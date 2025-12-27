@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SiteHeader } from "@/components/site-header";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Tradelia | Fondazione educativa",
@@ -26,6 +27,7 @@ export default function RootLayout({
         >
           <SiteHeader />
           {children}
+          <Toaster richColors position="bottom-right" />
         </ThemeProvider>
       </body>
     </html>

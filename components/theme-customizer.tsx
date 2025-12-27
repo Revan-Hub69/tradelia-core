@@ -1,106 +1,177 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Palette, Settings } from "lucide-react";
-import { useTheme } from "next-themes";
+import * as React from "react"
+import { Moon, Sun, Palette, Monitor } from "lucide-react"
+import { useTheme } from "next-themes"
+import { Button } from "@/components/ui/button"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import { Label } from "@/components/ui/label"
+import { Badge } from "@/components/ui/badge"
 
-const themes = [
-  { name: "Light", value: "light", colors: ["#ffffff", "#f8fafc", "#0f172a"] },
-  { name: "Dark", value: "dark", colors: ["#0f172a", "#1e293b", "#ffffff"] },
-  { name: "System", value: "system", colors: ["#64748b", "#334155", "#0f172a"] },
-];
+const colorPresets = [
+  { name: "Blue", value: "#3b82f6" },
+  { name: "Purple", value: "#8b5cf6" },
+  { name: "Pink", value: "#ec4899" },
+  { name: "Red", value: "#ef4444" },
+  { name: "Orange", value: "#f97316" },
+  { name: "Yellow", value: "#eab308" },
+  { name: "Green", value: "#22c55e" },
+  { name: "Teal", value: "#14b8a6" },
+  { name: "Cyan", value: "#06b6d4" },
+  { name: "Indigo", value: "#6366f1" },
+]
 
 export function ThemeCustomizer() {
-  const [open, setOpen] = React.useState(false);
-  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false)
+  const { theme, setTheme, resolvedTheme } = useTheme()
+  const [currentColor, setCurrentColor] = React.useState("#3b82f6")
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return null
+  }
+
+  const handleThemeModeChange = (newTheme: string) => {
+    setTheme(newTheme)
+  }
+
+  const handleColorChange = (color: string) => {
+    setCurrentColor(color)
+    // Apply CSS custom property for theme color
+    document.documentElement.style.setProperty('--theme-color', color)
+  }
 
   return (
-    <>
-      {/* Trigger Button */}
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => setOpen(!open)}
-        className="relative"
-      >
-        <Palette className="h-4 w-4" />
-        <span className="sr-only">Customize theme</span>
-        <Badge variant="secondary" className="absolute -top-2 -right-2 h-5 w-5 p-0 text-xs">
-          Pro
-        </Badge>
-      </Button>
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="relative h-9 w-9 rounded-full border border-border/40 bg-background shadow-sm hover:bg-accent hover:text-accent-foreground"
+        >
+          <Palette className="h-4 w-4" />
+          <span className="sr-only">Toggle theme customizer</span>
+        </Button>
+      </SheetTrigger>
+      <SheetContent className="w-80 space-y-6">
+        <SheetHeader>
+          <SheetTitle>Theme Customizer</SheetTitle>
+          <SheetDescription>
+            Customize the appearance of your dashboard.
+          </SheetDescription>
+        </SheetHeader>
 
-      {/* Customizer Panel */}
-      {open && (
-        <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm">
-          <div className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Settings className="h-5 w-5" />
-                <h2 className="text-lg font-semibold">Theme Customizer</h2>
-              </div>
+        {/* Theme Mode Selection */}
+        <div className="space-y-3">
+          <Label className="text-base font-medium">Theme Mode</Label>
+          <div className="grid grid-cols-3 gap-2">
+            <Button
+              variant={theme === 'light' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => handleThemeModeChange('light')}
+              className="justify-start"
+            >
+              <Sun className="mr-2 h-4 w-4" />
+              Light
+            </Button>
+            <Button
+              variant={theme === 'dark' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => handleThemeModeChange('dark')}
+              className="justify-start"
+            >
+              <Moon className="mr-2 h-4 w-4" />
+              Dark
+            </Button>
+            <Button
+              variant={theme === 'system' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => handleThemeModeChange('system')}
+              className="justify-start"
+            >
+              <Monitor className="mr-2 h-4 w-4" />
+              System
+            </Button>
+          </div>
+        </div>
+
+        {/* Color Selection */}
+        <div className="space-y-3">
+          <Label className="text-base font-medium">Accent Color</Label>
+          <div className="grid grid-cols-5 gap-2">
+            {colorPresets.map((color) => (
               <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setOpen(false)}
+                key={color.value}
+                variant={currentColor === color.value ? 'default' : 'outline'}
+                size="icon"
+                className="h-8 w-8 rounded-full p-0"
+                style={{ backgroundColor: color.value }}
+                onClick={() => handleColorChange(color.value)}
               >
-                ✕
+                <span className="sr-only">{color.name}</span>
               </Button>
-            </div>
-            
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-sm font-medium mb-3">Select Theme</h3>
-                <div className="grid grid-cols-3 gap-3">
-                  {themes.map((t) => (
-                    <button
-                      key={t.value}
-                      onClick={() => setTheme(t.value)}
-                      className={`flex flex-col items-center gap-2 rounded-lg border p-3 transition-colors hover:bg-accent ${
-                        theme === t.value ? "border-primary" : ""
-                      }`}
-                    >
-                      <div className="flex gap-1">
-                        {t.colors.map((color, i) => (
-                          <div
-                            key={i}
-                            className="h-6 w-6 rounded-full border"
-                            style={{ backgroundColor: color }}
-                          />
-                        ))}
-                      </div>
-                      <span className="text-xs font-medium">{t.name}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
+            ))}
+          </div>
+        </div>
 
-              <div className="pt-4 border-t">
-                <p className="text-xs text-muted-foreground">
-                  Theme customizer is a premium feature. 
-                  <br />
-                  Basic theme switching is available in the header.
-                </p>
-              </div>
+        {/* Custom Color Input */}
+        <div className="space-y-3">
+          <Label className="text-base font-medium">Custom Color</Label>
+          <div className="flex items-center space-x-2">
+            <input
+              type="color"
+              value={currentColor}
+              onChange={(e) => handleColorChange(e.target.value)}
+              className="h-8 w-8 rounded border border-border bg-transparent p-0"
+            />
+            <div className="flex-1">
+              <Badge variant="outline" className="font-mono text-xs">
+                {currentColor}
+              </Badge>
             </div>
           </div>
         </div>
-      )}
-    </>
-  );
-}
 
-export function ThemeCustomizerTrigger({ onClick }: { onClick: () => void }) {
-  return (
-    <Button
-      onClick={onClick}
-      className="fixed bottom-4 right-4 z-50 rounded-full shadow-lg"
-      size="icon"
-      variant="premium"
-    >
-      <Palette className="h-5 w-5" />
-    </Button>
-  );
+        {/* Current Theme Preview */}
+        <div className="space-y-3">
+          <Label className="text-base font-medium">Preview</Label>
+          <div
+            className="rounded-lg border p-4"
+            style={{
+              backgroundColor: resolvedTheme === 'dark' ? '#1f2937' : '#f9fafb',
+              borderColor: currentColor + '40',
+            }}
+          >
+            <div className="space-y-2">
+              <h4 className="font-medium" style={{ color: currentColor }}>
+                Sample Card
+              </h4>
+              <p className="text-sm text-muted-foreground">
+                This is how your theme will look with the selected colors.
+              </p>
+              <Button
+                size="sm"
+                style={{
+                  backgroundColor: currentColor,
+                  borderColor: currentColor,
+                }}
+              >
+                Primary Button
+              </Button>
+            </div>
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
+  )
 }

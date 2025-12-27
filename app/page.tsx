@@ -13,6 +13,7 @@ import {
 import { EconomicsIcon } from "@/components/icons/economics-icon";
 import { MicrostructureIcon } from "@/components/icons/microstructure-icon";
 import { BrainIcon } from "@/components/icons/brain-icon";
+import { DemoToasts } from "@/components/ui/demo-toasts";
 
 export default function HomePage() {
   return (
@@ -216,6 +217,22 @@ export default function HomePage() {
                 </Card>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* UI Components Demo */}
+        <section className="py-32">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="text-center space-y-6 mb-20">
+              <Badge variant="secondary" className="text-sm">UI Components</Badge>
+              <h2 className="text-4xl font-bold tracking-tight">Componenti UI Avanzati</h2>
+              <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+                Esempio di componenti UI con animazioni, micro-interazioni e feedback visivo avanzato.
+                Tutti i componenti sono completamente accessibili e responsivi.
+              </p>
+            </div>
+            
+            <DemoToasts />
           </div>
         </section>
 

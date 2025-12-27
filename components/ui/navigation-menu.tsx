@@ -76,14 +76,14 @@ function NavigationMenuTrigger({
       data-slot="navigation-menu-trigger"
       className={cn(navigationMenuTriggerStyle(), "group", className)}
       onClick={() => setOpen(!open)}
-      onMouseEnter={() => {
+      onMouseEnter={(event) => {
         setOpen(true)
-        onMouseEnter?.()
+        onMouseEnter?.(event)
       }}
-      onMouseLeave={() => {
+      onMouseLeave={(event) => {
         // Delay to allow moving to content
         setTimeout(() => setOpen(false), 150)
-        onMouseLeave?.()
+        onMouseLeave?.(event)
       }}
       {...props}
     >
