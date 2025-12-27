@@ -65,7 +65,7 @@ const menuSections = [
       {
         title: 'Percorsi di Studio',
         description: 'Apprendimento strutturato per livelli',
-        href: '/paths',
+        href: '/dashboard/paths/long-term',
         badge: null
       }
     ]

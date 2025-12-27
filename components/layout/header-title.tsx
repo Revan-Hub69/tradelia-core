@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 
 const titles: { test: RegExp; label: string }[] = [
   { test: /^\/$/, label: "Home" },
-  { test: /^\/paths(\/|$)/, label: "Percorsi" },
+  { test: /^\/dashboard\/paths(\/|$)/, label: "Percorsi" },
   { test: /^\/library(\/|$)/, label: "Libreria" },
   { test: /^\/about$/, label: "Metodo & Compliance" },
 ];

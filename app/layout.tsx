@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "sonner";
-import ClientLayout from "./client-layout";
+import ClientLayout from "./ClientLayout";
 
 export const metadata: Metadata = {
   title: "Tradelia | Fondazione educativa",

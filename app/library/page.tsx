@@ -19,7 +19,7 @@ export default function LibraryPage() {
       subtitle="Concetti essenziali per valutare segnali e contesto senza sostituire il giudizio critico."
       actions={
         <Button asChild variant="secondary" size="sm">
-          <Link href="/paths/long-term">Vai ai percorsi</Link>
+          <Link href="/dashboard/paths/long-term">Vai ai percorsi</Link>
         </Button>
       }
     >

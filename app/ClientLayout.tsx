@@ -13,9 +13,9 @@ export default function ClientLayout({
   const isDashboardPage = pathname?.startsWith('/dashboard');
   
   return (
-    <>
+    <div key={pathname}>
       {!isDashboardPage && <SiteHeader />}
       {children}
-    </>
+    </div>
   );
 }
