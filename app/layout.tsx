@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata: Metadata = {
   title: "Tradelia | Fondazione educativa",
@@ -15,7 +16,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="it">
-      <body className="bg-muted/20 text-foreground antialiased">{children}</body>
+      <body className="bg-muted/20 text-foreground antialiased">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
