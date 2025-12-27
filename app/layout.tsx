@@ -1,11 +1,9 @@
-"use client";
-
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { usePathname } from "next/navigation";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import { SiteHeader } from "@/components/site-header";
 import { Toaster } from "sonner";
+import ClientLayout from "./client-layout";
 
 export const metadata: Metadata = {
   title: "Tradelia | Fondazione educativa",
@@ -18,9 +16,6 @@ export default function RootLayout({
 }: {
   children: ReactNode;
 }) {
-  const pathname = usePathname();
-  const isDashboardPage = pathname?.startsWith('/dashboard');
-  
   return (
     <html lang="it">
       <body className="bg-muted/20 text-foreground antialiased">
@@ -30,8 +25,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {!isDashboardPage && <SiteHeader />}
-          {children}
+          <ClientLayout>
+            {children}
+          </ClientLayout>
           <Toaster richColors position="bottom-right" />
         </ThemeProvider>
       </body>
