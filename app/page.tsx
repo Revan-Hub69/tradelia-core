@@ -15,6 +15,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { EconomicsIcon } from "@/components/icons/economics-icon";
 import { MicrostructureIcon } from "@/components/icons/microstructure-icon";
 import { BrainIcon } from "@/components/icons/brain-icon";
+import { LogoIcon } from "@/components/icons/logo-icon";
 
 export default function HomePage() {
   return (
@@ -23,9 +24,7 @@ export default function HomePage() {
       <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <div className="flex items-center space-x-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-              <span className="text-sm font-bold text-primary-foreground">T</span>
-            </div>
+            <LogoIcon className="h-8 w-8 text-primary" />
             <div>
               <p className="text-sm font-semibold">Tradelia</p>
               <p className="text-xs text-muted-foreground">Educazione al rischio</p>
