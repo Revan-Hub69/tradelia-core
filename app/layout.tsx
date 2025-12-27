@@ -1,5 +1,7 @@
-import type { Metadata } from "next";
+"use client";
+
 import type { ReactNode } from "react";
+import { usePathname } from "next/navigation";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SiteHeader } from "@/components/site-header";
@@ -16,6 +18,9 @@ export default function RootLayout({
 }: {
   children: ReactNode;
 }) {
+  const pathname = usePathname();
+  const isDashboardPage = pathname?.startsWith('/dashboard');
+  
   return (
     <html lang="it">
       <body className="bg-muted/20 text-foreground antialiased">
@@ -25,7 +30,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <SiteHeader />
+          {!isDashboardPage && <SiteHeader />}
           {children}
           <Toaster richColors position="bottom-right" />
         </ThemeProvider>

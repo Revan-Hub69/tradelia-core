@@ -6,7 +6,7 @@ import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { AppSidebar } from "@/components/app-sidebar";
-import { SiteHeader } from "@/components/site-header";
+
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -36,10 +36,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         </SheetContent>
       </Sheet>
 
-      {/* Main Content with Header */}
+      {/* Main Content */}
       <div className="flex flex-1 flex-col">
-        <SiteHeader />
-        <main className="flex-1 space-y-4 p-4 md:p-8 pt-16 md:pt-8">
+        <main className="flex-1 space-y-4 p-4 md:p-8 pt-8">
           {children}
         </main>
       </div>

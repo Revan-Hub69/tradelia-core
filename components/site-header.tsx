@@ -118,13 +118,13 @@ export function SiteHeader() {
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent">
+                  <NavigationMenuTrigger id="dashboard-menu" className="bg-transparent">
                     <span className="flex items-center gap-1">
                       Dashboard
                       <Badge variant="secondary" className="ml-1 text-xs">Pro</Badge>
                     </span>
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent>
+                  <NavigationMenuContent id="dashboard-menu">
                     <div className="w-[600px] p-4">
                       <div className="grid grid-cols-2 gap-4">
                         {menuSections[0].items.map((item) => (
@@ -148,10 +148,10 @@ export function SiteHeader() {
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent">
+                  <NavigationMenuTrigger id="metodologia-menu" className="bg-transparent">
                     Metodologia
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent>
+                  <NavigationMenuContent id="metodologia-menu">
                     <div className="w-[600px] p-4">
                       <div className="grid grid-cols-2 gap-4">
                         {menuSections[1].items.map((item) => (
@@ -190,10 +190,10 @@ export function SiteHeader() {
           <div className="flex items-center space-x-4">
             {/* Desktop Actions */}
             <div className="hidden md:flex md:items-center md:space-x-2">
-              <Button asChild variant="ghost" size="sm">
+              <Button asChild variant="ghost" size="sm" aria-label="Accedi al dashboard">
                 <Link href="/dashboard">Accedi</Link>
               </Button>
-              <Button asChild variant="premium" size="sm">
+              <Button asChild variant="premium" size="sm" aria-label="Inizia ora con Tradelia">
                 <Link href="/dashboard">Inizia Ora</Link>
               </Button>
               <Separator orientation="vertical" className="mx-2 h-6" />

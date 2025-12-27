@@ -5,7 +5,14 @@ import { Button } from "@/components/ui/button";
 
 export default function DashboardHome() {
   return (
-    <div className="space-y-6">
+    <>
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold tracking-tight">Dashboard Tradelia</h1>
+        <p className="text-muted-foreground">
+          Seleziona una sezione per esplorare i contenuti educativi. Metodo rigoroso senza segnali operativi.
+        </p>
+      </div>
+      <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle>Dashboard Tradelia</CardTitle>

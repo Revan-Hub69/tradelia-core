@@ -8,13 +8,6 @@ import { Button } from "@/components/ui/button";
 export default function CryptoPage() {
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Crypto</h1>
-          <p className="text-muted-foreground">Contesto, rischio dominante, checklist cognitiva</p>
-        </div>
-        <Badge variant="secondary">Asset Class</Badge>
-      </div>
 
       <Alert>
         <AlertTitle>Nota metodologica</AlertTitle>

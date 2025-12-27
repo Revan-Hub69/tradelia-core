@@ -13,7 +13,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { ChevronDown, Home, BookOpen, Target, Lightbulb } from "lucide-react";
-import { ModeToggle } from "@/components/mode-toggle";
+
 
 const navItems = [
   {
@@ -136,9 +136,7 @@ export function AppSidebar({ className, ...props }: AppSidebarProps) {
             ))}
           </div>
         </div>
-        <div className="px-3 py-2">
-          <ModeToggle />
-        </div>
+
       </div>
     </div>
   );

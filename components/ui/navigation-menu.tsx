@@ -4,6 +4,12 @@ import { ChevronDownIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
+// Context for managing menu state globally
+const NavigationMenuContext = React.createContext<{
+  openItem: string | null
+  setOpenItem: (id: string | null) => void
+}>({ openItem: null, setOpenItem: () => {} })
+
 // Simple navigation menu without Radix UI dependencies
 function NavigationMenu({
   className,
@@ -13,19 +19,38 @@ function NavigationMenu({
 }: React.ComponentProps<"div"> & {
   viewport?: boolean
 }) {
+  const [openItem, setOpenItem] = React.useState<string | null>(null)
+  
+  // Close menu when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element
+      if (!target.closest('[data-slot="navigation-menu"]')) {
+        setOpenItem(null)
+      }
+    }
+    
+    if (openItem) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [openItem])
+  
   return (
-    <div
-      data-slot="navigation-menu"
-      data-viewport={viewport}
-      className={cn(
-        "group/navigation-menu relative flex max-w-max flex-1 items-center justify-center",
-        className
-      )}
-      {...props}
-    >
-      {children}
-      {viewport && <NavigationMenuViewport />}
-    </div>
+    <NavigationMenuContext.Provider value={{ openItem, setOpenItem }}>
+      <div
+        data-slot="navigation-menu"
+        data-viewport={viewport}
+        className={cn(
+          "group/navigation-menu relative flex max-w-max flex-1 items-center justify-center",
+          className
+        )}
+        {...props}
+      >
+        {children}
+        {viewport && <NavigationMenuViewport />}
+      </div>
+    </NavigationMenuContext.Provider>
   )
 }
 
@@ -68,30 +93,41 @@ function NavigationMenuTrigger({
   onMouseEnter,
   onMouseLeave,
   ...props
-}: React.ComponentProps<"button">) {
-  const [open, setOpen] = React.useState(false)
+}: React.ComponentProps<"button"> & { id?: string }) {
+  const { openItem, setOpenItem } = React.useContext(NavigationMenuContext)
+  const triggerId = props.id || 'trigger'
+  const isOpen = openItem === triggerId
+  
+  const handleClick = () => {
+    if (isOpen) {
+      setOpenItem(null)
+    } else {
+      setOpenItem(triggerId)
+    }
+  }
+  
+  const handleMouseEnter = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (openItem && openItem !== triggerId) {
+      setOpenItem(triggerId)
+    }
+    onMouseEnter?.(event)
+  }
   
   return (
     <button
       data-slot="navigation-menu-trigger"
+      data-state={isOpen ? "open" : "closed"}
       className={cn(navigationMenuTriggerStyle(), "group", className)}
-      onClick={() => setOpen(!open)}
-      onMouseEnter={(event) => {
-        setOpen(true)
-        onMouseEnter?.(event)
-      }}
-      onMouseLeave={(event) => {
-        // Delay to allow moving to content
-        setTimeout(() => setOpen(false), 150)
-        onMouseLeave?.(event)
-      }}
+      onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={onMouseLeave}
       {...props}
     >
       {children}{" "}
       <ChevronDownIcon
         className={cn(
           "relative top-[1px] ml-1 size-3 transition duration-300",
-          open && "rotate-180"
+          isOpen && "rotate-180"
         )}
         aria-hidden="true"
       />
@@ -102,25 +138,25 @@ function NavigationMenuTrigger({
 function NavigationMenuContent({
   className,
   children,
+  id,
   ...props
-}: React.ComponentProps<"div">) {
-  const [open, setOpen] = React.useState(false)
+}: React.ComponentProps<"div"> & { id?: string }) {
+  const { openItem } = React.useContext(NavigationMenuContext)
+  const contentId = id || 'content'
+  const isVisible = openItem === contentId
   
-  // This is a simplified approach - in a real implementation,
-  // you'd want to coordinate with the trigger state
   return (
     <div
       data-slot="navigation-menu-content"
+      data-state={isVisible ? "open" : "closed"}
       className={cn(
         "data-[motion^=from-]:animate-in data-[motion^=to-]:animate-out data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 top-0 left-0 w-full p-2 pr-2.5 md:absolute md:w-auto",
-        "absolute top-full left-0 z-50 mt-1.5 overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md md:w-auto opacity-0 invisible group-hover/navigation-menu:opacity-100 group-hover/navigation-menu:visible transition-all duration-200",
+        "absolute top-full left-0 z-50 mt-1.5 overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md md:w-auto transition-all duration-200",
+        isVisible ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none",
         className
       )}
       onMouseEnter={() => {
         // Keep menu open when hovering over content
-      }}
-      onMouseLeave={() => {
-        // This would need to communicate with trigger - simplified for now
       }}
       {...props}
     >
