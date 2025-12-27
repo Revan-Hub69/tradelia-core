@@ -4,6 +4,15 @@ import { ChevronDownIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
+// Navigation Menu Context
+const NavigationMenuContext = React.createContext<{
+  open: boolean
+  setOpen: (open: boolean) => void
+}>({
+  open: false,
+  setOpen: () => {},
+})
+
 // Simple navigation menu without Radix UI dependencies
 function NavigationMenu({
   className,
@@ -13,19 +22,23 @@ function NavigationMenu({
 }: React.ComponentProps<"div"> & {
   viewport?: boolean
 }) {
+  const [open, setOpen] = React.useState(false)
+  
   return (
-    <div
-      data-slot="navigation-menu"
-      data-viewport={viewport}
-      className={cn(
-        "group/navigation-menu relative flex max-w-max flex-1 items-center justify-center",
-        className
-      )}
-      {...props}
-    >
-      {children}
-      {viewport && <NavigationMenuViewport />}
-    </div>
+    <NavigationMenuContext.Provider value={{ open, setOpen }}>
+      <div
+        data-slot="navigation-menu"
+        data-viewport={viewport}
+        className={cn(
+          "group/navigation-menu relative flex max-w-max flex-1 items-center justify-center",
+          className
+        )}
+        {...props}
+      >
+        {children}
+        {viewport && <NavigationMenuViewport />}
+      </div>
+    </NavigationMenuContext.Provider>
   )
 }
 
@@ -67,13 +80,14 @@ function NavigationMenuTrigger({
   children,
   ...props
 }: React.ComponentProps<"button">) {
-  const [open, setOpen] = React.useState(false);
+  const { open, setOpen } = React.useContext(NavigationMenuContext)
   
   return (
     <button
       data-slot="navigation-menu-trigger"
       className={cn(navigationMenuTriggerStyle(), "group", className)}
       onClick={() => setOpen(!open)}
+      onMouseEnter={() => setOpen(true)}
       {...props}
     >
       {children}{" "}
@@ -90,8 +104,13 @@ function NavigationMenuTrigger({
 
 function NavigationMenuContent({
   className,
+  children,
   ...props
 }: React.ComponentProps<"div">) {
+  const { open } = React.useContext(NavigationMenuContext)
+  
+  if (!open) return null
+  
   return (
     <div
       data-slot="navigation-menu-content"
@@ -100,8 +119,14 @@ function NavigationMenuContent({
         "absolute top-full left-0 z-50 mt-1.5 overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md md:w-auto",
         className
       )}
+      onMouseLeave={() => {
+        const { setOpen } = React.useContext(NavigationMenuContext)
+        setOpen(false)
+      }}
       {...props}
-    />
+    >
+      {children}
+    </div>
   )
 }
 
