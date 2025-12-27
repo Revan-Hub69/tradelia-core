@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 export default function HomePage() {
   return (
@@ -23,9 +24,52 @@ export default function HomePage() {
             <p className="text-xs text-muted-foreground">Educazione al rischio · Metodo, non segnali</p>
           </div>
           <div className="flex items-center gap-2">
-            <Button asChild variant="outline">
+            <Button asChild variant="secondary">
               <Link href="/dashboard">Dashboard</Link>
             </Button>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline">Fonti & Metodo</Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-full sm:max-w-lg">
+                <div className="space-y-6 py-6">
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold">Principi</p>
+                    <div className="space-y-3">
+                      {[
+                        { title: "Economia Finanziaria", body: "Analisi del rischio e teoria dei portafogli." },
+                        { title: "Market Microstructure", body: "Contesto operativo e liquidità degli strumenti." },
+                        { title: "Behavioral Finance", body: "Riconoscimento e riduzione dei bias cognitivi." },
+                      ].map((p) => (
+                        <Card key={p.title}>
+                          <CardContent className="p-3">
+                            <p className="text-sm font-medium">{p.title}</p>
+                            <p className="text-sm text-muted-foreground">{p.body}</p>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold">Limiti</p>
+                    <ul className="list-disc space-y-2 pl-5 text-sm text-muted-foreground">
+                      <li>Nessuna previsione di performance</li>
+                      <li>Nessun segnale operativo</li>
+                      <li>Nessuna promessa di rendimento</li>
+                      <li>Contenuti esclusivamente educativi</li>
+                    </ul>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold">Fonti</p>
+                    <div className="space-y-2 text-sm text-muted-foreground">
+                      <p>Dimson, Marsh, Staunton - Triumph of the Optimists</p>
+                      <p>Markowitz - Portfolio Selection</p>
+                      <p>Kahneman - Thinking, Fast and Slow</p>
+                    </div>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </header>
