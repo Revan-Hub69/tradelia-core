@@ -12,6 +12,9 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { EconomicsIcon } from "@/components/icons/economics-icon";
+import { MicrostructureIcon } from "@/components/icons/microstructure-icon";
+import { BrainIcon } from "@/components/icons/brain-icon";
 
 export default function HomePage() {
   return (
@@ -200,29 +203,32 @@ export default function HomePage() {
                 {
                   title: "Economia Finanziaria",
                   desc: "Teoria dei portafogli e analisi del rischio",
-                  icon: "📊"
+                  icon: EconomicsIcon
                 },
                 {
                   title: "Market Microstructure",
                   desc: "Contesto operativo e liquidità degli strumenti",
-                  icon: "🔬"
+                  icon: MicrostructureIcon
                 },
                 {
                   title: "Behavioral Finance",
                   desc: "Riconoscimento e riduzione dei bias cognitivi",
-                  icon: "🧠"
+                  icon: BrainIcon
                 },
-              ].map((item) => (
-                <div key={item.title} className="text-center space-y-4">
-                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-2xl">
-                    {item.icon}
+              ].map((item) => {
+                const IconComponent = item.icon;
+                return (
+                  <div key={item.title} className="text-center space-y-4">
+                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                      <IconComponent className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">{item.title}</h3>
+                      <p className="text-sm text-muted-foreground mt-2">{item.desc}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold">{item.title}</h3>
-                    <p className="text-sm text-muted-foreground mt-2">{item.desc}</p>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>
