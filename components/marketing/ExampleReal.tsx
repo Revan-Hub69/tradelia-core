@@ -60,8 +60,8 @@ export default function ExampleReal() {
           <FearGreedWidget />
         </UnifiedCard>
 
-        {/* AI Analysis - NO card, just clean content that adapts to theme */}
-        <div className="space-y-4">
+        {/* AI Analysis - ONE clean container */}
+        <div className="bg-card border border-border rounded-lg p-6 space-y-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center flex-shrink-0">
               <div className="w-5 h-5 bg-background rounded-lg"></div>
@@ -72,7 +72,7 @@ export default function ExampleReal() {
             </div>
           </div>
           
-          {/* AI content - NO background, just text that adapts */}
+          {/* AI content */}
           <div className="space-y-3">
             {fearGreedData ? (
               <AIFearGreedAnalysis 

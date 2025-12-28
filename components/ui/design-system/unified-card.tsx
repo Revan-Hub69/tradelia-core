@@ -8,12 +8,12 @@ interface UnifiedCardProps {
 }
 
 export function UnifiedCard({ variant = 'standard', children, className }: UnifiedCardProps) {
-  const baseStyles = 'bg-card rounded-2xl transition-all duration-200'
+  const baseStyles = 'bg-card rounded-xl transition-colors duration-150'
   
   const variantStyles = {
-    standard: 'border border-border p-6 shadow-sm hover:shadow-md',
-    elevated: 'border border-border p-8 shadow-lg hover:shadow-xl hover:-translate-y-0.5',
-    hero: 'border-2 border-border p-12 shadow-xl'
+    standard: 'border border-border p-6 hover:border-border-strong',
+    elevated: 'border border-border p-8',
+    hero: 'border-2 border-border p-12'
   }
 
   return (
@@ -43,7 +43,7 @@ interface CardTitleProps {
 
 export function CardTitle({ children, className }: CardTitleProps) {
   return (
-    <h3 className={cn('text-2xl font-bold text-foreground', className)}>
+    <h3 className={cn('text-xl font-bold text-foreground', className)}>
       {children}
     </h3>
   )
@@ -56,7 +56,7 @@ interface CardContentProps {
 
 export function CardContent({ children, className }: CardContentProps) {
   return (
-    <div className={cn('text-muted-foreground leading-relaxed', className)}>
+    <div className={cn('text-foreground leading-relaxed', className)}>
       {children}
     </div>
   )

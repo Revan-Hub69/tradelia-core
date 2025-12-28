@@ -125,17 +125,17 @@ export function SiteHeader() {
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger id="dashboard-menu" className="bg-transparent">
+                  <NavigationMenuTrigger className="bg-transparent">
                     <span className="flex items-center gap-1">
                       Dashboard
                       <Badge variant="secondary" className="ml-1 text-xs">Crypto</Badge>
                     </span>
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent id="dashboard-menu">
+                  <NavigationMenuContent>
                     <div className="w-[600px] p-4">
                       <div className="grid grid-cols-2 gap-4">
                         {menuSections[0].items.map((item) => (
-                          <NavigationMenuLink key={item.title} href={item.href} className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                          <Link key={item.title} href={item.href} className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                             <div className="flex items-center gap-2">
                               <div className="text-sm font-medium leading-none">{item.title}</div>
                               {item.badge && (
@@ -147,7 +147,7 @@ export function SiteHeader() {
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                               {item.description}
                             </p>
-                          </NavigationMenuLink>
+                          </Link>
                         ))}
                       </div>
                     </div>
@@ -155,14 +155,14 @@ export function SiteHeader() {
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger id="metodologia-menu" className="bg-transparent">
+                  <NavigationMenuTrigger className="bg-transparent">
                     Metodologia
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent id="metodologia-menu">
+                  <NavigationMenuContent>
                     <div className="w-[600px] p-4">
                       <div className="grid grid-cols-2 gap-4">
                         {menuSections[1].items.map((item) => (
-                          <NavigationMenuLink key={item.title} href={item.href} className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                          <Link key={item.title} href={item.href} className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                             <div className="flex items-center gap-2">
                               <div className="text-sm font-medium leading-none">{item.title}</div>
                               {item.badge && (
@@ -174,7 +174,7 @@ export function SiteHeader() {
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                               {item.description}
                             </p>
-                          </NavigationMenuLink>
+                          </Link>
                         ))}
                       </div>
                     </div>

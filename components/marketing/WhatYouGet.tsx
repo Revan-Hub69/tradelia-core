@@ -22,33 +22,33 @@ export default function WhatYouGet() {
         title="Cosa trovi (e cosa no)"
       />
       
-      <div className="grid gap-8 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2">
         <UnifiedCard variant="standard" className="border-success/30">
           <CardHeader>
             <CardTitle className="text-success">✓ Trovi</CardTitle>
           </CardHeader>
           <CardContent>
-            <ul className="space-y-3">
+            <ul className="space-y-2">
               {youGet.map((item, i) => (
                 <li key={i} className="flex items-start gap-3">
                   <CheckIcon className="shrink-0 mt-0.5" />
-                  <span>{item}</span>
+                  <span className="text-sm">{item}</span>
                 </li>
               ))}
             </ul>
           </CardContent>
         </UnifiedCard>
         
-        <UnifiedCard variant="standard" className="border-warning/30 bg-warning/5">
+        <UnifiedCard variant="standard" className="border-warning/20 bg-warning/5">
           <CardHeader>
-            <CardTitle className="text-warning-foreground">✗ Non trovi</CardTitle>
+            <CardTitle className="text-foreground">✗ Non trovi</CardTitle>
           </CardHeader>
           <CardContent>
-            <ul className="space-y-3">
+            <ul className="space-y-2">
               {youDontGet.map((item, i) => (
                 <li key={i} className="flex items-start gap-3">
                   <CrossIcon className="shrink-0 mt-0.5" />
-                  <span>{item}</span>
+                  <span className="text-sm">{item}</span>
                 </li>
               ))}
             </ul>

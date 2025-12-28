@@ -9,12 +9,12 @@ export default function FinalCTANew() {
       <SectionLayout background="muted">
         <div className="mx-auto max-w-3xl">
           <UnifiedCard variant="hero" className="bg-gradient-to-br from-primary/5 to-background border-primary/20">
-            <CardContent className="text-center space-y-6">
-              <h2 className="text-4xl font-bold">Inizia con calma</h2>
-              <p className="text-xl text-muted-foreground">
+            <CardContent className="text-center space-y-5">
+              <h2 className="text-3xl font-bold">Inizia con calma</h2>
+              <p className="text-base text-foreground leading-relaxed">
                 Parti dalla prima micro-lezione. Nessuna pressione, nessuna promessa: solo basi chiare.
               </p>
-              <Button asChild size="lg" className="px-8 py-6 text-lg">
+              <Button asChild size="lg" className="px-8 py-6 text-base font-semibold">
                 <Link href="/dashboard">
                   Inizia
                 </Link>
@@ -28,17 +28,17 @@ export default function FinalCTANew() {
       <footer className="border-t bg-muted py-12">
         <div className="mx-auto max-w-5xl px-6">
           <div className="text-center space-y-6">
-            <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground">
-              <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
-              <span>•</span>
-              <Link href="/about" className="hover:text-foreground transition-colors">Metodo</Link>
-              <span>•</span>
-              <Link href="/contact" className="hover:text-foreground transition-colors">Contatti</Link>
+            <div className="flex items-center justify-center gap-6 text-sm text-foreground">
+              <Link href="/privacy" className="hover:text-primary transition-colors font-medium">Privacy</Link>
+              <span className="text-muted-foreground">•</span>
+              <Link href="/about" className="hover:text-primary transition-colors font-medium">Metodo</Link>
+              <span className="text-muted-foreground">•</span>
+              <Link href="/contact" className="hover:text-primary transition-colors font-medium">Contatti</Link>
             </div>
             
             <div className="pt-6 border-t border-border">
-              <p className="text-sm text-muted-foreground leading-relaxed max-w-3xl mx-auto">
-                <strong className="text-foreground">Disclaimer:</strong> Tradelia è una piattaforma educativa. 
+              <p className="text-sm text-foreground leading-relaxed max-w-3xl mx-auto">
+                <strong className="font-semibold">Disclaimer:</strong> Tradelia è una piattaforma educativa. 
                 Nessuna consulenza finanziaria. Nessuna raccomandazione o segnale operativo.
               </p>
             </div>

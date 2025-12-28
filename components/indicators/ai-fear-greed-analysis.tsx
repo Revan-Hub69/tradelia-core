@@ -116,7 +116,7 @@ export function AIFearGreedAnalysis({ fearGreedValue, fearGreedClass, fearGreedC
 
   return (
     <div 
-      className="text-base leading-relaxed text-foreground prose prose-sm max-w-none dark:prose-invert"
+      className="text-base leading-relaxed text-foreground prose prose-sm max-w-none dark:prose-invert prose-strong:font-semibold prose-strong:text-foreground dark:prose-strong:text-foreground"
       dangerouslySetInnerHTML={{ __html: analysis }}
     />
   )

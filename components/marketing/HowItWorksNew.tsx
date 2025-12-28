@@ -4,17 +4,17 @@ import { UnifiedCard, CardHeader, CardTitle, CardContent } from "@/components/ui
 export default function HowItWorksNew() {
   const steps = [
     {
-      number: "1",
+      number: "01",
       title: "Micro-lezioni da 5 minuti",
       description: "Un concetto alla volta. Nessun salto logico. Si parte da zero."
     },
     {
-      number: "2",
+      number: "02",
       title: "Spiegazioni guidate (AI educativa)",
       description: "Un supporto che descrive e spiega, senza dire cosa fare."
     },
     {
-      number: "3",
+      number: "03",
       title: "Comprensione prima dell'azione",
       description: "Decidi tu se e quando usare ciò che impari. Nessuna pressione. Nessuna call to action finanziaria."
     }
@@ -26,17 +26,21 @@ export default function HowItWorksNew() {
         title="Come funziona"
       />
       
-      <div className="grid gap-8 md:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-3">
         {steps.map((step) => (
-          <UnifiedCard key={step.number} variant="standard">
+          <UnifiedCard key={step.number} variant="standard" className="relative">
+            {/* Vertical accent bar - Academic style */}
+            <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-xl" aria-hidden="true"></div>
+            
             <CardHeader>
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground text-xl font-bold mb-4">
+              {/* Large section number - Bloomberg/FT style */}
+              <div className="text-5xl font-bold text-primary/20 mb-2" aria-hidden="true">
                 {step.number}
               </div>
-              <CardTitle className="text-xl">{step.title}</CardTitle>
+              <CardTitle className="text-lg">{step.title}</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-base">{step.description}</p>
+              <p className="text-sm leading-relaxed">{step.description}</p>
             </CardContent>
           </UnifiedCard>
         ))}

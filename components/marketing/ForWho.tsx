@@ -7,13 +7,13 @@ export default function ForWho() {
         <SectionHeader 
           title="Per chi è"
         />
-        <div className="text-lg text-muted-foreground leading-relaxed space-y-4">
+        <div className="text-base text-foreground leading-relaxed space-y-4">
           <p>
-            <strong className="text-foreground">Per chi è esposto all'hype crypto</strong><br />
-            <strong className="text-foreground">Per chi è confuso ma curioso</strong><br />
-            <strong className="text-foreground">Per chi vuole capire prima di fidarsi</strong>
+            <strong className="font-semibold">Per chi è esposto all'hype crypto</strong><br />
+            <strong className="font-semibold">Per chi è confuso ma curioso</strong><br />
+            <strong className="font-semibold">Per chi vuole capire prima di fidarsi</strong>
           </p>
-          <p className="text-base">
+          <p className="text-sm text-muted-foreground">
             Non serve esperienza. Non serve investire.
           </p>
         </div>
