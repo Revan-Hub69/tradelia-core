@@ -10,7 +10,7 @@ export default function RootLayout({
   children: ReactNode;
 }) {
   return (
-    <html lang="it" className={`${inter.variable} ${ibmPlexSans.variable}`}>
+    <html lang="it" className={`${inter.variable} ${ibmPlexSans.variable}`} suppressHydrationWarning>
       <body className="bg-muted/20 text-foreground antialiased font-sans">
         <ThemeProvider
           attribute="class"
