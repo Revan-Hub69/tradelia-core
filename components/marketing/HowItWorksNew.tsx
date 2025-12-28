@@ -1,4 +1,5 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { SectionLayout, SectionHeader } from "@/components/ui/design-system/section-layout"
+import { UnifiedCard, CardHeader, CardTitle, CardContent } from "@/components/ui/design-system/unified-card"
 
 export default function HowItWorksNew() {
   const steps = [
@@ -20,30 +21,26 @@ export default function HowItWorksNew() {
   ];
 
   return (
-    <section id="how" className="py-20 bg-muted/30">
-      <div className="mx-auto max-w-6xl px-6">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold mb-4">Come funziona</h2>
-        </div>
-        
-        <div className="grid gap-8 md:grid-cols-3">
-          {steps.map((step) => (
-            <Card key={step.number} className="relative hover-lift">
-              <CardHeader>
-                <div className="flex items-center gap-4 mb-2">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xl font-bold">
-                    {step.number}
-                  </div>
-                </div>
-                <CardTitle className="text-xl">{step.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-base">{step.description}</CardDescription>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+    <SectionLayout background="white">
+      <SectionHeader 
+        title="Come funziona"
+      />
+      
+      <div className="grid gap-8 md:grid-cols-3">
+        {steps.map((step) => (
+          <UnifiedCard key={step.number} variant="standard">
+            <CardHeader>
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground text-xl font-bold mb-4">
+                {step.number}
+              </div>
+              <CardTitle className="text-xl">{step.title}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-base">{step.description}</p>
+            </CardContent>
+          </UnifiedCard>
+        ))}
       </div>
-    </section>
+    </SectionLayout>
   );
 }

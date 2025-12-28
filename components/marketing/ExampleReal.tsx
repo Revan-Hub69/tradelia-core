@@ -1,170 +1,197 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { CheckIcon } from "@/components/icons/check-icon";
-import { CrossIcon } from "@/components/icons/cross-icon";
-import { WarningIcon } from "@/components/icons/warning-icon";
+'use client'
+
+import { useState, useEffect } from 'react'
+import { UnifiedCard, CardHeader, CardTitle, CardContent } from "@/components/ui/design-system/unified-card"
+import { SectionLayout, SectionHeader } from "@/components/ui/design-system/section-layout"
+import { CheckIcon } from "@/components/icons/check-icon"
+import { CrossIcon } from "@/components/icons/cross-icon"
+import { FearGreedWidget } from "@/components/indicators/fear-greed-widget"
+import { AIFearGreedAnalysis, AIAnalysisPlaceholder } from "@/components/indicators/ai-fear-greed-analysis"
+
+interface FearGreedData {
+  value: number
+  value_class: string
+  value_classification: string
+  timestamp: string
+  time_until_update: string
+  source: string
+  last_updated: string
+  database_id: string
+}
 
 export default function ExampleReal() {
+  const [fearGreedData, setFearGreedData] = useState<FearGreedData | null>(null)
+
+  useEffect(() => {
+    const fetchFearGreedData = async () => {
+      try {
+        const response = await fetch('/api/indicators/fear-greed')
+        if (response.ok) {
+          const result = await response.json()
+          if (result.success && result.data) {
+            setFearGreedData(result.data)
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch Fear & Greed data:', error)
+      }
+    }
+
+    fetchFearGreedData()
+  }, [])
+
   return (
-    <section id="example" className="py-20">
-      <div className="mx-auto max-w-6xl px-6">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">Esempio: Fear & Greed Index</h2>
-          <p className="text-secondary max-w-2xl mx-auto">
-            Un indicatore spiegato come si deve: dalle basi accademiche alla lettura pratica.
-          </p>
-        </div>
+    <SectionLayout background="muted">
+      <SectionHeader 
+        badge="Esempio Pratico"
+        title="Fear & Greed Index"
+        subtitle="Un indicatore spiegato dalle basi accademiche alla lettura pratica, senza semplificazioni pericolose."
+      />
+
+      {/* Main Content: Widget + AI */}
+      <div className="grid lg:grid-cols-3 gap-8 mb-12">
         
-        <div className="grid gap-8 lg:grid-cols-2">
-          {/* Card Dati Live */}
-          <Card className="card-elevated hover-lift">
+        {/* Widget - 1 colonna */}
+        <div className="lg:col-span-1">
+          <UnifiedCard variant="elevated">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-sm font-medium text-muted-foreground">Dati Live</span>
+              <span className="text-xs text-muted-foreground">Alternative.me</span>
+            </div>
+            <FearGreedWidget />
+          </UnifiedCard>
+        </div>
+
+        {/* AI Analysis - 2 colonne */}
+        <div className="lg:col-span-2">
+          <UnifiedCard variant="elevated" className="bg-gradient-to-br from-warning/10 to-background border-warning/30">
             <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>Fear & Greed Index — Crypto</CardTitle>
-                <Badge variant="secondary">Live</Badge>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 bg-warning rounded-xl flex items-center justify-center">
+                  <div className="w-5 h-5 bg-background rounded-lg"></div>
+                </div>
+                <div>
+                  <CardTitle className="text-warning-foreground">Tradelia AI Analysis</CardTitle>
+                  <p className="text-sm text-muted-foreground">Interpretazione contestuale</p>
+                </div>
               </div>
-              <CardDescription>Indicatore del sentiment di mercato</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="text-center py-8">
-                <div className="text-6xl font-bold text-primary mb-2 animate-bounce-subtle">
-                  [VALUE_PLACEHOLDER]
+            
+            <CardContent>
+              {fearGreedData ? (
+                <AIFearGreedAnalysis 
+                  fearGreedValue={fearGreedData.value}
+                  fearGreedClass={fearGreedData.value_class}
+                  fearGreedClassification={fearGreedData.value_classification}
+                />
+              ) : (
+                <AIAnalysisPlaceholder />
+              )}
+
+              {/* AI Principles */}
+              <div className="grid grid-cols-3 gap-3 mt-6 pt-6 border-t border-border">
+                <div className="text-center">
+                  <CheckIcon className="h-5 w-5 text-success mx-auto mb-1" />
+                  <div className="text-xs font-medium text-foreground">Nessuna Previsione</div>
                 </div>
-                <div className="text-xl text-secondary">
-                  [CLASS_PLACEHOLDER]
+                <div className="text-center">
+                  <CheckIcon className="h-5 w-5 text-success mx-auto mb-1" />
+                  <div className="text-xs font-medium text-foreground">Zero Raccomandazioni</div>
                 </div>
-                <div className="text-sm text-tertiary mt-4">
-                  Aggiornato: [DATE_PLACEHOLDER]
+                <div className="text-center">
+                  <CheckIcon className="h-5 w-5 text-success mx-auto mb-1" />
+                  <div className="text-xs font-medium text-foreground">Solo Educazione</div>
                 </div>
-                <div className="text-xs text-tertiary mt-1">
-                  Fonte: [SOURCE_PLACEHOLDER]
-                </div>
-              </div>
-              
-              {/* Chart Placeholder */}
-              <div className="bg-muted/50 rounded-lg p-8 text-center">
-                <div className="text-secondary mb-2">[CHART_PLACEHOLDER]</div>
-                <p className="text-xs text-tertiary">
-                  Grafico storico (quando integrato con API)
-                </p>
               </div>
             </CardContent>
-          </Card>
-          
-          {/* Spiegazione Progressiva */}
-          <div className="space-y-6">
-            {/* 1. Origine Accademica */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">1. Da dove nasce</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-secondary leading-relaxed text-sm">
-                  L'idea di misurare il sentiment di mercato viene dalla <strong>finanza comportamentale</strong> (Kahneman, Tversky). 
-                  Gli investitori non sono sempre razionali: paura e avidità influenzano le decisioni.
-                </p>
-                <p className="text-secondary leading-relaxed text-sm mt-3">
-                  Il Fear & Greed Index è un tentativo di <strong>quantificare queste emozioni collettive</strong> in un numero.
-                </p>
-              </CardContent>
-            </Card>
-            
-            {/* 2. Cosa Misura */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">2. Cosa misura</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-secondary leading-relaxed text-sm">
-                  Misura il <strong>sentiment emotivo dominante</strong> nel mercato crypto, su una scala 0–100:
-                </p>
-                <ul className="mt-3 space-y-2 text-sm text-secondary">
-                  <li><strong>0–24:</strong> Paura estrema</li>
-                  <li><strong>25–49:</strong> Paura</li>
-                  <li><strong>50–74:</strong> Avidità</li>
-                  <li><strong>75–100:</strong> Avidità estrema</li>
-                </ul>
-              </CardContent>
-            </Card>
-            
-            {/* 3. Come lo Misura */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">3. Come lo misura</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-secondary leading-relaxed text-sm">
-                  Combina diversi fattori di mercato, ognuno con un peso specifico:
-                </p>
-                <ul className="mt-3 space-y-2 text-sm text-secondary">
-                  <li>• <strong>Volatilità</strong> (25%)</li>
-                  <li>• <strong>Volume di trading</strong> (25%)</li>
-                  <li>• <strong>Social media sentiment</strong> (15%)</li>
-                  <li>• <strong>Dominance di Bitcoin</strong> (10%)</li>
-                  <li>• <strong>Google Trends</strong> (10%)</li>
-                  <li>• Altri fattori (15%)</li>
-                </ul>
-                <p className="text-tertiary text-xs mt-3 italic">
-                  Nota: i pesi possono variare tra diverse implementazioni dell'indice.
-                </p>
-              </CardContent>
-            </Card>
-            
-            {/* 4. Spiegazione Tradelia AI */}
-            <Alert>
-              <AlertTitle>4. Spiegazione Tradelia AI</AlertTitle>
-              <div className="mt-2 text-sm leading-relaxed">
-                <div className="bg-muted/50 rounded p-4 mb-3">
-                  <p className="text-sm text-secondary italic">
-                    [AI_DYNAMIC_PLACEHOLDER]
-                  </p>
-                  <p className="text-sm text-secondary mt-2">
-                    Qui comparirà una lettura contestuale basata sul valore corrente: cosa significa oggi, quali fattori stanno influenzando il mercato, e come interpretarlo senza cadere in semplificazioni.
-                  </p>
-                </div>
-                <div className="flex items-center gap-3 text-xs text-tertiary flex-wrap">
-                  <span className="flex items-center gap-1">
-                    <CheckIcon className="h-4 w-4" /> Nessuna previsione
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <CheckIcon className="h-4 w-4" /> Nessuna raccomandazione
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <CheckIcon className="h-4 w-4" /> Solo contesto educativo
-                  </span>
-                </div>
-              </div>
-            </Alert>
-            
-            {/* Limiti */}
-            <Card className="border-amber-500/50 bg-amber-500/5">
-              <CardHeader>
-                <CardTitle className="text-amber-700 dark:text-amber-400 text-lg">Limiti da conoscere</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2">
-                  <li className="flex items-start gap-3">
-                    <CrossIcon className="shrink-0 mt-0.5" />
-                    <span className="text-sm">Non predice movimenti futuri</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <CrossIcon className="shrink-0 mt-0.5" />
-                    <span className="text-sm">Non dice cosa comprare o vendere</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <CrossIcon className="shrink-0 mt-0.5" />
-                    <span className="text-sm">È un indicatore ritardato (lagging), non anticipatore</span>
-                  </li>
-                </ul>
-                <p className="mt-4 text-sm text-secondary">
-                  Va usato come <strong>contesto</strong>, mai come segnale operativo isolato.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
+          </UnifiedCard>
         </div>
       </div>
-    </section>
-  );
+
+      {/* Educational Content - 3 colonne uguali */}
+      <div className="grid md:grid-cols-3 gap-6">
+        
+        {/* 1. Fondamento */}
+        <UnifiedCard variant="standard">
+          <CardHeader>
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center mb-3">
+              <span className="text-primary-foreground font-bold text-sm">1</span>
+            </div>
+            <CardTitle className="text-xl">Fondamento</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm mb-3">
+              Nasce dalla <strong className="text-foreground">finanza comportamentale</strong> (Kahneman, Tversky). 
+              Paura e avidità influenzano le decisioni.
+            </p>
+            <div className="bg-muted rounded-lg p-3 border border-border">
+              <p className="text-xs text-muted-foreground italic">
+                "Quantifica le emozioni collettive del mercato"
+              </p>
+            </div>
+          </CardContent>
+        </UnifiedCard>
+
+        {/* 2. Meccanismo */}
+        <UnifiedCard variant="standard">
+          <CardHeader>
+            <div className="w-8 h-8 bg-info rounded-lg flex items-center justify-center mb-3">
+              <span className="text-info-foreground font-bold text-sm">2</span>
+            </div>
+            <CardTitle className="text-xl">Meccanismo</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm mb-3">
+              Combina fattori di mercato con pesi specifici:
+            </p>
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm bg-muted rounded p-2">
+                <span className="font-medium text-foreground">Volatilità</span>
+                <span className="text-muted-foreground">25%</span>
+              </div>
+              <div className="flex justify-between text-sm bg-muted rounded p-2">
+                <span className="font-medium text-foreground">Volume</span>
+                <span className="text-muted-foreground">25%</span>
+              </div>
+              <div className="flex justify-between text-sm bg-muted rounded p-2">
+                <span className="font-medium text-foreground">Altri</span>
+                <span className="text-muted-foreground">50%</span>
+              </div>
+            </div>
+          </CardContent>
+        </UnifiedCard>
+
+        {/* 3. Errori */}
+        <UnifiedCard variant="standard">
+          <CardHeader>
+            <div className="w-8 h-8 bg-destructive rounded-lg flex items-center justify-center mb-3">
+              <CrossIcon className="h-4 w-4 text-destructive-foreground" />
+            </div>
+            <CardTitle className="text-xl">Errori da Evitare</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2 mb-3">
+              <div className="flex items-start gap-2 text-sm">
+                <CrossIcon className="h-3 w-3 text-destructive mt-1 flex-shrink-0" />
+                <span>Usarlo per prevedere</span>
+              </div>
+              <div className="flex items-start gap-2 text-sm">
+                <CrossIcon className="h-3 w-3 text-destructive mt-1 flex-shrink-0" />
+                <span>Segnale di trading</span>
+              </div>
+              <div className="flex items-start gap-2 text-sm">
+                <CrossIcon className="h-3 w-3 text-destructive mt-1 flex-shrink-0" />
+                <span>Unico fattore decisionale</span>
+              </div>
+            </div>
+            <div className="bg-success/10 border border-success/30 rounded-lg p-3">
+              <p className="text-xs text-success-foreground font-medium">
+                ✓ Uso corretto: termometro del sentiment
+              </p>
+            </div>
+          </CardContent>
+        </UnifiedCard>
+      </div>
+    </SectionLayout>
+  )
 }

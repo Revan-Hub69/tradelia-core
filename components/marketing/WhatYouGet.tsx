@@ -1,4 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SectionLayout, SectionHeader } from "@/components/ui/design-system/section-layout"
+import { UnifiedCard, CardHeader, CardTitle, CardContent } from "@/components/ui/design-system/unified-card"
 import { CheckIcon } from "@/components/icons/check-icon";
 import { CrossIcon } from "@/components/icons/cross-icon";
 
@@ -16,46 +17,44 @@ export default function WhatYouGet() {
   ];
 
   return (
-    <section id="whatyouget" className="py-20 bg-muted/30">
-      <div className="mx-auto max-w-5xl px-6">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4 animate-fade-in">Cosa trovi (e cosa no)</h2>
-        </div>
+    <SectionLayout background="muted">
+      <SectionHeader 
+        title="Cosa trovi (e cosa no)"
+      />
+      
+      <div className="grid gap-8 md:grid-cols-2">
+        <UnifiedCard variant="standard" className="border-success/30">
+          <CardHeader>
+            <CardTitle className="text-success">✓ Trovi</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-3">
+              {youGet.map((item, i) => (
+                <li key={i} className="flex items-start gap-3">
+                  <CheckIcon className="shrink-0 mt-0.5" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </UnifiedCard>
         
-        <div className="grid gap-8 md:grid-cols-2">
-          <Card className="border-primary/50 card-elevated hover-lift animate-slide-up">
-            <CardHeader>
-              <CardTitle className="text-primary">✓ Trovi</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-3">
-                {youGet.map((item, i) => (
-                  <li key={i} className="flex items-start gap-3 hover-scale transition-transform duration-200">
-                    <CheckIcon className="shrink-0 mt-0.5" />
-                    <span className="text-secondary">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-          
-          <Card className="border-amber-500/50 bg-amber-500/5 card-elevated hover-lift animate-slide-up">
-            <CardHeader>
-              <CardTitle className="text-amber-700 dark:text-amber-400">✗ Non trovi</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-3">
-                {youDontGet.map((item, i) => (
-                  <li key={i} className="flex items-start gap-3 hover-scale transition-transform duration-200">
-                    <CrossIcon className="shrink-0 mt-0.5" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        </div>
+        <UnifiedCard variant="standard" className="border-warning/30 bg-warning/5">
+          <CardHeader>
+            <CardTitle className="text-warning-foreground">✗ Non trovi</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-3">
+              {youDontGet.map((item, i) => (
+                <li key={i} className="flex items-start gap-3">
+                  <CrossIcon className="shrink-0 mt-0.5" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </UnifiedCard>
       </div>
-    </section>
+    </SectionLayout>
   );
 }

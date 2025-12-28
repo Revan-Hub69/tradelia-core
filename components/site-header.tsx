@@ -8,35 +8,36 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { LogoIcon } from "@/components/icons/logo-icon";
 import { Menu } from "lucide-react";
 import Link from "next/link";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 
 const menuSections = [
   {
-    title: 'Percorsi Educativi',
+    title: 'Dashboard',
     items: [
       {
-        title: 'Dashboard Crypto',
-        description: 'Analisi della custodia e liquidità nel mercato crypto',
-        href: '/dashboard/crypto',
+        title: 'Indicatori Crypto',
+        description: 'Fear & Greed, Bitcoin Dominance, sentiment di mercato',
+        href: '/dashboard',
+        badge: 'Live'
+      },
+      {
+        title: 'Analisi Comportamentale',
+        description: 'Bias cognitivi e psicologia del trading crypto',
+        href: '/dashboard/behavioral',
         badge: 'Nuovo'
       },
       {
-        title: 'Dashboard FX',
-        description: 'Regime tassi e driver dominanti nel forex',
-        href: '/dashboard/fx',
+        title: 'Microlearning',
+        description: 'Lezioni brevi per capire gli indicatori',
+        href: '/dashboard/learn',
         badge: null
       },
       {
-        title: 'Dashboard Equity',
-        description: 'Regime di mercato e coerenza delle evidenze',
-        href: '/dashboard/equity',
-        badge: null
-      },
-      {
-        title: 'Dashboard Commodities',
-        description: 'Ciclicità fisica e vincoli di offerta',
-        href: '/dashboard/commodities',
+        title: 'Storico & Grafici',
+        description: 'Andamento temporale degli indicatori',
+        href: '/dashboard/history',
         badge: null
       }
     ]
@@ -45,28 +46,28 @@ const menuSections = [
     title: 'Metodologia',
     items: [
       {
-        title: 'Economia Finanziaria',
-        description: 'Teoria dei portafogli e analisi del rischio',
-        href: '/library',
+        title: 'Finanza Comportamentale',
+        description: 'Riconoscimento e riduzione dei bias cognitivi',
+        href: '/library/behavioral',
+        badge: 'Fondamentale'
+      },
+      {
+        title: 'Analisi del Sentiment',
+        description: 'Come leggere le emozioni del mercato crypto',
+        href: '/library/sentiment',
         badge: 'Base'
       },
       {
-        title: 'Market Microstructure',
-        description: 'Contesto operativo e liquidità degli strumenti',
-        href: '/library',
+        title: 'Indicatori On-Chain',
+        description: 'Metriche blockchain e loro interpretazione',
+        href: '/library/onchain',
         badge: 'Intermedio'
       },
       {
-        title: 'Behavioral Finance',
-        description: 'Riconoscimento e riduzione dei bias cognitivi',
-        href: '/library',
-        badge: 'Avanzato'
-      },
-      {
-        title: 'Percorsi di Studio',
-        description: 'Apprendimento strutturato per livelli',
-        href: '/dashboard/paths/long-term',
-        badge: null
+        title: 'Limiti e Disclaimer',
+        description: 'Comprensione dei limiti metodologici',
+        href: '/about',
+        badge: 'Importante'
       }
     ]
   },
@@ -81,14 +82,20 @@ const menuSections = [
       },
       {
         title: 'Metodo Tradelia',
-        description: 'Principi metodologici e limiti',
+        description: 'Principi metodologici e approccio antifuffa',
         href: '/about',
         badge: 'Fondamentale'
       },
       {
-        title: 'Limiti e Disclaimer',
-        description: 'Comprensione dei limiti metodologici',
-        href: '/about',
+        title: 'Glossario Crypto',
+        description: 'Termini e concetti spiegati chiaramente',
+        href: '/library/glossary',
+        badge: null
+      },
+      {
+        title: 'FAQ',
+        description: 'Domande frequenti su indicatori e metodologia',
+        href: '/faq',
         badge: null
       }
     ]
@@ -121,7 +128,7 @@ export function SiteHeader() {
                   <NavigationMenuTrigger id="dashboard-menu" className="bg-transparent">
                     <span className="flex items-center gap-1">
                       Dashboard
-                      <Badge variant="secondary" className="ml-1 text-xs">Pro</Badge>
+                      <Badge variant="secondary" className="ml-1 text-xs">Crypto</Badge>
                     </span>
                   </NavigationMenuTrigger>
                   <NavigationMenuContent id="dashboard-menu">
@@ -208,94 +215,101 @@ export function SiteHeader() {
                   <span className="sr-only">Toggle menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-                <div className="mt-6 space-y-6">
-                  {/* Mobile Logo */}
-                  <div className="flex items-center space-x-2">
-                    <LogoIcon className="h-6 w-6 text-primary" />
-                    <div>
-                      <p className="font-semibold">Tradelia</p>
-                      <p className="text-xs text-muted-foreground">Educazione al rischio</p>
-                    </div>
+              <SheetContent side="right" className="w-[300px] sm:w-[400px] flex flex-col">
+                <SheetHeader className="sr-only">
+                  <SheetTitle>Menu di navigazione</SheetTitle>
+                </SheetHeader>
+                
+                {/* Mobile Logo - Fixed at top */}
+                <div className="flex items-center space-x-2 py-4 border-b">
+                  <LogoIcon className="h-6 w-6 text-primary" />
+                  <div>
+                    <p className="font-semibold">Tradelia</p>
+                    <p className="text-xs text-muted-foreground">Educazione al rischio</p>
                   </div>
+                </div>
 
-                  {/* Mobile Navigation Links */}
-                  <nav className="space-y-3">
-                    <div>
-                      <h3 className="mb-3 text-sm font-medium text-muted-foreground">Dashboard</h3>
-                      <div className="space-y-2">
-                        {menuSections[0].items.map((item) => (
-                          <Link
-                            key={item.title}
-                            href={item.href}
-                            className="flex items-center justify-between rounded-md p-2 text-sm hover:bg-accent"
-                            onClick={() => setMobileMenuOpen(false)}
-                          >
-                            <span>{item.title}</span>
-                            {item.badge && (
-                              <Badge variant="outline" className="text-xs">
-                                {item.badge}
-                              </Badge>
-                            )}
-                          </Link>
-                        ))}
+                {/* Scrollable Content */}
+                <ScrollArea className="flex-1 py-4">
+                  <div className="space-y-6">
+                    {/* Mobile Navigation Links */}
+                    <nav className="space-y-4">
+                      <div>
+                        <h3 className="mb-3 text-sm font-medium text-muted-foreground">Dashboard</h3>
+                        <div className="space-y-2">
+                          {menuSections[0].items.map((item) => (
+                            <Link
+                              key={item.title}
+                              href={item.href}
+                              className="flex items-center justify-between rounded-md p-2 text-sm hover:bg-accent transition-colors"
+                              onClick={() => setMobileMenuOpen(false)}
+                            >
+                              <span>{item.title}</span>
+                              {item.badge && (
+                                <Badge variant="outline" className="text-xs">
+                                  {item.badge}
+                                </Badge>
+                              )}
+                            </Link>
+                          ))}
+                        </div>
                       </div>
-                    </div>
 
-                    <div>
-                      <h3 className="mb-3 text-sm font-medium text-muted-foreground">Metodologia</h3>
-                      <div className="space-y-2">
-                        {menuSections[1].items.map((item) => (
-                          <Link
-                            key={item.title}
-                            href={item.href}
-                            className="flex items-center justify-between rounded-md p-2 text-sm hover:bg-accent"
-                            onClick={() => setMobileMenuOpen(false)}
-                          >
-                            <span>{item.title}</span>
-                            {item.badge && (
-                              <Badge variant="outline" className="text-xs">
-                                {item.badge}
-                              </Badge>
-                            )}
-                          </Link>
-                        ))}
+                      <div>
+                        <h3 className="mb-3 text-sm font-medium text-muted-foreground">Metodologia</h3>
+                        <div className="space-y-2">
+                          {menuSections[1].items.map((item) => (
+                            <Link
+                              key={item.title}
+                              href={item.href}
+                              className="flex items-center justify-between rounded-md p-2 text-sm hover:bg-accent transition-colors"
+                              onClick={() => setMobileMenuOpen(false)}
+                            >
+                              <span>{item.title}</span>
+                              {item.badge && (
+                                <Badge variant="outline" className="text-xs">
+                                  {item.badge}
+                                </Badge>
+                              )}
+                            </Link>
+                          ))}
+                        </div>
                       </div>
-                    </div>
 
-                    <div>
-                      <h3 className="mb-3 text-sm font-medium text-muted-foreground">Risorse</h3>
-                      <div className="space-y-2">
-                        {menuSections[2].items.map((item) => (
-                          <Link
-                            key={item.title}
-                            href={item.href}
-                            className="flex items-center justify-between rounded-md p-2 text-sm hover:bg-accent"
-                            onClick={() => setMobileMenuOpen(false)}
-                          >
-                            <span>{item.title}</span>
-                            {item.badge && (
-                              <Badge variant="outline" className="text-xs">
-                                {item.badge}
-                              </Badge>
-                            )}
-                          </Link>
-                        ))}
+                      <div>
+                        <h3 className="mb-3 text-sm font-medium text-muted-foreground">Risorse</h3>
+                        <div className="space-y-2">
+                          {menuSections[2].items.map((item) => (
+                            <Link
+                              key={item.title}
+                              href={item.href}
+                              className="flex items-center justify-between rounded-md p-2 text-sm hover:bg-accent transition-colors"
+                              onClick={() => setMobileMenuOpen(false)}
+                            >
+                              <span>{item.title}</span>
+                              {item.badge && (
+                                <Badge variant="outline" className="text-xs">
+                                  {item.badge}
+                                </Badge>
+                              )}
+                            </Link>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  </nav>
+                    </nav>
+                  </div>
+                </ScrollArea>
 
-                  {/* Mobile Actions */}
-                  <div className="space-y-3 pt-4 border-t">
-                    <Button asChild className="w-full">
-                      <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
-                        Inizia Ora
-                      </Link>
-                    </Button>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">Tema</span>
-                      <ModeToggle />
-                    </div>
+                {/* Mobile Actions - Fixed at bottom */}
+                <div className="space-y-3 pt-4 border-t">
+                  <Button asChild className="w-full">
+                    <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                      Inizia Ora
+                    </Link>
+                  </Button>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Tema</span>
+                    <ModeToggle />
                   </div>
                 </div>
               </SheetContent>

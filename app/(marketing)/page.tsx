@@ -1,5 +1,6 @@
 import HeroSection from "@/components/marketing/HeroSection";
 import WhyExists from "@/components/marketing/WhyExists";
+import AIProblem from "@/components/marketing/AIProblem";
 import Symptoms from "@/components/marketing/Symptoms";
 import HowItWorksNew from "@/components/marketing/HowItWorksNew";
 import ExampleReal from "@/components/marketing/ExampleReal";
@@ -9,10 +10,11 @@ import FinalCTANew from "@/components/marketing/FinalCTANew";
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      <main className="relative">
+    <div className="min-h-screen bg-background">
+      <main role="main">
         <HeroSection />
         <WhyExists />
+        <AIProblem />
         <Symptoms />
         <HowItWorksNew />
         <ExampleReal />
