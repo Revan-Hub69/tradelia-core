@@ -1,18 +1,24 @@
-import HeroProblem from "@/components/marketing/HeroProblem";
-import WhyWeFail from "@/components/marketing/WhyWeFail";
-import AssetClasses from "@/components/marketing/AssetClasses";
-import AcademicRigour from "@/components/marketing/AcademicRigour";
-import FinalCTA from "@/components/marketing/FinalCTA";
+import HeroSection from "@/components/marketing/HeroSection";
+import WhyExists from "@/components/marketing/WhyExists";
+import Symptoms from "@/components/marketing/Symptoms";
+import HowItWorksNew from "@/components/marketing/HowItWorksNew";
+import ExampleReal from "@/components/marketing/ExampleReal";
+import WhatYouGet from "@/components/marketing/WhatYouGet";
+import ForWho from "@/components/marketing/ForWho";
+import FinalCTANew from "@/components/marketing/FinalCTANew";
 
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       <main className="relative">
-        <HeroProblem />
-        <WhyWeFail />
-        <AssetClasses />
-        <AcademicRigour />
-        <FinalCTA />
+        <HeroSection />
+        <WhyExists />
+        <Symptoms />
+        <HowItWorksNew />
+        <ExampleReal />
+        <WhatYouGet />
+        <ForWho />
+        <FinalCTANew />
       </main>
     </div>
   );

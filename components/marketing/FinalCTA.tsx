@@ -19,10 +19,10 @@ export default function FinalCTA({ className }: FinalCTAProps) {
             <CardContent className="p-12 text-center space-y-8">
               <div className="space-y-4">
                 <Badge variant="premium" className="text-sm">Inizia Ora</Badge>
-                <h2 className="text-4xl font-bold">Pronto a capire davvero come funzionano i mercati?</h2>
+                <h2 className="text-4xl font-bold">Pronto a capire davvero come funzionano le crypto?</h2>
                 <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                  Inizia gratis con le prime lezioni. Impara le basi con microlearning e l'aiuto dell'AI. 
-                  Niente trucchi, solo conoscenza vera.
+                  Inizia gratis con le prime lezioni sulle crypto. Impara le basi con microlearning e l'aiuto dell'AI. 
+                  Poi decidi tu se e quando investire.
                 </p>
               </div>
               

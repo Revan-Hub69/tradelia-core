@@ -18,25 +18,25 @@ export default function HeroProblem({ className }: HeroProblemProps) {
             <Badge variant="premium" className="text-sm px-4 py-1.5">
               <span className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                Metodo • Rigore • Trasparenza
+                Metodo • Crypto • Investimenti
               </span>
             </Badge>
             
             <h1 className="text-5xl font-bold tracking-tight sm:text-7xl lg:text-8xl">
               <span className="block bg-gradient-to-r from-foreground via-foreground/80 to-foreground bg-clip-text text-transparent">
-                Hai paura di investire?
+                Vuoi investire in crypto
               </span>
               <span className="block bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
-                O continui a sbagliare?
+                ma hai paura di sbagliare?
               </span>
               <span className="block text-4xl sm:text-5xl lg:text-6xl mt-4">
-                Impara le vere basi. Con l'AI.
+                O hai già perso soldi?
               </span>
             </h1>
             
             <p className="mx-auto max-w-3xl text-xl text-muted-foreground leading-relaxed">
-              Tradelia ti insegna le basi accademiche dei mercati finanziari con microlearning e un'AI che ti guida 
-              nella scelta degli indicatori giusti. Capisci cosa stai facendo prima di rischiare i tuoi soldi.
+              Tradelia ti insegna le vere basi delle crypto (e degli altri mercati) con lezioni da 5 minuti 
+              e un'AI che ti guida. Capisci cosa stai facendo prima di rischiare i tuoi soldi.
             </p>
           </div>
           

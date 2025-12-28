@@ -7,10 +7,10 @@ interface WhyWeFailProps {
 
 export default function WhyWeFail({ className }: WhyWeFailProps) {
   const errors = [
-    "Non sai da dove iniziare e hai paura di sbagliare tutto",
-    "Segui segnali e strategie che non capisci davvero", 
-    "Usi indicatori a caso senza sapere quando funzionano",
-    "Perdi soldi e non capisci perché continui a sbagliare"
+    "Hai sentito parlare di Bitcoin ma non sai se è il momento giusto",
+    "Hai comprato crypto seguendo l'hype e hai perso soldi", 
+    "Non capisci la differenza tra exchange, wallet e custodia",
+    "Vedi tutti che guadagnano e hai paura di restare indietro"
   ];
 
   return (
@@ -20,8 +20,8 @@ export default function WhyWeFail({ className }: WhyWeFailProps) {
           <div className="space-y-8">
             <div className="space-y-4">
               <Badge variant="outline" className="text-sm">Il Problema</Badge>
-              <h2 className="text-4xl font-bold tracking-tight">Ti riconosci in uno di questi?</h2>
-              <p className="text-lg text-muted-foreground">Gli errori più comuni di chi inizia o continua a sbagliare</p>
+              <h2 className="text-4xl font-bold tracking-tight">Ti riconosci?</h2>
+              <p className="text-lg text-muted-foreground">Gli errori più comuni con le crypto (e gli investimenti)</p>
             </div>
             
             <div className="space-y-6">
@@ -40,8 +40,8 @@ export default function WhyWeFail({ className }: WhyWeFailProps) {
             <Alert className="border-destructive/50 bg-destructive/5 shadow-lg">
               <AlertTitle className="text-destructive text-xl">Il vero problema</AlertTitle>
               <AlertDescription className="text-base leading-relaxed mt-3">
-                Non ti mancano i dati o i segnali. Ti mancano le basi per capire cosa stai facendo.
-                Senza fondamenta solide, ogni strategia è solo fortuna. E la fortuna finisce sempre.
+                Tutti parlano di crypto, ma nessuno ti spiega davvero come funzionano. 
+                Compri sull'onda dell'entusiasmo, senza capire cosa stai facendo. E poi perdi soldi.
               </AlertDescription>
             </Alert>
           </div>

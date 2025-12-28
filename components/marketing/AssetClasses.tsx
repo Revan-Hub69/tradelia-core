@@ -17,15 +17,15 @@ export default function AssetClasses({ className }: AssetClassesProps) {
   const assets = [
     {
       name: "Crypto",
-      desc: "Come funzionano davvero le crypto e come non perdere tutto",
+      desc: "Inizia qui: Bitcoin, Ethereum e come non perdere tutto",
       color: "from-orange-500/20 to-red-500/20",
       href: "/dashboard/crypto",
-      badge: "Popolare",
+      badge: "Inizia Qui",
       features: ["Custodia sicura", "Quando comprare", "Evitare truffe"]
     },
     {
       name: "Azioni", 
-      desc: "Investire in azioni senza farsi fregare dall'hype",
+      desc: "Dopo le crypto: investire in azioni senza farsi fregare",
       color: "from-green-500/20 to-emerald-500/20",
       href: "/dashboard/equity",
       badge: null,
@@ -33,7 +33,7 @@ export default function AssetClasses({ className }: AssetClassesProps) {
     },
     {
       name: "Forex",
-      desc: "Capire le valute e i tassi di interesse",
+      desc: "Livello avanzato: capire le valute e i tassi",
       color: "from-blue-500/20 to-cyan-500/20",
       href: "/dashboard/fx",
       badge: null,
@@ -41,7 +41,7 @@ export default function AssetClasses({ className }: AssetClassesProps) {
     },
     {
       name: "Materie Prime",
-      desc: "Oro, petrolio e commodities spiegate bene",
+      desc: "Per esperti: oro, petrolio e commodities",
       color: "from-amber-500/20 to-yellow-500/20", 
       href: "/dashboard/commodities",
       badge: null,
@@ -53,10 +53,11 @@ export default function AssetClasses({ className }: AssetClassesProps) {
     <section id="assets" className={`py-32 ${className || ""}`}>
       <div className="mx-auto max-w-7xl px-6">
         <div className="text-center space-y-6 mb-20">
-          <Badge variant="secondary" className="text-sm">Cosa Imparerai</Badge>
-          <h2 className="text-4xl font-bold tracking-tight">Scegli il mercato che ti interessa</h2>
+          <Badge variant="secondary" className="text-sm">Inizia dalle Crypto</Badge>
+          <h2 className="text-4xl font-bold tracking-tight">Parti dalle crypto, poi esplora gli altri mercati</h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Ogni mercato funziona in modo diverso. Impara le basi specifiche per quello che vuoi tradare o investire.
+            La maggior parte inizia dalle crypto. Impara le basi qui, poi applica lo stesso metodo 
+            ad azioni, forex e materie prime.
           </p>
         </div>
         
