@@ -14,14 +14,14 @@ export function LazySection({
   fallback = <div className="h-96 animate-pulse bg-muted/20" />,
   rootMargin = '100px'
 }: LazySectionProps) {
-  const { elementRef, isIntersecting } = useIntersectionObserver({
+  const { ref, isVisible } = useIntersectionObserver({
     rootMargin,
     triggerOnce: true
   })
 
   return (
-    <div ref={elementRef}>
-      {isIntersecting ? (
+    <div ref={ref as any}>
+      {isVisible ? (
         <Suspense fallback={fallback}>
           {children}
         </Suspense>

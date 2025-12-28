@@ -42,17 +42,20 @@ export async function GET() {
       }
     }
 
+    // Type assertion for the data
+    const indicatorData = data as any
+
     const response = {
       success: true,
       data: {
-        value: Number(data.value),
-        value_class: data.value_class,
-        value_classification: getItalianClassification(data.value_class || ''),
-        timestamp: data.metadata?.timestamp || data.updated_at,
-        time_until_update: data.metadata?.time_until_update,
-        source: data.source,
-        last_updated: data.updated_at,
-        database_id: data.id
+        value: Number(indicatorData.value),
+        value_class: indicatorData.value_class,
+        value_classification: getItalianClassification(indicatorData.value_class || ''),
+        timestamp: indicatorData.metadata?.timestamp || indicatorData.updated_at,
+        time_until_update: indicatorData.metadata?.time_until_update,
+        source: indicatorData.source,
+        last_updated: indicatorData.updated_at,
+        database_id: indicatorData.id
       }
     }
 
@@ -113,19 +116,23 @@ export async function POST() {
     let savedData
     if (existingData && !selectError) {
       // Update existing record
+      const updatePayload = {
+        value: parseInt(fearGreedData.value),
+        value_class: getItalianClass(fearGreedData.value_classification),
+        metadata: {
+          timestamp: fearGreedData.timestamp,
+          time_until_update: fearGreedData.time_until_update,
+          classification_original: fearGreedData.value_classification
+        },
+        source: 'alternative.me',
+        updated_at: new Date().toISOString()
+      }
+      
       const { data: updatedData, error: updateError } = await supabase
         .from('indicators')
-        .update({
-          value: parseInt(fearGreedData.value),
-          value_class: getItalianClass(fearGreedData.value_classification),
-          metadata: {
-            timestamp: fearGreedData.timestamp,
-            time_until_update: fearGreedData.time_until_update,
-            classification_original: fearGreedData.value_classification
-          },
-          source: 'alternative.me',
-          updated_at: new Date().toISOString()
-        })
+        // @ts-expect-error - Supabase type inference issue with metadata field
+        .update(updatePayload)
+        // @ts-expect-error - Supabase type inference issue
         .eq('id', existingData.id)
         .select()
         .single()
@@ -136,19 +143,22 @@ export async function POST() {
       savedData = updatedData
     } else {
       // Insert new record
+      const insertPayload = {
+        indicator_type: 'fear_greed',
+        value: parseInt(fearGreedData.value),
+        value_class: getItalianClass(fearGreedData.value_classification),
+        metadata: {
+          timestamp: fearGreedData.timestamp,
+          time_until_update: fearGreedData.time_until_update,
+          classification_original: fearGreedData.value_classification
+        },
+        source: 'alternative.me'
+      }
+      
       const { data: insertedData, error: insertError } = await supabase
         .from('indicators')
-        .insert({
-          indicator_type: 'fear_greed',
-          value: parseInt(fearGreedData.value),
-          value_class: getItalianClass(fearGreedData.value_classification),
-          metadata: {
-            timestamp: fearGreedData.timestamp,
-            time_until_update: fearGreedData.time_until_update,
-            classification_original: fearGreedData.value_classification
-          },
-          source: 'alternative.me'
-        })
+        // @ts-expect-error - Supabase type inference issue with metadata field
+        .insert(insertPayload)
         .select()
         .single()
 
@@ -167,6 +177,7 @@ export async function POST() {
         value: parseInt(fearGreedData.value),
         value_class: getItalianClass(fearGreedData.value_classification),
         timestamp: fearGreedData.timestamp,
+        // @ts-expect-error - Supabase type inference issue
         database_id: savedData.id
       }
     })

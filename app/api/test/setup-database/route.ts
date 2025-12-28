@@ -25,6 +25,7 @@ export async function POST() {
     `
 
     // Use raw SQL query
+    // @ts-expect-error - Supabase RPC type inference issue
     const { error: createError } = await supabase.rpc('exec', { 
       sql: createTableQuery 
     })
