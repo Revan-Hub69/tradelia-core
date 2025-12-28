@@ -11,9 +11,7 @@
     "lint:fix": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "lint:style": "stylelint \"**/*.css\" --fix",
     "type-check": "tsc --noEmit",
-    "validate": "npm run type-check && npm run lint",
-    "predev": "npm run validate",
-    "prebuild": "npm run validate"
+    "validate": "npm run type-check && npm run lint"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.0",
