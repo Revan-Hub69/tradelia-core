@@ -14,16 +14,23 @@ const nextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
   async headers() {
+    const isDev = process.env.NODE_ENV === 'development';
+    
+    // More restrictive CSP for production
+    const csp = isDev 
+      ? "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-src 'none'; object-src 'none'; base-uri 'self';"
+      : "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';";
+
     return [
       {
         source: '/(.*)',
         headers: [
-          // Content Security Policy (soft CSP per development)
+          // Content Security Policy (stricter in production)
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-src 'none'; object-src 'none'; base-uri 'self';",
+            value: csp,
           },
-          // HTTP Strict Transport Security (solo per HTTPS)
+          // HTTP Strict Transport Security (only for HTTPS)
           {
             key: 'Strict-Transport-Security',
             value: 'max-age=31536000; includeSubDomains; preload',

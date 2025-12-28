@@ -28,7 +28,7 @@ export default function HowItWorksNew() {
         
         <div className="grid gap-8 md:grid-cols-3">
           {steps.map((step) => (
-            <Card key={step.number} className="relative">
+            <Card key={step.number} className="relative hover-lift">
               <CardHeader>
                 <div className="flex items-center gap-4 mb-2">
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xl font-bold">

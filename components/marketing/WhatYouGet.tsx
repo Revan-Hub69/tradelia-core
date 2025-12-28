@@ -19,34 +19,34 @@ export default function WhatYouGet() {
     <section id="whatyouget" className="py-20 bg-muted/30">
       <div className="mx-auto max-w-5xl px-6">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">Cosa trovi (e cosa no)</h2>
+          <h2 className="text-3xl font-bold mb-4 animate-fade-in">Cosa trovi (e cosa no)</h2>
         </div>
         
         <div className="grid gap-8 md:grid-cols-2">
-          <Card className="border-primary/50">
+          <Card className="border-primary/50 card-elevated hover-lift animate-slide-up">
             <CardHeader>
               <CardTitle className="text-primary">✓ Trovi</CardTitle>
             </CardHeader>
             <CardContent>
               <ul className="space-y-3">
                 {youGet.map((item, i) => (
-                  <li key={i} className="flex items-start gap-3">
+                  <li key={i} className="flex items-start gap-3 hover-scale transition-transform duration-200">
                     <CheckIcon className="shrink-0 mt-0.5" />
-                    <span className="text-muted-foreground">{item}</span>
+                    <span className="text-secondary">{item}</span>
                   </li>
                 ))}
               </ul>
             </CardContent>
           </Card>
           
-          <Card className="border-amber-500/50 bg-amber-500/5">
+          <Card className="border-amber-500/50 bg-amber-500/5 card-elevated hover-lift animate-slide-up">
             <CardHeader>
               <CardTitle className="text-amber-700 dark:text-amber-400">✗ Non trovi</CardTitle>
             </CardHeader>
             <CardContent>
               <ul className="space-y-3">
                 {youDontGet.map((item, i) => (
-                  <li key={i} className="flex items-start gap-3">
+                  <li key={i} className="flex items-start gap-3 hover-scale transition-transform duration-200">
                     <CrossIcon className="shrink-0 mt-0.5" />
                     <span>{item}</span>
                   </li>

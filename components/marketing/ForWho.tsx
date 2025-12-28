@@ -3,7 +3,7 @@ export default function ForWho() {
     <section id="forwho" className="py-20">
       <div className="mx-auto max-w-3xl px-6 text-center">
         <h2 className="text-3xl font-bold mb-6">Per chi è</h2>
-        <div className="text-lg text-muted-foreground leading-relaxed space-y-4">
+        <div className="text-lg text-secondary leading-relaxed space-y-4">
           <p>
             <strong>Per chi è esposto all'hype crypto</strong><br />
             <strong>Per chi è confuso ma curioso</strong><br />
