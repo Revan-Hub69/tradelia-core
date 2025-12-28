@@ -106,55 +106,55 @@
     --font-ibm-plex-sans: 'IBM Plex Sans', system-ui, sans-serif;
     --font-roboto-mono: 'Roboto Mono', Monaco, monospace;
     
-    /* Core System Colors - Lighter for better readability */
-    --background: 222.2 47% 11%;           /* Lighter dark background */
+    /* Core System Colors - Professional dark theme */
+    --background: 222.2 47% 8%;            /* Dark but not black */
     --foreground: 210 40% 98%;
-    --card: 222.2 47% 14%;                 /* Slightly lighter than background */
+    --card: 222.2 47% 11%;                 /* Slightly lighter than background */
     --card-foreground: 210 40% 98%;
-    --popover: 222.2 47% 14%;
+    --popover: 222.2 47% 11%;
     --popover-foreground: 210 40% 98%;
     
-    /* Primary Brand - More vibrant */
-    --primary: 217.2 91% 60%;              /* Bright blue for dark mode */
+    /* Primary Brand - Vibrant blue */
+    --primary: 217.2 91% 60%;              
     --primary-foreground: 222.2 47% 11%;
     
-    /* Semantic Color Tokens (WCAG AA Compliant) */
-    --text-primary: 210 40% 98%;            /* H1, H2, primary text */
-    --text-secondary: 215 20.2% 75%;       /* Lighter body text */
-    --text-muted: 215 20.2% 65%;           /* Lighter muted text */
-    --text-inverse: 222.2 84% 4.9%;        /* Text on light backgrounds */
+    /* Semantic Color Tokens */
+    --text-primary: 210 40% 98%;           
+    --text-secondary: 215 20.2% 75%;       
+    --text-muted: 215 20.2% 60%;           
+    --text-inverse: 222.2 84% 4.9%;        
     
     /* Interactive Elements */
-    --focus-ring: 217.2 91% 60%;           /* Match primary */
-    --focus-ring-offset: 222.2 47% 11%;    /* Dark offset for visibility */
-    --border-default: 217.2 32.6% 25%;     /* Lighter borders */
-    --border: 217.2 32.6% 25%;             /* Lighter borders */
-    --border-subtle: 217.2 32.6% 20%;      /* Subtle borders */
-    --border-strong: 217.2 32.6% 35%;      /* Strong borders */
+    --focus-ring: 217.2 91% 60%;           
+    --focus-ring-offset: 222.2 47% 8%;     
+    --border-default: 217.2 32.6% 22%;     
+    --border: 217.2 32.6% 22%;             
+    --border-subtle: 217.2 32.6% 18%;      
+    --border-strong: 217.2 32.6% 30%;      
     
-    /* Status Colors (WCAG Compliant) - More vibrant */
-    --success: 142.1 76% 50%;              /* Brighter green */
-    --success-foreground: 222.2 47% 11%;
-    --warning: 38 92% 65%;                 /* Brighter amber */
-    --warning-foreground: 222.2 47% 11%;
-    --error: 0 84.2% 70%;                  /* Brighter red */
-    --error-foreground: 222.2 47% 11%;
-    --info: 217.2 91% 60%;                 /* Bright blue */
-    --info-foreground: 222.2 47% 11%;
+    /* Status Colors - Vibrant and consistent */
+    --success: 142.1 70% 45%;              
+    --success-foreground: 142.1 70% 95%;
+    --warning: 38 92% 50%;                 
+    --warning-foreground: 38 92% 95%;
+    --error: 0 72% 51%;                    
+    --error-foreground: 0 72% 95%;
+    --info: 217.2 91% 60%;                 
+    --info-foreground: 217.2 91% 95%;
     
     /* UI States */
-    --muted: 217.2 32.6% 20%;              /* Lighter muted */
-    --muted-foreground: 215 20.2% 70%;     /* Lighter muted text */
-    --accent: 217.2 32.6% 20%;
+    --muted: 217.2 32.6% 15%;              
+    --muted-foreground: 215 20.2% 65%;     
+    --accent: 217.2 32.6% 15%;
     --accent-foreground: 210 40% 98%;
-    --secondary: 217.2 32.6% 20%;
+    --secondary: 217.2 32.6% 15%;
     --secondary-foreground: 210 40% 98%;
     
     /* Interactive States */
-    --input: 217.2 32.6% 20%;
+    --input: 217.2 32.6% 15%;
     --ring: 217.2 91% 60%;
-    --destructive: 0 84.2% 70%;
-    --destructive-foreground: 222.2 47% 11%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 72% 95%;
   }
 }
 

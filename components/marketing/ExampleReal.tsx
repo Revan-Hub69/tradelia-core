@@ -48,67 +48,61 @@ export default function ExampleReal() {
         subtitle="Un indicatore spiegato dalle basi accademiche alla lettura pratica, senza semplificazioni pericolose."
       />
 
-      {/* Main Content: Widget + AI */}
-      <div className="grid lg:grid-cols-3 gap-8 mb-12">
+      {/* Main Content: Widget + AI side by side on desktop, stacked on mobile */}
+      <div className="grid lg:grid-cols-2 gap-6 mb-12">
         
-        {/* Widget - 1 colonna */}
-        <div className="lg:col-span-1">
-          <UnifiedCard variant="elevated">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-sm font-medium text-muted-foreground">Dati Live</span>
-              <span className="text-xs text-muted-foreground">Alternative.me</span>
+        {/* Widget */}
+        <UnifiedCard variant="standard">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-sm font-medium text-muted-foreground">Dati Live</span>
+            <span className="text-xs text-muted-foreground">Alternative.me</span>
+          </div>
+          <FearGreedWidget />
+        </UnifiedCard>
+
+        {/* AI Analysis - NO nested cards, just content */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center flex-shrink-0">
+              <div className="w-5 h-5 bg-background rounded-lg"></div>
             </div>
-            <FearGreedWidget />
-          </UnifiedCard>
-        </div>
+            <div>
+              <h3 className="text-lg font-bold text-foreground">Tradelia AI Analysis</h3>
+              <p className="text-sm text-muted-foreground">Interpretazione contestuale</p>
+            </div>
+          </div>
+          
+          <div className="bg-card border border-border rounded-xl p-6">
+            {fearGreedData ? (
+              <AIFearGreedAnalysis 
+                fearGreedValue={fearGreedData.value}
+                fearGreedClass={fearGreedData.value_class}
+                fearGreedClassification={fearGreedData.value_classification}
+              />
+            ) : (
+              <AIAnalysisPlaceholder />
+            )}
+          </div>
 
-        {/* AI Analysis - 2 colonne */}
-        <div className="lg:col-span-2">
-          <UnifiedCard variant="elevated" className="bg-gradient-to-br from-warning/10 to-background border-warning/30">
-            <CardHeader>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 bg-warning rounded-xl flex items-center justify-center">
-                  <div className="w-5 h-5 bg-background rounded-lg"></div>
-                </div>
-                <div>
-                  <CardTitle className="text-warning-foreground">Tradelia AI Analysis</CardTitle>
-                  <p className="text-sm text-muted-foreground">Interpretazione contestuale</p>
-                </div>
-              </div>
-            </CardHeader>
-            
-            <CardContent>
-              {fearGreedData ? (
-                <AIFearGreedAnalysis 
-                  fearGreedValue={fearGreedData.value}
-                  fearGreedClass={fearGreedData.value_class}
-                  fearGreedClassification={fearGreedData.value_classification}
-                />
-              ) : (
-                <AIAnalysisPlaceholder />
-              )}
-
-              {/* AI Principles */}
-              <div className="grid grid-cols-3 gap-3 mt-6 pt-6 border-t border-border">
-                <div className="text-center">
-                  <CheckIcon className="h-5 w-5 text-success mx-auto mb-1" />
-                  <div className="text-xs font-medium text-foreground">Nessuna Previsione</div>
-                </div>
-                <div className="text-center">
-                  <CheckIcon className="h-5 w-5 text-success mx-auto mb-1" />
-                  <div className="text-xs font-medium text-foreground">Zero Raccomandazioni</div>
-                </div>
-                <div className="text-center">
-                  <CheckIcon className="h-5 w-5 text-success mx-auto mb-1" />
-                  <div className="text-xs font-medium text-foreground">Solo Educazione</div>
-                </div>
-              </div>
-            </CardContent>
-          </UnifiedCard>
+          {/* AI Principles - Simple badges */}
+          <div className="flex flex-wrap gap-2">
+            <div className="inline-flex items-center gap-2 bg-success/10 text-success px-3 py-1.5 rounded-full text-xs font-medium">
+              <CheckIcon className="h-3 w-3" />
+              Nessuna Previsione
+            </div>
+            <div className="inline-flex items-center gap-2 bg-success/10 text-success px-3 py-1.5 rounded-full text-xs font-medium">
+              <CheckIcon className="h-3 w-3" />
+              Zero Raccomandazioni
+            </div>
+            <div className="inline-flex items-center gap-2 bg-success/10 text-success px-3 py-1.5 rounded-full text-xs font-medium">
+              <CheckIcon className="h-3 w-3" />
+              Solo Educazione
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Educational Content - 3 colonne uguali */}
+      {/* Educational Content - 3 colonne */}
       <div className="grid md:grid-cols-3 gap-6">
         
         {/* 1. Fondamento */}
@@ -161,33 +155,33 @@ export default function ExampleReal() {
           </CardContent>
         </UnifiedCard>
 
-        {/* 3. Errori */}
+        {/* 3. Uso Corretto - REDESIGNED */}
         <UnifiedCard variant="standard">
           <CardHeader>
-            <div className="w-8 h-8 bg-destructive rounded-lg flex items-center justify-center mb-3">
-              <CrossIcon className="h-4 w-4 text-destructive-foreground" />
+            <div className="w-8 h-8 bg-success rounded-lg flex items-center justify-center mb-3">
+              <CheckIcon className="h-4 w-4 text-success-foreground" />
             </div>
-            <CardTitle className="text-xl">Errori da Evitare</CardTitle>
+            <CardTitle className="text-xl">Uso Corretto</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2 mb-3">
+            <p className="text-sm mb-4 text-success-foreground">
+              <strong>Termometro del sentiment</strong> - Non uno strumento predittivo
+            </p>
+            
+            <div className="space-y-2">
+              <div className="text-xs text-muted-foreground font-medium mb-2">❌ Non usare per:</div>
               <div className="flex items-start gap-2 text-sm">
-                <CrossIcon className="h-3 w-3 text-destructive mt-1 flex-shrink-0" />
-                <span>Usarlo per prevedere</span>
+                <span className="text-muted-foreground">•</span>
+                <span>Prevedere movimenti</span>
               </div>
               <div className="flex items-start gap-2 text-sm">
-                <CrossIcon className="h-3 w-3 text-destructive mt-1 flex-shrink-0" />
-                <span>Segnale di trading</span>
+                <span className="text-muted-foreground">•</span>
+                <span>Segnali di trading</span>
               </div>
               <div className="flex items-start gap-2 text-sm">
-                <CrossIcon className="h-3 w-3 text-destructive mt-1 flex-shrink-0" />
-                <span>Unico fattore decisionale</span>
+                <span className="text-muted-foreground">•</span>
+                <span>Decisioni isolate</span>
               </div>
-            </div>
-            <div className="bg-success/10 border border-success/30 rounded-lg p-3">
-              <p className="text-xs text-success-foreground font-medium">
-                ✓ Uso corretto: termometro del sentiment
-              </p>
             </div>
           </CardContent>
         </UnifiedCard>
