@@ -60,7 +60,7 @@ export default function ExampleReal() {
           <FearGreedWidget />
         </UnifiedCard>
 
-        {/* AI Analysis - NO nested cards, just content */}
+        {/* AI Analysis - NO card, just clean content that adapts to theme */}
         <div className="space-y-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center flex-shrink-0">
@@ -72,7 +72,8 @@ export default function ExampleReal() {
             </div>
           </div>
           
-          <div className="bg-card border border-border rounded-xl p-6">
+          {/* AI content - NO background, just text that adapts */}
+          <div className="space-y-3">
             {fearGreedData ? (
               <AIFearGreedAnalysis 
                 fearGreedValue={fearGreedData.value}
@@ -85,7 +86,7 @@ export default function ExampleReal() {
           </div>
 
           {/* AI Principles - Simple badges */}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 pt-4 border-t border-border">
             <div className="inline-flex items-center gap-2 bg-success/10 text-success px-3 py-1.5 rounded-full text-xs font-medium">
               <CheckIcon className="h-3 w-3" />
               Nessuna Previsione
@@ -136,7 +137,7 @@ export default function ExampleReal() {
           </CardHeader>
           <CardContent>
             <p className="text-sm mb-3">
-              Combina fattori di mercato con pesi specifici:
+              Combina 6 fattori di mercato con pesi specifici:
             </p>
             <div className="space-y-2">
               <div className="flex justify-between text-sm bg-muted rounded p-2">
@@ -148,8 +149,20 @@ export default function ExampleReal() {
                 <span className="text-muted-foreground">25%</span>
               </div>
               <div className="flex justify-between text-sm bg-muted rounded p-2">
-                <span className="font-medium text-foreground">Altri</span>
-                <span className="text-muted-foreground">50%</span>
+                <span className="font-medium text-foreground">Social Media</span>
+                <span className="text-muted-foreground">15%</span>
+              </div>
+              <div className="flex justify-between text-sm bg-muted rounded p-2">
+                <span className="font-medium text-foreground">Dominance</span>
+                <span className="text-muted-foreground">10%</span>
+              </div>
+              <div className="flex justify-between text-sm bg-muted rounded p-2">
+                <span className="font-medium text-foreground">Trends</span>
+                <span className="text-muted-foreground">10%</span>
+              </div>
+              <div className="flex justify-between text-sm bg-muted rounded p-2">
+                <span className="font-medium text-foreground">Surveys</span>
+                <span className="text-muted-foreground">15%</span>
               </div>
             </div>
           </CardContent>
