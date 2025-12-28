@@ -17,35 +17,35 @@ export default function AssetClasses({ className }: AssetClassesProps) {
   const assets = [
     {
       name: "Crypto",
-      desc: "Custodia e liquidità prima del prezzo",
+      desc: "Come funzionano davvero le crypto e come non perdere tutto",
       color: "from-orange-500/20 to-red-500/20",
       href: "/dashboard/crypto",
-      badge: "Nuovo",
-      features: ["Custodia", "Liquidità", "Regulatory"]
+      badge: "Popolare",
+      features: ["Custodia sicura", "Quando comprare", "Evitare truffe"]
     },
     {
-      name: "FX", 
-      desc: "Regime tassi e driver dominanti",
-      color: "from-blue-500/20 to-cyan-500/20",
-      href: "/dashboard/fx",
-      badge: null,
-      features: ["Tassi", "Macro", "Correlazioni"]
-    },
-    {
-      name: "Equity",
-      desc: "Regime di mercato e coerenza evidenze", 
+      name: "Azioni", 
+      desc: "Investire in azioni senza farsi fregare dall'hype",
       color: "from-green-500/20 to-emerald-500/20",
       href: "/dashboard/equity",
       badge: null,
-      features: ["Regimi", "Valutazione", "Ciclicità"]
+      features: ["Valutare aziende", "Quando vendere", "Gestire rischio"]
     },
     {
-      name: "Commodities",
-      desc: "Ciclicità fisica e vincoli offerta",
+      name: "Forex",
+      desc: "Capire le valute e i tassi di interesse",
+      color: "from-blue-500/20 to-cyan-500/20",
+      href: "/dashboard/fx",
+      badge: null,
+      features: ["Coppie valutarie", "Tassi interesse", "Timing giusto"]
+    },
+    {
+      name: "Materie Prime",
+      desc: "Oro, petrolio e commodities spiegate bene",
       color: "from-amber-500/20 to-yellow-500/20", 
       href: "/dashboard/commodities",
       badge: null,
-      features: ["Supply/Demand", "Stagionalità", "Geopolitica"]
+      features: ["Domanda/Offerta", "Stagionalità", "Quando entrare"]
     }
   ];
 
@@ -53,11 +53,10 @@ export default function AssetClasses({ className }: AssetClassesProps) {
     <section id="assets" className={`py-32 ${className || ""}`}>
       <div className="mx-auto max-w-7xl px-6">
         <div className="text-center space-y-6 mb-20">
-          <Badge variant="secondary" className="text-sm">Asset Classes</Badge>
-          <h2 className="text-4xl font-bold tracking-tight">Ogni asset richiede un modello mentale diverso</h2>
+          <Badge variant="secondary" className="text-sm">Cosa Imparerai</Badge>
+          <h2 className="text-4xl font-bold tracking-tight">Scegli il mercato che ti interessa</h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Seleziona il contesto corretto per il tuo percorso educativo. Ogni mercato ha le sue regole, 
-            la sua liquidità e i suoi driver fondamentali.
+            Ogni mercato funziona in modo diverso. Impara le basi specifiche per quello che vuoi tradare o investire.
           </p>
         </div>
         
@@ -90,7 +89,7 @@ export default function AssetClasses({ className }: AssetClassesProps) {
                 
                 <Button asChild className="w-full group-hover:bg-primary/90 transition-colors">
                   <Link href={asset.href}>
-                    Esplora Dashboard
+                    Inizia a Imparare
                     <svg className="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>

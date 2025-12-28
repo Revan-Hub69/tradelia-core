@@ -8,23 +8,23 @@ interface AcademicRigourProps {
 }
 
 export default function AcademicRigour({ className }: AcademicRigourProps) {
-  const disciplines = [
+  const steps = [
     {
-      title: "Economia Finanziaria",
-      desc: "Teoria dei portafogli, analisi del rischio e pricing dei titoli",
+      title: "Microlearning",
+      desc: "Lezioni da 5 minuti. Impari le basi accademiche senza perderti in teoria inutile.",
       icon: EconomicsIcon,
       color: "from-blue-500/10 to-blue-500/5"
     },
     {
-      title: "Market Microstructure", 
-      desc: "Contesto operativo, liquidità e meccanismi di formazione dei prezzi",
-      icon: MicrostructureIcon,
+      title: "AI Personale", 
+      desc: "Un assistente AI ti aiuta a capire quali indicatori usare e quando. Niente più confusione.",
+      icon: BrainIcon,
       color: "from-purple-500/10 to-purple-500/5"
     },
     {
-      title: "Behavioral Finance",
-      desc: "Riconoscimento e riduzione sistematica dei bias cognitivi",
-      icon: BrainIcon,
+      title: "Pratica Guidata",
+      desc: "Applichi subito quello che impari con esempi reali e checklist pratiche.",
+      icon: MicrostructureIcon,
       color: "from-green-500/10 to-green-500/5"
     }
   ];
@@ -33,16 +33,15 @@ export default function AcademicRigour({ className }: AcademicRigourProps) {
     <section className={`py-32 bg-muted/20 ${className || ""}`}>
       <div className="mx-auto max-w-7xl px-6">
         <div className="text-center space-y-6 mb-20">
-          <Badge variant="outline" className="text-sm">Metodologia</Badge>
-          <h2 className="text-4xl font-bold tracking-tight">Solidità Accademica</h2>
+          <Badge variant="outline" className="text-sm" id="come-funziona">Come Funziona</Badge>
+          <h2 className="text-4xl font-bold tracking-tight">Impari davvero. Senza perdere tempo.</h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Approccio basato su discipline accademiche consolidate e verificabili.
-            Nessuna promessa, solo metodo.
+            Basi accademiche solide + AI che ti guida + Lezioni brevi che puoi seguire quando vuoi.
           </p>
         </div>
         
         <div className="grid gap-12 md:grid-cols-3">
-          {disciplines.map((item, index) => {
+          {steps.map((item, index) => {
             const IconComponent = item.icon;
             return (
               <div key={item.title} className="text-center space-y-6 group">

@@ -7,10 +7,10 @@ interface WhyWeFailProps {
 
 export default function WhyWeFail({ className }: WhyWeFailProps) {
   const errors = [
-    "Applicare regole corrette al contesto sbagliato",
-    "Confondere strumenti con natura e liquidità diverse", 
-    "Leggere il prezzo senza regime e struttura",
-    "Usare concetti accademici superficialmente"
+    "Non sai da dove iniziare e hai paura di sbagliare tutto",
+    "Segui segnali e strategie che non capisci davvero", 
+    "Usi indicatori a caso senza sapere quando funzionano",
+    "Perdi soldi e non capisci perché continui a sbagliare"
   ];
 
   return (
@@ -19,9 +19,9 @@ export default function WhyWeFail({ className }: WhyWeFailProps) {
         <div className="grid gap-16 lg:grid-cols-2">
           <div className="space-y-8">
             <div className="space-y-4">
-              <Badge variant="outline" className="text-sm">Analisi del Problema</Badge>
-              <h2 className="text-4xl font-bold tracking-tight">Perché sbagliamo</h2>
-              <p className="text-lg text-muted-foreground">Errori sistematici di interpretazione nei mercati</p>
+              <Badge variant="outline" className="text-sm">Il Problema</Badge>
+              <h2 className="text-4xl font-bold tracking-tight">Ti riconosci in uno di questi?</h2>
+              <p className="text-lg text-muted-foreground">Gli errori più comuni di chi inizia o continua a sbagliare</p>
             </div>
             
             <div className="space-y-6">
@@ -38,10 +38,10 @@ export default function WhyWeFail({ className }: WhyWeFailProps) {
           
           <div className="flex items-center">
             <Alert className="border-destructive/50 bg-destructive/5 shadow-lg">
-              <AlertTitle className="text-destructive text-xl">Rischio cognitivo strutturale</AlertTitle>
+              <AlertTitle className="text-destructive text-xl">Il vero problema</AlertTitle>
               <AlertDescription className="text-base leading-relaxed mt-3">
-                L'errore di interpretazione porta a decisioni sistematicamente sbagliate,
-                sottovalutazione del rischio, falsa sicurezza e perdita di capitale nel medio periodo.
+                Non ti mancano i dati o i segnali. Ti mancano le basi per capire cosa stai facendo.
+                Senza fondamenta solide, ogni strategia è solo fortuna. E la fortuna finisce sempre.
               </AlertDescription>
             </Alert>
           </div>

@@ -24,36 +24,36 @@ export default function HeroProblem({ className }: HeroProblemProps) {
             
             <h1 className="text-5xl font-bold tracking-tight sm:text-7xl lg:text-8xl">
               <span className="block bg-gradient-to-r from-foreground via-foreground/80 to-foreground bg-clip-text text-transparent">
-                Il problema
+                Hai paura di investire?
               </span>
               <span className="block bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
-                non è la mancanza di dati.
+                O continui a sbagliare?
               </span>
               <span className="block text-4xl sm:text-5xl lg:text-6xl mt-4">
-                È l'interpretazione.
+                Impara le vere basi. Con l'AI.
               </span>
             </h1>
             
             <p className="mx-auto max-w-3xl text-xl text-muted-foreground leading-relaxed">
-              Tradelia è una piattaforma educativa a rigore accademico che riduce gli errori cognitivi 
-              prima di qualsiasi operatività nei mercati finanziari. Metodo, non segnali.
+              Tradelia ti insegna le basi accademiche dei mercati finanziari con microlearning e un'AI che ti guida 
+              nella scelta degli indicatori giusti. Capisci cosa stai facendo prima di rischiare i tuoi soldi.
             </p>
           </div>
           
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
             <Button asChild size="xl" variant="premium" className="px-12 py-4 text-base">
               <Link href="/dashboard">
-                Accedi Dashboard
+                Inizia Gratis
                 <svg className="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
               </Link>
             </Button>
             <Button asChild variant="outline" size="xl" className="px-12 py-4 text-base">
-              <Link href="#assets">
-                Esplora Asset Classes
+              <Link href="#come-funziona">
+                Come Funziona
                 <svg className="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </Link>
             </Button>
@@ -62,18 +62,18 @@ export default function HeroProblem({ className }: HeroProblemProps) {
           {/* Stats Row */}
           <div className="flex justify-center items-center gap-8 pt-8 border-t border-border/50">
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary">4</div>
-              <div className="text-sm text-muted-foreground">Asset Classes</div>
+              <div className="text-2xl font-bold text-primary">5 min</div>
+              <div className="text-sm text-muted-foreground">Lezioni brevi</div>
             </div>
             <div className="w-px h-8 bg-border" />
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary">3</div>
-              <div className="text-sm text-muted-foreground">Discipline</div>
+              <div className="text-2xl font-bold text-primary">AI</div>
+              <div className="text-sm text-muted-foreground">Assistente personale</div>
             </div>
             <div className="w-px h-8 bg-border" />
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary">100%</div>
-              <div className="text-sm text-muted-foreground">Educativo</div>
+              <div className="text-2xl font-bold text-primary">0€</div>
+              <div className="text-sm text-muted-foreground">Per iniziare</div>
             </div>
           </div>
         </div>
