@@ -104,8 +104,8 @@ export function SiteHeader() {
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Logo and Brand */}
           <div className="flex items-center space-x-2">
-            <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-              <LogoIcon className="h-8 w-8 text-primary" />
+            <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity" aria-label="Tradelia - Torna alla homepage">
+              <LogoIcon className="h-8 w-8 text-primary" aria-hidden="true" />
               <div className="hidden sm:block">
                 <p className="text-lg font-semibold">Tradelia</p>
                 <p className="text-xs text-muted-foreground">Educazione al rischio</p>
@@ -196,7 +196,7 @@ export function SiteHeader() {
               <Button asChild variant="premium" size="sm" aria-label="Inizia ora con Tradelia">
                 <Link href="/dashboard">Inizia Ora</Link>
               </Button>
-              <Separator orientation="vertical" className="mx-2 h-6" />
+              <Separator orientation="vertical" className="mx-2 h-6" aria-hidden="true" />
               <ModeToggle />
             </div>
 

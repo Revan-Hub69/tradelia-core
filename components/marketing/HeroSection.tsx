@@ -10,18 +10,18 @@ export default function HeroSection() {
       <div className="mx-auto max-w-4xl px-6 relative text-center">
         <div className="space-y-8">
           <h1 className="text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
-            Vedi grafici e "consigli" crypto online ma non capisci cosa significano davvero?
+            Vedi grafici e "consigli" crypto ovunque, ma non sai cosa significano <strong className="text-primary">davvero</strong>?
           </h1>
           
           <p className="mx-auto max-w-2xl text-xl text-muted-foreground leading-relaxed">
-            Tradelia è un progetto antifuffa: micro-lezioni brevi + spiegazioni guidate per capire cosa stai guardando. 
-            Senza promesse, senza segnali.
+            Tradelia è un <strong>progetto antifuffa</strong>: micro-lezioni brevi + spiegazioni guidate per capire ciò che stai guardando. 
+            <strong> Senza promesse. Senza segnali. Senza pressione.</strong>
           </p>
           
           <div className="flex justify-center">
             <Button asChild size="lg" className="px-8 py-6 text-lg">
               <Link href="/dashboard">
-                Inizia
+                Inizia con calma
               </Link>
             </Button>
           </div>

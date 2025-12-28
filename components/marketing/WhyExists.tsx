@@ -4,8 +4,9 @@ export default function WhyExists() {
       <div className="mx-auto max-w-3xl px-6 text-center">
         <h2 className="text-3xl font-bold mb-6">Perché esiste Tradelia</h2>
         <p className="text-lg text-muted-foreground leading-relaxed">
-          Nel mondo crypto circolano numeri, grafici e opinioni continue. Spesso semplificate, spesso fuorvianti. 
-          Tradelia nasce per ridurre la confusione e insegnare le basi con calma.
+          Nel mondo crypto circolano numeri, grafici e opinioni continue. <strong>Spesso semplificate. Spesso fuori contesto. Spesso fuorvianti.</strong>
+          <br /><br />
+          Tradelia nasce per <strong>ridurre la confusione</strong>, non per creare aspettative. Qui impari le basi, con calma, prima di fidarti di chiunque.
         </p>
       </div>
     </section>

@@ -5,17 +5,17 @@ export default function HowItWorksNew() {
     {
       number: "1",
       title: "Micro-lezioni da 5 minuti",
-      description: "Un concetto alla volta, partendo da zero."
+      description: "Un concetto alla volta. Nessun salto logico. Si parte da zero."
     },
     {
       number: "2",
       title: "Spiegazioni guidate (AI educativa)",
-      description: "Ti spiega concetti e indicatori in modo non operativo."
+      description: "Un supporto che descrive e spiega, senza dire cosa fare."
     },
     {
       number: "3",
       title: "Comprensione prima dell'azione",
-      description: "Decidi tu se e quando usare ciò che impari. Nessuna pressione."
+      description: "Decidi tu se e quando usare ciò che impari. Nessuna pressione. Nessuna call to action finanziaria."
     }
   ];
 

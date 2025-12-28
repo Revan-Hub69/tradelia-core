@@ -54,9 +54,14 @@ export default function ExampleReal() {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground leading-relaxed">
-                  Il Fear & Greed Index prova a riassumere lo stato emotivo del mercato crypto su una scala 0–100. 
-                  Valori bassi indicano paura diffusa; valori alti indicano avidità e pressione a comprare. 
-                  Non è un segnale operativo: serve come contesto.
+                  Il Fear & Greed Index prova a riassumere lo stato emotivo del mercato crypto su una scala 0–100.
+                </p>
+                <ul className="mt-4 space-y-2 text-muted-foreground">
+                  <li><strong>Valori bassi</strong> → paura diffusa</li>
+                  <li><strong>Valori alti</strong> → avidità e pressione emotiva</li>
+                </ul>
+                <p className="mt-4 text-sm">
+                  ⚠️ <strong>Non è un segnale operativo.</strong> Serve solo come contesto, non come decisione.
                 </p>
               </CardContent>
             </Card>
@@ -68,63 +73,73 @@ export default function ExampleReal() {
               <CardContent>
                 <ul className="space-y-3">
                   <li className="flex items-start gap-3">
-                    <span className="text-primary mt-1">✓</span>
+                    <span className="text-primary mt-1 font-bold">✓</span>
                     <span className="text-sm text-muted-foreground">
-                      Usalo per capire il clima emotivo, non per "prevedere" il prezzo
+                      Per capire il clima emotivo del mercato
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-primary mt-1">✓</span>
+                    <span className="text-primary mt-1 font-bold">✓</span>
                     <span className="text-sm text-muted-foreground">
-                      Leggilo insieme al contesto (notizie, volatilità, liquidità)
+                      Insieme a notizie, volatilità, liquidità
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-primary mt-1">✓</span>
+                    <span className="text-primary mt-1 font-bold">✓</span>
                     <span className="text-sm text-muted-foreground">
-                      Evita scorciatoie: un indice non sostituisce il ragionamento
+                      Come supporto al ragionamento, non come scorciatoia
                     </span>
                   </li>
                 </ul>
               </CardContent>
             </Card>
             
-            <Card className="border-destructive/50">
+            <Card className="border-amber-500/50 bg-amber-500/5">
               <CardHeader>
-                <CardTitle className="text-destructive">Limiti (antifuffa)</CardTitle>
+                <CardTitle className="text-amber-700 dark:text-amber-400">Limiti (antifuffa)</CardTitle>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2">
                   <li className="flex items-start gap-3">
-                    <span className="text-destructive mt-1">✗</span>
-                    <span className="text-sm text-muted-foreground">Non predice il futuro</span>
+                    <span className="text-amber-700 dark:text-amber-400 mt-1 font-bold">✗</span>
+                    <span className="text-sm">Non predice il futuro</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-destructive mt-1">✗</span>
-                    <span className="text-sm text-muted-foreground">
-                      Non dice cosa comprare o quando entrare
+                    <span className="text-amber-700 dark:text-amber-400 mt-1 font-bold">✗</span>
+                    <span className="text-sm">
+                      Non dice cosa comprare
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-amber-700 dark:text-amber-400 mt-1 font-bold">✗</span>
+                    <span className="text-sm">
+                      Non dice quando entrare o uscire
                     </span>
                   </li>
                 </ul>
+                <p className="mt-4 text-sm text-muted-foreground italic">
+                  Se qualcuno lo usa così, sta semplificando troppo.
+                </p>
               </CardContent>
             </Card>
             
             {/* AI Reading Placeholder */}
             <Alert>
-              <AlertTitle>Lettura guidata (AI)</AlertTitle>
+              <AlertTitle>Lettura guidata (AI educativa)</AlertTitle>
               <AlertDescription className="mt-2">
                 <div className="bg-muted/50 rounded p-4 mb-3">
                   <p className="text-sm text-muted-foreground italic">
                     [AI_DYNAMIC_PLACEHOLDER]
                   </p>
                   <p className="text-sm text-muted-foreground mt-2">
-                    Qui comparirà una lettura aggiornata basata sul valore corrente dell'indice. 
-                    Sarà descrittiva e non operativa.
+                    Qui comparirà una lettura descrittiva aggiornata, basata sul valore corrente dell'indice.
                   </p>
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  ⚠️ Nessuna previsione. Nessuna raccomandazione.
-                </p>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <span className="font-bold">✔</span> Nessuna previsione
+                  <span className="font-bold">✔</span> Nessuna raccomandazione
+                  <span className="font-bold">✔</span> Solo spiegazione contestuale
+                </div>
               </AlertDescription>
             </Alert>
           </div>

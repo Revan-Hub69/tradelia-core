@@ -10,7 +10,7 @@ export default function WhatYouGet() {
   const youDontGet = [
     "Segnali operativi",
     "Promesse di guadagni",
-    '"Comprare/vendere" suggerito da un modello'
+    '"Compra / vendi" suggeriti da modelli o AI'
   ];
 
   return (
@@ -37,16 +37,16 @@ export default function WhatYouGet() {
             </CardContent>
           </Card>
           
-          <Card className="border-destructive/50">
+          <Card className="border-amber-500/50 bg-amber-500/5">
             <CardHeader>
-              <CardTitle className="text-destructive">✗ Non trovi</CardTitle>
+              <CardTitle className="text-amber-700 dark:text-amber-400">✗ Non trovi</CardTitle>
             </CardHeader>
             <CardContent>
               <ul className="space-y-3">
                 {youDontGet.map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
-                    <span className="text-destructive mt-1 text-lg">-</span>
-                    <span className="text-muted-foreground">{item}</span>
+                    <span className="text-amber-700 dark:text-amber-400 mt-1 text-lg font-bold">-</span>
+                    <span>{item}</span>
                   </li>
                 ))}
               </ul>

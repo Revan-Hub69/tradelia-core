@@ -2,10 +2,10 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function Symptoms() {
   const symptoms = [
-    "Vedi indicatori e non sai cosa rappresentano",
+    "Vedi indicatori ma non sai cosa rappresentano davvero",
     "Senti parlare di fear, hype, trend senza contesto",
     "Hai paura di sbagliare perché ti mancano le basi",
-    "Non distingui informazione utile da fuffa"
+    "Non distingui informazione utile da fuffa ben confezionata"
   ];
 
   return (
@@ -28,7 +28,7 @@ export default function Symptoms() {
         
         <Alert className="border-primary/20 bg-primary/5">
           <AlertDescription className="text-center text-base">
-            È normale. Il problema è come vengono spiegate le cose, non la tua intelligenza.
+            👉 <strong>È normale.</strong> Il problema non è la tua intelligenza, ma come vengono spiegate le cose online.
           </AlertDescription>
         </Alert>
       </div>
