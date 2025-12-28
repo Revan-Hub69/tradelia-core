@@ -57,6 +57,7 @@ const navItems = [
     href: "/dashboard/about",
     icon: Lightbulb,
   },
+
 ];
 
 interface AppSidebarProps extends React.HTMLAttributes<HTMLDivElement> {}

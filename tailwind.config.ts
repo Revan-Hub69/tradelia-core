@@ -18,6 +18,11 @@ const config: Config = {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['var(--font-inter)', 'Inter', 'system-ui', 'sans-serif'],
+        heading: ['var(--font-ibm-plex-sans)', 'IBM Plex Sans', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-roboto-mono)', 'Roboto Mono', 'Monaco', 'monospace'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -51,6 +56,37 @@ const config: Config = {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+        },
+        
+        /* Semantic Design Tokens (WCAG AA Compliant) */
+        'text-primary': "hsl(var(--text-primary))",
+        'text-secondary': "hsl(var(--text-secondary))",
+        'text-muted': "hsl(var(--text-muted))",
+        'text-inverse': "hsl(var(--text-inverse))",
+        
+        'border-default': "hsl(var(--border-default))",
+        'border-subtle': "hsl(var(--border-subtle))",
+        'border-strong': "hsl(var(--border-strong))",
+        
+        'focus-ring': "hsl(var(--focus-ring))",
+        'focus-ring-offset': "hsl(var(--focus-ring-offset))",
+        
+        /* Status Colors */
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
+        error: {
+          DEFAULT: "hsl(var(--error))",
+          foreground: "hsl(var(--error-foreground))",
+        },
+        info: {
+          DEFAULT: "hsl(var(--info))",
+          foreground: "hsl(var(--info-foreground))",
         },
       },
       borderRadius: {

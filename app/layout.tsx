@@ -1,15 +1,8 @@
-import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "sonner";
-import ClientLayout from "./ClientLayout";
-
-export const metadata: Metadata = {
-  title: "Tradelia | Fondazione educativa",
-  description:
-    "Piattaforma educativa per decisioni finanziarie più consapevoli e gestione del rischio disciplinata.",
-};
+import { inter, ibmPlexSans } from "@/lib/fonts";
 
 export default function RootLayout({
   children,
@@ -17,17 +10,15 @@ export default function RootLayout({
   children: ReactNode;
 }) {
   return (
-    <html lang="it">
-      <body className="bg-muted/20 text-foreground antialiased">
+    <html lang="it" className={`${inter.variable} ${ibmPlexSans.variable}`}>
+      <body className="bg-muted/20 text-foreground antialiased font-sans">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <ClientLayout>
-            {children}
-          </ClientLayout>
+          {children}
           <Toaster richColors position="bottom-right" />
         </ThemeProvider>
       </body>

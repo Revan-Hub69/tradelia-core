@@ -1,63 +1,56 @@
-import Link from "next/link";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { BrainIcon } from "@/components/icons/brain-icon"
+import { EconomicsIcon } from "@/components/icons/economics-icon"
+import { MicrostructureIcon } from "@/components/icons/microstructure-icon"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-
-export default function DashboardHome() {
+export default function DashboardPage() {
   return (
-    <>
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold tracking-tight">Dashboard Tradelia</h1>
-        <p className="text-muted-foreground">
-          Seleziona una sezione per esplorare i contenuti educativi. Metodo rigoroso senza segnali operativi.
-        </p>
+    <div className="flex-1 space-y-4 p-8 pt-6">
+      <div className="flex items-center justify-between space-y-2">
+        <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+        <div className="flex items-center space-x-2">
+          <Badge variant="outline">Welcome</Badge>
+        </div>
       </div>
-      <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Dashboard Tradelia</CardTitle>
-          <CardDescription>
-            Seleziona una sezione per esplorare i contenuti educativi. Metodo rigoroso senza segnali operativi.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-wrap gap-3">
-          <Button asChild><Link href="/dashboard/crypto">Crypto</Link></Button>
-          <Button asChild variant="secondary"><Link href="/dashboard/fx">FX</Link></Button>
-          <Button asChild variant="secondary"><Link href="/dashboard/equity">Equity</Link></Button>
-          <Button asChild variant="secondary"><Link href="/dashboard/commodities">Commodities</Link></Button>
-        </CardContent>
-      </Card>
+      
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card className="p-6">
+          <div className="flex items-center space-x-4">
+            <div className="rounded-lg bg-muted p-2">
+              <BrainIcon className="h-4 w-4" />
+            </div>
+            <div>
+              <h3 className="text-sm font-medium">AI Insights</h3>
+              <p className="text-xs text-muted-foreground">AI-powered market analysis</p>
+            </div>
+          </div>
+        </Card>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader>
-            <CardTitle>Percorsi</CardTitle>
-            <CardDescription>Unità brevi e verificabili per orizzonte temporale.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button asChild variant="secondary"><Link href="/dashboard/paths/long-term">Vai ai percorsi</Link></Button>
-          </CardContent>
+        <Card className="p-6">
+          <div className="flex items-center space-x-4">
+            <div className="rounded-lg bg-muted p-2">
+              <EconomicsIcon className="h-4 w-4" />
+            </div>
+            <div>
+              <h3 className="text-sm font-medium">Economics</h3>
+              <p className="text-xs text-muted-foreground">Economic indicators & analysis</p>
+            </div>
+          </div>
         </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Libreria</CardTitle>
-            <CardDescription>Indicatori e concetti con esempi e limiti.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button asChild variant="secondary"><Link href="/dashboard/library">Apri libreria</Link></Button>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Metodo</CardTitle>
-            <CardDescription>Note metodologiche e fonti accademiche.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button asChild variant="secondary"><Link href="/dashboard/about">Leggi il metodo</Link></Button>
-          </CardContent>
+
+        <Card className="p-6">
+          <div className="flex items-center space-x-4">
+            <div className="rounded-lg bg-muted p-2">
+              <MicrostructureIcon className="h-4 w-4" />
+            </div>
+            <div>
+              <h3 className="text-sm font-medium">Market Microstructure</h3>
+              <p className="text-xs text-muted-foreground">Order flow & liquidity analysis</p>
+            </div>
+          </div>
         </Card>
       </div>
     </div>
-    </>
-  );
+  )
 }
