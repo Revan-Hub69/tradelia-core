@@ -1,4 +1,5 @@
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ArrowIcon } from "@/components/icons/arrow-icon";
 
 export default function Symptoms() {
   const symptoms = [
@@ -27,8 +28,9 @@ export default function Symptoms() {
         </div>
         
         <Alert className="border-primary/20 bg-primary/5">
-          <AlertDescription className="text-center text-base">
-            👉 <strong>È normale.</strong> Il problema non è la tua intelligenza, ma come vengono spiegate le cose online.
+          <AlertDescription className="text-center text-base flex items-center justify-center gap-2">
+            <ArrowIcon className="h-5 w-5 text-primary shrink-0" />
+            <span><strong>È normale.</strong> Il problema non è la tua intelligenza, ma come vengono spiegate le cose online.</span>
           </AlertDescription>
         </Alert>
       </div>

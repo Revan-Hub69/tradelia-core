@@ -1,4 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CheckIcon } from "@/components/icons/check-icon";
+import { CrossIcon } from "@/components/icons/cross-icon";
 
 export default function WhatYouGet() {
   const youGet = [
@@ -29,7 +31,7 @@ export default function WhatYouGet() {
               <ul className="space-y-3">
                 {youGet.map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
-                    <span className="text-primary mt-1 text-lg">+</span>
+                    <CheckIcon className="shrink-0 mt-0.5" />
                     <span className="text-muted-foreground">{item}</span>
                   </li>
                 ))}
@@ -45,7 +47,7 @@ export default function WhatYouGet() {
               <ul className="space-y-3">
                 {youDontGet.map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
-                    <span className="text-amber-700 dark:text-amber-400 mt-1 text-lg font-bold">-</span>
+                    <CrossIcon className="shrink-0 mt-0.5" />
                     <span>{item}</span>
                   </li>
                 ))}

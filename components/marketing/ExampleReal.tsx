@@ -1,6 +1,9 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { CheckIcon } from "@/components/icons/check-icon";
+import { CrossIcon } from "@/components/icons/cross-icon";
+import { WarningIcon } from "@/components/icons/warning-icon";
 
 export default function ExampleReal() {
   return (
@@ -60,8 +63,9 @@ export default function ExampleReal() {
                   <li><strong>Valori bassi</strong> → paura diffusa</li>
                   <li><strong>Valori alti</strong> → avidità e pressione emotiva</li>
                 </ul>
-                <p className="mt-4 text-sm">
-                  ⚠️ <strong>Non è un segnale operativo.</strong> Serve solo come contesto, non come decisione.
+                <p className="mt-4 text-sm flex items-center gap-2">
+                  <WarningIcon className="h-5 w-5 shrink-0" />
+                  <span><strong>Non è un segnale operativo.</strong> Serve solo come contesto, non come decisione.</span>
                 </p>
               </CardContent>
             </Card>
@@ -73,19 +77,19 @@ export default function ExampleReal() {
               <CardContent>
                 <ul className="space-y-3">
                   <li className="flex items-start gap-3">
-                    <span className="text-primary mt-1 font-bold">✓</span>
+                    <CheckIcon className="shrink-0 mt-0.5" />
                     <span className="text-sm text-muted-foreground">
                       Per capire il clima emotivo del mercato
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-primary mt-1 font-bold">✓</span>
+                    <CheckIcon className="shrink-0 mt-0.5" />
                     <span className="text-sm text-muted-foreground">
                       Insieme a notizie, volatilità, liquidità
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-primary mt-1 font-bold">✓</span>
+                    <CheckIcon className="shrink-0 mt-0.5" />
                     <span className="text-sm text-muted-foreground">
                       Come supporto al ragionamento, non come scorciatoia
                     </span>
@@ -101,17 +105,17 @@ export default function ExampleReal() {
               <CardContent>
                 <ul className="space-y-2">
                   <li className="flex items-start gap-3">
-                    <span className="text-amber-700 dark:text-amber-400 mt-1 font-bold">✗</span>
+                    <CrossIcon className="shrink-0 mt-0.5" />
                     <span className="text-sm">Non predice il futuro</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-amber-700 dark:text-amber-400 mt-1 font-bold">✗</span>
+                    <CrossIcon className="shrink-0 mt-0.5" />
                     <span className="text-sm">
                       Non dice cosa comprare
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-amber-700 dark:text-amber-400 mt-1 font-bold">✗</span>
+                    <CrossIcon className="shrink-0 mt-0.5" />
                     <span className="text-sm">
                       Non dice quando entrare o uscire
                     </span>
@@ -135,10 +139,16 @@ export default function ExampleReal() {
                     Qui comparirà una lettura descrittiva aggiornata, basata sul valore corrente dell'indice.
                   </p>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <span className="font-bold">✔</span> Nessuna previsione
-                  <span className="font-bold">✔</span> Nessuna raccomandazione
-                  <span className="font-bold">✔</span> Solo spiegazione contestuale
+                <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
+                  <span className="flex items-center gap-1">
+                    <CheckIcon className="h-4 w-4" /> Nessuna previsione
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <CheckIcon className="h-4 w-4" /> Nessuna raccomandazione
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <CheckIcon className="h-4 w-4" /> Solo spiegazione contestuale
+                  </span>
                 </div>
               </AlertDescription>
             </Alert>
