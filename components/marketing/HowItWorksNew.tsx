@@ -26,7 +26,7 @@ export default function HowItWorksNew() {
         title="Come funziona"
       />
       
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {steps.map((step) => (
           <UnifiedCard key={step.number} variant="standard" className="relative">
             {/* Vertical accent bar - Academic style */}
@@ -34,13 +34,13 @@ export default function HowItWorksNew() {
             
             <CardHeader>
               {/* Large section number - Bloomberg/FT style */}
-              <div className="text-5xl font-bold text-primary/20 mb-2" aria-hidden="true">
+              <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary/20 mb-2" aria-hidden="true">
                 {step.number}
               </div>
-              <CardTitle className="text-lg">{step.title}</CardTitle>
+              <CardTitle className="text-base sm:text-lg">{step.title}</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm leading-relaxed">{step.description}</p>
+              <p className="text-xs sm:text-sm leading-relaxed">{step.description}</p>
             </CardContent>
           </UnifiedCard>
         ))}

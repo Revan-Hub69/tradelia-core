@@ -10,6 +10,8 @@ const nextConfig = {
     // optimizeCss: true, // Temporarily disabled - causing critters error
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
   },
+  // Disable unnecessary polyfills for modern browsers
+  transpilePackages: [],
   images: {
     formats: ['image/webp', 'image/avif'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
@@ -20,10 +22,10 @@ const nextConfig = {
   async headers() {
     const isDev = process.env.NODE_ENV === 'development';
     
-    // More restrictive CSP for production with API endpoints
+    // More restrictive CSP for production with API endpoints and Trusted Types
     const csp = isDev 
       ? "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.huggingface.co https://api.alternative.me https://*.supabase.co wss://*.supabase.co ws://localhost:*; frame-src 'none'; object-src 'none'; base-uri 'self';"
-      : "default-src 'self'; script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.huggingface.co https://api.alternative.me https://*.supabase.co wss://*.supabase.co; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';";
+      : "default-src 'self'; script-src 'self' 'strict-dynamic' 'nonce-${Math.random().toString(36)}' https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.huggingface.co https://api.alternative.me https://*.supabase.co wss://*.supabase.co; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; require-trusted-types-for 'script';";
 
     return [
       {
@@ -67,6 +69,16 @@ const nextConfig = {
           {
             key: 'X-DNS-Prefetch-Control',
             value: 'on'
+          },
+          // Cross-Origin-Opener-Policy for security isolation
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin'
+          },
+          // Cross-Origin-Embedder-Policy
+          {
+            key: 'Cross-Origin-Embedder-Policy',
+            value: 'require-corp'
           }
         ],
       },

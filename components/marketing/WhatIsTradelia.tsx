@@ -14,7 +14,7 @@ export default function WhatIsTradelia() {
         subtitle={HOMEPAGE_CONTENT.whatIsTradelia.subtitle}
       />
       
-      <div className="grid gap-6 sm:gap-8 sm:grid-cols-1 lg:grid-cols-2 max-w-4xl mx-auto px-4 sm:px-0">
+      <div className="grid gap-6 sm:gap-8 sm:grid-cols-1 lg:grid-cols-2 max-w-4xl mx-auto">
         {/* Card A: What we do - Responsive */}
         <UnifiedCard variant="elevated" className="border-muted-foreground/30 bg-muted/20">
           <CardHeader>
@@ -51,7 +51,7 @@ export default function WhatIsTradelia() {
       </div>
       
       {/* Method - Responsive */}
-      <div className="text-center mt-8 sm:mt-12 px-4 sm:px-0">
+      <div className="text-center mt-8 sm:mt-12">
         <UnifiedCard variant="hero" className="bg-primary/10 border-primary/20 max-w-2xl mx-auto">
           <CardContent className="p-6 sm:p-8">
             <h3 className="heading-card mb-3 sm:mb-4">{howItWorks.title}</h3>

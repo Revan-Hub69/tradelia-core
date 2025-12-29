@@ -9,10 +9,10 @@
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "lint:style": "stylelint \"**/*.css\" --fix",
     "type-check": "tsc --noEmit",
     "validate": "npm run type-check && npm run lint",
-    "generate-types": "supabase gen types typescript --project-id $SUPABASE_PROJECT_ID > lib/supabase/types.ts || echo 'Set SUPABASE_PROJECT_ID environment variable'"
+    "generate-types": "supabase gen types typescript --project-id $SUPABASE_PROJECT_ID > lib/supabase/types.ts || echo 'Set SUPABASE_PROJECT_ID environment variable'",
+    "clean": "rimraf .next"
   },
   "dependencies": {
     "@huggingface/inference": "^4.13.5",
@@ -56,6 +56,7 @@
     "eslint-config-next": "^16.0.10",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-react-hooks": "^5.0.0",
+    "rimraf": "^6.0.1",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.6.2"
   }

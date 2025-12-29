@@ -113,9 +113,9 @@ export function SiteHeader() {
           <div className="flex items-center space-x-2">
             <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity" aria-label="Tradelia - Torna alla homepage">
               <LogoIcon className="h-8 w-8 text-primary" aria-hidden="true" />
-              <div className="hidden sm:block">
+              <div className="block">
                 <p className="text-lg font-semibold">Tradelia</p>
-                <p className="text-xs text-muted-foreground">Educazione al rischio</p>
+                <p className="text-xs text-muted-foreground hidden sm:block">Educazione al rischio</p>
               </div>
             </Link>
           </div>

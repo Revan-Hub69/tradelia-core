@@ -13,6 +13,9 @@ npm run dev
 
 # Build for production
 npm run build
+
+# Clean build cache
+npm run clean
 ```
 
 Apri [http://localhost:3000](http://localhost:3000) nel browser.
@@ -21,6 +24,7 @@ Apri [http://localhost:3000](http://localhost:3000) nel browser.
 
 ```
 tradelia-core/
+├── .kiro/specs/            # Specifiche progetto e documentazione
 ├── app/                    # Next.js 14 App Router
 │   ├── (marketing)/       # Homepage e landing pages
 │   ├── api/               # API routes
@@ -30,19 +34,19 @@ tradelia-core/
 │   └── library/          # Libreria contenuti educativi
 ├── components/
 │   ├── marketing/        # Componenti homepage
-│   ├── indicators/       # Widget indicatori
+│   ├── indicators/       # Widget indicatori AI-powered
 │   ├── ui/              # UI components base
 │   │   └── design-system/ # Design system unificato
-│   └── test/            # Componenti di test
+│   └── layout/          # Layout components
 ├── lib/
 │   ├── ai/              # Tradelia AI logic
 │   ├── indicators/      # Logica indicatori
 │   ├── supabase/        # Supabase client & types
 │   └── validation/      # Zod schemas
-├── docs/                # 📚 Documentazione
-│   ├── design/         # Design system docs
-│   ├── setup/          # Setup & infrastructure
-│   └── archive/        # Docs storici
+├── hooks/               # Custom React hooks
+├── public/              # Static assets
+├── docs/                # 📚 Documentazione essenziale
+│   └── HUGGINGFACE-SETUP.md # AI integration guide
 └── supabase/           # Database migrations & schema
 ```
 
