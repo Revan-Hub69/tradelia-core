@@ -2,73 +2,64 @@ import { SectionLayout, SectionHeader } from "@/components/ui/design-system/sect
 import { UnifiedCard, CardHeader, CardTitle, CardContent } from "@/components/ui/design-system/unified-card"
 import { SuccessDotIcon } from "@/components/icons/success-dot-icon"
 import { ErrorDotIcon } from "@/components/icons/error-dot-icon"
+import { HOMEPAGE_CONTENT } from "@/lib/constants/homepage-content";
 
 export default function WhatIsTradelia() {
+  const { whatWeDo, whatWeDont, howItWorks } = HOMEPAGE_CONTENT.whatIsTradelia;
+
   return (
     <SectionLayout>
       <SectionHeader 
-        title="Cos'è Tradelia"
-        subtitle="Un sistema educativo che riduce il rumore crypto"
+        title={HOMEPAGE_CONTENT.whatIsTradelia.title}
+        subtitle={HOMEPAGE_CONTENT.whatIsTradelia.subtitle}
       />
       
-      <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-        {/* Card A: What we do */}
-        <UnifiedCard variant="elevated" className="border-success/30 bg-success/5">
+      <div className="grid gap-6 sm:gap-8 sm:grid-cols-1 lg:grid-cols-2 max-w-4xl mx-auto px-4 sm:px-0">
+        {/* Card A: What we do - Responsive */}
+        <UnifiedCard variant="elevated" className="border-muted-foreground/30 bg-muted/20">
           <CardHeader>
-            <CardTitle className="text-success">Tradelia fa questo:</CardTitle>
+            <CardTitle className="heading-card">{whatWeDo.title}</CardTitle>
           </CardHeader>
           <CardContent>
-            <ul className="space-y-3">
-              <li className="flex items-start gap-3">
-                <SuccessDotIcon className="shrink-0 mt-1" />
-                <span className="text-sm">Spiega concetti con esempi reali</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <SuccessDotIcon className="shrink-0 mt-1" />
-                <span className="text-sm">Mostra errori comuni senza giudizio</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <SuccessDotIcon className="shrink-0 mt-1" />
-                <span className="text-sm">Ti dà regole pratiche di sicurezza</span>
-              </li>
+            <ul className="content-spacing">
+              {whatWeDo.items.map((item, index) => (
+                <li key={index} className="flex items-start gap-3">
+                  <SuccessDotIcon className="shrink-0 mt-1" />
+                  <span className="text-body">{item}</span>
+                </li>
+              ))}
             </ul>
           </CardContent>
         </UnifiedCard>
         
-        {/* Card B: What we don't do */}
-        <UnifiedCard variant="elevated" className="border-muted-foreground/20 bg-muted/30">
+        {/* Card B: What we don't do - Responsive */}
+        <UnifiedCard variant="elevated" className="border-muted-foreground/40 bg-muted/30">
           <CardHeader>
-            <CardTitle className="text-foreground">Tradelia NON fa questo:</CardTitle>
+            <CardTitle className="heading-card">{whatWeDont.title}</CardTitle>
           </CardHeader>
           <CardContent>
-            <ul className="space-y-3">
-              <li className="flex items-start gap-3">
-                <ErrorDotIcon className="shrink-0 mt-1" />
-                <span className="text-sm">Segnali di trading</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <ErrorDotIcon className="shrink-0 mt-1" />
-                <span className="text-sm">Promesse di guadagno</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <ErrorDotIcon className="shrink-0 mt-1" />
-                <span className="text-sm">Consigli "compra/vendi"</span>
-              </li>
+            <ul className="content-spacing">
+              {whatWeDont.items.map((item, index) => (
+                <li key={index} className="flex items-start gap-3">
+                  <ErrorDotIcon className="shrink-0 mt-1" />
+                  <span className="text-body">{item}</span>
+                </li>
+              ))}
             </ul>
           </CardContent>
         </UnifiedCard>
       </div>
       
-      {/* Method - Simple */}
-      <div className="text-center mt-12">
+      {/* Method - Responsive */}
+      <div className="text-center mt-8 sm:mt-12 px-4 sm:px-0">
         <UnifiedCard variant="hero" className="bg-primary/10 border-primary/20 max-w-2xl mx-auto">
-          <CardContent className="p-8">
-            <h3 className="text-xl font-semibold text-foreground mb-4">Come funziona</h3>
-            <p className="text-base text-foreground leading-relaxed">
-              Sempre con lo stesso schema: <strong>esempio reale</strong> → <strong>spiegazione</strong> → <strong>errore comune</strong> → <strong>regola di sicurezza</strong>
+          <CardContent className="p-6 sm:p-8">
+            <h3 className="heading-card mb-3 sm:mb-4">{howItWorks.title}</h3>
+            <p className="text-body">
+              {howItWorks.description}
             </p>
-            <p className="text-sm text-muted-foreground mt-4">
-              Pochi minuti alla volta • Un concetto alla volta • Nessuna decisione richiesta
+            <p className="text-caption mt-3 sm:mt-4">
+              {howItWorks.subtitle}
             </p>
           </CardContent>
         </UnifiedCard>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SectionLayout } from "@/components/ui/design-system/section-layout"
+import { HOMEPAGE_CONTENT, NAVIGATION } from "@/lib/constants/homepage-content";
 
 export default function HeroSection() {
   return (
@@ -16,44 +17,43 @@ export default function HeroSection() {
       <div className="mx-auto max-w-4xl text-center relative z-10">
         <div className="space-y-10">
           
-          {/* Eyebrow label - ultra discreto */}
-          <div className="inline-flex items-center gap-2 text-xs font-medium text-muted-foreground/70 uppercase tracking-wider mb-6">
+          {/* Eyebrow label - responsive e discreto */}
+          <div className="eyebrow-label mb-4 sm:mb-6">
             <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40"></div>
-            Educazione Crypto Antifuffa
+            <span className="hidden sm:inline">{HOMEPAGE_CONTENT.hero.eyebrowLabel.full}</span>
+            <span className="sm:hidden">{HOMEPAGE_CONTENT.hero.eyebrowLabel.short}</span>
           </div>
           
-          {/* Recognition - H1 unico non spezzato */}
-          <div className="space-y-6">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05] text-foreground">
-              Il mondo crypto è pieno di hype e confusione
+          {/* Recognition - H1 responsive */}
+          <div className="content-spacing-lg">
+            <h1 className="heading-display px-4 sm:px-0">
+              {HOMEPAGE_CONTENT.hero.title}
             </h1>
             
-            <h2 className="text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-              Paura, promesse, numeri fuori contesto.
-              <br />
-              <span className="text-foreground font-medium">È normale sentirsi disorientati.</span>
+            <h2 className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto px-4 sm:px-0">
+              {HOMEPAGE_CONTENT.hero.subtitle.line1}
+              <br className="hidden sm:block" />
+              <span className="text-foreground font-medium">{HOMEPAGE_CONTENT.hero.subtitle.line2}</span>
             </h2>
           </div>
           
-          {/* Normalization - Brief */}
-          <div className="max-w-2xl mx-auto">
-            <p className="text-lg text-foreground leading-relaxed">
-              Tradelia è un sistema educativo che ti guida 
-              <strong className="font-semibold"> passo dopo passo</strong>, 
-              senza fretta, senza promesse, senza segnali.
+          {/* Normalization - Responsive */}
+          <div className="max-w-2xl mx-auto px-4 sm:px-0">
+            <p className="text-body-large">
+              {HOMEPAGE_CONTENT.hero.description}
             </p>
           </div>
           
-          {/* Single State Transition */}
-          <div className="space-y-4 pt-4">
-            <Button asChild size="lg" className="px-10 py-6 text-base font-semibold">
-              <Link href="/dashboard/start">
-                Inizia dal primo passo
+          {/* Single State Transition - Responsive */}
+          <div className="content-spacing pt-4 px-4 sm:px-0">
+            <Button asChild size="lg" className="px-8 sm:px-10 py-4 sm:py-6 text-sm sm:text-base font-semibold w-full sm:w-auto">
+              <Link href={NAVIGATION.dashboard}>
+                {HOMEPAGE_CONTENT.hero.cta.primary}
               </Link>
             </Button>
             
-            <p className="text-sm text-muted-foreground">
-              Nessuna registrazione • Nessuna decisione • Solo orientamento
+            <p className="text-caption">
+              {HOMEPAGE_CONTENT.hero.cta.subtitle}
             </p>
           </div>
           

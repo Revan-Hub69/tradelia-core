@@ -1,13 +1,14 @@
 import { SectionLayout, SectionHeader } from "@/components/ui/design-system/section-layout"
 import { UnifiedCard, CardContent } from "@/components/ui/design-system/unified-card"
+import { HOMEPAGE_CONTENT } from "@/lib/constants/homepage-content";
 
 export default function WhyExists() {
   return (
     <SectionLayout background="muted">
       <div className="mx-auto max-w-3xl text-center">
         <SectionHeader 
-          title="Se ti senti confuso, è normale"
-          subtitle="Nel mondo crypto l'hype rende difficile distinguere informazione da fuffa, anche quando le spiegazioni sembrano «chiare»"
+          title={HOMEPAGE_CONTENT.whyExists.title}
+          subtitle={HOMEPAGE_CONTENT.whyExists.subtitle}
         />
         
         {/* Single focused message */}
@@ -16,7 +17,7 @@ export default function WhyExists() {
           
           <CardContent className="p-8">
             <p className="text-base text-primary font-semibold">
-              Tradelia parte da qui: ridurre il rumore, non aggiungerne altro.
+              {HOMEPAGE_CONTENT.whyExists.message}
             </p>
           </CardContent>
         </UnifiedCard>

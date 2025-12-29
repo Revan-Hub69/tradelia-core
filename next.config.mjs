@@ -23,7 +23,7 @@ const nextConfig = {
     // More restrictive CSP for production with API endpoints
     const csp = isDev 
       ? "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.huggingface.co https://api.alternative.me https://*.supabase.co wss://*.supabase.co ws://localhost:*; frame-src 'none'; object-src 'none'; base-uri 'self';"
-      : "default-src 'self'; script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.huggingface.co https://api.alternative.me https://*.supabase.co wss://*.supabase.co; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';";
+      : "default-src 'self'; script-src 'self' 'sha256-' https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.huggingface.co https://api.alternative.me https://*.supabase.co wss://*.supabase.co; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;";
 
     return [
       {

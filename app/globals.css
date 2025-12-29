@@ -45,14 +45,12 @@
     --accent-amber: 43 96% 56%;          /* Warning/attention amber */
     --accent-rose: 351 83% 61%;          /* Error/danger rose */
     
-    /* Core System Colors */
-    --background: 0 0% 100%;
-    /* Core System Colors */
-    --background: 0 0% 100%;
+    /* Core System Colors - Warm Off-White */
+    --background: 210 40% 99%;              /* Warm off-white, not stark white */
     --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
+    --card: 210 40% 99%;                    /* Consistent with background */
     --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
+    --popover: 210 40% 99%;
     --popover-foreground: 222.2 84% 4.9%;
     
     /* Primary Brand */
@@ -72,12 +70,12 @@
     --border-subtle: 210 40% 96%;           /* Subtle borders, dividers */
     --border-strong: 215.4 16.3% 46.9%;    /* Strong borders, inputs */
     
-    /* Status Colors (WCAG AA Compliant) */
-    --success: 142.1 76.2% 36.3%;          /* Green - 4.5:1 contrast */
+    /* Status Colors - ANTI-TRADING BIAS (WCAG AA Compliant) */
+    --success: 220 9% 46%;                  /* Neutral slate - no trading association */
     --success-foreground: 210 40% 98%;
     --warning: 38 92% 45%;                  /* Amber - darker for better contrast */
     --warning-foreground: 222.2 84% 4.9%;  /* Dark text on warning bg */
-    --error: 0 84.2% 60.2%;                 /* Red - 4.5:1 contrast */
+    --error: 220 14% 41%;                   /* Neutral dark slate - no trading association */
     --error-foreground: 210 40% 98%;
     --info: 221.2 83.2% 53.3%;              /* Blue - 4.5:1 contrast */
     --info-foreground: 210 40% 98%;
@@ -114,8 +112,8 @@
     --popover: 222.2 47% 14%;
     --popover-foreground: 210 40% 98%;
     
-    /* Primary Brand - Consistent blue */
-    --primary: 217.2 91% 60%;              
+    /* Primary Brand - Desaturated, non-trading */
+    --primary: 217.2 32% 45%;              /* Desaturated blue, professional */
     --primary-foreground: 222.2 47% 11%;
     
     /* Semantic Color Tokens - WCAG AAA where possible */
@@ -124,23 +122,23 @@
     --text-muted: 215 20.2% 70%;           /* Muted but readable */
     --text-inverse: 222.2 84% 4.9%;        
     
-    /* Interactive Elements - Consistent with background */
-    --focus-ring: 217.2 91% 60%;           
+    /* Interactive Elements - Consistent, desaturated */
+    --focus-ring: 217.2 32% 55%;           /* Desaturated focus ring */
     --focus-ring-offset: 222.2 47% 11%;     
     --border-default: 217.2 32.6% 25%;     /* Visible borders */
     --border: 217.2 32.6% 25%;             
     --border-subtle: 217.2 32.6% 20%;      
     --border-strong: 217.2 32.6% 35%;      
     
-    /* Status Colors - Vibrant but not neon */
-    --success: 142.1 70% 45%;              
-    --success-foreground: 142.1 70% 95%;
-    --warning: 38 92% 50%;                 
+    /* Status Colors - Desaturated, anti-trading */
+    --success: 220 12% 55%;                /* Neutral slate, desaturated */
+    --success-foreground: 220 12% 95%;
+    --warning: 38 45% 55%;                 /* Desaturated amber */
     --warning-foreground: 222.2 47% 11%;   /* Dark text on bright warning */
-    --error: 0 72% 50%;                    
-    --error-foreground: 0 72% 95%;
-    --info: 217.2 91% 60%;                 
-    --info-foreground: 217.2 91% 95%;
+    --error: 220 18% 50%;                  /* Neutral dark slate, desaturated */
+    --error-foreground: 220 18% 95%;
+    --info: 217.2 32% 55%;                 /* Desaturated blue */
+    --info-foreground: 217.2 32% 95%;
     
     /* UI States - Clear hierarchy */
     --muted: 217.2 32.6% 20%;              /* Distinct from background */
@@ -152,18 +150,18 @@
     
     /* Interactive States */
     --input: 217.2 32.6% 20%;
-    --ring: 217.2 91% 60%;
-    --destructive: 0 72% 50%;
-    --destructive-foreground: 0 72% 95%;
+    --ring: 217.2 32% 55%;                  /* Desaturated ring */
+    --destructive: 220 18% 50%;             /* Neutral destructive */
+    --destructive-foreground: 220 18% 95%;
   }
 }
 
 @layer base {
-  /* Keyframes for Animations */
+  /* Keyframes for Animations - HCI 2024 Compliant */
   @keyframes fadeIn {
     from {
       opacity: 0;
-      transform: translateY(20px);
+      transform: translateY(8px);
     }
     to {
       opacity: 1;
@@ -174,7 +172,7 @@
   @keyframes slideUp {
     from {
       opacity: 0;
-      transform: translateY(40px);
+      transform: translateY(12px);
     }
     to {
       opacity: 1;
@@ -195,6 +193,52 @@
   body {
     @apply bg-background text-foreground;
     overflow-x: hidden;
+    
+    /* Global scrollbar styling - adapts to theme */
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.2) transparent;
+  }
+  
+  /* Global webkit scrollbar - refined and theme-adaptive */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  @media (min-width: 768px) {
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground) / 0.2);
+    border-radius: 3px;
+    border: 1px solid hsl(var(--background));
+    transition: background-color 0.2s ease;
+  }
+
+  @media (min-width: 768px) {
+    ::-webkit-scrollbar-thumb {
+      border-radius: 4px;
+    }
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.4);
+  }
+
+  /* Dark mode scrollbar refinements */
+  .dark ::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground) / 0.3);
+    border: 1px solid hsl(var(--background));
+  }
+
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.5);
   }
   
   /* Prevent body scroll when drawer is open - IMPROVED */
@@ -205,12 +249,12 @@
     height: 100% !important;
   }
   
-  /* Ensure drawer content is scrollable with proper scrollbar */
+  /* Ensure drawer content is scrollable with refined scrollbar */
   .drawer-content {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
-    scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.25) transparent;
   }
   
   .drawer-content::-webkit-scrollbar {
@@ -222,13 +266,14 @@
   }
 
   .drawer-content::-webkit-scrollbar-thumb {
-    background-color: hsl(var(--muted-foreground) / 0.3);
+    background-color: hsl(var(--muted-foreground) / 0.25);
     border-radius: 4px;
+    border: 1px solid hsl(var(--card));
     transition: background-color 0.2s ease;
   }
 
   .drawer-content::-webkit-scrollbar-thumb:hover {
-    background-color: hsl(var(--muted-foreground) / 0.5);
+    background-color: hsl(var(--muted-foreground) / 0.45);
   }
   
   /* Ensure all containers respect viewport width */
@@ -447,14 +492,14 @@
 
   /* Microinteractions & Animations - ACADEMIC STYLE */
   
-  /* Fade-in for lazy loading only */
+  /* Fade-in for lazy loading only - HCI 2024 compliant */
   .animate-fade-in {
-    animation: fadeIn 0.6s ease-out forwards;
+    animation: fadeIn 0.15s ease-out forwards;
   }
   
-  /* Slide-up for content reveal */
+  /* Slide-up for content reveal - HCI 2024 compliant */
   .animate-slide-up {
-    animation: slideUp 0.8s ease-out forwards;
+    animation: slideUp 0.18s ease-out forwards;
   }
   
   /* REMOVED: bounce, pulse, float, glow - not academic */
@@ -576,10 +621,10 @@
     );
   }
 
-  /* Custom Scrollbar Styles */
+  /* Custom Scrollbar Styles - Refined */
   .custom-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.25) transparent;
   }
 
   .custom-scrollbar::-webkit-scrollbar {
@@ -591,19 +636,19 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: hsl(var(--muted-foreground) / 0.3);
+    background-color: hsl(var(--muted-foreground) / 0.25);
     border-radius: 3px;
     transition: background-color 0.2s ease;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: hsl(var(--muted-foreground) / 0.5);
+    background-color: hsl(var(--muted-foreground) / 0.45);
   }
 
-  /* ScrollArea custom styles */
+  /* ScrollArea custom styles - Refined */
   [data-radix-scroll-area-viewport] {
     scrollbar-width: thin;
-    scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.25) transparent;
   }
 
   [data-radix-scroll-area-viewport]::-webkit-scrollbar {
@@ -615,13 +660,13 @@
   }
 
   [data-radix-scroll-area-viewport]::-webkit-scrollbar-thumb {
-    background-color: hsl(var(--muted-foreground) / 0.3);
+    background-color: hsl(var(--muted-foreground) / 0.25);
     border-radius: 3px;
     transition: background-color 0.2s ease;
   }
 
   [data-radix-scroll-area-viewport]::-webkit-scrollbar-thumb:hover {
-    background-color: hsl(var(--muted-foreground) / 0.5);
+    background-color: hsl(var(--muted-foreground) / 0.45);
   }
 
   /* REMOVED: Glass effects - not academic */
@@ -705,18 +750,69 @@
   .space-2xl { margin: var(--space-2xl); }
   .space-3xl { margin: var(--space-3xl); }
   
-  /* Premium Brand Colors */
-  .text-tradelia-navy { color: hsl(var(--tradelia-navy)); }
-  .text-tradelia-blue { color: hsl(var(--tradelia-blue)); }
-  .text-tradelia-cyan { color: hsl(var(--tradelia-cyan)); }
-  .text-tradelia-slate { color: hsl(var(--tradelia-slate)); }
-  .text-accent-gold { color: hsl(var(--accent-gold)); }
-  .text-accent-emerald { color: hsl(var(--accent-emerald)); }
-  .text-accent-amber { color: hsl(var(--accent-amber)); }
-  .text-accent-rose { color: hsl(var(--accent-rose)); }
+  /* Typography Utilities - Eliminano duplicazione */
+  .heading-display {
+    @apply text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05] text-foreground;
+  }
   
-  .bg-tradelia-navy { background-color: hsl(var(--tradelia-navy)); }
-  .bg-tradelia-blue { background-color: hsl(var(--tradelia-blue)); }
-  .bg-tradelia-cyan { background-color: hsl(var(--tradelia-cyan)); }
-  .bg-tradelia-slate { background-color: hsl(var(--tradelia-slate)); }
+  .heading-section {
+    @apply text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground;
+  }
+  
+  .heading-card {
+    @apply text-lg sm:text-xl font-semibold text-foreground;
+  }
+  
+  .text-body-large {
+    @apply text-base sm:text-lg text-foreground leading-relaxed;
+  }
+  
+  .text-body {
+    @apply text-sm sm:text-base text-foreground leading-relaxed;
+  }
+  
+  .text-caption {
+    @apply text-xs sm:text-sm text-muted-foreground;
+  }
+  
+  .eyebrow-label {
+    @apply inline-flex items-center gap-2 text-xs font-medium text-muted-foreground/70 uppercase tracking-wider;
+  }
+  
+  .badge-primary {
+    @apply inline-flex items-center gap-2 bg-primary/10 text-primary px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium;
+  }
+  
+  .badge-secondary {
+    @apply inline-flex items-center gap-2 bg-muted text-muted-foreground px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium;
+  }
+  
+  .badge-success {
+    @apply inline-flex items-center gap-2 bg-muted-foreground/10 text-muted-foreground px-3 py-1.5 rounded-full text-xs font-medium;
+  }
+  
+  .badge-outline {
+    @apply inline-flex items-center gap-2 border border-border bg-background text-foreground px-3 py-1.5 rounded-full text-xs font-medium;
+  }
+  
+  .link-footer {
+    @apply hover:text-primary transition-colors font-medium;
+  }
+  
+  /* Responsive spacing utilities */
+  .section-spacing {
+    @apply py-12 sm:py-16 lg:py-24;
+  }
+  
+  .section-spacing-sm {
+    @apply py-8 sm:py-12 lg:py-16;
+  }
+  
+  .content-spacing {
+    @apply space-y-3 sm:space-y-4;
+  }
+  
+  .content-spacing-lg {
+    @apply space-y-4 sm:space-y-6;
+  }
 }

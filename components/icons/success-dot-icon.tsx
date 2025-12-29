@@ -17,7 +17,7 @@ export function SuccessDotIcon({ className, ...props }: SuccessDotIconProps) {
         cx="8"
         cy="8"
         r="7"
-        className="fill-success/10 stroke-success/30"
+        className="fill-muted-foreground/10 stroke-muted-foreground/30"
         strokeWidth="0.5"
       />
       {/* Cerchio interno principale */}
@@ -25,21 +25,21 @@ export function SuccessDotIcon({ className, ...props }: SuccessDotIconProps) {
         cx="8"
         cy="8"
         r="5"
-        className="fill-success/20"
+        className="fill-muted-foreground/20"
       />
       {/* Punto centrale raffinato */}
       <circle
         cx="8"
         cy="8"
         r="2.5"
-        className="fill-success"
+        className="fill-muted-foreground"
       />
       {/* Highlight per effetto 3D */}
       <circle
         cx="7.2"
         cy="6.8"
         r="0.8"
-        className="fill-success/40"
+        className="fill-muted-foreground/40"
       />
     </svg>
   );

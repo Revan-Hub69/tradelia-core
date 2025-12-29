@@ -14,7 +14,7 @@ export function SectionLayout({ children, className, background = 'white' }: Sec
   }
 
   return (
-    <section className={cn('py-16 lg:py-24', bgStyles[background], className)}>
+    <section className={cn('section-spacing', bgStyles[background], className)}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         {children}
       </div>
@@ -31,18 +31,18 @@ interface SectionHeaderProps {
 
 export function SectionHeader({ title, subtitle, badge, className }: SectionHeaderProps) {
   return (
-    <div className={cn('text-center mb-12', className)}>
+    <div className={cn('text-center mb-8 sm:mb-12 px-4 sm:px-0', className)}>
       {badge && (
-        <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4">
+        <div className="badge-primary mb-3 sm:mb-4">
           <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
           {badge}
         </div>
       )}
-      <h2 className="text-4xl font-bold text-foreground mb-4">
+      <h2 className="heading-section mb-3 sm:mb-4">
         {title}
       </h2>
       {subtitle && (
-        <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+        <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
           {subtitle}
         </p>
       )}

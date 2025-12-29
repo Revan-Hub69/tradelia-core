@@ -17,7 +17,7 @@ export default function HeroProblem({ className }: HeroProblemProps) {
           <div className="space-y-6">
             <Badge variant="premium" className="text-sm px-4 py-1.5">
               <span className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-primary"></span>
                 Metodo • Crypto • Investimenti
               </span>
             </Badge>
