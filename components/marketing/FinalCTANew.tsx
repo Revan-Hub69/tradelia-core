@@ -7,25 +7,27 @@ export default function FinalCTANew() {
   return (
     <>
       <SectionLayout background="muted">
-        <div className="mx-auto max-w-3xl">
-          <UnifiedCard variant="hero" className="bg-gradient-to-br from-primary/5 to-background border-primary/20">
-            <CardContent className="text-center space-y-5">
-              <h2 className="text-3xl font-bold">Inizia con calma</h2>
-              <p className="text-base text-foreground leading-relaxed">
-                Parti dalla prima micro-lezione. Nessuna pressione, nessuna promessa: solo basi chiare.
-              </p>
-              <Button asChild size="lg" className="px-8 py-6 text-base font-semibold">
-                <Link href="/dashboard">
-                  Inizia
-                </Link>
-              </Button>
-            </CardContent>
-          </UnifiedCard>
+        <div className="mx-auto max-w-3xl text-center">
+          
+          <h2 className="text-3xl font-bold text-foreground mb-6">
+            Da dove si inizia
+          </h2>
+          
+          <p className="text-lg text-muted-foreground mb-8">
+            Dal punto più comune: come l'hype usa numeri e concetti fuori contesto.
+          </p>
+          
+          <Button asChild size="lg" className="px-8 py-6 text-base font-semibold">
+            <Link href="/dashboard">
+              Inizia dal primo passo
+            </Link>
+          </Button>
+          
         </div>
       </SectionLayout>
 
       {/* Footer */}
-      <footer className="border-t bg-muted py-12">
+      <footer className="border-t bg-background py-12">
         <div className="mx-auto max-w-5xl px-6">
           <div className="text-center space-y-6">
             <div className="flex items-center justify-center gap-6 text-sm text-foreground">
@@ -38,8 +40,9 @@ export default function FinalCTANew() {
             
             <div className="pt-6 border-t border-border">
               <p className="text-sm text-foreground leading-relaxed max-w-3xl mx-auto">
-                <strong className="font-semibold">Disclaimer:</strong> Tradelia è una piattaforma educativa. 
-                Nessuna consulenza finanziaria. Nessuna raccomandazione o segnale operativo.
+                <strong className="font-semibold">Disclaimer:</strong> Tradelia è educativo. 
+                Non fornisce consulenza finanziaria né raccomandazioni operative.
+                Serve a migliorare la comprensione e ridurre errori comuni nel mondo crypto.
               </p>
             </div>
             
