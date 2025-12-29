@@ -63,9 +63,10 @@ export const HOMEPAGE_CONTENT = {
   // Footer
   footer: {
     links: [
-      { href: "/privacy", label: "Privacy" },
-      { href: "/about", label: "Metodo" },
-      { href: "/contact", label: "Contatti" }
+      { href: "/dashboard/start", label: "Inizia Qui" },
+      { href: "/dashboard/metodo", label: "Metodo & Fonti" },
+      { href: "/about", label: "Chi Siamo" },
+      { href: "/privacy", label: "Privacy" }
     ],
     disclaimer: "Disclaimer: Tradelia è educativo. Non fornisce consulenza finanziaria né raccomandazioni operative. Serve a migliorare la comprensione e ridurre errori comuni nel mondo crypto.",
     copyright: "© 2025 Tradelia. Capire prima di credere. Capire prima di agire."
@@ -74,5 +75,6 @@ export const HOMEPAGE_CONTENT = {
 
 // Navigation Constants
 export const NAVIGATION = {
-  dashboard: "/dashboard/start"
+  dashboard: "/dashboard/start",
+  mainCta: "/dashboard/start"
 } as const;

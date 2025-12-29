@@ -17,57 +17,57 @@ const menuSections = [
     title: 'Dashboard',
     items: [
       {
-        title: 'Indicatori Crypto',
-        description: 'Fear & Greed, Bitcoin Dominance, sentiment di mercato',
-        href: '/dashboard',
-        badge: 'Live'
-      },
-      {
-        title: 'Analisi Comportamentale',
-        description: 'Bias cognitivi e psicologia del trading crypto',
-        href: '/dashboard/behavioral',
+        title: 'Start · Orientamento',
+        description: 'Capire da dove iniziare, senza decidere nulla',
+        href: '/dashboard/start',
         badge: 'Nuovo'
       },
       {
         title: 'Microlearning',
-        description: 'Lezioni brevi per capire gli indicatori',
-        href: '/dashboard/learn',
+        description: 'Capire prima di credere - Brevi lezioni educative',
+        href: '/dashboard/microlearning',
         badge: null
       },
       {
-        title: 'Storico & Grafici',
-        description: 'Andamento temporale degli indicatori',
-        href: '/dashboard/history',
-        badge: null
+        title: 'Misuratori di Contesto',
+        description: 'Numeri per orientarsi, non per decidere',
+        href: '/dashboard/misuratori',
+        badge: 'Live'
+      },
+      {
+        title: 'Libreria Truffe',
+        description: 'Riconoscere prima di cadere - Schemi ricorrenti',
+        href: '/dashboard/truffe',
+        badge: 'Importante'
       }
     ]
   },
   {
-    title: 'Metodologia',
+    title: 'Strumenti',
     items: [
       {
-        title: 'Finanza Comportamentale',
-        description: 'Riconoscimento e riduzione dei bias cognitivi',
-        href: '/library/behavioral',
+        title: 'Check Piattaforme',
+        description: 'Checklist per valutare piattaforme crypto',
+        href: '/dashboard/check-piattaforme',
+        badge: 'Fase 2'
+      },
+      {
+        title: 'Fear & Greed Index',
+        description: 'Sentiment di mercato con analisi AI',
+        href: '/dashboard/misuratori/fear-greed',
+        badge: 'AI'
+      },
+      {
+        title: 'Metodo & Fonti',
+        description: 'Come funziona Tradelia, trasparenza completa',
+        href: '/dashboard/metodo',
         badge: 'Fondamentale'
       },
       {
-        title: 'Analisi del Sentiment',
-        description: 'Come leggere le emozioni del mercato crypto',
-        href: '/library/sentiment',
-        badge: 'Base'
-      },
-      {
-        title: 'Indicatori On-Chain',
-        description: 'Metriche blockchain e loro interpretazione',
-        href: '/library/onchain',
-        badge: 'Intermedio'
-      },
-      {
-        title: 'Limiti e Disclaimer',
-        description: 'Comprensione dei limiti metodologici',
-        href: '/about',
-        badge: 'Importante'
+        title: 'Progresso Personale',
+        description: 'Il tuo percorso di apprendimento',
+        href: '/dashboard/progresso',
+        badge: null
       }
     ]
   },
@@ -75,14 +75,14 @@ const menuSections = [
     title: 'Risorse',
     items: [
       {
-        title: 'Biblioteca',
+        title: 'Biblioteca Educativa',
         description: 'Contenuti educativi e materiali di studio',
         href: '/library',
         badge: null
       },
       {
-        title: 'Metodo Tradelia',
-        description: 'Principi metodologici e approccio antifuffa',
+        title: 'Principi Antifuffa',
+        description: 'Metodologia e approccio educativo',
         href: '/about',
         badge: 'Fondamentale'
       },
@@ -156,7 +156,7 @@ export function SiteHeader() {
 
                 <NavigationMenuItem>
                   <NavigationMenuTrigger className="bg-transparent">
-                    Metodologia
+                    Strumenti
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <div className="w-[600px] p-4">
@@ -183,10 +183,10 @@ export function SiteHeader() {
 
                 <NavigationMenuItem>
                   <NavigationMenuLink
-                    href="/library"
+                    href="/dashboard/start"
                     className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
                   >
-                    Biblioteca
+                    Inizia Qui
                   </NavigationMenuLink>
                 </NavigationMenuItem>
               </NavigationMenuList>
@@ -197,11 +197,11 @@ export function SiteHeader() {
           <div className="flex items-center space-x-4">
             {/* Desktop Actions */}
             <div className="hidden md:flex md:items-center md:space-x-2">
-              <Button asChild variant="ghost" size="sm" aria-label="Accedi al dashboard">
-                <Link href="/dashboard">Accedi</Link>
+              <Button asChild variant="ghost" size="sm" aria-label="Accedi alla dashboard">
+                <Link href="/dashboard">Dashboard</Link>
               </Button>
-              <Button asChild variant="premium" size="sm" aria-label="Inizia ora con Tradelia">
-                <Link href="/dashboard">Inizia Ora</Link>
+              <Button asChild variant="premium" size="sm" aria-label="Inizia il percorso di orientamento">
+                <Link href="/dashboard/start">Inizia Qui</Link>
               </Button>
               <Separator orientation="vertical" className="mx-2 h-6" aria-hidden="true" />
               <ModeToggle />
@@ -256,7 +256,7 @@ export function SiteHeader() {
                       </div>
 
                       <div>
-                        <h3 className="mb-3 text-sm font-medium text-muted-foreground">Metodologia</h3>
+                        <h3 className="mb-3 text-sm font-medium text-muted-foreground">Strumenti</h3>
                         <div className="space-y-2">
                           {menuSections[1].items.map((item) => (
                             <Link
@@ -303,8 +303,8 @@ export function SiteHeader() {
                 {/* Mobile Actions - Fixed at bottom */}
                 <div className="space-y-3 pt-4 border-t">
                   <Button asChild className="w-full">
-                    <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
-                      Inizia Ora
+                    <Link href="/dashboard/start" onClick={() => setMobileMenuOpen(false)}>
+                      Inizia Qui
                     </Link>
                   </Button>
                   <div className="flex items-center justify-between">
