@@ -151,12 +151,6 @@ export function HuggingFaceConnectionTest() {
                   )}
                 </div>
               )}
-
-              {!result.success && result.status && (
-                <p className="text-xs text-muted-foreground mt-2">
-                  HTTP Status: {result.status}
-                </p>
-              )}
             </div>
           )}
 
