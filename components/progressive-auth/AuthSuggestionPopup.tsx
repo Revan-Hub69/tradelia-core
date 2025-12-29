@@ -1,11 +1,14 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { UnifiedCard, CardContent } from '@/components/ui/design-system/unified-card'
 import { Badge } from '@/components/ui/badge'
-import { X, BookOpen, RefreshCw, Shield, Clock } from 'lucide-react'
+import { X } from 'lucide-react'
+import { BrainIcon } from '@/components/icons/brain-icon'
+import { EconomicsIcon } from '@/components/icons/economics-icon'
+import { WarningIcon } from '@/components/icons/warning-icon'
 import { AuthModal } from '@/components/auth/AuthModal'
 import { authManager } from '@/lib/auth/supabase-auth'
 import { getProgressData, savePreferences, getPreferences } from '@/lib/utils/session'
@@ -75,54 +78,62 @@ export function AuthSuggestionPopup({ trigger, onClose }: AuthSuggestionPopupPro
     switch (trigger) {
       case 'start_flow_complete':
         return {
-          title: 'Ottimo lavoro! 🎉',
-          subtitle: 'Hai completato il percorso di orientamento',
-          description: 'Vuoi salvare il tuo progresso per continuare da qualsiasi dispositivo?',
+          title: 'Percorso di orientamento completato',
+          subtitle: 'Valutazione iniziale terminata',
+          description: 'Hai completato la valutazione del tuo stato attuale. Un account educativo ti permetterebbe di salvare questo progresso e accedere a funzionalità avanzate.',
+          icon: BrainIcon,
           benefits: [
-            'Il tuo percorso educativo viene salvato automaticamente',
-            'Sincronizzazione tra tutti i tuoi dispositivi',
-            'Accesso a funzionalità avanzate quando disponibili'
+            'Salvataggio permanente del progresso educativo',
+            'Sincronizzazione automatica tra dispositivi',
+            'Accesso prioritario a nuovi contenuti educativi'
           ],
-          urgency: 'low'
+          urgency: 'low',
+          badgeText: 'Opzionale'
         }
 
       case 'multiple_sections':
         return {
-          title: 'Stai esplorando molto! 📚',
-          subtitle: 'Hai visitato diverse sezioni educative',
-          description: 'Un account ti permetterebbe di tenere traccia del tuo progresso complessivo.',
+          title: 'Utilizzo multi-sezione rilevato',
+          subtitle: 'Esplorazione approfondita in corso',
+          description: 'Stai utilizzando diverse sezioni educative. Un account centralizzato ottimizzerebbe il tracciamento del tuo percorso di apprendimento.',
+          icon: EconomicsIcon,
           benefits: [
-            'Tracciamento del progresso tra tutte le sezioni',
-            'Ripresa automatica da dove hai lasciato',
-            'Statistiche personali del tuo apprendimento'
+            'Tracciamento unificato del progresso educativo',
+            'Ripresa automatica da qualsiasi sezione',
+            'Analytics dettagliate del percorso di apprendimento'
           ],
-          urgency: 'medium'
+          urgency: 'medium',
+          badgeText: 'Consigliato'
         }
 
       case 'data_retention':
         return {
-          title: 'I tuoi dati scadranno presto ⏰',
-          subtitle: 'Hai dati educativi da più di 7 giorni',
-          description: 'Senza un account, i tuoi progressi verranno eliminati automaticamente tra qualche giorno.',
+          title: 'Scadenza automatica dati',
+          subtitle: 'Eliminazione programmata per privacy',
+          description: 'I dati educativi locali vengono eliminati automaticamente dopo 30 giorni per garantire la privacy. Un account previene questa perdita mantenendo la sicurezza.',
+          icon: WarningIcon,
           benefits: [
-            'Salvataggio permanente di tutto il tuo progresso',
-            'Nessuna perdita di dati educativi',
-            'Backup sicuro e crittografato'
+            'Prevenzione perdita dati educativi',
+            'Backup crittografato e sicuro',
+            'Conservazione permanente del progresso'
           ],
-          urgency: 'high'
+          urgency: 'high',
+          badgeText: 'Azione richiesta'
         }
 
       default:
         return {
-          title: 'Salva il tuo progresso',
-          subtitle: 'Account opzionale ma utile',
-          description: 'Crea un account per non perdere il tuo percorso educativo.',
+          title: 'Account educativo disponibile',
+          subtitle: 'Salvataggio progresso opzionale',
+          description: 'Un account educativo opzionale per salvare il tuo percorso di apprendimento e sincronizzare i progressi tra dispositivi.',
+          icon: BrainIcon,
           benefits: [
             'Progresso salvato automaticamente',
-            'Sincronizzazione tra dispositivi',
+            'Sincronizzazione multi-dispositivo',
             'Privacy e sicurezza garantite'
           ],
-          urgency: 'low'
+          urgency: 'low',
+          badgeText: 'Opzionale'
         }
     }
   }
@@ -132,50 +143,85 @@ export function AuthSuggestionPopup({ trigger, onClose }: AuthSuggestionPopupPro
   }
 
   const content = getSuggestionContent()
-  const urgencyColors: Record<string, string> = {
-    low: 'border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950/20',
-    medium: 'border-orange-200 bg-orange-50 dark:border-orange-800 dark:bg-orange-950/20',
-    high: 'border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950/20'
+  const IconComponent = content.icon
+
+  const urgencyStyles: Record<string, { border: string; bg: string; badge: string }> = {
+    low: { 
+      border: 'border-blue-200 dark:border-blue-800', 
+      bg: 'bg-blue-50/50 dark:bg-blue-950/20',
+      badge: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+    },
+    medium: { 
+      border: 'border-orange-200 dark:border-orange-800', 
+      bg: 'bg-orange-50/50 dark:bg-orange-950/20',
+      badge: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200'
+    },
+    high: { 
+      border: 'border-red-200 dark:border-red-800', 
+      bg: 'bg-red-50/50 dark:bg-red-950/20',
+      badge: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+    }
   }
+
+  const styles = urgencyStyles[content.urgency]
 
   return (
     <>
       <Dialog open={true} onOpenChange={() => handleDismiss(false)}>
         <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="sr-only">
+              Suggerimento account - {content.title}
+            </DialogTitle>
+          </DialogHeader>
+
           {/* Close Button */}
           <Button
             variant="ghost"
             size="sm"
             onClick={() => handleDismiss(false)}
-            className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100"
+            className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-primary/50"
+            aria-label="Chiudi suggerimento"
           >
             <X className="h-4 w-4" />
           </Button>
 
-          <div className="space-y-6 pt-6">
+          <div className="space-y-6 pt-2">
             {/* Header */}
-            <div className="text-center space-y-2">
-              <h2 className="text-xl font-semibold">{content.title}</h2>
-              <p className="text-sm text-muted-foreground">{content.subtitle}</p>
+            <div className="flex items-start gap-4">
+              <div className="p-2 rounded-lg bg-primary/10 flex-shrink-0">
+                <IconComponent className="w-5 h-5 text-primary" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <h2 className="text-lg font-semibold">{content.title}</h2>
+                  <Badge 
+                    variant="outline" 
+                    className={`text-xs ${styles.badge}`}
+                  >
+                    {content.badgeText}
+                  </Badge>
+                </div>
+                <p className="text-sm text-muted-foreground">{content.subtitle}</p>
+              </div>
             </div>
 
             {/* Main Content */}
-            <UnifiedCard className={urgencyColors[content.urgency]}>
-              <CardContent className="p-6">
-                <p className="text-sm mb-4">{content.description}</p>
-                
-                <div className="space-y-3">
-                  {content.benefits.map((benefit, index) => (
-                    <div key={index} className="flex items-start gap-3">
-                      <div className="p-1 rounded-full bg-primary/10 flex-shrink-0 mt-0.5">
-                        <div className="w-2 h-2 rounded-full bg-primary" />
-                      </div>
-                      <span className="text-sm">{benefit}</span>
-                    </div>
-                  ))}
+            <div className={`rounded-lg border p-4 ${styles.border} ${styles.bg}`}>
+              <p className="text-sm mb-4 leading-relaxed">{content.description}</p>
+              
+              <div className="space-y-2">
+                <div className="text-xs font-medium text-muted-foreground mb-2">
+                  Vantaggi dell'account:
                 </div>
-              </CardContent>
-            </UnifiedCard>
+                {content.benefits.map((benefit, index) => (
+                  <div key={index} className="flex items-start gap-2">
+                    <div className="w-1 h-1 rounded-full bg-primary mt-2 flex-shrink-0" />
+                    <span className="text-sm leading-relaxed">{benefit}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
 
             {/* Actions */}
             <div className="space-y-3">
@@ -184,32 +230,37 @@ export function AuthSuggestionPopup({ trigger, onClose }: AuthSuggestionPopupPro
                 className="w-full"
                 size="lg"
               >
-                Crea Account (Gratis)
+                Crea Account Educativo
               </Button>
               
-              <div className="flex gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 <Button
                   variant="ghost"
                   onClick={() => handleDismiss(false)}
-                  className="flex-1 text-sm"
+                  className="text-sm"
                 >
-                  Ricordamelo dopo
+                  Ricorda dopo
                 </Button>
                 
                 <Button
                   variant="ghost"
                   onClick={() => handleDismiss(true)}
-                  className="flex-1 text-sm"
+                  className="text-sm"
                 >
-                  Non mostrare più
+                  Non mostrare
                 </Button>
               </div>
             </div>
 
             {/* Educational Note */}
-            <div className="text-xs text-muted-foreground text-center p-3 bg-muted/20 rounded-lg">
-              <strong>Promemoria:</strong> L'account è completamente opzionale. 
-              Puoi continuare a usare Tradelia senza registrarti.
+            <div className="text-xs text-muted-foreground bg-muted/30 rounded-lg p-3 border">
+              <div className="flex items-start gap-2">
+                <WarningIcon className="w-3 h-3 mt-0.5 flex-shrink-0" />
+                <div>
+                  <strong>Principio di trasparenza:</strong> L'account è completamente opzionale. 
+                  Tradelia funziona integralmente anche senza registrazione. Nessuna funzionalità educativa è limitata.
+                </div>
+              </div>
             </div>
           </div>
         </DialogContent>
@@ -220,8 +271,8 @@ export function AuthSuggestionPopup({ trigger, onClose }: AuthSuggestionPopupPro
         open={showAuthModal}
         onClose={() => setShowAuthModal(false)}
         defaultTab="register"
-        title="Salva il tuo progresso"
-        description="Crea un account per non perdere il tuo percorso educativo"
+        title="Crea il tuo account educativo"
+        description="Salva il tuo progresso e sincronizza tra dispositivi"
       />
     </>
   )

@@ -3,7 +3,9 @@ import { UnifiedCard, CardContent } from "@/components/ui/design-system/unified-
 import { ErrorBoundary } from "@/components/ui/error-boundary"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ExternalLink, BookOpen, Shield, Target } from "lucide-react"
+import { ExternalLink, Target } from "lucide-react"
+import { BrainIcon } from "@/components/icons/brain-icon"
+import { WarningIcon } from "@/components/icons/warning-icon"
 import Link from "next/link"
 
 export default function MetodoPage() {
@@ -38,7 +40,7 @@ export default function MetodoPage() {
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
                       <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/30">
-                        <BookOpen className="w-5 h-5 text-green-600 dark:text-green-400" />
+                        <BrainIcon className="w-5 h-5 text-green-600 dark:text-green-400" />
                       </div>
                       <div>
                         <h3 className="text-lg font-semibold text-green-900 dark:text-green-100 mb-2">
@@ -57,7 +59,7 @@ export default function MetodoPage() {
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
                       <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30">
-                        <Shield className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                        <WarningIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                       </div>
                       <div>
                         <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">

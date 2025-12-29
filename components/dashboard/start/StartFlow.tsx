@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { UnifiedCard, CardContent } from '@/components/ui/design-system/unified-card'
 import { Progress } from '@/components/ui/progress'
@@ -9,6 +9,7 @@ import { supabase } from '@/lib/supabase/client'
 import { saveProgressData, getProgressData } from '@/lib/utils/session'
 import { useAuthSuggestions } from '@/components/progressive-auth/AuthSuggestionPopup'
 import { authManager } from '@/lib/auth/supabase-auth'
+import { useStepFocusManagement } from '@/hooks/use-focus-management'
 import type { Database } from '@/lib/supabase/types'
 
 type StartFlowResponse = Database['public']['Tables']['start_flow_responses']['Insert']
@@ -103,8 +104,24 @@ export function StartFlow({ sessionId }: StartFlowProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [pathSuggestion, setPathSuggestion] = useState<ReturnType<typeof getPathSuggestion> | null>(null)
   
+  // Focus management refs
+  const stepContainerRef = useRef<HTMLDivElement>(null)
+  const backButtonRef = useRef<HTMLButtonElement>(null)
+  
+  // Focus management hook
+  const { focusStepContainer, focusBackButton } = useStepFocusManagement()
+  
   // Auth suggestions hook
   const { triggerSuggestion, SuggestionComponent } = useAuthSuggestions()
+
+  // Focus management helper
+  const manageFocus = (step: number) => {
+    if (step === 2) {
+      focusBackButton(backButtonRef)
+    } else {
+      focusStepContainer(stepContainerRef)
+    }
+  }
 
   // Load existing responses if any
   useEffect(() => {
@@ -177,6 +194,7 @@ export function StartFlow({ sessionId }: StartFlowProps) {
 
     setCurrentStep(2)
     setIsLoading(false)
+    manageFocus(2)
   }
 
   const handleCognitiveNeedSelect = async (optionId: string) => {
@@ -212,7 +230,7 @@ export function StartFlow({ sessionId }: StartFlowProps) {
       if (!authManager.isAuthenticated) {
         setTimeout(() => {
           triggerSuggestion('start_flow_complete')
-        }, 2000) // Wait 2 seconds to let user see the results
+        }, 3000) // Increased delay to avoid focus conflicts
       }
     } catch (error) {
       console.warn('Failed to save cognitive need:', error)
@@ -220,11 +238,13 @@ export function StartFlow({ sessionId }: StartFlowProps) {
 
     setCurrentStep(3)
     setIsLoading(false)
+    manageFocus(3)
   }
 
   const goBack = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1)
+      manageFocus(currentStep - 1)
     }
   }
 
@@ -243,140 +263,158 @@ export function StartFlow({ sessionId }: StartFlowProps) {
               {Math.round(progress)}%
             </span>
           </div>
-          <Progress value={progress} className="h-2" />
+          <Progress value={progress} className="h-2" aria-label={`Progresso: ${Math.round(progress)}%`} />
         </div>
 
         {/* Step 1: Mental State */}
         {currentStep === 1 && (
-          <UnifiedCard>
-            <CardContent className="p-8">
-              <h2 className="text-2xl font-semibold mb-2">
-                In questo momento, come ti senti rispetto al mondo crypto?
-              </h2>
-              <p className="text-muted-foreground mb-8">
-                Scegli l'opzione che descrive meglio la tua situazione attuale.
-              </p>
+          <div ref={stepContainerRef} tabIndex={-1} className="focus:outline-none focus-managed">
+            <UnifiedCard>
+              <CardContent className="p-8">
+                <h2 className="text-2xl font-semibold mb-2">
+                  In questo momento, come ti senti rispetto al mondo crypto?
+                </h2>
+                <p className="text-muted-foreground mb-8">
+                  Scegli l'opzione che descrive meglio la tua situazione attuale.
+                </p>
 
-              <div className="space-y-4">
-                {mentalStateOptions.map((option) => (
-                  <button
-                    key={option.id}
-                    onClick={() => handleMentalStateSelect(option.id)}
-                    disabled={isLoading}
-                    className="w-full text-left p-4 rounded-lg border border-border hover:border-primary/50 hover:bg-primary/5 transition-all duration-200 disabled:opacity-50"
-                  >
-                    <div className="font-medium mb-1">{option.label}</div>
-                    <div className="text-sm text-muted-foreground">{option.description}</div>
-                  </button>
-                ))}
-              </div>
-            </CardContent>
-          </UnifiedCard>
+                <div className="space-y-4" role="radiogroup" aria-labelledby="mental-state-question">
+                  {mentalStateOptions.map((option) => (
+                    <button
+                      key={option.id}
+                      onClick={() => handleMentalStateSelect(option.id)}
+                      disabled={isLoading}
+                      className="w-full text-left p-4 rounded-lg border border-border hover:border-primary/50 hover:bg-primary/5 transition-all duration-200 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus-managed"
+                      role="radio"
+                      aria-checked="false"
+                    >
+                      <div className="font-medium mb-1">{option.label}</div>
+                      <div className="text-sm text-muted-foreground">{option.description}</div>
+                    </button>
+                  ))}
+                </div>
+              </CardContent>
+            </UnifiedCard>
+          </div>
         )}
 
         {/* Step 2: Cognitive Need */}
         {currentStep === 2 && (
-          <UnifiedCard>
-            <CardContent className="p-8">
-              <div className="flex items-center gap-4 mb-6">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={goBack}
-                  disabled={isLoading}
-                >
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Indietro
-                </Button>
-              </div>
-
-              <h2 className="text-2xl font-semibold mb-2">
-                Cosa ti serve di più adesso?
-              </h2>
-              <p className="text-muted-foreground mb-8">
-                Seleziona il bisogno che senti più urgente in questo momento.
-              </p>
-
-              <div className="space-y-4">
-                {cognitiveNeedOptions.map((option) => (
-                  <button
-                    key={option.id}
-                    onClick={() => handleCognitiveNeedSelect(option.id)}
+          <div ref={stepContainerRef} tabIndex={-1} className="focus:outline-none focus-managed">
+            <UnifiedCard>
+              <CardContent className="p-8">
+                <div className="flex items-center gap-4 mb-6">
+                  <Button
+                    ref={backButtonRef}
+                    variant="ghost"
+                    size="sm"
+                    onClick={goBack}
                     disabled={isLoading}
-                    className="w-full text-left p-4 rounded-lg border border-border hover:border-primary/50 hover:bg-primary/5 transition-all duration-200 disabled:opacity-50"
+                    className="focus:outline-none focus:ring-2 focus:ring-primary/50 focus-managed"
                   >
-                    <div className="font-medium mb-1">{option.label}</div>
-                    <div className="text-sm text-muted-foreground">{option.description}</div>
-                  </button>
-                ))}
-              </div>
-            </CardContent>
-          </UnifiedCard>
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Indietro
+                  </Button>
+                </div>
+
+                <h2 className="text-2xl font-semibold mb-2">
+                  Cosa ti serve di più adesso?
+                </h2>
+                <p className="text-muted-foreground mb-8">
+                  Seleziona il bisogno che senti più urgente in questo momento.
+                </p>
+
+                <div className="space-y-4" role="radiogroup" aria-labelledby="cognitive-need-question">
+                  {cognitiveNeedOptions.map((option) => (
+                    <button
+                      key={option.id}
+                      onClick={() => handleCognitiveNeedSelect(option.id)}
+                      disabled={isLoading}
+                      className="w-full text-left p-4 rounded-lg border border-border hover:border-primary/50 hover:bg-primary/5 transition-all duration-200 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus-managed"
+                      role="radio"
+                      aria-checked="false"
+                    >
+                      <div className="font-medium mb-1">{option.label}</div>
+                      <div className="text-sm text-muted-foreground">{option.description}</div>
+                    </button>
+                  ))}
+                </div>
+              </CardContent>
+            </UnifiedCard>
+          </div>
         )}
 
         {/* Step 3: Path Suggestion */}
         {currentStep === 3 && pathSuggestion && (
-          <UnifiedCard variant="hero">
-            <CardContent className="p-8">
-              <div className="text-center mb-8">
-                <h2 className="text-2xl font-semibold mb-4">
-                  Da dove iniziare
-                </h2>
-                <p className="text-muted-foreground">
-                  In base a quello che hai indicato, il punto più utile per iniziare è questo:
-                </p>
-              </div>
+          <div ref={stepContainerRef} tabIndex={-1} className="focus:outline-none focus-managed">
+            <UnifiedCard variant="hero">
+              <CardContent className="p-8">
+                <div className="text-center mb-8">
+                  <h2 className="text-2xl font-semibold mb-4">
+                    Da dove iniziare
+                  </h2>
+                  <p className="text-muted-foreground">
+                    In base a quello che hai indicato, il punto più utile per iniziare è questo:
+                  </p>
+                </div>
 
-              {/* Primary Suggestion */}
-              <div className="mb-8">
-                <div className="bg-primary/10 border border-primary/20 rounded-lg p-6 mb-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <ArrowRight className="w-5 h-5 text-primary" />
-                    <span className="font-semibold text-primary">Suggerimento principale</span>
+                {/* Primary Suggestion */}
+                <div className="mb-8">
+                  <div className="bg-primary/10 border border-primary/20 rounded-lg p-6 mb-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <ArrowRight className="w-5 h-5 text-primary" />
+                      <span className="font-semibold text-primary">Suggerimento principale</span>
+                    </div>
+                    <h3 className="text-lg font-medium mb-4">{pathSuggestion.primary}</h3>
+                    <Button 
+                      asChild 
+                      size="lg" 
+                      className="w-full focus:outline-none focus:ring-2 focus:ring-primary/50 focus-managed"
+                    >
+                      <a href={pathSuggestion.primaryHref}>
+                        Inizia da qui
+                      </a>
+                    </Button>
                   </div>
-                  <h3 className="text-lg font-medium mb-4">{pathSuggestion.primary}</h3>
-                  <Button asChild size="lg" className="w-full">
-                    <a href={pathSuggestion.primaryHref}>
-                      Inizia da qui
-                    </a>
+                </div>
+
+                {/* Secondary Suggestions */}
+                <div>
+                  <h4 className="font-medium mb-4 text-muted-foreground">
+                    Altre sezioni utili (link soft):
+                  </h4>
+                  <div className="grid gap-3">
+                    {pathSuggestion.secondary.map((item, index) => (
+                      <a
+                        key={item}
+                        href={pathSuggestion.secondaryHrefs[index]}
+                        className="block p-3 rounded-lg border border-border hover:border-primary/30 hover:bg-primary/5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus-managed"
+                      >
+                        <span className="text-sm font-medium">{item}</span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Restart Option */}
+                <div className="mt-8 pt-6 border-t border-border text-center">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setCurrentStep(1)
+                      setResponses({ session_id: sessionId })
+                      setPathSuggestion(null)
+                      manageFocus(1)
+                    }}
+                    className="focus:outline-none focus:ring-2 focus:ring-primary/50 focus-managed"
+                  >
+                    Ricomincia il percorso
                   </Button>
                 </div>
-              </div>
-
-              {/* Secondary Suggestions */}
-              <div>
-                <h4 className="font-medium mb-4 text-muted-foreground">
-                  Altre sezioni utili (link soft):
-                </h4>
-                <div className="grid gap-3">
-                  {pathSuggestion.secondary.map((item, index) => (
-                    <a
-                      key={item}
-                      href={pathSuggestion.secondaryHrefs[index]}
-                      className="block p-3 rounded-lg border border-border hover:border-primary/30 hover:bg-primary/5 transition-all duration-200"
-                    >
-                      <span className="text-sm font-medium">{item}</span>
-                    </a>
-                  ))}
-                </div>
-              </div>
-
-              {/* Restart Option */}
-              <div className="mt-8 pt-6 border-t border-border text-center">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setCurrentStep(1)
-                    setResponses({ session_id: sessionId })
-                    setPathSuggestion(null)
-                  }}
-                >
-                  Ricomincia il percorso
-                </Button>
-              </div>
-            </CardContent>
-          </UnifiedCard>
+              </CardContent>
+            </UnifiedCard>
+          </div>
         )}
       </div>
 

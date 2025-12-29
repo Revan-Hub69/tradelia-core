@@ -3,7 +3,10 @@ import { UnifiedCard, CardContent } from "@/components/ui/design-system/unified-
 import { ErrorBoundary } from "@/components/ui/error-boundary"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, BookOpen, BarChart3, Shield, CheckSquare, Info, TrendingUp } from "lucide-react"
+import { ArrowRight, CheckSquare, Info, TrendingUp } from "lucide-react"
+import { BrainIcon } from "@/components/icons/brain-icon"
+import { EconomicsIcon } from "@/components/icons/economics-icon"
+import { WarningIcon } from "@/components/icons/warning-icon"
 import Link from "next/link"
 
 export default function DashboardPage() {
@@ -59,7 +62,7 @@ export default function DashboardPage() {
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="p-2 rounded-lg bg-muted group-hover:bg-primary/10 transition-colors">
-                      <BookOpen className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
+                      <BrainIcon className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
                     </div>
                     <Badge variant="outline" className="text-xs">Brevi</Badge>
                   </div>
@@ -80,7 +83,7 @@ export default function DashboardPage() {
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="p-2 rounded-lg bg-muted group-hover:bg-primary/10 transition-colors">
-                      <BarChart3 className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
+                      <EconomicsIcon className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
                     </div>
                     <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">Live</Badge>
                   </div>
@@ -101,7 +104,7 @@ export default function DashboardPage() {
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="p-2 rounded-lg bg-muted group-hover:bg-primary/10 transition-colors">
-                      <Shield className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
+                      <WarningIcon className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
                     </div>
                     <Badge variant="outline" className="text-xs bg-red-50 text-red-700 border-red-200">Importante</Badge>
                   </div>

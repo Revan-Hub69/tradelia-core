@@ -3,7 +3,9 @@ import { UnifiedCard, CardContent } from "@/components/ui/design-system/unified-
 import { ErrorBoundary } from "@/components/ui/error-boundary"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { AlertTriangle, Shield, Eye, Brain } from "lucide-react"
+import { AlertTriangle, Eye } from "lucide-react"
+import { WarningIcon } from "@/components/icons/warning-icon"
+import { BrainIcon } from "@/components/icons/brain-icon"
 import Link from "next/link"
 
 export default function TruffePage() {
@@ -32,10 +34,15 @@ export default function TruffePage() {
             {/* Educational Disclaimer */}
             <div className="mb-12">
               <UnifiedCard className="border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950/20">
-                <CardContent className="p-6 text-center">
-                  <p className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                    📚 Gli esempi servono a riconoscere pattern, non a creare allarmismo.
-                  </p>
+                <CardContent className="p-6">
+                  <div className="flex items-start gap-3">
+                    <div className="p-1.5 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex-shrink-0">
+                      <WarningIcon className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <p className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                      <strong>Nota educativa:</strong> Gli esempi servono a riconoscere pattern ricorrenti, non a creare allarmismo.
+                    </p>
+                  </div>
                 </CardContent>
               </UnifiedCard>
             </div>
@@ -98,7 +105,7 @@ export default function TruffePage() {
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
                     <div className="p-2 rounded-lg bg-yellow-100 dark:bg-yellow-900/30">
-                      <Brain className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+                      <BrainIcon className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
@@ -124,7 +131,7 @@ export default function TruffePage() {
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
                     <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/30">
-                      <Shield className="w-5 h-5 text-green-600 dark:text-green-400" />
+                      <WarningIcon className="w-5 h-5 text-green-600 dark:text-green-400" />
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">

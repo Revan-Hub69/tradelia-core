@@ -131,7 +131,7 @@ const learningPaths = [
     duration: '6-8 hours',
     lessons: 22,
     rating: 4.7,
-    image: '📊',
+    image: 'chart',
     tags: ['Options', 'Greeks', 'Strategies']
   }
 ];

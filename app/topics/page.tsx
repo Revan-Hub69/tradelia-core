@@ -155,17 +155,27 @@ export default function TopicsPage() {
         </p>
         <div className="grid gap-4 md:grid-cols-3">
           <div className="text-center">
-            <div className="text-2xl mb-2">🎯</div>
+            <div className="w-8 h-8 mx-auto mb-2 rounded-lg bg-primary/10 flex items-center justify-center">
+              <div className="w-3 h-3 rounded-full bg-primary"></div>
+            </div>
             <h4 className="font-medium">Focused Learning</h4>
             <p className="text-xs text-muted-foreground">Dive deep into specific topics</p>
           </div>
           <div className="text-center">
-            <div className="text-2xl mb-2">📈</div>
+            <div className="w-8 h-8 mx-auto mb-2 rounded-lg bg-primary/10 flex items-center justify-center">
+              <div className="w-4 h-3 border-l-2 border-b-2 border-primary transform rotate-45"></div>
+            </div>
             <h4 className="font-medium">Progressive Difficulty</h4>
             <p className="text-xs text-muted-foreground">From beginner to advanced</p>
           </div>
           <div className="text-center">
-            <div className="text-2xl mb-2">🔗</div>
+            <div className="w-8 h-8 mx-auto mb-2 rounded-lg bg-primary/10 flex items-center justify-center">
+              <div className="flex gap-1">
+                <div className="w-1 h-1 rounded-full bg-primary"></div>
+                <div className="w-1 h-1 rounded-full bg-primary"></div>
+                <div className="w-1 h-1 rounded-full bg-primary"></div>
+              </div>
+            </div>
             <h4 className="font-medium">Connected Concepts</h4>
             <p className="text-xs text-muted-foreground">See how topics relate to each other</p>
           </div>
