@@ -22,6 +22,23 @@ interface FearGreedResponse {
   error?: string
 }
 
+const COLOR_PALETTE: Record<string, string> = {
+  extreme_fear: 'hsl(var(--error))',
+  fear: 'hsl(var(--warning))',
+  neutral: 'hsl(var(--muted-foreground))',
+  greed: 'hsl(var(--info))',
+  extreme_greed: 'hsl(var(--primary))',
+  default: 'hsl(var(--info))',
+}
+
+const SCALE_LEGEND = [
+  { label: 'Paura estrema (0-25)', key: 'extreme_fear' },
+  { label: 'Paura (26-45)', key: 'fear' },
+  { label: 'Neutrale (46-55)', key: 'neutral' },
+  { label: 'Avidità (56-75)', key: 'greed' },
+  { label: 'Avidità estrema (76-100)', key: 'extreme_greed' },
+]
+
 export function FearGreedWidget() {
   const [data, setData] = useState<FearGreedData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -59,11 +76,11 @@ export function FearGreedWidget() {
   }, [])
 
   const getValueColor = (value: number) => {
-    if (value <= 25) return '#dc2626' // red-600
-    if (value <= 45) return '#ea580c' // orange-600
-    if (value <= 55) return '#ca8a04' // yellow-600
-    if (value <= 75) return '#16a34a' // green-600
-    return '#2563eb' // blue-600
+    if (value <= 25) return COLOR_PALETTE.extreme_fear
+    if (value <= 45) return COLOR_PALETTE.fear
+    if (value <= 55) return COLOR_PALETTE.neutral
+    if (value <= 75) return COLOR_PALETTE.greed
+    return COLOR_PALETTE.extreme_greed
   }
 
   const getClassBadgeVariant = (valueClass: string) => {
@@ -78,9 +95,9 @@ export function FearGreedWidget() {
   }
 
   const getIcon = (value: number) => {
-    if (value <= 45) return <TrendingDown className="h-3 w-3" />
-    if (value <= 55) return <Minus className="h-3 w-3" />
-    return <TrendingUp className="h-3 w-3" />
+    if (value <= 45) return <TrendingDown className="h-3 w-3" aria-hidden="true" />
+    if (value <= 55) return <Minus className="h-3 w-3" aria-hidden="true" />
+    return <TrendingUp className="h-3 w-3" aria-hidden="true" />
   }
 
   const formatTimestamp = (timestamp: string) => {
@@ -98,7 +115,7 @@ export function FearGreedWidget() {
   }
 
   // Gauge component
-  const GaugeChart = ({ value }: { value: number }) => {
+  const GaugeChart = ({ value, classification }: { value: number; classification: string }) => {
     const radius = 45
     const strokeWidth = 8
     const normalizedRadius = radius - strokeWidth * 2
@@ -106,14 +123,19 @@ export function FearGreedWidget() {
     const strokeDasharray = `${circumference} ${circumference}`
     const strokeDashoffset = circumference - (value / 100) * circumference
     const color = getValueColor(value)
+    const ariaDescription = `Indice Fear & Greed a ${value} su 100, livello ${classification}.`
 
     return (
-      <div className="relative w-24 h-24 flex items-center justify-center">
+      <div
+        className="relative w-24 h-24 flex items-center justify-center"
+        role="img"
+        aria-label={ariaDescription}
+      >
         <svg
           height={radius * 2}
           width={radius * 2}
           className="transform -rotate-90"
-        >
+          >
           {/* Background circle */}
           <circle
             stroke="#e5e7eb"
@@ -192,19 +214,20 @@ export function FearGreedWidget() {
   }
 
   return (
-    <Card className="w-full max-w-sm hover:shadow-lg transition-shadow duration-300">
+    <Card className="w-full max-w-sm hover:shadow-lg transition-shadow duration-300" role="region" aria-label="Indicatore Fear & Greed">
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
           Fear & Greed Index
+          <span className="sr-only">{`Valore corrente ${data.value} su 100 (${data.value_classification}).`}</span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="pt-0">
+      <CardContent className="pt-0 space-y-4">
         <div className="flex items-center gap-4">
           {/* Gauge Chart */}
-          <GaugeChart value={data.value} />
+          <GaugeChart value={data.value} classification={data.value_classification} />
           
           {/* Info Section */}
-          <div className="flex-1 space-y-2">
+          <div className="flex-1 space-y-2" aria-live="polite">
             <div>
               <Badge 
                 variant={getClassBadgeVariant(data.value_class)} 
@@ -227,11 +250,24 @@ export function FearGreedWidget() {
           </div>
         </div>
         
-        {/* Scale indicators */}
-        <div className="mt-3 flex justify-between text-xs text-muted-foreground">
-          <span>0</span>
-          <span className="text-center">Paura ← → Avidità</span>
-          <span>100</span>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-xs text-muted-foreground" aria-hidden="true">
+            <span>0</span>
+            <span className="text-center">Paura ← → Avidità</span>
+            <span>100</span>
+          </div>
+          <div className="grid grid-cols-2 gap-2" aria-label="Legenda livelli sentiment">
+            {SCALE_LEGEND.map((item) => (
+              <div key={item.key} className="flex items-center gap-2 text-xs text-muted-foreground">
+                <span
+                  className="h-3 w-3 rounded-full border border-border"
+                  style={{ backgroundColor: COLOR_PALETTE[item.key] ?? COLOR_PALETTE.default }}
+                  aria-hidden="true"
+                />
+                <span>{item.label}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </CardContent>
     </Card>

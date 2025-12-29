@@ -76,7 +76,7 @@ export function AppSidebar({ className, ...props }: AppSidebarProps) {
 
   return (
     <div className={cn("pb-12", className)} {...props}>
-      <div className="space-y-4 py-4">
+      <nav className="space-y-4 py-4" aria-label="Navigazione dashboard">
         <div className="px-3 py-2">
           <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
             Tradelia
@@ -93,15 +93,20 @@ export function AppSidebar({ className, ...props }: AppSidebarProps) {
                       <Button
                         variant="ghost"
                         className="w-full justify-between"
+                        aria-expanded={openItems.includes(item.title)}
+                        aria-controls={`${item.title}-submenu`}
                       >
                         <div className="flex items-center">
                           <item.icon className="mr-2 h-4 w-4" />
                           {item.title}
                         </div>
-                        <ChevronDown className="h-4 w-4" />
+                        <ChevronDown className="h-4 w-4" aria-hidden="true" />
                       </Button>
                     </CollapsibleTrigger>
-                    <CollapsibleContent className="space-y-1">
+                    <CollapsibleContent
+                      className="space-y-1"
+                      id={`${item.title}-submenu`}
+                    >
                       {item.items.map((subItem) => (
                         <Button
                           key={subItem.title}
@@ -137,8 +142,7 @@ export function AppSidebar({ className, ...props }: AppSidebarProps) {
             ))}
           </div>
         </div>
-
-      </div>
+      </nav>
     </div>
   );
 }

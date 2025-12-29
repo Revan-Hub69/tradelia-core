@@ -2,6 +2,9 @@
 const nextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
+  eslint: {
+    dirs: ["app", "components", "hooks", "lib", "docs", "supabase"],
+  },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },

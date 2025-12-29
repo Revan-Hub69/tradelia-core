@@ -198,6 +198,15 @@
     scrollbar-width: thin;
     scrollbar-color: hsl(var(--muted-foreground) / 0.2) transparent;
   }
+
+  /* Skip link helpers */
+  .skip-link {
+    @apply sr-only;
+  }
+
+  .skip-link:focus-visible {
+    @apply not-sr-only;
+  }
   
   /* Global webkit scrollbar - refined and theme-adaptive */
   ::-webkit-scrollbar {
@@ -876,4 +885,31 @@ button:disabled {
 /* Smooth focus transitions */
 *:focus {
   transition: outline-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+@layer components {
+  /* Typographic scale utilities for consistent hierarchy */
+  .heading-1 {
+    @apply font-heading text-4xl sm:text-5xl lg:text-6xl leading-tight tracking-tight text-foreground;
+  }
+
+  .heading-2 {
+    @apply font-heading text-3xl sm:text-4xl leading-tight tracking-tight text-foreground;
+  }
+
+  .heading-3 {
+    @apply font-heading text-2xl sm:text-3xl leading-snug tracking-tight text-foreground;
+  }
+
+  .body-lg {
+    @apply text-lg sm:text-xl leading-relaxed text-foreground;
+  }
+
+  .body-base {
+    @apply text-base leading-relaxed text-foreground;
+  }
+
+  .body-muted {
+    @apply text-base leading-relaxed text-muted-foreground;
+  }
 }

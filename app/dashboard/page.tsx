@@ -23,12 +23,12 @@ export default function DashboardPage() {
                 Dashboard Tradelia
               </div>
               
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6 leading-tight">
+              <h1 className="heading-1 mb-6">
                 Tradelia
                 <span className="block text-primary">Educazione Crypto Antifuffa</span>
               </h1>
               
-              <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto px-4">
+              <p className="body-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto px-4">
                 "Non dice cosa fare. Dice cosa stai guardando."
               </p>
             </header>

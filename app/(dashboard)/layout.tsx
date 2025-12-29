@@ -27,6 +27,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             variant="outline"
             size="icon"
             className="md:hidden fixed top-4 left-4 z-40"
+            aria-label="Apri il menu di navigazione"
           >
             <Menu className="h-4 w-4" />
           </Button>

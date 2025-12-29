@@ -96,6 +96,12 @@ export default function RootLayout({
   return (
     <html lang="it" className={`${inter.variable} ${ibmPlexSans.variable}`} suppressHydrationWarning>
       <body className="bg-muted/20 text-foreground antialiased font-sans">
+        <a
+          href="#main-content"
+          className="skip-link sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2 focus:rounded-md focus:bg-background focus:text-foreground focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
+        >
+          Salta al contenuto principale
+        </a>
         <StructuredData />
         <ThemeProvider
           attribute="class"
@@ -104,7 +110,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AppProviders>
-            {children}
+            <div id="main-content" role="main" tabIndex={-1} className="min-h-screen focus:outline-none">
+              {children}
+            </div>
             <Toaster richColors position="bottom-right" />
           </AppProviders>
         </ThemeProvider>
