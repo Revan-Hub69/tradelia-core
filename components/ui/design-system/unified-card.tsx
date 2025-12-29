@@ -11,9 +11,9 @@ export function UnifiedCard({ variant = 'standard', children, className }: Unifi
   const baseStyles = 'bg-card rounded-xl transition-colors duration-150'
   
   const variantStyles = {
-    standard: 'border border-border p-6 hover:border-border-strong',
-    elevated: 'border border-border p-8',
-    hero: 'border-2 border-border p-12'
+    standard: 'border border-border p-4 sm:p-6 hover:border-border-strong',
+    elevated: 'border border-border p-6 sm:p-8',
+    hero: 'border-2 border-border p-8 sm:p-12'
   }
 
   return (

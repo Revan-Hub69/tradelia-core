@@ -33,14 +33,14 @@ export default function FinalCTANew() {
           <div className="text-center space-y-6">
             <div className="flex items-center justify-center gap-6 text-sm text-foreground">
               {HOMEPAGE_CONTENT.footer.links.map((link, index) => (
-                <>
-                  <Link key={link.href} href={link.href} className="link-footer">
+                <div key={link.href} className="flex items-center gap-6">
+                  <Link href={link.href} className="link-footer">
                     {link.label}
                   </Link>
                   {index < HOMEPAGE_CONTENT.footer.links.length - 1 && (
                     <span className="text-muted-foreground">•</span>
                   )}
-                </>
+                </div>
               ))}
             </div>
             
