@@ -18,7 +18,7 @@ export default function FinalCTANew() {
           </p>
           
           <Button asChild size="lg" className="px-8 py-6 text-base font-semibold">
-            <Link href="/dashboard">
+            <Link href="/dashboard/start">
               Inizia dal primo passo
             </Link>
           </Button>

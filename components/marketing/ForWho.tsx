@@ -1,5 +1,7 @@
 import { SectionLayout } from "@/components/ui/design-system/section-layout"
 import { UnifiedCard, CardContent } from "@/components/ui/design-system/unified-card"
+import { CheckIcon } from "@/components/icons/check-icon"
+import { CrossIcon } from "@/components/icons/cross-icon"
 
 export default function ForWho() {
   return (
@@ -13,7 +15,10 @@ export default function ForWho() {
         <div className="grid md:grid-cols-2 gap-6 mb-12">
           <UnifiedCard className="text-left">
             <CardContent className="p-6">
-              <h3 className="font-semibold text-foreground mb-4">✅ Per te se:</h3>
+              <div className="flex items-center gap-3 mb-4">
+                <CheckIcon className="w-5 h-5" />
+                <h3 className="font-semibold text-foreground">Per te se:</h3>
+              </div>
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
                   <div className="w-2 h-2 rounded-full bg-success mt-2 flex-shrink-0"></div>
@@ -37,7 +42,10 @@ export default function ForWho() {
           
           <UnifiedCard className="text-left">
             <CardContent className="p-6">
-              <h3 className="font-semibold text-foreground mb-4">❌ Non per te se:</h3>
+              <div className="flex items-center gap-3 mb-4">
+                <CrossIcon className="w-5 h-5" />
+                <h3 className="font-semibold text-foreground">Non per te se:</h3>
+              </div>
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
                   <div className="w-2 h-2 rounded-full bg-error mt-2 flex-shrink-0"></div>

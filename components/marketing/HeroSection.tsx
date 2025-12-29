@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { SectionLayout } from "@/components/ui/design-system/section-layout"
 
 export default function HeroSection() {
@@ -64,7 +63,7 @@ export default function HeroSection() {
           {/* Single CTA */}
           <div className="pt-8">
             <Button asChild size="lg" className="px-8 py-6 text-base font-semibold">
-              <Link href="/dashboard">
+              <Link href="/dashboard/start">
                 Inizia dal primo passo
               </Link>
             </Button>
