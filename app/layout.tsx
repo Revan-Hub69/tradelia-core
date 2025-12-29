@@ -38,6 +38,15 @@ export const metadata: Metadata = {
   publisher: "Tradelia",
   category: "Education",
   classification: "Financial Education",
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: '48x48', type: 'image/x-icon' },
+      { url: '/favicon.svg', type: 'image/svg+xml' }
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }
+    ]
+  },
   robots: {
     index: true,
     follow: true,

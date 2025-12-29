@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SectionLayout } from "@/components/ui/design-system/section-layout"
+import { LogoIcon } from "@/components/icons/logo-icon";
 import { HOMEPAGE_CONTENT, NAVIGATION } from "@/lib/constants/homepage-content";
 
 export default function FinalCTANew() {
@@ -28,33 +29,45 @@ export default function FinalCTANew() {
       </SectionLayout>
 
       {/* Footer */}
-      <footer className="border-t bg-background py-12">
-        <div className="mx-auto max-w-5xl px-6">
-          <div className="text-center space-y-6">
-            <div className="flex items-center justify-center gap-6 text-sm text-foreground">
-              {HOMEPAGE_CONTENT.footer.links.map((link, index) => (
-                <div key={link.href} className="flex items-center gap-6">
-                  <Link href={link.href} className="link-footer">
-                    {link.label}
-                  </Link>
-                  {index < HOMEPAGE_CONTENT.footer.links.length - 1 && (
-                    <span className="text-muted-foreground">•</span>
-                  )}
-                </div>
+      <footer className="border-t bg-background">
+        <div className="container mx-auto px-4 py-6 max-w-7xl">
+          
+          {/* Single Row Layout */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            
+            {/* Brand */}
+            <div className="flex items-center space-x-2">
+              <LogoIcon className="h-5 w-5 text-primary" />
+              <div>
+                <span className="text-sm font-semibold">Tradelia</span>
+                <p className="text-xs text-muted-foreground">Educazione al rischio</p>
+              </div>
+            </div>
+
+            {/* Links - Horizontal */}
+            <nav className="flex flex-wrap gap-6">
+              {HOMEPAGE_CONTENT.footer.links.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {link.label}
+                </Link>
               ))}
+            </nav>
+
+            {/* Copyright */}
+            <div className="text-sm text-muted-foreground">
+              © {new Date().getFullYear()} Tradelia
             </div>
-            
-            <div className="pt-6 border-t border-border">
-              <p className="text-sm text-foreground leading-relaxed max-w-3xl mx-auto">
-                <strong className="font-semibold">Disclaimer:</strong> {HOMEPAGE_CONTENT.footer.disclaimer}
-              </p>
-            </div>
-            
-            <div className="pt-4">
-              <p className="text-xs text-muted-foreground">
-                {HOMEPAGE_CONTENT.footer.copyright}
-              </p>
-            </div>
+          </div>
+
+          {/* Disclaimer - Separate row */}
+          <div className="mt-4 pt-4 border-t border-border">
+            <p className="text-xs text-muted-foreground text-center leading-relaxed">
+              <strong>Disclaimer:</strong> {HOMEPAGE_CONTENT.footer.disclaimer}
+            </p>
           </div>
         </div>
       </footer>

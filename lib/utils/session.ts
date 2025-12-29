@@ -53,11 +53,22 @@ class TradeliaDB {
       const transaction = this.db!.transaction([store], 'readwrite')
       const objectStore = transaction.objectStore(store)
       
-      const data = {
-        key,
-        value,
-        created_at: new Date().toISOString(),
-        expires_at: new Date(Date.now() + expiresInDays * 24 * 60 * 60 * 1000).toISOString()
+      // Adapt data structure based on store type
+      let data: any
+      if (store === 'sessions') {
+        data = {
+          id: key,  // sessions store uses 'id' as keyPath
+          value: value || {},
+          created_at: new Date().toISOString(),
+          expires_at: new Date(Date.now() + expiresInDays * 24 * 60 * 60 * 1000).toISOString()
+        }
+      } else {
+        data = {
+          key: key,  // preferences and temp_data use 'key' as keyPath
+          value: value || {},
+          created_at: new Date().toISOString(),
+          expires_at: new Date(Date.now() + expiresInDays * 24 * 60 * 60 * 1000).toISOString()
+        }
       }
       
       const request = objectStore.put(data)
@@ -73,7 +84,11 @@ class TradeliaDB {
     return new Promise((resolve, reject) => {
       const transaction = this.db!.transaction([store], 'readonly')
       const objectStore = transaction.objectStore(store)
-      const request = objectStore.get(key)
+      
+      // Use the correct key based on store type
+      // sessions store uses 'id' as keyPath, others use 'key'
+      const lookupKey = store === 'sessions' ? key : key
+      const request = objectStore.get(lookupKey)
       
       request.onerror = () => reject(request.error)
       request.onsuccess = () => {
@@ -84,7 +99,7 @@ class TradeliaDB {
         }
         
         // Check if expired
-        if (new Date(result.expires_at) < new Date()) {
+        if (result.expires_at && new Date(result.expires_at) < new Date()) {
           this.delete(store, key) // Clean up expired data
           resolve(null)
           return
@@ -102,7 +117,11 @@ class TradeliaDB {
     return new Promise((resolve, reject) => {
       const transaction = this.db!.transaction([store], 'readwrite')
       const objectStore = transaction.objectStore(store)
-      const request = objectStore.delete(key)
+      
+      // Use the correct key based on store type
+      // sessions store uses 'id' as keyPath, others use 'key'
+      const lookupKey = store === 'sessions' ? key : key
+      const request = objectStore.delete(lookupKey)
       request.onerror = () => reject(request.error)
       request.onsuccess = () => resolve()
     })
