@@ -25,7 +25,10 @@ export default function WhatYouGet() {
       <div className="grid gap-6 md:grid-cols-2">
         <UnifiedCard variant="standard" className="border-success/30">
           <CardHeader>
-            <CardTitle className="text-success">✓ Trovi</CardTitle>
+            <CardTitle className="flex items-center gap-2 text-success">
+              <CheckIcon className="h-5 w-5" />
+              Trovi
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2">
@@ -41,7 +44,10 @@ export default function WhatYouGet() {
         
         <UnifiedCard variant="standard" className="border-warning/20 bg-warning/5">
           <CardHeader>
-            <CardTitle className="text-foreground">✗ Non trovi</CardTitle>
+            <CardTitle className="flex items-center gap-2 text-foreground">
+              <CrossIcon className="h-5 w-5" />
+              Non trovi
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2">

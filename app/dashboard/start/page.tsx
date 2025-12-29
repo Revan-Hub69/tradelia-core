@@ -6,54 +6,98 @@ import Link from "next/link"
 export default function StartPage() {
   return (
     <div className="min-h-screen bg-background">
-      <SectionLayout className="py-16">
-        <div className="mx-auto max-w-3xl text-center">
+      <SectionLayout className="py-20">
+        <div className="mx-auto max-w-4xl">
           
-          <h1 className="text-4xl font-bold text-foreground mb-6">
-            Prima di tutto, capiamo una cosa.
-          </h1>
-          
-          <div className="max-w-2xl mx-auto space-y-6 mb-12">
-            <p className="text-lg text-foreground leading-relaxed">
-              Nel mondo crypto:
-            </p>
-            
-            <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <div className="w-2 h-2 rounded-full bg-success mt-2 flex-shrink-0"></div>
-                <span className="text-base text-foreground">non serve sapere tutto</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></div>
-                <span className="text-base text-foreground">non serve decidere ora</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-2 h-2 rounded-full bg-warning mt-2 flex-shrink-0"></div>
-                <span className="text-base text-foreground">serve capire come non sbagliare</span>
-              </div>
+          {/* Institutional Header */}
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 text-sm font-medium text-primary mb-6">
+              <div className="w-2 h-2 rounded-full bg-primary"></div>
+              Sistema Educativo Tradelia
             </div>
             
-            <p className="text-lg text-foreground font-medium">
-              Questo percorso inizia da un esempio reale e poi ti guida passo dopo passo.
+            <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-6 leading-tight">
+              Prima di tutto,
+              <span className="block text-primary">capiamo una cosa</span>
+            </h1>
+            
+            <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">
+              Nel mondo crypto non serve sapere tutto subito.
+              <br />
+              Serve capire come non sbagliare.
             </p>
           </div>
           
-          <UnifiedCard className="bg-primary/10 border-primary/20 mb-8">
-            <CardContent className="p-6">
-              <p className="text-base text-muted-foreground mb-4">
-                Nessuna decisione richiesta.
-              </p>
-              <Button asChild size="lg" className="px-8 py-6 text-base font-semibold">
-                <Link href="/learn/fear-greed-basics">
-                  Inizia la prima lezione
-                </Link>
-              </Button>
-            </CardContent>
-          </UnifiedCard>
+          {/* Cognitive Preparation - Institutional Style */}
+          <div className="grid lg:grid-cols-3 gap-8 mb-16">
+            <UnifiedCard className="text-center border-primary/20 bg-primary/5">
+              <CardContent className="p-8">
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                  <div className="w-3 h-3 rounded-full bg-primary"></div>
+                </div>
+                <h3 className="font-semibold text-foreground mb-3">Non serve decidere ora</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Questo percorso non ti chiede scelte operative. Solo comprensione.
+                </p>
+              </CardContent>
+            </UnifiedCard>
+            
+            <UnifiedCard className="text-center border-success/20 bg-success/5">
+              <CardContent className="p-8">
+                <div className="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-4">
+                  <div className="w-3 h-3 rounded-full bg-success"></div>
+                </div>
+                <h3 className="font-semibold text-foreground mb-3">Un passo alla volta</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Ogni lezione dura 3-5 minuti. Un concetto, un errore comune, una regola.
+                </p>
+              </CardContent>
+            </UnifiedCard>
+            
+            <UnifiedCard className="text-center border-warning/20 bg-warning/5">
+              <CardContent className="p-8">
+                <div className="w-12 h-12 rounded-full bg-warning/10 flex items-center justify-center mx-auto mb-4">
+                  <div className="w-3 h-3 rounded-full bg-warning"></div>
+                </div>
+                <h3 className="font-semibold text-foreground mb-3">Nessuna pressione</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Puoi fermarti quando vuoi. Non c'è urgenza, non ci sono scadenze.
+                </p>
+              </CardContent>
+            </UnifiedCard>
+          </div>
           
-          <p className="text-sm text-muted-foreground">
-            Tempo stimato: 3-5 minuti • Un concetto alla volta
-          </p>
+          {/* Single State Transition - Institutional */}
+          <div className="text-center">
+            <UnifiedCard variant="hero" className="bg-gradient-to-br from-primary/5 to-background border-primary/20 max-w-2xl mx-auto">
+              <CardContent className="p-12">
+                <h2 className="text-2xl font-semibold text-foreground mb-4">
+                  Iniziamo dal punto più comune
+                </h2>
+                <p className="text-base text-muted-foreground mb-8 leading-relaxed">
+                  Come l'hype usa numeri e concetti fuori contesto per creare false certezze.
+                </p>
+                
+                <Button asChild size="lg" className="px-10 py-6 text-base font-semibold">
+                  <Link href="/learn/fear-greed-basics">
+                    Inizia la prima lezione
+                  </Link>
+                </Button>
+                
+                <p className="text-xs text-muted-foreground mt-6">
+                  Tempo stimato: 4 minuti • Nessuna registrazione richiesta
+                </p>
+              </CardContent>
+            </UnifiedCard>
+          </div>
+          
+          {/* Institutional Compliance */}
+          <div className="mt-16 pt-8 border-t border-border text-center">
+            <p className="text-sm text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              <strong className="font-medium">Sistema educativo:</strong> Tradelia non fornisce consulenza finanziaria 
+              né raccomandazioni operative. L'obiettivo è sviluppare comprensione e senso critico.
+            </p>
+          </div>
           
         </div>
       </SectionLayout>

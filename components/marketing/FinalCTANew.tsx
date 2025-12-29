@@ -17,11 +17,13 @@ export default function FinalCTANew() {
             Dal punto più comune: come l'hype usa numeri e concetti fuori contesto.
           </p>
           
-          <Button asChild size="lg" className="px-8 py-6 text-base font-semibold">
-            <Link href="/dashboard/start">
-              Inizia dal primo passo
-            </Link>
-          </Button>
+          {/* Repeat CTA - link secondario */}
+          <Link 
+            href="/dashboard/start" 
+            className="inline-flex items-center text-sm font-medium text-primary hover:text-primary/80 transition-colors underline-offset-4 hover:underline"
+          >
+            Inizia dal primo passo
+          </Link>
           
         </div>
       </SectionLayout>

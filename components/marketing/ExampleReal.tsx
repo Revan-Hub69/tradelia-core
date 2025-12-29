@@ -182,7 +182,10 @@ export default function ExampleReal() {
             </p>
             
             <div className="space-y-2">
-              <div className="text-xs text-muted-foreground font-medium mb-2">❌ Non usare per:</div>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium mb-2">
+                <CrossIcon className="h-3 w-3" />
+                Non usare per:
+              </div>
               <div className="flex items-start gap-2 text-sm">
                 <span className="text-muted-foreground">•</span>
                 <span>Prevedere movimenti</span>
