@@ -22,7 +22,12 @@ export async function POST(request: NextRequest) {
     const { value, classification, context } = validationResult.data
     const classificationItalian = getFearGreedClassItalian(classification)
 
-    // Call our custom Tradelia AI
+    // Hardcoded explanation of what the indicator is
+    const indicatorExplanation = `**📊 Cos'è il Fear & Greed Index**
+
+L'indice misura il **sentiment del mercato crypto** su una scala 0-100, analizzando volatilità, volume, social media, dominance e trends. Non è un segnale di trading, ma uno strumento per comprendere la **psicologia collettiva** degli investitori.`
+
+    // Call AI for practical interpretation of the specific value
     const aiResponse = await callTradeliaAI({
       task: 'explain_indicator',
       context: {
@@ -32,23 +37,31 @@ export async function POST(request: NextRequest) {
       }
     })
 
+    // Combine hardcoded + AI interpretation
+    const fullExplanation = `${indicatorExplanation}\n\n${aiResponse.explanation}`
+
     return NextResponse.json({
       success: aiResponse.success,
-      explanation: aiResponse.explanation,
+      explanation: fullExplanation,
       confidence: aiResponse.confidence,
       model: aiResponse.model,
       fallback: aiResponse.fallback,
       provider: 'tradelia-ai',
-      // Add Tradelia branding
-      signature: '🎓 Spiegato da Tradelia AI - Educazione antifuffa',
+      signature: '🎓 Analisi educativa Tradelia AI',
       timestamp: new Date().toISOString()
     })
 
   } catch (error) {
     console.error('Tradelia AI explanation error:', error)
     
-    // Always provide educational fallback
-    const fallbackExplanation = `Il Fear & Greed Index misura le emozioni dominanti nel mercato crypto. È uno strumento educativo per comprendere la psicologia di mercato, non un segnale di trading. Tradelia si impegna a fornire educazione trasparente sui limiti di ogni indicatore.`
+    // Educational fallback
+    const fallbackExplanation = `**📊 Cos'è il Fear & Greed Index**
+
+L'indice misura il sentiment del mercato crypto su una scala 0-100. Non è un segnale di trading, ma uno strumento educativo per comprendere la psicologia di mercato.
+
+**⚠️ Valore attuale: ${body.value}/100**
+
+Questo valore riflette il sentiment collettivo. Ricorda: gli indicatori non predicono il futuro e possono rimanere in zone estreme per periodi prolungati. Usa questo dato per riflettere sui tuoi bias emotivi, non per decisioni operative.`
     
     return NextResponse.json({
       success: true,
@@ -57,8 +70,7 @@ export async function POST(request: NextRequest) {
       model: 'tradelia-fallback',
       fallback: true,
       provider: 'tradelia-ai',
-      signature: '🎓 Spiegato da Tradelia AI - Educazione antifuffa',
-      error: 'AI service temporarily unavailable',
+      signature: '🎓 Analisi educativa Tradelia AI',
       timestamp: new Date().toISOString()
     })
   }

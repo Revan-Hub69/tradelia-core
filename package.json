@@ -15,6 +15,7 @@
     "generate-types": "supabase gen types typescript --project-id $SUPABASE_PROJECT_ID > lib/supabase/types.ts || echo 'Set SUPABASE_PROJECT_ID environment variable'"
   },
   "dependencies": {
+    "@huggingface/inference": "^4.13.5",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-alert-dialog": "^1.1.1",
     "@radix-ui/react-collapsible": "^1.1.0",

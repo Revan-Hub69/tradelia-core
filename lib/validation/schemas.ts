@@ -10,10 +10,13 @@ export const FearGreedRequestSchema = z.object({
     .max(100, 'Value must be between 0 and 100')
     .int('Value must be an integer'),
   classification: z.enum(['extreme_fear', 'fear', 'neutral', 'greed', 'extreme_greed']),
-  context: z.object({
-    timestamp: z.string().optional(),
-    source: z.string().optional()
-  }).optional()
+  context: z.union([
+    z.string(),
+    z.object({
+      timestamp: z.string().optional(),
+      source: z.string().optional()
+    })
+  ]).optional()
 })
 
 export type FearGreedRequest = z.infer<typeof FearGreedRequestSchema>

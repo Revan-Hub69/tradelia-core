@@ -65,8 +65,11 @@ export function AIFearGreedTest() {
         },
         body: JSON.stringify({
           value: data.value,
-          classification: data.value_class,
-          context: 'test'
+          classification: data.value_class, // Send the classification from API
+          context: {
+            timestamp: data.updated_at,
+            source: data.source
+          }
         })
       })
       
@@ -183,8 +186,12 @@ export function AIFearGreedTest() {
             
             <div className="text-xs text-muted-foreground space-y-1">
               <p>Source: {fearGreedData.source}</p>
-              <p>Updated: {new Date(fearGreedData.updated_at).toLocaleString('it-IT')}</p>
-              <p>Next Update: {fearGreedData.metadata.time_until_update}</p>
+              {fearGreedData.updated_at && (
+                <p>Updated: {new Date(fearGreedData.updated_at).toLocaleString('it-IT')}</p>
+              )}
+              {fearGreedData.metadata?.time_until_update && (
+                <p>Next Update: {fearGreedData.metadata.time_until_update}</p>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -199,13 +206,20 @@ export function AIFearGreedTest() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="prose prose-sm max-w-none">
-              <p className="text-foreground leading-relaxed">
-                {aiExplanation.explanation}
-              </p>
-            </div>
+            <div 
+              className="prose prose-sm max-w-none dark:prose-invert"
+              dangerouslySetInnerHTML={{ 
+                __html: aiExplanation.explanation
+                  .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                  .replace(/\n\n/g, '</p><p>')
+                  .replace(/^(.+)$/gm, '<p>$1</p>')
+                  .replace(/<p><\/p>/g, '')
+                  .replace(/- (.*?)(?=\n|$)/g, '<li>$1</li>')
+                  .replace(/(<li>.*<\/li>)/s, '<ul class="list-disc ml-4 space-y-1">$1</ul>')
+              }}
+            />
             
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
+            <div className="flex items-center justify-between text-xs text-muted-foreground pt-4 border-t">
               <div className="flex items-center gap-4">
                 <span>Model: {aiExplanation.model}</span>
                 <span>Confidence: {Math.round(aiExplanation.confidence * 100)}%</span>
@@ -213,10 +227,6 @@ export function AIFearGreedTest() {
                   <Badge variant="outline" className="text-xs">Fallback</Badge>
                 )}
               </div>
-            </div>
-            
-            <div className="text-xs text-muted-foreground italic">
-              {aiExplanation.signature}
             </div>
           </CardContent>
         </Card>
