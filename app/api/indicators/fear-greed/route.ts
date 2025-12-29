@@ -130,9 +130,7 @@ export async function POST() {
       
       const { data: updatedData, error: updateError } = await supabase
         .from('indicators')
-        // @ts-expect-error - Supabase type inference issue with metadata field
         .update(updatePayload)
-        // @ts-expect-error - Supabase type inference issue
         .eq('id', existingData.id)
         .select()
         .single()
@@ -157,7 +155,6 @@ export async function POST() {
       
       const { data: insertedData, error: insertError } = await supabase
         .from('indicators')
-        // @ts-expect-error - Supabase type inference issue with metadata field
         .insert(insertPayload)
         .select()
         .single()
@@ -177,7 +174,6 @@ export async function POST() {
         value: parseInt(fearGreedData.value),
         value_class: getItalianClass(fearGreedData.value_classification),
         timestamp: fearGreedData.timestamp,
-        // @ts-expect-error - Supabase type inference issue
         database_id: savedData.id
       }
     })

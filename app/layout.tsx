@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { AppProviders } from "@/components/providers/AppProviders";
 import { Toaster } from "sonner";
 import { inter, ibmPlexSans } from "@/lib/fonts";
 import { StructuredData } from "@/components/structured-data";
@@ -14,7 +15,7 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://tradelia.com'),
+  metadataBase: new URL('https://tradelia.org'),
   title: {
     default: "Tradelia | Educazione Finanziaria Antifuffa",
     template: "%s | Tradelia"
@@ -74,9 +75,9 @@ export const metadata: Metadata = {
     images: ["/og-image.png"]
   },
   alternates: {
-    canonical: "https://tradelia.com",
+    canonical: "https://tradelia.org",
     languages: {
-      'it-IT': 'https://tradelia.com',
+      'it-IT': 'https://tradelia.org',
     }
   },
   verification: {
@@ -102,8 +103,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
-          <Toaster richColors position="bottom-right" />
+          <AppProviders>
+            {children}
+            <Toaster richColors position="bottom-right" />
+          </AppProviders>
         </ThemeProvider>
       </body>
     </html>

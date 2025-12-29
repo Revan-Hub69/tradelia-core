@@ -6,11 +6,15 @@ import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMe
 import { Separator } from "@/components/ui/separator";
 import { ModeToggle } from "@/components/mode-toggle";
 import { LogoIcon } from "@/components/icons/logo-icon";
-import { Menu } from "lucide-react";
+import { Menu, User, LogOut, Settings, UserCircle } from "lucide-react";
 import Link from "next/link";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { AuthModal } from "@/components/auth/AuthModal";
+import { useAuth } from "@/components/providers/AppProviders";
+import { authManager } from "@/lib/auth/supabase-auth";
 
 const menuSections = [
   {
@@ -104,6 +108,107 @@ const menuSections = [
 
 export function SiteHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const [showAuthModal, setShowAuthModal] = React.useState(false);
+  const [isLoggingOut, setIsLoggingOut] = React.useState(false);
+  const { user, isAuthenticated, isLoading } = useAuth();
+
+  const handleLogout = async () => {
+    if (isLoggingOut) return; // Prevent double-click
+    
+    setIsLoggingOut(true);
+    try {
+      await authManager.logout();
+      // Optional: Show success message or redirect
+      console.log('Logout successful');
+    } catch (error) {
+      console.error('Logout failed:', error);
+      // Optional: Show error message
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
+  const UserMenu = () => {
+    if (isLoading) {
+      return (
+        <Button variant="ghost" size="sm" disabled>
+          <UserCircle className="w-4 h-4 animate-pulse" />
+        </Button>
+      );
+    }
+
+    if (!isAuthenticated || !user) {
+      return (
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={() => setShowAuthModal(true)}
+          className="flex items-center gap-2"
+        >
+          <User className="w-4 h-4" />
+          <span className="hidden sm:inline">Accedi</span>
+        </Button>
+      );
+    }
+
+    return (
+      <div className="flex items-center gap-2">
+        {/* User Info + Dropdown Menu */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" className="flex items-center gap-2 max-w-[200px]">
+              <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <User className="w-3 h-3 text-primary" />
+              </div>
+              <span className="hidden sm:inline truncate text-sm">
+                {user.displayName || user.email.split('@')[0]}
+              </span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <div className="px-2 py-1.5">
+              <p className="text-sm font-medium truncate">{user.displayName || 'Utente'}</p>
+              <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+            </div>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link href="/account/profile" className="flex items-center gap-2">
+                <User className="w-4 h-4" />
+                Profilo
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/account/preferences" className="flex items-center gap-2">
+                <Settings className="w-4 h-4" />
+                Preferenze
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem 
+              onClick={handleLogout} 
+              disabled={isLoggingOut}
+              className="flex items-center gap-2 text-red-600 focus:text-red-600"
+            >
+              <LogOut className={`w-4 h-4 ${isLoggingOut ? 'animate-spin' : ''}`} />
+              {isLoggingOut ? 'Disconnessione...' : 'Esci'}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        
+        {/* Quick Logout Button (fallback) */}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleLogout}
+          disabled={isLoggingOut}
+          className="text-muted-foreground hover:text-red-600 p-1"
+          title="Logout rapido"
+        >
+          <LogOut className={`w-4 h-4 ${isLoggingOut ? 'animate-spin' : ''}`} />
+        </Button>
+      </div>
+    );
+  };
 
   return (
     <>
@@ -204,6 +309,7 @@ export function SiteHeader() {
                 <Link href="/dashboard/start">Inizia Qui</Link>
               </Button>
               <Separator orientation="vertical" className="mx-2 h-6" aria-hidden="true" />
+              <UserMenu />
               <ModeToggle />
             </div>
 
@@ -307,6 +413,67 @@ export function SiteHeader() {
                       Inizia Qui
                     </Link>
                   </Button>
+                  
+                  {/* Mobile Auth */}
+                  <div className="space-y-2">
+                    {isAuthenticated && user ? (
+                      <>
+                        <div className="flex items-center gap-2 p-2 bg-muted/20 rounded-lg">
+                          <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                            <User className="w-3 h-3 text-primary" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium truncate">
+                              {user.displayName || 'Utente'}
+                            </p>
+                            <p className="text-xs text-muted-foreground truncate">
+                              {user.email}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            asChild
+                            className="flex-1"
+                          >
+                            <Link href="/account/profile" onClick={() => setMobileMenuOpen(false)}>
+                              <User className="w-4 h-4 mr-2" />
+                              Profilo
+                            </Link>
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setMobileMenuOpen(false);
+                              handleLogout();
+                            }}
+                            disabled={isLoggingOut}
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          >
+                            <LogOut className={`w-4 h-4 mr-2 ${isLoggingOut ? 'animate-spin' : ''}`} />
+                            {isLoggingOut ? 'Uscita...' : 'Esci'}
+                          </Button>
+                        </div>
+                      </>
+                    ) : (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          setShowAuthModal(true);
+                        }}
+                        className="flex items-center gap-2 w-full justify-center"
+                      >
+                        <User className="w-4 h-4" />
+                        Accedi
+                      </Button>
+                    )}
+                  </div>
+                  
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">Tema</span>
                     <ModeToggle />
@@ -317,6 +484,12 @@ export function SiteHeader() {
           </div>
         </div>
       </header>
+
+      {/* Auth Modal */}
+      <AuthModal
+        open={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+      />
     </>
   );
 }
