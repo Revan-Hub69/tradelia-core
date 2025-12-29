@@ -4,6 +4,8 @@ import { callTradeliaAI } from '@/lib/ai/tradelia-ai'
 import { FearGreedRequestSchema } from '@/lib/validation/schemas'
 
 export async function POST(request: NextRequest) {
+  let requestValue = 0; // Default fallback value
+  
   try {
     // Parse and validate request body
     const body = await request.json()
@@ -20,6 +22,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { value, classification, context } = validationResult.data
+    requestValue = value; // Store for potential use in catch block
     const classificationItalian = getFearGreedClassItalian(classification)
 
     // Hardcoded explanation of what the indicator is
@@ -59,7 +62,7 @@ L'indice misura il **sentiment del mercato crypto** su una scala 0-100, analizza
 
 L'indice misura il sentiment del mercato crypto su una scala 0-100. Non è un segnale di trading, ma uno strumento educativo per comprendere la psicologia di mercato.
 
-**⚠️ Valore attuale: ${body.value}/100**
+**⚠️ Valore attuale: ${requestValue}/100**
 
 Questo valore riflette il sentiment collettivo. Ricorda: gli indicatori non predicono il futuro e possono rimanere in zone estreme per periodi prolungati. Usa questo dato per riflettere sui tuoi bias emotivi, non per decisioni operative.`
     
