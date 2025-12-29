@@ -49,17 +49,21 @@ class TradeliaDB {
     if (!this.db) await this.init()
     if (!this.db) throw new Error('IndexedDB not available')
 
-    const transaction = this.db.transaction([store], 'readwrite')
-    const objectStore = transaction.objectStore(store)
-    
-    const data = {
-      key,
-      value,
-      created_at: new Date().toISOString(),
-      expires_at: new Date(Date.now() + expiresInDays * 24 * 60 * 60 * 1000).toISOString()
-    }
-    
-    await objectStore.put(data)
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction([store], 'readwrite')
+      const objectStore = transaction.objectStore(store)
+      
+      const data = {
+        key,
+        value,
+        created_at: new Date().toISOString(),
+        expires_at: new Date(Date.now() + expiresInDays * 24 * 60 * 60 * 1000).toISOString()
+      }
+      
+      const request = objectStore.put(data)
+      request.onerror = () => reject(request.error)
+      request.onsuccess = () => resolve()
+    })
   }
 
   async get(store: string, key: string): Promise<any> {
@@ -95,18 +99,26 @@ class TradeliaDB {
     if (!this.db) await this.init()
     if (!this.db) return
 
-    const transaction = this.db.transaction([store], 'readwrite')
-    const objectStore = transaction.objectStore(store)
-    await objectStore.delete(key)
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction([store], 'readwrite')
+      const objectStore = transaction.objectStore(store)
+      const request = objectStore.delete(key)
+      request.onerror = () => reject(request.error)
+      request.onsuccess = () => resolve()
+    })
   }
 
   async clear(store: string): Promise<void> {
     if (!this.db) await this.init()
     if (!this.db) return
 
-    const transaction = this.db.transaction([store], 'readwrite')
-    const objectStore = transaction.objectStore(store)
-    await objectStore.clear()
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction([store], 'readwrite')
+      const objectStore = transaction.objectStore(store)
+      const request = objectStore.clear()
+      request.onerror = () => reject(request.error)
+      request.onsuccess = () => resolve()
+    })
   }
 
   async cleanup(): Promise<void> {

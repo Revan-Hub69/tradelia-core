@@ -349,6 +349,20 @@ export function StartFlow({ sessionId }: StartFlowProps) {
           <div ref={stepContainerRef} tabIndex={-1} className="focus:outline-none focus-managed">
             <UnifiedCard variant="hero">
               <CardContent className="p-8">
+                {/* Back Button */}
+                <div className="flex items-center gap-4 mb-6">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={goBack}
+                    disabled={isLoading}
+                    className="focus:outline-none focus:ring-2 focus:ring-primary/50 focus-managed"
+                  >
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Modifica risposta
+                  </Button>
+                </div>
+
                 <div className="text-center mb-8">
                   <h2 className="text-2xl font-semibold mb-4">
                     Da dove iniziare
@@ -397,20 +411,33 @@ export function StartFlow({ sessionId }: StartFlowProps) {
                 </div>
 
                 {/* Restart Option */}
-                <div className="mt-8 pt-6 border-t border-border text-center">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      setCurrentStep(1)
-                      setResponses({ session_id: sessionId })
-                      setPathSuggestion(null)
-                      manageFocus(1)
-                    }}
-                    className="focus:outline-none focus:ring-2 focus:ring-primary/50 focus-managed"
-                  >
-                    Ricomincia il percorso
-                  </Button>
+                <div className="mt-8 pt-6 border-t border-border">
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setCurrentStep(1)
+                        setResponses({ session_id: sessionId })
+                        setPathSuggestion(null)
+                        manageFocus(1)
+                      }}
+                      className="focus:outline-none focus:ring-2 focus:ring-primary/50 focus-managed"
+                    >
+                      Ricomincia il percorso
+                    </Button>
+                    
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      asChild
+                      className="focus:outline-none focus:ring-2 focus:ring-primary/50 focus-managed"
+                    >
+                      <a href="/dashboard">
+                        Esplora tutte le sezioni
+                      </a>
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </UnifiedCard>

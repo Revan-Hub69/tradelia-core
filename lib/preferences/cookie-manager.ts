@@ -4,6 +4,7 @@
  */
 
 import { supabase } from '@/lib/supabase/client'
+import { authManager } from '@/lib/auth/supabase-auth'
 import { getSessionId, savePreferences, getPreferences } from '@/lib/utils/session'
 import type { Json } from '@/lib/supabase/types'
 
@@ -96,24 +97,28 @@ class CookiePreferencesManager {
 
       // Fallback to local storage for guest users
       const sessionId = await getSessionId()
-      if (supabase) {
-        const { data } = await supabase
-          .from('cookie_preferences')
-          .select('*')
-          .eq('session_id', sessionId)
-          .single()
+      if (supabase && authManager.isAuthenticated) {
+        try {
+          const { data } = await supabase
+            .from('cookie_preferences')
+            .select('*')
+            .eq('session_id', sessionId)
+            .single()
 
-        if (data) {
-          return {
-            hasConsented: true,
-            consentDate: data.created_at || new Date().toISOString(),
-            preferences: {
-              essential: data.essential ?? true,
-              functional: data.functional ?? false,
-              analytics: data.analytics ?? false
-            },
-            version: CookiePreferencesManager.CONSENT_VERSION
+          if (data) {
+            return {
+              hasConsented: true,
+              consentDate: data.created_at || new Date().toISOString(),
+              preferences: {
+                essential: data.essential ?? true,
+                functional: data.functional ?? false,
+                analytics: data.analytics ?? false
+              },
+              version: CookiePreferencesManager.CONSENT_VERSION
+            }
           }
+        } catch (supabaseError) {
+          console.warn('Failed to load consent from Supabase:', supabaseError)
         }
       }
 
