@@ -5,16 +5,17 @@ interface SectionLayoutProps {
   children: ReactNode
   className?: string
   background?: 'white' | 'muted'
+  id?: string
 }
 
-export function SectionLayout({ children, className, background = 'white' }: SectionLayoutProps) {
+export function SectionLayout({ children, className, background = 'white', id }: SectionLayoutProps) {
   const bgStyles = {
     white: 'bg-background',
     muted: 'bg-muted'
   }
 
   return (
-    <section className={cn('section-spacing', bgStyles[background], className)}>
+    <section id={id} className={cn('section-spacing', bgStyles[background], className)}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {children}
       </div>

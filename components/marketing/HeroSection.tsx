@@ -50,7 +50,7 @@ export default function HeroSection() {
               </Button>
               
               <Link 
-                href="#come-funziona" 
+                href="#cosa-tradelia" 
                 className="text-sm font-medium text-primary hover:text-primary/80 transition-colors underline-offset-4 hover:underline"
               >
                 {HOMEPAGE_CONTENT.hero.cta.secondary}

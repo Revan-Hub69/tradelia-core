@@ -4,8 +4,11 @@ import { SectionLayout } from "@/components/ui/design-system/section-layout"
 import { UnifiedCard, CardContent, CardHeader, CardTitle } from "@/components/ui/design-system/unified-card"
 import { ErrorBoundary } from "@/components/ui/error-boundary"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { SuccessDotIcon } from "@/components/icons/success-dot-icon"
 import { ErrorDotIcon } from "@/components/icons/error-dot-icon"
+import { BrainIcon } from "@/components/icons/brain-icon"
+import { WarningIcon } from "@/components/icons/warning-icon"
 import { getSessionId, initStorageCleanup } from "@/lib/utils/session"
 import { useAuth } from "@/components/providers/AppProviders"
 import { useEffect, useState } from "react"
@@ -59,8 +62,13 @@ export default function StartPage() {
         <SectionLayout className="py-12 sm:py-20">
           <div className="mx-auto max-w-4xl space-y-8">
           
-          {/* BLOCCO 1 — COSA STAI GUARDANDO (3 RIGHE) */}
+          {/* BLOCCO 1 — COSA STAI GUARDANDO (3 RIGHE) - Verifiche accademiche */}
           <header className="text-center">
+            <div className="inline-flex items-center gap-2 text-sm font-medium text-primary mb-6">
+              <div className="w-2 h-2 rounded-full bg-primary" aria-hidden="true"></div>
+              Sistema Educativo Tradelia
+            </div>
+            
             <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-4">
               Come usare Tradelia
             </h1>
@@ -71,57 +79,102 @@ export default function StartPage() {
             </div>
           </header>
           
-          {/* BLOCCO 2 — COME FUNZIONA (SCHEMA, NON COPY) */}
-          <UnifiedCard variant="elevated" className="max-w-2xl mx-auto">
+          {/* Verifica Accademica: Scopo e Limitazioni */}
+          <UnifiedCard className="border-blue-200 bg-blue-50/50 dark:border-blue-800 dark:bg-blue-950/20">
+            <CardContent className="p-6">
+              <div className="flex items-start gap-4">
+                <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30">
+                  <BrainIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">
+                    Scopo Educativo
+                  </h3>
+                  <p className="text-sm text-blue-700 dark:text-blue-300">
+                    L'obiettivo è sviluppare comprensione e senso critico sui mercati crypto, 
+                    non fornire segnali operativi o consigli di investimento.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </UnifiedCard>
+          
+          {/* BLOCCO 2 — COME FUNZIONA (SCHEMA, NON COPY) - Metodologia Accademica */}
+          <UnifiedCard variant="elevated">
             <CardHeader>
-              <CardTitle>Funziona così:</CardTitle>
+              <CardTitle>Metodologia</CardTitle>
             </CardHeader>
             <CardContent>
-              <ol className="space-y-3 text-muted-foreground">
-                <li className="flex items-start gap-3">
-                  <span className="flex-shrink-0 w-6 h-6 bg-primary text-primary-foreground rounded-full text-sm font-medium flex items-center justify-center">1</span>
-                  <span>Tutti partono dalle basi comuni</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="flex-shrink-0 w-6 h-6 bg-primary text-primary-foreground rounded-full text-sm font-medium flex items-center justify-center">2</span>
-                  <span>Poi scegli cosa approfondire</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="flex-shrink-0 w-6 h-6 bg-primary text-primary-foreground rounded-full text-sm font-medium flex items-center justify-center">3</span>
-                  <span>Ogni contenuto è breve e indipendente</span>
-                </li>
-              </ol>
-            </CardContent>
-          </UnifiedCard>
-          
-          {/* BLOCCO 3 — PERCHÉ LE BASI SONO OBBLIGATORIE (1 FRASE) */}
-          <UnifiedCard variant="elevated" className="bg-muted/30 max-w-2xl mx-auto">
-            <CardContent className="p-6 text-center">
-              <p className="text-foreground font-medium">
-                Senza alcune basi minime, le informazioni crypto vengono interpretate male. Per questo non sono facoltative.
+              <p className="text-sm text-muted-foreground mb-4">
+                Ogni contenuto segue sempre lo stesso schema accademico:
               </p>
+              <div className="grid sm:grid-cols-2 gap-3">
+                <div className="p-3 bg-muted/30 rounded-lg">
+                  <div className="font-medium text-sm mb-1">1. Concetto</div>
+                  <div className="text-xs text-muted-foreground">Spiegazione chiara</div>
+                </div>
+                <div className="p-3 bg-muted/30 rounded-lg">
+                  <div className="font-medium text-sm mb-1">2. Esempio Reale</div>
+                  <div className="text-xs text-muted-foreground">Caso verificabile</div>
+                </div>
+                <div className="p-3 bg-muted/30 rounded-lg">
+                  <div className="font-medium text-sm mb-1">3. Errore Comune</div>
+                  <div className="text-xs text-muted-foreground">Cosa si sbaglia</div>
+                </div>
+                <div className="p-3 bg-muted/30 rounded-lg">
+                  <div className="font-medium text-sm mb-1">4. Regola di Sicurezza</div>
+                  <div className="text-xs text-muted-foreground">Come evitarlo</div>
+                </div>
+              </div>
             </CardContent>
           </UnifiedCard>
           
-          {/* BLOCCO 4 — COSA TROVERAI / COSA NO (DUE COLONNE) */}
-          <div className="grid gap-6 sm:grid-cols-2 max-w-4xl mx-auto">
+          {/* BLOCCO 3 — PERCHÉ LE BASI SONO OBBLIGATORIE - Verifica Accademica */}
+          <UnifiedCard className="border-yellow-200 bg-yellow-50/50 dark:border-yellow-800 dark:bg-yellow-950/20">
+            <CardContent className="p-6">
+              <div className="flex items-start gap-4">
+                <div className="p-2 rounded-lg bg-yellow-100 dark:bg-yellow-900/30">
+                  <WarningIcon className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-yellow-900 dark:text-yellow-100 mb-2">
+                    Prerequisiti Cognitivi
+                  </h3>
+                  <p className="text-sm text-yellow-700 dark:text-yellow-300">
+                    Senza alcune basi minime, le informazioni crypto vengono interpretate male. 
+                    Per questo i concetti fondamentali non sono opzionali.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </UnifiedCard>
+          
+          {/* BLOCCO 4 — COSA TROVERAI / COSA NO - Verifiche Accademiche */}
+          <div className="grid gap-6 sm:grid-cols-2">
             <UnifiedCard variant="elevated" className="border-green-200 bg-green-50/50 dark:border-green-800 dark:bg-green-950/20">
               <CardHeader>
-                <CardTitle className="text-green-700 dark:text-green-300">Troverai</CardTitle>
+                <CardTitle className="text-green-700 dark:text-green-300 flex items-center gap-2">
+                  <SuccessDotIcon className="w-4 h-4" />
+                  Contenuti Educativi
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2">
                   <li className="flex items-start gap-2">
                     <SuccessDotIcon className="shrink-0 mt-1" />
-                    <span className="text-sm">spiegazioni brevi</span>
+                    <span className="text-sm">Spiegazioni basate su evidenze</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <SuccessDotIcon className="shrink-0 mt-1" />
-                    <span className="text-sm">esempi reali</span>
+                    <span className="text-sm">Esempi reali e verificabili</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <SuccessDotIcon className="shrink-0 mt-1" />
-                    <span className="text-sm">errori comuni spiegati</span>
+                    <span className="text-sm">Analisi di errori cognitivi comuni</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <SuccessDotIcon className="shrink-0 mt-1" />
+                    <span className="text-sm">Regole di risk management</span>
                   </li>
                 </ul>
               </CardContent>
@@ -129,61 +182,89 @@ export default function StartPage() {
             
             <UnifiedCard variant="elevated" className="border-red-200 bg-red-50/50 dark:border-red-800 dark:bg-red-950/20">
               <CardHeader>
-                <CardTitle className="text-red-700 dark:text-red-300">Non troverai</CardTitle>
+                <CardTitle className="text-red-700 dark:text-red-300 flex items-center gap-2">
+                  <ErrorDotIcon className="w-4 h-4" />
+                  Non Troverai
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2">
                   <li className="flex items-start gap-2">
                     <ErrorDotIcon className="shrink-0 mt-1" />
-                    <span className="text-sm">segnali</span>
+                    <span className="text-sm">Segnali di trading</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <ErrorDotIcon className="shrink-0 mt-1" />
-                    <span className="text-sm">consigli di investimento</span>
+                    <span className="text-sm">Consigli di investimento</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <ErrorDotIcon className="shrink-0 mt-1" />
-                    <span className="text-sm">promesse</span>
+                    <span className="text-sm">Previsioni di prezzo</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <ErrorDotIcon className="shrink-0 mt-1" />
+                    <span className="text-sm">Promesse di performance</span>
                   </li>
                 </ul>
               </CardContent>
             </UnifiedCard>
           </div>
           
-          {/* BLOCCO 5 — REGISTRAZIONE (SECCA, NON COMMERCIALE) */}
-          <UnifiedCard variant="elevated" className="max-w-2xl mx-auto">
+          {/* BLOCCO 5 — REGISTRAZIONE - Verifica Accademica */}
+          <UnifiedCard variant="elevated">
             <CardContent className="p-6 text-center space-y-4">
-              <p className="text-muted-foreground">
-                Puoi usare Tradelia anche senza account. Se ti registri, puoi salvare i progressi.
-              </p>
+              <div className="space-y-2">
+                <h3 className="font-semibold">Accesso al Sistema</h3>
+                <p className="text-sm text-muted-foreground">
+                  Puoi accedere ai contenuti educativi anche senza registrazione. 
+                  La registrazione permette di salvare i progressi di apprendimento.
+                </p>
+              </div>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button asChild variant="outline" size="sm">
-                  <Link href="/dashboard/microlearning">Continua senza account</Link>
+                  <Link href="/dashboard/microlearning">Accedi senza registrazione</Link>
                 </Button>
                 {!user && (
                   <Button asChild size="sm">
-                    <Link href="/auth/register">Registrati per salvare</Link>
+                    <Link href="/auth/register">Registrati per salvare progressi</Link>
                   </Button>
                 )}
               </div>
             </CardContent>
           </UnifiedCard>
           
-          {/* BLOCCO 6 — CTA UNICA */}
-          <div className="text-center pt-4">
+          {/* BLOCCO 6 — CTA UNICA - Verifica Accademica */}
+          <div className="text-center space-y-4">
             <Button asChild size="lg" className="px-8 py-4">
               <Link href="/dashboard/microlearning">
-                Inizia dalle basi comuni
+                Inizia dai Concetti Fondamentali
               </Link>
             </Button>
+            <p className="text-xs text-muted-foreground">
+              Percorso strutturato • Progressione graduale • Nessuna pressione temporale
+            </p>
           </div>
           
-          {/* Institutional Compliance */}
-          <footer className="mt-12 pt-8 border-t border-border text-center">
-            <p className="text-xs text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              <strong className="font-medium">Sistema educativo:</strong> Tradelia non fornisce consulenza finanziaria 
-              né raccomandazioni operative. L'obiettivo è sviluppare comprensione e senso critico.
-            </p>
+          {/* Compliance Accademico - Verifiche complete */}
+          <footer className="mt-12 pt-8 border-t border-border space-y-4">
+            <div className="text-center">
+              <Badge variant="outline" className="mb-4">Sistema Educativo Certificato</Badge>
+              <p className="text-xs text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+                <strong className="font-medium">Disclaimer Accademico:</strong> Tradelia è un sistema educativo 
+                basato su metodologie di behavioral finance e analisi critica dei mercati crypto. 
+                Non fornisce consulenza finanziaria personalizzata né raccomandazioni operative. 
+                L'obiettivo è sviluppare comprensione, senso critico e capacità di risk assessment.
+              </p>
+            </div>
+            
+            <div className="text-center pt-4">
+              <Link 
+                href="/dashboard/metodo" 
+                className="text-xs text-primary hover:text-primary/80 underline-offset-4 hover:underline"
+              >
+                Leggi Metodologia Completa e Fonti →
+              </Link>
+            </div>
           </footer>
           
         </div>

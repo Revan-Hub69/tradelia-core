@@ -8,7 +8,7 @@ export default function WhatIsTradelia() {
   const { whatWeDo, whatWeDont, howItWorks } = HOMEPAGE_CONTENT.whatIsTradelia;
 
   return (
-    <SectionLayout>
+    <SectionLayout id="cosa-tradelia">
       <SectionHeader 
         title={HOMEPAGE_CONTENT.whatIsTradelia.title}
         subtitle={HOMEPAGE_CONTENT.whatIsTradelia.subtitle}
