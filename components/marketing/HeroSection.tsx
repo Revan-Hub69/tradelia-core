@@ -15,44 +15,49 @@ export default function HeroSection() {
       
       {/* Cognitive Architecture - Balanced */}
       <div className="mx-auto max-w-4xl text-center relative z-10">
-        <div className="space-y-10">
+        <div className="space-y-8">
           
-          {/* Eyebrow label - responsive e discreto */}
-          <div className="eyebrow-label mb-4 sm:mb-6">
-            <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40"></div>
-            <span className="hidden sm:inline">{HOMEPAGE_CONTENT.hero.eyebrowLabel.full}</span>
-            <span className="sm:hidden">{HOMEPAGE_CONTENT.hero.eyebrowLabel.short}</span>
-          </div>
-          
-          {/* Recognition - H1 responsive */}
+          {/* Title - Audit 2025: più corto, più definito */}
           <div className="content-spacing-lg">
-            <h1 className="heading-display px-4 sm:px-0">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight px-4 sm:px-0">
               {HOMEPAGE_CONTENT.hero.title}
             </h1>
             
-            <h2 className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto px-4 sm:px-0">
-              {HOMEPAGE_CONTENT.hero.subtitle.line1}
-              <br className="hidden sm:block" />
-              <span className="text-foreground font-medium">{HOMEPAGE_CONTENT.hero.subtitle.line2}</span>
-            </h2>
+            <div className="max-w-2xl mx-auto px-4 sm:px-0 space-y-4">
+              <p className="text-lg sm:text-xl text-muted-foreground">
+                {HOMEPAGE_CONTENT.hero.subtitle.line1}
+              </p>
+              <p className="text-lg sm:text-xl text-foreground">
+                {HOMEPAGE_CONTENT.hero.subtitle.line2}
+              </p>
+            </div>
           </div>
           
-          {/* Normalization - Responsive */}
-          <div className="max-w-2xl mx-auto px-4 sm:px-0">
-            <p className="text-body-large">
+          {/* Riga di fiducia - Audit: microcopy */}
+          <div className="max-w-lg mx-auto px-4 sm:px-0">
+            <p className="text-sm font-medium text-muted-foreground tracking-wide">
               {HOMEPAGE_CONTENT.hero.description}
             </p>
           </div>
           
-          {/* Single State Transition - Responsive */}
-          <div className="content-spacing pt-4 px-4 sm:px-0">
-            <Button asChild size="lg" className="px-8 sm:px-10 py-4 sm:py-6 text-sm sm:text-base font-semibold w-full sm:w-auto">
-              <Link href={NAVIGATION.dashboard}>
-                {HOMEPAGE_CONTENT.hero.cta.primary}
+          {/* CTA Section - Audit: riduce ansia da commitment */}
+          <div className="content-spacing pt-4 px-4 sm:px-0 space-y-4">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button asChild size="lg" className="px-8 sm:px-10 py-4 sm:py-6 text-sm sm:text-base font-semibold w-full sm:w-auto">
+                <Link href={NAVIGATION.dashboard}>
+                  {HOMEPAGE_CONTENT.hero.cta.primary}
+                </Link>
+              </Button>
+              
+              <Link 
+                href="#come-funziona" 
+                className="text-sm font-medium text-primary hover:text-primary/80 transition-colors underline-offset-4 hover:underline"
+              >
+                {HOMEPAGE_CONTENT.hero.cta.secondary}
               </Link>
-            </Button>
+            </div>
             
-            <p className="text-caption">
+            <p className="text-xs text-muted-foreground leading-relaxed">
               {HOMEPAGE_CONTENT.hero.cta.subtitle}
             </p>
           </div>

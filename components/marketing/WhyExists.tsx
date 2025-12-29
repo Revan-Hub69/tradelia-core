@@ -11,12 +11,12 @@ export default function WhyExists() {
           subtitle={HOMEPAGE_CONTENT.whyExists.subtitle}
         />
         
-        {/* Single focused message */}
-        <UnifiedCard variant="elevated" className="bg-primary/5 border-primary/20 relative">
+        {/* Manifesto - Audit: isolata tipograficamente come divider concettuale */}
+        <UnifiedCard variant="elevated" className="bg-primary/5 border-primary/20 relative mt-8">
           <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-xl" aria-hidden="true"></div>
           
           <CardContent className="p-8">
-            <p className="text-base text-primary font-semibold">
+            <p className="text-lg font-semibold text-primary leading-relaxed">
               {HOMEPAGE_CONTENT.whyExists.message}
             </p>
           </CardContent>
