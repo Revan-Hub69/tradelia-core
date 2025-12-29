@@ -70,9 +70,21 @@ export async function GET() {
   }
 }
 
-// POST - Update Fear & Greed data (for cron job)
-export async function POST() {
+// POST - Update Fear & Greed data (PROTECTED - cron job only)
+export async function POST(request: Request) {
   try {
+    // SECURITY: Protect against abuse
+    const cronSecret = request.headers.get('x-cron-secret')
+    
+    // Check for cron secret (for Vercel Cron or external cron)
+    if (cronSecret !== process.env.CRON_SECRET) {
+      console.warn('Unauthorized POST attempt to fear-greed API')
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+    
     console.log('Updating Fear & Greed data from Alternative.me...')
     
     const supabase = createServerClient()

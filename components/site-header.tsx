@@ -22,84 +22,26 @@ const menuSections = [
     items: [
       {
         title: 'Start · Orientamento',
-        description: 'Capire da dove iniziare, senza decidere nulla',
+        description: 'Capire da dove iniziare',
         href: '/dashboard/start',
-        badge: 'Nuovo'
+        badge: null
       },
       {
         title: 'Microlearning',
-        description: 'Capire prima di credere - Brevi lezioni educative',
+        description: 'Brevi lezioni educative',
         href: '/dashboard/microlearning',
         badge: null
       },
       {
         title: 'Misuratori di Contesto',
-        description: 'Numeri per orientarsi, non per decidere',
+        description: 'Numeri per orientarsi',
         href: '/dashboard/misuratori',
         badge: 'Live'
       },
       {
         title: 'Libreria Truffe',
-        description: 'Riconoscere prima di cadere - Schemi ricorrenti',
+        description: 'Riconoscere schemi ricorrenti',
         href: '/dashboard/truffe',
-        badge: 'Importante'
-      }
-    ]
-  },
-  {
-    title: 'Strumenti',
-    items: [
-      {
-        title: 'Check Piattaforme',
-        description: 'Checklist per valutare piattaforme crypto',
-        href: '/dashboard/check-piattaforme',
-        badge: 'Fase 2'
-      },
-      {
-        title: 'Fear & Greed Index',
-        description: 'Sentiment di mercato con analisi AI',
-        href: '/dashboard/misuratori/fear-greed',
-        badge: 'AI'
-      },
-      {
-        title: 'Metodo & Fonti',
-        description: 'Come funziona Tradelia, trasparenza completa',
-        href: '/dashboard/metodo',
-        badge: 'Fondamentale'
-      },
-      {
-        title: 'Progresso Personale',
-        description: 'Il tuo percorso di apprendimento',
-        href: '/dashboard/progresso',
-        badge: null
-      }
-    ]
-  },
-  {
-    title: 'Risorse',
-    items: [
-      {
-        title: 'Biblioteca Educativa',
-        description: 'Contenuti educativi e materiali di studio',
-        href: '/library',
-        badge: null
-      },
-      {
-        title: 'Principi Antifuffa',
-        description: 'Metodologia e approccio educativo',
-        href: '/about',
-        badge: 'Fondamentale'
-      },
-      {
-        title: 'Glossario Crypto',
-        description: 'Termini e concetti spiegati chiaramente',
-        href: '/library/glossary',
-        badge: null
-      },
-      {
-        title: 'FAQ',
-        description: 'Domande frequenti su indicatori e metodologia',
-        href: '/faq',
         badge: null
       }
     ]
@@ -195,17 +137,7 @@ export function SiteHeader() {
           </DropdownMenuContent>
         </DropdownMenu>
         
-        {/* Quick Logout Button (fallback) */}
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleLogout}
-          disabled={isLoggingOut}
-          className="text-muted-foreground hover:text-red-600 p-1"
-          title="Logout rapido"
-        >
-          <LogOut className={`w-4 h-4 ${isLoggingOut ? 'animate-spin' : ''}`} />
-        </Button>
+        {/* Quick Logout Button - REMOVED REDUNDANCY */}
       </div>
     );
   };
@@ -231,14 +163,11 @@ export function SiteHeader() {
               <NavigationMenuList>
                 <NavigationMenuItem>
                   <NavigationMenuTrigger className="bg-transparent">
-                    <span className="flex items-center gap-1">
-                      Dashboard
-                      <Badge variant="secondary" className="ml-1 text-xs">Crypto</Badge>
-                    </span>
+                    Dashboard
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <div className="w-[600px] p-4">
-                      <div className="grid grid-cols-2 gap-4">
+                    <div className="w-[500px] p-4">
+                      <div className="grid grid-cols-1 gap-3">
                         {menuSections[0].items.map((item) => (
                           <Link key={item.title} href={item.href} className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                             <div className="flex items-center gap-2">
@@ -260,38 +189,11 @@ export function SiteHeader() {
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent">
-                    Strumenti
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <div className="w-[600px] p-4">
-                      <div className="grid grid-cols-2 gap-4">
-                        {menuSections[1].items.map((item) => (
-                          <Link key={item.title} href={item.href} className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                            <div className="flex items-center gap-2">
-                              <div className="text-sm font-medium leading-none">{item.title}</div>
-                              {item.badge && (
-                                <Badge variant="outline" className="text-xs">
-                                  {item.badge}
-                                </Badge>
-                              )}
-                            </div>
-                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              {item.description}
-                            </p>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-
-                <NavigationMenuItem>
                   <NavigationMenuLink
-                    href="/dashboard/start"
+                    href="/dashboard/metodo"
                     className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
                   >
-                    Inizia Qui
+                    Metodo
                   </NavigationMenuLink>
                 </NavigationMenuItem>
               </NavigationMenuList>
@@ -302,9 +204,6 @@ export function SiteHeader() {
           <div className="flex items-center space-x-4">
             {/* Desktop Actions */}
             <div className="hidden md:flex md:items-center md:space-x-2">
-              <Button asChild variant="ghost" size="sm" aria-label="Accedi alla dashboard">
-                <Link href="/dashboard">Dashboard</Link>
-              </Button>
               <Button asChild variant="premium" size="sm" aria-label="Inizia il percorso di orientamento">
                 <Link href="/dashboard/start">Inizia Qui</Link>
               </Button>
@@ -362,44 +261,15 @@ export function SiteHeader() {
                       </div>
 
                       <div>
-                        <h3 className="mb-3 text-sm font-medium text-muted-foreground">Strumenti</h3>
+                        <h3 className="mb-3 text-sm font-medium text-muted-foreground">Altro</h3>
                         <div className="space-y-2">
-                          {menuSections[1].items.map((item) => (
-                            <Link
-                              key={item.title}
-                              href={item.href}
-                              className="flex items-center justify-between rounded-md p-2 text-sm hover:bg-accent transition-colors"
-                              onClick={() => setMobileMenuOpen(false)}
-                            >
-                              <span>{item.title}</span>
-                              {item.badge && (
-                                <Badge variant="outline" className="text-xs">
-                                  {item.badge}
-                                </Badge>
-                              )}
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <h3 className="mb-3 text-sm font-medium text-muted-foreground">Risorse</h3>
-                        <div className="space-y-2">
-                          {menuSections[2].items.map((item) => (
-                            <Link
-                              key={item.title}
-                              href={item.href}
-                              className="flex items-center justify-between rounded-md p-2 text-sm hover:bg-accent transition-colors"
-                              onClick={() => setMobileMenuOpen(false)}
-                            >
-                              <span>{item.title}</span>
-                              {item.badge && (
-                                <Badge variant="outline" className="text-xs">
-                                  {item.badge}
-                                </Badge>
-                              )}
-                            </Link>
-                          ))}
+                          <Link
+                            href="/dashboard/metodo"
+                            className="flex items-center justify-between rounded-md p-2 text-sm hover:bg-accent transition-colors"
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            <span>Metodo & Fonti</span>
+                          </Link>
                         </div>
                       </div>
                     </nav>

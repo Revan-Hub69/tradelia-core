@@ -45,6 +45,11 @@ const mentalStateOptions = [
 // Step 2: Cognitive Need Options
 const cognitiveNeedOptions = [
   {
+    id: 'just_understand',
+    label: 'Solo capire, senza fare nulla',
+    description: 'Voglio solo comprendere meglio questo mondo, senza pressioni operative'
+  },
+  {
     id: 'understand_basics',
     label: 'Capire le basi, con calma',
     description: 'Voglio una comprensione solida dei concetti fondamentali'
@@ -58,11 +63,6 @@ const cognitiveNeedOptions = [
     id: 'recognize_scams',
     label: 'Riconoscere truffe e schemi ricorrenti',
     description: 'Voglio sviluppare la capacità di identificare pattern fraudolenti'
-  },
-  {
-    id: 'evaluate_platforms',
-    label: 'Capire come valutare una piattaforma (disponibile più avanti)',
-    description: 'Voglio imparare a valutare la sicurezza e affidabilità delle piattaforme'
   }
 ]
 
@@ -84,6 +84,15 @@ const getPathSuggestion = (mentalState: string, cognitiveNeed: string) => {
       primaryHref: '/dashboard/misuratori',
       secondary: ['Microlearning', 'Libreria truffe'],
       secondaryHrefs: ['/dashboard/microlearning', '/dashboard/truffe']
+    }
+  }
+
+  if (cognitiveNeed === 'just_understand') {
+    return {
+      primary: 'Microlearning · Capire senza pressioni',
+      primaryHref: '/dashboard/microlearning',
+      secondary: ['Misuratori di contesto', 'Metodo & Fonti'],
+      secondaryHrefs: ['/dashboard/misuratori', '/dashboard/metodo']
     }
   }
   
@@ -259,11 +268,8 @@ export function StartFlow({ sessionId }: StartFlowProps) {
             <span className="text-sm text-muted-foreground">
               Step {Math.min(currentStep, 3)} di 3
             </span>
-            <span className="text-sm text-muted-foreground">
-              {Math.round(progress)}%
-            </span>
           </div>
-          <Progress value={progress} className="h-2" aria-label={`Progresso: ${Math.round(progress)}%`} />
+          <Progress value={progress} className="h-2" aria-label={`Step ${Math.min(currentStep, 3)} di 3`} />
         </div>
 
         {/* Step 1: Mental State */}
@@ -271,14 +277,15 @@ export function StartFlow({ sessionId }: StartFlowProps) {
           <div ref={stepContainerRef} tabIndex={-1} className="focus:outline-none focus-managed">
             <UnifiedCard>
               <CardContent className="p-8">
-                <h2 className="text-2xl font-semibold mb-2">
+                <h2 className="text-2xl font-semibold mb-2" id="mental-state-question">
                   In questo momento, come ti senti rispetto al mondo crypto?
                 </h2>
                 <p className="text-muted-foreground mb-8">
                   Scegli l'opzione che descrive meglio la tua situazione attuale.
                 </p>
 
-                <div className="space-y-4" role="radiogroup" aria-labelledby="mental-state-question">
+                <fieldset className="space-y-4">
+                  <legend className="sr-only">Stato mentale rispetto al mondo crypto</legend>
                   {mentalStateOptions.map((option) => (
                     <button
                       key={option.id}
@@ -292,7 +299,7 @@ export function StartFlow({ sessionId }: StartFlowProps) {
                       <div className="text-sm text-muted-foreground">{option.description}</div>
                     </button>
                   ))}
-                </div>
+                </fieldset>
               </CardContent>
             </UnifiedCard>
           </div>
@@ -317,14 +324,15 @@ export function StartFlow({ sessionId }: StartFlowProps) {
                   </Button>
                 </div>
 
-                <h2 className="text-2xl font-semibold mb-2">
+                <h2 className="text-2xl font-semibold mb-2" id="cognitive-need-question">
                   Cosa ti serve di più adesso?
                 </h2>
                 <p className="text-muted-foreground mb-8">
                   Seleziona il bisogno che senti più urgente in questo momento.
                 </p>
 
-                <div className="space-y-4" role="radiogroup" aria-labelledby="cognitive-need-question">
+                <fieldset className="space-y-4">
+                  <legend className="sr-only">Bisogno cognitivo più urgente</legend>
                   {cognitiveNeedOptions.map((option) => (
                     <button
                       key={option.id}
@@ -338,7 +346,7 @@ export function StartFlow({ sessionId }: StartFlowProps) {
                       <div className="text-sm text-muted-foreground">{option.description}</div>
                     </button>
                   ))}
-                </div>
+                </fieldset>
               </CardContent>
             </UnifiedCard>
           </div>

@@ -24,17 +24,17 @@ export default function DashboardPage() {
               </div>
               
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6 leading-tight">
-                Educazione Crypto
-                <span className="block text-primary">Antifuffa</span>
+                Tradelia
+                <span className="block text-primary">Educazione Crypto Antifuffa</span>
               </h1>
               
               <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto px-4">
-                "Tradelia non dice cosa fare. Dice cosa stai guardando."
+                "Non dice cosa fare. Dice cosa stai guardando."
               </p>
             </header>
 
             {/* Main Sections Grid */}
-            <section className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+            <section className="grid md:grid-cols-2 gap-6 mb-16">
               
               {/* Start - Orientamento */}
               <UnifiedCard className="border-primary/20 bg-primary/5 hover:border-primary/30 transition-all duration-200 hover:shadow-lg group">
@@ -120,26 +120,7 @@ export default function DashboardPage() {
                 </CardContent>
               </UnifiedCard>
 
-              {/* Check Piattaforme */}
-              <UnifiedCard className="opacity-75 hover:opacity-100 transition-opacity duration-200">
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="p-2 rounded-lg bg-muted">
-                      <CheckSquare className="w-5 h-5 text-muted-foreground" />
-                    </div>
-                    <Badge variant="outline" className="text-xs">Fase 2</Badge>
-                  </div>
-                  <h3 className="text-lg font-semibold mb-2">Check Piattaforme</h3>
-                  <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-                    Checklist per valutare piattaforme crypto. Disponibile prossimamente.
-                  </p>
-                  <Button asChild variant="outline" size="sm" className="w-full" disabled>
-                    <Link href="/dashboard/check-piattaforme">
-                      Prossimamente
-                    </Link>
-                  </Button>
-                </CardContent>
-              </UnifiedCard>
+              {/* Check Piattaforme - REMOVED (not ready) */}
 
               {/* Metodo & Fonti */}
               <UnifiedCard className="hover:border-primary/30 transition-all duration-200 hover:shadow-lg group">

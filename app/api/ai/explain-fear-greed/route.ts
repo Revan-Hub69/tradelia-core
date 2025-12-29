@@ -3,10 +3,60 @@ import { getFearGreedClassItalian } from '@/lib/indicators/fear-greed'
 import { callTradeliaAI } from '@/lib/ai/tradelia-ai'
 import { FearGreedRequestSchema } from '@/lib/validation/schemas'
 
+// Simple in-memory rate limiting (for production use Redis/KV)
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>()
+const RATE_LIMIT_WINDOW = 60 * 1000 // 1 minute
+const RATE_LIMIT_MAX_REQUESTS = 5 // 5 requests per minute per IP
+
+function getRateLimitKey(request: NextRequest): string {
+  const forwarded = request.headers.get('x-forwarded-for')
+  const ip = forwarded ? forwarded.split(',')[0] : 'unknown'
+  return `ai-explain:${ip}`
+}
+
+function checkRateLimit(key: string): { allowed: boolean; remaining: number } {
+  const now = Date.now()
+  const record = rateLimitMap.get(key)
+  
+  if (!record || now > record.resetTime) {
+    rateLimitMap.set(key, { count: 1, resetTime: now + RATE_LIMIT_WINDOW })
+    return { allowed: true, remaining: RATE_LIMIT_MAX_REQUESTS - 1 }
+  }
+  
+  if (record.count >= RATE_LIMIT_MAX_REQUESTS) {
+    return { allowed: false, remaining: 0 }
+  }
+  
+  record.count++
+  return { allowed: true, remaining: RATE_LIMIT_MAX_REQUESTS - record.count }
+}
+
 export async function POST(request: NextRequest) {
   let requestValue = 0; // Default fallback value
   
   try {
+    // SECURITY: Rate limiting to prevent AI API abuse
+    const rateLimitKey = getRateLimitKey(request)
+    const { allowed, remaining } = checkRateLimit(rateLimitKey)
+    
+    if (!allowed) {
+      console.warn(`Rate limit exceeded for ${rateLimitKey}`)
+      return NextResponse.json(
+        { 
+          error: 'Rate limit exceeded',
+          message: 'Too many requests. Please wait before trying again.',
+          retryAfter: 60
+        },
+        { 
+          status: 429,
+          headers: {
+            'X-RateLimit-Limit': RATE_LIMIT_MAX_REQUESTS.toString(),
+            'X-RateLimit-Remaining': '0',
+            'X-RateLimit-Reset': Math.ceil((Date.now() + RATE_LIMIT_WINDOW) / 1000).toString()
+          }
+        }
+      )
+    }
     // Parse and validate request body
     const body = await request.json()
     const validationResult = FearGreedRequestSchema.safeParse(body)
@@ -21,7 +71,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { value, classification, context } = validationResult.data
+    const { value, classification } = validationResult.data
     requestValue = value; // Store for potential use in catch block
     const classificationItalian = getFearGreedClassItalian(classification)
 
