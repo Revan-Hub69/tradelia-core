@@ -4,7 +4,6 @@ import { SectionLayout } from "@/components/ui/design-system/section-layout"
 import { UnifiedCard, CardContent, CardHeader, CardTitle } from "@/components/ui/design-system/unified-card"
 import { ErrorBoundary } from "@/components/ui/error-boundary"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { SuccessDotIcon } from "@/components/icons/success-dot-icon"
 import { ErrorDotIcon } from "@/components/icons/error-dot-icon"
 import { BrainIcon } from "@/components/icons/brain-icon"
@@ -245,15 +244,14 @@ export default function StartPage() {
             </p>
           </div>
           
-          {/* Compliance Accademico - Verifiche complete */}
+          {/* Compliance Accademico - Semplificato e onesto */}
           <footer className="mt-12 pt-8 border-t border-border space-y-4">
             <div className="text-center">
-              <Badge variant="outline" className="mb-4">Sistema Educativo Certificato</Badge>
               <p className="text-xs text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                <strong className="font-medium">Disclaimer Accademico:</strong> Tradelia è un sistema educativo 
-                basato su metodologie di behavioral finance e analisi critica dei mercati crypto. 
-                Non fornisce consulenza finanziaria personalizzata né raccomandazioni operative. 
-                L'obiettivo è sviluppare comprensione, senso critico e capacità di risk assessment.
+                <strong className="font-medium">Disclaimer:</strong> Tradelia è un progetto educativo 
+                che usa metodologie di behavioral finance per spiegare i mercati crypto. 
+                Non fornisce consulenza finanziaria né raccomandazioni operative. 
+                L'obiettivo è sviluppare comprensione e senso critico.
               </p>
             </div>
             
