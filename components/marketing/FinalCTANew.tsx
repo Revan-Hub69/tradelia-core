@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { SectionLayout } from "@/components/ui/design-system/section-layout"
 import { LogoIcon } from "@/components/icons/logo-icon";
 import { HOMEPAGE_CONTENT, NAVIGATION } from "@/lib/constants/homepage-content";
@@ -9,21 +10,23 @@ export default function FinalCTANew() {
       <SectionLayout background="muted">
         <div className="mx-auto max-w-3xl text-center">
           
-          <h2 className="heading-section mb-6">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-tight mb-8">
             {HOMEPAGE_CONTENT.finalCta.title}
           </h2>
           
-          <p className="text-body-large mb-8">
-            {HOMEPAGE_CONTENT.finalCta.description}
-          </p>
+          {/* CTA Button */}
+          <div className="mb-6">
+            <Button asChild size="lg" className="px-10 py-6 text-lg font-semibold">
+              <Link href={NAVIGATION.dashboard}>
+                {HOMEPAGE_CONTENT.finalCta.cta}
+              </Link>
+            </Button>
+          </div>
           
-          {/* Repeat CTA - link secondario */}
-          <Link 
-            href={NAVIGATION.dashboard}
-            className="inline-flex items-center text-sm font-medium text-primary hover:text-primary/80 transition-colors underline-offset-4 hover:underline"
-          >
-            {HOMEPAGE_CONTENT.finalCta.cta}
-          </Link>
+          {/* Final Disclaimer */}
+          <p className="text-sm text-muted-foreground">
+            {HOMEPAGE_CONTENT.finalCta.disclaimer}
+          </p>
           
         </div>
       </SectionLayout>
@@ -40,7 +43,7 @@ export default function FinalCTANew() {
               <LogoIcon className="h-5 w-5 text-primary" />
               <div>
                 <span className="text-sm font-semibold">Tradelia</span>
-                <p className="text-xs text-muted-foreground">Educazione al rischio</p>
+                <p className="text-xs text-muted-foreground">Dashboard dinamica</p>
               </div>
             </div>
 
@@ -59,7 +62,7 @@ export default function FinalCTANew() {
 
             {/* Copyright */}
             <div className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} Tradelia
+              {HOMEPAGE_CONTENT.footer.copyright}
             </div>
           </div>
 
