@@ -213,47 +213,47 @@ function assessPhase1Readiness(
   criteria: Array<{ name: string; status: 'PASS' | 'WARN' | 'FAIL'; value: any; threshold: any }>;
   recommendation: string;
 } {
-  const criteria = [
+  const criteria: Array<{ name: string; status: 'PASS' | 'WARN' | 'FAIL'; value: any; threshold: any }> = [
     {
       name: 'Minimum Trades',
-      status: kpis.totalTrades >= 100 ? 'PASS' : kpis.totalTrades >= 50 ? 'WARN' : 'FAIL',
+      status: (kpis.totalTrades >= 100 ? 'PASS' : kpis.totalTrades >= 50 ? 'WARN' : 'FAIL') as 'PASS' | 'WARN' | 'FAIL',
       value: kpis.totalTrades,
       threshold: 100,
     },
     {
       name: 'Data Quality',
-      status: stats.totalEvents >= 1000 ? 'PASS' : stats.totalEvents >= 500 ? 'WARN' : 'FAIL',
+      status: (stats.totalEvents >= 1000 ? 'PASS' : stats.totalEvents >= 500 ? 'WARN' : 'FAIL') as 'PASS' | 'WARN' | 'FAIL',
       value: stats.totalEvents,
       threshold: 1000,
     },
     {
       name: 'Win Rate',
-      status: kpis.winRate >= 40 ? 'PASS' : kpis.winRate >= 30 ? 'WARN' : 'FAIL',
+      status: (kpis.winRate >= 40 ? 'PASS' : kpis.winRate >= 30 ? 'WARN' : 'FAIL') as 'PASS' | 'WARN' | 'FAIL',
       value: `${kpis.winRate.toFixed(1)}%`,
       threshold: '40%',
     },
     {
       name: 'Expectancy',
-      status: kpis.expectancy > 0 ? 'PASS' : kpis.expectancy > -0.5 ? 'WARN' : 'FAIL',
+      status: (kpis.expectancy > 0 ? 'PASS' : kpis.expectancy > -0.5 ? 'WARN' : 'FAIL') as 'PASS' | 'WARN' | 'FAIL',
       value: `${kpis.expectancy.toFixed(2)}%`,
       threshold: '>0%',
     },
     {
       name: 'Max Drawdown',
-      status: kpis.maxDrawdown <= 10 ? 'PASS' : kpis.maxDrawdown <= 20 ? 'WARN' : 'FAIL',
+      status: (kpis.maxDrawdown <= 10 ? 'PASS' : kpis.maxDrawdown <= 20 ? 'WARN' : 'FAIL') as 'PASS' | 'WARN' | 'FAIL',
       value: `${kpis.maxDrawdown.toFixed(1)}%`,
       threshold: '≤10%',
     },
     {
       name: 'Slippage Control',
-      status: kpis.avgSlippage <= 0.1 ? 'PASS' : kpis.avgSlippage <= 0.2 ? 'WARN' : 'FAIL',
+      status: (kpis.avgSlippage <= 0.1 ? 'PASS' : kpis.avgSlippage <= 0.2 ? 'WARN' : 'FAIL') as 'PASS' | 'WARN' | 'FAIL',
       value: `${kpis.avgSlippage.toFixed(3)}%`,
       threshold: '≤0.1%',
     },
     {
       name: 'System Stability',
-      status: runs.filter(r => r.status === 'FAILED').length === 0 ? 'PASS' : 
-             runs.filter(r => r.status === 'FAILED').length <= 1 ? 'WARN' : 'FAIL',
+      status: (runs.filter(r => r.status === 'FAILED').length === 0 ? 'PASS' : 
+             runs.filter(r => r.status === 'FAILED').length <= 1 ? 'WARN' : 'FAIL') as 'PASS' | 'WARN' | 'FAIL',
       value: runs.filter(r => r.status === 'FAILED').length,
       threshold: 0,
     },

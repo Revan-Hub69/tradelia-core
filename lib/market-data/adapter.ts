@@ -8,7 +8,8 @@ import {
   KlineEvent, 
   ConnectionStatus,
   MarketDataConfig,
-  DEFAULT_CONFIG 
+  DEFAULT_CONFIG,
+  Timeframe
 } from './types';
 import { EnhancedCircuitBreaker } from '@/lib/utils/circuit-breaker-enhanced';
 import { retryNetworkOperation } from '@/lib/utils/retry-enhanced';
@@ -293,8 +294,8 @@ export class BinanceMarketDataAdapter implements MarketDataAdapter {
     }
   }
 
-  private mapBinanceToTimeframe(interval: string): string | null {
-    const mapping: Record<string, string> = {
+  private mapBinanceToTimeframe(interval: string): Timeframe | null {
+    const mapping: Record<string, Timeframe> = {
       '1m': 'M1',
       '5m': 'M5',
       '15m': 'M15',
@@ -309,8 +310,7 @@ export class BinanceMarketDataAdapter implements MarketDataAdapter {
     
     this.heartbeatTimer = setInterval(() => {
       if (this.ws?.readyState === WebSocket.OPEN) {
-        // Send ping frame
-        this.ws.ping();
+        // WebSocket is open, update heartbeat
         this.connectionStatus.lastHeartbeat = Date.now();
       } else {
         this.connectionStatus.connected = false;

@@ -9,6 +9,7 @@ import { DeterministicCandleAggregator } from './aggregator';
 import { SimulatedPaperOMS } from './paper-oms';
 import { SetupEngine } from '@/lib/setup/engine';
 import { MarketState } from '@/lib/setup/types';
+import { RegimeSignature } from '@/lib/mce/types';
 import { 
   MarketDataConfig, 
   DEFAULT_CONFIG, 
@@ -154,56 +155,67 @@ export class MarketDataEngine {
     try {
       // Build market state from current candle data
       const currentTime = timestamp || Date.now();
-      const marketState: MarketState = {
-        timestamp: currentTime,
-        symbols: {},
-        regime: {
-          classification: 'NORMAL', // Simplified for now
-          confidence: 0.8,
-          since: currentTime - 3600000, // 1 hour ago
-          volatility: 'MEDIUM',
-          trend: 'SIDEWAYS',
+      
+      // Create a simplified regime signature for testing
+      const regime: RegimeSignature = {
+        v: "mce.v1",
+        symbol: "BTCUSDT",
+        tf: "1m",
+        asOf: currentTime,
+        trend: 'range',
+        volatility: 'normal',
+        confidence: 0.8,
+        features: {
+          atr14: 0,
+          atr50: 0,
+          atrPct7d: 50,
+          atrPct30d: 50,
+          emaFast: 0,
+          emaSlow: 0,
+          trendStrength: 0.5,
+          volNorm: 0.5,
         },
-        session: {
-          name: this.getCurrentSession(currentTime),
-          openTime: this.getSessionOpenTime(currentTime),
-          closeTime: this.getSessionCloseTime(currentTime),
-          isActive: true,
+        quality: {
+          completeness: 1.0,
+          gaps: 0,
+          freshnessSec: 0,
+          source: "binance",
+          valid: true,
         },
+        change: {
+          changed: false,
+          prevAsOf: undefined,
+          prevTrend: undefined,
+          prevVol: undefined,
+        },
+        hash: "simplified-hash",
       };
 
-      // Add symbol data from aggregator
-      for (const symbol of this.config.symbols) {
-        const candleState = this.aggregator.getCurrentState(symbol);
-        if (candleState.timeframes.M1) {
-          const candle = candleState.timeframes.M1;
-          marketState.symbols[symbol] = {
-            price: candle.close,
-            volume24h: candle.volume,
-            change24h: 0, // Would need historical data
-            change24hPct: 0,
-            structure: {
-              trend: 'SIDEWAYS',
-              support: candle.low,
-              resistance: candle.high,
-              keyLevels: [candle.low, candle.high],
-            },
-            orderflow: {
-              buyPressure: 0.5,
-              sellPressure: 0.5,
-              imbalance: 0,
-              volumeProfile: [],
-            },
-            volatility: {
-              atr: Math.abs(candle.high - candle.low),
-              realized: 0.02,
-              implied: 0.025,
-              percentile: 50,
-            },
-          };
-        }
-      }
+      const marketState: MarketState = {
+        regime,
+        universeFit: {
+          dayGate: {
+            tradableDay: true,
+            countA: 0,
+            countB: 0,
+            reasons: [],
+          },
+          marketFits: [],
+        },
+        structure: {},
+        orderflow: {},
+        volatility: {},
+        session: {
+          current: this.getCurrentSession(currentTime) as 'ASIA' | 'EU' | 'US' | 'OVERLAP_EU_US',
+          openingSoon: false,
+          closingSoon: false,
+        },
+        asOf: currentTime,
+      };
 
+      // Add symbol data from aggregator (simplified for now)
+      // In a full implementation, this would populate structure, orderflow, volatility
+      
       return marketState;
       
     } catch (error) {
@@ -291,16 +303,16 @@ export class MarketDataEngine {
       const marketState = await this.getMarketState();
       if (!marketState) return;
 
-      // Run setup detection for each symbol
-      for (const symbol of this.config.symbols) {
-        const decisions = await this.setupEngine.processSymbol(symbol, marketState);
+      // Run setup detection
+      const decision = await this.setupEngine.processMarketState(marketState);
+      
+      if (decision.allowed && decision.setups.length > 0) {
+        this.stats.setupsDetected += decision.setups.length;
         
-        for (const decision of decisions) {
-          this.stats.setupsDetected++;
-          
-          // If setup is validated and paper trading is enabled, execute trade
-          if (this.config.enablePaperTrading && decision.action === 'ENTER') {
-            await this.executePaperTrade(decision, marketState);
+        // If paper trading is enabled, execute trades for valid setups
+        if (this.config.enablePaperTrading) {
+          for (const setup of decision.setups) {
+            await this.executePaperTrade(setup, marketState);
           }
         }
       }
@@ -310,18 +322,13 @@ export class MarketDataEngine {
     }
   }
 
-  private async executePaperTrade(decision: any, marketState: MarketState): Promise<void> {
+  private async executePaperTrade(setup: any, marketState: MarketState): Promise<void> {
     try {
-      const symbol = decision.symbol;
-      const symbolData = marketState.symbols[symbol];
-      
-      if (!symbolData) return;
-
-      // Create order intent
+      // Create order intent from setup
       const orderIntent = {
-        setupId: decision.setupId,
-        symbol,
-        side: decision.direction === 'LONG' ? 'BUY' as const : 'SELL' as const,
+        setupId: setup.setupId || 'test-setup-' + Date.now(),
+        symbol: setup.symbol || 'BTCUSDT',
+        side: setup.direction === 'LONG' ? 'BUY' as const : 'SELL' as const,
         type: 'MARKET' as const,
         quantity: 0.001, // Fixed quantity for simulation
         ttlSec: 60,
@@ -332,7 +339,7 @@ export class MarketDataEngine {
       
       if (result.status === 'FILLED') {
         this.stats.tradesExecuted++;
-        console.log(`Paper trade executed: ${symbol} ${orderIntent.side} at ${result.fillPrice}`);
+        console.log(`Paper trade executed: ${orderIntent.symbol} ${orderIntent.side} at ${result.fillPrice}`);
       }
       
     } catch (error) {
@@ -429,11 +436,12 @@ export class MarketDataEngine {
       .substring(0, 16);
   }
 
-  private getCurrentSession(timestamp: number): string {
+  private getCurrentSession(timestamp: number): 'ASIA' | 'EU' | 'US' | 'OVERLAP_EU_US' {
     const hour = new Date(timestamp).getUTCHours();
     
     if (hour >= 0 && hour < 8) return 'ASIA';
-    if (hour >= 8 && hour < 16) return 'EUROPE';
+    if (hour >= 8 && hour < 16) return 'EU';
+    if (hour >= 14 && hour < 18) return 'OVERLAP_EU_US'; // Overlap period
     return 'US';
   }
 

@@ -538,11 +538,11 @@ export class SetupDetector {
     return breakoutRules.checkAcceptance(structuralBreak, timestamp);
   }
 
-  private checkOrderflowAlignment(orderflow: any, direction: string): any {
+  private checkOrderflowAlignment(orderflow: any, direction: 'LONG' | 'SHORT'): any {
     return breakoutRules.checkOrderflowAlignment(orderflow, direction);
   }
 
-  private checkRegimeAlignment(regime: any, direction: string): any {
+  private checkRegimeAlignment(regime: any, direction: 'LONG' | 'SHORT'): any {
     // Regime alignment logic
     const classification = regime.classification;
     const strength = regime.strength || 0;
