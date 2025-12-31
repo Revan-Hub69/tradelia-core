@@ -1,12 +1,712 @@
-# UCM + MSF v1 - Implementation Tasks
+# UCM + MSF v1 - Implementation Tasks (REVISED)
 
 ## Overview
 
-Implementazione di Universe Control Module (UCM) e Market Selection & Fit Engine (MSF) seguendo l'approccio "vertical slice" già utilizzato per MCE.
+Implementazione **incrementale** di UCM e MSF seguendo approccio pragmatico:
+1. **UCM Phase 1 ONLY** - Universe stabile
+2. **Dashboard Read-Only** - Fiducia nel sistema  
+3. **MSF + DayGate** - Solo dopo validazione UCM
 
-**Obiettivo**: Entro fine implementazione avere pipeline completa MCE → UCM → MSF → API funzionante.
+**Principio**: Non toccare MSF finché UCM non è solido e stabile.
 
-## Phase 1: UCM Foundation (Week 1)
+## 🎯 STEP 1: UCM Phase 1 ONLY (Week 1-2)
+
+### Obiettivo
+Vedere l'universo muoversi **poco ma bene**. Focus su:
+- Eligibility calculation
+- Hysteresis anti-flip
+- Universe_active stabile
+- Niente MSF ancora
+
+### Task 1.1: Database Schema UCM
+**Durata**: 1 giorno
+**Output**: Migrazione Supabase per tabelle UCM
+
+```sql
+-- File: supabase/migrations/006_ucm_schema.sql
+CREATE TABLE universe_pool (
+  id SERIAL PRIMARY KEY,
+  version TEXT NOT NULL,
+  as_of BIGINT NOT NULL,
+  symbols JSONB NOT NULL,
+  core_symbols JSONB NOT NULL,
+  hash TEXT NOT NULL UNIQUE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE universe_state (
+  symbol TEXT PRIMARY KEY,
+  status TEXT NOT NULL CHECK (status IN ('ACTIVE', 'INACTIVE', 'BLACKLISTED')),
+  entered_at BIGINT,
+  exited_at BIGINT,
+  cooldown_until BIGINT,
+  blacklist_until BIGINT,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE universe_active (
+  id SERIAL PRIMARY KEY,
+  as_of BIGINT NOT NULL,
+  version TEXT NOT NULL,
+  target_count INTEGER NOT NULL,
+  min_count INTEGER NOT NULL,
+  max_count INTEGER NOT NULL,
+  symbols JSONB NOT NULL,
+  core_included BOOLEAN NOT NULL,
+  meta JSONB NOT NULL,
+  based_on JSONB NOT NULL,
+  hash TEXT NOT NULL UNIQUE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE eligibility_snapshots (
+  symbol TEXT NOT NULL,
+  as_of BIGINT NOT NULL,
+  vol_quote_24h NUMERIC NOT NULL,
+  spread_bps NUMERIC NOT NULL,
+  completeness_60m NUMERIC NOT NULL,
+  gaps_60m INTEGER NOT NULL,
+  atr14_1m NUMERIC NOT NULL,
+  atr_percentile_1m NUMERIC NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  PRIMARY KEY (symbol, as_of)
+);
+
+-- Indexes for performance
+CREATE INDEX idx_universe_active_as_of ON universe_active(as_of DESC);
+CREATE INDEX idx_eligibility_snapshots_as_of ON eligibility_snapshots(as_of DESC);
+CREATE INDEX idx_universe_state_status ON universe_state(status);
+
+-- RLS policies
+ALTER TABLE universe_pool ENABLE ROW LEVEL SECURITY;
+ALTER TABLE universe_state ENABLE ROW LEVEL SECURITY;
+ALTER TABLE universe_active ENABLE ROW LEVEL SECURITY;
+ALTER TABLE eligibility_snapshots ENABLE ROW LEVEL SECURITY;
+
+-- Allow read access to authenticated users
+CREATE POLICY "Allow read access" ON universe_pool FOR SELECT USING (true);
+CREATE POLICY "Allow read access" ON universe_state FOR SELECT USING (true);
+CREATE POLICY "Allow read access" ON universe_active FOR SELECT USING (true);
+CREATE POLICY "Allow read access" ON eligibility_snapshots FOR SELECT USING (true);
+
+-- Allow service role full access
+CREATE POLICY "Service role full access" ON universe_pool FOR ALL USING (auth.role() = 'service_role');
+CREATE POLICY "Service role full access" ON universe_state FOR ALL USING (auth.role() = 'service_role');
+CREATE POLICY "Service role full access" ON universe_active FOR ALL USING (auth.role() = 'service_role');
+CREATE POLICY "Service role full access" ON eligibility_snapshots FOR ALL USING (auth.role() = 'service_role');
+```
+
+### Task 1.2: UCM Types & Schemas
+**Durata**: 1 giorno
+**Output**: TypeScript types e Zod schemas per UCM
+
+```typescript
+// File: lib/ucm/schemas.ts
+import { z } from "zod";
+
+export const UniversePoolSchema = z.object({
+  v: z.literal("ucm.pool.v1"),
+  asOf: z.number().int().nonnegative(),
+  symbols: z.array(z.string()).min(10).max(150),
+  coreSymbols: z.array(z.string()).min(3).max(10),
+  hash: z.string().regex(/^[a-f0-9]{64}$/),
+});
+
+export const EligibilitySnapshotSchema = z.object({
+  symbol: z.string(),
+  asOf: z.number().int().nonnegative(),
+  volQuote_24h: z.number().nonnegative(),
+  spreadBps: z.number().nonnegative(),
+  completeness_60m: z.number().min(0).max(1),
+  gaps_60m: z.number().int().min(0),
+  atr14_1m: z.number().positive(),
+  atrPercentile_1m: z.number().min(0).max(100),
+});
+
+export const UniverseStateSchema = z.object({
+  symbol: z.string(),
+  status: z.enum(["ACTIVE", "INACTIVE", "BLACKLISTED"]),
+  enteredAt: z.number().int().nonnegative().optional(),
+  exitedAt: z.number().int().nonnegative().optional(),
+  cooldownUntil: z.number().int().nonnegative().optional(),
+  blacklistUntil: z.number().int().nonnegative().optional(),
+});
+
+export const UniverseActiveSchema = z.object({
+  v: z.literal("ucm.active.v1"),
+  asOf: z.number().int().nonnegative(),
+  target: z.number().int().positive(),
+  min: z.number().int().positive(),
+  max: z.number().int().positive(),
+  symbols: z.array(z.string()),
+  coreIncluded: z.boolean(),
+  meta: z.object({
+    added: z.array(z.string()),
+    removed: z.array(z.string()),
+    blacklisted: z.array(z.string()),
+  }),
+  basedOn: z.object({
+    poolHash: z.string(),
+    eligibilityBatchHash: z.string(),
+    prevActiveHash: z.string().optional(),
+  }),
+  hash: z.string().regex(/^[a-f0-9]{64}$/),
+});
+
+// Type exports
+export type UniversePoolType = z.infer<typeof UniversePoolSchema>;
+export type EligibilitySnapshotType = z.infer<typeof EligibilitySnapshotSchema>;
+export type UniverseStateType = z.infer<typeof UniverseStateSchema>;
+export type UniverseActiveType = z.infer<typeof UniverseActiveSchema>;
+
+// Validation helpers
+export function validateUniversePool(data: unknown): data is UniversePoolType {
+  try {
+    UniversePoolSchema.parse(data);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export function validateUniverseActive(data: unknown): data is UniverseActiveType {
+  try {
+    UniverseActiveSchema.parse(data);
+    return true;
+  } catch {
+    return false;
+  }
+}
+```
+
+### Task 1.3: UCM Configuration
+**Durata**: 0.5 giorni
+**Output**: Configurazione parametri UCM (CONGELATI)
+
+```typescript
+// File: lib/ucm/config.ts
+export const UCM_CONFIG = {
+  // Universe sizing
+  TARGET: 20,
+  MIN_ACTIVE: 12,
+  MAX_ACTIVE: 25,
+  
+  // Hysteresis timing (minutes)
+  ENTER_CONFIRM_MINUTES: 10,
+  EXIT_CONFIRM_MINUTES: 20,
+  
+  // Cooldown and blacklist (minutes/days)
+  COOLDOWN_MINUTES: 60,
+  BLACKLIST_DAYS: 7,
+  
+  // Hard thresholds (CONGELATI per v1)
+  SPREAD_ENTER_MAX: 15, // bps - da calibrare con dati reali
+  SPREAD_HARD_MAX: 50,  // bps - blacklist threshold
+  ATR_MIN: 0.001,       // minimum ATR for eligibility
+  
+  // Ranking weights (CONGELATI)
+  RANKING_WEIGHTS: {
+    volume: 0.55,
+    friction: 0.25,
+    quality: 0.20,
+  },
+  
+  // Default universe pool (starter set)
+  DEFAULT_POOL: {
+    coreSymbols: ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT", "XRPUSDT"],
+    symbols: [
+      // Major pairs
+      "BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT", "XRPUSDT",
+      "ADAUSDT", "DOTUSDT", "LINKUSDT", "LTCUSDT", "BCHUSDT",
+      // Mid-cap
+      "AVAXUSDT", "MATICUSDT", "ATOMUSDT", "NEARUSDT", "FTMUSDT",
+      "ALGOUSDT", "VETUSDT", "ICPUSDT", "FILUSDT", "TRXUSDT",
+      // Additional for pool diversity
+      "UNIUSDT", "AAVEUSDT", "SUSHIUSDT", "COMPUSDT", "MKRUSDT",
+    ],
+  },
+} as const;
+
+// Type for config
+export type UCMConfig = typeof UCM_CONFIG;
+```
+
+### Task 1.4: UCM Core Engine
+**Durata**: 2 giorni
+**Output**: Logica principale UCM
+
+```typescript
+// File: lib/ucm/engine/ranking.ts
+import { EligibilitySnapshotType } from "../schemas";
+import { UCM_CONFIG } from "../config";
+
+export function calculateRankingScore(snapshot: EligibilitySnapshotType): number {
+  // Normalize volume (0-100)
+  const volScore = normalizeVolume(snapshot.volQuote_24h);
+  
+  // Calculate friction score (0-100, higher = worse)
+  const frictionScore = calculateFrictionScore(snapshot);
+  
+  // Calculate quality score (0-100)
+  const qualityScore = calculateQualityScore(snapshot);
+  
+  // Weighted combination
+  const rankScore = 
+    UCM_CONFIG.RANKING_WEIGHTS.volume * volScore +
+    UCM_CONFIG.RANKING_WEIGHTS.friction * (100 - frictionScore) +
+    UCM_CONFIG.RANKING_WEIGHTS.quality * qualityScore;
+  
+  return Math.max(0, Math.min(100, rankScore));
+}
+
+function calculateFrictionScore(snapshot: EligibilitySnapshotType): number {
+  // Base spread penalty
+  const spreadPenalty = Math.min(100, snapshot.spreadBps * 2);
+  
+  // ATR percentile adjustment (high percentile = more volatile = higher friction)
+  const volatilityPenalty = snapshot.atrPercentile_1m * 0.3;
+  
+  return Math.min(100, spreadPenalty + volatilityPenalty);
+}
+
+function calculateQualityScore(snapshot: EligibilitySnapshotType): number {
+  if (snapshot.gaps_60m > 0) return 0;
+  if (snapshot.completeness_60m < 0.99) return snapshot.completeness_60m * 50;
+  return 100;
+}
+
+function normalizeVolume(volume: number): number {
+  // Simple log normalization - da calibrare con dati reali
+  const logVol = Math.log10(Math.max(1, volume));
+  return Math.min(100, Math.max(0, (logVol - 6) * 25)); // Assume 1M = baseline
+}
+```
+
+```typescript
+// File: lib/ucm/engine/eligibility.ts
+import { EligibilitySnapshotType } from "../schemas";
+import { UCM_CONFIG } from "../config";
+
+export function isEligible(snapshot: EligibilitySnapshotType): boolean {
+  // Hard requirements
+  if (snapshot.spreadBps > UCM_CONFIG.SPREAD_ENTER_MAX) return false;
+  if (snapshot.completeness_60m < 0.99) return false;
+  if (snapshot.gaps_60m > 0) return false;
+  if (snapshot.atr14_1m < UCM_CONFIG.ATR_MIN) return false;
+  
+  return true;
+}
+
+export function shouldBlacklist(snapshot: EligibilitySnapshotType): boolean {
+  // Hard disqualification criteria
+  if (snapshot.completeness_60m < 0.98) return true;
+  if (snapshot.gaps_60m > 0) return true;
+  if (snapshot.spreadBps > UCM_CONFIG.SPREAD_HARD_MAX) return true;
+  
+  return false;
+}
+```
+
+```typescript
+// File: lib/ucm/engine/hysteresis.ts
+import { EligibilitySnapshotType } from "../schemas";
+import { UCM_CONFIG } from "../config";
+
+export function checkEnterHysteresis(
+  symbol: string, 
+  history: EligibilitySnapshotType[]
+): boolean {
+  const confirmMinutes = UCM_CONFIG.ENTER_CONFIRM_MINUTES;
+  const requiredSnapshots = Math.ceil(confirmMinutes / 5); // Assuming 5min intervals
+  
+  if (history.length < requiredSnapshots) return false;
+  
+  // Check last N snapshots are all eligible
+  const recentHistory = history.slice(-requiredSnapshots);
+  return recentHistory.every(snapshot => isEligible(snapshot));
+}
+
+export function checkExitHysteresis(
+  symbol: string,
+  history: EligibilitySnapshotType[]
+): boolean {
+  const confirmMinutes = UCM_CONFIG.EXIT_CONFIRM_MINUTES;
+  const requiredSnapshots = Math.ceil(confirmMinutes / 5);
+  
+  if (history.length < requiredSnapshots) return false;
+  
+  // Check last N snapshots are all non-eligible
+  const recentHistory = history.slice(-requiredSnapshots);
+  return recentHistory.every(snapshot => !isEligible(snapshot));
+}
+```
+
+### Task 1.5: UCM Database Layer
+**Durata**: 1 giorno
+**Output**: Repository pattern per UCM
+
+```typescript
+// File: lib/ucm/db/repo.ts
+import { supabaseAdmin } from "../../mce/db/supabase";
+import { 
+  UniversePoolType, 
+  UniverseStateType, 
+  UniverseActiveType, 
+  EligibilitySnapshotType 
+} from "../schemas";
+
+export class UCMRepository {
+  async getUniversePool(): Promise<UniversePoolType | null> {
+    const { data, error } = await supabaseAdmin
+      .from('universe_pool')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+    
+    if (error || !data) return null;
+    
+    return {
+      v: "ucm.pool.v1",
+      asOf: data.as_of,
+      symbols: data.symbols,
+      coreSymbols: data.core_symbols,
+      hash: data.hash,
+    };
+  }
+  
+  async updateUniversePool(pool: UniversePoolType): Promise<void> {
+    const { error } = await supabaseAdmin
+      .from('universe_pool')
+      .insert({
+        version: pool.v,
+        as_of: pool.asOf,
+        symbols: pool.symbols,
+        core_symbols: pool.coreSymbols,
+        hash: pool.hash,
+      });
+    
+    if (error) throw new Error(`Failed to update universe pool: ${error.message}`);
+  }
+  
+  async getUniverseStates(): Promise<UniverseStateType[]> {
+    const { data, error } = await supabaseAdmin
+      .from('universe_state')
+      .select('*');
+    
+    if (error) throw new Error(`Failed to get universe states: ${error.message}`);
+    
+    return data.map(row => ({
+      symbol: row.symbol,
+      status: row.status,
+      enteredAt: row.entered_at,
+      exitedAt: row.exited_at,
+      cooldownUntil: row.cooldown_until,
+      blacklistUntil: row.blacklist_until,
+    }));
+  }
+  
+  async updateUniverseState(state: UniverseStateType): Promise<void> {
+    const { error } = await supabaseAdmin
+      .from('universe_state')
+      .upsert({
+        symbol: state.symbol,
+        status: state.status,
+        entered_at: state.enteredAt,
+        exited_at: state.exitedAt,
+        cooldown_until: state.cooldownUntil,
+        blacklist_until: state.blacklistUntil,
+      });
+    
+    if (error) throw new Error(`Failed to update universe state: ${error.message}`);
+  }
+  
+  async getLatestUniverseActive(): Promise<UniverseActiveType | null> {
+    const { data, error } = await supabaseAdmin
+      .from('universe_active')
+      .select('*')
+      .order('as_of', { ascending: false })
+      .limit(1)
+      .single();
+    
+    if (error || !data) return null;
+    
+    return {
+      v: "ucm.active.v1",
+      asOf: data.as_of,
+      target: data.target_count,
+      min: data.min_count,
+      max: data.max_count,
+      symbols: data.symbols,
+      coreIncluded: data.core_included,
+      meta: data.meta,
+      basedOn: data.based_on,
+      hash: data.hash,
+    };
+  }
+  
+  async saveUniverseActive(active: UniverseActiveType): Promise<void> {
+    const { error } = await supabaseAdmin
+      .from('universe_active')
+      .insert({
+        as_of: active.asOf,
+        version: active.v,
+        target_count: active.target,
+        min_count: active.min,
+        max_count: active.max,
+        symbols: active.symbols,
+        core_included: active.coreIncluded,
+        meta: active.meta,
+        based_on: active.basedOn,
+        hash: active.hash,
+      });
+    
+    if (error) throw new Error(`Failed to save universe active: ${error.message}`);
+  }
+  
+  async saveEligibilitySnapshots(snapshots: EligibilitySnapshotType[]): Promise<void> {
+    const rows = snapshots.map(snapshot => ({
+      symbol: snapshot.symbol,
+      as_of: snapshot.asOf,
+      vol_quote_24h: snapshot.volQuote_24h,
+      spread_bps: snapshot.spreadBps,
+      completeness_60m: snapshot.completeness_60m,
+      gaps_60m: snapshot.gaps_60m,
+      atr14_1m: snapshot.atr14_1m,
+      atr_percentile_1m: snapshot.atrPercentile_1m,
+    }));
+    
+    const { error } = await supabaseAdmin
+      .from('eligibility_snapshots')
+      .upsert(rows);
+    
+    if (error) throw new Error(`Failed to save eligibility snapshots: ${error.message}`);
+  }
+  
+  async getEligibilityHistory(symbol: string, minutes: number): Promise<EligibilitySnapshotType[]> {
+    const cutoff = Date.now() - (minutes * 60 * 1000);
+    
+    const { data, error } = await supabaseAdmin
+      .from('eligibility_snapshots')
+      .select('*')
+      .eq('symbol', symbol)
+      .gte('as_of', cutoff)
+      .order('as_of', { ascending: true });
+    
+    if (error) throw new Error(`Failed to get eligibility history: ${error.message}`);
+    
+    return data.map(row => ({
+      symbol: row.symbol,
+      asOf: row.as_of,
+      volQuote_24h: row.vol_quote_24h,
+      spreadBps: row.spread_bps,
+      completeness_60m: row.completeness_60m,
+      gaps_60m: row.gaps_60m,
+      atr14_1m: row.atr14_1m,
+      atrPercentile_1m: row.atr_percentile_1m,
+    }));
+  }
+}
+```
+
+### Task 1.6: UCM Pipeline
+**Durata**: 1 giorno
+**Output**: Pipeline completa UCM
+
+```typescript
+// File: lib/ucm/pipeline/runOnce.ts
+import { UCMRepository } from "../db/repo";
+import { generateUniverseActive } from "../engine/universe";
+import { collectEligibilitySnapshots } from "./collect";
+import { UCM_CONFIG } from "../config";
+
+export interface UCMPipelineResult {
+  success: boolean;
+  universeActive: UniverseActiveType | null;
+  errors: string[];
+  stats: {
+    eligibleCount: number;
+    activeCount: number;
+    blacklistedCount: number;
+    addedCount: number;
+    removedCount: number;
+    executionTime: number;
+  };
+}
+
+export async function runUCMPipeline(): Promise<UCMPipelineResult> {
+  const startTime = Date.now();
+  const errors: string[] = [];
+  const repo = new UCMRepository();
+  
+  try {
+    // 1. Get current universe pool
+    let pool = await repo.getUniversePool();
+    if (!pool) {
+      // Initialize with default pool
+      pool = await initializeDefaultPool(repo);
+    }
+    
+    // 2. Collect eligibility snapshots
+    const snapshots = await collectEligibilitySnapshots(pool.symbols);
+    await repo.saveEligibilitySnapshots(snapshots);
+    
+    // 3. Get current states
+    const states = await repo.getUniverseStates();
+    
+    // 4. Get previous active universe
+    const prevActive = await repo.getLatestUniverseActive();
+    
+    // 5. Generate new universe active
+    const universeActive = await generateUniverseActive(
+      pool,
+      snapshots,
+      states,
+      prevActive
+    );
+    
+    // 6. Save new universe active
+    await repo.saveUniverseActive(universeActive);
+    
+    // 7. Calculate stats
+    const stats = {
+      eligibleCount: snapshots.filter(s => isEligible(s)).length,
+      activeCount: universeActive.symbols.length,
+      blacklistedCount: universeActive.meta.blacklisted.length,
+      addedCount: universeActive.meta.added.length,
+      removedCount: universeActive.meta.removed.length,
+      executionTime: Date.now() - startTime,
+    };
+    
+    return {
+      success: true,
+      universeActive,
+      errors,
+      stats,
+    };
+    
+  } catch (error) {
+    errors.push(`UCM pipeline failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    
+    return {
+      success: false,
+      universeActive: null,
+      errors,
+      stats: {
+        eligibleCount: 0,
+        activeCount: 0,
+        blacklistedCount: 0,
+        addedCount: 0,
+        removedCount: 0,
+        executionTime: Date.now() - startTime,
+      },
+    };
+  }
+}
+
+async function initializeDefaultPool(repo: UCMRepository): Promise<UniversePoolType> {
+  const pool: UniversePoolType = {
+    v: "ucm.pool.v1",
+    asOf: Date.now(),
+    symbols: UCM_CONFIG.DEFAULT_POOL.symbols,
+    coreSymbols: UCM_CONFIG.DEFAULT_POOL.coreSymbols,
+    hash: generatePoolHash(UCM_CONFIG.DEFAULT_POOL.symbols, UCM_CONFIG.DEFAULT_POOL.coreSymbols),
+  };
+  
+  await repo.updateUniversePool(pool);
+  return pool;
+}
+```
+
+### Task 1.7: UCM API
+**Durata**: 0.5 giorni
+**Output**: API endpoint per UCM
+
+```typescript
+// File: app/api/universe/active/route.ts
+import { NextResponse } from "next/server";
+import { UCMRepository } from "../../../../lib/ucm/db/repo";
+
+export async function GET() {
+  try {
+    const repo = new UCMRepository();
+    const universeActive = await repo.getLatestUniverseActive();
+    
+    if (!universeActive) {
+      return NextResponse.json(
+        { ok: false, error: "No universe active found" },
+        { status: 404 }
+      );
+    }
+    
+    return NextResponse.json({
+      ok: true,
+      data: universeActive,
+    });
+    
+  } catch (error) {
+    return NextResponse.json(
+      { 
+        ok: false, 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      },
+      { status: 500 }
+    );
+  }
+}
+```
+
+## 🎯 STEP 1 Success Criteria
+
+### Deliverables Checklist
+- ✅ Database schema UCM deployed
+- ✅ TypeScript types & schemas complete
+- ✅ Core UCM engine implemented
+- ✅ Database repository layer working
+- ✅ UCM pipeline functional
+- ✅ API endpoint responding
+
+### KPI Targets (Week 1-2)
+- **Turnover Rate**: <= 0.2 per hour (2-4 simboli su 20)
+- **Core Symbols Uptime**: > 95%
+- **Pipeline Success Rate**: > 95%
+- **API Response Time**: < 200ms
+
+### Validation Tests
+```bash
+# Test UCM pipeline
+node scripts/ucm-test.mjs
+
+# Test API endpoint
+curl https://tradelia.ai/api/universe/active
+
+# Monitor turnover
+# Check universe changes over 24h period
+```
+
+## 🚫 What NOT to Implement in Step 1
+
+- ❌ MSF database schema
+- ❌ Market fit calculation
+- ❌ Day gate logic
+- ❌ MSF APIs
+- ❌ Dashboard UI (except basic read-only)
+
+**Focus**: Solo UCM. Niente MSF finché UCM non è stabile.
+
+## Next Steps After Step 1
+
+Solo dopo aver validato che:
+1. Universe si muove poco ma bene
+2. Turnover è sotto controllo
+3. Hysteresis funziona
+4. Core symbols sono stabili
+
+Allora procediamo con:
+- Step 2: Dashboard read-only
+- Step 3: MSF + DayGate
+
+**Principio**: Costruire fiducia step-by-step, non tutto insieme.
 
 ### Task 1.1: Database Schema UCM
 **Durata**: 1 giorno
