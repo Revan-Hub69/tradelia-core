@@ -136,6 +136,13 @@ export const HOMEPAGE_CONTENT = {
     }
   },
 
+  // PERCHÉ TRADELIA ESISTE
+  whyExists: {
+    title: "Perché Tradelia esiste",
+    subtitle: "Il problema che stiamo cercando di risolvere",
+    message: "Nel mondo crypto, la maggior parte degli errori non nasce dalla mancanza di informazioni, ma dal guardare le informazioni sbagliate per l'obiettivo che si ha. Tradelia esiste per interrompere questo meccanismo: prima di mostrarti qualsiasi dato, ti aiuta a chiarire cosa stai cercando di fare."
+  },
+
   // METODO E TRASPARENZA
   methodology: {
     title: "Su cosa si basa Tradelia",
