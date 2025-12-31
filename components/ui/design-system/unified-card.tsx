@@ -1,13 +1,23 @@
-import { ReactNode } from 'react'
+import { ReactNode, MouseEventHandler } from 'react'
 import { cn } from '@/lib/utils'
 
 interface UnifiedCardProps {
   variant?: 'standard' | 'elevated' | 'hero'
   children: ReactNode
   className?: string
+  onClick?: MouseEventHandler<HTMLDivElement>
+  onMouseEnter?: MouseEventHandler<HTMLDivElement>
+  onMouseLeave?: MouseEventHandler<HTMLDivElement>
 }
 
-export function UnifiedCard({ variant = 'standard', children, className }: UnifiedCardProps) {
+export function UnifiedCard({ 
+  variant = 'standard', 
+  children, 
+  className,
+  onClick,
+  onMouseEnter,
+  onMouseLeave
+}: UnifiedCardProps) {
   const baseStyles = 'bg-card rounded-xl transition-colors duration-150'
   
   const variantStyles = {
@@ -17,7 +27,12 @@ export function UnifiedCard({ variant = 'standard', children, className }: Unifi
   }
 
   return (
-    <div className={cn(baseStyles, variantStyles[variant], className)}>
+    <div 
+      className={cn(baseStyles, variantStyles[variant], className)}
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
       {children}
     </div>
   )
