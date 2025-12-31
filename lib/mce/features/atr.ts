@@ -1,7 +1,7 @@
 // Average True Range (ATR) calculation
 // Scale-invariant volatility measurement
 
-import { type KlineType } from "../types";
+import { type KlineType } from "../schemas";
 import { atr, trueRange, sma, isValidNumber, roundTo } from "../utils/math";
 
 export interface ATRResult {

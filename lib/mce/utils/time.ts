@@ -30,8 +30,7 @@ export function msToTF(ms: number): TF | null {
 }
 
 // Round timestamp to timeframe boundary
-export function roundToTimeframe(timestamp: number, tf: TF): number {
-  const intervalMs = tfToMs(tf);
+export function roundToTimeframe(timestamp: number, intervalMs: number): number {
   return Math.floor(timestamp / intervalMs) * intervalMs;
 }
 
@@ -57,7 +56,7 @@ export function generateTimestamps(
   const intervalMs = tfToMs(tf);
   const timestamps: number[] = [];
   
-  let current = roundToTimeframe(startTime, tf);
+  let current = roundToTimeframe(startTime, intervalMs);
   
   while (current < endTime) {
     if (current >= startTime) {
@@ -149,7 +148,8 @@ export function parseTimestamp(input: string | number | Date): number {
 
 // Get current time aligned to timeframe
 export function getCurrentAlignedTime(tf: TF): number {
-  return roundToTimeframe(Date.now(), tf);
+  const intervalMs = tfToMs(tf);
+  return roundToTimeframe(Date.now(), intervalMs);
 }
 
 // Check if timestamp is recent (within N intervals)
@@ -181,7 +181,7 @@ export function getLastNPeriods(
   endTime: number = Date.now()
 ): { start: number; end: number } {
   const intervalMs = tfToMs(tf);
-  const alignedEnd = roundToTimeframe(endTime, tf);
+  const alignedEnd = roundToTimeframe(endTime, intervalMs);
   const start = alignedEnd - (periods * intervalMs);
   
   return { start, end: alignedEnd };
@@ -226,11 +226,12 @@ export function validateTimestampSequence(
     
     // Check if on boundary
     if (!isOnBoundary(timestamp, tf)) {
+      const intervalMs = tfToMs(tf);
       errors.push({
         type: "invalid_boundary",
         index: i,
         timestamp,
-        details: { expected: roundToTimeframe(timestamp, tf) },
+        details: { expected: roundToTimeframe(timestamp, intervalMs) },
       });
     }
     

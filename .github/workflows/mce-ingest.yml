@@ -2,8 +2,8 @@ name: MCE Data Ingestion
 
 on:
   schedule:
-    # Run every minute (GitHub Actions has ~1-2 minute delay)
-    - cron: '* * * * *'
+    # Run every 5 minutes (GitHub Actions minimum)
+    - cron: '*/5 * * * *'
   
   # Allow manual triggering
   workflow_dispatch:
@@ -11,12 +11,12 @@ on:
       dry_run:
         description: 'Run in dry-run mode (no database writes)'
         required: false
-        default: 'false'
+        default: false
         type: boolean
       verbose:
         description: 'Enable verbose logging'
         required: false
-        default: 'false'
+        default: false
         type: boolean
 
 # Prevent concurrent runs

@@ -1,7 +1,7 @@
 // Exponential Moving Average (EMA) calculation
 // Trend detection and strength measurement
 
-import { type KlineType } from "../types";
+import { type KlineType } from "../schemas";
 import { ema, isValidNumber, roundTo, percentageChange } from "../utils/math";
 
 export interface EMAResult {

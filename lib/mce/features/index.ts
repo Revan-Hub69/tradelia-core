@@ -1,14 +1,14 @@
 // MCE Features - Main calculation engine
 // Combines all feature calculations into a single interface
 
-import { type KlineType, type FeatureVector } from "../types";
+import { type KlineType, type FeatureVectorType } from "../schemas";
 import { calculateATRSafe, type ATRResult } from "./atr";
 import { calculateEMASafe, type EMAResult } from "./ema";
 import { calculateVolumeSafe, type VolumeResult } from "./volume";
 import { roundTo } from "../utils/math";
 
 export interface FeatureCalculationResult {
-  features: FeatureVector;
+  features: FeatureVectorType;
   intermediate: {
     atr: ATRResult;
     ema: EMAResult;
@@ -25,11 +25,11 @@ export interface FeatureCalculationResult {
 // Default configuration for feature calculation
 export const DEFAULT_FEATURE_CONFIG = {
   atr: {
-    periods: [14, 50],
-    lookbackDays: [7, 30],
+    periods: [14, 50] as number[],
+    lookbackDays: [7, 30] as number[],
   },
   ema: {
-    periods: [20, 50],
+    periods: [20, 50] as number[],
   },
   volume: {
     ma: 20,
@@ -37,7 +37,7 @@ export const DEFAULT_FEATURE_CONFIG = {
     norm: 100,
   },
   minKlines: 60, // Minimum klines required for reliable calculation
-} as const;
+};
 
 // Calculate all features for a set of klines
 export function calculateFeatures(
@@ -49,7 +49,7 @@ export function calculateFeatures(
   const warnings: string[] = [];
 
   // Initialize default result
-  const defaultFeatures: FeatureVector = {
+  const defaultFeatures: FeatureVectorType = {
     atr14: null,
     atr50: null,
     atrPct7d: null,
@@ -133,7 +133,7 @@ export function calculateFeatures(
     };
 
   } catch (error) {
-    errors.push(`Feature calculation failed: ${error.message}`);
+    errors.push(`Feature calculation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 
   result.metadata.calculationTime = Date.now() - startTime;
@@ -141,7 +141,7 @@ export function calculateFeatures(
 }
 
 // Validate feature vector completeness
-export function validateFeatures(features: FeatureVector): {
+export function validateFeatures(features: FeatureVectorType): {
   valid: boolean;
   completeness: number; // 0-1
   missingFeatures: string[];
@@ -159,7 +159,7 @@ export function validateFeatures(features: FeatureVector): {
   let presentCount = 0;
 
   for (const feature of allFeatures) {
-    const value = features[feature as keyof FeatureVector];
+    const value = features[feature as keyof FeatureVectorType];
     if (value === null || value === undefined) {
       missingFeatures.push(feature);
     } else {
@@ -171,7 +171,7 @@ export function validateFeatures(features: FeatureVector): {
   
   // Check if critical features are missing
   const criticalMissing = criticalFeatures.some(
-    feature => features[feature as keyof FeatureVector] === null
+    feature => features[feature as keyof FeatureVectorType] === null
   );
 
   return {
@@ -235,13 +235,9 @@ export function calculateFeaturesRobust(
       
       // If we have critical errors, retry with reduced requirements
       if (result.metadata.errors.length > 0 && attempt < maxRetries) {
-        // Reduce minimum klines requirement for retry
-        const retryConfig = {
-          ...config,
-          minKlines: Math.max(20, config.minKlines / 2),
-        };
-        
-        continue; // Try again with relaxed config
+        // Use reduced minimum klines requirement for retry
+        const reducedMinKlines = Math.max(20, config.minKlines / 2);
+        return calculateFeatures(klines, { ...config, minKlines: reducedMinKlines });
       }
       
       return result;

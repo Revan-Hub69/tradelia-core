@@ -1,7 +1,7 @@
 // Volume analysis for market context
 // Volume normalization and trend detection
 
-import { type KlineType } from "../types";
+import { type KlineType } from "../schemas";
 import { sma, zScore, standardDeviation, isValidNumber, roundTo, normalize } from "../utils/math";
 
 export interface VolumeResult {
