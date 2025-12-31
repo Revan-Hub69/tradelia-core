@@ -8,6 +8,7 @@ import { UCM_CONFIG, validateUCMConfig, getConfigSummary } from "../config";
 import { 
   UniversePoolType, 
   UniverseActiveType, 
+  UniverseStateType,
   generatePoolHash,
   UCMError 
 } from "../schemas";
@@ -62,7 +63,12 @@ export async function runUCMPipeline(): Promise<UCMPipelineResult> {
     blacklistedSymbols: 0,
     rankingStats: { avgScore: 0, topScore: 0, bottomScore: 0 },
   };
-  let changes = { added: [], removed: [], blacklisted: [], maintained: [] };
+  let changes: {
+    added: string[];
+    removed: string[];
+    blacklisted: string[];
+    maintained: string[];
+  } = { added: [], removed: [], blacklisted: [], maintained: [] };
   
   try {
     console.log('🚀 Starting UCM Pipeline...');
@@ -148,14 +154,17 @@ export async function runUCMPipeline(): Promise<UCMPipelineResult> {
     console.log('💾 Universe active saved');
     
     // 11. Update universe states
-    const stateUpdates = Array.from(generationResult.changes.added).map(symbol => ({
+    const stateUpdates: UniverseStateType[] = [];
+    
+    // Add new active symbols
+    stateUpdates.push(...Array.from(generationResult.changes.added).map(symbol => ({
       symbol,
       status: 'ACTIVE' as const,
       enteredAt: universeActive!.asOf,
       exitedAt: undefined,
       cooldownUntil: undefined,
       blacklistUntil: undefined,
-    }));
+    })));
     
     // Add removed symbols with cooldown
     stateUpdates.push(...Array.from(generationResult.changes.removed).map(symbol => ({
@@ -246,9 +255,9 @@ async function initializeDefaultPool(repo: UCMRepository): Promise<UniversePoolT
   const pool: UniversePoolType = {
     v: "ucm.pool.v1",
     asOf: Date.now(),
-    symbols: UCM_CONFIG.DEFAULT_POOL.symbols,
-    coreSymbols: UCM_CONFIG.DEFAULT_POOL.coreSymbols,
-    hash: generatePoolHash(UCM_CONFIG.DEFAULT_POOL.symbols, UCM_CONFIG.DEFAULT_POOL.coreSymbols),
+    symbols: [...UCM_CONFIG.DEFAULT_POOL.symbols],
+    coreSymbols: [...UCM_CONFIG.DEFAULT_POOL.coreSymbols],
+    hash: generatePoolHash([...UCM_CONFIG.DEFAULT_POOL.symbols], [...UCM_CONFIG.DEFAULT_POOL.coreSymbols]),
   };
   
   await repo.updateUniversePool(pool);
