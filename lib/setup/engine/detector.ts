@@ -310,7 +310,7 @@ export class SetupDetector {
     confidenceScore += 0.3 * trend.strength;
 
     // 2. PULLBACK TO STRUCTURE
-    const pullback = this.detectPullbackToStructure(structure, trend);
+    const pullback = this.detectPullbackToStructure(structure, trend, symbol, marketState);
     if (!pullback) return null;
 
     const pullbackDepth = pullback.depth;
@@ -354,7 +354,7 @@ export class SetupDetector {
     // 5. CALCULATE ENTRY/STOP/TARGETS
     const entryPrice = this.calculatePullbackEntry(pullback);
     const stopLevel = this.calculatePullbackStop(pullback, trend);
-    const targets = this.calculatePullbackTargets(trend, structure, volatility);
+    const targets = this.calculatePullbackTargets(trend, structure, volatility, symbol, marketState);
 
     const riskReward = Math.abs(targets.primary - entryPrice) / Math.abs(entryPrice - stopLevel);
     
@@ -410,7 +410,7 @@ export class SetupDetector {
     let confidenceScore = 0;
 
     // 1. LIQUIDITY SWEEP DETECTION
-    const liquiditySweep = this.detectLiquiditySweep(structure);
+    const liquiditySweep = this.detectLiquiditySweep(structure, symbol, marketState);
     if (!liquiditySweep) return null;
 
     if (liquiditySweep.distance < this.config.liquiditySweepConfig.minSweepDistance) return null;
@@ -623,7 +623,7 @@ export class SetupDetector {
     };
   }
 
-  private detectPullbackToStructure(structure: any, trend: any): any {
+  private detectPullbackToStructure(structure: any, trend: any, symbol: string, marketState: MarketState): any {
     const m15Levels = structure.M15 || [];
     const h1Levels = trend.h1Levels;
     
@@ -637,7 +637,8 @@ export class SetupDetector {
     if (!relevantH1Level) return null;
     
     // Check if current price is near this level (within 0.5% for pullback)
-    const currentPrice = m15Levels[0]?.level || 0;
+    const currentPrice = marketState.prices[symbol]?.last || 0;
+    if (currentPrice === 0) return null; // No price data
     const pullbackDistance = Math.abs(currentPrice - relevantH1Level.level) / relevantH1Level.level;
     
     if (pullbackDistance > 0.005) return null; // Too far from structure
@@ -707,9 +708,10 @@ export class SetupDetector {
       : pullback.level + buffer;
   }
 
-  private calculatePullbackTargets(trend: any, structure: any, volatility: any): any {
+  private calculatePullbackTargets(trend: any, structure: any, volatility: any, symbol: string, marketState: MarketState): any {
     const atr = volatility.atr || 0;
-    const currentPrice = trend.h1Levels[0]?.level || 0;
+    const currentPrice = marketState.prices[symbol]?.last || 0;
+    if (currentPrice === 0) return null;
     
     // Primary target: 1.5x ATR in trend direction
     const primaryDistance = atr * 1.5;
@@ -726,7 +728,7 @@ export class SetupDetector {
     return { primary, secondary };
   }
   
-  private detectLiquiditySweep(structure: any): any {
+  private detectLiquiditySweep(structure: any, symbol: string, marketState: MarketState): any {
     const m15Levels = structure.M15 || [];
     const h1Levels = structure.H1 || [];
     
@@ -744,7 +746,8 @@ export class SetupDetector {
     if (!recentPool) return null;
     
     // Check if price has moved beyond the pool (sweep)
-    const currentPrice = m15Levels[0]?.level || 0;
+    const currentPrice = marketState.prices[symbol]?.last || 0;
+    if (currentPrice === 0) return null; // No price data
     const sweepDistance = Math.abs(currentPrice - recentPool.level) / recentPool.level;
     
     // Must be a meaningful sweep (at least 0.1%)

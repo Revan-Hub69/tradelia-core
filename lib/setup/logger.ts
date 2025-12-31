@@ -230,7 +230,7 @@ export class SetupEventLogger {
       timestamp: Date.now(),
       data: {
         exitPrice,
-        exitReason: 'STOP',
+        exitReason: outcome.exitReason,
       },
       marketState,
       outcome,
@@ -254,7 +254,7 @@ export class SetupEventLogger {
       timestamp: Date.now(),
       data: {
         exitPrice,
-        exitReason: 'TARGET_PRIMARY',
+        exitReason: outcome.exitReason,
       },
       marketState,
       outcome,

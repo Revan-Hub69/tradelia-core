@@ -210,6 +210,7 @@ export class MarketDataEngine {
           openingSoon: false,
           closingSoon: false,
         },
+        prices: {}, // Empty for now - would be populated with real prices
         asOf: currentTime,
       };
 

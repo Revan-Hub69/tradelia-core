@@ -15,6 +15,7 @@ export interface MarketState {
   orderflow: OrderflowState;
   volatility: VolState;
   session: SessionState;
+  prices: Record<string, { last: number; timestamp: number }>; // REAL PRICES
   asOf: number;
 }
 

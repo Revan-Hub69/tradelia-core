@@ -4,8 +4,8 @@ import { MarketState } from './types';
 export async function buildRealMarketState(symbols: string[]): Promise<MarketState> {
   const now = Date.now();
   
-  // Get real prices from Binance (simplified)
-  const prices: any = {};
+  // Get real prices from Binance
+  const prices: Record<string, { last: number; timestamp: number }> = {};
   try {
     const response = await fetch('https://api.binance.com/api/v3/ticker/price');
     const tickers = await response.json();
@@ -13,7 +13,7 @@ export async function buildRealMarketState(symbols: string[]): Promise<MarketSta
     for (const symbol of symbols) {
       const ticker = tickers.find((t: any) => t.symbol === symbol);
       prices[symbol] = {
-        last: ticker ? parseFloat(ticker.price) : 50000,
+        last: ticker ? parseFloat(ticker.price) : (symbol === 'BTCUSDT' ? 50000 : 2000),
         timestamp: now
       };
     }
@@ -83,6 +83,7 @@ export async function buildRealMarketState(symbols: string[]): Promise<MarketSta
       return acc;
     }, {} as any),
     session: { current: 'US', openingSoon: false, closingSoon: false },
+    prices, // REAL PRICES HERE
     asOf: now,
   };
 }
