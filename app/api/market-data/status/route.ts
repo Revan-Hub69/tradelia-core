@@ -2,16 +2,18 @@
 // Professional monitoring and KPI endpoint
 
 import { NextRequest, NextResponse } from 'next/server';
-import { applyRateLimit } from '@/lib/middleware/rate-limit-db';
+import { requirePermission } from '@/lib/middleware/api-auth';
 import { supabaseAdmin } from '@/lib/mce/db/supabase';
 
 export async function GET(request: NextRequest) {
   try {
-    // Apply rate limiting
-    const rateLimitResult = await applyRateLimit(request);
-    if (rateLimitResult) {
-      return rateLimitResult;
+    // Require authentication and read permission
+    const authResult = await requirePermission(request, 'read:market-data');
+    if (authResult instanceof NextResponse) {
+      return authResult; // Return auth error response
     }
+    
+    const authContext = authResult;
 
     const supabase = supabaseAdmin();
     

@@ -10,6 +10,8 @@ import {
   MarketDataConfig,
   DEFAULT_CONFIG 
 } from './types';
+import { EnhancedCircuitBreaker } from '@/lib/utils/circuit-breaker-enhanced';
+import { retryNetworkOperation } from '@/lib/utils/retry-enhanced';
 
 export class BinanceMarketDataAdapter implements MarketDataAdapter {
   private ws: WebSocket | null = null;
@@ -18,11 +20,17 @@ export class BinanceMarketDataAdapter implements MarketDataAdapter {
   private reconnectAttempts = 0;
   private heartbeatTimer: NodeJS.Timeout | null = null;
   private reconnectTimer: NodeJS.Timeout | null = null;
+  private circuitBreaker: EnhancedCircuitBreaker;
   
   // Event callbacks
   private tradeCallback: ((event: TradeEvent) => void) | null = null;
   private orderBookCallback: ((event: OrderBookEvent) => void) | null = null;
   private klineCallback: ((event: KlineEvent) => void) | null = null;
+  
+  // Connection redundancy
+  private primaryWs: WebSocket | null = null;
+  private backupWs: WebSocket | null = null;
+  private activeConnection: 'primary' | 'backup' = 'primary';
   
   constructor(config: Partial<MarketDataConfig> = {}) {
     this.config = { ...DEFAULT_CONFIG, ...config };
@@ -32,9 +40,24 @@ export class BinanceMarketDataAdapter implements MarketDataAdapter {
       reconnectCount: 0,
       latency: 0,
     };
+    
+    // Initialize circuit breaker for connection management
+    this.circuitBreaker = new EnhancedCircuitBreaker({
+      failureThreshold: 3,
+      recoveryTimeout: 30000, // 30 seconds
+      slowCallThreshold: 10000, // 10 seconds
+    });
   }
 
   async connect(symbols: string[]): Promise<void> {
+    return this.circuitBreaker.execute(async () => {
+      return retryNetworkOperation(async () => {
+        await this.establishConnection(symbols);
+      }, 3, 2000);
+    });
+  }
+
+  private async establishConnection(symbols: string[]): Promise<void> {
     if (this.ws?.readyState === WebSocket.OPEN) {
       await this.disconnect();
     }
@@ -48,7 +71,16 @@ export class BinanceMarketDataAdapter implements MarketDataAdapter {
         console.log(`Connecting to Binance WebSocket: ${wsUrl}`);
         this.ws = new WebSocket(wsUrl);
         
+        // Set connection timeout
+        const connectionTimeout = setTimeout(() => {
+          if (this.ws?.readyState !== WebSocket.OPEN) {
+            this.ws?.close();
+            reject(new Error('WebSocket connection timeout'));
+          }
+        }, 10000); // 10 second timeout
+        
         this.ws.onopen = () => {
+          clearTimeout(connectionTimeout);
           console.log('Binance WebSocket connected');
           this.connectionStatus.connected = true;
           this.connectionStatus.lastHeartbeat = Date.now();
@@ -59,10 +91,16 @@ export class BinanceMarketDataAdapter implements MarketDataAdapter {
         };
         
         this.ws.onmessage = (event) => {
-          this.handleMessage(event.data);
+          try {
+            this.handleMessage(event.data);
+          } catch (error) {
+            console.error('Error handling WebSocket message:', error);
+            // Don't throw here to avoid breaking the connection
+          }
         };
         
         this.ws.onclose = (event) => {
+          clearTimeout(connectionTimeout);
           console.log(`WebSocket closed: ${event.code} ${event.reason}`);
           this.connectionStatus.connected = false;
           this.stopHeartbeat();
@@ -73,6 +111,7 @@ export class BinanceMarketDataAdapter implements MarketDataAdapter {
         };
         
         this.ws.onerror = (error) => {
+          clearTimeout(connectionTimeout);
           console.error('WebSocket error:', error);
           reject(new Error('WebSocket connection failed'));
         };
