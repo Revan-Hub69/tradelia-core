@@ -1,46 +1,53 @@
-# 📚 Tradelia Documentation
+# Tradelia Documentation
 
-Documentazione organizzata del progetto Tradelia.
+**🎯 OVERVIEW PRINCIPALE**: [`project-overview.md`](project-overview.md)
 
-## 📁 Struttura
+## Market Context Engine (MCE)
 
-### `/design` - Design System & UI
-- `DESIGN-SYSTEM-RESET-2026.md` - Design system completo con regole e palette
-- `DESIGN-RESET-COMPLETE.md` - Riepilogo del reset design completato
-- `DESIGN-ACTION-PLAN.md` - Piano d'azione per il design system
-- `DESIGN-EXCELLENCE-2026.md` - Linee guida per eccellenza design
-- `DESIGN-AUDIT-CRITICAL.md` - Audit critico del design
+Il Market Context Engine è il primo mattoncino dell'infrastruttura di trading AI di Tradelia, implementando classificazione deterministica dei regimi di mercato.
 
-### `/setup` - Setup & Infrastructure
-- `FEAR-GREED-SETUP.md` - Setup Fear & Greed Index con Alternative.me
-- `SUPABASE-CRON-SETUP.sql` - Setup cron job Supabase
-- `SUPABASE-FIX-PERMISSIONS.sql` - Fix permessi database
-- `VERCEL-SETUP.md` - Configurazione Vercel deployment
-- `CRYPTO-INFRASTRUCTURE-PLAN.md` - Piano infrastruttura crypto data
+### 📋 Documentation Structure
 
-### `/archive` - Documentazione Storica
-File completati o superati, mantenuti per riferimento storico:
-- `ACCESSIBILITY-AUDIT-2026.md`
-- `MICROINTERACTIONS-RESTORED.md`
-- `MIGRATION-SUMMARY.md`
-- `MOBILE-FIXES-SUMMARY.md`
-- `P0-FIXES-SIMPLE.md`
-- `PERFORMANCE-SEO-OPTIMIZATION.md`
-- `PROFESSIONAL-DESIGN-SUMMARY.md`
-- `cleanup-old-structure.md`
+#### 🎯 Start Here
+- **[Project Overview](project-overview.md)** - **LEGGI QUESTO PRIMA** - Panoramica completa del progetto
 
-## 🎯 Quick Links
+#### Core Architecture
+- **[Design v2](mce-design-v2.md)** - System architecture and components
+- **[Canonical Output](mce-canonical-output-v2.md)** - Standardized output format
+- **[Validation KPIs](mce-validation-kpi-v2.md)** - Metrics and validation criteria
 
-### Per iniziare
-1. Leggi `README.md` nella root
-2. Setup: `/setup/VERCEL-SETUP.md`
-3. Design: `/design/DESIGN-SYSTEM-RESET-2026.md`
+#### Implementation
+- **[Free Tier Architecture](mce-free-tier-architecture.md)** - Zero-cost implementation using Vercel + GitHub Actions + Supabase
 
-### Per sviluppare
-- Design system: `/design/DESIGN-SYSTEM-RESET-2026.md`
-- Componenti: `components/ui/design-system/`
-- API: `app/api/`
+#### Development Workflow
+- **[Requirements](../.kiro/specs/market-context-engine/requirements.md)** - EARS-compliant requirements
+- **[Tasks](../.kiro/specs/market-context-engine/tasks.md)** - Implementation plan and tasks
 
-### Per deploy
-- Vercel: `/setup/VERCEL-SETUP.md`
-- Supabase: `/setup/SUPABASE-CRON-SETUP.sql`
+### 🎯 Principles
+
+- **Deterministic Core**: Same input → Same output (bit-per-bit)
+- **Progressive Activation**: MAX architecture, incremental deployment
+- **Free-First**: Start with zero-cost infrastructure ($0/mese)
+- **Strategy Agnostic**: Constrains strategy selection, doesn't imply trading actions
+
+### 🚀 Quick Start
+
+1. **📋 Read Overview**: Start with [Project Overview](project-overview.md) - **ESSENZIALE**
+2. **🏗️ Understand Architecture**: Review [Design v2](mce-design-v2.md)
+3. **📊 Check Output**: See [Canonical Output](mce-canonical-output-v2.md)
+4. **💰 Implementation**: Follow [Free Tier Architecture](mce-free-tier-architecture.md)
+5. **🔧 Start Building**: Execute [Tasks](../.kiro/specs/market-context-engine/tasks.md)
+
+### 📊 Current Status
+
+- ✅ **Requirements**: Complete (EARS-compliant)
+- ✅ **Architecture**: Complete (v2 separated)
+- ✅ **Output Format**: Complete (canonical)
+- ✅ **KPI Metrics**: Complete (validation)
+- ✅ **Free Tier Plan**: Complete (implementation)
+- ✅ **Documentation**: Complete (organized)
+- 🔄 **Implementation**: Ready to start
+
+---
+
+*Last updated: December 2024*

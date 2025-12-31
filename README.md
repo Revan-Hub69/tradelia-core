@@ -1,177 +1,132 @@
-# Supabase CLI
+# Tradelia AI - Dashboard Intraday
 
-[![Coverage Status](https://coveralls.io/repos/github/supabase/cli/badge.svg?branch=main)](https://coveralls.io/github/supabase/cli?branch=main) [![Bitbucket Pipelines](https://img.shields.io/bitbucket/pipelines/supabase-cli/setup-cli/master?style=flat-square&label=Bitbucket%20Canary)](https://bitbucket.org/supabase-cli/setup-cli/pipelines) [![Gitlab Pipeline Status](https://img.shields.io/gitlab/pipeline-status/sweatybridge%2Fsetup-cli?label=Gitlab%20Canary)
-](https://gitlab.com/sweatybridge/setup-cli/-/pipelines)
+Tradelia è una piattaforma educativa per il trading di criptovalute che combina contenuti didattici, strumenti di analisi e **Market Context Engine (MCE)** per classificazione deterministica dei regimi di mercato intraday.
 
-[Supabase](https://supabase.io) is an open source Firebase alternative. We're building the features of Firebase using enterprise-grade open source tools.
+## 🎯 Progetto Attuale: Dashboard Intraday + MCE
 
-This repository contains all the functionality for Supabase CLI.
+**Obiettivo**: Primo step dell'infrastruttura AI per trading intraday con setup chiavi in mano.
 
-- [x] Running Supabase locally
-- [x] Managing database migrations
-- [x] Creating and deploying Supabase Functions
-- [x] Generating types directly from your database schema
-- [x] Making authenticated HTTP requests to [Management API](https://supabase.com/docs/reference/api/introduction)
+### Principi Fondamentali
+- **MAX Architecture**: Architettura massimale, attivazione progressiva
+- **Free-First**: Infrastruttura a costo zero ($0/mese)
+- **Determinismo Assoluto**: Same input → Same output (bit-per-bit)
+- **Strategy Agnostic**: Vincola selezione strategica, non implica azioni di trading
 
-## Getting started
+## 📋 Documentazione Completa
 
-### Install the CLI
+**🎯 OVERVIEW PRINCIPALE**: [`docs/project-overview.md`](docs/project-overview.md)
 
-Available via [NPM](https://www.npmjs.com) as dev dependency. To install:
+### Market Context Engine (MCE)
+- **[Requirements](/.kiro/specs/market-context-engine/requirements.md)** - EARS-compliant requirements
+- **[Tasks](/.kiro/specs/market-context-engine/tasks.md)** - Implementation plan
+- **[Architecture](docs/mce-design-v2.md)** - System design
+- **[Output Format](docs/mce-canonical-output-v2.md)** - Canonical JSON specification
+- **[KPI Metrics](docs/mce-validation-kpi-v2.md)** - Validation criteria
+- **[Free Tier Implementation](docs/mce-free-tier-architecture.md)** - Zero-cost deployment
 
-```bash
-npm i supabase --save-dev
+## 🏗️ Architettura Attuale
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    TRADELIA DASHBOARD                       │
+│                   (Vercel + Next.js)                       │
+└─────────────────────┬───────────────────────────────────────┘
+                      │
+┌─────────────────────▼───────────────────────────────────────┐
+│                MARKET CONTEXT ENGINE                        │
+│              (GitHub Actions + Supabase)                   │
+│                                                             │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐ │
+│  │  Ingestion  │  │ Classifier  │  │    Regime Cache     │ │
+│  │   (5min)    │  │   (5min)    │  │   (API Ready)       │ │
+│  └─────────────┘  └─────────────┘  └─────────────────────┘ │
+└─────────────────────┬───────────────────────────────────────┘
+                      │
+┌─────────────────────▼───────────────────────────────────────┐
+│                  BINANCE API                                │
+│              (Free Tier - REST)                            │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-When installing with yarn 4, you need to disable experimental fetch with the following nodejs config.
+## 💰 Stack FREE TIER (Costo: $0/mese)
 
-```
-NODE_OPTIONS=--no-experimental-fetch yarn add supabase
-```
+- **Frontend**: Vercel Hobby (dashboard esistente)
+- **Backend**: GitHub Actions (MCE engine schedulato)
+- **Database**: Supabase Free (cache + recent data)
+- **Storage**: GitHub Repository (dati storici)
+- **API**: Binance REST (free tier)
 
-> **Note**
-For Bun versions below v1.0.17, you must add `supabase` as a [trusted dependency](https://bun.sh/guides/install/trusted) before running `bun add -D supabase`.
+## 🚀 Status Implementazione
 
-<details>
-  <summary><b>macOS</b></summary>
+### ✅ COMPLETATO
+- Requirements (EARS-compliant)
+- Architecture design (v2)
+- Output format specification
+- KPI validation metrics
+- Free tier implementation plan
+- Documentation completa
 
-  Available via [Homebrew](https://brew.sh). To install:
+### 🔄 IN PROGRESS
+- Setup GitHub Actions workflows
+- Supabase database configuration
+- Dashboard API integration
 
-  ```sh
-  brew install supabase/tap/supabase
-  ```
+## Stack Tecnologico Base
 
-  To install the beta release channel:
-  
-  ```sh
-  brew install supabase/tap/supabase-beta
-  brew link --overwrite supabase-beta
-  ```
-  
-  To upgrade:
+- **Frontend**: Next.js 14 with App Router
+- **Styling**: Tailwind CSS + shadcn/ui
+- **Database**: Supabase (PostgreSQL)
+- **Authentication**: Supabase Auth
+- **Deployment**: Vercel
+- **AI**: Market regime classification
 
-  ```sh
-  brew upgrade supabase
-  ```
-</details>
+## Getting Started
 
-<details>
-  <summary><b>Windows</b></summary>
+1. **Leggi la Overview Completa**
+   ```bash
+   # Apri in browser o editor
+   docs/project-overview.md
+   ```
 
-  Available via [Scoop](https://scoop.sh). To install:
+2. **Setup Ambiente di Sviluppo**
+   ```bash
+   git clone [repository-url]
+   cd tradelia
+   npm install
+   cp .env.local.example .env.local
+   npm run dev
+   ```
 
-  ```powershell
-  scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
-  scoop install supabase
-  ```
+3. **Implementazione MCE**
+   - Segui [`docs/mce-free-tier-architecture.md`](docs/mce-free-tier-architecture.md)
+   - Tasks in [`.kiro/specs/market-context-engine/tasks.md`](.kiro/specs/market-context-engine/tasks.md)
 
-  To upgrade:
+## 📊 MCE Output Example
 
-  ```powershell
-  scoop update supabase
-  ```
-</details>
-
-<details>
-  <summary><b>Linux</b></summary>
-
-  Available via [Homebrew](https://brew.sh) and Linux packages.
-
-  #### via Homebrew
-
-  To install:
-
-  ```sh
-  brew install supabase/tap/supabase
-  ```
-
-  To upgrade:
-
-  ```sh
-  brew upgrade supabase
-  ```
-
-  #### via Linux packages
-
-  Linux packages are provided in [Releases](https://github.com/supabase/cli/releases). To install, download the `.apk`/`.deb`/`.rpm`/`.pkg.tar.zst` file depending on your package manager and run the respective commands.
-
-  ```sh
-  sudo apk add --allow-untrusted <...>.apk
-  ```
-
-  ```sh
-  sudo dpkg -i <...>.deb
-  ```
-
-  ```sh
-  sudo rpm -i <...>.rpm
-  ```
-
-  ```sh
-  sudo pacman -U <...>.pkg.tar.zst
-  ```
-</details>
-
-<details>
-  <summary><b>Other Platforms</b></summary>
-
-  You can also install the CLI via [go modules](https://go.dev/ref/mod#go-install) without the help of package managers.
-
-  ```sh
-  go install github.com/supabase/cli@latest
-  ```
-
-  Add a symlink to the binary in `$PATH` for easier access:
-
-  ```sh
-  ln -s "$(go env GOPATH)/bin/cli" /usr/bin/supabase
-  ```
-
-  This works on other non-standard Linux distros.
-</details>
-
-<details>
-  <summary><b>Community Maintained Packages</b></summary>
-
-  Available via [pkgx](https://pkgx.sh/). Package script [here](https://github.com/pkgxdev/pantry/blob/main/projects/supabase.com/cli/package.yml).
-  To install in your working directory:
-
-  ```bash
-  pkgx install supabase
-  ```
-
-  Available via [Nixpkgs](https://nixos.org/). Package script [here](https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/tools/supabase-cli/default.nix).
-</details>
-
-### Run the CLI
-
-```bash
-supabase bootstrap
+```json
+{
+  "as_of_ts": 1730000000000,
+  "symbol": "BTCUSDT",
+  "price_regime": {
+    "trend": "range",           // up | down | range
+    "volatility": "compressed"  // compressed | normal | expanded
+  },
+  "confidence": 0.81,
+  "data_quality": {
+    "missing_pct": 0.2,
+    "late_events_pct": 1.1,
+    "coverage_pct": 99.8
+  }
+}
 ```
 
-Or using npx:
+## 🎯 Next Steps
 
-```bash
-npx supabase bootstrap
-```
+1. **Review**: [`docs/project-overview.md`](docs/project-overview.md)
+2. **Implement**: Follow MCE implementation guide
+3. **Deploy**: GitHub Actions + Supabase setup
+4. **Integrate**: MCE API endpoints in dashboard
 
-The bootstrap command will guide you through the process of setting up a Supabase project using one of the [starter](https://github.com/supabase-community/supabase-samples/blob/main/samples.json) templates.
+## Licenza
 
-## Docs
-
-Command & config reference can be found [here](https://supabase.com/docs/reference/cli/about).
-
-## Breaking changes
-
-We follow semantic versioning for changes that directly impact CLI commands, flags, and configurations.
-
-However, due to dependencies on other service images, we cannot guarantee that schema migrations, seed.sql, and generated types will always work for the same CLI major version. If you need such guarantees, we encourage you to pin a specific version of CLI in package.json.
-
-## Developing
-
-To run from source:
-
-```sh
-# Go >= 1.22
-go run . help
-```
+Questo progetto è sotto licenza MIT. Vedi il file `LICENSE` per i dettagli.
