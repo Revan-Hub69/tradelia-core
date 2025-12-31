@@ -12,9 +12,9 @@ export interface DayGateInput {
   config: MSFConfig;
 }
 
-export function generateDayGate(input: DayGateInput): DayGate {
+export function generateDayGate(input: DayGateInput, asOf: number): DayGate {
   const { regime, universe, marketFits, config } = input;
-  const timestamp = Date.now();
+  const timestamp = asOf; // ✅ DETERMINISTIC: Use passed timestamp
   const reasons: string[] = [];
   
   // Count A and B symbols (for reporting only, not decision logic)
@@ -51,8 +51,8 @@ export function generateDayGate(input: DayGateInput): DayGate {
       reasons.push("universe too small");
     }
     
-    // Too many data gaps across universe
-    const avgGaps = marketFits.reduce((sum, fit) => sum + (fit.reasons.includes("gaps") ? 1 : 0), 0);
+    // ✅ FIX BUG: Correct string match for gaps
+    const avgGaps = marketFits.reduce((sum, fit) => sum + (fit.reasons.includes("too many gaps") ? 1 : 0), 0);
     if (avgGaps > marketFits.length * 0.3) { // >30% symbols have gap issues
       tradableDay = false;
       reasons.push("widespread data gaps");
@@ -79,14 +79,15 @@ export function generateDayGate(input: DayGateInput): DayGate {
     hash: "", // will be calculated
   };
   
-  // Calculate deterministic hash
+  // ✅ DETERMINISTIC HASH: Use stable inputs
   dayGate.hash = calculateHash({
     tradableDay,
     countA,
     countB,
     reasons: finalReasons,
-    regime: regime.hash,
-    universe: universe.hash,
+    regimeHash: regime.hash,
+    universeHash: universe.hash,
+    asOf: timestamp,
   });
   
   return dayGate;

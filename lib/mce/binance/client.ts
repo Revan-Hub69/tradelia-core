@@ -4,6 +4,7 @@
 import { z } from "zod";
 import { BinanceKlineResponseSchema } from "../schemas";
 import { MCEError } from "../types";
+import { getBinanceConfig, type BinanceConfig } from "../../config/binance";
 
 // Rate limiter class
 class RateLimiter {
@@ -69,25 +70,27 @@ export interface BinanceApiError {
 
 // Main Binance client class
 export class BinanceClient {
-  private readonly baseUrl = "https://api.binance.com";
+  private readonly config: BinanceConfig;
   private readonly rateLimiter: RateLimiter;
-  private readonly timeout: number;
 
-  constructor(options: {
-    rateLimit?: { requests: number; windowMs: number };
-    timeout?: number;
-  } = {}) {
-    // Conservative 8 RPS (480 requests per minute)
-    const { requests = 8, windowMs = 1000 } = options.rateLimit || {};
-    this.rateLimiter = new RateLimiter(requests, windowMs);
-    this.timeout = options.timeout || 10000; // 10s timeout
+  constructor(customConfig?: Partial<BinanceConfig>) {
+    // Merge custom config with defaults
+    this.config = { ...getBinanceConfig(), ...customConfig };
+    
+    // Initialize rate limiter with config
+    this.rateLimiter = new RateLimiter(
+      this.config.rateLimit.requests,
+      this.config.rateLimit.windowMs
+    );
+    
+    console.log(`🔗 Binance client initialized: ${this.config.baseUrl}`);
   }
 
   // Fetch klines with rate limiting and error handling
   async getKlines(params: BinanceKlineParams): Promise<BinanceKlineRaw[]> {
     await this.rateLimiter.waitForSlot();
 
-    const url = new URL("/api/v3/klines", this.baseUrl);
+    const url = new URL("/api/v3/klines", this.config.baseUrl);
     
     // Add query parameters
     url.searchParams.set("symbol", params.symbol);
@@ -107,12 +110,12 @@ export class BinanceClient {
 
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+      const timeoutId = setTimeout(() => controller.abort(), this.config.timeout);
 
       const response = await fetch(url.toString(), {
         method: "GET",
         headers: {
-          "User-Agent": "MCE/1.0",
+          "User-Agent": this.config.userAgent,
         },
         signal: controller.signal,
       });
@@ -154,7 +157,7 @@ export class BinanceClient {
       
       if (error instanceof Error && error.name === "AbortError") {
         throw new MCEError(
-          `Binance API timeout after ${this.timeout}ms`,
+          `Binance API timeout after ${this.config.timeout}ms`,
           "TIMEOUT_ERROR",
           { url: url.toString() }
         );
@@ -235,11 +238,11 @@ export class BinanceClient {
     
     try {
       // Use server time endpoint (lightweight)
-      const url = new URL("/api/v3/time", this.baseUrl);
+      const url = new URL("/api/v3/time", this.config.baseUrl);
       
       const response = await fetch(url.toString(), {
         method: "GET",
-        headers: { "User-Agent": "MCE/1.0" },
+        headers: { "User-Agent": this.config.userAgent },
         signal: AbortSignal.timeout(5000), // 5s timeout for health check
       });
       
@@ -268,7 +271,7 @@ export class BinanceClient {
   }
 }
 
-// Default client instance
+// Default client instance with production config
 export const binanceClient = new BinanceClient();
 
 // Utility function to convert Binance interval to milliseconds

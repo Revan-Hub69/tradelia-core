@@ -148,15 +148,39 @@ export function isValidPlaybook(playbook: string): playbook is AllowedPlaybook {
   return ["breakout", "pullback", "mean_revert", "none"].includes(playbook);
 }
 
-// Utility functions
+// ✅ DETERMINISTIC HASH: Deep canonical JSON sort for stable hashing
 export function calculateHash(data: any): string {
-  // Simple deterministic hash for MSF objects
-  const str = JSON.stringify(data, Object.keys(data).sort());
+  // Recursive function to sort object keys deeply
+  function sortObjectDeep(obj: any): any {
+    if (obj === null || typeof obj !== 'object') {
+      return obj;
+    }
+    
+    if (Array.isArray(obj)) {
+      return obj.map(sortObjectDeep);
+    }
+    
+    const sortedObj: any = {};
+    const sortedKeys = Object.keys(obj).sort();
+    
+    for (const key of sortedKeys) {
+      sortedObj[key] = sortObjectDeep(obj[key]);
+    }
+    
+    return sortedObj;
+  }
+  
+  // Create canonical string representation
+  const canonicalData = sortObjectDeep(data);
+  const canonicalStr = JSON.stringify(canonicalData);
+  
+  // Simple but stable hash function
   let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
+  for (let i = 0; i < canonicalStr.length; i++) {
+    const char = canonicalStr.charCodeAt(i);
     hash = ((hash << 5) - hash) + char;
     hash = hash & hash; // Convert to 32-bit integer
   }
+  
   return Math.abs(hash).toString(16);
 }

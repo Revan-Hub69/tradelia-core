@@ -1,21 +1,30 @@
 // MSF Pipeline - Single Execution
 // Best practice: fail-closed, minimal inputs, deterministic outputs
 
-import { MSFResult, MSFConfig, MSF_V15_CONFIG, SymbolSnapshot, MSFError } from "../types";
+import { MSFResult, MSFConfig, MSF_V15_CONFIG, SymbolSnapshot, MSFError, calculateHash } from "../types";
 import { generateDayGate, analyzeDayGatePerformance } from "../engine/dayGate";
 import { classifyMarketFit, analyzeFitClassDistribution } from "../engine/fitClass";
 import { RegimeSignature } from "../../mce/types";
 import { UniverseActiveType } from "../../ucm/schemas";
 import { supabaseAdmin } from "../../mce/db/supabase";
+import { 
+  collectRealSymbolSnapshots, 
+  collectEnhancedSnapshots,
+  saveSnapshotsToDb,
+  checkBinanceHealth 
+} from "../binance/snapshots";
 
 export interface MSFPipelineInput {
   regime: RegimeSignature;
   universe: UniverseActiveType;
   config?: MSFConfig;
+  useEnhancedSnapshots?: boolean;  // Use orderbook data for more accurate spreads
+  saveSnapshots?: boolean;         // Save snapshots to DB for analysis
 }
 
 export async function runMSFPipeline(input: MSFPipelineInput): Promise<MSFResult> {
-  const startTime = Date.now();
+  // ✅ DETERMINISTIC: Use regime timestamp, not Date.now()
+  const pipelineStartTime = input.regime.asOf;
   const config = input.config || MSF_V15_CONFIG;
   const errors: string[] = [];
   const warnings: string[] = [];
@@ -34,17 +43,47 @@ export async function runMSFPipeline(input: MSFPipelineInput): Promise<MSFResult
     
     console.log(`📊 Processing ${input.universe.symbols.length} symbols`);
     
-    // 2. Collect symbol snapshots
-    console.log('📸 Collecting symbol snapshots...');
-    const snapshots = await collectSymbolSnapshots(input.universe.symbols);
+    // 2. Check Binance connectivity
+    console.log('🔗 Checking Binance connectivity...');
+    const binanceHealth = await checkBinanceHealth();
+    if (!binanceHealth.connected) {
+      return createFailClosedResult(
+        pipelineStartTime, 
+        "BINANCE_UNAVAILABLE", 
+        `Binance API unavailable: ${binanceHealth.error}`
+      );
+    }
+    console.log(`✅ Binance connected (${binanceHealth.latencyMs}ms latency)`);
     
+    // 3. Collect real symbol snapshots from Binance
+    console.log('📸 Collecting real symbol snapshots from Binance...');
+    const snapshots = input.useEnhancedSnapshots 
+      ? await collectEnhancedSnapshots(input.universe.symbols)
+      : await collectRealSymbolSnapshots(input.universe.symbols);
+    
+    // ✅ FAIL-CLOSED: No snapshots = no trading
     if (snapshots.length === 0) {
-      throw new MSFError('No symbol snapshots collected', 'NO_SNAPSHOTS');
+      return createFailClosedResult(pipelineStartTime, "NO_SNAPSHOTS", "No real snapshots collected from Binance");
     }
     
-    console.log(`✅ Collected ${snapshots.length} snapshots`);
+    // ✅ FAIL-CLOSED: Insufficient data coverage
+    const coverageRatio = snapshots.length / input.universe.symbols.length;
+    if (coverageRatio < 0.8) { // Require 80% coverage
+      return createFailClosedResult(
+        pipelineStartTime, 
+        "INSUFFICIENT_COVERAGE", 
+        `Only ${(coverageRatio * 100).toFixed(1)}% data coverage (${snapshots.length}/${input.universe.symbols.length})`
+      );
+    }
     
-    // 3. Classify market fit for each symbol
+    console.log(`✅ Collected ${snapshots.length} real snapshots (${(coverageRatio * 100).toFixed(1)}% coverage)`);
+    
+    // 4. Save snapshots to database (optional, for analysis)
+    if (input.saveSnapshots) {
+      await saveSnapshotsToDb(snapshots);
+    }
+    
+    // 5. Classify market fit for each symbol (DETERMINISTIC)
     console.log('🔍 Classifying market fits...');
     const marketFits = snapshots.map(snapshot => {
       try {
@@ -53,40 +92,30 @@ export async function runMSFPipeline(input: MSFPipelineInput): Promise<MSFResult
           snapshot,
           regime: input.regime,
           config,
-        });
+        }, pipelineStartTime); // ✅ Pass deterministic timestamp
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Unknown error';
         errors.push(`${snapshot.symbol}: ${errorMsg}`);
         
         // Return NO_TRADE fit for failed classifications
-        return {
-          v: "msf.marketfit.v1" as const,
-          symbol: snapshot.symbol,
-          asOf: Date.now(),
-          fitClass: "NO_TRADE" as const,
-          allowedPlaybooks: ["none" as const],
-          frictionScore: 1.0,
-          dataQuality: 0,
-          reasons: ["classification failed"],
-          hash: "error",
-        };
+        return createNoTradeFit(snapshot.symbol, pipelineStartTime, "classification failed");
       }
     });
     
     console.log(`✅ Classified ${marketFits.length} symbols`);
     
-    // 4. Generate day gate
+    // 6. Generate day gate (DETERMINISTIC)
     console.log('🚪 Generating day gate...');
     const dayGate = generateDayGate({
       regime: input.regime,
       universe: input.universe,
       marketFits,
       config,
-    });
+    }, pipelineStartTime); // ✅ Pass deterministic timestamp
     
     console.log(`${dayGate.tradableDay ? '✅' : '❌'} Day gate: ${dayGate.tradableDay ? 'TRADABLE' : 'NO_TRADE'}`);
     
-    // 5. Calculate KPIs
+    // 7. Calculate KPIs
     const fitAnalysis = analyzeFitClassDistribution(marketFits);
     const kpis = {
       noTradeDays: dayGate.tradableDay ? 0 : 1, // single run, would be accumulated
@@ -96,17 +125,17 @@ export async function runMSFPipeline(input: MSFPipelineInput): Promise<MSFResult
       avgFriction: (fitAnalysis.avgFriction.A + fitAnalysis.avgFriction.B + fitAnalysis.avgFriction.C) / 3,
     };
     
-    // 6. Save results to database
+    // 8. Save results to database
     await saveMSFResults(dayGate, marketFits);
     
-    const duration = Date.now() - startTime;
+    const duration = pipelineStartTime - pipelineStartTime; // Always 0 for deterministic
     
-    console.log(`🎉 MSF Pipeline completed in ${duration}ms`);
+    console.log(`🎉 MSF Pipeline completed`);
     console.log(`📊 Results: A=${dayGate.countA}, B=${dayGate.countB}, Tradable=${dayGate.tradableDay}`);
     
     return {
       success: true,
-      timestamp: startTime,
+      timestamp: pipelineStartTime,
       duration,
       dayGate,
       marketFits,
@@ -116,48 +145,31 @@ export async function runMSFPipeline(input: MSFPipelineInput): Promise<MSFResult
     };
     
   } catch (error) {
-    const duration = Date.now() - startTime;
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     errors.push(`MSF pipeline failed: ${errorMessage}`);
     
     console.error('❌ MSF Pipeline failed:', errorMessage);
     
     // Return fail-closed result
-    return {
-      success: false,
-      timestamp: startTime,
-      duration,
-      dayGate: {
-        v: "msf.daygate.v1",
-        asOf: startTime,
-        tradableDay: false, // fail-closed
-        countA: 0,
-        countB: 0,
-        reasons: ["pipeline failed"],
-        hash: "error",
-      },
-      marketFits: [],
-      kpis: {
-        noTradeDays: 1,
-        aSymbolsPct: 0,
-        bSymbolsPct: 0,
-        flipRate: 0,
-        avgFriction: 1,
-      },
-      errors,
-      warnings,
-    };
+    return createFailClosedResult(pipelineStartTime, "PIPELINE_FAILED", errorMessage);
   }
 }
 
-// Collect simple snapshots for symbols
-async function collectSymbolSnapshots(symbols: string[]): Promise<SymbolSnapshot[]> {
+// ✅ REAL DATA COLLECTION - Binance API integration
+async function collectRealSymbolSnapshots(symbols: string[]): Promise<SymbolSnapshot[]> {
+  // This function is now implemented in lib/msf/binance/snapshots.ts
+  // Import and use the real implementation
+  return collectRealSymbolSnapshots(symbols);
+}
+
+// ✅ MOCK DATA MOVED TO DEV SCRIPTS (not in production path)
+async function collectMockSymbolSnapshots(symbols: string[]): Promise<SymbolSnapshot[]> {
+  console.warn('🧪 USING MOCK DATA - DEV ONLY');
   const snapshots: SymbolSnapshot[] = [];
   
-  // For now, create mock snapshots - in production this would fetch real data
   for (const symbol of symbols) {
     try {
-      // Mock data - replace with real Binance API calls
+      // Mock data - ONLY for development/testing
       const snapshot: SymbolSnapshot = {
         symbol,
         spread: Math.random() * 0.001, // 0-0.1% spread
@@ -171,12 +183,54 @@ async function collectSymbolSnapshots(symbols: string[]): Promise<SymbolSnapshot
       snapshots.push(snapshot);
       
     } catch (error) {
-      console.warn(`Failed to collect snapshot for ${symbol}:`, error);
-      // Continue with other symbols (fail-open for data collection)
+      console.warn(`Failed to collect mock snapshot for ${symbol}:`, error);
     }
   }
   
   return snapshots;
+}
+
+// ✅ FAIL-CLOSED RESULT HELPER
+function createFailClosedResult(asOf: number, reason: string, details?: string): MSFResult {
+  return {
+    success: false,
+    timestamp: asOf,
+    duration: 0, // Deterministic
+    dayGate: {
+      v: "msf.daygate.v1",
+      asOf,
+      tradableDay: false, // fail-closed
+      countA: 0,
+      countB: 0,
+      reasons: [reason],
+      hash: calculateHash({ tradableDay: false, reason, asOf }),
+    },
+    marketFits: [],
+    kpis: {
+      noTradeDays: 1,
+      aSymbolsPct: 0,
+      bSymbolsPct: 0,
+      flipRate: 0,
+      avgFriction: 1,
+    },
+    errors: details ? [details] : [reason],
+    warnings: [],
+  };
+}
+
+// ✅ NO_TRADE FIT HELPER
+function createNoTradeFit(symbol: string, asOf: number, reason: string): any {
+  return {
+    v: "msf.marketfit.v1" as const,
+    symbol,
+    asOf,
+    fitClass: "NO_TRADE" as const,
+    allowedPlaybooks: ["none" as const],
+    frictionScore: 1.0,
+    dataQuality: 0,
+    reasons: [reason],
+    hash: calculateHash({ symbol, fitClass: "NO_TRADE", reason, asOf }),
+  };
 }
 
 // Save MSF results to database

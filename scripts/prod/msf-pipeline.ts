@@ -8,7 +8,7 @@
  */
 
 import { runMSFPipeline, analyzeMSFPerformance } from '../../lib/msf/pipeline/runOnce';
-import { DEFAULT_MSF_CONFIG } from '../../lib/msf/types';
+import { MSF_V15_CONFIG } from '../../lib/msf/types';
 import { supabaseAdmin } from '../../lib/mce/db/supabase';
 
 // Parse command line arguments
@@ -158,9 +158,9 @@ async function runProductionPipeline() {
       nodeVersion: process.version,
       platform: process.platform,
       config: {
-        minABCount: DEFAULT_MSF_CONFIG.minABCount,
-        aClassMaxPct: DEFAULT_MSF_CONFIG.aClassMaxPct,
-        failClosed: DEFAULT_MSF_CONFIG.failClosed,
+        minRegimeConfidence: MSF_V15_CONFIG.minRegimeConfidence,
+        minDataQuality: MSF_V15_CONFIG.minDataQuality,
+        failClosed: MSF_V15_CONFIG.failClosed,
       }
     });
 
@@ -219,7 +219,9 @@ async function runProductionPipeline() {
     const result = await runMSFPipeline({
       regime,
       universe,
-      config: DEFAULT_MSF_CONFIG,
+      config: MSF_V15_CONFIG,
+      useEnhancedSnapshots: true,    // Use orderbook data for accurate spreads
+      saveSnapshots: !isHealthCheck, // Save snapshots unless health check
     });
     
     const duration = Date.now() - startTime;

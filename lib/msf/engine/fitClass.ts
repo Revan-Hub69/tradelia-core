@@ -11,9 +11,9 @@ export interface FitClassInput {
   config: MSFConfig;
 }
 
-export function classifyMarketFit(input: FitClassInput): MarketFit {
+export function classifyMarketFit(input: FitClassInput, asOf: number): MarketFit {
   const { symbol, snapshot, regime, config } = input;
-  const timestamp = Date.now();
+  const timestamp = asOf; // ✅ DETERMINISTIC: Use passed timestamp
   const reasons: string[] = [];
   
   // Start with data quality checks (fail-closed)
@@ -27,7 +27,7 @@ export function classifyMarketFit(input: FitClassInput): MarketFit {
   
   // Gap check
   if (snapshot.gaps > config.maxGapsAllowed) {
-    reasons.push("too many gaps");
+    reasons.push("too many gaps"); // ✅ CONSISTENT: Match dayGate string
     return createMarketFit(symbol, timestamp, fitClass, [], 1.0, snapshot.completeness, reasons);
   }
   
@@ -108,7 +108,7 @@ function createMarketFit(
     hash: "", // will be calculated
   };
   
-  // Calculate deterministic hash
+  // ✅ DETERMINISTIC HASH: Use stable inputs only
   marketFit.hash = calculateHash({
     symbol,
     fitClass,
@@ -116,6 +116,7 @@ function createMarketFit(
     frictionScore: marketFit.frictionScore,
     dataQuality: marketFit.dataQuality,
     reasons,
+    asOf: timestamp, // Include timestamp for uniqueness
   });
   
   return marketFit;
