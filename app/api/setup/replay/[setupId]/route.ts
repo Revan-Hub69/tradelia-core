@@ -7,7 +7,7 @@ import { setupLogger } from '@/lib/setup/logger';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { setupId: string } }
+  { params }: { params: Promise<{ setupId: string }> }
 ) {
   try {
     // Apply rate limiting
@@ -16,7 +16,7 @@ export async function GET(
       return rateLimitResult;
     }
 
-    const { setupId } = params;
+    const { setupId } = await params;
     
     if (!setupId) {
       return NextResponse.json(

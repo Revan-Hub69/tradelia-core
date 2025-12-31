@@ -166,6 +166,14 @@ export class DatabaseRateLimit {
   }
 }
 
+// Convenience function for applying rate limits
+export async function applyRateLimit(
+  request: NextRequest, 
+  limiter: DatabaseRateLimit = dbRateLimits.general
+): Promise<NextResponse | null> {
+  return await limiter.check(request);
+}
+
 // Pre-configured rate limiters
 export const dbRateLimits = {
   // Strict limits for expensive operations

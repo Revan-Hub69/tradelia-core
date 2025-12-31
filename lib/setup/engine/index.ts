@@ -1,6 +1,7 @@
 // Setup Engine - Professional Trading System
 // Best practice: coordinated detection, validation, and decision making
 
+import { v4 as uuidv4 } from 'uuid';
 import { SetupDetector } from './detector';
 import { SetupValidator } from './validator';
 import { 
@@ -160,7 +161,7 @@ export class SetupEngine {
     try {
       // Log expiration
       const event = {
-        eventId: require('uuid').v4(),
+        eventId: uuidv4(),
         setupId,
         symbol: setup.symbol,
         eventType: 'SETUP_EXPIRED' as const,
