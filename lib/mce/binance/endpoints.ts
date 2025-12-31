@@ -98,7 +98,7 @@ export const BINANCE_ERROR_CODES = {
 
 // Check if error is retryable
 export function isRetryableError(errorCode: number): boolean {
-  const retryableCodes = [
+  const retryableCodes: number[] = [
     BINANCE_ERROR_CODES.DISCONNECTED,
     BINANCE_ERROR_CODES.TIMEOUT,
     BINANCE_ERROR_CODES.TOO_MANY_REQUESTS,
