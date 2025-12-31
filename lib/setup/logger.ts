@@ -215,6 +215,54 @@ export class SetupEventLogger {
     await this.logEvent(event);
   }
 
+  async logStopHit(
+    setupId: string,
+    symbol: string,
+    exitPrice: number,
+    outcome: SetupOutcome,
+    marketState: Partial<MarketState>
+  ): Promise<void> {
+    const event: SetupEvent = {
+      eventId: uuidv4(),
+      setupId,
+      symbol,
+      eventType: 'STOP_HIT',
+      timestamp: Date.now(),
+      data: {
+        exitPrice,
+        exitReason: 'STOP',
+      },
+      marketState,
+      outcome,
+    };
+
+    await this.logEvent(event);
+  }
+
+  async logTargetHit(
+    setupId: string,
+    symbol: string,
+    exitPrice: number,
+    outcome: SetupOutcome,
+    marketState: Partial<MarketState>
+  ): Promise<void> {
+    const event: SetupEvent = {
+      eventId: uuidv4(),
+      setupId,
+      symbol,
+      eventType: 'TARGET_HIT',
+      timestamp: Date.now(),
+      data: {
+        exitPrice,
+        exitReason: 'TARGET_PRIMARY',
+      },
+      marketState,
+      outcome,
+    };
+
+    await this.logEvent(event);
+  }
+
   // ============================================================================
   // CORE LOGGING
   // ============================================================================

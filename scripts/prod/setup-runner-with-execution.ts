@@ -64,7 +64,7 @@ async function runCycle() {
     console.log(`Paper trading: ${executionStats.activePositions} positions, $${executionStats.totalPnL.toFixed(2)} PnL, ${(executionStats.winRate * 100).toFixed(1)}% win rate`);
     
   } catch (error) {
-    console.error('❌ Cycle failed:', error.message);
+    console.error('❌ Cycle failed:', error instanceof Error ? error.message : String(error));
   }
 }
 

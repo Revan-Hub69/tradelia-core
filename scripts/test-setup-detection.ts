@@ -48,7 +48,6 @@ async function testSetupDetection() {
     const stats = await setupEngine.getEngineStats();
     console.log('📈 Engine Stats:');
     console.log(`- Active Setups: ${stats.activeSetups}/${stats.maxConcurrentSetups}`);
-    console.log(`- Total Risk: $${stats.totalRisk}`);
     console.log(`- Avg Confidence: ${(stats.avgConfidenceScore * 100).toFixed(1)}%`);
     console.log(`- Avg Risk/Reward: ${stats.avgRiskReward.toFixed(2)}`);
     

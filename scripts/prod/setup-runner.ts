@@ -36,7 +36,7 @@ async function runCycle() {
     console.log(`Active: ${stats.activeSetups}/${stats.maxConcurrentSetups}`);
     
   } catch (error) {
-    console.error('❌ Cycle failed:', error.message);
+    console.error('❌ Cycle failed:', error instanceof Error ? error.message : String(error));
   }
 }
 
