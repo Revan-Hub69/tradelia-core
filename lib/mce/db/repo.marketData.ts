@@ -2,7 +2,7 @@
 // Handles database operations for market_data table
 
 import { supabaseAdmin } from "./supabase";
-import { type KlineType, type MarketDataRowType } from "../types";
+import { type KlineType, type MarketDataRowType } from "../schemas";
 import { MarketDataRowSchema } from "../schemas";
 import { MCEError, DataQualityError } from "../types";
 
@@ -100,7 +100,7 @@ export async function upsertKlines(klines: KlineType[]): Promise<UpsertResult> {
     }
     
     throw new MCEError(
-      `Market data upsert failed: ${error.message}`,
+      `Market data upsert failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       "DATABASE_ERROR",
       { originalError: error, klinesCount: klines.length }
     );
@@ -180,7 +180,7 @@ export async function getKlines(query: MarketDataQuery = {}): Promise<KlineType[
     }
     
     throw new MCEError(
-      `Market data query failed: ${error.message}`,
+      `Market data query failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       "DATABASE_ERROR",
       { originalError: error, query }
     );
@@ -246,7 +246,7 @@ export async function checkDataGaps(
     }
     
     throw new MCEError(
-      `Data gap check failed: ${error.message}`,
+      `Data gap check failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       "DATABASE_ERROR",
       { originalError: error, symbol, tf, hours }
     );
@@ -357,7 +357,7 @@ export async function getDataStats(
     }
     
     throw new MCEError(
-      `Data stats query failed: ${error.message}`,
+      `Data stats query failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       "DATABASE_ERROR",
       { originalError: error, symbol, tf }
     );
@@ -389,7 +389,7 @@ export async function cleanupOldData(days: number = 90): Promise<number> {
     }
     
     throw new MCEError(
-      `Data cleanup failed: ${error.message}`,
+      `Data cleanup failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       "DATABASE_ERROR",
       { originalError: error, days }
     );

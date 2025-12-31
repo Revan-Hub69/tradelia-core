@@ -1,7 +1,7 @@
 // Data Quality Assessment
 // Evaluates completeness, freshness, and reliability of market data
 
-import { type KlineType, type DataQuality, type TF } from "../types";
+import { type KlineType, type DataQuality, type TF } from "../schemas";
 import { tfToMs } from "../utils/time";
 import { roundTo } from "../utils/math";
 
@@ -387,6 +387,3 @@ function formatTimeDuration(seconds: number): string {
     return `${(seconds / 86400).toFixed(1)}d`;
   }
 }
-
-// Export configuration type for external use
-export type { QualityConfig };

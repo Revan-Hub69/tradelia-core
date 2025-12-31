@@ -1,7 +1,8 @@
 // Regime Classification Engine
 // Rule-based classification with anti-flip smoothing
 
-import { type TrendClass, type VolClass, type FeatureVector, type KlineType } from "../types";
+import { type TrendClass, type VolClass, type FeatureVector } from "../types";
+import { type KlineType } from "../schemas";
 import { roundTo, clamp } from "../utils/math";
 
 export interface ClassificationConfig {

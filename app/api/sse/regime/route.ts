@@ -54,7 +54,8 @@ export async function GET(request: NextRequest): Promise<Response> {
   const stream = new ReadableStream({
     start(controller) {
       let lastSignatureHash: string | null = null;
-      let pollTimer: NodeJS.Timeout | null = null;
+      let pollTimer: ReturnType<typeof setInterval> | null = null;
+      let heartbeatTimer: ReturnType<typeof setInterval> | null = null;
       let isActive = true;
       
       // SSE helper functions
@@ -178,7 +179,7 @@ export async function GET(request: NextRequest): Promise<Response> {
       pollTimer = setInterval(pollForUpdates, pollInterval);
       
       // Heartbeat every 30 seconds
-      const heartbeatTimer = setInterval(sendHeartbeat, 30000);
+      heartbeatTimer = setInterval(sendHeartbeat, 30000);
       
       // Cleanup function
       const cleanup = () => {
@@ -189,6 +190,7 @@ export async function GET(request: NextRequest): Promise<Response> {
         }
         if (heartbeatTimer) {
           clearInterval(heartbeatTimer);
+          heartbeatTimer = null;
         }
       };
       

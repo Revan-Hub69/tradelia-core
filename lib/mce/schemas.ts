@@ -237,3 +237,6 @@ export type MarketDataRowType = z.infer<typeof MarketDataRowSchema>;
 export type RegimeSignatureRowType = z.infer<typeof RegimeSignatureRowSchema>;
 export type SystemHealthRowType = z.infer<typeof SystemHealthRowSchema>;
 export type MCEConfigType = z.infer<typeof MCEConfigSchema>;
+
+// Re-export essential types from types.ts for convenience
+export type { TF, DataQuality } from "./types";
