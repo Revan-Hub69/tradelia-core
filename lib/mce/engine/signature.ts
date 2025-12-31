@@ -203,7 +203,7 @@ export function validateSignature(signature: RegimeSignature): {
     // Schema validation
     RegimeSignatureSchema.parse(signature);
   } catch (error) {
-    errors.push(`Schema validation failed: ${error.message}`);
+    errors.push(`Schema validation failed: ${error instanceof Error ? error.message : 'Unknown validation error'}`);
     return { valid: false, errors, warnings };
   }
   
@@ -348,6 +348,3 @@ export function getSignatureSummary(signature: RegimeSignature): {
     hash,
   };
 }
-
-// Export configuration type
-export type { SignatureConfig };
