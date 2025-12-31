@@ -168,6 +168,27 @@ export class SetupEventLogger {
     await this.logEvent(event);
   }
 
+  async logSetupExpired(
+    setupId: string,
+    symbol: string,
+    marketState: Partial<MarketState>
+  ): Promise<void> {
+    const event: SetupEvent = {
+      eventId: uuidv4(),
+      setupId,
+      symbol,
+      eventType: 'SETUP_EXPIRED',
+      timestamp: Date.now(),
+      data: {
+        reason: 'ttl_exceeded',
+        expiredAt: marketState.asOf || Date.now(),
+      },
+      marketState,
+    };
+
+    await this.logEvent(event);
+  }
+
   async logTradeExit(
     setupId: string,
     symbol: string,

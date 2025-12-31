@@ -5,6 +5,8 @@ import { supabaseAdmin } from '../../mce/db/supabase';
 import { SetupCandidate } from '../types';
 
 export class SetupStateManager {
+  constructor(private readonly config = { maxConcurrentSetups: 3, maxExposurePerSymbol: 200 }) {}
+  
   // ============================================================================
   // ACTIVE SETUP MANAGEMENT
   // ============================================================================
@@ -124,7 +126,7 @@ export class SetupStateManager {
 
     return {
       activeSetups: activeSetups.length,
-      maxConcurrentSetups: 3, // From config
+      maxConcurrentSetups: this.config.maxConcurrentSetups,
       totalRisk,
       setupsByType,
       setupsBySymbol,
@@ -162,7 +164,7 @@ export class SetupStateManager {
 
     // Check total risk exposure
     const symbolRisk = existingSetups.reduce((sum, s) => sum + s.maxRisk, 0);
-    if (symbolRisk + newSetup.maxRisk > 200) { // Max $200 per symbol
+    if (symbolRisk + newSetup.maxRisk > this.config.maxExposurePerSymbol) {
       conflicts.push(`max_symbol_exposure_exceeded_${newSetup.symbol}`);
     }
 

@@ -12,7 +12,8 @@
     "type-check": "tsc --noEmit",
     "validate": "npm run type-check && npm run lint",
     "generate-types": "supabase gen types typescript --project-id $SUPABASE_PROJECT_ID > lib/supabase/types.ts || echo 'Set SUPABASE_PROJECT_ID environment variable'",
-    "clean": "rimraf .next"
+    "clean": "rimraf .next",
+    "setup-pipeline": "tsx scripts/prod/setup-pipeline.ts"
   },
   "dependencies": {
     "@huggingface/inference": "^4.13.5",

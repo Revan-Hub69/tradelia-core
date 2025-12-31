@@ -88,7 +88,7 @@ USING (auth.role() = 'authenticated');
 
 -- Function to get active setups summary
 CREATE OR REPLACE FUNCTION get_active_setups_summary()
-RETURNS JSONB AS $
+RETURNS JSONB AS $$
 DECLARE
   result JSONB;
   total_active INTEGER;
@@ -135,11 +135,11 @@ BEGIN
   
   RETURN result;
 END;
-$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Function to cleanup expired setups
 CREATE OR REPLACE FUNCTION cleanup_expired_setups()
-RETURNS INTEGER AS $
+RETURNS INTEGER AS $$
 DECLARE
   deleted_count INTEGER;
 BEGIN
@@ -150,7 +150,7 @@ BEGIN
   
   RETURN deleted_count;
 END;
-$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Function to check setup conflicts
 CREATE OR REPLACE FUNCTION check_setup_conflicts(
@@ -159,7 +159,7 @@ CREATE OR REPLACE FUNCTION check_setup_conflicts(
   new_entry_price NUMERIC,
   new_max_risk NUMERIC
 )
-RETURNS JSONB AS $
+RETURNS JSONB AS $$
 DECLARE
   conflicts JSONB := '[]'::jsonb;
   opposing_count INTEGER;
@@ -207,7 +207,7 @@ BEGIN
     'newTotalRisk', symbol_risk + new_max_risk
   );
 END;
-$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- ============================================================================
 -- AUTOMATIC CLEANUP TRIGGER
@@ -215,12 +215,12 @@ $ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Create a function to be called by cron or manually
 CREATE OR REPLACE FUNCTION schedule_setup_cleanup()
-RETURNS void AS $
+RETURNS void AS $$
 BEGIN
   -- This would be called by pg_cron or external scheduler
   PERFORM cleanup_expired_setups();
 END;
-$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- ============================================================================
 -- COMMENTS

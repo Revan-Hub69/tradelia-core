@@ -158,16 +158,14 @@ export class SetupEngine {
 
   async expireSetup(setupId: string, marketState: MarketState): Promise<void> {
     try {
-      // Log expiration
-      const event = {
-        eventId: uuidv4(),
-        setupId,
-        symbol: 'UNKNOWN', // We'll get this from the database if needed
-        eventType: 'SETUP_EXPIRED' as const,
-        timestamp: Date.now(),
-        data: { reason: 'ttl_exceeded' },
-        marketState,
-      };
+      // Get setup details before removal
+      const activeSetups = await setupStateManager.getActiveSetups();
+      const setup = activeSetups.find(s => s.setupId === setupId);
+      
+      if (setup) {
+        // Log expiration event properly
+        await setupLogger.logSetupExpired(setupId, setup.symbol, marketState);
+      }
 
       // Remove from active setups
       await setupStateManager.removeActiveSetup(setupId);
