@@ -17,6 +17,7 @@ const mobileLinks = [
   { title: 'Start', href: '/dashboard/start' },
   { title: 'Microlearning', href: '/dashboard/microlearning' },
   { title: 'Misuratori', href: '/dashboard/misuratori' },
+  { title: 'Market Data', href: '/dashboard/market-data' },
   { title: 'Truffe', href: '/dashboard/truffe' },
   { title: 'Metodo', href: '/dashboard/metodo' }
 ];

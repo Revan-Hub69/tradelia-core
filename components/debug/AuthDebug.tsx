@@ -18,7 +18,7 @@ export function AuthDebug() {
         {isLoading ? (
           <Badge variant="outline">Loading...</Badge>
         ) : isAuthenticated ? (
-          <Badge variant="success">Authenticated</Badge>
+          <Badge variant="default">Authenticated</Badge>
         ) : (
           <Badge variant="outline">Guest</Badge>
         )}

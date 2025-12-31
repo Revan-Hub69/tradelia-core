@@ -2,6 +2,62 @@
 
 Tradelia è una piattaforma educativa per il trading di criptovalute che combina contenuti didattici, strumenti di analisi e **Market Context Engine (MCE)** per classificazione deterministica dei regimi di mercato intraday.
 
+## 🚀 Phase 1 Operational Demo - LIVE NOW!
+
+**Il sistema completo è ora operativo con dashboard real-time!**
+
+### Quick Start - Full Operational Loop
+
+1. **Verify System Readiness**
+   ```bash
+   node scripts/dev/verify-phase1-readiness.mjs
+   ```
+
+2. **Start Development Server**
+   ```bash
+   npm run dev
+   ```
+
+3. **Launch Operational Demo** (in another terminal)
+   ```bash
+   node scripts/dev/start-operational-demo.mjs
+   ```
+
+4. **Open Dashboard**
+   ```
+   http://localhost:3000/dashboard/market-data
+   ```
+
+### What's Running - Complete Desk-Grade Loop
+
+- **📊 Real Binance Data**: Live WebSocket connection to BTCUSDT/ETHUSDT
+- **🔄 Event Processing**: Real-time trade and orderbook aggregation  
+- **🎯 Setup Detection**: Automated breakout pattern recognition
+- **💰 Paper Trading**: Simulated order execution with slippage
+- **📈 KPI Tracking**: Win rate, expectancy, drawdown, Sharpe ratio
+- **🖥️ Dashboard**: Professional monitoring with 30s auto-refresh
+
+### Dashboard Features
+
+- **Overview Tab**: System statistics and KPI summary
+- **Performance Tab**: Trading metrics and execution quality
+- **Health Tab**: Connection status and system checks
+- **Readiness Tab**: Phase 1 promotion criteria assessment
+
+### Testing Scripts
+
+```bash
+# Test complete operational loop
+node scripts/dev/test-full-operational-loop.mjs
+
+# Test dashboard functionality  
+node scripts/dev/test-market-data-dashboard.mjs
+
+# Test individual components
+node scripts/dev/test-market-data-integration.mjs
+node scripts/dev/test-setup-engine.mjs
+```
+
 ## 🎯 Progetto Attuale: Dashboard Intraday + MCE
 
 **Obiettivo**: Primo step dell'infrastruttura AI per trading intraday con setup chiavi in mano.

@@ -3,7 +3,7 @@ import { UnifiedCard, CardContent } from "@/components/ui/design-system/unified-
 import { ErrorBoundary } from "@/components/ui/error-boundary"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, CheckSquare, Info, TrendingUp } from "lucide-react"
+import { ArrowRight, CheckSquare, Info, TrendingUp, Database } from "lucide-react"
 import { BrainIcon } from "@/components/icons/brain-icon"
 import { EconomicsIcon } from "@/components/icons/economics-icon"
 import { WarningIcon } from "@/components/icons/warning-icon"
@@ -94,6 +94,27 @@ export default function DashboardPage() {
                   <Button asChild variant="outline" size="sm" className="w-full">
                     <Link href="/dashboard/misuratori">
                       Vedi Indicatori
+                    </Link>
+                  </Button>
+                </CardContent>
+              </UnifiedCard>
+
+              {/* Market Data Dashboard */}
+              <UnifiedCard className="hover:border-primary/30 transition-all duration-200 hover:shadow-lg group">
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="p-2 rounded-lg bg-muted group-hover:bg-primary/10 transition-colors">
+                      <Database className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
+                    </div>
+                    <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">Phase 1</Badge>
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">Market Data Dashboard</h3>
+                  <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                    Real-time monitoring and KPI tracking for market data integration system.
+                  </p>
+                  <Button asChild variant="outline" size="sm" className="w-full">
+                    <Link href="/dashboard/market-data">
+                      View Dashboard
                     </Link>
                   </Button>
                 </CardContent>
