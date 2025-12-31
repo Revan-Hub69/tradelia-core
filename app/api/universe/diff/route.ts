@@ -4,11 +4,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { UCMRepository } from "../../../../lib/ucm/db/repo";
 import { UniverseDiffQuerySchema } from "../../../../lib/ucm/schemas";
+import { dbRateLimits } from "../../../../lib/middleware/rate-limit-db";
 
 export const runtime = 'nodejs';
 
 export async function GET(request: NextRequest) {
   try {
+    // Apply database-backed rate limiting for public endpoint
+    const rateLimitResult = await dbRateLimits.general.check(request);
+    if (rateLimitResult) {
+      return rateLimitResult;
+    }
+    
     const { searchParams } = new URL(request.url);
     
     // Parse and validate query parameters

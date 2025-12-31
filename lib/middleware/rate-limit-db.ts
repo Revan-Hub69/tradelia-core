@@ -43,12 +43,15 @@ export class DatabaseRateLimit {
         .delete()
         .lt('expires_at', now.toISOString());
       
-      // Get current count for this key
+      // Get current count for this key in the current window
+      const windowStartBucket = new Date(Math.floor(now.getTime() / this.config.windowMs) * this.config.windowMs);
+      const windowEndBucket = new Date(windowStartBucket.getTime() + this.config.windowMs);
+      
       const { data: existing, error: selectError } = await supabase
         .from('rate_limits')
         .select('*')
         .eq('key', key)
-        .gte('window_start', windowStart.toISOString())
+        .eq('window_start', windowStartBucket.toISOString())
         .single();
       
       if (selectError && selectError.code !== 'PGRST116') { // PGRST116 = no rows
@@ -58,7 +61,7 @@ export class DatabaseRateLimit {
       }
       
       let currentCount = 0;
-      let resetTime = expiresAt;
+      let resetTime = windowEndBucket;
       
       if (existing) {
         currentCount = existing.count;
@@ -91,14 +94,14 @@ export class DatabaseRateLimit {
         currentCount += 1;
         
       } else {
-        // Create new rate limit record
+        // Create new rate limit record for this window
         const { error: insertError } = await supabase
           .from('rate_limits')
           .insert({
             key,
             count: 1,
-            window_start: windowStart.toISOString(),
-            expires_at: expiresAt.toISOString()
+            window_start: windowStartBucket.toISOString(),
+            expires_at: windowEndBucket.toISOString()
           });
         
         if (insertError) {

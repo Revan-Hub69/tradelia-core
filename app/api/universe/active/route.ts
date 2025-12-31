@@ -1,17 +1,23 @@
 // UCM API - Universe Active endpoint
 // Returns the current active universe with caching and error handling
 
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { UCMRepository } from "../../../../lib/ucm/db/repo";
 import { UniverseActiveApiResponseSchema } from "../../../../lib/ucm/schemas";
+import { dbRateLimits } from "../../../../lib/middleware/rate-limit-db";
 
 export const runtime = 'nodejs';
 
 // Cache the response for 1 minute to reduce database load
 const CACHE_DURATION = 60; // seconds
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Apply database-backed rate limiting for public endpoint
+    const rateLimitResult = await dbRateLimits.general.check(request);
+    if (rateLimitResult) {
+      return rateLimitResult;
+    }
     const repo = new UCMRepository();
     const universeActive = await repo.getLatestUniverseActive();
     

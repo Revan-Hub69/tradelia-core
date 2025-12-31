@@ -10,14 +10,15 @@ import {
   generatePoolHash 
 } from "../../../../lib/ucm/schemas";
 import { rateLimits, isWhitelistedIP, addSecurityHeaders } from "../../../../lib/middleware/rate-limit";
+import { dbRateLimits } from "../../../../lib/middleware/rate-limit-db";
 
 export const runtime = 'nodejs';
 
 export async function GET(request: NextRequest) {
   try {
-    // Apply rate limiting (skip for whitelisted IPs)
+    // Apply database-backed rate limiting (skip for whitelisted IPs)
     if (!isWhitelistedIP(request)) {
-      const rateLimitResult = await rateLimits.universe(request);
+      const rateLimitResult = await dbRateLimits.admin.check(request);
       if (rateLimitResult) {
         return addSecurityHeaders(rateLimitResult);
       }

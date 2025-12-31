@@ -66,7 +66,7 @@ jobs:
           echo "Running system health checks..."
           
           # Check MCE health
-          if node scripts/prod/mce-pipeline.mjs --health; then
+          if npx tsx scripts/prod/mce-pipeline.ts --health; then
             echo "MCE health: PASS"
             MCE_HEALTHY=true
           else
@@ -75,7 +75,7 @@ jobs:
           fi
           
           # Check UCM health  
-          if node scripts/prod/ucm-pipeline.mjs --health; then
+          if npx tsx scripts/prod/ucm-pipeline.ts --health; then
             echo "UCM health: PASS"
             UCM_HEALTHY=true
           else
@@ -126,7 +126,7 @@ jobs:
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
           GITHUB_RUN_ID: ${{ github.run_id }}
         run: |
-          CMD="node scripts/prod/mce-pipeline.mjs"
+          CMD="npx tsx scripts/prod/mce-pipeline.ts"
           
           if [ "${{ github.event.inputs.verbose }}" = "true" ]; then
             CMD="$CMD --verbose"
@@ -170,7 +170,7 @@ jobs:
           UCM_ADMIN_TOKEN: ${{ secrets.UCM_ADMIN_TOKEN }}
           GITHUB_RUN_ID: ${{ github.run_id }}
         run: |
-          CMD="node scripts/prod/ucm-pipeline.mjs"
+          CMD="npx tsx scripts/prod/ucm-pipeline.ts"
           
           if [ "${{ github.event.inputs.verbose }}" = "true" ]; then
             CMD="$CMD --verbose"
@@ -209,10 +209,10 @@ jobs:
           echo "🚨 Pipeline failure detected, running diagnostics..."
           
           echo "📊 MCE Health Check:"
-          node scripts/prod/mce-pipeline.mjs --health --verbose || true
+          npx tsx scripts/prod/mce-pipeline.ts --health --verbose || true
           
           echo "📊 UCM Health Check:"  
-          node scripts/prod/ucm-pipeline.mjs --health --verbose || true
+          npx tsx scripts/prod/ucm-pipeline.ts --health --verbose || true
           
           echo "📊 System Health API:"
           curl -f https://tradelia-core.vercel.app/api/health || echo "Health API failed"
