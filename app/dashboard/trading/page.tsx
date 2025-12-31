@@ -147,18 +147,18 @@ export default function TradingDashboard() {
   return (
     <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Trading Dashboard</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl sm:text-3xl font-bold">Trading Dashboard</h1>
+          <p className="text-sm text-muted-foreground">
             Market Context → Universe Selection → Setup Analysis
           </p>
         </div>
-        <div className="flex items-center space-x-4">
-          <div className="text-sm text-muted-foreground">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+          <div className="text-xs sm:text-sm text-muted-foreground">
             Last updated: {lastUpdate.toLocaleTimeString()}
           </div>
-          <Button onClick={fetchData} variant="outline" size="sm" disabled={loading}>
+          <Button onClick={fetchData} variant="outline" size="sm" disabled={loading} className="w-full sm:w-auto">
             <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
@@ -175,10 +175,10 @@ export default function TradingDashboard() {
           <CardContent>
             {marketRegime && (
               <div className="space-y-2">
-                <Badge className={getRegimeColor(marketRegime.trend)}>
+                <Badge className={`${getRegimeColor(marketRegime.trend)} text-xs sm:text-sm`}>
                   {marketRegime.trend.toUpperCase()} / {marketRegime.volatility.toUpperCase()}
                 </Badge>
-                <div className="text-sm text-muted-foreground">
+                <div className="text-xs sm:text-sm text-muted-foreground">
                   Confidence: {(marketRegime.confidence * 100).toFixed(0)}%
                 </div>
               </div>
@@ -192,7 +192,7 @@ export default function TradingDashboard() {
             <Target className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{universe.length}</div>
+            <div className="text-xl sm:text-2xl font-bold">{universe.length}</div>
             <p className="text-xs text-muted-foreground">
               symbols selected for analysis
             </p>
@@ -205,7 +205,7 @@ export default function TradingDashboard() {
             <BarChart3 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-xl sm:text-2xl font-bold">
               {setups.filter(s => s.recommendation === 'TRADE').length}
             </div>
             <p className="text-xs text-muted-foreground">
@@ -217,10 +217,10 @@ export default function TradingDashboard() {
 
       {/* Main Content Tabs */}
       <Tabs defaultValue="universe" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="universe">Universe Selection</TabsTrigger>
-          <TabsTrigger value="setups">Setup Analysis</TabsTrigger>
-          <TabsTrigger value="context">Market Context</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:grid-cols-none lg:inline-flex">
+          <TabsTrigger value="universe" className="text-xs sm:text-sm">Universe</TabsTrigger>
+          <TabsTrigger value="setups" className="text-xs sm:text-sm">Setups</TabsTrigger>
+          <TabsTrigger value="context" className="text-xs sm:text-sm">Context</TabsTrigger>
         </TabsList>
 
         {/* Universe Tab */}
@@ -235,17 +235,17 @@ export default function TradingDashboard() {
             <CardContent>
               <div className="space-y-3">
                 {universe.map((symbol) => (
-                  <div key={symbol.symbol} className="flex items-center justify-between p-3 rounded-lg border">
-                    <div className="flex items-center space-x-3">
+                  <div key={symbol.symbol} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 p-3 rounded-lg border">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
                       <div className="text-sm font-medium text-muted-foreground">
                         #{symbol.rank}
                       </div>
                       <div className="font-semibold">{symbol.symbol}</div>
-                      <Badge variant="outline">
+                      <Badge variant="outline" className="w-fit">
                         Score: {symbol.score?.toFixed(2) || 'N/A'}
                       </Badge>
                     </div>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-xs sm:text-sm text-muted-foreground break-words">
                       {symbol.reasons?.join(', ') || 'Selected for analysis'}
                     </div>
                   </div>
@@ -262,12 +262,12 @@ export default function TradingDashboard() {
 
         {/* Setups Tab */}
         <TabsContent value="setups" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4">
             {/* Trade Recommendations */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center">
-                  <CheckCircle className="h-5 w-5 mr-2 text-green-600" />
+                <CardTitle className="flex items-center text-base sm:text-lg">
+                  <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-green-600" />
                   Ready to Trade
                 </CardTitle>
               </CardHeader>
@@ -275,16 +275,16 @@ export default function TradingDashboard() {
                 <div className="space-y-3">
                   {setups.filter(s => s.recommendation === 'TRADE').map((setup) => (
                     <div key={setup.symbol} className="p-3 rounded-lg border border-green-200 bg-green-50">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="font-semibold">{setup.symbol}</div>
-                        <Badge className="text-green-600 bg-green-100">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                        <div className="font-semibold text-sm sm:text-base">{setup.symbol}</div>
+                        <Badge className="text-green-600 bg-green-100 w-fit">
                           {setup.fit}
                         </Badge>
                       </div>
-                      <div className="text-sm text-green-700">
+                      <div className="text-xs sm:text-sm text-green-700 mb-1">
                         Confidence: {(setup.confidence * 100).toFixed(0)}%
                       </div>
-                      <div className="text-xs text-green-600 mt-1">
+                      <div className="text-xs text-green-600 break-words">
                         {setup.reasons.join(', ')}
                       </div>
                     </div>
@@ -301,8 +301,8 @@ export default function TradingDashboard() {
             {/* Monitor List */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Clock className="h-5 w-5 mr-2 text-yellow-600" />
+                <CardTitle className="flex items-center text-base sm:text-lg">
+                  <Clock className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-yellow-600" />
                   Monitor
                 </CardTitle>
               </CardHeader>
@@ -310,16 +310,16 @@ export default function TradingDashboard() {
                 <div className="space-y-3">
                   {setups.filter(s => s.recommendation === 'MONITOR').map((setup) => (
                     <div key={setup.symbol} className="p-3 rounded-lg border border-yellow-200 bg-yellow-50">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="font-semibold">{setup.symbol}</div>
-                        <Badge className="text-yellow-600 bg-yellow-100">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                        <div className="font-semibold text-sm sm:text-base">{setup.symbol}</div>
+                        <Badge className="text-yellow-600 bg-yellow-100 w-fit">
                           {setup.fit}
                         </Badge>
                       </div>
-                      <div className="text-sm text-yellow-700">
+                      <div className="text-xs sm:text-sm text-yellow-700 mb-1">
                         Confidence: {(setup.confidence * 100).toFixed(0)}%
                       </div>
-                      <div className="text-xs text-yellow-600 mt-1">
+                      <div className="text-xs text-yellow-600 break-words">
                         {setup.reasons.join(', ')}
                       </div>
                     </div>
@@ -344,16 +344,16 @@ export default function TradingDashboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {setups.filter(s => s.recommendation === 'AVOID').map((setup) => (
                     <div key={setup.symbol} className="p-3 rounded-lg border border-red-200 bg-red-50">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="font-semibold">{setup.symbol}</div>
-                        <Badge className="text-red-600 bg-red-100">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                        <div className="font-semibold text-sm sm:text-base">{setup.symbol}</div>
+                        <Badge className="text-red-600 bg-red-100 w-fit">
                           {setup.fit}
                         </Badge>
                       </div>
-                      <div className="text-xs text-red-600">
+                      <div className="text-xs text-red-600 break-words">
                         {setup.reasons.join(', ')}
                       </div>
                     </div>
@@ -376,7 +376,7 @@ export default function TradingDashboard() {
             <CardContent>
               {marketRegime && (
                 <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <div className="text-sm text-muted-foreground mb-2">Trend Direction</div>
                       <div className="flex items-center space-x-2">
@@ -398,7 +398,7 @@ export default function TradingDashboard() {
                     </div>
                     <div>
                       <div className="text-sm text-muted-foreground mb-2">Last Update</div>
-                      <div className="text-sm">
+                      <div className="text-xs sm:text-sm break-words">
                         {new Date(marketRegime.asOf).toLocaleString()}
                       </div>
                     </div>
