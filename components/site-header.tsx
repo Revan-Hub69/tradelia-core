@@ -15,6 +15,7 @@ import { authManager } from "@/lib/auth/supabase-auth";
 const mobileLinks = [
   { title: 'Dashboard', href: '/dashboard' },
   { title: 'Start', href: '/dashboard/start' },
+  { title: 'Trading', href: '/dashboard/trading' },
   { title: 'Microlearning', href: '/dashboard/microlearning' },
   { title: 'Misuratori', href: '/dashboard/misuratori' },
   { title: 'Market Data', href: '/dashboard/market-data' },
@@ -58,6 +59,9 @@ export function SiteHeader() {
           <div className="hidden md:flex items-center space-x-4">
             <Button asChild variant="ghost">
               <Link href="/dashboard">Dashboard</Link>
+            </Button>
+            <Button asChild variant="ghost">
+              <Link href="/dashboard/trading">Trading</Link>
             </Button>
             <Button asChild>
               <Link href="/dashboard/start">Inizia Qui</Link>

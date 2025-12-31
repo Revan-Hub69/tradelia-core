@@ -7,7 +7,7 @@ import { supabaseAdmin } from '@/lib/mce/db/supabase';
 
 export async function GET(request: NextRequest) {
   try {
-    // Require authentication and read permission
+    // Re-enable authentication for production
     const authResult = await requirePermission(request, 'read:market-data');
     if (authResult instanceof NextResponse) {
       return authResult; // Return auth error response
