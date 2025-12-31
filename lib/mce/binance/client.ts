@@ -148,11 +148,11 @@ export class BinanceClient {
         throw new MCEError(
           "Invalid Binance API response format",
           "VALIDATION_ERROR",
-          { zodError: error.errors, url: url.toString() }
+          { zodError: error.issues, url: url.toString() }
         );
       }
       
-      if (error.name === "AbortError") {
+      if (error instanceof Error && error.name === "AbortError") {
         throw new MCEError(
           `Binance API timeout after ${this.timeout}ms`,
           "TIMEOUT_ERROR",
@@ -165,7 +165,7 @@ export class BinanceClient {
       }
       
       throw new MCEError(
-        `Binance API request failed: ${error.message}`,
+        `Binance API request failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
         "NETWORK_ERROR",
         { originalError: error, url: url.toString() }
       );

@@ -50,13 +50,13 @@ export function normalizeBinanceKline(
   } catch (error) {
     if (error instanceof z.ZodError) {
       throw new DataQualityError(
-        `Invalid kline data: ${error.errors.map(e => e.message).join(", ")}`,
-        { raw, symbol, tf, zodErrors: error.errors }
+        `Invalid kline data: ${error.issues.map(e => e.message).join(", ")}`,
+        { raw, symbol, tf, zodErrors: error.issues }
       );
     }
     
     throw new MCEError(
-      `Failed to normalize Binance kline: ${error.message}`,
+      `Failed to normalize Binance kline: ${error instanceof Error ? error.message : 'Unknown error'}`,
       "NORMALIZATION_ERROR",
       { raw, symbol, tf, originalError: error }
     );
