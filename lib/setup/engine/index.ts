@@ -4,7 +4,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { SetupDetector } from './detector';
 import { SetupValidator } from './validator';
-import { setupStateManager } from './state-manager';
+import { setupStateManagerMemory as setupStateManager } from './state-manager-memory';
 import { 
   MarketState, 
   SetupCandidate, 

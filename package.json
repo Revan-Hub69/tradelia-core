@@ -13,7 +13,9 @@
     "validate": "npm run type-check && npm run lint",
     "generate-types": "supabase gen types typescript --project-id $SUPABASE_PROJECT_ID > lib/supabase/types.ts || echo 'Set SUPABASE_PROJECT_ID environment variable'",
     "clean": "rimraf .next",
-    "setup-pipeline": "tsx scripts/prod/setup-pipeline.ts"
+    "setup-pipeline": "tsx scripts/prod/setup-pipeline.ts",
+    "setup-runner": "tsx scripts/prod/setup-runner.ts",
+    "setup-runner-full": "tsx scripts/prod/setup-runner-with-execution.ts"
   },
   "dependencies": {
     "@huggingface/inference": "^4.13.5",
@@ -37,6 +39,7 @@
     "autoprefixer": "^10.4.19",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^17.2.3",
     "lucide-react": "^0.469.0",
     "next": "^16.0.10",
     "next-themes": "^0.3.0",
