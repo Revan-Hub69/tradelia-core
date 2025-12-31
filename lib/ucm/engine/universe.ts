@@ -43,9 +43,10 @@ export async function generateUniverseActive(
   pool: UniversePoolType,
   eligibilitySnapshots: EligibilitySnapshotType[],
   currentStates: UniverseStateType[],
-  prevActive?: UniverseActiveType | null
+  prevActive?: UniverseActiveType | null,
+  eligibilityHistory?: Map<string, EligibilitySnapshotType[]>
 ): Promise<UniverseActiveType> {
-  const result = await generateUniverseWithStats(pool, eligibilitySnapshots, currentStates, prevActive);
+  const result = await generateUniverseWithStats(pool, eligibilitySnapshots, currentStates, prevActive, eligibilityHistory);
   return result.universeActive;
 }
 
@@ -53,7 +54,8 @@ export async function generateUniverseWithStats(
   pool: UniversePoolType,
   eligibilitySnapshots: EligibilitySnapshotType[],
   currentStates: UniverseStateType[],
-  prevActive?: UniverseActiveType | null
+  prevActive?: UniverseActiveType | null,
+  eligibilityHistory?: Map<string, EligibilitySnapshotType[]>
 ): Promise<UniverseGenerationResult> {
   const warnings: string[] = [];
   const asOf = Date.now();
@@ -79,16 +81,25 @@ export async function generateUniverseWithStats(
     // 4. Calculate rankings for all available symbols
     const rankings = rankSymbols(availableSnapshots);
     
-    // 5. Create eligibility history map (for now, just current snapshot)
-    // TODO: In full implementation, this would contain historical data
-    const eligibilityHistory = new Map<string, EligibilitySnapshotType[]>();
-    availableSymbols.forEach(symbol => {
-      const snapshot = snapshotMap.get(symbol)!;
-      eligibilityHistory.set(symbol, [snapshot]); // Simplified for v1
-    });
+    // 5. Create or use provided eligibility history map
+    let historyMap: Map<string, EligibilitySnapshotType[]>;
     
-    // 6. Process state transitions with hysteresis
-    const transitions = processStateTransitions(availableSymbols, stateMap, eligibilityHistory);
+    if (eligibilityHistory) {
+      // Use provided real history
+      historyMap = eligibilityHistory;
+      console.log(`📈 Using provided history: ${historyMap.size} symbols with history`);
+    } else {
+      // Fallback: create minimal history (for backward compatibility)
+      historyMap = new Map<string, EligibilitySnapshotType[]>();
+      availableSymbols.forEach(symbol => {
+        const snapshot = snapshotMap.get(symbol)!;
+        historyMap.set(symbol, [snapshot]);
+      });
+      warnings.push('Using minimal history (1 snapshot per symbol) - hysteresis may not work correctly');
+    }
+    
+    // 6. Process state transitions with hysteresis (using real history)
+    const transitions = processStateTransitions(availableSymbols, stateMap, historyMap);
     
     // 7. Apply state changes and build new active universe
     const { newStates, changes } = applyStateTransitions(transitions, stateMap, asOf);
@@ -97,8 +108,7 @@ export async function generateUniverseWithStats(
     const activeSelection = selectActiveSymbols(
       pool.coreSymbols,
       rankings,
-      newStates,
-      prevActive?.symbols || []
+      newStates
     );
     
     // 9. Generate universe active object
@@ -228,8 +238,7 @@ interface ActiveSelectionResult {
 function selectActiveSymbols(
   coreSymbols: string[],
   rankings: RankingResult[],
-  states: Map<string, UniverseStateType>,
-  prevActiveSymbols: string[]
+  states: Map<string, UniverseStateType>
 ): ActiveSelectionResult {
   // 1. Get all active symbols from states
   const activeSymbols = Array.from(states.entries())
@@ -287,7 +296,6 @@ function calculateUniverseStats(
   changes: { added: string[]; removed: string[]; blacklisted: string[]; maintained: string[] }
 ): UniverseGenerationResult['stats'] {
   const eligibleRankings = rankings.filter(r => r.eligible);
-  const activeRankings = rankings.filter(r => activeSelection.symbols.includes(r.symbol));
   
   const avgScore = rankings.length > 0 ? 
     rankings.reduce((sum, r) => sum + r.rankScore, 0) / rankings.length : 0;

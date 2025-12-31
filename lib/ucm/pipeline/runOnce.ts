@@ -9,6 +9,7 @@ import {
   UniversePoolType, 
   UniverseActiveType, 
   UniverseStateType,
+  EligibilitySnapshotType,
   generatePoolHash,
   UCMError 
 } from "../schemas";
@@ -113,29 +114,56 @@ export async function runUCMPipeline(): Promise<UCMPipelineResult> {
     
     console.log(`✅ Collected ${collectionResult.snapshots.length}/${pool.symbols.length} snapshots`);
     
-    // 6. Save eligibility snapshots
+    // 6. Get eligibility history for hysteresis (REAL HISTORY, not 1 snapshot)
+    console.log('📊 Building eligibility history for hysteresis...');
+    const eligibilityHistory = new Map<string, EligibilitySnapshotType[]>();
+    
+    // Get 30 minutes of history for each symbol (covers both enter/exit windows)
+    const historyPromises = pool.symbols.map(async (symbol) => {
+      const history = await repo.getEligibilityHistory(symbol, 30);
+      eligibilityHistory.set(symbol, history);
+      return { symbol, historyLength: history.length };
+    });
+    
+    const historyResults = await Promise.all(historyPromises);
+    const avgHistoryLength = historyResults.reduce((sum, r) => sum + r.historyLength, 0) / historyResults.length;
+    console.log(`📈 History built: avg ${avgHistoryLength.toFixed(1)} snapshots per symbol`);
+    
+    // Add current snapshots to history
+    collectionResult.snapshots.forEach(snapshot => {
+      const existing = eligibilityHistory.get(snapshot.symbol) || [];
+      // Avoid duplicates by checking timestamp
+      const isDuplicate = existing.some(h => h.asOf === snapshot.asOf);
+      if (!isDuplicate) {
+        existing.push(snapshot);
+        eligibilityHistory.set(snapshot.symbol, existing.sort((a, b) => a.asOf - b.asOf));
+      }
+    });
+    
+    // 8. Save eligibility snapshots
     if (collectionResult.snapshots.length > 0) {
       await repo.saveEligibilitySnapshots(collectionResult.snapshots);
       console.log('💾 Eligibility snapshots saved');
     }
     
-    // 7. Get current universe states
+    // 9. Get current universe states
     const currentStates = await repo.getUniverseStates();
     console.log(`📋 Current states: ${currentStates.length} symbols tracked`);
     
-    // 8. Get previous active universe
+    // 9. Get previous active universe
     const prevActive = await repo.getLatestUniverseActive();
     if (prevActive) {
       console.log(`🔄 Previous universe: ${prevActive.symbols.length} symbols`);
     }
     
-    // 9. Generate new universe active
+    // 10. Generate new universe active (with REAL history)
     console.log('🎯 Generating new universe...');
     const generationResult = await generateUniverseWithStats(
       pool,
       collectionResult.snapshots,
       currentStates,
-      prevActive
+      prevActive,
+      eligibilityHistory // Pass real history instead of creating fake one
     );
     
     universeActive = generationResult.universeActive;
@@ -149,11 +177,11 @@ export async function runUCMPipeline(): Promise<UCMPipelineResult> {
     console.log(`✅ Universe generated: ${universeActive.symbols.length} active symbols`);
     console.log(`📈 Changes: +${changes.added.length} -${changes.removed.length} ⚫${changes.blacklisted.length}`);
     
-    // 10. Save new universe active
+    // 11. Save new universe active
     await repo.saveUniverseActive(universeActive);
     console.log('💾 Universe active saved');
     
-    // 11. Update universe states
+    // 12. Update universe states
     const stateUpdates: UniverseStateType[] = [];
     
     // Add new active symbols

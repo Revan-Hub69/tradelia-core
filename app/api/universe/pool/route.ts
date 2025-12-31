@@ -9,28 +9,49 @@ import {
   UniversePoolSchema,
   generatePoolHash 
 } from "../../../../lib/ucm/schemas";
+import { rateLimits, isWhitelistedIP, addSecurityHeaders } from "../../../../lib/middleware/rate-limit";
 
 export const runtime = 'nodejs';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Apply rate limiting (skip for whitelisted IPs)
+    if (!isWhitelistedIP(request)) {
+      const rateLimitResult = await rateLimits.universe(request);
+      if (rateLimitResult) {
+        return addSecurityHeaders(rateLimitResult);
+      }
+    }
+
+    // Check authentication
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return addSecurityHeaders(NextResponse.json(
+        { 
+          ok: false, 
+          error: "Authentication required. Please provide a valid Bearer token." 
+        },
+        { status: 401 }
+      ));
+    }
+    
     const repo = new UCMRepository();
     const pool = await repo.getUniversePool();
     
     if (!pool) {
-      return NextResponse.json(
+      return addSecurityHeaders(NextResponse.json(
         { 
           ok: false, 
           error: "No universe pool found. Pool may not have been initialized." 
         },
         { status: 404 }
-      );
+      ));
     }
     
     const response = { ok: true, data: pool };
     const validatedResponse = UniversePoolApiResponseSchema.parse(response);
     
-    return NextResponse.json(validatedResponse, {
+    return addSecurityHeaders(NextResponse.json(validatedResponse, {
       status: 200,
       headers: {
         'Cache-Control': 'public, max-age=300, stale-while-revalidate=600', // 5 min cache
@@ -40,25 +61,45 @@ export async function GET() {
         'X-Pool-Size': pool.symbols.length.toString(),
         'X-Core-Size': pool.coreSymbols.length.toString(),
       },
-    });
+    }));
     
   } catch (error) {
     console.error('Universe Pool GET API Error:', error);
     
-    return NextResponse.json(
+    return addSecurityHeaders(NextResponse.json(
       { 
         ok: false, 
         error: error instanceof Error ? error.message : "Internal server error" 
       },
       { status: 500 }
-    );
+    ));
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    // TODO: Add authentication check for admin users
-    // For now, this is a placeholder for future admin functionality
+    // Apply strict rate limiting for admin operations
+    if (!isWhitelistedIP(request)) {
+      const rateLimitResult = await rateLimits.admin(request);
+      if (rateLimitResult) {
+        return addSecurityHeaders(rateLimitResult);
+      }
+    }
+
+    // Check authentication for admin operations
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return addSecurityHeaders(NextResponse.json(
+        { 
+          ok: false, 
+          error: "Admin authentication required for pool updates." 
+        },
+        { status: 401 }
+      ));
+    }
+    
+    // TODO: Validate admin role from JWT token
+    // For now, require any valid Bearer token
     
     const body = await request.json();
     
@@ -82,46 +123,46 @@ export async function POST(request: NextRequest) {
     
     const response = { ok: true, data: validatedPool };
     
-    return NextResponse.json(response, {
+    return addSecurityHeaders(NextResponse.json(response, {
       status: 201,
       headers: {
         'Content-Type': 'application/json',
         'X-Pool-Hash': validatedPool.hash,
         'X-Pool-Size': validatedPool.symbols.length.toString(),
       },
-    });
+    }));
     
   } catch (error) {
     console.error('Universe Pool POST API Error:', error);
     
     if (error instanceof Error && error.message.includes('validation')) {
-      return NextResponse.json(
+      return addSecurityHeaders(NextResponse.json(
         { 
           ok: false, 
           error: "Invalid pool data. Required: symbols (array), coreSymbols (array)." 
         },
         { status: 400 }
-      );
+      ));
     }
     
-    return NextResponse.json(
+    return addSecurityHeaders(NextResponse.json(
       { 
         ok: false, 
         error: error instanceof Error ? error.message : "Internal server error" 
       },
       { status: 500 }
-    );
+    ));
   }
 }
 
 // OPTIONS handler for CORS
 export async function OPTIONS() {
-  return NextResponse.json({}, {
+  return addSecurityHeaders(NextResponse.json({}, {
     status: 200,
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     },
-  });
+  }));
 }

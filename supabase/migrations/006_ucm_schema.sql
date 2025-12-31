@@ -62,23 +62,31 @@ CREATE INDEX idx_universe_state_blacklist ON universe_state(blacklist_until) WHE
 CREATE INDEX idx_eligibility_snapshots_as_of ON eligibility_snapshots(as_of DESC);
 CREATE INDEX idx_eligibility_snapshots_symbol_as_of ON eligibility_snapshots(symbol, as_of DESC);
 
--- RLS (Row Level Security) policies
+-- RLS (Row Level Security) policies - SECURE, not open
 ALTER TABLE universe_pool ENABLE ROW LEVEL SECURITY;
 ALTER TABLE universe_state ENABLE ROW LEVEL SECURITY;
 ALTER TABLE universe_active ENABLE ROW LEVEL SECURITY;
 ALTER TABLE eligibility_snapshots ENABLE ROW LEVEL SECURITY;
 
--- Allow read access to authenticated users
-CREATE POLICY "Allow read access to universe_pool" ON universe_pool FOR SELECT USING (true);
-CREATE POLICY "Allow read access to universe_state" ON universe_state FOR SELECT USING (true);
-CREATE POLICY "Allow read access to universe_active" ON universe_active FOR SELECT USING (true);
-CREATE POLICY "Allow read access to eligibility_snapshots" ON eligibility_snapshots FOR SELECT USING (true);
+-- Allow authenticated users to read (not public read)
+CREATE POLICY "Allow authenticated read on universe_pool" ON universe_pool 
+  FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "Allow authenticated read on universe_state" ON universe_state 
+  FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "Allow authenticated read on universe_active" ON universe_active 
+  FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "Allow authenticated read on eligibility_snapshots" ON eligibility_snapshots 
+  FOR SELECT USING (auth.role() = 'authenticated');
 
 -- Allow service role full access for pipeline operations
-CREATE POLICY "Service role full access to universe_pool" ON universe_pool FOR ALL USING (auth.role() = 'service_role');
-CREATE POLICY "Service role full access to universe_state" ON universe_state FOR ALL USING (auth.role() = 'service_role');
-CREATE POLICY "Service role full access to universe_active" ON universe_active FOR ALL USING (auth.role() = 'service_role');
-CREATE POLICY "Service role full access to eligibility_snapshots" ON eligibility_snapshots FOR ALL USING (auth.role() = 'service_role');
+CREATE POLICY "Service role full access to universe_pool" ON universe_pool 
+  FOR ALL USING (auth.role() = 'service_role');
+CREATE POLICY "Service role full access to universe_state" ON universe_state 
+  FOR ALL USING (auth.role() = 'service_role');
+CREATE POLICY "Service role full access to universe_active" ON universe_active 
+  FOR ALL USING (auth.role() = 'service_role');
+CREATE POLICY "Service role full access to eligibility_snapshots" ON eligibility_snapshots 
+  FOR ALL USING (auth.role() = 'service_role');
 
 -- Utility functions for UCM operations
 
