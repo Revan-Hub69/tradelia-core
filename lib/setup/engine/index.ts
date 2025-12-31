@@ -4,6 +4,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { SetupDetector } from './detector';
 import { SetupValidator } from './validator';
+import { setupStateManager } from './state-manager';
 import { 
   MarketState, 
   SetupCandidate, 
@@ -16,7 +17,6 @@ import { setupLogger } from '../logger';
 export class SetupEngine {
   private readonly detector: SetupDetector;
   private readonly validator: SetupValidator;
-  private activeSetups: Map<string, SetupCandidate> = new Map();
 
   constructor(private readonly config: SetupEngineConfig = DEFAULT_SETUP_CONFIG) {
     this.detector = new SetupDetector(config);
@@ -55,7 +55,7 @@ export class SetupEngine {
       // 2. VALIDATE EACH CANDIDATE
       const validatedSetups: SetupCandidate[] = [];
       const rejectionReasons: string[] = [];
-      const existingSetups = Array.from(this.activeSetups.values());
+      const existingSetups = await setupStateManager.getActiveSetups();
 
       for (const candidate of candidates) {
         console.log(`🔍 Validating ${candidate.setupType} setup for ${candidate.symbol}`);
@@ -78,8 +78,8 @@ export class SetupEngine {
       // 3. APPLY FINAL FILTERS
       const finalSetups = await this.applyFinalFilters(validatedSetups, marketState);
 
-      // 4. UPDATE ACTIVE SETUPS
-      this.updateActiveSetups(finalSetups);
+      // 4. UPDATE ACTIVE SETUPS (persist to database)
+      await this.updateActiveSetups(finalSetups);
 
       // 5. CREATE DECISION
       const decision: SetupDecision = {
@@ -125,7 +125,9 @@ export class SetupEngine {
   // ============================================================================
 
   async triggerSetup(setupId: string, actualEntryPrice: number, marketState: MarketState): Promise<boolean> {
-    const setup = this.activeSetups.get(setupId);
+    const activeSetups = await setupStateManager.getActiveSetups();
+    const setup = activeSetups.find(s => s.setupId === setupId);
+    
     if (!setup) {
       console.error(`Setup ${setupId} not found in active setups`);
       return false;
@@ -155,23 +157,20 @@ export class SetupEngine {
   }
 
   async expireSetup(setupId: string, marketState: MarketState): Promise<void> {
-    const setup = this.activeSetups.get(setupId);
-    if (!setup) return;
-
     try {
       // Log expiration
       const event = {
         eventId: uuidv4(),
         setupId,
-        symbol: setup.symbol,
+        symbol: 'UNKNOWN', // We'll get this from the database if needed
         eventType: 'SETUP_EXPIRED' as const,
         timestamp: Date.now(),
-        data: { reason: 'ttl_exceeded', originalTTL: setup.entryModel.ttlSec },
+        data: { reason: 'ttl_exceeded' },
         marketState,
       };
 
       // Remove from active setups
-      this.activeSetups.delete(setupId);
+      await setupStateManager.removeActiveSetup(setupId);
       
       console.log(`⏰ Setup ${setupId} expired`);
 
@@ -184,38 +183,31 @@ export class SetupEngine {
   // ACTIVE SETUP MANAGEMENT
   // ============================================================================
 
-  getActiveSetups(): SetupCandidate[] {
-    return Array.from(this.activeSetups.values());
+  async getActiveSetups(): Promise<SetupCandidate[]> {
+    return await setupStateManager.getActiveSetups();
   }
 
-  getActiveSetup(setupId: string): SetupCandidate | undefined {
-    return this.activeSetups.get(setupId);
+  async getActiveSetup(setupId: string): Promise<SetupCandidate | undefined> {
+    const activeSetups = await setupStateManager.getActiveSetups();
+    return activeSetups.find(s => s.setupId === setupId);
   }
 
-  removeActiveSetup(setupId: string): void {
-    this.activeSetups.delete(setupId);
+  async removeActiveSetup(setupId: string): Promise<void> {
+    await setupStateManager.removeActiveSetup(setupId);
   }
 
   // ============================================================================
   // CLEANUP AND MAINTENANCE
   // ============================================================================
 
-  async cleanupExpiredSetups(currentTimestamp: number): Promise<void> {
-    const expiredSetups: string[] = [];
-
-    for (const [setupId, setup] of this.activeSetups.entries()) {
-      if (setup.expiresAt <= currentTimestamp) {
-        expiredSetups.push(setupId);
+  async cleanupExpiredSetups(currentTimestamp?: number): Promise<void> {
+    try {
+      const deletedCount = await setupStateManager.cleanupExpiredSetups();
+      if (deletedCount > 0) {
+        console.log(`🧹 Cleaned up ${deletedCount} expired setups`);
       }
-    }
-
-    for (const setupId of expiredSetups) {
-      this.activeSetups.delete(setupId);
-      console.log(`🧹 Cleaned up expired setup ${setupId}`);
-    }
-
-    if (expiredSetups.length > 0) {
-      console.log(`🧹 Cleaned up ${expiredSetups.length} expired setups`);
+    } catch (error) {
+      console.error('Failed to cleanup expired setups:', error);
     }
   }
 
@@ -232,7 +224,8 @@ export class SetupEngine {
 
     // Apply maximum concurrent setups limit
     const maxSetups = this.config.maxConcurrentSetups;
-    const existingCount = this.activeSetups.size;
+    const existingSetups = await setupStateManager.getActiveSetups();
+    const existingCount = existingSetups.length;
     const availableSlots = Math.max(0, maxSetups - existingCount);
 
     if (availableSlots === 0) {
@@ -247,7 +240,7 @@ export class SetupEngine {
     const usedSymbols = new Set<string>();
 
     // Add existing symbols to used set
-    for (const setup of this.activeSetups.values()) {
+    for (const setup of existingSetups) {
       usedSymbols.add(setup.symbol);
     }
 
@@ -265,49 +258,33 @@ export class SetupEngine {
     return diversifiedSetups;
   }
 
-  private updateActiveSetups(newSetups: SetupCandidate[]): void {
+  private async updateActiveSetups(newSetups: SetupCandidate[]): Promise<void> {
     for (const setup of newSetups) {
-      this.activeSetups.set(setup.setupId, setup);
-      console.log(`📝 Added setup ${setup.setupId} to active setups`);
+      try {
+        await setupStateManager.addActiveSetup(setup);
+        console.log(`📝 Added setup ${setup.setupId} to active setups`);
+      } catch (error) {
+        console.error(`Failed to add setup ${setup.setupId}:`, error);
+      }
     }
 
-    console.log(`📊 Active setups: ${this.activeSetups.size}/${this.config.maxConcurrentSetups}`);
+    const totalActive = (await setupStateManager.getActiveSetups()).length;
+    console.log(`📊 Active setups: ${totalActive}/${this.config.maxConcurrentSetups}`);
   }
 
   // ============================================================================
   // STATISTICS AND MONITORING
   // ============================================================================
 
-  getEngineStats(): {
+  async getEngineStats(): Promise<{
     activeSetups: number;
     maxConcurrentSetups: number;
     setupsByType: Record<string, number>;
     setupsBySymbol: Record<string, number>;
     avgConfidenceScore: number;
     avgRiskReward: number;
-  } {
-    const activeSetups = Array.from(this.activeSetups.values());
-    
-    const setupsByType: Record<string, number> = {};
-    const setupsBySymbol: Record<string, number> = {};
-    let totalConfidence = 0;
-    let totalRiskReward = 0;
-
-    for (const setup of activeSetups) {
-      setupsByType[setup.setupType] = (setupsByType[setup.setupType] || 0) + 1;
-      setupsBySymbol[setup.symbol] = (setupsBySymbol[setup.symbol] || 0) + 1;
-      totalConfidence += setup.confidenceScore;
-      totalRiskReward += setup.riskReward;
-    }
-
-    return {
-      activeSetups: activeSetups.length,
-      maxConcurrentSetups: this.config.maxConcurrentSetups,
-      setupsByType,
-      setupsBySymbol,
-      avgConfidenceScore: activeSetups.length > 0 ? totalConfidence / activeSetups.length : 0,
-      avgRiskReward: activeSetups.length > 0 ? totalRiskReward / activeSetups.length : 0,
-    };
+  }> {
+    return await setupStateManager.getEngineStats();
   }
 }
 

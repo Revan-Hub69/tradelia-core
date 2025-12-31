@@ -8,7 +8,7 @@
 CREATE TABLE IF NOT EXISTS setup_events (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   event_id UUID NOT NULL UNIQUE,
-  setup_id UUID,                    -- Links related events
+  setup_id TEXT,                    -- Links related events (deterministic hash)
   symbol TEXT NOT NULL,
   event_type TEXT NOT NULL,
   timestamp TIMESTAMPTZ NOT NULL,
@@ -94,7 +94,7 @@ USING (auth.role() = 'authenticated');
 -- ============================================================================
 
 -- Function to get setup lifecycle events
-CREATE OR REPLACE FUNCTION get_setup_lifecycle(setup_uuid UUID)
+CREATE OR REPLACE FUNCTION get_setup_lifecycle(setup_hash TEXT)
 RETURNS TABLE (
   event_id UUID,
   event_type TEXT,
@@ -113,7 +113,7 @@ BEGIN
     se.market_state,
     se.outcome
   FROM setup_events se
-  WHERE se.setup_id = setup_uuid
+  WHERE se.setup_id = setup_hash
   ORDER BY se.timestamp ASC;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

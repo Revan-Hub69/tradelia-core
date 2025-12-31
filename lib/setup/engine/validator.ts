@@ -354,13 +354,18 @@ export class SetupValidator {
       reasons.push('high_market_stress_poor_liquidity');
     }
 
-    // Check for absorption (could indicate liquidity issues)
-    if (orderflow.absorption) {
-      reasons.push('absorption_detected_liquidity_concern');
+    // Setup-type specific liquidity checks
+    if (setup.setupType === 'LIQUIDITY_SWEEP_REVERSAL') {
+      // For liquidity sweep setups, absorption is REQUIRED
+      if (!orderflow.absorption) {
+        reasons.push('liquidity_sweep_requires_absorption');
+      }
+    } else {
+      // For other setups, absorption indicates potential liquidity issues
+      if (orderflow.absorption) {
+        reasons.push('absorption_detected_liquidity_concern');
+      }
     }
-
-    // For now, assume liquidity is adequate if we pass basic checks
-    // In production, this would check actual order book depth
 
     return {
       valid: reasons.length === 0,

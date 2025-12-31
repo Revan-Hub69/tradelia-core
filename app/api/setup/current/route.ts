@@ -14,8 +14,8 @@ export async function GET(request: NextRequest) {
     }
 
     // Get current engine state
-    const activeSetups = setupEngine.getActiveSetups();
-    const engineStats = setupEngine.getEngineStats();
+    const activeSetups = await setupEngine.getActiveSetups();
+    const engineStats = await setupEngine.getEngineStats();
 
     // Format active setups for API response
     const formattedSetups = activeSetups.map(setup => ({

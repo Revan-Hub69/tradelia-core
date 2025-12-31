@@ -16,12 +16,9 @@ import { v4 as uuidv4 } from 'uuid';
 export class SetupEventLogger {
   private readonly batchSize = 100;
   private eventBuffer: SetupEvent[] = [];
-  private flushTimer?: NodeJS.Timeout;
 
-  constructor(private readonly autoFlush = true) {
-    if (autoFlush) {
-      this.startAutoFlush();
-    }
+  constructor() {
+    // No auto-flush in serverless environment
   }
 
   // ============================================================================
@@ -202,16 +199,28 @@ export class SetupEventLogger {
   // ============================================================================
 
   private async logEvent(event: SetupEvent): Promise<void> {
-    if (this.autoFlush) {
+    // In serverless, always write directly for important events
+    if (this.isImportantEvent(event.eventType)) {
+      await this.writeEventToDb(event);
+    } else {
+      // Buffer less important events and flush when batch is full
       this.eventBuffer.push(event);
       
       if (this.eventBuffer.length >= this.batchSize) {
         await this.flush();
       }
-    } else {
-      // Direct write for critical events
-      await this.writeEventToDb(event);
     }
+  }
+
+  private isImportantEvent(eventType: SetupEventType): boolean {
+    return [
+      'SETUP_DETECTED',
+      'SETUP_VALIDATED', 
+      'SETUP_REJECTED',
+      'ENTRY_TRIGGERED',
+      'STOP_HIT',
+      'TARGET_HIT'
+    ].includes(eventType);
   }
 
   async flush(): Promise<void> {
@@ -275,19 +284,10 @@ export class SetupEventLogger {
   }
 
   // ============================================================================
-  // AUTO-FLUSH MANAGEMENT
+  // CLEANUP
   // ============================================================================
 
-  private startAutoFlush(): void {
-    this.flushTimer = setInterval(async () => {
-      await this.flush();
-    }, 5000); // Flush every 5 seconds
-  }
-
   async destroy(): Promise<void> {
-    if (this.flushTimer) {
-      clearInterval(this.flushTimer);
-    }
     await this.flush(); // Final flush
   }
 
