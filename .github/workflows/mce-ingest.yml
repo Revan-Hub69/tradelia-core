@@ -2,7 +2,8 @@ name: MCE Data Ingestion
 
 on:
   schedule:
-    # Run every 5 minutes (GitHub Actions minimum)
+    # Run every 5 minutes for real-time market context updates
+    # This is the minimum interval supported by GitHub Actions
     - cron: '*/5 * * * *'
   
   # Allow manual triggering
@@ -96,11 +97,11 @@ jobs:
             /tmp/mce-*.log
           retention-days: 7
 
-  # Health check job (runs less frequently)
+  # Health check job (runs on manual trigger only)
   health-check:
     runs-on: ubuntu-latest
-    # Run every 15 minutes
-    if: github.event.schedule == '*/15 * * * *' || github.event_name == 'workflow_dispatch'
+    # Only run on manual workflow dispatch
+    if: github.event_name == 'workflow_dispatch'
     timeout-minutes: 2
     
     steps:
