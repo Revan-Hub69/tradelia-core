@@ -1,0 +1,125 @@
+name: MCE Data Ingestion
+
+on:
+  schedule:
+    # Run every minute (GitHub Actions has ~1-2 minute delay)
+    - cron: '* * * * *'
+  
+  # Allow manual triggering
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Run in dry-run mode (no database writes)'
+        required: false
+        default: 'false'
+        type: boolean
+      verbose:
+        description: 'Enable verbose logging'
+        required: false
+        default: 'false'
+        type: boolean
+
+# Prevent concurrent runs
+concurrency:
+  group: mce-ingest
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5  # Fail fast if something is wrong
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci --only=production
+      
+      - name: Run MCE Pipeline
+        env:
+          # Supabase configuration
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          
+          # MCE configuration
+          MCE_SYMBOLS: 'BTCUSDT'
+          MCE_TIMEFRAMES: '1m,5m,15m,1h,4h'
+          MCE_LOOKBACK_HOURS: '48'
+          MCE_MIN_KLINES: '100'
+          MCE_ENABLE_ANTIFLIP: 'true'
+          MCE_MAX_RETRIES: '3'
+          MCE_TIMEOUT_MS: '25000'  # 25s timeout (5s buffer for GitHub Actions)
+          MCE_SAVE_TO_DB: ${{ github.event.inputs.dry_run != 'true' }}
+          MCE_LOG_RESULTS: 'true'
+        run: |
+          # Build command with optional flags
+          CMD="node scripts/mce-run-once.mjs"
+          
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            CMD="$CMD --dry-run"
+          fi
+          
+          if [ "${{ github.event.inputs.verbose }}" = "true" ]; then
+            CMD="$CMD --verbose"
+          fi
+          
+          echo "Running: $CMD"
+          $CMD
+      
+      - name: Health Check (on failure)
+        if: failure()
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          echo "Pipeline failed, running health check..."
+          node scripts/mce-run-once.mjs --health --verbose
+      
+      - name: Upload logs (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mce-logs-${{ github.run_number }}
+          path: |
+            /home/runner/.npm/_logs/
+            /tmp/mce-*.log
+          retention-days: 7
+
+  # Health check job (runs less frequently)
+  health-check:
+    runs-on: ubuntu-latest
+    # Run every 15 minutes
+    if: github.event.schedule == '*/15 * * * *' || github.event_name == 'workflow_dispatch'
+    timeout-minutes: 2
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci --only=production
+      
+      - name: Run Health Check
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: node scripts/mce-run-once.mjs --health --verbose
