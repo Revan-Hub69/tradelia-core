@@ -128,7 +128,7 @@ jobs:
         run: |
           CMD="npx tsx scripts/prod/mce-pipeline.ts"
           
-          if [ "${{ github.event.inputs.verbose }}" = "true" ]; then
+          if [ "${{ github.event.inputs.verbose || 'false' }}" = "true" ]; then
             CMD="$CMD --verbose"
           fi
           
@@ -172,7 +172,7 @@ jobs:
         run: |
           CMD="npx tsx scripts/prod/ucm-pipeline.ts"
           
-          if [ "${{ github.event.inputs.verbose }}" = "true" ]; then
+          if [ "${{ github.event.inputs.verbose || 'false' }}" = "true" ]; then
             CMD="$CMD --verbose"
           fi
           

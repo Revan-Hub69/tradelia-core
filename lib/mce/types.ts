@@ -1,8 +1,8 @@
 // MCE Core Types - Canonical and Deterministic
 // These types define the exact data structures used throughout the MCE system
 
-// Supported symbols (start with BTCUSDT only)
-export type Symbol = "BTCUSDT";
+// Supported symbols (production ready symbols)
+export type Symbol = "BTCUSDT" | "ETHUSDT" | "BNBUSDT" | "XRPUSDT" | "SOLUSDT" | "ADAUSDT" | "DOTUSDT" | "LINKUSDT";
 
 // Supported timeframes
 export type TF = "1m" | "5m" | "15m" | "1h" | "4h";
@@ -165,7 +165,7 @@ export interface MCEConfig {
 
 // Default configuration
 export const DEFAULT_MCE_CONFIG: MCEConfig = {
-  symbols: ["BTCUSDT"],
+  symbols: ["BTCUSDT", "ETHUSDT", "BNBUSDT", "XRPUSDT", "SOLUSDT", "ADAUSDT", "DOTUSDT", "LINKUSDT"],
   timeframes: ["1m", "5m", "15m", "1h", "4h"],
   features: {
     atrPeriods: [14, 50],
@@ -213,7 +213,7 @@ export class ClassificationError extends MCEError {
 
 // Type guards
 export function isValidSymbol(symbol: string): symbol is Symbol {
-  return symbol === "BTCUSDT";
+  return ["BTCUSDT", "ETHUSDT", "BNBUSDT", "XRPUSDT", "SOLUSDT", "ADAUSDT", "DOTUSDT", "LINKUSDT"].includes(symbol);
 }
 
 export function isValidTF(tf: string): tf is TF {
