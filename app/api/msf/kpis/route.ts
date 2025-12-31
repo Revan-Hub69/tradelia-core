@@ -3,26 +3,14 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/mce/db/supabase';
-import { applyRateLimit } from '@/lib/middleware/rate-limit-db';
+import { dbRateLimits } from '@/lib/middleware/rate-limit-db';
 
 export async function GET(request: NextRequest) {
   try {
     // Apply rate limiting (general tier - 60 req/min)
-    const rateLimitResult = await applyRateLimit(request, 'general');
-    if (!rateLimitResult.allowed) {
-      return NextResponse.json(
-        { 
-          ok: false, 
-          error: 'Rate limit exceeded',
-          retryAfter: rateLimitResult.retryAfter 
-        },
-        { 
-          status: 429,
-          headers: {
-            'Retry-After': rateLimitResult.retryAfter?.toString() || '60'
-          }
-        }
-      );
+    const rateLimitResult = await dbRateLimits.general.check(request);
+    if (rateLimitResult) {
+      return rateLimitResult;
     }
 
     const sb = supabaseAdmin();

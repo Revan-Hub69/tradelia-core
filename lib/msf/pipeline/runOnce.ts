@@ -155,13 +155,6 @@ export async function runMSFPipeline(input: MSFPipelineInput): Promise<MSFResult
   }
 }
 
-// ✅ REAL DATA COLLECTION - Binance API integration
-async function collectRealSymbolSnapshots(symbols: string[]): Promise<SymbolSnapshot[]> {
-  // This function is now implemented in lib/msf/binance/snapshots.ts
-  // Import and use the real implementation
-  return collectRealSymbolSnapshots(symbols);
-}
-
 // ✅ MOCK DATA MOVED TO DEV SCRIPTS (not in production path)
 async function collectMockSymbolSnapshots(symbols: string[]): Promise<SymbolSnapshot[]> {
   console.warn('🧪 USING MOCK DATA - DEV ONLY');
