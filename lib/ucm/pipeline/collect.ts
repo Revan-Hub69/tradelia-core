@@ -6,6 +6,7 @@ import { UCM_CONFIG } from "../config";
 import { BinanceClient } from "../../mce/binance/client";
 import { supabaseAdmin } from "../../mce/db/supabase";
 import { roundTo } from "../../mce/utils/math";
+import { circuitBreakers } from "../../utils/circuit-breaker";
 
 export interface CollectionResult {
   snapshots: EligibilitySnapshotType[];
@@ -133,14 +134,13 @@ async function collect24hTickerData(symbols: string[]): Promise<Map<string, Tick
   const tickerMap = new Map<string, TickerData>();
   
   try {
-    // Use Binance 24hr ticker statistics API
-    // Fetch 24hr ticker for all symbols at once
-    const response = await fetch('https://api.binance.com/api/v3/ticker/24hr');
-    if (!response.ok) {
-      throw new Error(`Binance API error: ${response.status} ${response.statusText}`);
-    }
-    
-    const allTickers = await response.json();
+    // Use circuit breaker for Binance API calls
+    const allTickers = await circuitBreakers.binance.execute(
+      'https://api.binance.com/api/v3/ticker/24hr',
+      {
+        signal: AbortSignal.timeout(10000) // 10s timeout
+      }
+    );
     
     for (const symbol of symbols) {
       const ticker = allTickers.find((t: any) => t.symbol === symbol);
@@ -185,9 +185,9 @@ async function collect24hTickerData(symbols: string[]): Promise<Map<string, Tick
     }
     
   } catch (error) {
-    // Fallback: use conservative estimates (deterministic, not random)
-    console.warn('Failed to fetch real ticker data, using fallback estimates:', error);
+    console.warn('Circuit breaker or Binance API error, using fallback estimates:', error);
     
+    // Fallback: use conservative estimates (deterministic, not random)
     for (const symbol of symbols) {
       // Deterministic fallback based on symbol characteristics
       const symbolHash = symbol.split('').reduce((hash, char) => hash + char.charCodeAt(0), 0);

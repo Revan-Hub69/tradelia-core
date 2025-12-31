@@ -13,6 +13,7 @@ import {
   generatePoolHash,
   UCMError 
 } from "../schemas";
+import { withLock } from "../../utils/distributed-lock";
 
 export interface UCMPipelineResult {
   success: boolean;
@@ -42,6 +43,26 @@ export interface UCMPipelineResult {
 }
 
 export async function runUCMPipeline(): Promise<UCMPipelineResult> {
+  // Use distributed lock to prevent concurrent pipeline runs
+  return await withLock(
+    {
+      name: 'ucm_pipeline',
+      ttl: 5 * 60 * 1000, // 5 minutes
+      retryDelay: 2000,
+      maxRetries: 3
+    },
+    async () => {
+      return await runUCMPipelineInternal();
+    },
+    {
+      startedBy: process.pid.toString(),
+      startedAt: Date.now(),
+      version: 'v1.0.0'
+    }
+  );
+}
+
+async function runUCMPipelineInternal(): Promise<UCMPipelineResult> {
   const startTime = Date.now();
   const errors: string[] = [];
   const warnings: string[] = [];

@@ -155,14 +155,24 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// OPTIONS handler for CORS
+// OPTIONS handler for CORS - SECURE ADMIN ENDPOINT
 export async function OPTIONS() {
+  // Strict CORS for admin endpoints - NO wildcard
+  const allowedOrigins = [
+    'https://tradelia-core.vercel.app',
+    'https://tradelia-core-git-main-revan-hub69.vercel.app',
+    'https://tradelia.com',
+    'http://localhost:3000', // Development only
+  ];
+  
   return addSecurityHeaders(NextResponse.json({}, {
     status: 200,
     headers: {
-      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': allowedOrigins[0], // Default to production
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Allow-Credentials': 'true',
+      'Access-Control-Max-Age': '86400', // 24 hours
     },
   }));
 }

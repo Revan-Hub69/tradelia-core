@@ -1,4 +1,4 @@
-name: MCE Data Ingestion
+name: Production Pipeline Execution
 
 on:
   schedule:
@@ -9,8 +9,17 @@ on:
   # Allow manual triggering
   workflow_dispatch:
     inputs:
-      dry_run:
-        description: 'Run in dry-run mode (no database writes)'
+      pipeline:
+        description: 'Pipeline to run'
+        required: true
+        default: 'both'
+        type: choice
+        options:
+          - 'mce'
+          - 'ucm'
+          - 'both'
+      health_check:
+        description: 'Run health check only'
         required: false
         default: false
         type: boolean
@@ -22,13 +31,16 @@ on:
 
 # Prevent concurrent runs
 concurrency:
-  group: mce-ingest
+  group: production-pipeline
   cancel-in-progress: false
 
 jobs:
-  ingest:
+  # Health Check Job (runs first)
+  health-check:
     runs-on: ubuntu-latest
-    timeout-minutes: 5  # Fail fast if something is wrong
+    timeout-minutes: 2
+    outputs:
+      healthy: ${{ steps.health.outputs.healthy }}
     
     steps:
       - name: Checkout code
@@ -41,67 +53,137 @@ jobs:
           cache: 'npm'
       
       - name: Install dependencies
-        run: npm ci --only=production
+        run: npm ci --omit=dev
       
-      - name: Run MCE Pipeline
+      - name: Run System Health Check
+        id: health
         env:
-          # Supabase configuration
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-          
-          # MCE configuration
-          MCE_SYMBOLS: 'BTCUSDT'
-          MCE_TIMEFRAMES: '1m,5m,15m,1h,4h'
-          MCE_LOOKBACK_HOURS: '48'
-          MCE_MIN_KLINES: '100'
-          MCE_ENABLE_ANTIFLIP: 'true'
-          MCE_MAX_RETRIES: '3'
-          MCE_TIMEOUT_MS: '25000'  # 25s timeout (5s buffer for GitHub Actions)
-          MCE_SAVE_TO_DB: ${{ github.event.inputs.dry_run != 'true' }}
-          MCE_LOG_RESULTS: 'true'
         run: |
-          # Build command with optional flags
-          CMD="node scripts/mce-run-once.mjs"
+          echo "Running system health checks..."
           
-          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
-            CMD="$CMD --dry-run"
+          # Check MCE health
+          if node scripts/prod/mce-pipeline.mjs --health; then
+            echo "MCE health: PASS"
+            MCE_HEALTHY=true
+          else
+            echo "MCE health: FAIL"
+            MCE_HEALTHY=false
           fi
+          
+          # Check UCM health  
+          if node scripts/prod/ucm-pipeline.mjs --health; then
+            echo "UCM health: PASS"
+            UCM_HEALTHY=true
+          else
+            echo "UCM health: FAIL"
+            UCM_HEALTHY=false
+          fi
+          
+          # Overall health
+          if [ "$MCE_HEALTHY" = "true" ] && [ "$UCM_HEALTHY" = "true" ]; then
+            echo "healthy=true" >> $GITHUB_OUTPUT
+            echo "✅ All systems healthy"
+          else
+            echo "healthy=false" >> $GITHUB_OUTPUT
+            echo "❌ System health check failed"
+            exit 1
+          fi
+
+  # MCE Pipeline Job
+  mce-pipeline:
+    runs-on: ubuntu-latest
+    needs: health-check
+    if: |
+      (github.event_name == 'schedule' || 
+       github.event.inputs.pipeline == 'mce' || 
+       github.event.inputs.pipeline == 'both') &&
+      (github.event.inputs.health_check != 'true') &&
+      needs.health-check.outputs.healthy == 'true'
+    timeout-minutes: 3
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci --omit=dev
+      
+      - name: Run MCE Production Pipeline
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+        run: |
+          CMD="node scripts/prod/mce-pipeline.mjs"
           
           if [ "${{ github.event.inputs.verbose }}" = "true" ]; then
             CMD="$CMD --verbose"
           fi
           
-          echo "Running: $CMD"
+          echo "🚀 Running MCE Production Pipeline: $CMD"
           $CMD
+
+  # UCM Pipeline Job  
+  ucm-pipeline:
+    runs-on: ubuntu-latest
+    needs: [health-check, mce-pipeline]
+    if: |
+      (github.event_name == 'schedule' || 
+       github.event.inputs.pipeline == 'ucm' || 
+       github.event.inputs.pipeline == 'both') &&
+      (github.event.inputs.health_check != 'true') &&
+      needs.health-check.outputs.healthy == 'true' &&
+      (always() && (needs.mce-pipeline.result == 'success' || needs.mce-pipeline.result == 'skipped'))
+    timeout-minutes: 3
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
       
-      - name: Health Check (on failure)
-        if: failure()
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci --omit=dev
+      
+      - name: Run UCM Production Pipeline
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          UCM_ADMIN_TOKEN: ${{ secrets.UCM_ADMIN_TOKEN }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
         run: |
-          echo "Pipeline failed, running health check..."
-          node scripts/mce-run-once.mjs --health --verbose
-      
-      - name: Upload logs (on failure)
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: mce-logs-${{ github.run_number }}
-          path: |
-            /home/runner/.npm/_logs/
-            /tmp/mce-*.log
-          retention-days: 7
+          CMD="node scripts/prod/ucm-pipeline.mjs"
+          
+          if [ "${{ github.event.inputs.verbose }}" = "true" ]; then
+            CMD="$CMD --verbose"
+          fi
+          
+          echo "🎯 Running UCM Production Pipeline: $CMD"
+          $CMD
 
-  # Health check job (runs on manual trigger only)
-  health-check:
+  # Failure Recovery Job
+  failure-recovery:
     runs-on: ubuntu-latest
-    # Only run on manual workflow dispatch
-    if: github.event_name == 'workflow_dispatch'
+    needs: [health-check, mce-pipeline, ucm-pipeline]
+    if: failure()
     timeout-minutes: 2
     
     steps:
@@ -115,12 +197,31 @@ jobs:
           cache: 'npm'
       
       - name: Install dependencies
-        run: npm ci --only=production
+        run: npm ci --omit=dev
       
-      - name: Run Health Check
+      - name: Diagnostic Health Check
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-        run: node scripts/mce-run-once.mjs --health --verbose
+        run: |
+          echo "🚨 Pipeline failure detected, running diagnostics..."
+          
+          echo "📊 MCE Health Check:"
+          node scripts/prod/mce-pipeline.mjs --health --verbose || true
+          
+          echo "📊 UCM Health Check:"  
+          node scripts/prod/ucm-pipeline.mjs --health --verbose || true
+          
+          echo "📊 System Health API:"
+          curl -f https://tradelia-core.vercel.app/api/health || echo "Health API failed"
+      
+      - name: Upload diagnostic logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: pipeline-failure-logs-${{ github.run_number }}
+          path: |
+            /home/runner/.npm/_logs/
+            /tmp/*.log
+          retention-days: 7

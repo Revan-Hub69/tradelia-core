@@ -33,10 +33,10 @@ async function checkDatabase(): Promise<HealthCheck> {
   const start = Date.now();
   
   try {
-    // Test basic connectivity
+    // Test basic connectivity with a real query
     const { data, error } = await supabaseAdmin()
       .from('universe_pool')
-      .select('count')
+      .select('id')
       .limit(1);
     
     if (error) {
@@ -56,7 +56,8 @@ async function checkDatabase(): Promise<HealthCheck> {
       latency,
       details: {
         connectionPool: 'active',
-        queryTime: `${latency}ms`
+        queryTime: `${latency}ms`,
+        tablesAccessible: data !== null
       }
     };
   } catch (error) {
@@ -132,24 +133,43 @@ async function checkPipelineStatus(): Promise<HealthCheck> {
     if (!data || data.length === 0) {
       return {
         name: 'pipeline_status',
-        status: 'degraded',
+        status: 'unhealthy',
         latency,
-        error: 'No pipeline runs found'
+        error: 'No pipeline runs found - system not operational'
       };
     }
     
     const lastRun = new Date(data[0].created_at);
     const timeSinceLastRun = Date.now() - lastRun.getTime();
-    const maxAge = 10 * 60 * 1000; // 10 minutes
+    
+    // CRITICAL: Pipeline freshness validation - fail if > 15min
+    const maxAge = 15 * 60 * 1000; // 15 minutes (P1 requirement)
+    const warnAge = 10 * 60 * 1000; // 10 minutes warning threshold
+    
+    let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
+    let statusMessage = 'Pipeline data is fresh';
+    
+    if (timeSinceLastRun > maxAge) {
+      status = 'unhealthy';
+      statusMessage = 'Pipeline data is stale - operational failure';
+    } else if (timeSinceLastRun > warnAge) {
+      status = 'degraded';
+      statusMessage = 'Pipeline data is aging - warning threshold exceeded';
+    }
     
     return {
       name: 'pipeline_status',
-      status: timeSinceLastRun > maxAge ? 'degraded' : 'healthy',
+      status,
       latency,
+      error: status === 'unhealthy' ? statusMessage : undefined,
       details: {
         lastRun: lastRun.toISOString(),
         timeSinceLastRun: `${Math.round(timeSinceLastRun / 1000)}s`,
-        dataFreshness: timeSinceLastRun > maxAge ? 'stale' : 'fresh'
+        timeSinceLastRunMinutes: Math.round(timeSinceLastRun / 1000 / 60),
+        dataFreshness: status === 'healthy' ? 'fresh' : status === 'degraded' ? 'aging' : 'stale',
+        freshnessThreshold: '15 minutes',
+        warningThreshold: '10 minutes',
+        statusMessage
       }
     };
   } catch (error) {
