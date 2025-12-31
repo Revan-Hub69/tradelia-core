@@ -36,7 +36,7 @@ interface UniverseSymbol {
 
 interface SetupAnalysis {
   symbol: string;
-  fit: 'PERFECT' | 'GOOD' | 'POOR';
+  fit: 'A' | 'B' | 'C' | 'NO_TRADE';
   confidence: number;
   reasons: string[];
   recommendation: 'TRADE' | 'MONITOR' | 'AVOID';
@@ -48,139 +48,55 @@ export default function TradingDashboard() {
   const [setups, setSetups] = useState<SetupAnalysis[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
-  const [usingMockData, setUsingMockData] = useState(false);
 
   const fetchData = async () => {
     try {
       setLoading(true);
 
       // Fetch market regime
-      try {
-        const regimeResponse = await fetch('/api/regime/current');
-        if (regimeResponse.ok) {
-          const regimeData = await regimeResponse.json();
-          if (regimeData.ok && regimeData.data?.signature) {
-            setMarketRegime({
-              trend: regimeData.data.signature.trend || 'range',
-              volatility: regimeData.data.signature.volatility || 'normal',
-              confidence: regimeData.data.signature.confidence || 0.5,
-              asOf: regimeData.data.signature.asOf || new Date().toISOString(),
-            });
-          }
-        } else {
-          // Fallback to mock data if API fails
-          console.warn('Regime API failed, using mock data');
-          setUsingMockData(true);
+      const regimeResponse = await fetch('/api/regime/current');
+      if (regimeResponse.ok) {
+        const regimeData = await regimeResponse.json();
+        if (regimeData.ok && regimeData.data?.signature) {
           setMarketRegime({
-            trend: 'bull',
-            volatility: 'normal',
-            confidence: 0.75,
-            asOf: new Date().toISOString(),
+            trend: regimeData.data.signature.trend || 'range',
+            volatility: regimeData.data.signature.volatility || 'normal',
+            confidence: regimeData.data.signature.confidence || 0.5,
+            asOf: regimeData.data.signature.asOf || new Date().toISOString(),
           });
         }
-      } catch (error) {
-        console.warn('Regime API error, using mock data:', error);
-        setUsingMockData(true);
-        setMarketRegime({
-          trend: 'bull',
-          volatility: 'normal',
-          confidence: 0.75,
-          asOf: new Date().toISOString(),
-        });
       }
 
       // Fetch universe
-      try {
-        const universeResponse = await fetch('/api/universe/active');
-        if (universeResponse.ok) {
-          const universeData = await universeResponse.json();
-          if (universeData.ok && universeData.data?.symbols) {
-            setUniverse(universeData.data.symbols.slice(0, 10));
-          }
-        } else {
-          // Fallback to mock data if API fails
-          console.warn('Universe API failed, using mock data');
-          setUsingMockData(true);
-          setUniverse([
-            { symbol: 'BTCUSDT', rank: 1, score: 85.5, reasons: ['high_volume', 'low_spread'] },
-            { symbol: 'ETHUSDT', rank: 2, score: 78.2, reasons: ['good_liquidity', 'stable_spread'] },
-            { symbol: 'BNBUSDT', rank: 3, score: 72.1, reasons: ['decent_volume', 'acceptable_spread'] },
-            { symbol: 'XRPUSDT', rank: 4, score: 68.9, reasons: ['moderate_volume', 'tight_spread'] },
-            { symbol: 'SOLUSDT', rank: 5, score: 65.3, reasons: ['growing_volume', 'improving_liquidity'] }
-          ]);
+      const universeResponse = await fetch('/api/universe/active');
+      if (universeResponse.ok) {
+        const universeData = await universeResponse.json();
+        if (universeData.ok && universeData.data?.symbols) {
+          setUniverse(universeData.data.symbols.slice(0, 10));
         }
-      } catch (error) {
-        console.warn('Universe API error, using mock data:', error);
-        setUsingMockData(true);
-        setUniverse([
-          { symbol: 'BTCUSDT', rank: 1, score: 85.5, reasons: ['high_volume', 'low_spread'] },
-          { symbol: 'ETHUSDT', rank: 2, score: 78.2, reasons: ['good_liquidity', 'stable_spread'] },
-          { symbol: 'BNBUSDT', rank: 3, score: 72.1, reasons: ['decent_volume', 'acceptable_spread'] },
-          { symbol: 'XRPUSDT', rank: 4, score: 68.9, reasons: ['moderate_volume', 'tight_spread'] },
-          { symbol: 'SOLUSDT', rank: 5, score: 65.3, reasons: ['growing_volume', 'improving_liquidity'] }
-        ]);
       }
 
       // Fetch setup analysis
-      try {
-        const setupResponse = await fetch('/api/msf/current');
-        if (setupResponse.ok) {
-          const setupData = await setupResponse.json();
-          if (setupData.ok && setupData.data?.marketFits) {
-            // Transform MSF data to setup analysis format
-            const setupAnalysis = setupData.data.marketFits.map((fit: any) => ({
-              symbol: fit.symbol,
-              fit: fit.fitClass,
-              confidence: fit.dataQuality,
-              reasons: fit.reasons || [],
-              recommendation: fit.fitClass === 'A' ? 'TRADE' : 
-                             fit.fitClass === 'B' ? 'MONITOR' : 'AVOID'
-            }));
-            setSetups(setupAnalysis);
-          }
-        } else {
-          // Fallback to mock data if API fails
-          console.warn('MSF API failed, using mock data');
-          setUsingMockData(true);
-          setSetups([
-            { symbol: 'BTCUSDT', fit: 'A', confidence: 0.98, reasons: ['tight_spread', 'high_volume'], recommendation: 'TRADE' },
-            { symbol: 'ETHUSDT', fit: 'A', confidence: 0.96, reasons: ['good_liquidity', 'stable_spread'], recommendation: 'TRADE' },
-            { symbol: 'BNBUSDT', fit: 'B', confidence: 0.94, reasons: ['moderate_spread', 'decent_volume'], recommendation: 'MONITOR' },
-            { symbol: 'XRPUSDT', fit: 'B', confidence: 0.95, reasons: ['tight_spread', 'lower_volume'], recommendation: 'MONITOR' },
-            { symbol: 'SOLUSDT', fit: 'C', confidence: 0.91, reasons: ['wider_spread', 'variable_liquidity'], recommendation: 'AVOID' }
-          ]);
+      const setupResponse = await fetch('/api/msf/current');
+      if (setupResponse.ok) {
+        const setupData = await setupResponse.json();
+        if (setupData.ok && setupData.data?.marketFits) {
+          // Transform MSF data to setup analysis format
+          const setupAnalysis = setupData.data.marketFits.map((fit: any) => ({
+            symbol: fit.symbol,
+            fit: fit.fitClass,
+            confidence: fit.dataQuality,
+            reasons: fit.reasons || [],
+            recommendation: fit.fitClass === 'A' ? 'TRADE' : 
+                           fit.fitClass === 'B' ? 'MONITOR' : 'AVOID'
+          }));
+          setSetups(setupAnalysis);
         }
-      } catch (error) {
-        console.warn('MSF API error, using mock data:', error);
-        setUsingMockData(true);
-        setSetups([
-          { symbol: 'BTCUSDT', fit: 'A', confidence: 0.98, reasons: ['tight_spread', 'high_volume'], recommendation: 'TRADE' },
-          { symbol: 'ETHUSDT', fit: 'A', confidence: 0.96, reasons: ['good_liquidity', 'stable_spread'], recommendation: 'TRADE' },
-          { symbol: 'BNBUSDT', fit: 'B', confidence: 0.94, reasons: ['moderate_spread', 'decent_volume'], recommendation: 'MONITOR' },
-          { symbol: 'XRPUSDT', fit: 'B', confidence: 0.95, reasons: ['tight_spread', 'lower_volume'], recommendation: 'MONITOR' },
-          { symbol: 'SOLUSDT', fit: 'C', confidence: 0.91, reasons: ['wider_spread', 'variable_liquidity'], recommendation: 'AVOID' }
-        ]);
       }
 
       setLastUpdate(new Date());
     } catch (error) {
       console.error('Error fetching trading data:', error);
-      // Set fallback data even on general error
-      setUsingMockData(true);
-      setMarketRegime({
-        trend: 'bull',
-        volatility: 'normal',
-        confidence: 0.75,
-        asOf: new Date().toISOString(),
-      });
-      setUniverse([
-        { symbol: 'BTCUSDT', rank: 1, score: 85.5, reasons: ['high_volume', 'low_spread'] },
-        { symbol: 'ETHUSDT', rank: 2, score: 78.2, reasons: ['good_liquidity', 'stable_spread'] }
-      ]);
-      setSetups([
-        { symbol: 'BTCUSDT', fit: 'A', confidence: 0.98, reasons: ['tight_spread', 'high_volume'], recommendation: 'TRADE' },
-        { symbol: 'ETHUSDT', fit: 'A', confidence: 0.96, reasons: ['good_liquidity', 'stable_spread'], recommendation: 'TRADE' }
-      ]);
     } finally {
       setLoading(false);
     }
@@ -230,22 +146,6 @@ export default function TradingDashboard() {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
-      {/* Mock Data Banner */}
-      {usingMockData && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-          <div className="flex items-center">
-            <AlertTriangle className="h-5 w-5 text-yellow-600 mr-2" />
-            <div>
-              <h3 className="text-sm font-medium text-yellow-800">Using Demo Data</h3>
-              <p className="text-sm text-yellow-700">
-                APIs are not responding. Showing demo data for interface testing. 
-                Run database migrations and populate data for live functionality.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
