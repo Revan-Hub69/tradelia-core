@@ -9,12 +9,6 @@ export const runtime = 'nodejs';
 
 export async function GET(request: NextRequest) {
   try {
-    // Apply database-backed rate limiting for public endpoint
-    const rateLimitResult = await dbRateLimits.general.check(request);
-    if (rateLimitResult) {
-      return rateLimitResult;
-    }
-    
     const sb = supabaseAdmin();
     
     // Get latest universe_active
