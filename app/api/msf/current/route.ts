@@ -13,54 +13,102 @@ export async function GET(request: NextRequest) {
       return rateLimitResult;
     }
 
-    // Return mock data for now (until database is properly synced)
+    const sb = supabaseAdmin();
+
+    // Get latest day gate
+    const { data: dayGateData, error: dayGateError } = await sb
+      .from('msf_day_gates')
+      .select('*')
+      .order('as_of', { ascending: false })
+      .limit(1)
+      .single();
+
+    if (dayGateError && dayGateError.code !== 'PGRST116') {
+      console.error('Day gate query error:', dayGateError);
+      return NextResponse.json(
+        { ok: false, error: 'Failed to fetch day gate' },
+        { status: 500 }
+      );
+    }
+
+    // Get latest market fits
+    const { data: marketFitsData, error: marketFitsError } = await sb
+      .from('msf_market_fits')
+      .select('*')
+      .order('as_of', { ascending: false })
+      .limit(100);
+
+    if (marketFitsError && marketFitsError.code !== 'PGRST116') {
+      console.error('Market fits query error:', marketFitsError);
+      return NextResponse.json(
+        { ok: false, error: 'Failed to fetch market fits' },
+        { status: 500 }
+      );
+    }
+
+    // If no data, return 404
+    if (!dayGateData && (!marketFitsData || marketFitsData.length === 0)) {
+      return NextResponse.json(
+        { 
+          ok: false, 
+          error: 'No MSF data available. Pipeline may not have run yet.' 
+        },
+        { status: 404 }
+      );
+    }
+
     const now = Date.now();
-    const mockMarketFits = [
-      {
-        symbol: 'BTCUSDT',
-        asOf: now,
-        fitClass: 'A',
-        allowedPlaybooks: ['breakout', 'pullback', 'liquidity_sweep'],
-        frictionScore: 0.1,
-        dataQuality: 0.95,
-        reasons: [],
-        hash: 'mock_btc_' + now,
-      },
-      {
-        symbol: 'ETHUSDT',
-        asOf: now,
-        fitClass: 'A',
-        allowedPlaybooks: ['breakout', 'pullback'],
-        frictionScore: 0.15,
-        dataQuality: 0.92,
-        reasons: [],
-        hash: 'mock_eth_' + now,
-      }
-    ];
+    const asOf = dayGateData?.as_of || now;
+
+    // Transform market fits
+    const marketFits = (marketFitsData || []).map((fit: any) => ({
+      symbol: fit.symbol,
+      asOf: fit.as_of,
+      fitClass: fit.fit_class,
+      allowedPlaybooks: fit.allowed_playbooks || [],
+      frictionScore: parseFloat(fit.friction_score || '0'),
+      dataQuality: parseFloat(fit.data_quality || '0.5'),
+      reasons: fit.reasons || [],
+      hash: fit.hash,
+    }));
+
+    // Calculate summary
+    const summary = {
+      totalSymbols: marketFits.length,
+      aCount: marketFits.filter((f: any) => f.fitClass === 'A').length,
+      bCount: marketFits.filter((f: any) => f.fitClass === 'B').length,
+      cCount: marketFits.filter((f: any) => f.fitClass === 'C').length,
+      noTradeCount: marketFits.filter((f: any) => f.fitClass === 'NO_TRADE').length,
+      avgFriction: marketFits.length > 0 
+        ? marketFits.reduce((sum: number, f: any) => sum + f.frictionScore, 0) / marketFits.length 
+        : 0,
+      avgDataQuality: marketFits.length > 0 
+        ? marketFits.reduce((sum: number, f: any) => sum + f.dataQuality, 0) / marketFits.length 
+        : 0,
+    };
 
     // Return structured response
     const response = {
       ok: true,
       data: {
-        dayGate: {
-          asOf: now,
+        dayGate: dayGateData ? {
+          asOf: dayGateData.as_of,
+          tradableDay: dayGateData.tradable_day,
+          countA: dayGateData.count_a,
+          countB: dayGateData.count_b,
+          reasons: dayGateData.reasons || [],
+          hash: dayGateData.hash,
+        } : {
+          asOf,
           tradableDay: true,
-          countA: 2,
-          countB: 0,
+          countA: summary.aCount,
+          countB: summary.bCount,
           reasons: [],
-          hash: 'mock_daygate_' + now,
+          hash: 'no_daygate',
         },
-        marketFits: mockMarketFits,
-        summary: {
-          totalSymbols: 2,
-          aCount: 2,
-          bCount: 0,
-          cCount: 0,
-          noTradeCount: 0,
-          avgFriction: 0.125,
-          avgDataQuality: 0.935,
-        },
-        lastUpdate: now,
+        marketFits,
+        summary,
+        lastUpdate: asOf,
       }
     };
 
