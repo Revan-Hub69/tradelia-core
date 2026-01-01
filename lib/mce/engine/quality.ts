@@ -101,7 +101,8 @@ export function calculateFreshness(
     current.closeTime > latest.closeTime ? current : latest
   );
 
-  const freshnessSec = (currentTime - lastKline.closeTime) / 1000;
+  const rawFreshnessSec = (currentTime - lastKline.closeTime) / 1000;
+  const freshnessSec = Math.max(0, rawFreshnessSec);
   
   // Format time since last data
   const timeSinceLastData = formatTimeDuration(freshnessSec);

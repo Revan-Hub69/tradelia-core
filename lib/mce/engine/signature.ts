@@ -166,6 +166,32 @@ export function verifySignatureHash(
   }
 }
 
+function normalizePrevTrend(value: unknown): "up" | "down" | "range" | undefined {
+  if (typeof value !== "string") {
+    return undefined;
+  }
+
+  const normalized = value.toLowerCase();
+  if (normalized === "up" || normalized === "down" || normalized === "range") {
+    return normalized as "up" | "down" | "range";
+  }
+
+  return undefined;
+}
+
+function normalizePrevVol(value: unknown): "compressed" | "normal" | "expanded" | undefined {
+  if (typeof value !== "string") {
+    return undefined;
+  }
+
+  const normalized = value.toLowerCase();
+  if (normalized === "compressed" || normalized === "normal" || normalized === "expanded") {
+    return normalized as "compressed" | "normal" | "expanded";
+  }
+
+  return undefined;
+}
+
 // Create regime change object
 export function createRegimeChange(
   previousSignature: RegimeSignature | null,
@@ -178,15 +204,24 @@ export function createRegimeChange(
     };
   }
   
-  const trendChanged = currentTrend !== previousSignature.trend;
-  const volChanged = currentVolatility !== previousSignature.volatility;
+  const prevTrend = normalizePrevTrend(previousSignature.trend);
+  const prevVol = normalizePrevVol(previousSignature.volatility);
+
+  if (!prevTrend || !prevVol) {
+    return {
+      changed: true,
+    };
+  }
+
+  const trendChanged = currentTrend !== prevTrend;
+  const volChanged = currentVolatility !== prevVol;
   const changed = trendChanged || volChanged;
   
   return {
     changed,
     prevAsOf: changed ? previousSignature.asOf : undefined,
-    prevTrend: changed ? previousSignature.trend : undefined,
-    prevVol: changed ? previousSignature.volatility : undefined,
+    prevTrend: changed ? prevTrend : undefined,
+    prevVol: changed ? prevVol : undefined,
   };
 }
 

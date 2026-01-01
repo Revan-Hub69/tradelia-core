@@ -14,7 +14,7 @@ const PRODUCTION_CONFIG: PipelineConfig = {
   symbols: ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'XRPUSDT', 'SOLUSDT', 'ADAUSDT', 'DOTUSDT', 'LINKUSDT'],
   timeframes: ['1m', '5m', '15m', '1h', '4h'],
   dataLookback: {
-    hours: 48,
+    hours: 400,
     minKlines: 100,
   },
   processing: {
