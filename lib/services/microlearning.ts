@@ -1,7 +1,7 @@
 // Microlearning Service
 // Handles all microlearning data operations with Supabase
 
-import { supabase } from '@/lib/supabase/client'
+import { supabase } from '@/lib/supabase/browser-client'
 import { getSessionId } from '@/lib/utils/session'
 import type { 
   MicrolearningData, 

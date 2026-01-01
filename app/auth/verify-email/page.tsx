@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Alert } from '@/components/ui/alert'
 import { UnifiedCard, CardContent } from '@/components/ui/design-system/unified-card'
 import { CheckCircle, AlertCircle, Mail, ArrowLeft } from 'lucide-react'
-import { supabase } from '@/lib/supabase/client'
+import { supabase } from '@/lib/supabase/browser-client'
 import Link from 'next/link'
 
 function VerifyEmailContent() {

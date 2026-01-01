@@ -83,15 +83,21 @@ export function useMarketDataDashboard(refreshInterval = 30000) {
     try {
       setState(prev => ({ ...prev, loading: true, error: null }));
 
+      const headers: HeadersInit = {};
+      const apiKey = process.env.NEXT_PUBLIC_MARKET_DATA_API_KEY;
+      if (apiKey) {
+        headers['x-api-key'] = apiKey;
+      }
+
       // Fetch market data status
-      const marketDataResponse = await fetch('/api/market-data/status');
+      const marketDataResponse = await fetch('/api/market-data/status', { headers });
       if (!marketDataResponse.ok) {
         throw new Error(`Market data API error: ${marketDataResponse.status}`);
       }
       const marketData = await marketDataResponse.json();
 
       // Fetch health status
-      const healthResponse = await fetch('/api/health/detailed');
+      const healthResponse = await fetch('/api/health/detailed', { headers });
       if (!healthResponse.ok) {
         throw new Error(`Health API error: ${healthResponse.status}`);
       }

@@ -7,13 +7,13 @@ import { supabaseAdmin } from '@/lib/mce/db/supabase';
 
 export async function GET(request: NextRequest) {
   try {
-    // Re-enable authentication for production
+    // Re-enable authentication for production (optional public fallback)
     const authResult = await requirePermission(request, 'read:market-data');
     if (authResult instanceof NextResponse) {
-      return authResult; // Return auth error response
+      if (process.env.MARKET_DATA_PUBLIC !== 'true') {
+        return authResult; // Return auth error response
+      }
     }
-    
-    const authContext = authResult;
 
     const supabase = supabaseAdmin();
     

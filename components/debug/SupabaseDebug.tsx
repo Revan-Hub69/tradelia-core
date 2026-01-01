@@ -30,7 +30,7 @@ export function SupabaseDebug() {
           // Try a simple query
           const { data, error } = await supabase
             .from('cookie_preferences')
-            .select('count()', { count: 'exact', head: true })
+            .select('*', { count: 'exact', head: true })
 
           if (error) {
             setStatus(prev => ({

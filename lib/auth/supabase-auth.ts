@@ -3,7 +3,7 @@
  * Provides a clean interface for all auth operations
  */
 
-import { supabase } from '@/lib/supabase/client'
+import { supabase } from '@/lib/supabase/browser-client'
 import type { User, Session, AuthError } from '@supabase/supabase-js'
 import { exportUserData, importUserData, clearTemporaryData } from '@/lib/utils/session'
 

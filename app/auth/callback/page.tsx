@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase/client'
+import { supabase } from '@/lib/supabase/browser-client'
 import { Skeleton } from '@/components/ui/loading-skeleton'
 
 export default function AuthCallbackPage() {

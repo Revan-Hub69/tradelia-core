@@ -23,7 +23,7 @@ export function useSupabase() {
         
         const { data, error: err } = await supabase
           .from('cookie_preferences')
-          .select('count()', { count: 'exact', head: true })
+          .select('*', { count: 'exact', head: true })
 
         if (err) {
           console.error('Supabase connection error:', err)

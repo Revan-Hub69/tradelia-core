@@ -45,7 +45,7 @@ export function SupabaseConnectionDebug() {
         // Try to connect
         const { data, error } = await supabase
           .from('cookie_preferences')
-          .select('count()', { count: 'exact', head: true })
+          .select('*', { count: 'exact', head: true })
 
         if (error) {
           setStatus(prev => ({

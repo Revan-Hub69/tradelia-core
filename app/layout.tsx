@@ -116,7 +116,7 @@ export default function RootLayout({
           <AppProviders>
             {children}
             <Toaster richColors position="bottom-right" />
-            <SupabaseConnectionDebug />
+            {process.env.NODE_ENV !== 'production' && <SupabaseConnectionDebug />}
           </AppProviders>
         </ThemeProvider>
       </body>
