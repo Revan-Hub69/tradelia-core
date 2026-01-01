@@ -39,19 +39,19 @@ async function fetchBinanceKlines(symbol, interval, limit = 100) {
 }
 
 function calculateTrend(closes) {
-  if (closes.length < 2) return 'NEUTRAL';
+  if (closes.length < 2) return 'range';
   
   const recent = closes.slice(-5);
   const avg = recent.reduce((a, b) => a + b) / recent.length;
   const current = closes[closes.length - 1];
   
-  if (current > avg * 1.01) return 'UP';
-  if (current < avg * 0.99) return 'DOWN';
-  return 'NEUTRAL';
+  if (current > avg * 1.01) return 'up';
+  if (current < avg * 0.99) return 'down';
+  return 'range';
 }
 
 function calculateVolatility(closes) {
-  if (closes.length < 2) return 'LOW';
+  if (closes.length < 2) return 'normal';
   
   const returns = [];
   for (let i = 1; i < closes.length; i++) {
@@ -60,9 +60,9 @@ function calculateVolatility(closes) {
   
   const avgReturn = returns.reduce((a, b) => a + b) / returns.length;
   
-  if (avgReturn > 0.02) return 'HIGH';
-  if (avgReturn > 0.01) return 'MEDIUM';
-  return 'LOW';
+  if (avgReturn > 0.02) return 'expanded';
+  if (avgReturn > 0.01) return 'normal';
+  return 'compressed';
 }
 
 async function runMCEPipeline() {
