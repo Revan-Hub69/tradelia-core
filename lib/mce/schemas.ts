@@ -5,7 +5,16 @@ import { z } from "zod";
 
 // Base type schemas
 export const TFSchema = z.enum(["1m", "5m", "15m", "1h", "4h"]);
-export const SymbolSchema = z.enum(["BTCUSDT"]);
+export const SymbolSchema = z.enum([
+  "BTCUSDT",
+  "ETHUSDT",
+  "BNBUSDT",
+  "XRPUSDT",
+  "SOLUSDT",
+  "ADAUSDT",
+  "DOTUSDT",
+  "LINKUSDT",
+]);
 export const TrendClassSchema = z.enum(["up", "down", "range"]);
 export const VolClassSchema = z.enum(["compressed", "normal", "expanded"]);
 
