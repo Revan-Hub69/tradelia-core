@@ -74,15 +74,30 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const row = data[0];
     const retrievedAt = Date.now();
     
+    // Build signature from database row
+    const signature = {
+      v: "mce.v1",
+      symbol: row.symbol,
+      tf: row.tf,
+      asOf: row.as_of,
+      trend: row.trend,
+      volatility: row.volatility,
+      confidence: parseFloat(row.confidence),
+      features: row.features || {},
+      quality: row.quality || { completeness: 1, gaps: 0, freshnessSec: 0, source: "binance", valid: true },
+      change: { changed: false },
+      hash: row.hash || "0000000000000000000000000000000000000000000000000000000000000000",
+    };
+    
     // Validate signature structure
     let validatedSignature;
     try {
-      validatedSignature = RegimeSignatureSchema.parse(row.signature);
+      validatedSignature = RegimeSignatureSchema.parse(signature);
     } catch (validationError) {
       console.error("Signature validation error:", validationError);
       return NextResponse.json({
         ok: false,
-        error: "Invalid signature format in database",
+        error: "Invalid signature format",
       } as CurrentRegimeResponse, { status: 500 });
     }
     
