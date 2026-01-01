@@ -5,7 +5,8 @@ import { EligibilitySnapshotType, EligibilityError } from "../schemas";
 import { UCM_CONFIG } from "../config";
 import { BinanceClient } from "../../mce/binance/client";
 import { supabaseAdmin } from "../../mce/db/supabase";
-import { roundTo } from "../../mce/utils/math";
+import { isValidNumber, roundTo, trueRange } from "../../mce/utils/math";
+import { getBinanceConfig } from "../../config/binance";
 import { circuitBreakers } from "../../utils/circuit-breaker";
 
 export interface CollectionResult {
@@ -132,11 +133,12 @@ interface TickerData {
 
 async function collect24hTickerData(symbols: string[]): Promise<Map<string, TickerData>> {
   const tickerMap = new Map<string, TickerData>();
+  const { baseUrl } = getBinanceConfig();
   
   try {
     // Use circuit breaker for Binance API calls
     const allTickers = await circuitBreakers.binance.execute(
-      'https://api.binance.com/api/v3/ticker/24hr',
+      new URL('/api/v3/ticker/24hr', baseUrl).toString(),
       {
         signal: AbortSignal.timeout(10000) // 10s timeout
       }
@@ -218,20 +220,24 @@ async function collectMCEData(symbols: string[]): Promise<Map<string, MCEData>> 
   
   try {
     // Get data quality and ATR from MCE market_data table
-    const windowStart = Date.now() - (UCM_CONFIG.DATA_COLLECTION.completeness_window_minutes * 60 * 1000);
+    const completenessWindowMinutes = UCM_CONFIG.DATA_COLLECTION.completeness_window_minutes;
+    const atrWindowMinutes = UCM_CONFIG.DATA_COLLECTION.atr_percentile_window;
+    const maxWindowMinutes = Math.max(completenessWindowMinutes, atrWindowMinutes);
+    const windowStart = Date.now() - (maxWindowMinutes * 60 * 1000);
     
     for (const symbol of symbols) {
       try {
         // Get recent market data for completeness calculation
         const { data: marketData, error: marketError } = await supabaseAdmin()
           .from('market_data')
-          .select('open_time, atr14_1m')
+          .select('open_time, close_time, open, high, low, close, volume, trades')
           .eq('symbol', symbol)
           .eq('tf', '1m')
           .gte('open_time', windowStart)
           .order('open_time', { ascending: true });
         
         if (marketError) {
+          errors.push(`Market data query failed for ${symbol}: ${marketError.message}`);
           throw new Error(`Market data query failed: ${marketError.message}`);
         }
         
@@ -246,20 +252,34 @@ async function collectMCEData(symbols: string[]): Promise<Map<string, MCEData>> 
           continue;
         }
         
+        const now = Date.now();
+        const completenessStart = now - (completenessWindowMinutes * 60 * 1000);
+        const recentData = marketData.filter(row => row.open_time >= completenessStart);
+
         // Calculate completeness and gaps
-        const expectedBars = UCM_CONFIG.DATA_COLLECTION.completeness_window_minutes;
-        const actualBars = marketData.length;
+        const expectedBars = completenessWindowMinutes;
+        const actualBars = recentData.length;
         const completeness = Math.min(1, actualBars / expectedBars);
         
         // Count gaps (simplified - just missing bars)
         const gaps = Math.max(0, expectedBars - actualBars);
-        
-        // Get latest ATR14
-        const latestData = marketData[marketData.length - 1];
-        const atr14 = latestData?.atr14_1m || 0.001;
-        
-        // Calculate ATR percentile (simplified - would need historical window)
-        const atrPercentile = await calculateATRPercentile(symbol, atr14);
+
+        const validRows = marketData.filter(row =>
+          isValidNumber(Number(row.open_time)) &&
+          isValidNumber(Number(row.close_time)) &&
+          isValidNumber(Number(row.open)) &&
+          isValidNumber(Number(row.high)) &&
+          isValidNumber(Number(row.low)) &&
+          isValidNumber(Number(row.close))
+        );
+
+        const highs = validRows.map(row => Number(row.high));
+        const lows = validRows.map(row => Number(row.low));
+        const closes = validRows.map(row => Number(row.close));
+
+        const atrSeries = buildAtr14Series(highs, lows, closes);
+        const atr14 = atrSeries.length > 0 ? atrSeries[atrSeries.length - 1] : 0.001;
+        const atrPercentile = calculateATRPercentile(atrSeries, atr14);
         
         mceMap.set(symbol, {
           completeness: roundTo(completeness, 4),
@@ -286,49 +306,59 @@ async function collectMCEData(symbols: string[]): Promise<Map<string, MCEData>> 
   return mceMap;
 }
 
-async function calculateATRPercentile(symbol: string, currentATR: number): Promise<number> {
-  try {
-    // Get historical ATR data for percentile calculation
-    const windowStart = Date.now() - (UCM_CONFIG.DATA_COLLECTION.atr_percentile_window * 60 * 1000);
-    
-    const { data: historicalData, error } = await supabaseAdmin()
-      .from('market_data')
-      .select('atr14_1m')
-      .eq('symbol', symbol)
-      .eq('tf', '1m')
-      .gte('open_time', windowStart)
-      .order('open_time', { ascending: true });
-    
-    if (error || !historicalData || historicalData.length < 50) {
-      // Not enough data for reliable percentile, return middle value
-      return 50;
+function buildAtr14Series(highs: number[], lows: number[], closes: number[]): number[] {
+  if (highs.length < 15 || lows.length < 15 || closes.length < 15) {
+    return [];
+  }
+
+  const trValues: number[] = [];
+  for (let i = 1; i < highs.length; i++) {
+    const tr = trueRange(highs[i], lows[i], closes[i - 1]);
+    if (isValidNumber(tr)) {
+      trValues.push(tr);
     }
-    
-    // Calculate percentile
-    const atrValues = historicalData
-      .map(d => d.atr14_1m)
-      .filter(atr => atr > 0)
-      .sort((a, b) => a - b);
-    
-    if (atrValues.length === 0) return 50;
-    
-    // Find position of current ATR in sorted array
-    let position = 0;
-    for (let i = 0; i < atrValues.length; i++) {
-      if (currentATR > atrValues[i]) {
-        position = i + 1;
-      } else {
-        break;
+  }
+
+  if (trValues.length < 14) {
+    return [];
+  }
+
+  const atrValues: number[] = [];
+  let sum = 0;
+
+  for (let i = 0; i < trValues.length; i++) {
+    sum += trValues[i];
+    if (i >= 14) {
+      sum -= trValues[i - 14];
+    }
+    if (i >= 13) {
+      const atrValue = sum / 14;
+      if (isValidNumber(atrValue)) {
+        atrValues.push(atrValue);
       }
     }
-    
-    const percentile = (position / atrValues.length) * 100;
-    return Math.min(100, Math.max(0, percentile));
-    
-  } catch (error) {
-    // Return default percentile on error
+  }
+
+  return atrValues;
+}
+
+function calculateATRPercentile(atrValues: number[], currentATR: number): number {
+  if (atrValues.length === 0 || !isValidNumber(currentATR)) {
     return 50;
   }
+
+  const sorted = [...atrValues].sort((a, b) => a - b);
+  let count = 0;
+
+  for (const value of sorted) {
+    if (value < currentATR) {
+      count += 1;
+    } else if (value === currentATR) {
+      count += 0.5;
+    }
+  }
+
+  return Math.min(100, Math.max(0, (count / sorted.length) * 100));
 }
 
 function calculateCollectionStats(
