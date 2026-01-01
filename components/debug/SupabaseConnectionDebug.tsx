@@ -10,6 +10,7 @@ export function SupabaseConnectionDebug() {
     anonKey?: string
     canConnect: boolean
     error?: string
+    errorCode?: string
     tables?: string[]
   }>({
     clientExists: false,
@@ -50,7 +51,8 @@ export function SupabaseConnectionDebug() {
           setStatus(prev => ({
             ...prev,
             canConnect: false,
-            error: `${error.code}: ${error.message}`
+            errorCode: error.code,
+            error: error.message
           }))
         } else {
           setStatus(prev => ({
@@ -70,14 +72,20 @@ export function SupabaseConnectionDebug() {
   }, [])
 
   return (
-    <div className="fixed bottom-4 right-4 bg-black text-white p-4 rounded-lg text-xs max-w-xs z-50 font-mono">
+    <div className="fixed bottom-4 right-4 bg-black text-white p-4 rounded-lg text-xs max-w-xs z-50 font-mono max-h-96 overflow-y-auto">
       <div className="font-bold mb-2">Supabase Debug</div>
       <div>Client: {status.clientExists ? '✓' : '✗'}</div>
       <div>URL: {status.url}</div>
       <div>Key: {status.anonKey}</div>
       <div>Connected: {status.canConnect ? '✓' : '✗'}</div>
+      {status.errorCode && (
+        <div className="text-yellow-400 mt-2">Code: {status.errorCode}</div>
+      )}
       {status.error && (
-        <div className="text-red-400 mt-2 break-words">{status.error}</div>
+        <div className="text-red-400 mt-2 break-words whitespace-pre-wrap">{status.error}</div>
+      )}
+      {status.canConnect && (
+        <div className="text-green-400 mt-2">✅ Ready to use</div>
       )}
     </div>
   )
