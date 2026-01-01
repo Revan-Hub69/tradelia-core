@@ -16,6 +16,8 @@ export function useSupabase() {
     // Test the connection
     const testConnection = async () => {
       try {
+        if (!supabase) return
+        
         const { data, error: err } = await supabase
           .from('cookie_preferences')
           .select('count()', { count: 'exact', head: true })
