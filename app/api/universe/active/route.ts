@@ -2,14 +2,10 @@
 // Returns the current active universe with caching and error handling
 
 import { NextRequest, NextResponse } from "next/server";
-import { UCMRepository } from "../../../../lib/ucm/db/repo";
-import { UniverseActiveApiResponseSchema } from "../../../../lib/ucm/schemas";
-import { dbRateLimits } from "../../../../lib/middleware/rate-limit-db";
+import { supabaseAdmin } from "@/lib/mce/db/supabase";
+import { dbRateLimits } from "@/lib/middleware/rate-limit-db";
 
 export const runtime = 'nodejs';
-
-// Cache the response for 1 minute to reduce database load
-const CACHE_DURATION = 60; // seconds
 
 export async function GET(request: NextRequest) {
   try {
@@ -19,10 +15,32 @@ export async function GET(request: NextRequest) {
       return rateLimitResult;
     }
     
-    const repo = new UCMRepository();
-    const universeActive = await repo.getLatestUniverseActive();
+    const sb = supabaseAdmin();
     
-    if (!universeActive) {
+    // Get latest universe_active
+    const { data, error } = await sb
+      .from('universe_active')
+      .select('as_of, version, symbols, hash')
+      .order('as_of', { ascending: false })
+      .limit(1);
+    
+    if (error) {
+      console.error('Database query error:', error);
+      return NextResponse.json(
+        { 
+          ok: false, 
+          error: "Database query failed" 
+        },
+        { 
+          status: 500,
+          headers: {
+            'Cache-Control': 'no-cache',
+          },
+        }
+      );
+    }
+    
+    if (!data || data.length === 0) {
       return NextResponse.json(
         { 
           ok: false, 
@@ -37,18 +55,26 @@ export async function GET(request: NextRequest) {
       );
     }
     
-    // Validate response schema
-    const response = { ok: true, data: universeActive };
-    const validatedResponse = UniverseActiveApiResponseSchema.parse(response);
+    const row = data[0];
+    const response = {
+      ok: true,
+      data: {
+        asOf: row.as_of,
+        version: row.version,
+        symbols: row.symbols,
+        hash: row.hash,
+        count: row.symbols.length
+      }
+    };
     
-    return NextResponse.json(validatedResponse, {
+    return NextResponse.json(response, {
       status: 200,
       headers: {
-        'Cache-Control': `public, max-age=${CACHE_DURATION}, stale-while-revalidate=${CACHE_DURATION * 2}`,
+        'Cache-Control': `public, max-age=60, stale-while-revalidate=120`,
         'Content-Type': 'application/json',
-        'X-Universe-Hash': universeActive.hash,
-        'X-Universe-AsOf': universeActive.asOf.toString(),
-        'X-Universe-Count': universeActive.symbols.length.toString(),
+        'X-Universe-Hash': row.hash,
+        'X-Universe-AsOf': row.as_of.toString(),
+        'X-Universe-Count': row.symbols.length.toString(),
       },
     });
     

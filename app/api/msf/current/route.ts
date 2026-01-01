@@ -5,6 +5,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/mce/db/supabase';
 import { dbRateLimits } from '@/lib/middleware/rate-limit-db';
 
+export const runtime = 'nodejs';
+
 export async function GET(request: NextRequest) {
   try {
     // Apply rate limiting (general tier - 60 req/min)
