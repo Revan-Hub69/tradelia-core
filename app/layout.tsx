@@ -6,6 +6,7 @@ import { AppProviders } from "@/components/providers/AppProviders";
 import { Toaster } from "sonner";
 import { inter, ibmPlexSans } from "@/lib/fonts";
 import { StructuredData } from "@/components/structured-data";
+import { SupabaseConnectionDebug } from "@/components/debug/SupabaseConnectionDebug";
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -115,6 +116,7 @@ export default function RootLayout({
           <AppProviders>
             {children}
             <Toaster richColors position="bottom-right" />
+            <SupabaseConnectionDebug />
           </AppProviders>
         </ThemeProvider>
       </body>
