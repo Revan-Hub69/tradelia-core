@@ -1,12 +1,12 @@
-name: MCE Pipeline
+name: UCM + MSF Pipelines
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "7,37 * * * *"
   workflow_dispatch:
     inputs:
       health_check:
-        description: "Run health check only"
+        description: "Run health checks only"
         required: false
         default: false
         type: boolean
@@ -20,13 +20,13 @@ permissions:
   contents: read
 
 concurrency:
-  group: mce-pipeline
+  group: ucm-msf-pipeline
   cancel-in-progress: false
 
 jobs:
-  mce:
+  ucm-msf:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -40,13 +40,32 @@ jobs:
       - name: Install dependencies
         run: npm ci --include=dev --no-fund --no-audit
 
-      - name: Run MCE pipeline
+      - name: Run UCM pipeline
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           GITHUB_RUN_ID: ${{ github.run_id }}
         run: |
-          CMD="npx tsx scripts/prod/mce-pipeline.ts"
+          CMD="npx tsx scripts/prod/ucm-pipeline.ts"
+
+          if [ "${{ github.event.inputs.health_check || 'false' }}" = "true" ]; then
+            CMD="$CMD --health"
+          fi
+
+          if [ "${{ github.event.inputs.verbose || 'false' }}" = "true" ]; then
+            CMD="$CMD --verbose"
+          fi
+
+          echo "Running: $CMD"
+          $CMD
+
+      - name: Run MSF pipeline
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+        run: |
+          CMD="npx tsx scripts/prod/msf-pipeline.ts"
 
           if [ "${{ github.event.inputs.health_check || 'false' }}" = "true" ]; then
             CMD="$CMD --health"
