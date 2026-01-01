@@ -1,6 +1,6 @@
 'use client'
 
-import { createBrowserClient } from '@supabase/ssr'
+import { createClient } from '@supabase/supabase-js'
 import type { Database } from './types'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -12,7 +12,12 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 // Browser-side Supabase client (for client components)
 export const supabase = supabaseUrl && supabaseAnonKey
-  ? createBrowserClient<Database>(supabaseUrl, supabaseAnonKey)
+  ? createClient<Database>(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+      },
+    })
   : null
 
 export default supabase
