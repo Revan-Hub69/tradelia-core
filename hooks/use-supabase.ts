@@ -16,7 +16,10 @@ export function useSupabase() {
     // Test the connection
     const testConnection = async () => {
       try {
-        if (!supabase) return
+        if (!supabase) {
+          setError('Supabase client not available')
+          return
+        }
         
         const { data, error: err } = await supabase
           .from('cookie_preferences')
