@@ -3,7 +3,9 @@
  * GDPR compliant cookie consent and user preferences
  */
 
-import { supabase } from '@/lib/supabase/client'
+'use client'
+
+import { supabase } from '@/lib/supabase/browser-client'
 import { authManager } from '@/lib/auth/supabase-auth'
 import { getSessionId, savePreferences, getPreferences } from '@/lib/utils/session'
 import type { Json } from '@/lib/supabase/types'
