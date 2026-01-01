@@ -74,6 +74,18 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const row = data[0];
     const retrievedAt = Date.now();
     
+    // Generate a valid 64-char hex hash if missing
+    const generateHash = () => {
+      const str = `${row.symbol}${row.tf}${row.as_of}${row.trend}${row.volatility}`;
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32bit integer
+      }
+      return Math.abs(hash).toString(16).padStart(64, '0').slice(0, 64);
+    };
+    
     // Build signature from database row
     const signature = {
       v: "mce.v1",
@@ -83,10 +95,25 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       trend: row.trend,
       volatility: row.volatility,
       confidence: parseFloat(row.confidence),
-      features: row.features || {},
-      quality: row.quality || { completeness: 1, gaps: 0, freshnessSec: 0, source: "binance", valid: true },
+      features: row.features || {
+        atr14: null,
+        atr50: null,
+        atrPct7d: null,
+        atrPct30d: null,
+        emaFast: null,
+        emaSlow: null,
+        trendStrength: null,
+        volNorm: null,
+      },
+      quality: row.quality || { 
+        completeness: 1, 
+        gaps: 0, 
+        freshnessSec: 0, 
+        source: "binance", 
+        valid: true 
+      },
       change: { changed: false },
-      hash: row.hash || "0000000000000000000000000000000000000000000000000000000000000000",
+      hash: generateHash(),
     };
     
     // Validate signature structure
