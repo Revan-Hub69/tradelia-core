@@ -237,7 +237,6 @@ async function collectMCEData(symbols: string[]): Promise<Map<string, MCEData>> 
           .order('open_time', { ascending: true });
         
         if (marketError) {
-          errors.push(`Market data query failed for ${symbol}: ${marketError.message}`);
           throw new Error(`Market data query failed: ${marketError.message}`);
         }
         
