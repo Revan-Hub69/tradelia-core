@@ -2,7 +2,7 @@
 // Returns the most recent regime classification for specified symbol/timeframe
 
 import { NextRequest, NextResponse } from "next/server";
-import { supabaseAnon } from "@/lib/mce/db/supabase";
+import { supabaseAdmin } from "@/lib/mce/db/supabase";
 import { RegimeSignatureSchema } from "@/lib/mce/schemas";
 import { type Symbol, type TF } from "@/lib/mce/types";
 
@@ -46,7 +46,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     }
     
     // Query database for latest regime signature (MCE, not UCM)
-    const sb = supabaseAnon();
+    const sb = supabaseAdmin();
     
     const { data, error } = await sb
       .from("regime_signatures")
