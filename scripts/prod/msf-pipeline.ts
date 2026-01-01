@@ -10,6 +10,7 @@
 import { runMSFPipeline, analyzeMSFPerformance } from '../../lib/msf/pipeline/runOnce';
 import { MSF_V15_CONFIG } from '../../lib/msf/types';
 import { supabaseAdmin } from '../../lib/mce/db/supabase';
+import type { UniverseActiveType } from '../../lib/ucm/schemas';
 
 // Parse command line arguments
 const args = process.argv.slice(2);
@@ -94,7 +95,7 @@ async function checkMSFHealth() {
         const sb = supabaseAdmin();
         const { data: universeData, error: universeError } = await sb
           .from('universe_active')
-          .select('universe')
+          .select('as_of, symbols')
           .order('as_of', { ascending: false })
           .limit(1);
         
@@ -135,19 +136,31 @@ async function getLatestRegime() {
 }
 
 // Get latest UCM universe
-async function getLatestUniverse() {
+async function getLatestUniverse(): Promise<UniverseActiveType> {
   const sb = supabaseAdmin();
   const { data, error } = await sb
     .from('universe_active')
-    .select('universe')
+    .select('as_of, version, target_count, min_count, max_count, symbols, core_included, meta, based_on, hash')
     .order('as_of', { ascending: false })
-    .limit(1);
+    .limit(1)
+    .single();
   
-  if (error || !data || data.length === 0) {
+  if (error || !data) {
     throw new Error('No UCM universe available');
   }
   
-  return data[0].universe;
+  return {
+    v: (data.version || 'ucm.active.v1') as UniverseActiveType['v'],
+    asOf: data.as_of,
+    target: data.target_count,
+    min: data.min_count,
+    max: data.max_count,
+    symbols: data.symbols || [],
+    coreIncluded: data.core_included,
+    meta: data.meta,
+    basedOn: data.based_on,
+    hash: data.hash,
+  };
 }
 
 async function runProductionPipeline() {

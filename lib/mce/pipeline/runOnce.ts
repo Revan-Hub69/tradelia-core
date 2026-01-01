@@ -96,12 +96,20 @@ export async function runMCEPipeline(
       try {
         const result = await processSinglePair(symbol, tf, config);
         results.push(result);
+
+        if (!result.success && result.error) {
+          errors.push(`${symbol} ${tf}: ${result.error}`);
+        }
+
         
         if (config.output.logResults) {
           const status = result.success ? "✅" : "❌";
           const regime = result.signature ? `${result.signature.trend}/${result.signature.volatility}` : "N/A";
           const confidence = result.signature ? `${(result.signature.confidence * 100).toFixed(1)}%` : "N/A";
           console.log(`   ${status} ${symbol} ${tf}: ${regime} (${confidence})`);
+          if (!result.success && result.error) {
+            console.log(`      Error: ${result.error}`);
+          }
         }
         
       } catch (error) {
@@ -468,3 +476,4 @@ export async function checkPipelineHealth(): Promise<{
   
   return { healthy, checks };
 }
+
