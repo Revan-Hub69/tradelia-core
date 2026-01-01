@@ -9,11 +9,6 @@ import { type Symbol, type TF } from "@/lib/mce/types";
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
-interface CurrentRegimeQuery {
-  symbol?: Symbol;
-  tf?: TF;
-}
-
 interface CurrentRegimeResponse {
   ok: boolean;
   data?: {
@@ -50,13 +45,14 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       } as CurrentRegimeResponse, { status: 400 });
     }
     
-    // Query database for latest regime signature
+    // Query database for latest regime signature (MCE, not UCM)
     const sb = supabaseAnon();
     
     const { data, error } = await sb
-      .from("eligibility_snapshots")
-      .select("*")
+      .from("regime_signatures")
+      .select("signature, as_of, symbol, tf")
       .eq("symbol", symbol)
+      .eq("tf", tf)
       .order("as_of", { ascending: false })
       .limit(1);
     
