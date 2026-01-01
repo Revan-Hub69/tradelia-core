@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/mce/db/supabase";
 import { type Symbol, type TF } from "@/lib/mce/types";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 interface CurrentRegimeResponse {
