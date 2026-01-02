@@ -67,10 +67,10 @@ type ResultGroup = {
 };
 
 const objectiveOptions = [
-  { value: "passivo", label: "Investimenti passivi" },
-  { value: "cripto", label: "Acquistare cripto" },
+  { value: "tradizionali", label: "Investimenti tradizionali" },
+  { value: "passivi", label: "Investimenti passivi" },
   { value: "trading", label: "Fare trading" },
-  { value: "custodia", label: "Custodia e sicurezza" },
+  { value: "cripto", label: "Acquistare cripto" },
 ];
 
 const avoidOptions = [
@@ -212,6 +212,21 @@ function classifyPlan({
     }
   }
 
+  if (objective === "tradizionali") {
+    if (platform.type === "wallet") {
+      reasons.push("Un wallet gestisce custodia: non e uno strumento di investimento tradizionale.");
+      tone = "stop";
+    }
+    if (platform.type === "exchange") {
+      reasons.push("Ambiente orientato a cripto/operativita: può introdurre complessità non necessaria.");
+      if (tone !== "stop") tone = "warn";
+    }
+    if (platform.type === "account") {
+      reasons.push("Strumento di parcheggio liquidità: non e un piano di investimento.");
+      if (tone !== "stop") tone = "warn";
+    }
+  }
+
   if (objective === "cripto") {
     if (platform.type === "account") {
       reasons.push("Non consente acquisto cripto: è uno strumento di parcheggio liquidità.");
@@ -239,13 +254,13 @@ function classifyPlan({
     }
   }
 
-  if (objective === "custodia") {
-    if (plan.supportsTrading) {
-      reasons.push("E uno strumento orientato all'operativita: non nasce per sola custodia.");
-      if (tone !== "stop") tone = "warn";
+  if (objective === "passivi" || objective === "tradizionali") {
+    if (platform.type === "derivatives") {
+      reasons.push("Strumento ad alta gestione: non è coerente con un obiettivo passivo.");
+      tone = "stop";
     }
-    if (plan.custodyModel === "self" && isBeginner) {
-      reasons.push("La self-custody richiede responsabilità tecnica e procedure di sicurezza.");
+    if (platform.type === "exchange" || platform.type === "wallet") {
+      reasons.push("Può introdurre complessità non necessaria per un obiettivo passivo/tradizionale.");
       if (tone !== "stop") tone = "warn";
     }
   }
@@ -265,12 +280,12 @@ function classifyPlan({
     if (tone !== "stop") tone = "warn";
   }
 
-  if ((objective === "cripto" || objective === "custodia") && isBeginner && plan.technicalLevel === "high") {
+  if (objective === "cripto" && isBeginner && plan.technicalLevel === "high") {
     reasons.push("Livello tecnico alto: puo introdurre frizione prima di aver chiarito l'obiettivo.");
     if (tone !== "stop") tone = "warn";
   }
 
-  if (objective === "passivo" && plan.supportsLeverage) {
+  if (objective === "passivi" && plan.supportsLeverage) {
     reasons.push("Per investimenti passivi, la leva introduce complessita non necessaria.");
     tone = "stop";
   }
@@ -372,19 +387,38 @@ export function VerificationForm({ initialObjective, catalog }: VerificationForm
 
   function handleObjective(value: string) {
     setObjective(value);
-    setStep("avoid");
   }
 
   function handleAvoid(value: string) {
     setAvoid(value);
-    setStep("level");
   }
 
   function handleLevel(value: string) {
     setLevel(value);
-    setStep("loading");
-    if (timerRef.current) window.clearTimeout(timerRef.current);
-    timerRef.current = window.setTimeout(() => setStep("result"), 1000);
+  }
+
+  function canGoNext(currentStep: Step) {
+    if (currentStep === "objective") return Boolean(objective);
+    if (currentStep === "avoid") return Boolean(avoid);
+    if (currentStep === "level") return Boolean(level);
+    return false;
+  }
+
+  function goBack() {
+    if (step === "avoid") setStep("objective");
+    else if (step === "level") setStep("avoid");
+    else if (step === "result") setStep("level");
+  }
+
+  function goNext() {
+    if (!canGoNext(step)) return;
+    if (step === "objective") setStep("avoid");
+    else if (step === "avoid") setStep("level");
+    else if (step === "level") {
+      setStep("loading");
+      if (timerRef.current) window.clearTimeout(timerRef.current);
+      timerRef.current = window.setTimeout(() => setStep("result"), 1100);
+    }
   }
 
   function handleReset() {
@@ -412,49 +446,55 @@ export function VerificationForm({ initialObjective, catalog }: VerificationForm
           </p>
 
           {step === "objective" && (
-            <StepSingleSelect
-              title="Cosa vuoi fare adesso?"
-              options={objectiveOptions}
-              value={objective}
-              onSelect={handleObjective}
-              helperText="Non serve sapere termini tecnici. Serve solo a evitare incompatibilità tipiche."
-            />
+            <div key="objective" className="animate-fade-in">
+              <StepSingleSelect
+                title="Cosa vuoi fare adesso?"
+                options={objectiveOptions}
+                value={objective}
+                onSelect={handleObjective}
+                helperText="Non serve sapere termini tecnici. Serve solo a evitare incompatibilità tipiche."
+              />
+            </div>
           )}
 
           {step === "avoid" && (
-            <StepSingleSelect
-              title="Cosa vuoi evitare soprattutto?"
-              options={avoidOptions}
-              value={avoid}
-              onSelect={handleAvoid}
-              helperText="Seleziona l'opzione che ti descrive di più."
-              tooltip="Perché lo chiediamo?"
-              tooltipBody="Per calibrare frizioni e vincoli senza trasformare il risultato in un ranking."
-            />
+            <div key="avoid" className="animate-fade-in">
+              <StepSingleSelect
+                title="Cosa vuoi evitare soprattutto?"
+                options={avoidOptions}
+                value={avoid}
+                onSelect={handleAvoid}
+                helperText="Seleziona l'opzione che ti descrive di più."
+                tooltip="Perché lo chiediamo?"
+                tooltipBody="Per calibrare frizioni e vincoli senza trasformare il risultato in un ranking."
+              />
+            </div>
           )}
 
           {step === "level" && (
-            <StepSingleSelect
-              title="A che punto sei?"
-              options={levelOptions}
-              value={level}
-              onSelect={handleLevel}
-              helperText="Serve solo a calibrare la complessità. Non è un giudizio."
-            />
+            <div key="level" className="animate-fade-in">
+              <StepSingleSelect
+                title="A che punto sei?"
+                options={levelOptions}
+                value={level}
+                onSelect={handleLevel}
+                helperText="Serve solo a calibrare la complessità. Non è un giudizio."
+              />
+            </div>
           )}
 
           {step === "loading" && (
-            <div className="space-y-3 text-sm text-muted-foreground">
+            <div className="space-y-3 text-sm text-muted-foreground animate-fade-in" aria-busy="true">
               <p className="text-xs font-semibold uppercase tracking-[0.2em]">Verifica compatibilità in corso</p>
               <p>Stiamo controllando vincoli e frizioni tipiche per questo profilo.</p>
-              <div className="progress-line">
-                <span style={{ width: "70%" }} />
+              <div className="progress-line progress-indeterminate" aria-hidden>
+                <span />
               </div>
             </div>
           )}
 
           {step === "result" && (
-            <div className="space-y-6">
+            <div className="space-y-6 animate-fade-in">
               <div className="space-y-2">
                 <h2 className="text-2xl font-semibold text-foreground">Shortlist di piani compatibili (con limiti).</h2>
                 <p className="text-sm text-muted-foreground">
@@ -580,6 +620,9 @@ export function VerificationForm({ initialObjective, catalog }: VerificationForm
                 <button type="button" className="btn-secondary" onClick={handleReset}>
                   Rifai il controllo
                 </button>
+                <button type="button" className="btn-secondary" onClick={goBack}>
+                  Modifica risposte
+                </button>
                 <Link href="/metodo#limiti" className="link-underline text-sm font-semibold">
                   Leggi Metodo e limiti
                 </Link>
@@ -591,6 +634,27 @@ export function VerificationForm({ initialObjective, catalog }: VerificationForm
               <div className="text-xs text-muted-foreground">
                 Questo non è un consiglio operativo. Mostriamo compatibilità e frizioni in base ai dati disponibili nel catalogo e alle tue risposte.
               </div>
+            </div>
+          )}
+
+          {(step === "objective" || step === "avoid" || step === "level") && (
+            <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between">
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={goBack}
+                disabled={step === "objective"}
+              >
+                Indietro
+              </button>
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={goNext}
+                disabled={!canGoNext(step)}
+              >
+                Continua
+              </button>
             </div>
           )}
         </div>

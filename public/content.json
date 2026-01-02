@@ -7,10 +7,10 @@
     ],
     "question": "Cosa vuoi fare adesso?",
     "options": [
-      { "id": "passivo", "label": "Investimenti passivi", "subtext": "poco tempo, regole chiare" },
-      { "id": "cripto", "label": "Acquistare cripto", "subtext": "prima comprare, poi capire bene" },
+      { "id": "tradizionali", "label": "Investimenti tradizionali", "subtext": "strumenti standard, tutele piu chiare" },
+      { "id": "passivi", "label": "Investimenti passivi", "subtext": "poco tempo, regole chiare" },
       { "id": "trading", "label": "Fare trading", "subtext": "più frequente, più rischi" },
-      { "id": "custodia", "label": "Custodia e sicurezza", "subtext": "wallet, chiavi, protezione" }
+      { "id": "cripto", "label": "Acquistare cripto", "subtext": "prima comprare, poi capire bene" }
     ],
     "cta": "Avvia il controllo",
     "microcopy": "1 minuto. Nessuna registrazione. Riduce errori comuni: non certifica scelte \"sicure\". Se mancano dati critici (es. spread/slippage), lo dichiariamo."
