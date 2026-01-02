@@ -108,23 +108,77 @@ export default function HomePage() {
         </RevealSection>
 
         <RevealSection className="border-b border-border/60 px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-          <div className="mx-auto max-w-5xl space-y-6">
-            <div className="space-y-3">
-              <h2 className="text-2xl font-semibold">{content.problema.title}</h2>
-              <p className="text-sm text-muted-foreground">{content.problema.problem}</p>
-            </div>
-            <div className="surface-card p-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                {content.problema.solutionTitle}
+          <div className="mx-auto max-w-5xl space-y-8">
+            <div className="space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                In 60 secondi ottieni
               </p>
-              <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-                {content.problema.solutions.map((item) => (
-                  <li key={item} className="flex items-start gap-2">
-                    <span className="mt-2 inline-block h-2 w-2 rounded-full bg-primary" aria-hidden />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
+              <h2 className="text-2xl font-semibold">Una verifica leggibile, non un consiglio.</h2>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-3">
+              {content.cosaFacciamo.bullets.map((item) => (
+                <div key={item} className="surface-card p-5">
+                  <p className="text-sm font-semibold text-foreground">{item}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="surface-card p-6">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                  Esempio di output
+                </p>
+                <p className="mt-3 text-sm text-muted-foreground">
+                  Shortlist + frizioni + fonti. Senza “migliore”, senza promessa.
+                </p>
+                <div className="mt-5 space-y-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-semibold text-foreground">Piano A · Broker</p>
+                    <span className="status-ok inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em]">
+                      ADATTO
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-semibold text-foreground">Piano B · Exchange</p>
+                    <span className="status-attention inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em]">
+                      FRIZIONE
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-semibold text-foreground">Piano C · Derivati</p>
+                    <span className="status-risk inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em]">
+                      NON ADATTO
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="surface-card p-6">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                  Perimetro
+                </p>
+                <p className="mt-3 text-sm text-muted-foreground">{content.cosaFacciamo.microcopy}</p>
+                <details className="accordion mt-5">
+                  <summary>{content.problema.title}</summary>
+                  <div className="mt-4 space-y-4 text-sm text-muted-foreground">
+                    <p>{content.problema.problem}</p>
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                        {content.problema.solutionTitle}
+                      </p>
+                      <ul className="mt-3 space-y-2">
+                        {content.problema.solutions.map((item) => (
+                          <li key={item} className="flex items-start gap-2">
+                            <span className="mt-2 inline-block h-2 w-2 rounded-full bg-primary" aria-hidden />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </details>
+              </div>
             </div>
           </div>
         </RevealSection>
@@ -133,21 +187,6 @@ export default function HomePage() {
           <div className="mx-auto max-w-5xl space-y-4">
             <h2 className="text-2xl font-semibold">{content.accoglienza.title}</h2>
             <p className="text-sm text-muted-foreground">{content.accoglienza.body}</p>
-          </div>
-        </RevealSection>
-
-        <RevealSection className="border-b border-border/60 px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-          <div className="mx-auto max-w-5xl space-y-6">
-            <h2 className="text-2xl font-semibold">{content.cosaFacciamo.title}</h2>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              {content.cosaFacciamo.bullets.map((item) => (
-                <li key={item} className="flex items-start gap-2">
-                  <span className="mt-2 inline-block h-2 w-2 rounded-full bg-primary" aria-hidden />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-            <p className="text-xs text-muted-foreground">{content.cosaFacciamo.microcopy}</p>
           </div>
         </RevealSection>
 
