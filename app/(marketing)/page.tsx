@@ -104,8 +104,8 @@ export default function HomePage() {
   const content = loadContent();
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <main id="top" role="main" className="space-y-0">
+    <div id="top" className="min-h-screen bg-background text-foreground">
+      <main id="main-content" role="main" className="space-y-0">
         <section className="relative overflow-hidden border-b border-border/60 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
           <div className="pointer-events-none absolute inset-0 -z-10">
             <div className="absolute inset-0 hero-haze" />
@@ -140,7 +140,7 @@ export default function HomePage() {
                 ))}
               </ul>
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                <Link href="/verifica" className="btn-primary" aria-label="Avvia verifica">
+                <Link href="/verifica" className="btn-primary" aria-label="Trova lo strumento adatto">
                   {content.hero.primaryCta}
                 </Link>
                 <Link href="#metodo" className="btn-secondary" aria-label="Leggi metodologia">
@@ -260,7 +260,7 @@ export default function HomePage() {
               <Link
                 href="/verifica"
                 className="btn-primary"
-                aria-label="Fai verificare la piattaforma"
+                aria-label="Scopri cosa e coerente per te"
               >
                 {content.verifica.cta}
               </Link>
@@ -417,7 +417,7 @@ export default function HomePage() {
               <Link
                 href="/verifica"
                 className="btn-primary"
-                aria-label="Avvia verifica finale"
+                aria-label="Trova lo strumento adatto"
               >
                 {content.cta.primary}
               </Link>

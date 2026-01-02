@@ -54,6 +54,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
               '(function(){try{var t="tradelia-theme";var e=localStorage.getItem(t);var n=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";var r=e==="light"||e==="dark"?e:n;document.documentElement.dataset.theme=r;document.documentElement.style.colorScheme=r;}catch(o){}})();',
           }}
         />
+        <a href="#main-content" className="skip-link">
+          Salta al contenuto
+        </a>
         <SiteHeader />
         {children}
       </body>

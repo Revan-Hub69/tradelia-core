@@ -101,7 +101,7 @@
   }
 
   @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not([data-theme]) {
       --shadow-soft: 0 16px 36px hsl(220 10% 4% / 0.4), 0 6px 14px hsl(220 10% 4% / 0.3);
       --shadow-strong: 0 28px 70px hsl(220 10% 4% / 0.55), 0 16px 26px hsl(220 10% 4% / 0.4);
 
@@ -147,6 +147,27 @@
     text-rendering: optimizeLegibility;
   }
 
+  .skip-link {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 999px;
+    background: hsl(var(--foreground));
+    color: hsl(var(--background));
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transform: translateY(-200%);
+    transition: transform 150ms ease;
+    z-index: 50;
+  }
+
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+
   h1, h2, h3, h4, h5, h6 {
     @apply font-heading font-semibold leading-snug tracking-tight text-foreground;
   }
@@ -181,26 +202,64 @@
 @layer components {
   .btn-primary {
     @apply inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition-subtle no-underline;
-    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary)) 55%, hsl(var(--accent)) 100%);
     color: hsl(var(--primary-foreground));
-    box-shadow: var(--shadow-soft);
+    border: 1px solid hsl(var(--primary) / 0.35);
+    box-shadow: 0 16px 28px hsl(var(--primary) / 0.25), 0 2px 6px hsl(var(--primary) / 0.18);
+  }
+
+  .btn-primary::after {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    border-radius: inherit;
+    background: linear-gradient(180deg, hsl(var(--primary-foreground) / 0.2), transparent 55%);
+    opacity: 0.7;
+    pointer-events: none;
   }
 
   .btn-primary:hover {
     transform: translateY(-1px);
-    box-shadow: var(--shadow-strong);
+    box-shadow: 0 22px 40px hsl(var(--primary) / 0.28), 0 6px 12px hsl(var(--primary) / 0.18);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 10px 22px hsl(var(--primary) / 0.2), 0 3px 8px hsl(var(--primary) / 0.12);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
   }
 
   .btn-secondary {
     @apply inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition-subtle no-underline;
     border: 1px solid hsl(var(--border));
-    background: hsl(var(--background));
+    background: linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--secondary)) 100%);
     color: hsl(var(--foreground));
+    box-shadow: 0 12px 24px hsl(var(--foreground) / 0.08);
   }
 
   .btn-secondary:hover {
-    background: hsl(var(--muted));
+    transform: translateY(-1px);
+    background: hsl(var(--secondary));
     box-shadow: var(--shadow-soft);
+  }
+
+  .btn-secondary:active {
+    transform: translateY(0);
+  }
+
+  .btn-secondary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
   }
 }
 

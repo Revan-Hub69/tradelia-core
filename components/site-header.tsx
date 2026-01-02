@@ -54,7 +54,7 @@ export function SiteHeader() {
           ))}
           <ThemeToggle />
           <Link href="/verifica" className="btn-primary px-4 py-2 text-xs">
-            Avvia verifica
+            Trova lo strumento
           </Link>
         </nav>
       </div>
@@ -80,7 +80,7 @@ export function SiteHeader() {
               className="btn-primary px-4 py-2 text-xs"
               onClick={() => setOpen(false)}
             >
-              Avvia verifica
+              Trova lo strumento
             </Link>
           </nav>
         </div>

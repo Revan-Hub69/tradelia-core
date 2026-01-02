@@ -1,15 +1,15 @@
 {
   "hero": {
-    "title": "Scegliere uno strumento e gia una decisione finanziaria.",
-    "subtitle": "Tradelia aiuta chi e all'inizio a verificare se la piattaforma scelta e coerente con il proprio obiettivo: risparmio, investimento, crypto, pagamenti.",
+    "title": "Scegliere lo strumento giusto e gia una decisione finanziaria.",
+    "subtitle": "Tradelia aiuta chi e all'inizio a capire quale strumento e coerente con il proprio obiettivo: risparmio, investimento, crypto, pagamenti.",
     "bullets": [
       "Obiettivo dichiarato",
       "Fonti ufficiali",
       "Confini espliciti"
     ],
     "disclaimer": "Nessun consiglio operativo. Nessun ranking. Nessuna promessa di performance.",
-    "primaryCta": "Avvia verifica",
-    "secondaryCta": "Leggi il metodo"
+    "primaryCta": "Trova lo strumento adatto",
+    "secondaryCta": "Come funziona"
   },
   "problema": {
     "title": "Il problema non e la strategia. E lo strumento sbagliato.",
@@ -53,8 +53,8 @@
     ]
   },
   "verifica": {
-    "title": "Una verifica, non una classifica.",
-    "subtitle": "Incrociamo intento e caratteristiche operative: tariffe, custodia, limiti, regolazione, affidabilita.",
+    "title": "Una guida alla scelta, non una classifica.",
+    "subtitle": "Incrociamo il tuo intento con caratteristiche operative: tariffe, custodia, limiti, regolazione, affidabilita.",
     "steps": [
       {
         "number": "01",
@@ -90,7 +90,7 @@
         "tone": "non-coerente"
       }
     ],
-    "cta": "Fai verificare la piattaforma"
+    "cta": "Scopri cosa e coerente per te"
   },
   "esempi": {
     "title": "Esempi di incompatibilita operative.",
@@ -161,9 +161,9 @@
     "regola": "Regola d'oro: se aumenta l'eccitazione e sbagliata; se aumenta la chiarezza e giusta."
   },
   "cta": {
-    "title": "Vuoi capire se la tua scelta regge?",
-    "subtitle": "Dichiara obiettivo e vincoli. Tradelia restituisce compatibilita motivata con fonti.",
-    "primary": "Avvia verifica",
+    "title": "Vuoi capire cosa e piu adatto al tuo obiettivo?",
+    "subtitle": "Dichiara obiettivo e vincoli. Tradelia restituisce compatibilita motivata e le opzioni piu coerenti.",
+    "primary": "Trova lo strumento adatto",
     "secondary": "Torna su",
     "version": "Metodo 2026.01",
     "legal": "Materiale educativo e informativo. Non e consulenza finanziaria regolamentata."
