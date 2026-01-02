@@ -15,12 +15,12 @@ export default function HomePage() {
                 Sistema di verifica decisionale
               </p>
               <h1 className="text-5xl font-bold leading-tight text-foreground sm:text-6xl lg:text-7xl">
-                La compatibilità non è un'opinione.
+                Dicci cosa vuoi fare.
                 <br />
-                <span className="text-primary">È una verifica.</span>
+                <span className="text-primary">Noi facciamo la verifica sporca.</span>
               </h1>
               <p className="max-w-2xl text-lg text-muted-foreground sm:text-xl">
-                Dichiara il tuo obiettivo operativo. Verifichiamo se lo strumento che stai considerando è coerente con le tue necessità reali, basandoci su documentazione ufficiale e caratteristiche verificabili.
+                Nessuna shortlist da comparatore: raccogliamo il tuo intento e controlliamo noi la compatibilità della piattaforma (costi, sicurezza, assistenza, operatività) usando dati verificabili, non incentivi di affiliazione.
               </p>
             </div>
             <div className="flex flex-col gap-4 sm:flex-row">
@@ -86,21 +86,21 @@ export default function HomePage() {
           <div className="mx-auto max-w-5xl space-y-12">
             <div className="space-y-4">
               <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
-                Metodo cognitivo
+                Metodo cognitivo (fatto da noi)
               </p>
               <h2 className="text-3xl font-bold text-foreground sm:text-4xl">
-                Sei passaggi verso la chiarezza operativa.
+                Sei passaggi per valutare la tua scelta, senza che tu debba farli.
               </h2>
             </div>
 
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {[
-                { num: '01', title: 'Disambiguazione', desc: 'Blocca l\'automatismo interpretativo.' },
-                { num: '02', title: 'Frizione cognitiva', desc: 'Introduce dubbio produttivo.' },
-                { num: '03', title: 'Ristrutturazione', desc: 'Sposta il focus dal risultato allo strumento.' },
-                { num: '04', title: 'Verifica tecnica', desc: 'Checklist basata su dati ufficiali.' },
-                { num: '05', title: 'Controllo interpretazione', desc: 'Evita sovrainterpretazioni.' },
-                { num: '06', title: 'Confini espliciti', desc: 'Cosa facciamo. Cosa non facciamo.' }
+                { num: '01', title: 'Disambiguazione', desc: 'Blocca l\'automatismo interpretativo sul tuo obiettivo dichiarato.' },
+                { num: '02', title: 'Frizione cognitiva', desc: 'Introduce dubbio produttivo sui rischi nascosti.' },
+                { num: '03', title: 'Ristrutturazione', desc: 'Sposta il focus dal risultato allo strumento e al suo contesto.' },
+                { num: '04', title: 'Verifica tecnica', desc: 'Checklist interna basata su dati ufficiali e KPI normalizzati.' },
+                { num: '05', title: 'Controllo interpretazione', desc: 'Evita sovrainterpretazioni e hype da incentivi.' },
+                { num: '06', title: 'Confini espliciti', desc: 'Cosa verifichiamo, cosa escludiamo, con quali fonti.' }
               ].map((step) => (
                 <div key={step.num} className="space-y-3 rounded-lg border border-border/30 bg-background p-6">
                   <div className="flex items-baseline gap-3">
@@ -174,15 +174,15 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* CHECKLIST - Strumento di verifica */}
+        {/* VERIFICHE - Lavoro sporco fatto da noi */}
         <section className="border-b border-border/30 bg-muted/5 px-6 py-24 sm:px-8 sm:py-32">
           <div className="mx-auto max-w-5xl space-y-12">
             <div className="space-y-4">
               <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
-                Strumento di verifica
+                Lavoro sporco
               </p>
               <h2 className="text-3xl font-bold text-foreground sm:text-4xl">
-                Checklist di coerenza operativa.
+                Verifiche che facciamo noi (non tu).
               </h2>
             </div>
 
@@ -211,7 +211,7 @@ export default function HomePage() {
                 "Non coerente" non significa "sbagliato".
               </p>
               <p className="mt-2 text-sm text-muted-foreground">
-                Significa che, per le tue condizioni specifiche, quello strumento aumenta il rischio di errore sistemico. Tradelia spiega il perché e quantifica l'impatto economico.
+                Significa che, per le tue condizioni specifiche, quello strumento aumenta il rischio di errore sistemico. Tradelia spiega il perché, quantifica l'impatto economico e suggerisce un'alternativa compatibile.
               </p>
             </div>
           </div>
@@ -304,7 +304,7 @@ export default function HomePage() {
                 Pronto a verificare?
               </h2>
               <p className="mx-auto max-w-2xl text-base text-muted-foreground">
-                Dichiara il tuo obiettivo operativo. Verifichiamo insieme se lo strumento è coerente con le tue necessità.
+                Dichiara il tuo obiettivo operativo. Verifichiamo noi se lo strumento è coerente con le tue necessità, senza che tu debba confrontare nulla.
               </p>
             </div>
 
