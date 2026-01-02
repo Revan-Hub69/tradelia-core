@@ -1,208 +1,263 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import Link from "next/link";
 
-type FormState = {
-  difficulty: string;
-  objective: string;
-  instrument: string;
-  detail: string;
+type Tone = "ok" | "warn" | "stop";
+type Step = "objective" | "avoid" | "level" | "loading" | "result";
+
+type ResultItem = {
+  id: string;
+  label: string;
+  tone: Tone;
+  why: string;
+  commonMistake: string;
+  doesNotMean: string;
 };
 
-type ResultStatus = "adatto" | "frizione" | "non-adatto";
-
-type Issue = {
-  message: string;
-  bucket: "Costi impliciti" | "Complessita operativa" | "Vincoli regolatori";
-  severity: "hard" | "soft";
-};
-
-type Result = {
-  status: ResultStatus;
+type ResultGroup = {
   title: string;
-  summary: string;
-  friction: string[];
-  note: string;
-  normalizzazione?: string;
+  tone: Tone;
+  items: ResultItem[];
 };
 
-const difficultyOptions = [
-  { value: "costi", label: "Costi poco chiari" },
-  { value: "rischio", label: "Rischio piu alto del previsto" },
-  { value: "regole", label: "Regole complesse" },
-  { value: "custodia", label: "Custodia / sicurezza" },
-  { value: "leva", label: "Leva o meccanismi che non capivo" },
-  { value: "non-so", label: "Non sono sicuro di cosa sto usando" },
-];
+type VerificationFormProps = {
+  initialObjective?: string;
+};
 
 const objectiveOptions = [
-  { value: "investire", label: "Investire nel tempo" },
+  { value: "investire", label: "Iniziare a investire" },
   { value: "trading", label: "Fare trading" },
-  { value: "custodire", label: "Custodire capitale" },
-  { value: "trasferire", label: "Trasferire valore" },
+  { value: "sicurezza", label: "Tenere i soldi al sicuro" },
+  { value: "capire", label: "Capire da dove partire" },
 ];
 
-const instrumentOptions = [
-  { value: "broker", label: "Broker" },
-  { value: "exchange", label: "Exchange" },
-  { value: "wallet", label: "Wallet" },
-  { value: "conto-deposito", label: "Conto deposito" },
+const avoidOptions = [
+  { value: "rischio", label: "Perdere soldi senza capirne il motivo" },
+  { value: "costi", label: "Costi nascosti" },
+  { value: "regole", label: "Regole complicate" },
+  { value: "custodia", label: "Problemi di custodia / sicurezza" },
+  { value: "stress", label: "Stress e decisioni impulsive" },
 ];
 
-const detailOptions: Record<string, { value: string; label: string }[]> = {
-  broker: [
-    { value: "regolamentato", label: "Regolamentato" },
-    { value: "non-regolamentato", label: "Non regolamentato" },
-  ],
-  exchange: [
-    { value: "custodial", label: "Custodial" },
-    { value: "non-custodial", label: "Non custodial" },
-  ],
-  wallet: [
-    { value: "self-custody", label: "Self-custody" },
-    { value: "custodial", label: "Custodial" },
-  ],
-  "conto-deposito": [
-    { value: "vincolato", label: "Vincolato" },
-    { value: "libero", label: "Libero" },
-  ],
+const levelOptions = [
+  { value: "mai", label: "Non ho mai iniziato" },
+  { value: "poco", label: "Ho iniziato da poco" },
+  { value: "errori", label: "Ho gia provato e ho fatto errori" },
+  { value: "esperienza", label: "Ho gia esperienza ma voglio ridurre errori" },
+];
+
+const detailsByCategory: Record<
+  string,
+  { why: string; commonMistake: string; doesNotMean: string }
+> = {
+  broker: {
+    why: "Regole piu chiare e tutele piu visibili rispetto a strumenti non regolamentati.",
+    commonMistake: "Confondere trasparenza con assenza di rischio.",
+    doesNotMean: "Non significa che sia adatto a qualsiasi obiettivo.",
+  },
+  exchange: {
+    why: "Operativita crypto con custodia variabile e livelli di complessita diversi.",
+    commonMistake: "Sottovalutare costi, limiti o procedure operative.",
+    doesNotMean: "Non significa che sia l'unica strada per usare crypto.",
+  },
+  "wallet-self": {
+    why: "Controllo totale, ma responsabilita totale su sicurezza e accesso.",
+    commonMistake: "Pensare che la self-custody elimini ogni rischio.",
+    doesNotMean: "Non significa che sia sbagliata per sempre.",
+  },
+  "wallet-custodial": {
+    why: "Semplicita operativa, ma dipendenza dal fornitore per accesso e tutela.",
+    commonMistake: "Scambiare comodita per sicurezza assoluta.",
+    doesNotMean: "Non significa che sia priva di vincoli.",
+  },
+  leva: {
+    why: "Amplifica errori e richiede disciplina operativa e gestione del rischio.",
+    commonMistake: "Confondere leva con fare piu in fretta.",
+    doesNotMean: "Non significa che sia sbagliata in assoluto.",
+  },
+  conto: {
+    why: "Stabilita e vincoli strutturali, non operativita di trading.",
+    commonMistake: "Usare strumenti di parcheggio per obiettivi operativi.",
+    doesNotMean: "Non significa che sia inutile per altri scopi.",
+  },
 };
 
-const statusLabels: Record<ResultStatus, { title: string; summary: string }> = {
-  adatto: {
-    title: "Adatto al tuo obiettivo attuale",
-    summary:
-      "Per le informazioni fornite, lo strumento non presenta incompatibilita strutturali evidenti.",
-  },
-  frizione: {
-    title: "Adatto, ma con frizioni da considerare",
-    summary:
-      "Lo strumento puo funzionare, ma alcune caratteristiche aumentano la probabilita di errori comuni.",
-  },
-  "non-adatto": {
-    title: "Non adatto al tuo obiettivo attuale",
-    summary:
-      "Questo non significa che lo strumento sia sbagliato. Significa che, per come funziona, aumenta il rischio di errori frequenti in situazioni come la tua.",
-  },
-};
+function computeTone(
+  categoryId: string,
+  objective: string,
+  avoid: string,
+  level: string
+): Tone {
+  const isBeginner = level === "mai" || level === "poco";
+  const isExperienced = level === "esperienza";
 
-function evaluate(form: FormState): Result {
-  const issues: Issue[] = [];
-
-  if (form.objective === "trading" && form.instrument === "conto-deposito") {
-    issues.push({
-      message: "Lo strumento non consente operativita intraday o leva.",
-      bucket: "Vincoli regolatori",
-      severity: "hard",
-    });
+  if (categoryId === "leva") {
+    if (objective !== "trading") return "stop";
+    if (isBeginner || avoid === "stress") return "stop";
+    if (avoid === "rischio") return "stop";
+    return "warn";
   }
 
-  if (form.objective === "trading" && form.instrument === "wallet") {
-    issues.push({
-      message: "Un wallet non e progettato per esecuzione rapida o gestione ordini.",
-      bucket: "Complessita operativa",
-      severity: "hard",
-    });
+  if (categoryId === "broker") {
+    if (objective === "sicurezza") return "warn";
+    return "ok";
   }
 
-  if (form.objective === "trasferire" && form.instrument === "broker") {
-    issues.push({
-      message: "Un broker non e strutturato per trasferimenti frequenti di valore.",
-      bucket: "Vincoli regolatori",
-      severity: "hard",
-    });
+  if (categoryId === "conto") {
+    if (objective === "trading") return "stop";
+    if (objective === "sicurezza" || objective === "capire") return "ok";
+    return "warn";
   }
 
-  if (form.objective === "custodire" && form.instrument === "exchange") {
-    issues.push({
-      message: "La custodia su exchange introduce dipendenze operative e rischi di piattaforma.",
-      bucket: "Complessita operativa",
-      severity: "soft",
-    });
+  if (categoryId === "exchange") {
+    if (isBeginner) return "warn";
+    if (avoid === "regole" || avoid === "costi") return "warn";
+    return isExperienced ? "ok" : "warn";
   }
 
-  if (form.objective === "investire" && form.instrument === "exchange") {
-    issues.push({
-      message: "Costi e volatilita possono generare attrito operativo nel tempo.",
-      bucket: "Costi impliciti",
-      severity: "soft",
-    });
+  if (categoryId === "wallet-self") {
+    if (isBeginner) return "warn";
+    if (avoid === "custodia") return "warn";
+    return "warn";
   }
 
-  if (form.instrument === "broker" && form.detail === "non-regolamentato") {
-    issues.push({
-      message: "Assenza di tutela regolamentare e maggiore esposizione a vincoli.",
-      bucket: "Vincoli regolatori",
-      severity: "hard",
-    });
+  if (categoryId === "wallet-custodial") {
+    if (avoid === "custodia") return "warn";
+    if (objective === "sicurezza" && isBeginner) return "ok";
+    if (objective === "capire" && isBeginner) return "ok";
+    return "warn";
   }
 
-  if (form.instrument === "wallet" && form.detail === "self-custody") {
-    if (["custodia", "non-so"].includes(form.difficulty)) {
-      issues.push({
-        message: "La self-custody richiede procedure di sicurezza avanzate.",
-        bucket: "Complessita operativa",
-        severity: "soft",
-      });
-    }
-  }
-
-  if (form.instrument === "exchange" && form.detail === "non-custodial") {
-    issues.push({
-      message: "La non custodia richiede gestione autonoma e controlli aggiuntivi.",
-      bucket: "Complessita operativa",
-      severity: "soft",
-    });
-  }
-
-  if (form.instrument === "conto-deposito" && form.detail === "vincolato") {
-    if (form.objective === "trasferire") {
-      issues.push({
-        message: "Vincoli di uscita rallentano la disponibilita del capitale.",
-        bucket: "Vincoli regolatori",
-        severity: "hard",
-      });
-    }
-  }
-
-  const hasHard = issues.some((issue) => issue.severity === "hard");
-  const status: ResultStatus = hasHard
-    ? "non-adatto"
-    : issues.length > 0
-    ? "frizione"
-    : "adatto";
-
-  const friction = Array.from(new Set(issues.map((issue) => issue.bucket)));
-
-  return {
-    status,
-    title: statusLabels[status].title,
-    summary: statusLabels[status].summary,
-    friction,
-    note: "Questo non garantisce risultati ne riduce il rischio di mercato.",
-    normalizzazione:
-      status === "non-adatto"
-        ? "Molte persone fanno lo stesso errore. Non e una mancanza di competenza."
-        : undefined,
-  };
+  return "warn";
 }
 
-export function VerificationForm() {
-  const [form, setForm] = useState<FormState>({
-    difficulty: "",
-    objective: "",
-    instrument: "",
-    detail: "",
+function buildResults(objective: string, avoid: string, level: string): ResultGroup[] {
+  const categories = [
+    { id: "broker", label: "Broker regolamentato" },
+    { id: "conto", label: "Conti / parcheggio liquidita" },
+    { id: "exchange", label: "Exchange" },
+    { id: "wallet-custodial", label: "Wallet custodial" },
+    { id: "wallet-self", label: "Wallet self-custody" },
+    { id: "leva", label: "Trading con leva" },
+  ];
+
+  const items = categories.map((category) => {
+    const tone = computeTone(category.id, objective, avoid, level);
+    const details = detailsByCategory[category.id];
+    return {
+      id: category.id,
+      label: category.label,
+      tone,
+      why: details.why,
+      commonMistake: details.commonMistake,
+      doesNotMean: details.doesNotMean,
+    };
   });
-  const [submitted, setSubmitted] = useState(false);
-  const [status, setStatus] = useState<"idle" | "loading" | "ready">("idle");
+
+  const groups: ResultGroup[] = [
+    { title: "Piu adatto per iniziare", tone: "ok", items: items.filter((item) => item.tone === "ok") },
+    { title: "Adatto, ma con frizione", tone: "warn", items: items.filter((item) => item.tone === "warn") },
+    { title: "Non adatto adesso", tone: "stop", items: items.filter((item) => item.tone === "stop") },
+  ];
+
+  return groups.filter((group) => group.items.length > 0);
+}
+
+function ToneBadge({ tone }: { tone: Tone }) {
+  const label = tone === "ok" ? "ADATTO" : tone === "warn" ? "FRIZIONE" : "NON ADATTO";
+  const className = tone === "ok" ? "status-ok" : tone === "warn" ? "status-attention" : "status-risk";
+
+  return (
+    <span className={`${className} inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em]`}>
+      {label}
+    </span>
+  );
+}
+
+function StepSingleSelect({
+  title,
+  options,
+  value,
+  onSelect,
+  helperText,
+  tooltip,
+  tooltipBody,
+}: {
+  title: string;
+  options: { value: string; label: string }[];
+  value: string;
+  onSelect: (value: string) => void;
+  helperText?: string;
+  tooltip?: string;
+  tooltipBody?: string;
+}) {
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-sm font-semibold text-foreground">{title}</p>
+          {helperText && <p className="text-xs text-muted-foreground">{helperText}</p>}
+        </div>
+        {tooltip && (
+          <details className="accordion w-full sm:w-auto">
+            <summary>{tooltip}</summary>
+            <p className="mt-3 text-xs text-muted-foreground">
+              {tooltipBody ?? "Lo chiediamo solo per evitare interpretazioni sbagliate del risultato."}
+            </p>
+          </details>
+        )}
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        {options.map((option) => (
+          <button
+            key={option.value}
+            type="button"
+            className="choice-card"
+            data-selected={value === option.value}
+            aria-pressed={value === option.value}
+            onClick={() => onSelect(option.value)}
+          >
+            <p className="text-sm font-semibold text-foreground">{option.label}</p>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ProgressLine({ step, steps }: { step: number; steps: number }) {
+  const width = `${Math.round((step / steps) * 100)}%`;
+  return (
+    <div className="space-y-2">
+      <div className="progress-line">
+        <span style={{ width }} />
+      </div>
+      <p className="text-xs text-muted-foreground">solo {steps} step</p>
+    </div>
+  );
+}
+
+export function VerificationForm({ initialObjective }: VerificationFormProps) {
+  const [objective, setObjective] = useState("");
+  const [avoid, setAvoid] = useState("");
+  const [level, setLevel] = useState("");
+  const [step, setStep] = useState<Step>("objective");
   const timerRef = useRef<number | null>(null);
 
-  const isComplete = useMemo(() => Object.values(form).every(Boolean), [form]);
-  const result = useMemo(
-    () => (status === "ready" && isComplete ? evaluate(form) : null),
-    [status, isComplete, form]
+  const groups = useMemo(
+    () => (step === "result" ? buildResults(objective, avoid, level) : []),
+    [step, objective, avoid, level]
   );
+
+  useEffect(() => {
+    if (!initialObjective) return;
+    const allowed = objectiveOptions.some((option) => option.value === initialObjective);
+    if (allowed && !objective) {
+      setObjective(initialObjective);
+      setStep("avoid");
+    }
+  }, [initialObjective, objective]);
 
   useEffect(() => {
     return () => {
@@ -212,200 +267,163 @@ export function VerificationForm() {
     };
   }, []);
 
-  function handleChange(field: keyof FormState, value: string) {
-    setForm((prev) => {
-      if (field === "instrument") {
-        return { ...prev, instrument: value, detail: "" };
-      }
-      return { ...prev, [field]: value };
-    });
-    if (status !== "idle") {
-      setStatus("idle");
-      setSubmitted(false);
+  function handleObjective(value: string) {
+    setObjective(value);
+    setStep("avoid");
+  }
+
+  function handleAvoid(value: string) {
+    setAvoid(value);
+    setStep("level");
+  }
+
+  function handleLevel(value: string) {
+    setLevel(value);
+    setStep("loading");
+    if (timerRef.current) {
+      window.clearTimeout(timerRef.current);
+    }
+    timerRef.current = window.setTimeout(() => {
+      setStep("result");
+    }, 1000);
+  }
+
+  function handleReset() {
+    setObjective("");
+    setAvoid("");
+    setLevel("");
+    setStep("objective");
+  }
+
+  function handlePrint() {
+    if (typeof window !== "undefined") {
+      window.print();
     }
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSubmitted(true);
-    if (!isComplete) {
-      return;
-    }
-    setStatus("loading");
-    if (timerRef.current) {
-      window.clearTimeout(timerRef.current);
-    }
-    timerRef.current = window.setTimeout(() => {
-      setStatus("ready");
-    }, 900);
   }
-
-  function handleReset() {
-    setForm({
-      difficulty: "",
-      objective: "",
-      instrument: "",
-      detail: "",
-    });
-    setSubmitted(false);
-    setStatus("idle");
-    if (timerRef.current) {
-      window.clearTimeout(timerRef.current);
-      timerRef.current = null;
-    }
-  }
-
-  const resultStyles: Record<ResultStatus, string> = {
-    adatto: "status-ok",
-    frizione: "status-attention",
-    "non-adatto": "status-risk",
-  };
 
   return (
-    <div className="space-y-10">
-      <form onSubmit={handleSubmit} className="surface-card rounded-2xl p-6 sm:p-8">
-        <div className="grid gap-6 md:grid-cols-2">
-          <label className="space-y-2 text-sm font-medium text-foreground">
-            Cosa ti ha creato piu difficolta finora?
-            <span className="block text-xs font-normal text-muted-foreground">
-              Questa risposta serve solo a interpretare meglio il risultato.
-            </span>
-            <select
-              className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-2 text-sm"
-              value={form.difficulty}
-              onChange={(event) => handleChange("difficulty", event.target.value)}
-            >
-              <option value="">Seleziona</option>
-              {difficultyOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </label>
+    <form onSubmit={handleSubmit} className="space-y-8">
+      <div className="surface-card rounded-2xl p-6 sm:p-8">
+        <div className="space-y-6">
+          <ProgressLine step={step === "objective" ? 1 : step === "avoid" ? 2 : 3} steps={3} />
+          <p className="text-xs text-muted-foreground">Nessuna risposta e sbagliata.</p>
 
-          <label className="space-y-2 text-sm font-medium text-foreground">
-            Cosa stai cercando di fare adesso?
-            <select
-              className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-2 text-sm"
-              value={form.objective}
-              onChange={(event) => handleChange("objective", event.target.value)}
-            >
-              <option value="">Seleziona</option>
-              {objectiveOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </label>
+          {step === "objective" && (
+            <StepSingleSelect
+              title="Cosa stai cercando di fare?"
+              options={objectiveOptions}
+              value={objective}
+              onSelect={handleObjective}
+              helperText="Non c'e risposta giusta. Non serve sapere termini tecnici. Serve solo a evitare errori comuni."
+            />
+          )}
 
-          <label className="space-y-2 text-sm font-medium text-foreground">
-            Che tipo di strumento stai usando?
-            <select
-              className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-2 text-sm"
-              value={form.instrument}
-              onChange={(event) => handleChange("instrument", event.target.value)}
-            >
-              <option value="">Seleziona</option>
-              {instrumentOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </label>
+          {step === "avoid" && (
+            <StepSingleSelect
+              title="Cosa vuoi evitare soprattutto?"
+              options={avoidOptions}
+              value={avoid}
+              onSelect={handleAvoid}
+              helperText="Seleziona l'opzione che ti descrive di piu."
+              tooltip="Perche lo chiediamo?"
+              tooltipBody="Per capire quale complessita e piu rischiosa per te adesso."
+            />
+          )}
 
-          <label className="space-y-2 text-sm font-medium text-foreground">
-            Dettaglio minimo
-            <select
-              className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-2 text-sm"
-              value={form.detail}
-              onChange={(event) => handleChange("detail", event.target.value)}
-              disabled={!form.instrument}
-            >
-              <option value="">Seleziona</option>
-              {(detailOptions[form.instrument] ?? []).map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
+          {step === "level" && (
+            <StepSingleSelect
+              title="A che punto sei?"
+              options={levelOptions}
+              value={level}
+              onSelect={handleLevel}
+              helperText="Serve solo a calibrare la frizione. Non e un giudizio."
+            />
+          )}
 
-        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-          <button type="submit" className="btn-primary" disabled={!isComplete}>
-            Vedi esito
-          </button>
-          <button type="button" className="btn-secondary" onClick={handleReset}>
-            Reset
-          </button>
-        </div>
-      </form>
-
-      <div aria-live="polite" className="space-y-6">
-        {status === "idle" && !submitted && (
-          <div className="surface-card rounded-2xl p-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-              Esito non disponibile
-            </p>
-            <p className="mt-3 text-sm text-muted-foreground">
-              Compila i campi per ottenere una verifica informativa. Nessun dato viene salvato.
-            </p>
-          </div>
-        )}
-
-        {status === "loading" && (
-          <div className="surface-card rounded-2xl p-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-              Stiamo verificando incompatibilita strutturali
-            </p>
-            <p className="mt-3 text-sm text-muted-foreground">
-              Applichiamo regole esplicite ai dati dichiarati.
-            </p>
-            <div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-muted">
-              <div className="h-full w-2/3 animate-pulse rounded-full bg-primary/40" />
+          {step === "loading" && (
+            <div className="space-y-3 text-sm text-muted-foreground">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em]">Verifica compatibilita in corso</p>
+              <p>Stiamo controllando frizioni tipiche per chi e in questa situazione.</p>
+              <div className="progress-line">
+                <span style={{ width: "70%" }} />
+              </div>
             </div>
-            <p className="mt-3 text-xs text-muted-foreground">
-              Esito informativo. Non e consulenza regolamentata.
-            </p>
-          </div>
-        )}
+          )}
 
-        {result && (
-          <div className={`rounded-2xl p-6 ${resultStyles[result.status]}`}>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-              Esito
-            </p>
-            <h2 className="mt-2 text-2xl font-semibold text-foreground">{result.title}</h2>
-            <p className="mt-3 text-sm text-foreground/80">{result.summary}</p>
-
-            {result.status === "frizione" && result.friction.length > 0 && (
-              <div className="mt-5 space-y-2">
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                  Variabili di frizione
+          {step === "result" && (
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <h2 className="text-2xl font-semibold text-foreground">
+                  Per il tuo profilo: ecco da cosa partire (e cosa evitare).
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Ogni voce e cliccabile per capire il perche.
                 </p>
-                <ul className="space-y-2">
-                  {result.friction.map((item) => (
-                    <li key={item} className="text-sm text-foreground/80">
-                      {item}
-                    </li>
-                  ))}
-                </ul>
               </div>
-            )}
 
-            {result.normalizzazione && (
-              <div className="mt-5 rounded-xl border border-border/60 bg-muted/30 p-4 text-sm text-muted-foreground">
-                {result.normalizzazione}
+              <div className="space-y-6">
+                {groups.map((group) => (
+                  <div key={group.title} className="space-y-3">
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                      {group.title}
+                    </p>
+                    <div className="space-y-3">
+                      {group.items.map((item) => (
+                        <details key={item.id} className="accordion">
+                          <summary className="flex items-center justify-between gap-4">
+                            <span className="text-sm font-semibold text-foreground">{item.label}</span>
+                            <ToneBadge tone={item.tone} />
+                          </summary>
+                          <div className="mt-4 space-y-3 text-sm text-muted-foreground">
+                            <div>
+                              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                                Perche
+                              </p>
+                              <p className="mt-1">{item.why}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                                Errore comune
+                              </p>
+                              <p className="mt-1">{item.commonMistake}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                                Non significa
+                              </p>
+                              <p className="mt-1">{item.doesNotMean}</p>
+                            </div>
+                          </div>
+                        </details>
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </div>
-            )}
 
-            <p className="mt-4 text-xs text-muted-foreground">{result.note}</p>
-          </div>
-        )}
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <button type="button" className="btn-secondary" onClick={handleReset}>
+                  Rifai il controllo
+                </button>
+                <Link href="/metodo#limiti" className="link-underline text-sm font-semibold">
+                  Leggi Metodo e limiti
+                </Link>
+                <button type="button" className="link-underline text-sm font-semibold" onClick={handlePrint}>
+                  Salva come promemoria
+                </button>
+              </div>
+
+              <div className="text-xs text-muted-foreground">
+                Questo non e un consiglio operativo. Serve solo a ridurre errori comuni.
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </form>
   );
 }

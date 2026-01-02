@@ -329,6 +329,101 @@
     outline-offset: 3px;
   }
 
+  .header-cta-tooltip {
+    position: absolute;
+    right: 0;
+    top: 120%;
+    max-width: 220px;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.75rem;
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--card));
+    color: hsl(var(--foreground));
+    font-size: 0.7rem;
+    line-height: 1.3;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 150ms ease, transform 150ms ease;
+    pointer-events: none;
+    box-shadow: var(--shadow-soft);
+    z-index: 20;
+  }
+
+  .group:hover .header-cta-tooltip,
+  .group:focus-within .header-cta-tooltip {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .choice-card {
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--card));
+    border-radius: 1rem;
+    padding: 1.25rem;
+    text-align: left;
+    transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+  }
+
+  .choice-card[data-selected="true"] {
+    border-color: hsl(var(--ring));
+    box-shadow: var(--shadow-soft);
+    transform: translateY(-1px);
+  }
+
+  .choice-card:hover {
+    border-color: hsl(var(--ring) / 0.6);
+  }
+
+  .progress-line {
+    height: 2px;
+    width: 100%;
+    background: hsl(var(--border));
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .progress-line > span {
+    display: block;
+    height: 100%;
+    background: hsl(var(--primary));
+    transition: width 200ms ease;
+  }
+
+  .accordion {
+    border: 1px solid hsl(var(--border));
+    border-radius: 1rem;
+    background: hsl(var(--card));
+    padding: 1rem 1.25rem;
+  }
+
+  .accordion summary {
+    list-style: none;
+    cursor: pointer;
+    font-weight: 600;
+    color: hsl(var(--foreground));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .accordion summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .tooltip-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 999px;
+    border: 1px solid hsl(var(--border));
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: hsl(var(--foreground));
+    background: hsl(var(--background));
+  }
+
   .status-ok {
     border: 1px solid hsl(var(--status-ok) / 0.35);
     background: hsl(var(--status-ok) / 0.12);

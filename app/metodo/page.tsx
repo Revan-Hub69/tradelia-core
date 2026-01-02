@@ -54,7 +54,7 @@ export default function MetodoPage() {
             </p>
           </div>
 
-          <div className="surface-card rounded-2xl p-6">
+          <div className="surface-card rounded-2xl p-6" id="limiti">
             <h2 className="text-base font-semibold text-foreground">Limiti dichiarati</h2>
             <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
               <li>Non sostituisce consulenza regolamentata.</li>

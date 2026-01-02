@@ -1,50 +1,121 @@
 {
-  "principi": {
-    "title": "Principi non negoziabili",
-    "items": [
-      "L'utente non e mai valutato. Lo strumento si.",
-      "Nessuna frase deve aumentare eccitazione o urgenza.",
-      "Ogni output riduce bias, non crea sicurezza.",
-      "Se qualcosa sembra facile, probabilmente e sbagliato.",
-      "Stop intenzionale prima di qualsiasi decisione."
-    ]
-  },
   "hero": {
-    "title": "Prima di investire o fare trading, verifica se lo strumento che stai usando e adatto a cio che vuoi fare.",
-    "subtitleLines": [
-      "Molti errori non dipendono dalle scelte,",
-      "ma dallo strumento sbagliato. Tradelia ti aiuta a capirlo prima."
+    "title": "Non sai da dove partire? Prima controlla che tipo di strumento ti serve.",
+    "subtitle": [
+      "Molti errori all'inizio non dipendono da cosa compri,",
+      "ma dallo strumento sbagliato (broker, exchange, wallet, leva, conti)."
     ],
-    "cta": "Inizia la verifica",
-    "microcopy": "60 secondi. Nessuna registrazione. Nessun consiglio operativo."
+    "question": "Cosa stai cercando di fare?",
+    "options": [
+      {
+        "id": "investire",
+        "label": "Iniziare a investire",
+        "subtext": "poco stress, regole chiare"
+      },
+      {
+        "id": "trading",
+        "label": "Fare trading",
+        "subtext": "operazioni piu frequenti, piu rischi"
+      },
+      {
+        "id": "sicurezza",
+        "label": "Tenere i soldi al sicuro",
+        "subtext": "custodia, protezione, accesso"
+      },
+      {
+        "id": "capire",
+        "label": "Capire da dove partire",
+        "subtext": "non so ancora cosa scegliere"
+      }
+    ],
+    "cta": "Avvia controllo (1 minuto)",
+    "microcopy": "Nessuna registrazione. Nessuna promessa. Ti restituiamo una mappa di compatibilita tra profilo e categorie di strumenti."
   },
-  "accoglienza": "Se hai gia sbagliato in passato, sei esattamente nel posto giusto.",
-  "preview": {
-    "title": "Cosa ti chiederemo",
-    "subtitle": "Serve solo a evitare errori comuni. Non serve esperienza.",
-    "items": [
-      "Cosa ti ha creato piu problemi finora",
-      "Cosa stai cercando di fare",
-      "Che tipo di strumento stai usando"
-    ]
+  "accoglienza": {
+    "title": "Se hai gia sbagliato in passato, sei nel posto giusto.",
+    "body": "Molte persone iniziano da strumenti troppo complessi o sbagliati per il loro obiettivo. Tradelia non giudica: riduce errori comuni prima della scelta."
+  },
+  "cosaFacciamo": {
+    "title": "Cosa fa Tradelia (in pratica)",
+    "bullets": [
+      "Ti dice quali categorie di strumenti sono piu adatte per il tuo caso (non brand).",
+      "Evidenzia frizioni: costi impliciti, regole, custodia, leva, complessita.",
+      "Spiega come leggere il risultato senza sovrainterpretare."
+    ],
+    "microcopy": "Non analizziamo mercati, non suggeriamo asset, non ottimizziamo performance."
   },
   "esempio": {
-    "title": "Esempio",
+    "title": "Un errore comune (tap per vedere perche)",
     "objectiveLabel": "Obiettivo",
-    "objectiveValue": "Trading con leva",
-    "instrumentLabel": "Strumento",
-    "instrumentValue": "Conto deposito",
-    "outcomeLabel": "Esito",
-    "outcomeValue": "Non adatto",
-    "reasonLabel": "Motivo",
-    "reasonValue": "Lo strumento non consente leva ne operativita intraday. Questo aumenta il rischio di errore strutturale."
+    "objectiveValue": "fare trading",
+    "choiceLabel": "Scelta tipica",
+    "choiceValue": "conto deposito",
+    "resultLabel": "Esito",
+    "resultValue": "Non adatto",
+    "accordionTitle": "Perche?",
+    "accordionBody": "Per il trading servono esecuzione, gestione rischio intraday, strumenti operativi. Un conto deposito ha vincoli strutturali diversi. Non e sbagliato: e un altro scopo."
   },
-  "metodo": {
-    "title": "Metodo pubblico",
-    "body": "Tradelia espone regole, fonti e limiti in un documento pubblico. La verifica e deterministica e ripetibile."
+  "comeFunziona": {
+    "title": "Come funziona il controllo",
+    "steps": [
+      "Selezioni obiettivo e livello (pochi click).",
+      "Indichi cosa vuoi evitare (rischi, costi, regole).",
+      "Calcoliamo compatibilita solo per categorie.",
+      "Mostriamo Adatto / Con frizione / Non adatto con motivi."
+    ],
+    "note": "Solo 3 step."
+  },
+  "verifichiamo": {
+    "title": "Cosa verifichiamo",
+    "items": [
+      {
+        "label": "Broker regolamentato",
+        "tooltip": "Regole piu chiare, vincoli e tutele."
+      },
+      {
+        "label": "Exchange",
+        "tooltip": "Operativita crypto, ma complessita e custodia variabile."
+      },
+      {
+        "label": "Wallet custodial vs self-custody",
+        "tooltip": "Controllo totale implica responsabilita totale."
+      },
+      {
+        "label": "Trading con leva",
+        "tooltip": "Amplifica errori e stress decisionale."
+      },
+      {
+        "label": "Conti / parcheggio liquidita",
+        "tooltip": "Stabilita e vincoli, non operativita di trading."
+      }
+    ]
+  },
+  "limiti": {
+    "title": "Dove ci fermiamo (intenzionalmente)",
+    "items": [
+      "Non suggeriamo asset.",
+      "Non eseguiamo ordini.",
+      "Non promettiamo risultati.",
+      "Non sostituiamo consulenza regolamentata."
+    ],
+    "accordionTitle": "Perche ci fermiamo?",
+    "accordionBody": "Per evitare sicurezza ingiustificata e spinta all'azione rapida."
+  },
+  "fonti": {
+    "title": "Trasparenza e fonti",
+    "items": [
+      "Documentazione ufficiale e principi di risk management.",
+      "AI per sintesi e chiarezza, non per decisione."
+    ],
+    "affiliazioni": "Affiliazioni (se presenti) separate dal metodo."
+  },
+  "ctaFinale": {
+    "title": "Pronto a partire senza fare il primo errore evitabile?",
+    "cta": "Inizia il controllo",
+    "microcopy": "1 minuto · nessuna registrazione"
   },
   "footer": {
-    "metodo": "Metodo pubblico",
+    "metodo": "Metodo",
     "privacy": "Privacy",
     "disclaimer": "MiFID / Disclaimer",
     "contatti": "Contatti"

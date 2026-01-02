@@ -1,6 +1,12 @@
 import { VerificationForm } from "./verification-form";
 
-export default function VerifyPage() {
+type VerifyPageProps = {
+  searchParams?: {
+    objective?: string;
+  };
+};
+
+export default function VerifyPage({ searchParams }: VerifyPageProps) {
   return (
     <div className="min-h-screen bg-background">
       <main id="main-content" className="mx-auto max-w-5xl px-6 py-20 sm:px-8 sm:py-32">
@@ -18,7 +24,7 @@ export default function VerifyPage() {
             </p>
           </div>
 
-          <VerificationForm />
+          <VerificationForm initialObjective={searchParams?.objective} />
 
           <div className="surface-card rounded-2xl p-6 text-sm text-muted-foreground">
             Materiale educativo e informativo. Nessun consiglio operativo. Non e consulenza finanziaria regolamentata.

@@ -1,38 +1,62 @@
 import fs from "fs";
 import path from "path";
 import Link from "next/link";
+import { HeroInteractive } from "./hero-interactive";
+import { VerifyCategories } from "./verify-categories";
 
 type Content = {
-  principi: {
-    title: string;
-    items: string[];
-  };
   hero: {
     title: string;
-    subtitleLines: string[];
+    subtitle: string[];
+    question: string;
+    options: { id: string; label: string; subtext: string }[];
     cta: string;
     microcopy: string;
   };
-  accoglienza: string;
-  preview: {
+  accoglienza: {
     title: string;
-    subtitle: string;
-    items: string[];
+    body: string;
+  };
+  cosaFacciamo: {
+    title: string;
+    bullets: string[];
+    microcopy: string;
   };
   esempio: {
     title: string;
     objectiveLabel: string;
     objectiveValue: string;
-    instrumentLabel: string;
-    instrumentValue: string;
-    outcomeLabel: string;
-    outcomeValue: string;
-    reasonLabel: string;
-    reasonValue: string;
+    choiceLabel: string;
+    choiceValue: string;
+    resultLabel: string;
+    resultValue: string;
+    accordionTitle: string;
+    accordionBody: string;
   };
-  metodo: {
+  comeFunziona: {
     title: string;
-    body: string;
+    steps: string[];
+    note: string;
+  };
+  verifichiamo: {
+    title: string;
+    items: { label: string; tooltip: string }[];
+  };
+  limiti: {
+    title: string;
+    items: string[];
+    accordionTitle: string;
+    accordionBody: string;
+  };
+  fonti: {
+    title: string;
+    items: string[];
+    affiliazioni: string;
+  };
+  ctaFinale: {
+    title: string;
+    cta: string;
+    microcopy: string;
   };
   footer: {
     metodo: string;
@@ -41,61 +65,6 @@ type Content = {
     contatti: string;
   };
 };
-
-const previewIcons = [
-  (
-    <svg
-      key="difficulty"
-      viewBox="0 0 24 24"
-      className="h-5 w-5"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <circle cx="12" cy="12" r="8" />
-      <path d="M8.5 10.5l2.5 2.5 4.5-5" />
-    </svg>
-  ),
-  (
-    <svg
-      key="goal"
-      viewBox="0 0 24 24"
-      className="h-5 w-5"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path d="M4 17l5-5 4 4 7-7" />
-      <path d="M20 10v6h-6" />
-    </svg>
-  ),
-  (
-    <svg
-      key="tool"
-      viewBox="0 0 24 24"
-      className="h-5 w-5"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <rect x="4" y="6" width="16" height="12" rx="2" />
-      <path d="M8 10h8" />
-      <path d="M8 14h5" />
-    </svg>
-  ),
-];
 
 function loadContent(): Content {
   const filePath = path.join(process.cwd(), "public", "content.json");
@@ -109,97 +78,53 @@ export default function HomePage() {
   return (
     <div id="top" className="min-h-screen bg-background text-foreground">
       <main id="main-content" role="main" className="space-y-0">
-        <section
-          id="principi"
-          className="section-reveal border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8"
-          style={{ animationDelay: "0ms" }}
-        >
-          <div className="mx-auto max-w-5xl space-y-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-              {content.principi.title}
-            </p>
-            <div className="surface-card rounded-2xl p-6">
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                {content.principi.items.map((item) => (
-                  <li key={item} className="flex items-start gap-2">
-                    <span
-                      className="mt-2 inline-block h-2 w-2 rounded-full bg-primary"
-                      aria-hidden
-                    />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        <section
-          id="verifica"
-          className="section-reveal border-b border-border/60 px-4 py-14 sm:px-6 sm:py-20 lg:px-8"
-          style={{ animationDelay: "80ms" }}
-        >
-          <div className="mx-auto flex max-w-5xl flex-col gap-8">
-            <div className="space-y-6">
+        <section className="section-reveal border-b border-border/60 px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+          <div className="mx-auto max-w-5xl space-y-8">
+            <div className="space-y-4">
               <h1 className="text-3xl font-semibold leading-tight sm:text-4xl lg:text-5xl">
                 {content.hero.title}
               </h1>
               <div className="space-y-2 text-base text-muted-foreground">
-                {content.hero.subtitleLines.map((line) => (
+                {content.hero.subtitle.map((line) => (
                   <p key={line}>{line}</p>
                 ))}
               </div>
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                <Link href="/verifica" className="btn-primary" aria-label="Inizia la verifica">
-                  {content.hero.cta}
-                </Link>
-              </div>
-              <p className="text-xs text-muted-foreground">{content.hero.microcopy}</p>
             </div>
 
-            <div className="surface-card rounded-2xl p-6 text-sm text-muted-foreground">
-              {content.accoglienza}
-            </div>
+            <HeroInteractive
+              question={content.hero.question}
+              options={content.hero.options}
+              ctaLabel={content.hero.cta}
+              microcopy={content.hero.microcopy}
+            />
           </div>
         </section>
 
-        <section
-          id="preview"
-          className="section-reveal border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8"
-          style={{ animationDelay: "160ms" }}
-        >
-          <div className="mx-auto max-w-5xl space-y-8">
-            <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                {content.preview.title}
-              </p>
-              <p className="text-sm text-muted-foreground">{content.preview.subtitle}</p>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-3">
-              {content.preview.items.map((item, index) => (
-                <div
-                  key={item}
-                  className="surface-card surface-card-hover flex items-start gap-3 rounded-2xl p-5"
-                >
-                  <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-border/60 bg-muted/40 text-primary/80">
-                    {previewIcons[index]}
-                  </div>
-                  <p className="text-sm text-foreground">{item}</p>
-                </div>
+        <section className="section-reveal border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+          <div className="mx-auto max-w-5xl space-y-4">
+            <h2 className="text-2xl font-semibold">{content.accoglienza.title}</h2>
+            <p className="text-sm text-muted-foreground">{content.accoglienza.body}</p>
+          </div>
+        </section>
+
+        <section className="section-reveal border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+          <div className="mx-auto max-w-5xl space-y-6">
+            <h2 className="text-2xl font-semibold">{content.cosaFacciamo.title}</h2>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              {content.cosaFacciamo.bullets.map((item) => (
+                <li key={item} className="flex items-start gap-2">
+                  <span className="mt-2 inline-block h-2 w-2 rounded-full bg-primary" aria-hidden />
+                  <span>{item}</span>
+                </li>
               ))}
-            </div>
+            </ul>
+            <p className="text-xs text-muted-foreground">{content.cosaFacciamo.microcopy}</p>
           </div>
         </section>
 
-        <section
-          id="esempio"
-          className="section-reveal border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8"
-          style={{ animationDelay: "240ms" }}
-        >
-          <div className="mx-auto max-w-5xl space-y-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-              {content.esempio.title}
-            </p>
+        <section id="esempi" className="section-reveal border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+          <div className="mx-auto max-w-5xl space-y-6">
+            <h2 className="text-2xl font-semibold">{content.esempio.title}</h2>
             <div className="surface-card rounded-2xl p-6">
               <div className="grid gap-4 sm:grid-cols-3">
                 <div className="space-y-1">
@@ -210,42 +135,95 @@ export default function HomePage() {
                 </div>
                 <div className="space-y-1">
                   <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                    {content.esempio.instrumentLabel}
+                    {content.esempio.choiceLabel}
                   </p>
-                  <p className="text-sm text-foreground">{content.esempio.instrumentValue}</p>
+                  <p className="text-sm text-foreground">{content.esempio.choiceValue}</p>
                 </div>
                 <div className="space-y-1">
                   <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                    {content.esempio.outcomeLabel}
+                    {content.esempio.resultLabel}
                   </p>
                   <span className="status-risk inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em]">
-                    {content.esempio.outcomeValue}
+                    {content.esempio.resultValue}
                   </span>
                 </div>
               </div>
-              <div className="mt-5 space-y-2 rounded-xl border border-border/60 bg-muted/30 p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                  {content.esempio.reasonLabel}
-                </p>
-                <p className="text-sm text-muted-foreground">{content.esempio.reasonValue}</p>
-              </div>
+              <details className="accordion mt-5">
+                <summary>{content.esempio.accordionTitle}</summary>
+                <p className="mt-3 text-sm text-muted-foreground">{content.esempio.accordionBody}</p>
+              </details>
             </div>
           </div>
         </section>
 
-        <section
-          id="metodo"
-          className="section-reveal px-4 py-12 sm:px-6 sm:py-16 lg:px-8"
-          style={{ animationDelay: "320ms" }}
-        >
-          <div className="mx-auto max-w-5xl space-y-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-              {content.metodo.title}
-            </p>
-            <p className="text-sm text-muted-foreground">{content.metodo.body}</p>
-            <Link href="/metodo" className="link-underline text-sm font-semibold">
-              Apri il documento completo
+        <section id="metodo" className="section-reveal border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+          <div className="mx-auto max-w-5xl space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-semibold">{content.comeFunziona.title}</h2>
+              <span className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                {content.comeFunziona.note}
+              </span>
+            </div>
+            <div className="progress-line">
+              <span style={{ width: "100%" }} />
+            </div>
+            <ol className="grid gap-3 sm:grid-cols-2">
+              {content.comeFunziona.steps.map((step) => (
+                <li key={step} className="surface-card rounded-2xl p-4 text-sm text-muted-foreground">
+                  {step}
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+
+        <section id="verifichiamo" className="section-reveal border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+          <div className="mx-auto max-w-5xl space-y-6">
+            <h2 className="text-2xl font-semibold">{content.verifichiamo.title}</h2>
+            <VerifyCategories items={content.verifichiamo.items} />
+          </div>
+        </section>
+
+        <section id="limiti" className="section-reveal border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+          <div className="mx-auto max-w-5xl space-y-6">
+            <h2 className="text-2xl font-semibold">{content.limiti.title}</h2>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              {content.limiti.items.map((item) => (
+                <li key={item} className="flex items-start gap-2">
+                  <span className="mt-2 inline-block h-2 w-2 rounded-full bg-primary" aria-hidden />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <details className="accordion">
+              <summary>{content.limiti.accordionTitle}</summary>
+              <p className="mt-3 text-sm text-muted-foreground">{content.limiti.accordionBody}</p>
+            </details>
+          </div>
+        </section>
+
+        <section id="fonti" className="section-reveal border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+          <div className="mx-auto max-w-5xl space-y-6">
+            <h2 className="text-2xl font-semibold">{content.fonti.title}</h2>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              {content.fonti.items.map((item) => (
+                <li key={item} className="flex items-start gap-2">
+                  <span className="mt-2 inline-block h-2 w-2 rounded-full bg-primary" aria-hidden />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="text-xs text-muted-foreground">{content.fonti.affiliazioni}</p>
+          </div>
+        </section>
+
+        <section className="section-reveal px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+          <div className="mx-auto max-w-5xl space-y-4 text-center">
+            <h2 className="text-2xl font-semibold">{content.ctaFinale.title}</h2>
+            <Link href="/verifica" className="btn-primary">
+              {content.ctaFinale.cta}
             </Link>
+            <p className="text-xs text-muted-foreground">{content.ctaFinale.microcopy}</p>
           </div>
         </section>
       </main>

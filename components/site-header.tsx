@@ -9,10 +9,11 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false)
 
   const navigation = [
-    { href: '#principi', label: 'Principi' },
-    { href: '#verifica', label: 'Verifica' },
-    { href: '#esempio', label: 'Esempio' },
-    { href: '/metodo', label: 'Metodo' }
+    { href: '#metodo', label: 'Metodo' },
+    { href: '#verifichiamo', label: 'Cosa verifichiamo' },
+    { href: '#esempi', label: 'Esempi' },
+    { href: '#limiti', label: 'Limiti' },
+    { href: '#fonti', label: 'Fonti' }
   ]
 
   return (
@@ -53,6 +54,14 @@ export function SiteHeader() {
             </Link>
           ))}
           <ThemeToggle />
+          <div className="relative group">
+            <Link href="/verifica" className="btn-primary px-4 py-2 text-xs">
+              Inizia il controllo
+            </Link>
+            <span className="header-cta-tooltip">
+              Nessun consiglio operativo. Solo compatibilita di base.
+            </span>
+          </div>
         </nav>
       </div>
 
@@ -72,6 +81,13 @@ export function SiteHeader() {
             <div className="px-1 py-2">
               <ThemeToggle />
             </div>
+            <Link
+              href="/verifica"
+              className="btn-primary px-4 py-2 text-xs"
+              onClick={() => setOpen(false)}
+            >
+              Inizia il controllo
+            </Link>
           </nav>
         </div>
       )}
