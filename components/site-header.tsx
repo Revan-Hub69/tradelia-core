@@ -9,10 +9,10 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false)
 
   const navigation = [
-    { href: '#problema', label: 'Perche' },
-    { href: '#metodo', label: 'Metodo' },
-    { href: '#esempi', label: 'Esempi' },
-    { href: '#trasparenza', label: 'Confini' }
+    { href: '#principi', label: 'Principi' },
+    { href: '#verifica', label: 'Verifica' },
+    { href: '#esempio', label: 'Esempio' },
+    { href: '/metodo', label: 'Metodo' }
   ]
 
   return (
@@ -53,9 +53,6 @@ export function SiteHeader() {
             </Link>
           ))}
           <ThemeToggle />
-          <Link href="/verifica" className="btn-primary px-4 py-2 text-xs">
-            Trova lo strumento
-          </Link>
         </nav>
       </div>
 
@@ -75,13 +72,6 @@ export function SiteHeader() {
             <div className="px-1 py-2">
               <ThemeToggle />
             </div>
-            <Link
-              href="/verifica"
-              className="btn-primary px-4 py-2 text-xs"
-              onClick={() => setOpen(false)}
-            >
-              Trova lo strumento
-            </Link>
           </nav>
         </div>
       )}

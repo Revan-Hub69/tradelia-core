@@ -3,172 +3,196 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 
 type FormState = {
+  difficulty: string;
   objective: string;
   instrument: string;
-  horizon: string;
-  experience: string;
-  priority: string;
-  frequency: string;
+  detail: string;
 };
 
-type ResultStatus = "coerente" | "frizione" | "non-coerente";
+type ResultStatus = "adatto" | "frizione" | "non-adatto";
+
+type Issue = {
+  message: string;
+  bucket: "Costi impliciti" | "Complessita operativa" | "Vincoli regolatori";
+  severity: "hard" | "soft";
+};
 
 type Result = {
   status: ResultStatus;
   title: string;
   summary: string;
-  issues: string[];
-  suggestions: string[];
-  checks: string[];
+  friction: string[];
+  note: string;
+  normalizzazione?: string;
 };
 
+const difficultyOptions = [
+  { value: "costi", label: "Costi poco chiari" },
+  { value: "rischio", label: "Rischio piu alto del previsto" },
+  { value: "regole", label: "Regole complesse" },
+  { value: "custodia", label: "Custodia / sicurezza" },
+  { value: "leva", label: "Leva o meccanismi che non capivo" },
+  { value: "non-so", label: "Non sono sicuro di cosa sto usando" },
+];
+
 const objectiveOptions = [
-  { value: "risparmio", label: "Risparmio a breve" },
-  { value: "investimento", label: "Investimento medio/lungo" },
-  { value: "crypto", label: "Acquisto o gestione crypto" },
-  { value: "trading", label: "Trading attivo" },
-  { value: "pagamenti", label: "Pagamenti e liquidita" },
+  { value: "investire", label: "Investire nel tempo" },
+  { value: "trading", label: "Fare trading" },
+  { value: "custodire", label: "Custodire capitale" },
+  { value: "trasferire", label: "Trasferire valore" },
 ];
 
 const instrumentOptions = [
+  { value: "broker", label: "Broker" },
+  { value: "exchange", label: "Exchange" },
+  { value: "wallet", label: "Wallet" },
   { value: "conto-deposito", label: "Conto deposito" },
-  { value: "broker-azioni", label: "Broker azioni/ETF" },
-  { value: "exchange", label: "Exchange crypto" },
-  { value: "cfd-leva", label: "Piattaforma CFD/leva" },
-  { value: "wallet-noncustodial", label: "Wallet non-custodial" },
-  { value: "conto-pagamenti", label: "Conto pagamenti / carta" },
 ];
 
-const horizonOptions = [
-  { value: "giorni", label: "Giorni" },
-  { value: "mesi", label: "Mesi" },
-  { value: "anni", label: "Anni" },
-];
-
-const experienceOptions = [
-  { value: "prima-volta", label: "Prima volta" },
-  { value: "qualche-esperienza", label: "Qualche esperienza" },
-  { value: "esperto", label: "Esperto" },
-];
-
-const priorityOptions = [
-  { value: "semplicita", label: "Semplicita" },
-  { value: "costi", label: "Costi bassi" },
-  { value: "controllo", label: "Controllo" },
-];
-
-const frequencyOptions = [
-  { value: "occasionale", label: "Occasionale" },
-  { value: "regolare", label: "Regolare" },
-  { value: "alta", label: "Alta" },
-];
-
-const suggestionsByObjective: Record<string, string[]> = {
-  risparmio: [
-    "Conto deposito o conto remunerato con vincoli chiari",
-    "Strumenti con prelievi e tempi di uscita espliciti",
+const detailOptions: Record<string, { value: string; label: string }[]> = {
+  broker: [
+    { value: "regolamentato", label: "Regolamentato" },
+    { value: "non-regolamentato", label: "Non regolamentato" },
   ],
-  investimento: [
-    "Broker regolamentato con costi trasparenti",
-    "Strumenti a basso costo e regole semplici",
+  exchange: [
+    { value: "custodial", label: "Custodial" },
+    { value: "non-custodial", label: "Non custodial" },
   ],
-  crypto: [
-    "Exchange regolamentato con custodia e supporto chiari",
-    "Wallet custodial se vuoi ridurre la complessita iniziale",
+  wallet: [
+    { value: "self-custody", label: "Self-custody" },
+    { value: "custodial", label: "Custodial" },
   ],
-  trading: [
-    "Broker con costi e spread trasparenti",
-    "Piattaforme con controllo del rischio configurabile",
-  ],
-  pagamenti: [
-    "Conto pagamenti o carta con IBAN e limiti chiari",
-    "Strumenti con tempi di accredito espliciti",
+  "conto-deposito": [
+    { value: "vincolato", label: "Vincolato" },
+    { value: "libero", label: "Libero" },
   ],
 };
 
-const defaultChecks = [
-  "Costi reali (commissioni, spread, canoni)",
-  "Tempi e limiti di prelievo",
-  "Custodia e tutela regolamentare",
-];
-
 const statusLabels: Record<ResultStatus, { title: string; summary: string }> = {
-  coerente: {
-    title: "Coerente",
-    summary: "La scelta e compatibile con il tuo obiettivo e i vincoli dichiarati.",
+  adatto: {
+    title: "Adatto al tuo obiettivo attuale",
+    summary:
+      "Per le informazioni fornite, lo strumento non presenta incompatibilita strutturali evidenti.",
   },
   frizione: {
-    title: "Coerente con frizione",
+    title: "Adatto, ma con frizioni da considerare",
     summary:
-      "La scelta puo funzionare, ma richiede attenzione su alcuni punti critici.",
+      "Lo strumento puo funzionare, ma alcune caratteristiche aumentano la probabilita di errori comuni.",
   },
-  "non-coerente": {
-    title: "Non coerente",
+  "non-adatto": {
+    title: "Non adatto al tuo obiettivo attuale",
     summary:
-      "La scelta aumenta il rischio di costi o vincoli non compatibili con il tuo obiettivo.",
+      "Questo non significa che lo strumento sia sbagliato. Significa che, per come funziona, aumenta il rischio di errori frequenti in situazioni come la tua.",
   },
 };
 
 function evaluate(form: FormState): Result {
-  const issues: string[] = [];
+  const issues: Issue[] = [];
 
-  if (form.objective === "risparmio" && !["conto-deposito", "conto-pagamenti"].includes(form.instrument)) {
-    issues.push("Per il risparmio breve servono strumenti con vincoli di uscita chiari.");
+  if (form.objective === "trading" && form.instrument === "conto-deposito") {
+    issues.push({
+      message: "Lo strumento non consente operativita intraday o leva.",
+      bucket: "Vincoli regolatori",
+      severity: "hard",
+    });
   }
 
-  if (form.objective === "investimento" && form.instrument === "cfd-leva") {
-    issues.push("La leva puo aumentare il rischio oltre l'obiettivo di investimento.");
+  if (form.objective === "trading" && form.instrument === "wallet") {
+    issues.push({
+      message: "Un wallet non e progettato per esecuzione rapida o gestione ordini.",
+      bucket: "Complessita operativa",
+      severity: "hard",
+    });
   }
 
-  if (form.objective === "trading" && ["conto-deposito", "conto-pagamenti"].includes(form.instrument)) {
-    issues.push("Per trading attivo servono strumenti con esecuzione e costi adeguati.");
+  if (form.objective === "trasferire" && form.instrument === "broker") {
+    issues.push({
+      message: "Un broker non e strutturato per trasferimenti frequenti di valore.",
+      bucket: "Vincoli regolatori",
+      severity: "hard",
+    });
   }
 
-  if (form.objective === "crypto" && form.instrument === "conto-deposito") {
-    issues.push("Un conto deposito non e progettato per gestione crypto.");
+  if (form.objective === "custodire" && form.instrument === "exchange") {
+    issues.push({
+      message: "La custodia su exchange introduce dipendenze operative e rischi di piattaforma.",
+      bucket: "Complessita operativa",
+      severity: "soft",
+    });
   }
 
-  if (form.objective === "pagamenti" && ["broker-azioni", "cfd-leva"].includes(form.instrument)) {
-    issues.push("Per pagamenti quotidiani servono strumenti con liquidita immediata.");
+  if (form.objective === "investire" && form.instrument === "exchange") {
+    issues.push({
+      message: "Costi e volatilita possono generare attrito operativo nel tempo.",
+      bucket: "Costi impliciti",
+      severity: "soft",
+    });
   }
 
-  if (form.experience === "prima-volta" && form.instrument === "wallet-noncustodial") {
-    issues.push("La non-custodia richiede procedure di sicurezza avanzate.");
+  if (form.instrument === "broker" && form.detail === "non-regolamentato") {
+    issues.push({
+      message: "Assenza di tutela regolamentare e maggiore esposizione a vincoli.",
+      bucket: "Vincoli regolatori",
+      severity: "hard",
+    });
   }
 
-  if (form.horizon === "giorni" && form.instrument === "broker-azioni") {
-    issues.push("Per orizzonti molto brevi, costi e tempi di regolamento pesano di piu.");
+  if (form.instrument === "wallet" && form.detail === "self-custody") {
+    if (["custodia", "non-so"].includes(form.difficulty)) {
+      issues.push({
+        message: "La self-custody richiede procedure di sicurezza avanzate.",
+        bucket: "Complessita operativa",
+        severity: "soft",
+      });
+    }
   }
 
-  if (form.frequency === "alta" && form.instrument === "broker-azioni") {
-    issues.push("Frequenza alta richiede costi molto trasparenti e competitivi.");
+  if (form.instrument === "exchange" && form.detail === "non-custodial") {
+    issues.push({
+      message: "La non custodia richiede gestione autonoma e controlli aggiuntivi.",
+      bucket: "Complessita operativa",
+      severity: "soft",
+    });
   }
 
-  if (form.priority === "semplicita" && form.instrument === "cfd-leva") {
-    issues.push("Le piattaforme con leva aumentano la complessita operativa.");
+  if (form.instrument === "conto-deposito" && form.detail === "vincolato") {
+    if (form.objective === "trasferire") {
+      issues.push({
+        message: "Vincoli di uscita rallentano la disponibilita del capitale.",
+        bucket: "Vincoli regolatori",
+        severity: "hard",
+      });
+    }
   }
 
-  const status: ResultStatus =
-    issues.length === 0 ? "coerente" : issues.length <= 2 ? "frizione" : "non-coerente";
+  const hasHard = issues.some((issue) => issue.severity === "hard");
+  const status: ResultStatus = hasHard
+    ? "non-adatto"
+    : issues.length > 0
+    ? "frizione"
+    : "adatto";
+
+  const friction = Array.from(new Set(issues.map((issue) => issue.bucket)));
 
   return {
     status,
     title: statusLabels[status].title,
     summary: statusLabels[status].summary,
-    issues,
-    suggestions: suggestionsByObjective[form.objective] ?? [],
-    checks: defaultChecks,
+    friction,
+    note: "Questo non garantisce risultati ne riduce il rischio di mercato.",
+    normalizzazione:
+      status === "non-adatto"
+        ? "Molte persone fanno lo stesso errore. Non e una mancanza di competenza."
+        : undefined,
   };
 }
 
 export function VerificationForm() {
   const [form, setForm] = useState<FormState>({
+    difficulty: "",
     objective: "",
     instrument: "",
-    horizon: "",
-    experience: "",
-    priority: "",
-    frequency: "",
+    detail: "",
   });
   const [submitted, setSubmitted] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "ready">("idle");
@@ -189,7 +213,12 @@ export function VerificationForm() {
   }, []);
 
   function handleChange(field: keyof FormState, value: string) {
-    setForm((prev) => ({ ...prev, [field]: value }));
+    setForm((prev) => {
+      if (field === "instrument") {
+        return { ...prev, instrument: value, detail: "" };
+      }
+      return { ...prev, [field]: value };
+    });
     if (status !== "idle") {
       setStatus("idle");
       setSubmitted(false);
@@ -208,17 +237,15 @@ export function VerificationForm() {
     }
     timerRef.current = window.setTimeout(() => {
       setStatus("ready");
-    }, 450);
+    }, 900);
   }
 
   function handleReset() {
     setForm({
+      difficulty: "",
       objective: "",
       instrument: "",
-      horizon: "",
-      experience: "",
-      priority: "",
-      frequency: "",
+      detail: "",
     });
     setSubmitted(false);
     setStatus("idle");
@@ -229,9 +256,9 @@ export function VerificationForm() {
   }
 
   const resultStyles: Record<ResultStatus, string> = {
-    coerente: "border-emerald-500/30 bg-emerald-500/10",
-    frizione: "border-amber-500/30 bg-amber-500/10",
-    "non-coerente": "border-rose-500/30 bg-rose-500/10",
+    adatto: "status-ok",
+    frizione: "status-attention",
+    "non-adatto": "status-risk",
   };
 
   return (
@@ -239,7 +266,26 @@ export function VerificationForm() {
       <form onSubmit={handleSubmit} className="surface-card rounded-2xl p-6 sm:p-8">
         <div className="grid gap-6 md:grid-cols-2">
           <label className="space-y-2 text-sm font-medium text-foreground">
-            Obiettivo principale
+            Cosa ti ha creato piu difficolta finora?
+            <span className="block text-xs font-normal text-muted-foreground">
+              Questa risposta serve solo a interpretare meglio il risultato.
+            </span>
+            <select
+              className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-2 text-sm"
+              value={form.difficulty}
+              onChange={(event) => handleChange("difficulty", event.target.value)}
+            >
+              <option value="">Seleziona</option>
+              {difficultyOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="space-y-2 text-sm font-medium text-foreground">
+            Cosa stai cercando di fare adesso?
             <select
               className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-2 text-sm"
               value={form.objective}
@@ -255,7 +301,7 @@ export function VerificationForm() {
           </label>
 
           <label className="space-y-2 text-sm font-medium text-foreground">
-            Strumento che stai valutando
+            Che tipo di strumento stai usando?
             <select
               className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-2 text-sm"
               value={form.instrument}
@@ -271,62 +317,15 @@ export function VerificationForm() {
           </label>
 
           <label className="space-y-2 text-sm font-medium text-foreground">
-            Orizzonte temporale
+            Dettaglio minimo
             <select
               className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-2 text-sm"
-              value={form.horizon}
-              onChange={(event) => handleChange("horizon", event.target.value)}
+              value={form.detail}
+              onChange={(event) => handleChange("detail", event.target.value)}
+              disabled={!form.instrument}
             >
               <option value="">Seleziona</option>
-              {horizonOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="space-y-2 text-sm font-medium text-foreground">
-            Esperienza
-            <select
-              className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-2 text-sm"
-              value={form.experience}
-              onChange={(event) => handleChange("experience", event.target.value)}
-            >
-              <option value="">Seleziona</option>
-              {experienceOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="space-y-2 text-sm font-medium text-foreground">
-            Priorita principale
-            <select
-              className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-2 text-sm"
-              value={form.priority}
-              onChange={(event) => handleChange("priority", event.target.value)}
-            >
-              <option value="">Seleziona</option>
-              {priorityOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="space-y-2 text-sm font-medium text-foreground">
-            Frequenza operativa
-            <select
-              className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-2 text-sm"
-              value={form.frequency}
-              onChange={(event) => handleChange("frequency", event.target.value)}
-            >
-              <option value="">Seleziona</option>
-              {frequencyOptions.map((option) => (
+              {(detailOptions[form.instrument] ?? []).map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
@@ -337,7 +336,7 @@ export function VerificationForm() {
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <button type="submit" className="btn-primary" disabled={!isComplete}>
-            Vedi risultato
+            Vedi esito
           </button>
           <button type="button" className="btn-secondary" onClick={handleReset}>
             Reset
@@ -352,8 +351,7 @@ export function VerificationForm() {
               Esito non disponibile
             </p>
             <p className="mt-3 text-sm text-muted-foreground">
-              Compila i campi per ottenere una verifica di compatibilita
-              informativa. Nessun dato viene salvato.
+              Compila i campi per ottenere una verifica informativa. Nessun dato viene salvato.
             </p>
           </div>
         )}
@@ -361,10 +359,10 @@ export function VerificationForm() {
         {status === "loading" && (
           <div className="surface-card rounded-2xl p-6">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-              Analisi in corso
+              Stiamo verificando incompatibilita strutturali
             </p>
             <p className="mt-3 text-sm text-muted-foreground">
-              Stiamo applicando le regole di compatibilita ai dati dichiarati.
+              Applichiamo regole esplicite ai dati dichiarati.
             </p>
             <div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-muted">
               <div className="h-full w-2/3 animate-pulse rounded-full bg-primary/40" />
@@ -376,35 +374,20 @@ export function VerificationForm() {
         )}
 
         {result && (
-          <div className={`rounded-2xl border p-6 ${resultStyles[result.status]}`}>
+          <div className={`rounded-2xl p-6 ${resultStyles[result.status]}`}>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
               Esito
             </p>
             <h2 className="mt-2 text-2xl font-semibold text-foreground">{result.title}</h2>
             <p className="mt-3 text-sm text-foreground/80">{result.summary}</p>
 
-            {result.issues.length > 0 && (
+            {result.status === "frizione" && result.friction.length > 0 && (
               <div className="mt-5 space-y-2">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                  Frizioni rilevate
+                  Variabili di frizione
                 </p>
                 <ul className="space-y-2">
-                  {result.issues.map((issue) => (
-                    <li key={issue} className="text-sm text-foreground/80">
-                      {issue}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {result.suggestions.length > 0 && (
-              <div className="mt-5 space-y-2">
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                  Tipi spesso coerenti
-                </p>
-                <ul className="space-y-2">
-                  {result.suggestions.map((item) => (
+                  {result.friction.map((item) => (
                     <li key={item} className="text-sm text-foreground/80">
                       {item}
                     </li>
@@ -412,19 +395,16 @@ export function VerificationForm() {
                 </ul>
               </div>
             )}
+
+            {result.normalizzazione && (
+              <div className="mt-5 rounded-xl border border-border/60 bg-muted/30 p-4 text-sm text-muted-foreground">
+                {result.normalizzazione}
+              </div>
+            )}
+
+            <p className="mt-4 text-xs text-muted-foreground">{result.note}</p>
           </div>
         )}
-
-        <div className="surface-card rounded-2xl p-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-            Cosa controlliamo sempre
-          </p>
-          <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-            {defaultChecks.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </div>
       </div>
     </div>
   );

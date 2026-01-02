@@ -1,172 +1,47 @@
 {
-  "hero": {
-    "title": "Scegliere lo strumento giusto e gia una decisione finanziaria.",
-    "subtitle": "Tradelia aiuta chi e all'inizio a capire quale strumento e coerente con il proprio obiettivo: risparmio, investimento, crypto, pagamenti.",
-    "bullets": [
-      "Obiettivo dichiarato",
-      "Fonti ufficiali",
-      "Confini espliciti"
-    ],
-    "disclaimer": "Nessun consiglio operativo. Nessun ranking. Nessuna promessa di performance.",
-    "primaryCta": "Trova lo strumento adatto",
-    "secondaryCta": "Come funziona"
+  "principi": {
+    "title": "Principi non negoziabili",
+    "items": [
+      "L'utente non e mai valutato. Lo strumento si.",
+      "Nessuna frase deve aumentare eccitazione o urgenza.",
+      "Ogni output riduce bias, non crea sicurezza.",
+      "Se qualcosa sembra facile, probabilmente e sbagliato.",
+      "Stop intenzionale prima di qualsiasi decisione."
+    ]
   },
-  "problema": {
-    "title": "Il problema non e la strategia. E lo strumento sbagliato.",
-    "subtitle": "Molti contenuti e comparatori mostrano opzioni valide, ma non adatte al tuo caso. Il risultato e attrito operativo prima ancora di iniziare.",
-    "cards": [
-      {
-        "title": "Scelte senza contesto",
-        "body": "Lo stesso prodotto viene proposto per obiettivi diversi: risparmio, investimento, trading, pagamenti."
-      },
-      {
-        "title": "Costi che non vedi",
-        "body": "Commissioni, spread, canoni e condizioni cambiano l'esito reale, anche se la scelta sembra corretta."
-      },
-      {
-        "title": "Vincoli operativi",
-        "body": "KYC, limiti, tempi di prelievo e assistenza incidono piu della grafica o del marketing."
-      }
+  "hero": {
+    "title": "Prima di investire o fare trading, verifica se lo strumento che stai usando e adatto a cio che vuoi fare.",
+    "subtitleLines": [
+      "Molti errori non dipendono dalle scelte,",
+      "ma dallo strumento sbagliato. Tradelia ti aiuta a capirlo prima."
     ],
-    "noteTitle": "Non coerente non significa sbagliato.",
-    "noteBody": "Significa che, con i tuoi obiettivi e vincoli, quello strumento aumenta il rischio di costi, blocchi o scelte inefficaci."
+    "cta": "Inizia la verifica",
+    "microcopy": "60 secondi. Nessuna registrazione. Nessun consiglio operativo."
+  },
+  "accoglienza": "Se hai gia sbagliato in passato, sei esattamente nel posto giusto.",
+  "preview": {
+    "title": "Cosa ti chiederemo",
+    "subtitle": "Serve solo a evitare errori comuni. Non serve esperienza.",
+    "items": [
+      "Cosa ti ha creato piu problemi finora",
+      "Cosa stai cercando di fare",
+      "Che tipo di strumento stai usando"
+    ]
+  },
+  "esempio": {
+    "title": "Esempio",
+    "objectiveLabel": "Obiettivo",
+    "objectiveValue": "Trading con leva",
+    "instrumentLabel": "Strumento",
+    "instrumentValue": "Conto deposito",
+    "outcomeLabel": "Esito",
+    "outcomeValue": "Non adatto",
+    "reasonLabel": "Motivo",
+    "reasonValue": "Lo strumento non consente leva ne operativita intraday. Questo aumenta il rischio di errore strutturale."
   },
   "metodo": {
-    "title": "Metodo cognitivo, non persuasivo.",
-    "subtitle": "L'utente dichiara l'intento. Tradelia verifica con regole esplicite e fonti ufficiali.",
-    "steps": [
-      {
-        "label": "01",
-        "title": "Intento chiaro",
-        "body": "Obiettivo, orizzonte, frequenza, budget, paese, preferenze di custodia e assistenza."
-      },
-      {
-        "label": "02",
-        "title": "Regole verificabili",
-        "body": "Documenti ufficiali, tariffe, licenze, limiti, condizioni operative, reclami pubblici."
-      },
-      {
-        "label": "03",
-        "title": "Esito motivato",
-        "body": "Coerente, frizione o non coerente, con spiegazione e alternative possibili."
-      }
-    ]
-  },
-  "verifica": {
-    "title": "Una guida alla scelta, non una classifica.",
-    "subtitle": "Incrociamo il tuo intento con caratteristiche operative: tariffe, custodia, limiti, regolazione, affidabilita.",
-    "steps": [
-      {
-        "number": "01",
-        "title": "Intento",
-        "body": "Raccogliamo obiettivo, vincoli, asset, paese, frequenza e soglie di costo."
-      },
-      {
-        "number": "02",
-        "title": "Verifica",
-        "body": "Applichiamo regole su fonti ufficiali: tariffe, licenze, KYC, prelievi, supporto."
-      },
-      {
-        "number": "03",
-        "title": "Risposta motivata",
-        "body": "Consegniamo compatibilita motivata, rischi residui e, se serve, alternative."
-      }
-    ],
-    "resultsTitle": "Possibili esiti",
-    "results": [
-      {
-        "label": "COERENTE",
-        "description": "Compatibile con i vincoli dichiarati.",
-        "tone": "coerente"
-      },
-      {
-        "label": "FRIZIONE",
-        "description": "Compatibile solo accettando trade-off espliciti (costi, tempi, limiti).",
-        "tone": "frizione"
-      },
-      {
-        "label": "NON COERENTE",
-        "description": "Aumenta il rischio di errore sistemico dato il perimetro dichiarato.",
-        "tone": "non-coerente"
-      }
-    ],
-    "cta": "Scopri cosa e coerente per te"
-  },
-  "esempi": {
-    "title": "Esempi di incompatibilita operative.",
-    "subtitle": "Tre scenari tipici per chi inizia, dove lo strumento conta piu della strategia.",
-    "scenarios": [
-      {
-        "title": "Risparmio di emergenza",
-        "because": "Vincoli di uscita o penali rendono il capitale meno disponibile.",
-        "checks": [
-          "Vincoli di prelievo e svincolo",
-          "Tempi e costi di uscita"
-        ]
-      },
-      {
-        "title": "Primo acquisto crypto",
-        "because": "Custodia e recupero contano piu del prezzo.",
-        "checks": [
-          "Tipo di custodia e responsabilita",
-          "Procedure di recupero e limiti"
-        ]
-      },
-      {
-        "title": "Investimento periodico",
-        "because": "Costi ricorrenti e soglie minime cambiano il rendimento reale.",
-        "checks": [
-          "Commissioni ricorrenti e canoni",
-          "Piani di accumulo e soglie di accesso"
-        ]
-      }
-    ]
-  },
-  "controlli": {
-    "title": "Controlli che facciamo noi.",
-    "subtitle": "Checklist interna su fonti ufficiali e dati operativi. Tu rispondi solo all'essenziale.",
-    "items": [
-      "Obiettivo e orizzonte",
-      "Costi totali (commissioni, spread, canoni, tassi)",
-      "Vincoli operativi (KYC, prelievi, limiti, orari)",
-      "Regolazione e custodia (licenze, segregazione, tutela)",
-      "Affidabilita (supporto, reclami, downtime pubblici)",
-      "Documenti ufficiali (ToS, policy, tariffe, contratti)"
-    ],
-    "footnote": "Le fonti vengono mostrate e linkate nel report di verifica."
-  },
-  "trasparenza": {
-    "title": "Trasparenza e confini.",
-    "subtitle": "Decisione informativa, non commerciale.",
-    "do": [
-      "Verifichiamo compatibilita tra obiettivo e strumento",
-      "Quantifichiamo costi operativi reali",
-      "Evidenziamo rischi sistemici e trade-off",
-      "Forniamo fonti ufficiali verificabili"
-    ],
-    "dont": [
-      "Non facciamo ranking di piattaforme",
-      "Non suggeriamo asset specifici",
-      "Non promettiamo performance",
-      "Non sostituiamo consulenza regolamentata"
-    ],
-    "metodologiaTitle": "Metodologia pubblica",
-    "metodologia": [
-      "Fonti ufficiali (licenze, ToS, policy operative)",
-      "Dati operativi pubblici (tariffe, spread, prelievi)",
-      "Segnalazioni pubbliche (multe, richiami, downtime dichiarati)",
-      "AI usata per estrazione e sintesi; la decisione segue regole trasparenti",
-      "Affiliazioni dichiarate e separate dalla valutazione di compatibilita"
-    ],
-    "regola": "Regola d'oro: se aumenta l'eccitazione e sbagliata; se aumenta la chiarezza e giusta."
-  },
-  "cta": {
-    "title": "Vuoi capire cosa e piu adatto al tuo obiettivo?",
-    "subtitle": "Dichiara obiettivo e vincoli. Tradelia restituisce compatibilita motivata e le opzioni piu coerenti.",
-    "primary": "Trova lo strumento adatto",
-    "secondary": "Torna su",
-    "version": "Metodo 2026.01",
-    "legal": "Materiale educativo e informativo. Non e consulenza finanziaria regolamentata."
+    "title": "Metodo pubblico",
+    "body": "Tradelia espone regole, fonti e limiti in un documento pubblico. La verifica e deterministica e ripetibile."
   },
   "footer": {
     "metodo": "Metodo pubblico",

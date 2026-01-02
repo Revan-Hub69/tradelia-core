@@ -10,18 +10,18 @@ export default function VerifyPage() {
               Verifica guidata
             </p>
             <h1 className="text-3xl font-semibold text-foreground sm:text-4xl">
-              Scelta guidata per il tuo obiettivo
+              Verifica di compatibilita
             </h1>
             <p className="max-w-2xl text-base text-muted-foreground">
-              Questo check non suggerisce broker specifici. Verifica la coerenza tra
-              il tuo obiettivo e il tipo di strumento che stai valutando.
+              L'utente non e mai valutato. Lo strumento si. Questa verifica riduce
+              errori strutturali prima di qualsiasi decisione.
             </p>
           </div>
 
           <VerificationForm />
 
           <div className="surface-card rounded-2xl p-6 text-sm text-muted-foreground">
-            Materiale educativo e informativo. Non e consulenza finanziaria regolamentata.
+            Materiale educativo e informativo. Nessun consiglio operativo. Non e consulenza finanziaria regolamentata.
           </div>
         </div>
       </main>
