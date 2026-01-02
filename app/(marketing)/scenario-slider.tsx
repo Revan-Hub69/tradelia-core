@@ -11,10 +11,10 @@ type Scenario = {
 };
 
 type ScenarioSliderProps = {
-  title: string;
-  ctaSecondary: string;
-  ctaSecondaryHref: string;
   items: Scenario[];
+  title?: string;
+  ctaSecondary?: string;
+  ctaSecondaryHref?: string;
 };
 
 function clampIndex(index: number, length: number) {
@@ -90,17 +90,21 @@ export function ScenarioSlider({ title, ctaSecondary, ctaSecondaryHref, items }:
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div className="space-y-2">
-          <h2 className="text-2xl font-semibold">{title}</h2>
-          <p className="text-xs text-muted-foreground" aria-live="polite">
-            Scenario {clampIndex(index, length) + 1} di {length}
-          </p>
+      {title && (
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div className="space-y-2">
+            <h2 className="text-2xl font-semibold">{title}</h2>
+            <p className="text-xs text-muted-foreground" aria-live="polite">
+              Scenario {clampIndex(index, length) + 1} di {length}
+            </p>
+          </div>
+          {ctaSecondary && ctaSecondaryHref && (
+            <a href={ctaSecondaryHref} className="link-underline text-sm font-semibold">
+              {ctaSecondary}
+            </a>
+          )}
         </div>
-        <a href={ctaSecondaryHref} className="link-underline text-sm font-semibold">
-          {ctaSecondary}
-        </a>
-      </div>
+      )}
 
       <div
         ref={containerRef}
@@ -111,6 +115,11 @@ export function ScenarioSlider({ title, ctaSecondary, ctaSecondaryHref, items }:
         aria-roledescription="carousel"
         aria-label="Scenari. Usa frecce sinistra e destra."
       >
+        {!title && (
+          <p className="text-xs text-muted-foreground" aria-live="polite">
+            Scenario {clampIndex(index, length) + 1} di {length}
+          </p>
+        )}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Situazione</p>

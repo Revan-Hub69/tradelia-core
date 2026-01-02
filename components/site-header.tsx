@@ -9,11 +9,9 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false)
 
   const navigation = [
-    { href: '#metodo', label: 'Metodo' },
-    { href: '#verifichiamo', label: 'Cosa verifichiamo' },
-    { href: '#esempi', label: 'Esempi' },
-    { href: '#limiti', label: 'Limiti' },
-    { href: '#fonti', label: 'Fonti' }
+    { href: '/metodo', label: 'Metodo' },
+    { href: '/#esempi', label: 'Esempi' },
+    { href: '/#fonti', label: 'Trasparenza' }
   ]
 
   return (
