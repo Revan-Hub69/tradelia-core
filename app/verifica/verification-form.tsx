@@ -67,10 +67,10 @@ type ResultGroup = {
 };
 
 const objectiveOptions = [
-  { value: "investire", label: "Iniziare a investire" },
+  { value: "passivo", label: "Investimenti passivi" },
+  { value: "cripto", label: "Acquistare cripto" },
   { value: "trading", label: "Fare trading" },
-  { value: "sicurezza", label: "Tenere i soldi al sicuro" },
-  { value: "capire", label: "Capire da dove partire" },
+  { value: "custodia", label: "Custodia e sicurezza" },
 ];
 
 const avoidOptions = [
@@ -204,6 +204,25 @@ function classifyPlan({
     tone = "stop";
   }
 
+  if (platform.type === "derivatives") {
+    const isExperienced = level === "esperienza";
+    if (!(objective === "trading" && isExperienced)) {
+      reasons.push("Strumento derivato: aumenta complessita e gestione attiva rispetto a obiettivi beginner-first.");
+      tone = "stop";
+    }
+  }
+
+  if (objective === "cripto") {
+    if (platform.type === "account") {
+      reasons.push("Non consente acquisto cripto: e uno strumento di parcheggio liquidita.");
+      tone = "stop";
+    }
+    if (platform.type === "wallet" && !plan.supportsTrading) {
+      reasons.push("Un wallet gestisce custodia: per acquistare servono anche on/off-ramp o un intermediario.");
+      if (tone !== "stop") tone = "warn";
+    }
+  }
+
   if (objective !== "trading" && plan.supportsLeverage) {
     reasons.push("Include leva: aumenta complessita e gestione attiva anche se il tuo obiettivo non e trading.");
     if (tone !== "stop") tone = "warn";
@@ -220,7 +239,7 @@ function classifyPlan({
     }
   }
 
-  if (objective === "sicurezza") {
+  if (objective === "custodia") {
     if (plan.supportsTrading) {
       reasons.push("E uno strumento orientato all'operativita: non nasce per sola custodia.");
       if (tone !== "stop") tone = "warn";
@@ -246,13 +265,13 @@ function classifyPlan({
     if (tone !== "stop") tone = "warn";
   }
 
-  if (objective === "capire" && isBeginner && plan.technicalLevel === "high") {
+  if ((objective === "cripto" || objective === "custodia") && isBeginner && plan.technicalLevel === "high") {
     reasons.push("Livello tecnico alto: puo introdurre frizione prima di aver chiarito l'obiettivo.");
     if (tone !== "stop") tone = "warn";
   }
 
-  if (objective === "investire" && plan.supportsLeverage) {
-    reasons.push("Per iniziare a investire, la leva introduce complessita non necessaria.");
+  if (objective === "passivo" && plan.supportsLeverage) {
+    reasons.push("Per investimenti passivi, la leva introduce complessita non necessaria.");
     tone = "stop";
   }
 
@@ -394,7 +413,7 @@ export function VerificationForm({ initialObjective, catalog }: VerificationForm
 
           {step === "objective" && (
             <StepSingleSelect
-              title="Cosa stai cercando di fare?"
+              title="Cosa vuoi fare adesso?"
               options={objectiveOptions}
               value={objective}
               onSelect={handleObjective}

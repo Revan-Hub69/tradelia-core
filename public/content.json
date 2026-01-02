@@ -5,12 +5,12 @@
       "Tradelia confronta esigenze dichiarate con dati contrattuali e operativi: costi per piano, vincoli, livello tecnico richiesto, reclami e assistenza.",
       "Non suggeriamo asset o timing. Riduciamo errori strutturali prima della scelta."
     ],
-    "question": "Cosa stai cercando di fare?",
+    "question": "Cosa vuoi fare adesso?",
     "options": [
-      { "id": "investire", "label": "Iniziare a investire", "subtext": "poco stress, regole chiare" },
-      { "id": "trading", "label": "Fare trading", "subtext": "operazioni piu frequenti, piu rischi" },
-      { "id": "sicurezza", "label": "Tenere i soldi al sicuro", "subtext": "custodia, protezione, accesso" },
-      { "id": "capire", "label": "Capire da dove partire", "subtext": "non so ancora cosa scegliere" }
+      { "id": "passivo", "label": "Investimenti passivi", "subtext": "poco tempo, regole chiare" },
+      { "id": "cripto", "label": "Acquistare cripto", "subtext": "prima comprare, poi capire bene" },
+      { "id": "trading", "label": "Fare trading", "subtext": "piu frequente, piu rischi" },
+      { "id": "custodia", "label": "Custodia e sicurezza", "subtext": "wallet, chiavi, protezione" }
     ],
     "cta": "Avvia il controllo",
     "microcopy": "1 minuto. Nessuna registrazione. Se mancano dati critici (es. spread/slippage), lo dichiariamo e non forziamo un esito."
@@ -40,16 +40,64 @@
     ],
     "microcopy": "Non analizziamo mercati, non suggeriamo asset, non ottimizziamo performance. Eventuali affiliazioni (se presenti) non influenzano il metodo."
   },
-  "esempio": {
-    "title": "Un errore comune (tap per vedere perche)",
-    "objectiveLabel": "Obiettivo",
-    "objectiveValue": "fare trading",
-    "choiceLabel": "Scelta tipica",
-    "choiceValue": "conto deposito vincolato",
-    "resultLabel": "Esito",
-    "resultValue": "Non adatto",
-    "accordionTitle": "Perche?",
-    "accordionBody": "Per trading servono esecuzione, gestione rischio intraday e costi operativi coerenti. Un conto deposito e progettato per parcheggio liquidita: vincoli di uscita e tempi non sono compatibili. Non e sbagliato: e un altro scopo."
+  "scenari": {
+    "title": "Situazioni reali che Tradelia aiuta a evitare (prima che sia tardi)",
+    "ctaSecondary": "Vedi cosa controlliamo",
+    "items": [
+      {
+        "id": "auto-crypto",
+        "situation": "Sto usando un servizio di trading automatico crypto.",
+        "hiddenError": "Regole di custodia e prelievo opache o non verificabili.",
+        "clarifies": "Documentazione, custodia, regole di prelievo e segnali di rischio verificabili.",
+        "doesNotMean": "Non significa che sia una truffa. Significa che alcuni vincoli aumentano il rischio di errore o blocco operativo."
+      },
+      {
+        "id": "implicit-costs",
+        "situation": "Opero su FX/commodities e mi sembrava \"senza fee\".",
+        "hiddenError": "Costi impliciti (spread/slippage) e funding/overnight che diventano dominanti.",
+        "clarifies": "Dove si paga davvero e quando i costi diventano rilevanti per il tuo profilo.",
+        "doesNotMean": "Non significa che non si possa usare. Significa che serve una lettura corretta delle condizioni e dei costi operativi."
+      },
+      {
+        "id": "exchange-wallet",
+        "situation": "Ho comprato cripto e le lascio dove capita.",
+        "hiddenError": "Custodia, responsabilita e recupero non esplicitati prima.",
+        "clarifies": "Custodial vs self-custody, rischi tipici per beginner e requisiti minimi.",
+        "doesNotMean": "Non significa che una scelta sia \"giusta\" sempre. Significa che cambia chi porta il rischio operativo."
+      },
+      {
+        "id": "passive-start",
+        "situation": "Voglio investimenti passivi e non so da dove partire.",
+        "hiddenError": "Strumento non allineato a orizzonte e tutele, con complessita non necessaria.",
+        "clarifies": "Piani compatibili per iniziare e frizioni tipiche da verificare prima.",
+        "doesNotMean": "Non significa che il mercato sia meno rischioso. Significa che riduci errori strutturali di strumento."
+      },
+      {
+        "id": "confirm-bias",
+        "situation": "Opero da anni: voglio verificare se sto gia bene.",
+        "hiddenError": "Bias di conferma e parametri non esplicitati (vincoli, costi, custodia, supporto).",
+        "clarifies": "Perche un piano risulta compatibile o in frizione, con limiti dichiarati.",
+        "doesNotMean": "Non significa approvazione. Significa che, sui dati disponibili, non emergono incompatibilita evidenti."
+      }
+    ]
+  },
+  "storie": {
+    "title": "Storie (anonime) — casi tipici",
+    "microcopy": "Esempi di verifica. Non sono garanzie, non sono promesse.",
+    "items": [
+      {
+        "title": "Esporsi troppo su un servizio opaco",
+        "body": "Stavo per aumentare molto un versamento su una piattaforma di \"trading automatico\". Prima ho fatto il controllo: documentazione e regole di prelievo erano incoerenti. Ho deciso di fermarmi e verificare meglio."
+      },
+      {
+        "title": "Capire i costi prima che diventino dominanti",
+        "body": "Pensavo di pagare poco perche vedevo \"zero fee\". Il controllo ha reso visibili spread e condizioni che, con il mio modo di operare, avrebbero pesato molto nel tempo. Ho cambiato impostazione prima di agire."
+      },
+      {
+        "title": "Ridurre frizioni su custodia e recupero",
+        "body": "Avevo cripto su piu servizi senza un criterio. Tradelia mi ha chiarito differenze di custodia e responsabilita, e cosa verificare prima (backup, accesso, procedure)."
+      }
+    ]
   },
   "comeFunziona": {
     "title": "Come funziona il controllo",
@@ -94,7 +142,7 @@
   "ctaFinale": {
     "title": "Vuoi una verifica di compatibilita prima di scegliere?",
     "cta": "Inizia il controllo",
-    "microcopy": "1 minuto · nessuna registrazione · esito con motivi e limiti"
+    "microcopy": "1 minuto. Nessuna registrazione. Esito con motivi e limiti."
   },
   "footer": {
     "metodo": "Metodo",

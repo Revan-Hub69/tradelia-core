@@ -4,6 +4,7 @@ import Link from "next/link";
 import { HeroInteractive } from "./hero-interactive";
 import { VerifyCategories } from "./verify-categories";
 import { RevealSection } from "./reveal-section";
+import { ScenarioSlider } from "./scenario-slider";
 
 type Content = {
   hero: {
@@ -29,16 +30,15 @@ type Content = {
     bullets: string[];
     microcopy: string;
   };
-  esempio: {
+  scenari: {
     title: string;
-    objectiveLabel: string;
-    objectiveValue: string;
-    choiceLabel: string;
-    choiceValue: string;
-    resultLabel: string;
-    resultValue: string;
-    accordionTitle: string;
-    accordionBody: string;
+    ctaSecondary: string;
+    items: { id: string; situation: string; hiddenError: string; clarifies: string; doesNotMean: string }[];
+  };
+  storie: {
+    title: string;
+    microcopy: string;
+    items: { title: string; body: string }[];
   };
   comeFunziona: {
     title: string;
@@ -152,35 +152,30 @@ export default function HomePage() {
         </RevealSection>
 
         <RevealSection id="esempi" className="border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-          <div className="mx-auto max-w-5xl space-y-6">
-            <h2 className="text-2xl font-semibold">{content.esempio.title}</h2>
-            <div className="surface-card rounded-2xl p-6">
-              <div className="grid gap-4 sm:grid-cols-3">
-                <div className="space-y-1">
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                    {content.esempio.objectiveLabel}
-                  </p>
-                  <p className="text-sm text-foreground">{content.esempio.objectiveValue}</p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                    {content.esempio.choiceLabel}
-                  </p>
-                  <p className="text-sm text-foreground">{content.esempio.choiceValue}</p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                    {content.esempio.resultLabel}
-                  </p>
-                  <span className="status-risk inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em]">
-                    {content.esempio.resultValue}
-                  </span>
-                </div>
+          <div className="mx-auto max-w-5xl space-y-8">
+            <ScenarioSlider
+              title={content.scenari.title}
+              ctaSecondary={content.scenari.ctaSecondary}
+              ctaSecondaryHref="#verifichiamo"
+              items={content.scenari.items}
+            />
+
+            <div className="surface-divider h-px w-full" aria-hidden />
+
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <h3 className="text-xl font-semibold">{content.storie.title}</h3>
+                <p className="text-sm text-muted-foreground">{content.storie.microcopy}</p>
               </div>
-              <details className="accordion mt-5">
-                <summary>{content.esempio.accordionTitle}</summary>
-                <p className="mt-3 text-sm text-muted-foreground">{content.esempio.accordionBody}</p>
-              </details>
+              <div className="grid gap-3 sm:grid-cols-3">
+                {content.storie.items.map((story) => (
+                  <div key={story.title} className="surface-card rounded-2xl p-5">
+                    <p className="text-sm font-semibold text-foreground">{story.title}</p>
+                    <p className="mt-3 text-sm text-muted-foreground">{story.body}</p>
+                    <p className="mt-4 text-xs text-muted-foreground">Esempio informativo. Non e una garanzia.</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </RevealSection>
