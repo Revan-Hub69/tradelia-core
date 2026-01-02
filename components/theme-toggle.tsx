@@ -43,7 +43,7 @@ export function ThemeToggle() {
   if (!mounted) {
     return (
       <span className="rounded-full border border-border/70 px-3 py-1 text-xs text-muted-foreground">
-        Tema
+        Chiaro
       </span>
     );
   }
@@ -53,9 +53,10 @@ export function ThemeToggle() {
       type="button"
       onClick={handleToggle}
       aria-pressed={theme === "dark"}
+      aria-label="Cambia tema"
       className="rounded-full border border-border/70 px-3 py-1 text-xs text-muted-foreground transition hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
-      Tema: {theme === "dark" ? "Scuro" : "Chiaro"}
+      {theme === "dark" ? "Scuro" : "Chiaro"}
     </button>
   );
 }
