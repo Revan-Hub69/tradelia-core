@@ -6,23 +6,64 @@ import Link from "next/link";
 type Tone = "ok" | "warn" | "stop";
 type Step = "objective" | "avoid" | "level" | "loading" | "result";
 
+type PlatformPlan = {
+  id: string;
+  name: string;
+  technicalLevel: "low" | "medium" | "high";
+  custodyModel: "custodial" | "self";
+  supportsTrading: boolean;
+  supportsLeverage: boolean;
+  feeTransparency: "high" | "medium" | "low";
+  costs: {
+    commissions: string;
+    spread: string;
+    funding: string;
+  };
+  support: {
+    channels: string[];
+    knownIssues: string[];
+  };
+  sources: { label: string; url: string }[];
+};
+
+type Platform = {
+  id: string;
+  name: string;
+  type: "broker" | "exchange" | "wallet" | "account" | "derivatives";
+  regions: string[];
+  plans: PlatformPlan[];
+};
+
+type PlatformCatalog = {
+  version: string;
+  asOf: string;
+  note: string;
+  platforms: Platform[];
+};
+
+type VerificationFormProps = {
+  initialObjective?: string;
+  catalog: PlatformCatalog;
+};
+
 type ResultItem = {
   id: string;
-  label: string;
+  platformName: string;
+  platformType: Platform["type"];
+  regions: string[];
+  planName: string;
   tone: Tone;
+  reasons: string[];
   why: string;
   commonMistake: string;
   doesNotMean: string;
+  plan: PlatformPlan;
 };
 
 type ResultGroup = {
   title: string;
   tone: Tone;
   items: ResultItem[];
-};
-
-type VerificationFormProps = {
-  initialObjective?: string;
 };
 
 const objectiveOptions = [
@@ -34,7 +75,7 @@ const objectiveOptions = [
 
 const avoidOptions = [
   { value: "rischio", label: "Perdere soldi senza capirne il motivo" },
-  { value: "costi", label: "Costi nascosti" },
+  { value: "costi", label: "Costi poco chiari / costi nascosti" },
   { value: "regole", label: "Regole complicate" },
   { value: "custodia", label: "Problemi di custodia / sicurezza" },
   { value: "stress", label: "Stress e decisioni impulsive" },
@@ -47,129 +88,14 @@ const levelOptions = [
   { value: "esperienza", label: "Ho gia esperienza ma voglio ridurre errori" },
 ];
 
-const detailsByCategory: Record<
-  string,
-  { why: string; commonMistake: string; doesNotMean: string }
-> = {
-  broker: {
-    why: "Regole piu chiare e tutele piu visibili rispetto a strumenti non regolamentati.",
-    commonMistake: "Confondere trasparenza con assenza di rischio.",
-    doesNotMean: "Non significa che sia adatto a qualsiasi obiettivo.",
-  },
-  exchange: {
-    why: "Operativita crypto con custodia variabile e livelli di complessita diversi.",
-    commonMistake: "Sottovalutare costi, limiti o procedure operative.",
-    doesNotMean: "Non significa che sia l'unica strada per usare crypto.",
-  },
-  "wallet-self": {
-    why: "Controllo totale, ma responsabilita totale su sicurezza e accesso.",
-    commonMistake: "Pensare che la self-custody elimini ogni rischio.",
-    doesNotMean: "Non significa che sia sbagliata per sempre.",
-  },
-  "wallet-custodial": {
-    why: "Semplicita operativa, ma dipendenza dal fornitore per accesso e tutela.",
-    commonMistake: "Scambiare comodita per sicurezza assoluta.",
-    doesNotMean: "Non significa che sia priva di vincoli.",
-  },
-  leva: {
-    why: "Amplifica errori e richiede disciplina operativa e gestione del rischio.",
-    commonMistake: "Confondere leva con fare piu in fretta.",
-    doesNotMean: "Non significa che sia sbagliata in assoluto.",
-  },
-  conto: {
-    why: "Stabilita e vincoli strutturali, non operativita di trading.",
-    commonMistake: "Usare strumenti di parcheggio per obiettivi operativi.",
-    doesNotMean: "Non significa che sia inutile per altri scopi.",
-  },
-};
-
-function computeTone(
-  categoryId: string,
-  objective: string,
-  avoid: string,
-  level: string
-): Tone {
-  const isBeginner = level === "mai" || level === "poco";
-  const isExperienced = level === "esperienza";
-
-  if (categoryId === "leva") {
-    if (objective !== "trading") return "stop";
-    if (isBeginner || avoid === "stress") return "stop";
-    if (avoid === "rischio") return "stop";
-    return "warn";
-  }
-
-  if (categoryId === "broker") {
-    if (objective === "sicurezza") return "warn";
-    return "ok";
-  }
-
-  if (categoryId === "conto") {
-    if (objective === "trading") return "stop";
-    if (objective === "sicurezza" || objective === "capire") return "ok";
-    return "warn";
-  }
-
-  if (categoryId === "exchange") {
-    if (isBeginner) return "warn";
-    if (avoid === "regole" || avoid === "costi") return "warn";
-    return isExperienced ? "ok" : "warn";
-  }
-
-  if (categoryId === "wallet-self") {
-    if (isBeginner) return "warn";
-    if (avoid === "custodia") return "warn";
-    return "warn";
-  }
-
-  if (categoryId === "wallet-custodial") {
-    if (avoid === "custodia") return "warn";
-    if (objective === "sicurezza" && isBeginner) return "ok";
-    if (objective === "capire" && isBeginner) return "ok";
-    return "warn";
-  }
-
-  return "warn";
-}
-
-function buildResults(objective: string, avoid: string, level: string): ResultGroup[] {
-  const categories = [
-    { id: "broker", label: "Broker regolamentato" },
-    { id: "conto", label: "Conti / parcheggio liquidita" },
-    { id: "exchange", label: "Exchange" },
-    { id: "wallet-custodial", label: "Wallet custodial" },
-    { id: "wallet-self", label: "Wallet self-custody" },
-    { id: "leva", label: "Trading con leva" },
-  ];
-
-  const items = categories.map((category) => {
-    const tone = computeTone(category.id, objective, avoid, level);
-    const details = detailsByCategory[category.id];
-    return {
-      id: category.id,
-      label: category.label,
-      tone,
-      why: details.why,
-      commonMistake: details.commonMistake,
-      doesNotMean: details.doesNotMean,
-    };
-  });
-
-  const groups: ResultGroup[] = [
-    { title: "Piu adatto per iniziare", tone: "ok", items: items.filter((item) => item.tone === "ok") },
-    { title: "Adatto, ma con frizione", tone: "warn", items: items.filter((item) => item.tone === "warn") },
-    { title: "Non adatto adesso", tone: "stop", items: items.filter((item) => item.tone === "stop") },
-  ];
-
-  return groups.filter((group) => group.items.length > 0);
-}
-
 function ToneBadge({ tone }: { tone: Tone }) {
   const label = tone === "ok" ? "ADATTO" : tone === "warn" ? "FRIZIONE" : "NON ADATTO";
   const className = tone === "ok" ? "status-ok" : tone === "warn" ? "status-attention" : "status-risk";
 
   return (
-    <span className={`${className} inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em]`}>
+    <span
+      className={`${className} inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em]`}
+    >
       {label}
     </span>
   );
@@ -238,7 +164,168 @@ function ProgressLine({ step, steps }: { step: number; steps: number }) {
   );
 }
 
-export function VerificationForm({ initialObjective }: VerificationFormProps) {
+function platformTypeLabel(type: Platform["type"]) {
+  if (type === "broker") return "Broker";
+  if (type === "exchange") return "Exchange";
+  if (type === "wallet") return "Wallet";
+  if (type === "account") return "Conto";
+  return "Derivati";
+}
+
+function technicalLabel(level: PlatformPlan["technicalLevel"]) {
+  if (level === "low") return "basso";
+  if (level === "medium") return "medio";
+  return "alto";
+}
+
+function custodyLabel(model: PlatformPlan["custodyModel"]) {
+  return model === "self" ? "self-custody" : "custodial";
+}
+
+function classifyPlan({
+  platform,
+  plan,
+  objective,
+  avoid,
+  level,
+}: {
+  platform: Platform;
+  plan: PlatformPlan;
+  objective: string;
+  avoid: string;
+  level: string;
+}): Pick<ResultItem, "tone" | "reasons" | "why" | "commonMistake" | "doesNotMean"> {
+  const isBeginner = level === "mai" || level === "poco";
+  const reasons: string[] = [];
+  let tone: Tone = "ok";
+
+  if (objective === "trading" && !plan.supportsTrading) {
+    reasons.push("Non supporta l'operativita necessaria per fare trading.");
+    tone = "stop";
+  }
+
+  if (objective !== "trading" && plan.supportsLeverage) {
+    reasons.push("Include leva: aumenta complessita e gestione attiva anche se il tuo obiettivo non e trading.");
+    if (tone !== "stop") tone = "warn";
+  }
+
+  if (plan.supportsLeverage) {
+    if (isBeginner) {
+      reasons.push("La leva amplifica errori e richiede esperienza operativa.");
+      tone = "stop";
+    }
+    if (avoid === "stress" || avoid === "rischio") {
+      reasons.push("La leva e incompatibile con cio che vuoi evitare in questo momento.");
+      tone = "stop";
+    }
+  }
+
+  if (objective === "sicurezza") {
+    if (plan.supportsTrading) {
+      reasons.push("E uno strumento orientato all'operativita: non nasce per sola custodia.");
+      if (tone !== "stop") tone = "warn";
+    }
+    if (plan.custodyModel === "self" && isBeginner) {
+      reasons.push("La self-custody richiede responsabilita tecnica e procedure di sicurezza.");
+      if (tone !== "stop") tone = "warn";
+    }
+  }
+
+  if (avoid === "costi" && (plan.feeTransparency === "low" || plan.feeTransparency === "medium")) {
+    reasons.push("Trasparenza costi non massima: richiede verifica puntuale di tariffe e condizioni.");
+    if (tone !== "stop") tone = "warn";
+  }
+
+  if (avoid === "regole" && plan.technicalLevel !== "low") {
+    reasons.push("Richiede un livello tecnico non basso: aumenta rischio di errore procedurale.");
+    if (tone !== "stop") tone = "warn";
+  }
+
+  if (avoid === "custodia" && plan.custodyModel === "self") {
+    reasons.push("La self-custody sposta responsabilita e rischio operativo sull'utente.");
+    if (tone !== "stop") tone = "warn";
+  }
+
+  if (objective === "capire" && isBeginner && plan.technicalLevel === "high") {
+    reasons.push("Livello tecnico alto: puo introdurre frizione prima di aver chiarito l'obiettivo.");
+    if (tone !== "stop") tone = "warn";
+  }
+
+  if (objective === "investire" && plan.supportsLeverage) {
+    reasons.push("Per iniziare a investire, la leva introduce complessita non necessaria.");
+    tone = "stop";
+  }
+
+  const whyParts: string[] = [];
+  whyParts.push(`${platformTypeLabel(platform.type)}: ${platform.name} · Piano: ${plan.name}.`);
+  whyParts.push(
+    `Livello tecnico ${technicalLabel(plan.technicalLevel)}, custodia ${custodyLabel(plan.custodyModel)}.`
+  );
+  if (plan.supportsTrading) whyParts.push("Supporta operativita di trading.");
+  if (plan.supportsLeverage) whyParts.push("Include leva.");
+  if (!plan.supportsTrading) whyParts.push("Non e orientato al trading.");
+
+  let commonMistake = "Sottovalutare i vincoli operativi leggendo solo il nome del prodotto.";
+  if (plan.supportsLeverage) {
+    commonMistake = "Confondere la leva con una scorciatoia: aumenta stress, errori e gestione attiva.";
+  } else if (plan.custodyModel === "self") {
+    commonMistake = "Pensare che piu controllo significhi automaticamente piu sicurezza, senza procedure.";
+  } else if (avoid === "costi") {
+    commonMistake = "Guardare solo la commissione e ignorare costi operativi e condizioni contrattuali.";
+  } else if (avoid === "regole") {
+    commonMistake = "Entrare su uno strumento complesso senza un processo minimo (checklist).";
+  }
+
+  const doesNotMean =
+    tone === "stop"
+      ? "Non significa che la piattaforma sia 'sbagliata'. Significa che, per il tuo profilo adesso, aumenta il rischio di errori comuni."
+      : "Non significa che tu debba fare una scelta. Significa che questo piano introduce o riduce frizioni coerenti con il tuo profilo.";
+
+  return {
+    tone,
+    reasons,
+    why: whyParts.join(" "),
+    commonMistake,
+    doesNotMean,
+  };
+}
+
+function buildResults(catalog: PlatformCatalog, objective: string, avoid: string, level: string): ResultGroup[] {
+  const allItems: ResultItem[] = catalog.platforms.flatMap((platform) =>
+    platform.plans.map((plan) => {
+      const id = `${platform.id}:${plan.id}`;
+      const details = classifyPlan({ platform, plan, objective, avoid, level });
+      return {
+        id,
+        platformName: platform.name,
+        platformType: platform.type,
+        regions: platform.regions,
+        planName: plan.name,
+        plan,
+        ...details,
+      };
+    })
+  );
+
+  const toneRank: Record<Tone, number> = { ok: 0, warn: 1, stop: 2 };
+  const sorted = [...allItems].sort((a, b) => {
+    const byTone = toneRank[a.tone] - toneRank[b.tone];
+    if (byTone !== 0) return byTone;
+    const byReasons = a.reasons.length - b.reasons.length;
+    if (byReasons !== 0) return byReasons;
+    return a.platformName.localeCompare(b.platformName);
+  });
+
+  const groups: ResultGroup[] = [
+    { title: "Piu adatto adesso", tone: "ok", items: sorted.filter((item) => item.tone === "ok") },
+    { title: "Adatto, ma con frizione", tone: "warn", items: sorted.filter((item) => item.tone === "warn") },
+    { title: "Non adatto adesso", tone: "stop", items: sorted.filter((item) => item.tone === "stop") },
+  ];
+
+  return groups.filter((group) => group.items.length > 0);
+}
+
+export function VerificationForm({ initialObjective, catalog }: VerificationFormProps) {
   const allowedInitialObjective = useMemo(
     () =>
       initialObjective && objectiveOptions.some((option) => option.value === initialObjective)
@@ -254,15 +341,13 @@ export function VerificationForm({ initialObjective }: VerificationFormProps) {
   const timerRef = useRef<number | null>(null);
 
   const groups = useMemo(
-    () => (step === "result" ? buildResults(objective, avoid, level) : []),
-    [step, objective, avoid, level]
+    () => (step === "result" ? buildResults(catalog, objective, avoid, level) : []),
+    [step, catalog, objective, avoid, level]
   );
 
   useEffect(() => {
     return () => {
-      if (timerRef.current) {
-        window.clearTimeout(timerRef.current);
-      }
+      if (timerRef.current) window.clearTimeout(timerRef.current);
     };
   }, []);
 
@@ -279,12 +364,8 @@ export function VerificationForm({ initialObjective }: VerificationFormProps) {
   function handleLevel(value: string) {
     setLevel(value);
     setStep("loading");
-    if (timerRef.current) {
-      window.clearTimeout(timerRef.current);
-    }
-    timerRef.current = window.setTimeout(() => {
-      setStep("result");
-    }, 1000);
+    if (timerRef.current) window.clearTimeout(timerRef.current);
+    timerRef.current = window.setTimeout(() => setStep("result"), 1000);
   }
 
   function handleReset() {
@@ -295,9 +376,7 @@ export function VerificationForm({ initialObjective }: VerificationFormProps) {
   }
 
   function handlePrint() {
-    if (typeof window !== "undefined") {
-      window.print();
-    }
+    if (typeof window !== "undefined") window.print();
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -309,7 +388,9 @@ export function VerificationForm({ initialObjective }: VerificationFormProps) {
       <div className="surface-card rounded-2xl p-6 sm:p-8">
         <div className="space-y-6">
           <ProgressLine step={step === "objective" ? 1 : step === "avoid" ? 2 : 3} steps={3} />
-          <p className="text-xs text-muted-foreground">Nessuna risposta e sbagliata.</p>
+          <p className="text-xs text-muted-foreground">
+            Nessuna risposta e "sbagliata". Serve a ridurre errori comuni di compatibilita.
+          </p>
 
           {step === "objective" && (
             <StepSingleSelect
@@ -317,7 +398,7 @@ export function VerificationForm({ initialObjective }: VerificationFormProps) {
               options={objectiveOptions}
               value={objective}
               onSelect={handleObjective}
-              helperText="Non c'e risposta giusta. Non serve sapere termini tecnici. Serve solo a evitare errori comuni."
+              helperText="Non serve sapere termini tecnici. Serve solo a evitare incompatibilita tipiche."
             />
           )}
 
@@ -329,7 +410,7 @@ export function VerificationForm({ initialObjective }: VerificationFormProps) {
               onSelect={handleAvoid}
               helperText="Seleziona l'opzione che ti descrive di piu."
               tooltip="Perche lo chiediamo?"
-              tooltipBody="Per capire quale complessita e piu rischiosa per te adesso."
+              tooltipBody="Per calibrare frizioni e vincoli senza trasformare il risultato in un ranking."
             />
           )}
 
@@ -339,14 +420,14 @@ export function VerificationForm({ initialObjective }: VerificationFormProps) {
               options={levelOptions}
               value={level}
               onSelect={handleLevel}
-              helperText="Serve solo a calibrare la frizione. Non e un giudizio."
+              helperText="Serve solo a calibrare la complessita. Non e un giudizio."
             />
           )}
 
           {step === "loading" && (
             <div className="space-y-3 text-sm text-muted-foreground">
               <p className="text-xs font-semibold uppercase tracking-[0.2em]">Verifica compatibilita in corso</p>
-              <p>Stiamo controllando frizioni tipiche per chi e in questa situazione.</p>
+              <p>Stiamo controllando vincoli e frizioni tipiche per questo profilo.</p>
               <div className="progress-line">
                 <span style={{ width: "70%" }} />
               </div>
@@ -356,46 +437,118 @@ export function VerificationForm({ initialObjective }: VerificationFormProps) {
           {step === "result" && (
             <div className="space-y-6">
               <div className="space-y-2">
-                <h2 className="text-2xl font-semibold text-foreground">
-                  Per il tuo profilo: ecco da cosa partire (e cosa evitare).
-                </h2>
+                <h2 className="text-2xl font-semibold text-foreground">Shortlist di piani compatibili (con limiti).</h2>
                 <p className="text-sm text-muted-foreground">
-                  Ogni voce e cliccabile per capire il perche.
+                  Ogni voce e cliccabile: motivi, frizioni, costi dichiarati e fonti.
                 </p>
               </div>
 
               <div className="space-y-6">
                 {groups.map((group) => (
                   <div key={group.title} className="space-y-3">
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                      {group.title}
-                    </p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">{group.title}</p>
                     <div className="space-y-3">
                       {group.items.map((item) => (
                         <details key={item.id} className="accordion">
                           <summary className="flex items-center justify-between gap-4">
-                            <span className="text-sm font-semibold text-foreground">{item.label}</span>
+                            <span className="text-sm font-semibold text-foreground">
+                              {item.platformName} · {item.planName}
+                              <span className="ml-2 text-xs font-normal text-muted-foreground">
+                                {platformTypeLabel(item.platformType)}
+                              </span>
+                            </span>
                             <ToneBadge tone={item.tone} />
                           </summary>
-                          <div className="mt-4 space-y-3 text-sm text-muted-foreground">
+
+                          <div className="mt-4 space-y-4 text-sm text-muted-foreground">
+                            {item.reasons.length > 0 && (
+                              <div>
+                                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                                  Frizioni e vincoli rilevati
+                                </p>
+                                <ul className="mt-2 space-y-1">
+                                  {item.reasons.map((reason) => (
+                                    <li key={reason} className="flex items-start gap-2">
+                                      <span className="mt-2 inline-block h-2 w-2 rounded-full bg-primary" aria-hidden />
+                                      <span>{reason}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+
                             <div>
-                              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                                Perche
-                              </p>
+                              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Perche</p>
                               <p className="mt-1">{item.why}</p>
                             </div>
+
+                            <div className="grid gap-3 sm:grid-cols-2">
+                              <div className="surface-card rounded-2xl p-4">
+                                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                                  Dati (piano)
+                                </p>
+                                <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
+                                  <li>Commissioni: {item.plan.costs.commissions}</li>
+                                  <li>Spread/slippage: {item.plan.costs.spread}</li>
+                                  <li>Funding/overnight: {item.plan.costs.funding}</li>
+                                  <li>Trasparenza costi: {item.plan.feeTransparency}</li>
+                                  <li>Livello tecnico: {technicalLabel(item.plan.technicalLevel)}</li>
+                                  <li>Custodia: {custodyLabel(item.plan.custodyModel)}</li>
+                                </ul>
+                              </div>
+
+                              <div className="surface-card rounded-2xl p-4">
+                                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                                  Supporto e problemi noti
+                                </p>
+                                <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
+                                  <li>Canali: {item.plan.support.channels.join(", ") || "N/D"}</li>
+                                  {item.plan.support.knownIssues.length > 0 ? (
+                                    item.plan.support.knownIssues.map((issue) => <li key={issue}>{issue}</li>)
+                                  ) : (
+                                    <li>Nessuna criticita nota nel catalogo.</li>
+                                  )}
+                                </ul>
+                              </div>
+                            </div>
+
                             <div>
                               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                                 Errore comune
                               </p>
                               <p className="mt-1">{item.commonMistake}</p>
                             </div>
+
                             <div>
                               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                                 Non significa
                               </p>
                               <p className="mt-1">{item.doesNotMean}</p>
                             </div>
+
+                            {item.plan.sources.length > 0 && (
+                              <div>
+                                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Fonti</p>
+                                <ul className="mt-2 space-y-1">
+                                  {item.plan.sources.map((source) => (
+                                    <li key={source.url}>
+                                      <a
+                                        className="link-underline"
+                                        href={source.url}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                      >
+                                        {source.label}
+                                      </a>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+
+                            {item.regions.length > 0 && (
+                              <p className="text-xs text-muted-foreground">Regioni dichiarate: {item.regions.join(", ")}</p>
+                            )}
                           </div>
                         </details>
                       ))}
@@ -417,7 +570,8 @@ export function VerificationForm({ initialObjective }: VerificationFormProps) {
               </div>
 
               <div className="text-xs text-muted-foreground">
-                Questo non e un consiglio operativo. Serve solo a ridurre errori comuni.
+                Questo non e un consiglio operativo. Mostriamo compatibilita e frizioni in base ai dati disponibili nel
+                catalogo e alle tue risposte.
               </div>
             </div>
           )}

@@ -1,0 +1,155 @@
+{
+  "version": "2026.02",
+  "asOf": "2026-01-02",
+  "note": "Catalogo iniziale: struttura pronta per inserire piattaforme e piani con dati verificabili. I record di esempio servono solo a validare UX e logica.",
+  "platforms": [
+    {
+      "id": "broker-alpha",
+      "name": "Broker Alpha",
+      "type": "broker",
+      "regions": ["EU"],
+      "plans": [
+        {
+          "id": "standard",
+          "name": "Standard",
+          "technicalLevel": "medium",
+          "custodyModel": "custodial",
+          "supportsTrading": true,
+          "supportsLeverage": false,
+          "feeTransparency": "high",
+          "costs": {
+            "commissions": "commissione per eseguito",
+            "spread": "spread dipende dal mercato",
+            "funding": "non applicabile"
+          },
+          "support": {
+            "channels": ["email", "ticket"],
+            "knownIssues": ["tempi di risposta variabili nei picchi"]
+          },
+          "sources": [
+            { "label": "Fee schedule", "url": "https://example.com/broker-alpha/fees" },
+            { "label": "Terms", "url": "https://example.com/broker-alpha/terms" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "exchange-beta",
+      "name": "Exchange Beta",
+      "type": "exchange",
+      "regions": ["GLOBAL"],
+      "plans": [
+        {
+          "id": "spot",
+          "name": "Spot",
+          "technicalLevel": "medium",
+          "custodyModel": "custodial",
+          "supportsTrading": true,
+          "supportsLeverage": false,
+          "feeTransparency": "medium",
+          "costs": {
+            "commissions": "maker/taker",
+            "spread": "variabile (stimabile su campioni)",
+            "funding": "non applicabile"
+          },
+          "support": {
+            "channels": ["chat", "ticket"],
+            "knownIssues": ["limitazioni prelievi in manutenzione"]
+          },
+          "sources": [
+            { "label": "Fees", "url": "https://example.com/exchange-beta/fees" },
+            { "label": "Status", "url": "https://example.com/exchange-beta/status" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wallet-gamma",
+      "name": "Wallet Gamma",
+      "type": "wallet",
+      "regions": ["GLOBAL"],
+      "plans": [
+        {
+          "id": "self-custody",
+          "name": "Self-custody",
+          "technicalLevel": "high",
+          "custodyModel": "self",
+          "supportsTrading": false,
+          "supportsLeverage": false,
+          "feeTransparency": "high",
+          "costs": {
+            "commissions": "non applicabile",
+            "spread": "non applicabile",
+            "funding": "non applicabile"
+          },
+          "support": {
+            "channels": ["documentazione"],
+            "knownIssues": ["responsabilita totale sulla sicurezza"]
+          },
+          "sources": [
+            { "label": "Docs", "url": "https://example.com/wallet-gamma/docs" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "account-delta",
+      "name": "Conto Delta",
+      "type": "account",
+      "regions": ["EU"],
+      "plans": [
+        {
+          "id": "vincolato",
+          "name": "Deposito vincolato",
+          "technicalLevel": "low",
+          "custodyModel": "custodial",
+          "supportsTrading": false,
+          "supportsLeverage": false,
+          "feeTransparency": "high",
+          "costs": {
+            "commissions": "non applicabile",
+            "spread": "non applicabile",
+            "funding": "non applicabile"
+          },
+          "support": {
+            "channels": ["email"],
+            "knownIssues": ["penali o tempi di svincolo"]
+          },
+          "sources": [
+            { "label": "Condizioni", "url": "https://example.com/conto-delta/terms" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lever-epsilon",
+      "name": "Leverage Epsilon",
+      "type": "derivatives",
+      "regions": ["GLOBAL"],
+      "plans": [
+        {
+          "id": "perpetual",
+          "name": "Perpetual con leva",
+          "technicalLevel": "high",
+          "custodyModel": "custodial",
+          "supportsTrading": true,
+          "supportsLeverage": true,
+          "feeTransparency": "medium",
+          "costs": {
+            "commissions": "commissioni + funding",
+            "spread": "variabile (stimabile su campioni)",
+            "funding": "periodico"
+          },
+          "support": {
+            "channels": ["ticket"],
+            "knownIssues": ["liquidazioni e funding richiedono gestione attiva"]
+          },
+          "sources": [
+            { "label": "Fees", "url": "https://example.com/leverage-epsilon/fees" }
+          ]
+        }
+      ]
+    }
+  ]
+}
+

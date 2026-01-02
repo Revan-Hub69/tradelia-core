@@ -1,4 +1,47 @@
+import fs from "fs";
+import path from "path";
 import { VerificationForm } from "./verification-form";
+
+type PlatformPlan = {
+  id: string;
+  name: string;
+  technicalLevel: "low" | "medium" | "high";
+  custodyModel: "custodial" | "self";
+  supportsTrading: boolean;
+  supportsLeverage: boolean;
+  feeTransparency: "high" | "medium" | "low";
+  costs: {
+    commissions: string;
+    spread: string;
+    funding: string;
+  };
+  support: {
+    channels: string[];
+    knownIssues: string[];
+  };
+  sources: { label: string; url: string }[];
+};
+
+type Platform = {
+  id: string;
+  name: string;
+  type: "broker" | "exchange" | "wallet" | "account" | "derivatives";
+  regions: string[];
+  plans: PlatformPlan[];
+};
+
+type PlatformCatalog = {
+  version: string;
+  asOf: string;
+  note: string;
+  platforms: Platform[];
+};
+
+function loadPlatformCatalog(): PlatformCatalog {
+  const filePath = path.join(process.cwd(), "public", "platforms.json");
+  const raw = fs.readFileSync(filePath, "utf-8");
+  return JSON.parse(raw) as PlatformCatalog;
+}
 
 type VerifyPageProps = {
   searchParams?: {
@@ -7,6 +50,7 @@ type VerifyPageProps = {
 };
 
 export default function VerifyPage({ searchParams }: VerifyPageProps) {
+  const catalog = loadPlatformCatalog();
   return (
     <div className="min-h-screen bg-background">
       <main id="main-content" className="mx-auto max-w-5xl px-6 py-20 sm:px-8 sm:py-32">
@@ -24,7 +68,10 @@ export default function VerifyPage({ searchParams }: VerifyPageProps) {
             </p>
           </div>
 
-          <VerificationForm initialObjective={searchParams?.objective} />
+          <VerificationForm
+            initialObjective={searchParams?.objective}
+            catalog={catalog}
+          />
 
           <div className="surface-card rounded-2xl p-6 text-sm text-muted-foreground">
             Materiale educativo e informativo. Nessun consiglio operativo. Non e consulenza finanziaria regolamentata.
