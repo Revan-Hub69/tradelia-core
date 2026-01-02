@@ -3,20 +3,24 @@ import type { Metadata } from "next";
 import { SiteHeader } from "@/components/site-header";
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://tradelia.com'),
+  metadataBase: new URL("https://tradelia.org"),
   title: {
-    default: "Tradelia | Fondazione educativa",
+    default: "Tradelia | Verifica decisionale",
     template: "%s | Tradelia"
   },
-  description: "Piattaforma educativa per decisioni finanziarie più consapevoli e gestione del rischio disciplinata. Metodo, non segnali.",
+  description:
+    "Sistema che verifica la compatibilità tra necessità dell'utente e caratteristiche reali di broker, wallet, exchange e conti deposito, con fonti ufficiali.",
   keywords: [
-    "educazione finanziaria", 
-    "gestione rischio", 
-    "trading", 
-    "investimenti", 
-    "analisi tecnica", 
-    "economia", 
-    "finanza comportamentale"
+    "compatibilità finanziaria",
+    "broker",
+    "exchange",
+    "wallet",
+    "conti deposito",
+    "risk management",
+    "decision science",
+    "MiFID",
+    "due diligence",
+    "fintech"
   ],
   authors: [{ name: "Tradelia Team" }],
   creator: "Tradelia",
@@ -29,23 +33,25 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "it_IT",
-    url: "https://tradelia.com",
-    title: "Tradelia | Fondazione educativa",
-    description: "Piattaforma educativa per decisioni finanziarie più consapevoli e gestione del rischio disciplinata.",
+    url: "https://tradelia.org",
+    title: "Tradelia | Verifica decisionale",
+    description:
+      "Sistema che verifica la compatibilità tra necessità dell'utente e caratteristiche reali di broker, wallet, exchange e conti deposito.",
     siteName: "Tradelia",
     images: [
       {
         url: "/og.png",
         width: 1200,
         height: 630,
-        alt: "Tradelia - Piattaforma educativa finanziaria"
+        alt: "Tradelia - Sistema di verifica decisionale"
       }
     ]
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tradelia | Fondazione educativa",
-    description: "Piattaforma educativa per decisioni finanziarie più consapevoli e gestione del rischio disciplinata.",
+    title: "Tradelia | Verifica decisionale",
+    description:
+      "Sistema che verifica la compatibilità tra necessità dell'utente e caratteristiche reali di broker, wallet, exchange e conti deposito.",
     images: ["/og.png"],
     creator: "@tradelia"
   },
@@ -55,9 +61,9 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
   icons: {
