@@ -5,6 +5,7 @@ import { HeroInteractive } from "./hero-interactive";
 import { VerifyCategories } from "./verify-categories";
 import { RevealSection } from "./reveal-section";
 import { ScenarioSlider } from "./scenario-slider";
+import { FinderPreview } from "./finder-preview";
 
 type Content = {
   hero: {
@@ -73,14 +74,56 @@ type Content = {
   };
 };
 
+type PlatformPlan = {
+  id: string;
+  name: string;
+  technicalLevel: "low" | "medium" | "high";
+  custodyModel: "custodial" | "self";
+  supportsTrading: boolean;
+  supportsLeverage: boolean;
+  feeTransparency: "high" | "medium" | "low";
+  costs: {
+    commissions: string;
+    spread: string;
+    funding: string;
+  };
+  support: {
+    channels: string[];
+    knownIssues: string[];
+  };
+  sources: { label: string; url: string }[];
+};
+
+type Platform = {
+  id: string;
+  name: string;
+  type: "broker" | "exchange" | "wallet" | "account" | "derivatives";
+  regions: string[];
+  plans: PlatformPlan[];
+};
+
+type PlatformCatalog = {
+  version: string;
+  asOf: string;
+  note: string;
+  platforms: Platform[];
+};
+
 function loadContent(): Content {
   const filePath = path.join(process.cwd(), "public", "content.json");
   const raw = fs.readFileSync(filePath, "utf-8");
   return JSON.parse(raw) as Content;
 }
 
+function loadPlatformCatalog(): PlatformCatalog {
+  const filePath = path.join(process.cwd(), "public", "platforms.json");
+  const raw = fs.readFileSync(filePath, "utf-8");
+  return JSON.parse(raw) as PlatformCatalog;
+}
+
 export default function HomePage() {
   const content = loadContent();
+  const catalog = loadPlatformCatalog();
 
   return (
     <div id="top" className="min-h-screen bg-background text-foreground">
@@ -98,12 +141,19 @@ export default function HomePage() {
               </div>
             </div>
 
-            <HeroInteractive
-              question={content.hero.question}
-              options={content.hero.options}
-              ctaLabel={content.hero.cta}
-              microcopy={content.hero.microcopy}
-            />
+            <FinderPreview catalog={catalog} />
+
+            <details className="accordion">
+              <summary>Preferisci la verifica guidata?</summary>
+              <div className="mt-4 space-y-4">
+                <HeroInteractive
+                  question={content.hero.question}
+                  options={content.hero.options}
+                  ctaLabel={content.hero.cta}
+                  microcopy={content.hero.microcopy}
+                />
+              </div>
+            </details>
           </div>
         </RevealSection>
 
