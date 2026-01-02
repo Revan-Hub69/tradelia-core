@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 
@@ -42,6 +43,13 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="it">
       <body>
+        <Script
+          id="theme-initializer"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t="tradelia-theme";var e=localStorage.getItem(t);var n=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";var r=e==="light"||e==="dark"?e:n;document.documentElement.dataset.theme=r;document.documentElement.style.colorScheme=r;}catch(o){}})();`
+          }}
+        />
         <SiteHeader />
         {children}
       </body>
