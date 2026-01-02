@@ -1,0 +1,176 @@
+{
+  "hero": {
+    "title": "Scelta della piattaforma senza sorprese.",
+    "subtitle": "Verifica compatibilità tra ciò che vuoi fare e le caratteristiche reali di broker, exchange, wallet e conti deposito.",
+    "bullets": [
+      "Compatibilità operativa",
+      "Fonti ufficiali",
+      "Confini espliciti"
+    ],
+    "disclaimer": "Nessun segnale. Nessuna promessa. Nessuna raccomandazione su asset.",
+    "primaryCta": "Avvia verifica",
+    "secondaryCta": "Leggi metodologia"
+  },
+  "problema": {
+    "title": "L’errore spesso è lo strumento, non la previsione.",
+    "subtitle": "Costi overnight che erodono, blocchi nei prelievi, ranking di affiliazione: chi sbaglia intermediario perde denaro anche quando la strategia è corretta.",
+    "cards": [
+      {
+        "title": "Funding overnight che erode",
+        "body": "Posizioni multi-day su indici/CFD con costi di finanziamento che superano il rendimento atteso. I piani promozionali spesso aumentano il funding dopo poche settimane."
+      },
+      {
+        "title": "Blocchi e disservizi",
+        "body": "Outage e sospensioni di prelievo possono azzerare settimane di lavoro. Gli esempi storici (es. blackout di marzo 2020) mostrano che neanche i brand noti sono immuni."
+      },
+      {
+        "title": "Comparatori sbilanciati",
+        "body": "Ranking basati su affiliazioni o robo non autorizzati spingono soluzioni non compatibili con il tuo caso d’uso. La “lista top” non considera i tuoi vincoli operativi."
+      }
+    ],
+    "noteTitle": "Non coerente ≠ sbagliato.",
+    "noteBody": "Significa che, dati i tuoi obiettivi e vincoli, quello strumento aumenta il rischio di errore sistemico (costi, limiti, affidabilità, compliance)."
+  },
+  "metodo": {
+    "title": "Metodo decisionale, non persuasivo.",
+    "subtitle": "Struttura cognitiva per evitare scelte guidate da incentivi o hype. L’utente dichiara l’intento, Tradelia effettua la verifica.",
+    "steps": [
+      {
+        "label": "01",
+        "title": "Intento chiaro",
+        "body": "Obiettivo, frequenza, orizzonte, asset, budget, paese e sensibilità a costi/prelievi/assistenza."
+      },
+      {
+        "label": "02",
+        "title": "Regole di verifica",
+        "body": "Fonti ufficiali, requisiti di licenza, piani tariffari, limiti operativi, storico di reclami e disservizi pubblici."
+      },
+      {
+        "label": "03",
+        "title": "Decisione motivata",
+        "body": "Output: coerente, frizione, non coerente. Con spiegazione e alternative compatibili."
+      }
+    ]
+  },
+  "verifica": {
+    "title": "Una verifica, non una classifica.",
+    "subtitle": "Tradelia incrocia il tuo intento con dati comparabili: tariffe reali, limiti, custodia, assistenza e storico di disservizi.",
+    "steps": [
+      {
+        "number": "01",
+        "title": "Intento",
+        "body": "Raccogliamo obiettivo, vincoli, asset, paese, frequenza e soglie di costo accettabili."
+      },
+      {
+        "number": "02",
+        "title": "Verifica",
+        "body": "Applichiamo regole su fonti ufficiali: piani tariffari, licenze, KYC, prelievi, reclami e outage dichiarati."
+      },
+      {
+        "number": "03",
+        "title": "Risposta motivata",
+        "body": "Consegniamo compatibilità motivata, rischi residui e, se serve, alternative coerenti con il tuo perimetro."
+      }
+    ],
+    "resultsTitle": "Risultato possibile",
+    "results": [
+      {
+        "label": "COERENTE",
+        "description": "Compatibile con i vincoli dichiarati.",
+        "tone": "coerente"
+      },
+      {
+        "label": "FRIZIONE",
+        "description": "Compatibile solo accettando trade-off espliciti (costi, tempi, limiti).",
+        "tone": "frizione"
+      },
+      {
+        "label": "NON COERENTE",
+        "description": "Aumenta il rischio di errore sistemico dato il perimetro dichiarato.",
+        "tone": "non-coerente"
+      }
+    ],
+    "cta": "Fai verificare la piattaforma"
+  },
+  "esempi": {
+    "title": "Esempi di incompatibilità operative.",
+    "subtitle": "Tre scenari reali dove la scelta dell’intermediario incide più della strategia.",
+    "scenarios": [
+      {
+        "title": "Overnight su indici/CFD",
+        "because": "Funding e rollover possono erodere più del rendimento atteso dopo pochi giorni.",
+        "checks": [
+          "Tariffe di funding per fascia oraria e asset",
+          "Durata delle promozioni e variazione dei costi"
+        ]
+      },
+      {
+        "title": "Trading frequente + prelievi",
+        "because": "Fee di uscita, limiti o ritardi nei prelievi possono immobilizzare capitale.",
+        "checks": [
+          "Tempi medi e limiti di prelievo dichiarati",
+          "Fee di deposito/prelievo e restrizioni geografiche"
+        ]
+      },
+      {
+        "title": "Automazione / API",
+        "because": "API limitate o outage non dichiarati generano slippage e ordini rifiutati.",
+        "checks": [
+          "SLA e copertura oraria del supporto tecnico",
+          "Storico di downtime e rifiuto ordini su API"
+        ]
+      }
+    ]
+  },
+  "controlli": {
+    "title": "Controlli che facciamo noi.",
+    "subtitle": "Checklist interna su fonti ufficiali e dati operativi: niente compilazioni per l’utente.",
+    "items": [
+      "Obiettivo e orizzonte",
+      "Costi reali (spread, commissioni, funding, slippage)",
+      "Limiti operativi (KYC, prelievi, orari, volumi)",
+      "Regolazione e custodia (licenze, segregazione, negative balance)",
+      "Affidabilità (SLA supporto, outage, reclami ufficiali)",
+      "Documentazione verificata (ToS, liquidation policy, promo terms)"
+    ],
+    "footnote": "Le fonti vengono mostrate e linkate nel report di verifica."
+  },
+  "trasparenza": {
+    "title": "Trasparenza & confini.",
+    "subtitle": "Decisione informativa, non commerciale.",
+    "do": [
+      "Verifichiamo compatibilità tra obiettivo e strumento",
+      "Quantifichiamo costi operativi reali",
+      "Evidenziamo rischi sistemici e trade-off",
+      "Forniamo fonti ufficiali verificabili"
+    ],
+    "dont": [
+      "Non suggeriamo asset specifici",
+      "Non forniamo segnali di trading",
+      "Non promettiamo performance",
+      "Non sostituiamo consulenza regolamentata"
+    ],
+    "metodologiaTitle": "Metodologia",
+    "metodologia": [
+      "Fonti ufficiali (licenze, ToS, policy di liquidazione)",
+      "Dati operativi pubblici (tariffe, spread, funding, prelievi)",
+      "Segnalazioni pubbliche (multe, richiami, downtime dichiarati)",
+      "AI usata per estrazione/normalizzazione; la decisione segue regole trasparenti",
+      "Affiliazioni: dichiarate e separate dalla valutazione di compatibilità"
+    ],
+    "regola": "Regola d’oro: se aumenta l’eccitazione è sbagliata; se aumenta la chiarezza è giusta."
+  },
+  "cta": {
+    "title": "Vuoi verificare se la tua scelta regge?",
+    "subtitle": "Dichiara obiettivo e vincoli. Tradelia restituisce compatibilità motivata con fonti.",
+    "primary": "Avvia verifica",
+    "secondary": "Torna su",
+    "version": "Metodo 2026.01",
+    "legal": "Materiale educativo e informativo. Non è consulenza finanziaria regolamentata."
+  },
+  "footer": {
+    "privacy": "Privacy",
+    "disclaimer": "MiFID / Disclaimer",
+    "contatti": "Contatti"
+  }
+}
