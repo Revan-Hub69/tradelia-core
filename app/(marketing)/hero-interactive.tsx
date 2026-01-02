@@ -33,6 +33,7 @@ function ChoiceCard({
       className="choice-card w-full"
       data-selected={selected}
       aria-pressed={selected}
+      aria-label={`${label}${selected ? " (selezionato)" : ""}`}
       onClick={onClick}
     >
       <p className="text-sm font-semibold text-foreground">{label}</p>
@@ -59,6 +60,9 @@ export function HeroInteractive({ question, options, ctaLabel, microcopy }: Hero
   const [selected, setSelected] = useState<string | null>(null);
 
   const isReady = Boolean(selected);
+  const helperText = isReady
+    ? "Hai selezionato un obiettivo: puoi avviare il controllo."
+    : "Scegli un obiettivo per attivare il controllo.";
 
   function handleStart() {
     if (!selected) return;
@@ -67,7 +71,12 @@ export function HeroInteractive({ question, options, ctaLabel, microcopy }: Hero
 
   return (
     <div className="space-y-6">
-      <p className="text-sm font-semibold text-foreground">{question}</p>
+      <div className="space-y-2">
+        <p className="text-sm font-semibold text-foreground">{question}</p>
+        <p className="text-xs text-muted-foreground" aria-live="polite">
+          {helperText}
+        </p>
+      </div>
       <div className="grid gap-3 sm:grid-cols-2">
         {options.map((option) => (
           <ChoiceCard

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState, type KeyboardEvent } from "react";
 
 type Item = {
   label: string;
@@ -12,21 +12,39 @@ type VerifyCategoriesProps = {
 };
 
 function InlineTooltip({ content }: { content: string }) {
+  const tooltipId = useId();
   const [open, setOpen] = useState(false);
 
+  function handleClose() {
+    setOpen(false);
+  }
+
+  function handleToggle() {
+    setOpen((prev) => !prev);
+  }
+
+  function handleKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
+    if (event.key === "Escape") {
+      handleClose();
+    }
+  }
+
   return (
-    <div className="relative">
+    <div className="relative" onMouseLeave={handleClose}>
       <button
         type="button"
         className="tooltip-trigger"
         aria-expanded={open}
         aria-label="Informazioni"
-        onClick={() => setOpen((prev) => !prev)}
+        aria-controls={open ? tooltipId : undefined}
+        onClick={handleToggle}
+        onBlur={handleClose}
+        onKeyDown={handleKeyDown}
       >
         i
       </button>
       {open && (
-        <div className="absolute right-0 mt-2 w-52 rounded-xl border border-border bg-background p-3 text-xs text-muted-foreground shadow-sm">
+        <div id={tooltipId} className="tooltip-panel" role="status" aria-live="polite">
           {content}
         </div>
       )}
