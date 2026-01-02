@@ -3,6 +3,7 @@ import path from "path";
 import Link from "next/link";
 import { HeroInteractive } from "./hero-interactive";
 import { VerifyCategories } from "./verify-categories";
+import { RevealSection } from "./reveal-section";
 
 type Content = {
   hero: {
@@ -16,6 +17,12 @@ type Content = {
   accoglienza: {
     title: string;
     body: string;
+  };
+  problema: {
+    title: string;
+    problem: string;
+    solutionTitle: string;
+    solutions: string[];
   };
   cosaFacciamo: {
     title: string;
@@ -78,7 +85,7 @@ export default function HomePage() {
   return (
     <div id="top" className="min-h-screen bg-background text-foreground">
       <main id="main-content" role="main" className="space-y-0">
-        <section className="section-reveal border-b border-border/60 px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+        <RevealSection className="border-b border-border/60 px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
           <div className="mx-auto max-w-5xl space-y-8">
             <div className="space-y-4">
               <h1 className="text-3xl font-semibold leading-tight sm:text-4xl lg:text-5xl">
@@ -98,16 +105,38 @@ export default function HomePage() {
               microcopy={content.hero.microcopy}
             />
           </div>
-        </section>
+        </RevealSection>
 
-        <section className="section-reveal border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <RevealSection className="border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+          <div className="mx-auto max-w-5xl space-y-6">
+            <div className="space-y-3">
+              <h2 className="text-2xl font-semibold">{content.problema.title}</h2>
+              <p className="text-sm text-muted-foreground">{content.problema.problem}</p>
+            </div>
+            <div className="surface-card rounded-2xl p-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                {content.problema.solutionTitle}
+              </p>
+              <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+                {content.problema.solutions.map((item) => (
+                  <li key={item} className="flex items-start gap-2">
+                    <span className="mt-2 inline-block h-2 w-2 rounded-full bg-primary" aria-hidden />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </RevealSection>
+
+        <RevealSection className="border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
           <div className="mx-auto max-w-5xl space-y-4">
             <h2 className="text-2xl font-semibold">{content.accoglienza.title}</h2>
             <p className="text-sm text-muted-foreground">{content.accoglienza.body}</p>
           </div>
-        </section>
+        </RevealSection>
 
-        <section className="section-reveal border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <RevealSection className="border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
           <div className="mx-auto max-w-5xl space-y-6">
             <h2 className="text-2xl font-semibold">{content.cosaFacciamo.title}</h2>
             <ul className="space-y-2 text-sm text-muted-foreground">
@@ -120,9 +149,9 @@ export default function HomePage() {
             </ul>
             <p className="text-xs text-muted-foreground">{content.cosaFacciamo.microcopy}</p>
           </div>
-        </section>
+        </RevealSection>
 
-        <section id="esempi" className="section-reveal border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <RevealSection id="esempi" className="border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
           <div className="mx-auto max-w-5xl space-y-6">
             <h2 className="text-2xl font-semibold">{content.esempio.title}</h2>
             <div className="surface-card rounded-2xl p-6">
@@ -154,9 +183,9 @@ export default function HomePage() {
               </details>
             </div>
           </div>
-        </section>
+        </RevealSection>
 
-        <section id="metodo" className="section-reveal border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <RevealSection id="metodo" className="border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
           <div className="mx-auto max-w-5xl space-y-6">
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-semibold">{content.comeFunziona.title}</h2>
@@ -175,16 +204,16 @@ export default function HomePage() {
               ))}
             </ol>
           </div>
-        </section>
+        </RevealSection>
 
-        <section id="verifichiamo" className="section-reveal border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <RevealSection id="verifichiamo" className="border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
           <div className="mx-auto max-w-5xl space-y-6">
             <h2 className="text-2xl font-semibold">{content.verifichiamo.title}</h2>
             <VerifyCategories items={content.verifichiamo.items} />
           </div>
-        </section>
+        </RevealSection>
 
-        <section id="limiti" className="section-reveal border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <RevealSection id="limiti" className="border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
           <div className="mx-auto max-w-5xl space-y-6">
             <h2 className="text-2xl font-semibold">{content.limiti.title}</h2>
             <ul className="space-y-2 text-sm text-muted-foreground">
@@ -200,9 +229,9 @@ export default function HomePage() {
               <p className="mt-3 text-sm text-muted-foreground">{content.limiti.accordionBody}</p>
             </details>
           </div>
-        </section>
+        </RevealSection>
 
-        <section id="fonti" className="section-reveal border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <RevealSection id="fonti" className="border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
           <div className="mx-auto max-w-5xl space-y-6">
             <h2 className="text-2xl font-semibold">{content.fonti.title}</h2>
             <ul className="space-y-2 text-sm text-muted-foreground">
@@ -215,9 +244,9 @@ export default function HomePage() {
             </ul>
             <p className="text-xs text-muted-foreground">{content.fonti.affiliazioni}</p>
           </div>
-        </section>
+        </RevealSection>
 
-        <section className="section-reveal px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <RevealSection className="px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
           <div className="mx-auto max-w-5xl space-y-4 text-center">
             <h2 className="text-2xl font-semibold">{content.ctaFinale.title}</h2>
             <Link href="/verifica" className="btn-primary">
@@ -225,7 +254,7 @@ export default function HomePage() {
             </Link>
             <p className="text-xs text-muted-foreground">{content.ctaFinale.microcopy}</p>
           </div>
-        </section>
+        </RevealSection>
       </main>
 
       <footer className="section-reveal border-t border-border/60 bg-background px-4 py-6 sm:px-6 lg:px-8">

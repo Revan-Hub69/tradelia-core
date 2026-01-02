@@ -239,25 +239,24 @@ function ProgressLine({ step, steps }: { step: number; steps: number }) {
 }
 
 export function VerificationForm({ initialObjective }: VerificationFormProps) {
-  const [objective, setObjective] = useState("");
+  const allowedInitialObjective = useMemo(
+    () =>
+      initialObjective && objectiveOptions.some((option) => option.value === initialObjective)
+        ? initialObjective
+        : "",
+    [initialObjective]
+  );
+
+  const [objective, setObjective] = useState(allowedInitialObjective);
   const [avoid, setAvoid] = useState("");
   const [level, setLevel] = useState("");
-  const [step, setStep] = useState<Step>("objective");
+  const [step, setStep] = useState<Step>(allowedInitialObjective ? "avoid" : "objective");
   const timerRef = useRef<number | null>(null);
 
   const groups = useMemo(
     () => (step === "result" ? buildResults(objective, avoid, level) : []),
     [step, objective, avoid, level]
   );
-
-  useEffect(() => {
-    if (!initialObjective) return;
-    const allowed = objectiveOptions.some((option) => option.value === initialObjective);
-    if (allowed && !objective) {
-      setObjective(initialObjective);
-      setStep("avoid");
-    }
-  }, [initialObjective, objective]);
 
   useEffect(() => {
     return () => {
