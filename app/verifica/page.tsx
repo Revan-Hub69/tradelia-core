@@ -60,10 +60,10 @@ export default function VerifyPage({ searchParams }: VerifyPageProps) {
               Verifica guidata
             </p>
             <h1 className="text-3xl font-semibold text-foreground sm:text-4xl">
-              Verifica di compatibilita
+              Verifica di compatibilità
             </h1>
             <p className="max-w-2xl text-base text-muted-foreground">
-              L'utente non e mai valutato. Lo strumento si. Questa verifica riduce
+              L'utente non è mai valutato. Lo strumento sì. Questa verifica riduce
               errori strutturali prima di qualsiasi decisione.
             </p>
           </div>
@@ -73,8 +73,8 @@ export default function VerifyPage({ searchParams }: VerifyPageProps) {
             catalog={catalog}
           />
 
-          <div className="surface-card rounded-2xl p-6 text-sm text-muted-foreground">
-            Materiale educativo e informativo. Nessun consiglio operativo. Non e consulenza finanziaria regolamentata.
+          <div className="surface-card p-6 text-sm text-muted-foreground">
+            Materiale educativo e informativo. Nessun consiglio operativo. Non è consulenza finanziaria regolamentata.
           </div>
         </div>
       </main>

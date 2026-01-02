@@ -84,8 +84,8 @@ const avoidOptions = [
 const levelOptions = [
   { value: "mai", label: "Non ho mai iniziato" },
   { value: "poco", label: "Ho iniziato da poco" },
-  { value: "errori", label: "Ho gia provato e ho fatto errori" },
-  { value: "esperienza", label: "Ho gia esperienza ma voglio ridurre errori" },
+  { value: "errori", label: "Ho già provato e ho fatto errori" },
+  { value: "esperienza", label: "Ho già esperienza ma voglio ridurre errori" },
 ];
 
 function ToneBadge({ tone }: { tone: Tone }) {
@@ -207,14 +207,14 @@ function classifyPlan({
   if (platform.type === "derivatives") {
     const isExperienced = level === "esperienza";
     if (!(objective === "trading" && isExperienced)) {
-      reasons.push("Strumento derivato: aumenta complessita e gestione attiva rispetto a obiettivi beginner-first.");
+      reasons.push("Strumento derivato: aumenta complessità e gestione attiva rispetto a obiettivi beginner-first.");
       tone = "stop";
     }
   }
 
   if (objective === "cripto") {
     if (platform.type === "account") {
-      reasons.push("Non consente acquisto cripto: e uno strumento di parcheggio liquidita.");
+      reasons.push("Non consente acquisto cripto: è uno strumento di parcheggio liquidità.");
       tone = "stop";
     }
     if (platform.type === "wallet" && !plan.supportsTrading) {
@@ -224,7 +224,7 @@ function classifyPlan({
   }
 
   if (objective !== "trading" && plan.supportsLeverage) {
-    reasons.push("Include leva: aumenta complessita e gestione attiva anche se il tuo obiettivo non e trading.");
+    reasons.push("Include leva: aumenta complessità e gestione attiva anche se il tuo obiettivo non è trading.");
     if (tone !== "stop") tone = "warn";
   }
 
@@ -234,7 +234,7 @@ function classifyPlan({
       tone = "stop";
     }
     if (avoid === "stress" || avoid === "rischio") {
-      reasons.push("La leva e incompatibile con cio che vuoi evitare in questo momento.");
+      reasons.push("La leva è incompatibile con ciò che vuoi evitare in questo momento.");
       tone = "stop";
     }
   }
@@ -245,7 +245,7 @@ function classifyPlan({
       if (tone !== "stop") tone = "warn";
     }
     if (plan.custodyModel === "self" && isBeginner) {
-      reasons.push("La self-custody richiede responsabilita tecnica e procedure di sicurezza.");
+      reasons.push("La self-custody richiede responsabilità tecnica e procedure di sicurezza.");
       if (tone !== "stop") tone = "warn";
     }
   }
@@ -261,7 +261,7 @@ function classifyPlan({
   }
 
   if (avoid === "custodia" && plan.custodyModel === "self") {
-    reasons.push("La self-custody sposta responsabilita e rischio operativo sull'utente.");
+    reasons.push("La self-custody sposta responsabilità e rischio operativo sull'utente.");
     if (tone !== "stop") tone = "warn";
   }
 
@@ -282,13 +282,13 @@ function classifyPlan({
   );
   if (plan.supportsTrading) whyParts.push("Supporta operativita di trading.");
   if (plan.supportsLeverage) whyParts.push("Include leva.");
-  if (!plan.supportsTrading) whyParts.push("Non e orientato al trading.");
+  if (!plan.supportsTrading) whyParts.push("Non è orientato al trading.");
 
   let commonMistake = "Sottovalutare i vincoli operativi leggendo solo il nome del prodotto.";
   if (plan.supportsLeverage) {
     commonMistake = "Confondere la leva con una scorciatoia: aumenta stress, errori e gestione attiva.";
   } else if (plan.custodyModel === "self") {
-    commonMistake = "Pensare che piu controllo significhi automaticamente piu sicurezza, senza procedure.";
+    commonMistake = "Pensare che più controllo significhi automaticamente più sicurezza, senza procedure.";
   } else if (avoid === "costi") {
     commonMistake = "Guardare solo la commissione e ignorare costi operativi e condizioni contrattuali.";
   } else if (avoid === "regole") {
@@ -408,7 +408,7 @@ export function VerificationForm({ initialObjective, catalog }: VerificationForm
         <div className="space-y-6">
           <ProgressLine step={step === "objective" ? 1 : step === "avoid" ? 2 : 3} steps={3} />
           <p className="text-xs text-muted-foreground">
-            Nessuna risposta e "sbagliata". Serve a ridurre errori comuni di compatibilita.
+            Nessuna risposta è "sbagliata". Serve a ridurre errori comuni di compatibilità.
           </p>
 
           {step === "objective" && (
@@ -417,7 +417,7 @@ export function VerificationForm({ initialObjective, catalog }: VerificationForm
               options={objectiveOptions}
               value={objective}
               onSelect={handleObjective}
-              helperText="Non serve sapere termini tecnici. Serve solo a evitare incompatibilita tipiche."
+              helperText="Non serve sapere termini tecnici. Serve solo a evitare incompatibilità tipiche."
             />
           )}
 
@@ -427,8 +427,8 @@ export function VerificationForm({ initialObjective, catalog }: VerificationForm
               options={avoidOptions}
               value={avoid}
               onSelect={handleAvoid}
-              helperText="Seleziona l'opzione che ti descrive di piu."
-              tooltip="Perche lo chiediamo?"
+              helperText="Seleziona l'opzione che ti descrive di più."
+              tooltip="Perché lo chiediamo?"
               tooltipBody="Per calibrare frizioni e vincoli senza trasformare il risultato in un ranking."
             />
           )}
@@ -439,13 +439,13 @@ export function VerificationForm({ initialObjective, catalog }: VerificationForm
               options={levelOptions}
               value={level}
               onSelect={handleLevel}
-              helperText="Serve solo a calibrare la complessita. Non e un giudizio."
+              helperText="Serve solo a calibrare la complessità. Non è un giudizio."
             />
           )}
 
           {step === "loading" && (
             <div className="space-y-3 text-sm text-muted-foreground">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em]">Verifica compatibilita in corso</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em]">Verifica compatibilità in corso</p>
               <p>Stiamo controllando vincoli e frizioni tipiche per questo profilo.</p>
               <div className="progress-line">
                 <span style={{ width: "70%" }} />
@@ -458,7 +458,7 @@ export function VerificationForm({ initialObjective, catalog }: VerificationForm
               <div className="space-y-2">
                 <h2 className="text-2xl font-semibold text-foreground">Shortlist di piani compatibili (con limiti).</h2>
                 <p className="text-sm text-muted-foreground">
-                  Ogni voce e cliccabile: motivi, frizioni, costi dichiarati e fonti.
+                  Ogni voce è cliccabile: motivi, frizioni, costi dichiarati e fonti.
                 </p>
               </div>
 
@@ -589,8 +589,7 @@ export function VerificationForm({ initialObjective, catalog }: VerificationForm
               </div>
 
               <div className="text-xs text-muted-foreground">
-                Questo non e un consiglio operativo. Mostriamo compatibilita e frizioni in base ai dati disponibili nel
-                catalogo e alle tue risposte.
+                Questo non è un consiglio operativo. Mostriamo compatibilità e frizioni in base ai dati disponibili nel catalogo e alle tue risposte.
               </div>
             </div>
           )}

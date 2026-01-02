@@ -85,13 +85,13 @@ export default function HomePage() {
   return (
     <div id="top" className="min-h-screen bg-background text-foreground">
       <main id="main-content" role="main" className="space-y-0">
-        <RevealSection className="border-b border-border/60 px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+        <RevealSection className="border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
           <div className="mx-auto max-w-5xl space-y-8">
-            <div className="space-y-4">
+            <div className="max-w-3xl space-y-4">
               <h1 className="text-3xl font-semibold leading-tight sm:text-4xl lg:text-5xl">
                 {content.hero.title}
               </h1>
-              <div className="space-y-2 text-base text-muted-foreground">
+              <div className="space-y-2 text-sm text-muted-foreground">
                 {content.hero.subtitle.map((line) => (
                   <p key={line}>{line}</p>
                 ))}
@@ -107,13 +107,13 @@ export default function HomePage() {
           </div>
         </RevealSection>
 
-        <RevealSection className="border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <RevealSection className="border-b border-border/60 px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
           <div className="mx-auto max-w-5xl space-y-6">
             <div className="space-y-3">
               <h2 className="text-2xl font-semibold">{content.problema.title}</h2>
               <p className="text-sm text-muted-foreground">{content.problema.problem}</p>
             </div>
-            <div className="surface-card rounded-2xl p-6">
+            <div className="surface-card p-6">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                 {content.problema.solutionTitle}
               </p>
@@ -129,14 +129,14 @@ export default function HomePage() {
           </div>
         </RevealSection>
 
-        <RevealSection className="border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <RevealSection className="border-b border-border/60 px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
           <div className="mx-auto max-w-5xl space-y-4">
             <h2 className="text-2xl font-semibold">{content.accoglienza.title}</h2>
             <p className="text-sm text-muted-foreground">{content.accoglienza.body}</p>
           </div>
         </RevealSection>
 
-        <RevealSection className="border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <RevealSection className="border-b border-border/60 px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
           <div className="mx-auto max-w-5xl space-y-6">
             <h2 className="text-2xl font-semibold">{content.cosaFacciamo.title}</h2>
             <ul className="space-y-2 text-sm text-muted-foreground">
@@ -151,7 +151,7 @@ export default function HomePage() {
           </div>
         </RevealSection>
 
-        <RevealSection id="esempi" className="border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <RevealSection id="esempi" className="border-b border-border/60 px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
           <div className="mx-auto max-w-5xl space-y-8">
             <ScenarioSlider
               title={content.scenari.title}
@@ -169,10 +169,10 @@ export default function HomePage() {
               </div>
               <div className="grid gap-3 sm:grid-cols-3">
                 {content.storie.items.map((story) => (
-                  <div key={story.title} className="surface-card rounded-2xl p-5">
+                  <div key={story.title} className="surface-card p-5">
                     <p className="text-sm font-semibold text-foreground">{story.title}</p>
                     <p className="mt-3 text-sm text-muted-foreground">{story.body}</p>
-                    <p className="mt-4 text-xs text-muted-foreground">Esempio informativo. Non e una garanzia.</p>
+                    <p className="mt-4 text-xs text-muted-foreground">Esempio informativo. Non è una garanzia.</p>
                   </div>
                 ))}
               </div>
@@ -180,7 +180,7 @@ export default function HomePage() {
           </div>
         </RevealSection>
 
-        <RevealSection id="metodo" className="border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <RevealSection id="metodo" className="border-b border-border/60 px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
           <div className="mx-auto max-w-5xl space-y-6">
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-semibold">{content.comeFunziona.title}</h2>
@@ -193,7 +193,7 @@ export default function HomePage() {
             </div>
             <ol className="grid gap-3 sm:grid-cols-2">
               {content.comeFunziona.steps.map((step) => (
-                <li key={step} className="surface-card rounded-2xl p-4 text-sm text-muted-foreground">
+                <li key={step} className="surface-card p-4 text-sm text-muted-foreground">
                   {step}
                 </li>
               ))}
@@ -201,14 +201,14 @@ export default function HomePage() {
           </div>
         </RevealSection>
 
-        <RevealSection id="verifichiamo" className="border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <RevealSection id="verifichiamo" className="border-b border-border/60 px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
           <div className="mx-auto max-w-5xl space-y-6">
             <h2 className="text-2xl font-semibold">{content.verifichiamo.title}</h2>
             <VerifyCategories items={content.verifichiamo.items} />
           </div>
         </RevealSection>
 
-        <RevealSection id="limiti" className="border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <RevealSection id="limiti" className="border-b border-border/60 px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
           <div className="mx-auto max-w-5xl space-y-6">
             <h2 className="text-2xl font-semibold">{content.limiti.title}</h2>
             <ul className="space-y-2 text-sm text-muted-foreground">
@@ -226,7 +226,7 @@ export default function HomePage() {
           </div>
         </RevealSection>
 
-        <RevealSection id="fonti" className="border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <RevealSection id="fonti" className="border-b border-border/60 px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
           <div className="mx-auto max-w-5xl space-y-6">
             <h2 className="text-2xl font-semibold">{content.fonti.title}</h2>
             <ul className="space-y-2 text-sm text-muted-foreground">
@@ -241,7 +241,7 @@ export default function HomePage() {
           </div>
         </RevealSection>
 
-        <RevealSection className="px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <RevealSection className="px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
           <div className="mx-auto max-w-5xl space-y-4 text-center">
             <h2 className="text-2xl font-semibold">{content.ctaFinale.title}</h2>
             <Link href="/verifica" className="btn-primary">
@@ -269,7 +269,7 @@ export default function HomePage() {
             </Link>
           </div>
           <p className="text-xs text-muted-foreground">
-            Materiale informativo ed educativo. Non e consulenza finanziaria regolamentata.
+            Materiale informativo ed educativo. Non è consulenza finanziaria regolamentata.
           </p>
         </div>
       </footer>

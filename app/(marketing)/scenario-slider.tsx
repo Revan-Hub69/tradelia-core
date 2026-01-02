@@ -104,7 +104,7 @@ export function ScenarioSlider({ title, ctaSecondary, ctaSecondaryHref, items }:
 
       <div
         ref={containerRef}
-        className="surface-card rounded-2xl p-6 sm:p-8"
+        className="surface-card p-6 sm:p-8"
         tabIndex={0}
         onKeyDown={onContainerKeyDown}
         role="group"
@@ -123,7 +123,7 @@ export function ScenarioSlider({ title, ctaSecondary, ctaSecondaryHref, items }:
               onClick={goPrev}
               aria-label="Scenario precedente"
             >
-              Prev
+              Precedente
             </button>
             <button
               type="button"
@@ -131,17 +131,17 @@ export function ScenarioSlider({ title, ctaSecondary, ctaSecondaryHref, items }:
               onClick={goNext}
               aria-label="Scenario successivo"
             >
-              Next
+              Successivo
             </button>
           </div>
         </div>
 
         <div className="mt-6 grid gap-3 sm:grid-cols-2">
-          <div className="surface-card rounded-2xl p-4">
+          <div className="surface-card p-4">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Errore invisibile</p>
             <p className="mt-2 text-sm text-muted-foreground">{current.hiddenError}</p>
           </div>
-          <div className="surface-card rounded-2xl p-4">
+          <div className="surface-card p-4">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Cosa chiarisce</p>
             <p className="mt-2 text-sm text-muted-foreground">{current.clarifies}</p>
           </div>
@@ -191,7 +191,7 @@ export function ScenarioSlider({ title, ctaSecondary, ctaSecondaryHref, items }:
             if (event.target === event.currentTarget) closeDetails();
           }}
         >
-          <div className="surface-card w-full max-w-2xl rounded-2xl p-6 sm:p-8">
+          <div className="surface-card w-full max-w-2xl p-6 sm:p-8">
             <div className="flex items-start justify-between gap-6">
               <div className="space-y-2">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Scenario</p>

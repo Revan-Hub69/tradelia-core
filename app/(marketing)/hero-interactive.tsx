@@ -50,7 +50,7 @@ function ProgressLine({ step, steps }: { step: number; steps: number }) {
       <div className="progress-line">
         <span style={{ width }} />
       </div>
-      <p className="text-xs text-muted-foreground">{step}/{steps}</p>
+      <p className="text-xs text-muted-foreground">Fase {step} di {steps}</p>
     </div>
   );
 }
@@ -60,9 +60,7 @@ export function HeroInteractive({ question, options, ctaLabel, microcopy }: Hero
   const [selected, setSelected] = useState<string | null>(null);
 
   const isReady = Boolean(selected);
-  const helperText = isReady
-    ? "Hai selezionato un obiettivo: puoi avviare il controllo."
-    : "Scegli un obiettivo per attivare il controllo.";
+  const helperText = isReady ? "" : "Seleziona un obiettivo per procedere.";
 
   function handleStart() {
     if (!selected) return;
@@ -73,9 +71,11 @@ export function HeroInteractive({ question, options, ctaLabel, microcopy }: Hero
     <div className="space-y-6">
       <div className="space-y-2">
         <p className="text-sm font-semibold text-foreground">{question}</p>
-        <p className="text-xs text-muted-foreground" aria-live="polite">
-          {helperText}
-        </p>
+        {helperText && (
+          <p className="text-xs text-muted-foreground" aria-live="polite">
+            {helperText}
+          </p>
+        )}
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
         {options.map((option) => (

@@ -1,41 +1,41 @@
 {
   "hero": {
-    "title": "Prima di scegliere una piattaforma, controlla se il piano e compatibile con cio che vuoi fare.",
+    "title": "Prima di scegliere, verifica se lo strumento è compatibile con te.",
     "subtitle": [
-      "Tradelia confronta esigenze dichiarate con dati contrattuali e operativi: costi per piano, vincoli, livello tecnico richiesto, reclami e assistenza.",
-      "Non suggeriamo asset o timing. Riduciamo errori strutturali prima della scelta."
+      "Obiettivo, vincoli, custodia, costi impliciti, complessità.",
+      "Nessun asset. Nessun timing. Nessuna pressione."
     ],
     "question": "Cosa vuoi fare adesso?",
     "options": [
       { "id": "passivo", "label": "Investimenti passivi", "subtext": "poco tempo, regole chiare" },
       { "id": "cripto", "label": "Acquistare cripto", "subtext": "prima comprare, poi capire bene" },
-      { "id": "trading", "label": "Fare trading", "subtext": "piu frequente, piu rischi" },
+      { "id": "trading", "label": "Fare trading", "subtext": "più frequente, più rischi" },
       { "id": "custodia", "label": "Custodia e sicurezza", "subtext": "wallet, chiavi, protezione" }
     ],
     "cta": "Avvia il controllo",
-    "microcopy": "1 minuto. Nessuna registrazione. Se mancano dati critici (es. spread/slippage), lo dichiariamo e non forziamo un esito."
+    "microcopy": "1 minuto. Nessuna registrazione. Riduce errori comuni: non certifica scelte \"sicure\". Se mancano dati critici (es. spread/slippage), lo dichiariamo."
   },
   "problema": {
-    "title": "Perche questo e un problema (e come lo risolviamo)",
-    "problem": "Molti contenuti descrivono strumenti corretti, ma non operativamente idonei al tuo caso. Il danno tipico non e la previsione: e il costo cumulativo (commissioni, spread, funding) o un vincolo operativo (prelievi, KYC, assistenza) scoperto tardi.",
+    "title": "Perché questo è un problema (e come lo risolviamo)",
+    "problem": "Molti contenuti descrivono strumenti corretti, ma non operativamente idonei al tuo caso. Il danno tipico non è la previsione: è il costo cumulativo (commissioni, spread, funding) o un vincolo operativo (prelievi, KYC, assistenza) scoperto tardi.",
     "solutionTitle": "Cosa facciamo di concreto",
     "solutions": [
       "Archiviamo costi contrattuali per piano (tariffe ufficiali e condizioni).",
       "Stimiamo attriti operativi dove possibile (spread/slippage) e dichiariamo i limiti delle misure.",
-      "Valutiamo complessita operativa e requisiti minimi (custodia, leva, gestione rischio).",
+      "Valutiamo complessità operativa e requisiti minimi (custodia, leva, gestione rischio).",
       "Segnaliamo problemi noti di assistenza e reclami pubblici, quando disponibili.",
       "Restituiamo un esito Adatto / Frizione / Non adatto, con motivi e fonti."
     ]
   },
   "accoglienza": {
-    "title": "Se hai gia commesso errori, sei nel posto giusto.",
+    "title": "Se hai già commesso errori, sei nel posto giusto.",
     "body": "Molte persone partono da strumenti troppo complessi o non compatibili con il proprio obiettivo. Tradelia non giudica: rende visibili frizioni e vincoli prima della scelta."
   },
   "cosaFacciamo": {
     "title": "Cosa fa Tradelia (pratico e verificabile)",
     "bullets": [
       "Confronta la tua esigenza con piattaforme e piani (non con promesse).",
-      "Evidenzia frizioni: costi contrattuali, costi operativi stimati, vincoli e complessita.",
+      "Evidenzia frizioni: costi contrattuali, costi operativi stimati, vincoli e complessità.",
       "Guida l'interpretazione del risultato per evitare sovrainterpretazioni."
     ],
     "microcopy": "Non analizziamo mercati, non suggeriamo asset, non ottimizziamo performance. Eventuali affiliazioni (se presenti) non influenzano il metodo."
@@ -61,22 +61,22 @@
       {
         "id": "exchange-wallet",
         "situation": "Ho comprato cripto e le lascio dove capita.",
-        "hiddenError": "Custodia, responsabilita e recupero non esplicitati prima.",
+        "hiddenError": "Custodia, responsabilità e recupero non esplicitati prima.",
         "clarifies": "Custodial vs self-custody, rischi tipici per beginner e requisiti minimi.",
         "doesNotMean": "Non significa che una scelta sia \"giusta\" sempre. Significa che cambia chi porta il rischio operativo."
       },
       {
         "id": "passive-start",
         "situation": "Voglio investimenti passivi e non so da dove partire.",
-        "hiddenError": "Strumento non allineato a orizzonte e tutele, con complessita non necessaria.",
+        "hiddenError": "Strumento non allineato a orizzonte e tutele, con complessità non necessaria.",
         "clarifies": "Piani compatibili per iniziare e frizioni tipiche da verificare prima.",
         "doesNotMean": "Non significa che il mercato sia meno rischioso. Significa che riduci errori strutturali di strumento."
       },
       {
         "id": "confirm-bias",
-        "situation": "Opero da anni: voglio verificare se sto gia bene.",
+        "situation": "Opero da anni: voglio verificare se sto già bene.",
         "hiddenError": "Bias di conferma e parametri non esplicitati (vincoli, costi, custodia, supporto).",
-        "clarifies": "Perche un piano risulta compatibile o in frizione, con limiti dichiarati.",
+        "clarifies": "Perché un piano risulta compatibile o in frizione, con limiti dichiarati.",
         "doesNotMean": "Non significa approvazione. Significa che, sui dati disponibili, non emergono incompatibilita evidenti."
       }
     ]
@@ -91,11 +91,11 @@
       },
       {
         "title": "Capire i costi prima che diventino dominanti",
-        "body": "Pensavo di pagare poco perche vedevo \"zero fee\". Il controllo ha reso visibili spread e condizioni che, con il mio modo di operare, avrebbero pesato molto nel tempo. Ho cambiato impostazione prima di agire."
+        "body": "Pensavo di pagare poco perché vedevo \"zero fee\". Il controllo ha reso visibili spread e condizioni che, con il mio modo di operare, avrebbero pesato molto nel tempo. Ho cambiato impostazione prima di agire."
       },
       {
         "title": "Ridurre frizioni su custodia e recupero",
-        "body": "Avevo cripto su piu servizi senza un criterio. Tradelia mi ha chiarito differenze di custodia e responsabilita, e cosa verificare prima (backup, accesso, procedure)."
+        "body": "Avevo cripto su più servizi senza un criterio. Tradelia mi ha chiarito differenze di custodia e responsabilità, e cosa verificare prima (backup, accesso, procedure)."
       }
     ]
   },
@@ -104,19 +104,19 @@
     "steps": [
       "Selezioni obiettivo e livello (pochi click).",
       "Indichi cosa vuoi evitare (costi, regole, custodia, stress).",
-      "Calcoliamo compatibilita su piattaforme e piani, basandoci sui dati disponibili.",
+      "Calcoliamo compatibilità su piattaforme e piani, basandoci sui dati disponibili.",
       "Mostriamo Adatto / Con frizione / Non adatto con motivi e limiti dichiarati."
     ],
-    "note": "Solo 3 step."
+    "note": "Solo 3 passaggi."
   },
   "verifichiamo": {
     "title": "Cosa verifichiamo",
     "items": [
-      { "label": "Broker regolamentato", "tooltip": "Regole piu chiare, vincoli e tutele." },
-      { "label": "Exchange", "tooltip": "Operativita crypto, ma complessita e custodia variabile." },
-      { "label": "Wallet custodial vs self-custody", "tooltip": "Controllo totale implica responsabilita totale." },
+      { "label": "Broker regolamentato", "tooltip": "Regole più chiare, vincoli e tutele." },
+      { "label": "Exchange", "tooltip": "Operatività crypto, ma complessità e custodia variabile." },
+      { "label": "Wallet custodial vs self-custody", "tooltip": "Controllo totale implica responsabilità totale." },
       { "label": "Trading con leva", "tooltip": "Amplifica errori e stress decisionale." },
-      { "label": "Conti / parcheggio liquidita", "tooltip": "Stabilita e vincoli, non operativita di trading. Attenzione a penali e tempi di uscita." }
+      { "label": "Conti / parcheggio liquidità", "tooltip": "Stabilità e vincoli, non operatività di trading. Attenzione a penali e tempi di uscita." }
     ]
   },
   "limiti": {
@@ -127,7 +127,7 @@
       "Non promettiamo risultati.",
       "Non sostituiamo consulenza regolamentata."
     ],
-    "accordionTitle": "Perche ci fermiamo?",
+    "accordionTitle": "Perché ci fermiamo?",
     "accordionBody": "Per evitare sicurezza ingiustificata e spinta all'azione rapida. Ogni eventuale affiliazione e dichiarata e non modifica il metodo."
   },
   "fonti": {
@@ -140,7 +140,7 @@
     "affiliazioni": "Affiliazioni (se presenti) separate dal metodo e sempre segnalate."
   },
   "ctaFinale": {
-    "title": "Vuoi una verifica di compatibilita prima di scegliere?",
+    "title": "Vuoi una verifica di compatibilità prima di scegliere?",
     "cta": "Inizia il controllo",
     "microcopy": "1 minuto. Nessuna registrazione. Esito con motivi e limiti."
   },
