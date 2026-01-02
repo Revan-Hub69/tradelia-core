@@ -8,7 +8,6 @@ const nextConfig = {
   experimental: {
     mdxRs: true,
     // optimizeCss: true, // Temporarily disabled - causing critters error
-    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
   },
   // Disable unnecessary polyfills for modern browsers
   transpilePackages: [],
@@ -24,8 +23,8 @@ const nextConfig = {
     
     // CSP configuration - more permissive for Next.js compatibility
     const csp = isDev 
-      ? "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.huggingface.co https://api.alternative.me https://*.supabase.co wss://*.supabase.co ws://localhost:*; frame-src 'none'; object-src 'none'; base-uri 'self';"
-      : "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.huggingface.co https://api.alternative.me https://*.supabase.co wss://*.supabase.co; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';";
+      ? "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self';"
+      : "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';";
 
     return [
       {
@@ -87,16 +86,6 @@ const nextConfig = {
           }
         ]
       },
-      // Cache API routes with shorter TTL
-      {
-        source: '/api/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=300, s-maxage=300' // 5 minutes
-          }
-        ]
-      }
     ];
   },
 };

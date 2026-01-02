@@ -1,15 +1,15 @@
-import { cn } from "@/lib/utils";
-
 interface LogoIconProps extends React.SVGProps<SVGSVGElement> {
   className?: string;
 }
 
 export function LogoIcon({ className, ...props }: LogoIconProps) {
+  const classes = className ? `h-8 w-8 ${className}` : "h-8 w-8";
+
   return (
     <svg
       viewBox="0 0 32 32"
       fill="none"
-      className={cn("h-8 w-8", className)}
+      className={classes}
       {...props}
     >
       {/* Outer circle */}

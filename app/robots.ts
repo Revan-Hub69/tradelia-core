@@ -1,17 +1,11 @@
-import { MetadataRoute } from 'next'
+import type { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
-      userAgent: '*',
-      allow: '/',
-      disallow: [
-        '/api/',
-        '/admin/',
-        '/_next/',
-        '/private/'
-      ],
+      userAgent: "*",
+      allow: "/",
     },
-    sitemap: 'https://tradelia.com/sitemap.xml',
-  }
+    sitemap: "https://tradelia.org/sitemap.xml",
+  };
 }

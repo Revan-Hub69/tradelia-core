@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-background">
@@ -80,7 +78,10 @@ export default function HomePage() {
           </p>
         </section>
 
-        <section className="mt-16 space-y-8 border-t border-border/60 pt-12 sm:mt-20 sm:pt-16">
+        <section
+          id="metodo-operativo"
+          className="mt-16 space-y-8 border-t border-border/60 pt-12 sm:mt-20 sm:pt-16"
+        >
           <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
             Metodo cognitivo
           </p>
@@ -224,9 +225,9 @@ export default function HomePage() {
             <li>Compatibilità con MiFID e comunicazione non persuasiva.</li>
           </ul>
           <p className="text-sm text-muted-foreground">
-            <Link href="/metodo-operativo" className="underline underline-offset-4">
+            <a href="#metodo-operativo" className="underline underline-offset-4">
               Approfondisci il metodo operativo
-            </Link>
+            </a>
           </p>
         </section>
 

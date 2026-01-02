@@ -1,52 +1,62 @@
 import type { ReactNode } from "react";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
-import { AppProviders } from "@/components/providers/AppProviders";
-import { Toaster } from "sonner";
 import { inter, ibmPlexSans } from "@/lib/fonts";
-import { StructuredData } from "@/components/structured-data";
-import { SupabaseConnectionDebug } from "@/components/debug/SupabaseConnectionDebug";
 
 export const viewport: Viewport = {
-  width: 'device-width',
+  width: "device-width",
   initialScale: 1,
   maximumScale: 5,
   userScalable: true,
-}
+};
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://tradelia.org'),
+  metadataBase: new URL("https://tradelia.org"),
   title: {
-    default: "Tradelia | Educazione Finanziaria Antifuffa",
-    template: "%s | Tradelia"
+    default: "Tradelia | Verifica decisionale",
+    template: "%s | Tradelia",
   },
-  description: "Piattaforma educativa per comprendere crypto e mercati finanziari. Micro-lezioni, spiegazioni guidate, zero consigli operativi. Educazione seria contro la fuffa finanziaria.",
+  description:
+    "Sistema che verifica la compatibilità tra necessità dell'utente e caratteristiche reali di broker, wallet, exchange e conti deposito, con fonti ufficiali.",
   keywords: [
-    "educazione finanziaria",
-    "crypto educazione", 
-    "bitcoin spiegazione",
-    "fear greed index",
-    "analisi tecnica educativa",
-    "trading educazione",
-    "investimenti consapevoli",
-    "finanza comportamentale",
-    "antifuffa finanziaria",
-    "micro lezioni crypto"
+    "compatibilità finanziaria",
+    "broker",
+    "exchange",
+    "wallet",
+    "conti deposito",
+    "risk management",
+    "decision science",
+    "MiFID",
+    "due diligence",
+    "fintech",
   ],
-  authors: [{ name: "Tradelia Team", url: "https://tradelia.com" }],
+  authors: [{ name: "Tradelia Team" }],
   creator: "Tradelia",
   publisher: "Tradelia",
-  category: "Education",
-  classification: "Financial Education",
-  icons: {
-    icon: [
-      { url: '/favicon.ico', sizes: '48x48', type: 'image/x-icon' },
-      { url: '/favicon.svg', type: 'image/svg+xml' }
+  openGraph: {
+    type: "website",
+    locale: "it_IT",
+    url: "https://tradelia.org",
+    title: "Tradelia | Verifica decisionale",
+    description:
+      "Sistema che verifica la compatibilità tra necessità dell'utente e caratteristiche reali di broker, wallet, exchange e conti deposito.",
+    siteName: "Tradelia",
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "Tradelia - Sistema di verifica decisionale",
+      },
     ],
-    apple: [
-      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }
-    ]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Tradelia | Verifica decisionale",
+    description:
+      "Sistema che verifica la compatibilità tra necessità dell'utente e caratteristiche reali di broker, wallet, exchange e conti deposito.",
+    images: ["/og.png"],
+    creator: "@tradelia",
   },
   robots: {
     index: true,
@@ -54,71 +64,35 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
-  openGraph: {
-    type: "website",
-    locale: "it_IT",
-    url: "https://tradelia.com",
-    siteName: "Tradelia",
-    title: "Tradelia | Educazione Finanziaria Antifuffa",
-    description: "Micro-lezioni crypto e spiegazioni guidate. Zero consigli operativi, solo educazione seria contro la fuffa finanziaria.",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Tradelia - Educazione Finanziaria Antifuffa",
-        type: "image/png"
-      }
-    ]
-  },
-  twitter: {
-    card: "summary_large_image",
-    site: "@tradelia",
-    creator: "@tradelia",
-    title: "Tradelia | Educazione Finanziaria Antifuffa",
-    description: "Micro-lezioni crypto e spiegazioni guidate. Zero consigli operativi, solo educazione seria.",
-    images: ["/og-image.png"]
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
   alternates: {
     canonical: "https://tradelia.org",
     languages: {
-      'it-IT': 'https://tradelia.org',
-    }
+      "it-IT": "https://tradelia.org",
+    },
   },
-  verification: {
-    google: "your-google-verification-code",
-    other: {
-      "facebook-domain-verification": "your-facebook-verification-code"
-    }
-  }
-}
+};
 
-export default function RootLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="it" className={`${inter.variable} ${ibmPlexSans.variable}`} suppressHydrationWarning>
+    <html
+      lang="it"
+      className={`${inter.variable} ${ibmPlexSans.variable}`}
+      suppressHydrationWarning
+    >
       <body className="bg-muted/20 text-foreground antialiased font-sans">
-        <StructuredData />
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <AppProviders>
-            {children}
-            <Toaster richColors position="bottom-right" />
-            {process.env.NODE_ENV !== 'production' && <SupabaseConnectionDebug />}
-          </AppProviders>
-        </ThemeProvider>
+        {children}
       </body>
     </html>
   );

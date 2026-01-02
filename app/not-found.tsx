@@ -1,19 +1,17 @@
 import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
-
 export default function NotFound() {
   return (
-    <div className="flex h-full flex-col items-start justify-center gap-4">
-      <div>
-        <h1 className="text-xl font-semibold text-foreground">Contenuto non disponibile</h1>
+    <div className="mx-auto flex min-h-[60vh] max-w-[60rem] flex-col justify-center gap-4 px-6 py-12">
+      <div className="space-y-2">
+        <h1 className="text-xl font-semibold text-primary">Contenuto non disponibile</h1>
         <p className="text-sm text-muted-foreground">
-          La risorsa richiesta non è presente nel percorso educativo.
+          La risorsa richiesta non è presente.
         </p>
       </div>
-      <Button asChild>
-        <Link href="/">Torna alla home</Link>
-      </Button>
+      <Link href="/" className="text-sm text-primary underline underline-offset-4">
+        Torna alla home
+      </Link>
     </div>
   );
 }
