@@ -23,7 +23,7 @@ export function LogoIcon({ className, ...props }: LogoIconProps) {
       />
       {/* Inner geometric shape representing data/analytics */}
       <path
-        d="M8 12L12 8L16 12L20 8L24 12V20L20 24L16 20L12 24L8 20V12Z"
+        d="M8 12L12 8L16 12L20 8L24 12V20L20 24L16 20L12 24L8 20V12Z"        
         stroke="currentColor"
         strokeWidth="1.5"
         strokeLinejoin="round"
