@@ -1,9 +1,9 @@
 {
   "hero": {
-    "title": "Non sai da dove partire? Prima controlla che tipo di strumento ti serve.",
+    "title": "Prima di scegliere uno strumento, togli l'asimmetria informativa.",
     "subtitle": [
-      "Molti errori all'inizio non dipendono da cosa compri,",
-      "ma dallo strumento sbagliato (broker, exchange, wallet, leva, conti)."
+      "Gli errori piu costosi nascono da strumenti sbagliati, costi nascosti o incentivi opachi.",
+      "Qui confronti categorie (broker, exchange, leva, wallet) senza affiliazioni mascherate."
     ],
     "question": "Cosa stai cercando di fare?",
     "options": [
@@ -28,40 +28,40 @@
         "subtext": "non so ancora cosa scegliere"
       }
     ],
-    "cta": "Avvia controllo (1 minuto)",
-    "microcopy": "Nessuna registrazione. Nessuna promessa. Ti restituiamo una mappa di compatibilita tra profilo e categorie di strumenti."
+    "cta": "Avvia controllo trasparenza",
+    "microcopy": "Nessuna registrazione. Nessuna pressione all'azione. Se esistono affiliazioni le segnaliamo: l'obiettivo e ridurre il rischio di pagare per lo strumento sbagliato."
   },
   "accoglienza": {
-    "title": "Se hai gia sbagliato in passato, sei nel posto giusto.",
-    "body": "Molte persone iniziano da strumenti troppo complessi o sbagliati per il loro obiettivo. Tradelia non giudica: riduce errori comuni prima della scelta."
+    "title": "Se hai gia perso soldi o tempo, qui trovi freni e avvisi prima di cliccare.",
+    "body": "Molti iniziano con leva, exchange o conti bloccati per obiettivi sbagliati. Tradelia mette in evidenza frizioni, costi impliciti e rischi di custodia prima di scegliere."
   },
   "cosaFacciamo": {
-    "title": "Cosa fa Tradelia (in pratica)",
+    "title": "Cosa fa Tradelia (pratico e verificabile)",
     "bullets": [
       "Ti dice quali categorie di strumenti sono piu adatte per il tuo caso (non brand).",
-      "Evidenzia frizioni: costi impliciti, regole, custodia, leva, complessita.",
-      "Spiega come leggere il risultato senza sovrainterpretare."
+      "Evidenzia frizioni: costi impliciti, incentivi commerciali, custodia, leva, complessita.",
+      "Spiega come leggere il risultato senza sovrainterpretare o farti correre rischi inutili."
     ],
-    "microcopy": "Non analizziamo mercati, non suggeriamo asset, non ottimizziamo performance."
+    "microcopy": "Non analizziamo mercati, non suggeriamo asset, non ottimizziamo performance. Separiamo metodo e affiliazioni per ridurre bias."
   },
   "esempio": {
-    "title": "Un errore comune (tap per vedere perche)",
+    "title": "Asimmetria informativa: un esempio concreto",
     "objectiveLabel": "Obiettivo",
-    "objectiveValue": "fare trading",
-    "choiceLabel": "Scelta tipica",
-    "choiceValue": "conto deposito",
+    "objectiveValue": "Avvicinarsi al mondo crypto",
+    "choiceLabel": "Scelta indotta da promozioni",
+    "choiceValue": "CFD con leva su crypto",
     "resultLabel": "Esito",
     "resultValue": "Non adatto",
     "accordionTitle": "Perche?",
-    "accordionBody": "Per il trading servono esecuzione, gestione rischio intraday, strumenti operativi. Un conto deposito ha vincoli strutturali diversi. Non e sbagliato: e un altro scopo."
+    "accordionBody": "Obiettivo: capire le basi e custodire in modo sicuro. Scelta indotta da affiliazioni e pubblicita: CFD con leva. Effetto: costi overnight e spread erodono il capitale, leva amplifica errori e rischi di sicurezza sono delegati alla piattaforma. Stessa asimmetria nel trading multiday su commodities: costi overnight e roll degradano la strategia. Per chi acquista azioni, spread e slippage nascosti su broker poco trasparenti distruggono il rendimento. Meglio partire da strumenti regolamentati senza leva o da soluzioni di custodia con costi visibili."
   },
   "comeFunziona": {
     "title": "Come funziona il controllo",
     "steps": [
       "Selezioni obiettivo e livello (pochi click).",
-      "Indichi cosa vuoi evitare (rischi, costi, regole).",
-      "Calcoliamo compatibilita solo per categorie.",
-      "Mostriamo Adatto / Con frizione / Non adatto con motivi."
+      "Indichi cosa vuoi evitare (rischi, costi, incentivi, regole).",
+      "Calcoliamo compatibilita solo per categorie (no marchi, no affiliazioni nascoste).",
+      "Mostriamo Adatto / Con frizione / Non adatto con motivi e rischi tipici."
     ],
     "note": "Solo 3 step."
   },
@@ -86,7 +86,7 @@
       },
       {
         "label": "Conti / parcheggio liquidita",
-        "tooltip": "Stabilita e vincoli, non operativita di trading."
+        "tooltip": "Stabilita e vincoli, non operativita di trading. Occhio ai costi e alle penali."
       }
     ]
   },
@@ -99,20 +99,21 @@
       "Non sostituiamo consulenza regolamentata."
     ],
     "accordionTitle": "Perche ci fermiamo?",
-    "accordionBody": "Per evitare sicurezza ingiustificata e spinta all'azione rapida."
+    "accordionBody": "Per evitare sicurezza ingiustificata e spinta all'azione rapida. Ogni eventuale affiliazione e dichiarata: nessun risultato dipende da incentivi nascosti."
   },
   "fonti": {
     "title": "Trasparenza e fonti",
     "items": [
-      "Documentazione ufficiale e principi di risk management.",
-      "AI per sintesi e chiarezza, non per decisione."
+      "Documentazione ufficiale e principi di risk management (no schede commerciali).",
+      "AI per sintesi e chiarezza, non per decisione.",
+      "Controllo umano su conflitti di interesse e custodia."
     ],
-    "affiliazioni": "Affiliazioni (se presenti) separate dal metodo."
+    "affiliazioni": "Affiliazioni (se presenti) separate dal metodo e sempre segnalate."
   },
   "ctaFinale": {
-    "title": "Pronto a partire senza fare il primo errore evitabile?",
+    "title": "Pronto a evitare costi nascosti e strumenti sbagliati?",
     "cta": "Inizia il controllo",
-    "microcopy": "1 minuto · nessuna registrazione"
+    "microcopy": "1 minuto · nessuna registrazione · trasparenza su affiliazioni"
   },
   "footer": {
     "metodo": "Metodo",
