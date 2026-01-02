@@ -107,7 +107,9 @@ export function ScenarioSlider({ title, ctaSecondary, ctaSecondaryHref, items }:
         className="surface-card rounded-2xl p-6 sm:p-8"
         tabIndex={0}
         onKeyDown={onContainerKeyDown}
-        aria-label="Slider scenari. Usa frecce sinistra e destra."
+        role="group"
+        aria-roledescription="carousel"
+        aria-label="Scenari. Usa frecce sinistra e destra."
       >
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-3">
@@ -151,14 +153,20 @@ export function ScenarioSlider({ title, ctaSecondary, ctaSecondaryHref, items }:
               <button
                 key={item.id}
                 type="button"
-                className="h-2.5 w-2.5 rounded-full border border-border/80 transition-subtle"
-                style={{
-                  background: i === clampIndex(index, length) ? "hsl(var(--primary))" : "transparent",
-                }}
+                className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/70 bg-background transition-subtle hover:bg-muted/50"
                 aria-label={`Vai allo scenario ${i + 1}`}
                 aria-current={i === clampIndex(index, length)}
                 onClick={() => setIndex(i)}
-              />
+              >
+                <span
+                  aria-hidden
+                  className="h-2.5 w-2.5 rounded-full"
+                  style={{
+                    background:
+                      i === clampIndex(index, length) ? "hsl(var(--primary))" : "hsl(var(--border))",
+                  }}
+                />
+              </button>
             ))}
           </div>
 

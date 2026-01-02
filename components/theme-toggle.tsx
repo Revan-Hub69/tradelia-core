@@ -43,7 +43,7 @@ export function ThemeToggle() {
   ]
 
   return (
-    <div className="inline-flex items-center rounded-full border border-border/70 bg-background p-1 shadow-sm" role="group" aria-label="Seleziona tema">
+    <div className="inline-flex items-center rounded-lg border border-border/70 bg-background p-1" role="group" aria-label="Seleziona tema">
       {options.map((option) => {
         const isActive = theme === option.value
         return (
@@ -52,8 +52,8 @@ export function ThemeToggle() {
             type="button"
             aria-pressed={isActive}
             className={cn(
-              'px-3 py-1.5 text-xs font-semibold transition-subtle rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
-              isActive ? 'bg-primary text-primary-foreground shadow-sm' : 'text-foreground hover:bg-muted/70'
+              'px-3 py-1.5 text-xs font-semibold transition-subtle rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
+              isActive ? 'bg-primary text-primary-foreground' : 'text-foreground hover:bg-muted/70'
             )}
             onClick={() => handleThemeChange(option.value)}
           >
