@@ -542,7 +542,23 @@
   .stagger-3 { animation-delay: 360ms; }
 
   .section-reveal {
-    animation: fadeIn 520ms ease-out both;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 320ms ease-out, transform 320ms ease-out;
+  }
+
+  .section-reveal[data-visible="true"] {
+    opacity: 1;
+    transform: none;
+  }
+
+  .section-reveal:not([data-visible]) {
+    opacity: 1;
+    transform: none;
+  }
+
+  .section-reveal[data-visible="true"] .progress-line > span {
+    transition-delay: 120ms;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -556,9 +572,9 @@
     }
 
     .section-reveal {
-      animation: none;
       opacity: 1;
       transform: none;
+      transition: none;
     }
 
     .link-underline::after {
