@@ -1,10 +1,12 @@
 import Link from "next/link";
+
+import { ThemeToggle } from "@/components/theme-toggle";
 import { LogoIcon } from "@/components/icons/logo-icon";
 
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-[60rem] items-center px-6 sm:px-8">
+      <div className="mx-auto flex h-16 max-w-[60rem] items-center justify-between px-6 sm:px-8">
         <Link href="/" className="flex items-center gap-3 no-underline hover:no-underline">
           <LogoIcon className="h-8 w-8 text-primary" />
           <div className="leading-tight">
@@ -14,6 +16,7 @@ export function SiteHeader() {
             </span>
           </div>
         </Link>
+        <ThemeToggle />
       </div>
     </header>
   );

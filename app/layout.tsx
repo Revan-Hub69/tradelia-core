@@ -84,6 +84,19 @@ export const metadata: Metadata = {
   },
 };
 
+const themeScript = `
+(() => {
+  try {
+    const stored = localStorage.getItem("tradelia-theme");
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const theme = stored === "light" || stored === "dark" ? stored : (prefersDark ? "dark" : "light");
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    }
+  } catch (error) {}
+})();
+`;
+
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
@@ -91,6 +104,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       className={`${inter.variable} ${ibmPlexSans.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body className="bg-muted/20 text-foreground antialiased font-sans">
         {children}
       </body>
