@@ -20,6 +20,11 @@ export const metadata: Metadata = {
   },
   description:
     "Sistema che verifica la compatibilita tra obiettivi dichiarati e caratteristiche reali di broker, wallet, exchange, conti deposito e strumenti di pagamento.",
+  icons: {
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+  },
+  manifest: "/site.webmanifest",
   keywords: [
     "compatibilita finanziaria",
     "broker",

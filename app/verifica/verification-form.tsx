@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 
 type FormState = {
   objective: string;
@@ -171,20 +171,44 @@ export function VerificationForm() {
     frequency: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<"idle" | "loading" | "ready">("idle");
+  const timerRef = useRef<number | null>(null);
 
   const isComplete = useMemo(() => Object.values(form).every(Boolean), [form]);
   const result = useMemo(
-    () => (submitted && isComplete ? evaluate(form) : null),
-    [submitted, isComplete, form]
+    () => (status === "ready" && isComplete ? evaluate(form) : null),
+    [status, isComplete, form]
   );
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        window.clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
 
   function handleChange(field: keyof FormState, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
+    if (status !== "idle") {
+      setStatus("idle");
+      setSubmitted(false);
+    }
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubmitted(true);
+    if (!isComplete) {
+      return;
+    }
+    setStatus("loading");
+    if (timerRef.current) {
+      window.clearTimeout(timerRef.current);
+    }
+    timerRef.current = window.setTimeout(() => {
+      setStatus("ready");
+    }, 450);
   }
 
   function handleReset() {
@@ -197,6 +221,11 @@ export function VerificationForm() {
       frequency: "",
     });
     setSubmitted(false);
+    setStatus("idle");
+    if (timerRef.current) {
+      window.clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
   }
 
   const resultStyles: Record<ResultStatus, string> = {
@@ -317,6 +346,35 @@ export function VerificationForm() {
       </form>
 
       <div aria-live="polite" className="space-y-6">
+        {status === "idle" && !submitted && (
+          <div className="surface-card rounded-2xl p-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              Esito non disponibile
+            </p>
+            <p className="mt-3 text-sm text-muted-foreground">
+              Compila i campi per ottenere una verifica di compatibilita
+              informativa. Nessun dato viene salvato.
+            </p>
+          </div>
+        )}
+
+        {status === "loading" && (
+          <div className="surface-card rounded-2xl p-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              Analisi in corso
+            </p>
+            <p className="mt-3 text-sm text-muted-foreground">
+              Stiamo applicando le regole di compatibilita ai dati dichiarati.
+            </p>
+            <div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-muted">
+              <div className="h-full w-2/3 animate-pulse rounded-full bg-primary/40" />
+            </div>
+            <p className="mt-3 text-xs text-muted-foreground">
+              Esito informativo. Non e consulenza regolamentata.
+            </p>
+          </div>
+        )}
+
         {result && (
           <div className={`rounded-2xl border p-6 ${resultStyles[result.status]}`}>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">

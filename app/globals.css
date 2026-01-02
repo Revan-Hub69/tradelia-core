@@ -34,6 +34,13 @@
     --input: 30 16% 92%;
     --ring: 212 42% 28%;
     --radius: 0.75rem;
+
+    --cta-start: 214 40% 22%;
+    --cta-end: 28 62% 54%;
+    --cta-strong: 28 66% 46%;
+    --cta-text: 36 33% 96%;
+    --cta-shadow: 214 28% 12%;
+    --cta-ring: 28 66% 54%;
   }
 
   :root[data-theme='light'] {
@@ -98,6 +105,13 @@
     --border: 220 14% 20%;
     --input: 220 14% 16%;
     --ring: 36 40% 60%;
+
+    --cta-start: 36 58% 62%;
+    --cta-end: 24 62% 50%;
+    --cta-strong: 32 66% 54%;
+    --cta-text: 220 18% 9%;
+    --cta-shadow: 20 30% 5%;
+    --cta-ring: 36 62% 58%;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -194,6 +208,31 @@
     @apply text-foreground no-underline transition-colors hover:text-primary;
   }
 
+  .link-underline {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding-bottom: 0.15rem;
+  }
+
+  .link-underline::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, hsl(var(--primary)), transparent);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 180ms ease;
+  }
+
+  .link-underline:hover::after,
+  .link-underline:focus-visible::after {
+    transform: scaleX(1);
+  }
+
   ::selection {
     @apply bg-primary/15 text-foreground;
   }
@@ -204,10 +243,12 @@
     @apply inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition-subtle no-underline;
     position: relative;
     overflow: hidden;
-    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary)) 55%, hsl(var(--accent)) 100%);
-    color: hsl(var(--primary-foreground));
-    border: 1px solid hsl(var(--primary) / 0.35);
-    box-shadow: 0 16px 28px hsl(var(--primary) / 0.25), 0 2px 6px hsl(var(--primary) / 0.18);
+    background: linear-gradient(135deg, hsl(var(--cta-start)) 0%, hsl(var(--cta-end)) 65%, hsl(var(--cta-strong)) 100%);
+    background-size: 200% 200%;
+    background-position: 0% 50%;
+    color: hsl(var(--cta-text));
+    border: 1px solid hsl(var(--cta-strong) / 0.45);
+    box-shadow: 0 18px 38px hsl(var(--cta-shadow) / 0.32), 0 6px 12px hsl(var(--cta-shadow) / 0.22);
   }
 
   .btn-primary::after {
@@ -215,19 +256,30 @@
     position: absolute;
     inset: 1px;
     border-radius: inherit;
-    background: linear-gradient(180deg, hsl(var(--primary-foreground) / 0.2), transparent 55%);
-    opacity: 0.7;
+    background: radial-gradient(240px circle at 20% 20%, hsl(var(--cta-text) / 0.25), transparent 60%);
+    opacity: 0.4;
     pointer-events: none;
+    transition: opacity 200ms ease;
   }
 
   .btn-primary:hover {
     transform: translateY(-1px);
-    box-shadow: 0 22px 40px hsl(var(--primary) / 0.28), 0 6px 12px hsl(var(--primary) / 0.18);
+    background-position: 100% 50%;
+    box-shadow: 0 26px 46px hsl(var(--cta-shadow) / 0.36), 0 10px 18px hsl(var(--cta-shadow) / 0.2);
+  }
+
+  .btn-primary:hover::after {
+    opacity: 0.75;
   }
 
   .btn-primary:active {
     transform: translateY(0);
-    box-shadow: 0 10px 22px hsl(var(--primary) / 0.2), 0 3px 8px hsl(var(--primary) / 0.12);
+    box-shadow: 0 12px 24px hsl(var(--cta-shadow) / 0.28), 0 4px 10px hsl(var(--cta-shadow) / 0.16);
+  }
+
+  .btn-primary:focus-visible {
+    outline: 2px solid hsl(var(--cta-ring));
+    outline-offset: 3px;
   }
 
   .btn-primary:disabled {
@@ -240,14 +292,14 @@
   .btn-secondary {
     @apply inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition-subtle no-underline;
     border: 1px solid hsl(var(--border));
-    background: linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--secondary)) 100%);
+    background: linear-gradient(180deg, hsl(var(--card)) 0%, hsl(var(--secondary)) 100%);
     color: hsl(var(--foreground));
     box-shadow: 0 12px 24px hsl(var(--foreground) / 0.08);
   }
 
   .btn-secondary:hover {
     transform: translateY(-1px);
-    background: hsl(var(--secondary));
+    background: linear-gradient(180deg, hsl(var(--secondary)) 0%, hsl(var(--muted)) 100%);
     box-shadow: var(--shadow-soft);
   }
 
@@ -260,6 +312,11 @@
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
+  }
+
+  .btn-secondary:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 3px;
   }
 }
 
@@ -307,6 +364,17 @@
     box-shadow: var(--shadow-strong);
   }
 
+  .surface-card-hover {
+    @apply transition-subtle;
+  }
+
+  @media (hover: hover) {
+    .surface-card-hover:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-strong);
+    }
+  }
+
   .link-internal {
     @apply text-foreground no-underline transition-subtle;
   }
@@ -350,6 +418,10 @@
   .stagger-2 { animation-delay: 240ms; }
   .stagger-3 { animation-delay: 360ms; }
 
+  .section-reveal {
+    animation: rise 650ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .animate-fade-in,
     .animate-rise,
@@ -358,6 +430,16 @@
       animation: none;
       opacity: 1;
       transform: none;
+    }
+
+    .section-reveal {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+
+    .link-underline::after {
+      transition: none;
     }
   }
 

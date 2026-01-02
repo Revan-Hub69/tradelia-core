@@ -66,6 +66,7 @@ type Content = {
     legal: string;
   };
   footer: {
+    metodo: string;
     privacy: string;
     disclaimer: string;
     contatti: string;
@@ -73,6 +74,231 @@ type Content = {
 };
 
 const staggerClasses = ["stagger-1", "stagger-2", "stagger-3"];
+const problemaIcons = [
+  (
+    <svg
+      key="context"
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <rect x="3.5" y="4.5" width="11" height="11" rx="2" />
+      <rect x="9.5" y="8.5" width="11" height="11" rx="2" />
+    </svg>
+  ),
+  (
+    <svg
+      key="costs"
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M4 7.5h7l6 6-7 7-6-6v-7Z" />
+      <circle cx="8" cy="11" r="1.5" />
+    </svg>
+  ),
+  (
+    <svg
+      key="constraints"
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <rect x="5" y="11" width="14" height="9" rx="2" />
+      <path d="M8 11V8.5a4 4 0 0 1 8 0V11" />
+    </svg>
+  ),
+];
+
+const metodoIcons = [
+  (
+    <svg
+      key="intent"
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <circle cx="12" cy="12" r="8" />
+      <path d="M12 7v10" />
+      <path d="M7 12h10" />
+    </svg>
+  ),
+  (
+    <svg
+      key="rules"
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <rect x="6" y="4" width="12" height="16" rx="2" />
+      <path d="M9 9h6" />
+      <path d="M9 13h4" />
+      <path d="M9 16l2 2 4-4" />
+    </svg>
+  ),
+  (
+    <svg
+      key="outcome"
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M4 17l5-5 4 4 7-7" />
+      <path d="M20 10v6h-6" />
+    </svg>
+  ),
+];
+
+const verificaIcons = [
+  (
+    <svg
+      key="intent-input"
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <rect x="4" y="5" width="16" height="14" rx="2" />
+      <path d="M8 9h8" />
+      <path d="M8 13h6" />
+    </svg>
+  ),
+  (
+    <svg
+      key="verify"
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <circle cx="10" cy="10" r="4" />
+      <path d="M13 13l6 6" />
+      <path d="M8.5 10.5l1.5 1.5 2.5-3" />
+    </svg>
+  ),
+  (
+    <svg
+      key="report"
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <rect x="5" y="4" width="14" height="16" rx="2" />
+      <path d="M8 9h8" />
+      <path d="M8 13h6" />
+      <path d="M8 17h4" />
+    </svg>
+  ),
+];
+
+const esempiIcons = [
+  (
+    <svg
+      key="emergency"
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M12 3.5l7 3v5.5c0 4.2-3 7.7-7 8.7-4-1-7-4.5-7-8.7V6.5l7-3Z" />
+      <path d="M12 9v4" />
+      <circle cx="12" cy="16.5" r="0.7" fill="currentColor" stroke="none" />
+    </svg>
+  ),
+  (
+    <svg
+      key="crypto"
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <rect x="3.5" y="6.5" width="17" height="11" rx="2" />
+      <path d="M16.5 10h4v4h-4a2 2 0 0 1 0-4Z" />
+      <circle cx="18.5" cy="12" r="0.75" fill="currentColor" stroke="none" />
+    </svg>
+  ),
+  (
+    <svg
+      key="periodic"
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <rect x="3.5" y="5.5" width="17" height="14" rx="2" />
+      <path d="M7 3.5v4" />
+      <path d="M17 3.5v4" />
+      <path d="M7 12h4" />
+      <path d="M7 15.5h6" />
+    </svg>
+  ),
+];
 
 function loadContent(): Content {
   const filePath = path.join(process.cwd(), "public", "content.json");
@@ -106,7 +332,10 @@ export default function HomePage() {
   return (
     <div id="top" className="min-h-screen bg-background text-foreground">
       <main id="main-content" role="main" className="space-y-0">
-        <section className="relative overflow-hidden border-b border-border/60 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        <section
+          className="section-reveal relative overflow-hidden border-b border-border/60 px-4 py-16 sm:px-6 sm:py-24 lg:px-8"
+          style={{ animationDelay: "0ms" }}
+        >
           <div className="pointer-events-none absolute inset-0 -z-10">
             <div className="absolute inset-0 hero-haze" />
             <div className="absolute inset-0 hero-grid opacity-70" />
@@ -152,7 +381,11 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="problema" className="border-b border-border/60 px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+        <section
+          id="problema"
+          className="section-reveal border-b border-border/60 px-4 py-16 sm:px-6 sm:py-20 lg:px-8"
+          style={{ animationDelay: "80ms" }}
+        >
           <div className="mx-auto max-w-6xl space-y-10">
             <div className="space-y-3">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
@@ -167,11 +400,14 @@ export default function HomePage() {
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {content.problema.cards.map((card) => (
+              {content.problema.cards.map((card, index) => (
                 <div
                   key={card.title}
-                  className="card-interactive rounded-2xl border border-border/70 p-6"
+                  className="card-interactive group rounded-2xl border border-border/70 p-6"
                 >
+                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl border border-border/60 bg-muted/40 text-primary/80 transition-subtle group-hover:border-primary/40 group-hover:bg-primary/10 group-hover:text-primary">
+                    {problemaIcons[index]}
+                  </div>
                   <h3 className="text-lg font-semibold text-foreground">{card.title}</h3>
                   <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                     {card.body}
@@ -191,7 +427,11 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="metodo" className="border-b border-border/60 bg-muted/10 px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+        <section
+          id="metodo"
+          className="section-reveal border-b border-border/60 bg-muted/10 px-4 py-16 sm:px-6 sm:py-20 lg:px-8"
+          style={{ animationDelay: "140ms" }}
+        >
           <div className="mx-auto max-w-6xl space-y-10">
             <div className="space-y-3">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
@@ -205,8 +445,11 @@ export default function HomePage() {
               {content.metodo.steps.map((step, index) => (
                 <div
                   key={step.label}
-                  className={`surface-card rounded-2xl p-6 ${staggerClasses[index % staggerClasses.length]} animate-rise`}
+                  className={`surface-card surface-card-hover group rounded-2xl p-6 ${staggerClasses[index % staggerClasses.length]} animate-rise`}
                 >
+                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl border border-border/60 bg-muted/40 text-primary/80 transition-subtle group-hover:border-primary/40 group-hover:bg-primary/10 group-hover:text-primary">
+                    {metodoIcons[index]}
+                  </div>
                   <div className="flex items-center gap-3">
                     <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
                       {step.label}
@@ -220,7 +463,11 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="verifica" className="border-b border-border/60 px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+        <section
+          id="verifica"
+          className="section-reveal border-b border-border/60 px-4 py-16 sm:px-6 sm:py-20 lg:px-8"
+          style={{ animationDelay: "200ms" }}
+        >
           <div className="mx-auto max-w-6xl space-y-10">
             <div className="space-y-3">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
@@ -234,8 +481,11 @@ export default function HomePage() {
               {content.verifica.steps.map((step, index) => (
                 <div
                   key={step.number}
-                  className={`surface-card rounded-2xl p-6 ${staggerClasses[index % staggerClasses.length]} animate-rise`}
+                  className={`surface-card surface-card-hover group rounded-2xl p-6 ${staggerClasses[index % staggerClasses.length]} animate-rise`}
                 >
+                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl border border-border/60 bg-muted/40 text-primary/80 transition-subtle group-hover:border-primary/40 group-hover:bg-primary/10 group-hover:text-primary">
+                    {verificaIcons[index]}
+                  </div>
                   <div className="flex items-center gap-3">
                     <span className="text-sm font-semibold text-primary">{step.number}</span>
                     <h3 className="text-base font-semibold">{step.title}</h3>
@@ -268,7 +518,11 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="esempi" className="border-b border-border/60 bg-muted/10 px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+        <section
+          id="esempi"
+          className="section-reveal border-b border-border/60 bg-muted/10 px-4 py-16 sm:px-6 sm:py-20 lg:px-8"
+          style={{ animationDelay: "260ms" }}
+        >
           <div className="mx-auto max-w-6xl space-y-10">
             <div className="space-y-3">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
@@ -279,8 +533,11 @@ export default function HomePage() {
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {content.esempi.scenarios.map((scenario) => (
-                <div key={scenario.title} className="surface-card rounded-2xl p-6">
+              {content.esempi.scenarios.map((scenario, index) => (
+                <div key={scenario.title} className="surface-card surface-card-hover group rounded-2xl p-6">
+                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl border border-border/60 bg-muted/40 text-primary/80 transition-subtle group-hover:border-primary/40 group-hover:bg-primary/10 group-hover:text-primary">
+                    {esempiIcons[index]}
+                  </div>
                   <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                     Scenario
                   </p>
@@ -315,7 +572,11 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="controlli" className="border-b border-border/60 px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+        <section
+          id="controlli"
+          className="section-reveal border-b border-border/60 px-4 py-16 sm:px-6 sm:py-20 lg:px-8"
+          style={{ animationDelay: "320ms" }}
+        >
           <div className="mx-auto max-w-6xl space-y-10">
             <div className="space-y-3">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
@@ -340,7 +601,11 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="trasparenza" className="border-b border-border/60 bg-muted/10 px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+        <section
+          id="trasparenza"
+          className="section-reveal border-b border-border/60 bg-muted/10 px-4 py-16 sm:px-6 sm:py-20 lg:px-8"
+          style={{ animationDelay: "380ms" }}
+        >
           <div className="mx-auto max-w-6xl space-y-10">
             <div className="space-y-3">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
@@ -405,7 +670,10 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+        <section
+          className="section-reveal px-4 py-16 sm:px-6 sm:py-20 lg:px-8"
+          style={{ animationDelay: "440ms" }}
+        >
           <div className="mx-auto max-w-5xl space-y-8 text-center">
             <div className="space-y-4">
               <h2 className="text-3xl font-semibold sm:text-4xl">{content.cta.title}</h2>
@@ -433,16 +701,22 @@ export default function HomePage() {
         </section>
       </main>
 
-      <footer className="border-t border-border/60 bg-background px-4 py-6 sm:px-6 lg:px-8">
+      <footer
+        className="section-reveal border-t border-border/60 bg-background px-4 py-6 sm:px-6 lg:px-8"
+        style={{ animationDelay: "500ms" }}
+      >
         <div className="mx-auto flex max-w-6xl flex-col gap-4 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap gap-4">
-            <Link href="/privacy" className="link-internal font-medium">
+            <Link href="/metodo" className="link-internal link-underline font-medium">
+              {content.footer.metodo}
+            </Link>
+            <Link href="/privacy" className="link-internal link-underline font-medium">
               {content.footer.privacy}
             </Link>
-            <Link href="/disclaimer" className="link-internal font-medium">
+            <Link href="/disclaimer" className="link-internal link-underline font-medium">
               {content.footer.disclaimer}
             </Link>
-            <Link href="/contatti" className="link-internal font-medium">
+            <Link href="/contatti" className="link-internal link-underline font-medium">
               {content.footer.contatti}
             </Link>
           </div>
