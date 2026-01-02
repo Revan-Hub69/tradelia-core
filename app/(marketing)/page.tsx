@@ -128,32 +128,53 @@ export default function HomePage() {
   return (
     <div id="top" className="min-h-screen bg-background text-foreground">
       <main id="main-content" role="main" className="space-y-0">
-        <RevealSection className="border-b border-border/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-          <div className="mx-auto max-w-5xl space-y-8">
-            <div className="max-w-3xl space-y-4">
-              <h1 className="text-3xl font-semibold leading-tight sm:text-4xl lg:text-5xl">
-                {content.hero.title}
-              </h1>
-              <div className="space-y-2 text-sm text-muted-foreground">
-                {content.hero.subtitle.map((line) => (
-                  <p key={line}>{line}</p>
-                ))}
+        <RevealSection className="hero-haze border-b border-border/60 px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+          <div className="mx-auto max-w-6xl">
+            <div className="grid gap-10 lg:grid-cols-2 lg:items-start">
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  <h1 className="text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">
+                    {content.hero.title}
+                  </h1>
+                  <div className="space-y-2 text-base text-muted-foreground">
+                    {content.hero.subtitle.map((line) => (
+                      <p key={line}>{line}</p>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <Link href="/verifica" className="btn-primary">
+                    Trova la piattaforma giusta
+                  </Link>
+                  <Link href="#metodo" className="btn-secondary">
+                    Come funziona
+                  </Link>
+                </div>
+
+                <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                  <span className="rounded-full border border-border/70 bg-background/70 px-3 py-1">Tariffe ufficiali</span>
+                  <span className="rounded-full border border-border/70 bg-background/70 px-3 py-1">Vincoli operativi</span>
+                  <span className="rounded-full border border-border/70 bg-background/70 px-3 py-1">Assistenza e reclami</span>
+                  <span className="rounded-full border border-border/70 bg-background/70 px-3 py-1">Costi impliciti (quando misurabili)</span>
+                </div>
+              </div>
+
+              <div className="surface-card-strong p-4 sm:p-5">
+                <FinderPreview catalog={catalog} />
+                <details className="accordion mt-4">
+                  <summary>Preferisci la verifica guidata?</summary>
+                  <div className="mt-4 space-y-4">
+                    <HeroInteractive
+                      question={content.hero.question}
+                      options={content.hero.options}
+                      ctaLabel={content.hero.cta}
+                      microcopy={content.hero.microcopy}
+                    />
+                  </div>
+                </details>
               </div>
             </div>
-
-            <FinderPreview catalog={catalog} />
-
-            <details className="accordion">
-              <summary>Preferisci la verifica guidata?</summary>
-              <div className="mt-4 space-y-4">
-                <HeroInteractive
-                  question={content.hero.question}
-                  options={content.hero.options}
-                  ctaLabel={content.hero.cta}
-                  microcopy={content.hero.microcopy}
-                />
-              </div>
-            </details>
           </div>
         </RevealSection>
 

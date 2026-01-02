@@ -204,77 +204,77 @@ export function FinderPreview({ catalog }: { catalog: PlatformCatalog }) {
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <div className="surface-card p-6 sm:p-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Trova il piano giusto</p>
-        <h2 className="mt-3 text-xl font-semibold text-foreground">Dimmi cosa vuoi fare. Io filtro le opzioni.</h2>
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Obiettivo</p>
+        <h2 className="mt-3 text-xl font-semibold text-foreground">Trova un piano adatto in pochi click.</h2>
 
         <div className="mt-6 space-y-5">
-          <div className="space-y-3">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Obiettivo</p>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {objectives.map((o) => (
-                <button
-                  key={o.id}
-                  type="button"
-                  className="choice-card"
-                  data-selected={objective === o.id}
-                  aria-pressed={objective === o.id}
-                  onClick={() => setObjective(o.id)}
-                >
-                  <p className="text-sm font-semibold text-foreground">{o.label}</p>
-                  <p className="mt-2 text-xs text-muted-foreground">{o.micro}</p>
-                </button>
-              ))}
-            </div>
-          </div>
-
           <div className="grid gap-3 sm:grid-cols-2">
-            <div className="space-y-3">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Esperienza</p>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <button
-                  type="button"
-                  className="btn-secondary w-full"
-                  aria-pressed={experience === "beginner"}
-                  onClick={() => setExperience("beginner")}
-                >
-                  Inizio
-                </button>
-                <button
-                  type="button"
-                  className="btn-secondary w-full"
-                  aria-pressed={experience === "experienced"}
-                  onClick={() => setExperience("experienced")}
-                >
-                  Ho gia esperienza
-                </button>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Priorita</p>
-              <div className="grid gap-3 sm:grid-cols-3">
-                {([
-                  { id: "semplicita", label: "Semplicita" },
-                  { id: "costi", label: "Costi" },
-                  { id: "sicurezza", label: "Sicurezza" },
-                ] as const).map((p) => (
-                  <button
-                    key={p.id}
-                    type="button"
-                    className="btn-secondary w-full px-3 py-2 text-xs"
-                    aria-pressed={priority === p.id}
-                    onClick={() => setPriority(p.id)}
-                  >
-                    {p.label}
-                  </button>
-                ))}
-              </div>
-            </div>
+            {objectives.map((o) => (
+              <button
+                key={o.id}
+                type="button"
+                className="choice-card"
+                data-selected={objective === o.id}
+                aria-pressed={objective === o.id}
+                onClick={() => setObjective(o.id)}
+              >
+                <p className="text-sm font-semibold text-foreground">{o.label}</p>
+                <p className="mt-2 text-xs text-muted-foreground">{o.micro}</p>
+              </button>
+            ))}
           </div>
 
-          <p className="text-xs text-muted-foreground">
-            Demo con catalogo di esempio. In produzione, ogni campo deve avere fonte, data e copertura.
-          </p>
+          <details className="accordion">
+            <summary>Opzioni avanzate</summary>
+            <div className="mt-4 space-y-5">
+              <div className="space-y-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Esperienza</p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <button
+                    type="button"
+                    className="btn-secondary w-full"
+                    aria-pressed={experience === "beginner"}
+                    onClick={() => setExperience("beginner")}
+                  >
+                    Inizio
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-secondary w-full"
+                    aria-pressed={experience === "experienced"}
+                    onClick={() => setExperience("experienced")}
+                  >
+                    Ho gia esperienza
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Priorita</p>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  {([
+                    { id: "semplicita", label: "Semplicita" },
+                    { id: "costi", label: "Costi" },
+                    { id: "sicurezza", label: "Sicurezza" },
+                  ] as const).map((p) => (
+                    <button
+                      key={p.id}
+                      type="button"
+                      className="btn-secondary w-full px-3 py-2 text-xs"
+                      aria-pressed={priority === p.id}
+                      onClick={() => setPriority(p.id)}
+                    >
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <p className="text-xs text-muted-foreground">
+                Demo con catalogo di esempio. In produzione, ogni campo deve avere fonte, data e copertura.
+              </p>
+            </div>
+          </details>
         </div>
       </div>
 
@@ -368,4 +368,3 @@ export function FinderPreview({ catalog }: { catalog: PlatformCatalog }) {
     </div>
   );
 }
-

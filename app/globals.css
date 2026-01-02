@@ -8,31 +8,31 @@
     --shadow-soft: 0 14px 32px hsl(220 20% 10% / 0.06), 0 4px 10px hsl(220 20% 10% / 0.04);
     --shadow-strong: 0 24px 60px hsl(220 20% 10% / 0.14), 0 10px 20px hsl(220 20% 10% / 0.1);
 
-    --background: 220 20% 97%;
-    --foreground: 220 16% 16%;
-    --card: 220 18% 99%;
-    --card-foreground: 220 16% 16%;
-    --popover: 220 18% 99%;
-    --popover-foreground: 220 16% 16%;
+    --background: 210 40% 98%;
+    --foreground: 222 22% 16%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 22% 16%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 22% 16%;
 
-    --primary: 220 16% 22%;
-    --primary-foreground: 220 20% 97%;
+    --primary: 172 70% 32%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 16% 92%;
-    --secondary-foreground: 220 16% 16%;
+    --secondary: 210 30% 96%;
+    --secondary-foreground: 222 22% 16%;
 
-    --muted: 220 16% 94%;
+    --muted: 210 30% 96%;
     --muted-foreground: 220 10% 40%;
 
-    --accent: 220 10% 70%;
-    --accent-foreground: 220 16% 16%;
+    --accent: 172 60% 90%;
+    --accent-foreground: 222 22% 16%;
 
     --destructive: 6 30% 45%;
     --destructive-foreground: 220 20% 97%;
 
-    --border: 220 12% 86%;
+    --border: 220 14% 88%;
     --input: 220 14% 92%;
-    --ring: 220 16% 22%;
+    --ring: 172 70% 32%;
     --radius: 0.625rem;
     --radius-control: 0.625rem;
     --radius-card: 0.75rem;
@@ -41,13 +41,13 @@
     --status-attention: 42 30% 50%;
     --status-risk: 6 30% 45%;
 
-    --cta-bg: 220 16% 18%;
-    --cta-text: 220 20% 97%;
-    --cta-border: 220 16% 28%;
-    --cta-shadow: 220 25% 10%;
-    --cta-ring: 42 30% 50%;
+    --cta-bg: 172 70% 32%;
+    --cta-text: 0 0% 100%;
+    --cta-border: 172 70% 26%;
+    --cta-shadow: 172 80% 16%;
+    --cta-ring: 172 70% 32%;
 
-    --shadow-document: 0 1px 0 hsl(220 20% 10% / 0.06), 0 10px 24px hsl(220 20% 10% / 0.05);
+    --shadow-document: 0 1px 0 hsl(220 20% 10% / 0.06), 0 12px 28px hsl(220 20% 10% / 0.06);
   }
 
   :root[data-theme='light'] {
@@ -55,31 +55,31 @@
     --shadow-soft: 0 14px 32px hsl(220 20% 10% / 0.06), 0 4px 10px hsl(220 20% 10% / 0.04);
     --shadow-strong: 0 24px 60px hsl(220 20% 10% / 0.14), 0 10px 20px hsl(220 20% 10% / 0.1);
 
-    --background: 220 20% 97%;
-    --foreground: 220 16% 16%;
-    --card: 220 18% 99%;
-    --card-foreground: 220 16% 16%;
-    --popover: 220 18% 99%;
-    --popover-foreground: 220 16% 16%;
+    --background: 210 40% 98%;
+    --foreground: 222 22% 16%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 22% 16%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 22% 16%;
 
-    --primary: 220 16% 22%;
-    --primary-foreground: 220 20% 97%;
+    --primary: 172 70% 32%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 16% 92%;
-    --secondary-foreground: 220 16% 16%;
+    --secondary: 210 30% 96%;
+    --secondary-foreground: 222 22% 16%;
 
-    --muted: 220 16% 94%;
+    --muted: 210 30% 96%;
     --muted-foreground: 220 10% 40%;
 
-    --accent: 220 10% 70%;
-    --accent-foreground: 220 16% 16%;
+    --accent: 172 60% 90%;
+    --accent-foreground: 222 22% 16%;
 
     --destructive: 6 30% 45%;
     --destructive-foreground: 220 20% 97%;
 
-    --border: 220 12% 86%;
+    --border: 220 14% 88%;
     --input: 220 14% 92%;
-    --ring: 220 16% 22%;
+    --ring: 172 70% 32%;
 
     --radius: 0.625rem;
     --radius-control: 0.625rem;
@@ -89,13 +89,13 @@
     --status-attention: 42 30% 50%;
     --status-risk: 6 30% 45%;
 
-    --cta-bg: 220 16% 18%;
-    --cta-text: 220 20% 97%;
-    --cta-border: 220 16% 28%;
-    --cta-shadow: 220 25% 10%;
-    --cta-ring: 42 30% 50%;
+    --cta-bg: 172 70% 32%;
+    --cta-text: 0 0% 100%;
+    --cta-border: 172 70% 26%;
+    --cta-shadow: 172 80% 16%;
+    --cta-ring: 172 70% 32%;
 
-    --shadow-document: 0 1px 0 hsl(220 20% 10% / 0.06), 0 10px 24px hsl(220 20% 10% / 0.05);
+    --shadow-document: 0 1px 0 hsl(220 20% 10% / 0.06), 0 12px 28px hsl(220 20% 10% / 0.06);
   }
 
   :root[data-theme='dark'] {
@@ -666,8 +666,8 @@
 
   .hero-haze {
     background:
-      radial-gradient(800px circle at 12% -10%, hsl(var(--accent) / 0.35), transparent 60%),
-      radial-gradient(900px circle at 88% 0%, hsl(var(--primary) / 0.2), transparent 55%);
+      radial-gradient(900px circle at 12% -10%, hsl(var(--accent) / 0.55), transparent 60%),
+      radial-gradient(900px circle at 88% 10%, hsl(var(--primary) / 0.18), transparent 55%);
   }
 
   .hero-grid {
