@@ -19,7 +19,7 @@ export default function CTASection() {
 
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <Button asChild size="lg">
-              <Link href="/verify">
+              <Link href="/verifica">
                 Inizia la verifica
               </Link>
             </Button>

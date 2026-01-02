@@ -3,37 +3,40 @@ import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
+import { fraunces, sora } from "@/lib/fonts";
 
 export const viewport: Viewport = {
-  width: 'device-width',
+  width: "device-width",
   initialScale: 1,
   maximumScale: 5,
   userScalable: true,
-}
+};
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://tradelia.org'),
+  metadataBase: new URL("https://tradelia.org"),
   title: {
     default: "Tradelia | Verifica decisionale",
-    template: "%s | Tradelia"
+    template: "%s | Tradelia",
   },
-  description: "Sistema che verifica la compatibilità tra necessità dell'utente e caratteristiche reali di broker, wallet, exchange e conti deposito, con fonti ufficiali.",
+  description:
+    "Sistema che verifica la compatibilita tra obiettivi dichiarati e caratteristiche reali di broker, wallet, exchange, conti deposito e strumenti di pagamento.",
   keywords: [
-    "compatibilità finanziaria",
+    "compatibilita finanziaria",
     "broker",
     "exchange",
     "wallet",
     "conti deposito",
+    "strumenti di pagamento",
     "risk management",
     "decision science",
     "MiFID",
     "due diligence",
-    "fintech"
+    "fintech",
   ],
   authors: [{ name: "Tradelia Team" }],
   creator: "Tradelia",
   publisher: "Tradelia",
-}
+};
 
 interface RootLayoutProps {
   children: ReactNode;
@@ -41,13 +44,14 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="it">
-      <body>
+    <html lang="it" className={`${sora.variable} ${fraunces.variable}`}>
+      <body className="bg-background text-foreground antialiased font-sans">
         <Script
           id="theme-initializer"
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t="tradelia-theme";var e=localStorage.getItem(t);var n=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";var r=e==="light"||e==="dark"?e:n;document.documentElement.dataset.theme=r;document.documentElement.style.colorScheme=r;}catch(o){}})();`
+            __html:
+              '(function(){try{var t="tradelia-theme";var e=localStorage.getItem(t);var n=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";var r=e==="light"||e==="dark"?e:n;document.documentElement.dataset.theme=r;document.documentElement.style.colorScheme=r;}catch(o){}})();',
           }}
         />
         <SiteHeader />

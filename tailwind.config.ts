@@ -19,8 +19,8 @@ const config: Config = {
     },
     extend: {
       fontFamily: {
-        sans: ['var(--font-inter)', 'Inter', 'system-ui', 'sans-serif'],
-        heading: ['var(--font-ibm-plex-sans)', 'IBM Plex Sans', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-sora)', 'Sora', 'system-ui', 'sans-serif'],
+        heading: ['var(--font-fraunces)', 'Fraunces', 'Georgia', 'serif'],
         mono: ['var(--font-roboto-mono)', 'Roboto Mono', 'Monaco', 'monospace'],
       },
       colors: {

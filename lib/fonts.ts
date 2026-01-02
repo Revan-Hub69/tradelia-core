@@ -1,26 +1,26 @@
-import { Inter, IBM_Plex_Sans } from "next/font/google";
+import { Fraunces, Sora } from "next/font/google";
 
-// Configure Inter font for UI elements
-export const inter = Inter({
+// Configure Sora for interface text
+export const sora = Sora({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-inter",
+  variable: "--font-sora",
 });
 
-// Configure IBM Plex Sans for headings and specific UI elements
-export const ibmPlexSans = IBM_Plex_Sans({
+// Configure Fraunces for headings
+export const fraunces = Fraunces({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
-  variable: "--font-ibm-plex-sans",
+  variable: "--font-fraunces",
 });
 
 // Font utility classes for consistent usage
 export const fontClasses = {
-  // Primary UI font (Inter)
+  // Primary UI font (Sora)
   ui: "font-sans",
   
-  // Heading font (IBM Plex Sans)
+  // Heading font (Fraunces)
   heading: "font-heading",
   
   // Monospace for code/data

@@ -34,7 +34,7 @@ export default function HeroNew() {
           {/* CTA */}
           <div className="flex flex-col items-center gap-4 pt-4 sm:flex-row sm:justify-center">
             <Button asChild size="lg" className="w-full sm:w-auto">
-              <Link href="/verify">
+              <Link href="/verifica">
                 Inizia la verifica
               </Link>
             </Button>
