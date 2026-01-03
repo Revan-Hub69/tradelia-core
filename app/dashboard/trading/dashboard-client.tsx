@@ -76,6 +76,85 @@ type SymbolsConfig = {
   symbols: string[];
 };
 
+type MarketBias = "BULL" | "BEAR" | "NEUTRAL";
+
+type WsHealth = "OK" | "DEGRADED" | "STALE";
+
+type UniverseCandidate = {
+  symbol: string;
+  side: "LONG" | "SHORT";
+  scores: {
+    tradeability: number;
+    regimeMatch: number;
+    total: number;
+  };
+  htf: {
+    price: number;
+    atrPct4h: number;
+    regime: "TREND" | "RANGE" | "TRANSITION";
+    bias: MarketBias;
+    stress: boolean;
+    trendStrength: number;
+    rangeRatio: number;
+    emaState: "aligned_strong" | "aligned_emerging" | "none";
+  };
+  ws: {
+    bid: number;
+    ask: number;
+    spreadBpsNow: number;
+    spreadMeanBps60s: number;
+    spreadStdBps60s: number;
+    msgRate60s: number;
+    lastUpdateAgeSec: number;
+  };
+  reasons: {
+    blocks: string[];
+    warnings: string[];
+    info: string[];
+  };
+};
+
+type UniverseResponse = {
+  meta: {
+    version: "universe-v1";
+    ts: number;
+    source: "rest" | "rest+ws";
+    anchorSymbol: string;
+    topN: number;
+  };
+  market: {
+    anchor: {
+      symbol: string;
+      regime4h: Regime4hOutput | null;
+      bias: MarketBias;
+      confidence: number;
+    };
+    quality: {
+      rest: {
+        freshnessSec: number;
+        gaps: number;
+        contiguous: boolean;
+        asOfTs: number;
+        staleAfterSec: number;
+      } | null;
+      ws: {
+        available: boolean;
+        health: WsHealth;
+        lastMessageAgeSec: number;
+        reconnects: number;
+      } | null;
+    };
+  };
+  long: UniverseCandidate[];
+  short: UniverseCandidate[];
+  excludedSummary: {
+    blockedByReason: Record<string, number>;
+    warnedByReason: Record<string, number>;
+    totalBlocked: number;
+    totalWarned: number;
+  };
+};
+
 type RegimeConfigForm = {
   version: RegimeConfig["version"];
   windows: {
@@ -130,6 +209,37 @@ function regimeBadgeClass(regime: Regime4h) {
   if (regime === "TREND") return "status-ok";
   if (regime === "RANGE") return "status-attention";
   return "status-risk";
+}
+
+function reasonBadge(reason: string, variant: "block" | "warning" | "info", index: number) {
+  const toneClasses =
+    variant === "block"
+      ? "bg-destructive/10 text-destructive border-destructive/40"
+      : variant === "warning"
+        ? "bg-warning/10 text-warning border-warning/40"
+        : "bg-success/10 text-success border-success/40";
+  return (
+    <span
+      key={`${variant}-${reason}-${index}`}
+      className={`inline-flex max-w-full items-center truncate rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] ${toneClasses}`}
+    >
+      {reason}
+    </span>
+  );
+}
+
+function reasonChips(candidate: UniverseCandidate) {
+  const chips: JSX.Element[] = [];
+  candidate.reasons.blocks.forEach((reason, index) => chips.push(reasonBadge(reason, "block", index)));
+  candidate.reasons.warnings.forEach((reason, index) => {
+    const baseIndex = candidate.reasons.blocks.length;
+    chips.push(reasonBadge(reason, "warning", baseIndex + index));
+  });
+  candidate.reasons.info.forEach((reason, index) => {
+    const baseIndex = candidate.reasons.blocks.length + candidate.reasons.warnings.length;
+    chips.push(reasonBadge(reason, "info", baseIndex + index));
+  });
+  return chips;
 }
 
 async function writeClipboard(text: string) {
@@ -348,6 +458,16 @@ export function DashboardClient() {
   const settingsCloseRef = useRef<HTMLButtonElement | null>(null);
   const restoreFocusRef = useRef<HTMLElement | null>(null);
 
+  const [universe, setUniverse] = useState<UniverseResponse | null>(null);
+  const [loadingUniverse, setLoadingUniverse] = useState(false);
+  const [universeError, setUniverseError] = useState<string | null>(null);
+  const [universeTopN, setUniverseTopN] = useState(20);
+
+  const [aiGoal, setAiGoal] = useState("Genera un brief operativo (max 10 righe) su Brick 1-2: regime+universe, con guardrails e why per top symbol.");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
+  const [aiResult, setAiResult] = useState<unknown | null>(null);
+
   const normalizedSymbol = useMemo(() => symbol.trim().toUpperCase(), [symbol]);
 
   const showCopyNotice = useCallback((message: string) => {
@@ -377,6 +497,36 @@ export function DashboardClient() {
     },
     [showCopyNotice],
   );
+
+  const loadUniverse = useCallback(async () => {
+    setLoadingUniverse(true);
+    setUniverseError(null);
+    try {
+      const url = new URL("/api/trading/universe", window.location.origin);
+      url.searchParams.set("anchor", normalizedSymbol);
+      url.searchParams.set("topN", String(universeTopN));
+      const res = await fetch(url.toString(), { method: "GET", cache: "no-store" });
+      const json = (await res.json().catch(() => ({}))) as unknown;
+      if (!res.ok) throw new Error(inferErrorMessage(json, "Impossibile caricare il trading universe."));
+      setUniverse(json as UniverseResponse);
+    } catch (error) {
+      setUniverse(null);
+      setUniverseError(error instanceof Error ? error.message : "Impossibile caricare il trading universe.");
+    } finally {
+      setLoadingUniverse(false);
+    }
+  }, [normalizedSymbol, universeTopN]);
+
+  const refreshUniverse = useCallback(() => {
+    void loadUniverse();
+  }, [loadUniverse]);
+
+  const handleUniverseTopNChange = useCallback((value: string) => {
+    const parsed = Number(value);
+    if (!Number.isFinite(parsed)) return;
+    const sanitized = Math.max(1, Math.min(50, Math.floor(parsed)));
+    setUniverseTopN(sanitized);
+  }, []);
 
   const openSettings = useCallback(() => {
     restoreFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -421,6 +571,14 @@ export function DashboardClient() {
     };
 
     const screenerTop = screener?.results ? screener.results.slice(0, 25) : null;
+    const universeSnapshot = universe
+      ? {
+          meta: universe.meta,
+          market: universe.market,
+          long: universe.long.slice(0, 3),
+          short: universe.short.slice(0, 3),
+        }
+      : null;
 
     return {
       version: "tradelia-ai-packet-v1",
@@ -428,11 +586,12 @@ export function DashboardClient() {
       symbol: normalizedSymbol,
       regime4h: regime?.regime ?? null,
       screener: screener ? { asOf: screener.asOf, top: screenerTop } : null,
+      universe: universeSnapshot,
       configs,
       instruction:
-        "Usa solo questi dati. Non calcolare indicatori. Tratta regime4h.regime come gate (TREND/RANGE/TRANSITION) e rispetta allowedSetups/forbiddenSetups.",
+        "Usa solo questi dati. Non calcolare indicatori. Tratta regime4h.regime come gate (TREND/RANGE/TRANSITION), rispetta allowedSetups/forbiddenSetups e segui i reason code del Universe (long/short).",
     };
-  }, [normalizedSymbol, regime, screener, parsedRegimeConfig, parsedScreenerConfig, symbolsConfig]);
+  }, [normalizedSymbol, regime, screener, parsedRegimeConfig, parsedScreenerConfig, symbolsConfig, universe]);
 
   const aiPrompt = useMemo(() => {
     return [
@@ -443,6 +602,27 @@ export function DashboardClient() {
       JSON.stringify(aiPacket, null, 2),
     ].join("\n");
   }, [aiPacket]);
+
+  const runAi = useCallback(async () => {
+    setAiLoading(true);
+    setAiError(null);
+    setAiResult(null);
+    try {
+      const res = await fetch("/api/trading/ai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ goal: aiGoal, packet: aiPacket }),
+      });
+      const json = (await res.json().catch(() => ({}))) as unknown;
+      if (!res.ok) throw new Error(inferErrorMessage(json, "AI error."));
+      setAiResult(json);
+    } catch (error) {
+      setAiError(error instanceof Error ? error.message : "AI error.");
+      setAiResult(null);
+    } finally {
+      setAiLoading(false);
+    }
+  }, [aiGoal, aiPacket]);
 
   const loadConfigs = useCallback(async () => {
     setLoadingConfigs(true);
@@ -581,8 +761,8 @@ export function DashboardClient() {
   }, [loadConfigs]);
 
   useEffect(() => {
-    void runRegime();
-  }, [runRegime]);
+    void loadUniverse();
+  }, [loadUniverse]);
 
   const screenerStats = useMemo(() => {
     if (!screener) return null;
@@ -678,6 +858,33 @@ export function DashboardClient() {
               Config e stato sono salvati su filesystem (consigliato: locale/VPS). In produzione su serverless non è
               affidabile.
             </p>
+            <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+              <span className="rounded-full border border-border bg-background/60 px-3 py-1">Comandi rapidi:</span>
+              <button
+                type="button"
+                className="btn-secondary px-3 py-1 text-[11px]"
+                onClick={() => void copyText("Comando", "npm run dev:local")}
+              >
+                Copia `npm run dev:local`
+              </button>
+              <button
+                type="button"
+                className="btn-secondary px-3 py-1 text-[11px]"
+                onClick={() => void copyText("Comando", "npm run ws:daemon")}
+              >
+                Copia `npm run ws:daemon`
+              </button>
+              <button
+                type="button"
+                className="btn-secondary px-3 py-1 text-[11px]"
+                onClick={() => void copyText("Comando", "npm run dev")}
+              >
+                Copia `npm run dev`
+              </button>
+              <span className="rounded-full border border-border bg-muted/20 px-3 py-1">
+                Note: il browser non può “aprire” terminali automaticamente (limitazione sicurezza).
+              </span>
+            </div>
           </div>
 
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
@@ -707,8 +914,291 @@ export function DashboardClient() {
         </div>
       </div>
 
-      <div className="grid gap-10 lg:grid-cols-2">
-        <section className="surface-card p-8">
+      <section className="surface-card p-8 space-y-5">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Brick 1-2 Universe</p>
+            <h2 className="text-lg font-semibold text-foreground">Tradeability + Regime Gate</h2>
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              Il contract Universe combina regime 4h deterministico con WS + score per long/short. I top candidates sono aggiornati in locale dal daemon Binance WS.
+            </p>
+            {universe && (
+              <p className="text-xs font-semibold text-muted-foreground">
+                Source: {universe.meta.source} · Top {universe.meta.topN} · aggiornato {new Date(universe.meta.ts).toLocaleString()}
+              </p>
+            )}
+          </div>
+          <div className="flex flex-wrap items-end gap-2">
+            <label className="flex items-center gap-2 rounded-full border border-border bg-background/60 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              Anchor
+              <input
+                className="h-8 w-32 rounded-full border border-border bg-muted/10 px-3 text-xs text-foreground outline-none"
+                value={symbol}
+                onChange={(event) => setSymbol(event.target.value)}
+                spellCheck={false}
+              />
+            </label>
+            <label className="flex items-center gap-2 rounded-full border border-border bg-background/60 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              Top N
+              <input
+                type="number"
+                min={1}
+                max={50}
+                className="h-8 w-16 rounded-full border border-border bg-muted/10 px-2 text-right text-xs text-foreground outline-none"
+                value={String(universeTopN)}
+                onChange={(event) => handleUniverseTopNChange(event.target.value)}
+              />
+            </label>
+            <button
+              type="button"
+              className="btn-secondary px-4 py-2 text-xs"
+              onClick={() => refreshUniverse()}
+              disabled={loadingUniverse}
+            >
+              {loadingUniverse ? "Aggiorno..." : "Aggiorna"}
+            </button>
+            <button
+              type="button"
+              className="btn-secondary px-4 py-2 text-xs"
+              onClick={() => void copyText("Universe", JSON.stringify(universe, null, 2))}
+              disabled={!universe}
+            >
+              Copia JSON
+            </button>
+          </div>
+        </div>
+
+        {loadingUniverse && (
+          <div className="rounded-2xl border border-border bg-muted/20 p-4 text-sm text-muted-foreground">Caricamento Universe...</div>
+        )}
+
+        {universeError && (
+          <div className="rounded-2xl border border-border bg-destructive/10 p-4 text-sm text-destructive">{universeError}</div>
+        )}
+
+        {!universe && !loadingUniverse && !universeError && (
+          <div className="rounded-2xl border border-border bg-muted/10 p-4 text-sm text-muted-foreground">
+            Nessun dato disponibile per ora. Verifica che il daemon WS sia attivo (npm run ws:daemon) e ricarica.
+          </div>
+        )}
+
+        {universe && (
+          <div className="space-y-5">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="rounded-2xl border border-border bg-muted/30 p-4 text-sm text-foreground">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Anchor</p>
+                <p className="mt-3 text-lg font-semibold text-foreground">{universe.market.anchor.symbol}</p>
+                <p className="text-xs text-muted-foreground">
+                  Regime:{" "}
+                  <span className={`${regimeBadgeClass(universe.market.anchor.regime4h?.regime ?? "TRANSITION")} rounded-full px-2 py-0.5 text-[10px]`}>
+                    {universe.market.anchor.regime4h?.regime ?? "TRANSITION"}
+                  </span>
+                </p>
+                <p className="text-xs text-muted-foreground">Bias: {universe.market.anchor.bias}</p>
+                <p className="text-xs text-muted-foreground">Confidence: {(universe.market.anchor.confidence * 100).toFixed(0)}%</p>
+              </div>
+              <div className="rounded-2xl border border-border bg-muted/30 p-4 text-sm text-foreground">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Qualità dati</p>
+                <div className="mt-3 grid grid-cols-2 gap-2 text-[11px] text-muted-foreground">
+                  <div>freshness</div>
+                  <div className="text-right">
+                    {universe.market.quality.rest ? `${Math.round(universe.market.quality.rest.freshnessSec)}s` : "n/a"}
+                  </div>
+                  <div>gaps</div>
+                  <div className="text-right">{universe.market.quality.rest?.gaps ?? "-"}</div>
+                  <div>contiguo</div>
+                  <div className="text-right">{universe.market.quality.rest?.contiguous ? "sì" : "no"}</div>
+                  <div>asOf</div>
+                  <div className="text-right">
+                    {universe.market.quality.rest ? new Date(universe.market.quality.rest.asOfTs).toLocaleString() : "-"}
+                  </div>
+                </div>
+                <div className="mt-3 grid grid-cols-2 gap-2 text-[11px]">
+                  <div className="text-muted-foreground">WS health</div>
+                  <div className="text-right text-xs">
+                    {universe.market.quality.ws?.health ?? "STALE"} ({universe.market.quality.ws?.available ? "live" : "fallback"})
+                  </div>
+                  <div className="text-muted-foreground">last msg</div>
+                  <div className="text-right text-muted-foreground">
+                    {universe.market.quality.ws ? `${Math.round(universe.market.quality.ws.lastMessageAgeSec)}s` : "-"}
+                  </div>
+                  <div className="text-muted-foreground">reconnects</div>
+                  <div className="text-right text-muted-foreground">{universe.market.quality.ws?.reconnects ?? 0}</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-6 lg:grid-cols-2">
+              {["long", "short"].map((side) => {
+                const candidates = side === "long" ? universe.long : universe.short;
+                return (
+                  <div key={side} className="space-y-4 rounded-2xl border border-border bg-background/70 p-4">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-semibold text-foreground">{side === "long" ? "Long candidates" : "Short candidates"}</p>
+                      <span className="text-xs text-muted-foreground">Top {candidates.length}</span>
+                    </div>
+                    <div className="overflow-auto rounded-2xl border border-border/60">
+                      <table className="w-full border-collapse text-left text-[11px]">
+                        <thead className="sticky top-0 bg-background/90 text-muted-foreground">
+                          <tr>
+                            <th className="px-3 py-2">Symbol</th>
+                            <th className="px-3 py-2">Score</th>
+                            <th className="px-3 py-2">Spread / activity</th>
+                            <th className="px-3 py-2">Reasons</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {candidates.map((candidate) => (
+                            <tr key={candidate.symbol} className="border-b border-border/40 hover:bg-muted/10">
+                              <td className="px-3 py-2">
+                                <button
+                                  type="button"
+                                  className="font-semibold text-foreground hover:text-primary"
+                                  onClick={() => {
+                                    setSymbol(candidate.symbol);
+                                    void runRegime(candidate.symbol);
+                                  }}
+                                >
+                                  {candidate.symbol}
+                                </button>
+                                <p className="text-[10px] text-muted-foreground">
+                                  price {formatNumber(candidate.htf.price)} · ATR% {candidate.htf.atrPct4h.toFixed(2)}
+                                </p>
+                              </td>
+                              <td className="px-3 py-2">
+                                <p className="font-semibold text-foreground">{candidate.scores.total}</p>
+                                <p className="text-[10px] text-muted-foreground">
+                                  trade {candidate.scores.tradeability} · regime {candidate.scores.regimeMatch}
+                                </p>
+                              </td>
+                              <td className="px-3 py-2">
+                                <p className="text-[10px] text-muted-foreground">spread {formatBps(candidate.ws.spreadBpsNow)}</p>
+                                <p className="text-[10px] text-muted-foreground">msgRate {candidate.ws.msgRate60s}</p>
+                                <p className="text-[10px] text-muted-foreground">health {candidate.ws.lastUpdateAgeSec.toFixed(0)}s</p>
+                              </td>
+                              <td className="px-3 py-2">
+                                <div className="flex flex-wrap gap-1">{reasonChips(candidate).slice(0, 6)}</div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="rounded-2xl border border-border bg-muted/30 p-4 text-sm text-foreground">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Blocked</p>
+                <p className="text-lg font-semibold text-foreground">{universe.excludedSummary.totalBlocked}</p>
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {Object.entries(universe.excludedSummary.blockedByReason).map(([reason, count]) => (
+                    <span key={reason} className="rounded-full border border-border px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                      {reason}: {count}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div className="rounded-2xl border border-border bg-muted/30 p-4 text-sm text-foreground">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Warnings</p>
+                <p className="text-lg font-semibold text-foreground">{universe.excludedSummary.totalWarned}</p>
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {Object.entries(universe.excludedSummary.warnedByReason).map(([reason, count]) => (
+                    <span key={reason} className="rounded-full border border-border px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                      {reason}: {count}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div className="rounded-2xl border border-border bg-muted/30 p-4 text-sm text-foreground">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Current meta</p>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  anchor {universe.market.anchor.symbol} · top {universe.meta.topN} · source {universe.meta.source}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Updated {new Date(universe.meta.ts).toLocaleString()}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+      </section>
+
+      <section className="surface-card p-8 space-y-5">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="space-y-1">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">AI (Groq)</p>
+            <h2 className="text-lg font-semibold text-foreground">Brief vincolato</h2>
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              Usa il packet (regime + universe + config) e ritorna JSON. La chiave resta server-side: serve `GROQ_API_KEY` in locale.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-end gap-2">
+            <button
+              type="button"
+              className="btn-primary px-4 py-2 text-xs"
+              onClick={() => void runAi()}
+              disabled={aiLoading}
+            >
+              {aiLoading ? "Chiamo..." : "Esegui AI"}
+            </button>
+            <button
+              type="button"
+              className="btn-secondary px-4 py-2 text-xs"
+              onClick={() => void copyText("Prompt AI", aiPrompt)}
+            >
+              Copia prompt
+            </button>
+            <button
+              type="button"
+              className="btn-secondary px-4 py-2 text-xs"
+              onClick={() => void copyText("Packet AI", JSON.stringify(aiPacket, null, 2))}
+            >
+              Copia packet
+            </button>
+            <button
+              type="button"
+              className="btn-secondary px-4 py-2 text-xs"
+              onClick={() => void copyText("AI output", JSON.stringify(aiResult, null, 2))}
+              disabled={!aiResult}
+            >
+              Copia output
+            </button>
+          </div>
+        </div>
+
+        <label className="space-y-2">
+          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Goal</span>
+          <textarea
+            className="min-h-[92px] w-full resize-y rounded-2xl border border-border bg-background px-4 py-3 text-sm text-foreground"
+            value={aiGoal}
+            onChange={(event) => setAiGoal(event.target.value)}
+          />
+        </label>
+
+        {aiError && (
+          <div className="rounded-2xl border border-border bg-destructive/10 p-4 text-sm text-destructive">{aiError}</div>
+        )}
+
+        {aiResult !== null && (
+          <pre className="max-h-[520px] overflow-auto rounded-2xl border border-border bg-background/60 p-5 text-xs text-foreground">
+            {JSON.stringify(aiResult, null, 2)}
+          </pre>
+        )}
+
+        {aiResult === null && !aiError && (
+          <div className="rounded-2xl border border-border bg-muted/20 p-4 text-sm text-muted-foreground">
+            Suggerimento: avvia `npm run dev:local`, apri /dashboard/trading e poi premi “Esegui AI”.
+          </div>
+        )}
+      </section>
+
+      <details className="accordion surface-card p-8">
+        <summary>Diagnostica (vecchi pannelli: regime + screener)</summary>
+        <div className="mt-8 grid gap-10 lg:grid-cols-2">
+          <section className="surface-card p-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div className="space-y-1">
               <h2 className="text-sm font-semibold text-foreground">Regime 4h (deterministico)</h2>
@@ -822,7 +1312,7 @@ export function DashboardClient() {
           )}
         </section>
 
-        <section className="surface-card p-8">
+          <section className="surface-card p-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div className="space-y-1">
               <h2 className="text-sm font-semibold text-foreground">Screener (watchlist)</h2>
@@ -954,7 +1444,8 @@ export function DashboardClient() {
             </div>
           )}
         </section>
-      </div>
+        </div>
+      </details>
 
       {settingsOpen && (
         <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-labelledby="trading-settings-title">

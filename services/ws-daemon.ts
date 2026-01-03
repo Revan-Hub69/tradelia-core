@@ -116,6 +116,48 @@ let socket: WebSocket | null = null;
 let socketConnected = false;
 let reconnects = 0;
 let lastSocketMessageTs = 0;
+let backoffMs = 500;
+let reconnectScheduled = false;
+
+function nextBackoff() {
+  const wait = backoffMs;
+  backoffMs = Math.min(10_000, Math.floor(backoffMs * 1.6));
+  return wait;
+}
+
+function resetBackoff() {
+  backoffMs = 500;
+}
+
+function safeClose(candidate: WebSocket | null) {
+  if (!candidate) return;
+  try {
+    candidate.removeAllListeners();
+    if (candidate.readyState === WebSocket.CONNECTING) {
+      candidate.on('error', () => {});
+      candidate.terminate();
+      return;
+    }
+    if (candidate.readyState === WebSocket.OPEN) {
+      candidate.close(1000, "reconnect");
+    }
+  } catch {
+    try {
+      candidate.terminate();
+    } catch {
+      // ignore
+    }
+  }
+}
+
+function scheduleReconnect(delayMs: number) {
+  if (reconnectScheduled) return;
+  reconnectScheduled = true;
+  setTimeout(() => {
+    reconnectScheduled = false;
+    connectWS();
+  }, delayMs);
+}
 
 async function fetchTopNUSDT(): Promise<string[]> {
   const res = await fetch(`${BINANCE_REST}/api/v3/ticker/24hr`, { cache: "no-store" });
@@ -163,8 +205,7 @@ function connectWS() {
 
   const url = buildWsUrl(topSymbols);
   try {
-    socket?.removeAllListeners();
-    socket?.close();
+    safeClose(socket);
   } catch {
     // ignore
   }
@@ -175,6 +216,7 @@ function connectWS() {
     socketConnected = true;
     lastSocketMessageTs = now();
     console.log(`[WS] connected (${topSymbols.length} symbols)`);
+    resetBackoff();
   });
 
   socket.on("message", (buf: RawData) => {
@@ -198,18 +240,18 @@ function connectWS() {
   socket.on("close", () => {
     socketConnected = false;
     reconnects += 1;
-    console.log("[WS] closed, reconnecting...");
     cache.markDisconnected(topSymbols);
-    setTimeout(connectWS, 1000);
+    const wait = nextBackoff();
+    console.log(`[WS] closed, reconnecting in ${wait}ms`);
+    scheduleReconnect(wait);
   });
 
   socket.on("error", (err: Error) => {
-    console.error("[WS] error", err);
-    try {
-      socket?.close();
-    } catch {
-      // ignore
-    }
+    console.error("[WS] error:", err?.message ?? err);
+    safeClose(socket);
+    const wait = nextBackoff();
+    console.log(`[WS] error, reconnecting in ${wait}ms`);
+    scheduleReconnect(wait);
   });
 }
 
@@ -224,7 +266,7 @@ async function refreshTopList() {
 
     if (changed) {
       console.log("[TOP] updated, reconnect WS");
-      connectWS();
+      scheduleReconnect(300);
     } else {
       console.log("[TOP] unchanged");
     }
