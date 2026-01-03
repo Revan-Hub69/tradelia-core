@@ -20,11 +20,15 @@ const nextConfig = {
   compress: true,
   async headers() {
     const isDev = process.env.NODE_ENV === 'development';
+    const connectSrc = buildConnectSrc({
+      isDev,
+      apiBaseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
+    });
     
     // CSP configuration - more permissive for Next.js compatibility
     const csp = isDev 
-      ? "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self';"
-      : "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';";
+      ? `default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src ${connectSrc}; frame-src 'none'; object-src 'none'; base-uri 'self';`
+      : `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src ${connectSrc}; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';`;
 
     return [
       {
@@ -89,5 +93,32 @@ const nextConfig = {
     ];
   },
 };
+
+function buildConnectSrc({ isDev, apiBaseUrl }) {
+  const allow = new Set(["'self'"]);
+  if (isDev) {
+    allow.add('http://localhost:3000');
+    allow.add('http://localhost:3001');
+  }
+
+  const normalized = normalizeUrl(apiBaseUrl);
+  if (normalized) {
+    allow.add(normalized.origin);
+  }
+
+  return Array.from(allow).join(' ');
+}
+
+function normalizeUrl(value) {
+  if (!value || typeof value !== 'string') return null;
+  const trimmed = value.trim().replace(/\/+$/, '');
+  if (!trimmed) return null;
+  const withScheme = trimmed.startsWith('http://') || trimmed.startsWith('https://') ? trimmed : `https://${trimmed}`;
+  try {
+    return new URL(withScheme);
+  } catch {
+    return null;
+  }
+}
 
 export default nextConfig;
