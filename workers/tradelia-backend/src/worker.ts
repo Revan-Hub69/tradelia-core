@@ -100,20 +100,35 @@ async function fetchCandlesWithFallback({
   interval: string;
   limit: number;
   userAgent: string;
-}): Promise<{ candles: OhlcvCandle[]; source: "binance" | "coinbase"; meta: Record<string, unknown> }> {
+}): Promise<{ candles: OhlcvCandle[]; source: "binance" | "okx" | "coinbase"; meta: Record<string, unknown> }> {
   try {
     const candles = await fetchBinanceKlines({ symbol, interval, limit, userAgent });
     return { candles, source: "binance", meta: { provider: "binance" } };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error.";
-    if (!message.includes("Binance klines error (451)")) {
-      // Se non è un blocco geo/eligibility, non fare fallback silenzioso.
+    if (!shouldFallbackFromBinanceError(message)) {
+      // Se non è un blocco/restriction tipico, non fare fallback silenzioso.
       throw error;
     }
   }
 
-  const candles = await fetchCoinbaseCandles({ symbol, interval, limit, userAgent });
-  return { candles, source: "coinbase", meta: { provider: "coinbase", note: "Fallback (binance 451)." } };
+  try {
+    const candles = await fetchOkxCandles({ symbol, interval, limit, userAgent });
+    return { candles, source: "okx", meta: { provider: "okx", note: "Fallback (binance blocked)." } };
+  } catch (error) {
+    const okxMessage = error instanceof Error ? error.message : "Unknown error.";
+    // Coinbase is a last resort; it doesn't support 4h.
+    try {
+      const candles = await fetchCoinbaseCandles({ symbol, interval, limit, userAgent });
+      return {
+        candles,
+        source: "coinbase",
+        meta: { provider: "coinbase", note: "Fallback (binance blocked, okx failed).", okxError: okxMessage },
+      };
+    } catch {
+      throw new Error(`All providers failed. okxError: ${okxMessage}`);
+    }
+  }
 }
 
 async function fetchBinanceKlines({
@@ -160,6 +175,104 @@ async function fetchBinanceKlines({
   }
 
   return candles;
+}
+
+function shouldFallbackFromBinanceError(message: string) {
+  // Typical blocks when running from datacenter IPs / restricted locations.
+  if (message.includes("Binance klines error (451)")) return true;
+  if (message.includes("Binance klines error (403)")) return true;
+  if (message.includes("Binance klines error (429)")) return true;
+  if (message.includes("cloudfront") || message.includes("Request blocked")) return true;
+  if (message.includes("Service unavailable from a restricted location")) return true;
+  return false;
+}
+
+async function fetchOkxCandles({
+  symbol,
+  interval,
+  limit,
+  userAgent,
+}: {
+  symbol: string;
+  interval: string;
+  limit: number;
+  userAgent: string;
+}): Promise<OhlcvCandle[]> {
+  const instId = mapToOkxInstId(symbol);
+  if (!instId) {
+    throw new Error("OKX fallback supports only *USDT symbols (e.g., BTCUSDT).");
+  }
+
+  const bar = mapToOkxBar(interval);
+  if (!bar) {
+    throw new Error("OKX fallback does not support this interval.");
+  }
+
+  const effectiveLimit = Math.min(limit, 300);
+  const url = new URL("https://www.okx.com/api/v5/market/candles");
+  url.searchParams.set("instId", instId);
+  url.searchParams.set("bar", bar);
+  url.searchParams.set("limit", String(effectiveLimit));
+
+  const res = await fetch(url.toString(), {
+    headers: { Accept: "application/json", "User-Agent": userAgent },
+  });
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`OKX candles error (${res.status}): ${text || res.statusText}`);
+  }
+
+  const jsonBody = (await res.json()) as unknown;
+  if (!isPlainObject(jsonBody)) throw new Error("OKX response is not an object.");
+  const data = (jsonBody as Record<string, unknown>).data;
+  if (!Array.isArray(data)) throw new Error("OKX response missing data array.");
+
+  // Each entry: [ ts, o, h, l, c, vol, volCcy?, volCcyQuote?, confirm? ]
+  const parsed: OhlcvCandle[] = [];
+  for (const entry of data) {
+    if (!Array.isArray(entry) || entry.length < 6) throw new Error("OKX candle has an invalid shape.");
+    const timeMs = toFiniteNumber(entry[0]);
+    const open = toFiniteNumber(entry[1]);
+    const high = toFiniteNumber(entry[2]);
+    const low = toFiniteNumber(entry[3]);
+    const close = toFiniteNumber(entry[4]);
+    const volume = toFiniteNumber(entry[5]);
+    if (timeMs === null || open === null || high === null || low === null || close === null || volume === null) {
+      throw new Error("OKX candle contains invalid number values.");
+    }
+    parsed.push({ time: timeMs, open, high, low, close, volume });
+  }
+
+  // OKX returns newest-first.
+  parsed.sort((a, b) => a.time - b.time);
+  return parsed;
+}
+
+function mapToOkxInstId(symbol: string): string | null {
+  if (!symbol.endsWith("USDT")) return null;
+  const base = symbol.slice(0, -4);
+  if (!base || !/^[A-Z0-9]{2,10}$/.test(base)) return null;
+  return `${base}-USDT`;
+}
+
+function mapToOkxBar(interval: string): string | null {
+  // OKX bars: 1m/3m/5m/15m/30m/1H/2H/4H/6H/12H/1D/2D/3D/1W/1M
+  if (interval === "1m") return "1m";
+  if (interval === "3m") return "3m";
+  if (interval === "5m") return "5m";
+  if (interval === "15m") return "15m";
+  if (interval === "30m") return "30m";
+  if (interval === "1h") return "1H";
+  if (interval === "2h") return "2H";
+  if (interval === "4h") return "4H";
+  if (interval === "6h") return "6H";
+  if (interval === "12h") return "12H";
+  if (interval === "1d") return "1D";
+  if (interval === "3d") return "3D";
+  if (interval === "1w") return "1W";
+  if (interval === "1M") return "1M";
+  return null;
 }
 
 async function fetchCoinbaseCandles({
