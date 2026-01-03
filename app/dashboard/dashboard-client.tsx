@@ -36,6 +36,11 @@ type AiResponse = {
 
 const INTERVAL_OPTIONS = ["15m", "1h", "4h", "1d"] as const;
 
+const API_BASE_URL =
+  typeof process !== "undefined" && process.env.NEXT_PUBLIC_API_BASE_URL
+    ? process.env.NEXT_PUBLIC_API_BASE_URL
+    : "";
+
 function regimeBadgeClass(regime: Regime) {
   if (regime === "TREND") return "status-ok";
   if (regime === "RANGE") return "status-attention";
@@ -74,7 +79,8 @@ export function DashboardClient() {
     const prev = window.localStorage.getItem(storageKey);
     const previousRegime = prev === "TREND" || prev === "RANGE" || prev === "NO_TRADE" ? prev : undefined;
 
-    const url = new URL("/api/snapshot", window.location.origin);
+    const base = API_BASE_URL || window.location.origin;
+    const url = new URL(API_BASE_URL ? "/snapshot" : "/api/snapshot", base);
     url.searchParams.set("symbol", symbol.trim().toUpperCase());
     url.searchParams.set("interval", interval);
     url.searchParams.set("limit", String(limit));
@@ -105,7 +111,8 @@ export function DashboardClient() {
     setAiError(null);
 
     try {
-      const res = await fetch("/api/ai", {
+      const endpoint = API_BASE_URL ? `${API_BASE_URL}/ai` : "/api/ai";
+      const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -272,4 +279,3 @@ export function DashboardClient() {
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
-

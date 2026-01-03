@@ -1,0 +1,7 @@
+name = "tradelia-backend"
+main = "src/worker.ts"
+compatibility_date = "2025-01-29"
+
+[vars]
+ALLOWED_ORIGINS = "https://tradelia.org,http://localhost:3000,http://localhost:3001"
+
