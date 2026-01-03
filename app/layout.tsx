@@ -53,7 +53,12 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="it" className={`${sora.variable} ${fraunces.variable}`}>
+    <html
+      lang="it"
+      className={`${sora.variable} ${fraunces.variable}`}
+      data-theme="light"
+      style={{ colorScheme: "light" }}
+    >
       <body className="bg-background text-foreground antialiased font-sans">
         <Script
           id="theme-initializer"
