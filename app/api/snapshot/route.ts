@@ -4,6 +4,7 @@ import { classifyRegime, type OhlcvCandle, type Regime } from "@/lib/market/regi
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const preferredRegion = ["fra1"];
 
 type SnapshotResponse = {
   source: "binance";
@@ -169,4 +170,3 @@ function toFiniteNumber(value: unknown): number | null {
   }
   return null;
 }
-
