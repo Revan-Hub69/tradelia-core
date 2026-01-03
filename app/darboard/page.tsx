@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-export default function DashboardPage() {
+export default function DarboardPage() {
   redirect("/dashboard/trading");
 }
 
