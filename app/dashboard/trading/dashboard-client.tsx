@@ -60,10 +60,6 @@ type ScreenerResponse = {
   results: Array<ScreenerOk | ScreenerErr>;
 };
 
-type DashboardClientProps = {
-  adminEmail: string;
-};
-
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
@@ -89,7 +85,7 @@ function regimeBadgeClass(regime: Regime4h) {
   return "status-risk";
 }
 
-export function DashboardClient({ adminEmail }: DashboardClientProps) {
+export function DashboardClient() {
   const [symbol, setSymbol] = useState("BTCUSDT");
   const [limit, setLimit] = useState(300);
   const [concurrency, setConcurrency] = useState(3);
@@ -113,11 +109,6 @@ export function DashboardClient({ adminEmail }: DashboardClientProps) {
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
   const normalizedSymbol = useMemo(() => symbol.trim().toUpperCase(), [symbol]);
-
-  const logout = useCallback(async () => {
-    await fetch("/api/trading/auth/logout", { method: "POST" }).catch(() => undefined);
-    window.location.href = "/dashboard/trading/login";
-  }, []);
 
   const loadConfigs = useCallback(async () => {
     setLoadingConfigs(true);
@@ -251,16 +242,8 @@ export function DashboardClient({ adminEmail }: DashboardClientProps) {
 
   return (
     <div className="space-y-8">
-      <div className="surface-card flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="space-y-1">
-          <p className="text-sm text-muted-foreground">
-            Admin: <span className="font-semibold text-foreground">{adminEmail}</span>
-          </p>
-          <p className="text-xs text-muted-foreground">Modifica config su filesystem locale (consigliato: locale/VPS).</p>
-        </div>
-        <button type="button" className="btn-secondary px-4 py-2 text-xs" onClick={() => void logout()}>
-          Logout
-        </button>
+      <div className="surface-card p-4 text-xs text-muted-foreground">
+        Config e stato sono salvati su filesystem (consigliato: locale/VPS). In produzione su serverless non è affidabile.
       </div>
 
       <div className="grid gap-8 lg:grid-cols-2">
@@ -557,4 +540,3 @@ export function DashboardClient({ adminEmail }: DashboardClientProps) {
     </div>
   );
 }
-

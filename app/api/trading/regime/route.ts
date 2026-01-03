@@ -5,8 +5,8 @@ import { NextResponse } from "next/server";
 
 import { fetchKlines4h } from "@/adapters/binance";
 import { computeRegime4h, type Regime4h } from "@/engines/regime4h";
-import { requireAdminApiSession } from "@/lib/trading/admin-guard";
 import { readRegimeConfig } from "@/lib/trading/config-io";
+import { isTradingEnabled } from "@/lib/trading/trading-enabled";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,8 +17,7 @@ type PersistedState = {
 };
 
 export async function GET(request: Request) {
-  const guard = await requireAdminApiSession();
-  if ("response" in guard) return guard.response;
+  if (!isTradingEnabled()) return NextResponse.json({ error: "Trading disabled." }, { status: 404 });
 
   const { searchParams } = new URL(request.url);
   const symbol = sanitizeSymbol(searchParams.get("symbol") ?? "BTCUSDT");

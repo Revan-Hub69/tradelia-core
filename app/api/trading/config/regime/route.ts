@@ -1,14 +1,13 @@
 import { NextResponse } from "next/server";
 
-import { requireAdminApiSession } from "@/lib/trading/admin-guard";
 import { readRegimeConfig, writeRegimeConfig } from "@/lib/trading/config-io";
+import { isTradingEnabled } from "@/lib/trading/trading-enabled";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const guard = await requireAdminApiSession();
-  if ("response" in guard) return guard.response;
+  if (!isTradingEnabled()) return NextResponse.json({ error: "Trading disabled." }, { status: 404 });
 
   try {
     return NextResponse.json(readRegimeConfig(), { status: 200 });
@@ -19,8 +18,7 @@ export async function GET() {
 }
 
 export async function PUT(request: Request) {
-  const guard = await requireAdminApiSession();
-  if ("response" in guard) return guard.response;
+  if (!isTradingEnabled()) return NextResponse.json({ error: "Trading disabled." }, { status: 404 });
 
   let body: unknown;
   try {

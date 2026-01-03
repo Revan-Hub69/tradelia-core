@@ -5,8 +5,8 @@ import { NextResponse } from "next/server";
 
 import { fetchBookTickers, fetchKlines4h, fetchMarketRules, fetchTickers24h } from "@/adapters/binance";
 import { computeRegime4h, type Regime4h, type Regime4hOutput } from "@/engines/regime4h";
-import { requireAdminApiSession } from "@/lib/trading/admin-guard";
 import { readRegimeConfig, readScreenerConfig, readSymbolsConfig } from "@/lib/trading/config-io";
+import { isTradingEnabled } from "@/lib/trading/trading-enabled";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -35,8 +35,7 @@ type ScanOk = {
 type ScanError = { symbol: string; ok: false; error: string };
 
 export async function GET(request: Request) {
-  const guard = await requireAdminApiSession();
-  if ("response" in guard) return guard.response;
+  if (!isTradingEnabled()) return NextResponse.json({ error: "Trading disabled." }, { status: 404 });
 
   const { searchParams } = new URL(request.url);
   const limitParsed = parseLimit(searchParams.get("limit"));

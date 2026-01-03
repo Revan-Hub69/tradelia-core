@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { requireAdminSession } from "@/lib/trading/admin-guard";
+import { isTradingEnabled } from "@/lib/trading/trading-enabled";
 import { DashboardClient } from "./dashboard-client";
 
 export const runtime = "nodejs";
@@ -11,8 +11,8 @@ export const metadata: Metadata = {
   description: "Regime 4h deterministico, screener e configurazione locale.",
 };
 
-export default async function TradingDashboardPage() {
-  const session = await requireAdminSession();
+export default function TradingDashboardPage() {
+  const enabled = isTradingEnabled();
 
   return (
     <div className="min-h-screen bg-background">
@@ -28,7 +28,14 @@ export default async function TradingDashboardPage() {
             </p>
           </div>
 
-          <DashboardClient adminEmail={session.email} />
+          {enabled ? (
+            <DashboardClient />
+          ) : (
+            <div className="surface-card p-6 text-sm text-muted-foreground">
+              Trading dashboard disabilitata in produzione. Avvia in locale (npm run dev) oppure abilita con
+              TRADING_ENABLED=true (es. VPS).
+            </div>
+          )}
 
           <div className="surface-card p-6 text-sm text-muted-foreground">
             Materiale tecnico per test interno. Nessun consiglio operativo.
