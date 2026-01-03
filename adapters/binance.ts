@@ -8,6 +8,7 @@ export type Candle = {
 };
 
 const BINANCE_BASE_URL = "https://api.binance.com";
+const FOUR_HOURS_MS = 4 * 60 * 60 * 1000;
 
 export async function fetchKlines4h(symbol: string, limit: number): Promise<Candle[]> {
   const normalizedSymbol = symbol.trim().toUpperCase();
@@ -61,7 +62,7 @@ export async function fetchKlines4h(symbol: string, limit: number): Promise<Cand
     candles.push({ t, o, h, l, c, v });
   }
 
-  return candles;
+  return normalizeCandles4h(candles);
 }
 
 function toFiniteNumber(value: unknown): number | null {
@@ -73,3 +74,43 @@ function toFiniteNumber(value: unknown): number | null {
   return null;
 }
 
+function normalizeCandles4h(candles: Candle[]) {
+  const sorted = [...candles].sort((a, b) => a.t - b.t);
+  const normalized: Candle[] = [];
+
+  for (const candle of sorted) {
+    assertCandleShape(candle);
+    if (normalized.length > 0 && candle.t === normalized.at(-1)?.t) {
+      normalized[normalized.length - 1] = candle;
+      continue;
+    }
+    normalized.push(candle);
+  }
+
+  for (let index = 0; index < normalized.length; index += 1) {
+    const candle = normalized[index];
+    if (candle.t % FOUR_HOURS_MS !== 0) {
+      throw new Error("Candle timestamp is not aligned to 4h boundary.");
+    }
+    if (index === 0) continue;
+    const prev = normalized[index - 1];
+    const delta = candle.t - prev.t;
+    if (delta !== FOUR_HOURS_MS) {
+      throw new Error("Candles are not contiguous 4h intervals.");
+    }
+  }
+
+  return normalized;
+}
+
+function assertCandleShape(candle: Candle) {
+  if (!Number.isFinite(candle.t) || candle.t <= 0) throw new Error("Invalid candle timestamp.");
+  if (!Number.isFinite(candle.o) || candle.o <= 0) throw new Error("Invalid candle open.");
+  if (!Number.isFinite(candle.h) || candle.h <= 0) throw new Error("Invalid candle high.");
+  if (!Number.isFinite(candle.l) || candle.l <= 0) throw new Error("Invalid candle low.");
+  if (!Number.isFinite(candle.c) || candle.c <= 0) throw new Error("Invalid candle close.");
+  if (!Number.isFinite(candle.v) || candle.v < 0) throw new Error("Invalid candle volume.");
+  if (candle.h < candle.l) throw new Error("Invalid candle: high < low.");
+  if (candle.o < candle.l || candle.o > candle.h) throw new Error("Invalid candle: open outside range.");
+  if (candle.c < candle.l || candle.c > candle.h) throw new Error("Invalid candle: close outside range.");
+}

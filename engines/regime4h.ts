@@ -2,6 +2,8 @@ import type { Candle } from "@/adapters/binance";
 
 export type Regime4h = "TREND" | "RANGE" | "TRANSITION";
 
+const FOUR_HOURS_MS = 4 * 60 * 60 * 1000;
+
 export type RegimeConfig = {
   version: "regime-4h-config-v1";
   windows: {
@@ -64,33 +66,35 @@ export function computeRegime4h({
   config: RegimeConfig;
 }): Regime4hOutput {
   assertConfig(config);
-  assertCandles(candles4h, config);
+  const normalizedCandles = normalizeCandles4h(candles4h);
+  assertCandles(normalizedCandles, config);
 
-  const closes = candles4h.map((candle) => candle.c);
+  const closes = normalizedCandles.map((candle) => candle.c);
   const ema20 = ema(closes, config.windows.ema20);
   const ema50 = ema(closes, config.windows.ema50);
   const ema200 = ema(closes, config.windows.ema200);
-  const atr14 = atrWilder(candles4h, config.windows.atr14);
+  const atr14 = atrWilder(normalizedCandles, config.windows.atr14);
   const returnsStd20 = stdLogReturns(closes, config.windows.returnsStd20);
 
-  const last = candles4h.at(-1);
+  const last = normalizedCandles.at(-1);
   if (!last) throw new Error("Missing last candle.");
+  const prevCandle = normalizedCandles.at(-2);
 
-  const trueRangeLast = last.h - last.l;
-  const range = highLowWindow(candles4h, config.windows.rangeHHLL50);
+  const trueRangeLast = prevCandle ? trueRange(last, prevCandle.c) : last.h - last.l;
+  const range = highLowWindow(normalizedCandles, config.windows.rangeHHLL50);
   const rangeRatio = (range.high - range.low) / atr14;
   const trendStrength = Math.abs(ema20 - ema50) / atr14;
   const emaState = computeEmaState({ ema20, ema50, ema200, close: last.c });
   const stress = trueRangeLast / atr14 >= config.thresholds.stressTrueRangeToAtr;
 
-  const prev = previousRegime;
+  const prevRegime = previousRegime;
   let keptPrevious = false;
   let regime: Regime4h = "TRANSITION";
 
-  if (prev === "TREND" && !passesExitTrend({ trendStrength, rangeRatio, emaState }, config)) {
+  if (prevRegime === "TREND" && !passesExitTrend({ trendStrength, rangeRatio, emaState }, config)) {
     regime = "TREND";
     keptPrevious = true;
-  } else if (prev === "RANGE" && !passesExitRange({ trendStrength, rangeRatio }, config)) {
+  } else if (prevRegime === "RANGE" && !passesExitRange({ trendStrength, rangeRatio }, config)) {
     regime = "RANGE";
     keptPrevious = true;
   } else if (passesEnterTrend({ trendStrength, rangeRatio, emaState }, config)) {
@@ -265,6 +269,47 @@ function assertCandles(candles: Candle[], config: RegimeConfig) {
   }
 }
 
+function normalizeCandles4h(candles: Candle[]) {
+  const sorted = [...candles].sort((a, b) => a.t - b.t);
+  const normalized: Candle[] = [];
+
+  for (const candle of sorted) {
+    assertCandleShape(candle);
+    if (normalized.length > 0 && candle.t === normalized.at(-1)?.t) {
+      normalized[normalized.length - 1] = candle;
+      continue;
+    }
+    normalized.push(candle);
+  }
+
+  for (let index = 0; index < normalized.length; index += 1) {
+    const candle = normalized[index];
+    if (candle.t % FOUR_HOURS_MS !== 0) {
+      throw new Error("Candle timestamp is not aligned to 4h boundary.");
+    }
+    if (index === 0) continue;
+    const prev = normalized[index - 1];
+    const delta = candle.t - prev.t;
+    if (delta !== FOUR_HOURS_MS) {
+      throw new Error("Candles are not contiguous 4h intervals.");
+    }
+  }
+
+  return normalized;
+}
+
+function assertCandleShape(candle: Candle) {
+  if (!Number.isFinite(candle.t) || candle.t <= 0) throw new Error("Invalid candle timestamp.");
+  if (!Number.isFinite(candle.o) || candle.o <= 0) throw new Error("Invalid candle open.");
+  if (!Number.isFinite(candle.h) || candle.h <= 0) throw new Error("Invalid candle high.");
+  if (!Number.isFinite(candle.l) || candle.l <= 0) throw new Error("Invalid candle low.");
+  if (!Number.isFinite(candle.c) || candle.c <= 0) throw new Error("Invalid candle close.");
+  if (!Number.isFinite(candle.v) || candle.v < 0) throw new Error("Invalid candle volume.");
+  if (candle.h < candle.l) throw new Error("Invalid candle: high < low.");
+  if (candle.o < candle.l || candle.o > candle.h) throw new Error("Invalid candle: open outside range.");
+  if (candle.c < candle.l || candle.c > candle.h) throw new Error("Invalid candle: close outside range.");
+}
+
 function mean(values: number[]) {
   return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
@@ -288,10 +333,7 @@ function atrWilder(candles: Candle[], period: number): number {
   for (let index = 1; index < candles.length; index += 1) {
     const candle = candles[index];
     const prev = candles[index - 1];
-    const highLow = candle.h - candle.l;
-    const highPrevClose = Math.abs(candle.h - prev.c);
-    const lowPrevClose = Math.abs(candle.l - prev.c);
-    trs.push(Math.max(highLow, highPrevClose, lowPrevClose));
+    trs.push(trueRange(candle, prev.c));
   }
 
   let current = mean(trs.slice(0, period));
@@ -300,6 +342,13 @@ function atrWilder(candles: Candle[], period: number): number {
   }
   if (current <= 0 || !Number.isFinite(current)) throw new Error("Invalid ATR.");
   return current;
+}
+
+function trueRange(candle: Candle, prevClose: number) {
+  const highLow = candle.h - candle.l;
+  const highPrevClose = Math.abs(candle.h - prevClose);
+  const lowPrevClose = Math.abs(candle.l - prevClose);
+  return Math.max(highLow, highPrevClose, lowPrevClose);
 }
 
 function stdLogReturns(closes: number[], window: number) {
