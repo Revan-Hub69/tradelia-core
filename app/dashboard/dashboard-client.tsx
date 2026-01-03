@@ -36,10 +36,14 @@ type AiResponse = {
 
 const INTERVAL_OPTIONS = ["15m", "1h", "4h", "1d"] as const;
 
-const API_BASE_URL =
-  typeof process !== "undefined" && process.env.NEXT_PUBLIC_API_BASE_URL
-    ? process.env.NEXT_PUBLIC_API_BASE_URL
-    : "";
+function normalizeApiBaseUrl(value: string) {
+  const trimmed = value.trim().replace(/\/+$/, "");
+  if (!trimmed) return "";
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) return trimmed;
+  return `https://${trimmed}`;
+}
+
+const API_BASE_URL = normalizeApiBaseUrl(process.env.NEXT_PUBLIC_API_BASE_URL ?? "");
 
 function regimeBadgeClass(regime: Regime) {
   if (regime === "TREND") return "status-ok";
