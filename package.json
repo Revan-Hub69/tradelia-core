@@ -7,6 +7,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "regime:run": "node --import tsx cli/regime-run.ts --symbol BTCUSDT --limit 300",
+    "regime:scan": "node --import tsx cli/regime-scan.ts --symbols-file config/symbols.json --limit 300 --concurrency 3",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --fix",
     "type-check": "tsc --noEmit",

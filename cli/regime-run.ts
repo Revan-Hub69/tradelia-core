@@ -11,6 +11,7 @@ type Args = {
 
 type PersistedState = {
   previousRegime?: Regime4h;
+  previousRegimes?: Record<string, Regime4h>;
 };
 
 async function main() {
@@ -21,18 +22,22 @@ async function main() {
 
   const statePath = path.join(process.cwd(), "state.json");
   const previous = readState(statePath);
+  const symbolKey = args.symbol.trim().toUpperCase();
+  const previousRegime = previous.previousRegimes?.[symbolKey] ?? previous.previousRegime;
 
   const candles4h = await fetchKlines4h(args.symbol, args.limit);
 
   const output = computeRegime4h({
     candles4h,
-    previousRegime: previous.previousRegime,
+    previousRegime,
     config,
   });
 
   process.stdout.write(`${JSON.stringify(output, null, 2)}\n`);
 
-  writeState(statePath, { previousRegime: output.regime });
+  const previousRegimes: Record<string, Regime4h> = { ...(previous.previousRegimes ?? {}) };
+  previousRegimes[symbolKey] = output.regime;
+  writeState(statePath, { ...previous, previousRegime: output.regime, previousRegimes });
 }
 
 function parseArgs(argv: string[]): Args {
@@ -75,11 +80,26 @@ function readState(filePath: string): PersistedState {
     const raw = fs.readFileSync(filePath, "utf-8");
     const parsed = JSON.parse(raw) as unknown;
     if (!parsed || typeof parsed !== "object") return {};
-    const previousRegime = (parsed as Record<string, unknown>).previousRegime;
+    const obj = parsed as Record<string, unknown>;
+    const state: PersistedState = {};
+
+    const previousRegime = obj.previousRegime;
     if (previousRegime === "TREND" || previousRegime === "RANGE" || previousRegime === "TRANSITION") {
-      return { previousRegime };
+      state.previousRegime = previousRegime;
     }
-    return {};
+
+    const prevs = obj.previousRegimes;
+    if (prevs && typeof prevs === "object" && !Array.isArray(prevs)) {
+      const mapped: Record<string, Regime4h> = {};
+      for (const [key, value] of Object.entries(prevs as Record<string, unknown>)) {
+        if (value === "TREND" || value === "RANGE" || value === "TRANSITION") {
+          mapped[key] = value;
+        }
+      }
+      state.previousRegimes = mapped;
+    }
+
+    return state;
   } catch {
     return {};
   }
@@ -94,4 +114,3 @@ main().catch((error) => {
   process.stderr.write(`${message}\n`);
   process.exit(1);
 });
-

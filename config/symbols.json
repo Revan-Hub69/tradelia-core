@@ -1,0 +1,26 @@
+{
+  "version": "symbols-v1",
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT",
+    "SOLUSDT",
+    "BNBUSDT",
+    "XRPUSDT",
+    "ADAUSDT",
+    "DOGEUSDT",
+    "LTCUSDT",
+    "LINKUSDT",
+    "AVAXUSDT",
+    "TRXUSDT",
+    "DOTUSDT",
+    "MATICUSDT",
+    "ATOMUSDT",
+    "OPUSDT",
+    "ARBUSDT",
+    "SUIUSDT",
+    "APTUSDT",
+    "INJUSDT",
+    "NEARUSDT"
+  ]
+}
+
