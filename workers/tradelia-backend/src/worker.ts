@@ -148,7 +148,13 @@ async function fetchBinanceKlines({
   url.searchParams.set("limit", String(limit));
 
   const res = await fetch(url.toString(), {
-    headers: { Accept: "application/json", "User-Agent": userAgent },
+    headers: {
+      "User-Agent": userAgent,
+      Accept: "application/json",
+      "Accept-Language": "en-US,en;q=0.9",
+      "Cache-Control": "no-cache",
+      Pragma: "no-cache",
+    },
   });
 
   if (!res.ok) {

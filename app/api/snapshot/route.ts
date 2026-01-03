@@ -101,7 +101,11 @@ async function fetchBinanceKlines({
   const res = await fetch(url, {
     cache: "no-store",
     headers: {
+      "User-Agent": "Mozilla/5.0 (compatible; TradeliaBot/1.0; +https://tradelia.org)",
       Accept: "application/json",
+      "Accept-Language": "en-US,en;q=0.9",
+      "Cache-Control": "no-cache",
+      Pragma: "no-cache",
     },
   });
 
