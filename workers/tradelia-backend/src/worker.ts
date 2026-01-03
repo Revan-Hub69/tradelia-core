@@ -1,4 +1,4 @@
-import { classifyRegime, type OhlcvCandle, type Regime } from "../../../lib/market/regime";
+import { classifyRegime, type OhlcvCandle, type Regime } from "./regime";
 
 type Env = {
   GROQ_API_KEY?: string;
@@ -61,28 +61,33 @@ async function handleSnapshot(url: URL, request: Request): Promise<Response> {
 
   const userAgent = request.headers.get("user-agent") ?? "tradelia-worker";
 
-  const { candles, source, meta } = await fetchCandlesWithFallback({
-    symbol,
-    interval,
-    limit: limit.value,
-    userAgent,
-  });
-
-  const regime = classifyRegime({ candles, previousRegime: previousRegime.value });
-
-  return json(
-    {
-      source,
+  try {
+    const { candles, source, meta } = await fetchCandlesWithFallback({
       symbol,
       interval,
-      limit: candles.length,
-      asOf: Date.now(),
-      candles,
-      regime,
-      meta,
-    },
-    200,
-  );
+      limit: limit.value,
+      userAgent,
+    });
+
+    const regime = classifyRegime({ candles, previousRegime: previousRegime.value });
+
+    return json(
+      {
+        source,
+        symbol,
+        interval,
+        limit: candles.length,
+        asOf: Date.now(),
+        candles,
+        regime,
+        meta,
+      },
+      200,
+    );
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error.";
+    return json({ error: message }, 400);
+  }
 }
 
 async function fetchCandlesWithFallback({
@@ -471,4 +476,3 @@ function parseAllowedOrigins(value: string | undefined) {
       .filter((entry) => entry !== ""),
   );
 }
-
