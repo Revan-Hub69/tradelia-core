@@ -5,6 +5,7 @@ type Env = {
   GROQ_MODEL?: string;
   GROQ_BASE_URL?: string;
   ALLOWED_ORIGINS?: string;
+  BINANCE_BASE_URL?: string;
 };
 
 export default {
@@ -16,9 +17,9 @@ export default {
     }
 
     if (request.method === "GET" && url.pathname === "/snapshot") {
-      const response = await handleSnapshot(url, request);
-      return withCors(env, request, response);
-    }
+    const response = await handleSnapshot(url, request, env);
+    return withCors(env, request, response);
+  }
 
     if (request.method === "POST" && url.pathname === "/ai") {
       const response = await handleAi(request, env);
@@ -29,7 +30,7 @@ export default {
   },
 };
 
-async function handleSnapshot(url: URL, request: Request): Promise<Response> {
+async function handleSnapshot(url: URL, request: Request, env: Env): Promise<Response> {
   const symbol = sanitizeSymbol(url.searchParams.get("symbol") ?? "BTCUSDT");
   if (!symbol) return json({ error: "symbol is invalid." }, 400);
 
@@ -67,6 +68,7 @@ async function handleSnapshot(url: URL, request: Request): Promise<Response> {
       interval,
       limit: limit.value,
       userAgent,
+      binanceBaseUrl: env.BINANCE_BASE_URL,
     });
 
     const regime = classifyRegime({ candles, previousRegime: previousRegime.value });
@@ -95,15 +97,17 @@ async function fetchCandlesWithFallback({
   interval,
   limit,
   userAgent,
+  binanceBaseUrl,
 }: {
   symbol: string;
   interval: string;
   limit: number;
   userAgent: string;
+  binanceBaseUrl?: string;
 }): Promise<{ candles: OhlcvCandle[]; source: "binance" | "okx" | "coinbase"; meta: Record<string, unknown> }> {
   try {
-    const candles = await fetchBinanceKlines({ symbol, interval, limit, userAgent });
-    return { candles, source: "binance", meta: { provider: "binance" } };
+    const candles = await fetchBinanceKlines({ symbol, interval, limit, userAgent, baseUrl: binanceBaseUrl });
+    return { candles, source: "binance", meta: { provider: "binance", baseUrl: normalizeBinanceBaseUrl(binanceBaseUrl) } };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error.";
     if (!shouldFallbackFromBinanceError(message)) {
@@ -136,13 +140,16 @@ async function fetchBinanceKlines({
   interval,
   limit,
   userAgent,
+  baseUrl,
 }: {
   symbol: string;
   interval: string;
   limit: number;
   userAgent: string;
+  baseUrl?: string;
 }): Promise<OhlcvCandle[]> {
-  const url = new URL("https://api.binance.com/api/v3/klines");
+  const base = normalizeBinanceBaseUrl(baseUrl);
+  const url = new URL("/api/v3/klines", base);
   url.searchParams.set("symbol", symbol);
   url.searchParams.set("interval", interval);
   url.searchParams.set("limit", String(limit));
@@ -181,6 +188,14 @@ async function fetchBinanceKlines({
   }
 
   return candles;
+}
+
+function normalizeBinanceBaseUrl(value: string | undefined) {
+  if (!value || typeof value !== "string") return "https://api.binance.com";
+  const trimmed = value.trim().replace(/\/+$/, "");
+  if (!trimmed) return "https://api.binance.com";
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) return trimmed;
+  return `https://${trimmed}`;
 }
 
 function shouldFallbackFromBinanceError(message: string) {

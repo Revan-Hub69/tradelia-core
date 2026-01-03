@@ -16,7 +16,7 @@ type SnapshotResponse = {
   regime: ReturnType<typeof classifyRegime>;
 };
 
-const BINANCE_BASE_URL = "https://api.binance.com";
+const BINANCE_BASE_URL = process.env.BINANCE_BASE_URL ?? "https://api.binance.com";
 const DEFAULT_SYMBOL = "BTCUSDT";
 const DEFAULT_INTERVAL = "4h";
 const DEFAULT_LIMIT = 300;
@@ -93,7 +93,8 @@ async function fetchBinanceKlines({
   interval: string;
   limit: number;
 }): Promise<OhlcvCandle[]> {
-  const url = new URL("/api/v3/klines", BINANCE_BASE_URL);
+  const base = normalizeBinanceBaseUrl(BINANCE_BASE_URL);
+  const url = new URL("/api/v3/klines", base);
   url.searchParams.set("symbol", symbol);
   url.searchParams.set("interval", interval);
   url.searchParams.set("limit", String(limit));
@@ -140,6 +141,13 @@ async function fetchBinanceKlines({
   }
 
   return candles;
+}
+
+function normalizeBinanceBaseUrl(value: string) {
+  const trimmed = value.trim().replace(/\/+$/, "");
+  if (!trimmed) return "https://api.binance.com";
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) return trimmed;
+  return `https://${trimmed}`;
 }
 
 function parsePreviousRegime(
