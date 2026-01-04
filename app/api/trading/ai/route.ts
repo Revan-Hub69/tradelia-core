@@ -14,6 +14,7 @@ type TradingAiRequestBody = {
 function mapDeprecatedGroqModel(model: string) {
   if (model === "llama3-70b-8192") return "llama-3.1-70b-versatile";
   if (model === "llama3-8b-8192") return "llama-3.1-8b-instant";
+  if (model === "llama-3.1-70b-versatile") return "llama-3.3-70b-versatile";
   return model;
 }
 
@@ -67,7 +68,7 @@ export async function POST(request: Request) {
   }
 
   const rawModel = typeof process.env.GROQ_MODEL === "string" ? process.env.GROQ_MODEL.trim() : "";
-  const requestedModel = rawModel.length > 0 ? rawModel : "llama-3.1-70b-versatile";
+  const requestedModel = rawModel.length > 0 ? rawModel : "llama-3.3-70b-versatile";
   const model = mapDeprecatedGroqModel(requestedModel);
 
   const system = [
