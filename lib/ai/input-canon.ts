@@ -50,8 +50,8 @@ export function canonicalizeBrick1(rawData: any): Brick1Canon | null {
     stress_flag: Boolean(regime4h.stress),
     atr_pct: Number(metrics.atr14) || 0,
     spread_bps: Number(rawData.spread_bps) || 0,
-    trend_strength: Number(metrics.trendStrength) || 0,
-    range_ratio: Number(metrics.rangeRatio) || 0,
+    trend_strength: Math.max(-1, Math.min(1, Number(metrics.trendStrength) || 0)),
+    range_ratio: Math.max(0, Math.min(1, Number(metrics.rangeRatio) || 0)),
     returns_std: Number(metrics.returnsStd) || 0,
     ema_state: determineEmaState(metrics),
     freshness_ms: Date.now() - (rawData.ts || Date.now())
@@ -139,13 +139,26 @@ function determineEmaState(metrics: any): "BULL" | "BEAR" | "NEUTRAL" {
 }
 
 function calculateAtrPct(raw: any): number {
-  // Try multiple sources for ATR
-  if (raw.htf?.atr) return Number(raw.htf.atr);
-  if (raw.metrics?.atr14) return Number(raw.metrics.atr14);
-  if (raw.htf?.price && raw.volatility) {
-    return Number(raw.volatility) / Number(raw.htf.price);
+  // Try multiple sources for ATR - ensure it's a percentage (0-1 range)
+  let atr = 0;
+  
+  if (raw.htf?.atr) {
+    atr = Number(raw.htf.atr);
+  } else if (raw.metrics?.atr14) {
+    atr = Number(raw.metrics.atr14);
+  } else if (raw.htf?.price && raw.volatility) {
+    atr = Number(raw.volatility) / Number(raw.htf.price);
   }
-  return 0;
+  
+  // Ensure ATR is in reasonable range (0-50% max)
+  if (atr > 1) {
+    // If ATR looks like absolute value, convert to percentage
+    const price = Number(raw.htf?.price) || 1;
+    atr = atr / price;
+  }
+  
+  // Cap at 50% for sanity
+  return Math.min(atr, 0.5);
 }
 
 function determineLiquidityGrade(raw: any): "A" | "B" | "C" | "D" {

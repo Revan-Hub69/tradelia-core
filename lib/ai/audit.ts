@@ -107,13 +107,13 @@ export function runSanityChecks(input: InputCanon): SanityCheck[] {
       threshold: 100
     });
 
-    // ATR sanity
+    // ATR sanity - should be reasonable percentage
     checks.push({
       name: "atr_reasonable",
-      pass: input.brick1.atr_pct >= 0.001 && input.brick1.atr_pct <= 0.5,
+      pass: input.brick1.atr_pct >= 0.001 && input.brick1.atr_pct <= 0.2, // Max 20%
       detail: `ATR: ${(input.brick1.atr_pct * 100).toFixed(2)}%`,
       value: input.brick1.atr_pct,
-      threshold: 0.5
+      threshold: 0.2
     });
 
     // Trend strength bounds

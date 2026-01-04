@@ -458,25 +458,44 @@ export function AIAnalysis({ data }: AIAnalysisProps) {
 
               {activeTab === "evidence" && (
                 <div className="space-y-4">
-                  {analysis.brick1?.evidence && (
+                  {analysis.brick1?.evidence && analysis.brick1.evidence.length > 0 && (
                     <div className="rounded border border-border/30 bg-muted/20 p-4">
                       <h4 className="text-sm font-medium text-foreground mb-3">Brick 1 Evidence</h4>
                       <ul className="space-y-1 text-xs">
                         {analysis.brick1.evidence.map((evidence, i) => (
-                          <li key={i} className="text-muted-foreground font-mono">{evidence}</li>
+                          <li key={i} className="text-muted-foreground font-mono">{String(evidence)}</li>
                         ))}
                       </ul>
                     </div>
                   )}
                   
-                  {analysis.brick2?.evidence && (
+                  {analysis.brick2?.evidence && analysis.brick2.evidence.length > 0 && (
                     <div className="rounded border border-border/30 bg-muted/20 p-4">
                       <h4 className="text-sm font-medium text-foreground mb-3">Brick 2 Evidence</h4>
                       <ul className="space-y-1 text-xs">
                         {analysis.brick2.evidence.map((evidence, i) => (
-                          <li key={i} className="text-muted-foreground font-mono">{evidence}</li>
+                          <li key={i} className="text-muted-foreground font-mono">{String(evidence)}</li>
                         ))}
                       </ul>
+                    </div>
+                  )}
+                  
+                  {analysis.brick1_plus_brick2?.evidence && analysis.brick1_plus_brick2.evidence.length > 0 && (
+                    <div className="rounded border border-border/30 bg-muted/20 p-4">
+                      <h4 className="text-sm font-medium text-foreground mb-3">Brick 1+2 Evidence</h4>
+                      <ul className="space-y-1 text-xs">
+                        {analysis.brick1_plus_brick2.evidence.map((evidence, i) => (
+                          <li key={i} className="text-muted-foreground font-mono">{String(evidence)}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  
+                  {(!analysis.brick1?.evidence || analysis.brick1.evidence.length === 0) &&
+                   (!analysis.brick2?.evidence || analysis.brick2.evidence.length === 0) &&
+                   (!analysis.brick1_plus_brick2?.evidence || analysis.brick1_plus_brick2.evidence.length === 0) && (
+                    <div className="text-center py-8">
+                      <p className="text-sm text-muted-foreground">No evidence data available</p>
                     </div>
                   )}
                 </div>
