@@ -42,7 +42,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         
         {/* Content */}
         <main className="flex-1 overflow-auto">
-          <div className="p-3 sm:p-4 max-w-none">
+          <div className="p-3 sm:p-4">
             {children}
           </div>
         </main>

@@ -16,7 +16,7 @@ export function AIAnalysis({ data }: AIAnalysisProps) {
   const [analysis, setAnalysis] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [goal, setGoal] = useState("Analizza il regime di mercato attuale e fornisci un brief operativo. Spiega la situazione in modo chiaro e diretto, suggerendo eventuali opportunità o rischi da considerare.");
+  const [goal, setGoal] = useState("Analizza il regime di mercato attuale e fornisci un brief operativo in italiano. Spiega la situazione in modo chiaro e diretto, suggerendo eventuali opportunità o rischi da considerare. Rispondi SOLO in testo semplice, non in JSON.");
 
   const runAnalysis = useCallback(async () => {
     if (!data) return;

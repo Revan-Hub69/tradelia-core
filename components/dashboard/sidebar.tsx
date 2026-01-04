@@ -50,16 +50,38 @@ export function Sidebar({ collapsed, onToggle, onOpenSettings }: SidebarProps) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-3 space-y-1">
+      <nav className="flex-1 p-2 space-y-1">
         {navigation.map((item) => {
           const IconComponent = item.icon;
           
           if (item.onClick) {
             return (
-              <button
-                key={item.name}
-                onClick={onOpenSettings}
-                className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded transition-subtle text-left ${
+              <div key={item.name} className="relative group">
+                <button
+                  onClick={onOpenSettings}
+                  className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded transition-subtle text-left ${
+                    item.current
+                      ? 'bg-primary text-primary-foreground'
+                      : 'text-muted-foreground hover:bg-muted/30 hover:text-foreground'
+                  }`}
+                >
+                  <IconComponent size={18} />
+                  {!collapsed && <span className="font-medium text-sm">{item.name}</span>}
+                </button>
+                {collapsed && (
+                  <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-foreground text-background text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                    {item.name}
+                  </div>
+                )}
+              </div>
+            );
+          }
+          
+          return (
+            <div key={item.name} className="relative group">
+              <Link
+                href={item.href}
+                className={`flex items-center space-x-3 px-3 py-2.5 rounded transition-subtle ${
                   item.current
                     ? 'bg-primary text-primary-foreground'
                     : 'text-muted-foreground hover:bg-muted/30 hover:text-foreground'
@@ -67,23 +89,13 @@ export function Sidebar({ collapsed, onToggle, onOpenSettings }: SidebarProps) {
               >
                 <IconComponent size={18} />
                 {!collapsed && <span className="font-medium text-sm">{item.name}</span>}
-              </button>
-            );
-          }
-          
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={`flex items-center space-x-3 px-3 py-2.5 rounded transition-subtle ${
-                item.current
-                  ? 'bg-primary text-primary-foreground'
-                  : 'text-muted-foreground hover:bg-muted/30 hover:text-foreground'
-              }`}
-            >
-              <IconComponent size={18} />
-              {!collapsed && <span className="font-medium text-sm">{item.name}</span>}
-            </Link>
+              </Link>
+              {collapsed && (
+                <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-foreground text-background text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                  {item.name}
+                </div>
+              )}
+            </div>
           );
         })}
       </nav>

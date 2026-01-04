@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { SearchIcon, BellIcon, SettingsIcon, MenuIcon } from "@/components/icons/dashboard-icons";
+import { SearchIcon, SettingsIcon, MenuIcon } from "@/components/icons/dashboard-icons";
 
 interface DashboardHeaderProps {
   onToggleSidebar: () => void;
@@ -9,7 +9,6 @@ interface DashboardHeaderProps {
 }
 
 export function DashboardHeader({ onToggleSidebar, onOpenSettings }: DashboardHeaderProps) {
-  const [notifications] = useState(2);
   const [currentTime, setCurrentTime] = useState<string>("");
 
   useEffect(() => {
@@ -56,16 +55,6 @@ export function DashboardHeader({ onToggleSidebar, onOpenSettings }: DashboardHe
             </div>
           </div>
 
-          {/* Notifications */}
-          <button className="relative p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted/30 focus:outline-none focus:ring-2 focus:ring-primary rounded transition-subtle">
-            <BellIcon size={18} />
-            {notifications > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 h-4 w-4 bg-destructive text-destructive-foreground text-xs rounded-full flex items-center justify-center font-medium">
-                {notifications}
-              </span>
-            )}
-          </button>
-
           {/* Settings */}
           <button 
             onClick={onOpenSettings}
@@ -73,13 +62,6 @@ export function DashboardHeader({ onToggleSidebar, onOpenSettings }: DashboardHe
           >
             <SettingsIcon size={18} />
           </button>
-
-          {/* Profile */}
-          <div className="flex items-center space-x-2">
-            <div className="w-7 h-7 bg-primary text-primary-foreground rounded-full flex items-center justify-center border border-border/50">
-              <span className="text-xs font-medium">U</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>

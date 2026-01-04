@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import React from "react";
 import { Card, StatCard } from "@/components/dashboard/card";
 import { OverviewIcon, UniverseIcon, RegimeIcon, RefreshIcon } from "@/components/icons/dashboard-icons";
 import { AIAnalysis } from "./ai-analysis";
@@ -158,54 +159,162 @@ function RegimeWidget({ regime }: { regime: RegimeOutput | null }) {
 }
 
 function UniverseTable({ candidates, title }: { candidates: UniverseCandidate[]; title: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+  
+  const displayedCandidates = expanded ? candidates : candidates.slice(0, 3);
+  
+  const toggleRowExpansion = (symbol: string) => {
+    const newExpanded = new Set(expandedRows);
+    if (newExpanded.has(symbol)) {
+      newExpanded.delete(symbol);
+    } else {
+      newExpanded.add(symbol);
+    }
+    setExpandedRows(newExpanded);
+  };
+
   return (
-    <Card title={title} subtitle={`${candidates.length} candidates`}>
+    <Card 
+      title={title} 
+      subtitle={`${candidates.length} candidates`}
+      actions={
+        candidates.length > 3 && (
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="text-xs text-primary hover:text-primary/80 transition-subtle"
+          >
+            {expanded ? 'Show Less' : `Show All (${candidates.length})`}
+          </button>
+        )
+      }
+    >
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-border/30">
           <thead className="bg-muted/30">
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Symbol</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Regime</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Score</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Spread</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Status</th>
+              <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Symbol</th>
+              <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Price</th>
+              <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Regime</th>
+              <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Score</th>
+              <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Spread</th>
+              <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Status</th>
+              <th className="px-3 py-2 text-center text-xs font-medium text-muted-foreground uppercase tracking-wide">Details</th>
             </tr>
           </thead>
           <tbody className="bg-background divide-y divide-border/30">
-            {candidates.slice(0, 5).map((candidate) => (
-              <tr key={candidate.symbol} className="hover:bg-muted/20 transition-subtle">
-                <td className="px-4 py-4 whitespace-nowrap">
-                  <div className="min-w-0">
-                    <div className="text-sm font-medium text-foreground truncate">{candidate.symbol}</div>
-                    <div className="text-xs text-muted-foreground truncate">${formatNumber(candidate.htf.price)}</div>
-                  </div>
-                </td>
-                <td className="px-4 py-4 whitespace-nowrap">
-                  {getRegimeBadge(candidate.htf.regime)}
-                </td>
-                <td className="px-4 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-foreground">{candidate.scores.total}</div>
-                  <div className="text-xs text-muted-foreground">T:{candidate.scores.tradeability} R:{candidate.scores.regimeMatch}</div>
-                </td>
-                <td className="px-4 py-4 whitespace-nowrap text-sm text-foreground">
-                  {formatBps(candidate.ws.spreadBpsNow)}
-                </td>
-                <td className="px-4 py-4 whitespace-nowrap">
-                  <div className="flex flex-wrap gap-1 max-w-32">
-                    {candidate.reasons.blocks.slice(0, 1).map((reason, i) => (
-                      <span key={i} className="inline-flex items-center px-2 py-1 rounded text-xs bg-status-risk/20 text-status-risk border border-status-risk/30 truncate max-w-20" title={reason}>
-                        {reason.length > 8 ? reason.substring(0, 8) + '...' : reason}
-                      </span>
-                    ))}
-                    {candidate.reasons.warnings.slice(0, 1).map((reason, i) => (
-                      <span key={i} className="inline-flex items-center px-2 py-1 rounded text-xs bg-status-attention/20 text-status-attention border border-status-attention/30 truncate max-w-20" title={reason}>
-                        {reason.length > 8 ? reason.substring(0, 8) + '...' : reason}
-                      </span>
-                    ))}
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {displayedCandidates.map((candidate) => {
+              const isRowExpanded = expandedRows.has(candidate.symbol);
+              return (
+                <React.Fragment key={candidate.symbol}>
+                  <tr className="hover:bg-muted/20 transition-subtle">
+                    <td className="px-3 py-3 whitespace-nowrap">
+                      <div className="text-sm font-medium text-foreground">{candidate.symbol}</div>
+                      <div className="text-xs text-muted-foreground">{candidate.side}</div>
+                    </td>
+                    <td className="px-3 py-3 whitespace-nowrap">
+                      <div className="text-sm font-medium text-foreground">${formatNumber(candidate.htf.price)}</div>
+                    </td>
+                    <td className="px-3 py-3 whitespace-nowrap">
+                      {getRegimeBadge(candidate.htf.regime)}
+                      {candidate.htf.stress && (
+                        <div className="mt-1">
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-status-risk/20 text-status-risk border border-status-risk/30">
+                            STRESS
+                          </span>
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-3 py-3 whitespace-nowrap">
+                      <div className="text-sm font-medium text-foreground">{candidate.scores.total}</div>
+                      <div className="text-xs text-muted-foreground">
+                        T:{candidate.scores.tradeability} R:{candidate.scores.regimeMatch}
+                      </div>
+                    </td>
+                    <td className="px-3 py-3 whitespace-nowrap">
+                      <div className="text-sm text-foreground">{formatBps(candidate.ws.spreadBpsNow)}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {candidate.ws.lastUpdateAgeSec}s ago
+                      </div>
+                    </td>
+                    <td className="px-3 py-3 whitespace-nowrap">
+                      <div className="flex flex-wrap gap-1 max-w-24">
+                        {candidate.reasons.blocks.slice(0, 1).map((reason, i) => (
+                          <span key={i} className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-status-risk/20 text-status-risk border border-status-risk/30 truncate" title={reason}>
+                            {reason.length > 6 ? reason.substring(0, 6) + '...' : reason}
+                          </span>
+                        ))}
+                        {candidate.reasons.warnings.slice(0, 1).map((reason, i) => (
+                          <span key={i} className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-status-attention/20 text-status-attention border border-status-attention/30 truncate" title={reason}>
+                            {reason.length > 6 ? reason.substring(0, 6) + '...' : reason}
+                          </span>
+                        ))}
+                      </div>
+                    </td>
+                    <td className="px-3 py-3 text-center">
+                      <button
+                        onClick={() => toggleRowExpansion(candidate.symbol)}
+                        className="text-primary hover:text-primary/80 transition-subtle"
+                      >
+                        {isRowExpanded ? '−' : '+'}
+                      </button>
+                    </td>
+                  </tr>
+                  {isRowExpanded && (
+                    <tr>
+                      <td colSpan={7} className="px-3 py-3 bg-muted/10">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                          <div>
+                            <h4 className="font-medium text-foreground mb-2">Reasons</h4>
+                            <div className="space-y-1">
+                              {candidate.reasons.blocks.length > 0 && (
+                                <div>
+                                  <span className="text-xs text-status-risk font-medium">Blocks:</span>
+                                  <ul className="text-xs text-muted-foreground ml-2">
+                                    {candidate.reasons.blocks.map((reason, i) => (
+                                      <li key={i}>• {reason}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                              {candidate.reasons.warnings.length > 0 && (
+                                <div>
+                                  <span className="text-xs text-status-attention font-medium">Warnings:</span>
+                                  <ul className="text-xs text-muted-foreground ml-2">
+                                    {candidate.reasons.warnings.map((reason, i) => (
+                                      <li key={i}>• {reason}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                              {candidate.reasons.info.length > 0 && (
+                                <div>
+                                  <span className="text-xs text-foreground font-medium">Info:</span>
+                                  <ul className="text-xs text-muted-foreground ml-2">
+                                    {candidate.reasons.info.map((reason, i) => (
+                                      <li key={i}>• {reason}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          <div>
+                            <h4 className="font-medium text-foreground mb-2">Technical Details</h4>
+                            <div className="space-y-1 text-xs text-muted-foreground">
+                              <div>Side: <span className="text-foreground">{candidate.side}</span></div>
+                              <div>HTF Regime: <span className="text-foreground">{candidate.htf.regime}</span></div>
+                              <div>HTF Stress: <span className="text-foreground">{candidate.htf.stress ? 'Yes' : 'No'}</span></div>
+                              <div>WS Update: <span className="text-foreground">{candidate.ws.lastUpdateAgeSec}s ago</span></div>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              );
+            })}
           </tbody>
         </table>
       </div>
