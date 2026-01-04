@@ -11,6 +11,12 @@ type TradingAiRequestBody = {
   packet?: unknown;
 };
 
+function mapDeprecatedGroqModel(model: string) {
+  if (model === "llama3-70b-8192") return "llama-3.1-70b-versatile";
+  if (model === "llama3-8b-8192") return "llama-3.1-8b-instant";
+  return model;
+}
+
 function isAllowedLocalHost(host: string | null) {
   if (!host) return false;
   const lower = host.toLowerCase();
@@ -60,7 +66,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Missing GROQ_API_KEY." }, { status: 500 });
   }
 
-  const model = process.env.GROQ_MODEL ?? "llama3-70b-8192";
+  const rawModel = typeof process.env.GROQ_MODEL === "string" ? process.env.GROQ_MODEL.trim() : "";
+  const requestedModel = rawModel.length > 0 ? rawModel : "llama-3.1-70b-versatile";
+  const model = mapDeprecatedGroqModel(requestedModel);
 
   const system = [
     "Sei un assistente operativo per Brick 1-2 (regime + universe) in un sistema di trading intraday crypto.",
@@ -116,6 +124,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         keySource: localKey ? "local-file" : "env",
+        requestedModel,
         model: completion.model,
         id: completion.id,
         created: completion.created,
