@@ -56,7 +56,7 @@ export function AIAnalysis({ data }: AIAnalysisProps) {
         analysisText = result;
       } else if (result && typeof result === "object") {
         // Try to extract meaningful conversational content
-        const possibleFields = ['analysis', 'summary', 'content', 'text', 'message', 'response', 'brief'];
+        const possibleFields = ['analysis', 'summary', 'content', 'text', 'message', 'response', 'brief', 'answer'];
         
         for (const field of possibleFields) {
           if (result[field] && typeof result[field] === 'string') {
@@ -65,7 +65,18 @@ export function AIAnalysis({ data }: AIAnalysisProps) {
           }
         }
         
-        // If no text field found, try to format the response nicely
+        // If no direct text field, try to extract from nested objects
+        if (!analysisText) {
+          if (result.choices && Array.isArray(result.choices) && result.choices[0]?.message?.content) {
+            analysisText = result.choices[0].message.content;
+          } else if (result.data && typeof result.data === 'string') {
+            analysisText = result.data;
+          } else if (result.result && typeof result.result === 'string') {
+            analysisText = result.result;
+          }
+        }
+        
+        // If still no text, try to format structured response
         if (!analysisText && result.regime && result.recommendations) {
           analysisText = `**Regime di Mercato**: ${result.regime}\n\n**Raccomandazioni**:\n${
             Array.isArray(result.recommendations) 
@@ -74,12 +85,12 @@ export function AIAnalysis({ data }: AIAnalysisProps) {
           }`;
         }
         
-        // Last resort: show that we got a response but couldn't parse it
+        // Last resort: inform user to try again with different prompt
         if (!analysisText) {
-          analysisText = "L'AI ha fornito una risposta ma in un formato non leggibile. Prova a riformulare la richiesta.";
+          analysisText = "La risposta AI non è in un formato leggibile. Prova a modificare la richiesta di analisi per ottenere una risposta più chiara.";
         }
       } else {
-        analysisText = "Risposta AI non valida. Riprova.";
+        analysisText = "Risposta AI non valida. Verifica la configurazione e riprova.";
       }
       
       setAnalysis(analysisText);

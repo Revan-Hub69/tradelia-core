@@ -5,23 +5,24 @@ import { OverviewIcon, UniverseIcon, RegimeIcon, AIIcon, SettingsIcon, ChevronLe
 
 const navigation = [
   { name: "Overview", href: "/dashboard/trading", icon: OverviewIcon, current: true },
-  { name: "Universe", href: "#universe", icon: UniverseIcon, current: false },
-  { name: "Regime", href: "#regime", icon: RegimeIcon, current: false },
-  { name: "AI Analysis", href: "#ai", icon: AIIcon, current: false },
-  { name: "Settings", href: "#settings", icon: SettingsIcon, current: false },
+  { name: "Universe", href: "/dashboard/trading#universe", icon: UniverseIcon, current: false },
+  { name: "Regime", href: "/dashboard/trading#regime", icon: RegimeIcon, current: false },
+  { name: "AI Analysis", href: "/dashboard/trading#ai", icon: AIIcon, current: false },
+  { name: "Settings", href: "#", icon: SettingsIcon, current: false, onClick: true },
 ];
 
 interface SidebarProps {
   collapsed: boolean;
   onToggle: () => void;
+  onOpenSettings: () => void;
 }
 
-export function Sidebar({ collapsed, onToggle }: SidebarProps) {
+export function Sidebar({ collapsed, onToggle, onOpenSettings }: SidebarProps) {
   return (
     <div className={`bg-card text-card-foreground transition-all duration-300 ease-in-out border-r border-border/50 ${
-      collapsed ? 'w-16' : 'w-64'
+      collapsed ? 'w-12' : 'w-48'
     } min-h-screen flex flex-col fixed lg:relative z-30 lg:z-auto ${
-      collapsed ? 'lg:w-16' : 'lg:w-64'
+      collapsed ? 'lg:w-12' : 'lg:w-48'
     }`}>
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-border/50">
@@ -52,6 +53,24 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       <nav className="flex-1 p-3 space-y-1">
         {navigation.map((item) => {
           const IconComponent = item.icon;
+          
+          if (item.onClick) {
+            return (
+              <button
+                key={item.name}
+                onClick={onOpenSettings}
+                className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded transition-subtle text-left ${
+                  item.current
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-muted-foreground hover:bg-muted/30 hover:text-foreground'
+                }`}
+              >
+                <IconComponent size={18} />
+                {!collapsed && <span className="font-medium text-sm">{item.name}</span>}
+              </button>
+            );
+          }
+          
           return (
             <Link
               key={item.name}

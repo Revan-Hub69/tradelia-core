@@ -254,7 +254,7 @@ export function ModernDashboard() {
   const aiData = regime && universe ? { symbol, regime, universe } : null;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Controls */}
       <Card title="Market Controls" subtitle="Configurazione simbolo di riferimento">
         <div className="flex items-center space-x-4">
@@ -300,7 +300,7 @@ export function ModernDashboard() {
 
       {/* Stats Overview */}
       {universe && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div id="universe" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard
             title="Anchor Symbol"
             value={universe.market.anchor.symbol}
@@ -328,21 +328,21 @@ export function ModernDashboard() {
       )}
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Regime Analysis */}
-        <div className="lg:col-span-1">
+        <div id="regime" className="lg:col-span-1">
           <RegimeWidget regime={regime} />
         </div>
 
         {/* AI Analysis */}
-        <div className="lg:col-span-2">
+        <div id="ai" className="lg:col-span-2">
           <AIAnalysis data={aiData} />
         </div>
       </div>
 
       {/* Universe Tables */}
       {universe && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <UniverseTable candidates={universe.long} title="Long Opportunities" />
           <UniverseTable candidates={universe.short} title="Short Opportunities" />
         </div>
