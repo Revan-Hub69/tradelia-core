@@ -5,7 +5,7 @@ import { Card } from "@/components/dashboard/card";
 import { Drawer } from "@/components/dashboard/drawer";
 import { AIIcon } from "@/components/icons/dashboard-icons";
 
-type AIAnalysisProps = {
+type DataExportProps = {
   data: {
     symbol: string;
     regime: any;
@@ -13,354 +13,270 @@ type AIAnalysisProps = {
   } | null;
 };
 
-type BrickMode = "BRICK1_ONLY" | "BRICK2_ONLY" | "BRICK1_PLUS_BRICK2";
+// AI Analysis disabled - rate limit issues
+// This component now focuses on data export for VS Code analysis
+const AI_ENABLED = false;
 
-interface NasaAnalysisResult {
-  meta: {
-    mode: string;
-    engine: { name: string; version: string };
-    ts: number;
-    input_hash: string;
-    run_id: string;
-  };
-  status: {
-    state: "ACTIVE" | "REVIEW" | "HOLD" | "NEEDS_DATA";
-    go_no_go: "GO" | "NO_GO";
-    confidence: number;
-    blocking_reasons: string[];
-  };
-  brick1?: {
-    market_state: {
-      regime: string;
-      vol_state: string;
-      liquidity_state: string;
-      stress_flag: boolean;
-    };
-    policy: {
-      allowed_playbooks: string[];
-      blocked_playbooks: string[];
-      max_risk_r: number;
-      notes: string[];
-    };
-    evidence: any[];
-  };
-  brick2?: {
-    universe: {
-      top: Array<{
-        symbol: string;
-        category: string;
-        score: number;
-        why: string[];
-      }>;
-      avoid: Array<{
-        symbol: string;
-        why: string[];
-      }>;
-    };
-    evidence: any[];
-  };
-  brick1_plus_brick2?: {
-    filtered_top: Array<{
-      symbol: string;
-      action: "FOCUS" | "WATCH" | "IGNORE";
-      playbook: string;
-      reason: string[];
-    }>;
-    evidence: any[];
-  };
-  audit: {
-    input_coverage_pct: number;
-    assumptions: string[];
-    conflicts: string[];
-    sanity_checks: Array<{
-      name: string;
-      pass: boolean;
-      detail: string;
-      value?: number;
-      threshold?: number;
-    }>;
-    input_hash: string;
-    timestamp: number;
-  };
-}
-
-export function AIAnalysis({ data }: AIAnalysisProps) {
-  const [analysis, setAnalysis] = useState<NasaAnalysisResult | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+export function AIAnalysis({ data }: DataExportProps) {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [inputCanon, setInputCanon] = useState<any>(null);
+  const [copied, setCopied] = useState<string | null>(null);
 
-  const runAnalysis = useCallback(async (mode: BrickMode) => {
-    if (!data) return;
-    
-    setLoading(true);
-    setError(null);
-    
+  // Copy to clipboard helper
+  const copyToClipboard = useCallback(async (content: string, label: string) => {
     try {
-      // NASA-grade: Send ONLY raw data, NO mock/fallback
-      const rawInput = {
-        symbol: data.symbol,
-        ts: Date.now(),
-        source: "dashboard",
-        regime: data.regime,
-        universe: data.universe
-      };
-
-      // Fail-fast validation
-      if (!rawInput.symbol) {
-        throw new Error("Dati mancanti: simbolo anchor");
-      }
-      
-      if (mode !== "BRICK2_ONLY" && !rawInput.regime) {
-        throw new Error("Dati mancanti: regime di mercato");
-      }
-      
-      if (mode !== "BRICK1_ONLY") {
-        if (!rawInput.universe || (!rawInput.universe.long?.length && !rawInput.universe.short?.length)) {
-          throw new Error("Dati mancanti: candidati universe");
-        }
-      }
-
-      const response = await fetch("/api/trading/ai/nasa", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode, input: rawInput })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: `HTTP ${response.status}` }));
-        throw new Error(errorData.error || `Errore API: ${response.status}`);
-      }
-      
-      const result = await response.json();
-      setAnalysis(result.output as NasaAnalysisResult);
-      setInputCanon(result.input_canon);
-      
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Analisi fallita");
-    } finally {
-      setLoading(false);
+      await navigator.clipboard.writeText(content);
+      setCopied(label);
+      setTimeout(() => setCopied(null), 2000);
+    } catch {
+      // Fallback for older browsers
+      const textarea = document.createElement('textarea');
+      textarea.value = content;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      setCopied(label);
+      setTimeout(() => setCopied(null), 2000);
     }
-  }, [data]);
+  }, []);
 
-  // Status badge helper
-  const getStatusColor = (state: string) => {
-    const colors: Record<string, string> = {
-      ACTIVE: "bg-status-ok/20 text-status-ok border-status-ok/30",
-      REVIEW: "bg-status-attention/20 text-status-attention border-status-attention/30",
-      HOLD: "bg-status-risk/20 text-status-risk border-status-risk/30",
-      NEEDS_DATA: "bg-muted/30 text-muted-foreground border-border/50"
+  // Download JSON file
+  const downloadJson = useCallback((content: object, filename: string) => {
+    const blob = new Blob([JSON.stringify(content, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, []);
+
+  // Build export data
+  const buildExportData = useCallback(() => {
+    if (!data) return null;
+    return {
+      meta: {
+        exported_at: new Date().toISOString(),
+        symbol: data.symbol,
+        source: "tradelia-dashboard"
+      },
+      regime: data.regime,
+      universe: data.universe
     };
-    return colors[state] || colors.NEEDS_DATA;
-  };
+  }, [data]);
 
   // No data state
   if (!data) {
     return (
-      <Card title="Analisi AI" subtitle="Valutazione automatica del mercato">
+      <Card title="Export Dati" subtitle="Esporta dati per analisi esterna">
         <div className="text-center py-6">
           <AIIcon size={32} className="mx-auto text-muted-foreground mb-3" />
-          <p className="text-sm text-muted-foreground">Carica i dati di mercato per abilitare l'analisi</p>
+          <p className="text-sm text-muted-foreground">Carica i dati di mercato per abilitare l'export</p>
         </div>
       </Card>
     );
   }
 
+  const exportData = buildExportData();
+  const longCount = data.universe?.long?.length || 0;
+  const shortCount = data.universe?.short?.length || 0;
+
   return (
     <>
       <Card 
-        title="Analisi AI" 
-        subtitle="Valutazione automatica del mercato"
+        title="Export Dati" 
+        subtitle="Esporta per analisi in VS Code"
         actions={
           <button
             onClick={() => setDrawerOpen(true)}
             className="rounded bg-foreground px-3 py-2 text-xs font-medium text-background hover:bg-foreground/90 transition-subtle"
           >
-            Dettagli
+            Visualizza
           </button>
         }
       >
-        {/* Main content - always visible */}
         <div className="space-y-4">
-          {/* Quick actions - run analysis directly */}
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => runAnalysis("BRICK1_ONLY")}
-              disabled={loading}
-              className="flex-1 min-w-[100px] px-3 py-2 text-xs font-medium rounded border border-border/50 hover:bg-muted/30 disabled:opacity-50 transition-subtle"
-            >
-              {loading ? "..." : "Regime"}
-            </button>
-            <button
-              onClick={() => runAnalysis("BRICK2_ONLY")}
-              disabled={loading}
-              className="flex-1 min-w-[100px] px-3 py-2 text-xs font-medium rounded border border-border/50 hover:bg-muted/30 disabled:opacity-50 transition-subtle"
-            >
-              {loading ? "..." : "Universe"}
-            </button>
-            <button
-              onClick={() => runAnalysis("BRICK1_PLUS_BRICK2")}
-              disabled={loading}
-              className="flex-1 min-w-[100px] px-3 py-2 text-xs font-medium rounded bg-foreground text-background hover:bg-foreground/90 disabled:opacity-50 transition-subtle"
-            >
-              {loading ? "..." : "Completa"}
-            </button>
-          </div>
-
-          {/* Error display */}
-          {error && (
-            <div className="p-3 rounded bg-status-risk/10 border border-status-risk/30">
-              <p className="text-xs text-status-risk">{error}</p>
-            </div>
-          )}
-
-          {/* Results summary - compact */}
-          {analysis && (
-            <div className="space-y-3">
-              {/* Decision row */}
-              <div className="flex items-center justify-between p-3 rounded bg-muted/20 border border-border/30">
-                <div className="flex items-center gap-3">
-                  <span className={`px-2 py-1 rounded text-xs font-medium border ${getStatusColor(analysis.status.state)}`}>
-                    {analysis.status.state}
-                  </span>
-                  <span className={`px-2 py-1 rounded text-xs font-medium border ${
-                    analysis.status.go_no_go === "GO" 
-                      ? "bg-status-ok/20 text-status-ok border-status-ok/30"
-                      : "bg-status-risk/20 text-status-risk border-status-risk/30"
-                  }`}>
-                    {analysis.status.go_no_go}
-                  </span>
-                </div>
-                <div className="text-right">
-                  <div className="text-sm font-medium text-foreground">{analysis.status.confidence}%</div>
-                  <div className="text-xs text-muted-foreground">confidence</div>
-                </div>
-              </div>
-
-              {/* Key info */}
-              <div className="grid grid-cols-2 gap-3 text-xs">
-                <div>
-                  <span className="text-muted-foreground">Coverage:</span>
-                  <span className="ml-1 text-foreground font-medium">{analysis.audit.input_coverage_pct}%</span>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">Mode:</span>
-                  <span className="ml-1 text-foreground font-medium">{analysis.meta.mode.replace(/_/g, ' ')}</span>
-                </div>
-              </div>
-
-              {/* Blocking reasons if any */}
-              {analysis.status.blocking_reasons.length > 0 && (
-                <div className="p-2 rounded bg-status-risk/10 border border-status-risk/30">
-                  <p className="text-xs text-status-risk font-medium mb-1">Blocchi:</p>
-                  <ul className="text-xs text-status-risk space-y-0.5">
-                    {analysis.status.blocking_reasons.map((reason, i) => (
-                      <li key={i}>• {reason}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {/* Sanity checks summary */}
-              <div className="flex items-center gap-2 text-xs">
-                <span className="text-muted-foreground">Sanity:</span>
-                {analysis.audit.sanity_checks.filter(c => c.pass).length === analysis.audit.sanity_checks.length ? (
-                  <span className="text-status-ok">✓ Tutti passati</span>
-                ) : (
-                  <span className="text-status-attention">
-                    {analysis.audit.sanity_checks.filter(c => !c.pass).length} falliti
-                  </span>
-                )}
-                <button
-                  onClick={() => setDrawerOpen(true)}
-                  className="text-primary hover:text-primary/80 transition-subtle ml-auto"
-                >
-                  Dettagli →
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Empty state */}
-          {!analysis && !error && !loading && (
-            <div className="text-center py-4">
+          {/* AI Disabled Notice */}
+          {!AI_ENABLED && (
+            <div className="p-3 rounded bg-muted/30 border border-border/50">
               <p className="text-xs text-muted-foreground">
-                Seleziona un tipo di analisi per iniziare
+                <span className="font-medium text-foreground">AI disabilitata</span> — Rate limit raggiunto. 
+                Usa l'export per analizzare i dati in VS Code.
               </p>
             </div>
           )}
+
+          {/* Data Summary */}
+          <div className="grid grid-cols-3 gap-3">
+            <div className="p-3 rounded bg-muted/20 border border-border/30 text-center">
+              <div className="text-lg font-medium text-foreground">{data.symbol}</div>
+              <div className="text-xs text-muted-foreground">Anchor</div>
+            </div>
+            <div className="p-3 rounded bg-muted/20 border border-border/30 text-center">
+              <div className="text-lg font-medium text-status-ok">{longCount}</div>
+              <div className="text-xs text-muted-foreground">Long</div>
+            </div>
+            <div className="p-3 rounded bg-muted/20 border border-border/30 text-center">
+              <div className="text-lg font-medium text-status-risk">{shortCount}</div>
+              <div className="text-xs text-muted-foreground">Short</div>
+            </div>
+          </div>
+
+          {/* Regime Info */}
+          {data.regime && (
+            <div className="p-3 rounded bg-muted/20 border border-border/30">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Regime</span>
+                <span className="text-xs font-medium text-foreground">
+                  {data.regime.regime4h?.regime || data.regime.regime || "N/A"}
+                </span>
+              </div>
+              {data.regime.regime4h?.metrics?.atr14 && (
+                <div className="flex items-center justify-between mt-1">
+                  <span className="text-xs text-muted-foreground">ATR14</span>
+                  <span className="text-xs font-medium text-foreground">
+                    {Number(data.regime.regime4h.metrics.atr14).toFixed(2)}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Export Actions */}
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => copyToClipboard(JSON.stringify(exportData, null, 2), 'all')}
+              className="flex-1 min-w-[100px] px-3 py-2 text-xs font-medium rounded border border-border/50 hover:bg-muted/30 transition-subtle"
+            >
+              {copied === 'all' ? '✓ Copiato' : 'Copia JSON'}
+            </button>
+            <button
+              onClick={() => downloadJson(exportData!, `tradelia-${data.symbol}-${Date.now()}.json`)}
+              className="flex-1 min-w-[100px] px-3 py-2 text-xs font-medium rounded bg-foreground text-background hover:bg-foreground/90 transition-subtle"
+            >
+              Download
+            </button>
+          </div>
+
+          {/* Quick Copy Buttons */}
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => copyToClipboard(JSON.stringify(data.regime, null, 2), 'regime')}
+              className="px-2 py-1 text-xs rounded border border-border/50 hover:bg-muted/30 transition-subtle"
+            >
+              {copied === 'regime' ? '✓' : 'Regime'}
+            </button>
+            <button
+              onClick={() => copyToClipboard(JSON.stringify(data.universe?.long || [], null, 2), 'long')}
+              className="px-2 py-1 text-xs rounded border border-border/50 hover:bg-muted/30 transition-subtle"
+            >
+              {copied === 'long' ? '✓' : 'Long'}
+            </button>
+            <button
+              onClick={() => copyToClipboard(JSON.stringify(data.universe?.short || [], null, 2), 'short')}
+              className="px-2 py-1 text-xs rounded border border-border/50 hover:bg-muted/30 transition-subtle"
+            >
+              {copied === 'short' ? '✓' : 'Short'}
+            </button>
+          </div>
         </div>
       </Card>
 
-      {/* Details Drawer */}
+      {/* Data Viewer Drawer */}
       <Drawer 
         open={drawerOpen} 
         onClose={() => setDrawerOpen(false)} 
-        title="Dettagli Analisi AI"
+        title="Dati Raw"
         size="compact"
       >
         <div className="space-y-6">
-          {/* Sanity Checks */}
-          {analysis && (
-            <div>
-              <h4 className="text-sm font-medium text-foreground mb-3">Sanity Checks</h4>
-              <div className="space-y-2">
-                {analysis.audit.sanity_checks.map((check, i) => (
-                  <div key={i} className="flex items-center justify-between p-2 bg-muted/20 rounded">
-                    <div>
-                      <div className="text-xs font-medium text-foreground">{check.name.replace(/_/g, ' ')}</div>
-                      <div className="text-xs text-muted-foreground">{check.detail}</div>
-                    </div>
-                    <span className={`px-1.5 py-0.5 rounded text-xs ${
-                      check.pass ? "bg-status-ok/20 text-status-ok" : "bg-status-risk/20 text-status-risk"
-                    }`}>
-                      {check.pass ? "OK" : "FAIL"}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          {/* Regime Data */}
+          <details className="group" open>
+            <summary className="text-sm font-medium text-foreground cursor-pointer hover:text-primary transition-subtle flex items-center justify-between">
+              <span>Regime Data</span>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  copyToClipboard(JSON.stringify(data.regime, null, 2), 'regime-drawer');
+                }}
+                className="text-xs text-muted-foreground hover:text-foreground"
+              >
+                {copied === 'regime-drawer' ? '✓ Copiato' : 'Copia'}
+              </button>
+            </summary>
+            <pre className="mt-2 text-xs text-muted-foreground bg-muted/20 p-3 rounded overflow-auto max-h-48 font-mono">
+              {JSON.stringify(data.regime, null, 2)}
+            </pre>
+          </details>
 
-          {/* Assumptions */}
-          {analysis && analysis.audit.assumptions.length > 0 && (
-            <div>
-              <h4 className="text-sm font-medium text-foreground mb-3">Assunzioni</h4>
-              <ul className="space-y-1">
-                {analysis.audit.assumptions.map((assumption, i) => (
-                  <li key={i} className="text-xs text-muted-foreground flex items-start gap-2">
-                    <span className="text-foreground/30">•</span>
-                    {assumption}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          {/* Long Candidates */}
+          <details className="group">
+            <summary className="text-sm font-medium text-foreground cursor-pointer hover:text-primary transition-subtle flex items-center justify-between">
+              <span>Long Candidates ({longCount})</span>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  copyToClipboard(JSON.stringify(data.universe?.long || [], null, 2), 'long-drawer');
+                }}
+                className="text-xs text-muted-foreground hover:text-foreground"
+              >
+                {copied === 'long-drawer' ? '✓ Copiato' : 'Copia'}
+              </button>
+            </summary>
+            <pre className="mt-2 text-xs text-muted-foreground bg-muted/20 p-3 rounded overflow-auto max-h-48 font-mono">
+              {JSON.stringify(data.universe?.long || [], null, 2)}
+            </pre>
+          </details>
 
-          {/* Input Canon (collapsible) */}
-          {inputCanon && (
-            <details className="group">
-              <summary className="text-sm font-medium text-foreground cursor-pointer hover:text-primary transition-subtle">
-                Input Canon (dati processati)
-              </summary>
-              <pre className="mt-2 text-xs text-muted-foreground bg-muted/20 p-3 rounded overflow-auto max-h-64">
-                {JSON.stringify(inputCanon, null, 2)}
-              </pre>
-            </details>
-          )}
+          {/* Short Candidates */}
+          <details className="group">
+            <summary className="text-sm font-medium text-foreground cursor-pointer hover:text-primary transition-subtle flex items-center justify-between">
+              <span>Short Candidates ({shortCount})</span>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  copyToClipboard(JSON.stringify(data.universe?.short || [], null, 2), 'short-drawer');
+                }}
+                className="text-xs text-muted-foreground hover:text-foreground"
+              >
+                {copied === 'short-drawer' ? '✓ Copiato' : 'Copia'}
+              </button>
+            </summary>
+            <pre className="mt-2 text-xs text-muted-foreground bg-muted/20 p-3 rounded overflow-auto max-h-48 font-mono">
+              {JSON.stringify(data.universe?.short || [], null, 2)}
+            </pre>
+          </details>
 
-          {/* Full Response (collapsible) */}
-          {analysis && (
-            <details className="group">
-              <summary className="text-sm font-medium text-foreground cursor-pointer hover:text-primary transition-subtle">
-                Risposta completa AI
-              </summary>
-              <pre className="mt-2 text-xs text-muted-foreground bg-muted/20 p-3 rounded overflow-auto max-h-64">
-                {JSON.stringify(analysis, null, 2)}
-              </pre>
-            </details>
-          )}
+          {/* Full Export */}
+          <details className="group">
+            <summary className="text-sm font-medium text-foreground cursor-pointer hover:text-primary transition-subtle flex items-center justify-between">
+              <span>Export Completo</span>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  copyToClipboard(JSON.stringify(exportData, null, 2), 'full-drawer');
+                }}
+                className="text-xs text-muted-foreground hover:text-foreground"
+              >
+                {copied === 'full-drawer' ? '✓ Copiato' : 'Copia'}
+              </button>
+            </summary>
+            <pre className="mt-2 text-xs text-muted-foreground bg-muted/20 p-3 rounded overflow-auto max-h-64 font-mono">
+              {JSON.stringify(exportData, null, 2)}
+            </pre>
+          </details>
+
+          {/* Usage Instructions */}
+          <div className="p-3 rounded bg-muted/20 border border-border/30">
+            <p className="text-xs font-medium text-foreground mb-2">Come usare in VS Code:</p>
+            <ol className="text-xs text-muted-foreground space-y-1 list-decimal list-inside">
+              <li>Copia il JSON desiderato</li>
+              <li>Crea un file .json in VS Code</li>
+              <li>Incolla e analizza con i tuoi script</li>
+            </ol>
+          </div>
         </div>
       </Drawer>
     </>
