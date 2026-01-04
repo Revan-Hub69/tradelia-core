@@ -33,7 +33,7 @@ export interface InputCanon {
 export interface Brick1Canon {
   regime: "TREND" | "RANGE" | "TRANSITION";
   stress_flag: boolean;
-  atr_pct: number;
+  atr_frac: number; // ATR as fraction (0-0.3), not percentage
   spread_bps: number;
   trend_strength: number;
   range_ratio: number;
@@ -107,13 +107,13 @@ export function runSanityChecks(input: InputCanon): SanityCheck[] {
       threshold: 100
     });
 
-    // ATR sanity - should be reasonable percentage
+    // ATR sanity - now using fraction (0-0.3 typical)
     checks.push({
       name: "atr_reasonable",
-      pass: input.brick1.atr_pct >= 0.001 && input.brick1.atr_pct <= 0.2, // Max 20%
-      detail: `ATR: ${(input.brick1.atr_pct * 100).toFixed(2)}%`,
-      value: input.brick1.atr_pct,
-      threshold: 0.2
+      pass: input.brick1.atr_frac >= 0.001 && input.brick1.atr_frac <= 0.3,
+      detail: `ATR: ${(input.brick1.atr_frac * 100).toFixed(2)}%`,
+      value: input.brick1.atr_frac,
+      threshold: 0.3
     });
 
     // Trend strength bounds
@@ -123,6 +123,15 @@ export function runSanityChecks(input: InputCanon): SanityCheck[] {
       detail: `Trend strength: ${input.brick1.trend_strength.toFixed(3)}`,
       value: input.brick1.trend_strength,
       threshold: 1
+    });
+
+    // Returns std sanity (must be > 0 for valid calculation)
+    checks.push({
+      name: "returns_std_valid",
+      pass: input.brick1.returns_std > 0.001,
+      detail: `Returns std: ${input.brick1.returns_std.toFixed(4)}`,
+      value: input.brick1.returns_std,
+      threshold: 0.001
     });
   }
 

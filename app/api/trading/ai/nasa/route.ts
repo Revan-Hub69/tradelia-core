@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
 
 import { getLocalGroqApiKey } from "@/lib/trading/local-secrets";
 import { isTradingEnabled } from "@/lib/trading/trading-enabled";
@@ -8,32 +9,186 @@ import { createInputCanon, validateInputCanon } from "@/lib/ai/input-canon";
 import type { InputCanon } from "@/lib/ai/input-canon";
 import { SYSTEM_PROMPT, getBrick1Prompt, getBrick2Prompt, getBrick1Plus2Prompt } from "@/lib/ai/prompts";
 
+// Zod schemas for NASA-grade validation
+const NasaAnalysisResultSchema = z.object({
+  meta: z.object({
+    mode: z.string(),
+    engine: z.object({
+      name: z.string(),
+      version: z.string()
+    }),
+    ts: z.number(),
+    input_hash: z.string(),
+    run_id: z.string()
+  }),
+  status: z.object({
+    state: z.enum(["ACTIVE", "REVIEW", "HOLD", "NEEDS_DATA"]),
+    go_no_go: z.enum(["GO", "NO_GO"]),
+    confidence: z.number().min(0).max(100),
+    blocking_reasons: z.array(z.string())
+  }),
+  brick1: z.object({
+    market_state: z.object({
+      regime: z.string(),
+      vol_state: z.string(),
+      liquidity_state: z.string(),
+      stress_flag: z.boolean()
+    }),
+    policy: z.object({
+      allowed_playbooks: z.array(z.string()),
+      blocked_playbooks: z.array(z.string()),
+      max_risk_r: z.number(),
+      notes: z.array(z.string())
+    }),
+    evidence: z.array(z.string())
+  }).optional(),
+  brick2: z.object({
+    universe: z.object({
+      top: z.array(z.object({
+        symbol: z.string(),
+        category: z.string(),
+        score: z.number(),
+        why: z.array(z.string())
+      })),
+      avoid: z.array(z.object({
+        symbol: z.string(),
+        why: z.array(z.string())
+      }))
+    }),
+    evidence: z.array(z.string())
+  }).optional(),
+  brick1_plus_brick2: z.object({
+    filtered_top: z.array(z.object({
+      symbol: z.string(),
+      action: z.enum(["FOCUS", "WATCH", "IGNORE"]),
+      playbook: z.string(),
+      reason: z.array(z.string())
+    })),
+    evidence: z.array(z.string())
+  }).optional(),
+  audit: z.object({
+    input_coverage_pct: z.number(),
+    assumptions: z.array(z.string()),
+    conflicts: z.array(z.string()),
+    sanity_checks: z.array(z.object({
+      name: z.string(),
+      pass: z.boolean(),
+      detail: z.string(),
+      value: z.number().optional(),
+      threshold: z.number().optional()
+    })),
+    input_hash: z.string(),
+    timestamp: z.number()
+  })
+});
+
+// Create mode-specific schemas with more flexible validation
+function createModeSpecificSchema(mode: string) {
+  const baseSchema = z.object({
+    meta: z.object({
+      mode: z.string(),
+      engine: z.object({
+        name: z.string(),
+        version: z.string()
+      }),
+      ts: z.number(),
+      input_hash: z.string().optional(), // Will be overridden server-side
+      run_id: z.string().optional() // Will be overridden server-side
+    }),
+    status: z.object({
+      state: z.enum(["ACTIVE", "REVIEW", "HOLD", "NEEDS_DATA"]),
+      go_no_go: z.enum(["GO", "NO_GO"]),
+      confidence: z.number().min(0).max(100),
+      blocking_reasons: z.array(z.string())
+    }),
+    audit: z.object({
+      input_coverage_pct: z.number(),
+      assumptions: z.array(z.string()),
+      conflicts: z.array(z.string()),
+      sanity_checks: z.array(z.object({
+        name: z.string(),
+        pass: z.boolean(),
+        detail: z.string(),
+        value: z.number().optional(),
+        threshold: z.number().optional()
+      })),
+      input_hash: z.string().optional(), // Will be overridden server-side
+      timestamp: z.number().optional() // Will be overridden server-side
+    })
+  });
+
+  // Add mode-specific fields with relaxed validation
+  switch (mode) {
+    case "BRICK1_ONLY":
+      return baseSchema.extend({
+        brick1: z.object({
+          market_state: z.object({
+            regime: z.string(),
+            vol_state: z.string(),
+            liquidity_state: z.string(),
+            stress_flag: z.boolean()
+          }).optional(),
+          policy: z.object({
+            allowed_playbooks: z.array(z.string()),
+            blocked_playbooks: z.array(z.string()),
+            max_risk_r: z.number(),
+            notes: z.array(z.string())
+          }).optional(),
+          evidence: z.array(z.any()).optional() // Relaxed: accept any type
+        }).optional(),
+        brick2: z.any().optional(),
+        brick1_plus_brick2: z.any().optional()
+      });
+    
+    case "BRICK2_ONLY":
+      return baseSchema.extend({
+        brick1: z.any().optional(),
+        brick2: z.object({
+          universe: z.object({
+            top: z.array(z.object({
+              symbol: z.string(),
+              category: z.string().optional(), // Made optional
+              score: z.number(),
+              why: z.array(z.string()).optional() // Made optional
+            })),
+            avoid: z.array(z.object({
+              symbol: z.string(),
+              why: z.array(z.string()).optional() // Made optional
+            }))
+          }).optional(),
+          evidence: z.array(z.any()).optional() // Relaxed: accept any type
+        }).optional(),
+        brick1_plus_brick2: z.any().optional()
+      });
+    
+    case "BRICK1_PLUS_BRICK2":
+      return baseSchema.extend({
+        brick1: z.any().optional(),
+        brick2: z.any().optional(),
+        brick1_plus_brick2: z.object({
+          filtered_top: z.array(z.object({
+            symbol: z.string(),
+            action: z.enum(["FOCUS", "WATCH", "IGNORE"]),
+            playbook: z.string(),
+            reason: z.union([z.array(z.string()), z.string()]) // Accept both array and string
+          })),
+          evidence: z.array(z.any()).optional() // Relaxed: accept any type
+        }).optional()
+      });
+    
+    default:
+      return baseSchema;
+  }
+}
+
+type NasaAnalysisResult = z.infer<ReturnType<typeof createModeSpecificSchema>>;
+
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 type NasaAiRequestBody = {
   mode: "BRICK1_ONLY" | "BRICK2_ONLY" | "BRICK1_PLUS_BRICK2";
   input: unknown;
-};
-
-type NasaAnalysisResult = {
-  meta: {
-    mode: string;
-    engine: { name: string; version: string };
-    ts: number;
-    input_hash: string;
-    run_id: string;
-  };
-  status: {
-    state: "ACTIVE" | "REVIEW" | "HOLD" | "NEEDS_DATA";
-    go_no_go: "GO" | "NO_GO";
-    confidence: number;
-    blocking_reasons: string[];
-  };
-  brick1?: any;
-  brick2?: any;
-  brick1_plus_brick2?: any;
-  audit: AuditResult;
 };
 
 function isAllowedLocalHost(host: string | null) {
@@ -106,12 +261,14 @@ export async function POST(request: Request) {
     // Step 3: Audit input (deterministic)
     const auditResult: AuditResult = auditInput(inputCanon, mode);
     
-    // Step 4: Check if we can proceed
-    if (auditResult.input_coverage_pct < 70) {
+    // Step 4: Check if we can proceed (fail-closed)
+    const failedChecks = auditResult.sanity_checks.filter(check => !check.pass);
+    if (auditResult.input_coverage_pct < 70 || failedChecks.length > 0) {
       return NextResponse.json({
-        error: "Insufficient input coverage",
+        error: auditResult.input_coverage_pct < 70 ? "Insufficient input coverage" : "Critical sanity checks failed",
         coverage: auditResult.input_coverage_pct,
-        required: 70,
+        failed_checks: failedChecks.map(c => c.name),
+        required_coverage: 70,
         run_id: runId,
         audit: auditResult
       }, { status: 400 });
@@ -150,7 +307,7 @@ export async function POST(request: Request) {
         throw new Error("Invalid mode");
     }
 
-    // Step 7: Call AI with JSON mode
+    // Step 7: Call AI with JSON mode (NASA-grade)
     const completion = await groqChatCompletion({
       config,
       messages: [
@@ -159,7 +316,8 @@ export async function POST(request: Request) {
       ],
       temperature: 0.0, // NASA-grade determinism
       maxTokens: 2500,
-      topP: 0.1
+      topP: 0.1,
+      responseFormat: { type: "json_object" } // Force JSON mode
     });
 
     const content = completion.choices?.[0]?.message?.content;
@@ -170,7 +328,7 @@ export async function POST(request: Request) {
       }, { status: 502 });
     }
 
-    // Step 8: Parse AI response
+    // Step 8: Parse and validate AI response with Zod
     const parsed = parseAIJson(content);
     if (!parsed) {
       return NextResponse.json({ 
@@ -180,18 +338,24 @@ export async function POST(request: Request) {
       }, { status: 502 });
     }
 
-    // Step 9: Validate response structure
-    const result = parsed as NasaAnalysisResult;
-    if (!result.meta || !result.status || !result.audit) {
+    // Step 9: Zod validation (NASA-grade schema enforcement)
+    let result: NasaAnalysisResult;
+    try {
+      const schema = createModeSpecificSchema(mode);
+      result = schema.parse(parsed);
+    } catch (zodError) {
+      console.error(`[NASA-AI] ${runId} Zod validation failed:`, zodError);
       return NextResponse.json({
-        error: "Invalid response structure from AI",
+        error: "AI response failed schema validation",
+        validation_errors: zodError instanceof z.ZodError ? zodError.issues : "Unknown validation error",
         run_id: runId
       }, { status: 502 });
     }
 
-    // Step 10: Add server-side metadata
+    // Step 10: Override server-side metadata (NASA-grade audit trail)
     result.meta.run_id = runId;
     result.meta.input_hash = auditResult.input_hash;
+    result.audit = auditResult; // Use server-calculated audit, not AI-generated
 
     // Step 11: Log run (in production, save to database)
     console.log(`[NASA-AI] ${runId} ${mode} coverage=${auditResult.input_coverage_pct}% confidence=${result.status.confidence}% state=${result.status.state}`);

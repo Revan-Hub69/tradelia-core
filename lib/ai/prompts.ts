@@ -51,8 +51,8 @@ Analyze the market state and generate trading policy. Return ONLY this JSON stru
     },
     "evidence": []
   },
-  "brick2": null,
-  "brick1_plus_brick2": null,
+  "brick2": {},
+  "brick1_plus_brick2": {},
   "audit": {
     "input_coverage_pct": ${auditResult.input_coverage_pct},
     "assumptions": ${JSON.stringify(auditResult.assumptions)},
@@ -64,9 +64,10 @@ Analyze the market state and generate trading policy. Return ONLY this JSON stru
 INSTRUCTIONS:
 - Use INPUT_CANON.brick1 data to determine market_state
 - Set policy based on regime and stress conditions
-- Reference input paths in evidence array
+- Reference input paths in evidence array (must start with "INPUT.")
 - Use AUDIT data for coverage and conflicts
-- Set confidence based on data quality and conflicts`;
+- Set confidence as integer 0-100 based on data quality and conflicts
+- If sanity checks fail, set state to "NEEDS_DATA" and go_no_go to "NO_GO"`;
 }
 
 export function getBrick2Prompt(inputCanon: any, auditResult: any): string {
@@ -91,7 +92,7 @@ Analyze universe candidates and rank opportunities. Return ONLY this JSON struct
     "confidence": 0,
     "blocking_reasons": []
   },
-  "brick1": null,
+  "brick1": {},
   "brick2": {
     "universe": {
       "asof_ts": ${Date.now()},
@@ -100,7 +101,7 @@ Analyze universe candidates and rank opportunities. Return ONLY this JSON struct
     },
     "evidence": []
   },
-  "brick1_plus_brick2": null,
+  "brick1_plus_brick2": {},
   "audit": {
     "input_coverage_pct": ${auditResult.input_coverage_pct},
     "assumptions": ${JSON.stringify(auditResult.assumptions)},

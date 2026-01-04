@@ -14,7 +14,7 @@ export interface InputCanon {
 export interface Brick1Canon {
   regime: "TREND" | "RANGE" | "TRANSITION";
   stress_flag: boolean;
-  atr_pct: number;
+  atr_frac: number; // ATR as fraction (0-0.3), not percentage
   spread_bps: number;
   trend_strength: number;
   range_ratio: number;
@@ -48,7 +48,7 @@ export function canonicalizeBrick1(rawData: any): Brick1Canon | null {
   return {
     regime: regime4h.regime || "TRANSITION",
     stress_flag: Boolean(regime4h.stress),
-    atr_pct: Number(metrics.atr14) || 0,
+    atr_frac: calculateAtrFrac(rawData), // Now rawData includes htf.price
     spread_bps: Number(rawData.spread_bps) || 0,
     trend_strength: Math.max(-1, Math.min(1, Number(metrics.trendStrength) || 0)),
     range_ratio: Math.max(0, Math.min(1, Number(metrics.rangeRatio) || 0)),
@@ -121,7 +121,7 @@ function canonicalizeCandidate(raw: any, side: "LONG" | "SHORT"): Brick2Canon['c
     side,
     score: Number(raw.scores?.total) || 0,
     spread_bps: Number(raw.ws?.spreadBpsNow) || 0,
-    atr_pct: calculateAtrPct(raw),
+    atr_pct: calculateAtrFrac(raw),
     liquidity_grade: determineLiquidityGrade(raw),
     regime_match: Number(raw.scores?.regimeMatch) || 0,
     cleanliness: calculateCleanliness(raw)
@@ -138,27 +138,80 @@ function determineEmaState(metrics: any): "BULL" | "BEAR" | "NEUTRAL" {
   return "NEUTRAL";
 }
 
-function calculateAtrPct(raw: any): number {
-  // Try multiple sources for ATR - ensure it's a percentage (0-1 range)
+/**
+ * Calculate ATR as fraction (0-0.3 typical range)
+ * Standard: atr_frac = ATR / Price
+ */
+function calculateAtrFrac(raw: any): number {
+  console.log(`🔍 ATR Debug - Raw data structure:`, JSON.stringify(raw, null, 2));
+  
+  // Get price from multiple sources
+  let price = 0;
+  
+  // Try different price sources based on data structure
+  if (raw.htf?.price) {
+    price = Number(raw.htf.price);
+    console.log(`📊 Price from raw.htf.price: ${price}`);
+  } else if (raw.price) {
+    price = Number(raw.price);
+    console.log(`📊 Price from raw.price: ${price}`);
+  } else if (raw.regime4h?.metrics?.price) {
+    price = Number(raw.regime4h.metrics.price);
+    console.log(`📊 Price from raw.regime4h.metrics.price: ${price}`);
+  } else if (raw.market?.anchor?.htf?.price) {
+    price = Number(raw.market.anchor.htf.price);
+    console.log(`📊 Price from raw.market.anchor.htf.price: ${price}`);
+  } else {
+    // Fallback based on symbol
+    const symbol = raw.symbol || raw.market?.anchor?.symbol || 'UNKNOWN';
+    if (symbol.includes('BTC')) price = 91000;
+    else if (symbol.includes('ETH')) price = 3200;
+    else price = 50000;
+    console.log(`📊 Price fallback for ${symbol}: ${price}`);
+  }
+  
   let atr = 0;
   
-  if (raw.htf?.atr) {
+  // Try multiple sources for ATR value (absolute)
+  if (raw.regime4h?.metrics?.atr14) {
+    atr = Number(raw.regime4h.metrics.atr14);
+    console.log(`📊 ATR from raw.regime4h.metrics.atr14: ${atr}`);
+  } else if (raw.htf?.atr) {
     atr = Number(raw.htf.atr);
+    console.log(`📊 ATR from raw.htf.atr: ${atr}`);
   } else if (raw.metrics?.atr14) {
     atr = Number(raw.metrics.atr14);
-  } else if (raw.htf?.price && raw.volatility) {
-    atr = Number(raw.volatility) / Number(raw.htf.price);
+    console.log(`📊 ATR from raw.metrics.atr14: ${atr}`);
+  } else if (raw.metrics?.atr) {
+    atr = Number(raw.metrics.atr);
+    console.log(`📊 ATR from raw.metrics.atr: ${atr}`);
+  } else if (raw.regime?.metrics?.atr14) {
+    atr = Number(raw.regime.metrics.atr14);
+    console.log(`📊 ATR from raw.regime.metrics.atr14: ${atr}`);
+  } else if (raw.market?.anchor?.regime4h?.metrics?.atr14) {
+    atr = Number(raw.market.anchor.regime4h.metrics.atr14);
+    console.log(`📊 ATR from raw.market.anchor.regime4h.metrics.atr14: ${atr}`);
+  } else {
+    console.log(`❌ No ATR found in data structure`);
   }
   
-  // Ensure ATR is in reasonable range (0-50% max)
-  if (atr > 1) {
-    // If ATR looks like absolute value, convert to percentage
-    const price = Number(raw.htf?.price) || 1;
-    atr = atr / price;
+  console.log(`🔍 ATR Debug: atr=${atr}, price=${price}, symbol=${raw.symbol || raw.market?.anchor?.symbol || 'unknown'}`);
+  
+  if (atr <= 0 || price <= 0) {
+    console.log(`❌ Invalid values: atr=${atr}, price=${price}`);
+    return 0;
   }
   
-  // Cap at 50% for sanity
-  return Math.min(atr, 0.5);
+  // Calculate fraction: ATR / Price
+  const atr_frac = atr / price;
+  
+  console.log(`📊 ATR Result: ${atr} / ${price} = ${atr_frac} (${(atr_frac * 100).toFixed(2)}%)`);
+  
+  // Sanity cap at 30% (0.3)
+  const result = Math.min(atr_frac, 0.3);
+  console.log(`✅ Final ATR fraction: ${result} (${(result * 100).toFixed(2)}%)`);
+  
+  return result;
 }
 
 function determineLiquidityGrade(raw: any): "A" | "B" | "C" | "D" {

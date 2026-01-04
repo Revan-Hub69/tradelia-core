@@ -28,6 +28,7 @@ export interface GroqChatRequest {
   temperature?: number;
   maxTokens?: number;
   topP?: number;
+  responseFormat?: { type: "json_object" };
 }
 
 /**
@@ -73,7 +74,8 @@ export async function groqChatCompletion({
   messages,
   temperature = 0.0,
   maxTokens = 2000,
-  topP = 0.1
+  topP = 0.1,
+  responseFormat
 }: GroqChatRequest): Promise<GroqResponse> {
   const baseUrl = config.baseUrl ?? "https://api.groq.com/openai/v1/";
   const url = new URL("chat/completions", baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`);
@@ -82,6 +84,19 @@ export async function groqChatCompletion({
   const timeout = setTimeout(() => controller.abort(), 45_000);
 
   try {
+    const requestBody: any = {
+      model: config.model,
+      temperature,
+      max_tokens: maxTokens,
+      top_p: topP,
+      messages,
+    };
+
+    // Add response_format only if specified (NASA-grade JSON mode)
+    if (responseFormat) {
+      requestBody.response_format = responseFormat;
+    }
+
     const response = await fetch(url, {
       method: "POST",
       cache: "no-store",
@@ -90,14 +105,7 @@ export async function groqChatCompletion({
         Authorization: `Bearer ${config.apiKey}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        model: config.model,
-        temperature,
-        max_tokens: maxTokens,
-        top_p: topP,
-        response_format: { type: "json_object" }, // 🎯 JSON mode enforced
-        messages,
-      }),
+      body: JSON.stringify(requestBody),
     });
 
     if (!response.ok) {

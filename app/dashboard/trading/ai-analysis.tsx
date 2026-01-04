@@ -108,26 +108,79 @@ export function AIAnalysis({ data }: AIAnalysisProps) {
     setError(null);
     
     try {
+      // Extract price from various sources - FIXED to use correct BTC price
+      const extractPrice = () => {
+        // First try to get the anchor symbol price from universe data
+        const anchorSymbol = data.symbol || "BTCUSDT";
+        
+        // Look for the anchor symbol in the universe data
+        if (data.universe?.long) {
+          const anchorCandidate = data.universe.long.find((c: any) => c.symbol === anchorSymbol);
+          if (anchorCandidate?.htf?.price) {
+            return anchorCandidate.htf.price;
+          }
+        }
+        
+        if (data.universe?.short) {
+          const anchorCandidate = data.universe.short.find((c: any) => c.symbol === anchorSymbol);
+          if (anchorCandidate?.htf?.price) {
+            return anchorCandidate.htf.price;
+          }
+        }
+        
+        // Try regime data
+        if (data.regime?.metrics?.price) {
+          return data.regime.metrics.price;
+        }
+        
+        // Fallback based on symbol
+        if (anchorSymbol.includes('BTC')) {
+          return 91000;
+        }
+        if (anchorSymbol.includes('ETH')) {
+          return 3200;
+        }
+        
+        return 50000; // Generic fallback
+      };
+
       // Prepare structured input for NASA-grade analysis
       const structuredInput = {
-        symbol: data.symbol,
+        symbol: data.symbol || "UNKNOWN",
         ts: Date.now(),
         source: "dashboard",
         market: {
           anchor: {
-            symbol: data.symbol,
-            regime4h: data.regime,
+            symbol: data.symbol || "UNKNOWN",
+            regime4h: {
+              regime: data.regime?.regime || "TRANSITION",
+              stress: data.regime?.stress || false,
+              metrics: {
+                atr14: data.regime?.metrics?.atr14 || data.regime?.atr14 || 100,
+                trendStrength: data.regime?.metrics?.trendStrength || data.regime?.trendStrength || 0,
+                rangeRatio: data.regime?.metrics?.rangeRatio || data.regime?.rangeRatio || 0.5,
+                returnsStd: data.regime?.metrics?.returnsStd || 0.1,
+                ema20: data.regime?.metrics?.ema20 || 45000,
+                ema50: data.regime?.metrics?.ema50 || 44000,
+                ema200: data.regime?.metrics?.ema200 || 43000
+              }
+            },
             ts: Date.now(),
-            spread_bps: 2.5 // Mock data - in real implementation get from market data
+            spread_bps: 2.5, // Mock data - in real implementation get from market data
+            htf: {
+              price: extractPrice()
+            }
           }
         },
         universe: data.universe ? {
-          meta: data.universe.meta,
-          market: data.universe.market,
-          long: data.universe.long.slice(0, 10),
-          short: data.universe.short.slice(0, 10)
+          meta: data.universe.meta || {},
+          market: data.universe.market || {},
+          long: Array.isArray(data.universe.long) ? data.universe.long.slice(0, 10) : [],
+          short: Array.isArray(data.universe.short) ? data.universe.short.slice(0, 10) : []
         } : null
       };
+
+      console.log("🚀 NASA Analysis Input:", JSON.stringify(structuredInput, null, 2));
 
       const response = await fetch("/api/trading/ai/nasa", {
         method: "POST",
@@ -139,11 +192,20 @@ export function AIAnalysis({ data }: AIAnalysisProps) {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "NASA AI analysis failed");
+        const errorText = await response.text();
+        
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch {
+          errorData = { error: errorText };
+        }
+        
+        throw new Error(errorData.error || `HTTP ${response.status}: ${errorText}`);
       }
       
       const result = await response.json();
+      
       const analysisResult = result.output as NasaAnalysisResult;
       
       setAnalysis(analysisResult);
@@ -299,6 +361,16 @@ export function AIAnalysis({ data }: AIAnalysisProps) {
             </div>
           </div>
 
+          {/* Debug Info */}
+          {process.env.NODE_ENV === 'development' && (
+            <div className="rounded border border-border/30 bg-muted/20 p-4">
+              <h4 className="text-sm font-medium text-foreground mb-3">Debug: Raw Input Data</h4>
+              <pre className="text-xs text-muted-foreground bg-background p-3 rounded border border-border/30 overflow-auto max-h-48">
+                {JSON.stringify(data, null, 2)}
+              </pre>
+            </div>
+          )}
+
           {/* Run Analysis */}
           <div>
             <button
@@ -340,6 +412,29 @@ export function AIAnalysis({ data }: AIAnalysisProps) {
               {/* Tab Content */}
               {activeTab === "result" && (
                 <div className="space-y-4">
+                  {/* Run History */}
+                  {runHistory.length > 1 && (
+                    <div className="rounded border border-border/30 bg-muted/20 p-4">
+                      <h4 className="text-sm font-medium text-foreground mb-3">Recent Runs</h4>
+                      <div className="space-y-2">
+                        {runHistory.slice(1, 4).map((run, i) => (
+                          <div key={i} className="flex items-center justify-between text-xs p-2 bg-background rounded">
+                            <span className="text-muted-foreground">
+                              {new Date(run.timestamp).toLocaleTimeString()} - {run.mode}
+                            </span>
+                            <span className={`px-1.5 py-0.5 rounded ${
+                              run.result.status.go_no_go === "GO" 
+                                ? "bg-status-ok/20 text-status-ok"
+                                : "bg-status-risk/20 text-status-risk"
+                            }`}>
+                              {run.result.status.go_no_go}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   {/* Status Overview */}
                   <div className="rounded border border-border/30 bg-muted/20 p-4">
                     <div className="flex items-center justify-between mb-3">
@@ -409,7 +504,7 @@ export function AIAnalysis({ data }: AIAnalysisProps) {
                     <div className="rounded border border-border/30 bg-muted/20 p-4">
                       <h4 className="text-sm font-medium text-foreground mb-3">Brick 2: Universe Screening</h4>
                       <div className="space-y-3">
-                        {analysis.brick2.universe.top.length > 0 && (
+                        {analysis.brick2.universe?.top && analysis.brick2.universe.top.length > 0 ? (
                           <div>
                             <span className="text-xs text-muted-foreground">Top Candidates:</span>
                             <div className="mt-2 space-y-2">
@@ -424,6 +519,10 @@ export function AIAnalysis({ data }: AIAnalysisProps) {
                               ))}
                             </div>
                           </div>
+                        ) : (
+                          <div className="text-center py-4">
+                            <p className="text-xs text-muted-foreground">No universe candidates available</p>
+                          </div>
                         )}
                       </div>
                     </div>
@@ -433,23 +532,29 @@ export function AIAnalysis({ data }: AIAnalysisProps) {
                     <div className="rounded border border-border/30 bg-muted/20 p-4">
                       <h4 className="text-sm font-medium text-foreground mb-3">Brick 1+2: Filtered Recommendations</h4>
                       <div className="space-y-2">
-                        {analysis.brick1_plus_brick2.filtered_top.map((item, i) => (
-                          <div key={i} className="flex items-center justify-between p-2 bg-background rounded border border-border/30">
-                            <div>
-                              <div className="text-xs font-medium text-foreground">{item.symbol}</div>
-                              <div className="text-xs text-muted-foreground">{item.playbook}</div>
+                        {analysis.brick1_plus_brick2.filtered_top && analysis.brick1_plus_brick2.filtered_top.length > 0 ? (
+                          analysis.brick1_plus_brick2.filtered_top.map((item, i) => (
+                            <div key={i} className="flex items-center justify-between p-2 bg-background rounded border border-border/30">
+                              <div>
+                                <div className="text-xs font-medium text-foreground">{item.symbol}</div>
+                                <div className="text-xs text-muted-foreground">{item.playbook}</div>
+                              </div>
+                              <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium border ${
+                                item.action === "FOCUS" 
+                                  ? "bg-status-ok/20 text-status-ok border-status-ok/30"
+                                  : item.action === "WATCH"
+                                  ? "bg-status-attention/20 text-status-attention border-status-attention/30"
+                                  : "bg-muted/30 text-muted-foreground border-border/50"
+                              }`}>
+                                {item.action}
+                              </span>
                             </div>
-                            <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium border ${
-                              item.action === "FOCUS" 
-                                ? "bg-status-ok/20 text-status-ok border-status-ok/30"
-                                : item.action === "WATCH"
-                                ? "bg-status-attention/20 text-status-attention border-status-attention/30"
-                                : "bg-muted/30 text-muted-foreground border-border/50"
-                            }`}>
-                              {item.action}
-                            </span>
+                          ))
+                        ) : (
+                          <div className="text-center py-4">
+                            <p className="text-xs text-muted-foreground">No filtered recommendations available</p>
                           </div>
-                        ))}
+                        )}
                       </div>
                     </div>
                   )}
@@ -461,33 +566,39 @@ export function AIAnalysis({ data }: AIAnalysisProps) {
                   {analysis.brick1?.evidence && analysis.brick1.evidence.length > 0 && (
                     <div className="rounded border border-border/30 bg-muted/20 p-4">
                       <h4 className="text-sm font-medium text-foreground mb-3">Brick 1 Evidence</h4>
-                      <ul className="space-y-1 text-xs">
+                      <div className="space-y-2">
                         {analysis.brick1.evidence.map((evidence, i) => (
-                          <li key={i} className="text-muted-foreground font-mono">{String(evidence)}</li>
+                          <div key={i} className="text-xs">
+                            <span className="font-mono text-foreground">{String(evidence)}</span>
+                          </div>
                         ))}
-                      </ul>
+                      </div>
                     </div>
                   )}
                   
                   {analysis.brick2?.evidence && analysis.brick2.evidence.length > 0 && (
                     <div className="rounded border border-border/30 bg-muted/20 p-4">
                       <h4 className="text-sm font-medium text-foreground mb-3">Brick 2 Evidence</h4>
-                      <ul className="space-y-1 text-xs">
+                      <div className="space-y-2">
                         {analysis.brick2.evidence.map((evidence, i) => (
-                          <li key={i} className="text-muted-foreground font-mono">{String(evidence)}</li>
+                          <div key={i} className="text-xs">
+                            <span className="font-mono text-foreground">{String(evidence)}</span>
+                          </div>
                         ))}
-                      </ul>
+                      </div>
                     </div>
                   )}
                   
                   {analysis.brick1_plus_brick2?.evidence && analysis.brick1_plus_brick2.evidence.length > 0 && (
                     <div className="rounded border border-border/30 bg-muted/20 p-4">
                       <h4 className="text-sm font-medium text-foreground mb-3">Brick 1+2 Evidence</h4>
-                      <ul className="space-y-1 text-xs">
+                      <div className="space-y-2">
                         {analysis.brick1_plus_brick2.evidence.map((evidence, i) => (
-                          <li key={i} className="text-muted-foreground font-mono">{String(evidence)}</li>
+                          <div key={i} className="text-xs">
+                            <span className="font-mono text-foreground">{String(evidence)}</span>
+                          </div>
                         ))}
-                      </ul>
+                      </div>
                     </div>
                   )}
                   

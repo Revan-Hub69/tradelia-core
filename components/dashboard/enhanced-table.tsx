@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import React from "react";
+import { fmtBps, fmtPctChange, fmtTimeAgo, fmtScore } from "@/lib/utils/formatting";
 import { Card } from "./card";
 
 // Types
@@ -19,6 +20,7 @@ interface UniverseCandidate {
     price: number;
     regime: "TREND" | "RANGE" | "TRANSITION";
     stress: boolean;
+    chgPct24h?: number; // Add change percentage
   };
   ws: {
     spreadBpsNow: number;
@@ -29,6 +31,12 @@ interface UniverseCandidate {
     warnings: string[];
     info: string[];
   };
+}
+
+interface ExcludedSummary {
+  blocked: number;
+  warned: number;
+  topReasons: string[];
 }
 
 interface TableConfig {
@@ -60,15 +68,35 @@ const viewModes: Record<TableViewMode, TableConfig> = {
   }
 };
 
-// Utility functions
+// Utility functions - Updated with desk-grade formatting
 function formatNumber(value: number): string {
-  if (!Number.isFinite(value)) return "-";
+  if (!Number.isFinite(value)) return "—";
   return new Intl.NumberFormat("en-US", { maximumFractionDigits: 4 }).format(value);
 }
 
 function formatBps(value: number | null | undefined): string {
-  if (typeof value !== "number" || !Number.isFinite(value)) return "-";
-  return `${value.toFixed(1)}bps`;
+  if (typeof value !== "number" || !Number.isFinite(value)) return "—";
+  return `${fmtBps(value)}bps`;
+}
+
+function formatChange(value: number | null | undefined): JSX.Element {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    return <span className="text-muted-foreground">—</span>;
+  }
+  
+  const formatted = fmtPctChange(value);
+  const isPositive = value > 0;
+  const isNegative = value < 0;
+  
+  return (
+    <span className={`${
+      isPositive ? 'text-status-ok' : 
+      isNegative ? 'text-status-risk' : 
+      'text-muted-foreground'
+    }`}>
+      {isPositive ? '+' : ''}{formatted}
+    </span>
+  );
 }
 
 function getRegimeBadge(regime: "TREND" | "RANGE" | "TRANSITION") {
@@ -120,17 +148,49 @@ function ViewModeToggle({
   );
 }
 
+// Excluded Summary Component
+function ExcludedSummary({ excluded }: { excluded: ExcludedSummary }) {
+  if (excluded.blocked === 0 && excluded.warned === 0) return null;
+  
+  return (
+    <div className="mb-4 p-3 bg-muted/20 rounded border border-border/30">
+      <div className="flex items-center justify-between">
+        <div className="text-xs text-muted-foreground">
+          <span className="font-medium">Excluded:</span>
+          {excluded.blocked > 0 && (
+            <span className="ml-2 text-status-risk">
+              {excluded.blocked} blocked
+            </span>
+          )}
+          {excluded.warned > 0 && (
+            <span className="ml-2 text-status-attention">
+              {excluded.warned} warned
+            </span>
+          )}
+        </div>
+        {excluded.topReasons.length > 0 && (
+          <div className="text-xs text-muted-foreground">
+            Top reasons: {excluded.topReasons.slice(0, 3).join(", ")}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // Enhanced Table Component
 interface EnhancedTableProps {
   candidates: UniverseCandidate[];
   title: string;
   defaultMode?: TableViewMode;
+  excluded?: ExcludedSummary;
 }
 
 export function EnhancedTable({ 
   candidates, 
   title, 
-  defaultMode = 'comfortable' 
+  defaultMode = 'comfortable',
+  excluded
 }: EnhancedTableProps) {
   const [viewMode, setViewMode] = useState<TableViewMode>(defaultMode);
   const [showAll, setShowAll] = useState(false);
@@ -168,10 +228,12 @@ export function EnhancedTable({
         );
       
       case 'change':
-        // Placeholder for price change - would need historical data
         return (
-          <div className="text-sm text-muted-foreground">
-            --
+          <div className="text-sm">
+            {candidate.htf.chgPct24h !== undefined ? 
+              formatChange(candidate.htf.chgPct24h) : 
+              <span className="text-muted-foreground">—</span>
+            }
           </div>
         );
       
@@ -214,7 +276,7 @@ export function EnhancedTable({
             <div className="text-sm text-foreground">{formatBps(candidate.ws.spreadBpsNow)}</div>
             {viewMode === 'detailed' && (
               <div className="text-xs text-muted-foreground">
-                {candidate.ws.lastUpdateAgeSec}s ago
+                {fmtTimeAgo(candidate.ws.lastUpdateAgeSec)}
               </div>
             )}
           </div>
@@ -223,7 +285,7 @@ export function EnhancedTable({
       case 'timestamp':
         return (
           <div className="text-xs text-muted-foreground">
-            {candidate.ws.lastUpdateAgeSec}s ago
+            {fmtTimeAgo(candidate.ws.lastUpdateAgeSec)}
           </div>
         );
       
@@ -308,6 +370,9 @@ export function EnhancedTable({
         </div>
       }
     >
+      {/* Excluded Summary */}
+      {excluded && <ExcludedSummary excluded={excluded} />}
+      
       <div className="overflow-x-auto">
         <table className="w-full divide-y divide-border/30" style={{ minWidth: '700px' }}>
           <thead className="bg-muted/30">

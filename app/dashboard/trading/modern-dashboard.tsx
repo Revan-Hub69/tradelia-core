@@ -98,7 +98,7 @@ function getRegimeBadge(regime: Regime4h) {
 function CompactUniverseCard({ 
   candidates, 
   title, 
-  type 
+  type: _type 
 }: { 
   candidates: UniverseCandidate[]; 
   title: string; 
