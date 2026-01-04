@@ -228,14 +228,18 @@ export function EnhancedTable({
         );
       
       case 'change':
-        return (
-          <div className="text-sm">
-            {candidate.htf.chgPct24h !== undefined ? 
-              formatChange(candidate.htf.chgPct24h) : 
-              <span className="text-muted-foreground">—</span>
-            }
-          </div>
-        );
+        // Change data not available from backend - show ATR% as volatility indicator instead
+        const atrPct = (candidate as any).htf?.atrPct4h;
+        if (atrPct !== undefined && Number.isFinite(atrPct)) {
+          return (
+            <div className="text-sm">
+              <span className="text-muted-foreground" title="ATR% 4h (volatility)">
+                ±{atrPct.toFixed(1)}%
+              </span>
+            </div>
+          );
+        }
+        return <span className="text-muted-foreground text-sm">—</span>;
       
       case 'regime':
         return (
@@ -306,12 +310,37 @@ export function EnhancedTable({
         );
       
       case 'reasons':
+        const hasBlocks = candidate.reasons.blocks.length > 0;
+        const hasWarnings = candidate.reasons.warnings.length > 0;
+        const hasInfo = candidate.reasons.info.length > 0;
+        
+        if (!hasBlocks && !hasWarnings && !hasInfo) {
+          return <span className="text-xs text-muted-foreground">—</span>;
+        }
+        
         return (
-          <div className="max-w-32">
-            <div className="text-xs text-muted-foreground">
-              {candidate.reasons.blocks.length > 0 && `${candidate.reasons.blocks.length} blocks`}
-              {candidate.reasons.warnings.length > 0 && `, ${candidate.reasons.warnings.length} warnings`}
-            </div>
+          <div className="max-w-48 space-y-0.5">
+            {hasBlocks && (
+              <div className="flex flex-wrap gap-1">
+                {candidate.reasons.blocks.slice(0, 2).map((reason, i) => (
+                  <span key={i} className="inline-flex items-center px-1 py-0.5 rounded text-xs bg-status-risk/20 text-status-risk" title={reason}>
+                    {reason.replace(/_/g, ' ').substring(0, 12)}
+                  </span>
+                ))}
+              </div>
+            )}
+            {hasWarnings && (
+              <div className="flex flex-wrap gap-1">
+                {candidate.reasons.warnings.slice(0, 2).map((reason, i) => (
+                  <span key={i} className="inline-flex items-center px-1 py-0.5 rounded text-xs bg-status-attention/20 text-status-attention" title={reason}>
+                    {reason.replace(/_/g, ' ').substring(0, 12)}
+                  </span>
+                ))}
+              </div>
+            )}
+            {!hasBlocks && !hasWarnings && hasInfo && (
+              <span className="text-xs text-status-ok">✓ OK</span>
+            )}
           </div>
         );
       

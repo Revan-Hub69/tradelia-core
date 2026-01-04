@@ -1,6 +1,7 @@
 // Test Input Canon with real data
 // Run: node test-input-canon.js
 
+// Updated with latest live data
 const testData = {
   symbol: "BTCUSDT",
   ts: Date.now(),
@@ -9,57 +10,104 @@ const testData = {
     version: "regime-4h-v1",
     regime: "TREND",
     stress: false,
+    keptPrevious: true,
     metrics: {
       atr14: 725.3829108281786,
-      ema20: 90004.13422612991,
-      ema50: 89105.6444746856,
-      ema200: 88984.30672467101,
-      trendStrength: 1.2386420165571557,
+      ema20: 90005.26755946325,
+      ema50: 89106.11114135226,
+      ema200: 88984.42513263122,
+      trendStrength: 1.2395610713856053,
       rangeRatio: 6.897736251171732,
-      returnsStd20: 0.0035650673912921574,
+      returnsStd20: 0.0035601419555910713,
       emaState: "aligned_strong"
-    }
+    },
+    allowedSetups: ["trend_pullback"],
+    forbiddenSetups: ["range_rejection"]
   },
   universe: {
-    meta: { anchorSymbol: "BTCUSDT", topN: 10 },
+    meta: { anchorSymbol: "BTCUSDT", topN: 10, source: "rest+ws" },
     long: [
       {
         symbol: "BTCUSDT",
         side: "LONG",
         scores: { tradeability: 100, regimeMatch: 84, total: 84 },
         htf: {
-          price: 91232.52,
-          atrPct4h: 0.7950924854735774,
+          price: 91244.42,
+          atrPct4h: 0.7949887903591021,
           regime: "TREND",
           bias: "BULL",
-          stress: false
+          stress: false,
+          trendStrength: 1.2395610713856053,
+          emaState: "aligned_strong"
         },
         ws: {
-          bid: 91232.52,
-          ask: 91232.53,
-          spreadBpsNow: 0.001096100321103829,
-          msgRate60s: 4180,
-          lastUpdateAgeSec: 0.044
-        }
+          bid: 91244.41,
+          ask: 91244.42,
+          spreadBpsNow: 0.0010959574889883735,
+          spreadMeanBps60s: 0.0017110862797488351,
+          msgRate60s: 2796,
+          lastUpdateAgeSec: 0.493
+        },
+        reasons: { blocks: [], warnings: [], info: ["WS_OK", "SPREAD_OK", "ATR_OK", "REGIME_TREND", "BIAS_BULL"] }
       },
       {
         symbol: "ETHUSDT",
         side: "LONG",
         scores: { tradeability: 100, regimeMatch: 96, total: 96 },
         htf: {
-          price: 3135.9,
-          atrPct4h: 1.0251280412617183,
+          price: 3136.5,
+          atrPct4h: 1.0249319383365607,
           regime: "TREND",
-          bias: "BULL"
+          bias: "BULL",
+          trendStrength: 1.650227699329194,
+          emaState: "aligned_strong"
         },
         ws: {
-          spreadBpsNow: 0.03188872111802983,
-          msgRate60s: 3162,
-          lastUpdateAgeSec: 0.397
-        }
+          spreadBpsNow: 0.031882620943433145,
+          msgRate60s: 1888,
+          lastUpdateAgeSec: 0.594
+        },
+        reasons: { blocks: [], warnings: [], info: ["WS_OK", "SPREAD_OK", "ATR_OK", "REGIME_TREND", "BIAS_BULL"] }
+      },
+      {
+        symbol: "SUIUSDT",
+        side: "LONG",
+        scores: { tradeability: 97, regimeMatch: 98, total: 95 },
+        htf: {
+          price: 1.6991,
+          atrPct4h: 2.120449537672634,
+          regime: "TREND",
+          bias: "BULL",
+          trendStrength: 2.1281467376291845,
+          emaState: "aligned_strong"
+        },
+        ws: {
+          spreadBpsNow: 0.5884602936416218,
+          msgRate60s: 617,
+          lastUpdateAgeSec: 0.748
+        },
+        reasons: { blocks: [], warnings: [], info: ["WS_OK", "SPREAD_OK", "ATR_OK", "REGIME_TREND", "BIAS_BULL"] }
       }
     ],
-    short: []
+    short: [
+      {
+        symbol: "GIGGLEUSDT",
+        side: "SHORT",
+        scores: { tradeability: 71, regimeMatch: 45, total: 32 },
+        htf: {
+          price: 77.5,
+          atrPct4h: 3.589112757351318,
+          regime: "TRANSITION",
+          bias: "NEUTRAL"
+        },
+        ws: {
+          spreadBpsNow: 1.2902393393981182,
+          msgRate60s: 726,
+          lastUpdateAgeSec: 1.018
+        },
+        reasons: { blocks: [], warnings: ["SPREAD_JITTER_HIGH", "IMPACT_HIGH"], info: ["WS_OK", "REGIME_TRANSITION"] }
+      }
+    ]
   }
 };
 

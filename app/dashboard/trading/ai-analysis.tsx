@@ -14,7 +14,6 @@ type AIAnalysisProps = {
 };
 
 type BrickMode = "BRICK1_ONLY" | "BRICK2_ONLY" | "BRICK1_PLUS_BRICK2";
-type DrawerTab = "result" | "evidence" | "sanity" | "input";
 
 interface NasaAnalysisResult {
   meta: {
@@ -43,7 +42,7 @@ interface NasaAnalysisResult {
       max_risk_r: number;
       notes: string[];
     };
-    evidence: string[];
+    evidence: any[];
   };
   brick2?: {
     universe: {
@@ -58,7 +57,7 @@ interface NasaAnalysisResult {
         why: string[];
       }>;
     };
-    evidence: string[];
+    evidence: any[];
   };
   brick1_plus_brick2?: {
     filtered_top: Array<{
@@ -67,7 +66,7 @@ interface NasaAnalysisResult {
       playbook: string;
       reason: string[];
     }>;
-    evidence: string[];
+    evidence: any[];
   };
   audit: {
     input_coverage_pct: number;
@@ -85,23 +84,14 @@ interface NasaAnalysisResult {
   };
 }
 
-interface RunHistory {
-  result: NasaAnalysisResult;
-  timestamp: number;
-  mode: BrickMode;
-}
-
 export function AIAnalysis({ data }: AIAnalysisProps) {
   const [analysis, setAnalysis] = useState<NasaAnalysisResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [selectedMode, setSelectedMode] = useState<BrickMode>("BRICK1_ONLY");
-  const [activeTab, setActiveTab] = useState<DrawerTab>("result");
-  const [runHistory, setRunHistory] = useState<RunHistory[]>([]);
   const [inputCanon, setInputCanon] = useState<any>(null);
 
-  const runNasaAnalysis = useCallback(async (mode: BrickMode) => {
+  const runAnalysis = useCallback(async (mode: BrickMode) => {
     if (!data) return;
     
     setLoading(true);
@@ -109,69 +99,43 @@ export function AIAnalysis({ data }: AIAnalysisProps) {
     
     try {
       // NASA-grade: Send ONLY raw data, NO mock/fallback
-      // Server-side createInputCanon() handles all canonicalization
       const rawInput = {
         symbol: data.symbol,
         ts: Date.now(),
         source: "dashboard",
-        // Pass raw regime data as-is (server extracts what it needs)
         regime: data.regime,
-        // Pass raw universe data as-is (server extracts what it needs)
         universe: data.universe
       };
 
-      // Fail-fast: if critical data is missing, don't call AI
+      // Fail-fast validation
       if (!rawInput.symbol) {
-        throw new Error("NEEDS_DATA: Missing anchor symbol");
+        throw new Error("Dati mancanti: simbolo anchor");
       }
       
-      if (mode === "BRICK1_ONLY" || mode === "BRICK1_PLUS_BRICK2") {
-        if (!rawInput.regime) {
-          throw new Error("NEEDS_DATA: Missing regime data for Brick1 analysis");
-        }
+      if (mode !== "BRICK2_ONLY" && !rawInput.regime) {
+        throw new Error("Dati mancanti: regime di mercato");
       }
       
-      if (mode === "BRICK2_ONLY" || mode === "BRICK1_PLUS_BRICK2") {
+      if (mode !== "BRICK1_ONLY") {
         if (!rawInput.universe || (!rawInput.universe.long?.length && !rawInput.universe.short?.length)) {
-          throw new Error("NEEDS_DATA: Missing universe candidates for Brick2 analysis");
+          throw new Error("Dati mancanti: candidati universe");
         }
       }
 
       const response = await fetch("/api/trading/ai/nasa", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          mode,
-          input: rawInput
-        })
+        body: JSON.stringify({ mode, input: rawInput })
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
-        
-        let errorData;
-        try {
-          errorData = JSON.parse(errorText);
-        } catch {
-          errorData = { error: errorText };
-        }
-        
-        throw new Error(errorData.error || `HTTP ${response.status}: ${errorText}`);
+        const errorData = await response.json().catch(() => ({ error: `HTTP ${response.status}` }));
+        throw new Error(errorData.error || `Errore API: ${response.status}`);
       }
       
       const result = await response.json();
-      
-      const analysisResult = result.output as NasaAnalysisResult;
-      
-      setAnalysis(analysisResult);
+      setAnalysis(result.output as NasaAnalysisResult);
       setInputCanon(result.input_canon);
-      
-      // Add to history
-      setRunHistory(prev => [{
-        result: analysisResult,
-        timestamp: Date.now(),
-        mode
-      }, ...prev.slice(0, 4)]); // Keep last 5 runs
       
     } catch (err) {
       setError(err instanceof Error ? err.message : "Analisi fallita");
@@ -180,45 +144,24 @@ export function AIAnalysis({ data }: AIAnalysisProps) {
     }
   }, [data]);
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-  };
-
-  const getStatusBadge = (status: string) => {
-    const styles = {
+  // Status badge helper
+  const getStatusColor = (state: string) => {
+    const colors: Record<string, string> = {
       ACTIVE: "bg-status-ok/20 text-status-ok border-status-ok/30",
       REVIEW: "bg-status-attention/20 text-status-attention border-status-attention/30",
       HOLD: "bg-status-risk/20 text-status-risk border-status-risk/30",
       NEEDS_DATA: "bg-muted/30 text-muted-foreground border-border/50"
     };
-    
-    return (
-      <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium border ${styles[status as keyof typeof styles] || styles.NEEDS_DATA}`}>
-        {status}
-      </span>
-    );
+    return colors[state] || colors.NEEDS_DATA;
   };
 
-  const getGoNoGoBadge = (decision: string) => {
-    return (
-      <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium border ${
-        decision === "GO" 
-          ? "bg-status-ok/20 text-status-ok border-status-ok/30"
-          : "bg-status-risk/20 text-status-risk border-status-risk/30"
-      }`}>
-        {decision}
-      </span>
-    );
-  };
-
+  // No data state
   if (!data) {
     return (
-      <Card title="NASA-Grade AI Analysis" subtitle="Analisi strutturata a scaglioni">
-        <div className="text-center py-8">
-          <div className="text-muted-foreground mb-4">
-            <AIIcon size={48} />
-          </div>
-          <p className="text-sm text-muted-foreground">Carica i dati di mercato per abilitare l'analisi NASA-grade</p>
+      <Card title="Analisi AI" subtitle="Valutazione automatica del mercato">
+        <div className="text-center py-6">
+          <AIIcon size={32} className="mx-auto text-muted-foreground mb-3" />
+          <p className="text-sm text-muted-foreground">Carica i dati di mercato per abilitare l'analisi</p>
         </div>
       </Card>
     );
@@ -227,401 +170,196 @@ export function AIAnalysis({ data }: AIAnalysisProps) {
   return (
     <>
       <Card 
-        title="NASA-Grade AI Analysis" 
-        subtitle="Analisi strutturata a scaglioni"
+        title="Analisi AI" 
+        subtitle="Valutazione automatica del mercato"
         actions={
           <button
             onClick={() => setDrawerOpen(true)}
             className="rounded bg-foreground px-3 py-2 text-xs font-medium text-background hover:bg-foreground/90 transition-subtle"
           >
-            Apri Analisi
+            Dettagli
           </button>
         }
       >
-        <div className="space-y-3">
-          {analysis ? (
-            <>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  {getStatusBadge(analysis.status.state)}
-                  {getGoNoGoBadge(analysis.status.go_no_go)}
+        {/* Main content - always visible */}
+        <div className="space-y-4">
+          {/* Quick actions - run analysis directly */}
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => runAnalysis("BRICK1_ONLY")}
+              disabled={loading}
+              className="flex-1 min-w-[100px] px-3 py-2 text-xs font-medium rounded border border-border/50 hover:bg-muted/30 disabled:opacity-50 transition-subtle"
+            >
+              {loading ? "..." : "Regime"}
+            </button>
+            <button
+              onClick={() => runAnalysis("BRICK2_ONLY")}
+              disabled={loading}
+              className="flex-1 min-w-[100px] px-3 py-2 text-xs font-medium rounded border border-border/50 hover:bg-muted/30 disabled:opacity-50 transition-subtle"
+            >
+              {loading ? "..." : "Universe"}
+            </button>
+            <button
+              onClick={() => runAnalysis("BRICK1_PLUS_BRICK2")}
+              disabled={loading}
+              className="flex-1 min-w-[100px] px-3 py-2 text-xs font-medium rounded bg-foreground text-background hover:bg-foreground/90 disabled:opacity-50 transition-subtle"
+            >
+              {loading ? "..." : "Completa"}
+            </button>
+          </div>
+
+          {/* Error display */}
+          {error && (
+            <div className="p-3 rounded bg-status-risk/10 border border-status-risk/30">
+              <p className="text-xs text-status-risk">{error}</p>
+            </div>
+          )}
+
+          {/* Results summary - compact */}
+          {analysis && (
+            <div className="space-y-3">
+              {/* Decision row */}
+              <div className="flex items-center justify-between p-3 rounded bg-muted/20 border border-border/30">
+                <div className="flex items-center gap-3">
+                  <span className={`px-2 py-1 rounded text-xs font-medium border ${getStatusColor(analysis.status.state)}`}>
+                    {analysis.status.state}
+                  </span>
+                  <span className={`px-2 py-1 rounded text-xs font-medium border ${
+                    analysis.status.go_no_go === "GO" 
+                      ? "bg-status-ok/20 text-status-ok border-status-ok/30"
+                      : "bg-status-risk/20 text-status-risk border-status-risk/30"
+                  }`}>
+                    {analysis.status.go_no_go}
+                  </span>
                 </div>
-                <div className="text-xs text-muted-foreground">
-                  Confidence: {analysis.status.confidence}%
+                <div className="text-right">
+                  <div className="text-sm font-medium text-foreground">{analysis.status.confidence}%</div>
+                  <div className="text-xs text-muted-foreground">confidence</div>
                 </div>
               </div>
-              
-              <div className="text-xs text-muted-foreground">
-                Mode: {analysis.meta.mode} | Coverage: {analysis.audit.input_coverage_pct}% | Run: {analysis.meta.run_id}
+
+              {/* Key info */}
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div>
+                  <span className="text-muted-foreground">Coverage:</span>
+                  <span className="ml-1 text-foreground font-medium">{analysis.audit.input_coverage_pct}%</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Mode:</span>
+                  <span className="ml-1 text-foreground font-medium">{analysis.meta.mode.replace(/_/g, ' ')}</span>
+                </div>
               </div>
-              
+
+              {/* Blocking reasons if any */}
               {analysis.status.blocking_reasons.length > 0 && (
-                <div className="text-xs text-status-risk">
-                  Blocks: {analysis.status.blocking_reasons.join(", ")}
+                <div className="p-2 rounded bg-status-risk/10 border border-status-risk/30">
+                  <p className="text-xs text-status-risk font-medium mb-1">Blocchi:</p>
+                  <ul className="text-xs text-status-risk space-y-0.5">
+                    {analysis.status.blocking_reasons.map((reason, i) => (
+                      <li key={i}>• {reason}</li>
+                    ))}
+                  </ul>
                 </div>
               )}
-            </>
-          ) : (
-            <div className="flex items-center space-x-3">
-              <div className="text-muted-foreground">
-                <AIIcon size={24} />
-              </div>
-              <div className="flex-1">
-                <div className="text-xs text-muted-foreground">
-                  {loading ? "Eseguendo analisi NASA-grade..." : "Nessuna analisi eseguita. Apri per configurare."}
-                </div>
+
+              {/* Sanity checks summary */}
+              <div className="flex items-center gap-2 text-xs">
+                <span className="text-muted-foreground">Sanity:</span>
+                {analysis.audit.sanity_checks.filter(c => c.pass).length === analysis.audit.sanity_checks.length ? (
+                  <span className="text-status-ok">✓ Tutti passati</span>
+                ) : (
+                  <span className="text-status-attention">
+                    {analysis.audit.sanity_checks.filter(c => !c.pass).length} falliti
+                  </span>
+                )}
+                <button
+                  onClick={() => setDrawerOpen(true)}
+                  className="text-primary hover:text-primary/80 transition-subtle ml-auto"
+                >
+                  Dettagli →
+                </button>
               </div>
             </div>
           )}
-          
-          {error && (
-            <div className="text-xs text-status-risk">
-              Errore: {error}
+
+          {/* Empty state */}
+          {!analysis && !error && !loading && (
+            <div className="text-center py-4">
+              <p className="text-xs text-muted-foreground">
+                Seleziona un tipo di analisi per iniziare
+              </p>
             </div>
           )}
         </div>
       </Card>
 
+      {/* Details Drawer */}
       <Drawer 
         open={drawerOpen} 
         onClose={() => setDrawerOpen(false)} 
-        title="NASA-Grade AI Analysis"
+        title="Dettagli Analisi AI"
         size="compact"
       >
         <div className="space-y-6">
-          {/* Mode Selection */}
-          <div>
-            <label className="block text-xs font-medium uppercase tracking-wide text-muted-foreground mb-3">
-              Modalità Analisi
-            </label>
-            <div className="grid grid-cols-1 gap-2">
-              {[
-                { mode: "BRICK1_ONLY" as BrickMode, title: "Brick 1: Market State", desc: "Regime + Policy" },
-                { mode: "BRICK2_ONLY" as BrickMode, title: "Brick 2: Universe Screening", desc: "Asset Ranking" },
-                { mode: "BRICK1_PLUS_BRICK2" as BrickMode, title: "Brick 1+2: Integrated", desc: "Policy + Screening" }
-              ].map(({ mode, title, desc }) => (
-                <button
-                  key={mode}
-                  onClick={() => setSelectedMode(mode)}
-                  className={`p-3 text-left rounded border transition-subtle ${
-                    selectedMode === mode
-                      ? 'border-primary bg-primary/10 text-foreground'
-                      : 'border-border/50 hover:bg-muted/30 text-muted-foreground'
-                  }`}
-                >
-                  <div className="text-sm font-medium">{title}</div>
-                  <div className="text-xs text-muted-foreground">{desc}</div>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Debug Info */}
-          {process.env.NODE_ENV === 'development' && (
-            <div className="rounded border border-border/30 bg-muted/20 p-4">
-              <h4 className="text-sm font-medium text-foreground mb-3">Debug: Raw Input Data</h4>
-              <pre className="text-xs text-muted-foreground bg-background p-3 rounded border border-border/30 overflow-auto max-h-48">
-                {JSON.stringify(data, null, 2)}
-              </pre>
+          {/* Sanity Checks */}
+          {analysis && (
+            <div>
+              <h4 className="text-sm font-medium text-foreground mb-3">Sanity Checks</h4>
+              <div className="space-y-2">
+                {analysis.audit.sanity_checks.map((check, i) => (
+                  <div key={i} className="flex items-center justify-between p-2 bg-muted/20 rounded">
+                    <div>
+                      <div className="text-xs font-medium text-foreground">{check.name.replace(/_/g, ' ')}</div>
+                      <div className="text-xs text-muted-foreground">{check.detail}</div>
+                    </div>
+                    <span className={`px-1.5 py-0.5 rounded text-xs ${
+                      check.pass ? "bg-status-ok/20 text-status-ok" : "bg-status-risk/20 text-status-risk"
+                    }`}>
+                      {check.pass ? "OK" : "FAIL"}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
-          {/* Run Analysis */}
-          <div>
-            <button
-              onClick={() => runNasaAnalysis(selectedMode)}
-              disabled={loading}
-              className="w-full rounded bg-foreground px-4 py-3 text-sm font-medium text-background hover:bg-foreground/90 disabled:opacity-50 transition-subtle"
-            >
-              {loading ? "Analizzando..." : `Esegui ${selectedMode.replace(/_/g, " ")}`}
-            </button>
-          </div>
-
-          {/* Results Display */}
-          {analysis && (
-            <div className="space-y-4">
-              {/* Tabs */}
-              <div className="border-b border-border/30">
-                <nav className="flex space-x-4">
-                  {[
-                    { id: "result" as DrawerTab, label: "Risultato" },
-                    { id: "evidence" as DrawerTab, label: "Evidence" },
-                    { id: "sanity" as DrawerTab, label: "Sanity Checks" },
-                    { id: "input" as DrawerTab, label: "Input Canon" }
-                  ].map(({ id, label }) => (
-                    <button
-                      key={id}
-                      onClick={() => setActiveTab(id)}
-                      className={`py-2 px-1 text-xs font-medium border-b-2 transition-subtle ${
-                        activeTab === id
-                          ? 'border-primary text-primary'
-                          : 'border-transparent text-muted-foreground hover:text-foreground'
-                      }`}
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </nav>
-              </div>
-
-              {/* Tab Content */}
-              {activeTab === "result" && (
-                <div className="space-y-4">
-                  {/* Run History */}
-                  {runHistory.length > 1 && (
-                    <div className="rounded border border-border/30 bg-muted/20 p-4">
-                      <h4 className="text-sm font-medium text-foreground mb-3">Recent Runs</h4>
-                      <div className="space-y-2">
-                        {runHistory.slice(1, 4).map((run, i) => (
-                          <div key={i} className="flex items-center justify-between text-xs p-2 bg-background rounded">
-                            <span className="text-muted-foreground">
-                              {new Date(run.timestamp).toLocaleTimeString()} - {run.mode}
-                            </span>
-                            <span className={`px-1.5 py-0.5 rounded ${
-                              run.result.status.go_no_go === "GO" 
-                                ? "bg-status-ok/20 text-status-ok"
-                                : "bg-status-risk/20 text-status-risk"
-                            }`}>
-                              {run.result.status.go_no_go}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Status Overview */}
-                  <div className="rounded border border-border/30 bg-muted/20 p-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <h4 className="text-sm font-medium text-foreground">Status Overview</h4>
-                      <button
-                        onClick={() => copyToClipboard(JSON.stringify(analysis, null, 2))}
-                        className="text-xs text-primary hover:text-primary/80 transition-subtle"
-                      >
-                        Copy JSON
-                      </button>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 text-xs">
-                      <div>
-                        <span className="text-muted-foreground">State:</span>
-                        <div className="mt-1">{getStatusBadge(analysis.status.state)}</div>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground">Decision:</span>
-                        <div className="mt-1">{getGoNoGoBadge(analysis.status.go_no_go)}</div>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground">Confidence:</span>
-                        <div className="mt-1 text-foreground font-medium">{analysis.status.confidence}%</div>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground">Coverage:</span>
-                        <div className="mt-1 text-foreground font-medium">{analysis.audit.input_coverage_pct}%</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Brick Results */}
-                  {analysis.brick1 && (
-                    <div className="rounded border border-border/30 bg-muted/20 p-4">
-                      <h4 className="text-sm font-medium text-foreground mb-3">Brick 1: Market State</h4>
-                      <div className="space-y-3 text-xs">
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <span className="text-muted-foreground">Regime:</span>
-                            <div className="mt-1 text-foreground font-medium">{analysis.brick1.market_state.regime}</div>
-                          </div>
-                          <div>
-                            <span className="text-muted-foreground">Vol State:</span>
-                            <div className="mt-1 text-foreground font-medium">{analysis.brick1.market_state.vol_state}</div>
-                          </div>
-                          <div>
-                            <span className="text-muted-foreground">Liquidity:</span>
-                            <div className="mt-1 text-foreground font-medium">{analysis.brick1.market_state.liquidity_state}</div>
-                          </div>
-                          <div>
-                            <span className="text-muted-foreground">Stress:</span>
-                            <div className="mt-1 text-foreground font-medium">{analysis.brick1.market_state.stress_flag ? "YES" : "NO"}</div>
-                          </div>
-                        </div>
-                        
-                        {analysis.brick1.policy.allowed_playbooks.length > 0 && (
-                          <div>
-                            <span className="text-muted-foreground">Allowed Playbooks:</span>
-                            <div className="mt-1 text-foreground">{analysis.brick1.policy.allowed_playbooks.join(", ")}</div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {analysis.brick2 && (
-                    <div className="rounded border border-border/30 bg-muted/20 p-4">
-                      <h4 className="text-sm font-medium text-foreground mb-3">Brick 2: Universe Screening</h4>
-                      <div className="space-y-3">
-                        {analysis.brick2.universe?.top && analysis.brick2.universe.top.length > 0 ? (
-                          <div>
-                            <span className="text-xs text-muted-foreground">Top Candidates:</span>
-                            <div className="mt-2 space-y-2">
-                              {analysis.brick2.universe.top.slice(0, 5).map((candidate, i) => (
-                                <div key={i} className="flex items-center justify-between p-2 bg-background rounded border border-border/30">
-                                  <div>
-                                    <div className="text-xs font-medium text-foreground">{candidate.symbol}</div>
-                                    <div className="text-xs text-muted-foreground">{candidate.category}</div>
-                                  </div>
-                                  <div className="text-xs font-medium text-foreground">{candidate.score}</div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="text-center py-4">
-                            <p className="text-xs text-muted-foreground">No universe candidates available</p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {analysis.brick1_plus_brick2 && (
-                    <div className="rounded border border-border/30 bg-muted/20 p-4">
-                      <h4 className="text-sm font-medium text-foreground mb-3">Brick 1+2: Filtered Recommendations</h4>
-                      <div className="space-y-2">
-                        {analysis.brick1_plus_brick2.filtered_top && analysis.brick1_plus_brick2.filtered_top.length > 0 ? (
-                          analysis.brick1_plus_brick2.filtered_top.map((item, i) => (
-                            <div key={i} className="flex items-center justify-between p-2 bg-background rounded border border-border/30">
-                              <div>
-                                <div className="text-xs font-medium text-foreground">{item.symbol}</div>
-                                <div className="text-xs text-muted-foreground">{item.playbook}</div>
-                              </div>
-                              <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium border ${
-                                item.action === "FOCUS" 
-                                  ? "bg-status-ok/20 text-status-ok border-status-ok/30"
-                                  : item.action === "WATCH"
-                                  ? "bg-status-attention/20 text-status-attention border-status-attention/30"
-                                  : "bg-muted/30 text-muted-foreground border-border/50"
-                              }`}>
-                                {item.action}
-                              </span>
-                            </div>
-                          ))
-                        ) : (
-                          <div className="text-center py-4">
-                            <p className="text-xs text-muted-foreground">No filtered recommendations available</p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {activeTab === "evidence" && (
-                <div className="space-y-4">
-                  {analysis.brick1?.evidence && analysis.brick1.evidence.length > 0 && (
-                    <div className="rounded border border-border/30 bg-muted/20 p-4">
-                      <h4 className="text-sm font-medium text-foreground mb-3">Brick 1 Evidence</h4>
-                      <div className="space-y-2">
-                        {analysis.brick1.evidence.map((evidence, i) => (
-                          <div key={i} className="text-xs">
-                            <span className="font-mono text-foreground">{String(evidence)}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  
-                  {analysis.brick2?.evidence && analysis.brick2.evidence.length > 0 && (
-                    <div className="rounded border border-border/30 bg-muted/20 p-4">
-                      <h4 className="text-sm font-medium text-foreground mb-3">Brick 2 Evidence</h4>
-                      <div className="space-y-2">
-                        {analysis.brick2.evidence.map((evidence, i) => (
-                          <div key={i} className="text-xs">
-                            <span className="font-mono text-foreground">{String(evidence)}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  
-                  {analysis.brick1_plus_brick2?.evidence && analysis.brick1_plus_brick2.evidence.length > 0 && (
-                    <div className="rounded border border-border/30 bg-muted/20 p-4">
-                      <h4 className="text-sm font-medium text-foreground mb-3">Brick 1+2 Evidence</h4>
-                      <div className="space-y-2">
-                        {analysis.brick1_plus_brick2.evidence.map((evidence, i) => (
-                          <div key={i} className="text-xs">
-                            <span className="font-mono text-foreground">{String(evidence)}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  
-                  {(!analysis.brick1?.evidence || analysis.brick1.evidence.length === 0) &&
-                   (!analysis.brick2?.evidence || analysis.brick2.evidence.length === 0) &&
-                   (!analysis.brick1_plus_brick2?.evidence || analysis.brick1_plus_brick2.evidence.length === 0) && (
-                    <div className="text-center py-8">
-                      <p className="text-sm text-muted-foreground">No evidence data available</p>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {activeTab === "sanity" && (
-                <div className="space-y-4">
-                  <div className="rounded border border-border/30 bg-muted/20 p-4">
-                    <h4 className="text-sm font-medium text-foreground mb-3">Sanity Checks</h4>
-                    <div className="space-y-2 text-xs">
-                      {analysis.audit.sanity_checks.map((check, i) => (
-                        <div key={i} className="flex items-center justify-between p-2 bg-background rounded">
-                          <div>
-                            <div className="font-medium text-foreground">{check.name}</div>
-                            <div className="text-muted-foreground">{check.detail}</div>
-                          </div>
-                          <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs ${
-                            check.pass 
-                              ? "bg-status-ok/20 text-status-ok"
-                              : "bg-status-risk/20 text-status-risk"
-                          }`}>
-                            {check.pass ? "PASS" : "FAIL"}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                    
-                    {analysis.audit.conflicts.length > 0 && (
-                      <div className="mt-4 p-3 bg-status-risk/10 rounded border border-status-risk/30">
-                        <div className="text-status-risk font-medium text-xs mb-2">Conflicts Detected:</div>
-                        <ul className="text-xs text-status-risk space-y-1">
-                          {analysis.audit.conflicts.map((conflict, i) => (
-                            <li key={i}>• {conflict}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {activeTab === "input" && inputCanon && (
-                <div className="space-y-4">
-                  <div className="rounded border border-border/30 bg-muted/20 p-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <h4 className="text-sm font-medium text-foreground">Input Canon</h4>
-                      <button
-                        onClick={() => copyToClipboard(JSON.stringify(inputCanon, null, 2))}
-                        className="text-xs text-primary hover:text-primary/80 transition-subtle"
-                      >
-                        Copy JSON
-                      </button>
-                    </div>
-                    <pre className="text-xs text-muted-foreground bg-background p-3 rounded border border-border/30 overflow-auto max-h-96">
-                      {JSON.stringify(inputCanon, null, 2)}
-                    </pre>
-                  </div>
-                </div>
-              )}
+          {/* Assumptions */}
+          {analysis && analysis.audit.assumptions.length > 0 && (
+            <div>
+              <h4 className="text-sm font-medium text-foreground mb-3">Assunzioni</h4>
+              <ul className="space-y-1">
+                {analysis.audit.assumptions.map((assumption, i) => (
+                  <li key={i} className="text-xs text-muted-foreground flex items-start gap-2">
+                    <span className="text-foreground/30">•</span>
+                    {assumption}
+                  </li>
+                ))}
+              </ul>
             </div>
+          )}
+
+          {/* Input Canon (collapsible) */}
+          {inputCanon && (
+            <details className="group">
+              <summary className="text-sm font-medium text-foreground cursor-pointer hover:text-primary transition-subtle">
+                Input Canon (dati processati)
+              </summary>
+              <pre className="mt-2 text-xs text-muted-foreground bg-muted/20 p-3 rounded overflow-auto max-h-64">
+                {JSON.stringify(inputCanon, null, 2)}
+              </pre>
+            </details>
+          )}
+
+          {/* Full Response (collapsible) */}
+          {analysis && (
+            <details className="group">
+              <summary className="text-sm font-medium text-foreground cursor-pointer hover:text-primary transition-subtle">
+                Risposta completa AI
+              </summary>
+              <pre className="mt-2 text-xs text-muted-foreground bg-muted/20 p-3 rounded overflow-auto max-h-64">
+                {JSON.stringify(analysis, null, 2)}
+              </pre>
+            </details>
           )}
         </div>
       </Drawer>
