@@ -588,8 +588,6 @@ export async function GET(
           whyNotTrade: result.analysis.gate.whyNotTrade,
           passedGates: result.analysis.gate.passedGates,
           failedGates: result.analysis.gate.failedGates,
-          blockedSetups: result.analysis.gate.blockedSetups,
-          maxScoreCap: result.analysis.gate.maxScoreCap,
         },
       },
       reasons: result.reasons,
