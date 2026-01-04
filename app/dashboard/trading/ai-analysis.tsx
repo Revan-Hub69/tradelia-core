@@ -229,6 +229,7 @@ export function AIAnalysis({ data }: AIAnalysisProps) {
         open={drawerOpen} 
         onClose={() => setDrawerOpen(false)} 
         title="NASA-Grade AI Analysis"
+        size="compact"
       >
         <div className="space-y-6">
           {/* Mode Selection */}

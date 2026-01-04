@@ -90,96 +90,88 @@ export async function POST(request: Request) {
     "- If contradictions exist, set state to \"REVIEW\" and explain conflicts.",
   ].join("\n");
 
-  // NASA-Grade User Prompt Template
-  const userPrompt = [
-    `TASK MODE: ${mode}`,
-    "",
-    `INPUT: ${JSON.stringify(input)}`,
-    "",
-    "You must return ONLY valid JSON matching this schema:",
-    "{",
-    '  "meta": {',
-    `    "mode": "${mode}",`,
-    '    "engine": { "name": "groq-analyst", "version": "1.0.0" },',
-    `    "ts": ${Date.now()},`,
-    '    "input_hash": "computed",',
-    '    "notes": ""',
-    "  },",
-    '  "status": {',
-    '    "state": "ACTIVE",',
-    '    "go_no_go": "GO",',
-    '    "confidence": 85,',
-    '    "blocking_reasons": []',
-    "  },",
-    mode === "BRICK1_ONLY" ? [
-      '  "brick1": {',
-      '    "market_state": {',
-      '      "regime": "TREND",',
-      '      "vol_state": "NORMAL",',
-      '      "liquidity_state": "GOOD",',
-      '      "stress_flag": false,',
-      '      "timeframe_anchor": "4h",',
-      '      "risk_window_days": [0, 7]',
-      '    },',
-      '    "policy": {',
-      '      "allowed_playbooks": ["trend_following"],',
-      '      "blocked_playbooks": [],',
-      '      "max_risk_r": 1.0,',
-      '      "notes": ["Market conditions favorable"]',
-      '    },',
-      '    "evidence": ["INPUT.market.anchor.regime4h"]',
-      '  },'
-    ].join('\n') : '  "brick1": null,',
-    mode === "BRICK2_ONLY" ? [
-      '  "brick2": {',
-      '    "universe": {',
-      '      "asof_ts": ' + Date.now() + ',',
-      '      "top": [',
-      '        {',
-      '          "symbol": "BTCUSDT",',
-      '          "category": "A_TREND_CLEAN",',
-      '          "score": 85,',
-      '          "tradability": {',
-      '            "spread_bps": 2.5,',
-      '            "atr_pct": 3.2,',
-      '            "liquidity_grade": "A"',
-      '          },',
-      '          "why": ["Strong trend", "Good liquidity"],',
-      '          "evidence": ["INPUT.universe.long[0]"]',
-      '        }',
-      '      ],',
-      '      "avoid": []',
-      '    },',
-      '    "evidence": ["INPUT.universe"]',
-      '  },'
-    ].join('\n') : '  "brick2": null,',
-    mode === "BRICK1_PLUS_BRICK2" ? [
-      '  "brick1_plus_brick2": {',
-      '    "filtered_top": [',
-      '      {',
-      '        "symbol": "BTCUSDT",',
-      '        "action": "FOCUS",',
-      '        "playbook": "trend_following",',
-      '        "reason": ["Regime allows trend plays", "High score"],',
-      '        "evidence": ["brick1.policy", "brick2.universe.top[0]"]',
-      '      }',
-      '    ],',
-      '    "evidence": ["brick1", "brick2"]',
-      '  },'
-    ].join('\n') : '  "brick1_plus_brick2": null,',
-    '  "audit": {',
-    '    "input_coverage_pct": 90,',
-    '    "assumptions": ["Market data is fresh"],',
-    '    "conflicts": [],',
-    '    "sanity_checks": [',
-    '      { "name": "timestamp_valid", "pass": true, "detail": "Timestamps are recent" },',
-    '      { "name": "spread_reasonable", "pass": true, "detail": "Spreads within normal range" }',
-    '    ]',
-    "  }",
-    "}",
-    "",
-    "CRITICAL: Return ONLY the JSON object above. No markdown, no explanations, no extra text."
-  ].join("\n");
+  // Simplified NASA-Grade User Prompt
+  const userPrompt = `TASK MODE: ${mode}
+
+INPUT DATA: ${JSON.stringify(input)}
+
+Analyze the input data and return ONLY a valid JSON response with this structure:
+
+{
+  "meta": {
+    "mode": "${mode}",
+    "engine": {"name": "groq-analyst", "version": "1.0.0"},
+    "ts": ${Date.now()},
+    "notes": ""
+  },
+  "status": {
+    "state": "ACTIVE",
+    "go_no_go": "GO", 
+    "confidence": 85,
+    "blocking_reasons": []
+  },
+  "brick1": ${mode.includes("BRICK1") ? `{
+    "market_state": {
+      "regime": "TREND",
+      "vol_state": "NORMAL", 
+      "liquidity_state": "GOOD",
+      "stress_flag": false,
+      "timeframe_anchor": "4h",
+      "risk_window_days": [0, 7]
+    },
+    "policy": {
+      "allowed_playbooks": ["trend_following"],
+      "blocked_playbooks": [],
+      "max_risk_r": 1.0,
+      "notes": ["Market analysis complete"]
+    },
+    "evidence": ["INPUT.market"]
+  }` : "null"},
+  "brick2": ${mode.includes("BRICK2") ? `{
+    "universe": {
+      "asof_ts": ${Date.now()},
+      "top": [
+        {
+          "symbol": "BTCUSDT",
+          "category": "A_TREND_CLEAN",
+          "score": 85,
+          "tradability": {
+            "spread_bps": 2.5,
+            "atr_pct": 3.2,
+            "liquidity_grade": "A"
+          },
+          "why": ["Strong trend", "Good liquidity"],
+          "evidence": ["INPUT.universe"]
+        }
+      ],
+      "avoid": []
+    },
+    "evidence": ["INPUT.universe"]
+  }` : "null"},
+  "brick1_plus_brick2": ${mode === "BRICK1_PLUS_BRICK2" ? `{
+    "filtered_top": [
+      {
+        "symbol": "BTCUSDT", 
+        "action": "FOCUS",
+        "playbook": "trend_following",
+        "reason": ["Regime allows trend plays"],
+        "evidence": ["brick1.policy", "brick2.universe"]
+      }
+    ],
+    "evidence": ["brick1", "brick2"]
+  }` : "null"},
+  "audit": {
+    "input_coverage_pct": 90,
+    "assumptions": ["Market data processed"],
+    "conflicts": [],
+    "sanity_checks": [
+      {"name": "timestamp_valid", "pass": true, "detail": "OK"},
+      {"name": "data_complete", "pass": true, "detail": "OK"}
+    ]
+  }
+}
+
+Return ONLY the JSON object. No markdown, no explanations.`;
 
   try {
     const completion = await groqChatCompletion({
@@ -276,7 +268,15 @@ async function groqChatCompletion({
 
 function safeJsonParse(value: string): unknown | null {
   try {
-    return JSON.parse(value);
+    // Remove markdown code blocks if present
+    let cleanValue = value.trim();
+    if (cleanValue.startsWith('```json')) {
+      cleanValue = cleanValue.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+    } else if (cleanValue.startsWith('```')) {
+      cleanValue = cleanValue.replace(/^```\s*/, '').replace(/\s*```$/, '');
+    }
+    
+    return JSON.parse(cleanValue);
   } catch {
     return null;
   }

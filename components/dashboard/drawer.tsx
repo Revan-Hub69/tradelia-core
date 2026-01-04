@@ -2,16 +2,26 @@
 
 import { useEffect } from "react";
 
+type DrawerSize = "compact" | "table" | "wide";
+
+const sizeClasses = {
+  compact: "w-full sm:w-[500px] lg:w-[600px]",
+  table: "w-full sm:w-[800px] lg:w-[1000px] xl:w-[1200px]", 
+  wide: "w-full sm:w-[900px] lg:w-[1100px] xl:w-[1300px]"
+};
+
 export function Drawer({
   open,
   title,
   onClose,
   children,
+  size = "compact"
 }: {
   open: boolean;
   title: string;
   onClose: () => void;
   children: React.ReactNode;
+  size?: DrawerSize;
 }) {
   useEffect(() => {
     if (!open) return;
@@ -28,7 +38,7 @@ export function Drawer({
         className="absolute inset-0 bg-background/90 backdrop-blur-sm"
         onClick={onClose}
       />
-      <aside className="absolute right-0 top-0 h-full w-full sm:w-[800px] lg:w-[900px] xl:w-[1000px] bg-card border-l border-border/50 shadow-2xl flex flex-col">
+      <aside className={`absolute right-0 top-0 h-full ${sizeClasses[size]} bg-card border-l border-border/50 shadow-2xl flex flex-col`}>
         <header className="p-4 border-b border-border/50 flex items-center justify-between bg-muted/20">
           <h3 className="text-base font-semibold text-foreground tracking-tight">{title}</h3>
           <button

@@ -159,6 +159,7 @@ function CompactUniverseCard({
         open={drawerOpen} 
         onClose={() => setDrawerOpen(false)} 
         title={`${title} - Analisi Completa`}
+        size="table"
       >
         <EnhancedTable 
           candidates={candidates} 
