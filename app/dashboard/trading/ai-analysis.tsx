@@ -16,7 +16,7 @@ export function AIAnalysis({ data }: AIAnalysisProps) {
   const [analysis, setAnalysis] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [goal, setGoal] = useState("Analizza il regime di mercato attuale e fornisci un brief operativo in italiano. Spiega la situazione in modo chiaro e diretto, suggerendo eventuali opportunità o rischi da considerare. Rispondi SOLO in testo semplice, non in JSON.");
+  const [goal, setGoal] = useState("Analizza la situazione di mercato attuale. Come vedi i dati? Ci sono opportunità interessanti o rischi da considerare?");
 
   const runAnalysis = useCallback(async () => {
     if (!data) return;
@@ -25,14 +25,12 @@ export function AIAnalysis({ data }: AIAnalysisProps) {
     setError(null);
     
     try {
-      const response = await fetch("/api/trading/ai", {
+      const response = await fetch("/api/trading/ai/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          goal: `${goal}\n\nIMPORTANTE: Rispondi SOLO in italiano, in modo conversazionale e diretto. NON usare JSON. Scrivi come se stessi parlando con un trader esperto. Usa paragrafi brevi e chiari.`,
-          packet: {
-            version: "tradelia-ai-packet-v1",
-            asOf: Date.now(),
+          message: goal,
+          context: {
             symbol: data.symbol,
             regime4h: data.regime,
             universe: data.universe ? {
@@ -41,58 +39,15 @@ export function AIAnalysis({ data }: AIAnalysisProps) {
               long: data.universe.long.slice(0, 5),
               short: data.universe.short.slice(0, 5),
             } : null,
-          }
+          },
+          conversational: true
         })
       });
 
       if (!response.ok) throw new Error("AI analysis failed");
       
-      const result = await response.json();
-      
-      // Extract conversational text from AI response
-      let analysisText = "";
-      
-      if (typeof result === "string") {
-        analysisText = result;
-      } else if (result && typeof result === "object") {
-        // Try to extract meaningful conversational content
-        const possibleFields = ['analysis', 'summary', 'content', 'text', 'message', 'response', 'brief', 'answer'];
-        
-        for (const field of possibleFields) {
-          if (result[field] && typeof result[field] === 'string') {
-            analysisText = result[field];
-            break;
-          }
-        }
-        
-        // If no direct text field, try to extract from nested objects
-        if (!analysisText) {
-          if (result.choices && Array.isArray(result.choices) && result.choices[0]?.message?.content) {
-            analysisText = result.choices[0].message.content;
-          } else if (result.data && typeof result.data === 'string') {
-            analysisText = result.data;
-          } else if (result.result && typeof result.result === 'string') {
-            analysisText = result.result;
-          }
-        }
-        
-        // If still no text, try to format structured response
-        if (!analysisText && result.regime && result.recommendations) {
-          analysisText = `**Regime di Mercato**: ${result.regime}\n\n**Raccomandazioni**:\n${
-            Array.isArray(result.recommendations) 
-              ? result.recommendations.map((rec: string) => `• ${rec}`).join('\n')
-              : result.recommendations
-          }`;
-        }
-        
-        // Last resort: inform user to try again with different prompt
-        if (!analysisText) {
-          analysisText = "La risposta AI non è in un formato leggibile. Prova a modificare la richiesta di analisi per ottenere una risposta più chiara.";
-        }
-      } else {
-        analysisText = "Risposta AI non valida. Verifica la configurazione e riprova.";
-      }
-      
+      // Get plain text response
+      const analysisText = await response.text();
       setAnalysis(analysisText);
       
     } catch (err) {
@@ -125,7 +80,7 @@ export function AIAnalysis({ data }: AIAnalysisProps) {
           disabled={loading}
           className="rounded bg-foreground px-3 py-2 text-xs font-medium text-background hover:bg-foreground/90 disabled:opacity-50 transition-subtle"
         >
-          {loading ? "Analyzing..." : "Avvia Analisi"}
+          {loading ? "Analizzando..." : "Avvia Analisi"}
         </button>
       }
     >
@@ -169,7 +124,7 @@ export function AIAnalysis({ data }: AIAnalysisProps) {
               <AIIcon size={48} />
             </div>
             <p className="text-sm text-muted-foreground">
-              Premi "Avvia Analisi" per ottenere insights AI sui dati di mercato attuali
+              Premi "Avvia Analisi" per ottenere insights conversazionali sui dati di mercato attuali
             </p>
           </div>
         )}

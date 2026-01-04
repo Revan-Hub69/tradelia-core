@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useState } from "react";
+import { type ReactNode, useState } from "react";
 import { Sidebar } from "./sidebar";
 import { DashboardHeader } from "./header";
 import { SettingsModal } from "./settings-modal";
@@ -32,17 +32,16 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       
       {/* Main content */}
       <div className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ${
-        sidebarCollapsed ? 'lg:ml-12' : 'lg:ml-48'
+        sidebarCollapsed ? 'lg:ml-12' : 'lg:ml-40'
       }`}>
         {/* Header */}
         <DashboardHeader 
           onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
-          onOpenSettings={() => setSettingsOpen(true)}
         />
         
         {/* Content */}
         <main className="flex-1 overflow-auto">
-          <div className="p-3 sm:p-4">
+          <div className="p-2 sm:p-3">
             {children}
           </div>
         </main>

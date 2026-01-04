@@ -1,22 +1,29 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { SearchIcon, SettingsIcon, MenuIcon } from "@/components/icons/dashboard-icons";
+import { SearchIcon, MenuIcon } from "@/components/icons/dashboard-icons";
 
 interface DashboardHeaderProps {
   onToggleSidebar: () => void;
-  onOpenSettings: () => void;
+  onOpenSettings?: () => void;
 }
 
-export function DashboardHeader({ onToggleSidebar, onOpenSettings }: DashboardHeaderProps) {
+export function DashboardHeader({ onToggleSidebar }: DashboardHeaderProps) {
   const [currentTime, setCurrentTime] = useState<string>("");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Set initial time and update every second
+    // Use a timeout to avoid synchronous setState in effect
+    const mountTimeout = setTimeout(() => setMounted(true), 0);
+    
     const updateTime = () => setCurrentTime(new Date().toLocaleTimeString());
     updateTime();
     const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
+    
+    return () => {
+      clearTimeout(mountTimeout);
+      clearInterval(interval);
+    };
   }, []);
 
   return (
@@ -35,7 +42,9 @@ export function DashboardHeader({ onToggleSidebar, onOpenSettings }: DashboardHe
             <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-status-ok/20 text-status-ok border border-status-ok/30">
               Live
             </span>
-            <span className="text-xs text-muted-foreground">Updated: {currentTime}</span>
+            <span className="text-xs text-muted-foreground">
+              {mounted ? `Updated: ${currentTime}` : "Loading..."}
+            </span>
           </div>
         </div>
 
@@ -54,14 +63,6 @@ export function DashboardHeader({ onToggleSidebar, onOpenSettings }: DashboardHe
               </div>
             </div>
           </div>
-
-          {/* Settings */}
-          <button 
-            onClick={onOpenSettings}
-            className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted/30 focus:outline-none focus:ring-2 focus:ring-primary rounded transition-subtle"
-          >
-            <SettingsIcon size={18} />
-          </button>
         </div>
       </div>
     </header>

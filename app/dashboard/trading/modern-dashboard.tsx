@@ -5,6 +5,7 @@ import React from "react";
 import { Card, StatCard } from "@/components/dashboard/card";
 import { OverviewIcon, UniverseIcon, RegimeIcon, RefreshIcon } from "@/components/icons/dashboard-icons";
 import { AIAnalysis } from "./ai-analysis";
+import { EnhancedTable } from "@/components/dashboard/enhanced-table";
 
 // Types (same as before)
 type Regime4h = "TREND" | "RANGE" | "TRANSITION";
@@ -73,7 +74,7 @@ function formatNumber(value: number): string {
   return new Intl.NumberFormat("en-US", { maximumFractionDigits: 4 }).format(value);
 }
 
-function formatBps(value: number | null | undefined): string {
+function _formatBps(value: number | null | undefined): string {
   if (typeof value !== "number" || !Number.isFinite(value)) return "-";
   return `${value.toFixed(1)}bps`;
 }
@@ -158,170 +159,6 @@ function RegimeWidget({ regime }: { regime: RegimeOutput | null }) {
   );
 }
 
-function UniverseTable({ candidates, title }: { candidates: UniverseCandidate[]; title: string }) {
-  const [expanded, setExpanded] = useState(false);
-  const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
-  
-  const displayedCandidates = expanded ? candidates : candidates.slice(0, 3);
-  
-  const toggleRowExpansion = (symbol: string) => {
-    const newExpanded = new Set(expandedRows);
-    if (newExpanded.has(symbol)) {
-      newExpanded.delete(symbol);
-    } else {
-      newExpanded.add(symbol);
-    }
-    setExpandedRows(newExpanded);
-  };
-
-  return (
-    <Card 
-      title={title} 
-      subtitle={`${candidates.length} candidates`}
-      actions={
-        candidates.length > 3 && (
-          <button
-            onClick={() => setExpanded(!expanded)}
-            className="text-xs text-primary hover:text-primary/80 transition-subtle"
-          >
-            {expanded ? 'Show Less' : `Show All (${candidates.length})`}
-          </button>
-        )
-      }
-    >
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-border/30">
-          <thead className="bg-muted/30">
-            <tr>
-              <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Symbol</th>
-              <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Price</th>
-              <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Regime</th>
-              <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Score</th>
-              <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Spread</th>
-              <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Status</th>
-              <th className="px-3 py-2 text-center text-xs font-medium text-muted-foreground uppercase tracking-wide">Details</th>
-            </tr>
-          </thead>
-          <tbody className="bg-background divide-y divide-border/30">
-            {displayedCandidates.map((candidate) => {
-              const isRowExpanded = expandedRows.has(candidate.symbol);
-              return (
-                <React.Fragment key={candidate.symbol}>
-                  <tr className="hover:bg-muted/20 transition-subtle">
-                    <td className="px-3 py-3 whitespace-nowrap">
-                      <div className="text-sm font-medium text-foreground">{candidate.symbol}</div>
-                      <div className="text-xs text-muted-foreground">{candidate.side}</div>
-                    </td>
-                    <td className="px-3 py-3 whitespace-nowrap">
-                      <div className="text-sm font-medium text-foreground">${formatNumber(candidate.htf.price)}</div>
-                    </td>
-                    <td className="px-3 py-3 whitespace-nowrap">
-                      {getRegimeBadge(candidate.htf.regime)}
-                      {candidate.htf.stress && (
-                        <div className="mt-1">
-                          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-status-risk/20 text-status-risk border border-status-risk/30">
-                            STRESS
-                          </span>
-                        </div>
-                      )}
-                    </td>
-                    <td className="px-3 py-3 whitespace-nowrap">
-                      <div className="text-sm font-medium text-foreground">{candidate.scores.total}</div>
-                      <div className="text-xs text-muted-foreground">
-                        T:{candidate.scores.tradeability} R:{candidate.scores.regimeMatch}
-                      </div>
-                    </td>
-                    <td className="px-3 py-3 whitespace-nowrap">
-                      <div className="text-sm text-foreground">{formatBps(candidate.ws.spreadBpsNow)}</div>
-                      <div className="text-xs text-muted-foreground">
-                        {candidate.ws.lastUpdateAgeSec}s ago
-                      </div>
-                    </td>
-                    <td className="px-3 py-3 whitespace-nowrap">
-                      <div className="flex flex-wrap gap-1 max-w-24">
-                        {candidate.reasons.blocks.slice(0, 1).map((reason, i) => (
-                          <span key={i} className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-status-risk/20 text-status-risk border border-status-risk/30 truncate" title={reason}>
-                            {reason.length > 6 ? reason.substring(0, 6) + '...' : reason}
-                          </span>
-                        ))}
-                        {candidate.reasons.warnings.slice(0, 1).map((reason, i) => (
-                          <span key={i} className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-status-attention/20 text-status-attention border border-status-attention/30 truncate" title={reason}>
-                            {reason.length > 6 ? reason.substring(0, 6) + '...' : reason}
-                          </span>
-                        ))}
-                      </div>
-                    </td>
-                    <td className="px-3 py-3 text-center">
-                      <button
-                        onClick={() => toggleRowExpansion(candidate.symbol)}
-                        className="text-primary hover:text-primary/80 transition-subtle"
-                      >
-                        {isRowExpanded ? '−' : '+'}
-                      </button>
-                    </td>
-                  </tr>
-                  {isRowExpanded && (
-                    <tr>
-                      <td colSpan={7} className="px-3 py-3 bg-muted/10">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                          <div>
-                            <h4 className="font-medium text-foreground mb-2">Reasons</h4>
-                            <div className="space-y-1">
-                              {candidate.reasons.blocks.length > 0 && (
-                                <div>
-                                  <span className="text-xs text-status-risk font-medium">Blocks:</span>
-                                  <ul className="text-xs text-muted-foreground ml-2">
-                                    {candidate.reasons.blocks.map((reason, i) => (
-                                      <li key={i}>• {reason}</li>
-                                    ))}
-                                  </ul>
-                                </div>
-                              )}
-                              {candidate.reasons.warnings.length > 0 && (
-                                <div>
-                                  <span className="text-xs text-status-attention font-medium">Warnings:</span>
-                                  <ul className="text-xs text-muted-foreground ml-2">
-                                    {candidate.reasons.warnings.map((reason, i) => (
-                                      <li key={i}>• {reason}</li>
-                                    ))}
-                                  </ul>
-                                </div>
-                              )}
-                              {candidate.reasons.info.length > 0 && (
-                                <div>
-                                  <span className="text-xs text-foreground font-medium">Info:</span>
-                                  <ul className="text-xs text-muted-foreground ml-2">
-                                    {candidate.reasons.info.map((reason, i) => (
-                                      <li key={i}>• {reason}</li>
-                                    ))}
-                                  </ul>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="font-medium text-foreground mb-2">Technical Details</h4>
-                            <div className="space-y-1 text-xs text-muted-foreground">
-                              <div>Side: <span className="text-foreground">{candidate.side}</span></div>
-                              <div>HTF Regime: <span className="text-foreground">{candidate.htf.regime}</span></div>
-                              <div>HTF Stress: <span className="text-foreground">{candidate.htf.stress ? 'Yes' : 'No'}</span></div>
-                              <div>WS Update: <span className="text-foreground">{candidate.ws.lastUpdateAgeSec}s ago</span></div>
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                </React.Fragment>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    </Card>
-  );
-}
-
 // Main Component
 export function ModernDashboard() {
   const [symbol, setSymbol] = useState("BTCUSDT");
@@ -363,7 +200,7 @@ export function ModernDashboard() {
   const aiData = regime && universe ? { symbol, regime, universe } : null;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Controls */}
       <Card title="Market Controls" subtitle="Configurazione simbolo di riferimento">
         <div className="flex items-center space-x-4">
@@ -409,7 +246,7 @@ export function ModernDashboard() {
 
       {/* Stats Overview */}
       {universe && (
-        <div id="universe" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div id="universe" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
           <StatCard
             title="Anchor Symbol"
             value={universe.market.anchor.symbol}
@@ -437,7 +274,7 @@ export function ModernDashboard() {
       )}
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
         {/* Regime Analysis */}
         <div id="regime" className="lg:col-span-1">
           <RegimeWidget regime={regime} />
@@ -451,9 +288,17 @@ export function ModernDashboard() {
 
       {/* Universe Tables */}
       {universe && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <UniverseTable candidates={universe.long} title="Long Opportunities" />
-          <UniverseTable candidates={universe.short} title="Short Opportunities" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+          <EnhancedTable 
+            candidates={universe.long} 
+            title="Long Opportunities" 
+            defaultMode="comfortable"
+          />
+          <EnhancedTable 
+            candidates={universe.short} 
+            title="Short Opportunities" 
+            defaultMode="comfortable"
+          />
         </div>
       )}
     </div>
