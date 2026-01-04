@@ -463,7 +463,7 @@ export function DashboardClient() {
   const [universeError, setUniverseError] = useState<string | null>(null);
   const [universeTopN, setUniverseTopN] = useState(20);
 
-  const [aiGoal, setAiGoal] = useState("Genera un brief operativo (max 10 righe) su Brick 1-2: regime+universe, con guardrails e why per top symbol.");
+  const [aiGoal, setAiGoal] = useState("Analizza i dati attuali e fornisci un brief operativo in italiano. Spiega il regime di mercato, i migliori candidati long/short e eventuali rischi. Rispondi in modo chiaro e diretto, non in JSON.");
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
   const [aiResult, setAiResult] = useState<unknown | null>(null);
@@ -923,7 +923,7 @@ export function DashboardClient() {
 
   return (
     <div className="space-y-10">
-      <div className="surface-card p-6 lg:p-8">
+      <div className="rounded border border-border/50 bg-background p-6 lg:p-8">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="space-y-1">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Workspace locale</p>
@@ -1013,10 +1013,10 @@ export function DashboardClient() {
         </div>
       </div>
 
-      <section className="surface-card p-8 space-y-5">
+      <section className="rounded border border-border/50 bg-background p-8 space-y-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Brick 1-2 Universe</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Brick 1-2 Universe</p>
             <h2 className="text-lg font-semibold text-foreground">Tradeability + Regime Gate</h2>
             <p className="text-xs leading-relaxed text-muted-foreground">
               Il contract Universe combina regime 4h deterministico con WS + score per long/short. I top candidates sono aggiornati in locale dal daemon Binance WS.
@@ -1225,13 +1225,13 @@ export function DashboardClient() {
         )}
       </section>
 
-      <section className="surface-card p-8 space-y-5">
+      <section className="rounded border border-border/50 bg-background p-8 space-y-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-1">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">AI (Groq)</p>
-            <h2 className="text-lg font-semibold text-foreground">Brief vincolato</h2>
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">AI Analysis</p>
+            <h2 className="text-lg font-semibold text-foreground">Analisi Intelligente</h2>
             <p className="text-xs leading-relaxed text-muted-foreground">
-              Usa il packet (regime + universe + config) e ritorna JSON. La chiave resta server-side: serve `GROQ_API_KEY` in locale.
+              L'AI analizza regime, universe e configurazioni per fornire un brief operativo in linguaggio naturale.
             </p>
           </div>
           <div className="flex flex-wrap items-end gap-2">
@@ -1282,9 +1282,77 @@ export function DashboardClient() {
         )}
 
         {aiResult !== null && (
-          <pre className="max-h-[520px] overflow-auto rounded-2xl border border-border bg-background/60 p-5 text-xs text-foreground">
-            {JSON.stringify(aiResult, null, 2)}
-          </pre>
+          <div className="space-y-4">
+            <div className="rounded-2xl border border-border bg-background/60 p-5">
+              <div className="prose prose-sm max-w-none text-foreground">
+                {(() => {
+                  // Prova a estrarre testo leggibile dall'AI response
+                  if (typeof aiResult === 'string') {
+                    return <div className="whitespace-pre-wrap">{aiResult}</div>;
+                  }
+                  
+                  if (typeof aiResult === 'object' && aiResult !== null) {
+                    const result = aiResult as any;
+                    
+                    // Cerca campi comuni per testo leggibile
+                    if (result.analysis) {
+                      return <div className="whitespace-pre-wrap">{result.analysis}</div>;
+                    }
+                    if (result.summary) {
+                      return <div className="whitespace-pre-wrap">{result.summary}</div>;
+                    }
+                    if (result.brief) {
+                      return <div className="whitespace-pre-wrap">{result.brief}</div>;
+                    }
+                    if (result.content) {
+                      return <div className="whitespace-pre-wrap">{result.content}</div>;
+                    }
+                    if (result.text) {
+                      return <div className="whitespace-pre-wrap">{result.text}</div>;
+                    }
+                    if (result.message) {
+                      return <div className="whitespace-pre-wrap">{result.message}</div>;
+                    }
+                    
+                    // Se ha una struttura riconoscibile, formattala meglio
+                    if (result.regime && result.recommendations) {
+                      return (
+                        <div className="space-y-3">
+                          <div>
+                            <h4 className="font-medium text-foreground">Regime Analysis</h4>
+                            <p className="text-sm text-muted-foreground">{result.regime}</p>
+                          </div>
+                          <div>
+                            <h4 className="font-medium text-foreground">Recommendations</h4>
+                            <div className="text-sm text-muted-foreground">
+                              {Array.isArray(result.recommendations) 
+                                ? result.recommendations.map((rec: string, i: number) => (
+                                    <p key={i} className="mb-1">• {rec}</p>
+                                  ))
+                                : <p>{result.recommendations}</p>
+                              }
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    }
+                  }
+                  
+                  // Fallback: mostra JSON formattato ma più leggibile
+                  return (
+                    <details className="cursor-pointer">
+                      <summary className="font-medium text-foreground mb-2">
+                        AI Response (JSON) - Click to expand
+                      </summary>
+                      <pre className="text-xs text-muted-foreground overflow-auto">
+                        {JSON.stringify(aiResult, null, 2)}
+                      </pre>
+                    </details>
+                  );
+                })()}
+              </div>
+            </div>
+          </div>
         )}
 
         {aiResult === null && !aiError && (
@@ -1294,10 +1362,10 @@ export function DashboardClient() {
         )}
       </section>
 
-      <details className="accordion surface-card p-8">
+      <details className="accordion rounded border border-border/50 bg-muted/30 p-8">
         <summary>Diagnostica (vecchi pannelli: regime + screener)</summary>
         <div className="mt-8 grid gap-10 lg:grid-cols-2">
-          <section className="surface-card p-8">
+          <section className="rounded border border-border/50 bg-background p-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div className="space-y-1">
               <h2 className="text-sm font-semibold text-foreground">Regime 4h (deterministico)</h2>

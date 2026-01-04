@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 export default function DashboardPage() {
-  redirect("/dashboard/trading");
+  // Redirect alla homepage - dashboard principale non accessibile
+  redirect("/");
 }
 
