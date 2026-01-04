@@ -100,11 +100,28 @@ class StreamCache {
   snapshot(symbols: string[]) {
     const out: Record<string, SymbolStats & { lastUpdateAgeSec: number }> = {};
     const ts = now();
+    const cutoff = ts - WINDOW_MS;
+
     for (const symbol of symbols) {
       const st = this.stats.get(symbol);
       if (!st) continue;
-      out[symbol] = { ...st, lastUpdateAgeSec: Math.max(0, (ts - st.lastUpdateTs) / 1000) };
+
+      const points = this.spreads.get(symbol) ?? [];
+      while (points.length && points[0].ts < cutoff) points.shift();
+      this.spreads.set(symbol, points);
+
+      const values = points.map((p) => p.spreadBps);
+      const { mean, std } = meanStd(values);
+
+      out[symbol] = {
+        ...st,
+        spreadMeanBps60s: mean,
+        spreadStdBps60s: std,
+        msgRate60s: values.length,
+        lastUpdateAgeSec: Math.max(0, (ts - st.lastUpdateTs) / 1000),
+      };
     }
+
     return out;
   }
 }

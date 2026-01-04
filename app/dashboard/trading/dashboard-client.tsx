@@ -1588,73 +1588,85 @@ export function DashboardClient() {
                 )}
 
                 <div className="space-y-10">
-                  {hasLocalGroqKey !== null && (
-                    <section className="space-y-4">
-                      <div className="space-y-1">
-                        <h3 className="text-sm font-semibold text-foreground">Groq key (solo locale)</h3>
+                  <section className="space-y-4">
+                    <div className="space-y-1">
+                      <h3 className="text-sm font-semibold text-foreground">Groq key (solo locale)</h3>
+                      <p className="text-xs text-muted-foreground">
+                        Salvata su file locale e usata automaticamente da <code className="font-mono">/api/trading/ai</code> in dev.
+                      </p>
+                      {hasLocalGroqKey === null && (
                         <p className="text-xs text-muted-foreground">
-                          Salvata su file locale e usata automaticamente da <code className="font-mono">/api/trading/ai</code> in dev.
+                          Non disponibile qui: apri la dashboard in locale su{" "}
+                          <code className="font-mono">http://localhost:3000/dashboard/trading</code>.
                         </p>
-                        {localSecretsPath && (
-                          <p className="text-xs text-muted-foreground">
-                            path: <code className="font-mono">{localSecretsPath}</code>
-                          </p>
-                        )}
-                        {localGroqKeyError && <p className="text-xs text-destructive">{localGroqKeyError}</p>}
+                      )}
+                      {localSecretsPath && (
+                        <p className="text-xs text-muted-foreground">
+                          path: <code className="font-mono">{localSecretsPath}</code>
+                        </p>
+                      )}
+                      {localGroqKeyError && <p className="text-xs text-destructive">{localGroqKeyError}</p>}
+                    </div>
+
+                    <div className="grid gap-3">
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                        <span className="rounded-full border border-border bg-muted/20 px-3 py-1">
+                          stato: {hasLocalGroqKey === null ? "non disponibile" : hasLocalGroqKey ? "impostata" : "mancante"}
+                        </span>
+                        <button
+                          type="button"
+                          className="btn-secondary px-3 py-1 text-[11px]"
+                          onClick={() => void loadLocalSecretsStatus()}
+                        >
+                          Ricarica stato
+                        </button>
+                        <button
+                          type="button"
+                          className="btn-secondary px-3 py-1 text-[11px]"
+                          onClick={() => void copyText("URL", "http://localhost:3000/dashboard/trading")}
+                        >
+                          Copia URL locale
+                        </button>
                       </div>
 
-                      <div className="grid gap-3">
-                        <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                          <span className="rounded-full border border-border bg-muted/20 px-3 py-1">
-                            stato: {hasLocalGroqKey ? "impostata" : "mancante"}
-                          </span>
-                          <button
-                            type="button"
-                            className="btn-secondary px-3 py-1 text-[11px]"
-                            onClick={() => void loadLocalSecretsStatus()}
-                          >
-                            Ricarica stato
-                          </button>
-                        </div>
+                      <label className="space-y-2">
+                        <span className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Nuova key</span>
+                        <input
+                          type="password"
+                          className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground"
+                          value={localGroqKeyDraft}
+                          onChange={(event) => setLocalGroqKeyDraft(event.target.value)}
+                          placeholder={hasLocalGroqKey === null ? "Disponibile solo in locale" : "gsk_..."}
+                          spellCheck={false}
+                          disabled={hasLocalGroqKey === null}
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Lascia vuoto e salva per rimuovere la key locale (torna a <code className="font-mono">GROQ_API_KEY</code> env).
+                        </p>
+                      </label>
 
-                        <label className="space-y-2">
-                          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Nuova key</span>
-                          <input
-                            type="password"
-                            className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground"
-                            value={localGroqKeyDraft}
-                            onChange={(event) => setLocalGroqKeyDraft(event.target.value)}
-                            placeholder="gsk_..."
-                            spellCheck={false}
-                          />
-                          <p className="text-xs text-muted-foreground">
-                            Lascia vuoto e salva per rimuovere la key locale (torna a <code className="font-mono">GROQ_API_KEY</code> env).
-                          </p>
-                        </label>
-
-                        <div className="flex flex-wrap gap-2">
-                          <button
-                            type="button"
-                            className="btn-primary px-4 py-2 text-xs"
-                            onClick={saveLocalGroqKey}
-                            disabled={savingLocalGroqKey}
-                          >
-                            {savingLocalGroqKey ? "Salvo..." : "Salva key locale"}
-                          </button>
-                          <button
-                            type="button"
-                            className="btn-secondary px-4 py-2 text-xs"
-                            onClick={() => {
-                              setLocalGroqKeyDraft("");
-                              setLocalGroqKeyError(null);
-                            }}
-                          >
-                            Reset
-                          </button>
-                        </div>
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          className="btn-primary px-4 py-2 text-xs"
+                          onClick={saveLocalGroqKey}
+                          disabled={savingLocalGroqKey || hasLocalGroqKey === null}
+                        >
+                          {savingLocalGroqKey ? "Salvo..." : "Salva key locale"}
+                        </button>
+                        <button
+                          type="button"
+                          className="btn-secondary px-4 py-2 text-xs"
+                          onClick={() => {
+                            setLocalGroqKeyDraft("");
+                            setLocalGroqKeyError(null);
+                          }}
+                        >
+                          Reset
+                        </button>
                       </div>
-                    </section>
-                  )}
+                    </div>
+                  </section>
 
                   <section className="space-y-4">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">

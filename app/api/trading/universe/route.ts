@@ -210,6 +210,9 @@ export async function GET(request: Request) {
     wsSnap = {};
   }
 
+  const wsIsHealthy = wsSnap.ws?.health === "OK" || wsSnap.ws?.health === "DEGRADED";
+  const wsAvailable = Boolean(wsSnap.ws?.connected) && wsIsHealthy;
+
   const wsSymbols = Array.isArray(wsSnap.meta?.symbols) ? wsSnap.meta?.symbols ?? [] : [];
   const preBlockedByReason: Record<string, number> = {};
   const symbols = wsSymbols
@@ -520,7 +523,7 @@ export async function GET(request: Request) {
     meta: {
       version: "universe-v1",
       ts: Date.now(),
-      source: wsSnap.ws?.connected ? "rest+ws" : "rest",
+      source: wsAvailable ? "rest+ws" : "rest",
       anchorSymbol: anchor,
       topN,
     },
@@ -534,7 +537,7 @@ export async function GET(request: Request) {
       quality: {
         rest: { freshnessSec, gaps, contiguous, asOfTs, staleAfterSec },
         ws: {
-          available: Boolean(wsSnap.ws?.connected),
+          available: wsAvailable,
           health: wsSnap.ws?.health ?? "STALE",
           lastMessageAgeSec: wsSnap.ws?.lastMessageAgeSec ?? 9999,
           reconnects: wsSnap.ws?.reconnects ?? 0,
