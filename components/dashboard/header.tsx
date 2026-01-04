@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SearchIcon, BellIcon, SettingsIcon, MenuIcon } from "@/components/icons/dashboard-icons";
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -11,6 +11,15 @@ interface DashboardHeaderProps {
 
 export function DashboardHeader({ onToggleSidebar, onOpenSettings }: DashboardHeaderProps) {
   const [notifications] = useState(2);
+  const [currentTime, setCurrentTime] = useState<string>("");
+
+  useEffect(() => {
+    // Set initial time and update every second
+    const updateTime = () => setCurrentTime(new Date().toLocaleTimeString());
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <header className="bg-card border-b border-border/50 px-6 py-4">
@@ -28,7 +37,7 @@ export function DashboardHeader({ onToggleSidebar, onOpenSettings }: DashboardHe
             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-status-ok/20 text-status-ok border border-status-ok/30">
               Live
             </span>
-            <span className="text-sm text-muted-foreground">Updated: {new Date().toLocaleTimeString()}</span>
+            <span className="text-sm text-muted-foreground">Updated: {currentTime}</span>
           </div>
         </div>
 

@@ -15,6 +15,12 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [currentTime, setCurrentTime] = useState<string>("");
+
+  useEffect(() => {
+    // Set initial time
+    setCurrentTime(new Date().toLocaleString());
+  }, []);
 
   const loadLocalSecretsStatus = useCallback(async () => {
     setError(null);
@@ -237,7 +243,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       </div>
                       <div className="flex justify-between">
                         <span>Last Updated:</span>
-                        <span className="font-medium text-foreground">{new Date().toLocaleString()}</span>
+                        <span className="font-medium text-foreground">{currentTime}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>URL:</span>
