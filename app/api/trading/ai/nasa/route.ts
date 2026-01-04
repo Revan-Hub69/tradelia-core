@@ -9,80 +9,10 @@ import { createInputCanon, validateInputCanon } from "@/lib/ai/input-canon";
 import type { InputCanon } from "@/lib/ai/input-canon";
 import { SYSTEM_PROMPT, getBrick1Prompt, getBrick2Prompt, getBrick1Plus2Prompt } from "@/lib/ai/prompts";
 
-// Zod schemas for NASA-grade validation
-const NasaAnalysisResultSchema = z.object({
-  meta: z.object({
-    mode: z.string(),
-    engine: z.object({
-      name: z.string(),
-      version: z.string()
-    }),
-    ts: z.number(),
-    input_hash: z.string(),
-    run_id: z.string()
-  }),
-  status: z.object({
-    state: z.enum(["ACTIVE", "REVIEW", "HOLD", "NEEDS_DATA"]),
-    go_no_go: z.enum(["GO", "NO_GO"]),
-    confidence: z.number().min(0).max(100),
-    blocking_reasons: z.array(z.string())
-  }),
-  brick1: z.object({
-    market_state: z.object({
-      regime: z.string(),
-      vol_state: z.string(),
-      liquidity_state: z.string(),
-      stress_flag: z.boolean()
-    }),
-    policy: z.object({
-      allowed_playbooks: z.array(z.string()),
-      blocked_playbooks: z.array(z.string()),
-      max_risk_r: z.number(),
-      notes: z.array(z.string())
-    }),
-    evidence: z.array(z.string())
-  }).optional(),
-  brick2: z.object({
-    universe: z.object({
-      top: z.array(z.object({
-        symbol: z.string(),
-        category: z.string(),
-        score: z.number(),
-        why: z.array(z.string())
-      })),
-      avoid: z.array(z.object({
-        symbol: z.string(),
-        why: z.array(z.string())
-      }))
-    }),
-    evidence: z.array(z.string())
-  }).optional(),
-  brick1_plus_brick2: z.object({
-    filtered_top: z.array(z.object({
-      symbol: z.string(),
-      action: z.enum(["FOCUS", "WATCH", "IGNORE"]),
-      playbook: z.string(),
-      reason: z.array(z.string())
-    })),
-    evidence: z.array(z.string())
-  }).optional(),
-  audit: z.object({
-    input_coverage_pct: z.number(),
-    assumptions: z.array(z.string()),
-    conflicts: z.array(z.string()),
-    sanity_checks: z.array(z.object({
-      name: z.string(),
-      pass: z.boolean(),
-      detail: z.string(),
-      value: z.number().optional(),
-      threshold: z.number().optional()
-    })),
-    input_hash: z.string(),
-    timestamp: z.number()
-  })
-});
+// Evidence schema: array of strings only (NASA-grade: no z.any())
+const EvidenceSchema = z.array(z.string()).optional();
 
-// Create mode-specific schemas with more flexible validation
+// Create mode-specific schemas with strict validation
 function createModeSpecificSchema(mode: string) {
   const baseSchema = z.object({
     meta: z.object({
@@ -117,7 +47,7 @@ function createModeSpecificSchema(mode: string) {
     })
   });
 
-  // Add mode-specific fields with relaxed validation
+  // Add mode-specific fields with strict evidence validation
   switch (mode) {
     case "BRICK1_ONLY":
       return baseSchema.extend({
@@ -134,7 +64,7 @@ function createModeSpecificSchema(mode: string) {
             max_risk_r: z.number(),
             notes: z.array(z.string())
           }).optional(),
-          evidence: z.array(z.any()).optional() // Relaxed: accept any type
+          evidence: EvidenceSchema // NASA-grade: strings only
         }).optional(),
         brick2: z.any().optional(),
         brick1_plus_brick2: z.any().optional()
@@ -147,16 +77,16 @@ function createModeSpecificSchema(mode: string) {
           universe: z.object({
             top: z.array(z.object({
               symbol: z.string(),
-              category: z.string().optional(), // Made optional
+              category: z.string().optional(),
               score: z.number(),
-              why: z.array(z.string()).optional() // Made optional
+              why: z.array(z.string()).optional()
             })),
             avoid: z.array(z.object({
               symbol: z.string(),
-              why: z.array(z.string()).optional() // Made optional
+              why: z.array(z.string()).optional()
             }))
           }).optional(),
-          evidence: z.array(z.any()).optional() // Relaxed: accept any type
+          evidence: EvidenceSchema // NASA-grade: strings only
         }).optional(),
         brick1_plus_brick2: z.any().optional()
       });
@@ -170,9 +100,9 @@ function createModeSpecificSchema(mode: string) {
             symbol: z.string(),
             action: z.enum(["FOCUS", "WATCH", "IGNORE"]),
             playbook: z.string(),
-            reason: z.union([z.array(z.string()), z.string()]) // Accept both array and string
+            reason: z.union([z.array(z.string()), z.string()])
           })),
-          evidence: z.array(z.any()).optional() // Relaxed: accept any type
+          evidence: EvidenceSchema // NASA-grade: strings only
         }).optional()
       });
     

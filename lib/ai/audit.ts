@@ -36,11 +36,14 @@ export interface Brick1Canon {
   stress_flag: boolean;
   atr_frac: number; // ATR as fraction (0-0.3), not percentage
   spread_bps: number;
-  trend_strength: number;
-  range_ratio: number;
+  trend_strength: number; // Normalized to [-1, 1] via tanh
+  range_ratio: number; // Normalized to [0, 1] via sigmoid
   returns_std: number;
   ema_state: "BULL" | "BEAR" | "NEUTRAL";
   freshness_ms: number;
+  // Raw values preserved for audit/conflict detection
+  _raw_trend_strength?: number;
+  _raw_range_ratio?: number;
 }
 
 export interface Brick2Canon {
@@ -70,7 +73,7 @@ export function generateInputHash(input: InputCanon): string {
 export function calculateInputCoverage(input: InputCanon, mode: string): number {
   const requiredFields = getRequiredFields(mode);
   let presentFields = 0;
-  let totalFields = requiredFields.length;
+  const totalFields = requiredFields.length;
 
   for (const field of requiredFields) {
     if (getNestedValue(input, field) !== undefined && getNestedValue(input, field) !== null) {
@@ -163,27 +166,39 @@ export function runSanityChecks(input: InputCanon): SanityCheck[] {
 
 /**
  * Detect logical conflicts in the data
+ * Uses RAW values (not normalized) for accurate conflict detection
  */
 export function detectConflicts(input: InputCanon): string[] {
   const conflicts: string[] = [];
 
   if (input.brick1) {
-    // Regime vs trend strength conflict
-    if (input.brick1.regime === "TREND" && Math.abs(input.brick1.trend_strength) < 0.3) {
-      conflicts.push(`Regime=TREND but trend_strength=${input.brick1.trend_strength.toFixed(3)} is weak`);
+    // Use raw values for conflict detection (more accurate thresholds)
+    const rawTrendStrength = input.brick1._raw_trend_strength ?? input.brick1.trend_strength;
+    const rawRangeRatio = input.brick1._raw_range_ratio ?? input.brick1.range_ratio;
+    
+    // Regime vs trend strength conflict (using raw values)
+    // Raw trend_strength: typical range is 0-2+, weak < 0.5, strong > 1.0
+    if (input.brick1.regime === "TREND" && Math.abs(rawTrendStrength) < 0.5) {
+      conflicts.push(`Regime=TREND but raw_trend_strength=${rawTrendStrength.toFixed(3)} is weak (<0.5)`);
     }
 
-    if (input.brick1.regime === "RANGE" && Math.abs(input.brick1.trend_strength) > 0.7) {
-      conflicts.push(`Regime=RANGE but trend_strength=${input.brick1.trend_strength.toFixed(3)} is strong`);
+    if (input.brick1.regime === "RANGE" && Math.abs(rawTrendStrength) > 1.0) {
+      conflicts.push(`Regime=RANGE but raw_trend_strength=${rawTrendStrength.toFixed(3)} is strong (>1.0)`);
     }
 
-    // EMA state vs trend strength
-    if (input.brick1.ema_state === "BULL" && input.brick1.trend_strength < -0.2) {
-      conflicts.push(`EMA_state=BULL but trend_strength=${input.brick1.trend_strength.toFixed(3)} is bearish`);
+    // Range ratio conflict (using raw values)
+    // Raw range_ratio: typical range is 0-10+, high > 3.0 indicates choppy market
+    if (input.brick1.regime === "TREND" && rawRangeRatio > 5.0) {
+      conflicts.push(`Regime=TREND but raw_range_ratio=${rawRangeRatio.toFixed(2)} is very high (>5.0), market may be choppy`);
     }
 
-    if (input.brick1.ema_state === "BEAR" && input.brick1.trend_strength > 0.2) {
-      conflicts.push(`EMA_state=BEAR but trend_strength=${input.brick1.trend_strength.toFixed(3)} is bullish`);
+    // EMA state vs trend strength (using raw values)
+    if (input.brick1.ema_state === "BULL" && rawTrendStrength < -0.3) {
+      conflicts.push(`EMA_state=BULL but raw_trend_strength=${rawTrendStrength.toFixed(3)} is bearish`);
+    }
+
+    if (input.brick1.ema_state === "BEAR" && rawTrendStrength > 0.3) {
+      conflicts.push(`EMA_state=BEAR but raw_trend_strength=${rawTrendStrength.toFixed(3)} is bullish`);
     }
   }
 

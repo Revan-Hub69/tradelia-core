@@ -18,11 +18,14 @@ export interface Brick1Canon {
   stress_flag: boolean;
   atr_frac: number; // ATR as fraction (0-0.3), not percentage
   spread_bps: number;
-  trend_strength: number;
-  range_ratio: number;
+  trend_strength: number; // Normalized to [-1, 1] via tanh
+  range_ratio: number; // Normalized to [0, 1] via sigmoid
   returns_std: number;
   ema_state: "BULL" | "BEAR" | "NEUTRAL";
   freshness_ms: number;
+  // Raw values preserved for audit/conflict detection
+  _raw_trend_strength?: number;
+  _raw_range_ratio?: number;
 }
 
 export interface Brick2Canon {
@@ -87,7 +90,7 @@ export function canonicalizeBrick1(rawData: any, anchorSymbol: string, universe:
   }
   if (!spread_bps) missing.push("spread_bps");
   
-  // Get other metrics
+  // Get other metrics - NO CLAMPING, preserve original values for audit
   const trendStrength = Number(metrics?.trendStrength) || 0;
   const rangeRatio = Number(metrics?.rangeRatio) || 0;
   const returnsStd = Number(metrics?.returnsStd) || Number(metrics?.returnsStd20) || 0;
@@ -101,17 +104,28 @@ export function canonicalizeBrick1(rawData: any, anchorSymbol: string, universe:
     return { canon: null, missing };
   }
 
+  // Normalize trend_strength to [-1, 1] using tanh-like scaling
+  // Original values can be > 1 (e.g., 1.24), this preserves relative strength
+  const normalizedTrendStrength = Math.tanh(trendStrength);
+  
+  // Normalize range_ratio to [0, 1] using sigmoid-like scaling
+  // Original values can be >> 1 (e.g., 6.89), this preserves relative magnitude
+  const normalizedRangeRatio = rangeRatio / (1 + rangeRatio);
+
   return {
     canon: {
       regime: regime || "TRANSITION",
       stress_flag: Boolean(rawData?.stress || rawData?.regime4h?.stress),
       atr_frac: Math.min(atr_frac, 0.3), // Cap at 30%
       spread_bps: spread_bps || 0,
-      trend_strength: Math.max(-1, Math.min(1, trendStrength)),
-      range_ratio: Math.max(0, Math.min(1, rangeRatio)),
+      trend_strength: normalizedTrendStrength, // Now properly normalized
+      range_ratio: normalizedRangeRatio, // Now properly normalized
       returns_std: returnsStd,
       ema_state: determineEmaState(metrics),
-      freshness_ms: Date.now() - (rawData?.ts || Date.now())
+      freshness_ms: Date.now() - (rawData?.ts || Date.now()),
+      // Preserve raw values for audit
+      _raw_trend_strength: trendStrength,
+      _raw_range_ratio: rangeRatio
     },
     missing
   };
