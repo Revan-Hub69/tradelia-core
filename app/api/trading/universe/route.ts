@@ -22,6 +22,9 @@ const TOPN_DEFAULT = 20;
 const TOPN_MAX = 50;
 const CONCURRENCY = 5;
 const TTL_MS = 90_000;
+const IMPACT_WARN_BPS = 4;
+const JITTER_WARN_BPS = 0.5;
+const ACTIVITY_LOW_WARN = 20;
 
 type PersistedState = {
   previousRegime?: Regime4h;
@@ -71,6 +74,16 @@ function sanitizeSymbol(value: string) {
   const upper = value.trim().toUpperCase();
   if (!/^[A-Z0-9]{5,20}$/.test(upper)) return null;
   return upper;
+}
+
+function isStablecoinPair(symbol: string) {
+  return /^(USDC|FDUSD|TUSD|USDP|DAI|BUSD)USDT$/.test(symbol);
+}
+
+function isLeveragedToken(symbol: string) {
+  // Binance leveraged tokens often end with UP/DOWN, or include BULL/BEAR.
+  // Examples: BTCUPUSDT, BTCDOWNUSDT
+  return /^(.*)(UP|DOWN)USDT$/.test(symbol) || /^(.*)(BULL|BEAR)USDT$/.test(symbol);
 }
 
 function lastCandleClose(candles: Candle[]) {
@@ -192,19 +205,35 @@ export async function GET(request: Request) {
   }
 
   const wsSymbols = Array.isArray(wsSnap.meta?.symbols) ? wsSnap.meta?.symbols ?? [] : [];
+  const preBlockedByReason: Record<string, number> = {};
   const symbols = wsSymbols
     .map((s) => sanitizeSymbol(String(s)) ?? "")
     .filter((s) => s.length > 0)
-    .slice(0, TOPN_MAX);
+    .slice(0, TOPN_MAX)
+    .filter((symbol) => {
+      if (!isStablecoinPair(symbol)) return true;
+      inc(preBlockedByReason, ReasonCode.STABLECOIN_PAIR);
+      return false;
+    })
+    .filter((symbol) => {
+      if (!isLeveragedToken(symbol)) return true;
+      inc(preBlockedByReason, ReasonCode.LEVERAGED_TOKEN);
+      return false;
+    });
 
   if (symbols.length === 0) {
+    const blockedByReason = { ...preBlockedByReason };
+    if (Object.keys(blockedByReason).length === 0) {
+      blockedByReason[ReasonCode.WS_UNAVAILABLE] = 1;
+    }
+    const totalBlocked = Object.values(blockedByReason).reduce((a, b) => a + b, 0);
     return NextResponse.json(
       {
         meta: { version: "universe-v1", ts: Date.now(), source: "rest", anchorSymbol: anchor, topN },
         market: { anchor: { symbol: anchor, regime4h: null, bias: "NEUTRAL", confidence: 0 }, quality: { rest: null, ws: null } },
         long: [],
         short: [],
-        excludedSummary: { blockedByReason: { [ReasonCode.WS_UNAVAILABLE]: 1 }, warnedByReason: {}, totalBlocked: 1, totalWarned: 0 },
+        excludedSummary: { blockedByReason, warnedByReason: {}, totalBlocked, totalWarned: 0 },
       },
       { status: 200, headers: { "cache-control": "no-store" } },
     );
@@ -214,7 +243,7 @@ export async function GET(request: Request) {
   const state = readState(statePath);
   const previousRegimes: Record<string, Regime4h> = { ...(state.previousRegimes ?? {}) };
 
-  const blockedByReason: Record<string, number> = {};
+  const blockedByReason: Record<string, number> = { ...preBlockedByReason };
   const warnedByReason: Record<string, number> = {};
 
   let anchorEntry: CachedRegime | null = null;
@@ -391,6 +420,21 @@ export async function GET(request: Request) {
       wsHealth,
     });
 
+    if (tradeability.parts.jitterAbsBps >= JITTER_WARN_BPS) {
+      reasons.warnings.push(ReasonCode.SPREAD_JITTER_HIGH);
+      inc(warnedByReason, ReasonCode.SPREAD_JITTER_HIGH);
+    }
+
+    if (tradeability.parts.impactBps >= IMPACT_WARN_BPS) {
+      reasons.warnings.push(ReasonCode.IMPACT_HIGH);
+      inc(warnedByReason, ReasonCode.IMPACT_HIGH);
+    }
+
+    if (msgRate60s > 0 && msgRate60s < ACTIVITY_LOW_WARN) {
+      reasons.warnings.push(ReasonCode.ACTIVITY_LOW);
+      inc(warnedByReason, ReasonCode.ACTIVITY_LOW);
+    }
+
     const pushSide = (side: MarketSide) => {
       const match = regimeMatchScore(side, regime.regime, bias, regime.stress);
       const total = totalScore(tradeability.score, match);
@@ -431,8 +475,12 @@ export async function GET(request: Request) {
     };
 
     if (reasons.blocks.length === 0) {
-      pushSide("LONG");
-      pushSide("SHORT");
+      if (regime.regime === "TREND" && bias !== "NEUTRAL") {
+        pushSide(bias === "BULL" ? "LONG" : "SHORT");
+      } else {
+        pushSide("LONG");
+        pushSide("SHORT");
+      }
     }
   }
 

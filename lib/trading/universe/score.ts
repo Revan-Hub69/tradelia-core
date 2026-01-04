@@ -35,6 +35,13 @@ function linScoreLower(value: number, hardMin: number, idealMin: number) {
   return (value - hardMin) / (idealMin - hardMin);
 }
 
+function logScore(value: number, maxValue: number) {
+  if (!Number.isFinite(value) || value <= 0) return 0;
+  const safeMax = Math.max(1, maxValue);
+  const normalized = Math.log10(value + 1) / Math.log10(safeMax + 1);
+  return clamp01(normalized);
+}
+
 export function tradeabilityScore(input: {
   spreadBpsNow: number;
   spreadMeanBps60s: number;
@@ -45,40 +52,47 @@ export function tradeabilityScore(input: {
 }) {
   const eps = 1e-6;
 
-  const spreadEff = Math.max(input.spreadBpsNow, input.spreadMeanBps60s);
-  const spread01 = linScoreUpper(spreadEff, 8, 25);
-  const spreadScore = 40 * spread01;
+  const spreadEffBps = Math.max(input.spreadBpsNow, input.spreadMeanBps60s);
+  const jitterAbsBps = Number.isFinite(input.spreadStdBps60s) ? Math.max(0, input.spreadStdBps60s) : 0;
+  const cv = jitterAbsBps / Math.max(Number.isFinite(input.spreadMeanBps60s) ? input.spreadMeanBps60s : 0, eps);
 
-  const cv = input.spreadStdBps60s / Math.max(input.spreadMeanBps60s, eps);
-  const jitter01 = linScoreUpper(cv, 0.35, 1.2);
-  const stabilityScore = 20 * jitter01;
+  const impactBps = spreadEffBps + 2.0 * jitterAbsBps;
+  const impact01 = linScoreUpper(impactBps, 0.5, 12);
+  const impactScore = 55 * impact01;
 
-  const act01 = linScoreLower(input.msgRate60s, 3, 25);
-  const activityScore = 20 * act01;
+  const stability01 = linScoreUpper(jitterAbsBps, 0.05, 1.0);
+  const stabilityScore = 10 * stability01;
+
+  const activityPenalty01 = linScoreLower(input.msgRate60s, 0, 8);
+  const activityPenalty = 10 * (1 - activityPenalty01);
+  const activityBonus = 10 * logScore(input.msgRate60s, 1000);
 
   const atrPct = input.atrPct4h;
   let vol01 = 0;
   if (Number.isFinite(atrPct)) {
-    if (atrPct >= 0.6 && atrPct <= 6.0) vol01 = 1;
-    else if (atrPct < 0.6) vol01 = clamp01((atrPct - 0.2) / (0.6 - 0.2));
-    else vol01 = clamp01((10.0 - atrPct) / (10.0 - 6.0));
+    if (atrPct >= 0.8 && atrPct <= 5.5) vol01 = 1;
+    else if (atrPct < 0.8) vol01 = clamp01((atrPct - 0.2) / (0.8 - 0.2));
+    else vol01 = clamp01((10.0 - atrPct) / (10.0 - 5.5));
   }
-  const volFitScore = 20 * vol01;
+  const volFitScore = 25 * vol01;
 
-  const raw = spreadScore + stabilityScore + activityScore + volFitScore;
+  const raw = Math.max(0, impactScore + stabilityScore + activityBonus + volFitScore - activityPenalty);
   const hm = healthMultiplier(input.wsHealth);
   const score = Math.round(Math.max(0, Math.min(100, raw * hm)));
 
   return {
     score,
     parts: {
-      spreadEff,
+      spreadEffBps,
+      jitterAbsBps,
+      impactBps,
       cv,
       raw,
       hm,
-      spreadScore,
+      impactScore,
       stabilityScore,
-      activityScore,
+      activityBonus,
+      activityPenalty,
       volFitScore,
     },
   };
@@ -103,4 +117,3 @@ export function totalScore(tradeability: number, match: number) {
   if (!Number.isFinite(tradeability) || !Number.isFinite(match)) return 0;
   return Math.round((tradeability * match) / 100);
 }
-

@@ -467,6 +467,7 @@ export function DashboardClient() {
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
   const [aiResult, setAiResult] = useState<unknown | null>(null);
+  const [launchingWsDaemon, setLaunchingWsDaemon] = useState(false);
 
   const normalizedSymbol = useMemo(() => symbol.trim().toUpperCase(), [symbol]);
 
@@ -623,6 +624,26 @@ export function DashboardClient() {
       setAiLoading(false);
     }
   }, [aiGoal, aiPacket]);
+
+  const launchWsDaemon = useCallback(async () => {
+    setLaunchingWsDaemon(true);
+    try {
+      const res = await fetch("/api/trading/local/launch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ target: "ws-daemon" }),
+      });
+      const json = (await res.json().catch(() => ({}))) as unknown;
+      if (!res.ok) throw new Error(inferErrorMessage(json, "Impossibile avviare ws-daemon."));
+      const message = isPlainObject(json) && typeof json.message === "string" ? json.message : "OK";
+      showCopyNotice(message);
+      void refreshUniverse();
+    } catch (error) {
+      showCopyNotice(error instanceof Error ? error.message : "Impossibile avviare ws-daemon.");
+    } finally {
+      setLaunchingWsDaemon(false);
+    }
+  }, [refreshUniverse, showCopyNotice]);
 
   const loadConfigs = useCallback(async () => {
     setLoadingConfigs(true);
@@ -859,31 +880,43 @@ export function DashboardClient() {
               affidabile.
             </p>
             <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-              <span className="rounded-full border border-border bg-background/60 px-3 py-1">Comandi rapidi:</span>
               <button
                 type="button"
                 className="btn-secondary px-3 py-1 text-[11px]"
-                onClick={() => void copyText("Comando", "npm run dev:local")}
+                onClick={() => void launchWsDaemon()}
+                disabled={launchingWsDaemon}
               >
-                Copia `npm run dev:local`
+                {launchingWsDaemon ? "Avvio ws-daemon..." : "Avvia ws-daemon (CMD)"}
               </button>
-              <button
-                type="button"
-                className="btn-secondary px-3 py-1 text-[11px]"
-                onClick={() => void copyText("Comando", "npm run ws:daemon")}
-              >
-                Copia `npm run ws:daemon`
-              </button>
-              <button
-                type="button"
-                className="btn-secondary px-3 py-1 text-[11px]"
-                onClick={() => void copyText("Comando", "npm run dev")}
-              >
-                Copia `npm run dev`
-              </button>
-              <span className="rounded-full border border-border bg-muted/20 px-3 py-1">
-                Note: il browser non può “aprire” terminali automaticamente (limitazione sicurezza).
-              </span>
+              <details className="accordion">
+                <summary>Launcher (Windows)</summary>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    className="btn-secondary px-3 py-1 text-[11px]"
+                    onClick={() => void copyText("Path", "scripts\\\\windows\\\\start-local.cmd")}
+                  >
+                    Copia path `start-local.cmd`
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-secondary px-3 py-1 text-[11px]"
+                    onClick={() => void copyText("Path", "scripts\\\\windows\\\\start-ws-daemon.cmd")}
+                  >
+                    Copia path `start-ws-daemon.cmd`
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-secondary px-3 py-1 text-[11px]"
+                    onClick={() => void copyText("Path", "scripts\\\\windows\\\\start-dev.cmd")}
+                  >
+                    Copia path `start-dev.cmd`
+                  </button>
+                </div>
+                <p className="mt-3 text-xs text-muted-foreground">
+                  Tip: fai doppio click da Explorer per aprire CMD con il processo già impostato.
+                </p>
+              </details>
             </div>
           </div>
 
