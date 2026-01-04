@@ -99,10 +99,10 @@ export function runSanityChecks(input: InputCanon): SanityCheck[] {
 
   // Brick1 checks
   if (input.brick1) {
-    // Spread sanity
+    // Spread sanity - allow very low spreads for major pairs like BTC
     checks.push({
       name: "spread_reasonable",
-      pass: input.brick1.spread_bps >= 0.1 && input.brick1.spread_bps <= 100,
+      pass: input.brick1.spread_bps >= 0 && input.brick1.spread_bps <= 100,
       detail: `Spread: ${input.brick1.spread_bps}bps`,
       value: input.brick1.spread_bps,
       threshold: 100
