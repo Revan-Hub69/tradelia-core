@@ -3,6 +3,7 @@ import type { MarketBias } from "./bias";
 export type WsHealth = "OK" | "DEGRADED" | "STALE";
 export type MarketSide = "LONG" | "SHORT";
 export type Regime4h = "TREND" | "RANGE" | "TRANSITION";
+export type EmaState = "aligned_strong" | "aligned_emerging" | "none";
 
 export function wsHealthFromAge(ageSec: number): WsHealth {
   if (!Number.isFinite(ageSec)) return "STALE";
@@ -19,6 +20,10 @@ export function healthMultiplier(health: WsHealth) {
 
 function clamp01(value: number) {
   return Math.max(0, Math.min(1, value));
+}
+
+function clamp100(value: number) {
+  return Math.max(0, Math.min(100, value));
 }
 
 function linScoreUpper(value: number, idealMax: number, hardMax: number) {
@@ -40,6 +45,18 @@ function logScore(value: number, maxValue: number) {
   const safeMax = Math.max(1, maxValue);
   const normalized = Math.log10(value + 1) / Math.log10(safeMax + 1);
   return clamp01(normalized);
+}
+
+function emaStateWeight(emaState: EmaState) {
+  if (emaState === "aligned_strong") return 1.0;
+  if (emaState === "aligned_emerging") return 0.65;
+  return 0;
+}
+
+function directionFactor(side: MarketSide, bias: MarketBias) {
+  if (bias === "NEUTRAL") return 0.65;
+  if (bias === "BULL") return side === "LONG" ? 1 : 0;
+  return side === "SHORT" ? 1 : 0;
 }
 
 export function tradeabilityScore(input: {
@@ -98,19 +115,52 @@ export function tradeabilityScore(input: {
   };
 }
 
-export function regimeMatchScore(side: MarketSide, regime: Regime4h, bias: MarketBias, stress: boolean) {
-  let base = 0;
+export function regimeMatchScore(input: {
+  side: MarketSide;
+  regime: Regime4h;
+  bias: MarketBias;
+  stress: boolean;
+  trendStrength: number;
+  rangeRatio: number;
+  emaState: EmaState;
+  atrPct4h: number;
+}) {
+  const trendStrength = Number.isFinite(input.trendStrength) ? input.trendStrength : 0;
+  const rangeRatio = Number.isFinite(input.rangeRatio) ? input.rangeRatio : 0;
+  const atrPct4h = Number.isFinite(input.atrPct4h) ? input.atrPct4h : 0;
 
-  if (regime === "TRANSITION") base = 10;
-  else if (regime === "RANGE") base = 30;
-  else {
-    if (bias === "BULL") base = side === "LONG" ? 85 : 15;
-    else if (bias === "BEAR") base = side === "SHORT" ? 85 : 15;
-    else base = 40;
+  const emaW = emaStateWeight(input.emaState);
+  const dirW = directionFactor(input.side, input.bias);
+
+  const trend01 = clamp01((trendStrength - 0.55) / (1.6 - 0.55));
+  const range01 = clamp01((rangeRatio - 2.0) / (10.0 - 2.0));
+
+  let baseStrength = 0;
+  let directionalMultiplier = 1;
+
+  if (input.regime === "TREND") {
+    baseStrength = 30 + 25 * emaW + 30 * trend01 + 15 * range01;
+    directionalMultiplier = 0.25 + 0.75 * dirW;
+  } else if (input.regime === "RANGE") {
+    const antiTrend01 = 1 - trend01;
+    const structure01 = 1 - emaW;
+    baseStrength = 35 + 40 * range01 + 15 * antiTrend01 + 10 * structure01;
+    directionalMultiplier = 0.85 + 0.15 * dirW;
+  } else {
+    const antiTrend01 = 1 - trend01;
+    const structure01 = 1 - emaW;
+    baseStrength = 15 + 20 * range01 + 10 * antiTrend01 + 10 * structure01;
+    directionalMultiplier = 0.9 + 0.1 * dirW;
   }
 
-  if (stress) base = Math.round(base * 0.6);
-  return Math.max(0, Math.min(100, base));
+  let score = clamp100(baseStrength * directionalMultiplier);
+
+  if (atrPct4h > 0 && atrPct4h < 0.35) score *= 0.85;
+  if (atrPct4h > 8.0) score *= 0.85;
+
+  if (input.stress) score *= 0.6;
+
+  return Math.round(clamp100(score));
 }
 
 export function totalScore(tradeability: number, match: number) {

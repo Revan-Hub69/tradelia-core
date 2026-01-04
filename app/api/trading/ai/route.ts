@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { getLocalGroqApiKey } from "@/lib/trading/local-secrets";
 import { isTradingEnabled } from "@/lib/trading/trading-enabled";
 
 export const runtime = "nodejs";
@@ -9,6 +10,32 @@ type TradingAiRequestBody = {
   goal?: unknown;
   packet?: unknown;
 };
+
+function isAllowedLocalHost(host: string | null) {
+  if (!host) return false;
+  const lower = host.toLowerCase();
+  return lower === "localhost" || lower === "127.0.0.1" || lower.startsWith("localhost:") || lower.startsWith("127.0.0.1:");
+}
+
+function isAllowedOrigin(origin: string | null) {
+  if (!origin) return false;
+  try {
+    const url = new URL(origin);
+    if (url.protocol !== "http:" && url.protocol !== "https:") return false;
+    return url.hostname === "localhost" || url.hostname === "127.0.0.1";
+  } catch {
+    return false;
+  }
+}
+
+function isLocalDevRequest(req: Request) {
+  if (process.env.NODE_ENV === "production") return false;
+  const hostOk = isAllowedLocalHost(req.headers.get("host"));
+  const originOk = isAllowedOrigin(req.headers.get("origin"));
+  const fetchSite = (req.headers.get("sec-fetch-site") ?? "").toLowerCase();
+  const sameOrigin = fetchSite === "" || fetchSite === "same-origin";
+  return hostOk && originOk && sameOrigin;
+}
 
 export async function POST(request: Request) {
   if (!isTradingEnabled()) return NextResponse.json({ error: "Trading disabled." }, { status: 404 });
@@ -26,7 +53,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "packet must be an object." }, { status: 400 });
   }
 
-  const apiKey = process.env.GROQ_API_KEY;
+  const localKey = isLocalDevRequest(request) ? getLocalGroqApiKey() : undefined;
+  const apiKey = localKey ?? process.env.GROQ_API_KEY;
   if (!apiKey) {
     return NextResponse.json({ error: "Missing GROQ_API_KEY." }, { status: 500 });
   }
@@ -86,6 +114,7 @@ export async function POST(request: Request) {
     const parsed = safeJsonParse(content);
     return NextResponse.json(
       {
+        keySource: localKey ? "local-file" : "env",
         model: completion.model,
         id: completion.id,
         created: completion.created,
@@ -163,4 +192,3 @@ function safeJsonParse(value: string): unknown | null {
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
-

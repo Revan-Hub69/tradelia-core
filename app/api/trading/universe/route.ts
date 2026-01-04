@@ -77,13 +77,19 @@ function sanitizeSymbol(value: string) {
 }
 
 function isStablecoinPair(symbol: string) {
-  return /^(USDC|FDUSD|TUSD|USDP|DAI|BUSD)USDT$/.test(symbol);
+  return /^(USDC|FDUSD|TUSD|USDP|DAI|BUSD|USD1|USDE|USDS|PYUSD)USDT$/.test(symbol);
 }
 
 function isLeveragedToken(symbol: string) {
   // Binance leveraged tokens often end with UP/DOWN, or include BULL/BEAR.
   // Examples: BTCUPUSDT, BTCDOWNUSDT
   return /^(.*)(UP|DOWN)USDT$/.test(symbol) || /^(.*)(BULL|BEAR)USDT$/.test(symbol);
+}
+
+function isStableLike(price: number, atrPct4h: number) {
+  if (!Number.isFinite(price) || price <= 0) return false;
+  if (!Number.isFinite(atrPct4h) || atrPct4h <= 0) return false;
+  return Math.abs(price - 1) <= 0.02 && atrPct4h < 0.2;
 }
 
 function lastCandleClose(candles: Candle[]) {
@@ -305,6 +311,12 @@ export async function GET(request: Request) {
 
     const reasons = { blocks: [] as ReasonCode[], warnings: [] as ReasonCode[], info: [] as ReasonCode[] };
 
+    if (isStableLike(close, atrPct4h)) {
+      reasons.blocks.push(ReasonCode.STABLECOIN_PAIR);
+      inc(blockedByReason, ReasonCode.STABLECOIN_PAIR);
+      continue;
+    }
+
     const wsPerSymbol = wsSnap.symbols?.[symbol];
     const wsHealth = wsPerSymbol ? wsHealthFromAge(wsPerSymbol.lastUpdateAgeSec) : "STALE";
     if (!wsPerSymbol) {
@@ -436,7 +448,16 @@ export async function GET(request: Request) {
     }
 
     const pushSide = (side: MarketSide) => {
-      const match = regimeMatchScore(side, regime.regime, bias, regime.stress);
+      const match = regimeMatchScore({
+        side,
+        regime: regime.regime,
+        bias,
+        stress: regime.stress,
+        trendStrength: regime.metrics.trendStrength,
+        rangeRatio: regime.metrics.rangeRatio,
+        emaState: regime.metrics.emaState,
+        atrPct4h,
+      });
       const total = totalScore(tradeability.score, match);
       const matchReason = side === "LONG" ? ReasonCode.REGIME_MATCH_LONG : ReasonCode.REGIME_MATCH_SHORT;
       if (total <= 0) return;

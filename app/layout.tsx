@@ -58,6 +58,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       className={`${sora.variable} ${fraunces.variable}`}
       data-theme="light"
       style={{ colorScheme: "light" }}
+      suppressHydrationWarning
     >
       <body className="bg-background text-foreground antialiased font-sans">
         <Script

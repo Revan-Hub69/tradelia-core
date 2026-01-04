@@ -14,7 +14,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --fix",
     "type-check": "tsc --noEmit",
-    "test": "node --import tsx --test tests/regime4h.test.ts",
+    "test": "node --import tsx --test tests/regime4h.test.ts tests/universe-score.test.ts",
     "validate": "npm run type-check && npm run lint",
     "clean": "rimraf .next"
   },

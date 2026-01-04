@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Trading Dashboard",
-  description: "Regime 4h deterministico, screener e configurazione locale.",
+  description: "Brick 1–2 (regime 4h + universe) con WS locale, AI vincolata e configurazione locale.",
 };
 
 export default function TradingDashboardPage() {
@@ -21,9 +21,9 @@ export default function TradingDashboardPage() {
           <header className="space-y-5">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Trading</p>
             <div className="space-y-2">
-              <h1 className="text-3xl font-semibold text-foreground sm:text-4xl">Regime (gate) + Screener</h1>
+              <h1 className="text-3xl font-semibold text-foreground sm:text-4xl">Trading (local-first)</h1>
               <p className="max-w-3xl text-base leading-relaxed text-muted-foreground">
-                Regime deterministico (4h) come gate, screener su watchlist e configurazione locale.
+                Brick 1–2: regime deterministico (4h) come gate + universe long/short (REST+WS) con output stabile per UX e AI.
               </p>
             </div>
             <div className="surface-divider h-px w-full" />

@@ -468,6 +468,11 @@ export function DashboardClient() {
   const [aiError, setAiError] = useState<string | null>(null);
   const [aiResult, setAiResult] = useState<unknown | null>(null);
   const [launchingWsDaemon, setLaunchingWsDaemon] = useState(false);
+  const [localSecretsPath, setLocalSecretsPath] = useState<string | null>(null);
+  const [hasLocalGroqKey, setHasLocalGroqKey] = useState<boolean | null>(null);
+  const [localGroqKeyDraft, setLocalGroqKeyDraft] = useState("");
+  const [savingLocalGroqKey, setSavingLocalGroqKey] = useState(false);
+  const [localGroqKeyError, setLocalGroqKeyError] = useState<string | null>(null);
 
   const normalizedSymbol = useMemo(() => symbol.trim().toUpperCase(), [symbol]);
 
@@ -560,6 +565,53 @@ export function DashboardClient() {
       restoreFocusRef.current?.focus();
     };
   }, [settingsOpen]);
+
+  const loadLocalSecretsStatus = useCallback(async () => {
+    setLocalGroqKeyError(null);
+    try {
+      const res = await fetch("/api/trading/local/secrets", { method: "GET", cache: "no-store" });
+      if (res.status === 404) {
+        setLocalSecretsPath(null);
+        setHasLocalGroqKey(null);
+        return;
+      }
+      const json = (await res.json().catch(() => ({}))) as any;
+      if (!res.ok) throw new Error(inferErrorMessage(json, "Impossibile leggere lo stato secrets."));
+      setLocalSecretsPath(typeof json.secretsPath === "string" ? json.secretsPath : null);
+      setHasLocalGroqKey(Boolean(json.hasGroqApiKey));
+    } catch (error) {
+      setLocalSecretsPath(null);
+      setHasLocalGroqKey(null);
+      setLocalGroqKeyError(error instanceof Error ? error.message : "Impossibile leggere lo stato secrets.");
+    }
+  }, []);
+
+  const saveLocalGroqKey = useCallback(async () => {
+    setSavingLocalGroqKey(true);
+    setLocalGroqKeyError(null);
+    try {
+      const res = await fetch("/api/trading/local/secrets", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ groqApiKey: localGroqKeyDraft }),
+      });
+      const json = (await res.json().catch(() => ({}))) as any;
+      if (!res.ok) throw new Error(inferErrorMessage(json, "Salvataggio secrets fallito."));
+      setLocalSecretsPath(typeof json.secretsPath === "string" ? json.secretsPath : null);
+      setHasLocalGroqKey(Boolean(json.hasGroqApiKey));
+      setLocalGroqKeyDraft("");
+      showCopyNotice("Groq key salvata (solo locale)");
+    } catch (error) {
+      setLocalGroqKeyError(error instanceof Error ? error.message : "Salvataggio secrets fallito.");
+    } finally {
+      setSavingLocalGroqKey(false);
+    }
+  }, [localGroqKeyDraft, showCopyNotice]);
+
+  useEffect(() => {
+    if (!settingsOpen) return;
+    void loadLocalSecretsStatus();
+  }, [loadLocalSecretsStatus, settingsOpen]);
 
   const parsedRegimeConfig = useMemo(() => parseRegimeConfigForm(regimeForm), [regimeForm]);
   const parsedScreenerConfig = useMemo(() => parseScreenerConfigForm(screenerForm), [screenerForm]);
@@ -888,8 +940,22 @@ export function DashboardClient() {
               >
                 {launchingWsDaemon ? "Avvio ws-daemon..." : "Avvia ws-daemon (CMD)"}
               </button>
+              <button
+                type="button"
+                className="btn-secondary px-3 py-1 text-[11px]"
+                onClick={() => void copyText("Comando", "npm run dev:local")}
+              >
+                Copia `npm run dev:local`
+              </button>
+              <button
+                type="button"
+                className="btn-secondary px-3 py-1 text-[11px]"
+                onClick={() => void copyText("Comando", "npm run ws:daemon")}
+              >
+                Copia `npm run ws:daemon`
+              </button>
               <details className="accordion">
-                <summary>Launcher (Windows)</summary>
+                <summary>Script .cmd (Windows)</summary>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <button
                     type="button"
@@ -1522,6 +1588,74 @@ export function DashboardClient() {
                 )}
 
                 <div className="space-y-10">
+                  {hasLocalGroqKey !== null && (
+                    <section className="space-y-4">
+                      <div className="space-y-1">
+                        <h3 className="text-sm font-semibold text-foreground">Groq key (solo locale)</h3>
+                        <p className="text-xs text-muted-foreground">
+                          Salvata su file locale e usata automaticamente da <code className="font-mono">/api/trading/ai</code> in dev.
+                        </p>
+                        {localSecretsPath && (
+                          <p className="text-xs text-muted-foreground">
+                            path: <code className="font-mono">{localSecretsPath}</code>
+                          </p>
+                        )}
+                        {localGroqKeyError && <p className="text-xs text-destructive">{localGroqKeyError}</p>}
+                      </div>
+
+                      <div className="grid gap-3">
+                        <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                          <span className="rounded-full border border-border bg-muted/20 px-3 py-1">
+                            stato: {hasLocalGroqKey ? "impostata" : "mancante"}
+                          </span>
+                          <button
+                            type="button"
+                            className="btn-secondary px-3 py-1 text-[11px]"
+                            onClick={() => void loadLocalSecretsStatus()}
+                          >
+                            Ricarica stato
+                          </button>
+                        </div>
+
+                        <label className="space-y-2">
+                          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Nuova key</span>
+                          <input
+                            type="password"
+                            className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground"
+                            value={localGroqKeyDraft}
+                            onChange={(event) => setLocalGroqKeyDraft(event.target.value)}
+                            placeholder="gsk_..."
+                            spellCheck={false}
+                          />
+                          <p className="text-xs text-muted-foreground">
+                            Lascia vuoto e salva per rimuovere la key locale (torna a <code className="font-mono">GROQ_API_KEY</code> env).
+                          </p>
+                        </label>
+
+                        <div className="flex flex-wrap gap-2">
+                          <button
+                            type="button"
+                            className="btn-primary px-4 py-2 text-xs"
+                            onClick={saveLocalGroqKey}
+                            disabled={savingLocalGroqKey}
+                          >
+                            {savingLocalGroqKey ? "Salvo..." : "Salva key locale"}
+                          </button>
+                          <button
+                            type="button"
+                            className="btn-secondary px-4 py-2 text-xs"
+                            onClick={() => {
+                              setLocalGroqKeyDraft("");
+                              setLocalGroqKeyError(null);
+                            }}
+                          >
+                            Reset
+                          </button>
+                        </div>
+                      </div>
+                    </section>
+                  )}
+
                   <section className="space-y-4">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                         <div className="space-y-1">
