@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { OverviewIcon, UniverseIcon, RegimeIcon, AIIcon, SettingsIcon, ChevronLeftIcon } from "@/components/icons/dashboard-icons";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const navigation = [
+  { name: "Homepage", href: "/", icon: OverviewIcon, current: false, external: true },
   { name: "Overview", href: "/dashboard/trading", icon: OverviewIcon, current: true },
   { name: "Universe", href: "/dashboard/trading#universe", icon: UniverseIcon, current: false },
   { name: "Regime", href: "/dashboard/trading#regime", icon: RegimeIcon, current: false },
@@ -110,7 +112,16 @@ export function Sidebar({ collapsed, onToggle, onOpenSettings }: SidebarProps) {
       </nav>
 
       {/* Footer */}
-      <div className="p-3 border-t border-border/50">
+      <div className="p-3 border-t border-border/50 space-y-3">
+        {/* Theme Toggle */}
+        <div className={`flex items-center ${collapsed ? 'justify-center' : 'justify-between'}`}>
+          {!collapsed && (
+            <span className="text-xs text-muted-foreground">Tema</span>
+          )}
+          <ThemeToggle />
+        </div>
+        
+        {/* User Profile */}
         <div className={`flex items-center ${collapsed ? 'justify-center' : 'space-x-2'}`}>
           <div className="w-6 h-6 bg-muted/30 rounded-full flex items-center justify-center border border-border/50">
             <span className="text-xs font-medium text-muted-foreground">U</span>

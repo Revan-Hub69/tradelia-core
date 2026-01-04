@@ -17,6 +17,11 @@ interface HealthStatus {
       ms: number;
       error?: string;
     };
+    binance_ws: {
+      ok: boolean;
+      ms: number;
+      error?: string;
+    };
     groq_env: {
       ok: boolean;
     };
@@ -304,6 +309,27 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                         {healthStatus.services.binance_rest.ok && (
                           <span className="text-xs text-muted-foreground">
                             {healthStatus.services.binance_rest.ms}ms
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-3 bg-muted/30 rounded border border-border/50">
+                      <div>
+                        <p className="text-sm font-medium text-foreground">Binance WebSocket</p>
+                        <p className="text-xs text-muted-foreground">Real-time data stream</p>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium border ${
+                          healthStatus.services.binance_ws.ok
+                            ? "bg-status-ok/20 text-status-ok border-status-ok/30"
+                            : "bg-status-risk/20 text-status-risk border-status-risk/30"
+                        }`}>
+                          {healthStatus.services.binance_ws.ok ? "Connected" : "Disconnected"}
+                        </span>
+                        {healthStatus.services.binance_ws.ok && (
+                          <span className="text-xs text-muted-foreground">
+                            {healthStatus.services.binance_ws.ms}ms
                           </span>
                         )}
                       </div>

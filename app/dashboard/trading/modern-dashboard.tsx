@@ -3,9 +3,10 @@
 import { useCallback, useEffect, useState } from "react";
 import React from "react";
 import { Card, StatCard } from "@/components/dashboard/card";
+import { Drawer } from "@/components/dashboard/drawer";
+import { EnhancedTable } from "@/components/dashboard/enhanced-table";
 import { OverviewIcon, UniverseIcon, RegimeIcon, RefreshIcon } from "@/components/icons/dashboard-icons";
 import { AIAnalysis } from "./ai-analysis";
-import { EnhancedTable } from "@/components/dashboard/enhanced-table";
 
 // Types (same as before)
 type Regime4h = "TREND" | "RANGE" | "TRANSITION";
@@ -90,6 +91,82 @@ function getRegimeBadge(regime: Regime4h) {
     <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium border ${styles[regime]}`}>
       {regime}
     </span>
+  );
+}
+
+// Compact Universe Card Component
+function CompactUniverseCard({ 
+  candidates, 
+  title, 
+  type 
+}: { 
+  candidates: UniverseCandidate[]; 
+  title: string; 
+  type: "long" | "short";
+}) {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  
+  const topCandidates = candidates.slice(0, 3);
+  const hasMore = candidates.length > 3;
+
+  return (
+    <>
+      <Card 
+        title={title} 
+        subtitle={`${candidates.length} candidates`}
+        actions={
+          <button
+            onClick={() => setDrawerOpen(true)}
+            className="rounded bg-foreground px-3 py-2 text-xs font-medium text-background hover:bg-foreground/90 transition-subtle"
+          >
+            Espandi Tabella
+          </button>
+        }
+      >
+        <div className="space-y-2">
+          {topCandidates.map((candidate, index) => (
+            <div key={candidate.symbol} className="flex items-center justify-between p-2 bg-muted/20 rounded border border-border/30">
+              <div className="flex items-center space-x-3">
+                <div className="text-xs text-muted-foreground w-4">#{index + 1}</div>
+                <div>
+                  <div className="text-sm font-medium text-foreground">{candidate.symbol}</div>
+                  <div className="text-xs text-muted-foreground">${formatNumber(candidate.htf.price)}</div>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2">
+                {getRegimeBadge(candidate.htf.regime)}
+                <div className="text-xs font-medium text-foreground">
+                  {candidate.scores.total}
+                </div>
+              </div>
+            </div>
+          ))}
+          
+          {hasMore && (
+            <div className="text-center pt-2">
+              <button
+                onClick={() => setDrawerOpen(true)}
+                className="text-xs text-primary hover:text-primary/80 transition-subtle"
+              >
+                +{candidates.length - 3} altri candidati
+              </button>
+            </div>
+          )}
+        </div>
+      </Card>
+
+      <Drawer 
+        open={drawerOpen} 
+        onClose={() => setDrawerOpen(false)} 
+        title={`${title} - Analisi Completa`}
+      >
+        <EnhancedTable 
+          candidates={candidates} 
+          title={title} 
+          defaultMode="detailed"
+        />
+      </Drawer>
+    </>
   );
 }
 
@@ -289,15 +366,15 @@ export function ModernDashboard() {
       {/* Universe Tables */}
       {universe && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-          <EnhancedTable 
+          <CompactUniverseCard 
             candidates={universe.long} 
             title="Long Opportunities" 
-            defaultMode="comfortable"
+            type="long"
           />
-          <EnhancedTable 
+          <CompactUniverseCard 
             candidates={universe.short} 
             title="Short Opportunities" 
-            defaultMode="comfortable"
+            type="short"
           />
         </div>
       )}
