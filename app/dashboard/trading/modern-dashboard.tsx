@@ -77,6 +77,33 @@ type UniverseData = {
   short: UniverseCandidate[];
 };
 
+// Setup Engine Response Type (BRICK 3)
+type SetupEngineResponse = {
+  symbol: string;
+  timestamp: number;
+  status: "SETUP_FOUND" | "NO_SETUP" | "BLOCKED" | "REVIEW";
+  setup: {
+    setupId: string;
+    setupType: string;
+    direction: "LONG" | "SHORT";
+    entry: { type: string; price: number; ttlSeconds: number };
+    stop: { type: string; price: number; reasoning: string };
+    targets: { primary: { price: number; reasoning: string }; secondary?: { price: number; reasoning: string } };
+    riskReward: { ratio: number; riskBps: number; rewardBps: number };
+    score: { total: number; confidence: string; contributions: Array<{ factor: string; contribution: number }> };
+    evidence: Array<{ type: string; description: string; value: number }>;
+  } | null;
+  analysis: {
+    regime: { type: string; strength: number; direction: string; stress: boolean };
+    structure: { swingHigh: number; swingLow: number; nearestResistance: number; nearestSupport: number };
+    l2Summary: { imbalance5bps: number; imbalance10bps: number; voidScore: number; liquidityStress: string };
+    tapeSummary: { cvd5m: number; slope5m: number; aggressionRatio: number; divergence: boolean; exhaustion: boolean };
+    gate: { status: string; whyNotTrade: string[]; passedGates: string[]; failedGates: string[] };
+  };
+  reasons: string[];
+  meta: { wsConnected: boolean; wsHealth: string; tradesCount: number; depthLevels: number };
+};
+
 // Utility functions
 function formatNumber(value: number): string {
   if (!Number.isFinite(value)) return "-";
@@ -131,15 +158,175 @@ function WsHealthIndicator({ wsHealth, source }: { wsHealth?: UniverseData['wsHe
   );
 }
 
+// Setup Analysis Drawer Content (BRICK 3)
+function SetupAnalysisContent({ 
+  data, 
+  loading, 
+  error 
+}: { 
+  data: SetupEngineResponse | null; 
+  loading: boolean; 
+  error: string | null;
+}) {
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-sm text-muted-foreground">Analisi in corso...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-4 rounded border border-status-risk/30 bg-status-risk/10">
+        <p className="text-sm text-status-risk">{error}</p>
+      </div>
+    );
+  }
+
+  if (!data) return null;
+
+  const statusColors = {
+    SETUP_FOUND: "bg-status-ok/20 text-status-ok border-status-ok/30",
+    NO_SETUP: "bg-muted/30 text-muted-foreground border-border/50",
+    BLOCKED: "bg-status-risk/20 text-status-risk border-status-risk/30",
+    REVIEW: "bg-status-attention/20 text-status-attention border-status-attention/30",
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Status Header */}
+      <div className="flex items-center justify-between p-3 rounded border border-border/50 bg-muted/10">
+        <div className="flex items-center gap-3">
+          <span className={`px-2 py-1 rounded text-xs font-medium border ${statusColors[data.status]}`}>
+            {data.status.replace("_", " ")}
+          </span>
+          <span className="text-sm font-medium text-foreground">{data.symbol}</span>
+        </div>
+        <span className="text-xs text-muted-foreground">
+          {new Date(data.timestamp).toLocaleTimeString()}
+        </span>
+      </div>
+
+      {/* Setup Details (if found) */}
+      {data.setup && (
+        <div className="space-y-3">
+          <div className="p-4 rounded border border-border/50 bg-background">
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-3">Setup</p>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-xs text-muted-foreground">Tipo</p>
+                <p className="text-sm font-medium text-foreground">{data.setup.setupType} {data.setup.direction}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Score</p>
+                <p className="text-sm font-medium text-foreground">{data.setup.score.total} ({data.setup.score.confidence})</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Entry</p>
+                <p className="text-sm font-medium text-foreground">${data.setup.entry.price.toFixed(2)}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Stop</p>
+                <p className="text-sm font-medium text-foreground">${data.setup.stop.price.toFixed(2)}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Target</p>
+                <p className="text-sm font-medium text-foreground">${data.setup.targets.primary.price.toFixed(2)}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">R:R</p>
+                <p className="text-sm font-medium text-foreground">{data.setup.riskReward.ratio.toFixed(2)}:1</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Score Contributions */}
+          <div className="p-4 rounded border border-border/50 bg-background">
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-3">Score Breakdown</p>
+            <div className="space-y-2">
+              {data.setup.score.contributions.map((c, i) => (
+                <div key={i} className="flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground">{c.factor}</span>
+                  <span className={`font-medium ${c.contribution >= 0 ? 'text-status-ok' : 'text-status-risk'}`}>
+                    {c.contribution >= 0 ? '+' : ''}{c.contribution.toFixed(1)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Analysis Summary */}
+      <div className="grid grid-cols-2 gap-3">
+        <div className="p-3 rounded border border-border/50 bg-background">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2">Regime</p>
+          <p className="text-sm font-medium text-foreground">{data.analysis.regime.type}</p>
+          <p className="text-xs text-muted-foreground">
+            {data.analysis.regime.direction} • {(data.analysis.regime.strength * 100).toFixed(0)}%
+          </p>
+        </div>
+        <div className="p-3 rounded border border-border/50 bg-background">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2">L2</p>
+          <p className="text-sm font-medium text-foreground">{data.analysis.l2Summary.liquidityStress}</p>
+          <p className="text-xs text-muted-foreground">
+            Imb: {(data.analysis.l2Summary.imbalance10bps * 100).toFixed(1)}%
+          </p>
+        </div>
+        <div className="p-3 rounded border border-border/50 bg-background">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2">Tape</p>
+          <p className="text-sm font-medium text-foreground">
+            CVD: {data.analysis.tapeSummary.slope5m > 0 ? '↑' : '↓'}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Aggr: {(data.analysis.tapeSummary.aggressionRatio * 100).toFixed(0)}%
+          </p>
+        </div>
+        <div className="p-3 rounded border border-border/50 bg-background">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2">Gate</p>
+          <p className="text-sm font-medium text-foreground">{data.analysis.gate.status}</p>
+          <p className="text-xs text-muted-foreground">
+            {data.analysis.gate.passedGates.length}/{data.analysis.gate.passedGates.length + data.analysis.gate.failedGates.length} passed
+          </p>
+        </div>
+      </div>
+
+      {/* Reasons */}
+      {data.reasons.length > 0 && (
+        <div className="p-4 rounded border border-border/50 bg-background">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2">Reasoning</p>
+          <ul className="space-y-1">
+            {data.reasons.map((reason, i) => (
+              <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-foreground/30" />
+                {reason}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Meta */}
+      <div className="flex items-center justify-between text-xs text-muted-foreground p-2 bg-muted/10 rounded">
+        <span>WS: {data.meta.wsConnected ? data.meta.wsHealth : 'Disconnected'}</span>
+        <span>{data.meta.tradesCount} trades • {data.meta.depthLevels} levels</span>
+      </div>
+    </div>
+  );
+}
+
 // Compact Universe Card Component
 function CompactUniverseCard({ 
   candidates, 
   title, 
-  type: _type 
+  type: _type,
+  onCandidateClick
 }: { 
   candidates: UniverseCandidate[]; 
   title: string; 
   type: "long" | "short";
+  onCandidateClick: (candidate: UniverseCandidate) => void;
 }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   
@@ -162,7 +349,11 @@ function CompactUniverseCard({
       >
         <div className="space-y-2">
           {topCandidates.map((candidate, index) => (
-            <div key={candidate.symbol} className="flex items-center justify-between p-2 bg-muted/20 rounded border border-border/30">
+            <div 
+              key={candidate.symbol} 
+              className="flex items-center justify-between p-2 bg-muted/20 rounded border border-border/30 cursor-pointer hover:bg-muted/40 transition-subtle"
+              onClick={() => onCandidateClick(candidate)}
+            >
               <div className="flex items-center space-x-3">
                 <div className="text-xs text-muted-foreground w-4">#{index + 1}</div>
                 <div>
@@ -202,6 +393,10 @@ function CompactUniverseCard({
           candidates={candidates} 
           title={title} 
           defaultMode="detailed"
+          onCandidateClick={(c) => {
+            setDrawerOpen(false);
+            onCandidateClick(c);
+          }}
         />
       </Drawer>
     </>
@@ -281,6 +476,13 @@ export function ModernDashboard() {
   const [regime, setRegime] = useState<RegimeOutput | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  // BRICK 3: Setup Analysis State
+  const [setupDrawerOpen, setSetupDrawerOpen] = useState(false);
+  const [selectedCandidate, setSelectedCandidate] = useState<UniverseCandidate | null>(null);
+  const [setupData, setSetupData] = useState<SetupEngineResponse | null>(null);
+  const [setupLoading, setSetupLoading] = useState(false);
+  const [setupError, setSetupError] = useState<string | null>(null);
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -319,6 +521,32 @@ export function ModernDashboard() {
       setLoading(false);
     }
   }, [symbol]);
+
+  // BRICK 3: Load setup analysis for selected candidate
+  const loadSetupAnalysis = useCallback(async (candidate: UniverseCandidate) => {
+    setSelectedCandidate(candidate);
+    setSetupDrawerOpen(true);
+    setSetupLoading(true);
+    setSetupError(null);
+    setSetupData(null);
+    
+    try {
+      const setupUrl = new URL(`/api/trading/setup/${candidate.symbol}`, window.location.origin);
+      const res = await fetch(setupUrl.toString());
+      
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP ${res.status}`);
+      }
+      
+      const data = await res.json();
+      setSetupData(data);
+    } catch (err) {
+      setSetupError(err instanceof Error ? err.message : "Failed to load setup analysis");
+    } finally {
+      setSetupLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     loadData();
@@ -437,14 +665,30 @@ export function ModernDashboard() {
             candidates={universe.long} 
             title="Long Opportunities" 
             type="long"
+            onCandidateClick={loadSetupAnalysis}
           />
           <CompactUniverseCard 
             candidates={universe.short} 
             title="Short Opportunities" 
             type="short"
+            onCandidateClick={loadSetupAnalysis}
           />
         </div>
       )}
+
+      {/* BRICK 3: Setup Analysis Drawer */}
+      <Drawer
+        open={setupDrawerOpen}
+        onClose={() => setSetupDrawerOpen(false)}
+        title={selectedCandidate ? `Setup Analysis - ${selectedCandidate.symbol}` : "Setup Analysis"}
+        size="wide"
+      >
+        <SetupAnalysisContent 
+          data={setupData} 
+          loading={setupLoading} 
+          error={setupError} 
+        />
+      </Drawer>
     </div>
   );
 }

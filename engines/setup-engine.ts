@@ -388,6 +388,7 @@ export function runSetupEngine(input: SetupEngineInput): SetupEngineOutput {
   
   // 4. Run gates
   const gateResult = runGates({
+    symbol: input.symbol,
     spreadBps: input.spreadBps,
     l2Quality: l2Analysis.quality,
     tapeQuality: tapeAnalysis.quality,
@@ -408,7 +409,7 @@ export function runSetupEngine(input: SetupEngineInput): SetupEngineOutput {
     };
   }
   
-  // 6. Detect setup type
+  // 5. Detect setup type
   const setupTypeResult = detectSetupType(
     input.regime,
     input.structure,
@@ -429,7 +430,7 @@ export function runSetupEngine(input: SetupEngineInput): SetupEngineOutput {
     };
   }
   
-  // 7. Calculate entry/stop/targets
+  // 6. Calculate entry/stop/targets
   const entry = calculateEntry(
     setupTypeResult.type,
     setupTypeResult.direction,
@@ -455,12 +456,12 @@ export function runSetupEngine(input: SetupEngineInput): SetupEngineOutput {
     input.structure
   );
   
-  // 8. Calculate R:R
+  // 7. Calculate R:R
   const riskBps = Math.abs(entry.price - stop.price) / entry.price * 10000;
   const rewardBps = Math.abs(targets.primary.price - entry.price) / entry.price * 10000;
   const ratio = rewardBps / riskBps;
   
-  // 9. Validate R:R
+  // 8. Validate R:R
   const minRR = getMinRiskReward(setupTypeResult.type);
   if (ratio < minRR) {
     reasons.push(`R:R ${ratio.toFixed(2)} below minimum ${minRR} for ${setupTypeResult.type}`);
@@ -473,7 +474,7 @@ export function runSetupEngine(input: SetupEngineInput): SetupEngineOutput {
     };
   }
   
-  // 10. Calculate score
+  // 9. Calculate score
   const scoringInput: ScoringInput = {
     setupType: setupTypeResult.type,
     direction: setupTypeResult.direction,
@@ -492,7 +493,7 @@ export function runSetupEngine(input: SetupEngineInput): SetupEngineOutput {
   
   const score = calculateSetupScore(scoringInput);
   
-  // 11. Build setup candidate
+  // 10. Build setup candidate
   const setupId = generateSetupId(
     input.symbol,
     setupTypeResult.type,

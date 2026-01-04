@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import React from "react";
-import { fmtBps, fmtPctChange, fmtTimeAgo, fmtScore } from "@/lib/utils/formatting";
+import { fmtBps, fmtTimeAgo } from "@/lib/utils/formatting";
 import { Card } from "./card";
 
 // Types
@@ -77,26 +77,6 @@ function formatNumber(value: number): string {
 function formatBps(value: number | null | undefined): string {
   if (typeof value !== "number" || !Number.isFinite(value)) return "—";
   return `${fmtBps(value)}bps`;
-}
-
-function formatChange(value: number | null | undefined): JSX.Element {
-  if (typeof value !== "number" || !Number.isFinite(value)) {
-    return <span className="text-muted-foreground">—</span>;
-  }
-  
-  const formatted = fmtPctChange(value);
-  const isPositive = value > 0;
-  const isNegative = value < 0;
-  
-  return (
-    <span className={`${
-      isPositive ? 'text-status-ok' : 
-      isNegative ? 'text-status-risk' : 
-      'text-muted-foreground'
-    }`}>
-      {isPositive ? '+' : ''}{formatted}
-    </span>
-  );
 }
 
 function getRegimeBadge(regime: "TREND" | "RANGE" | "TRANSITION") {
@@ -184,13 +164,15 @@ interface EnhancedTableProps {
   title: string;
   defaultMode?: TableViewMode;
   excluded?: ExcludedSummary;
+  onCandidateClick?: (candidate: UniverseCandidate) => void;
 }
 
 export function EnhancedTable({ 
   candidates, 
   title, 
   defaultMode = 'comfortable',
-  excluded
+  excluded,
+  onCandidateClick
 }: EnhancedTableProps) {
   const [viewMode, setViewMode] = useState<TableViewMode>(defaultMode);
   const [showAll, setShowAll] = useState(false);
@@ -421,7 +403,10 @@ export function EnhancedTable({
               const isRowExpanded = expandedRows.has(candidate.symbol);
               return (
                 <React.Fragment key={candidate.symbol}>
-                  <tr className={`hover:bg-muted/20 transition-subtle ${config.rowHeight}`}>
+                  <tr 
+                    className={`hover:bg-muted/20 transition-subtle ${config.rowHeight} ${onCandidateClick ? 'cursor-pointer' : ''}`}
+                    onClick={() => onCandidateClick?.(candidate)}
+                  >
                     {config.columns.map((column) => (
                       <td key={column} className="px-3 py-2 whitespace-nowrap">
                         {renderCell(candidate, column)}
