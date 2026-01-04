@@ -388,7 +388,6 @@ export function runSetupEngine(input: SetupEngineInput): SetupEngineOutput {
   
   // 4. Run gates
   const gateResult = runGates({
-    symbol: input.symbol,
     spreadBps: input.spreadBps,
     l2Quality: l2Analysis.quality,
     tapeQuality: tapeAnalysis.quality,
