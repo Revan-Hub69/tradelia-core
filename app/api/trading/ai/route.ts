@@ -31,7 +31,8 @@ function isAllowedOrigin(origin: string | null) {
 function isLocalDevRequest(req: Request) {
   if (process.env.NODE_ENV === "production") return false;
   const hostOk = isAllowedLocalHost(req.headers.get("host"));
-  const originOk = isAllowedOrigin(req.headers.get("origin"));
+  const origin = req.headers.get("origin");
+  const originOk = origin === null || origin === "" ? true : isAllowedOrigin(origin);
   const fetchSite = (req.headers.get("sec-fetch-site") ?? "").toLowerCase();
   const sameOrigin = fetchSite === "" || fetchSite === "same-origin";
   return hostOk && originOk && sameOrigin;
