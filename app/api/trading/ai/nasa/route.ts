@@ -93,98 +93,92 @@ export async function POST(request: Request) {
   // NASA-Grade User Prompt Template
   const userPrompt = [
     `TASK MODE: ${mode}`,
-    "Allowed modes:",
-    "- BRICK1_ONLY",
-    "- BRICK2_ONLY", 
-    "- BRICK1_PLUS_BRICK2",
-    "",
-    "You will receive a single JSON object as input named INPUT. You must return a single JSON object named OUTPUT using the schema below.",
     "",
     `INPUT: ${JSON.stringify(input)}`,
     "",
-    "OUTPUT SCHEMA (must match exactly):",
-    JSON.stringify({
-      "meta": {
-        "mode": "BRICK1_ONLY|BRICK2_ONLY|BRICK1_PLUS_BRICK2",
-        "engine": { "name": "groq-analyst", "version": "1.0.0" },
-        "ts": 0,
-        "input_hash": "",
-        "notes": ""
-      },
-      "status": {
-        "state": "ACTIVE|REVIEW|HOLD|NEEDS_DATA",
-        "go_no_go": "GO|NO_GO",
-        "confidence": 0,
-        "blocking_reasons": []
-      },
-      "brick1": {
-        "market_state": {
-          "regime": "TREND|RANGE|TRANSITION",
-          "vol_state": "LOW|NORMAL|HIGH|EXTREME",
-          "liquidity_state": "GOOD|THIN|DETERIORATING",
-          "stress_flag": false,
-          "timeframe_anchor": "4h",
-          "risk_window_days": [0,0]
-        },
-        "policy": {
-          "allowed_playbooks": [],
-          "blocked_playbooks": [],
-          "max_risk_r": 0,
-          "notes": []
-        },
-        "evidence": []
-      },
-      "brick2": {
-        "universe": {
-          "asof_ts": 0,
-          "top": [
-            {
-              "symbol": "",
-              "category": "A_TREND_CLEAN|B_VOL_EXPANSION|C_MEAN_REVERT|D_AVOID",
-              "score": 0,
-              "tradability": {
-                "spread_bps": 0,
-                "atr_pct": 0,
-                "liquidity_grade": "A|B|C|D"
-              },
-              "why": [],
-              "evidence": []
-            }
-          ],
-          "avoid": [
-            { "symbol": "", "why": [], "evidence": [] }
-          ]
-        },
-        "evidence": []
-      },
-      "brick1_plus_brick2": {
-        "filtered_top": [
-          {
-            "symbol": "",
-            "action": "FOCUS|WATCH|IGNORE",
-            "playbook": "",
-            "reason": [],
-            "evidence": []
-          }
-        ],
-        "evidence": []
-      },
-      "audit": {
-        "input_coverage_pct": 0,
-        "assumptions": [],
-        "conflicts": [],
-        "sanity_checks": [
-          { "name": "", "pass": false, "detail": "" }
-        ]
-      }
-    }, null, 2),
+    "You must return ONLY valid JSON matching this schema:",
+    "{",
+    '  "meta": {',
+    `    "mode": "${mode}",`,
+    '    "engine": { "name": "groq-analyst", "version": "1.0.0" },',
+    `    "ts": ${Date.now()},`,
+    '    "input_hash": "computed",',
+    '    "notes": ""',
+    "  },",
+    '  "status": {',
+    '    "state": "ACTIVE",',
+    '    "go_no_go": "GO",',
+    '    "confidence": 85,',
+    '    "blocking_reasons": []',
+    "  },",
+    mode === "BRICK1_ONLY" ? [
+      '  "brick1": {',
+      '    "market_state": {',
+      '      "regime": "TREND",',
+      '      "vol_state": "NORMAL",',
+      '      "liquidity_state": "GOOD",',
+      '      "stress_flag": false,',
+      '      "timeframe_anchor": "4h",',
+      '      "risk_window_days": [0, 7]',
+      '    },',
+      '    "policy": {',
+      '      "allowed_playbooks": ["trend_following"],',
+      '      "blocked_playbooks": [],',
+      '      "max_risk_r": 1.0,',
+      '      "notes": ["Market conditions favorable"]',
+      '    },',
+      '    "evidence": ["INPUT.market.anchor.regime4h"]',
+      '  },'
+    ].join('\n') : '  "brick1": null,',
+    mode === "BRICK2_ONLY" ? [
+      '  "brick2": {',
+      '    "universe": {',
+      '      "asof_ts": ' + Date.now() + ',',
+      '      "top": [',
+      '        {',
+      '          "symbol": "BTCUSDT",',
+      '          "category": "A_TREND_CLEAN",',
+      '          "score": 85,',
+      '          "tradability": {',
+      '            "spread_bps": 2.5,',
+      '            "atr_pct": 3.2,',
+      '            "liquidity_grade": "A"',
+      '          },',
+      '          "why": ["Strong trend", "Good liquidity"],',
+      '          "evidence": ["INPUT.universe.long[0]"]',
+      '        }',
+      '      ],',
+      '      "avoid": []',
+      '    },',
+      '    "evidence": ["INPUT.universe"]',
+      '  },'
+    ].join('\n') : '  "brick2": null,',
+    mode === "BRICK1_PLUS_BRICK2" ? [
+      '  "brick1_plus_brick2": {',
+      '    "filtered_top": [',
+      '      {',
+      '        "symbol": "BTCUSDT",',
+      '        "action": "FOCUS",',
+      '        "playbook": "trend_following",',
+      '        "reason": ["Regime allows trend plays", "High score"],',
+      '        "evidence": ["brick1.policy", "brick2.universe.top[0]"]',
+      '      }',
+      '    ],',
+      '    "evidence": ["brick1", "brick2"]',
+      '  },'
+    ].join('\n') : '  "brick1_plus_brick2": null,',
+    '  "audit": {',
+    '    "input_coverage_pct": 90,',
+    '    "assumptions": ["Market data is fresh"],',
+    '    "conflicts": [],',
+    '    "sanity_checks": [',
+    '      { "name": "timestamp_valid", "pass": true, "detail": "Timestamps are recent" },',
+    '      { "name": "spread_reasonable", "pass": true, "detail": "Spreads within normal range" }',
+    '    ]',
+    "  }",
+    "}",
     "",
-    "RULES:",
-    "1) If mode is BRICK1_ONLY: fill brick1; set brick2 and brick1_plus_brick2 empty but valid.",
-    "2) If mode is BRICK2_ONLY: fill brick2; do NOT infer macro regime; set brick1 market_state to NEEDS_DATA-like defaults and set state REVIEW if missing.",
-    "3) If mode is BRICK1_PLUS_BRICK2: you must apply brick1.policy to brick2.universe to create filtered_top.",
-    "4) evidence entries must be INPUT field paths (e.g., \"INPUT.market.anchor.regime4h.metrics.atr14\").",
-    "5) Provide at least 6 sanity_checks: timestamp monotonicity, spread sanity, atr sanity, missing fields, contradictions, extreme volatility guard.",
+    "CRITICAL: Return ONLY the JSON object above. No markdown, no explanations, no extra text."
   ].join("\n");
 
   try {

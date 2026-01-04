@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import React from "react";
 import { Card } from "./card";
 
@@ -309,13 +309,13 @@ export function EnhancedTable({
       }
     >
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-border/30">
+        <table className="w-full divide-y divide-border/30" style={{ minWidth: '700px' }}>
           <thead className="bg-muted/30">
             <tr>
               {config.columns.map((column) => (
                 <th 
                   key={column}
-                  className="px-2 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide"
+                  className="px-3 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide whitespace-nowrap"
                 >
                   {getColumnHeader(column)}
                 </th>
@@ -329,14 +329,14 @@ export function EnhancedTable({
                 <React.Fragment key={candidate.symbol}>
                   <tr className={`hover:bg-muted/20 transition-subtle ${config.rowHeight}`}>
                     {config.columns.map((column) => (
-                      <td key={column} className="px-2 py-2 whitespace-nowrap">
+                      <td key={column} className="px-3 py-2 whitespace-nowrap">
                         {renderCell(candidate, column)}
                       </td>
                     ))}
                   </tr>
                   {isRowExpanded && (
                     <tr>
-                      <td colSpan={config.columns.length} className="px-2 py-3 bg-muted/10">
+                      <td colSpan={config.columns.length} className="px-3 py-3 bg-muted/10">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                           <div>
                             <h4 className="font-medium text-foreground mb-2">Reasons</h4>

@@ -28,7 +28,7 @@ export function Drawer({
         className="absolute inset-0 bg-background/90 backdrop-blur-sm"
         onClick={onClose}
       />
-      <aside className="absolute right-0 top-0 h-full w-full sm:w-[600px] bg-card border-l border-border/50 shadow-2xl flex flex-col">
+      <aside className="absolute right-0 top-0 h-full w-full sm:w-[800px] lg:w-[900px] xl:w-[1000px] bg-card border-l border-border/50 shadow-2xl flex flex-col">
         <header className="p-4 border-b border-border/50 flex items-center justify-between bg-muted/20">
           <h3 className="text-base font-semibold text-foreground tracking-tight">{title}</h3>
           <button

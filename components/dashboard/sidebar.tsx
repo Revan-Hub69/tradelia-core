@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { OverviewIcon, UniverseIcon, RegimeIcon, AIIcon, SettingsIcon, ChevronLeftIcon } from "@/components/icons/dashboard-icons";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { ThemeToggleCompact } from "./theme-toggle-compact";
 
 const navigation = [
   { name: "Homepage", href: "/", icon: OverviewIcon, current: false, external: true },
@@ -118,7 +118,7 @@ export function Sidebar({ collapsed, onToggle, onOpenSettings }: SidebarProps) {
           {!collapsed && (
             <span className="text-xs text-muted-foreground">Tema</span>
           )}
-          <ThemeToggle />
+          <ThemeToggleCompact />
         </div>
         
         {/* User Profile */}
