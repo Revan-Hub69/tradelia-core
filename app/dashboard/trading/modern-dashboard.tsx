@@ -51,6 +51,8 @@ type UniverseCandidate = {
   };
 };
 
+type WsHealth = "OK" | "DEGRADED" | "STALE";
+
 type UniverseData = {
   meta: {
     ts: number;
@@ -64,6 +66,12 @@ type UniverseData = {
       regime4h: RegimeOutput | null;
       bias: "BULL" | "BEAR" | "NEUTRAL";
     };
+  };
+  wsHealth?: {
+    connected: boolean;
+    health: WsHealth;
+    lastMessageAgeSec: number;
+    symbolCount: number;
   };
   long: UniverseCandidate[];
   short: UniverseCandidate[];
@@ -91,6 +99,35 @@ function getRegimeBadge(regime: Regime4h) {
     <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium border ${styles[regime]}`}>
       {regime}
     </span>
+  );
+}
+
+// WS Health Indicator Component
+function WsHealthIndicator({ wsHealth, source }: { wsHealth?: UniverseData['wsHealth']; source: string }) {
+  const getHealthColor = (health?: WsHealth) => {
+    if (!health) return "bg-muted/30 text-muted-foreground";
+    const colors = {
+      OK: "bg-status-ok/20 text-status-ok",
+      DEGRADED: "bg-status-attention/20 text-status-attention",
+      STALE: "bg-status-risk/20 text-status-risk"
+    };
+    return colors[health];
+  };
+
+  const isWsActive = source === "rest+ws" && wsHealth?.connected;
+  const healthStatus = wsHealth?.health || (source === "rest" ? "REST" : "UNKNOWN");
+
+  return (
+    <div className="flex items-center gap-2 text-xs">
+      <span className={`px-2 py-1 rounded font-medium ${getHealthColor(wsHealth?.health)}`}>
+        {isWsActive ? `WS ${healthStatus}` : "REST ONLY"}
+      </span>
+      {wsHealth && (
+        <span className="text-muted-foreground">
+          {wsHealth.symbolCount} symbols • {wsHealth.lastMessageAgeSec.toFixed(1)}s ago
+        </span>
+      )}
+    </div>
   );
 }
 
@@ -258,6 +295,18 @@ export function ModernDashboard() {
       if (!universeRes.ok) throw new Error("Failed to load universe data");
       
       const universeData = await universeRes.json();
+      
+      // Map wsHealth from API response
+      if (universeData.market?.quality?.ws) {
+        const ws = universeData.market.quality.ws;
+        universeData.wsHealth = {
+          connected: ws.available,
+          health: ws.health,
+          lastMessageAgeSec: ws.lastMessageAgeSec,
+          symbolCount: universeData.meta?.topN || 0
+        };
+      }
+      
       setUniverse(universeData);
       
       if (universeData.market?.anchor?.regime4h) {
@@ -324,30 +373,47 @@ export function ModernDashboard() {
 
       {/* Stats Overview */}
       {universe && (
-        <div id="universe" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-          <StatCard
-            title="Anchor Symbol"
-            value={universe.market.anchor.symbol}
-            change={universe.market.anchor.bias}
-            changeType={universe.market.anchor.bias === "BULL" ? "positive" : universe.market.anchor.bias === "BEAR" ? "negative" : "neutral"}
-            icon={<OverviewIcon size={20} className="text-muted-foreground" />}
-          />
-          <StatCard
-            title="Long Candidates"
-            value={universe.long.length}
-            icon={<RegimeIcon size={20} className="text-status-ok" />}
-          />
-          <StatCard
-            title="Short Candidates"
-            value={universe.short.length}
-            icon={<RegimeIcon size={20} className="text-status-risk rotate-180" />}
-          />
-          <StatCard
-            title="Data Source"
-            value={universe.meta.source.toUpperCase()}
-            change={`Updated ${new Date(universe.meta.ts).toLocaleTimeString()}`}
-            icon={<UniverseIcon size={20} className="text-muted-foreground" />}
-          />
+        <div id="universe" className="space-y-3">
+          {/* WS Health Bar */}
+          <div className="flex items-center justify-between p-3 rounded border border-border/50 bg-muted/10">
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Data Source
+              </span>
+              <WsHealthIndicator wsHealth={universe.wsHealth} source={universe.meta.source} />
+            </div>
+            <span className="text-xs text-muted-foreground">
+              {new Date(universe.meta.ts).toLocaleTimeString()}
+            </span>
+          </div>
+
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+            <StatCard
+              title="Anchor Symbol"
+              value={universe.market.anchor.symbol}
+              change={universe.market.anchor.bias}
+              changeType={universe.market.anchor.bias === "BULL" ? "positive" : universe.market.anchor.bias === "BEAR" ? "negative" : "neutral"}
+              icon={<OverviewIcon size={20} className="text-muted-foreground" />}
+            />
+            <StatCard
+              title="Long Candidates"
+              value={universe.long.length}
+              icon={<RegimeIcon size={20} className="text-status-ok" />}
+            />
+            <StatCard
+              title="Short Candidates"
+              value={universe.short.length}
+              icon={<RegimeIcon size={20} className="text-status-risk rotate-180" />}
+            />
+            <StatCard
+              title="Source Quality"
+              value={universe.meta.source === "rest+ws" ? "Live" : "REST"}
+              change={universe.wsHealth?.health === "OK" ? "Real-time" : "Delayed"}
+              changeType={universe.wsHealth?.health === "OK" ? "positive" : "neutral"}
+              icon={<UniverseIcon size={20} className="text-muted-foreground" />}
+            />
+          </div>
         </div>
       )}
 
