@@ -14,11 +14,11 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-slate-50 overflow-hidden">
+    <div className="flex h-screen bg-background overflow-hidden">
       {/* Mobile backdrop */}
       {!sidebarCollapsed && (
         <div 
-          className="fixed inset-0 z-20 bg-slate-900 bg-opacity-50 lg:hidden"
+          className="fixed inset-0 z-20 bg-background/80 backdrop-blur-sm lg:hidden"
           onClick={() => setSidebarCollapsed(true)}
         />
       )}
@@ -30,7 +30,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       />
       
       {/* Main content */}
-      <div className="flex-1 flex flex-col min-w-0 lg:ml-0">
+      <div className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ${
+        sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'
+      }`}>
         {/* Header */}
         <DashboardHeader 
           onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}

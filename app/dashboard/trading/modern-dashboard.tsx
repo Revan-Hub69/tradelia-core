@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Card, StatCard } from "@/components/dashboard/card";
-import { OverviewIcon, UniverseIcon, RegimeIcon, AIIcon, RefreshIcon } from "@/components/icons/dashboard-icons";
+import { OverviewIcon, UniverseIcon, RegimeIcon, RefreshIcon } from "@/components/icons/dashboard-icons";
+import { AIAnalysis } from "./ai-analysis";
 
 // Types (same as before)
 type Regime4h = "TREND" | "RANGE" | "TRANSITION";
@@ -78,13 +79,13 @@ function formatBps(value: number | null | undefined): string {
 
 function getRegimeBadge(regime: Regime4h) {
   const styles = {
-    TREND: "bg-emerald-100 text-emerald-800 border-emerald-200",
-    RANGE: "bg-amber-100 text-amber-800 border-amber-200", 
-    TRANSITION: "bg-slate-100 text-slate-800 border-slate-200"
+    TREND: "bg-status-ok/20 text-status-ok border-status-ok/30",
+    RANGE: "bg-status-attention/20 text-status-attention border-status-attention/30", 
+    TRANSITION: "bg-muted/30 text-muted-foreground border-border/50"
   };
   
   return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${styles[regime]}`}>
+    <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium border ${styles[regime]}`}>
       {regime}
     </span>
   );
@@ -94,7 +95,9 @@ function getRegimeBadge(regime: Regime4h) {
 function RegimeWidget({ regime }: { regime: RegimeOutput | null }) {
   if (!regime) {
     return (
-      <Card title="Market Regime" loading={true} />
+      <Card title="Market Regime" loading={true}>
+        <div></div>
+      </Card>
     );
   }
 
@@ -106,7 +109,7 @@ function RegimeWidget({ regime }: { regime: RegimeOutput | null }) {
         <div className="flex items-center space-x-2">
           {getRegimeBadge(regime.regime)}
           {regime.stress && (
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
+            <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-status-risk/20 text-status-risk border border-status-risk/30">
               STRESS
             </span>
           )}
@@ -116,37 +119,37 @@ function RegimeWidget({ regime }: { regime: RegimeOutput | null }) {
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-3">
           <div>
-            <p className="text-sm text-slate-500">Trend Strength</p>
-            <p className="text-lg font-semibold text-slate-900">{formatNumber(regime.metrics.trendStrength)}</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide">Trend Strength</p>
+            <p className="text-lg font-semibold text-foreground">{formatNumber(regime.metrics.trendStrength)}</p>
           </div>
           <div>
-            <p className="text-sm text-slate-500">Range Ratio</p>
-            <p className="text-lg font-semibold text-slate-900">{formatNumber(regime.metrics.rangeRatio)}</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide">Range Ratio</p>
+            <p className="text-lg font-semibold text-foreground">{formatNumber(regime.metrics.rangeRatio)}</p>
           </div>
         </div>
         <div className="space-y-3">
           <div>
-            <p className="text-sm text-slate-500">ATR14</p>
-            <p className="text-lg font-semibold text-slate-900">{formatNumber(regime.metrics.atr14)}</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide">ATR14</p>
+            <p className="text-lg font-semibold text-foreground">{formatNumber(regime.metrics.atr14)}</p>
           </div>
           <div>
-            <p className="text-sm text-slate-500">EMA Alignment</p>
-            <p className="text-lg font-semibold text-slate-900">
+            <p className="text-xs text-muted-foreground uppercase tracking-wide">EMA Alignment</p>
+            <p className="text-lg font-semibold text-foreground">
               {regime.metrics.ema20 > regime.metrics.ema50 ? "Bullish ↗" : "Bearish ↘"}
             </p>
           </div>
         </div>
       </div>
       
-      <div className="mt-4 pt-4 border-t border-slate-100">
+      <div className="mt-4 pt-4 border-t border-border/30">
         <div className="space-y-2">
           <div>
-            <p className="text-sm text-slate-500">Allowed Setups</p>
-            <p className="text-sm font-medium text-slate-900 break-words">{regime.allowedSetups.join(", ") || "None"}</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide">Allowed Setups</p>
+            <p className="text-sm font-medium text-foreground break-words">{regime.allowedSetups.join(", ") || "None"}</p>
           </div>
           <div>
-            <p className="text-sm text-slate-500">Reason</p>
-            <p className="text-xs text-slate-600 break-all">{regime.reasonCode}</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide">Reason</p>
+            <p className="text-xs text-muted-foreground break-all">{regime.reasonCode}</p>
           </div>
         </div>
       </div>
@@ -158,44 +161,44 @@ function UniverseTable({ candidates, title }: { candidates: UniverseCandidate[];
   return (
     <Card title={title} subtitle={`${candidates.length} candidates`}>
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-slate-200">
-          <thead className="bg-slate-50">
+        <table className="min-w-full divide-y divide-border/30">
+          <thead className="bg-muted/30">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Symbol</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Regime</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Score</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Spread</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Symbol</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Regime</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Score</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Spread</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Status</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-slate-200">
+          <tbody className="bg-background divide-y divide-border/30">
             {candidates.slice(0, 5).map((candidate) => (
-              <tr key={candidate.symbol} className="hover:bg-slate-50 transition-colors">
-                <td className="px-6 py-4 whitespace-nowrap">
+              <tr key={candidate.symbol} className="hover:bg-muted/20 transition-subtle">
+                <td className="px-4 py-4 whitespace-nowrap">
                   <div className="min-w-0">
-                    <div className="text-sm font-medium text-slate-900 truncate">{candidate.symbol}</div>
-                    <div className="text-sm text-slate-500 truncate">${formatNumber(candidate.htf.price)}</div>
+                    <div className="text-sm font-medium text-foreground truncate">{candidate.symbol}</div>
+                    <div className="text-xs text-muted-foreground truncate">${formatNumber(candidate.htf.price)}</div>
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-4 py-4 whitespace-nowrap">
                   {getRegimeBadge(candidate.htf.regime)}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-slate-900">{candidate.scores.total}</div>
-                  <div className="text-xs text-slate-500">T:{candidate.scores.tradeability} R:{candidate.scores.regimeMatch}</div>
+                <td className="px-4 py-4 whitespace-nowrap">
+                  <div className="text-sm font-medium text-foreground">{candidate.scores.total}</div>
+                  <div className="text-xs text-muted-foreground">T:{candidate.scores.tradeability} R:{candidate.scores.regimeMatch}</div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
+                <td className="px-4 py-4 whitespace-nowrap text-sm text-foreground">
                   {formatBps(candidate.ws.spreadBpsNow)}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-4 py-4 whitespace-nowrap">
                   <div className="flex flex-wrap gap-1 max-w-32">
                     {candidate.reasons.blocks.slice(0, 1).map((reason, i) => (
-                      <span key={i} className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-red-100 text-red-700 border border-red-200 truncate max-w-20" title={reason}>
+                      <span key={i} className="inline-flex items-center px-2 py-1 rounded text-xs bg-status-risk/20 text-status-risk border border-status-risk/30 truncate max-w-20" title={reason}>
                         {reason.length > 8 ? reason.substring(0, 8) + '...' : reason}
                       </span>
                     ))}
                     {candidate.reasons.warnings.slice(0, 1).map((reason, i) => (
-                      <span key={i} className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-amber-100 text-amber-700 border border-amber-200 truncate max-w-20" title={reason}>
+                      <span key={i} className="inline-flex items-center px-2 py-1 rounded text-xs bg-status-attention/20 text-status-attention border border-status-attention/30 truncate max-w-20" title={reason}>
                         {reason.length > 8 ? reason.substring(0, 8) + '...' : reason}
                       </span>
                     ))}
@@ -210,175 +213,6 @@ function UniverseTable({ candidates, title }: { candidates: UniverseCandidate[];
   );
 }
 
-function AIAnalysisWidget({ data, aiGoal, setAiGoal }: { 
-  data: any; 
-  aiGoal: string;
-  setAiGoal: (goal: string) => void;
-}) {
-  const [analysis, setAnalysis] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const runAnalysis = useCallback(async () => {
-    if (!data) return;
-    
-    setLoading(true);
-    setError(null);
-    setAnalysis(null);
-    
-    try {
-      const aiPacket = {
-        version: "tradelia-ai-packet-v1",
-        asOf: Date.now(),
-        symbol: data.symbol,
-        regime4h: data.regime,
-        universe: data.universe ? {
-          meta: data.universe.meta,
-          market: data.universe.market,
-          long: data.universe.long.slice(0, 3),
-          short: data.universe.short.slice(0, 3),
-        } : null,
-        instruction: "Usa solo questi dati. Non calcolare indicatori. Tratta regime4h.regime come gate (TREND/RANGE/TRANSITION), rispetta allowedSetups/forbiddenSetups e segui i reason code del Universe (long/short).",
-      };
-
-      const response = await fetch("/api/trading/ai", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ goal: aiGoal, packet: aiPacket })
-      });
-
-      if (!response.ok) throw new Error("AI analysis failed");
-      
-      const result = await response.json();
-      setAnalysis(result);
-      
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "AI analysis failed");
-    } finally {
-      setLoading(false);
-    }
-  }, [data, aiGoal]);
-
-  return (
-    <Card 
-      title="AI Analysis" 
-      subtitle="Intelligent market insights"
-      actions={
-        <button
-          onClick={runAnalysis}
-          disabled={loading || !data}
-          className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-slate-700 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:opacity-50 transition-colors"
-        >
-          {loading ? "Analyzing..." : "Run Analysis"}
-        </button>
-      }
-      loading={loading}
-    >
-      <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">
-            Analysis Goal
-          </label>
-          <textarea
-            className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-slate-500 focus:border-slate-500 text-sm resize-none"
-            rows={3}
-            value={aiGoal}
-            onChange={(e) => setAiGoal(e.target.value)}
-            placeholder="Describe what you want to analyze..."
-          />
-        </div>
-
-        {error && (
-          <div className="bg-red-50 border border-red-200 rounded-md p-4">
-            <div className="text-sm text-red-700">{error}</div>
-          </div>
-        )}
-
-        {analysis && (
-          <div className="bg-slate-50 border border-slate-200 rounded-md p-4">
-            <div className="prose prose-sm max-w-none text-slate-700">
-              {(() => {
-                // Prova a estrarre testo leggibile dall'AI response
-                if (typeof analysis === 'string') {
-                  return <div className="whitespace-pre-wrap">{analysis}</div>;
-                }
-                
-                if (typeof analysis === 'object' && analysis !== null) {
-                  const result = analysis as any;
-                  
-                  // Cerca campi comuni per testo leggibile
-                  if (result.analysis) {
-                    return <div className="whitespace-pre-wrap">{result.analysis}</div>;
-                  }
-                  if (result.summary) {
-                    return <div className="whitespace-pre-wrap">{result.summary}</div>;
-                  }
-                  if (result.brief) {
-                    return <div className="whitespace-pre-wrap">{result.brief}</div>;
-                  }
-                  if (result.content) {
-                    return <div className="whitespace-pre-wrap">{result.content}</div>;
-                  }
-                  if (result.text) {
-                    return <div className="whitespace-pre-wrap">{result.text}</div>;
-                  }
-                  if (result.message) {
-                    return <div className="whitespace-pre-wrap">{result.message}</div>;
-                  }
-                  
-                  // Se ha una struttura riconoscibile, formattala meglio
-                  if (result.regime && result.recommendations) {
-                    return (
-                      <div className="space-y-3">
-                        <div>
-                          <h4 className="font-medium text-slate-900">Regime Analysis</h4>
-                          <p className="text-sm text-slate-600">{result.regime}</p>
-                        </div>
-                        <div>
-                          <h4 className="font-medium text-slate-900">Recommendations</h4>
-                          <div className="text-sm text-slate-600">
-                            {Array.isArray(result.recommendations) 
-                              ? result.recommendations.map((rec: string, i: number) => (
-                                  <p key={i} className="mb-1">• {rec}</p>
-                                ))
-                              : <p>{result.recommendations}</p>
-                            }
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  }
-                }
-                
-                // Fallback: mostra JSON formattato ma più leggibile
-                return (
-                  <details className="cursor-pointer">
-                    <summary className="font-medium text-slate-900 mb-2">
-                      AI Response (JSON) - Click to expand
-                    </summary>
-                    <pre className="text-xs text-slate-600 overflow-auto bg-white p-3 rounded border">
-                      {JSON.stringify(analysis, null, 2)}
-                    </pre>
-                  </details>
-                );
-              })()}
-            </div>
-          </div>
-        )}
-
-        {!analysis && !error && !loading && (
-          <div className="text-center py-8">
-            <div className="text-slate-400 mb-4">
-              <AIIcon size={48} />
-            </div>
-            <p className="text-slate-500">Click "Run Analysis" to get AI insights on current market conditions</p>
-          </div>
-        )}
-      </div>
-    </Card>
-  );
-}
-
 // Main Component
 export function ModernDashboard() {
   const [symbol, setSymbol] = useState("BTCUSDT");
@@ -386,7 +220,6 @@ export function ModernDashboard() {
   const [regime, setRegime] = useState<RegimeOutput | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [aiGoal, setAiGoal] = useState("Analizza i dati attuali e fornisci un brief operativo in italiano. Spiega il regime di mercato, i migliori candidati long/short e eventuali rischi. Rispondi in modo chiaro e diretto, non in JSON.");
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -423,17 +256,17 @@ export function ModernDashboard() {
   return (
     <div className="space-y-6">
       {/* Controls */}
-      <Card title="Market Controls">
+      <Card title="Market Controls" subtitle="Configurazione simbolo di riferimento">
         <div className="flex items-center space-x-4">
           <div className="flex-1">
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2">
               Anchor Symbol
             </label>
             <input
               type="text"
               value={symbol}
               onChange={(e) => setSymbol(e.target.value.toUpperCase())}
-              className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-slate-500 focus:border-slate-500 text-sm"
+              className="w-full px-3 py-2 border border-border/50 rounded bg-background focus:ring-2 focus:ring-primary focus:border-primary text-sm transition-subtle"
               placeholder="BTCUSDT"
             />
           </div>
@@ -441,10 +274,10 @@ export function ModernDashboard() {
             <button
               onClick={loadData}
               disabled={loading}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-slate-700 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:opacity-50 transition-colors"
+              className="inline-flex items-center px-4 py-2 border border-border/50 text-sm font-medium rounded text-foreground bg-background hover:bg-muted/30 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50 transition-subtle"
             >
               <RefreshIcon size={16} className="mr-2" />
-              {loading ? "Loading..." : "Refresh Data"}
+              {loading ? "Loading..." : "Aggiorna Dati"}
             </button>
           </div>
         </div>
@@ -452,14 +285,14 @@ export function ModernDashboard() {
 
       {/* Error Display */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-md p-4">
+        <div className="rounded border border-status-risk/30 bg-status-risk/10 p-4">
           <div className="flex">
             <div className="flex-shrink-0">
-              <span className="text-red-400">⚠️</span>
+              <span className="text-status-risk">⚠️</span>
             </div>
             <div className="ml-3">
-              <h3 className="text-sm font-medium text-red-800">Error</h3>
-              <div className="mt-2 text-sm text-red-700">{error}</div>
+              <h3 className="text-sm font-medium text-status-risk">Error</h3>
+              <div className="mt-2 text-sm text-status-risk">{error}</div>
             </div>
           </div>
         </div>
@@ -473,23 +306,23 @@ export function ModernDashboard() {
             value={universe.market.anchor.symbol}
             change={universe.market.anchor.bias}
             changeType={universe.market.anchor.bias === "BULL" ? "positive" : universe.market.anchor.bias === "BEAR" ? "negative" : "neutral"}
-            icon={<OverviewIcon size={24} className="text-slate-600" />}
+            icon={<OverviewIcon size={20} className="text-muted-foreground" />}
           />
           <StatCard
             title="Long Candidates"
             value={universe.long.length}
-            icon={<RegimeIcon size={24} className="text-emerald-600" />}
+            icon={<RegimeIcon size={20} className="text-status-ok" />}
           />
           <StatCard
             title="Short Candidates"
             value={universe.short.length}
-            icon={<RegimeIcon size={24} className="text-red-600 rotate-180" />}
+            icon={<RegimeIcon size={20} className="text-status-risk rotate-180" />}
           />
           <StatCard
             title="Data Source"
             value={universe.meta.source.toUpperCase()}
             change={`Updated ${new Date(universe.meta.ts).toLocaleTimeString()}`}
-            icon={<UniverseIcon size={24} className="text-slate-600" />}
+            icon={<UniverseIcon size={20} className="text-muted-foreground" />}
           />
         </div>
       )}
@@ -503,7 +336,7 @@ export function ModernDashboard() {
 
         {/* AI Analysis */}
         <div className="lg:col-span-2">
-          <AIAnalysisWidget data={aiData} aiGoal={aiGoal} setAiGoal={setAiGoal} />
+          <AIAnalysis data={aiData} />
         </div>
       </div>
 

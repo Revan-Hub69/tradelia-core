@@ -87,28 +87,28 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         {/* Backdrop */}
-        <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity" onClick={onClose} />
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm transition-opacity" onClick={onClose} />
 
         {/* Modal */}
-        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
-          <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        <div className="inline-block align-bottom bg-card rounded border border-border/50 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+          <div className="bg-card px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div className="sm:flex sm:items-start">
               <div className="w-full">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg leading-6 font-medium text-slate-900">
+                  <h3 className="text-lg leading-6 font-medium text-foreground">
                     Dashboard Settings
                   </h3>
                   <button
                     onClick={onClose}
-                    className="text-slate-400 hover:text-slate-600 p-1 rounded-md hover:bg-slate-100 transition-colors"
+                    className="text-muted-foreground hover:text-foreground p-1 rounded hover:bg-muted/30 transition-subtle"
                   >
                     <CloseIcon size={20} />
                   </button>
                 </div>
 
                 {(error || message) && (
-                  <div className={`mb-6 p-4 rounded-md ${error ? 'bg-red-50 border border-red-200' : 'bg-emerald-50 border border-emerald-200'}`}>
-                    <div className={`text-sm ${error ? 'text-red-700' : 'text-emerald-700'}`}>
+                  <div className={`mb-6 p-4 rounded border ${error ? 'bg-status-risk/10 border-status-risk/30' : 'bg-status-ok/10 border-status-ok/30'}`}>
+                    <div className={`text-sm ${error ? 'text-status-risk' : 'text-status-ok'}`}>
                       {error || message}
                     </div>
                   </div>
@@ -117,36 +117,36 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 <div className="space-y-8">
                   {/* System Controls */}
                   <div>
-                    <h4 className="text-sm font-medium text-slate-900 mb-4">System Controls</h4>
+                    <h4 className="text-sm font-medium text-foreground mb-4">System Controls</h4>
                     <div className="space-y-3">
-                      <div className="flex items-center justify-between p-3 bg-slate-50 rounded-md">
+                      <div className="flex items-center justify-between p-3 bg-muted/30 rounded border border-border/50">
                         <div>
-                          <p className="text-sm font-medium text-slate-900">WebSocket Daemon</p>
-                          <p className="text-xs text-slate-500">Avvia il daemon WS per dati real-time</p>
+                          <p className="text-sm font-medium text-foreground">WebSocket Daemon</p>
+                          <p className="text-xs text-muted-foreground">Avvia il daemon WS per dati real-time</p>
                         </div>
                         <button
                           onClick={launchWsDaemon}
-                          className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-slate-700 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-colors"
+                          className="inline-flex items-center px-3 py-2 border border-border/50 text-sm leading-4 font-medium rounded text-foreground bg-background hover:bg-muted/30 focus:outline-none focus:ring-2 focus:ring-primary transition-subtle"
                         >
                           Launch WS Daemon
                         </button>
                       </div>
                       
-                      <div className="flex items-center justify-between p-3 bg-slate-50 rounded-md">
+                      <div className="flex items-center justify-between p-3 bg-muted/30 rounded border border-border/50">
                         <div>
-                          <p className="text-sm font-medium text-slate-900">Development Commands</p>
-                          <p className="text-xs text-slate-500">Comandi per sviluppo locale</p>
+                          <p className="text-sm font-medium text-foreground">Development Commands</p>
+                          <p className="text-xs text-muted-foreground">Comandi per sviluppo locale</p>
                         </div>
                         <div className="flex space-x-2">
                           <button
                             onClick={() => navigator.clipboard?.writeText("npm run dev:local")}
-                            className="inline-flex items-center px-3 py-1 border border-slate-300 text-xs font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-colors"
+                            className="inline-flex items-center px-3 py-1 border border-border/50 text-xs font-medium rounded text-muted-foreground bg-background hover:bg-muted/30 focus:outline-none focus:ring-2 focus:ring-primary transition-subtle"
                           >
                             Copy dev:local
                           </button>
                           <button
                             onClick={() => navigator.clipboard?.writeText("npm run ws:daemon")}
-                            className="inline-flex items-center px-3 py-1 border border-slate-300 text-xs font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-colors"
+                            className="inline-flex items-center px-3 py-1 border border-border/50 text-xs font-medium rounded text-muted-foreground bg-background hover:bg-muted/30 focus:outline-none focus:ring-2 focus:ring-primary transition-subtle"
                           >
                             Copy ws:daemon
                           </button>
@@ -157,29 +157,29 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
                   {/* AI Configuration */}
                   <div>
-                    <h4 className="text-sm font-medium text-slate-900 mb-4">AI Configuration</h4>
+                    <h4 className="text-sm font-medium text-foreground mb-4">AI Configuration</h4>
                     <div className="space-y-4">
                       <div className="flex items-center space-x-3 text-sm">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                        <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium border ${
                           hasLocalKey === null 
-                            ? "bg-slate-100 text-slate-800 border-slate-200"
+                            ? "bg-muted/30 text-muted-foreground border-border/50"
                             : hasLocalKey 
-                            ? "bg-emerald-100 text-emerald-800 border-emerald-200"
-                            : "bg-red-100 text-red-800 border-red-200"
+                            ? "bg-status-ok/20 text-status-ok border-status-ok/30"
+                            : "bg-status-risk/20 text-status-risk border-status-risk/30"
                         }`}>
                           {hasLocalKey === null ? "Unknown" : hasLocalKey ? "Configured" : "Missing"}
                         </span>
-                        <span className="text-slate-600">Groq API Key Status</span>
+                        <span className="text-muted-foreground">Groq API Key Status</span>
                       </div>
                       
                       {localSecretsPath && (
-                        <div className="text-xs text-slate-500 bg-slate-50 p-2 rounded font-mono break-all">
+                        <div className="text-xs text-muted-foreground bg-muted/30 p-2 rounded font-mono break-all border border-border/50">
                           Path: {localSecretsPath}
                         </div>
                       )}
                       
                       <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-2">
+                        <label className="block text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2">
                           New API Key
                         </label>
                         <input
@@ -187,10 +187,10 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                           value={groqKey}
                           onChange={(e) => setGroqKey(e.target.value)}
                           placeholder={hasLocalKey === null ? "Disponibile solo in locale" : "gsk_..."}
-                          className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-slate-500 focus:border-slate-500 text-sm"
+                          className="w-full px-3 py-2 border border-border/50 rounded bg-background focus:ring-2 focus:ring-primary focus:border-primary text-sm transition-subtle"
                           disabled={hasLocalKey === null}
                         />
-                        <p className="mt-1 text-xs text-slate-500">
+                        <p className="mt-1 text-xs text-muted-foreground">
                           Lascia vuoto e salva per rimuovere la key locale (torna a GROQ_API_KEY env)
                         </p>
                       </div>
@@ -199,7 +199,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                         <button
                           onClick={saveGroqKey}
                           disabled={saving || hasLocalKey === null}
-                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-slate-700 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:opacity-50 transition-colors"
+                          className="inline-flex items-center px-4 py-2 border border-border/50 text-sm font-medium rounded text-foreground bg-background hover:bg-muted/30 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50 transition-subtle"
                         >
                           {saving ? "Saving..." : "Save Key"}
                         </button>
@@ -209,13 +209,13 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                             setError(null);
                             setMessage(null);
                           }}
-                          className="inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-colors"
+                          className="inline-flex items-center px-4 py-2 border border-border/50 text-sm font-medium rounded text-muted-foreground bg-background hover:bg-muted/30 focus:outline-none focus:ring-2 focus:ring-primary transition-subtle"
                         >
                           Reset
                         </button>
                         <button
                           onClick={loadLocalSecretsStatus}
-                          className="inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-colors"
+                          className="inline-flex items-center px-4 py-2 border border-border/50 text-sm font-medium rounded text-muted-foreground bg-background hover:bg-muted/30 focus:outline-none focus:ring-2 focus:ring-primary transition-subtle"
                         >
                           Refresh Status
                         </button>
@@ -225,23 +225,23 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
                   {/* System Info */}
                   <div>
-                    <h4 className="text-sm font-medium text-slate-900 mb-4">System Info</h4>
-                    <div className="bg-slate-50 rounded-md p-4 text-sm text-slate-600 space-y-1">
+                    <h4 className="text-sm font-medium text-foreground mb-4">System Info</h4>
+                    <div className="bg-muted/30 rounded p-4 text-sm text-muted-foreground space-y-1 border border-border/50">
                       <div className="flex justify-between">
                         <span>Environment:</span>
-                        <span className="font-medium">Development</span>
+                        <span className="font-medium text-foreground">Development</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Mode:</span>
-                        <span className="font-medium">Local-first</span>
+                        <span className="font-medium text-foreground">Local-first</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Last Updated:</span>
-                        <span className="font-medium">{new Date().toLocaleString()}</span>
+                        <span className="font-medium text-foreground">{new Date().toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>URL:</span>
-                        <span className="font-medium font-mono text-xs">http://localhost:3001/dashboard/trading</span>
+                        <span className="font-medium font-mono text-xs text-foreground">http://localhost:3001/dashboard/trading</span>
                       </div>
                     </div>
                   </div>
@@ -250,11 +250,11 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             </div>
           </div>
           
-          <div className="bg-slate-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+          <div className="bg-muted/30 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse border-t border-border/50">
             <button
               type="button"
               onClick={onClose}
-              className="w-full inline-flex justify-center rounded-md border border-slate-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 sm:ml-3 sm:w-auto sm:text-sm transition-colors"
+              className="w-full inline-flex justify-center rounded border border-border/50 px-4 py-2 bg-background text-base font-medium text-foreground hover:bg-muted/30 focus:outline-none focus:ring-2 focus:ring-primary sm:ml-3 sm:w-auto sm:text-sm transition-subtle"
             >
               Close
             </button>

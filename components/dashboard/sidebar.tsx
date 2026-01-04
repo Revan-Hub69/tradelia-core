@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { OverviewIcon, UniverseIcon, RegimeIcon, AIIcon, SettingsIcon, ChevronLeftIcon } from "@/components/icons/dashboard-icons";
 
@@ -19,33 +18,31 @@ interface SidebarProps {
 
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   return (
-    <div className={`bg-slate-900 text-slate-100 transition-all duration-300 ease-in-out ${
+    <div className={`bg-card text-card-foreground transition-all duration-300 ease-in-out border-r border-border/50 ${
       collapsed ? 'w-16' : 'w-64'
-    } min-h-screen flex flex-col border-r border-slate-800 ${
+    } min-h-screen flex flex-col fixed lg:relative z-30 lg:z-auto ${
       collapsed ? 'lg:w-16' : 'lg:w-64'
-    } fixed lg:relative z-30 lg:z-auto ${
-      collapsed ? '-translate-x-full lg:translate-x-0' : 'translate-x-0'
     }`}>
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-slate-800">
+      <div className="flex items-center justify-between p-4 border-b border-border/50">
         {!collapsed && (
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-slate-700 rounded-lg flex items-center justify-center border border-slate-600">
+            <div className="w-8 h-8 bg-muted/30 rounded border border-border/50 flex items-center justify-center">
               <svg width="16" height="16" viewBox="0 0 32 32" fill="none">
-                <circle cx="16" cy="16" r="15" stroke="#94a3b8" strokeWidth="2" fill="none"/>
-                <path d="M8 12L12 8L16 12L20 8L24 12V20L20 24L16 20L12 24L8 20V12Z" stroke="#94a3b8" strokeWidth="1.5" strokeLinejoin="round" fill="none"/>
-                <circle cx="16" cy="16" r="2" fill="#94a3b8"/>
+                <circle cx="16" cy="16" r="15" stroke="hsl(var(--primary))" strokeWidth="2" fill="none"/>
+                <path d="M8 12L12 8L16 12L20 8L24 12V20L20 24L16 20L12 24L8 20V12Z" stroke="hsl(var(--primary))" strokeWidth="1.5" strokeLinejoin="round" fill="none"/>
+                <circle cx="16" cy="16" r="2" fill="hsl(var(--primary))"/>
               </svg>
             </div>
-            <span className="font-semibold text-slate-100">Tradelia</span>
+            <span className="font-semibold text-foreground">Tradelia</span>
           </div>
         )}
         <button
           onClick={onToggle}
-          className="p-1.5 rounded-md hover:bg-slate-800 transition-colors"
+          className="p-1.5 rounded hover:bg-muted/30 transition-subtle"
         >
           <ChevronLeftIcon 
-            className={`text-slate-400 transition-transform duration-200 ${collapsed ? 'rotate-180' : ''}`} 
+            className={`text-muted-foreground transition-transform duration-200 ${collapsed ? 'rotate-180' : ''}`} 
             size={16} 
           />
         </button>
@@ -59,10 +56,10 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
             <Link
               key={item.name}
               href={item.href}
-              className={`flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${
+              className={`flex items-center space-x-3 px-3 py-2.5 rounded transition-subtle ${
                 item.current
-                  ? 'bg-slate-800 text-slate-100 border border-slate-700'
-                  : 'text-slate-300 hover:bg-slate-800 hover:text-slate-100'
+                  ? 'bg-primary text-primary-foreground'
+                  : 'text-muted-foreground hover:bg-muted/30 hover:text-foreground'
               }`}
             >
               <IconComponent size={18} />
@@ -73,15 +70,15 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       </nav>
 
       {/* Footer */}
-      <div className="p-4 border-t border-slate-800">
+      <div className="p-4 border-t border-border/50">
         <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-slate-700 rounded-full flex items-center justify-center border border-slate-600">
-            <span className="text-xs font-medium text-slate-300">U</span>
+          <div className="w-8 h-8 bg-muted/30 rounded-full flex items-center justify-center border border-border/50">
+            <span className="text-xs font-medium text-muted-foreground">U</span>
           </div>
           {!collapsed && (
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-slate-100 truncate">Local User</p>
-              <p className="text-xs text-slate-400 truncate">Development</p>
+              <p className="text-sm font-medium text-foreground truncate">Local User</p>
+              <p className="text-xs text-muted-foreground truncate">Development</p>
             </div>
           )}
         </div>

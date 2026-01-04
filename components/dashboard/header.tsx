@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { SearchIcon, BellIcon, SettingsIcon, MenuIcon } from "@/components/icons/dashboard-icons";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface DashboardHeaderProps {
   onToggleSidebar: () => void;
@@ -12,22 +13,22 @@ export function DashboardHeader({ onToggleSidebar, onOpenSettings }: DashboardHe
   const [notifications] = useState(2);
 
   return (
-    <header className="bg-white border-b border-slate-200 px-6 py-4">
+    <header className="bg-card border-b border-border/50 px-6 py-4">
       <div className="flex items-center justify-between">
         {/* Left side */}
         <div className="flex items-center space-x-4">
           <button
             onClick={onToggleSidebar}
-            className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors lg:hidden"
+            className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted/30 rounded transition-subtle lg:hidden"
           >
             <MenuIcon size={20} />
           </button>
-          <h1 className="text-2xl font-semibold text-slate-900">Trading Dashboard</h1>
+          <h1 className="text-xl sm:text-2xl font-semibold text-foreground">Trading Dashboard</h1>
           <div className="hidden sm:flex items-center space-x-3">
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 border border-emerald-200">
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-status-ok/20 text-status-ok border border-status-ok/30">
               Live
             </span>
-            <span className="text-sm text-slate-500">Updated: {new Date().toLocaleTimeString()}</span>
+            <span className="text-sm text-muted-foreground">Updated: {new Date().toLocaleTimeString()}</span>
           </div>
         </div>
 
@@ -39,19 +40,24 @@ export function DashboardHeader({ onToggleSidebar, onOpenSettings }: DashboardHe
               <input
                 type="text"
                 placeholder="Search symbols..."
-                className="w-64 pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent text-sm"
+                className="w-64 pl-10 pr-4 py-2 border border-border/50 rounded bg-background focus:ring-2 focus:ring-primary focus:border-primary text-sm transition-subtle"
               />
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <SearchIcon className="text-slate-400" size={16} />
+                <SearchIcon className="text-muted-foreground" size={16} />
               </div>
             </div>
           </div>
 
+          {/* Theme Toggle */}
+          <div className="hidden sm:block">
+            <ThemeToggle />
+          </div>
+
           {/* Notifications */}
-          <button className="relative p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-500 rounded-lg transition-colors">
+          <button className="relative p-2 text-muted-foreground hover:text-foreground hover:bg-muted/30 focus:outline-none focus:ring-2 focus:ring-primary rounded transition-subtle">
             <BellIcon size={20} />
             {notifications > 0 && (
-              <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
+              <span className="absolute -top-1 -right-1 h-5 w-5 bg-destructive text-destructive-foreground text-xs rounded-full flex items-center justify-center font-medium">
                 {notifications}
               </span>
             )}
@@ -60,15 +66,15 @@ export function DashboardHeader({ onToggleSidebar, onOpenSettings }: DashboardHe
           {/* Settings */}
           <button 
             onClick={onOpenSettings}
-            className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-500 rounded-lg transition-colors"
+            className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted/30 focus:outline-none focus:ring-2 focus:ring-primary rounded transition-subtle"
           >
             <SettingsIcon size={20} />
           </button>
 
           {/* Profile */}
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-slate-700 rounded-full flex items-center justify-center border border-slate-300">
-              <span className="text-white text-sm font-medium">U</span>
+            <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center border border-border/50">
+              <span className="text-sm font-medium">U</span>
             </div>
           </div>
         </div>
