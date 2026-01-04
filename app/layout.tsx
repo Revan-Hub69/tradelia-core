@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import "./globals.css";
-import { SiteHeader } from "@/components/site-header";
+import { SiteHeaderGate } from "@/components/site-header-gate";
 import { fraunces, sora } from "@/lib/fonts";
 
 export const viewport: Viewport = {
@@ -72,7 +72,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <a href="#main-content" className="skip-link">
           Salta al contenuto
         </a>
-        <SiteHeader />
+        <SiteHeaderGate />
         {children}
       </body>
     </html>
