@@ -1,5 +1,6 @@
 // NASA-Grade Input Canonicalization
 // Compress raw data to essential features, prevent context explosion
+// ALL canonicalization happens server-side - NO client-side mock/fallback
 
 export interface InputCanon {
   brick1?: Brick1Canon;
@@ -9,6 +10,7 @@ export interface InputCanon {
     timestamp: number;
     source: string;
   };
+  missing_fields: string[]; // Track what's missing for audit
 }
 
 export interface Brick1Canon {
@@ -38,37 +40,100 @@ export interface Brick2Canon {
 
 /**
  * Convert raw regime data to canonical Brick1 format
+ * NASA-grade: NO fallbacks, track missing fields
  */
-export function canonicalizeBrick1(rawData: any): Brick1Canon | null {
-  if (!rawData?.regime4h) return null;
-
-  const regime4h = rawData.regime4h;
-  const metrics = regime4h.metrics || {};
+export function canonicalizeBrick1(rawData: any, anchorSymbol: string, universe: any): { canon: Brick1Canon | null; missing: string[] } {
+  const missing: string[] = [];
+  
+  // Try multiple sources for regime data
+  const regime = rawData?.regime || rawData?.regime4h?.regime;
+  const metrics = rawData?.metrics || rawData?.regime4h?.metrics || rawData;
+  
+  if (!regime) missing.push("regime");
+  
+  // Get price from universe anchor candidate (most reliable source)
+  let price = 0;
+  if (universe?.long) {
+    const anchor = universe.long.find((c: any) => c.symbol === anchorSymbol);
+    if (anchor?.htf?.price) price = Number(anchor.htf.price);
+  }
+  if (!price && universe?.short) {
+    const anchor = universe.short.find((c: any) => c.symbol === anchorSymbol);
+    if (anchor?.htf?.price) price = Number(anchor.htf.price);
+  }
+  if (!price && metrics?.close) price = Number(metrics.close);
+  if (!price && rawData?.close) price = Number(rawData.close);
+  
+  // Get ATR from metrics
+  const atr14 = Number(metrics?.atr14) || 0;
+  
+  // Calculate ATR fraction (NASA-grade: single formula)
+  let atr_frac = 0;
+  if (atr14 > 0 && price > 0) {
+    atr_frac = atr14 / price;
+  } else {
+    missing.push("atr_frac (atr14 or price missing)");
+  }
+  
+  // Get spread from WS data in universe (real data)
+  let spread_bps = 0;
+  if (universe?.long) {
+    const anchor = universe.long.find((c: any) => c.symbol === anchorSymbol);
+    if (anchor?.ws?.spreadBpsNow) spread_bps = Number(anchor.ws.spreadBpsNow);
+  }
+  if (!spread_bps && universe?.short) {
+    const anchor = universe.short.find((c: any) => c.symbol === anchorSymbol);
+    if (anchor?.ws?.spreadBpsNow) spread_bps = Number(anchor.ws.spreadBpsNow);
+  }
+  if (!spread_bps) missing.push("spread_bps");
+  
+  // Get other metrics
+  const trendStrength = Number(metrics?.trendStrength) || 0;
+  const rangeRatio = Number(metrics?.rangeRatio) || 0;
+  const returnsStd = Number(metrics?.returnsStd) || Number(metrics?.returnsStd20) || 0;
+  
+  if (!trendStrength && trendStrength !== 0) missing.push("trendStrength");
+  if (!rangeRatio && rangeRatio !== 0) missing.push("rangeRatio");
+  if (!returnsStd) missing.push("returnsStd");
+  
+  // If critical fields missing, return null
+  if (!regime || atr_frac === 0) {
+    return { canon: null, missing };
+  }
 
   return {
-    regime: regime4h.regime || "TRANSITION",
-    stress_flag: Boolean(regime4h.stress),
-    atr_frac: calculateAtrFrac(rawData), // Now rawData includes htf.price
-    spread_bps: Number(rawData.spread_bps) || 0,
-    trend_strength: Math.max(-1, Math.min(1, Number(metrics.trendStrength) || 0)),
-    range_ratio: Math.max(0, Math.min(1, Number(metrics.rangeRatio) || 0)),
-    returns_std: Number(metrics.returnsStd) || 0,
-    ema_state: determineEmaState(metrics),
-    freshness_ms: Date.now() - (rawData.ts || Date.now())
+    canon: {
+      regime: regime || "TRANSITION",
+      stress_flag: Boolean(rawData?.stress || rawData?.regime4h?.stress),
+      atr_frac: Math.min(atr_frac, 0.3), // Cap at 30%
+      spread_bps: spread_bps || 0,
+      trend_strength: Math.max(-1, Math.min(1, trendStrength)),
+      range_ratio: Math.max(0, Math.min(1, rangeRatio)),
+      returns_std: returnsStd,
+      ema_state: determineEmaState(metrics),
+      freshness_ms: Date.now() - (rawData?.ts || Date.now())
+    },
+    missing
   };
 }
 
 /**
  * Convert raw universe data to canonical Brick2 format
+ * NASA-grade: NO fallbacks, use real WS data
  */
-export function canonicalizeBrick2(rawData: any): Brick2Canon | null {
-  if (!rawData?.long && !rawData?.short) return null;
+export function canonicalizeBrick2(rawData: any): { canon: Brick2Canon | null; missing: string[] } {
+  const missing: string[] = [];
+  
+  if (!rawData?.long && !rawData?.short) {
+    missing.push("universe candidates (long or short)");
+    return { canon: null, missing };
+  }
 
   const candidates: Brick2Canon['candidates'] = [];
 
   // Process long candidates
   if (Array.isArray(rawData.long)) {
-    for (const candidate of rawData.long.slice(0, 25)) { // Limit to top 25
+    for (const candidate of rawData.long.slice(0, 25)) {
       const canonical = canonicalizeCandidate(candidate, "LONG");
       if (canonical) candidates.push(canonical);
     }
@@ -76,39 +141,56 @@ export function canonicalizeBrick2(rawData: any): Brick2Canon | null {
 
   // Process short candidates
   if (Array.isArray(rawData.short)) {
-    for (const candidate of rawData.short.slice(0, 25)) { // Limit to top 25
+    for (const candidate of rawData.short.slice(0, 25)) {
       const canonical = canonicalizeCandidate(candidate, "SHORT");
       if (canonical) candidates.push(canonical);
     }
   }
 
-  return { candidates };
+  if (candidates.length === 0) {
+    missing.push("valid candidates after filtering");
+    return { canon: null, missing };
+  }
+
+  return { canon: { candidates }, missing };
 }
 
 /**
  * Create complete canonical input from raw data
+ * NASA-grade: Server-side only, NO client fallbacks
  */
 export function createInputCanon(rawData: any, mode: string): InputCanon {
+  const anchorSymbol = rawData.symbol || "UNKNOWN";
+  const allMissing: string[] = [];
+  
   const canon: InputCanon = {
     meta: {
-      anchor_symbol: rawData.symbol || "UNKNOWN",
+      anchor_symbol: anchorSymbol,
       timestamp: rawData.ts || Date.now(),
       source: rawData.source || "unknown"
-    }
+    },
+    missing_fields: []
   };
 
   // Add brick1 data if needed
   if (mode === "BRICK1_ONLY" || mode === "BRICK1_PLUS_BRICK2") {
-    const brick1 = canonicalizeBrick1(rawData.market?.anchor);
-    if (brick1) canon.brick1 = brick1;
+    const { canon: brick1, missing } = canonicalizeBrick1(rawData.regime, anchorSymbol, rawData.universe);
+    if (brick1) {
+      canon.brick1 = brick1;
+    }
+    allMissing.push(...missing.map(m => `brick1.${m}`));
   }
 
   // Add brick2 data if needed
   if (mode === "BRICK2_ONLY" || mode === "BRICK1_PLUS_BRICK2") {
-    const brick2 = canonicalizeBrick2(rawData.universe);
-    if (brick2) canon.brick2 = brick2;
+    const { canon: brick2, missing } = canonicalizeBrick2(rawData.universe);
+    if (brick2) {
+      canon.brick2 = brick2;
+    }
+    allMissing.push(...missing.map(m => `brick2.${m}`));
   }
 
+  canon.missing_fields = allMissing;
   return canon;
 }
 
@@ -116,12 +198,23 @@ export function createInputCanon(rawData: any, mode: string): InputCanon {
 function canonicalizeCandidate(raw: any, side: "LONG" | "SHORT"): Brick2Canon['candidates'][0] | null {
   if (!raw?.symbol) return null;
 
+  // Use real WS data for spread (NASA-grade: no fallback)
+  const spreadBps = Number(raw.ws?.spreadBpsNow) || 0;
+  
+  // Calculate ATR% from htf data (real data)
+  let atrPct = 0;
+  if (raw.htf?.atrPct4h) {
+    atrPct = Number(raw.htf.atrPct4h);
+  } else if (raw.htf?.atr && raw.htf?.price) {
+    atrPct = (Number(raw.htf.atr) / Number(raw.htf.price)) * 100;
+  }
+
   return {
     symbol: raw.symbol,
     side,
     score: Number(raw.scores?.total) || 0,
-    spread_bps: Number(raw.ws?.spreadBpsNow) || 0,
-    atr_pct: calculateAtrFrac(raw),
+    spread_bps: spreadBps,
+    atr_pct: atrPct,
     liquidity_grade: determineLiquidityGrade(raw),
     regime_match: Number(raw.scores?.regimeMatch) || 0,
     cleanliness: calculateCleanliness(raw)
@@ -129,96 +222,19 @@ function canonicalizeCandidate(raw: any, side: "LONG" | "SHORT"): Brick2Canon['c
 }
 
 function determineEmaState(metrics: any): "BULL" | "BEAR" | "NEUTRAL" {
-  const ema20 = Number(metrics.ema20) || 0;
-  const ema50 = Number(metrics.ema50) || 0;
-  const ema200 = Number(metrics.ema200) || 0;
+  const ema20 = Number(metrics?.ema20) || 0;
+  const ema50 = Number(metrics?.ema50) || 0;
+  const ema200 = Number(metrics?.ema200) || 0;
 
   if (ema20 > ema50 && ema50 > ema200) return "BULL";
   if (ema20 < ema50 && ema50 < ema200) return "BEAR";
   return "NEUTRAL";
 }
 
-/**
- * Calculate ATR as fraction (0-0.3 typical range)
- * Standard: atr_frac = ATR / Price
- */
-function calculateAtrFrac(raw: any): number {
-  console.log(`🔍 ATR Debug - Raw data structure:`, JSON.stringify(raw, null, 2));
-  
-  // Get price from multiple sources
-  let price = 0;
-  
-  // Try different price sources based on data structure
-  if (raw.htf?.price) {
-    price = Number(raw.htf.price);
-    console.log(`📊 Price from raw.htf.price: ${price}`);
-  } else if (raw.price) {
-    price = Number(raw.price);
-    console.log(`📊 Price from raw.price: ${price}`);
-  } else if (raw.regime4h?.metrics?.price) {
-    price = Number(raw.regime4h.metrics.price);
-    console.log(`📊 Price from raw.regime4h.metrics.price: ${price}`);
-  } else if (raw.market?.anchor?.htf?.price) {
-    price = Number(raw.market.anchor.htf.price);
-    console.log(`📊 Price from raw.market.anchor.htf.price: ${price}`);
-  } else {
-    // Fallback based on symbol
-    const symbol = raw.symbol || raw.market?.anchor?.symbol || 'UNKNOWN';
-    if (symbol.includes('BTC')) price = 91000;
-    else if (symbol.includes('ETH')) price = 3200;
-    else price = 50000;
-    console.log(`📊 Price fallback for ${symbol}: ${price}`);
-  }
-  
-  let atr = 0;
-  
-  // Try multiple sources for ATR value (absolute)
-  if (raw.regime4h?.metrics?.atr14) {
-    atr = Number(raw.regime4h.metrics.atr14);
-    console.log(`📊 ATR from raw.regime4h.metrics.atr14: ${atr}`);
-  } else if (raw.htf?.atr) {
-    atr = Number(raw.htf.atr);
-    console.log(`📊 ATR from raw.htf.atr: ${atr}`);
-  } else if (raw.metrics?.atr14) {
-    atr = Number(raw.metrics.atr14);
-    console.log(`📊 ATR from raw.metrics.atr14: ${atr}`);
-  } else if (raw.metrics?.atr) {
-    atr = Number(raw.metrics.atr);
-    console.log(`📊 ATR from raw.metrics.atr: ${atr}`);
-  } else if (raw.regime?.metrics?.atr14) {
-    atr = Number(raw.regime.metrics.atr14);
-    console.log(`📊 ATR from raw.regime.metrics.atr14: ${atr}`);
-  } else if (raw.market?.anchor?.regime4h?.metrics?.atr14) {
-    atr = Number(raw.market.anchor.regime4h.metrics.atr14);
-    console.log(`📊 ATR from raw.market.anchor.regime4h.metrics.atr14: ${atr}`);
-  } else {
-    console.log(`❌ No ATR found in data structure`);
-  }
-  
-  console.log(`🔍 ATR Debug: atr=${atr}, price=${price}, symbol=${raw.symbol || raw.market?.anchor?.symbol || 'unknown'}`);
-  
-  if (atr <= 0 || price <= 0) {
-    console.log(`❌ Invalid values: atr=${atr}, price=${price}`);
-    return 0;
-  }
-  
-  // Calculate fraction: ATR / Price
-  const atr_frac = atr / price;
-  
-  console.log(`📊 ATR Result: ${atr} / ${price} = ${atr_frac} (${(atr_frac * 100).toFixed(2)}%)`);
-  
-  // Sanity cap at 30% (0.3)
-  const result = Math.min(atr_frac, 0.3);
-  console.log(`✅ Final ATR fraction: ${result} (${(result * 100).toFixed(2)}%)`);
-  
-  return result;
-}
-
 function determineLiquidityGrade(raw: any): "A" | "B" | "C" | "D" {
   const spread = Number(raw.ws?.spreadBpsNow) || 999;
   const volume = Number(raw.volume24h) || 0;
 
-  // Grade based on spread and volume
   if (spread <= 2 && volume > 1000000) return "A";
   if (spread <= 5 && volume > 100000) return "B";
   if (spread <= 20 && volume > 10000) return "C";
@@ -226,11 +242,9 @@ function determineLiquidityGrade(raw: any): "A" | "B" | "C" | "D" {
 }
 
 function calculateCleanliness(raw: any): number {
-  // Cleanliness = inverse of choppiness/noise
   const rangeRatio = Number(raw.metrics?.rangeRatio) || 0.5;
   const trendStrength = Math.abs(Number(raw.metrics?.trendStrength) || 0);
   
-  // Higher trend strength + lower range ratio = cleaner
   return Math.min(1, trendStrength * (1 - rangeRatio));
 }
 

@@ -28,6 +28,7 @@ export interface InputCanon {
     timestamp: number;
     source: string;
   };
+  missing_fields?: string[]; // Track what's missing for audit
 }
 
 export interface Brick1Canon {
@@ -230,10 +231,18 @@ function getNestedValue(obj: any, path: string): any {
 function generateAssumptions(input: InputCanon): string[] {
   const assumptions: string[] = [];
   
+  // Track missing fields as assumptions
+  if (input.missing_fields && input.missing_fields.length > 0) {
+    assumptions.push(`Missing fields: ${input.missing_fields.join(", ")}`);
+  }
+  
   if (input.brick1) {
     assumptions.push("Market data represents current conditions");
     if (input.brick1.freshness_ms > 60_000) {
       assumptions.push("Stale data may not reflect current market state");
+    }
+    if (input.brick1.spread_bps === 0) {
+      assumptions.push("Spread data unavailable - liquidity assessment limited");
     }
   }
   

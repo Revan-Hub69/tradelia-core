@@ -108,86 +108,41 @@ export function AIAnalysis({ data }: AIAnalysisProps) {
     setError(null);
     
     try {
-      // Extract price from various sources - FIXED to use correct BTC price
-      const extractPrice = () => {
-        // First try to get the anchor symbol price from universe data
-        const anchorSymbol = data.symbol || "BTCUSDT";
-        
-        // Look for the anchor symbol in the universe data
-        if (data.universe?.long) {
-          const anchorCandidate = data.universe.long.find((c: any) => c.symbol === anchorSymbol);
-          if (anchorCandidate?.htf?.price) {
-            return anchorCandidate.htf.price;
-          }
-        }
-        
-        if (data.universe?.short) {
-          const anchorCandidate = data.universe.short.find((c: any) => c.symbol === anchorSymbol);
-          if (anchorCandidate?.htf?.price) {
-            return anchorCandidate.htf.price;
-          }
-        }
-        
-        // Try regime data
-        if (data.regime?.metrics?.price) {
-          return data.regime.metrics.price;
-        }
-        
-        // Fallback based on symbol
-        if (anchorSymbol.includes('BTC')) {
-          return 91000;
-        }
-        if (anchorSymbol.includes('ETH')) {
-          return 3200;
-        }
-        
-        return 50000; // Generic fallback
-      };
-
-      // Prepare structured input for NASA-grade analysis
-      const structuredInput = {
-        symbol: data.symbol || "UNKNOWN",
+      // NASA-grade: Send ONLY raw data, NO mock/fallback
+      // Server-side createInputCanon() handles all canonicalization
+      const rawInput = {
+        symbol: data.symbol,
         ts: Date.now(),
         source: "dashboard",
-        market: {
-          anchor: {
-            symbol: data.symbol || "UNKNOWN",
-            regime4h: {
-              regime: data.regime?.regime || "TRANSITION",
-              stress: data.regime?.stress || false,
-              metrics: {
-                atr14: data.regime?.metrics?.atr14 || data.regime?.atr14 || 100,
-                trendStrength: data.regime?.metrics?.trendStrength || data.regime?.trendStrength || 0,
-                rangeRatio: data.regime?.metrics?.rangeRatio || data.regime?.rangeRatio || 0.5,
-                returnsStd: data.regime?.metrics?.returnsStd || 0.1,
-                ema20: data.regime?.metrics?.ema20 || 45000,
-                ema50: data.regime?.metrics?.ema50 || 44000,
-                ema200: data.regime?.metrics?.ema200 || 43000
-              }
-            },
-            ts: Date.now(),
-            spread_bps: 2.5, // Mock data - in real implementation get from market data
-            htf: {
-              price: extractPrice()
-            }
-          }
-        },
-        universe: data.universe ? {
-          meta: data.universe.meta || {},
-          market: data.universe.market || {},
-          long: Array.isArray(data.universe.long) ? data.universe.long.slice(0, 10) : [],
-          short: Array.isArray(data.universe.short) ? data.universe.short.slice(0, 10) : []
-        } : null
+        // Pass raw regime data as-is (server extracts what it needs)
+        regime: data.regime,
+        // Pass raw universe data as-is (server extracts what it needs)
+        universe: data.universe
       };
 
-      console.log("🚀 NASA Analysis Input:", JSON.stringify(structuredInput, null, 2));
+      // Fail-fast: if critical data is missing, don't call AI
+      if (!rawInput.symbol) {
+        throw new Error("NEEDS_DATA: Missing anchor symbol");
+      }
+      
+      if (mode === "BRICK1_ONLY" || mode === "BRICK1_PLUS_BRICK2") {
+        if (!rawInput.regime) {
+          throw new Error("NEEDS_DATA: Missing regime data for Brick1 analysis");
+        }
+      }
+      
+      if (mode === "BRICK2_ONLY" || mode === "BRICK1_PLUS_BRICK2") {
+        if (!rawInput.universe || (!rawInput.universe.long?.length && !rawInput.universe.short?.length)) {
+          throw new Error("NEEDS_DATA: Missing universe candidates for Brick2 analysis");
+        }
+      }
 
       const response = await fetch("/api/trading/ai/nasa", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           mode,
-          input: structuredInput
+          input: rawInput
         })
       });
 
