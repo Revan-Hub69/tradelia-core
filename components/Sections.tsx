@@ -1,120 +1,109 @@
 'use client';
 
-import { ReactNode } from 'react';
 import { useInView } from '@/hooks/useAnimations';
+import { useLanguage } from '@/components/LanguageSelector';
 import { Section, Container, Card, Button } from '@/components/UI';
-import { CheckIcon, TargetIcon, AlertIcon, LightbulbIcon, RocketIcon, ClockIcon, LockIcon, BarChartIcon, ShieldIcon, FileTextIcon } from '@/components/Icons';
-import { errorPatterns, evidenceData, dashboardFeatures } from '@/lib/data';
+import { 
+  CheckIcon, 
+  AlertIcon, 
+  ShieldIcon, 
+  BarChartIcon, 
+  LightbulbIcon,
+  RocketIcon,
+  TargetIcon,
+  ClockIcon,
+  LockIcon,
+  FileTextIcon
+} from '@/components/Icons';
 
-interface HeroSectionProps {
-  title: string;
-  subtitle: string;
-  subtitleBold: string;
-}
-
-export const HeroSection = ({ title, subtitle, subtitleBold }: HeroSectionProps) => {
+// 1. Hero Section - Statement chiaro per principianti
+export const HeroSection = () => {
   const { ref, isInView } = useInView();
+  const { t } = useLanguage();
 
   return (
-    <Section className="py-24 lg:py-32 bg-white">
+    <Section variant="lg">
       <Container size="md" center>
-        <div ref={ref} className={`transition-all duration-1000 ${isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <h1 className="text-6xl lg:text-7xl font-black text-gray-900 mb-8 tracking-tight">
-            {title}
+        <div ref={ref} className={`transition-all duration-700 ${isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <h1 className="headline-1 mb-6">
+            {t('hero.title')}
           </h1>
-          <p className="text-2xl lg:text-3xl text-gray-800 mb-6 font-medium leading-tight">
-            {subtitle}<br />
-            <span className="text-gray-900 font-bold">{subtitleBold}</span>
+          
+          <p className="text-lg sm:text-xl mb-2" style={{ color: 'hsl(var(--muted-foreground))' }}>
+            {t('hero.subtitle')}
           </p>
-          
-          <Card className="text-left max-w-2xl mx-auto mb-12">
-            <p className="text-xl text-gray-800 mb-6 leading-relaxed">
-              In <strong className="text-gray-900">pochi click</strong> configura il tuo profilo
-              e ottieni una <strong className="text-gray-900">dashboard personalizzata</strong> per evitare errori crypto.
-            </p>
-            <div className="space-y-3 text-gray-700">
-              {['Nessuna promessa di guadagno', 'Nessun segnale di trading', 'Nessuna pressione ad agire'].map((item, i) => (
-                <p key={i} className="flex items-center gap-3">
-                  <CheckIcon className="w-5 h-5 text-green-600" />
-                  {item}
-                </p>
-              ))}
-            </div>
+          <p className="text-lg sm:text-xl font-semibold mb-8" style={{ color: 'hsl(var(--foreground))' }}>
+            {t('hero.subtitleBold')}
+          </p>
+
+          <p className="body-text mb-8 max-w-2xl mx-auto">
+            {t('hero.description')}
+          </p>
+
+          <Card className="mb-8 max-w-2xl mx-auto">
+            <ul className="space-y-3">
+              {Array.isArray(t('hero.features')) ? (t('hero.features') as string[]).map((feature, index) => (
+                <li key={index} className="flex items-center gap-3">
+                  <CheckIcon className="w-5 h-5 flex-shrink-0" style={{ color: 'hsl(120 60% 50%)' }} />
+                  <span className="body-text">{feature}</span>
+                </li>
+              )) : null}
+            </ul>
           </Card>
-          
-          <div className="space-y-4 mb-8">
-            <Button href="/dashboard" size="md">
-              <TargetIcon className="w-6 h-6" />
-              Accedi alla Dashboard
-            </Button>
-            <p className="text-sm text-gray-500 flex items-center justify-center gap-4">
-              {[
-                { icon: ClockIcon, text: 'Configurazione rapida' },
-                { icon: LockIcon, text: 'Nessuna registrazione' },
-                { icon: BarChartIcon, text: 'Analisi obiettiva' }
-              ].map((item, i) => (
-                <span key={i} className="flex items-center gap-1">
-                  <item.icon className="w-4 h-4" />
-                  {item.text}
-                </span>
-              ))}
-            </p>
-          </div>
-          
-          <Card variant="success" className="max-w-2xl mx-auto">
-            <p className="text-blue-900 font-medium">
-              <span className="font-bold">Metodologia verificabile:</span> Basato su ricerche di Kahneman, Tversky, 
-              Barber & Odean e report regolatori ESMA, SEC, FCA
-            </p>
-          </Card>
+
+          <Button href="/dashboard" size="lg" className="mb-6">
+            {t('hero.cta')}
+          </Button>
+
+          <p className="small-text">
+            {t('hero.disclaimer')}
+          </p>
         </div>
       </Container>
     </Section>
   );
 };
 
-export const ProblemSection = () => {
+// 2. Context Section - Perché esistiamo (errori dei principianti)
+export const ContextSection = () => {
   const { ref, isInView } = useInView();
+  const { t } = useLanguage();
 
   return (
-    <Section className="bg-gray-900 text-white">
-      <Container>
-        <div ref={ref} className={`transition-all duration-1000 ${isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-bold mb-8">
-              Il problema non è il mercato<br />
-              <span className="text-red-400">È partire senza un criterio</span>
-            </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-              La maggior parte delle perdite nel mondo crypto non nasce da previsioni sbagliate,
-              ma da <strong className="text-white">errori iniziali ripetuti</strong>:
-            </p>
-          </div>
+    <Section variant="md" background="muted">
+      <Container size="md" center>
+        <div ref={ref}>
+          <p className="eyebrow-text mb-4">Contesto</p>
+          <h2 className={`headline-2 mb-6 transition-all duration-700 ${isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            {t('problem.title')}<br />
+            <span style={{ color: 'hsl(var(--primary))' }}>{t('problem.titleSecond')}</span>
+          </h2>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-            {errorPatterns.map((error, index) => (
-              <div 
-                key={index} 
-                className={`bg-red-900/30 border border-red-700/50 rounded-xl p-6 hover:bg-red-900/40 transition-all duration-300 ${
-                  isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+          <p className="body-text mb-8 max-w-2xl mx-auto">
+            {t('problem.description')}:
+          </p>
+
+          <div className="grid gap-4 mb-8 max-w-2xl mx-auto">
+            {Array.isArray(t('problem.errors')) ? (t('problem.errors') as string[]).map((error, index) => (
+              <Card 
+                key={index}
+                className={`transition-all duration-500 ${
+                  isInView ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'
                 }`}
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
                 <div className="flex items-start gap-3">
-                  <AlertIcon className="w-6 h-6 text-red-400 flex-shrink-0 mt-1" />
-                  <p className="text-white font-medium leading-relaxed">{error}</p>
+                  <AlertIcon className="w-4 h-4 mt-1 flex-shrink-0" style={{ color: 'hsl(45 60% 50%)' }} />
+                  <span className="body-text">{error}</span>
                 </div>
-              </div>
-            ))}
+              </Card>
+            )) : null}
           </div>
-          
-          <Card className="text-center bg-gray-800 border-gray-700">
-            <p className="text-2xl font-bold mb-4 text-white">
-              Questi errori non sono individuali.<br />
-              <span className="text-yellow-400">Sono pattern documentati.</span>
-            </p>
-            <p className="text-gray-300">
-              Studiati da decenni in finanza comportamentale e confermati dai regolatori
+
+          <Card>
+            <p className="headline-3 mb-2 text-center">
+              {t('problem.conclusion')}<br />
+              <span style={{ color: 'hsl(var(--primary))' }}>{t('problem.conclusionSecond')}</span>
             </p>
           </Card>
         </div>
@@ -123,81 +112,128 @@ export const ProblemSection = () => {
   );
 };
 
-export const EvidenceSection = () => {
+// 3. How It Works Section - 3 step del processo
+export const HowItWorksSection = () => {
   const { ref, isInView } = useInView();
+  const { locale } = useLanguage();
+
+  const steps = {
+    it: [
+      {
+        number: "01",
+        title: "Definisci il tuo profilo",
+        description: "Questionario guidato per identificare obiettivi, orizzonte temporale e tolleranza al rischio basato su framework accademici."
+      },
+      {
+        number: "02", 
+        title: "Analisi di coerenza",
+        description: "Il sistema confronta il tuo profilo con le caratteristiche degli strumenti crypto per identificare incompatibilità."
+      },
+      {
+        number: "03",
+        title: "Dashboard personalizzata",
+        description: "Ricevi analisi continue e alert per mantenere coerenza tra obiettivi e strumenti nel tempo."
+      }
+    ],
+    en: [
+      {
+        number: "01",
+        title: "Define your profile",
+        description: "Guided questionnaire to identify objectives, time horizon and risk tolerance based on academic frameworks."
+      },
+      {
+        number: "02", 
+        title: "Coherence analysis",
+        description: "The system compares your profile with crypto tool characteristics to identify incompatibilities."
+      },
+      {
+        number: "03",
+        title: "Personalized dashboard",
+        description: "Receive continuous analysis and alerts to maintain coherence between objectives and tools over time."
+      }
+    ]
+  };
 
   return (
-    <Section className="bg-white">
-      <Container size="xl">
+    <Section variant="lg">
+      <Container size="md" center>
         <div ref={ref}>
-          <div className="text-center mb-16">
-            <h2 className={`text-4xl lg:text-5xl font-bold text-gray-900 mb-8 transition-all duration-1000 ${
-              isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-            }`}>
-              Errori tipici documentati
-            </h2>
-            <p className="text-xl text-gray-700 max-w-4xl mx-auto">
-              Gli errori più comuni non dipendono dall'esperienza dell'utente,
-              ma da <strong>bias cognitivi</strong> e <strong>mismatch obiettivo–strumento</strong> ampiamente studiati.
-            </p>
-          </div>
+          <p className="eyebrow-text mb-4">Processo</p>
+          <h2 className={`headline-2 mb-12 transition-all duration-700 ${isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            Come funziona l'analisi di coerenza
+          </h2>
           
-          {/* Mobile Cards */}
-          <div className="lg:hidden space-y-6">
-            {evidenceData.map((row, index) => (
+          <div className="space-y-8">
+            {steps[locale].map((step, index) => (
               <Card 
                 key={index}
-                className={`hover:shadow-md transition-all duration-300 ${
-                  isInView ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'
+                interactive
+                className={`transition-all duration-700 ${
+                  isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                 }`}
-                style={{ transitionDelay: `${index * 150}ms` }}
+                style={{ transitionDelay: `${index * 200}ms` }}
               >
-                <div className="flex items-start gap-4 mb-3">
-                  <row.icon className="w-6 h-6 text-gray-600 flex-shrink-0 mt-1" />
-                  <h3 className="font-bold text-gray-900 text-lg">{row.error}</h3>
+                <div className="flex items-start gap-4">
+                  <span className="eyebrow-text px-2 py-1 rounded" style={{ backgroundColor: 'hsl(var(--muted))' }}>
+                    {step.number}
+                  </span>
+                  <div>
+                    <h3 className="headline-3 mb-2">{step.title}</h3>
+                    <p className="body-text">{step.description}</p>
+                  </div>
                 </div>
-                <p className="text-gray-700 pl-10">
-                  <strong>Fonte:</strong> {row.evidence}
-                </p>
               </Card>
             ))}
           </div>
+        </div>
+      </Container>
+    </Section>
+  );
+};
 
-          {/* Desktop Table */}
-          <div className={`hidden lg:block transition-all duration-1000 ${
-            isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}>
-            <Card className="overflow-hidden shadow-sm">
-              <table className="w-full">
-                <thead className="bg-gray-100">
-                  <tr>
-                    <th className="text-left p-8 font-bold text-gray-900 text-xl w-1/2">Errore tipico</th>
-                    <th className="text-left p-8 font-bold text-gray-900 text-xl w-1/2">Evidenza accademica</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {evidenceData.map((row, index) => (
-                    <tr key={index} className="border-t-2 border-gray-100 hover:bg-gray-50 transition-colors">
-                      <td className="p-8 font-semibold text-gray-900 text-lg">
-                        <div className="flex items-center gap-3">
-                          <row.icon className="w-5 h-5 text-gray-600" />
-                          {row.error}
-                        </div>
-                      </td>
-                      <td className="p-8 text-gray-700 text-lg">{row.evidence}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </Card>
-          </div>
-          
-          <Card variant="success" className="mt-8">
-            <div className="flex items-center justify-center gap-3">
-              <LightbulbIcon className="w-6 h-6 text-blue-600" />
-              <p className="text-blue-900 font-bold text-xl text-center">
-                Questi non sono errori casuali. Sono comportamenti ricorrenti osservati nel tempo.
+// 4. Examples Section - Pattern di errore documentati
+export const ExamplesSection = () => {
+  const { ref, isInView } = useInView();
+  const { t } = useLanguage();
+
+  return (
+    <Section variant="md" background="muted">
+      <Container size="md" center>
+        <div ref={ref}>
+          <p className="eyebrow-text mb-4">Esempi</p>
+          <h2 className={`headline-2 mb-6 transition-all duration-700 ${isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            {t('evidence.title')}
+          </h2>
+          <p className="body-text mb-8 max-w-2xl mx-auto">
+            {t('evidence.subtitle')}.
+          </p>
+
+          {/* Statistica ESMA */}
+          <Card className="mb-8">
+            <h3 className="headline-3 mb-4 text-center">{t('statistics.title')}</h3>
+            <p className="body-text mb-6 text-center">
+              {t('statistics.description')} (CFD e strumenti analoghi).
+            </p>
+            
+            <Card variant="error" className="mb-6 text-center">
+              <p className="headline-1 mb-2" style={{color: 'hsl(0 60% 50%)'}}>
+                {t('statistics.percentage')}
               </p>
+              <p className="headline-3 mb-2" style={{color: 'hsl(0 60% 40%)'}}>
+                {t('statistics.result')}
+              </p>
+              <p className="small-text">{t('statistics.source')}</p>
+            </Card>
+            
+            <div className="space-y-3 max-w-xl mx-auto">
+              <div className="flex items-center gap-2">
+                <CheckIcon className="w-4 h-4" style={{color: 'hsl(120 60% 50%)'}} />
+                <span className="body-text">Questo non significa "mai usarli"</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <AlertIcon className="w-4 h-4" style={{color: 'hsl(45 60% 50%)'}} />
+                <span className="body-text">Significa che se l'obiettivo è sbagliato, le probabilità peggiorano</span>
+              </div>
             </div>
           </Card>
         </div>
@@ -206,42 +242,189 @@ export const EvidenceSection = () => {
   );
 };
 
-export const CTASection = () => {
+// 5. Methodology Section - Ricerche accademiche
+export const MethodologySection = () => {
   const { ref, isInView } = useInView();
+  const { locale } = useLanguage();
+
+  const sources = [
+    {
+      authors: "Kahneman & Tversky",
+      work: "Prospect Theory",
+      relevance: locale === 'it' ? "Bias cognitivi nelle decisioni finanziarie" : "Cognitive biases in financial decisions"
+    },
+    {
+      authors: "Barber & Odean", 
+      work: "Trading Is Hazardous to Your Wealth",
+      relevance: locale === 'it' ? "Overconfidence e overtrading nei mercati" : "Overconfidence and overtrading in markets"
+    },
+    {
+      authors: "ESMA",
+      work: "CFD Retail Investor Reports",
+      relevance: locale === 'it' ? "Perdite sistematiche nei prodotti a leva" : "Systematic losses in leveraged products"
+    },
+    {
+      authors: "Thaler & Sunstein",
+      work: "Nudge Theory",
+      relevance: locale === 'it' ? "Architettura delle scelte finanziarie" : "Financial choice architecture"
+    }
+  ];
 
   return (
-    <Section className="bg-gray-900 text-white">
+    <Section variant="lg" id="metodologia">
       <Container size="md" center>
-        <div ref={ref} className={`transition-all duration-1000 ${isInView ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
-          <h2 className="text-5xl lg:text-6xl font-bold mb-8 flex items-center justify-center gap-4">
-            <RocketIcon className="w-12 h-12" />
-            Dashboard Anti-Errori
+        <div ref={ref}>
+          <p className="eyebrow-text mb-4">Metodologia</p>
+          <h2 className={`headline-2 mb-8 transition-all duration-700 ${isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            {locale === 'it' ? 'Ricerche accademiche di riferimento' : 'Academic research references'}
           </h2>
           
-          <div className="mb-8">
-            <Button href="/dashboard" variant="secondary" size="lg">
-              <ClockIcon className="w-6 h-6" />
-              Accedi alla Dashboard Anti-Errori
-            </Button>
-          </div>
-          
-          <div className="space-y-2">
-            <p className="text-gray-400 text-lg flex items-center justify-center gap-6">
-              {[
-                { icon: LockIcon, text: 'Nessuna email' },
-                { icon: ShieldIcon, text: 'Nessuna operazione' },
-                { icon: TargetIcon, text: 'Solo chiarezza decisionale' }
-              ].map((item, i) => (
-                <span key={i} className="flex items-center gap-2">
-                  <item.icon className="w-5 h-5" />
-                  {item.text}
-                </span>
+          <Card className="mb-8">
+            <p className="body-text mb-6">
+              {locale === 'it' 
+                ? 'L\'analisi si basa su decenni di ricerca in finanza comportamentale e sui report dei regolatori finanziari europei.'
+                : 'The analysis is based on decades of behavioral finance research and European financial regulators\' reports.'
+              }
+            </p>
+            
+            <h3 className="headline-3 mb-4">
+              {locale === 'it' ? 'Fonti principali' : 'Main sources'}
+            </h3>
+            
+            <div className="space-y-4">
+              {sources.map((source, index) => (
+                <div 
+                  key={index}
+                  className={`transition-all duration-500 ${
+                    isInView ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'
+                  }`}
+                  style={{ transitionDelay: `${index * 150}ms` }}
+                >
+                  <div className="flex items-start gap-3">
+                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: 'hsl(var(--foreground) / 0.3)' }} />
+                    <div>
+                      <p className="text-sm font-medium" style={{ color: 'hsl(var(--foreground))' }}>
+                        {source.authors} - {source.work}
+                      </p>
+                      <p className="small-text">{source.relevance}</p>
+                    </div>
+                  </div>
+                </div>
               ))}
+            </div>
+          </Card>
+          
+          <p className="small-text text-center">
+            {locale === 'it' 
+              ? 'Tutte le fonti sono pubblicamente verificabili e peer-reviewed.'
+              : 'All sources are publicly verifiable and peer-reviewed.'
+            }
+          </p>
+        </div>
+      </Container>
+    </Section>
+  );
+};
+
+// 6. Limits Section - Onestà intellettuale
+export const LimitsSection = () => {
+  const { ref, isInView } = useInView();
+  const { locale } = useLanguage();
+
+  const limits = {
+    it: [
+      "Non fornisce consigli di investimento personalizzati",
+      "Non predice performance future degli asset",
+      "Non sostituisce consulenza finanziaria professionale", 
+      "Non garantisce risultati di investimento"
+    ],
+    en: [
+      "Does not provide personalized investment advice",
+      "Does not predict future asset performance",
+      "Does not replace professional financial advice",
+      "Does not guarantee investment results"
+    ]
+  };
+
+  return (
+    <Section variant="md" background="muted">
+      <Container size="md" center>
+        <div ref={ref}>
+          <p className="eyebrow-text mb-4">Limiti</p>
+          <h2 className={`headline-2 mb-8 transition-all duration-700 ${isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            {locale === 'it' ? 'Cosa non facciamo' : 'What we don\'t do'}
+          </h2>
+          
+          <Card>
+            <p className="body-text mb-6">
+              {locale === 'it' 
+                ? 'Tradelia è uno strumento educativo per l\'analisi di coerenza. È importante comprendere i suoi limiti operativi.'
+                : 'Tradelia is an educational tool for coherence analysis. It\'s important to understand its operational limits.'
+              }
             </p>
-            <p className="text-gray-500 text-sm">
-              Completamente gratuito · Basato su evidenze accademiche
+            
+            <ul className="space-y-3">
+              {limits[locale].map((limit, index) => (
+                <li key={index} className="flex items-start gap-3">
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: 'hsl(var(--foreground) / 0.3)' }} />
+                  <span className="body-text">{limit}</span>
+                </li>
+              ))}
+            </ul>
+          </Card>
+        </div>
+      </Container>
+    </Section>
+  );
+};
+
+// 7. CTA Section - Call to action discreto
+export const CTASection = () => {
+  const { ref, isInView } = useInView();
+  const { t } = useLanguage();
+
+  return (
+    <Section variant="md">
+      <Container size="md" center>
+        <div ref={ref}>
+          <Card className={`text-center transition-all duration-700 ${isInView ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
+            <h2 className="headline-2 mb-4">
+              {t('cta.title')}
+            </h2>
+            <p className="body-text mb-6">
+              {t('cta.disclaimer')}
             </p>
-          </div>
+            <Button href="/dashboard" size="lg" className="mb-4">
+              {t('cta.button')}
+            </Button>
+            <div className="flex flex-wrap items-center justify-center gap-6 text-sm" style={{ color: 'hsl(var(--muted-foreground))' }}>
+              {Array.isArray(t('cta.benefits')) ? (t('cta.benefits') as string[]).map((benefit, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <CheckIcon className="w-4 h-4" style={{ color: 'hsl(120 60% 50%)' }} />
+                  <span>{benefit}</span>
+                </div>
+              )) : null}
+            </div>
+          </Card>
+        </div>
+      </Container>
+    </Section>
+  );
+};
+
+// 8. Footer Section - Disclaimer legale
+export const FooterSection = () => {
+  const { t } = useLanguage();
+
+  return (
+    <Section variant="sm" background="muted">
+      <Container size="md" center>
+        <div className="text-center">
+          <FileTextIcon className="w-6 h-6 mx-auto mb-4" style={{ color: 'hsl(var(--muted-foreground))' }} />
+          <h3 className="headline-3 mb-4">{t('disclaimer.title')}</h3>
+          <p className="small-text">
+            {t('disclaimer.text')}
+          </p>
         </div>
       </Container>
     </Section>

@@ -3,16 +3,29 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* Tradelia 2026 Design System - Institutional Palette */
+    --background: 0 0% 99%;           /* Bianco caldo istituzionale */
+    --foreground: 220 15% 12%;        /* Grigio scuro blu per testo */
+    --primary: 215 50% 45%;           /* Blu desaturato per accenti */
+    --muted: 220 10% 96%;             /* Grigio chiaro per sfondi */
+    --muted-foreground: 220 10% 40%;  /* Grigio medio per testo secondario */
+    --border: 220 10% 88%;            /* Grigio sottile per bordi */
+  }
+
   html {
     @apply scroll-smooth;
   }
 
   body {
-    @apply bg-white text-gray-900 font-sans antialiased;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    @apply font-sans antialiased;
   }
 
   *:focus-visible {
-    @apply outline-none ring-2 ring-gray-900 ring-offset-2;
+    @apply outline-none ring-2 ring-offset-2;
+    outline-color: hsl(var(--foreground));
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -25,22 +38,72 @@
 }
 
 @layer utilities {
+  /* Tradelia 2026 Typography System */
+  .headline-1 {
+    @apply text-3xl sm:text-4xl lg:text-5xl font-bold;
+    color: hsl(var(--foreground));
+    letter-spacing: -0.02em;
+  }
+
+  .headline-2 {
+    @apply text-xl sm:text-2xl lg:text-3xl font-semibold;
+    color: hsl(var(--foreground));
+    letter-spacing: -0.01em;
+  }
+
+  .headline-3 {
+    @apply text-base sm:text-lg font-medium;
+    color: hsl(var(--foreground));
+  }
+
+  .body-text {
+    @apply text-sm sm:text-base;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .small-text {
+    @apply text-xs;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .eyebrow-text {
+    @apply text-xs uppercase tracking-wide font-medium;
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Tradelia 2026 Spacing System */
+  .section-lg {
+    @apply py-20 sm:py-32;
+  }
+
+  .section-md {
+    @apply py-16 sm:py-24;
+  }
+
+  .section-sm {
+    @apply py-12 sm:py-16;
+  }
+
+  /* Tradelia 2026 Component System */
+  .card-interactive {
+    @apply rounded border p-5 transition-all duration-150;
+    background-color: hsl(var(--background));
+    border-color: hsl(var(--border) / 0.5);
+  }
+
+  .card-interactive:hover {
+    border-color: hsl(var(--border));
+    background-color: hsl(var(--muted) / 0.3);
+    transform: translateY(-1px);
+  }
+
+  .transition-subtle {
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Tradelia 2026 Compliant Animations */
   .animate-fade-in {
-    animation: fadeIn 0.6s ease-out forwards;
-  }
-
-  .animate-slide-up {
-    animation: slideUp 0.8s ease-out forwards;
-  }
-
-  .animate-scale-in {
-    animation: scaleIn 0.5s ease-out forwards;
-  }
-
-  .animate-stagger {
-    opacity: 0;
-    transform: translateY(20px);
-    animation: staggerIn 0.6s ease-out forwards;
+    animation: fadeIn 150ms ease-out forwards;
   }
 
   @keyframes fadeIn {
@@ -48,33 +111,9 @@
     to { opacity: 1; }
   }
 
-  @keyframes slideUp {
-    from { 
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to { 
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes scaleIn {
-    from { 
-      opacity: 0;
-      transform: scale(0.95);
-    }
-    to { 
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-
-  @keyframes staggerIn {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  /* Link hover effect */
+  .link-internal:hover {
+    color: hsl(var(--primary)) !important;
   }
 
   .text-balance {

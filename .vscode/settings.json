@@ -1,1 +1,4 @@
-{\n  \"css.lint.unknownAtRules\": \"ignore\"\n}
+{
+"css.lint.unknownAtRules": "ignore",
+"typescript.autoClosingTags": false
+}
