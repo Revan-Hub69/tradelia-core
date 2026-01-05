@@ -25,14 +25,18 @@ export default function RootLayout({
   return (
     <html lang={defaultLocale} className="scroll-smooth">
       <head>
+        {/* Inter Font */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
         {/* Viewport ottimizzato */}
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-        
+
         {/* Theme color per browser mobile */}
-        <meta name="theme-color" content="#f8f9fa" media="(prefers-color-scheme: light)" />
-        <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)" />
+        <meta name="theme-color" content="#1a1a1a" />
       </head>
-      <body className="antialiased">
+      <body className="antialiased min-h-screen bg-background">
         {/* Header modulare */}
         <Header dictionary={dictionary} locale={defaultLocale} />
         

@@ -4,7 +4,7 @@ export default function HomePage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="section-lg">
+      <section className="section-lg animate-fade-in">
         <div className="mx-auto max-w-2xl px-6 sm:px-8">
           <h1 className="mb-6">
             {dictionary.hero.title}
@@ -45,22 +45,43 @@ export default function HomePage() {
           </h2>
           <div className="space-y-6">
             <div className="rounded border border-border/50 bg-background p-5 card-interactive">
-              <h3 className="mb-2">{dictionary.how.step1.title}</h3>
-              <p className="text-sm text-muted-foreground">
-                {dictionary.how.step1.description}
-              </p>
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                  <span className="text-primary font-bold text-sm">1</span>
+                </div>
+                <div>
+                  <h3 className="mb-2">{dictionary.how.step1.title}</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {dictionary.how.step1.description}
+                  </p>
+                </div>
+              </div>
             </div>
             <div className="rounded border border-border/50 bg-background p-5 card-interactive">
-              <h3 className="mb-2">{dictionary.how.step2.title}</h3>
-              <p className="text-sm text-muted-foreground">
-                {dictionary.how.step2.description}
-              </p>
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                  <span className="text-primary font-bold text-sm">2</span>
+                </div>
+                <div>
+                  <h3 className="mb-2">{dictionary.how.step2.title}</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {dictionary.how.step2.description}
+                  </p>
+                </div>
+              </div>
             </div>
             <div className="rounded border border-border/50 bg-background p-5 card-interactive">
-              <h3 className="mb-2">{dictionary.how.step3.title}</h3>
-              <p className="text-sm text-muted-foreground">
-                {dictionary.how.step3.description}
-              </p>
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                  <span className="text-primary font-bold text-sm">3</span>
+                </div>
+                <div>
+                  <h3 className="mb-2">{dictionary.how.step3.title}</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {dictionary.how.step3.description}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

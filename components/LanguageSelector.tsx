@@ -11,10 +11,13 @@ export default function LanguageSelector({ currentLocale }: LanguageSelectorProp
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="relative">
+    <div className="language-selector relative" suppressHydrationWarning>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-1 px-2 py-1 text-sm text-muted-foreground hover:text-foreground transition-colors border border-border rounded hover:bg-muted/50"
+        aria-expanded={isOpen}
+        aria-haspopup="true"
+        aria-label={`Lingua corrente: ${currentLocale === 'it' ? 'Italiano' : 'English'}. Clicca per cambiare lingua`}
       >
         <span className="font-medium uppercase">{currentLocale}</span>
         <svg 

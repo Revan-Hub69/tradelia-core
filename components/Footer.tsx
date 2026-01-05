@@ -24,22 +24,28 @@ export default function Footer({ dictionary, locale }: FooterProps) {
           
           {/* Footer links */}
           <nav className="flex items-center gap-4 text-xs" aria-label="Link footer">
-            <a 
-              href={`/${locale}/privacy`} 
+            <div className="flex items-center gap-1 text-success">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path d="M4 6V4a2 2 0 114 0v2m-1 3h2m-1-9a1 1 0 011 1v1H3V4a1 1 0 011-1z" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              SSL Secured
+            </div>
+            <a
+              href={`/${locale}/privacy`}
               className="link-internal"
               rel="nofollow"
             >
               {dictionary.footer.privacy}
             </a>
-            <a 
-              href={`/${locale}/disclaimer`} 
+            <a
+              href={`/${locale}/disclaimer`}
               className="link-internal"
               rel="nofollow"
             >
               {dictionary.footer.disclaimer}
             </a>
-            <a 
-              href={`/${locale}/contatti`} 
+            <a
+              href={`/${locale}/contatti`}
               className="link-internal"
             >
               {dictionary.footer.contacts}

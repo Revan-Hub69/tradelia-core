@@ -15,7 +15,7 @@ interface HeaderProps {
 
 export default function Header({ dictionary, locale }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-50 bg-background border-b border-border">
+    <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
       <div className="mx-auto max-w-2xl px-6 sm:px-8">
         <div className="flex h-14 items-center justify-between">
           <Logo />

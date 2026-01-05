@@ -8,6 +8,9 @@ const config: Config = {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    fontFamily: {
+      sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+    },
     extend: {
       colors: {
         background: "hsl(var(--background))",
@@ -22,6 +25,9 @@ const config: Config = {
         },
         border: "hsl(var(--border))",
         accent: "hsl(var(--accent))",
+        success: "hsl(var(--success))",
+        warning: "hsl(var(--warning))",
+        error: "hsl(var(--error))",
         logo: "hsl(var(--logo))",
       },
       letterSpacing: {
@@ -32,16 +38,17 @@ const config: Config = {
         "2xl": "672px",
       },
       fontSize: {
-        // Headline sizes dalle linee guida
-        "3xl": ["1.875rem", { lineHeight: "2.25rem", letterSpacing: "-0.02em" }], // 30px
-        "4xl": ["2.25rem", { lineHeight: "2.5rem", letterSpacing: "-0.02em" }],   // 36px
-        "5xl": ["3rem", { lineHeight: "1", letterSpacing: "-0.02em" }],           // 48px
-        "xl": ["1.25rem", { lineHeight: "1.75rem", letterSpacing: "-0.01em" }],   // 20px
-        "2xl": ["1.5rem", { lineHeight: "2rem", letterSpacing: "-0.01em" }],      // 24px
+        // Headline sizes
+        "5xl": ["3rem", { lineHeight: "1.1", letterSpacing: "-0.02em" }],      // 48px H1
+        "4xl": ["2.25rem", { lineHeight: "1.2", letterSpacing: "-0.02em" }],  // 36px H2
+        "3xl": ["1.875rem", { lineHeight: "1.3", letterSpacing: "-0.02em" }], // 30px H3
+        "2xl": ["1.5rem", { lineHeight: "1.3", letterSpacing: "-0.01em" }],   // 24px
+        "xl": ["1.25rem", { lineHeight: "1.4", letterSpacing: "-0.01em" }],   // 20px
         // Body sizes
-        "sm": ["0.875rem", { lineHeight: "1.25rem" }],  // 14px
-        "base": ["1rem", { lineHeight: "1.5rem" }],     // 16px
-        "xs": ["0.75rem", { lineHeight: "1rem" }],      // 12px
+        "lg": ["1.125rem", { lineHeight: "1.5" }],  // 18px
+        "base": ["1rem", { lineHeight: "1.6" }],    // 16px
+        "sm": ["0.875rem", { lineHeight: "1.5" }],  // 14px
+        "xs": ["0.75rem", { lineHeight: "1.4" }],   // 12px
       },
       spacing: {
         // Section spacing dalle linee guida
