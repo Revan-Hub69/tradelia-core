@@ -1,13 +1,10 @@
 'use client';
 
-import { useLanguage } from '@/components/LanguageSelector';
-import { HeroSection, ProblemSection, EvidenceSection, CTASection } from '@/components/Sections';
+import { HeroSection, ContextSection, CTASection } from '@/components/Sections';
 import { Section, Container, Card } from '@/components/UI';
 import { CheckIcon, AlertIcon, FileTextIcon } from '@/components/Icons';
 
 export default function HomePage() {
-  const { t } = useLanguage();
-
   return (
     <>
       {/* Structured Data */}
@@ -31,15 +28,9 @@ export default function HomePage() {
         }}
       />
 
-      <HeroSection 
-        title={t('hero.title')}
-        subtitle={t('hero.subtitle')}
-        subtitleBold={t('hero.subtitleBold')}
-      />
+      <HeroSection />
 
-      <ProblemSection />
-
-      <EvidenceSection />
+      <ContextSection />
 
       {/* Statistics Section */}
       <Section className="bg-gray-50">
