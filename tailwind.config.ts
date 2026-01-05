@@ -1,116 +1,86 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-  darkMode: ["class", '[data-theme="dark"]'],
+  darkMode: ["class"],
   content: [
-    "./pages/**/*.{ts,tsx}",
-    "./components/**/*.{ts,tsx}",
-    "./app/**/*.{ts,tsx}",
-    "./src/**/*.{ts,tsx}",
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  prefix: "",
   theme: {
-    container: {
-      center: true,
-      padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
-    },
     extend: {
-      fontFamily: {
-        sans: ['var(--font-sora)', 'Sora', 'system-ui', 'sans-serif'],
-        heading: ['var(--font-fraunces)', 'Fraunces', 'Georgia', 'serif'],
-        mono: ['var(--font-roboto-mono)', 'Roboto Mono', 'Monaco', 'monospace'],
-      },
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
         },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
         },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
-        },
-        
-        /* Semantic Design Tokens (WCAG AA Compliant) */
-        'text-primary': "hsl(var(--text-primary))",
-        'text-secondary': "hsl(var(--text-secondary))",
-        'text-muted': "hsl(var(--text-muted))",
-        'text-inverse': "hsl(var(--text-inverse))",
-        
-        'border-default': "hsl(var(--border-default))",
-        'border-subtle': "hsl(var(--border-subtle))",
-        'border-strong': "hsl(var(--border-strong))",
-        
-        'focus-ring': "hsl(var(--focus-ring))",
-        'focus-ring-offset': "hsl(var(--focus-ring-offset))",
-        
-        /* Status Colors */
-        success: {
-          DEFAULT: "hsl(var(--success))",
-          foreground: "hsl(var(--success-foreground))",
-        },
-        warning: {
-          DEFAULT: "hsl(var(--warning))",
-          foreground: "hsl(var(--warning-foreground))",
-        },
-        error: {
-          DEFAULT: "hsl(var(--error))",
-          foreground: "hsl(var(--error-foreground))",
-        },
-        info: {
-          DEFAULT: "hsl(var(--info))",
-          foreground: "hsl(var(--info-foreground))",
-        },
+        border: "hsl(var(--border))",
+        accent: "hsl(var(--accent))",
+        logo: "hsl(var(--logo))",
+      },
+      letterSpacing: {
+        tight: "-0.02em",
+        snug: "-0.01em",
+      },
+      maxWidth: {
+        "2xl": "672px",
+      },
+      fontSize: {
+        // Headline sizes dalle linee guida
+        "3xl": ["1.875rem", { lineHeight: "2.25rem", letterSpacing: "-0.02em" }], // 30px
+        "4xl": ["2.25rem", { lineHeight: "2.5rem", letterSpacing: "-0.02em" }],   // 36px
+        "5xl": ["3rem", { lineHeight: "1", letterSpacing: "-0.02em" }],           // 48px
+        "xl": ["1.25rem", { lineHeight: "1.75rem", letterSpacing: "-0.01em" }],   // 20px
+        "2xl": ["1.5rem", { lineHeight: "2rem", letterSpacing: "-0.01em" }],      // 24px
+        // Body sizes
+        "sm": ["0.875rem", { lineHeight: "1.25rem" }],  // 14px
+        "base": ["1rem", { lineHeight: "1.5rem" }],     // 16px
+        "xs": ["0.75rem", { lineHeight: "1rem" }],      // 12px
+      },
+      spacing: {
+        // Section spacing dalle linee guida
+        "12": "3rem",   // section-sm py-12
+        "16": "4rem",   // section-sm sm:py-16
+        "20": "5rem",   // section-lg py-20
+        "24": "6rem",   // section-md sm:py-24
+        "32": "8rem",   // section-lg sm:py-32
+        // Header height
+        "14": "3.5rem", // 56px header height
+      },
+      transitionDuration: {
+        "150": "150ms",
+      },
+      transitionTimingFunction: {
+        subtle: "cubic-bezier(0.4, 0, 0.2, 1)",
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        DEFAULT: "0.375rem", // 6px default radius
       },
-      keyframes: {
-        "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
-        },
-        "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
-        },
+      minHeight: {
+        "44": "2.75rem", // 44px minimum touch target
       },
-      animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
+      screens: {
+        'xs': '475px',
+        'sm': '640px',
+        'md': '768px',
+        'lg': '1024px',
+        'xl': '1280px',
+        '2xl': '1536px',
+        // Breakpoint per print
+        'print': { 'raw': 'print' },
+        // Breakpoint per reduced motion
+        'motion-safe': { 'raw': '(prefers-reduced-motion: no-preference)' },
+        'motion-reduce': { 'raw': '(prefers-reduced-motion: reduce)' },
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [],
 };
 
 export default config;

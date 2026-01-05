@@ -1,79 +1,48 @@
-import type { ReactNode } from "react";
-import type { Metadata, Viewport } from "next";
-import Script from "next/script";
+import type { Metadata } from "next";
+import { dictionary, defaultLocale, localeMetadata } from '@/lib/i18n';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import "./globals.css";
-import { SiteHeaderGate } from "@/components/site-header-gate";
-import { fraunces, sora } from "@/lib/fonts";
 
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
-  maximumScale: 5,
-  userScalable: true,
-};
-
+// Metadata ottimizzati per SEO e performance
 export const metadata: Metadata = {
-  metadataBase: new URL("https://tradelia.org"),
-  title: {
-    default: "Tradelia | Verifica decisionale",
-    template: "%s | Tradelia",
-  },
-  description:
-    "Sistema che verifica la compatibilita tra obiettivi dichiarati e caratteristiche reali di broker, wallet, exchange, conti deposito e strumenti di pagamento.",
+  ...localeMetadata[defaultLocale],
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "48x48", type: "image/x-icon" },
       { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "32x32" }
     ],
-    shortcut: [{ url: "/favicon.ico", type: "image/x-icon" }],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+    apple: "/apple-touch-icon.png",
   },
   manifest: "/site.webmanifest",
-  keywords: [
-    "compatibilita finanziaria",
-    "broker",
-    "exchange",
-    "wallet",
-    "conti deposito",
-    "strumenti di pagamento",
-    "risk management",
-    "decision science",
-    "MiFID",
-    "due diligence",
-    "fintech",
-  ],
-  authors: [{ name: "Tradelia Team" }],
-  creator: "Tradelia",
-  publisher: "Tradelia",
 };
 
-interface RootLayoutProps {
-  children: ReactNode;
-}
-
-export default function RootLayout({ children }: RootLayoutProps) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html
-      lang="it"
-      className={`${sora.variable} ${fraunces.variable}`}
-      data-theme="light"
-      style={{ colorScheme: "light" }}
-      suppressHydrationWarning
-    >
-      <body className="bg-background text-foreground antialiased font-sans">
-        <Script
-          id="theme-initializer"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{
-            __html:
-              '(function(){try{var t="tradelia-theme";var e=localStorage.getItem(t);var n=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";var r=e==="light"||e==="dark"?e:n;document.documentElement.dataset.theme=r;document.documentElement.style.colorScheme=r;}catch(o){}})();',
-          }}
-        />
-        <a href="#main-content" className="skip-link">
-          Salta al contenuto
-        </a>
-        <SiteHeaderGate />
-        {children}
+    <html lang={defaultLocale} className="scroll-smooth">
+      <head>
+        {/* Viewport ottimizzato */}
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        
+        {/* Theme color per browser mobile */}
+        <meta name="theme-color" content="#f8f9fa" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)" />
+      </head>
+      <body className="antialiased">
+        {/* Header modulare */}
+        <Header dictionary={dictionary} locale={defaultLocale} />
+        
+        {/* Main content con ID per skip link */}
+        <main id="main-content" role="main">
+          {children}
+        </main>
+        
+        {/* Footer modulare */}
+        <Footer dictionary={dictionary} locale={defaultLocale} />
       </body>
     </html>
   );
