@@ -39,8 +39,17 @@ export default function Logo() {
         <div className="absolute inset-0 rounded-full bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm -z-10" />
       </div>
       <span className="font-semibold transition-all duration-300 group-hover:text-primary relative">
-        Tradelia
-        <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-primary/60 transition-all duration-300 group-hover:w-full" />
+        <span className="text-muted-foreground relative">
+          T
+          <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
+        </span>
+        <span className="text-foreground relative">
+          <span className="relative">
+            r
+            <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
+          </span>
+          adelia
+        </span>
       </span>
     </Link>
   );

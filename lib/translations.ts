@@ -11,44 +11,45 @@ export const translations = {
       cta: 'Accedi alla dashboard',
       features: [
         'Nessun account',
-        'Nessun deposito', 
+        'Nessun deposito',
         'Solo educazione'
       ]
     },
     research: {
       eyebrow: 'Ricerca comportamentale',
-      title: 'Errori documentati dalla letteratura accademica',
-      subtitle: 'Studi peer-reviewed identificano pattern ricorrenti negli errori dei trader retail',
+      title: 'Errori comuni documentati dalla ricerca accademica',
+      subtitle: 'Studi peer-reviewed identificano pattern ricorrenti negli errori di chi si avvicina agli investimenti',
       overconfidence: {
-        title: 'Overconfidence Bias',
-        description: 'I trader retail sovrastimano sistematicamente le proprie capacità, portando a scelte di strumenti inadeguati al livello di esperienza.',
+        title: 'Eccesso di fiducia',
+        description: 'Chi inizia tende a sovrastimare le proprie capacità di comprensione, scegliendo strumenti troppo complessi per il proprio livello di esperienza.',
         source: 'Barber, B. M., & Odean, T. (2001). Boys will be boys: Gender, overconfidence, and common stock investment. The Quarterly Journal of Economics, 116(1), 261-292.'
       },
       disposition: {
-        title: 'Disposition Effect',
-        description: 'Tendenza a vendere asset in guadagno troppo presto e mantenere asset in perdita troppo a lungo, amplificata dalla volatilità crypto.',
+        title: 'Decisioni emotive',
+        description: 'Tendenza a vendere quando si guadagna (per paura di perdere) e tenere quando si perde (sperando di recuperare), amplificata dalla volatilità crypto.',
         source: 'Shefrin, H., & Statman, M. (1985). The disposition to sell winners too early and ride losers too long. The Journal of Finance, 40(3), 777-790.'
       },
       herding: {
-        title: 'Herding Behavior',
-        description: 'Imitazione delle scelte altrui senza comprensione del contesto, particolarmente pronunciata nei mercati crypto per effetto social media.',
+        title: 'Imitazione sociale',
+        description: 'Copiare le scelte altrui senza comprendere il contesto, particolarmente comune nei mercati crypto per effetto social media e influencer.',
         source: 'Bikhchandani, S., Hirshleifer, D., & Welch, I. (1992). A theory of fads, fashion, custom, and cultural change as informational cascades. Journal of Political Economy, 100(5), 992-1026.'
       }
     },
     howItWorks: {
       title: 'Come funziona',
-      subtitle: 'Tre step per verificare la coerenza tra i tuoi obiettivi e gli strumenti scelti.',
+      titleWithLogo: true, // Flag per mostrare logo inline
+      subtitle: 'Strumento educativo in tre step per identificare potenziali incompatibilità tra obiettivi e strumenti crypto.',
       step1: {
-        title: 'Scegli l\'obiettivo',
-        description: 'Cosa vuoi fare davvero: esplorare, capire, acquistare con prudenza.'
+        title: 'Definisci il tuo obiettivo educativo',
+        description: 'Indica cosa vuoi apprendere: comprensione generale, informazioni su primo acquisto, o approfondimento specifico.'
       },
       step2: {
-        title: 'Leggi il contesto',
-        description: 'Ti mostriamo "dove sei" nel mercato e cosa significa per un principiante.'
+        title: 'Consulta il contesto informativo',
+        description: 'Accedi a informazioni educative sul mercato crypto attuale e cosa significa per chi inizia, senza tecnicismi.'
       },
       step3: {
-        title: 'Ricevi un percorso guidato',
-        description: 'Pochi strumenti, spiegati bene, con errori tipici evidenziati prima.'
+        title: 'Ricevi informazioni educative',
+        description: 'Contenuti informativi su strumenti coerenti al tuo obiettivo educativo e avvisi sui rischi comuni documentati.'
       }
     },
     differentiator: {
@@ -135,18 +136,18 @@ export const translations = {
     },
     howItWorks: {
       title: 'How it works',
-      subtitle: 'Three steps to verify coherence between your objectives and chosen tools.',
+      subtitle: 'Guided dashboard in three steps to identify incompatibilities between objectives and crypto tools.',
       step1: {
-        title: 'Choose objective',
-        description: 'What you really want to do: explore, understand, buy with prudence.'
+        title: 'Define your objective',
+        description: 'Select what you want to achieve: general understanding, safe first purchase, or specific deep-dive.'
       },
       step2: {
-        title: 'Read context',
-        description: 'We show you "where you are" in the market and what it means for a beginner.'
+        title: 'Analyze current context',
+        description: 'Get an overview of the current crypto market and what it means for beginners, without jargon.'
       },
       step3: {
-        title: 'Get guided path',
-        description: 'Few tools, well explained, with typical errors highlighted beforehand.'
+        title: 'Get educational information',
+        description: 'Educational content on tools coherent to your objective and alerts on common documented risks.'
       }
     },
     differentiator: {

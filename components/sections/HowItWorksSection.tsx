@@ -47,7 +47,7 @@ export default function HowItWorksSection() {
             id="how-it-works-title"
             className="text-xl sm:text-2xl lg:text-3xl font-semibold text-foreground leading-tight tracking-tight mb-4"
           >
-            {howItWorks.title}
+            Come funziona <span className="font-semibold"><span className="text-muted-foreground">T</span><span className="text-foreground">radelia</span></span>
           </h2>
           <p className="text-sm sm:text-base text-muted-foreground">
             {howItWorks.subtitle}

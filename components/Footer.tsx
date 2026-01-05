@@ -38,13 +38,13 @@ export function Footer() {
           {/* Links Essenziali */}
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4 border-t border-border/30">
             <div className="flex gap-6 text-xs text-muted-foreground">
-              <a href="/privacy" className="hover:text-foreground transition-subtle link-internal">
+              <a href="/privacy" className="hover:text-foreground transition-subtle link-tech">
                 Privacy
               </a>
-              <a href="/terms" className="hover:text-foreground transition-subtle link-internal">
+              <a href="/terms" className="hover:text-foreground transition-subtle link-tech">
                 Termini
               </a>
-              <a href="/methodology" className="hover:text-foreground transition-subtle link-internal">
+              <a href="/methodology" className="hover:text-foreground transition-subtle link-tech">
                 Metodologia
               </a>
             </div>
