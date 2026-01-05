@@ -4,54 +4,36 @@ export default function HomePage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="section-xl relative overflow-hidden">
-        {/* Geometric pattern background */}
-        <div className="absolute inset-0">
-          <div 
-            className="w-full h-full opacity-40" 
-            style={{
-              backgroundImage: `
-                radial-gradient(circle at 1px 1px, #64748b 1px, transparent 0)
-              `,
-              backgroundSize: '20px 20px'
-            }}
-          />
-        </div>
-        
-        {/* Floating geometric elements */}
-        <div className="absolute top-20 left-10 w-4 h-4 border border-primary-300/30 rotate-45 animate-float" style={{ animationDelay: '0s' }} />
-        <div className="absolute top-32 right-20 w-3 h-3 bg-primary-400/20 rounded-full animate-float" style={{ animationDelay: '2s' }} />
-        <div className="absolute bottom-40 left-1/4 w-2 h-2 bg-primary-500/30 rotate-12 animate-float" style={{ animationDelay: '4s' }} />
-        
-        <div className="container-xs text-center relative z-10">
+      <section className="section-xl bg-gradient-to-br from-gray-50 to-white">
+        <div className="container-xs text-center">
           <div className="animate-in">
-            <h1 className="mb-4 text-5xl lg:text-6xl font-bold tracking-tight">
+            <h1 className="mb-6 text-5xl lg:text-6xl font-bold tracking-tight text-gray-900">
               TRADELIA
             </h1>
-            <p className="mb-8 text-xl lg:text-2xl text-muted-foreground font-medium">
+            <p className="mb-8 text-xl lg:text-2xl text-gray-700 font-medium max-w-3xl mx-auto">
               Crypto ti incuriosiscono,<br />
-              <span className="text-foreground">ma non vuoi partire facendo errori evitabili?</span>
+              <span className="text-gray-900 font-semibold">ma non vuoi partire facendo errori evitabili?</span>
             </p>
           </div>
           
           <div className="animate-up" style={{ animationDelay: '200ms' }}>
-            <div className="card p-8 mb-8 text-left max-w-2xl mx-auto">
-              <p className="text-lg mb-4">
-                In <span className="font-semibold text-primary-600">60 secondi</span> chiarisci cosa vuoi davvero fare
+            <div className="bg-white border-2 border-gray-200 rounded-xl p-8 mb-8 text-left max-w-2xl mx-auto shadow-lg">
+              <p className="text-lg mb-4 text-gray-800">
+                In <span className="font-bold text-blue-600">60 secondi</span> chiarisci cosa vuoi davvero fare
                 e ottieni un check di coerenza decisionale basato su evidenze accademiche.
               </p>
-              <div className="space-y-2 text-muted-foreground">
+              <div className="space-y-2 text-gray-600">
                 <p>• Nessuna promessa</p>
                 <p>• Nessun segnale</p>
                 <p>• Nessuna pressione ad agire</p>
               </div>
             </div>
             
-            <a href="#check" className="btn-primary btn-lg mb-4">
+            <a href="#check" className="inline-flex items-center px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl mb-4">
               → Inizia dal tuo obiettivo
             </a>
             
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-gray-500">
               Nessuna registrazione · Nessuna operazione · Check guidato (60s)
             </p>
           </div>
@@ -59,14 +41,14 @@ export default function HomePage() {
       </section>
 
       {/* Problem Section */}
-      <section className="section bg-muted/50">
+      <section className="section bg-white">
         <div className="container-xs">
           <div className="text-center mb-12">
-            <h2 className="mb-6 text-3xl lg:text-4xl font-semibold">
+            <h2 className="mb-6 text-3xl lg:text-4xl font-bold text-gray-900">
               Il problema non è il mercato<br />
-              <span className="text-primary-600">È partire senza un criterio</span>
+              <span className="text-blue-600">È partire senza un criterio</span>
             </h2>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+            <p className="text-lg text-gray-700 max-w-3xl mx-auto">
               La maggior parte delle perdite nel mondo crypto non nasce da previsioni sbagliate,
               ma da errori iniziali ripetuti:
             </p>
@@ -80,48 +62,48 @@ export default function HomePage() {
               'esposizione eccessiva nelle prime fasi',
               'decisioni emotive (FOMO, panico, overconfidence)'
             ].map((error, index) => (
-              <div key={index} className="card p-4 interactive">
+              <div key={index} className="bg-red-50 border border-red-200 rounded-lg p-4 hover:bg-red-100 transition-colors">
                 <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 bg-error-500 rounded-full mt-2 flex-shrink-0" />
-                  <p className="text-muted-foreground">{error}</p>
+                  <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0" />
+                  <p className="text-gray-800 font-medium">{error}</p>
                 </div>
               </div>
             ))}
           </div>
           
           <div className="text-center mt-8">
-            <p className="text-lg font-medium">
+            <p className="text-lg font-semibold text-gray-900">
               Questi errori non sono individuali.<br />
-              <span className="text-primary-600">Sono pattern documentati.</span>
+              <span className="text-blue-600">Sono pattern documentati.</span>
             </p>
           </div>
         </div>
       </section>
 
       {/* Evidence Table Section */}
-      <section className="section">
+      <section className="section bg-gray-50">
         <div className="container-xs">
           <div className="text-center mb-12">
-            <h2 className="mb-6">
+            <h2 className="mb-6 text-3xl lg:text-4xl font-bold text-gray-900">
               Errori tipici all'inizio<br />
-              <span className="text-muted-foreground">(e perché non sono opinioni)</span>
+              <span className="text-gray-600 font-normal">(e perché non sono opinioni)</span>
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-gray-700">
               Gli errori più comuni non dipendono dall'esperienza dell'utente,
               ma da bias cognitivi e mismatch obiettivo–strumento ampiamente studiati.
             </p>
           </div>
           
-          <div className="card overflow-hidden">
+          <div className="bg-white rounded-xl border-2 border-gray-200 overflow-hidden shadow-lg">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-muted/50">
+                <thead className="bg-gray-100">
                   <tr>
-                    <th className="text-left p-4 font-semibold">Errore tipico</th>
-                    <th className="text-left p-4 font-semibold">Evidenza accademica / regolatoria</th>
+                    <th className="text-left p-6 font-bold text-gray-900 text-lg">Errore tipico</th>
+                    <th className="text-left p-6 font-bold text-gray-900 text-lg">Evidenza accademica / regolatoria</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y">
+                <tbody className="divide-y divide-gray-200">
                   {[
                     {
                       error: 'Usare leva o derivati pensando di fare "lungo periodo"',
@@ -144,17 +126,17 @@ export default function HomePage() {
                       evidence: 'Overconfidence bias · Illusione di controllo (Kahneman & Tversky)'
                     }
                   ].map((row, index) => (
-                    <tr key={index} className="hover:bg-muted/30 transition-colors">
-                      <td className="p-4 font-medium">{row.error}</td>
-                      <td className="p-4 text-muted-foreground">{row.evidence}</td>
+                    <tr key={index} className="hover:bg-blue-50 transition-colors">
+                      <td className="p-6 font-semibold text-gray-900">{row.error}</td>
+                      <td className="p-6 text-gray-700">{row.evidence}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
             
-            <div className="p-6 bg-primary-50 border-t">
-              <p className="text-primary-800 font-medium">
+            <div className="p-6 bg-blue-50 border-t-2 border-blue-200">
+              <p className="text-blue-800 font-semibold text-lg">
                 👉 Questi non sono errori casuali. Sono comportamenti ricorrenti osservati nel tempo.
               </p>
             </div>
