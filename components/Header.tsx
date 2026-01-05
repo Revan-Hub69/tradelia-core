@@ -1,43 +1,29 @@
 import Logo from './Logo';
 import LanguageSelector from './LanguageSelector';
-import { type Locale } from '@/lib/i18n';
 
-interface HeaderProps {
-  dictionary: {
-    nav: {
-      methodology: string;
-      verify: string;
-      home: string;
-    };
-  };
-  locale: Locale;
-}
-
-export default function Header({ dictionary, locale }: HeaderProps) {
+export default function Header() {
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/70 shadow-sm">
-      <div className="container flex h-14 items-center">
+    <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur border-b border-gray-200">
+      <div className="max-w-7xl mx-auto px-6 flex h-16 items-center justify-between">
         <Logo />
         
-        <div className="flex flex-1 items-center justify-end space-x-4">
-          <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
+        <div className="flex items-center gap-6">
+          <nav className="hidden md:flex items-center gap-8">
             <a 
               href="#metodologia" 
-              className="transition-all duration-300 hover:text-primary-600 text-muted-foreground relative group"
+              className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
             >
-              {dictionary.nav.methodology}
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary-500 to-primary-600 transition-all duration-300 group-hover:w-full" />
+              Metodologia
             </a>
             <a 
-              href="#verifica" 
-              className="transition-all duration-300 hover:text-primary-600 text-muted-foreground relative group"
+              href="#check" 
+              className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
             >
-              {dictionary.nav.verify}
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary-500 to-primary-600 transition-all duration-300 group-hover:w-full" />
+              Verifica
             </a>
           </nav>
           
-          <LanguageSelector currentLocale={locale} />
+          <LanguageSelector />
         </div>
       </div>
     </header>

@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import { dictionary, defaultLocale, localeMetadata } from '@/lib/i18n';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import "./globals.css";
 
-// Metadata ottimizzati per SEO e performance
 export const metadata: Metadata = {
-  ...localeMetadata[defaultLocale],
+  title: "Tradelia - Check di coerenza crypto",
+  description: "Verifica la coerenza tra i tuoi obiettivi e gli strumenti crypto in 60 secondi",
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },
@@ -23,30 +22,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang={defaultLocale} className="scroll-smooth">
+    <html lang="it" className="scroll-smooth">
       <head>
-        {/* Inter Font */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-
-        {/* Viewport ottimizzato */}
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-
-        {/* Theme color per browser mobile */}
-        <meta name="theme-color" content="#1a1a1a" />
+        <meta name="theme-color" content="#1f2937" />
       </head>
-      <body className="antialiased min-h-screen bg-background">
-        {/* Header modulare */}
-        <Header dictionary={dictionary} locale={defaultLocale} />
-        
-        {/* Main content con ID per skip link */}
+      <body className="antialiased min-h-screen bg-white">
+        <Header />
         <main id="main-content" role="main">
           {children}
         </main>
-        
-        {/* Footer modulare */}
-        <Footer dictionary={dictionary} locale={defaultLocale} />
+        <Footer />
       </body>
     </html>
   );

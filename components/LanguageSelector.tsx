@@ -1,81 +1,55 @@
 'use client';
 
 import { useState } from 'react';
-import { locales, type Locale, getDictionary } from '@/lib/i18n';
+
+const locales = ['it', 'en'] as const;
+type Locale = typeof locales[number];
 
 interface LanguageSelectorProps {
-  currentLocale: Locale;
-  onLocaleChange?: (locale: Locale) => void;
+  currentLocale?: Locale;
 }
 
-export default function LanguageSelector({ currentLocale, onLocaleChange }: LanguageSelectorProps) {
+export default function LanguageSelector({ currentLocale = 'it' }: LanguageSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedLocale, setSelectedLocale] = useState<Locale>(currentLocale);
 
   const handleLocaleChange = (locale: Locale) => {
+    setSelectedLocale(locale);
     setIsOpen(false);
-    if (onLocaleChange) {
-      onLocaleChange(locale);
-    } else {
-      // Fallback: reload page with new locale
-      window.location.href = `/${locale}`;
-    }
+    // In a real app, this would trigger a route change or context update
+    console.log(`Language changed to: ${locale}`);
   };
 
   const getLanguageName = (locale: Locale) => {
-    const names = {
-      it: 'Italiano',
-      en: 'English'
-    };
-    return names[locale];
+    return locale === 'it' ? 'Italiano' : 'English';
   };
 
   return (
-    <div className="language-selector relative" suppressHydrationWarning>
+    <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 transition-all duration-300 border border-gray-300 rounded-md hover:bg-gray-50 relative group"
-        aria-expanded={isOpen}
-        aria-haspopup="true"
-        aria-label={`Lingua corrente: ${getLanguageName(currentLocale)}. Clicca per cambiare lingua`}
+        className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
       >
-        <span className="font-medium uppercase">{currentLocale}</span>
-        <svg 
-          width="14" 
-          height="14" 
-          viewBox="0 0 14 14" 
-          fill="none"
-          className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
-        >
-          <path 
-            d="M3.5 5.25L7 8.75L10.5 5.25" 
-            stroke="currentColor" 
-            strokeWidth="1.5" 
-            strokeLinecap="round" 
-            strokeLinejoin="round"
-          />
+        <span className="uppercase">{selectedLocale}</span>
+        <svg className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
-        <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-primary-500 transition-all duration-300 group-hover:w-full" />
       </button>
       
       {isOpen && (
         <>
-          <div 
-            className="fixed inset-0 z-10" 
-            onClick={() => setIsOpen(false)}
-          />
-          <div className="absolute right-0 top-full mt-1 py-1 bg-white border border-gray-200 rounded-md shadow-lg z-20 min-w-[120px]">
+          <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
+          <div className="absolute right-0 top-full mt-1 py-1 bg-white border border-gray-200 rounded-lg shadow-lg z-20 min-w-[140px]">
             {locales.map((locale) => (
               <button
                 key={locale}
                 onClick={() => handleLocaleChange(locale)}
-                className={`w-full px-3 py-2 text-left text-sm transition-colors hover:bg-gray-50 ${
-                  locale === currentLocale 
-                    ? 'text-primary-600 font-medium bg-primary-50' 
-                    : 'text-gray-700 hover:text-gray-900'
+                className={`w-full px-4 py-2 text-left text-sm hover:bg-gray-50 transition-colors ${
+                  locale === selectedLocale ? 'text-gray-900 font-medium bg-gray-50' : 'text-gray-700'
                 }`}
               >
                 <span className="uppercase font-medium">{locale}</span>
-                <span className="ml-2 text-xs">{getLanguageName(locale)}</span>
+                <span className="ml-2 text-xs text-gray-500">{getLanguageName(locale)}</span>
               </button>
             ))}
           </div>
