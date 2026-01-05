@@ -4,143 +4,212 @@
 
 @layer base {
   :root {
-    /* Tradelia 2026 Design System - Light Mode */
-    --background: 0 0% 99%;           /* Bianco caldo istituzionale */
-    --foreground: 220 15% 12%;        /* Grigio scuro blu per testo */
-    --primary: 215 50% 45%;           /* Blu desaturato per accenti */
-    --muted: 220 10% 96%;             /* Grigio chiaro per sfondi */
-    --muted-foreground: 220 10% 40%;  /* Grigio medio per testo secondario */
-    --border: 220 10% 88%;            /* Grigio sottile per bordi */
+    /* Tradelia 2026 - Palette Tech Migliorata */
+    --background: 0 0% 98%;           /* Bianco più contrastato */
+    --foreground: 220 20% 8%;         /* Nero più deciso */
+    --primary: 215 60% 40%;           /* Blu più saturo ma istituzionale */
+    --muted: 220 15% 94%;             /* Grigio più contrastato */
+    --muted-foreground: 220 15% 35%;  /* Grigio più scuro */
+    --border: 220 15% 85%;            /* Bordi più visibili */
+    --accent: 220 25% 92%;            /* Nuovo: per sezioni alternate */
   }
 
   .dark {
-    /* Tradelia 2026 Design System - Dark Mode */
-    --background: 220 15% 8%;
+    --background: 220 20% 6%;
     --foreground: 220 10% 95%;
-    --primary: 215 55% 55%;
-    --muted: 220 15% 15%;
-    --muted-foreground: 220 10% 60%;
-    --border: 220 15% 20%;
+    --primary: 215 65% 50%;
+    --muted: 220 20% 12%;
+    --muted-foreground: 220 15% 65%;
+    --border: 220 20% 18%;
+    --accent: 220 25% 10%;
+  }
+
+  * {
+    @apply border-border;
   }
 
   html {
     @apply scroll-smooth;
+    font-feature-settings: "rlig" 1, "calt" 1, "kern" 1, "liga" 1;
   }
 
   body {
-    background-color: hsl(var(--background));
-    color: hsl(var(--foreground));
-    @apply font-sans antialiased;
+    @apply bg-background text-foreground font-sans antialiased;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   *:focus-visible {
-    @apply outline-none ring-2 ring-offset-2;
-    outline-color: hsl(var(--foreground));
+    @apply outline-none ring-2 ring-primary/60 ring-offset-2 ring-offset-background;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    * {
+    *, *::before, *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
     }
   }
 }
 
 @layer utilities {
-  /* Tradelia 2026 Typography System */
-  .headline-1 {
-    @apply text-3xl sm:text-4xl lg:text-5xl font-bold;
-    color: hsl(var(--foreground));
-    letter-spacing: -0.02em;
-  }
-
-  .headline-2 {
-    @apply text-xl sm:text-2xl lg:text-3xl font-semibold;
-    color: hsl(var(--foreground));
-    letter-spacing: -0.01em;
-  }
-
-  .headline-3 {
-    @apply text-base sm:text-lg font-medium;
-    color: hsl(var(--foreground));
-  }
-
-  .body-text {
-    @apply text-sm sm:text-base;
-    color: hsl(var(--muted-foreground));
-  }
-
-  .small-text {
-    @apply text-xs;
-    color: hsl(var(--muted-foreground));
-  }
-
-  .eyebrow-text {
-    @apply text-xs uppercase tracking-wide font-medium;
-    color: hsl(var(--muted-foreground));
-  }
-
-  /* Tradelia 2026 Spacing System */
-  .section-lg {
-    @apply py-20 sm:py-32;
-  }
-
-  .section-md {
-    @apply py-16 sm:py-24;
-  }
-
-  .section-sm {
-    @apply py-12 sm:py-16;
-  }
-
-  /* Tradelia 2026 Component System */
-  .card-interactive {
-    @apply rounded border p-5 transition-all duration-150;
-    background-color: hsl(var(--background));
-    border-color: hsl(var(--border) / 0.5);
-  }
-
-  .card-interactive:hover {
-    border-color: hsl(var(--border));
-    background-color: hsl(var(--muted) / 0.3);
-    transform: translateY(-1px);
-  }
-
+  /* Transition Subtle - Design Guide Compliant */
   .transition-subtle {
     transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Tradelia 2026 Compliant Animations */
-  .animate-fade-in {
-    animation: fadeIn 150ms ease-out forwards;
+  /* Tech Interactions - Design Guide Compliant */
+  .btn-tech {
+    @apply bg-foreground text-background h-10 px-6 text-sm font-medium rounded;
+    @apply transition-subtle;
+    @apply hover:shadow-lg hover:shadow-foreground/10;
+    @apply active:scale-[0.98];
+    @apply focus:ring-2 focus:ring-primary/60 focus:ring-offset-2;
+    @apply relative overflow-hidden cursor-pointer;
   }
 
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  .btn-tech::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-background/15 to-transparent;
+    @apply -translate-x-full transition-transform duration-500;
   }
 
-  /* Link hover effect */
+  .btn-tech:hover::before {
+    @apply translate-x-full;
+  }
+
+  .btn-tech:active {
+    @apply bg-foreground/90;
+  }
+
+  /* Card Interactive - Design Guide Compliant */
+  .card-interactive {
+    @apply rounded border border-border/50 bg-background p-5;
+    @apply transition-subtle;
+  }
+
+  .card-interactive:hover {
+    @apply border-border bg-muted/30;
+    transform: translateY(-1px);
+  }
+
+  /* Card Tech - Enhanced but Compliant */
+  .card-tech {
+    @apply rounded-lg border border-border/50 bg-background p-6;
+    @apply transition-subtle;
+    @apply hover:border-primary/30 hover:shadow-md hover:shadow-foreground/5;
+    @apply hover:-translate-y-1;
+  }
+
+  /* Link Internal - Design Guide Compliant */
+  .link-internal {
+    @apply transition-subtle;
+  }
+
   .link-internal:hover {
-    color: hsl(var(--primary)) !important;
+    @apply text-primary;
   }
 
-  .text-balance {
-    text-wrap: balance;
+  /* Link Tech - Enhanced Underline */
+  .link-tech {
+    @apply relative transition-subtle;
   }
 
-  .will-change-transform {
-    will-change: transform;
+  .link-tech::after {
+    content: '';
+    @apply absolute -bottom-0.5 left-0 w-0 h-0.5 bg-primary;
+    @apply transition-all duration-300 ease-out;
   }
 
-  .will-change-opacity {
-    will-change: opacity;
+  .link-tech:hover::after {
+    @apply w-full;
   }
 
-  .gpu-accelerated {
-    transform: translateZ(0);
-    backface-visibility: hidden;
-    perspective: 1000px;
+  /* Pattern Geometrico Più Visibile */
+  .pattern-geo {
+    background-image: 
+      radial-gradient(circle at 20% 30%, hsl(var(--primary) / 0.08) 0%, transparent 60%),
+      radial-gradient(circle at 80% 70%, hsl(var(--foreground) / 0.04) 0%, transparent 50%),
+      linear-gradient(90deg, transparent 48%, hsl(var(--border) / 0.6) 50%, transparent 52%),
+      linear-gradient(0deg, transparent 48%, hsl(var(--border) / 0.4) 50%, transparent 52%),
+      conic-gradient(from 45deg at 50% 50%, transparent 0deg, hsl(var(--primary) / 0.02) 90deg, transparent 180deg);
+    background-size: 160px 160px, 100px 100px, 60px 60px, 60px 60px, 200px 200px;
+    background-position: 0 0, 80px 80px, 0 0, 0 0, 100px 100px;
   }
+
+  /* Animazioni Sottili - Design Guide Compliant */
+  .animate-fade-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.6s ease-out forwards;
+  }
+
+  .animate-slide-in {
+    opacity: 0;
+    transform: translateX(-15px);
+    animation: slideIn 0.5s ease-out forwards;
+  }
+
+  .animate-scale-in {
+    opacity: 0;
+    transform: scale(0.98);
+    animation: scaleIn 0.4s ease-out forwards;
+  }
+
+  /* Fade In Observer */
+  .fade-in-section {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease-out;
+  }
+
+  .fade-in-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Delays Sottili */
+  .delay-100 { animation-delay: 0.1s; }
+  .delay-200 { animation-delay: 0.2s; }
+  .delay-300 { animation-delay: 0.3s; }
+
+  /* Pulse Sottile */
+  .pulse-tech {
+    animation: pulseTech 3s ease-in-out infinite;
+  }
+
+  /* Spacing System */
+  .section-lg { @apply py-20 sm:py-32; }
+  .section-md { @apply py-16 sm:py-24; }
+  .section-sm { @apply py-12 sm:py-16; }
+}
+
+/* Keyframes - Design Guide Compliant */
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulseTech {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
 }

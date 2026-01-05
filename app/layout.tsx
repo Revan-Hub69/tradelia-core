@@ -1,21 +1,14 @@
 import type { Metadata } from "next";
-import { Inter } from 'next/font/google';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 import { LanguageProvider } from '@/components/LanguageSelector';
+import InitialPopup from '@/components/InitialPopup';
 import "./globals.css";
 
-const inter = Inter({ 
-  subsets: ['latin'],
-  display: 'swap',
-  preload: true,
-  variable: '--font-inter'
-});
-
 export const metadata: Metadata = {
-  title: "Tradelia - Stop alle perdite crypto. Inizia nel modo giusto.",
-  description: "La prima dashboard AI che ti avvisa PRIMA di commettere errori costosi nel crypto. Oltre 50,000 trader hanno già salvato €2.3M+ grazie a noi. Setup gratuito in 2 minuti.",
-  keywords: "crypto dashboard, AI trading, perdite crypto, errori trading, protezione investimenti, scam detector, risk management",
+  title: "Tradelia - Esplora le crypto senza fare gli errori più costosi",
+  description: "Una dashboard guidata che ti aiuta a capire il contesto, evitare trappole comuni e scegliere un percorso coerente prima di usare denaro.",
+  keywords: "crypto, cryptocurrency, bitcoin, trading, educazione, principianti, dashboard, errori, contesto",
   authors: [{ name: "Tradelia" }],
   creator: "Tradelia",
   publisher: "Tradelia",
@@ -24,21 +17,21 @@ export const metadata: Metadata = {
     type: "website",
     locale: "it_IT",
     url: "https://tradelia.com",
-    title: "Tradelia - Stop alle perdite crypto",
-    description: "Dashboard AI che previene errori costosi nel crypto. 50,000+ trader protetti, €2.3M+ perdite evitate.",
+    title: "Tradelia - Esplora le crypto senza fare gli errori più costosi",
+    description: "Una dashboard guidata che ti aiuta a capire il contesto, evitare trappole comuni e scegliere un percorso coerente prima di usare denaro.",
     siteName: "Tradelia",
     images: [{
-      url: "/og.png",
+      url: "/og-image.png",
       width: 1200,
       height: 630,
-      alt: "Tradelia - Dashboard AI per crypto trading sicuro"
+      alt: "Tradelia - Dashboard Guidata per Crypto"
     }]
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tradelia - Stop alle perdite crypto",
-    description: "Dashboard AI che previene errori costosi nel crypto. 50,000+ trader protetti.",
-    images: ["/og.png"]
+    title: "Tradelia - Esplora le crypto senza fare gli errori più costosi",
+    description: "Dashboard guidata per evitare errori comuni nel mondo crypto.",
+    images: ["/og-image.png"]
   },
   icons: {
     icon: [
@@ -49,13 +42,9 @@ export const metadata: Metadata = {
   },
   manifest: "/site.webmanifest",
   viewport: "width=device-width, initial-scale=1, viewport-fit=cover",
-  themeColor: "#2563eb",
+  themeColor: "hsl(220 15% 12%)",
   alternates: {
-    canonical: "https://tradelia.com",
-    languages: {
-      'it': 'https://tradelia.com',
-      'en': 'https://tradelia.com/en'
-    }
+    canonical: "https://tradelia.com"
   }
 };
 
@@ -65,18 +54,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="it" className={`scroll-smooth ${inter.variable}`}>
+    <html lang="it" className="scroll-smooth">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <meta name="format-detection" content="telephone=no" />
       </head>
-      <body 
-        className={`antialiased min-h-screen font-sans ${inter.className}`}
-        style={{ backgroundColor: 'hsl(var(--background))', color: 'hsl(var(--foreground))' }}
-      >
+      <body className="antialiased min-h-screen bg-background text-foreground font-sans">
         <LanguageProvider>
+          <InitialPopup type="disclaimer" />
           <Header />
           <main id="main-content" role="main">
             {children}

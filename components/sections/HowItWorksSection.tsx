@@ -1,0 +1,67 @@
+'use client';
+
+import { useTranslations } from '@/hooks/useTranslations';
+
+interface StepProps {
+  step: {
+    title: string;
+    description: string;
+  };
+  index: number;
+}
+
+function Step({ step, index }: StepProps) {
+  return (
+    <article className="card-tech">
+      <div className="flex items-start gap-4">
+        <div 
+          className="w-8 h-8 bg-foreground text-background rounded-lg flex items-center justify-center text-sm font-medium flex-shrink-0 mt-0.5"
+          aria-label={`Step ${index + 1}`}
+        >
+          {index + 1}
+        </div>
+        <div>
+          <h3 className="text-base sm:text-lg font-medium text-foreground mb-2">
+            {step.title}
+          </h3>
+          <p className="text-sm sm:text-base text-muted-foreground">
+            {step.description}
+          </p>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+export default function HowItWorksSection() {
+  const { howItWorks } = useTranslations();
+
+  return (
+    <section 
+      className="section-md fade-in-section"
+      aria-labelledby="how-it-works-title"
+    >
+      <div className="max-w-2xl mx-auto px-6 sm:px-8">
+        <header className="text-center mb-12">
+          <h2 
+            id="how-it-works-title"
+            className="text-xl sm:text-2xl lg:text-3xl font-semibold text-foreground leading-tight tracking-tight mb-4"
+          >
+            {howItWorks.title}
+          </h2>
+          <p className="text-sm sm:text-base text-muted-foreground">
+            {howItWorks.subtitle}
+          </p>
+        </header>
+        
+        <ol className="space-y-8" role="list">
+          {howItWorks.steps.map((step, index) => (
+            <li key={`step-${index + 1}`} role="listitem">
+              <Step step={step} index={index} />
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}

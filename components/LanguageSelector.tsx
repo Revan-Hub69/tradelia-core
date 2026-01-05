@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, createContext, useContext } from 'react';
+import { useState, createContext, useContext, useEffect } from 'react';
 import { translations, type Locale } from '../lib/translations';
 
 const LanguageContext = createContext<{
@@ -16,6 +16,47 @@ const LanguageContext = createContext<{
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocale] = useState<Locale>('it');
 
+  useEffect(() => {
+    // Autodetect browser language con safe localStorage access
+    const detectLanguage = (): Locale => {
+      // Safe localStorage access (può fallire in SSR o private browsing)
+      let saved: string | null = null;
+      try {
+        saved = typeof window !== 'undefined' ? localStorage.getItem('tradelia-language') : null;
+      } catch (error) {
+        console.warn('localStorage not available:', error);
+      }
+      
+      if (saved && (saved === 'it' || saved === 'en')) {
+        return saved as Locale;
+      }
+
+      // Safe navigator access
+      if (typeof window !== 'undefined' && navigator.language) {
+        const browserLang = navigator.language.toLowerCase();
+        if (browserLang.startsWith('it')) return 'it';
+        if (browserLang.startsWith('en')) return 'en';
+      }
+      
+      // Default fallback
+      return 'it';
+    };
+
+    setLocale(detectLanguage());
+  }, []);
+
+  const handleSetLocale = (newLocale: Locale) => {
+    setLocale(newLocale);
+    // Safe localStorage access
+    try {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('tradelia-language', newLocale);
+      }
+    } catch (error) {
+      console.warn('Could not save language preference:', error);
+    }
+  };
+
   const t = (key: string): string => {
     const keys = key.split('.');
     let value: any = translations[locale];
@@ -28,7 +69,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <LanguageContext.Provider value={{ locale, setLocale, t }}>
+    <LanguageContext.Provider value={{ locale, setLocale: handleSetLocale, t }}>
       {children}
     </LanguageContext.Provider>
   );
@@ -51,13 +92,19 @@ export default function LanguageSelector() {
     return locale === 'it' ? 'Italiano' : 'English';
   };
 
+  const getFlag = (locale: Locale) => {
+    return locale === 'it' ? '🇮🇹' : '🇬🇧';
+  };
+
   return (
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+        className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground border border-border/60 rounded-lg hover:bg-muted/30 transition-subtle"
+        aria-label="Select language"
       >
-        <span className="uppercase">{locale}</span>
+        <span className="text-base">{getFlag(locale)}</span>
+        <span className="uppercase font-medium">{locale}</span>
         <svg className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
@@ -66,17 +113,20 @@ export default function LanguageSelector() {
       {isOpen && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
-          <div className="absolute right-0 top-full mt-1 py-1 bg-white border border-gray-200 rounded-lg shadow-lg z-20 min-w-[140px]">
+          <div className="absolute right-0 top-full mt-1 py-1 bg-background border border-border/60 rounded-lg shadow-lg z-20 min-w-[160px]">
             {locales.map((loc) => (
               <button
                 key={loc}
                 onClick={() => handleLocaleChange(loc)}
-                className={`w-full px-4 py-2 text-left text-sm hover:bg-gray-50 transition-colors ${
-                  loc === locale ? 'text-gray-900 font-medium bg-gray-50' : 'text-gray-700'
+                className={`w-full px-4 py-3 text-left text-sm hover:bg-muted/30 transition-subtle flex items-center gap-3 ${
+                  loc === locale ? 'text-foreground font-medium bg-muted/30' : 'text-muted-foreground'
                 }`}
               >
-                <span className="uppercase font-medium">{loc}</span>
-                <span className="ml-2 text-xs text-gray-500">{getLanguageName(loc)}</span>
+                <span className="text-base">{getFlag(loc)}</span>
+                <div>
+                  <div className="uppercase font-medium">{loc}</div>
+                  <div className="text-xs text-muted-foreground">{getLanguageName(loc)}</div>
+                </div>
               </button>
             ))}
           </div>

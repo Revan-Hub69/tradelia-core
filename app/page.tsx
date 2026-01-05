@@ -1,53 +1,54 @@
 'use client';
 
-import { 
-  HeroSection, 
-  ContextSection,
-  HowItWorksSection,
-  ExamplesSection,
-  MethodologySection,
-  LimitsSection,
-  CTASection, 
-  FooterSection 
-} from '@/components/Sections';
+import { useFadeInObserver } from '@/hooks/useFadeInObserver';
+import { useTranslations } from '@/hooks/useTranslations';
+import HeroSection from '@/components/sections/HeroSection';
+import ResearchSection from '@/components/sections/ResearchSection';
+import HowItWorksSection from '@/components/sections/HowItWorksSection';
+import DifferentiatorSection from '@/components/sections/DifferentiatorSection';
+import TrustSection from '@/components/sections/TrustSection';
+import FinalCtaSection from '@/components/sections/FinalCtaSection';
 
 export default function HomePage() {
+  const { hero } = useTranslations();
+  
+  // Hook per gestire le animazioni fade-in
+  useFadeInObserver({
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px',
+    triggerOnce: true
+  });
+
   return (
     <>
-      {/* Structured Data */}
+      {/* SEO Meta - Dinamico basato su traduzioni */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "SoftwareApplication",
+            "@type": "WebApplication",
             "name": "Tradelia",
-            "description": "Financial consistency verification tool based on academic research",
+            "description": hero.description,
             "url": "https://tradelia.com",
-            "applicationCategory": "FinanceApplication",
+            "applicationCategory": "EducationalApplication",
             "operatingSystem": "Web",
             "offers": {
               "@type": "Offer",
               "price": "0",
               "priceCurrency": "EUR"
-            },
-            "creator": {
-              "@type": "Organization",
-              "name": "Tradelia"
             }
           })
         }}
       />
 
-      {/* Architettura Homepage secondo Design Guide 2026 */}
-      <HeroSection />        {/* 1. Hero - Statement chiaro, CTA discreta */}
-      <ContextSection />     {/* 2. Contesto - Perché esiste questo strumento */}
-      <HowItWorksSection />  {/* 3. Funzionamento - Come funziona (3 step) */}
-      <ExamplesSection />    {/* 4. Esempi - Incompatibilità comuni */}
-      <MethodologySection /> {/* 5. Metodologia - Fonti e processo */}
-      <LimitsSection />      {/* 6. Limiti - Cosa non facciamo */}
-      <CTASection />         {/* 7. CTA - Call to action discreto */}
-      <FooterSection />      {/* 8. Footer - Disclaimer legale */}
+      {/* Sezioni Modulari */}
+      <HeroSection />
+      <ResearchSection />
+      <HowItWorksSection />
+      <DifferentiatorSection />
+      <TrustSection />
+      <FinalCtaSection />
     </>
   );
 }
