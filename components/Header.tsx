@@ -1,7 +1,11 @@
+'use client';
+
 import Logo from './Logo';
-import LanguageSelector from './LanguageSelector';
+import LanguageSelector, { useLanguage } from './LanguageSelector';
 
 export default function Header() {
+  const { t } = useLanguage();
+
   return (
     <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-6 flex h-16 items-center justify-between">
@@ -13,7 +17,7 @@ export default function Header() {
               href="#metodologia" 
               className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
             >
-              Metodologia
+              {t('nav.about')}
             </a>
             <a 
               href="#check" 
