@@ -4,8 +4,26 @@ export default function HomePage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="section-lg">
-        <div className="container-xs text-center">
+      <section className="section-lg relative overflow-hidden">
+        {/* Geometric pattern background */}
+        <div className="absolute inset-0 opacity-[0.03]">
+          <svg className="w-full h-full" viewBox="0 0 400 400" fill="none">
+            <defs>
+              <pattern id="geometric" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+                <circle cx="20" cy="20" r="1" fill="currentColor" className="text-primary-500" />
+                <path d="M0 20h40M20 0v40" stroke="currentColor" strokeWidth="0.5" className="text-primary-300" opacity="0.5" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#geometric)" />
+          </svg>
+        </div>
+        
+        {/* Floating geometric elements */}
+        <div className="absolute top-20 left-10 w-4 h-4 border border-primary-300/30 rotate-45 animate-float" style={{ animationDelay: '0s' }} />
+        <div className="absolute top-32 right-20 w-3 h-3 bg-primary-400/20 rounded-full animate-float" style={{ animationDelay: '2s' }} />
+        <div className="absolute bottom-40 left-1/4 w-2 h-2 bg-primary-500/30 rotate-12 animate-float" style={{ animationDelay: '4s' }} />
+        
+        <div className="container-xs text-center relative z-10">
           <h1 className="mb-6 animate-in">
             {dictionary.hero.title}
           </h1>
