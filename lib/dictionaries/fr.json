@@ -1,0 +1,67 @@
+{
+  "nav": {
+    "methodology": "Méthodologie",
+    "verify": "Vérifier",
+    "home": "Accueil"
+  },
+  "hero": {
+    "title": "Vérifiez la cohérence entre votre objectif et l'instrument financier",
+    "description": "Un outil de vérification neutre qui analyse la compatibilité entre vos objectifs d'investissement et les caractéristiques des instruments financiers disponibles.",
+    "cta": "Commencer la vérification"
+  },
+  "context": {
+    "eyebrow": "Contexte",
+    "title": "Les portails de comparaison sont souvent rémunérés par des affiliations",
+    "description1": "La plupart des services de comparaison financière reçoivent des commissions des fournisseurs de produits. Cela peut influencer quels instruments sont promus ou comment ils sont présentés.",
+    "description2": "Tradelia fournit des vérifications de cohérence basées sur des critères objectifs, sans affiliations commerciales avec les fournisseurs de produits financiers."
+  },
+  "how": {
+    "eyebrow": "Fonctionnement",
+    "title": "Trois étapes pour la vérification de cohérence",
+    "step1": {
+      "title": "1. Définition de l'objectif",
+      "description": "Vous spécifiez votre objectif d'investissement : horizon temporel, tolérance au risque, montant disponible et finalité de l'investissement."
+    },
+    "step2": {
+      "title": "2. Analyse de l'instrument",
+      "description": "Saisissez les caractéristiques de l'instrument financier que vous envisagez : coûts, liquidité, risque, durée minimale."
+    },
+    "step3": {
+      "title": "3. Vérification de cohérence",
+      "description": "Le système compare objectif et instrument, mettant en évidence d'éventuelles incompatibilités selon des critères de cohérence prédéfinis."
+    }
+  },
+  "examples": {
+    "eyebrow": "Exemples",
+    "title": "Incompatibilités communes entre objectifs et instruments",
+    "example1": "Objectif à court terme (6 mois) avec instrument bloqué pendant 2 ans",
+    "example2": "Faible tolérance au risque avec investissement en actions individuelles",
+    "example3": "Coûts annuels supérieurs à 2% pour les investissements à long terme",
+    "badge": "Non cohérent"
+  },
+  "methodology": {
+    "eyebrow": "Méthodologie",
+    "title": "Critères de vérification basés sur des standards académiques",
+    "description1": "Les critères de cohérence utilisés sont dérivés de principes établis de la théorie du portefeuille et des directives des organismes de surveillance européens (ESMA, Consob).",
+    "description2": "Chaque vérification est traçable et basée sur des paramètres objectifs : aucune évaluation subjective ou prévision de marché n'est utilisée."
+  },
+  "limits": {
+    "eyebrow": "Limites",
+    "title": "Ce que nous ne faisons pas",
+    "limit1": "Nous ne fournissons pas de conseils d'investissement personnalisés",
+    "limit2": "Nous ne prédisons pas les performances futures des instruments",
+    "limit3": "Nous ne considérons pas la situation fiscale individuelle",
+    "limit4": "Nous ne remplaçons pas les conseils d'un conseiller qualifié"
+  },
+  "cta": {
+    "title": "Vérifiez la cohérence de votre instrument",
+    "description": "Commencez la vérification de cohérence entre vos objectifs et l'instrument financier que vous envisagez.",
+    "button": "Commencer la vérification"
+  },
+  "footer": {
+    "copyright": "© 2026 Tradelia. Cet outil fournit des vérifications de cohérence, pas de conseils d'investissement.",
+    "privacy": "Confidentialité",
+    "disclaimer": "Avertissement",
+    "contacts": "Contacts"
+  }
+}

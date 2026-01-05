@@ -1,0 +1,67 @@
+{
+  "nav": {
+    "methodology": "Methodik",
+    "verify": "Prüfen",
+    "home": "Startseite"
+  },
+  "hero": {
+    "title": "Kohärenz zwischen Ihrem Ziel und dem Finanzinstrument prüfen",
+    "description": "Ein neutrales Prüfwerkzeug, das die Kompatibilität zwischen Ihren Anlagezielen und den Eigenschaften verfügbarer Finanzinstrumente analysiert.",
+    "cta": "Prüfung starten"
+  },
+  "context": {
+    "eyebrow": "Kontext",
+    "title": "Vergleichsportale werden oft durch Partnerschaften vergütet",
+    "description1": "Die meisten Finanzvergleichsdienste erhalten Provisionen von Produktanbietern. Dies kann beeinflussen, welche Instrumente beworben oder wie sie präsentiert werden.",
+    "description2": "Tradelia bietet Kohärenzprüfungen basierend auf objektiven Kriterien, ohne kommerzielle Partnerschaften mit Finanzproduktanbietern."
+  },
+  "how": {
+    "eyebrow": "Funktionsweise",
+    "title": "Drei Schritte zur Kohärenzprüfung",
+    "step1": {
+      "title": "1. Zieldefinition",
+      "description": "Sie spezifizieren Ihr Anlageziel: Zeithorizont, Risikotoleranz, verfügbarer Betrag und Zweck der Anlage."
+    },
+    "step2": {
+      "title": "2. Instrumentenanalyse",
+      "description": "Geben Sie die Eigenschaften des Finanzinstruments ein, das Sie in Betracht ziehen: Kosten, Liquidität, Risiko, Mindestlaufzeit."
+    },
+    "step3": {
+      "title": "3. Kohärenzprüfung",
+      "description": "Das System vergleicht Ziel und Instrument und hebt eventuelle Inkompatibilitäten nach vordefinierten Kohärenzkriterien hervor."
+    }
+  },
+  "examples": {
+    "eyebrow": "Beispiele",
+    "title": "Häufige Inkompatibilitäten zwischen Zielen und Instrumenten",
+    "example1": "Kurzfristiges Ziel (6 Monate) mit für 2 Jahre gesperrtem Instrument",
+    "example2": "Niedrige Risikotoleranz mit Investition in Einzelaktien",
+    "example3": "Jährliche Kosten über 2% für langfristige Anlagen",
+    "badge": "Nicht kohärent"
+  },
+  "methodology": {
+    "eyebrow": "Methodik",
+    "title": "Prüfkriterien basierend auf akademischen Standards",
+    "description1": "Die verwendeten Kohärenzkriterien leiten sich von etablierten Prinzipien der Portfoliotheorie und Richtlinien europäischer Aufsichtsbehörden (ESMA, Consob) ab.",
+    "description2": "Jede Prüfung ist nachvollziehbar und basiert auf objektiven Parametern: Es werden keine subjektiven Bewertungen oder Marktprognosen verwendet."
+  },
+  "limits": {
+    "eyebrow": "Grenzen",
+    "title": "Was wir nicht tun",
+    "limit1": "Wir bieten keine personalisierte Anlageberatung",
+    "limit2": "Wir prognostizieren keine zukünftige Performance von Instrumenten",
+    "limit3": "Wir berücksichtigen nicht die individuelle Steuersituation",
+    "limit4": "Wir ersetzen nicht die Beratung durch einen qualifizierten Berater"
+  },
+  "cta": {
+    "title": "Prüfen Sie die Kohärenz Ihres Instruments",
+    "description": "Starten Sie die Kohärenzprüfung zwischen Ihren Zielen und dem Finanzinstrument, das Sie in Betracht ziehen.",
+    "button": "Prüfung starten"
+  },
+  "footer": {
+    "copyright": "© 2026 Tradelia. Dieses Tool bietet Kohärenzprüfungen, keine Anlageberatung.",
+    "privacy": "Datenschutz",
+    "disclaimer": "Haftungsausschluss",
+    "contacts": "Kontakte"
+  }
+}
