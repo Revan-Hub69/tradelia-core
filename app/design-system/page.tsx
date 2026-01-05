@@ -1,1 +1,158 @@
-import { dictionary } from '@/lib/i18n';\n\nexport default function DesignSystemShowcase() {\n  return (\n    <div className=\"min-h-screen bg-background\">\n      {/* Hero Section - Design System Showcase */}\n      <section className=\"section-xl relative overflow-hidden\">\n        <div className=\"absolute inset-0 bg-gradient-to-br from-background via-background to-muted/20 -z-10\" />\n        \n        <div className=\"container-responsive relative\">\n          <div className=\"text-center max-w-4xl mx-auto\">\n            <div className=\"animate-fade-in-up\">\n              <h1 className=\"mb-8 gradient-text\">\n                Tradelia Ultra Premium Design System\n              </h1>\n            </div>\n            \n            <div className=\"animate-fade-in-up\" style={{ animationDelay: '200ms' }}>\n              <p className=\"lead mb-12 max-w-2xl mx-auto\">\n                Showcase di tutti i componenti e stili del design system ultra premium\n              </p>\n            </div>\n          </div>\n        </div>\n      </section>\n\n      {/* Typography Section */}\n      <section className=\"section-lg\">\n        <div className=\"container-responsive\">\n          <div className=\"mb-16\">\n            <p className=\"eyebrow-premium mb-6\">Typography</p>\n            <h2 className=\"mb-8\">Sistema Tipografico</h2>\n          </div>\n          \n          <div className=\"card-glass p-8 sm:p-12 space-y-8\">\n            <div>\n              <h1>Display Heading (H1)</h1>\n              <p className=\"text-sm text-muted-foreground mt-2\">text-5xl lg:text-6xl font-bold tracking-tighter</p>\n            </div>\n            \n            <div>\n              <h2>Section Heading (H2)</h2>\n              <p className=\"text-sm text-muted-foreground mt-2\">text-4xl lg:text-5xl font-semibold tracking-tight</p>\n            </div>\n            \n            <div>\n              <h3>Subsection Heading (H3)</h3>\n              <p className=\"text-sm text-muted-foreground mt-2\">text-3xl lg:text-4xl font-medium tracking-snug</p>\n            </div>\n            \n            <div>\n              <p className=\"lead\">Lead paragraph - Testo introduttivo più grande per catturare l'attenzione del lettore.</p>\n              <p className=\"text-sm text-muted-foreground mt-2\">text-lg sm:text-xl leading-relaxed</p>\n            </div>\n            \n            <div>\n              <p>Body paragraph - Testo standard per il contenuto principale con ottima leggibilità.</p>\n              <p className=\"text-sm text-muted-foreground mt-2\">text-sm sm:text-base leading-relaxed</p>\n            </div>\n            \n            <div>\n              <p className=\"small\">Small text - Per note, disclaimer e informazioni secondarie.</p>\n              <p className=\"text-sm text-muted-foreground mt-2\">text-xs sm:text-sm leading-normal</p>\n            </div>\n          </div>\n        </div>\n      </section>\n\n      {/* Buttons Section */}\n      <section className=\"section-lg bg-gradient-to-br from-muted/10 to-muted/30\">\n        <div className=\"container-responsive\">\n          <div className=\"mb-16\">\n            <p className=\"eyebrow-premium mb-6\">Buttons</p>\n            <h2 className=\"mb-8\">Sistema di Button</h2>\n          </div>\n          \n          <div className=\"card-elevated p-8 sm:p-12\">\n            <div className=\"grid gap-8 md:grid-cols-2\">\n              <div>\n                <h4 className=\"mb-6\">Primary Buttons</h4>\n                <div className=\"space-y-4\">\n                  <div>\n                    <button className=\"btn-primary-premium\">\n                      Premium CTA Button\n                      <svg className=\"ml-2 w-5 h-5\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\">\n                        <path strokeLinecap=\"round\" strokeLinejoin=\"round\" strokeWidth={2} d=\"M13 7l5 5m0 0l-5 5m5-5H6\" />\n                      </svg>\n                    </button>\n                    <p className=\"text-xs text-muted-foreground mt-2\">btn-primary-premium</p>\n                  </div>\n                  \n                  <div>\n                    <button className=\"btn-primary\">Standard Primary</button>\n                    <p className=\"text-xs text-muted-foreground mt-2\">btn-primary</p>\n                  </div>\n                </div>\n              </div>\n              \n              <div>\n                <h4 className=\"mb-6\">Secondary Buttons</h4>\n                <div className=\"space-y-4\">\n                  <div>\n                    <button className=\"btn-secondary\">Secondary Button</button>\n                    <p className=\"text-xs text-muted-foreground mt-2\">btn-secondary</p>\n                  </div>\n                  \n                  <div>\n                    <button className=\"btn-ghost\">Ghost Button</button>\n                    <p className=\"text-xs text-muted-foreground mt-2\">btn-ghost</p>\n                  </div>\n                  \n                  <div>\n                    <button className=\"btn-link\">Link Button</button>\n                    <p className=\"text-xs text-muted-foreground mt-2\">btn-link</p>\n                  </div>\n                </div>\n              </div>\n            </div>\n            \n            <div className=\"mt-8 pt-8 border-t border-border/50\">\n              <h4 className=\"mb-6\">Button Sizes</h4>\n              <div className=\"flex items-center gap-4 flex-wrap\">\n                <button className=\"btn-sm btn-secondary\">Small</button>\n                <button className=\"btn-md btn-secondary\">Medium</button>\n                <button className=\"btn-lg btn-secondary\">Large</button>\n              </div>\n            </div>\n          </div>\n        </div>\n      </section>\n\n      {/* Cards Section */}\n      <section className=\"section-lg\">\n        <div className=\"container-responsive\">\n          <div className=\"mb-16\">\n            <p className=\"eyebrow-premium mb-6\">Cards</p>\n            <h2 className=\"mb-8\">Sistema di Card</h2>\n          </div>\n          \n          <div className=\"grid gap-8 md:grid-cols-2 lg:grid-cols-3\">\n            <div className=\"card-base p-6\">\n              <h4 className=\"mb-3\">Base Card</h4>\n              <p className=\"text-muted-foreground mb-4\">Card standard con bordo e background base.</p>\n              <code className=\"text-xs bg-muted px-2 py-1 rounded\">card-base</code>\n            </div>\n            \n            <div className=\"card-elevated p-6\">\n              <h4 className=\"mb-3\">Elevated Card</h4>\n              <p className=\"text-muted-foreground mb-4\">Card con elevazione e ombra sottile.</p>\n              <code className=\"text-xs bg-muted px-2 py-1 rounded\">card-elevated</code>\n            </div>\n            \n            <div className=\"card-premium p-6\">\n              <h4 className=\"mb-3\">Premium Card</h4>\n              <p className=\"text-muted-foreground mb-4\">Card premium con gradient e ombra avanzata.</p>\n              <code className=\"text-xs bg-muted px-2 py-1 rounded\">card-premium</code>\n            </div>\n            \n            <div className=\"card-glass p-6\">\n              <h4 className=\"mb-3\">Glass Card</h4>\n              <p className=\"text-muted-foreground mb-4\">Card con effetto glassmorphism e backdrop blur.</p>\n              <code className=\"text-xs bg-muted px-2 py-1 rounded\">card-glass</code>\n            </div>\n            \n            <div className=\"card-interactive-premium p-6\">\n              <h4 className=\"mb-3\">Interactive Premium</h4>\n              <p className=\"text-muted-foreground mb-4\">Card interattiva con animazioni premium.</p>\n              <code className=\"text-xs bg-muted px-2 py-1 rounded\">card-interactive-premium</code>\n            </div>\n            \n            <div className=\"card-interactive p-6\">\n              <h4 className=\"mb-3\">Interactive Standard</h4>\n              <p className=\"text-muted-foreground mb-4\">Card interattiva standard con hover effects.</p>\n              <code className=\"text-xs bg-muted px-2 py-1 rounded\">card-interactive</code>\n            </div>\n          </div>\n        </div>\n      </section>\n\n      {/* Lists Section */}\n      <section className=\"section-lg bg-gradient-to-br from-muted/10 to-muted/20\">\n        <div className=\"container-responsive\">\n          <div className=\"mb-16\">\n            <p className=\"eyebrow-premium mb-6\">Lists</p>\n            <h2 className=\"mb-8\">Sistema di Liste</h2>\n          </div>\n          \n          <div className=\"grid gap-8 md:grid-cols-2\">\n            <div className=\"card-glass p-8\">\n              <h4 className=\"mb-6\">Bullet Lists</h4>\n              <ul className=\"space-y-4\">\n                <li className=\"list-item\">\n                  <div className=\"list-bullet\" />\n                  <span>Standard bullet list item</span>\n                </li>\n                <li className=\"list-item\">\n                  <div className=\"list-bullet-premium\" />\n                  <span>Premium bullet list item</span>\n                </li>\n              </ul>\n            </div>\n            \n            <div className=\"card-glass p-8\">\n              <h4 className=\"mb-6\">Numbered Lists</h4>\n              <ul className=\"space-y-4\">\n                <li className=\"list-item\">\n                  <div className=\"list-number\">1</div>\n                  <span>Standard numbered list item</span>\n                </li>\n                <li className=\"list-item\">\n                  <div className=\"list-number-premium\">2</div>\n                  <span>Premium numbered list item</span>\n                </li>\n              </ul>\n            </div>\n          </div>\n        </div>\n      </section>\n\n      {/* Badges Section */}\n      <section className=\"section-lg\">\n        <div className=\"container-responsive\">\n          <div className=\"mb-16\">\n            <p className=\"eyebrow-premium mb-6\">Badges</p>\n            <h2 className=\"mb-8\">Sistema di Badge</h2>\n          </div>\n          \n          <div className=\"card-elevated p-8 sm:p-12\">\n            <div className=\"space-y-6\">\n              <div>\n                <h4 className=\"mb-4\">Semantic Badges</h4>\n                <div className=\"flex flex-wrap gap-3\">\n                  <span className=\"badge\">Default</span>\n                  <span className=\"badge-primary\">Primary</span>\n                  <span className=\"badge-success\">Success</span>\n                  <span className=\"badge-warning\">Warning</span>\n                  <span className=\"badge-error\">Error</span>\n                </div>\n              </div>\n              \n              <div>\n                <h4 className=\"mb-4\">Eyebrow Text</h4>\n                <div className=\"space-y-2\">\n                  <p className=\"eyebrow\">Standard Eyebrow</p>\n                  <p className=\"eyebrow-premium\">Premium Eyebrow</p>\n                </div>\n              </div>\n            </div>\n          </div>\n        </div>\n      </section>\n    </div>\n  );\n}
+export default function DesignSystemShowcase() {
+  return (
+    <div className="min-h-screen bg-background">
+      <section className="section-xl relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-muted/20 -z-10" />
+        
+        <div className="container-responsive relative">
+          <div className="text-center max-w-4xl mx-auto">
+            <div className="animate-fade-in-up">
+              <h1 className="mb-8 gradient-text">
+                Tradelia Ultra Premium Design System
+              </h1>
+            </div>
+            
+            <div className="animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+              <p className="lead mb-12 max-w-2xl mx-auto">
+                Showcase di tutti i componenti e stili del design system ultra premium
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-lg">
+        <div className="container-responsive">
+          <div className="mb-16">
+            <p className="eyebrow-premium mb-6">Typography</p>
+            <h2 className="mb-8">Sistema Tipografico</h2>
+          </div>
+          
+          <div className="card-glass p-8 sm:p-12 space-y-8">
+            <div>
+              <h1>Display Heading (H1)</h1>
+              <p className="text-sm text-muted-foreground mt-2">text-5xl lg:text-6xl font-bold tracking-tighter</p>
+            </div>
+            
+            <div>
+              <h2>Section Heading (H2)</h2>
+              <p className="text-sm text-muted-foreground mt-2">text-4xl lg:text-5xl font-semibold tracking-tight</p>
+            </div>
+            
+            <div>
+              <h3>Subsection Heading (H3)</h3>
+              <p className="text-sm text-muted-foreground mt-2">text-3xl lg:text-4xl font-medium tracking-snug</p>
+            </div>
+            
+            <div>
+              <p className="lead">Lead paragraph - Testo introduttivo più grande per catturare l'attenzione del lettore.</p>
+              <p className="text-sm text-muted-foreground mt-2">text-lg sm:text-xl leading-relaxed</p>
+            </div>
+            
+            <div>
+              <p>Body paragraph - Testo standard per il contenuto principale con ottima leggibilità.</p>
+              <p className="text-sm text-muted-foreground mt-2">text-sm sm:text-base leading-relaxed</p>
+            </div>
+            
+            <div>
+              <p className="small">Small text - Per note, disclaimer e informazioni secondarie.</p>
+              <p className="text-sm text-muted-foreground mt-2">text-xs sm:text-sm leading-normal</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-lg bg-gradient-to-br from-muted/10 to-muted/30">
+        <div className="container-responsive">
+          <div className="mb-16">
+            <p className="eyebrow-premium mb-6">Buttons</p>
+            <h2 className="mb-8">Sistema di Button</h2>
+          </div>
+          
+          <div className="card-elevated p-8 sm:p-12">
+            <div className="grid gap-8 md:grid-cols-2">
+              <div>
+                <h4 className="mb-6">Primary Buttons</h4>
+                <div className="space-y-4">
+                  <div>
+                    <button className="btn-primary-premium">
+                      Premium CTA Button
+                    </button>
+                    <p className="text-xs text-muted-foreground mt-2">btn-primary-premium</p>
+                  </div>
+                  
+                  <div>
+                    <button className="btn-primary">Standard Primary</button>
+                    <p className="text-xs text-muted-foreground mt-2">btn-primary</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <h4 className="mb-6">Secondary Buttons</h4>
+                <div className="space-y-4">
+                  <div>
+                    <button className="btn-secondary">Secondary Button</button>
+                    <p className="text-xs text-muted-foreground mt-2">btn-secondary</p>
+                  </div>
+                  
+                  <div>
+                    <button className="btn-ghost">Ghost Button</button>
+                    <p className="text-xs text-muted-foreground mt-2">btn-ghost</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-lg">
+        <div className="container-responsive">
+          <div className="mb-16">
+            <p className="eyebrow-premium mb-6">Cards</p>
+            <h2 className="mb-8">Sistema di Card</h2>
+          </div>
+          
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <div className="card-base p-6">
+              <h4 className="mb-3">Base Card</h4>
+              <p className="text-muted-foreground mb-4">Card standard con bordo e background base.</p>
+              <code className="text-xs bg-muted px-2 py-1 rounded">card-base</code>
+            </div>
+            
+            <div className="card-elevated p-6">
+              <h4 className="mb-3">Elevated Card</h4>
+              <p className="text-muted-foreground mb-4">Card con elevazione e ombra sottile.</p>
+              <code className="text-xs bg-muted px-2 py-1 rounded">card-elevated</code>
+            </div>
+            
+            <div className="card-premium p-6">
+              <h4 className="mb-3">Premium Card</h4>
+              <p className="text-muted-foreground mb-4">Card premium con gradient e ombra avanzata.</p>
+              <code className="text-xs bg-muted px-2 py-1 rounded">card-premium</code>
+            </div>
+            
+            <div className="card-glass p-6">
+              <h4 className="mb-3">Glass Card</h4>
+              <p className="text-muted-foreground mb-4">Card con effetto glassmorphism e backdrop blur.</p>
+              <code className="text-xs bg-muted px-2 py-1 rounded">card-glass</code>
+            </div>
+            
+            <div className="card-interactive-premium p-6">
+              <h4 className="mb-3">Interactive Premium</h4>
+              <p className="text-muted-foreground mb-4">Card interattiva con animazioni premium.</p>
+              <code className="text-xs bg-muted px-2 py-1 rounded">card-interactive-premium</code>
+            </div>
+            
+            <div className="card-interactive p-6">
+              <h4 className="mb-3">Interactive Standard</h4>
+              <p className="text-muted-foreground mb-4">Card interattiva standard con hover effects.</p>
+              <code className="text-xs bg-muted px-2 py-1 rounded">card-interactive</code>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
