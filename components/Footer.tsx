@@ -14,39 +14,44 @@ interface FooterProps {
 
 export default function Footer({ dictionary, locale }: FooterProps) {
   return (
-    <footer className="border-t border-border/50 bg-muted/30" role="contentinfo">
-      <div className="container-responsive py-8">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <footer className="border-t border-border/30 bg-gradient-to-br from-muted/20 to-muted/40 relative" role="contentinfo">
+      {/* Subtle gradient line at top */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+      
+      <div className="container-responsive py-12">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
           {/* Copyright */}
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             {dictionary.footer.copyright}
           </p>
           
           {/* Footer links */}
-          <nav className="flex items-center gap-4 text-xs" aria-label="Link footer">
-            <div className="flex items-center gap-1 text-success">
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                <path d="M4 6V4a2 2 0 114 0v2m-1 3h2m-1-9a1 1 0 011 1v1H3V4a1 1 0 011-1z" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
+          <nav className="flex items-center gap-6 text-sm" aria-label="Link footer">
+            <div className="flex items-center gap-2 text-success group">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="transition-transform duration-200 group-hover:scale-110">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                <path d="m9 12 2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-              SSL Secured
+              <span className="font-medium">SSL Secured</span>
             </div>
+            
             <a
               href={`/${locale}/privacy`}
-              className="link-internal"
+              className="link-internal font-medium"
               rel="nofollow"
             >
               {dictionary.footer.privacy}
             </a>
             <a
               href={`/${locale}/disclaimer`}
-              className="link-internal"
+              className="link-internal font-medium"
               rel="nofollow"
             >
               {dictionary.footer.disclaimer}
             </a>
             <a
               href={`/${locale}/contatti`}
-              className="link-internal"
+              className="link-internal font-medium"
             >
               {dictionary.footer.contacts}
             </a>
