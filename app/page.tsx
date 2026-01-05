@@ -6,12 +6,13 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="section-lg relative overflow-hidden">
         {/* Geometric pattern background */}
-        <div className="absolute inset-0 opacity-[0.03]">
+        <div className="absolute inset-0 opacity-20">
           <svg className="w-full h-full" viewBox="0 0 400 400" fill="none">
             <defs>
-              <pattern id="geometric" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-                <circle cx="20" cy="20" r="1" fill="currentColor" className="text-primary-500" />
-                <path d="M0 20h40M20 0v40" stroke="currentColor" strokeWidth="0.5" className="text-primary-300" opacity="0.5" />
+              <pattern id="geometric" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+                <circle cx="30" cy="30" r="2" fill="currentColor" className="text-primary-400" />
+                <path d="M0 30h60M30 0v60" stroke="currentColor" strokeWidth="1" className="text-primary-300" opacity="0.8" />
+                <rect x="25" y="25" width="10" height="10" stroke="currentColor" strokeWidth="0.5" className="text-primary-500" fill="none" opacity="0.6" />
               </pattern>
             </defs>
             <rect width="100%" height="100%" fill="url(#geometric)" />

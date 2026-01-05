@@ -32,23 +32,26 @@ export default function Footer({ dictionary, locale }: FooterProps) {
             
             <a
               href={`/${locale}/privacy`}
-              className="text-muted-foreground hover:text-foreground transition-colors"
+              className="text-muted-foreground hover:text-primary-600 transition-all duration-300 relative group"
               rel="nofollow"
             >
               {dictionary.footer.privacy}
+              <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-primary-500 transition-all duration-300 group-hover:w-full" />
             </a>
             <a
               href={`/${locale}/disclaimer`}
-              className="text-muted-foreground hover:text-foreground transition-colors"
+              className="text-muted-foreground hover:text-primary-600 transition-all duration-300 relative group"
               rel="nofollow"
             >
               {dictionary.footer.disclaimer}
+              <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-primary-500 transition-all duration-300 group-hover:w-full" />
             </a>
             <a
               href={`/${locale}/contatti`}
-              className="text-muted-foreground hover:text-foreground transition-colors"
+              className="text-muted-foreground hover:text-primary-600 transition-all duration-300 relative group"
             >
               {dictionary.footer.contacts}
+              <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-primary-500 transition-all duration-300 group-hover:w-full" />
             </a>
           </nav>
         </div>
