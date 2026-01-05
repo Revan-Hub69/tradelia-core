@@ -6,16 +6,14 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="section-lg relative overflow-hidden">
         {/* Geometric pattern background */}
-        <div className="absolute inset-0 opacity-15">
+        <div className="absolute inset-0">
           <div 
-            className="w-full h-full" 
+            className="w-full h-full opacity-40" 
             style={{
               backgroundImage: `
-                radial-gradient(circle at 25px 25px, rgba(100, 116, 139, 0.4) 1px, transparent 1px),
-                linear-gradient(rgba(100, 116, 139, 0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(100, 116, 139, 0.1) 1px, transparent 1px)
+                radial-gradient(circle at 1px 1px, #64748b 1px, transparent 0)
               `,
-              backgroundSize: '50px 50px, 50px 50px, 50px 50px'
+              backgroundSize: '20px 20px'
             }}
           />
         </div>
