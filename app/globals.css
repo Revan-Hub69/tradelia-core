@@ -4,13 +4,23 @@
 
 @layer base {
   :root {
-    /* Tradelia 2026 Design System - Institutional Palette */
+    /* Tradelia 2026 Design System - Light Mode */
     --background: 0 0% 99%;           /* Bianco caldo istituzionale */
     --foreground: 220 15% 12%;        /* Grigio scuro blu per testo */
     --primary: 215 50% 45%;           /* Blu desaturato per accenti */
     --muted: 220 10% 96%;             /* Grigio chiaro per sfondi */
     --muted-foreground: 220 10% 40%;  /* Grigio medio per testo secondario */
     --border: 220 10% 88%;            /* Grigio sottile per bordi */
+  }
+
+  .dark {
+    /* Tradelia 2026 Design System - Dark Mode */
+    --background: 220 15% 8%;
+    --foreground: 220 10% 95%;
+    --primary: 215 55% 55%;
+    --muted: 220 15% 15%;
+    --muted-foreground: 220 10% 60%;
+    --border: 220 15% 20%;
   }
 
   html {

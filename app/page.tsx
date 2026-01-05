@@ -2,9 +2,11 @@
 
 import { 
   HeroSection, 
-  ProblemSection, 
-  TechnologySection,
-  SocialProofSection,
+  ContextSection,
+  HowItWorksSection,
+  ExamplesSection,
+  MethodologySection,
+  LimitsSection,
   CTASection, 
   FooterSection 
 } from '@/components/Sections';
@@ -20,7 +22,7 @@ export default function HomePage() {
             "@context": "https://schema.org",
             "@type": "SoftwareApplication",
             "name": "Tradelia",
-            "description": "AI-powered dashboard that prevents crypto trading mistakes using behavioral research",
+            "description": "Financial consistency verification tool based on academic research",
             "url": "https://tradelia.com",
             "applicationCategory": "FinanceApplication",
             "operatingSystem": "Web",
@@ -28,11 +30,6 @@ export default function HomePage() {
               "@type": "Offer",
               "price": "0",
               "priceCurrency": "EUR"
-            },
-            "aggregateRating": {
-              "@type": "AggregateRating",
-              "ratingValue": "4.9",
-              "reviewCount": "50247"
             },
             "creator": {
               "@type": "Organization",
@@ -42,12 +39,15 @@ export default function HomePage() {
         }}
       />
 
-      <HeroSection />
-      <ProblemSection />
-      <TechnologySection />
-      <SocialProofSection />
-      <CTASection />
-      <FooterSection />
+      {/* Architettura Homepage secondo Design Guide 2026 */}
+      <HeroSection />        {/* 1. Hero - Statement chiaro, CTA discreta */}
+      <ContextSection />     {/* 2. Contesto - Perché esiste questo strumento */}
+      <HowItWorksSection />  {/* 3. Funzionamento - Come funziona (3 step) */}
+      <ExamplesSection />    {/* 4. Esempi - Incompatibilità comuni */}
+      <MethodologySection /> {/* 5. Metodologia - Fonti e processo */}
+      <LimitsSection />      {/* 6. Limiti - Cosa non facciamo */}
+      <CTASection />         {/* 7. CTA - Call to action discreto */}
+      <FooterSection />      {/* 8. Footer - Disclaimer legale */}
     </>
   );
 }
