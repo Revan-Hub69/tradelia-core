@@ -37,9 +37,10 @@ interface CardProps {
   children: ReactNode;
   variant?: 'default' | 'success' | 'warning' | 'error';
   className?: string;
+  style?: React.CSSProperties;
 }
 
-export const Card = ({ children, variant = 'default', className = '' }: CardProps) => {
+export const Card = ({ children, variant = 'default', className = '', style }: CardProps) => {
   const variants = {
     default: 'bg-white border-gray-200',
     success: 'bg-green-50 border-green-200',
@@ -48,7 +49,7 @@ export const Card = ({ children, variant = 'default', className = '' }: CardProp
   };
   
   return (
-    <div className={`border-2 rounded-2xl p-8 ${variants[variant]} ${className}`}>
+    <div className={`border-2 rounded-2xl p-8 ${variants[variant]} ${className}`} style={style}>
       {children}
     </div>
   );
