@@ -1,1 +1,101 @@
-import type { Config } from \"tailwindcss\";\n\nconst config: Config = {\n  darkMode: [\"class\"],\n  content: [\n    \"./pages/**/*.{js,ts,jsx,tsx,mdx}\",\n    \"./components/**/*.{js,ts,jsx,tsx,mdx}\",\n    \"./app/**/*.{js,ts,jsx,tsx,mdx}\",\n  ],\n  theme: {\n    fontFamily: {\n      sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],\n    },\n    extend: {\n      colors: {\n        // Professional color system\n        primary: {\n          50: '#f0f9ff',\n          100: '#e0f2fe',\n          200: '#bae6fd',\n          300: '#7dd3fc',\n          400: '#38bdf8',\n          500: '#0ea5e9',\n          600: '#0284c7',\n          700: '#0369a1',\n          800: '#075985',\n          900: '#0c4a6e',\n          950: '#082f49',\n        },\n        gray: {\n          50: '#fafafa',\n          100: '#f5f5f5',\n          200: '#e5e5e5',\n          300: '#d4d4d4',\n          400: '#a3a3a3',\n          500: '#737373',\n          600: '#525252',\n          700: '#404040',\n          800: '#262626',\n          900: '#171717',\n          950: '#0a0a0a',\n        },\n        success: {\n          50: '#f0fdf4',\n          500: '#22c55e',\n          600: '#16a34a',\n        },\n        warning: {\n          50: '#fffbeb',\n          500: '#f59e0b',\n          600: '#d97706',\n        },\n        error: {\n          50: '#fef2f2',\n          500: '#ef4444',\n          600: '#dc2626',\n        },\n        background: 'hsl(var(--background))',\n        foreground: 'hsl(var(--foreground))',\n        muted: {\n          DEFAULT: 'hsl(var(--muted))',\n          foreground: 'hsl(var(--muted-foreground))',\n        },\n        border: 'hsl(var(--border))',\n        input: 'hsl(var(--input))',\n        ring: 'hsl(var(--ring))',\n      },\n      spacing: {\n        18: '4.5rem',\n        72: '18rem',\n        84: '21rem',\n        96: '24rem',\n      },\n      maxWidth: {\n        '8xl': '88rem',\n        '9xl': '96rem',\n      },\n      animation: {\n        'fade-in': 'fadeIn 0.5s ease-out',\n        'slide-up': 'slideUp 0.5s ease-out',\n        'scale-in': 'scaleIn 0.3s ease-out',\n      },\n      keyframes: {\n        fadeIn: {\n          '0%': { opacity: '0' },\n          '100%': { opacity: '1' },\n        },\n        slideUp: {\n          '0%': { opacity: '0', transform: 'translateY(10px)' },\n          '100%': { opacity: '1', transform: 'translateY(0)' },\n        },\n        scaleIn: {\n          '0%': { opacity: '0', transform: 'scale(0.95)' },\n          '100%': { opacity: '1', transform: 'scale(1)' },\n        },\n      },\n    },\n  },\n  plugins: [],\n};\n\nexport default config;
+import type { Config } from "tailwindcss";
+
+const config: Config = {
+  darkMode: ["class"],
+  content: [
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  theme: {
+    fontFamily: {
+      sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+    },
+    extend: {
+      colors: {
+        primary: {
+          50: '#f0f9ff',
+          100: '#e0f2fe',
+          200: '#bae6fd',
+          300: '#7dd3fc',
+          400: '#38bdf8',
+          500: '#0ea5e9',
+          600: '#0284c7',
+          700: '#0369a1',
+          800: '#075985',
+          900: '#0c4a6e',
+          950: '#082f49',
+        },
+        gray: {
+          50: '#fafafa',
+          100: '#f5f5f5',
+          200: '#e5e5e5',
+          300: '#d4d4d4',
+          400: '#a3a3a3',
+          500: '#737373',
+          600: '#525252',
+          700: '#404040',
+          800: '#262626',
+          900: '#171717',
+          950: '#0a0a0a',
+        },
+        success: {
+          50: '#f0fdf4',
+          500: '#22c55e',
+          600: '#16a34a',
+        },
+        warning: {
+          50: '#fffbeb',
+          500: '#f59e0b',
+          600: '#d97706',
+        },
+        error: {
+          50: '#fef2f2',
+          500: '#ef4444',
+          600: '#dc2626',
+        },
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))',
+        },
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
+      },
+      spacing: {
+        18: '4.5rem',
+        72: '18rem',
+        84: '21rem',
+        96: '24rem',
+      },
+      maxWidth: {
+        '8xl': '88rem',
+        '9xl': '96rem',
+      },
+      animation: {
+        'fade-in': 'fadeIn 0.5s ease-out',
+        'slide-up': 'slideUp 0.5s ease-out',
+        'scale-in': 'scaleIn 0.3s ease-out',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideUp: {
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        scaleIn: {
+          '0%': { opacity: '0', transform: 'scale(0.95)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
+        },
+      },
+    },
+  },
+  plugins: [],
+};
+
+export default config;
