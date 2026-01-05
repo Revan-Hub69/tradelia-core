@@ -19,7 +19,7 @@ export default function HomePage() {
           <div className="animate-up" style={{ animationDelay: '200ms' }}>
             <div className="bg-white border-2 border-gray-200 rounded-xl p-8 mb-8 text-left max-w-2xl mx-auto shadow-lg">
               <p className="text-lg mb-4 text-gray-800">
-                In <span className="font-bold text-blue-600">60 secondi</span> chiarisci cosa vuoi davvero fare
+                In <span className="font-bold text-primary-600">60 secondi</span> chiarisci cosa vuoi davvero fare
                 e ottieni un check di coerenza decisionale basato su evidenze accademiche.
               </p>
               <div className="space-y-2 text-gray-600">
@@ -29,7 +29,7 @@ export default function HomePage() {
               </div>
             </div>
             
-            <a href="#check" className="inline-flex items-center px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl mb-4">
+            <a href="#check" className="inline-flex items-center px-8 py-4 bg-primary-600 text-white text-lg font-semibold rounded-lg hover:bg-primary-700 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl mb-4">
               → Inizia dal tuo obiettivo
             </a>
             
@@ -46,7 +46,7 @@ export default function HomePage() {
           <div className="text-center mb-12">
             <h2 className="mb-6 text-3xl lg:text-4xl font-bold text-gray-900">
               Il problema non è il mercato<br />
-              <span className="text-blue-600">È partire senza un criterio</span>
+              <span className="text-primary-600">È partire senza un criterio</span>
             </h2>
             <p className="text-lg text-gray-700 max-w-3xl mx-auto">
               La maggior parte delle perdite nel mondo crypto non nasce da previsioni sbagliate,
@@ -74,7 +74,7 @@ export default function HomePage() {
           <div className="text-center mt-8">
             <p className="text-lg font-semibold text-gray-900">
               Questi errori non sono individuali.<br />
-              <span className="text-blue-600">Sono pattern documentati.</span>
+              <span className="text-primary-600">Sono pattern documentati.</span>
             </p>
           </div>
         </div>
