@@ -6,14 +6,14 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="section-lg relative overflow-hidden">
         {/* Geometric pattern background */}
-        <div className="absolute inset-0 opacity-30">
+        <div className="absolute inset-0 opacity-60">
           <svg className="w-full h-full" viewBox="0 0 400 400" fill="none">
             <defs>
-              <pattern id="geometric" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
-                <circle cx="40" cy="40" r="1.5" fill="currentColor" className="text-primary-400" />
-                <path d="M0 40h80M40 0v80" stroke="currentColor" strokeWidth="0.5" className="text-primary-300" opacity="0.4" />
-                <circle cx="40" cy="40" r="20" stroke="currentColor" strokeWidth="0.3" className="text-primary-400" fill="none" opacity="0.3" />
-                <path d="M30 30l20 20M50 30l-20 20" stroke="currentColor" strokeWidth="0.4" className="text-primary-500" opacity="0.5" />
+              <pattern id="geometric" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+                <circle cx="30" cy="30" r="2" fill="currentColor" className="text-primary-400" />
+                <path d="M0 30h60M30 0v60" stroke="currentColor" strokeWidth="1" className="text-primary-300" />
+                <circle cx="30" cy="30" r="15" stroke="currentColor" strokeWidth="0.8" className="text-primary-400" fill="none" />
+                <path d="M20 20l20 20M40 20l-20 20" stroke="currentColor" strokeWidth="0.6" className="text-primary-500" />
               </pattern>
             </defs>
             <rect width="100%" height="100%" fill="url(#geometric)" />
