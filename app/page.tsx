@@ -6,18 +6,18 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="section-lg relative overflow-hidden">
         {/* Geometric pattern background */}
-        <div className="absolute inset-0 opacity-60">
-          <svg className="w-full h-full" viewBox="0 0 400 400" fill="none">
-            <defs>
-              <pattern id="geometric" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
-                <circle cx="30" cy="30" r="2" fill="currentColor" className="text-primary-400" />
-                <path d="M0 30h60M30 0v60" stroke="currentColor" strokeWidth="1" className="text-primary-300" />
-                <circle cx="30" cy="30" r="15" stroke="currentColor" strokeWidth="0.8" className="text-primary-400" fill="none" />
-                <path d="M20 20l20 20M40 20l-20 20" stroke="currentColor" strokeWidth="0.6" className="text-primary-500" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#geometric)" />
-          </svg>
+        <div className="absolute inset-0 opacity-15">
+          <div 
+            className="w-full h-full" 
+            style={{
+              backgroundImage: `
+                radial-gradient(circle at 25px 25px, rgba(100, 116, 139, 0.4) 1px, transparent 1px),
+                linear-gradient(rgba(100, 116, 139, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(100, 116, 139, 0.1) 1px, transparent 1px)
+              `,
+              backgroundSize: '50px 50px, 50px 50px, 50px 50px'
+            }}
+          />
         </div>
         
         {/* Floating geometric elements */}
