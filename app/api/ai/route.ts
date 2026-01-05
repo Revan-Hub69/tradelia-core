@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import type { Regime, RegimeClassifierOutput } from "@/lib/market/regime";
+import type { Regime4h, Regime4hOutput } from "@/engines/regime4h";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -14,7 +14,7 @@ type AiRequestBody = {
 };
 
 type AiDecision = {
-  regime: Regime;
+  regime: Regime4h;
   allowedSetups: string[];
   action: "NO_TRADE" | "ALLOW";
   setup: string | null;
@@ -63,7 +63,7 @@ export async function POST(request: Request) {
     "",
     "Schema JSON richiesto:",
     "{",
-    '  "regime": "TREND|RANGE|NO_TRADE",',
+    '  "regime": "TREND|RANGE|TRANSITION",',
     '  "allowedSetups": string[],',
     '  "action": "ALLOW|NO_TRADE",',
     '  "setup": string|null,',
@@ -74,7 +74,7 @@ export async function POST(request: Request) {
     "}",
     "",
     "Regole:",
-    "- Se regime = NO_TRADE: action=NO_TRADE, setup=null, allowedSetups=[].",
+    "- Se regime = TRANSITION: action=NO_TRADE, setup=null, allowedSetups=[].",
     "- Se regime = TREND: puoi scegliere SOLO tra allowedSetups.",
     "- Se regime = RANGE: puoi scegliere SOLO tra allowedSetups.",
     "- Mantieni reason breve e meccanica (max 2 frasi).",
@@ -131,19 +131,19 @@ export async function POST(request: Request) {
   }
 }
 
-function allowedSetupsForRegime(regime: Regime): string[] {
+function allowedSetupsForRegime(regime: Regime4h): string[] {
   if (regime === "TREND") return ["trend_following", "pullback"];
   if (regime === "RANGE") return ["range_rejection"];
   return [];
 }
 
-function parseRegimeOutput(value: unknown): { ok: true; value: RegimeClassifierOutput } | { ok: false; error: string } {
+function parseRegimeOutput(value: unknown): { ok: true; value: Regime4hOutput } | { ok: false; error: string } {
   if (!isPlainObject(value)) return { ok: false, error: "regime must be an object." };
   const regime = (value as Record<string, unknown>).regime;
-  if (regime !== "TREND" && regime !== "RANGE" && regime !== "NO_TRADE") {
-    return { ok: false, error: "regime.regime must be one of TREND, RANGE, NO_TRADE." };
+  if (regime !== "TREND" && regime !== "RANGE" && regime !== "TRANSITION") {
+    return { ok: false, error: "regime.regime must be one of TREND, RANGE, TRANSITION." };
   }
-  return { ok: true, value: value as RegimeClassifierOutput };
+  return { ok: true, value: value as Regime4hOutput };
 }
 
 function parseSetupTimeframes(
@@ -223,7 +223,7 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 
 function isAiDecision(value: unknown): value is AiDecision {
   if (!isPlainObject(value)) return false;
-  if (value.regime !== "TREND" && value.regime !== "RANGE" && value.regime !== "NO_TRADE") return false;
+  if (value.regime !== "TREND" && value.regime !== "RANGE" && value.regime !== "TRANSITION") return false;
   if (!Array.isArray(value.allowedSetups) || value.allowedSetups.some((v) => typeof v !== "string")) return false;
   if (value.action !== "ALLOW" && value.action !== "NO_TRADE") return false;
   if (value.setup !== null && typeof value.setup !== "string") return false;

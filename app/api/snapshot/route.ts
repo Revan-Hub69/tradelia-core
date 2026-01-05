@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { classifyRegime, type OhlcvCandle, type Regime } from "@/lib/market/regime";
+import { computeRegime4h, type Regime4h, type Regime4hOutput } from "@/engines/regime4h";
+import type { Candle } from "@/adapters/binance";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -12,8 +13,8 @@ type SnapshotResponse = {
   interval: string;
   limit: number;
   asOf: number;
-  candles: OhlcvCandle[];
-  regime: ReturnType<typeof classifyRegime>;
+  candles: Candle[];
+  regime: Regime4hOutput;
 };
 
 const BINANCE_BASE_URL = process.env.BINANCE_BASE_URL ?? "https://api.binance.com";
@@ -65,7 +66,7 @@ export async function GET(request: Request) {
 
   try {
     const candles = await fetchBinanceKlines({ symbol, interval, limit: limit.value });
-    const regime = classifyRegime({ candles, previousRegime: previousRegime.value });
+    const regime = computeRegime4h({ candles4h: candles, previousRegime: previousRegime.value });
 
     const response: SnapshotResponse = {
       source: "binance",
@@ -92,7 +93,7 @@ async function fetchBinanceKlines({
   symbol: string;
   interval: string;
   limit: number;
-}): Promise<OhlcvCandle[]> {
+}): Promise<Candle[]> {
   const base = normalizeBinanceBaseUrl(BINANCE_BASE_URL);
   const url = new URL("/api/v3/klines", base);
   url.searchParams.set("symbol", symbol);
@@ -120,24 +121,24 @@ async function fetchBinanceKlines({
     throw new Error("Binance response is not an array.");
   }
 
-  const candles: OhlcvCandle[] = [];
+  const candles: Candle[] = [];
   for (const entry of data) {
     if (!Array.isArray(entry) || entry.length < 6) {
       throw new Error("Binance kline has an invalid shape.");
     }
 
-    const time = toFiniteNumber(entry[0]);
-    const open = toFiniteNumber(entry[1]);
-    const high = toFiniteNumber(entry[2]);
-    const low = toFiniteNumber(entry[3]);
-    const close = toFiniteNumber(entry[4]);
-    const volume = toFiniteNumber(entry[5]);
+    const t = toFiniteNumber(entry[0]);
+    const o = toFiniteNumber(entry[1]);
+    const h = toFiniteNumber(entry[2]);
+    const l = toFiniteNumber(entry[3]);
+    const c = toFiniteNumber(entry[4]);
+    const v = toFiniteNumber(entry[5]);
 
-    if (time === null || open === null || high === null || low === null || close === null || volume === null) {
+    if (t === null || o === null || h === null || l === null || c === null || v === null) {
       throw new Error("Binance kline contains invalid number values.");
     }
 
-    candles.push({ time, open, high, low, close, volume });
+    candles.push({ t, o, h, l, c, v });
   }
 
   return candles;
@@ -152,10 +153,10 @@ function normalizeBinanceBaseUrl(value: string) {
 
 function parsePreviousRegime(
   value: string | null,
-): { ok: true; value: Regime | undefined } | { ok: false; error: string } {
+): { ok: true; value: Regime4h | undefined } | { ok: false; error: string } {
   if (!value) return { ok: true, value: undefined };
-  if (value === "TREND" || value === "RANGE" || value === "NO_TRADE") return { ok: true, value };
-  return { ok: false, error: "previousRegime must be one of TREND, RANGE, NO_TRADE." };
+  if (value === "TREND" || value === "RANGE" || value === "TRANSITION") return { ok: true, value };
+  return { ok: false, error: "previousRegime must be one of TREND, RANGE, TRANSITION." };
 }
 
 function parseLimit(value: string | null): { ok: true; value: number } | { ok: false; error: string } {

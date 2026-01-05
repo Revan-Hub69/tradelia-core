@@ -1,4 +1,5 @@
-import { classifyRegime, type OhlcvCandle, type Regime } from "./regime";
+import { computeRegime4h, type Regime4h, type Regime4hOutput } from "../../engines/regime4h";
+import type { Candle } from "../../adapters/binance";
 
 type Env = {
   GROQ_API_KEY?: string;
@@ -71,7 +72,7 @@ async function handleSnapshot(url: URL, request: Request, env: Env): Promise<Res
       binanceBaseUrl: env.BINANCE_BASE_URL,
     });
 
-    const regime = classifyRegime({ candles, previousRegime: previousRegime.value });
+    const regime = computeRegime4h({ candles4h: candles, previousRegime: previousRegime.value });
 
     return json(
       {
@@ -534,10 +535,10 @@ function parseRegimeOutput(value: unknown): { ok: true; value: { regime: Regime 
 
 function parsePreviousRegime(
   value: string | null,
-): { ok: true; value: Regime | undefined } | { ok: false; error: string } {
+): { ok: true; value: Regime4h | undefined } | { ok: false; error: string } {
   if (!value) return { ok: true, value: undefined };
-  if (value === "TREND" || value === "RANGE" || value === "NO_TRADE") return { ok: true, value };
-  return { ok: false, error: "previousRegime must be one of TREND, RANGE, NO_TRADE." };
+  if (value === "TREND" || value === "RANGE" || value === "TRANSITION") return { ok: true, value };
+  return { ok: false, error: "previousRegime must be one of TREND, RANGE, TRANSITION." };
 }
 
 function parseLimit(value: string | null): { ok: true; value: number } | { ok: false; error: string } {
