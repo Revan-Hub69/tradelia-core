@@ -41,7 +41,12 @@ export default function HeroSection() {
                 </h1>
                 
                 <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-xl font-semibold">
-                  Usando solo ricerche accademiche verificate.
+                  Usando solo{' '}
+                  <span className="text-foreground relative">
+                    nozioni accademiche
+                    <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary/60 rounded-full block" />
+                  </span>
+                  .
                 </p>
 
                 {/* Trust metrics */}

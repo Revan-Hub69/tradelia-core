@@ -113,6 +113,9 @@ export function Footer() {
               <div className="text-xs text-muted-foreground">
                 <p>Versione 2026.02</p>
                 <p>Ultimo aggiornamento: Gennaio 2026</p>
+                <a href="/changelog-metodologia" className="text-primary hover:text-primary/80 transition-colors underline">
+                  Changelog metodologia
+                </a>
               </div>
             </div>
           </div>

@@ -158,8 +158,9 @@ export default function ResearchSection() {
           </p>
         </header>
         
-        <div className="space-y-16 fade-in-stagger" role="list">
-          {RESEARCH_ITEMS.map((item, index) => (
+        {/* Above-fold: Solo i 2 bias più importanti */}
+        <div className="space-y-16 fade-in-stagger mb-20" role="list">
+          {RESEARCH_ITEMS.slice(0, 2).map((item, index) => (
             <div key={item.key} role="listitem">
               <ResearchItem 
                 item={item} 
@@ -168,6 +169,21 @@ export default function ResearchSection() {
               />
             </div>
           ))}
+        </div>
+
+        {/* Below-fold: Resto dei bias */}
+        <div className="border-t border-border/30 pt-16">
+          <div className="space-y-16" role="list">
+            {RESEARCH_ITEMS.slice(2).map((item, index) => (
+              <div key={item.key} role="listitem">
+                <ResearchItem 
+                  item={item} 
+                  data={research[item.key]}
+                  index={index + 2}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

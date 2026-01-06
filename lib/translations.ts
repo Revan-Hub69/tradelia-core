@@ -7,7 +7,7 @@ export const translations = {
     hero: {
       title: 'Esplora le crypto senza fare gli',
       titleHighlight: 'errori più costosi',
-      description: 'Usando solo ricerche accademiche verificate.',
+      description: 'Usando solo nozioni accademiche.',
       cta: 'Accedi alla dashboard',
       ctaSecondary: 'Guarda demo',
       features: [
@@ -30,7 +30,7 @@ export const translations = {
           title: 'Incompatibilità rilevata',
           description: 'Obiettivo "hodling" + strumento "leverage" = rischio elevato'
         },
-        source: 'Basato su Barber & Odean (2001) + 2 studi accademici verificati',
+        source: 'Basato su Barber & Odean (2001) + Kahneman & Tversky (1979), De Bondt & Thaler (1985)',
         errorFrequency: 'Frequenza errore',
         trendLabel: 'Trend negli ultimi studi comportamentali'
       }
@@ -144,23 +144,112 @@ export const translations = {
     },
     modal: {
       title: 'Accesso Dashboard',
-      educational: {
-        title: 'Strumento Educativo',
-        description: 'Dashboard progettata per identificare incompatibilità tra obiettivi e strumenti crypto. Non fornisce consigli di investimento.'
+      step: 'Passo',
+      of: 'di',
+      disclaimer: {
+        title: 'Informazioni Importanti',
+        educational: {
+          title: 'Strumento Educativo',
+          description: 'Dashboard guidata per esplorare le crypto senza fare gli errori più costosi. Non fornisce consigli di investimento.'
+        },
+        affiliations: {
+          title: 'Trasparenza Affiliazioni',
+          description: 'Alcuni strumenti mostrati potrebbero generare commissioni di affiliazione. Questa trasparenza è parte della nostra metodologia.'
+        },
+        responsibility: 'Accedendo confermi di comprendere che questo è uno strumento educativo. Tutte le decisioni di investimento rimangono di tua esclusiva responsabilità.'
       },
-      steps: {
-        title: 'Cosa troverai nella dashboard',
-        items: [
-          'Questionario per identificare il tuo obiettivo principale',
-          'Analisi di coerenza tra obiettivo e strumenti disponibili',
-          'Documentazione accademica sui rischi specifici',
-          'Risorse educative per evitare errori comuni'
-        ]
+      questions: {
+        objective: {
+          title: 'Cosa ti interessa delle criptovalute?',
+          subtitle: 'Queste informazioni ci aiutano a impostare i giusti componenti nella dashboard dinamica.',
+          options: {
+            investment: {
+              title: 'Investimento',
+              description: 'Compri e mantieni per mesi o anni',
+              difficulty: 'easy'
+            },
+            emergency: {
+              title: 'Asset di emergenza',
+              description: 'Riserva di valore alternativa a oro e banche',
+              difficulty: 'medium'
+            },
+            passive: {
+              title: 'Rendite passive',
+              description: 'Generi reddito da crypto possedute',
+              difficulty: 'hard'
+            },
+            speculation: {
+              title: 'Speculazione',
+              description: 'Scommetti su variazioni di prezzo a breve termine',
+              difficulty: 'hard'
+            }
+          }
+        },
+        experience: {
+          title: 'Quale esperienza hai maturato?',
+          subtitle: 'Ci aiuta a calibrare il livello di dettaglio delle spiegazioni.',
+          options: {
+            none: {
+              title: 'Nessuna esperienza',
+              description: 'Non ho mai investito in strumenti finanziari'
+            },
+            basic: {
+              title: 'Esperienza base',
+              description: 'Solo conti deposito e obbligazioni'
+            },
+            traditional: {
+              title: 'Investimenti tradizionali',
+              description: 'Azioni, ETF e fondi comuni'
+            },
+            crypto: {
+              title: 'Già investito in crypto',
+              description: 'Ho esperienza diretta con criptovalute'
+            }
+          }
+        },
+        tools: {
+          title: 'Utilizzi altri strumenti finanziari?',
+          subtitle: 'Per identificare potenziali sovrapposizioni o conflitti.',
+          options: {
+            none: {
+              title: 'Solo conto corrente',
+              description: 'Non utilizzo altri strumenti di investimento'
+            },
+            pension: {
+              title: 'Fondi pensione/TFR',
+              description: 'Previdenza complementare e TFR'
+            },
+            diversified: {
+              title: 'Portafoglio diversificato',
+              description: 'Azioni, obbligazioni, ETF, fondi'
+            },
+            trading: {
+              title: 'Trading attivo',
+              description: 'Operazioni frequenti su vari mercati'
+            }
+          }
+        },
+        storage: {
+          title: 'Come vuoi salvare le tue preferenze?',
+          subtitle: 'Scegli il metodo più adatto alle tue esigenze di privacy.',
+          options: {
+            register: {
+              title: 'Registrazione',
+              description: 'Email e password per sincronizzare le preferenze su tutti i dispositivi'
+            },
+            guest: {
+              title: 'Modalità Guest',
+              description: 'Salvataggio locale criptato, massima privacy, nessun account richiesto'
+            }
+          },
+          explanation: 'In modalità guest i dati sono salvati solo sul tuo dispositivo con crittografia avanzata. Nessuna informazione viene trasmessa ai nostri server.'
+        }
       },
-      disclaimer: 'Accedendo confermi di comprendere che questo è uno strumento educativo. Tutte le decisioni di investimento rimangono di tua esclusiva responsabilità.',
       actions: {
         cancel: 'Annulla',
-        continue: 'Accedi alla Dashboard'
+        back: 'Indietro',
+        continue: 'Continua',
+        finish: 'Accedi alla Dashboard'
       }
     }
   },
@@ -172,7 +261,7 @@ export const translations = {
     hero: {
       title: 'Explore crypto without making the',
       titleHighlight: 'most costly mistakes',
-      description: 'Using only verified academic research.',
+      description: 'Using only academic knowledge.',
       cta: 'Access dashboard',
       ctaSecondary: 'Watch demo',
       features: [
@@ -289,23 +378,112 @@ export const translations = {
     },
     modal: {
       title: 'Dashboard Access',
-      educational: {
-        title: 'Educational Tool',
-        description: 'Dashboard designed to identify incompatibilities between objectives and crypto tools. Does not provide investment advice.'
+      step: 'Step',
+      of: 'of',
+      disclaimer: {
+        title: 'Important Information',
+        educational: {
+          title: 'Educational Tool',
+          description: 'Guided dashboard to explore crypto without making the most costly mistakes. Does not provide investment advice.'
+        },
+        affiliations: {
+          title: 'Affiliate Transparency',
+          description: 'Some tools shown may generate affiliate commissions. This transparency is part of our methodology.'
+        },
+        responsibility: 'By accessing you confirm understanding this is an educational tool. All investment decisions remain your exclusive responsibility.'
       },
-      steps: {
-        title: 'What you\'ll find in the dashboard',
-        items: [
-          'Questionnaire to identify your main objective',
-          'Coherence analysis between objective and available tools',
-          'Academic documentation on specific risks',
-          'Educational resources to avoid common mistakes'
-        ]
+      questions: {
+        objective: {
+          title: 'What interests you about cryptocurrencies?',
+          subtitle: 'This information helps us set up the right components in the dynamic dashboard.',
+          options: {
+            investment: {
+              title: 'Investment',
+              description: 'Buy and hold for months or years',
+              difficulty: 'easy'
+            },
+            emergency: {
+              title: 'Emergency asset',
+              description: 'Store of value alternative to gold and banks',
+              difficulty: 'medium'
+            },
+            passive: {
+              title: 'Passive income',
+              description: 'Generate income from owned crypto',
+              difficulty: 'hard'
+            },
+            speculation: {
+              title: 'Speculation',
+              description: 'Bet on short-term price variations',
+              difficulty: 'hard'
+            }
+          }
+        },
+        experience: {
+          title: 'What experience have you gained?',
+          subtitle: 'Helps us calibrate the level of detail in explanations.',
+          options: {
+            none: {
+              title: 'No experience',
+              description: 'I have never invested in financial instruments'
+            },
+            basic: {
+              title: 'Basic experience',
+              description: 'Only savings accounts and bonds'
+            },
+            traditional: {
+              title: 'Traditional investments',
+              description: 'Stocks, ETFs and mutual funds'
+            },
+            crypto: {
+              title: 'Already invested in crypto',
+              description: 'I have direct experience with cryptocurrencies'
+            }
+          }
+        },
+        tools: {
+          title: 'Do you use other financial tools?',
+          subtitle: 'To identify potential overlaps or conflicts.',
+          options: {
+            none: {
+              title: 'Only checking account',
+              description: 'I don\'t use other investment tools'
+            },
+            pension: {
+              title: 'Pension funds/TFR',
+              description: 'Supplementary pension and TFR'
+            },
+            diversified: {
+              title: 'Diversified portfolio',
+              description: 'Stocks, bonds, ETFs, funds'
+            },
+            trading: {
+              title: 'Active trading',
+              description: 'Frequent operations on various markets'
+            }
+          }
+        },
+        storage: {
+          title: 'How do you want to save your preferences?',
+          subtitle: 'Choose the method that best suits your privacy needs.',
+          options: {
+            register: {
+              title: 'Registration',
+              description: 'Email and password to sync preferences across all devices'
+            },
+            guest: {
+              title: 'Guest Mode',
+              description: 'Encrypted local storage, maximum privacy, no account required'
+            }
+          },
+          explanation: 'In guest mode data is saved only on your device with advanced encryption. No information is transmitted to our servers.'
+        }
       },
-      disclaimer: 'By accessing you confirm understanding that this is an educational tool. All investment decisions remain your sole responsibility.',
       actions: {
         cancel: 'Cancel',
-        continue: 'Access Dashboard'
+        back: 'Back',
+        continue: 'Continue',
+        finish: 'Access Dashboard'
       }
     }
   }

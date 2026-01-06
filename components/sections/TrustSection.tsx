@@ -61,10 +61,38 @@ export default function TrustSection() {
           >
             {trust.title}
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">
             {trust.subtitle}
           </p>
+          
+          {/* Micro-label con mini-frase */}
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 rounded-full text-sm text-primary font-medium">
+            <CheckIcon className="w-4 h-4" />
+            <span>Framework basato su 7 studi, nessun dato inventato, metodologia pubblica</span>
+          </div>
         </header>
+
+        {/* Consolidamento Accademico - 3 Bullet Points */}
+        <div className="mb-16 p-6 rounded-lg border border-border/50 bg-background/80 backdrop-blur-sm">
+          <h3 className="text-lg font-semibold text-foreground mb-4 text-center">Metodologia Accademica</h3>
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="text-center">
+              <BookOpenIcon className="w-6 h-6 text-primary mx-auto mb-2" />
+              <h4 className="font-medium text-foreground mb-1">Fonti</h4>
+              <p className="text-sm text-muted-foreground">7 studi peer-reviewed verificati</p>
+            </div>
+            <div className="text-center">
+              <MethodologyIcon className="w-6 h-6 text-primary mx-auto mb-2" />
+              <h4 className="font-medium text-foreground mb-1">Metodo</h4>
+              <p className="text-sm text-muted-foreground">Processo pubblico e trasparente</p>
+            </div>
+            <div className="text-center">
+              <DiamondIcon className="w-6 h-6 text-primary mx-auto mb-2" />
+              <h4 className="font-medium text-foreground mb-1">Conflitti</h4>
+              <p className="text-sm text-muted-foreground">Affiliazioni completamente dichiarate</p>
+            </div>
+          </div>
+        </div>
 
         {/* Trust Metrics */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16 fade-in-stagger">
