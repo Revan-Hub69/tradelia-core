@@ -9,8 +9,9 @@ export default function FinalCtaSection() {
 
   return (
     <section 
-      className="section-md fade-in-section"
+      className="section-md"
       aria-labelledby="final-cta-title"
+      style={{ backgroundColor: 'red', minHeight: '200px' }}
     >
       <div className="max-w-2xl mx-auto px-6 sm:px-8">
         <div className="space-y-8">
