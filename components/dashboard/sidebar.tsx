@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { OverviewIcon, SettingsIcon, ChevronLeftIcon } from "@/components/icons/dashboard-icons";
-import { ThemeToggleCompact } from "./theme-toggle-compact";
 import { useAuth } from "@/hooks/useAuth";
 
 const navigation = [
@@ -80,12 +79,6 @@ export function Sidebar({ collapsed, onToggle, onOpenSettings }: SidebarProps) {
 
         {/* Footer */}
         <div className="p-3 border-t border-border/50 space-y-3">
-          {/* Theme Toggle */}
-          <div className={`flex items-center ${collapsed ? 'justify-center' : 'justify-between'}`}>
-            {!collapsed && <span className="text-xs text-muted-foreground">Tema</span>}
-            <ThemeToggleCompact />
-          </div>
-          
           {/* User Info */}
           <div className={`flex items-center ${collapsed ? 'justify-center' : 'gap-2'}`}>
             <div className={`w-7 h-7 rounded-full flex items-center justify-center border border-border/50 ${
@@ -145,10 +138,6 @@ export function Sidebar({ collapsed, onToggle, onOpenSettings }: SidebarProps) {
 
         {/* Footer */}
         <div className="p-3 border-t border-border/50 space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-muted-foreground">Tema</span>
-            <ThemeToggleCompact />
-          </div>
           <div className="flex items-center gap-2">
             <div className={`w-7 h-7 rounded-full flex items-center justify-center border border-border/50 ${
               isGuest ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'
