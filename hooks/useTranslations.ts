@@ -102,21 +102,6 @@ export function useTranslations() {
       disclaimer: t('finalCta.disclaimer')
     },
 
-    popup: {
-      disclaimer: {
-        title: t('popup.disclaimer.title'),
-        education: t('popup.disclaimer.education'),
-        responsibility: t('popup.disclaimer.responsibility'),
-        affiliations: t('popup.disclaimer.affiliations'),
-        accept: t('popup.disclaimer.accept')
-      },
-      welcome: {
-        title: t('popup.welcome.title'),
-        description: t('popup.welcome.description'),
-        cta: t('popup.welcome.cta')
-      }
-    },
-
     footer: {
       description: t('footer.description'),
       methodology: t('footer.methodology'),

@@ -117,17 +117,19 @@ export default function DashboardModal() {
             </h3>
             
             <ol className="space-y-3">
-              {Array.isArray(t('modal.steps.items')) 
-                ? (t('modal.steps.items') as string[]).map((step: string, index: number) => (
-                    <li key={`modal-step-${index}`} className="flex items-start gap-3">
-                      <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <span className="text-xs font-semibold text-primary">{index + 1}</span>
-                      </div>
-                      <span className="text-sm text-muted-foreground">{step}</span>
-                    </li>
-                  ))
-                : null
-              }
+              {(() => {
+                const steps = t('modal.steps.items');
+                return Array.isArray(steps) 
+                  ? steps.map((step: string, index: number) => (
+                      <li key={`modal-step-${index}`} className="flex items-start gap-3">
+                        <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <span className="text-xs font-semibold text-primary">{index + 1}</span>
+                        </div>
+                        <span className="text-sm text-muted-foreground">{step}</span>
+                      </li>
+                    ))
+                  : null;
+              })()}
             </ol>
           </div>
 

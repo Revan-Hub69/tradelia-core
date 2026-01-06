@@ -9,25 +9,54 @@ export default function FinalCtaSection() {
   const { openModal } = useDashboardModal();
   const sectionRef = useRef<HTMLElement>(null);
 
-  // Force visibility after component mounts
+  // Fallback per assicurare visibilità se l'observer non funziona
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (sectionRef.current) {
-        sectionRef.current.classList.add('visible');
-      }
-    }, 100);
+    const section = sectionRef.current;
+    if (!section) return;
 
-    return () => clearTimeout(timer);
+    // Controlla se la sezione è già visibile
+    if (section.classList.contains('visible')) return;
+
+    // Fallback timer per l'ultima sezione
+    const fallbackTimer = setTimeout(() => {
+      if (!section.classList.contains('visible')) {
+        section.classList.add('visible');
+      }
+    }, 1000);
+
+    // Observer per rilevare quando la sezione entra nel viewport
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+            clearTimeout(fallbackTimer);
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      }
+    );
+
+    observer.observe(section);
+
+    return () => {
+      observer.disconnect();
+      clearTimeout(fallbackTimer);
+    };
   }, []);
 
   return (
     <section 
       ref={sectionRef}
-      className="section-md fade-in-section"
+      className="section-md fade-in-section bg-background"
       aria-labelledby="final-cta-title"
     >
       <div className="max-w-2xl mx-auto px-6 sm:px-8">
-        <div className="space-y-8">
+        <div className="space-y-8 text-center">
           <h2 
             id="final-cta-title"
             className="text-xl sm:text-2xl lg:text-3xl font-semibold text-foreground leading-tight tracking-tight"
@@ -44,7 +73,7 @@ export default function FinalCtaSection() {
               {finalCta.button}
             </button>
             
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground max-w-md mx-auto">
               {finalCta.disclaimer}
             </p>
           </div>

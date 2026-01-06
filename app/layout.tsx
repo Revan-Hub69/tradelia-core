@@ -4,7 +4,6 @@ import { Footer } from '@/components/Footer';
 import { LanguageProvider } from '@/components/LanguageSelector';
 import { DashboardModalProvider } from '@/contexts/DashboardModalContext';
 import DashboardModal from '@/components/DashboardModal';
-import InitialPopup from '@/components/InitialPopup';
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -72,7 +71,6 @@ export default function RootLayout({
       <body className="antialiased min-h-screen bg-background text-foreground font-sans">
         <LanguageProvider>
           <DashboardModalProvider>
-            <InitialPopup type="disclaimer" />
             <Header />
             <main id="main-content" role="main">
               {children}

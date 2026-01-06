@@ -75,20 +75,6 @@ export const translations = {
       button: 'Accedi alla dashboard',
       disclaimer: 'Gratis · 60–90 secondi · Senza usare denaro'
     },
-    popup: {
-      disclaimer: {
-        title: 'Avviso importante',
-        education: 'Tradelia è uno strumento educativo basato su ricerca accademica. Non fornisce consulenza finanziaria personalizzata.',
-        responsibility: 'L\'utente rimane completamente responsabile delle proprie decisioni di investimento.',
-        affiliations: 'Questo sito può ricevere commissioni da partner raccomandati. Trasparenza completa sui conflitti di interesse.',
-        accept: 'Ho compreso'
-      },
-      welcome: {
-        title: 'Benvenuto in Tradelia',
-        description: 'Dashboard educativa per esplorare le crypto senza fare errori costosi. Basata su ricerca comportamentale accademica.',
-        cta: 'Inizia l\'esplorazione'
-      }
-    },
     footer: {
       description: 'Strumento educativo per identificare incompatibilità tra obiettivi e strumenti finanziari. Basato su ricerca comportamentale accademica.',
       methodology: 'Framework da studi peer-reviewed. Nessun cookie, trasparenza sui partner.',
@@ -198,20 +184,6 @@ export const translations = {
       title: 'Start from dashboard',
       button: 'Access dashboard',
       disclaimer: 'Free · 60–90 seconds · No money used'
-    },
-    popup: {
-      disclaimer: {
-        title: 'Important notice',
-        education: 'Tradelia is an educational tool based on academic research. It does not provide personalized financial advice.',
-        responsibility: 'The user remains completely responsible for their investment decisions.',
-        affiliations: 'This site may receive commissions from recommended partners. Full transparency on conflicts of interest.',
-        accept: 'I understand'
-      },
-      welcome: {
-        title: 'Welcome to Tradelia',
-        description: 'Educational dashboard to explore crypto without making costly mistakes. Based on academic behavioral research.',
-        cta: 'Start exploring'
-      }
     },
     footer: {
       description: 'Educational tool to identify incompatibilities between objectives and financial instruments. Based on academic behavioral research.',
