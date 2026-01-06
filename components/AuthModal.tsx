@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useDashboardModal } from '@/contexts/DashboardModalContext';
 import { useAuth } from '@/hooks/useAuth';
+import { useTranslations } from '@/hooks/useTranslations';
 import Logo from './Logo';
 import { 
   CloseIcon, 
@@ -23,6 +24,7 @@ interface AuthFormData {
 }
 
 export default function AuthModal() {
+  const { modal } = useTranslations();
   const { isOpen, closeModal, initialMode } = useDashboardModal();
   const { signInWithGoogle, signInWithEmail, signUpWithEmail } = useAuth();
   
@@ -196,7 +198,7 @@ export default function AuthModal() {
       {/* Header */}
       <div className="text-center space-y-2">
         <h3 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight">
-          Accedi alla dashboard
+          {modal.title}
         </h3>
         <p className="text-sm text-muted-foreground">
           Scegli la modalità di accesso
@@ -274,7 +276,7 @@ export default function AuthModal() {
 
       {/* Footer note */}
       <p className="text-xs text-muted-foreground text-center leading-relaxed">
-        Continuando accetti i termini di servizio e la privacy policy.
+        Strumento educativo. Non fornisce consulenza finanziaria.
       </p>
     </div>
   );
@@ -285,10 +287,10 @@ export default function AuthModal() {
     <div className="space-y-6">
       <div className="text-center space-y-2">
         <h3 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight">
-          Accedi
+          Accesso
         </h3>
         <p className="text-sm text-muted-foreground">
-          Inserisci le tue credenziali
+          Inserisci le credenziali
         </p>
       </div>
 
@@ -377,7 +379,7 @@ export default function AuthModal() {
     <div className="space-y-6">
       <div className="text-center space-y-2">
         <h3 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight">
-          Crea account
+          Registrazione
         </h3>
         <p className="text-sm text-muted-foreground">
           Sincronizza i dati su tutti i dispositivi
@@ -478,7 +480,7 @@ export default function AuthModal() {
           disabled={isSubmitting}
           className="w-full h-11 bg-foreground text-background text-sm font-medium rounded hover:bg-foreground/90 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2"
         >
-          {isSubmitting ? 'Registrazione...' : 'Crea account'}
+          {isSubmitting ? 'Registrazione...' : 'Registrati'}
         </button>
       </form>
 
@@ -501,10 +503,10 @@ export default function AuthModal() {
     <div className="space-y-6">
       <div className="text-center space-y-2">
         <h3 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight">
-          Recupera password
+          Recupero password
         </h3>
         <p className="text-sm text-muted-foreground">
-          Inserisci l&apos;email per ricevere il link di reset
+          Inserisci l&apos;email per ricevere il link
         </p>
       </div>
 
@@ -539,7 +541,7 @@ export default function AuthModal() {
           disabled={isSubmitting}
           className="w-full h-11 bg-foreground text-background text-sm font-medium rounded hover:bg-foreground/90 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2"
         >
-          {isSubmitting ? 'Invio in corso...' : 'Invia link di reset'}
+          {isSubmitting ? 'Invio...' : 'Invia link'}
         </button>
       </form>
 
@@ -566,7 +568,7 @@ export default function AuthModal() {
           Email inviata
         </h3>
         <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
-          Se l&apos;indirizzo è registrato, riceverai un link per reimpostare la password.
+          Controlla la casella email per il link di recupero.
         </p>
       </div>
 
