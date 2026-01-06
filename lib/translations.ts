@@ -17,7 +17,7 @@ export const translations = {
       ],
       trustBadges: {
         verified: 'Metodologia verificata',
-        specs: '0€ • 60-90s • No KYC'
+        specs: '0€ • 60-90s • Nessun documento'
       },
       dashboard: {
         title: 'Anteprima Dashboard',
@@ -30,7 +30,7 @@ export const translations = {
           title: 'Incompatibilità rilevata',
           description: 'Obiettivo "hodling" + strumento "leverage" = rischio elevato'
         },
-        source: 'Basato su Barber & Odean (2001) + 2 studi peer-reviewed',
+        source: 'Basato su Barber & Odean (2001) + 2 studi accademici verificati',
         errorFrequency: 'Frequenza errore',
         trendLabel: 'Trend negli ultimi studi comportamentali'
       }
@@ -38,7 +38,7 @@ export const translations = {
     research: {
       eyebrow: 'Ricerca comportamentale',
       title: 'Errori comuni documentati dalla ricerca accademica',
-      subtitle: 'Studi peer-reviewed identificano pattern ricorrenti negli errori di chi si avvicina agli investimenti',
+      subtitle: 'Studi accademici verificati identificano pattern ricorrenti negli errori di chi si avvicina agli investimenti',
       overconfidence: {
         title: 'Eccesso di fiducia',
         description: 'Chi inizia tende a sovrastimare le proprie capacità di comprensione, scegliendo strumenti troppo complessi per il proprio livello di esperienza.',
@@ -53,6 +53,27 @@ export const translations = {
         title: 'Imitazione sociale',
         description: 'Copiare le scelte altrui senza comprendere il contesto, particolarmente comune nei mercati crypto per effetto social media e influencer.',
         source: 'Bikhchandani, S., Hirshleifer, D., & Welch, I. (1992). A theory of fads, fashion, custom, and cultural change as informational cascades. Journal of Political Economy, 100(5), 992-1026.'
+      },
+      // Studi aggiuntivi per completare i 7 studi accademici
+      prospectTheory: {
+        title: 'Teoria del prospetto',
+        description: 'Le persone valutano guadagni e perdite in modo asimmetrico, tendendo a essere più sensibili alle perdite che ai guadagni equivalenti.',
+        source: 'Kahneman, D., & Tversky, A. (1979). Prospect theory: An analysis of decision under risk. Econometrica, 47(2), 263-291.'
+      },
+      mentalAccounting: {
+        title: 'Contabilità mentale',
+        description: 'Tendenza a categorizzare il denaro in "conti mentali" separati, portando a decisioni irrazionali nella gestione del portafoglio.',
+        source: 'Thaler, R. (1985). Mental accounting and consumer choice. Marketing Science, 4(3), 199-214.'
+      },
+      meanReversion: {
+        title: 'Reazione eccessiva',
+        description: 'Gli investitori tendono a reagire in modo eccessivo alle notizie, creando opportunità di correzione nei prezzi.',
+        source: 'De Bondt, W. F., & Thaler, R. (1985). Does the stock market overreact? The Journal of Finance, 40(3), 793-805.'
+      },
+      dispositionEffect: {
+        title: 'Effetto disposizione',
+        description: 'Tendenza sistematica a vendere titoli vincenti troppo presto e mantenere titoli perdenti troppo a lungo.',
+        source: 'Odean, T. (1998). Are investors reluctant to realize their losses? The Journal of Finance, 53(5), 1775-1798.'
       }
     },
     academicBanner: {
@@ -84,21 +105,20 @@ export const translations = {
       title: 'Seri per design',
       subtitle: 'Trasparenza metodologica e onestà intellettuale.',
       badges: [
-        'Educational · non consulenza',
+        'Educativo · non consulenza',
         'Nessun segnale',
-        'Nessuna leva',
         'Nessuna esecuzione / custodia',
-        'Focus: prevenzione errori'
+        'Concentrato: prevenzione errori'
       ]
     },
     finalCta: {
       title: 'Inizia dalla dashboard',
       button: 'Accedi alla dashboard',
-      disclaimer: 'Gratis · 60–90 secondi · Senza usare denaro'
+      disclaimer: 'Gratuito · 60–90 secondi · Senza usare denaro'
     },
     footer: {
       description: 'Strumento educativo per identificare incompatibilità tra obiettivi e strumenti finanziari. Basato su ricerca comportamentale accademica.',
-      methodology: 'Framework da studi peer-reviewed. Nessun cookie, trasparenza sui partner.',
+      methodology: 'Struttura da studi accademici verificati. Nessun cookie, trasparenza sui partner.',
       disclaimer: 'Strumento educativo, non consulenza finanziaria. Possibili commissioni da partner raccomandati. L\'utente rimane responsabile delle proprie decisioni.',
       links: {
         privacy: 'Privacy',

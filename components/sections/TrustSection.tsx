@@ -9,42 +9,42 @@ export default function TrustSection() {
   // Badge hierarchy with priorities
   const TRUST_BADGES = [
     {
-      text: 'Educational only',
+      text: 'Solo educativo',
       type: 'primary' as const,
       IconComponent: GraduationCapIcon,
       description: 'Nessun consiglio di investimento'
     },
     {
-      text: 'No leverage',
+      text: 'Nessuna custodia',
       type: 'primary' as const,
-      IconComponent: ShieldIcon,
-      description: 'Zero strumenti ad alto rischio'
-    },
-    {
-      text: 'No custody',
-      type: 'secondary' as const,
       IconComponent: LockIcon,
       description: 'Non gestiamo i tuoi fondi'
     },
     {
-      text: 'Peer-reviewed',
+      text: 'Ricerca accademica',
       type: 'secondary' as const,
       IconComponent: BookOpenIcon,
-      description: 'Basato su ricerca accademica'
+      description: 'Basato su studi peer-reviewed'
     },
     {
-      text: 'Trasparenza affiliazioni',
+      text: 'Trasparenza commissioni',
       type: 'secondary' as const,
       IconComponent: DiamondIcon,
-      description: 'Commissioni dichiarate'
+      description: 'Affiliazioni dichiarate'
+    },
+    {
+      text: 'Metodologia aperta',
+      type: 'secondary' as const,
+      IconComponent: ShieldIcon,
+      description: 'Processo verificabile'
     }
   ];
 
   const TRUST_METRICS = [
     { label: '0€', description: 'Costo utilizzo' },
-    { label: '0', description: 'Leva finanziaria' },
+    { label: '0', description: 'Custodia fondi' },
     { label: '100%', description: 'Educativo' },
-    { label: '3+', description: 'Paper peer-reviewed' }
+    { label: '7', description: 'Studi accademici' }
   ];
 
   return (
@@ -67,10 +67,10 @@ export default function TrustSection() {
         </header>
 
         {/* Trust Metrics */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16 fade-in-stagger">
           {TRUST_METRICS.map((metric, index) => (
-            <div key={index} className="text-center">
-              <div className="text-3xl sm:text-4xl font-bold text-primary mb-2">
+            <div key={index} className="text-center group">
+              <div className="text-3xl sm:text-4xl font-bold text-primary mb-2 group-hover:scale-105 transition-transform duration-200">
                 {metric.label}
               </div>
               <div className="text-sm text-muted-foreground">
@@ -132,10 +132,10 @@ export default function TrustSection() {
               Metodologia verificabile
             </h3>
             <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
-              Framework basato su 3+ studi peer-reviewed. Fonti accademiche verificabili. 
-              Nessun dato inventato o stimato. Trasparenza completa sui conflitti di interesse.
+              Framework basato su 7 studi accademici verificati. Fonti pubbliche e metodologia trasparente. 
+              Nessun dato stimato o inventato. Completa trasparenza sui conflitti di interesse.
             </p>
-            <div className="flex justify-center gap-4 text-xs text-muted-foreground">
+            <div className="flex flex-wrap justify-center gap-3 text-xs text-muted-foreground">
               <span className="flex items-center gap-1">
                 <CheckIcon className="w-3 h-3 text-primary" />
                 Barber & Odean (2001)
@@ -147,6 +147,22 @@ export default function TrustSection() {
               <span className="flex items-center gap-1">
                 <CheckIcon className="w-3 h-3 text-primary" />
                 Bikhchandani et al. (1992)
+              </span>
+              <span className="flex items-center gap-1">
+                <CheckIcon className="w-3 h-3 text-primary" />
+                Kahneman & Tversky (1979)
+              </span>
+              <span className="flex items-center gap-1">
+                <CheckIcon className="w-3 h-3 text-primary" />
+                Thaler (1985)
+              </span>
+              <span className="flex items-center gap-1">
+                <CheckIcon className="w-3 h-3 text-primary" />
+                De Bondt & Thaler (1985)
+              </span>
+              <span className="flex items-center gap-1">
+                <CheckIcon className="w-3 h-3 text-primary" />
+                Odean (1998)
               </span>
             </div>
           </div>

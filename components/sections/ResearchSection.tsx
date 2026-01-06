@@ -81,36 +81,53 @@ export default function ResearchSection() {
 
         {/* Visual/Sparkline */}
         <div className={`${isReversed ? 'lg:col-start-1' : ''}`}>
-          <div className="bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl p-6">
+          <div className="group bg-background/90 backdrop-blur-sm border border-border/50 rounded-xl p-6 hover:shadow-lg hover:border-border transition-all duration-300 hover:-translate-y-1">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-muted-foreground">{hero.dashboard.errorFrequency}</span>
-                <span className={`text-2xl font-bold ${
-                  item.iconColor === 'red' ? 'text-red-600' : 
-                  item.iconColor === 'orange' ? 'text-orange-600' : 
-                  'text-amber-600'
-                }`}>
-                  {item.sparkline[item.sparkline.length - 1]}%
+                <span className="text-sm font-medium text-muted-foreground">Frequenza errore</span>
+                <div className="flex items-center gap-2">
+                  <span className={`text-3xl font-bold ${
+                    item.iconColor === 'red' ? 'text-red-600' : 
+                    item.iconColor === 'orange' ? 'text-orange-600' : 
+                    'text-amber-600'
+                  }`}>
+                    {item.sparkline[item.sparkline.length - 1]}%
+                  </span>
+                  <div className={`w-2 h-2 rounded-full ${
+                    item.iconColor === 'red' ? 'bg-red-500' : 
+                    item.iconColor === 'orange' ? 'bg-orange-500' : 
+                    'bg-amber-500'
+                  } animate-pulse`} />
+                </div>
+              </div>
+              
+              {/* Enhanced sparkline with gradient */}
+              <div className="relative">
+                <div className="flex items-end gap-1 h-16 bg-gradient-to-t from-muted/20 to-transparent rounded p-2">
+                  {item.sparkline.map((value, i) => (
+                    <div
+                      key={i}
+                      className={`flex-1 rounded-t transition-all duration-500 hover:opacity-80 sparkline-bar ${
+                        item.iconColor === 'red' ? 'bg-gradient-to-t from-red-500 to-red-300' : 
+                        item.iconColor === 'orange' ? 'bg-gradient-to-t from-orange-500 to-orange-300' : 
+                        'bg-gradient-to-t from-amber-500 to-amber-300'
+                      }`}
+                      style={{ 
+                        height: `${(value / Math.max(...item.sparkline)) * 100}%`,
+                        animationDelay: `${i * 100}ms`
+                      }}
+                    />
+                  ))}
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-background/10 to-transparent pointer-events-none" />
+              </div>
+              
+              <div className="flex items-center justify-between text-xs text-muted-foreground">
+                <span>Tendenza comportamentale</span>
+                <span className="flex items-center gap-1">
+                  <div className="w-1 h-1 rounded-full bg-muted-foreground/50" />
+                  <span>Dati empirici</span>
                 </span>
-              </div>
-              
-              {/* Simple sparkline */}
-              <div className="flex items-end gap-1 h-12">
-                {item.sparkline.map((value, i) => (
-                  <div
-                    key={i}
-                    className={`flex-1 rounded-t ${
-                      item.iconColor === 'red' ? 'bg-red-200' : 
-                      item.iconColor === 'orange' ? 'bg-orange-200' : 
-                      'bg-amber-200'
-                    }`}
-                    style={{ height: `${(value / Math.max(...item.sparkline)) * 100}%` }}
-                  />
-                ))}
-              </div>
-              
-              <div className="text-xs text-muted-foreground text-center">
-                {hero.dashboard.trendLabel}
               </div>
             </div>
           </div>
@@ -141,7 +158,7 @@ export default function ResearchSection() {
           </p>
         </header>
         
-        <div className="space-y-16" role="list">
+        <div className="space-y-16 fade-in-stagger" role="list">
           {RESEARCH_ITEMS.map((item, index) => (
             <div key={item.key} role="listitem">
               <ResearchItem 
