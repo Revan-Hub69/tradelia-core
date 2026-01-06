@@ -92,7 +92,7 @@ export default function LanguageSelector() {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 px-2 py-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-subtle"
+        className="flex items-center gap-1 px-2 py-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-subtle rounded hover:bg-muted/30"
         aria-label="Seleziona lingua"
       >
         <span className="uppercase tracking-wide">{locale}</span>
@@ -109,8 +109,10 @@ export default function LanguageSelector() {
               <button
                 key={loc}
                 onClick={() => handleLocaleChange(loc)}
-                className={`w-full px-3 py-2 text-left text-sm hover:bg-muted/30 transition-subtle ${
-                  loc === locale ? 'text-foreground font-medium bg-muted/30' : 'text-muted-foreground'
+                className={`w-full px-3 py-2 text-left text-sm transition-subtle rounded-sm ${
+                  loc === locale 
+                    ? 'text-foreground font-medium bg-muted/30' 
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/20'
                 }`}
               >
                 <span className="uppercase tracking-wide">{loc}</span>
