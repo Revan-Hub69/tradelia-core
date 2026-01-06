@@ -57,9 +57,8 @@ export default function TrustSection() {
         <header className="text-center mb-16">
           <h2 
             id="trust-title"
-            className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-foreground leading-tight tracking-tight mb-6 flex items-center gap-3"
+            className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-foreground leading-tight tracking-tight mb-6 text-center"
           >
-            <MethodologyIcon className="w-8 h-8 text-primary flex-shrink-0" />
             {trust.title}
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">

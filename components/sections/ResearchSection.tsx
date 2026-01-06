@@ -149,9 +149,8 @@ export default function ResearchSection() {
           </p>
           <h2 
             id="research-title"
-            className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-foreground leading-tight tracking-tight mb-6 flex items-center gap-3"
+            className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-foreground leading-tight tracking-tight mb-6 text-center"
           >
-            <ResearchIcon className="w-8 h-8 text-primary flex-shrink-0" />
             {research.title}
           </h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">

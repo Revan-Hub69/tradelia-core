@@ -47,9 +47,8 @@ export default function HowItWorksSection() {
         <header className="text-center mb-12">
           <h2 
             id="how-it-works-title"
-            className="text-xl sm:text-2xl lg:text-3xl font-semibold text-foreground leading-tight tracking-tight mb-4 flex items-center gap-3"
+            className="text-xl sm:text-2xl lg:text-3xl font-semibold text-foreground leading-tight tracking-tight mb-4 text-center"
           >
-            <ProcessIcon className="w-7 h-7 text-primary flex-shrink-0" />
             Come funziona <span className="font-semibold relative">
               <span className="text-muted-foreground relative">
                 T
