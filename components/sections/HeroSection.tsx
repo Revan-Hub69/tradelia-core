@@ -8,7 +8,6 @@ import {
   CheckIcon, 
   ShieldIcon, 
   AlertTriangleIcon,
-  AnalyticsIcon,
   DashboardIcon
 } from '@/components/icons/TradeliaIcons';
 
@@ -29,27 +28,31 @@ export default function HeroSection() {
           
           {/* Left Column - Copy & CTA */}
           <div className="space-y-8 lg:pr-8">
-            <div className="space-y-6">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight tracking-tight">
-                {hero.title}{' '}
-                <span className="text-primary relative">
-                  {hero.titleHighlight}
-                  <div className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-primary/60 to-primary/20 rounded-full" />
-                </span>
-              </h1>
-              
-              <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-xl">
-                {hero.description}
-              </p>
+            {/* Text overlay background */}
+            <div className="relative">
+              <div className="absolute inset-0 bg-background/60 backdrop-blur-sm rounded-2xl -m-4 p-4" />
+              <div className="relative space-y-6">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight tracking-tight">
+                  {hero.title}{' '}
+                  <span className="text-primary relative">
+                    {hero.titleHighlight}
+                    <div className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-primary/60 to-primary/20 rounded-full" />
+                  </span>
+                </h1>
+                
+                <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-xl font-semibold">
+                  {hero.description}
+                </p>
 
-              {/* Trust metrics */}
-              <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                {hero.features.map((feature, index) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-primary rounded-full" />
-                    <span className="font-medium">{feature}</span>
-                  </div>
-                ))}
+                {/* Trust metrics */}
+                <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                  {hero.features.map((feature, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                      <span className="font-medium">{feature}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 

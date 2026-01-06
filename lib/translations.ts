@@ -83,6 +83,20 @@ export const translations = {
       title: 'Come funziona',
       titleWithLogo: true, // Flag per mostrare logo inline
       subtitle: 'Identificazione dei rischi tra obiettivi e strumenti crypto.',
+      steps: [
+        {
+          title: 'Indica cosa ti interessa di più',
+          description: 'Possedere crypto, speculare sul prezzo, o rendita passiva. Ogni scelta configura strumenti e rischi specifici.'
+        },
+        {
+          title: 'Dashboard configurata',
+          description: 'Strumenti coerenti alla tua scelta e rischi specifici documentati dalla ricerca accademica.'
+        },
+        {
+          title: 'Educazione continua',
+          description: 'Errori comuni da evitare per la tua categoria e alert su incompatibilità tra strumenti e intenzioni.'
+        }
+      ],
       step1: {
         title: 'Indica cosa ti interessa di più',
         description: 'Possedere crypto, speculare sul prezzo, o rendita passiva. Ogni scelta configura strumenti e rischi specifici.'
@@ -213,6 +227,20 @@ export const translations = {
       title: 'How it works',
       titleWithLogo: true, // Flag per mostrare logo inline
       subtitle: 'Risk identification between objectives and crypto tools.',
+      steps: [
+        {
+          title: 'Indicate what interests you most',
+          description: 'Own crypto, speculate on price, or passive income. Each choice configures specific tools and risks.'
+        },
+        {
+          title: 'Configured dashboard',
+          description: 'Tools coherent to your choice and specific risks documented by academic research.'
+        },
+        {
+          title: 'Continuous education',
+          description: 'Common errors to avoid for your category and alerts on incompatibilities between tools and intentions.'
+        }
+      ],
       step1: {
         title: 'Indicate what interests you most',
         description: 'Own crypto, speculate on price, or passive income. Each choice configures specific tools and risks.'

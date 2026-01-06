@@ -12,10 +12,10 @@ interface StepProps {
 
 function Step({ step, index }: StepProps) {
   return (
-    <article className="card-tech">
+    <article className="card-interactive">
       <div className="flex items-start gap-4">
         <div 
-          className="w-8 h-8 bg-foreground text-background rounded-lg flex items-center justify-center text-sm font-medium flex-shrink-0 mt-0.5"
+          className="w-8 h-8 bg-primary/10 text-primary rounded-lg flex items-center justify-center text-sm font-semibold flex-shrink-0 mt-0.5 border border-primary/20"
           aria-label={`Step ${index + 1}`}
         >
           {index + 1}
@@ -24,7 +24,7 @@ function Step({ step, index }: StepProps) {
           <h3 className="text-base sm:text-lg font-medium text-foreground mb-2">
             {step.title}
           </h3>
-          <p className="text-sm sm:text-base text-muted-foreground">
+          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
             {step.description}
           </p>
         </div>
