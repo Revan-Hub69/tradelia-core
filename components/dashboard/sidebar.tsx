@@ -35,7 +35,7 @@ export function Sidebar({ collapsed, onToggle, onOpenSettings }: SidebarProps) {
   return (
     <>
       {/* Desktop: in-flow sidebar */}
-      <div className={`hidden lg:flex bg-card text-card-foreground transition-all duration-300 ease-in-out border-r border-border/50 ${
+      <div className={`hidden lg:flex bg-background text-foreground transition-all duration-300 ease-in-out border-r border-border/50 ${
         collapsed ? 'w-12' : 'w-40'
       } min-h-0 flex-col`}>
         {/* Header */}
@@ -106,7 +106,7 @@ export function Sidebar({ collapsed, onToggle, onOpenSettings }: SidebarProps) {
       </div>
 
       {/* Mobile: slide-in overlay sidebar */}
-      <div className={`lg:hidden fixed inset-y-0 left-0 z-30 bg-card text-card-foreground border-r border-border/50 w-40 flex flex-col transition-transform duration-300 ease-in-out ${
+      <div className={`lg:hidden fixed inset-y-0 left-0 z-30 bg-background text-foreground border-r border-border/50 w-40 flex flex-col transition-transform duration-300 ease-in-out ${
         collapsed ? '-translate-x-full' : 'translate-x-0'
       }`}>
         {/* Header */}

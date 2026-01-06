@@ -30,7 +30,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Mobile backdrop */}
       {!sidebarCollapsed && (
         <div 
-          className="fixed inset-0 z-20 bg-background/80 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-20 bg-foreground/20 backdrop-blur-sm lg:hidden"
           onClick={() => setSidebarCollapsed(true)}
         />
       )}
@@ -51,10 +51,18 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         
         {/* Content - single scroll point */}
         <main className="flex-1 overflow-y-auto overscroll-none">
-          <div className="p-2 sm:p-3">
+          <div className="p-3 sm:p-4">
             {children}
           </div>
         </main>
+
+        {/* Mini Footer */}
+        <footer className="border-t border-border/50 px-4 py-2 bg-background">
+          <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+            <span>© 2026 Tradelia. Strumento educativo.</span>
+            <span>Non costituisce consulenza finanziaria.</span>
+          </div>
+        </footer>
       </div>
 
       {/* Settings Modal */}

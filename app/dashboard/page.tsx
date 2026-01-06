@@ -16,7 +16,7 @@ import {
 } from '@/components/icons/TradeliaIcons'
 
 function DashboardContent() {
-  const { user, profile, loading, signOut } = useAuth()
+  const { user, profile, loading } = useAuth()
   const searchParams = useSearchParams()
   const router = useRouter()
   
@@ -128,7 +128,7 @@ function DashboardContent() {
         )}
 
         {/* User Info Card */}
-        <div className="rounded border border-border/50 bg-card p-4">
+        <div className="rounded border border-border/50 bg-background p-4">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-8 h-8 rounded-full bg-muted/50 flex items-center justify-center">
               <UserIcon className="w-4 h-4 text-muted-foreground" />
@@ -161,7 +161,7 @@ function DashboardContent() {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-3 gap-3">
-          <div className="rounded border border-border/50 bg-card p-3">
+          <div className="rounded border border-border/50 bg-background p-3">
             <div className="flex items-center justify-between mb-2">
               <div className="w-7 h-7 rounded bg-green-500/10 flex items-center justify-center">
                 <CheckIcon className="w-3.5 h-3.5 text-green-600" />
@@ -172,7 +172,7 @@ function DashboardContent() {
             <p className="text-[10px] text-muted-foreground">Dashboard configurata</p>
           </div>
 
-          <div className="rounded border border-border/50 bg-card p-3">
+          <div className="rounded border border-border/50 bg-background p-3">
             <div className="flex items-center justify-between mb-2">
               <div className="w-7 h-7 rounded bg-blue-500/10 flex items-center justify-center">
                 <BarChartIcon className="w-3.5 h-3.5 text-blue-600" />
@@ -183,7 +183,7 @@ function DashboardContent() {
             <p className="text-[10px] text-muted-foreground">Rischi identificati</p>
           </div>
 
-          <div className="rounded border border-border/50 bg-card p-3">
+          <div className="rounded border border-border/50 bg-background p-3">
             <div className="flex items-center justify-between mb-2">
               <div className="w-7 h-7 rounded bg-amber-500/10 flex items-center justify-center">
                 <TrendingUpIcon className="w-3.5 h-3.5 text-amber-600" />
@@ -196,7 +196,7 @@ function DashboardContent() {
         </div>
 
         {/* Config Card */}
-        <div className="rounded border border-border/50 bg-card p-4">
+        <div className="rounded border border-border/50 bg-background p-4">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center">
               <ShieldIcon className="w-3 h-3 text-primary" />
@@ -259,13 +259,13 @@ function DashboardContent() {
 
         {/* Educational Content */}
         <div className="grid sm:grid-cols-2 gap-3">
-          <div className="rounded border border-border/50 bg-card p-3">
+          <div className="rounded border border-border/50 bg-background p-3">
             <h3 className="text-xs font-medium text-foreground mb-1">Errori comuni</h3>
             <p className="text-[10px] text-muted-foreground leading-relaxed">
               Pattern comportamentali documentati dalla ricerca accademica.
             </p>
           </div>
-          <div className="rounded border border-border/50 bg-card p-3">
+          <div className="rounded border border-border/50 bg-background p-3">
             <h3 className="text-xs font-medium text-foreground mb-1">Metodologia</h3>
             <p className="text-[10px] text-muted-foreground leading-relaxed">
               Fonti accademiche verificate e processo di identificazione.
