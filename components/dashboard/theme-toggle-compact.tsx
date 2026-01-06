@@ -20,7 +20,12 @@ function getPreferredTheme(): Theme {
 function applyTheme(theme: Theme) {
   if (typeof document === 'undefined') return;
 
-  document.documentElement.dataset.theme = theme;
+  // Use class for Tailwind dark mode
+  if (theme === 'dark') {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
   document.documentElement.style.colorScheme = theme;
   window.localStorage.setItem(STORAGE_KEY, theme);
 }
