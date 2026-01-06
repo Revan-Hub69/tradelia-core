@@ -20,7 +20,7 @@ import {
 } from '@/components/icons/TradeliaIcons'
 
 export default function Dashboard() {
-  const { user, profile, loading } = useAuth()
+  const { user, profile, loading, signOut } = useAuth()
   const [dashboardConfig, setDashboardConfig] = useState<any>(null)
   const [guestProfile, setGuestProfile] = useState<any>(null)
   const [showEmailAlert, setShowEmailAlert] = useState(false)
@@ -73,7 +73,6 @@ export default function Dashboard() {
   }
 
   const handleSignOut = async () => {
-    const { signOut } = await import('@/hooks/useAuth')
     await signOut()
     router.push('/')
   }
