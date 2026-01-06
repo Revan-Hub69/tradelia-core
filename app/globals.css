@@ -121,6 +121,42 @@
     @apply bg-primary/80;
   }
 
+  /* Mobile Language Selector Enhancement */
+  .mobile-language-selector button {
+    @apply px-4 py-3 text-base font-medium;
+    @apply bg-muted/50 border border-border/60 rounded-lg;
+    @apply text-foreground;
+    min-height: 48px; /* Touch target */
+  }
+
+  .mobile-language-selector button:hover {
+    @apply bg-muted/70 border-border;
+  }
+
+  .mobile-language-selector [role="listbox"] {
+    @apply min-w-full;
+  }
+
+  .mobile-language-selector [role="option"] {
+    @apply px-4 py-3 text-base;
+    min-height: 48px; /* Touch target */
+  }
+
+  /* Section Separators */
+  .section-separator {
+    @apply relative;
+  }
+
+  .section-separator::after {
+    content: '';
+    @apply absolute bottom-0 left-1/2 transform -translate-x-1/2;
+    @apply w-12 h-px bg-gradient-to-r from-transparent via-border to-transparent;
+  }
+
+  .section-separator-full {
+    @apply border-b border-border/30;
+  }
+
   /* Card Interactive - Design Guide Compliant */
   .card-interactive {
     @apply rounded border border-border/50 bg-background p-5;

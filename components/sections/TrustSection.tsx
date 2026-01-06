@@ -7,7 +7,7 @@ export default function TrustSection() {
 
   return (
     <section 
-      className="section-md bg-muted/30 fade-in-section"
+      className="section-md bg-muted/30 fade-in-section section-separator-full"
       aria-labelledby="trust-title"
     >
       <div className="max-w-2xl mx-auto px-6 sm:px-8">

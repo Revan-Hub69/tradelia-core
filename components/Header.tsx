@@ -11,7 +11,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 bg-background/98 backdrop-blur-md border-b border-border/60 shadow-sm">
       <div className="w-full px-6 sm:px-8">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between h-14">
             {/* Logo */}
             <div className="flex-shrink-0">
@@ -19,17 +19,21 @@ export function Header() {
             </div>
             
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-6">
-              <a href="#metodologia" className="text-muted-foreground hover:text-foreground text-sm font-medium transition-all duration-150 link-tech">
-                {t('nav.methodology')}
-              </a>
-              <a href="#verifica" className="text-muted-foreground hover:text-foreground text-sm font-medium transition-all duration-150 link-tech">
-                {t('nav.verify')}
-              </a>
-              <LanguageSelector />
-              <button className="btn-tech ml-2">
-                {t('hero.cta')}
-              </button>
+            <nav className="hidden md:flex items-center gap-8">
+              <div className="flex items-center gap-6">
+                <a href="#metodologia" className="text-muted-foreground hover:text-foreground text-sm font-medium transition-all duration-150 link-tech">
+                  {t('nav.methodology')}
+                </a>
+                <a href="#verifica" className="text-muted-foreground hover:text-foreground text-sm font-medium transition-all duration-150 link-tech">
+                  {t('nav.verify')}
+                </a>
+              </div>
+              <div className="flex items-center gap-4">
+                <LanguageSelector />
+                <button className="btn-tech">
+                  {t('hero.cta')}
+                </button>
+              </div>
             </nav>
 
             {/* Mobile Menu Button */}
@@ -50,27 +54,32 @@ export function Header() {
 
           {/* Mobile Navigation */}
           {mobileMenuOpen && (
-            <nav className="md:hidden py-4 border-t border-border/30">
-              <div className="flex flex-col space-y-4">
+            <nav className="md:hidden py-6 border-t border-border/30 bg-background/95">
+              <div className="flex flex-col space-y-6">
                 <a 
                   href="#metodologia" 
-                  className="text-muted-foreground hover:text-foreground text-sm font-medium transition-all duration-150 link-tech py-2"
+                  className="text-foreground hover:text-primary text-base font-medium transition-all duration-150 link-tech py-3 px-2"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {t('nav.methodology')}
                 </a>
                 <a 
                   href="#verifica" 
-                  className="text-muted-foreground hover:text-foreground text-sm font-medium transition-all duration-150 link-tech py-2"
+                  className="text-foreground hover:text-primary text-base font-medium transition-all duration-150 link-tech py-3 px-2"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {t('nav.verify')}
                 </a>
-                <div className="py-2">
-                  <LanguageSelector />
+                
+                {/* Mobile Language Selector - Enhanced */}
+                <div className="py-3 px-2">
+                  <div className="mobile-language-selector">
+                    <LanguageSelector />
+                  </div>
                 </div>
+                
                 <button 
-                  className="btn-tech w-full mt-4"
+                  className="btn-tech w-full mt-6 h-12 text-base"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {t('hero.cta')}

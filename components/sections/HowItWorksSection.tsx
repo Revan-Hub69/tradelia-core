@@ -38,7 +38,7 @@ export default function HowItWorksSection() {
 
   return (
     <section 
-      className="section-md fade-in-section"
+      className="section-md fade-in-section section-separator"
       aria-labelledby="how-it-works-title"
     >
       <div className="max-w-2xl mx-auto px-6 sm:px-8">
