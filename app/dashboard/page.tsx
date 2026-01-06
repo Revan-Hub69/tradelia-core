@@ -15,7 +15,10 @@ import {
   SettingsIcon,
   LogOutIcon,
   MailIcon,
-  UserIcon
+  UserIcon,
+  MenuIcon,
+  CloseIcon,
+  HomeIcon
 } from '@/components/icons/TradeliaIcons'
 
 function DashboardContent() {
@@ -26,6 +29,8 @@ function DashboardContent() {
   const [dashboardConfig, setDashboardConfig] = useState<any>(null)
   const [isGuestMode, setIsGuestMode] = useState(false)
   const [showEmailAlert, setShowEmailAlert] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [activeSection, setActiveSection] = useState('overview')
 
   // Default dashboard config
   const getDefaultDashboardConfig = () => ({
@@ -45,49 +50,47 @@ function DashboardContent() {
   })
 
   useEffect(() => {
-    const isGuest = searchParams.get('guest') === 'true'
+    const isGuestParam = searchParams.get('guest') === 'true'
     
-    // Guest mode: immediate access with default config
-    if (isGuest) {
-      console.log('👻 Guest mode activated')
-      setIsGuestMode(true)
-      setDashboardConfig(getDefaultDashboardConfig())
-      return
-    }
+    console.log('🔍 Dashboard check:', { loading, user: !!user, isGuestParam })
 
-    // Authenticated user: load from Supabase
-    if (!loading && user && profile) {
-      console.log('👤 Loading registered user data...')
+    // Still loading auth - wait
+    if (loading) return
+
+    // PRIORITY 1: Authenticated user (OAuth or email)
+    if (user) {
+      console.log('✅ Authenticated user detected:', user.email)
+      setIsGuestMode(false)
       setShowEmailAlert(!user.email_confirmed_at)
       
+      // Load user's dashboard config from Supabase
       supabase
         .from('dashboard_configs')
         .select('*')
         .eq('user_id', user.id)
         .single()
         .then(({ data }) => {
-          if (data) {
-            setDashboardConfig(data)
-          } else {
-            setDashboardConfig(getDefaultDashboardConfig())
-          }
+          setDashboardConfig(data || getDefaultDashboardConfig())
         })
       return
     }
 
-    // Not loading, not guest, no user -> redirect to home
-    if (!loading && !isGuest && !user) {
-      console.log('❌ No auth, redirecting to home')
-      router.push('/')
+    // PRIORITY 2: Guest mode (explicit param, no user)
+    if (isGuestParam && !user) {
+      console.log('👻 Guest mode activated')
+      setIsGuestMode(true)
+      setDashboardConfig(getDefaultDashboardConfig())
+      return
     }
-  }, [user, profile, loading, searchParams, router])
+
+    // PRIORITY 3: No auth, no guest param -> redirect home
+    console.log('❌ No auth, no guest param -> redirect')
+    router.push('/')
+  }, [user, loading, searchParams, router])
 
   const handleResendVerification = async () => {
     if (user?.email) {
-      await supabase.auth.resend({
-        type: 'signup',
-        email: user.email
-      })
+      await supabase.auth.resend({ type: 'signup', email: user.email })
       alert('Email di verifica inviata!')
     }
   }
@@ -97,25 +100,13 @@ function DashboardContent() {
     router.push('/')
   }
 
-  // Show loading only if not guest and still loading auth
-  if (loading && !isGuestMode) {
+  // Loading state
+  if (loading || !dashboardConfig) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto" />
-          <p className="text-sm text-muted-foreground">Caricamento dashboard...</p>
-        </div>
-      </div>
-    )
-  }
-
-  // Wait for config to be set
-  if (!dashboardConfig) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto" />
-          <p className="text-sm text-muted-foreground">Preparazione dashboard...</p>
+          <p className="text-sm text-muted-foreground">Caricamento...</p>
         </div>
       </div>
     )
@@ -127,273 +118,310 @@ function DashboardContent() {
     full_name: 'Utente ospite'
   }
   const userType = isGuestMode ? 'Ospite' : 'Registrato'
+  const userName = user?.user_metadata?.full_name || profile?.full_name || (isGuestMode ? 'Ospite' : 'Utente')
+
+  const navItems = [
+    { id: 'overview', label: 'Panoramica', icon: BarChartIcon },
+    { id: 'analysis', label: 'Analisi', icon: TrendingUpIcon },
+    { id: 'education', label: 'Educazione', icon: BookOpenIcon },
+    { id: 'settings', label: 'Impostazioni', icon: SettingsIcon },
+  ]
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border/50 bg-background/95 backdrop-blur-sm sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-4">
-              <Logo />
-              <div className="hidden sm:block">
-                <h1 className="text-lg font-semibold text-foreground">Dashboard</h1>
-              </div>
+    <div className="min-h-screen bg-background flex">
+      {/* Mobile Overlay */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-foreground/20 backdrop-blur-sm z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside className={`
+        fixed lg:static inset-y-0 left-0 z-50
+        w-64 bg-background border-r border-border/50
+        transform transition-transform duration-200 ease-out
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        flex flex-col
+      `}>
+        {/* Sidebar Header */}
+        <div className="h-14 flex items-center justify-between px-4 border-b border-border/50">
+          <Logo />
+          <button 
+            onClick={() => setSidebarOpen(false)}
+            className="lg:hidden p-2 text-muted-foreground hover:text-foreground rounded"
+            aria-label="Chiudi menu"
+          >
+            <CloseIcon className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* User Info */}
+        <div className="p-4 border-b border-border/50">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-muted/50 flex items-center justify-center">
+              <UserIcon className="w-5 h-5 text-muted-foreground" />
             </div>
-            
-            <div className="flex items-center gap-3">
-              <div className="hidden md:flex items-center gap-2 text-xs text-muted-foreground">
-                <div className="w-2 h-2 rounded-full bg-green-500" />
-                <span>{userType}</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-foreground truncate">{userName}</p>
+              <div className="flex items-center gap-1.5">
+                <div className={`w-1.5 h-1.5 rounded-full ${isGuestMode ? 'bg-amber-500' : 'bg-green-500'}`} />
+                <span className="text-xs text-muted-foreground">{userType}</span>
               </div>
-              
-              {!isGuestMode && user && (
-                <button
-                  onClick={handleSignOut}
-                  className="p-2 text-muted-foreground hover:text-foreground transition-colors duration-150 rounded focus:outline-none focus:ring-2 focus:ring-primary/60"
-                  aria-label="Esci"
-                >
-                  <LogOutIcon className="w-4 h-4" />
-                </button>
-              )}
             </div>
           </div>
         </div>
-      </header>
 
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 py-8">
-        {/* Email Verification Alert */}
-        {showEmailAlert && user && (
-          <div className="mb-8 p-4 rounded border border-border/50 bg-muted/30">
-            <div className="flex items-start gap-3">
-              <MailIcon className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <p className="text-sm font-medium text-foreground mb-1">
-                  Verifica email
-                </p>
-                <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
-                  Conferma l&apos;indirizzo email per accedere a tutte le funzionalità. 
-                  Non obbligatorio per utilizzare la dashboard.
-                </p>
-                <div className="flex items-center gap-4">
-                  <button
-                    onClick={handleResendVerification}
-                    className="text-xs text-primary hover:text-primary/80 transition-colors duration-150"
-                  >
-                    Invia verifica
-                  </button>
-                  <button
-                    onClick={() => setShowEmailAlert(false)}
-                    className="text-xs text-muted-foreground hover:text-foreground transition-colors duration-150"
-                  >
-                    Nascondi
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Navigation */}
+        <nav className="flex-1 p-3 space-y-1">
+          {navItems.map((item) => {
+            const Icon = item.icon
+            const isActive = activeSection === item.id
+            return (
+              <button
+                key={item.id}
+                onClick={() => { setActiveSection(item.id); setSidebarOpen(false) }}
+                className={`
+                  w-full flex items-center gap-3 px-3 py-2.5 rounded text-sm
+                  transition-colors duration-150
+                  ${isActive 
+                    ? 'bg-muted text-foreground font-medium' 
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                  }
+                `}
+              >
+                <Icon className="w-4 h-4" />
+                {item.label}
+              </button>
+            )
+          })}
+        </nav>
 
-        {/* Main Grid */}
-        <div className="grid lg:grid-cols-12 gap-8">
-          {/* Left Sidebar */}
-          <div className="lg:col-span-3 space-y-6">
-            {/* Profile Card */}
-            <div className="rounded border border-border/50 bg-background p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-full bg-muted/50 flex items-center justify-center">
-                  <UserIcon className="w-5 h-5 text-muted-foreground" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-foreground">
-                    {user?.user_metadata?.full_name || profile?.full_name || 'Utente'}
+        {/* Sidebar Footer */}
+        <div className="p-3 border-t border-border/50 space-y-1">
+          <button
+            onClick={() => router.push('/')}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors duration-150"
+          >
+            <HomeIcon className="w-4 h-4" />
+            Homepage
+          </button>
+          {!isGuestMode && (
+            <button
+              onClick={handleSignOut}
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors duration-150"
+            >
+              <LogOutIcon className="w-4 h-4" />
+              Esci
+            </button>
+          )}
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col min-h-screen">
+        {/* Top Bar (mobile) */}
+        <header className="h-14 flex items-center justify-between px-4 border-b border-border/50 lg:hidden">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="p-2 text-muted-foreground hover:text-foreground rounded"
+            aria-label="Apri menu"
+          >
+            <MenuIcon className="w-5 h-5" />
+          </button>
+          <Logo />
+          <div className="w-9" /> {/* Spacer */}
+        </header>
+
+        {/* Content Area */}
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto">
+          {/* Email Alert */}
+          {showEmailAlert && user && (
+            <div className="mb-6 p-4 rounded border border-border/50 bg-muted/30">
+              <div className="flex items-start gap-3">
+                <MailIcon className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-foreground mb-1">Verifica email</p>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Conferma l&apos;indirizzo email per accedere a tutte le funzionalità.
                   </p>
-                  <p className="text-xs text-muted-foreground">{userType}</p>
-                </div>
-              </div>
-              
-              <div className="space-y-3 text-xs">
-                {user && (
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Email</span>
-                    <span className="text-foreground">{user.email}</span>
+                  <div className="flex items-center gap-4">
+                    <button onClick={handleResendVerification} className="text-xs text-primary hover:text-primary/80">
+                      Invia verifica
+                    </button>
+                    <button onClick={() => setShowEmailAlert(false)} className="text-xs text-muted-foreground hover:text-foreground">
+                      Nascondi
+                    </button>
                   </div>
-                )}
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Obiettivo</span>
-                  <span className="text-foreground capitalize">
-                    {currentProfile?.crypto_objective || 'Non definito'}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Esperienza</span>
-                  <span className="text-foreground capitalize">
-                    {currentProfile?.experience_level || 'Non definita'}
-                  </span>
                 </div>
               </div>
             </div>
+          )}
 
-            {/* Quick Actions */}
-            <div className="rounded border border-border/50 bg-background p-6">
-              <h3 className="text-sm font-medium text-foreground mb-4">Azioni rapide</h3>
-              <div className="space-y-2">
-                <button className="w-full p-3 text-left rounded border border-border/50 hover:bg-muted/30 transition-all duration-150 group">
-                  <div className="flex items-center gap-3">
-                    <SettingsIcon className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-sm text-foreground">Impostazioni</span>
-                  </div>
-                </button>
-                <button 
-                  onClick={() => router.push('/')}
-                  className="w-full p-3 text-left rounded border border-border/50 hover:bg-muted/30 transition-all duration-150 group"
-                >
-                  <div className="flex items-center gap-3">
-                    <BookOpenIcon className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-sm text-foreground">Torna alla homepage</span>
-                  </div>
-                </button>
-              </div>
-            </div>
+          {/* Section Title */}
+          <div className="mb-6">
+            <h1 className="text-xl sm:text-2xl font-semibold text-foreground">
+              {navItems.find(n => n.id === activeSection)?.label || 'Dashboard'}
+            </h1>
           </div>
 
-          {/* Main Content */}
-          <div className="lg:col-span-9 space-y-8">
-            {/* Overview Cards */}
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="rounded border border-border/50 bg-background p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-10 h-10 rounded bg-green-50 flex items-center justify-center">
-                    <CheckIcon className="w-5 h-5 text-green-600" />
+          {/* Overview Section */}
+          {activeSection === 'overview' && (
+            <div className="space-y-6">
+              {/* Stats Grid */}
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="rounded border border-border/50 bg-background p-5">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="w-9 h-9 rounded bg-green-50 flex items-center justify-center">
+                      <CheckIcon className="w-4 h-4 text-green-600" />
+                    </div>
+                    <span className="text-xs text-muted-foreground uppercase tracking-wide">Stato</span>
                   </div>
-                  <span className="text-xs text-muted-foreground uppercase tracking-wide">Stato</span>
+                  <p className="text-xl font-bold text-foreground">Attivo</p>
+                  <p className="text-xs text-muted-foreground mt-1">Dashboard configurata</p>
                 </div>
-                <div className="space-y-1">
-                  <p className="text-2xl font-bold text-foreground">Attivo</p>
-                  <p className="text-xs text-muted-foreground">Dashboard configurata</p>
-                </div>
-              </div>
 
-              <div className="rounded border border-border/50 bg-background p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-10 h-10 rounded bg-blue-50 flex items-center justify-center">
-                    <BarChartIcon className="w-5 h-5 text-blue-600" />
+                <div className="rounded border border-border/50 bg-background p-5">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="w-9 h-9 rounded bg-blue-50 flex items-center justify-center">
+                      <BarChartIcon className="w-4 h-4 text-blue-600" />
+                    </div>
+                    <span className="text-xs text-muted-foreground uppercase tracking-wide">Analisi</span>
                   </div>
-                  <span className="text-xs text-muted-foreground uppercase tracking-wide">Analisi</span>
+                  <p className="text-xl font-bold text-foreground">3</p>
+                  <p className="text-xs text-muted-foreground mt-1">Rischi identificati</p>
                 </div>
-                <div className="space-y-1">
-                  <p className="text-2xl font-bold text-foreground">3</p>
-                  <p className="text-xs text-muted-foreground">Rischi identificati</p>
-                </div>
-              </div>
 
-              <div className="rounded border border-border/50 bg-background p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-10 h-10 rounded bg-amber-50 flex items-center justify-center">
-                    <TrendingUpIcon className="w-5 h-5 text-amber-600" />
+                <div className="rounded border border-border/50 bg-background p-5">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="w-9 h-9 rounded bg-amber-50 flex items-center justify-center">
+                      <TrendingUpIcon className="w-4 h-4 text-amber-600" />
+                    </div>
+                    <span className="text-xs text-muted-foreground uppercase tracking-wide">Fonti</span>
                   </div>
-                  <span className="text-xs text-muted-foreground uppercase tracking-wide">Educazione</span>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-2xl font-bold text-foreground">7</p>
-                  <p className="text-xs text-muted-foreground">Fonti accademiche</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Configuration Card */}
-            <div className="rounded border border-border/50 bg-background p-6">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center">
-                  <ShieldIcon className="w-4 h-4 text-primary" />
-                </div>
-                <div>
-                  <h2 className="text-lg font-semibold text-foreground">
-                    {dashboardConfig.objective_config?.title}
-                  </h2>
-                  <p className="text-sm text-muted-foreground">
-                    {dashboardConfig.objective_config?.description}
-                  </p>
+                  <p className="text-xl font-bold text-foreground">7</p>
+                  <p className="text-xs text-muted-foreground mt-1">Fonti accademiche</p>
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-6">
-                {/* Risk Warnings */}
-                <div className="space-y-4">
-                  <h3 className="text-sm font-medium text-foreground uppercase tracking-wide">
-                    Avvisi principali
-                  </h3>
-                  <div className="p-4 rounded border border-amber-200 bg-amber-50">
-                    <div className="flex items-start gap-3">
-                      <AlertTriangleIcon className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <p className="text-sm font-medium text-amber-800 mb-1">
-                          {dashboardConfig.risk_warnings?.primary}
-                        </p>
-                        <p className="text-xs text-amber-700">
-                          {dashboardConfig.risk_warnings?.secondary}
-                        </p>
+              {/* Config Card */}
+              <div className="rounded border border-border/50 bg-background p-5">
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center">
+                    <ShieldIcon className="w-4 h-4 text-primary" />
+                  </div>
+                  <div>
+                    <h2 className="text-base font-semibold text-foreground">
+                      {dashboardConfig.objective_config?.title}
+                    </h2>
+                    <p className="text-xs text-muted-foreground">
+                      {dashboardConfig.objective_config?.description}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-5">
+                  {/* Warnings */}
+                  <div className="space-y-3">
+                    <h3 className="text-xs font-medium text-foreground uppercase tracking-wide">Avvisi</h3>
+                    <div className="p-3 rounded border border-amber-200 bg-amber-50">
+                      <div className="flex items-start gap-2">
+                        <AlertTriangleIcon className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-sm font-medium text-amber-800">{dashboardConfig.risk_warnings?.primary}</p>
+                          <p className="text-xs text-amber-700 mt-1">{dashboardConfig.risk_warnings?.secondary}</p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <p className="text-xs text-muted-foreground">
-                    Fonte: {dashboardConfig.risk_warnings?.academicSource}
-                  </p>
-                </div>
 
-                {/* Recommended Tools */}
-                <div className="space-y-4">
-                  <h3 className="text-sm font-medium text-foreground uppercase tracking-wide">
-                    Strumenti coerenti
-                  </h3>
+                  {/* Tools */}
                   <div className="space-y-3">
-                    <div>
-                      <p className="text-xs font-medium text-green-700 mb-2">Raccomandati</p>
-                      <ul className="space-y-1">
-                        {dashboardConfig.recommended_tools?.primary?.map((tool: string, index: number) => (
-                          <li key={index} className="flex items-center gap-2 text-xs">
-                            <div className="w-1.5 h-1.5 bg-green-500 rounded-full flex-shrink-0" />
-                            <span className="text-muted-foreground">{tool}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div>
-                      <p className="text-xs font-medium text-red-700 mb-2">Da evitare</p>
-                      <ul className="space-y-1">
-                        {dashboardConfig.recommended_tools?.avoid?.map((tool: string, index: number) => (
-                          <li key={index} className="flex items-center gap-2 text-xs">
-                            <div className="w-1.5 h-1.5 bg-red-500 rounded-full flex-shrink-0" />
-                            <span className="text-muted-foreground">{tool}</span>
-                          </li>
-                        ))}
-                      </ul>
+                    <h3 className="text-xs font-medium text-foreground uppercase tracking-wide">Strumenti</h3>
+                    <div className="space-y-2">
+                      <div>
+                        <p className="text-xs font-medium text-green-700 mb-1">Raccomandati</p>
+                        <ul className="space-y-1">
+                          {dashboardConfig.recommended_tools?.primary?.map((tool: string, i: number) => (
+                            <li key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
+                              <div className="w-1.5 h-1.5 bg-green-500 rounded-full" />
+                              {tool}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium text-red-700 mb-1">Da evitare</p>
+                        <ul className="space-y-1">
+                          {dashboardConfig.recommended_tools?.avoid?.map((tool: string, i: number) => (
+                            <li key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
+                              <div className="w-1.5 h-1.5 bg-red-500 rounded-full" />
+                              {tool}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Educational Content */}
-            <div className="rounded border border-border/50 bg-background p-6">
-              <h2 className="text-lg font-semibold text-foreground mb-4">Contenuti educativi</h2>
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div className="p-4 rounded border border-border/50 bg-muted/30">
-                  <h3 className="text-sm font-medium text-foreground mb-2">Errori comuni</h3>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    Pattern comportamentali documentati dalla ricerca accademica per la tua categoria di obiettivo.
-                  </p>
-                </div>
-                <div className="p-4 rounded border border-border/50 bg-muted/30">
-                  <h3 className="text-sm font-medium text-foreground mb-2">Metodologia</h3>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    Fonti accademiche verificate e processo di identificazione delle incompatibilità.
-                  </p>
+              {/* Profile Summary */}
+              <div className="rounded border border-border/50 bg-background p-5">
+                <h3 className="text-sm font-medium text-foreground mb-4">Profilo</h3>
+                <div className="grid sm:grid-cols-3 gap-4 text-sm">
+                  {user && (
+                    <div>
+                      <span className="text-muted-foreground">Email</span>
+                      <p className="text-foreground mt-1">{user.email}</p>
+                    </div>
+                  )}
+                  <div>
+                    <span className="text-muted-foreground">Obiettivo</span>
+                    <p className="text-foreground mt-1 capitalize">{currentProfile?.crypto_objective || 'Non definito'}</p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Esperienza</span>
+                    <p className="text-foreground mt-1 capitalize">{currentProfile?.experience_level || 'Non definita'}</p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          )}
+
+          {/* Analysis Section */}
+          {activeSection === 'analysis' && (
+            <div className="rounded border border-border/50 bg-background p-5">
+              <p className="text-sm text-muted-foreground">Sezione analisi in sviluppo.</p>
+            </div>
+          )}
+
+          {/* Education Section */}
+          {activeSection === 'education' && (
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="rounded border border-border/50 bg-background p-5">
+                <h3 className="text-sm font-medium text-foreground mb-2">Errori comuni</h3>
+                <p className="text-xs text-muted-foreground">
+                  Pattern comportamentali documentati dalla ricerca accademica.
+                </p>
+              </div>
+              <div className="rounded border border-border/50 bg-background p-5">
+                <h3 className="text-sm font-medium text-foreground mb-2">Metodologia</h3>
+                <p className="text-xs text-muted-foreground">
+                  Fonti accademiche verificate e processo di identificazione.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Settings Section */}
+          {activeSection === 'settings' && (
+            <div className="rounded border border-border/50 bg-background p-5">
+              <p className="text-sm text-muted-foreground">Sezione impostazioni in sviluppo.</p>
+            </div>
+          )}
+        </main>
       </div>
     </div>
   )

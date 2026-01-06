@@ -26,7 +26,7 @@ interface AuthFormData {
 export default function AuthModal() {
   const { modal } = useTranslations();
   const { isOpen, closeModal, initialMode } = useDashboardModal();
-  const { signInWithGoogle, signInWithEmail, signUpWithEmail } = useAuth();
+  const { user, signInWithGoogle, signInWithEmail, signUpWithEmail } = useAuth();
   
   const modalRef = useRef<HTMLDivElement>(null);
   const firstFocusableRef = useRef<HTMLButtonElement>(null);
@@ -39,14 +39,21 @@ export default function AuthModal() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Reset on open
+  // Reset on open + check if already logged in
   useEffect(() => {
     if (isOpen) {
+      // If user is already authenticated, redirect to dashboard
+      if (user) {
+        closeModal();
+        window.location.href = '/dashboard';
+        return;
+      }
+      
       setMode(initialMode === 'login' ? 'login' : 'gateway');
       setFormData({ email: '', password: '', confirmPassword: '', fullName: '' });
       setErrors({});
     }
-  }, [isOpen, initialMode]);
+  }, [isOpen, initialMode, user, closeModal]);
 
   // Focus management
   useEffect(() => {
