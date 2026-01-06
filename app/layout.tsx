@@ -1,14 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
-import { LanguageProvider } from '@/components/LanguageSelector';
-import { DashboardModalProvider } from '@/contexts/DashboardModalContext';
-import AuthModal from '@/components/AuthModal';
 import "./globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
-  // In futuro, questo sarà dinamico basato su locale
-  const locale = 'it'; // Default per ora
+  const locale = 'it';
   
   const titles = {
     it: "Tradelia - Identifica Incompatibilità tra Obiettivi e Strumenti Crypto | Ricerca Accademica",
@@ -88,16 +82,7 @@ export default function RootLayout({
         <meta name="format-detection" content="telephone=no" />
       </head>
       <body className="antialiased min-h-screen bg-background text-foreground font-sans">
-        <LanguageProvider>
-          <DashboardModalProvider>
-            <Header />
-            <main id="main-content" role="main">
-              {children}
-            </main>
-            <Footer />
-            <AuthModal />
-          </DashboardModalProvider>
-        </LanguageProvider>
+        {children}
       </body>
     </html>
   );
