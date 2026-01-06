@@ -1,16 +1,13 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLanguage } from './LanguageSelector';
+import { useDashboardModal } from '@/contexts/DashboardModalContext';
 import Logo from './Logo';
 
-interface DashboardModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export default function DashboardModal({ isOpen, onClose }: DashboardModalProps) {
+export default function DashboardModal() {
   const { t } = useLanguage();
+  const { isOpen, closeModal } = useDashboardModal();
   const modalRef = useRef<HTMLDivElement>(null);
   const firstFocusableRef = useRef<HTMLButtonElement>(null);
 
@@ -20,7 +17,7 @@ export default function DashboardModal({ isOpen, onClose }: DashboardModalProps)
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        onClose();
+        closeModal();
       }
       
       // Tab trapping
@@ -58,7 +55,7 @@ export default function DashboardModal({ isOpen, onClose }: DashboardModalProps)
       document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = 'unset';
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, closeModal]);
 
   if (!isOpen) return null;
 
@@ -72,7 +69,7 @@ export default function DashboardModal({ isOpen, onClose }: DashboardModalProps)
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-foreground/20 backdrop-blur-sm"
-        onClick={onClose}
+        onClick={closeModal}
         aria-hidden="true"
       />
       
@@ -94,7 +91,7 @@ export default function DashboardModal({ isOpen, onClose }: DashboardModalProps)
           </div>
           <button
             ref={firstFocusableRef}
-            onClick={onClose}
+            onClick={closeModal}
             className="p-2 text-muted-foreground hover:text-foreground transition-subtle rounded focus:ring-2 focus:ring-primary/60 focus:ring-offset-2"
             aria-label="Chiudi modale"
           >
@@ -142,7 +139,7 @@ export default function DashboardModal({ isOpen, onClose }: DashboardModalProps)
         {/* Footer */}
         <div className="flex flex-col sm:flex-row gap-3 p-6 border-t border-border/30">
           <button
-            onClick={onClose}
+            onClick={closeModal}
             className="flex-1 px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground border border-border/50 rounded transition-subtle focus:ring-2 focus:ring-primary/60 focus:ring-offset-2"
           >
             {t('modal.actions.cancel')}
@@ -151,7 +148,7 @@ export default function DashboardModal({ isOpen, onClose }: DashboardModalProps)
             onClick={() => {
               // TODO: Implement dashboard access logic
               console.log('Accessing dashboard...');
-              onClose();
+              closeModal();
             }}
             className="flex-1 btn-tech"
           >

@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { LanguageProvider } from '@/components/LanguageSelector';
+import { DashboardModalProvider } from '@/contexts/DashboardModalContext';
+import DashboardModal from '@/components/DashboardModal';
 import InitialPopup from '@/components/InitialPopup';
 import "./globals.css";
 
@@ -69,12 +71,15 @@ export default function RootLayout({
       </head>
       <body className="antialiased min-h-screen bg-background text-foreground font-sans">
         <LanguageProvider>
-          <InitialPopup type="disclaimer" />
-          <Header />
-          <main id="main-content" role="main">
-            {children}
-          </main>
-          <Footer />
+          <DashboardModalProvider>
+            <InitialPopup type="disclaimer" />
+            <Header />
+            <main id="main-content" role="main">
+              {children}
+            </main>
+            <Footer />
+            <DashboardModal />
+          </DashboardModalProvider>
         </LanguageProvider>
       </body>
     </html>
