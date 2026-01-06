@@ -28,7 +28,10 @@ export default function Dashboard() {
 
   useEffect(() => {
     const loadDashboardData = async () => {
+      console.log('🔄 Loading dashboard data...', { user: !!user, profile: !!profile, loading });
+      
       if (user && profile) {
+        console.log('👤 Loading registered user data...');
         setShowEmailAlert(!user.email_confirmed_at)
         
         const { data, error } = await supabase
@@ -38,19 +41,30 @@ export default function Dashboard() {
           .single()
 
         if (data) {
+          console.log('✅ Loaded user dashboard config:', data);
           setDashboardConfig(data)
         }
       } else {
         // Guest user logic
+        console.log('👻 Loading guest user data...');
         const guestManager = new GuestSessionManager()
-        const guestData = await guestManager.loadProfile()
-        const guestConfig = await guestManager.loadDashboardConfig()
         
-        if (guestData) {
-          setGuestProfile(guestData)
-          setDashboardConfig(guestConfig || getDefaultDashboardConfig())
-        } else {
-          // No guest session found, redirect to home
+        try {
+          const guestData = await guestManager.loadProfile()
+          const guestConfig = await guestManager.loadDashboardConfig()
+          
+          console.log('📊 Guest data loaded:', { guestData, guestConfig });
+          
+          if (guestData) {
+            setGuestProfile(guestData)
+            setDashboardConfig(guestConfig || getDefaultDashboardConfig())
+            console.log('✅ Guest dashboard setup complete');
+          } else {
+            console.log('❌ No guest session found, redirecting to home');
+            router.push('/')
+          }
+        } catch (error) {
+          console.error('❌ Error loading guest data:', error);
           router.push('/')
         }
       }

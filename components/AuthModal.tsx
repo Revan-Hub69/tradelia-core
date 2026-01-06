@@ -58,9 +58,10 @@ export default function AuthModal() {
     }
   }, [mode, isOpen]);
 
-  // Keyboard + focus trap
+  // Keyboard + focus trap + mobile back button
   useEffect(() => {
     if (!isOpen) return;
+    
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') closeModal();
       if (e.key === 'Tab') {
@@ -73,10 +74,26 @@ export default function AuthModal() {
         }
       }
     };
+
+    // Handle mobile back button
+    const handlePopState = (e: PopStateEvent) => {
+      e.preventDefault();
+      closeModal();
+    };
+
+    // Push a dummy state when modal opens
+    window.history.pushState({ modalOpen: true }, '', window.location.href);
+    
     document.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('popstate', handlePopState);
     setTimeout(() => firstFocusableRef.current?.focus(), 100);
     document.body.style.overflow = 'hidden';
-    return () => { document.removeEventListener('keydown', handleKeyDown); document.body.style.overflow = 'unset'; };
+    
+    return () => { 
+      document.removeEventListener('keydown', handleKeyDown); 
+      window.removeEventListener('popstate', handlePopState);
+      document.body.style.overflow = 'unset'; 
+    };
   }, [isOpen, closeModal]);
 
   // Validation
@@ -105,10 +122,12 @@ export default function AuthModal() {
 
   // Handlers
   const handleGuest = async () => {
+    console.log('🔄 Starting guest flow...');
     try {
       const { GuestSessionManager } = await import('@/lib/guestSession');
       const guestManager = new GuestSessionManager();
       
+      console.log('📝 Saving guest profile...');
       // Save a basic guest profile with default values
       await guestManager.saveProfile({ 
         objective: 'generale',
@@ -117,6 +136,7 @@ export default function AuthModal() {
         completedAt: new Date().toISOString() 
       });
       
+      console.log('⚙️ Saving dashboard config...');
       // Save default dashboard config
       await guestManager.saveDashboardConfig({
         objective_config: {
@@ -134,10 +154,17 @@ export default function AuthModal() {
         }
       });
       
+      console.log('✅ Guest setup complete, redirecting...');
       closeModal();
-      window.location.href = '/dashboard';
+      
+      // Use router.push instead of window.location.href for better Next.js handling
+      setTimeout(() => {
+        window.location.href = '/dashboard';
+      }, 100);
+      
     } catch (err) {
-      console.error('Guest error:', err);
+      console.error('❌ Guest error:', err);
+      setErrors({ submit: 'Errore durante l\'accesso come ospite' });
     }
   };
 
