@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslations } from '@/hooks/useTranslations';
+import { ProcessIcon } from '@/components/icons/TradeliaIcons';
 
 interface StepProps {
   step: {
@@ -39,15 +40,16 @@ export default function HowItWorksSection() {
   return (
     <section 
       id="how-it-works"
-      className="section-md fade-in-section section-separator"
+      className="section-md fade-in-section bg-muted/30 border-b border-border/30"
       aria-labelledby="how-it-works-title"
     >
       <div className="max-w-2xl mx-auto px-6 sm:px-8">
         <header className="text-center mb-12">
           <h2 
             id="how-it-works-title"
-            className="text-xl sm:text-2xl lg:text-3xl font-semibold text-foreground leading-tight tracking-tight mb-4"
+            className="text-xl sm:text-2xl lg:text-3xl font-semibold text-foreground leading-tight tracking-tight mb-4 flex items-center gap-3"
           >
+            <ProcessIcon className="w-7 h-7 text-primary flex-shrink-0" />
             Come funziona <span className="font-semibold relative">
               <span className="text-muted-foreground relative">
                 T

@@ -7,7 +7,7 @@ export const translations = {
     hero: {
       title: 'Esplora le crypto senza fare gli',
       titleHighlight: 'errori più costosi',
-      description: 'Dashboard guidata per esplorare le crypto senza fare gli errori più costosi.',
+      description: 'Usando solo ricerche accademiche verificate.',
       cta: 'Accedi alla dashboard',
       ctaSecondary: 'Guarda demo',
       features: [
@@ -116,7 +116,7 @@ export const translations = {
       outcome: 'Riduci i 3 errori più costosi per i beginner crypto: eccesso di fiducia, decisioni emotive, imitazione sociale.'
     },
     trust: {
-      title: 'Seri per design',
+      title: 'Metodologia trasparente',
       subtitle: 'Trasparenza metodologica e onestà intellettuale.',
       badges: [
         'Educativo · non consulenza',
@@ -172,7 +172,7 @@ export const translations = {
     hero: {
       title: 'Explore crypto without making the',
       titleHighlight: 'most costly mistakes',
-      description: 'Guided dashboard to explore crypto without making the most costly mistakes.',
+      description: 'Using only verified academic research.',
       cta: 'Access dashboard',
       ctaSecondary: 'Watch demo',
       features: [
@@ -260,7 +260,7 @@ export const translations = {
       outcome: 'Reduce the 3 most costly errors for crypto beginners: overconfidence, emotional decisions, social imitation.'
     },
     trust: {
-      title: 'Serious by design',
+      title: 'Transparent methodology',
       subtitle: 'Methodological transparency and intellectual honesty.',
       badges: [
         'Educational · not advice',

@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from '@/hooks/useTranslations';
-import { GraduationCapIcon, ShieldIcon, LockIcon, BookOpenIcon, DiamondIcon, CheckIcon } from '@/components/icons/TradeliaIcons';
+import { GraduationCapIcon, ShieldIcon, LockIcon, BookOpenIcon, DiamondIcon, CheckIcon, MethodologyIcon } from '@/components/icons/TradeliaIcons';
 
 export default function TrustSection() {
   const { trust } = useTranslations();
@@ -50,15 +50,16 @@ export default function TrustSection() {
   return (
     <section 
       id="trust"
-      className="section-lg bg-background fade-in-section"
+      className="section-lg bg-background fade-in-section border-b border-border/30"
       aria-labelledby="trust-title"
     >
       <div className="max-w-4xl mx-auto px-6 sm:px-8">
         <header className="text-center mb-16">
           <h2 
             id="trust-title"
-            className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-foreground leading-tight tracking-tight mb-6"
+            className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-foreground leading-tight tracking-tight mb-6 flex items-center gap-3"
           >
+            <MethodologyIcon className="w-8 h-8 text-primary flex-shrink-0" />
             {trust.title}
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">

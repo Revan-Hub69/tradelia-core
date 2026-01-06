@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from '@/hooks/useTranslations';
-import { AlertTriangleIcon, TrendingUpIcon, BrainIcon } from '@/components/icons/TradeliaIcons';
+import { AlertTriangleIcon, TrendingUpIcon, BrainIcon, ResearchIcon } from '@/components/icons/TradeliaIcons';
 
 export default function ResearchSection() {
   const { research, hero } = useTranslations();
@@ -126,7 +126,7 @@ export default function ResearchSection() {
                 <span>Tendenza comportamentale</span>
                 <span className="flex items-center gap-1">
                   <div className="w-1 h-1 rounded-full bg-muted-foreground/50" />
-                  <span>Dati empirici</span>
+                  <span>Studi comportamentali</span>
                 </span>
               </div>
             </div>
@@ -139,7 +139,7 @@ export default function ResearchSection() {
   return (
     <section 
       id="research"
-      className="section-lg bg-muted/30 fade-in-section"
+      className="section-lg bg-background fade-in-section border-b border-border/30"
       aria-labelledby="research-title"
     >
       <div className="max-w-6xl mx-auto px-6 sm:px-8">
@@ -149,8 +149,9 @@ export default function ResearchSection() {
           </p>
           <h2 
             id="research-title"
-            className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-foreground leading-tight tracking-tight mb-6"
+            className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-foreground leading-tight tracking-tight mb-6 flex items-center gap-3"
           >
+            <ResearchIcon className="w-8 h-8 text-primary flex-shrink-0" />
             {research.title}
           </h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
