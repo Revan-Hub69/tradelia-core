@@ -613,7 +613,7 @@ export const ResearchIcon: React.FC<IconProps> = ({ className = "w-4 h-4", size 
   </svg>
 );
 
-// Indicatori di difficoltà - Design minimal
+// Indicatori di difficoltà - Design minimal con colori progressivi
 export const DifficultyEasyIcon: React.FC<IconProps> = ({ className = "w-4 h-4", size }) => (
   <svg 
     className={className} 
@@ -623,9 +623,9 @@ export const DifficultyEasyIcon: React.FC<IconProps> = ({ className = "w-4 h-4",
     fill="none" 
     xmlns="http://www.w3.org/2000/svg"
   >
-    <circle cx="6" cy="12" r="2" fill="currentColor" />
-    <circle cx="12" cy="12" r="2" fill="currentColor" opacity="0.3" />
-    <circle cx="18" cy="12" r="2" fill="currentColor" opacity="0.3" />
+    <circle cx="6" cy="12" r="2" fill="#22c55e" />
+    <circle cx="12" cy="12" r="2" fill="#e5e7eb" />
+    <circle cx="18" cy="12" r="2" fill="#e5e7eb" />
   </svg>
 );
 
@@ -638,9 +638,9 @@ export const DifficultyMediumIcon: React.FC<IconProps> = ({ className = "w-4 h-4
     fill="none" 
     xmlns="http://www.w3.org/2000/svg"
   >
-    <circle cx="6" cy="12" r="2" fill="currentColor" />
-    <circle cx="12" cy="12" r="2" fill="currentColor" />
-    <circle cx="18" cy="12" r="2" fill="currentColor" opacity="0.3" />
+    <circle cx="6" cy="12" r="2" fill="#22c55e" />
+    <circle cx="12" cy="12" r="2" fill="#f59e0b" />
+    <circle cx="18" cy="12" r="2" fill="#e5e7eb" />
   </svg>
 );
 
@@ -653,9 +653,9 @@ export const DifficultyHardIcon: React.FC<IconProps> = ({ className = "w-4 h-4",
     fill="none" 
     xmlns="http://www.w3.org/2000/svg"
   >
-    <circle cx="6" cy="12" r="2" fill="currentColor" />
-    <circle cx="12" cy="12" r="2" fill="currentColor" />
-    <circle cx="18" cy="12" r="2" fill="currentColor" />
+    <circle cx="6" cy="12" r="2" fill="#22c55e" />
+    <circle cx="12" cy="12" r="2" fill="#f59e0b" />
+    <circle cx="18" cy="12" r="2" fill="#ef4444" />
   </svg>
 );
 

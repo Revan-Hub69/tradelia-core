@@ -159,6 +159,12 @@ export const translations = {
         responsibility: 'Accedendo confermi di comprendere che questo è uno strumento educativo. Tutte le decisioni di investimento rimangono di tua esclusiva responsabilità.'
       },
       questions: {
+        difficulty: {
+          legend: 'Difficoltà:',
+          easy: 'Base',
+          medium: 'Media', 
+          hard: 'Alta'
+        },
         objective: {
           title: 'Cosa ti interessa delle criptovalute?',
           subtitle: 'Queste informazioni ci aiutano a impostare i giusti componenti nella dashboard dinamica.',
@@ -393,6 +399,12 @@ export const translations = {
         responsibility: 'By accessing you confirm understanding this is an educational tool. All investment decisions remain your exclusive responsibility.'
       },
       questions: {
+        difficulty: {
+          legend: 'Difficulty:',
+          easy: 'Basic',
+          medium: 'Medium', 
+          hard: 'High'
+        },
         objective: {
           title: 'What interests you about cryptocurrencies?',
           subtitle: 'This information helps us set up the right components in the dynamic dashboard.',

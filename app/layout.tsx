@@ -3,7 +3,7 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { LanguageProvider } from '@/components/LanguageSelector';
 import { DashboardModalProvider } from '@/contexts/DashboardModalContext';
-import DashboardModal from '@/components/DashboardModal';
+import AuthModal from '@/components/AuthModal';
 import "./globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -95,7 +95,7 @@ export default function RootLayout({
               {children}
             </main>
             <Footer />
-            <DashboardModal />
+            <AuthModal />
           </DashboardModalProvider>
         </LanguageProvider>
       </body>

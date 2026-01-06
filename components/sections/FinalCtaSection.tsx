@@ -67,11 +67,11 @@ export default function FinalCtaSection() {
           
           <div className="space-y-4">
             <button 
-              onClick={openModal}
+              onClick={() => openModal()}
               className="btn-tech"
-              aria-label={`${finalCta.button} - Accesso finale alla dashboard`}
+              aria-label="Accedi alla dashboard"
             >
-              {finalCta.button}
+              Accedi alla dashboard
             </button>
             
             <p className="text-xs text-muted-foreground max-w-md mx-auto">

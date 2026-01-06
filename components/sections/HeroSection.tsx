@@ -65,10 +65,10 @@ export default function HeroSection() {
             <div className="space-y-4">
               <div className="flex flex-col sm:flex-row gap-3">
                 <button 
-                  onClick={openModal}
+                  onClick={() => openModal()}
                   className="btn-tech-premium group"
                 >
-                  <span>{hero.cta}</span>
+                  <span>Accedi alla dashboard</span>
                   <ArrowRightIcon className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
                 </button>
                 

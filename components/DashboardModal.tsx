@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLanguage } from './LanguageSelector';
 import { useDashboardModal } from '@/contexts/DashboardModalContext';
 import Logo from './Logo';
+import RegistrationForm from './RegistrationForm';
 import { 
   CloseIcon, 
   ArrowRightIcon, 
@@ -11,7 +12,6 @@ import {
   ShieldIcon,
   CheckIcon,
   UserIcon,
-  CogIcon,
   TrendingUpIcon,
   DiamondIcon,
   DifficultyEasyIcon,
@@ -36,6 +36,7 @@ export default function DashboardModal() {
   const { isOpen, closeModal } = useDashboardModal();
   const modalRef = useRef<HTMLDivElement>(null);
   const firstFocusableRef = useRef<HTMLButtonElement>(null);
+  const stepContentRef = useRef<HTMLDivElement>(null);
   
   const [step, setStep] = useState(1);
   const [profile, setProfile] = useState<UserProfile>({
@@ -45,7 +46,7 @@ export default function DashboardModal() {
     storageMode: null
   });
 
-  const totalSteps = 5;
+  const totalSteps = 6; // Aggiunto step registrazione
 
   // Reset state when modal opens
   useEffect(() => {
@@ -59,6 +60,26 @@ export default function DashboardModal() {
       });
     }
   }, [isOpen]);
+
+  // Focus management for step changes
+  useEffect(() => {
+    if (isOpen && stepContentRef.current) {
+      if (step === 1) {
+        // For disclaimer step, focus the main content area
+        setTimeout(() => {
+          stepContentRef.current?.focus();
+        }, 150);
+      } else {
+        // For other steps, focus the first interactive element
+        const firstButton = stepContentRef.current.querySelector('button');
+        if (firstButton) {
+          setTimeout(() => {
+            firstButton.focus();
+          }, 150);
+        }
+      }
+    }
+  }, [step, isOpen]);
 
   // Keyboard navigation and focus management
   useEffect(() => {
@@ -119,17 +140,123 @@ export default function DashboardModal() {
   };
 
   const handleFinish = async () => {
-    // TODO: Save profile based on storage mode
-    if (profile.storageMode === 'guest') {
-      // Save to IndexedDB with encryption
-      console.log('Saving to encrypted local storage:', profile);
-    } else {
-      // Handle registration flow
-      console.log('Registration flow:', profile);
+    try {
+      if (profile.storageMode === 'guest') {
+        // Save to encrypted local storage via Supabase
+        const { GuestSessionManager } = await import('@/lib/guestSession');
+        const guestManager = new GuestSessionManager();
+        
+        await guestManager.saveProfile({
+          objective: profile.objective,
+          experience: profile.experience,
+          otherTools: profile.otherTools,
+          completedAt: new Date().toISOString()
+        });
+
+        // Generate dashboard config based on selections
+        const dashboardConfig = generateDashboardConfig(profile);
+        await guestManager.saveDashboardConfig(dashboardConfig);
+        
+        console.log('Guest profile saved successfully');
+        closeModal();
+        // Navigate to dashboard
+        window.location.href = '/dashboard';
+      } else {
+        // Show registration form
+        setStep(6);
+      }
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      // TODO: Show error message to user
     }
-    
+  };
+
+  const handleRegistrationSuccess = () => {
+    // Registration completed, save profile to user account
+    console.log('Registration successful, saving profile to user account');
     closeModal();
-    // TODO: Navigate to dashboard
+    // Navigate to dashboard
+    window.location.href = '/dashboard';
+  };
+
+  const handleRegistrationBack = () => {
+    setStep(5); // Back to storage selection
+  };
+
+  // Generate dashboard configuration based on user selections
+  const generateDashboardConfig = (userProfile: UserProfile) => {
+    const configs = {
+      investment: {
+        objective_config: {
+          title: 'Investimento a lungo termine',
+          description: 'Strategia buy & hold con focus su crescita del capitale',
+          timeHorizon: 'long-term',
+          riskLevel: 'medium'
+        },
+        risk_warnings: {
+          primary: 'Disposition Effect - Tendenza a vendere vincenti troppo presto',
+          secondary: 'Volatilità a lungo termine',
+          academicSource: 'Shefrin & Statman (1985)'
+        },
+        recommended_tools: {
+          primary: ['DCA automatico', 'Wallet hardware', 'Staking sicuro'],
+          avoid: ['Trading con leva', 'Day trading', 'Futures']
+        }
+      },
+      emergency: {
+        objective_config: {
+          title: 'Asset di emergenza',
+          description: 'Riserva di valore per situazioni impreviste',
+          timeHorizon: 'variable',
+          riskLevel: 'low'
+        },
+        risk_warnings: {
+          primary: 'Volatilità a breve termine',
+          secondary: 'Rischi di custodia',
+          academicSource: 'Nakamoto (2008) - Store of value thesis'
+        },
+        recommended_tools: {
+          primary: ['Cold storage', 'Hardware wallet', 'Stablecoin allocation'],
+          avoid: ['Hot wallet per grandi somme', 'Exchange custody', 'Altcoin speculativi']
+        }
+      },
+      passive: {
+        objective_config: {
+          title: 'Rendite passive',
+          description: 'Generazione di reddito da crypto possedute',
+          timeHorizon: 'medium-term',
+          riskLevel: 'high'
+        },
+        risk_warnings: {
+          primary: 'Smart contract risk',
+          secondary: 'Impermanent loss in liquidity pools',
+          academicSource: 'Gudgeon et al. (2020) - DeFi risks'
+        },
+        recommended_tools: {
+          primary: ['Staking validato', 'Lending protocols verificati', 'Yield farming conservativo'],
+          avoid: ['Yield farming ad alto rischio', 'Protocolli non auditati', 'Leverage farming']
+        }
+      },
+      speculation: {
+        objective_config: {
+          title: 'Speculazione',
+          description: 'Trading attivo su variazioni di prezzo',
+          timeHorizon: 'short-term',
+          riskLevel: 'very-high'
+        },
+        risk_warnings: {
+          primary: 'Overconfidence Bias - 73% sovrastima le proprie capacità',
+          secondary: 'Overtrading e costi di transazione',
+          academicSource: 'Barber & Odean (2001)'
+        },
+        recommended_tools: {
+          primary: ['Stop loss rigorosi', 'Position sizing', 'Analisi tecnica'],
+          avoid: ['Leva eccessiva', 'FOMO trading', 'Revenge trading']
+        }
+      }
+    };
+
+    return configs[userProfile.objective as keyof typeof configs] || configs.investment;
   };
 
   const canProceed = () => {
@@ -139,6 +266,7 @@ export default function DashboardModal() {
       case 3: return profile.experience !== null;
       case 4: return profile.otherTools !== null;
       case 5: return profile.storageMode !== null;
+      case 6: return false; // Registration step - handled by form
       default: return false;
     }
   };
@@ -183,6 +311,23 @@ export default function DashboardModal() {
               <p className="text-sm text-muted-foreground">
                 {t('modal.questions.objective.subtitle')}
               </p>
+            </div>
+
+            {/* Legenda difficoltà */}
+            <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground bg-muted/30 rounded p-2">
+              <span className="font-medium">{t('modal.questions.difficulty.legend')}</span>
+              <div className="flex items-center gap-1">
+                <DifficultyEasyIcon className="w-3 h-3" />
+                <span>{t('modal.questions.difficulty.easy')}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <DifficultyMediumIcon className="w-3 h-3" />
+                <span>{t('modal.questions.difficulty.medium')}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <DifficultyHardIcon className="w-3 h-3" />
+                <span>{t('modal.questions.difficulty.hard')}</span>
+              </div>
             </div>
             
             <div className="space-y-2">
@@ -355,6 +500,19 @@ export default function DashboardModal() {
           </div>
         );
 
+      case 6:
+        return (
+          <RegistrationForm 
+            onSuccess={handleRegistrationSuccess}
+            onBack={handleRegistrationBack}
+            profileData={{
+              objective: profile.objective || '',
+              experience: profile.experience || '',
+              otherTools: profile.otherTools || ''
+            }}
+          />
+        );
+
       default:
         return null;
     }
@@ -377,7 +535,7 @@ export default function DashboardModal() {
       {/* Modal Content */}
       <div 
         ref={modalRef}
-        className="relative w-full max-w-lg max-h-[90vh] bg-background border border-border/50 rounded-lg shadow-lg animate-scale-in flex flex-col"
+        className="relative w-full max-w-lg max-h-[90vh] bg-background border border-border/50 rounded-lg shadow-lg animate-scale-in flex flex-col mx-4"
       >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-border/30">
@@ -391,7 +549,11 @@ export default function DashboardModal() {
                 {t('modal.title')}
               </h2>
               <div className="text-xs text-muted-foreground mt-1">
-                {t('modal.step')} {step} {t('modal.of')} {totalSteps}
+                {step <= 5 ? (
+                  <>{t('modal.step')} {step} {t('modal.of')} 5</>
+                ) : (
+                  <>Registrazione</>
+                )}
               </div>
             </div>
           </div>
@@ -410,20 +572,25 @@ export default function DashboardModal() {
           <div className="w-full bg-muted/50 rounded-full h-1">
             <div 
               className="bg-primary h-1 rounded-full transition-all duration-300"
-              style={{ width: `${(step / totalSteps) * 100}%` }}
+              style={{ width: `${(Math.min(step, 5) / 5) * 100}%` }}
             />
           </div>
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto flex-1">
+        <div 
+          className="p-6 overflow-y-auto flex-1" 
+          ref={stepContentRef}
+          tabIndex={-1}
+          style={{ outline: 'none' }}
+        >
           {renderStepContent()}
         </div>
 
         {/* Footer */}
         <div className="flex justify-between p-6 border-t border-border/30">
           <button
-            onClick={step === 1 ? closeModal : prevStep}
+            onClick={step === 1 ? closeModal : (step === 6 ? handleRegistrationBack : prevStep)}
             className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground border border-border/50 rounded transition-subtle focus:ring-2 focus:ring-primary/60 focus:ring-offset-2"
           >
             {step === 1 ? (
@@ -439,23 +606,25 @@ export default function DashboardModal() {
             )}
           </button>
           
-          <button
-            onClick={step === totalSteps ? handleFinish : nextStep}
-            disabled={!canProceed()}
-            className="flex items-center gap-2 btn-tech disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {step === totalSteps ? (
-              <>
-                {t('modal.actions.finish')}
-                <CheckIcon className="w-4 h-4" />
-              </>
-            ) : (
-              <>
-                {t('modal.actions.continue')}
-                <ArrowRightIcon className="w-4 h-4" />
-              </>
-            )}
-          </button>
+          {step !== 6 && (
+            <button
+              onClick={step === 5 ? handleFinish : nextStep}
+              disabled={!canProceed()}
+              className="flex items-center gap-2 btn-tech disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {step === 5 ? (
+                <>
+                  {t('modal.actions.finish')}
+                  <CheckIcon className="w-4 h-4" />
+                </>
+              ) : (
+                <>
+                  {t('modal.actions.continue')}
+                  <ArrowRightIcon className="w-4 h-4" />
+                </>
+              )}
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -73,10 +73,10 @@ export function Header() {
               <div className="flex items-center gap-4">
                 <LanguageSelector />
                 <button 
-                  onClick={openModal}
+                  onClick={() => openModal()}
                   className="btn-tech"
                 >
-                  {t('hero.cta')}
+                  Accedi alla dashboard
                 </button>
               </div>
             </nav>
@@ -128,7 +128,7 @@ export function Header() {
                     openModal();
                   }}
                 >
-                  {t('hero.cta')}
+                  Accedi alla dashboard
                 </button>
               </div>
             </nav>

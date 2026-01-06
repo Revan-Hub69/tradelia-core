@@ -2,9 +2,12 @@
 
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 
+type ModalMode = 'gateway' | 'login';
+
 interface DashboardModalContextType {
   isOpen: boolean;
-  openModal: () => void;
+  initialMode: ModalMode;
+  openModal: (mode?: ModalMode) => void;
   closeModal: () => void;
 }
 
@@ -12,8 +15,10 @@ const DashboardModalContext = createContext<DashboardModalContextType | undefine
 
 export function DashboardModalProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [initialMode, setInitialMode] = useState<ModalMode>('gateway');
 
-  const openModal = useCallback(() => {
+  const openModal = useCallback((mode: ModalMode = 'gateway') => {
+    setInitialMode(mode);
     setIsOpen(true);
   }, []);
 
@@ -22,7 +27,7 @@ export function DashboardModalProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <DashboardModalContext.Provider value={{ isOpen, openModal, closeModal }}>
+    <DashboardModalContext.Provider value={{ isOpen, initialMode, openModal, closeModal }}>
       {children}
     </DashboardModalContext.Provider>
   );
