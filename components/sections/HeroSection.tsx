@@ -61,7 +61,7 @@ export default function HeroSection() {
                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  Guarda demo
+                  {hero.ctaSecondary}
                 </button>
               </div>
 
@@ -71,13 +71,13 @@ export default function HeroSection() {
                   <svg className="w-3 h-3 text-primary" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
-                  <span>Metodologia verificata</span>
+                  <span>{hero.trustBadges.verified}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <svg className="w-3 h-3 text-primary" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
-                  <span>0€ • 60-90s • No KYC</span>
+                  <span>{hero.trustBadges.specs}</span>
                 </div>
               </div>
             </div>
@@ -91,7 +91,7 @@ export default function HeroSection() {
                 <div className="space-y-6">
                   {/* Header */}
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-foreground">Dashboard Preview</h3>
+                    <h3 className="text-lg font-semibold text-foreground">{hero.dashboard.title}</h3>
                     <div className="flex gap-1">
                       <div className="w-2 h-2 bg-red-400 rounded-full" />
                       <div className="w-2 h-2 bg-yellow-400 rounded-full" />
@@ -103,15 +103,15 @@ export default function HeroSection() {
                   <div className="grid grid-cols-3 gap-3">
                     <div className="kpi-card bg-red-50 border-red-200">
                       <div className="text-2xl font-bold text-red-600">73%</div>
-                      <div className="text-xs text-red-600/80">Errori comuni</div>
+                      <div className="text-xs text-red-600/80">{hero.dashboard.metrics.commonErrors}</div>
                     </div>
                     <div className="kpi-card bg-amber-50 border-amber-200">
                       <div className="text-2xl font-bold text-amber-600">3</div>
-                      <div className="text-xs text-amber-600/80">Rischi attivi</div>
+                      <div className="text-xs text-amber-600/80">{hero.dashboard.metrics.activeRisks}</div>
                     </div>
                     <div className="kpi-card bg-green-50 border-green-200">
                       <div className="text-2xl font-bold text-green-600">12</div>
-                      <div className="text-xs text-green-600/80">Fonti accademiche</div>
+                      <div className="text-xs text-green-600/80">{hero.dashboard.metrics.academicSources}</div>
                     </div>
                   </div>
 
@@ -124,8 +124,8 @@ export default function HeroSection() {
                         </svg>
                       </div>
                       <div>
-                        <div className="text-sm font-medium text-amber-800">Incompatibilità rilevata</div>
-                        <div className="text-xs text-amber-700 mt-1">Obiettivo "hodling" + strumento "leverage" = rischio elevato</div>
+                        <div className="text-sm font-medium text-amber-800">{hero.dashboard.alert.title}</div>
+                        <div className="text-xs text-amber-700 mt-1">{hero.dashboard.alert.description}</div>
                       </div>
                     </div>
                   </div>
@@ -136,7 +136,7 @@ export default function HeroSection() {
                       <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      <span>Basato su Barber & Odean (2001) + 2 studi peer-reviewed</span>
+                      <span>{hero.dashboard.source}</span>
                     </div>
                   </div>
                 </div>

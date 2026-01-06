@@ -7,13 +7,33 @@ export const translations = {
     hero: {
       title: 'Esplora le crypto senza fare gli',
       titleHighlight: 'errori più costosi',
-      description: 'Una dashboard guidata che ti aiuta a capire il contesto, evitare trappole comuni e scegliere un percorso coerente prima di usare denaro.',
+      description: 'Dashboard guidata basata su ricerca accademica per identificare incompatibilità tra obiettivi e strumenti crypto prima dell\'investimento.',
       cta: 'Accedi alla dashboard',
+      ctaSecondary: 'Guarda demo',
       features: [
         'Nessun account',
         'Nessun deposito',
         'Solo educazione'
-      ]
+      ],
+      trustBadges: {
+        verified: 'Metodologia verificata',
+        specs: '0€ • 60-90s • No KYC'
+      },
+      dashboard: {
+        title: 'Anteprima Dashboard',
+        metrics: {
+          commonErrors: 'Errori comuni',
+          activeRisks: 'Rischi attivi', 
+          academicSources: 'Fonti accademiche'
+        },
+        alert: {
+          title: 'Incompatibilità rilevata',
+          description: 'Obiettivo "hodling" + strumento "leverage" = rischio elevato'
+        },
+        source: 'Basato su Barber & Odean (2001) + 2 studi peer-reviewed',
+        errorFrequency: 'Frequenza errore',
+        trendLabel: 'Trend negli ultimi studi comportamentali'
+      }
     },
     research: {
       eyebrow: 'Ricerca comportamentale',
@@ -118,13 +138,33 @@ export const translations = {
     hero: {
       title: 'Explore crypto without making the',
       titleHighlight: 'most costly mistakes',
-      description: 'A guided dashboard that helps you understand context, avoid common traps and choose a coherent path before using money.',
+      description: 'Academic research-based guided dashboard to identify incompatibilities between objectives and crypto tools before investment.',
       cta: 'Access dashboard',
+      ctaSecondary: 'Watch demo',
       features: [
         'No account',
         'No deposit',
         'Education only'
-      ]
+      ],
+      trustBadges: {
+        verified: 'Verified methodology',
+        specs: '0€ • 60-90s • No KYC'
+      },
+      dashboard: {
+        title: 'Dashboard Preview',
+        metrics: {
+          commonErrors: 'Common errors',
+          activeRisks: 'Active risks',
+          academicSources: 'Academic sources'
+        },
+        alert: {
+          title: 'Incompatibility detected',
+          description: 'Objective "hodling" + tool "leverage" = high risk'
+        },
+        source: 'Based on Barber & Odean (2001) + 2 peer-reviewed studies',
+        errorFrequency: 'Error frequency',
+        trendLabel: 'Trend in recent behavioral studies'
+      }
     },
     research: {
       eyebrow: 'Behavioral research',

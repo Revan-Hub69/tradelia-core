@@ -28,11 +28,31 @@ export function useTranslations() {
       titleHighlight: t('hero.titleHighlight'),
       description: t('hero.description'),
       cta: t('hero.cta'),
+      ctaSecondary: t('hero.ctaSecondary'),
       features: [
         t('hero.features.0'),
         t('hero.features.1'),
         t('hero.features.2')
-      ]
+      ],
+      trustBadges: {
+        verified: t('hero.trustBadges.verified'),
+        specs: t('hero.trustBadges.specs')
+      },
+      dashboard: {
+        title: t('hero.dashboard.title'),
+        metrics: {
+          commonErrors: t('hero.dashboard.metrics.commonErrors'),
+          activeRisks: t('hero.dashboard.metrics.activeRisks'),
+          academicSources: t('hero.dashboard.metrics.academicSources')
+        },
+        alert: {
+          title: t('hero.dashboard.alert.title'),
+          description: t('hero.dashboard.alert.description')
+        },
+        source: t('hero.dashboard.source'),
+        errorFrequency: t('hero.dashboard.errorFrequency'),
+        trendLabel: t('hero.dashboard.trendLabel')
+      }
     },
 
     research: {

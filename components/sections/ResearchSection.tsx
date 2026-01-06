@@ -3,7 +3,7 @@
 import { useTranslations } from '@/hooks/useTranslations';
 
 export default function ResearchSection() {
-  const { research } = useTranslations();
+  const { research, hero } = useTranslations();
 
   const RESEARCH_ITEMS = [
     {
@@ -49,9 +49,17 @@ export default function ResearchSection() {
         {/* Content */}
         <div className={`space-y-4 ${isReversed ? 'lg:col-start-2' : ''}`}>
           <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 bg-${item.iconColor}-50 rounded-xl flex items-center justify-center flex-shrink-0`}>
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
+              item.iconColor === 'red' ? 'bg-red-50' : 
+              item.iconColor === 'orange' ? 'bg-orange-50' : 
+              'bg-amber-50'
+            }`}>
               <svg 
-                className={`w-5 h-5 text-${item.iconColor}-500`} 
+                className={`w-5 h-5 ${
+                  item.iconColor === 'red' ? 'text-red-500' : 
+                  item.iconColor === 'orange' ? 'text-orange-500' : 
+                  'text-amber-500'
+                }`}
                 fill="none" 
                 stroke="currentColor" 
                 viewBox="0 0 24 24"
@@ -81,8 +89,12 @@ export default function ResearchSection() {
           <div className="bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl p-6">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-muted-foreground">Frequenza errore</span>
-                <span className={`text-2xl font-bold text-${item.iconColor}-600`}>
+                <span className="text-sm font-medium text-muted-foreground">{hero.dashboard.errorFrequency}</span>
+                <span className={`text-2xl font-bold ${
+                  item.iconColor === 'red' ? 'text-red-600' : 
+                  item.iconColor === 'orange' ? 'text-orange-600' : 
+                  'text-amber-600'
+                }`}>
                   {item.sparkline[item.sparkline.length - 1]}%
                 </span>
               </div>
@@ -92,14 +104,18 @@ export default function ResearchSection() {
                 {item.sparkline.map((value, i) => (
                   <div
                     key={i}
-                    className={`flex-1 bg-${item.iconColor}-200 rounded-t`}
+                    className={`flex-1 rounded-t ${
+                      item.iconColor === 'red' ? 'bg-red-200' : 
+                      item.iconColor === 'orange' ? 'bg-orange-200' : 
+                      'bg-amber-200'
+                    }`}
                     style={{ height: `${(value / Math.max(...item.sparkline)) * 100}%` }}
                   />
                 ))}
               </div>
               
               <div className="text-xs text-muted-foreground text-center">
-                Trend negli ultimi studi comportamentali
+                {hero.dashboard.trendLabel}
               </div>
             </div>
           </div>
