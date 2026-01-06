@@ -37,8 +37,9 @@ export default function Login() {
     try {
       await signInWithEmail(formData.email, formData.password)
       router.push('/dashboard')
-    } catch (error: any) {
-      setError(error.message || 'Errore durante l\'accesso')
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Errore durante l\'accesso';
+      setError(message)
     } finally {
       setIsSubmitting(false)
     }
@@ -47,8 +48,9 @@ export default function Login() {
   const handleGoogleSignIn = async () => {
     try {
       await signInWithGoogle()
-    } catch (error: any) {
-      setError(error.message || 'Errore durante l\'accesso con Google')
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Errore durante l\'accesso con Google';
+      setError(message)
     }
   }
 

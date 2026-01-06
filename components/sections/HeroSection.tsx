@@ -96,7 +96,7 @@ export default function HeroSection() {
           <div className="relative lg:pl-8">
             <div className="relative">
               {/* Main dashboard card */}
-              <div className="bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl shadow-2xl p-6 transform hover:scale-[1.02] transition-all duration-500">
+              <div className="bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl shadow-2xl p-6 transform hover:scale-[1.02] transition-all duration-150">
                 <div className="space-y-6">
                   {/* Header */}
                   <div className="flex items-center justify-between">
@@ -150,9 +150,9 @@ export default function HeroSection() {
                 </div>
               </div>
 
-              {/* Floating elements */}
-              <div className="absolute -top-4 -right-4 w-20 h-20 bg-primary/10 rounded-full blur-xl animate-pulse-tech" />
-              <div className="absolute -bottom-6 -left-6 w-16 h-16 bg-foreground/5 rounded-full blur-lg animate-pulse-tech" style={{ animationDelay: '1s' }} />
+              {/* Subtle decorative elements - static, no animation */}
+              <div className="absolute -top-4 -right-4 w-20 h-20 bg-primary/5 rounded-full blur-xl" />
+              <div className="absolute -bottom-6 -left-6 w-16 h-16 bg-foreground/3 rounded-full blur-lg" />
             </div>
           </div>
         </div>

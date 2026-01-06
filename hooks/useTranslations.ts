@@ -165,10 +165,14 @@ export function isValidTranslationKey(key: string, locale: string): boolean {
   try {
     const { translations } = require('../lib/translations');
     const keys = key.split('.');
-    let value: any = translations[locale as keyof typeof translations];
+    let value: unknown = translations[locale as keyof typeof translations];
     
     for (const k of keys) {
-      value = value?.[k];
+      if (value && typeof value === 'object') {
+        value = (value as Record<string, unknown>)[k];
+      } else {
+        return false;
+      }
     }
     
     return value !== undefined && value !== key;

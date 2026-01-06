@@ -60,13 +60,17 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   const t = (key: string): string => {
     const keys = key.split('.');
-    let value: any = translations[locale];
+    let value: unknown = translations[locale];
     
     for (const k of keys) {
-      value = value?.[k];
+      if (value && typeof value === 'object') {
+        value = (value as Record<string, unknown>)[k];
+      } else {
+        return key;
+      }
     }
     
-    return value || key;
+    return typeof value === 'string' ? value : key;
   };
 
   return (
@@ -76,9 +80,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export const useLanguage = () => useContext(LanguageContext);
-
-const languages = {
+export const useLanguage = () => useContext(LanguageContext);const languages = {
   it: { name: 'Italiano', code: 'IT' },
   en: { name: 'English', code: 'EN' }
 } as const;

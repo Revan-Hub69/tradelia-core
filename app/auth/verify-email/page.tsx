@@ -46,7 +46,7 @@ export default function VerifyEmail() {
         } else {
           setError('Link di verifica non valido o scaduto')
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         setError('Errore durante la verifica email')
       } finally {
         setLoading(false)
@@ -78,7 +78,7 @@ export default function VerifyEmail() {
       } else {
         setError('Email non trovata. Torna alla registrazione.')
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError('Errore durante l\'invio dell\'email')
     } finally {
       setResending(false)

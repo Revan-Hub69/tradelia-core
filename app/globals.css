@@ -113,7 +113,7 @@
     @apply h-12 px-8 text-base font-semibold rounded-lg;
     @apply bg-gradient-to-r from-primary to-primary/90;
     @apply text-white shadow-lg shadow-primary/20;
-    @apply transition-all duration-300;
+    @apply transition-all duration-150;
     @apply hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5;
     @apply active:scale-[0.98];
     @apply focus:ring-2 focus:ring-primary/60 focus:ring-offset-2;
@@ -125,7 +125,7 @@
     @apply h-12 px-8 text-base font-medium rounded-lg;
     @apply bg-background border-2 border-border/60;
     @apply text-foreground;
-    @apply transition-all duration-300;
+    @apply transition-all duration-150;
     @apply hover:border-primary/30 hover:bg-muted/30 hover:-translate-y-0.5;
     @apply active:scale-[0.98];
     @apply focus:ring-2 focus:ring-primary/60 focus:ring-offset-2;
@@ -135,7 +135,7 @@
   .btn-tech::before {
     content: '';
     @apply absolute inset-0 bg-gradient-to-r from-transparent via-background/15 to-transparent;
-    @apply -translate-x-full transition-transform duration-500;
+    @apply -translate-x-full transition-transform duration-150;
   }
 
   .btn-tech:hover::before {
@@ -153,7 +153,7 @@
   /* KPI Card Component */
   .kpi-card {
     @apply p-4 rounded-lg border text-center;
-    @apply transition-all duration-300;
+    @apply transition-all duration-150;
     @apply hover:scale-105 hover:shadow-md;
   }
 
@@ -257,7 +257,7 @@
   .link-tech::after {
     content: '';
     @apply absolute -bottom-0.5 left-0 w-0 h-0.5 bg-primary;
-    @apply transition-all duration-300 ease-out;
+    @apply transition-all duration-150 ease-out;
   }
 
   .link-tech:hover::after {
@@ -351,16 +351,7 @@
 
   /* Sparkline Enhanced Animation */
   .sparkline-bar {
-    animation: sparklineGrow 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  }
-
-  /* Premium Pulse */
-  .pulse-tech {
-    animation: pulseTech 3s ease-in-out infinite;
-  }
-
-  .animate-pulse-tech {
-    animation: pulseTech 4s ease-in-out infinite;
+    animation: sparklineGrow 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
 
   /* Delays Sottili */
@@ -398,11 +389,6 @@
     opacity: 1;
     transform: scale(1);
   }
-}
-
-@keyframes pulseTech {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
 }
 
 @keyframes sparklineGrow {

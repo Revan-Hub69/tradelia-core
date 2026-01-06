@@ -10,7 +10,7 @@ export function generateSessionToken(): string {
 }
 
 // Encrypt data using Web Crypto API
-export async function encryptData(data: any, key: CryptoKey): Promise<string> {
+export async function encryptData(data: unknown, key: CryptoKey): Promise<string> {
   const encoder = new TextEncoder()
   const dataBuffer = encoder.encode(JSON.stringify(data))
   
@@ -29,7 +29,7 @@ export async function encryptData(data: any, key: CryptoKey): Promise<string> {
 }
 
 // Decrypt data using Web Crypto API
-export async function decryptData(encryptedData: string, key: CryptoKey): Promise<any> {
+export async function decryptData<T = unknown>(encryptedData: string, key: CryptoKey): Promise<T> {
   const combined = new Uint8Array(
     atob(encryptedData).split('').map(char => char.charCodeAt(0))
   )
@@ -44,7 +44,7 @@ export async function decryptData(encryptedData: string, key: CryptoKey): Promis
   )
   
   const decoder = new TextDecoder()
-  return JSON.parse(decoder.decode(decrypted))
+  return JSON.parse(decoder.decode(decrypted)) as T
 }
 
 // Generate encryption key from session token
@@ -72,6 +72,21 @@ export async function generateEncryptionKey(sessionToken: string): Promise<Crypt
   )
 }
 
+// Profile data type
+interface ProfileData {
+  objective?: string | null;
+  experience?: string | null;
+  otherTools?: string | null;
+  completedAt?: string;
+}
+
+// Dashboard config type
+interface DashboardConfigData {
+  objective_config?: Record<string, unknown>;
+  risk_warnings?: Record<string, unknown>;
+  recommended_tools?: Record<string, unknown>;
+}
+
 export class GuestSessionManager {
   private sessionToken: string | null = null
   private encryptionKey: CryptoKey | null = null
@@ -96,7 +111,7 @@ export class GuestSessionManager {
     return this.sessionToken
   }
 
-  async saveProfile(profileData: any): Promise<void> {
+  async saveProfile(profileData: ProfileData): Promise<void> {
     if (!this.sessionToken || !this.encryptionKey) {
       await this.initializeSession()
     }
@@ -120,7 +135,7 @@ export class GuestSessionManager {
     }
   }
 
-  async loadProfile(): Promise<any | null> {
+  async loadProfile(): Promise<ProfileData | null> {
     if (!this.sessionToken) {
       return null
     }
@@ -140,14 +155,14 @@ export class GuestSessionManager {
         this.encryptionKey = await generateEncryptionKey(this.sessionToken)
       }
 
-      return await decryptData(data.encrypted_data.profile, this.encryptionKey)
+      return await decryptData<ProfileData>(data.encrypted_data.profile, this.encryptionKey)
     } catch (error) {
       console.error('Error loading guest profile:', error)
       return null
     }
   }
 
-  async saveDashboardConfig(config: any): Promise<void> {
+  async saveDashboardConfig(config: DashboardConfigData): Promise<void> {
     if (!this.sessionToken) {
       await this.initializeSession()
     }
@@ -168,7 +183,7 @@ export class GuestSessionManager {
     }
   }
 
-  async loadDashboardConfig(): Promise<any | null> {
+  async loadDashboardConfig(): Promise<DashboardConfigData | null> {
     if (!this.sessionToken) {
       return null
     }
@@ -184,7 +199,7 @@ export class GuestSessionManager {
         return null
       }
 
-      return data
+      return data as DashboardConfigData
     } catch (error) {
       console.error('Error loading dashboard config:', error)
       return null

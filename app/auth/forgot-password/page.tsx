@@ -44,7 +44,7 @@ export default function ForgotPassword() {
       } else {
         setSuccess(true)
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError('Errore durante l\'invio dell\'email di reset')
     } finally {
       setLoading(false)

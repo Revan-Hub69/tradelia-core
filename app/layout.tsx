@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { PWAProvider } from "@/components/PWAProvider";
+import { SkipLink } from "@/components/SkipLink";
+import { JsonLd, getOrganizationSchema, getWebSiteSchema } from "@/components/seo/JsonLd";
 import "./globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -82,6 +84,8 @@ export default function RootLayout({
         <meta name="format-detection" content="telephone=no" />
       </head>
       <body className="antialiased min-h-screen bg-background text-foreground font-sans">
+        <JsonLd data={[getOrganizationSchema(), getWebSiteSchema()]} />
+        <SkipLink />
         <PWAProvider>
           {children}
         </PWAProvider>

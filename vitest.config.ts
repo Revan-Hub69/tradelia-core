@@ -4,7 +4,7 @@ import { resolve } from 'path';
 export default defineConfig({
   test: {
     environment: 'jsdom',
-    setupFiles: ['./test/setup.ts'],
+    setupFiles: ['./test/setup.ts', './test/setup-a11y.ts'],
     globals: true,
   },
   resolve: {

@@ -98,7 +98,7 @@ export default function TrustSection() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16 fade-in-stagger">
           {TRUST_METRICS.map((metric, index) => (
             <div key={index} className="text-center group">
-              <div className="text-3xl sm:text-4xl font-bold text-primary mb-2 group-hover:scale-105 transition-transform duration-200">
+              <div className="text-3xl sm:text-4xl font-bold text-primary mb-2 group-hover:scale-105 transition-transform duration-150">
                 {metric.label}
               </div>
               <div className="text-sm text-muted-foreground">

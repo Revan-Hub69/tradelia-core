@@ -100,10 +100,9 @@ export default function RegistrationForm({ onSuccess, onBack, profileData }: Reg
       }
       
       onSuccess();
-    } catch (error: any) {
-      setErrors({ 
-        submit: error.message || 'Errore durante la registrazione' 
-      });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Errore durante la registrazione';
+      setErrors({ submit: message });
     } finally {
       setIsSubmitting(false);
     }
@@ -114,15 +113,21 @@ export default function RegistrationForm({ onSuccess, onBack, profileData }: Reg
       await signInWithGoogle();
       // Note: Profile data will be saved in the auth callback
       onSuccess();
-    } catch (error: any) {
-      setErrors({ 
-        submit: error.message || 'Errore durante l\'accesso con Google' 
-      });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Errore durante l\'accesso con Google';
+      setErrors({ submit: message });
     }
   };
 
+  // Profile data type for dashboard config generation
+  interface UserProfileData {
+    objective: string;
+    experience: string;
+    otherTools: string;
+  }
+
   // Generate dashboard configuration (same logic as in DashboardModal)
-  const generateDashboardConfig = (userProfile: any) => {
+  const generateDashboardConfig = (userProfile: UserProfileData) => {
     const configs = {
       investment: {
         objective_config: {

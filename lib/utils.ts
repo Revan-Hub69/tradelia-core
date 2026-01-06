@@ -86,7 +86,7 @@ export function isValidUrl(url: string): boolean {
 }
 
 // Performance utilities
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (...args: Parameters<T>) => ReturnType<T>>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void {
@@ -97,7 +97,7 @@ export function debounce<T extends (...args: any[]) => any>(
   };
 }
 
-export function throttle<T extends (...args: any[]) => any>(
+export function throttle<T extends (...args: Parameters<T>) => ReturnType<T>>(
   func: T,
   limit: number
 ): (...args: Parameters<T>) => void {

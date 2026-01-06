@@ -81,7 +81,7 @@ export default function ResearchSection() {
 
         {/* Visual/Sparkline */}
         <div className={`${isReversed ? 'lg:col-start-1' : ''}`}>
-          <div className="group bg-background/90 backdrop-blur-sm border border-border/50 rounded-xl p-6 hover:shadow-lg hover:border-border transition-all duration-300 hover:-translate-y-1">
+          <div className="group bg-background/90 backdrop-blur-sm border border-border/50 rounded-xl p-6 hover:shadow-lg hover:border-border transition-all duration-150 hover:-translate-y-1">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-muted-foreground">Frequenza errore</span>
@@ -97,7 +97,7 @@ export default function ResearchSection() {
                     item.iconColor === 'red' ? 'bg-red-500' : 
                     item.iconColor === 'orange' ? 'bg-orange-500' : 
                     'bg-amber-500'
-                  } animate-pulse`} />
+                  }`} />
                 </div>
               </div>
               
@@ -107,7 +107,7 @@ export default function ResearchSection() {
                   {item.sparkline.map((value, i) => (
                     <div
                       key={i}
-                      className={`flex-1 rounded-t transition-all duration-500 hover:opacity-80 sparkline-bar ${
+                      className={`flex-1 rounded-t transition-all duration-150 hover:opacity-80 sparkline-bar ${
                         item.iconColor === 'red' ? 'bg-gradient-to-t from-red-500 to-red-300' : 
                         item.iconColor === 'orange' ? 'bg-gradient-to-t from-orange-500 to-orange-300' : 
                         'bg-gradient-to-t from-amber-500 to-amber-300'
