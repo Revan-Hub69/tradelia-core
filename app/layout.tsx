@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { PWAProvider } from "@/components/PWAProvider";
 import "./globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -56,8 +57,7 @@ export async function generateMetadata(): Promise<Metadata> {
         { url: "/favicon.ico", sizes: "32x32" }
       ],
       apple: "/apple-touch-icon.png",
-    },
-    manifest: "/site.webmanifest"
+    }
   };
 }
 
@@ -82,7 +82,9 @@ export default function RootLayout({
         <meta name="format-detection" content="telephone=no" />
       </head>
       <body className="antialiased min-h-screen bg-background text-foreground font-sans">
-        {children}
+        <PWAProvider>
+          {children}
+        </PWAProvider>
       </body>
     </html>
   );

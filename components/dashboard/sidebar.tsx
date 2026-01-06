@@ -89,7 +89,7 @@ export function Sidebar({ collapsed, onToggle, onOpenSettings }: SidebarProps) {
             {!collapsed && (
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-medium text-foreground truncate">{userName}</p>
-                <p className="text-[10px] text-muted-foreground truncate">{userType}</p>
+                <p className="text-xs text-muted-foreground truncate">{userType}</p>
               </div>
             )}
           </div>
@@ -146,7 +146,7 @@ export function Sidebar({ collapsed, onToggle, onOpenSettings }: SidebarProps) {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-xs font-medium text-foreground truncate">{userName}</p>
-              <p className="text-[10px] text-muted-foreground truncate">{userType}</p>
+              <p className="text-xs text-muted-foreground truncate">{userType}</p>
             </div>
           </div>
           {!isGuest && (
@@ -165,14 +165,14 @@ export function Sidebar({ collapsed, onToggle, onOpenSettings }: SidebarProps) {
 
 // Helper function to render nav items
 // Active: bg-primary text-white (come button homepage)
-// Inactive: text-muted-foreground hover:text-foreground hover:bg-muted/50
+// Inactive: text-muted-foreground hover:text-foreground hover:bg-muted
 function renderNavItem(item: typeof navigation[0], collapsed: boolean, onOpenSettings: () => void) {
   const IconComponent = item.icon;
   
   // Stili coerenti con homepage btn-tech
-  const baseStyles = `flex items-center ${collapsed ? 'justify-center' : 'gap-2'} px-2.5 py-2 rounded transition-colors duration-150`;
-  const activeStyles = 'bg-primary text-white font-medium';
-  const inactiveStyles = 'text-muted-foreground hover:text-foreground hover:bg-muted/50';
+  const baseStyles = `flex items-center ${collapsed ? 'justify-center' : 'gap-2'} px-2.5 py-2 rounded transition-all duration-150`;
+  const activeStyles = 'bg-primary text-white font-medium shadow-sm';
+  const inactiveStyles = 'text-muted-foreground hover:text-foreground hover:bg-muted hover:shadow-sm';
   
   if (item.onClick) {
     return (
