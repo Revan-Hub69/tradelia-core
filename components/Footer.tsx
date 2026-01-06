@@ -16,7 +16,7 @@ export function Footer() {
             </div>
             
             <div className="space-y-3">
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm text-foreground/90">
                 <strong className="text-foreground">Metodologia:</strong> Framework da studi peer-reviewed. 
                 Nessun cookie, trasparenza sui partner.
               </p>
@@ -25,7 +25,7 @@ export function Footer() {
 
           {/* Disclaimer Essenziale */}
           <div className="p-4 rounded border border-border/50 bg-background">
-            <p className="text-xs text-muted-foreground leading-relaxed">
+            <p className="text-sm text-foreground/80 leading-relaxed">
               <strong className="text-foreground">Disclaimer:</strong> Strumento educativo, non consulenza finanziaria. 
               Possibili commissioni da partner raccomandati. L'utente rimane responsabile delle proprie decisioni.
             </p>
@@ -33,7 +33,7 @@ export function Footer() {
 
           {/* Links Essenziali */}
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4 border-t border-border/30">
-            <div className="flex gap-6 text-xs text-muted-foreground">
+            <div className="flex gap-6 text-sm text-foreground/70">
               <a href="/privacy" className="hover:text-foreground transition-subtle link-tech">
                 Privacy
               </a>
@@ -47,7 +47,7 @@ export function Footer() {
                 Contatti
               </a>
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-foreground/60">
               © 2026 Tradelia
             </p>
           </div>
