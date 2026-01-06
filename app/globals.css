@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    /* Tradelia 2026 - Palette Tech Migliorata */
+    /* Tradelia 2026 - Palette Tech Premium */
     --background: 0 0% 98%;           /* Bianco più contrastato */
     --foreground: 220 20% 8%;         /* Nero più deciso */
     --primary: 215 60% 40%;           /* Blu logo underline - DEFINITIVO */
@@ -12,6 +12,19 @@
     --muted-foreground: 220 15% 35%;  /* Grigio più scuro */
     --border: 220 15% 85%;            /* Bordi più visibili */
     --accent: 220 25% 92%;            /* Nuovo: per sezioni alternate */
+    
+    /* Premium Shadow System */
+    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+    
+    /* Gradient System */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.8) 100%);
+    --gradient-surface: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%);
+    --gradient-overlay: linear-gradient(135deg, hsl(var(--primary) / 0.1) 0%, transparent 100%);
   }
 
   .dark {
@@ -92,7 +105,7 @@
     transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Tech Interactions - Design Guide Compliant */
+  /* Premium Button System */
   .btn-tech {
     @apply h-10 px-6 text-sm font-medium rounded;
     @apply bg-primary text-white;
@@ -101,6 +114,29 @@
     @apply active:scale-[0.98];
     @apply focus:ring-2 focus:ring-primary/60 focus:ring-offset-2;
     @apply relative overflow-hidden cursor-pointer;
+  }
+
+  .btn-tech-premium {
+    @apply h-12 px-8 text-base font-semibold rounded-lg;
+    @apply bg-gradient-to-r from-primary to-primary/90;
+    @apply text-white shadow-lg shadow-primary/20;
+    @apply transition-all duration-300;
+    @apply hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5;
+    @apply active:scale-[0.98];
+    @apply focus:ring-2 focus:ring-primary/60 focus:ring-offset-2;
+    @apply relative overflow-hidden cursor-pointer;
+    @apply flex items-center justify-center;
+  }
+
+  .btn-secondary-premium {
+    @apply h-12 px-8 text-base font-medium rounded-lg;
+    @apply bg-background border-2 border-border/60;
+    @apply text-foreground;
+    @apply transition-all duration-300;
+    @apply hover:border-primary/30 hover:bg-muted/30 hover:-translate-y-0.5;
+    @apply active:scale-[0.98];
+    @apply focus:ring-2 focus:ring-primary/60 focus:ring-offset-2;
+    @apply flex items-center justify-center;
   }
 
   .btn-tech::before {
@@ -119,6 +155,41 @@
 
   .btn-tech:active {
     @apply bg-primary/80;
+  }
+
+  /* KPI Card Component */
+  .kpi-card {
+    @apply p-4 rounded-lg border text-center;
+    @apply transition-all duration-300;
+    @apply hover:scale-105 hover:shadow-md;
+  }
+
+  /* Badge Hierarchy System */
+  .badge-primary {
+    @apply px-3 py-1.5 text-sm font-semibold rounded-full;
+    @apply bg-primary text-white;
+    @apply shadow-sm;
+  }
+
+  .badge-secondary {
+    @apply px-3 py-1 text-xs font-medium rounded-full;
+    @apply bg-muted text-muted-foreground;
+    @apply border border-border/50;
+  }
+
+  .badge-success {
+    @apply px-3 py-1 text-xs font-medium rounded-full;
+    @apply bg-green-50 text-green-700 border border-green-200;
+  }
+
+  .badge-warning {
+    @apply px-3 py-1 text-xs font-medium rounded-full;
+    @apply bg-amber-50 text-amber-700 border border-amber-200;
+  }
+
+  .badge-danger {
+    @apply px-3 py-1 text-xs font-medium rounded-full;
+    @apply bg-red-50 text-red-700 border border-red-200;
   }
 
   /* Mobile Language Selector Enhancement */
@@ -200,7 +271,19 @@
     @apply w-full;
   }
 
-  /* Pattern Geometrico Più Visibile */
+  /* Premium Pattern Geometrico */
+  .pattern-geo-premium {
+    background-image: 
+      radial-gradient(circle at 25% 25%, hsl(var(--primary) / 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, hsl(var(--foreground) / 0.05) 0%, transparent 50%),
+      linear-gradient(90deg, transparent 48%, hsl(var(--border) / 0.8) 50%, transparent 52%),
+      linear-gradient(0deg, transparent 48%, hsl(var(--border) / 0.6) 50%, transparent 52%),
+      conic-gradient(from 45deg at 50% 50%, transparent 0deg, hsl(var(--primary) / 0.03) 90deg, transparent 180deg);
+    background-size: 200px 200px, 150px 150px, 80px 80px, 80px 80px, 300px 300px;
+    background-position: 0 0, 100px 100px, 0 0, 0 0, 150px 150px;
+  }
+
+  /* Pattern Geometrico Standard */
   .pattern-geo {
     background-image: 
       radial-gradient(circle at 20% 30%, hsl(var(--primary) / 0.08) 0%, transparent 60%),
@@ -212,7 +295,7 @@
     background-position: 0 0, 80px 80px, 0 0, 0 0, 100px 100px;
   }
 
-  /* Animazioni Sottili - Design Guide Compliant */
+  /* Premium Animations */
   .animate-fade-up {
     opacity: 0;
     transform: translateY(20px);
@@ -243,20 +326,28 @@
     transform: translateY(0);
   }
 
+  /* Premium Pulse */
+  .pulse-tech {
+    animation: pulseTech 3s ease-in-out infinite;
+  }
+
+  .animate-pulse-tech {
+    animation: pulseTech 4s ease-in-out infinite;
+  }
+
   /* Delays Sottili */
   .delay-100 { animation-delay: 0.1s; }
   .delay-200 { animation-delay: 0.2s; }
   .delay-300 { animation-delay: 0.3s; }
 
-  /* Pulse Sottile */
-  .pulse-tech {
-    animation: pulseTech 3s ease-in-out infinite;
-  }
-
   /* Spacing System */
   .section-lg { @apply py-20 sm:py-32; }
   .section-md { @apply py-16 sm:py-24; }
   .section-sm { @apply py-12 sm:py-16; }
+
+  /* Shadow Utilities */
+  .shadow-premium { box-shadow: var(--shadow-xl); }
+  .shadow-premium-lg { box-shadow: var(--shadow-2xl); }
 }
 
 /* Keyframes - Design Guide Compliant */

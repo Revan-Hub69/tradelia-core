@@ -57,7 +57,8 @@ export const translations = {
     },
     differentiator: {
       title: 'La maggior parte delle piattaforme spinge all\'azione per monetizzare. Noi rallentiamo.',
-      subtitle: 'Perché chi inizia non ha bisogno di più funzioni. Ha bisogno di meno errori.'
+      subtitle: 'Perché chi inizia non ha bisogno di più funzioni. Ha bisogno di meno errori.',
+      outcome: 'Riduci i 3 errori più costosi per i beginner crypto: eccesso di fiducia, decisioni emotive, imitazione sociale.'
     },
     trust: {
       title: 'Seri per design',
@@ -167,7 +168,8 @@ export const translations = {
     },
     differentiator: {
       title: 'Most platforms push for action to monetize. We slow down.',
-      subtitle: 'Because beginners don\'t need more features. They need fewer errors.'
+      subtitle: 'Because beginners don\'t need more features. They need fewer errors.',
+      outcome: 'Reduce the 3 most costly errors for crypto beginners: overconfidence, emotional decisions, social imitation.'
     },
     trust: {
       title: 'Serious by design',

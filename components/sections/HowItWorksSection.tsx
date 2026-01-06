@@ -38,6 +38,7 @@ export default function HowItWorksSection() {
 
   return (
     <section 
+      id="how-it-works"
       className="section-md fade-in-section section-separator"
       aria-labelledby="how-it-works-title"
     >

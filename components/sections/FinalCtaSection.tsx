@@ -51,6 +51,7 @@ export default function FinalCtaSection() {
 
   return (
     <section 
+      id="final-cta"
       ref={sectionRef}
       className="section-md fade-in-section bg-background"
       aria-labelledby="final-cta-title"
