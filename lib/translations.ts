@@ -117,7 +117,7 @@ export const translations = {
       disclaimer: 'Gratuito · 60–90 secondi · Senza usare denaro'
     },
     footer: {
-      description: 'Strumento educativo per identificare incompatibilità tra obiettivi e strumenti finanziari. Basato su ricerca comportamentale accademica.',
+      description: 'Dashboard guidata per esplorare le crypto senza fare gli errori più costosi. Basata su ricerca comportamentale accademica.',
       methodology: 'Struttura da studi accademici verificati. Nessun cookie, trasparenza sui partner.',
       disclaimer: 'Strumento educativo, non consulenza finanziaria. Possibili commissioni da partner raccomandati. L\'utente rimane responsabile delle proprie decisioni.',
       links: {
@@ -248,7 +248,7 @@ export const translations = {
       disclaimer: 'Free · 60–90 seconds · No money used'
     },
     footer: {
-      description: 'Educational tool to identify incompatibilities between objectives and financial instruments. Based on academic behavioral research.',
+      description: 'Guided dashboard to explore crypto without making the most costly mistakes. Based on academic behavioral research.',
       methodology: 'Framework from peer-reviewed studies. No cookies, transparency on partners.',
       disclaimer: 'Educational tool, not financial advice. Possible commissions from recommended partners. User remains responsible for their decisions.',
       links: {

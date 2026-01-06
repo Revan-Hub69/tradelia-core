@@ -43,8 +43,8 @@ export function Footer() {
           <div className="text-center space-y-4">
             <Logo />
             <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
-              Strumento educativo per identificare incompatibilità tra obiettivi e strumenti crypto. 
-              Basato su ricerca accademica verificata.
+              Dashboard guidata per esplorare le crypto senza fare gli errori più costosi. 
+              Basata su ricerca comportamentale accademica.
             </p>
           </div>
 
