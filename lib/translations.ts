@@ -100,6 +100,27 @@ export const translations = {
         contact: 'Contatti'
       },
       copyright: '© 2026 Tradelia'
+    },
+    modal: {
+      title: 'Accesso Dashboard',
+      educational: {
+        title: 'Strumento Educativo',
+        description: 'Dashboard progettata per identificare incompatibilità tra obiettivi e strumenti crypto. Non fornisce consigli di investimento.'
+      },
+      steps: {
+        title: 'Cosa troverai nella dashboard',
+        items: [
+          'Questionario per identificare il tuo obiettivo principale',
+          'Analisi di coerenza tra obiettivo e strumenti disponibili',
+          'Documentazione accademica sui rischi specifici',
+          'Risorse educative per evitare errori comuni'
+        ]
+      },
+      disclaimer: 'Accedendo confermi di comprendere che questo è uno strumento educativo. Tutte le decisioni di investimento rimangono di tua esclusiva responsabilità.',
+      actions: {
+        cancel: 'Annulla',
+        continue: 'Accedi alla Dashboard'
+      }
     }
   },
   en: {
@@ -203,6 +224,27 @@ export const translations = {
         contact: 'Contact'
       },
       copyright: '© 2026 Tradelia'
+    },
+    modal: {
+      title: 'Dashboard Access',
+      educational: {
+        title: 'Educational Tool',
+        description: 'Dashboard designed to identify incompatibilities between objectives and crypto tools. Does not provide investment advice.'
+      },
+      steps: {
+        title: 'What you\'ll find in the dashboard',
+        items: [
+          'Questionnaire to identify your main objective',
+          'Coherence analysis between objective and available tools',
+          'Academic documentation on specific risks',
+          'Educational resources to avoid common mistakes'
+        ]
+      },
+      disclaimer: 'By accessing you confirm understanding that this is an educational tool. All investment decisions remain your sole responsibility.',
+      actions: {
+        cancel: 'Cancel',
+        continue: 'Access Dashboard'
+      }
     }
   }
 } as const;
