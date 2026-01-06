@@ -1,10 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
-import { GuestSessionManager } from '@/lib/guestSession'
 import { supabase } from '@/lib/supabase'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Logo from '@/components/Logo'
 import { 
   ShieldIcon,
@@ -19,63 +18,16 @@ import {
   UserIcon
 } from '@/components/icons/TradeliaIcons'
 
-export default function Dashboard() {
+function DashboardContent() {
   const { user, profile, loading, signOut } = useAuth()
-  const [dashboardConfig, setDashboardConfig] = useState<any>(null)
-  const [guestProfile, setGuestProfile] = useState<any>(null)
-  const [showEmailAlert, setShowEmailAlert] = useState(false)
+  const searchParams = useSearchParams()
   const router = useRouter()
+  
+  const [dashboardConfig, setDashboardConfig] = useState<any>(null)
+  const [isGuestMode, setIsGuestMode] = useState(false)
+  const [showEmailAlert, setShowEmailAlert] = useState(false)
 
-  useEffect(() => {
-    const loadDashboardData = async () => {
-      console.log('🔄 Loading dashboard data...', { user: !!user, profile: !!profile, loading });
-      
-      if (user && profile) {
-        console.log('👤 Loading registered user data...');
-        setShowEmailAlert(!user.email_confirmed_at)
-        
-        const { data, error } = await supabase
-          .from('dashboard_configs')
-          .select('*')
-          .eq('user_id', user.id)
-          .single()
-
-        if (data) {
-          console.log('✅ Loaded user dashboard config:', data);
-          setDashboardConfig(data)
-        }
-      } else {
-        // Guest user logic
-        console.log('👻 Loading guest user data...');
-        const guestManager = new GuestSessionManager()
-        
-        try {
-          const guestData = await guestManager.loadProfile()
-          const guestConfig = await guestManager.loadDashboardConfig()
-          
-          console.log('📊 Guest data loaded:', { guestData, guestConfig });
-          
-          if (guestData) {
-            setGuestProfile(guestData)
-            setDashboardConfig(guestConfig || getDefaultDashboardConfig())
-            console.log('✅ Guest dashboard setup complete');
-          } else {
-            console.log('❌ No guest session found, redirecting to home');
-            router.push('/')
-          }
-        } catch (error) {
-          console.error('❌ Error loading guest data:', error);
-          router.push('/')
-        }
-      }
-    }
-
-    if (!loading) {
-      loadDashboardData()
-    }
-  }, [user, profile, loading, router])
-
-  // Default dashboard config for guest users
+  // Default dashboard config
   const getDefaultDashboardConfig = () => ({
     objective_config: {
       title: 'Configurazione di base',
@@ -92,16 +44,51 @@ export default function Dashboard() {
     }
   })
 
+  useEffect(() => {
+    const isGuest = searchParams.get('guest') === 'true'
+    
+    // Guest mode: immediate access with default config
+    if (isGuest) {
+      console.log('👻 Guest mode activated')
+      setIsGuestMode(true)
+      setDashboardConfig(getDefaultDashboardConfig())
+      return
+    }
+
+    // Authenticated user: load from Supabase
+    if (!loading && user && profile) {
+      console.log('👤 Loading registered user data...')
+      setShowEmailAlert(!user.email_confirmed_at)
+      
+      supabase
+        .from('dashboard_configs')
+        .select('*')
+        .eq('user_id', user.id)
+        .single()
+        .then(({ data }) => {
+          if (data) {
+            setDashboardConfig(data)
+          } else {
+            setDashboardConfig(getDefaultDashboardConfig())
+          }
+        })
+      return
+    }
+
+    // Not loading, not guest, no user -> redirect to home
+    if (!loading && !isGuest && !user) {
+      console.log('❌ No auth, redirecting to home')
+      router.push('/')
+    }
+  }, [user, profile, loading, searchParams, router])
+
   const handleResendVerification = async () => {
     if (user?.email) {
-      const { error } = await supabase.auth.resend({
+      await supabase.auth.resend({
         type: 'signup',
         email: user.email
       })
-      
-      if (!error) {
-        alert('Email di verifica inviata!')
-      }
+      alert('Email di verifica inviata!')
     }
   }
 
@@ -110,7 +97,8 @@ export default function Dashboard() {
     router.push('/')
   }
 
-  if (loading) {
+  // Show loading only if not guest and still loading auth
+  if (loading && !isGuestMode) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center space-y-4">
@@ -121,12 +109,24 @@ export default function Dashboard() {
     )
   }
 
-  const currentProfile = profile || guestProfile || {
-    objective: 'generale',
-    experience: 'base',
+  // Wait for config to be set
+  if (!dashboardConfig) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto" />
+          <p className="text-sm text-muted-foreground">Preparazione dashboard...</p>
+        </div>
+      </div>
+    )
+  }
+
+  const currentProfile = profile || {
+    crypto_objective: 'generale' as const,
+    experience_level: 'base' as const,
     full_name: 'Utente ospite'
   }
-  const userType = user ? 'Registrato' : 'Ospite'
+  const userType = isGuestMode ? 'Ospite' : 'Registrato'
 
   return (
     <div className="min-h-screen bg-background">
@@ -147,7 +147,7 @@ export default function Dashboard() {
                 <span>{userType}</span>
               </div>
               
-              {user && (
+              {!isGuestMode && user && (
                 <button
                   onClick={handleSignOut}
                   className="p-2 text-muted-foreground hover:text-foreground transition-colors duration-150 rounded focus:outline-none focus:ring-2 focus:ring-primary/60"
@@ -222,13 +222,13 @@ export default function Dashboard() {
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Obiettivo</span>
                   <span className="text-foreground capitalize">
-                    {currentProfile?.objective || 'Non definito'}
+                    {currentProfile?.crypto_objective || 'Non definito'}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Esperienza</span>
                   <span className="text-foreground capitalize">
-                    {currentProfile?.experience || 'Non definita'}
+                    {currentProfile?.experience_level || 'Non definita'}
                   </span>
                 </div>
               </div>
@@ -302,79 +302,77 @@ export default function Dashboard() {
             </div>
 
             {/* Configuration Card */}
-            {dashboardConfig && (
-              <div className="rounded border border-border/50 bg-background p-6">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center">
-                    <ShieldIcon className="w-4 h-4 text-primary" />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-semibold text-foreground">
-                      {dashboardConfig.objective_config?.title}
-                    </h2>
-                    <p className="text-sm text-muted-foreground">
-                      {dashboardConfig.objective_config?.description}
-                    </p>
-                  </div>
+            <div className="rounded border border-border/50 bg-background p-6">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center">
+                  <ShieldIcon className="w-4 h-4 text-primary" />
                 </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-foreground">
+                    {dashboardConfig.objective_config?.title}
+                  </h2>
+                  <p className="text-sm text-muted-foreground">
+                    {dashboardConfig.objective_config?.description}
+                  </p>
+                </div>
+              </div>
 
-                <div className="grid md:grid-cols-2 gap-6">
-                  {/* Risk Warnings */}
-                  <div className="space-y-4">
-                    <h3 className="text-sm font-medium text-foreground uppercase tracking-wide">
-                      Avvisi principali
-                    </h3>
-                    <div className="p-4 rounded border border-amber-200 bg-amber-50">
-                      <div className="flex items-start gap-3">
-                        <AlertTriangleIcon className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
-                        <div>
-                          <p className="text-sm font-medium text-amber-800 mb-1">
-                            {dashboardConfig.risk_warnings?.primary}
-                          </p>
-                          <p className="text-xs text-amber-700">
-                            {dashboardConfig.risk_warnings?.secondary}
-                          </p>
-                        </div>
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Risk Warnings */}
+                <div className="space-y-4">
+                  <h3 className="text-sm font-medium text-foreground uppercase tracking-wide">
+                    Avvisi principali
+                  </h3>
+                  <div className="p-4 rounded border border-amber-200 bg-amber-50">
+                    <div className="flex items-start gap-3">
+                      <AlertTriangleIcon className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-medium text-amber-800 mb-1">
+                          {dashboardConfig.risk_warnings?.primary}
+                        </p>
+                        <p className="text-xs text-amber-700">
+                          {dashboardConfig.risk_warnings?.secondary}
+                        </p>
                       </div>
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      Fonte: {dashboardConfig.risk_warnings?.academicSource}
-                    </p>
                   </div>
+                  <p className="text-xs text-muted-foreground">
+                    Fonte: {dashboardConfig.risk_warnings?.academicSource}
+                  </p>
+                </div>
 
-                  {/* Recommended Tools */}
-                  <div className="space-y-4">
-                    <h3 className="text-sm font-medium text-foreground uppercase tracking-wide">
-                      Strumenti coerenti
-                    </h3>
-                    <div className="space-y-3">
-                      <div>
-                        <p className="text-xs font-medium text-green-700 mb-2">Raccomandati</p>
-                        <ul className="space-y-1">
-                          {dashboardConfig.recommended_tools?.primary?.map((tool: string, index: number) => (
-                            <li key={index} className="flex items-center gap-2 text-xs">
-                              <div className="w-1.5 h-1.5 bg-green-500 rounded-full flex-shrink-0" />
-                              <span className="text-muted-foreground">{tool}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                      <div>
-                        <p className="text-xs font-medium text-red-700 mb-2">Da evitare</p>
-                        <ul className="space-y-1">
-                          {dashboardConfig.recommended_tools?.avoid?.map((tool: string, index: number) => (
-                            <li key={index} className="flex items-center gap-2 text-xs">
-                              <div className="w-1.5 h-1.5 bg-red-500 rounded-full flex-shrink-0" />
-                              <span className="text-muted-foreground">{tool}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                {/* Recommended Tools */}
+                <div className="space-y-4">
+                  <h3 className="text-sm font-medium text-foreground uppercase tracking-wide">
+                    Strumenti coerenti
+                  </h3>
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-xs font-medium text-green-700 mb-2">Raccomandati</p>
+                      <ul className="space-y-1">
+                        {dashboardConfig.recommended_tools?.primary?.map((tool: string, index: number) => (
+                          <li key={index} className="flex items-center gap-2 text-xs">
+                            <div className="w-1.5 h-1.5 bg-green-500 rounded-full flex-shrink-0" />
+                            <span className="text-muted-foreground">{tool}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-red-700 mb-2">Da evitare</p>
+                      <ul className="space-y-1">
+                        {dashboardConfig.recommended_tools?.avoid?.map((tool: string, index: number) => (
+                          <li key={index} className="flex items-center gap-2 text-xs">
+                            <div className="w-1.5 h-1.5 bg-red-500 rounded-full flex-shrink-0" />
+                            <span className="text-muted-foreground">{tool}</span>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
                 </div>
               </div>
-            )}
+            </div>
 
             {/* Educational Content */}
             <div className="rounded border border-border/50 bg-background p-6">
@@ -398,5 +396,20 @@ export default function Dashboard() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function Dashboard() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto" />
+          <p className="text-sm text-muted-foreground">Caricamento...</p>
+        </div>
+      </div>
+    }>
+      <DashboardContent />
+    </Suspense>
   )
 }
