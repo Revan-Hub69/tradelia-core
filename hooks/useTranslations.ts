@@ -132,6 +132,26 @@ export function useTranslations() {
         methodology: t('footer.links.methodology')
       },
       copyright: t('footer.copyright')
+    },
+
+    modal: {
+      title: t('modal.title'),
+      step: t('modal.step'),
+      of: t('modal.of'),
+      disclaimer: {
+        title: t('modal.disclaimer.title'),
+        educational: {
+          title: t('modal.disclaimer.educational.title'),
+          description: t('modal.disclaimer.educational.description')
+        },
+        responsibility: t('modal.disclaimer.responsibility')
+      },
+      actions: {
+        cancel: t('modal.actions.cancel'),
+        back: t('modal.actions.back'),
+        continue: t('modal.actions.continue'),
+        finish: t('modal.actions.finish')
+      }
     }
   }), [locale, t, setLocale]);
 
