@@ -175,14 +175,14 @@ export function Sidebar({ collapsed, onToggle, onOpenSettings }: SidebarProps) {
 }
 
 // Helper function to render nav items
-// Active: bg-foreground text-background (come button homepage - massimo contrasto)
+// Active: bg-primary text-white (come button homepage)
 // Inactive: text-muted-foreground hover:text-foreground hover:bg-muted/50
 function renderNavItem(item: typeof navigation[0], collapsed: boolean, onOpenSettings: () => void) {
   const IconComponent = item.icon;
   
-  // Stili coerenti con homepage - WCAG AAA
+  // Stili coerenti con homepage btn-tech
   const baseStyles = `flex items-center ${collapsed ? 'justify-center' : 'gap-2'} px-2.5 py-2 rounded transition-colors duration-150`;
-  const activeStyles = 'bg-foreground text-background font-medium';
+  const activeStyles = 'bg-primary text-white font-medium';
   const inactiveStyles = 'text-muted-foreground hover:text-foreground hover:bg-muted/50';
   
   if (item.onClick) {
