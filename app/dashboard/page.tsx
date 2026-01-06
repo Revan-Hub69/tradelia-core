@@ -41,14 +41,16 @@ export default function Dashboard() {
           setDashboardConfig(data)
         }
       } else {
+        // Guest user logic
         const guestManager = new GuestSessionManager()
         const guestData = await guestManager.loadProfile()
         const guestConfig = await guestManager.loadDashboardConfig()
         
         if (guestData) {
           setGuestProfile(guestData)
-          setDashboardConfig(guestConfig)
+          setDashboardConfig(guestConfig || getDefaultDashboardConfig())
         } else {
+          // No guest session found, redirect to home
           router.push('/')
         }
       }
@@ -58,6 +60,23 @@ export default function Dashboard() {
       loadDashboardData()
     }
   }, [user, profile, loading, router])
+
+  // Default dashboard config for guest users
+  const getDefaultDashboardConfig = () => ({
+    objective_config: {
+      title: 'Configurazione di base',
+      description: 'Analisi generale degli strumenti finanziari'
+    },
+    risk_warnings: {
+      primary: 'Verifica sempre la coerenza tra obiettivo e strumento',
+      secondary: 'Gli strumenti complessi richiedono maggiore attenzione',
+      academicSource: 'Ricerca comportamentale finanziaria'
+    },
+    recommended_tools: {
+      primary: ['ETF diversificati', 'Fondi indicizzati', 'Conti deposito'],
+      avoid: ['Prodotti strutturati complessi', 'Leva finanziaria elevata']
+    }
+  })
 
   const handleResendVerification = async () => {
     if (user?.email) {
@@ -88,7 +107,11 @@ export default function Dashboard() {
     )
   }
 
-  const currentProfile = profile || guestProfile
+  const currentProfile = profile || guestProfile || {
+    objective: 'generale',
+    experience: 'base',
+    full_name: 'Utente ospite'
+  }
   const userType = user ? 'Registrato' : 'Ospite'
 
   return (

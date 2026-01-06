@@ -108,7 +108,32 @@ export default function AuthModal() {
     try {
       const { GuestSessionManager } = await import('@/lib/guestSession');
       const guestManager = new GuestSessionManager();
-      await guestManager.saveProfile({ completedAt: new Date().toISOString() });
+      
+      // Save a basic guest profile with default values
+      await guestManager.saveProfile({ 
+        objective: 'generale',
+        experience: 'base',
+        full_name: 'Utente ospite',
+        completedAt: new Date().toISOString() 
+      });
+      
+      // Save default dashboard config
+      await guestManager.saveDashboardConfig({
+        objective_config: {
+          title: 'Configurazione di base',
+          description: 'Analisi generale degli strumenti finanziari'
+        },
+        risk_warnings: {
+          primary: 'Verifica sempre la coerenza tra obiettivo e strumento',
+          secondary: 'Gli strumenti complessi richiedono maggiore attenzione',
+          academicSource: 'Ricerca comportamentale finanziaria'
+        },
+        recommended_tools: {
+          primary: ['ETF diversificati', 'Fondi indicizzati', 'Conti deposito'],
+          avoid: ['Prodotti strutturati complessi', 'Leva finanziaria elevata']
+        }
+      });
+      
       closeModal();
       window.location.href = '/dashboard';
     } catch (err) {
