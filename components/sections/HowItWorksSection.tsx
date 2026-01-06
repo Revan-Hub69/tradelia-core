@@ -47,7 +47,19 @@ export default function HowItWorksSection() {
             id="how-it-works-title"
             className="text-xl sm:text-2xl lg:text-3xl font-semibold text-foreground leading-tight tracking-tight mb-4"
           >
-            Come funziona <span className="font-semibold"><span className="text-muted-foreground">T</span><span className="text-foreground">radelia</span></span>
+            Come funziona <span className="font-semibold relative">
+              <span className="text-muted-foreground relative">
+                T
+                <span className="absolute -bottom-0.5 left-0 w-full h-0.5 bg-primary" />
+              </span>
+              <span className="text-foreground relative">
+                <span className="relative">
+                  r
+                  <span className="absolute -bottom-0.5 left-0 w-full h-0.5 bg-primary" />
+                </span>
+                adelia
+              </span>
+            </span>
           </h2>
           <p className="text-sm sm:text-base text-muted-foreground">
             {howItWorks.subtitle}

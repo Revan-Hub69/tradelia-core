@@ -56,6 +56,10 @@ export function useTranslations() {
       }
     },
 
+    academicBanner: {
+      text: t('academicBanner.text')
+    },
+
     howItWorks: {
       title: t('howItWorks.title'),
       subtitle: t('howItWorks.subtitle'),

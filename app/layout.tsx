@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { LanguageProvider } from '@/components/LanguageSelector';
@@ -6,9 +6,10 @@ import InitialPopup from '@/components/InitialPopup';
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Tradelia - Esplora le crypto senza fare gli errori più costosi",
-  description: "Una dashboard guidata che ti aiuta a capire il contesto, evitare trappole comuni e scegliere un percorso coerente prima di usare denaro.",
-  keywords: "crypto, cryptocurrency, bitcoin, trading, educazione, principianti, dashboard, errori, contesto",
+  metadataBase: new URL('https://tradelia.com'),
+  title: "Tradelia - Come Iniziare con le Crypto Senza Errori Costosi | Guida Principianti",
+  description: "Hai paura di investire in crypto? Tradelia ti aiuta a capire i rischi prima di comprare Bitcoin. Guida gratuita per principianti che vogliono evitare errori costosi. Nessun account richiesto.",
+  keywords: "crypto principianti, come iniziare bitcoin, errori da evitare crypto, bitcoin sicuro, investire crypto senza rischi, crypto per principianti italia, bitcoin truffa come evitare, exchange crypto sicuro, wallet bitcoin principianti, crypto guida italiana, paura investire bitcoin, come comprare crypto sicuro",
   authors: [{ name: "Tradelia" }],
   creator: "Tradelia",
   publisher: "Tradelia",
@@ -17,8 +18,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "it_IT",
     url: "https://tradelia.com",
-    title: "Tradelia - Esplora le crypto senza fare gli errori più costosi",
-    description: "Una dashboard guidata che ti aiuta a capire il contesto, evitare trappole comuni e scegliere un percorso coerente prima di usare denaro.",
+    title: "Tradelia - Come Iniziare con le Crypto Senza Errori Costosi",
+    description: "Hai paura di investire in crypto? Tradelia ti aiuta a capire i rischi prima di comprare Bitcoin.",
     siteName: "Tradelia",
     images: [{
       url: "/og-image.png",
@@ -29,8 +30,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tradelia - Esplora le crypto senza fare gli errori più costosi",
-    description: "Dashboard guidata per evitare errori comuni nel mondo crypto.",
+    title: "Tradelia - Come Iniziare con le Crypto Senza Errori Costosi",
+    description: "Guida gratuita per principianti crypto. Evita errori costosi prima di investire in Bitcoin.",
     images: ["/og-image.png"]
   },
   icons: {
@@ -41,11 +42,16 @@ export const metadata: Metadata = {
     apple: "/apple-touch-icon.png",
   },
   manifest: "/site.webmanifest",
-  viewport: "width=device-width, initial-scale=1, viewport-fit=cover",
-  themeColor: "hsl(220 15% 12%)",
   alternates: {
     canonical: "https://tradelia.com"
   }
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: 'hsl(220 15% 12%)'
 };
 
 export default function RootLayout({

@@ -41,15 +41,16 @@ export default function Logo() {
       <span className="font-semibold transition-all duration-300 group-hover:text-primary relative">
         <span className="text-muted-foreground relative">
           T
-          <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
+          <span className="absolute -bottom-0.5 left-0 w-full h-0.5 bg-primary" />
         </span>
         <span className="text-foreground relative">
           <span className="relative">
             r
-            <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
+            <span className="absolute -bottom-0.5 left-0 w-full h-0.5 bg-primary" />
           </span>
           adelia
         </span>
+        <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
       </span>
     </Link>
   );

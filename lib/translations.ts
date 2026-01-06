@@ -35,25 +35,28 @@ export const translations = {
         source: 'Bikhchandani, S., Hirshleifer, D., & Welch, I. (1992). A theory of fads, fashion, custom, and cultural change as informational cascades. Journal of Political Economy, 100(5), 992-1026.'
       }
     },
+    academicBanner: {
+      text: 'In Tradelia se un concetto non ha una solida documentazione accademica rimane fuori dalla porta'
+    },
     howItWorks: {
       title: 'Come funziona',
       titleWithLogo: true, // Flag per mostrare logo inline
-      subtitle: 'Strumento educativo in tre step per identificare potenziali incompatibilità tra obiettivi e strumenti crypto.',
+      subtitle: 'Identificazione dei rischi tra obiettivi e strumenti crypto.',
       step1: {
-        title: 'Definisci il tuo obiettivo educativo',
-        description: 'Indica cosa vuoi apprendere: comprensione generale, informazioni su primo acquisto, o approfondimento specifico.'
+        title: 'Indica cosa ti interessa di più',
+        description: 'Possedere crypto, speculare sul prezzo, o rendita passiva. Ogni scelta configura strumenti e rischi specifici.'
       },
       step2: {
-        title: 'Consulta il contesto informativo',
-        description: 'Accedi a informazioni educative sul mercato crypto attuale e cosa significa per chi inizia, senza tecnicismi.'
+        title: 'Dashboard configurata',
+        description: 'Strumenti coerenti alla tua scelta e rischi specifici documentati dalla ricerca accademica.'
       },
       step3: {
-        title: 'Ricevi informazioni educative',
-        description: 'Contenuti informativi su strumenti coerenti al tuo obiettivo educativo e avvisi sui rischi comuni documentati.'
+        title: 'Educazione continua',
+        description: 'Errori comuni da evitare per la tua categoria e alert su incompatibilità tra strumenti e intenzioni.'
       }
     },
     differentiator: {
-      title: 'La maggior parte delle piattaforme spinge all\'azione. Noi rallentiamo.',
+      title: 'La maggior parte delle piattaforme spinge all\'azione per monetizzare. Noi rallentiamo.',
       subtitle: 'Perché chi inizia non ha bisogno di più funzioni. Ha bisogno di meno errori.'
     },
     trust: {
@@ -93,7 +96,8 @@ export const translations = {
       links: {
         privacy: 'Privacy',
         terms: 'Termini',
-        methodology: 'Metodologia'
+        methodology: 'Metodologia',
+        contact: 'Contatti'
       },
       copyright: '© 2026 Tradelia'
     }
@@ -116,11 +120,11 @@ export const translations = {
     },
     research: {
       eyebrow: 'Behavioral research',
-      title: 'Errors documented by academic literature',
-      subtitle: 'Peer-reviewed studies identify recurring patterns in retail trader errors',
+      title: 'Common errors documented by academic research',
+      subtitle: 'Peer-reviewed studies identify recurring patterns in beginner investment errors',
       overconfidence: {
         title: 'Overconfidence Bias',
-        description: 'Retail traders systematically overestimate their abilities, leading to tool choices inadequate to their experience level.',
+        description: 'Beginners tend to overestimate their understanding abilities, choosing tools too complex for their experience level.',
         source: 'Barber, B. M., & Odean, T. (2001). Boys will be boys: Gender, overconfidence, and common stock investment. The Quarterly Journal of Economics, 116(1), 261-292.'
       },
       disposition: {
@@ -134,24 +138,28 @@ export const translations = {
         source: 'Bikhchandani, S., Hirshleifer, D., & Welch, I. (1992). A theory of fads, fashion, custom, and cultural change as informational cascades. Journal of Political Economy, 100(5), 992-1026.'
       }
     },
+    academicBanner: {
+      text: 'In Tradelia, if a concept lacks solid academic documentation, it stays outside the door'
+    },
     howItWorks: {
       title: 'How it works',
-      subtitle: 'Guided dashboard in three steps to identify incompatibilities between objectives and crypto tools.',
+      titleWithLogo: true, // Flag per mostrare logo inline
+      subtitle: 'Risk identification between objectives and crypto tools.',
       step1: {
-        title: 'Define your objective',
-        description: 'Select what you want to achieve: general understanding, safe first purchase, or specific deep-dive.'
+        title: 'Indicate what interests you most',
+        description: 'Own crypto, speculate on price, or passive income. Each choice configures specific tools and risks.'
       },
       step2: {
-        title: 'Analyze current context',
-        description: 'Get an overview of the current crypto market and what it means for beginners, without jargon.'
+        title: 'Configured dashboard',
+        description: 'Tools coherent to your choice and specific risks documented by academic research.'
       },
       step3: {
-        title: 'Get educational information',
-        description: 'Educational content on tools coherent to your objective and alerts on common documented risks.'
+        title: 'Continuous education',
+        description: 'Common errors to avoid for your category and alerts on incompatibilities between tools and intentions.'
       }
     },
     differentiator: {
-      title: 'Most platforms push for action. We slow down.',
+      title: 'Most platforms push for action to monetize. We slow down.',
       subtitle: 'Because beginners don\'t need more features. They need fewer errors.'
     },
     trust: {
@@ -191,7 +199,8 @@ export const translations = {
       links: {
         privacy: 'Privacy',
         terms: 'Terms',
-        methodology: 'Methodology'
+        methodology: 'Methodology',
+        contact: 'Contact'
       },
       copyright: '© 2026 Tradelia'
     }

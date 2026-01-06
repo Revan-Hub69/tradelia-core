@@ -47,6 +47,9 @@ export function Footer() {
               <a href="/methodology" className="hover:text-foreground transition-subtle link-tech">
                 Metodologia
               </a>
+              <a href="mailto:info@tradelia.com" className="hover:text-foreground transition-subtle link-tech">
+                Contatti
+              </a>
             </div>
             <p className="text-xs text-muted-foreground">
               © 2026 Tradelia
