@@ -7,6 +7,8 @@ export default function FinalCtaSection() {
   const { finalCta } = useTranslations();
   const { openModal } = useDashboardModal();
 
+  console.log('FinalCtaSection rendering:', finalCta);
+
   return (
     <section 
       className="section-md"
@@ -19,22 +21,26 @@ export default function FinalCtaSection() {
             id="final-cta-title"
             className="text-xl sm:text-2xl lg:text-3xl font-semibold text-foreground leading-tight tracking-tight"
           >
-            {finalCta.title}
+            {finalCta?.title || 'DEBUG: No title'}
           </h2>
           
           <div className="space-y-4">
             <button 
               onClick={openModal}
               className="btn-tech"
-              aria-label={`${finalCta.button} - Accesso finale alla dashboard`}
+              aria-label={`${finalCta?.button || 'DEBUG'} - Accesso finale alla dashboard`}
             >
-              {finalCta.button}
+              {finalCta?.button || 'DEBUG: No button text'}
             </button>
             
             <p className="text-xs text-muted-foreground">
-              {finalCta.disclaimer}
+              {finalCta?.disclaimer || 'DEBUG: No disclaimer'}
             </p>
           </div>
+          
+          <p style={{ color: 'white', fontSize: '20px' }}>
+            DEBUG: FinalCtaSection is rendering!
+          </p>
         </div>
       </div>
     </section>
