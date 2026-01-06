@@ -122,50 +122,9 @@ export default function AuthModal() {
 
   // Handlers
   const handleGuest = async () => {
-    console.log('🔄 Starting guest flow...');
-    try {
-      const { GuestSessionManager } = await import('@/lib/guestSession');
-      const guestManager = new GuestSessionManager();
-      
-      console.log('📝 Saving guest profile...');
-      // Save a basic guest profile with default values
-      await guestManager.saveProfile({ 
-        objective: 'generale',
-        experience: 'base',
-        full_name: 'Utente ospite',
-        completedAt: new Date().toISOString() 
-      });
-      
-      console.log('⚙️ Saving dashboard config...');
-      // Save default dashboard config
-      await guestManager.saveDashboardConfig({
-        objective_config: {
-          title: 'Configurazione di base',
-          description: 'Analisi generale degli strumenti finanziari'
-        },
-        risk_warnings: {
-          primary: 'Verifica sempre la coerenza tra obiettivo e strumento',
-          secondary: 'Gli strumenti complessi richiedono maggiore attenzione',
-          academicSource: 'Ricerca comportamentale finanziaria'
-        },
-        recommended_tools: {
-          primary: ['ETF diversificati', 'Fondi indicizzati', 'Conti deposito'],
-          avoid: ['Prodotti strutturati complessi', 'Leva finanziaria elevata']
-        }
-      });
-      
-      console.log('✅ Guest setup complete, redirecting...');
-      closeModal();
-      
-      // Use router.push instead of window.location.href for better Next.js handling
-      setTimeout(() => {
-        window.location.href = '/dashboard';
-      }, 100);
-      
-    } catch (err) {
-      console.error('❌ Guest error:', err);
-      setErrors({ submit: 'Errore durante l\'accesso come ospite' });
-    }
+    console.log('🔄 Guest button clicked');
+    closeModal();
+    window.location.href = '/dashboard?guest=true';
   };
 
   const handleGoogle = async () => {
