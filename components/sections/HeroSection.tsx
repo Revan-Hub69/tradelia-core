@@ -41,7 +41,12 @@ export default function HeroSection() {
                 </h1>
                 
                 <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-xl font-semibold">
-                  {hero.description}
+                  Dashboard guidata per esplorare le crypto senza fare gli{' '}
+                  <span className="text-foreground relative">
+                    errori più costosi
+                    <div className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary/60 rounded-full" />
+                  </span>
+                  .
                 </p>
 
                 {/* Trust metrics */}

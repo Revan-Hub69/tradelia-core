@@ -7,7 +7,7 @@ export const translations = {
     hero: {
       title: 'Esplora le crypto senza fare gli',
       titleHighlight: 'errori più costosi',
-      description: 'Dashboard guidata basata su ricerca accademica per identificare incompatibilità tra obiettivi e strumenti crypto prima dell\'investimento.',
+      description: 'Dashboard guidata per esplorare le crypto senza fare gli errori più costosi.',
       cta: 'Accedi alla dashboard',
       ctaSecondary: 'Guarda demo',
       features: [
@@ -172,7 +172,7 @@ export const translations = {
     hero: {
       title: 'Explore crypto without making the',
       titleHighlight: 'most costly mistakes',
-      description: 'Academic research-based guided dashboard to identify incompatibilities between objectives and crypto tools before investment.',
+      description: 'Guided dashboard to explore crypto without making the most costly mistakes.',
       cta: 'Access dashboard',
       ctaSecondary: 'Watch demo',
       features: [
