@@ -314,7 +314,7 @@
     animation: scaleIn 0.4s ease-out forwards;
   }
 
-  /* Fade In Observer - Enhanced */
+  /* Fade In Observer - Enhanced with fallback */
   .fade-in-section {
     opacity: 0;
     transform: translateY(30px);
@@ -322,6 +322,12 @@
   }
 
   .fade-in-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Fallback per JavaScript disabilitato */
+  .no-js .fade-in-section {
     opacity: 1;
     transform: translateY(0);
   }
@@ -340,6 +346,12 @@
   .fade-in-stagger.visible > *:nth-child(5) { transition-delay: 400ms; }
 
   .fade-in-stagger.visible > * {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Fallback per stagger */
+  .no-js .fade-in-stagger > * {
     opacity: 1;
     transform: translateY(0);
   }

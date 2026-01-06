@@ -53,6 +53,28 @@ export function useFadeInObserver(options: UseFadeInObserverOptions = {}) {
     fadeElements.forEach((el) => {
       if (observerRef.current) {
         observerRef.current.observe(el);
+        
+        // Controlla immediatamente se l'elemento è già visibile
+        const rect = el.getBoundingClientRect();
+        const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+        if (isVisible) {
+          el.classList.add('visible');
+        }
+      }
+    });
+
+    // Stesso per elementi stagger
+    const staggerElements = document.querySelectorAll('.fade-in-stagger');
+    staggerElements.forEach((el) => {
+      if (observerRef.current) {
+        observerRef.current.observe(el);
+        
+        // Controlla immediatamente se l'elemento è già visibile
+        const rect = el.getBoundingClientRect();
+        const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+        if (isVisible) {
+          el.classList.add('visible');
+        }
       }
     });
 
