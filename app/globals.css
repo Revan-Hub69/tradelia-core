@@ -7,7 +7,7 @@
     /* Tradelia 2026 - Palette Tech Migliorata */
     --background: 0 0% 98%;           /* Bianco più contrastato */
     --foreground: 220 20% 8%;         /* Nero più deciso */
-    --primary: 215 60% 40%;           /* Blu più saturo ma istituzionale */
+    --primary: 215 60% 40%;           /* Blu logo underline - DEFINITIVO */
     --muted: 220 15% 94%;             /* Grigio più contrastato */
     --muted-foreground: 220 15% 35%;  /* Grigio più scuro */
     --border: 220 15% 85%;            /* Bordi più visibili */
@@ -63,9 +63,10 @@
 
   /* Tech Interactions - Design Guide Compliant */
   .btn-tech {
-    @apply bg-foreground text-background h-10 px-6 text-sm font-medium rounded;
+    @apply h-10 px-6 text-sm font-medium rounded;
+    @apply bg-primary text-white;
     @apply transition-subtle;
-    @apply hover:shadow-lg hover:shadow-foreground/10;
+    @apply hover:shadow-lg hover:shadow-primary/10;
     @apply active:scale-[0.98];
     @apply focus:ring-2 focus:ring-primary/60 focus:ring-offset-2;
     @apply relative overflow-hidden cursor-pointer;
@@ -81,8 +82,12 @@
     @apply translate-x-full;
   }
 
+  .btn-tech:hover {
+    @apply bg-primary/90;
+  }
+
   .btn-tech:active {
-    @apply bg-foreground/90;
+    @apply bg-primary/80;
   }
 
   /* Card Interactive - Design Guide Compliant */

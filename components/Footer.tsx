@@ -16,10 +16,6 @@ export function Footer() {
             </div>
             
             <div className="space-y-3">
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Strumento educativo per identificare incompatibilità tra obiettivi e strumenti finanziari. 
-                Basato su ricerca comportamentale accademica.
-              </p>
               <p className="text-xs text-muted-foreground">
                 <strong className="text-foreground">Metodologia:</strong> Framework da studi peer-reviewed. 
                 Nessun cookie, trasparenza sui partner.

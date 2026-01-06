@@ -15,23 +15,30 @@ export default function HeroSection() {
       <div className="max-w-2xl mx-auto px-6 sm:px-8">
         <div className="space-y-6 sm:space-y-8 animate-fade-up">
           <div className="space-y-4 sm:space-y-6">
-            <h1 
-              id="hero-title"
-              className="text-2xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-tight tracking-tight"
-            >
-              {hero.title}{" "}
-              <span className="relative">
-                {hero.titleHighlight}
-                <div 
-                  className="absolute -bottom-1 sm:-bottom-2 left-0 w-full h-0.5 bg-gradient-to-r from-primary/60 to-primary/30 rounded-full"
-                  aria-hidden="true"
-                />
-              </span>
-            </h1>
-            
-            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-              {hero.description}
-            </p>
+            {/* Overlay solo dietro i testi */}
+            <div className="relative">
+              <div 
+                className="absolute inset-0 bg-white/80 rounded-lg -m-3 p-3"
+                aria-hidden="true"
+              />
+              <h1 
+                id="hero-title"
+                className="relative text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-tight tracking-tight"
+              >
+                {hero.title}{" "}
+                <span className="relative">
+                  {hero.titleHighlight}
+                  <div 
+                    className="absolute -bottom-1 sm:-bottom-2 left-0 w-full h-0.5 bg-gradient-to-r from-primary/60 to-primary/30 rounded-full"
+                    aria-hidden="true"
+                  />
+                </span>
+              </h1>
+              
+              <p className="relative text-base sm:text-lg text-foreground leading-relaxed font-medium mt-4">
+                {hero.description}
+              </p>
+            </div>
           </div>
           
           <div className="space-y-4 sm:space-y-6">

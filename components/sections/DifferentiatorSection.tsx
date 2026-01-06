@@ -7,17 +7,17 @@ export default function DifferentiatorSection() {
 
   return (
     <section 
-      className="section-md bg-foreground text-background fade-in-section"
+      className="section-md fade-in-section bg-primary text-white"
       aria-labelledby="differentiator-title"
     >
       <div className="max-w-2xl mx-auto px-6 sm:px-8 text-center">
         <h2 
           id="differentiator-title"
-          className="text-xl sm:text-2xl lg:text-3xl font-semibold mb-4 leading-tight tracking-tight"
+          className="text-xl sm:text-2xl lg:text-3xl font-semibold mb-4 leading-tight tracking-tight text-white"
         >
           {differentiator.title}
         </h2>
-        <p className="text-sm sm:text-base text-background/80">
+        <p className="text-sm sm:text-base text-white/90">
           {differentiator.subtitle}
         </p>
       </div>
