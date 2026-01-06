@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { useLanguage } from './LanguageSelector';
 import { useDashboardModal } from '@/contexts/DashboardModalContext';
 import Logo from './Logo';
+import { CloseIcon } from '@/components/icons/TradeliaIcons';
 
 export default function DashboardModal() {
   const { t } = useLanguage();
@@ -95,9 +96,7 @@ export default function DashboardModal() {
             className="p-2 text-muted-foreground hover:text-foreground transition-subtle rounded focus:ring-2 focus:ring-primary/60 focus:ring-offset-2"
             aria-label="Chiudi modale"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <CloseIcon className="w-5 h-5" />
           </button>
         </div>
 

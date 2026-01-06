@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslations } from '@/hooks/useTranslations';
+import { AlertTriangleIcon, TrendingUpIcon, BrainIcon } from '@/components/icons/TradeliaIcons';
 
 export default function ResearchSection() {
   const { research, hero } = useTranslations();
@@ -9,19 +10,19 @@ export default function ResearchSection() {
     {
       key: 'overconfidence' as const,
       iconColor: 'red',
-      iconPath: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 15.5c-.77.833.192 2.5 1.732 2.5z",
+      IconComponent: AlertTriangleIcon,
       sparkline: [65, 78, 82, 73, 89, 76, 73] as number[] // Fix readonly issue
     },
     {
       key: 'disposition' as const,
       iconColor: 'orange',
-      iconPath: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+      IconComponent: TrendingUpIcon,
       sparkline: [45, 52, 48, 61, 55, 58, 62] as number[]
     },
     {
       key: 'herding' as const,
       iconColor: 'amber',
-      iconPath: "M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+      IconComponent: BrainIcon,
       sparkline: [30, 45, 52, 48, 55, 61, 58] as number[]
     }
   ];
@@ -30,7 +31,7 @@ export default function ResearchSection() {
     item: {
       key: 'overconfidence' | 'disposition' | 'herding';
       iconColor: string;
-      iconPath: string;
+      IconComponent: React.FC<{ className?: string; size?: number }>;
       sparkline: number[];
     };
     data: {
@@ -54,19 +55,13 @@ export default function ResearchSection() {
               item.iconColor === 'orange' ? 'bg-orange-50' : 
               'bg-amber-50'
             }`}>
-              <svg 
+              <item.IconComponent 
                 className={`w-5 h-5 ${
                   item.iconColor === 'red' ? 'text-red-500' : 
                   item.iconColor === 'orange' ? 'text-orange-500' : 
                   'text-amber-500'
                 }`}
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.iconPath} />
-              </svg>
+              />
             </div>
             <h3 className="text-lg sm:text-xl font-semibold text-foreground">
               {data.title}

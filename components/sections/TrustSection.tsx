@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslations } from '@/hooks/useTranslations';
+import { GraduationCapIcon, ShieldIcon, LockIcon, BookOpenIcon, DiamondIcon, CheckIcon } from '@/components/icons/TradeliaIcons';
 
 export default function TrustSection() {
   const { trust } = useTranslations();
@@ -10,31 +11,31 @@ export default function TrustSection() {
     {
       text: 'Educational only',
       type: 'primary' as const,
-      icon: '🎓',
+      IconComponent: GraduationCapIcon,
       description: 'Nessun consiglio di investimento'
     },
     {
       text: 'No leverage',
       type: 'primary' as const,
-      icon: '🛡️',
+      IconComponent: ShieldIcon,
       description: 'Zero strumenti ad alto rischio'
     },
     {
       text: 'No custody',
       type: 'secondary' as const,
-      icon: '🔒',
+      IconComponent: LockIcon,
       description: 'Non gestiamo i tuoi fondi'
     },
     {
       text: 'Peer-reviewed',
       type: 'secondary' as const,
-      icon: '📚',
+      IconComponent: BookOpenIcon,
       description: 'Basato su ricerca accademica'
     },
     {
       text: 'Trasparenza affiliazioni',
       type: 'secondary' as const,
-      icon: '💎',
+      IconComponent: DiamondIcon,
       description: 'Commissioni dichiarate'
     }
   ];
@@ -90,7 +91,7 @@ export default function TrustSection() {
               {TRUST_BADGES.filter(badge => badge.type === 'primary').map((badge, index) => (
                 <div key={index} className="group relative">
                   <div className="badge-primary flex items-center gap-2">
-                    <span>{badge.icon}</span>
+                    <badge.IconComponent className="w-4 h-4" />
                     <span>{badge.text}</span>
                   </div>
                   {/* Tooltip */}
@@ -111,7 +112,7 @@ export default function TrustSection() {
               {TRUST_BADGES.filter(badge => badge.type === 'secondary').map((badge, index) => (
                 <div key={index} className="group relative">
                   <div className="badge-secondary flex items-center gap-2">
-                    <span>{badge.icon}</span>
+                    <badge.IconComponent className="w-4 h-4" />
                     <span>{badge.text}</span>
                   </div>
                   {/* Tooltip */}
@@ -136,21 +137,15 @@ export default function TrustSection() {
             </p>
             <div className="flex justify-center gap-4 text-xs text-muted-foreground">
               <span className="flex items-center gap-1">
-                <svg className="w-3 h-3 text-primary" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
+                <CheckIcon className="w-3 h-3 text-primary" />
                 Barber & Odean (2001)
               </span>
               <span className="flex items-center gap-1">
-                <svg className="w-3 h-3 text-primary" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
+                <CheckIcon className="w-3 h-3 text-primary" />
                 Shefrin & Statman (1985)
               </span>
               <span className="flex items-center gap-1">
-                <svg className="w-3 h-3 text-primary" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
+                <CheckIcon className="w-3 h-3 text-primary" />
                 Bikhchandani et al. (1992)
               </span>
             </div>

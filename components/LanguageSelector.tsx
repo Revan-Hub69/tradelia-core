@@ -2,6 +2,7 @@
 
 import { useState, createContext, useContext, useEffect, useRef } from 'react';
 import { translations, type Locale } from '../lib/translations';
+import { ChevronDownIcon, CheckIcon } from '@/components/icons/TradeliaIcons';
 
 const LanguageContext = createContext<{
   locale: Locale;
@@ -149,15 +150,9 @@ export default function LanguageSelector() {
         <span className="text-sm">
           {currentLanguage.name}
         </span>
-        <svg 
-          className={`w-3 h-3 transition-transform ${isOpen ? 'rotate-180' : ''}`} 
-          fill="none" 
-          stroke="currentColor" 
-          viewBox="0 0 24 24"
-          aria-hidden="true"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
+        <ChevronDownIcon 
+          className={`w-3 h-3 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+        />
       </button>
       
       {isOpen && (
@@ -201,15 +196,7 @@ export default function LanguageSelector() {
                     {lang.name}
                   </span>
                   {isSelected && (
-                    <svg 
-                      className="w-4 h-4 text-primary" 
-                      fill="none" 
-                      stroke="currentColor" 
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
+                    <CheckIcon className="w-4 h-4 text-primary" />
                   )}
                 </button>
               );
