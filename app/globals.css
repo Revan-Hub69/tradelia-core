@@ -96,12 +96,20 @@
   /* Prevent CLS with size reservations */
   .dashboard-preview {
     min-height: 400px;
+    width: 100%;
     contain: layout style;
+    content-visibility: auto;
   }
   
   .hero-section {
     min-height: 600px;
     contain: layout style;
+  }
+  
+  /* Fix specific CLS elements */
+  .bg-background\/80.backdrop-blur-sm {
+    min-height: 200px;
+    contain: layout;
   }
   
   /* Optimize images for CLS */
@@ -112,6 +120,13 @@
   
   img[width][height] {
     aspect-ratio: attr(width) / attr(height);
+  }
+  
+  /* Font loading optimization */
+  @font-face {
+    font-family: 'Inter';
+    font-display: swap;
+    src: local('Inter');
   }
 
   /* Transition Subtle - Design Guide Compliant */
