@@ -201,7 +201,7 @@ export function useTranslations() {
     },
 
     faq: {
-      questions: t('faq.questions') as any[]
+      questions: t('faq.questions') as unknown as any[]
     }
   }), [locale, t, setLocale]);
 
