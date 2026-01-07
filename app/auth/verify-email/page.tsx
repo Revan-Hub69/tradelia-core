@@ -38,10 +38,9 @@ export default function VerifyEmail() {
             setError('Errore durante la verifica email: ' + error.message)
           } else {
             setSuccess(true)
-            // Redirect to localized dashboard after 3 seconds
+            // Redirect to dashboard after 3 seconds
             setTimeout(() => {
-              const userLocale = navigator.language.startsWith('en') ? 'en' : 'it';
-              router.push(`/${userLocale}/dashboard`)
+              router.push('/dashboard')
             }, 3000)
           }
         } else {

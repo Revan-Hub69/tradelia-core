@@ -12,7 +12,6 @@ import { getMessages } from 'next-intl/server';
 import { QueryProvider } from '@/src/shared/providers/QueryProvider';
 import { ThemeProvider } from '@/shared/config/theme-provider';
 import { PWAProvider } from '@/components/PWAProvider';
-import { DashboardLayout } from '@/components/dashboard/layout';
 import { routing, type Locale } from '@/src/i18n/routing';
 import '@/app/globals.css';
 
@@ -78,9 +77,9 @@ export default async function LocalizedAppLayout({
           <QueryProvider>
             <ThemeProvider>
               <PWAProvider>
-                <DashboardLayout>
+                <div className="min-h-screen bg-background">
                   {children}
-                </DashboardLayout>
+                </div>
               </PWAProvider>
             </ThemeProvider>
           </QueryProvider>

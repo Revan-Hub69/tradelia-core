@@ -11,18 +11,14 @@ export default function DifferentiatorSection() {
       aria-labelledby="differentiator-title"
     >
       <div className="max-w-2xl mx-auto px-6 sm:px-8 text-center">
-        <div className="space-y-4">
-          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            Limiti
-          </p>
+        <div className="space-y-6">
           <h2 
             id="differentiator-title"
-            className="text-xl sm:text-2xl lg:text-3xl font-semibold text-foreground leading-tight"
-            style={{ letterSpacing: '-0.01em' }}
+            className="text-xl sm:text-2xl lg:text-3xl font-semibold text-foreground leading-tight tracking-tight"
           >
             {differentiator.title}
           </h2>
-          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
             {differentiator.subtitle}
           </p>
         </div>
