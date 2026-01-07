@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslations } from '@/hooks/useTranslations';
+import { useEffect, useRef, useState } from 'react';
 import { AlertTriangleIcon, TrendingUpIcon, BrainIcon, BarChartIcon, ShieldIcon } from '@/components/icons/TradeliaIcons';
 
 // Types
@@ -13,105 +14,120 @@ interface ResearchItemData {
   sparkline: number[];
 }
 
-interface ResearchItemProps {
-  item: ResearchItemData;
-  data: {
-    title: string;
-    description: string;
-    source: string;
-  };
-  index: number;
-  sourceLabel: string;
-  errorFrequency: string;
-  behavioralTrend: string;
-  behavioralStudies: string;
-}
-
 // Constants
 const RESEARCH_ITEMS: ResearchItemData[] = [
-  {
-    key: 'overconfidence',
-    iconColor: 'red',
-    IconComponent: AlertTriangleIcon,
-    sparkline: [65, 68, 72, 75, 77, 79, 78]
-  },
-  {
-    key: 'fomo',
-    iconColor: 'green',
-    IconComponent: TrendingUpIcon,
-    sparkline: [60, 63, 67, 70, 72, 74, 72]
-  },
-  {
-    key: 'panicSelling',
-    iconColor: 'blue',
-    IconComponent: BrainIcon,
-    sparkline: [55, 58, 62, 65, 67, 69, 68]
-  },
-  {
-    key: 'disposition',
-    iconColor: 'orange',
-    IconComponent: BarChartIcon,
-    sparkline: [52, 55, 58, 60, 63, 65, 65]
-  },
-  {
-    key: 'herding',
-    iconColor: 'amber',
-    IconComponent: ShieldIcon,
-    sparkline: [42, 46, 50, 53, 56, 58, 58]
-  }
+  { key: 'overconfidence', iconColor: 'red', IconComponent: AlertTriangleIcon, sparkline: [65, 68, 72, 75, 77, 79, 78] },
+  { key: 'fomo', iconColor: 'green', IconComponent: TrendingUpIcon, sparkline: [60, 63, 67, 70, 72, 74, 72] },
+  { key: 'panicSelling', iconColor: 'blue', IconComponent: BrainIcon, sparkline: [55, 58, 62, 65, 67, 69, 68] },
+  { key: 'disposition', iconColor: 'orange', IconComponent: BarChartIcon, sparkline: [52, 55, 58, 60, 63, 65, 65] },
+  { key: 'herding', iconColor: 'amber', IconComponent: ShieldIcon, sparkline: [42, 46, 50, 53, 56, 58, 58] }
 ];
 
 // Helper functions
 function getIconBgClass(color: string): string {
-  const map: Record<string, string> = {
-    red: 'bg-red-50',
-    orange: 'bg-orange-50',
-    amber: 'bg-amber-50',
-    green: 'bg-green-50',
-    blue: 'bg-blue-50'
-  };
+  const map: Record<string, string> = { red: 'bg-red-50', orange: 'bg-orange-50', amber: 'bg-amber-50', green: 'bg-green-50', blue: 'bg-blue-50' };
   return map[color] || 'bg-blue-50';
 }
 
 function getIconTextClass(color: string): string {
-  const map: Record<string, string> = {
-    red: 'text-red-500',
-    orange: 'text-orange-500',
-    amber: 'text-amber-500',
-    green: 'text-green-500',
-    blue: 'text-blue-500'
-  };
+  const map: Record<string, string> = { red: 'text-red-500', orange: 'text-orange-500', amber: 'text-amber-500', green: 'text-green-500', blue: 'text-blue-500' };
   return map[color] || 'text-blue-500';
 }
 
 function getTextClass(color: string): string {
-  const map: Record<string, string> = {
-    red: 'text-red-600',
-    orange: 'text-orange-600',
-    amber: 'text-amber-600',
-    green: 'text-green-600',
-    blue: 'text-blue-600'
-  };
+  const map: Record<string, string> = { red: 'text-red-600', orange: 'text-orange-600', amber: 'text-amber-600', green: 'text-green-600', blue: 'text-blue-600' };
   return map[color] || 'text-blue-600';
 }
 
 function getBgClass(color: string): string {
-  const map: Record<string, string> = {
-    red: 'bg-red-500',
-    orange: 'bg-orange-500',
-    amber: 'bg-amber-500',
-    green: 'bg-green-500',
-    blue: 'bg-blue-500'
-  };
+  const map: Record<string, string> = { red: 'bg-red-500', orange: 'bg-orange-500', amber: 'bg-amber-500', green: 'bg-green-500', blue: 'bg-blue-500' };
   return map[color] || 'bg-blue-500';
 }
 
-// ResearchItem component - simplified without sparkline chart
-function ResearchItem({ item, data, sourceLabel }: Omit<ResearchItemProps, 'index' | 'errorFrequency' | 'behavioralTrend' | 'behavioralStudies'> & { index: number }) {
-  const isReversed = item.key === 'fomo' || item.key === 'disposition';
+function getStrokeClass(color: string): string {
+  const map: Record<string, string> = { red: 'stroke-red-500', orange: 'stroke-orange-500', amber: 'stroke-amber-500', green: 'stroke-green-500', blue: 'stroke-blue-500' };
+  return map[color] || 'stroke-blue-500';
+}
+
+// Circular gauge component
+function CircularGauge({ percentage, color, animate }: { percentage: number; color: string; animate: boolean }) {
+  const radius = 40;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (percentage / 100) * circumference;
   
   return (
-    <article className={`grid lg:grid-cols-2 gap-6 lg:gap-10 items-center ${isReversed ? 'lg:grid-flow-col-dense' : ''}`}>
+    <div className="relative w-24 h-24 mx-auto">
+      <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+        {/* Background circle */}
+        <circle
+          cx="50" cy="50" r={radius}
+          fill="none"
+          className="stroke-muted/30"
+          strokeWidth="8"
+        />
+        {/* Progress circle */}
+        <circle
+          cx="50" cy="50" r={radius}
+          fill="none"
+          className={`${getStrokeClass(color)} transition-all duration-1000 ease-out`}
+          strokeWidth="8"
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          strokeDashoffset={animate ? offset : circumference}
+        />
+      </svg>
+      {/* Center text */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className={`text-xl font-bold ${getTextClass(color)}`}>
+          {percentage}%
+        </span>
+      </div>
+    </div>
+  );
+}
+
+// Hook for viewport animation
+function useInView() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [isInView, setIsInView] = useState(false);
+  
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+    
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry?.isIntersecting) {
+          setIsInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+    
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+  
+  return { ref, isInView };
+}
+
+// ResearchItem component with circular gauge
+function ResearchItem({ item, data, sourceLabel }: { 
+  item: ResearchItemData; 
+  data: { title: string; description: string; source: string }; 
+  sourceLabel: string;
+}) {
+  const { ref, isInView } = useInView();
+  const isReversed = item.key === 'fomo' || item.key === 'disposition';
+  const percentage = item.sparkline.at(-1) ?? 0;
+  
+  return (
+    <article 
+      ref={ref}
+      className={`grid lg:grid-cols-2 gap-6 lg:gap-10 items-center ${isReversed ? 'lg:grid-flow-col-dense' : ''}`}
+    >
       {/* Content */}
       <div className={`space-y-3 ${isReversed ? 'lg:col-start-2' : ''}`}>
         <div className="flex items-center gap-3">
@@ -132,30 +148,53 @@ function ResearchItem({ item, data, sourceLabel }: Omit<ResearchItemProps, 'inde
         </cite>
       </div>
 
-      {/* Simple percentage indicator */}
+      {/* Circular gauge */}
       <div className={`${isReversed ? 'lg:col-start-1' : ''}`}>
         <div className="rounded border border-border/50 bg-background p-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs text-muted-foreground">Frequenza errore</span>
-            <span className={`text-2xl font-bold ${getTextClass(item.iconColor)}`}>
-              {item.sparkline.at(-1)}%
-            </span>
-          </div>
-          <div className="h-2 bg-muted/50 rounded-full overflow-hidden">
-            <div 
-              className={`h-full rounded-full ${getBgClass(item.iconColor)}`}
-              style={{ width: `${item.sparkline.at(-1)}%` }}
-            />
-          </div>
+          <p className="text-xs text-muted-foreground text-center mb-3">Frequenza errore</p>
+          <CircularGauge percentage={percentage} color={item.iconColor} animate={isInView} />
         </div>
       </div>
     </article>
   );
 }
 
+// Animated bar for comparison chart
+function AnimatedBar({ percentage, color, isInView }: { percentage: number; color: string; isInView: boolean }) {
+  return (
+    <div className="h-3 bg-muted/50 rounded-full overflow-hidden">
+      <div 
+        className={`h-full rounded-full transition-all duration-700 ease-out ${getBgClass(color)}`}
+        style={{ width: isInView ? `${percentage}%` : '0%' }}
+      />
+    </div>
+  );
+}
+
 // Main component
 export default function ResearchSection() {
   const { research } = useTranslations();
+  const comparisonRef = useRef<HTMLDivElement>(null);
+  const [comparisonInView, setComparisonInView] = useState(false);
+  
+  useEffect(() => {
+    const element = comparisonRef.current;
+    if (!element) return;
+    
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry?.isIntersecting) {
+          setComparisonInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 }
+    );
+    
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <section 
@@ -170,7 +209,7 @@ export default function ResearchSection() {
           </p>
           <h2 
             id="research-title"
-            className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-foreground leading-tight tracking-tight mb-6 text-center"
+            className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-foreground leading-tight tracking-tight mb-6"
           >
             {research.title}
           </h2>
@@ -181,12 +220,11 @@ export default function ResearchSection() {
         
         {/* Above-fold: 3 errori principali */}
         <div className="space-y-12 mb-16" role="list">
-          {RESEARCH_ITEMS.slice(0, 3).map((item, index) => (
+          {RESEARCH_ITEMS.slice(0, 3).map((item) => (
             <div key={item.key} role="listitem">
               <ResearchItem 
                 item={item} 
                 data={research[item.key]}
-                index={index}
                 sourceLabel={research.sourceLabel}
               />
             </div>
@@ -196,12 +234,11 @@ export default function ResearchSection() {
         {/* Below-fold: Resto dei bias */}
         <div className="border-t border-border/30 pt-12">
           <div className="space-y-12" role="list">
-            {RESEARCH_ITEMS.slice(3).map((item, index) => (
+            {RESEARCH_ITEMS.slice(3).map((item) => (
               <div key={item.key} role="listitem">
                 <ResearchItem 
                   item={item} 
                   data={research[item.key]}
-                  index={index + 3}
                   sourceLabel={research.sourceLabel}
                 />
               </div>
@@ -209,14 +246,14 @@ export default function ResearchSection() {
           </div>
         </div>
 
-        {/* Comparison Chart - Horizontal bars (mobile friendly) */}
-        <div className="mt-20 border-t border-border/30 pt-16">
+        {/* Comparison Chart with viewport animation */}
+        <div ref={comparisonRef} className="mt-20 border-t border-border/30 pt-16">
           <h3 className="text-xl font-semibold text-foreground mb-8 text-center">
             {research.comparisonTitle}
           </h3>
           <div className="bg-background/90 backdrop-blur-sm border border-border/50 rounded-xl p-4 sm:p-6 lg:p-8">
             <div className="space-y-6">
-              {/* Chart Legend - responsive grid */}
+              {/* Chart Legend */}
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 text-sm">
                 {RESEARCH_ITEMS.map((item) => (
                   <div key={`legend-${item.key}`} className="flex items-center gap-2">
@@ -228,10 +265,14 @@ export default function ResearchSection() {
                 ))}
               </div>
               
-              {/* Horizontal Bar Chart - mobile friendly */}
+              {/* Animated Horizontal Bars */}
               <div className="space-y-4">
-                {RESEARCH_ITEMS.map((item) => (
-                  <div key={`bar-${item.key}`} className="space-y-1">
+                {RESEARCH_ITEMS.map((item, index) => (
+                  <div 
+                    key={`bar-${item.key}`} 
+                    className="space-y-1"
+                    style={{ transitionDelay: `${index * 100}ms` }}
+                  >
                     <div className="flex items-center justify-between text-xs">
                       <span className="text-muted-foreground truncate max-w-[60%]">
                         {research[item.key].title}
@@ -240,12 +281,11 @@ export default function ResearchSection() {
                         {item.sparkline.at(-1)}%
                       </span>
                     </div>
-                    <div className="h-3 bg-muted/50 rounded-full overflow-hidden">
-                      <div 
-                        className={`h-full rounded-full transition-all duration-500 ${getBgClass(item.iconColor)}`}
-                        style={{ width: `${item.sparkline.at(-1)}%` }}
-                      />
-                    </div>
+                    <AnimatedBar 
+                      percentage={item.sparkline.at(-1) ?? 0} 
+                      color={item.iconColor} 
+                      isInView={comparisonInView}
+                    />
                   </div>
                 ))}
               </div>
