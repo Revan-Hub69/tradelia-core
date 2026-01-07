@@ -10,6 +10,12 @@ const nextConfig = {
   // External packages
   serverExternalPackages: ['@supabase/supabase-js'],
   
+  // SWC compiler options (Next.js 16+)
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+    reactRemoveProperties: process.env.NODE_ENV === 'production',
+  },
+  
   // Turbopack configuration (Next.js 16+)
   turbopack: {},
   
