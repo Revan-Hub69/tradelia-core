@@ -311,6 +311,79 @@ export const translations = {
         back: 'Indietro',
         continue: 'Continua',
         finish: 'Accedi alla Dashboard'
+      },
+      // Auth Modal additional translations
+      auth: {
+        gateway: {
+          subtitle: 'Scegli la modalità di accesso',
+          guestTitle: 'Continua come ospite',
+          guestDescription: 'Accesso immediato. Dati salvati solo su questo dispositivo.',
+          or: 'oppure',
+          google: 'Continua con Google',
+          email: 'Accedi con email',
+          emailDescription: 'Usa email e password per accedere o registrarti.',
+          footer: 'Strumento educativo. Non fornisce consulenza finanziaria.'
+        },
+        login: {
+          title: 'Accesso',
+          subtitle: 'Inserisci le credenziali',
+          email: 'Email',
+          emailPlaceholder: 'nome@esempio.it',
+          password: 'Password',
+          passwordPlaceholder: '••••••••',
+          submit: 'Accedi',
+          submitting: 'Accesso in corso...',
+          forgotPassword: 'Password dimenticata?',
+          noAccount: 'Non hai un account?',
+          register: 'Registrati',
+          errors: {
+            required: 'Campo obbligatorio',
+            invalidFormat: 'Formato non valido',
+            invalidCredentials: 'Credenziali non valide',
+            loginError: 'Errore di accesso'
+          }
+        },
+        register: {
+          title: 'Registrazione',
+          subtitle: 'Sincronizza i dati su tutti i dispositivi',
+          name: 'Nome',
+          namePlaceholder: 'Mario Rossi',
+          email: 'Email',
+          emailPlaceholder: 'nome@esempio.it',
+          password: 'Password',
+          passwordPlaceholder: 'Minimo 8 caratteri',
+          confirmPassword: 'Conferma password',
+          confirmPlaceholder: 'Ripeti la password',
+          submit: 'Registrati',
+          submitting: 'Registrazione...',
+          hasAccount: 'Hai già un account?',
+          login: 'Accedi',
+          errors: {
+            required: 'Campo obbligatorio',
+            invalidFormat: 'Formato non valido',
+            minLength: 'Minimo 8 caratteri',
+            mismatch: 'Non coincidono',
+            registrationError: 'Errore di registrazione'
+          }
+        },
+        resetRequest: {
+          title: 'Recupero password',
+          subtitle: "Inserisci l'email per ricevere il link",
+          email: 'Email',
+          emailPlaceholder: 'nome@esempio.it',
+          submit: 'Invia link',
+          submitting: 'Invio...',
+          errors: {
+            invalidEmail: 'Email non valida',
+            sendError: 'Errore invio email'
+          },
+          backToLogin: 'Torna al login'
+        },
+        resetSent: {
+          title: 'Email inviata',
+          description: 'Controlla la casella email per il link di recupero.',
+          backToLogin: 'Torna al login'
+        }
       }
     }
   },
@@ -626,6 +699,79 @@ export const translations = {
         back: 'Back',
         continue: 'Continue',
         finish: 'Access Dashboard'
+      },
+      // Auth Modal additional translations
+      auth: {
+        gateway: {
+          subtitle: 'Choose your access method',
+          guestTitle: 'Continue as guest',
+          guestDescription: 'Immediate access. Data saved only on this device.',
+          or: 'or',
+          google: 'Continue with Google',
+          email: 'Sign in with email',
+          emailDescription: 'Use email and password to sign in or register.',
+          footer: 'Educational tool. Does not provide financial advice.'
+        },
+        login: {
+          title: 'Sign In',
+          subtitle: 'Enter your credentials',
+          email: 'Email',
+          emailPlaceholder: 'name@example.com',
+          password: 'Password',
+          passwordPlaceholder: '••••••••',
+          submit: 'Sign In',
+          submitting: 'Signing in...',
+          forgotPassword: 'Forgot password?',
+          noAccount: 'Don\'t have an account?',
+          register: 'Register',
+          errors: {
+            required: 'Field is required',
+            invalidFormat: 'Invalid format',
+            invalidCredentials: 'Invalid credentials',
+            loginError: 'Login error'
+          }
+        },
+        register: {
+          title: 'Registration',
+          subtitle: 'Sync your data across all devices',
+          name: 'Name',
+          namePlaceholder: 'John Smith',
+          email: 'Email',
+          emailPlaceholder: 'name@example.com',
+          password: 'Password',
+          passwordPlaceholder: 'Minimum 8 characters',
+          confirmPassword: 'Confirm password',
+          confirmPlaceholder: 'Repeat password',
+          submit: 'Register',
+          submitting: 'Registering...',
+          hasAccount: 'Already have an account?',
+          login: 'Sign In',
+          errors: {
+            required: 'Field is required',
+            invalidFormat: 'Invalid format',
+            minLength: 'Minimum 8 characters',
+            mismatch: 'Does not match',
+            registrationError: 'Registration error'
+          }
+        },
+        resetRequest: {
+          title: 'Password Recovery',
+          subtitle: 'Enter your email to receive the link',
+          email: 'Email',
+          emailPlaceholder: 'name@example.com',
+          submit: 'Send link',
+          submitting: 'Sending...',
+          errors: {
+            invalidEmail: 'Invalid email',
+            sendError: 'Error sending email'
+          },
+          backToLogin: 'Back to login'
+        },
+        resetSent: {
+          title: 'Email sent',
+          description: 'Check your email inbox for the recovery link.',
+          backToLogin: 'Back to login'
+        }
       }
     }
   }

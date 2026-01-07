@@ -39,5 +39,33 @@
     "open": "Apri",
     "expand": "Espandi",
     "collapse": "Comprimi"
+  },
+  "auth": {
+    "title": "Accedi o Registrati",
+    "subtitle": "Accedi al tuo account per continuare",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Conferma Password",
+    "login": "Accedi",
+    "register": "Registrati",
+    "forgotPassword": "Password dimenticata?",
+    "noAccount": "Non hai un account?",
+    "hasAccount": "Hai già un account?",
+    "signUp": "Registrati",
+    "signIn": "Accedi",
+    "orContinueWith": "oppure continua con",
+    "emailRequired": "L'email è obbligatoria",
+    "invalidEmail": "Inserisci un'email valida",
+    "passwordRequired": "La password è obbligatoria",
+    "passwordMinLength": "La password deve essere di almeno 8 caratteri",
+    "passwordsNoMatch": "Le password non coincidono",
+    "termsAgreement": "Accetto i Termini di Servizio e l'Informativa sulla Privacy",
+    "welcome": "Benvenuto!",
+    "welcomeBack": "Bentornato!",
+    "loginSuccess": "Accesso effettuato con successo",
+    "registrationSuccess": "Registrazione completata",
+    "loginError": "Errore durante l'accesso",
+    "registrationError": "Errore durante la registrazione",
+    "continueAsGuest": "Continua come ospite"
   }
 }

@@ -39,5 +39,33 @@
     "open": "Open",
     "expand": "Expand",
     "collapse": "Collapse"
+  },
+  "auth": {
+    "title": "Sign In or Register",
+    "subtitle": "Sign in to your account to continue",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "login": "Sign In",
+    "register": "Register",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "signUp": "Sign Up",
+    "signIn": "Sign In",
+    "orContinueWith": "or continue with",
+    "emailRequired": "Email is required",
+    "invalidEmail": "Please enter a valid email",
+    "passwordRequired": "Password is required",
+    "passwordMinLength": "Password must be at least 8 characters",
+    "passwordsNoMatch": "Passwords do not match",
+    "termsAgreement": "I agree to the Terms of Service and Privacy Policy",
+    "welcome": "Welcome!",
+    "welcomeBack": "Welcome back!",
+    "loginSuccess": "Successfully signed in",
+    "registrationSuccess": "Registration completed",
+    "loginError": "Error signing in",
+    "registrationError": "Error registering",
+    "continueAsGuest": "Continue as guest"
   }
 }
