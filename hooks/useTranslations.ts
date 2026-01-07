@@ -198,10 +198,6 @@ export function useTranslations() {
         continue: t('modal.actions.continue'),
         finish: t('modal.actions.finish')
       }
-    },
-
-    faq: {
-      questions: t('faq.questions') as unknown as any[]
     }
   }), [locale, t, setLocale]);
 
