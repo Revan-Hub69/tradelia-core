@@ -19,51 +19,46 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
   const t = await getTranslations('dashboard');
   
   return (
-    <div className="container mx-auto px-6 py-8">
-      <div className="space-y-6">
-        {/* Header con language switcher */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">
-              {t('title')}
-            </h1>
-            <p className="text-muted-foreground mt-2">
-              {t('subtitle')}
-            </p>
-          </div>
-          <LocaleSwitcher />
-        </div>
-        
-        <div className="rounded border-2 border-border bg-background p-6 shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">
-            {t('welcome')}
-          </h2>
-          <p className="text-muted-foreground">
-            Dashboard internazionalizzata implementata seguendo i principi Tradelia 2026.
-            Supporta IT/EN con bundle separation per marketing/dashboard.
+    <div className="space-y-6">
+      {/* Header con language switcher */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-semibold text-foreground">
+            {t('title')}
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            {t('subtitle')}
           </p>
         </div>
-        
-        {/* Placeholder per future implementazioni */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="rounded border border-border/50 bg-background p-4">
-            <h3 className="font-medium mb-2">Card 1</h3>
-            <p className="text-sm text-muted-foreground">
-              Contenuto della prima card
-            </p>
-          </div>
-          <div className="rounded border border-border/50 bg-background p-4">
-            <h3 className="font-medium mb-2">Card 2</h3>
-            <p className="text-sm text-muted-foreground">
-              Contenuto della seconda card
-            </p>
-          </div>
-          <div className="rounded border border-border/50 bg-background p-4">
-            <h3 className="font-medium mb-2">Card 3</h3>
-            <p className="text-sm text-muted-foreground">
-              Contenuto della terza card
-            </p>
-          </div>
+        <LocaleSwitcher />
+      </div>
+      
+      {/* Welcome card */}
+      <div className="rounded border-2 border-border bg-background p-5 shadow-sm">
+        <h2 className="text-base font-medium text-foreground mb-2">
+          {t('welcome')}
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          Dashboard internazionalizzata implementata seguendo i principi Tradelia 2026.
+        </p>
+      </div>
+      
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="rounded border border-border/50 bg-background p-4">
+          <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Errori Comuni</div>
+          <div className="text-2xl font-bold text-red-600">73%</div>
+          <div className="text-xs text-muted-foreground mt-1">dei trader retail</div>
+        </div>
+        <div className="rounded border border-border/50 bg-background p-4">
+          <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Rischi Attivi</div>
+          <div className="text-2xl font-bold text-amber-600">3</div>
+          <div className="text-xs text-muted-foreground mt-1">da monitorare</div>
+        </div>
+        <div className="rounded border border-border/50 bg-background p-4">
+          <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Fonti Accademiche</div>
+          <div className="text-2xl font-bold text-green-600">12</div>
+          <div className="text-xs text-muted-foreground mt-1">peer-reviewed</div>
         </div>
       </div>
     </div>

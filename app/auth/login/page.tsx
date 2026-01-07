@@ -36,7 +36,9 @@ export default function Login() {
     
     try {
       await signInWithEmail(formData.email, formData.password)
-      router.push('/dashboard')
+      // Redirect to localized dashboard
+      const userLocale = navigator.language.startsWith('en') ? 'en' : 'it';
+      router.push(`/${userLocale}/dashboard`)
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Errore durante l\'accesso';
       setError(message)

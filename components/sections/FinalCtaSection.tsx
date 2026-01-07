@@ -2,73 +2,34 @@
 
 import { useTranslations } from '@/hooks/useTranslations';
 import { useDashboardModal } from '@/contexts/DashboardModalContext';
-import { useEffect, useRef } from 'react';
 
 export default function FinalCtaSection() {
   const { finalCta } = useTranslations();
   const { openModal } = useDashboardModal();
-  const sectionRef = useRef<HTMLElement>(null);
-
-  // Fallback per assicurare visibilità se l'observer non funziona
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-
-    // Controlla se la sezione è già visibile
-    if (section.classList.contains('visible')) return;
-
-    // Fallback timer per l'ultima sezione
-    const fallbackTimer = setTimeout(() => {
-      if (!section.classList.contains('visible')) {
-        section.classList.add('visible');
-      }
-    }, 1000);
-
-    // Observer per rilevare quando la sezione entra nel viewport
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            observer.unobserve(entry.target);
-            clearTimeout(fallbackTimer);
-          }
-        });
-      },
-      {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-      }
-    );
-
-    observer.observe(section);
-
-    return () => {
-      observer.disconnect();
-      clearTimeout(fallbackTimer);
-    };
-  }, []);
 
   return (
     <section 
       id="final-cta"
-      ref={sectionRef}
-      className="section-md fade-in-section bg-background"
+      className="section-md bg-background"
       aria-labelledby="final-cta-title"
     >
       <div className="max-w-2xl mx-auto px-6 sm:px-8">
-        <div className="space-y-8 text-center">
+        <div className="space-y-6 text-center">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            Verifica
+          </p>
           <h2 
             id="final-cta-title"
-            className="text-xl sm:text-2xl lg:text-3xl font-semibold text-foreground leading-tight tracking-tight"
+            className="text-xl sm:text-2xl lg:text-3xl font-semibold text-foreground leading-tight"
+            style={{ letterSpacing: '-0.01em' }}
           >
             {finalCta.title}
           </h2>
           
-          <div className="space-y-4">
+          <div className="space-y-4 pt-2">
             <button 
               onClick={() => openModal()}
-              className="btn-tech"
+              className="h-10 px-6 text-sm font-medium rounded bg-foreground text-background hover:bg-foreground/90 transition-colors duration-150 focus:ring-2 focus:ring-primary/60 focus:ring-offset-2"
               aria-label={finalCta.button}
             >
               {finalCta.button}
