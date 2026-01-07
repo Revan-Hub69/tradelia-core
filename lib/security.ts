@@ -125,6 +125,8 @@ export class TokenSecurity {
       if (!this.isValidJWTFormat(token)) return null;
       
       const payload = token.split('.')[1];
+      if (!payload) return null;
+      
       const decoded = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
       return JSON.parse(decoded);
     } catch {
@@ -147,13 +149,22 @@ export class AuditLogger {
     // Sanitize details to prevent log injection
     const sanitizedDetails = this.sanitizeLogData(details);
     
-    const logEntry = {
+    const logEntry: {
+      timestamp: number;
+      action: string;
+      userId?: string;
+      details: any;
+      severity: 'info' | 'warning' | 'error';
+    } = {
       timestamp: Date.now(),
       action: SecurityValidator.sanitizeInput(action),
-      userId: userId ? SecurityValidator.sanitizeInput(userId) : undefined,
       details: sanitizedDetails,
       severity
     };
+    
+    if (userId) {
+      logEntry.userId = SecurityValidator.sanitizeInput(userId);
+    }
     
     this.logs.push(logEntry);
     

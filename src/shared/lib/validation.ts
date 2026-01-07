@@ -105,6 +105,8 @@ export function validateCodiceFiscale(cf: string): boolean {
   let sum = 0;
   for (let i = 0; i < 15; i++) {
     const char = cleanCF[i];
+    if (!char) return false; // Invalid character
+    
     if (i % 2 === 0) {
       // Posizione dispari (1-based)
       sum += oddChars.indexOf(char) !== -1 ? oddChars.indexOf(char) : parseInt(char);
@@ -115,7 +117,8 @@ export function validateCodiceFiscale(cf: string): boolean {
   }
   
   const checkChar = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[sum % 26];
-  return cleanCF[15] === checkChar;
+  const lastChar = cleanCF[15];
+  return lastChar !== undefined && lastChar === checkChar;
 }
 
 /**

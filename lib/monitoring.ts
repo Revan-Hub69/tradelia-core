@@ -117,10 +117,16 @@ class MonitoringSystem {
     const metric: Metric = {
       name,
       value,
-      timestamp: Date.now(),
-      labels,
-      unit
+      timestamp: Date.now()
     };
+    
+    if (labels) {
+      metric.labels = labels;
+    }
+    
+    if (unit) {
+      metric.unit = unit;
+    }
     
     if (!this.metrics.has(name)) {
       this.metrics.set(name, []);

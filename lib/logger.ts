@@ -102,20 +102,27 @@ class Logger {
       timestamp: new Date().toISOString(),
       level,
       message: this.sanitizeString(message),
-      traceId: this.context.traceId || this.generateTraceId(),
-      component: this.context.component,
-      action: this.context.action,
-      userId: this.context.userId,
-      sessionId: this.context.sessionId,
-      ...extra
+      traceId: this.context.traceId || this.generateTraceId()
     };
     
-    // Remove undefined fields
-    Object.keys(logEntry).forEach(key => {
-      if (logEntry[key as keyof LogEntry] === undefined) {
-        delete logEntry[key as keyof LogEntry];
-      }
-    });
+    // Add optional properties only if they exist
+    if (this.context.component) {
+      logEntry.component = this.context.component;
+    }
+    if (this.context.action) {
+      logEntry.action = this.context.action;
+    }
+    if (this.context.userId) {
+      logEntry.userId = this.context.userId;
+    }
+    if (this.context.sessionId) {
+      logEntry.sessionId = this.context.sessionId;
+    }
+    
+    // Add extra properties
+    if (extra) {
+      Object.assign(logEntry, extra);
+    }
     
     // Sanitize the entire entry
     const sanitized = this.sanitize(logEntry);
@@ -232,16 +239,27 @@ export const logApiRequest = (method: string, url: string, startTime: number) =>
 };
 
 export const logUserAction = (action: string, userId?: string, metadata?: Record<string, any>) => {
-  logger.setContext({ 
+  const context: Partial<LogContext> = { 
     component: 'user_interaction', 
-    action,
-    userId 
-  });
+    action
+  };
+  
+  if (userId) {
+    context.userId = userId;
+  }
+  
+  logger.setContext(context);
   logger.info(`User action: ${action}`, metadata);
 };
 
 export const logError = (error: Error, component: string, action?: string) => {
-  logger.setContext({ component, action });
+  const context: Partial<LogContext> = { component };
+  
+  if (action) {
+    context.action = action;
+  }
+  
+  logger.setContext(context);
   logger.error(`Error in ${component}`, error);
 };
 
