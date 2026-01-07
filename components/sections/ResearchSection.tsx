@@ -106,80 +106,46 @@ function getBgClass(color: string): string {
   return map[color] || 'bg-blue-500';
 }
 
-function getGradientClass(color: string): string {
-  const map: Record<string, string> = {
-    red: 'bg-gradient-to-t from-red-500 to-red-300',
-    orange: 'bg-gradient-to-t from-orange-500 to-orange-300',
-    amber: 'bg-gradient-to-t from-amber-500 to-amber-300',
-    green: 'bg-gradient-to-t from-green-500 to-green-300',
-    blue: 'bg-gradient-to-t from-blue-500 to-blue-300'
-  };
-  return map[color] || 'bg-gradient-to-t from-blue-500 to-blue-300';
-}
-
-// ResearchItem component - defined outside main component
-function ResearchItem({ item, data, index, sourceLabel, errorFrequency, behavioralTrend, behavioralStudies }: ResearchItemProps) {
-  const isReversed = index % 2 === 1;
-  const maxValue = Math.max(...item.sparkline);
+// ResearchItem component - simplified without sparkline chart
+function ResearchItem({ item, data, sourceLabel }: Omit<ResearchItemProps, 'index' | 'errorFrequency' | 'behavioralTrend' | 'behavioralStudies'> & { index: number }) {
+  const isReversed = item.key === 'fomo' || item.key === 'disposition';
   
   return (
-    <article className={`grid lg:grid-cols-2 gap-8 lg:gap-12 items-center ${isReversed ? 'lg:grid-flow-col-dense' : ''}`}>
+    <article className={`grid lg:grid-cols-2 gap-6 lg:gap-10 items-center ${isReversed ? 'lg:grid-flow-col-dense' : ''}`}>
       {/* Content */}
-      <div className={`space-y-4 ${isReversed ? 'lg:col-start-2' : ''}`}>
+      <div className={`space-y-3 ${isReversed ? 'lg:col-start-2' : ''}`}>
         <div className="flex items-center gap-3">
-          <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${getIconBgClass(item.iconColor)}`}>
+          <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${getIconBgClass(item.iconColor)}`}>
             <item.IconComponent className={`w-5 h-5 ${getIconTextClass(item.iconColor)}`} />
           </div>
-          <h3 className="text-lg sm:text-xl font-semibold text-foreground">
+          <h3 className="text-base sm:text-lg font-medium text-foreground">
             {data.title}
           </h3>
         </div>
         
-        <p className="text-base text-muted-foreground leading-relaxed">
+        <p className="text-sm text-muted-foreground leading-relaxed">
           {data.description}
         </p>
         
-        <div className="pt-2 border-t border-border/30">
-          <cite className="text-xs text-muted-foreground not-italic">
-            <strong>{sourceLabel}</strong> {data.source}
-          </cite>
-        </div>
+        <cite className="block text-xs text-muted-foreground not-italic pt-2 border-t border-border/30">
+          <strong>{sourceLabel}</strong> {data.source}
+        </cite>
       </div>
 
-      {/* Visual/Sparkline */}
+      {/* Simple percentage indicator */}
       <div className={`${isReversed ? 'lg:col-start-1' : ''}`}>
-        <div className="group bg-background/90 backdrop-blur-sm border border-border/50 rounded-xl p-6 hover:shadow-lg hover:border-border transition-all duration-150 hover:-translate-y-1">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-muted-foreground">{errorFrequency}</span>
-              <div className="flex items-center gap-2">
-                <span className={`text-3xl font-bold ${getTextClass(item.iconColor)}`}>
-                  {item.sparkline.at(-1)}%
-                </span>
-                <div className={`w-2 h-2 rounded-full ${getBgClass(item.iconColor)}`} />
-              </div>
-            </div>
-            
-            {/* Sparkline */}
-            <div className="relative">
-              <div className="flex items-end gap-1 h-16 bg-gradient-to-t from-muted/20 to-transparent rounded p-2">
-                {item.sparkline.map((value, i) => (
-                  <div
-                    key={`${item.key}-spark-${value}-${i}`}
-                    className={`flex-1 rounded-t transition-all duration-150 hover:opacity-80 ${getGradientClass(item.iconColor)}`}
-                    style={{ height: `${(value / maxValue) * 100}%` }}
-                  />
-                ))}
-              </div>
-            </div>
-            
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>{behavioralTrend}</span>
-              <span className="flex items-center gap-1">
-                <div className="w-1 h-1 rounded-full bg-muted-foreground/50" />
-                <span>{behavioralStudies}</span>
-              </span>
-            </div>
+        <div className="rounded border border-border/50 bg-background p-4">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs text-muted-foreground">Frequenza errore</span>
+            <span className={`text-2xl font-bold ${getTextClass(item.iconColor)}`}>
+              {item.sparkline.at(-1)}%
+            </span>
+          </div>
+          <div className="h-2 bg-muted/50 rounded-full overflow-hidden">
+            <div 
+              className={`h-full rounded-full ${getBgClass(item.iconColor)}`}
+              style={{ width: `${item.sparkline.at(-1)}%` }}
+            />
           </div>
         </div>
       </div>
@@ -214,7 +180,7 @@ export default function ResearchSection() {
         </header>
         
         {/* Above-fold: 3 errori principali */}
-        <div className="space-y-16 fade-in-stagger mb-20" role="list">
+        <div className="space-y-12 mb-16" role="list">
           {RESEARCH_ITEMS.slice(0, 3).map((item, index) => (
             <div key={item.key} role="listitem">
               <ResearchItem 
@@ -222,17 +188,14 @@ export default function ResearchSection() {
                 data={research[item.key]}
                 index={index}
                 sourceLabel={research.sourceLabel}
-                errorFrequency={research.errorFrequency}
-                behavioralTrend={research.behavioralTrend}
-                behavioralStudies={research.behavioralStudies}
               />
             </div>
           ))}
         </div>
 
         {/* Below-fold: Resto dei bias */}
-        <div className="border-t border-border/30 pt-16">
-          <div className="space-y-16" role="list">
+        <div className="border-t border-border/30 pt-12">
+          <div className="space-y-12" role="list">
             {RESEARCH_ITEMS.slice(3).map((item, index) => (
               <div key={item.key} role="listitem">
                 <ResearchItem 
@@ -240,9 +203,6 @@ export default function ResearchSection() {
                   data={research[item.key]}
                   index={index + 3}
                   sourceLabel={research.sourceLabel}
-                  errorFrequency={research.errorFrequency}
-                  behavioralTrend={research.behavioralTrend}
-                  behavioralStudies={research.behavioralStudies}
                 />
               </div>
             ))}
