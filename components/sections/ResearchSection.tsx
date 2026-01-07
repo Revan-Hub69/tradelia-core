@@ -84,7 +84,7 @@ export default function ResearchSection() {
           <div className="group bg-background/90 backdrop-blur-sm border border-border/50 rounded-xl p-6 hover:shadow-lg hover:border-border transition-all duration-150 hover:-translate-y-1">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-muted-foreground">Frequenza errore</span>
+                <span className="text-sm font-medium text-muted-foreground">{research.errorFrequency}</span>
                 <div className="flex items-center gap-2">
                   <span className={`text-3xl font-bold ${
                     item.iconColor === 'red' ? 'text-red-600' : 
@@ -123,10 +123,10 @@ export default function ResearchSection() {
               </div>
               
               <div className="flex items-center justify-between text-xs text-muted-foreground">
-                <span>Tendenza comportamentale</span>
+                <span>{research.behavioralTrend}</span>
                 <span className="flex items-center gap-1">
                   <div className="w-1 h-1 rounded-full bg-muted-foreground/50" />
-                  <span>Studi comportamentali</span>
+                  <span>{research.behavioralStudies}</span>
                 </span>
               </div>
             </div>

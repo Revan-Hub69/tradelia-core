@@ -9,42 +9,42 @@ export default function TrustSection() {
   // Badge hierarchy with priorities
   const TRUST_BADGES = [
     {
-      text: 'Solo educativo',
+      text: trust.badges.educationalOnly,
       type: 'primary' as const,
       IconComponent: GraduationCapIcon,
-      description: 'Nessun consiglio di investimento'
+      description: trust.badgeDescriptions.educationalOnly
     },
     {
-      text: 'Nessuna custodia',
+      text: trust.badges.noCustody,
       type: 'primary' as const,
       IconComponent: LockIcon,
-      description: 'Non gestiamo i tuoi fondi'
+      description: trust.badgeDescriptions.noCustody
     },
     {
-      text: 'Ricerca accademica',
+      text: trust.badges.academicResearch,
       type: 'secondary' as const,
       IconComponent: BookOpenIcon,
-      description: 'Basato su studi peer-reviewed'
+      description: trust.badgeDescriptions.academicResearch
     },
     {
-      text: 'Trasparenza commissioni',
+      text: trust.badges.commissionTransparency,
       type: 'secondary' as const,
       IconComponent: DiamondIcon,
-      description: 'Affiliazioni dichiarate'
+      description: trust.badgeDescriptions.commissionTransparency
     },
     {
-      text: 'Metodologia aperta',
+      text: trust.badges.openMethodology,
       type: 'secondary' as const,
       IconComponent: ShieldIcon,
-      description: 'Processo verificabile'
+      description: trust.badgeDescriptions.openMethodology
     }
   ];
 
   const TRUST_METRICS = [
-    { label: '0€', description: 'Costo utilizzo' },
-    { label: '0', description: 'Custodia fondi' },
-    { label: '100%', description: 'Educativo' },
-    { label: '7', description: 'Studi accademici' }
+    { label: trust.metrics.cost, description: trust.metrics.costDescription },
+    { label: trust.metrics.custody, description: trust.metrics.custodyDescription },
+    { label: trust.metrics.educational, description: trust.metrics.educationalDescription },
+    { label: trust.metrics.studies, description: trust.metrics.studiesDescription }
   ];
 
   return (
@@ -68,28 +68,28 @@ export default function TrustSection() {
           {/* Micro-label con mini-frase */}
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 rounded-full text-sm text-primary font-medium">
             <CheckIcon className="w-4 h-4" />
-            <span>Framework basato su 7 studi, nessun dato inventato, metodologia pubblica</span>
+            <span>{trust.frameworkDescription}</span>
           </div>
         </header>
 
         {/* Consolidamento Accademico - 3 Bullet Points */}
         <div className="mb-16 p-6 rounded-lg border border-border/50 bg-background/80 backdrop-blur-sm">
-          <h3 className="text-lg font-semibold text-foreground mb-4 text-center">Metodologia Accademica</h3>
+          <h3 className="text-lg font-semibold text-foreground mb-4 text-center">{trust.academicMethodology}</h3>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="text-center">
               <BookOpenIcon className="w-6 h-6 text-primary mx-auto mb-2" />
-              <h4 className="font-medium text-foreground mb-1">Fonti</h4>
-              <p className="text-sm text-muted-foreground">7 studi peer-reviewed verificati</p>
+              <h4 className="font-medium text-foreground mb-1">{trust.academicSections.sources}</h4>
+              <p className="text-sm text-muted-foreground">{trust.academicSections.sourcesDescription}</p>
             </div>
             <div className="text-center">
               <MethodologyIcon className="w-6 h-6 text-primary mx-auto mb-2" />
-              <h4 className="font-medium text-foreground mb-1">Metodo</h4>
-              <p className="text-sm text-muted-foreground">Processo pubblico e trasparente</p>
+              <h4 className="font-medium text-foreground mb-1">{trust.academicSections.method}</h4>
+              <p className="text-sm text-muted-foreground">{trust.academicSections.methodDescription}</p>
             </div>
             <div className="text-center">
               <DiamondIcon className="w-6 h-6 text-primary mx-auto mb-2" />
-              <h4 className="font-medium text-foreground mb-1">Conflitti</h4>
-              <p className="text-sm text-muted-foreground">Affiliazioni completamente dichiarate</p>
+              <h4 className="font-medium text-foreground mb-1">{trust.academicSections.conflicts}</h4>
+              <p className="text-sm text-muted-foreground">{trust.academicSections.conflictsDescription}</p>
             </div>
           </div>
         </div>
@@ -113,7 +113,7 @@ export default function TrustSection() {
           {/* Primary badges */}
           <div className="space-y-4">
             <h3 className="text-sm font-medium text-muted-foreground text-center uppercase tracking-wide">
-              Garanzie principali
+              {trust.primaryGuarantees}
             </h3>
             <div className="flex flex-wrap justify-center gap-4">
               {TRUST_BADGES.filter(badge => badge.type === 'primary').map((badge, index) => (
@@ -134,7 +134,7 @@ export default function TrustSection() {
           {/* Secondary badges */}
           <div className="space-y-4">
             <h3 className="text-sm font-medium text-muted-foreground text-center uppercase tracking-wide">
-              Metodologia e trasparenza
+              {trust.methodologyTransparency}
             </h3>
             <div className="flex flex-wrap justify-center gap-3">
               {TRUST_BADGES.filter(badge => badge.type === 'secondary').map((badge, index) => (
@@ -157,11 +157,10 @@ export default function TrustSection() {
         <div className="mt-16 pt-8 border-t border-border/30">
           <div className="text-center space-y-4">
             <h3 className="text-lg font-semibold text-foreground">
-              Metodologia verificabile
+              {trust.verifiableMethodology}
             </h3>
             <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
-              Framework basato su 7 studi accademici verificati. Fonti pubbliche e metodologia trasparente. 
-              Nessun dato stimato o inventato. Completa trasparenza sui conflitti di interesse.
+              {trust.frameworkDescription}
             </p>
             <div className="flex flex-wrap justify-center gap-3 text-xs text-muted-foreground">
               <span className="flex items-center gap-1">

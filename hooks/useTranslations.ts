@@ -59,6 +59,9 @@ export function useTranslations() {
       eyebrow: t('research.eyebrow'),
       title: t('research.title'),
       subtitle: t('research.subtitle'),
+      errorFrequency: t('research.errorFrequency'),
+      behavioralTrend: t('research.behavioralTrend'),
+      behavioralStudies: t('research.behavioralStudies'),
       overconfidence: {
         title: t('research.overconfidence.title'),
         description: t('research.overconfidence.description'),
@@ -83,6 +86,7 @@ export function useTranslations() {
     howItWorks: {
       title: t('howItWorks.title'),
       subtitle: t('howItWorks.subtitle'),
+      logoText: t('howItWorks.logoText'),
       steps: [
         {
           title: t('howItWorks.step1.title'),
@@ -107,13 +111,43 @@ export function useTranslations() {
     trust: {
       title: t('trust.title'),
       subtitle: t('trust.subtitle'),
-      badges: [
-        t('trust.badges.0'),
-        t('trust.badges.1'),
-        t('trust.badges.2'),
-        t('trust.badges.3'),
-        t('trust.badges.4')
-      ]
+      academicMethodology: t('trust.academicMethodology'),
+      primaryGuarantees: t('trust.primaryGuarantees'),
+      methodologyTransparency: t('trust.methodologyTransparency'),
+      verifiableMethodology: t('trust.verifiableMethodology'),
+      frameworkDescription: t('trust.frameworkDescription'),
+      badges: {
+        educationalOnly: t('trust.badges.educationalOnly'),
+        noCustody: t('trust.badges.noCustody'),
+        academicResearch: t('trust.badges.academicResearch'),
+        commissionTransparency: t('trust.badges.commissionTransparency'),
+        openMethodology: t('trust.badges.openMethodology')
+      },
+      badgeDescriptions: {
+        educationalOnly: t('trust.badgeDescriptions.educationalOnly'),
+        noCustody: t('trust.badgeDescriptions.noCustody'),
+        academicResearch: t('trust.badgeDescriptions.academicResearch'),
+        commissionTransparency: t('trust.badgeDescriptions.commissionTransparency'),
+        openMethodology: t('trust.badgeDescriptions.openMethodology')
+      },
+      metrics: {
+        cost: t('trust.metrics.cost'),
+        costDescription: t('trust.metrics.costDescription'),
+        custody: t('trust.metrics.custody'),
+        custodyDescription: t('trust.metrics.custodyDescription'),
+        educational: t('trust.metrics.educational'),
+        educationalDescription: t('trust.metrics.educationalDescription'),
+        studies: t('trust.metrics.studies'),
+        studiesDescription: t('trust.metrics.studiesDescription')
+      },
+      academicSections: {
+        sources: t('trust.academicSections.sources'),
+        sourcesDescription: t('trust.academicSections.sourcesDescription'),
+        method: t('trust.academicSections.method'),
+        methodDescription: t('trust.academicSections.methodDescription'),
+        conflicts: t('trust.academicSections.conflicts'),
+        conflictsDescription: t('trust.academicSections.conflictsDescription')
+      }
     },
 
     finalCta: {
@@ -122,14 +156,25 @@ export function useTranslations() {
       disclaimer: t('finalCta.disclaimer')
     },
 
+    header: {
+      dashboardButton: t('header.dashboardButton')
+    },
+
     footer: {
       description: t('footer.description'),
       methodology: t('footer.methodology'),
       disclaimer: t('footer.disclaimer'),
+      disclaimerTitle: t('footer.disclaimerTitle'),
+      methodologyTitle: t('footer.methodologyTitle'),
+      version: t('footer.version'),
+      lastUpdate: t('footer.lastUpdate'),
+      changelogLink: t('footer.changelogLink'),
+      legalInfo: t('footer.legalInfo'),
       links: {
         privacy: t('footer.links.privacy'),
         terms: t('footer.links.terms'),
-        methodology: t('footer.links.methodology')
+        methodology: t('footer.links.methodology'),
+        contact: t('footer.links.contact')
       },
       copyright: t('footer.copyright')
     },

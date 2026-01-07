@@ -69,9 +69,9 @@ export default function FinalCtaSection() {
             <button 
               onClick={() => openModal()}
               className="btn-tech"
-              aria-label="Accedi alla dashboard"
+              aria-label={finalCta.button}
             >
-              Accedi alla dashboard
+              {finalCta.button}
             </button>
             
             <p className="text-xs text-muted-foreground max-w-md mx-auto">

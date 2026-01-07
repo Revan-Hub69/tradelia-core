@@ -8,6 +8,7 @@ import { MenuIcon, CloseIcon } from '@/components/icons/TradeliaIcons';
 
 export function Header() {
   const { t } = useLanguage();
+  const { header } = useTranslations();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
   const { openModal } = useDashboardModal();
@@ -76,7 +77,7 @@ export function Header() {
                   onClick={() => openModal()}
                   className="btn-tech"
                 >
-                  Accedi alla dashboard
+                  {header.dashboardButton}
                 </button>
               </div>
             </nav>
@@ -128,7 +129,7 @@ export function Header() {
                     openModal();
                   }}
                 >
-                  Accedi alla dashboard
+                  {header.dashboardButton}
                 </button>
               </div>
             </nav>

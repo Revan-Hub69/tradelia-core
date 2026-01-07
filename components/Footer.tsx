@@ -6,6 +6,7 @@ import { MailIcon, FileTextIcon, ScaleIcon, EyeIcon, BookOpenIcon } from '@/comp
 
 export function Footer() {
   const { t } = useLanguage();
+  const { footer } = useTranslations();
 
   const footerLinks = [
     {
@@ -43,8 +44,7 @@ export function Footer() {
           <div className="text-center space-y-4">
             <Logo />
             <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
-              Dashboard guidata per esplorare le crypto senza fare gli errori più costosi. 
-              Basata su ricerca comportamentale accademica.
+              {footer.description}
             </p>
           </div>
 
@@ -77,10 +77,10 @@ export function Footer() {
               <div className="space-y-4">
                 <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
                   <FileTextIcon className="w-4 h-4 text-primary" />
-                  Disclaimer Legale
+                  {footer.disclaimerTitle}
                 </h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  {t('footer.disclaimer')}
+                  {footer.disclaimer}
                 </p>
               </div>
             </div>
@@ -90,10 +90,10 @@ export function Footer() {
               <div className="space-y-4">
                 <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
                   <BookOpenIcon className="w-4 h-4 text-primary" />
-                  Metodologia
+                  {footer.methodologyTitle}
                 </h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  <strong className="text-foreground">{t('footer.methodology').split('.')[0]}:</strong> {t('footer.methodology').split('. ')[1]}
+                  <strong className="text-foreground">{footer.methodology.split('.')[0]}:</strong> {footer.methodology.split('. ')[1]}
                 </p>
               </div>
             </div>
@@ -104,17 +104,17 @@ export function Footer() {
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
               <div className="space-y-1">
                 <p className="text-sm text-foreground/80 font-medium">
-                  {t('footer.copyright')}
+                  {footer.copyright}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  Strumento educativo • Non consulenza finanziaria • Ricerca accademica
+                  {footer.legalInfo}
                 </p>
               </div>
               <div className="text-xs text-muted-foreground">
-                <p>Versione 2026.02</p>
-                <p>Ultimo aggiornamento: Gennaio 2026</p>
+                <p>{footer.version}</p>
+                <p>{footer.lastUpdate}</p>
                 <a href="/changelog-metodologia" className="text-primary hover:text-primary/80 transition-colors underline">
-                  Changelog metodologia
+                  {footer.changelogLink}
                 </a>
               </div>
             </div>

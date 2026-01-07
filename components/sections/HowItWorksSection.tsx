@@ -49,7 +49,7 @@ export default function HowItWorksSection() {
             id="how-it-works-title"
             className="text-xl sm:text-2xl lg:text-3xl font-semibold text-foreground leading-tight tracking-tight mb-4 text-center"
           >
-            Come funziona <span className="font-semibold relative">
+            {howItWorks.title} <span className="font-semibold relative">
               <span className="text-muted-foreground relative">
                 T
                 <span className="absolute -bottom-0.5 left-0 w-full h-0.5 bg-primary" />

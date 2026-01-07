@@ -83,6 +83,7 @@ export const translations = {
       title: 'Come funziona',
       titleWithLogo: true, // Flag per mostrare logo inline
       subtitle: 'Identificazione dei rischi tra obiettivi e strumenti crypto.',
+      logoText: 'Tradelia',
       steps: [
         {
           title: 'Indica cosa ti interessa di più',
@@ -130,10 +131,26 @@ export const translations = {
       button: 'Accedi alla dashboard',
       disclaimer: 'Gratuito · 60–90 secondi · Senza usare denaro'
     },
+    header: {
+      dashboardButton: 'Accedi alla dashboard'
+    },
+    research: {
+      eyebrow: 'Ricerca comportamentale',
+      title: 'Errori comuni documentati dalla ricerca accademica',
+      subtitle: 'Studi accademici verificati identificano pattern ricorrenti negli errori di chi si avvicina agli investimenti',
+      errorFrequency: 'Frequenza errore',
+      behavioralTrend: 'Tendenza comportamentale',
+      behavioralStudies: 'Studi comportamentali',
     footer: {
       description: 'Dashboard guidata per esplorare le crypto senza fare gli errori più costosi. Basata su ricerca comportamentale accademica.',
       methodology: 'Struttura da studi accademici verificati. Nessun cookie, trasparenza sui partner.',
       disclaimer: 'Strumento educativo, non consulenza finanziaria. Possibili commissioni da partner raccomandati. L\'utente rimane responsabile delle proprie decisioni.',
+      disclaimerTitle: 'Disclaimer Legale',
+      methodologyTitle: 'Metodologia',
+      version: 'Versione 2026.02',
+      lastUpdate: 'Ultimo aggiornamento: Gennaio 2026',
+      changelogLink: 'Changelog metodologia',
+      legalInfo: 'Strumento educativo • Non consulenza finanziaria • Ricerca accademica',
       links: {
         privacy: 'Privacy',
         terms: 'Termini',
@@ -141,6 +158,47 @@ export const translations = {
         contact: 'Contatti'
       },
       copyright: '© 2026 Tradelia'
+    },
+    trust: {
+      title: 'Metodologia trasparente',
+      subtitle: 'Trasparenza metodologica e onestà intellettuale.',
+      academicMethodology: 'Metodologia Accademica',
+      primaryGuarantees: 'Garanzie principali',
+      methodologyTransparency: 'Metodologia e trasparenza',
+      verifiableMethodology: 'Metodologia verificabile',
+      frameworkDescription: 'Framework basato su 7 studi accademici verificati. Fonti pubbliche e metodologia trasparente. Nessun dato stimato o inventato. Completa trasparenza sui conflitti di interesse.',
+      badges: {
+        educationalOnly: 'Solo educativo',
+        noCustody: 'Nessuna custodia',
+        academicResearch: 'Ricerca accademica',
+        commissionTransparency: 'Trasparenza commissioni',
+        openMethodology: 'Metodologia aperta'
+      },
+      badgeDescriptions: {
+        educationalOnly: 'Nessun consiglio di investimento',
+        noCustody: 'Non gestiamo i tuoi fondi',
+        academicResearch: 'Basato su studi peer-reviewed',
+        commissionTransparency: 'Affiliazioni dichiarate',
+        openMethodology: 'Processo verificabile'
+      },
+      metrics: {
+        cost: '0€',
+        costDescription: 'Costo utilizzo',
+        custody: '0',
+        custodyDescription: 'Custodia fondi',
+        educational: '100%',
+        educationalDescription: 'Educativo',
+        studies: '7',
+        studiesDescription: 'Studi accademici'
+      },
+      academicSections: {
+        sources: 'Fonti',
+        sourcesDescription: '7 studi peer-reviewed verificati',
+        method: 'Metodo',
+        methodDescription: 'Processo pubblico e trasparente',
+        conflicts: 'Conflitti',
+        conflictsDescription: 'Affiliazioni completamente dichiarate'
+      }
     },
     modal: {
       title: 'Accesso Dashboard',
@@ -322,6 +380,7 @@ export const translations = {
       title: 'How it works',
       titleWithLogo: true, // Flag per mostrare logo inline
       subtitle: 'Risk identification between objectives and crypto tools.',
+      logoText: 'Tradelia',
       steps: [
         {
           title: 'Indicate what interests you most',
@@ -370,10 +429,26 @@ export const translations = {
       button: 'Access dashboard',
       disclaimer: 'Free · 60–90 seconds · No money used'
     },
+    header: {
+      dashboardButton: 'Access dashboard'
+    },
+    research: {
+      eyebrow: 'Behavioral research',
+      title: 'Common errors documented by academic research',
+      subtitle: 'Peer-reviewed studies identify recurring patterns in beginner investment errors',
+      errorFrequency: 'Error frequency',
+      behavioralTrend: 'Behavioral trend',
+      behavioralStudies: 'Behavioral studies',
     footer: {
       description: 'Guided dashboard to explore crypto without making the most costly mistakes. Based on academic behavioral research.',
       methodology: 'Framework from peer-reviewed studies. No cookies, transparency on partners.',
       disclaimer: 'Educational tool, not financial advice. Possible commissions from recommended partners. User remains responsible for their decisions.',
+      disclaimerTitle: 'Legal Disclaimer',
+      methodologyTitle: 'Methodology',
+      version: 'Version 2026.02',
+      lastUpdate: 'Last update: January 2026',
+      changelogLink: 'Methodology changelog',
+      legalInfo: 'Educational tool • Not financial advice • Academic research',
       links: {
         privacy: 'Privacy',
         terms: 'Terms',
@@ -381,6 +456,47 @@ export const translations = {
         contact: 'Contact'
       },
       copyright: '© 2026 Tradelia'
+    },
+    trust: {
+      title: 'Transparent methodology',
+      subtitle: 'Methodological transparency and intellectual honesty.',
+      academicMethodology: 'Academic Methodology',
+      primaryGuarantees: 'Primary guarantees',
+      methodologyTransparency: 'Methodology and transparency',
+      verifiableMethodology: 'Verifiable methodology',
+      frameworkDescription: 'Framework based on 7 verified academic studies. Public sources and transparent methodology. No estimated or invented data. Complete transparency on conflicts of interest.',
+      badges: {
+        educationalOnly: 'Educational only',
+        noCustody: 'No custody',
+        academicResearch: 'Academic research',
+        commissionTransparency: 'Commission transparency',
+        openMethodology: 'Open methodology'
+      },
+      badgeDescriptions: {
+        educationalOnly: 'No investment advice',
+        noCustody: 'We don\'t manage your funds',
+        academicResearch: 'Based on peer-reviewed studies',
+        commissionTransparency: 'Declared affiliations',
+        openMethodology: 'Verifiable process'
+      },
+      metrics: {
+        cost: '0€',
+        costDescription: 'Usage cost',
+        custody: '0',
+        custodyDescription: 'Fund custody',
+        educational: '100%',
+        educationalDescription: 'Educational',
+        studies: '7',
+        studiesDescription: 'Academic studies'
+      },
+      academicSections: {
+        sources: 'Sources',
+        sourcesDescription: '7 verified peer-reviewed studies',
+        method: 'Method',
+        methodDescription: 'Public and transparent process',
+        conflicts: 'Conflicts',
+        conflictsDescription: 'Fully declared affiliations'
+      }
     },
     modal: {
       title: 'Dashboard Access',
