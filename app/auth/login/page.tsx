@@ -3,6 +3,9 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/hooks/useAuth'
+import { useLanguage } from '@/components/LanguageSelector'
+import { mapAuthErrorToKey } from '@/lib/auth/error-mapping'
+import { safeRedirect } from '@/lib/auth/safe-redirect'
 import { 
   MailIcon, 
   LockIcon,
@@ -13,6 +16,7 @@ import Logo from '@/components/Logo'
 
 export default function Login() {
   const router = useRouter()
+  const { t } = useLanguage()
   const { signInWithEmail, signInWithGoogle, loading } = useAuth()
   
   const [formData, setFormData] = useState({
@@ -27,7 +31,7 @@ export default function Login() {
     e.preventDefault()
     
     if (!formData.email || !formData.password) {
-      setError('Inserisci email e password')
+      setError(t('auth.login.errors.required'))
       return
     }
 
@@ -36,10 +40,10 @@ export default function Login() {
     
     try {
       await signInWithEmail(formData.email, formData.password)
-      router.push('/dashboard')
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Errore durante l\'accesso';
-      setError(message)
+      router.push(safeRedirect('/dashboard', '/dashboard'))
+    } catch (err: unknown) {
+      const key = mapAuthErrorToKey(err)
+      setError(t(key))
     } finally {
       setIsSubmitting(false)
     }
@@ -48,30 +52,32 @@ export default function Login() {
   const handleGoogleSignIn = async () => {
     try {
       await signInWithGoogle()
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Errore durante l\'accesso con Google';
-      setError(message)
+    } catch (err: unknown) {
+      const key = mapAuthErrorToKey(err)
+      setError(t(key))
     }
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
+    <div className="min-h-screen bg-background flex items-center justify-center px-6 sm:px-8">
+      <div className="w-full max-w-md space-y-8">
+        <div className="text-center space-y-4">
           <Logo />
-          <h1 className="text-2xl font-bold text-foreground mt-4 mb-2">
-            Accedi al tuo account
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Accedi per sincronizzare le tue preferenze
-          </p>
+          <div className="space-y-2">
+            <h1 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight">
+              {t('auth.login.title')}
+            </h1>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {t('auth.login.subtitle')}
+            </p>
+          </div>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded">
-            <div className="flex items-center gap-2">
-              <AlertTriangleIcon className="w-4 h-4 text-red-600 flex-shrink-0" />
-              <p className="text-sm text-red-800">{error}</p>
+          <div className="p-4 rounded border border-red-200 bg-red-50" role="alert">
+            <div className="flex items-start gap-3">
+              <AlertTriangleIcon className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-red-800 leading-relaxed">{error}</p>
             </div>
           </div>
         )}
@@ -80,7 +86,7 @@ export default function Login() {
         <button
           onClick={handleGoogleSignIn}
           disabled={loading}
-          className="w-full flex items-center justify-center gap-3 p-3 border border-border/50 rounded hover:bg-muted/30 transition-all disabled:opacity-50 mb-6"
+          className="w-full flex items-center justify-center gap-3 h-11 border border-border/50 rounded hover:bg-muted/30 transition-all duration-150 disabled:opacity-50 text-sm font-medium"
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -88,49 +94,56 @@ export default function Login() {
             <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
             <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
           </svg>
-          Continua con Google
+          {t('auth.common.continueWithGoogle')}
         </button>
 
-        <div className="relative mb-6">
+        <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-border/30" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">oppure</span>
+            <span className="bg-background px-2 text-muted-foreground">{t('auth.common.or')}</span>
           </div>
         </div>
 
         {/* Email Login Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              Email
+          <div className="space-y-2">
+            <label htmlFor="email" className="block text-sm font-medium text-foreground">
+              {t('auth.login.email')}
             </label>
             <div className="relative">
-              <MailIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <MailIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
               <input
+                id="email"
                 type="email"
+                autoComplete="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full pl-10 pr-4 py-2 border border-border/50 rounded focus:ring-2 focus:ring-primary/60 focus:border-primary text-sm"
-                placeholder="mario@esempio.it"
+                className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border/50 rounded focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary transition-all duration-150 placeholder:text-muted-foreground/60"
+                placeholder={t('auth.login.emailPlaceholder')}
+                aria-label={t('auth.common.aria.emailField')}
+                aria-invalid={!!error}
                 required
               />
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              Password
+          <div className="space-y-2">
+            <label htmlFor="password" className="block text-sm font-medium text-foreground">
+              {t('auth.login.password')}
             </label>
             <div className="relative">
-              <LockIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
               <input
+                id="password"
                 type="password"
+                autoComplete="current-password"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className="w-full pl-10 pr-4 py-2 border border-border/50 rounded focus:ring-2 focus:ring-primary/60 focus:border-primary text-sm"
-                placeholder="La tua password"
+                className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border/50 rounded focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary transition-all duration-150 placeholder:text-muted-foreground/60"
+                placeholder={t('auth.login.passwordPlaceholder')}
+                aria-label={t('auth.common.aria.passwordField')}
                 required
               />
             </div>
@@ -139,40 +152,41 @@ export default function Login() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full btn-tech disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full h-11 bg-foreground text-background text-sm font-medium rounded hover:bg-foreground/90 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2 flex items-center justify-center gap-2"
           >
             {isSubmitting ? (
-              'Accesso in corso...'
+              t('auth.login.submitting')
             ) : (
               <>
-                Accedi
-                <ArrowRightIcon className="w-4 h-4 ml-2" />
+                {t('auth.login.submit')}
+                <ArrowRightIcon className="w-4 h-4" />
               </>
             )}
           </button>
         </form>
 
-        <div className="mt-4 text-center">
+        <div className="text-center">
           <a
             href="/auth/forgot-password"
-            className="text-xs text-primary hover:text-primary/80 transition-subtle"
+            className="text-xs text-primary hover:text-primary/80 transition-colors duration-150"
           >
-            Password dimenticata?
+            {t('auth.login.forgotPassword')}
           </a>
         </div>
 
-        <div className="mt-6 text-center">
+        <div className="text-center">
           <button
             onClick={() => router.push('/')}
-            className="text-sm text-muted-foreground hover:text-foreground transition-subtle"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-150"
+            aria-label={t('auth.common.aria.backToHome')}
           >
-            ← Torna alla homepage
+            {t('auth.common.backToHome')}
           </button>
         </div>
 
-        <div className="mt-4 p-3 bg-muted/30 rounded text-xs text-muted-foreground text-center">
-          <p>
-            Non hai un account? Completa il questionario sulla homepage per registrarti.
+        <div className="p-3 rounded border border-border/50 bg-muted/30">
+          <p className="text-xs text-muted-foreground text-center leading-relaxed">
+            {t('auth.login.noAccount')}
           </p>
         </div>
       </div>

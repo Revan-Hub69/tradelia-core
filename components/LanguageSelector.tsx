@@ -2,6 +2,7 @@
 
 import { useState, createContext, useContext, useEffect, useRef } from 'react';
 import { translations, type Locale } from '../lib/translations';
+import { persistLocale } from '../lib/locale-preference';
 import { ChevronDownIcon, CheckIcon } from '@/components/icons/TradeliaIcons';
 
 const LanguageContext = createContext<{
@@ -48,14 +49,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   const handleSetLocale = (newLocale: Locale) => {
     setLocale(newLocale);
-    // Safe localStorage access
-    try {
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('tradelia-language', newLocale);
-      }
-    } catch (error) {
-      console.warn('Could not save language preference:', error);
-    }
+    // Bridge Mode: sync localStorage + cookie
+    persistLocale(newLocale);
   };
 
   const t = (key: string): string => {

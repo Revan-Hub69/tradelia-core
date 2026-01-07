@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import { useLanguage } from '@/components/LanguageSelector'
+import { mapAuthErrorToKey } from '@/lib/auth/error-mapping'
 import { 
   MailIcon, 
   ArrowRightIcon,
@@ -13,6 +15,7 @@ import Logo from '@/components/Logo'
 
 export default function ForgotPassword() {
   const router = useRouter()
+  const { t } = useLanguage()
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -22,12 +25,12 @@ export default function ForgotPassword() {
     e.preventDefault()
     
     if (!email) {
-      setError('Inserisci il tuo indirizzo email')
+      setError(t('auth.forgotPassword.errors.required'))
       return
     }
 
     if (!/\S+@\S+\.\S+/.test(email)) {
-      setError('Inserisci un indirizzo email valido')
+      setError(t('auth.forgotPassword.errors.invalid'))
       return
     }
 
@@ -35,17 +38,19 @@ export default function ForgotPassword() {
     setError('')
 
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      const { error: supabaseError } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/auth/reset-password`
       })
 
-      if (error) {
-        setError(error.message)
+      if (supabaseError) {
+        const key = mapAuthErrorToKey(supabaseError)
+        setError(t(key))
       } else {
         setSuccess(true)
       }
     } catch (err: unknown) {
-      setError('Errore durante l\'invio dell\'email di reset')
+      const key = mapAuthErrorToKey(err)
+      setError(t(key))
     } finally {
       setLoading(false)
     }
@@ -53,28 +58,29 @@ export default function ForgotPassword() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          <div className="text-center mb-8">
+      <div className="min-h-screen bg-background flex items-center justify-center px-6 sm:px-8">
+        <div className="w-full max-w-md space-y-8">
+          <div className="text-center space-y-4">
             <Logo />
-            <h1 className="text-2xl font-bold text-foreground mt-4 mb-2">
-              Email inviata
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Controlla la tua casella email per il link di reset password.
-            </p>
+            <div className="space-y-2">
+              <h1 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight">
+                {t('auth.forgotPassword.successTitle')}
+              </h1>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {t('auth.forgotPassword.successSubtitle')}
+              </p>
+            </div>
           </div>
           
-          <div className="bg-green-50 border border-green-200 rounded p-4 mb-6">
+          <div className="p-4 rounded border border-green-200 bg-green-50">
             <div className="flex items-start gap-3">
               <CheckIcon className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="text-sm text-green-800 font-medium mb-1">
-                  Email di reset inviata
+              <div className="space-y-1">
+                <p className="text-sm text-green-800 font-medium">
+                  {t('auth.forgotPassword.successTitle')}
                 </p>
-                <p className="text-xs text-green-700">
-                  Abbiamo inviato un link per reimpostare la password a <strong>{email}</strong>. 
-                  Il link scadrà tra 1 ora.
+                <p className="text-xs text-green-700 leading-relaxed">
+                  {t('auth.forgotPassword.successDetail')}
                 </p>
               </div>
             </div>
@@ -83,17 +89,18 @@ export default function ForgotPassword() {
           <div className="space-y-3">
             <button
               onClick={() => setSuccess(false)}
-              className="w-full text-sm text-muted-foreground hover:text-foreground transition-subtle border border-border/50 rounded py-2"
+              className="w-full h-10 text-sm text-muted-foreground hover:text-foreground transition-colors duration-150 border border-border/50 rounded"
             >
-              Non hai ricevuto l'email? Riprova
+              {t('auth.forgotPassword.retry')}
             </button>
             
             <div className="text-center">
               <button
                 onClick={() => router.push('/')}
-                className="text-sm text-muted-foreground hover:text-foreground transition-subtle"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-150"
+                aria-label={t('auth.common.aria.backToHome')}
               >
-                ← Torna alla homepage
+                {t('auth.common.backToHome')}
               </button>
             </div>
           </div>
@@ -103,40 +110,46 @@ export default function ForgotPassword() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
+    <div className="min-h-screen bg-background flex items-center justify-center px-6 sm:px-8">
+      <div className="w-full max-w-md space-y-8">
+        <div className="text-center space-y-4">
           <Logo />
-          <h1 className="text-2xl font-bold text-foreground mt-4 mb-2">
-            Reset password
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Inserisci il tuo indirizzo email per ricevere il link di reset.
-          </p>
+          <div className="space-y-2">
+            <h1 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight">
+              {t('auth.forgotPassword.title')}
+            </h1>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {t('auth.forgotPassword.subtitle')}
+            </p>
+          </div>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded">
-            <div className="flex items-center gap-2">
-              <AlertTriangleIcon className="w-4 h-4 text-red-600 flex-shrink-0" />
-              <p className="text-sm text-red-800">{error}</p>
+          <div className="p-4 rounded border border-red-200 bg-red-50" role="alert">
+            <div className="flex items-start gap-3">
+              <AlertTriangleIcon className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-red-800 leading-relaxed">{error}</p>
             </div>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              Indirizzo email
+          <div className="space-y-2">
+            <label htmlFor="email" className="block text-sm font-medium text-foreground">
+              {t('auth.forgotPassword.email')}
             </label>
             <div className="relative">
-              <MailIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <MailIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
               <input
+                id="email"
                 type="email"
+                autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-border/50 rounded focus:ring-2 focus:ring-primary/60 focus:border-primary text-sm"
-                placeholder="mario@esempio.it"
+                className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border/50 rounded focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary transition-all duration-150 placeholder:text-muted-foreground/60"
+                placeholder={t('auth.forgotPassword.emailPlaceholder')}
+                aria-label={t('auth.common.aria.emailField')}
+                aria-invalid={!!error}
                 required
               />
             </div>
@@ -145,32 +158,32 @@ export default function ForgotPassword() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full btn-tech disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full h-11 bg-foreground text-background text-sm font-medium rounded hover:bg-foreground/90 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2 flex items-center justify-center gap-2"
           >
             {loading ? (
-              'Invio in corso...'
+              t('auth.forgotPassword.submitting')
             ) : (
               <>
-                Invia link di reset
-                <ArrowRightIcon className="w-4 h-4 ml-2" />
+                {t('auth.forgotPassword.submit')}
+                <ArrowRightIcon className="w-4 h-4" />
               </>
             )}
           </button>
         </form>
 
-        <div className="mt-6 text-center">
+        <div className="text-center">
           <button
             onClick={() => router.push('/')}
-            className="text-sm text-muted-foreground hover:text-foreground transition-subtle"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-150"
+            aria-label={t('auth.common.aria.backToHome')}
           >
-            ← Torna alla homepage
+            {t('auth.common.backToHome')}
           </button>
         </div>
 
-        <div className="mt-4 p-3 bg-muted/30 rounded text-xs text-muted-foreground">
-          <p>
-            <strong>Nota:</strong> Se non ricevi l'email entro qualche minuto, 
-            controlla la cartella spam o riprova con un altro indirizzo.
+        <div className="p-3 rounded border border-border/50 bg-muted/30">
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            <strong>{t('auth.forgotPassword.note')}</strong>
           </p>
         </div>
       </div>

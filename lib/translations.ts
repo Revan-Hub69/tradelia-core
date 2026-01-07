@@ -385,6 +385,127 @@ export const translations = {
           backToLogin: 'Torna al login'
         }
       }
+    },
+    // Standalone auth pages translations (anti-enumeration)
+    auth: {
+      common: {
+        backToHome: '← Torna alla homepage',
+        loading: 'Caricamento...',
+        error: 'Errore',
+        success: 'Successo',
+        or: 'oppure',
+        continueWithGoogle: 'Continua con Google',
+        rateLimited: 'Troppi tentativi. Riprova più tardi.',
+        errorGeneric: 'Si è verificato un errore. Riprova.',
+        emailSentIfExists: 'Se l\'indirizzo è valido, riceverai un\'email.',
+        aria: {
+          closeModal: 'Chiudi',
+          submit: 'Invia',
+          emailField: 'Campo email',
+          passwordField: 'Campo password',
+          backToHome: 'Torna alla homepage'
+        }
+      },
+      login: {
+        title: 'Accedi al tuo account',
+        subtitle: 'Accedi per sincronizzare le tue preferenze',
+        email: 'Email',
+        emailPlaceholder: 'mario@esempio.it',
+        password: 'Password',
+        passwordPlaceholder: 'La tua password',
+        submit: 'Accedi',
+        submitting: 'Accesso in corso...',
+        forgotPassword: 'Password dimenticata?',
+        noAccount: 'Non hai un account? Completa il questionario sulla homepage per registrarti.',
+        errors: {
+          required: 'Inserisci email e password',
+          invalid: 'Impossibile completare l\'accesso. Riprova.'
+        }
+      },
+      forgotPassword: {
+        title: 'Reset password',
+        subtitle: 'Inserisci il tuo indirizzo email per ricevere il link di reset.',
+        email: 'Indirizzo email',
+        emailPlaceholder: 'mario@esempio.it',
+        submit: 'Invia link di reset',
+        submitting: 'Invio in corso...',
+        successTitle: 'Richiesta inviata',
+        successSubtitle: 'Se l\'indirizzo è associato a un account, riceverai un\'email con le istruzioni.',
+        successDetail: 'Abbiamo inviato un link per reimpostare la password. Il link scadrà tra 1 ora.',
+        retry: 'Non hai ricevuto l\'email? Riprova',
+        note: 'Controlla anche la cartella spam.',
+        errors: {
+          required: 'Inserisci il tuo indirizzo email',
+          invalid: 'Inserisci un indirizzo email valido',
+          sendError: 'Impossibile inviare l\'email. Riprova.'
+        }
+      },
+      resetPassword: {
+        title: 'Nuova password',
+        subtitle: 'Inserisci la nuova password per completare il reset.',
+        newPassword: 'Nuova password',
+        newPasswordPlaceholder: 'Minimo 8 caratteri',
+        confirmPassword: 'Conferma password',
+        confirmPasswordPlaceholder: 'Ripeti la password',
+        submit: 'Aggiorna password',
+        submitting: 'Aggiornamento...',
+        successTitle: 'Password aggiornata',
+        successSubtitle: 'La password è stata modificata. Reindirizzamento alla homepage.',
+        redirecting: 'Reindirizzamento in corso...',
+        errors: {
+          invalidLink: 'Link non valido o scaduto. Richiedi un nuovo link.',
+          mismatch: 'Le password non coincidono',
+          minLength: 'La password deve essere di almeno 8 caratteri',
+          updateError: 'Impossibile aggiornare la password. Riprova.'
+        }
+      },
+      verifyEmail: {
+        title: 'Verifica email',
+        verifying: 'Verifica email in corso...',
+        successTitle: 'Email verificata',
+        successSubtitle: 'La tua email è stata verificata. Reindirizzamento alla dashboard...',
+        redirecting: 'Reindirizzamento...',
+        errorTitle: 'Verifica email',
+        errorSubtitle: 'Si è verificato un problema durante la verifica.',
+        resend: 'Invia nuova email di verifica',
+        resending: 'Invio in corso...',
+        resendSuccess: 'Email inviata!',
+        errors: {
+          invalidLink: 'Link non valido o scaduto.',
+          verifyError: 'Impossibile verificare l\'email. Riprova.',
+          resendError: 'Impossibile inviare l\'email. Riprova.'
+        }
+      },
+      callback: {
+        title: 'Completamento autenticazione...',
+        subtitle: 'Attendere mentre viene completato il processo di accesso.',
+        errorGeneric: 'Errore durante l\'autenticazione. Riprova.'
+      },
+      register: {
+        title: 'Crea il tuo account',
+        subtitle: 'Sincronizza le tue preferenze su tutti i dispositivi',
+        fullName: 'Nome completo',
+        fullNamePlaceholder: 'Mario Rossi',
+        email: 'Email',
+        emailPlaceholder: 'mario@esempio.it',
+        password: 'Password',
+        passwordPlaceholder: 'Minimo 8 caratteri',
+        confirmPassword: 'Conferma password',
+        confirmPasswordPlaceholder: 'Ripeti la password',
+        submit: 'Crea account',
+        submitting: 'Creazione account...',
+        terms: 'Creando un account accetti i nostri termini di servizio e confermi di aver letto la privacy policy.',
+        forgotPassword: 'Password dimenticata?',
+        errors: {
+          nameRequired: 'Nome richiesto',
+          emailRequired: 'Email richiesta',
+          emailInvalid: 'Email non valida',
+          passwordRequired: 'Password richiesta',
+          passwordMinLength: 'Minimo 8 caratteri',
+          passwordMismatch: 'Le password non coincidono',
+          registerError: 'Impossibile completare la registrazione. Riprova.'
+        }
+      }
     }
   },
   en: {
@@ -771,6 +892,127 @@ export const translations = {
           title: 'Email sent',
           description: 'Check your email inbox for the recovery link.',
           backToLogin: 'Back to login'
+        }
+      }
+    },
+    // Standalone auth pages translations (anti-enumeration)
+    auth: {
+      common: {
+        backToHome: '← Back to homepage',
+        loading: 'Loading...',
+        error: 'Error',
+        success: 'Success',
+        or: 'or',
+        continueWithGoogle: 'Continue with Google',
+        rateLimited: 'Too many attempts. Please try again later.',
+        errorGeneric: 'An error occurred. Please try again.',
+        emailSentIfExists: 'If the address is valid, you will receive an email.',
+        aria: {
+          closeModal: 'Close',
+          submit: 'Submit',
+          emailField: 'Email field',
+          passwordField: 'Password field',
+          backToHome: 'Back to homepage'
+        }
+      },
+      login: {
+        title: 'Sign in to your account',
+        subtitle: 'Sign in to sync your preferences',
+        email: 'Email',
+        emailPlaceholder: 'john@example.com',
+        password: 'Password',
+        passwordPlaceholder: 'Your password',
+        submit: 'Sign in',
+        submitting: 'Signing in...',
+        forgotPassword: 'Forgot password?',
+        noAccount: 'Don\'t have an account? Complete the questionnaire on the homepage to register.',
+        errors: {
+          required: 'Enter email and password',
+          invalid: 'Unable to sign in. Please try again.'
+        }
+      },
+      forgotPassword: {
+        title: 'Reset password',
+        subtitle: 'Enter your email address to receive the reset link.',
+        email: 'Email address',
+        emailPlaceholder: 'john@example.com',
+        submit: 'Send reset link',
+        submitting: 'Sending...',
+        successTitle: 'Request sent',
+        successSubtitle: 'If the address is associated with an account, you will receive an email with instructions.',
+        successDetail: 'We sent a link to reset your password. The link will expire in 1 hour.',
+        retry: 'Didn\'t receive the email? Try again',
+        note: 'Check your spam folder too.',
+        errors: {
+          required: 'Enter your email address',
+          invalid: 'Enter a valid email address',
+          sendError: 'Unable to send email. Please try again.'
+        }
+      },
+      resetPassword: {
+        title: 'New password',
+        subtitle: 'Enter your new password to complete the reset.',
+        newPassword: 'New password',
+        newPasswordPlaceholder: 'Minimum 8 characters',
+        confirmPassword: 'Confirm password',
+        confirmPasswordPlaceholder: 'Repeat password',
+        submit: 'Update password',
+        submitting: 'Updating...',
+        successTitle: 'Password updated',
+        successSubtitle: 'Your password has been changed. Redirecting to homepage.',
+        redirecting: 'Redirecting...',
+        errors: {
+          invalidLink: 'Invalid or expired link. Request a new one.',
+          mismatch: 'Passwords do not match',
+          minLength: 'Password must be at least 8 characters',
+          updateError: 'Unable to update password. Please try again.'
+        }
+      },
+      verifyEmail: {
+        title: 'Verify email',
+        verifying: 'Verifying email...',
+        successTitle: 'Email verified',
+        successSubtitle: 'Your email has been verified. Redirecting to dashboard...',
+        redirecting: 'Redirecting...',
+        errorTitle: 'Verify email',
+        errorSubtitle: 'There was a problem verifying your email.',
+        resend: 'Send new verification email',
+        resending: 'Sending...',
+        resendSuccess: 'Email sent!',
+        errors: {
+          invalidLink: 'Invalid or expired link.',
+          verifyError: 'Unable to verify email. Please try again.',
+          resendError: 'Unable to send email. Please try again.'
+        }
+      },
+      callback: {
+        title: 'Completing authentication...',
+        subtitle: 'Please wait while we complete the sign-in process.',
+        errorGeneric: 'Authentication error. Please try again.'
+      },
+      register: {
+        title: 'Create your account',
+        subtitle: 'Sync your preferences across all devices',
+        fullName: 'Full name',
+        fullNamePlaceholder: 'John Doe',
+        email: 'Email',
+        emailPlaceholder: 'john@example.com',
+        password: 'Password',
+        passwordPlaceholder: 'Minimum 8 characters',
+        confirmPassword: 'Confirm password',
+        confirmPasswordPlaceholder: 'Repeat password',
+        submit: 'Create account',
+        submitting: 'Creating account...',
+        terms: 'By creating an account you agree to our terms of service and confirm you have read the privacy policy.',
+        forgotPassword: 'Forgot password?',
+        errors: {
+          nameRequired: 'Name required',
+          emailRequired: 'Email required',
+          emailInvalid: 'Invalid email',
+          passwordRequired: 'Password required',
+          passwordMinLength: 'Minimum 8 characters',
+          passwordMismatch: 'Passwords do not match',
+          registerError: 'Unable to complete registration. Please try again.'
         }
       }
     }

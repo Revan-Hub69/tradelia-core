@@ -552,7 +552,7 @@ export default function DashboardModal() {
                 {step <= 5 ? (
                   <>{t('modal.step')} {step} {t('modal.of')} 5</>
                 ) : (
-                  <>Registrazione</>
+                  <>{t('auth.register.title')}</>
                 )}
               </div>
             </div>
@@ -561,7 +561,7 @@ export default function DashboardModal() {
             ref={firstFocusableRef}
             onClick={closeModal}
             className="p-2 text-muted-foreground hover:text-foreground transition-subtle rounded focus:ring-2 focus:ring-primary/60 focus:ring-offset-2"
-            aria-label="Chiudi modale"
+            aria-label={t('auth.common.aria.closeModal')}
           >
             <CloseIcon className="w-5 h-5" />
           </button>

@@ -3,16 +3,18 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import { useLanguage } from '@/components/LanguageSelector'
+import { mapAuthErrorToKey } from '@/lib/auth/error-mapping'
 import { 
   MailIcon, 
   CheckIcon,
-  AlertTriangleIcon,
-  ArrowRightIcon 
+  AlertTriangleIcon
 } from '@/components/icons/TradeliaIcons'
 import Logo from '@/components/Logo'
 
 export default function VerifyEmail() {
   const router = useRouter()
+  const { t } = useLanguage()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -27,15 +29,21 @@ export default function VerifyEmail() {
         const refreshToken = hashParams.get('refresh_token')
         const type = hashParams.get('type')
 
+        // Strip token from URL after consuming (security)
+        if (window.location.hash) {
+          window.history.replaceState({}, document.title, window.location.pathname)
+        }
+
         if (type === 'signup' && accessToken && refreshToken) {
           // Set the session with the tokens
-          const { error } = await supabase.auth.setSession({
+          const { error: sessionError } = await supabase.auth.setSession({
             access_token: accessToken,
             refresh_token: refreshToken
           })
 
-          if (error) {
-            setError('Errore durante la verifica email: ' + error.message)
+          if (sessionError) {
+            const key = mapAuthErrorToKey(sessionError)
+            setError(t(key))
           } else {
             setSuccess(true)
             // Redirect to dashboard after 3 seconds
@@ -44,42 +52,45 @@ export default function VerifyEmail() {
             }, 3000)
           }
         } else {
-          setError('Link di verifica non valido o scaduto')
+          setError(t('auth.verifyEmail.errors.invalidLink'))
         }
-      } catch (err: unknown) {
-        setError('Errore durante la verifica email')
+      } catch {
+        setError(t('auth.verifyEmail.errors.verifyError'))
       } finally {
         setLoading(false)
       }
     }
 
     verifyEmail()
-  }, [router])
+  }, [router, t])
 
   const handleResendVerification = async () => {
     setResending(true)
     
     try {
-      // Get current user email from URL params or ask user to enter it
+      // Get current user email from URL params
       const urlParams = new URLSearchParams(window.location.search)
       const email = urlParams.get('email')
       
       if (email) {
-        const { error } = await supabase.auth.resend({
+        const { error: resendError } = await supabase.auth.resend({
           type: 'signup',
           email: email
         })
         
-        if (error) {
-          setError('Errore durante l\'invio: ' + error.message)
+        if (resendError) {
+          const key = mapAuthErrorToKey(resendError)
+          setError(t(key))
         } else {
-          alert('Email di verifica inviata!')
+          // Show success without alert (anti-enumeration)
+          setError('')
         }
       } else {
-        setError('Email non trovata. Torna alla registrazione.')
+        // Generic error, don't reveal email not found
+        setError(t('auth.verifyEmail.errors.resendError'))
       }
-    } catch (err: unknown) {
-      setError('Errore durante l\'invio dell\'email')
+    } catch {
+      setError(t('auth.verifyEmail.errors.resendError'))
     } finally {
       setResending(false)
     }
@@ -87,10 +98,10 @@ export default function VerifyEmail() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Verifica email in corso...</p>
+      <div className="min-h-screen bg-background flex items-center justify-center px-6 sm:px-8">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto" />
+          <p className="text-muted-foreground text-sm">{t('auth.verifyEmail.verifying')}</p>
         </div>
       </div>
     )
@@ -98,23 +109,24 @@ export default function VerifyEmail() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          <div className="text-center mb-8">
+      <div className="min-h-screen bg-background flex items-center justify-center px-6 sm:px-8">
+        <div className="w-full max-w-md space-y-8">
+          <div className="text-center space-y-4">
             <Logo />
-            <h1 className="text-2xl font-bold text-foreground mt-4 mb-2">
-              Email verificata
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              La tua email è stata verificata con successo. 
-              Verrai reindirizzato alla dashboard.
-            </p>
+            <div className="space-y-2">
+              <h1 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight">
+                {t('auth.verifyEmail.successTitle')}
+              </h1>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {t('auth.verifyEmail.successSubtitle')}
+              </p>
+            </div>
           </div>
           
-          <div className="bg-green-50 border border-green-200 rounded p-4 text-center">
+          <div className="p-4 rounded border border-green-200 bg-green-50 text-center">
             <CheckIcon className="w-6 h-6 text-green-600 mx-auto mb-2" />
             <p className="text-sm text-green-800">
-              Reindirizzamento alla dashboard...
+              {t('auth.verifyEmail.redirecting')}
             </p>
           </div>
         </div>
@@ -123,23 +135,25 @@ export default function VerifyEmail() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
+    <div className="min-h-screen bg-background flex items-center justify-center px-6 sm:px-8">
+      <div className="w-full max-w-md space-y-8">
+        <div className="text-center space-y-4">
           <Logo />
-          <h1 className="text-2xl font-bold text-foreground mt-4 mb-2">
-            Verifica email
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Si è verificato un problema durante la verifica della tua email.
-          </p>
+          <div className="space-y-2">
+            <h1 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight">
+              {t('auth.verifyEmail.errorTitle')}
+            </h1>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {t('auth.verifyEmail.errorSubtitle')}
+            </p>
+          </div>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded">
-            <div className="flex items-center gap-2">
-              <AlertTriangleIcon className="w-4 h-4 text-red-600 flex-shrink-0" />
-              <p className="text-sm text-red-800">{error}</p>
+          <div className="p-4 rounded border border-red-200 bg-red-50" role="alert">
+            <div className="flex items-start gap-3">
+              <AlertTriangleIcon className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-red-800 leading-relaxed">{error}</p>
             </div>
           </div>
         )}
@@ -148,14 +162,14 @@ export default function VerifyEmail() {
           <button
             onClick={handleResendVerification}
             disabled={resending}
-            className="w-full btn-tech disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full h-11 bg-foreground text-background text-sm font-medium rounded hover:bg-foreground/90 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2 flex items-center justify-center gap-2"
           >
             {resending ? (
-              'Invio in corso...'
+              t('auth.verifyEmail.resending')
             ) : (
               <>
-                <MailIcon className="w-4 h-4 mr-2" />
-                Invia nuova email di verifica
+                <MailIcon className="w-4 h-4" />
+                {t('auth.verifyEmail.resend')}
               </>
             )}
           </button>
@@ -163,9 +177,10 @@ export default function VerifyEmail() {
           <div className="text-center">
             <button
               onClick={() => router.push('/')}
-              className="text-sm text-muted-foreground hover:text-foreground transition-subtle"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-150"
+              aria-label={t('auth.common.aria.backToHome')}
             >
-              ← Torna alla homepage
+              {t('auth.common.backToHome')}
             </button>
           </div>
         </div>

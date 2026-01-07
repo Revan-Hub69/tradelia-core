@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from './LanguageSelector';
+import { mapAuthErrorToKey } from '@/lib/auth/error-mapping';
 import { 
   UserIcon, 
   MailIcon, 
@@ -21,8 +22,9 @@ interface RegistrationFormProps {
   };
 }
 
-export default function RegistrationForm({ onSuccess, onBack, profileData }: RegistrationFormProps) {
+export default function RegistrationForm({ onSuccess, onBack: _onBack, profileData }: RegistrationFormProps) {
   const { signUpWithEmail, signInWithGoogle, loading } = useAuth();
+  const { t } = useLanguage();
   
   const [formData, setFormData] = useState({
     email: '',
@@ -37,24 +39,24 @@ export default function RegistrationForm({ onSuccess, onBack, profileData }: Reg
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = t('auth.register.errors.nameRequired');
+    }
+
     if (!formData.email) {
-      newErrors.email = 'Email richiesta';
+      newErrors.email = t('auth.register.errors.emailRequired');
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email non valida';
+      newErrors.email = t('auth.register.errors.emailInvalid');
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password richiesta';
+      newErrors.password = t('auth.register.errors.passwordRequired');
     } else if (formData.password.length < 8) {
-      newErrors.password = 'Password deve essere di almeno 8 caratteri';
+      newErrors.password = t('auth.register.errors.passwordMinLength');
     }
 
     if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Le password non coincidono';
-    }
-
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = 'Nome richiesto';
+      newErrors.confirmPassword = t('auth.register.errors.passwordMismatch');
     }
 
     setErrors(newErrors);
@@ -100,9 +102,9 @@ export default function RegistrationForm({ onSuccess, onBack, profileData }: Reg
       }
       
       onSuccess();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Errore durante la registrazione';
-      setErrors({ submit: message });
+    } catch (err: unknown) {
+      const key = mapAuthErrorToKey(err);
+      setErrors({ submit: t(key) });
     } finally {
       setIsSubmitting(false);
     }
@@ -113,9 +115,9 @@ export default function RegistrationForm({ onSuccess, onBack, profileData }: Reg
       await signInWithGoogle();
       // Note: Profile data will be saved in the auth callback
       onSuccess();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Errore durante l\'accesso con Google';
-      setErrors({ submit: message });
+    } catch (err: unknown) {
+      const key = mapAuthErrorToKey(err);
+      setErrors({ submit: t(key) });
     }
   };
 
@@ -206,10 +208,10 @@ export default function RegistrationForm({ onSuccess, onBack, profileData }: Reg
     <div className="space-y-6">
       <div className="text-center">
         <h3 className="text-lg font-semibold text-foreground mb-2">
-          Crea il tuo account
+          {t('auth.register.title')}
         </h3>
         <p className="text-sm text-muted-foreground">
-          Sincronizza le tue preferenze su tutti i dispositivi
+          {t('auth.register.subtitle')}
         </p>
       </div>
 
@@ -217,7 +219,7 @@ export default function RegistrationForm({ onSuccess, onBack, profileData }: Reg
       <button
         onClick={handleGoogleSignIn}
         disabled={loading}
-        className="w-full flex items-center justify-center gap-3 p-3 border border-border/50 rounded hover:bg-muted/30 transition-all disabled:opacity-50"
+        className="w-full flex items-center justify-center gap-3 h-11 border border-border/50 rounded hover:bg-muted/30 transition-all duration-150 disabled:opacity-50 text-sm font-medium"
       >
         <svg className="w-5 h-5" viewBox="0 0 24 24">
           <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -225,7 +227,7 @@ export default function RegistrationForm({ onSuccess, onBack, profileData }: Reg
           <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
           <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
         </svg>
-        Continua con Google
+        {t('auth.common.continueWithGoogle')}
       </button>
 
       <div className="relative">
@@ -233,90 +235,110 @@ export default function RegistrationForm({ onSuccess, onBack, profileData }: Reg
           <div className="w-full border-t border-border/30" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">oppure</span>
+          <span className="bg-background px-2 text-muted-foreground">{t('auth.common.or')}</span>
         </div>
       </div>
 
       {/* Email Registration Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-foreground mb-2">
-            Nome completo
+        <div className="space-y-2">
+          <label htmlFor="fullName" className="block text-sm font-medium text-foreground">
+            {t('auth.register.fullName')}
           </label>
           <div className="relative">
-            <UserIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
             <input
+              id="fullName"
               type="text"
+              autoComplete="name"
               value={formData.fullName}
               onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-              className="w-full pl-10 pr-4 py-2 border border-border/50 rounded focus:ring-2 focus:ring-primary/60 focus:border-primary text-sm"
-              placeholder="Mario Rossi"
+              className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border/50 rounded focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary transition-all duration-150 placeholder:text-muted-foreground/60"
+              placeholder={t('auth.register.fullNamePlaceholder')}
+              aria-invalid={!!errors.fullName}
+              aria-errormessage={errors.fullName ? 'fullName-error' : undefined}
             />
           </div>
           {errors.fullName && (
-            <p className="text-xs text-red-600 mt-1">{errors.fullName}</p>
+            <p id="fullName-error" className="text-xs text-red-600" role="alert">{errors.fullName}</p>
           )}
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-foreground mb-2">
-            Email
+        <div className="space-y-2">
+          <label htmlFor="email" className="block text-sm font-medium text-foreground">
+            {t('auth.register.email')}
           </label>
           <div className="relative">
-            <MailIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <MailIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
             <input
+              id="email"
               type="email"
+              autoComplete="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full pl-10 pr-4 py-2 border border-border/50 rounded focus:ring-2 focus:ring-primary/60 focus:border-primary text-sm"
-              placeholder="mario@esempio.it"
+              className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border/50 rounded focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary transition-all duration-150 placeholder:text-muted-foreground/60"
+              placeholder={t('auth.register.emailPlaceholder')}
+              aria-invalid={!!errors.email}
+              aria-errormessage={errors.email ? 'email-error' : undefined}
             />
           </div>
           {errors.email && (
-            <p className="text-xs text-red-600 mt-1">{errors.email}</p>
+            <p id="email-error" className="text-xs text-red-600" role="alert">{errors.email}</p>
           )}
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-foreground mb-2">
-            Password
+        <div className="space-y-2">
+          <label htmlFor="password" className="block text-sm font-medium text-foreground">
+            {t('auth.register.password')}
           </label>
           <div className="relative">
-            <LockIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
             <input
+              id="password"
               type="password"
+              autoComplete="new-password"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="w-full pl-10 pr-4 py-2 border border-border/50 rounded focus:ring-2 focus:ring-primary/60 focus:border-primary text-sm"
-              placeholder="Minimo 8 caratteri"
+              className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border/50 rounded focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary transition-all duration-150 placeholder:text-muted-foreground/60"
+              placeholder={t('auth.register.passwordPlaceholder')}
+              minLength={8}
+              maxLength={128}
+              aria-invalid={!!errors.password}
+              aria-errormessage={errors.password ? 'password-error' : undefined}
             />
           </div>
           {errors.password && (
-            <p className="text-xs text-red-600 mt-1">{errors.password}</p>
+            <p id="password-error" className="text-xs text-red-600" role="alert">{errors.password}</p>
           )}
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-foreground mb-2">
-            Conferma password
+        <div className="space-y-2">
+          <label htmlFor="confirmPassword" className="block text-sm font-medium text-foreground">
+            {t('auth.register.confirmPassword')}
           </label>
           <div className="relative">
-            <LockIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
             <input
+              id="confirmPassword"
               type="password"
+              autoComplete="new-password"
               value={formData.confirmPassword}
               onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-              className="w-full pl-10 pr-4 py-2 border border-border/50 rounded focus:ring-2 focus:ring-primary/60 focus:border-primary text-sm"
-              placeholder="Ripeti la password"
+              className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border/50 rounded focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary transition-all duration-150 placeholder:text-muted-foreground/60"
+              placeholder={t('auth.register.confirmPasswordPlaceholder')}
+              minLength={8}
+              maxLength={128}
+              aria-invalid={!!errors.confirmPassword}
+              aria-errormessage={errors.confirmPassword ? 'confirmPassword-error' : undefined}
             />
           </div>
           {errors.confirmPassword && (
-            <p className="text-xs text-red-600 mt-1">{errors.confirmPassword}</p>
+            <p id="confirmPassword-error" className="text-xs text-red-600" role="alert">{errors.confirmPassword}</p>
           )}
         </div>
 
         {errors.submit && (
-          <div className="p-3 bg-red-50 border border-red-200 rounded">
+          <div className="p-3 rounded border border-red-200 bg-red-50" role="alert">
             <p className="text-sm text-red-600">{errors.submit}</p>
           </div>
         )}
@@ -324,24 +346,24 @@ export default function RegistrationForm({ onSuccess, onBack, profileData }: Reg
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full btn-tech disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full h-11 bg-foreground text-background text-sm font-medium rounded hover:bg-foreground/90 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2 flex items-center justify-center gap-2"
         >
           {isSubmitting ? (
-            'Creazione account...'
+            t('auth.register.submitting')
           ) : (
             <>
-              Crea account
-              <ArrowRightIcon className="w-4 h-4 ml-2" />
+              {t('auth.register.submit')}
+              <ArrowRightIcon className="w-4 h-4" />
             </>
           )}
         </button>
       </form>
 
-      <div className="p-3 bg-muted/30 rounded text-xs text-muted-foreground">
+      <div className="p-3 rounded border border-border/50 bg-muted/30">
         <div className="flex items-start gap-2">
           <CheckIcon className="w-3 h-3 mt-0.5 text-primary flex-shrink-0" />
-          <span>
-            Creando un account accetti i nostri termini di servizio e confermi di aver letto la privacy policy.
+          <span className="text-xs text-muted-foreground leading-relaxed">
+            {t('auth.register.terms')}
           </span>
         </div>
       </div>
@@ -349,9 +371,9 @@ export default function RegistrationForm({ onSuccess, onBack, profileData }: Reg
       <div className="text-center">
         <a
           href="/auth/forgot-password"
-          className="text-xs text-primary hover:text-primary/80 transition-subtle"
+          className="text-xs text-primary hover:text-primary/80 transition-colors duration-150"
         >
-          Password dimenticata?
+          {t('auth.register.forgotPassword')}
         </a>
       </div>
     </div>
