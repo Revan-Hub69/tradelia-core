@@ -85,7 +85,6 @@ export default function RootLayout({
           rel="preload" 
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" 
           as="style" 
-          onLoad={() => {}} 
         />
         <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" /></noscript>
         <meta name="format-detection" content="telephone=no" />

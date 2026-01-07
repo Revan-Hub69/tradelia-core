@@ -4,6 +4,16 @@ import { useEffect } from 'react';
 
 export function PerformanceOptimizer() {
   useEffect(() => {
+    // Handle font loading asynchronously
+    const handleFontLoading = () => {
+      const preloadLink = document.querySelector('link[rel="preload"][as="style"]') as HTMLLinkElement;
+      if (preloadLink) {
+        preloadLink.onload = () => {
+          preloadLink.rel = 'stylesheet';
+        };
+      }
+    };
+
     // Critical CSS inlining
     const inlineCriticalCSS = () => {
       const criticalCSS = `
@@ -17,15 +27,8 @@ export function PerformanceOptimizer() {
       document.head.insertBefore(style, document.head.firstChild);
     };
 
-    // Optimize font loading with font-display swap
-    const optimizeFonts = () => {
-      // Remove existing font loading from PerformanceOptimizer
-      // Fonts are now handled in layout.tsx with preload
-    };
-
     // Reduce CLS by reserving space
     const reduceCLS = () => {
-      // Set explicit dimensions for dynamic content
       const dashboardPreview = document.querySelector('.dashboard-preview');
       if (dashboardPreview) {
         (dashboardPreview as HTMLElement).style.minHeight = '400px';
@@ -33,13 +36,9 @@ export function PerformanceOptimizer() {
     };
 
     // Run optimizations immediately
+    handleFontLoading();
     inlineCriticalCSS();
     reduceCLS();
-
-    // Defer non-critical optimizations
-    requestIdleCallback(() => {
-      optimizeFonts();
-    });
 
   }, []);
 
