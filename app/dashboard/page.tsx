@@ -100,24 +100,24 @@ function DashboardContent() {
       <div className="space-y-4 max-w-4xl">
         {/* Email Alert */}
         {showEmailAlert && user && (
-          <div className="p-4 rounded border border-border/50 bg-muted/30">
+          <div className="p-4 rounded border border-border bg-muted/50 shadow-sm">
             <div className="flex items-start gap-3">
               <MailIcon className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
               <div className="flex-1">
-                <p className="text-sm font-medium text-foreground mb-1">Verifica email</p>
-                <p className="text-xs text-muted-foreground mb-3">
+                <p className="text-sm font-semibold text-foreground mb-1">Verifica email</p>
+                <p className="text-xs font-medium text-muted-foreground mb-3">
                   Conferma l&apos;indirizzo email per accedere a tutte le funzionalità.
                 </p>
                 <div className="flex items-center gap-4">
                   <button 
                     onClick={handleResendVerification} 
-                    className="text-xs font-medium text-primary hover:text-primary/80 transition-colors duration-150"
+                    className="text-xs font-semibold text-primary hover:text-primary/80 transition-colors duration-150"
                   >
                     Invia verifica
                   </button>
                   <button 
                     onClick={() => setShowEmailAlert(false)} 
-                    className="text-xs text-muted-foreground hover:text-foreground transition-colors duration-150"
+                    className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors duration-150"
                   >
                     Nascondi
                   </button>
@@ -128,18 +128,18 @@ function DashboardContent() {
         )}
 
         {/* User Profile Card */}
-        <div className="rounded border border-border/50 bg-background p-5">
+        <div className="rounded border border-border/50 bg-background p-5 shadow-sm">
           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-4">Profilo</p>
           
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-muted/50 flex items-center justify-center border border-border/50">
-              <UserIcon className="w-5 h-5 text-muted-foreground" />
+            <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center border border-border">
+              <UserIcon className="w-5 h-5 text-foreground" />
             </div>
             <div>
-              <p className="text-sm font-medium text-foreground">{userName}</p>
+              <p className="text-sm font-semibold text-foreground">{userName}</p>
               <div className="flex items-center gap-1.5">
-                <div className={`w-1.5 h-1.5 rounded-full ${isGuestMode ? 'bg-amber-500' : 'bg-green-600'}`} />
-                <span className="text-xs text-muted-foreground">{userType}</span>
+                <div className={`w-1.5 h-1.5 rounded-full ${isGuestMode ? 'bg-amber-600' : 'bg-green-700'}`} />
+                <span className="text-xs font-medium text-muted-foreground">{userType}</span>
               </div>
             </div>
           </div>
@@ -147,47 +147,47 @@ function DashboardContent() {
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs">
             {user && (
               <div>
-                <span className="text-muted-foreground block mb-1">Email</span>
-                <p className="text-foreground truncate">{user.email}</p>
+                <span className="text-muted-foreground font-medium block mb-1">Email</span>
+                <p className="text-foreground font-medium truncate">{user.email}</p>
               </div>
             )}
             <div>
-              <span className="text-muted-foreground block mb-1">Obiettivo</span>
-              <p className="text-foreground capitalize">{currentProfile?.crypto_objective || 'Non definito'}</p>
+              <span className="text-muted-foreground font-medium block mb-1">Obiettivo</span>
+              <p className="text-foreground font-medium capitalize">{currentProfile?.crypto_objective || 'Non definito'}</p>
             </div>
             <div>
-              <span className="text-muted-foreground block mb-1">Esperienza</span>
-              <p className="text-foreground capitalize">{currentProfile?.experience_level || 'Non definita'}</p>
+              <span className="text-muted-foreground font-medium block mb-1">Esperienza</span>
+              <p className="text-foreground font-medium capitalize">{currentProfile?.experience_level || 'Non definita'}</p>
             </div>
           </div>
         </div>
 
         {/* Status Card */}
-        <div className="rounded border border-border/50 bg-background p-5">
+        <div className="rounded border border-border/50 bg-background p-5 shadow-sm">
           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-4">Stato</p>
           
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded bg-muted/50 flex items-center justify-center border border-border/50">
+            <div className="w-10 h-10 rounded bg-muted flex items-center justify-center border border-border">
               <CheckIcon className="w-5 h-5 text-foreground" />
             </div>
             <div>
-              <p className="text-sm font-medium text-foreground">Dashboard attiva</p>
-              <p className="text-xs text-muted-foreground">Configurazione completata</p>
+              <p className="text-sm font-semibold text-foreground">Dashboard attiva</p>
+              <p className="text-xs font-medium text-muted-foreground">Configurazione completata</p>
             </div>
           </div>
         </div>
 
         {/* Configuration Card */}
-        <div className="rounded border border-border/50 bg-background p-5">
+        <div className="rounded border border-border/50 bg-background p-5 shadow-sm">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center">
+            <div className="w-8 h-8 rounded bg-primary/15 flex items-center justify-center border border-primary/20">
               <ShieldIcon className="w-4 h-4 text-primary" />
             </div>
             <div>
               <h2 className="text-sm font-semibold text-foreground">
                 {dashboardConfig.objective_config?.title}
               </h2>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs font-medium text-muted-foreground">
                 {dashboardConfig.objective_config?.description}
               </p>
             </div>
@@ -197,16 +197,16 @@ function DashboardContent() {
             {/* Warnings */}
             <div className="space-y-3">
               <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Avvisi</p>
-              <div className="p-4 rounded border border-amber-200 bg-amber-50">
+              <div className="p-4 rounded border border-amber-300 bg-amber-50">
                 <div className="flex items-start gap-3">
-                  <AlertTriangleIcon className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <AlertTriangleIcon className="w-4 h-4 text-amber-700 flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-xs font-medium text-amber-800">{dashboardConfig.risk_warnings?.primary}</p>
-                    <p className="text-xs text-amber-700 mt-1">{dashboardConfig.risk_warnings?.secondary}</p>
+                    <p className="text-xs font-semibold text-amber-900">{dashboardConfig.risk_warnings?.primary}</p>
+                    <p className="text-xs font-medium text-amber-800 mt-1">{dashboardConfig.risk_warnings?.secondary}</p>
                   </div>
                 </div>
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs font-medium text-muted-foreground">
                 Fonte: {dashboardConfig.risk_warnings?.academicSource}
               </p>
             </div>
@@ -216,23 +216,23 @@ function DashboardContent() {
               <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Strumenti</p>
               <div className="space-y-3">
                 <div>
-                  <p className="text-xs font-medium text-foreground mb-2">Coerenti con obiettivi generali</p>
+                  <p className="text-xs font-semibold text-foreground mb-2">Coerenti con obiettivi generali</p>
                   <ul className="space-y-1.5">
                     {dashboardConfig.recommended_tools?.primary?.map((tool: string, i: number) => (
                       <li key={i} className="flex items-start gap-2">
-                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground/30" />
-                        <span className="text-xs text-muted-foreground">{tool}</span>
+                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground/40" />
+                        <span className="text-xs font-medium text-muted-foreground">{tool}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
                 <div>
-                  <p className="text-xs font-medium text-foreground mb-2">Richiedono attenzione</p>
+                  <p className="text-xs font-semibold text-foreground mb-2">Richiedono attenzione</p>
                   <ul className="space-y-1.5">
                     {dashboardConfig.recommended_tools?.avoid?.map((tool: string, i: number) => (
                       <li key={i} className="flex items-start gap-2">
-                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground/30" />
-                        <span className="text-xs text-muted-foreground">{tool}</span>
+                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground/40" />
+                        <span className="text-xs font-medium text-muted-foreground">{tool}</span>
                       </li>
                     ))}
                   </ul>
@@ -244,21 +244,21 @@ function DashboardContent() {
 
         {/* Educational Content */}
         <div className="grid sm:grid-cols-2 gap-4">
-          <div className="rounded border border-border/50 bg-background p-5 card-interactive">
+          <div className="rounded border border-border/50 bg-background p-5 shadow-sm card-interactive">
             <div className="flex items-center gap-2 mb-3">
-              <BookOpenIcon className="w-4 h-4 text-muted-foreground" />
-              <h3 className="text-sm font-medium text-foreground">Errori comuni</h3>
+              <BookOpenIcon className="w-4 h-4 text-foreground" />
+              <h3 className="text-sm font-semibold text-foreground">Errori comuni</h3>
             </div>
-            <p className="text-xs text-muted-foreground leading-relaxed">
+            <p className="text-xs font-medium text-muted-foreground leading-relaxed">
               Pattern comportamentali documentati dalla ricerca accademica nel campo della finanza comportamentale.
             </p>
           </div>
-          <div className="rounded border border-border/50 bg-background p-5 card-interactive">
+          <div className="rounded border border-border/50 bg-background p-5 shadow-sm card-interactive">
             <div className="flex items-center gap-2 mb-3">
-              <BookOpenIcon className="w-4 h-4 text-muted-foreground" />
-              <h3 className="text-sm font-medium text-foreground">Metodologia</h3>
+              <BookOpenIcon className="w-4 h-4 text-foreground" />
+              <h3 className="text-sm font-semibold text-foreground">Metodologia</h3>
             </div>
-            <p className="text-xs text-muted-foreground leading-relaxed">
+            <p className="text-xs font-medium text-muted-foreground leading-relaxed">
               Fonti accademiche peer-reviewed e processo di identificazione delle incompatibilità.
             </p>
           </div>
