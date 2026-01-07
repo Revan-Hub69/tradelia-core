@@ -4,7 +4,11 @@ const nextConfig = {
   experimental: {
     optimizeCss: true,
     optimizePackageImports: ['@radix-ui/react-slot', 'class-variance-authority', 'clsx', 'tailwind-merge'],
+    webVitalsAttribution: ['CLS', 'LCP'],
   },
+  
+  // External packages
+  serverExternalPackages: ['@supabase/supabase-js'],
   
   // Turbopack configuration (Next.js 16+)
   turbopack: {},
@@ -12,6 +16,20 @@ const nextConfig = {
   // Compression and optimization
   compress: true,
   poweredByHeader: false,
+  
+  // Bundle analyzer
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+      };
+      // Tree shaking optimization
+      config.optimization.usedExports = true;
+      config.optimization.sideEffects = false;
+    }
+    return config;
+  },
   
   // Image optimization
   images: {

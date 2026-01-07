@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { PWAProvider } from "@/components/PWAProvider";
 import { SkipLink } from "@/components/SkipLink";
+import { PerformanceOptimizer } from "@/components/PerformanceOptimizer";
 import { JsonLd, getOrganizationSchema, getWebSiteSchema, getLearningResourceSchema, getCourseSchemas } from "@/components/seo/JsonLd";
 import "./globals.css";
 
@@ -78,11 +79,10 @@ export default function RootLayout({
   return (
     <html lang="it" className="scroll-smooth">
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <meta name="format-detection" content="telephone=no" />
       </head>
       <body className="antialiased min-h-screen bg-background text-foreground font-sans">
+        <PerformanceOptimizer />
         <JsonLd data={[
           getOrganizationSchema(), 
           getWebSiteSchema(), 
