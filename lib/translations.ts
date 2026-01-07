@@ -42,6 +42,7 @@ export const translations = {
       errorFrequency: 'Frequenza errore',
       behavioralTrend: 'Tendenza comportamentale',
       behavioralStudies: 'Studi comportamentali',
+      sourceLabel: 'Fonte:',
       overconfidence: {
         title: 'Eccesso di fiducia',
         description: 'Chi inizia tende a sovrastimare le proprie capacità di comprensione, scegliendo strumenti troppo complessi per il proprio livello di esperienza.',
@@ -345,6 +346,7 @@ export const translations = {
       errorFrequency: 'Error frequency',
       behavioralTrend: 'Behavioral trend',
       behavioralStudies: 'Behavioral studies',
+      sourceLabel: 'Source:',
       overconfidence: {
         title: 'Overconfidence Bias',
         description: 'Beginners tend to overestimate their understanding abilities, choosing tools too complex for their experience level.',

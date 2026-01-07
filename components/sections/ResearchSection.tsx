@@ -74,7 +74,7 @@ export default function ResearchSection() {
           
           <div className="pt-2 border-t border-border/30">
             <cite className="text-xs text-muted-foreground not-italic">
-              <strong>Fonte:</strong> {data.source}
+              <strong>{research.sourceLabel}</strong> {data.source}
             </cite>
           </div>
         </div>

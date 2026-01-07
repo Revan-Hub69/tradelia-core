@@ -62,6 +62,7 @@ export function useTranslations() {
       errorFrequency: t('research.errorFrequency'),
       behavioralTrend: t('research.behavioralTrend'),
       behavioralStudies: t('research.behavioralStudies'),
+      sourceLabel: t('research.sourceLabel'),
       overconfidence: {
         title: t('research.overconfidence.title'),
         description: t('research.overconfidence.description'),
