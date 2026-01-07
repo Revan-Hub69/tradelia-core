@@ -42,9 +42,6 @@ const nextConfig = {
     return config;
   },
   
-  // Modern JS target
-  swcMinify: true,
-  
   // Image optimization
   images: {
     formats: ['image/avif', 'image/webp'],
