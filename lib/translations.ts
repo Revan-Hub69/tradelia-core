@@ -5,8 +5,8 @@ export const translations = {
       verify: 'Verifica'
     },
     hero: {
-      title: 'Esplora le crypto senza fare gli',
-      titleHighlight: 'errori più costosi',
+      title: 'Dashboard dinamica che evita gli',
+      titleHighlight: 'errori nel mondo crypto',
       description: 'Usando solo nozioni accademiche.',
       cta: 'Accedi alla dashboard',
       ctaSecondary: 'Guarda demo',
@@ -265,8 +265,8 @@ export const translations = {
       verify: 'Verify'
     },
     hero: {
-      title: 'Explore crypto without making the',
-      titleHighlight: 'most costly mistakes',
+      title: 'Dynamic dashboard that avoids',
+      titleHighlight: 'crypto world mistakes',
       description: 'Using only academic knowledge.',
       cta: 'Access dashboard',
       ctaSecondary: 'Watch demo',

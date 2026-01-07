@@ -2,6 +2,8 @@
 
 **Versione**: 2026.02 - Tradelia non convince. Tradelia chiarifica.
 
+**Definizione**: Dashboard dinamica che evita gli errori nel mondo crypto.
+
 ## Principi Fondamentali
 
 ### 1. Chiarezza > Persuasione
@@ -134,7 +136,7 @@
 ### Esempi di Copy
 
 ❌ "La compatibilità non è un'opinione. È una verifica."
-✅ "Verifica la coerenza tra il tuo obiettivo e lo strumento finanziario."
+✅ "Dashboard dinamica che evita gli errori nel mondo crypto."
 
 ❌ "73% dei trader retail sceglie strumenti incompatibili"
 ✅ "I portali di comparazione sono spesso remunerati tramite affiliazioni."
@@ -144,6 +146,9 @@
 
 ❌ "Inizia la verifica"
 ✅ "Avvia verifica"
+
+❌ "Dashboard anti-errori crypto"
+✅ "Dashboard dinamica che evita gli errori nel mondo crypto"
 
 ## Microinterazioni
 
