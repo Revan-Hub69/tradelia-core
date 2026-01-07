@@ -3,7 +3,7 @@
   "version": "2026.02",
   "private": true,
   "engines": {
-    "node": ">=22.0.0",
+    "node": "22.x",
     "npm": ">=10.0.0"
   },
   "scripts": {
@@ -21,18 +21,19 @@
     "test:coverage": "vitest --coverage",
     "test:a11y": "vitest --run --config vitest.a11y.config.ts",
     "generate:icons": "node scripts/generate-pwa-icons.js",
-    "analyze": "ANALYZE=true npm run build",
-    "analyze:marketing": "ANALYZE=true npm run build && npx @next/bundle-analyzer .next/static/chunks/pages/(marketing)",
-    "analyze:dashboard": "ANALYZE=true npm run build && npx @next/bundle-analyzer .next/static/chunks/pages/(app)",
+    "analyze": "cross-env ANALYZE=true npm run build",
+    "analyze:marketing": "cross-env ANALYZE=true npm run build",
+    "analyze:dashboard": "cross-env ANALYZE=true npm run build",
     "build:check-budgets": "npm run build && node scripts/check-bundle-budgets.js",
     "check:versions": "node scripts/check-versions.js",
     "check:deps": "npx madge --circular --extensions ts,tsx src/",
     "check:boundaries": "eslint . --ext .ts,.tsx --no-fix",
-    "lighthouse": "lhci autorun"
+    "lighthouse": "lhci autorun",
+    "bundle:analyze": "npx @next/bundle-analyzer .next"
   },
   "dependencies": {
-    "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-dialog": "^1.1.2",
+    "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.4",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.89.0",
@@ -63,6 +64,7 @@
     "@typescript-eslint/parser": "^8.19.1",
     "@vitest/coverage-v8": "^4.0.16",
     "@vitest/ui": "^4.0.16",
+    "cross-env": "^7.0.3",
     "eslint": "^9.17.0",
     "eslint-config-next": "15.1.3",
     "eslint-plugin-import": "^2.31.0",
@@ -78,8 +80,12 @@
     "vitest": "^4.0.16"
   },
   "renovate": {
-    "extends": ["config:base"],
-    "schedule": ["before 6am on monday"],
+    "extends": [
+      "config:base"
+    ],
+    "schedule": [
+      "before 6am on monday"
+    ],
     "automerge": true,
     "automergeType": "pr",
     "major": {

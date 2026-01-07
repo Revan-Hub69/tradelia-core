@@ -8,20 +8,29 @@ const nextConfig = {
   // Performance optimizations
   experimental: {
     optimizeCss: false, // Disabled temporarily due to critters module error
-    optimizePackageImports: ['@radix-ui/react-slot', 'class-variance-authority', 'clsx', 'tailwind-merge'],
+    optimizePackageImports: [
+      '@radix-ui/react-slot', 
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-tooltip',
+      'class-variance-authority', 
+      'clsx', 
+      'tailwind-merge',
+      '@supabase/supabase-js',
+      '@tanstack/react-query'
+    ],
     webVitalsAttribution: ['CLS', 'LCP'],
   },
   
   // External packages
-  serverExternalPackages: ['@supabase/supabase-js'],
+  serverExternalPackages: [],
   
-  // SWC compiler options (Next.js 16+)
+  // SWC compiler options (Next.js 15+)
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
     reactRemoveProperties: process.env.NODE_ENV === 'production',
   },
   
-  // Turbopack configuration (Next.js 16+)
+  // Turbopack configuration (Next.js 15+)
   turbopack: {},
   
   // Compression and optimization
@@ -35,15 +44,36 @@ const nextConfig = {
         ...config.resolve.fallback,
         fs: false,
       };
+      
       // Tree shaking optimization
       config.optimization.usedExports = true;
       config.optimization.sideEffects = false;
-      // Code splitting with aggressive chunking
+      
+      // More aggressive code splitting
       config.optimization.splitChunks = {
         chunks: 'all',
         minSize: 20000,
-        maxSize: 244000,
+        maxSize: 200000, // Reduced from 244000
         cacheGroups: {
+          // Separate vendor chunks
+          supabase: {
+            test: /[\\/]node_modules[\\/]@supabase[\\/]/,
+            name: 'supabase',
+            chunks: 'all',
+            priority: 30,
+          },
+          radix: {
+            test: /[\\/]node_modules[\\/]@radix-ui[\\/]/,
+            name: 'radix',
+            chunks: 'all',
+            priority: 25,
+          },
+          tanstack: {
+            test: /[\\/]node_modules[\\/]@tanstack[\\/]/,
+            name: 'tanstack',
+            chunks: 'all',
+            priority: 20,
+          },
           vendor: {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
@@ -59,10 +89,12 @@ const nextConfig = {
           },
         },
       };
+      
       // Remove unused imports
       config.optimization.providedExports = true;
       config.optimization.concatenateModules = true;
     }
+    
     return config;
   },
   

@@ -1,10 +1,10 @@
 'use client'
 
 import { Suspense, useEffect, useState } from 'react'
+import dynamic from 'next/dynamic'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/lib/supabase'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { DashboardLayout } from '@/components/dashboard/layout'
 import { 
   ShieldIcon,
   AlertTriangleIcon,
@@ -13,6 +13,22 @@ import {
   MailIcon,
   UserIcon
 } from '@/components/icons/TradeliaIcons'
+
+// Dynamic import for heavy components
+const DashboardLayout = dynamic(
+  () => import('@/components/dashboard/layout').then(mod => ({ default: mod.DashboardLayout })),
+  {
+    loading: () => (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto" />
+          <p className="text-sm text-muted-foreground">Caricamento layout...</p>
+        </div>
+      </div>
+    ),
+    ssr: false
+  }
+)
 
 function DashboardContent() {
   const { user, profile, loading } = useAuth()
