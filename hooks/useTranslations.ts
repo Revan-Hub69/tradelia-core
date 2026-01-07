@@ -78,6 +78,16 @@ export function useTranslations() {
         title: t('research.herding.title'),
         description: t('research.herding.description'),
         source: t('research.herding.source')
+      },
+      fomo: {
+        title: t('research.fomo.title'),
+        description: t('research.fomo.description'),
+        source: t('research.fomo.source')
+      },
+      panicSelling: {
+        title: t('research.panicSelling.title'),
+        description: t('research.panicSelling.description'),
+        source: t('research.panicSelling.source')
       }
     },
 

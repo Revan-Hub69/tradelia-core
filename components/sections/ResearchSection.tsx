@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from '@/hooks/useTranslations';
-import { AlertTriangleIcon, TrendingUpIcon, BrainIcon, BarChartIcon, ShieldIcon } from '@/components/icons/TradeliaIcons';
+import { AlertTriangleIcon, TrendingUpIcon, BrainIcon, BarChartIcon, ShieldIcon, DiamondIcon } from '@/components/icons/TradeliaIcons';
 
 export default function ResearchSection() {
   const { research } = useTranslations();
@@ -12,6 +12,18 @@ export default function ResearchSection() {
       iconColor: 'red',
       IconComponent: AlertTriangleIcon,
       sparkline: [65, 68, 72, 75, 77, 79, 78] as number[]
+    },
+    {
+      key: 'fomo' as const,
+      iconColor: 'green',
+      IconComponent: TrendingUpIcon,
+      sparkline: [60, 63, 67, 70, 72, 74, 72] as number[]
+    },
+    {
+      key: 'panicSelling' as const,
+      iconColor: 'blue',
+      IconComponent: BrainIcon,
+      sparkline: [55, 58, 62, 65, 67, 69, 68] as number[]
     },
     {
       key: 'disposition' as const,
@@ -29,7 +41,7 @@ export default function ResearchSection() {
 
   interface ResearchItemProps {
     item: {
-      key: 'overconfidence' | 'disposition' | 'herding';
+      key: 'overconfidence' | 'fomo' | 'panicSelling' | 'disposition' | 'herding';
       iconColor: string;
       IconComponent: React.FC<{ className?: string; size?: number }>;
       sparkline: number[];
@@ -53,13 +65,17 @@ export default function ResearchSection() {
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
               item.iconColor === 'red' ? 'bg-red-50' : 
               item.iconColor === 'orange' ? 'bg-orange-50' : 
-              'bg-amber-50'
+              item.iconColor === 'amber' ? 'bg-amber-50' :
+              item.iconColor === 'green' ? 'bg-green-50' :
+              'bg-blue-50'
             }`}>
               <item.IconComponent 
                 className={`w-5 h-5 ${
                   item.iconColor === 'red' ? 'text-red-500' : 
                   item.iconColor === 'orange' ? 'text-orange-500' : 
-                  'text-amber-500'
+                  item.iconColor === 'amber' ? 'text-amber-500' :
+                  item.iconColor === 'green' ? 'text-green-500' :
+                  'text-blue-500'
                 }`}
               />
             </div>
@@ -89,14 +105,18 @@ export default function ResearchSection() {
                   <span className={`text-3xl font-bold ${
                     item.iconColor === 'red' ? 'text-red-600' : 
                     item.iconColor === 'orange' ? 'text-orange-600' : 
-                    'text-amber-600'
+                    item.iconColor === 'amber' ? 'text-amber-600' :
+                    item.iconColor === 'green' ? 'text-green-600' :
+                    'text-blue-600'
                   }`}>
-                    {item.sparkline[item.sparkline.length - 1]}%
+                    {item.sparkline.at(-1)}%
                   </span>
                   <div className={`w-2 h-2 rounded-full ${
                     item.iconColor === 'red' ? 'bg-red-500' : 
                     item.iconColor === 'orange' ? 'bg-orange-500' : 
-                    'bg-amber-500'
+                    item.iconColor === 'amber' ? 'bg-amber-500' :
+                    item.iconColor === 'green' ? 'bg-green-500' :
+                    'bg-blue-500'
                   }`} />
                 </div>
               </div>
@@ -110,7 +130,9 @@ export default function ResearchSection() {
                       className={`flex-1 rounded-t transition-all duration-150 hover:opacity-80 sparkline-bar ${
                         item.iconColor === 'red' ? 'bg-gradient-to-t from-red-500 to-red-300' : 
                         item.iconColor === 'orange' ? 'bg-gradient-to-t from-orange-500 to-orange-300' : 
-                        'bg-gradient-to-t from-amber-500 to-amber-300'
+                        item.iconColor === 'amber' ? 'bg-gradient-to-t from-amber-500 to-amber-300' :
+                        item.iconColor === 'green' ? 'bg-gradient-to-t from-green-500 to-green-300' :
+                        'bg-gradient-to-t from-blue-500 to-blue-300'
                       }`}
                       style={{ 
                         height: `${(value / Math.max(...item.sparkline)) * 100}%`,
@@ -158,9 +180,9 @@ export default function ResearchSection() {
           </p>
         </header>
         
-        {/* Above-fold: Solo i 2 bias più importanti */}
+        {/* Above-fold: 3 errori principali */}
         <div className="space-y-16 fade-in-stagger mb-20" role="list">
-          {RESEARCH_ITEMS.slice(0, 2).map((item, index) => (
+          {RESEARCH_ITEMS.slice(0, 3).map((item, index) => (
             <div key={item.key} role="listitem">
               <ResearchItem 
                 item={item} 
@@ -174,12 +196,12 @@ export default function ResearchSection() {
         {/* Below-fold: Resto dei bias */}
         <div className="border-t border-border/30 pt-16">
           <div className="space-y-16" role="list">
-            {RESEARCH_ITEMS.slice(2).map((item, index) => (
+            {RESEARCH_ITEMS.slice(3).map((item, index) => (
               <div key={item.key} role="listitem">
                 <ResearchItem 
                   item={item} 
                   data={research[item.key]}
-                  index={index + 2}
+                  index={index + 3}
                 />
               </div>
             ))}
@@ -194,52 +216,64 @@ export default function ResearchSection() {
           <div className="bg-background/90 backdrop-blur-sm border border-border/50 rounded-xl p-8">
             <div className="space-y-6">
               {/* Chart Legend */}
-              <div className="flex items-center justify-center gap-8 text-sm">
+              <div className="flex flex-wrap items-center justify-center gap-6 text-sm">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded bg-red-500" />
-                  <span className="text-muted-foreground">Leveraggio senza Stop Loss</span>
+                  <span className="text-muted-foreground">Leveraggio</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded bg-green-500" />
+                  <span className="text-muted-foreground">FOMO</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded bg-blue-500" />
+                  <span className="text-muted-foreground">Panic Selling</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded bg-orange-500" />
-                  <span className="text-muted-foreground">Ordini non compresi</span>
+                  <span className="text-muted-foreground">Ordini</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded bg-amber-500" />
-                  <span className="text-muted-foreground">Scam e siti finti</span>
+                  <span className="text-muted-foreground">Scam</span>
                 </div>
               </div>
               
               {/* Grouped Bar Chart */}
-              <div className="relative h-48 flex items-end justify-center gap-4 px-8">
-                {RESEARCH_ITEMS.map((item, i) => (
+              <div className="relative h-56 flex items-end justify-center gap-3 px-4">
+                {RESEARCH_ITEMS.map((item) => (
                   <div key={item.key} className="flex flex-col items-center gap-2">
-                    <div className="flex gap-1 items-end h-40">
+                    <div className="flex gap-1 items-end h-44">
                       {/* Previous months */}
                       {item.sparkline.slice(0, -1).map((value, j) => (
                         <div
                           key={j}
-                          className={`w-4 rounded-t transition-all duration-150 ${
+                          className={`w-3 rounded-t transition-all duration-150 ${
                             item.iconColor === 'red' ? 'bg-red-300' : 
                             item.iconColor === 'orange' ? 'bg-orange-300' : 
-                            'bg-amber-300'
+                            item.iconColor === 'amber' ? 'bg-amber-300' :
+                            item.iconColor === 'green' ? 'bg-green-300' :
+                            'bg-blue-300'
                           }`}
-                          style={{ height: `${(value / 100) * 160}px` }}
+                          style={{ height: `${(value / 100) * 176}px` }}
                         />
                       ))}
                       {/* Current month - taller and highlighted */}
                       <div
-                        className={`w-6 rounded-t transition-all duration-300 ${
+                        className={`w-5 rounded-t transition-all duration-300 ${
                           item.iconColor === 'red' ? 'bg-red-500 shadow-lg shadow-red-500/20' : 
                           item.iconColor === 'orange' ? 'bg-orange-500 shadow-lg shadow-orange-500/20' : 
-                          'bg-amber-500 shadow-lg shadow-amber-500/20'
+                          item.iconColor === 'amber' ? 'bg-amber-500 shadow-lg shadow-amber-500/20' :
+                          item.iconColor === 'green' ? 'bg-green-500 shadow-lg shadow-green-500/20' :
+                          'bg-blue-500 shadow-lg shadow-blue-500/20'
                         }`}
-                        style={{ height: `${(item.sparkline.at(-1) ?? 0) / 100 * 160}px` }}
+                        style={{ height: `${(item.sparkline.at(-1) ?? 0) / 100 * 176}px` }}
                       />
                     </div>
                     <span className="text-xs text-muted-foreground font-medium">
                       {item.sparkline.at(-1)}%
                     </span>
-                    <span className="text-xs text-muted-foreground/70 max-w-24 text-center leading-tight">
+                    <span className="text-xs text-muted-foreground/70 max-w-20 text-center leading-tight">
                       {research[item.key].title}
                     </span>
                   </div>
@@ -247,7 +281,7 @@ export default function ResearchSection() {
               </div>
               
               {/* X-axis labels */}
-              <div className="flex justify-center gap-4 text-xs text-muted-foreground/50">
+              <div className="flex justify-center gap-3 text-xs text-muted-foreground/50 px-4">
                 <span>G</span>
                 <span>F</span>
                 <span>M</span>

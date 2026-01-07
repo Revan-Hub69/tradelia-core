@@ -58,6 +58,16 @@ export const translations = {
         title: 'Scam e Siti Finti',
         description: 'Investire su siti che promettono rendimenti impossibili senza verificare la legittimità. Il 58% delle perdite crypto deriva da truffe e phishing.',
         source: 'FBI Internet Crime Report 2024; Chainalysis 2024 Crypto Crime Report. Gradient di rischio crescente.'
+      },
+      fomo: {
+        title: 'FOMO',
+        description: 'Comprare quando il prezzo è già ai massimi per paura di perdere l\'occasione. Il 72% degli investitori crypto compra sui massimi dopo aver visto notizie di guadagni.',
+        source: 'Statman, M. (2017). What Investors Want: What Behavioral Finance Tells Us About Investment Management. McGraw-Hill.'
+      },
+      panicSelling: {
+        title: 'Panic Selling',
+        description: 'Vendere quando il prezzo crolla per paura di perdere tutto, spesso sui minimi assoluti. Il 68% dei holder vendono durante i drawdown peggiori.',
+        source: 'Shiller, R. J. (2015). Irrational Exuberance (3rd ed.). Princeton University Press.'
       }
     },
     academicBanner: {
@@ -363,6 +373,16 @@ export const translations = {
         title: 'Scams and Fake Sites',
         description: 'Investing on sites promising impossible returns without verifying legitimacy. 58% of crypto losses come from scams and phishing.',
         source: 'FBI Internet Crime Report 2024; Chainalysis 2024 Crypto Crime Report. Growing risk gradient.'
+      },
+      fomo: {
+        title: 'FOMO',
+        description: 'Buying when price is already at highs for fear of missing out. 72% of crypto investors buy at highs after seeing news of profits.',
+        source: 'Statman, M. (2017). What Investors Want: What Behavioral Finance Tells Us About Investment Management. McGraw-Hill.'
+      },
+      panicSelling: {
+        title: 'Panic Selling',
+        description: 'Selling when price crashes for fear of losing everything, often at absolute lows. 68% of holders sell during the worst drawdowns.',
+        source: 'Shiller, R. J. (2015). Irrational Exuberance (3rd ed.). Princeton University Press.'
       }
     },
     academicBanner: {
