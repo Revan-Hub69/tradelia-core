@@ -2,6 +2,7 @@
 
 import Logo from './Logo';
 import { useLanguage } from './LanguageSelector';
+import { useTranslations } from '@/hooks/useTranslations';
 import { MailIcon, FileTextIcon, ScaleIcon, EyeIcon, BookOpenIcon } from '@/components/icons/TradeliaIcons';
 
 export function Footer() {
