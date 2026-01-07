@@ -41,12 +41,7 @@ export default function HeroSection() {
                 </h1>
                 
                 <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-xl font-semibold">
-                  Usando solo{' '}
-                  <span className="text-foreground relative">
-                    nozioni accademiche
-                    <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary/60 rounded-full block" />
-                  </span>
-                  .
+                  {hero.description}
                 </p>
 
                 {/* Trust metrics */}
@@ -68,7 +63,7 @@ export default function HeroSection() {
                   onClick={() => openModal()}
                   className="btn-tech-premium group"
                 >
-                  <span>Accedi alla dashboard</span>
+                  <span>{hero.cta}</span>
                   <ArrowRightIcon className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
                 </button>
                 
