@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Disable ESLint during build to avoid compatibility warnings
+  // Disable ESLint during build temporarily (import boundaries still work in dev)
   eslint: {
     ignoreDuringBuilds: true,
   },
