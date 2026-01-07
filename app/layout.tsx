@@ -1,27 +1,27 @@
 import type { Metadata, Viewport } from "next";
 import { PWAProvider } from "@/components/PWAProvider";
 import { SkipLink } from "@/components/SkipLink";
-import { JsonLd, getOrganizationSchema, getWebSiteSchema } from "@/components/seo/JsonLd";
+import { JsonLd, getOrganizationSchema, getWebSiteSchema, getLearningResourceSchema, getCourseSchemas } from "@/components/seo/JsonLd";
 import "./globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = 'it';
   
   const titles = {
-    it: "Tradelia - Identifica Incompatibilità tra Obiettivi e Strumenti Crypto | Ricerca Accademica",
-    en: "Tradelia - Identify Incompatibilities between Objectives and Crypto Tools | Academic Research"
+    it: "Tradelia - Evita gli Errori più Costosi nelle Crypto | Dashboard Educativa Gratuita",
+    en: "Tradelia - Avoid the Most Costly Crypto Mistakes | Free Educational Dashboard"
   };
   
   const descriptions = {
-    it: "Dashboard educativa basata su ricerca comportamentale peer-reviewed per identificare incompatibilità tra obiettivi di investimento e strumenti crypto. Metodologia accademica verificata.",
-    en: "Educational dashboard based on peer-reviewed behavioral research to identify incompatibilities between investment objectives and crypto tools. Verified academic methodology."
+    it: "Dashboard educativa che ti aiuta a evitare gli errori più comuni di chi inizia con le crypto. 4 percorsi personalizzati basati su ricerca accademica. Gratuita, senza deposito.",
+    en: "Educational dashboard helping you avoid the most common crypto beginner mistakes. 4 personalized paths based on academic research. Free, no deposit required."
   };
 
   return {
     metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://tradelia.com'),
     title: titles[locale as keyof typeof titles],
     description: descriptions[locale as keyof typeof descriptions],
-    keywords: "crypto education, behavioral finance, investment risk assessment, academic research, cryptocurrency tools, financial literacy, risk management, peer-reviewed methodology",
+    keywords: "errori crypto, perdere soldi crypto, rischi criptovalute principianti, crypto senza rischi, educazione crypto, finanza comportamentale, investire crypto sicuro",
     authors: [{ name: "Tradelia Research Team" }],
     creator: "Tradelia",
     publisher: "Tradelia",
@@ -41,17 +41,17 @@ export async function generateMetadata(): Promise<Metadata> {
       description: descriptions[locale as keyof typeof descriptions],
       siteName: "Tradelia",
       images: [{
-        url: "/og-image.png",
+        url: "/og.png",
         width: 1200,
         height: 630,
-        alt: "Tradelia - Academic Crypto Risk Assessment Dashboard"
+        alt: "Tradelia - Dashboard educativa per evitare errori crypto"
       }]
     },
     twitter: {
       card: "summary_large_image",
       title: titles[locale as keyof typeof titles],
       description: descriptions[locale as keyof typeof descriptions],
-      images: ["/og-image.png"]
+      images: ["/og.png"]
     },
     icons: {
       icon: [
@@ -78,13 +78,28 @@ export default function RootLayout({
   return (
     <html lang="it" className="scroll-smooth">
       <head>
+        {/* Preload critical fonts */}
+        <link 
+          rel="preload" 
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" 
+          as="style"
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        <link 
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" 
+          rel="stylesheet"
+        />
         <meta name="format-detection" content="telephone=no" />
       </head>
       <body className="antialiased min-h-screen bg-background text-foreground font-sans">
-        <JsonLd data={[getOrganizationSchema(), getWebSiteSchema()]} />
+        <JsonLd data={[
+          getOrganizationSchema(), 
+          getWebSiteSchema(), 
+          getLearningResourceSchema(),
+          ...getCourseSchemas()
+        ]} />
         <SkipLink />
         <PWAProvider>
           {children}

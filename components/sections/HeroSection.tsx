@@ -102,9 +102,9 @@ export default function HeroSection() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <DashboardIcon className="w-5 h-5 text-primary" />
-                      <h3 className="text-lg font-semibold text-foreground">{hero.dashboard.title}</h3>
+                      <span className="text-lg font-semibold text-foreground">{hero.dashboard.title}</span>
                     </div>
-                    <div className="flex gap-1">
+                    <div className="flex gap-1" aria-hidden="true">
                       <div className="w-2 h-2 bg-red-400 rounded-full" />
                       <div className="w-2 h-2 bg-yellow-400 rounded-full" />
                       <div className="w-2 h-2 bg-green-400 rounded-full" />
@@ -114,16 +114,16 @@ export default function HeroSection() {
                   {/* Risk cards */}
                   <div className="grid grid-cols-3 gap-3">
                     <div className="kpi-card bg-red-50 border-red-200">
-                      <div className="text-2xl font-bold text-red-600">73%</div>
-                      <div className="text-xs text-red-600/80">{hero.dashboard.metrics.commonErrors}</div>
+                      <div className="text-2xl font-bold text-red-700">73%</div>
+                      <div className="text-xs text-red-700">{hero.dashboard.metrics.commonErrors}</div>
                     </div>
                     <div className="kpi-card bg-amber-50 border-amber-200">
-                      <div className="text-2xl font-bold text-amber-600">3</div>
-                      <div className="text-xs text-amber-600/80">{hero.dashboard.metrics.activeRisks}</div>
+                      <div className="text-2xl font-bold text-amber-700">3</div>
+                      <div className="text-xs text-amber-700">{hero.dashboard.metrics.activeRisks}</div>
                     </div>
                     <div className="kpi-card bg-green-50 border-green-200">
-                      <div className="text-2xl font-bold text-green-600">12</div>
-                      <div className="text-xs text-green-600/80">{hero.dashboard.metrics.academicSources}</div>
+                      <div className="text-2xl font-bold text-green-700">12</div>
+                      <div className="text-xs text-green-700">{hero.dashboard.metrics.academicSources}</div>
                     </div>
                   </div>
 
