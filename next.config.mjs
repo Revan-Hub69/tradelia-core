@@ -16,9 +16,6 @@ const nextConfig = {
     reactRemoveProperties: process.env.NODE_ENV === 'production',
   },
   
-  // Modern browser target
-  target: 'es2022',
-  
   // Turbopack configuration (Next.js 16+)
   turbopack: {},
   
