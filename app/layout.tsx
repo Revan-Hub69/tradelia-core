@@ -79,6 +79,7 @@ export default function RootLayout({
   return (
     <html lang="it" className="scroll-smooth">
       <head>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <meta name="format-detection" content="telephone=no" />
       </head>
       <body className="antialiased min-h-screen bg-background text-foreground font-sans">

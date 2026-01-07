@@ -27,9 +27,23 @@ const nextConfig = {
       // Tree shaking optimization
       config.optimization.usedExports = true;
       config.optimization.sideEffects = false;
+      // Code splitting
+      config.optimization.splitChunks = {
+        chunks: 'all',
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            chunks: 'all',
+          },
+        },
+      };
     }
     return config;
   },
+  
+  // Modern JS target
+  swcMinify: true,
   
   // Image optimization
   images: {

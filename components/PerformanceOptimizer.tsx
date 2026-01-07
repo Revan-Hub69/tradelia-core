@@ -8,13 +8,7 @@ export function PerformanceOptimizer() {
     const addResourceHints = () => {
       const head = document.head;
       
-      // DNS prefetch for external domains
-      const dnsPrefetch = document.createElement('link');
-      dnsPrefetch.rel = 'dns-prefetch';
-      dnsPrefetch.href = '//fonts.googleapis.com';
-      head.appendChild(dnsPrefetch);
-      
-      // Preconnect for critical resources
+      // Preconnect for fonts
       const preconnect = document.createElement('link');
       preconnect.rel = 'preconnect';
       preconnect.href = 'https://fonts.gstatic.com';
@@ -22,7 +16,7 @@ export function PerformanceOptimizer() {
       head.appendChild(preconnect);
     };
 
-    // Optimize font loading
+    // Optimize font loading with font-display swap
     const optimizeFonts = () => {
       const fontLink = document.createElement('link');
       fontLink.rel = 'stylesheet';
@@ -32,10 +26,23 @@ export function PerformanceOptimizer() {
       document.head.appendChild(fontLink);
     };
 
+    // Reduce CLS by reserving space
+    const reduceCLS = () => {
+      // Add size hints to prevent layout shifts
+      const style = document.createElement('style');
+      style.textContent = `
+        .dashboard-preview { min-height: 400px; }
+        .hero-section { min-height: 600px; }
+        img { aspect-ratio: attr(width) / attr(height); }
+      `;
+      document.head.appendChild(style);
+    };
+
     // Run optimizations
     requestIdleCallback(() => {
       addResourceHints();
       optimizeFonts();
+      reduceCLS();
     });
 
   }, []);

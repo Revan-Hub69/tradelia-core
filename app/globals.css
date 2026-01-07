@@ -93,6 +93,27 @@
 }
 
 @layer utilities {
+  /* Prevent CLS with size reservations */
+  .dashboard-preview {
+    min-height: 400px;
+    contain: layout style;
+  }
+  
+  .hero-section {
+    min-height: 600px;
+    contain: layout style;
+  }
+  
+  /* Optimize images for CLS */
+  img {
+    height: auto;
+    max-width: 100%;
+  }
+  
+  img[width][height] {
+    aspect-ratio: attr(width) / attr(height);
+  }
+
   /* Transition Subtle - Design Guide Compliant */
   .transition-subtle {
     transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
