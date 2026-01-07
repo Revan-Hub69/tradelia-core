@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useDashboardModal } from '@/contexts/DashboardModalContext';
 import { useAuth } from '@/hooks/useAuth';
-import { useTranslations } from '@/hooks/useTranslations';
+import { useLanguage } from './LanguageSelector';
+import { mapAuthErrorToKey } from '@/lib/auth/error-mapping';
 import Logo from './Logo';
 import { 
   CloseIcon, 
@@ -24,7 +25,7 @@ interface AuthFormData {
 }
 
 export default function AuthModal() {
-  const { modal } = useTranslations();
+  const { t } = useLanguage();
   const { isOpen, closeModal, initialMode } = useDashboardModal();
   const { user, signInWithGoogle, signInWithEmail, signUpWithEmail } = useAuth();
   
@@ -59,7 +60,7 @@ export default function AuthModal() {
   useEffect(() => {
     if (isOpen && contentRef.current) {
       setTimeout(() => {
-        const firstBtn = contentRef.current?.querySelector('button:not([aria-label="Chiudi"])');
+        const firstBtn = contentRef.current?.querySelector('button:not([data-close-button])');
         if (firstBtn) (firstBtn as HTMLElement).focus();
       }, 150);
     }
@@ -108,21 +109,21 @@ export default function AuthModal() {
   
   const validateLogin = () => {
     const errs: Record<string, string> = {};
-    if (!formData.email) errs.email = 'Campo obbligatorio';
-    else if (!validateEmail(formData.email)) errs.email = 'Formato non valido';
-    if (!formData.password) errs.password = 'Campo obbligatorio';
+    if (!formData.email) errs.email = t('modal.auth.login.errors.required');
+    else if (!validateEmail(formData.email)) errs.email = t('modal.auth.login.errors.invalidFormat');
+    if (!formData.password) errs.password = t('modal.auth.login.errors.required');
     setErrors(errs);
     return !Object.keys(errs).length;
   };
 
   const validateRegister = () => {
     const errs: Record<string, string> = {};
-    if (!formData.fullName.trim()) errs.fullName = 'Campo obbligatorio';
-    if (!formData.email) errs.email = 'Campo obbligatorio';
-    else if (!validateEmail(formData.email)) errs.email = 'Formato non valido';
-    if (!formData.password) errs.password = 'Campo obbligatorio';
-    else if (formData.password.length < 8) errs.password = 'Minimo 8 caratteri';
-    if (formData.password !== formData.confirmPassword) errs.confirmPassword = 'Non coincidono';
+    if (!formData.fullName.trim()) errs.fullName = t('modal.auth.register.errors.required');
+    if (!formData.email) errs.email = t('modal.auth.register.errors.required');
+    else if (!validateEmail(formData.email)) errs.email = t('modal.auth.register.errors.invalidFormat');
+    if (!formData.password) errs.password = t('modal.auth.register.errors.required');
+    else if (formData.password.length < 8) errs.password = t('modal.auth.register.errors.minLength');
+    if (formData.password !== formData.confirmPassword) errs.confirmPassword = t('modal.auth.register.errors.mismatch');
     setErrors(errs);
     return !Object.keys(errs).length;
   };
@@ -138,8 +139,8 @@ export default function AuthModal() {
     try {
       await signInWithGoogle();
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Errore con Google';
-      setErrors({ submit: message });
+      const key = mapAuthErrorToKey(err);
+      setErrors({ submit: t(key) });
     }
   };
 
@@ -152,10 +153,8 @@ export default function AuthModal() {
       closeModal();
       window.location.href = '/dashboard';
     } catch (err: unknown) {
-      const message = err instanceof Error && err.message === 'Invalid login credentials' 
-        ? 'Credenziali non valide' 
-        : 'Errore di accesso';
-      setErrors({ submit: message });
+      const key = mapAuthErrorToKey(err);
+      setErrors({ submit: t(key) });
     } finally {
       setIsSubmitting(false);
     }
@@ -170,8 +169,8 @@ export default function AuthModal() {
       closeModal();
       window.location.href = '/dashboard';
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Errore di registrazione';
-      setErrors({ submit: message });
+      const key = mapAuthErrorToKey(err);
+      setErrors({ submit: t(key) });
     } finally {
       setIsSubmitting(false);
     }
@@ -180,7 +179,7 @@ export default function AuthModal() {
   const handleResetRequest = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.email || !validateEmail(formData.email)) {
-      setErrors({ email: 'Email non valida' });
+      setErrors({ email: t('modal.auth.resetRequest.errors.invalidEmail') });
       return;
     }
     setIsSubmitting(true);
@@ -191,8 +190,8 @@ export default function AuthModal() {
       });
       setMode('reset-sent');
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Errore invio email';
-      setErrors({ submit: message });
+      const key = mapAuthErrorToKey(err);
+      setErrors({ submit: t(key) });
     } finally {
       setIsSubmitting(false);
     }
@@ -216,10 +215,10 @@ export default function AuthModal() {
       {/* Header */}
       <div className="text-center space-y-2">
         <h3 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight">
-          {modal.title}
+          {t('modal.title')}
         </h3>
         <p className="text-sm text-muted-foreground">
-          Scegli la modalità di accesso
+          {t('modal.auth.gateway.subtitle')}
         </p>
       </div>
 
@@ -236,10 +235,10 @@ export default function AuthModal() {
             </div>
             <div className="flex-1 min-w-0">
               <div className="font-medium text-foreground text-sm sm:text-base">
-                Continua come ospite
+                {t('modal.auth.gateway.guestTitle')}
               </div>
               <div className="text-xs text-muted-foreground mt-1">
-                Accesso immediato. Dati salvati solo su questo dispositivo.
+                {t('modal.auth.gateway.guestDescription')}
               </div>
             </div>
           </div>
@@ -252,7 +251,7 @@ export default function AuthModal() {
           </div>
           <div className="relative flex justify-center">
             <span className="bg-background px-3 text-xs text-muted-foreground uppercase tracking-wide">
-              oppure
+              {t('modal.auth.gateway.or')}
             </span>
           </div>
         </div>
@@ -268,7 +267,7 @@ export default function AuthModal() {
             <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
             <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
           </svg>
-          <span className="text-sm font-medium text-foreground">Continua con Google</span>
+          <span className="text-sm font-medium text-foreground">{t('modal.auth.gateway.google')}</span>
         </button>
 
         {/* Email */}
@@ -282,10 +281,10 @@ export default function AuthModal() {
             </div>
             <div className="flex-1 min-w-0">
               <div className="font-medium text-foreground text-sm sm:text-base">
-                Accedi con email
+                {t('modal.auth.gateway.email')}
               </div>
               <div className="text-xs text-muted-foreground mt-1">
-                Usa email e password per accedere o registrarti.
+                {t('modal.auth.gateway.emailDescription')}
               </div>
             </div>
           </div>
@@ -294,7 +293,7 @@ export default function AuthModal() {
 
       {/* Footer note */}
       <p className="text-xs text-muted-foreground text-center leading-relaxed">
-        Strumento educativo. Non fornisce consulenza finanziaria.
+        {t('modal.auth.gateway.footer')}
       </p>
     </div>
   );
@@ -305,10 +304,10 @@ export default function AuthModal() {
     <div className="space-y-6">
       <div className="text-center space-y-2">
         <h3 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight">
-          Accesso
+          {t('modal.auth.login.title')}
         </h3>
         <p className="text-sm text-muted-foreground">
-          Inserisci le credenziali
+          {t('modal.auth.login.subtitle')}
         </p>
       </div>
 
@@ -316,7 +315,7 @@ export default function AuthModal() {
         {/* Email */}
         <div className="space-y-2">
           <label htmlFor="login-email" className="block text-sm font-medium text-foreground">
-            Email
+            {t('modal.auth.login.email')}
           </label>
           <div className="relative">
             <MailIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
@@ -326,7 +325,7 @@ export default function AuthModal() {
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border/50 rounded focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary transition-all duration-150 placeholder:text-muted-foreground/60"
-              placeholder="nome@esempio.it"
+              placeholder={t('modal.auth.login.emailPlaceholder')}
               autoComplete="email"
             />
           </div>
@@ -336,7 +335,7 @@ export default function AuthModal() {
         {/* Password */}
         <div className="space-y-2">
           <label htmlFor="login-password" className="block text-sm font-medium text-foreground">
-            Password
+            {t('modal.auth.login.password')}
           </label>
           <div className="relative">
             <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
@@ -346,7 +345,7 @@ export default function AuthModal() {
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border/50 rounded focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary transition-all duration-150 placeholder:text-muted-foreground/60"
-              placeholder="••••••••"
+              placeholder={t('modal.auth.login.passwordPlaceholder')}
               autoComplete="current-password"
             />
           </div>
@@ -366,7 +365,7 @@ export default function AuthModal() {
           disabled={isSubmitting}
           className="w-full h-11 bg-foreground text-background text-sm font-medium rounded hover:bg-foreground/90 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2"
         >
-          {isSubmitting ? 'Accesso in corso...' : 'Accedi'}
+          {isSubmitting ? t('modal.auth.login.submitting') : t('modal.auth.login.submit')}
         </button>
       </form>
 
@@ -376,15 +375,15 @@ export default function AuthModal() {
           onClick={() => { setErrors({}); setMode('reset-request'); }}
           className="text-xs text-muted-foreground hover:text-foreground transition-colors duration-150"
         >
-          Password dimenticata?
+          {t('modal.auth.login.forgotPassword')}
         </button>
         <p className="text-xs text-muted-foreground">
-          Non hai un account?{' '}
+          {t('modal.auth.login.noAccount')}{' '}
           <button 
             onClick={() => { setErrors({}); setMode('register'); }} 
             className="text-foreground font-medium hover:text-primary transition-colors duration-150"
           >
-            Registrati
+            {t('modal.auth.login.register')}
           </button>
         </p>
       </div>
@@ -397,10 +396,10 @@ export default function AuthModal() {
     <div className="space-y-6">
       <div className="text-center space-y-2">
         <h3 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight">
-          Registrazione
+          {t('modal.auth.register.title')}
         </h3>
         <p className="text-sm text-muted-foreground">
-          Sincronizza i dati su tutti i dispositivi
+          {t('modal.auth.register.subtitle')}
         </p>
       </div>
 
@@ -408,7 +407,7 @@ export default function AuthModal() {
         {/* Name */}
         <div className="space-y-2">
           <label htmlFor="register-name" className="block text-sm font-medium text-foreground">
-            Nome
+            {t('modal.auth.register.name')}
           </label>
           <div className="relative">
             <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
@@ -418,7 +417,7 @@ export default function AuthModal() {
               value={formData.fullName}
               onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
               className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border/50 rounded focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary transition-all duration-150 placeholder:text-muted-foreground/60"
-              placeholder="Mario Rossi"
+              placeholder={t('modal.auth.register.namePlaceholder')}
               autoComplete="name"
             />
           </div>
@@ -428,7 +427,7 @@ export default function AuthModal() {
         {/* Email */}
         <div className="space-y-2">
           <label htmlFor="register-email" className="block text-sm font-medium text-foreground">
-            Email
+            {t('modal.auth.register.email')}
           </label>
           <div className="relative">
             <MailIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
@@ -438,7 +437,7 @@ export default function AuthModal() {
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border/50 rounded focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary transition-all duration-150 placeholder:text-muted-foreground/60"
-              placeholder="nome@esempio.it"
+              placeholder={t('modal.auth.register.emailPlaceholder')}
               autoComplete="email"
             />
           </div>
@@ -448,7 +447,7 @@ export default function AuthModal() {
         {/* Password */}
         <div className="space-y-2">
           <label htmlFor="register-password" className="block text-sm font-medium text-foreground">
-            Password
+            {t('modal.auth.register.password')}
           </label>
           <div className="relative">
             <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
@@ -458,7 +457,7 @@ export default function AuthModal() {
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border/50 rounded focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary transition-all duration-150 placeholder:text-muted-foreground/60"
-              placeholder="Minimo 8 caratteri"
+              placeholder={t('modal.auth.register.passwordPlaceholder')}
               autoComplete="new-password"
             />
           </div>
@@ -468,7 +467,7 @@ export default function AuthModal() {
         {/* Confirm Password */}
         <div className="space-y-2">
           <label htmlFor="register-confirm" className="block text-sm font-medium text-foreground">
-            Conferma password
+            {t('modal.auth.register.confirmPassword')}
           </label>
           <div className="relative">
             <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
@@ -478,7 +477,7 @@ export default function AuthModal() {
               value={formData.confirmPassword}
               onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
               className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border/50 rounded focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary transition-all duration-150 placeholder:text-muted-foreground/60"
-              placeholder="Ripeti la password"
+              placeholder={t('modal.auth.register.confirmPlaceholder')}
               autoComplete="new-password"
             />
           </div>
@@ -498,18 +497,18 @@ export default function AuthModal() {
           disabled={isSubmitting}
           className="w-full h-11 bg-foreground text-background text-sm font-medium rounded hover:bg-foreground/90 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2"
         >
-          {isSubmitting ? 'Registrazione...' : 'Registrati'}
+          {isSubmitting ? t('modal.auth.register.submitting') : t('modal.auth.register.submit')}
         </button>
       </form>
 
       {/* Link */}
       <p className="text-xs text-muted-foreground text-center">
-        Hai già un account?{' '}
+        {t('modal.auth.register.hasAccount')}{' '}
         <button 
           onClick={() => { setErrors({}); setMode('login'); }} 
           className="text-foreground font-medium hover:text-primary transition-colors duration-150"
         >
-          Accedi
+          {t('modal.auth.register.login')}
         </button>
       </p>
     </div>
@@ -521,17 +520,17 @@ export default function AuthModal() {
     <div className="space-y-6">
       <div className="text-center space-y-2">
         <h3 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight">
-          Recupero password
+          {t('modal.auth.resetRequest.title')}
         </h3>
         <p className="text-sm text-muted-foreground">
-          Inserisci l&apos;email per ricevere il link
+          {t('modal.auth.resetRequest.subtitle')}
         </p>
       </div>
 
       <form onSubmit={handleResetRequest} className="space-y-4">
         <div className="space-y-2">
           <label htmlFor="reset-email" className="block text-sm font-medium text-foreground">
-            Email
+            {t('modal.auth.resetRequest.email')}
           </label>
           <div className="relative">
             <MailIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
@@ -541,7 +540,7 @@ export default function AuthModal() {
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border/50 rounded focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary transition-all duration-150 placeholder:text-muted-foreground/60"
-              placeholder="nome@esempio.it"
+              placeholder={t('modal.auth.resetRequest.emailPlaceholder')}
               autoComplete="email"
             />
           </div>
@@ -559,7 +558,7 @@ export default function AuthModal() {
           disabled={isSubmitting}
           className="w-full h-11 bg-foreground text-background text-sm font-medium rounded hover:bg-foreground/90 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2"
         >
-          {isSubmitting ? 'Invio...' : 'Invia link'}
+          {isSubmitting ? t('modal.auth.resetRequest.submitting') : t('modal.auth.resetRequest.submit')}
         </button>
       </form>
 
@@ -568,7 +567,7 @@ export default function AuthModal() {
           onClick={() => { setErrors({}); setMode('login'); }} 
           className="text-foreground font-medium hover:text-primary transition-colors duration-150"
         >
-          Torna al login
+          {t('modal.auth.resetRequest.backToLogin')}
         </button>
       </p>
     </div>
@@ -583,10 +582,10 @@ export default function AuthModal() {
       
       <div className="space-y-2">
         <h3 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight">
-          Email inviata
+          {t('modal.auth.resetSent.title')}
         </h3>
         <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
-          Controlla la casella email per il link di recupero.
+          {t('modal.auth.resetSent.description')}
         </p>
       </div>
 
@@ -594,7 +593,7 @@ export default function AuthModal() {
         onClick={() => setMode('login')}
         className="h-11 px-6 bg-foreground text-background text-sm font-medium rounded hover:bg-foreground/90 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2"
       >
-        Torna al login
+        {t('modal.auth.resetSent.backToLogin')}
       </button>
     </div>
   );
@@ -641,7 +640,7 @@ export default function AuthModal() {
               <button 
                 onClick={handleBack} 
                 className="p-2 -ml-2 text-muted-foreground hover:text-foreground rounded transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary/60"
-                aria-label="Indietro"
+                aria-label={t('modal.actions.back')}
               >
                 <ArrowLeftIcon className="w-4 h-4" />
               </button>
@@ -652,7 +651,8 @@ export default function AuthModal() {
             ref={firstFocusableRef} 
             onClick={closeModal} 
             className="p-2 -mr-2 text-muted-foreground hover:text-foreground rounded transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary/60" 
-            aria-label="Chiudi"
+            aria-label={t('auth.common.aria.closeModal')}
+            data-close-button
           >
             <CloseIcon className="w-5 h-5" />
           </button>
