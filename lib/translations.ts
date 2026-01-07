@@ -39,6 +39,9 @@ export const translations = {
       eyebrow: 'Ricerca comportamentale',
       title: 'Errori comuni documentati dalla ricerca accademica',
       subtitle: 'Studi accademici verificati identificano pattern ricorrenti negli errori di chi si avvicina agli investimenti',
+      errorFrequency: 'Frequenza errore',
+      behavioralTrend: 'Tendenza comportamentale',
+      behavioralStudies: 'Studi comportamentali',
       overconfidence: {
         title: 'Eccesso di fiducia',
         description: 'Chi inizia tende a sovrastimare le proprie capacità di comprensione, scegliendo strumenti troppo complessi per il proprio livello di esperienza.',
@@ -53,27 +56,6 @@ export const translations = {
         title: 'Imitazione sociale',
         description: 'Copiare le scelte altrui senza comprendere il contesto, particolarmente comune nei mercati crypto per effetto social media e influencer.',
         source: 'Bikhchandani, S., Hirshleifer, D., & Welch, I. (1992). A theory of fads, fashion, custom, and cultural change as informational cascades. Journal of Political Economy, 100(5), 992-1026.'
-      },
-      // Studi aggiuntivi per completare i 7 studi accademici
-      prospectTheory: {
-        title: 'Teoria del prospetto',
-        description: 'Le persone valutano guadagni e perdite in modo asimmetrico, tendendo a essere più sensibili alle perdite che ai guadagni equivalenti.',
-        source: 'Kahneman, D., & Tversky, A. (1979). Prospect theory: An analysis of decision under risk. Econometrica, 47(2), 263-291.'
-      },
-      mentalAccounting: {
-        title: 'Contabilità mentale',
-        description: 'Tendenza a categorizzare il denaro in "conti mentali" separati, portando a decisioni irrazionali nella gestione del portafoglio.',
-        source: 'Thaler, R. (1985). Mental accounting and consumer choice. Marketing Science, 4(3), 199-214.'
-      },
-      meanReversion: {
-        title: 'Reazione eccessiva',
-        description: 'Gli investitori tendono a reagire in modo eccessivo alle notizie, creando opportunità di correzione nei prezzi.',
-        source: 'De Bondt, W. F., & Thaler, R. (1985). Does the stock market overreact? The Journal of Finance, 40(3), 793-805.'
-      },
-      dispositionEffect: {
-        title: 'Effetto disposizione',
-        description: 'Tendenza sistematica a vendere titoli vincenti troppo presto e mantenere titoli perdenti troppo a lungo.',
-        source: 'Odean, T. (1998). Are investors reluctant to realize their losses? The Journal of Finance, 53(5), 1775-1798.'
       }
     },
     academicBanner: {
@@ -81,7 +63,7 @@ export const translations = {
     },
     howItWorks: {
       title: 'Come funziona',
-      titleWithLogo: true, // Flag per mostrare logo inline
+      titleWithLogo: true,
       subtitle: 'Identificazione dei rischi tra obiettivi e strumenti crypto.',
       logoText: 'Tradelia',
       steps: [
@@ -115,49 +97,6 @@ export const translations = {
       title: 'La maggior parte delle piattaforme spinge all\'azione per monetizzare. Noi rallentiamo.',
       subtitle: 'Perché chi inizia non ha bisogno di più funzioni. Ha bisogno di meno errori.',
       outcome: 'Riduci i 3 errori più costosi per i beginner crypto: eccesso di fiducia, decisioni emotive, imitazione sociale.'
-    },
-    trust: {
-      title: 'Metodologia trasparente',
-      subtitle: 'Trasparenza metodologica e onestà intellettuale.',
-      badges: [
-        'Educativo · non consulenza',
-        'Nessun segnale',
-        'Nessuna esecuzione / custodia',
-        'Concentrato: prevenzione errori'
-      ]
-    },
-    finalCta: {
-      title: 'Inizia dalla dashboard',
-      button: 'Accedi alla dashboard',
-      disclaimer: 'Gratuito · 60–90 secondi · Senza usare denaro'
-    },
-    header: {
-      dashboardButton: 'Accedi alla dashboard'
-    },
-    research: {
-      eyebrow: 'Ricerca comportamentale',
-      title: 'Errori comuni documentati dalla ricerca accademica',
-      subtitle: 'Studi accademici verificati identificano pattern ricorrenti negli errori di chi si avvicina agli investimenti',
-      errorFrequency: 'Frequenza errore',
-      behavioralTrend: 'Tendenza comportamentale',
-      behavioralStudies: 'Studi comportamentali',
-    footer: {
-      description: 'Dashboard guidata per esplorare le crypto senza fare gli errori più costosi. Basata su ricerca comportamentale accademica.',
-      methodology: 'Struttura da studi accademici verificati. Nessun cookie, trasparenza sui partner.',
-      disclaimer: 'Strumento educativo, non consulenza finanziaria. Possibili commissioni da partner raccomandati. L\'utente rimane responsabile delle proprie decisioni.',
-      disclaimerTitle: 'Disclaimer Legale',
-      methodologyTitle: 'Metodologia',
-      version: 'Versione 2026.02',
-      lastUpdate: 'Ultimo aggiornamento: Gennaio 2026',
-      changelogLink: 'Changelog metodologia',
-      legalInfo: 'Strumento educativo • Non consulenza finanziaria • Ricerca accademica',
-      links: {
-        privacy: 'Privacy',
-        terms: 'Termini',
-        methodology: 'Metodologia',
-        contact: 'Contatti'
-      },
-      copyright: '© 2026 Tradelia'
     },
     trust: {
       title: 'Metodologia trasparente',
@@ -199,6 +138,32 @@ export const translations = {
         conflicts: 'Conflitti',
         conflictsDescription: 'Affiliazioni completamente dichiarate'
       }
+    },
+    finalCta: {
+      title: 'Inizia dalla dashboard',
+      button: 'Accedi alla dashboard',
+      disclaimer: 'Gratuito · 60–90 secondi · Senza usare denaro'
+    },
+    header: {
+      dashboardButton: 'Accedi alla dashboard'
+    },
+    footer: {
+      description: 'Dashboard guidata per esplorare le crypto senza fare gli errori più costosi. Basata su ricerca comportamentale accademica.',
+      methodology: 'Struttura da studi accademici verificati. Nessun cookie, trasparenza sui partner.',
+      disclaimer: 'Strumento educativo, non consulenza finanziaria. Possibili commissioni da partner raccomandati. L\'utente rimane responsabile delle proprie decisioni.',
+      disclaimerTitle: 'Disclaimer Legale',
+      methodologyTitle: 'Metodologia',
+      version: 'Versione 2026.02',
+      lastUpdate: 'Ultimo aggiornamento: Gennaio 2026',
+      changelogLink: 'Changelog metodologia',
+      legalInfo: 'Strumento educativo • Non consulenza finanziaria • Ricerca accademica',
+      links: {
+        privacy: 'Privacy',
+        terms: 'Termini',
+        methodology: 'Metodologia',
+        contact: 'Contatti'
+      },
+      copyright: '© 2026 Tradelia'
     },
     modal: {
       title: 'Accesso Dashboard',
@@ -357,6 +322,9 @@ export const translations = {
       eyebrow: 'Behavioral research',
       title: 'Common errors documented by academic research',
       subtitle: 'Peer-reviewed studies identify recurring patterns in beginner investment errors',
+      errorFrequency: 'Error frequency',
+      behavioralTrend: 'Behavioral trend',
+      behavioralStudies: 'Behavioral studies',
       overconfidence: {
         title: 'Overconfidence Bias',
         description: 'Beginners tend to overestimate their understanding abilities, choosing tools too complex for their experience level.',
@@ -378,7 +346,7 @@ export const translations = {
     },
     howItWorks: {
       title: 'How it works',
-      titleWithLogo: true, // Flag per mostrare logo inline
+      titleWithLogo: true,
       subtitle: 'Risk identification between objectives and crypto tools.',
       logoText: 'Tradelia',
       steps: [
@@ -412,50 +380,6 @@ export const translations = {
       title: 'Most platforms push for action to monetize. We slow down.',
       subtitle: 'Because beginners don\'t need more features. They need fewer errors.',
       outcome: 'Reduce the 3 most costly errors for crypto beginners: overconfidence, emotional decisions, social imitation.'
-    },
-    trust: {
-      title: 'Transparent methodology',
-      subtitle: 'Methodological transparency and intellectual honesty.',
-      badges: [
-        'Educational · not advice',
-        'No signals',
-        'No leverage',
-        'No execution / custody',
-        'Focus: error prevention'
-      ]
-    },
-    finalCta: {
-      title: 'Start from dashboard',
-      button: 'Access dashboard',
-      disclaimer: 'Free · 60–90 seconds · No money used'
-    },
-    header: {
-      dashboardButton: 'Access dashboard'
-    },
-    research: {
-      eyebrow: 'Behavioral research',
-      title: 'Common errors documented by academic research',
-      subtitle: 'Peer-reviewed studies identify recurring patterns in beginner investment errors',
-      errorFrequency: 'Error frequency',
-      behavioralTrend: 'Behavioral trend',
-      behavioralStudies: 'Behavioral studies',
-    footer: {
-      description: 'Guided dashboard to explore crypto without making the most costly mistakes. Based on academic behavioral research.',
-      methodology: 'Framework from peer-reviewed studies. No cookies, transparency on partners.',
-      disclaimer: 'Educational tool, not financial advice. Possible commissions from recommended partners. User remains responsible for their decisions.',
-      disclaimerTitle: 'Legal Disclaimer',
-      methodologyTitle: 'Methodology',
-      version: 'Version 2026.02',
-      lastUpdate: 'Last update: January 2026',
-      changelogLink: 'Methodology changelog',
-      legalInfo: 'Educational tool • Not financial advice • Academic research',
-      links: {
-        privacy: 'Privacy',
-        terms: 'Terms',
-        methodology: 'Methodology',
-        contact: 'Contact'
-      },
-      copyright: '© 2026 Tradelia'
     },
     trust: {
       title: 'Transparent methodology',
@@ -497,6 +421,32 @@ export const translations = {
         conflicts: 'Conflicts',
         conflictsDescription: 'Fully declared affiliations'
       }
+    },
+    finalCta: {
+      title: 'Start from dashboard',
+      button: 'Access dashboard',
+      disclaimer: 'Free · 60–90 seconds · No money used'
+    },
+    header: {
+      dashboardButton: 'Access dashboard'
+    },
+    footer: {
+      description: 'Guided dashboard to explore crypto without making the most costly mistakes. Based on academic behavioral research.',
+      methodology: 'Framework from peer-reviewed studies. No cookies, transparency on partners.',
+      disclaimer: 'Educational tool, not financial advice. Possible commissions from recommended partners. User remains responsible for their decisions.',
+      disclaimerTitle: 'Legal Disclaimer',
+      methodologyTitle: 'Methodology',
+      version: 'Version 2026.02',
+      lastUpdate: 'Last update: January 2026',
+      changelogLink: 'Methodology changelog',
+      legalInfo: 'Educational tool • Not financial advice • Academic research',
+      links: {
+        privacy: 'Privacy',
+        terms: 'Terms',
+        methodology: 'Methodology',
+        contact: 'Contact'
+      },
+      copyright: '© 2026 Tradelia'
     },
     modal: {
       title: 'Dashboard Access',
