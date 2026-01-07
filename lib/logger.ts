@@ -55,7 +55,7 @@ class Logger {
   
   clearContext(): void {
     const traceId = this.context.traceId;
-    this.context = { traceId };
+    this.context = traceId ? { traceId } : {};
   }
   
   debug(message: string, extra?: Record<string, any>): void {

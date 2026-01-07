@@ -94,8 +94,8 @@ export function useAuth() {
       options: {
         data: {
           full_name: fullName
-        },
-        emailRedirectTo: undefined // Disable email verification requirement
+        }
+        // emailRedirectTo removed - undefined not compatible with exactOptionalPropertyTypes
       }
     })
     

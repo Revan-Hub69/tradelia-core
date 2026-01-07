@@ -108,14 +108,23 @@ export function useFreshnessData(response: Response): FreshnessData {
   const category = (response.headers.get('X-Data-Category') as DataCategory) || 'freshness-critical';
   const freshness = response.headers.get('X-Data-Freshness') as FreshnessStatus || 'fresh';
   const cacheStatus = response.headers.get('X-Cache-Status');
-  const age = response.headers.get('X-Data-Age');
+  const ageHeader = response.headers.get('X-Data-Age');
   
-  return {
+  const result: FreshnessData = {
     category,
     status: freshness,
-    timestamp: Date.now(),
-    age: age ? parseInt(age) * 1000 : undefined
+    timestamp: Date.now()
   };
+  
+  // Only add age if it exists and is valid
+  if (ageHeader) {
+    const parsedAge = parseInt(ageHeader) * 1000;
+    if (!isNaN(parsedAge)) {
+      result.age = parsedAge;
+    }
+  }
+  
+  return result;
 }
 
 // Utility for API calls with freshness awareness

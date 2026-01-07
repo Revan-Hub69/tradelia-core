@@ -58,7 +58,7 @@ export function detectBrowserLocale(): Locale {
   
   const browserLang = navigator.language.split('-')[0];
   
-  if (isValidLocale(browserLang)) {
+  if (browserLang && isValidLocale(browserLang)) {
     return browserLang;
   }
   
