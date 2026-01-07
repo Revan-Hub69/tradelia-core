@@ -80,6 +80,7 @@ export default function RootLayout({
     <html lang="it" className="scroll-smooth">
       <head>
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
         <meta name="format-detection" content="telephone=no" />
       </head>
       <body className="antialiased min-h-screen bg-background text-foreground font-sans">
