@@ -3,10 +3,23 @@
 import Logo from './Logo';
 import { useLanguage } from './LanguageSelector';
 import { useTranslations } from '@/hooks/useTranslations';
+import { 
+  PrivacyIcon, 
+  TermsIcon, 
+  MethodologyIcon, 
+  ContactIcon 
+} from '@/components/icons/TradeliaIcons';
 
 export function Footer() {
   const { t } = useLanguage();
   const { footer } = useTranslations();
+
+  const footerLinks = [
+    { id: 'privacy', href: '/privacy', label: t('footer.links.privacy'), icon: PrivacyIcon },
+    { id: 'terms', href: '/terms', label: t('footer.links.terms'), icon: TermsIcon },
+    { id: 'methodology', href: '/methodology', label: t('footer.links.methodology'), icon: MethodologyIcon },
+    { id: 'contact', href: 'mailto:info@tradelia.com', label: t('footer.links.contact'), icon: ContactIcon }
+  ];
 
   return (
     <footer className="section-sm border-t border-border/50 bg-muted/30">
@@ -21,24 +34,19 @@ export function Footer() {
             </p>
           </div>
 
-          {/* Links - inline */}
-          <div className="flex flex-wrap justify-center gap-4 text-xs">
-            <a href="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">
-              {t('footer.links.privacy')}
-            </a>
-            <span className="text-border">·</span>
-            <a href="/terms" className="text-muted-foreground hover:text-foreground transition-colors">
-              {t('footer.links.terms')}
-            </a>
-            <span className="text-border">·</span>
-            <a href="/methodology" className="text-muted-foreground hover:text-foreground transition-colors">
-              {t('footer.links.methodology')}
-            </a>
-            <span className="text-border">·</span>
-            <a href="mailto:info@tradelia.com" className="text-muted-foreground hover:text-foreground transition-colors">
-              {t('footer.links.contact')}
-            </a>
-          </div>
+          {/* Links con icone e stile link-tech */}
+          <nav className="flex flex-wrap justify-center gap-6 text-xs" aria-label="Footer navigation">
+            {footerLinks.map((link) => (
+              <a 
+                key={link.id}
+                href={link.href} 
+                className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground link-tech transition-all duration-150"
+              >
+                <link.icon className="w-3.5 h-3.5" />
+                <span>{link.label}</span>
+              </a>
+            ))}
+          </nav>
 
           {/* Disclaimer compatto */}
           <div className="text-center">
@@ -48,7 +56,7 @@ export function Footer() {
           </div>
 
           {/* Copyright */}
-          <div className="pt-4 border-t border-border/30 text-center">
+          <div className="pt-4 border-t border-border/70 text-center">
             <p className="text-xs text-muted-foreground">
               {footer.copyright} · {footer.version}
             </p>

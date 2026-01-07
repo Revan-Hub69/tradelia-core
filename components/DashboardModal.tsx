@@ -538,7 +538,7 @@ export default function DashboardModal() {
         className="relative w-full max-w-lg max-h-[90vh] bg-background border border-border/50 rounded-lg shadow-lg animate-scale-in flex flex-col mx-4"
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-border/30">
+        <div className="flex items-center justify-between p-6 border-b border-border/70">
           <div className="flex items-center gap-3">
             <Logo />
             <div>
@@ -588,7 +588,7 @@ export default function DashboardModal() {
         </div>
 
         {/* Footer */}
-        <div className="flex justify-between p-6 border-t border-border/30">
+        <div className="flex justify-between p-6 border-t border-border/70">
           <button
             onClick={step === 1 ? closeModal : (step === 6 ? handleRegistrationBack : prevStep)}
             className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground border border-border/50 rounded transition-subtle focus:ring-2 focus:ring-primary/60 focus:ring-offset-2"

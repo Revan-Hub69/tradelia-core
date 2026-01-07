@@ -20,15 +20,7 @@
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   }
 
-  .dark {
-    --background: 220 15% 8%;
-    --foreground: 220 10% 95%;
-    --primary: 215 55% 55%;
-    --muted: 220 15% 15%;
-    --muted-foreground: 220 10% 60%;
-    --border: 220 15% 20%;
-    --accent: 220 15% 12%;
-  }
+
 
   * {
     @apply border-border;

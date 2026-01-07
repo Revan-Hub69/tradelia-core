@@ -318,13 +318,13 @@ export default function AuthModal() {
             {t('modal.auth.login.email')}
           </label>
           <div className="relative">
-            <MailIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+            <MailIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80 pointer-events-none" />
             <input
               id="login-email"
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border/50 rounded focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary transition-all duration-150 placeholder:text-muted-foreground/60"
+              className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-150 placeholder:text-muted-foreground"
               placeholder={t('modal.auth.login.emailPlaceholder')}
               autoComplete="email"
             />
@@ -338,13 +338,13 @@ export default function AuthModal() {
             {t('modal.auth.login.password')}
           </label>
           <div className="relative">
-            <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+            <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80 pointer-events-none" />
             <input
               id="login-password"
               type="password"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border/50 rounded focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary transition-all duration-150 placeholder:text-muted-foreground/60"
+              className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-150 placeholder:text-muted-foreground"
               placeholder={t('modal.auth.login.passwordPlaceholder')}
               autoComplete="current-password"
             />
@@ -410,13 +410,13 @@ export default function AuthModal() {
             {t('modal.auth.register.name')}
           </label>
           <div className="relative">
-            <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+            <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80 pointer-events-none" />
             <input
               id="register-name"
               type="text"
               value={formData.fullName}
               onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-              className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border/50 rounded focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary transition-all duration-150 placeholder:text-muted-foreground/60"
+              className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-150 placeholder:text-muted-foreground"
               placeholder={t('modal.auth.register.namePlaceholder')}
               autoComplete="name"
             />
@@ -430,13 +430,13 @@ export default function AuthModal() {
             {t('modal.auth.register.email')}
           </label>
           <div className="relative">
-            <MailIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+            <MailIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80 pointer-events-none" />
             <input
               id="register-email"
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border/50 rounded focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary transition-all duration-150 placeholder:text-muted-foreground/60"
+              className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-150 placeholder:text-muted-foreground"
               placeholder={t('modal.auth.register.emailPlaceholder')}
               autoComplete="email"
             />
@@ -450,13 +450,13 @@ export default function AuthModal() {
             {t('modal.auth.register.password')}
           </label>
           <div className="relative">
-            <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+            <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80 pointer-events-none" />
             <input
               id="register-password"
               type="password"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border/50 rounded focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary transition-all duration-150 placeholder:text-muted-foreground/60"
+              className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-150 placeholder:text-muted-foreground"
               placeholder={t('modal.auth.register.passwordPlaceholder')}
               autoComplete="new-password"
             />
@@ -470,13 +470,13 @@ export default function AuthModal() {
             {t('modal.auth.register.confirmPassword')}
           </label>
           <div className="relative">
-            <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+            <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80 pointer-events-none" />
             <input
               id="register-confirm"
               type="password"
               value={formData.confirmPassword}
               onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-              className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border/50 rounded focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary transition-all duration-150 placeholder:text-muted-foreground/60"
+              className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-150 placeholder:text-muted-foreground"
               placeholder={t('modal.auth.register.confirmPlaceholder')}
               autoComplete="new-password"
             />
@@ -533,13 +533,13 @@ export default function AuthModal() {
             {t('modal.auth.resetRequest.email')}
           </label>
           <div className="relative">
-            <MailIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+            <MailIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80 pointer-events-none" />
             <input
               id="reset-email"
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border/50 rounded focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary transition-all duration-150 placeholder:text-muted-foreground/60"
+              className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-150 placeholder:text-muted-foreground"
               placeholder={t('modal.auth.resetRequest.emailPlaceholder')}
               autoComplete="email"
             />
@@ -634,7 +634,7 @@ export default function AuthModal() {
         className="relative w-full max-w-md bg-background border border-border/50 rounded-lg shadow-lg flex flex-col max-h-[90vh] overflow-hidden"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border/30 flex-shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border/70 flex-shrink-0">
           <div className="flex items-center gap-3">
             {showBackButton && (
               <button 
