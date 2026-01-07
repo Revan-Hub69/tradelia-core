@@ -59,6 +59,7 @@ export function useTranslations() {
       eyebrow: t('research.eyebrow'),
       title: t('research.title'),
       subtitle: t('research.subtitle'),
+      comparisonTitle: t('research.comparisonTitle'),
       errorFrequency: t('research.errorFrequency'),
       behavioralTrend: t('research.behavioralTrend'),
       behavioralStudies: t('research.behavioralStudies'),

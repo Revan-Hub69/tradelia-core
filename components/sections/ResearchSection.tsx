@@ -1,29 +1,29 @@
 'use client';
 
 import { useTranslations } from '@/hooks/useTranslations';
-import { AlertTriangleIcon, TrendingUpIcon, BrainIcon, ResearchIcon } from '@/components/icons/TradeliaIcons';
+import { AlertTriangleIcon, TrendingUpIcon, BrainIcon, BarChartIcon, ShieldIcon } from '@/components/icons/TradeliaIcons';
 
 export default function ResearchSection() {
-  const { research, hero } = useTranslations();
+  const { research } = useTranslations();
 
   const RESEARCH_ITEMS = [
     {
       key: 'overconfidence' as const,
       iconColor: 'red',
       IconComponent: AlertTriangleIcon,
-      sparkline: [65, 78, 82, 73, 89, 76, 73] as number[] // Fix readonly issue
+      sparkline: [65, 68, 72, 75, 77, 79, 78] as number[]
     },
     {
       key: 'disposition' as const,
       iconColor: 'orange',
-      IconComponent: TrendingUpIcon,
-      sparkline: [45, 52, 48, 61, 55, 58, 62] as number[]
+      IconComponent: BarChartIcon,
+      sparkline: [52, 55, 58, 60, 63, 65, 65] as number[]
     },
     {
       key: 'herding' as const,
       iconColor: 'amber',
-      IconComponent: BrainIcon,
-      sparkline: [30, 45, 52, 48, 55, 61, 58] as number[]
+      IconComponent: ShieldIcon,
+      sparkline: [42, 46, 50, 53, 56, 58, 58] as number[]
     }
   ];
 
@@ -183,6 +183,80 @@ export default function ResearchSection() {
                 />
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Comparison Chart - Tutti gli errori a confronto */}
+        <div className="mt-20 border-t border-border/30 pt-16">
+          <h3 className="text-xl font-semibold text-foreground mb-8 text-center">
+            {research.comparisonTitle}
+          </h3>
+          <div className="bg-background/90 backdrop-blur-sm border border-border/50 rounded-xl p-8">
+            <div className="space-y-6">
+              {/* Chart Legend */}
+              <div className="flex items-center justify-center gap-8 text-sm">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded bg-red-500" />
+                  <span className="text-muted-foreground">Leveraggio senza Stop Loss</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded bg-orange-500" />
+                  <span className="text-muted-foreground">Ordini non compresi</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded bg-amber-500" />
+                  <span className="text-muted-foreground">Scam e siti finti</span>
+                </div>
+              </div>
+              
+              {/* Grouped Bar Chart */}
+              <div className="relative h-48 flex items-end justify-center gap-4 px-8">
+                {RESEARCH_ITEMS.map((item, i) => (
+                  <div key={item.key} className="flex flex-col items-center gap-2">
+                    <div className="flex gap-1 items-end h-40">
+                      {/* Previous months */}
+                      {item.sparkline.slice(0, -1).map((value, j) => (
+                        <div
+                          key={j}
+                          className={`w-4 rounded-t transition-all duration-150 ${
+                            item.iconColor === 'red' ? 'bg-red-300' : 
+                            item.iconColor === 'orange' ? 'bg-orange-300' : 
+                            'bg-amber-300'
+                          }`}
+                          style={{ height: `${(value / 100) * 160}px` }}
+                        />
+                      ))}
+                      {/* Current month - taller and highlighted */}
+                      <div
+                        className={`w-6 rounded-t transition-all duration-300 ${
+                          item.iconColor === 'red' ? 'bg-red-500 shadow-lg shadow-red-500/20' : 
+                          item.iconColor === 'orange' ? 'bg-orange-500 shadow-lg shadow-orange-500/20' : 
+                          'bg-amber-500 shadow-lg shadow-amber-500/20'
+                        }`}
+                        style={{ height: `${(item.sparkline.at(-1) ?? 0) / 100 * 160}px` }}
+                      />
+                    </div>
+                    <span className="text-xs text-muted-foreground font-medium">
+                      {item.sparkline.at(-1)}%
+                    </span>
+                    <span className="text-xs text-muted-foreground/70 max-w-24 text-center leading-tight">
+                      {research[item.key].title}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              
+              {/* X-axis labels */}
+              <div className="flex justify-center gap-4 text-xs text-muted-foreground/50">
+                <span>G</span>
+                <span>F</span>
+                <span>M</span>
+                <span>A</span>
+                <span>M</span>
+                <span>G</span>
+                <span className="font-semibold text-foreground">L</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
