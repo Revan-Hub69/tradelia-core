@@ -2,46 +2,46 @@
   {
     "name": "minScore",
     "expected": 0.9,
-    "actual": 0.45,
+    "actual": 0.84,
     "values": [
-      0.45
+      0.84
     ],
     "operator": ">=",
     "passed": false,
     "auditProperty": "performance",
     "auditId": "categories",
     "level": "warn",
-    "url": "http://localhost:3001/"
+    "url": "https://tradelia.org/"
+  },
+  {
+    "name": "maxNumericValue",
+    "expected": 1800,
+    "actual": 3045.973,
+    "values": [
+      3045.973
+    ],
+    "operator": "<=",
+    "passed": false,
+    "auditId": "first-contentful-paint",
+    "level": "warn",
+    "url": "https://tradelia.org/",
+    "auditTitle": "First Contentful Paint",
+    "auditDocumentationLink": "https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/"
   },
   {
     "name": "maxNumericValue",
     "expected": 2500,
-    "actual": 6847.375999999999,
+    "actual": 3474.5730000000003,
     "values": [
-      6847.375999999999
+      3474.5730000000003
     ],
     "operator": "<=",
     "passed": false,
     "auditId": "largest-contentful-paint",
     "level": "error",
-    "url": "http://localhost:3001/",
+    "url": "https://tradelia.org/",
     "auditTitle": "Largest Contentful Paint",
     "auditDocumentationLink": "https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/"
-  },
-  {
-    "name": "maxNumericValue",
-    "expected": 200,
-    "actual": 1463.5,
-    "values": [
-      1463.5
-    ],
-    "operator": "<=",
-    "passed": false,
-    "auditId": "total-blocking-time",
-    "level": "warn",
-    "url": "http://localhost:3001/",
-    "auditTitle": "Total Blocking Time",
-    "auditDocumentationLink": "https://developer.chrome.com/docs/lighthouse/performance/lighthouse-total-blocking-time/"
   },
   {
     "name": "auditRan",
@@ -55,6 +55,6 @@
     "auditProperty": "pwa",
     "auditId": "categories",
     "level": "warn",
-    "url": "http://localhost:3001/"
+    "url": "https://tradelia.org/"
   }
 ]
