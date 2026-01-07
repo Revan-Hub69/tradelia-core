@@ -2,7 +2,7 @@
 const nextConfig = {
   // Performance optimizations
   experimental: {
-    optimizeCss: true,
+    optimizeCss: false, // Disabled temporarily due to critters module error
     optimizePackageImports: ['@radix-ui/react-slot', 'class-variance-authority', 'clsx', 'tailwind-merge'],
     webVitalsAttribution: ['CLS', 'LCP'],
   },
