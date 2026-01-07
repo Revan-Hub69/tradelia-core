@@ -6,7 +6,6 @@ import { lazy, Suspense, ComponentType } from 'react';
 const DynamicComponents = {
   DashboardModal: lazy(() => import('./DashboardModal')),
   AuthModal: lazy(() => import('./AuthModal')),
-  SettingsModal: lazy(() => import('./dashboard/settings-modal')),
 } as const;
 
 interface DynamicLoaderProps {
