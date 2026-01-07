@@ -41,7 +41,8 @@
 - **Sezioni piccole**: `section-sm` (py-12 sm:py-16)
 - **Padding orizzontale**: px-6 sm:px-8
 - **Max-width**: max-w-2xl (672px) - contenuto stretto per leggibilità
-- **Bordi**: border-border/50 per separare sezioni
+- **Bordi sezioni**: border-border/50 per separare sezioni
+- **Bordi card**: border-2 border-border per card principali
 - **Background**: Alternare background e muted/30 per ritmo visivo
 
 ## Tipografia
@@ -87,7 +88,14 @@
 
 ### Card/Box
 ```tsx
-<div className="rounded border border-border/50 bg-background p-5 card-interactive">
+<div className="rounded border-2 border-border bg-background p-5 shadow-sm card-interactive">
+  {/* content */}
+</div>
+```
+
+### Card Secondaria/Contenuto
+```tsx
+<div className="rounded border border-border/50 bg-background p-4">
   {/* content */}
 </div>
 ```

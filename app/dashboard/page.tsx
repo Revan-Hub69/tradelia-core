@@ -100,7 +100,7 @@ function DashboardContent() {
       <div className="space-y-4 max-w-4xl">
         {/* Email Alert */}
         {showEmailAlert && user && (
-          <div className="p-4 rounded border border-border bg-muted/50 shadow-sm">
+          <div className="p-4 rounded border-2 border-primary/20 bg-primary/5 shadow-sm">
             <div className="flex items-start gap-3">
               <MailIcon className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
               <div className="flex-1">
@@ -128,11 +128,11 @@ function DashboardContent() {
         )}
 
         {/* User Profile Card */}
-        <div className="rounded border border-border/50 bg-background p-5 shadow-sm">
+        <div className="rounded border-2 border-border bg-background p-5 shadow-sm">
           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-4">Profilo</p>
           
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center border border-border">
+            <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center border-2 border-border">
               <UserIcon className="w-5 h-5 text-foreground" />
             </div>
             <div>
@@ -163,11 +163,11 @@ function DashboardContent() {
         </div>
 
         {/* Status Card */}
-        <div className="rounded border border-border/50 bg-background p-5 shadow-sm">
+        <div className="rounded border-2 border-border bg-background p-5 shadow-sm">
           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-4">Stato</p>
           
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded bg-muted flex items-center justify-center border border-border">
+            <div className="w-10 h-10 rounded bg-muted flex items-center justify-center border-2 border-border">
               <CheckIcon className="w-5 h-5 text-foreground" />
             </div>
             <div>
@@ -178,9 +178,9 @@ function DashboardContent() {
         </div>
 
         {/* Configuration Card */}
-        <div className="rounded border border-border/50 bg-background p-5 shadow-sm">
+        <div className="rounded border-2 border-border bg-background p-5 shadow-sm">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-8 rounded bg-primary/15 flex items-center justify-center border border-primary/20">
+            <div className="w-8 h-8 rounded bg-primary/15 flex items-center justify-center border-2 border-primary/30">
               <ShieldIcon className="w-4 h-4 text-primary" />
             </div>
             <div>
@@ -197,7 +197,7 @@ function DashboardContent() {
             {/* Warnings */}
             <div className="space-y-3">
               <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Avvisi</p>
-              <div className="p-4 rounded border border-amber-300 bg-amber-50">
+              <div className="p-4 rounded border-2 border-amber-400 bg-amber-50">
                 <div className="flex items-start gap-3">
                   <AlertTriangleIcon className="w-4 h-4 text-amber-700 flex-shrink-0 mt-0.5" />
                   <div>
@@ -244,7 +244,7 @@ function DashboardContent() {
 
         {/* Educational Content */}
         <div className="grid sm:grid-cols-2 gap-4">
-          <div className="rounded border border-border/50 bg-background p-5 shadow-sm card-interactive">
+          <div className="rounded border-2 border-border bg-background p-5 shadow-sm card-interactive">
             <div className="flex items-center gap-2 mb-3">
               <BookOpenIcon className="w-4 h-4 text-foreground" />
               <h3 className="text-sm font-semibold text-foreground">Errori comuni</h3>
@@ -253,7 +253,7 @@ function DashboardContent() {
               Pattern comportamentali documentati dalla ricerca accademica nel campo della finanza comportamentale.
             </p>
           </div>
-          <div className="rounded border border-border/50 bg-background p-5 shadow-sm card-interactive">
+          <div className="rounded border-2 border-border bg-background p-5 shadow-sm card-interactive">
             <div className="flex items-center gap-2 mb-3">
               <BookOpenIcon className="w-4 h-4 text-foreground" />
               <h3 className="text-sm font-semibold text-foreground">Metodologia</h3>
