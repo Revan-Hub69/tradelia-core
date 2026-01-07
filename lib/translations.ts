@@ -165,6 +165,26 @@ export const translations = {
       },
       copyright: '© 2026 Tradelia'
     },
+    faq: {
+      questions: [
+        {
+          question: 'Le crypto sono sicure per i principianti?',
+          answer: 'Le crypto hanno rischi specifici che i principianti spesso sottovalutano. Tradelia ti aiuta a identificare questi rischi prima di investire, basandosi su ricerca accademica sui comportamenti più comuni che portano a perdite.'
+        },
+        {
+          question: 'Come evitare le truffe crypto?',
+          answer: 'Tradelia identifica i pattern comportamentali che rendono vulnerabili alle truffe, come l\'eccesso di fiducia e l\'imitazione sociale. Ti mostra come riconoscere questi bias prima che ti costino denaro.'
+        },
+        {
+          question: 'Quanto devo investire in Bitcoin?',
+          answer: 'Tradelia non fornisce consigli di investimento, ma ti aiuta a capire se i tuoi obiettivi sono coerenti con gli strumenti che stai considerando. L\'importo dipende dalla tua situazione personale.'
+        },
+        {
+          question: 'Tradelia è gratuito?',
+          answer: 'Sì, Tradelia è completamente gratuito. Non richiede registrazione o depositi. Può ricevere commissioni da partner raccomandati, con piena trasparenza.'
+        }
+      ]
+    },
     modal: {
       title: 'Accesso Dashboard',
       step: 'Passo',
@@ -447,6 +467,26 @@ export const translations = {
         contact: 'Contact'
       },
       copyright: '© 2026 Tradelia'
+    },
+    faq: {
+      questions: [
+        {
+          question: 'Are crypto safe for beginners?',
+          answer: 'Crypto have specific risks that beginners often underestimate. Tradelia helps you identify these risks before investing, based on academic research on the most common behaviors that lead to losses.'
+        },
+        {
+          question: 'How to avoid crypto scams?',
+          answer: 'Tradelia identifies behavioral patterns that make you vulnerable to scams, such as overconfidence and social imitation. It shows you how to recognize these biases before they cost you money.'
+        },
+        {
+          question: 'How much should I invest in Bitcoin?',
+          answer: 'Tradelia does not provide investment advice, but helps you understand if your goals are consistent with the tools you are considering. The amount depends on your personal situation.'
+        },
+        {
+          question: 'Is Tradelia free?',
+          answer: 'Yes, Tradelia is completely free. No registration or deposits required. May receive commissions from recommended partners, with full transparency.'
+        }
+      ]
     },
     modal: {
       title: 'Dashboard Access',
