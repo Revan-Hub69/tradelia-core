@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Logo from './Logo';
 import LanguageSelector, { useLanguage } from './LanguageSelector';
+import { useTranslations } from '@/hooks/useTranslations';
 import { useDashboardModal } from '@/contexts/DashboardModalContext';
 import { MenuIcon, CloseIcon } from '@/components/icons/TradeliaIcons';
 
