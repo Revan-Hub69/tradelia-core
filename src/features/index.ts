@@ -9,7 +9,7 @@
 // export { useSidebarStore } from './sidebar-state/store/sidebar-store';
 
 // Locale switching
-// export { LocaleSwitcher } from './locale-switcher/LocaleSwitcher';
+export { LocaleSwitcher } from './locale-switcher/components/LocaleSwitcher';
 
 // Widget reordering
 // export { useRobustDragDrop } from './widget-reorder/hooks/useRobustDragDrop';

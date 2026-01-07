@@ -1,0 +1,43 @@
+{
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Panoramica dei tuoi strumenti di trading",
+    "welcome": "Benvenuto in Tradelia",
+    "loading": "Caricamento...",
+    "error": "Si è verificato un errore",
+    "retry": "Riprova"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "settings": "Impostazioni",
+    "profile": "Profilo",
+    "logout": "Esci"
+  },
+  "settings": {
+    "title": "Impostazioni",
+    "language": "Lingua",
+    "theme": "Tema",
+    "notifications": "Notifiche",
+    "save": "Salva",
+    "cancel": "Annulla"
+  },
+  "profile": {
+    "title": "Profilo",
+    "name": "Nome",
+    "email": "Email",
+    "avatar": "Avatar",
+    "edit": "Modifica",
+    "save": "Salva modifiche"
+  },
+  "common": {
+    "loading": "Caricamento...",
+    "error": "Errore",
+    "success": "Successo",
+    "warning": "Attenzione",
+    "info": "Informazione",
+    "close": "Chiudi",
+    "open": "Apri",
+    "expand": "Espandi",
+    "collapse": "Comprimi"
+  }
+}

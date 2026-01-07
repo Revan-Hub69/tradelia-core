@@ -13,3 +13,6 @@ export * from './lib';
 
 // UI primitives exports
 export * from './ui';
+
+// Provider exports
+export * from './providers';

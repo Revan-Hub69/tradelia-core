@@ -32,9 +32,12 @@ export default function AuthCallbackPage() {
             });
           }
 
-          // Clean URL and redirect to dashboard
+          // Detect user's preferred locale (default to Italian)
+          const userLocale = navigator.language.startsWith('en') ? 'en' : 'it';
+          
+          // Clean URL and redirect to localized dashboard
           window.history.replaceState({}, document.title, '/auth/callback');
-          router.push('/dashboard');
+          router.push(`/${userLocale}/dashboard`);
         }
       }
     };

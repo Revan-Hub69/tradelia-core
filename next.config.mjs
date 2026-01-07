@@ -1,3 +1,7 @@
+import createNextIntlPlugin from 'next-intl/plugin';
+
+const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Disable ESLint during build temporarily (import boundaries still work in dev)
@@ -38,18 +42,25 @@ const nextConfig = {
   poweredByHeader: false,
   
   // Bundle analyzer
-  webpack: (config, { isServer }) => {
+  webpack: (config, { isServer, dev }) => {
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
         fs: false,
       };
       
-      // Tree shaking optimization
-      config.optimization.usedExports = true;
-      config.optimization.sideEffects = false;
+      // Only apply production optimizations in production build
+      if (!dev) {
+        // Tree shaking optimization (production only)
+        config.optimization.usedExports = true;
+        config.optimization.sideEffects = false;
+        
+        // Remove unused imports (production only)
+        config.optimization.providedExports = true;
+        config.optimization.concatenateModules = true;
+      }
       
-      // More aggressive code splitting
+      // More aggressive code splitting (works in both dev and prod)
       config.optimization.splitChunks = {
         chunks: 'all',
         minSize: 20000,
@@ -89,10 +100,6 @@ const nextConfig = {
           },
         },
       };
-      
-      // Remove unused imports
-      config.optimization.providedExports = true;
-      config.optimization.concatenateModules = true;
     }
     
     return config;
@@ -227,4 +234,4 @@ const nextConfig = {
   }
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

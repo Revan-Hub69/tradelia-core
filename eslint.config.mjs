@@ -90,7 +90,7 @@ const eslintConfig = [
             },
             {
               target: "./src/server",
-              from: ["./src/i18n", "./messages"],
+              from: ["./src/i18n", "./messages", "next-intl"],
               message: "Server code must not import client translations"
             },
             {
