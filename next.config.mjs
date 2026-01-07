@@ -77,21 +77,49 @@ const nextConfig = {
       {
         source: '/(.*)',
         headers: [
+          // Prevent clickjacking
           {
             key: 'X-Frame-Options',
             value: 'DENY'
           },
+          // Prevent MIME type sniffing
           {
             key: 'X-Content-Type-Options',
             value: 'nosniff'
           },
+          // Control referrer information
           {
             key: 'Referrer-Policy',
             value: 'strict-origin-when-cross-origin'
           },
+          // Disable dangerous browser features
           {
             key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()'
+            value: 'camera=(), microphone=(), geolocation=(), interest-cohort=(), payment=(), usb=()'
+          },
+          // HSTS for HTTPS enforcement
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=31536000; includeSubDomains; preload'
+          },
+          // Content Security Policy - Tradelia 2026 compliant
+          {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com", // Allow Next.js and external libs
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com", // Allow Tailwind and Google Fonts
+              "font-src 'self' https://fonts.gstatic.com data:",
+              "img-src 'self' data: blob: https:", // Allow images from CDN and data URLs
+              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.coingecko.com", // API endpoints
+              "media-src 'self'",
+              "object-src 'none'", // Disable plugins
+              "base-uri 'self'",
+              "form-action 'self'",
+              "frame-ancestors 'none'", // Prevent embedding
+              "upgrade-insecure-requests",
+              "report-uri /api/security/csp-report" // CSP violation reporting
+            ].join('; ')
           }
         ]
       },
@@ -109,6 +137,24 @@ const nextConfig = {
           {
             key: 'Content-Security-Policy',
             value: "default-src 'self'; script-src 'self'"
+          }
+        ]
+      },
+      {
+        source: '/api/(.*)',
+        headers: [
+          // API-specific security headers
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY'
+          },
+          {
+            key: 'Cache-Control',
+            value: 'no-store, max-age=0'
           }
         ]
       }

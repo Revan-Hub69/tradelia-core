@@ -2,7 +2,7 @@ import { LanguageProvider } from '@/components/LanguageSelector';
 import { DashboardModalProvider } from '@/contexts/DashboardModalContext';
 import AuthModal from '@/components/AuthModal';
 
-export default function DashboardRootLayout({
+export default function AppLayout({
   children,
 }: {
   children: React.ReactNode;

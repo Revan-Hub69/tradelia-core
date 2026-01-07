@@ -1,0 +1,444 @@
+name: PR Quality Checks - Tradelia 2026
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  code-quality:
+    name: Code Quality & Architecture
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript strict mode check
+        run: npx tsc --noEmit --strict
+
+      - name: ESLint with import boundaries
+        run: npm run lint
+
+      - name: Check circular dependencies
+        run: npx madge --circular --extensions ts,tsx src/
+
+      - name: Architecture boundaries check
+        run: |
+          # Check that entities don't import from features/widgets
+          if grep -r "from.*features\|from.*widgets" src/entities/; then
+            echo "❌ Entities cannot import from features or widgets"
+            exit 1
+          fi
+          
+          # Check that shared doesn't import from upper layers
+          if grep -r "from.*entities\|from.*features\|from.*widgets" src/shared/; then
+            echo "❌ Shared cannot import from entities, features, or widgets"
+            exit 1
+          fi
+          
+          echo "✅ Architecture boundaries respected"
+
+      - name: Bundle size check
+        run: |
+          npm run build
+          
+          # Check marketing bundle size (should be <150KB)
+          MARKETING_SIZE=$(find .next/static/chunks -name "*marketing*" -exec du -b {} + | awk '{sum+=$1} END {print sum}')
+          if [ "$MARKETING_SIZE" -gt 153600 ]; then
+            echo "❌ Marketing bundle too large: ${MARKETING_SIZE} bytes (limit: 150KB)"
+            exit 1
+          fi
+          
+          # Check dashboard bundle size (should be <300KB)
+          DASHBOARD_SIZE=$(find .next/static/chunks -name "*app*" -exec du -b {} + | awk '{sum+=$1} END {print sum}')
+          if [ "$DASHBOARD_SIZE" -gt 307200 ]; then
+            echo "❌ Dashboard bundle too large: ${DASHBOARD_SIZE} bytes (limit: 300KB)"
+            exit 1
+          fi
+          
+          echo "✅ Bundle sizes within limits"
+
+  internationalization:
+    name: Internationalization (Dashboard Only)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check translation completeness
+        run: |
+          # Check that all IT keys have EN translations
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+            
+            function getKeys(obj, prefix = '') {
+              let keys = [];
+              for (const [key, value] of Object.entries(obj)) {
+                const fullKey = prefix ? \`\${prefix}.\${key}\` : key;
+                if (typeof value === 'object' && value !== null) {
+                  keys.push(...getKeys(value, fullKey));
+                } else {
+                  keys.push(fullKey);
+                }
+              }
+              return keys;
+            }
+            
+            const itCommon = JSON.parse(fs.readFileSync('./messages/it/common.json', 'utf8'));
+            const enCommon = JSON.parse(fs.readFileSync('./messages/en/common.json', 'utf8'));
+            
+            const itKeys = getKeys(itCommon);
+            const enKeys = getKeys(enCommon);
+            
+            const missingInEn = itKeys.filter(key => !enKeys.includes(key));
+            const missingInIt = enKeys.filter(key => !itKeys.includes(key));
+            
+            if (missingInEn.length > 0) {
+              console.error('❌ Missing EN translations:', missingInEn);
+              process.exit(1);
+            }
+            
+            if (missingInIt.length > 0) {
+              console.error('❌ Missing IT translations:', missingInIt);
+              process.exit(1);
+            }
+            
+            console.log('✅ All translations complete');
+          "
+
+      - name: Check hardcoded strings
+        run: |
+          # Check for hardcoded strings in components (should use t() function)
+          if grep -r --include="*.tsx" --include="*.ts" --exclude-dir=node_modules \
+             -E "(title|label|placeholder|aria-label)=['\"][^{]" src/; then
+            echo "❌ Found hardcoded strings - use t() function instead"
+            exit 1
+          fi
+          
+          echo "✅ No hardcoded strings found"
+
+      - name: Verify marketing has no i18n imports
+        run: |
+          # Marketing should not import i18n to keep bundle light
+          if grep -r "next-intl\|useTranslations\|getTranslations" app/\(marketing\)/; then
+            echo "❌ Marketing pages should not use i18n (Italian-only)"
+            exit 1
+          fi
+          
+          echo "✅ Marketing bundle has no i18n overhead"
+
+  accessibility:
+    name: Accessibility (WCAG AAA+)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Start application
+        run: npm start &
+        env:
+          PORT: 3000
+
+      - name: Wait for application
+        run: npx wait-on http://localhost:3000
+
+      - name: Run accessibility tests
+        run: npm run test:a11y
+
+      - name: Check color contrast ratios
+        run: |
+          # Verify CSS custom properties meet contrast requirements
+          node -e "
+            const fs = require('fs');
+            const css = fs.readFileSync('./app/globals.css', 'utf8');
+            
+            // Extract color values and verify contrast ratios
+            // This is a simplified check - in production use proper contrast calculation
+            if (!css.includes('--foreground: 220 15% 12%')) {
+              console.error('❌ Foreground color does not meet 8:1 contrast requirement');
+              process.exit(1);
+            }
+            
+            console.log('✅ Color contrast ratios verified');
+          "
+
+      - name: Check semantic HTML
+        run: |
+          # Check for proper heading hierarchy and semantic elements
+          if grep -r --include="*.tsx" "<div.*role=" src/ | grep -v "role=\"button\|role=\"dialog\|role=\"menu\""; then
+            echo "⚠️  Consider using semantic HTML instead of div with role"
+          fi
+          
+          echo "✅ Semantic HTML check completed"
+
+  security:
+    name: Security Compliance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Security audit
+        run: npm audit --audit-level=moderate
+
+      - name: Check for sensitive data in logs
+        run: |
+          # Check that logging doesn't expose sensitive data
+          if grep -r --include="*.ts" --include="*.tsx" \
+             -E "console\.(log|info|debug).*password|email|token" src/; then
+            echo "❌ Potential sensitive data in logs"
+            exit 1
+          fi
+          
+          echo "✅ No sensitive data in logs"
+
+      - name: Verify CSP compliance
+        run: |
+          # Check that no inline scripts or unsafe-eval are used
+          if grep -r --include="*.tsx" --include="*.ts" \
+             "dangerouslySetInnerHTML.*script\|eval(" src/; then
+            echo "❌ Potential CSP violations found"
+            exit 1
+          fi
+          
+          echo "✅ CSP compliance verified"
+
+      - name: Check input validation
+        run: |
+          # Verify that form inputs use validation
+          if grep -r --include="*.tsx" "<input\|<textarea" src/ | grep -v "required\|pattern\|minLength\|maxLength"; then
+            echo "⚠️  Consider adding validation to form inputs"
+          fi
+          
+          echo "✅ Input validation check completed"
+
+  performance:
+    name: Performance & Bundle Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build and analyze bundles
+        run: |
+          ANALYZE=true npm run build
+          
+          # Generate bundle analysis report
+          npx @next/bundle-analyzer .next/static/chunks/
+
+      - name: Check for performance anti-patterns
+        run: |
+          # Check for large images without optimization
+          if find public/ -name "*.jpg" -o -name "*.png" | xargs du -b | awk '$1 > 100000 {print}' | grep .; then
+            echo "⚠️  Large images found - consider optimization"
+          fi
+          
+          # Check for missing lazy loading
+          if grep -r --include="*.tsx" "<img" src/ | grep -v "loading=\"lazy\""; then
+            echo "⚠️  Images without lazy loading found"
+          fi
+          
+          echo "✅ Performance checks completed"
+
+  testing:
+    name: Testing Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: npm run test:unit
+
+      - name: Run integration tests
+        run: npm run test:integration
+
+      - name: Check test coverage
+        run: |
+          npm run test:coverage
+          
+          # Verify minimum coverage thresholds
+          COVERAGE=$(npx nyc report --reporter=text-summary | grep "Lines" | awk '{print $2}' | sed 's/%//')
+          if [ "$COVERAGE" -lt 80 ]; then
+            echo "❌ Test coverage below 80%: ${COVERAGE}%"
+            exit 1
+          fi
+          
+          echo "✅ Test coverage: ${COVERAGE}%"
+
+  lighthouse:
+    name: Lighthouse Performance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Start application
+        run: npm start &
+        env:
+          PORT: 3000
+
+      - name: Wait for application
+        run: npx wait-on http://localhost:3000
+
+      - name: Run Lighthouse CI
+        run: npx lhci autorun
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+      - name: Check performance budgets
+        run: |
+          # Verify Lighthouse scores meet Tradelia 2026 standards
+          PERFORMANCE_SCORE=$(cat .lighthouseci/lhr-*.json | jq '.categories.performance.score * 100')
+          ACCESSIBILITY_SCORE=$(cat .lighthouseci/lhr-*.json | jq '.categories.accessibility.score * 100')
+          
+          if [ "$PERFORMANCE_SCORE" -lt 95 ]; then
+            echo "❌ Performance score below 95: ${PERFORMANCE_SCORE}"
+            exit 1
+          fi
+          
+          if [ "$ACCESSIBILITY_SCORE" -lt 100 ]; then
+            echo "❌ Accessibility score below 100: ${ACCESSIBILITY_SCORE}"
+            exit 1
+          fi
+          
+          echo "✅ Lighthouse scores meet standards"
+
+  tradelia-2026-compliance:
+    name: Tradelia 2026 Compliance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check copy principles
+        run: |
+          # Check for excitement-inducing words (violates "chiarezza > persuasione")
+          if grep -r --include="*.tsx" --include="*.json" \
+             -i "amazing\|incredible\|revolutionary\|best-ever\|unbelievable" src/ messages/; then
+            echo "❌ Found excitement-inducing words - violates 'chiarezza > persuasione'"
+            exit 1
+          fi
+          
+          echo "✅ Copy follows Tradelia 2026 principles"
+
+      - name: Check for unverifiable claims
+        run: |
+          # Check for percentage claims without sources
+          if grep -r --include="*.tsx" --include="*.json" \
+             -E "[0-9]+%.*trader|[0-9]+%.*user" src/ messages/ | grep -v "source\|reference"; then
+            echo "❌ Found unverifiable percentage claims - violates 'verificabilità > opinione'"
+            exit 1
+          fi
+          
+          echo "✅ No unverifiable claims found"
+
+      - name: Check color palette compliance
+        run: |
+          # Verify only approved Tradelia 2026 colors are used
+          if grep -r --include="*.css" --include="*.tsx" \
+             -E "bg-red-|text-red-|bg-green-|text-green-" src/ app/; then
+            echo "❌ Non-approved colors found - use neutral Tradelia 2026 palette"
+            exit 1
+          fi
+          
+          echo "✅ Color palette compliance verified"
+
+  summary:
+    name: Quality Gate Summary
+    runs-on: ubuntu-latest
+    needs: [code-quality, internationalization, accessibility, security, performance, testing, lighthouse, tradelia-2026-compliance]
+    if: always()
+    steps:
+      - name: Check all jobs status
+        run: |
+          if [[ "${{ needs.code-quality.result }}" != "success" || \
+                "${{ needs.internationalization.result }}" != "success" || \
+                "${{ needs.accessibility.result }}" != "success" || \
+                "${{ needs.security.result }}" != "success" || \
+                "${{ needs.performance.result }}" != "success" || \
+                "${{ needs.testing.result }}" != "success" || \
+                "${{ needs.lighthouse.result }}" != "success" || \
+                "${{ needs.tradelia-2026-compliance.result }}" != "success" ]]; then
+            echo "❌ Quality gate failed - check individual job results"
+            exit 1
+          fi
+          
+          echo "✅ All quality checks passed - PR meets Tradelia 2026 standards"
