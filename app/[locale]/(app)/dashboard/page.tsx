@@ -9,7 +9,7 @@
 
 import { getTranslations } from 'next-intl/server';
 import { setRequestLocale } from 'next-intl/server';
-import { DashboardShell } from '@/widgets/dashboard-shell/DashboardShell';
+import { DashboardLayout } from '@/components/dashboard/layout';
 import { CardGrid } from '@/widgets/cards/CardGrid';
 import { SummaryCard } from '@/widgets/cards/SummaryCard';
 import { DetailCard } from '@/widgets/cards/DetailCard';
@@ -57,7 +57,7 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
   };
 
   return (
-    <DashboardShell>
+    <DashboardLayout>
       <div className="space-y-6">
         {/* Header */}
         <div className="space-y-2">
@@ -203,6 +203,6 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
           </div>
         </CardGrid>
       </div>
-    </DashboardShell>
+    </DashboardLayout>
   );
 }

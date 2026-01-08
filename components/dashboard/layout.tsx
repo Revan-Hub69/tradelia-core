@@ -12,6 +12,25 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+    
+    // Load sidebar state from localStorage
+    const savedState = localStorage.getItem('tradelia-sidebar-collapsed');
+    if (savedState !== null) {
+      setSidebarCollapsed(JSON.parse(savedState));
+    }
+  }, []);
+
+  // Save sidebar state to localStorage
+  useEffect(() => {
+    if (mounted) {
+      localStorage.setItem('tradelia-sidebar-collapsed', JSON.stringify(sidebarCollapsed));
+    }
+  }, [sidebarCollapsed, mounted]);
 
   // Block body scroll when modal is open
   useEffect(() => {
@@ -25,13 +44,17 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     };
   }, [settingsOpen]);
 
+  const handleToggleSidebar = () => {
+    setSidebarCollapsed(!sidebarCollapsed);
+  };
+
   return (
     <div className="fixed inset-0 flex bg-background overflow-hidden">
       {/* Mobile backdrop */}
       {!sidebarCollapsed && (
         <div 
           className="fixed inset-0 z-20 bg-foreground/20 backdrop-blur-sm lg:hidden"
-          onClick={() => setSidebarCollapsed(true)}
+          onClick={handleToggleSidebar}
           onKeyDown={(e) => {
             if (e.key === 'Escape') {
               setSidebarCollapsed(true);
@@ -46,7 +69,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Sidebar - always in flow on desktop, slide-in on mobile */}
       <Sidebar 
         collapsed={sidebarCollapsed} 
-        onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+        onToggle={handleToggleSidebar}
         onOpenSettings={() => setSettingsOpen(true)}
       />
       
@@ -54,19 +77,19 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
         <DashboardHeader 
-          onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
+          onToggleSidebar={handleToggleSidebar}
         />
         
         {/* Content - single scroll point */}
         <main className="flex-1 overflow-y-auto overscroll-none">
-          <div className="p-3 sm:p-4">
+          <div className="p-4 sm:p-6 max-w-7xl mx-auto">
             {children}
           </div>
         </main>
 
         {/* Mini Footer */}
         <footer className="border-t border-border/50 px-4 py-2 bg-background">
-          <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+          <div className="flex items-center justify-between text-[10px] text-muted-foreground max-w-7xl mx-auto">
             <span>© 2026 Tradelia. Strumento educativo.</span>
             <span>Non costituisce consulenza finanziaria.</span>
           </div>

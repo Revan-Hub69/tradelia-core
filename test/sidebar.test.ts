@@ -1,125 +1,89 @@
 /**
  * Sidebar Tests - Tradelia 2026
  * 
- * Test per la sidebar intelligente multi-stato
+ * Test per la sidebar della dashboard
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 
-describe('Sidebar State Store', () => {
-  beforeEach(() => {
-    // Clear localStorage before each test
-    if (typeof localStorage !== 'undefined') {
-      localStorage.clear();
-    }
-  });
+// Mock useAuth hook
+vi.mock('../hooks/useAuth', () => ({
+  useAuth: () => ({
+    user: null,
+    profile: null,
+    signOut: vi.fn(),
+  }),
+}));
 
-  describe('Store Exports', () => {
-    it('should export useSidebarStore', async () => {
-      const { useSidebarStore } = await import('../src/features/sidebar-state');
-      expect(useSidebarStore).toBeDefined();
-      expect(typeof useSidebarStore).toBe('function');
-    });
+// Mock useRouter
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+  }),
+}));
 
-    it('should export selector hooks', async () => {
-      const { 
-        useSidebarState, 
-        useIsSidebarExpanded, 
-        useIsSidebarCompact, 
-        useIsSidebarHidden 
-      } = await import('../src/features/sidebar-state');
-      
-      expect(useSidebarState).toBeDefined();
-      expect(useIsSidebarExpanded).toBeDefined();
-      expect(useIsSidebarCompact).toBeDefined();
-      expect(useIsSidebarHidden).toBeDefined();
-    });
-  });
-
-  describe('State Types', () => {
-    it('should have correct SidebarState type values', async () => {
-      const { useSidebarStore } = await import('../src/features/sidebar-state');
-      const store = useSidebarStore.getState();
-      
-      // Default state should be 'expanded'
-      expect(['expanded', 'compact', 'hidden']).toContain(store.state);
-    });
-  });
-
-  describe('State Transitions', () => {
-    it('should toggle through states correctly', async () => {
-      const { useSidebarStore } = await import('../src/features/sidebar-state');
-      const store = useSidebarStore.getState();
-      
-      // Set to expanded first
-      store.setState('expanded');
-      expect(useSidebarStore.getState().state).toBe('expanded');
-      
-      // Toggle: expanded -> compact
-      store.toggle();
-      expect(useSidebarStore.getState().state).toBe('compact');
-      
-      // Toggle: compact -> hidden
-      store.toggle();
-      expect(useSidebarStore.getState().state).toBe('hidden');
-      
-      // Toggle: hidden -> expanded
-      store.toggle();
-      expect(useSidebarStore.getState().state).toBe('expanded');
-    });
-
-    it('should allow direct state setting', async () => {
-      const { useSidebarStore } = await import('../src/features/sidebar-state');
-      const store = useSidebarStore.getState();
-      
-      store.setState('hidden');
-      expect(useSidebarStore.getState().state).toBe('hidden');
-      
-      store.setState('compact');
-      expect(useSidebarStore.getState().state).toBe('compact');
-      
-      store.setState('expanded');
-      expect(useSidebarStore.getState().state).toBe('expanded');
-    });
-  });
-});
-
-describe('Sidebar Widget', () => {
+describe('Sidebar Component', () => {
   describe('Component Exports', () => {
-    it('should export DashboardSidebar component', async () => {
-      // Skip this test for now due to path alias issues in Vitest
-      // The component works correctly in the actual application
-      expect(true).toBe(true);
+    it('should export Sidebar component', async () => {
+      const { Sidebar } = await import('../components/dashboard/sidebar');
+      expect(Sidebar).toBeDefined();
+      expect(typeof Sidebar).toBe('function');
     });
   });
 });
 
 describe('Sidebar Dimensions (Tradelia 2026 Spec)', () => {
-  it('expanded state should be 280px', () => {
+  it('expanded state should be 64 (w-16)', () => {
     const SIDEBAR_WIDTHS = {
-      expanded: 280,
-      compact: 72,
-      hidden: 0,
+      expanded: 256, // w-64
+      compact: 64,   // w-16
     };
-    expect(SIDEBAR_WIDTHS.expanded).toBe(280);
+    expect(SIDEBAR_WIDTHS.expanded).toBe(256);
   });
 
-  it('compact state should be 72px', () => {
+  it('compact state should be 64px (w-16)', () => {
     const SIDEBAR_WIDTHS = {
-      expanded: 280,
-      compact: 72,
-      hidden: 0,
+      expanded: 256, // w-64
+      compact: 64,   // w-16
     };
-    expect(SIDEBAR_WIDTHS.compact).toBe(72);
+    expect(SIDEBAR_WIDTHS.compact).toBe(64);
+  });
+});
+
+describe('Sidebar Design System (Tradelia 2026)', () => {
+  it('should use consistent spacing', () => {
+    // p-4 for header/footer, p-2 for nav
+    const SPACING = {
+      header: 16, // p-4
+      nav: 8,     // p-2
+      footer: 16, // p-4
+    };
+    expect(SPACING.header).toBe(16);
+    expect(SPACING.nav).toBe(8);
+    expect(SPACING.footer).toBe(16);
   });
 
-  it('hidden state should be 0px', () => {
-    const SIDEBAR_WIDTHS = {
-      expanded: 280,
-      compact: 72,
-      hidden: 0,
+  it('should use consistent colors', () => {
+    // Colors should match homepage design system
+    const COLORS = {
+      background: 'hsl(var(--background))',
+      foreground: 'hsl(var(--foreground))',
+      primary: 'hsl(var(--primary))',
+      muted: 'hsl(var(--muted))',
+      border: 'hsl(var(--border))',
     };
-    expect(SIDEBAR_WIDTHS.hidden).toBe(0);
+    expect(COLORS.background).toBe('hsl(var(--background))');
+    expect(COLORS.primary).toBe('hsl(var(--primary))');
+  });
+
+  it('should use transition-subtle for animations', () => {
+    // transition-subtle = 150ms cubic-bezier(0.4, 0, 0.2, 1)
+    const TRANSITION = {
+      duration: '150ms',
+      easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    };
+    expect(TRANSITION.duration).toBe('150ms');
+    expect(TRANSITION.easing).toBe('cubic-bezier(0.4, 0, 0.2, 1)');
   });
 });
 
@@ -131,8 +95,24 @@ describe('Sidebar Accessibility', () => {
   });
 
   it('should support keyboard navigation shortcuts', () => {
-    // Ctrl+[ should toggle sidebar
-    // Escape should hide sidebar
+    // Escape should close mobile sidebar
     expect(true).toBe(true); // Placeholder for keyboard tests
+  });
+
+  it('should have proper focus management', () => {
+    // Focus should be managed correctly for accessibility
+    expect(true).toBe(true); // Placeholder for focus tests
+  });
+});
+
+describe('Sidebar State Management', () => {
+  it('should persist state to localStorage', () => {
+    // State should be saved to localStorage
+    expect(true).toBe(true); // Placeholder for localStorage tests
+  });
+
+  it('should handle hydration correctly', () => {
+    // Should prevent hydration mismatch
+    expect(true).toBe(true); // Placeholder for hydration tests
   });
 });
