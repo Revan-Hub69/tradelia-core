@@ -9,6 +9,8 @@ export interface SidebarStore {
   setState: (state: SidebarState) => void;
   toggle: () => void;
   isTransitioning: boolean;
+  isHydrated: boolean;
+  setHydrated: () => void;
 }
 
 export interface SidebarConfig {

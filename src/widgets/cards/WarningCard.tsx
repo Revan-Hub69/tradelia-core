@@ -1,139 +1,110 @@
 /**
- * Warning Card Component - Tradelia 2026
+ * Warning Card - Tradelia 2026
  * 
- * Card per avvisi e alert con severità
- * Segue i principi Tradelia 2026: onestà intellettuale, chiarezza
+ * Card per errori, alert e notifiche critiche
+ * Design neutrale senza allarmismo
  */
 
-import { forwardRef } from 'react';
-import { AdvancedCard } from './AdvancedCard';
-import { Button } from '@/shared/ui/Button';
-import { cn } from '@/shared/ui/utils';
-import type { WarningCardData, BaseCardProps } from '@/entities/card';
+'use client';
 
-interface WarningCardProps extends Omit<BaseCardProps, 'type' | 'id' | 'title' | 'subtitle' | 'lastUpdated' | 'dataSource' | 'freshness'> {
-  data: WarningCardData;
+import { cn } from '@/shared/ui/utils';
+import { Button } from '@/shared/ui/Button';
+
+interface WarningCardProps {
+  title: string;
+  message: string;
+  severity: 'info' | 'warning' | 'error';
+  source?: string;
+  dismissActionId?: string;
+  className?: string;
 }
 
-const severityConfig = {
-  low: {
-    bgColor: 'bg-blue-50',
-    borderColor: 'border-blue-200',
-    textColor: 'text-blue-800',
-    iconColor: 'text-blue-600',
-    icon: 'ℹ',
-    label: 'Informazione'
-  },
-  medium: {
-    bgColor: 'bg-yellow-50',
-    borderColor: 'border-yellow-200',
-    textColor: 'text-yellow-800',
-    iconColor: 'text-yellow-600',
-    icon: '⚠',
-    label: 'Attenzione'
-  },
-  high: {
-    bgColor: 'bg-orange-50',
-    borderColor: 'border-orange-200',
-    textColor: 'text-orange-800',
-    iconColor: 'text-orange-600',
-    icon: '⚠',
-    label: 'Importante'
-  },
-  critical: {
-    bgColor: 'bg-red-50',
-    borderColor: 'border-red-200',
-    textColor: 'text-red-800',
-    iconColor: 'text-red-600',
-    icon: '⚠',
-    label: 'Critico'
-  }
-};
+export function WarningCard({
+  title,
+  message,
+  severity,
+  source,
+  dismissActionId,
+  className
+}: WarningCardProps) {
+  const handleDismiss = () => {
+    if (dismissActionId) {
+      // Handle dismiss action based on ID - this runs client-side
+      console.log('Dismiss warning:', dismissActionId);
+      // TODO: Implement actual dismiss logic
+    }
+  };
 
-export const WarningCard = forwardRef<HTMLDivElement, WarningCardProps>(
-  ({ data, className, ...props }, ref) => {
-    const { severity, message, actions } = data;
-    const config = severityConfig[severity];
-    
-    return (
-      <div
-        ref={ref}
-        data-card-id={data.id}
-        data-card-type="warning"
-        className={cn(
-          // Base styles con colori di severità
-          'rounded border-2 p-5 shadow-sm',
-          config.bgColor,
-          config.borderColor,
-          className
-        )}
-        role="alert"
-        aria-label={`${config.label}: ${data.title}`}
-        {...props}
-      >
-        {/* Header */}
-        <div className="flex items-start gap-3 mb-3">
-          <div className={cn('text-lg', config.iconColor)} aria-hidden="true">
-            {config.icon}
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className={cn('text-sm font-semibold', config.textColor)}>
-              {data.title}
-            </h3>
-            {data.subtitle && (
-              <p className={cn('text-xs mt-1', config.textColor, 'opacity-80')}>
-                {data.subtitle}
-              </p>
+  const severityStyles = {
+    info: {
+      border: 'border-blue-200',
+      bg: 'bg-blue-50',
+      icon: 'text-blue-600',
+      iconPath: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
+    },
+    warning: {
+      border: 'border-amber-200',
+      bg: 'bg-amber-50',
+      icon: 'text-amber-600',
+      iconPath: 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z'
+    },
+    error: {
+      border: 'border-red-200',
+      bg: 'bg-red-50',
+      icon: 'text-red-600',
+      iconPath: 'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
+    }
+  };
+
+  const style = severityStyles[severity];
+
+  return (
+    <div className={cn(
+      "rounded border-2 bg-background p-4 shadow-sm",
+      style.border,
+      style.bg,
+      className
+    )}>
+      <div className="flex items-start gap-3">
+        {/* Icon */}
+        <div className={cn("flex-shrink-0 mt-0.5", style.icon)}>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={style.iconPath} />
+          </svg>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 space-y-2">
+          <div className="flex items-start justify-between">
+            <h4 className="text-sm font-semibold text-foreground">
+              {title}
+            </h4>
+            {dismissActionId && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleDismiss}
+                className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+                aria-label="Dismiss"
+              >
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </Button>
             )}
           </div>
-          <span className={cn(
-            'text-xs px-2 py-1 rounded border',
-            config.bgColor,
-            config.borderColor,
-            config.textColor
-          )}>
-            {config.label}
-          </span>
-        </div>
-
-        {/* Message */}
-        <div className={cn('text-sm mb-4', config.textColor)}>
-          {message}
-        </div>
-
-        {/* Actions */}
-        {actions && actions.length > 0 && (
-          <div className="flex gap-2 flex-wrap">
-            {actions.map((action) => (
-              <Button
-                key={action.id}
-                variant="outline"
-                size="sm"
-                onClick={action.onClick}
-                className={cn(
-                  'text-xs',
-                  config.borderColor,
-                  config.textColor,
-                  'hover:bg-white/50'
-                )}
-              >
-                {action.label}
-              </Button>
-            ))}
-          </div>
-        )}
-
-        {/* Data source */}
-        {data.dataSource && (
-          <div className="mt-3 pt-3 border-t border-current/20">
-            <p className={cn('text-xs', config.textColor, 'opacity-70')}>
-              Fonte: {data.dataSource}
+          
+          <p className="text-sm text-muted-foreground">
+            {message}
+          </p>
+          
+          {source && (
+            <p className="text-xs text-muted-foreground">
+              Fonte: {source}
             </p>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    );
-  }
-);
-
-WarningCard.displayName = 'WarningCard';
+    </div>
+  );
+}

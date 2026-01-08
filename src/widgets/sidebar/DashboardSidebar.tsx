@@ -7,16 +7,17 @@
  * - Tooltips intelligenti in compact mode
  * - Keyboard navigation completa
  * - Accessibilità WCAG AAA+
+ * - Design coerente con homepage
  */
 
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useSidebarStore, useSidebarState } from '@/src/features/sidebar-state';
-import { cn, transitionSubtle } from '@/src/shared/ui/utils';
-import type { NavigationItem } from '@/src/entities/navigation/types';
+import { useSidebarStore, useSidebarState, useIsSidebarHydrated } from '@/features/sidebar-state';
+import { cn } from '@/shared/ui/utils';
+import type { NavigationItem } from '@/entities/navigation/types';
 
 // Sidebar dimensions following Tradelia 2026 spec
 const SIDEBAR_WIDTHS = {
@@ -38,13 +39,23 @@ export function DashboardSidebar({
 }: DashboardSidebarProps) {
   const sidebarRef = useRef<HTMLElement>(null);
   const state = useSidebarState();
+  const isHydrated = useIsSidebarHydrated();
   const { toggle, setState } = useSidebarStore();
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+  
+  // Use default state during SSR to prevent hydration mismatch
+  const effectiveState = mounted && isHydrated ? state : 'expanded';
+  
+  // Mount effect to prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   
   // Handle aria-hidden and inert for hidden state (accessibility)
   useEffect(() => {
     if (sidebarRef.current) {
-      if (state === 'hidden') {
+      if (effectiveState === 'hidden') {
         sidebarRef.current.setAttribute('aria-hidden', 'true');
         sidebarRef.current.setAttribute('inert', '');
       } else {
@@ -52,13 +63,13 @@ export function DashboardSidebar({
         sidebarRef.current.removeAttribute('inert');
       }
     }
-  }, [state]);
+  }, [effectiveState]);
 
   // Keyboard navigation
   const handleKeyDown = (event: React.KeyboardEvent) => {
     switch (event.key) {
       case 'Escape':
-        if (state !== 'hidden') {
+        if (effectiveState !== 'hidden') {
           setState('hidden');
         }
         break;
@@ -71,15 +82,15 @@ export function DashboardSidebar({
     }
   };
 
-  const isExpanded = state === 'expanded';
-  const isCompact = state === 'compact';
-  const isHidden = state === 'hidden';
+  const isExpanded = effectiveState === 'expanded';
+  const isCompact = effectiveState === 'compact';
+  const isHidden = effectiveState === 'hidden';
 
   return (
     <aside
       ref={sidebarRef}
       className={cn(
-        'flex flex-col border-r border-border bg-background',
+        'flex flex-col border-r border-border/50 bg-background',
         'transition-all duration-300 ease-out',
         isExpanded && 'w-[280px]',
         isCompact && 'w-[72px]',
@@ -87,8 +98,8 @@ export function DashboardSidebar({
         className
       )}
       style={{ 
-        width: SIDEBAR_WIDTHS[state],
-        minWidth: SIDEBAR_WIDTHS[state],
+        width: SIDEBAR_WIDTHS[effectiveState],
+        minWidth: SIDEBAR_WIDTHS[effectiveState],
       }}
       aria-label="Navigazione principale"
       onKeyDown={handleKeyDown}
@@ -153,7 +164,7 @@ function SidebarHeader({ isCompact, onToggle }: SidebarHeaderProps) {
         className={cn(
           'p-2 rounded-lg text-muted-foreground',
           'hover:text-foreground hover:bg-muted/50',
-          transitionSubtle,
+          'transition-subtle',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2',
           isCompact && 'absolute right-2'
         )}
@@ -204,7 +215,7 @@ function SidebarNavItem({ item, isCompact, isActive, onNavigate }: SidebarNavIte
 
   const baseStyles = cn(
     'flex items-center gap-3 px-3 py-2.5 rounded-lg',
-    transitionSubtle,
+    'transition-subtle',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2',
     isCompact && 'justify-center px-2'
   );

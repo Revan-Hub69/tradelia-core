@@ -1,9 +1,12 @@
 import type { Metadata, Viewport } from "next";
+import { Inter } from 'next/font/google';
 import { PWAProvider } from "@/components/PWAProvider";
 import { SkipLink } from "@/components/SkipLink";
 import { PerformanceOptimizer } from "@/components/PerformanceOptimizer";
 import { JsonLd, getOrganizationSchema, getWebSiteSchema, getLearningResourceSchema, getCourseSchemas } from "@/components/seo/JsonLd";
 import "./globals.css";
+
+const inter = Inter({ subsets: ['latin'] });
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = 'it';
@@ -77,7 +80,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="it" className="scroll-smooth">
+    <html lang="it" dir="ltr" className="scroll-smooth" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
@@ -89,7 +92,7 @@ export default function RootLayout({
         <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" /></noscript>
         <meta name="format-detection" content="telephone=no" />
       </head>
-      <body className="antialiased min-h-screen bg-background text-foreground font-sans">
+      <body className={`${inter.className} antialiased min-h-screen bg-background text-foreground font-sans`} suppressHydrationWarning>
         <PerformanceOptimizer />
         <JsonLd data={[
           getOrganizationSchema(), 

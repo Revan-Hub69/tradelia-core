@@ -4,7 +4,9 @@
  * Componente per indicare la freschezza dei dati nelle card
  */
 
-import { forwardRef } from 'react';
+'use client';
+
+import { forwardRef, useEffect, useState } from 'react';
 import { cn } from './utils';
 import type { DataFreshness } from '@/entities/card';
 
@@ -60,7 +62,47 @@ function formatTimeAgo(date: Date): string {
 
 export const DataFreshnessIndicator = forwardRef<HTMLDivElement, DataFreshnessIndicatorProps>(
   ({ freshness, lastUpdated, className }, ref) => {
+    const [timeAgo, setTimeAgo] = useState<string>('');
+    const [isClient, setIsClient] = useState(false);
+    
+    useEffect(() => {
+      setIsClient(true);
+      if (lastUpdated) {
+        setTimeAgo(formatTimeAgo(lastUpdated));
+        
+        // Update every minute
+        const interval = setInterval(() => {
+          setTimeAgo(formatTimeAgo(lastUpdated));
+        }, 60000);
+        
+        return () => clearInterval(interval);
+      }
+    }, [lastUpdated]);
+    
     const config = freshnessConfig[freshness];
+    
+    // Show placeholder during SSR to prevent hydration mismatch
+    if (!isClient) {
+      return (
+        <div
+          ref={ref}
+          className={cn(
+            'inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs border',
+            config.color,
+            config.bgColor,
+            config.borderColor,
+            className
+          )}
+        >
+          <span className="text-xs" aria-hidden="true">
+            {config.icon}
+          </span>
+          <span className="font-medium">
+            {config.label}
+          </span>
+        </div>
+      );
+    }
     
     return (
       <div
@@ -72,13 +114,13 @@ export const DataFreshnessIndicator = forwardRef<HTMLDivElement, DataFreshnessIn
           config.borderColor,
           className
         )}
-        title={`${config.label}${lastUpdated ? ` - Updated ${formatTimeAgo(lastUpdated)}` : ''}`}
+        title={`${config.label}${lastUpdated ? ` - Updated ${timeAgo}` : ''}`}
       >
         <span className="text-xs" aria-hidden="true">
           {config.icon}
         </span>
         <span className="font-medium">
-          {lastUpdated ? formatTimeAgo(lastUpdated) : config.label}
+          {lastUpdated && timeAgo ? timeAgo : config.label}
         </span>
       </div>
     );

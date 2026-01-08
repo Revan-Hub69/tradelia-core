@@ -8,7 +8,8 @@ export {
   useIsSidebarExpanded, 
   useIsSidebarCompact, 
   useIsSidebarHidden,
-  useIsSidebarTransitioning 
+  useIsSidebarTransitioning,
+  useIsSidebarHydrated
 } from './store';
 
 export type { SidebarState, SidebarStore, SidebarConfig } from './types';

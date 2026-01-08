@@ -1,61 +1,96 @@
 /**
- * Detail Card Component - Tradelia 2026
+ * Detail Card - Tradelia 2026
  * 
- * Card per visualizzare informazioni dettagliate con sezioni
- * Segue i principi Tradelia 2026: chiarezza > persuasione
+ * Card per informazioni approfondite, tabelle e liste
+ * Con indicatori di freschezza dati e fonti
  */
 
-import { forwardRef } from 'react';
-import { AdvancedCard } from './AdvancedCard';
-import { cn } from '@/shared/ui/utils';
-import type { DetailCardData, BaseCardProps } from '@/entities/card';
+'use client';
 
-interface DetailCardProps extends Omit<BaseCardProps, 'type' | 'id' | 'title' | 'subtitle' | 'lastUpdated' | 'dataSource' | 'freshness'> {
-  data: DetailCardData;
+import { type ReactNode } from 'react';
+import { cn } from '@/shared/ui/utils';
+import { DataFreshnessIndicator } from '@/shared/ui/DataFreshnessIndicator';
+
+interface DetailCardProps {
+  title: string;
+  subtitle?: string;
+  children: ReactNode;
+  lastUpdated?: Date;
+  dataSource?: string;
+  isLoading?: boolean;
+  className?: string;
 }
 
-export const DetailCard = forwardRef<HTMLDivElement, DetailCardProps>(
-  ({ data, ...props }, ref) => {
-    const { sections } = data;
-    
-    // Prepare props, only including defined values
-    const cardProps: any = {
-      ref,
-      ...props,
-      type: "detail" as const,
-      id: data.id,
-      title: data.title,
-      isExpandable: true,
-    };
-    
-    if (data.subtitle !== undefined) cardProps.subtitle = data.subtitle;
-    if (data.freshness !== undefined) cardProps.freshness = data.freshness;
-    if (data.lastUpdated !== undefined) cardProps.lastUpdated = data.lastUpdated;
-    if (data.dataSource !== undefined) cardProps.dataSource = data.dataSource;
-    
+export function DetailCard({
+  title,
+  subtitle,
+  children,
+  lastUpdated,
+  dataSource,
+  isLoading = false,
+  className
+}: DetailCardProps) {
+  if (isLoading) {
     return (
-      <AdvancedCard {...cardProps}>
-        <div className="space-y-4">
-          {sections.map((section, index) => (
-            <div 
-              key={index}
-              className={cn(
-                'space-y-2',
-                index > 0 && 'pt-4 border-t border-border/50'
-              )}
-            >
-              <h4 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                {section.title}
-              </h4>
-              <div className="text-sm text-muted-foreground">
-                {section.content}
-              </div>
-            </div>
-          ))}
+      <div className={cn(
+        "rounded border-2 border-border bg-background p-5 shadow-sm",
+        className
+      )}>
+        <div className="animate-pulse space-y-4">
+          <div className="space-y-2">
+            <div className="h-5 bg-muted rounded w-1/3" />
+            <div className="h-4 bg-muted rounded w-1/2" />
+          </div>
+          <div className="space-y-3">
+            <div className="h-4 bg-muted rounded" />
+            <div className="h-4 bg-muted rounded w-5/6" />
+            <div className="h-4 bg-muted rounded w-4/6" />
+          </div>
         </div>
-      </AdvancedCard>
+      </div>
     );
   }
-);
 
-DetailCard.displayName = 'DetailCard';
+  return (
+    <div className={cn(
+      "rounded border-2 border-border bg-background p-5 shadow-sm",
+      "hover:border-border hover:bg-muted/30 hover:translate-y-[-1px]",
+      "transition-all duration-150 ease-out",
+      className
+    )}>
+      <div className="space-y-4">
+        {/* Header */}
+        <div className="space-y-1">
+          <h3 className="text-lg font-semibold text-foreground">
+            {title}
+          </h3>
+          {subtitle && (
+            <p className="text-sm text-muted-foreground">
+              {subtitle}
+            </p>
+          )}
+        </div>
+
+        {/* Content */}
+        <div>
+          {children}
+        </div>
+
+        {/* Data Freshness */}
+        {lastUpdated && (
+          <div className="pt-3 border-t border-border/50">
+            <DataFreshnessIndicator
+              freshness="fresh"
+              lastUpdated={lastUpdated}
+            />
+            {dataSource && (
+              <p className="text-xs text-muted-foreground mt-1">
+                Fonte: {dataSource}
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

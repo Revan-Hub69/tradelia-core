@@ -1,81 +1,90 @@
 /**
- * Action Card Component - Tradelia 2026
+ * Action Card - Tradelia 2026
  * 
- * Card per azioni e CTA discrete
- * Segue i principi Tradelia 2026: CTA discreto, no growth hacking
+ * Card per CTA, form e operazioni utente
+ * Design discreto seguendo i principi Tradelia
  */
 
-import { forwardRef } from 'react';
-import { AdvancedCard } from './AdvancedCard';
-import { Button } from '@/shared/ui/Button';
-import { cn } from '@/shared/ui/utils';
-import type { ActionCardData, BaseCardProps } from '@/entities/card';
+'use client';
 
-interface ActionCardProps extends Omit<BaseCardProps, 'type' | 'id' | 'title' | 'subtitle' | 'lastUpdated' | 'dataSource' | 'freshness'> {
-  data: ActionCardData;
+import { cn } from '@/shared/ui/utils';
+import { Button } from '@/shared/ui/Button';
+
+interface ActionCardProps {
+  title: string;
+  description: string;
+  primaryAction: {
+    label: string;
+    actionId: string;
+  };
+  secondaryAction?: {
+    label: string;
+    actionId: string;
+  };
+  className?: string;
 }
 
-export const ActionCard = forwardRef<HTMLDivElement, ActionCardProps>(
-  ({ data, ...props }, ref) => {
-    const { actions } = data;
-    
-    // Prepare props, only including defined values
-    const cardProps: any = {
-      ref,
-      ...props,
-      type: "action" as const,
-      id: data.id,
-      title: data.title,
-    };
-    
-    if (data.subtitle !== undefined) cardProps.subtitle = data.subtitle;
-    if (data.freshness !== undefined) cardProps.freshness = data.freshness;
-    if (data.lastUpdated !== undefined) cardProps.lastUpdated = data.lastUpdated;
-    if (data.dataSource !== undefined) cardProps.dataSource = data.dataSource;
-    
-    return (
-      <AdvancedCard {...cardProps}>
-        <div className="space-y-3">
-          {/* Actions */}
-          <div className={cn(
-            'flex gap-2',
-            actions.length > 2 ? 'flex-col' : 'flex-row'
-          )}>
-            {actions.map((action) => {
-              // Map action variants to Button variants
-              const buttonVariant = action.variant === 'primary' ? 'default' : 
-                                   action.variant === 'secondary' ? 'outline' : 
-                                   'outline';
-              
-              return (
-                <Button
-                  key={action.id}
-                  variant={buttonVariant}
-                  size="sm"
-                  onClick={action.onClick}
-                  disabled={action.isLoading}
-                  className={cn(
-                    'flex-1',
-                    // Tradelia 2026: CTA discreto, no colori aggressivi
-                    action.variant === 'primary' && 'bg-foreground text-background hover:bg-foreground/90'
-                  )}
-                >
-                  {action.isLoading ? (
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 border border-current border-t-transparent rounded-full animate-spin" />
-                      <span>Elaborazione...</span>
-                    </div>
-                  ) : (
-                    action.label
-                  )}
-                </Button>
-              );
-            })}
-          </div>
-        </div>
-      </AdvancedCard>
-    );
-  }
-);
+export function ActionCard({
+  title,
+  description,
+  primaryAction,
+  secondaryAction,
+  className
+}: ActionCardProps) {
+  
+  const handleAction = (actionId: string) => {
+    // Handle actions based on ID - this runs client-side
+    switch (actionId) {
+      case 'start-analysis':
+        console.log('Avvia analisi');
+        // TODO: Implement actual analysis logic
+        break;
+      case 'learn-more':
+        console.log('Scopri di più');
+        // TODO: Navigate to learn more page
+        break;
+      default:
+        console.log('Unknown action:', actionId);
+    }
+  };
 
-ActionCard.displayName = 'ActionCard';
+  return (
+    <div className={cn(
+      "rounded border-2 border-border bg-background p-5 shadow-sm",
+      "hover:border-border hover:bg-muted/30 hover:translate-y-[-1px]",
+      "transition-all duration-150 ease-out",
+      className
+    )}>
+      <div className="space-y-4">
+        {/* Content */}
+        <div className="space-y-2">
+          <h3 className="text-lg font-semibold text-foreground">
+            {title}
+          </h3>
+          <p className="text-sm text-muted-foreground">
+            {description}
+          </p>
+        </div>
+
+        {/* Actions */}
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Button
+            onClick={() => handleAction(primaryAction.actionId)}
+            className="flex-1"
+          >
+            {primaryAction.label}
+          </Button>
+          {secondaryAction && (
+            <Button
+              variant="outline"
+              onClick={() => handleAction(secondaryAction.actionId)}
+              className="flex-1"
+            >
+              {secondaryAction.label}
+            </Button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

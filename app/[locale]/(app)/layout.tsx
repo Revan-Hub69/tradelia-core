@@ -71,20 +71,16 @@ export default async function LocalizedAppLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} dir="ltr">
-      <body className={inter.className}>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <QueryProvider>
-            <ThemeProvider>
-              <PWAProvider>
-                <div className="min-h-screen bg-background">
-                  {children}
-                </div>
-              </PWAProvider>
-            </ThemeProvider>
-          </QueryProvider>
-        </NextIntlClientProvider>
-      </body>
-    </html>
+    <NextIntlClientProvider locale={locale} messages={messages}>
+      <QueryProvider>
+        <ThemeProvider>
+          <PWAProvider>
+            <div className="min-h-screen bg-background antialiased text-foreground font-sans">
+              {children}
+            </div>
+          </PWAProvider>
+        </ThemeProvider>
+      </QueryProvider>
+    </NextIntlClientProvider>
   );
 }
