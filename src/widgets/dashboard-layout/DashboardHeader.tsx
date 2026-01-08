@@ -11,6 +11,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
 import { Button } from '@/src/shared/ui/Button'
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
+import { LanguageToggle } from '@/components/ui/LanguageToggle'
 import { DiamondIcon, BellIcon, SearchIcon } from '@/components/icons/TradeliaIcons'
 
 export function DashboardHeader() {
@@ -40,6 +42,12 @@ export function DashboardHeader() {
 
         {/* Actions */}
         <div className="flex items-center gap-4">
+          {/* Theme & Language Toggles */}
+          <div className="hidden md:flex items-center gap-3">
+            <ThemeToggle variant="compact" />
+            <LanguageToggle variant="compact" />
+          </div>
+
           {/* Notifications */}
           <button className="relative p-2 text-muted-foreground hover:text-foreground transition-colors duration-150">
             <BellIcon className="w-5 h-5" />

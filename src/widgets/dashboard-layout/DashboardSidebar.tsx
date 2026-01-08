@@ -11,6 +11,8 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
+import { LanguageToggle } from '@/components/ui/LanguageToggle'
 import { 
   DiamondIcon,
   UserIcon,
@@ -146,8 +148,17 @@ export function DashboardSidebar() {
         })}
       </nav>
 
-      {/* Sign Out */}
-      <div className="p-4 border-t border-border/30">
+      {/* Settings & Controls */}
+      <div className="p-4 border-t border-border/30 space-y-4">
+        {/* Theme & Language Controls */}
+        {!isCollapsed && (
+          <div className="space-y-4">
+            <ThemeToggle variant="full" />
+            <LanguageToggle variant="full" />
+          </div>
+        )}
+
+        {/* Sign Out */}
         <button
           onClick={handleSignOut}
           className={`

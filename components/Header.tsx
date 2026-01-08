@@ -5,6 +5,7 @@ import Logo from './Logo';
 import LanguageSelector, { useLanguage } from './LanguageSelector';
 import { useTranslations } from '@/hooks/useTranslations';
 import { useDashboardModal } from '@/contexts/DashboardModalContext';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { MenuIcon, CloseIcon } from '@/components/icons/TradeliaIcons';
 
 export function Header() {
@@ -73,6 +74,7 @@ export function Header() {
                 ))}
               </div>
               <div className="flex items-center gap-4">
+                <ThemeToggle variant="compact" />
                 <LanguageSelector />
                 <button 
                   onClick={() => openModal()}
@@ -116,8 +118,9 @@ export function Header() {
                   </a>
                 ))}
                 
-                {/* Mobile Language Selector - Enhanced */}
-                <div className="py-3 px-2">
+                {/* Mobile Controls */}
+                <div className="space-y-4 py-3 px-2">
+                  <ThemeToggle variant="full" />
                   <div className="mobile-language-selector">
                     <LanguageSelector />
                   </div>
