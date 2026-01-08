@@ -8,7 +8,7 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import { DashboardLayout } from '@/components/dashboard/layout'
+import { DashboardLayout } from '@/src/widgets/dashboard-layout'
 import { DashboardAuthGuard } from '@/src/widgets/dashboard-auth'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
 import { CardGrid } from '@/widgets/cards/CardGrid'

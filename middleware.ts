@@ -80,6 +80,30 @@ export function middleware(request: NextRequest) {
 
   // Apply i18n middleware for dashboard routes
   if (pathname.startsWith('/dashboard') || pathname.match(/^\/[a-z]{2}\/dashboard/)) {
+    // For /dashboard routes (non-localized), let the redirect page handle it
+    if (pathname === '/dashboard') {
+      const requestHeaders = new Headers(request.headers);
+      requestHeaders.set('x-trace-id', traceId);
+      
+      const response = NextResponse.next({
+        request: {
+          headers: requestHeaders,
+        },
+      });
+      
+      response.headers.set('x-trace-id', traceId);
+      response.headers.set('x-request-id', traceId);
+      
+      const duration = Date.now() - startTime;
+      logger.performance('Dashboard redirect request processed', startTime, {
+        method: request.method,
+        url: request.url
+      });
+      
+      return response;
+    }
+    
+    // For localized dashboard routes, apply i18n
     const response = intlMiddleware(request);
     
     // Add trace ID to i18n response

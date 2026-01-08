@@ -23,7 +23,16 @@ export default async function DashboardRedirect({ searchParams }: DashboardRedir
   
   // Build query string if params exist
   const queryString = Object.keys(params).length > 0 
-    ? '?' + new URLSearchParams(params as Record<string, string>).toString()
+    ? '?' + new URLSearchParams(
+        Object.entries(params).reduce((acc, [key, value]) => {
+          // Handle array values by taking the first element
+          const stringValue = Array.isArray(value) ? value[0] : value;
+          if (stringValue) {
+            acc[key] = stringValue;
+          }
+          return acc;
+        }, {} as Record<string, string>)
+      ).toString()
     : '';
   
   // Redirect to localized dashboard with preserved query params
