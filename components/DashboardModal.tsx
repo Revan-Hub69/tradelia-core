@@ -160,7 +160,7 @@ export default function DashboardModal() {
         console.log('Guest profile saved successfully');
         closeModal();
         // Navigate to dashboard
-        window.location.href = '/dashboard';
+        window.location.href = '/dashboard?guest=true';
       } else {
         // Show registration form
         setStep(6);
