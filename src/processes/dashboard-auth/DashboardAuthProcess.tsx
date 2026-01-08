@@ -91,7 +91,7 @@ function DashboardAuthProviderInner({ children, locale }: DashboardAuthProviderP
           }))
         } else {
           // No auth, redirect to home
-          router.push(`/${locale}`)
+          router.push('/')
           return
         }
       } catch (error) {
@@ -262,7 +262,7 @@ function DashboardAuthProviderInner({ children, locale }: DashboardAuthProviderP
         const { error } = await supabase.auth.signOut()
         if (error) throw error
         
-        router.push(`/${locale}`)
+        router.push('/')
       } catch (error: any) {
         setState(prev => ({ 
           ...prev, 

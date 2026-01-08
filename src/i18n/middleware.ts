@@ -19,5 +19,5 @@ export default createMiddleware({
   pathnames: routing.pathnames,
 
   // Redirect to default locale for dashboard routes
-  localePrefix: 'as-needed'
+  localePrefix: 'always'
 });

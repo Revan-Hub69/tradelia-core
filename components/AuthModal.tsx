@@ -26,7 +26,7 @@ interface AuthFormData {
 }
 
 export default function AuthModal() {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const { isOpen, closeModal, initialMode } = useDashboardModal();
   const { user, signInWithGoogle, signInWithEmail, signUpWithEmail } = useAuth();
   const router = useRouter();
@@ -47,7 +47,6 @@ export default function AuthModal() {
     if (isOpen) {
       // If user is already authenticated, redirect to localized dashboard
       if (user) {
-        const locale = document.documentElement.lang || 'it';
         router.replace(`/${locale}/dashboard`);
         closeModal();
         return;
@@ -57,7 +56,7 @@ export default function AuthModal() {
       setFormData({ email: '', password: '', confirmPassword: '', fullName: '' });
       setErrors({});
     }
-  }, [isOpen, initialMode, user, closeModal, router]);
+  }, [isOpen, initialMode, user, closeModal, router, locale]);
 
   // Focus management
   useEffect(() => {
@@ -122,7 +121,6 @@ export default function AuthModal() {
 
   // Handlers
   const handleGuest = async () => {
-    const locale = document.documentElement.lang || 'it';
     router.push(`/${locale}/dashboard?guest=true`);
     closeModal();
   };
@@ -142,7 +140,6 @@ export default function AuthModal() {
     setIsSubmitting(true);
     try {
       await signInWithEmail(formData.email, formData.password);
-      const locale = document.documentElement.lang || 'it';
       router.push(`/${locale}/dashboard`);
       closeModal();
     } catch (err: unknown) {
@@ -159,7 +156,6 @@ export default function AuthModal() {
     setIsSubmitting(true);
     try {
       await signUpWithEmail(formData.email, formData.password, formData.fullName);
-      const locale = document.documentElement.lang || 'it';
       router.push(`/${locale}/dashboard`);
       closeModal();
     } catch (err: unknown) {

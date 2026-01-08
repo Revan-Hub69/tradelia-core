@@ -8,7 +8,7 @@ import { routing } from './src/i18n/routing';
 const intlMiddleware = createIntlMiddleware({
   locales: routing.locales,
   defaultLocale: routing.defaultLocale,
-  localePrefix: 'as-needed'
+  localePrefix: 'always'
 });
 
 export function middleware(request: NextRequest) {
