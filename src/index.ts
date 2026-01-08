@@ -13,18 +13,12 @@ export * from './entities';
 
 // Features layer - Feature-specific logic
 export { 
-  useSidebarStore, 
-  useSidebarState, 
-  useIsSidebarExpanded,
-  useIsSidebarCompact,
-  useIsSidebarHidden,
   useRobustDragDrop,
   LocaleSwitcher 
 } from './features';
 
 // Widgets layer - Composite UI components
 export {
-  DashboardSidebar,
   AdvancedCard,
   SummaryCard,
   DetailCard,

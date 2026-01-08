@@ -5,9 +5,6 @@
  * Possono dipendere da entities e shared, ma non da widgets o processes.
  */
 
-// Sidebar state management
-export * from './sidebar-state';
-
 // Locale switching
 export { LocaleSwitcher } from './locale-switcher/components/LocaleSwitcher';
 

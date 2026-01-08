@@ -15,13 +15,10 @@
 // export { HeaderWidget } from './header/HeaderWidget';
 
 // Sidebar widget - Navigation sidebar
-export * from './sidebar';
+// Removed - using components/dashboard/sidebar.tsx instead
 
 // Card widgets - Advanced card system
 export * from './cards';
 
 // Type exports (avoiding conflicts with features)
-export type { DashboardShellProps, DashboardLayoutConfig } from './dashboard-shell/types';
-export type { DashboardGridProps, GridLayoutConfig } from './dashboard-grid/types';
-export type { HeaderWidgetProps, HeaderConfig } from './header/types';
-export type { CardGridWidgetProps, CardGridConfig } from './card-grid/types';
+// Removed type exports for deleted widgets - using components/dashboard instead

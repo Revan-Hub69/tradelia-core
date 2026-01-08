@@ -80,18 +80,18 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           onToggleSidebar={handleToggleSidebar}
         />
         
-        {/* Content - single scroll point */}
-        <main className="flex-1 overflow-y-auto overscroll-none">
-          <div className="p-4 sm:p-6 max-w-7xl mx-auto">
+        {/* Content - single scroll point with better spacing */}
+        <main className="flex-1 overflow-y-auto overscroll-none bg-muted/20">
+          <div className="p-6 sm:p-8 max-w-7xl mx-auto">
             {children}
           </div>
         </main>
 
-        {/* Mini Footer */}
-        <footer className="border-t border-border/50 px-4 py-2 bg-background">
-          <div className="flex items-center justify-between text-[10px] text-muted-foreground max-w-7xl mx-auto">
-            <span>© 2026 Tradelia. Strumento educativo.</span>
-            <span>Non costituisce consulenza finanziaria.</span>
+        {/* Mini Footer - Enhanced */}
+        <footer className="border-t border-border/50 px-6 py-3 bg-background/95 backdrop-blur-sm">
+          <div className="flex items-center justify-between text-xs text-muted-foreground max-w-7xl mx-auto">
+            <span>© 2026 Tradelia. Strumento educativo per analisi finanziaria.</span>
+            <span>Non costituisce consulenza finanziaria professionale.</span>
           </div>
         </footer>
       </div>
