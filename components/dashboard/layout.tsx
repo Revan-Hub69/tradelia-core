@@ -1,15 +1,20 @@
 "use client";
 
 import { type ReactNode, useState, useEffect } from "react";
+import { useRouter } from 'next/navigation';
 import { Sidebar } from "./sidebar";
 import { DashboardHeader } from "./header";
 import { SettingsModal } from "./settings-modal";
+import { CommandPalette, getDefaultCommands } from '@/features/command-palette';
+import { useTheme } from '@/shared/config/theme-provider';
 
 interface DashboardLayoutProps {
   children: ReactNode;
 }
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
+  const router = useRouter();
+  const { theme, setTheme } = useTheme();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -48,8 +53,19 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     setSidebarCollapsed(!sidebarCollapsed);
   };
 
+  // Command palette commands
+  const commands = getDefaultCommands(
+    (path: string) => router.push(path),
+    handleToggleSidebar,
+    () => setTheme(theme === 'light' ? 'dark' : 'light'),
+    () => setSettingsOpen(true) // Open settings instead of notifications
+  );
+
   return (
     <div className="fixed inset-0 flex bg-background overflow-hidden">
+      {/* Command Palette */}
+      <CommandPalette commands={commands} />
+      
       {/* Mobile backdrop */}
       {!sidebarCollapsed && (
         <div 

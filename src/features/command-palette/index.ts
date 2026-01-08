@@ -1,18 +1,6 @@
-/**
- * Command Palette Feature - Barrel Exports
- */
-
+// Command Palette Feature Exports
 export { CommandPalette } from './components/CommandPalette';
-export { CommandInput } from './components/CommandInput';
-export { CommandItem } from './components/CommandItem';
-export { CommandList } from './components/CommandList';
-
-export { 
-  useCommandStore,
-  useCommandPaletteOpen,
-  useCommandPaletteQuery,
-  useCommandPaletteSelected,
-  useCommandPaletteResults
-} from './store/command-store';
-
-export { fuzzySearch, highlightMatches } from './lib/fuzzy-search';
+export { useCommandStore } from './store/command-store';
+export { getDefaultCommands } from './lib/default-commands';
+export { fuzzySearch, highlightMatch } from './lib/fuzzy-search';
+export type { Command } from './store/command-store';

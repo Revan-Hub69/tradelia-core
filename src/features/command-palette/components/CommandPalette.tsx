@@ -1,156 +1,119 @@
-/**
- * Command Palette Component - Tradelia 2026
- * 
- * Componente principale della command palette
- * Design ispirato a VS Code/Linear ma seguendo i principi Tradelia 2026
- */
-
 'use client';
 
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import * as Dialog from '@radix-ui/react-dialog';
-import { useCommandStore } from '../store/command-store';
-import { CommandInput, type CommandInputRef } from './CommandInput';
+import { useCommandStore, Command } from '../store/command-store';
+import { fuzzySearch } from '../lib/fuzzy-search';
 import { CommandList } from './CommandList';
+import { CommandInput } from './CommandInput';
 import { useHotkey } from '@/shared/hooks/useHotkey';
 import { cn } from '@/shared/ui/utils';
-import type { Command } from '@/entities/command';
 
 interface CommandPaletteProps {
   commands: Command[];
-  className?: string;
 }
 
-export function CommandPalette({ commands, className }: CommandPaletteProps) {
+export function CommandPalette({ commands }: CommandPaletteProps) {
   const t = useTranslations('dashboard.commandPalette');
-  const inputRef = useRef<CommandInputRef>(null);
-  
   const {
     isOpen,
     query,
     selectedIndex,
-    filteredCommands,
+    recentCommands,
     setOpen,
     setQuery,
-    selectNext,
-    selectPrevious,
-    executeSelected,
-    executeCommand,
-    setAllCommands
+    setSelectedIndex,
+    addToRecent,
+    addToHistory
   } = useCommandStore();
 
-  // Update commands when prop changes
-  useEffect(() => {
-    setAllCommands(commands);
-  }, [commands, setAllCommands]);
+  const filteredCommands = query 
+    ? fuzzySearch(query, commands)
+    : recentCommands.length > 0 
+      ? recentCommands 
+      : commands.slice(0, 8);
 
-  // Global hotkey to open/close
-  useHotkey('cmd+k', useCallback(() => {
-    setOpen(!isOpen);
-  }, [isOpen, setOpen]));
-
-  // Focus input when opened
-  useEffect(() => {
-    if (isOpen) {
-      // Small delay to ensure dialog is rendered
-      const timer = setTimeout(() => {
-        inputRef.current?.focus();
-      }, 50);
-      return () => clearTimeout(timer);
+  // Command palette toggle hotkey
+  useHotkey(
+    'command-palette-toggle',
+    'k',
+    () => setOpen(!isOpen),
+    {
+      metaKey: true, // Cmd on Mac
+      ctrlKey: true, // Ctrl on Windows/Linux
+      description: 'Toggle command palette'
     }
-  }, [isOpen]);
+  );
 
   const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
+    if (!isOpen) return;
+
     switch (event.key) {
-      case 'ArrowDown':
-        event.preventDefault();
-        selectNext();
-        break;
-      case 'ArrowUp':
-        event.preventDefault();
-        selectPrevious();
-        break;
-      case 'Enter':
-        event.preventDefault();
-        executeSelected();
-        break;
       case 'Escape':
         event.preventDefault();
         setOpen(false);
         break;
+        
+      case 'ArrowDown':
+        event.preventDefault();
+        setSelectedIndex(Math.min(selectedIndex + 1, filteredCommands.length - 1));
+        break;
+        
+      case 'ArrowUp':
+        event.preventDefault();
+        setSelectedIndex(Math.max(selectedIndex - 1, 0));
+        break;
+        
+      case 'Enter':
+        event.preventDefault();
+        const selectedCommand = filteredCommands[selectedIndex];
+        if (selectedCommand) {
+          selectedCommand.action();
+          addToRecent(selectedCommand);
+          addToHistory(query);
+          setOpen(false);
+        }
+        break;
     }
-  }, [selectNext, selectPrevious, executeSelected, setOpen]);
+  }, [isOpen, selectedIndex, filteredCommands, query, setOpen, setSelectedIndex, addToRecent, addToHistory]);
 
-  const handleSelectCommand = useCallback((command: Command) => {
-    executeCommand(command);
-  }, [executeCommand]);
+  // Reset selected index when commands change
+  useEffect(() => {
+    setSelectedIndex(0);
+  }, [filteredCommands.length, setSelectedIndex]);
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={setOpen}>
       <Dialog.Portal>
-        <Dialog.Overlay 
-          className={cn(
-            'fixed inset-0 z-50',
-            'bg-background/80 backdrop-blur-sm',
-            'data-[state=open]:animate-in data-[state=closed]:animate-out',
-            'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0'
-          )}
-        />
+        <Dialog.Overlay className="fixed inset-0 bg-black/50 animate-in fade-in-0 duration-200" />
         <Dialog.Content
           className={cn(
-            'fixed left-1/2 top-1/3 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2',
-            'bg-background border-2 border-border rounded-lg shadow-lg',
-            'data-[state=open]:animate-in data-[state=closed]:animate-out',
-            'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
-            'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
-            'data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%]',
-            'data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]',
-            className
+            'fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2',
+            'w-full max-w-lg rounded border-2 border-border bg-background shadow-lg',
+            'animate-in fade-in-0 zoom-in-95 duration-200'
           )}
           onKeyDown={handleKeyDown}
         >
-          {/* Header */}
-          <div className="border-b border-border/50">
+          <div className="flex flex-col max-h-96">
             <CommandInput
-              ref={inputRef}
               value={query}
               onChange={setQuery}
               placeholder={t('placeholder')}
             />
-          </div>
-
-          {/* Command List */}
-          <CommandList
-            commands={filteredCommands}
-            selectedIndex={selectedIndex}
-            onSelectCommand={handleSelectCommand}
-            query={query}
-          />
-
-          {/* Footer */}
-          <div className="border-t border-border/50 px-4 py-2">
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <div className="flex items-center gap-4">
-                <span className="flex items-center gap-1">
-                  <kbd className="px-1 py-0.5 bg-muted rounded text-xs">↑↓</kbd>
-                  {t('shortcuts.navigate')}
-                </span>
-                <span className="flex items-center gap-1">
-                  <kbd className="px-1 py-0.5 bg-muted rounded text-xs">Enter</kbd>
-                  {t('shortcuts.select')}
-                </span>
-                <span className="flex items-center gap-1">
-                  <kbd className="px-1 py-0.5 bg-muted rounded text-xs">Esc</kbd>
-                  {t('shortcuts.close')}
-                </span>
-              </div>
-              {filteredCommands.length > 0 && (
-                <span>
-                  {filteredCommands.length} comando{filteredCommands.length !== 1 ? 'i' : ''}
-                </span>
-              )}
-            </div>
+            
+            <CommandList
+              commands={filteredCommands}
+              selectedIndex={selectedIndex}
+              query={query}
+              onSelect={(command) => {
+                command.action();
+                addToRecent(command);
+                addToHistory(query);
+                setOpen(false);
+              }}
+              showRecent={!query && recentCommands.length > 0}
+            />
           </div>
         </Dialog.Content>
       </Dialog.Portal>

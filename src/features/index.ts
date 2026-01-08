@@ -13,7 +13,9 @@ export * from './widget-reorder';
 
 // Command palette
 export { CommandPalette } from './command-palette/components/CommandPalette';
-export { createDefaultCommands, createCommand } from './command-palette/lib/default-commands';
+export { getDefaultCommands } from './command-palette/lib/default-commands';
+export { useCommandStore } from './command-palette/store/command-store';
+export type { Command } from './command-palette/store/command-store';
 
 // Placeholder exports (to be implemented)
 export type { LocaleConfig } from './locale-switcher/types';
