@@ -1,7 +1,7 @@
 /**
  * Dashboard Header - Tradelia 2026
  * 
- * Header professionale con glassmorphism e navigazione
+ * Header professionale con navigazione ottimizzato per performance
  * Seguendo le spec del design system
  */
 
@@ -9,6 +9,7 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
 import { Button } from '@/src/shared/ui/Button'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
@@ -17,10 +18,11 @@ import { DiamondIcon, BellIcon, SearchIcon } from '@/components/icons/TradeliaIc
 
 export function DashboardHeader() {
   const router = useRouter()
+  const t = useTranslations('dashboard')
   const { state } = useDashboardAuth()
 
   return (
-    <header className="h-16 bg-background/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-50">
+    <header className="h-16 bg-background/80 border-b border-border/50 sticky top-0 z-50">
       <div className="h-full px-6 lg:px-8 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity duration-150">
@@ -34,7 +36,7 @@ export function DashboardHeader() {
             <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input
               type="text"
-              placeholder="Cerca strumenti, analisi..."
+              placeholder={t('searchPlaceholder')}
               className="w-full h-10 pl-10 pr-4 bg-muted/50 border border-border/50 rounded-lg text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-150"
             />
           </div>
@@ -59,7 +61,7 @@ export function DashboardHeader() {
             {state.isGuestMode && (
               <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 rounded-full">
                 <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
-                <span className="text-xs font-medium text-amber-700">Modalità Ospite</span>
+                <span className="text-xs font-medium text-amber-700">{t('guestMode')}</span>
               </div>
             )}
             
@@ -69,7 +71,7 @@ export function DashboardHeader() {
               onClick={() => router.push('/')}
               className="hidden sm:inline-flex"
             >
-              Torna al Sito
+              {t('backToSite')}
             </Button>
           </div>
         </div>

@@ -26,13 +26,13 @@ interface DashboardAuthGuardProps {
 export function DashboardAuthGuard({ children }: DashboardAuthGuardProps) {
   const { state, actions } = useDashboardAuth()
 
-  // Loading state
+  // Loading state - Ottimizzato per performance
   if (state.loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto" />
-          <p className="text-sm text-muted-foreground">Caricamento dashboard...</p>
+          <div className="animate-spin rounded-full h-6 w-6 border-2 border-primary/20 border-t-primary mx-auto" />
+          <p className="text-xs text-muted-foreground">Caricamento...</p>
         </div>
       </div>
     )

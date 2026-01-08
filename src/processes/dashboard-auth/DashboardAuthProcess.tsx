@@ -55,13 +55,24 @@ function DashboardAuthProviderInner({ children, locale }: DashboardAuthProviderP
   useEffect(() => {
     const initializeAuth = async () => {
       try {
+        // Set loading to false faster for better UX
+        setState(prev => ({ ...prev, loading: true }))
+        
         const isGuestParam = searchParams.get('guest') === 'true'
         
-        // Get current session
-        const { data: { session } } = await supabase.auth.getSession()
+        // Get current session with timeout
+        const sessionPromise = supabase.auth.getSession()
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Session timeout')), 3000)
+        )
+        
+        const { data: { session } } = await Promise.race([
+          sessionPromise,
+          timeoutPromise
+        ]) as any
         
         if (session?.user) {
-          // Authenticated user
+          // Authenticated user - set loading false immediately
           setState(prev => ({ 
             ...prev, 
             user: session.user, 
@@ -69,13 +80,14 @@ function DashboardAuthProviderInner({ children, locale }: DashboardAuthProviderP
             loading: false 
           }))
           
-          // Fetch profile and dashboard config
-          await Promise.all([
+          // Fetch profile and dashboard config in background
+          Promise.all([
             fetchProfile(session.user.id),
             fetchDashboardConfig(session.user.id)
-          ])
+          ]).catch(console.error)
+          
         } else if (isGuestParam) {
-          // Guest mode
+          // Guest mode - immediate loading
           setState(prev => ({
             ...prev,
             user: null,
@@ -90,7 +102,8 @@ function DashboardAuthProviderInner({ children, locale }: DashboardAuthProviderP
             loading: false
           }))
         } else {
-          // No auth, redirect to home
+          // No auth, redirect to home immediately
+          setState(prev => ({ ...prev, loading: false }))
           router.push('/')
           return
         }
@@ -104,7 +117,9 @@ function DashboardAuthProviderInner({ children, locale }: DashboardAuthProviderP
       }
     }
 
-    initializeAuth()
+    // Add small delay to prevent flash
+    const timer = setTimeout(initializeAuth, 100)
+    return () => clearTimeout(timer)
   }, [searchParams, router, locale])
 
   // Listen for auth changes
@@ -349,10 +364,7 @@ export function DashboardAuthProvider({ children, locale }: DashboardAuthProvide
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto" />
-          <p className="text-sm text-muted-foreground">Inizializzazione...</p>
-        </div>
+        <div className="animate-spin rounded-full h-6 w-6 border-2 border-primary/20 border-t-primary" />
       </div>
     }>
       <DashboardAuthProviderInner locale={locale}>

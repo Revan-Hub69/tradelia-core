@@ -10,6 +10,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { LanguageToggle } from '@/components/ui/LanguageToggle'
@@ -25,43 +26,45 @@ import {
   ChevronRightIcon
 } from '@/components/icons/TradeliaIcons'
 
-const navigationItems = [
-  {
-    name: 'Panoramica',
-    href: '/it/dashboard',
-    icon: ChartIcon,
-    description: 'Dashboard principale'
-  },
-  {
-    name: 'Portafoglio',
-    href: '/it/dashboard/portfolio',
-    icon: DiamondIcon,
-    description: 'Analisi strumenti'
-  },
-  {
-    name: 'Verifica',
-    href: '/it/dashboard/verify',
-    icon: ShieldIcon,
-    description: 'Controllo coerenza'
-  },
-  {
-    name: 'Educazione',
-    href: '/it/dashboard/education',
-    icon: BookIcon,
-    description: 'Risorse formative'
-  },
-  {
-    name: 'Impostazioni',
-    href: '/it/dashboard/settings',
-    icon: SettingsIcon,
-    description: 'Configurazione'
-  }
-]
-
 export function DashboardSidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false)
   const pathname = usePathname()
+  const t = useTranslations('navigation')
+  const tDashboard = useTranslations('dashboard')
   const { state, actions } = useDashboardAuth()
+
+  const navigationItems = [
+    {
+      name: t('overview'),
+      href: '/it/dashboard',
+      icon: ChartIcon,
+      description: t('overviewDescription')
+    },
+    {
+      name: t('portfolio'),
+      href: '/it/dashboard/portfolio',
+      icon: DiamondIcon,
+      description: t('portfolioDescription')
+    },
+    {
+      name: t('verify'),
+      href: '/it/dashboard/verify',
+      icon: ShieldIcon,
+      description: t('verifyDescription')
+    },
+    {
+      name: t('education'),
+      href: '/it/dashboard/education',
+      icon: BookIcon,
+      description: t('educationDescription')
+    },
+    {
+      name: t('settings'),
+      href: '/it/dashboard/settings',
+      icon: SettingsIcon,
+      description: t('settingsDescription')
+    }
+  ]
 
   const handleSignOut = async () => {
     await actions.signOut()
@@ -71,7 +74,7 @@ export function DashboardSidebar() {
     <aside className={`
       ${isCollapsed ? 'w-16' : 'w-64'} 
       transition-all duration-300 ease-in-out
-      bg-background/80 backdrop-blur-md border-r border-border/50
+      bg-background/80 border-r border-border/50
       flex flex-col h-[calc(100vh-4rem)]
     `}>
       {/* Collapse Toggle */}
@@ -81,7 +84,7 @@ export function DashboardSidebar() {
           className="w-full flex items-center justify-between text-muted-foreground hover:text-foreground transition-colors duration-150"
         >
           {!isCollapsed && (
-            <span className="text-sm font-medium">Menu</span>
+            <span className="text-sm font-medium">{t('menu')}</span>
           )}
           {isCollapsed ? (
             <ChevronRightIcon className="w-4 h-4" />
@@ -107,7 +110,7 @@ export function DashboardSidebar() {
                 {state.profile?.full_name || 'Utente Ospite'}
               </p>
               <p className="text-xs text-muted-foreground">
-                {state.isGuestMode ? 'Modalità limitata' : 'Account verificato'}
+                {state.isGuestMode ? tDashboard('limitedMode') : tDashboard('verifiedAccount')}
               </p>
             </div>
           )}
@@ -169,7 +172,7 @@ export function DashboardSidebar() {
         >
           <LogOutIcon className="w-5 h-5 flex-shrink-0" />
           {!isCollapsed && (
-            <span className="text-sm font-medium">Esci</span>
+            <span className="text-sm font-medium">{t('logout')}</span>
           )}
         </button>
       </div>

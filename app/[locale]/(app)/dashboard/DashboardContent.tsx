@@ -2,7 +2,7 @@
  * Dashboard Content - Tradelia 2026
  * 
  * Dashboard professionale enterprise seguendo le spec del design system
- * Layout moderno con glassmorphism e componenti avanzati
+ * Layout moderno con glassmorphism e componenti ottimizzati per performance
  */
 
 'use client'
@@ -20,6 +20,7 @@ import {
 } from '@/components/icons/TradeliaIcons'
 
 export function DashboardContent() {
+  const t = useTranslations('dashboard')
   const { state } = useDashboardAuth()
 
   // Dati dinamici basati su utente reale o guest
@@ -36,17 +37,17 @@ export function DashboardContent() {
         {
           id: '1',
           type: 'warning' as const,
-          title: 'Modalità limitata',
-          message: 'Registrati per accedere a tutte le funzionalità di analisi',
-          source: 'Sistema Tradelia'
+          title: t('limitedMode'),
+          message: t('registerForAnalysis'),
+          source: t('systemTradelia')
         }
       ] : [
         {
           id: '1',
           type: 'warning' as const,
-          title: 'Concentrazione elevata',
-          message: 'Il 65% del portafoglio è concentrato in un singolo asset',
-          source: 'Analisi diversificazione'
+          title: t('highConcentration'),
+          message: t('concentrationMessage'),
+          source: t('diversificationAnalysis')
         }
       ]
     }
@@ -66,36 +67,36 @@ export function DashboardContent() {
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-3xl font-bold text-foreground tracking-tight">
-                  Benvenuto, {userName}
+                  {t('welcome')}, {userName}
                 </h1>
                 <p className="text-muted-foreground mt-1">
-                  Dashboard dinamica che evita gli errori nel mondo crypto
+                  {t('subtitle')}
                 </p>
               </div>
               
               {state.isGuestMode && (
                 <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-lg">
                   <ShieldIcon className="w-4 h-4 text-amber-600" />
-                  <span className="text-sm font-medium text-amber-700">Modalità Ospite</span>
+                  <span className="text-sm font-medium text-amber-700">{t('guestMode')}</span>
                 </div>
               )}
             </div>
           </div>
 
-          {/* KPI Cards */}
+          {/* KPI Cards - Ottimizzate per performance */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Asset Totali */}
-            <div className="bg-background/60 backdrop-blur-sm border border-border/50 rounded-xl p-6 hover:bg-background/80 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+            <div className="bg-background/60 border border-border/50 rounded-xl p-6 hover:bg-background/80 transition-colors duration-150">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2">
-                    Asset Totali
+                    {t('totalAssets')}
                   </p>
                   <p className="text-3xl font-bold text-foreground">
                     {dashboardData.summary.totalAssets}
                   </p>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Strumenti monitorati
+                    {t('monitoredTools')}
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
@@ -105,11 +106,11 @@ export function DashboardContent() {
             </div>
 
             {/* Valore Portafoglio */}
-            <div className="bg-background/60 backdrop-blur-sm border border-border/50 rounded-xl p-6 hover:bg-background/80 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+            <div className="bg-background/60 border border-border/50 rounded-xl p-6 hover:bg-background/80 transition-colors duration-150">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2">
-                    Valore Portafoglio
+                    {t('portfolioValue')}
                   </p>
                   <p className="text-3xl font-bold text-foreground">
                     €{dashboardData.summary.portfolioValue.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
@@ -119,7 +120,7 @@ export function DashboardContent() {
                     <span className="text-sm text-green-600 font-medium">
                       +{dashboardData.summary.monthlyChange}%
                     </span>
-                    <span className="text-sm text-muted-foreground">questo mese</span>
+                    <span className="text-sm text-muted-foreground">{t('thisMonth')}</span>
                   </div>
                 </div>
                 <div className="w-12 h-12 bg-green-500/10 rounded-lg flex items-center justify-center">
@@ -129,17 +130,17 @@ export function DashboardContent() {
             </div>
 
             {/* Score di Rischio */}
-            <div className="bg-background/60 backdrop-blur-sm border border-border/50 rounded-xl p-6 hover:bg-background/80 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+            <div className="bg-background/60 border border-border/50 rounded-xl p-6 hover:bg-background/80 transition-colors duration-150">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2">
-                    Score di Rischio
+                    {t('riskScore')}
                   </p>
                   <p className="text-3xl font-bold text-foreground">
                     {dashboardData.summary.riskScore}
                   </p>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Su scala 1-10
+                    {t('riskScaleDescription')}
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-amber-500/10 rounded-lg flex items-center justify-center">
@@ -149,17 +150,17 @@ export function DashboardContent() {
             </div>
 
             {/* Coerenza */}
-            <div className="bg-background/60 backdrop-blur-sm border border-border/50 rounded-xl p-6 hover:bg-background/80 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+            <div className="bg-background/60 border border-border/50 rounded-xl p-6 hover:bg-background/80 transition-colors duration-150">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2">
-                    Coerenza
+                    {t('coherence')}
                   </p>
                   <p className="text-3xl font-bold text-foreground">
                     {state.isGuestMode ? "N/A" : `${dashboardData.summary.coherenceScore}%`}
                   </p>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Obiettivi vs strumenti
+                    {t('coherenceDescription')}
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center">
@@ -171,14 +172,14 @@ export function DashboardContent() {
 
           {/* Main Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Analisi Portafoglio */}
+            {/* Analisi Portafoglio - Ottimizzata */}
             <div className="lg:col-span-2">
-              <div className="bg-background/60 backdrop-blur-sm border border-border/50 rounded-xl p-6">
+              <div className="bg-background/60 border border-border/50 rounded-xl p-6">
                 <div className="flex items-center justify-between mb-6">
                   <div>
-                    <h2 className="text-xl font-semibold text-foreground">Analisi Portafoglio</h2>
+                    <h2 className="text-xl font-semibold text-foreground">{t('portfolioAnalysis')}</h2>
                     <p className="text-sm text-muted-foreground">
-                      {state.isGuestMode ? "Dati di esempio" : "Distribuzione e performance degli asset"}
+                      {state.isGuestMode ? t('sampleData') : t('distributionAndPerformance')}
                     </p>
                   </div>
                   <ChartIcon className="w-6 h-6 text-muted-foreground" />
@@ -188,23 +189,23 @@ export function DashboardContent() {
                   <div className="text-center py-12">
                     <ShieldIcon className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                     <h3 className="text-lg font-semibold text-foreground mb-2">
-                      Analisi completa disponibile per utenti registrati
+                      {t('fullAnalysisAvailable')}
                     </h3>
                     <p className="text-sm text-muted-foreground mb-4">
-                      Registrati per accedere a grafici dettagliati, analisi di rischio e raccomandazioni personalizzate
+                      {t('registerForAnalysis')}
                     </p>
                     <button
                       onClick={() => window.location.href = '/'}
                       className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors duration-150"
                     >
-                      Registrati ora
+                      {t('registerNow')}
                     </button>
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 gap-6">
                     <div className="space-y-4">
                       <h3 className="text-sm font-semibold text-foreground uppercase tracking-wide">
-                        Allocazione
+                        {t('allocation')}
                       </h3>
                       <div className="space-y-3">
                         <div className="flex justify-between items-center">
@@ -223,7 +224,7 @@ export function DashboardContent() {
                     </div>
                     <div className="space-y-4">
                       <h3 className="text-sm font-semibold text-foreground uppercase tracking-wide">
-                        Performance 30gg
+                        {t('performance30d')}
                       </h3>
                       <div className="space-y-3">
                         <div className="flex justify-between items-center">
@@ -245,32 +246,32 @@ export function DashboardContent() {
               </div>
             </div>
 
-            {/* Action Card */}
+            {/* Action Card - Ottimizzata */}
             <div className="space-y-6">
               {/* Quick Actions */}
-              <div className="bg-background/60 backdrop-blur-sm border border-border/50 rounded-xl p-6">
+              <div className="bg-background/60 border border-border/50 rounded-xl p-6">
                 <h2 className="text-lg font-semibold text-foreground mb-4">
-                  {state.isGuestMode ? "Inizia ora" : "Azioni rapide"}
+                  {state.isGuestMode ? t('getStarted') : t('quickActions')}
                 </h2>
                 <div className="space-y-3">
                   <button className="w-full p-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors duration-150 text-left">
                     <div className="font-medium">
-                      {state.isGuestMode ? "Registrati" : "Riequilibra Portafoglio"}
+                      {state.isGuestMode ? t('register') : t('rebalancePortfolio')}
                     </div>
                     <div className="text-sm opacity-90">
-                      {state.isGuestMode ? "Accedi a tutte le funzionalità" : "Ottimizza l'allocazione"}
+                      {state.isGuestMode ? t('accessAllFeatures') : t('optimizeAllocation')}
                     </div>
                   </button>
                   <button className="w-full p-3 border border-border/50 rounded-lg hover:bg-muted/50 transition-colors duration-150 text-left">
-                    <div className="font-medium text-foreground">Verifica Coerenza</div>
-                    <div className="text-sm text-muted-foreground">Analizza i tuoi strumenti</div>
+                    <div className="font-medium text-foreground">{t('verifyCoherence')}</div>
+                    <div className="text-sm text-muted-foreground">{t('analyzeTools')}</div>
                   </button>
                 </div>
               </div>
 
               {/* Alerts */}
-              <div className="bg-background/60 backdrop-blur-sm border border-border/50 rounded-xl p-6">
-                <h2 className="text-lg font-semibold text-foreground mb-4">Avvisi</h2>
+              <div className="bg-background/60 border border-border/50 rounded-xl p-6">
+                <h2 className="text-lg font-semibold text-foreground mb-4">{t('alerts')}</h2>
                 <div className="space-y-3">
                   {dashboardData.alerts.map((alert) => (
                     <div key={alert.id} className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
