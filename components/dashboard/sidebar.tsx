@@ -60,7 +60,7 @@ export function Sidebar({ collapsed, onToggle, onOpenSettings }: SidebarProps) {
   // Don't render until mounted to prevent hydration mismatch
   if (!mounted) {
     return (
-      <div className={`hidden lg:flex bg-background border-r border-border/50 ${collapsed ? 'w-20' : 'w-80'} min-h-0 flex-col`}>
+      <div className={`hidden lg:flex bg-background border-r border-border/50 ${collapsed ? 'w-16' : 'w-64'} min-h-0 flex-col`}>
         <div className="animate-pulse">
           <div className="h-16 bg-muted/30 border-b border-border/50" />
           <div className="p-4 space-y-3">
@@ -77,29 +77,29 @@ export function Sidebar({ collapsed, onToggle, onOpenSettings }: SidebarProps) {
     <>
       {/* Desktop: in-flow sidebar - Enterprise Level */}
       <div className={`hidden lg:flex bg-background border-r border-border/50 transition-all duration-300 ease-out ${
-        collapsed ? 'w-20' : 'w-80'
+        collapsed ? 'w-16' : 'w-64'
       } min-h-0 flex-col shadow-sm`}>
         
         {/* Header - Premium Tradelia 2026 Design */}
-        <div className="flex items-center justify-between p-6 border-b border-border/50 bg-muted/20">
+        <div className="flex items-center justify-between p-4 border-b border-border/50 bg-muted/20">
           {!collapsed && (
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl border-2 border-primary/20 flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5 shadow-sm">
-                <svg width="20" height="20" viewBox="0 0 32 32" fill="none">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg border-2 border-primary/20 flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5 shadow-sm">
+                <svg width="16" height="16" viewBox="0 0 32 32" fill="none">
                   <circle cx="16" cy="16" r="15" stroke="hsl(var(--primary))" strokeWidth="2" fill="none"/>
                   <path d="M8 12L12 8L16 12L20 8L24 12V20L20 24L16 20L12 24L8 20V12Z" stroke="hsl(var(--primary))" strokeWidth="1.5" strokeLinejoin="round" fill="none"/>
                   <circle cx="16" cy="16" r="2" fill="hsl(var(--primary))"/>
                 </svg>
               </div>
               <div>
-                <span className="text-base font-bold text-foreground tracking-tight">Tradelia</span>
+                <span className="text-sm font-bold text-foreground tracking-tight">Tradelia</span>
                 <p className="text-xs text-muted-foreground font-medium">Dashboard dinamica</p>
               </div>
             </div>
           )}
           {collapsed && (
-            <div className="w-10 h-10 rounded-xl border-2 border-primary/20 flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5 shadow-sm mx-auto">
-              <svg width="20" height="20" viewBox="0 0 32 32" fill="none">
+            <div className="w-8 h-8 rounded-lg border-2 border-primary/20 flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5 shadow-sm mx-auto">
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="none">
                 <circle cx="16" cy="16" r="15" stroke="hsl(var(--primary))" strokeWidth="2" fill="none"/>
                 <path d="M8 12L12 8L16 12L20 8L24 12V20L20 24L16 20L12 24L8 20V12Z" stroke="hsl(var(--primary))" strokeWidth="1.5" strokeLinejoin="round" fill="none"/>
                 <circle cx="16" cy="16" r="2" fill="hsl(var(--primary))"/>
@@ -108,27 +108,27 @@ export function Sidebar({ collapsed, onToggle, onOpenSettings }: SidebarProps) {
           )}
           <button
             onClick={onToggle}
-            className="p-2.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 border border-transparent hover:border-border/50"
+            className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 border border-transparent hover:border-border/50"
             aria-label={collapsed ? "Espandi sidebar" : "Comprimi sidebar"}
           >
             <ChevronLeftIcon 
               className={`transition-transform duration-200 ${collapsed ? 'rotate-180' : ''}`} 
-              size={18} 
+              size={16} 
             />
           </button>
         </div>
 
         {/* Navigation - Enterprise Level Design */}
-        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-          <div className={`space-y-1 ${collapsed ? 'space-y-3' : ''}`}>
+        <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
+          <div className={`space-y-1 ${collapsed ? 'space-y-2' : ''}`}>
             {navigation.map((item) => renderNavItem(item, collapsed, onOpenSettings))}
           </div>
         </nav>
 
         {/* Status Indicator */}
         {!collapsed && (
-          <div className="px-4 py-3 border-t border-border/30">
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border border-border/50">
+          <div className="px-3 py-2 border-t border-border/30">
+            <div className="flex items-center gap-2 p-2 rounded-lg bg-muted/30 border border-border/50">
               <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-medium text-foreground">Sistema operativo</p>
@@ -139,10 +139,10 @@ export function Sidebar({ collapsed, onToggle, onOpenSettings }: SidebarProps) {
         )}
 
         {/* Footer - Premium User Section */}
-        <div className="p-4 border-t border-border/50 bg-muted/10">
-          <div className={`flex items-center ${collapsed ? 'justify-center' : 'gap-4'}`}>
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center border-2 border-primary/20 shadow-sm">
-              <span className="text-sm font-bold text-primary">{userInitial}</span>
+        <div className="p-3 border-t border-border/50 bg-muted/10">
+          <div className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3'}`}>
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center border-2 border-primary/20 shadow-sm">
+              <span className="text-xs font-bold text-primary">{userInitial}</span>
             </div>
             {!collapsed && (
               <div className="flex-1 min-w-0">
@@ -164,7 +164,7 @@ export function Sidebar({ collapsed, onToggle, onOpenSettings }: SidebarProps) {
           {!isGuest && !collapsed && (
             <button
               onClick={handleSignOut}
-              className="w-full mt-4 px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground bg-background hover:bg-muted/50 border border-border/50 hover:border-border rounded-lg transition-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2"
+              className="w-full mt-3 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground bg-background hover:bg-muted/50 border border-border/50 hover:border-border rounded-lg transition-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2"
             >
               Esci dal sistema
             </button>
@@ -257,8 +257,8 @@ function renderNavItem(item: typeof navigation[0], collapsed: boolean, onOpenSet
   const IconComponent = item.icon;
   
   // Enterprise-level styling following Tradelia 2026 principles
-  const baseStyles = `group relative flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 ${
-    collapsed ? 'justify-center px-3' : ''
+  const baseStyles = `group relative flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 ${
+    collapsed ? 'justify-center px-2' : ''
   }`;
   
   const activeStyles = 'bg-gradient-to-r from-primary to-primary/90 text-white font-semibold shadow-lg shadow-primary/20 border border-primary/20';
@@ -271,8 +271,8 @@ function renderNavItem(item: typeof navigation[0], collapsed: boolean, onOpenSet
           onClick={onOpenSettings}
           className={`w-full text-left ${baseStyles} ${item.current ? activeStyles : inactiveStyles}`}
         >
-          <div className={`flex items-center justify-center w-6 h-6 ${item.current ? 'text-white' : 'text-primary'}`}>
-            <IconComponent size={20} />
+          <div className={`flex items-center justify-center w-5 h-5 ${item.current ? 'text-white' : 'text-primary'}`}>
+            <IconComponent size={16} />
           </div>
           {!collapsed && (
             <div className="flex-1 min-w-0">
@@ -306,8 +306,8 @@ function renderNavItem(item: typeof navigation[0], collapsed: boolean, onOpenSet
         href={item.href}
         className={`${baseStyles} ${item.current ? activeStyles : inactiveStyles}`}
       >
-        <div className={`flex items-center justify-center w-6 h-6 ${item.current ? 'text-white' : 'text-primary'}`}>
-          <IconComponent size={20} />
+        <div className={`flex items-center justify-center w-5 h-5 ${item.current ? 'text-white' : 'text-primary'}`}>
+          <IconComponent size={16} />
         </div>
         {!collapsed && (
           <div className="flex-1 min-w-0">

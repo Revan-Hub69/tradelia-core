@@ -53,15 +53,15 @@ export function DetailCard({
 
   return (
     <div className={cn(
-      "rounded-lg border-2 border-border bg-background p-6 shadow-sm",
+      "rounded-lg border-2 border-border bg-background p-4 shadow-sm",
       "hover:border-primary/30 hover:bg-muted/20 hover:shadow-md hover:-translate-y-0.5",
       "transition-all duration-150 ease-out",
       className
     )}>
-      <div className="space-y-5">
+      <div className="space-y-4">
         {/* Header */}
-        <div className="space-y-2">
-          <h3 className="text-xl font-bold text-foreground tracking-tight">
+        <div className="space-y-1">
+          <h3 className="text-lg font-bold text-foreground tracking-tight">
             {title}
           </h3>
           {subtitle && (

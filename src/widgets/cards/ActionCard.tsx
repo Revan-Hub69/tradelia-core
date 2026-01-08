@@ -50,15 +50,15 @@ export function ActionCard({
 
   return (
     <div className={cn(
-      "rounded-lg border-2 border-border bg-background p-6 shadow-sm",
+      "rounded-lg border-2 border-border bg-background p-4 shadow-sm",
       "hover:border-primary/30 hover:bg-muted/20 hover:shadow-md hover:-translate-y-0.5",
       "transition-all duration-150 ease-out",
       className
     )}>
-      <div className="space-y-5">
+      <div className="space-y-4">
         {/* Content */}
-        <div className="space-y-3">
-          <h3 className="text-xl font-bold text-foreground tracking-tight">
+        <div className="space-y-2">
+          <h3 className="text-lg font-bold text-foreground tracking-tight">
             {title}
           </h3>
           <p className="text-sm text-muted-foreground font-medium leading-relaxed">
@@ -67,11 +67,10 @@ export function ActionCard({
         </div>
 
         {/* Actions */}
-        <div className="flex flex-col sm:flex-row gap-3 pt-2">
+        <div className="flex flex-col sm:flex-row gap-2 pt-1">
           <Button
             onClick={() => handleAction(primaryAction.actionId)}
-            className="flex-1 h-11"
-            size="lg"
+            className="flex-1 h-10"
           >
             {primaryAction.label}
           </Button>
@@ -79,8 +78,7 @@ export function ActionCard({
             <Button
               variant="outline"
               onClick={() => handleAction(secondaryAction.actionId)}
-              className="flex-1 h-11"
-              size="lg"
+              className="flex-1 h-10"
             >
               {secondaryAction.label}
             </Button>

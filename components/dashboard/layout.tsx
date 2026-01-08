@@ -82,7 +82,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         
         {/* Content - single scroll point with better spacing */}
         <main className="flex-1 overflow-y-auto overscroll-none bg-muted/20">
-          <div className="p-6 sm:p-8 max-w-7xl mx-auto">
+          <div className="p-4 sm:p-6 max-w-7xl mx-auto">
             {children}
           </div>
         </main>

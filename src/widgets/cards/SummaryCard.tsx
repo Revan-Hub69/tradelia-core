@@ -26,21 +26,14 @@ export function SummaryCard({
   change,
   className 
 }: SummaryCardProps) {
-  const trendColors = {
-    positive: 'text-green-700',
-    negative: 'text-red-700',
-    neutral: 'text-muted-foreground',
-    warning: 'text-amber-700'
-  };
-
   return (
     <div className={cn(
-      "rounded-lg border-2 border-border bg-background p-6 shadow-sm",
+      "rounded-lg border-2 border-border bg-background p-4 shadow-sm",
       "hover:border-primary/30 hover:bg-muted/20 hover:shadow-md hover:-translate-y-0.5",
       "transition-all duration-150 ease-out",
       className
     )}>
-      <div className="space-y-3">
+      <div className="space-y-2">
         {/* Title */}
         <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           {title}
@@ -48,7 +41,7 @@ export function SummaryCard({
         
         {/* Value */}
         <div className="flex items-baseline justify-between">
-          <p className="text-3xl font-bold text-foreground tracking-tight">
+          <p className="text-2xl font-bold text-foreground tracking-tight">
             {value}
           </p>
           {change && (
