@@ -43,10 +43,11 @@ export default function AuthModal() {
   // Reset on open + check if already logged in
   useEffect(() => {
     if (isOpen) {
-      // If user is already authenticated, redirect to dashboard
+      // If user is already authenticated, redirect to localized dashboard
       if (user) {
         closeModal();
-        window.location.href = '/dashboard';
+        const locale = document.documentElement.lang || 'it'
+        window.location.href = `/${locale}/dashboard`;
         return;
       }
       
@@ -132,7 +133,8 @@ export default function AuthModal() {
   const handleGuest = async () => {
     console.log('🔄 Guest button clicked');
     closeModal();
-    window.location.href = '/dashboard?guest=true';
+    const locale = document.documentElement.lang || 'it'
+    window.location.href = `/${locale}/dashboard?guest=true`;
   };
 
   const handleGoogle = async () => {
@@ -151,7 +153,8 @@ export default function AuthModal() {
     try {
       await signInWithEmail(formData.email, formData.password);
       closeModal();
-      window.location.href = '/dashboard';
+      const locale = document.documentElement.lang || 'it'
+      window.location.href = `/${locale}/dashboard`;
     } catch (err: unknown) {
       const key = mapAuthErrorToKey(err);
       setErrors({ submit: t(key) });
@@ -167,7 +170,8 @@ export default function AuthModal() {
     try {
       await signUpWithEmail(formData.email, formData.password, formData.fullName);
       closeModal();
-      window.location.href = '/dashboard';
+      const locale = document.documentElement.lang || 'it'
+      window.location.href = `/${locale}/dashboard`;
     } catch (err: unknown) {
       const key = mapAuthErrorToKey(err);
       setErrors({ submit: t(key) });

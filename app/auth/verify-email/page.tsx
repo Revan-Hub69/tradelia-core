@@ -46,9 +46,10 @@ export default function VerifyEmail() {
             setError(t(key))
           } else {
             setSuccess(true)
-            // Redirect to dashboard after 3 seconds
+            // Redirect to localized dashboard after 3 seconds
             setTimeout(() => {
-              router.push('/dashboard')
+              const locale = document.documentElement.lang || 'it'
+              router.push(`/${locale}/dashboard`)
             }, 3000)
           }
         } else {

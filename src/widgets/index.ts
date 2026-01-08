@@ -20,5 +20,8 @@
 // Card widgets - Advanced card system
 export * from './cards';
 
+// Dashboard auth widget - Authentication guard and states
+export { DashboardAuthGuard } from './dashboard-auth';
+
 // Type exports (avoiding conflicts with features)
 // Removed type exports for deleted widgets - using components/dashboard instead

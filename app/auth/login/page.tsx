@@ -40,7 +40,9 @@ export default function Login() {
     
     try {
       await signInWithEmail(formData.email, formData.password)
-      router.push(safeRedirect('/dashboard', '/dashboard'))
+      // Redirect to localized dashboard
+      const locale = document.documentElement.lang || 'it'
+      router.push(safeRedirect(`/${locale}/dashboard`, `/${locale}/dashboard`))
     } catch (err: unknown) {
       const key = mapAuthErrorToKey(err)
       setError(t(key))

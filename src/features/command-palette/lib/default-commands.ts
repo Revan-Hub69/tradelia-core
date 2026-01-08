@@ -26,7 +26,10 @@ export function getDefaultCommands(
       keywords: ['home', 'dashboard', 'principale'],
       shortcut: 'Ctrl+H',
       icon: HomeIcon,
-      action: () => navigate('/dashboard')
+      action: () => {
+        const locale = document.documentElement.lang || 'it'
+        navigate(`/${locale}/dashboard`)
+      }
     },
     {
       id: 'nav-settings',
@@ -36,7 +39,10 @@ export function getDefaultCommands(
       keywords: ['settings', 'impostazioni', 'config', 'preferenze'],
       shortcut: 'Ctrl+,',
       icon: SettingsIcon,
-      action: () => navigate('/dashboard/settings')
+      action: () => {
+        const locale = document.documentElement.lang || 'it'
+        navigate(`/${locale}/dashboard/settings`)
+      }
     },
     {
       id: 'nav-profile',
@@ -45,7 +51,10 @@ export function getDefaultCommands(
       category: 'Navigazione',
       keywords: ['profile', 'profilo', 'account', 'utente'],
       icon: UserIcon,
-      action: () => navigate('/dashboard/profile')
+      action: () => {
+        const locale = document.documentElement.lang || 'it'
+        navigate(`/${locale}/dashboard/profile`)
+      }
     },
     {
       id: 'nav-analytics',
@@ -54,7 +63,10 @@ export function getDefaultCommands(
       category: 'Navigazione',
       keywords: ['analytics', 'metriche', 'statistiche', 'dati'],
       icon: ChartIcon,
-      action: () => navigate('/dashboard/analytics')
+      action: () => {
+        const locale = document.documentElement.lang || 'it'
+        navigate(`/${locale}/dashboard/analytics`)
+      }
     },
 
     // UI Actions
@@ -98,7 +110,10 @@ export function getDefaultCommands(
       keywords: ['help', 'aiuto', 'docs', 'documentazione', 'guida'],
       shortcut: 'F1',
       icon: HelpIcon,
-      action: () => navigate('/dashboard/help')
+      action: () => {
+        const locale = document.documentElement.lang || 'it'
+        navigate(`/${locale}/dashboard/help`)
+      }
     },
     {
       id: 'help-shortcuts',
@@ -108,7 +123,10 @@ export function getDefaultCommands(
       keywords: ['shortcuts', 'scorciatoie', 'keyboard', 'tastiera', 'hotkeys'],
       shortcut: 'Ctrl+/',
       icon: HelpIcon,
-      action: () => navigate('/dashboard/shortcuts')
+      action: () => {
+        const locale = document.documentElement.lang || 'it'
+        navigate(`/${locale}/dashboard/shortcuts`)
+      }
     },
 
     // Account
