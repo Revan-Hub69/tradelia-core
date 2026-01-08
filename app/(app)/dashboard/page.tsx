@@ -8,12 +8,24 @@
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 
-export default async function DashboardRedirect() {
+interface DashboardRedirectProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default async function DashboardRedirect({ searchParams }: DashboardRedirectProps) {
   // Get locale from cookie or default to 'it'
   const cookieStore = await cookies();
   const localeCookie = cookieStore.get('NEXT_LOCALE');
   const locale = localeCookie?.value || 'it';
   
-  // Redirect to localized dashboard
-  redirect(`/${locale}/dashboard`);
+  // Get search params
+  const params = await searchParams;
+  
+  // Build query string if params exist
+  const queryString = Object.keys(params).length > 0 
+    ? '?' + new URLSearchParams(params as Record<string, string>).toString()
+    : '';
+  
+  // Redirect to localized dashboard with preserved query params
+  redirect(`/${locale}/dashboard${queryString}`);
 }
