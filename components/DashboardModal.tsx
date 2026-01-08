@@ -159,8 +159,8 @@ export default function DashboardModal() {
         
         console.log('Guest profile saved successfully');
         closeModal();
-        // Navigate to dashboard
-        window.location.href = '/dashboard?guest=true';
+        // Navigate to dashboard with guest mode
+        window.location.href = '/it/dashboard?guest=true';
       } else {
         // Show registration form
         setStep(6);
@@ -175,8 +175,8 @@ export default function DashboardModal() {
     // Registration completed, save profile to user account
     console.log('Registration successful, saving profile to user account');
     closeModal();
-    // Navigate to dashboard
-    window.location.href = '/dashboard';
+    // Navigate to dashboard for registered users
+    window.location.href = '/it/dashboard';
   };
 
   const handleRegistrationBack = () => {

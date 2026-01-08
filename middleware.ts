@@ -40,7 +40,8 @@ export function middleware(request: NextRequest) {
     pathname.startsWith('/static') ||
     pathname.includes('.') ||
     pathname.startsWith('/sw.js') ||
-    pathname.startsWith('/manifest')
+    pathname.startsWith('/manifest') ||
+    pathname === '/dashboard' // Let dashboard redirect handle itself
   ) {
     // Add trace ID to request headers
     const requestHeaders = new Headers(request.headers);
@@ -78,66 +79,16 @@ export function middleware(request: NextRequest) {
     return response;
   }
 
-  // Apply i18n middleware for dashboard routes
-  if (pathname.startsWith('/dashboard')) {
-    // For /dashboard routes (non-localized), let the redirect page handle it
-    if (pathname === '/dashboard') {
-      const requestHeaders = new Headers(request.headers);
-      requestHeaders.set('x-trace-id', traceId);
-      
-      const response = NextResponse.next({
-        request: {
-          headers: requestHeaders,
-        },
-      });
-      
-      response.headers.set('x-trace-id', traceId);
-      response.headers.set('x-request-id', traceId);
-      
-      const duration = Date.now() - startTime;
-      logger.performance('Dashboard redirect request processed', startTime, {
-        method: request.method,
-        url: request.url
-      });
-      
-      return response;
-    }
-  }
-
-  // Apply i18n middleware for localized routes (including dashboard)
-  if (pathname.match(/^\/[a-z]{2}(\/|$)/)) {
-    const response = intlMiddleware(request);
-    
-    // Add trace ID to i18n response
-    response.headers.set('x-trace-id', traceId);
-    response.headers.set('x-request-id', traceId);
-    
-    // Log i18n request
-    const duration = Date.now() - startTime;
-    logger.performance('i18n request processed', startTime, {
-      method: request.method,
-      url: request.url,
-      locale: response.headers.get('x-middleware-request-x-pathname')
-    });
-    
-    return response;
-  }
-
-  // Default handling with trace ID
-  const requestHeaders = new Headers(request.headers);
-  requestHeaders.set('x-trace-id', traceId);
+  // Apply i18n middleware for all localized routes
+  const response = intlMiddleware(request);
   
-  const response = NextResponse.next({
-    request: {
-      headers: requestHeaders,
-    },
-  });
-  
+  // Add trace ID to i18n response
   response.headers.set('x-trace-id', traceId);
   response.headers.set('x-request-id', traceId);
   
+  // Log i18n request
   const duration = Date.now() - startTime;
-  logger.performance('Default request processed', startTime, {
+  logger.performance('i18n request processed', startTime, {
     method: request.method,
     url: request.url
   });
