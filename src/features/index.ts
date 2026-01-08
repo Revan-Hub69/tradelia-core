@@ -6,18 +6,16 @@
  */
 
 // Sidebar state management
-// export { useSidebarStore } from './sidebar-state/store/sidebar-store';
+export * from './sidebar-state';
 
 // Locale switching
 export { LocaleSwitcher } from './locale-switcher/components/LocaleSwitcher';
 
 // Widget reordering
-// export { useRobustDragDrop } from './widget-reorder/hooks/useRobustDragDrop';
+export * from './widget-reorder';
 
 // Command palette
 // export { CommandPalette } from './command-palette/components/CommandPalette';
 
 // Placeholder exports (to be implemented)
-export type { SidebarState } from './sidebar-state/types';
 export type { LocaleConfig } from './locale-switcher/types';
-export type { DragDropConfig } from './widget-reorder/types';

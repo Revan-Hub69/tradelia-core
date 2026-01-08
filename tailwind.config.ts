@@ -62,6 +62,17 @@ const config: Config = {
         success: 'hsl(var(--success))',
         warning: 'hsl(var(--warning))',
         error: 'hsl(var(--error))',
+        // Primary scale for gradients
+        'primary-50': 'hsl(215, 50%, 95%)',
+        'primary-100': 'hsl(215, 50%, 90%)',
+        'primary-200': 'hsl(215, 50%, 80%)',
+        'primary-300': 'hsl(215, 50%, 70%)',
+        'primary-400': 'hsl(215, 50%, 55%)',
+        'primary-500': 'hsl(215, 50%, 45%)',
+        'primary-600': 'hsl(215, 50%, 40%)',
+        'primary-700': 'hsl(215, 50%, 35%)',
+        'primary-800': 'hsl(215, 50%, 25%)',
+        'primary-900': 'hsl(215, 50%, 15%)',
       },
       spacing: {
         '18': '4.5rem',

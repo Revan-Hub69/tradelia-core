@@ -1,53 +1,109 @@
 /**
  * Card Entity Types - Tradelia 2026
+ * 
+ * Definizioni di tipi per il sistema di card avanzato
  */
 
 export type CardType = 'summary' | 'detail' | 'action' | 'warning' | 'educational';
 
-/**
- * CardEntity - Entità di business per le card della dashboard
- * Nota: Rinominato da "Card" per evitare conflitto con il componente UI Card
- */
-export interface CardEntity {
+export type DataFreshness = 'fresh' | 'stale' | 'offline' | 'error';
+
+export interface BaseCardData {
   id: string;
   type: CardType;
   title: string;
   subtitle?: string;
-  content: CardContent;
-  metadata: CardMetadata;
-  state: CardState;
-  permissions: CardPermissions;
-}
-
-export interface CardContent {
-  data: Record<string, any>;
-  lastUpdated: Date;
+  lastUpdated?: Date;
   dataSource?: string;
-  freshness: 'fresh' | 'stale' | 'unknown';
+  freshness?: DataFreshness;
 }
 
-export interface CardMetadata {
-  order: number;
-  isVisible: boolean;
-  isExpandable: boolean;
-  isDraggable: boolean;
-  size: 'small' | 'medium' | 'large';
-  category: string;
-  tags: string[];
-}
-
-export interface CardState {
-  isLoading: boolean;
-  isExpanded: boolean;
-  isError: boolean;
+export interface BaseCardProps extends BaseCardData {
+  isLoading?: boolean;
+  isError?: boolean;
   errorMessage?: string;
-  retryCount: number;
-  lastRetryAt?: Date;
+  onRetry?: () => void;
+  isDraggable?: boolean;
+  isExpandable?: boolean;
+  isExpanded?: boolean;
+  onToggleExpand?: () => void;
+  onReorder?: (fromId: string, toId: string) => void;
+  children?: React.ReactNode;
+  className?: string;
 }
 
-export interface CardPermissions {
-  canView: boolean;
-  canEdit: boolean;
-  canDelete: boolean;
-  canReorder: boolean;
+export interface SummaryCardData extends BaseCardData {
+  type: 'summary';
+  value: string | number;
+  change?: {
+    value: number;
+    percentage: number;
+    direction: 'up' | 'down' | 'neutral';
+  };
+  trend?: Array<{ date: string; value: number }>;
+}
+
+export interface DetailCardData extends BaseCardData {
+  type: 'detail';
+  sections: Array<{
+    title: string;
+    content: React.ReactNode;
+  }>;
+}
+
+export interface ActionCardData extends BaseCardData {
+  type: 'action';
+  actions: Array<{
+    id: string;
+    label: string;
+    variant: 'primary' | 'secondary' | 'outline';
+    onClick: () => void;
+    isLoading?: boolean;
+  }>;
+}
+
+export interface WarningCardData extends BaseCardData {
+  type: 'warning';
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  message: string;
+  actions?: Array<{
+    id: string;
+    label: string;
+    onClick: () => void;
+  }>;
+}
+
+export interface EducationalCardData extends BaseCardData {
+  type: 'educational';
+  content: {
+    summary: string;
+    details?: string;
+    links?: Array<{
+      label: string;
+      href: string;
+      external?: boolean;
+    }>;
+  };
+}
+
+export type CardData = 
+  | SummaryCardData 
+  | DetailCardData 
+  | ActionCardData 
+  | WarningCardData 
+  | EducationalCardData;
+
+// Drag & Drop types
+export interface DragState {
+  draggedItem: string | null;
+  dropTarget: string | null;
+  isDragging: boolean;
+}
+
+export interface TouchState {
+  startY: number;
+  startX: number;
+  currentElement: HTMLElement | null;
+  isLongPress: boolean;
+  longPressTimer: NodeJS.Timeout | null;
 }

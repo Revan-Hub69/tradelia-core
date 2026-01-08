@@ -14,10 +14,8 @@
 // export { UserService } from './user/service';
 
 // Card entities
-// export { Card, CardType } from './card/types';
-// export { CardService } from './card/service';
+export * from './card';
 
 // Placeholder exports (to be implemented)
 export type { NavigationItem } from './navigation/types';
 export type { User, UserProfile } from './user/types';
-export type { CardEntity, CardType } from './card/types';

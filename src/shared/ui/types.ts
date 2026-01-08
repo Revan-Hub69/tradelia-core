@@ -61,6 +61,14 @@ export interface ThemeContextType {
   resolvedTheme: 'light' | 'dark';
 }
 
+// Density types
+export type Density = 'compact' | 'comfortable' | 'spacious';
+
+export interface DensityContextType {
+  density: Density;
+  setDensity: (density: Density) => void;
+}
+
 // Accessibility types
 export interface A11yProps {
   'aria-label'?: string;

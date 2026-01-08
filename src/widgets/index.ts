@@ -15,14 +15,13 @@
 // export { HeaderWidget } from './header/HeaderWidget';
 
 // Sidebar widget - Navigation sidebar
-// export { SidebarWidget } from './sidebar/SidebarWidget';
+export * from './sidebar';
 
-// Card grid widget - Draggable card layout
-// export { CardGridWidget } from './card-grid/CardGridWidget';
+// Card widgets - Advanced card system
+export * from './cards';
 
-// Type exports
+// Type exports (avoiding conflicts with features)
 export type { DashboardShellProps, DashboardLayoutConfig } from './dashboard-shell/types';
 export type { DashboardGridProps, GridLayoutConfig } from './dashboard-grid/types';
 export type { HeaderWidgetProps, HeaderConfig } from './header/types';
-export type { SidebarWidgetProps, SidebarConfig } from './sidebar/types';
 export type { CardGridWidgetProps, CardGridConfig } from './card-grid/types';

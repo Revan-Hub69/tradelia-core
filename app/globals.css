@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    /* Tradelia 2026 - Design Guide Palette */
+    /* Tradelia 2026 - Design Guide Palette (Light Mode) */
     --background: 0 0% 99%;           /* Bianco caldo */
     --foreground: 220 15% 12%;        /* Grigio scuro blu */
     --primary: 215 50% 45%;           /* Blu desaturato istituzionale */
@@ -13,11 +13,67 @@
     --border: 220 10% 88%;            /* Grigio sottile */
     --accent: 220 10% 94%;            /* Per sezioni alternate */
     
+    /* Semantic Status Colors - Light Mode */
+    --success: 142 76% 36%;           /* Verde accessibile */
+    --warning: 38 92% 50%;            /* Ambra accessibile */
+    --error: 0 84% 60%;               /* Rosso accessibile */
+    
+    /* Surface Layers - Light Mode */
+    --surface: 0 0% 100%;             /* Superficie base */
+    --surface-elevated: 0 0% 100%;    /* Superficie elevata */
+    --surface-glass: 0 0% 100% / 0.8; /* Superficie glass */
+    
     /* Shadow System */
     --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    
+    /* Theme Transition Duration */
+    --theme-transition: 300ms;
+  }
+
+  /* Dark Mode - Tradelia 2026 Compliant */
+  [data-theme="dark"] {
+    --background: 220 15% 8%;         /* Grigio scuro blu */
+    --foreground: 220 10% 95%;        /* Quasi bianco */
+    --primary: 215 55% 55%;           /* Blu più luminoso per dark */
+    --muted: 220 15% 15%;             /* Grigio scuro */
+    --muted-foreground: 220 10% 60%;  /* Grigio medio chiaro */
+    --border: 220 15% 20%;            /* Bordo scuro */
+    --accent: 220 15% 12%;            /* Accent scuro */
+    
+    /* Semantic Status Colors - Dark Mode (adjusted for contrast) */
+    --success: 142 70% 45%;           /* Verde più luminoso */
+    --warning: 38 90% 55%;            /* Ambra più luminosa */
+    --error: 0 80% 65%;               /* Rosso più luminoso */
+    
+    /* Surface Layers - Dark Mode */
+    --surface: 220 15% 10%;           /* Superficie base scura */
+    --surface-elevated: 220 15% 13%;  /* Superficie elevata scura */
+    --surface-glass: 220 15% 10% / 0.8; /* Superficie glass scura */
+    
+    /* Shadow System - Dark Mode (più sottili) */
+    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.2);
+    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.2);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.2);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+  }
+
+  /* Density Modes - Optional */
+  [data-density="compact"] {
+    --spacing-unit: 0.75;
+    --text-scale: 0.9;
+  }
+
+  [data-density="comfortable"] {
+    --spacing-unit: 1;
+    --text-scale: 1;
+  }
+
+  [data-density="spacious"] {
+    --spacing-unit: 1.25;
+    --text-scale: 1.05;
   }
 
 
@@ -37,6 +93,26 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Theme Transition - Smooth 300ms */
+  html,
+  body,
+  [data-theme] * {
+    transition: 
+      background-color var(--theme-transition, 300ms) cubic-bezier(0.4, 0, 0.2, 1),
+      border-color var(--theme-transition, 300ms) cubic-bezier(0.4, 0, 0.2, 1),
+      color var(--theme-transition, 300ms) cubic-bezier(0.4, 0, 0.2, 1),
+      fill var(--theme-transition, 300ms) cubic-bezier(0.4, 0, 0.2, 1),
+      stroke var(--theme-transition, 300ms) cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Disable theme transition on initial load */
+  html.no-transition,
+  html.no-transition *,
+  html.no-transition *::before,
+  html.no-transition *::after {
+    transition: none !important;
   }
 
   *:focus-visible {

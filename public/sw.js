@@ -1,191 +1,380 @@
 /**
- * Tradelia Service Worker - Data Freshness Compliant
- * Implements Data Freshness Contract policies for different data categories
+ * Tradelia Service Worker - Dashboard Only (Hardened)
+ * 
+ * Implements Data Freshness Contract policies for dashboard routes only.
+ * Marketing pages remain cacheable by browser/CDN only.
+ * 
+ * @version 2.0.0
+ * @see docs/data-freshness-contract.md
  */
 
-const CACHE_NAME = 'tradelia-v2';
+const CACHE_VERSION = '2.0.0';
+const CACHE_NAME = `tradelia-dashboard-v${CACHE_VERSION}`;
 const OFFLINE_URL = '/offline';
+
+// Dashboard route patterns (only these are handled by SW)
+const DASHBOARD_PATTERNS = [
+  /^\/it\/dashboard/,
+  /^\/en\/dashboard/,
+  /^\/dashboard/,
+  /^\/api\//,
+];
+
+// Marketing routes to skip (let browser/CDN handle)
+const MARKETING_PATTERNS = [
+  /^\/$/,           // Homepage
+  /^\/about/,
+  /^\/pricing/,
+  /^\/contact/,
+  /^\/blog/,
+];
 
 // Assets to precache (immutable-asset category)
 const PRECACHE_ASSETS = [
-  '/',
-  '/dashboard',
+  '/it/dashboard',
+  '/en/dashboard',
   '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png'
+  '/icons/icon-512x512.png',
 ];
 
-// Install: precache critical assets
+// TTL constants (in milliseconds)
+const TTL = {
+  FRESHNESS_CRITICAL: 0,        // Always network
+  STALE_ALLOWED: 30 * 60 * 1000, // 30 minutes
+  STATIC_SNAPSHOT: 24 * 60 * 60 * 1000, // 24 hours
+  IMMUTABLE: 365 * 24 * 60 * 60 * 1000, // 1 year
+};
+
+/**
+ * Install: precache critical dashboard assets
+ */
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(PRECACHE_ASSETS);
-    })
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(PRECACHE_ASSETS))
+      .then(() => self.skipWaiting())
   );
-  self.skipWaiting();
 });
 
-// Activate: clean old caches
+/**
+ * Activate: clean old versioned caches
+ */
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames
-          .filter((name) => name.startsWith('tradelia-') && name !== CACHE_NAME)
-          .map((name) => caches.delete(name))
-      );
-    })
+    caches.keys()
+      .then((cacheNames) => {
+        return Promise.all(
+          cacheNames
+            .filter((name) => {
+              // Delete old tradelia caches
+              return name.startsWith('tradelia-') && name !== CACHE_NAME;
+            })
+            .map((name) => {
+              console.log(`[SW] Deleting old cache: ${name}`);
+              return caches.delete(name);
+            })
+        );
+      })
+      .then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// Fetch: Data Freshness Contract compliant strategy
+/**
+ * Fetch: Single unified handler with proper guards
+ */
 self.addEventListener('fetch', (event) => {
-  // Skip non-GET requests
-  if (event.request.method !== 'GET') return;
-  
-  // Skip external requests
-  if (!event.request.url.startsWith(self.location.origin)) return;
-  
-  const url = new URL(event.request.url);
-  
-  // Route by data category and URL pattern
-  if (url.pathname.startsWith('/api/')) {
-    event.respondWith(handleApiRequest(event.request));
-  } else if (url.pathname.startsWith('/auth/')) {
-    // Auth routes: always network-first (freshness-critical)
-    event.respondWith(networkFirstStrategy(event.request));
-  } else {
-    // Static assets and pages: cache-first for performance
-    event.respondWith(cacheFirstStrategy(event.request));
-  }
-});
-
-// Handle API requests based on data category
-async function handleApiRequest(request) {
+  const { request } = event;
   const url = new URL(request.url);
   
-  // Determine data category from URL patterns
-  let category = 'freshness-critical'; // Default to most restrictive
+  // Skip non-GET requests
+  if (request.method !== 'GET') return;
   
-  if (url.pathname.includes('/health') || url.pathname.includes('/alerts')) {
-    category = 'freshness-critical';
-  } else if (url.pathname.includes('/preferences') || url.pathname.includes('/layout')) {
-    category = 'stale-allowed';
-  } else if (url.pathname.includes('/reports') || url.pathname.includes('/history')) {
-    category = 'static-snapshot';
+  // Skip external requests
+  if (!url.origin.includes(self.location.origin)) return;
+  
+  // Skip marketing routes - let browser/CDN handle
+  if (isMarketingRoute(url.pathname)) return;
+  
+  // Only handle dashboard routes
+  if (!isDashboardRoute(url.pathname)) return;
+  
+  // Route by destination and URL pattern
+  event.respondWith(handleRequest(request, url));
+});
+
+/**
+ * Check if route is a marketing page
+ */
+function isMarketingRoute(pathname) {
+  return MARKETING_PATTERNS.some((pattern) => pattern.test(pathname));
+}
+
+/**
+ * Check if route is a dashboard page or API
+ */
+function isDashboardRoute(pathname) {
+  return DASHBOARD_PATTERNS.some((pattern) => pattern.test(pathname));
+}
+
+/**
+ * Main request handler - routes to appropriate strategy
+ */
+async function handleRequest(request, url) {
+  // Static assets (scripts, styles, images)
+  if (isStaticAsset(request)) {
+    return cacheFirstStrategy(request);
   }
   
-  // Apply strategy based on category
+  // API requests
+  if (url.pathname.startsWith('/api/')) {
+    return handleApiRequest(request, url);
+  }
+  
+  // Dashboard pages
+  return networkFirstStrategy(request);
+}
+
+/**
+ * Check if request is for a static asset
+ */
+function isStaticAsset(request) {
+  const destination = request.destination;
+  return ['script', 'style', 'image', 'font'].includes(destination);
+}
+
+/**
+ * Handle API requests based on data category
+ */
+async function handleApiRequest(request, url) {
+  const category = getDataCategory(url.pathname);
+  
   switch (category) {
     case 'freshness-critical':
-      return networkFirstStrategy(request);
+      return networkFirstWithFreshnessIndicator(request);
     case 'stale-allowed':
-      return staleWhileRevalidateStrategy(request, 1800000); // 30min TTL
+      return staleWhileRevalidateStrategy(request, TTL.STALE_ALLOWED);
     case 'static-snapshot':
-      return cacheFirstWithValidation(request, 86400000); // 24h TTL
+      return cacheFirstWithValidation(request, TTL.STATIC_SNAPSHOT);
     default:
       return networkFirstStrategy(request);
   }
 }
 
-// Network-first strategy (for freshness-critical data)
-async function networkFirstStrategy(request) {
+/**
+ * Determine data category from URL pattern
+ */
+function getDataCategory(pathname) {
+  // Freshness-critical: real-time data
+  if (pathname.includes('/health') || 
+      pathname.includes('/alerts') ||
+      pathname.includes('/realtime') ||
+      pathname.includes('/monitoring')) {
+    return 'freshness-critical';
+  }
+  
+  // Stale-allowed: user preferences, layout
+  if (pathname.includes('/preferences') || 
+      pathname.includes('/layout') ||
+      pathname.includes('/settings')) {
+    return 'stale-allowed';
+  }
+  
+  // Static-snapshot: historical data, reports
+  if (pathname.includes('/reports') || 
+      pathname.includes('/history') ||
+      pathname.includes('/snapshot')) {
+    return 'static-snapshot';
+  }
+  
+  // Default to freshness-critical for safety
+  return 'freshness-critical';
+}
+
+/**
+ * Generate cache key with auth/locale awareness
+ */
+function getCacheKey(request) {
+  const url = new URL(request.url);
+  const authHeader = request.headers.get('authorization');
+  const locale = request.headers.get('accept-language')?.split(',')[0] || 'it';
+  
+  // Create context-aware cache key
+  const authContext = authHeader ? `auth:${hashString(authHeader).slice(0, 8)}` : 'public';
+  const localeContext = `locale:${locale.slice(0, 2)}`;
+  
+  return `${url.pathname}${url.search}?${authContext}&${localeContext}`;
+}
+
+/**
+ * Simple string hash for cache key generation
+ */
+function hashString(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  return Math.abs(hash).toString(16);
+}
+
+/**
+ * Network-first strategy with freshness indicator
+ */
+async function networkFirstWithFreshnessIndicator(request) {
   try {
     const response = await fetch(request);
     
-    // Add freshness indicator to response
+    // Add freshness indicator
     const headers = new Headers(response.headers);
     headers.set('X-Data-Freshness', 'fresh');
     headers.set('X-Cache-Status', 'network');
+    headers.set('X-SW-Version', CACHE_VERSION);
     
     return new Response(response.body, {
       status: response.status,
       statusText: response.statusText,
-      headers
+      headers,
     });
   } catch (error) {
-    // For freshness-critical data, don't serve stale - return error
+    // For freshness-critical data, return error (don't serve stale)
     return new Response(
-      JSON.stringify({ 
-        error: 'Network unavailable', 
+      JSON.stringify({
+        error: 'Network unavailable',
         category: 'freshness-critical',
-        message: 'Real-time data unavailable. Please check connection.' 
-      }), 
-      { 
-        status: 503, 
+        message: 'Real-time data unavailable. Please check connection.',
+      }),
+      {
+        status: 503,
         statusText: 'Service Unavailable',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       }
     );
   }
 }
 
-// Stale-while-revalidate strategy (for stale-allowed data)
+/**
+ * Network-first strategy (for dashboard pages)
+ */
+async function networkFirstStrategy(request) {
+  const cache = await caches.open(CACHE_NAME);
+  
+  try {
+    const response = await fetch(request);
+    
+    if (response.ok) {
+      // Cache successful responses
+      const responseClone = response.clone();
+      const headers = new Headers(responseClone.headers);
+      headers.set('sw-cached-date', new Date().toISOString());
+      
+      const responseWithDate = new Response(responseClone.body, {
+        status: responseClone.status,
+        statusText: responseClone.statusText,
+        headers,
+      });
+      
+      cache.put(request, responseWithDate);
+    }
+    
+    return response;
+  } catch (error) {
+    // Fallback to cache
+    const cached = await cache.match(request);
+    if (cached) {
+      const headers = new Headers(cached.headers);
+      headers.set('X-Data-Freshness', 'stale');
+      headers.set('X-Cache-Status', 'cache-offline');
+      
+      return new Response(cached.body, {
+        status: cached.status,
+        statusText: cached.statusText,
+        headers,
+      });
+    }
+    
+    return new Response('Offline', { status: 503 });
+  }
+}
+
+/**
+ * Stale-while-revalidate strategy (for stale-allowed data)
+ */
 async function staleWhileRevalidateStrategy(request, ttl) {
   const cache = await caches.open(CACHE_NAME);
-  const cached = await cache.match(request);
+  const cacheKey = getCacheKey(request);
+  const cached = await cache.match(cacheKey);
   
   // Check TTL
   if (cached) {
     const cachedDate = cached.headers.get('sw-cached-date');
     if (cachedDate) {
-      const isStale = Date.now() - new Date(cachedDate).getTime() > ttl;
-      if (!isStale) {
-        // Fresh cached data
+      const age = Date.now() - new Date(cachedDate).getTime();
+      if (age < ttl) {
+        // Fresh cached data - return immediately
         const headers = new Headers(cached.headers);
         headers.set('X-Data-Freshness', 'fresh');
         headers.set('X-Cache-Status', 'cache-fresh');
+        headers.set('X-Data-Age', Math.floor(age / 1000).toString());
         
         return new Response(cached.body, {
           status: cached.status,
           statusText: cached.statusText,
-          headers
+          headers,
         });
       }
     }
   }
   
-  // Fetch fresh data in background
-  const networkPromise = fetch(request).then(response => {
-    if (response.ok) {
-      const responseClone = response.clone();
-      const headers = new Headers(responseClone.headers);
-      headers.set('sw-cached-date', new Date().toISOString());
-      headers.set('X-Data-Freshness', 'fresh');
-      headers.set('X-Cache-Status', 'network-updated');
-      
-      const responseWithDate = new Response(responseClone.body, {
-        status: responseClone.status,
-        statusText: responseClone.statusText,
-        headers
-      });
-      
-      cache.put(request, responseWithDate.clone());
-      return responseWithDate;
-    }
-    return response;
-  }).catch(() => cached);
+  // Fetch fresh data
+  const networkPromise = fetch(request)
+    .then((response) => {
+      if (response.ok) {
+        const responseClone = response.clone();
+        const headers = new Headers(responseClone.headers);
+        headers.set('sw-cached-date', new Date().toISOString());
+        headers.set('X-Data-Freshness', 'fresh');
+        headers.set('X-Cache-Status', 'network-updated');
+        
+        const responseWithDate = new Response(responseClone.body, {
+          status: responseClone.status,
+          statusText: responseClone.statusText,
+          headers,
+        });
+        
+        cache.put(cacheKey, responseWithDate.clone());
+        return responseWithDate;
+      }
+      return response;
+    })
+    .catch(() => cached);
   
-  // Return stale data immediately if available, fresh data when ready
+  // Return stale data immediately if available
   if (cached) {
     const headers = new Headers(cached.headers);
     headers.set('X-Data-Freshness', 'stale');
     headers.set('X-Cache-Status', 'cache-stale');
     
+    // Trigger background revalidation
+    networkPromise.catch(() => {});
+    
     return new Response(cached.body, {
       status: cached.status,
       statusText: cached.statusText,
-      headers
+      headers,
     });
   }
   
   return networkPromise;
 }
 
-// Cache-first with validation (for static-snapshot data)
+/**
+ * Cache-first with validation (for static-snapshot data)
+ */
 async function cacheFirstWithValidation(request, ttl) {
   const cache = await caches.open(CACHE_NAME);
-  const cached = await cache.match(request);
+  const cacheKey = getCacheKey(request);
+  const cached = await cache.match(cacheKey);
   
   if (cached) {
     const cachedDate = cached.headers.get('sw-cached-date');
@@ -201,7 +390,7 @@ async function cacheFirstWithValidation(request, ttl) {
         return new Response(cached.body, {
           status: cached.status,
           statusText: cached.statusText,
-          headers
+          headers,
         });
       }
     }
@@ -220,10 +409,10 @@ async function cacheFirstWithValidation(request, ttl) {
       const responseWithDate = new Response(responseClone.body, {
         status: responseClone.status,
         statusText: responseClone.statusText,
-        headers
+        headers,
       });
       
-      cache.put(request, responseWithDate.clone());
+      cache.put(cacheKey, responseWithDate.clone());
       return responseWithDate;
     }
     return response;
@@ -237,7 +426,7 @@ async function cacheFirstWithValidation(request, ttl) {
       return new Response(cached.body, {
         status: cached.status,
         statusText: cached.statusText,
-        headers
+        headers,
       });
     }
     
@@ -245,7 +434,9 @@ async function cacheFirstWithValidation(request, ttl) {
   }
 }
 
-// Cache-first strategy (for immutable assets and pages)
+/**
+ * Cache-first strategy (for immutable static assets)
+ */
 async function cacheFirstStrategy(request) {
   const cache = await caches.open(CACHE_NAME);
   const cached = await cache.match(request);
@@ -257,48 +448,53 @@ async function cacheFirstStrategy(request) {
   try {
     const response = await fetch(request);
     if (response.ok) {
-      cache.put(request, response.clone());
+      // Only cache if response has cache-control allowing it
+      const cacheControl = response.headers.get('cache-control');
+      if (!cacheControl || !cacheControl.includes('no-store')) {
+        cache.put(request, response.clone());
+      }
     }
     return response;
   } catch (error) {
-    // For navigation requests, return cached home page
-    if (request.mode === 'navigate') {
-      const cachedHome = await cache.match('/');
-      if (cachedHome) return cachedHome;
-    }
-    
     return new Response('Offline', { status: 503 });
   }
 }
 
-// Push notifications handler
+/**
+ * Push notifications handler
+ */
 self.addEventListener('push', (event) => {
   if (!event.data) return;
   
-  const data = event.data.json();
-  const options = {
-    body: data.body || '',
-    icon: '/icons/icon-192x192.png',
-    badge: '/icons/icon-96x96.png',
-    vibrate: [100, 50, 100],
-    data: {
-      url: data.url || '/'
-    }
-  };
-  
-  event.waitUntil(
-    self.registration.showNotification(data.title || 'Tradelia', options)
-  );
+  try {
+    const data = event.data.json();
+    const options = {
+      body: data.body || '',
+      icon: '/icons/icon-192x192.png',
+      badge: '/icons/icon-96x96.png',
+      vibrate: [100, 50, 100],
+      data: { url: data.url || '/it/dashboard' },
+    };
+    
+    event.waitUntil(
+      self.registration.showNotification(data.title || 'Tradelia', options)
+    );
+  } catch (error) {
+    console.error('[SW] Push notification error:', error);
+  }
 });
 
-// Notification click handler
+/**
+ * Notification click handler
+ */
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   
-  const url = event.notification.data?.url || '/';
+  const url = event.notification.data?.url || '/it/dashboard';
   
   event.waitUntil(
-    self.clients.matchAll({ type: 'window', includeUncontrolled: true })
+    self.clients
+      .matchAll({ type: 'window', includeUncontrolled: true })
       .then((clientList) => {
         // Focus existing window if available
         for (const client of clientList) {
@@ -312,4 +508,25 @@ self.addEventListener('notificationclick', (event) => {
         }
       })
   );
+});
+
+/**
+ * Message handler for cache management
+ */
+self.addEventListener('message', (event) => {
+  if (event.data?.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+  
+  if (event.data?.type === 'CLEAR_CACHE') {
+    event.waitUntil(
+      caches.delete(CACHE_NAME).then(() => {
+        console.log('[SW] Cache cleared');
+      })
+    );
+  }
+  
+  if (event.data?.type === 'GET_VERSION') {
+    event.ports[0]?.postMessage({ version: CACHE_VERSION });
+  }
 });

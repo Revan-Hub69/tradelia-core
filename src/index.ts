@@ -12,10 +12,27 @@ export * from './shared';
 export * from './entities';
 
 // Features layer - Feature-specific logic
-export * from './features';
+export { 
+  useSidebarStore, 
+  useSidebarState, 
+  useIsSidebarExpanded,
+  useIsSidebarCompact,
+  useIsSidebarHidden,
+  useRobustDragDrop,
+  LocaleSwitcher 
+} from './features';
 
 // Widgets layer - Composite UI components
-export * from './widgets';
+export {
+  DashboardSidebar,
+  AdvancedCard,
+  SummaryCard,
+  DetailCard,
+  ActionCard,
+  WarningCard,
+  EducationalCard,
+  CardGrid
+} from './widgets';
 
 // Processes layer - Business process orchestration
 export * from './processes';

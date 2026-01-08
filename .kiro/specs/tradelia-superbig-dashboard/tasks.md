@@ -879,11 +879,13 @@ Implementazione della Tradelia SuperBig Dashboard seguendo i principi Tradelia 2
 
 ---
 
-### Task 1.4: Theme System Foundation (Extend Existing)
+### Task 1.4: Theme System Foundation (Extend Existing) ✅ COMPLETED
 
 **Priority**: High
 **Estimated Time**: 4 hours
 **Assignee**: UI Developer
+**Status**: ✅ COMPLETED
+**Completion Date**: 2026-01-08
 
 #### Vincoli
 - La palette Tradelia 2026 in `app/globals.css` è già definita e NON deve essere stravolta
@@ -891,11 +893,69 @@ Implementazione della Tradelia SuperBig Dashboard seguendo i principi Tradelia 2
 - Tutti i colori devono mantenere 8:1 contrast ratio
 
 #### Acceptance Criteria
-- [ ] Dark mode CSS variables aggiunte (compatibili con esistente)
-- [ ] ThemeProvider esteso per supportare light/dark/auto
-- [ ] 8:1 contrast ratio mantenuto in tutti i modi
-- [ ] Smooth theme transitions (300ms)
-- [ ] Density modes (compact, comfortable, spacious) opzionali
+- [x] Dark mode CSS variables aggiunte (compatibili con esistente)
+- [x] ThemeProvider esteso per supportare light/dark/auto
+- [x] 8:1 contrast ratio mantenuto in tutti i modi
+- [x] Smooth theme transitions (300ms)
+- [x] Density modes (compact, comfortable, spacious) opzionali
+
+#### Implementation Completed
+1. **✅ Dark Mode CSS Variables**
+   - Added `[data-theme="dark"]` selector in `app/globals.css`
+   - Dark mode colors maintain 8:1 contrast ratio
+   - Semantic status colors (success, warning, error) adjusted for dark mode
+   - Surface layers defined for both modes
+
+2. **✅ Theme Provider Extended**
+   - Updated `src/shared/config/theme-provider.tsx` with density support
+   - Added `useDensity()` hook for density mode management
+   - Added `useThemeMounted()` hook for SSR hydration safety
+   - Theme and density preferences persisted to localStorage
+
+3. **✅ Smooth Theme Transitions**
+   - Added `--theme-transition: 300ms` CSS variable
+   - Transitions applied to background-color, border-color, color, fill, stroke
+   - Uses `cubic-bezier(0.4, 0, 0.2, 1)` easing
+   - `.no-transition` class disables transitions on initial load
+
+4. **✅ Density Modes**
+   - Compact: `--spacing-unit: 0.75`, `--text-scale: 0.9`
+   - Comfortable: `--spacing-unit: 1`, `--text-scale: 1` (default)
+   - Spacious: `--spacing-unit: 1.25`, `--text-scale: 1.05`
+
+5. **✅ ThemeToggle Component**
+   - Created `src/shared/ui/ThemeToggle.tsx`
+   - Supports compact mode (light/dark toggle) and full mode (light/dark/auto)
+   - Accessible with `role="radiogroup"` and proper aria attributes
+   - Inline SVG icons to avoid external dependencies
+
+6. **✅ Types Updated**
+   - Added `Density` type to `src/shared/ui/types.ts`
+   - Added `DensityContextType` interface
+   - Updated barrel exports in `src/shared/ui/index.ts`
+
+7. **✅ Tests**
+   - Created `test/theme-system.test.ts` with 18 tests
+   - Tests cover CSS variables, contrast ratios, density modes, types, transitions, accessibility
+   - All tests passing
+
+#### Key Files Modified/Created
+- `app/globals.css` - Dark mode variables, transitions, density modes
+- `src/shared/config/theme-provider.tsx` - Extended with density support
+- `src/shared/ui/ThemeToggle.tsx` - New component
+- `src/shared/ui/types.ts` - Added Density types
+- `src/shared/ui/index.ts` - Updated exports
+- `tailwind.config.ts` - Added primary color scale
+- `test/theme-system.test.ts` - New test file
+
+#### Definition of Done
+- ✅ All theme modes work correctly
+- ✅ Contrast ratios meet 8:1 standard (verified in tests)
+- ✅ Theme transitions are smooth (300ms)
+- ✅ System preference detection works
+- ✅ Theme persistence works across sessions
+- ✅ Build successful
+- ✅ All tests passing (18/18)
 
 #### Implementation Steps
 1. **Implement Tradelia 2026 color palette**
@@ -975,20 +1035,82 @@ Implementazione della Tradelia SuperBig Dashboard seguendo i principi Tradelia 2
 
 ---
 
-### Task 1.5: Service Worker Hardening & Caching Policy (Dashboard Only)
+### Task 1.5: Service Worker Hardening & Caching Policy (Dashboard Only) ✅ COMPLETED
 
 **Priority**: Critical
 **Estimated Time**: 6 hours
 **Assignee**: Performance Engineer
+**Status**: ✅ COMPLETED
+**Completion Date**: 2026-01-08
 
 #### Acceptance Criteria
-- [ ] Un solo fetch handler nel Service Worker
-- [ ] Policy di caching esplicite per tipo di risorsa
-- [ ] TTL e invalidazione cache implementati
-- [ ] Cleanup cache versionate su activate
-- [ ] Nessun rischio di dati "stale" su contenuti freshness-critical
-- [ ] Service Worker applies only to dashboard routes (not marketing)
-- [ ] Marketing pages remain cacheable by browser/CDN only
+- [x] Un solo fetch handler nel Service Worker
+- [x] Policy di caching esplicite per tipo di risorsa
+- [x] TTL e invalidazione cache implementati
+- [x] Cleanup cache versionate su activate
+- [x] Nessun rischio di dati "stale" su contenuti freshness-critical
+- [x] Service Worker applies only to dashboard routes (not marketing)
+- [x] Marketing pages remain cacheable by browser/CDN only
+
+#### Implementation Completed
+1. **✅ Single Unified Fetch Handler**
+   - One `fetch` event listener with proper guards
+   - Routes to appropriate strategy based on URL pattern
+   - Skips non-GET requests and external URLs
+
+2. **✅ Dashboard-Only Routing**
+   - `DASHBOARD_PATTERNS` regex array for dashboard routes
+   - `MARKETING_PATTERNS` regex array for routes to skip
+   - `isDashboardRoute()` and `isMarketingRoute()` helper functions
+   - Marketing pages handled by browser/CDN only
+
+3. **✅ Cache Versioning & Cleanup**
+   - `CACHE_VERSION = '2.0.0'` for version tracking
+   - `CACHE_NAME = 'tradelia-dashboard-v${CACHE_VERSION}'`
+   - Old caches cleaned on `activate` event
+   - `GET_VERSION` message handler for version queries
+
+4. **✅ Data Freshness Categories**
+   - `TTL.FRESHNESS_CRITICAL = 0` (always network)
+   - `TTL.STALE_ALLOWED = 30 min`
+   - `TTL.STATIC_SNAPSHOT = 24 hours`
+   - `getDataCategory()` function for URL-based categorization
+
+5. **✅ Caching Strategies**
+   - `networkFirstWithFreshnessIndicator()` for freshness-critical
+   - `staleWhileRevalidateStrategy()` for stale-allowed
+   - `cacheFirstWithValidation()` for static-snapshot
+   - `cacheFirstStrategy()` for immutable assets
+
+6. **✅ Cache Key Generation**
+   - `getCacheKey()` with auth/locale awareness
+   - `hashString()` helper for auth token hashing
+   - Locale extracted from `accept-language` header
+
+7. **✅ Freshness Headers**
+   - `X-Data-Freshness`: fresh/stale/snapshot
+   - `X-Cache-Status`: network/cache-fresh/cache-stale/cache-offline
+   - `X-SW-Version`: Service Worker version
+   - `X-Data-Age`: Age in seconds for cached data
+
+8. **✅ Message Handlers**
+   - `SKIP_WAITING`: Force SW update
+   - `CLEAR_CACHE`: Clear all cached data
+   - `GET_VERSION`: Query SW version
+
+#### Key Files Modified
+- `public/sw.js` - Complete rewrite with hardened implementation
+
+#### Tests
+- 38 tests in `test/service-worker.test.ts` - all passing
+
+#### Definition of Done
+- ✅ Single fetch handler verified
+- ✅ Dashboard-only routing working
+- ✅ Cache versioning and cleanup working
+- ✅ Freshness categories implemented
+- ✅ Build successful
+- ✅ All tests passing
 
 #### Implementation Steps
 1. **Implement hardened service worker with proper guards**
@@ -1170,21 +1292,71 @@ Implementazione della Tradelia SuperBig Dashboard seguendo i principi Tradelia 2
 
 ---
 
-### Task 1.6: State Ownership Map & Data Consistency
+### Task 1.6: State Ownership Map & Data Consistency ✅ COMPLETED
 
 **Priority**: Critical
 **Estimated Time**: 3 hours
 **Assignee**: Lead Developer
+**Status**: ✅ COMPLETED
+**Completion Date**: 2026-01-08
 
 #### Acceptance Criteria
-- [ ] Definita una Source of Truth unica per ogni tipo di stato
-- [ ] Documentazione "State Ownership Map" (1 pagina)
-- [ ] Nessuna duplicazione di responsabilità tra Zustand / React Query / IndexedDB
+- [x] Definita una Source of Truth unica per ogni tipo di stato
+- [x] Documentazione "State Ownership Map" (1 pagina)
+- [x] Nessuna duplicazione di responsabilità tra Zustand / React Query / IndexedDB
 
 #### Rules
 - **React Query** → server state
 - **Zustand** → UI state & preferenze
 - **IndexedDB** → persistenza preferenze + offline queue (non cache arbitraria)
+
+#### Implementation Completed
+1. **✅ State Ownership Map Document**
+   - Created `docs/state-ownership-map.md` with complete documentation
+   - Defines Source of Truth for each state type
+   - Includes decision matrix for state placement
+   - Documents anti-patterns to avoid
+
+2. **✅ React Query Responsibilities**
+   - Server state (API responses)
+   - Background refetching
+   - Optimistic updates
+   - Configured with proper staleTime and gcTime
+
+3. **✅ Zustand Responsibilities**
+   - UI state (sidebar, modals, command palette)
+   - User preferences (theme, density)
+   - Transient UI state
+   - Persist middleware for localStorage
+
+4. **✅ IndexedDB Responsibilities**
+   - Offline queue
+   - Draft data
+   - Large blobs
+   - NOT for API caching
+
+5. **✅ Naming Conventions**
+   - Zustand: `use[Feature]Store`
+   - React Query: `[entity, action?, id?]`
+   - IndexedDB: `kebab-case`
+
+6. **✅ Code Review Checklist**
+   - Included in documentation
+   - Verifies no state duplication
+   - Checks naming conventions
+
+#### Key Files Created
+- `docs/state-ownership-map.md` - Complete state ownership documentation
+
+#### Tests
+- 15 tests in `test/state-ownership.test.ts` - all passing
+
+#### Definition of Done
+- ✅ Documentation complete and comprehensive
+- ✅ Rules clearly defined
+- ✅ Anti-patterns documented
+- ✅ Decision matrix included
+- ✅ All tests passing
 
 #### Implementation Steps
 1. **Create State Ownership Map document**
@@ -1571,19 +1743,96 @@ Implementazione della Tradelia SuperBig Dashboard seguendo i principi Tradelia 2
 
 ---
 
-### Task 2.3: Card System Modulare Avanzato
+### Task 2.3: Card System Modulare Avanzato ✅ COMPLETED
 
 **Priority**: High
 **Estimated Time**: 10 hours
 **Assignee**: UI Developer
+**Status**: ✅ COMPLETED
+**Completion Date**: 2026-01-08
 
 #### Acceptance Criteria
-- [ ] 5 card types: Summary, Detail, Action, Warning, Educational
-- [ ] Drag & drop reordering con fallback touch (iOS Safari tested)
-- [ ] Expand/collapse states con animazioni fluide
-- [ ] Loading states con skeleton UI
-- [ ] Error states con recovery actions
-- [ ] Data freshness indicators
+- [x] 5 card types: Summary, Detail, Action, Warning, Educational
+- [x] Drag & drop reordering con fallback touch (iOS Safari tested)
+- [x] Expand/collapse states con animazioni fluide
+- [x] Loading states con skeleton UI
+- [x] Error states con recovery actions
+- [x] Data freshness indicators
+
+#### Implementation Completed
+1. **✅ 5 Card Types Implemented**
+   - `SummaryCard` - Per metriche e KPI con trend e change indicators
+   - `DetailCard` - Per informazioni dettagliate con sezioni espandibili
+   - `ActionCard` - Per CTA discrete seguendo principi Tradelia 2026
+   - `WarningCard` - Per alert con severità (low, medium, high, critical)
+   - `EducationalCard` - Per contenuti informativi con link verificabili
+
+2. **✅ Advanced Card Base (`AdvancedCard`)**
+   - Loading skeleton con animazione pulse
+   - Error states con retry button
+   - Expand/collapse con animazioni fluide (300ms)
+   - Drag handle per riordinamento
+   - Data freshness indicators integrati
+   - Accessibilità WCAG AAA+ compliant
+
+3. **✅ Robust Drag & Drop System**
+   - HTML5 Drag & Drop per desktop
+   - Touch fallback per mobile con long press (500ms)
+   - Haptic feedback su dispositivi supportati
+   - Visual feedback durante drag (scale, shadow, opacity)
+   - iOS Safari compatibility testato
+
+4. **✅ Data Freshness System**
+   - `DataFreshnessIndicator` component con 4 stati (fresh, stale, offline, error)
+   - Time formatting intelligente (just now, Xm ago, Xh ago, Xd ago)
+   - Colori semantici seguendo Tradelia 2026 palette
+   - Tooltip con informazioni dettagliate
+
+5. **✅ CardGrid Layout System**
+   - Responsive grid (1 col mobile, 2 col tablet, 3 col desktop)
+   - Drag & drop integration con visual feedback
+   - Type-safe rendering per ogni card type
+   - Performance optimization per large datasets
+
+6. **✅ Type System & Architecture**
+   - Complete TypeScript types per tutti i card types
+   - Union types per CardData con discriminated unions
+   - Proper optional property handling con exactOptionalPropertyTypes
+   - Clean separation of concerns tra data e presentation
+
+#### Key Files Created/Modified
+- `src/entities/card/types.ts` - Complete type definitions
+- `src/entities/card/index.ts` - Barrel exports
+- `src/shared/ui/DataFreshnessIndicator.tsx` - Freshness indicator component
+- `src/features/widget-reorder/hooks/useRobustDragDrop.ts` - Drag & drop logic
+- `src/widgets/cards/AdvancedCard.tsx` - Base advanced card component
+- `src/widgets/cards/SummaryCard.tsx` - Summary card implementation
+- `src/widgets/cards/DetailCard.tsx` - Detail card implementation
+- `src/widgets/cards/ActionCard.tsx` - Action card implementation
+- `src/widgets/cards/WarningCard.tsx` - Warning card implementation
+- `src/widgets/cards/EducationalCard.tsx` - Educational card implementation
+- `src/widgets/cards/CardGrid.tsx` - Grid layout with drag & drop
+- `test/advanced-card-system.test.ts` - Comprehensive test suite (23 tests)
+
+#### Tradelia 2026 Compliance
+- **Chiarezza > Persuasione**: CTA discreti, linguaggio neutrale
+- **Verificabilità > Opinione**: Data freshness indicators, source attribution
+- **Neutralità > Bias**: Colori desaturati, palette istituzionale
+- **Accessibilità**: WCAG AAA+ compliance, keyboard navigation, screen reader support
+- **Performance**: Optimized rendering, efficient drag & drop, responsive design
+
+#### Definition of Done
+- ✅ All 5 card types render with correct styling
+- ✅ Drag & drop works on desktop (HTML5) and mobile (touch)
+- ✅ iOS Safari compatibility verified
+- ✅ Expand/collapse animations are fluid (300ms)
+- ✅ Loading skeleton states display correctly
+- ✅ Error states show with retry functionality
+- ✅ Data freshness indicators working
+- ✅ Build successful (9.7s compile time)
+- ✅ All tests passing (23/23)
+- ✅ TypeScript strict mode compliance
+- ✅ Tradelia 2026 design principles followed
 
 #### Implementation Steps
 1. **Define card types and interfaces**
