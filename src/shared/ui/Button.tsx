@@ -13,8 +13,8 @@ import { cn, focusRing, transitionSubtle } from './utils';
 import type { ButtonProps } from './types';
 
 const buttonVariants = {
-  default: 'bg-foreground text-background hover:bg-foreground/90 active:scale-[0.98]',
-  outline: 'border-2 border-border bg-background text-foreground hover:bg-muted/30 hover:-translate-y-px',
+  default: 'bg-primary text-white hover:bg-primary/90 active:scale-[0.98] shadow-sm hover:shadow-md',
+  outline: 'border-2 border-border bg-background text-foreground hover:bg-muted/30 hover:border-primary/30 hover:-translate-y-px',
   ghost: 'bg-transparent text-foreground hover:bg-muted/50',
 };
 

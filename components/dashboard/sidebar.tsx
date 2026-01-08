@@ -289,11 +289,11 @@ function renderNavItem(item: typeof navigation[0], collapsed: boolean, onOpenSet
         
         {/* Tooltip for collapsed state */}
         {collapsed && (
-          <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-3 py-2 bg-foreground text-background text-sm font-medium rounded-lg opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap z-50 shadow-xl border border-border/20">
+          <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-3 py-2 bg-primary text-white text-sm font-medium rounded-lg opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap z-50 shadow-xl border border-primary/20">
             <div className="font-medium">{item.name}</div>
-            <div className="text-xs opacity-75">{item.description}</div>
+            <div className="text-xs opacity-90">{item.description}</div>
             {/* Arrow */}
-            <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-foreground"></div>
+            <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-primary"></div>
           </div>
         )}
       </div>
@@ -324,11 +324,11 @@ function renderNavItem(item: typeof navigation[0], collapsed: boolean, onOpenSet
       
       {/* Tooltip for collapsed state */}
       {collapsed && (
-        <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-3 py-2 bg-foreground text-background text-sm font-medium rounded-lg opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap z-50 shadow-xl border border-border/20">
+        <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-3 py-2 bg-primary text-white text-sm font-medium rounded-lg opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap z-50 shadow-xl border border-primary/20">
           <div className="font-medium">{item.name}</div>
-          <div className="text-xs opacity-75">{item.description}</div>
+          <div className="text-xs opacity-90">{item.description}</div>
           {/* Arrow */}
-          <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-foreground"></div>
+          <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-primary"></div>
         </div>
       )}
     </div>

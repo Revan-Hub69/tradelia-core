@@ -363,7 +363,7 @@ export default function AuthModal() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full h-11 bg-foreground text-background text-sm font-medium rounded hover:bg-foreground/90 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2"
+          className="w-full h-11 bg-primary text-white text-sm font-medium rounded hover:bg-primary/90 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2 shadow-sm hover:shadow-md"
         >
           {isSubmitting ? t('modal.auth.login.submitting') : t('modal.auth.login.submit')}
         </button>
@@ -495,7 +495,7 @@ export default function AuthModal() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full h-11 bg-foreground text-background text-sm font-medium rounded hover:bg-foreground/90 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2"
+          className="w-full h-11 bg-primary text-white text-sm font-medium rounded hover:bg-primary/90 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2 shadow-sm hover:shadow-md"
         >
           {isSubmitting ? t('modal.auth.register.submitting') : t('modal.auth.register.submit')}
         </button>
@@ -556,7 +556,7 @@ export default function AuthModal() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full h-11 bg-foreground text-background text-sm font-medium rounded hover:bg-foreground/90 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2"
+          className="w-full h-11 bg-primary text-white text-sm font-medium rounded hover:bg-primary/90 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2 shadow-sm hover:shadow-md"
         >
           {isSubmitting ? t('modal.auth.resetRequest.submitting') : t('modal.auth.resetRequest.submit')}
         </button>
@@ -591,7 +591,7 @@ export default function AuthModal() {
 
       <button
         onClick={() => setMode('login')}
-        className="h-11 px-6 bg-foreground text-background text-sm font-medium rounded hover:bg-foreground/90 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2"
+        className="h-11 px-6 bg-primary text-white text-sm font-medium rounded hover:bg-primary/90 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2 shadow-sm hover:shadow-md"
       >
         {t('modal.auth.resetSent.backToLogin')}
       </button>

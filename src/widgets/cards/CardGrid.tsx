@@ -18,7 +18,7 @@ interface CardGridProps {
 export function CardGrid({ children, className }: CardGridProps) {
   return (
     <div className={cn(
-      "space-y-6",
+      "space-y-8",
       className
     )}>
       {children}

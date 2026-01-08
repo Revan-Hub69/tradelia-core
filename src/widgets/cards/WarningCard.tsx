@@ -60,23 +60,24 @@ export function WarningCard({
 
   return (
     <div className={cn(
-      "rounded border-2 bg-background p-4 shadow-sm",
+      "rounded-lg border-2 bg-background p-5 shadow-sm",
       style.border,
       style.bg,
+      "hover:shadow-md hover:-translate-y-0.5 transition-all duration-150 ease-out",
       className
     )}>
-      <div className="flex items-start gap-3">
+      <div className="flex items-start gap-4">
         {/* Icon */}
-        <div className={cn("flex-shrink-0 mt-0.5", style.icon)}>
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className={cn("flex-shrink-0 mt-1", style.icon)}>
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={style.iconPath} />
           </svg>
         </div>
 
         {/* Content */}
-        <div className="flex-1 space-y-2">
+        <div className="flex-1 space-y-3">
           <div className="flex items-start justify-between">
-            <h4 className="text-sm font-semibold text-foreground">
+            <h4 className="text-base font-bold text-foreground">
               {title}
             </h4>
             {dismissActionId && (
@@ -84,22 +85,22 @@ export function WarningCard({
                 variant="ghost"
                 size="sm"
                 onClick={handleDismiss}
-                className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+                className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground -mt-1"
                 aria-label="Dismiss"
               >
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </Button>
             )}
           </div>
           
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground font-medium leading-relaxed">
             {message}
           </p>
           
           {source && (
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground font-medium">
               Fonte: {source}
             </p>
           )}

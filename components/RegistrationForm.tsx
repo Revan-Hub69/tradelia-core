@@ -346,7 +346,7 @@ export default function RegistrationForm({ onSuccess, onBack: _onBack, profileDa
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full h-11 bg-foreground text-background text-sm font-medium rounded hover:bg-foreground/90 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2 flex items-center justify-center gap-2"
+          className="w-full h-11 bg-primary text-white text-sm font-medium rounded hover:bg-primary/90 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2 flex items-center justify-center gap-2 shadow-sm hover:shadow-md"
         >
           {isSubmitting ? (
             t('auth.register.submitting')

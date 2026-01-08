@@ -53,19 +53,19 @@ export function DetailCard({
 
   return (
     <div className={cn(
-      "rounded border-2 border-border bg-background p-5 shadow-sm",
-      "hover:border-border hover:bg-muted/30 hover:translate-y-[-1px]",
+      "rounded-lg border-2 border-border bg-background p-6 shadow-sm",
+      "hover:border-primary/30 hover:bg-muted/20 hover:shadow-md hover:-translate-y-0.5",
       "transition-all duration-150 ease-out",
       className
     )}>
-      <div className="space-y-4">
+      <div className="space-y-5">
         {/* Header */}
-        <div className="space-y-1">
-          <h3 className="text-lg font-semibold text-foreground">
+        <div className="space-y-2">
+          <h3 className="text-xl font-bold text-foreground tracking-tight">
             {title}
           </h3>
           {subtitle && (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground font-medium">
               {subtitle}
             </p>
           )}
@@ -78,13 +78,13 @@ export function DetailCard({
 
         {/* Data Freshness */}
         {lastUpdated && (
-          <div className="pt-3 border-t border-border/50">
+          <div className="pt-4 border-t border-border/50">
             <DataFreshnessIndicator
               freshness="fresh"
               lastUpdated={lastUpdated}
             />
             {dataSource && (
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-xs text-muted-foreground mt-2 font-medium">
                 Fonte: {dataSource}
               </p>
             )}
