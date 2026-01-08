@@ -20,4 +20,4 @@
 // Placeholder exports (to be implemented)
 export type { NavigationItem } from './navigation/types';
 export type { User, UserProfile } from './user/types';
-export type { Card, CardType } from './card/types';
+export type { CardEntity, CardType } from './card/types';

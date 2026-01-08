@@ -4,7 +4,11 @@
 
 export type CardType = 'summary' | 'detail' | 'action' | 'warning' | 'educational';
 
-export interface Card {
+/**
+ * CardEntity - Entità di business per le card della dashboard
+ * Nota: Rinominato da "Card" per evitare conflitto con il componente UI Card
+ */
+export interface CardEntity {
   id: string;
   type: CardType;
   title: string;

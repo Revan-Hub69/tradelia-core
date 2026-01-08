@@ -1,18 +1,14 @@
-import { LanguageProvider } from '@/components/LanguageSelector';
-import { DashboardModalProvider } from '@/contexts/DashboardModalContext';
-import AuthModal from '@/components/AuthModal';
+/**
+ * App Layout (Redirect Only) - Tradelia 2026
+ * 
+ * Questo layout è minimale perché le route sotto app/(app)/
+ * reindirizzano alla versione localizzata app/[locale]/(app)/
+ */
 
 export default function AppLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <LanguageProvider>
-      <DashboardModalProvider>
-        {children}
-        <AuthModal />
-      </DashboardModalProvider>
-    </LanguageProvider>
-  );
+  return children;
 }

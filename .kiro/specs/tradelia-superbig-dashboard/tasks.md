@@ -6,20 +6,29 @@ Implementazione della Tradelia SuperBig Dashboard seguendo i principi Tradelia 2
 
 **Principio Guida**: "Se non è abbastanza buono per Google Workspace, non è abbastanza buono per Tradelia."
 
+## Vincoli di Progetto
+
+**IMPORTANTE - Vincoli da rispettare:**
+
+1. **Homepage Freezata**: La homepage marketing (`app/(marketing)/`) è FREEZATA e NON deve essere modificata.
+2. **Dashboard Solo Localizzata**: La dashboard esiste solo in `app/[locale]/(app)/`. 
+3. **Palette Esistente**: La palette in `app/globals.css` NON deve essere stravolta.
+4. **Test Incrementali**: Ogni step deve essere testato prima di procedere.
+
 ## Implementation Strategy
 
 ### Phase-Based Approach
 
-**Phase 0**: Architecture Separation (Week 1)
-- Separate marketing and dashboard bundles
-- Move OAuth logic to dedicated callback route
-- Create app/(app) route group for dashboard
-- Establish performance budgets per route group
+**Phase 0**: Foundation Policies (Weeks 1)
+- Data contracts and freshness policies ✅
+- Security baseline ✅
+- Observability ✅
+- PR standards ✅
 
 **Phase 1**: Foundation & Architecture (Weeks 1-2)
 - Setup modular architecture
 - Core infrastructure
-- Basic theming system
+- Basic theming system (extend existing)
 
 **Phase 2**: Core Components (Weeks 3-4)
 - Sidebar intelligente
@@ -36,299 +45,24 @@ Implementazione della Tradelia SuperBig Dashboard seguendo i principi Tradelia 2
 - Accessibility compliance
 - Testing & monitoring
 
-## Phase 0: Architecture Separation (Marketing vs Dashboard)
+## Phase 0: Foundation Policies & Contracts (COMPLETED)
 
-### Task 0.0: Route Group Separation & Bundle Isolation
+### Task 0.0: Dashboard Route Cleanup ✅ COMPLETED
 
 **Priority**: Critical
-**Estimated Time**: 6 hours
-**Assignee**: Lead Developer
+**Status**: ✅ COMPLETED
+**Completion Date**: 2026-01-08
 
-#### Acceptance Criteria
-- [ ] app/(marketing) route group for lightweight homepage
-- [ ] app/(app) route group for dashboard with separate layout
-- [ ] OAuth callback moved to app/auth/callback/page.tsx
-- [ ] Marketing homepage converted to Server Component
-- [ ] Separate performance budgets for marketing vs dashboard
-- [ ] No heavy dependencies in marketing bundle
+#### Notes
+- Homepage (`app/(marketing)/`) è FREEZATA - non toccare
+- Dashboard localizzata già esiste in `app/[locale]/(app)/`
+- Route `app/(app)/dashboard` ora reindirizza a `/{locale}/dashboard`
+- OAuth callback già reindirizza alla dashboard localizzata
 
-#### Implementation Steps
-1. **Create route group separation**
-   ```
-   app/
-   ├── (marketing)/
-   │   ├── layout.tsx          # Lightweight marketing layout
-   │   └── page.tsx            # Server Component homepage
-   ├── (app)/
-   │   ├── layout.tsx          # Dashboard layout with providers
-   │   └── dashboard/
-   │       └── page.tsx        # Dashboard main page
-   └── auth/
-       └── callback/
-           └── page.tsx        # OAuth callback handler
-   ```
-
-2. **Convert marketing homepage to Server Component**
-   ```tsx
-   // app/(marketing)/page.tsx
-   import { Metadata } from 'next';
-   import HeroSection from '@/components/sections/HeroSection';
-   import ResearchSection from '@/components/sections/ResearchSection';
-   import AcademicBannerSection from '@/components/sections/AcademicBannerSection';
-   import HowItWorksSection from '@/components/sections/HowItWorksSection';
-   import DifferentiatorSection from '@/components/sections/DifferentiatorSection';
-   import TrustSection from '@/components/sections/TrustSection';
-   import FinalCtaSection from '@/components/sections/FinalCtaSection';
-   import FaqSchema from '@/components/sections/FaqSchema';
-   
-   export const metadata: Metadata = {
-     title: 'Tradelia - Dashboard dinamica che evita gli errori nel mondo crypto',
-     description: 'Dashboard dinamica che evita gli errori nel mondo crypto. Verifica la coerenza dei tuoi strumenti di trading.',
-   };
-   
-   export default function HomePage() {
-     return (
-       <>
-         {/* SEO Meta - Server-side rendered */}
-         <script
-           type="application/ld+json"
-           dangerouslySetInnerHTML={{
-             __html: JSON.stringify({
-               "@context": "https://schema.org",
-               "@type": "WebApplication",
-               "name": "Tradelia",
-               "description": "Dashboard dinamica che evita gli errori nel mondo crypto",
-               "url": "https://tradelia.com",
-               "applicationCategory": "EducationalApplication",
-               "operatingSystem": "Web",
-               "offers": {
-                 "@type": "Offer",
-                 "price": "0",
-                 "priceCurrency": "EUR"
-               }
-             })
-           }}
-         />
-   
-         {/* Sezioni Modulari - Server Components */}
-         <HeroSection />
-         <ResearchSection />
-         <AcademicBannerSection />
-         <HowItWorksSection />
-         <DifferentiatorSection />
-         <TrustSection />
-         <FinalCtaSection />
-         <FaqSchema />
-       </>
-     );
-   }
-   ```
-
-3. **Create lightweight marketing layout**
-   ```tsx
-   // app/(marketing)/layout.tsx
-   import { Inter } from 'next/font/google';
-   import Header from '@/components/Header';
-   import Footer from '@/components/Footer';
-   import '@/app/globals.css';
-   
-   const inter = Inter({ subsets: ['latin'] });
-   
-   export default function MarketingLayout({
-     children,
-   }: {
-     children: React.ReactNode;
-   }) {
-     return (
-       <html lang="it">
-         <body className={inter.className}>
-           <Header />
-           <main>{children}</main>
-           <Footer />
-         </body>
-       </html>
-     );
-   }
-   ```
-
-4. **Create dashboard layout with providers**
-   ```tsx
-   // app/(app)/layout.tsx
-   'use client';
-   
-   import { Inter } from 'next/font/google';
-   import { NextIntlClientProvider } from 'next-intl';
-   import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-   import { ThemeProvider } from '@/shared/config/theme-provider';
-   import { PWAProvider } from '@/components/PWAProvider';
-   import { DashboardShell } from '@/widgets/dashboard-shell/DashboardShell';
-   import '@/app/globals.css';
-   
-   const inter = Inter({ subsets: ['latin'] });
-   const queryClient = new QueryClient();
-   
-   export default function AppLayout({
-     children,
-   }: {
-     children: React.ReactNode;
-   }) {
-     return (
-       <html lang="it">
-         <body className={inter.className}>
-           <QueryClientProvider client={queryClient}>
-             <NextIntlClientProvider locale="it" messages={{}}>
-               <ThemeProvider>
-                 <PWAProvider>
-                   <DashboardShell>
-                     {children}
-                   </DashboardShell>
-                 </PWAProvider>
-               </ThemeProvider>
-             </NextIntlClientProvider>
-           </QueryClientProvider>
-         </body>
-       </html>
-     );
-   }
-   ```
-
-5. **Move OAuth callback to dedicated route**
-   ```tsx
-   // app/auth/callback/page.tsx
-   'use client';
-   
-   import { useEffect } from 'react';
-   import { useRouter } from 'next/navigation';
-   import { supabase } from '@/lib/supabase';
-   
-   export default function AuthCallbackPage() {
-     const router = useRouter();
-     
-     useEffect(() => {
-       const handleOAuthCallback = async () => {
-         // Handle OAuth token from URL hash
-         if (typeof window !== 'undefined' && window.location.hash.includes('access_token')) {
-           const { data: { session } } = await supabase.auth.getSession();
-           
-           if (session?.user) {
-             // Create profile if not exists
-             const { data: profile } = await supabase
-               .from('user_profiles')
-               .select('id')
-               .eq('id', session.user.id)
-               .single();
-   
-             if (!profile) {
-               await supabase.from('user_profiles').insert({
-                 id: session.user.id,
-                 email: session.user.email,
-                 full_name: session.user.user_metadata?.full_name || session.user.user_metadata?.name,
-                 avatar_url: session.user.user_metadata?.avatar_url,
-                 storage_preference: 'register',
-                 created_at: new Date().toISOString()
-               });
-             }
-   
-             // Clean URL and redirect to dashboard
-             window.history.replaceState({}, document.title, '/auth/callback');
-             router.push('/dashboard');
-           }
-         }
-       };
-   
-       handleOAuthCallback();
-     }, [router]);
-   
-     return (
-       <div className="flex items-center justify-center min-h-screen">
-         <div className="text-center">
-           <h1 className="text-xl font-semibold mb-2">Completing authentication...</h1>
-           <p className="text-muted-foreground">Please wait while we redirect you.</p>
-         </div>
-       </div>
-     );
-   }
-   ```
-
-6. **Create dashboard main page**
-   ```tsx
-   // app/(app)/dashboard/page.tsx
-   'use client';
-   
-   import { useTranslations } from 'next-intl';
-   import { DashboardGrid } from '@/widgets/dashboard-grid/DashboardGrid';
-   import { CommandPalette } from '@/features/command-palette/components/CommandPalette';
-   
-   export default function DashboardPage() {
-     const t = useTranslations('dashboard');
-     
-     return (
-       <>
-         <div className="space-y-6">
-           <div>
-             <h1 className="text-2xl font-bold">{t('title')}</h1>
-             <p className="text-muted-foreground">{t('subtitle')}</p>
-           </div>
-           
-           <DashboardGrid />
-         </div>
-         
-         <CommandPalette commands={[]} />
-       </>
-     );
-   }
-   ```
-
-7. **Setup separate performance budgets**
-   ```javascript
-   // next.config.mjs
-   export default {
-     experimental: {
-       bundlePagesRouterDependencies: true,
-     },
-     webpack: (config, { isServer }) => {
-       if (!isServer) {
-         // Marketing bundle budget
-         config.performance = {
-           ...config.performance,
-           maxAssetSize: 150000, // 150KB for marketing
-           maxEntrypointSize: 150000,
-         };
-         
-         // Dashboard bundle budget (separate)
-         if (config.name === 'client' && config.entry['app/(app)/layout']) {
-           config.performance.maxAssetSize = 300000; // 300KB for dashboard
-           config.performance.maxEntrypointSize = 300000;
-         }
-       }
-       return config;
-     },
-   };
-   ```
-
-8. **Update bundle analysis script**
-   ```json
-   // package.json scripts
-   {
-     "scripts": {
-       "analyze:marketing": "ANALYZE=true npm run build && npx @next/bundle-analyzer .next/static/chunks/pages/(marketing)",
-       "analyze:dashboard": "ANALYZE=true npm run build && npx @next/bundle-analyzer .next/static/chunks/pages/(app)",
-       "build:check-budgets": "npm run build && node scripts/check-bundle-budgets.js"
-     }
-   }
-   ```
-
-#### Definition of Done
-- Marketing homepage is Server Component with no client-side JavaScript
-- Dashboard has separate route group with all providers
-- OAuth callback is isolated in dedicated route
-- Bundle sizes respect separate budgets (marketing <150KB, dashboard <300KB)
-- No shared heavy dependencies between marketing and dashboard
-- Performance budgets enforced in CI
-
----
-
-## Phase 0: Foundation Policies & Contracts
+#### Implementation Completed
+- `app/(app)/layout.tsx` - Semplificato a passthrough
+- `app/(app)/dashboard/page.tsx` - Convertito in redirect server-side
+- Redirect usa cookie `NEXT_LOCALE` per determinare la locale
 
 ### Task 0.1: Data Contract & Freshness Policy ✅ COMPLETED
 
@@ -1145,18 +879,23 @@ Implementazione della Tradelia SuperBig Dashboard seguendo i principi Tradelia 2
 
 ---
 
-### Task 1.4: Theme System Foundation
+### Task 1.4: Theme System Foundation (Extend Existing)
 
 **Priority**: High
-**Estimated Time**: 6 hours
+**Estimated Time**: 4 hours
 **Assignee**: UI Developer
 
+#### Vincoli
+- La palette Tradelia 2026 in `app/globals.css` è già definita e NON deve essere stravolta
+- Questo task estende l'esistente con supporto dark mode e density modes
+- Tutti i colori devono mantenere 8:1 contrast ratio
+
 #### Acceptance Criteria
-- [ ] Tradelia 2026 color palette implemented
-- [ ] Light/dark/auto theme modes working
-- [ ] 8:1 contrast ratio achieved (WCAG AAA+)
-- [ ] CSS custom properties for theming
+- [ ] Dark mode CSS variables aggiunte (compatibili con esistente)
+- [ ] ThemeProvider esteso per supportare light/dark/auto
+- [ ] 8:1 contrast ratio mantenuto in tutti i modi
 - [ ] Smooth theme transitions (300ms)
+- [ ] Density modes (compact, comfortable, spacious) opzionali
 
 #### Implementation Steps
 1. **Implement Tradelia 2026 color palette**
@@ -1487,17 +1226,35 @@ Implementazione della Tradelia SuperBig Dashboard seguendo i principi Tradelia 2
 
 ## Phase 2: Core Components
 
-### Task 2.1: Shared UI Components
+### Task 2.1: Shared UI Components ✅ COMPLETED
 
 **Priority**: Critical
 **Estimated Time**: 8 hours
-**Assignee**: UI Developer
+**Status**: ✅ COMPLETED
+**Completion Date**: 2026-01-08
 
 #### Acceptance Criteria
-- [ ] Button component with variants and sizes
-- [ ] Input component with validation states
-- [ ] Card component with Tradelia 2026 styling
-- [ ] All components follow accessibility guidelines
+- [x] Button component with variants and sizes
+- [x] Input component with validation states
+- [x] Card component with Tradelia 2026 styling
+- [x] Badge component for tags and states
+- [x] All components follow accessibility guidelines
+- [x] Micro-interactions implemented (150ms, cubic-bezier)
+
+#### Implementation Completed
+- `src/shared/ui/Button.tsx` - Button con varianti (default, outline, ghost) e sizes (sm, default, lg)
+- `src/shared/ui/Input.tsx` - Input con label, error, success states e helper text
+- `src/shared/ui/Card.tsx` - Card con varianti, loading skeleton, sub-components (Header, Title, Description, Content, Footer)
+- `src/shared/ui/Badge.tsx` - Badge con varianti (default, success, warning, error)
+- `src/shared/ui/utils.ts` - Utility functions (cn, focusRing, transitionSubtle)
+- `src/shared/ui/index.ts` - Barrel exports
+- `test/shared-ui.test.ts` - 14 test per i componenti
+
+#### Notes
+- Rinominato `Card` entity in `CardEntity` per evitare conflitto con componente UI
+- Tutti i componenti usano forwardRef per compatibilità con form libraries
+- Focus ring WCAG AAA+ compliant (ring-2 ring-primary/60 ring-offset-2)
+- Transizioni 150ms con cubic-bezier(0.4, 0, 0.2, 1)
 - [ ] Micro-interactions implemented (150ms, cubic-bezier)
 
 #### Implementation Steps
@@ -1625,19 +1382,37 @@ Implementazione della Tradelia SuperBig Dashboard seguendo i principi Tradelia 2
 
 ---
 
-### Task 2.2: Sidebar Intelligente Multi-Stato
+### Task 2.2: Sidebar Intelligente Multi-Stato ✅ COMPLETED
 
 **Priority**: Critical
 **Estimated Time**: 12 hours
-**Assignee**: Frontend Developer
+**Status**: ✅ COMPLETED
+**Completion Date**: 2026-01-08
 
 #### Acceptance Criteria
-- [ ] Three states: expanded (280px), compact (72px), hidden (0px)
-- [ ] State persistence with localStorage
-- [ ] Intelligent tooltips in compact mode
-- [ ] Keyboard navigation support
-- [ ] Progress indicators for incomplete sections
-- [ ] Search/filter functionality
+- [x] Three states: expanded (280px), compact (72px), hidden (0px)
+- [x] State persistence with localStorage
+- [x] Intelligent tooltips in compact mode
+- [x] Keyboard navigation support (Ctrl+[, Escape)
+- [x] Accessibility: aria-hidden, inert when hidden
+- [ ] Progress indicators for incomplete sections (types ready, UI pending)
+- [ ] Search/filter functionality (types ready, UI pending)
+
+#### Implementation Completed
+- `src/features/sidebar-state/store.ts` - Zustand store con persistenza localStorage
+- `src/features/sidebar-state/index.ts` - Barrel exports con selector hooks
+- `src/widgets/sidebar/DashboardSidebar.tsx` - Componente sidebar completo
+- `src/widgets/sidebar/index.ts` - Barrel exports
+- `test/sidebar.test.ts` - 11 test per store e dimensioni
+
+#### Features Implemented
+- 3 stati con dimensioni corrette (280px/72px/0px)
+- Persistenza stato con Zustand persist middleware
+- Tooltips intelligenti in compact mode (group-hover)
+- Keyboard shortcuts: Ctrl+[ toggle, Escape hide
+- Accessibilità: aria-hidden e inert per stato hidden
+- Transizioni fluide 300ms
+- Focus ring WCAG AAA+
 
 #### Implementation Steps
 1. **Create sidebar state management**

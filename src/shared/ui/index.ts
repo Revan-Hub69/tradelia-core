@@ -7,16 +7,14 @@
  * - Accessibilità WCAG AAA+
  */
 
-// Core components (to be implemented)
-// export { Button } from './Button';
-// export { Input } from './Input';
-// export { Card } from './Card';
-// export { Badge } from './Badge';
+// Core components
+export { Button } from './Button';
+export { Input } from './Input';
+export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './Card';
+export { Badge } from './Badge';
 
 // Utility functions
-export { cn } from './utils';
+export { cn, focusRing, transitionSubtle, cardInteractive, supportsHover, prefersReducedMotion } from './utils';
 
 // Types
-export type { ButtonProps } from './types';
-export type { InputProps } from './types';
-export type { CardProps } from './types';
+export type { ButtonProps, InputProps, CardProps, BadgeProps, Theme, ThemeContextType, A11yProps } from './types';

@@ -2,13 +2,13 @@
  * Dashboard Initialization Process Types - Tradelia 2026
  */
 
-import type { Card } from '../../entities/card/types';
+import type { CardEntity } from '../../entities/card/types';
 import type { User } from '../../entities/user/types';
 
 export interface DashboardInitFlow {
   currentStep: InitStep;
   user?: User;
-  cards: Card[];
+  cards: CardEntity[];
   isLoading: boolean;
   error?: string;
 }

@@ -2,12 +2,12 @@
  * Card Grid Widget Types - Tradelia 2026
  */
 
-import type { Card } from '../../entities/card/types';
+import type { CardEntity } from '../../entities/card/types';
 
 export interface CardGridWidgetProps {
-  cards: Card[];
-  onCardReorder?: (cards: Card[]) => void;
-  onCardSelect?: (card: Card) => void;
+  cards: CardEntity[];
+  onCardReorder?: (cards: CardEntity[]) => void;
+  onCardSelect?: (card: CardEntity) => void;
   className?: string;
   draggable?: boolean;
 }
