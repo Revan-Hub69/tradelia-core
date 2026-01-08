@@ -32,6 +32,14 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         <div 
           className="fixed inset-0 z-20 bg-foreground/20 backdrop-blur-sm lg:hidden"
           onClick={() => setSidebarCollapsed(true)}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') {
+              setSidebarCollapsed(true);
+            }
+          }}
+          role="button"
+          tabIndex={0}
+          aria-label="Chiudi sidebar"
         />
       )}
 

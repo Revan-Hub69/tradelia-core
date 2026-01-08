@@ -15,7 +15,8 @@ export { LocaleSwitcher } from './locale-switcher/components/LocaleSwitcher';
 export * from './widget-reorder';
 
 // Command palette
-// export { CommandPalette } from './command-palette/components/CommandPalette';
+export { CommandPalette } from './command-palette/components/CommandPalette';
+export { createDefaultCommands, createCommand } from './command-palette/lib/default-commands';
 
 // Placeholder exports (to be implemented)
 export type { LocaleConfig } from './locale-switcher/types';

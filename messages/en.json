@@ -5,7 +5,24 @@
     "welcome": "Welcome to Tradelia",
     "loading": "Loading...",
     "error": "An error occurred",
-    "retry": "Retry"
+    "retry": "Retry",
+    "commandPalette": {
+      "placeholder": "Search commands...",
+      "noResults": "No commands found",
+      "noCommands": "No commands available",
+      "tryDifferentTerms": "Try different terms",
+      "recentCommands": "Recent commands",
+      "navigation": "Navigation",
+      "actions": "Actions",
+      "settings": "Settings",
+      "data": "Data",
+      "help": "Help",
+      "shortcuts": {
+        "navigate": "Navigate",
+        "select": "Select",
+        "close": "Close"
+      }
+    }
   },
   "navigation": {
     "dashboard": "Dashboard",
