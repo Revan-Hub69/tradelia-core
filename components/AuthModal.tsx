@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useDashboardModal } from '@/contexts/DashboardModalContext';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from './LanguageSelector';
@@ -28,6 +29,7 @@ export default function AuthModal() {
   const { t } = useLanguage();
   const { isOpen, closeModal, initialMode } = useDashboardModal();
   const { user, signInWithGoogle, signInWithEmail, signUpWithEmail } = useAuth();
+  const router = useRouter();
   
   const modalRef = useRef<HTMLDivElement>(null);
   const firstFocusableRef = useRef<HTMLButtonElement>(null);
@@ -45,9 +47,9 @@ export default function AuthModal() {
     if (isOpen) {
       // If user is already authenticated, redirect to localized dashboard
       if (user) {
+        const locale = document.documentElement.lang || 'it';
+        router.replace(`/${locale}/dashboard`);
         closeModal();
-        const locale = document.documentElement.lang || 'it'
-        window.location.href = `/${locale}/dashboard`;
         return;
       }
       
@@ -55,7 +57,7 @@ export default function AuthModal() {
       setFormData({ email: '', password: '', confirmPassword: '', fullName: '' });
       setErrors({});
     }
-  }, [isOpen, initialMode, user, closeModal]);
+  }, [isOpen, initialMode, user, closeModal, router]);
 
   // Focus management
   useEffect(() => {
@@ -67,7 +69,7 @@ export default function AuthModal() {
     }
   }, [mode, isOpen]);
 
-  // Keyboard + focus trap + mobile back button
+  // Keyboard + focus trap
   useEffect(() => {
     if (!isOpen) return;
     
@@ -83,24 +85,13 @@ export default function AuthModal() {
         }
       }
     };
-
-    // Handle mobile back button
-    const handlePopState = (e: PopStateEvent) => {
-      e.preventDefault();
-      closeModal();
-    };
-
-    // Push a dummy state when modal opens
-    window.history.pushState({ modalOpen: true }, '', window.location.href);
     
     document.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('popstate', handlePopState);
     setTimeout(() => firstFocusableRef.current?.focus(), 100);
     document.body.style.overflow = 'hidden';
     
     return () => { 
       document.removeEventListener('keydown', handleKeyDown); 
-      window.removeEventListener('popstate', handlePopState);
       document.body.style.overflow = 'unset'; 
     };
   }, [isOpen, closeModal]);
@@ -131,10 +122,9 @@ export default function AuthModal() {
 
   // Handlers
   const handleGuest = async () => {
-    console.log('🔄 Guest button clicked');
+    const locale = document.documentElement.lang || 'it';
+    router.push(`/${locale}/dashboard?guest=true`);
     closeModal();
-    const locale = document.documentElement.lang || 'it'
-    window.location.href = `/${locale}/dashboard?guest=true`;
   };
 
   const handleGoogle = async () => {
@@ -152,9 +142,9 @@ export default function AuthModal() {
     setIsSubmitting(true);
     try {
       await signInWithEmail(formData.email, formData.password);
+      const locale = document.documentElement.lang || 'it';
+      router.push(`/${locale}/dashboard`);
       closeModal();
-      const locale = document.documentElement.lang || 'it'
-      window.location.href = `/${locale}/dashboard`;
     } catch (err: unknown) {
       const key = mapAuthErrorToKey(err);
       setErrors({ submit: t(key) });
@@ -169,9 +159,9 @@ export default function AuthModal() {
     setIsSubmitting(true);
     try {
       await signUpWithEmail(formData.email, formData.password, formData.fullName);
+      const locale = document.documentElement.lang || 'it';
+      router.push(`/${locale}/dashboard`);
       closeModal();
-      const locale = document.documentElement.lang || 'it'
-      window.location.href = `/${locale}/dashboard`;
     } catch (err: unknown) {
       const key = mapAuthErrorToKey(err);
       setErrors({ submit: t(key) });

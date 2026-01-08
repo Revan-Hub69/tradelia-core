@@ -46,6 +46,7 @@ function validateSpacingClass(className: string): boolean {
   if (!match) return false;
   
   const value = match[2];
+  if (!value) return false;
   if (value === 'px' || value === 'auto') return true;
   
   const numValue = parseInt(value, 10);
@@ -117,11 +118,11 @@ describe('Property 13: CSS Spacing Scale', () => {
 
 // Validate form input has proper label association
 function validateInputLabel(input: {
-  id?: string;
-  name?: string;
-  ariaLabel?: string;
-  ariaLabelledby?: string;
-  hasAssociatedLabel?: boolean;
+  id?: string | undefined;
+  name?: string | undefined;
+  ariaLabel?: string | undefined;
+  ariaLabelledby?: string | undefined;
+  hasAssociatedLabel?: boolean | undefined;
 }): boolean {
   // Must have some form of label
   return Boolean(
@@ -134,8 +135,8 @@ function validateInputLabel(input: {
 // Validate error message association
 function validateErrorAssociation(input: {
   hasError: boolean;
-  ariaDescribedby?: string;
-  ariaInvalid?: boolean;
+  ariaDescribedby?: string | undefined;
+  ariaInvalid?: boolean | undefined;
 }): boolean {
   if (!input.hasError) return true;
   
@@ -146,7 +147,7 @@ function validateErrorAssociation(input: {
 // Validate required field marking
 function validateRequiredField(input: {
   required: boolean;
-  ariaRequired?: boolean;
+  ariaRequired?: boolean | undefined;
 }): boolean {
   if (!input.required) return true;
   
@@ -339,10 +340,10 @@ describe('Property 12: Responsive Touch Targets', () => {
 // Validate TypeScript config has strict mode
 function validateTsConfig(config: {
   compilerOptions?: {
-    strict?: boolean;
-    noImplicitAny?: boolean;
-    strictNullChecks?: boolean;
-  };
+    strict?: boolean | undefined;
+    noImplicitAny?: boolean | undefined;
+    strictNullChecks?: boolean | undefined;
+  } | undefined;
 }): boolean {
   const opts = config.compilerOptions;
   if (!opts) return false;

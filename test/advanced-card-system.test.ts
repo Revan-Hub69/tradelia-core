@@ -157,7 +157,7 @@ describe('Advanced Card System', () => {
 
       expect(detailCard.type).toBe('detail');
       expect(detailCard.sections).toHaveLength(1);
-      expect(detailCard.sections[0].title).toBe('Bitcoin');
+      expect(detailCard.sections[0]!.title).toBe('Bitcoin');
     });
 
     it('should validate action card data structure', () => {
@@ -177,7 +177,7 @@ describe('Advanced Card System', () => {
 
       expect(actionCard.type).toBe('action');
       expect(actionCard.actions).toHaveLength(1);
-      expect(actionCard.actions[0].variant).toBe('primary');
+      expect(actionCard.actions[0]!.variant).toBe('primary');
     });
 
     it('should validate warning card data structure', () => {
@@ -213,7 +213,7 @@ describe('Advanced Card System', () => {
 
       expect(educationalCard.type).toBe('educational');
       expect(educationalCard.content.summary).toBeTruthy();
-      expect(educationalCard.content.links?.[0].external).toBe(true);
+      expect(educationalCard.content.links[0]!.external).toBe(true);
     });
   });
 
@@ -270,8 +270,8 @@ describe('Advanced Card System', () => {
       }));
 
       expect(largeDataset).toHaveLength(1000);
-      expect(largeDataset[0].id).toBe('card-0');
-      expect(largeDataset[999].id).toBe('card-999');
+      expect(largeDataset[0]!.id).toBe('card-0');
+      expect(largeDataset[999]!.id).toBe('card-999');
     });
 
     it('should optimize re-renders', () => {

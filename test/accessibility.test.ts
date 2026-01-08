@@ -22,8 +22,8 @@ function validateHeadingHierarchy(headings: number[]): boolean {
   
   // No skipping levels (e.g., h1 -> h3 without h2)
   for (let i = 1; i < headings.length; i++) {
-    const current = headings[i];
-    const previous = headings[i - 1];
+    const current = headings[i]!;
+    const previous = headings[i - 1]!;
     
     // Can go down (h1 -> h2) or stay same (h2 -> h2) or go up any amount (h3 -> h1)
     // But cannot skip down (h1 -> h3)
@@ -36,7 +36,7 @@ function validateHeadingHierarchy(headings: number[]): boolean {
 }
 
 // Image alt text validation
-function validateImageAlt(images: Array<{ alt?: string; role?: string }>): boolean {
+function validateImageAlt(images: Array<{ alt?: string | undefined; role?: string | undefined }>): boolean {
   return images.every(img => {
     // Either has meaningful alt text or is decorative (role="presentation")
     return (img.alt && img.alt.trim().length > 0) || img.role === 'presentation';
@@ -44,7 +44,7 @@ function validateImageAlt(images: Array<{ alt?: string; role?: string }>): boole
 }
 
 // Interactive element aria-label validation
-function validateAriaLabels(elements: Array<{ hasVisibleText: boolean; ariaLabel?: string }>): boolean {
+function validateAriaLabels(elements: Array<{ hasVisibleText: boolean; ariaLabel?: string | undefined }>): boolean {
   return elements.every(el => {
     // If has visible text, aria-label is optional
     // If no visible text, aria-label is required
@@ -85,7 +85,7 @@ describe('Property 4: Semantic HTML Structure', () => {
             if (isValid) {
               // If valid, verify no skips going down
               for (let i = 1; i < headings.length; i++) {
-                if (headings[i] > headings[i - 1] + 1) {
+                if (headings[i]! > headings[i - 1]! + 1) {
                   return false;
                 }
               }
@@ -193,7 +193,7 @@ describe('Property 4: Semantic HTML Structure', () => {
  */
 
 // Focus indicator validation
-function validateFocusIndicator(styles: { outlineWidth?: string; ringWidth?: string; boxShadow?: string }): boolean {
+function validateFocusIndicator(styles: { outlineWidth?: string | undefined; ringWidth?: string | undefined; boxShadow?: string | undefined }): boolean {
   // Check for visible focus indicator (outline, ring, or box-shadow)
   const hasOutline = styles.outlineWidth && parseFloat(styles.outlineWidth) >= 2;
   const hasRing = styles.ringWidth && parseFloat(styles.ringWidth) >= 2;
@@ -203,7 +203,7 @@ function validateFocusIndicator(styles: { outlineWidth?: string; ringWidth?: str
 }
 
 // Tab order validation (no positive tabindex)
-function validateTabOrder(elements: Array<{ tagName: string; tabIndex: number; role?: string }>): boolean {
+function validateTabOrder(elements: Array<{ tagName: string; tabIndex: number; role?: string | undefined }>): boolean {
   return elements.every(el => {
     // Positive tabindex breaks natural order
     if (el.tabIndex > 0) return false;
@@ -405,7 +405,7 @@ function getLuminance(r: number, g: number, b: number): number {
     c = c / 255;
     return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
   });
-  return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
+  return 0.2126 * rs! + 0.7152 * gs! + 0.0722 * bs!;
 }
 
 // Calculate contrast ratio
@@ -517,7 +517,9 @@ function validateAnimationClass(className: string): { valid: boolean; reason?: s
   // Check for duration classes
   const durationMatch = className.match(/duration-(\d+)/);
   if (durationMatch) {
-    const duration = parseInt(durationMatch[1], 10);
+    const durationStr = durationMatch[1];
+    if (!durationStr) return { valid: false, reason: 'Invalid duration class' };
+    const duration = parseInt(durationStr, 10);
     if (duration > 150 && className.includes('transition')) {
       return { valid: false, reason: `Transition duration ${duration}ms exceeds 150ms limit` };
     }
@@ -633,10 +635,10 @@ describe('Property 5: Animation Constraints', () => {
 
 // Validate image has dimensions (prevents CLS)
 function validateImageDimensions(image: {
-  width?: number | string;
-  height?: number | string;
-  aspectRatio?: string;
-  fill?: boolean;
+  width?: number | string | undefined;
+  height?: number | string | undefined;
+  aspectRatio?: string | undefined;
+  fill?: boolean | undefined;
 }): boolean {
   // next/image fill mode handles dimensions automatically
   if (image.fill) return true;

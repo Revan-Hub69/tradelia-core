@@ -23,10 +23,6 @@ export function DashboardModalProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const closeModal = useCallback(() => {
-    // Remove the dummy history state if it exists
-    if (window.history.state?.modalOpen) {
-      window.history.back();
-    }
     setIsOpen(false);
   }, []);
 
