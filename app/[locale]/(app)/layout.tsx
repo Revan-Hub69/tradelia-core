@@ -69,7 +69,7 @@ export default async function LocalizedAppLayout({
     : routing.defaultLocale;
 
   // Load messages for the locale
-  const messages = await getMessages();
+  const messages = await getMessages({ locale });
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>

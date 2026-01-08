@@ -1,5 +1,7 @@
 /**
  * i18n Request Configuration - Tradelia 2026
+ * 
+ * Configurazione per next-intl request handling
  */
 
 import { getRequestConfig } from 'next-intl/server';
@@ -13,6 +15,6 @@ export default getRequestConfig(async ({ locale }) => {
 
   return {
     locale: validLocale,
-    messages: (await import(`../../messages/${validLocale}.json`)).default as Record<string, unknown>
+    messages: (await import(`../../messages/${validLocale}.json`)).default
   };
 });
