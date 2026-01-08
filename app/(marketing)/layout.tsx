@@ -3,6 +3,7 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { LanguageProvider } from '@/components/LanguageSelector';
 import { DashboardModalProvider } from '@/contexts/DashboardModalContext';
+import { ThemeProvider } from '@/src/shared/config/theme-provider';
 import AuthModal from '@/components/AuthModal';
 
 export const metadata: Metadata = {
@@ -29,14 +30,16 @@ export default function MarketingLayout({
 }) {
   return (
     <LanguageProvider>
-      <DashboardModalProvider>
-        <Header />
-        <main id="main-content" role="main">
-          {children}
-        </main>
-        <Footer />
-        <AuthModal />
-      </DashboardModalProvider>
+      <ThemeProvider>
+        <DashboardModalProvider>
+          <Header />
+          <main id="main-content" role="main">
+            {children}
+          </main>
+          <Footer />
+          <AuthModal />
+        </DashboardModalProvider>
+      </ThemeProvider>
     </LanguageProvider>
   );
 }
