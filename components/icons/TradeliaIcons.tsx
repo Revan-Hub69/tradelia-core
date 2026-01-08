@@ -1140,3 +1140,63 @@ export const HelpIcon: React.FC<IconProps> = ({ className = "w-4 h-4", size }) =
     <line x1="12" y1="17" x2="12.01" y2="17" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
   </svg>
 );
+export const ChevronLeftIcon: React.FC<IconProps> = ({ className = "w-4 h-4", size }) => (
+  <svg 
+    className={className} 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <polyline 
+      points="15 18 9 12 15 6" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const ChevronRightIcon: React.FC<IconProps> = ({ className = "w-4 h-4", size }) => (
+  <svg 
+    className={className} 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <polyline 
+      points="9 18 15 12 9 6" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const BookIcon: React.FC<IconProps> = ({ className = "w-4 h-4", size }) => (
+  <svg 
+    className={className} 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path 
+      d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeLinecap="round"
+    />
+    <path 
+      d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" 
+      stroke="currentColor" 
+      strokeWidth="2"
+    />
+  </svg>
+);
