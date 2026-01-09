@@ -95,10 +95,7 @@ export function DashboardSidebar({ isOpen, onClose, isMobile }: DashboardSidebar
         bg-background/95 border-r border-border/50
         supports-[backdrop-filter]:bg-background/80 supports-[backdrop-filter]:backdrop-blur-sm
         transform transition-transform duration-300 ease-in-out
-        ${isMobile 
-          ? (isOpen ? 'translate-x-0' : '-translate-x-full')
-          : 'lg:translate-x-0'
-        }
+        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
         flex flex-col
       `}
       aria-label="Dashboard navigation"
