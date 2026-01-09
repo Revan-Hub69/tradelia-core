@@ -121,8 +121,8 @@
     "collapse": "Comprimi"
   },
   "auth": {
-    "title": "Accedi o Registrati",
-    "subtitle": "Accedi al tuo account per continuare",
+    "title": "Sblocca tutte le funzionalità",
+    "subtitle": "Registrati per accedere ad analisi avanzate, alert personalizzati e molto altro",
     "email": "Email",
     "password": "Password",
     "confirmPassword": "Conferma Password",
@@ -147,6 +147,18 @@
     "loginError": "Errore durante l'accesso",
     "registrationError": "Errore durante la registrazione",
     "continueAsGuest": "Continua come ospite",
-    "close": "Chiudi"
+    "close": "Chiudi",
+    "continueWithGoogle": "Continua con Google",
+    "signInWithEmail": "Registrati con Email",
+    "educationalWarning": "Tradelia è uno strumento educativo. Non forniamo consulenza finanziaria.",
+    "createAccount": "Crea il tuo account",
+    "enterCredentials": "Inserisci i tuoi dati per registrarti",
+    "fullName": "Nome completo",
+    "emailPlaceholder": "La tua email",
+    "passwordPlaceholder": "Scegli una password",
+    "signingUp": "Registrazione in corso...",
+    "backToLogin": "Torna indietro",
+    "verificationTitle": "Controlla la tua email",
+    "verificationDescription": "Abbiamo inviato un link di verifica a {email}. Clicca sul link per attivare il tuo account."
   }
 }

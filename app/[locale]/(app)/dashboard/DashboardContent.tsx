@@ -11,6 +11,7 @@ import { useTranslations } from 'next-intl'
 import { DashboardLayout } from '@/src/widgets/dashboard-layout'
 import { DashboardAuthGuard } from '@/src/widgets/dashboard-auth'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
+import { useDashboardModal } from '@/contexts/DashboardModalContext'
 import { 
   TrendingUpIcon, 
   ShieldIcon, 
@@ -22,6 +23,7 @@ import {
 export function DashboardContent() {
   const t = useTranslations('dashboard')
   const { state } = useDashboardAuth()
+  const { openModal } = useDashboardModal()
 
   // Dati dinamici basati su utente reale o guest
   const getDashboardData = () => {
@@ -195,7 +197,7 @@ export function DashboardContent() {
                       {t('registerForAnalysis')}
                     </p>
                     <button
-                      onClick={() => window.location.href = '/'}
+                      onClick={() => openModal()}
                       className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors duration-150"
                     >
                       {t('registerNow')}
@@ -254,7 +256,10 @@ export function DashboardContent() {
                   {state.isGuestMode ? t('getStarted') : t('quickActions')}
                 </h2>
                 <div className="space-y-3">
-                  <button className="w-full p-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors duration-150 text-left">
+                  <button 
+                    onClick={() => state.isGuestMode ? openModal() : null}
+                    className="w-full p-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors duration-150 text-left"
+                  >
                     <div className="font-medium">
                       {state.isGuestMode ? t('register') : t('rebalancePortfolio')}
                     </div>

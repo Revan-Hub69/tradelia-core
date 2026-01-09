@@ -134,14 +134,13 @@ export function DashboardSidebar({ isOpen, onClose }: DashboardSidebarProps) {
             `transition-transform duration-300 ease-out ` +
             `motion-reduce:transition-none motion-reduce:transform-none`
           }
-          onEscapeKeyDown={(e) => {
-            e.preventDefault()
-            onClose()
-          }}
-          onPointerDownOutside={(e) => {
-            // Ensure consistent close on outside interaction
-            e.preventDefault()
-            onClose()
+          onEscapeKeyDown={() => onClose()}
+          onInteractOutside={(e) => {
+            // Only close if clicking on the overlay, not inside the panel
+            const target = e.target as HTMLElement
+            if (target?.getAttribute('data-testid') === 'sidebar-backdrop') {
+              onClose()
+            }
           }}
           aria-label="Dashboard navigation"
         >
