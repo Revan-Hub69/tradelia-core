@@ -138,6 +138,7 @@
     "registrationSuccess": "Registrazione completata",
     "loginError": "Errore durante l'accesso",
     "registrationError": "Errore durante la registrazione",
-    "continueAsGuest": "Continua come ospite"
+    "continueAsGuest": "Continua come ospite",
+    "close": "Chiudi"
   }
 }

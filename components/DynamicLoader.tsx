@@ -4,8 +4,8 @@ import { lazy, Suspense, ComponentType } from 'react';
 
 // Dynamic imports for heavy components
 const DynamicComponents = {
-  DashboardModal: lazy(() => import('./DashboardModal')),
   AuthModal: lazy(() => import('./AuthModal')),
+  DashboardRegistrationModal: lazy(() => import('./DashboardRegistrationModal')),
 } as const;
 
 interface DynamicLoaderProps {

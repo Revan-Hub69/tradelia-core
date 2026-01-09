@@ -171,6 +171,7 @@
     "verificationDescription": "We've sent a verification link to {email}",
     "verifiedTitle": "Email verified!",
     "verifiedDescription": "You can now sign in",
-    "verifiedError": "Error verifying email"
+    "verifiedError": "Error verifying email",
+    "close": "Close"
   }
 }

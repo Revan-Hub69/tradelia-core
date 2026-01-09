@@ -3,8 +3,8 @@
 import { lazy, Suspense } from 'react';
 
 // Lazy load heavy components
-const DashboardModal = lazy(() => import('./DashboardModal'));
 const AuthModal = lazy(() => import('./AuthModal'));
+const DashboardRegistrationModal = lazy(() => import('./DashboardRegistrationModal'));
 
 interface LazyComponentProps {
   component: 'dashboard' | 'auth';
@@ -12,7 +12,7 @@ interface LazyComponentProps {
 }
 
 export function LazyComponent({ component, ...props }: LazyComponentProps) {
-  const Component = component === 'dashboard' ? DashboardModal : AuthModal;
+  const Component = component === 'auth' ? AuthModal : DashboardRegistrationModal;
   
   return (
     <Suspense fallback={<div className="animate-pulse bg-muted h-8 w-24 rounded" />}>
