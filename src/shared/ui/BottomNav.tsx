@@ -1,27 +1,25 @@
 /**
  * BottomNav - Tradelia 2026
  * 
- * Bottom navigation mobile per i 4 journey + Home.
- * Seguendo dashboard-design-contract.md:
- * - Home + 4 journey tabs
+ * Bottom navigation SOLO mobile per i 4 journey.
+ * - 4 journey tabs (no Home - Home è il default)
  * - Icona + label sempre
  * - Active state forte
  * - Visibile SOLO su mobile (<1024px)
- * - Scrollabile orizzontalmente se necessario
+ * - Su desktop: sidebar fissa
  */
 
 'use client'
 
 import Link from 'next/link'
-import { usePathname, useParams } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { JOURNEY_ORDER, JOURNEYS, type JourneyId } from '@/src/shared/config/journeys'
 import {
   ShieldIcon,
   TrendingUpIcon,
   BoltIcon,
-  RefreshIcon,
-  HomeIcon
+  RefreshIcon
 } from '@/components/icons/TradeliaIcons'
 
 const JOURNEY_ICONS: Record<JourneyId, React.ComponentType<{ className?: string }>> = {
@@ -33,17 +31,17 @@ const JOURNEY_ICONS: Record<JourneyId, React.ComponentType<{ className?: string 
 
 export function BottomNav() {
   const pathname = usePathname()
-  const params = useParams()
-  const locale = params.locale as string
   const t = useTranslations()
   
-  // Check if we're on dashboard home (not a specific journey)
-  const isOnDashboard = pathname.includes('/dashboard')
-  const isOnHome = pathname === `/${locale}/dashboard` || pathname === `/${locale}/dashboard/`
+  // Extract locale from pathname (e.g., /it/dashboard -> it)
+  const pathParts = pathname.split('/')
+  const locale = pathParts[1] || 'it'
   
-  // Determine active journey (only if not on home)
+  // Check if we're on dashboard
+  const isOnDashboard = pathname.includes('/dashboard')
+  
+  // Determine active journey
   const getActiveJourney = (): JourneyId | null => {
-    if (isOnHome) return null
     if (pathname.includes('/emergency')) return 'emergency'
     if (pathname.includes('/longterm')) return 'longterm'
     if (pathname.includes('/speculation')) return 'speculation'
@@ -60,35 +58,7 @@ export function BottomNav() {
       className="fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-t border-border lg:hidden"
       aria-label="Navigazione principale"
     >
-      <div className="flex items-center h-16 px-1 safe-area-bottom overflow-x-auto scrollbar-hide">
-        {/* Home Tab */}
-        <Link
-          href={`/${locale}/dashboard`}
-          className={`
-            flex flex-col items-center justify-center min-w-[64px] flex-1 h-full px-1 py-1
-            transition-colors duration-150 active:scale-95
-            ${isOnHome 
-              ? 'text-primary' 
-              : 'text-muted-foreground hover:text-foreground'
-            }
-          `}
-          aria-current={isOnHome ? 'page' : undefined}
-        >
-          <div className={`
-            p-1.5 rounded-lg transition-colors duration-150
-            ${isOnHome ? 'bg-primary/10' : ''}
-          `}>
-            <HomeIcon className="w-5 h-5" />
-          </div>
-          <span className={`
-            text-[10px] mt-0.5 font-medium truncate
-            ${isOnHome ? 'text-primary' : ''}
-          `}>
-            Home
-          </span>
-        </Link>
-
-        {/* Journey Tabs */}
+      <div className="flex items-center justify-around h-16 px-2 safe-area-bottom">
         {JOURNEY_ORDER.map((journeyId) => {
           const journey = JOURNEYS[journeyId]
           const Icon = JOURNEY_ICONS[journeyId]
@@ -100,7 +70,7 @@ export function BottomNav() {
               key={journeyId}
               href={href}
               className={`
-                flex flex-col items-center justify-center min-w-[64px] flex-1 h-full px-1 py-1
+                flex flex-col items-center justify-center flex-1 h-full px-2 py-1
                 transition-colors duration-150 active:scale-95
                 ${isActive 
                   ? 'text-primary' 
@@ -116,7 +86,7 @@ export function BottomNav() {
                 <Icon className="w-5 h-5" />
               </div>
               <span className={`
-                text-[10px] mt-0.5 font-medium truncate
+                text-[10px] mt-0.5 font-medium truncate max-w-full
                 ${isActive ? 'text-primary' : ''}
               `}>
                 {t(journey.labelKey)}
