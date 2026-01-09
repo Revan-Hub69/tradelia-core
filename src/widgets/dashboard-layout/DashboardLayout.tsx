@@ -13,7 +13,7 @@
 'use client'
 
 import type { ReactNode } from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { DashboardHeader } from './DashboardHeader'
 import { DashboardSidebar } from './DashboardSidebar'
 
@@ -24,9 +24,6 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   // Sidebar sempre chiusa di default - mai aperta automaticamente
   const [sidebarOpen, setSidebarOpen] = useState(false)
-
-  // Debug log per verificare lo stato
-  console.log('DashboardLayout - sidebarOpen:', sidebarOpen)
 
   // Close sidebar on Escape key
   useEffect(() => {
@@ -65,10 +62,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     return () => window.removeEventListener('resize', handleResize)
   }, [sidebarOpen])
 
-  const handleMenuClick = () => {
-    console.log('Menu clicked, current state:', sidebarOpen)
-    setSidebarOpen(!sidebarOpen)
-  }
+  const handleCloseSidebar = useCallback(() => {
+    setSidebarOpen(false)
+  }, [])
+
+  const handleMenuClick = useCallback(() => {
+    setSidebarOpen((prev) => !prev)
+  }, [])
 
   return (
     <div className="min-h-screen bg-background">
@@ -82,7 +82,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       {sidebarOpen && (
         <div 
           className="fixed inset-0 bg-black/60 z-40 transition-opacity duration-300"
-          onClick={() => setSidebarOpen(false)}
+          onClick={handleCloseSidebar}
           aria-hidden="true"
         />
       )}
@@ -90,7 +90,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Sidebar - Overlay che slide in da sinistra */}
       <DashboardSidebar 
         isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
+        onClose={handleCloseSidebar}
       />
       
       {/* Main Content - Mai si muove, sidebar appare sopra */}
