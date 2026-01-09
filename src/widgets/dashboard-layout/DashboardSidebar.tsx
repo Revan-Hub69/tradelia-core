@@ -97,9 +97,8 @@ export function DashboardSidebar({ isOpen, onClose, isMobile }: DashboardSidebar
         transform transition-transform duration-300 ease-in-out
         ${isMobile 
           ? (isOpen ? 'translate-x-0' : '-translate-x-full')
-          : 'translate-x-0'
+          : (isOpen ? 'lg:translate-x-0' : 'lg:-translate-x-full')
         }
-        ${!isMobile ? 'lg:relative lg:top-0 lg:z-auto' : ''}
         flex flex-col
       `}
       aria-label="Dashboard navigation"

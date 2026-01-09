@@ -18,7 +18,12 @@ import DashboardRegistrationModal from '@/components/DashboardRegistrationModal'
 import { routing, type Locale } from '@/src/i18n/routing';
 import '@/app/globals.css';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ 
+  subsets: ['latin'],
+  display: 'swap',
+  preload: true,
+  fallback: ['system-ui', 'arial']
+});
 
 // Generate static params for supported locales
 export async function generateStaticParams() {
@@ -80,7 +85,7 @@ export default async function LocalizedAppLayout({
           <PWAProvider>
             <DashboardModalProvider>
               <DashboardAuthProvider locale={locale}>
-                <div className="min-h-screen bg-background antialiased text-foreground font-sans">
+                <div className={`min-h-screen bg-background antialiased text-foreground ${inter.className}`}>
                   {children}
                 </div>
                 <DashboardRegistrationModal />

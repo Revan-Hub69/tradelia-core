@@ -93,9 +93,9 @@ export function DashboardHeader({ onMenuClick, sidebarOpen }: DashboardHeaderPro
           {/* User Status & Back to Site */}
           <div className="flex items-center gap-2">
             {state.isGuestMode && (
-              <div className="hidden sm:flex items-center gap-2 px-2 py-1 bg-amber-500/10 border border-amber-500/20 rounded-md">
-                <div className="w-1.5 h-1.5 bg-amber-500 rounded-full" />
-                <span className="text-xs font-medium text-amber-700 dark:text-amber-300">
+              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-warning/8 border border-warning/20 rounded-lg backdrop-blur-sm">
+                <div className="w-1.5 h-1.5 bg-warning rounded-full animate-pulse" />
+                <span className="text-xs font-medium text-warning">
                   {t('guestMode')}
                 </span>
               </div>

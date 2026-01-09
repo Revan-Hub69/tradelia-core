@@ -112,9 +112,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         <main 
           className={`
             min-h-[calc(100vh-4rem)] transition-all duration-300 ease-in-out
-            ${isMobile 
-              ? 'ml-0' 
-              : 'lg:ml-64'
+            ${sidebarOpen && !isMobile 
+              ? 'lg:ml-64' 
+              : 'ml-0'
             }
           `}
         >
