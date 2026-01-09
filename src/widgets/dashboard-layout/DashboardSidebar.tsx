@@ -2,7 +2,6 @@
  * Dashboard Sidebar - Tradelia 2026 Enterprise
  * 
  * Sidebar mobile overlay con design enterprise moderno
- * Ispirata a shadcn/ui sidebar best practices
  */
 
 'use client'
@@ -13,6 +12,8 @@ import { usePathname, useParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
 import { useDashboardModal } from '@/contexts/DashboardModalContext'
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
+import { LanguageToggle } from '@/components/ui/LanguageToggle'
 import Logo from '@/components/Logo'
 import { 
   UserIcon,
@@ -82,6 +83,7 @@ export function DashboardSidebar({ isOpen, onClose }: DashboardSidebarProps) {
             <button
               onClick={onClose}
               className="p-2 -mr-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
+              aria-label="Chiudi menu"
             >
               <CloseIcon className="w-5 h-5" />
             </button>
@@ -151,48 +153,10 @@ export function DashboardSidebar({ isOpen, onClose }: DashboardSidebarProps) {
           </nav>
         </div>
 
-        {/* Preferences */}
-        <div className="p-4 border-t border-border/50">
-          <p className="px-3 mb-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            Preferenze
-          </p>
-          
-          {/* Theme Selector */}
-          <div className="px-3 mb-4">
-            <p className="text-xs text-muted-foreground mb-2">Tema</p>
-            <div className="flex gap-1 p-1 bg-muted/50 rounded-lg">
-              <ThemeButton value="light" label="Chiaro" />
-              <ThemeButton value="dark" label="Scuro" />
-              <ThemeButton value="system" label="Auto" />
-            </div>
-          </div>
-
-          {/* Language Selector */}
-          <div className="px-3">
-            <p className="text-xs text-muted-foreground mb-2">Lingua</p>
-            <div className="flex gap-2">
-              <Link
-                href={pathname.replace(`/${locale}`, '/it')}
-                className={`flex-1 py-2 px-3 text-sm text-center rounded-lg transition-colors ${
-                  locale === 'it' 
-                    ? 'bg-primary/10 text-primary font-medium' 
-                    : 'bg-muted/50 text-muted-foreground hover:bg-muted'
-                }`}
-              >
-                🇮🇹 Italiano
-              </Link>
-              <Link
-                href={pathname.replace(`/${locale}`, '/en')}
-                className={`flex-1 py-2 px-3 text-sm text-center rounded-lg transition-colors ${
-                  locale === 'en' 
-                    ? 'bg-primary/10 text-primary font-medium' 
-                    : 'bg-muted/50 text-muted-foreground hover:bg-muted'
-                }`}
-              >
-                🇬🇧 English
-              </Link>
-            </div>
-          </div>
+        {/* Preferences - Using existing components */}
+        <div className="p-4 border-t border-border/50 space-y-4">
+          <ThemeToggle variant="full" />
+          <LanguageToggle variant="full" />
         </div>
 
         {/* Footer */}
@@ -207,27 +171,5 @@ export function DashboardSidebar({ isOpen, onClose }: DashboardSidebarProps) {
         </div>
       </div>
     </div>
-  )
-}
-
-// Theme Button Component
-function ThemeButton({ value, label }: { value: string; label: string }) {
-  const handleClick = () => {
-    if (value === 'system') {
-      document.documentElement.removeAttribute('data-theme')
-      localStorage.removeItem('theme')
-    } else {
-      document.documentElement.setAttribute('data-theme', value)
-      localStorage.setItem('theme', value)
-    }
-  }
-
-  return (
-    <button
-      onClick={handleClick}
-      className="flex-1 py-1.5 px-2 text-xs font-medium rounded-md text-muted-foreground hover:text-foreground hover:bg-background transition-colors"
-    >
-      {label}
-    </button>
   )
 }

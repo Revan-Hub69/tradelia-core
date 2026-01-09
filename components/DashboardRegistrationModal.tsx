@@ -11,9 +11,9 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { useDashboardModal } from '@/contexts/DashboardModalContext'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
+import Logo from '@/components/Logo'
 import { 
   CloseIcon,
-  DiamondIcon,
   CheckIcon,
   MailIcon,
   ShieldIcon
@@ -98,12 +98,7 @@ export default function DashboardRegistrationModal() {
 
         {/* Header */}
         <div className="p-6 pb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
-              <DiamondIcon className="w-5 h-5 text-primary" />
-            </div>
-            <span className="text-xl font-bold text-foreground">Tradelia</span>
-          </div>
+          <Logo />
         </div>
 
         {/* Content */}
