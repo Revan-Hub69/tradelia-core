@@ -90,7 +90,18 @@ export function DashboardSidebar({ isOpen, onClose, isMobile }: DashboardSidebar
 
   return (
     <aside 
-      className={`dashboard-sidebar-overlay ${isOpen ? 'open' : ''} flex flex-col`}
+      className={`
+        fixed top-16 left-0 z-50 h-[calc(100vh-4rem)] w-64
+        bg-background/95 border-r border-border/50
+        supports-[backdrop-filter]:bg-background/80 supports-[backdrop-filter]:backdrop-blur-sm
+        transform transition-transform duration-300 ease-in-out
+        ${isMobile 
+          ? (isOpen ? 'translate-x-0' : '-translate-x-full')
+          : 'translate-x-0'
+        }
+        ${!isMobile ? 'lg:relative lg:top-0 lg:z-auto' : ''}
+        flex flex-col
+      `}
       aria-label="Dashboard navigation"
     >
       {/* Mobile Logo */}

@@ -89,7 +89,14 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       <div className="relative">
         {/* Mobile Backdrop */}
         <div 
-          className={`dashboard-backdrop ${sidebarOpen ? 'open' : ''}`}
+          className={`
+            fixed inset-0 bg-black/50 z-40 lg:hidden
+            transition-opacity duration-300 ease-in-out
+            ${isMobile && sidebarOpen 
+              ? 'opacity-100 visible' 
+              : 'opacity-0 invisible'
+            }
+          `}
           onClick={() => setSidebarOpen(false)}
           aria-hidden="true"
         />
@@ -102,7 +109,15 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         />
         
         {/* Main Content - Responsive margin */}
-        <main className="dashboard-main-content">
+        <main 
+          className={`
+            min-h-[calc(100vh-4rem)] transition-all duration-300 ease-in-out
+            ${isMobile 
+              ? 'ml-0' 
+              : 'lg:ml-64'
+            }
+          `}
+        >
           <div className="p-4 sm:p-6 lg:p-8 max-w-none">
             {children}
           </div>
