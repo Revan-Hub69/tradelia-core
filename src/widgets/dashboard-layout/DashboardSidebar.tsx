@@ -82,12 +82,17 @@ export function DashboardSidebar({ isOpen, onClose }: DashboardSidebarProps) {
     await actions.signOut()
   }
 
-  // Close sidebar on route change
+  // Close sidebar on route change (skip initial mount)
+  const isFirstRender = useRef(true)
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
     if (isOpen) {
       onClose()
     }
-  }, [pathname, onClose, isOpen])
+  }, [pathname]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Focus the close button when opening (Radix will trap focus inside)
   useEffect(() => {

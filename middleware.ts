@@ -41,6 +41,7 @@ export function middleware(request: NextRequest) {
     pathname.includes('.') ||
     pathname.startsWith('/sw.js') ||
     pathname.startsWith('/manifest') ||
+    pathname.endsWith('.webmanifest') ||
     pathname === '/dashboard' // Let dashboard redirect handle itself
   ) {
     // Add trace ID to request headers

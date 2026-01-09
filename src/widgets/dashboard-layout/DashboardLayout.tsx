@@ -86,7 +86,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   }, [isOpen])
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-hidden">
       {/* Header - Fixed at top */}
       <DashboardHeader
         onMenuClick={handleMenuClick}
@@ -100,8 +100,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       />
 
       {/* Main Content - Mai si muove, sidebar appare sopra */}
-      <main className="pt-16 min-h-screen">
-        <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+      <main className="pt-16 min-h-screen overflow-x-hidden">
+        <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
           {children}
         </div>
       </main>
