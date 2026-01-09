@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useDashboardModal } from '@/contexts/DashboardModalContext';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from './LanguageSelector';
 import { mapAuthErrorToKey } from '@/lib/auth/error-mapping';
+import { loginSchema, registerSchema, resetRequestSchema, validateForm } from '@/src/shared/lib/validation';
 import Logo from './Logo';
 import { 
   CloseIcon, 
@@ -95,29 +96,47 @@ export default function AuthModal() {
     };
   }, [isOpen, closeModal]);
 
-  // Validation
-  const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  
-  const validateLogin = () => {
-    const errs: Record<string, string> = {};
-    if (!formData.email) errs.email = t('modal.auth.login.errors.required');
-    else if (!validateEmail(formData.email)) errs.email = t('modal.auth.login.errors.invalidFormat');
-    if (!formData.password) errs.password = t('modal.auth.login.errors.required');
-    setErrors(errs);
-    return !Object.keys(errs).length;
-  };
+  // Get locale for validation messages
+  const validationLocale = (locale === 'it' || locale === 'en') ? locale : 'it';
 
-  const validateRegister = () => {
-    const errs: Record<string, string> = {};
-    if (!formData.fullName.trim()) errs.fullName = t('modal.auth.register.errors.required');
-    if (!formData.email) errs.email = t('modal.auth.register.errors.required');
-    else if (!validateEmail(formData.email)) errs.email = t('modal.auth.register.errors.invalidFormat');
-    if (!formData.password) errs.password = t('modal.auth.register.errors.required');
-    else if (formData.password.length < 8) errs.password = t('modal.auth.register.errors.minLength');
-    if (formData.password !== formData.confirmPassword) errs.confirmPassword = t('modal.auth.register.errors.mismatch');
-    setErrors(errs);
-    return !Object.keys(errs).length;
-  };
+  // Zod-based validation
+  const validateLogin = useCallback(() => {
+    const schema = loginSchema(validationLocale);
+    const result = validateForm(schema, { email: formData.email, password: formData.password });
+    if (!result.success) {
+      setErrors(result.errors);
+      return false;
+    }
+    setErrors({});
+    return true;
+  }, [formData.email, formData.password, validationLocale]);
+
+  const validateRegister = useCallback(() => {
+    const schema = registerSchema(validationLocale);
+    const result = validateForm(schema, {
+      fullName: formData.fullName,
+      email: formData.email,
+      password: formData.password,
+      confirmPassword: formData.confirmPassword
+    });
+    if (!result.success) {
+      setErrors(result.errors);
+      return false;
+    }
+    setErrors({});
+    return true;
+  }, [formData, validationLocale]);
+
+  const validateResetEmail = useCallback(() => {
+    const schema = resetRequestSchema(validationLocale);
+    const result = validateForm(schema, { email: formData.email });
+    if (!result.success) {
+      setErrors(result.errors);
+      return false;
+    }
+    setErrors({});
+    return true;
+  }, [formData.email, validationLocale]);
 
   // Handlers
   const handleGuest = async () => {
@@ -168,10 +187,7 @@ export default function AuthModal() {
 
   const handleResetRequest = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.email || !validateEmail(formData.email)) {
-      setErrors({ email: t('modal.auth.resetRequest.errors.invalidEmail') });
-      return;
-    }
+    if (!validateResetEmail()) return;
     setIsSubmitting(true);
     try {
       const { supabase } = await import('@/lib/supabase');

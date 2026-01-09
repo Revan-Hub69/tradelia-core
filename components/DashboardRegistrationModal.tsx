@@ -7,10 +7,11 @@
 
 'use client'
 
-import { useState } from 'react'
-import { useTranslations } from 'next-intl'
+import { useState, useCallback } from 'react'
+import { useTranslations, useLocale } from 'next-intl'
 import { useDashboardModal } from '@/contexts/DashboardModalContext'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
+import { registerSchema, validateForm, type Locale } from '@/src/shared/lib/validation'
 import Logo from '@/components/Logo'
 import { 
   CloseIcon,
@@ -21,14 +22,31 @@ import {
 
 export default function DashboardRegistrationModal() {
   const t = useTranslations('auth')
+  const locale = useLocale()
   const { isOpen, closeModal } = useDashboardModal()
   const { actions } = useDashboardAuth()
   const [isLoading, setIsLoading] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [fullName, setFullName] = useState('')
   const [mode, setMode] = useState<'gateway' | 'email' | 'success'>('gateway')
   const [error, setError] = useState<string | null>(null)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
+
+  // Validation locale
+  const validationLocale: Locale = (locale === 'it' || locale === 'en') ? locale : 'it'
+
+  const validateRegistration = useCallback(() => {
+    const schema = registerSchema(validationLocale)
+    const result = validateForm(schema, { fullName, email, password, confirmPassword })
+    if (!result.success) {
+      setFieldErrors(result.errors)
+      return false
+    }
+    setFieldErrors({})
+    return true
+  }, [fullName, email, password, confirmPassword, validationLocale])
 
   if (!isOpen) return null
 
@@ -48,6 +66,8 @@ export default function DashboardRegistrationModal() {
 
   const handleEmailSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!validateRegistration()) return
+    
     setIsLoading(true)
     setError(null)
     try {
@@ -65,8 +85,10 @@ export default function DashboardRegistrationModal() {
     setMode('gateway')
     setEmail('')
     setPassword('')
+    setConfirmPassword('')
     setFullName('')
     setError(null)
+    setFieldErrors({})
     closeModal()
   }
 
@@ -199,9 +221,9 @@ export default function DashboardRegistrationModal() {
                     placeholder={t('fullName')}
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="w-full p-3.5 border border-border/50 rounded-xl bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-150"
-                    required
+                    className={`w-full p-3.5 border rounded-xl bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-150 ${fieldErrors.fullName ? 'border-error' : 'border-border/50'}`}
                   />
+                  {fieldErrors.fullName && <p className="text-xs text-error mt-1">{fieldErrors.fullName}</p>}
                 </div>
                 <div className="space-y-1">
                   <label htmlFor="email" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
@@ -213,9 +235,9 @@ export default function DashboardRegistrationModal() {
                     placeholder={t('emailPlaceholder')}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full p-3.5 border border-border/50 rounded-xl bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-150"
-                    required
+                    className={`w-full p-3.5 border rounded-xl bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-150 ${fieldErrors.email ? 'border-error' : 'border-border/50'}`}
                   />
+                  {fieldErrors.email && <p className="text-xs text-error mt-1">{fieldErrors.email}</p>}
                 </div>
                 <div className="space-y-1">
                   <label htmlFor="password" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
@@ -227,10 +249,23 @@ export default function DashboardRegistrationModal() {
                     placeholder={t('passwordPlaceholder')}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full p-3.5 border border-border/50 rounded-xl bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-150"
-                    required
-                    minLength={8}
+                    className={`w-full p-3.5 border rounded-xl bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-150 ${fieldErrors.password ? 'border-error' : 'border-border/50'}`}
                   />
+                  {fieldErrors.password && <p className="text-xs text-error mt-1">{fieldErrors.password}</p>}
+                </div>
+                <div className="space-y-1">
+                  <label htmlFor="confirmPassword" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                    Conferma Password
+                  </label>
+                  <input
+                    id="confirmPassword"
+                    type="password"
+                    placeholder="Conferma la password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className={`w-full p-3.5 border rounded-xl bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-150 ${fieldErrors.confirmPassword ? 'border-error' : 'border-border/50'}`}
+                  />
+                  {fieldErrors.confirmPassword && <p className="text-xs text-error mt-1">{fieldErrors.confirmPassword}</p>}
                 </div>
 
                 <button
@@ -246,6 +281,7 @@ export default function DashboardRegistrationModal() {
                 onClick={() => {
                   setMode('gateway')
                   setError(null)
+                  setFieldErrors({})
                 }}
                 className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors duration-150 py-2"
               >

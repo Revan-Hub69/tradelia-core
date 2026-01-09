@@ -1,178 +1,283 @@
 /**
- * Validation Utilities - Tradelia 2026
+ * Form Validation - Tradelia 2026
  * 
- * Funzioni di validazione che seguono i principi di verificabilità
+ * Seguendo ux-contract.md e security-contract.md:
+ * - Validazione client-side per UX (feedback immediato)
+ * - Validazione server-side OBBLIGATORIA per sicurezza
+ * - Messaggi specifici, non generici
+ * - Zod schemas riutilizzabili
  */
 
+import { z } from 'zod'
+
+// ============================================
+// VALIDATION MESSAGES (i18n ready)
+// ============================================
+
+export const validationMessages = {
+  it: {
+    required: 'Campo obbligatorio',
+    email: {
+      invalid: 'Inserisci un\'email valida',
+      required: 'L\'email è obbligatoria'
+    },
+    password: {
+      required: 'La password è obbligatoria',
+      minLength: 'La password deve essere di almeno 8 caratteri',
+      maxLength: 'La password non può superare i 100 caratteri',
+      weak: 'La password deve contenere almeno una lettera maiuscola, una minuscola e un numero'
+    },
+    confirmPassword: {
+      required: 'Conferma la password',
+      mismatch: 'Le password non coincidono'
+    },
+    name: {
+      required: 'Il nome è obbligatorio',
+      minLength: 'Il nome deve essere di almeno 2 caratteri',
+      maxLength: 'Il nome non può superare i 100 caratteri'
+    },
+    generic: {
+      tooShort: 'Valore troppo corto',
+      tooLong: 'Valore troppo lungo',
+      invalid: 'Valore non valido'
+    }
+  },
+  en: {
+    required: 'Required field',
+    email: {
+      invalid: 'Please enter a valid email',
+      required: 'Email is required'
+    },
+    password: {
+      required: 'Password is required',
+      minLength: 'Password must be at least 8 characters',
+      maxLength: 'Password cannot exceed 100 characters',
+      weak: 'Password must contain at least one uppercase letter, one lowercase letter, and one number'
+    },
+    confirmPassword: {
+      required: 'Please confirm your password',
+      mismatch: 'Passwords do not match'
+    },
+    name: {
+      required: 'Name is required',
+      minLength: 'Name must be at least 2 characters',
+      maxLength: 'Name cannot exceed 100 characters'
+    },
+    generic: {
+      tooShort: 'Value too short',
+      tooLong: 'Value too long',
+      invalid: 'Invalid value'
+    }
+  }
+}
+
+type Locale = 'it' | 'en'
+type Messages = typeof validationMessages.it
+
+export function getMessages(locale: Locale = 'it'): Messages {
+  return validationMessages[locale] || validationMessages.it
+}
+
+// ============================================
+// ZOD SCHEMAS
+// ============================================
+
+// Email schema
+export const emailSchema = (messages: Messages) => 
+  z.string()
+    .min(1, messages.email.required)
+    .email(messages.email.invalid)
+    .max(255, messages.generic.tooLong)
+
+// Password schema (basic)
+export const passwordSchema = (messages: Messages) =>
+  z.string()
+    .min(1, messages.password.required)
+    .min(8, messages.password.minLength)
+    .max(100, messages.password.maxLength)
+
+// Password schema (strong - with pattern)
+export const strongPasswordSchema = (messages: Messages) =>
+  z.string()
+    .min(1, messages.password.required)
+    .min(8, messages.password.minLength)
+    .max(100, messages.password.maxLength)
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, messages.password.weak)
+
+// Name schema
+export const nameSchema = (messages: Messages) =>
+  z.string()
+    .min(1, messages.name.required)
+    .min(2, messages.name.minLength)
+    .max(100, messages.name.maxLength)
+    .trim()
+
+// ============================================
+// FORM SCHEMAS
+// ============================================
+
+// Login form
+export const loginSchema = (locale: Locale = 'it') => {
+  const m = getMessages(locale)
+  return z.object({
+    email: emailSchema(m),
+    password: z.string().min(1, m.password.required)
+  })
+}
+
+// Registration form
+export const registerSchema = (locale: Locale = 'it') => {
+  const m = getMessages(locale)
+  return z.object({
+    fullName: nameSchema(m),
+    email: emailSchema(m),
+    password: passwordSchema(m),
+    confirmPassword: z.string().min(1, m.confirmPassword.required)
+  }).refine((data) => data.password === data.confirmPassword, {
+    message: m.confirmPassword.mismatch,
+    path: ['confirmPassword']
+  })
+}
+
+// Password reset request
+export const resetRequestSchema = (locale: Locale = 'it') => {
+  const m = getMessages(locale)
+  return z.object({
+    email: emailSchema(m)
+  })
+}
+
+// Password reset (new password)
+export const resetPasswordSchema = (locale: Locale = 'it') => {
+  const m = getMessages(locale)
+  return z.object({
+    password: passwordSchema(m),
+    confirmPassword: z.string().min(1, m.confirmPassword.required)
+  }).refine((data) => data.password === data.confirmPassword, {
+    message: m.confirmPassword.mismatch,
+    path: ['confirmPassword']
+  })
+}
+
+// ============================================
+// VALIDATION HELPERS
+// ============================================
+
+export type ValidationResult<T> = 
+  | { success: true; data: T }
+  | { success: false; errors: Record<string, string> }
+
 /**
- * Valida un indirizzo email
- * Utilizza regex standard RFC 5322 semplificata
+ * Validate form data with Zod schema
+ * Returns either validated data or field-level errors
  */
-export function validateEmail(email: string): boolean {
-  if (!email || typeof email !== 'string') return false;
+export function validateForm<T>(
+  schema: z.ZodSchema<T>,
+  data: unknown
+): ValidationResult<T> {
+  const result = schema.safeParse(data)
   
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email.trim());
+  if (result.success) {
+    return { success: true, data: result.data }
+  }
+  
+  // Convert Zod errors to field-level errors
+  const errors: Record<string, string> = {}
+  for (const error of result.error.errors) {
+    const path = error.path.join('.')
+    if (!errors[path]) {
+      errors[path] = error.message
+    }
+  }
+  
+  return { success: false, errors }
 }
 
 /**
- * Valida un URL
- * Supporta HTTP, HTTPS e protocolli personalizzati
+ * Validate single field (for real-time validation)
  */
-export function validateUrl(url: string, allowedProtocols: string[] = ['http', 'https']): boolean {
-  if (!url || typeof url !== 'string') return false;
-  
-  try {
-    const urlObj = new URL(url);
-    return allowedProtocols.includes(urlObj.protocol.slice(0, -1));
-  } catch {
-    return false;
-  }
+export function validateField(
+  schema: z.ZodSchema,
+  value: unknown
+): string | null {
+  const result = schema.safeParse(value)
+  if (result.success) return null
+  return result.error.errors[0]?.message || 'Invalid value'
 }
 
-/**
- * Valida una password seguendo criteri di sicurezza
- */
-export function validatePassword(password: string): {
-  isValid: boolean;
-  errors: string[];
-} {
-  const errors: string[] = [];
-  
-  if (!password || typeof password !== 'string') {
-    return { isValid: false, errors: ['Password richiesta'] };
-  }
-  
-  if (password.length < 8) {
-    errors.push('Minimo 8 caratteri');
-  }
-  
-  if (!/[A-Z]/.test(password)) {
-    errors.push('Almeno una lettera maiuscola');
-  }
-  
-  if (!/[a-z]/.test(password)) {
-    errors.push('Almeno una lettera minuscola');
-  }
-  
-  if (!/\d/.test(password)) {
-    errors.push('Almeno un numero');
-  }
-  
-  if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-    errors.push('Almeno un carattere speciale');
-  }
-  
-  return {
-    isValid: errors.length === 0,
-    errors,
-  };
+// ============================================
+// REACT HOOK
+// ============================================
+
+import { useState, useCallback } from 'react'
+
+interface UseFormValidationOptions<T> {
+  schema: z.ZodSchema<T>
+  onSubmit: (data: T) => Promise<void> | void
 }
 
-/**
- * Valida un numero di telefono italiano
- */
-export function validatePhoneNumber(phone: string): boolean {
-  if (!phone || typeof phone !== 'string') return false;
-  
-  // Rimuove spazi e caratteri speciali
-  const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
-  
-  // Formato italiano: +39 seguito da 9-10 cifre
-  const italianPhoneRegex = /^(\+39)?[0-9]{9,10}$/;
-  return italianPhoneRegex.test(cleanPhone);
-}
+export function useFormValidation<T extends Record<string, unknown>>({
+  schema,
+  onSubmit
+}: UseFormValidationOptions<T>) {
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-/**
- * Valida un codice fiscale italiano
- */
-export function validateCodiceFiscale(cf: string): boolean {
-  if (!cf || typeof cf !== 'string') return false;
-  
-  const cleanCF = cf.toUpperCase().replace(/\s/g, '');
-  
-  // Verifica lunghezza
-  if (cleanCF.length !== 16) return false;
-  
-  // Verifica formato: 6 lettere, 2 numeri, 1 lettera, 2 numeri, 1 lettera, 3 caratteri, 1 lettera
-  const cfRegex = /^[A-Z]{6}[0-9]{2}[A-Z][0-9]{2}[A-Z][0-9]{3}[A-Z]$/;
-  if (!cfRegex.test(cleanCF)) return false;
-  
-  // Verifica carattere di controllo (algoritmo semplificato)
-  const oddChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const evenChars = 'BAKPLCQDREVOSFTGUHMINJWZYX';
-  
-  let sum = 0;
-  for (let i = 0; i < 15; i++) {
-    const char = cleanCF[i];
-    if (!char) return false; // Invalid character
+  const validate = useCallback((data: unknown): data is T => {
+    const result = validateForm(schema, data)
+    if (result.success) {
+      setErrors({})
+      return true
+    }
+    setErrors(result.errors)
+    return false
+  }, [schema])
+
+  const validateSingleField = useCallback((field: string, value: unknown) => {
+    // Get field schema from parent schema - safe type check
+    const schemaShape = (schema as unknown as { shape?: Record<string, z.ZodTypeAny> }).shape
+    const fieldSchema = schemaShape?.[field]
+    if (!fieldSchema) return
     
-    if (i % 2 === 0) {
-      // Posizione dispari (1-based)
-      sum += oddChars.indexOf(char) !== -1 ? oddChars.indexOf(char) : parseInt(char);
-    } else {
-      // Posizione pari (1-based)
-      sum += evenChars.indexOf(char) !== -1 ? evenChars.indexOf(char) : parseInt(char);
-    }
-  }
-  
-  const checkChar = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[sum % 26];
-  const lastChar = cleanCF[15];
-  return lastChar !== undefined && lastChar === checkChar;
-}
+    const error = validateField(fieldSchema, value)
+    setErrors(prev => {
+      if (error) {
+        return { ...prev, [field]: error }
+      }
+      const { [field]: _, ...rest } = prev
+      return rest
+    })
+  }, [schema])
 
-/**
- * Valida un input generico con regole personalizzate
- */
-export interface ValidationRule {
-  test: (value: string) => boolean;
-  message: string;
-}
-
-export function validateWithRules(value: string, rules: ValidationRule[]): {
-  isValid: boolean;
-  errors: string[];
-} {
-  const errors: string[] = [];
-  
-  for (const rule of rules) {
-    if (!rule.test(value)) {
-      errors.push(rule.message);
+  const handleSubmit = useCallback(async (data: unknown) => {
+    if (!validate(data)) return
+    
+    setIsSubmitting(true)
+    try {
+      await onSubmit(data as T)
+    } finally {
+      setIsSubmitting(false)
     }
-  }
-  
+  }, [validate, onSubmit])
+
+  const clearErrors = useCallback(() => {
+    setErrors({})
+  }, [])
+
+  const setFieldError = useCallback((field: string, message: string) => {
+    setErrors(prev => ({ ...prev, [field]: message }))
+  }, [])
+
   return {
-    isValid: errors.length === 0,
     errors,
-  };
+    isSubmitting,
+    validate,
+    validateSingleField,
+    handleSubmit,
+    clearErrors,
+    setFieldError
+  }
 }
 
-/**
- * Regole di validazione predefinite
- */
-export const ValidationRules = {
-  required: (message = 'Campo obbligatorio'): ValidationRule => ({
-    test: (value) => value.trim().length > 0,
-    message,
-  }),
-  
-  minLength: (min: number, message?: string): ValidationRule => ({
-    test: (value) => value.length >= min,
-    message: message || `Minimo ${min} caratteri`,
-  }),
-  
-  maxLength: (max: number, message?: string): ValidationRule => ({
-    test: (value) => value.length <= max,
-    message: message || `Massimo ${max} caratteri`,
-  }),
-  
-  pattern: (regex: RegExp, message: string): ValidationRule => ({
-    test: (value) => regex.test(value),
-    message,
-  }),
-  
-  noSpecialChars: (message = 'Caratteri speciali non consentiti'): ValidationRule => ({
-    test: (value) => /^[a-zA-Z0-9\s]*$/.test(value),
-    message,
-  }),
-};
+// Export types
+export type { Locale, Messages }

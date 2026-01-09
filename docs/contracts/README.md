@@ -13,6 +13,7 @@ Questa cartella contiene i contratti fondamentali del progetto. Ogni contratto d
 | [state-contract.md](./state-contract.md) | Ownership dello stato (sidebar, auth, layout) | ✅ Attivo |
 | [security-contract.md](./security-contract.md) | Cosa è pubblico, cosa no | ✅ Attivo |
 | [sidebar-contract.md](./sidebar-contract.md) | Specifiche sidebar hybrid | ✅ Attivo |
+| [validation-contract.md](./validation-contract.md) | Form validation con Zod, messaggi i18n | ✅ Attivo |
 
 ## Regola d'Oro
 

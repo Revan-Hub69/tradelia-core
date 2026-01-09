@@ -7,7 +7,29 @@
 // Utility functions
 export { formatBytes, formatDate, formatCurrency } from './formatters';
 export { debounce, throttle } from './performance';
-export { validateEmail, validateUrl } from './validation';
+
+// Validation (Zod-based)
+export {
+  // Messages
+  validationMessages,
+  getMessages,
+  // Schemas
+  emailSchema,
+  passwordSchema,
+  strongPasswordSchema,
+  nameSchema,
+  // Form schemas
+  loginSchema,
+  registerSchema,
+  resetRequestSchema,
+  resetPasswordSchema,
+  // Helpers
+  validateForm,
+  validateField,
+  // Hook
+  useFormValidation
+} from './validation';
+export type { ValidationResult, Locale, Messages } from './validation';
 
 // Constants
 export { TRADELIA_CONSTANTS } from './constants';
