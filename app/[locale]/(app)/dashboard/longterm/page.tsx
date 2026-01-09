@@ -3,7 +3,7 @@
  * Investimenti lungo termine: crescita stabile, DCA
  */
 
-import { JourneyPage } from '@/src/widgets/journey-page'
+import { JourneyPage } from '@/widgets/journey-page'
 
 export default function LongtermPage() {
   return <JourneyPage journeyId="longterm" />

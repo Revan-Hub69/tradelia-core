@@ -3,7 +3,7 @@
  * Speculazione: trading attivo, opportunità
  */
 
-import { JourneyPage } from '@/src/widgets/journey-page'
+import { JourneyPage } from '@/widgets/journey-page'
 
 export default function SpeculationPage() {
   return <JourneyPage journeyId="speculation" />

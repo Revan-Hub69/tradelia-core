@@ -60,6 +60,10 @@ function DashboardAuthProviderInner({ children, locale }: DashboardAuthProviderP
         
         const isGuestParam = searchParams.get('guest') === 'true'
         
+        // Check if guest mode is stored in sessionStorage (persists during navigation)
+        const isGuestStored = typeof window !== 'undefined' && 
+          sessionStorage.getItem('tradelia_guest_mode') === 'true'
+        
         // Get current session with timeout
         const sessionPromise = supabase.auth.getSession()
         const timeoutPromise = new Promise((_, reject) => 
@@ -73,6 +77,11 @@ function DashboardAuthProviderInner({ children, locale }: DashboardAuthProviderP
         
         if (session?.user) {
           // Authenticated user - set loading false immediately
+          // Clear guest mode from storage if user is authenticated
+          if (typeof window !== 'undefined') {
+            sessionStorage.removeItem('tradelia_guest_mode')
+          }
+          
           setState(prev => ({ 
             ...prev, 
             user: session.user, 
@@ -86,8 +95,12 @@ function DashboardAuthProviderInner({ children, locale }: DashboardAuthProviderP
             fetchDashboardConfig(session.user.id)
           ]).catch(console.error)
           
-        } else if (isGuestParam) {
-          // Guest mode - immediate loading
+        } else if (isGuestParam || isGuestStored) {
+          // Guest mode - store in sessionStorage for persistence during navigation
+          if (typeof window !== 'undefined') {
+            sessionStorage.setItem('tradelia_guest_mode', 'true')
+          }
+          
           setState(prev => ({
             ...prev,
             user: null,
@@ -102,7 +115,7 @@ function DashboardAuthProviderInner({ children, locale }: DashboardAuthProviderP
             loading: false
           }))
         } else {
-          // No auth, redirect to home immediately
+          // No auth and no guest mode, redirect to home
           setState(prev => ({ ...prev, loading: false }))
           router.push('/')
           return
@@ -274,6 +287,11 @@ function DashboardAuthProviderInner({ children, locale }: DashboardAuthProviderP
 
     signOut: async () => {
       try {
+        // Clear guest mode from storage
+        if (typeof window !== 'undefined') {
+          sessionStorage.removeItem('tradelia_guest_mode')
+        }
+        
         const { error } = await supabase.auth.signOut()
         if (error) throw error
         
@@ -288,6 +306,11 @@ function DashboardAuthProviderInner({ children, locale }: DashboardAuthProviderP
     },
 
     enableGuestMode: () => {
+      // Store guest mode in sessionStorage for persistence during navigation
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('tradelia_guest_mode', 'true')
+      }
+      
       setState(prev => ({
         ...prev,
         user: null,

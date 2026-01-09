@@ -3,7 +3,7 @@
  * Asset di emergenza: liquidità immediata, protezione
  */
 
-import { JourneyPage } from '@/src/widgets/journey-page'
+import { JourneyPage } from '@/widgets/journey-page'
 
 export default function EmergencyPage() {
   return <JourneyPage journeyId="emergency" />
