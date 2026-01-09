@@ -2,7 +2,7 @@
  * Localized App Layout - Tradelia 2026
  * 
  * Layout UNICO per dashboard internazionalizzata.
- * Include: Sidebar (desktop) + BottomNav (mobile) + Header
+ * Include: Sidebar (desktop) + BottomNav (mobile) + Header + Performance Monitoring
  */
 
 import type { Metadata } from 'next';
@@ -16,6 +16,7 @@ import { DashboardAuthProvider } from '@/src/processes/dashboard-auth';
 import { DashboardModalProvider } from '@/contexts/DashboardModalContext';
 import { ToastProvider } from '@/src/shared/ui';
 import DashboardRegistrationModal from '@/components/DashboardRegistrationModal';
+import { PerformanceMonitor } from '@/src/shared/components/PerformanceMonitor';
 import { routing, type Locale } from '@/src/i18n/routing';
 import '@/app/globals.css';
 
@@ -91,6 +92,7 @@ export default async function LocalizedAppLayout({
                     {children}
                   </div>
                   <DashboardRegistrationModal />
+                  <PerformanceMonitor />
                 </DashboardAuthProvider>
               </ToastProvider>
             </DashboardModalProvider>

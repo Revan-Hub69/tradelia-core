@@ -5,16 +5,19 @@
  * LAYOUT UNICO che include:
  * - Desktop (≥768px): Sidebar fissa a sinistra + Header + Content
  * - Mobile (<768px): Header + Content + BottomNav fissa in basso
+ * - Focus trap per sidebar mobile (WCAG 2.2 compliant)
  */
 
 'use client'
 
 import type { ReactNode } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTranslations, useLocale } from 'next-intl'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
 import { useDashboardModal } from '@/contexts/DashboardModalContext'
+import { useSidebarFocusTrap } from '@/src/shared/hooks/useFocusTrap'
 import Logo from '@/components/Logo'
 import { UserMenu } from './UserMenu'
 import { JOURNEY_ORDER, type JourneyId } from '@/src/shared/config/journeys'
@@ -27,7 +30,9 @@ import {
   RefreshIcon,
   HomeIcon,
   BellIcon,
-  SearchIcon
+  SearchIcon,
+  MenuIcon,
+  CloseIcon
 } from '@/components/icons/TradeliaIcons'
 
 const JOURNEY_ICONS: Record<JourneyId, React.ComponentType<{ className?: string }>> = {
@@ -50,6 +55,33 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const { state, actions } = useDashboardAuth()
   const { openModal } = useDashboardModal()
 
+  // Mobile sidebar state
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
+
+  // Focus trap for mobile sidebar
+  const { containerRef: sidebarRef } = useSidebarFocusTrap(
+    isMobileSidebarOpen,
+    () => setIsMobileSidebarOpen(false)
+  )
+
+  // Close sidebar on route change (mobile)
+  useEffect(() => {
+    setIsMobileSidebarOpen(false)
+  }, [pathname])
+
+  // Prevent body scroll when sidebar is open (mobile)
+  useEffect(() => {
+    if (isMobileSidebarOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isMobileSidebarOpen])
+
   // Navigation state
   const isOnHome = pathname === `/${locale}/dashboard` || pathname === `/${locale}/dashboard/`
   const getActiveJourney = (): JourneyId | null => {
@@ -61,8 +93,149 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   }
   const activeJourney = getActiveJourney()
 
+  const closeMobileSidebar = () => setIsMobileSidebarOpen(false)
+
   return (
     <div className="min-h-screen bg-background">
+      {/* ========== MOBILE SIDEBAR BACKDROP ========== */}
+      {isMobileSidebarOpen && (
+        <div 
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden"
+          onClick={closeMobileSidebar}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* ========== MOBILE SIDEBAR OVERLAY ========== */}
+      <aside 
+        ref={sidebarRef}
+        className={`
+          fixed top-0 left-0 bottom-0 w-80 max-w-[85vw] bg-background border-r border-border z-50
+          transform transition-transform duration-300 ease-out md:hidden
+          ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+        `}
+        role="navigation"
+        aria-label="Navigazione principale"
+        aria-hidden={!isMobileSidebarOpen}
+      >
+        {/* Mobile Sidebar Header */}
+        <div className="h-16 px-4 flex items-center justify-between border-b border-border/50">
+          <Logo />
+          <button
+            onClick={closeMobileSidebar}
+            className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/50"
+            aria-label="Chiudi menu"
+          >
+            <CloseIcon className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Mobile User Card */}
+        <div className="p-4 border-b border-border/50">
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/30">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-lg shadow-primary/20">
+              {state.isGuestMode ? (
+                <ShieldIcon className="w-5 h-5 text-white" />
+              ) : (
+                <UserIcon className="w-5 h-5 text-white" />
+              )}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-foreground truncate">
+                {state.profile?.full_name || tDashboard('guestUser')}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {state.isGuestMode ? tDashboard('limitedMode') : tDashboard('verifiedAccount')}
+              </p>
+            </div>
+          </div>
+          
+          {state.isGuestMode && (
+            <button
+              onClick={() => {
+                openModal()
+                closeMobileSidebar()
+              }}
+              className="w-full mt-3 py-2 px-4 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            >
+              {t('unlockFeatures')}
+            </button>
+          )}
+        </div>
+
+        {/* Mobile Navigation */}
+        <nav className="flex-1 overflow-y-auto p-4" aria-label={t('menuLabel')}>
+          {/* Home Link */}
+          <Link
+            href={`/${locale}/dashboard`}
+            onClick={closeMobileSidebar}
+            className={`
+              relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all mb-2
+              focus:outline-none focus:ring-2 focus:ring-primary
+              ${isOnHome 
+                ? 'bg-primary/10 text-primary' 
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+              }
+            `}
+            aria-current={isOnHome ? 'page' : undefined}
+          >
+            {isOnHome && (
+              <span className="absolute left-0 top-2 bottom-2 w-[3px] bg-primary rounded-r-full" aria-hidden="true" />
+            )}
+            <HomeIcon className={`w-5 h-5 flex-shrink-0 ${isOnHome ? 'text-primary' : ''}`} />
+            <span>Home</span>
+          </Link>
+
+          <p className="px-3 mb-2 mt-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            Percorsi
+          </p>
+          <ul className="space-y-1">
+            {JOURNEY_ORDER.map((journeyId) => {
+              const Icon = JOURNEY_ICONS[journeyId]
+              const isActive = activeJourney === journeyId
+              
+              return (
+                <li key={journeyId}>
+                  <Link
+                    href={`/${locale}/dashboard/${journeyId}`}
+                    onClick={closeMobileSidebar}
+                    className={`
+                      relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
+                      focus:outline-none focus:ring-2 focus:ring-primary
+                      ${isActive 
+                        ? 'bg-primary/10 text-primary' 
+                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                      }
+                    `}
+                    aria-current={isActive ? 'page' : undefined}
+                  >
+                    {isActive && (
+                      <span className="absolute left-0 top-2 bottom-2 w-[3px] bg-primary rounded-r-full" aria-hidden="true" />
+                    )}
+                    <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? 'text-primary' : ''}`} />
+                    <span>{tJourneys(`${journeyId}.name`)}</span>
+                  </Link>
+                </li>
+              )
+            })}
+          </ul>
+        </nav>
+
+        {/* Mobile Footer */}
+        <div className="p-4 border-t border-border/50">
+          <button
+            onClick={() => {
+              actions.signOut()
+              closeMobileSidebar()
+            }}
+            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium text-error hover:bg-error/10 transition-colors focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2"
+          >
+            <LogOutIcon className="w-4 h-4" />
+            {t('logout')}
+          </button>
+        </div>
+      </aside>
+
       {/* ========== DESKTOP SIDEBAR (≥768px) ========== */}
       <aside className="hidden md:flex fixed top-0 left-0 bottom-0 w-64 bg-background border-r border-border flex-col z-40">
         {/* Logo */}
@@ -174,8 +347,15 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* ========== HEADER ========== */}
       <header className="h-16 bg-background/95 backdrop-blur-sm border-b border-border/50 fixed top-0 left-0 right-0 z-50 md:left-64">
         <div className="h-full px-4 sm:px-6 md:px-8 flex items-center justify-between">
-          {/* Mobile: Logo */}
+          {/* Mobile: Hamburger + Logo */}
           <div className="flex items-center gap-4 md:hidden">
+            <button
+              onClick={() => setIsMobileSidebarOpen(true)}
+              className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/50"
+              aria-label="Apri menu"
+            >
+              <MenuIcon className="w-5 h-5" />
+            </button>
             <Logo />
           </div>
           

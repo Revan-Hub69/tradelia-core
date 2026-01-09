@@ -1,26 +1,30 @@
 /**
  * JourneyPage - Tradelia 2026
  * 
- * Template base per ogni journey.
- * Mostra:
- * - Header con nome journey e azione primaria
- * - KPI specifici del journey
- * - Contenuto placeholder (da implementare per ogni journey)
+ * Implementa la struttura definitiva per ogni journey:
+ * 1. Header di contesto (breadcrumb + titolo + descrizione)
+ * 2. Sub-navigazione locale (Introduzione, Errori, Educativo, Tool, Piattaforme)
+ * 3. Contenuto scalabile per ogni tab
  */
 
 'use client'
 
-import { useTranslations } from 'next-intl'
+import { useEffect } from 'react'
+import { useTranslations, useLocale } from 'next-intl'
 import { DashboardLayout } from '@/src/widgets/dashboard-layout'
 import { DashboardAuthGuard } from '@/src/widgets/dashboard-auth'
+import { SectionLayout } from '@/src/widgets/section-layout/SectionLayout'
 import { JOURNEYS, type JourneyId } from '@/src/shared/config/journeys'
-import { EmptyState } from '@/src/shared/ui/EmptyState'
 import {
   ShieldIcon,
   TrendingUpIcon,
   BoltIcon,
   RefreshIcon,
-  ChartIcon
+  BookOpenIcon,
+  AlertTriangleIcon,
+  GraduationCapIcon,
+  CogIcon,
+  SettingsIcon
 } from '@/components/icons/TradeliaIcons'
 
 interface JourneyPageProps {
@@ -34,85 +38,264 @@ const JOURNEY_ICONS: Record<JourneyId, React.ComponentType<{ className?: string 
   passive: RefreshIcon
 }
 
-const JOURNEY_COLORS: Record<JourneyId, string> = {
-  emergency: 'warning',
-  longterm: 'success',
-  speculation: 'primary',
-  passive: 'info'
-}
-
 export function JourneyPage({ journeyId }: JourneyPageProps) {
   const t = useTranslations()
+  const locale = useLocale()
   const journey = JOURNEYS[journeyId]
   const Icon = JOURNEY_ICONS[journeyId]
-  const color = JOURNEY_COLORS[journeyId]
+
+  // Handle tab switching from empty state
+  useEffect(() => {
+    const handleTabSwitch = (event: CustomEvent) => {
+      const targetTab = event.detail
+      // This would need to be connected to SectionLayout's tab state
+      // For now, we'll use a simple approach
+      const tabElement = document.querySelector(`[data-tab-id="${targetTab}"]`) as HTMLButtonElement
+      if (tabElement) {
+        tabElement.click()
+      }
+    }
+
+    window.addEventListener('switchToTab', handleTabSwitch as EventListener)
+    return () => window.removeEventListener('switchToTab', handleTabSwitch as EventListener)
+  }, [])
+
+  // Sub-navigazione standardizzata per tutte le sezioni
+  const subNavItems = [
+    {
+      id: 'intro',
+      label: 'Introduzione',
+      icon: <BookOpenIcon className="w-4 h-4" />,
+      content: (
+        <div className="space-y-6">
+          <div className="bg-background/60 border border-border/50 rounded-xl p-6">
+            <h3 className="text-lg font-semibold mb-3">Benvenuto in {t(journey.labelKey)}</h3>
+            <p className="text-muted-foreground mb-4">
+              {t(`journeys.${journeyId}.description`)}
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 bg-muted/30 rounded-lg">
+                <h4 className="font-medium mb-2">Obiettivo</h4>
+                <p className="text-sm text-muted-foreground">
+                  Definire chiaramente cosa vuoi ottenere con questo percorso
+                </p>
+              </div>
+              <div className="p-4 bg-muted/30 rounded-lg">
+                <h4 className="font-medium mb-2">Approccio</h4>
+                <p className="text-sm text-muted-foreground">
+                  Metodologia step-by-step per raggiungere i tuoi obiettivi
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    },
+    {
+      id: 'errors',
+      label: 'Errori da evitare',
+      icon: <AlertTriangleIcon className="w-4 h-4" />,
+      content: (
+        <div className="space-y-6">
+          <div className="bg-background/60 border border-border/50 rounded-xl p-6">
+            <h3 className="text-lg font-semibold mb-3">Errori comuni in {t(journey.labelKey)}</h3>
+            <div className="space-y-4">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex gap-4 p-4 bg-error/5 border border-error/20 rounded-lg">
+                  <AlertTriangleIcon className="w-5 h-5 text-error flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-medium text-error mb-1">Errore #{i}</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Descrizione dell'errore e come evitarlo. Contenuto specifico per {journeyId}.
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )
+    },
+    {
+      id: 'educational',
+      label: 'Educativo',
+      icon: <GraduationCapIcon className="w-4 h-4" />,
+      content: (
+        <div className="space-y-6">
+          <div className="bg-background/60 border border-border/50 rounded-xl p-6">
+            <h3 className="text-lg font-semibold mb-3">Risorse educative</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="p-4 border border-border/50 rounded-lg hover:bg-muted/30 transition-colors cursor-pointer">
+                  <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center mb-3">
+                    <GraduationCapIcon className="w-4 h-4 text-primary" />
+                  </div>
+                  <h4 className="font-medium mb-2">Lezione {i}</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Contenuto educativo specifico per {journeyId}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )
+    },
+    {
+      id: 'tools',
+      label: 'Tool',
+      icon: <CogIcon className="w-4 h-4" />,
+      count: 0, // No tools available yet - show educational empty state
+      content: (
+        <div className="space-y-8">
+          {/* Educational Empty State */}
+          <div className="text-center py-12">
+            <div className="w-16 h-16 rounded-2xl bg-warning/10 flex items-center justify-center mx-auto mb-6">
+              <AlertTriangleIcon className="w-8 h-8 text-warning" />
+            </div>
+            
+            <h3 className="text-xl font-semibold text-foreground mb-3">
+              Prima di usare strumenti
+            </h3>
+            
+            <p className="text-muted-foreground max-w-md mx-auto mb-8">
+              Leggi "Errori da evitare" per utilizzare i tool in sicurezza. 
+              2 minuti di lettura che possono evitare errori costosi.
+            </p>
+            
+            <button 
+              onClick={() => {
+                // This will be connected to the parent's onItemClick
+                const event = new CustomEvent('switchToTab', { detail: 'errors' })
+                window.dispatchEvent(event)
+              }}
+              className="px-6 py-3 bg-warning text-white rounded-lg font-medium hover:bg-warning/90 transition-colors"
+            >
+              Vai a Errori da evitare
+            </button>
+          </div>
+
+          {/* Educational Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="p-6 bg-primary/5 border border-primary/20 rounded-xl">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                  <BookOpenIcon className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-primary">1. Educativo</h4>
+                  <p className="text-xs text-primary/70">Basi teoriche</p>
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Comprendi i principi fondamentali prima di utilizzare qualsiasi strumento.
+              </p>
+            </div>
+
+            <div className="p-6 bg-warning/5 border border-warning/20 rounded-xl">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-warning/10 rounded-lg flex items-center justify-center">
+                  <AlertTriangleIcon className="w-5 h-5 text-warning" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-warning">2. Errori</h4>
+                  <p className="text-xs text-warning/70">Cosa evitare</p>
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Gli errori comuni possono costare caro. Leggi questa sezione per primo.
+              </p>
+            </div>
+
+            <div className="p-6 bg-muted/30 border border-border/50 rounded-xl opacity-60">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-muted/50 rounded-lg flex items-center justify-center">
+                  <CogIcon className="w-5 h-5 text-muted-foreground" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-muted-foreground">3. Tool</h4>
+                  <p className="text-xs text-muted-foreground/70">Strumenti pratici</p>
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Disponibili dopo aver completato la preparazione necessaria.
+              </p>
+            </div>
+          </div>
+
+          {/* Context-specific warning */}
+          <div className="bg-error/5 border border-error/20 rounded-xl p-6">
+            <div className="flex items-start gap-4">
+              <ShieldIcon className="w-6 h-6 text-error flex-shrink-0 mt-0.5" />
+              <div>
+                <h4 className="font-semibold text-error mb-2">
+                  {journeyId === 'emergency' && 'Asset Rifugio: Massima Attenzione'}
+                  {journeyId === 'longterm' && 'Lungo Termine: Strategia Solida'}
+                  {journeyId === 'speculation' && 'Speculazione: Preparazione Obbligatoria'}
+                  {journeyId === 'passive' && 'Passivi: Apparente Semplicità, Vere Insidie'}
+                </h4>
+                <p className="text-sm text-muted-foreground">
+                  {journeyId === 'emergency' && 'I tool per la protezione del capitale richiedono comprensione profonda dei rischi. Un errore può compromettere la tua sicurezza finanziaria.'}
+                  {journeyId === 'longterm' && 'Gli investimenti a lungo termine necessitano di una strategia ben definita. Decisioni affrettate possono costare anni di rendimenti.'}
+                  {journeyId === 'speculation' && 'La speculazione è intrinsecamente rischiosa. Senza preparazione adeguata, è più probabile perdere che guadagnare.'}
+                  {journeyId === 'passive' && 'Gli investimenti passivi sembrano semplici ma nascondono insidie. Anche qui servono conoscenze base per evitare errori.'}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    },
+    {
+      id: 'platforms',
+      label: 'Piattaforme',
+      icon: <SettingsIcon className="w-4 h-4" />,
+      content: (
+        <div className="space-y-6">
+          <div className="bg-background/60 border border-border/50 rounded-xl p-6">
+            <h3 className="text-lg font-semibold mb-3">Piattaforme consigliate</h3>
+            <div className="space-y-4">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex items-center gap-4 p-4 border border-border/50 rounded-lg">
+                  <div className="w-12 h-12 bg-muted/50 rounded-lg flex items-center justify-center">
+                    <SettingsIcon className="w-6 h-6 text-muted-foreground" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-medium mb-1">Piattaforma {i}</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Descrizione della piattaforma e perché è adatta per {journeyId}
+                    </p>
+                  </div>
+                  <button className="px-4 py-2 bg-primary text-white text-sm rounded-lg hover:bg-primary/90 transition-colors">
+                    Visita
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )
+    }
+  ]
 
   return (
     <DashboardAuthGuard>
       <DashboardLayout>
-        <div className="space-y-8">
-          {/* Journey Header */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className={`w-12 h-12 rounded-xl bg-${color}/10 flex items-center justify-center`}>
-                <Icon className={`w-6 h-6 text-${color}`} />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-foreground">
-                  {t(journey.labelKey)}
-                </h1>
-                <p className="text-sm text-muted-foreground">
-                  {t(`journeys.${journeyId}.description`)}
-                </p>
-              </div>
-            </div>
-            
-            {/* Primary Action */}
-            <button className="hidden sm:flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
-              {t(journey.primaryActionKey)}
-            </button>
-          </div>
-
-          {/* KPI Grid - Placeholder */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {[1, 2, 3, 4].map((i) => (
-              <div 
-                key={i}
-                className="bg-background/60 border border-border/50 rounded-xl p-4 lg:p-6"
-              >
-                <div className="h-4 w-20 bg-muted rounded animate-pulse mb-2" />
-                <div className="h-8 w-24 bg-muted rounded animate-pulse mb-1" />
-                <div className="h-3 w-16 bg-muted rounded animate-pulse" />
-              </div>
-            ))}
-          </div>
-
-          {/* Content Placeholder */}
-          <div className="bg-background/60 border border-border/50 rounded-xl p-6 lg:p-8">
-            <EmptyState
-              icon={<ChartIcon className="w-12 h-12" />}
-              title={`${t(journey.labelKey)} - In costruzione`}
-              description="Questa sezione sarà disponibile presto. Stiamo lavorando per offrirti la migliore esperienza."
-            />
-          </div>
-
-          {/* Sections Preview */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {journey.sections.slice(1).map((section) => (
-              <div 
-                key={section.id}
-                className="bg-background/60 border border-border/50 rounded-xl p-4 hover:bg-background/80 transition-colors cursor-pointer"
-              >
-                <h3 className="font-medium text-foreground mb-1">
-                  {t(section.labelKey)}
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Sezione in arrivo
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
+        <SectionLayout
+          breadcrumb={[
+            { label: 'Home', href: `/${locale}/dashboard` },
+            { label: t(journey.labelKey) }
+          ]}
+          title={t(journey.labelKey)}
+          description={t(`journeys.${journeyId}.description`)}
+          icon={<Icon className="w-6 h-6 text-primary" />}
+          primaryAction={{
+            label: t(journey.primaryActionKey),
+            onClick: () => console.log('Primary action clicked')
+          }}
+          subNavItems={subNavItems}
+          defaultActiveTab="intro"
+        />
       </DashboardLayout>
     </DashboardAuthGuard>
   )

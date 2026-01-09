@@ -3,8 +3,17 @@
  * Asset di emergenza: liquidità immediata, protezione
  */
 
-import { JourneyPage } from '@/widgets/journey-page'
+import dynamic from 'next/dynamic'
+import { SkeletonJourneyPage } from '@/src/shared/ui/SkeletonLayouts'
+
+const JourneyPageComponent = dynamic(
+  () => import('@/src/widgets/journey-page/JourneyPage').then(mod => mod.JourneyPage),
+  {
+    loading: () => <SkeletonJourneyPage />,
+    ssr: true // Keep SSR for SEO
+  }
+)
 
 export default function EmergencyPage() {
-  return <JourneyPage journeyId="emergency" />
+  return <JourneyPageComponent journeyId="emergency" />
 }

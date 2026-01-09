@@ -3,8 +3,17 @@
  * Speculazione: trading attivo, opportunità
  */
 
-import { JourneyPage } from '@/widgets/journey-page'
+import dynamic from 'next/dynamic'
+import { SkeletonJourneyPage } from '@/src/shared/ui/SkeletonLayouts'
+
+const JourneyPageComponent = dynamic(
+  () => import('@/src/widgets/journey-page/JourneyPage').then(mod => mod.JourneyPage),
+  {
+    loading: () => <SkeletonJourneyPage />,
+    ssr: true
+  }
+)
 
 export default function SpeculationPage() {
-  return <JourneyPage journeyId="speculation" />
+  return <JourneyPageComponent journeyId="speculation" />
 }

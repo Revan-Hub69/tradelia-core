@@ -3,8 +3,17 @@
  * Investimenti lungo termine: crescita stabile, DCA
  */
 
-import { JourneyPage } from '@/widgets/journey-page'
+import dynamic from 'next/dynamic'
+import { SkeletonJourneyPage } from '@/src/shared/ui/SkeletonLayouts'
+
+const JourneyPageComponent = dynamic(
+  () => import('@/src/widgets/journey-page/JourneyPage').then(mod => mod.JourneyPage),
+  {
+    loading: () => <SkeletonJourneyPage />,
+    ssr: true
+  }
+)
 
 export default function LongtermPage() {
-  return <JourneyPage journeyId="longterm" />
+  return <JourneyPageComponent journeyId="longterm" />
 }
