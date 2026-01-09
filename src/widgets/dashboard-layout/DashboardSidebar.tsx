@@ -118,7 +118,7 @@ export function DashboardSidebar({ isOpen, onClose }: DashboardSidebarProps) {
               }}
               className="w-full mt-3 py-2.5 px-4 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
             >
-              Sblocca tutte le funzionalità
+              {t('unlockFeatures')}
             </button>
           )}
         </div>
@@ -126,7 +126,7 @@ export function DashboardSidebar({ isOpen, onClose }: DashboardSidebarProps) {
         {/* Navigation */}
         <div className="p-4">
           <p className="px-3 mb-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            Menu
+            {t('menuLabel')}
           </p>
           <nav className="space-y-1">
             {navigationItems.map((item) => {

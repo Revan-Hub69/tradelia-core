@@ -91,12 +91,18 @@
     "settingsDescription": "Configurazione",
     "profile": "Profilo",
     "logout": "Esci",
-    "menu": "Menu"
+    "menu": "Menu",
+    "menuLabel": "Menu",
+    "preferencesLabel": "Preferenze",
+    "unlockFeatures": "Sblocca tutte le funzionalità"
   },
   "settings": {
     "title": "Impostazioni",
     "language": "Lingua",
     "theme": "Tema",
+    "light": "Chiaro",
+    "dark": "Scuro",
+    "system": "Sistema",
     "notifications": "Notifiche",
     "save": "Salva",
     "cancel": "Annulla"

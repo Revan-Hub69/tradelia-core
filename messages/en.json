@@ -90,12 +90,18 @@
     "settingsDescription": "Configuration",
     "profile": "Profile",
     "logout": "Logout",
-    "menu": "Menu"
+    "menu": "Menu",
+    "menuLabel": "Menu",
+    "preferencesLabel": "Preferences",
+    "unlockFeatures": "Unlock all features"
   },
   "settings": {
     "title": "Settings",
     "language": "Language",
     "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
     "notifications": "Notifications",
     "save": "Save",
     "cancel": "Cancel"

@@ -8,6 +8,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 import { useTheme } from '@/src/shared/config/theme-provider'
 import type { Theme } from '@/src/shared/ui/types'
 
@@ -45,22 +46,10 @@ const MonitorIcon = ({ className }: { className?: string }) => (
   </svg>
 )
 
-const themeOptions: ThemeOption[] = [
-  {
-    value: 'light',
-    label: 'Chiaro',
-    icon: <SunIcon className="w-4 h-4" />
-  },
-  {
-    value: 'dark',
-    label: 'Scuro',
-    icon: <MoonIcon className="w-4 h-4" />
-  },
-  {
-    value: 'auto',
-    label: 'Sistema',
-    icon: <MonitorIcon className="w-4 h-4" />
-  }
+const themeOptionsStatic: ThemeOption[] = [
+  { value: 'light', label: 'Light', icon: <SunIcon className="w-4 h-4" /> },
+  { value: 'dark', label: 'Dark', icon: <MoonIcon className="w-4 h-4" /> },
+  { value: 'auto', label: 'System', icon: <MonitorIcon className="w-4 h-4" /> }
 ]
 
 interface ThemeToggleProps {
@@ -71,6 +60,13 @@ interface ThemeToggleProps {
 export function ThemeToggle({ variant = 'compact', className = '' }: ThemeToggleProps) {
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
+  const t = useTranslations('settings')
+
+  const themeOptions: ThemeOption[] = [
+    { value: 'light', label: t('light'), icon: <SunIcon className="w-4 h-4" /> },
+    { value: 'dark', label: t('dark'), icon: <MoonIcon className="w-4 h-4" /> },
+    { value: 'auto', label: t('system'), icon: <MonitorIcon className="w-4 h-4" /> }
+  ]
 
   useEffect(() => {
     setMounted(true)
@@ -110,7 +106,7 @@ export function ThemeToggle({ variant = 'compact', className = '' }: ThemeToggle
   return (
     <div className={`space-y-2 ${className}`}>
       <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-        Tema
+        {t('theme')}
       </p>
       <div className="flex items-center bg-muted/50 rounded-lg p-1 border border-border/50">
         {themeOptions.map((option) => (

@@ -9,7 +9,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 
 interface LanguageOption {
   value: string
@@ -40,6 +40,7 @@ export function LanguageToggle({ variant = 'compact', className = '' }: Language
   const pathname = usePathname()
   const locale = useLocale()
   const [mounted, setMounted] = useState(false)
+  const t = useTranslations('settings')
 
   useEffect(() => {
     setMounted(true)
@@ -95,7 +96,7 @@ export function LanguageToggle({ variant = 'compact', className = '' }: Language
   return (
     <div className={`space-y-2 ${className}`}>
       <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-        Lingua
+        {t('language')}
       </p>
       <div className="flex items-center bg-muted/50 rounded-lg p-1 border border-border/50">
         {languageOptions.map((option) => (
