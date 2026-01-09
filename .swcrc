@@ -1,0 +1,42 @@
+{
+  "jsc": {
+    "target": "es2022",
+    "parser": {
+      "syntax": "typescript",
+      "tsx": true,
+      "decorators": false,
+      "dynamicImport": true
+    },
+    "transform": {
+      "react": {
+        "runtime": "automatic",
+        "importSource": "react"
+      }
+    },
+    "minify": {
+      "compress": {
+        "drop_console": true,
+        "drop_debugger": true,
+        "pure_funcs": ["console.log", "console.info", "console.debug"],
+        "passes": 2,
+        "dead_code": true,
+        "unused": true,
+        "conditionals": true,
+        "evaluate": true,
+        "booleans": true,
+        "loops": true,
+        "if_return": true,
+        "join_vars": true,
+        "collapse_vars": true
+      },
+      "mangle": {
+        "toplevel": true
+      }
+    }
+  },
+  "module": {
+    "type": "es6"
+  },
+  "minify": true,
+  "isModule": true
+}
