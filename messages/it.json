@@ -124,7 +124,14 @@
     "close": "Chiudi",
     "open": "Apri",
     "expand": "Espandi",
-    "collapse": "Comprimi"
+    "collapse": "Comprimi",
+    "retry": "Riprova",
+    "goBack": "Torna indietro",
+    "somethingWentWrong": "Qualcosa è andato storto",
+    "connectionLost": "Connessione persa",
+    "checkConnection": "Verifica la tua connessione internet",
+    "loadingError": "Errore caricamento",
+    "persistentError": "Se il problema persiste, contatta il supporto"
   },
   "auth": {
     "title": "Sblocca tutte le funzionalità",

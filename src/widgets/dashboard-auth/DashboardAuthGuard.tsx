@@ -1,23 +1,22 @@
 /**
  * Dashboard Auth Guard - Tradelia 2026
  * 
- * Widget che gestisce gli stati di autenticazione della dashboard:
- * - Loading state
- * - Error state  
+ * Seguendo ux-contract.md:
+ * - Loading: skeleton (no spinner fullscreen)
+ * - Error: messaggio umano + retry
  * - Email verification alert
  * - Guest mode indicator
  */
 
 'use client'
 
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { useTranslations } from 'next-intl'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
 import { useDashboardModal } from '@/contexts/DashboardModalContext'
+import { SkeletonDashboard, FullPageError } from '@/src/shared/ui'
 import { 
   MailIcon, 
-  AlertTriangleIcon,
-  UserIcon,
   ShieldIcon
 } from '@/components/icons/TradeliaIcons'
 
@@ -30,52 +29,26 @@ export function DashboardAuthGuard({ children }: DashboardAuthGuardProps) {
   const { state, actions } = useDashboardAuth()
   const { openModal } = useDashboardModal()
 
-  // Debug log per verificare lo stato guest mode
-  console.log('DashboardAuthGuard - state:', {
-    isGuestMode: state.isGuestMode,
-    user: state.user,
-    loading: state.loading,
-    error: state.error
-  })
-
-  // Loading state - Ottimizzato per performance
+  // Loading state - Skeleton invece di spinner (ux-contract)
   if (state.loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-6 w-6 border-2 border-primary/20 border-t-primary mx-auto" />
-          <p className="text-xs text-muted-foreground">{t('loading')}</p>
+      <div className="min-h-screen bg-background">
+        <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+          <SkeletonDashboard />
         </div>
       </div>
     )
   }
 
-  // Error state
+  // Error state - Messaggio umano + retry (ux-contract)
   if (state.error) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-6">
-        <div className="text-center space-y-6 max-w-md">
-          <div className="p-4 rounded border-2 border-red-200 bg-red-50">
-            <div className="flex items-start gap-3">
-              <AlertTriangleIcon className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-              <div className="text-left">
-                <p className="text-sm font-semibold text-red-900 mb-1">
-                  {t('authError')}
-                </p>
-                <p className="text-xs text-red-800">
-                  {state.error}
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          <button
-            onClick={() => window.location.reload()}
-            className="h-10 px-6 bg-primary text-white text-sm font-medium rounded hover:bg-primary/90 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2"
-          >
-            {t('reloadPage')}
-          </button>
-        </div>
+      <div className="min-h-screen bg-background">
+        <FullPageError
+          title={t('authError')}
+          message={state.error}
+          onRetry={() => window.location.reload()}
+        />
       </div>
     )
   }
@@ -95,7 +68,7 @@ export function DashboardAuthGuard({ children }: DashboardAuthGuardProps) {
               </div>
               <button
                 onClick={actions.resendVerification}
-                className="text-xs font-semibold text-primary hover:text-primary/80 transition-colors duration-150 whitespace-nowrap"
+                className="text-xs font-semibold text-primary hover:text-primary/80 transition-colors duration-150 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1"
               >
                 {t('resendEmail')}
               </button>
@@ -104,20 +77,20 @@ export function DashboardAuthGuard({ children }: DashboardAuthGuardProps) {
         </div>
       )}
 
-      {/* Guest Mode Indicator - Ottimizzato per dark mode */}
+      {/* Guest Mode Indicator */}
       {state.isGuestMode && (
-        <div className="border-b border-border/50 bg-warning/8 dark:bg-warning/5 dark:border-warning/20">
+        <div className="border-b border-warning/20 bg-warning/5">
           <div className="max-w-7xl mx-auto px-6 py-3">
             <div className="flex items-center gap-3">
-              <ShieldIcon className="w-4 h-4 text-warning dark:text-warning/90 flex-shrink-0" />
+              <ShieldIcon className="w-4 h-4 text-warning flex-shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-warning dark:text-warning/90">
+                <p className="text-sm font-medium text-warning">
                   {t('guestModeActive')}
                 </p>
               </div>
               <button
                 onClick={() => openModal('gateway')}
-                className="text-xs font-semibold text-warning dark:text-warning/90 hover:text-warning/80 dark:hover:text-warning/70 transition-colors duration-200 whitespace-nowrap px-3 py-1 rounded-md bg-warning/10 dark:bg-warning/10 hover:bg-warning/20 dark:hover:bg-warning/15 border border-warning/20 dark:border-warning/30"
+                className="text-xs font-semibold text-warning hover:text-warning/80 transition-colors duration-150 whitespace-nowrap px-3 py-1.5 rounded-lg bg-warning/10 hover:bg-warning/15 border border-warning/20 focus:outline-none focus:ring-2 focus:ring-warning"
               >
                 {t('registerNowShort')}
               </button>

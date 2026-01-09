@@ -124,7 +124,14 @@
     "close": "Close",
     "open": "Open",
     "expand": "Expand",
-    "collapse": "Collapse"
+    "collapse": "Collapse",
+    "retry": "Retry",
+    "goBack": "Go back",
+    "somethingWentWrong": "Something went wrong",
+    "connectionLost": "Connection lost",
+    "checkConnection": "Check your internet connection",
+    "loadingError": "Loading error",
+    "persistentError": "If the problem persists, contact support"
   },
   "auth": {
     "title": "Sign In or Register",
