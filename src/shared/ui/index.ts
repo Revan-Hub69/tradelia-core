@@ -36,6 +36,11 @@ export {
   NetworkError, 
   FullPageError 
 } from './ErrorState';
+export { 
+  ToastProvider, 
+  useToast 
+} from './Toast';
+export type { Toast, ToastVariant, ToastContextType } from './Toast';
 
 // Utility functions
 export { cn, focusRing, transitionSubtle, cardInteractive, supportsHover, prefersReducedMotion } from './utils';
