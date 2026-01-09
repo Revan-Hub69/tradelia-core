@@ -1,8 +1,9 @@
 /**
  * Desktop Sidebar - Tradelia 2026
+ * Navigation Contract v1.0
  * 
- * Sidebar fissa per desktop (>=1024px).
- * Su mobile è nascosta - si usa BottomNav.
+ * Visibilità: hidden md:flex (solo ≥768px)
+ * Posizione: fixed top-16 left-0 bottom-0 w-64
  */
 
 'use client'
@@ -54,18 +55,10 @@ export function DesktopSidebar() {
   }
   const activeJourney = getActiveJourney()
 
-  const handleLogout = () => {
-    actions.signOut()
-  }
-
-  const handleRegister = () => {
-    openModal()
-  }
-
   return (
-    <aside className="hidden lg:flex fixed top-16 left-0 bottom-0 w-64 bg-background border-r border-border flex-col z-40">
+    <aside className="hidden md:flex fixed top-0 left-0 bottom-0 w-64 bg-background border-r border-border flex-col z-40">
       {/* Logo */}
-      <div className="p-4 border-b border-border/50">
+      <div className="h-16 px-4 flex items-center border-b border-border/50">
         <Logo />
       </div>
 
@@ -91,7 +84,7 @@ export function DesktopSidebar() {
         
         {state.isGuestMode && (
           <button
-            onClick={handleRegister}
+            onClick={() => openModal()}
             className="w-full mt-3 py-2 px-4 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
             {t('unlockFeatures')}
@@ -196,7 +189,7 @@ export function DesktopSidebar() {
       {/* Footer */}
       <div className="p-4 border-t border-border">
         <button
-          onClick={handleLogout}
+          onClick={() => actions.signOut()}
           className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-sm font-medium text-error hover:bg-error/10 transition-colors focus:outline-none focus:ring-2 focus:ring-error"
         >
           <LogOutIcon className="w-4 h-4" />

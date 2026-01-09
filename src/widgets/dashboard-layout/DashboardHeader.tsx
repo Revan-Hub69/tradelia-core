@@ -1,9 +1,10 @@
 /**
  * Dashboard Header - Tradelia 2026
+ * Navigation Contract v1.0
  * 
- * Header semplificato:
- * - Mobile: Logo + notifiche
- * - Desktop: Search + notifiche + back to site (logo è nella sidebar)
+ * Posizione: fixed, md:left-64 (shift per sidebar)
+ * Mobile: logo + notifiche
+ * Desktop: search + notifiche + back to site
  */
 
 'use client'
@@ -24,18 +25,18 @@ export function DashboardHeader() {
   const { state } = useDashboardAuth()
 
   return (
-    <header className="h-16 bg-background/95 border-b border-border/50 fixed top-0 left-0 right-0 z-50 lg:left-64">
-      <div className="h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        {/* Left Section - Logo (mobile only, desktop has sidebar) */}
-        <div className="flex items-center gap-4 lg:hidden">
+    <header className="h-16 bg-background/95 border-b border-border/50 fixed top-0 left-0 right-0 z-50 md:left-64">
+      <div className="h-full px-4 sm:px-6 md:px-8 flex items-center justify-between">
+        {/* Left Section - Logo (mobile only) */}
+        <div className="flex items-center gap-4 md:hidden">
           <Logo />
         </div>
         
         {/* Desktop: empty left space */}
-        <div className="hidden lg:block" />
+        <div className="hidden md:block" />
 
         {/* Center - Search Bar (desktop only) */}
-        <div className="hidden lg:flex flex-1 max-w-md mx-8">
+        <div className="hidden md:flex flex-1 max-w-md mx-8">
           <div className="relative w-full">
             <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input

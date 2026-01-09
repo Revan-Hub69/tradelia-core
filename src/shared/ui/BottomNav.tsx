@@ -1,8 +1,9 @@
 /**
  * BottomNav - Tradelia 2026
+ * Navigation Contract v1.0
  * 
- * Bottom navigation SOLO mobile per i 4 journey.
- * NASCOSTA su desktop (lg:hidden)
+ * Visibilità: md:hidden (solo <768px)
+ * 5 tab: Home + 4 journey
  */
 
 'use client'
@@ -15,7 +16,8 @@ import {
   ShieldIcon,
   TrendingUpIcon,
   BoltIcon,
-  RefreshIcon
+  RefreshIcon,
+  HomeIcon
 } from '@/components/icons/TradeliaIcons'
 
 const JOURNEY_ICONS: Record<JourneyId, React.ComponentType<{ className?: string }>> = {
@@ -32,6 +34,7 @@ export function BottomNav() {
   
   // Check if we're on dashboard
   const isOnDashboard = pathname.includes('/dashboard')
+  const isOnHome = pathname === `/${locale}/dashboard` || pathname === `/${locale}/dashboard/`
   
   // Determine active journey
   const getActiveJourney = (): JourneyId | null => {
@@ -48,10 +51,33 @@ export function BottomNav() {
 
   return (
     <nav 
-      className="fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-t border-border block lg:hidden"
+      className="fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-t border-border md:hidden"
       aria-label="Navigazione principale"
     >
-      <div className="flex items-center justify-around h-16 px-2 safe-area-bottom">
+      <div className="flex items-center justify-around h-16 px-1 safe-area-bottom">
+        {/* Home Tab */}
+        <Link
+          href={`/${locale}/dashboard`}
+          prefetch={false}
+          className={`
+            flex flex-col items-center justify-center flex-1 h-full px-1 py-1
+            transition-colors duration-150 active:scale-95
+            ${isOnHome 
+              ? 'text-primary' 
+              : 'text-muted-foreground hover:text-foreground'
+            }
+          `}
+          aria-current={isOnHome ? 'page' : undefined}
+        >
+          <div className={`p-1.5 rounded-lg ${isOnHome ? 'bg-primary/10' : ''}`}>
+            <HomeIcon className="w-5 h-5" />
+          </div>
+          <span className={`text-[10px] mt-0.5 font-medium ${isOnHome ? 'text-primary' : ''}`}>
+            Home
+          </span>
+        </Link>
+
+        {/* Journey Tabs */}
         {JOURNEY_ORDER.map((journeyId) => {
           const journey = JOURNEYS[journeyId]
           const Icon = JOURNEY_ICONS[journeyId]
@@ -64,7 +90,7 @@ export function BottomNav() {
               href={href}
               prefetch={false}
               className={`
-                flex flex-col items-center justify-center flex-1 h-full px-2 py-1
+                flex flex-col items-center justify-center flex-1 h-full px-1 py-1
                 transition-colors duration-150 active:scale-95
                 ${isActive 
                   ? 'text-primary' 
@@ -73,16 +99,10 @@ export function BottomNav() {
               `}
               aria-current={isActive ? 'page' : undefined}
             >
-              <div className={`
-                p-1.5 rounded-lg transition-colors duration-150
-                ${isActive ? 'bg-primary/10' : ''}
-              `}>
+              <div className={`p-1.5 rounded-lg ${isActive ? 'bg-primary/10' : ''}`}>
                 <Icon className="w-5 h-5" />
               </div>
-              <span className={`
-                text-[10px] mt-0.5 font-medium truncate max-w-full
-                ${isActive ? 'text-primary' : ''}
-              `}>
+              <span className={`text-[10px] mt-0.5 font-medium truncate ${isActive ? 'text-primary' : ''}`}>
                 {t(journey.labelKey)}
               </span>
             </Link>
