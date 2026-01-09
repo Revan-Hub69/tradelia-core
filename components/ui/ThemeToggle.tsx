@@ -8,7 +8,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useTranslations } from 'next-intl'
 import { useTheme } from '@/src/shared/config/theme-provider'
 import type { Theme } from '@/src/shared/ui/types'
 
@@ -46,26 +45,35 @@ const MonitorIcon = ({ className }: { className?: string }) => (
   </svg>
 )
 
-const themeOptionsStatic: ThemeOption[] = [
-  { value: 'light', label: 'Light', icon: <SunIcon className="w-4 h-4" /> },
-  { value: 'dark', label: 'Dark', icon: <MoonIcon className="w-4 h-4" /> },
-  { value: 'auto', label: 'System', icon: <MonitorIcon className="w-4 h-4" /> }
-]
+// Default labels (used when not in next-intl context)
+const defaultLabels = {
+  theme: 'Tema',
+  light: 'Chiaro',
+  dark: 'Scuro',
+  system: 'Sistema'
+}
 
 interface ThemeToggleProps {
   variant?: 'compact' | 'full'
   className?: string
+  labels?: {
+    theme?: string
+    light?: string
+    dark?: string
+    system?: string
+  }
 }
 
-export function ThemeToggle({ variant = 'compact', className = '' }: ThemeToggleProps) {
+export function ThemeToggle({ variant = 'compact', className = '', labels }: ThemeToggleProps) {
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
-  const t = useTranslations('settings')
+
+  const l = { ...defaultLabels, ...labels }
 
   const themeOptions: ThemeOption[] = [
-    { value: 'light', label: t('light'), icon: <SunIcon className="w-4 h-4" /> },
-    { value: 'dark', label: t('dark'), icon: <MoonIcon className="w-4 h-4" /> },
-    { value: 'auto', label: t('system'), icon: <MonitorIcon className="w-4 h-4" /> }
+    { value: 'light', label: l.light, icon: <SunIcon className="w-4 h-4" /> },
+    { value: 'dark', label: l.dark, icon: <MoonIcon className="w-4 h-4" /> },
+    { value: 'auto', label: l.system, icon: <MonitorIcon className="w-4 h-4" /> }
   ]
 
   useEffect(() => {
@@ -106,7 +114,7 @@ export function ThemeToggle({ variant = 'compact', className = '' }: ThemeToggle
   return (
     <div className={`space-y-2 ${className}`}>
       <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-        {t('theme')}
+        {l.theme}
       </p>
       <div className="flex items-center bg-muted/50 rounded-lg p-1 border border-border/50">
         {themeOptions.map((option) => (

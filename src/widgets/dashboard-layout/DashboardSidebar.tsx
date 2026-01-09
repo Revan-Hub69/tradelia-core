@@ -155,8 +155,20 @@ export function DashboardSidebar({ isOpen, onClose }: DashboardSidebarProps) {
 
         {/* Preferences - Using existing components */}
         <div className="p-4 border-t border-border/50 space-y-4">
-          <ThemeToggle variant="full" />
-          <LanguageToggle variant="full" />
+          <ThemeToggle 
+            variant="full" 
+            labels={{
+              theme: tDashboard('loading') ? 'Tema' : 'Tema', // fallback
+              light: locale === 'en' ? 'Light' : 'Chiaro',
+              dark: locale === 'en' ? 'Dark' : 'Scuro',
+              system: locale === 'en' ? 'System' : 'Sistema'
+            }}
+          />
+          <LanguageToggle 
+            variant="full" 
+            currentLocale={locale}
+            labelText={locale === 'en' ? 'Language' : 'Lingua'}
+          />
         </div>
 
         {/* Footer */}

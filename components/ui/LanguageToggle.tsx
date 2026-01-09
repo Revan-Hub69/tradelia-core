@@ -9,7 +9,6 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { useLocale, useTranslations } from 'next-intl'
 
 interface LanguageOption {
   value: string
@@ -18,29 +17,24 @@ interface LanguageOption {
 }
 
 const languageOptions: LanguageOption[] = [
-  {
-    value: 'it',
-    label: 'Italiano',
-    flag: '🇮🇹'
-  },
-  {
-    value: 'en',
-    label: 'English',
-    flag: '🇺🇸'
-  }
+  { value: 'it', label: 'Italiano', flag: '🇮🇹' },
+  { value: 'en', label: 'English', flag: '🇺🇸' }
 ]
 
 interface LanguageToggleProps {
   variant?: 'compact' | 'full'
   className?: string
+  currentLocale?: string
+  labelText?: string
 }
 
-export function LanguageToggle({ variant = 'compact', className = '' }: LanguageToggleProps) {
+export function LanguageToggle({ variant = 'compact', className = '', currentLocale, labelText = 'Lingua' }: LanguageToggleProps) {
   const router = useRouter()
   const pathname = usePathname()
-  const locale = useLocale()
   const [mounted, setMounted] = useState(false)
-  const t = useTranslations('settings')
+  
+  // Detect locale from pathname if not provided
+  const locale = currentLocale || pathname.split('/')[1] || 'it'
 
   useEffect(() => {
     setMounted(true)
@@ -49,12 +43,16 @@ export function LanguageToggle({ variant = 'compact', className = '' }: Language
   const handleLanguageChange = (newLocale: string) => {
     if (newLocale === locale) return
     
-    // Replace the locale in the current pathname and preserve query params
+    // Replace the locale in the current pathname
     const segments = pathname.split('/')
-    segments[1] = newLocale // Replace locale segment
-    const newPath = segments.join('/')
+    if (segments[1] === 'it' || segments[1] === 'en') {
+      segments[1] = newLocale
+    } else {
+      segments.splice(1, 0, newLocale)
+    }
+    const newPath = segments.join('/') || '/'
     
-    // Preserve current query parameters (like ?guest=true)
+    // Preserve current query parameters
     const currentUrl = new URL(window.location.href)
     const searchParams = currentUrl.searchParams.toString()
     const finalUrl = searchParams ? `${newPath}?${searchParams}` : newPath
@@ -96,7 +94,7 @@ export function LanguageToggle({ variant = 'compact', className = '' }: Language
   return (
     <div className={`space-y-2 ${className}`}>
       <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-        {t('language')}
+        {labelText}
       </p>
       <div className="flex items-center bg-muted/50 rounded-lg p-1 border border-border/50">
         {languageOptions.map((option) => (
