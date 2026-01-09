@@ -56,7 +56,7 @@ export function DashboardContent() {
   }
 
   const dashboardData = getDashboardData()
-  const userName = state.profile?.full_name || 'Utente'
+  const userName = state.profile?.full_name || t('guestUser')
 
   return (
     <DashboardAuthGuard>
@@ -209,15 +209,15 @@ export function DashboardContent() {
                       </h3>
                       <div className="space-y-3">
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-muted-foreground">Bitcoin</span>
+                          <span className="text-sm text-muted-foreground">{t('bitcoin')}</span>
                           <span className="text-sm font-semibold text-foreground">45%</span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-muted-foreground">Ethereum</span>
+                          <span className="text-sm text-muted-foreground">{t('ethereum')}</span>
                           <span className="text-sm font-semibold text-foreground">30%</span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-muted-foreground">Altri</span>
+                          <span className="text-sm text-muted-foreground">{t('others')}</span>
                           <span className="text-sm font-semibold text-foreground">25%</span>
                         </div>
                       </div>
@@ -228,15 +228,15 @@ export function DashboardContent() {
                       </h3>
                       <div className="space-y-3">
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-muted-foreground">Bitcoin</span>
+                          <span className="text-sm text-muted-foreground">{t('bitcoin')}</span>
                           <span className="text-sm font-semibold text-green-600">+12.3%</span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-muted-foreground">Ethereum</span>
+                          <span className="text-sm text-muted-foreground">{t('ethereum')}</span>
                           <span className="text-sm font-semibold text-green-600">+8.7%</span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-muted-foreground">Altri</span>
+                          <span className="text-sm text-muted-foreground">{t('others')}</span>
                           <span className="text-sm font-semibold text-red-600">-2.1%</span>
                         </div>
                       </div>

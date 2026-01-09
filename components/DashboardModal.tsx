@@ -32,7 +32,7 @@ interface UserProfile {
 }
 
 export default function DashboardModal() {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const { isOpen, closeModal } = useDashboardModal();
   const modalRef = useRef<HTMLDivElement>(null);
   const firstFocusableRef = useRef<HTMLButtonElement>(null);
@@ -160,7 +160,7 @@ export default function DashboardModal() {
         console.log('Guest profile saved successfully');
         closeModal();
         // Navigate to dashboard with guest mode
-        window.location.href = '/it/dashboard?guest=true';
+        window.location.href = `/${locale}/dashboard?guest=true`;
       } else {
         // Show registration form
         setStep(6);
@@ -176,7 +176,7 @@ export default function DashboardModal() {
     console.log('Registration successful, saving profile to user account');
     closeModal();
     // Navigate to dashboard for registered users
-    window.location.href = '/it/dashboard';
+    window.location.href = `/${locale}/dashboard`;
   };
 
   const handleRegistrationBack = () => {

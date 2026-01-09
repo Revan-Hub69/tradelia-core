@@ -40,6 +40,10 @@
     "systemTradelia": "Sistema Tradelia",
     "searchPlaceholder": "Cerca strumenti, analisi...",
     "backToSite": "Torna al Sito",
+    "guestUser": "Utente Ospite",
+    "bitcoin": "Bitcoin",
+    "ethereum": "Ethereum", 
+    "others": "Altri",
     "commandPalette": {
       "placeholder": "Cerca comandi...",
       "noResults": "Nessun comando trovato",

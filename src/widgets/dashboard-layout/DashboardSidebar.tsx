@@ -9,7 +9,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
@@ -29,6 +29,8 @@ import {
 export function DashboardSidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false)
   const pathname = usePathname()
+  const params = useParams()
+  const locale = params.locale as string
   const t = useTranslations('navigation')
   const tDashboard = useTranslations('dashboard')
   const { state, actions } = useDashboardAuth()
@@ -36,31 +38,31 @@ export function DashboardSidebar() {
   const navigationItems = [
     {
       name: t('overview'),
-      href: '/it/dashboard',
+      href: `/${locale}/dashboard`,
       icon: ChartIcon,
       description: t('overviewDescription')
     },
     {
       name: t('portfolio'),
-      href: '/it/dashboard/portfolio',
+      href: `/${locale}/dashboard/portfolio`,
       icon: DiamondIcon,
       description: t('portfolioDescription')
     },
     {
       name: t('verify'),
-      href: '/it/dashboard/verify',
+      href: `/${locale}/dashboard/verify`,
       icon: ShieldIcon,
       description: t('verifyDescription')
     },
     {
       name: t('education'),
-      href: '/it/dashboard/education',
+      href: `/${locale}/dashboard/education`,
       icon: BookIcon,
       description: t('educationDescription')
     },
     {
       name: t('settings'),
-      href: '/it/dashboard/settings',
+      href: `/${locale}/dashboard/settings`,
       icon: SettingsIcon,
       description: t('settingsDescription')
     }
@@ -107,7 +109,7 @@ export function DashboardSidebar() {
           {!isCollapsed && (
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-foreground truncate">
-                {state.profile?.full_name || 'Utente Ospite'}
+                {state.profile?.full_name || tDashboard('guestUser')}
               </p>
               <p className="text-xs text-muted-foreground">
                 {state.isGuestMode ? tDashboard('limitedMode') : tDashboard('verifiedAccount')}

@@ -93,7 +93,7 @@ function DashboardAuthProviderInner({ children, locale }: DashboardAuthProviderP
             user: null,
             profile: {
               id: 'guest',
-              full_name: 'Utente ospite',
+              full_name: 'Guest User',
               crypto_objective: 'investment',
               experience_level: 'basic'
             } as UserProfile,
@@ -293,7 +293,7 @@ function DashboardAuthProviderInner({ children, locale }: DashboardAuthProviderP
         user: null,
         profile: {
           id: 'guest',
-          full_name: 'Utente ospite',
+          full_name: 'Guest User',
           crypto_objective: 'investment',
           experience_level: 'basic'
         } as UserProfile,
