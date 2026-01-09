@@ -1,17 +1,14 @@
 /**
- * Tradelia SuperBig Dashboard - Localized Page
+ * Tradelia Dashboard Home - Localized Page
  * 
- * Dashboard enterprise-level seguendo i principi Tradelia 2026:
+ * Hub centrale dei 4 journey seguendo i principi Tradelia 2026:
  * - Chiarezza > Persuasione
  * - Verificabilità > Opinione  
  * - Neutralità > Bias
- * 
- * Integrata con autenticazione reale, gestione profili e configurazioni
  */
 
-import { getTranslations } from 'next-intl/server';
 import { setRequestLocale } from 'next-intl/server';
-import { DashboardContent } from './DashboardContent';
+import { DashboardHome } from './DashboardHome';
 
 interface DashboardPageProps {
   params: Promise<{ locale: string }>;
@@ -23,5 +20,5 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
   // Enable static rendering
   setRequestLocale(locale);
   
-  return <DashboardContent />;
+  return <DashboardHome />;
 }

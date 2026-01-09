@@ -24,14 +24,23 @@ import { LanguageToggle } from '@/components/ui/LanguageToggle'
 import Logo from '@/components/Logo'
 import { 
   UserIcon,
-  ChartIcon,
   SettingsIcon,
   ShieldIcon,
-  BookIcon,
   LogOutIcon,
-  DiamondIcon,
-  CloseIcon
+  CloseIcon,
+  TrendingUpIcon,
+  BoltIcon,
+  RefreshIcon,
+  HomeIcon
 } from '@/components/icons/TradeliaIcons'
+import { JOURNEY_ORDER, JOURNEYS, getJourneyFromPath, type JourneyId } from '@/src/shared/config/journeys'
+
+const JOURNEY_ICONS: Record<JourneyId, React.ComponentType<{ className?: string }>> = {
+  emergency: ShieldIcon,
+  longterm: TrendingUpIcon,
+  speculation: BoltIcon,
+  passive: RefreshIcon
+}
 
 interface DashboardSidebarProps {
   isOpen: boolean
@@ -44,6 +53,7 @@ export function DashboardSidebar({ isOpen, onClose }: DashboardSidebarProps) {
   const locale = params.locale as string
   const t = useTranslations('navigation')
   const tDashboard = useTranslations('dashboard')
+  const tJourneys = useTranslations('journeys')
   const { state, actions } = useDashboardAuth()
   const { openModal } = useDashboardModal()
   
@@ -52,13 +62,9 @@ export function DashboardSidebar({ isOpen, onClose }: DashboardSidebarProps) {
   const isFirstRender = useRef(true)
   const previousPathname = useRef(pathname)
 
-  const navigationItems = [
-    { name: t('overview'), href: `/${locale}/dashboard`, icon: ChartIcon },
-    { name: t('portfolio'), href: `/${locale}/dashboard/portfolio`, icon: DiamondIcon },
-    { name: t('verify'), href: `/${locale}/dashboard/verify`, icon: ShieldIcon },
-    { name: t('education'), href: `/${locale}/dashboard/education`, icon: BookIcon },
-    { name: t('settings'), href: `/${locale}/dashboard/settings`, icon: SettingsIcon },
-  ]
+  // Current active journey
+  const activeJourney = getJourneyFromPath(pathname)
+  const isOnHome = pathname === `/${locale}/dashboard`
 
   // Focus trap
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -184,20 +190,41 @@ export function DashboardSidebar({ isOpen, onClose }: DashboardSidebarProps) {
             )}
           </div>
 
-          {/* Navigation */}
+          {/* Navigation - Journey Switcher */}
           <nav className="p-4" aria-label={t('menuLabel')}>
-            <p className="px-3 mb-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              {t('menuLabel')}
+            {/* Home Link */}
+            <Link
+              href={`/${locale}/dashboard`}
+              className={`
+                relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all mb-2
+                focus:outline-none focus:ring-2 focus:ring-primary
+                ${isOnHome 
+                  ? 'bg-primary/10 text-primary' 
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                }
+              `}
+              aria-current={isOnHome ? 'page' : undefined}
+            >
+              {isOnHome && (
+                <span className="absolute left-0 top-2 bottom-2 w-[3px] bg-primary rounded-r-full" aria-hidden="true" />
+              )}
+              <HomeIcon className={`w-5 h-5 flex-shrink-0 ${isOnHome ? 'text-primary' : ''}`} />
+              <span>Home</span>
+            </Link>
+
+            <p className="px-3 mb-2 mt-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              Percorsi
             </p>
             <ul className="space-y-1">
-              {navigationItems.map((item) => {
-                const isActive = pathname === item.href
-                const Icon = item.icon
+              {JOURNEY_ORDER.map((journeyId) => {
+                const Icon = JOURNEY_ICONS[journeyId]
+                const isActive = activeJourney === journeyId && !isOnHome
+                const href = `/${locale}/dashboard/${journeyId}`
                 
                 return (
-                  <li key={item.href}>
+                  <li key={journeyId}>
                     <Link
-                      href={item.href}
+                      href={href}
                       className={`
                         relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
                         focus:outline-none focus:ring-2 focus:ring-primary
@@ -208,20 +235,32 @@ export function DashboardSidebar({ isOpen, onClose }: DashboardSidebarProps) {
                       `}
                       aria-current={isActive ? 'page' : undefined}
                     >
-                      {/* Active indicator stripe */}
                       {isActive && (
-                        <span 
-                          className="absolute left-0 top-2 bottom-2 w-[3px] bg-primary rounded-r-full"
-                          aria-hidden="true"
-                        />
+                        <span className="absolute left-0 top-2 bottom-2 w-[3px] bg-primary rounded-r-full" aria-hidden="true" />
                       )}
                       <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? 'text-primary' : ''}`} />
-                      <span>{item.name}</span>
+                      <span>{tJourneys(`${journeyId}.name`)}</span>
                     </Link>
                   </li>
                 )
               })}
             </ul>
+
+            {/* Settings Link */}
+            <Link
+              href={`/${locale}/dashboard/settings`}
+              className={`
+                relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all mt-4
+                focus:outline-none focus:ring-2 focus:ring-primary
+                ${pathname.includes('/settings') 
+                  ? 'bg-primary/10 text-primary' 
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                }
+              `}
+            >
+              <SettingsIcon className="w-5 h-5 flex-shrink-0" />
+              <span>{t('settings')}</span>
+            </Link>
           </nav>
 
           {/* Preferences */}

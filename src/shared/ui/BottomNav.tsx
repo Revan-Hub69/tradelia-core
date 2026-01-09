@@ -35,11 +35,16 @@ export function BottomNav() {
   const locale = params.locale as string
   const t = useTranslations()
   
+  // Check if we're on a journey page or home
   const activeJourney = getJourneyFromPath(pathname)
+  const isOnDashboard = pathname.includes('/dashboard')
+
+  // Don't show on non-dashboard pages
+  if (!isOnDashboard) return null
 
   return (
     <nav 
-      className="fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border lg:hidden"
+      className="fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-t border-border lg:hidden"
       aria-label="Navigazione principale"
     >
       <div className="flex items-center justify-around h-16 px-2 safe-area-bottom">
@@ -55,7 +60,7 @@ export function BottomNav() {
               href={href}
               className={`
                 flex flex-col items-center justify-center flex-1 h-full px-2 py-1
-                transition-colors duration-150
+                transition-colors duration-150 active:scale-95
                 ${isActive 
                   ? 'text-primary' 
                   : 'text-muted-foreground hover:text-foreground'
