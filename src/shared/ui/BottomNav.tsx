@@ -2,18 +2,14 @@
  * BottomNav - Tradelia 2026
  * 
  * Bottom navigation SOLO mobile per i 4 journey.
- * - 4 journey tabs (no Home - Home è il default)
- * - Icona + label sempre
- * - Active state forte
- * - Visibile SOLO su mobile (<1024px)
- * - Su desktop: sidebar fissa
+ * NASCOSTA su desktop (lg:hidden)
  */
 
 'use client'
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import { JOURNEY_ORDER, JOURNEYS, type JourneyId } from '@/src/shared/config/journeys'
 import {
   ShieldIcon,
@@ -31,11 +27,8 @@ const JOURNEY_ICONS: Record<JourneyId, React.ComponentType<{ className?: string 
 
 export function BottomNav() {
   const pathname = usePathname()
+  const locale = useLocale()
   const t = useTranslations()
-  
-  // Extract locale from pathname (e.g., /it/dashboard -> it)
-  const pathParts = pathname.split('/')
-  const locale = pathParts[1] || 'it'
   
   // Check if we're on dashboard
   const isOnDashboard = pathname.includes('/dashboard')
@@ -55,7 +48,7 @@ export function BottomNav() {
 
   return (
     <nav 
-      className="fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-t border-border lg:hidden"
+      className="fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-t border-border block lg:hidden"
       aria-label="Navigazione principale"
     >
       <div className="flex items-center justify-around h-16 px-2 safe-area-bottom">
@@ -69,6 +62,7 @@ export function BottomNav() {
             <Link
               key={journeyId}
               href={href}
+              prefetch={false}
               className={`
                 flex flex-col items-center justify-center flex-1 h-full px-2 py-1
                 transition-colors duration-150 active:scale-95

@@ -9,7 +9,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
 import { useDashboardModal } from '@/contexts/DashboardModalContext'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
@@ -25,7 +25,7 @@ import {
   RefreshIcon,
   HomeIcon
 } from '@/components/icons/TradeliaIcons'
-import { JOURNEY_ORDER, JOURNEYS, type JourneyId } from '@/src/shared/config/journeys'
+import { JOURNEY_ORDER, type JourneyId } from '@/src/shared/config/journeys'
 
 const JOURNEY_ICONS: Record<JourneyId, React.ComponentType<{ className?: string }>> = {
   emergency: ShieldIcon,
@@ -36,15 +36,12 @@ const JOURNEY_ICONS: Record<JourneyId, React.ComponentType<{ className?: string 
 
 export function DesktopSidebar() {
   const pathname = usePathname()
+  const locale = useLocale()
   const t = useTranslations('navigation')
   const tJourneys = useTranslations('journeys')
   const tDashboard = useTranslations('dashboard')
   const { state, actions } = useDashboardAuth()
   const { openModal } = useDashboardModal()
-  
-  // Extract locale from pathname
-  const pathParts = pathname.split('/')
-  const locale = pathParts[1] || 'it'
 
   // Current active journey
   const isOnHome = pathname === `/${locale}/dashboard` || pathname === `/${locale}/dashboard/`
@@ -67,6 +64,11 @@ export function DesktopSidebar() {
 
   return (
     <aside className="hidden lg:flex fixed top-16 left-0 bottom-0 w-64 bg-background border-r border-border flex-col z-40">
+      {/* Logo */}
+      <div className="p-4 border-b border-border/50">
+        <Logo />
+      </div>
+
       {/* User Card */}
       <div className="p-4 border-b border-border/50">
         <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/30">
@@ -102,6 +104,7 @@ export function DesktopSidebar() {
         {/* Home Link */}
         <Link
           href={`/${locale}/dashboard`}
+          prefetch={false}
           className={`
             relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all mb-2
             focus:outline-none focus:ring-2 focus:ring-primary
@@ -132,6 +135,7 @@ export function DesktopSidebar() {
               <li key={journeyId}>
                 <Link
                   href={href}
+                  prefetch={false}
                   className={`
                     relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
                     focus:outline-none focus:ring-2 focus:ring-primary
@@ -156,6 +160,7 @@ export function DesktopSidebar() {
         {/* Settings Link */}
         <Link
           href={`/${locale}/dashboard/settings`}
+          prefetch={false}
           className={`
             relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all mt-4
             focus:outline-none focus:ring-2 focus:ring-primary

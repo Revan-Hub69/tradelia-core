@@ -3,12 +3,12 @@
  * 
  * Header semplificato:
  * - Mobile: Logo + notifiche
- * - Desktop: Logo + search + notifiche + back to site
+ * - Desktop: Search + notifiche + back to site (logo è nella sidebar)
  */
 
 'use client'
 
-import { useRouter, usePathname } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
 import { Button } from '@/src/shared/ui/Button'
@@ -20,13 +20,8 @@ import {
 
 export function DashboardHeader() {
   const router = useRouter()
-  const pathname = usePathname()
   const t = useTranslations('dashboard')
   const { state } = useDashboardAuth()
-  
-  // Extract locale from pathname
-  const pathParts = pathname.split('/')
-  const locale = pathParts[1] || 'it'
 
   return (
     <header className="h-16 bg-background/95 border-b border-border/50 fixed top-0 left-0 right-0 z-50 lg:left-64">
