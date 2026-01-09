@@ -98,18 +98,18 @@ export function DashboardAuthGuard({ children }: DashboardAuthGuardProps) {
 
       {/* Guest Mode Indicator */}
       {state.isGuestMode && (
-        <div className="border-b border-border/50 bg-amber-50">
+        <div className="border-b border-border/50 bg-warning/8 dark:bg-warning/10">
           <div className="max-w-7xl mx-auto px-6 py-3">
             <div className="flex items-center gap-3">
-              <ShieldIcon className="w-4 h-4 text-amber-700 flex-shrink-0" />
+              <ShieldIcon className="w-4 h-4 text-warning flex-shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-amber-900">
+                <p className="text-sm font-medium text-warning">
                   {t('guestModeActive')}
                 </p>
               </div>
               <button
                 onClick={() => openModal('gateway')}
-                className="text-xs font-semibold text-amber-800 hover:text-amber-900 transition-colors duration-150 whitespace-nowrap"
+                className="text-xs font-semibold text-warning hover:text-warning/80 transition-colors duration-200 whitespace-nowrap px-3 py-1 rounded-md bg-warning/10 hover:bg-warning/20"
               >
                 {t('registerNowShort')}
               </button>

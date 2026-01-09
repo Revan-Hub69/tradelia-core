@@ -1,13 +1,12 @@
 /**
- * Dashboard Layout - Tradelia 2026 Super Premium v2.1
+ * Dashboard Layout - Tradelia 2026 Super Premium v3.0
  * 
- * Layout enterprise seguendo paper accademici e best practices:
- * - Sidebar overlay (non push) per mobile-first design
- * - Performance ottimizzata con CSS Grid e Flexbox
+ * Layout enterprise con sidebar overlay moderna:
+ * - Sidebar overlay che appare sopra il contenuto (non sposta)
+ * - Backdrop scuro quando sidebar è aperta
+ * - Animazioni fluide e performance ottimizzate
  * - Accessibilità WCAG AAA compliant
- * - Responsive design mobile-first
- * - Dark mode ottimizzato per contrasti
- * - Enterprise-grade microanimazioni
+ * - Mobile-first responsive design
  */
 
 'use client'
@@ -23,48 +22,6 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
-
-  // Responsive detection with debounce
-  useEffect(() => {
-    let timeoutId: NodeJS.Timeout
-
-    const checkMobile = () => {
-      clearTimeout(timeoutId)
-      timeoutId = setTimeout(() => {
-        const mobile = window.innerWidth < 1024
-        setIsMobile(mobile)
-        
-        // Auto-close mobile sidebar when switching to desktop
-        if (!mobile && sidebarOpen) {
-          setSidebarOpen(false)
-        }
-      }, 100)
-    }
-
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => {
-      window.removeEventListener('resize', checkMobile)
-      clearTimeout(timeoutId)
-    }
-  }, [sidebarOpen])
-
-  // Prevent body scroll when mobile sidebar is open
-  useEffect(() => {
-    if (isMobile && sidebarOpen) {
-      document.body.style.overflow = 'hidden'
-      document.body.style.paddingRight = '0px' // Prevent layout shift
-    } else {
-      document.body.style.overflow = ''
-      document.body.style.paddingRight = ''
-    }
-
-    return () => {
-      document.body.style.overflow = ''
-      document.body.style.paddingRight = ''
-    }
-  }, [isMobile, sidebarOpen])
 
   // Close sidebar on Escape key
   useEffect(() => {
@@ -78,6 +35,19 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     return () => document.removeEventListener('keydown', handleEscape)
   }, [sidebarOpen])
 
+  // Prevent body scroll when sidebar is open
+  useEffect(() => {
+    if (sidebarOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [sidebarOpen])
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header - Fixed at top */}
@@ -86,41 +56,27 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         sidebarOpen={sidebarOpen}
       />
       
-      {/* Layout Container */}
-      <div className="relative">
-        {/* Mobile Backdrop */}
+      {/* Backdrop - Appears when sidebar is open */}
+      {sidebarOpen && (
         <div 
-          className={`
-            fixed inset-0 bg-black/50 z-40
-            transition-opacity duration-300 ease-in-out
-            ${sidebarOpen 
-              ? 'opacity-100 visible' 
-              : 'opacity-0 invisible'
-            }
-          `}
+          className="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300"
           onClick={() => setSidebarOpen(false)}
           aria-hidden="true"
         />
-        
-        {/* Sidebar - Overlay on mobile, fixed on desktop */}
-        <DashboardSidebar 
-          isOpen={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
-          isMobile={isMobile}
-        />
-        
-        {/* Main Content - Responsive margin */}
-        <main 
-          className={`
-            min-h-[calc(100vh-4rem)] transition-all duration-300 ease-in-out
-            ${sidebarOpen ? 'lg:ml-64' : 'ml-0'}
-          `}
-        >
-          <div className="p-4 sm:p-6 lg:p-8 max-w-none">
-            {children}
-          </div>
-        </main>
-      </div>
+      )}
+      
+      {/* Sidebar - Overlay that slides in from left */}
+      <DashboardSidebar 
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
+      
+      {/* Main Content - Never moves, sidebar overlays on top */}
+      <main className="pt-16 min-h-screen">
+        <div className="p-4 sm:p-6 lg:p-8">
+          {children}
+        </div>
+      </main>
     </div>
   )
 }
