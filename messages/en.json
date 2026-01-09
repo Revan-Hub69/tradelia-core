@@ -194,5 +194,51 @@
     "verifiedDescription": "You can now sign in",
     "verifiedError": "Error verifying email",
     "close": "Close"
+  },
+  "journeys": {
+    "emergency": {
+      "name": "Emergency",
+      "action": "Check liquidity",
+      "description": "Liquid assets and exit plan",
+      "sections": {
+        "overview": "Overview",
+        "liquidAssets": "Liquid assets",
+        "exitPlan": "Exit plan",
+        "history": "Withdrawal history"
+      }
+    },
+    "longterm": {
+      "name": "Long term",
+      "action": "Add plan",
+      "description": "Stable growth and DCA",
+      "sections": {
+        "overview": "Overview",
+        "dcaPlans": "DCA plans",
+        "projections": "Projections",
+        "rebalance": "Rebalancing"
+      }
+    },
+    "speculation": {
+      "name": "Speculation",
+      "action": "Analyze signal",
+      "description": "Active trading and opportunities",
+      "sections": {
+        "overview": "Overview",
+        "signals": "Signals",
+        "positions": "Positions",
+        "analysis": "Technical analysis"
+      }
+    },
+    "passive": {
+      "name": "Passive",
+      "action": "Calculate yield",
+      "description": "Automatic yields and staking",
+      "sections": {
+        "overview": "Overview",
+        "staking": "Staking",
+        "yields": "Yield farming",
+        "projections": "APY projections"
+      }
+    }
   }
 }

@@ -167,6 +167,12 @@
 
 @layer utilities {
   /* Tradelia 2026 - Utility Classes */
+  
+  /* Safe area for iOS bottom nav */
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
   .text-balance {
     text-wrap: balance;
   }

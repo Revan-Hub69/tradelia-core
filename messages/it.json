@@ -173,5 +173,51 @@
     "backToLogin": "Torna indietro",
     "verificationTitle": "Controlla la tua email",
     "verificationDescription": "Abbiamo inviato un link di verifica a {email}. Clicca sul link per attivare il tuo account."
+  },
+  "journeys": {
+    "emergency": {
+      "name": "Emergenza",
+      "action": "Verifica liquidità",
+      "description": "Asset liquidi e piano di uscita",
+      "sections": {
+        "overview": "Panoramica",
+        "liquidAssets": "Asset liquidi",
+        "exitPlan": "Piano di uscita",
+        "history": "Storico prelievi"
+      }
+    },
+    "longterm": {
+      "name": "Lungo termine",
+      "action": "Aggiungi piano",
+      "description": "Crescita stabile e DCA",
+      "sections": {
+        "overview": "Panoramica",
+        "dcaPlans": "Piani DCA",
+        "projections": "Proiezioni",
+        "rebalance": "Ribilanciamento"
+      }
+    },
+    "speculation": {
+      "name": "Speculazione",
+      "action": "Analizza segnale",
+      "description": "Trading attivo e opportunità",
+      "sections": {
+        "overview": "Panoramica",
+        "signals": "Segnali",
+        "positions": "Posizioni",
+        "analysis": "Analisi tecnica"
+      }
+    },
+    "passive": {
+      "name": "Passivo",
+      "action": "Calcola rendimento",
+      "description": "Rendite automatiche e staking",
+      "sections": {
+        "overview": "Panoramica",
+        "staking": "Staking",
+        "yields": "Yield farming",
+        "projections": "Proiezioni APY"
+      }
+    }
   }
 }

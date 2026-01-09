@@ -15,6 +15,7 @@ import { PWAProvider } from '@/components/PWAProvider';
 import { DashboardAuthProvider } from '@/src/processes/dashboard-auth';
 import { DashboardModalProvider } from '@/contexts/DashboardModalContext';
 import { ToastProvider } from '@/src/shared/ui';
+import { BottomNav } from '@/src/shared/ui/BottomNav';
 import DashboardRegistrationModal from '@/components/DashboardRegistrationModal';
 import { routing, type Locale } from '@/src/i18n/routing';
 import '@/app/globals.css';
@@ -89,6 +90,7 @@ export default async function LocalizedAppLayout({
                 <DashboardAuthProvider locale={locale}>
                   <div className={`min-h-screen bg-background antialiased text-foreground ${inter.className}`}>
                     {children}
+                    <BottomNav />
                   </div>
                   <DashboardRegistrationModal />
                 </DashboardAuthProvider>
