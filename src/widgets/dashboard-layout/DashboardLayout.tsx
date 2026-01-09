@@ -1,12 +1,13 @@
 /**
- * Dashboard Layout - Tradelia 2026 Super Premium v3.0
+ * Dashboard Layout - Tradelia 2026 Super Premium v4.0
  * 
- * Layout enterprise con sidebar overlay moderna:
- * - Sidebar overlay che appare sopra il contenuto (non sposta)
+ * Layout enterprise con sidebar overlay moderna seguendo best practice 2024:
+ * - Sidebar overlay che appare sopra il contenuto (non sposta mai)
  * - Backdrop scuro quando sidebar è aperta
  * - Animazioni fluide e performance ottimizzate
  * - Accessibilità WCAG AAA compliant
  * - Mobile-first responsive design
+ * - Stato sidebar sempre chiuso di default
  */
 
 'use client'
@@ -21,6 +22,7 @@ interface DashboardLayoutProps {
 }
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
+  // Sidebar sempre chiusa di default - mai aperta automaticamente
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   // Close sidebar on Escape key
@@ -35,7 +37,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     return () => document.removeEventListener('keydown', handleEscape)
   }, [sidebarOpen])
 
-  // Prevent body scroll when sidebar is open
+  // Prevent body scroll when sidebar is open on mobile
   useEffect(() => {
     if (sidebarOpen) {
       document.body.style.overflow = 'hidden'
@@ -48,6 +50,18 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     }
   }, [sidebarOpen])
 
+  // Force close sidebar on window resize to desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024 && sidebarOpen) {
+        setSidebarOpen(false)
+      }
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [sidebarOpen])
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header - Fixed at top */}
@@ -56,24 +70,24 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         sidebarOpen={sidebarOpen}
       />
       
-      {/* Backdrop - Appears when sidebar is open */}
+      {/* Backdrop - Only appears when sidebar is open */}
       {sidebarOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300"
+          className="fixed inset-0 bg-black/60 z-40 transition-opacity duration-300 lg:hidden"
           onClick={() => setSidebarOpen(false)}
           aria-hidden="true"
         />
       )}
       
-      {/* Sidebar - Overlay that slides in from left */}
+      {/* Sidebar - Overlay che slide in da sinistra */}
       <DashboardSidebar 
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
       />
       
-      {/* Main Content - Never moves, sidebar overlays on top */}
+      {/* Main Content - Mai si muove, sidebar appare sopra */}
       <main className="pt-16 min-h-screen">
-        <div className="p-4 sm:p-6 lg:p-8">
+        <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
           {children}
         </div>
       </main>

@@ -1,17 +1,18 @@
 /**
- * Dashboard Sidebar - Tradelia 2026 Super Premium v3.0
+ * Dashboard Sidebar - Tradelia 2026 Super Premium v4.0
  * 
  * Sidebar overlay moderna seguendo best practice 2024:
- * - Overlay che appare sopra il contenuto (non sposta)
+ * - Overlay che appare sopra il contenuto (mai sposta il contenuto)
  * - Animazione slide-in fluida da sinistra
- * - Chiusura automatica su route change
+ * - Chiusura automatica su route change e resize
  * - Accessibilità completa con focus trap
  * - Design system Tradelia 2026 compliant
+ * - Sempre nascosta di default
  */
 
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname, useParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
@@ -41,6 +42,7 @@ export function DashboardSidebar({ isOpen, onClose }: DashboardSidebarProps) {
   const t = useTranslations('navigation')
   const tDashboard = useTranslations('dashboard')
   const { state, actions } = useDashboardAuth()
+  const sidebarRef = useRef<HTMLDivElement>(null)
 
   const navigationItems = [
     {
@@ -84,16 +86,36 @@ export function DashboardSidebar({ isOpen, onClose }: DashboardSidebarProps) {
     onClose()
   }, [pathname, onClose])
 
+  // Click outside to close
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+        onClose()
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isOpen, onClose])
+
   return (
     <aside 
+      ref={sidebarRef}
       className={`
         fixed top-0 left-0 z-50 h-full w-80
         bg-background border-r border-border
         transform transition-transform duration-300 ease-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-        flex flex-col shadow-xl
+        flex flex-col shadow-2xl
+        lg:shadow-xl
       `}
       aria-label="Dashboard navigation"
+      aria-hidden={!isOpen}
     >
       {/* Header with Logo */}
       <div className="h-16 flex items-center px-6 border-b border-border/50">

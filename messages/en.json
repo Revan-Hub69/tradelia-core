@@ -55,10 +55,9 @@
     "settings": "Settings",
     "settingsDescription": "Configure your preferences",
     "verify": "Verify",
-    "verifyDescription": "Verify the consistency of your tools"
+    "verifyDescription": "Verify the consistency of your tools",
     "authError": "Authentication error",
     "reloadPage": "Reload page",
-    "loading": "Loading...",
     "commandPalette": {
       "placeholder": "Search commands...",
       "noResults": "No commands found",

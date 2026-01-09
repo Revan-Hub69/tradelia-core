@@ -41,11 +41,12 @@ export function DashboardHeader({ onMenuClick, sidebarOpen }: DashboardHeaderPro
       <div className="h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Left Section */}
         <div className="flex items-center gap-4">
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Button - Sempre visibile su mobile */}
           <button
             onClick={onMenuClick}
-            className="lg:hidden p-2 -ml-2 text-muted-foreground hover:text-foreground transition-colors duration-150 rounded-lg hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/50"
+            className="p-2 -ml-2 text-muted-foreground hover:text-foreground transition-colors duration-150 rounded-lg hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/50 lg:hidden"
             aria-label={sidebarOpen ? "Close menu" : "Open menu"}
+            type="button"
           >
             {sidebarOpen ? (
               <CloseIcon className="w-5 h-5" />
