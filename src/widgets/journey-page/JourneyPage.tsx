@@ -282,6 +282,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
     <DashboardAuthGuard>
       <DashboardLayout>
         <SectionLayout
+          sectionId={journeyId}
           breadcrumb={[
             { label: 'Home', href: `/${locale}/dashboard` },
             { label: t(journey.labelKey) }

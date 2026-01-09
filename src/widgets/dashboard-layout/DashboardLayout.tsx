@@ -18,6 +18,7 @@ import { useTranslations, useLocale } from 'next-intl'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
 import { useDashboardModal } from '@/contexts/DashboardModalContext'
 import { useSidebarFocusTrap } from '@/src/shared/hooks/useFocusTrap'
+import { NetworkStatus } from '@/src/shared/ui/NetworkStatus'
 import Logo from '@/components/Logo'
 import { UserMenu } from './UserMenu'
 import { JOURNEY_ORDER, type JourneyId } from '@/src/shared/config/journeys'
@@ -400,7 +401,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       </header>
 
       {/* ========== MAIN CONTENT ========== */}
-      <main className="pt-16 min-h-screen md:pl-64 pb-20 md:pb-0">
+      <main className="pt-16 min-h-screen md:pl-64 pb-24 md:pb-0">
         <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto w-full">
           {children}
         </div>
@@ -411,13 +412,14 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         className="fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-t border-border md:hidden"
         aria-label="Navigazione principale"
       >
-        <div className="flex items-center justify-around h-16 px-1 safe-area-bottom">
+        <div className="flex items-center justify-around h-20 px-2 safe-area-bottom">
           {/* Home Tab */}
           <Link
             href={`/${locale}/dashboard`}
             className={`
-              flex flex-col items-center justify-center flex-1 h-full px-1 py-1
-              transition-colors duration-150 active:scale-95
+              flex flex-col items-center justify-center flex-1 h-16 px-2 py-2
+              transition-colors duration-150 active:scale-95 rounded-lg
+              min-w-[44px] min-h-[44px]
               ${isOnHome 
                 ? 'text-primary' 
                 : 'text-muted-foreground hover:text-foreground'
@@ -425,10 +427,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             `}
             aria-current={isOnHome ? 'page' : undefined}
           >
-            <div className={`p-1.5 rounded-lg ${isOnHome ? 'bg-primary/10' : ''}`}>
-              <HomeIcon className="w-5 h-5" />
+            <div className={`p-2 rounded-lg transition-colors ${isOnHome ? 'bg-primary/10' : ''}`}>
+              <HomeIcon className="w-6 h-6" />
             </div>
-            <span className={`text-[10px] mt-0.5 font-medium ${isOnHome ? 'text-primary' : ''}`}>
+            <span className={`text-[11px] mt-1 font-medium leading-tight ${isOnHome ? 'text-primary' : ''}`}>
               Home
             </span>
           </Link>
@@ -443,8 +445,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 key={journeyId}
                 href={`/${locale}/dashboard/${journeyId}`}
                 className={`
-                  flex flex-col items-center justify-center flex-1 h-full px-1 py-1
-                  transition-colors duration-150 active:scale-95
+                  flex flex-col items-center justify-center flex-1 h-16 px-2 py-2
+                  transition-colors duration-150 active:scale-95 rounded-lg
+                  min-w-[44px] min-h-[44px]
                   ${isActive 
                     ? 'text-primary' 
                     : 'text-muted-foreground hover:text-foreground'
@@ -452,10 +455,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 `}
                 aria-current={isActive ? 'page' : undefined}
               >
-                <div className={`p-1.5 rounded-lg ${isActive ? 'bg-primary/10' : ''}`}>
-                  <Icon className="w-5 h-5" />
+                <div className={`p-2 rounded-lg transition-colors ${isActive ? 'bg-primary/10' : ''}`}>
+                  <Icon className="w-6 h-6" />
                 </div>
-                <span className={`text-[10px] mt-0.5 font-medium truncate ${isActive ? 'text-primary' : ''}`}>
+                <span className={`text-[11px] mt-1 font-medium leading-tight text-center ${isActive ? 'text-primary' : ''}`}>
                   {tJourneys(`${journeyId}.name`)}
                 </span>
               </Link>
@@ -463,6 +466,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           })}
         </div>
       </nav>
+
+      {/* ========== NETWORK STATUS ========== */}
+      <NetworkStatus />
     </div>
   )
 }

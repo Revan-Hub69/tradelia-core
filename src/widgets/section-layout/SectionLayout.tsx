@@ -6,6 +6,7 @@
  * 1. Header di contesto (breadcrumb + titolo + descrizione)
  * 2. Sub-navigazione locale (tabs)
  * 3. Contenuto dinamico con skeleton loading
+ * 4. Section memory per ricordare ultima tab visitata
  */
 
 'use client'
@@ -15,6 +16,7 @@ import { useState, useEffect } from 'react'
 import { SectionHeader } from '@/src/shared/ui/SectionHeader'
 import { SubNavigation } from '@/src/shared/ui/SubNavigation'
 import { SkeletonSectionLayout } from '@/src/shared/ui/SkeletonLayouts'
+import { useSectionMemory } from '@/src/shared/hooks/useSectionMemory'
 import type { BreadcrumbItem, SubNavItemWithContent } from '@/src/shared/types/navigation'
 
 interface SectionLayoutProps {
@@ -32,6 +34,9 @@ interface SectionLayoutProps {
   subNavItems: SubNavItemWithContent[]
   defaultActiveTab?: string
   
+  // Section memory
+  sectionId: string // Required for section memory
+  
   // Loading state
   isLoading?: boolean
   
@@ -47,20 +52,29 @@ export function SectionLayout({
   primaryAction,
   subNavItems,
   defaultActiveTab,
+  sectionId,
   isLoading = false,
   className = ''
 }: SectionLayoutProps) {
-  const [activeTab, setActiveTab] = useState(defaultActiveTab || subNavItems[0]?.id || '')
+  const { getRememberedTab, rememberTab, hasMemory } = useSectionMemory(
+    sectionId, 
+    defaultActiveTab || subNavItems[0]?.id || ''
+  )
+  
+  const [activeTab, setActiveTab] = useState(() => getRememberedTab())
   const [isContentLoading, setIsContentLoading] = useState(false)
   
   const activeItem = subNavItems.find(item => item.id === activeTab)
 
-  // Handle tab change with loading state
+  // Handle tab change with loading state and memory
   const handleTabChange = (newTabId: string) => {
     if (newTabId === activeTab) return
     
     setIsContentLoading(true)
     setActiveTab(newTabId)
+    
+    // Remember this tab choice
+    rememberTab(newTabId)
     
     // Scroll to top on tab change (UX best practice)
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -70,6 +84,13 @@ export function SectionLayout({
       setIsContentLoading(false)
     }, 150)
   }
+
+  // Show memory indicator for first-time users
+  useEffect(() => {
+    if (hasMemory && process.env.NODE_ENV === 'development') {
+      console.log(`[Section Memory] Restored tab "${activeTab}" for section "${sectionId}"`)
+    }
+  }, [hasMemory, activeTab, sectionId])
 
   // Show skeleton during initial loading
   if (isLoading) {
@@ -87,11 +108,12 @@ export function SectionLayout({
         {...(primaryAction && { primaryAction })}
       />
 
-      {/* Sub-navigazione locale */}
+      {/* Sub-navigazione locale con sticky behavior */}
       <SubNavigation
         items={subNavItems.map(({ content: _content, ...item }) => item)}
         activeId={activeTab}
         onItemClick={handleTabChange}
+        enableSticky={true}
       />
 
       {/* Contenuto dinamico */}
