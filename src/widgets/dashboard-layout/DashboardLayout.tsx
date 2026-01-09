@@ -1,5 +1,5 @@
 /**
- * Dashboard Layout - Tradelia 2026 Super Premium
+ * Dashboard Layout - Tradelia 2026 Super Premium v2.1
  * 
  * Layout enterprise seguendo paper accademici e best practices:
  * - Sidebar overlay (non push) per mobile-first design
@@ -7,6 +7,7 @@
  * - Accessibilità WCAG AAA compliant
  * - Responsive design mobile-first
  * - Dark mode ottimizzato per contrasti
+ * - Enterprise-grade microanimazioni
  */
 
 'use client'
@@ -112,9 +113,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         <main 
           className={`
             min-h-[calc(100vh-4rem)] transition-all duration-300 ease-in-out
-            ${sidebarOpen && !isMobile 
-              ? 'lg:ml-64' 
-              : 'ml-0'
+            ${isMobile 
+              ? 'ml-0' 
+              : 'lg:ml-64'
             }
           `}
         >
