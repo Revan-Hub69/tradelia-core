@@ -1,4 +1,65 @@
 {
+  "modal": {
+    "title": "Sign in to Tradelia",
+    "actions": {
+      "back": "Back"
+    },
+    "auth": {
+      "gateway": {
+        "subtitle": "Choose how you want to continue",
+        "guestTitle": "Continue as guest",
+        "guestDescription": "Quick access. Data stays only on this device.",
+        "or": "or",
+        "google": "Continue with Google",
+        "email": "Sign in with email",
+        "emailDescription": "Use email and password to sign in or register.",
+        "footer": "Tradelia is an educational tool. We do not provide financial advice."
+      },
+      "login": {
+        "title": "Welcome back",
+        "subtitle": "Sign in to your account",
+        "email": "Email",
+        "emailPlaceholder": "name@example.com",
+        "password": "Password",
+        "passwordPlaceholder": "••••••••",
+        "submit": "Sign in",
+        "submitting": "Signing in...",
+        "forgotPassword": "Forgot password?",
+        "noAccount": "Don't have an account?",
+        "register": "Sign up"
+      },
+      "register": {
+        "title": "Create your account",
+        "subtitle": "Sign up to access all features",
+        "name": "Full name",
+        "namePlaceholder": "Your name",
+        "email": "Email",
+        "emailPlaceholder": "name@example.com",
+        "password": "Password",
+        "passwordPlaceholder": "Choose a secure password",
+        "confirmPassword": "Confirm password",
+        "confirmPlaceholder": "Repeat password",
+        "submit": "Create account",
+        "submitting": "Creating account...",
+        "hasAccount": "Already have an account?",
+        "login": "Sign in"
+      },
+      "resetRequest": {
+        "title": "Reset password",
+        "subtitle": "Enter your email to receive a reset link",
+        "email": "Email",
+        "emailPlaceholder": "name@example.com",
+        "submit": "Send link",
+        "submitting": "Sending...",
+        "backToLogin": "Back to sign in"
+      },
+      "resetSent": {
+        "title": "Check your email",
+        "description": "We've sent instructions to reset your password.",
+        "backToLogin": "Back to sign in"
+      }
+    }
+  },
   "dashboard": {
     "title": "Dashboard",
     "subtitle": "Overview of your trading tools",
@@ -193,7 +254,18 @@
     "verifiedTitle": "Email verified!",
     "verifiedDescription": "You can now sign in",
     "verifiedError": "Error verifying email",
-    "close": "Close"
+    "close": "Close",
+    "common": {
+      "aria": {
+        "closeModal": "Close window"
+      },
+      "backToHome": "Back to home"
+    },
+    "callback": {
+      "title": "Authenticating",
+      "subtitle": "Please wait while we complete sign in...",
+      "errorGeneric": "An error occurred during authentication"
+    }
   },
   "journeys": {
     "emergency": {

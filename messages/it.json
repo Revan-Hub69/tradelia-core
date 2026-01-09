@@ -1,4 +1,65 @@
 {
+  "modal": {
+    "title": "Accedi a Tradelia",
+    "actions": {
+      "back": "Indietro"
+    },
+    "auth": {
+      "gateway": {
+        "subtitle": "Scegli come vuoi continuare",
+        "guestTitle": "Continua come ospite",
+        "guestDescription": "Accesso rapido. I dati restano solo su questo dispositivo.",
+        "or": "oppure",
+        "google": "Continua con Google",
+        "email": "Accedi con email",
+        "emailDescription": "Usa email e password per accedere o registrarti.",
+        "footer": "Tradelia è uno strumento educativo. Non forniamo consulenza finanziaria."
+      },
+      "login": {
+        "title": "Bentornato",
+        "subtitle": "Accedi al tuo account",
+        "email": "Email",
+        "emailPlaceholder": "nome@esempio.com",
+        "password": "Password",
+        "passwordPlaceholder": "••••••••",
+        "submit": "Accedi",
+        "submitting": "Accesso in corso...",
+        "forgotPassword": "Password dimenticata?",
+        "noAccount": "Non hai un account?",
+        "register": "Registrati"
+      },
+      "register": {
+        "title": "Crea il tuo account",
+        "subtitle": "Registrati per accedere a tutte le funzionalità",
+        "name": "Nome completo",
+        "namePlaceholder": "Il tuo nome",
+        "email": "Email",
+        "emailPlaceholder": "nome@esempio.com",
+        "password": "Password",
+        "passwordPlaceholder": "Scegli una password sicura",
+        "confirmPassword": "Conferma password",
+        "confirmPlaceholder": "Ripeti la password",
+        "submit": "Crea account",
+        "submitting": "Creazione in corso...",
+        "hasAccount": "Hai già un account?",
+        "login": "Accedi"
+      },
+      "resetRequest": {
+        "title": "Recupera password",
+        "subtitle": "Inserisci la tua email per ricevere il link di reset",
+        "email": "Email",
+        "emailPlaceholder": "nome@esempio.com",
+        "submit": "Invia link",
+        "submitting": "Invio in corso...",
+        "backToLogin": "Torna al login"
+      },
+      "resetSent": {
+        "title": "Controlla la tua email",
+        "description": "Abbiamo inviato le istruzioni per reimpostare la password.",
+        "backToLogin": "Torna al login"
+      }
+    }
+  },
   "dashboard": {
     "title": "Dashboard",
     "subtitle": "Panoramica dei tuoi strumenti di trading",
@@ -172,7 +233,18 @@
     "signingUp": "Registrazione in corso...",
     "backToLogin": "Torna indietro",
     "verificationTitle": "Controlla la tua email",
-    "verificationDescription": "Abbiamo inviato un link di verifica a {email}. Clicca sul link per attivare il tuo account."
+    "verificationDescription": "Abbiamo inviato un link di verifica a {email}. Clicca sul link per attivare il tuo account.",
+    "common": {
+      "aria": {
+        "closeModal": "Chiudi finestra"
+      },
+      "backToHome": "Torna alla home"
+    },
+    "callback": {
+      "title": "Autenticazione in corso",
+      "subtitle": "Attendi mentre completiamo l'accesso...",
+      "errorGeneric": "Si è verificato un errore durante l'autenticazione"
+    }
   },
   "journeys": {
     "emergency": {
