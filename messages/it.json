@@ -44,6 +44,13 @@
     "bitcoin": "Bitcoin",
     "ethereum": "Ethereum", 
     "others": "Altri",
+    "emailVerification": "Verifica la tua email per accedere a tutte le funzionalità",
+    "resendEmail": "Invia di nuovo",
+    "guestModeActive": "Modalità ospite attiva - Funzionalità limitate",
+    "registerNowShort": "Registrati",
+    "authError": "Errore di autenticazione",
+    "reloadPage": "Ricarica pagina",
+    "loading": "Caricamento...",
     "commandPalette": {
       "placeholder": "Cerca comandi...",
       "noResults": "Nessun comando trovato",

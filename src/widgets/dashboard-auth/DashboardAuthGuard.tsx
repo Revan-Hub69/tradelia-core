@@ -11,7 +11,9 @@
 'use client'
 
 import { ReactNode } from 'react'
+import { useTranslations } from 'next-intl'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
+import { useDashboardModal } from '@/contexts/DashboardModalContext'
 import { 
   MailIcon, 
   AlertTriangleIcon,
@@ -24,7 +26,9 @@ interface DashboardAuthGuardProps {
 }
 
 export function DashboardAuthGuard({ children }: DashboardAuthGuardProps) {
+  const t = useTranslations('dashboard')
   const { state, actions } = useDashboardAuth()
+  const { openModal } = useDashboardModal()
 
   // Loading state - Ottimizzato per performance
   if (state.loading) {
@@ -32,7 +36,7 @@ export function DashboardAuthGuard({ children }: DashboardAuthGuardProps) {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="animate-spin rounded-full h-6 w-6 border-2 border-primary/20 border-t-primary mx-auto" />
-          <p className="text-xs text-muted-foreground">Caricamento...</p>
+          <p className="text-xs text-muted-foreground">{t('loading')}</p>
         </div>
       </div>
     )
@@ -48,7 +52,7 @@ export function DashboardAuthGuard({ children }: DashboardAuthGuardProps) {
               <AlertTriangleIcon className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
               <div className="text-left">
                 <p className="text-sm font-semibold text-red-900 mb-1">
-                  Errore di autenticazione
+                  {t('authError')}
                 </p>
                 <p className="text-xs text-red-800">
                   {state.error}
@@ -61,7 +65,7 @@ export function DashboardAuthGuard({ children }: DashboardAuthGuardProps) {
             onClick={() => window.location.reload()}
             className="h-10 px-6 bg-primary text-white text-sm font-medium rounded hover:bg-primary/90 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2"
           >
-            Ricarica pagina
+            {t('reloadPage')}
           </button>
         </div>
       </div>
@@ -78,14 +82,14 @@ export function DashboardAuthGuard({ children }: DashboardAuthGuardProps) {
               <MailIcon className="w-4 h-4 text-primary flex-shrink-0" />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-foreground">
-                  Verifica la tua email per accedere a tutte le funzionalità
+                  {t('emailVerification')}
                 </p>
               </div>
               <button
                 onClick={actions.resendVerification}
                 className="text-xs font-semibold text-primary hover:text-primary/80 transition-colors duration-150 whitespace-nowrap"
               >
-                Invia di nuovo
+                {t('resendEmail')}
               </button>
             </div>
           </div>
@@ -100,14 +104,14 @@ export function DashboardAuthGuard({ children }: DashboardAuthGuardProps) {
               <ShieldIcon className="w-4 h-4 text-amber-700 flex-shrink-0" />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-amber-900">
-                  Modalità ospite attiva - Funzionalità limitate
+                  {t('guestModeActive')}
                 </p>
               </div>
               <button
-                onClick={() => window.location.href = '/'}
+                onClick={() => openModal('gateway')}
                 className="text-xs font-semibold text-amber-800 hover:text-amber-900 transition-colors duration-150 whitespace-nowrap"
               >
-                Registrati
+                {t('registerNowShort')}
               </button>
             </div>
           </div>
