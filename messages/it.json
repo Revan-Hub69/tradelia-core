@@ -17,6 +17,7 @@
     "riskScaleDescription": "Su scala 1-10",
     "coherence": "Coerenza",
     "coherenceDescription": "Obiettivi vs strumenti",
+    "notAvailable": "Non disponibile",
     "portfolioAnalysis": "Analisi Portafoglio",
     "sampleData": "Dati di esempio",
     "distributionAndPerformance": "Distribuzione e performance degli asset",
