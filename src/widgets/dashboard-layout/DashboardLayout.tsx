@@ -25,6 +25,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   // Sidebar sempre chiusa di default - mai aperta automaticamente
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
+  // Debug log per verificare lo stato
+  console.log('DashboardLayout - sidebarOpen:', sidebarOpen)
+
   // Close sidebar on Escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -62,18 +65,23 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     return () => window.removeEventListener('resize', handleResize)
   }, [sidebarOpen])
 
+  const handleMenuClick = () => {
+    console.log('Menu clicked, current state:', sidebarOpen)
+    setSidebarOpen(!sidebarOpen)
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header - Fixed at top */}
       <DashboardHeader 
-        onMenuClick={() => setSidebarOpen(!sidebarOpen)}
+        onMenuClick={handleMenuClick}
         sidebarOpen={sidebarOpen}
       />
       
       {/* Backdrop - Only appears when sidebar is open */}
       {sidebarOpen && (
         <div 
-          className="fixed inset-0 bg-black/60 z-40 transition-opacity duration-300 lg:hidden"
+          className="fixed inset-0 bg-black/60 z-40 transition-opacity duration-300"
           onClick={() => setSidebarOpen(false)}
           aria-hidden="true"
         />

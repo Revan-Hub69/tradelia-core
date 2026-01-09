@@ -30,6 +30,14 @@ export function DashboardAuthGuard({ children }: DashboardAuthGuardProps) {
   const { state, actions } = useDashboardAuth()
   const { openModal } = useDashboardModal()
 
+  // Debug log per verificare lo stato guest mode
+  console.log('DashboardAuthGuard - state:', {
+    isGuestMode: state.isGuestMode,
+    user: state.user,
+    loading: state.loading,
+    error: state.error
+  })
+
   // Loading state - Ottimizzato per performance
   if (state.loading) {
     return (

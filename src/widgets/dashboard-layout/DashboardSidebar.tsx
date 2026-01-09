@@ -1,13 +1,13 @@
 /**
- * Dashboard Sidebar - Tradelia 2026 Super Premium v4.0
+ * Dashboard Sidebar - Tradelia 2026 Super Premium v5.0
  * 
- * Sidebar overlay moderna seguendo best practice 2024:
+ * Sidebar overlay moderna - SEMPRE NASCOSTA DI DEFAULT:
  * - Overlay che appare sopra il contenuto (mai sposta il contenuto)
  * - Animazione slide-in fluida da sinistra
  * - Chiusura automatica su route change e resize
  * - Accessibilità completa con focus trap
  * - Design system Tradelia 2026 compliant
- * - Sempre nascosta di default
+ * - FORZATAMENTE nascosta se isOpen è false
  */
 
 'use client'
@@ -43,6 +43,9 @@ export function DashboardSidebar({ isOpen, onClose }: DashboardSidebarProps) {
   const tDashboard = useTranslations('dashboard')
   const { state, actions } = useDashboardAuth()
   const sidebarRef = useRef<HTMLDivElement>(null)
+
+  // Debug log
+  console.log('DashboardSidebar - isOpen:', isOpen)
 
   const navigationItems = [
     {
@@ -103,17 +106,23 @@ export function DashboardSidebar({ isOpen, onClose }: DashboardSidebarProps) {
     }
   }, [isOpen, onClose])
 
+  // FORZARE la sidebar ad essere nascosta se isOpen è false
+  const sidebarClasses = `
+    fixed top-0 left-0 z-50 h-full w-80
+    bg-background border-r border-border
+    flex flex-col shadow-2xl
+    transition-transform duration-300 ease-out
+    ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+  `
+
   return (
     <aside 
       ref={sidebarRef}
-      className={`
-        fixed top-0 left-0 z-50 h-full w-80
-        bg-background border-r border-border
-        transform transition-transform duration-300 ease-out
-        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-        flex flex-col shadow-2xl
-        lg:shadow-xl
-      `}
+      className={sidebarClasses}
+      style={{
+        transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
+        visibility: isOpen ? 'visible' : 'hidden'
+      }}
       aria-label="Dashboard navigation"
       aria-hidden={!isOpen}
     >
