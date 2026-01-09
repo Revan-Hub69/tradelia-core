@@ -25,9 +25,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   // Sidebar sempre chiusa di default - mai aperta automaticamente
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
-  // Debug log per verificare lo stato
-  console.log('DashboardLayout - sidebarOpen:', sidebarOpen)
-
   // Close sidebar on Escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -66,7 +63,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   }, [sidebarOpen])
 
   const handleMenuClick = () => {
-    console.log('Menu clicked, current state:', sidebarOpen)
     setSidebarOpen(!sidebarOpen)
   }
 

@@ -43,9 +43,7 @@ export function DashboardSidebar({ isOpen, onClose }: DashboardSidebarProps) {
   const tDashboard = useTranslations('dashboard')
   const { state, actions } = useDashboardAuth()
   const sidebarRef = useRef<HTMLDivElement>(null)
-
-  // Debug log
-  console.log('DashboardSidebar - isOpen:', isOpen)
+  const lastFocusedElementRef = useRef<HTMLElement | null>(null)
 
   const navigationItems = [
     {
@@ -89,6 +87,65 @@ export function DashboardSidebar({ isOpen, onClose }: DashboardSidebarProps) {
     onClose()
   }, [pathname, onClose])
 
+  // Focus management for accessibility
+  useEffect(() => {
+    if (!isOpen) {
+      return
+    }
+
+    lastFocusedElementRef.current = document.activeElement as HTMLElement | null
+    const focusableSelectors = [
+      'a[href]',
+      'button:not([disabled])',
+      'input:not([disabled])',
+      'select:not([disabled])',
+      'textarea:not([disabled])',
+      '[tabindex]:not([tabindex="-1"])'
+    ]
+    const getFocusableElements = () =>
+      sidebarRef.current?.querySelectorAll<HTMLElement>(
+        focusableSelectors.join(',')
+      )
+    const focusableElements = getFocusableElements()
+    const firstElement = focusableElements?.[0]
+    if (firstElement) {
+      firstElement.focus()
+    } else {
+      sidebarRef.current?.focus()
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const currentFocusableElements = getFocusableElements()
+      if (
+        event.key !== 'Tab' ||
+        !currentFocusableElements ||
+        currentFocusableElements.length === 0
+      ) {
+        return
+      }
+
+      const first = currentFocusableElements[0]
+      const last = currentFocusableElements[currentFocusableElements.length - 1]
+      if (!first || !last) {
+        return
+      }
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      lastFocusedElementRef.current?.focus()
+    }
+  }, [isOpen])
+
   // Click outside to close
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -108,20 +165,35 @@ export function DashboardSidebar({ isOpen, onClose }: DashboardSidebarProps) {
 
   return (
     <aside 
+      id="dashboard-sidebar"
       ref={sidebarRef}
       className={`
-        fixed top-0 left-0 z-50 h-full w-80
+        fixed top-0 left-0 z-50 h-full w-[85vw] sm:w-72 lg:w-80
         bg-background border-r border-border
         flex flex-col shadow-2xl
         transition-transform duration-300 ease-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
       `}
-      aria-label="Dashboard navigation"
+      tabIndex={-1}
+      role="dialog"
+      aria-labelledby="dashboard-sidebar-title"
+      aria-modal="true"
       aria-hidden={!isOpen}
     >
       {/* Header with Logo */}
-      <div className="h-16 flex items-center px-6 border-b border-border/50">
+      <div className="h-16 flex items-center justify-between px-6 border-b border-border/50">
+        <h2 id="dashboard-sidebar-title" className="sr-only">
+          Dashboard navigation
+        </h2>
         <Logo />
+        <button
+          onClick={onClose}
+          type="button"
+          className="p-2 -mr-2 text-muted-foreground hover:text-foreground transition-colors duration-150 rounded-lg hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/50"
+          aria-label="Close menu"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
       </div>
 
       {/* User Profile */}
