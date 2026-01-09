@@ -15,10 +15,8 @@ import { usePathname } from 'next/navigation'
 import { useTranslations, useLocale } from 'next-intl'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
 import { useDashboardModal } from '@/contexts/DashboardModalContext'
-import { ThemeToggle } from '@/components/ui/ThemeToggle'
-import { LanguageToggle } from '@/components/ui/LanguageToggle'
 import Logo from '@/components/Logo'
-import { Button } from '@/src/shared/ui/Button'
+import { UserMenu } from './UserMenu'
 import { JOURNEY_ORDER, type JourneyId } from '@/src/shared/config/journeys'
 import {
   UserIcon,
@@ -175,29 +173,11 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </Link>
         </nav>
 
-        {/* Preferences */}
-        <div className="p-4 border-t border-border/50 space-y-3">
-          <ThemeToggle 
-            variant="full" 
-            labels={{
-              theme: locale === 'en' ? 'Theme' : 'Tema',
-              light: locale === 'en' ? 'Light' : 'Chiaro',
-              dark: locale === 'en' ? 'Dark' : 'Scuro',
-              system: locale === 'en' ? 'System' : 'Sistema'
-            }}
-          />
-          <LanguageToggle 
-            variant="full" 
-            currentLocale={locale}
-            labelText={locale === 'en' ? 'Language' : 'Lingua'}
-          />
-        </div>
-
         {/* Footer */}
-        <div className="p-4 border-t border-border">
+        <div className="p-4 border-t border-border/50">
           <button
             onClick={() => actions.signOut()}
-            className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-sm font-medium text-error hover:bg-error/10 transition-colors focus:outline-none focus:ring-2 focus:ring-error"
+            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium text-error hover:bg-error/10 transition-colors focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2"
           >
             <LogOutIcon className="w-4 h-4" />
             {t('logout')}
@@ -247,14 +227,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               </div>
             )}
             
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => window.location.href = '/'}
-              className="hidden sm:inline-flex text-xs"
-            >
-              {tDashboard('backToSite')}
-            </Button>
+            <UserMenu />
+
           </div>
         </div>
       </header>
