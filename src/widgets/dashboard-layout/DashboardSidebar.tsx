@@ -116,10 +116,6 @@ export function DashboardSidebar({ isOpen, onClose }: DashboardSidebarProps) {
         transition-transform duration-300 ease-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
       `}
-      style={{
-        transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
-        display: isOpen ? 'flex' : 'none'
-      }}
       aria-label="Dashboard navigation"
       aria-hidden={!isOpen}
     >
