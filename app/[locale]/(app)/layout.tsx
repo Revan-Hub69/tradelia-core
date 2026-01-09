@@ -13,6 +13,8 @@ import { QueryProvider } from '@/src/shared/providers/QueryProvider';
 import { ThemeProvider } from '@/shared/config/theme-provider';
 import { PWAProvider } from '@/components/PWAProvider';
 import { DashboardAuthProvider } from '@/src/processes/dashboard-auth';
+import { DashboardModalProvider } from '@/contexts/DashboardModalContext';
+import DashboardModal from '@/components/DashboardModal';
 import { routing, type Locale } from '@/src/i18n/routing';
 import '@/app/globals.css';
 
@@ -76,11 +78,14 @@ export default async function LocalizedAppLayout({
       <QueryProvider>
         <ThemeProvider>
           <PWAProvider>
-            <DashboardAuthProvider locale={locale}>
-              <div className="min-h-screen bg-background antialiased text-foreground font-sans">
-                {children}
-              </div>
-            </DashboardAuthProvider>
+            <DashboardModalProvider>
+              <DashboardAuthProvider locale={locale}>
+                <div className="min-h-screen bg-background antialiased text-foreground font-sans">
+                  {children}
+                </div>
+                <DashboardModal />
+              </DashboardAuthProvider>
+            </DashboardModalProvider>
           </PWAProvider>
         </ThemeProvider>
       </QueryProvider>
