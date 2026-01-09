@@ -13,9 +13,9 @@ import type { BadgeProps } from './types';
 
 const badgeVariants = {
   default: 'bg-muted text-muted-foreground border border-border/50',
-  success: 'bg-green-50 text-green-700 border border-green-200',
-  warning: 'bg-amber-50 text-amber-700 border border-amber-200',
-  error: 'bg-red-50 text-red-700 border border-red-200',
+  success: 'badge-success',
+  warning: 'badge-warning',
+  error: 'badge-danger',
 };
 
 const badgeSizes = {

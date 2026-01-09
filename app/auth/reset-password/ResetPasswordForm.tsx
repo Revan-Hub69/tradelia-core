@@ -88,9 +88,9 @@ export default function ResetPasswordForm() {
             </div>
           </div>
           
-          <div className="p-4 rounded border border-green-200 bg-green-50 text-center">
-            <CheckIcon className="w-6 h-6 text-green-600 mx-auto mb-2" />
-            <p className="text-sm text-green-800">
+          <div className="p-4 rounded border  alert-success text-center">
+            <CheckIcon className="w-6 h-6 text-success mx-auto mb-2" />
+            <p className="text-sm text-success">
               {t('auth.resetPassword.redirecting')}
             </p>
           </div>
@@ -115,10 +115,10 @@ export default function ResetPasswordForm() {
         </div>
 
         {error && (
-          <div className="p-4 rounded border border-red-200 bg-red-50" role="alert">
+          <div className="p-4 rounded border  alert-error" role="alert">
             <div className="flex items-start gap-3">
-              <AlertTriangleIcon className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-red-800 leading-relaxed">{error}</p>
+              <AlertTriangleIcon className="w-4 h-4 text-error flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-error leading-relaxed">{error}</p>
             </div>
           </div>
         )}

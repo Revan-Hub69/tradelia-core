@@ -47,9 +47,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             // Default border
             'border-border',
             // Error state
-            hasError && 'border-red-500 focus-visible:ring-red-500/60',
+            hasError && 'border-error focus-visible:ring-error/60',
             // Success state
-            success && 'border-green-600 focus-visible:ring-green-600/60',
+            success && 'border-success focus-visible:ring-success/60',
             // Disabled state
             'disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted/50',
             // Custom classes
@@ -63,7 +63,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {hasError && (
           <p 
             id={errorId}
-            className="text-xs font-medium text-red-600" 
+            className="text-xs font-medium text-error" 
             role="alert"
           >
             {error}

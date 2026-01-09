@@ -53,6 +53,9 @@ const config: Config = {
           DEFAULT: 'hsl(var(--muted))',
           foreground: 'hsl(var(--muted-foreground))',
         },
+        subtle: {
+          foreground: 'hsl(var(--subtle-foreground))',
+        },
         border: 'hsl(var(--border))',
         surface: {
           DEFAULT: 'hsl(var(--surface))',

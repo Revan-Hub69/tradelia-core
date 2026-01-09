@@ -72,14 +72,14 @@ export default function ForgotPassword() {
             </div>
           </div>
           
-          <div className="p-4 rounded border border-green-200 bg-green-50">
+          <div className="p-4 rounded border  alert-success">
             <div className="flex items-start gap-3">
-              <CheckIcon className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <CheckIcon className="w-5 h-5 text-success flex-shrink-0 mt-0.5" />
               <div className="space-y-1">
-                <p className="text-sm text-green-800 font-medium">
+                <p className="text-sm text-success font-medium">
                   {t('auth.forgotPassword.successTitle')}
                 </p>
-                <p className="text-xs text-green-700 leading-relaxed">
+                <p className="text-xs text-success leading-relaxed">
                   {t('auth.forgotPassword.successDetail')}
                 </p>
               </div>
@@ -125,10 +125,10 @@ export default function ForgotPassword() {
         </div>
 
         {error && (
-          <div className="p-4 rounded border border-red-200 bg-red-50" role="alert">
+          <div className="p-4 rounded border  alert-error" role="alert">
             <div className="flex items-start gap-3">
-              <AlertTriangleIcon className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-red-800 leading-relaxed">{error}</p>
+              <AlertTriangleIcon className="w-4 h-4 text-error flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-error leading-relaxed">{error}</p>
             </div>
           </div>
         )}

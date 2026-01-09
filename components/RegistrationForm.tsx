@@ -260,7 +260,7 @@ export default function RegistrationForm({ onSuccess, onBack: _onBack, profileDa
             />
           </div>
           {errors.fullName && (
-            <p id="fullName-error" className="text-xs text-red-600" role="alert">{errors.fullName}</p>
+            <p id="fullName-error" className="text-xs text-error" role="alert">{errors.fullName}</p>
           )}
         </div>
 
@@ -283,7 +283,7 @@ export default function RegistrationForm({ onSuccess, onBack: _onBack, profileDa
             />
           </div>
           {errors.email && (
-            <p id="email-error" className="text-xs text-red-600" role="alert">{errors.email}</p>
+            <p id="email-error" className="text-xs text-error" role="alert">{errors.email}</p>
           )}
         </div>
 
@@ -308,7 +308,7 @@ export default function RegistrationForm({ onSuccess, onBack: _onBack, profileDa
             />
           </div>
           {errors.password && (
-            <p id="password-error" className="text-xs text-red-600" role="alert">{errors.password}</p>
+            <p id="password-error" className="text-xs text-error" role="alert">{errors.password}</p>
           )}
         </div>
 
@@ -333,13 +333,13 @@ export default function RegistrationForm({ onSuccess, onBack: _onBack, profileDa
             />
           </div>
           {errors.confirmPassword && (
-            <p id="confirmPassword-error" className="text-xs text-red-600" role="alert">{errors.confirmPassword}</p>
+            <p id="confirmPassword-error" className="text-xs text-error" role="alert">{errors.confirmPassword}</p>
           )}
         </div>
 
         {errors.submit && (
-          <div className="p-3 rounded border border-red-200 bg-red-50" role="alert">
-            <p className="text-sm text-red-600">{errors.submit}</p>
+          <div className="p-3 rounded border  alert-error" role="alert">
+            <p className="text-sm text-error">{errors.submit}</p>
           </div>
         )}
 

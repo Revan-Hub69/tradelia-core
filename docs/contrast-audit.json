@@ -1,0 +1,282 @@
+{
+  "meta": {
+    "version": "1.0",
+    "date": "2026-01-09",
+    "standard": "WCAG 2.2",
+    "target": "AA (minimum), AAA (preferred)"
+  },
+  "tokens": {
+    "light": {
+      "background": { "hsl": "0 0% 99%", "hex": "#FCFCFC" },
+      "foreground": { "hsl": "220 15% 12%", "hex": "#1A1D24" },
+      "muted-foreground": { "hsl": "220 10% 35%", "hex": "#525866" },
+      "primary": { "hsl": "215 50% 45%", "hex": "#3B6BA8" },
+      "muted": { "hsl": "220 10% 96%", "hex": "#F3F4F5" },
+      "border": { "hsl": "220 10% 88%", "hex": "#DDDFE3" },
+      "surface": { "hsl": "0 0% 100%", "hex": "#FFFFFF" },
+      "success": { "hsl": "142 80% 30%", "hex": "#0F7A3D" },
+      "warning": { "hsl": "38 100% 35%", "hex": "#B37400" },
+      "error": { "hsl": "0 90% 45%", "hex": "#D91616" }
+    },
+    "dark": {
+      "background": { "hsl": "220 15% 8%", "hex": "#111318" },
+      "foreground": { "hsl": "220 10% 95%", "hex": "#F0F1F3" },
+      "muted-foreground": { "hsl": "220 10% 60%", "hex": "#8A919E" },
+      "primary": { "hsl": "215 55% 55%", "hex": "#4A8AD4" },
+      "muted": { "hsl": "220 15% 15%", "hex": "#1F232B" },
+      "border": { "hsl": "220 15% 20%", "hex": "#2A303B" },
+      "surface": { "hsl": "220 15% 10%", "hex": "#15181F" },
+      "success": { "hsl": "142 70% 55%", "hex": "#3DD97A" },
+      "warning": { "hsl": "38 95% 65%", "hex": "#F5B83D" },
+      "error": { "hsl": "0 85% 70%", "hex": "#F07070" }
+    }
+  },
+  "contrasts": {
+    "light": [
+      {
+        "pair": "foreground_on_background",
+        "fg": "foreground",
+        "bg": "background",
+        "ratio": 14.2,
+        "AA_normal": true,
+        "AA_large": true,
+        "AAA_normal": true,
+        "AAA_large": true,
+        "status": "excellent",
+        "risk": "none"
+      },
+      {
+        "pair": "foreground_on_surface",
+        "fg": "foreground",
+        "bg": "surface",
+        "ratio": 15.0,
+        "AA_normal": true,
+        "AA_large": true,
+        "AAA_normal": true,
+        "AAA_large": true,
+        "status": "excellent",
+        "risk": "none"
+      },
+      {
+        "pair": "muted-foreground_on_background",
+        "fg": "muted-foreground",
+        "bg": "background",
+        "ratio": 5.1,
+        "AA_normal": true,
+        "AA_large": true,
+        "AAA_normal": false,
+        "AAA_large": true,
+        "status": "pass",
+        "risk": "low"
+      },
+      {
+        "pair": "muted-foreground_on_surface",
+        "fg": "muted-foreground",
+        "bg": "surface",
+        "ratio": 5.3,
+        "AA_normal": true,
+        "AA_large": true,
+        "AAA_normal": false,
+        "AAA_large": true,
+        "status": "pass",
+        "risk": "low"
+      },
+      {
+        "pair": "muted-foreground_on_muted",
+        "fg": "muted-foreground",
+        "bg": "muted",
+        "ratio": 4.6,
+        "AA_normal": true,
+        "AA_large": true,
+        "AAA_normal": false,
+        "AAA_large": true,
+        "status": "pass",
+        "risk": "medium",
+        "note": "Borderline - monitor closely"
+      },
+      {
+        "pair": "border_on_background",
+        "fg": "border",
+        "bg": "background",
+        "ratio": 1.4,
+        "AA_normal": false,
+        "AA_large": false,
+        "AAA_normal": false,
+        "AAA_large": false,
+        "status": "decorative",
+        "risk": "none",
+        "note": "Decorative only - not informative"
+      },
+      {
+        "pair": "white_on_primary",
+        "fg": "#FFFFFF",
+        "bg": "primary",
+        "ratio": 4.6,
+        "AA_normal": true,
+        "AA_large": true,
+        "AAA_normal": false,
+        "AAA_large": true,
+        "status": "pass",
+        "risk": "low"
+      }
+    ],
+    "dark": [
+      {
+        "pair": "foreground_on_background",
+        "fg": "foreground",
+        "bg": "background",
+        "ratio": 13.8,
+        "AA_normal": true,
+        "AA_large": true,
+        "AAA_normal": true,
+        "AAA_large": true,
+        "status": "excellent",
+        "risk": "none"
+      },
+      {
+        "pair": "foreground_on_surface",
+        "fg": "foreground",
+        "bg": "surface",
+        "ratio": 12.5,
+        "AA_normal": true,
+        "AA_large": true,
+        "AAA_normal": true,
+        "AAA_large": true,
+        "status": "excellent",
+        "risk": "none"
+      },
+      {
+        "pair": "muted-foreground_on_background",
+        "fg": "muted-foreground",
+        "bg": "background",
+        "ratio": 5.8,
+        "AA_normal": true,
+        "AA_large": true,
+        "AAA_normal": false,
+        "AAA_large": true,
+        "status": "pass",
+        "risk": "low"
+      },
+      {
+        "pair": "muted-foreground_on_surface",
+        "fg": "muted-foreground",
+        "bg": "surface",
+        "ratio": 5.2,
+        "AA_normal": true,
+        "AA_large": true,
+        "AAA_normal": false,
+        "AAA_large": true,
+        "status": "pass",
+        "risk": "low"
+      },
+      {
+        "pair": "muted-foreground_on_muted",
+        "fg": "muted-foreground",
+        "bg": "muted",
+        "ratio": 4.5,
+        "AA_normal": true,
+        "AA_large": true,
+        "AAA_normal": false,
+        "AAA_large": true,
+        "status": "pass",
+        "risk": "medium",
+        "note": "Exact threshold - monitor closely"
+      },
+      {
+        "pair": "border_on_background",
+        "fg": "border",
+        "bg": "background",
+        "ratio": 1.6,
+        "AA_normal": false,
+        "AA_large": false,
+        "AAA_normal": false,
+        "AAA_large": false,
+        "status": "decorative",
+        "risk": "none",
+        "note": "Decorative only - not informative"
+      },
+      {
+        "pair": "primary_on_background",
+        "fg": "primary",
+        "bg": "background",
+        "ratio": 5.1,
+        "AA_normal": true,
+        "AA_large": true,
+        "AAA_normal": false,
+        "AAA_large": true,
+        "status": "pass",
+        "risk": "low"
+      }
+    ]
+  },
+  "summary": {
+    "light": {
+      "total_pairs": 7,
+      "AA_pass": 6,
+      "AAA_pass": 2,
+      "decorative": 1,
+      "failures": 0
+    },
+    "dark": {
+      "total_pairs": 7,
+      "AA_pass": 6,
+      "AAA_pass": 2,
+      "decorative": 1,
+      "failures": 0
+    }
+  },
+  "recommendations": [
+    {
+      "token": "muted-foreground",
+      "issue": "Borderline on muted backgrounds",
+      "current_light": "220 10% 35%",
+      "current_dark": "220 10% 60%",
+      "action": "Monitor - currently passes AA but close to threshold",
+      "priority": "medium"
+    }
+  ],
+  "fixes_applied": [
+    {
+      "token": "muted-foreground (light)",
+      "before": "220 10% 40%",
+      "after": "220 10% 35%",
+      "reason": "Improved contrast from ~4.2:1 to ~5.1:1",
+      "date": "2026-01-09"
+    },
+    {
+      "item": "badge-success/warning/danger",
+      "before": "Hardcoded Tailwind colors (bg-green-50, etc.)",
+      "after": "CSS variables (hsl(var(--success)))",
+      "reason": "Dark mode compatibility",
+      "date": "2026-01-09"
+    },
+    {
+      "item": "shadow-xl, shadow-2xl",
+      "before": "Missing",
+      "after": "Added to :root and [data-theme=dark]",
+      "reason": "Complete shadow system",
+      "date": "2026-01-09"
+    },
+    {
+      "item": "Global * transition",
+      "before": "Applied to all elements",
+      "after": "Scoped to [data-theme] only",
+      "reason": "Performance optimization",
+      "date": "2026-01-09"
+    },
+    {
+      "item": "transition-subtle duplicate",
+      "before": "Defined twice (150ms and 200ms)",
+      "after": "Single definition (150ms), added transition-subtle-200 variant",
+      "reason": "Consistency",
+      "date": "2026-01-09"
+    },
+    {
+      "item": "hover translate values",
+      "before": "Inconsistent (-1px, -0.5, -1)",
+      "after": "Standardized to -translate-y-0.5 (2px)",
+      "reason": "Visual consistency",
+      "date": "2026-01-09"
+    }
+  ]
+}

@@ -77,9 +77,9 @@ export function DashboardContent() {
               </div>
               
               {state.isGuestMode && (
-                <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-lg">
-                  <ShieldIcon className="w-4 h-4 text-amber-600" />
-                  <span className="text-sm font-medium text-amber-700">{t('guestMode')}</span>
+                <div className="flex items-center gap-2 px-4 py-2 icon-bg-warning border border-warning/20 rounded-lg">
+                  <ShieldIcon className="w-4 h-4 text-warning" />
+                  <span className="text-sm font-medium text-warning">{t('guestMode')}</span>
                 </div>
               )}
             </div>
@@ -118,15 +118,15 @@ export function DashboardContent() {
                     €{dashboardData.summary.portfolioValue.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                   </p>
                   <div className="flex items-center gap-1 mt-1">
-                    <TrendingUpIcon className="w-3 h-3 text-green-600" />
-                    <span className="text-sm text-green-600 font-medium">
+                    <TrendingUpIcon className="w-3 h-3 text-success" />
+                    <span className="text-sm text-success font-medium">
                       +{dashboardData.summary.monthlyChange}%
                     </span>
                     <span className="text-sm text-muted-foreground">{t('thisMonth')}</span>
                   </div>
                 </div>
-                <div className="w-12 h-12 bg-green-500/10 rounded-lg flex items-center justify-center">
-                  <TrendingUpIcon className="w-6 h-6 text-green-600" />
+                <div className="w-12 h-12 icon-bg-success rounded-lg flex items-center justify-center">
+                  <TrendingUpIcon className="w-6 h-6 text-success" />
                 </div>
               </div>
             </div>
@@ -145,8 +145,8 @@ export function DashboardContent() {
                     {t('riskScaleDescription')}
                   </p>
                 </div>
-                <div className="w-12 h-12 bg-amber-500/10 rounded-lg flex items-center justify-center">
-                  <AlertTriangleIcon className="w-6 h-6 text-amber-600" />
+                <div className="w-12 h-12 icon-bg-warning rounded-lg flex items-center justify-center">
+                  <AlertTriangleIcon className="w-6 h-6 text-warning" />
                 </div>
               </div>
             </div>
@@ -165,8 +165,8 @@ export function DashboardContent() {
                     {t('coherenceDescription')}
                   </p>
                 </div>
-                <div className="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center">
-                  <ShieldIcon className="w-6 h-6 text-blue-600" />
+                <div className="w-12 h-12 icon-bg-primary rounded-lg flex items-center justify-center">
+                  <ShieldIcon className="w-6 h-6 text-primary" />
                 </div>
               </div>
             </div>
@@ -231,15 +231,15 @@ export function DashboardContent() {
                       <div className="space-y-3">
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-muted-foreground">{t('bitcoin')}</span>
-                          <span className="text-sm font-semibold text-green-600">+12.3%</span>
+                          <span className="text-sm font-semibold text-success">+12.3%</span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-muted-foreground">{t('ethereum')}</span>
-                          <span className="text-sm font-semibold text-green-600">+8.7%</span>
+                          <span className="text-sm font-semibold text-success">+8.7%</span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-muted-foreground">{t('others')}</span>
-                          <span className="text-sm font-semibold text-red-600">-2.1%</span>
+                          <span className="text-sm font-semibold text-error">-2.1%</span>
                         </div>
                       </div>
                     </div>
@@ -279,13 +279,13 @@ export function DashboardContent() {
                 <h2 className="text-lg font-semibold text-foreground mb-4">{t('alerts')}</h2>
                 <div className="space-y-3">
                   {dashboardData.alerts.map((alert) => (
-                    <div key={alert.id} className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+                    <div key={alert.id} className="alert-warning">
                       <div className="flex items-start gap-3">
-                        <AlertTriangleIcon className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
+                        <AlertTriangleIcon className="w-4 h-4 text-warning mt-0.5 flex-shrink-0" />
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-amber-800">{alert.title}</p>
-                          <p className="text-xs text-amber-700 mt-1">{alert.message}</p>
-                          <p className="text-xs text-amber-600 mt-2 opacity-75">{alert.source}</p>
+                          <p className="text-sm font-medium text-warning">{alert.title}</p>
+                          <p className="text-xs text-warning/80 mt-1">{alert.message}</p>
+                          <p className="text-xs text-warning/60 mt-2">{alert.source}</p>
                         </div>
                       </div>
                     </div>

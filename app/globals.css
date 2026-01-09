@@ -7,9 +7,10 @@
     /* Tradelia 2026 - Design Guide Compliant Colors */
     --background: 0 0% 99%;           /* Bianco caldo */
     --foreground: 220 15% 12%;        /* Grigio scuro blu */
-    --primary: 215 50% 45%;           /* Blu desaturato istituzionale */
+    --primary: 215 55% 40%;           /* Blu più scuro - AAA compliant */
     --muted: 220 10% 96%;             /* Grigio chiaro */
-    --muted-foreground: 220 10% 40%;  /* Grigio medio (buon contrasto) */
+    --muted-foreground: 220 12% 30%;  /* Grigio scuro - WCAG AAA 7:1 target */
+    --subtle-foreground: 220 10% 45%; /* Testo terziario - AA only, uso limitato */
     --border: 220 10% 88%;            /* Grigio sottile */
     --accent: 220 10% 97%;            /* Accent chiarissimo */
     
@@ -27,6 +28,8 @@
     --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.12), 0 1px 2px -1px rgb(0 0 0 / 0.08);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.12), 0 2px 4px -2px rgb(0 0 0 / 0.08);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.15), 0 4px 6px -4px rgb(0 0 0 / 0.08);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.15), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
     
     /* Theme Transition Duration */
     --theme-transition: 150ms;
@@ -38,7 +41,8 @@
     --foreground: 220 10% 95%;        /* Bianco puro */
     --primary: 215 55% 55%;           /* Blu brillante accessibile */
     --muted: 220 15% 15%;             /* Grigio scuro elevato */
-    --muted-foreground: 220 10% 60%;  /* Grigio chiaro */
+    --muted-foreground: 220 10% 70%;  /* Grigio chiaro - WCAG AAA 7:1 target */
+    --subtle-foreground: 220 10% 50%; /* Testo terziario - AA only, uso limitato */
     --border: 220 15% 20%;            /* Bordo scuro visibile */
     --accent: 220 15% 12%;            /* Accent scuro profondo */
     
@@ -56,6 +60,8 @@
     --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.5), 0 1px 2px -1px rgb(0 0 0 / 0.4);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.4);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.6), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.5);
+    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.7);
   }
 
   /* Density Modes - Optional */
@@ -115,7 +121,7 @@
   }
 
   *:focus-visible {
-    @apply outline-none ring-2 ring-primary/60 ring-offset-2 ring-offset-background;
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
   }
 
   /* Custom Scrollbar - Design Guide Compliant */
@@ -169,9 +175,13 @@
     text-wrap: pretty;
   }
 
-  /* Performance Optimized Transitions */
+  /* Performance Optimized Transitions - 150ms Standard */
   .transition-subtle {
     transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .transition-subtle-200 {
+    transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .transition-colors-fast {
@@ -188,7 +198,7 @@
   .card-interactive:hover {
     border-color: hsl(var(--border));
     background: hsl(var(--muted) / 0.3);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
   }
 
   /* Link Internal Hover */
@@ -300,19 +310,15 @@
     src: local('Inter');
   }
 
-  /* Enterprise Microanimations - 200ms Premium */
-  .transition-subtle {
-    transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
+  /* Enterprise Microanimations - 150ms Standard */
   .transition-colors-subtle {
-    transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1), 
-                background-color 200ms cubic-bezier(0.4, 0, 0.2, 1),
-                border-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition: color 150ms cubic-bezier(0.4, 0, 0.2, 1), 
+                background-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .transition-transform-subtle {
-    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   /* Enterprise Focus States */
@@ -394,18 +400,87 @@
 
   .badge-success {
     @apply px-3 py-1 text-xs font-medium rounded-full;
-    @apply bg-green-50 text-green-700 border border-green-200;
+    background-color: hsl(var(--success) / 0.1);
+    color: hsl(var(--success));
+    border: 1px solid hsl(var(--success) / 0.2);
   }
 
   .badge-warning {
     @apply px-3 py-1 text-xs font-medium rounded-full;
-    @apply bg-amber-50 text-amber-700 border border-amber-200;
+    background-color: hsl(var(--warning) / 0.1);
+    color: hsl(var(--warning));
+    border: 1px solid hsl(var(--warning) / 0.2);
   }
 
   .badge-danger {
     @apply px-3 py-1 text-xs font-medium rounded-full;
-    @apply bg-red-50 text-red-700 border border-red-200;
+    background-color: hsl(var(--error) / 0.1);
+    color: hsl(var(--error));
+    border: 1px solid hsl(var(--error) / 0.2);
   }
+
+  /* Alert Components - Semantic Colors */
+  .alert-success {
+    background-color: hsl(var(--success) / 0.1);
+    border: 1px solid hsl(var(--success) / 0.2);
+    @apply p-4 rounded-lg;
+  }
+  .alert-success-text { color: hsl(var(--success)); }
+  .alert-success-icon { color: hsl(var(--success)); }
+
+  .alert-warning {
+    background-color: hsl(var(--warning) / 0.1);
+    border: 1px solid hsl(var(--warning) / 0.2);
+    @apply p-4 rounded-lg;
+  }
+  .alert-warning-text { color: hsl(var(--warning)); }
+  .alert-warning-icon { color: hsl(var(--warning)); }
+
+  .alert-error {
+    background-color: hsl(var(--error) / 0.1);
+    border: 1px solid hsl(var(--error) / 0.2);
+    @apply p-4 rounded-lg;
+  }
+  .alert-error-text { color: hsl(var(--error)); }
+  .alert-error-icon { color: hsl(var(--error)); }
+
+  /* KPI Cards - Semantic Variants */
+  .kpi-success {
+    background-color: hsl(var(--success) / 0.1);
+    border-color: hsl(var(--success) / 0.2);
+  }
+  .kpi-success-text { color: hsl(var(--success)); }
+
+  .kpi-warning {
+    background-color: hsl(var(--warning) / 0.1);
+    border-color: hsl(var(--warning) / 0.2);
+  }
+  .kpi-warning-text { color: hsl(var(--warning)); }
+
+  .kpi-error {
+    background-color: hsl(var(--error) / 0.1);
+    border-color: hsl(var(--error) / 0.2);
+  }
+  .kpi-error-text { color: hsl(var(--error)); }
+
+  /* Icon Backgrounds - Semantic */
+  .icon-bg-success {
+    background-color: hsl(var(--success) / 0.1);
+  }
+  .icon-bg-warning {
+    background-color: hsl(var(--warning) / 0.1);
+  }
+  .icon-bg-error {
+    background-color: hsl(var(--error) / 0.1);
+  }
+  .icon-bg-primary {
+    background-color: hsl(var(--primary) / 0.1);
+  }
+
+  /* Text Colors - Semantic */
+  .text-success { color: hsl(var(--success)); }
+  .text-warning { color: hsl(var(--warning)); }
+  .text-error { color: hsl(var(--error)); }
 
   /* Mobile Language Selector Enhancement */
   .mobile-language-selector button {
@@ -444,9 +519,9 @@
   }
 
   /* Card Interactive - Enterprise Premium */
-  .card-interactive {
+  .card-interactive-premium {
     @apply rounded-lg border border-border/50 bg-background p-5 shadow-sm;
-    @apply transition-all duration-200 ease-out;
+    @apply transition-all duration-150 ease-out;
     @apply hover:border-border hover:bg-surface-elevated hover:shadow-md;
     @apply hover:-translate-y-0.5 hover:shadow-foreground/5;
   }
@@ -454,9 +529,9 @@
   /* Card Tech - Enterprise Enhanced */
   .card-tech {
     @apply rounded-lg border border-border/50 bg-background p-6;
-    @apply transition-all duration-200 ease-out;
+    @apply transition-all duration-150 ease-out;
     @apply hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5;
-    @apply hover:-translate-y-1 hover:bg-surface-elevated;
+    @apply hover:-translate-y-0.5 hover:bg-surface-elevated;
   }
 
   /* Link Internal - Design Guide Compliant */
@@ -623,8 +698,8 @@
     transition: none !important;
   }
 
-  /* Smooth theme transitions */
-  * {
+  /* Theme transitions applied only to themed elements */
+  [data-theme] {
     transition-property: background-color, border-color, color, fill, stroke;
     transition-duration: var(--theme-transition);
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);

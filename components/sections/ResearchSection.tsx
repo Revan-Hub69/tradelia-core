@@ -23,30 +23,60 @@ const RESEARCH_ITEMS: ResearchItemData[] = [
   { key: 'herding', iconColor: 'amber', IconComponent: ShieldIcon, sparkline: [42, 46, 50, 53, 56, 58, 58] }
 ];
 
-// Helper functions
+// Helper functions - Using semantic tokens
 function getIconBgClass(color: string): string {
-  const map: Record<string, string> = { red: 'bg-red-50', orange: 'bg-orange-50', amber: 'bg-amber-50', green: 'bg-green-50', blue: 'bg-blue-50' };
-  return map[color] || 'bg-blue-50';
+  const map: Record<string, string> = { 
+    red: 'icon-bg-error', 
+    orange: 'icon-bg-warning', 
+    amber: 'icon-bg-warning', 
+    green: 'icon-bg-success', 
+    blue: 'icon-bg-primary' 
+  };
+  return map[color] || 'icon-bg-primary';
 }
 
 function getIconTextClass(color: string): string {
-  const map: Record<string, string> = { red: 'text-red-500', orange: 'text-orange-500', amber: 'text-amber-500', green: 'text-green-500', blue: 'text-blue-500' };
-  return map[color] || 'text-blue-500';
+  const map: Record<string, string> = { 
+    red: 'text-error', 
+    orange: 'text-warning', 
+    amber: 'text-warning', 
+    green: 'text-success', 
+    blue: 'text-primary' 
+  };
+  return map[color] || 'text-primary';
 }
 
 function getTextClass(color: string): string {
-  const map: Record<string, string> = { red: 'text-red-600', orange: 'text-orange-600', amber: 'text-amber-600', green: 'text-green-600', blue: 'text-blue-600' };
-  return map[color] || 'text-blue-600';
+  const map: Record<string, string> = { 
+    red: 'text-error', 
+    orange: 'text-warning', 
+    amber: 'text-warning', 
+    green: 'text-success', 
+    blue: 'text-primary' 
+  };
+  return map[color] || 'text-primary';
 }
 
 function getBgClass(color: string): string {
-  const map: Record<string, string> = { red: 'bg-red-500', orange: 'bg-orange-500', amber: 'bg-amber-500', green: 'bg-green-500', blue: 'bg-blue-500' };
-  return map[color] || 'bg-blue-500';
+  const map: Record<string, string> = { 
+    red: 'bg-error', 
+    orange: 'bg-warning', 
+    amber: 'bg-warning', 
+    green: 'bg-success', 
+    blue: 'bg-primary' 
+  };
+  return map[color] || 'bg-primary';
 }
 
 function getStrokeClass(color: string): string {
-  const map: Record<string, string> = { red: 'stroke-red-500', orange: 'stroke-orange-500', amber: 'stroke-amber-500', green: 'stroke-green-500', blue: 'stroke-blue-500' };
-  return map[color] || 'stroke-blue-500';
+  const map: Record<string, string> = { 
+    red: 'stroke-error', 
+    orange: 'stroke-warning', 
+    amber: 'stroke-warning', 
+    green: 'stroke-success', 
+    blue: 'stroke-primary' 
+  };
+  return map[color] || 'stroke-primary';
 }
 
 // Circular gauge component

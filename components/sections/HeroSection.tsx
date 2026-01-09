@@ -100,37 +100,37 @@ export default function HeroSection() {
                       <span className="text-lg font-semibold text-foreground">{hero.dashboard.title}</span>
                     </div>
                     <div className="flex gap-1" aria-hidden="true">
-                      <div className="w-2 h-2 bg-red-400 rounded-full" />
-                      <div className="w-2 h-2 bg-yellow-400 rounded-full" />
-                      <div className="w-2 h-2 bg-green-400 rounded-full" />
+                      <div className="w-2 h-2 bg-error rounded-full" />
+                      <div className="w-2 h-2 bg-warning rounded-full" />
+                      <div className="w-2 h-2 bg-success rounded-full" />
                     </div>
                   </div>
 
                   {/* Risk cards */}
                   <div className="grid grid-cols-3 gap-3">
-                    <div className="kpi-card bg-red-50 border-red-200">
-                      <div className="text-2xl font-bold text-red-700">73%</div>
-                      <div className="text-xs text-red-700">{hero.dashboard.metrics.commonErrors}</div>
+                    <div className="kpi-card kpi-error">
+                      <div className="text-2xl font-bold text-error">73%</div>
+                      <div className="text-xs text-error">{hero.dashboard.metrics.commonErrors}</div>
                     </div>
-                    <div className="kpi-card bg-amber-50 border-amber-200">
-                      <div className="text-2xl font-bold text-amber-700">3</div>
-                      <div className="text-xs text-amber-700">{hero.dashboard.metrics.activeRisks}</div>
+                    <div className="kpi-card kpi-warning">
+                      <div className="text-2xl font-bold text-warning">3</div>
+                      <div className="text-xs text-warning">{hero.dashboard.metrics.activeRisks}</div>
                     </div>
-                    <div className="kpi-card bg-green-50 border-green-200">
-                      <div className="text-2xl font-bold text-green-700">12</div>
-                      <div className="text-xs text-green-700">{hero.dashboard.metrics.academicSources}</div>
+                    <div className="kpi-card kpi-success">
+                      <div className="text-2xl font-bold text-success">12</div>
+                      <div className="text-xs text-success">{hero.dashboard.metrics.academicSources}</div>
                     </div>
                   </div>
 
                   {/* Alert example */}
-                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                  <div className="alert-warning">
                     <div className="flex items-start gap-3">
-                      <div className="w-5 h-5 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <AlertTriangleIcon className="w-3 h-3 text-amber-600" />
+                      <div className="w-5 h-5 icon-bg-warning rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <AlertTriangleIcon className="w-3 h-3 alert-warning-icon" />
                       </div>
                       <div>
-                        <div className="text-sm font-medium text-amber-800">{hero.dashboard.alert.title}</div>
-                        <div className="text-xs text-amber-700 mt-1">{hero.dashboard.alert.description}</div>
+                        <div className="text-sm font-medium text-warning">{hero.dashboard.alert.title}</div>
+                        <div className="text-xs text-warning/80 mt-1">{hero.dashboard.alert.description}</div>
                       </div>
                     </div>
                   </div>

@@ -319,7 +319,7 @@ export default function AuthModal() {
               autoComplete="email"
             />
           </div>
-          {errors.email && <p className="text-xs text-red-600">{errors.email}</p>}
+          {errors.email && <p className="text-xs text-error">{errors.email}</p>}
         </div>
 
         {/* Password */}
@@ -339,12 +339,12 @@ export default function AuthModal() {
               autoComplete="current-password"
             />
           </div>
-          {errors.password && <p className="text-xs text-red-600">{errors.password}</p>}
+          {errors.password && <p className="text-xs text-error">{errors.password}</p>}
         </div>
 
         {/* Error */}
         {errors.submit && (
-          <div className="p-3 rounded border border-red-200 bg-red-50 text-sm text-red-700">
+          <div className="p-3 rounded border  alert-error text-sm text-error">
             {errors.submit}
           </div>
         )}
@@ -411,7 +411,7 @@ export default function AuthModal() {
               autoComplete="name"
             />
           </div>
-          {errors.fullName && <p className="text-xs text-red-600">{errors.fullName}</p>}
+          {errors.fullName && <p className="text-xs text-error">{errors.fullName}</p>}
         </div>
 
         {/* Email */}
@@ -431,7 +431,7 @@ export default function AuthModal() {
               autoComplete="email"
             />
           </div>
-          {errors.email && <p className="text-xs text-red-600">{errors.email}</p>}
+          {errors.email && <p className="text-xs text-error">{errors.email}</p>}
         </div>
 
         {/* Password */}
@@ -451,7 +451,7 @@ export default function AuthModal() {
               autoComplete="new-password"
             />
           </div>
-          {errors.password && <p className="text-xs text-red-600">{errors.password}</p>}
+          {errors.password && <p className="text-xs text-error">{errors.password}</p>}
         </div>
 
         {/* Confirm Password */}
@@ -471,12 +471,12 @@ export default function AuthModal() {
               autoComplete="new-password"
             />
           </div>
-          {errors.confirmPassword && <p className="text-xs text-red-600">{errors.confirmPassword}</p>}
+          {errors.confirmPassword && <p className="text-xs text-error">{errors.confirmPassword}</p>}
         </div>
 
         {/* Error */}
         {errors.submit && (
-          <div className="p-3 rounded border border-red-200 bg-red-50 text-sm text-red-700">
+          <div className="p-3 rounded border  alert-error text-sm text-error">
             {errors.submit}
           </div>
         )}
@@ -534,11 +534,11 @@ export default function AuthModal() {
               autoComplete="email"
             />
           </div>
-          {errors.email && <p className="text-xs text-red-600">{errors.email}</p>}
+          {errors.email && <p className="text-xs text-error">{errors.email}</p>}
         </div>
 
         {errors.submit && (
-          <div className="p-3 rounded border border-red-200 bg-red-50 text-sm text-red-700">
+          <div className="p-3 rounded border  alert-error text-sm text-error">
             {errors.submit}
           </div>
         )}

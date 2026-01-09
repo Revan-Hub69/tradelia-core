@@ -58,10 +58,10 @@ export default function AuthCallbackPage() {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="text-center space-y-4 max-w-md mx-auto px-6">
-          <div className="p-4 rounded border border-red-200 bg-red-50" role="alert">
+          <div className="p-4 rounded border  alert-error" role="alert">
             <div className="flex items-start gap-3 justify-center">
-              <AlertTriangleIcon className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-red-800">{error}</p>
+              <AlertTriangleIcon className="w-4 h-4 text-error flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-error">{error}</p>
             </div>
           </div>
           <button

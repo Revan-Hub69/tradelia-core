@@ -175,7 +175,7 @@ export function DashboardSidebar({ isOpen, onClose }: DashboardSidebarProps) {
         <div className="p-4 border-t border-border/50">
           <button
             onClick={() => actions.signOut()}
-            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium text-red-600 hover:bg-red-500/10 transition-colors"
+            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium text-error hover:bg-error/10 transition-colors"
           >
             <LogOutIcon className="w-4 h-4" />
             {t('logout')}
