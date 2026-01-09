@@ -42,6 +42,9 @@ export {
 } from './Toast';
 export type { Toast, ToastVariant, ToastContextType } from './Toast';
 
+// Form components
+export { PasswordStrength, usePasswordStrength } from './PasswordStrength';
+
 // Utility functions
 export { cn, focusRing, transitionSubtle, cardInteractive, supportsHover, prefersReducedMotion } from './utils';
 

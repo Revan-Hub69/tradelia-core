@@ -7,6 +7,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from './LanguageSelector';
 import { mapAuthErrorToKey } from '@/lib/auth/error-mapping';
 import { loginSchema, registerSchema, resetRequestSchema, validateForm } from '@/src/shared/lib/validation';
+import { PasswordStrength } from '@/src/shared/ui/PasswordStrength';
 import Logo from './Logo';
 import { 
   CloseIcon, 
@@ -468,6 +469,7 @@ export default function AuthModal() {
             />
           </div>
           {errors.password && <p className="text-xs text-error">{errors.password}</p>}
+          <PasswordStrength password={formData.password} locale={validationLocale} showRequirements={true} />
         </div>
 
         {/* Confirm Password */}

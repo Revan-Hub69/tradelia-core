@@ -12,6 +12,7 @@ import { useTranslations, useLocale } from 'next-intl'
 import { useDashboardModal } from '@/contexts/DashboardModalContext'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
 import { registerSchema, validateForm, type Locale } from '@/src/shared/lib/validation'
+import { PasswordStrength } from '@/src/shared/ui/PasswordStrength'
 import Logo from '@/components/Logo'
 import { 
   CloseIcon,
@@ -252,6 +253,7 @@ export default function DashboardRegistrationModal() {
                     className={`w-full p-3.5 border rounded-xl bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-150 ${fieldErrors.password ? 'border-error' : 'border-border/50'}`}
                   />
                   {fieldErrors.password && <p className="text-xs text-error mt-1">{fieldErrors.password}</p>}
+                  <PasswordStrength password={password} locale={validationLocale} showRequirements={true} />
                 </div>
                 <div className="space-y-1">
                   <label htmlFor="confirmPassword" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
