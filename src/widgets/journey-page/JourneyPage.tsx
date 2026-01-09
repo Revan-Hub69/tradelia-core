@@ -50,11 +50,11 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
   return (
     <DashboardAuthGuard>
       <DashboardLayout>
-        <div className="space-y-8 pb-20 lg:pb-8">
+        <div className="space-y-8">
           {/* Journey Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className={`w-12 h-12 rounded-xl icon-bg-${color} flex items-center justify-center`}>
+              <div className={`w-12 h-12 rounded-xl bg-${color}/10 flex items-center justify-center`}>
                 <Icon className={`w-6 h-6 text-${color}`} />
               </div>
               <div>

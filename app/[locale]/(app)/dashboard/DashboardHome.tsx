@@ -8,8 +8,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import { DashboardLayout } from '@/src/widgets/dashboard-layout'
 import { DashboardAuthGuard } from '@/src/widgets/dashboard-auth'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
@@ -37,8 +36,7 @@ const JOURNEY_COLORS: Record<JourneyId, { bg: string; text: string; border: stri
 }
 
 export function DashboardHome() {
-  const params = useParams()
-  const locale = params.locale as string
+  const locale = useLocale()
   const t = useTranslations()
   const tDashboard = useTranslations('dashboard')
   const { state } = useDashboardAuth()
@@ -48,7 +46,7 @@ export function DashboardHome() {
   return (
     <DashboardAuthGuard>
       <DashboardLayout>
-        <div className="space-y-8 pb-20 lg:pb-8">
+        <div className="space-y-8">
           {/* Welcome Header */}
           <div className="space-y-2">
             <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
@@ -65,12 +63,11 @@ export function DashboardHome() {
               const journey = JOURNEYS[journeyId]
               const Icon = JOURNEY_ICONS[journeyId]
               const colors = JOURNEY_COLORS[journeyId]
-              const href = `/${locale}/dashboard/${journeyId}`
               
               return (
                 <Link
                   key={journeyId}
-                  href={href}
+                  href={`/${locale}/dashboard/${journeyId}`}
                   className={`
                     group relative p-6 rounded-xl border transition-all duration-200
                     bg-background/60 hover:bg-background/80
