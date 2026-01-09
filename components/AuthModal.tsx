@@ -6,7 +6,7 @@ import { useDashboardModal } from '@/contexts/DashboardModalContext';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from './LanguageSelector';
 import { mapAuthErrorToKey } from '@/lib/auth/error-mapping';
-import { loginSchema, registerSchema, resetRequestSchema, validateForm } from '@/src/shared/lib/validation';
+import { loginSchema, registerSchema, resetRequestSchema, validateForm, validateField, emailSchema, passwordSchema, nameSchema, getMessages } from '@/src/shared/lib/validation';
 import { PasswordStrength } from '@/src/shared/ui/PasswordStrength';
 import Logo from './Logo';
 import { 
@@ -138,6 +138,36 @@ export default function AuthModal() {
     setErrors({});
     return true;
   }, [formData.email, validationLocale]);
+
+  // On-blur field validation
+  const messages = getMessages(validationLocale);
+
+  const handleBlurEmail = useCallback(() => {
+    if (!formData.email) return; // Don't validate empty on blur
+    const error = validateField(emailSchema(messages), formData.email);
+    setErrors(prev => error ? { ...prev, email: error } : (({ email: _, ...rest }) => rest)(prev));
+  }, [formData.email, messages]);
+
+  const handleBlurPassword = useCallback(() => {
+    if (!formData.password) return;
+    const error = validateField(passwordSchema(messages), formData.password);
+    setErrors(prev => error ? { ...prev, password: error } : (({ password: _, ...rest }) => rest)(prev));
+  }, [formData.password, messages]);
+
+  const handleBlurFullName = useCallback(() => {
+    if (!formData.fullName) return;
+    const error = validateField(nameSchema(messages), formData.fullName);
+    setErrors(prev => error ? { ...prev, fullName: error } : (({ fullName: _, ...rest }) => rest)(prev));
+  }, [formData.fullName, messages]);
+
+  const handleBlurConfirmPassword = useCallback(() => {
+    if (!formData.confirmPassword) return;
+    if (formData.password !== formData.confirmPassword) {
+      setErrors(prev => ({ ...prev, confirmPassword: messages.confirmPassword.mismatch }));
+    } else {
+      setErrors(prev => (({ confirmPassword: _, ...rest }) => rest)(prev));
+    }
+  }, [formData.password, formData.confirmPassword, messages]);
 
   // Handlers
   const handleGuest = async () => {
@@ -331,12 +361,13 @@ export default function AuthModal() {
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-150 placeholder:text-muted-foreground"
+              onBlur={handleBlurEmail}
+              className={`w-full h-11 pl-10 pr-4 text-sm bg-background border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-150 placeholder:text-muted-foreground ${errors.email ? 'border-error' : 'border-border'}`}
               placeholder={t('modal.auth.login.emailPlaceholder')}
               autoComplete="email"
             />
           </div>
-          {errors.email && <p className="text-xs text-error">{errors.email}</p>}
+          {errors.email && <p className="text-xs text-error" role="alert">{errors.email}</p>}
         </div>
 
         {/* Password */}
@@ -351,12 +382,13 @@ export default function AuthModal() {
               type="password"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-150 placeholder:text-muted-foreground"
+              onBlur={handleBlurPassword}
+              className={`w-full h-11 pl-10 pr-4 text-sm bg-background border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-150 placeholder:text-muted-foreground ${errors.password ? 'border-error' : 'border-border'}`}
               placeholder={t('modal.auth.login.passwordPlaceholder')}
               autoComplete="current-password"
             />
           </div>
-          {errors.password && <p className="text-xs text-error">{errors.password}</p>}
+          {errors.password && <p className="text-xs text-error" role="alert">{errors.password}</p>}
         </div>
 
         {/* Error */}
@@ -423,12 +455,13 @@ export default function AuthModal() {
               type="text"
               value={formData.fullName}
               onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-              className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-150 placeholder:text-muted-foreground"
+              onBlur={handleBlurFullName}
+              className={`w-full h-11 pl-10 pr-4 text-sm bg-background border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-150 placeholder:text-muted-foreground ${errors.fullName ? 'border-error' : 'border-border'}`}
               placeholder={t('modal.auth.register.namePlaceholder')}
               autoComplete="name"
             />
           </div>
-          {errors.fullName && <p className="text-xs text-error">{errors.fullName}</p>}
+          {errors.fullName && <p className="text-xs text-error" role="alert">{errors.fullName}</p>}
         </div>
 
         {/* Email */}
@@ -443,12 +476,13 @@ export default function AuthModal() {
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-150 placeholder:text-muted-foreground"
+              onBlur={handleBlurEmail}
+              className={`w-full h-11 pl-10 pr-4 text-sm bg-background border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-150 placeholder:text-muted-foreground ${errors.email ? 'border-error' : 'border-border'}`}
               placeholder={t('modal.auth.register.emailPlaceholder')}
               autoComplete="email"
             />
           </div>
-          {errors.email && <p className="text-xs text-error">{errors.email}</p>}
+          {errors.email && <p className="text-xs text-error" role="alert">{errors.email}</p>}
         </div>
 
         {/* Password */}
@@ -463,12 +497,13 @@ export default function AuthModal() {
               type="password"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-150 placeholder:text-muted-foreground"
+              onBlur={handleBlurPassword}
+              className={`w-full h-11 pl-10 pr-4 text-sm bg-background border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-150 placeholder:text-muted-foreground ${errors.password ? 'border-error' : 'border-border'}`}
               placeholder={t('modal.auth.register.passwordPlaceholder')}
               autoComplete="new-password"
             />
           </div>
-          {errors.password && <p className="text-xs text-error">{errors.password}</p>}
+          {errors.password && <p className="text-xs text-error" role="alert">{errors.password}</p>}
           <PasswordStrength password={formData.password} locale={validationLocale} showRequirements={true} />
         </div>
 
@@ -484,12 +519,13 @@ export default function AuthModal() {
               type="password"
               value={formData.confirmPassword}
               onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-              className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-150 placeholder:text-muted-foreground"
+              onBlur={handleBlurConfirmPassword}
+              className={`w-full h-11 pl-10 pr-4 text-sm bg-background border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-150 placeholder:text-muted-foreground ${errors.confirmPassword ? 'border-error' : 'border-border'}`}
               placeholder={t('modal.auth.register.confirmPlaceholder')}
               autoComplete="new-password"
             />
           </div>
-          {errors.confirmPassword && <p className="text-xs text-error">{errors.confirmPassword}</p>}
+          {errors.confirmPassword && <p className="text-xs text-error" role="alert">{errors.confirmPassword}</p>}
         </div>
 
         {/* Error */}
@@ -547,12 +583,13 @@ export default function AuthModal() {
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-150 placeholder:text-muted-foreground"
+              onBlur={handleBlurEmail}
+              className={`w-full h-11 pl-10 pr-4 text-sm bg-background border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-150 placeholder:text-muted-foreground ${errors.email ? 'border-error' : 'border-border'}`}
               placeholder={t('modal.auth.resetRequest.emailPlaceholder')}
               autoComplete="email"
             />
           </div>
-          {errors.email && <p className="text-xs text-error">{errors.email}</p>}
+          {errors.email && <p className="text-xs text-error" role="alert">{errors.email}</p>}
         </div>
 
         {errors.submit && (

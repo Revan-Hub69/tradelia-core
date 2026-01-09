@@ -11,7 +11,7 @@ import { useState, useCallback } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { useDashboardModal } from '@/contexts/DashboardModalContext'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
-import { registerSchema, validateForm, type Locale } from '@/src/shared/lib/validation'
+import { registerSchema, validateForm, validateField, emailSchema, passwordSchema, nameSchema, getMessages, type Locale } from '@/src/shared/lib/validation'
 import { PasswordStrength } from '@/src/shared/ui/PasswordStrength'
 import Logo from '@/components/Logo'
 import { 
@@ -48,6 +48,36 @@ export default function DashboardRegistrationModal() {
     setFieldErrors({})
     return true
   }, [fullName, email, password, confirmPassword, validationLocale])
+
+  // On-blur field validation
+  const messages = getMessages(validationLocale)
+
+  const handleBlurEmail = useCallback(() => {
+    if (!email) return
+    const err = validateField(emailSchema(messages), email)
+    setFieldErrors(prev => err ? { ...prev, email: err } : (({ email: _, ...rest }) => rest)(prev))
+  }, [email, messages])
+
+  const handleBlurPassword = useCallback(() => {
+    if (!password) return
+    const err = validateField(passwordSchema(messages), password)
+    setFieldErrors(prev => err ? { ...prev, password: err } : (({ password: _, ...rest }) => rest)(prev))
+  }, [password, messages])
+
+  const handleBlurFullName = useCallback(() => {
+    if (!fullName) return
+    const err = validateField(nameSchema(messages), fullName)
+    setFieldErrors(prev => err ? { ...prev, fullName: err } : (({ fullName: _, ...rest }) => rest)(prev))
+  }, [fullName, messages])
+
+  const handleBlurConfirmPassword = useCallback(() => {
+    if (!confirmPassword) return
+    if (password !== confirmPassword) {
+      setFieldErrors(prev => ({ ...prev, confirmPassword: messages.confirmPassword.mismatch }))
+    } else {
+      setFieldErrors(prev => (({ confirmPassword: _, ...rest }) => rest)(prev))
+    }
+  }, [password, confirmPassword, messages])
 
   if (!isOpen) return null
 
@@ -222,9 +252,10 @@ export default function DashboardRegistrationModal() {
                     placeholder={t('fullName')}
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
+                    onBlur={handleBlurFullName}
                     className={`w-full p-3.5 border rounded-xl bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-150 ${fieldErrors.fullName ? 'border-error' : 'border-border/50'}`}
                   />
-                  {fieldErrors.fullName && <p className="text-xs text-error mt-1">{fieldErrors.fullName}</p>}
+                  {fieldErrors.fullName && <p className="text-xs text-error mt-1" role="alert">{fieldErrors.fullName}</p>}
                 </div>
                 <div className="space-y-1">
                   <label htmlFor="email" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
@@ -236,9 +267,10 @@ export default function DashboardRegistrationModal() {
                     placeholder={t('emailPlaceholder')}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    onBlur={handleBlurEmail}
                     className={`w-full p-3.5 border rounded-xl bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-150 ${fieldErrors.email ? 'border-error' : 'border-border/50'}`}
                   />
-                  {fieldErrors.email && <p className="text-xs text-error mt-1">{fieldErrors.email}</p>}
+                  {fieldErrors.email && <p className="text-xs text-error mt-1" role="alert">{fieldErrors.email}</p>}
                 </div>
                 <div className="space-y-1">
                   <label htmlFor="password" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
@@ -250,9 +282,10 @@ export default function DashboardRegistrationModal() {
                     placeholder={t('passwordPlaceholder')}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    onBlur={handleBlurPassword}
                     className={`w-full p-3.5 border rounded-xl bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-150 ${fieldErrors.password ? 'border-error' : 'border-border/50'}`}
                   />
-                  {fieldErrors.password && <p className="text-xs text-error mt-1">{fieldErrors.password}</p>}
+                  {fieldErrors.password && <p className="text-xs text-error mt-1" role="alert">{fieldErrors.password}</p>}
                   <PasswordStrength password={password} locale={validationLocale} showRequirements={true} />
                 </div>
                 <div className="space-y-1">
@@ -265,9 +298,10 @@ export default function DashboardRegistrationModal() {
                     placeholder="Conferma la password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
+                    onBlur={handleBlurConfirmPassword}
                     className={`w-full p-3.5 border rounded-xl bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-150 ${fieldErrors.confirmPassword ? 'border-error' : 'border-border/50'}`}
                   />
-                  {fieldErrors.confirmPassword && <p className="text-xs text-error mt-1">{fieldErrors.confirmPassword}</p>}
+                  {fieldErrors.confirmPassword && <p className="text-xs text-error mt-1" role="alert">{fieldErrors.confirmPassword}</p>}
                 </div>
 
                 <button
