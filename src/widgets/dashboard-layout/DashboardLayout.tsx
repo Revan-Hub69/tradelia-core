@@ -20,7 +20,6 @@ import { UserMenu } from './UserMenu'
 import { JOURNEY_ORDER, type JourneyId } from '@/src/shared/config/journeys'
 import {
   UserIcon,
-  SettingsIcon,
   ShieldIcon,
   LogOutIcon,
   TrendingUpIcon,
@@ -157,20 +156,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </ul>
 
           {/* Settings Link */}
-          <Link
-            href={`/${locale}/dashboard/settings`}
-            className={`
-              relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all mt-4
-              focus:outline-none focus:ring-2 focus:ring-primary
-              ${pathname.includes('/settings') 
-                ? 'bg-primary/10 text-primary' 
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-              }
-            `}
-          >
-            <SettingsIcon className="w-5 h-5 flex-shrink-0" />
-            <span>{t('settings')}</span>
-          </Link>
+          {/* Removed - now in header user menu */}
         </nav>
 
         {/* Footer */}
