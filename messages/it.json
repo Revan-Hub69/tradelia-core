@@ -92,6 +92,7 @@
     "logout": "Esci",
     "menu": "Menu",
     "menuLabel": "Menu",
+    "closeMenu": "Chiudi menu",
     "preferencesLabel": "Preferenze",
     "unlockFeatures": "Sblocca tutte le funzionalità"
   },

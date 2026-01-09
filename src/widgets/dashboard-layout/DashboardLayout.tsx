@@ -26,9 +26,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const { isOpen, setOpen } = useSidebarStore()
   const lastFocusedElRef = useRef<HTMLElement | null>(null)
 
-  // Debug log per verificare lo stato
-  console.log('DashboardLayout - sidebarOpen:', isOpen)
-
   // Close sidebar on Escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {

@@ -92,6 +92,7 @@
     "logout": "Logout",
     "menu": "Menu",
     "menuLabel": "Menu",
+    "closeMenu": "Close menu",
     "preferencesLabel": "Preferences",
     "unlockFeatures": "Unlock all features"
   },
