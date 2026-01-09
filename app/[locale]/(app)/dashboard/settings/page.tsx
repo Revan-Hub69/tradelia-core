@@ -2,16 +2,16 @@
  * Settings Page - Tradelia 2026
  */
 
-import { Metadata } from 'next'
-import { useTranslations } from 'next-intl'
+import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 
 interface SettingsPageProps {
-  params: { locale: string }
+  params: Promise<{ locale: string }>
 }
 
 export async function generateMetadata({ params }: SettingsPageProps): Promise<Metadata> {
-  const t = await getTranslations({ locale: params.locale, namespace: 'dashboard' })
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'dashboard' })
   
   return {
     title: t('settings'),
