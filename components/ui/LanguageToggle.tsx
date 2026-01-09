@@ -48,12 +48,17 @@ export function LanguageToggle({ variant = 'compact', className = '' }: Language
   const handleLanguageChange = (newLocale: string) => {
     if (newLocale === locale) return
     
-    // Replace the locale in the current pathname
+    // Replace the locale in the current pathname and preserve query params
     const segments = pathname.split('/')
     segments[1] = newLocale // Replace locale segment
     const newPath = segments.join('/')
     
-    router.push(newPath)
+    // Preserve current query parameters (like ?guest=true)
+    const currentUrl = new URL(window.location.href)
+    const searchParams = currentUrl.searchParams.toString()
+    const finalUrl = searchParams ? `${newPath}?${searchParams}` : newPath
+    
+    router.push(finalUrl)
   }
 
   if (!mounted) {
