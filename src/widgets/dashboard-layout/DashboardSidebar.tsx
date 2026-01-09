@@ -106,22 +106,19 @@ export function DashboardSidebar({ isOpen, onClose }: DashboardSidebarProps) {
     }
   }, [isOpen, onClose])
 
-  // FORZARE la sidebar ad essere nascosta se isOpen è false
-  const sidebarClasses = `
-    fixed top-0 left-0 z-50 h-full w-80
-    bg-background border-r border-border
-    flex flex-col shadow-2xl
-    transition-transform duration-300 ease-out
-    ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-  `
-
   return (
     <aside 
       ref={sidebarRef}
-      className={sidebarClasses}
+      className={`
+        fixed top-0 left-0 z-50 h-full w-80
+        bg-background border-r border-border
+        flex flex-col shadow-2xl
+        transition-transform duration-300 ease-out
+        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}
       style={{
         transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
-        visibility: isOpen ? 'visible' : 'hidden'
+        display: isOpen ? 'flex' : 'none'
       }}
       aria-label="Dashboard navigation"
       aria-hidden={!isOpen}
