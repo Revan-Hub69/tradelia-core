@@ -58,7 +58,6 @@
     "verifyDescription": "Verifica la coerenza dei tuoi strumenti",
     "authError": "Errore di autenticazione",
     "reloadPage": "Ricarica pagina",
-    "loading": "Caricamento...",
     "commandPalette": {
       "placeholder": "Cerca comandi...",
       "noResults": "Nessun comando trovato",
