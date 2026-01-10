@@ -960,14 +960,23 @@
   transform: none !important;
 }
 
-/* Disable text selection on badges */
-.trust-badge-no-select {
+/* Disable text selection on badges - GLOBAL */
+.trust-badge-no-select,
+.trust-badge-no-select * {
   user-select: none !important;
   -webkit-user-select: none !important;
   -moz-user-select: none !important;
   -ms-user-select: none !important;
   -webkit-touch-callout: none !important;
   -webkit-tap-highlight-color: transparent !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+.trust-badge-no-select:hover,
+.trust-badge-no-select:hover * {
+  transform: none !important;
+  transition: none !important;
 }
 
 /* Force static positioning for all badge elements */
@@ -975,6 +984,14 @@
   position: static !important;
   transform: none !important;
   transition: opacity 0.15s ease !important;
+}
+
+/* Sidebar specific - extra protection */
+.dashboard-sidebar .trust-badge-no-select,
+.dashboard-sidebar .trust-badge-no-select * {
+  transform: none !important;
+  transition: none !important;
+  animation: none !important;
 }
 
 /* Tooltips completely separate from layout */
