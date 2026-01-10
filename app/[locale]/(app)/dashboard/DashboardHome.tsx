@@ -75,7 +75,12 @@ export function DashboardHome() {
 
           {/* Journey Cards Grid - Section Frame */}
           <div className="section-frame p-6">
-            <h2 className="text-lg font-semibold content-primary mb-6">{tDashboard('tradeliaJourneys')}</h2>
+            <div className="mb-6">
+              <h2 className="text-lg font-semibold content-primary mb-2">{tDashboard('tradeliaJourneys')}</h2>
+              <p className="text-sm content-secondary">
+                {tDashboard('journeyExplanation')}
+              </p>
+            </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {JOURNEY_ORDER.map((journeyId) => {
                 const journey = JOURNEYS[journeyId]

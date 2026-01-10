@@ -140,6 +140,7 @@
     "noImmediateAction": "Nessun percorso richiede azione immediata.",
     "understandFirst": "Tradelia aiuta a capire prima di decidere.",
     "tradeliaJourneys": "Percorsi Tradelia",
+    "journeyExplanation": "I percorsi non indicano cosa fare, ma come orientarsi in base al livello di complessità.",
     "focusOn": "Focus su",
     "betaFeatures": "Funzionalità Beta",
     "betaFeaturesDescription": "Questa sezione è controllata da feature flags e può essere abilitata/disabilitata dinamicamente.",
