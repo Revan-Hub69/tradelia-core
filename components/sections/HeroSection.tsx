@@ -2,7 +2,6 @@
 
 import { useTranslations } from '@/hooks/useTranslations';
 import { useDashboardModal } from '@/contexts/DashboardModalContext';
-import { TrustBadges } from '@/src/shared/ui/TrustBadges';
 import { 
   ArrowRightIcon, 
   PlayIcon, 
@@ -34,10 +33,14 @@ export default function HeroSection() {
               <div className="absolute inset-0 bg-background/60 backdrop-blur-sm rounded-2xl -m-4 p-4" />
               <div className="relative space-y-6">
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight tracking-tight">
-                  {hero.title}
+                  {hero.title}{' '}
+                  <span className="text-primary relative">
+                    {hero.titleHighlight}
+                    <div className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-primary/60 to-primary/20 rounded-full" />
+                  </span>
                 </h1>
                 
-                <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-xl">
+                <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-xl font-semibold">
                   {hero.description}
                 </p>
 
@@ -47,7 +50,7 @@ export default function HeroSection() {
                   </p>
                 )}
 
-                {/* Trust metrics - più compatti */}
+                {/* Trust metrics */}
                 <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                   {hero.features.map((feature, index) => (
                     <div key={`feature-${index}`} className="flex items-center gap-2">
@@ -76,28 +79,15 @@ export default function HeroSection() {
                 </button>
               </div>
 
-              {/* Micro trust + TrustBadges inline */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                  <div className="flex items-center gap-1">
-                    <CheckIcon className="w-3 h-3 text-primary" />
-                    <span>{hero.trustBadges?.verified || 'Metodologia verificata'}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <ShieldIcon className="w-3 h-3 text-primary" />
-                    <span>{hero.trustBadges?.specs || '0€ • 60-90s • Nessun documento'}</span>
-                  </div>
+              {/* Micro trust */}
+              <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                <div className="flex items-center gap-1">
+                  <CheckIcon className="w-3 h-3 text-primary" />
+                  <span>{hero.trustBadges?.verified || 'Metodologia verificata'}</span>
                 </div>
-                
-                {/* TrustBadges compatti */}
-                <div className="hidden sm:block">
-                  <TrustBadges 
-                    variant="micro" 
-                    placement="footer" 
-                    showTooltips={true}
-                    animated={false}
-                    className="justify-end"
-                  />
+                <div className="flex items-center gap-1">
+                  <ShieldIcon className="w-3 h-3 text-primary" />
+                  <span>{hero.trustBadges?.specs || '0€ • 60-90s • Nessun documento'}</span>
                 </div>
               </div>
             </div>

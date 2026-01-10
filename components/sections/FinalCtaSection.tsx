@@ -2,6 +2,7 @@
 
 import { useTranslations } from '@/hooks/useTranslations';
 import { useDashboardModal } from '@/contexts/DashboardModalContext';
+import { TrustBadges } from '@/src/shared/ui/TrustBadges';
 import { useEffect, useRef } from 'react';
 
 export default function FinalCtaSection() {
@@ -65,7 +66,7 @@ export default function FinalCtaSection() {
             {finalCta.title}
           </h2>
           
-          <div className="space-y-4">
+          <div className="space-y-6">
             <button 
               onClick={() => openModal()}
               className="btn-tech"
@@ -77,6 +78,17 @@ export default function FinalCtaSection() {
             <p className="text-xs text-muted-foreground max-w-md mx-auto">
               {finalCta.disclaimer}
             </p>
+
+            {/* TrustBadges vicino all'ultima CTA */}
+            <div className="pt-4">
+              <TrustBadges 
+                variant="detailed" 
+                placement="footer" 
+                showTooltips={true}
+                animated={true}
+                className="justify-center"
+              />
+            </div>
           </div>
         </div>
       </div>

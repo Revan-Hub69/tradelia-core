@@ -5,11 +5,11 @@ export const translations = {
       verify: 'Verifica'
     },
     hero: {
-      title: 'Hai sempre sentito parlare di crypto, ma hai paura di sbagliare?',
-      titleHighlight: '',
+      title: 'Hai sempre sentito parlare di',
+      titleHighlight: 'crypto, ma hai paura di sbagliare?',
       description: 'Dashboard educativa che ti aiuta a riconoscere errori cognitivi comuni prima che diventino perdite reali.',
       subDescription: 'Evitare errori è gratuito. Recuperare le perdite no.',
-      cta: '👉 Guarda l\'anteprima',
+      cta: 'Accedi alla dashboard',
       ctaSecondary: 'Guarda demo',
       features: [
         'Nessun costo',
@@ -515,11 +515,11 @@ export const translations = {
       verify: 'Verify'
     },
     hero: {
-      title: 'Have you always heard about crypto, but are afraid of making mistakes?',
-      titleHighlight: '',
+      title: 'Have you always heard about',
+      titleHighlight: 'crypto, but are afraid of making mistakes?',
       description: 'Educational dashboard that helps you recognize common cognitive errors before they become real losses.',
       subDescription: 'Avoiding errors is free. Recovering losses is not.',
-      cta: '👉 Watch preview',
+      cta: 'Access dashboard',
       ctaSecondary: 'Watch demo',
       features: [
         'No costs',
