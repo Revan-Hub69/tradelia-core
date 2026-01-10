@@ -14,11 +14,10 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { 
   ShieldIcon, 
-  LockIcon, 
   CheckIcon, 
   InfoIcon,
   GraduationCapIcon,
-  EyeOffIcon
+  EyeIcon
 } from '@/components/icons/TradeliaIcons'
 
 export interface TrustBadgesProps {
@@ -57,7 +56,7 @@ export function TrustBadges({
     },
     {
       id: 'privacy',
-      icon: EyeOffIcon,
+      icon: EyeIcon,
       label: t('privacy.label'),
       description: t('privacy.description'),
       status: 'compliant',
