@@ -222,7 +222,8 @@
     "save": "Salva modifiche"
   },
   "common": {
-    "journeyStructure": "Struttura del percorso",
+    "journeyStructure": "Passaggi del percorso",
+    "stepsInOrder": "I passaggi sono progettati per essere seguiti in ordine",
     "nextStep": "Prossimo passo",
     "loading": "Caricamento...",
     "error": "Errore",

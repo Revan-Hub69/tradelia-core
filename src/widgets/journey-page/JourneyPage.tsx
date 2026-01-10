@@ -115,20 +115,17 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                 </p>
               </div>
 
-              {/* Simple next section instruction - not competing with tabs */}
+              {/* Simple next section instruction - natural language */}
               <div className="mt-12 p-4 bg-muted/20 rounded-lg border-l-4 border-primary/30">
-                <div className="text-sm text-muted-foreground mb-1">
-                  {t('nextStep')}:
-                </div>
                 <button
                   onClick={() => {
                     educationMemory.markIntroSeen()
                     const event = new CustomEvent('switchToTab', { detail: 'errors' })
                     window.dispatchEvent(event)
                   }}
-                  className="text-sm font-medium text-foreground hover:text-primary transition-colors"
+                  className="text-sm text-foreground hover:text-primary transition-colors"
                 >
-                  {t('common.journeyPage.tabs.errors')}
+                  {t('nextStep')}: {t('common.journeyPage.tabs.errors')}
                 </button>
               </div>
             </div>

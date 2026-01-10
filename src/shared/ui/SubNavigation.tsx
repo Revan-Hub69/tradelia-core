@@ -163,8 +163,13 @@ export function SubNavigation({
     <div className={`space-y-2 ${className}`}>
       {/* Journey structure label - wayfinding */}
       {showStructureLabel && (
-        <div className="text-sm text-muted-foreground">
-          {t('journeyStructure')}
+        <div className="space-y-1 mb-3">
+          <div className="text-sm text-muted-foreground">
+            {t('journeyStructure')}
+          </div>
+          <div className="text-xs text-muted-foreground/70">
+            {t('stepsInOrder')}
+          </div>
         </div>
       )}
       
