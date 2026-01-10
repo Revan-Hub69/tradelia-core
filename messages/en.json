@@ -200,6 +200,7 @@
     "sectionNavigation": "Section navigation",
     "safeButton": {
       "label": "Safe button",
+      "processing": "Processing...",
       "holdToConfirm": "Hold to confirm"
     },
     "networkStatus": {
@@ -489,10 +490,6 @@
         "projections": "APY projections"
       }
     }
-  },
-  "safeButton": {
-    "processing": "Processing...",
-    "holdToConfirm": "Hold to confirm"
   },
   "softConfirmation": {
     "proceed": "Proceed",

@@ -200,7 +200,8 @@
     "sectionNavigation": "Navigazione sezione",
     "safeButton": {
       "label": "Pulsante sicuro",
-      "holdToConfirm": "Tieni premuto per confermare"
+      "processing": "Elaborazione...",
+      "holdToConfirm": "Premi e tieni premuto per confermare"
     },
     "networkStatus": {
       "offline": "Connessione persa",
@@ -469,11 +470,7 @@
       }
     }
   },
-  "safeButton": {
-      "processing": "Elaborazione...",
-      "holdToConfirm": "Tieni premuto per confermare"
-    },
-    "softConfirmation": {
+  "softConfirmation": {
       "proceed": "Procedi",
       "readFirst": "Leggi prima",
       "dismiss": "Chiudi",
