@@ -1,16 +1,15 @@
 /**
- * TrustBadges - Ultra-Chicca 2026 - STATIC VERSION
+ * TrustBadges - Ultra-Chicca 2026 - SIMPLIFIED VERSION
  * 
  * Trust Badges & SSL Indicators
  * - SSL Secure, Zero Tracking, Educational Only
- * - COMPLETELY STATIC - NO ANIMATIONS OR MOVEMENTS
+ * - Simplified tooltip management with proper click outside handling
  * - Discrete placement with enhanced visual hierarchy
- * - Builds user confidence and compliance signaling
  */
 
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { 
   ShieldIcon, 
   CheckIcon, 
@@ -23,7 +22,6 @@ export interface TrustBadgesProps {
   placement?: 'header' | 'footer' | 'sidebar'
   variant?: 'minimal' | 'detailed' | 'compact' | 'premium' | 'micro'
   showTooltips?: boolean
-  animated?: boolean
   className?: string
 }
 
@@ -44,12 +42,10 @@ export function TrustBadges({
   showTooltips = true,
   className = ''
 }: TrustBadgesProps) {
-  // Use hardcoded strings for now to avoid translation issues
   const [hoveredBadge, setHoveredBadge] = useState<string | null>(null)
   const [mounted, setMounted] = useState(false)
-  const [tooltipTimeout, setTooltipTimeout] = useState<NodeJS.Timeout | null>(null)
   const [isMobile, setIsMobile] = useState(false)
-  const [clickedBadge, setClickedBadge] = useState<string | null>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setMounted(true)
@@ -62,97 +58,58 @@ export function TrustBadges({
     checkMobile()
     window.addEventListener('resize', checkMobile)
     
-    // Cleanup timeout on unmount
     return () => {
-      if (tooltipTimeout) {
-        clearTimeout(tooltipTimeout)
-      }
       window.removeEventListener('resize', checkMobile)
     }
-  }, [tooltipTimeout])
+  }, [])
 
-  // Handle tooltip with delay to prevent flickering
-  const handleMouseEnter = (badgeId: string) => {
-    if (isMobile) return // Skip hover on mobile
-    
-    if (tooltipTimeout) {
-      clearTimeout(tooltipTimeout)
-      setTooltipTimeout(null)
-    }
-    if (showTooltips) {
-      setHoveredBadge(badgeId)
-    }
-  }
-
-  const handleMouseLeave = () => {
-    if (isMobile) return // Skip hover on mobile
-    
-    // Longer delay to allow moving to tooltip
-    const timeout = setTimeout(() => {
-      setHoveredBadge(null)
-    }, 300) // Increased from 150ms to 300ms
-    setTooltipTimeout(timeout)
-  }
-
-  const handleTooltipEnter = () => {
-    if (isMobile) return
-    
-    if (tooltipTimeout) {
-      clearTimeout(tooltipTimeout)
-      setTooltipTimeout(null)
-    }
-  }
-
-  const handleTooltipLeave = () => {
-    if (isMobile) return
-    
-    setHoveredBadge(null)
-    if (tooltipTimeout) {
-      clearTimeout(tooltipTimeout)
-      setTooltipTimeout(null)
-    }
-  }
-
-  // Mobile-specific handlers
-  const handleMobileClick = (e: React.MouseEvent, badgeId: string) => {
-    e.preventDefault()
-    e.stopPropagation()
-    
-    if (!isMobile || !showTooltips) return
-    
-    if (clickedBadge === badgeId) {
-      // Close if already open
-      setClickedBadge(null)
-      setHoveredBadge(null)
-    } else {
-      // Open new tooltip
-      setClickedBadge(badgeId)
-      setHoveredBadge(badgeId)
-    }
-  }
-
-  // Close tooltip when clicking outside (mobile)
+  // Close tooltip when clicking outside
   useEffect(() => {
-    if (!isMobile || !clickedBadge) return
+    if (!hoveredBadge) return
     
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Element
-      if (!target.closest('.trust-badge-container')) {
-        setClickedBadge(null)
+      if (containerRef.current && !containerRef.current.contains(target)) {
         setHoveredBadge(null)
       }
     }
     
     document.addEventListener('click', handleClickOutside)
     return () => document.removeEventListener('click', handleClickOutside)
-  }, [isMobile, clickedBadge])
+  }, [hoveredBadge])
+
+  // Simplified tooltip handlers
+  const handleMouseEnter = (badgeId: string) => {
+    if (isMobile || !showTooltips) return
+    setHoveredBadge(badgeId)
+  }
+
+  const handleMouseLeave = () => {
+    if (isMobile) return
+    // Small delay to prevent flickering when moving to tooltip
+    setTimeout(() => setHoveredBadge(null), 100)
+  }
+
+  // Mobile click handler
+  const handleClick = (e: React.MouseEvent, badgeId: string) => {
+    e.preventDefault()
+    e.stopPropagation()
+    
+    if (!showTooltips) return
+    
+    if (hoveredBadge === badgeId) {
+      setHoveredBadge(null)
+    } else {
+      setHoveredBadge(badgeId)
+    }
+  }
 
   const badges: BadgeConfig[] = [
     {
       id: 'ssl',
       icon: ShieldIcon,
       label: 'SSL Sicuro',
-      description: 'Connessione crittografata e sicura',
+      description: 'Connessione crittografata end-to-end per proteggere i tuoi dati',
       status: 'verified',
       color: 'text-emerald-600 dark:text-emerald-400',
       accentColor: 'bg-emerald-500/10 border-emerald-500/20',
@@ -162,7 +119,7 @@ export function TrustBadges({
       id: 'privacy',
       icon: ShieldIcon,
       label: 'Privacy Garantita',
-      description: 'Nessun tracking, nessun cookie',
+      description: 'Niente pixel di tracciamento, niente marketing invasivo, niente vendita dati',
       status: 'compliant',
       color: 'text-blue-600 dark:text-blue-400',
       accentColor: 'bg-blue-500/10 border-blue-500/20',
@@ -172,7 +129,7 @@ export function TrustBadges({
       id: 'educational',
       icon: GraduationCapIcon,
       label: 'Solo Educativo',
-      description: 'Nessun consiglio di investimento',
+      description: 'Strumento formativo puro, non vendiamo prodotti finanziari',
       status: 'active',
       color: 'text-amber-600 dark:text-amber-400',
       accentColor: 'bg-amber-500/10 border-amber-500/20',
@@ -207,14 +164,13 @@ export function TrustBadges({
         return 'flex-col items-start space-y-1'
       case 'footer':
       default:
-        return 'justify-center flex-wrap gap-2' // Better mobile layout
+        return 'justify-center flex-wrap gap-2'
     }
   }
 
   if (!mounted) {
     return (
       <div className={`flex items-center ${getVariantClasses()} ${getPlacementClasses()} ${className}`}>
-        {/* Skeleton loading per evitare hydration mismatch */}
         {badges.map((badge) => (
           <div
             key={badge.id}
@@ -235,7 +191,10 @@ export function TrustBadges({
   }
 
   return (
-    <div className={`flex items-center ${getVariantClasses()} ${getPlacementClasses()} ${className} trust-badges-static`}>
+    <div 
+      ref={containerRef}
+      className={`flex items-center ${getVariantClasses()} ${getPlacementClasses()} ${className} trust-badges-static`}
+    >
       {badges.map((badge) => {
         const Icon = badge.icon
         const isActive = badge.id === 'ssl' ? isSSL : true
@@ -243,41 +202,14 @@ export function TrustBadges({
         return (
           <div
             key={badge.id}
-            className="relative trust-badge-no-select trust-badge-container"
+            className="relative trust-badge-container"
             onMouseEnter={() => handleMouseEnter(badge.id)}
             onMouseLeave={handleMouseLeave}
-            onClick={(e) => handleMobileClick(e, badge.id)}
-            role={isMobile ? "button" : undefined}
-            tabIndex={isMobile ? 0 : undefined}
-            onKeyDown={isMobile ? (e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault()
-                // Create a synthetic mouse event for keyboard activation
-                const syntheticEvent = {
-                  preventDefault: () => {},
-                  stopPropagation: () => {}
-                } as React.MouseEvent
-                handleMobileClick(syntheticEvent, badge.id)
-              }
-            } : undefined}
-            aria-label={isMobile ? `Mostra informazioni su ${badge.label}` : undefined}
+            onClick={(e) => handleClick(e, badge.id)}
           >
-            {/* Invisible hover area to prevent tooltip closing */}
-            {showTooltips && hoveredBadge === badge.id && !isMobile && (
-              <div className={`
-                absolute z-40 
-                ${placement === 'sidebar' 
-                  ? 'left-0 top-0 w-full h-full' 
-                  : placement === 'footer'
-                  ? '-inset-2' // Larger hover area for footer
-                  : '-inset-1'
-                }
-              `} />
-            )}
-            
             <div 
               className={`
-                relative flex items-center z-10 cursor-pointer
+                relative flex items-center cursor-pointer
                 ${variant === 'micro' 
                   ? 'gap-1 px-1.5 py-0.5 rounded-md border backdrop-blur-sm' 
                   : variant === 'compact'
@@ -286,12 +218,11 @@ export function TrustBadges({
                 }
                 ${isActive ? badge.accentColor : 'bg-muted/30 border-border/50'}
                 ${placement === 'sidebar' ? 'w-full' : ''}
-                ${isMobile ? 'select-none touch-manipulation' : ''}
-                trust-badge-no-select
+                transition-all duration-150
               `}
               title={!isMobile && showTooltips ? badge.description : undefined}
             >
-              {/* Status Indicator - STATIC */}
+              {/* Status Indicator */}
               {variant !== 'minimal' && variant !== 'micro' && isActive && (
                 <div className="relative">
                   <div className={`
@@ -304,7 +235,6 @@ export function TrustBadges({
               <Icon className={`
                 ${variant === 'minimal' || variant === 'micro' ? 'w-3 h-3' : variant === 'compact' ? 'w-3.5 h-3.5' : 'w-4 h-4'}
                 ${isActive ? badge.color : 'text-muted-foreground'}
-                trust-badge-no-select
               `} />
               
               {/* Label */}
@@ -313,17 +243,15 @@ export function TrustBadges({
                   font-medium whitespace-nowrap
                   ${isActive ? badge.color : 'text-muted-foreground'}
                   ${variant === 'compact' ? 'text-xs' : placement === 'sidebar' ? 'text-xs' : ''}
-                  trust-badge-no-select
                 `}>
                   {badge.label}
                 </span>
               )}
               
-              {/* Verification Check - STATIC */}
+              {/* Verification Check */}
               {variant === 'detailed' && isActive && (
                 <CheckIcon className={`
                   w-3 h-3 ${badge.color} opacity-80
-                  trust-badge-no-select
                 `} />
               )}
 
@@ -335,35 +263,22 @@ export function TrustBadges({
               )}
             </div>
 
-            {/* MOBILE-OPTIMIZED Tooltip */}
+            {/* Tooltip */}
             {showTooltips && hoveredBadge === badge.id && (
               <div 
                 className={`
                   ${isMobile 
-                    ? 'fixed inset-x-4 bottom-24 z-[9999] pointer-events-auto' 
-                    : `fixed z-[9999] pointer-events-auto
+                    ? 'fixed inset-x-4 bottom-24 z-[9999]' 
+                    : `absolute z-[9999]
                        ${placement === 'sidebar' 
                          ? 'left-full top-1/2 -translate-y-1/2 ml-3' 
-                         : placement === 'footer'
-                         ? 'bottom-20 left-1/2 -translate-x-1/2'
                          : 'bottom-full left-1/2 -translate-x-1/2 mb-3'
                        }`
                   }
                 `}
-                style={!isMobile ? {
-                  maxWidth: 'calc(100vw - 1rem)',
-                  ...(placement === 'footer' && {
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    bottom: '5rem'
-                  })
-                } : {}}
-                onMouseEnter={handleTooltipEnter}
-                onMouseLeave={handleTooltipLeave}
                 onClick={(e) => e.stopPropagation()}
-                role="dialog"
-                aria-labelledby={`tooltip-title-${badge.id}`}
-                tabIndex={-1}
+                onMouseEnter={() => setHoveredBadge(badge.id)}
+                onMouseLeave={() => !isMobile && setHoveredBadge(null)}
               >
                 <div className="relative">
                   <div className={`
@@ -376,10 +291,7 @@ export function TrustBadges({
                     {/* Mobile close button */}
                     {isMobile && (
                       <button
-                        onClick={() => {
-                          setClickedBadge(null)
-                          setHoveredBadge(null)
-                        }}
+                        onClick={() => setHoveredBadge(null)}
                         className="absolute top-2 right-2 p-1 text-muted-foreground hover:text-foreground rounded-full hover:bg-muted/50"
                         aria-label="Chiudi"
                       >
@@ -392,7 +304,7 @@ export function TrustBadges({
                         <Icon className={`${isMobile ? 'w-4 h-4' : 'w-3 h-3'} ${badge.color}`} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 id={`tooltip-title-${badge.id}`} className={`font-semibold text-foreground ${isMobile ? 'text-base' : 'text-sm'} mb-2 flex items-center gap-2`}>
+                        <h4 className={`font-semibold text-foreground ${isMobile ? 'text-base' : 'text-sm'} mb-2 flex items-center gap-2`}>
                           {badge.label}
                           {isActive && (
                             <CheckIcon className={`${isMobile ? 'w-4 h-4' : 'w-3 h-3'} ${badge.color} flex-shrink-0`} />
@@ -436,8 +348,6 @@ export function TrustBadges({
                       absolute w-2 h-2 bg-background/98 border-l border-b border-border/50 rotate-45
                       ${placement === 'sidebar' 
                         ? 'right-full top-1/2 -translate-y-1/2 -translate-x-1 rotate-[315deg]'
-                        : placement === 'footer'
-                        ? 'top-full left-1/2 -translate-x-1/2 -translate-y-1'
                         : 'top-full left-1/2 -translate-x-1/2 -translate-y-1'
                       }
                     `} />
@@ -452,7 +362,7 @@ export function TrustBadges({
   )
 }
 
-// Specialized trust badge components - ALL STATIC
+// Specialized trust badge components
 export function HeaderTrustBadges(props: Omit<TrustBadgesProps, 'placement'>) {
   return (
     <TrustBadges 
@@ -483,7 +393,7 @@ export function SidebarTrustBadges(props: Omit<TrustBadgesProps, 'placement'>) {
   )
 }
 
-// Enhanced Security Status - STATIC
+// Enhanced Security Status
 export function SecurityStatus({ className = '' }: { className?: string }) {
   const isSSL = typeof window !== 'undefined' && window.location.protocol === 'https:'
   
@@ -505,7 +415,7 @@ export function SecurityStatus({ className = '' }: { className?: string }) {
   )
 }
 
-// Premium Compliance Footer - STATIC
+// Premium Compliance Footer
 export function ComplianceFooter({ className = '' }: { className?: string }) {
   return (
     <div className={`text-center space-y-6 ${className}`}>
