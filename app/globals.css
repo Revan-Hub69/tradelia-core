@@ -1134,4 +1134,25 @@ html, body {
     z-index: 9999 !important;
     pointer-events: auto !important;
   }
+  
+  /* Prevent text selection on mobile badges */
+  .trust-badge-container {
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+  
+  /* Mobile tooltip full-width positioning */
+  .trust-badge-mobile-tooltip {
+    position: fixed !important;
+    left: 1rem !important;
+    right: 1rem !important;
+    bottom: 6rem !important;
+    z-index: 9999 !important;
+    max-width: none !important;
+    width: auto !important;
+  }
 }
