@@ -34,12 +34,8 @@ export default function HeroSection() {
               <div className="relative space-y-6">
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight tracking-tight">
                   {hero.title}{' '}
-                  <span className="text-primary relative inline-block">
-                    <span className="relative">
-                      crypto
-                      <div className="absolute -bottom-2 left-[60%] w-[40%] h-1 bg-gradient-to-r from-primary/60 to-primary/20 rounded-full" />
-                    </span>
-                    <span>, ma hai paura di sbagliare?</span>
+                  <span className="text-primary">
+                    {hero.titleHighlight}
                   </span>
                 </h1>
                 
@@ -49,14 +45,46 @@ export default function HeroSection() {
 
                 {hero.subDescription && (
                   <p className="text-base text-foreground font-semibold max-w-xl">
-                    {hero.subDescription}
+                    {(() => {
+                      // Split the subDescription to add underline to the first part
+                      const text = hero.subDescription;
+                      const isItalian = text.includes('Evitare errori è gratuito');
+                      const isEnglish = text.includes('Avoiding errors is free');
+                      
+                      if (isItalian) {
+                        const parts = text.split('. ');
+                        return (
+                          <>
+                            <span className="relative inline-block">
+                              {parts[0]}
+                              <div className="absolute -bottom-2 left-0 w-[40%] h-1 bg-gradient-to-r from-primary/60 to-primary/20 rounded-full" />
+                            </span>
+                            <span>. {parts[1]}</span>
+                          </>
+                        );
+                      } else if (isEnglish) {
+                        const parts = text.split('. ');
+                        return (
+                          <>
+                            <span className="relative inline-block">
+                              {parts[0]}
+                              <div className="absolute -bottom-2 left-0 w-[40%] h-1 bg-gradient-to-r from-primary/60 to-primary/20 rounded-full" />
+                            </span>
+                            <span>. {parts[1]}</span>
+                          </>
+                        );
+                      } else {
+                        // Fallback for other languages
+                        return text;
+                      }
+                    })()}
                   </p>
                 )}
 
                 {/* Trust metrics */}
                 <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                  {hero.features.map((feature, index) => (
-                    <div key={`feature-${index}`} className="flex items-center gap-2">
+                  {hero.features.map((feature) => (
+                    <div key={feature} className="flex items-center gap-2">
                       <div className="w-1.5 h-1.5 bg-primary rounded-full" />
                       <span className="font-medium">{feature}</span>
                     </div>
