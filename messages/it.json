@@ -538,8 +538,7 @@
         "whoItMakesSense": {
           "title": "Per chi ha senso",
           "content": "Questo approccio può avere senso per chi cerca: ridondanza del sistema, accesso indipendente, continuità operativa. Non per chi cerca ottimizzazione o rendimento."
-        },
-        "continueButton": "Continua: Errori da evitare"
+        }
       },
       "sections": {
         "overview": "Panoramica",

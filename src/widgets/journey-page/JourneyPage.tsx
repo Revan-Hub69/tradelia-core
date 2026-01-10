@@ -75,135 +75,144 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
       icon: <BookOpenIcon className="w-4 h-4" />,
       content: (
         <div className="space-y-6">
-          {/* Ultra-Chicche: Education Memory Progress */}
-          <div className="bg-primary/5 border border-primary/20 rounded-xl p-6">
-            <h4 className="font-semibold text-primary mb-3">{tJourney('yourProgress')}</h4>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm">{tJourney('introductionRead')}</span>
-                <span className={`text-xs px-2 py-1 rounded ${educationMemory.hasSeenIntro ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
-                  {educationMemory.hasSeenIntro ? tJourney('completed') : tJourney('toDo')}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm">{tJourney('errorsStudied')}</span>
-                <span className={`text-xs px-2 py-1 rounded ${educationMemory.hasReadErrors ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
-                  {educationMemory.hasReadErrors ? tJourney('completed') : tJourney('toDo')}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm">{tJourney('educationalSection')}</span>
-                <span className={`text-xs px-2 py-1 rounded ${educationMemory.hasReadEducational ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
-                  {educationMemory.hasReadEducational ? tJourney('completed') : tJourney('toDo')}
-                </span>
-              </div>
-            </div>
-            <div className="mt-4 p-3 bg-white/50 rounded-lg">
-              <p className="text-sm text-muted-foreground">
-                <strong>{tJourney('nextStep')}:</strong> {educationMemory.getRecommendedAction().reason}
-              </p>
-            </div>
-          </div>
-
-          {/* Emergency-specific introduction */}
+          {/* Emergency-specific introduction - Clean design following spec */}
           {journeyId === 'emergency' ? (
-            <div className="space-y-8">
-              {/* Title */}
-              <div className="text-center">
-                <h1 className="text-2xl font-bold text-foreground mb-2">
+            <div className="max-w-4xl mx-auto">
+              {/* Title - Centered, neutral */}
+              <div className="text-center mb-16">
+                <h1 className="text-3xl font-bold text-foreground">
                   {t('journeys.emergency.introduction.title')}
                 </h1>
               </div>
 
-              {/* Block 1 - Why it exists */}
-              <div className="section-frame p-6">
-                <h2 className="text-lg font-semibold text-foreground mb-4">
+              {/* Block 1 - Perché esiste */}
+              <div className="mb-16">
+                <h2 className="text-xl font-semibold text-foreground mb-6">
                   {t('journeys.emergency.introduction.whyExists.title')}
                 </h2>
-                <p className="text-muted-foreground leading-relaxed">
-                  {t('journeys.emergency.introduction.whyExists.content')}
-                </p>
+                <div className="prose prose-lg max-w-none">
+                  <p className="text-muted-foreground leading-relaxed text-lg">
+                    {t('journeys.emergency.introduction.whyExists.content')}
+                  </p>
+                </div>
               </div>
 
-              {/* Block 2 - Problem type */}
-              <div className="section-frame p-6">
-                <h2 className="text-lg font-semibold text-foreground mb-4">
+              {/* Block 2 - Che tipo di problema */}
+              <div className="mb-16">
+                <h2 className="text-xl font-semibold text-foreground mb-6">
                   {t('journeys.emergency.introduction.problemType.title')}
                 </h2>
-                <p className="text-muted-foreground leading-relaxed">
-                  {t('journeys.emergency.introduction.problemType.content')}
-                </p>
+                <div className="prose prose-lg max-w-none">
+                  <p className="text-muted-foreground leading-relaxed text-lg">
+                    {t('journeys.emergency.introduction.problemType.content')}
+                  </p>
+                </div>
               </div>
 
-              {/* Block 3 - Mental rule */}
-              <div className="section-frame p-6">
-                <h2 className="text-lg font-semibold text-foreground mb-4">
+              {/* Block 3 - La regola mentale */}
+              <div className="mb-16">
+                <h2 className="text-xl font-semibold text-foreground mb-6">
                   {t('journeys.emergency.introduction.mentalRule.title')}
                 </h2>
-                <p className="text-muted-foreground leading-relaxed">
-                  {t('journeys.emergency.introduction.mentalRule.content')}
-                </p>
+                <div className="prose prose-lg max-w-none">
+                  <p className="text-muted-foreground leading-relaxed text-lg">
+                    {t('journeys.emergency.introduction.mentalRule.content')}
+                  </p>
+                </div>
               </div>
 
-              {/* Block 4 - Who it makes sense for */}
-              <div className="section-frame p-6">
-                <h2 className="text-lg font-semibold text-foreground mb-4">
+              {/* Block 4 - Per chi ha senso */}
+              <div className="mb-20">
+                <h2 className="text-xl font-semibold text-foreground mb-6">
                   {t('journeys.emergency.introduction.whoItMakesSense.title')}
                 </h2>
-                <p className="text-muted-foreground leading-relaxed">
-                  {t('journeys.emergency.introduction.whoItMakesSense.content')}
-                </p>
+                <div className="prose prose-lg max-w-none">
+                  <p className="text-muted-foreground leading-relaxed text-lg">
+                    {t('journeys.emergency.introduction.whoItMakesSense.content')}
+                  </p>
+                </div>
               </div>
 
-              {/* Single CTA */}
-              <div className="text-center pt-4">
-                <SafeButton
+              {/* Single CTA - Simple "Prosegui" */}
+              <div className="text-center">
+                <button
                   onClick={() => {
                     educationMemory.markIntroSeen()
                     const event = new CustomEvent('switchToTab', { detail: 'errors' })
                     window.dispatchEvent(event)
                   }}
-                  variant="safe"
-                  size="lg"
+                  className="px-8 py-4 bg-primary text-white text-lg font-medium rounded-lg hover:bg-primary/90 transition-colors"
                 >
-                  {t('journeys.emergency.introduction.continueButton')}
-                </SafeButton>
+                  Prosegui
+                </button>
               </div>
             </div>
           ) : (
             /* Generic introduction for other journeys */
-            <div className="bg-background/60 border border-border/50 rounded-xl p-6">
-              <h3 className="text-lg font-semibold mb-3">{tJourney('welcomeTo')} {t(journey.labelKey)}</h3>
-              <p className="text-muted-foreground mb-4">
-                {t(`journeys.${journeyId}.description`)}
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 bg-muted/30 rounded-lg">
-                  <h4 className="font-medium mb-2">{tJourney('objective')}</h4>
-                  <p className="text-sm text-muted-foreground">
-                    {tJourney('objectiveDescription')}
-                  </p>
+            <>
+              {/* Ultra-Chicche: Education Memory Progress */}
+              <div className="bg-primary/5 border border-primary/20 rounded-xl p-6">
+                <h4 className="font-semibold text-primary mb-3">{tJourney('yourProgress')}</h4>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">{tJourney('introductionRead')}</span>
+                    <span className={`text-xs px-2 py-1 rounded ${educationMemory.hasSeenIntro ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
+                      {educationMemory.hasSeenIntro ? tJourney('completed') : tJourney('toDo')}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">{tJourney('errorsStudied')}</span>
+                    <span className={`text-xs px-2 py-1 rounded ${educationMemory.hasReadErrors ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
+                      {educationMemory.hasReadErrors ? tJourney('completed') : tJourney('toDo')}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">{tJourney('educationalSection')}</span>
+                    <span className={`text-xs px-2 py-1 rounded ${educationMemory.hasReadEducational ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
+                      {educationMemory.hasReadEducational ? tJourney('completed') : tJourney('toDo')}
+                    </span>
+                  </div>
                 </div>
-                <div className="p-4 bg-muted/30 rounded-lg">
-                  <h4 className="font-medium mb-2">{tJourney('approach')}</h4>
+                <div className="mt-4 p-3 bg-white/50 rounded-lg">
                   <p className="text-sm text-muted-foreground">
-                    {tJourney('approachDescription')}
+                    <strong>{tJourney('nextStep')}:</strong> {educationMemory.getRecommendedAction().reason}
                   </p>
                 </div>
               </div>
 
-              {/* Mark intro as seen when user reads this */}
-              <div className="mt-6">
-                <SafeButton
-                  onClick={() => educationMemory.markIntroSeen()}
-                  variant="safe"
-                  size="sm"
-                  disabled={educationMemory.hasSeenIntro}
-                >
-                  {educationMemory.hasSeenIntro ? tJourney('introductionCompleted') : tJourney('markAsRead')}
-                </SafeButton>
+              <div className="bg-background/60 border border-border/50 rounded-xl p-6">
+                <h3 className="text-lg font-semibold mb-3">{tJourney('welcomeTo')} {t(journey.labelKey)}</h3>
+                <p className="text-muted-foreground mb-4">
+                  {t(`journeys.${journeyId}.description`)}
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 bg-muted/30 rounded-lg">
+                    <h4 className="font-medium mb-2">{tJourney('objective')}</h4>
+                    <p className="text-sm text-muted-foreground">
+                      {tJourney('objectiveDescription')}
+                    </p>
+                  </div>
+                  <div className="p-4 bg-muted/30 rounded-lg">
+                    <h4 className="font-medium mb-2">{tJourney('approach')}</h4>
+                    <p className="text-sm text-muted-foreground">
+                      {tJourney('approachDescription')}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Mark intro as seen when user reads this */}
+                <div className="mt-6">
+                  <SafeButton
+                    onClick={() => educationMemory.markIntroSeen()}
+                    variant="safe"
+                    size="sm"
+                    disabled={educationMemory.hasSeenIntro}
+                  >
+                    {educationMemory.hasSeenIntro ? tJourney('introductionCompleted') : tJourney('markAsRead')}
+                  </SafeButton>
+                </div>
               </div>
-            </div>
+            </>
           )}
         </div>
       )
