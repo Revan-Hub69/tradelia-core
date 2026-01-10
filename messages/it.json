@@ -252,6 +252,60 @@
       "noToolsAvailable": "Nessun tool disponibile",
       "toolsComingSoon": "I tool per questa sezione saranno disponibili presto."
     },
+    "trustBadges": {
+      "ssl": {
+        "label": "SSL Sicuro",
+        "description": "Connessione crittografata e protetta"
+      },
+      "privacy": {
+        "label": "Privacy First",
+        "description": "Dati protetti secondo GDPR"
+      },
+      "educational": {
+        "label": "Solo Educativo",
+        "description": "Nessun consiglio finanziario"
+      }
+    },
+    "featureGate": {
+      "temporarilyUnavailable": "Temporaneamente non disponibile",
+      "featureDisabled": "Questa funzionalità è attualmente disabilitata",
+      "featureDisabledReason": "La funzionalità {feature} è attualmente disabilitata",
+      "comingSoon": "In arrivo",
+      "toolComingSoon": "Il tool {toolId} sarà disponibile presto",
+      "notifyMe": "Avvisami",
+      "learnMore": "Scopri di più",
+      "features": {
+        "animations": "Animazioni",
+        "complexAnimations": "Animazioni complesse",
+        "autoplay": "Riproduzione automatica",
+        "riskCalculator": "Calcolatore rischio",
+        "portfolioAnalyzer": "Analizzatore portafoglio",
+        "advancedCharts": "Grafici avanzati",
+        "aiFeatures": "Funzionalità AI",
+        "tooltips": "Suggerimenti",
+        "notifications": "Notifiche",
+        "soundEffects": "Effetti sonori",
+        "hapticFeedback": "Feedback tattile",
+        "lazyLoading": "Caricamento lazy",
+        "imageOptimization": "Ottimizzazione immagini",
+        "prefetching": "Precaricamento",
+        "betaFeatures": "Funzionalità beta",
+        "debugMode": "Modalità debug"
+      }
+    },
+    "toolPreview": {
+      "showInterest": "Sono interessato",
+      "notifyMe": "Avvisami",
+      "interestShown": "Interesse registrato",
+      "notifying": "Registrando...",
+      "expectedFeatures": "Funzionalità previste",
+      "estimatedLaunch": "Lancio previsto",
+      "complexity": {
+        "beginner": "Principiante",
+        "intermediate": "Intermedio", 
+        "advanced": "Avanzato"
+      }
+    },
     "privacyConsent": {
       "close": "Chiudi",
       "enableBasicAnalytics": "Abilita analytics di base",

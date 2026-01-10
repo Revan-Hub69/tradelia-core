@@ -252,6 +252,60 @@
       "noToolsAvailable": "No tools available",
       "toolsComingSoon": "Tools for this section will be available soon."
     },
+    "trustBadges": {
+      "ssl": {
+        "label": "SSL Secure",
+        "description": "Encrypted and protected connection"
+      },
+      "privacy": {
+        "label": "Privacy First",
+        "description": "Data protected according to GDPR"
+      },
+      "educational": {
+        "label": "Educational Only",
+        "description": "No financial advice"
+      }
+    },
+    "featureGate": {
+      "temporarilyUnavailable": "Temporarily unavailable",
+      "featureDisabled": "This feature is currently disabled",
+      "featureDisabledReason": "The {feature} feature is currently disabled",
+      "comingSoon": "Coming Soon",
+      "toolComingSoon": "The {toolId} tool will be available soon",
+      "notifyMe": "Notify Me",
+      "learnMore": "Learn More",
+      "features": {
+        "animations": "Animations",
+        "complexAnimations": "Complex animations",
+        "autoplay": "Autoplay",
+        "riskCalculator": "Risk calculator",
+        "portfolioAnalyzer": "Portfolio analyzer",
+        "advancedCharts": "Advanced charts",
+        "aiFeatures": "AI features",
+        "tooltips": "Tooltips",
+        "notifications": "Notifications",
+        "soundEffects": "Sound effects",
+        "hapticFeedback": "Haptic feedback",
+        "lazyLoading": "Lazy loading",
+        "imageOptimization": "Image optimization",
+        "prefetching": "Prefetching",
+        "betaFeatures": "Beta features",
+        "debugMode": "Debug mode"
+      }
+    },
+    "toolPreview": {
+      "showInterest": "Show Interest",
+      "notifyMe": "Notify Me",
+      "interestShown": "Interest Registered",
+      "notifying": "Registering...",
+      "expectedFeatures": "Expected Features",
+      "estimatedLaunch": "Estimated Launch",
+      "complexity": {
+        "beginner": "Beginner",
+        "intermediate": "Intermediate", 
+        "advanced": "Advanced"
+      }
+    },
     "privacyConsent": {
       "close": "Close",
       "enableBasicAnalytics": "Enable basic analytics",
