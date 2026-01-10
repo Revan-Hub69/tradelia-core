@@ -113,24 +113,10 @@ export function useRoutePerformance() {
 
 // Send performance metric to analytics
 async function sendPerformanceMetric(metric: PerformanceMetric) {
+  // Analytics disabled - endpoint not implemented
+  // TODO: Re-enable when /api/analytics/performance endpoint is created
   try {
-    // Only send if performance is poor (to reduce noise)
-    if (metric.rating === 'poor') {
-      await fetch('/api/analytics/performance', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'web_vital',
-          metric: metric.name,
-          value: metric.value,
-          rating: metric.rating,
-          url: metric.url,
-          timestamp: metric.timestamp,
-          // No PII, just anonymous session
-          session_id: getAnonymousSessionId()
-        })
-      })
-    }
+    console.debug('Performance metric:', metric.name, metric.value, metric.rating)
   } catch {
     // Fail silently - analytics should never break UX
   }
@@ -138,36 +124,13 @@ async function sendPerformanceMetric(metric: PerformanceMetric) {
 
 // Send navigation timing
 async function sendNavigationTiming(timing: NavigationTiming) {
+  // Analytics disabled - endpoint not implemented
+  // TODO: Re-enable when /api/analytics/performance endpoint is created
   try {
-    // Only send slow navigations (>2s)
-    if (timing.loadTime > 2000) {
-      await fetch('/api/analytics/performance', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'navigation',
-          route: timing.route,
-          load_time: timing.loadTime,
-          timestamp: timing.timestamp,
-          session_id: getAnonymousSessionId()
-        })
-      })
-    }
+    console.debug('Navigation timing:', timing.route, timing.loadTime + 'ms')
   } catch {
     // Fail silently
   }
-}
-
-// Get anonymous session ID (no user identification)
-function getAnonymousSessionId(): string {
-  if (typeof window === 'undefined') return 'server'
-  
-  let sessionId = sessionStorage.getItem('perf_session_id')
-  if (!sessionId) {
-    sessionId = Math.random().toString(36).substring(2, 15)
-    sessionStorage.setItem('perf_session_id', sessionId)
-  }
-  return sessionId
 }
 
 // Performance observer for custom metrics

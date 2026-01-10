@@ -119,10 +119,24 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                 <button
                   onClick={() => {
                     educationMemory.markIntroSeen()
-                    const event = new CustomEvent('switchToTab', { detail: 'errors' })
-                    window.dispatchEvent(event)
+                    
+                    // Try to find and click the errors tab
+                    const errorsTab = document.querySelector('[data-tab-id="errors"]') as HTMLButtonElement
+                    if (errorsTab) {
+                      errorsTab.click()
+                    } else {
+                      // Fallback: try to trigger the parent's tab change handler
+                      const tabContainer = document.querySelector('[role="tablist"]')
+                      if (tabContainer) {
+                        // Look for errors tab in the container
+                        const errorButton = tabContainer.querySelector('[data-tab-id="errors"]') as HTMLButtonElement
+                        if (errorButton) {
+                          errorButton.click()
+                        }
+                      }
+                    }
                   }}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-sm text-sky-600 hover:text-sky-700 transition-colors italic underline decoration-sky-600/30 hover:decoration-sky-700 underline-offset-4 focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:ring-offset-2 rounded-sm"
                 >
                   Next: Errors to avoid
                 </button>
