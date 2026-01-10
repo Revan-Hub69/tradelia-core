@@ -5,6 +5,7 @@ import { useTranslations, useLocale } from 'next-intl'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
+import { SafeButton } from '@/src/shared/ui/SafeButton'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { LanguageToggle } from '@/components/ui/LanguageToggle'
 import {
@@ -132,17 +133,21 @@ export function UserMenu() {
             {/* Divider */}
             <div className="my-1 border-t border-border/50" />
 
-            {/* Logout */}
-            <button
-              onClick={() => {
-                setIsOpen(false)
-                actions.signOut()
-              }}
-              className="w-full flex items-center gap-3 px-3 py-2 text-sm text-error hover:bg-error/10 transition-colors"
-            >
-              <LogOutIcon className="w-4 h-4" />
-              <span>{t('logout')}</span>
-            </button>
+            {/* Ultra-Chicche: SafeButton for Logout */}
+            <div className="px-3 py-2">
+              <SafeButton
+                variant="destructive"
+                onClick={() => {
+                  setIsOpen(false)
+                  actions.signOut()
+                }}
+                className="w-full flex items-center gap-3 px-0 py-1 text-sm text-error hover:bg-error/10 transition-colors bg-transparent border-none shadow-none"
+                size="sm"
+              >
+                <LogOutIcon className="w-4 h-4" />
+                <span>{t('logout')}</span>
+              </SafeButton>
+            </div>
           </div>
         </div>
       )}

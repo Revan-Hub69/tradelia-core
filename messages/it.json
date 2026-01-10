@@ -390,5 +390,105 @@
         "projections": "Proiezioni APY"
       }
     }
+  },
+  "safeButton": {
+      "processing": "Elaborazione...",
+      "holdToConfirm": "Tieni premuto per confermare"
+    },
+    "softConfirmation": {
+      "proceed": "Procedi",
+      "readFirst": "Leggi prima",
+      "dismiss": "Chiudi",
+      "toolWarning": {
+        "low": "Stai per utilizzare {toolName}. È uno strumento a basso rischio, ideale per iniziare.",
+        "medium": "Stai per utilizzare {toolName}. Richiede attenzione e conoscenze base.",
+        "high": "Stai per utilizzare {toolName}. È uno strumento avanzato con rischi significativi."
+      },
+      "sectionWarning": "Stai per accedere alla sezione {sectionId}. Assicurati di aver letto le informazioni di base."
+    },
+    "featureGate": {
+      "temporarilyUnavailable": "Temporaneamente non disponibile",
+      "featureDisabled": "Questa funzionalità è temporaneamente disabilitata per miglioramenti.",
+      "featureDisabledReason": "La funzionalità {feature} è temporaneamente disabilitata.",
+      "comingSoon": "In arrivo",
+      "toolComingSoon": "Il tool {toolId} sarà disponibile presto.",
+      "notifyMe": "Avvisami",
+      "learnMore": "Scopri di più",
+      "features": {
+        "animations": "Animazioni",
+        "complexAnimations": "Animazioni complesse",
+        "autoplay": "Riproduzione automatica",
+        "riskCalculator": "Calcolatore di rischio",
+        "portfolioAnalyzer": "Analizzatore portafoglio",
+        "advancedCharts": "Grafici avanzati",
+        "aiFeatures": "Funzionalità AI",
+        "tooltips": "Suggerimenti",
+        "notifications": "Notifiche",
+        "soundEffects": "Effetti sonori",
+        "hapticFeedback": "Feedback tattile",
+        "lazyLoading": "Caricamento lazy",
+        "imageOptimization": "Ottimizzazione immagini",
+        "prefetching": "Precaricamento",
+        "betaFeatures": "Funzionalità beta",
+        "debugMode": "Modalità debug"
+      }
+    },
+    "educationMemory": {
+      "messages": {
+        "getStarted": "Inizia leggendo l'Introduzione o gli Errori da evitare",
+        "readErrors": "Ottimo! Ora leggi gli Errori da evitare per completare la preparazione",
+        "readIntro": "Perfetto! Ora puoi leggere l'Introduzione per una visione completa",
+        "readEducational": "Eccellente! Completa con la sezione Educativo per approfondire",
+        "almostReady": "Quasi pronto! Completa qualche checklist per essere completamente preparato",
+        "completeChecklists": "Ottimo progresso! Completa le checklist rimanenti",
+        "fullyPrepared": "Sei completamente preparato per utilizzare tutti gli strumenti"
+      },
+      "actions": {
+        "startWithIntro": "Inizia con l'Introduzione per una panoramica completa",
+        "readErrorsFirst": "Leggi prima gli Errori da evitare per utilizzare i tool in sicurezza",
+        "expandKnowledge": "Espandi le tue conoscenze con la sezione Educativo",
+        "readyForTools": "Sei pronto per utilizzare gli strumenti avanzati"
+      }
+    },
+    "toolPreview": {
+      "preview": "Anteprima",
+      "expectedFeatures": "Funzionalità previste",
+      "launchTimeline": "Timeline di lancio",
+      "estimatedLaunch": "Lancio previsto: {date}",
+      "showInterest": "Mostra interesse",
+      "interestShown": "Interesse registrato",
+      "notifyMe": "Avvisami",
+      "notifying": "Ti avviseremo",
+      "thankYouForInterest": "Grazie per il tuo interesse! Ti terremo aggiornato sui progressi.",
+      "complexity": {
+        "simple": "Semplice",
+        "intermediate": "Intermedio",
+        "advanced": "Avanzato"
+      }
+    },
+    "trustBadges": {
+      "ssl": {
+        "label": "SSL Sicuro",
+        "description": "Connessione crittografata end-to-end per proteggere i tuoi dati",
+        "verified": "Connessione verificata",
+        "notSecure": "Connessione non sicura"
+      },
+      "privacy": {
+        "label": "Privacy First",
+        "description": "Dati protetti secondo GDPR, nessun tracking invasivo",
+        "compliant": "Conforme GDPR"
+      },
+      "educational": {
+        "label": "Solo Educativo",
+        "description": "Strumento educativo, non forniamo consigli finanziari",
+        "active": "Modalità educativa"
+      },
+      "secure": "Sicuro",
+      "notSecure": "Non sicuro",
+      "compliance": {
+        "gdpr": "Conforme GDPR • Privacy by Design • Dati protetti",
+        "educational": "Strumento educativo • Nessun consiglio finanziario",
+        "noAdvice": "Le informazioni fornite sono solo a scopo educativo"
+      }
+    }
   }
-}

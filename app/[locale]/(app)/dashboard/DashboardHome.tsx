@@ -11,6 +11,7 @@ import Link from 'next/link'
 import { useTranslations, useLocale } from 'next-intl'
 import { DashboardLayout } from '@/src/widgets/dashboard-layout'
 import { DashboardAuthGuard } from '@/src/widgets/dashboard-auth'
+import { FeatureGate } from '@/src/shared/ui/FeatureGate'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
 import { JOURNEY_ORDER, JOURNEYS, type JourneyId } from '@/src/shared/config/journeys'
 import {
@@ -105,6 +106,47 @@ export function DashboardHome() {
               )
             })}
           </div>
+
+          {/* Ultra-Chicche: Advanced Features with FeatureGate */}
+          <FeatureGate feature="advancedCharts">
+            <div className="p-6 rounded-xl border border-primary/20 bg-primary/5">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                  <TrendingUpIcon className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-primary">Grafici Avanzati</h3>
+                  <p className="text-xs text-primary/70">Funzionalità sperimentale</p>
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground mb-4">
+                Analisi avanzate con grafici interattivi e correlazioni di mercato in tempo reale.
+              </p>
+              <button className="px-4 py-2 bg-primary text-white rounded-lg text-sm hover:bg-primary/90 transition-colors">
+                Prova i Grafici Avanzati
+              </button>
+            </div>
+          </FeatureGate>
+
+          <FeatureGate feature="portfolioAnalyzer">
+            <div className="p-6 rounded-xl border border-success/20 bg-success/5">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-success/10 rounded-lg flex items-center justify-center">
+                  <ShieldIcon className="w-5 h-5 text-success" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-success">Analizzatore Portafoglio</h3>
+                  <p className="text-xs text-success/70">Beta disponibile</p>
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground mb-4">
+                Analisi automatica del rischio e suggerimenti di ottimizzazione per il tuo portafoglio.
+              </p>
+              <button className="px-4 py-2 bg-success text-white rounded-lg text-sm hover:bg-success/90 transition-colors">
+                Analizza Portafoglio
+              </button>
+            </div>
+          </FeatureGate>
 
           {/* Guest Mode CTA */}
           {state.isGuestMode && (

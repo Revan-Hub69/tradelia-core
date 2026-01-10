@@ -18,6 +18,7 @@ import { useTranslations, useLocale } from 'next-intl'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
 import { useSidebarFocusTrap } from '@/src/shared/hooks/useFocusTrap'
 import { NetworkStatus } from '@/src/shared/ui/NetworkStatus'
+import { TrustBadges } from '@/src/shared/ui/TrustBadges'
 import Logo from '@/components/Logo'
 import { UserMenu } from './UserMenu'
 import { JOURNEY_ORDER, type JourneyId } from '@/src/shared/config/journeys'
@@ -249,6 +250,11 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </ul>
 
         </nav>
+
+        {/* Ultra-Chicche: Trust Badges in Desktop Sidebar Footer */}
+        <div className="p-4 border-t border-border/50">
+          <TrustBadges />
+        </div>
       </aside>
 
       {/* ========== HEADER ========== */}

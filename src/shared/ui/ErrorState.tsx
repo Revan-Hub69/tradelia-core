@@ -10,7 +10,7 @@
 
 import type { ReactNode } from 'react'
 import { useTranslations } from 'next-intl'
-import { Button } from './Button'
+import { SafeButton } from './SafeButton'
 import { AlertTriangleIcon } from '@/components/icons/TradeliaIcons'
 
 interface ErrorStateProps {
@@ -52,13 +52,13 @@ export function ErrorState({
       
       {/* Retry */}
       {onRetry && (
-        <Button 
+        <SafeButton 
           onClick={onRetry} 
-          variant="outline" 
+          variant="safe" 
           size="sm"
         >
           {retryLabel || t('retry')}
-        </Button>
+        </SafeButton>
       )}
     </div>
   )
@@ -84,14 +84,14 @@ export function ErrorCard({
             {message}
           </p>
           {onRetry && (
-            <Button 
+            <SafeButton 
               onClick={onRetry} 
-              variant="outline" 
+              variant="safe" 
               size="sm"
               className="text-xs"
             >
               Riprova
-            </Button>
+            </SafeButton>
           )}
         </div>
       </div>
@@ -127,14 +127,14 @@ export function NetworkError({
         </div>
       </div>
       {onRetry && (
-        <Button 
+        <SafeButton 
           onClick={onRetry} 
-          variant="outline" 
+          variant="safe" 
           size="sm"
           className="border-error/30 text-error hover:bg-error/10"
         >
           Riprova
-        </Button>
+        </SafeButton>
       )}
     </div>
   )
@@ -177,14 +177,14 @@ export function FullPageError({
         {/* Actions */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           {onRetry && (
-            <Button onClick={onRetry}>
+            <SafeButton onClick={onRetry} variant="safe">
               Riprova
-            </Button>
+            </SafeButton>
           )}
           {onGoBack && (
-            <Button onClick={onGoBack} variant="outline">
+            <SafeButton onClick={onGoBack} variant="safe">
               Torna indietro
-            </Button>
+            </SafeButton>
           )}
         </div>
         

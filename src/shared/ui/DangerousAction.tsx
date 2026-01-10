@@ -8,6 +8,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { SafeButton } from '@/src/shared/ui/SafeButton'
 import { AlertTriangleIcon, ShieldIcon, CloseIcon } from '@/components/icons/TradeliaIcons'
 
 interface DangerousActionProps {
@@ -269,16 +270,11 @@ export function DangerousAction({
                 Annulla
               </button>
               
-              <button
+              <SafeButton
+                variant="critical"
                 onClick={handleConfirm}
                 disabled={!canConfirm || isProcessing}
-                className={`
-                  flex-1 px-4 py-2 text-white rounded-lg font-medium transition-colors
-                  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background
-                  disabled:opacity-50 disabled:cursor-not-allowed
-                  ${style.buttonColor}
-                  ${variant === 'critical' ? 'focus:ring-error/50' : 'focus:ring-primary/50'}
-                `}
+                className={`flex-1 px-4 py-2 text-white rounded-lg font-medium transition-colors ${style.buttonColor}`}
               >
                 {isProcessing ? (
                   <div className="flex items-center justify-center gap-2">
@@ -288,7 +284,7 @@ export function DangerousAction({
                 ) : (
                   'Conferma azione'
                 )}
-              </button>
+              </SafeButton>
             </div>
           </div>
         </div>

@@ -411,5 +411,105 @@
         "projections": "APY projections"
       }
     }
+  },
+  "safeButton": {
+    "processing": "Processing...",
+    "holdToConfirm": "Hold to confirm"
+  },
+  "softConfirmation": {
+    "proceed": "Proceed",
+    "readFirst": "Read first",
+    "dismiss": "Dismiss",
+    "toolWarning": {
+      "low": "You're about to use {toolName}. It's a low-risk tool, ideal for beginners.",
+      "medium": "You're about to use {toolName}. Requires attention and basic knowledge.",
+      "high": "You're about to use {toolName}. It's an advanced tool with significant risks."
+    },
+    "sectionWarning": "You're about to access the {sectionId} section. Make sure you've read the basic information."
+  },
+  "featureGate": {
+    "temporarilyUnavailable": "Temporarily unavailable",
+    "featureDisabled": "This feature is temporarily disabled for improvements.",
+    "featureDisabledReason": "The {feature} feature is temporarily disabled.",
+    "comingSoon": "Coming soon",
+    "toolComingSoon": "The {toolId} tool will be available soon.",
+    "notifyMe": "Notify me",
+    "learnMore": "Learn more",
+    "features": {
+      "animations": "Animations",
+      "complexAnimations": "Complex animations",
+      "autoplay": "Autoplay",
+      "riskCalculator": "Risk calculator",
+      "portfolioAnalyzer": "Portfolio analyzer",
+      "advancedCharts": "Advanced charts",
+      "aiFeatures": "AI features",
+      "tooltips": "Tooltips",
+      "notifications": "Notifications",
+      "soundEffects": "Sound effects",
+      "hapticFeedback": "Haptic feedback",
+      "lazyLoading": "Lazy loading",
+      "imageOptimization": "Image optimization",
+      "prefetching": "Prefetching",
+      "betaFeatures": "Beta features",
+      "debugMode": "Debug mode"
+    }
+  },
+  "educationMemory": {
+    "messages": {
+      "getStarted": "Start by reading the Introduction or Errors to avoid",
+      "readErrors": "Great! Now read Errors to avoid to complete your preparation",
+      "readIntro": "Perfect! Now you can read the Introduction for a complete overview",
+      "readEducational": "Excellent! Complete with the Educational section to deepen your knowledge",
+      "almostReady": "Almost ready! Complete some checklists to be fully prepared",
+      "completeChecklists": "Great progress! Complete the remaining checklists",
+      "fullyPrepared": "You are fully prepared to use all tools"
+    },
+    "actions": {
+      "startWithIntro": "Start with the Introduction for a complete overview",
+      "readErrorsFirst": "Read Errors to avoid first to use tools safely",
+      "expandKnowledge": "Expand your knowledge with the Educational section",
+      "readyForTools": "You're ready to use advanced tools"
+    }
+  },
+  "toolPreview": {
+    "preview": "Preview",
+    "expectedFeatures": "Expected features",
+    "launchTimeline": "Launch timeline",
+    "estimatedLaunch": "Expected launch: {date}",
+    "showInterest": "Show interest",
+    "interestShown": "Interest registered",
+    "notifyMe": "Notify me",
+    "notifying": "We'll notify you",
+    "thankYouForInterest": "Thank you for your interest! We'll keep you updated on progress.",
+    "complexity": {
+      "simple": "Simple",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    }
+  },
+  "trustBadges": {
+    "ssl": {
+      "label": "SSL Secure",
+      "description": "End-to-end encrypted connection to protect your data",
+      "verified": "Connection verified",
+      "notSecure": "Connection not secure"
+    },
+    "privacy": {
+      "label": "Privacy First",
+      "description": "Data protected according to GDPR, no invasive tracking",
+      "compliant": "GDPR compliant"
+    },
+    "educational": {
+      "label": "Educational Only",
+      "description": "Educational tool, we don't provide financial advice",
+      "active": "Educational mode"
+    },
+    "secure": "Secure",
+    "notSecure": "Not secure",
+    "compliance": {
+      "gdpr": "GDPR compliant • Privacy by Design • Protected data",
+      "educational": "Educational tool • No financial advice",
+      "noAdvice": "Information provided is for educational purposes only"
+    }
   }
 }

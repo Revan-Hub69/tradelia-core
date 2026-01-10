@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useDashboardModal } from '@/contexts/DashboardModalContext';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from './LanguageSelector';
+import { SafeButton } from '@/src/shared/ui/SafeButton';
 import { mapAuthErrorToKey } from '@/lib/auth/error-mapping';
 import { loginSchema, registerSchema, resetRequestSchema, validateForm, validateField, emailSchema, passwordSchema, nameSchema, getMessages } from '@/src/shared/lib/validation';
 import { PasswordStrength } from '@/src/shared/ui/PasswordStrength';
@@ -398,14 +399,15 @@ export default function AuthModal() {
           </div>
         )}
 
-        {/* Submit */}
-        <button
+        {/* Ultra-Chicche: SafeButton for Login */}
+        <SafeButton
+          variant="safe"
           type="submit"
           disabled={isSubmitting}
           className="w-full h-11 bg-primary text-white text-sm font-medium rounded hover:bg-primary/90 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2 shadow-sm hover:shadow-md"
         >
           {isSubmitting ? t('modal.auth.login.submitting') : t('modal.auth.login.submit')}
-        </button>
+        </SafeButton>
       </form>
 
       {/* Links */}
@@ -535,14 +537,15 @@ export default function AuthModal() {
           </div>
         )}
 
-        {/* Submit */}
-        <button
+        {/* Ultra-Chicche: SafeButton for Register */}
+        <SafeButton
+          variant="safe"
           type="submit"
           disabled={isSubmitting}
           className="w-full h-11 bg-primary text-white text-sm font-medium rounded hover:bg-primary/90 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2 shadow-sm hover:shadow-md"
         >
           {isSubmitting ? t('modal.auth.register.submitting') : t('modal.auth.register.submit')}
-        </button>
+        </SafeButton>
       </form>
 
       {/* Link */}
@@ -598,13 +601,15 @@ export default function AuthModal() {
           </div>
         )}
 
-        <button
+        {/* Ultra-Chicche: SafeButton for Reset Password */}
+        <SafeButton
+          variant="safe"
           type="submit"
           disabled={isSubmitting}
           className="w-full h-11 bg-primary text-white text-sm font-medium rounded hover:bg-primary/90 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2 shadow-sm hover:shadow-md"
         >
           {isSubmitting ? t('modal.auth.resetRequest.submitting') : t('modal.auth.resetRequest.submit')}
-        </button>
+        </SafeButton>
       </form>
 
       <p className="text-xs text-muted-foreground text-center">

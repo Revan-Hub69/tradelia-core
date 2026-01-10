@@ -1314,3 +1314,21 @@ export const GrowthIcon: React.FC<IconProps> = ({ className = "w-4 h-4", size })
     <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="2" />
   </svg>
 );
+
+export const LoaderIcon: React.FC<IconProps> = ({ className = "w-4 h-4", size }) => (
+  <svg 
+    className={className} 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path 
+      d="M21 12a9 9 0 11-6.219-8.56" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeLinecap="round"
+    />
+  </svg>
+);

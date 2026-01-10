@@ -12,6 +12,7 @@
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { RiskBadge, type RiskLevel } from './RiskBadge'
+import { ToolPreview } from './ToolPreview'
 import { CogIcon, ArrowRightIcon, StarIcon, ClockIcon } from '@/components/icons/TradeliaIcons'
 
 interface ToolCardProps {
@@ -198,7 +199,8 @@ export function ToolGrid({
   tools, 
   onToolOpen, 
   onToolFavorite,
-  className = '' 
+  className = '',
+  showPreviewTools = true // Ultra-Chicche: Show preview for upcoming tools
 }: {
   tools: Array<{
     id: string
@@ -214,21 +216,70 @@ export function ToolGrid({
   onToolOpen: (toolId: string) => void
   onToolFavorite?: ((toolId: string) => void) | undefined
   className?: string
+  showPreviewTools?: boolean
 }) {
   const t = useTranslations('common.toolCard')
   
   if (tools.length === 0) {
     return (
-      <div className="text-center py-12">
-        <div className="w-16 h-16 rounded-2xl bg-muted/50 flex items-center justify-center mx-auto mb-4">
-          <CogIcon className="w-8 h-8 text-muted-foreground" />
+      <div className="space-y-8">
+        {/* Original empty state */}
+        <div className="text-center py-12">
+          <div className="w-16 h-16 rounded-2xl bg-muted/50 flex items-center justify-center mx-auto mb-4">
+            <CogIcon className="w-8 h-8 text-muted-foreground" />
+          </div>
+          <h3 className="text-lg font-semibold text-foreground mb-2">
+            {t('noToolsAvailable')}
+          </h3>
+          <p className="text-muted-foreground">
+            {t('toolsComingSoon')}
+          </p>
         </div>
-        <h3 className="text-lg font-semibold text-foreground mb-2">
-          {t('noToolsAvailable')}
-        </h3>
-        <p className="text-muted-foreground">
-          {t('toolsComingSoon')}
-        </p>
+
+        {/* Ultra-Chicche: Preview upcoming tools */}
+        {showPreviewTools && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <ToolPreview
+              toolId="risk-analyzer-pro"
+              title="Risk Analyzer Pro"
+              description="Analisi avanzata del rischio con machine learning per ottimizzare il tuo portafoglio"
+              complexity="advanced"
+              expectedFeatures={[
+                "Analisi rischio real-time",
+                "Correlazioni di mercato",
+                "Stress testing automatico",
+                "Alert personalizzati"
+              ]}
+              estimatedLaunch="Q2 2026"
+            />
+            
+            <ToolPreview
+              toolId="portfolio-optimizer"
+              title="Portfolio Optimizer"
+              description="Ottimizzazione automatica del portafoglio basata sui tuoi obiettivi e tolleranza al rischio"
+              complexity="intermediate"
+              expectedFeatures={[
+                "Ribilanciamento automatico",
+                "Ottimizzazione fiscale",
+                "Diversificazione intelligente"
+              ]}
+              estimatedLaunch="Q3 2026"
+            />
+            
+            <ToolPreview
+              toolId="market-sentiment"
+              title="Market Sentiment"
+              description="Analisi del sentiment di mercato attraverso social media e news per timing ottimale"
+              complexity="simple"
+              expectedFeatures={[
+                "Sentiment score real-time",
+                "Trend analysis",
+                "Signal di ingresso/uscita"
+              ]}
+              estimatedLaunch="Q4 2026"
+            />
+          </div>
+        )}
       </div>
     )
   }

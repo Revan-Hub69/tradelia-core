@@ -14,6 +14,9 @@ import { useTranslations, useLocale } from 'next-intl'
 import { DashboardLayout } from '@/src/widgets/dashboard-layout'
 import { DashboardAuthGuard } from '@/src/widgets/dashboard-auth'
 import { SectionLayout } from '@/src/widgets/section-layout/SectionLayout'
+import { SoftConfirmation } from '@/src/shared/ui/SoftConfirmation'
+import { SafeButton } from '@/src/shared/ui/SafeButton'
+import { useEducationMemory } from '@/src/shared/hooks/useEducationMemory'
 import { JOURNEYS, type JourneyId } from '@/src/shared/config/journeys'
 import {
   ShieldIcon,
@@ -45,6 +48,9 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
   const journey = JOURNEYS[journeyId]
   const Icon = JOURNEY_ICONS[journeyId]
 
+  // Ultra-Chicche: Education Memory for intelligent guidance
+  const educationMemory = useEducationMemory(journeyId)
+
   // Handle tab switching from empty state
   useEffect(() => {
     const handleTabSwitch = (event: CustomEvent) => {
@@ -69,6 +75,36 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
       icon: <BookOpenIcon className="w-4 h-4" />,
       content: (
         <div className="space-y-6">
+          {/* Ultra-Chicche: Education Memory Progress */}
+          <div className="bg-primary/5 border border-primary/20 rounded-xl p-6">
+            <h4 className="font-semibold text-primary mb-3">Il tuo progresso</h4>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm">Introduzione letta</span>
+                <span className={`text-xs px-2 py-1 rounded ${educationMemory.hasSeenIntro ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
+                  {educationMemory.hasSeenIntro ? '✓ Completato' : 'Da fare'}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm">Errori studiati</span>
+                <span className={`text-xs px-2 py-1 rounded ${educationMemory.hasReadErrors ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
+                  {educationMemory.hasReadErrors ? '✓ Completato' : 'Da fare'}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm">Sezione educativa</span>
+                <span className={`text-xs px-2 py-1 rounded ${educationMemory.hasReadEducational ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
+                  {educationMemory.hasReadEducational ? '✓ Completato' : 'Da fare'}
+                </span>
+              </div>
+            </div>
+            <div className="mt-4 p-3 bg-white/50 rounded-lg">
+              <p className="text-sm text-muted-foreground">
+                <strong>Prossimo passo:</strong> {educationMemory.getRecommendedAction().reason}
+              </p>
+            </div>
+          </div>
+
           <div className="bg-background/60 border border-border/50 rounded-xl p-6">
             <h3 className="text-lg font-semibold mb-3">Benvenuto in {t(journey.labelKey)}</h3>
             <p className="text-muted-foreground mb-4">
@@ -87,6 +123,18 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                   Metodologia step-by-step per raggiungere i tuoi obiettivi
                 </p>
               </div>
+            </div>
+
+            {/* Mark intro as seen when user reads this */}
+            <div className="mt-6">
+              <SafeButton
+                onClick={() => educationMemory.markIntroSeen()}
+                variant="safe"
+                size="sm"
+                disabled={educationMemory.hasSeenIntro}
+              >
+                {educationMemory.hasSeenIntro ? '✓ Introduzione completata' : 'Segna come letto'}
+              </SafeButton>
             </div>
           </div>
         </div>
@@ -113,6 +161,18 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                 </div>
               ))}
             </div>
+
+            {/* Mark errors as read */}
+            <div className="mt-6">
+              <SafeButton
+                onClick={() => educationMemory.markErrorsRead()}
+                variant="safe"
+                size="sm"
+                disabled={educationMemory.hasReadErrors}
+              >
+                {educationMemory.hasReadErrors ? '✓ Errori studiati' : 'Ho letto gli errori'}
+              </SafeButton>
+            </div>
           </div>
         </div>
       )
@@ -138,6 +198,18 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                 </div>
               ))}
             </div>
+
+            {/* Mark educational as read */}
+            <div className="mt-6">
+              <SafeButton
+                onClick={() => educationMemory.markEducationalRead()}
+                variant="safe"
+                size="sm"
+                disabled={educationMemory.hasReadEducational}
+              >
+                {educationMemory.hasReadEducational ? '✓ Sezione completata' : 'Segna come completato'}
+              </SafeButton>
+            </div>
           </div>
         </div>
       )
@@ -149,6 +221,24 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
       count: 0, // No tools available yet - show educational empty state
       content: (
         <div className="space-y-8">
+          {/* Ultra-Chicche: SoftConfirmation for tool access */}
+          {!educationMemory.hasReadErrors && (
+            <SoftConfirmation
+              type="warning"
+              message={`Prima di accedere ai tool di ${t(journey.labelKey)}, è importante leggere la sezione "Errori da evitare".`}
+              onProceed={() => {
+                // Allow access but warn
+                console.log('User proceeded without reading errors')
+              }}
+            >
+              <div className="p-4 bg-warning/5 border border-warning/20 rounded-lg">
+                <p className="text-sm text-warning">
+                  ⚠️ Stai per accedere a strumenti che richiedono preparazione. Ti consigliamo di leggere prima gli errori comuni.
+                </p>
+              </div>
+            </SoftConfirmation>
+          )}
+
           {/* Educational Empty State */}
           <div className="text-center py-12">
             <div className="w-16 h-16 rounded-2xl bg-warning/10 flex items-center justify-center mx-auto mb-6">
