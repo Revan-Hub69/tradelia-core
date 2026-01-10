@@ -46,10 +46,45 @@ export function TrustBadges({
   // Use hardcoded strings for now to avoid translation issues
   const [hoveredBadge, setHoveredBadge] = useState<string | null>(null)
   const [mounted, setMounted] = useState(false)
+  const [tooltipTimeout, setTooltipTimeout] = useState<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     setMounted(true)
-  }, [])
+    
+    // Cleanup timeout on unmount
+    return () => {
+      if (tooltipTimeout) {
+        clearTimeout(tooltipTimeout)
+      }
+    }
+  }, [tooltipTimeout])
+
+  // Handle tooltip with delay to prevent flickering
+  const handleMouseEnter = (badgeId: string) => {
+    if (tooltipTimeout) {
+      clearTimeout(tooltipTimeout)
+    }
+    if (showTooltips) {
+      setHoveredBadge(badgeId)
+    }
+  }
+
+  const handleMouseLeave = () => {
+    const timeout = setTimeout(() => {
+      setHoveredBadge(null)
+    }, 150) // Small delay to allow moving to tooltip
+    setTooltipTimeout(timeout)
+  }
+
+  const handleTooltipEnter = () => {
+    if (tooltipTimeout) {
+      clearTimeout(tooltipTimeout)
+    }
+  }
+
+  const handleTooltipLeave = () => {
+    setHoveredBadge(null)
+  }
 
   const badges: BadgeConfig[] = [
     {
@@ -111,12 +146,31 @@ export function TrustBadges({
         return 'flex-col items-start space-y-1'
       case 'footer':
       default:
-        return 'justify-start flex-wrap gap-y-2'
+        return 'justify-center flex-wrap gap-2' // Better mobile layout
     }
   }
 
   if (!mounted) {
-    return <div className={`flex items-center ${getVariantClasses()} ${getPlacementClasses()} ${className}`} />
+    return (
+      <div className={`flex items-center ${getVariantClasses()} ${getPlacementClasses()} ${className}`}>
+        {/* Skeleton loading per evitare hydration mismatch */}
+        {badges.map((badge) => (
+          <div
+            key={badge.id}
+            className={`
+              flex items-center
+              ${variant === 'compact' ? 'gap-1.5 px-2 py-1 rounded-lg' : 'gap-2 px-3 py-2 rounded-xl'}
+              bg-muted/30 border border-border/50 backdrop-blur-sm
+            `}
+          >
+            <div className="w-3.5 h-3.5 bg-muted rounded" />
+            {variant !== 'minimal' && variant !== 'micro' && (
+              <div className="w-16 h-3 bg-muted rounded" />
+            )}
+          </div>
+        ))}
+      </div>
+    )
   }
 
   return (
@@ -129,12 +183,8 @@ export function TrustBadges({
           <div
             key={badge.id}
             className="relative trust-badge-no-select"
-            onMouseEnter={() => {
-              if (showTooltips) {
-                setHoveredBadge(badge.id)
-              }
-            }}
-            onMouseLeave={() => setHoveredBadge(null)}
+            onMouseEnter={() => handleMouseEnter(badge.id)}
+            onMouseLeave={handleMouseLeave}
           >
             <div 
               className={`
@@ -195,84 +245,76 @@ export function TrustBadges({
               )}
             </div>
 
-            {/* STATIC Tooltip - NO ANIMATIONS */}
+            {/* COMPACT Tooltip - NO ANIMATIONS */}
             {showTooltips && hoveredBadge === badge.id && (
-              <div className={`
-                absolute z-50 
-                ${placement === 'sidebar' 
-                  ? 'left-full top-1/2 -translate-y-1/2 ml-3' 
-                  : placement === 'footer'
-                  ? 'bottom-full left-1/2 -translate-x-1/2 mb-3 md:bottom-full md:left-1/2 md:-translate-x-1/2 md:mb-3'
-                  : 'bottom-full left-1/2 -translate-x-1/2 mb-3'
-                }
-              `}>
+              <div 
+                className={`
+                  absolute z-50 
+                  ${placement === 'sidebar' 
+                    ? 'left-full top-1/2 -translate-y-1/2 ml-3' 
+                    : placement === 'footer'
+                    ? 'bottom-full left-1/2 -translate-x-1/2 mb-3'
+                    : 'bottom-full left-1/2 -translate-x-1/2 mb-3'
+                  }
+                `}
+                onMouseEnter={handleTooltipEnter}
+                onMouseLeave={handleTooltipLeave}
+              >
                 <div className="relative">
                   <div className={`
-                    bg-background/95 backdrop-blur-md border border-border/50 rounded-xl shadow-xl p-3 
-                    ${placement === 'sidebar' ? 'w-64' : 'w-72'} 
-                    max-w-[calc(100vw-2rem)]
-                    ${placement === 'footer' ? 'md:w-72' : ''}
+                    bg-background/95 backdrop-blur-md border border-border/50 rounded-lg shadow-xl p-2
+                    ${placement === 'sidebar' ? 'w-56' : 'w-64'} 
+                    max-w-[calc(100vw-1rem)]
                   `}>
                     <div className="flex items-start gap-2">
-                      <div className={`p-1.5 rounded-lg ${badge.accentColor}`}>
-                        <Icon className={`w-3.5 h-3.5 ${badge.color}`} />
+                      <div className={`p-1 rounded ${badge.accentColor}`}>
+                        <Icon className={`w-3 h-3 ${badge.color}`} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold text-foreground text-sm mb-1 flex items-center gap-2">
+                        <h4 className="font-semibold text-foreground text-xs mb-1 flex items-center gap-1">
                           {badge.label}
                           {isActive && (
-                            <CheckIcon className={`w-3 h-3 ${badge.color}`} />
+                            <CheckIcon className={`w-2.5 h-2.5 ${badge.color}`} />
                           )}
                         </h4>
-                        <p className="text-xs text-muted-foreground leading-relaxed mb-2">
+                        <p className="text-[10px] text-muted-foreground leading-relaxed mb-1">
                           {badge.description}
                         </p>
                         
-                        {/* SSL Status */}
-                        {badge.id === 'ssl' && (
-                          <div className={`
-                            flex items-center gap-2 px-2 py-1 rounded-md text-xs font-medium
-                            ${isSSL 
-                              ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' 
-                              : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
-                            }
-                          `}>
-                            {isSSL ? (
-                              <>
-                                <CheckIcon className="w-3 h-3" />
-                                <span>SSL Verificato</span>
-                              </>
-                            ) : (
-                              <>
-                                <InfoIcon className="w-3 h-3" />
-                                <span>Non Sicuro</span>
-                              </>
-                            )}
-                          </div>
-                        )}
-
-                        {/* Trust Indicator */}
-                        {badge.id !== 'ssl' && (
-                          <div className={`
-                            flex items-center gap-2 px-2 py-1 rounded-md text-xs font-medium
-                            ${badge.accentColor} ${badge.color}
-                          `}>
-                            <div className={`w-1.5 h-1.5 rounded-full ${badge.pulseColor}`} />
-                            <span>
-                              {badge.id === 'privacy' ? 'Privacy garantita' : 'Modalità educativa'}
-                            </span>
-                          </div>
-                        )}
+                        {/* Compact Status */}
+                        <div className={`
+                          flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium
+                          ${badge.id === 'ssl' && isSSL 
+                            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' 
+                            : badge.id === 'ssl' && !isSSL
+                            ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                            : `${badge.accentColor} ${badge.color}`
+                          }
+                        `}>
+                          {badge.id === 'ssl' ? (
+                            <>
+                              {isSSL ? <CheckIcon className="w-2 h-2" /> : <InfoIcon className="w-2 h-2" />}
+                              <span>{isSSL ? 'SSL Verificato' : 'Non Sicuro'}</span>
+                            </>
+                          ) : (
+                            <>
+                              <div className={`w-1 h-1 rounded-full ${badge.pulseColor}`} />
+                              <span>
+                                {badge.id === 'privacy' ? 'Privacy garantita' : 'Modalità educativa'}
+                              </span>
+                            </>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
                   
                   {/* Tooltip Arrow - STATIC */}
                   <div className={`
-                    absolute w-3 h-3 bg-background/95 border-l border-b border-border/50 rotate-45
+                    absolute w-2 h-2 bg-background/95 border-l border-b border-border/50 rotate-45
                     ${placement === 'sidebar' 
-                      ? 'right-full top-1/2 -translate-y-1/2 -translate-x-1.5 rotate-[315deg]'
-                      : 'top-full left-1/2 -translate-x-1/2 -translate-y-1.5'
+                      ? 'right-full top-1/2 -translate-y-1/2 -translate-x-1 rotate-[315deg]'
+                      : 'top-full left-1/2 -translate-x-1/2 -translate-y-1'
                     }
                   `} />
                 </div>
