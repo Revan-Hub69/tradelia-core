@@ -255,7 +255,8 @@
     "trustBadges": {
       "ssl": {
         "label": "SSL Secure",
-        "description": "Encrypted and protected connection"
+        "description": "Encrypted and protected connection",
+        "verified": "Verified"
       },
       "privacy": {
         "label": "Privacy First",
@@ -304,6 +305,23 @@
         "beginner": "Beginner",
         "intermediate": "Intermediate", 
         "advanced": "Advanced"
+      }
+    },
+    "educationMemory": {
+      "messages": {
+        "getStarted": "Start by reading the introduction or errors to avoid",
+        "readIntro": "Read the introduction to get started",
+        "readErrors": "Read errors to avoid to continue",
+        "readEducational": "Complete the educational section",
+        "almostReady": "Almost ready! Complete the checklists",
+        "completeChecklists": "Complete checklists to unlock all tools",
+        "fullyPrepared": "You are fully prepared for this section"
+      },
+      "actions": {
+        "startWithIntro": "Start by reading the Introduction",
+        "readErrorsFirst": "Read Errors to Avoid first",
+        "expandKnowledge": "Expand your knowledge in the Educational section",
+        "readyForTools": "You are ready to use the tools"
       }
     },
     "privacyConsent": {

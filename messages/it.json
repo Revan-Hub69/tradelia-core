@@ -255,7 +255,8 @@
     "trustBadges": {
       "ssl": {
         "label": "SSL Sicuro",
-        "description": "Connessione crittografata e protetta"
+        "description": "Connessione crittografata e protetta",
+        "verified": "Verificato"
       },
       "privacy": {
         "label": "Privacy First",
@@ -304,6 +305,23 @@
         "beginner": "Principiante",
         "intermediate": "Intermedio", 
         "advanced": "Avanzato"
+      }
+    },
+    "educationMemory": {
+      "messages": {
+        "getStarted": "Inizia leggendo l'introduzione o gli errori da evitare",
+        "readIntro": "Leggi l'introduzione per iniziare",
+        "readErrors": "Leggi gli errori da evitare per continuare",
+        "readEducational": "Completa la sezione educativa",
+        "almostReady": "Quasi pronto! Completa le checklist",
+        "completeChecklists": "Completa le checklist per sbloccare tutti i tool",
+        "fullyPrepared": "Sei completamente preparato per questa sezione"
+      },
+      "actions": {
+        "startWithIntro": "Inizia leggendo l'Introduzione",
+        "readErrorsFirst": "Leggi prima gli Errori da evitare",
+        "expandKnowledge": "Espandi le tue conoscenze nella sezione Educativa",
+        "readyForTools": "Sei pronto per utilizzare i tool"
       }
     },
     "privacyConsent": {
