@@ -286,6 +286,7 @@
   "common": {
     "journeyStructure": "Journey steps",
     "progressionGuidance": "Steps are designed to be followed in order.",
+    "journey": "Journey",
     "loading": "Loading...",
     "error": "Error",
     "success": "Success",

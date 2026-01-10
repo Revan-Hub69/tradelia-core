@@ -27,6 +27,7 @@ export function ActiveContextPill({ className = '' }: ActiveContextPillProps) {
   const pathname = usePathname()
   const locale = useLocale()
   const t = useTranslations('journeys')
+  const tCommon = useTranslations('common')
 
   // Get current context
   const getCurrentContext = (): { id: JourneyId | 'home'; label: string } => {
@@ -100,7 +101,7 @@ export function ActiveContextPill({ className = '' }: ActiveContextPillProps) {
         aria-haspopup="listbox"
         aria-label="Cambia percorso"
       >
-        <span className="text-xs">Percorso:</span>
+        <span className="text-xs">{tCommon('journey')}:</span>
         <span className={`font-semibold transition-colors ${isAnimating ? '' : 'text-foreground'}`}>
           {currentContext.label}
         </span>

@@ -248,7 +248,7 @@ function getPageSection(pathname: string): string {
 function getElementIdentifier(element: HTMLElement): string {
   // Try to get a meaningful identifier
   if (element.id) return `#${element.id}`
-  if (element.className) return `.${element.className.split(' ')[0]}`
+  if (element.className && typeof element.className === 'string') return `.${element.className.split(' ')[0]}`
   if (element.tagName === 'BUTTON') return 'button'
   if (element.tagName === 'A') return 'link'
   if (element.tagName === 'INPUT') return `input[${element.getAttribute('type') || 'text'}]`
