@@ -40,6 +40,7 @@ const JOURNEY_ICONS: Record<JourneyId, React.ComponentType<{ className?: string 
 
 export function JourneyPage({ journeyId }: JourneyPageProps) {
   const t = useTranslations()
+  const tJourney = useTranslations('common.journeyPage')
   const locale = useLocale()
   const journey = JOURNEYS[journeyId]
   const Icon = JOURNEY_ICONS[journeyId]
@@ -64,7 +65,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
   const subNavItems = [
     {
       id: 'intro',
-      label: 'Introduzione',
+      label: tJourney('tabs.intro'),
       icon: <BookOpenIcon className="w-4 h-4" />,
       content: (
         <div className="space-y-6">
@@ -93,7 +94,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
     },
     {
       id: 'errors',
-      label: 'Errori da evitare',
+      label: tJourney('tabs.errors'),
       icon: <AlertTriangleIcon className="w-4 h-4" />,
       content: (
         <div className="space-y-6">
@@ -118,7 +119,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
     },
     {
       id: 'educational',
-      label: 'Educativo',
+      label: tJourney('tabs.educational'),
       icon: <GraduationCapIcon className="w-4 h-4" />,
       content: (
         <div className="space-y-6">
@@ -143,7 +144,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
     },
     {
       id: 'tools',
-      label: 'Tool',
+      label: tJourney('tabs.tools'),
       icon: <CogIcon className="w-4 h-4" />,
       count: 0, // No tools available yet - show educational empty state
       content: (
@@ -155,12 +156,11 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
             </div>
             
             <h3 className="text-xl font-semibold text-foreground mb-3">
-              Prima di usare strumenti
+              {tJourney('toolsEmptyState.title')}
             </h3>
             
             <p className="text-muted-foreground max-w-md mx-auto mb-8">
-              Leggi "Errori da evitare" per utilizzare i tool in sicurezza. 
-              2 minuti di lettura che possono evitare errori costosi.
+              {tJourney('toolsEmptyState.description')}
             </p>
             
             <button 
@@ -171,7 +171,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
               }}
               className="px-6 py-3 bg-warning text-white rounded-lg font-medium hover:bg-warning/90 transition-colors"
             >
-              Vai a Errori da evitare
+              {tJourney('toolsEmptyState.readErrorsButton')}
             </button>
           </div>
 
@@ -229,16 +229,10 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
               <ShieldIcon className="w-6 h-6 text-error flex-shrink-0 mt-0.5" />
               <div>
                 <h4 className="font-semibold text-error mb-2">
-                  {journeyId === 'emergency' && 'Asset Rifugio: Massima Attenzione'}
-                  {journeyId === 'longterm' && 'Lungo Termine: Strategia Solida'}
-                  {journeyId === 'speculation' && 'Speculazione: Preparazione Obbligatoria'}
-                  {journeyId === 'passive' && 'Passivi: Apparente Semplicità, Vere Insidie'}
+                  {tJourney(`errorWarnings.${journeyId}.title`)}
                 </h4>
                 <p className="text-sm text-muted-foreground">
-                  {journeyId === 'emergency' && 'I tool per la protezione del capitale richiedono comprensione profonda dei rischi. Un errore può compromettere la tua sicurezza finanziaria.'}
-                  {journeyId === 'longterm' && 'Gli investimenti a lungo termine necessitano di una strategia ben definita. Decisioni affrettate possono costare anni di rendimenti.'}
-                  {journeyId === 'speculation' && 'La speculazione è intrinsecamente rischiosa. Senza preparazione adeguata, è più probabile perdere che guadagnare.'}
-                  {journeyId === 'passive' && 'Gli investimenti passivi sembrano semplici ma nascondono insidie. Anche qui servono conoscenze base per evitare errori.'}
+                  {tJourney(`errorWarnings.${journeyId}.description`)}
                 </p>
               </div>
             </div>
@@ -248,7 +242,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
     },
     {
       id: 'platforms',
-      label: 'Piattaforme',
+      label: tJourney('tabs.platforms'),
       icon: <SettingsIcon className="w-4 h-4" />,
       content: (
         <div className="space-y-6">
@@ -263,7 +257,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                   <div className="flex-1">
                     <h4 className="font-medium mb-1">Piattaforma {i}</h4>
                     <p className="text-sm text-muted-foreground">
-                      Descrizione della piattaforma e perché è adatta per {journeyId}
+                      {tJourney('platformDescription', { journeyId })}
                     </p>
                   </div>
                   <button className="px-4 py-2 bg-primary text-white text-sm rounded-lg hover:bg-primary/90 transition-colors">

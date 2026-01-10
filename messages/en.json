@@ -251,6 +251,46 @@
       "removeFromFavorites": "Remove from favorites",
       "noToolsAvailable": "No tools available",
       "toolsComingSoon": "Tools for this section will be available soon."
+    },
+    "privacyConsent": {
+      "close": "Close",
+      "enableBasicAnalytics": "Enable basic analytics",
+      "enablePerformanceTracking": "Enable performance tracking",
+      "enableErrorReporting": "Enable error reporting", 
+      "enableFeatureUsageTracking": "Enable feature usage tracking"
+    },
+    "journeyPage": {
+      "tabs": {
+        "intro": "Introduction",
+        "errors": "Errors to avoid",
+        "educational": "Educational", 
+        "tools": "Tools",
+        "platforms": "Platforms"
+      },
+      "errorWarnings": {
+        "emergency": {
+          "title": "Emergency Assets: Maximum Attention",
+          "description": "Capital protection tools require deep understanding of risks. A mistake can compromise your financial security."
+        },
+        "longterm": {
+          "title": "Long Term: Solid Strategy",
+          "description": "Long-term investments need a well-defined strategy. Hasty decisions can cost years of returns."
+        },
+        "speculation": {
+          "title": "Speculation: Mandatory Preparation", 
+          "description": "Speculation is inherently risky. Without adequate preparation, you're more likely to lose than gain."
+        },
+        "passive": {
+          "title": "Passive: Apparent Simplicity, Real Pitfalls",
+          "description": "Passive investments seem simple but hide pitfalls. Even here you need basic knowledge to avoid errors."
+        }
+      },
+      "toolsEmptyState": {
+        "title": "Tools coming soon",
+        "description": "Read \"Errors to avoid\" to use tools safely. 2 minutes of reading that can prevent costly mistakes.",
+        "readErrorsButton": "Read Errors to Avoid"
+      },
+      "platformDescription": "Platform description and why it's suitable for {journeyId}"
     }
   },
   "auth": {

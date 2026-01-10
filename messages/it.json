@@ -251,6 +251,46 @@
       "removeFromFavorites": "Rimuovi dai preferiti",
       "noToolsAvailable": "Nessun tool disponibile",
       "toolsComingSoon": "I tool per questa sezione saranno disponibili presto."
+    },
+    "privacyConsent": {
+      "close": "Chiudi",
+      "enableBasicAnalytics": "Abilita analytics di base",
+      "enablePerformanceTracking": "Abilita monitoraggio performance", 
+      "enableErrorReporting": "Abilita segnalazione errori",
+      "enableFeatureUsageTracking": "Abilita tracciamento utilizzo funzionalità"
+    },
+    "journeyPage": {
+      "tabs": {
+        "intro": "Introduzione",
+        "errors": "Errori da evitare", 
+        "educational": "Educativo",
+        "tools": "Tool",
+        "platforms": "Piattaforme"
+      },
+      "errorWarnings": {
+        "emergency": {
+          "title": "Asset Rifugio: Massima Attenzione",
+          "description": "I tool per la protezione del capitale richiedono comprensione profonda dei rischi. Un errore può compromettere la tua sicurezza finanziaria."
+        },
+        "longterm": {
+          "title": "Lungo Termine: Strategia Solida", 
+          "description": "Gli investimenti a lungo termine necessitano di una strategia ben definita. Decisioni affrettate possono costare anni di rendimenti."
+        },
+        "speculation": {
+          "title": "Speculazione: Preparazione Obbligatoria",
+          "description": "La speculazione è intrinsecamente rischiosa. Senza preparazione adeguata, è più probabile perdere che guadagnare."
+        },
+        "passive": {
+          "title": "Passivi: Apparente Semplicità, Vere Insidie",
+          "description": "Gli investimenti passivi sembrano semplici ma nascondono insidie. Anche qui servono conoscenze base per evitare errori."
+        }
+      },
+      "toolsEmptyState": {
+        "title": "Tool in arrivo",
+        "description": "Leggi \"Errori da evitare\" per utilizzare i tool in sicurezza. 2 minuti di lettura che possono evitare errori costosi.",
+        "readErrorsButton": "Leggi Errori da Evitare"
+      },
+      "platformDescription": "Descrizione della piattaforma e perché è adatta per {journeyId}"
     }
   },
   "auth": {

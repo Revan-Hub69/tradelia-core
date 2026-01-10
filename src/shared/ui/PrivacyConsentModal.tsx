@@ -11,6 +11,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 import { ShieldIcon, CloseIcon, InfoIcon } from '@/components/icons/TradeliaIcons'
 import { getAnalyticsStatus, updatePrivacySettings } from '@/src/shared/lib/analytics'
 
@@ -28,6 +29,7 @@ interface PrivacyConsentModalProps {
 }
 
 export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentModalProps) {
+  const t = useTranslations('common.privacyConsent')
   const [settings, setSettings] = useState<ConsentSettings>({
     analytics_enabled: false,
     performance_tracking: false,
@@ -126,7 +128,7 @@ export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentM
           <button
             onClick={onClose}
             className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/50"
-            aria-label="Chiudi"
+            aria-label={t('close')}
           >
             <CloseIcon className="w-4 h-4" />
           </button>
@@ -171,7 +173,7 @@ export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentM
                   checked={settings.analytics_enabled}
                   onChange={(e) => handleSettingChange('analytics_enabled', e.target.checked)}
                   className="sr-only"
-                  aria-label="Abilita analytics di base"
+                  aria-label={t('enableBasicAnalytics')}
                 />
                 <div className={`
                   w-11 h-6 rounded-full transition-colors relative
@@ -204,7 +206,7 @@ export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentM
                   checked={settings.performance_tracking}
                   onChange={(e) => handleSettingChange('performance_tracking', e.target.checked)}
                   className="sr-only"
-                  aria-label="Abilita monitoraggio performance"
+                  aria-label={t('enablePerformanceTracking')}
                 />
                 <div className={`
                   w-11 h-6 rounded-full transition-colors relative
@@ -237,7 +239,7 @@ export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentM
                   checked={settings.error_reporting}
                   onChange={(e) => handleSettingChange('error_reporting', e.target.checked)}
                   className="sr-only"
-                  aria-label="Abilita segnalazione errori"
+                  aria-label={t('enableErrorReporting')}
                 />
                 <div className={`
                   w-11 h-6 rounded-full transition-colors relative
@@ -270,7 +272,7 @@ export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentM
                   checked={settings.feature_usage}
                   onChange={(e) => handleSettingChange('feature_usage', e.target.checked)}
                   className="sr-only"
-                  aria-label="Abilita tracciamento utilizzo funzionalità"
+                  aria-label={t('enableFeatureUsageTracking')}
                 />
                 <div className={`
                   w-11 h-6 rounded-full transition-colors relative
