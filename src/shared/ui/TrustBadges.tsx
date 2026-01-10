@@ -3,19 +3,17 @@
  * 
  * Trust Badges & SSL Indicators
  * - SSL Secure, Zero Tracking, Educational Only
- * - Simplified tooltip management with proper click outside handling
- * - Discrete placement with enhanced visual hierarchy
+ * - Simple badges without tooltips or popups
+ * - Clean English text for international audience
  */
 
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { 
   ShieldIcon, 
-  CheckIcon, 
-  InfoIcon,
-  GraduationCapIcon,
-  CloseIcon
+  CheckIcon,
+  GraduationCapIcon
 } from '@/components/icons/TradeliaIcons'
 
 export interface TrustBadgesProps {
@@ -29,7 +27,6 @@ interface BadgeConfig {
   id: string
   icon: React.ComponentType<{ className?: string }>
   label: string
-  description: string
   status: 'active' | 'verified' | 'compliant'
   color: string
   accentColor: string
@@ -39,77 +36,20 @@ interface BadgeConfig {
 export function TrustBadges({ 
   placement = 'footer',
   variant = 'detailed',
-  showTooltips = true,
+  showTooltips = false, // Disabled by default
   className = ''
 }: TrustBadgesProps) {
-  const [hoveredBadge, setHoveredBadge] = useState<string | null>(null)
   const [mounted, setMounted] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
-  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setMounted(true)
-    
-    // Detect mobile device
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768 || 'ontouchstart' in window)
-    }
-    
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    
-    return () => {
-      window.removeEventListener('resize', checkMobile)
-    }
   }, [])
-
-  // Close tooltip when clicking outside
-  useEffect(() => {
-    if (!hoveredBadge) return
-    
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as Element
-      if (containerRef.current && !containerRef.current.contains(target)) {
-        setHoveredBadge(null)
-      }
-    }
-    
-    document.addEventListener('click', handleClickOutside)
-    return () => document.removeEventListener('click', handleClickOutside)
-  }, [hoveredBadge])
-
-  // Simplified tooltip handlers
-  const handleMouseEnter = (badgeId: string) => {
-    if (isMobile || !showTooltips) return
-    setHoveredBadge(badgeId)
-  }
-
-  const handleMouseLeave = () => {
-    if (isMobile) return
-    // Small delay to prevent flickering when moving to tooltip
-    setTimeout(() => setHoveredBadge(null), 100)
-  }
-
-  // Mobile click handler
-  const handleClick = (e: React.MouseEvent, badgeId: string) => {
-    e.preventDefault()
-    e.stopPropagation()
-    
-    if (!showTooltips) return
-    
-    if (hoveredBadge === badgeId) {
-      setHoveredBadge(null)
-    } else {
-      setHoveredBadge(badgeId)
-    }
-  }
 
   const badges: BadgeConfig[] = [
     {
       id: 'ssl',
       icon: ShieldIcon,
-      label: 'SSL Sicuro',
-      description: 'Connessione crittografata end-to-end per proteggere i tuoi dati',
+      label: 'SSL Secure',
       status: 'verified',
       color: 'text-emerald-600 dark:text-emerald-400',
       accentColor: 'bg-emerald-500/10 border-emerald-500/20',
@@ -118,8 +58,7 @@ export function TrustBadges({
     {
       id: 'privacy',
       icon: ShieldIcon,
-      label: 'Privacy Garantita',
-      description: 'Niente pixel di tracciamento, niente marketing invasivo, niente vendita dati',
+      label: 'Zero Tracking',
       status: 'compliant',
       color: 'text-blue-600 dark:text-blue-400',
       accentColor: 'bg-blue-500/10 border-blue-500/20',
@@ -128,8 +67,7 @@ export function TrustBadges({
     {
       id: 'educational',
       icon: GraduationCapIcon,
-      label: 'Solo Educativo',
-      description: 'Strumento formativo puro, non vendiamo prodotti finanziari',
+      label: 'Educational Only',
       status: 'active',
       color: 'text-amber-600 dark:text-amber-400',
       accentColor: 'bg-amber-500/10 border-amber-500/20',
@@ -192,7 +130,6 @@ export function TrustBadges({
 
   return (
     <div 
-      ref={containerRef}
       className={`flex items-center ${getVariantClasses()} ${getPlacementClasses()} ${className} trust-badges-static`}
     >
       {badges.map((badge) => {
@@ -203,26 +140,10 @@ export function TrustBadges({
           <div
             key={badge.id}
             className="relative trust-badge-container"
-            onMouseEnter={() => handleMouseEnter(badge.id)}
-            onMouseLeave={handleMouseLeave}
-            onClick={(e) => handleClick(e, badge.id)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault()
-                const syntheticEvent = {
-                  preventDefault: () => {},
-                  stopPropagation: () => {}
-                } as React.MouseEvent<HTMLDivElement>
-                handleClick(syntheticEvent, badge.id)
-              }
-            }}
-            role="button"
-            tabIndex={0}
-            aria-label={`Mostra informazioni su ${badge.label}`}
           >
             <div 
               className={`
-                relative flex items-center cursor-pointer
+                relative flex items-center
                 ${variant === 'micro' 
                   ? 'gap-1 px-1.5 py-0.5 rounded-md border backdrop-blur-sm' 
                   : variant === 'compact'
@@ -233,7 +154,6 @@ export function TrustBadges({
                 ${placement === 'sidebar' ? 'w-full' : ''}
                 transition-all duration-150
               `}
-              title={!isMobile && showTooltips ? badge.description : undefined}
             >
               {/* Status Indicator */}
               {variant !== 'minimal' && variant !== 'micro' && isActive && (
@@ -267,114 +187,7 @@ export function TrustBadges({
                   w-3 h-3 ${badge.color} opacity-80
                 `} />
               )}
-
-              {/* Info Icon Indicator */}
-              {showTooltips && (
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-primary/10 border border-primary/20 rounded-full flex items-center justify-center">
-                  <InfoIcon className="w-2.5 h-2.5 text-primary/70" />
-                </div>
-              )}
             </div>
-
-            {/* Tooltip */}
-            {showTooltips && hoveredBadge === badge.id && (
-              <div 
-                className={`
-                  ${isMobile 
-                    ? 'fixed inset-x-4 bottom-24 z-[9999]' 
-                    : placement === 'sidebar'
-                    ? 'fixed z-[9999] left-64 ml-3'
-                    : 'absolute z-[9999] bottom-full left-1/2 -translate-x-1/2 mb-3'
-                  }
-                `}
-                style={!isMobile && placement === 'sidebar' ? {
-                  top: '50%',
-                  transform: 'translateY(-50%)'
-                } : {}}
-                onClick={(e) => e.stopPropagation()}
-                onKeyDown={(e) => {
-                  if (e.key === 'Escape') {
-                    setHoveredBadge(null)
-                  }
-                }}
-                onMouseEnter={() => setHoveredBadge(badge.id)}
-                onMouseLeave={() => !isMobile && setHoveredBadge(null)}
-              >
-                <div className="relative">
-                  <div className={`
-                    bg-background/98 backdrop-blur-md border border-border/50 rounded-lg shadow-2xl
-                    ${isMobile 
-                      ? 'p-4 mx-auto max-w-sm' 
-                      : `p-3 ${placement === 'sidebar' ? 'w-56' : 'w-64'} max-w-[calc(100vw-1rem)]`
-                    }
-                  `}>
-                    {/* Mobile close button */}
-                    {isMobile && (
-                      <button
-                        onClick={() => setHoveredBadge(null)}
-                        className="absolute top-2 right-2 p-1 text-muted-foreground hover:text-foreground rounded-full hover:bg-muted/50"
-                        aria-label="Chiudi"
-                      >
-                        <CloseIcon className="w-4 h-4" />
-                      </button>
-                    )}
-                    
-                    <div className="flex items-start gap-3">
-                      <div className={`p-2 rounded-lg ${badge.accentColor} flex-shrink-0`}>
-                        <Icon className={`${isMobile ? 'w-4 h-4' : 'w-3 h-3'} ${badge.color}`} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className={`font-semibold text-foreground ${isMobile ? 'text-base' : 'text-sm'} mb-2 flex items-center gap-2`}>
-                          {badge.label}
-                          {isActive && (
-                            <CheckIcon className={`${isMobile ? 'w-4 h-4' : 'w-3 h-3'} ${badge.color} flex-shrink-0`} />
-                          )}
-                        </h4>
-                        <p className={`text-muted-foreground leading-relaxed mb-3 ${isMobile ? 'text-sm' : 'text-xs'}`}>
-                          {badge.description}
-                        </p>
-                        
-                        {/* Status indicator */}
-                        <div className={`
-                          flex items-center gap-2 px-3 py-2 rounded-lg ${isMobile ? 'text-sm' : 'text-xs'} font-medium
-                          ${badge.id === 'ssl' && isSSL 
-                            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' 
-                            : badge.id === 'ssl' && !isSSL
-                            ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
-                            : `${badge.accentColor} ${badge.color}`
-                          }
-                        `}>
-                          {badge.id === 'ssl' ? (
-                            <>
-                              {isSSL ? <CheckIcon className="w-4 h-4 flex-shrink-0" /> : <InfoIcon className="w-4 h-4 flex-shrink-0" />}
-                              <span>{isSSL ? 'SSL Verificato' : 'Non Sicuro'}</span>
-                            </>
-                          ) : (
-                            <>
-                              <div className={`w-2 h-2 rounded-full ${badge.pulseColor} flex-shrink-0`} />
-                              <span>
-                                {badge.id === 'privacy' ? 'Privacy garantita' : 'Modalità educativa'}
-                              </span>
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Tooltip Arrow - Only for desktop */}
-                  {!isMobile && (
-                    <div className={`
-                      absolute w-2 h-2 bg-background/98 border-l border-b border-border/50 rotate-45
-                      ${placement === 'sidebar' 
-                        ? 'left-0 top-1/2 -translate-y-1/2 -translate-x-1 rotate-[315deg]'
-                        : 'top-full left-1/2 -translate-x-1/2 -translate-y-1'
-                      }
-                    `} />
-                  )}
-                </div>
-              </div>
-            )}
           </div>
         )
       })}
@@ -429,7 +242,7 @@ export function SecurityStatus({ className = '' }: { className?: string }) {
         text-sm font-medium
         ${isSSL ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}
       `}>
-        {isSSL ? 'Sicuro' : 'Non sicuro'}
+        {isSSL ? 'Secure' : 'Not secure'}
       </span>
     </div>
   )
@@ -446,14 +259,14 @@ export function ComplianceFooter({ className = '' }: { className?: string }) {
       <div className="space-y-3 text-xs text-muted-foreground">
         <div className="flex items-center justify-center gap-2 font-medium">
           <ShieldIcon className="w-3 h-3 text-primary" />
-          <span>Conforme GDPR</span>
+          <span>GDPR Compliant</span>
         </div>
         <div className="flex items-center justify-center gap-2 font-medium">
           <GraduationCapIcon className="w-3 h-3 text-amber-500" />
-          <span>Solo Educativo</span>
+          <span>Educational Only</span>
         </div>
         <p className="opacity-75 max-w-md mx-auto leading-relaxed">
-          Nessun consiglio di investimento. Solo contenuti educativi.
+          No investment advice. Educational content only.
         </p>
       </div>
     </div>
