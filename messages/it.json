@@ -223,6 +223,7 @@
   },
   "common": {
     "journeyStructure": "Passaggi del percorso",
+    "progressionGuidance": "I passaggi sono pensati per essere seguiti in ordine.",
     "loading": "Caricamento...",
     "error": "Errore",
     "success": "Successo",

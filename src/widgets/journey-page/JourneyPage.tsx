@@ -124,7 +124,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                   }}
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Next: Common errors when using crypto as emergency reserve
+                  Next: Errors to avoid
                 </button>
               </div>
             </div>

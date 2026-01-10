@@ -274,6 +274,11 @@ export function SubNavigation({
           })}
         </nav>
       </div>
+      
+      {/* Progression guidance - micro-line under tabs */}
+      <div className="px-4 py-2 text-xs text-muted-foreground">
+        {t('progressionGuidance')}
+      </div>
       </div>
       
       {/* Spacer when sticky to prevent content jump */}
