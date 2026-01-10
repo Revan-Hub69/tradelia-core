@@ -35,31 +35,22 @@ export default function HeroSection() {
               <div className="relative space-y-6">
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight tracking-tight">
                   {hero.title}
-                  {hero.titleHighlight && (
-                    <>
-                      {' '}
-                      <span className="text-primary relative">
-                        {hero.titleHighlight}
-                        <div className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-primary/60 to-primary/20 rounded-full" />
-                      </span>
-                    </>
-                  )}
                 </h1>
                 
-                <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-xl font-semibold">
+                <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-xl">
                   {hero.description}
                 </p>
 
                 {hero.subDescription && (
-                  <p className="text-base text-foreground font-bold max-w-xl">
+                  <p className="text-base text-foreground font-semibold max-w-xl">
                     {hero.subDescription}
                   </p>
                 )}
 
-                {/* Trust metrics */}
-                <div className="space-y-3">
+                {/* Trust metrics - più compatti */}
+                <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                   {hero.features.map((feature, index) => (
-                    <div key={`feature-${index}`} className="flex items-center gap-3 text-sm text-muted-foreground">
+                    <div key={`feature-${index}`} className="flex items-center gap-2">
                       <div className="w-1.5 h-1.5 bg-primary rounded-full" />
                       <span className="font-medium">{feature}</span>
                     </div>
@@ -85,26 +76,28 @@ export default function HeroSection() {
                 </button>
               </div>
 
-              {/* Trust Badges near CTA */}
-              <div className="pt-4">
-                <TrustBadges 
-                  variant="compact" 
-                  placement="footer" 
-                  showTooltips={true}
-                  animated={true}
-                  className="justify-start"
-                />
-              </div>
-
-              {/* Micro trust */}
-              <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                <div className="flex items-center gap-1">
-                  <CheckIcon className="w-3 h-3 text-primary" />
-                  <span>{hero.trustBadges?.verified || 'Metodologia verificata'}</span>
+              {/* Micro trust + TrustBadges inline */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-1">
+                    <CheckIcon className="w-3 h-3 text-primary" />
+                    <span>{hero.trustBadges?.verified || 'Metodologia verificata'}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <ShieldIcon className="w-3 h-3 text-primary" />
+                    <span>{hero.trustBadges?.specs || '0€ • 60-90s • Nessun documento'}</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-1">
-                  <ShieldIcon className="w-3 h-3 text-primary" />
-                  <span>{hero.trustBadges?.specs || '0€ • 60-90s • Nessun documento'}</span>
+                
+                {/* TrustBadges compatti */}
+                <div className="hidden sm:block">
+                  <TrustBadges 
+                    variant="micro" 
+                    placement="footer" 
+                    showTooltips={true}
+                    animated={false}
+                    className="justify-end"
+                  />
                 </div>
               </div>
             </div>

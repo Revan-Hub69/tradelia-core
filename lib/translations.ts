@@ -5,16 +5,16 @@ export const translations = {
       verify: 'Verifica'
     },
     hero: {
-      title: 'Hai sempre sentito parlare di criptovalute, ma hai paura di sbagliare?',
+      title: 'Hai sempre sentito parlare di crypto, ma hai paura di sbagliare?',
       titleHighlight: '',
-      description: 'Una dashboard educativa che ti aiuta a riconoscere errori cognitivi comuni e rischi incompatibili con il tuo profilo, prima che diventino perdite reali.',
+      description: 'Dashboard educativa che ti aiuta a riconoscere errori cognitivi comuni prima che diventino perdite reali.',
       subDescription: 'Evitare errori è gratuito. Recuperare le perdite no.',
       cta: '👉 Guarda l\'anteprima',
       ctaSecondary: 'Guarda demo',
       features: [
-        'Nessun costo da sostenere',
-        'Nessun marketing, nessuna promessa',
-        'Nessuna pressione a investire'
+        'Nessun costo',
+        'Nessun marketing',
+        'Nessuna pressione'
       ],
       trustBadges: {
         verified: 'Metodologia verificata',
@@ -515,16 +515,16 @@ export const translations = {
       verify: 'Verify'
     },
     hero: {
-      title: 'Have you always heard about cryptocurrencies, but are afraid of making mistakes?',
+      title: 'Have you always heard about crypto, but are afraid of making mistakes?',
       titleHighlight: '',
-      description: 'An educational dashboard that helps you recognize common cognitive errors and risks incompatible with your profile, before they become real losses.',
+      description: 'Educational dashboard that helps you recognize common cognitive errors before they become real losses.',
       subDescription: 'Avoiding errors is free. Recovering losses is not.',
       cta: '👉 Watch preview',
       ctaSecondary: 'Watch demo',
       features: [
-        'No costs to bear',
-        'No marketing, no promises',
-        'No pressure to invest'
+        'No costs',
+        'No marketing',
+        'No pressure'
       ],
       trustBadges: {
         verified: 'Verified methodology',
