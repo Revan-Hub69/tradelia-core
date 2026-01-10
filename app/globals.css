@@ -1124,4 +1124,14 @@ html, body {
     max-width: calc(100vw - 1rem) !important;
     width: auto !important;
   }
+  
+  /* Stable tooltip positioning */
+  .trust-badge-tooltip-stable {
+    position: fixed !important;
+    bottom: 5rem !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 9999 !important;
+    pointer-events: auto !important;
+  }
 }

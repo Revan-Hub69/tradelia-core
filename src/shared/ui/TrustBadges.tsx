@@ -63,6 +63,7 @@ export function TrustBadges({
   const handleMouseEnter = (badgeId: string) => {
     if (tooltipTimeout) {
       clearTimeout(tooltipTimeout)
+      setTooltipTimeout(null)
     }
     if (showTooltips) {
       setHoveredBadge(badgeId)
@@ -70,20 +71,26 @@ export function TrustBadges({
   }
 
   const handleMouseLeave = () => {
+    // Longer delay to allow moving to tooltip
     const timeout = setTimeout(() => {
       setHoveredBadge(null)
-    }, 150) // Small delay to allow moving to tooltip
+    }, 300) // Increased from 150ms to 300ms
     setTooltipTimeout(timeout)
   }
 
   const handleTooltipEnter = () => {
     if (tooltipTimeout) {
       clearTimeout(tooltipTimeout)
+      setTooltipTimeout(null)
     }
   }
 
   const handleTooltipLeave = () => {
     setHoveredBadge(null)
+    if (tooltipTimeout) {
+      clearTimeout(tooltipTimeout)
+      setTooltipTimeout(null)
+    }
   }
 
   const badges: BadgeConfig[] = [
@@ -186,9 +193,22 @@ export function TrustBadges({
             onMouseEnter={() => handleMouseEnter(badge.id)}
             onMouseLeave={handleMouseLeave}
           >
+            {/* Invisible hover area to prevent tooltip closing */}
+            {showTooltips && hoveredBadge === badge.id && (
+              <div className={`
+                absolute z-40 
+                ${placement === 'sidebar' 
+                  ? 'left-0 top-0 w-full h-full' 
+                  : placement === 'footer'
+                  ? '-inset-2' // Larger hover area for footer
+                  : '-inset-1'
+                }
+              `} />
+            )}
+            
             <div 
               className={`
-                relative flex items-center
+                relative flex items-center z-10
                 ${variant === 'micro' 
                   ? 'gap-1 px-1.5 py-0.5 rounded-md border backdrop-blur-sm' 
                   : variant === 'compact'
@@ -245,45 +265,54 @@ export function TrustBadges({
               )}
             </div>
 
-            {/* COMPACT Tooltip - NO ANIMATIONS */}
+            {/* STABLE Tooltip with better positioning */}
             {showTooltips && hoveredBadge === badge.id && (
               <div 
                 className={`
-                  absolute z-50 
+                  fixed z-[9999] pointer-events-auto
                   ${placement === 'sidebar' 
                     ? 'left-full top-1/2 -translate-y-1/2 ml-3' 
                     : placement === 'footer'
-                    ? 'bottom-full left-1/2 -translate-x-1/2 mb-3'
+                    ? 'bottom-20 left-1/2 -translate-x-1/2' // Fixed positioning for footer
                     : 'bottom-full left-1/2 -translate-x-1/2 mb-3'
                   }
                 `}
+                style={{
+                  // Dynamic positioning to stay in viewport
+                  maxWidth: 'calc(100vw - 1rem)',
+                  ...(placement === 'footer' && {
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    bottom: '5rem' // Above mobile nav
+                  })
+                }}
                 onMouseEnter={handleTooltipEnter}
                 onMouseLeave={handleTooltipLeave}
               >
                 <div className="relative">
                   <div className={`
-                    bg-background/95 backdrop-blur-md border border-border/50 rounded-lg shadow-xl p-2
+                    bg-background/98 backdrop-blur-md border border-border/50 rounded-lg shadow-2xl p-3
                     ${placement === 'sidebar' ? 'w-56' : 'w-64'} 
                     max-w-[calc(100vw-1rem)]
                   `}>
                     <div className="flex items-start gap-2">
-                      <div className={`p-1 rounded ${badge.accentColor}`}>
+                      <div className={`p-1.5 rounded ${badge.accentColor} flex-shrink-0`}>
                         <Icon className={`w-3 h-3 ${badge.color}`} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold text-foreground text-xs mb-1 flex items-center gap-1">
+                        <h4 className="font-semibold text-foreground text-sm mb-1 flex items-center gap-1">
                           {badge.label}
                           {isActive && (
-                            <CheckIcon className={`w-2.5 h-2.5 ${badge.color}`} />
+                            <CheckIcon className={`w-3 h-3 ${badge.color} flex-shrink-0`} />
                           )}
                         </h4>
-                        <p className="text-[10px] text-muted-foreground leading-relaxed mb-1">
+                        <p className="text-xs text-muted-foreground leading-relaxed mb-2">
                           {badge.description}
                         </p>
                         
                         {/* Compact Status */}
                         <div className={`
-                          flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium
+                          flex items-center gap-1.5 px-2 py-1 rounded text-xs font-medium
                           ${badge.id === 'ssl' && isSSL 
                             ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' 
                             : badge.id === 'ssl' && !isSSL
@@ -293,12 +322,12 @@ export function TrustBadges({
                         `}>
                           {badge.id === 'ssl' ? (
                             <>
-                              {isSSL ? <CheckIcon className="w-2 h-2" /> : <InfoIcon className="w-2 h-2" />}
+                              {isSSL ? <CheckIcon className="w-3 h-3 flex-shrink-0" /> : <InfoIcon className="w-3 h-3 flex-shrink-0" />}
                               <span>{isSSL ? 'SSL Verificato' : 'Non Sicuro'}</span>
                             </>
                           ) : (
                             <>
-                              <div className={`w-1 h-1 rounded-full ${badge.pulseColor}`} />
+                              <div className={`w-1.5 h-1.5 rounded-full ${badge.pulseColor} flex-shrink-0`} />
                               <span>
                                 {badge.id === 'privacy' ? 'Privacy garantita' : 'Modalità educativa'}
                               </span>
@@ -309,11 +338,13 @@ export function TrustBadges({
                     </div>
                   </div>
                   
-                  {/* Tooltip Arrow - STATIC */}
+                  {/* Tooltip Arrow - Better positioning */}
                   <div className={`
-                    absolute w-2 h-2 bg-background/95 border-l border-b border-border/50 rotate-45
+                    absolute w-2 h-2 bg-background/98 border-l border-b border-border/50 rotate-45
                     ${placement === 'sidebar' 
                       ? 'right-full top-1/2 -translate-y-1/2 -translate-x-1 rotate-[315deg]'
+                      : placement === 'footer'
+                      ? 'top-full left-1/2 -translate-x-1/2 -translate-y-1'
                       : 'top-full left-1/2 -translate-x-1/2 -translate-y-1'
                     }
                   `} />
