@@ -34,9 +34,12 @@ export default function HeroSection() {
               <div className="relative space-y-6">
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight tracking-tight">
                   {hero.title}{' '}
-                  <span className="text-primary relative">
-                    {hero.titleHighlight}
-                    <div className="absolute -bottom-2 right-0 w-[40%] h-1 bg-gradient-to-r from-primary/60 to-primary/20 rounded-full" />
+                  <span className="text-primary relative inline-block">
+                    <span className="relative">
+                      crypto
+                      <div className="absolute -bottom-2 left-[60%] w-[40%] h-1 bg-gradient-to-r from-primary/60 to-primary/20 rounded-full" />
+                    </span>
+                    <span>, ma hai paura di sbagliare?</span>
                   </span>
                 </h1>
                 

@@ -79,15 +79,15 @@ export default function FinalCtaSection() {
               {finalCta.disclaimer}
             </p>
 
-            {/* TrustBadges con posizione assoluta per evitare spostamenti */}
+            {/* TrustBadges completamente fissi */}
             <div className="trust-badges-container">
-              <div className="trust-badges-fixed">
+              <div className="trust-badges-fixed trust-badges-static trust-badge-no-select">
                 <TrustBadges 
                   variant="detailed" 
                   placement="footer" 
                   showTooltips={true}
                   animated={false}
-                  className="trust-badge-item"
+                  className="trust-badge-no-select"
                 />
               </div>
             </div>

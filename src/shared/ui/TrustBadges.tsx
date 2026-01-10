@@ -183,7 +183,7 @@ export function TrustBadges({
           >
             <div 
               className={`
-                relative flex items-center transition-all duration-300 cursor-help group-hover:scale-105
+                relative flex items-center cursor-help
                 ${variant === 'micro' 
                   ? 'gap-1 px-1.5 py-0.5 rounded-md border backdrop-blur-sm' 
                   : variant === 'compact'
@@ -193,9 +193,9 @@ export function TrustBadges({
                 ${isActive ? badge.accentColor : 'bg-muted/30 border-border/50'}
                 ${variant === 'premium' ? 'trust-badge-premium shadow-sm hover:shadow-md' : ''}
                 ${placement === 'sidebar' ? 'w-full' : ''}
-                ${animated ? `animate-in fade-in slide-in-from-bottom-2 trust-badge-stagger-${index + 1}` : ''}
                 ${isHovered ? 'ring-2 ring-offset-2 ring-offset-background' : ''}
                 ${isActive && isHovered ? `ring-${badge.color.split('-')[1]}-500/30` : ''}
+                trust-badge-no-select
               `}
               title={showTooltips ? badge.description : undefined}
             >
@@ -219,16 +219,16 @@ export function TrustBadges({
               <Icon className={`
                 ${variant === 'minimal' || variant === 'micro' ? 'w-3 h-3' : variant === 'compact' ? 'w-3.5 h-3.5' : 'w-4 h-4'}
                 ${isActive ? badge.color : 'text-muted-foreground'}
-                transition-all duration-300
-                ${isHovered ? 'scale-110' : ''}
+                trust-badge-no-select
               `} />
               
               {/* Label */}
               {variant !== 'minimal' && variant !== 'micro' && (
                 <span className={`
-                  font-medium whitespace-nowrap transition-all duration-300
+                  font-medium whitespace-nowrap
                   ${isActive ? badge.color : 'text-muted-foreground'}
                   ${variant === 'compact' ? 'text-xs' : placement === 'sidebar' ? 'text-xs' : ''}
+                  trust-badge-no-select
                 `}>
                   {badge.label}
                 </span>
