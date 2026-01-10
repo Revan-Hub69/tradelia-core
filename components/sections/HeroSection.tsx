@@ -57,7 +57,7 @@ export default function HeroSection() {
                           <>
                             <span className="relative inline-block">
                               {parts[0]}
-                              <div className="absolute -bottom-2 left-0 w-[40%] h-1 bg-gradient-to-r from-primary/60 to-primary/20 rounded-full" />
+                              <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-primary/60 to-primary/20 rounded-full" />
                             </span>
                             <span>. {parts[1]}</span>
                           </>
@@ -68,7 +68,7 @@ export default function HeroSection() {
                           <>
                             <span className="relative inline-block">
                               {parts[0]}
-                              <div className="absolute -bottom-2 left-0 w-[40%] h-1 bg-gradient-to-r from-primary/60 to-primary/20 rounded-full" />
+                              <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-primary/60 to-primary/20 rounded-full" />
                             </span>
                             <span>. {parts[1]}</span>
                           </>

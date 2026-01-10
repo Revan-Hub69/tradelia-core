@@ -1107,4 +1107,21 @@ html, body {
   .trust-badge-tooltip-mobile::before {
     display: none !important;
   }
+  
+  /* Better mobile positioning for footer badges */
+  .trust-badges-mobile-footer {
+    position: relative;
+    overflow: visible;
+    padding: 0.5rem 0;
+  }
+  
+  /* Prevent tooltip overflow on mobile */
+  .trust-badges-mobile-footer .absolute {
+    position: fixed !important;
+    bottom: 6rem !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    max-width: calc(100vw - 1rem) !important;
+    width: auto !important;
+  }
 }

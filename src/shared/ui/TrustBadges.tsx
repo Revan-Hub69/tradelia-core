@@ -197,14 +197,27 @@ export function TrustBadges({
 
             {/* STATIC Tooltip - NO ANIMATIONS */}
             {showTooltips && hoveredBadge === badge.id && (
-              <div className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-3">
+              <div className={`
+                absolute z-50 
+                ${placement === 'sidebar' 
+                  ? 'left-full top-1/2 -translate-y-1/2 ml-3' 
+                  : placement === 'footer'
+                  ? 'bottom-full left-1/2 -translate-x-1/2 mb-3 md:bottom-full md:left-1/2 md:-translate-x-1/2 md:mb-3'
+                  : 'bottom-full left-1/2 -translate-x-1/2 mb-3'
+                }
+              `}>
                 <div className="relative">
-                  <div className="bg-background/95 backdrop-blur-md border border-border/50 rounded-xl shadow-xl p-3 w-72 max-w-[calc(100vw-2rem)]">
+                  <div className={`
+                    bg-background/95 backdrop-blur-md border border-border/50 rounded-xl shadow-xl p-3 
+                    ${placement === 'sidebar' ? 'w-64' : 'w-72'} 
+                    max-w-[calc(100vw-2rem)]
+                    ${placement === 'footer' ? 'md:w-72' : ''}
+                  `}>
                     <div className="flex items-start gap-2">
                       <div className={`p-1.5 rounded-lg ${badge.accentColor}`}>
                         <Icon className={`w-3.5 h-3.5 ${badge.color}`} />
                       </div>
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <h4 className="font-semibold text-foreground text-sm mb-1 flex items-center gap-2">
                           {badge.label}
                           {isActive && (
@@ -255,7 +268,13 @@ export function TrustBadges({
                   </div>
                   
                   {/* Tooltip Arrow - STATIC */}
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 -translate-y-1.5 w-3 h-3 bg-background/95 border-l border-b border-border/50 rotate-45" />
+                  <div className={`
+                    absolute w-3 h-3 bg-background/95 border-l border-b border-border/50 rotate-45
+                    ${placement === 'sidebar' 
+                      ? 'right-full top-1/2 -translate-y-1/2 -translate-x-1.5 rotate-[315deg]'
+                      : 'top-full left-1/2 -translate-x-1/2 -translate-y-1.5'
+                    }
+                  `} />
                 </div>
               </div>
             )}

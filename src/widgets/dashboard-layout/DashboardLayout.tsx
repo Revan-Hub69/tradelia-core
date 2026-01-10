@@ -387,10 +387,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               </div>
             </div>
 
-            {/* Mobile Trust Badges */}
+            {/* Mobile Trust Badges - Better positioning */}
             <div className="pt-3 border-t border-border/30 md:hidden">
-              <div className="trust-badge-no-select">
-                <TrustBadges placement="footer" variant="compact" showTooltips={true} className="justify-center text-xs trust-badge-no-select" />
+              <div className="flex justify-center">
+                <TrustBadges placement="footer" variant="compact" showTooltips={true} className="text-xs" />
               </div>
             </div>
           </div>
