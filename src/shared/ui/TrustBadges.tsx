@@ -1,11 +1,10 @@
 /**
- * TrustBadges - Ultra-Chicca 2026
+ * TrustBadges - Ultra-Chicca 2026 - STATIC VERSION
  * 
  * Trust Badges & SSL Indicators
  * - SSL Secure, Zero Tracking, Educational Only
- * - Premium design with subtle animations and effects
+ * - COMPLETELY STATIC - NO ANIMATIONS OR MOVEMENTS
  * - Discrete placement with enhanced visual hierarchy
- * - Hover explanations with smooth transitions
  * - Builds user confidence and compliance signaling
  */
 
@@ -42,54 +41,15 @@ export function TrustBadges({
   placement = 'footer',
   variant = 'detailed',
   showTooltips = true,
-  animated = true,
   className = ''
 }: TrustBadgesProps) {
   // Use hardcoded strings for now to avoid translation issues
   const [hoveredBadge, setHoveredBadge] = useState<string | null>(null)
   const [mounted, setMounted] = useState(false)
-  const [tooltipPosition, setTooltipPosition] = useState<'top' | 'bottom' | 'left' | 'right'>('top')
 
   useEffect(() => {
     setMounted(true)
   }, [])
-
-  // Smart tooltip positioning to avoid viewport overflow
-  const handleTooltipPosition = (element: HTMLElement) => {
-    if (!element) return
-
-    const rect = element.getBoundingClientRect()
-    const viewportWidth = window.innerWidth
-    const viewportHeight = window.innerHeight
-    
-    // Check if tooltip would overflow
-    const tooltipWidth = 320 // max-w-xs ≈ 320px
-    const tooltipHeight = 200 // estimated height
-    
-    let position: 'top' | 'bottom' | 'left' | 'right' = 'top'
-    
-    if (placement === 'sidebar') {
-      // For sidebar, prefer right if space available, otherwise left
-      if (rect.right + tooltipWidth < viewportWidth) {
-        position = 'right'
-      } else {
-        position = 'left'
-      }
-    } else {
-      // For footer/header, prefer top if space available
-      if (rect.top - tooltipHeight > 0) {
-        position = 'top'
-      } else if (rect.bottom + tooltipHeight < viewportHeight) {
-        position = 'bottom'
-      } else if (rect.left - tooltipWidth > 0) {
-        position = 'left'
-      } else {
-        position = 'right'
-      }
-    }
-    
-    setTooltipPosition(position)
-  }
 
   const badges: BadgeConfig[] = [
     {
@@ -160,27 +120,25 @@ export function TrustBadges({
   }
 
   return (
-    <div className={`flex items-center ${getVariantClasses()} ${getPlacementClasses()} ${className}`}>
-      {badges.map((badge, index) => {
+    <div className={`flex items-center ${getVariantClasses()} ${getPlacementClasses()} ${className} trust-badges-static`}>
+      {badges.map((badge) => {
         const Icon = badge.icon
         const isActive = badge.id === 'ssl' ? isSSL : true
-        const isHovered = hoveredBadge === badge.id
         
         return (
           <div
             key={badge.id}
-            className="relative group trust-badge-no-select"
-            onMouseEnter={(e) => {
+            className="relative trust-badge-no-select"
+            onMouseEnter={() => {
               if (showTooltips) {
                 setHoveredBadge(badge.id)
-                handleTooltipPosition(e.currentTarget)
               }
             }}
             onMouseLeave={() => setHoveredBadge(null)}
           >
             <div 
               className={`
-                relative flex items-center cursor-help
+                relative flex items-center
                 ${variant === 'micro' 
                   ? 'gap-1 px-1.5 py-0.5 rounded-md border backdrop-blur-sm' 
                   : variant === 'compact'
@@ -188,15 +146,12 @@ export function TrustBadges({
                   : 'gap-2 px-3 py-2 rounded-xl border backdrop-blur-sm'
                 }
                 ${isActive ? badge.accentColor : 'bg-muted/30 border-border/50'}
-                ${variant === 'premium' ? 'trust-badge-premium shadow-sm hover:shadow-md' : ''}
                 ${placement === 'sidebar' ? 'w-full' : ''}
-                ${isHovered ? 'ring-2 ring-offset-2 ring-offset-background' : ''}
-                ${isActive && isHovered ? `ring-${badge.color.split('-')[1]}-500/30` : ''}
                 trust-badge-no-select
               `}
               title={showTooltips ? badge.description : undefined}
             >
-              {/* Status Indicator - NESSUNA ANIMAZIONE */}
+              {/* Status Indicator - STATIC */}
               {variant !== 'minimal' && variant !== 'micro' && isActive && (
                 <div className="relative">
                   <div className={`
@@ -224,15 +179,13 @@ export function TrustBadges({
                 </span>
               )}
               
-              {/* Verification Check - NESSUNA ANIMAZIONE */}
+              {/* Verification Check - STATIC */}
               {variant === 'detailed' && isActive && (
                 <CheckIcon className={`
                   w-3 h-3 ${badge.color} opacity-80
                   trust-badge-no-select
                 `} />
               )}
-
-              {/* NESSUN Premium Gradient Overlay */}
 
               {/* Info Icon Indicator */}
               {showTooltips && (
@@ -242,27 +195,13 @@ export function TrustBadges({
               )}
             </div>
 
-            {/* Enhanced Tooltip - NESSUNA ANIMAZIONE */}
+            {/* STATIC Tooltip - NO ANIMATIONS */}
             {showTooltips && hoveredBadge === badge.id && (
-              <div className={`
-                absolute z-50
-                ${tooltipPosition === 'top' ? 'bottom-full left-1/2 -translate-x-1/2 mb-3' : ''}
-                ${tooltipPosition === 'bottom' ? 'top-full left-1/2 -translate-x-1/2 mt-3' : ''}
-                ${tooltipPosition === 'left' ? 'right-full top-1/2 -translate-y-1/2 mr-3' : ''}
-                ${tooltipPosition === 'right' ? 'left-full top-1/2 -translate-y-1/2 ml-3' : ''}
-                md:relative md:z-50
-              `}>
+              <div className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-3">
                 <div className="relative">
-                  <div className={`
-                    bg-background/95 backdrop-blur-md border border-border/50 rounded-xl shadow-xl p-3 w-72 max-w-[calc(100vw-2rem)]
-                    ${tooltipPosition === 'left' || tooltipPosition === 'right' ? 'trust-badge-tooltip-left' : 'trust-badge-tooltip-up'}
-                    ${variant === 'premium' ? 'shadow-2xl' : ''}
-                    md:trust-badge-tooltip-mobile
-                  `}>
+                  <div className="bg-background/95 backdrop-blur-md border border-border/50 rounded-xl shadow-xl p-3 w-72 max-w-[calc(100vw-2rem)]">
                     <div className="flex items-start gap-2">
-                      <div className={`
-                        p-1.5 rounded-lg ${badge.accentColor}
-                      `}>
+                      <div className={`p-1.5 rounded-lg ${badge.accentColor}`}>
                         <Icon className={`w-3.5 h-3.5 ${badge.color}`} />
                       </div>
                       <div className="flex-1">
@@ -315,14 +254,8 @@ export function TrustBadges({
                     </div>
                   </div>
                   
-                  {/* Tooltip Arrow with Smart Positioning */}
-                  <div className={`
-                    absolute w-3 h-3 bg-background/95 border-l border-b border-border/50 rotate-45
-                    ${tooltipPosition === 'top' ? 'top-full left-1/2 -translate-x-1/2 -translate-y-1.5' : ''}
-                    ${tooltipPosition === 'bottom' ? 'bottom-full left-1/2 -translate-x-1/2 translate-y-1.5 rotate-[225deg]' : ''}
-                    ${tooltipPosition === 'left' ? 'left-full top-1/2 -translate-y-1/2 translate-x-1.5 rotate-[135deg]' : ''}
-                    ${tooltipPosition === 'right' ? 'right-full top-1/2 -translate-y-1/2 -translate-x-1.5 rotate-[315deg]' : ''}
-                  `} />
+                  {/* Tooltip Arrow - STATIC */}
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 -translate-y-1.5 w-3 h-3 bg-background/95 border-l border-b border-border/50 rotate-45" />
                 </div>
               </div>
             )}
@@ -333,13 +266,12 @@ export function TrustBadges({
   )
 }
 
-// Specialized trust badge components with enhanced designs
+// Specialized trust badge components - ALL STATIC
 export function HeaderTrustBadges(props: Omit<TrustBadgesProps, 'placement'>) {
   return (
     <TrustBadges 
       placement="header" 
       variant="minimal"
-      animated={false}
       {...props} 
     />
   )
@@ -350,7 +282,6 @@ export function FooterTrustBadges(props: Omit<TrustBadgesProps, 'placement'>) {
     <TrustBadges 
       placement="footer" 
       variant="premium"
-      animated={false}
       {...props} 
     />
   )
@@ -361,13 +292,12 @@ export function SidebarTrustBadges(props: Omit<TrustBadgesProps, 'placement'>) {
     <TrustBadges 
       placement="sidebar" 
       variant="compact"
-      animated={false}
       {...props} 
     />
   )
 }
 
-// Enhanced Security Status with animations
+// Enhanced Security Status - STATIC
 export function SecurityStatus({ className = '' }: { className?: string }) {
   const isSSL = typeof window !== 'undefined' && window.location.protocol === 'https:'
   
@@ -389,12 +319,12 @@ export function SecurityStatus({ className = '' }: { className?: string }) {
   )
 }
 
-// Premium Compliance Footer with enhanced design
+// Premium Compliance Footer - STATIC
 export function ComplianceFooter({ className = '' }: { className?: string }) {
   return (
     <div className={`text-center space-y-6 ${className}`}>
       <div className="relative">
-        <TrustBadges variant="premium" animated={false} />
+        <TrustBadges variant="premium" />
       </div>
       
       <div className="space-y-3 text-xs text-muted-foreground">

@@ -86,7 +86,6 @@ export default function FinalCtaSection() {
                   variant="detailed" 
                   placement="footer" 
                   showTooltips={true}
-                  animated={false}
                   className="trust-badge-no-select"
                 />
               </div>

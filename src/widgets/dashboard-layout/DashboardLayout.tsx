@@ -189,7 +189,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         {/* Ultra-Chicche: Trust Badges in Mobile Sidebar Footer */}
         <div className="p-3 border-t border-border/50 flex-shrink-0">
           <div className="trust-badge-no-select">
-            <TrustBadges placement="sidebar" variant="compact" animated={false} showTooltips={true} className="text-xs trust-badge-no-select" />
+            <TrustBadges placement="sidebar" variant="compact" showTooltips={true} className="text-xs trust-badge-no-select" />
           </div>
         </div>
       </aside>
@@ -261,7 +261,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         {/* Ultra-Chicche: Trust Badges in Desktop Sidebar Footer */}
         <div className="p-3 border-t border-border/50 flex-shrink-0">
           <div className="trust-badge-no-select">
-            <TrustBadges placement="sidebar" variant="compact" animated={false} showTooltips={true} className="text-xs trust-badge-no-select" />
+            <TrustBadges placement="sidebar" variant="compact" showTooltips={true} className="text-xs trust-badge-no-select" />
           </div>
         </div>
       </aside>
@@ -390,7 +390,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             {/* Mobile Trust Badges */}
             <div className="pt-3 border-t border-border/30 md:hidden">
               <div className="trust-badge-no-select">
-                <TrustBadges placement="footer" variant="compact" animated={false} showTooltips={true} className="justify-center text-xs trust-badge-no-select" />
+                <TrustBadges placement="footer" variant="compact" showTooltips={true} className="justify-center text-xs trust-badge-no-select" />
               </div>
             </div>
           </div>
