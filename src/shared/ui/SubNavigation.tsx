@@ -213,9 +213,10 @@ export function SubNavigation({
                   flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap
                   border-b-2 border-transparent transition-all duration-150 
                   focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2
+                  ${item.secondary ? 'opacity-70' : ''}
                   ${isActive 
                     ? 'text-primary bg-primary/5' 
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/30'
+                    : `text-muted-foreground hover:text-foreground hover:bg-muted/30 ${item.secondary ? 'hover:opacity-90' : ''}`
                   }
                 `}
                 aria-current={isActive ? 'page' : undefined}

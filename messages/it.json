@@ -520,9 +520,9 @@
     "emergency": {
       "name": "Emergenza",
       "action": "Verifica liquidità",
-      "description": "Crypto come asset di emergenza",
+      "description": "Crypto come riserva di emergenza",
       "introduction": {
-        "title": "Crypto come asset di emergenza",
+        "title": "Crypto come riserva di emergenza",
         "whyExists": {
           "content": "Bitcoin nasce nel 2008–2009 in risposta a una crisi sistemica: il valore esisteva, ma l'accesso al valore non era più garantito. Da allora, le criptovalute rappresentano una categoria di sistemi pensati per funzionare anche quando i canali tradizionali si interrompono."
         },

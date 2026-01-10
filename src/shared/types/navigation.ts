@@ -16,6 +16,7 @@ export interface SubNavItem {
   label: string
   icon?: ReactNode
   count?: number
+  secondary?: boolean
 }
 
 export interface SubNavItemWithContent extends SubNavItem {

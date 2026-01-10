@@ -541,9 +541,9 @@
     "emergency": {
       "name": "Emergency",
       "action": "Check liquidity",
-      "description": "Crypto as emergency asset",
+      "description": "Crypto as emergency reserve",
       "introduction": {
-        "title": "Crypto as emergency asset",
+        "title": "Crypto as emergency reserve",
         "whyExists": {
           "content": "Bitcoin was born in 2008–2009 in response to a systemic crisis: value existed, but access to value was no longer guaranteed. Since then, cryptocurrencies represent a category of systems designed to function even when traditional channels are interrupted."
         },

@@ -84,12 +84,10 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
               </h1>
 
               {/* Plain text blocks - no cards, no numbers, no emphasis */}
-              <div className="space-y-6 text-sm text-muted-foreground leading-relaxed">
+              <div className="space-y-8 text-sm text-muted-foreground leading-relaxed">
                 <p>
                   {t('journeys.emergency.introduction.whyExists.content')}
                 </p>
-
-                <div className="h-px bg-border/30 my-8"></div>
 
                 <p>
                   {t('journeys.emergency.introduction.problemType.content')}
@@ -265,8 +263,9 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
     {
       id: 'tools',
       label: tJourney('tabs.tools'),
-      icon: <CogIcon className="w-4 h-4" />,
+      icon: <CogIcon className="w-4 h-4 opacity-60" />,
       count: 0, // No tools available yet - show educational empty state
+      secondary: true, // Mark as secondary
       content: (
         <div className="space-y-8">
           {/* Ultra-Chicche: SoftConfirmation for tool access */}
@@ -381,7 +380,8 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
     {
       id: 'platforms',
       label: tJourney('tabs.platforms'),
-      icon: <SettingsIcon className="w-4 h-4" />,
+      icon: <SettingsIcon className="w-4 h-4 opacity-60" />,
+      secondary: true, // Mark as secondary
       content: (
         <div className="space-y-6">
           <div className="bg-background/60 border border-border/50 rounded-xl p-6">
