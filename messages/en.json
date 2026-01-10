@@ -559,6 +559,10 @@
         "whoItMakesSense": {
           "title": "Who it makes sense for",
           "content": "This approach may make sense for those seeking: system redundancy, independent access, operational continuity. Not for those seeking optimization or yield."
+        },
+        "ctaSection": {
+          "description": "Now that you understand the approach, discover the most common errors to avoid.",
+          "button": "Continue with errors to avoid"
         }
       },
       "sections": {

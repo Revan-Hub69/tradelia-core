@@ -168,7 +168,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                 <div className="text-center">
                   <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-2xl p-8 border border-primary/20">
                     <p className="text-muted-foreground mb-6 text-lg">
-                      Ora che hai compreso l'approccio, scopri gli errori più comuni da evitare.
+                      {t('journeys.emergency.introduction.ctaSection.description')}
                     </p>
                     <button
                       onClick={() => {
@@ -178,7 +178,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                       }}
                       className="px-12 py-4 bg-primary text-white text-lg font-semibold rounded-xl hover:bg-primary/90 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
                     >
-                      Continua con gli errori da evitare →
+                      {t('journeys.emergency.introduction.ctaSection.button')} →
                     </button>
                   </div>
                 </div>
