@@ -207,6 +207,7 @@
     border-radius: 12px;
     /* Subtle shadow for depth without distraction */
     box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05);
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
   }
   
   /* Section Frame with semantic left borders */
@@ -237,6 +238,7 @@
     border-radius: 8px;
     /* Minimal shadow - borders do the separation work */
     box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
   }
   
   /* Micro-dividers between sections */
@@ -322,6 +324,19 @@
     /* Subtle lift without distraction */
     transform: translateY(-1px);
     box-shadow: 0 2px 4px 0 rgb(0 0 0 / 0.08);
+  }
+
+  /* Section Frame Hover Effects - 2026 Cognitive Design */
+  .section-frame:hover {
+    border-color: hsl(var(--border-section));
+    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 0.06);
+  }
+
+  /* Card 2026 Hover Effects */
+  .card-2026:hover {
+    border-color: hsl(var(--border-card));
+    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 0.08);
+    transform: translateY(-0.5px);
   }
 
   /* Link Internal Hover */

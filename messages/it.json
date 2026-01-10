@@ -198,6 +198,7 @@
     "persistentError": "Se il problema persiste, contatta il supporto",
     "errorOccurred": "Si è verificato un errore",
     "sectionNavigation": "Navigazione sezione",
+    "safeButton": "Pulsante sicuro",
     "networkStatus": {
       "offline": "Connessione persa",
       "slow": "Connessione lenta",

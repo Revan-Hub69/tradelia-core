@@ -198,6 +198,7 @@
     "persistentError": "If the problem persists, contact support",
     "errorOccurred": "An error occurred",
     "sectionNavigation": "Section navigation",
+    "safeButton": "Safe button",
     "networkStatus": {
       "offline": "Connection lost",
       "slow": "Slow connection",
