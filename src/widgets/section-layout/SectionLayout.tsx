@@ -114,7 +114,7 @@ export function SectionLayout({
         activeId={activeTab}
         onItemClick={handleTabChange}
         enableSticky={true}
-        showStructureLabel={true}
+        showStructureLabel={false}
       />
 
       {/* Contenuto dinamico */}

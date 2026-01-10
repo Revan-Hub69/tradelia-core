@@ -84,7 +84,6 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
     {
       id: 'intro',
       label: tJourney('tabs.intro'),
-      icon: <BookOpenIcon className="w-4 h-4" />,
       recommended: recommendedTab === 'intro',
       content: (
         <div className="space-y-6">
@@ -115,17 +114,17 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                 </p>
               </div>
 
-              {/* Single natural language instruction */}
-              <div className="mt-12 flex justify-end">
+              {/* Cognitive closure - semantic CTA */}
+              <div className="mt-12 pt-6 border-t border-border/30">
                 <button
                   onClick={() => {
                     educationMemory.markIntroSeen()
                     const event = new CustomEvent('switchToTab', { detail: 'errors' })
                     window.dispatchEvent(event)
                   }}
-                  className="px-4 py-2 text-sm bg-muted/30 hover:bg-muted/50 rounded-lg transition-colors"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Continue → {t('common.journeyPage.tabs.errors')}
+                  Next: Common errors when using crypto as emergency reserve
                 </button>
               </div>
             </div>
@@ -202,7 +201,6 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
     {
       id: 'errors',
       label: tJourney('tabs.errors'),
-      icon: <AlertTriangleIcon className="w-4 h-4" />,
       recommended: recommendedTab === 'errors',
       content: (
         <div className="space-y-6">
@@ -240,7 +238,6 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
     {
       id: 'educational',
       label: tJourney('tabs.educational'),
-      icon: <GraduationCapIcon className="w-4 h-4" />,
       recommended: recommendedTab === 'educational',
       content: (
         <div className="space-y-6">
@@ -278,7 +275,6 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
     {
       id: 'tools',
       label: tJourney('tabs.tools'),
-      icon: <CogIcon className="w-4 h-4 opacity-60" />,
       // Remove count: 0 to avoid showing "0" badge
       secondary: true, // Mark as secondary
       disabled: true, // Mark as disabled when no tools available
@@ -396,7 +392,6 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
     {
       id: 'platforms',
       label: tJourney('tabs.platforms'),
-      icon: <SettingsIcon className="w-4 h-4 opacity-60" />,
       secondary: true, // Mark as secondary
       content: (
         <div className="space-y-6">

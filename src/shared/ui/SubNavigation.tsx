@@ -216,7 +216,15 @@ export function SubNavigation({
                 aria-controls={`panel-${item.id}`}
                 id={`tab-${item.id}`}
                 tabIndex={isActive ? 0 : -1}
-                onClick={() => !item.disabled && onItemClick(item.id)}
+                onClick={() => {
+                  // Only allow clicking current step or previous steps
+                  const currentIndex = items.findIndex(i => i.id === activeId)
+                  const clickedIndex = items.findIndex(i => i.id === item.id)
+                  
+                  if (!item.disabled && clickedIndex <= currentIndex) {
+                    onItemClick(item.id)
+                  }
+                }}
                 onKeyDown={(e) => !item.disabled && handleKeyDown(e, item.id)}
                 disabled={item.disabled}
                 aria-disabled={item.disabled}
@@ -224,20 +232,28 @@ export function SubNavigation({
                   flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap
                   transition-all duration-150 relative
                   focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2
-                  ${item.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-                  ${item.secondary && !item.disabled ? 'opacity-70' : ''}
-                  ${isActive && !item.disabled
-                    ? 'text-primary border-b-2 border-primary' 
-                    : `text-muted-foreground ${!item.disabled ? 'hover:text-foreground' : ''} ${item.secondary && !item.disabled ? 'hover:opacity-90' : ''} border-b-2 border-transparent`
-                  }
+                  ${(() => {
+                    const currentIndex = items.findIndex(i => i.id === activeId)
+                    const itemIndex = items.findIndex(i => i.id === item.id)
+                    const canClick = !item.disabled && itemIndex <= currentIndex
+                    
+                    if (item.disabled || itemIndex > currentIndex) {
+                      return 'opacity-40 cursor-not-allowed text-muted-foreground'
+                    }
+                    
+                    if (isActive) {
+                      return 'text-primary border-b-2 border-primary cursor-default'
+                    }
+                    
+                    if (canClick) {
+                      return 'text-muted-foreground hover:text-foreground border-b-2 border-transparent cursor-pointer'
+                    }
+                    
+                    return 'text-muted-foreground border-b-2 border-transparent cursor-not-allowed'
+                  })()}
                 `}
                 aria-current={isActive ? 'page' : undefined}
               >
-                {item.icon && (
-                  <span className={`w-4 h-4 transition-colors ${isActive ? 'text-primary' : ''}`}>
-                    {item.icon}
-                  </span>
-                )}
                 <span>{item.label}</span>
                 {item.recommended && !isActive && (
                   <div className="absolute -top-1 -right-1 w-2 h-2 bg-primary/60 rounded-full" />
