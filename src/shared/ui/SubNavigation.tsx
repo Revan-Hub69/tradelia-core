@@ -217,58 +217,43 @@ export function SubNavigation({
                 id={`tab-${item.id}`}
                 tabIndex={isActive ? 0 : -1}
                 onClick={() => {
-                  // Only allow clicking current step or previous steps
+                  // Only allow clicking previous steps (back only)
                   const currentIndex = items.findIndex(i => i.id === activeId)
                   const clickedIndex = items.findIndex(i => i.id === item.id)
                   
-                  if (!item.disabled && clickedIndex <= currentIndex) {
+                  if (!item.disabled && clickedIndex < currentIndex) {
                     onItemClick(item.id)
                   }
+                  // Current step and future steps: no action
                 }}
                 onKeyDown={(e) => !item.disabled && handleKeyDown(e, item.id)}
                 disabled={item.disabled}
                 aria-disabled={item.disabled}
                 className={`
-                  flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap
-                  transition-all duration-150 relative
-                  focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2
+                  flex items-center gap-2 px-4 py-3 text-sm font-normal whitespace-nowrap
+                  transition-colors duration-150 relative border-b-2
+                  focus:outline-none focus:ring-2 focus:ring-muted-foreground/20 focus:ring-offset-2
                   ${(() => {
                     const currentIndex = items.findIndex(i => i.id === activeId)
                     const itemIndex = items.findIndex(i => i.id === item.id)
-                    const canClick = !item.disabled && itemIndex <= currentIndex
                     
-                    if (item.disabled || itemIndex > currentIndex) {
-                      return 'opacity-40 cursor-not-allowed text-muted-foreground'
-                    }
-                    
+                    // Current step: subtle underline
                     if (isActive) {
-                      return 'text-primary border-b-2 border-primary cursor-default'
+                      return 'text-foreground border-foreground/30 cursor-default'
                     }
                     
-                    if (canClick) {
-                      return 'text-muted-foreground hover:text-foreground border-b-2 border-transparent cursor-pointer'
+                    // Previous steps: clickable (back only)
+                    if (itemIndex < currentIndex) {
+                      return 'text-muted-foreground border-transparent hover:text-foreground cursor-pointer'
                     }
                     
-                    return 'text-muted-foreground border-b-2 border-transparent cursor-not-allowed'
+                    // Future steps: muted, no hover, no click affordance
+                    return 'text-muted-foreground/60 border-transparent cursor-default'
                   })()}
                 `}
-                aria-current={isActive ? 'page' : undefined}
+                aria-current={isActive ? 'step' : undefined}
               >
                 <span>{item.label}</span>
-                {item.recommended && !isActive && (
-                  <div className="absolute -top-1 -right-1 w-2 h-2 bg-primary/60 rounded-full" />
-                )}
-                {item.count !== undefined && (
-                  <span className={`
-                    px-2 py-0.5 text-xs rounded-full transition-colors
-                    ${isActive 
-                      ? 'bg-primary/20 text-primary' 
-                      : 'bg-muted text-muted-foreground'
-                    }
-                  `}>
-                    {item.count}
-                  </span>
-                )}
               </button>
             )
           })}

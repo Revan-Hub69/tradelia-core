@@ -14,7 +14,6 @@ import { useTranslations, useLocale } from 'next-intl'
 import { DashboardLayout } from '@/src/widgets/dashboard-layout'
 import { DashboardAuthGuard } from '@/src/widgets/dashboard-auth'
 import { SectionLayout } from '@/src/widgets/section-layout/SectionLayout'
-import { SoftConfirmation } from '@/src/shared/ui/SoftConfirmation'
 import { SafeButton } from '@/src/shared/ui/SafeButton'
 import { useEducationMemory } from '@/src/shared/hooks/useEducationMemory'
 import { JOURNEYS, type JourneyId } from '@/src/shared/config/journeys'
@@ -23,11 +22,7 @@ import {
   TrendingUpIcon,
   BoltIcon,
   RefreshIcon,
-  BookOpenIcon,
-  AlertTriangleIcon,
-  GraduationCapIcon,
-  CogIcon,
-  SettingsIcon
+  AlertTriangleIcon
 } from '@/components/icons/TradeliaIcons'
 
 interface JourneyPageProps {
@@ -68,7 +63,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
   }, [])
 
   // Determine recommended next tab based on education memory
-  const getRecommendedTab = () => {
+  const _getRecommendedTab = () => {
     if (journeyId !== 'emergency') return null
     
     if (!educationMemory.hasSeenIntro) return 'intro'
@@ -77,58 +72,73 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
     return null
   }
 
-  const recommendedTab = getRecommendedTab()
-
   // Sub-navigazione standardizzata per tutte le sezioni
   const subNavItems = [
     {
       id: 'intro',
       label: tJourney('tabs.intro'),
-      recommended: recommendedTab === 'intro',
       content: (
         <div className="space-y-6">
-          {/* Emergency-specific introduction - Cognitive microlearning approach */}
+          {/* Emergency-specific introduction - Ultra-Chicche implementation */}
           {journeyId === 'emergency' ? (
-            <div className="max-w-2xl">
-              {/* Simple title - left aligned, no hero */}
-              <h1 className="text-xl font-medium text-foreground mb-8">
+            <div className="max-w-[66ch] mx-auto px-6">
+              {/* Meta indicators - top right, silent */}
+              <div className="flex justify-between items-start mb-12">
+                <div></div>
+                <div className="text-xs text-muted-foreground/60 space-y-1 text-right">
+                  <div>Scope: Orientation</div>
+                  <div>Mode: Risk-first</div>
+                </div>
+              </div>
+
+              {/* Anti-hero title - policy brief style */}
+              <h1 className="text-[20px] font-normal text-foreground mb-12 leading-[1.4]">
                 {t('journeys.emergency.introduction.title')}
               </h1>
 
-              {/* Plain text blocks - no cards, no numbers, no emphasis */}
-              <div className="space-y-8 text-sm text-muted-foreground leading-relaxed">
-                <p>
+              {/* Anti-marketing typography - line-height 1.75, narrow column */}
+              <div className="space-y-8 text-[16px] text-muted-foreground leading-[1.75]">
+                <p className="max-w-[60ch]">
                   {t('journeys.emergency.introduction.whyExists.content')}
                 </p>
 
-                <p>
+                <p className="max-w-[60ch]">
                   {t('journeys.emergency.introduction.problemType.content')}
                 </p>
 
-                <p>
+                <p className="max-w-[60ch]">
                   {t('journeys.emergency.introduction.mentalRule.content')}
                 </p>
 
-                <p>
+                <p className="max-w-[60ch]">
                   {t('journeys.emergency.introduction.whoItMakesSense.content')}
                 </p>
               </div>
 
-              {/* Cognitive closure - semantic CTA */}
-              <div className="mt-12 pt-6 border-t border-border/30">
+              {/* Frase-ancora (optional memory anchor) */}
+              <div className="mt-12 mb-8">
+                <p className="text-[16px] text-muted-foreground leading-[1.75] max-w-[60ch]">
+                  Here, value is evaluated by access, not price.
+                </p>
+              </div>
+
+              {/* Completion without gamification - passive closure */}
+              <div className="mt-16 pt-8 border-t border-border/20">
+                <p className="text-sm text-muted-foreground/80 mb-4 max-w-[60ch]">
+                  {tJourney('sectionDefinesFrame')}
+                </p>
+                
+                {/* Textual step transition - not a button */}
                 <button
                   onClick={() => {
                     educationMemory.markIntroSeen()
                     
-                    // Try to find and click the errors tab
                     const errorsTab = document.querySelector('[data-tab-id="errors"]') as HTMLButtonElement
                     if (errorsTab) {
                       errorsTab.click()
                     } else {
-                      // Fallback: try to trigger the parent's tab change handler
                       const tabContainer = document.querySelector('[role="tablist"]')
                       if (tabContainer) {
-                        // Look for errors tab in the container
                         const errorButton = tabContainer.querySelector('[data-tab-id="errors"]') as HTMLButtonElement
                         if (errorButton) {
                           errorButton.click()
@@ -136,9 +146,10 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                       }
                     }
                   }}
-                  className="text-sm text-sky-600 hover:text-sky-700 transition-colors italic underline decoration-sky-600/30 hover:decoration-sky-700 underline-offset-4 focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:ring-offset-2 rounded-sm"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-muted-foreground/20 focus:ring-offset-2 rounded-sm min-h-[44px] flex items-center"
+                  aria-label="Go to next step: Errors to avoid"
                 >
-                  Next: Errors to avoid
+                  Next step: Errors to avoid
                 </button>
               </div>
             </div>
@@ -215,35 +226,72 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
     {
       id: 'errors',
       label: tJourney('tabs.errors'),
-      recommended: recommendedTab === 'errors',
       content: (
         <div className="space-y-6">
-          <div className="bg-background/60 border border-border/50 rounded-xl p-6">
-            <h3 className="text-lg font-semibold mb-3">{tJourney('commonErrorsIn')} {t(journey.labelKey)}</h3>
-            <div className="space-y-4">
+          {/* Soft contextual warning - adult-to-adult communication */}
+          {journeyId === 'emergency' && !educationMemory.hasSeenIntro && (
+            <div className="max-w-[66ch] mx-auto px-6 mb-8">
+              <p className="text-sm text-muted-foreground/80 mb-2">
+                {tJourney('assumesDecisionFrame')}
+              </p>
+              <button
+                onClick={() => {
+                  const introTab = document.querySelector('[data-tab-id="intro"]') as HTMLButtonElement
+                  if (introTab) {
+                    introTab.click()
+                  }
+                }}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors underline decoration-muted-foreground/30 hover:decoration-foreground underline-offset-2"
+              >
+                {tJourney('viewIntroduction')}
+              </button>
+            </div>
+          )}
+
+          <div className="max-w-[66ch] mx-auto px-6">
+            <h3 className="text-[20px] font-normal text-foreground mb-8 leading-[1.4]">
+              {tJourney('commonErrorsIn')} {t(journey.labelKey)}
+            </h3>
+            <div className="space-y-8">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="flex gap-4 p-4 bg-error/5 border border-error/20 rounded-lg">
-                  <AlertTriangleIcon className="w-5 h-5 text-error flex-shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="font-medium text-error mb-1">{tJourney('errorNumber')} #{i}</h4>
-                    <p className="text-sm text-muted-foreground">
-                      {tJourney('errorDescription')} {journeyId}.
-                    </p>
+                <div key={i} className="space-y-4">
+                  <div className="flex gap-4">
+                    <AlertTriangleIcon className="w-5 h-5 text-error flex-shrink-0 mt-1" />
+                    <div className="space-y-3">
+                      <h4 className="text-[16px] font-normal text-error leading-[1.4]">
+                        {tJourney('errorNumber')} #{i}
+                      </h4>
+                      <p className="text-[16px] text-muted-foreground leading-[1.75] max-w-[60ch]">
+                        {tJourney('errorDescription')} {journeyId}.
+                      </p>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Mark errors as read */}
-            <div className="mt-6">
-              <SafeButton
-                onClick={() => educationMemory.markErrorsRead()}
-                variant="safe"
-                size="sm"
-                disabled={educationMemory.hasReadErrors}
+            {/* Completion without gamification */}
+            <div className="mt-16 pt-8 border-t border-border/20">
+              <p className="text-sm text-muted-foreground/80 mb-4 max-w-[60ch]">
+                {tJourney('sectionAddressesErrors')}
+              </p>
+              
+              <button
+                onClick={() => {
+                  educationMemory.markErrorsRead()
+                  const educationalTab = document.querySelector('[data-tab-id="educational"]') as HTMLButtonElement
+                  if (educationalTab) {
+                    educationalTab.click()
+                  }
+                }}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-muted-foreground/20 focus:ring-offset-2 rounded-sm min-h-[44px] flex items-center"
+                aria-label="Go to next step: Educational resources"
               >
-                {educationMemory.hasReadErrors ? tJourney('errorsStudiedButton') : tJourney('readErrorsButton')}
-              </SafeButton>
+                {educationMemory.hasSeenIntro 
+                  ? "Next step: Educational resources"
+                  : "Review the Introduction for context"
+                }
+              </button>
             </div>
           </div>
         </div>
@@ -252,35 +300,63 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
     {
       id: 'educational',
       label: tJourney('tabs.educational'),
-      recommended: recommendedTab === 'educational',
       content: (
         <div className="space-y-6">
-          <div className="bg-background/60 border border-border/50 rounded-xl p-6">
-            <h3 className="text-lg font-semibold mb-3">{tJourney('educationalResources')}</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="p-4 border border-border/50 rounded-lg hover:bg-muted/30 transition-colors cursor-pointer">
-                  <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center mb-3">
-                    <GraduationCapIcon className="w-4 h-4 text-primary" />
-                  </div>
-                  <h4 className="font-medium mb-2">{tJourney('lesson')} {i}</h4>
-                  <p className="text-sm text-muted-foreground">
-                    {tJourney('educationalContent')} {journeyId}
+          {/* Soft contextual warning for educational section */}
+          {journeyId === 'emergency' && !educationMemory.hasReadErrors && (
+            <div className="max-w-[66ch] mx-auto px-6 mb-8">
+              <p className="text-sm text-muted-foreground/80 mb-2">
+                {tJourney('assumesErrorsKnowledge')}
+              </p>
+              <button
+                onClick={() => {
+                  const errorsTab = document.querySelector('[data-tab-id="errors"]') as HTMLButtonElement
+                  if (errorsTab) {
+                    errorsTab.click()
+                  }
+                }}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors underline decoration-muted-foreground/30 hover:decoration-foreground underline-offset-2"
+              >
+                {tJourney('viewErrors')}
+              </button>
+            </div>
+          )}
+
+          <div className="max-w-[66ch] mx-auto px-6">
+            <h3 className="text-[20px] font-normal text-foreground mb-8 leading-[1.4]">
+              {tJourney('educationalResources')}
+            </h3>
+            
+            {/* Educational content - anti-marketing layout */}
+            <div className="space-y-12">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="space-y-4">
+                  <h4 className="text-[16px] font-normal text-foreground leading-[1.4]">
+                    {tJourney('lesson')} {i}
+                  </h4>
+                  <p className="text-[16px] text-muted-foreground leading-[1.75] max-w-[60ch]">
+                    {tJourney('educationalContent')} {journeyId}. This section assumes understanding of the decision frame and common errors.
                   </p>
                 </div>
               ))}
             </div>
 
-            {/* Mark educational as read */}
-            <div className="mt-6">
-              <SafeButton
-                onClick={() => educationMemory.markEducationalRead()}
-                variant="safe"
-                size="sm"
-                disabled={educationMemory.hasReadEducational}
+            {/* Completion without gamification */}
+            <div className="mt-16 pt-8 border-t border-border/20">
+              <p className="text-sm text-muted-foreground/80 mb-4 max-w-[60ch]">
+                {tJourney('sectionEstablishesFoundation')}
+              </p>
+              
+              <button
+                onClick={() => {
+                  educationMemory.markEducationalRead()
+                  // No automatic navigation - let user choose
+                }}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-muted-foreground/20 focus:ring-offset-2 rounded-sm min-h-[44px] flex items-center"
+                aria-label="Mark educational section as completed"
               >
-                {educationMemory.hasReadEducational ? tJourney('sectionCompleted') : tJourney('markAsCompleted')}
-              </SafeButton>
+                Continue with Tools
+              </button>
             </div>
           </div>
         </div>
@@ -289,116 +365,62 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
     {
       id: 'tools',
       label: tJourney('tabs.tools'),
-      // Remove count: 0 to avoid showing "0" badge
-      secondary: true, // Mark as secondary
-      disabled: true, // Mark as disabled when no tools available
       content: (
         <div className="space-y-8">
-          {/* Ultra-Chicche: SoftConfirmation for tool access */}
-          {!educationMemory.hasReadErrors && (
-            <SoftConfirmation
-              type="warning"
-              message={`${tJourney('beforeAccessingTools')} ${t(journey.labelKey)}, ${tJourney('importantToRead')}.`}
-              onProceed={() => {
-                // Allow access but warn
-                console.log('User proceeded without reading errors')
-              }}
-            >
-              <div className="p-4 bg-warning/5 border border-warning/20 rounded-lg">
-                <p className="text-sm text-warning">
-                  ⚠️ {tJourney('toolAccessWarning')}
+          <div className="max-w-[66ch] mx-auto px-6">
+            {/* Context check - soft warning */}
+            {!educationMemory.hasReadErrors && (
+              <div className="mb-8">
+                <p className="text-sm text-muted-foreground/80 mb-2">
+                  {tJourney('toolsAssumeKnowledge')}
                 </p>
+                <button
+                  onClick={() => {
+                    const errorsTab = document.querySelector('[data-tab-id="errors"]') as HTMLButtonElement
+                    if (errorsTab) {
+                      errorsTab.click()
+                    }
+                  }}
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors underline decoration-muted-foreground/30 hover:decoration-foreground underline-offset-2"
+                >
+                  {tJourney('reviewPreparationSteps')}
+                </button>
               </div>
-            </SoftConfirmation>
-          )}
+            )}
 
-          {/* Educational Empty State */}
-          <div className="text-center py-12">
-            <div className="w-16 h-16 rounded-2xl bg-warning/10 flex items-center justify-center mx-auto mb-6">
-              <AlertTriangleIcon className="w-8 h-8 text-warning" />
-            </div>
-            
-            <h3 className="text-xl font-semibold text-foreground mb-3">
+            <h3 className="text-[20px] font-normal text-foreground mb-8 leading-[1.4]">
               {tJourney('toolsEmptyState.title')}
             </h3>
             
-            <p className="text-muted-foreground max-w-md mx-auto mb-8">
-              {tJourney('toolsEmptyState.description')}
-            </p>
-            
-            <button 
-              onClick={() => {
-                // This will be connected to the parent's onItemClick
-                const event = new CustomEvent('switchToTab', { detail: 'errors' })
-                window.dispatchEvent(event)
-              }}
-              className="px-6 py-3 bg-warning text-white rounded-lg font-medium hover:bg-warning/90 transition-colors"
-            >
-              {tJourney('toolsEmptyState.readErrorsButton')}
-            </button>
-          </div>
-
-          {/* Educational Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-6 bg-primary/5 border border-primary/20 rounded-xl">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                  <BookOpenIcon className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-primary">1. {tJourney('educational')}</h4>
-                  <p className="text-xs text-primary/70">{tJourney('theoreticalBases')}</p>
-                </div>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                {tJourney('understandPrinciples')}
+            <div className="space-y-8 text-[16px] text-muted-foreground leading-[1.75]">
+              <p className="max-w-[60ch]">
+                {tJourney('toolsEmptyState.description')}
+              </p>
+              
+              <p className="max-w-[60ch]">
+                Tools will be available after completing the preparation sequence: Introduction → Errors → Educational foundation.
               </p>
             </div>
 
-            <div className="p-6 bg-warning/5 border border-warning/20 rounded-xl">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-warning/10 rounded-lg flex items-center justify-center">
-                  <AlertTriangleIcon className="w-5 h-5 text-warning" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-warning">2. {tJourney('errors')}</h4>
-                  <p className="text-xs text-warning/70">{tJourney('whatToAvoid')}</p>
-                </div>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                {tJourney('commonErrorsCost')}
-              </p>
-            </div>
-
-            <div className="p-6 bg-muted/30 border border-border/50 rounded-xl opacity-60">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-muted/50 rounded-lg flex items-center justify-center">
-                  <CogIcon className="w-5 h-5 text-muted-foreground" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-muted-foreground">3. {tJourney('tools')}</h4>
-                  <p className="text-xs text-muted-foreground/70">{tJourney('practicalTools')}</p>
-                </div>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                {tJourney('availableAfterPreparation')}
-              </p>
-            </div>
-          </div>
-
-          {/* Context-specific warning */}
-          <div className="bg-error/5 border border-error/20 rounded-xl p-6">
-            <div className="flex items-start gap-4">
-              <ShieldIcon className="w-6 h-6 text-error flex-shrink-0 mt-0.5" />
-              <div>
-                <h4 className="font-semibold text-error mb-2">
-                  {tJourney(`errorWarnings.${journeyId}.title`)}
-                </h4>
-                <p className="text-sm text-muted-foreground">
-                  {tJourney(`errorWarnings.${journeyId}.description`)}
+            {/* Only here: operative CTA (when tools are actually available) */}
+            {educationMemory.hasReadErrors && educationMemory.hasReadEducational && (
+              <div className="mt-12 pt-8 border-t border-border/20">
+                <p className="text-sm text-muted-foreground/80 mb-6 max-w-[60ch]">
+                  {tJourney('sectionProvidesTools')}
                 </p>
+                
+                {/* This would be the actual operative CTA when tools exist */}
+                <button
+                  onClick={() => {
+                    // Actual tool interaction would go here
+                    console.log('Tool interaction')
+                  }}
+                  className="px-6 py-3 bg-foreground text-background text-sm font-normal rounded-sm hover:bg-foreground/90 transition-colors focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:ring-offset-2"
+                >
+                  Access emergency evaluation tool
+                </button>
               </div>
-            </div>
+            )}
           </div>
         </div>
       )
@@ -406,28 +428,42 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
     {
       id: 'platforms',
       label: tJourney('tabs.platforms'),
-      secondary: true, // Mark as secondary
       content: (
         <div className="space-y-6">
-          <div className="bg-background/60 border border-border/50 rounded-xl p-6">
-            <h3 className="text-lg font-semibold mb-3">{tJourney('recommendedPlatforms')}</h3>
-            <div className="space-y-4">
+          <div className="max-w-[66ch] mx-auto px-6">
+            <h3 className="text-[20px] font-normal text-foreground mb-8 leading-[1.4]">
+              {tJourney('recommendedPlatforms')}
+            </h3>
+            
+            <div className="space-y-12">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="flex items-center gap-4 p-4 border border-border/50 rounded-lg">
-                  <div className="w-12 h-12 bg-muted/50 rounded-lg flex items-center justify-center">
-                    <SettingsIcon className="w-6 h-6 text-muted-foreground" />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="font-medium mb-1">{tJourney('platform')} {i}</h4>
-                    <p className="text-sm text-muted-foreground">
-                      {tJourney('platformDescription', { journeyId })}
-                    </p>
-                  </div>
-                  <button className="px-4 py-2 bg-primary text-white text-sm rounded-lg hover:bg-primary/90 transition-colors">
+                <div key={i} className="space-y-4">
+                  <h4 className="text-[16px] font-normal text-foreground leading-[1.4]">
+                    {tJourney('platform')} {i}
+                  </h4>
+                  <p className="text-[16px] text-muted-foreground leading-[1.75] max-w-[60ch]">
+                    {tJourney('platformDescription', { journeyId })}
+                  </p>
+                  
+                  {/* Operative CTA only in platforms section */}
+                  <button
+                    onClick={() => {
+                      // Actual platform visit would go here
+                      console.log(`Visit platform ${i}`)
+                    }}
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors underline decoration-muted-foreground/30 hover:decoration-foreground underline-offset-2 focus:outline-none focus:ring-2 focus:ring-muted-foreground/20 focus:ring-offset-2 rounded-sm min-h-[44px] flex items-center"
+                  >
                     {tJourney('visit')}
                   </button>
                 </div>
               ))}
+            </div>
+
+            {/* Final completion - no gamification */}
+            <div className="mt-16 pt-8 border-t border-border/20">
+              <p className="text-sm text-muted-foreground/80 max-w-[60ch]">
+                {tJourney('sectionProvidesGuidance')}
+              </p>
             </div>
           </div>
         </div>

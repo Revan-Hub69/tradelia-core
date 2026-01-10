@@ -464,7 +464,18 @@
       "availableAfterPreparation": "Disponibili dopo aver completato la preparazione necessaria.",
       "recommendedPlatforms": "Piattaforme consigliate",
       "platform": "Piattaforma",
-      "visit": "Visita"
+      "visit": "Visita",
+      "sectionDefinesFrame": "Questa sezione definisce il quadro decisionale.",
+      "sectionAddressesErrors": "Questa sezione affronta i bias cognitivi comuni nelle decisioni di emergenza.",
+      "sectionEstablishesFoundation": "Questa sezione stabilisce le basi teoriche.",
+      "sectionProvidesTools": "Questa sezione fornisce strumenti operativi per le decisioni crypto di emergenza.",
+      "sectionProvidesGuidance": "Questa sezione fornisce indicazioni specifiche per l'implementazione su piattaforme.",
+      "assumesDecisionFrame": "Questa sezione presuppone il quadro decisionale definito nell'Introduzione.",
+      "assumesErrorsKnowledge": "Questa sezione applica i principi da Errori da evitare.",
+      "toolsAssumeKnowledge": "I tool presuppongono la comprensione del quadro decisionale e degli errori comuni.",
+      "viewIntroduction": "Visualizza Introduzione",
+      "viewErrors": "Visualizza Errori da evitare",
+      "reviewPreparationSteps": "Rivedi i passaggi di preparazione"
     }
   },
   "auth": {

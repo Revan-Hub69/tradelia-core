@@ -526,7 +526,18 @@
       "availableAfterPreparation": "Available after completing the necessary preparation.",
       "recommendedPlatforms": "Recommended platforms",
       "platform": "Platform",
-      "visit": "Visit"
+      "visit": "Visit",
+      "sectionDefinesFrame": "This section defines the decision frame.",
+      "sectionAddressesErrors": "This section addresses common cognitive biases in emergency decisions.",
+      "sectionEstablishesFoundation": "This section establishes the theoretical foundation.",
+      "sectionProvidesTools": "This section provides actionable tools for emergency crypto decisions.",
+      "sectionProvidesGuidance": "This section provides platform-specific implementation guidance.",
+      "assumesDecisionFrame": "This section assumes the decision frame defined in the Introduction.",
+      "assumesErrorsKnowledge": "This section applies the principles from Errors to avoid.",
+      "toolsAssumeKnowledge": "Tools assume understanding of the decision frame and common errors.",
+      "viewIntroduction": "View Introduction",
+      "viewErrors": "View Errors to avoid",
+      "reviewPreparationSteps": "Review preparation steps"
     },
   "auth": {
     "title": "Sign In or Register",
