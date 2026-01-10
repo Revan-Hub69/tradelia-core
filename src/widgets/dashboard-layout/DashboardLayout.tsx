@@ -321,18 +321,20 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         {/* ========== TECHNICAL FOOTER ========== */}
         <footer className="mt-auto border-t border-border/50 bg-background/95 backdrop-blur-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-6">
               {/* Trust & Security */}
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <h3 className="text-sm font-semibold text-foreground">Sicurezza & Privacy</h3>
-                <TrustBadges placement="footer" variant="compact" animated={false} />
+                <div className="w-full overflow-hidden">
+                  <TrustBadges placement="footer" variant="compact" animated={false} className="flex-wrap" />
+                </div>
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   Tradelia utilizza crittografia end-to-end e non traccia mai i tuoi dati personali.
                 </p>
               </div>
               
               {/* Technical Info */}
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <h3 className="text-sm font-semibold text-foreground">Informazioni Tecniche</h3>
                 <div className="space-y-2 text-xs text-muted-foreground">
                   <div className="flex items-center justify-between">
@@ -351,7 +353,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               </div>
               
               {/* Legal & Support */}
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <h3 className="text-sm font-semibold text-foreground">Supporto & Legale</h3>
                 <div className="space-y-2 text-xs">
                   <a href="/privacy" className="block text-muted-foreground hover:text-foreground transition-colors">
@@ -369,11 +371,11 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             
             {/* Bottom Bar */}
             <div className="pt-4 border-t border-border/30 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-4 text-xs text-muted-foreground">
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-4 text-xs text-muted-foreground">
                 <span>© 2026 Tradelia</span>
-                <span>•</span>
+                <span className="hidden sm:inline">•</span>
                 <span>Strumento educativo</span>
-                <span>•</span>
+                <span className="hidden sm:inline">•</span>
                 <span>Nessun consiglio finanziario</span>
               </div>
               

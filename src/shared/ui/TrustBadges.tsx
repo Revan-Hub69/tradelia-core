@@ -150,7 +150,7 @@ export function TrustBadges({
         return 'flex-col items-start space-y-3'
       case 'footer':
       default:
-        return 'justify-center'
+        return 'justify-start flex-wrap gap-y-2'
     }
   }
 
@@ -369,7 +369,6 @@ export function SidebarTrustBadges(props: Omit<TrustBadgesProps, 'placement'>) {
 
 // Enhanced Security Status with animations
 export function SecurityStatus({ className = '' }: { className?: string }) {
-  const t = useTranslations('common.trustBadges')
   const isSSL = typeof window !== 'undefined' && window.location.protocol === 'https:'
   
   return (
@@ -388,7 +387,7 @@ export function SecurityStatus({ className = '' }: { className?: string }) {
         text-sm font-medium transition-all duration-300
         ${isSSL ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}
       `}>
-        {isSSL ? t('secure') : t('notSecure')}
+        {isSSL ? 'Sicuro' : 'Non sicuro'}
       </span>
     </div>
   )
