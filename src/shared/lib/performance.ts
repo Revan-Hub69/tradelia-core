@@ -42,7 +42,7 @@ function getRating(name: keyof typeof THRESHOLDS, value: number): 'good' | 'need
 export function trackWebVitals() {
   if (typeof window === 'undefined') return
 
-  // Dynamic import to avoid bundle bloat
+  // Dynamic import to avoid bundle bloat - gracefully handle missing package
   import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
     const handleMetric = (metric: { name: string; value: number }) => {
       const performanceMetric: PerformanceMetric = {
@@ -71,8 +71,12 @@ export function trackWebVitals() {
     getFCP(handleMetric)
     getLCP(handleMetric)
     getTTFB(handleMetric)
-  }).catch(() => {
-    // Fail silently if web-vitals can't be loaded
+  }).catch((error) => {
+    // Gracefully handle missing web-vitals package
+    if (process.env.NODE_ENV === 'development') {
+      console.info('[Performance] web-vitals package not installed. Install with: npm install web-vitals')
+    }
+    // Continue without Web Vitals tracking
   })
 }
 
