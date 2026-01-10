@@ -18,7 +18,7 @@ import { useTranslations, useLocale } from 'next-intl'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
 import { useSidebarFocusTrap } from '@/src/shared/hooks/useFocusTrap'
 import { NetworkStatus } from '@/src/shared/ui/NetworkStatus'
-import { TrustBadges } from '@/src/shared/ui/TrustBadges'
+import { TrustBadges, SecurityStatus } from '@/src/shared/ui/TrustBadges'
 import Logo from '@/components/Logo'
 import { UserMenu } from './UserMenu'
 import { JOURNEY_ORDER, type JourneyId } from '@/src/shared/config/journeys'
@@ -94,7 +94,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const closeMobileSidebar = () => setIsMobileSidebarOpen(false)
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-hidden">
       {/* ========== MOBILE SIDEBAR BACKDROP ========== */}
       {isMobileSidebarOpen && (
         <div 
@@ -313,10 +313,80 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       </header>
 
       {/* ========== MAIN CONTENT ========== */}
-      <main className="pt-16 min-h-screen md:pl-64 pb-24 md:pb-0">
+      <main className="pt-16 min-h-screen md:pl-64 pb-32 md:pb-16">
         <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto w-full">
           {children}
         </div>
+        
+        {/* ========== TECHNICAL FOOTER ========== */}
+        <footer className="mt-auto border-t border-border/50 bg-background/95 backdrop-blur-sm">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+              {/* Trust & Security */}
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold text-foreground">Sicurezza & Privacy</h3>
+                <TrustBadges placement="footer" variant="compact" animated={false} />
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Tradelia utilizza crittografia end-to-end e non traccia mai i tuoi dati personali.
+                </p>
+              </div>
+              
+              {/* Technical Info */}
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold text-foreground">Informazioni Tecniche</h3>
+                <div className="space-y-2 text-xs text-muted-foreground">
+                  <div className="flex items-center justify-between">
+                    <span>Versione:</span>
+                    <span className="font-mono">2026.02</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>Ultimo aggiornamento:</span>
+                    <span>Gennaio 2026</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>Uptime:</span>
+                    <span className="text-success">99.9%</span>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Legal & Support */}
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold text-foreground">Supporto & Legale</h3>
+                <div className="space-y-2 text-xs">
+                  <a href="/privacy" className="block text-muted-foreground hover:text-foreground transition-colors">
+                    Privacy Policy
+                  </a>
+                  <a href="/terms" className="block text-muted-foreground hover:text-foreground transition-colors">
+                    Termini di Servizio
+                  </a>
+                  <a href="/support" className="block text-muted-foreground hover:text-foreground transition-colors">
+                    Centro Assistenza
+                  </a>
+                </div>
+              </div>
+            </div>
+            
+            {/* Bottom Bar */}
+            <div className="pt-4 border-t border-border/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                <span>© 2026 Tradelia</span>
+                <span>•</span>
+                <span>Strumento educativo</span>
+                <span>•</span>
+                <span>Nessun consiglio finanziario</span>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <SecurityStatus />
+                <div className="w-px h-4 bg-border" />
+                <span className="text-xs text-muted-foreground">
+                  Made with ❤️ in Italy
+                </span>
+              </div>
+            </div>
+          </div>
+        </footer>
       </main>
 
       {/* ========== MOBILE BOTTOM NAV (<768px) ========== */}

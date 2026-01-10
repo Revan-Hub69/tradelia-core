@@ -180,7 +180,7 @@ export function SubNavigation({
 
       <div 
         ref={containerRef}
-        className="flex overflow-x-auto scrollbar-hide relative"
+        className="flex overflow-x-auto scrollbar-hide relative max-w-full"
         onScroll={updateScrollHints}
       >
         {/* Ink bar */}

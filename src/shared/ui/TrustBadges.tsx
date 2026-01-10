@@ -49,10 +49,48 @@ export function TrustBadges({
   const t = useTranslations('common.trustBadges')
   const [hoveredBadge, setHoveredBadge] = useState<string | null>(null)
   const [mounted, setMounted] = useState(false)
+  const [tooltipPosition, setTooltipPosition] = useState<'top' | 'bottom' | 'left' | 'right'>('top')
 
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  // Smart tooltip positioning to avoid viewport overflow
+  const handleTooltipPosition = (element: HTMLElement) => {
+    if (!element) return
+
+    const rect = element.getBoundingClientRect()
+    const viewportWidth = window.innerWidth
+    const viewportHeight = window.innerHeight
+    
+    // Check if tooltip would overflow
+    const tooltipWidth = 320 // max-w-xs ≈ 320px
+    const tooltipHeight = 200 // estimated height
+    
+    let position: 'top' | 'bottom' | 'left' | 'right' = 'top'
+    
+    if (placement === 'sidebar') {
+      // For sidebar, prefer right if space available, otherwise left
+      if (rect.right + tooltipWidth < viewportWidth) {
+        position = 'right'
+      } else {
+        position = 'left'
+      }
+    } else {
+      // For footer/header, prefer top if space available
+      if (rect.top - tooltipHeight > 0) {
+        position = 'top'
+      } else if (rect.bottom + tooltipHeight < viewportHeight) {
+        position = 'bottom'
+      } else if (rect.left - tooltipWidth > 0) {
+        position = 'left'
+      } else {
+        position = 'right'
+      }
+    }
+    
+    setTooltipPosition(position)
+  }
 
   const badges: BadgeConfig[] = [
     {
@@ -131,7 +169,12 @@ export function TrustBadges({
           <div
             key={badge.id}
             className="relative group"
-            onMouseEnter={() => showTooltips && setHoveredBadge(badge.id)}
+            onMouseEnter={(e) => {
+              if (showTooltips) {
+                setHoveredBadge(badge.id)
+                handleTooltipPosition(e.currentTarget)
+              }
+            }}
             onMouseLeave={() => setHoveredBadge(null)}
             style={{
               animationDelay: animated ? `${index * 150}ms` : '0ms'
@@ -200,19 +243,19 @@ export function TrustBadges({
               )}
             </div>
 
-            {/* Enhanced Tooltip */}
+            {/* Enhanced Tooltip with Smart Positioning */}
             {showTooltips && hoveredBadge === badge.id && (
               <div className={`
                 absolute z-50 transition-all duration-300
-                ${placement === 'sidebar' 
-                  ? 'left-full top-0 ml-3' 
-                  : 'bottom-full left-1/2 transform -translate-x-1/2 mb-3'
-                }
+                ${tooltipPosition === 'top' ? 'bottom-full left-1/2 transform -translate-x-1/2 mb-3' : ''}
+                ${tooltipPosition === 'bottom' ? 'top-full left-1/2 transform -translate-x-1/2 mt-3' : ''}
+                ${tooltipPosition === 'left' ? 'right-full top-1/2 transform -translate-y-1/2 mr-3' : ''}
+                ${tooltipPosition === 'right' ? 'left-full top-1/2 transform -translate-y-1/2 ml-3' : ''}
               `}>
                 <div className="relative">
                   <div className={`
-                    bg-background/95 backdrop-blur-md border border-border/50 rounded-xl shadow-xl p-4 max-w-xs
-                    ${placement === 'sidebar' ? 'trust-badge-tooltip-left' : 'trust-badge-tooltip-up'}
+                    bg-background/95 backdrop-blur-md border border-border/50 rounded-xl shadow-xl p-4 w-80 max-w-[calc(100vw-2rem)]
+                    ${tooltipPosition === 'left' || tooltipPosition === 'right' ? 'trust-badge-tooltip-left' : 'trust-badge-tooltip-up'}
                     ${variant === 'premium' ? 'shadow-2xl' : ''}
                   `}>
                     <div className="flex items-start gap-3">
@@ -272,13 +315,13 @@ export function TrustBadges({
                     </div>
                   </div>
                   
-                  {/* Tooltip Arrow */}
+                  {/* Tooltip Arrow with Smart Positioning */}
                   <div className={`
                     absolute w-3 h-3 bg-background/95 border-l border-b border-border/50 rotate-45
-                    ${placement === 'sidebar' 
-                      ? 'left-0 top-4 -translate-x-1.5' 
-                      : 'top-full left-1/2 -translate-x-1/2 -translate-y-1.5'
-                    }
+                    ${tooltipPosition === 'top' ? 'top-full left-1/2 -translate-x-1/2 -translate-y-1.5' : ''}
+                    ${tooltipPosition === 'bottom' ? 'bottom-full left-1/2 -translate-x-1/2 translate-y-1.5 rotate-[225deg]' : ''}
+                    ${tooltipPosition === 'left' ? 'left-full top-1/2 -translate-y-1/2 translate-x-1.5 rotate-[135deg]' : ''}
+                    ${tooltipPosition === 'right' ? 'right-full top-1/2 -translate-y-1/2 -translate-x-1.5 rotate-[315deg]' : ''}
                   `} />
                 </div>
               </div>
