@@ -103,7 +103,7 @@
     "backToSite": "Torna al Sito",
     "guestUser": "Utente Ospite",
     "bitcoin": "Bitcoin",
-    "ethereum": "Ethereum", 
+    "ethereum": "Ethereum",
     "others": "Altri",
     "emailVerification": "Verifica la tua email per accedere a tutte le funzionalità",
     "resendEmail": "Invia di nuovo",
@@ -111,7 +111,7 @@
     "registerNowShort": "Registrati",
     "education": "Educazione",
     "educationDescription": "Risorse educative per il trading crypto",
-    "portfolio": "Portafoglio", 
+    "portfolio": "Portafoglio",
     "portfolioDescription": "Gestisci il tuo portafoglio crypto",
     "settings": "Impostazioni",
     "settingsDescription": "Configura le tue preferenze",
@@ -182,7 +182,7 @@
     "dashboard": "Dashboard",
     "overview": "Panoramica",
     "overviewDescription": "Dashboard principale",
-    "portfolio": "Portafoglio", 
+    "portfolio": "Portafoglio",
     "portfolioDescription": "Analisi strumenti",
     "verify": "Verifica",
     "verifyDescription": "Controllo coerenza",
@@ -262,7 +262,7 @@
     },
     "riskBadge": {
       "low": "Basso Rischio",
-      "medium": "Medio Rischio", 
+      "medium": "Medio Rischio",
       "high": "Alto Rischio",
       "explanationLabel": "Spiegazione livello di rischio",
       "closeLabel": "Chiudi",
@@ -276,7 +276,7 @@
       "highExplanation": "Strumento avanzato con rischi significativi. Solo per utenti esperti con capitale dedicato.",
       "lowTips": [
         "Ideale per iniziare senza stress",
-        "Perdite potenziali molto limitate", 
+        "Perdite potenziali molto limitate",
         "Adatto per capitale che non puoi permetterti di perdere"
       ],
       "mediumTips": [
@@ -350,7 +350,7 @@
       "tooltip": "Indica quanta complessità concettuale e decisionale è richiesta per comprendere il percorso. Non misura il rendimento né il rischio potenziale.",
       "levels": {
         "low": "Bassa",
-        "medium": "Media", 
+        "medium": "Media",
         "mediumHigh": "Medio-Alta",
         "high": "Alta",
         "veryHigh": "Altissima"
@@ -365,7 +365,7 @@
       "estimatedLaunch": "Lancio previsto",
       "complexity": {
         "beginner": "Principiante",
-        "intermediate": "Intermedio", 
+        "intermediate": "Intermedio",
         "advanced": "Avanzato"
       }
     },
@@ -389,14 +389,14 @@
     "privacyConsent": {
       "close": "Chiudi",
       "enableBasicAnalytics": "Abilita analytics di base",
-      "enablePerformanceTracking": "Abilita monitoraggio performance", 
+      "enablePerformanceTracking": "Abilita monitoraggio performance",
       "enableErrorReporting": "Abilita segnalazione errori",
       "enableFeatureUsageTracking": "Abilita tracciamento utilizzo funzionalità"
     },
     "journeyPage": {
       "tabs": {
         "intro": "Introduzione",
-        "errors": "Errori da evitare", 
+        "errors": "Errori da evitare",
         "educational": "Educativo",
         "tools": "Tool",
         "platforms": "Piattaforme"
@@ -407,7 +407,7 @@
           "description": "I tool per la protezione del capitale richiedono comprensione profonda dei rischi. Un errore può compromettere la tua sicurezza finanziaria."
         },
         "longterm": {
-          "title": "Lungo Termine: Strategia Solida", 
+          "title": "Lungo Termine: Strategia Solida",
           "description": "Gli investimenti a lungo termine necessitano di una strategia ben definita. Decisioni affrettate possono costare anni di rendimenti."
         },
         "speculation": {
@@ -424,47 +424,47 @@
         "description": "Leggi \"Errori da evitare\" per utilizzare i tool in sicurezza. 2 minuti di lettura che possono evitare errori costosi.",
         "readErrorsButton": "Leggi Errori da Evitare"
       },
-      "platformDescription": "Descrizione della piattaforma e perché è adatta per {journeyId}"
-    },
-    "yourProgress": "Il tuo progresso",
-    "introductionRead": "Introduzione letta",
-    "errorsStudied": "Errori studiati",
-    "educationalSection": "Sezione educativa",
-    "completed": "✓ Completato",
-    "toDo": "Da fare",
-    "nextStep": "Prossimo passo",
-    "welcomeTo": "Benvenuto in",
-    "objective": "Obiettivo",
-    "objectiveDescription": "Definire chiaramente cosa vuoi ottenere con questo percorso",
-    "approach": "Approccio",
-    "approachDescription": "Metodologia step-by-step per raggiungere i tuoi obiettivi",
-    "introductionCompleted": "✓ Introduzione completata",
-    "markAsRead": "Segna come letto",
-    "commonErrorsIn": "Errori comuni in",
-    "errorNumber": "Errore",
-    "errorDescription": "Descrizione dell'errore e come evitarlo. Contenuto specifico per",
-    "errorsStudiedButton": "✓ Errori studiati",
-    "readErrorsButton": "Ho letto gli errori",
-    "educationalResources": "Risorse educative",
-    "lesson": "Lezione",
-    "educationalContent": "Contenuto educativo specifico per",
-    "sectionCompleted": "✓ Sezione completata",
-    "markAsCompleted": "Segna come completato",
-    "beforeAccessingTools": "Prima di accedere ai tool di",
-    "importantToRead": "è importante leggere la sezione \"Errori da evitare\"",
-    "toolAccessWarning": "Stai per accedere a strumenti che richiedono preparazione. Ti consigliamo di leggere prima gli errori comuni.",
-    "educational": "Educativo",
-    "theoreticalBases": "Basi teoriche",
-    "understandPrinciples": "Comprendi i principi fondamentali prima di utilizzare qualsiasi strumento.",
-    "errors": "Errori",
-    "whatToAvoid": "Cosa evitare",
-    "commonErrorsCost": "Gli errori comuni possono costare caro. Leggi questa sezione per primo.",
-    "tools": "Tool",
-    "practicalTools": "Strumenti pratici",
-    "availableAfterPreparation": "Disponibili dopo aver completato la preparazione necessaria.",
-    "recommendedPlatforms": "Piattaforme consigliate",
-    "platform": "Piattaforma",
-    "visit": "Visita"
+      "platformDescription": "Descrizione della piattaforma e perché è adatta per {journeyId}",
+      "yourProgress": "Il tuo progresso",
+      "introductionRead": "Introduzione letta",
+      "errorsStudied": "Errori studiati",
+      "educationalSection": "Sezione educativa",
+      "completed": "✓ Completato",
+      "toDo": "Da fare",
+      "nextStep": "Prossimo passo",
+      "welcomeTo": "Benvenuto in",
+      "objective": "Obiettivo",
+      "objectiveDescription": "Definire chiaramente cosa vuoi ottenere con questo percorso",
+      "approach": "Approccio",
+      "approachDescription": "Metodologia step-by-step per raggiungere i tuoi obiettivi",
+      "introductionCompleted": "✓ Introduzione completata",
+      "markAsRead": "Segna come letto",
+      "commonErrorsIn": "Errori comuni in",
+      "errorNumber": "Errore",
+      "errorDescription": "Descrizione dell'errore e come evitarlo. Contenuto specifico per",
+      "errorsStudiedButton": "✓ Errori studiati",
+      "readErrorsButton": "Ho letto gli errori",
+      "educationalResources": "Risorse educative",
+      "lesson": "Lezione",
+      "educationalContent": "Contenuto educativo specifico per",
+      "sectionCompleted": "✓ Sezione completata",
+      "markAsCompleted": "Segna come completato",
+      "beforeAccessingTools": "Prima di accedere ai tool di",
+      "importantToRead": "è importante leggere la sezione \"Errori da evitare\"",
+      "toolAccessWarning": "Stai per accedere a strumenti che richiedono preparazione. Ti consigliamo di leggere prima gli errori comuni.",
+      "educational": "Educativo",
+      "theoreticalBases": "Basi teoriche",
+      "understandPrinciples": "Comprendi i principi fondamentali prima di utilizzare qualsiasi strumento.",
+      "errors": "Errori",
+      "whatToAvoid": "Cosa evitare",
+      "commonErrorsCost": "Gli errori comuni possono costare caro. Leggi questa sezione per primo.",
+      "tools": "Tool",
+      "practicalTools": "Strumenti pratici",
+      "availableAfterPreparation": "Disponibili dopo aver completato la preparazione necessaria.",
+      "recommendedPlatforms": "Piattaforme consigliate",
+      "platform": "Piattaforma",
+      "visit": "Visita"
+    }
   },
   "auth": {
     "title": "Sblocca tutte le funzionalità",
@@ -581,99 +581,99 @@
     }
   },
   "softConfirmation": {
-      "proceed": "Procedi",
-      "readFirst": "Leggi prima",
-      "dismiss": "Chiudi",
-      "toolWarning": {
-        "low": "Stai per utilizzare {toolName}. È uno strumento a basso rischio, ideale per iniziare.",
-        "medium": "Stai per utilizzare {toolName}. Richiede attenzione e conoscenze base.",
-        "high": "Stai per utilizzare {toolName}. È uno strumento avanzato con rischi significativi."
-      },
-      "sectionWarning": "Stai per accedere alla sezione {sectionId}. Assicurati di aver letto le informazioni di base."
+    "proceed": "Procedi",
+    "readFirst": "Leggi prima",
+    "dismiss": "Chiudi",
+    "toolWarning": {
+      "low": "Stai per utilizzare {toolName}. È uno strumento a basso rischio, ideale per iniziare.",
+      "medium": "Stai per utilizzare {toolName}. Richiede attenzione e conoscenze base.",
+      "high": "Stai per utilizzare {toolName}. È uno strumento avanzato con rischi significativi."
     },
-    "featureGate": {
-      "temporarilyUnavailable": "Temporaneamente non disponibile",
-      "featureDisabled": "Questa funzionalità è temporaneamente disabilitata per miglioramenti.",
-      "featureDisabledReason": "La funzionalità {feature} è temporaneamente disabilitata.",
-      "comingSoon": "In arrivo",
-      "toolComingSoon": "Il tool {toolId} sarà disponibile presto.",
-      "notifyMe": "Avvisami",
-      "learnMore": "Scopri di più",
-      "features": {
-        "animations": "Animazioni",
-        "complexAnimations": "Animazioni complesse",
-        "autoplay": "Riproduzione automatica",
-        "riskCalculator": "Calcolatore di rischio",
-        "portfolioAnalyzer": "Analizzatore portafoglio",
-        "advancedCharts": "Grafici avanzati",
-        "aiFeatures": "Funzionalità AI",
-        "tooltips": "Suggerimenti",
-        "notifications": "Notifiche",
-        "soundEffects": "Effetti sonori",
-        "hapticFeedback": "Feedback tattile",
-        "lazyLoading": "Caricamento lazy",
-        "imageOptimization": "Ottimizzazione immagini",
-        "prefetching": "Precaricamento",
-        "betaFeatures": "Funzionalità beta",
-        "debugMode": "Modalità debug"
-      }
+    "sectionWarning": "Stai per accedere alla sezione {sectionId}. Assicurati di aver letto le informazioni di base."
+  },
+  "featureGate": {
+    "temporarilyUnavailable": "Temporaneamente non disponibile",
+    "featureDisabled": "Questa funzionalità è temporaneamente disabilitata per miglioramenti.",
+    "featureDisabledReason": "La funzionalità {feature} è temporaneamente disabilitata.",
+    "comingSoon": "In arrivo",
+    "toolComingSoon": "Il tool {toolId} sarà disponibile presto.",
+    "notifyMe": "Avvisami",
+    "learnMore": "Scopri di più",
+    "features": {
+      "animations": "Animazioni",
+      "complexAnimations": "Animazioni complesse",
+      "autoplay": "Riproduzione automatica",
+      "riskCalculator": "Calcolatore di rischio",
+      "portfolioAnalyzer": "Analizzatore portafoglio",
+      "advancedCharts": "Grafici avanzati",
+      "aiFeatures": "Funzionalità AI",
+      "tooltips": "Suggerimenti",
+      "notifications": "Notifiche",
+      "soundEffects": "Effetti sonori",
+      "hapticFeedback": "Feedback tattile",
+      "lazyLoading": "Caricamento lazy",
+      "imageOptimization": "Ottimizzazione immagini",
+      "prefetching": "Precaricamento",
+      "betaFeatures": "Funzionalità beta",
+      "debugMode": "Modalità debug"
+    }
+  },
+  "educationMemory": {
+    "messages": {
+      "getStarted": "Inizia leggendo l'Introduzione o gli Errori da evitare",
+      "readErrors": "Ottimo! Ora leggi gli Errori da evitare per completare la preparazione",
+      "readIntro": "Perfetto! Ora puoi leggere l'Introduzione per una visione completa",
+      "readEducational": "Eccellente! Completa con la sezione Educativo per approfondire",
+      "almostReady": "Quasi pronto! Completa qualche checklist per essere completamente preparato",
+      "completeChecklists": "Ottimo progresso! Completa le checklist rimanenti",
+      "fullyPrepared": "Sei completamente preparato per utilizzare tutti gli strumenti"
     },
-    "educationMemory": {
-      "messages": {
-        "getStarted": "Inizia leggendo l'Introduzione o gli Errori da evitare",
-        "readErrors": "Ottimo! Ora leggi gli Errori da evitare per completare la preparazione",
-        "readIntro": "Perfetto! Ora puoi leggere l'Introduzione per una visione completa",
-        "readEducational": "Eccellente! Completa con la sezione Educativo per approfondire",
-        "almostReady": "Quasi pronto! Completa qualche checklist per essere completamente preparato",
-        "completeChecklists": "Ottimo progresso! Completa le checklist rimanenti",
-        "fullyPrepared": "Sei completamente preparato per utilizzare tutti gli strumenti"
-      },
-      "actions": {
-        "startWithIntro": "Inizia con l'Introduzione per una panoramica completa",
-        "readErrorsFirst": "Leggi prima gli Errori da evitare per utilizzare i tool in sicurezza",
-        "expandKnowledge": "Espandi le tue conoscenze con la sezione Educativo",
-        "readyForTools": "Sei pronto per utilizzare gli strumenti avanzati"
-      }
+    "actions": {
+      "startWithIntro": "Inizia con l'Introduzione per una panoramica completa",
+      "readErrorsFirst": "Leggi prima gli Errori da evitare per utilizzare i tool in sicurezza",
+      "expandKnowledge": "Espandi le tue conoscenze con la sezione Educativo",
+      "readyForTools": "Sei pronto per utilizzare gli strumenti avanzati"
+    }
+  },
+  "toolPreview": {
+    "preview": "Anteprima",
+    "expectedFeatures": "Funzionalità previste",
+    "launchTimeline": "Timeline di lancio",
+    "estimatedLaunch": "Lancio previsto: {date}",
+    "showInterest": "Mostra interesse",
+    "interestShown": "Interesse registrato",
+    "notifyMe": "Avvisami",
+    "notifying": "Ti avviseremo",
+    "thankYouForInterest": "Grazie per il tuo interesse! Ti terremo aggiornato sui progressi.",
+    "complexity": {
+      "simple": "Semplice",
+      "intermediate": "Intermedio",
+      "advanced": "Avanzato"
+    }
+  },
+  "trustBadges": {
+    "ssl": {
+      "label": "SSL Sicuro",
+      "description": "Connessione crittografata end-to-end per proteggere i tuoi dati",
+      "verified": "Connessione verificata",
+      "notSecure": "Connessione non sicura"
     },
-    "toolPreview": {
-      "preview": "Anteprima",
-      "expectedFeatures": "Funzionalità previste",
-      "launchTimeline": "Timeline di lancio",
-      "estimatedLaunch": "Lancio previsto: {date}",
-      "showInterest": "Mostra interesse",
-      "interestShown": "Interesse registrato",
-      "notifyMe": "Avvisami",
-      "notifying": "Ti avviseremo",
-      "thankYouForInterest": "Grazie per il tuo interesse! Ti terremo aggiornato sui progressi.",
-      "complexity": {
-        "simple": "Semplice",
-        "intermediate": "Intermedio",
-        "advanced": "Avanzato"
-      }
+    "privacy": {
+      "label": "Zero Tracking",
+      "description": "Niente pixel di tracciamento, niente marketing invasivo, niente vendita dati",
+      "compliant": "Privacy garantita"
     },
-    "trustBadges": {
-      "ssl": {
-        "label": "SSL Sicuro",
-        "description": "Connessione crittografata end-to-end per proteggere i tuoi dati",
-        "verified": "Connessione verificata",
-        "notSecure": "Connessione non sicura"
-      },
-      "privacy": {
-        "label": "Zero Tracking",
-        "description": "Niente pixel di tracciamento, niente marketing invasivo, niente vendita dati",
-        "compliant": "Privacy garantita"
-      },
-      "educational": {
-        "label": "Solo Educativo",
-        "description": "Strumento formativo puro, non vendiamo prodotti finanziari",
-        "active": "Modalità educativa"
-      },
-      "secure": "Sicuro",
-      "notSecure": "Non sicuro",
-      "compliance": {
-        "gdpr": "Privacy by Design • Zero tracking • Dati mai venduti",
-        "educational": "Strumento educativo • Nessun prodotto in vendita",
-        "noAdvice": "Le informazioni sono solo a scopo formativo, mai commerciale"
-      }
+    "educational": {
+      "label": "Solo Educativo",
+      "description": "Strumento formativo puro, non vendiamo prodotti finanziari",
+      "active": "Modalità educativa"
+    },
+    "secure": "Sicuro",
+    "notSecure": "Non sicuro",
+    "compliance": {
+      "gdpr": "Privacy by Design • Zero tracking • Dati mai venduti",
+      "educational": "Strumento educativo • Nessun prodotto in vendita",
+      "noAdvice": "Le informazioni sono solo a scopo formativo, mai commerciale"
     }
   }
+}
