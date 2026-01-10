@@ -51,7 +51,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const t = useTranslations('navigation')
   const tJourneys = useTranslations('journeys')
   const tDashboard = useTranslations('dashboard')
-  const { state, actions } = useDashboardAuth()
+  const { state } = useDashboardAuth()
 
   // Mobile sidebar state
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
@@ -190,12 +190,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* ========== DESKTOP SIDEBAR (≥768px) ========== */}
       <aside className="hidden md:flex fixed top-0 left-0 bottom-0 w-64 bg-background border-r border-border flex-col z-40">
         {/* Logo */}
-        <div className="h-16 px-4 flex items-center border-b border-border/50">
+        <div className="h-16 px-4 flex items-center border-b border-border/50 flex-shrink-0">
           <Logo />
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto p-4" aria-label={t('menuLabel')}>
+        <nav className="flex-1 overflow-y-auto p-4 min-h-0" aria-label={t('menuLabel')}>
           {/* Home Link */}
           <Link
             href={`/${locale}/dashboard`}
@@ -252,8 +252,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </nav>
 
         {/* Ultra-Chicche: Trust Badges in Desktop Sidebar Footer */}
-        <div className="p-4 border-t border-border/50">
-          <TrustBadges />
+        <div className="p-4 border-t border-border/50 flex-shrink-0">
+          <TrustBadges placement="sidebar" variant="minimal" className="text-xs" />
         </div>
       </aside>
 

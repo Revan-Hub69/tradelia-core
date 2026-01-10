@@ -155,7 +155,10 @@
     "menuLabel": "Menu",
     "closeMenu": "Close menu",
     "preferencesLabel": "Preferences",
-    "unlockFeatures": "Unlock all features"
+    "unlockFeatures": "Unlock all features",
+    "common": {
+      "mainNavigation": "Main navigation"
+    }
   },
   "settings": {
     "title": "Settings",
@@ -194,7 +197,6 @@
     "loadingError": "Loading error",
     "persistentError": "If the problem persists, contact support",
     "errorOccurred": "An error occurred",
-    "mainNavigation": "Main navigation",
     "sectionNavigation": "Section navigation",
     "networkStatus": {
       "offline": "Connection lost",

@@ -155,7 +155,10 @@
     "menuLabel": "Menu",
     "closeMenu": "Chiudi menu",
     "preferencesLabel": "Preferenze",
-    "unlockFeatures": "Sblocca tutte le funzionalità"
+    "unlockFeatures": "Sblocca tutte le funzionalità",
+    "common": {
+      "mainNavigation": "Navigazione principale"
+    }
   },
   "settings": {
     "title": "Impostazioni",
@@ -194,7 +197,6 @@
     "loadingError": "Errore caricamento",
     "persistentError": "Se il problema persiste, contatta il supporto",
     "errorOccurred": "Si è verificato un errore",
-    "mainNavigation": "Navigazione principale",
     "sectionNavigation": "Navigazione sezione",
     "networkStatus": {
       "offline": "Connessione persa",

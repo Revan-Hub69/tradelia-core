@@ -92,7 +92,7 @@ export function TrustBadges({
       case 'header':
         return 'justify-end'
       case 'sidebar':
-        return 'flex-col items-start'
+        return 'flex-col items-start space-y-2'
       case 'footer':
       default:
         return 'justify-center'
