@@ -257,16 +257,16 @@
     "trustBadges": {
       "ssl": {
         "label": "SSL Secure",
-        "description": "Encrypted and protected connection",
-        "verified": "Verified"
+        "description": "End-to-end encrypted connection, no data intercepted",
+        "verified": "Connection verified"
       },
       "privacy": {
-        "label": "Privacy First",
-        "description": "Data protected according to GDPR"
+        "label": "Zero Tracking",
+        "description": "No pixels, no marketing, no data selling"
       },
       "educational": {
         "label": "Educational Only",
-        "description": "No financial advice"
+        "description": "Learning tool, we don't sell financial products"
       }
     },
     "featureGate": {
@@ -569,21 +569,21 @@
       "notSecure": "Connection not secure"
     },
     "privacy": {
-      "label": "Privacy First",
-      "description": "Data protected according to GDPR, no invasive tracking",
-      "compliant": "GDPR compliant"
+      "label": "Zero Tracking",
+      "description": "No tracking pixels, no invasive marketing, no data selling",
+      "compliant": "Privacy guaranteed"
     },
     "educational": {
       "label": "Educational Only",
-      "description": "Educational tool, we don't provide financial advice",
+      "description": "Pure learning tool, we don't sell financial products",
       "active": "Educational mode"
     },
     "secure": "Secure",
     "notSecure": "Not secure",
     "compliance": {
-      "gdpr": "GDPR compliant • Privacy by Design • Protected data",
-      "educational": "Educational tool • No financial advice",
-      "noAdvice": "Information provided is for educational purposes only"
+      "gdpr": "Privacy by Design • Zero tracking • Data never sold",
+      "educational": "Educational tool • No products for sale",
+      "noAdvice": "Information is for learning purposes only, never commercial"
     }
   }
 }

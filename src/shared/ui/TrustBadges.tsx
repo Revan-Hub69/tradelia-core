@@ -16,8 +16,7 @@ import {
   ShieldIcon, 
   CheckIcon, 
   InfoIcon,
-  GraduationCapIcon,
-  EyeIcon
+  GraduationCapIcon
 } from '@/components/icons/TradeliaIcons'
 
 export interface TrustBadgesProps {
@@ -56,7 +55,7 @@ export function TrustBadges({
     },
     {
       id: 'privacy',
-      icon: EyeIcon,
+      icon: ShieldIcon,
       label: t('privacy.label'),
       description: t('privacy.description'),
       status: 'compliant',

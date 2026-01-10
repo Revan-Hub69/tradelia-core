@@ -257,16 +257,16 @@
     "trustBadges": {
       "ssl": {
         "label": "SSL Sicuro",
-        "description": "Connessione crittografata e protetta",
-        "verified": "Verificato"
+        "description": "Connessione crittografata end-to-end, nessun dato intercettato",
+        "verified": "Connessione verificata"
       },
       "privacy": {
-        "label": "Privacy First",
-        "description": "Dati protetti secondo GDPR"
+        "label": "Zero Tracking",
+        "description": "Niente pixel, niente marketing, niente vendita dati"
       },
       "educational": {
         "label": "Solo Educativo",
-        "description": "Nessun consiglio finanziario"
+        "description": "Strumento formativo, non vendiamo prodotti finanziari"
       }
     },
     "featureGate": {
@@ -548,21 +548,21 @@
         "notSecure": "Connessione non sicura"
       },
       "privacy": {
-        "label": "Privacy First",
-        "description": "Dati protetti secondo GDPR, nessun tracking invasivo",
-        "compliant": "Conforme GDPR"
+        "label": "Zero Tracking",
+        "description": "Niente pixel di tracciamento, niente marketing invasivo, niente vendita dati",
+        "compliant": "Privacy garantita"
       },
       "educational": {
         "label": "Solo Educativo",
-        "description": "Strumento educativo, non forniamo consigli finanziari",
+        "description": "Strumento formativo puro, non vendiamo prodotti finanziari",
         "active": "Modalità educativa"
       },
       "secure": "Sicuro",
       "notSecure": "Non sicuro",
       "compliance": {
-        "gdpr": "Conforme GDPR • Privacy by Design • Dati protetti",
-        "educational": "Strumento educativo • Nessun consiglio finanziario",
-        "noAdvice": "Le informazioni fornite sono solo a scopo educativo"
+        "gdpr": "Privacy by Design • Zero tracking • Dati mai venduti",
+        "educational": "Strumento educativo • Nessun prodotto in vendita",
+        "noAdvice": "Le informazioni sono solo a scopo formativo, mai commerciale"
       }
     }
   }
