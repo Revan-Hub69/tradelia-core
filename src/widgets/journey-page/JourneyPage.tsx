@@ -75,76 +75,114 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
       icon: <BookOpenIcon className="w-4 h-4" />,
       content: (
         <div className="space-y-6">
-          {/* Emergency-specific introduction - Clean design following spec */}
+          {/* Emergency-specific introduction - Design 2026 */}
           {journeyId === 'emergency' ? (
-            <div className="max-w-4xl mx-auto">
-              {/* Title - Centered, neutral */}
-              <div className="text-center mb-16">
-                <h1 className="text-3xl font-bold text-foreground">
-                  {t('journeys.emergency.introduction.title')}
-                </h1>
-              </div>
-
-              {/* Block 1 - Perché esiste */}
-              <div className="mb-16">
-                <h2 className="text-xl font-semibold text-foreground mb-6">
-                  {t('journeys.emergency.introduction.whyExists.title')}
-                </h2>
-                <div className="prose prose-lg max-w-none">
-                  <p className="text-muted-foreground leading-relaxed text-lg">
-                    {t('journeys.emergency.introduction.whyExists.content')}
-                  </p>
+            <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+              <div className="max-w-4xl mx-auto px-6 py-16">
+                
+                {/* Hero Title */}
+                <div className="text-center mb-20">
+                  <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
+                    {t('journeys.emergency.introduction.title')}
+                  </h1>
+                  <div className="w-24 h-1 bg-primary mx-auto rounded-full"></div>
                 </div>
-              </div>
 
-              {/* Block 2 - Che tipo di problema */}
-              <div className="mb-16">
-                <h2 className="text-xl font-semibold text-foreground mb-6">
-                  {t('journeys.emergency.introduction.problemType.title')}
-                </h2>
-                <div className="prose prose-lg max-w-none">
-                  <p className="text-muted-foreground leading-relaxed text-lg">
-                    {t('journeys.emergency.introduction.problemType.content')}
-                  </p>
+                {/* Block 1 - Perché esiste */}
+                <div className="mb-20">
+                  <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-sm border border-border/20 hover:shadow-md transition-all duration-300">
+                    <div className="flex items-start gap-6">
+                      <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
+                        <span className="text-2xl font-bold text-primary">1</span>
+                      </div>
+                      <div>
+                        <h2 className="text-2xl font-bold text-foreground mb-4">
+                          {t('journeys.emergency.introduction.whyExists.title')}
+                        </h2>
+                        <p className="text-lg text-muted-foreground leading-relaxed">
+                          {t('journeys.emergency.introduction.whyExists.content')}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
 
-              {/* Block 3 - La regola mentale */}
-              <div className="mb-16">
-                <h2 className="text-xl font-semibold text-foreground mb-6">
-                  {t('journeys.emergency.introduction.mentalRule.title')}
-                </h2>
-                <div className="prose prose-lg max-w-none">
-                  <p className="text-muted-foreground leading-relaxed text-lg">
-                    {t('journeys.emergency.introduction.mentalRule.content')}
-                  </p>
+                {/* Block 2 - Che tipo di problema */}
+                <div className="mb-20">
+                  <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-sm border border-border/20 hover:shadow-md transition-all duration-300">
+                    <div className="flex items-start gap-6">
+                      <div className="w-12 h-12 bg-warning/10 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
+                        <span className="text-2xl font-bold text-warning">2</span>
+                      </div>
+                      <div>
+                        <h2 className="text-2xl font-bold text-foreground mb-4">
+                          {t('journeys.emergency.introduction.problemType.title')}
+                        </h2>
+                        <p className="text-lg text-muted-foreground leading-relaxed">
+                          {t('journeys.emergency.introduction.problemType.content')}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
 
-              {/* Block 4 - Per chi ha senso */}
-              <div className="mb-20">
-                <h2 className="text-xl font-semibold text-foreground mb-6">
-                  {t('journeys.emergency.introduction.whoItMakesSense.title')}
-                </h2>
-                <div className="prose prose-lg max-w-none">
-                  <p className="text-muted-foreground leading-relaxed text-lg">
-                    {t('journeys.emergency.introduction.whoItMakesSense.content')}
-                  </p>
+                {/* Block 3 - La regola mentale */}
+                <div className="mb-20">
+                  <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-sm border border-border/20 hover:shadow-md transition-all duration-300">
+                    <div className="flex items-start gap-6">
+                      <div className="w-12 h-12 bg-success/10 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
+                        <span className="text-2xl font-bold text-success">3</span>
+                      </div>
+                      <div>
+                        <h2 className="text-2xl font-bold text-foreground mb-4">
+                          {t('journeys.emergency.introduction.mentalRule.title')}
+                        </h2>
+                        <p className="text-lg text-muted-foreground leading-relaxed">
+                          {t('journeys.emergency.introduction.mentalRule.content')}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
 
-              {/* Single CTA - Simple "Prosegui" */}
-              <div className="text-center">
-                <button
-                  onClick={() => {
-                    educationMemory.markIntroSeen()
-                    const event = new CustomEvent('switchToTab', { detail: 'errors' })
-                    window.dispatchEvent(event)
-                  }}
-                  className="px-8 py-4 bg-primary text-white text-lg font-medium rounded-lg hover:bg-primary/90 transition-colors"
-                >
-                  Prosegui
-                </button>
+                {/* Block 4 - Per chi ha senso */}
+                <div className="mb-24">
+                  <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-sm border border-border/20 hover:shadow-md transition-all duration-300">
+                    <div className="flex items-start gap-6">
+                      <div className="w-12 h-12 bg-info/10 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
+                        <span className="text-2xl font-bold text-info">4</span>
+                      </div>
+                      <div>
+                        <h2 className="text-2xl font-bold text-foreground mb-4">
+                          {t('journeys.emergency.introduction.whoItMakesSense.title')}
+                        </h2>
+                        <p className="text-lg text-muted-foreground leading-relaxed">
+                          {t('journeys.emergency.introduction.whoItMakesSense.content')}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* CTA Section */}
+                <div className="text-center">
+                  <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-2xl p-8 border border-primary/20">
+                    <p className="text-muted-foreground mb-6 text-lg">
+                      Ora che hai compreso l'approccio, scopri gli errori più comuni da evitare.
+                    </p>
+                    <button
+                      onClick={() => {
+                        educationMemory.markIntroSeen()
+                        const event = new CustomEvent('switchToTab', { detail: 'errors' })
+                        window.dispatchEvent(event)
+                      }}
+                      className="px-12 py-4 bg-primary text-white text-lg font-semibold rounded-xl hover:bg-primary/90 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
+                    >
+                      Continua con gli errori da evitare →
+                    </button>
+                  </div>
+                </div>
+
               </div>
             </div>
           ) : (
@@ -449,7 +487,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
             { label: t(journey.labelKey) }
           ]}
           title={t(journey.labelKey)}
-          description={t(`journeys.${journeyId}.description`)}
+          description={journeyId === 'emergency' ? '' : t(`journeys.${journeyId}.description`)}
           icon={<Icon className="w-6 h-6 text-primary" />}
           primaryAction={{
             label: t(journey.primaryActionKey),
