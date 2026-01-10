@@ -222,6 +222,8 @@
     "save": "Salva modifiche"
   },
   "common": {
+    "journeyStructure": "Struttura del percorso",
+    "nextStep": "Prossimo passo",
     "loading": "Caricamento...",
     "error": "Errore",
     "success": "Successo",
@@ -424,8 +426,6 @@
       },
       "platformDescription": "Descrizione della piattaforma e perché è adatta per {journeyId}"
     },
-    "journeyStructure": "Struttura del percorso",
-    "nextStep": "Prossimo passo",
     "yourProgress": "Il tuo progresso",
     "introductionRead": "Introduzione letta",
     "errorsStudied": "Errori studiati",

@@ -164,7 +164,7 @@ export function SubNavigation({
       {/* Journey structure label - wayfinding */}
       {showStructureLabel && (
         <div className="text-sm text-muted-foreground">
-          {t('common.journeyPage.journeyStructure')}
+          {t('journeyStructure')}
         </div>
       )}
       

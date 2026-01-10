@@ -118,7 +118,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
               {/* Simple next section instruction - not competing with tabs */}
               <div className="mt-12 p-4 bg-muted/20 rounded-lg border-l-4 border-primary/30">
                 <div className="text-sm text-muted-foreground mb-1">
-                  {t('common.journeyPage.nextStep')}:
+                  {t('nextStep')}:
                 </div>
                 <button
                   onClick={() => {
