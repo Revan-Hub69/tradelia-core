@@ -10,6 +10,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { RiskBadge, type RiskLevel } from './RiskBadge'
 import { CogIcon, ArrowRightIcon, StarIcon, ClockIcon } from '@/components/icons/TradeliaIcons'
 
@@ -52,6 +53,7 @@ export function ToolCard({
   size = 'md'
 }: ToolCardProps) {
   const [isHovered, setIsHovered] = useState(false)
+  const t = useTranslations('common.toolCard')
 
   const sizeClasses = {
     sm: 'p-4',
@@ -88,7 +90,7 @@ export function ToolCard({
           handleCardClick()
         }
       }}
-      aria-label={`Apri tool: ${title}`}
+      aria-label={t('openToolLabel', { title })}
     >
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
@@ -119,7 +121,7 @@ export function ToolCard({
           {/* New Badge */}
           {isNew && (
             <span className="px-2 py-1 text-xs font-medium bg-primary text-white rounded-full">
-              Nuovo
+              {t('new')}
             </span>
           )}
           
@@ -134,7 +136,7 @@ export function ToolCard({
                   : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                 }
               `}
-              aria-label={isFavorite ? 'Rimuovi dai preferiti' : 'Aggiungi ai preferiti'}
+              aria-label={isFavorite ? t('removeFromFavorites') : t('addToFavorites')}
             >
               <StarIcon className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
             </button>
@@ -177,7 +179,7 @@ export function ToolCard({
           focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2
         `}
       >
-        <span>Apri Tool</span>
+        <span>{t('openTool')}</span>
         <ArrowRightIcon className={`w-4 h-4 transition-transform ${isHovered ? 'translate-x-1' : ''}`} />
       </button>
 
@@ -213,6 +215,8 @@ export function ToolGrid({
   onToolFavorite?: ((toolId: string) => void) | undefined
   className?: string
 }) {
+  const t = useTranslations('common.toolCard')
+  
   if (tools.length === 0) {
     return (
       <div className="text-center py-12">
@@ -220,10 +224,10 @@ export function ToolGrid({
           <CogIcon className="w-8 h-8 text-muted-foreground" />
         </div>
         <h3 className="text-lg font-semibold text-foreground mb-2">
-          Nessun tool disponibile
+          {t('noToolsAvailable')}
         </h3>
         <p className="text-muted-foreground">
-          I tool per questa sezione saranno disponibili presto.
+          {t('toolsComingSoon')}
         </p>
       </div>
     )

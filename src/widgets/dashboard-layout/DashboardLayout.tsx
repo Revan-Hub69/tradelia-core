@@ -16,14 +16,12 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTranslations, useLocale } from 'next-intl'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
-import { useDashboardModal } from '@/contexts/DashboardModalContext'
 import { useSidebarFocusTrap } from '@/src/shared/hooks/useFocusTrap'
 import { NetworkStatus } from '@/src/shared/ui/NetworkStatus'
 import Logo from '@/components/Logo'
 import { UserMenu } from './UserMenu'
 import { JOURNEY_ORDER, type JourneyId } from '@/src/shared/config/journeys'
 import {
-  UserIcon,
   ShieldIcon,
   LogOutIcon,
   TrendingUpIcon,
@@ -54,7 +52,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const tJourneys = useTranslations('journeys')
   const tDashboard = useTranslations('dashboard')
   const { state, actions } = useDashboardAuth()
-  const { openModal } = useDashboardModal()
 
   // Mobile sidebar state
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
@@ -129,39 +126,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           >
             <CloseIcon className="w-5 h-5" />
           </button>
-        </div>
-
-        {/* Mobile User Card */}
-        <div className="p-4 border-b border-border/50">
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/30">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-lg shadow-primary/20">
-              {state.isGuestMode ? (
-                <ShieldIcon className="w-5 h-5 text-white" />
-              ) : (
-                <UserIcon className="w-5 h-5 text-white" />
-              )}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-foreground truncate">
-                {state.profile?.full_name || tDashboard('guestUser')}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {state.isGuestMode ? tDashboard('limitedMode') : tDashboard('verifiedAccount')}
-              </p>
-            </div>
-          </div>
-          
-          {state.isGuestMode && (
-            <button
-              onClick={() => {
-                openModal()
-                closeMobileSidebar()
-              }}
-              className="w-full mt-3 py-2 px-4 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-            >
-              {t('unlockFeatures')}
-            </button>
-          )}
         </div>
 
         {/* Mobile Navigation */}
@@ -242,36 +206,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         {/* Logo */}
         <div className="h-16 px-4 flex items-center border-b border-border/50">
           <Logo />
-        </div>
-
-        {/* User Card */}
-        <div className="p-4 border-b border-border/50">
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/30">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-lg shadow-primary/20">
-              {state.isGuestMode ? (
-                <ShieldIcon className="w-5 h-5 text-white" />
-              ) : (
-                <UserIcon className="w-5 h-5 text-white" />
-              )}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-foreground truncate">
-                {state.profile?.full_name || tDashboard('guestUser')}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {state.isGuestMode ? tDashboard('limitedMode') : tDashboard('verifiedAccount')}
-              </p>
-            </div>
-          </div>
-          
-          {state.isGuestMode && (
-            <button
-              onClick={() => openModal()}
-              className="w-full mt-3 py-2 px-4 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-            >
-              {t('unlockFeatures')}
-            </button>
-          )}
         </div>
 
         {/* Navigation */}

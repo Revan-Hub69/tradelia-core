@@ -8,6 +8,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { AlertTriangleIcon, ShieldIcon, InfoIcon, CloseIcon } from '@/components/icons/TradeliaIcons'
 
 export type RiskLevel = 'low' | 'medium' | 'high'
@@ -20,55 +21,30 @@ interface RiskBadgeProps {
 }
 
 interface RiskInfo {
-  label: string
   color: string
   bgColor: string
   borderColor: string
   icon: React.ComponentType<{ className?: string }>
-  explanation: string
-  tips: string[]
 }
 
 const RISK_CONFIG: Record<RiskLevel, RiskInfo> = {
   low: {
-    label: 'Basso Rischio',
     color: 'text-success',
     bgColor: 'bg-success/10',
     borderColor: 'border-success/20',
-    icon: ShieldIcon,
-    explanation: 'Questo strumento o strategia presenta rischi minimi. È adatto anche ai principianti.',
-    tips: [
-      'Ideale per iniziare senza stress',
-      'Perdite potenziali molto limitate',
-      'Adatto per capitale che non puoi permetterti di perdere'
-    ]
+    icon: ShieldIcon
   },
   medium: {
-    label: 'Medio Rischio',
     color: 'text-warning',
     bgColor: 'bg-warning/10',
     borderColor: 'border-warning/20',
-    icon: AlertTriangleIcon,
-    explanation: 'Questo strumento richiede attenzione e conoscenze base. Possibili perdite moderate.',
-    tips: [
-      'Leggi prima la sezione "Errori da evitare"',
-      'Inizia con importi piccoli per fare pratica',
-      'Assicurati di capire i meccanismi prima di procedere'
-    ]
+    icon: AlertTriangleIcon
   },
   high: {
-    label: 'Alto Rischio',
     color: 'text-error',
     bgColor: 'bg-error/10',
     borderColor: 'border-error/20',
-    icon: AlertTriangleIcon,
-    explanation: 'Strumento avanzato con rischi significativi. Solo per utenti esperti con capitale dedicato.',
-    tips: [
-      'SOLO per utenti esperti',
-      'Usa SOLO capitale che puoi permetterti di perdere completamente',
-      'Studia approfonditamente prima di utilizzare',
-      'Considera alternative a rischio minore'
-    ]
+    icon: AlertTriangleIcon
   }
 }
 
@@ -79,6 +55,7 @@ export function RiskBadge({
   size = 'md' 
 }: RiskBadgeProps) {
   const [showModal, setShowModal] = useState(false)
+  const t = useTranslations('common.riskBadge')
   const config = RISK_CONFIG[level]
   const Icon = config.icon
 
@@ -99,12 +76,12 @@ export function RiskBadge({
       {/* Badge */}
       <div className={`inline-flex items-center gap-2 rounded-full font-medium ${sizeClasses[size]} ${config.bgColor} ${config.borderColor} ${config.color} border ${className}`}>
         <Icon className={iconSizes[size]} />
-        <span>{config.label}</span>
+        <span>{t(level)}</span>
         {showExplanation && (
           <button
             onClick={() => setShowModal(true)}
             className={`${iconSizes[size]} ${config.color} hover:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-current focus:ring-offset-1`}
-            aria-label="Spiegazione livello di rischio"
+            aria-label={t('explanationLabel')}
           >
             <InfoIcon className={iconSizes[size]} />
           </button>
@@ -125,7 +102,7 @@ export function RiskBadge({
             }}
             role="button"
             tabIndex={0}
-            aria-label="Chiudi spiegazione"
+            aria-label={t('closeExplanation')}
           />
 
           {/* Modal */}
@@ -137,14 +114,14 @@ export function RiskBadge({
                   <Icon className={`w-5 h-5 ${config.color}`} />
                 </div>
                 <h3 className="text-lg font-semibold text-foreground">
-                  {config.label}
+                  {t(level)}
                 </h3>
               </div>
               
               <button
                 onClick={() => setShowModal(false)}
                 className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/50"
-                aria-label="Chiudi"
+                aria-label={t('closeLabel')}
               >
                 <CloseIcon className="w-4 h-4" />
               </button>
@@ -154,17 +131,17 @@ export function RiskBadge({
             <div className="p-6 space-y-4">
               {/* Explanation */}
               <p className="text-muted-foreground">
-                {config.explanation}
+                {t(`${level}Explanation`)}
               </p>
 
               {/* Tips */}
               <div>
                 <h4 className="font-medium text-foreground mb-3">
-                  {level === 'high' ? 'Attenzioni Critiche' : 'Consigli Pratici'}
+                  {level === 'high' ? t('criticalAttentions') : t('practicalTips')}
                 </h4>
                 <ul className="space-y-2">
-                  {config.tips.map((tip) => (
-                    <li key={tip} className="flex items-start gap-2 text-sm text-muted-foreground">
+                  {(t.raw(`${level}Tips`) as string[]).map((tip, index) => (
+                    <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
                       <span className={`w-1.5 h-1.5 rounded-full ${config.bgColor.replace('/10', '/60')} flex-shrink-0 mt-2`} />
                       <span>{tip}</span>
                     </li>
@@ -175,9 +152,7 @@ export function RiskBadge({
               {/* Call to Action */}
               <div className={`p-4 rounded-lg ${config.bgColor} ${config.borderColor} border`}>
                 <p className={`text-sm font-medium ${config.color}`}>
-                  {level === 'low' && '💡 Perfetto per iniziare in sicurezza'}
-                  {level === 'medium' && '⚠️ Leggi prima "Errori da evitare"'}
-                  {level === 'high' && '🚨 Solo per utenti molto esperti'}
+                  {t(`${level}Cta`)}
                 </p>
               </div>
             </div>
@@ -188,7 +163,7 @@ export function RiskBadge({
                 onClick={() => setShowModal(false)}
                 className="flex-1 px-4 py-2 border border-border rounded-lg text-foreground bg-background hover:bg-muted/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50"
               >
-                Ho capito
+                {t('understood')}
               </button>
               
               {level !== 'low' && (
@@ -205,7 +180,7 @@ export function RiskBadge({
                       : 'bg-error hover:bg-error/90 focus:ring-error/50'
                   }`}
                 >
-                  Leggi Errori
+                  {t('readErrors')}
                 </button>
               )}
             </div>

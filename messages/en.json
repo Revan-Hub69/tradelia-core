@@ -192,7 +192,63 @@
     "connectionLost": "Connection lost",
     "checkConnection": "Check your internet connection",
     "loadingError": "Loading error",
-    "persistentError": "If the problem persists, contact support"
+    "persistentError": "If the problem persists, contact support",
+    "networkStatus": {
+      "offline": "Connection lost",
+      "slow": "Slow connection",
+      "reconnecting": "Reconnecting...",
+      "restored": "Connection restored",
+      "offlineMessage": "Check your internet connection",
+      "slowMessage": "Some features may be slower",
+      "reconnectingMessage": "Attempting to restore connection",
+      "restoredMessage": "All features are available",
+      "retryButton": "Retry",
+      "retryingButton": "Connecting...",
+      "closeNotification": "Close notification"
+    },
+    "riskBadge": {
+      "low": "Low Risk",
+      "medium": "Medium Risk",
+      "high": "High Risk", 
+      "explanationLabel": "Risk level explanation",
+      "closeLabel": "Close",
+      "closeExplanation": "Close explanation",
+      "practicalTips": "Practical Tips",
+      "criticalAttentions": "Critical Attentions",
+      "understood": "Understood",
+      "readErrors": "Read Errors",
+      "lowExplanation": "This tool or strategy has minimal risks. Suitable for beginners.",
+      "mediumExplanation": "This tool requires attention and basic knowledge. Possible moderate losses.",
+      "highExplanation": "Advanced tool with significant risks. Only for experienced users with dedicated capital.",
+      "lowTips": [
+        "Ideal to start without stress",
+        "Very limited potential losses",
+        "Suitable for capital you can't afford to lose"
+      ],
+      "mediumTips": [
+        "Read the \"Errors to avoid\" section first",
+        "Start with small amounts to practice",
+        "Make sure you understand the mechanisms before proceeding"
+      ],
+      "highTips": [
+        "ONLY for experienced users",
+        "Use ONLY capital you can afford to lose completely",
+        "Study thoroughly before using",
+        "Consider lower risk alternatives"
+      ],
+      "lowCta": "💡 Perfect to start safely",
+      "mediumCta": "⚠️ Read \"Errors to avoid\" first",
+      "highCta": "🚨 Only for very experienced users"
+    },
+    "toolCard": {
+      "openTool": "Open Tool",
+      "openToolLabel": "Open tool: {title}",
+      "new": "New",
+      "addToFavorites": "Add to favorites",
+      "removeFromFavorites": "Remove from favorites",
+      "noToolsAvailable": "No tools available",
+      "toolsComingSoon": "Tools for this section will be available soon."
+    }
   },
   "auth": {
     "title": "Sign In or Register",

@@ -192,7 +192,63 @@
     "connectionLost": "Connessione persa",
     "checkConnection": "Verifica la tua connessione internet",
     "loadingError": "Errore caricamento",
-    "persistentError": "Se il problema persiste, contatta il supporto"
+    "persistentError": "Se il problema persiste, contatta il supporto",
+    "networkStatus": {
+      "offline": "Connessione persa",
+      "slow": "Connessione lenta",
+      "reconnecting": "Riconnessione...",
+      "restored": "Connessione ripristinata",
+      "offlineMessage": "Verifica la tua connessione internet",
+      "slowMessage": "Alcune funzionalità potrebbero essere rallentate",
+      "reconnectingMessage": "Tentativo di ripristino della connessione",
+      "restoredMessage": "Tutte le funzionalità sono disponibili",
+      "retryButton": "Riprova",
+      "retryingButton": "Connessione...",
+      "closeNotification": "Chiudi notifica"
+    },
+    "riskBadge": {
+      "low": "Basso Rischio",
+      "medium": "Medio Rischio", 
+      "high": "Alto Rischio",
+      "explanationLabel": "Spiegazione livello di rischio",
+      "closeLabel": "Chiudi",
+      "closeExplanation": "Chiudi spiegazione",
+      "practicalTips": "Consigli Pratici",
+      "criticalAttentions": "Attenzioni Critiche",
+      "understood": "Ho capito",
+      "readErrors": "Leggi Errori",
+      "lowExplanation": "Questo strumento o strategia presenta rischi minimi. È adatto anche ai principianti.",
+      "mediumExplanation": "Questo strumento richiede attenzione e conoscenze base. Possibili perdite moderate.",
+      "highExplanation": "Strumento avanzato con rischi significativi. Solo per utenti esperti con capitale dedicato.",
+      "lowTips": [
+        "Ideale per iniziare senza stress",
+        "Perdite potenziali molto limitate", 
+        "Adatto per capitale che non puoi permetterti di perdere"
+      ],
+      "mediumTips": [
+        "Leggi prima la sezione \"Errori da evitare\"",
+        "Inizia con importi piccoli per fare pratica",
+        "Assicurati di capire i meccanismi prima di procedere"
+      ],
+      "highTips": [
+        "SOLO per utenti esperti",
+        "Usa SOLO capitale che puoi permetterti di perdere completamente",
+        "Studia approfonditamente prima di utilizzare",
+        "Considera alternative a rischio minore"
+      ],
+      "lowCta": "💡 Perfetto per iniziare in sicurezza",
+      "mediumCta": "⚠️ Leggi prima \"Errori da evitare\"",
+      "highCta": "🚨 Solo per utenti molto esperti"
+    },
+    "toolCard": {
+      "openTool": "Apri Tool",
+      "openToolLabel": "Apri tool: {title}",
+      "new": "Nuovo",
+      "addToFavorites": "Aggiungi ai preferiti",
+      "removeFromFavorites": "Rimuovi dai preferiti",
+      "noToolsAvailable": "Nessun tool disponibile",
+      "toolsComingSoon": "I tool per questa sezione saranno disponibili presto."
+    }
   },
   "auth": {
     "title": "Sblocca tutte le funzionalità",

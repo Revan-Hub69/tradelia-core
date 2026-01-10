@@ -8,6 +8,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 import { AlertTriangleIcon, WifiOffIcon, RefreshIcon, CheckIcon } from '@/components/icons/TradeliaIcons'
 
 interface NetworkStatusProps {
@@ -17,30 +18,29 @@ interface NetworkStatusProps {
 type NetworkState = 'online' | 'offline' | 'slow' | 'reconnecting'
 
 export function NetworkStatus({ className = '' }: NetworkStatusProps) {
+  const t = useTranslations('common.networkStatus')
   const [networkState, setNetworkState] = useState<NetworkState>('online')
   const [showBanner, setShowBanner] = useState(false)
   const [retryCount, setRetryCount] = useState(0)
+  const [hasTestedConnection, setHasTestedConnection] = useState(false)
 
   // Check network status
   useEffect(() => {
-    const updateNetworkStatus = () => {
-      if (!navigator.onLine) {
-        setNetworkState('offline')
-        setShowBanner(true)
-      } else {
-        // Test connection speed with a small request
-        testConnectionSpeed()
-      }
-    }
+    let isMounted = true
 
     const testConnectionSpeed = async () => {
       try {
         const start = Date.now()
-        const response = await fetch('/api/ping', { 
+        // Use a more reliable endpoint - try the current page or a known endpoint
+        const response = await fetch(window.location.origin + '/favicon.ico', { 
           method: 'HEAD',
           cache: 'no-cache'
         })
         const duration = Date.now() - start
+
+        if (!isMounted) return
+
+        setHasTestedConnection(true)
 
         if (!response.ok) {
           throw new Error('Network error')
@@ -49,14 +49,34 @@ export function NetworkStatus({ className = '' }: NetworkStatusProps) {
         if (duration > 5000) {
           setNetworkState('slow')
           setShowBanner(true)
-        } else if (networkState !== 'online') {
-          setNetworkState('online')
-          // Show brief success message
-          setTimeout(() => setShowBanner(false), 3000)
+        } else {
+          setNetworkState(prev => {
+            // Only show success message if we were previously having issues
+            if (prev === 'offline' || prev === 'reconnecting') {
+              setTimeout(() => isMounted && setShowBanner(false), 3000)
+            } else {
+              // Don't show banner if connection is good from the start
+              setShowBanner(false)
+            }
+            return 'online'
+          })
         }
       } catch {
+        if (!isMounted) return
+        setHasTestedConnection(true)
         setNetworkState('offline')
         setShowBanner(true)
+      }
+    }
+
+    const updateNetworkStatus = () => {
+      if (!navigator.onLine) {
+        setNetworkState('offline')
+        setShowBanner(true)
+        setHasTestedConnection(true)
+      } else if (!hasTestedConnection) {
+        // Only test on first load or after being offline
+        testConnectionSpeed()
       }
     }
 
@@ -67,19 +87,12 @@ export function NetworkStatus({ className = '' }: NetworkStatusProps) {
     window.addEventListener('online', updateNetworkStatus)
     window.addEventListener('offline', updateNetworkStatus)
 
-    // Periodic check when online
-    const interval = setInterval(() => {
-      if (navigator.onLine) {
-        testConnectionSpeed()
-      }
-    }, 30000) // Check every 30 seconds
-
     return () => {
+      isMounted = false
       window.removeEventListener('online', updateNetworkStatus)
       window.removeEventListener('offline', updateNetworkStatus)
-      clearInterval(interval)
     }
-  }, [networkState])
+  }, [hasTestedConnection])
 
   // Handle retry
   const handleRetry = async () => {
@@ -87,7 +100,7 @@ export function NetworkStatus({ className = '' }: NetworkStatusProps) {
     setRetryCount(prev => prev + 1)
 
     try {
-      const response = await fetch('/api/ping', { 
+      const response = await fetch(window.location.origin + '/favicon.ico', { 
         method: 'HEAD',
         cache: 'no-cache'
       })
@@ -120,8 +133,8 @@ export function NetworkStatus({ className = '' }: NetworkStatusProps) {
       case 'offline':
         return {
           icon: WifiOffIcon,
-          title: 'Connessione persa',
-          message: 'Verifica la tua connessione internet',
+          title: t('offline'),
+          message: t('offlineMessage'),
           bgColor: 'bg-error/10',
           borderColor: 'border-error/20',
           textColor: 'text-error',
@@ -130,8 +143,8 @@ export function NetworkStatus({ className = '' }: NetworkStatusProps) {
       case 'slow':
         return {
           icon: AlertTriangleIcon,
-          title: 'Connessione lenta',
-          message: 'Alcune funzionalità potrebbero essere rallentate',
+          title: t('slow'),
+          message: t('slowMessage'),
           bgColor: 'bg-warning/10',
           borderColor: 'border-warning/20',
           textColor: 'text-warning',
@@ -140,8 +153,8 @@ export function NetworkStatus({ className = '' }: NetworkStatusProps) {
       case 'reconnecting':
         return {
           icon: RefreshIcon,
-          title: 'Riconnessione...',
-          message: 'Tentativo di ripristino della connessione',
+          title: t('reconnecting'),
+          message: t('reconnectingMessage'),
           bgColor: 'bg-primary/10',
           borderColor: 'border-primary/20',
           textColor: 'text-primary',
@@ -150,8 +163,8 @@ export function NetworkStatus({ className = '' }: NetworkStatusProps) {
       case 'online':
         return {
           icon: CheckIcon,
-          title: 'Connessione ripristinata',
-          message: 'Tutte le funzionalità sono disponibili',
+          title: t('restored'),
+          message: t('restoredMessage'),
           bgColor: 'bg-success/10',
           borderColor: 'border-success/20',
           textColor: 'text-success',
@@ -204,14 +217,14 @@ export function NetworkStatus({ className = '' }: NetworkStatusProps) {
                 border border-current hover:bg-current hover:text-white
               `}
             >
-              {networkState === 'reconnecting' ? 'Connessione...' : 'Riprova'}
+              {networkState === 'reconnecting' ? t('retryingButton') : t('retryButton')}
             </button>
           )}
           
           <button
             onClick={() => setShowBanner(false)}
             className="p-1 text-muted-foreground hover:text-foreground transition-colors rounded focus:outline-none focus:ring-2 focus:ring-primary/50"
-            aria-label="Chiudi notifica"
+            aria-label={t('closeNotification')}
           >
             ×
           </button>
@@ -245,7 +258,7 @@ export function useNetworkStatus() {
   const testConnectionSpeed = async (): Promise<boolean> => {
     try {
       const start = Date.now()
-      await fetch('/api/ping', { method: 'HEAD', cache: 'no-cache' })
+      await fetch(window.location.origin + '/favicon.ico', { method: 'HEAD', cache: 'no-cache' })
       const duration = Date.now() - start
       
       const isSlow = duration > 3000
