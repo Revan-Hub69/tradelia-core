@@ -521,6 +521,26 @@
       "name": "Emergenza",
       "action": "Verifica liquidità",
       "description": "Crypto come asset di emergenza",
+      "introduction": {
+        "title": "Crypto come asset di emergenza",
+        "whyExists": {
+          "title": "Perché esiste questo percorso",
+          "content": "Bitcoin nasce nel 2008–2009 in risposta a una crisi sistemica: il valore esisteva, ma l'accesso al valore non era più garantito. Da allora, le criptovalute rappresentano una categoria di sistemi pensati per funzionare anche quando i canali tradizionali si interrompono."
+        },
+        "problemType": {
+          "title": "Che tipo di problema affronta",
+          "content": "Questo percorso non riguarda il prezzo né la valutazione di mercato. Riguarda una domanda diversa: Posso accedere e trasferire valore se il sistema smette di funzionare normalmente?"
+        },
+        "mentalRule": {
+          "title": "La regola mentale",
+          "content": "In un asset di emergenza, il criterio principale non è quanto vale, ma se funziona quando serve. Per questo, chi usa le crypto come riserva di emergenza ragiona in termini di funzione, non di performance."
+        },
+        "whoItMakesSense": {
+          "title": "Per chi ha senso",
+          "content": "Questo approccio può avere senso per chi cerca: ridondanza del sistema, accesso indipendente, continuità operativa. Non per chi cerca ottimizzazione o rendimento."
+        },
+        "continueButton": "Continua: Errori da evitare"
+      },
       "sections": {
         "overview": "Panoramica",
         "liquidAssets": "Asset liquidi",

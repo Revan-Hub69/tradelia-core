@@ -542,6 +542,26 @@
       "name": "Emergency",
       "action": "Check liquidity",
       "description": "Crypto as emergency asset",
+      "introduction": {
+        "title": "Crypto as emergency asset",
+        "whyExists": {
+          "title": "Why this path exists",
+          "content": "Bitcoin was born in 2008–2009 in response to a systemic crisis: value existed, but access to value was no longer guaranteed. Since then, cryptocurrencies represent a category of systems designed to function even when traditional channels are interrupted."
+        },
+        "problemType": {
+          "title": "What type of problem it addresses",
+          "content": "This path is not about price or market valuation. It addresses a different question: Can I access and transfer value if the system stops functioning normally?"
+        },
+        "mentalRule": {
+          "title": "The mental rule",
+          "content": "In an emergency asset, the main criterion is not how much it's worth, but whether it works when needed. That's why those who use crypto as emergency reserves think in terms of function, not performance."
+        },
+        "whoItMakesSense": {
+          "title": "Who it makes sense for",
+          "content": "This approach may make sense for those seeking: system redundancy, independent access, operational continuity. Not for those seeking optimization or yield."
+        },
+        "continueButton": "Continue: Errors to avoid"
+      },
       "sections": {
         "overview": "Overview",
         "liquidAssets": "Liquid assets",

@@ -105,38 +105,106 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
             </div>
           </div>
 
-          <div className="bg-background/60 border border-border/50 rounded-xl p-6">
-            <h3 className="text-lg font-semibold mb-3">{tJourney('welcomeTo')} {t(journey.labelKey)}</h3>
-            <p className="text-muted-foreground mb-4">
-              {t(`journeys.${journeyId}.description`)}
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 bg-muted/30 rounded-lg">
-                <h4 className="font-medium mb-2">{tJourney('objective')}</h4>
-                <p className="text-sm text-muted-foreground">
-                  {tJourney('objectiveDescription')}
-                </p>
+          {/* Emergency-specific introduction */}
+          {journeyId === 'emergency' ? (
+            <div className="space-y-8">
+              {/* Title */}
+              <div className="text-center">
+                <h1 className="text-2xl font-bold text-foreground mb-2">
+                  {t('journeys.emergency.introduction.title')}
+                </h1>
               </div>
-              <div className="p-4 bg-muted/30 rounded-lg">
-                <h4 className="font-medium mb-2">{tJourney('approach')}</h4>
-                <p className="text-sm text-muted-foreground">
-                  {tJourney('approachDescription')}
-                </p>
-              </div>
-            </div>
 
-            {/* Mark intro as seen when user reads this */}
-            <div className="mt-6">
-              <SafeButton
-                onClick={() => educationMemory.markIntroSeen()}
-                variant="safe"
-                size="sm"
-                disabled={educationMemory.hasSeenIntro}
-              >
-                {educationMemory.hasSeenIntro ? tJourney('introductionCompleted') : tJourney('markAsRead')}
-              </SafeButton>
+              {/* Block 1 - Why it exists */}
+              <div className="section-frame p-6">
+                <h2 className="text-lg font-semibold text-foreground mb-4">
+                  {t('journeys.emergency.introduction.whyExists.title')}
+                </h2>
+                <p className="text-muted-foreground leading-relaxed">
+                  {t('journeys.emergency.introduction.whyExists.content')}
+                </p>
+              </div>
+
+              {/* Block 2 - Problem type */}
+              <div className="section-frame p-6">
+                <h2 className="text-lg font-semibold text-foreground mb-4">
+                  {t('journeys.emergency.introduction.problemType.title')}
+                </h2>
+                <p className="text-muted-foreground leading-relaxed">
+                  {t('journeys.emergency.introduction.problemType.content')}
+                </p>
+              </div>
+
+              {/* Block 3 - Mental rule */}
+              <div className="section-frame p-6">
+                <h2 className="text-lg font-semibold text-foreground mb-4">
+                  {t('journeys.emergency.introduction.mentalRule.title')}
+                </h2>
+                <p className="text-muted-foreground leading-relaxed">
+                  {t('journeys.emergency.introduction.mentalRule.content')}
+                </p>
+              </div>
+
+              {/* Block 4 - Who it makes sense for */}
+              <div className="section-frame p-6">
+                <h2 className="text-lg font-semibold text-foreground mb-4">
+                  {t('journeys.emergency.introduction.whoItMakesSense.title')}
+                </h2>
+                <p className="text-muted-foreground leading-relaxed">
+                  {t('journeys.emergency.introduction.whoItMakesSense.content')}
+                </p>
+              </div>
+
+              {/* Single CTA */}
+              <div className="text-center pt-4">
+                <SafeButton
+                  onClick={() => {
+                    educationMemory.markIntroSeen()
+                    const event = new CustomEvent('switchToTab', { detail: 'errors' })
+                    window.dispatchEvent(event)
+                  }}
+                  variant="safe"
+                  size="lg"
+                >
+                  {t('journeys.emergency.introduction.continueButton')}
+                </SafeButton>
+              </div>
             </div>
-          </div>
+          ) : (
+            /* Generic introduction for other journeys */
+            <div className="bg-background/60 border border-border/50 rounded-xl p-6">
+              <h3 className="text-lg font-semibold mb-3">{tJourney('welcomeTo')} {t(journey.labelKey)}</h3>
+              <p className="text-muted-foreground mb-4">
+                {t(`journeys.${journeyId}.description`)}
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 bg-muted/30 rounded-lg">
+                  <h4 className="font-medium mb-2">{tJourney('objective')}</h4>
+                  <p className="text-sm text-muted-foreground">
+                    {tJourney('objectiveDescription')}
+                  </p>
+                </div>
+                <div className="p-4 bg-muted/30 rounded-lg">
+                  <h4 className="font-medium mb-2">{tJourney('approach')}</h4>
+                  <p className="text-sm text-muted-foreground">
+                    {tJourney('approachDescription')}
+                  </p>
+                </div>
+              </div>
+
+              {/* Mark intro as seen when user reads this */}
+              <div className="mt-6">
+                <SafeButton
+                  onClick={() => educationMemory.markIntroSeen()}
+                  variant="safe"
+                  size="sm"
+                  disabled={educationMemory.hasSeenIntro}
+                >
+                  {educationMemory.hasSeenIntro ? tJourney('introductionCompleted') : tJourney('markAsRead')}
+                </SafeButton>
+              </div>
+            </div>
+          )}
         </div>
       )
     },
