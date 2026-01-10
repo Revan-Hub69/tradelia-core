@@ -541,7 +541,7 @@
     "emergency": {
       "name": "Emergency",
       "action": "Check liquidity",
-      "description": "Liquid assets and exit plan",
+      "description": "Crypto as emergency asset",
       "sections": {
         "overview": "Overview",
         "liquidAssets": "Liquid assets",
@@ -552,7 +552,7 @@
     "longterm": {
       "name": "Long term",
       "action": "Add plan",
-      "description": "Grow your savings without stress",
+      "description": "Growth strategies over time",
       "sections": {
         "overview": "Overview",
         "dcaPlans": "DCA plans",
@@ -563,7 +563,7 @@
     "speculation": {
       "name": "Speculation",
       "action": "Analyze signal",
-      "description": "Seize market opportunities wisely",
+      "description": "High variability contexts",
       "sections": {
         "overview": "Overview",
         "signals": "Signals",
@@ -574,7 +574,7 @@
     "passive": {
       "name": "Passive",
       "action": "Calculate yield",
-      "description": "Generate income without doing anything",
+      "description": "Automatic income mechanisms",
       "sections": {
         "overview": "Overview",
         "staking": "Staking",
