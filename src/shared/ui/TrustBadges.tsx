@@ -133,7 +133,7 @@ export function TrustBadges({
       case 'minimal':
         return 'text-xs gap-2'
       case 'compact':
-        return 'text-xs gap-3'
+        return 'text-xs gap-2'
       case 'micro':
         return 'text-[10px] gap-1'
       case 'premium':
@@ -187,6 +187,8 @@ export function TrustBadges({
                 relative flex items-center transition-all duration-300 cursor-help group-hover:scale-105
                 ${variant === 'micro' 
                   ? 'gap-1 px-1.5 py-0.5 rounded-md border backdrop-blur-sm' 
+                  : variant === 'compact'
+                  ? 'gap-1.5 px-2 py-1 rounded-lg border backdrop-blur-sm'
                   : 'gap-2 px-3 py-2 rounded-xl border backdrop-blur-sm'
                 }
                 ${isActive ? badge.accentColor : 'bg-muted/30 border-border/50'}
@@ -202,12 +204,12 @@ export function TrustBadges({
               {variant !== 'minimal' && variant !== 'micro' && isActive && (
                 <div className="relative">
                   <div className={`
-                    w-2 h-2 rounded-full ${badge.pulseColor}
+                    ${variant === 'compact' ? 'w-1.5 h-1.5' : 'w-2 h-2'} rounded-full ${badge.pulseColor}
                     ${animated ? 'animate-pulse' : ''}
                   `} />
                   {animated && (
                     <div className={`
-                      absolute inset-0 w-2 h-2 rounded-full ${badge.pulseColor} opacity-75
+                      absolute inset-0 ${variant === 'compact' ? 'w-1.5 h-1.5' : 'w-2 h-2'} rounded-full ${badge.pulseColor} opacity-75
                       trust-badge-pulse-indicator
                     `} />
                   )}
@@ -216,7 +218,7 @@ export function TrustBadges({
               
               {/* Icon */}
               <Icon className={`
-                ${variant === 'minimal' || variant === 'micro' ? 'w-3 h-3' : 'w-4 h-4'}
+                ${variant === 'minimal' || variant === 'micro' ? 'w-3 h-3' : variant === 'compact' ? 'w-3.5 h-3.5' : 'w-4 h-4'}
                 ${isActive ? badge.color : 'text-muted-foreground'}
                 transition-all duration-300
                 ${isHovered ? 'scale-110' : ''}
@@ -227,7 +229,7 @@ export function TrustBadges({
                 <span className={`
                   font-medium whitespace-nowrap transition-all duration-300
                   ${isActive ? badge.color : 'text-muted-foreground'}
-                  ${placement === 'sidebar' ? 'text-xs' : ''}
+                  ${variant === 'compact' ? 'text-xs' : placement === 'sidebar' ? 'text-xs' : ''}
                 `}>
                   {badge.label}
                 </span>
@@ -259,25 +261,25 @@ export function TrustBadges({
               `}>
                 <div className="relative">
                   <div className={`
-                    bg-background/95 backdrop-blur-md border border-border/50 rounded-xl shadow-xl p-4 w-80 max-w-[calc(100vw-2rem)]
+                    bg-background/95 backdrop-blur-md border border-border/50 rounded-xl shadow-xl p-3 w-72 max-w-[calc(100vw-2rem)]
                     ${tooltipPosition === 'left' || tooltipPosition === 'right' ? 'trust-badge-tooltip-left' : 'trust-badge-tooltip-up'}
                     ${variant === 'premium' ? 'shadow-2xl' : ''}
                   `}>
-                    <div className="flex items-start gap-3">
+                    <div className="flex items-start gap-2">
                       <div className={`
-                        p-2 rounded-lg ${badge.accentColor}
+                        p-1.5 rounded-lg ${badge.accentColor}
                         ${animated ? 'animate-pulse' : ''}
                       `}>
-                        <Icon className={`w-4 h-4 ${badge.color}`} />
+                        <Icon className={`w-3.5 h-3.5 ${badge.color}`} />
                       </div>
                       <div className="flex-1">
-                        <h4 className="font-semibold text-foreground text-sm mb-2 flex items-center gap-2">
+                        <h4 className="font-semibold text-foreground text-sm mb-1 flex items-center gap-2">
                           {badge.label}
                           {isActive && (
                             <CheckIcon className={`w-3 h-3 ${badge.color}`} />
                           )}
                         </h4>
-                        <p className="text-xs text-muted-foreground leading-relaxed mb-3">
+                        <p className="text-xs text-muted-foreground leading-relaxed mb-2">
                           {badge.description}
                         </p>
                         
