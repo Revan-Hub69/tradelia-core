@@ -806,3 +806,122 @@
     outline: 2px solid hsl(var(--primary));
     outline-offset: 2px;
   }
+
+/* Trust Badges Custom Animations */
+@keyframes trust-badge-glow {
+  0%, 100% { 
+    box-shadow: 0 0 5px rgba(var(--primary-rgb), 0.3);
+  }
+  50% { 
+    box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.6), 0 0 30px rgba(var(--primary-rgb), 0.4);
+  }
+}
+
+@keyframes trust-badge-pulse-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+@keyframes trust-badge-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes trust-badge-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Trust Badge Component Styles */
+.trust-badge-premium {
+  position: relative;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: trust-badge-shimmer 3s ease-in-out infinite;
+}
+
+.trust-badge-premium:hover {
+  animation: trust-badge-glow 2s ease-in-out infinite, trust-badge-float 2s ease-in-out infinite;
+}
+
+.trust-badge-pulse-indicator {
+  animation: trust-badge-pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+}
+
+/* Enhanced Tooltip Animations */
+@keyframes tooltip-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes tooltip-slide-left {
+  from {
+    opacity: 0;
+    transform: translateX(10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.trust-badge-tooltip-up {
+  animation: tooltip-slide-up 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.trust-badge-tooltip-left {
+  animation: tooltip-slide-left 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Staggered Animation for Multiple Badges */
+.trust-badge-stagger-1 {
+  animation-delay: 0ms;
+}
+
+.trust-badge-stagger-2 {
+  animation-delay: 150ms;
+}
+
+.trust-badge-stagger-3 {
+  animation-delay: 300ms;
+}
+
+/* Accessibility: Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .trust-badge-premium,
+  .trust-badge-pulse-indicator,
+  .trust-badge-tooltip-up,
+  .trust-badge-tooltip-left {
+    animation: none;
+  }
+  
+  .trust-badge-premium:hover {
+    animation: none;
+    transform: none;
+  }
+}

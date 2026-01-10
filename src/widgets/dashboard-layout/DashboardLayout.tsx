@@ -253,7 +253,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
         {/* Ultra-Chicche: Trust Badges in Desktop Sidebar Footer */}
         <div className="p-4 border-t border-border/50 flex-shrink-0">
-          <TrustBadges placement="sidebar" variant="minimal" className="text-xs" />
+          <TrustBadges placement="sidebar" variant="compact" animated={true} className="text-xs" />
         </div>
       </aside>
 
