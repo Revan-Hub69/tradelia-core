@@ -925,14 +925,37 @@
     transform: none;
   }
 }
-/* Prevent horizontal scroll issues */
-.scrollbar-hide {
-  -ms-overflow-style: none;  /* Internet Explorer 10+ */
-  scrollbar-width: none;  /* Firefox */
+/* Trust Badges - Fixed positioning to prevent layout shifts */
+.trust-badges-container {
+  position: relative;
+  height: 64px; /* Fixed height */
+  width: 100%;
 }
 
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;  /* Safari and Chrome */
+.trust-badges-fixed {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  pointer-events: auto;
+}
+
+/* Prevent any transform changes on hover that could cause shifts */
+.trust-badges-fixed .trust-badge-item {
+  transform: none !important;
+  transition: opacity 0.15s ease, box-shadow 0.15s ease;
+}
+
+.trust-badges-fixed .trust-badge-item:hover {
+  transform: none !important;
+}
+
+/* Ensure tooltips don't affect layout */
+.trust-badge-tooltip {
+  position: fixed !important;
+  z-index: 9999 !important;
+  pointer-events: none;
 }
 
 /* Ensure main containers don't overflow */

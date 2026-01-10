@@ -58,7 +58,7 @@ export default function FinalCtaSection() {
       aria-labelledby="final-cta-title"
     >
       <div className="max-w-2xl mx-auto px-6 sm:px-8">
-        <div className="space-y-8 text-center">
+        <div className="space-y-8 text-center relative">
           <h2 
             id="final-cta-title"
             className="text-xl sm:text-2xl lg:text-3xl font-semibold text-foreground leading-tight tracking-tight"
@@ -79,15 +79,17 @@ export default function FinalCtaSection() {
               {finalCta.disclaimer}
             </p>
 
-            {/* TrustBadges vicino all'ultima CTA */}
-            <div className="pt-4">
-              <TrustBadges 
-                variant="detailed" 
-                placement="footer" 
-                showTooltips={true}
-                animated={true}
-                className="justify-center"
-              />
+            {/* TrustBadges con posizione assoluta per evitare spostamenti */}
+            <div className="trust-badges-container">
+              <div className="trust-badges-fixed">
+                <TrustBadges 
+                  variant="detailed" 
+                  placement="footer" 
+                  showTooltips={true}
+                  animated={false}
+                  className="trust-badge-item"
+                />
+              </div>
             </div>
           </div>
         </div>
