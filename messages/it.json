@@ -424,6 +424,7 @@
       },
       "platformDescription": "Descrizione della piattaforma e perché è adatta per {journeyId}"
     },
+    "continueToErrors": "Continua",
     "yourProgress": "Il tuo progresso",
     "introductionRead": "Introduzione letta",
     "errorsStudied": "Errori studiati",
@@ -530,7 +531,7 @@
           "content": "Questo percorso non riguarda il prezzo né la valutazione di mercato. Riguarda una domanda diversa: Posso accedere e trasferire valore se il sistema smette di funzionare normalmente?"
         },
         "mentalRule": {
-          "content": "In un asset di emergenza, il criterio principale non è quanto vale, ma se funziona quando serve. Per questo, chi usa le crypto come riserva di emergenza ragiona in termini di funzione, non di performance."
+          "content": "In una riserva di emergenza, il criterio principale non è quanto vale, ma se funziona quando serve. Per questo motivo, le riserve di emergenza vengono valutate in termini di funzione, non di performance."
         },
         "whoItMakesSense": {
           "content": "Questo approccio può avere senso per chi cerca: ridondanza del sistema, accesso indipendente, continuità operativa. Non per chi cerca ottimizzazione o rendimento."

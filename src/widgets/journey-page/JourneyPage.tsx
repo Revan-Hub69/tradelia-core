@@ -264,8 +264,9 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
       id: 'tools',
       label: tJourney('tabs.tools'),
       icon: <CogIcon className="w-4 h-4 opacity-60" />,
-      count: 0, // No tools available yet - show educational empty state
+      // Remove count: 0 to avoid showing "0" badge
       secondary: true, // Mark as secondary
+      disabled: true, // Mark as disabled when no tools available
       content: (
         <div className="space-y-8">
           {/* Ultra-Chicche: SoftConfirmation for tool access */}
@@ -422,10 +423,12 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
           title={t(journey.labelKey)}
           description={journeyId === 'emergency' ? '' : t(`journeys.${journeyId}.description`)}
           icon={<Icon className="w-6 h-6 text-primary" />}
-          primaryAction={{
-            label: t(journey.primaryActionKey),
-            onClick: () => console.log('Primary action clicked')
-          }}
+          {...(journeyId !== 'emergency' ? {
+            primaryAction: {
+              label: t(journey.primaryActionKey),
+              onClick: () => console.log('Primary action clicked')
+            }
+          } : {})}
           subNavItems={subNavItems}
           defaultActiveTab="intro"
         />

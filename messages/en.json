@@ -424,6 +424,7 @@
       },
       "platformDescription": "Platform description and why it's suitable for {journeyId}"
     },
+    "continueToErrors": "Continue",
     "yourProgress": "Your progress",
     "introductionRead": "Introduction read",
     "errorsStudied": "Errors studied",
@@ -551,7 +552,7 @@
           "content": "This path is not about price or market valuation. It addresses a different question: Can I access and transfer value if the system stops functioning normally?"
         },
         "mentalRule": {
-          "content": "In an emergency asset, the main criterion is not how much it's worth, but whether it works when needed. That's why those who use crypto as emergency reserves think in terms of function, not performance."
+          "content": "In an emergency reserve, the main criterion is not how much it's worth, but whether it works when needed. For this reason, emergency reserves are evaluated in terms of function, not performance."
         },
         "whoItMakesSense": {
           "content": "This approach may make sense for those seeking: system redundancy, independent access, operational continuity. Not for those seeking optimization or yield."

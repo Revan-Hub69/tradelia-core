@@ -207,16 +207,19 @@ export function SubNavigation({
                 aria-controls={`panel-${item.id}`}
                 id={`tab-${item.id}`}
                 tabIndex={isActive ? 0 : -1}
-                onClick={() => onItemClick(item.id)}
-                onKeyDown={(e) => handleKeyDown(e, item.id)}
+                onClick={() => !item.disabled && onItemClick(item.id)}
+                onKeyDown={(e) => !item.disabled && handleKeyDown(e, item.id)}
+                disabled={item.disabled}
+                aria-disabled={item.disabled}
                 className={`
                   flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap
                   border-b-2 border-transparent transition-all duration-150 
                   focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2
-                  ${item.secondary ? 'opacity-70' : ''}
-                  ${isActive 
+                  ${item.disabled ? 'opacity-50 cursor-not-allowed' : ''}
+                  ${item.secondary && !item.disabled ? 'opacity-70' : ''}
+                  ${isActive && !item.disabled
                     ? 'text-primary bg-primary/5' 
-                    : `text-muted-foreground hover:text-foreground hover:bg-muted/30 ${item.secondary ? 'hover:opacity-90' : ''}`
+                    : `text-muted-foreground ${!item.disabled ? 'hover:text-foreground hover:bg-muted/30' : ''} ${item.secondary && !item.disabled ? 'hover:opacity-90' : ''}`
                   }
                 `}
                 aria-current={isActive ? 'page' : undefined}
