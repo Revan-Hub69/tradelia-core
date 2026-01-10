@@ -12,7 +12,7 @@ interface UseFocusTrapOptions {
   restoreFocus?: boolean
   autoFocus?: boolean
   escapeDeactivates?: boolean
-  onEscape?: () => void
+  onEscape?: (() => void) | undefined
 }
 
 export function useFocusTrap({
@@ -42,13 +42,14 @@ export function useFocusTrap({
     return Array.from(container.querySelectorAll(focusableSelectors))
       .filter((element) => {
         // Check if element is visible and not hidden
-        const style = window.getComputedStyle(element)
+        const htmlElement = element as HTMLElement
+        const style = window.getComputedStyle(htmlElement)
         return (
           style.display !== 'none' &&
           style.visibility !== 'hidden' &&
-          !element.hasAttribute('hidden') &&
-          element.offsetWidth > 0 &&
-          element.offsetHeight > 0
+          !htmlElement.hasAttribute('hidden') &&
+          htmlElement.offsetWidth > 0 &&
+          htmlElement.offsetHeight > 0
         )
       }) as HTMLElement[]
   }, [])
@@ -67,13 +68,13 @@ export function useFocusTrap({
       // Shift + Tab (backward)
       if (document.activeElement === firstElement) {
         event.preventDefault()
-        lastElement.focus()
+        lastElement?.focus()
       }
     } else {
       // Tab (forward)
       if (document.activeElement === lastElement) {
         event.preventDefault()
-        firstElement.focus()
+        firstElement?.focus()
       }
     }
   }, [getFocusableElements])
@@ -112,8 +113,8 @@ export function useFocusTrap({
     const focusableElements = getFocusableElements(container)
     
     if (focusableElements.length > 0) {
-      firstFocusableRef.current = focusableElements[0]
-      lastFocusableRef.current = focusableElements[focusableElements.length - 1]
+      firstFocusableRef.current = focusableElements[0] || null
+      lastFocusableRef.current = focusableElements[focusableElements.length - 1] || null
 
       // Auto focus first element
       if (autoFocus) {
