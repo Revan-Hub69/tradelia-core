@@ -135,7 +135,47 @@
         "select": "Select",
         "close": "Close"
       }
-    }
+    },
+    "chooseOrientation": "Choose where to orient yourself. The paths don't indicate what to do, but how to reason based on your goal.",
+    "noImmediateAction": "No path requires immediate action.",
+    "understandFirst": "Tradelia helps you understand before deciding.",
+    "tradeliaJourneys": "Tradelia Journeys",
+    "focusOn": "Focus on",
+    "betaFeatures": "Beta Features",
+    "betaFeaturesDescription": "This section is controlled by feature flags and can be enabled/disabled dynamically.",
+    "focusAreas": {
+      "emergency": {
+        "accessibility": "accessibility and real liquidity",
+        "operationalRisks": "operational and regulatory risks",
+        "concreteLimits": "concrete limits and criticalities"
+      },
+      "passive": {
+        "yieldSource": "yield source",
+        "realExposure": "real exposure",
+        "failureConditions": "failure conditions"
+      },
+      "longterm": {
+        "timeHorizon": "time horizon",
+        "cumulativeRisk": "cumulative risk",
+        "personalCompatibility": "personal compatibility"
+      },
+      "speculation": {
+        "asymmetricRisk": "asymmetric risk",
+        "cognitiveErrors": "frequent cognitive errors",
+        "operationalLimits": "active operation limits"
+      }
+    },
+    "securityPrivacy": "Security & Privacy",
+    "securityDescription": "End-to-end encryption, zero tracking, no data selling.",
+    "technicalInfo": "Technical Information",
+    "version": "Version",
+    "uptime": "Uptime",
+    "supportLegal": "Support & Legal",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "educationalTool": "Educational tool",
+    "noFinancialAdvice": "No financial advice",
+    "madeWithLove": "Made with ❤️ in Italy"
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -156,6 +196,7 @@
     "closeMenu": "Close menu",
     "preferencesLabel": "Preferences",
     "unlockFeatures": "Unlock all features",
+    "journeys": "Journeys",
     "common": {
       "mainNavigation": "Main navigation"
     }
@@ -381,7 +422,46 @@
         "readErrorsButton": "Read Errors to Avoid"
       },
       "platformDescription": "Platform description and why it's suitable for {journeyId}"
-    }
+    },
+    "yourProgress": "Your progress",
+    "introductionRead": "Introduction read",
+    "errorsStudied": "Errors studied",
+    "educationalSection": "Educational section",
+    "completed": "✓ Completed",
+    "toDo": "To do",
+    "nextStep": "Next step",
+    "welcomeTo": "Welcome to",
+    "objective": "Objective",
+    "objectiveDescription": "Clearly define what you want to achieve with this path",
+    "approach": "Approach",
+    "approachDescription": "Step-by-step methodology to reach your goals",
+    "introductionCompleted": "✓ Introduction completed",
+    "markAsRead": "Mark as read",
+    "commonErrorsIn": "Common errors in",
+    "errorNumber": "Error",
+    "errorDescription": "Error description and how to avoid it. Specific content for",
+    "errorsStudiedButton": "✓ Errors studied",
+    "readErrorsButton": "I've read the errors",
+    "educationalResources": "Educational resources",
+    "lesson": "Lesson",
+    "educationalContent": "Educational content specific for",
+    "sectionCompleted": "✓ Section completed",
+    "markAsCompleted": "Mark as completed",
+    "beforeAccessingTools": "Before accessing tools for",
+    "importantToRead": "it's important to read the \"Errors to avoid\" section",
+    "toolAccessWarning": "You're about to access tools that require preparation. We recommend reading the common errors first.",
+    "educational": "Educational",
+    "theoreticalBases": "Theoretical bases",
+    "understandPrinciples": "Understand the fundamental principles before using any tool.",
+    "errors": "Errors",
+    "whatToAvoid": "What to avoid",
+    "commonErrorsCost": "Common errors can be costly. Read this section first.",
+    "tools": "Tools",
+    "practicalTools": "Practical tools",
+    "availableAfterPreparation": "Available after completing the necessary preparation.",
+    "recommendedPlatforms": "Recommended platforms",
+    "platform": "Platform",
+    "visit": "Visit"
   },
   "auth": {
     "title": "Sign In or Register",

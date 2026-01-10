@@ -152,7 +152,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </Link>
 
           <p className="px-3 mb-2 mt-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            Percorsi
+            {t('journeys')}
           </p>
           <ul className="space-y-1">
             {JOURNEY_ORDER.map((journeyId) => {
@@ -224,7 +224,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </Link>
 
           <p className="px-3 mb-2 mt-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            Percorsi
+            {t('journeys')}
           </p>
           <ul className="space-y-1">
             {JOURNEY_ORDER.map((journeyId) => {
@@ -333,22 +333,22 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-4">
               {/* Security Info */}
               <div className="space-y-2">
-                <h3 className="text-sm font-semibold content-primary">Sicurezza & Privacy</h3>
+                <h3 className="text-sm font-semibold content-primary">{tDashboard('securityPrivacy')}</h3>
                 <p className="text-xs content-secondary leading-relaxed">
-                  Crittografia end-to-end, zero tracking, nessuna vendita dati.
+                  {tDashboard('securityDescription')}
                 </p>
               </div>
               
               {/* Technical Info */}
               <div className="space-y-2">
-                <h3 className="text-sm font-semibold content-primary">Informazioni Tecniche</h3>
+                <h3 className="text-sm font-semibold content-primary">{tDashboard('technicalInfo')}</h3>
                 <div className="space-y-1 text-xs content-secondary">
                   <div className="flex items-center justify-between">
-                    <span>Versione:</span>
+                    <span>{tDashboard('version')}:</span>
                     <span className="font-mono">2026.02</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span>Uptime:</span>
+                    <span>{tDashboard('uptime')}:</span>
                     <span className="text-success">99.9%</span>
                   </div>
                 </div>
@@ -356,13 +356,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               
               {/* Legal & Support */}
               <div className="space-y-2">
-                <h3 className="text-sm font-semibold content-primary">Supporto & Legale</h3>
+                <h3 className="text-sm font-semibold content-primary">{tDashboard('supportLegal')}</h3>
                 <div className="space-y-1 text-xs">
                   <a href="/privacy" className="block content-secondary hover:text-foreground transition-colors">
-                    Privacy Policy
+                    {tDashboard('privacyPolicy')}
                   </a>
                   <a href="/terms" className="block content-secondary hover:text-foreground transition-colors">
-                    Termini di Servizio
+                    {tDashboard('termsOfService')}
                   </a>
                 </div>
               </div>
@@ -373,16 +373,16 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 text-xs content-tertiary">
                 <span>© 2026 Tradelia</span>
                 <span className="hidden sm:inline">•</span>
-                <span>Strumento educativo</span>
+                <span>{tDashboard('educationalTool')}</span>
                 <span className="hidden sm:inline">•</span>
-                <span>Nessun consiglio finanziario</span>
+                <span>{tDashboard('noFinancialAdvice')}</span>
               </div>
               
               <div className="flex items-center gap-3">
                 <SecurityStatus />
                 <div className="w-px h-3 bg-border" />
                 <span className="text-xs content-tertiary">
-                  Made with ❤️ in Italy
+                  {tDashboard('madeWithLove')}
                 </span>
               </div>
             </div>

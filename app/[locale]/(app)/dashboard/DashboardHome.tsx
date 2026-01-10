@@ -55,18 +55,18 @@ export function DashboardHome() {
               {tDashboard('welcome')}, {userName}
             </h1>
             <p className="content-secondary">
-              Scegli da dove orientarti. I percorsi non indicano cosa fare, ma come ragionare in base al tuo obiettivo.
+              {tDashboard('chooseOrientation')}
             </p>
             <div className="mt-4 p-3 bg-muted/30 rounded-lg">
               <p className="text-sm text-muted-foreground">
-                <strong>Nessun percorso richiede azione immediata.</strong> Tradelia aiuta a capire prima di decidere.
+                <strong>{tDashboard('noImmediateAction')}</strong> {tDashboard('understandFirst')}
               </p>
             </div>
           </div>
 
           {/* Journey Cards Grid - Section Frame */}
           <div className="section-frame p-6">
-            <h2 className="text-lg font-semibold content-primary mb-6">Percorsi Tradelia</h2>
+            <h2 className="text-lg font-semibold content-primary mb-6">{tDashboard('tradeliaJourneys')}</h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {JOURNEY_ORDER.map((journeyId) => {
                 const journey = JOURNEYS[journeyId]
@@ -108,10 +108,10 @@ export function DashboardHome() {
                     <div className="section-divider">
                       <div className="space-y-2">
                         <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                          Focus su:
+                          {tDashboard('focusOn')}:
                         </h4>
                         <div className="flex flex-wrap gap-2">
-                          {getFocusAreas(journeyId).map((area, index) => (
+                          {getFocusAreas(journeyId, tDashboard).map((area, index) => (
                             <span 
                               key={index}
                               className="px-2 py-1 text-xs bg-muted/50 text-muted-foreground rounded-md"
@@ -131,9 +131,9 @@ export function DashboardHome() {
           {/* Feature Gate Demo */}
           <FeatureGate feature="betaFeatures">
             <div className="section-frame p-6">
-              <h2 className="text-lg font-semibold content-primary mb-4">Funzionalità Beta</h2>
+              <h2 className="text-lg font-semibold content-primary mb-4">{tDashboard('betaFeatures')}</h2>
               <p className="content-secondary">
-                Questa sezione è controllata da feature flags e può essere abilitata/disabilitata dinamicamente.
+                {tDashboard('betaFeaturesDescription')}
               </p>
             </div>
           </FeatureGate>
@@ -144,12 +144,28 @@ export function DashboardHome() {
 }
 
 // Helper function to get focus areas for each journey
-function getFocusAreas(journeyId: JourneyId): string[] {
+function getFocusAreas(journeyId: JourneyId, tDashboard: any): string[] {
   const focusAreas = {
-    emergency: ['accessibilità e liquidità reale', 'rischi operativi e normativi', 'limiti e criticità concrete'],
-    passive: ['fonte del rendimento', 'esposizione reale', 'condizioni di fallimento'],
-    longterm: ['orizzonte temporale', 'rischio cumulativo', 'compatibilità personale'],
-    speculation: ['rischio asimmetrico', 'errori cognitivi frequenti', 'limiti dell\'operatività attiva']
+    emergency: [
+      tDashboard('focusAreas.emergency.accessibility'),
+      tDashboard('focusAreas.emergency.operationalRisks'),
+      tDashboard('focusAreas.emergency.concreteLimits')
+    ],
+    passive: [
+      tDashboard('focusAreas.passive.yieldSource'),
+      tDashboard('focusAreas.passive.realExposure'),
+      tDashboard('focusAreas.passive.failureConditions')
+    ],
+    longterm: [
+      tDashboard('focusAreas.longterm.timeHorizon'),
+      tDashboard('focusAreas.longterm.cumulativeRisk'),
+      tDashboard('focusAreas.longterm.personalCompatibility')
+    ],
+    speculation: [
+      tDashboard('focusAreas.speculation.asymmetricRisk'),
+      tDashboard('focusAreas.speculation.cognitiveErrors'),
+      tDashboard('focusAreas.speculation.operationalLimits')
+    ]
   }
   
   return focusAreas[journeyId] || []

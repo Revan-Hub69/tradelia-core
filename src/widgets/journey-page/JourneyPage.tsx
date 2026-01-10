@@ -77,50 +77,50 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
         <div className="space-y-6">
           {/* Ultra-Chicche: Education Memory Progress */}
           <div className="bg-primary/5 border border-primary/20 rounded-xl p-6">
-            <h4 className="font-semibold text-primary mb-3">Il tuo progresso</h4>
+            <h4 className="font-semibold text-primary mb-3">{tJourney('yourProgress')}</h4>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm">Introduzione letta</span>
+                <span className="text-sm">{tJourney('introductionRead')}</span>
                 <span className={`text-xs px-2 py-1 rounded ${educationMemory.hasSeenIntro ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
-                  {educationMemory.hasSeenIntro ? '✓ Completato' : 'Da fare'}
+                  {educationMemory.hasSeenIntro ? tJourney('completed') : tJourney('toDo')}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm">Errori studiati</span>
+                <span className="text-sm">{tJourney('errorsStudied')}</span>
                 <span className={`text-xs px-2 py-1 rounded ${educationMemory.hasReadErrors ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
-                  {educationMemory.hasReadErrors ? '✓ Completato' : 'Da fare'}
+                  {educationMemory.hasReadErrors ? tJourney('completed') : tJourney('toDo')}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm">Sezione educativa</span>
+                <span className="text-sm">{tJourney('educationalSection')}</span>
                 <span className={`text-xs px-2 py-1 rounded ${educationMemory.hasReadEducational ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
-                  {educationMemory.hasReadEducational ? '✓ Completato' : 'Da fare'}
+                  {educationMemory.hasReadEducational ? tJourney('completed') : tJourney('toDo')}
                 </span>
               </div>
             </div>
             <div className="mt-4 p-3 bg-white/50 rounded-lg">
               <p className="text-sm text-muted-foreground">
-                <strong>Prossimo passo:</strong> {educationMemory.getRecommendedAction().reason}
+                <strong>{tJourney('nextStep')}:</strong> {educationMemory.getRecommendedAction().reason}
               </p>
             </div>
           </div>
 
           <div className="bg-background/60 border border-border/50 rounded-xl p-6">
-            <h3 className="text-lg font-semibold mb-3">Benvenuto in {t(journey.labelKey)}</h3>
+            <h3 className="text-lg font-semibold mb-3">{tJourney('welcomeTo')} {t(journey.labelKey)}</h3>
             <p className="text-muted-foreground mb-4">
               {t(`journeys.${journeyId}.description`)}
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-4 bg-muted/30 rounded-lg">
-                <h4 className="font-medium mb-2">Obiettivo</h4>
+                <h4 className="font-medium mb-2">{tJourney('objective')}</h4>
                 <p className="text-sm text-muted-foreground">
-                  Definire chiaramente cosa vuoi ottenere con questo percorso
+                  {tJourney('objectiveDescription')}
                 </p>
               </div>
               <div className="p-4 bg-muted/30 rounded-lg">
-                <h4 className="font-medium mb-2">Approccio</h4>
+                <h4 className="font-medium mb-2">{tJourney('approach')}</h4>
                 <p className="text-sm text-muted-foreground">
-                  Metodologia step-by-step per raggiungere i tuoi obiettivi
+                  {tJourney('approachDescription')}
                 </p>
               </div>
             </div>
@@ -133,7 +133,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                 size="sm"
                 disabled={educationMemory.hasSeenIntro}
               >
-                {educationMemory.hasSeenIntro ? '✓ Introduzione completata' : 'Segna come letto'}
+                {educationMemory.hasSeenIntro ? tJourney('introductionCompleted') : tJourney('markAsRead')}
               </SafeButton>
             </div>
           </div>
@@ -147,15 +147,15 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
       content: (
         <div className="space-y-6">
           <div className="bg-background/60 border border-border/50 rounded-xl p-6">
-            <h3 className="text-lg font-semibold mb-3">Errori comuni in {t(journey.labelKey)}</h3>
+            <h3 className="text-lg font-semibold mb-3">{tJourney('commonErrorsIn')} {t(journey.labelKey)}</h3>
             <div className="space-y-4">
               {[1, 2, 3].map((i) => (
                 <div key={i} className="flex gap-4 p-4 bg-error/5 border border-error/20 rounded-lg">
                   <AlertTriangleIcon className="w-5 h-5 text-error flex-shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-medium text-error mb-1">Errore #{i}</h4>
+                    <h4 className="font-medium text-error mb-1">{tJourney('errorNumber')} #{i}</h4>
                     <p className="text-sm text-muted-foreground">
-                      Descrizione dell'errore e come evitarlo. Contenuto specifico per {journeyId}.
+                      {tJourney('errorDescription')} {journeyId}.
                     </p>
                   </div>
                 </div>
@@ -170,7 +170,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                 size="sm"
                 disabled={educationMemory.hasReadErrors}
               >
-                {educationMemory.hasReadErrors ? '✓ Errori studiati' : 'Ho letto gli errori'}
+                {educationMemory.hasReadErrors ? tJourney('errorsStudiedButton') : tJourney('readErrorsButton')}
               </SafeButton>
             </div>
           </div>
@@ -184,16 +184,16 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
       content: (
         <div className="space-y-6">
           <div className="bg-background/60 border border-border/50 rounded-xl p-6">
-            <h3 className="text-lg font-semibold mb-3">Risorse educative</h3>
+            <h3 className="text-lg font-semibold mb-3">{tJourney('educationalResources')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {[1, 2, 3, 4, 5, 6].map((i) => (
                 <div key={i} className="p-4 border border-border/50 rounded-lg hover:bg-muted/30 transition-colors cursor-pointer">
                   <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center mb-3">
                     <GraduationCapIcon className="w-4 h-4 text-primary" />
                   </div>
-                  <h4 className="font-medium mb-2">Lezione {i}</h4>
+                  <h4 className="font-medium mb-2">{tJourney('lesson')} {i}</h4>
                   <p className="text-sm text-muted-foreground">
-                    Contenuto educativo specifico per {journeyId}
+                    {tJourney('educationalContent')} {journeyId}
                   </p>
                 </div>
               ))}
@@ -207,7 +207,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                 size="sm"
                 disabled={educationMemory.hasReadEducational}
               >
-                {educationMemory.hasReadEducational ? '✓ Sezione completata' : 'Segna come completato'}
+                {educationMemory.hasReadEducational ? tJourney('sectionCompleted') : tJourney('markAsCompleted')}
               </SafeButton>
             </div>
           </div>
@@ -225,7 +225,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
           {!educationMemory.hasReadErrors && (
             <SoftConfirmation
               type="warning"
-              message={`Prima di accedere ai tool di ${t(journey.labelKey)}, è importante leggere la sezione "Errori da evitare".`}
+              message={`${tJourney('beforeAccessingTools')} ${t(journey.labelKey)}, ${tJourney('importantToRead')}.`}
               onProceed={() => {
                 // Allow access but warn
                 console.log('User proceeded without reading errors')
@@ -233,7 +233,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
             >
               <div className="p-4 bg-warning/5 border border-warning/20 rounded-lg">
                 <p className="text-sm text-warning">
-                  ⚠️ Stai per accedere a strumenti che richiedono preparazione. Ti consigliamo di leggere prima gli errori comuni.
+                  ⚠️ {tJourney('toolAccessWarning')}
                 </p>
               </div>
             </SoftConfirmation>
@@ -273,12 +273,12 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                   <BookOpenIcon className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-primary">1. Educativo</h4>
-                  <p className="text-xs text-primary/70">Basi teoriche</p>
+                  <h4 className="font-semibold text-primary">1. {tJourney('educational')}</h4>
+                  <p className="text-xs text-primary/70">{tJourney('theoreticalBases')}</p>
                 </div>
               </div>
               <p className="text-sm text-muted-foreground">
-                Comprendi i principi fondamentali prima di utilizzare qualsiasi strumento.
+                {tJourney('understandPrinciples')}
               </p>
             </div>
 
@@ -288,12 +288,12 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                   <AlertTriangleIcon className="w-5 h-5 text-warning" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-warning">2. Errori</h4>
-                  <p className="text-xs text-warning/70">Cosa evitare</p>
+                  <h4 className="font-semibold text-warning">2. {tJourney('errors')}</h4>
+                  <p className="text-xs text-warning/70">{tJourney('whatToAvoid')}</p>
                 </div>
               </div>
               <p className="text-sm text-muted-foreground">
-                Gli errori comuni possono costare caro. Leggi questa sezione per primo.
+                {tJourney('commonErrorsCost')}
               </p>
             </div>
 
@@ -303,12 +303,12 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                   <CogIcon className="w-5 h-5 text-muted-foreground" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-muted-foreground">3. Tool</h4>
-                  <p className="text-xs text-muted-foreground/70">Strumenti pratici</p>
+                  <h4 className="font-semibold text-muted-foreground">3. {tJourney('tools')}</h4>
+                  <p className="text-xs text-muted-foreground/70">{tJourney('practicalTools')}</p>
                 </div>
               </div>
               <p className="text-sm text-muted-foreground">
-                Disponibili dopo aver completato la preparazione necessaria.
+                {tJourney('availableAfterPreparation')}
               </p>
             </div>
           </div>
@@ -337,7 +337,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
       content: (
         <div className="space-y-6">
           <div className="bg-background/60 border border-border/50 rounded-xl p-6">
-            <h3 className="text-lg font-semibold mb-3">Piattaforme consigliate</h3>
+            <h3 className="text-lg font-semibold mb-3">{tJourney('recommendedPlatforms')}</h3>
             <div className="space-y-4">
               {[1, 2, 3].map((i) => (
                 <div key={i} className="flex items-center gap-4 p-4 border border-border/50 rounded-lg">
@@ -345,13 +345,13 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                     <SettingsIcon className="w-6 h-6 text-muted-foreground" />
                   </div>
                   <div className="flex-1">
-                    <h4 className="font-medium mb-1">Piattaforma {i}</h4>
+                    <h4 className="font-medium mb-1">{tJourney('platform')} {i}</h4>
                     <p className="text-sm text-muted-foreground">
                       {tJourney('platformDescription', { journeyId })}
                     </p>
                   </div>
                   <button className="px-4 py-2 bg-primary text-white text-sm rounded-lg hover:bg-primary/90 transition-colors">
-                    Visita
+                    {tJourney('visit')}
                   </button>
                 </div>
               ))}

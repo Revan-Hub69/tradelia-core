@@ -135,7 +135,47 @@
         "select": "Seleziona",
         "close": "Chiudi"
       }
-    }
+    },
+    "chooseOrientation": "Scegli da dove orientarti. I percorsi non indicano cosa fare, ma come ragionare in base al tuo obiettivo.",
+    "noImmediateAction": "Nessun percorso richiede azione immediata.",
+    "understandFirst": "Tradelia aiuta a capire prima di decidere.",
+    "tradeliaJourneys": "Percorsi Tradelia",
+    "focusOn": "Focus su",
+    "betaFeatures": "Funzionalità Beta",
+    "betaFeaturesDescription": "Questa sezione è controllata da feature flags e può essere abilitata/disabilitata dinamicamente.",
+    "focusAreas": {
+      "emergency": {
+        "accessibility": "accessibilità e liquidità reale",
+        "operationalRisks": "rischi operativi e normativi",
+        "concreteLimits": "limiti e criticità concrete"
+      },
+      "passive": {
+        "yieldSource": "fonte del rendimento",
+        "realExposure": "esposizione reale",
+        "failureConditions": "condizioni di fallimento"
+      },
+      "longterm": {
+        "timeHorizon": "orizzonte temporale",
+        "cumulativeRisk": "rischio cumulativo",
+        "personalCompatibility": "compatibilità personale"
+      },
+      "speculation": {
+        "asymmetricRisk": "rischio asimmetrico",
+        "cognitiveErrors": "errori cognitivi frequenti",
+        "operationalLimits": "limiti dell'operatività attiva"
+      }
+    },
+    "securityPrivacy": "Sicurezza & Privacy",
+    "securityDescription": "Crittografia end-to-end, zero tracking, nessuna vendita dati.",
+    "technicalInfo": "Informazioni Tecniche",
+    "version": "Versione",
+    "uptime": "Uptime",
+    "supportLegal": "Supporto & Legale",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Termini di Servizio",
+    "educationalTool": "Strumento educativo",
+    "noFinancialAdvice": "Nessun consiglio finanziario",
+    "madeWithLove": "Made with ❤️ in Italy"
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -156,6 +196,7 @@
     "closeMenu": "Chiudi menu",
     "preferencesLabel": "Preferenze",
     "unlockFeatures": "Sblocca tutte le funzionalità",
+    "journeys": "Percorsi",
     "common": {
       "mainNavigation": "Navigazione principale"
     }
@@ -381,7 +422,46 @@
         "readErrorsButton": "Leggi Errori da Evitare"
       },
       "platformDescription": "Descrizione della piattaforma e perché è adatta per {journeyId}"
-    }
+    },
+    "yourProgress": "Il tuo progresso",
+    "introductionRead": "Introduzione letta",
+    "errorsStudied": "Errori studiati",
+    "educationalSection": "Sezione educativa",
+    "completed": "✓ Completato",
+    "toDo": "Da fare",
+    "nextStep": "Prossimo passo",
+    "welcomeTo": "Benvenuto in",
+    "objective": "Obiettivo",
+    "objectiveDescription": "Definire chiaramente cosa vuoi ottenere con questo percorso",
+    "approach": "Approccio",
+    "approachDescription": "Metodologia step-by-step per raggiungere i tuoi obiettivi",
+    "introductionCompleted": "✓ Introduzione completata",
+    "markAsRead": "Segna come letto",
+    "commonErrorsIn": "Errori comuni in",
+    "errorNumber": "Errore",
+    "errorDescription": "Descrizione dell'errore e come evitarlo. Contenuto specifico per",
+    "errorsStudiedButton": "✓ Errori studiati",
+    "readErrorsButton": "Ho letto gli errori",
+    "educationalResources": "Risorse educative",
+    "lesson": "Lezione",
+    "educationalContent": "Contenuto educativo specifico per",
+    "sectionCompleted": "✓ Sezione completata",
+    "markAsCompleted": "Segna come completato",
+    "beforeAccessingTools": "Prima di accedere ai tool di",
+    "importantToRead": "è importante leggere la sezione \"Errori da evitare\"",
+    "toolAccessWarning": "Stai per accedere a strumenti che richiedono preparazione. Ti consigliamo di leggere prima gli errori comuni.",
+    "educational": "Educativo",
+    "theoreticalBases": "Basi teoriche",
+    "understandPrinciples": "Comprendi i principi fondamentali prima di utilizzare qualsiasi strumento.",
+    "errors": "Errori",
+    "whatToAvoid": "Cosa evitare",
+    "commonErrorsCost": "Gli errori comuni possono costare caro. Leggi questa sezione per primo.",
+    "tools": "Tool",
+    "practicalTools": "Strumenti pratici",
+    "availableAfterPreparation": "Disponibili dopo aver completato la preparazione necessaria.",
+    "recommendedPlatforms": "Piattaforme consigliate",
+    "platform": "Piattaforma",
+    "visit": "Visita"
   },
   "auth": {
     "title": "Sblocca tutte le funzionalità",
