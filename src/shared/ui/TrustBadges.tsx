@@ -206,6 +206,19 @@ export function TrustBadges({
             onMouseEnter={() => handleMouseEnter(badge.id)}
             onMouseLeave={handleMouseLeave}
             onClick={(e) => handleClick(e, badge.id)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                const syntheticEvent = {
+                  preventDefault: () => {},
+                  stopPropagation: () => {}
+                } as React.MouseEvent<HTMLDivElement>
+                handleClick(syntheticEvent, badge.id)
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            aria-label={`Mostra informazioni su ${badge.label}`}
           >
             <div 
               className={`
@@ -269,14 +282,21 @@ export function TrustBadges({
                 className={`
                   ${isMobile 
                     ? 'fixed inset-x-4 bottom-24 z-[9999]' 
-                    : `absolute z-[9999]
-                       ${placement === 'sidebar' 
-                         ? 'left-full top-1/2 -translate-y-1/2 ml-3' 
-                         : 'bottom-full left-1/2 -translate-x-1/2 mb-3'
-                       }`
+                    : placement === 'sidebar'
+                    ? 'fixed z-[9999] left-64 ml-3'
+                    : 'absolute z-[9999] bottom-full left-1/2 -translate-x-1/2 mb-3'
                   }
                 `}
+                style={!isMobile && placement === 'sidebar' ? {
+                  top: '50%',
+                  transform: 'translateY(-50%)'
+                } : {}}
                 onClick={(e) => e.stopPropagation()}
+                onKeyDown={(e) => {
+                  if (e.key === 'Escape') {
+                    setHoveredBadge(null)
+                  }
+                }}
                 onMouseEnter={() => setHoveredBadge(badge.id)}
                 onMouseLeave={() => !isMobile && setHoveredBadge(null)}
               >
@@ -347,7 +367,7 @@ export function TrustBadges({
                     <div className={`
                       absolute w-2 h-2 bg-background/98 border-l border-b border-border/50 rotate-45
                       ${placement === 'sidebar' 
-                        ? 'right-full top-1/2 -translate-y-1/2 -translate-x-1 rotate-[315deg]'
+                        ? 'left-0 top-1/2 -translate-y-1/2 -translate-x-1 rotate-[315deg]'
                         : 'top-full left-1/2 -translate-x-1/2 -translate-y-1'
                       }
                     `} />
