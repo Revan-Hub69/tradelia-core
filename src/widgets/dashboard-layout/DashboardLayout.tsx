@@ -185,6 +185,11 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             })}
           </ul>
         </nav>
+
+        {/* Ultra-Chicche: Trust Badges in Mobile Sidebar Footer */}
+        <div className="p-3 border-t border-border/50 flex-shrink-0">
+          <TrustBadges placement="sidebar" variant="micro" animated={false} showTooltips={false} className="text-[10px]" />
+        </div>
       </aside>
 
       {/* ========== DESKTOP SIDEBAR (≥768px) ========== */}
@@ -376,6 +381,11 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                   Made with ❤️ in Italy
                 </span>
               </div>
+            </div>
+
+            {/* Mobile Trust Badges */}
+            <div className="pt-3 border-t border-border/30 md:hidden">
+              <TrustBadges placement="footer" variant="micro" animated={false} showTooltips={false} className="justify-center" />
             </div>
           </div>
         </footer>
