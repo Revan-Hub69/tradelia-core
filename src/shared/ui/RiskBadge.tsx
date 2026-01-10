@@ -118,6 +118,14 @@ export function RiskBadge({
           <div 
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setShowModal(false)}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') {
+                setShowModal(false)
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            aria-label="Chiudi spiegazione"
           />
 
           {/* Modal */}
@@ -155,8 +163,8 @@ export function RiskBadge({
                   {level === 'high' ? 'Attenzioni Critiche' : 'Consigli Pratici'}
                 </h4>
                 <ul className="space-y-2">
-                  {config.tips.map((tip, index) => (
-                    <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
+                  {config.tips.map((tip) => (
+                    <li key={tip} className="flex items-start gap-2 text-sm text-muted-foreground">
                       <span className={`w-1.5 h-1.5 rounded-full ${config.bgColor.replace('/10', '/60')} flex-shrink-0 mt-2`} />
                       <span>{tip}</span>
                     </li>
@@ -210,7 +218,7 @@ export function RiskBadge({
 
 // Preset components for common use cases
 export function ToolRiskBadge({ 
-  toolId, 
+  toolId: _toolId, 
   level, 
   className 
 }: { 
@@ -222,14 +230,14 @@ export function ToolRiskBadge({
     <RiskBadge 
       level={level} 
       showExplanation={true}
-      className={className}
       size="sm"
+      {...(className && { className })}
     />
   )
 }
 
 export function SectionRiskBadge({ 
-  sectionId, 
+  sectionId: _sectionId, 
   level, 
   className 
 }: { 
@@ -241,8 +249,8 @@ export function SectionRiskBadge({
     <RiskBadge 
       level={level} 
       showExplanation={true}
-      className={className}
       size="md"
+      {...(className && { className })}
     />
   )
 }
