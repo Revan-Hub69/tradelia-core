@@ -1,19 +1,22 @@
 /**
- * Long Term Journey - Tradelia 2026
- * Investimenti lungo termine: crescita stabile, DCA
+ * Long Term Journey Page - Route-Level Code Splitting
  */
+
+'use client'
 
 import dynamic from 'next/dynamic'
 import { SkeletonJourneyPage } from '@/src/shared/ui/SkeletonLayouts'
 
-const JourneyPageComponent = dynamic(
-  () => import('@/src/widgets/journey-page/JourneyPage').then(mod => mod.JourneyPage),
+const LongTermJourneyPage = dynamic(
+  () => import('@/src/widgets/journey-page/JourneyPage').then(mod => ({
+    default: (props: any) => <mod.default journeyId="longterm" {...props} />
+  })),
   {
     loading: () => <SkeletonJourneyPage />,
-    ssr: true
+    ssr: false
   }
 )
 
-export default function LongtermPage() {
-  return <JourneyPageComponent journeyId="longterm" />
+export default function LongTermPage() {
+  return <LongTermJourneyPage />
 }
