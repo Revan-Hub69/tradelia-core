@@ -66,12 +66,13 @@ export function useSectionMemory(sectionId: string, defaultTab: string) {
 
   // Remember tab for this section
   const rememberTab = (tabId: string) => {
+    const currentSection = memory[sectionId]
     const newMemory = {
       ...memory,
       [sectionId]: {
         lastActiveTab: tabId,
         lastVisited: Date.now(),
-        scrollPosition: memory[sectionId]?.scrollPosition
+        ...(currentSection?.scrollPosition !== undefined && { scrollPosition: currentSection.scrollPosition })
       }
     }
     
@@ -173,15 +174,28 @@ export function useScrollMemory(sectionId: string, tabId: string) {
 // Analytics integration
 export function trackSectionMemoryUsage(sectionId: string, wasRemembered: boolean) {
   // This would integrate with our analytics system
-  if (typeof window !== 'undefined' && (window as any).__TRADELIA_ANALYTICS__) {
-    (window as any).__TRADELIA_ANALYTICS__.trackEvent({
-      event: 'feature_usage',
-      properties: {
-        feature: 'section_memory',
-        section: sectionId,
-        was_remembered: wasRemembered,
-        action: 'tab_restore'
-      }
-    })
+  if (typeof window !== 'undefined') {
+    const analytics = (window as WindowWithAnalytics).__TRADELIA_ANALYTICS__
+    if (analytics) {
+      analytics.trackEvent({
+        event: 'feature_usage',
+        properties: {
+          feature: 'section_memory',
+          section: sectionId,
+          was_remembered: wasRemembered,
+          action: 'tab_restore'
+        }
+      })
+    }
+  }
+}
+
+// Add interface for window with analytics
+interface WindowWithAnalytics extends Window {
+  __TRADELIA_ANALYTICS__?: {
+    trackEvent: (event: {
+      event: string
+      properties: Record<string, string | number | boolean>
+    }) => void
   }
 }
