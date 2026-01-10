@@ -955,3 +955,18 @@ html, body {
     transform: none !important;
   }
 }
+/* Mobile-specific tooltip positioning */
+@media (max-width: 768px) {
+  .trust-badge-tooltip-mobile {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 9999 !important;
+    max-width: calc(100vw - 2rem) !important;
+  }
+  
+  .trust-badge-tooltip-mobile::before {
+    display: none !important;
+  }
+}

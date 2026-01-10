@@ -12,7 +12,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useTranslations } from 'next-intl'
 import { 
   ShieldIcon, 
   CheckIcon, 
@@ -46,7 +45,7 @@ export function TrustBadges({
   animated = true,
   className = ''
 }: TrustBadgesProps) {
-  const t = useTranslations('common.trustBadges')
+  // Use hardcoded strings for now to avoid translation issues
   const [hoveredBadge, setHoveredBadge] = useState<string | null>(null)
   const [mounted, setMounted] = useState(false)
   const [tooltipPosition, setTooltipPosition] = useState<'top' | 'bottom' | 'left' | 'right'>('top')
@@ -96,8 +95,8 @@ export function TrustBadges({
     {
       id: 'ssl',
       icon: ShieldIcon,
-      label: t('ssl.label'),
-      description: t('ssl.description'),
+      label: 'SSL Sicuro',
+      description: 'Connessione crittografata e sicura',
       status: 'verified',
       color: 'text-emerald-600 dark:text-emerald-400',
       accentColor: 'bg-emerald-500/10 border-emerald-500/20',
@@ -106,8 +105,8 @@ export function TrustBadges({
     {
       id: 'privacy',
       icon: ShieldIcon,
-      label: t('privacy.label'),
-      description: t('privacy.description'),
+      label: 'Privacy Garantita',
+      description: 'Nessun tracking, nessun cookie',
       status: 'compliant',
       color: 'text-blue-600 dark:text-blue-400',
       accentColor: 'bg-blue-500/10 border-blue-500/20',
@@ -116,8 +115,8 @@ export function TrustBadges({
     {
       id: 'educational',
       icon: GraduationCapIcon,
-      label: t('educational.label'),
-      description: t('educational.description'),
+      label: 'Solo Educativo',
+      description: 'Nessun consiglio di investimento',
       status: 'active',
       color: 'text-amber-600 dark:text-amber-400',
       accentColor: 'bg-amber-500/10 border-amber-500/20',
@@ -248,6 +247,13 @@ export function TrustBadges({
               {variant === 'premium' && isActive && (
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               )}
+
+              {/* Info Icon Indicator */}
+              {showTooltips && (
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-primary/10 border border-primary/20 rounded-full flex items-center justify-center">
+                  <InfoIcon className="w-2.5 h-2.5 text-primary/70" />
+                </div>
+              )}
             </div>
 
             {/* Enhanced Tooltip with Smart Positioning */}
@@ -258,12 +264,14 @@ export function TrustBadges({
                 ${tooltipPosition === 'bottom' ? 'top-full left-1/2 transform -translate-x-1/2 mt-3' : ''}
                 ${tooltipPosition === 'left' ? 'right-full top-1/2 transform -translate-y-1/2 mr-3' : ''}
                 ${tooltipPosition === 'right' ? 'left-full top-1/2 transform -translate-y-1/2 ml-3' : ''}
+                md:relative md:z-50
               `}>
                 <div className="relative">
                   <div className={`
                     bg-background/95 backdrop-blur-md border border-border/50 rounded-xl shadow-xl p-3 w-72 max-w-[calc(100vw-2rem)]
                     ${tooltipPosition === 'left' || tooltipPosition === 'right' ? 'trust-badge-tooltip-left' : 'trust-badge-tooltip-up'}
                     ${variant === 'premium' ? 'shadow-2xl' : ''}
+                    md:trust-badge-tooltip-mobile
                   `}>
                     <div className="flex items-start gap-2">
                       <div className={`
@@ -295,12 +303,12 @@ export function TrustBadges({
                             {isSSL ? (
                               <>
                                 <CheckIcon className="w-3 h-3" />
-                                <span>{t('ssl.verified')}</span>
+                                <span>SSL Verificato</span>
                               </>
                             ) : (
                               <>
                                 <InfoIcon className="w-3 h-3" />
-                                <span>{t('ssl.notSecure')}</span>
+                                <span>Non Sicuro</span>
                               </>
                             )}
                           </div>
@@ -402,8 +410,6 @@ export function SecurityStatus({ className = '' }: { className?: string }) {
 
 // Premium Compliance Footer with enhanced design
 export function ComplianceFooter({ className = '' }: { className?: string }) {
-  const t = useTranslations('common.trustBadges')
-  
   return (
     <div className={`text-center space-y-6 ${className}`}>
       <div className="relative">
@@ -414,14 +420,14 @@ export function ComplianceFooter({ className = '' }: { className?: string }) {
       <div className="space-y-3 text-xs text-muted-foreground">
         <div className="flex items-center justify-center gap-2 font-medium">
           <ShieldIcon className="w-3 h-3 text-primary" />
-          <span>{t('compliance.gdpr')}</span>
+          <span>Conforme GDPR</span>
         </div>
         <div className="flex items-center justify-center gap-2 font-medium">
           <GraduationCapIcon className="w-3 h-3 text-amber-500" />
-          <span>{t('compliance.educational')}</span>
+          <span>Solo Educativo</span>
         </div>
         <p className="opacity-75 max-w-md mx-auto leading-relaxed">
-          {t('compliance.noAdvice')}
+          Nessun consiglio di investimento. Solo contenuti educativi.
         </p>
       </div>
     </div>

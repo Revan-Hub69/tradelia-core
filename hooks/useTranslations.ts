@@ -27,6 +27,7 @@ export function useTranslations() {
       title: t('hero.title'),
       titleHighlight: t('hero.titleHighlight'),
       description: t('hero.description'),
+      subDescription: t('hero.subDescription'),
       cta: t('hero.cta'),
       ctaSecondary: t('hero.ctaSecondary'),
       features: [

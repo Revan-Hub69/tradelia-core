@@ -5,15 +5,16 @@ export const translations = {
       verify: 'Verifica'
     },
     hero: {
-      title: 'Dashboard dinamica che evita gli',
-      titleHighlight: 'errori nel mondo crypto',
-      description: 'Usando solo nozioni accademiche.',
-      cta: 'Accedi alla dashboard',
+      title: 'Hai sempre sentito parlare di criptovalute, ma hai paura di sbagliare?',
+      titleHighlight: '',
+      description: 'Una dashboard educativa che ti aiuta a riconoscere errori cognitivi comuni e rischi incompatibili con il tuo profilo, prima che diventino perdite reali.',
+      subDescription: 'Evitare errori è gratuito. Recuperare le perdite no.',
+      cta: '👉 Guarda l\'anteprima',
       ctaSecondary: 'Guarda demo',
       features: [
-        'Nessun account',
-        'Nessun deposito',
-        'Solo educazione'
+        'Nessun costo da sostenere',
+        'Nessun marketing, nessuna promessa',
+        'Nessuna pressione a investire'
       ],
       trustBadges: {
         verified: 'Metodologia verificata',
@@ -514,15 +515,16 @@ export const translations = {
       verify: 'Verify'
     },
     hero: {
-      title: 'Dynamic dashboard that avoids',
-      titleHighlight: 'crypto world mistakes',
-      description: 'Using only academic knowledge.',
-      cta: 'Access dashboard',
+      title: 'Have you always heard about cryptocurrencies, but are afraid of making mistakes?',
+      titleHighlight: '',
+      description: 'An educational dashboard that helps you recognize common cognitive errors and risks incompatible with your profile, before they become real losses.',
+      subDescription: 'Avoiding errors is free. Recovering losses is not.',
+      cta: '👉 Watch preview',
       ctaSecondary: 'Watch demo',
       features: [
-        'No account',
-        'No deposit',
-        'Education only'
+        'No costs to bear',
+        'No marketing, no promises',
+        'No pressure to invest'
       ],
       trustBadges: {
         verified: 'Verified methodology',
