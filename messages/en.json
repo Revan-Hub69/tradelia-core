@@ -551,7 +551,7 @@
     "longterm": {
       "name": "Long term",
       "action": "Add plan",
-      "description": "Stable growth and DCA",
+      "description": "Grow your savings without stress",
       "sections": {
         "overview": "Overview",
         "dcaPlans": "DCA plans",
@@ -562,7 +562,7 @@
     "speculation": {
       "name": "Speculation",
       "action": "Analyze signal",
-      "description": "Active trading and opportunities",
+      "description": "Seize market opportunities wisely",
       "sections": {
         "overview": "Overview",
         "signals": "Signals",
@@ -573,7 +573,7 @@
     "passive": {
       "name": "Passive",
       "action": "Calculate yield",
-      "description": "Automatic yields and staking",
+      "description": "Generate income without doing anything",
       "sections": {
         "overview": "Overview",
         "staking": "Staking",

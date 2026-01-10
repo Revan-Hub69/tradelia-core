@@ -10,7 +10,7 @@
 import { useTranslations } from 'next-intl'
 import { InfoIcon } from '@/components/icons/TradeliaIcons'
 
-export type ComplexityLevel = 'low' | 'medium' | 'medium-high' | 'high' | 'very-high'
+export type ComplexityLevel = 'low' | 'medium' | 'mediumHigh' | 'high' | 'veryHigh'
 
 interface ComplexityIndicatorProps {
   level: ComplexityLevel
@@ -21,29 +21,19 @@ interface ComplexityIndicatorProps {
 
 const COMPLEXITY_CONFIG = {
   'low': {
-    dots: 1,
-    label: 'Bassa',
-    description: 'Concetti chiari, pochi strumenti, focus su accesso e limiti'
+    dots: 1
   },
   'medium': {
-    dots: 2,
-    label: 'Media',
-    description: 'Richiede attenzione di base, concetti accessibili'
+    dots: 2
   },
-  'medium-high': {
-    dots: 3,
-    label: 'Medio-Alta',
-    description: 'Meccanismi meno intuitivi, rischi nascosti da comprendere'
+  'mediumHigh': {
+    dots: 3
   },
   'high': {
-    dots: 4,
-    label: 'Alta',
-    description: 'Richiede disciplina, bias temporali, decisioni a lungo termine'
+    dots: 4
   },
-  'very-high': {
-    dots: 5,
-    label: 'Altissima',
-    description: 'Altissimo carico cognitivo, contesto dinamico, errori frequenti'
+  'veryHigh': {
+    dots: 5
   }
 }
 
@@ -83,7 +73,7 @@ export function ComplexityIndicator({
           </span>
           <div 
             className="group relative cursor-help"
-            title={config.description}
+            title={t('tooltip')}
           >
             <InfoIcon className="w-3.5 h-3.5 text-muted-foreground/60 hover:text-muted-foreground transition-colors" />
             
@@ -96,10 +86,10 @@ export function ComplexityIndicator({
               pointer-events-none z-50
             ">
               <div className="font-medium text-foreground mb-1">
-                Complessità {config.label}
+                {t('label')} {t(`levels.${level}`)}
               </div>
               <div className="leading-relaxed">
-                {config.description}
+                {t('tooltip')}
               </div>
               
               {/* Arrow */}
@@ -130,7 +120,7 @@ export function ComplexityIndicator({
           
           return (
             <div
-              key={index}
+              key={`complexity-dot-${level}-${index}`}
               className={`
                 ${dotSizeClasses[size]} rounded-full transition-all duration-200
                 ${dotColor}
@@ -143,7 +133,7 @@ export function ComplexityIndicator({
       
       {showLabel && (
         <span className={`font-medium text-foreground ${textSizeClasses[size]}`}>
-          {config.label}
+          {t(`levels.${level}`)}
         </span>
       )}
     </div>
@@ -160,7 +150,7 @@ export function MediumComplexity(props: Omit<ComplexityIndicatorProps, 'level'>)
 }
 
 export function MediumHighComplexity(props: Omit<ComplexityIndicatorProps, 'level'>) {
-  return <ComplexityIndicator level="medium-high" {...props} />
+  return <ComplexityIndicator level="mediumHigh" {...props} />
 }
 
 export function HighComplexity(props: Omit<ComplexityIndicatorProps, 'level'>) {
@@ -168,7 +158,7 @@ export function HighComplexity(props: Omit<ComplexityIndicatorProps, 'level'>) {
 }
 
 export function VeryHighComplexity(props: Omit<ComplexityIndicatorProps, 'level'>) {
-  return <ComplexityIndicator level="very-high" {...props} />
+  return <ComplexityIndicator level="veryHigh" {...props} />
 }
 
 // Compact version for cards

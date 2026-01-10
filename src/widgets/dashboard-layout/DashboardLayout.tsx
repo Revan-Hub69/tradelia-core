@@ -186,50 +186,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               )
             })}
           </ul>
-
-          {/* Analytics Section */}
-          <div className="mt-6 pt-4 border-t border-border/30">
-            <h3 className="px-3 mb-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Analytics
-            </h3>
-            <Link
-              href={`/${locale}/dashboard/analytics`}
-              onClick={closeMobileSidebar}
-              className={`
-                relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all mb-1
-                focus:outline-none focus:ring-2 focus:ring-primary
-                ${pathname.includes('/analytics') && !pathname.includes('/analytics-advanced')
-                  ? 'bg-primary/10 text-primary' 
-                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                }
-              `}
-            >
-              {pathname.includes('/analytics') && !pathname.includes('/analytics-advanced') && (
-                <span className="absolute left-0 top-2 bottom-2 w-[3px] bg-primary rounded-r-full" aria-hidden="true" />
-              )}
-              <AnalyticsIcon className={`w-5 h-5 flex-shrink-0 ${pathname.includes('/analytics') && !pathname.includes('/analytics-advanced') ? 'text-primary' : ''}`} />
-              <span>Analytics</span>
-            </Link>
-            
-            <Link
-              href={`/${locale}/dashboard/analytics-pro`}
-              onClick={closeMobileSidebar}
-              className={`
-                relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
-                focus:outline-none focus:ring-2 focus:ring-primary
-                ${pathname.includes('/analytics-pro')
-                  ? 'bg-primary/10 text-primary' 
-                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                }
-              `}
-            >
-              {pathname.includes('/analytics-pro') && (
-                <span className="absolute left-0 top-2 bottom-2 w-[3px] bg-primary rounded-r-full" aria-hidden="true" />
-              )}
-              <BrainIcon className={`w-5 h-5 flex-shrink-0 ${pathname.includes('/analytics-pro') ? 'text-primary' : ''}`} />
-              <span>Advanced Analytics</span>
-            </Link>
-          </div>
         </nav>
 
         {/* Ultra-Chicche: Trust Badges in Mobile Sidebar Footer */}
@@ -301,48 +257,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               )
             })}
           </ul>
-
-          {/* Analytics Section */}
-          <div className="mt-6 pt-4 border-t border-border/30">
-            <h3 className="px-3 mb-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Analytics
-            </h3>
-            <Link
-              href={`/${locale}/dashboard/analytics`}
-              className={`
-                relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all mb-1
-                focus:outline-none focus:ring-2 focus:ring-primary
-                ${pathname.includes('/analytics') && !pathname.includes('/analytics-advanced')
-                  ? 'bg-primary/10 text-primary' 
-                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                }
-              `}
-            >
-              {pathname.includes('/analytics') && !pathname.includes('/analytics-advanced') && (
-                <span className="absolute left-0 top-2 bottom-2 w-[3px] bg-primary rounded-r-full" aria-hidden="true" />
-              )}
-              <AnalyticsIcon className={`w-5 h-5 flex-shrink-0 ${pathname.includes('/analytics') && !pathname.includes('/analytics-advanced') ? 'text-primary' : ''}`} />
-              <span>Analytics</span>
-            </Link>
-            
-            <Link
-              href={`/${locale}/dashboard/analytics-pro`}
-              className={`
-                relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
-                focus:outline-none focus:ring-2 focus:ring-primary
-                ${pathname.includes('/analytics-pro')
-                  ? 'bg-primary/10 text-primary' 
-                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                }
-              `}
-            >
-              {pathname.includes('/analytics-pro') && (
-                <span className="absolute left-0 top-2 bottom-2 w-[3px] bg-primary rounded-r-full" aria-hidden="true" />
-              )}
-              <BrainIcon className={`w-5 h-5 flex-shrink-0 ${pathname.includes('/analytics-pro') ? 'text-primary' : ''}`} />
-              <span>Advanced Analytics</span>
-            </Link>
-          </div>
 
         </nav>
 

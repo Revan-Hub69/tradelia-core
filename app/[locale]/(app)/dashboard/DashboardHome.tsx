@@ -123,7 +123,7 @@ export function DashboardHome() {
                         <div className="flex flex-wrap gap-2">
                           {getFocusAreas(journeyId, tDashboard).map((area, index) => (
                             <span 
-                              key={index}
+                              key={`${journeyId}-focus-${index}`}
                               className="px-2 py-1 text-xs bg-muted/50 text-muted-foreground rounded-md"
                             >
                               {area}
@@ -154,7 +154,7 @@ export function DashboardHome() {
 }
 
 // Helper function to get focus areas for each journey
-function getFocusAreas(journeyId: JourneyId, tDashboard: any): string[] {
+function getFocusAreas(journeyId: JourneyId, tDashboard: (key: string) => string): string[] {
   const focusAreas = {
     emergency: [
       tDashboard('focusAreas.emergency.accessibility'),

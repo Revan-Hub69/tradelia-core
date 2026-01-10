@@ -48,7 +48,7 @@ export const JOURNEYS: Record<JourneyId, JourneyConfig> = {
     labelKey: 'journeys.passive.name',
     icon: 'refresh',
     color: 'info',
-    complexity: 'medium-high', // 🟢 🟠 🟠 ⚪ ⚪ (3/5)
+    complexity: 'mediumHigh', // 🟢 🟠 🟠 ⚪ ⚪ (3/5)
     primaryActionKey: 'journeys.passive.action',
     sections: [
       { id: 'overview', labelKey: 'journeys.passive.sections.overview', href: '' },
@@ -76,7 +76,7 @@ export const JOURNEYS: Record<JourneyId, JourneyConfig> = {
     labelKey: 'journeys.speculation.name',
     icon: 'bolt',
     color: 'primary',
-    complexity: 'very-high', // 🟢 🟠 🟠 🔴 🔴 (5/5)
+    complexity: 'veryHigh', // 🟢 🟠 🟠 🔴 🔴 (5/5)
     primaryActionKey: 'journeys.speculation.action',
     sections: [
       { id: 'overview', labelKey: 'journeys.speculation.sections.overview', href: '' },

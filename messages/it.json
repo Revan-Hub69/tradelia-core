@@ -519,7 +519,7 @@
     "emergency": {
       "name": "Emergenza",
       "action": "Verifica liquidità",
-      "description": "Asset liquidi e piano di uscita",
+      "description": "Proteggi il tuo capitale quando serve davvero",
       "sections": {
         "overview": "Panoramica",
         "liquidAssets": "Asset liquidi",
@@ -530,7 +530,7 @@
     "longterm": {
       "name": "Lungo termine",
       "action": "Aggiungi piano",
-      "description": "Crescita stabile e DCA",
+      "description": "Fai crescere i tuoi risparmi senza stress",
       "sections": {
         "overview": "Panoramica",
         "dcaPlans": "Piani DCA",
@@ -541,7 +541,7 @@
     "speculation": {
       "name": "Speculazione",
       "action": "Analizza segnale",
-      "description": "Trading attivo e opportunità",
+      "description": "Sfrutta le opportunità di mercato con criterio",
       "sections": {
         "overview": "Panoramica",
         "signals": "Segnali",
@@ -552,7 +552,7 @@
     "passive": {
       "name": "Passivo",
       "action": "Calcola rendimento",
-      "description": "Rendite automatiche e staking",
+      "description": "Genera entrate senza fare nulla",
       "sections": {
         "overview": "Panoramica",
         "staking": "Staking",
