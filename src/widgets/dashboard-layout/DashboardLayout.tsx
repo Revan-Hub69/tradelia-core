@@ -32,7 +32,6 @@ import {
   SearchIcon,
   MenuIcon,
   CloseIcon,
-  AnalyticsIcon,
   BrainIcon
 } from '@/components/icons/TradeliaIcons'
 
