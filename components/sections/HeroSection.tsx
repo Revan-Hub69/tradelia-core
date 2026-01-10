@@ -18,7 +18,7 @@ export default function HeroSection() {
   return (
     <section 
       id="hero"
-      className="section-lg bg-gradient-to-br from-background via-background to-muted/20 pattern-geo-premium relative overflow-hidden"
+      className="section-lg section-frame bg-gradient-to-br from-bg-section via-bg-section to-muted/20 pattern-geo-premium relative overflow-hidden"
     >
       {/* Premium overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/10 pointer-events-none" />
@@ -28,9 +28,9 @@ export default function HeroSection() {
           
           {/* Left Column - Copy & CTA */}
           <div className="space-y-8 lg:pr-8">
-            {/* Text overlay background */}
+            {/* Text overlay background - 2026 Cognitive Design */}
             <div className="relative">
-              <div className="absolute inset-0 bg-background/60 backdrop-blur-sm rounded-2xl -m-4 p-4" />
+              <div className="absolute inset-0 card-2026 backdrop-blur-sm -m-4 p-4" />
               <div className="relative space-y-6">
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight tracking-tight">
                   {hero.title}{' '}
@@ -57,7 +57,7 @@ export default function HeroSection() {
                           <>
                             <span className="relative inline-block">
                               {parts[0]}
-                              <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-primary/60 to-primary/20 rounded-full" />
+                              <span className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-primary/60 to-primary/20 rounded-full block" />
                             </span>
                             <span>. {parts[1]}</span>
                           </>
@@ -68,7 +68,7 @@ export default function HeroSection() {
                           <>
                             <span className="relative inline-block">
                               {parts[0]}
-                              <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-primary/60 to-primary/20 rounded-full" />
+                              <span className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-primary/60 to-primary/20 rounded-full block" />
                             </span>
                             <span>. {parts[1]}</span>
                           </>
@@ -127,8 +127,8 @@ export default function HeroSection() {
           {/* Right Column - Dashboard Preview */}
           <div className="relative lg:pl-8">
             <div className="relative">
-              {/* Main dashboard card */}
-              <div className="bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl shadow-2xl p-6 transform hover:scale-[1.02] transition-all duration-150">
+              {/* Main dashboard card - 2026 Cognitive Design */}
+              <div className="card-2026 backdrop-blur-sm shadow-2xl p-6 transform hover:scale-[1.02] transition-all duration-150">
                 <div className="space-y-6">
                   {/* Header */}
                   <div className="flex items-center justify-between">

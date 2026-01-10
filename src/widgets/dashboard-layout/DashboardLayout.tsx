@@ -195,9 +195,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       </aside>
 
       {/* ========== DESKTOP SIDEBAR (≥768px) ========== */}
-      <aside className="hidden md:flex fixed top-0 left-0 bottom-0 w-64 bg-background border-r border-border flex-col z-40">
-        {/* Logo */}
-        <div className="h-16 px-4 flex items-center border-b border-border/50 flex-shrink-0">
+      <aside className="hidden md:flex fixed top-0 left-0 bottom-0 w-64 section-frame border-r-0 rounded-none flex-col z-40">
+        {/* Logo - Section divider */}
+        <div className="h-16 px-4 flex items-center section-divider flex-shrink-0">
           <Logo />
         </div>
 
@@ -258,8 +258,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
         </nav>
 
-        {/* Ultra-Chicche: Trust Badges in Desktop Sidebar Footer */}
-        <div className="p-3 border-t border-border/50 flex-shrink-0">
+        {/* Ultra-Chicche: Trust Badges in Desktop Sidebar Footer - Section divider */}
+        <div className="p-3 section-divider flex-shrink-0">
           <div className="trust-badge-no-select">
             <TrustBadges placement="sidebar" variant="compact" showTooltips={true} className="text-xs trust-badge-no-select" />
           </div>
@@ -267,7 +267,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       </aside>
 
       {/* ========== HEADER ========== */}
-      <header className="h-16 bg-background/95 backdrop-blur-sm border-b border-border/50 fixed top-0 left-0 right-0 z-50 md:left-64">
+      <header className="h-16 section-frame border-b-0 rounded-none backdrop-blur-sm fixed top-0 left-0 right-0 z-50 md:left-64">
         <div className="h-full px-4 sm:px-6 md:px-8 flex items-center justify-between">
           {/* Mobile: Hamburger + Logo */}
           <div className="flex items-center gap-4 md:hidden">
@@ -328,21 +328,21 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </div>
         
         {/* ========== TECHNICAL FOOTER ========== */}
-        <footer className="mt-auto border-t border-border/50 bg-background/95 backdrop-blur-sm">
+        <footer className="mt-auto section-divider section-frame backdrop-blur-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-4">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-4">
               {/* Security Info */}
               <div className="space-y-2">
-                <h3 className="text-sm font-semibold text-foreground">Sicurezza & Privacy</h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">
+                <h3 className="text-sm font-semibold content-primary">Sicurezza & Privacy</h3>
+                <p className="text-xs content-secondary leading-relaxed">
                   Crittografia end-to-end, zero tracking, nessuna vendita dati.
                 </p>
               </div>
               
               {/* Technical Info */}
               <div className="space-y-2">
-                <h3 className="text-sm font-semibold text-foreground">Informazioni Tecniche</h3>
-                <div className="space-y-1 text-xs text-muted-foreground">
+                <h3 className="text-sm font-semibold content-primary">Informazioni Tecniche</h3>
+                <div className="space-y-1 text-xs content-secondary">
                   <div className="flex items-center justify-between">
                     <span>Versione:</span>
                     <span className="font-mono">2026.02</span>
@@ -356,21 +356,21 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               
               {/* Legal & Support */}
               <div className="space-y-2">
-                <h3 className="text-sm font-semibold text-foreground">Supporto & Legale</h3>
+                <h3 className="text-sm font-semibold content-primary">Supporto & Legale</h3>
                 <div className="space-y-1 text-xs">
-                  <a href="/privacy" className="block text-muted-foreground hover:text-foreground transition-colors">
+                  <a href="/privacy" className="block content-secondary hover:text-foreground transition-colors">
                     Privacy Policy
                   </a>
-                  <a href="/terms" className="block text-muted-foreground hover:text-foreground transition-colors">
+                  <a href="/terms" className="block content-secondary hover:text-foreground transition-colors">
                     Termini di Servizio
                   </a>
                 </div>
               </div>
             </div>
             
-            {/* Bottom Bar */}
-            <div className="pt-3 border-t border-border/30 flex flex-col sm:flex-row items-center justify-between gap-3">
-              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 text-xs text-muted-foreground">
+            {/* Bottom Bar - Section divider */}
+            <div className="section-divider flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 text-xs content-tertiary">
                 <span>© 2026 Tradelia</span>
                 <span className="hidden sm:inline">•</span>
                 <span>Strumento educativo</span>
@@ -381,14 +381,14 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               <div className="flex items-center gap-3">
                 <SecurityStatus />
                 <div className="w-px h-3 bg-border" />
-                <span className="text-xs text-muted-foreground">
+                <span className="text-xs content-tertiary">
                   Made with ❤️ in Italy
                 </span>
               </div>
             </div>
 
-            {/* Mobile Trust Badges - Horizontal compact layout */}
-            <div className="pt-3 border-t border-border/30 md:hidden">
+            {/* Mobile Trust Badges - Horizontal compact layout - Section divider */}
+            <div className="section-divider md:hidden">
               <div className="flex justify-center">
                 <TrustBadges placement="footer" variant="compact" showTooltips={true} className="text-xs gap-2" />
               </div>
@@ -399,7 +399,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
       {/* ========== MOBILE BOTTOM NAV (<768px) ========== */}
       <nav 
-        className="fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-t border-border md:hidden"
+        className="fixed bottom-0 left-0 right-0 z-40 section-frame border-t-0 rounded-none backdrop-blur-sm md:hidden"
         aria-label={t('common.mainNavigation')}
       >
         <div className="flex items-center justify-around h-20 px-2 safe-area-bottom">

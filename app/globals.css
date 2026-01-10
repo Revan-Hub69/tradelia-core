@@ -19,7 +19,22 @@
     --warning: 38 100% 35%;           /* Ambra scura accessibile */
     --error: 0 90% 45%;               /* Rosso scuro accessibile */
     
-    /* Surface Layers */
+    /* 2026 COGNITIVE LOAD OPTIMIZATION - 3 Layer Hierarchy */
+    /* Layer 0: Page Background - Never pure white/black */
+    --bg-page: 0 0% 98%;              /* Slightly "dirty" white - prevents eye strain */
+    
+    /* Layer 1: Section Backgrounds - Clear separation from page */
+    --bg-section: 0 0% 100%;          /* Pure white sections on dirty background */
+    --border-section: 220 10% 88%;    /* Visible section borders */
+    
+    /* Layer 2: Card/Component Backgrounds - Always distinct from sections */
+    --bg-card: 0 0% 99.5%;            /* Slightly different from section */
+    --border-card: 220 10% 85%;       /* More visible than section borders */
+    
+    /* Micro-dividers for section separation */
+    --border-subtle: 220 10% 92%;     /* Dashed dividers between sections */
+    
+    /* Legacy Surface Layers - Maintained for compatibility */
     --surface: 0 0% 100%;             /* Superficie bianca pura */
     --surface-elevated: 0 0% 99%;     /* Superficie elevata sottile */
     
@@ -51,7 +66,22 @@
     --warning: 38 95% 65%;            /* Ambra brillante */
     --error: 0 85% 70%;               /* Rosso brillante */
     
-    /* Surface Layers - Dark Mode */
+    /* 2026 COGNITIVE LOAD OPTIMIZATION - Dark Mode 3 Layer Hierarchy */
+    /* Layer 0: Page Background - Never pure black */
+    --bg-page: 220 15% 7%;            /* Slightly "dirty" black - prevents eye strain */
+    
+    /* Layer 1: Section Backgrounds - Clear separation from page */
+    --bg-section: 220 15% 10%;        /* Elevated sections on dirty background */
+    --border-section: 220 15% 18%;    /* Visible section borders */
+    
+    /* Layer 2: Card/Component Backgrounds - Always distinct from sections */
+    --bg-card: 220 15% 12%;           /* Clearly different from section */
+    --border-card: 220 15% 22%;       /* More visible than section borders */
+    
+    /* Micro-dividers for section separation */
+    --border-subtle: 220 15% 15%;     /* Dashed dividers between sections */
+    
+    /* Legacy Surface Layers - Dark Mode - Maintained for compatibility */
     --surface: 220 15% 10%;           /* Superficie base scura elevata */
     --surface-elevated: 220 15% 14%;  /* Superficie elevata con contrasto */
     
@@ -93,6 +123,8 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    /* 2026 Cognitive Load: Use page background instead of pure background */
+    background-color: hsl(var(--bg-page));
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -166,6 +198,79 @@
 }
 
 @layer utilities {
+  /* 2026 COGNITIVE LOAD OPTIMIZATION UTILITIES */
+  
+  /* Section Frame Pattern - The core of 2026 design */
+  .section-frame {
+    background-color: hsl(var(--bg-section));
+    border: 1px solid hsl(var(--border-section));
+    border-radius: 12px;
+    /* Subtle shadow for depth without distraction */
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05);
+  }
+  
+  /* Section Frame with semantic left borders */
+  .section-frame-warning {
+    @apply section-frame;
+    border-left: 4px solid hsl(var(--warning));
+  }
+  
+  .section-frame-error {
+    @apply section-frame;
+    border-left: 4px solid hsl(var(--error));
+  }
+  
+  .section-frame-success {
+    @apply section-frame;
+    border-left: 4px solid hsl(var(--success));
+  }
+  
+  .section-frame-info {
+    @apply section-frame;
+    border-left: 4px solid hsl(var(--primary));
+  }
+  
+  /* Card 2026 - Always distinct from sections */
+  .card-2026 {
+    background-color: hsl(var(--bg-card));
+    border: 1px solid hsl(var(--border-card));
+    border-radius: 8px;
+    /* Minimal shadow - borders do the separation work */
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+  }
+  
+  /* Micro-dividers between sections */
+  .section-divider {
+    margin-top: 32px;
+    padding-top: 32px;
+    border-top: 1px dashed hsl(var(--border-subtle));
+  }
+  
+  /* Vertical spacing for cognitive breathing room */
+  .section-breathing {
+    @apply py-8 sm:py-12;
+  }
+  
+  .section-breathing-lg {
+    @apply py-12 sm:py-16;
+  }
+  
+  /* Content hierarchy helpers */
+  .content-primary {
+    color: hsl(var(--foreground));
+    font-weight: 600;
+  }
+  
+  .content-secondary {
+    color: hsl(var(--muted-foreground));
+    font-weight: 500;
+  }
+  
+  .content-tertiary {
+    color: hsl(var(--subtle-foreground));
+    font-weight: 400;
+  }
+
   /* Tradelia 2026 - Utility Classes */
   
   /* Safe area for iOS bottom nav */
@@ -205,15 +310,18 @@
                 border-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Card Interactive Hover - Design Guide Compliant */
+  /* Card Interactive - 2026 Cognitive Design */
   .card-interactive {
+    @apply card-2026;
     transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .card-interactive:hover {
-    border-color: hsl(var(--border));
-    background: hsl(var(--muted) / 0.3);
-    transform: translateY(-2px);
+    border-color: hsl(var(--border-card));
+    background-color: hsl(var(--bg-card));
+    /* Subtle lift without distraction */
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 0.08);
   }
 
   /* Link Internal Hover */
@@ -533,20 +641,30 @@
     @apply border-b border-border/30;
   }
 
-  /* Card Interactive - Enterprise Premium */
+  /* Card Interactive - Enterprise Premium - 2026 Cognitive Design */
   .card-interactive-premium {
-    @apply rounded-lg border border-border/50 bg-background p-5 shadow-sm;
-    @apply transition-all duration-150 ease-out;
-    @apply hover:border-border hover:bg-surface-elevated hover:shadow-md;
-    @apply hover:-translate-y-0.5 hover:shadow-foreground/5;
+    @apply card-2026 p-5;
+    transition: all 150ms ease-out;
+  }
+  
+  .card-interactive-premium:hover {
+    border-color: hsl(var(--border-card));
+    background-color: hsl(var(--bg-card));
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.08);
   }
 
-  /* Card Tech - Enterprise Enhanced */
+  /* Card Tech - Enterprise Enhanced - 2026 Cognitive Design */
   .card-tech {
-    @apply rounded-lg border border-border/50 bg-background p-6;
-    @apply transition-all duration-150 ease-out;
-    @apply hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5;
-    @apply hover:-translate-y-0.5 hover:bg-surface-elevated;
+    @apply card-2026 p-6;
+    transition: all 150ms ease-out;
+  }
+  
+  .card-tech:hover {
+    border-color: hsl(var(--primary) / 0.3);
+    background-color: hsl(var(--bg-card));
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px hsl(var(--primary) / 0.05);
   }
 
   /* Link Internal - Design Guide Compliant */

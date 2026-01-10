@@ -180,7 +180,8 @@ function ResearchItem({ item, data, sourceLabel }: {
 
       {/* Circular gauge */}
       <div className={`${isReversed ? 'lg:col-start-1' : ''}`}>
-        <div className="rounded border border-border/50 bg-background p-4">
+        {/* Research item cards - 2026 Cognitive Design */}
+        <div className="card-2026 rounded border border-border/50 p-4">
           <p className="text-xs text-muted-foreground text-center mb-3">Frequenza errore</p>
           <CircularGauge percentage={percentage} color={item.iconColor} animate={isInView} />
         </div>
@@ -229,7 +230,7 @@ export default function ResearchSection() {
   return (
     <section 
       id="research"
-      className="section-lg bg-background fade-in-section border-b border-border/30"
+      className="section-lg section-frame section-breathing-lg fade-in-section"
       aria-labelledby="research-title"
     >
       <div className="max-w-6xl mx-auto px-6 sm:px-8">
@@ -261,8 +262,8 @@ export default function ResearchSection() {
           ))}
         </div>
 
-        {/* Below-fold: Resto dei bias */}
-        <div className="border-t border-border/30 pt-12">
+        {/* Below-fold: Resto dei bias - Section divider */}
+        <div className="section-divider">
           <div className="space-y-12" role="list">
             {RESEARCH_ITEMS.slice(3).map((item) => (
               <div key={item.key} role="listitem">
@@ -276,12 +277,12 @@ export default function ResearchSection() {
           </div>
         </div>
 
-        {/* Comparison Chart with viewport animation */}
-        <div ref={comparisonRef} className="mt-20 border-t border-border/30 pt-16">
+        {/* Comparison Chart with viewport animation - Section divider */}
+        <div ref={comparisonRef} className="section-divider mt-20">
           <h3 className="text-xl font-semibold text-foreground mb-8 text-center">
             {research.comparisonTitle}
           </h3>
-          <div className="bg-background/90 backdrop-blur-sm border border-border/50 rounded-xl p-4 sm:p-6 lg:p-8">
+          <div className="card-2026 backdrop-blur-sm p-4 sm:p-6 lg:p-8">
             <div className="space-y-6">
               {/* Chart Legend */}
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 text-sm">
@@ -320,8 +321,8 @@ export default function ResearchSection() {
                 ))}
               </div>
               
-              {/* Source note */}
-              <p className="text-xs text-muted-foreground/70 text-center pt-2 border-t border-border/30">
+              {/* Source note - Section divider */}
+              <p className="text-xs text-muted-foreground/70 text-center section-divider">
                 {research.behavioralStudies}
               </p>
             </div>
