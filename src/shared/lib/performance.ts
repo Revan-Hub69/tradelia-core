@@ -24,7 +24,7 @@ interface NavigationTiming {
 // Web Vitals thresholds (2026 standards)
 const THRESHOLDS = {
   CLS: { good: 0.1, poor: 0.25 },
-  FID: { good: 100, poor: 300 },
+  INP: { good: 200, poor: 500 }, // Interaction to Next Paint (replaces FID in v5)
   FCP: { good: 1800, poor: 3000 },
   LCP: { good: 2500, poor: 4000 },
   TTFB: { good: 800, poor: 1800 }
@@ -43,7 +43,7 @@ export function trackWebVitals() {
   if (typeof window === 'undefined') return
 
   // Dynamic import to avoid bundle bloat - gracefully handle missing package
-  import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
+  import('web-vitals').then((webVitals) => {
     const handleMetric = (metric: { name: string; value: number }) => {
       const performanceMetric: PerformanceMetric = {
         name: metric.name,
@@ -66,12 +66,13 @@ export function trackWebVitals() {
       }
     }
 
-    getCLS(handleMetric)
-    getFID(handleMetric)
-    getFCP(handleMetric)
-    getLCP(handleMetric)
-    getTTFB(handleMetric)
-  }).catch((error) => {
+    // Use the correct API for web-vitals v5
+    if (webVitals.onCLS) webVitals.onCLS(handleMetric)
+    if (webVitals.onINP) webVitals.onINP(handleMetric) // FID is replaced by INP in v5
+    if (webVitals.onFCP) webVitals.onFCP(handleMetric)
+    if (webVitals.onLCP) webVitals.onLCP(handleMetric)
+    if (webVitals.onTTFB) webVitals.onTTFB(handleMetric)
+  }).catch((_error) => {
     // Gracefully handle missing web-vitals package
     if (process.env.NODE_ENV === 'development') {
       console.info('[Performance] web-vitals package not installed. Install with: npm install web-vitals')
@@ -288,6 +289,34 @@ if (typeof window !== 'undefined') {
     trackNavigation,
     observePerformance,
     checkPerformanceBudget
+  }
+}
+
+// Utility functions for performance optimization
+export function debounce<T extends (...args: unknown[]) => unknown>(
+  func: T,
+  wait: number
+): (...args: Parameters<T>) => void {
+  let timeoutId: NodeJS.Timeout | undefined
+
+  return function (this: unknown, ...args: Parameters<T>) {
+    clearTimeout(timeoutId)
+    timeoutId = setTimeout(() => func.apply(this, args), wait)
+  }
+}
+
+export function throttle<T extends (...args: unknown[]) => unknown>(
+  func: T,
+  limit: number
+): (...args: Parameters<T>) => void {
+  let inThrottle: boolean
+
+  return function (this: unknown, ...args: Parameters<T>) {
+    if (!inThrottle) {
+      func.apply(this, args)
+      inThrottle = true
+      setTimeout(() => (inThrottle = false), limit)
+    }
   }
 }
 
