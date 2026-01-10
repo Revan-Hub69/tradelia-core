@@ -301,6 +301,17 @@
         "debugMode": "Debug mode"
       }
     },
+    "complexity": {
+      "label": "Complexity",
+      "tooltip": "Indicates how much conceptual and decision-making complexity is required to understand the path. Does not measure potential returns or risk.",
+      "levels": {
+        "low": "Low",
+        "medium": "Medium", 
+        "mediumHigh": "Medium-High",
+        "high": "High",
+        "veryHigh": "Very High"
+      }
+    },
     "toolPreview": {
       "showInterest": "Show Interest",
       "notifyMe": "Notify Me",

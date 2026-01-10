@@ -301,6 +301,17 @@
         "debugMode": "Modalità debug"
       }
     },
+    "complexity": {
+      "label": "Complessità",
+      "tooltip": "Indica quanta complessità concettuale e decisionale è richiesta per comprendere il percorso. Non misura il rendimento né il rischio potenziale.",
+      "levels": {
+        "low": "Bassa",
+        "medium": "Media", 
+        "mediumHigh": "Medio-Alta",
+        "high": "Alta",
+        "veryHigh": "Altissima"
+      }
+    },
     "toolPreview": {
       "showInterest": "Sono interessato",
       "notifyMe": "Avvisami",

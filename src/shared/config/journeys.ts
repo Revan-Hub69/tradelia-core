@@ -1,12 +1,14 @@
 /**
  * Journey Configuration - Tradelia 2026
  * 
- * I 4 percorsi anti-errore:
- * - Emergenza: liquidità immediata, protezione
- * - Lungo termine: crescita stabile, DCA
- * - Speculazione: trading attivo, opportunità
- * - Passivo: rendite automatiche, staking
+ * I 4 percorsi anti-errore ordinati per complessità cognitiva:
+ * - Emergenza: liquidità immediata, protezione (MEDIA)
+ * - Passivo: rendite automatiche, staking (MEDIO-ALTA)
+ * - Lungo termine: crescita stabile, DCA (ALTA)
+ * - Speculazione: trading attivo, opportunità (ALTISSIMA)
  */
+
+import type { ComplexityLevel } from '@/src/shared/ui/ComplexityIndicator'
 
 export type JourneyId = 'emergency' | 'longterm' | 'speculation' | 'passive'
 
@@ -21,6 +23,7 @@ export interface JourneyConfig {
   labelKey: string
   icon: string // nome icona
   color: string // colore semantico
+  complexity: ComplexityLevel // livello di complessità cognitiva
   primaryActionKey: string
   sections: JourneySection[]
 }
@@ -31,6 +34,7 @@ export const JOURNEYS: Record<JourneyId, JourneyConfig> = {
     labelKey: 'journeys.emergency.name',
     icon: 'shield',
     color: 'warning',
+    complexity: 'medium', // 🟢 🟠 ⚪ ⚪ ⚪ (2/5)
     primaryActionKey: 'journeys.emergency.action',
     sections: [
       { id: 'overview', labelKey: 'journeys.emergency.sections.overview', href: '' },
@@ -39,11 +43,26 @@ export const JOURNEYS: Record<JourneyId, JourneyConfig> = {
       { id: 'history', labelKey: 'journeys.emergency.sections.history', href: '/history' },
     ]
   },
+  passive: {
+    id: 'passive',
+    labelKey: 'journeys.passive.name',
+    icon: 'refresh',
+    color: 'info',
+    complexity: 'medium-high', // 🟢 🟠 🟠 ⚪ ⚪ (3/5)
+    primaryActionKey: 'journeys.passive.action',
+    sections: [
+      { id: 'overview', labelKey: 'journeys.passive.sections.overview', href: '' },
+      { id: 'staking', labelKey: 'journeys.passive.sections.staking', href: '/staking' },
+      { id: 'yields', labelKey: 'journeys.passive.sections.yields', href: '/yields' },
+      { id: 'projections', labelKey: 'journeys.passive.sections.projections', href: '/projections' },
+    ]
+  },
   longterm: {
     id: 'longterm',
     labelKey: 'journeys.longterm.name',
     icon: 'growth',
     color: 'success',
+    complexity: 'high', // 🟢 🟠 🟠 🔴 ⚪ (4/5)
     primaryActionKey: 'journeys.longterm.action',
     sections: [
       { id: 'overview', labelKey: 'journeys.longterm.sections.overview', href: '' },
@@ -57,6 +76,7 @@ export const JOURNEYS: Record<JourneyId, JourneyConfig> = {
     labelKey: 'journeys.speculation.name',
     icon: 'bolt',
     color: 'primary',
+    complexity: 'very-high', // 🟢 🟠 🟠 🔴 🔴 (5/5)
     primaryActionKey: 'journeys.speculation.action',
     sections: [
       { id: 'overview', labelKey: 'journeys.speculation.sections.overview', href: '' },
@@ -64,28 +84,16 @@ export const JOURNEYS: Record<JourneyId, JourneyConfig> = {
       { id: 'positions', labelKey: 'journeys.speculation.sections.positions', href: '/positions' },
       { id: 'analysis', labelKey: 'journeys.speculation.sections.analysis', href: '/analysis' },
     ]
-  },
-  passive: {
-    id: 'passive',
-    labelKey: 'journeys.passive.name',
-    icon: 'refresh',
-    color: 'info',
-    primaryActionKey: 'journeys.passive.action',
-    sections: [
-      { id: 'overview', labelKey: 'journeys.passive.sections.overview', href: '' },
-      { id: 'staking', labelKey: 'journeys.passive.sections.staking', href: '/staking' },
-      { id: 'yields', labelKey: 'journeys.passive.sections.yields', href: '/yields' },
-      { id: 'projections', labelKey: 'journeys.passive.sections.projections', href: '/projections' },
-    ]
   }
 }
 
-export const JOURNEY_ORDER: JourneyId[] = ['emergency', 'longterm', 'speculation', 'passive']
+// ORDINE CORRETTO: dal meno complesso al più complesso
+export const JOURNEY_ORDER: JourneyId[] = ['emergency', 'passive', 'longterm', 'speculation']
 
 export function getJourneyFromPath(pathname: string): JourneyId {
   if (pathname.includes('/emergency')) return 'emergency'
+  if (pathname.includes('/passive')) return 'passive'
   if (pathname.includes('/longterm')) return 'longterm'
   if (pathname.includes('/speculation')) return 'speculation'
-  if (pathname.includes('/passive')) return 'passive'
   return 'emergency' // default
 }

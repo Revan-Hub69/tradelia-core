@@ -2,7 +2,7 @@
  * Dashboard Home - Tradelia 2026
  * 
  * Hub centrale che mostra i 4 journey con KPI riassuntivi.
- * L'utente sceglie il percorso da qui o dalla BottomNav.
+ * Ordinati per complessità cognitiva crescente con indicatori.
  */
 
 'use client'
@@ -12,6 +12,7 @@ import { useTranslations, useLocale } from 'next-intl'
 import { DashboardLayout } from '@/src/widgets/dashboard-layout'
 import { DashboardAuthGuard } from '@/src/widgets/dashboard-auth'
 import { FeatureGate } from '@/src/shared/ui/FeatureGate'
+import { ComplexityIndicator } from '@/src/shared/ui/ComplexityIndicator'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
 import { JOURNEY_ORDER, JOURNEYS, type JourneyId } from '@/src/shared/config/journeys'
 import {
@@ -31,9 +32,9 @@ const JOURNEY_ICONS: Record<JourneyId, React.ComponentType<{ className?: string 
 
 const JOURNEY_COLORS: Record<JourneyId, { bg: string; text: string; border: string }> = {
   emergency: { bg: 'bg-warning/10', text: 'text-warning', border: 'border-warning/20' },
+  passive: { bg: 'bg-info/10', text: 'text-info', border: 'border-info/20' },
   longterm: { bg: 'bg-success/10', text: 'text-success', border: 'border-success/20' },
-  speculation: { bg: 'bg-primary/10', text: 'text-primary', border: 'border-primary/20' },
-  passive: { bg: 'bg-info/10', text: 'text-info', border: 'border-info/20' }
+  speculation: { bg: 'bg-primary/10', text: 'text-primary', border: 'border-primary/20' }
 }
 
 export function DashboardHome() {
@@ -54,14 +55,19 @@ export function DashboardHome() {
               {tDashboard('welcome')}, {userName}
             </h1>
             <p className="content-secondary">
-              Scegli il tuo percorso per iniziare
+              Scegli da dove orientarti. I percorsi non indicano cosa fare, ma come ragionare in base al tuo obiettivo.
             </p>
+            <div className="mt-4 p-3 bg-muted/30 rounded-lg">
+              <p className="text-sm text-muted-foreground">
+                <strong>Nessun percorso richiede azione immediata.</strong> Tradelia aiuta a capire prima di decidere.
+              </p>
+            </div>
           </div>
 
           {/* Journey Cards Grid - Section Frame */}
           <div className="section-frame p-6">
-            <h2 className="text-lg font-semibold content-primary mb-4">Percorsi Disponibili</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <h2 className="text-lg font-semibold content-primary mb-6">Percorsi Tradelia</h2>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {JOURNEY_ORDER.map((journeyId) => {
                 const journey = JOURNEYS[journeyId]
                 const Icon = JOURNEY_ICONS[journeyId]
@@ -76,7 +82,7 @@ export function DashboardHome() {
                       hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
                     `}
                   >
-                    <div className="flex items-start gap-4">
+                    <div className="flex items-start gap-4 mb-4">
                       <div className={`w-12 h-12 rounded-xl ${colors.bg} flex items-center justify-center flex-shrink-0`}>
                         <Icon className={`w-6 h-6 ${colors.text}`} />
                       </div>
@@ -84,22 +90,36 @@ export function DashboardHome() {
                         <h3 className="text-lg font-semibold content-primary mb-1">
                           {t(journey.labelKey)}
                         </h3>
-                        <p className="text-sm content-secondary line-clamp-2">
+                        <p className="text-sm content-secondary line-clamp-2 mb-3">
                           {t(`journeys.${journeyId}.description`)}
                         </p>
+                        
+                        {/* Complexity Indicator */}
+                        <ComplexityIndicator 
+                          level={journey.complexity}
+                          size="sm"
+                          className="mb-2"
+                        />
                       </div>
                       <ArrowRightIcon className="w-5 h-5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all" />
                     </div>
                     
-                    {/* Quick stat placeholder - Section divider */}
+                    {/* Focus Areas */}
                     <div className="section-divider">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="content-secondary">
-                          {t(journey.primaryActionKey)}
-                        </span>
-                        <span className={`font-medium ${colors.text}`}>
-                          →
-                        </span>
+                      <div className="space-y-2">
+                        <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                          Focus su:
+                        </h4>
+                        <div className="flex flex-wrap gap-2">
+                          {getFocusAreas(journeyId).map((area, index) => (
+                            <span 
+                              key={index}
+                              className="px-2 py-1 text-xs bg-muted/50 text-muted-foreground rounded-md"
+                            >
+                              {area}
+                            </span>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </Link>
@@ -108,71 +128,29 @@ export function DashboardHome() {
             </div>
           </div>
 
-          {/* Ultra-Chicche: Advanced Features with FeatureGate - Section Frame */}
-          <div className="section-frame p-6 space-y-4">
-            <h2 className="text-lg font-semibold content-primary">Funzionalità Avanzate</h2>
-            
-            <FeatureGate feature="advancedCharts">
-              <div className="card-2026 p-6 border-l-4 border-l-primary">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                    <TrendingUpIcon className="w-5 h-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-primary">Grafici Avanzati</h3>
-                    <p className="text-xs text-primary/70">Funzionalità sperimentale</p>
-                  </div>
-                </div>
-                <p className="text-sm content-secondary mb-4">
-                  Analisi avanzate con grafici interattivi e correlazioni di mercato in tempo reale.
-                </p>
-                <button className="px-4 py-2 bg-primary text-white rounded-lg text-sm hover:bg-primary/90 transition-colors">
-                  Prova i Grafici Avanzati
-                </button>
-              </div>
-            </FeatureGate>
-
-            <FeatureGate feature="portfolioAnalyzer">
-              <div className="card-2026 p-6 border-l-4 border-l-success">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-success/10 rounded-lg flex items-center justify-center">
-                    <ShieldIcon className="w-5 h-5 text-success" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-success">Analizzatore Portafoglio</h3>
-                    <p className="text-xs text-success/70">Beta disponibile</p>
-                  </div>
-                </div>
-                <p className="text-sm content-secondary mb-4">
-                  Analisi automatica del rischio e suggerimenti di ottimizzazione per il tuo portafoglio.
-                </p>
-                <button className="px-4 py-2 bg-success text-white rounded-lg text-sm hover:bg-success/90 transition-colors">
-                  Analizza Portafoglio
-                </button>
-              </div>
-            </FeatureGate>
-          </div>
-
-          {/* Guest Mode CTA - Section Frame with warning accent */}
-          {state.isGuestMode && (
-            <div className="section-frame-warning p-4">
-              <div className="flex items-center gap-3">
-                <ShieldIcon className="w-5 h-5 text-warning flex-shrink-0" />
-                <div className="flex-1">
-                  <p className="text-sm font-medium content-primary">
-                    {tDashboard('limitedMode')}
-                  </p>
-                  <p className="text-xs content-tertiary mt-0.5">
-                    {tDashboard('registerForAnalysis')}
-                  </p>
-                </div>
-              </div>
+          {/* Feature Gate Demo */}
+          <FeatureGate feature="betaFeatures">
+            <div className="section-frame p-6">
+              <h2 className="text-lg font-semibold content-primary mb-4">Funzionalità Beta</h2>
+              <p className="content-secondary">
+                Questa sezione è controllata da feature flags e può essere abilitata/disabilitata dinamicamente.
+              </p>
             </div>
-          )}
+          </FeatureGate>
         </div>
       </DashboardLayout>
     </DashboardAuthGuard>
   )
 }
 
-export default DashboardHome
+// Helper function to get focus areas for each journey
+function getFocusAreas(journeyId: JourneyId): string[] {
+  const focusAreas = {
+    emergency: ['accessibilità e liquidità reale', 'rischi operativi e normativi', 'limiti e criticità concrete'],
+    passive: ['fonte del rendimento', 'esposizione reale', 'condizioni di fallimento'],
+    longterm: ['orizzonte temporale', 'rischio cumulativo', 'compatibilità personale'],
+    speculation: ['rischio asimmetrico', 'errori cognitivi frequenti', 'limiti dell\'operatività attiva']
+  }
+  
+  return focusAreas[journeyId] || []
+}
