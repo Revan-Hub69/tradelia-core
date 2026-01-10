@@ -22,7 +22,7 @@ import {
 
 export interface TrustBadgesProps {
   placement?: 'header' | 'footer' | 'sidebar'
-  variant?: 'minimal' | 'detailed' | 'compact' | 'premium'
+  variant?: 'minimal' | 'detailed' | 'compact' | 'premium' | 'micro'
   showTooltips?: boolean
   animated?: boolean
   className?: string
@@ -134,6 +134,8 @@ export function TrustBadges({
         return 'text-xs gap-2'
       case 'compact':
         return 'text-xs gap-3'
+      case 'micro':
+        return 'text-[10px] gap-1'
       case 'premium':
         return 'text-sm gap-4'
       case 'detailed':
@@ -147,7 +149,7 @@ export function TrustBadges({
       case 'header':
         return 'justify-end'
       case 'sidebar':
-        return 'flex-col items-start space-y-3'
+        return 'flex-col items-start space-y-1'
       case 'footer':
       default:
         return 'justify-start flex-wrap gap-y-2'
@@ -182,8 +184,11 @@ export function TrustBadges({
           >
             <div 
               className={`
-                relative flex items-center gap-2 px-3 py-2 rounded-xl border backdrop-blur-sm
-                transition-all duration-300 cursor-help group-hover:scale-105
+                relative flex items-center transition-all duration-300 cursor-help group-hover:scale-105
+                ${variant === 'micro' 
+                  ? 'gap-1 px-1.5 py-0.5 rounded-md border backdrop-blur-sm' 
+                  : 'gap-2 px-3 py-2 rounded-xl border backdrop-blur-sm'
+                }
                 ${isActive ? badge.accentColor : 'bg-muted/30 border-border/50'}
                 ${variant === 'premium' ? 'trust-badge-premium shadow-sm hover:shadow-md' : ''}
                 ${placement === 'sidebar' ? 'w-full' : ''}
@@ -194,7 +199,7 @@ export function TrustBadges({
               title={showTooltips ? badge.description : undefined}
             >
               {/* Status Indicator */}
-              {variant !== 'minimal' && isActive && (
+              {variant !== 'minimal' && variant !== 'micro' && isActive && (
                 <div className="relative">
                   <div className={`
                     w-2 h-2 rounded-full ${badge.pulseColor}
@@ -211,14 +216,14 @@ export function TrustBadges({
               
               {/* Icon */}
               <Icon className={`
-                ${variant === 'minimal' ? 'w-3 h-3' : 'w-4 h-4'}
+                ${variant === 'minimal' || variant === 'micro' ? 'w-3 h-3' : 'w-4 h-4'}
                 ${isActive ? badge.color : 'text-muted-foreground'}
                 transition-all duration-300
                 ${isHovered ? 'scale-110' : ''}
               `} />
               
               {/* Label */}
-              {variant !== 'minimal' && (
+              {variant !== 'minimal' && variant !== 'micro' && (
                 <span className={`
                   font-medium whitespace-nowrap transition-all duration-300
                   ${isActive ? badge.color : 'text-muted-foreground'}
