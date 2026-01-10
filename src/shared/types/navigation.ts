@@ -18,6 +18,7 @@ export interface SubNavItem {
   count?: number
   secondary?: boolean
   disabled?: boolean
+  recommended?: boolean
 }
 
 export interface SubNavItemWithContent extends SubNavItem {

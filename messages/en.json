@@ -424,7 +424,8 @@
       },
       "platformDescription": "Platform description and why it's suitable for {journeyId}"
     },
-    "continueToErrors": "Continue",
+    "journeyStructure": "Journey structure",
+    "nextStep": "Next step",
     "yourProgress": "Your progress",
     "introductionRead": "Introduction read",
     "errorsStudied": "Errors studied",
@@ -557,9 +558,7 @@
         "whoItMakesSense": {
           "content": "This approach may make sense for those seeking: system redundancy, independent access, operational continuity. Not for those seeking optimization or yield."
         },
-        "ctaSection": {
-          "button": "Continue with errors to avoid"
-        }
+        "ctaSection": {}
       },
       "sections": {
         "overview": "Overview",

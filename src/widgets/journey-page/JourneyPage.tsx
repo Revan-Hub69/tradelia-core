@@ -67,12 +67,25 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
     return () => window.removeEventListener('switchToTab', handleTabSwitch as EventListener)
   }, [])
 
+  // Determine recommended next tab based on education memory
+  const getRecommendedTab = () => {
+    if (journeyId !== 'emergency') return null
+    
+    if (!educationMemory.hasSeenIntro) return 'intro'
+    if (!educationMemory.hasReadErrors) return 'errors'
+    if (!educationMemory.hasReadEducational) return 'educational'
+    return null
+  }
+
+  const recommendedTab = getRecommendedTab()
+
   // Sub-navigazione standardizzata per tutte le sezioni
   const subNavItems = [
     {
       id: 'intro',
       label: tJourney('tabs.intro'),
       icon: <BookOpenIcon className="w-4 h-4" />,
+      recommended: recommendedTab === 'intro',
       content: (
         <div className="space-y-6">
           {/* Emergency-specific introduction - Cognitive microlearning approach */}
@@ -102,17 +115,20 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                 </p>
               </div>
 
-              {/* Simple next section link */}
-              <div className="mt-12">
+              {/* Simple next section instruction - not competing with tabs */}
+              <div className="mt-12 p-4 bg-muted/20 rounded-lg border-l-4 border-primary/30">
+                <div className="text-sm text-muted-foreground mb-1">
+                  {t('common.journeyPage.nextStep')}:
+                </div>
                 <button
                   onClick={() => {
                     educationMemory.markIntroSeen()
                     const event = new CustomEvent('switchToTab', { detail: 'errors' })
                     window.dispatchEvent(event)
                   }}
-                  className="text-sm text-primary hover:text-primary/80 transition-colors"
+                  className="text-sm font-medium text-foreground hover:text-primary transition-colors"
                 >
-                  {t('journeys.emergency.introduction.ctaSection.button')} →
+                  {t('common.journeyPage.tabs.errors')}
                 </button>
               </div>
             </div>
@@ -190,6 +206,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
       id: 'errors',
       label: tJourney('tabs.errors'),
       icon: <AlertTriangleIcon className="w-4 h-4" />,
+      recommended: recommendedTab === 'errors',
       content: (
         <div className="space-y-6">
           <div className="bg-background/60 border border-border/50 rounded-xl p-6">
@@ -227,6 +244,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
       id: 'educational',
       label: tJourney('tabs.educational'),
       icon: <GraduationCapIcon className="w-4 h-4" />,
+      recommended: recommendedTab === 'educational',
       content: (
         <div className="space-y-6">
           <div className="bg-background/60 border border-border/50 rounded-xl p-6">

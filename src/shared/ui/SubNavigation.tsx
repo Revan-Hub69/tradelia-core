@@ -22,6 +22,7 @@ interface SubNavigationProps {
   onItemClick: (id: string) => void
   className?: string
   enableSticky?: boolean
+  showStructureLabel?: boolean
 }
 
 export function SubNavigation({ 
@@ -29,7 +30,8 @@ export function SubNavigation({
   activeId, 
   onItemClick, 
   className = '',
-  enableSticky = true 
+  enableSticky = true,
+  showStructureLabel = false
 }: SubNavigationProps) {
   const t = useTranslations('common')
   const containerRef = useRef<HTMLDivElement>(null)
@@ -158,16 +160,23 @@ export function SubNavigation({
   }, [items, updateInkBar, updateScrollHints])
 
   return (
-    <div 
-      className={`
-        border-b border-border/50 relative transition-all duration-200
-        ${isSticky 
-          ? 'fixed top-16 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm shadow-sm md:left-64' 
-          : ''
-        }
-        ${className}
-      `}
-    >
+    <div className={`space-y-2 ${className}`}>
+      {/* Journey structure label - wayfinding */}
+      {showStructureLabel && (
+        <div className="text-sm text-muted-foreground">
+          {t('common.journeyPage.journeyStructure')}
+        </div>
+      )}
+      
+      <div 
+        className={`
+          border-b border-border/50 relative transition-all duration-200
+          ${isSticky 
+            ? 'fixed top-16 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm shadow-sm md:left-64' 
+            : ''
+          }
+        `}
+      >
       {/* Scroll hint - Left */}
       {showScrollHint.left && (
         <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none md:hidden" />
@@ -215,6 +224,7 @@ export function SubNavigation({
                   flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap
                   border-b-2 border-transparent transition-all duration-150 
                   focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2
+                  relative
                   ${item.disabled ? 'opacity-50 cursor-not-allowed' : ''}
                   ${item.secondary && !item.disabled ? 'opacity-70' : ''}
                   ${isActive && !item.disabled
@@ -230,6 +240,9 @@ export function SubNavigation({
                   </span>
                 )}
                 <span>{item.label}</span>
+                {item.recommended && !isActive && (
+                  <div className="absolute -top-1 -right-1 w-2 h-2 bg-primary/60 rounded-full" />
+                )}
                 {item.count !== undefined && (
                   <span className={`
                     px-2 py-0.5 text-xs rounded-full transition-colors
@@ -245,6 +258,7 @@ export function SubNavigation({
             )
           })}
         </nav>
+      </div>
       </div>
       
       {/* Spacer when sticky to prevent content jump */}

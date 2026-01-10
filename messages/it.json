@@ -424,7 +424,8 @@
       },
       "platformDescription": "Descrizione della piattaforma e perché è adatta per {journeyId}"
     },
-    "continueToErrors": "Continua",
+    "journeyStructure": "Struttura del percorso",
+    "nextStep": "Prossimo passo",
     "yourProgress": "Il tuo progresso",
     "introductionRead": "Introduzione letta",
     "errorsStudied": "Errori studiati",
@@ -536,9 +537,7 @@
         "whoItMakesSense": {
           "content": "Questo approccio può avere senso per chi cerca: ridondanza del sistema, accesso indipendente, continuità operativa. Non per chi cerca ottimizzazione o rendimento."
         },
-        "ctaSection": {
-          "button": "Continua con gli errori da evitare"
-        }
+        "ctaSection": {}
       },
       "sections": {
         "overview": "Panoramica",
