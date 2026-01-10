@@ -925,73 +925,68 @@
     transform: none;
   }
 }
-/* Trust Badges - Completely fixed positioning */
-.trust-badges-container {
-  position: relative;
-  height: 64px;
-  width: 100%;
-  overflow: hidden;
-}
-
-.trust-badges-fixed {
-  position: absolute !important;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
-  pointer-events: auto;
-  user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-}
-
-/* Completely disable any movement or transformation */
-.trust-badges-fixed * {
+/* TRUST BADGES - BLOCCO TOTALE MOVIMENTO */
+* [class*="trust-badge"],
+* [class*="TrustBadge"],
+.trust-badge-no-select,
+.trust-badge-no-select *,
+.trust-badges-container *,
+.trust-badges-fixed *,
+.trust-badges-static * {
   transform: none !important;
   transition: none !important;
-  user-select: none !important;
-  -webkit-user-select: none !important;
-  -moz-user-select: none !important;
-  -ms-user-select: none !important;
-}
-
-.trust-badges-fixed:hover * {
-  transform: none !important;
-}
-
-/* Disable text selection on badges - GLOBAL */
-.trust-badge-no-select,
-.trust-badge-no-select * {
+  animation: none !important;
   user-select: none !important;
   -webkit-user-select: none !important;
   -moz-user-select: none !important;
   -ms-user-select: none !important;
   -webkit-touch-callout: none !important;
   -webkit-tap-highlight-color: transparent !important;
-  transform: none !important;
-  transition: none !important;
 }
 
+/* HOVER STATES - NESSUN MOVIMENTO */
+* [class*="trust-badge"]:hover,
+* [class*="TrustBadge"]:hover,
 .trust-badge-no-select:hover,
-.trust-badge-no-select:hover * {
-  transform: none !important;
-  transition: none !important;
-}
-
-/* Force static positioning for all badge elements */
-.trust-badges-static * {
-  position: static !important;
-  transform: none !important;
-  transition: opacity 0.15s ease !important;
-}
-
-/* Sidebar specific - extra protection */
-.dashboard-sidebar .trust-badge-no-select,
-.dashboard-sidebar .trust-badge-no-select * {
+.trust-badge-no-select:hover *,
+.trust-badges-container:hover *,
+.trust-badges-fixed:hover *,
+.trust-badges-static:hover * {
   transform: none !important;
   transition: none !important;
   animation: none !important;
+}
+
+/* GROUP HOVER - DISABILITATO */
+.group:hover * [class*="trust-badge"],
+.group:hover .trust-badge-no-select,
+.group:hover .trust-badge-no-select * {
+  transform: none !important;
+  transition: none !important;
+  animation: none !important;
+}
+
+/* SCALE, TRANSLATE, ROTATE - TUTTI BLOCCATI */
+* [class*="trust-badge"] {
+  --tw-scale-x: 1 !important;
+  --tw-scale-y: 1 !important;
+  --tw-translate-x: 0 !important;
+  --tw-translate-y: 0 !important;
+  --tw-rotate: 0 !important;
+}
+
+.trust-badges-container {
+  position: relative;
+  height: auto;
+  width: 100%;
+  overflow: visible;
+}
+
+.trust-badges-fixed {
+  position: static !important;
+  transform: none !important;
+  white-space: nowrap;
+  pointer-events: auto;
 }
 
 /* Tooltips completely separate from layout */

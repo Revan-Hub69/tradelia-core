@@ -169,7 +169,7 @@ export function TrustBadges({
         return (
           <div
             key={badge.id}
-            className="relative group"
+            className="relative group trust-badge-no-select"
             onMouseEnter={(e) => {
               if (showTooltips) {
                 setHoveredBadge(badge.id)
@@ -177,9 +177,6 @@ export function TrustBadges({
               }
             }}
             onMouseLeave={() => setHoveredBadge(null)}
-            style={{
-              animationDelay: animated ? `${index * 150}ms` : '0ms'
-            }}
           >
             <div 
               className={`
@@ -199,19 +196,12 @@ export function TrustBadges({
               `}
               title={showTooltips ? badge.description : undefined}
             >
-              {/* Status Indicator */}
+              {/* Status Indicator - NESSUNA ANIMAZIONE */}
               {variant !== 'minimal' && variant !== 'micro' && isActive && (
                 <div className="relative">
                   <div className={`
                     ${variant === 'compact' ? 'w-1.5 h-1.5' : 'w-2 h-2'} rounded-full ${badge.pulseColor}
-                    ${animated ? 'animate-pulse' : ''}
                   `} />
-                  {animated && (
-                    <div className={`
-                      absolute inset-0 ${variant === 'compact' ? 'w-1.5 h-1.5' : 'w-2 h-2'} rounded-full ${badge.pulseColor} opacity-75
-                      trust-badge-pulse-indicator
-                    `} />
-                  )}
                 </div>
               )}
               
@@ -234,19 +224,15 @@ export function TrustBadges({
                 </span>
               )}
               
-              {/* Verification Check */}
+              {/* Verification Check - NESSUNA ANIMAZIONE */}
               {variant === 'detailed' && isActive && (
                 <CheckIcon className={`
                   w-3 h-3 ${badge.color} opacity-80
-                  transition-all duration-300
-                  ${isHovered ? 'scale-110 opacity-100' : ''}
+                  trust-badge-no-select
                 `} />
               )}
 
-              {/* Premium Gradient Overlay */}
-              {variant === 'premium' && isActive && (
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              )}
+              {/* NESSUN Premium Gradient Overlay */}
 
               {/* Info Icon Indicator */}
               {showTooltips && (
@@ -256,14 +242,14 @@ export function TrustBadges({
               )}
             </div>
 
-            {/* Enhanced Tooltip with Smart Positioning */}
+            {/* Enhanced Tooltip - NESSUNA ANIMAZIONE */}
             {showTooltips && hoveredBadge === badge.id && (
               <div className={`
-                absolute z-50 transition-all duration-300
-                ${tooltipPosition === 'top' ? 'bottom-full left-1/2 transform -translate-x-1/2 mb-3' : ''}
-                ${tooltipPosition === 'bottom' ? 'top-full left-1/2 transform -translate-x-1/2 mt-3' : ''}
-                ${tooltipPosition === 'left' ? 'right-full top-1/2 transform -translate-y-1/2 mr-3' : ''}
-                ${tooltipPosition === 'right' ? 'left-full top-1/2 transform -translate-y-1/2 ml-3' : ''}
+                absolute z-50
+                ${tooltipPosition === 'top' ? 'bottom-full left-1/2 -translate-x-1/2 mb-3' : ''}
+                ${tooltipPosition === 'bottom' ? 'top-full left-1/2 -translate-x-1/2 mt-3' : ''}
+                ${tooltipPosition === 'left' ? 'right-full top-1/2 -translate-y-1/2 mr-3' : ''}
+                ${tooltipPosition === 'right' ? 'left-full top-1/2 -translate-y-1/2 ml-3' : ''}
                 md:relative md:z-50
               `}>
                 <div className="relative">
@@ -276,7 +262,6 @@ export function TrustBadges({
                     <div className="flex items-start gap-2">
                       <div className={`
                         p-1.5 rounded-lg ${badge.accentColor}
-                        ${animated ? 'animate-pulse' : ''}
                       `}>
                         <Icon className={`w-3.5 h-3.5 ${badge.color}`} />
                       </div>
@@ -354,7 +339,7 @@ export function HeaderTrustBadges(props: Omit<TrustBadgesProps, 'placement'>) {
     <TrustBadges 
       placement="header" 
       variant="minimal"
-      animated={true}
+      animated={false}
       {...props} 
     />
   )
@@ -365,7 +350,7 @@ export function FooterTrustBadges(props: Omit<TrustBadgesProps, 'placement'>) {
     <TrustBadges 
       placement="footer" 
       variant="premium"
-      animated={true}
+      animated={false}
       {...props} 
     />
   )
@@ -376,7 +361,7 @@ export function SidebarTrustBadges(props: Omit<TrustBadgesProps, 'placement'>) {
     <TrustBadges 
       placement="sidebar" 
       variant="compact"
-      animated={true}
+      animated={false}
       {...props} 
     />
   )
@@ -390,16 +375,12 @@ export function SecurityStatus({ className = '' }: { className?: string }) {
     <div className={`flex items-center gap-3 ${className}`}>
       <div className="relative">
         <div className={`
-          w-3 h-3 rounded-full transition-all duration-300
-          ${isSSL ? 'bg-emerald-500' : 'bg-amber-500'}
-        `} />
-        <div className={`
-          absolute inset-0 w-3 h-3 rounded-full animate-ping opacity-75
+          w-3 h-3 rounded-full
           ${isSSL ? 'bg-emerald-500' : 'bg-amber-500'}
         `} />
       </div>
       <span className={`
-        text-sm font-medium transition-all duration-300
+        text-sm font-medium
         ${isSSL ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}
       `}>
         {isSSL ? 'Sicuro' : 'Non sicuro'}
@@ -413,8 +394,7 @@ export function ComplianceFooter({ className = '' }: { className?: string }) {
   return (
     <div className={`text-center space-y-6 ${className}`}>
       <div className="relative">
-        <TrustBadges variant="premium" animated={true} />
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-500 rounded-xl" />
+        <TrustBadges variant="premium" animated={false} />
       </div>
       
       <div className="space-y-3 text-xs text-muted-foreground">
