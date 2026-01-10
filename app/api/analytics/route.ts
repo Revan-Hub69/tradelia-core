@@ -8,13 +8,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-
-interface AnalyticsEvent {
-  event: 'navigation' | 'tool_usage' | 'error' | 'feature_usage' | 'performance' | 'accessibility'
-  properties: Record<string, string | number | boolean>
-  timestamp: number
-  session_id: string
-}
+import { addEvent, getEvents, getEventsByType, getEventCount, type AnalyticsEvent } from '@/src/shared/lib/analyticsStore'
 
 interface AnalyticsPayload {
   events: AnalyticsEvent[]
@@ -27,7 +21,7 @@ interface AnalyticsPayload {
 }
 
 // In-memory storage for demo (in production, use a proper database)
-const analyticsStore: AnalyticsEvent[] = []
+// Now using shared analytics store
 
 export async function POST(request: NextRequest) {
   try {
@@ -57,7 +51,7 @@ export async function POST(request: NextRequest) {
       }
 
       // Store event (in production, save to database)
-      analyticsStore.push(sanitizedEvent)
+      addEvent(sanitizedEvent)
       
       // Log for development
       if (process.env.NODE_ENV === 'development') {
@@ -70,9 +64,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Keep only last 1000 events in memory (prevent memory leaks)
-    if (analyticsStore.length > 1000) {
-      analyticsStore.splice(0, analyticsStore.length - 1000)
-    }
+    // This is now handled by the shared store
 
     return NextResponse.json({ 
       success: true, 
@@ -102,11 +94,11 @@ export async function GET(request: NextRequest) {
   const eventType = searchParams.get('type')
   const limit = parseInt(searchParams.get('limit') || '100')
 
-  let events = analyticsStore
+  let events = getEvents()
   
   // Filter by event type if specified
   if (eventType) {
-    events = events.filter(event => event.event === eventType)
+    events = getEventsByType(eventType as AnalyticsEvent['event'])
   }
 
   // Get recent events
@@ -116,7 +108,7 @@ export async function GET(request: NextRequest) {
 
   // Generate summary statistics
   const summary = {
-    total_events: analyticsStore.length,
+    total_events: getEventCount(),
     event_types: getEventTypeCounts(),
     recent_sessions: getRecentSessions(),
     top_sections: getTopSections(),
@@ -155,8 +147,9 @@ function sanitizeProperties(properties: Record<string, unknown>): Record<string,
 
 function getEventTypeCounts() {
   const counts: Record<string, number> = {}
+  const events = getEvents()
   
-  for (const event of analyticsStore) {
+  for (const event of events) {
     counts[event.event] = (counts[event.event] || 0) + 1
   }
   
@@ -165,7 +158,8 @@ function getEventTypeCounts() {
 
 function getRecentSessions() {
   const sessions = new Set()
-  const recentEvents = analyticsStore
+  const events = getEvents()
+  const recentEvents = events
     .filter(event => Date.now() - event.timestamp < 24 * 60 * 60 * 1000) // Last 24 hours
   
   for (const event of recentEvents) {
@@ -177,8 +171,9 @@ function getRecentSessions() {
 
 function getTopSections() {
   const sections: Record<string, number> = {}
+  const events = getEvents()
   
-  for (const event of analyticsStore) {
+  for (const event of events) {
     const section = event.properties.section as string
     if (section) {
       sections[section] = (sections[section] || 0) + 1
@@ -192,8 +187,9 @@ function getTopSections() {
 }
 
 function getErrorRate() {
-  const totalEvents = analyticsStore.length
-  const errorEvents = analyticsStore.filter(event => event.event === 'error').length
+  const events = getEvents()
+  const totalEvents = events.length
+  const errorEvents = events.filter(event => event.event === 'error').length
   
   return totalEvents > 0 ? (errorEvents / totalEvents * 100).toFixed(2) : '0.00'
 }

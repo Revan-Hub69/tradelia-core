@@ -13,6 +13,7 @@ import { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import { DashboardLayout } from '@/src/widgets/dashboard-layout'
 import { DashboardAuthGuard } from '@/src/widgets/dashboard-auth'
+import { useAnalyticsTracking } from '@/components/AnalyticsProvider'
 import { 
   AnalyticsIcon,
   TrendingUpIcon,
@@ -80,10 +81,18 @@ interface AnalyticsData {
 
 export default function AnalyticsPage() {
   const t = useTranslations('dashboard')
+  const { trackUserAction } = useAnalyticsTracking()
   const [data, setData] = useState<AnalyticsData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [timeframe, setTimeframe] = useState('24h')
+
+  // Track analytics page view
+  useEffect(() => {
+    trackUserAction('analytics_view', {
+      section: 'analytics_dashboard'
+    })
+  }, [trackUserAction])
 
   // Fetch analytics data
   useEffect(() => {
@@ -177,7 +186,13 @@ export default function AnalyticsPage() {
             <div className="flex items-center gap-2">
               <select
                 value={timeframe}
-                onChange={(e) => setTimeframe(e.target.value)}
+                onChange={(e) => {
+                  setTimeframe(e.target.value)
+                  trackUserAction('timeframe_change', {
+                    new_timeframe: e.target.value,
+                    section: 'analytics_dashboard'
+                  })
+                }}
                 className="px-3 py-2 border border-border rounded-lg bg-background text-foreground"
               >
                 <option value="1h">Last Hour</option>

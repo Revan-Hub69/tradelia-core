@@ -15,6 +15,7 @@ import { FeatureGate } from '@/src/shared/ui/FeatureGate'
 import { ComplexityIndicator } from '@/src/shared/ui/ComplexityIndicator'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
 import { JOURNEY_ORDER, JOURNEYS, type JourneyId } from '@/src/shared/config/journeys'
+import { useAnalyticsTracking } from '@/components/AnalyticsProvider'
 import {
   ShieldIcon,
   TrendingUpIcon,
@@ -42,8 +43,16 @@ export function DashboardHome() {
   const t = useTranslations()
   const tDashboard = useTranslations('dashboard')
   const { state } = useDashboardAuth()
+  const { trackUserAction } = useAnalyticsTracking()
   
   const userName = state.profile?.full_name || tDashboard('guestUser')
+
+  const handleJourneyClick = (journeyId: string) => {
+    trackUserAction('journey_click', {
+      journey_id: journeyId,
+      section: 'dashboard_home'
+    })
+  }
 
   return (
     <DashboardAuthGuard>
@@ -77,6 +86,7 @@ export function DashboardHome() {
                   <Link
                     key={journeyId}
                     href={`/${locale}/dashboard/${journeyId}`}
+                    onClick={() => handleJourneyClick(journeyId)}
                     className={`
                       card-2026 group relative p-6 transition-all duration-200
                       hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
