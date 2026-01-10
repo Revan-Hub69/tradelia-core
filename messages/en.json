@@ -223,8 +223,6 @@
   },
   "common": {
     "journeyStructure": "Journey steps",
-    "stepsInOrder": "Steps are designed to be followed in order",
-    "nextStep": "Next step",
     "loading": "Loading...",
     "error": "Error",
     "success": "Success",

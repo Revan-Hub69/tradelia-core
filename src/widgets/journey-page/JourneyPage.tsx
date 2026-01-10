@@ -115,17 +115,17 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                 </p>
               </div>
 
-              {/* Simple next section instruction - natural language */}
-              <div className="mt-12 p-4 bg-muted/20 rounded-lg border-l-4 border-primary/30">
+              {/* Single natural language instruction */}
+              <div className="mt-12 flex justify-end">
                 <button
                   onClick={() => {
                     educationMemory.markIntroSeen()
                     const event = new CustomEvent('switchToTab', { detail: 'errors' })
                     window.dispatchEvent(event)
                   }}
-                  className="text-sm text-foreground hover:text-primary transition-colors"
+                  className="px-4 py-2 text-sm bg-muted/30 hover:bg-muted/50 rounded-lg transition-colors"
                 >
-                  {t('nextStep')}: {t('common.journeyPage.tabs.errors')}
+                  Continue → {t('common.journeyPage.tabs.errors')}
                 </button>
               </div>
             </div>

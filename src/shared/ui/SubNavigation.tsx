@@ -163,13 +163,8 @@ export function SubNavigation({
     <div className={`space-y-2 ${className}`}>
       {/* Journey structure label - wayfinding */}
       {showStructureLabel && (
-        <div className="space-y-1 mb-3">
-          <div className="text-sm text-muted-foreground">
-            {t('journeyStructure')}
-          </div>
-          <div className="text-xs text-muted-foreground/70">
-            {t('stepsInOrder')}
-          </div>
+        <div className="text-sm text-muted-foreground mb-3">
+          {t('journeyStructure')}
         </div>
       )}
       
@@ -227,14 +222,13 @@ export function SubNavigation({
                 aria-disabled={item.disabled}
                 className={`
                   flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap
-                  border-b-2 border-transparent transition-all duration-150 
+                  transition-all duration-150 relative
                   focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2
-                  relative
-                  ${item.disabled ? 'opacity-50 cursor-not-allowed' : ''}
+                  ${item.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                   ${item.secondary && !item.disabled ? 'opacity-70' : ''}
                   ${isActive && !item.disabled
-                    ? 'text-primary bg-primary/5' 
-                    : `text-muted-foreground ${!item.disabled ? 'hover:text-foreground hover:bg-muted/30' : ''} ${item.secondary && !item.disabled ? 'hover:opacity-90' : ''}`
+                    ? 'text-primary border-b-2 border-primary' 
+                    : `text-muted-foreground ${!item.disabled ? 'hover:text-foreground' : ''} ${item.secondary && !item.disabled ? 'hover:opacity-90' : ''} border-b-2 border-transparent`
                   }
                 `}
                 aria-current={isActive ? 'page' : undefined}
