@@ -9,6 +9,7 @@
  */
 
 import type { ReactNode } from 'react'
+import { useTranslations } from 'next-intl'
 import { Button } from './Button'
 import { AlertTriangleIcon } from '@/components/icons/TradeliaIcons'
 
@@ -23,13 +24,15 @@ interface ErrorStateProps {
 
 // Inline error for sections/cards
 export function ErrorState({ 
-  title = 'Si è verificato un errore',
+  title,
   message, 
   onRetry,
-  retryLabel = 'Riprova',
+  retryLabel,
   icon,
   className = '' 
 }: ErrorStateProps) {
+  const t = useTranslations('common')
+  
   return (
     <div className={`flex flex-col items-center justify-center py-8 px-6 text-center ${className}`}>
       {/* Icon */}
@@ -39,7 +42,7 @@ export function ErrorState({
       
       {/* Title */}
       <h3 className="text-base font-semibold text-foreground mb-1">
-        {title}
+        {title || t('errorOccurred')}
       </h3>
       
       {/* Message */}
@@ -54,7 +57,7 @@ export function ErrorState({
           variant="outline" 
           size="sm"
         >
-          {retryLabel}
+          {retryLabel || t('retry')}
         </Button>
       )}
     </div>
@@ -146,11 +149,13 @@ interface FullPageErrorProps {
 }
 
 export function FullPageError({ 
-  title = 'Qualcosa è andato storto',
+  title,
   message,
   onRetry,
   onGoBack
 }: FullPageErrorProps) {
+  const t = useTranslations('common')
+  
   return (
     <div className="min-h-[60vh] flex items-center justify-center px-6">
       <div className="text-center max-w-md">
@@ -161,7 +166,7 @@ export function FullPageError({
         
         {/* Title */}
         <h1 className="text-2xl font-bold text-foreground mb-2">
-          {title}
+          {title || t('somethingWentWrong')}
         </h1>
         
         {/* Message */}

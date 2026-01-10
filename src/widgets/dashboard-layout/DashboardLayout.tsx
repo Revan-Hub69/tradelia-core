@@ -23,7 +23,6 @@ import { UserMenu } from './UserMenu'
 import { JOURNEY_ORDER, type JourneyId } from '@/src/shared/config/journeys'
 import {
   ShieldIcon,
-  LogOutIcon,
   TrendingUpIcon,
   BoltIcon,
   RefreshIcon,
@@ -113,7 +112,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         `}
         role="navigation"
-        aria-label="Navigazione principale"
+        aria-label={t('common.mainNavigation')}
         aria-hidden={!isMobileSidebarOpen}
       >
         {/* Mobile Sidebar Header */}
@@ -185,20 +184,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             })}
           </ul>
         </nav>
-
-        {/* Mobile Footer */}
-        <div className="p-4 border-t border-border/50">
-          <button
-            onClick={() => {
-              actions.signOut()
-              closeMobileSidebar()
-            }}
-            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium text-error hover:bg-error/10 transition-colors focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2"
-          >
-            <LogOutIcon className="w-4 h-4" />
-            {t('logout')}
-          </button>
-        </div>
       </aside>
 
       {/* ========== DESKTOP SIDEBAR (≥768px) ========== */}
@@ -263,20 +248,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             })}
           </ul>
 
-          {/* Settings Link */}
-          {/* Removed - now in header user menu */}
         </nav>
-
-        {/* Footer */}
-        <div className="p-4 border-t border-border/50">
-          <button
-            onClick={() => actions.signOut()}
-            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium text-error hover:bg-error/10 transition-colors focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2"
-          >
-            <LogOutIcon className="w-4 h-4" />
-            {t('logout')}
-          </button>
-        </div>
       </aside>
 
       {/* ========== HEADER ========== */}
@@ -344,7 +316,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* ========== MOBILE BOTTOM NAV (<768px) ========== */}
       <nav 
         className="fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-t border-border md:hidden"
-        aria-label="Navigazione principale"
+        aria-label={t('common.mainNavigation')}
       >
         <div className="flex items-center justify-around h-20 px-2 safe-area-bottom">
           {/* Home Tab */}

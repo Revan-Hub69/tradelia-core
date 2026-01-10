@@ -13,6 +13,7 @@
 'use client'
 
 import { useRef, useEffect, useState, useCallback } from 'react'
+import { useTranslations } from 'next-intl'
 import type { SubNavItem } from '@/src/shared/types/navigation'
 
 interface SubNavigationProps {
@@ -30,6 +31,7 @@ export function SubNavigation({
   className = '',
   enableSticky = true 
 }: SubNavigationProps) {
+  const t = useTranslations('common')
   const containerRef = useRef<HTMLDivElement>(null)
   const [inkBarStyle, setInkBarStyle] = useState<React.CSSProperties>({})
   const [showScrollHint, setShowScrollHint] = useState({ left: false, right: false })
@@ -191,7 +193,7 @@ export function SubNavigation({
         <nav 
           className="flex space-x-1 min-w-full" 
           role="tablist"
-          aria-label="Navigazione sezione"
+          aria-label={t('sectionNavigation')}
         >
           {items.map((item) => {
             const isActive = item.id === activeId

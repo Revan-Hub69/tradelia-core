@@ -9,6 +9,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { QueryProvider } from '@/src/shared/providers/QueryProvider';
 import { ThemeProvider } from '@/shared/config/theme-provider';
 import { PWAProvider } from '@/components/PWAProvider';
@@ -93,6 +94,7 @@ export default async function LocalizedAppLayout({
                   </div>
                   <DashboardRegistrationModal />
                   <PerformanceMonitor />
+                  <SpeedInsights />
                 </DashboardAuthProvider>
               </ToastProvider>
             </DashboardModalProvider>

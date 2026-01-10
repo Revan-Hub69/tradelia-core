@@ -193,6 +193,9 @@
     "checkConnection": "Verifica la tua connessione internet",
     "loadingError": "Errore caricamento",
     "persistentError": "Se il problema persiste, contatta il supporto",
+    "errorOccurred": "Si è verificato un errore",
+    "mainNavigation": "Navigazione principale",
+    "sectionNavigation": "Navigazione sezione",
     "networkStatus": {
       "offline": "Connessione persa",
       "slow": "Connessione lenta",
