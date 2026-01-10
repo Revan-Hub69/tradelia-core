@@ -113,6 +113,7 @@ export function DashboardHome() {
                         <ComplexityIndicator 
                           level={journey.complexity}
                           size="sm"
+                          showTooltip={false}
                           className="mb-2"
                         />
                       </div>

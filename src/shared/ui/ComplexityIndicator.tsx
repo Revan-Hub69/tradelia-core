@@ -15,6 +15,7 @@ export type ComplexityLevel = 'low' | 'medium' | 'mediumHigh' | 'high' | 'veryHi
 interface ComplexityIndicatorProps {
   level: ComplexityLevel
   showLabel?: boolean
+  showTooltip?: boolean
   size?: 'sm' | 'md' | 'lg'
   className?: string
 }
@@ -40,6 +41,7 @@ const COMPLEXITY_CONFIG = {
 export function ComplexityIndicator({ 
   level, 
   showLabel = true, 
+  showTooltip = true,
   size = 'md',
   className = '' 
 }: ComplexityIndicatorProps) {
@@ -71,31 +73,33 @@ export function ComplexityIndicator({
           <span className={`font-medium text-muted-foreground ${textSizeClasses[size]}`}>
             {t('label')}:
           </span>
-          <div 
-            className="group relative cursor-help"
-            title={t('tooltip')}
-          >
-            <InfoIcon className="w-3.5 h-3.5 text-muted-foreground/60 hover:text-muted-foreground transition-colors" />
-            
-            {/* Tooltip */}
-            <div className="
-              absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 
-              bg-background border border-border/50 rounded-lg shadow-lg
-              text-xs text-muted-foreground max-w-64 text-center
-              opacity-0 group-hover:opacity-100 transition-opacity duration-200
-              pointer-events-none z-50
-            ">
-              <div className="font-medium text-foreground mb-1">
-                {t('label')} {t(`levels.${level}`)}
-              </div>
-              <div className="leading-relaxed">
-                {t('tooltip')}
-              </div>
+          {showTooltip && (
+            <div 
+              className="group relative cursor-help"
+              title={t('tooltip')}
+            >
+              <InfoIcon className="w-3.5 h-3.5 text-muted-foreground/60 hover:text-muted-foreground transition-colors" />
               
-              {/* Arrow */}
-              <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 bg-background border-r border-b border-border/50 rotate-45 -mt-1" />
+              {/* Tooltip */}
+              <div className="
+                absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 
+                bg-background border border-border/50 rounded-lg shadow-lg
+                text-xs text-muted-foreground max-w-64 text-center
+                opacity-0 group-hover:opacity-100 transition-opacity duration-200
+                pointer-events-none z-50
+              ">
+                <div className="font-medium text-foreground mb-1">
+                  {t('label')} {t(`levels.${level}`)}
+                </div>
+                <div className="leading-relaxed">
+                  {t('tooltip')}
+                </div>
+                
+                {/* Arrow */}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 bg-background border-r border-b border-border/50 rotate-45 -mt-1" />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
       
