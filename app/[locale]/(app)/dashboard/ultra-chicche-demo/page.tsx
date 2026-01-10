@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import { SafeButton } from '@/src/shared/ui/SafeButton'
 import { SoftConfirmation } from '@/src/shared/ui/SoftConfirmation'
