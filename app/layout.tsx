@@ -6,7 +6,12 @@ import { PerformanceOptimizer } from "@/components/PerformanceOptimizer";
 import { JsonLd, getOrganizationSchema, getWebSiteSchema, getLearningResourceSchema, getCourseSchemas } from "@/components/seo/JsonLd";
 import "./globals.css";
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ 
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+  preload: true
+});
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = 'it';
@@ -82,14 +87,6 @@ export default function RootLayout({
   return (
     <html lang="it" dir="ltr" className="scroll-smooth" suppressHydrationWarning>
       <head>
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
-        <link 
-          rel="preload" 
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" 
-          as="style" 
-        />
-        <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" /></noscript>
         <meta name="format-detection" content="telephone=no" />
       </head>
       <body className={`${inter.className} antialiased min-h-screen bg-background text-foreground font-sans`} suppressHydrationWarning>
