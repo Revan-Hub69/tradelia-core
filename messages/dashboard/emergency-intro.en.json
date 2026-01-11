@@ -1,60 +1,70 @@
 {
   "emergencyIntro": {
     "title": "Crypto in emergency situations",
-    "subtitle": "Alternative systems when normal ones don't work",
+    "subtitle": "Alternative systems when traditional ones don't work",
     "risksTitle": "Real studied risks",
     "sections": {
       "origin": {
         "title": "Why cryptocurrencies were born",
-        "content": "Cryptocurrencies were born after the 2008 crisis, when the problem was not the lack of money, but the impossibility of using it freely.",
+        "content": "Cryptocurrencies were born after the 2008 crisis. In that context the problem was not the lack of money, but the impossibility of using it freely.",
         "situations": {
-          "title": "Real situations:",
+          "title": "In several countries situations occurred such as:",
           "items": [
-            "Banks closed",
-            "Limited withdrawals", 
-            "Blocked transfers"
+            "banks closed or operating intermittently",
+            "withdrawal limits", 
+            "transfers blocked or slowed down"
           ]
         },
-        "conclusion": "The goal was to create a transfer system that didn't depend on a single bank or authority."
+        "conclusion": "The basic idea was simple: create a transfer system that didn't depend on a single bank or authority."
       },
       "emergencies": {
-        "title": "What emergencies are we talking about",
-        "content": "Situations that have already happened and been studied:",
+        "title": "What type of emergencies are we talking about",
+        "content": "Not hypothetical scenarios, but situations that have already happened:",
         "types": [
           {
-            "title": "Account limitations",
-            "description": "Capital controls"
+            "title": "current account limitations",
+            "description": ""
           },
           {
-            "title": "Payment interruptions", 
-            "description": "System failures"
+            "title": "capital controls", 
+            "description": ""
           },
           {
-            "title": "Systemic crises",
-            "description": "Financial instability"
+            "title": "payment system interruptions",
+            "description": ""
           },
           {
-            "title": "Cyber attacks",
-            "description": "Financial infrastructure"
+            "title": "systemic failures",
+            "description": ""
+          },
+          {
+            "title": "financial crises",
+            "description": ""
+          },
+          {
+            "title": "cyber attacks on infrastructure",
+            "description": ""
           }
         ],
-        "keyPoint": "In these cases the problem is not value, but access and functioning.",
+        "keyPoint": "In these cases the main problem is not value, but access and system continuity.",
         "deepDiveButton": "Deep dive into real risks"
       },
       "approach": {
-        "title": "What it means to use them as emergency reserve",
-        "content": "It means considering them as an additional option, not as a replacement for the traditional system.",
-        "keyPoint": "The question is not \"how much do they yield\", but under what conditions do they continue to work."
+        "title": "What \"emergency reserve\" means",
+        "content": "Using cryptocurrencies as an emergency reserve does not mean replacing the traditional system.",
+        "additionalContent": "It means considering them as an additional option, to be evaluated only under certain conditions.",
+        "keyPoint": "The correct question is not: \"How much do they yield?\" But: \"Under what conditions do they continue to work?\""
       },
       "purpose": {
         "title": "Why this dashboard exists",
-        "content": "This dashboard serves to:",
+        "content": "This dashboard doesn't tell you what to buy.",
+        "additionalContent": "It serves to:",
         "items": [
           "understand when this approach is relevant",
           "understand what its functioning depends on", 
           "avoid discovering its limits at the worst moment"
         ],
-        "keyPoint": "It doesn't tell you what to buy. It helps you evaluate consciously."
+        "keyPoint": "The goal is to evaluate consciously, not to push you to invest."
       }
     },
     "risks": {

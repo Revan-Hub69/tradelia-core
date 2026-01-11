@@ -2,7 +2,7 @@
   "journeys": {
     "emergency": {
       "name": "Emergenza",
-      "description": "Sistemi alternativi per situazioni di crisi finanziaria",
+      "description": "Per chi vuole una soluzione di riserva in caso di problemi con banca o conto principale.",
       "action": "Valuta liquidità",
       "sections": {
         "overview": "Panoramica",
@@ -31,7 +31,7 @@
     },
     "longterm": {
       "name": "Lungo termine",
-      "description": "Strategie di accumulo e crescita nel tempo",
+      "description": "Per chi vuole accumulare nel tempo e dormire tranquillo durante i ribassi.",
       "action": "Pianifica DCA",
       "sections": {
         "overview": "Panoramica",
@@ -42,7 +42,7 @@
     },
     "speculation": {
       "name": "Speculazione",
-      "description": "Trading e opportunità a breve termine",
+      "description": "Per chi è disposto a rischiare molto nel breve per tentare guadagni veloci.",
       "action": "Analizza segnali",
       "sections": {
         "overview": "Panoramica",
@@ -53,7 +53,7 @@
     },
     "passive": {
       "name": "Passivo",
-      "description": "Investimenti automatizzati e DeFi",
+      "description": "Per chi cerca rendite automatiche o interessi, senza seguire il mercato ogni giorno.",
       "action": "Configura staking",
       "sections": {
         "overview": "Panoramica",

@@ -2,7 +2,7 @@
   "dashboard": {
     "title": "Dashboard",
     "subtitle": "Panoramica dei tuoi strumenti di trading",
-    "welcome": "Benvenuto",
+    "welcome": "Benvenuto in Tradelia",
     "loading": "Caricamento...",
     "error": "Si è verificato un errore",
     "retry": "Riprova",
@@ -86,9 +86,8 @@
         "close": "Chiudi"
       }
     },
-    "chooseOrientation": "Scegli da dove orientarti. I percorsi non indicano cosa fare, ma come ragionare in base al tuo obiettivo.",
-    "noImmediateAction": "Nessun percorso richiede azione immediata.",
-    "understandFirst": "Tradelia aiuta a capire prima di decidere.",
+    "chooseOrientation": "Scegli il percorso più vicino alla tua situazione. Ogni percorso ti aiuta a ragionare, non ti dice cosa comprare o vendere.",
+    "noImmediateAction": "Nessun percorso richiede operazioni reali o deposito di denaro.",
     "tradeliaJourneys": "Percorsi Tradelia",
     "journeyExplanation": "I percorsi non indicano cosa fare, ma come orientarsi in base al livello di complessità.",
     "focusOn": "Focus su",

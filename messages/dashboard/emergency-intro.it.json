@@ -1,60 +1,70 @@
 {
   "emergencyIntro": {
     "title": "Crypto in situazioni di emergenza",
-    "subtitle": "Sistemi alternativi quando quelli normali non funzionano",
+    "subtitle": "Sistemi alternativi quando quelli tradizionali non funzionano",
     "risksTitle": "Rischi reali studiati",
     "sections": {
       "origin": {
         "title": "Perché nascono le criptovalute",
-        "content": "Le criptovalute nascono dopo la crisi del 2008, quando il problema non era la mancanza di denaro, ma l'impossibilità di usarlo liberamente.",
+        "content": "Le criptovalute nascono dopo la crisi del 2008. In quel contesto il problema non era la mancanza di denaro, ma l'impossibilità di usarlo liberamente.",
         "situations": {
-          "title": "Situazioni reali:",
+          "title": "In diversi Paesi si verificarono situazioni come:",
           "items": [
-            "Banche chiuse",
-            "Prelievi limitati", 
-            "Trasferimenti bloccati"
+            "banche chiuse o operative a intermittenza",
+            "limiti ai prelievi", 
+            "trasferimenti bloccati o rallentati"
           ]
         },
-        "conclusion": "L'obiettivo era creare un sistema di trasferimento che non dipendesse da una singola banca o autorità."
+        "conclusion": "L'idea di fondo era semplice: creare un sistema di trasferimento che non dipendesse da una singola banca o autorità."
       },
       "emergencies": {
-        "title": "Di che emergenze parliamo",
-        "content": "Situazioni già accadute e studiate:",
+        "title": "Di che tipo di emergenze parliamo",
+        "content": "Non scenari ipotetici, ma situazioni già accadute:",
         "types": [
           {
-            "title": "Limitazioni ai conti",
-            "description": "Controlli sui capitali"
+            "title": "limitazioni ai conti correnti",
+            "description": ""
           },
           {
-            "title": "Interruzioni pagamenti", 
-            "description": "Guasti sistemici"
+            "title": "controlli sui capitali", 
+            "description": ""
           },
           {
-            "title": "Crisi sistemiche",
-            "description": "Instabilità finanziaria"
+            "title": "interruzioni dei sistemi di pagamento",
+            "description": ""
           },
           {
-            "title": "Attacchi informatici",
-            "description": "Infrastrutture finanziarie"
+            "title": "guasti sistemici",
+            "description": ""
+          },
+          {
+            "title": "crisi finanziarie",
+            "description": ""
+          },
+          {
+            "title": "attacchi informatici alle infrastrutture",
+            "description": ""
           }
         ],
-        "keyPoint": "In questi casi il problema non è il valore, ma l'accesso e il funzionamento.",
+        "keyPoint": "In questi casi il problema principale non è il valore, ma l'accesso e la continuità del sistema.",
         "deepDiveButton": "Approfondisci i rischi reali"
       },
       "approach": {
-        "title": "Cosa significa usarle come riserva di emergenza",
-        "content": "Significa considerarle come opzione aggiuntiva, non come sostituzione del sistema tradizionale.",
-        "keyPoint": "La domanda non è \"quanto rendono\", ma in quali condizioni continuano a funzionare."
+        "title": "Cosa significa \"riserva di emergenza\"",
+        "content": "Usare le criptovalute come riserva di emergenza non significa sostituire il sistema tradizionale.",
+        "additionalContent": "Significa considerarle come opzione aggiuntiva, da valutare solo in determinate condizioni.",
+        "keyPoint": "La domanda corretta non è: \"Quanto rendono?\" Ma: \"In quali condizioni continuano a funzionare?\""
       },
       "purpose": {
         "title": "Perché esiste questa dashboard",
-        "content": "Questa dashboard serve a:",
+        "content": "Questa dashboard non ti dice cosa comprare.",
+        "additionalContent": "Serve a:",
         "items": [
           "capire quando questo approccio è rilevante",
           "capire da cosa dipende il suo funzionamento", 
           "evitare di scoprirne i limiti nel momento peggiore"
         ],
-        "keyPoint": "Non ti dice cosa comprare. Ti aiuta a valutare consapevolmente."
+        "keyPoint": "L'obiettivo è valutare consapevolmente, non spingere a investire."
       }
     },
     "risks": {

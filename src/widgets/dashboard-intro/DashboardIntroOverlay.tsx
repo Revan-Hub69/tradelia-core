@@ -34,6 +34,70 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
   // Ref for content scrollable area
   const contentRef = useRef<HTMLDivElement>(null)
 
+  // Auto-scroll during text selection
+  useEffect(() => {
+    if (!isOpen || !contentRef.current) return
+
+    const container = contentRef.current
+    let isSelecting = false
+    let scrollInterval: NodeJS.Timeout | null = null
+
+    const handleMouseDown = () => {
+      isSelecting = true
+    }
+
+    const handleMouseUp = () => {
+      isSelecting = false
+      if (scrollInterval) {
+        clearInterval(scrollInterval)
+        scrollInterval = null
+      }
+    }
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isSelecting || !container) return
+
+      const rect = container.getBoundingClientRect()
+      const scrollZone = 50 // pixels from edge to trigger scroll
+      const scrollSpeed = 3 // pixels per interval
+
+      // Clear existing interval
+      if (scrollInterval) {
+        clearInterval(scrollInterval)
+        scrollInterval = null
+      }
+
+      // Check if mouse is near top or bottom edge
+      if (e.clientY < rect.top + scrollZone) {
+        // Scroll up
+        scrollInterval = setInterval(() => {
+          container.scrollTop = Math.max(0, container.scrollTop - scrollSpeed)
+        }, 16) // ~60fps
+      } else if (e.clientY > rect.bottom - scrollZone) {
+        // Scroll down
+        scrollInterval = setInterval(() => {
+          const maxScroll = container.scrollHeight - container.clientHeight
+          container.scrollTop = Math.min(maxScroll, container.scrollTop + scrollSpeed)
+        }, 16) // ~60fps
+      }
+    }
+
+    // Add event listeners
+    container.addEventListener('mousedown', handleMouseDown)
+    document.addEventListener('mouseup', handleMouseUp)
+    document.addEventListener('mousemove', handleMouseMove)
+
+    return () => {
+      // Cleanup
+      container.removeEventListener('mousedown', handleMouseDown)
+      document.removeEventListener('mouseup', handleMouseUp)
+      document.removeEventListener('mousemove', handleMouseMove)
+      if (scrollInterval) {
+        clearInterval(scrollInterval)
+      }
+    }
+  }, [isOpen])
+
   // Auto-focus on drawer content start and scroll reset
   useEffect(() => {
     if (isOpen && contentRef.current) {
@@ -191,16 +255,19 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
           </button>
         </div>
 
-        {/* Refined Content with smooth transitions */}
+        {/* Refined Content with smooth transitions and text selection auto-scroll */}
         <div 
           ref={contentRef}
-          className="flex-1 overflow-y-auto overscroll-contain min-h-0 max-h-full"
+          className="flex-1 overflow-y-auto overscroll-contain min-h-0 max-h-full select-text"
           tabIndex={-1}
           role="region"
           aria-label={currentStep === 'main' ? t('title') : t('risksTitle')}
+          style={{
+            scrollBehavior: 'smooth'
+          }}
         >
           <div className={`
-            transition-all duration-250 ease-out
+            transition-all duration-250 ease-out select-text
             ${isAnimating ? 'opacity-60 transform translate-x-1 pointer-events-none' : 'opacity-100 transform translate-x-0'}
           `}>
             {currentStep === 'main' ? (
@@ -297,6 +364,11 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
                   <p className="text-base sm:text-sm content-secondary leading-relaxed font-medium">
                     {t('sections.approach.content')}
                   </p>
+                  {t('sections.approach.additionalContent') && (
+                    <p className="text-base sm:text-sm content-secondary leading-relaxed font-medium">
+                      {t('sections.approach.additionalContent')}
+                    </p>
+                  )}
                   <div className="section-frame-success p-4 rounded-xl">
                     <p className="font-bold text-base sm:text-sm content-primary leading-relaxed">
                       {t('sections.approach.keyPoint')}
@@ -317,6 +389,11 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
                   <p className="text-base sm:text-sm content-secondary leading-relaxed font-medium">
                     {t('sections.purpose.content')}
                   </p>
+                  {t('sections.purpose.additionalContent') && (
+                    <p className="text-base sm:text-sm content-secondary leading-relaxed font-medium mb-4">
+                      {t('sections.purpose.additionalContent')}
+                    </p>
+                  )}
                   <ul className="space-y-4">
                     {t.raw('sections.purpose.items').map((item: string) => (
                       <li key={`purpose-item-${item.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-4">

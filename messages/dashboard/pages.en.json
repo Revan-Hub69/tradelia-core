@@ -2,7 +2,7 @@
   "dashboard": {
     "title": "Dashboard",
     "subtitle": "Overview of your trading tools",
-    "welcome": "Welcome",
+    "welcome": "Welcome to Tradelia",
     "loading": "Loading...",
     "error": "An error occurred",
     "retry": "Retry",
@@ -87,9 +87,8 @@
         "close": "Close"
       }
     },
-    "chooseOrientation": "Choose where to orient yourself. The paths don't indicate what to do, but how to reason based on your goal.",
-    "noImmediateAction": "No path requires immediate action.",
-    "understandFirst": "Tradelia helps you understand before deciding.",
+    "chooseOrientation": "Choose the path closest to your situation. Each path helps you reason, it doesn't tell you what to buy or sell.",
+    "noImmediateAction": "No path requires real operations or money deposits.",
     "tradeliaJourneys": "Tradelia Journeys",
     "journeyExplanation": "The journeys don't indicate what to do, but how to orient yourself based on complexity level.",
     "focusOn": "Focus on",

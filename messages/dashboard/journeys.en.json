@@ -2,7 +2,7 @@
   "journeys": {
     "emergency": {
       "name": "Emergency",
-      "description": "Alternative systems for financial crisis situations",
+      "description": "For those who want a backup solution in case of problems with bank or main account.",
       "action": "Assess liquidity",
       "sections": {
         "overview": "Overview",
@@ -31,7 +31,7 @@
     },
     "longterm": {
       "name": "Long term",
-      "description": "Accumulation and growth strategies over time",
+      "description": "For those who want to accumulate over time and sleep peacefully during downturns.",
       "action": "Plan DCA",
       "sections": {
         "overview": "Overview",
@@ -42,7 +42,7 @@
     },
     "speculation": {
       "name": "Speculation",
-      "description": "Trading and short-term opportunities",
+      "description": "For those willing to risk a lot in the short term to attempt quick gains.",
       "action": "Analyze signals",
       "sections": {
         "overview": "Overview",
@@ -53,7 +53,7 @@
     },
     "passive": {
       "name": "Passive",
-      "description": "Automated investments and DeFi",
+      "description": "For those seeking automatic returns or interest, without following the market every day.",
       "action": "Configure staking",
       "sections": {
         "overview": "Overview",
