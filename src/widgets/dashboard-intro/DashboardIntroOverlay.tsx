@@ -6,7 +6,7 @@
 
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslations } from 'next-intl'
 import { useModalFocusTrap } from '@/src/shared/hooks/useFocusTrap'
 
@@ -24,6 +24,25 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
 
   // Focus trap for drawer
   const { containerRef: drawerRef } = useModalFocusTrap(isOpen, onClose)
+  
+  // Ref for content scrollable area
+  const contentRef = useRef<HTMLDivElement>(null)
+
+  // Auto-focus and scroll reset when step changes
+  useEffect(() => {
+    if (isOpen && contentRef.current) {
+      // Reset scroll to top when step changes
+      contentRef.current.scrollTop = 0
+      
+      // Focus first interactive element after animation
+      setTimeout(() => {
+        const firstButton = contentRef.current?.querySelector('button:not([aria-hidden="true"])')
+        if (firstButton) {
+          (firstButton as HTMLElement).focus()
+        }
+      }, isAnimating ? 400 : 100)
+    }
+  }, [currentStep, isOpen, isAnimating])
 
   // Enhanced scroll lock with smooth animations
   useEffect(() => {
@@ -220,7 +239,10 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
         </div>
 
         {/* Enhanced Content with smooth transitions */}
-        <div className="flex-1 overflow-y-auto overscroll-contain min-h-0 max-h-full">
+        <div 
+          ref={contentRef}
+          className="flex-1 overflow-y-auto overscroll-contain min-h-0 max-h-full"
+        >
           <div className={`
             transition-all duration-300 ease-out
             ${isAnimating ? 'opacity-50 transform translate-x-2' : 'opacity-100 transform translate-x-0'}

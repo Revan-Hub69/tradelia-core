@@ -10,7 +10,7 @@
 
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslations } from 'next-intl'
 import { ShieldIcon, CloseIcon, InfoIcon } from '@/components/icons/TradeliaIcons'
 import { getAnalyticsStatus, updatePrivacySettings } from '@/src/shared/lib/analytics'
@@ -39,6 +39,9 @@ export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentM
 
   const [showDetails, setShowDetails] = useState(false)
   const [isAnimating, setIsAnimating] = useState(false)
+  
+  // Ref for modal content
+  const modalRef = useRef<HTMLDivElement>(null)
 
   // Load current settings
   useEffect(() => {
@@ -51,7 +54,15 @@ export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentM
         error_reporting: current.error_reporting,
         feature_usage: current.feature_usage
       })
-      setTimeout(() => setIsAnimating(false), 300)
+      
+      // Auto-focus first interactive element
+      setTimeout(() => {
+        const firstButton = modalRef.current?.querySelector('button:not([aria-hidden="true"])')
+        if (firstButton) {
+          (firstButton as HTMLElement).focus()
+        }
+        setIsAnimating(false)
+      }, 300)
     }
   }, [isOpen])
 
@@ -107,6 +118,7 @@ export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentM
 
       {/* Modern Modal with glass morphism */}
       <div 
+        ref={modalRef}
         className={`
           relative w-full max-w-2xl section-frame backdrop-blur-xl backdrop-saturate-150
           shadow-2xl shadow-primary/10 transition-all duration-400 ease-out

@@ -9,7 +9,7 @@
 
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { useDashboardModal } from '@/contexts/DashboardModalContext'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
@@ -39,9 +39,29 @@ export default function DashboardRegistrationModal() {
   const [error, setError] = useState<string | null>(null)
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [isAnimating, setIsAnimating] = useState(false)
+  
+  // Refs for modal and content
+  const modalRef = useRef<HTMLDivElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
 
   // Validation locale
   const validationLocale: Locale = (locale === 'it' || locale === 'en') ? locale : 'it'
+
+  // Auto-focus and scroll reset when mode changes
+  useEffect(() => {
+    if (isOpen && contentRef.current) {
+      // Reset scroll to top when mode changes
+      contentRef.current.scrollTop = 0
+      
+      // Focus first interactive element after animation
+      setTimeout(() => {
+        const firstButton = contentRef.current?.querySelector('button:not([aria-hidden="true"]), input:not([aria-hidden="true"])')
+        if (firstButton) {
+          (firstButton as HTMLElement).focus()
+        }
+      }, isAnimating ? 300 : 100)
+    }
+  }, [mode, isOpen, isAnimating])
 
   const validateRegistration = useCallback(() => {
     const schema = registerSchema(validationLocale)
@@ -155,7 +175,9 @@ export default function DashboardRegistrationModal() {
       <div className="absolute inset-0 bg-gradient-to-br from-background/90 via-background/70 to-background/50 backdrop-blur-lg backdrop-saturate-150" />
       
       {/* Modern Modal */}
-      <div className={`
+      <div 
+        ref={modalRef}
+        className={`
         relative w-full max-w-md section-frame backdrop-blur-xl backdrop-saturate-150
         shadow-2xl shadow-primary/10 overflow-hidden transition-all duration-400 ease-out
         max-h-[90vh] flex flex-col
@@ -190,7 +212,10 @@ export default function DashboardRegistrationModal() {
         </div>
 
         {/* Content - scrollabile */}
-        <div className="px-6 pb-6 overflow-y-auto flex-1">
+        <div 
+          ref={contentRef}
+          className="px-6 pb-6 overflow-y-auto flex-1"
+        >
           <div className={`
             transition-all duration-300 ease-out
             ${isAnimating ? 'opacity-50 transform translate-x-2' : 'opacity-100 transform translate-x-0'}
