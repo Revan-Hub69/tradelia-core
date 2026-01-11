@@ -31,8 +31,7 @@ import {
   BellIcon,
   SearchIcon,
   MenuIcon,
-  CloseIcon,
-  BrainIcon
+  CloseIcon
 } from '@/components/icons/TradeliaIcons'
 
 const JOURNEY_ICONS: Record<JourneyId, React.ComponentType<{ className?: string }>> = {
@@ -99,7 +98,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* ========== MOBILE SIDEBAR BACKDROP ========== */}
       {isMobileSidebarOpen && (
         <div 
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden"
+          className="fixed inset-0 z-[55] bg-black/50 backdrop-blur-sm md:hidden"
           onClick={closeMobileSidebar}
           aria-hidden="true"
         />
@@ -109,7 +108,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       <aside 
         ref={sidebarRef}
         className={`
-          fixed top-0 left-0 bottom-0 w-80 max-w-[85vw] bg-background border-r border-border z-50
+          fixed top-0 left-0 bottom-0 w-80 max-w-[85vw] bg-background border-r border-border z-[60]
           transform transition-transform duration-300 ease-out md:hidden
           ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         `}
@@ -118,11 +117,11 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         aria-hidden={!isMobileSidebarOpen}
       >
         {/* Mobile Sidebar Header */}
-        <div className="h-16 px-4 flex items-center justify-between border-b border-border/50">
+        <div className="h-16 px-4 flex items-center justify-between border-b border-border/50 bg-background">
           <Logo />
           <button
             onClick={closeMobileSidebar}
-            className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/50"
+            className="p-2 text-foreground hover:text-primary transition-colors rounded-lg hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/50 border border-border/30"
             aria-label="Chiudi menu"
           >
             <CloseIcon className="w-5 h-5" />
