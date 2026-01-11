@@ -156,7 +156,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                       }
                     }}
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-muted-foreground/20 focus:ring-offset-2 rounded-sm min-h-[44px] flex items-center"
-                    aria-label="Continua con la sezione Errori da evitare"
+                    aria-label={tJourney('continueWithErrorsAriaLabel')}
                   >
                     {tJourney('continueWithErrors')}
                   </button>
@@ -288,7 +288,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                 </p>
                 
                 <p className="text-sm text-muted-foreground/60 max-w-[60ch]">
-                  Dopo aver identificato gli errori comuni, il passaggio naturale è comprendere i fondamenti teorici.
+                  {tJourney('afterIdentifyingErrors')}
                 </p>
                 
                 <button
@@ -300,11 +300,11 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                     }
                   }}
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-muted-foreground/20 focus:ring-offset-2 rounded-sm min-h-[44px] flex items-center"
-                  aria-label="Continua con la sezione Educativo"
+                  aria-label={tJourney('continueWithEducationalAriaLabel')}
                 >
                   {educationMemory.hasSeenIntro 
-                    ? "→ Continua con: Educativo"
-                    : "→ Prima leggi: Introduzione"
+                    ? tJourney('continueWithEducational')
+                    : tJourney('firstReadIntroduction')
                   }
                 </button>
               </div>

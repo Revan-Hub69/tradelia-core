@@ -30,15 +30,13 @@ export function SubNavigation({
   activeId, 
   onItemClick, 
   className = '',
-  enableSticky = true,
+  enableSticky: _enableSticky = true, // Disabled for Ultra-Chicche
   showStructureLabel = false
 }: SubNavigationProps) {
   const t = useTranslations('common')
   const containerRef = useRef<HTMLDivElement>(null)
   const [inkBarStyle, setInkBarStyle] = useState<React.CSSProperties>({})
   const [showScrollHint, setShowScrollHint] = useState({ left: false, right: false })
-  const [isSticky, setIsSticky] = useState(false)
-  const [originalTop, setOriginalTop] = useState(0)
 
   // Update ink bar position
   const updateInkBar = useCallback(() => {
@@ -69,36 +67,17 @@ export function SubNavigation({
     setShowScrollHint({ left: canScrollLeft, right: canScrollRight })
   }, [])
 
-  // Handle sticky behavior
-  const handleScroll = useCallback(() => {
-    if (!enableSticky || !containerRef.current) return
-
-    const rect = containerRef.current.getBoundingClientRect()
-    const headerHeight = 64 // Height of main header
-    
-    // Become sticky when the element would go above the header
-    const shouldBeSticky = rect.top <= headerHeight && originalTop > headerHeight
-    
-    if (shouldBeSticky !== isSticky) {
-      setIsSticky(shouldBeSticky)
-    }
-  }, [enableSticky, isSticky, originalTop])
-
-  // Store original position
+  // Store original position - DISABLED
   useEffect(() => {
-    if (!containerRef.current) return
-    
-    const rect = containerRef.current.getBoundingClientRect()
-    setOriginalTop(rect.top + window.scrollY)
+    // Position tracking disabled for Ultra-Chicche design
+    return
   }, [])
 
-  // Add scroll listener for sticky behavior
+  // Add scroll listener for sticky behavior - DISABLED
   useEffect(() => {
-    if (!enableSticky) return
-
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [handleScroll, enableSticky])
+    // Sticky behavior disabled for Ultra-Chicche design
+    return
+  }, [])
 
   // Handle keyboard navigation
   const handleKeyDown = (event: React.KeyboardEvent, currentId: string) => {
@@ -171,10 +150,6 @@ export function SubNavigation({
       <div 
         className={`
           border-b border-border/50 relative transition-all duration-200
-          ${isSticky 
-            ? 'fixed top-16 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm shadow-sm md:left-64' 
-            : ''
-          }
         `}
       >
       {/* Scroll hint - Left */}
@@ -266,8 +241,7 @@ export function SubNavigation({
       </div>
       </div>
       
-      {/* Spacer when sticky to prevent content jump */}
-      {isSticky && <div className="h-12" />}
+      {/* Spacer removed - no more sticky behavior */}
     </div>
   )
 }

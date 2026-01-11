@@ -540,7 +540,12 @@
       "reviewPreparationSteps": "Review preparation steps",
       "nextStepErrors": "Next step: Errors to avoid",
       "whenUnderstoodFrame": "When you have understood the decision frame, the natural step is to identify common errors.",
-      "continueWithErrors": "→ Continue with: Errors to avoid"
+      "continueWithErrors": "→ Continue with: Errors to avoid",
+      "afterIdentifyingErrors": "After identifying common errors, the natural step is to understand the theoretical foundations.",
+      "continueWithEducational": "→ Continue with: Educational",
+      "firstReadIntroduction": "→ First read: Introduction",
+      "continueWithEducationalAriaLabel": "Continue with Educational section",
+      "continueWithErrorsAriaLabel": "Continue with Errors to avoid section"
     },
   "auth": {
     "title": "Sign In or Register",

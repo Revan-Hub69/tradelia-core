@@ -113,7 +113,7 @@ export function SectionLayout({
         items={subNavItems.map(({ content: _content, ...item }) => item)}
         activeId={activeTab}
         onItemClick={handleTabChange}
-        enableSticky={true}
+        enableSticky={false}
         showStructureLabel={false}
       />
 

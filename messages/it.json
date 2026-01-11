@@ -478,7 +478,12 @@
       "reviewPreparationSteps": "Rivedi i passaggi di preparazione",
       "nextStepErrors": "Prossimo passaggio: Errori da evitare",
       "whenUnderstoodFrame": "Quando hai compreso il quadro decisionale, il passaggio naturale è identificare gli errori comuni.",
-      "continueWithErrors": "→ Continua con: Errori da evitare"
+      "continueWithErrors": "→ Continua con: Errori da evitare",
+      "afterIdentifyingErrors": "Dopo aver identificato gli errori comuni, il passaggio naturale è comprendere i fondamenti teorici.",
+      "continueWithEducational": "→ Continua con: Educativo",
+      "firstReadIntroduction": "→ Prima leggi: Introduzione",
+      "continueWithEducationalAriaLabel": "Continua con la sezione Educativo",
+      "continueWithErrorsAriaLabel": "Continua con la sezione Errori da evitare"
     }
   },
   "auth": {
