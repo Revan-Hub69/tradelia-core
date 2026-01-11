@@ -111,23 +111,9 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
               </div>
 
               {/* Anti-hero title - policy brief style */}
-              <h1 className="text-[20px] font-normal text-foreground mb-8 leading-[1.4]">
+              <h1 className="text-[20px] font-normal text-foreground mb-16 leading-[1.4]">
                 {t('journeys.emergency.introduction.title')}
               </h1>
-
-              {/* Pulsante Consulta Introduzione - in alto */}
-              <div className="mb-16 flex justify-center">
-                <button
-                  onClick={() => setShowEmergencyIntro(true)}
-                  className="group inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-muted-foreground/20 focus:ring-offset-2 rounded-sm"
-                >
-                  <ConsultIcon className="w-4 h-4 transition-colors" />
-                  <span className="relative">
-                    {t('emergencyIntro.buttons.consultIntroduction')}
-                    <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-current transition-all duration-200 group-hover:w-full"></span>
-                  </span>
-                </button>
-              </div>
 
               {/* Blocchi cognitivi - ogni paragrafo = una idea */}
               <div className="space-y-12 text-[16px] text-muted-foreground leading-[1.75]">
@@ -552,6 +538,22 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
   return (
     <DashboardAuthGuard>
       <DashboardLayout>
+        {/* Emergency Consultation Button - Top of page, before breadcrumb */}
+        {journeyId === 'emergency' && (
+          <div className="px-6 py-4 border-b border-border/30">
+            <button
+              onClick={() => setShowEmergencyIntro(true)}
+              className="group inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-muted-foreground/20 focus:ring-offset-2 rounded-sm"
+            >
+              <ConsultIcon className="w-4 h-4 transition-colors" />
+              <span className="relative">
+                {t('emergencyIntro.buttons.consultIntroduction')}
+                <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-current transition-all duration-200 group-hover:w-full"></span>
+              </span>
+            </button>
+          </div>
+        )}
+        
         <SectionLayout
           sectionId={journeyId}
           breadcrumb={[
