@@ -1,0 +1,38 @@
+{
+  "emergencyDashboard": {
+    "heroAlert": {
+      "title": "CRIPTO COME RISORSA DI EMERGENZA",
+      "point1": "Serve quando il resto non funziona",
+      "point2": "Non serve a fare soldi",
+      "point3": "Non serve se la tratti come un investimento",
+      "warning": "Se la usi per lo scopo sbagliato, diventa un problema",
+      "moreInfoAriaLabel": "Maggiori informazioni"
+    },
+    "pillars": {
+      "academic": {
+        "title": "BASI ACCADEMICHE",
+        "subtitle": "PILASTRO 1",
+        "description": "Comprendi i fondamenti teorici e storici delle criptovalute come sistema di emergenza. Dalla crisi del 2008 alle implementazioni moderne."
+      },
+      "analysis": {
+        "title": "ANALISI CRIPTO",
+        "subtitle": "PILASTRO 2", 
+        "description": "Strumenti per valutare tecnologie, rischi e caratteristiche operative delle diverse criptovalute in scenari di emergenza."
+      },
+      "errors": {
+        "title": "ERRORI COMUNI",
+        "subtitle": "PILASTRO 3",
+        "description": "Impara dagli errori più frequenti per evitare di scoprire i limiti delle crypto nel momento peggiore."
+      },
+      "demo": {
+        "title": "DEMO ASSISTITA",
+        "subtitle": "PILASTRO 4",
+        "description": "Simulazioni guidate per testare procedure e comprendere il funzionamento pratico senza rischi reali."
+      },
+      "expand": "Espandi",
+      "collapse": "Riduci",
+      "clickToExpand": "Clicca per espandere",
+      "startPillar": "Inizia questo pilastro"
+    }
+  }
+}

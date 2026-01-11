@@ -1,7 +1,7 @@
 /**
- * Emergency Journey Page - Route-Level Code Splitting
+ * Emergency Journey Page - New Emergency Dashboard
  * 
- * Implementa lazy loading per ottimizzare le performance
+ * Implementa la nuova dashboard emergenza con hero alert e 4 pilastri
  */
 
 'use client'
@@ -10,9 +10,9 @@ import dynamic from 'next/dynamic'
 import { SkeletonJourneyPage } from '@/src/shared/ui/SkeletonLayouts'
 
 // Dynamic import with proper loading state
-const EmergencyJourneyPage = dynamic(
-  () => import('@/src/widgets/journey-page/JourneyPage').then(mod => ({
-    default: (props: any) => <mod.default journeyId="emergency" {...props} />
+const EmergencyDashboard = dynamic(
+  () => import('@/src/widgets/emergency-dashboard/EmergencyDashboard').then(mod => ({
+    default: mod.EmergencyDashboard
   })),
   {
     loading: () => <SkeletonJourneyPage />,
@@ -21,5 +21,5 @@ const EmergencyJourneyPage = dynamic(
 )
 
 export default function EmergencyPage() {
-  return <EmergencyJourneyPage />
+  return <EmergencyDashboard />
 }
