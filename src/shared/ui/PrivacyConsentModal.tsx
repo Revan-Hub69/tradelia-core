@@ -11,7 +11,6 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { useTranslations } from 'next-intl'
 import { ShieldIcon, CloseIcon, InfoIcon } from '@/components/icons/TradeliaIcons'
 import { getAnalyticsStatus, updatePrivacySettings } from '@/src/shared/lib/analytics'
 
@@ -29,7 +28,6 @@ interface PrivacyConsentModalProps {
 }
 
 export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentModalProps) {
-  const t = useTranslations('common.privacyConsent')
   const [settings, setSettings] = useState<ConsentSettings>({
     analytics_enabled: false,
     performance_tracking: false,
@@ -55,19 +53,15 @@ export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentM
     // Apply robust scroll lock
     html.style.overflow = 'hidden'
     html.style.paddingRight = scrollbarWidth ? `${scrollbarWidth}px` : ''
-    
-    // Animation complete with cleanup
-    const animationTimer = setTimeout(() => setIsAnimating(false), 300)
 
     return () => {
       // Restore scroll lock
       html.style.overflow = prevOverflow
       html.style.paddingRight = prevPadding
-      clearTimeout(animationTimer)
     }
   }, [isOpen])
 
-  // Auto-focus with explicit anchor targeting
+  // Auto-focus on modal content start
   useEffect(() => {
     if (isOpen) {
       setIsAnimating(true)
@@ -79,17 +73,11 @@ export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentM
         feature_usage: current.feature_usage
       })
       
-      // Focus explicit anchor after animation with timeout cleanup
+      // Focus on modal content area start after animation with timeout cleanup
       const focusTimer = setTimeout(() => {
-        const target = modalRef.current?.querySelector('[data-autofocus="true"]') as HTMLElement | null
-        if (target) {
-          target.focus()
-        } else {
-          // Fallback to first interactive element
-          const firstButton = modalRef.current?.querySelector('button:not([aria-hidden="true"])')
-          if (firstButton) {
-            (firstButton as HTMLElement).focus()
-          }
+        // Focus the modal content area itself for screen readers
+        if (modalRef.current) {
+          modalRef.current.focus()
         }
         setIsAnimating(false)
       }, 300)
@@ -150,7 +138,14 @@ export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentM
       onKeyDown={(e) => e.key === 'Escape' && onClose()}
     >
       {/* Enhanced Backdrop with refined gradient */}
-      <div className="absolute inset-0 bg-background/85 backdrop-blur-lg backdrop-saturate-105" />
+      <div 
+        className="absolute inset-0 bg-background/85 backdrop-blur-lg backdrop-saturate-105" 
+        onClick={onClose}
+        onKeyDown={(e) => e.key === 'Escape' && onClose()}
+        role="button"
+        tabIndex={-1}
+        aria-label="Close modal"
+      />
 
       {/* Refined Modal with subtle glass morphism */}
       <div 
@@ -167,6 +162,8 @@ export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentM
         aria-modal="true"
         aria-labelledby="privacy-modal-title"
         onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.key === 'Escape' && onClose()}
+        tabIndex={-1}
       >
         {/* Header with modern design */}
         <div className="flex items-center justify-between p-6 border-b border-border/30">
@@ -460,7 +457,6 @@ export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentM
           
           <button
             onClick={handleAcceptAll}
-            data-autofocus="true"
             className="
               flex-1 h-12 px-6 text-base font-semibold rounded-xl
               bg-gradient-to-r from-primary to-primary/90

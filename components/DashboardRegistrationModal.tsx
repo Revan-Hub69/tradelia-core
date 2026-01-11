@@ -68,23 +68,17 @@ export default function DashboardRegistrationModal() {
     }
   }, [isOpen])
 
-  // Auto-focus with explicit anchor targeting and scroll reset
+  // Auto-focus on modal content start and scroll reset
   useEffect(() => {
     if (isOpen && contentRef.current) {
       // Reset scroll to top when mode changes
       contentRef.current.scrollTop = 0
       
-      // Focus explicit anchor after animation with timeout cleanup
+      // Focus on modal content area start after animation with timeout cleanup
       const focusTimer = setTimeout(() => {
-        const target = contentRef.current?.querySelector('[data-autofocus="true"]') as HTMLElement | null
-        if (target) {
-          target.focus()
-        } else {
-          // Fallback to first interactive element
-          const firstButton = contentRef.current?.querySelector('button:not([aria-hidden="true"]), input:not([aria-hidden="true"])')
-          if (firstButton) {
-            (firstButton as HTMLElement).focus()
-          }
+        // Focus the modal content area itself for screen readers
+        if (modalRef.current) {
+          modalRef.current.focus()
         }
       }, isAnimating ? 300 : 100)
 
@@ -288,7 +282,6 @@ export default function DashboardRegistrationModal() {
                   <button
                     onClick={handleGoogleSignIn}
                     disabled={isLoading}
-                    data-autofocus="true"
                     className="
                       w-full flex items-center justify-center gap-3 p-4 rounded-xl
                       bg-background hover:bg-muted/30 active:scale-95
@@ -371,7 +364,6 @@ export default function DashboardRegistrationModal() {
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         onBlur={handleBlurFullName}
-                        data-autofocus="true"
                         className={`
                           w-full h-12 pl-10 pr-4 text-sm bg-background border rounded-xl
                           placeholder:text-muted-foreground transition-all duration-200
@@ -498,7 +490,6 @@ export default function DashboardRegistrationModal() {
                 </div>
                 <button
                   onClick={handleClose}
-                  data-autofocus="true"
                   className="
                     w-full h-12 px-6 text-base font-semibold rounded-xl
                     bg-gradient-to-r from-primary to-primary/90

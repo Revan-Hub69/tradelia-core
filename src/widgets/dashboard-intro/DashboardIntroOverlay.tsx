@@ -34,23 +34,17 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
   // Ref for content scrollable area
   const contentRef = useRef<HTMLDivElement>(null)
 
-  // Auto-focus with explicit anchor targeting and scroll reset
+  // Auto-focus on drawer content start and scroll reset
   useEffect(() => {
     if (isOpen && contentRef.current) {
       // Reset scroll to top when step changes
       contentRef.current.scrollTop = 0
       
-      // Focus explicit anchor after animation with timeout cleanup
+      // Focus on content area start after animation with timeout cleanup
       const focusTimer = setTimeout(() => {
-        const target = contentRef.current?.querySelector('[data-autofocus="true"]') as HTMLElement | null
-        if (target) {
-          target.focus()
-        } else {
-          // Fallback to first interactive element
-          const firstButton = contentRef.current?.querySelector('button:not([aria-hidden="true"])')
-          if (firstButton) {
-            (firstButton as HTMLElement).focus()
-          }
+        // Focus the scrollable content area itself for screen readers
+        if (contentRef.current) {
+          contentRef.current.focus()
         }
       }, isAnimating ? 400 : 100)
 
@@ -118,11 +112,11 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
 
   return (
     <>
-      {/* Enhanced Backdrop with refined gradient */}
+      {/* Improved Backdrop with proper theme-aware contrast */}
       <div 
         className={`
           fixed inset-0 z-[60] transition-all duration-300 ease-out
-          bg-background/85 backdrop-blur-lg backdrop-saturate-110
+          bg-black/60 dark:bg-white/20 backdrop-blur-lg backdrop-saturate-110
           ${isOpen ? 'opacity-100' : 'opacity-0'}
         `}
         onClick={onClose}
@@ -151,14 +145,14 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.key === 'Escape' && onClose()}
       >
-        {/* Refined Header with subtle glass morphism */}
-        <div className="sticky top-0 z-10 flex items-center justify-between p-6 border-b border-border/20 backdrop-blur-lg">
-          <div className="flex items-center gap-4">
+        {/* Refined Header with mobile-optimized layout */}
+        <div className="sticky top-0 z-10 flex items-center justify-between p-4 sm:p-6 border-b border-border/20 backdrop-blur-lg">
+          <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
             {currentStep === 'risks' && (
               <button
                 onClick={goBack}
                 className="
-                  p-2.5 rounded-lg transition-all duration-200 ease-out
+                  p-2.5 rounded-lg transition-all duration-200 ease-out flex-shrink-0
                   bg-muted/40 hover:bg-muted/60 active:scale-95
                   border border-border/30 hover:border-border/50
                   text-muted-foreground hover:text-foreground
@@ -170,12 +164,12 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
                 <BackIcon />
               </button>
             )}
-            <div className="space-y-1">
-              <h1 id="intro-title" className="text-xl font-bold content-primary">
+            <div className="space-y-1 min-w-0 flex-1">
+              <h1 id="intro-title" className="text-lg sm:text-xl font-bold content-primary leading-tight truncate">
                 {currentStep === 'main' ? t('title') : t('risksTitle')}
               </h1>
               {currentStep === 'main' && (
-                <p className="text-sm content-secondary">
+                <p className="text-sm content-secondary leading-tight">
                   {t('subtitle')}
                 </p>
               )}
@@ -184,7 +178,7 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
           <button
             onClick={onClose}
             className="
-              p-2.5 rounded-lg transition-all duration-200 ease-out
+              p-2.5 rounded-lg transition-all duration-200 ease-out flex-shrink-0
               bg-muted/30 hover:bg-error/10 active:scale-95
               border border-border/20 hover:border-error/30
               text-muted-foreground hover:text-error
@@ -201,58 +195,61 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
         <div 
           ref={contentRef}
           className="flex-1 overflow-y-auto overscroll-contain min-h-0 max-h-full"
+          tabIndex={-1}
+          role="region"
+          aria-label={currentStep === 'main' ? t('title') : t('risksTitle')}
         >
           <div className={`
             transition-all duration-250 ease-out
             ${isAnimating ? 'opacity-60 transform translate-x-1 pointer-events-none' : 'opacity-100 transform translate-x-0'}
           `}>
             {currentStep === 'main' ? (
-              <div className="p-6 pb-32 space-y-8 min-h-full">
-                {/* Blocco 1 - ORIGINE con design moderno */}
-                <div className="card-2026 p-6 space-y-4 hover:shadow-lg transition-all duration-200">
+              <div className="p-4 sm:p-6 pb-32 space-y-6 sm:space-y-8 min-h-full">
+                {/* Blocco 1 - ORIGINE con design mobile-first */}
+                <div className="card-2026 p-4 sm:p-6 space-y-4 hover:shadow-lg transition-all duration-200">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                       <OriginIcon />
                     </div>
-                    <h2 className="text-lg font-bold content-primary">
+                    <h2 className="text-lg sm:text-xl font-bold content-primary leading-tight">
                       {t('sections.origin.title')}
                     </h2>
                   </div>
-                  <p className="text-sm content-secondary leading-relaxed">
+                  <p className="text-base sm:text-sm content-secondary leading-relaxed font-medium">
                     {t('sections.origin.content')}
                   </p>
                   <div className="section-frame-warning p-4 rounded-xl">
-                    <p className="text-sm font-semibold content-primary mb-3">
+                    <p className="text-base sm:text-sm font-bold content-primary mb-4">
                       {t('sections.origin.situations.title')}
                     </p>
-                    <ul className="text-sm content-secondary space-y-2">
+                    <ul className="text-base sm:text-sm content-secondary space-y-3">
                       {t.raw('sections.origin.situations.items').map((item: string) => (
-                        <li key={`origin-situation-${item.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-center gap-2">
-                          <div className="w-1.5 h-1.5 rounded-full bg-warning flex-shrink-0" />
-                          {item}
+                        <li key={`origin-situation-${item.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-3 leading-relaxed">
+                          <div className="w-2 h-2 rounded-full bg-warning flex-shrink-0 mt-2" />
+                          <span className="font-medium">{item}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
-                  <p className="text-sm content-secondary leading-relaxed font-medium">
+                  <p className="text-base sm:text-sm content-secondary leading-relaxed font-semibold bg-muted/30 p-3 rounded-lg">
                     {t('sections.origin.conclusion')}
                   </p>
                 </div>
 
-                {/* Blocco 2 - EMERGENZE con design innovativo */}
-                <div className="card-2026 p-6 space-y-4 hover:shadow-lg transition-all duration-200">
+                {/* Blocco 2 - EMERGENZE con design mobile ottimizzato */}
+                <div className="card-2026 p-4 sm:p-6 space-y-4 hover:shadow-lg transition-all duration-200">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 rounded-xl bg-error/10 flex items-center justify-center">
                       <EmergencyIcon />
                     </div>
-                    <h2 className="text-lg font-bold content-primary">
+                    <h2 className="text-lg sm:text-xl font-bold content-primary leading-tight">
                       {t('sections.emergencies.title')}
                     </h2>
                   </div>
-                  <p className="text-sm content-secondary leading-relaxed">
+                  <p className="text-base sm:text-sm content-secondary leading-relaxed font-medium">
                     {t('sections.emergencies.content')}
                   </p>
-                  <div className="grid gap-3">
+                  <div className="grid gap-4">
                     {t.raw('sections.emergencies.types').map((type: { title: string; description: string }) => (
                       <div key={`emergency-type-${type.title.replace(/\s+/g, '-').toLowerCase()}`} className="
                         p-4 rounded-xl border border-border/50 
@@ -260,13 +257,13 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
                         hover:border-border hover:shadow-sm
                         transition-all duration-200
                       ">
-                        <div className="font-semibold text-sm content-primary">{type.title}</div>
-                        <div className="text-xs content-secondary mt-1">{type.description}</div>
+                        <div className="font-bold text-base sm:text-sm content-primary mb-2">{type.title}</div>
+                        <div className="text-sm content-secondary leading-relaxed">{type.description}</div>
                       </div>
                     ))}
                   </div>
                   <div className="section-frame-info p-4 rounded-xl">
-                    <p className="font-semibold text-sm content-primary">
+                    <p className="font-bold text-base sm:text-sm content-primary leading-relaxed">
                       {t('sections.emergencies.keyPoint')}
                     </p>
                   </div>
@@ -274,10 +271,10 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
                     onClick={goToRisks}
                     data-autofocus="true"
                     className="
-                      inline-flex items-center gap-2 px-4 py-2 rounded-xl
+                      inline-flex items-center gap-2 px-6 py-3 rounded-xl w-full sm:w-auto justify-center
                       bg-primary/10 hover:bg-primary/20 active:scale-95
                       border border-primary/20 hover:border-primary/40
-                      text-primary font-semibold text-sm
+                      text-primary font-bold text-base sm:text-sm
                       transition-all duration-200 ease-out
                       focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2
                     "
@@ -287,87 +284,87 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
                   </button>
                 </div>
 
-                {/* Blocco 3 - APPROCCIO con stile premium */}
-                <div className="card-2026 p-6 space-y-4 hover:shadow-lg transition-all duration-200">
+                {/* Blocco 3 - APPROCCIO con stile mobile-friendly */}
+                <div className="card-2026 p-4 sm:p-6 space-y-4 hover:shadow-lg transition-all duration-200">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 rounded-xl bg-success/10 flex items-center justify-center">
                       <ApproachIcon />
                     </div>
-                    <h2 className="text-lg font-bold content-primary">
+                    <h2 className="text-lg sm:text-xl font-bold content-primary leading-tight">
                       {t('sections.approach.title')}
                     </h2>
                   </div>
-                  <p className="text-sm content-secondary leading-relaxed">
+                  <p className="text-base sm:text-sm content-secondary leading-relaxed font-medium">
                     {t('sections.approach.content')}
                   </p>
                   <div className="section-frame-success p-4 rounded-xl">
-                    <p className="font-semibold text-sm content-primary">
+                    <p className="font-bold text-base sm:text-sm content-primary leading-relaxed">
                       {t('sections.approach.keyPoint')}
                     </p>
                   </div>
                 </div>
 
-                {/* Blocco 4 - SCOPO con design finale */}
-                <div className="card-2026 p-6 space-y-4 hover:shadow-lg transition-all duration-200">
+                {/* Blocco 4 - SCOPO con design finale mobile */}
+                <div className="card-2026 p-4 sm:p-6 space-y-4 hover:shadow-lg transition-all duration-200">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                       <PurposeIcon />
                     </div>
-                    <h2 className="text-lg font-bold content-primary">
+                    <h2 className="text-lg sm:text-xl font-bold content-primary leading-tight">
                       {t('sections.purpose.title')}
                     </h2>
                   </div>
-                  <p className="text-sm content-secondary leading-relaxed">
+                  <p className="text-base sm:text-sm content-secondary leading-relaxed font-medium">
                     {t('sections.purpose.content')}
                   </p>
-                  <ul className="space-y-3">
+                  <ul className="space-y-4">
                     {t.raw('sections.purpose.items').map((item: string) => (
-                      <li key={`purpose-item-${item.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-3">
-                        <div className="w-5 h-5 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <li key={`purpose-item-${item.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-4">
+                        <div className="w-6 h-6 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0 mt-1">
                           <CheckIcon />
                         </div>
-                        <span className="text-sm content-secondary">{item}</span>
+                        <span className="text-base sm:text-sm content-secondary leading-relaxed font-medium">{item}</span>
                       </li>
                     ))}
                   </ul>
                   <div className="section-frame-success p-4 rounded-xl">
-                    <p className="font-semibold text-sm content-primary">
+                    <p className="font-bold text-base sm:text-sm content-primary leading-relaxed">
                       {t('sections.purpose.keyPoint')}
                     </p>
                   </div>
                 </div>
               </div>
             ) : (
-              /* Risks Detail View - Modernized */
-              <div className="p-6 pb-32 space-y-8 min-h-full">
+              /* Risks Detail View - Mobile Optimized */
+              <div className="p-4 sm:p-6 pb-32 space-y-6 sm:space-y-8 min-h-full">
                 {/* Sezione 1 - Cyber Risk */}
-                <div className="card-2026 p-6 space-y-4 hover:shadow-lg transition-all duration-200">
+                <div className="card-2026 p-4 sm:p-6 space-y-4 hover:shadow-lg transition-all duration-200">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 rounded-xl bg-error/10 flex items-center justify-center">
                       <CyberIcon />
                     </div>
-                    <h3 className="font-bold text-lg content-primary">
+                    <h3 className="font-bold text-lg sm:text-xl content-primary leading-tight">
                       {t('risks.cyber.title')}
                     </h3>
                   </div>
-                  <p className="text-sm content-secondary leading-relaxed">
+                  <p className="text-base sm:text-sm content-secondary leading-relaxed font-medium">
                     {t('risks.cyber.content')}
                   </p>
-                  <ul className="text-sm content-secondary space-y-2">
+                  <ul className="text-base sm:text-sm content-secondary space-y-3">
                     {t.raw('risks.cyber.points').map((point: string) => (
-                      <li key={`cyber-point-${point.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-error flex-shrink-0 mt-2" />
-                        {point}
+                      <li key={`cyber-point-${point.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-3 leading-relaxed">
+                        <div className="w-2 h-2 rounded-full bg-error flex-shrink-0 mt-2" />
+                        <span className="font-medium">{point}</span>
                       </li>
                     ))}
                   </ul>
                   <div className="section-frame p-4 rounded-xl bg-muted/30">
-                    <p className="text-xs font-semibold content-primary mb-2">Fonti:</p>
-                    <ul className="text-xs content-secondary space-y-1">
+                    <p className="text-sm font-bold content-primary mb-3">Fonti:</p>
+                    <ul className="text-xs content-secondary space-y-2">
                       {t.raw('risks.cyber.sources').map((source: string) => (
-                        <li key={`cyber-source-${source.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-2">
-                          <div className="w-1 h-1 rounded-full bg-muted-foreground flex-shrink-0 mt-1.5" />
-                          {source}
+                        <li key={`cyber-source-${source.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-2 leading-relaxed">
+                          <div className="w-1 h-1 rounded-full bg-muted-foreground flex-shrink-0 mt-2" />
+                          <span>{source}</span>
                         </li>
                       ))}
                     </ul>
@@ -375,36 +372,36 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
                 </div>
 
                 {/* Sezione 2 - Systemic Risk */}
-                <div className="card-2026 p-6 space-y-4 hover:shadow-lg transition-all duration-200">
+                <div className="card-2026 p-4 sm:p-6 space-y-4 hover:shadow-lg transition-all duration-200">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 rounded-xl bg-warning/10 flex items-center justify-center">
                       <SystemicIcon />
                     </div>
-                    <h3 className="font-bold text-lg content-primary">
+                    <h3 className="font-bold text-lg sm:text-xl content-primary leading-tight">
                       {t('risks.systemic.title')}
                     </h3>
                   </div>
-                  <p className="text-sm content-secondary leading-relaxed">
+                  <p className="text-base sm:text-sm content-secondary leading-relaxed font-medium">
                     {t('risks.systemic.content')}
                   </p>
-                  <p className="text-sm content-secondary">
+                  <p className="text-base sm:text-sm content-secondary leading-relaxed font-medium bg-muted/20 p-3 rounded-lg">
                     {t('risks.systemic.reason')}
                   </p>
-                  <ul className="text-sm content-secondary space-y-2">
+                  <ul className="text-base sm:text-sm content-secondary space-y-3">
                     {t.raw('risks.systemic.points').map((point: string) => (
-                      <li key={`systemic-point-${point.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-warning flex-shrink-0 mt-2" />
-                        {point}
+                      <li key={`systemic-point-${point.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-3 leading-relaxed">
+                        <div className="w-2 h-2 rounded-full bg-warning flex-shrink-0 mt-2" />
+                        <span className="font-medium">{point}</span>
                       </li>
                     ))}
                   </ul>
                   <div className="section-frame p-4 rounded-xl bg-muted/30">
-                    <p className="text-xs font-semibold content-primary mb-2">Fonti:</p>
-                    <ul className="text-xs content-secondary space-y-1">
+                    <p className="text-sm font-bold content-primary mb-3">Fonti:</p>
+                    <ul className="text-xs content-secondary space-y-2">
                       {t.raw('risks.systemic.sources').map((source: string) => (
-                        <li key={`systemic-source-${source.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-2">
-                          <div className="w-1 h-1 rounded-full bg-muted-foreground flex-shrink-0 mt-1.5" />
-                          {source}
+                        <li key={`systemic-source-${source.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-2 leading-relaxed">
+                          <div className="w-1 h-1 rounded-full bg-muted-foreground flex-shrink-0 mt-2" />
+                          <span>{source}</span>
                         </li>
                       ))}
                     </ul>
@@ -412,58 +409,58 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
                 </div>
 
                 {/* Sezione 3 - Operational Disruptions */}
-                <div className="card-2026 p-6 space-y-4 hover:shadow-lg transition-all duration-200">
+                <div className="card-2026 p-4 sm:p-6 space-y-4 hover:shadow-lg transition-all duration-200">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                       <OperationalIcon />
                     </div>
-                    <h3 className="font-bold text-lg content-primary">
+                    <h3 className="font-bold text-lg sm:text-xl content-primary leading-tight">
                       {t('risks.operational.title')}
                     </h3>
                   </div>
-                  <p className="text-sm content-secondary leading-relaxed">
+                  <p className="text-base sm:text-sm content-secondary leading-relaxed font-medium">
                     {t('risks.operational.content')}
                   </p>
-                  <ul className="text-sm content-secondary space-y-2">
+                  <ul className="text-base sm:text-sm content-secondary space-y-3">
                     {t.raw('risks.operational.points').map((point: string) => (
-                      <li key={`operational-point-${point.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0 mt-2" />
-                        {point}
+                      <li key={`operational-point-${point.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-3 leading-relaxed">
+                        <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0 mt-2" />
+                        <span className="font-medium">{point}</span>
                       </li>
                     ))}
                   </ul>
                   <div className="section-frame p-4 rounded-xl bg-muted/30">
-                    <p className="text-xs font-semibold content-primary mb-2">Fonti:</p>
-                    <ul className="text-xs content-secondary space-y-1">
+                    <p className="text-sm font-bold content-primary mb-3">Fonti:</p>
+                    <ul className="text-xs content-secondary space-y-2">
                       {t.raw('risks.operational.sources').map((source: string) => (
-                        <li key={`operational-source-${source.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-2">
-                          <div className="w-1 h-1 rounded-full bg-muted-foreground flex-shrink-0 mt-1.5" />
-                          {source}
+                        <li key={`operational-source-${source.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-2 leading-relaxed">
+                          <div className="w-1 h-1 rounded-full bg-muted-foreground flex-shrink-0 mt-2" />
+                          <span>{source}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
                 </div>
 
-                {/* Conclusione con design finale */}
-                <div className="section-frame-info p-6 rounded-xl">
+                {/* Conclusione con design finale mobile */}
+                <div className="section-frame-info p-4 sm:p-6 rounded-xl">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                       <ConclusionIcon />
                     </div>
-                    <h4 className="font-bold text-lg content-primary">
+                    <h4 className="font-bold text-lg sm:text-xl content-primary leading-tight">
                       {t('risks.conclusion.title')}
                     </h4>
                   </div>
-                  <ul className="text-sm content-secondary space-y-2 mb-4">
+                  <ul className="text-base sm:text-sm content-secondary space-y-3 mb-4">
                     {t.raw('risks.conclusion.points').map((point: string) => (
-                      <li key={`conclusion-point-${point.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0 mt-2" />
-                        {point}
+                      <li key={`conclusion-point-${point.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-3 leading-relaxed">
+                        <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0 mt-2" />
+                        <span className="font-medium">{point}</span>
                       </li>
                     ))}
                   </ul>
-                  <p className="font-semibold text-sm content-primary">
+                  <p className="font-bold text-base sm:text-sm content-primary leading-relaxed bg-primary/10 p-3 rounded-lg">
                     {t('risks.conclusion.keyPoint')}
                   </p>
                 </div>
@@ -472,14 +469,14 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
           </div>
         </div>
 
-        {/* Refined Footer with elegant buttons */}
-        <div className="sticky bottom-0 p-6 border-t border-border/20 backdrop-blur-lg">
+        {/* Refined Footer with mobile-optimized buttons */}
+        <div className="sticky bottom-0 p-4 sm:p-6 border-t border-border/20 backdrop-blur-lg">
           {currentStep === 'main' ? (
             <button
               onClick={onClose}
               data-autofocus="true"
               className="
-                w-full h-12 px-6 text-base font-semibold rounded-lg
+                w-full h-14 sm:h-12 px-6 text-lg sm:text-base font-bold rounded-lg
                 bg-primary text-white shadow-lg shadow-primary/15
                 transition-all duration-200 ease-out
                 hover:shadow-xl hover:shadow-primary/25 hover:-translate-y-0.5
@@ -492,11 +489,11 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
               <CheckIcon />
             </button>
           ) : (
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={goBack}
                 className="
-                  flex-1 h-12 px-6 text-base font-medium rounded-lg
+                  flex-1 h-14 sm:h-12 px-6 text-lg sm:text-base font-medium rounded-lg
                   bg-muted/40 hover:bg-muted/60 active:scale-95
                   border border-border/30 hover:border-border/50
                   text-muted-foreground hover:text-foreground
@@ -512,7 +509,7 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
                 onClick={onClose}
                 data-autofocus="true"
                 className="
-                  flex-1 h-12 px-6 text-base font-semibold rounded-lg
+                  flex-1 h-14 sm:h-12 px-6 text-lg sm:text-base font-bold rounded-lg
                   bg-primary text-white shadow-lg shadow-primary/15
                   transition-all duration-200 ease-out
                   hover:shadow-xl hover:shadow-primary/25 hover:-translate-y-0.5
