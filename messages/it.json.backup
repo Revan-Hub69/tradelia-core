@@ -1,0 +1,727 @@
+{
+  "modal": {
+    "title": "Accedi a Tradelia",
+    "actions": {
+      "back": "Indietro"
+    },
+    "auth": {
+      "gateway": {
+        "subtitle": "Scegli come vuoi continuare",
+        "guestTitle": "Continua come ospite",
+        "guestDescription": "Accesso rapido. I dati restano solo su questo dispositivo.",
+        "or": "oppure",
+        "google": "Continua con Google",
+        "email": "Accedi con email",
+        "emailDescription": "Usa email e password per accedere o registrarti.",
+        "footer": "Tradelia è uno strumento educativo. Non forniamo consulenza finanziaria."
+      },
+      "login": {
+        "title": "Bentornato",
+        "subtitle": "Accedi al tuo account",
+        "email": "Email",
+        "emailPlaceholder": "nome@esempio.com",
+        "password": "Password",
+        "passwordPlaceholder": "••••••••",
+        "submit": "Accedi",
+        "submitting": "Accesso in corso...",
+        "forgotPassword": "Password dimenticata?",
+        "noAccount": "Non hai un account?",
+        "register": "Registrati"
+      },
+      "register": {
+        "title": "Crea il tuo account",
+        "subtitle": "Registrati per accedere a tutte le funzionalità",
+        "name": "Nome completo",
+        "namePlaceholder": "Il tuo nome",
+        "email": "Email",
+        "emailPlaceholder": "nome@esempio.com",
+        "password": "Password",
+        "passwordPlaceholder": "Scegli una password sicura",
+        "confirmPassword": "Conferma password",
+        "confirmPlaceholder": "Ripeti la password",
+        "submit": "Crea account",
+        "submitting": "Creazione in corso...",
+        "hasAccount": "Hai già un account?",
+        "login": "Accedi"
+      },
+      "resetRequest": {
+        "title": "Recupera password",
+        "subtitle": "Inserisci la tua email per ricevere il link di reset",
+        "email": "Email",
+        "emailPlaceholder": "nome@esempio.com",
+        "submit": "Invia link",
+        "submitting": "Invio in corso...",
+        "backToLogin": "Torna al login"
+      },
+      "resetSent": {
+        "title": "Controlla la tua email",
+        "description": "Abbiamo inviato le istruzioni per reimpostare la password.",
+        "backToLogin": "Torna al login"
+      }
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Panoramica dei tuoi strumenti di trading",
+    "welcome": "Benvenuto",
+    "loading": "Caricamento...",
+    "error": "Si è verificato un errore",
+    "retry": "Riprova",
+    "guestMode": "Modalità Ospite",
+    "limitedMode": "Modalità limitata",
+    "verifiedAccount": "Account verificato",
+    "totalAssets": "Asset Totali",
+    "monitoredTools": "Strumenti monitorati",
+    "portfolioValue": "Valore Portafoglio",
+    "thisMonth": "questo mese",
+    "riskScore": "Score di Rischio",
+    "riskScaleDescription": "Su scala 1-10",
+    "coherence": "Coerenza",
+    "coherenceDescription": "Obiettivi vs strumenti",
+    "portfolioAnalysis": "Analisi Portafoglio",
+    "sampleData": "Dati di esempio",
+    "distributionAndPerformance": "Distribuzione e performance degli asset",
+    "fullAnalysisAvailable": "Analisi completa disponibile per utenti registrati",
+    "registerForAnalysis": "Registrati per accedere a grafici dettagliati, analisi di rischio e raccomandazioni personalizzate",
+    "registerNow": "Registrati ora",
+    "allocation": "Allocazione",
+    "performance30d": "Performance 30gg",
+    "getStarted": "Inizia ora",
+    "quickActions": "Azioni rapide",
+    "register": "Registrati",
+    "accessAllFeatures": "Accedi a tutte le funzionalità",
+    "rebalancePortfolio": "Riequilibra Portafoglio",
+    "optimizeAllocation": "Ottimizza l'allocazione",
+    "verifyCoherence": "Verifica Coerenza",
+    "analyzeTools": "Analizza i tuoi strumenti",
+    "alerts": "Avvisi",
+    "highConcentration": "Concentrazione elevata",
+    "concentrationMessage": "Il 65% del portafoglio è concentrato in un singolo asset",
+    "diversificationAnalysis": "Analisi diversificazione",
+    "systemTradelia": "Sistema Tradelia",
+    "searchPlaceholder": "Cerca strumenti, analisi...",
+    "backToSite": "Torna al Sito",
+    "guestUser": "Utente Ospite",
+    "bitcoin": "Bitcoin",
+    "ethereum": "Ethereum",
+    "others": "Altri",
+    "emailVerification": "Verifica la tua email per accedere a tutte le funzionalità",
+    "resendEmail": "Invia di nuovo",
+    "guestModeActive": "Modalità ospite attiva - Funzionalità limitate",
+    "registerNowShort": "Registrati",
+    "education": "Educazione",
+    "educationDescription": "Risorse educative per il trading crypto",
+    "portfolio": "Portafoglio",
+    "portfolioDescription": "Gestisci il tuo portafoglio crypto",
+    "settings": "Impostazioni",
+    "settingsDescription": "Configura le tue preferenze",
+    "verify": "Verifica",
+    "verifyDescription": "Verifica la coerenza dei tuoi strumenti",
+    "authError": "Errore di autenticazione",
+    "reloadPage": "Ricarica pagina",
+    "commandPalette": {
+      "placeholder": "Cerca comandi...",
+      "noResults": "Nessun comando trovato",
+      "noCommands": "Nessun comando disponibile",
+      "tryDifferentTerms": "Prova con termini diversi",
+      "recentCommands": "Comandi recenti",
+      "navigation": "Navigazione",
+      "actions": "Azioni",
+      "settings": "Impostazioni",
+      "data": "Dati",
+      "help": "Aiuto",
+      "shortcuts": {
+        "navigate": "Naviga",
+        "select": "Seleziona",
+        "close": "Chiudi"
+      }
+    },
+    "chooseOrientation": "Scegli da dove orientarti. I percorsi non indicano cosa fare, ma come ragionare in base al tuo obiettivo.",
+    "noImmediateAction": "Nessun percorso richiede azione immediata.",
+    "understandFirst": "Tradelia aiuta a capire prima di decidere.",
+    "tradeliaJourneys": "Percorsi Tradelia",
+    "journeyExplanation": "I percorsi non indicano cosa fare, ma come orientarsi in base al livello di complessità.",
+    "focusOn": "Focus su",
+    "betaFeatures": "Funzionalità Beta",
+    "betaFeaturesDescription": "Questa sezione è controllata da feature flags e può essere abilitata/disabilitata dinamicamente.",
+    "focusAreas": {
+      "emergency": {
+        "accessibility": "accessibilità e liquidità reale",
+        "operationalRisks": "rischi operativi e normativi",
+        "concreteLimits": "limiti e criticità concrete"
+      },
+      "passive": {
+        "yieldSource": "fonte del rendimento",
+        "realExposure": "esposizione reale",
+        "failureConditions": "condizioni di fallimento"
+      },
+      "longterm": {
+        "timeHorizon": "orizzonte temporale",
+        "cumulativeRisk": "rischio cumulativo",
+        "personalCompatibility": "compatibilità personale"
+      },
+      "speculation": {
+        "asymmetricRisk": "rischio asimmetrico",
+        "cognitiveErrors": "errori cognitivi frequenti",
+        "operationalLimits": "limiti dell'operatività attiva"
+      }
+    },
+    "securityPrivacy": "Sicurezza & Privacy",
+    "securityDescription": "Crittografia end-to-end, zero tracking, nessuna vendita dati.",
+    "technicalInfo": "Informazioni Tecniche",
+    "version": "Versione",
+    "uptime": "Uptime",
+    "supportLegal": "Supporto & Legale",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Termini di Servizio",
+    "educationalTool": "Strumento educativo",
+    "noFinancialAdvice": "Nessun consiglio finanziario",
+    "madeWithLove": "Made with ❤️ in Italy"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "overview": "Panoramica",
+    "overviewDescription": "Dashboard principale",
+    "portfolio": "Portafoglio",
+    "portfolioDescription": "Analisi strumenti",
+    "verify": "Verifica",
+    "verifyDescription": "Controllo coerenza",
+    "education": "Educazione",
+    "educationDescription": "Risorse formative",
+    "settings": "Impostazioni",
+    "settingsDescription": "Configurazione",
+    "profile": "Profilo",
+    "logout": "Esci",
+    "menu": "Menu",
+    "menuLabel": "Menu",
+    "closeMenu": "Chiudi menu",
+    "preferencesLabel": "Preferenze",
+    "unlockFeatures": "Sblocca tutte le funzionalità",
+    "journeys": "Percorsi",
+    "common": {
+      "mainNavigation": "Navigazione principale"
+    }
+  },
+  "settings": {
+    "title": "Impostazioni",
+    "language": "Lingua",
+    "theme": "Tema",
+    "light": "Chiaro",
+    "dark": "Scuro",
+    "system": "Sistema",
+    "notifications": "Notifiche",
+    "save": "Salva",
+    "cancel": "Annulla"
+  },
+  "profile": {
+    "title": "Profilo",
+    "name": "Nome",
+    "email": "Email",
+    "avatar": "Avatar",
+    "edit": "Modifica",
+    "save": "Salva modifiche"
+  },
+  "common": {
+    "journeyStructure": "Passaggi del percorso",
+    "progressionGuidance": "I passaggi sono pensati per essere seguiti in ordine.",
+    "journey": "Percorso",
+    "loading": "Caricamento...",
+    "error": "Errore",
+    "success": "Successo",
+    "warning": "Attenzione",
+    "info": "Informazione",
+    "close": "Chiudi",
+    "open": "Apri",
+    "expand": "Espandi",
+    "collapse": "Comprimi",
+    "retry": "Riprova",
+    "goBack": "Torna indietro",
+    "somethingWentWrong": "Qualcosa è andato storto",
+    "connectionLost": "Connessione persa",
+    "checkConnection": "Verifica la tua connessione internet",
+    "loadingError": "Errore caricamento",
+    "persistentError": "Se il problema persiste, contatta il supporto",
+    "errorOccurred": "Si è verificato un errore",
+    "sectionNavigation": "Navigazione sezione",
+    "safeButton": {
+      "label": "Pulsante sicuro",
+      "processing": "Elaborazione...",
+      "holdToConfirm": "Premi e tieni premuto per confermare"
+    },
+    "networkStatus": {
+      "offline": "Connessione persa",
+      "slow": "Connessione lenta",
+      "reconnecting": "Riconnessione...",
+      "restored": "Connessione ripristinata",
+      "offlineMessage": "Verifica la tua connessione internet",
+      "slowMessage": "Alcune funzionalità potrebbero essere rallentate",
+      "reconnectingMessage": "Tentativo di ripristino della connessione",
+      "restoredMessage": "Tutte le funzionalità sono disponibili",
+      "retryButton": "Riprova",
+      "retryingButton": "Connessione...",
+      "closeNotification": "Chiudi notifica"
+    },
+    "riskBadge": {
+      "low": "Basso Rischio",
+      "medium": "Medio Rischio",
+      "high": "Alto Rischio",
+      "explanationLabel": "Spiegazione livello di rischio",
+      "closeLabel": "Chiudi",
+      "closeExplanation": "Chiudi spiegazione",
+      "practicalTips": "Consigli Pratici",
+      "criticalAttentions": "Attenzioni Critiche",
+      "understood": "Ho capito",
+      "readErrors": "Leggi Errori",
+      "lowExplanation": "Questo strumento o strategia presenta rischi minimi. È adatto anche ai principianti.",
+      "mediumExplanation": "Questo strumento richiede attenzione e conoscenze base. Possibili perdite moderate.",
+      "highExplanation": "Strumento avanzato con rischi significativi. Solo per utenti esperti con capitale dedicato.",
+      "lowTips": [
+        "Ideale per iniziare senza stress",
+        "Perdite potenziali molto limitate",
+        "Adatto per capitale che non puoi permetterti di perdere"
+      ],
+      "mediumTips": [
+        "Leggi prima la sezione \"Errori da evitare\"",
+        "Inizia con importi piccoli per fare pratica",
+        "Assicurati di capire i meccanismi prima di procedere"
+      ],
+      "highTips": [
+        "SOLO per utenti esperti",
+        "Usa SOLO capitale che puoi permetterti di perdere completamente",
+        "Studia approfonditamente prima di utilizzare",
+        "Considera alternative a rischio minore"
+      ],
+      "lowCta": "💡 Perfetto per iniziare in sicurezza",
+      "mediumCta": "⚠️ Leggi prima \"Errori da evitare\"",
+      "highCta": "🚨 Solo per utenti molto esperti"
+    },
+    "toolCard": {
+      "openTool": "Apri Tool",
+      "openToolLabel": "Apri tool: {title}",
+      "new": "Nuovo",
+      "addToFavorites": "Aggiungi ai preferiti",
+      "removeFromFavorites": "Rimuovi dai preferiti",
+      "noToolsAvailable": "Nessun tool disponibile",
+      "toolsComingSoon": "I tool per questa sezione saranno disponibili presto."
+    },
+    "trustBadges": {
+      "ssl": {
+        "label": "SSL Sicuro",
+        "description": "Connessione crittografata end-to-end, nessun dato intercettato",
+        "verified": "Connessione verificata"
+      },
+      "privacy": {
+        "label": "Zero Tracking",
+        "description": "Niente pixel, niente marketing, niente vendita dati"
+      },
+      "educational": {
+        "label": "Solo Educativo",
+        "description": "Strumento formativo, non vendiamo prodotti finanziari"
+      }
+    },
+    "featureGate": {
+      "temporarilyUnavailable": "Temporaneamente non disponibile",
+      "featureDisabled": "Questa funzionalità è attualmente disabilitata",
+      "featureDisabledReason": "La funzionalità {feature} è attualmente disabilitata",
+      "comingSoon": "In arrivo",
+      "toolComingSoon": "Il tool {toolId} sarà disponibile presto",
+      "notifyMe": "Avvisami",
+      "learnMore": "Scopri di più",
+      "features": {
+        "animations": "Animazioni",
+        "complexAnimations": "Animazioni complesse",
+        "autoplay": "Riproduzione automatica",
+        "riskCalculator": "Calcolatore rischio",
+        "portfolioAnalyzer": "Analizzatore portafoglio",
+        "advancedCharts": "Grafici avanzati",
+        "aiFeatures": "Funzionalità AI",
+        "tooltips": "Suggerimenti",
+        "notifications": "Notifiche",
+        "soundEffects": "Effetti sonori",
+        "hapticFeedback": "Feedback tattile",
+        "lazyLoading": "Caricamento lazy",
+        "imageOptimization": "Ottimizzazione immagini",
+        "prefetching": "Precaricamento",
+        "betaFeatures": "Funzionalità beta",
+        "debugMode": "Modalità debug"
+      }
+    },
+    "complexity": {
+      "label": "Complessità",
+      "tooltip": "Indica quanta complessità concettuale e decisionale è richiesta per comprendere il percorso. Non misura il rendimento né il rischio potenziale.",
+      "levels": {
+        "low": "Bassa",
+        "medium": "Media",
+        "mediumHigh": "Medio-Alta",
+        "high": "Alta",
+        "veryHigh": "Altissima"
+      }
+    },
+    "toolPreview": {
+      "showInterest": "Sono interessato",
+      "notifyMe": "Avvisami",
+      "interestShown": "Interesse registrato",
+      "notifying": "Registrando...",
+      "expectedFeatures": "Funzionalità previste",
+      "estimatedLaunch": "Lancio previsto",
+      "complexity": {
+        "beginner": "Principiante",
+        "intermediate": "Intermedio",
+        "advanced": "Avanzato"
+      }
+    },
+    "educationMemory": {
+      "messages": {
+        "getStarted": "Inizia leggendo l'introduzione o gli errori da evitare",
+        "readIntro": "Leggi l'introduzione per iniziare",
+        "readErrors": "Leggi gli errori da evitare per continuare",
+        "readEducational": "Completa la sezione educativa",
+        "almostReady": "Quasi pronto! Completa le checklist",
+        "completeChecklists": "Completa le checklist per sbloccare tutti i tool",
+        "fullyPrepared": "Sei completamente preparato per questa sezione"
+      },
+      "actions": {
+        "startWithIntro": "Inizia leggendo l'Introduzione",
+        "readErrorsFirst": "Leggi prima gli Errori da evitare",
+        "expandKnowledge": "Espandi le tue conoscenze nella sezione Educativa",
+        "readyForTools": "Sei pronto per utilizzare i tool"
+      }
+    },
+    "privacyConsent": {
+      "close": "Chiudi",
+      "enableBasicAnalytics": "Abilita analytics di base",
+      "enablePerformanceTracking": "Abilita monitoraggio performance",
+      "enableErrorReporting": "Abilita segnalazione errori",
+      "enableFeatureUsageTracking": "Abilita tracciamento utilizzo funzionalità"
+    },
+    "journeyPage": {
+      "tabs": {
+        "intro": "Introduzione",
+        "errors": "Errori da evitare",
+        "educational": "Educativo",
+        "tools": "Tool",
+        "platforms": "Piattaforme"
+      },
+      "errorWarnings": {
+        "emergency": {
+          "title": "Asset Rifugio: Massima Attenzione",
+          "description": "I tool per la protezione del capitale richiedono comprensione profonda dei rischi. Un errore può compromettere la tua sicurezza finanziaria."
+        },
+        "longterm": {
+          "title": "Lungo Termine: Strategia Solida",
+          "description": "Gli investimenti a lungo termine necessitano di una strategia ben definita. Decisioni affrettate possono costare anni di rendimenti."
+        },
+        "speculation": {
+          "title": "Speculazione: Preparazione Obbligatoria",
+          "description": "La speculazione è intrinsecamente rischiosa. Senza preparazione adeguata, è più probabile perdere che guadagnare."
+        },
+        "passive": {
+          "title": "Passivi: Apparente Semplicità, Vere Insidie",
+          "description": "Gli investimenti passivi sembrano semplici ma nascondono insidie. Anche qui servono conoscenze base per evitare errori."
+        }
+      },
+      "toolsEmptyState": {
+        "title": "Tool in arrivo",
+        "description": "Leggi \"Errori da evitare\" per utilizzare i tool in sicurezza. 2 minuti di lettura che possono evitare errori costosi.",
+        "readErrorsButton": "Leggi Errori da Evitare"
+      },
+      "platformDescription": "Descrizione della piattaforma e perché è adatta per {journeyId}",
+      "yourProgress": "Il tuo progresso",
+      "introductionRead": "Introduzione letta",
+      "errorsStudied": "Errori studiati",
+      "educationalSection": "Sezione educativa",
+      "completed": "✓ Completato",
+      "toDo": "Da fare",
+      "nextStep": "Prossimo passo",
+      "welcomeTo": "Benvenuto in",
+      "objective": "Obiettivo",
+      "objectiveDescription": "Definire chiaramente cosa vuoi ottenere con questo percorso",
+      "approach": "Approccio",
+      "approachDescription": "Metodologia step-by-step per raggiungere i tuoi obiettivi",
+      "introductionCompleted": "✓ Introduzione completata",
+      "markAsRead": "Segna come letto",
+      "commonErrorsIn": "Errori comuni in",
+      "errorNumber": "Errore",
+      "errorDescription": "Descrizione dell'errore e come evitarlo. Contenuto specifico per",
+      "errorsStudiedButton": "✓ Errori studiati",
+      "readErrorsButton": "Ho letto gli errori",
+      "educationalResources": "Risorse educative",
+      "lesson": "Lezione",
+      "educationalContent": "Contenuto educativo specifico per",
+      "sectionCompleted": "✓ Sezione completata",
+      "markAsCompleted": "Segna come completato",
+      "beforeAccessingTools": "Prima di accedere ai tool di",
+      "importantToRead": "è importante leggere la sezione \"Errori da evitare\"",
+      "toolAccessWarning": "Stai per accedere a strumenti che richiedono preparazione. Ti consigliamo di leggere prima gli errori comuni.",
+      "educational": "Educativo",
+      "theoreticalBases": "Basi teoriche",
+      "understandPrinciples": "Comprendi i principi fondamentali prima di utilizzare qualsiasi strumento.",
+      "errors": "Errori",
+      "whatToAvoid": "Cosa evitare",
+      "commonErrorsCost": "Gli errori comuni possono costare caro. Leggi questa sezione per primo.",
+      "tools": "Tool",
+      "practicalTools": "Strumenti pratici",
+      "availableAfterPreparation": "Disponibili dopo aver completato la preparazione necessaria.",
+      "recommendedPlatforms": "Piattaforme consigliate",
+      "platform": "Piattaforma",
+      "visit": "Visita",
+      "sectionDefinesFrame": "Questa sezione definisce il quadro decisionale.",
+      "sectionAddressesErrors": "Questa sezione affronta i bias cognitivi comuni nelle decisioni di emergenza.",
+      "sectionEstablishesFoundation": "Questa sezione stabilisce le basi teoriche.",
+      "sectionProvidesTools": "Questa sezione fornisce strumenti operativi per le decisioni crypto di emergenza.",
+      "sectionProvidesGuidance": "Questa sezione fornisce indicazioni specifiche per l'implementazione su piattaforme.",
+      "assumesDecisionFrame": "Questa sezione presuppone il quadro decisionale definito nell'Introduzione.",
+      "assumesErrorsKnowledge": "Questa sezione applica i principi da Errori da evitare.",
+      "toolsAssumeKnowledge": "I tool presuppongono la comprensione del quadro decisionale e degli errori comuni.",
+      "viewIntroduction": "Visualizza Introduzione",
+      "viewErrors": "Visualizza Errori da evitare",
+      "reviewPreparationSteps": "Rivedi i passaggi di preparazione",
+      "nextStepErrors": "Prossimo passaggio: Errori da evitare",
+      "whenUnderstoodFrame": "Quando hai compreso il quadro decisionale, il passaggio naturale è identificare gli errori comuni.",
+      "continueWithErrors": "→ Continua con: Errori da evitare",
+      "afterIdentifyingErrors": "Dopo aver identificato gli errori comuni, il passaggio naturale è comprendere i fondamenti teorici.",
+      "continueWithEducational": "→ Continua con: Educativo",
+      "firstReadIntroduction": "→ Prima leggi: Introduzione",
+      "continueWithEducationalAriaLabel": "Continua con la sezione Educativo",
+      "continueWithErrorsAriaLabel": "Continua con la sezione Errori da evitare",
+      "stepTransition": {
+        "nextStep": "PROSSIMO PASSO",
+        "beforeUsingTools": "Prima di usare strumenti o piattaforme, è importante capire quali errori portano più spesso a perdere accesso o controllo.",
+        "goToErrors": "Vai a \"Errori da evitare\"",
+        "afterIdentifyingErrorsBlock": "Dopo aver identificato gli errori comuni, il passaggio naturale è comprendere i fondamenti teorici.",
+        "goToEducational": "Vai a \"Educativo\"",
+        "reviewIntroduction": "Rivedi \"Introduzione\""
+      },
+      "memoryAnchor": "Qui, il valore è valutato per l'accesso, non per il prezzo.",
+      "educationalContentWithContext": "Contenuto educativo specifico per {journeyId}. Questa sezione presuppone la comprensione del quadro decisionale e degli errori comuni.",
+      "toolsAvailableAfterPrep": "I tool saranno disponibili dopo aver completato la sequenza di preparazione: Introduzione → Errori → Fondamenti educativi.",
+      "accessEmergencyTool": "Accedi al tool di valutazione emergenza",
+      "completedIntroduction": "Hai completato l'introduzione al percorso emergenza.",
+      "identifiedErrors": "Hai identificato gli errori comuni nel percorso emergenza."
+    }
+  },
+  "auth": {
+    "title": "Sblocca tutte le funzionalità",
+    "subtitle": "Registrati per accedere ad analisi avanzate, alert personalizzati e molto altro",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Conferma Password",
+    "login": "Accedi",
+    "register": "Registrati",
+    "forgotPassword": "Password dimenticata?",
+    "noAccount": "Non hai un account?",
+    "hasAccount": "Hai già un account?",
+    "signUp": "Registrati",
+    "signIn": "Accedi",
+    "orContinueWith": "oppure continua con",
+    "emailRequired": "L'email è obbligatoria",
+    "invalidEmail": "Inserisci un'email valida",
+    "passwordRequired": "La password è obbligatoria",
+    "passwordMinLength": "La password deve essere di almeno 8 caratteri",
+    "passwordsNoMatch": "Le password non coincidono",
+    "termsAgreement": "Accetto i Termini di Servizio e l'Informativa sulla Privacy",
+    "welcome": "Benvenuto!",
+    "welcomeBack": "Bentornato!",
+    "loginSuccess": "Accesso effettuato con successo",
+    "registrationSuccess": "Registrazione completata",
+    "loginError": "Errore durante l'accesso",
+    "registrationError": "Errore durante la registrazione",
+    "continueAsGuest": "Continua come ospite",
+    "close": "Chiudi",
+    "continueWithGoogle": "Continua con Google",
+    "signInWithEmail": "Registrati con Email",
+    "educationalWarning": "Tradelia è uno strumento educativo. Non forniamo consulenza finanziaria.",
+    "createAccount": "Crea il tuo account",
+    "enterCredentials": "Inserisci i tuoi dati per registrarti",
+    "fullName": "Nome completo",
+    "emailPlaceholder": "La tua email",
+    "passwordPlaceholder": "Scegli una password",
+    "signingUp": "Registrazione in corso...",
+    "backToLogin": "Torna indietro",
+    "verificationTitle": "Controlla la tua email",
+    "verificationDescription": "Abbiamo inviato un link di verifica a {email}. Clicca sul link per attivare il tuo account.",
+    "common": {
+      "aria": {
+        "closeModal": "Chiudi finestra"
+      },
+      "backToHome": "Torna alla home"
+    },
+    "callback": {
+      "title": "Autenticazione in corso",
+      "subtitle": "Attendi mentre completiamo l'accesso...",
+      "errorGeneric": "Si è verificato un errore durante l'autenticazione"
+    }
+  },
+  "journeys": {
+    "emergency": {
+      "name": "Emergenza",
+      "action": "Verifica liquidità",
+      "description": "Crypto come riserva di emergenza",
+      "introduction": {
+        "title": "Crypto come riserva di emergenza",
+        "whyExists": {
+          "content": "Bitcoin nasce nel 2008–2009, durante una crisi in cui il problema non era quanto valesse il denaro, ma se fosse possibile usarlo davvero. I soldi c'erano, ma in molti casi non si potevano muovere."
+        },
+        "problemType": {
+          "content": "Le criptovalute partono da qui: dall'idea di creare sistemi che continuino a funzionare anche quando quelli tradizionali si bloccano."
+        },
+        "mentalRule": {
+          "content": "Questo percorso non parla di prezzi o di previsioni. Parte da una domanda molto semplice: Se succede qualcosa di serio, posso ancora accedere e spostare valore?"
+        },
+        "whoItMakesSense": {
+          "content": "Quando si parla di una riserva di emergenza, la priorità non è \"quanto rende\", ma se funziona nel momento giusto. Quando i canali si bloccano, ciò che resta accessibile diventa più importante, mentre il resto diventa difficile o impossibile da usare."
+        },
+        "finalNote": {
+          "content": "Questo approccio ha senso per chi vuole capire se e come le crypto possano avere un ruolo in situazioni difficili, prima ancora di pensare al mercato."
+        },
+        "ctaSection": {}
+      },
+      "sections": {
+        "overview": "Panoramica",
+        "liquidAssets": "Asset liquidi",
+        "exitPlan": "Piano di uscita",
+        "history": "Storico prelievi"
+      }
+    },
+    "longterm": {
+      "name": "Lungo termine",
+      "action": "Aggiungi piano",
+      "description": "Strategie di crescita nel tempo",
+      "sections": {
+        "overview": "Panoramica",
+        "dcaPlans": "Piani DCA",
+        "projections": "Proiezioni",
+        "rebalance": "Ribilanciamento"
+      }
+    },
+    "speculation": {
+      "name": "Speculazione",
+      "action": "Analizza segnale",
+      "description": "Contesti ad alta variabilità",
+      "sections": {
+        "overview": "Panoramica",
+        "signals": "Segnali",
+        "positions": "Posizioni",
+        "analysis": "Analisi tecnica"
+      }
+    },
+    "passive": {
+      "name": "Passivo",
+      "action": "Calcola rendimento",
+      "description": "Meccanismi di rendita automatica",
+      "sections": {
+        "overview": "Panoramica",
+        "staking": "Staking",
+        "yields": "Yield farming",
+        "projections": "Proiezioni APY"
+      }
+    }
+  },
+  "softConfirmation": {
+    "proceed": "Procedi",
+    "readFirst": "Leggi prima",
+    "dismiss": "Chiudi",
+    "toolWarning": {
+      "low": "Stai per utilizzare {toolName}. È uno strumento a basso rischio, ideale per iniziare.",
+      "medium": "Stai per utilizzare {toolName}. Richiede attenzione e conoscenze base.",
+      "high": "Stai per utilizzare {toolName}. È uno strumento avanzato con rischi significativi."
+    },
+    "sectionWarning": "Stai per accedere alla sezione {sectionId}. Assicurati di aver letto le informazioni di base."
+  },
+  "featureGate": {
+    "temporarilyUnavailable": "Temporaneamente non disponibile",
+    "featureDisabled": "Questa funzionalità è temporaneamente disabilitata per miglioramenti.",
+    "featureDisabledReason": "La funzionalità {feature} è temporaneamente disabilitata.",
+    "comingSoon": "In arrivo",
+    "toolComingSoon": "Il tool {toolId} sarà disponibile presto.",
+    "notifyMe": "Avvisami",
+    "learnMore": "Scopri di più",
+    "features": {
+      "animations": "Animazioni",
+      "complexAnimations": "Animazioni complesse",
+      "autoplay": "Riproduzione automatica",
+      "riskCalculator": "Calcolatore di rischio",
+      "portfolioAnalyzer": "Analizzatore portafoglio",
+      "advancedCharts": "Grafici avanzati",
+      "aiFeatures": "Funzionalità AI",
+      "tooltips": "Suggerimenti",
+      "notifications": "Notifiche",
+      "soundEffects": "Effetti sonori",
+      "hapticFeedback": "Feedback tattile",
+      "lazyLoading": "Caricamento lazy",
+      "imageOptimization": "Ottimizzazione immagini",
+      "prefetching": "Precaricamento",
+      "betaFeatures": "Funzionalità beta",
+      "debugMode": "Modalità debug"
+    }
+  },
+  "educationMemory": {
+    "messages": {
+      "getStarted": "Inizia leggendo l'Introduzione o gli Errori da evitare",
+      "readErrors": "Ottimo! Ora leggi gli Errori da evitare per completare la preparazione",
+      "readIntro": "Perfetto! Ora puoi leggere l'Introduzione per una visione completa",
+      "readEducational": "Eccellente! Completa con la sezione Educativo per approfondire",
+      "almostReady": "Quasi pronto! Completa qualche checklist per essere completamente preparato",
+      "completeChecklists": "Ottimo progresso! Completa le checklist rimanenti",
+      "fullyPrepared": "Sei completamente preparato per utilizzare tutti gli strumenti"
+    },
+    "actions": {
+      "startWithIntro": "Inizia con l'Introduzione per una panoramica completa",
+      "readErrorsFirst": "Leggi prima gli Errori da evitare per utilizzare i tool in sicurezza",
+      "expandKnowledge": "Espandi le tue conoscenze con la sezione Educativo",
+      "readyForTools": "Sei pronto per utilizzare gli strumenti avanzati"
+    }
+  },
+  "toolPreview": {
+    "preview": "Anteprima",
+    "expectedFeatures": "Funzionalità previste",
+    "launchTimeline": "Timeline di lancio",
+    "estimatedLaunch": "Lancio previsto: {date}",
+    "showInterest": "Mostra interesse",
+    "interestShown": "Interesse registrato",
+    "notifyMe": "Avvisami",
+    "notifying": "Ti avviseremo",
+    "thankYouForInterest": "Grazie per il tuo interesse! Ti terremo aggiornato sui progressi.",
+    "complexity": {
+      "simple": "Semplice",
+      "intermediate": "Intermedio",
+      "advanced": "Avanzato"
+    }
+  },
+  "trustBadges": {
+    "ssl": {
+      "label": "SSL Sicuro",
+      "description": "Connessione crittografata end-to-end per proteggere i tuoi dati",
+      "verified": "Connessione verificata",
+      "notSecure": "Connessione non sicura"
+    },
+    "privacy": {
+      "label": "Zero Tracking",
+      "description": "Niente pixel di tracciamento, niente marketing invasivo, niente vendita dati",
+      "compliant": "Privacy garantita"
+    },
+    "educational": {
+      "label": "Solo Educativo",
+      "description": "Strumento formativo puro, non vendiamo prodotti finanziari",
+      "active": "Modalità educativa"
+    },
+    "secure": "Sicuro",
+    "notSecure": "Non sicuro",
+    "compliance": {
+      "gdpr": "Privacy by Design • Zero tracking • Dati mai venduti",
+      "educational": "Strumento educativo • Nessun prodotto in vendita",
+      "noAdvice": "Le informazioni sono solo a scopo formativo, mai commerciale"
+    }
+  }
+}
+,
+  "dashboardIntro": {
+    "title": "Crypto in situazioni di emergenza",
+    "subtitle": "Sistemi alternativi quando quelli normali non funzionano",
+    "close": "Chiudi introduzione",
+    "mainCta": "Ok, ho capito → Vai alla dashboard",
+    "deepenRisks": "🔍 Approfondisci i rischi reali →",
+    "drawerTitle": "Rischi reali studiati",
+    "drawerClose": "Chiudi approfondimento"
+  }
+}

@@ -1289,3 +1289,68 @@ html, body {
     width: auto !important;
   }
 }
+/* Dashboard Introduction Overlay - Tradelia Design */
+.prose-tradelia {
+  color: hsl(var(--foreground));
+}
+
+.prose-tradelia p {
+  margin-bottom: 1rem;
+  line-height: 1.75;
+}
+
+.prose-tradelia ul {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.prose-tradelia li {
+  margin-bottom: 0.5rem;
+}
+
+.prose-tradelia strong {
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+/* Overlay animations */
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes overlaySlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes drawerSlideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.overlay-backdrop {
+  animation: overlayFadeIn 0.2s ease-out;
+}
+
+.overlay-content {
+  animation: overlaySlideIn 0.3s ease-out;
+}
+
+.drawer-content {
+  animation: drawerSlideIn 0.3s ease-out;
+}
