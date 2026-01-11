@@ -495,7 +495,9 @@
       "memoryAnchor": "Qui, il valore è valutato per l'accesso, non per il prezzo.",
       "educationalContentWithContext": "Contenuto educativo specifico per {journeyId}. Questa sezione presuppone la comprensione del quadro decisionale e degli errori comuni.",
       "toolsAvailableAfterPrep": "I tool saranno disponibili dopo aver completato la sequenza di preparazione: Introduzione → Errori → Fondamenti educativi.",
-      "accessEmergencyTool": "Accedi al tool di valutazione emergenza"
+      "accessEmergencyTool": "Accedi al tool di valutazione emergenza",
+      "completedIntroduction": "Hai completato l'introduzione al percorso emergenza.",
+      "identifiedErrors": "Hai identificato gli errori comuni nel percorso emergenza."
     }
   },
   "auth": {

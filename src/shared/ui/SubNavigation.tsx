@@ -222,8 +222,8 @@ export function SubNavigation({
                       return 'text-muted-foreground border-transparent hover:text-foreground cursor-pointer'
                     }
                     
-                    // Future steps: muted, no hover, no click affordance
-                    return 'text-muted-foreground/60 border-transparent cursor-default'
+                    // Future steps: muted, no hover, no click affordance + "not ready" styling
+                    return 'text-muted-foreground/40 border-transparent cursor-default opacity-60'
                   })()}
                 `}
                 aria-current={isActive ? 'step' : undefined}

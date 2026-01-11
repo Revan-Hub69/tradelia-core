@@ -557,7 +557,9 @@
       "memoryAnchor": "Here, value is evaluated by access, not price.",
       "educationalContentWithContext": "Educational content specific for {journeyId}. This section assumes understanding of the decision frame and common errors.",
       "toolsAvailableAfterPrep": "Tools will be available after completing the preparation sequence: Introduction → Errors → Educational foundation.",
-      "accessEmergencyTool": "Access emergency evaluation tool"
+      "accessEmergencyTool": "Access emergency evaluation tool",
+      "completedIntroduction": "You have completed the introduction to the emergency path.",
+      "identifiedErrors": "You have identified common errors in the emergency path."
     },
   "auth": {
     "title": "Sign In or Register",

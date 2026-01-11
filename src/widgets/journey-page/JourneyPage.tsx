@@ -81,87 +81,107 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
         <div className="space-y-6">
           {/* Emergency-specific introduction - Ultra-Chicche implementation */}
           {journeyId === 'emergency' ? (
-            <div className="max-w-[66ch] mx-auto px-6">
+            <div className="max-w-[54ch] mx-auto px-8">
               {/* Meta indicators - top right, silent */}
-              <div className="flex justify-between items-start mb-12">
+              <div className="flex justify-between items-start mb-16">
                 <div></div>
-                <div className="text-xs text-muted-foreground/60 space-y-1 text-right">
+                <div className="text-xs text-muted-foreground/40 space-y-1 text-right">
                   <div>Scope: Orientation</div>
                   <div>Mode: Risk-first</div>
                 </div>
               </div>
 
               {/* Anti-hero title - policy brief style */}
-              <h1 className="text-[20px] font-normal text-foreground mb-12 leading-[1.4]">
+              <h1 className="text-[20px] font-normal text-foreground mb-16 leading-[1.4]">
                 {t('journeys.emergency.introduction.title')}
               </h1>
 
-              {/* Anti-marketing typography - line-height 1.75, narrow column */}
-              <div className="space-y-8 text-[16px] text-muted-foreground leading-[1.75]">
-                <p className="max-w-[60ch]">
-                  {t('journeys.emergency.introduction.whyExists.content')}
-                </p>
+              {/* Blocchi cognitivi - ogni paragrafo = una idea */}
+              <div className="space-y-12 text-[16px] text-muted-foreground leading-[1.75]">
+                {/* Blocco 1: Contesto storico */}
+                <div className="space-y-4">
+                  <p>
+                    {t('journeys.emergency.introduction.whyExists.content')}
+                  </p>
+                </div>
 
-                <p className="max-w-[60ch]">
-                  {t('journeys.emergency.introduction.problemType.content')}
-                </p>
+                {/* Blocco 2: Sistemi alternativi */}
+                <div className="space-y-4">
+                  <p>
+                    {t('journeys.emergency.introduction.problemType.content')}
+                  </p>
+                </div>
 
-                <p className="max-w-[60ch]">
-                  {t('journeys.emergency.introduction.mentalRule.content')}
-                </p>
+                {/* Blocco 3: Domanda centrale */}
+                <div className="space-y-4">
+                  <p>
+                    {t('journeys.emergency.introduction.mentalRule.content')}
+                  </p>
+                </div>
 
-                <p className="max-w-[60ch]">
-                  {t('journeys.emergency.introduction.whoItMakesSense.content')}
-                </p>
+                {/* Blocco 4: Priorità in emergenza */}
+                <div className="space-y-4">
+                  <p>
+                    {t('journeys.emergency.introduction.whoItMakesSense.content')}
+                  </p>
+                </div>
 
-                <p className="max-w-[60ch]">
-                  {t('journeys.emergency.introduction.finalNote.content')}
-                </p>
+                {/* Blocco 5: Contesto finale */}
+                <div className="space-y-4">
+                  <p>
+                    {t('journeys.emergency.introduction.finalNote.content')}
+                  </p>
+                </div>
               </div>
 
-              {/* Frase-ancora (optional memory anchor) - moved to callout */}
-              <div className="mt-12 mb-8 p-4 bg-muted/20 border-l-4 border-muted-foreground/30 rounded-r-lg">
-                <p className="text-[16px] text-muted-foreground leading-[1.75] max-w-[60ch] italic">
+              {/* Principio chiave - callout vero */}
+              <div className="mt-16 mb-12 p-6 bg-primary/5 border-l-4 border-primary/30 rounded-r-lg">
+                <p className="text-[16px] text-primary/90 leading-[1.6] font-medium">
                   {tJourney('memoryAnchor')}
                 </p>
               </div>
 
-              {/* Step Transition Block - UX cognitiva corretta */}
-              <div className="mt-16 pt-8 border-t border-border/20">
-                <div className="bg-muted/30 border border-border/50 rounded-xl p-6 space-y-4">
-                  {/* Titolo piccolo (stato) */}
-                  <div className="text-xs font-medium text-muted-foreground/80 uppercase tracking-wider">
-                    {tJourney('stepTransition.nextStep')}
-                  </div>
-                  
-                  {/* Descrizione chiara */}
-                  <p className="text-sm text-muted-foreground leading-relaxed max-w-[60ch]">
-                    {tJourney('stepTransition.beforeUsingTools')}
+              {/* Chiusura di fase - non sezione separata */}
+              <div className="mt-12 pt-6 border-t border-border/20">
+                <div className="space-y-6">
+                  {/* Stato completamento */}
+                  <p className="text-sm text-muted-foreground/70">
+                    {tJourney('completedIntroduction')}
                   </p>
                   
-                  {/* Azione chiara (bottone vero) */}
-                  <button
-                    onClick={() => {
-                      educationMemory.markIntroSeen()
-                      
-                      const errorsTab = document.querySelector('[data-tab-id="errors"]') as HTMLButtonElement
-                      if (errorsTab) {
-                        errorsTab.click()
-                      } else {
-                        const tabContainer = document.querySelector('[role="tablist"]')
-                        if (tabContainer) {
-                          const errorButton = tabContainer.querySelector('[data-tab-id="errors"]') as HTMLButtonElement
-                          if (errorButton) {
-                            errorButton.click()
+                  {/* CTA Tradelia-style */}
+                  <div className="bg-muted/20 border border-border/30 rounded-lg p-5 space-y-4">
+                    <div className="text-xs font-medium text-muted-foreground/60 uppercase tracking-wider">
+                      {tJourney('stepTransition.nextStep')}
+                    </div>
+                    
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {tJourney('stepTransition.beforeUsingTools')}
+                    </p>
+                    
+                    <button
+                      onClick={() => {
+                        educationMemory.markIntroSeen()
+                        
+                        const errorsTab = document.querySelector('[data-tab-id="errors"]') as HTMLButtonElement
+                        if (errorsTab) {
+                          errorsTab.click()
+                        } else {
+                          const tabContainer = document.querySelector('[role="tablist"]')
+                          if (tabContainer) {
+                            const errorButton = tabContainer.querySelector('[data-tab-id="errors"]') as HTMLButtonElement
+                            if (errorButton) {
+                              errorButton.click()
+                            }
                           }
                         }
-                      }
-                    }}
-                    className="inline-flex items-center gap-2 px-4 py-3 bg-foreground text-background text-sm font-medium rounded-lg hover:bg-foreground/90 transition-colors focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:ring-offset-2 min-h-[44px]"
-                    aria-label={tJourney('continueWithErrorsAriaLabel')}
-                  >
-                    {tJourney('stepTransition.goToErrors')} →
-                  </button>
+                      }}
+                      className="inline-flex items-center gap-2 px-4 py-2.5 border border-border/50 text-sm font-medium rounded-md text-muted-foreground hover:text-foreground hover:border-border transition-colors focus:outline-none focus:ring-2 focus:ring-muted-foreground/20 focus:ring-offset-2 min-h-[44px]"
+                      aria-label={tJourney('continueWithErrorsAriaLabel')}
+                    >
+                      {tJourney('stepTransition.goToErrors')} →
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -260,20 +280,21 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
             </div>
           )}
 
-          <div className="max-w-[66ch] mx-auto px-6">
-            <h3 className="text-[20px] font-normal text-foreground mb-8 leading-[1.4]">
+          <div className="max-w-[54ch] mx-auto px-8">
+            <h3 className="text-[20px] font-normal text-foreground mb-12 leading-[1.4]">
               {tJourney('commonErrorsIn')} {t(journey.labelKey)}
             </h3>
-            <div className="space-y-8">
+            
+            <div className="space-y-12">
               {[1, 2, 3].map((i) => (
                 <div key={i} className="space-y-4">
                   <div className="flex gap-4">
                     <AlertTriangleIcon className="w-5 h-5 text-error flex-shrink-0 mt-1" />
                     <div className="space-y-3">
-                      <h4 className="text-[16px] font-normal text-error leading-[1.4]">
+                      <h4 className="text-[16px] font-medium text-error leading-[1.4]">
                         {tJourney('errorNumber')} #{i}
                       </h4>
-                      <p className="text-[16px] text-muted-foreground leading-[1.75] max-w-[60ch]">
+                      <p className="text-[16px] text-muted-foreground leading-[1.75]">
                         {tJourney('errorDescription')} {journeyId}.
                       </p>
                     </div>
@@ -282,36 +303,39 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
               ))}
             </div>
 
-            {/* Step Transition Block - UX cognitiva corretta */}
-            <div className="mt-16 pt-8 border-t border-border/20">
-              <div className="bg-muted/30 border border-border/50 rounded-xl p-6 space-y-4">
-                {/* Titolo piccolo (stato) */}
-                <div className="text-xs font-medium text-muted-foreground/80 uppercase tracking-wider">
-                  {tJourney('stepTransition.nextStep')}
-                </div>
-                
-                {/* Descrizione chiara */}
-                <p className="text-sm text-muted-foreground leading-relaxed max-w-[60ch]">
-                  {tJourney('stepTransition.afterIdentifyingErrorsBlock')}
+            {/* Chiusura di fase - Tradelia style */}
+            <div className="mt-16 pt-6 border-t border-border/20">
+              <div className="space-y-6">
+                <p className="text-sm text-muted-foreground/70">
+                  {tJourney('identifiedErrors')}
                 </p>
                 
-                {/* Azione chiara (bottone vero) */}
-                <button
-                  onClick={() => {
-                    educationMemory.markErrorsRead()
-                    const educationalTab = document.querySelector('[data-tab-id="educational"]') as HTMLButtonElement
-                    if (educationalTab) {
-                      educationalTab.click()
-                    }
-                  }}
-                  className="inline-flex items-center gap-2 px-4 py-3 bg-foreground text-background text-sm font-medium rounded-lg hover:bg-foreground/90 transition-colors focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:ring-offset-2 min-h-[44px]"
-                  aria-label={tJourney('continueWithEducationalAriaLabel')}
-                >
-                  {educationMemory.hasSeenIntro 
-                    ? tJourney('stepTransition.goToEducational')
-                    : tJourney('stepTransition.reviewIntroduction')
-                  } →
-                </button>
+                <div className="bg-muted/20 border border-border/30 rounded-lg p-5 space-y-4">
+                  <div className="text-xs font-medium text-muted-foreground/60 uppercase tracking-wider">
+                    {tJourney('stepTransition.nextStep')}
+                  </div>
+                  
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {tJourney('stepTransition.afterIdentifyingErrorsBlock')}
+                  </p>
+                  
+                  <button
+                    onClick={() => {
+                      educationMemory.markErrorsRead()
+                      const educationalTab = document.querySelector('[data-tab-id="educational"]') as HTMLButtonElement
+                      if (educationalTab) {
+                        educationalTab.click()
+                      }
+                    }}
+                    className="inline-flex items-center gap-2 px-4 py-2.5 border border-border/50 text-sm font-medium rounded-md text-muted-foreground hover:text-foreground hover:border-border transition-colors focus:outline-none focus:ring-2 focus:ring-muted-foreground/20 focus:ring-offset-2 min-h-[44px]"
+                    aria-label={tJourney('continueWithEducationalAriaLabel')}
+                  >
+                    {educationMemory.hasSeenIntro 
+                      ? tJourney('stepTransition.goToEducational')
+                      : tJourney('stepTransition.reviewIntroduction')
+                    } →
+                  </button>
+                </div>
               </div>
             </div>
           </div>
