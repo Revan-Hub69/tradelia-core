@@ -11,7 +11,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useFocusTrap } from '@/src/shared/hooks/useFocusTrap'
+import { useModalFocusTrap } from '@/src/shared/hooks/useFocusTrap'
 
 interface DashboardIntroOverlayProps {
   isOpen: boolean
@@ -21,11 +21,19 @@ interface DashboardIntroOverlayProps {
 export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlayProps) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
+  const closeDrawer = () => {
+    setIsDrawerOpen(false)
+  }
+
+  const openDrawer = () => {
+    setIsDrawerOpen(true)
+  }
+
   // Focus trap for overlay
-  const { containerRef: overlayRef } = useFocusTrap(isOpen)
+  const { containerRef: overlayRef } = useModalFocusTrap(isOpen, onClose)
   
   // Focus trap for drawer
-  const { containerRef: drawerRef } = useFocusTrap(isDrawerOpen)
+  const { containerRef: drawerRef } = useModalFocusTrap(isDrawerOpen, closeDrawer)
 
   // Prevent body scroll when overlay is open
   useEffect(() => {
@@ -40,14 +48,6 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
       document.body.style.overflow = ''
     }
   }, [isOpen])
-
-  const openDrawer = () => {
-    setIsDrawerOpen(true)
-  }
-
-  const closeDrawer = () => {
-    setIsDrawerOpen(false)
-  }
 
   if (!isOpen) return null
 
