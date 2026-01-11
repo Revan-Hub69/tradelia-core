@@ -1,5 +1,43 @@
 {
   "common": {
+    "complexity": {
+      "label": "Complessità",
+      "tooltip": "Indica il livello di complessità cognitiva richiesto per questo percorso",
+      "levels": {
+        "low": "Bassa",
+        "medium": "Media",
+        "mediumHigh": "Media-Alta",
+        "high": "Alta",
+        "veryHigh": "Molto Alta"
+      }
+    },
+    "featureGate": {
+      "temporarilyUnavailable": "Temporaneamente non disponibile",
+      "featureDisabled": "Questa funzionalità è attualmente disabilitata",
+      "featureDisabledReason": "La funzionalità {feature} è attualmente disabilitata",
+      "comingSoon": "Prossimamente",
+      "toolComingSoon": "Lo strumento {toolId} sarà disponibile a breve",
+      "notifyMe": "Avvisami",
+      "learnMore": "Scopri di più",
+      "features": {
+        "animations": "Animazioni",
+        "complexAnimations": "Animazioni Complesse",
+        "autoplay": "Riproduzione Automatica",
+        "riskCalculator": "Calcolatore di Rischio",
+        "portfolioAnalyzer": "Analizzatore Portfolio",
+        "advancedCharts": "Grafici Avanzati",
+        "aiFeatures": "Funzionalità AI",
+        "tooltips": "Suggerimenti",
+        "notifications": "Notifiche",
+        "soundEffects": "Effetti Sonori",
+        "hapticFeedback": "Feedback Tattile",
+        "lazyLoading": "Caricamento Lazy",
+        "imageOptimization": "Ottimizzazione Immagini",
+        "prefetching": "Precaricamento",
+        "betaFeatures": "Funzionalità Beta",
+        "debugMode": "Modalità Debug"
+      }
+    },
     "journeyPage": {
       "tabs": {
         "intro": "Introduzione",

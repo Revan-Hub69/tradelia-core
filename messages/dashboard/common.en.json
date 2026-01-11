@@ -1,5 +1,43 @@
 {
   "common": {
+    "complexity": {
+      "label": "Complexity",
+      "tooltip": "Indicates the level of cognitive complexity required for this journey",
+      "levels": {
+        "low": "Low",
+        "medium": "Medium",
+        "mediumHigh": "Medium-High",
+        "high": "High",
+        "veryHigh": "Very High"
+      }
+    },
+    "featureGate": {
+      "temporarilyUnavailable": "Temporarily unavailable",
+      "featureDisabled": "This feature is currently disabled",
+      "featureDisabledReason": "The {feature} feature is currently disabled",
+      "comingSoon": "Coming Soon",
+      "toolComingSoon": "The {toolId} tool will be available soon",
+      "notifyMe": "Notify Me",
+      "learnMore": "Learn More",
+      "features": {
+        "animations": "Animations",
+        "complexAnimations": "Complex Animations",
+        "autoplay": "Autoplay",
+        "riskCalculator": "Risk Calculator",
+        "portfolioAnalyzer": "Portfolio Analyzer",
+        "advancedCharts": "Advanced Charts",
+        "aiFeatures": "AI Features",
+        "tooltips": "Tooltips",
+        "notifications": "Notifications",
+        "soundEffects": "Sound Effects",
+        "hapticFeedback": "Haptic Feedback",
+        "lazyLoading": "Lazy Loading",
+        "imageOptimization": "Image Optimization",
+        "prefetching": "Prefetching",
+        "betaFeatures": "Beta Features",
+        "debugMode": "Debug Mode"
+      }
+    },
     "journeyPage": {
       "tabs": {
         "intro": "Introduction",
