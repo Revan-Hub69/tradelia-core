@@ -8,11 +8,9 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { DashboardLayout } from '@/src/widgets/dashboard-layout'
 import { DashboardAuthGuard } from '@/src/widgets/dashboard-auth'
-import { DashboardIntroOverlay } from '@/src/widgets/dashboard-intro'
 import { FeatureGate } from '@/src/shared/ui/FeatureGate'
 import { ComplexityIndicator } from '@/src/shared/ui/ComplexityIndicator'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
@@ -47,23 +45,7 @@ export function DashboardHome() {
   const { state } = useDashboardAuth()
   const { trackUserAction } = useAnalyticsTracking()
   
-  // Introduction overlay state
-  const [showIntroOverlay, setShowIntroOverlay] = useState(false)
-  
   const userName = state.profile?.full_name || tDashboard('guestUser')
-
-  // Show intro overlay on first visit
-  useEffect(() => {
-    const hasSeenIntro = localStorage.getItem('tradelia-dashboard-intro-seen')
-    if (!hasSeenIntro) {
-      setShowIntroOverlay(true)
-    }
-  }, [])
-
-  const handleCloseIntro = () => {
-    setShowIntroOverlay(false)
-    localStorage.setItem('tradelia-dashboard-intro-seen', 'true')
-  }
 
   const handleJourneyClick = (journeyId: string) => {
     trackUserAction('journey_click', {
@@ -88,16 +70,6 @@ export function DashboardHome() {
               <p className="text-sm text-muted-foreground">
                 <strong>{tDashboard('noImmediateAction')}</strong> {tDashboard('understandFirst')}
               </p>
-            </div>
-            
-            {/* Button to reopen intro */}
-            <div className="mt-4">
-              <button
-                onClick={() => setShowIntroOverlay(true)}
-                className="text-sm text-primary hover:text-primary/80 transition-colors underline underline-offset-2"
-              >
-                📖 Rivedi l'introduzione alla dashboard
-              </button>
             </div>
           </div>
 
@@ -182,12 +154,6 @@ export function DashboardHome() {
             </div>
           </FeatureGate>
         </div>
-        
-        {/* Dashboard Introduction Overlay */}
-        <DashboardIntroOverlay 
-          isOpen={showIntroOverlay}
-          onClose={handleCloseIntro}
-        />
       </DashboardLayout>
     </DashboardAuthGuard>
   )

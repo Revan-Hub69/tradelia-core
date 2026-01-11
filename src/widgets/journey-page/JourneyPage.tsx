@@ -9,10 +9,11 @@
 
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { DashboardLayout } from '@/src/widgets/dashboard-layout'
 import { DashboardAuthGuard } from '@/src/widgets/dashboard-auth'
+import { DashboardIntroOverlay } from '@/src/widgets/dashboard-intro'
 import { SectionLayout } from '@/src/widgets/section-layout/SectionLayout'
 import { SafeButton } from '@/src/shared/ui/SafeButton'
 import { useEducationMemory } from '@/src/shared/hooks/useEducationMemory'
@@ -43,8 +44,26 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
   const journey = JOURNEYS[journeyId]
   const Icon = JOURNEY_ICONS[journeyId]
 
+  // Emergency intro overlay state
+  const [showEmergencyIntro, setShowEmergencyIntro] = useState(false)
+
   // Ultra-Chicche: Education Memory for intelligent guidance
   const educationMemory = useEducationMemory(journeyId)
+
+  // Show emergency intro overlay on first visit to emergency journey
+  useEffect(() => {
+    if (journeyId === 'emergency') {
+      const hasSeenEmergencyIntro = localStorage.getItem('tradelia-emergency-intro-seen')
+      if (!hasSeenEmergencyIntro) {
+        setShowEmergencyIntro(true)
+      }
+    }
+  }, [journeyId])
+
+  const handleCloseEmergencyIntro = () => {
+    setShowEmergencyIntro(false)
+    localStorage.setItem('tradelia-emergency-intro-seen', 'true')
+  }
 
   // Handle tab switching from empty state
   useEffect(() => {
@@ -537,6 +556,14 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
           subNavItems={subNavItems}
           defaultActiveTab="intro"
         />
+        
+        {/* Emergency Introduction Overlay - Only for emergency journey */}
+        {journeyId === 'emergency' && (
+          <DashboardIntroOverlay 
+            isOpen={showEmergencyIntro}
+            onClose={handleCloseEmergencyIntro}
+          />
+        )}
       </DashboardLayout>
     </DashboardAuthGuard>
   )

@@ -1,11 +1,11 @@
 /**
  * Dashboard Introduction Overlay - Tradelia 2026
  * 
- * Overlay innovativo che introduce alla dashboard con progressive disclosure:
+ * Overlay per introduzione al percorso EMERGENZA:
  * - Overlay principale: orienta il modello mentale in 60-90 secondi
  * - Drawer di approfondimento: dimostra con rigore e fonti
  * 
- * Design: UX istituzionale, contrasti eleganti, SVG homemade
+ * Design: UX istituzionale, contrasti eleganti, SOLO SVG homemade
  */
 
 'use client'
@@ -55,34 +55,34 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
     <>
       {/* Overlay Backdrop */}
       <div 
-        className="fixed inset-0 z-[70] bg-background/95 backdrop-blur-sm overlay-backdrop"
+        className="fixed inset-0 z-[70] bg-white/95 backdrop-blur-sm"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* Main Overlay */}
+      {/* Main Overlay - Design Tradelia */}
       <div 
         ref={overlayRef as React.RefObject<HTMLDivElement>}
-        className="fixed inset-0 z-[75] flex items-center justify-center p-4 overflow-y-auto"
+        className="fixed inset-0 z-[75] flex items-center justify-center p-6 overflow-y-auto"
         role="dialog"
         aria-modal="true"
         aria-labelledby="intro-title"
       >
-        <div className="w-full max-w-2xl bg-background border border-border rounded-2xl shadow-2xl overlay-content">
-          {/* Header */}
-          <div className="px-8 py-6 border-b border-border/50">
+        <div className="w-full max-w-3xl bg-white border border-gray-200 rounded-none shadow-lg">
+          {/* Header - Design Tradelia */}
+          <div className="px-12 py-8 border-b border-gray-100">
             <div className="flex items-start justify-between">
-              <div>
-                <h1 id="intro-title" className="text-2xl font-bold text-foreground mb-2">
+              <div className="max-w-lg">
+                <h1 id="intro-title" className="text-3xl font-normal text-gray-900 mb-4 leading-tight">
                   Crypto in situazioni di emergenza
                 </h1>
-                <p className="text-muted-foreground">
+                <p className="text-lg text-gray-600 leading-relaxed">
                   Sistemi alternativi quando quelli normali non funzionano
                 </p>
               </div>
               <button
                 onClick={onClose}
-                className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="p-3 text-gray-400 hover:text-gray-600 transition-colors rounded-none border border-gray-200 hover:border-gray-300"
                 aria-label="Chiudi introduzione"
               >
                 <CloseIcon />
@@ -90,84 +90,93 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
             </div>
           </div>
 
-          {/* Content */}
-          <div className="px-8 py-6 space-y-8">
+          {/* Content - Design Tradelia */}
+          <div className="px-12 py-10 space-y-12">
             {/* Blocco 1 - Origine */}
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-foreground">
+            <div className="space-y-6">
+              <h2 className="text-xl font-medium text-gray-900">
                 Perché nascono le criptovalute
               </h2>
-              <div className="prose prose-tradelia max-w-none">
-                <p className="text-foreground leading-relaxed">
+              <div className="max-w-2xl">
+                <p className="text-gray-700 leading-relaxed text-lg mb-6">
                   Le criptovalute nascono dopo la crisi del 2008, quando il problema non era la mancanza di denaro, 
                   ma l'impossibilità di usarlo liberamente.
                 </p>
-                <div className="my-4 p-4 bg-muted/30 rounded-lg border-l-4 border-warning/50">
-                  <p className="text-sm text-muted-foreground mb-2 font-medium">Situazioni reali:</p>
-                  <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• Banche chiuse</li>
-                    <li>• Prelievi limitati</li>
-                    <li>• Trasferimenti bloccati</li>
+                <div className="border-l-4 border-amber-400 bg-amber-50 p-6 mb-6">
+                  <p className="text-sm font-medium text-gray-900 mb-3">Situazioni reali:</p>
+                  <ul className="text-gray-700 space-y-2">
+                    <li className="flex items-start gap-3">
+                      <BulletIcon />
+                      <span>Banche chiuse</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <BulletIcon />
+                      <span>Prelievi limitati</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <BulletIcon />
+                      <span>Trasferimenti bloccati</span>
+                    </li>
                   </ul>
                 </div>
-                <p className="text-foreground leading-relaxed">
+                <p className="text-gray-700 leading-relaxed text-lg">
                   L'obiettivo era creare un sistema di trasferimento che non dipendesse da una singola banca o autorità.
                 </p>
               </div>
             </div>
 
             {/* Blocco 2 - Tipo di emergenze */}
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-foreground">
+            <div className="space-y-6">
+              <h2 className="text-xl font-medium text-gray-900">
                 Di che emergenze parliamo
               </h2>
-              <div className="prose prose-tradelia max-w-none">
-                <p className="text-foreground leading-relaxed mb-4">
+              <div className="max-w-2xl">
+                <p className="text-gray-700 leading-relaxed text-lg mb-6">
                   Situazioni già accadute e studiate:
                 </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-                  <div className="p-3 bg-muted/20 rounded-lg">
-                    <div className="text-sm font-medium text-foreground mb-1">Limitazioni ai conti</div>
-                    <div className="text-xs text-muted-foreground">Controlli sui capitali</div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                  <div className="border border-gray-200 p-4">
+                    <div className="text-base font-medium text-gray-900 mb-2">Limitazioni ai conti</div>
+                    <div className="text-sm text-gray-600">Controlli sui capitali</div>
                   </div>
-                  <div className="p-3 bg-muted/20 rounded-lg">
-                    <div className="text-sm font-medium text-foreground mb-1">Interruzioni dei pagamenti</div>
-                    <div className="text-xs text-muted-foreground">Guasti sistemici</div>
+                  <div className="border border-gray-200 p-4">
+                    <div className="text-base font-medium text-gray-900 mb-2">Interruzioni dei pagamenti</div>
+                    <div className="text-sm text-gray-600">Guasti sistemici</div>
                   </div>
-                  <div className="p-3 bg-muted/20 rounded-lg">
-                    <div className="text-sm font-medium text-foreground mb-1">Crisi sistemiche</div>
-                    <div className="text-xs text-muted-foreground">Instabilità finanziaria</div>
+                  <div className="border border-gray-200 p-4">
+                    <div className="text-base font-medium text-gray-900 mb-2">Crisi sistemiche</div>
+                    <div className="text-sm text-gray-600">Instabilità finanziaria</div>
                   </div>
-                  <div className="p-3 bg-muted/20 rounded-lg">
-                    <div className="text-sm font-medium text-foreground mb-1">Attacchi informatici</div>
-                    <div className="text-xs text-muted-foreground">Infrastrutture finanziarie</div>
+                  <div className="border border-gray-200 p-4">
+                    <div className="text-base font-medium text-gray-900 mb-2">Attacchi informatici</div>
+                    <div className="text-sm text-gray-600">Infrastrutture finanziarie</div>
                   </div>
                 </div>
-                <div className="p-4 bg-primary/5 rounded-lg border border-primary/20">
-                  <p className="text-sm text-foreground">
-                    <strong>👉 In questi casi il problema non è il valore, ma l'accesso e il funzionamento.</strong>
+                <div className="border border-blue-200 bg-blue-50 p-6 mb-6">
+                  <p className="text-gray-900 font-medium">
+                    In questi casi il problema non è il valore, ma l'accesso e il funzionamento.
                   </p>
                 </div>
                 <button
                   onClick={() => openDrawer()}
-                  className="mt-3 text-sm text-primary hover:text-primary/80 transition-colors underline underline-offset-2"
+                  className="text-blue-600 hover:text-blue-800 transition-colors underline underline-offset-2 font-medium"
                 >
-                  🔍 Approfondisci i rischi reali →
+                  Approfondisci i rischi reali
                 </button>
               </div>
             </div>
 
             {/* Blocco 3 - Approccio */}
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-foreground">
+            <div className="space-y-6">
+              <h2 className="text-xl font-medium text-gray-900">
                 Cosa significa usarle come riserva di emergenza
               </h2>
-              <div className="prose prose-tradelia max-w-none">
-                <p className="text-foreground leading-relaxed">
+              <div className="max-w-2xl">
+                <p className="text-gray-700 leading-relaxed text-lg mb-6">
                   Significa considerarle come opzione aggiuntiva, non come sostituzione del sistema tradizionale.
                 </p>
-                <div className="my-4 p-4 bg-muted/30 rounded-lg">
-                  <p className="text-sm text-foreground font-medium">
+                <div className="border border-gray-200 bg-gray-50 p-6">
+                  <p className="text-gray-900 font-medium">
                     La domanda non è "quanto rendono", ma in quali condizioni continuano a funzionare.
                   </p>
                 </div>
@@ -175,42 +184,42 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
             </div>
 
             {/* Blocco 4 - Scopo della dashboard */}
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-foreground">
+            <div className="space-y-6">
+              <h2 className="text-xl font-medium text-gray-900">
                 Perché esiste questa dashboard
               </h2>
-              <div className="prose prose-tradelia max-w-none">
-                <p className="text-foreground leading-relaxed mb-4">
+              <div className="max-w-2xl">
+                <p className="text-gray-700 leading-relaxed text-lg mb-6">
                   Questa dashboard serve a:
                 </p>
-                <ul className="space-y-2 text-foreground">
-                  <li className="flex items-start gap-3">
+                <ul className="space-y-4 mb-8">
+                  <li className="flex items-start gap-4">
                     <CheckIcon />
-                    <span>capire quando questo approccio è rilevante</span>
+                    <span className="text-gray-700">capire quando questo approccio è rilevante</span>
                   </li>
-                  <li className="flex items-start gap-3">
+                  <li className="flex items-start gap-4">
                     <CheckIcon />
-                    <span>capire da cosa dipende il suo funzionamento</span>
+                    <span className="text-gray-700">capire da cosa dipende il suo funzionamento</span>
                   </li>
-                  <li className="flex items-start gap-3">
+                  <li className="flex items-start gap-4">
                     <CheckIcon />
-                    <span>evitare di scoprirne i limiti nel momento peggiore</span>
+                    <span className="text-gray-700">evitare di scoprirne i limiti nel momento peggiore</span>
                   </li>
                 </ul>
-                <div className="mt-6 p-4 bg-success/5 rounded-lg border border-success/20">
-                  <p className="text-sm text-foreground">
-                    <strong>Non ti dice cosa comprare. Ti aiuta a valutare consapevolmente.</strong>
+                <div className="border border-green-200 bg-green-50 p-6">
+                  <p className="text-gray-900 font-medium">
+                    Non ti dice cosa comprare. Ti aiuta a valutare consapevolmente.
                   </p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Footer CTA */}
-          <div className="px-8 py-6 border-t border-border/50">
+          {/* Footer CTA - Design Tradelia */}
+          <div className="px-12 py-8 border-t border-gray-100">
             <button
               onClick={onClose}
-              className="w-full py-3 px-6 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2"
+              className="w-full py-4 px-8 bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors border border-blue-600 hover:border-blue-700"
             >
               Ok, ho capito → Vai alla dashboard
             </button>
@@ -218,28 +227,28 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
         </div>
       </div>
 
-      {/* Drawer di approfondimento */}
+      {/* Drawer di approfondimento - Design Tradelia */}
       {isDrawerOpen && (
         <>
           <div 
-            className="fixed inset-0 z-[80] bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 z-[80] bg-black/50"
             onClick={closeDrawer}
             aria-hidden="true"
           />
           <div 
             ref={drawerRef as React.RefObject<HTMLDivElement>}
-            className="fixed right-0 top-0 bottom-0 w-full max-w-2xl bg-background border-l border-border z-[85] overflow-y-auto drawer-content"
+            className="fixed right-0 top-0 bottom-0 w-full max-w-3xl bg-white border-l border-gray-200 z-[85] overflow-y-auto"
             role="dialog"
             aria-modal="true"
           >
-            <div className="sticky top-0 bg-background border-b border-border/50 px-6 py-4">
+            <div className="sticky top-0 bg-white border-b border-gray-100 px-8 py-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-foreground">
+                <h2 className="text-xl font-medium text-gray-900">
                   Rischi reali studiati
                 </h2>
                 <button
                   onClick={closeDrawer}
-                  className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  className="p-3 text-gray-400 hover:text-gray-600 transition-colors border border-gray-200 hover:border-gray-300"
                   aria-label="Chiudi approfondimento"
                 >
                   <CloseIcon />
@@ -247,27 +256,33 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
               </div>
             </div>
 
-            <div className="px-6 py-6 space-y-8">
+            <div className="px-8 py-8 space-y-12">
               {/* Sezione 1 - Rischio cyber */}
               <div className="space-y-4">
-                <h3 className="text-base font-semibold text-foreground">
+                <h3 className="text-lg font-medium text-gray-900">
                   Rischio cyber (futuro ad alta probabilità)
                 </h3>
-                <div className="prose prose-sm max-w-none">
-                  <p className="text-muted-foreground leading-relaxed">
+                <div className="max-w-2xl">
+                  <p className="text-gray-700 leading-relaxed mb-4">
                     Le istituzioni finanziarie considerano gli attacchi informatici una delle principali minacce 
                     alla continuità operativa.
                   </p>
-                  <ul className="text-muted-foreground space-y-1">
-                    <li>• ENISA segnala un aumento costante di incidenti nel settore finanziario</li>
-                    <li>• FMI e BIS riconoscono il cyber-risk come rischio di stabilità sistemica</li>
+                  <ul className="text-gray-700 space-y-2 mb-6">
+                    <li className="flex items-start gap-3">
+                      <BulletIcon />
+                      <span>ENISA segnala un aumento costante di incidenti nel settore finanziario</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <BulletIcon />
+                      <span>FMI e BIS riconoscono il cyber-risk come rischio di stabilità sistemica</span>
+                    </li>
                   </ul>
-                  <div className="mt-4 p-3 bg-muted/20 rounded-lg">
-                    <p className="text-xs font-medium text-muted-foreground mb-2">📎 Fonti:</p>
-                    <ul className="text-xs text-muted-foreground space-y-1">
-                      <li>• ENISA – Threat Landscape for Finance</li>
-                      <li>• IMF – Cyber Risk and Financial Stability</li>
-                      <li>• BIS – Operational and cyber risk in finance</li>
+                  <div className="border border-gray-200 bg-gray-50 p-4">
+                    <p className="text-sm font-medium text-gray-900 mb-2">Fonti:</p>
+                    <ul className="text-sm text-gray-700 space-y-1">
+                      <li>ENISA – Threat Landscape for Finance</li>
+                      <li>IMF – Cyber Risk and Financial Stability</li>
+                      <li>BIS – Operational and cyber risk in finance</li>
                     </ul>
                   </div>
                 </div>
@@ -275,26 +290,35 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
 
               {/* Sezione 2 - Rischio sistemico */}
               <div className="space-y-4">
-                <h3 className="text-base font-semibold text-foreground">
+                <h3 className="text-lg font-medium text-gray-900">
                   Rischio sistemico
                 </h3>
-                <div className="prose prose-sm max-w-none">
-                  <p className="text-muted-foreground leading-relaxed">
+                <div className="max-w-2xl">
+                  <p className="text-gray-700 leading-relaxed mb-4">
                     I sistemi finanziari sono altamente interconnessi. Un problema in un nodo critico può propagarsi rapidamente.
                   </p>
-                  <p className="text-muted-foreground leading-relaxed">
+                  <p className="text-gray-700 leading-relaxed mb-4">
                     Questo è il motivo per cui:
                   </p>
-                  <ul className="text-muted-foreground space-y-1">
-                    <li>• esistono stress test</li>
-                    <li>• esistono piani di emergenza</li>
-                    <li>• esistono controlli sui capitali</li>
+                  <ul className="text-gray-700 space-y-2 mb-6">
+                    <li className="flex items-start gap-3">
+                      <BulletIcon />
+                      <span>esistono stress test</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <BulletIcon />
+                      <span>esistono piani di emergenza</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <BulletIcon />
+                      <span>esistono controlli sui capitali</span>
+                    </li>
                   </ul>
-                  <div className="mt-4 p-3 bg-muted/20 rounded-lg">
-                    <p className="text-xs font-medium text-muted-foreground mb-2">📎 Fonti:</p>
-                    <ul className="text-xs text-muted-foreground space-y-1">
-                      <li>• BIS – Global Liquidity & Systemic Risk</li>
-                      <li>• IMF – Global Financial Stability Report</li>
+                  <div className="border border-gray-200 bg-gray-50 p-4">
+                    <p className="text-sm font-medium text-gray-900 mb-2">Fonti:</p>
+                    <ul className="text-sm text-gray-700 space-y-1">
+                      <li>BIS – Global Liquidity & Systemic Risk</li>
+                      <li>IMF – Global Financial Stability Report</li>
                     </ul>
                   </div>
                 </div>
@@ -302,39 +326,57 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
 
               {/* Sezione 3 - Interruzioni operative */}
               <div className="space-y-4">
-                <h3 className="text-base font-semibold text-foreground">
+                <h3 className="text-lg font-medium text-gray-900">
                   Interruzioni operative
                 </h3>
-                <div className="prose prose-sm max-w-none">
-                  <p className="text-muted-foreground leading-relaxed">
+                <div className="max-w-2xl">
+                  <p className="text-gray-700 leading-relaxed mb-4">
                     Anche senza crisi finanziarie possono verificarsi:
                   </p>
-                  <ul className="text-muted-foreground space-y-1">
-                    <li>• blackout</li>
-                    <li>• guasti ai circuiti di pagamento</li>
-                    <li>• blocchi temporanei di servizi digitali</li>
+                  <ul className="text-gray-700 space-y-2 mb-6">
+                    <li className="flex items-start gap-3">
+                      <BulletIcon />
+                      <span>blackout</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <BulletIcon />
+                      <span>guasti ai circuiti di pagamento</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <BulletIcon />
+                      <span>blocchi temporanei di servizi digitali</span>
+                    </li>
                   </ul>
-                  <div className="mt-4 p-3 bg-muted/20 rounded-lg">
-                    <p className="text-xs font-medium text-muted-foreground mb-2">📎 Fonti:</p>
-                    <ul className="text-xs text-muted-foreground space-y-1">
-                      <li>• World Economic Forum – Global Risks Report</li>
-                      <li>• Banca Centrale Europea – resilienza operativa</li>
+                  <div className="border border-gray-200 bg-gray-50 p-4">
+                    <p className="text-sm font-medium text-gray-900 mb-2">Fonti:</p>
+                    <ul className="text-sm text-gray-700 space-y-1">
+                      <li>World Economic Forum – Global Risks Report</li>
+                      <li>Banca Centrale Europea – resilienza operativa</li>
                     </ul>
                   </div>
                 </div>
               </div>
 
               {/* Chiusura drawer */}
-              <div className="p-4 bg-primary/5 rounded-lg border border-primary/20">
-                <h4 className="text-sm font-semibold text-foreground mb-2">
+              <div className="border border-blue-200 bg-blue-50 p-6">
+                <h4 className="text-base font-medium text-gray-900 mb-3">
                   Questi scenari:
                 </h4>
-                <ul className="text-sm text-muted-foreground space-y-1">
-                  <li>• non sono previsioni</li>
-                  <li>• non sono catastrofismo</li>
-                  <li>• sono rischi studiati da chi gestisce i sistemi</li>
+                <ul className="text-gray-700 space-y-2 mb-4">
+                  <li className="flex items-start gap-3">
+                    <BulletIcon />
+                    <span>non sono previsioni</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <BulletIcon />
+                    <span>non sono catastrofismo</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <BulletIcon />
+                    <span>sono rischi studiati da chi gestisce i sistemi</span>
+                  </li>
                 </ul>
-                <p className="text-sm text-foreground mt-3 font-medium">
+                <p className="text-gray-900 font-medium">
                   La dashboard serve a capire come ti influenzerebbero, non se accadranno.
                 </p>
               </div>
@@ -346,7 +388,7 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
   )
 }
 
-// SVG Icons homemade - Tradelia style
+// SVG Icons homemade - Tradelia style - NIENTE EMOJI
 function CloseIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-current">
@@ -363,7 +405,7 @@ function CloseIcon() {
 
 function CheckIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-success flex-shrink-0 mt-0.5">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-green-600 flex-shrink-0 mt-0.5">
       <path 
         d="M16.25 6.25L8.125 14.375L3.75 10" 
         stroke="currentColor" 
@@ -371,6 +413,14 @@ function CheckIcon() {
         strokeLinecap="round" 
         strokeLinejoin="round"
       />
+    </svg>
+  )
+}
+
+function BulletIcon() {
+  return (
+    <svg width="6" height="6" viewBox="0 0 6 6" fill="none" className="text-gray-400 flex-shrink-0 mt-2">
+      <circle cx="3" cy="3" r="3" fill="currentColor" />
     </svg>
   )
 }

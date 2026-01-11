@@ -1289,68 +1289,38 @@ html, body {
     width: auto !important;
   }
 }
-/* Dashboard Introduction Overlay - Tradelia Design */
-.prose-tradelia {
-  color: hsl(var(--foreground));
+/* Dashboard Introduction Overlay - Tradelia Design - NO EMOJI, SOLO SVG */
+.emergency-intro-overlay {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-.prose-tradelia p {
-  margin-bottom: 1rem;
+.emergency-intro-overlay h1 {
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.emergency-intro-overlay h2 {
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.emergency-intro-overlay p {
   line-height: 1.75;
+  max-width: 66ch;
 }
 
-.prose-tradelia ul {
-  margin: 1rem 0;
-  padding-left: 1.5rem;
+/* Viewport fix - ensure overlay stays within bounds */
+.emergency-intro-overlay .overlay-container {
+  max-height: 100vh;
+  max-width: 100vw;
+  overflow-y: auto;
 }
 
-.prose-tradelia li {
-  margin-bottom: 0.5rem;
-}
-
-.prose-tradelia strong {
-  font-weight: 600;
-  color: hsl(var(--foreground));
-}
-
-/* Overlay animations */
-@keyframes overlayFadeIn {
-  from {
-    opacity: 0;
+/* Drawer responsive */
+@media (max-width: 768px) {
+  .emergency-intro-overlay .drawer-content {
+    max-width: 100vw;
+    width: 100vw;
   }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes overlaySlideIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95) translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-@keyframes drawerSlideIn {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-
-.overlay-backdrop {
-  animation: overlayFadeIn 0.2s ease-out;
-}
-
-.overlay-content {
-  animation: overlaySlideIn 0.3s ease-out;
-}
-
-.drawer-content {
-  animation: drawerSlideIn 0.3s ease-out;
 }
