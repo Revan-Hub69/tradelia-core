@@ -34,114 +34,67 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
   // Ref for content scrollable area
   const contentRef = useRef<HTMLDivElement>(null)
 
-  // Auto-focus and scroll reset when step changes
+  // Auto-focus with explicit anchor targeting and scroll reset
   useEffect(() => {
     if (isOpen && contentRef.current) {
       // Reset scroll to top when step changes
       contentRef.current.scrollTop = 0
       
-      // Focus first interactive element after animation
-      setTimeout(() => {
-        const firstButton = contentRef.current?.querySelector('button:not([aria-hidden="true"])')
-        if (firstButton) {
-          (firstButton as HTMLElement).focus()
+      // Focus explicit anchor after animation with timeout cleanup
+      const focusTimer = setTimeout(() => {
+        const target = contentRef.current?.querySelector('[data-autofocus="true"]') as HTMLElement | null
+        if (target) {
+          target.focus()
+        } else {
+          // Fallback to first interactive element
+          const firstButton = contentRef.current?.querySelector('button:not([aria-hidden="true"])')
+          if (firstButton) {
+            (firstButton as HTMLElement).focus()
+          }
         }
       }, isAnimating ? 400 : 100)
+
+      return () => clearTimeout(focusTimer)
     }
   }, [currentStep, isOpen, isAnimating])
 
-  // Enhanced scroll lock with smooth animations
+  // Production-safe scroll lock with documentElement
   useEffect(() => {
-    if (isOpen) {
-      setIsAnimating(true)
-      
-      // Store current scroll position
-      const scrollY = window.scrollY
-      const scrollX = window.scrollX
-      
-      // Calculate scrollbar width to prevent layout shift
-      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
-      
-      // Apply scroll lock with smooth transition
-      document.body.style.overflow = 'hidden'
-      document.body.style.paddingRight = `${scrollbarWidth}px`
-      document.body.style.position = 'fixed'
-      document.body.style.top = `-${scrollY}px`
-      document.body.style.left = `-${scrollX}px`
-      document.body.style.width = '100%'
-      
-      // Store scroll position for restoration
-      document.body.dataset.scrollY = scrollY.toString()
-      document.body.dataset.scrollX = scrollX.toString()
-      
-      // Enhanced main content push with refined animation
-      const mainContent = document.querySelector('.dashboard-main-content') as HTMLElement
-      if (mainContent && window.innerWidth >= 1024) {
-        mainContent.style.transform = 'translateX(-300px)'
-        mainContent.style.transition = 'transform 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94)'
-        mainContent.style.opacity = '0.7'
-      }
-      
-      // Animation complete
-      setTimeout(() => setIsAnimating(false), 300)
-    } else {
-      setIsAnimating(true)
-      
-      // Restore scroll position and remove scroll lock
-      const scrollY = parseInt(document.body.dataset.scrollY || '0', 10)
-      const scrollX = parseInt(document.body.dataset.scrollX || '0', 10)
-      
-      // Remove scroll lock styles
-      document.body.style.overflow = ''
-      document.body.style.paddingRight = ''
-      document.body.style.position = ''
-      document.body.style.top = ''
-      document.body.style.left = ''
-      document.body.style.width = ''
-      
-      // Restore scroll position
-      window.scrollTo(scrollX, scrollY)
-      
-      // Clean up data attributes
-      delete document.body.dataset.scrollY
-      delete document.body.dataset.scrollX
-      
-      // Reset main content position with smooth return
-      const mainContent = document.querySelector('.dashboard-main-content') as HTMLElement
-      if (mainContent) {
-        mainContent.style.transform = ''
-        mainContent.style.transition = 'transform 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94)'
-        mainContent.style.opacity = ''
-      }
-      
-      setCurrentStep('main')
-      setTimeout(() => setIsAnimating(false), 300)
+    if (!isOpen) return
+
+    const html = document.documentElement
+    const prevOverflow = html.style.overflow
+    const prevPadding = html.style.paddingRight
+    const scrollbarWidth = window.innerWidth - html.clientWidth
+
+    // Apply robust scroll lock
+    html.style.overflow = 'hidden'
+    html.style.paddingRight = scrollbarWidth ? `${scrollbarWidth}px` : ''
+
+    // Enhanced main content push with refined animation
+    const mainContent = document.querySelector('.dashboard-main-content') as HTMLElement
+    if (mainContent && window.innerWidth >= 1024) {
+      mainContent.style.transform = 'translateX(-300px)'
+      mainContent.style.transition = 'transform 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+      mainContent.style.opacity = '0.7'
     }
+    
+    // Animation complete with cleanup
+    const animationTimer = setTimeout(() => setIsAnimating(false), 300)
 
     return () => {
-      // Cleanup on unmount
-      const scrollY = parseInt(document.body.dataset.scrollY || '0', 10)
-      const scrollX = parseInt(document.body.dataset.scrollX || '0', 10)
+      // Restore scroll lock
+      html.style.overflow = prevOverflow
+      html.style.paddingRight = prevPadding
       
-      document.body.style.overflow = ''
-      document.body.style.paddingRight = ''
-      document.body.style.position = ''
-      document.body.style.top = ''
-      document.body.style.left = ''
-      document.body.style.width = ''
-      
-      if (scrollY || scrollX) {
-        window.scrollTo(scrollX, scrollY)
-      }
-      
-      delete document.body.dataset.scrollY
-      delete document.body.dataset.scrollX
-      
-      const mainContent = document.querySelector('.dashboard-main-content') as HTMLElement
+      // Reset main content position
       if (mainContent) {
         mainContent.style.transform = ''
+        mainContent.style.transition = 'transform 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94)'
         mainContent.style.opacity = ''
       }
+      
+      clearTimeout(animationTimer)
     }
   }, [isOpen])
 
@@ -187,7 +140,6 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
           transform transition-all duration-300 ease-out overflow-hidden
           flex flex-col
           ${isOpen ? 'translate-x-0 scale-100' : 'translate-x-full scale-98'}
-          ${isAnimating ? 'pointer-events-none' : 'pointer-events-auto'}
         `}
         style={{
           background: 'hsl(var(--bg-section)/0.95)',
@@ -196,6 +148,8 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
         role="dialog"
         aria-modal="true"
         aria-labelledby="intro-title"
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.key === 'Escape' && onClose()}
       >
         {/* Refined Header with subtle glass morphism */}
         <div className="sticky top-0 z-10 flex items-center justify-between p-6 border-b border-border/20 backdrop-blur-lg">
@@ -250,7 +204,7 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
         >
           <div className={`
             transition-all duration-250 ease-out
-            ${isAnimating ? 'opacity-60 transform translate-x-1' : 'opacity-100 transform translate-x-0'}
+            ${isAnimating ? 'opacity-60 transform translate-x-1 pointer-events-none' : 'opacity-100 transform translate-x-0'}
           `}>
             {currentStep === 'main' ? (
               <div className="p-6 pb-32 space-y-8 min-h-full">
@@ -272,8 +226,8 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
                       {t('sections.origin.situations.title')}
                     </p>
                     <ul className="text-sm content-secondary space-y-2">
-                      {t.raw('sections.origin.situations.items').map((item: string, index: number) => (
-                        <li key={`origin-${index}`} className="flex items-center gap-2">
+                      {t.raw('sections.origin.situations.items').map((item: string) => (
+                        <li key={`origin-situation-${item.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-center gap-2">
                           <div className="w-1.5 h-1.5 rounded-full bg-warning flex-shrink-0" />
                           {item}
                         </li>
@@ -299,8 +253,8 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
                     {t('sections.emergencies.content')}
                   </p>
                   <div className="grid gap-3">
-                    {t.raw('sections.emergencies.types').map((type: { title: string; description: string }, index: number) => (
-                      <div key={`emergency-${index}`} className="
+                    {t.raw('sections.emergencies.types').map((type: { title: string; description: string }) => (
+                      <div key={`emergency-type-${type.title.replace(/\s+/g, '-').toLowerCase()}`} className="
                         p-4 rounded-xl border border-border/50 
                         bg-gradient-to-r from-muted/30 to-muted/10
                         hover:border-border hover:shadow-sm
@@ -318,6 +272,7 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
                   </div>
                   <button
                     onClick={goToRisks}
+                    data-autofocus="true"
                     className="
                       inline-flex items-center gap-2 px-4 py-2 rounded-xl
                       bg-primary/10 hover:bg-primary/20 active:scale-95
@@ -366,8 +321,8 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
                     {t('sections.purpose.content')}
                   </p>
                   <ul className="space-y-3">
-                    {t.raw('sections.purpose.items').map((item: string, index: number) => (
-                      <li key={`purpose-${index}`} className="flex items-start gap-3">
+                    {t.raw('sections.purpose.items').map((item: string) => (
+                      <li key={`purpose-item-${item.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-3">
                         <div className="w-5 h-5 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0 mt-0.5">
                           <CheckIcon />
                         </div>
@@ -399,8 +354,8 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
                     {t('risks.cyber.content')}
                   </p>
                   <ul className="text-sm content-secondary space-y-2">
-                    {t.raw('risks.cyber.points').map((point: string, index: number) => (
-                      <li key={`cyber-${index}`} className="flex items-start gap-2">
+                    {t.raw('risks.cyber.points').map((point: string) => (
+                      <li key={`cyber-point-${point.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-2">
                         <div className="w-1.5 h-1.5 rounded-full bg-error flex-shrink-0 mt-2" />
                         {point}
                       </li>
@@ -409,8 +364,8 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
                   <div className="section-frame p-4 rounded-xl bg-muted/30">
                     <p className="text-xs font-semibold content-primary mb-2">Fonti:</p>
                     <ul className="text-xs content-secondary space-y-1">
-                      {t.raw('risks.cyber.sources').map((source: string, index: number) => (
-                        <li key={`cyber-source-${index}`} className="flex items-start gap-2">
+                      {t.raw('risks.cyber.sources').map((source: string) => (
+                        <li key={`cyber-source-${source.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-2">
                           <div className="w-1 h-1 rounded-full bg-muted-foreground flex-shrink-0 mt-1.5" />
                           {source}
                         </li>
@@ -436,8 +391,8 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
                     {t('risks.systemic.reason')}
                   </p>
                   <ul className="text-sm content-secondary space-y-2">
-                    {t.raw('risks.systemic.points').map((point: string, index: number) => (
-                      <li key={`systemic-${index}`} className="flex items-start gap-2">
+                    {t.raw('risks.systemic.points').map((point: string) => (
+                      <li key={`systemic-point-${point.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-2">
                         <div className="w-1.5 h-1.5 rounded-full bg-warning flex-shrink-0 mt-2" />
                         {point}
                       </li>
@@ -446,8 +401,8 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
                   <div className="section-frame p-4 rounded-xl bg-muted/30">
                     <p className="text-xs font-semibold content-primary mb-2">Fonti:</p>
                     <ul className="text-xs content-secondary space-y-1">
-                      {t.raw('risks.systemic.sources').map((source: string, index: number) => (
-                        <li key={`systemic-source-${index}`} className="flex items-start gap-2">
+                      {t.raw('risks.systemic.sources').map((source: string) => (
+                        <li key={`systemic-source-${source.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-2">
                           <div className="w-1 h-1 rounded-full bg-muted-foreground flex-shrink-0 mt-1.5" />
                           {source}
                         </li>
@@ -470,8 +425,8 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
                     {t('risks.operational.content')}
                   </p>
                   <ul className="text-sm content-secondary space-y-2">
-                    {t.raw('risks.operational.points').map((point: string, index: number) => (
-                      <li key={`operational-${index}`} className="flex items-start gap-2">
+                    {t.raw('risks.operational.points').map((point: string) => (
+                      <li key={`operational-point-${point.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-2">
                         <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0 mt-2" />
                         {point}
                       </li>
@@ -480,8 +435,8 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
                   <div className="section-frame p-4 rounded-xl bg-muted/30">
                     <p className="text-xs font-semibold content-primary mb-2">Fonti:</p>
                     <ul className="text-xs content-secondary space-y-1">
-                      {t.raw('risks.operational.sources').map((source: string, index: number) => (
-                        <li key={`operational-source-${index}`} className="flex items-start gap-2">
+                      {t.raw('risks.operational.sources').map((source: string) => (
+                        <li key={`operational-source-${source.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-2">
                           <div className="w-1 h-1 rounded-full bg-muted-foreground flex-shrink-0 mt-1.5" />
                           {source}
                         </li>
@@ -501,8 +456,8 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
                     </h4>
                   </div>
                   <ul className="text-sm content-secondary space-y-2 mb-4">
-                    {t.raw('risks.conclusion.points').map((point: string, index: number) => (
-                      <li key={`conclusion-${index}`} className="flex items-start gap-2">
+                    {t.raw('risks.conclusion.points').map((point: string) => (
+                      <li key={`conclusion-point-${point.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-2">
                         <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0 mt-2" />
                         {point}
                       </li>
@@ -522,6 +477,7 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
           {currentStep === 'main' ? (
             <button
               onClick={onClose}
+              data-autofocus="true"
               className="
                 w-full h-12 px-6 text-base font-semibold rounded-lg
                 bg-primary text-white shadow-lg shadow-primary/15
@@ -554,6 +510,7 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
               </button>
               <button
                 onClick={onClose}
+                data-autofocus="true"
                 className="
                   flex-1 h-12 px-6 text-base font-semibold rounded-lg
                   bg-primary text-white shadow-lg shadow-primary/15

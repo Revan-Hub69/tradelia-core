@@ -48,19 +48,47 @@ export default function DashboardRegistrationModal() {
   // Validation locale
   const validationLocale: Locale = (locale === 'it' || locale === 'en') ? locale : 'it'
 
-  // Auto-focus and scroll reset when mode changes
+  // Production-safe scroll lock with documentElement
+  useEffect(() => {
+    if (!isOpen) return
+
+    const html = document.documentElement
+    const prevOverflow = html.style.overflow
+    const prevPadding = html.style.paddingRight
+    const scrollbarWidth = window.innerWidth - html.clientWidth
+
+    // Apply robust scroll lock
+    html.style.overflow = 'hidden'
+    html.style.paddingRight = scrollbarWidth ? `${scrollbarWidth}px` : ''
+
+    return () => {
+      // Restore scroll lock
+      html.style.overflow = prevOverflow
+      html.style.paddingRight = prevPadding
+    }
+  }, [isOpen])
+
+  // Auto-focus with explicit anchor targeting and scroll reset
   useEffect(() => {
     if (isOpen && contentRef.current) {
       // Reset scroll to top when mode changes
       contentRef.current.scrollTop = 0
       
-      // Focus first interactive element after animation
-      setTimeout(() => {
-        const firstButton = contentRef.current?.querySelector('button:not([aria-hidden="true"]), input:not([aria-hidden="true"])')
-        if (firstButton) {
-          (firstButton as HTMLElement).focus()
+      // Focus explicit anchor after animation with timeout cleanup
+      const focusTimer = setTimeout(() => {
+        const target = contentRef.current?.querySelector('[data-autofocus="true"]') as HTMLElement | null
+        if (target) {
+          target.focus()
+        } else {
+          // Fallback to first interactive element
+          const firstButton = contentRef.current?.querySelector('button:not([aria-hidden="true"]), input:not([aria-hidden="true"])')
+          if (firstButton) {
+            (firstButton as HTMLElement).focus()
+          }
         }
       }, isAnimating ? 300 : 100)
+
+      return () => clearTimeout(focusTimer)
     }
   }, [mode, isOpen, isAnimating])
 
@@ -171,9 +199,17 @@ export default function DashboardRegistrationModal() {
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title"
+      tabIndex={-1}
     >
       {/* Enhanced Backdrop */}
-      <div className="absolute inset-0 bg-gradient-to-br from-background/90 via-background/70 to-background/50 backdrop-blur-lg backdrop-saturate-150" />
+      <div 
+        className="absolute inset-0 bg-gradient-to-br from-background/90 via-background/70 to-background/50 backdrop-blur-lg backdrop-saturate-150" 
+        onClick={(e) => e.target === e.currentTarget && handleClose()}
+        onKeyDown={(e) => e.key === 'Escape' && handleClose()}
+        role="button"
+        tabIndex={-1}
+        aria-label="Close modal"
+      />
       
       {/* Modern Modal */}
       <div 
@@ -183,11 +219,17 @@ export default function DashboardRegistrationModal() {
         shadow-2xl shadow-primary/10 overflow-hidden transition-all duration-400 ease-out
         max-h-[90vh] flex flex-col
         ${isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}
-        ${isAnimating ? 'pointer-events-none' : 'pointer-events-auto'}
       `}
       style={{
         background: 'linear-gradient(135deg, hsl(var(--bg-section)) 0%, hsl(var(--bg-section)/0.95) 100%)',
-      }}>
+      }}
+      onClick={(e) => e.stopPropagation()}
+      onKeyDown={(e) => e.key === 'Escape' && handleClose()}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+      tabIndex={-1}
+      >
         {/* Gradient accent top */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-primary/80 to-primary/60" />
         
@@ -219,7 +261,7 @@ export default function DashboardRegistrationModal() {
         >
           <div className={`
             transition-all duration-300 ease-out
-            ${isAnimating ? 'opacity-50 transform translate-x-2' : 'opacity-100 transform translate-x-0'}
+            ${isAnimating ? 'opacity-50 transform translate-x-2 pointer-events-none' : 'opacity-100 transform translate-x-0'}
           `}>
             {mode === 'gateway' && (
               <div className="space-y-6">
@@ -246,6 +288,7 @@ export default function DashboardRegistrationModal() {
                   <button
                     onClick={handleGoogleSignIn}
                     disabled={isLoading}
+                    data-autofocus="true"
                     className="
                       w-full flex items-center justify-center gap-3 p-4 rounded-xl
                       bg-background hover:bg-muted/30 active:scale-95
@@ -328,6 +371,7 @@ export default function DashboardRegistrationModal() {
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         onBlur={handleBlurFullName}
+                        data-autofocus="true"
                         className={`
                           w-full h-12 pl-10 pr-4 text-sm bg-background border rounded-xl
                           placeholder:text-muted-foreground transition-all duration-200
@@ -454,6 +498,7 @@ export default function DashboardRegistrationModal() {
                 </div>
                 <button
                   onClick={handleClose}
+                  data-autofocus="true"
                   className="
                     w-full h-12 px-6 text-base font-semibold rounded-xl
                     bg-gradient-to-r from-primary to-primary/90

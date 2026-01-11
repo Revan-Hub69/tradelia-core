@@ -43,7 +43,31 @@ export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentM
   // Ref for modal content
   const modalRef = useRef<HTMLDivElement>(null)
 
-  // Load current settings
+  // Production-safe scroll lock with documentElement
+  useEffect(() => {
+    if (!isOpen) return
+
+    const html = document.documentElement
+    const prevOverflow = html.style.overflow
+    const prevPadding = html.style.paddingRight
+    const scrollbarWidth = window.innerWidth - html.clientWidth
+
+    // Apply robust scroll lock
+    html.style.overflow = 'hidden'
+    html.style.paddingRight = scrollbarWidth ? `${scrollbarWidth}px` : ''
+    
+    // Animation complete with cleanup
+    const animationTimer = setTimeout(() => setIsAnimating(false), 300)
+
+    return () => {
+      // Restore scroll lock
+      html.style.overflow = prevOverflow
+      html.style.paddingRight = prevPadding
+      clearTimeout(animationTimer)
+    }
+  }, [isOpen])
+
+  // Auto-focus with explicit anchor targeting
   useEffect(() => {
     if (isOpen) {
       setIsAnimating(true)
@@ -55,14 +79,22 @@ export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentM
         feature_usage: current.feature_usage
       })
       
-      // Auto-focus first interactive element
-      setTimeout(() => {
-        const firstButton = modalRef.current?.querySelector('button:not([aria-hidden="true"])')
-        if (firstButton) {
-          (firstButton as HTMLElement).focus()
+      // Focus explicit anchor after animation with timeout cleanup
+      const focusTimer = setTimeout(() => {
+        const target = modalRef.current?.querySelector('[data-autofocus="true"]') as HTMLElement | null
+        if (target) {
+          target.focus()
+        } else {
+          // Fallback to first interactive element
+          const firstButton = modalRef.current?.querySelector('button:not([aria-hidden="true"])')
+          if (firstButton) {
+            (firstButton as HTMLElement).focus()
+          }
         }
         setIsAnimating(false)
       }, 300)
+
+      return () => clearTimeout(focusTimer)
     }
   }, [isOpen])
 
@@ -112,7 +144,11 @@ export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentM
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+      onKeyDown={(e) => e.key === 'Escape' && onClose()}
+    >
       {/* Enhanced Backdrop with refined gradient */}
       <div className="absolute inset-0 bg-background/85 backdrop-blur-lg backdrop-saturate-105" />
 
@@ -123,7 +159,6 @@ export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentM
           relative w-full max-w-2xl section-frame backdrop-blur-lg backdrop-saturate-105
           shadow-xl shadow-primary/8 transition-all duration-300 ease-out
           ${isOpen ? 'scale-100 opacity-100' : 'scale-98 opacity-0'}
-          ${isAnimating ? 'pointer-events-none' : 'pointer-events-auto'}
         `}
         style={{
           background: 'hsl(var(--bg-section)/0.95)',
@@ -131,6 +166,7 @@ export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentM
         role="dialog"
         aria-modal="true"
         aria-labelledby="privacy-modal-title"
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Header with modern design */}
         <div className="flex items-center justify-between p-6 border-b border-border/30">
@@ -165,7 +201,7 @@ export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentM
         </div>
 
         {/* Content with enhanced styling */}
-        <div className="p-6 space-y-6">
+        <div className={`p-6 space-y-6 ${isAnimating ? 'pointer-events-none' : ''}`}>
           {/* Introduction with modern card */}
           <div className="section-frame-info p-5 rounded-xl">
             <div className="flex items-start gap-4">
@@ -424,6 +460,7 @@ export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentM
           
           <button
             onClick={handleAcceptAll}
+            data-autofocus="true"
             className="
               flex-1 h-12 px-6 text-base font-semibold rounded-xl
               bg-gradient-to-r from-primary to-primary/90
