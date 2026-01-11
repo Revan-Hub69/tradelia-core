@@ -538,7 +538,9 @@
       "viewIntroduction": "View Introduction",
       "viewErrors": "View Errors to avoid",
       "reviewPreparationSteps": "Review preparation steps",
-      "nextStepErrors": "Next step: Errors to avoid"
+      "nextStepErrors": "Next step: Errors to avoid",
+      "whenUnderstoodFrame": "When you have understood the decision frame, the natural step is to identify common errors.",
+      "continueWithErrors": "→ Continue with: Errors to avoid"
     },
   "auth": {
     "title": "Sign In or Register",

@@ -126,35 +126,41 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                 </p>
               </div>
 
-              {/* Completion without gamification - passive closure */}
+              {/* Completion without gamification - explicit cognitive closure */}
               <div className="mt-16 pt-8 border-t border-border/20">
-                <p className="text-sm text-muted-foreground/80 mb-4 max-w-[60ch]">
-                  {tJourney('sectionDefinesFrame')}
-                </p>
-                
-                {/* Textual step transition - not a button */}
-                <button
-                  onClick={() => {
-                    educationMemory.markIntroSeen()
-                    
-                    const errorsTab = document.querySelector('[data-tab-id="errors"]') as HTMLButtonElement
-                    if (errorsTab) {
-                      errorsTab.click()
-                    } else {
-                      const tabContainer = document.querySelector('[role="tablist"]')
-                      if (tabContainer) {
-                        const errorButton = tabContainer.querySelector('[data-tab-id="errors"]') as HTMLButtonElement
-                        if (errorButton) {
-                          errorButton.click()
+                <div className="space-y-4">
+                  <p className="text-sm text-muted-foreground/80 max-w-[60ch]">
+                    {tJourney('sectionDefinesFrame')}
+                  </p>
+                  
+                  <p className="text-sm text-muted-foreground/60 max-w-[60ch]">
+                    {tJourney('whenUnderstoodFrame')}
+                  </p>
+                  
+                  {/* Clear, unambiguous continuation */}
+                  <button
+                    onClick={() => {
+                      educationMemory.markIntroSeen()
+                      
+                      const errorsTab = document.querySelector('[data-tab-id="errors"]') as HTMLButtonElement
+                      if (errorsTab) {
+                        errorsTab.click()
+                      } else {
+                        const tabContainer = document.querySelector('[role="tablist"]')
+                        if (tabContainer) {
+                          const errorButton = tabContainer.querySelector('[data-tab-id="errors"]') as HTMLButtonElement
+                          if (errorButton) {
+                            errorButton.click()
+                          }
                         }
                       }
-                    }
-                  }}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-muted-foreground/20 focus:ring-offset-2 rounded-sm min-h-[44px] flex items-center"
-                  aria-label="Go to next step: Errors to avoid"
-                >
-                  {tJourney('nextStepErrors')}
-                </button>
+                    }}
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-muted-foreground/20 focus:ring-offset-2 rounded-sm min-h-[44px] flex items-center"
+                    aria-label="Continua con la sezione Errori da evitare"
+                  >
+                    {tJourney('continueWithErrors')}
+                  </button>
+                </div>
               </div>
             </div>
           ) : (
@@ -274,28 +280,34 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
               ))}
             </div>
 
-            {/* Completion without gamification */}
+            {/* Completion without gamification - explicit cognitive closure */}
             <div className="mt-16 pt-8 border-t border-border/20">
-              <p className="text-sm text-muted-foreground/80 mb-4 max-w-[60ch]">
-                {tJourney('sectionAddressesErrors')}
-              </p>
-              
-              <button
-                onClick={() => {
-                  educationMemory.markErrorsRead()
-                  const educationalTab = document.querySelector('[data-tab-id="educational"]') as HTMLButtonElement
-                  if (educationalTab) {
-                    educationalTab.click()
+              <div className="space-y-4">
+                <p className="text-sm text-muted-foreground/80 mb-4 max-w-[60ch]">
+                  {tJourney('sectionAddressesErrors')}
+                </p>
+                
+                <p className="text-sm text-muted-foreground/60 max-w-[60ch]">
+                  Dopo aver identificato gli errori comuni, il passaggio naturale è comprendere i fondamenti teorici.
+                </p>
+                
+                <button
+                  onClick={() => {
+                    educationMemory.markErrorsRead()
+                    const educationalTab = document.querySelector('[data-tab-id="educational"]') as HTMLButtonElement
+                    if (educationalTab) {
+                      educationalTab.click()
+                    }
+                  }}
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-muted-foreground/20 focus:ring-offset-2 rounded-sm min-h-[44px] flex items-center"
+                  aria-label="Continua con la sezione Educativo"
+                >
+                  {educationMemory.hasSeenIntro 
+                    ? "→ Continua con: Educativo"
+                    : "→ Prima leggi: Introduzione"
                   }
-                }}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-muted-foreground/20 focus:ring-offset-2 rounded-sm min-h-[44px] flex items-center"
-                aria-label="Go to next step: Educational resources"
-              >
-                {educationMemory.hasSeenIntro 
-                  ? "Next step: Educational resources"
-                  : "Review the Introduction for context"
-                }
-              </button>
+                </button>
+              </div>
             </div>
           </div>
         </div>

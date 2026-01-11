@@ -476,7 +476,9 @@
       "viewIntroduction": "Visualizza Introduzione",
       "viewErrors": "Visualizza Errori da evitare",
       "reviewPreparationSteps": "Rivedi i passaggi di preparazione",
-      "nextStepErrors": "Prossimo passaggio: Errori da evitare"
+      "nextStepErrors": "Prossimo passaggio: Errori da evitare",
+      "whenUnderstoodFrame": "Quando hai compreso il quadro decisionale, il passaggio naturale è identificare gli errori comuni.",
+      "continueWithErrors": "→ Continua con: Errori da evitare"
     }
   },
   "auth": {
