@@ -1,0 +1,121 @@
+{
+  "emergencyIntro": {
+    "title": "Crypto in emergency situations",
+    "subtitle": "Alternative systems when normal ones don't work",
+    "risksTitle": "Real studied risks",
+    "sections": {
+      "origin": {
+        "title": "Why cryptocurrencies were born",
+        "content": "Cryptocurrencies were born after the 2008 crisis, when the problem was not the lack of money, but the impossibility of using it freely.",
+        "situations": {
+          "title": "Real situations:",
+          "items": [
+            "Banks closed",
+            "Limited withdrawals", 
+            "Blocked transfers"
+          ]
+        },
+        "conclusion": "The goal was to create a transfer system that didn't depend on a single bank or authority."
+      },
+      "emergencies": {
+        "title": "What emergencies are we talking about",
+        "content": "Situations that have already happened and been studied:",
+        "types": [
+          {
+            "title": "Account limitations",
+            "description": "Capital controls"
+          },
+          {
+            "title": "Payment interruptions", 
+            "description": "System failures"
+          },
+          {
+            "title": "Systemic crises",
+            "description": "Financial instability"
+          },
+          {
+            "title": "Cyber attacks",
+            "description": "Financial infrastructure"
+          }
+        ],
+        "keyPoint": "In these cases the problem is not value, but access and functioning.",
+        "deepDiveButton": "Deep dive into real risks"
+      },
+      "approach": {
+        "title": "What it means to use them as emergency reserve",
+        "content": "It means considering them as an additional option, not as a replacement for the traditional system.",
+        "keyPoint": "The question is not \"how much do they yield\", but under what conditions do they continue to work."
+      },
+      "purpose": {
+        "title": "Why this dashboard exists",
+        "content": "This dashboard serves to:",
+        "items": [
+          "understand when this approach is relevant",
+          "understand what its functioning depends on", 
+          "avoid discovering its limits at the worst moment"
+        ],
+        "keyPoint": "It doesn't tell you what to buy. It helps you evaluate consciously."
+      }
+    },
+    "risks": {
+      "cyber": {
+        "title": "Cyber risk (high probability future)",
+        "content": "Financial institutions consider cyber attacks one of the main threats to operational continuity.",
+        "points": [
+          "ENISA reports a constant increase in incidents in the financial sector",
+          "IMF and BIS recognize cyber-risk as a systemic stability risk"
+        ],
+        "sources": [
+          "ENISA – Threat Landscape for Finance",
+          "IMF – Cyber Risk and Financial Stability",
+          "BIS – Operational and cyber risk in finance"
+        ]
+      },
+      "systemic": {
+        "title": "Systemic risk", 
+        "content": "Financial systems are highly interconnected. A problem in a critical node can spread rapidly.",
+        "reason": "This is why:",
+        "points": [
+          "stress tests exist",
+          "emergency plans exist",
+          "capital controls exist"
+        ],
+        "sources": [
+          "BIS – Global Liquidity & Systemic Risk",
+          "IMF – Global Financial Stability Report"
+        ]
+      },
+      "operational": {
+        "title": "Operational disruptions",
+        "content": "Even without financial crises, these can occur:",
+        "points": [
+          "blackouts",
+          "payment circuit failures", 
+          "temporary digital service blocks"
+        ],
+        "sources": [
+          "World Economic Forum – Global Risks Report",
+          "European Central Bank – operational resilience"
+        ]
+      },
+      "conclusion": {
+        "title": "These scenarios:",
+        "points": [
+          "are not predictions",
+          "are not catastrophism",
+          "are risks studied by those who manage the systems"
+        ],
+        "keyPoint": "The dashboard serves to understand how they would affect you, not if they will happen."
+      }
+    },
+    "buttons": {
+      "understood": "Ok, I understand",
+      "backToIntro": "Back to introduction", 
+      "goToDashboard": "Go to dashboard"
+    },
+    "navigation": {
+      "back": "Go back",
+      "close": "Close"
+    }
+  }
+}

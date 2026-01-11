@@ -1,0 +1,121 @@
+{
+  "emergencyIntro": {
+    "title": "Crypto in situazioni di emergenza",
+    "subtitle": "Sistemi alternativi quando quelli normali non funzionano",
+    "risksTitle": "Rischi reali studiati",
+    "sections": {
+      "origin": {
+        "title": "Perché nascono le criptovalute",
+        "content": "Le criptovalute nascono dopo la crisi del 2008, quando il problema non era la mancanza di denaro, ma l'impossibilità di usarlo liberamente.",
+        "situations": {
+          "title": "Situazioni reali:",
+          "items": [
+            "Banche chiuse",
+            "Prelievi limitati", 
+            "Trasferimenti bloccati"
+          ]
+        },
+        "conclusion": "L'obiettivo era creare un sistema di trasferimento che non dipendesse da una singola banca o autorità."
+      },
+      "emergencies": {
+        "title": "Di che emergenze parliamo",
+        "content": "Situazioni già accadute e studiate:",
+        "types": [
+          {
+            "title": "Limitazioni ai conti",
+            "description": "Controlli sui capitali"
+          },
+          {
+            "title": "Interruzioni pagamenti", 
+            "description": "Guasti sistemici"
+          },
+          {
+            "title": "Crisi sistemiche",
+            "description": "Instabilità finanziaria"
+          },
+          {
+            "title": "Attacchi informatici",
+            "description": "Infrastrutture finanziarie"
+          }
+        ],
+        "keyPoint": "In questi casi il problema non è il valore, ma l'accesso e il funzionamento.",
+        "deepDiveButton": "Approfondisci i rischi reali"
+      },
+      "approach": {
+        "title": "Cosa significa usarle come riserva di emergenza",
+        "content": "Significa considerarle come opzione aggiuntiva, non come sostituzione del sistema tradizionale.",
+        "keyPoint": "La domanda non è \"quanto rendono\", ma in quali condizioni continuano a funzionare."
+      },
+      "purpose": {
+        "title": "Perché esiste questa dashboard",
+        "content": "Questa dashboard serve a:",
+        "items": [
+          "capire quando questo approccio è rilevante",
+          "capire da cosa dipende il suo funzionamento", 
+          "evitare di scoprirne i limiti nel momento peggiore"
+        ],
+        "keyPoint": "Non ti dice cosa comprare. Ti aiuta a valutare consapevolmente."
+      }
+    },
+    "risks": {
+      "cyber": {
+        "title": "Rischio cyber (futuro ad alta probabilità)",
+        "content": "Le istituzioni finanziarie considerano gli attacchi informatici una delle principali minacce alla continuità operativa.",
+        "points": [
+          "ENISA segnala un aumento costante di incidenti nel settore finanziario",
+          "FMI e BIS riconoscono il cyber-risk come rischio di stabilità sistemica"
+        ],
+        "sources": [
+          "ENISA – Threat Landscape for Finance",
+          "IMF – Cyber Risk and Financial Stability",
+          "BIS – Operational and cyber risk in finance"
+        ]
+      },
+      "systemic": {
+        "title": "Rischio sistemico", 
+        "content": "I sistemi finanziari sono altamente interconnessi. Un problema in un nodo critico può propagarsi rapidamente.",
+        "reason": "Questo è il motivo per cui:",
+        "points": [
+          "esistono stress test",
+          "esistono piani di emergenza",
+          "esistono controlli sui capitali"
+        ],
+        "sources": [
+          "BIS – Global Liquidity & Systemic Risk",
+          "IMF – Global Financial Stability Report"
+        ]
+      },
+      "operational": {
+        "title": "Interruzioni operative",
+        "content": "Anche senza crisi finanziarie possono verificarsi:",
+        "points": [
+          "blackout",
+          "guasti ai circuiti di pagamento", 
+          "blocchi temporanei di servizi digitali"
+        ],
+        "sources": [
+          "World Economic Forum – Global Risks Report",
+          "Banca Centrale Europea – resilienza operativa"
+        ]
+      },
+      "conclusion": {
+        "title": "Questi scenari:",
+        "points": [
+          "non sono previsioni",
+          "non sono catastrofismo",
+          "sono rischi studiati da chi gestisce i sistemi"
+        ],
+        "keyPoint": "La dashboard serve a capire come ti influenzerebbero, non se accadranno."
+      }
+    },
+    "buttons": {
+      "understood": "Ok, ho capito",
+      "backToIntro": "Torna all'introduzione", 
+      "goToDashboard": "Vai alla dashboard"
+    },
+    "navigation": {
+      "back": "Torna indietro",
+      "close": "Chiudi"
+    }
+  }
+}
