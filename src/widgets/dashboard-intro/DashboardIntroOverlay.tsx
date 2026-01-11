@@ -1,11 +1,8 @@
 /**
- * Dashboard Introduction Overlay - Tradelia 2026
+ * Emergency Journey Introduction Overlay - Tradelia 2026
  * 
- * Overlay per introduzione al percorso EMERGENZA:
- * - Overlay principale: orienta il modello mentale in 60-90 secondi
- * - Drawer di approfondimento: dimostra con rigore e fonti
- * 
- * Design: UX istituzionale, contrasti eleganti, SOLO SVG homemade
+ * Single drawer with navigation, consistent with Tradelia design system
+ * Uses CSS variables from globals.css, viewport-safe, SOLO SVG
  */
 
 'use client'
@@ -18,30 +15,21 @@ interface DashboardIntroOverlayProps {
   onClose: () => void
 }
 
+type DrawerStep = 'main' | 'risks'
+
 export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlayProps) {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const [currentStep, setCurrentStep] = useState<DrawerStep>('main')
 
-  const closeDrawer = () => {
-    setIsDrawerOpen(false)
-  }
-
-  const openDrawer = () => {
-    setIsDrawerOpen(true)
-  }
-
-  // Focus trap for overlay
-  const { containerRef: overlayRef } = useModalFocusTrap(isOpen, onClose)
-  
   // Focus trap for drawer
-  const { containerRef: drawerRef } = useModalFocusTrap(isDrawerOpen, closeDrawer)
+  const { containerRef: drawerRef } = useModalFocusTrap(isOpen, onClose)
 
-  // Prevent body scroll when overlay is open
+  // Prevent body scroll when drawer is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
     } else {
       document.body.style.overflow = ''
-      setIsDrawerOpen(false)
+      setCurrentStep('main')
     }
 
     return () => {
@@ -49,355 +37,317 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
     }
   }, [isOpen])
 
+  const goToRisks = () => setCurrentStep('risks')
+  const goBack = () => setCurrentStep('main')
+
   if (!isOpen) return null
 
   return (
     <>
-      {/* Overlay Backdrop */}
+      {/* Backdrop - Tradelia style */}
       <div 
-        className="fixed inset-0 z-[70] bg-white/95 backdrop-blur-sm"
+        className="fixed inset-0 z-[70] bg-black/50 backdrop-blur-sm"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* Main Overlay - Design Tradelia */}
+      {/* Single Drawer - VIEWPORT SAFE with Tradelia design */}
       <div 
-        ref={overlayRef as React.RefObject<HTMLDivElement>}
-        className="fixed inset-0 z-[75] flex items-center justify-center p-6 overflow-y-auto"
+        ref={drawerRef as React.RefObject<HTMLDivElement>}
+        className="fixed inset-4 z-[75] flex items-center justify-center"
         role="dialog"
         aria-modal="true"
         aria-labelledby="intro-title"
       >
-        <div className="w-full max-w-3xl bg-white border border-gray-200 rounded-none shadow-lg">
-          {/* Header - Design Tradelia */}
-          <div className="px-12 py-8 border-b border-gray-100">
-            <div className="flex items-start justify-between">
-              <div className="max-w-lg">
-                <h1 id="intro-title" className="text-3xl font-normal text-gray-900 mb-4 leading-tight">
-                  Crypto in situazioni di emergenza
-                </h1>
-                <p className="text-lg text-gray-600 leading-relaxed">
-                  Sistemi alternativi quando quelli normali non funzionano
-                </p>
-              </div>
-              <button
-                onClick={onClose}
-                className="p-3 text-gray-400 hover:text-gray-600 transition-colors rounded-none border border-gray-200 hover:border-gray-300"
-                aria-label="Chiudi introduzione"
-              >
-                <CloseIcon />
-              </button>
-            </div>
-          </div>
-
-          {/* Content - Design Tradelia */}
-          <div className="px-12 py-10 space-y-12">
-            {/* Blocco 1 - Origine */}
-            <div className="space-y-6">
-              <h2 className="text-xl font-medium text-gray-900">
-                Perché nascono le criptovalute
-              </h2>
-              <div className="max-w-2xl">
-                <p className="text-gray-700 leading-relaxed text-lg mb-6">
-                  Le criptovalute nascono dopo la crisi del 2008, quando il problema non era la mancanza di denaro, 
-                  ma l'impossibilità di usarlo liberamente.
-                </p>
-                <div className="border-l-4 border-amber-400 bg-amber-50 p-6 mb-6">
-                  <p className="text-sm font-medium text-gray-900 mb-3">Situazioni reali:</p>
-                  <ul className="text-gray-700 space-y-2">
-                    <li className="flex items-start gap-3">
-                      <BulletIcon />
-                      <span>Banche chiuse</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <BulletIcon />
-                      <span>Prelievi limitati</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <BulletIcon />
-                      <span>Trasferimenti bloccati</span>
-                    </li>
-                  </ul>
-                </div>
-                <p className="text-gray-700 leading-relaxed text-lg">
-                  L'obiettivo era creare un sistema di trasferimento che non dipendesse da una singola banca o autorità.
-                </p>
-              </div>
-            </div>
-
-            {/* Blocco 2 - Tipo di emergenze */}
-            <div className="space-y-6">
-              <h2 className="text-xl font-medium text-gray-900">
-                Di che emergenze parliamo
-              </h2>
-              <div className="max-w-2xl">
-                <p className="text-gray-700 leading-relaxed text-lg mb-6">
-                  Situazioni già accadute e studiate:
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-                  <div className="border border-gray-200 p-4">
-                    <div className="text-base font-medium text-gray-900 mb-2">Limitazioni ai conti</div>
-                    <div className="text-sm text-gray-600">Controlli sui capitali</div>
-                  </div>
-                  <div className="border border-gray-200 p-4">
-                    <div className="text-base font-medium text-gray-900 mb-2">Interruzioni dei pagamenti</div>
-                    <div className="text-sm text-gray-600">Guasti sistemici</div>
-                  </div>
-                  <div className="border border-gray-200 p-4">
-                    <div className="text-base font-medium text-gray-900 mb-2">Crisi sistemiche</div>
-                    <div className="text-sm text-gray-600">Instabilità finanziaria</div>
-                  </div>
-                  <div className="border border-gray-200 p-4">
-                    <div className="text-base font-medium text-gray-900 mb-2">Attacchi informatici</div>
-                    <div className="text-sm text-gray-600">Infrastrutture finanziarie</div>
-                  </div>
-                </div>
-                <div className="border border-blue-200 bg-blue-50 p-6 mb-6">
-                  <p className="text-gray-900 font-medium">
-                    In questi casi il problema non è il valore, ma l'accesso e il funzionamento.
-                  </p>
-                </div>
+        <div className="w-full max-w-4xl section-frame emergency-intro-overlay overflow-hidden">
+          {/* Header with navigation */}
+          <div className="flex items-center justify-between p-6 border-b" style={{ borderColor: 'hsl(var(--border))' }}>
+            <div className="flex items-center gap-4">
+              {currentStep === 'risks' && (
                 <button
-                  onClick={() => openDrawer()}
-                  className="text-blue-600 hover:text-blue-800 transition-colors underline underline-offset-2 font-medium"
+                  onClick={goBack}
+                  className="p-2 transition-colors-fast hover:bg-muted/50 rounded-md"
+                  aria-label="Torna indietro"
                 >
-                  Approfondisci i rischi reali
+                  <BackIcon />
                 </button>
-              </div>
-            </div>
-
-            {/* Blocco 3 - Approccio */}
-            <div className="space-y-6">
-              <h2 className="text-xl font-medium text-gray-900">
-                Cosa significa usarle come riserva di emergenza
-              </h2>
-              <div className="max-w-2xl">
-                <p className="text-gray-700 leading-relaxed text-lg mb-6">
-                  Significa considerarle come opzione aggiuntiva, non come sostituzione del sistema tradizionale.
-                </p>
-                <div className="border border-gray-200 bg-gray-50 p-6">
-                  <p className="text-gray-900 font-medium">
-                    La domanda non è "quanto rendono", ma in quali condizioni continuano a funzionare.
+              )}
+              <div>
+                <h1 id="intro-title" className="text-xl font-normal" style={{ color: 'hsl(var(--foreground))' }}>
+                  {currentStep === 'main' ? 'Crypto in situazioni di emergenza' : 'Rischi reali studiati'}
+                </h1>
+                {currentStep === 'main' && (
+                  <p className="text-sm mt-1" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                    Sistemi alternativi quando quelli normali non funzionano
                   </p>
-                </div>
+                )}
               </div>
             </div>
-
-            {/* Blocco 4 - Scopo della dashboard */}
-            <div className="space-y-6">
-              <h2 className="text-xl font-medium text-gray-900">
-                Perché esiste questa dashboard
-              </h2>
-              <div className="max-w-2xl">
-                <p className="text-gray-700 leading-relaxed text-lg mb-6">
-                  Questa dashboard serve a:
-                </p>
-                <ul className="space-y-4 mb-8">
-                  <li className="flex items-start gap-4">
-                    <CheckIcon />
-                    <span className="text-gray-700">capire quando questo approccio è rilevante</span>
-                  </li>
-                  <li className="flex items-start gap-4">
-                    <CheckIcon />
-                    <span className="text-gray-700">capire da cosa dipende il suo funzionamento</span>
-                  </li>
-                  <li className="flex items-start gap-4">
-                    <CheckIcon />
-                    <span className="text-gray-700">evitare di scoprirne i limiti nel momento peggiore</span>
-                  </li>
-                </ul>
-                <div className="border border-green-200 bg-green-50 p-6">
-                  <p className="text-gray-900 font-medium">
-                    Non ti dice cosa comprare. Ti aiuta a valutare consapevolmente.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Footer CTA - Design Tradelia */}
-          <div className="px-12 py-8 border-t border-gray-100">
             <button
               onClick={onClose}
-              className="w-full py-4 px-8 bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors border border-blue-600 hover:border-blue-700"
+              className="p-2 transition-colors-fast hover:bg-muted/50 rounded-md"
+              style={{ color: 'hsl(var(--muted-foreground))' }}
+              aria-label="Chiudi"
             >
-              Ok, ho capito → Vai alla dashboard
+              <CloseIcon />
             </button>
           </div>
-        </div>
-      </div>
 
-      {/* Drawer di approfondimento - Design Tradelia */}
-      {isDrawerOpen && (
-        <>
-          <div 
-            className="fixed inset-0 z-[80] bg-black/50"
-            onClick={closeDrawer}
-            aria-hidden="true"
-          />
-          <div 
-            ref={drawerRef as React.RefObject<HTMLDivElement>}
-            className="fixed right-0 top-0 bottom-0 w-full max-w-3xl bg-white border-l border-gray-200 z-[85] overflow-y-auto"
-            role="dialog"
-            aria-modal="true"
-          >
-            <div className="sticky top-0 bg-white border-b border-gray-100 px-8 py-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-medium text-gray-900">
-                  Rischi reali studiati
-                </h2>
-                <button
-                  onClick={closeDrawer}
-                  className="p-3 text-gray-400 hover:text-gray-600 transition-colors border border-gray-200 hover:border-gray-300"
-                  aria-label="Chiudi approfondimento"
-                >
-                  <CloseIcon />
-                </button>
+          {/* Content - SCROLLABLE with Tradelia spacing */}
+          <div className="overflow-y-auto max-h-[70vh]">
+            {currentStep === 'main' ? (
+              <div className="p-6 space-y-8">
+                {/* Blocco 1 - ORIGINE */}
+                <div className="space-y-4">
+                  <h2 className="text-lg font-medium" style={{ color: 'hsl(var(--foreground))' }}>
+                    Perché nascono le criptovalute
+                  </h2>
+                  <p className="leading-relaxed max-w-[66ch]" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                    Le criptovalute nascono dopo la crisi del 2008, quando il problema non era la mancanza di denaro, 
+                    ma l'impossibilità di usarlo liberamente.
+                  </p>
+                  <div className="section-frame-warning p-4">
+                    <p className="text-sm font-medium mb-2" style={{ color: 'hsl(var(--foreground))' }}>Situazioni reali:</p>
+                    <ul className="space-y-1 text-sm" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                      <li>• Banche chiuse</li>
+                      <li>• Prelievi limitati</li>
+                      <li>• Trasferimenti bloccati</li>
+                    </ul>
+                  </div>
+                  <p className="leading-relaxed max-w-[66ch]" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                    L'obiettivo era creare un sistema di trasferimento che non dipendesse da una singola banca o autorità.
+                  </p>
+                </div>
+
+                {/* Blocco 2 - EMERGENZE */}
+                <div className="space-y-4">
+                  <h2 className="text-lg font-medium" style={{ color: 'hsl(var(--foreground))' }}>
+                    Di che emergenze parliamo
+                  </h2>
+                  <p className="leading-relaxed max-w-[66ch]" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                    Situazioni già accadute e studiate:
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="card-2026 p-3">
+                      <div className="font-medium text-sm" style={{ color: 'hsl(var(--foreground))' }}>Limitazioni ai conti</div>
+                      <div className="text-xs" style={{ color: 'hsl(var(--muted-foreground))' }}>Controlli sui capitali</div>
+                    </div>
+                    <div className="card-2026 p-3">
+                      <div className="font-medium text-sm" style={{ color: 'hsl(var(--foreground))' }}>Interruzioni pagamenti</div>
+                      <div className="text-xs" style={{ color: 'hsl(var(--muted-foreground))' }}>Guasti sistemici</div>
+                    </div>
+                    <div className="card-2026 p-3">
+                      <div className="font-medium text-sm" style={{ color: 'hsl(var(--foreground))' }}>Crisi sistemiche</div>
+                      <div className="text-xs" style={{ color: 'hsl(var(--muted-foreground))' }}>Instabilità finanziaria</div>
+                    </div>
+                    <div className="card-2026 p-3">
+                      <div className="font-medium text-sm" style={{ color: 'hsl(var(--foreground))' }}>Attacchi informatici</div>
+                      <div className="text-xs" style={{ color: 'hsl(var(--muted-foreground))' }}>Infrastrutture finanziarie</div>
+                    </div>
+                  </div>
+                  <div className="section-frame-info p-4">
+                    <p className="font-medium text-sm" style={{ color: 'hsl(var(--foreground))' }}>
+                      In questi casi il problema non è il valore, ma l'accesso e il funzionamento.
+                    </p>
+                  </div>
+                  <button
+                    onClick={goToRisks}
+                    className="inline-flex items-center gap-2 text-sm transition-colors-fast hover:underline"
+                    style={{ color: 'hsl(var(--primary))' }}
+                  >
+                    Approfondisci i rischi reali
+                    <ForwardIcon />
+                  </button>
+                </div>
+
+                {/* Blocco 3 - APPROCCIO */}
+                <div className="space-y-4">
+                  <h2 className="text-lg font-medium" style={{ color: 'hsl(var(--foreground))' }}>
+                    Cosa significa usarle come riserva di emergenza
+                  </h2>
+                  <p className="leading-relaxed max-w-[66ch]" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                    Significa considerarle come opzione aggiuntiva, non come sostituzione del sistema tradizionale.
+                  </p>
+                  <div className="card-2026 p-4">
+                    <p className="font-medium text-sm" style={{ color: 'hsl(var(--foreground))' }}>
+                      La domanda non è "quanto rendono", ma in quali condizioni continuano a funzionare.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Blocco 4 - SCOPO */}
+                <div className="space-y-4">
+                  <h2 className="text-lg font-medium" style={{ color: 'hsl(var(--foreground))' }}>
+                    Perché esiste questa dashboard
+                  </h2>
+                  <p className="leading-relaxed max-w-[66ch]" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                    Questa dashboard serve a:
+                  </p>
+                  <ul className="space-y-2">
+                    <li className="flex items-start gap-3">
+                      <CheckIcon />
+                      <span className="text-sm" style={{ color: 'hsl(var(--muted-foreground))' }}>capire quando questo approccio è rilevante</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckIcon />
+                      <span className="text-sm" style={{ color: 'hsl(var(--muted-foreground))' }}>capire da cosa dipende il suo funzionamento</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckIcon />
+                      <span className="text-sm" style={{ color: 'hsl(var(--muted-foreground))' }}>evitare di scoprirne i limiti nel momento peggiore</span>
+                    </li>
+                  </ul>
+                  <div className="section-frame-success p-4">
+                    <p className="font-medium text-sm" style={{ color: 'hsl(var(--foreground))' }}>
+                      Non ti dice cosa comprare. Ti aiuta a valutare consapevolmente.
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
-
-            <div className="px-8 py-8 space-y-12">
-              {/* Sezione 1 - Rischio cyber */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium text-gray-900">
-                  Rischio cyber (futuro ad alta probabilità)
-                </h3>
-                <div className="max-w-2xl">
-                  <p className="text-gray-700 leading-relaxed mb-4">
+            ) : (
+              /* Risks Detail View */
+              <div className="p-6 space-y-8">
+                {/* Sezione 1 - Cyber Risk */}
+                <div className="space-y-4">
+                  <h3 className="font-medium" style={{ color: 'hsl(var(--foreground))' }}>
+                    Rischio cyber (futuro ad alta probabilità)
+                  </h3>
+                  <p className="text-sm leading-relaxed max-w-[66ch]" style={{ color: 'hsl(var(--muted-foreground))' }}>
                     Le istituzioni finanziarie considerano gli attacchi informatici una delle principali minacce 
                     alla continuità operativa.
                   </p>
-                  <ul className="text-gray-700 space-y-2 mb-6">
-                    <li className="flex items-start gap-3">
-                      <BulletIcon />
-                      <span>ENISA segnala un aumento costante di incidenti nel settore finanziario</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <BulletIcon />
-                      <span>FMI e BIS riconoscono il cyber-risk come rischio di stabilità sistemica</span>
-                    </li>
+                  <ul className="text-sm space-y-1" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                    <li>• ENISA segnala un aumento costante di incidenti nel settore finanziario</li>
+                    <li>• FMI e BIS riconoscono il cyber-risk come rischio di stabilità sistemica</li>
                   </ul>
-                  <div className="border border-gray-200 bg-gray-50 p-4">
-                    <p className="text-sm font-medium text-gray-900 mb-2">Fonti:</p>
-                    <ul className="text-sm text-gray-700 space-y-1">
-                      <li>ENISA – Threat Landscape for Finance</li>
-                      <li>IMF – Cyber Risk and Financial Stability</li>
-                      <li>BIS – Operational and cyber risk in finance</li>
+                  <div className="card-2026 p-3">
+                    <p className="text-xs font-medium mb-1" style={{ color: 'hsl(var(--foreground))' }}>Fonti:</p>
+                    <ul className="text-xs space-y-1" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                      <li>• ENISA – Threat Landscape for Finance</li>
+                      <li>• IMF – Cyber Risk and Financial Stability</li>
+                      <li>• BIS – Operational and cyber risk in finance</li>
                     </ul>
                   </div>
                 </div>
-              </div>
 
-              {/* Sezione 2 - Rischio sistemico */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium text-gray-900">
-                  Rischio sistemico
-                </h3>
-                <div className="max-w-2xl">
-                  <p className="text-gray-700 leading-relaxed mb-4">
+                {/* Sezione 2 - Systemic Risk */}
+                <div className="space-y-4">
+                  <h3 className="font-medium" style={{ color: 'hsl(var(--foreground))' }}>
+                    Rischio sistemico
+                  </h3>
+                  <p className="text-sm leading-relaxed max-w-[66ch]" style={{ color: 'hsl(var(--muted-foreground))' }}>
                     I sistemi finanziari sono altamente interconnessi. Un problema in un nodo critico può propagarsi rapidamente.
                   </p>
-                  <p className="text-gray-700 leading-relaxed mb-4">
+                  <p className="text-sm" style={{ color: 'hsl(var(--muted-foreground))' }}>
                     Questo è il motivo per cui:
                   </p>
-                  <ul className="text-gray-700 space-y-2 mb-6">
-                    <li className="flex items-start gap-3">
-                      <BulletIcon />
-                      <span>esistono stress test</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <BulletIcon />
-                      <span>esistono piani di emergenza</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <BulletIcon />
-                      <span>esistono controlli sui capitali</span>
-                    </li>
+                  <ul className="text-sm space-y-1" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                    <li>• esistono stress test</li>
+                    <li>• esistono piani di emergenza</li>
+                    <li>• esistono controlli sui capitali</li>
                   </ul>
-                  <div className="border border-gray-200 bg-gray-50 p-4">
-                    <p className="text-sm font-medium text-gray-900 mb-2">Fonti:</p>
-                    <ul className="text-sm text-gray-700 space-y-1">
-                      <li>BIS – Global Liquidity & Systemic Risk</li>
-                      <li>IMF – Global Financial Stability Report</li>
+                  <div className="card-2026 p-3">
+                    <p className="text-xs font-medium mb-1" style={{ color: 'hsl(var(--foreground))' }}>Fonti:</p>
+                    <ul className="text-xs space-y-1" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                      <li>• BIS – Global Liquidity & Systemic Risk</li>
+                      <li>• IMF – Global Financial Stability Report</li>
                     </ul>
                   </div>
                 </div>
-              </div>
 
-              {/* Sezione 3 - Interruzioni operative */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium text-gray-900">
-                  Interruzioni operative
-                </h3>
-                <div className="max-w-2xl">
-                  <p className="text-gray-700 leading-relaxed mb-4">
+                {/* Sezione 3 - Operational Disruptions */}
+                <div className="space-y-4">
+                  <h3 className="font-medium" style={{ color: 'hsl(var(--foreground))' }}>
+                    Interruzioni operative
+                  </h3>
+                  <p className="text-sm leading-relaxed max-w-[66ch]" style={{ color: 'hsl(var(--muted-foreground))' }}>
                     Anche senza crisi finanziarie possono verificarsi:
                   </p>
-                  <ul className="text-gray-700 space-y-2 mb-6">
-                    <li className="flex items-start gap-3">
-                      <BulletIcon />
-                      <span>blackout</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <BulletIcon />
-                      <span>guasti ai circuiti di pagamento</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <BulletIcon />
-                      <span>blocchi temporanei di servizi digitali</span>
-                    </li>
+                  <ul className="text-sm space-y-1" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                    <li>• blackout</li>
+                    <li>• guasti ai circuiti di pagamento</li>
+                    <li>• blocchi temporanei di servizi digitali</li>
                   </ul>
-                  <div className="border border-gray-200 bg-gray-50 p-4">
-                    <p className="text-sm font-medium text-gray-900 mb-2">Fonti:</p>
-                    <ul className="text-sm text-gray-700 space-y-1">
-                      <li>World Economic Forum – Global Risks Report</li>
-                      <li>Banca Centrale Europea – resilienza operativa</li>
+                  <div className="card-2026 p-3">
+                    <p className="text-xs font-medium mb-1" style={{ color: 'hsl(var(--foreground))' }}>Fonti:</p>
+                    <ul className="text-xs space-y-1" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                      <li>• World Economic Forum – Global Risks Report</li>
+                      <li>• Banca Centrale Europea – resilienza operativa</li>
                     </ul>
                   </div>
                 </div>
-              </div>
 
-              {/* Chiusura drawer */}
-              <div className="border border-blue-200 bg-blue-50 p-6">
-                <h4 className="text-base font-medium text-gray-900 mb-3">
-                  Questi scenari:
-                </h4>
-                <ul className="text-gray-700 space-y-2 mb-4">
-                  <li className="flex items-start gap-3">
-                    <BulletIcon />
-                    <span>non sono previsioni</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <BulletIcon />
-                    <span>non sono catastrofismo</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <BulletIcon />
-                    <span>sono rischi studiati da chi gestisce i sistemi</span>
-                  </li>
-                </ul>
-                <p className="text-gray-900 font-medium">
-                  La dashboard serve a capire come ti influenzerebbero, non se accadranno.
-                </p>
+                {/* Conclusione */}
+                <div className="section-frame-info p-4">
+                  <h4 className="font-medium mb-2 text-sm" style={{ color: 'hsl(var(--foreground))' }}>
+                    Questi scenari:
+                  </h4>
+                  <ul className="text-sm space-y-1 mb-3" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                    <li>• non sono previsioni</li>
+                    <li>• non sono catastrofismo</li>
+                    <li>• sono rischi studiati da chi gestisce i sistemi</li>
+                  </ul>
+                  <p className="font-medium text-sm" style={{ color: 'hsl(var(--foreground))' }}>
+                    La dashboard serve a capire come ti influenzerebbero, non se accadranno.
+                  </p>
+                </div>
               </div>
-            </div>
+            )}
           </div>
-        </>
-      )}
+
+          {/* Footer with navigation */}
+          <div className="p-6 border-t" style={{ borderColor: 'hsl(var(--border))' }}>
+            {currentStep === 'main' ? (
+              <button
+                onClick={onClose}
+                className="w-full py-3 px-6 font-medium rounded-md transition-colors-fast"
+                style={{ 
+                  backgroundColor: 'hsl(var(--primary))', 
+                  color: 'white'
+                }}
+              >
+                Ok, ho capito
+              </button>
+            ) : (
+              <div className="flex gap-3">
+                <button
+                  onClick={goBack}
+                  className="flex-1 py-3 px-6 font-medium rounded-md transition-colors-fast border"
+                  style={{ 
+                    borderColor: 'hsl(var(--border))',
+                    color: 'hsl(var(--foreground))'
+                  }}
+                >
+                  Torna all'introduzione
+                </button>
+                <button
+                  onClick={onClose}
+                  className="flex-1 py-3 px-6 font-medium rounded-md transition-colors-fast"
+                  style={{ 
+                    backgroundColor: 'hsl(var(--primary))', 
+                    color: 'white'
+                  }}
+                >
+                  Vai alla dashboard
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </>
   )
 }
 
-// SVG Icons homemade - Tradelia style - NIENTE EMOJI
+// SVG Icons - Tradelia Design System Compliant
 function CloseIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-current">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
       <path 
-        d="M15 5L5 15M5 5l10 10" 
+        d="M12 4L4 12M4 4l8 8" 
         stroke="currentColor" 
         strokeWidth="1.5" 
-        strokeLinecap="round" 
-        strokeLinejoin="round"
+        strokeLinecap="round"
       />
     </svg>
   )
@@ -405,9 +355,9 @@ function CloseIcon() {
 
 function CheckIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-green-600 flex-shrink-0 mt-0.5">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="flex-shrink-0 mt-0.5" style={{ color: 'hsl(var(--success))' }}>
       <path 
-        d="M16.25 6.25L8.125 14.375L3.75 10" 
+        d="M13 4L6 11L3 8" 
         stroke="currentColor" 
         strokeWidth="1.5" 
         strokeLinecap="round" 
@@ -417,10 +367,30 @@ function CheckIcon() {
   )
 }
 
-function BulletIcon() {
+function BackIcon() {
   return (
-    <svg width="6" height="6" viewBox="0 0 6 6" fill="none" className="text-gray-400 flex-shrink-0 mt-2">
-      <circle cx="3" cy="3" r="3" fill="currentColor" />
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path 
+        d="M10 12L6 8L10 4" 
+        stroke="currentColor" 
+        strokeWidth="1.5" 
+        strokeLinecap="round" 
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function ForwardIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path 
+        d="M6 4L10 8L6 12" 
+        stroke="currentColor" 
+        strokeWidth="1.5" 
+        strokeLinecap="round" 
+        strokeLinejoin="round"
+      />
     </svg>
   )
 }
