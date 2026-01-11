@@ -111,9 +111,19 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
               </div>
 
               {/* Anti-hero title - policy brief style */}
-              <h1 className="text-[20px] font-normal text-foreground mb-16 leading-[1.4]">
+              <h1 className="text-[20px] font-normal text-foreground mb-8 leading-[1.4]">
                 {t('journeys.emergency.introduction.title')}
               </h1>
+
+              {/* Pulsante Consulta Introduzione - in alto */}
+              <div className="mb-16 flex justify-center">
+                <button
+                  onClick={() => setShowEmergencyIntro(true)}
+                  className="btn-tech px-6 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  {t('emergencyIntro.buttons.consultIntroduction')}
+                </button>
+              </div>
 
               {/* Blocchi cognitivi - ogni paragrafo = una idea */}
               <div className="space-y-12 text-[16px] text-muted-foreground leading-[1.75]">

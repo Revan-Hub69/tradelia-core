@@ -111,7 +111,8 @@
     "buttons": {
       "understood": "Ok, ho capito",
       "backToIntro": "Torna all'introduzione", 
-      "goToDashboard": "Vai alla dashboard"
+      "goToDashboard": "Vai alla dashboard",
+      "consultIntroduction": "Consulta introduzione"
     },
     "navigation": {
       "back": "Torna indietro",

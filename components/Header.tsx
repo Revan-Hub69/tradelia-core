@@ -74,7 +74,15 @@ export function Header() {
                 ))}
               </div>
               <div className="flex items-center gap-4">
-                <ThemeToggle variant="compact" />
+                <ThemeToggle 
+                  variant="compact" 
+                  labels={{
+                    theme: t('settings.theme'),
+                    light: t('settings.light'),
+                    dark: t('settings.dark'),
+                    system: t('settings.system')
+                  }}
+                />
                 <LanguageSelector />
                 <button 
                   onClick={() => openModal()}
@@ -120,7 +128,15 @@ export function Header() {
                 
                 {/* Mobile Controls */}
                 <div className="space-y-4 py-3 px-2">
-                  <ThemeToggle variant="full" />
+                  <ThemeToggle 
+                    variant="full" 
+                    labels={{
+                      theme: t('settings.theme'),
+                      light: t('settings.light'),
+                      dark: t('settings.dark'),
+                      system: t('settings.system')
+                    }}
+                  />
                   <div className="mobile-language-selector">
                     <LanguageSelector />
                   </div>

@@ -111,7 +111,8 @@
     "buttons": {
       "understood": "Ok, I understand",
       "backToIntro": "Back to introduction", 
-      "goToDashboard": "Go to dashboard"
+      "goToDashboard": "Go to dashboard",
+      "consultIntroduction": "Consult introduction"
     },
     "navigation": {
       "back": "Go back",
