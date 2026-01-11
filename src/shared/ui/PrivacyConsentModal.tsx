@@ -113,20 +113,20 @@ export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentM
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Enhanced Backdrop with gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-background/90 via-background/70 to-background/50 backdrop-blur-lg backdrop-saturate-150" />
+      {/* Enhanced Backdrop with refined gradient */}
+      <div className="absolute inset-0 bg-background/85 backdrop-blur-lg backdrop-saturate-105" />
 
-      {/* Modern Modal with glass morphism */}
+      {/* Refined Modal with subtle glass morphism */}
       <div 
         ref={modalRef}
         className={`
-          relative w-full max-w-2xl section-frame backdrop-blur-xl backdrop-saturate-150
-          shadow-2xl shadow-primary/10 transition-all duration-400 ease-out
-          ${isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}
+          relative w-full max-w-2xl section-frame backdrop-blur-lg backdrop-saturate-105
+          shadow-xl shadow-primary/8 transition-all duration-300 ease-out
+          ${isOpen ? 'scale-100 opacity-100' : 'scale-98 opacity-0'}
           ${isAnimating ? 'pointer-events-none' : 'pointer-events-auto'}
         `}
         style={{
-          background: 'linear-gradient(135deg, hsl(var(--bg-section)) 0%, hsl(var(--bg-section)/0.95) 100%)',
+          background: 'hsl(var(--bg-section)/0.95)',
         }}
         role="dialog"
         aria-modal="true"
