@@ -163,8 +163,8 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
           </button>
         </div>
 
-        {/* Content - SCROLLABLE with proper padding */}
-        <div className="flex-1 overflow-y-auto overscroll-contain">
+        {/* Content - SCROLLABLE with proper padding and visible scrollbar */}
+        <div className="flex-1 overflow-y-scroll overscroll-contain drawer-scrollable">
           {currentStep === 'main' ? (
             <div className="p-4 pb-24 space-y-6">
               {/* Blocco 1 - ORIGINE */}

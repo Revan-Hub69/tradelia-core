@@ -1310,6 +1310,32 @@ html, body {
   max-width: 66ch;
 }
 
+/* Drawer Scrollable - Force visible scrollbar on desktop */
+.drawer-scrollable {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted-foreground) / 0.4) hsl(var(--muted));
+}
+
+.drawer-scrollable::-webkit-scrollbar {
+  width: 8px;
+  display: block !important;
+}
+
+.drawer-scrollable::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 4px;
+}
+
+.drawer-scrollable::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.4);
+  border-radius: 4px;
+  transition: background-color 150ms ease;
+}
+
+.drawer-scrollable::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.6);
+}
+
 /* Viewport fix - ensure overlay stays within bounds */
 .emergency-intro-overlay .overlay-container {
   max-height: 100vh;
