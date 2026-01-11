@@ -2,6 +2,7 @@
   "journeys": {
     "emergency": {
       "name": "Emergenza",
+      "shortName": "Emergenza",
       "description": "Per chi vuole una soluzione di riserva in caso di problemi con banca o conto principale.",
       "action": "Valuta liquidità",
       "sections": {
@@ -31,6 +32,7 @@
     },
     "longterm": {
       "name": "Lungo termine",
+      "shortName": "L.Termine",
       "description": "Per chi vuole accumulare nel tempo e dormire tranquillo durante i ribassi.",
       "action": "Pianifica DCA",
       "sections": {
@@ -42,6 +44,7 @@
     },
     "speculation": {
       "name": "Speculazione",
+      "shortName": "Trading",
       "description": "Per chi è disposto a rischiare molto nel breve per tentare guadagni veloci.",
       "action": "Analizza segnali",
       "sections": {
@@ -53,6 +56,7 @@
     },
     "passive": {
       "name": "Passivo",
+      "shortName": "Passivo",
       "description": "Per chi cerca rendite automatiche o interessi, senza seguire il mercato ogni giorno.",
       "action": "Configura staking",
       "sections": {
