@@ -53,7 +53,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
   // Show emergency intro overlay on first visit to emergency journey
   useEffect(() => {
     if (journeyId === 'emergency') {
-      const hasSeenEmergencyIntro = localStorage.getItem('tradelia-emergency-intro-seen')
+      const hasSeenEmergencyIntro = localStorage.getItem('tradelia-emergency-intro-seen-v2')
       if (!hasSeenEmergencyIntro) {
         setShowEmergencyIntro(true)
       }
@@ -62,7 +62,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
 
   const handleCloseEmergencyIntro = () => {
     setShowEmergencyIntro(false)
-    localStorage.setItem('tradelia-emergency-intro-seen', 'true')
+    localStorage.setItem('tradelia-emergency-intro-seen-v2', 'true')
   }
 
   // Handle tab switching from empty state
