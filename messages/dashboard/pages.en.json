@@ -52,7 +52,7 @@
     "portfolio": "Portfolio",
     "portfolioDescription": "Manage your crypto portfolio",
     "settings": "Settings",
-    "settingsDescription": "Configure your preferences",
+    "settingsDescription": "Configure your preferences and account settings",
     "verify": "Verify",
     "verifyDescription": "Verify the consistency of your tools",
     "authError": "Authentication error",

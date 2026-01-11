@@ -4,7 +4,9 @@
       "mainNavigation": "Main navigation"
     },
     "menuLabel": "Navigation menu",
-    "journeys": "Journeys"
+    "journeys": "Journeys",
+    "settings": "Settings",
+    "logout": "Logout"
   },
   "dashboard": {
     "searchPlaceholder": "Search dashboard...",
