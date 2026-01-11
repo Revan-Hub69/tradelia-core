@@ -99,5 +99,41 @@
       "visit": "Visit",
       "sectionProvidesGuidance": "This section provides guidance on the most suitable platforms."
     }
+  },
+  "emergencyDashboard": {
+    "heroAlert": {
+      "title": "CRYPTO AS EMERGENCY RESOURCE",
+      "point1": "Useful when everything else fails",
+      "point2": "Not for making money",
+      "point3": "Not useful if treated as investment",
+      "warning": "If used for wrong purpose, it becomes a problem",
+      "moreInfoAriaLabel": "More information"
+    },
+    "pillars": {
+      "academic": {
+        "title": "ACADEMIC FOUNDATIONS",
+        "subtitle": "PILLAR 1",
+        "description": "Understand theoretical and historical foundations of cryptocurrencies as emergency systems. From 2008 crisis to modern implementations."
+      },
+      "analysis": {
+        "title": "CRYPTO ANALYSIS",
+        "subtitle": "PILLAR 2",
+        "description": "Tools to evaluate technologies, risks and operational characteristics of different cryptocurrencies in emergency scenarios."
+      },
+      "errors": {
+        "title": "COMMON MISTAKES",
+        "subtitle": "PILLAR 3", 
+        "description": "Learn from most frequent errors to avoid discovering crypto limitations at the worst moment."
+      },
+      "demo": {
+        "title": "GUIDED DEMO",
+        "subtitle": "PILLAR 4",
+        "description": "Guided simulations to test procedures and understand practical functioning without real risks."
+      },
+      "expand": "Expand",
+      "collapse": "Collapse", 
+      "clickToExpand": "Click to expand",
+      "startPillar": "Start this pillar"
+    }
   }
 }
