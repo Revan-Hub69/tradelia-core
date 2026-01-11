@@ -12,27 +12,20 @@ async function loadMessages(locale: Locale) {
   const mainMessages = (await import(`../../messages/${locale}.json`)).default;
   
   // Carica tutti i moduli dashboard
-  const dashboardModules = {
-    // Common dashboard translations
-    ...((await import(`../../messages/dashboard/common.${locale}.json`)).default),
-    
-    // Layout and navigation
-    ...((await import(`../../messages/dashboard/layout.${locale}.json`)).default),
-    
-    // Dashboard pages
-    ...((await import(`../../messages/dashboard/pages.${locale}.json`)).default),
-    
-    // Journey-specific translations
-    ...((await import(`../../messages/dashboard/journeys.${locale}.json`)).default),
-    
-    // Emergency intro (existing)
-    emergencyIntro: (await import(`../../messages/dashboard/emergency-intro.${locale}.json`)).default.emergencyIntro
-  };
+  const commonModule = (await import(`../../messages/dashboard/common.${locale}.json`)).default;
+  const layoutModule = (await import(`../../messages/dashboard/layout.${locale}.json`)).default;
+  const pagesModule = (await import(`../../messages/dashboard/pages.${locale}.json`)).default;
+  const journeysModule = (await import(`../../messages/dashboard/journeys.${locale}.json`)).default;
+  const emergencyIntroModule = (await import(`../../messages/dashboard/emergency-intro.${locale}.json`)).default;
   
   // Merge dei messaggi con priorità ai moduli dashboard
   return {
     ...mainMessages,
-    ...dashboardModules
+    ...commonModule,
+    ...layoutModule,
+    ...pagesModule,
+    ...journeysModule,
+    emergencyIntro: emergencyIntroModule.emergencyIntro
   };
 }
 
