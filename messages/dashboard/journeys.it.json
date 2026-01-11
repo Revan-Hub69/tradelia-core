@@ -1,0 +1,38 @@
+{
+  "journeys": {
+    "emergency": {
+      "name": "Emergenza",
+      "description": "Sistemi alternativi per situazioni di crisi finanziaria",
+      "introduction": {
+        "title": "Crypto in situazioni di emergenza: quando i sistemi tradizionali non funzionano",
+        "whyExists": {
+          "content": "Le criptovalute nascono dopo la crisi del 2008, quando il problema non era la mancanza di denaro, ma l'impossibilità di usarlo liberamente. Banche chiuse, prelievi limitati, trasferimenti bloccati."
+        },
+        "problemType": {
+          "content": "L'obiettivo era creare un sistema di trasferimento che non dipendesse da una singola banca o autorità. Un sistema che continuasse a funzionare anche quando quelli tradizionali si fermano."
+        },
+        "mentalRule": {
+          "content": "La domanda centrale non è \"quanto rendono\", ma \"in quali condizioni continuano a funzionare\". Questo cambia completamente l'approccio alla valutazione."
+        },
+        "whoItMakesSense": {
+          "content": "In emergenza, la priorità è l'accesso, non l'ottimizzazione. Significa considerarle come opzione aggiuntiva, non come sostituzione del sistema tradizionale."
+        },
+        "finalNote": {
+          "content": "Questa dashboard serve a capire quando questo approccio è rilevante, da cosa dipende il suo funzionamento, e come evitare di scoprirne i limiti nel momento peggiore."
+        }
+      }
+    },
+    "longterm": {
+      "name": "Lungo termine",
+      "description": "Strategie di accumulo e crescita nel tempo"
+    },
+    "speculation": {
+      "name": "Speculazione",
+      "description": "Trading e opportunità a breve termine"
+    },
+    "passive": {
+      "name": "Passivo",
+      "description": "Investimenti automatizzati e DeFi"
+    }
+  }
+}

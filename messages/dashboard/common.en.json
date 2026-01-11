@@ -1,0 +1,65 @@
+{
+  "common": {
+    "journeyPage": {
+      "tabs": {
+        "intro": "Introduction",
+        "errors": "Common Errors",
+        "educational": "Educational",
+        "tools": "Tools",
+        "platforms": "Platforms"
+      },
+      "welcomeTo": "Welcome to",
+      "objective": "Objective",
+      "objectiveDescription": "Understand fundamental principles and practical approaches.",
+      "approach": "Approach",
+      "approachDescription": "Evidence-based step-by-step methodology.",
+      "yourProgress": "Your Progress",
+      "introductionRead": "Introduction read",
+      "errorsStudied": "Errors studied",
+      "educationalSection": "Educational section",
+      "completed": "Completed",
+      "toDo": "To do",
+      "nextStep": "Next step",
+      "markAsRead": "Mark as read",
+      "introductionCompleted": "Introduction completed",
+      "memoryAnchor": "Remember: the goal is not to maximize returns, but to maintain access to your funds when traditional systems don't work.",
+      "completedIntroduction": "You have completed the journey introduction.",
+      "stepTransition": {
+        "nextStep": "Next step",
+        "beforeUsingTools": "Before using the tools, it's important to understand the most common errors.",
+        "goToErrors": "Continue with errors",
+        "afterIdentifyingErrorsBlock": "After identifying common errors, it's time to delve into the theoretical foundations.",
+        "goToEducational": "Continue with educational section",
+        "reviewIntroduction": "Review introduction"
+      },
+      "continueWithErrorsAriaLabel": "Continue with common errors section",
+      "continueWithEducationalAriaLabel": "Continue with educational section",
+      "assumesDecisionFrame": "This section assumes you have already understood the decision framework.",
+      "viewIntroduction": "View introduction",
+      "assumesErrorsKnowledge": "This section assumes knowledge of common errors.",
+      "viewErrors": "View errors",
+      "commonErrorsIn": "Common errors in",
+      "errorNumber": "Error",
+      "errorDescription": "Description of typical error in the journey",
+      "identifiedErrors": "You have identified the most common errors.",
+      "educationalResources": "Educational Resources",
+      "lesson": "Lesson",
+      "educationalContentWithContext": "Educational content specific to the {journeyId} journey context.",
+      "sectionEstablishesFoundation": "This section establishes the necessary theoretical foundations.",
+      "toolsEmptyState": {
+        "title": "Tools not yet available",
+        "description": "Operational tools will be available after completing the preparatory sections."
+      },
+      "toolsAssumeKnowledge": "Tools assume knowledge of previous sections.",
+      "reviewPreparationSteps": "Review preparation steps",
+      "toolsAvailableAfterPrep": "Tools will become available after completing preparation.",
+      "sectionProvidesTools": "This section provides operational tools for the journey.",
+      "accessEmergencyTool": "Access emergency tool",
+      "recommendedPlatforms": "Recommended Platforms",
+      "platform": "Platform",
+      "platformDescription": "Description of recommended platform for the {journeyId} journey.",
+      "visit": "Visit",
+      "sectionProvidesGuidance": "This section provides guidance on the most suitable platforms."
+    }
+  }
+}

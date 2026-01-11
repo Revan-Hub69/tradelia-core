@@ -1314,6 +1314,9 @@ html, body {
 .drawer-scrollable {
   scrollbar-width: thin;
   scrollbar-color: hsl(var(--muted-foreground) / 0.4) hsl(var(--muted));
+  /* Ensure scrolling works properly */
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
 }
 
 .drawer-scrollable::-webkit-scrollbar {
@@ -1334,6 +1337,17 @@ html, body {
 
 .drawer-scrollable::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--muted-foreground) / 0.6);
+}
+
+/* Mobile scrollbar visibility */
+@media (max-width: 768px) {
+  .drawer-scrollable {
+    scrollbar-width: auto;
+  }
+  
+  .drawer-scrollable::-webkit-scrollbar {
+    width: 12px;
+  }
 }
 
 /* Viewport fix - ensure overlay stays within bounds */

@@ -1,0 +1,65 @@
+{
+  "common": {
+    "journeyPage": {
+      "tabs": {
+        "intro": "Introduzione",
+        "errors": "Errori comuni",
+        "educational": "Educativo",
+        "tools": "Strumenti",
+        "platforms": "Piattaforme"
+      },
+      "welcomeTo": "Benvenuto in",
+      "objective": "Obiettivo",
+      "objectiveDescription": "Comprendere i principi fondamentali e gli approcci pratici.",
+      "approach": "Approccio",
+      "approachDescription": "Metodologia step-by-step basata su evidenze.",
+      "yourProgress": "I tuoi progressi",
+      "introductionRead": "Introduzione letta",
+      "errorsStudied": "Errori studiati",
+      "educationalSection": "Sezione educativa",
+      "completed": "Completato",
+      "toDo": "Da fare",
+      "nextStep": "Prossimo passo",
+      "markAsRead": "Segna come letto",
+      "introductionCompleted": "Introduzione completata",
+      "memoryAnchor": "Ricorda: l'obiettivo non è massimizzare i rendimenti, ma mantenere l'accesso ai tuoi fondi quando i sistemi tradizionali non funzionano.",
+      "completedIntroduction": "Hai completato l'introduzione al percorso.",
+      "stepTransition": {
+        "nextStep": "Prossimo passo",
+        "beforeUsingTools": "Prima di utilizzare gli strumenti, è importante comprendere gli errori più comuni.",
+        "goToErrors": "Continua con gli errori",
+        "afterIdentifyingErrorsBlock": "Dopo aver identificato gli errori comuni, è il momento di approfondire le basi teoriche.",
+        "goToEducational": "Continua con la sezione educativa",
+        "reviewIntroduction": "Rivedi l'introduzione"
+      },
+      "continueWithErrorsAriaLabel": "Continua con la sezione errori comuni",
+      "continueWithEducationalAriaLabel": "Continua con la sezione educativa",
+      "assumesDecisionFrame": "Questa sezione assume che tu abbia già compreso il quadro decisionale.",
+      "viewIntroduction": "Visualizza introduzione",
+      "assumesErrorsKnowledge": "Questa sezione assume la conoscenza degli errori comuni.",
+      "viewErrors": "Visualizza errori",
+      "commonErrorsIn": "Errori comuni in",
+      "errorNumber": "Errore",
+      "errorDescription": "Descrizione dell'errore tipico nel percorso",
+      "identifiedErrors": "Hai identificato gli errori più comuni.",
+      "educationalResources": "Risorse educative",
+      "lesson": "Lezione",
+      "educationalContentWithContext": "Contenuto educativo specifico per il contesto del percorso {journeyId}.",
+      "sectionEstablishesFoundation": "Questa sezione stabilisce le basi teoriche necessarie.",
+      "toolsEmptyState": {
+        "title": "Strumenti non ancora disponibili",
+        "description": "Gli strumenti operativi saranno disponibili dopo aver completato le sezioni preparatorie."
+      },
+      "toolsAssumeKnowledge": "Gli strumenti assumono la conoscenza delle sezioni precedenti.",
+      "reviewPreparationSteps": "Rivedi i passaggi preparatori",
+      "toolsAvailableAfterPrep": "Gli strumenti diventeranno disponibili dopo aver completato la preparazione.",
+      "sectionProvidesTools": "Questa sezione fornisce strumenti operativi per il percorso.",
+      "accessEmergencyTool": "Accedi allo strumento di emergenza",
+      "recommendedPlatforms": "Piattaforme raccomandate",
+      "platform": "Piattaforma",
+      "platformDescription": "Descrizione della piattaforma raccomandata per il percorso {journeyId}.",
+      "visit": "Visita",
+      "sectionProvidesGuidance": "Questa sezione fornisce orientamento sulle piattaforme più adatte."
+    }
+  }
+}

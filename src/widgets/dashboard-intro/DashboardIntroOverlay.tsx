@@ -24,18 +24,23 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
   // Focus trap for drawer
   const { containerRef: drawerRef } = useModalFocusTrap(isOpen, onClose)
 
-  // Proper scroll lock with position preservation - Fixed for drawer scrolling
+  // Improved scroll lock - prevents background scroll while allowing drawer scroll
   useEffect(() => {
     if (isOpen) {
       // Store current scroll position
       const scrollY = window.scrollY
       const scrollX = window.scrollX
       
-      // Apply scroll lock using overflow hidden instead of position fixed
-      // This allows internal scrolling in the drawer
-      document.documentElement.style.overflow = 'hidden'
+      // Calculate scrollbar width to prevent layout shift
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+      
+      // Apply scroll lock - only on body, not documentElement
       document.body.style.overflow = 'hidden'
-      document.body.style.paddingRight = '0px' // Prevent layout shift
+      document.body.style.paddingRight = `${scrollbarWidth}px`
+      document.body.style.position = 'fixed'
+      document.body.style.top = `-${scrollY}px`
+      document.body.style.left = `-${scrollX}px`
+      document.body.style.width = '100%'
       
       // Store scroll position for restoration
       document.body.dataset.scrollY = scrollY.toString()
@@ -53,9 +58,12 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
       const scrollX = parseInt(document.body.dataset.scrollX || '0', 10)
       
       // Remove scroll lock styles
-      document.documentElement.style.overflow = ''
       document.body.style.overflow = ''
       document.body.style.paddingRight = ''
+      document.body.style.position = ''
+      document.body.style.top = ''
+      document.body.style.left = ''
+      document.body.style.width = ''
       
       // Restore scroll position
       window.scrollTo(scrollX, scrollY)
@@ -79,9 +87,12 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
       const scrollY = parseInt(document.body.dataset.scrollY || '0', 10)
       const scrollX = parseInt(document.body.dataset.scrollX || '0', 10)
       
-      document.documentElement.style.overflow = ''
       document.body.style.overflow = ''
       document.body.style.paddingRight = ''
+      document.body.style.position = ''
+      document.body.style.top = ''
+      document.body.style.left = ''
+      document.body.style.width = ''
       
       if (scrollY || scrollX) {
         window.scrollTo(scrollX, scrollY)
@@ -157,9 +168,9 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
         </div>
 
         {/* Content - SCROLLABLE with proper padding and visible scrollbar */}
-        <div className="flex-1 overflow-y-scroll overscroll-contain drawer-scrollable min-h-0">
+        <div className="flex-1 overflow-y-auto overscroll-contain drawer-scrollable min-h-0 max-h-full">
           {currentStep === 'main' ? (
-            <div className="p-4 pb-24 space-y-6">
+            <div className="p-4 pb-24 space-y-6 min-h-full">
               {/* Blocco 1 - ORIGINE */}
               <div className="space-y-3">
                 <h2 className="text-base font-semibold text-gray-900">
@@ -251,7 +262,7 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
             </div>
           ) : (
             /* Risks Detail View */
-            <div className="p-4 pb-24 space-y-6">
+            <div className="p-4 pb-24 space-y-6 min-h-full">
               {/* Sezione 1 - Cyber Risk */}
               <div className="space-y-3">
                 <h3 className="font-semibold text-base text-gray-900">

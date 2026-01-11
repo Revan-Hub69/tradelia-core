@@ -1,0 +1,24 @@
+{
+  "navigation": {
+    "common": {
+      "mainNavigation": "Main navigation"
+    },
+    "menuLabel": "Navigation menu",
+    "journeys": "Journeys"
+  },
+  "dashboard": {
+    "searchPlaceholder": "Search dashboard...",
+    "guestMode": "Guest mode",
+    "securityPrivacy": "Security & Privacy",
+    "securityDescription": "Your data is protected with end-to-end encryption. No financial information is stored on our servers.",
+    "technicalInfo": "Technical Information",
+    "version": "Version",
+    "uptime": "Uptime",
+    "supportLegal": "Support & Legal",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "educationalTool": "Educational tool",
+    "noFinancialAdvice": "Not financial advice",
+    "madeWithLove": "Made with ❤️"
+  }
+}

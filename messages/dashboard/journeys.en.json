@@ -1,0 +1,38 @@
+{
+  "journeys": {
+    "emergency": {
+      "name": "Emergency",
+      "description": "Alternative systems for financial crisis situations",
+      "introduction": {
+        "title": "Crypto in emergency situations: when traditional systems don't work",
+        "whyExists": {
+          "content": "Cryptocurrencies emerged after the 2008 crisis, when the problem wasn't lack of money, but the inability to use it freely. Closed banks, limited withdrawals, blocked transfers."
+        },
+        "problemType": {
+          "content": "The goal was to create a transfer system that didn't depend on a single bank or authority. A system that would continue to work even when traditional ones stop."
+        },
+        "mentalRule": {
+          "content": "The central question is not \"how much do they yield\", but \"under what conditions do they continue to work\". This completely changes the evaluation approach."
+        },
+        "whoItMakesSense": {
+          "content": "In emergencies, priority is access, not optimization. It means considering them as an additional option, not as a replacement for the traditional system."
+        },
+        "finalNote": {
+          "content": "This dashboard helps understand when this approach is relevant, what its functioning depends on, and how to avoid discovering its limits at the worst moment."
+        }
+      }
+    },
+    "longterm": {
+      "name": "Long term",
+      "description": "Accumulation and growth strategies over time"
+    },
+    "speculation": {
+      "name": "Speculation",
+      "description": "Trading and short-term opportunities"
+    },
+    "passive": {
+      "name": "Passive",
+      "description": "Automated investments and DeFi"
+    }
+  }
+}
