@@ -545,7 +545,19 @@
       "continueWithEducational": "→ Continue with: Educational",
       "firstReadIntroduction": "→ First read: Introduction",
       "continueWithEducationalAriaLabel": "Continue with Educational section",
-      "continueWithErrorsAriaLabel": "Continue with Errors to avoid section"
+      "continueWithErrorsAriaLabel": "Continue with Errors to avoid section",
+      "stepTransition": {
+        "nextStep": "NEXT STEP",
+        "beforeUsingTools": "Before using tools or platforms, it's important to understand which errors most often lead to losing access or control.",
+        "goToErrors": "Go to \"Errors to avoid\"",
+        "afterIdentifyingErrorsBlock": "After identifying common errors, the natural step is to understand the theoretical foundations.",
+        "goToEducational": "Go to \"Educational\"",
+        "reviewIntroduction": "Review \"Introduction\""
+      },
+      "memoryAnchor": "Here, value is evaluated by access, not price.",
+      "educationalContentWithContext": "Educational content specific for {journeyId}. This section assumes understanding of the decision frame and common errors.",
+      "toolsAvailableAfterPrep": "Tools will be available after completing the preparation sequence: Introduction → Errors → Educational foundation.",
+      "accessEmergencyTool": "Access emergency evaluation tool"
     },
   "auth": {
     "title": "Sign In or Register",

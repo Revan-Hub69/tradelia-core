@@ -119,25 +119,27 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                 </p>
               </div>
 
-              {/* Frase-ancora (optional memory anchor) */}
-              <div className="mt-12 mb-8">
-                <p className="text-[16px] text-muted-foreground leading-[1.75] max-w-[60ch]">
-                  Here, value is evaluated by access, not price.
+              {/* Frase-ancora (optional memory anchor) - moved to callout */}
+              <div className="mt-12 mb-8 p-4 bg-muted/20 border-l-4 border-muted-foreground/30 rounded-r-lg">
+                <p className="text-[16px] text-muted-foreground leading-[1.75] max-w-[60ch] italic">
+                  {tJourney('memoryAnchor')}
                 </p>
               </div>
 
-              {/* Completion without gamification - explicit cognitive closure */}
+              {/* Step Transition Block - UX cognitiva corretta */}
               <div className="mt-16 pt-8 border-t border-border/20">
-                <div className="space-y-4">
-                  <p className="text-sm text-muted-foreground/80 max-w-[60ch]">
-                    {tJourney('sectionDefinesFrame')}
+                <div className="bg-muted/30 border border-border/50 rounded-xl p-6 space-y-4">
+                  {/* Titolo piccolo (stato) */}
+                  <div className="text-xs font-medium text-muted-foreground/80 uppercase tracking-wider">
+                    {tJourney('stepTransition.nextStep')}
+                  </div>
+                  
+                  {/* Descrizione chiara */}
+                  <p className="text-sm text-muted-foreground leading-relaxed max-w-[60ch]">
+                    {tJourney('stepTransition.beforeUsingTools')}
                   </p>
                   
-                  <p className="text-sm text-muted-foreground/60 max-w-[60ch]">
-                    {tJourney('whenUnderstoodFrame')}
-                  </p>
-                  
-                  {/* Clear, unambiguous continuation */}
+                  {/* Azione chiara (bottone vero) */}
                   <button
                     onClick={() => {
                       educationMemory.markIntroSeen()
@@ -155,10 +157,10 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                         }
                       }
                     }}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-muted-foreground/20 focus:ring-offset-2 rounded-sm min-h-[44px] flex items-center"
+                    className="inline-flex items-center gap-2 px-4 py-3 bg-foreground text-background text-sm font-medium rounded-lg hover:bg-foreground/90 transition-colors focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:ring-offset-2 min-h-[44px]"
                     aria-label={tJourney('continueWithErrorsAriaLabel')}
                   >
-                    {tJourney('continueWithErrors')}
+                    {tJourney('stepTransition.goToErrors')} →
                   </button>
                 </div>
               </div>
@@ -280,17 +282,20 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
               ))}
             </div>
 
-            {/* Completion without gamification - explicit cognitive closure */}
+            {/* Step Transition Block - UX cognitiva corretta */}
             <div className="mt-16 pt-8 border-t border-border/20">
-              <div className="space-y-4">
-                <p className="text-sm text-muted-foreground/80 mb-4 max-w-[60ch]">
-                  {tJourney('sectionAddressesErrors')}
+              <div className="bg-muted/30 border border-border/50 rounded-xl p-6 space-y-4">
+                {/* Titolo piccolo (stato) */}
+                <div className="text-xs font-medium text-muted-foreground/80 uppercase tracking-wider">
+                  {tJourney('stepTransition.nextStep')}
+                </div>
+                
+                {/* Descrizione chiara */}
+                <p className="text-sm text-muted-foreground leading-relaxed max-w-[60ch]">
+                  {tJourney('stepTransition.afterIdentifyingErrorsBlock')}
                 </p>
                 
-                <p className="text-sm text-muted-foreground/60 max-w-[60ch]">
-                  {tJourney('afterIdentifyingErrors')}
-                </p>
-                
+                {/* Azione chiara (bottone vero) */}
                 <button
                   onClick={() => {
                     educationMemory.markErrorsRead()
@@ -299,13 +304,13 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                       educationalTab.click()
                     }
                   }}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-muted-foreground/20 focus:ring-offset-2 rounded-sm min-h-[44px] flex items-center"
+                  className="inline-flex items-center gap-2 px-4 py-3 bg-foreground text-background text-sm font-medium rounded-lg hover:bg-foreground/90 transition-colors focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:ring-offset-2 min-h-[44px]"
                   aria-label={tJourney('continueWithEducationalAriaLabel')}
                 >
                   {educationMemory.hasSeenIntro 
-                    ? tJourney('continueWithEducational')
-                    : tJourney('firstReadIntroduction')
-                  }
+                    ? tJourney('stepTransition.goToEducational')
+                    : tJourney('stepTransition.reviewIntroduction')
+                  } →
                 </button>
               </div>
             </div>
@@ -351,7 +356,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                     {tJourney('lesson')} {i}
                   </h4>
                   <p className="text-[16px] text-muted-foreground leading-[1.75] max-w-[60ch]">
-                    {tJourney('educationalContent')} {journeyId}. This section assumes understanding of the decision frame and common errors.
+                    {tJourney('educationalContentWithContext', { journeyId })}
                   </p>
                 </div>
               ))}
@@ -414,7 +419,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
               </p>
               
               <p className="max-w-[60ch]">
-                Tools will be available after completing the preparation sequence: Introduction → Errors → Educational foundation.
+                {tJourney('toolsAvailableAfterPrep')}
               </p>
             </div>
 
@@ -433,7 +438,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                   }}
                   className="px-6 py-3 bg-foreground text-background text-sm font-normal rounded-sm hover:bg-foreground/90 transition-colors focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:ring-offset-2"
                 >
-                  Access emergency evaluation tool
+                  {tJourney('accessEmergencyTool')}
                 </button>
               </div>
             )}

@@ -483,7 +483,19 @@
       "continueWithEducational": "→ Continua con: Educativo",
       "firstReadIntroduction": "→ Prima leggi: Introduzione",
       "continueWithEducationalAriaLabel": "Continua con la sezione Educativo",
-      "continueWithErrorsAriaLabel": "Continua con la sezione Errori da evitare"
+      "continueWithErrorsAriaLabel": "Continua con la sezione Errori da evitare",
+      "stepTransition": {
+        "nextStep": "PROSSIMO PASSO",
+        "beforeUsingTools": "Prima di usare strumenti o piattaforme, è importante capire quali errori portano più spesso a perdere accesso o controllo.",
+        "goToErrors": "Vai a \"Errori da evitare\"",
+        "afterIdentifyingErrorsBlock": "Dopo aver identificato gli errori comuni, il passaggio naturale è comprendere i fondamenti teorici.",
+        "goToEducational": "Vai a \"Educativo\"",
+        "reviewIntroduction": "Rivedi \"Introduzione\""
+      },
+      "memoryAnchor": "Qui, il valore è valutato per l'accesso, non per il prezzo.",
+      "educationalContentWithContext": "Contenuto educativo specifico per {journeyId}. Questa sezione presuppone la comprensione del quadro decisionale e degli errori comuni.",
+      "toolsAvailableAfterPrep": "I tool saranno disponibili dopo aver completato la sequenza di preparazione: Introduzione → Errori → Fondamenti educativi.",
+      "accessEmergencyTool": "Accedi al tool di valutazione emergenza"
     }
   },
   "auth": {
@@ -555,7 +567,7 @@
           "content": "Questo percorso non parla di prezzi o di previsioni. Parte da una domanda molto semplice: Se succede qualcosa di serio, posso ancora accedere e spostare valore?"
         },
         "whoItMakesSense": {
-          "content": "Quando si parla di una riserva di emergenza, la prima cosa che conta non è \"quanto rende\", ma se funziona nel momento giusto. Ed è proprio in quei momenti che, storicamente, il valore tende a concentrarsi dove l'accesso è più raro."
+          "content": "Quando si parla di una riserva di emergenza, la priorità non è \"quanto rende\", ma se funziona nel momento giusto. Quando i canali si bloccano, ciò che resta accessibile diventa più importante, mentre il resto diventa difficile o impossibile da usare."
         },
         "finalNote": {
           "content": "Questo approccio ha senso per chi vuole capire se e come le crypto possano avere un ruolo in situazioni difficili, prima ancora di pensare al mercato."
