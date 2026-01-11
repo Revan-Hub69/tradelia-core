@@ -113,6 +113,10 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                 <p className="max-w-[60ch]">
                   {t('journeys.emergency.introduction.whoItMakesSense.content')}
                 </p>
+
+                <p className="max-w-[60ch]">
+                  {t('journeys.emergency.introduction.finalNote.content')}
+                </p>
               </div>
 
               {/* Frase-ancora (optional memory anchor) */}
@@ -149,7 +153,7 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-muted-foreground/20 focus:ring-offset-2 rounded-sm min-h-[44px] flex items-center"
                   aria-label="Go to next step: Errors to avoid"
                 >
-                  Next step: Errors to avoid
+                  {tJourney('nextStepErrors')}
                 </button>
               </div>
             </div>

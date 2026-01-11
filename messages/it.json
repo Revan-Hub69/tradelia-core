@@ -475,7 +475,8 @@
       "toolsAssumeKnowledge": "I tool presuppongono la comprensione del quadro decisionale e degli errori comuni.",
       "viewIntroduction": "Visualizza Introduzione",
       "viewErrors": "Visualizza Errori da evitare",
-      "reviewPreparationSteps": "Rivedi i passaggi di preparazione"
+      "reviewPreparationSteps": "Rivedi i passaggi di preparazione",
+      "nextStepErrors": "Prossimo passaggio: Errori da evitare"
     }
   },
   "auth": {
@@ -538,16 +539,19 @@
       "introduction": {
         "title": "Crypto come riserva di emergenza",
         "whyExists": {
-          "content": "Bitcoin nasce nel 2008–2009 in risposta a una crisi sistemica: il valore esisteva, ma l'accesso al valore non era più garantito. Da allora, le criptovalute rappresentano una categoria di sistemi pensati per funzionare anche quando i canali tradizionali si interrompono."
+          "content": "Bitcoin nasce nel 2008–2009, durante una crisi in cui il problema non era quanto valesse il denaro, ma se fosse possibile usarlo davvero. I soldi c'erano, ma in molti casi non si potevano muovere."
         },
         "problemType": {
-          "content": "Questo percorso non riguarda il prezzo né la valutazione di mercato. Riguarda una domanda diversa: Posso accedere e trasferire valore se il sistema smette di funzionare normalmente?"
+          "content": "Le criptovalute partono da qui: dall'idea di creare sistemi che continuino a funzionare anche quando quelli tradizionali si bloccano."
         },
         "mentalRule": {
-          "content": "In una riserva di emergenza, il criterio principale non è quanto vale, ma se funziona quando serve. Per questo motivo, le riserve di emergenza vengono valutate in termini di funzione, non di performance."
+          "content": "Questo percorso non parla di prezzi o di previsioni. Parte da una domanda molto semplice: Se succede qualcosa di serio, posso ancora accedere e spostare valore?"
         },
         "whoItMakesSense": {
-          "content": "Questo approccio può avere senso per chi cerca: ridondanza del sistema, accesso indipendente, continuità operativa. Non per chi cerca ottimizzazione o rendimento."
+          "content": "Quando si parla di una riserva di emergenza, la prima cosa che conta non è \"quanto rende\", ma se funziona nel momento giusto. Ed è proprio in quei momenti che, storicamente, il valore tende a concentrarsi dove l'accesso è più raro."
+        },
+        "finalNote": {
+          "content": "Questo approccio ha senso per chi vuole capire se e come le crypto possano avere un ruolo in situazioni difficili, prima ancora di pensare al mercato."
         },
         "ctaSection": {}
       },

@@ -537,7 +537,8 @@
       "toolsAssumeKnowledge": "Tools assume understanding of the decision frame and common errors.",
       "viewIntroduction": "View Introduction",
       "viewErrors": "View Errors to avoid",
-      "reviewPreparationSteps": "Review preparation steps"
+      "reviewPreparationSteps": "Review preparation steps",
+      "nextStepErrors": "Next step: Errors to avoid"
     },
   "auth": {
     "title": "Sign In or Register",
