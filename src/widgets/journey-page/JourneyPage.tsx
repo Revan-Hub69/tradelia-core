@@ -119,9 +119,13 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
               <div className="mb-16 flex justify-center">
                 <button
                   onClick={() => setShowEmergencyIntro(true)}
-                  className="btn-tech px-6 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="group inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-muted-foreground/20 focus:ring-offset-2 rounded-sm"
                 >
-                  {t('emergencyIntro.buttons.consultIntroduction')}
+                  <ConsultIcon className="w-4 h-4 transition-colors" />
+                  <span className="relative">
+                    {t('emergencyIntro.buttons.consultIntroduction')}
+                    <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-current transition-all duration-200 group-hover:w-full"></span>
+                  </span>
                 </button>
               </div>
 
@@ -576,6 +580,18 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
         )}
       </DashboardLayout>
     </DashboardAuthGuard>
+  )
+}
+
+// SVG Icons - Tradelia Design System Compliant
+function ConsultIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path 
+        d="M8 1C4.134 1 1 4.134 1 8s3.134 7 7 7 7-3.134 7-7-3.134-7-7-7zM8 11.5a.75.75 0 01-.75-.75V7.25a.75.75 0 011.5 0v3.5a.75.75 0 01-.75.75zM8 6a.75.75 0 110-1.5.75.75 0 010 1.5z" 
+        fill="currentColor"
+      />
+    </svg>
   )
 }
 
