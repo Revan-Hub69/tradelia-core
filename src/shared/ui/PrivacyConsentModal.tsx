@@ -1,11 +1,11 @@
 /**
- * Privacy Consent Modal - Tradelia 2026
+ * Privacy Consent Modal - Tradelia 2026 MODERNIZED
  * 
  * Modal per gestione consenso privacy conforme GDPR/CCPA
- * - Granular consent controls
- * - Clear explanations
- * - Easy opt-out
- * - Persistent settings
+ * - Professional design with system colors
+ * - Glass morphism effects
+ * - Smooth animations
+ * - Enhanced accessibility
  */
 
 'use client'
@@ -38,10 +38,12 @@ export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentM
   })
 
   const [showDetails, setShowDetails] = useState(false)
+  const [isAnimating, setIsAnimating] = useState(false)
 
   // Load current settings
   useEffect(() => {
     if (isOpen) {
+      setIsAnimating(true)
       const current = getAnalyticsStatus()
       setSettings({
         analytics_enabled: current.analytics_enabled,
@@ -49,6 +51,7 @@ export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentM
         error_reporting: current.error_reporting,
         feature_usage: current.feature_usage
       })
+      setTimeout(() => setIsAnimating(false), 300)
     }
   }, [isOpen])
 
@@ -99,27 +102,35 @@ export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentM
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+      {/* Enhanced Backdrop with gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-background/90 via-background/70 to-background/50 backdrop-blur-lg backdrop-saturate-150" />
 
-      {/* Modal */}
+      {/* Modern Modal with glass morphism */}
       <div 
-        className="relative w-full max-w-2xl bg-background border border-border rounded-xl shadow-2xl animate-in fade-in zoom-in-95 duration-200"
+        className={`
+          relative w-full max-w-2xl section-frame backdrop-blur-xl backdrop-saturate-150
+          shadow-2xl shadow-primary/10 transition-all duration-400 ease-out
+          ${isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}
+          ${isAnimating ? 'pointer-events-none' : 'pointer-events-auto'}
+        `}
+        style={{
+          background: 'linear-gradient(135deg, hsl(var(--bg-section)) 0%, hsl(var(--bg-section)/0.95) 100%)',
+        }}
         role="dialog"
         aria-modal="true"
         aria-labelledby="privacy-modal-title"
       >
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-border/50">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-              <ShieldIcon className="w-5 h-5 text-primary" />
+        {/* Header with modern design */}
+        <div className="flex items-center justify-between p-6 border-b border-border/30">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
+              <ShieldIcon className="w-6 h-6 text-primary" />
             </div>
             <div>
-              <h2 id="privacy-modal-title" className="text-lg font-semibold text-foreground">
+              <h2 id="privacy-modal-title" className="text-xl font-bold content-primary">
                 Impostazioni Privacy
               </h2>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm content-secondary">
                 Gestisci i tuoi dati e la privacy
               </p>
             </div>
@@ -127,22 +138,31 @@ export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentM
           
           <button
             onClick={onClose}
-            className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/50"
-            aria-label={t('close')}
+            className="
+              p-3 rounded-xl transition-all duration-200 ease-out
+              bg-muted/30 hover:bg-error/10 active:scale-95
+              border border-border/30 hover:border-error/30
+              text-muted-foreground hover:text-error
+              shadow-sm hover:shadow-md
+              focus:outline-none focus:ring-2 focus:ring-error/50 focus:ring-offset-2
+            "
+            aria-label="Chiudi"
           >
-            <CloseIcon className="w-4 h-4" />
+            <CloseIcon className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Content */}
+        {/* Content with enhanced styling */}
         <div className="p-6 space-y-6">
-          {/* Introduction */}
-          <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
-            <div className="flex items-start gap-3">
-              <InfoIcon className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+          {/* Introduction with modern card */}
+          <div className="section-frame-info p-5 rounded-xl">
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <InfoIcon className="w-5 h-5 text-primary" />
+              </div>
               <div>
-                <h3 className="font-medium text-primary mb-1">La tua privacy è importante</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="font-bold text-primary mb-2">La tua privacy è importante</h3>
+                <p className="text-sm content-secondary leading-relaxed">
                   Utilizziamo solo i dati necessari per migliorare la tua esperienza. 
                   Puoi controllare esattamente quali dati condividere con noi.
                 </p>
@@ -150,185 +170,257 @@ export function PrivacyConsentModal({ isOpen, onClose, onSave }: PrivacyConsentM
             </div>
           </div>
 
-          {/* Privacy Settings */}
+          {/* Privacy Settings with modern cards */}
           <div className="space-y-4">
-            <h3 className="font-medium text-foreground">Controlli Privacy</h3>
+            <h3 className="font-bold content-primary">Controlli Privacy</h3>
             
             {/* Analytics */}
-            <div className="flex items-start justify-between p-4 border border-border/50 rounded-lg">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <h4 className="font-medium text-foreground">Analytics di Base</h4>
-                  <span className="px-2 py-0.5 text-xs bg-muted text-muted-foreground rounded-full">
-                    Opzionale
-                  </span>
+            <div className="card-2026 p-5 hover:shadow-lg transition-all duration-200">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <div className="w-3 h-3 rounded-full bg-primary/60" />
+                    </div>
+                    <h4 className="font-semibold content-primary">Analytics di Base</h4>
+                    <span className="px-2 py-1 text-xs bg-muted/50 content-secondary rounded-full border border-border/30">
+                      Opzionale
+                    </span>
+                  </div>
+                  <p className="text-sm content-secondary leading-relaxed">
+                    Raccogliamo dati anonimi su come usi l'app per migliorare l'esperienza utente.
+                  </p>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  Raccogliamo dati anonimi su come usi l'app per migliorare l'esperienza utente.
-                </p>
-              </div>
-              <label className="flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={settings.analytics_enabled}
-                  onChange={(e) => handleSettingChange('analytics_enabled', e.target.checked)}
-                  className="sr-only"
-                  aria-label={t('enableBasicAnalytics')}
-                />
-                <div className={`
-                  w-11 h-6 rounded-full transition-colors relative
-                  ${settings.analytics_enabled ? 'bg-primary' : 'bg-muted'}
-                `}>
+                <label className="flex items-center cursor-pointer ml-4">
+                  <input
+                    type="checkbox"
+                    checked={settings.analytics_enabled}
+                    onChange={(e) => handleSettingChange('analytics_enabled', e.target.checked)}
+                    className="sr-only"
+                    aria-label="Abilita analytics di base"
+                  />
                   <div className={`
-                    w-4 h-4 bg-white rounded-full absolute top-1 transition-transform
-                    ${settings.analytics_enabled ? 'translate-x-6' : 'translate-x-1'}
-                  `} />
-                </div>
-              </label>
+                    w-12 h-6 rounded-full transition-all duration-200 relative border
+                    ${settings.analytics_enabled 
+                      ? 'bg-primary border-primary/30' 
+                      : 'bg-muted border-border'
+                    }
+                  `}>
+                    <div className={`
+                      w-4 h-4 bg-background rounded-full absolute top-1 transition-all duration-200 shadow-sm
+                      ${settings.analytics_enabled ? 'translate-x-7' : 'translate-x-1'}
+                    `} />
+                  </div>
+                </label>
+              </div>
             </div>
 
             {/* Performance Tracking */}
-            <div className="flex items-start justify-between p-4 border border-border/50 rounded-lg">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <h4 className="font-medium text-foreground">Monitoraggio Performance</h4>
-                  <span className="px-2 py-0.5 text-xs bg-muted text-muted-foreground rounded-full">
-                    Opzionale
-                  </span>
+            <div className="card-2026 p-5 hover:shadow-lg transition-all duration-200">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-8 h-8 rounded-lg bg-warning/10 flex items-center justify-center">
+                      <div className="w-3 h-3 rounded-full bg-warning/60" />
+                    </div>
+                    <h4 className="font-semibold content-primary">Monitoraggio Performance</h4>
+                    <span className="px-2 py-1 text-xs bg-muted/50 content-secondary rounded-full border border-border/30">
+                      Opzionale
+                    </span>
+                  </div>
+                  <p className="text-sm content-secondary leading-relaxed">
+                    Monitoriamo le performance dell'app per identificare e risolvere problemi di velocità.
+                  </p>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  Monitoriamo le performance dell'app per identificare e risolvere problemi di velocità.
-                </p>
-              </div>
-              <label className="flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={settings.performance_tracking}
-                  onChange={(e) => handleSettingChange('performance_tracking', e.target.checked)}
-                  className="sr-only"
-                  aria-label={t('enablePerformanceTracking')}
-                />
-                <div className={`
-                  w-11 h-6 rounded-full transition-colors relative
-                  ${settings.performance_tracking ? 'bg-primary' : 'bg-muted'}
-                `}>
+                <label className="flex items-center cursor-pointer ml-4">
+                  <input
+                    type="checkbox"
+                    checked={settings.performance_tracking}
+                    onChange={(e) => handleSettingChange('performance_tracking', e.target.checked)}
+                    className="sr-only"
+                    aria-label="Abilita monitoraggio performance"
+                  />
                   <div className={`
-                    w-4 h-4 bg-white rounded-full absolute top-1 transition-transform
-                    ${settings.performance_tracking ? 'translate-x-6' : 'translate-x-1'}
-                  `} />
-                </div>
-              </label>
+                    w-12 h-6 rounded-full transition-all duration-200 relative border
+                    ${settings.performance_tracking 
+                      ? 'bg-primary border-primary/30' 
+                      : 'bg-muted border-border'
+                    }
+                  `}>
+                    <div className={`
+                      w-4 h-4 bg-background rounded-full absolute top-1 transition-all duration-200 shadow-sm
+                      ${settings.performance_tracking ? 'translate-x-7' : 'translate-x-1'}
+                    `} />
+                  </div>
+                </label>
+              </div>
             </div>
 
             {/* Error Reporting */}
-            <div className="flex items-start justify-between p-4 border border-border/50 rounded-lg bg-muted/20">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <h4 className="font-medium text-foreground">Segnalazione Errori</h4>
-                  <span className="px-2 py-0.5 text-xs bg-primary/20 text-primary rounded-full">
-                    Essenziale
-                  </span>
+            <div className="card-2026 p-5 bg-success/5 border-success/20">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center">
+                      <div className="w-3 h-3 rounded-full bg-success/60" />
+                    </div>
+                    <h4 className="font-semibold content-primary">Segnalazione Errori</h4>
+                    <span className="px-2 py-1 text-xs bg-success/20 text-success rounded-full border border-success/30">
+                      Essenziale
+                    </span>
+                  </div>
+                  <p className="text-sm content-secondary leading-relaxed">
+                    Necessario per identificare e correggere errori che potrebbero compromettere la funzionalità.
+                  </p>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  Necessario per identificare e correggere errori che potrebbero compromettere la funzionalità.
-                </p>
-              </div>
-              <label className="flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={settings.error_reporting}
-                  onChange={(e) => handleSettingChange('error_reporting', e.target.checked)}
-                  className="sr-only"
-                  aria-label={t('enableErrorReporting')}
-                />
-                <div className={`
-                  w-11 h-6 rounded-full transition-colors relative
-                  ${settings.error_reporting ? 'bg-primary' : 'bg-muted'}
-                `}>
+                <label className="flex items-center cursor-pointer ml-4">
+                  <input
+                    type="checkbox"
+                    checked={settings.error_reporting}
+                    onChange={(e) => handleSettingChange('error_reporting', e.target.checked)}
+                    className="sr-only"
+                    aria-label="Abilita segnalazione errori"
+                  />
                   <div className={`
-                    w-4 h-4 bg-white rounded-full absolute top-1 transition-transform
-                    ${settings.error_reporting ? 'translate-x-6' : 'translate-x-1'}
-                  `} />
-                </div>
-              </label>
+                    w-12 h-6 rounded-full transition-all duration-200 relative border
+                    ${settings.error_reporting 
+                      ? 'bg-primary border-primary/30' 
+                      : 'bg-muted border-border'
+                    }
+                  `}>
+                    <div className={`
+                      w-4 h-4 bg-background rounded-full absolute top-1 transition-all duration-200 shadow-sm
+                      ${settings.error_reporting ? 'translate-x-7' : 'translate-x-1'}
+                    `} />
+                  </div>
+                </label>
+              </div>
             </div>
 
             {/* Feature Usage */}
-            <div className="flex items-start justify-between p-4 border border-border/50 rounded-lg">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <h4 className="font-medium text-foreground">Utilizzo Funzionalità</h4>
-                  <span className="px-2 py-0.5 text-xs bg-muted text-muted-foreground rounded-full">
-                    Opzionale
-                  </span>
+            <div className="card-2026 p-5 hover:shadow-lg transition-all duration-200">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <div className="w-3 h-3 rounded-full bg-primary/60" />
+                    </div>
+                    <h4 className="font-semibold content-primary">Utilizzo Funzionalità</h4>
+                    <span className="px-2 py-1 text-xs bg-muted/50 content-secondary rounded-full border border-border/30">
+                      Opzionale
+                    </span>
+                  </div>
+                  <p className="text-sm content-secondary leading-relaxed">
+                    Tracciamo quali funzionalità usi di più per migliorare quelle più importanti per te.
+                  </p>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  Tracciamo quali funzionalità usi di più per migliorare quelle più importanti per te.
-                </p>
-              </div>
-              <label className="flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={settings.feature_usage}
-                  onChange={(e) => handleSettingChange('feature_usage', e.target.checked)}
-                  className="sr-only"
-                  aria-label={t('enableFeatureUsageTracking')}
-                />
-                <div className={`
-                  w-11 h-6 rounded-full transition-colors relative
-                  ${settings.feature_usage ? 'bg-primary' : 'bg-muted'}
-                `}>
+                <label className="flex items-center cursor-pointer ml-4">
+                  <input
+                    type="checkbox"
+                    checked={settings.feature_usage}
+                    onChange={(e) => handleSettingChange('feature_usage', e.target.checked)}
+                    className="sr-only"
+                    aria-label="Abilita tracciamento utilizzo funzionalità"
+                  />
                   <div className={`
-                    w-4 h-4 bg-white rounded-full absolute top-1 transition-transform
-                    ${settings.feature_usage ? 'translate-x-6' : 'translate-x-1'}
-                  `} />
-                </div>
-              </label>
+                    w-12 h-6 rounded-full transition-all duration-200 relative border
+                    ${settings.feature_usage 
+                      ? 'bg-primary border-primary/30' 
+                      : 'bg-muted border-border'
+                    }
+                  `}>
+                    <div className={`
+                      w-4 h-4 bg-background rounded-full absolute top-1 transition-all duration-200 shadow-sm
+                      ${settings.feature_usage ? 'translate-x-7' : 'translate-x-1'}
+                    `} />
+                  </div>
+                </label>
+              </div>
             </div>
           </div>
 
           {/* Details Toggle */}
           <button
             onClick={() => setShowDetails(!showDetails)}
-            className="text-sm text-primary hover:text-primary/80 transition-colors"
+            className="
+              text-sm text-primary hover:text-primary/80 transition-colors duration-200
+              font-medium underline decoration-primary/30 hover:decoration-primary/60
+            "
           >
             {showDetails ? 'Nascondi dettagli' : 'Mostra dettagli tecnici'}
           </button>
 
           {/* Technical Details */}
           {showDetails && (
-            <div className="bg-muted/30 border border-border/50 rounded-lg p-4 space-y-3">
-              <h4 className="font-medium text-foreground">Dettagli Tecnici</h4>
-              <div className="text-sm text-muted-foreground space-y-2">
-                <p>• <strong>Dati raccolti:</strong> Solo dati anonimi di utilizzo, nessuna informazione personale</p>
-                <p>• <strong>Conservazione:</strong> I dati vengono conservati per massimo 90 giorni</p>
-                <p>• <strong>Condivisione:</strong> I dati non vengono mai condivisi con terze parti</p>
-                <p>• <strong>Sicurezza:</strong> Tutti i dati sono crittografati in transito e a riposo</p>
-                <p>• <strong>Controllo:</strong> Puoi modificare queste impostazioni in qualsiasi momento</p>
+            <div className="section-frame p-5 rounded-xl bg-muted/20 space-y-3">
+              <h4 className="font-bold content-primary">Dettagli Tecnici</h4>
+              <div className="text-sm content-secondary space-y-3">
+                <div className="flex items-start gap-3">
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0 mt-2" />
+                  <p><strong>Dati raccolti:</strong> Solo dati anonimi di utilizzo, nessuna informazione personale</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0 mt-2" />
+                  <p><strong>Conservazione:</strong> I dati vengono conservati per massimo 90 giorni</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0 mt-2" />
+                  <p><strong>Condivisione:</strong> I dati non vengono mai condivisi con terze parti</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0 mt-2" />
+                  <p><strong>Sicurezza:</strong> Tutti i dati sono crittografati in transito e a riposo</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0 mt-2" />
+                  <p><strong>Controllo:</strong> Puoi modificare queste impostazioni in qualsiasi momento</p>
+                </div>
               </div>
             </div>
           )}
         </div>
 
-        {/* Actions */}
-        <div className="flex flex-col sm:flex-row gap-3 p-6 border-t border-border/50">
+        {/* Modern Actions */}
+        <div className="flex flex-col sm:flex-row gap-3 p-6 border-t border-border/30">
           <button
             onClick={handleRejectAll}
-            className="flex-1 px-4 py-2 border border-border rounded-lg text-foreground bg-background hover:bg-muted/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50"
+            className="
+              flex-1 h-12 px-6 text-base font-medium rounded-xl
+              bg-muted/50 hover:bg-muted/80 active:scale-95
+              border border-border/50 hover:border-border
+              content-secondary hover:text-foreground
+              transition-all duration-200 ease-out
+              focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2
+            "
           >
             Solo Essenziali
           </button>
           
           <button
             onClick={handleSave}
-            className="flex-1 px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-muted/80 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50"
+            className="
+              flex-1 h-12 px-6 text-base font-medium rounded-xl
+              bg-background hover:bg-muted/30 active:scale-95
+              border border-border hover:border-primary/30
+              content-primary hover:text-primary
+              transition-all duration-200 ease-out
+              focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2
+            "
           >
             Salva Preferenze
           </button>
           
           <button
             onClick={handleAcceptAll}
-            className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2"
+            className="
+              flex-1 h-12 px-6 text-base font-semibold rounded-xl
+              bg-gradient-to-r from-primary to-primary/90
+              text-white shadow-lg shadow-primary/20
+              transition-all duration-200 ease-out
+              hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5
+              active:scale-[0.98]
+              focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2
+            "
           >
             Accetta Tutto
           </button>

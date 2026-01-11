@@ -1,7 +1,7 @@
 /**
- * Emergency Journey Introduction Drawer - Tradelia 2026
+ * Emergency Journey Introduction Drawer - Tradelia 2026 MODERNIZED
  * 
- * True side drawer with proper scroll behavior and focus management
+ * Professional & innovative drawer with system colors and advanced effects
  */
 
 'use client'
@@ -19,14 +19,17 @@ type DrawerStep = 'main' | 'risks'
 
 export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlayProps) {
   const [currentStep, setCurrentStep] = useState<DrawerStep>('main')
+  const [isAnimating, setIsAnimating] = useState(false)
   const t = useTranslations('emergencyIntro')
 
   // Focus trap for drawer
   const { containerRef: drawerRef } = useModalFocusTrap(isOpen, onClose)
 
-  // Improved scroll lock - prevents background scroll while allowing drawer scroll
+  // Enhanced scroll lock with smooth animations
   useEffect(() => {
     if (isOpen) {
+      setIsAnimating(true)
+      
       // Store current scroll position
       const scrollY = window.scrollY
       const scrollX = window.scrollX
@@ -34,7 +37,7 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
       // Calculate scrollbar width to prevent layout shift
       const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
       
-      // Apply scroll lock - only on body, not documentElement
+      // Apply scroll lock with smooth transition
       document.body.style.overflow = 'hidden'
       document.body.style.paddingRight = `${scrollbarWidth}px`
       document.body.style.position = 'fixed'
@@ -46,13 +49,19 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
       document.body.dataset.scrollY = scrollY.toString()
       document.body.dataset.scrollX = scrollX.toString()
       
-      // Push main content to the left on desktop
+      // Enhanced main content push with elastic animation
       const mainContent = document.querySelector('.dashboard-main-content') as HTMLElement
       if (mainContent && window.innerWidth >= 1024) {
-        mainContent.style.transform = 'translateX(-320px)'
-        mainContent.style.transition = 'transform 300ms ease-out'
+        mainContent.style.transform = 'translateX(-400px) scale(0.98)'
+        mainContent.style.transition = 'transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1)'
+        mainContent.style.filter = 'blur(1px)'
       }
+      
+      // Animation complete
+      setTimeout(() => setIsAnimating(false), 400)
     } else {
+      setIsAnimating(true)
+      
       // Restore scroll position and remove scroll lock
       const scrollY = parseInt(document.body.dataset.scrollY || '0', 10)
       const scrollX = parseInt(document.body.dataset.scrollX || '0', 10)
@@ -72,14 +81,16 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
       delete document.body.dataset.scrollY
       delete document.body.dataset.scrollX
       
-      // Reset main content position
+      // Reset main content position with elastic return
       const mainContent = document.querySelector('.dashboard-main-content') as HTMLElement
       if (mainContent) {
         mainContent.style.transform = ''
-        mainContent.style.transition = 'transform 300ms ease-out'
+        mainContent.style.transition = 'transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1)'
+        mainContent.style.filter = ''
       }
       
       setCurrentStep('main')
+      setTimeout(() => setIsAnimating(false), 400)
     }
 
     return () => {
@@ -104,55 +115,89 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
       const mainContent = document.querySelector('.dashboard-main-content') as HTMLElement
       if (mainContent) {
         mainContent.style.transform = ''
+        mainContent.style.filter = ''
       }
     }
   }, [isOpen])
 
-  const goToRisks = () => setCurrentStep('risks')
-  const goBack = () => setCurrentStep('main')
+  const goToRisks = () => {
+    setIsAnimating(true)
+    setTimeout(() => {
+      setCurrentStep('risks')
+      setIsAnimating(false)
+    }, 200)
+  }
+  
+  const goBack = () => {
+    setIsAnimating(true)
+    setTimeout(() => {
+      setCurrentStep('main')
+      setIsAnimating(false)
+    }, 200)
+  }
 
   if (!isOpen) return null
 
   return (
     <>
-      {/* Backdrop with proper z-index */}
+      {/* Enhanced Backdrop with gradient and blur */}
       <div 
-        className="fixed inset-0 z-[60] bg-black/30 backdrop-blur-sm transition-opacity duration-300"
+        className={`
+          fixed inset-0 z-[60] transition-all duration-400 ease-out
+          bg-gradient-to-br from-background/80 via-background/60 to-background/40
+          backdrop-blur-md backdrop-saturate-150
+          ${isOpen ? 'opacity-100' : 'opacity-0'}
+        `}
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* True Side Drawer - slides from right with proper layering */}
+      {/* Modern Side Drawer with glass morphism */}
       <div 
         ref={drawerRef as React.RefObject<HTMLDivElement>}
         className={`
-          fixed top-0 right-0 bottom-0 w-full max-w-lg bg-white z-[65] shadow-2xl
-          transform transition-transform duration-300 ease-out overflow-hidden
+          fixed top-0 right-0 bottom-0 w-full max-w-xl z-[65] 
+          section-frame border-l-2 border-r-0 border-t-0 border-b-0 rounded-l-2xl rounded-r-none
+          backdrop-blur-xl backdrop-saturate-150
+          shadow-2xl shadow-primary/10
+          transform transition-all duration-400 ease-out overflow-hidden
           flex flex-col
-          ${isOpen ? 'translate-x-0' : 'translate-x-full'}
+          ${isOpen ? 'translate-x-0 scale-100' : 'translate-x-full scale-95'}
+          ${isAnimating ? 'pointer-events-none' : 'pointer-events-auto'}
         `}
+        style={{
+          background: 'linear-gradient(135deg, hsl(var(--bg-section)) 0%, hsl(var(--bg-section)/0.95) 100%)',
+          borderColor: 'hsl(var(--border-section))',
+        }}
         role="dialog"
         aria-modal="true"
         aria-labelledby="intro-title"
       >
-        {/* Header with navigation - sticky */}
-        <div className="sticky top-0 z-10 flex items-center justify-between p-4 border-b border-gray-200 bg-white/95 backdrop-blur-sm">
-          <div className="flex items-center gap-3">
+        {/* Modern Header with glass morphism and gradient */}
+        <div className="sticky top-0 z-10 flex items-center justify-between p-6 border-b border-border/30 backdrop-blur-xl">
+          <div className="flex items-center gap-4">
             {currentStep === 'risks' && (
               <button
                 onClick={goBack}
-                className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="
+                  p-3 rounded-xl transition-all duration-200 ease-out
+                  bg-muted/50 hover:bg-muted/80 active:scale-95
+                  border border-border/50 hover:border-border
+                  text-muted-foreground hover:text-foreground
+                  shadow-sm hover:shadow-md
+                  focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2
+                "
                 aria-label={t('navigation.back')}
               >
                 <BackIcon />
               </button>
             )}
-            <div>
-              <h1 id="intro-title" className="text-lg font-semibold text-gray-900">
+            <div className="space-y-1">
+              <h1 id="intro-title" className="text-xl font-bold content-primary">
                 {currentStep === 'main' ? t('title') : t('risksTitle')}
               </h1>
               {currentStep === 'main' && (
-                <p className="text-sm text-gray-600 mt-0.5">
+                <p className="text-sm content-secondary">
                   {t('subtitle')}
                 </p>
               )}
@@ -160,221 +205,342 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="
+              p-3 rounded-xl transition-all duration-200 ease-out
+              bg-muted/30 hover:bg-error/10 active:scale-95
+              border border-border/30 hover:border-error/30
+              text-muted-foreground hover:text-error
+              shadow-sm hover:shadow-md
+              focus:outline-none focus:ring-2 focus:ring-error/50 focus:ring-offset-2
+            "
             aria-label={t('navigation.close')}
           >
             <CloseIcon />
           </button>
         </div>
 
-        {/* Content - SCROLLABLE with proper padding and visible scrollbar */}
-        <div className="flex-1 overflow-y-auto overscroll-contain drawer-scrollable min-h-0 max-h-full">
-          {currentStep === 'main' ? (
-            <div className="p-4 pb-24 space-y-6 min-h-full">
-              {/* Blocco 1 - ORIGINE */}
-              <div className="space-y-3">
-                <h2 className="text-base font-semibold text-gray-900">
-                  {t('sections.origin.title')}
-                </h2>
-                <p className="text-sm text-gray-700 leading-relaxed">
-                  {t('sections.origin.content')}
-                </p>
-                <div className="bg-amber-50 border-l-4 border-amber-400 p-3 rounded-r">
-                  <p className="text-xs font-medium text-gray-900 mb-2">{t('sections.origin.situations.title')}</p>
-                  <ul className="text-xs text-gray-700 space-y-1">
-                    {t.raw('sections.origin.situations.items').map((item: string) => (
-                      <li key={`origin-${item.slice(0, 10)}`}>• {item}</li>
-                    ))}
-                  </ul>
-                </div>
-                <p className="text-sm text-gray-700 leading-relaxed">
-                  {t('sections.origin.conclusion')}
-                </p>
-              </div>
-
-              {/* Blocco 2 - EMERGENZE */}
-              <div className="space-y-3">
-                <h2 className="text-base font-semibold text-gray-900">
-                  {t('sections.emergencies.title')}
-                </h2>
-                <p className="text-sm text-gray-700 leading-relaxed">
-                  {t('sections.emergencies.content')}
-                </p>
-                <div className="space-y-2">
-                  {t.raw('sections.emergencies.types').map((type: { title: string; description: string }) => (
-                    <div key={`emergency-${type.title.slice(0, 10)}`} className="border border-gray-200 rounded-lg p-3">
-                      <div className="font-medium text-sm text-gray-900">{type.title}</div>
-                      <div className="text-xs text-gray-600">{type.description}</div>
+        {/* Enhanced Content with smooth transitions */}
+        <div className="flex-1 overflow-y-auto overscroll-contain min-h-0 max-h-full">
+          <div className={`
+            transition-all duration-300 ease-out
+            ${isAnimating ? 'opacity-50 transform translate-x-2' : 'opacity-100 transform translate-x-0'}
+          `}>
+            {currentStep === 'main' ? (
+              <div className="p-6 pb-32 space-y-8 min-h-full">
+                {/* Blocco 1 - ORIGINE con design moderno */}
+                <div className="card-2026 p-6 space-y-4 hover:shadow-lg transition-all duration-200">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                      <OriginIcon />
                     </div>
-                  ))}
-                </div>
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                  <p className="font-medium text-sm text-gray-900">
-                    {t('sections.emergencies.keyPoint')}
+                    <h2 className="text-lg font-bold content-primary">
+                      {t('sections.origin.title')}
+                    </h2>
+                  </div>
+                  <p className="text-sm content-secondary leading-relaxed">
+                    {t('sections.origin.content')}
+                  </p>
+                  <div className="section-frame-warning p-4 rounded-xl">
+                    <p className="text-sm font-semibold content-primary mb-3">
+                      {t('sections.origin.situations.title')}
+                    </p>
+                    <ul className="text-sm content-secondary space-y-2">
+                      {t.raw('sections.origin.situations.items').map((item: string, index: number) => (
+                        <li key={`origin-${index}`} className="flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 rounded-full bg-warning flex-shrink-0" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <p className="text-sm content-secondary leading-relaxed font-medium">
+                    {t('sections.origin.conclusion')}
                   </p>
                 </div>
-                <button
-                  onClick={goToRisks}
-                  className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium transition-colors text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
-                >
-                  {t('sections.emergencies.deepDiveButton')}
-                  <ForwardIcon />
-                </button>
-              </div>
 
-              {/* Blocco 3 - APPROCCIO */}
-              <div className="space-y-3">
-                <h2 className="text-base font-semibold text-gray-900">
-                  {t('sections.approach.title')}
-                </h2>
-                <p className="text-sm text-gray-700 leading-relaxed">
-                  {t('sections.approach.content')}
-                </p>
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                  <p className="font-medium text-sm text-gray-900">
-                    {t('sections.approach.keyPoint')}
+                {/* Blocco 2 - EMERGENZE con design innovativo */}
+                <div className="card-2026 p-6 space-y-4 hover:shadow-lg transition-all duration-200">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-error/10 flex items-center justify-center">
+                      <EmergencyIcon />
+                    </div>
+                    <h2 className="text-lg font-bold content-primary">
+                      {t('sections.emergencies.title')}
+                    </h2>
+                  </div>
+                  <p className="text-sm content-secondary leading-relaxed">
+                    {t('sections.emergencies.content')}
+                  </p>
+                  <div className="grid gap-3">
+                    {t.raw('sections.emergencies.types').map((type: { title: string; description: string }, index: number) => (
+                      <div key={`emergency-${index}`} className="
+                        p-4 rounded-xl border border-border/50 
+                        bg-gradient-to-r from-muted/30 to-muted/10
+                        hover:border-border hover:shadow-sm
+                        transition-all duration-200
+                      ">
+                        <div className="font-semibold text-sm content-primary">{type.title}</div>
+                        <div className="text-xs content-secondary mt-1">{type.description}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="section-frame-info p-4 rounded-xl">
+                    <p className="font-semibold text-sm content-primary">
+                      {t('sections.emergencies.keyPoint')}
+                    </p>
+                  </div>
+                  <button
+                    onClick={goToRisks}
+                    className="
+                      inline-flex items-center gap-2 px-4 py-2 rounded-xl
+                      bg-primary/10 hover:bg-primary/20 active:scale-95
+                      border border-primary/20 hover:border-primary/40
+                      text-primary font-semibold text-sm
+                      transition-all duration-200 ease-out
+                      focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2
+                    "
+                  >
+                    {t('sections.emergencies.deepDiveButton')}
+                    <ForwardIcon />
+                  </button>
+                </div>
+
+                {/* Blocco 3 - APPROCCIO con stile premium */}
+                <div className="card-2026 p-6 space-y-4 hover:shadow-lg transition-all duration-200">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-success/10 flex items-center justify-center">
+                      <ApproachIcon />
+                    </div>
+                    <h2 className="text-lg font-bold content-primary">
+                      {t('sections.approach.title')}
+                    </h2>
+                  </div>
+                  <p className="text-sm content-secondary leading-relaxed">
+                    {t('sections.approach.content')}
+                  </p>
+                  <div className="section-frame-success p-4 rounded-xl">
+                    <p className="font-semibold text-sm content-primary">
+                      {t('sections.approach.keyPoint')}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Blocco 4 - SCOPO con design finale */}
+                <div className="card-2026 p-6 space-y-4 hover:shadow-lg transition-all duration-200">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                      <PurposeIcon />
+                    </div>
+                    <h2 className="text-lg font-bold content-primary">
+                      {t('sections.purpose.title')}
+                    </h2>
+                  </div>
+                  <p className="text-sm content-secondary leading-relaxed">
+                    {t('sections.purpose.content')}
+                  </p>
+                  <ul className="space-y-3">
+                    {t.raw('sections.purpose.items').map((item: string, index: number) => (
+                      <li key={`purpose-${index}`} className="flex items-start gap-3">
+                        <div className="w-5 h-5 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <CheckIcon />
+                        </div>
+                        <span className="text-sm content-secondary">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="section-frame-success p-4 rounded-xl">
+                    <p className="font-semibold text-sm content-primary">
+                      {t('sections.purpose.keyPoint')}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              /* Risks Detail View - Modernized */
+              <div className="p-6 pb-32 space-y-8 min-h-full">
+                {/* Sezione 1 - Cyber Risk */}
+                <div className="card-2026 p-6 space-y-4 hover:shadow-lg transition-all duration-200">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-error/10 flex items-center justify-center">
+                      <CyberIcon />
+                    </div>
+                    <h3 className="font-bold text-lg content-primary">
+                      {t('risks.cyber.title')}
+                    </h3>
+                  </div>
+                  <p className="text-sm content-secondary leading-relaxed">
+                    {t('risks.cyber.content')}
+                  </p>
+                  <ul className="text-sm content-secondary space-y-2">
+                    {t.raw('risks.cyber.points').map((point: string, index: number) => (
+                      <li key={`cyber-${index}`} className="flex items-start gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-error flex-shrink-0 mt-2" />
+                        {point}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="section-frame p-4 rounded-xl bg-muted/30">
+                    <p className="text-xs font-semibold content-primary mb-2">Fonti:</p>
+                    <ul className="text-xs content-secondary space-y-1">
+                      {t.raw('risks.cyber.sources').map((source: string, index: number) => (
+                        <li key={`cyber-source-${index}`} className="flex items-start gap-2">
+                          <div className="w-1 h-1 rounded-full bg-muted-foreground flex-shrink-0 mt-1.5" />
+                          {source}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Sezione 2 - Systemic Risk */}
+                <div className="card-2026 p-6 space-y-4 hover:shadow-lg transition-all duration-200">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-warning/10 flex items-center justify-center">
+                      <SystemicIcon />
+                    </div>
+                    <h3 className="font-bold text-lg content-primary">
+                      {t('risks.systemic.title')}
+                    </h3>
+                  </div>
+                  <p className="text-sm content-secondary leading-relaxed">
+                    {t('risks.systemic.content')}
+                  </p>
+                  <p className="text-sm content-secondary">
+                    {t('risks.systemic.reason')}
+                  </p>
+                  <ul className="text-sm content-secondary space-y-2">
+                    {t.raw('risks.systemic.points').map((point: string, index: number) => (
+                      <li key={`systemic-${index}`} className="flex items-start gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-warning flex-shrink-0 mt-2" />
+                        {point}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="section-frame p-4 rounded-xl bg-muted/30">
+                    <p className="text-xs font-semibold content-primary mb-2">Fonti:</p>
+                    <ul className="text-xs content-secondary space-y-1">
+                      {t.raw('risks.systemic.sources').map((source: string, index: number) => (
+                        <li key={`systemic-source-${index}`} className="flex items-start gap-2">
+                          <div className="w-1 h-1 rounded-full bg-muted-foreground flex-shrink-0 mt-1.5" />
+                          {source}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Sezione 3 - Operational Disruptions */}
+                <div className="card-2026 p-6 space-y-4 hover:shadow-lg transition-all duration-200">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                      <OperationalIcon />
+                    </div>
+                    <h3 className="font-bold text-lg content-primary">
+                      {t('risks.operational.title')}
+                    </h3>
+                  </div>
+                  <p className="text-sm content-secondary leading-relaxed">
+                    {t('risks.operational.content')}
+                  </p>
+                  <ul className="text-sm content-secondary space-y-2">
+                    {t.raw('risks.operational.points').map((point: string, index: number) => (
+                      <li key={`operational-${index}`} className="flex items-start gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0 mt-2" />
+                        {point}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="section-frame p-4 rounded-xl bg-muted/30">
+                    <p className="text-xs font-semibold content-primary mb-2">Fonti:</p>
+                    <ul className="text-xs content-secondary space-y-1">
+                      {t.raw('risks.operational.sources').map((source: string, index: number) => (
+                        <li key={`operational-source-${index}`} className="flex items-start gap-2">
+                          <div className="w-1 h-1 rounded-full bg-muted-foreground flex-shrink-0 mt-1.5" />
+                          {source}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Conclusione con design finale */}
+                <div className="section-frame-info p-6 rounded-xl">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                      <ConclusionIcon />
+                    </div>
+                    <h4 className="font-bold text-lg content-primary">
+                      {t('risks.conclusion.title')}
+                    </h4>
+                  </div>
+                  <ul className="text-sm content-secondary space-y-2 mb-4">
+                    {t.raw('risks.conclusion.points').map((point: string, index: number) => (
+                      <li key={`conclusion-${index}`} className="flex items-start gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0 mt-2" />
+                        {point}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="font-semibold text-sm content-primary">
+                    {t('risks.conclusion.keyPoint')}
                   </p>
                 </div>
               </div>
-
-              {/* Blocco 4 - SCOPO */}
-              <div className="space-y-3">
-                <h2 className="text-base font-semibold text-gray-900">
-                  {t('sections.purpose.title')}
-                </h2>
-                <p className="text-sm text-gray-700 leading-relaxed">
-                  {t('sections.purpose.content')}
-                </p>
-                <ul className="space-y-2">
-                  {t.raw('sections.purpose.items').map((item: string) => (
-                    <li key={`purpose-${item.slice(0, 15)}`} className="flex items-start gap-2">
-                      <CheckIcon />
-                      <span className="text-sm text-gray-700">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                  <p className="font-medium text-sm text-gray-900">
-                    {t('sections.purpose.keyPoint')}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ) : (
-            /* Risks Detail View */
-            <div className="p-4 pb-24 space-y-6 min-h-full">
-              {/* Sezione 1 - Cyber Risk */}
-              <div className="space-y-3">
-                <h3 className="font-semibold text-base text-gray-900">
-                  {t('risks.cyber.title')}
-                </h3>
-                <p className="text-sm text-gray-700 leading-relaxed">
-                  {t('risks.cyber.content')}
-                </p>
-                <ul className="text-sm text-gray-700 space-y-1">
-                  {t.raw('risks.cyber.points').map((point: string) => (
-                    <li key={`cyber-${point.slice(0, 20)}`}>• {point}</li>
-                  ))}
-                </ul>
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                  <p className="text-xs font-medium text-gray-900 mb-2">Fonti:</p>
-                  <ul className="text-xs text-gray-700 space-y-1">
-                    {t.raw('risks.cyber.sources').map((source: string) => (
-                      <li key={`cyber-source-${source.slice(0, 15)}`}>• {source}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              {/* Sezione 2 - Systemic Risk */}
-              <div className="space-y-3">
-                <h3 className="font-semibold text-base text-gray-900">
-                  {t('risks.systemic.title')}
-                </h3>
-                <p className="text-sm text-gray-700 leading-relaxed">
-                  {t('risks.systemic.content')}
-                </p>
-                <p className="text-sm text-gray-700">
-                  {t('risks.systemic.reason')}
-                </p>
-                <ul className="text-sm text-gray-700 space-y-1">
-                  {t.raw('risks.systemic.points').map((point: string) => (
-                    <li key={`systemic-${point.slice(0, 20)}`}>• {point}</li>
-                  ))}
-                </ul>
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                  <p className="text-xs font-medium text-gray-900 mb-2">Fonti:</p>
-                  <ul className="text-xs text-gray-700 space-y-1">
-                    {t.raw('risks.systemic.sources').map((source: string) => (
-                      <li key={`systemic-source-${source.slice(0, 15)}`}>• {source}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              {/* Sezione 3 - Operational Disruptions */}
-              <div className="space-y-3">
-                <h3 className="font-semibold text-base text-gray-900">
-                  {t('risks.operational.title')}
-                </h3>
-                <p className="text-sm text-gray-700 leading-relaxed">
-                  {t('risks.operational.content')}
-                </p>
-                <ul className="text-sm text-gray-700 space-y-1">
-                  {t.raw('risks.operational.points').map((point: string) => (
-                    <li key={`operational-${point.slice(0, 20)}`}>• {point}</li>
-                  ))}
-                </ul>
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                  <p className="text-xs font-medium text-gray-900 mb-2">Fonti:</p>
-                  <ul className="text-xs text-gray-700 space-y-1">
-                    {t.raw('risks.operational.sources').map((source: string) => (
-                      <li key={`operational-source-${source.slice(0, 15)}`}>• {source}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              {/* Conclusione */}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                <h4 className="font-medium text-sm text-gray-900 mb-2">
-                  {t('risks.conclusion.title')}
-                </h4>
-                <ul className="text-sm text-gray-700 space-y-1 mb-3">
-                  {t.raw('risks.conclusion.points').map((point: string) => (
-                    <li key={`conclusion-${point.slice(0, 20)}`}>• {point}</li>
-                  ))}
-                </ul>
-                <p className="font-medium text-sm text-gray-900">
-                  {t('risks.conclusion.keyPoint')}
-                </p>
-              </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
-        {/* Footer with Tradelia buttons - sticky */}
-        <div className="sticky bottom-0 p-4 border-t border-gray-200 bg-white/95 backdrop-blur-sm">
+        {/* Modern Footer with premium buttons */}
+        <div className="sticky bottom-0 p-6 border-t border-border/30 backdrop-blur-xl">
           {currentStep === 'main' ? (
             <button
               onClick={onClose}
-              className="btn-tech w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="
+                w-full h-12 px-6 text-base font-semibold rounded-xl
+                bg-gradient-to-r from-primary to-primary/90
+                text-white shadow-lg shadow-primary/20
+                transition-all duration-200 ease-out
+                hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5
+                active:scale-[0.98]
+                focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2
+                flex items-center justify-center gap-2
+              "
             >
               {t('buttons.understood')}
+              <CheckIcon />
             </button>
           ) : (
-            <div className="flex gap-3">
+            <div className="flex gap-4">
               <button
                 onClick={goBack}
-                className="flex-1 h-10 px-4 text-sm font-medium rounded border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="
+                  flex-1 h-12 px-6 text-base font-medium rounded-xl
+                  bg-muted/50 hover:bg-muted/80 active:scale-95
+                  border border-border/50 hover:border-border
+                  text-muted-foreground hover:text-foreground
+                  transition-all duration-200 ease-out
+                  focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2
+                  flex items-center justify-center gap-2
+                "
               >
+                <BackIcon />
                 {t('buttons.backToIntro')}
               </button>
               <button
                 onClick={onClose}
-                className="btn-tech flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="
+                  flex-1 h-12 px-6 text-base font-semibold rounded-xl
+                  bg-gradient-to-r from-primary to-primary/90
+                  text-white shadow-lg shadow-primary/20
+                  transition-all duration-200 ease-out
+                  hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5
+                  active:scale-[0.98]
+                  focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2
+                  flex items-center justify-center gap-2
+                "
               >
                 {t('buttons.goToDashboard')}
+                <ForwardIcon />
               </button>
             </div>
           )}
@@ -384,14 +550,14 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
   )
 }
 
-// SVG Icons - Tradelia Design System Compliant
+// Modern SVG Icons - System Colors Compliant
 function CloseIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
       <path 
-        d="M12 4L4 12M4 4l8 8" 
+        d="M13.5 4.5L4.5 13.5M4.5 4.5l9 9" 
         stroke="currentColor" 
-        strokeWidth="1.5" 
+        strokeWidth="2" 
         strokeLinecap="round"
       />
     </svg>
@@ -400,11 +566,11 @@ function CloseIcon() {
 
 function CheckIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="flex-shrink-0 mt-0.5" style={{ color: 'hsl(var(--success))' }}>
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" className="flex-shrink-0">
       <path 
-        d="M13 4L6 11L3 8" 
+        d="M15 4.5L6.75 12.75L3 9" 
         stroke="currentColor" 
-        strokeWidth="1.5" 
+        strokeWidth="2" 
         strokeLinecap="round" 
         strokeLinejoin="round"
       />
@@ -414,11 +580,11 @@ function CheckIcon() {
 
 function BackIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
       <path 
-        d="M10 12L6 8L10 4" 
+        d="M11.25 13.5L6.75 9L11.25 4.5" 
         stroke="currentColor" 
-        strokeWidth="1.5" 
+        strokeWidth="2" 
         strokeLinecap="round" 
         strokeLinejoin="round"
       />
@@ -428,11 +594,180 @@ function BackIcon() {
 
 function ForwardIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
       <path 
-        d="M6 4L10 8L6 12" 
+        d="M6.75 4.5L11.25 9L6.75 13.5" 
         stroke="currentColor" 
-        strokeWidth="1.5" 
+        strokeWidth="2" 
+        strokeLinecap="round" 
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+// New Modern Icons for Sections
+function OriginIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <path 
+        d="M10 2L3 7V18H17V7L10 2Z" 
+        stroke="hsl(var(--primary))" 
+        strokeWidth="2" 
+        strokeLinecap="round" 
+        strokeLinejoin="round"
+        fill="none"
+      />
+    </svg>
+  )
+}
+
+function EmergencyIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <path 
+        d="M10 2L12.09 6.26L17 7L13 10.74L14.18 15.74L10 13.5L5.82 15.74L7 10.74L3 7L7.91 6.26L10 2Z" 
+        stroke="hsl(var(--error))" 
+        strokeWidth="2" 
+        strokeLinecap="round" 
+        strokeLinejoin="round"
+        fill="none"
+      />
+    </svg>
+  )
+}
+
+function ApproachIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <path 
+        d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" 
+        stroke="hsl(var(--success))" 
+        strokeWidth="2" 
+        strokeLinecap="round" 
+        strokeLinejoin="round"
+        fill="none"
+      />
+    </svg>
+  )
+}
+
+function PurposeIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <path 
+        d="M10 2V10L15 15" 
+        stroke="hsl(var(--primary))" 
+        strokeWidth="2" 
+        strokeLinecap="round" 
+        strokeLinejoin="round"
+      />
+      <circle 
+        cx="10" 
+        cy="10" 
+        r="8" 
+        stroke="hsl(var(--primary))" 
+        strokeWidth="2"
+        fill="none"
+      />
+    </svg>
+  )
+}
+
+function CyberIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <rect 
+        x="3" 
+        y="11" 
+        width="14" 
+        height="6" 
+        rx="2" 
+        stroke="hsl(var(--error))" 
+        strokeWidth="2"
+        fill="none"
+      />
+      <path 
+        d="M7 11V7A3 3 0 0 1 13 7V11" 
+        stroke="hsl(var(--error))" 
+        strokeWidth="2" 
+        strokeLinecap="round" 
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function SystemicIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <path 
+        d="M12 2L2 7L12 12L22 7L12 2Z" 
+        stroke="hsl(var(--warning))" 
+        strokeWidth="2" 
+        strokeLinecap="round" 
+        strokeLinejoin="round"
+        fill="none"
+      />
+      <path 
+        d="M2 17L12 22L22 17" 
+        stroke="hsl(var(--warning))" 
+        strokeWidth="2" 
+        strokeLinecap="round" 
+        strokeLinejoin="round"
+      />
+      <path 
+        d="M2 12L12 17L22 12" 
+        stroke="hsl(var(--warning))" 
+        strokeWidth="2" 
+        strokeLinecap="round" 
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function OperationalIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <circle 
+        cx="10" 
+        cy="10" 
+        r="3" 
+        stroke="hsl(var(--primary))" 
+        strokeWidth="2"
+        fill="none"
+      />
+      <path 
+        d="M19.4 15A9 9 0 0 0 20 12A9 9 0 0 0 19.4 9" 
+        stroke="hsl(var(--primary))" 
+        strokeWidth="2" 
+        strokeLinecap="round"
+      />
+      <path 
+        d="M4.6 15A9 9 0 0 1 4 12A9 9 0 0 1 4.6 9" 
+        stroke="hsl(var(--primary))" 
+        strokeWidth="2" 
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
+function ConclusionIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <path 
+        d="M9 11L12 14L22 4" 
+        stroke="hsl(var(--primary))" 
+        strokeWidth="2" 
+        strokeLinecap="round" 
+        strokeLinejoin="round"
+      />
+      <path 
+        d="M21 12V19A2 2 0 0 1 19 21H5A2 2 0 0 1 3 19V5A2 2 0 0 1 5 3H16" 
+        stroke="hsl(var(--primary))" 
+        strokeWidth="2" 
         strokeLinecap="round" 
         strokeLinejoin="round"
       />

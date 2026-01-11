@@ -3,6 +3,13 @@
     "emergency": {
       "name": "Emergenza",
       "description": "Sistemi alternativi per situazioni di crisi finanziaria",
+      "action": "Valuta liquidità",
+      "sections": {
+        "overview": "Panoramica",
+        "liquidAssets": "Asset liquidi",
+        "exitPlan": "Piano di uscita",
+        "history": "Storico"
+      },
       "introduction": {
         "title": "Crypto in situazioni di emergenza: quando i sistemi tradizionali non funzionano",
         "whyExists": {
@@ -24,15 +31,36 @@
     },
     "longterm": {
       "name": "Lungo termine",
-      "description": "Strategie di accumulo e crescita nel tempo"
+      "description": "Strategie di accumulo e crescita nel tempo",
+      "action": "Pianifica DCA",
+      "sections": {
+        "overview": "Panoramica",
+        "dcaPlans": "Piani DCA",
+        "projections": "Proiezioni",
+        "rebalance": "Ribilanciamento"
+      }
     },
     "speculation": {
       "name": "Speculazione",
-      "description": "Trading e opportunità a breve termine"
+      "description": "Trading e opportunità a breve termine",
+      "action": "Analizza segnali",
+      "sections": {
+        "overview": "Panoramica",
+        "signals": "Segnali",
+        "positions": "Posizioni",
+        "analysis": "Analisi"
+      }
     },
     "passive": {
       "name": "Passivo",
-      "description": "Investimenti automatizzati e DeFi"
+      "description": "Investimenti automatizzati e DeFi",
+      "action": "Configura staking",
+      "sections": {
+        "overview": "Panoramica",
+        "staking": "Staking",
+        "yields": "Rendimenti",
+        "projections": "Proiezioni"
+      }
     }
   }
 }
