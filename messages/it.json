@@ -102,34 +102,34 @@
         "close": "Chiudi"
       }
     },
-    "chooseOrientation": "Scegli da dove orientarti. I percorsi non indicano cosa fare, ma come ragionare in base al tuo obiettivo.",
-    "noImmediateAction": "Nessun percorso richiede operazioni reali o deposito di denaro.",
-    "understandFirst": "Tradelia aiuta a capire prima di decidere.",
-    "tradeliaJourneys": "Percorsi Tradelia",
-    "journeyExplanation": "I percorsi non indicano cosa fare, ma come orientarsi in base al livello di complessità.",
+    "chooseOrientation": "Quattro modi di approcciarsi al mondo crypto. Quattro tipi di rischio da capire prima.",
+    "noImmediateAction": "Nessuna sezione richiede operazioni reali, depositi, pagamenti, abbonamenti o registrazioni.",
+    "understandFirst": "L'obiettivo è comprendere i rischi reali prima di tutto.",
+    "tradeliaJourneys": "Sezioni Tradelia",
+    "journeyExplanation": "Ogni sezione analizza una modalità diversa di approccio alle crypto. Nessuna ti dice cosa fare.",
     "focusOn": "Focus su",
     "betaFeatures": "Funzionalità Beta",
     "betaFeaturesDescription": "Questa sezione è controllata da feature flags e può essere abilitata/disabilitata dinamicamente.",
     "focusAreas": {
       "emergency": {
-        "accessibility": "accessibilità e liquidità reale",
-        "operationalRisks": "rischi operativi e regolamentari",
-        "concreteLimits": "limiti concreti e criticità"
+        "accessibility": "accessibilità in crisi",
+        "operationalRisks": "self-custody vs custodial",
+        "concreteLimits": "vincoli normativi"
       },
       "passive": {
-        "yieldSource": "fonte del rendimento",
-        "realExposure": "esposizione reale",
+        "yieldSource": "origine del rendimento",
+        "realExposure": "rischio controparte",
         "failureConditions": "condizioni di fallimento"
       },
       "longterm": {
-        "timeHorizon": "orizzonte temporale",
-        "cumulativeRisk": "rischio cumulativo",
-        "personalCompatibility": "compatibilità personale"
+        "timeHorizon": "orizzonte realistico",
+        "cumulativeRisk": "volatilità storica",
+        "personalCompatibility": "errori comportamentali"
       },
       "speculation": {
-        "asymmetricRisk": "rischio asimmetrico",
-        "cognitiveErrors": "errori cognitivi frequenti",
-        "operationalLimits": "limiti operativi attivi"
+        "asymmetricRisk": "asimmetria rischio/rendimento",
+        "cognitiveErrors": "competenze richieste",
+        "operationalLimits": "errori ricorrenti"
       }
     },
     "securityPrivacy": "Sicurezza e Privacy",
@@ -653,28 +653,28 @@
   },
   "journeys": {
     "emergency": {
-      "name": "Emergenza",
-      "shortName": "Emergenza",
-      "action": "Verifica liquidità",
-      "description": "Crypto come riserva di emergenza"
+      "name": "Riserva di Emergenza",
+      "shortName": "Riserva",
+      "action": "Esplora",
+      "description": "Capire se e quando le crypto possono funzionare come riserva in scenari di crisi sistemica: bail-in, controlli capitali, blocco conti, inflazione estrema. E soprattutto: i limiti reali."
     },
     "longterm": {
-      "name": "Lungo termine",
-      "shortName": "Lungo",
-      "action": "Aggiungi piano",
-      "description": "Strategie di crescita nel tempo"
+      "name": "Accumulo Crypto",
+      "shortName": "Accumulo",
+      "action": "Esplora",
+      "description": "Verificare best practice accademiche, rischi comuni e comprensione reale di cosa significa holdare nel tempo."
     },
     "speculation": {
       "name": "Speculazione",
       "shortName": "Specula",
-      "action": "Analizza segnale",
-      "description": "Contesti ad alta variabilità"
+      "action": "Esplora",
+      "description": "Comprendere rischi reali, capacità necessarie, strumenti e strategie sostenibili prima di operare attivamente."
     },
     "passive": {
-      "name": "Passivo",
-      "shortName": "Passivo",
-      "action": "Calcola rendimento",
-      "description": "Meccanismi di reddito automatico"
+      "name": "Sistemi Automatici",
+      "shortName": "Automatici",
+      "action": "Esplora",
+      "description": "Analizzare i vari sistemi di rendita passiva nel mondo crypto, la sostenibilità dei progetti e i rischi reali senza marketing."
     }
   }
 }

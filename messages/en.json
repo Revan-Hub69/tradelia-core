@@ -163,34 +163,34 @@
         "close": "Close"
       }
     },
-    "chooseOrientation": "Choose where to orient yourself. The paths don't indicate what to do, but how to reason based on your goal.",
-    "noImmediateAction": "No path requires immediate action.",
-    "understandFirst": "Tradelia helps you understand before deciding.",
-    "tradeliaJourneys": "Tradelia Journeys",
-    "journeyExplanation": "The journeys don't indicate what to do, but how to orient yourself based on complexity level.",
+    "chooseOrientation": "Four ways to approach the crypto world. Four types of risk to understand first.",
+    "noImmediateAction": "No section requires real operations, deposits, payments, subscriptions or registrations.",
+    "understandFirst": "The goal is to understand real risks before anything else.",
+    "tradeliaJourneys": "Tradelia Sections",
+    "journeyExplanation": "Each section analyzes a different approach to crypto. None tells you what to do.",
     "focusOn": "Focus on",
     "betaFeatures": "Beta Features",
     "betaFeaturesDescription": "This section is controlled by feature flags and can be enabled/disabled dynamically.",
     "focusAreas": {
       "emergency": {
-        "accessibility": "accessibility and real liquidity",
-        "operationalRisks": "operational and regulatory risks",
-        "concreteLimits": "concrete limits and criticalities"
+        "accessibility": "crisis accessibility",
+        "operationalRisks": "self-custody vs custodial",
+        "concreteLimits": "regulatory constraints"
       },
       "passive": {
-        "yieldSource": "yield source",
-        "realExposure": "real exposure",
+        "yieldSource": "yield origin",
+        "realExposure": "counterparty risk",
         "failureConditions": "failure conditions"
       },
       "longterm": {
-        "timeHorizon": "time horizon",
-        "cumulativeRisk": "cumulative risk",
-        "personalCompatibility": "personal compatibility"
+        "timeHorizon": "realistic horizon",
+        "cumulativeRisk": "historical volatility",
+        "personalCompatibility": "behavioral errors"
       },
       "speculation": {
-        "asymmetricRisk": "asymmetric risk",
-        "cognitiveErrors": "frequent cognitive errors",
-        "operationalLimits": "active operation limits"
+        "asymmetricRisk": "risk/reward asymmetry",
+        "cognitiveErrors": "required skills",
+        "operationalLimits": "recurring errors"
       }
     },
     "securityPrivacy": "Security & Privacy",
@@ -601,10 +601,10 @@
   },
   "journeys": {
     "emergency": {
-      "name": "Emergency",
-      "shortName": "Emergency",
-      "action": "Check liquidity",
-      "description": "Crypto as emergency reserve",
+      "name": "Emergency Reserve",
+      "shortName": "Reserve",
+      "action": "Explore",
+      "description": "Understand if and when crypto can work as a reserve in systemic crisis scenarios: bail-in, capital controls, account freezes, extreme inflation. And above all: the real limits.",
       "introduction": {
         "title": "Crypto as emergency reserve",
         "whyExists": {
@@ -629,10 +629,10 @@
       }
     },
     "longterm": {
-      "name": "Long term",
-      "shortName": "Long",
-      "action": "Add plan",
-      "description": "Growth strategies over time",
+      "name": "Crypto Accumulation",
+      "shortName": "Accumul",
+      "action": "Explore",
+      "description": "Verify academic best practices, common risks, and real understanding of what it means to hold over time.",
       "sections": {
         "overview": "Overview",
         "dcaPlans": "DCA plans",
@@ -643,8 +643,8 @@
     "speculation": {
       "name": "Speculation",
       "shortName": "Specul",
-      "action": "Analyze signal",
-      "description": "High variability contexts",
+      "action": "Explore",
+      "description": "Understand real risks, required skills, tools and sustainable strategies before actively trading.",
       "sections": {
         "overview": "Overview",
         "signals": "Signals",
@@ -653,10 +653,10 @@
       }
     },
     "passive": {
-      "name": "Passive",
-      "shortName": "Passive",
-      "action": "Calculate yield",
-      "description": "Automatic income mechanisms",
+      "name": "Automated Systems",
+      "shortName": "Auto",
+      "action": "Explore",
+      "description": "Analyze various passive income systems in the crypto world, project sustainability and real risks without marketing.",
       "sections": {
         "overview": "Overview",
         "staking": "Staking",
