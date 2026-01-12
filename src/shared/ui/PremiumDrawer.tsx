@@ -130,6 +130,16 @@ export function PremiumDrawer({
     return () => window.removeEventListener('keydown', handleEscape)
   }, [isOpen, onClose, closeOnEscape])
 
+  // Scroll to top quando il drawer si apre
+  const contentRef = useRef<HTMLDivElement>(null)
+  
+  useEffect(() => {
+    if (isOpen && contentRef.current) {
+      // Reset scroll position to top
+      contentRef.current.scrollTop = 0
+    }
+  }, [isOpen])
+
   // Focus trap
   useEffect(() => {
     if (!isOpen || !drawerRef.current) return
@@ -141,7 +151,13 @@ export function PremiumDrawer({
     const firstElement = focusableElements[0]
     const lastElement = focusableElements[focusableElements.length - 1]
 
-    setTimeout(() => firstElement?.focus(), 100)
+    // Focus sul primo elemento E scroll to top
+    setTimeout(() => {
+      if (contentRef.current) {
+        contentRef.current.scrollTop = 0
+      }
+      firstElement?.focus()
+    }, 100)
 
     const handleTab = (e: KeyboardEvent) => {
       if (e.key !== 'Tab') return
@@ -249,7 +265,10 @@ export function PremiumDrawer({
         )}
 
         {/* Content - SOLO questa parte scrolla */}
-        <div className="flex-1 overflow-y-auto overscroll-contain">
+        <div 
+          ref={contentRef}
+          className="flex-1 overflow-y-auto overscroll-contain"
+        >
           {children}
         </div>
 
