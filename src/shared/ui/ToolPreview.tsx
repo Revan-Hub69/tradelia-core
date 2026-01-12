@@ -51,7 +51,7 @@ export function ToolPreview({
   const t = useTranslations('common.toolPreview')
   const [hasShownInterest, setHasShownInterest] = useState(() => {
     if (typeof window === 'undefined') return false
-    const interests = localStorage.getItem('tool-interests')
+    const interests = localStorage.getItem('tradelia-tool-interests')
     if (interests) {
       try {
         const parsed = JSON.parse(interests)
@@ -65,7 +65,7 @@ export function ToolPreview({
 
   const [isNotifying, setIsNotifying] = useState(() => {
     if (typeof window === 'undefined') return false
-    const notifications = localStorage.getItem('tool-notifications')
+    const notifications = localStorage.getItem('tradelia-tool-notifications')
     if (notifications) {
       try {
         const parsed = JSON.parse(notifications)
@@ -104,11 +104,11 @@ export function ToolPreview({
     
     // Save to localStorage
     try {
-      const interests = localStorage.getItem('tool-interests')
+      const interests = localStorage.getItem('tradelia-tool-interests')
       const parsed = interests ? JSON.parse(interests) : []
       if (!parsed.includes(toolId)) {
         parsed.push(toolId)
-        localStorage.setItem('tool-interests', JSON.stringify(parsed))
+        localStorage.setItem('tradelia-tool-interests', JSON.stringify(parsed))
       }
     } catch (error) {
       console.warn('Failed to save tool interest:', error)
@@ -132,11 +132,11 @@ export function ToolPreview({
     
     // Save to localStorage
     try {
-      const notifications = localStorage.getItem('tool-notifications')
+      const notifications = localStorage.getItem('tradelia-tool-notifications')
       const parsed = notifications ? JSON.parse(notifications) : []
       if (!parsed.includes(toolId)) {
         parsed.push(toolId)
-        localStorage.setItem('tool-notifications', JSON.stringify(parsed))
+        localStorage.setItem('tradelia-tool-notifications', JSON.stringify(parsed))
       }
     } catch (error) {
       console.warn('Failed to save notification preference:', error)

@@ -36,6 +36,15 @@ export const validationMessages = {
       minLength: 'Il nome deve essere di almeno 2 caratteri',
       maxLength: 'Il nome non può superare i 100 caratteri'
     },
+    nickname: {
+      required: 'Il nickname è obbligatorio',
+      minLength: 'Il nickname deve avere almeno 3 caratteri',
+      maxLength: 'Il nickname non può superare 20 caratteri',
+      invalid: 'Solo lettere, numeri e underscore'
+    },
+    country: {
+      required: 'Seleziona il tuo paese di residenza'
+    },
     generic: {
       tooShort: 'Valore troppo corto',
       tooLong: 'Valore troppo lungo',
@@ -62,6 +71,15 @@ export const validationMessages = {
       required: 'Name is required',
       minLength: 'Name must be at least 2 characters',
       maxLength: 'Name cannot exceed 100 characters'
+    },
+    nickname: {
+      required: 'Nickname is required',
+      minLength: 'Nickname must be at least 3 characters',
+      maxLength: 'Nickname cannot exceed 20 characters',
+      invalid: 'Only letters, numbers and underscore allowed'
+    },
+    country: {
+      required: 'Please select your country of residence'
     },
     generic: {
       tooShort: 'Value too short',
@@ -112,6 +130,40 @@ export const nameSchema = (messages: Messages) =>
     .max(100, messages.name.maxLength)
     .trim()
 
+// Nickname schema (3-20 chars, alphanumeric + underscore)
+export const nicknameSchema = (messages: Messages) =>
+  z.string()
+    .min(1, messages.nickname.required)
+    .min(3, messages.nickname.minLength)
+    .max(20, messages.nickname.maxLength)
+    .regex(/^[a-zA-Z0-9_]+$/, messages.nickname.invalid)
+
+// Country schema (any valid ISO 3166-1 alpha-2 code)
+export const countrySchema = (messages: Messages) =>
+  z.string()
+    .length(2, messages.country.required)
+    .regex(/^[A-Z]{2}$/, messages.country.required)
+
+/**
+ * Validates a nickname string
+ * @param nickname - The nickname to validate
+ * @returns { success: true } if valid, { success: false, error: string } if invalid
+ */
+export function validateNickname(nickname: string): { success: true } | { success: false; error: string } {
+  // Check length
+  if (nickname.length < 3) {
+    return { success: false, error: 'minLength' }
+  }
+  if (nickname.length > 20) {
+    return { success: false, error: 'maxLength' }
+  }
+  // Check format (alphanumeric + underscore only)
+  if (!/^[a-zA-Z0-9_]+$/.test(nickname)) {
+    return { success: false, error: 'invalid' }
+  }
+  return { success: true }
+}
+
 // ============================================
 // FORM SCHEMAS
 // ============================================
@@ -127,6 +179,21 @@ export const loginSchema = (locale: Locale = 'it') => {
 
 // Registration form
 export const registerSchema = (locale: Locale = 'it') => {
+  const m = getMessages(locale)
+  return z.object({
+    nickname: nicknameSchema(m),
+    country: countrySchema(m),
+    email: emailSchema(m),
+    password: passwordSchema(m),
+    confirmPassword: z.string().min(1, m.confirmPassword.required)
+  }).refine((data) => data.password === data.confirmPassword, {
+    message: m.confirmPassword.mismatch,
+    path: ['confirmPassword']
+  })
+}
+
+// Registration form (legacy - with fullName for backward compatibility)
+export const registerSchemaLegacy = (locale: Locale = 'it') => {
   const m = getMessages(locale)
   return z.object({
     fullName: nameSchema(m),

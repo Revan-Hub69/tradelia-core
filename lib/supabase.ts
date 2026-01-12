@@ -27,10 +27,23 @@ export interface UserPreferences {
   [key: string]: string | boolean | undefined
 }
 
+// Country codes - now accepts all ISO 3166-1 alpha-2 codes
+// Full list available in lib/countries.ts
+export type CountryCode = string  // Any valid 2-letter ISO code
+
+// Re-export for convenience
+export { ALL_COUNTRIES, getCountryName, searchCountries, getCountriesSortedByLocale } from './countries'
+export type { Country } from './countries'
+
+// Legacy export for backward compatibility
+export const SUPPORTED_COUNTRIES = [] as { code: string; name: string }[]  // Deprecated - use ALL_COUNTRIES
+
 export interface UserProfile {
   id: string
   email?: string
-  full_name?: string
+  full_name?: string  // Deprecated - use nickname instead
+  nickname?: string   // Display name (3-20 chars, alphanumeric + underscore)
+  country_code?: string  // ISO 3166-1 alpha-2 country code
   avatar_url?: string
   crypto_objective?: 'investment' | 'emergency' | 'passive' | 'speculation'
   experience_level?: 'none' | 'basic' | 'traditional' | 'crypto'

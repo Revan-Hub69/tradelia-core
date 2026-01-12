@@ -160,6 +160,13 @@ export const translations = {
     header: {
       dashboardButton: 'Accedi alla dashboard'
     },
+    settings: {
+      theme: 'Tema',
+      light: 'Chiaro',
+      dark: 'Scuro',
+      system: 'Sistema',
+      language: 'Lingua'
+    },
     footer: {
       description: 'Dashboard guidata per esplorare le crypto senza fare gli errori più costosi. Basata su ricerca comportamentale accademica.',
       methodology: 'Struttura da studi accademici verificati. Nessun cookie, trasparenza sui partner.',
@@ -669,6 +676,13 @@ export const translations = {
     },
     header: {
       dashboardButton: 'Access dashboard'
+    },
+    settings: {
+      theme: 'Theme',
+      light: 'Light',
+      dark: 'Dark',
+      system: 'System',
+      language: 'Language'
     },
     footer: {
       description: 'Guided dashboard to explore crypto without making the most costly mistakes. Based on academic behavioral research.',

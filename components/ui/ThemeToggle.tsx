@@ -41,7 +41,13 @@ export function ThemeToggle({ variant = 'compact', className = '', labels }: The
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
-  const l = { ...defaultLabels, ...labels }
+  // Filter out labels that look like raw translation keys (contain dots)
+  // This handles cases where t('settings.light') returns 'settings.light' when key is missing
+  const sanitizedLabels = labels ? Object.fromEntries(
+    Object.entries(labels).filter(([, value]) => value && !value.includes('.'))
+  ) : {}
+  
+  const l = { ...defaultLabels, ...sanitizedLabels }
 
   const themeOptions: ThemeOption[] = [
     { value: 'light', label: l.light, icon: <SunIcon className="w-4 h-4" /> },

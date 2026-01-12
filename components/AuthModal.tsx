@@ -1,14 +1,16 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback, Component, useMemo } from 'react';
+import type { ErrorInfo, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { useDashboardModal } from '@/contexts/DashboardModalContext';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from './LanguageSelector';
 import { SafeButton } from '@/src/shared/ui/SafeButton';
 import { mapAuthErrorToKey } from '@/lib/auth/error-mapping';
-import { loginSchema, registerSchema, resetRequestSchema, validateForm, validateField, emailSchema, passwordSchema, nameSchema, getMessages } from '@/src/shared/lib/validation';
+import { loginSchema, registerSchema, resetRequestSchema, validateForm, validateField, emailSchema, passwordSchema, nicknameSchema, countrySchema, getMessages } from '@/src/shared/lib/validation';
 import { PasswordStrength } from '@/src/shared/ui/PasswordStrength';
+import { getCountriesSortedByLocale, type Country } from '@/lib/countries';
 import Logo from './Logo';
 import { 
   CloseIcon, 
@@ -16,8 +18,76 @@ import {
   ShieldIcon,
   MailIcon,
   LockIcon,
-  UserIcon
+  UserIcon,
+  GlobeIcon,
+  SearchIcon
 } from '@/components/icons/TradeliaIcons';
+
+// Error Boundary for AuthModal - catches rendering errors gracefully
+interface ErrorBoundaryProps {
+  children: ReactNode;
+  onReset?: () => void;
+  fallbackMessage?: string;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+}
+
+class AuthModalErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+    console.error('AuthModal Error:', error, errorInfo);
+  }
+
+  handleReset = (): void => {
+    this.setState({ hasError: false, error: null });
+    this.props.onReset?.();
+  };
+
+  render(): ReactNode {
+    if (this.state.hasError) {
+      return (
+        <div className="p-6 text-center space-y-4">
+          <div className="w-12 h-12 mx-auto rounded-full bg-error/10 flex items-center justify-center">
+            <span className="text-error text-xl">!</span>
+          </div>
+          <p className="text-foreground font-medium">
+            {this.props.fallbackMessage || 'Si è verificato un errore.'}
+          </p>
+          <p className="text-sm text-muted-foreground">
+            Riprova o ricarica la pagina.
+          </p>
+          <div className="flex gap-3 justify-center">
+            <button
+              onClick={this.handleReset}
+              className="px-4 py-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+            >
+              Riprova
+            </button>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 text-sm font-medium bg-primary text-white rounded hover:bg-primary/90 transition-colors"
+            >
+              Ricarica pagina
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
 
 type AuthMode = 'gateway' | 'login' | 'register' | 'reset-request' | 'reset-sent';
 
@@ -25,7 +95,133 @@ interface AuthFormData {
   email: string;
   password: string;
   confirmPassword: string;
-  fullName: string;
+  nickname: string;
+  country: string;  // ISO 3166-1 alpha-2 code
+}
+
+// Searchable Country Select Component
+interface CountrySelectProps {
+  value: string;
+  onChange: (code: string) => void;
+  onBlur: () => void;
+  locale: 'en' | 'it';
+  error: string | undefined;
+  label: string;
+  placeholder: string;
+}
+
+function CountrySelect({ value, onChange, onBlur, locale, error, label, placeholder }: CountrySelectProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState('');
+  const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  
+  const countries = useMemo(() => getCountriesSortedByLocale(locale), [locale]);
+  
+  const filteredCountries = useMemo(() => {
+    if (!search.trim()) return countries;
+    const q = search.toLowerCase();
+    return countries.filter(c => {
+      const name = locale === 'it' ? c.nameIt : c.name;
+      return name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q);
+    });
+  }, [countries, search, locale]);
+  
+  const selectedCountry = countries.find(c => c.code === value);
+  const displayValue = selectedCountry 
+    ? (locale === 'it' ? selectedCountry.nameIt : selectedCountry.name)
+    : '';
+
+  // Close on outside click
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+        onBlur();
+      }
+    }
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isOpen, onBlur]);
+
+  // Focus input when opening
+  useEffect(() => {
+    if (isOpen && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isOpen]);
+
+  return (
+    <div className="space-y-2" ref={containerRef}>
+      <label className="block text-sm font-medium text-foreground">{label}</label>
+      <div className="relative">
+        <GlobeIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80 pointer-events-none z-10" />
+        
+        {/* Trigger button */}
+        <button
+          type="button"
+          onClick={() => { setIsOpen(!isOpen); setSearch(''); }}
+          className={`w-full h-11 pl-10 pr-10 text-sm bg-background border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-150 text-left ${!value ? 'text-muted-foreground' : 'text-foreground'} ${error ? 'border-error' : 'border-border'}`}
+        >
+          {displayValue || placeholder}
+        </button>
+        
+        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+          <svg className={`w-4 h-4 text-muted-foreground transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+
+        {/* Dropdown */}
+        {isOpen && (
+          <div className="absolute z-50 w-full mt-1 bg-background border border-border rounded-lg shadow-lg max-h-60 overflow-hidden">
+            {/* Search input */}
+            <div className="p-2 border-b border-border/50">
+              <div className="relative">
+                <SearchIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder={locale === 'it' ? 'Cerca paese...' : 'Search country...'}
+                  className="w-full h-9 pl-8 pr-3 text-sm bg-muted/30 border-0 rounded focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+              </div>
+            </div>
+            
+            {/* Country list */}
+            <div className="max-h-48 overflow-y-auto">
+              {filteredCountries.length === 0 ? (
+                <div className="px-3 py-2 text-sm text-muted-foreground text-center">
+                  {locale === 'it' ? 'Nessun paese trovato' : 'No country found'}
+                </div>
+              ) : (
+                filteredCountries.map((country) => (
+                  <button
+                    key={country.code}
+                    type="button"
+                    onClick={() => {
+                      onChange(country.code);
+                      setIsOpen(false);
+                      setSearch('');
+                    }}
+                    className={`w-full px-3 py-2 text-sm text-left hover:bg-muted/50 transition-colors flex items-center gap-2 ${value === country.code ? 'bg-primary/10 text-primary' : 'text-foreground'}`}
+                  >
+                    <span className="text-xs text-muted-foreground w-6">{country.code}</span>
+                    <span>{locale === 'it' ? country.nameIt : country.name}</span>
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+      {error && <p className="text-xs text-error" role="alert">{error}</p>}
+    </div>
+  );
 }
 
 export default function AuthModal() {
@@ -40,7 +236,7 @@ export default function AuthModal() {
   
   const [mode, setMode] = useState<AuthMode>('gateway');
   const [formData, setFormData] = useState<AuthFormData>({
-    email: '', password: '', confirmPassword: '', fullName: ''
+    email: '', password: '', confirmPassword: '', nickname: '', country: ''
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -56,7 +252,7 @@ export default function AuthModal() {
       }
       
       setMode(initialMode === 'login' ? 'login' : 'gateway');
-      setFormData({ email: '', password: '', confirmPassword: '', fullName: '' });
+      setFormData({ email: '', password: '', confirmPassword: '', nickname: '', country: '' });
       setErrors({});
     }
   }, [isOpen, initialMode, user, closeModal, router, locale]);
@@ -116,7 +312,8 @@ export default function AuthModal() {
   const validateRegister = useCallback(() => {
     const schema = registerSchema(validationLocale);
     const result = validateForm(schema, {
-      fullName: formData.fullName,
+      nickname: formData.nickname,
+      country: formData.country,
       email: formData.email,
       password: formData.password,
       confirmPassword: formData.confirmPassword
@@ -155,11 +352,17 @@ export default function AuthModal() {
     setErrors(prev => error ? { ...prev, password: error } : (({ password: _, ...rest }) => rest)(prev));
   }, [formData.password, messages]);
 
-  const handleBlurFullName = useCallback(() => {
-    if (!formData.fullName) return;
-    const error = validateField(nameSchema(messages), formData.fullName);
-    setErrors(prev => error ? { ...prev, fullName: error } : (({ fullName: _, ...rest }) => rest)(prev));
-  }, [formData.fullName, messages]);
+  const handleBlurNickname = useCallback(() => {
+    if (!formData.nickname) return;
+    const error = validateField(nicknameSchema(messages), formData.nickname);
+    setErrors(prev => error ? { ...prev, nickname: error } : (({ nickname: _, ...rest }) => rest)(prev));
+  }, [formData.nickname, messages]);
+
+  const handleBlurCountry = useCallback(() => {
+    if (!formData.country) return;
+    const error = validateField(countrySchema(messages), formData.country);
+    setErrors(prev => error ? { ...prev, country: error } : (({ country: _, ...rest }) => rest)(prev));
+  }, [formData.country, messages]);
 
   const handleBlurConfirmPassword = useCallback(() => {
     if (!formData.confirmPassword) return;
@@ -206,7 +409,7 @@ export default function AuthModal() {
     if (!validateRegister()) return;
     setIsSubmitting(true);
     try {
-      await signUpWithEmail(formData.email, formData.password, formData.fullName);
+      await signUpWithEmail(formData.email, formData.password, formData.nickname, formData.country);
       router.push(`/${locale}/dashboard`);
       closeModal();
     } catch (err: unknown) {
@@ -241,6 +444,13 @@ export default function AuthModal() {
     else if (mode === 'login' || mode === 'register') setMode('gateway');
     else closeModal();
   };
+
+  // Reset handler for error boundary - must be before early return
+  const handleErrorReset = useCallback(() => {
+    setMode('gateway');
+    setErrors({});
+    setFormData({ email: '', password: '', confirmPassword: '', nickname: '', country: '' });
+  }, []);
 
   if (!isOpen) return null;
 
@@ -445,26 +655,38 @@ export default function AuthModal() {
       </div>
 
       <form onSubmit={handleRegister} className="space-y-4">
-        {/* Name */}
+        {/* Nickname */}
         <div className="space-y-2">
-          <label htmlFor="register-name" className="block text-sm font-medium text-foreground">
-            {t('modal.auth.register.name')}
+          <label htmlFor="register-nickname" className="block text-sm font-medium text-foreground">
+            {t('modal.auth.register.nickname')}
           </label>
           <div className="relative">
             <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80 pointer-events-none" />
             <input
-              id="register-name"
+              id="register-nickname"
               type="text"
-              value={formData.fullName}
-              onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-              onBlur={handleBlurFullName}
-              className={`w-full h-11 pl-10 pr-4 text-sm bg-background border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-150 placeholder:text-muted-foreground ${errors.fullName ? 'border-error' : 'border-border'}`}
-              placeholder={t('modal.auth.register.namePlaceholder')}
-              autoComplete="name"
+              value={formData.nickname}
+              onChange={(e) => setFormData({ ...formData, nickname: e.target.value })}
+              onBlur={handleBlurNickname}
+              className={`w-full h-11 pl-10 pr-4 text-sm bg-background border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-150 placeholder:text-muted-foreground ${errors.nickname ? 'border-error' : 'border-border'}`}
+              placeholder={t('modal.auth.register.nicknamePlaceholder')}
+              autoComplete="username"
             />
           </div>
-          {errors.fullName && <p className="text-xs text-error" role="alert">{errors.fullName}</p>}
+          <p className="text-xs text-muted-foreground">{t('modal.auth.register.nicknameHint')}</p>
+          {errors.nickname && <p className="text-xs text-error" role="alert">{errors.nickname}</p>}
         </div>
+
+        {/* Country - Searchable Dropdown */}
+        <CountrySelect
+          value={formData.country}
+          onChange={(code) => setFormData({ ...formData, country: code })}
+          onBlur={handleBlurCountry}
+          locale={validationLocale}
+          error={errors.country}
+          label={t('modal.auth.register.country')}
+          placeholder={t('modal.auth.register.countryPlaceholder')}
+        />
 
         {/* Email */}
         <div className="space-y-2">
@@ -708,13 +930,18 @@ export default function AuthModal() {
           </button>
         </div>
 
-        {/* Content */}
+        {/* Content with Error Boundary */}
         <div 
           className="px-6 py-6 overflow-y-auto flex-1" 
           ref={contentRef} 
           tabIndex={-1}
         >
-          {renderContent()}
+          <AuthModalErrorBoundary 
+            onReset={handleErrorReset}
+            fallbackMessage={t('auth.common.errorGeneric')}
+          >
+            {renderContent()}
+          </AuthModalErrorBoundary>
         </div>
       </div>
     </div>

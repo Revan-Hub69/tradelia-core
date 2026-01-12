@@ -87,13 +87,14 @@ export function useAuth() {
     }
   }
 
-  const signUpWithEmail = async (email: string, password: string, fullName?: string) => {
+  const signUpWithEmail = async (email: string, password: string, nickname?: string, countryCode?: string) => {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: {
-          full_name: fullName
+          nickname: nickname,
+          country_code: countryCode
         }
         // emailRedirectTo removed - undefined not compatible with exactOptionalPropertyTypes
       }

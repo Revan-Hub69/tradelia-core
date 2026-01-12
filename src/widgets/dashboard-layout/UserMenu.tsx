@@ -5,6 +5,7 @@ import { useTranslations, useLocale } from 'next-intl'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
+import { useDashboardModal } from '@/contexts/DashboardModalContext'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { LanguageToggle } from '@/components/ui/LanguageToggle'
 import {
@@ -23,6 +24,7 @@ export function UserMenu() {
   const t = useTranslations('navigation')
   const tDashboard = useTranslations('dashboard')
   const { state, actions } = useDashboardAuth()
+  const { openModal } = useDashboardModal()
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -132,17 +134,30 @@ export function UserMenu() {
             {/* Divider */}
             <div className="my-1 border-t border-border/50" />
 
-            {/* Logout Button */}
-            <button
-              onClick={() => {
-                setIsOpen(false)
-                actions.signOut()
-              }}
-              className="w-full flex items-center gap-3 px-3 py-2 text-sm text-error hover:text-error hover:bg-error/10 transition-colors"
-            >
-              <LogOutIcon className="w-4 h-4" />
-              <span>{t('logout')}</span>
-            </button>
+            {/* Conditional: Register for guest, Logout for authenticated */}
+            {state.isGuestMode ? (
+              <button
+                onClick={() => {
+                  setIsOpen(false)
+                  openModal('gateway')
+                }}
+                className="w-full flex items-center gap-3 px-3 py-2 text-sm text-primary hover:text-primary hover:bg-primary/10 transition-colors"
+              >
+                <UserIcon className="w-4 h-4" />
+                <span>{locale === 'en' ? 'Register' : 'Registrati'}</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  setIsOpen(false)
+                  actions.signOut()
+                }}
+                className="w-full flex items-center gap-3 px-3 py-2 text-sm text-error hover:text-error hover:bg-error/10 transition-colors"
+              >
+                <LogOutIcon className="w-4 h-4" />
+                <span>{t('logout')}</span>
+              </button>
+            )}
           </div>
         </div>
       )}

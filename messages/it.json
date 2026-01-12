@@ -39,6 +39,11 @@
       "register": {
         "title": "Crea il tuo account",
         "subtitle": "Registrati per accedere a tutte le funzionalità",
+        "nickname": "Nickname",
+        "nicknamePlaceholder": "Il tuo nickname",
+        "nicknameHint": "3-20 caratteri, solo lettere, numeri e _",
+        "country": "Paese di residenza",
+        "countryPlaceholder": "Seleziona il tuo paese",
         "name": "Nome completo",
         "namePlaceholder": "Il tuo nome",
         "email": "Email",

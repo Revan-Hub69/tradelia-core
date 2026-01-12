@@ -35,6 +35,9 @@ export function LanguageToggle({ variant = 'compact', className = '', currentLoc
   
   // Detect locale from pathname if not provided
   const locale = currentLocale || pathname.split('/')[1] || 'it'
+  
+  // Sanitize labelText - if it looks like a raw translation key (contains dots), use default
+  const sanitizedLabelText = labelText && !labelText.includes('.') ? labelText : 'Lingua'
 
   useEffect(() => {
     setMounted(true)
@@ -94,7 +97,7 @@ export function LanguageToggle({ variant = 'compact', className = '', currentLoc
   return (
     <div className={`space-y-2 ${className}`}>
       <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-        {labelText}
+        {sanitizedLabelText}
       </p>
       <div className="flex items-center bg-muted/50 rounded-lg p-1 border border-border/50">
         {languageOptions.map((option) => (

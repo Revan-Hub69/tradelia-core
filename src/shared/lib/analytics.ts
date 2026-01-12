@@ -122,7 +122,7 @@ function getPrivacySettings(): PrivacySettings {
   }
 
   try {
-    const stored = localStorage.getItem('tradelia_privacy_settings')
+    const stored = localStorage.getItem('tradelia-privacy-settings')
     if (stored) {
       return JSON.parse(stored)
     }
@@ -151,7 +151,7 @@ function setPrivacySettings(settings: Partial<PrivacySettings>) {
   }
 
   try {
-    localStorage.setItem('tradelia_privacy_settings', JSON.stringify(updated))
+    localStorage.setItem('tradelia-privacy-settings', JSON.stringify(updated))
   } catch {
     // Ignore storage errors
   }
@@ -255,45 +255,33 @@ function sanitizeProperties(properties: Record<string, unknown>): Record<string,
 
 // Schedule event flush
 function scheduleFlush() {
-  if (flushTimer) return
-
-  flushTimer = setTimeout(() => {
-    flushEvents()
-  }, ANALYTICS_CONFIG.flush_interval)
+  // Analytics disabled - endpoint removed
+  // Clear timer if exists and do nothing
+  if (flushTimer) {
+    clearTimeout(flushTimer)
+    flushTimer = null
+  }
 }
 
 // Flush events to server
+// DISABLED: Analytics endpoint has been removed
+// This function now clears the queue without making network requests
 async function flushEvents() {
   if (eventQueue.length === 0) return
 
-  const events = [...eventQueue]
-  eventQueue = []
+  // Clear the queue without sending - endpoint no longer exists
+  if (eventQueue.length > 0) {
+    console.debug('[Analytics] Events cleared (endpoint disabled):', eventQueue.length)
+    eventQueue = []
+  }
 
   if (flushTimer) {
     clearTimeout(flushTimer)
     flushTimer = null
   }
 
-  try {
-    await fetch(ANALYTICS_CONFIG.endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        events,
-        client_info: {
-          user_agent: navigator.userAgent.split(' ')[0], // Minimal UA info
-          screen_resolution: `${screen.width}x${screen.height}`,
-          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-          language: navigator.language
-        }
-      })
-    })
-  } catch (error) {
-    // Fail silently - analytics should never break UX
-    console.warn('Analytics flush failed:', error)
-  }
+  // No network request - endpoint removed
+  return
 }
 
 // Public API functions
@@ -362,28 +350,12 @@ export function requestAnalyticsConsent(): Promise<boolean> {
 }
 
 // Initialize analytics
+// DISABLED: Analytics endpoint has been removed
 export function initAnalytics() {
-  if (typeof window === 'undefined') return
-
-  // Flush events before page unload
-  window.addEventListener('beforeunload', () => {
-    if (eventQueue.length > 0) {
-      // Use sendBeacon for reliable delivery
-      if (navigator.sendBeacon) {
-        navigator.sendBeacon(
-          ANALYTICS_CONFIG.endpoint,
-          JSON.stringify({ events: eventQueue })
-        )
-      }
-    }
-  })
-
-  // Flush events on visibility change (tab switch)
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden' && eventQueue.length > 0) {
-      flushEvents()
-    }
-  })
+  // Analytics disabled - no event listeners needed
+  // Endpoint has been removed, so we don't set up any flush handlers
+  console.debug('[Analytics] Analytics initialization skipped - endpoint disabled')
+  return
 }
 
 // React hook for analytics

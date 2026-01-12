@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTranslations, useLocale } from 'next-intl'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
+import { useDashboardModal } from '@/contexts/DashboardModalContext'
 import { NetworkStatus } from '@/src/shared/ui/NetworkStatus'
 import Logo from '@/components/Logo'
 import { UserMenu } from './UserMenu'
@@ -41,6 +42,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const tJourneys = useTranslations('journeys')
   const tDashboard = useTranslations('dashboard')
   const { state } = useDashboardAuth()
+  const { openModal } = useDashboardModal()
 
   const isOnHome = pathname === `/${locale}/dashboard` || pathname === `/${locale}/dashboard/`
   const getActiveJourney = (): JourneyId | null => {
@@ -68,13 +70,17 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               <BellIcon className="w-5 h-5" />
             </button>
             {state.isGuestMode && (
-              <div className="flex items-center gap-2 px-2 sm:px-3 py-1.5 bg-warning/8 border border-warning/20 rounded-lg">
+              <button
+                onClick={() => openModal('gateway')}
+                className="flex items-center gap-2 px-2 sm:px-3 py-1.5 bg-warning/8 border border-warning/20 rounded-lg cursor-pointer hover:bg-warning/15 hover:border-warning/30 transition-colors focus:outline-none focus:ring-2 focus:ring-warning/50"
+                aria-label={locale === 'en' ? 'Register to save your progress' : 'Registrati per salvare i progressi'}
+              >
                 <div className="w-1.5 h-1.5 bg-warning rounded-full animate-pulse" />
                 <span className="text-xs font-medium text-warning">
                   <span className="hidden sm:inline">{tDashboard('guestMode')}</span>
                   <span className="sm:hidden">Guest</span>
                 </span>
-              </div>
+              </button>
             )}
             <NetworkStatus />
             <UserMenu />
