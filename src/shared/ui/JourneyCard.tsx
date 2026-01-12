@@ -64,32 +64,32 @@ export function JourneyCard({
   
   const cardContent = (
     <>
-      {/* Main row */}
-      <div className="flex items-start gap-4">
-        {/* Icon */}
-        <div className={`w-12 h-12 rounded-xl ${colors.bg} flex items-center justify-center flex-shrink-0`}>
-          <div className={colors.text}>{icon}</div>
+      {/* Main row - più compatto su mobile */}
+      <div className="flex items-center gap-3 sm:gap-4">
+        {/* Icon - più piccolo su mobile */}
+        <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${colors.bg} flex items-center justify-center flex-shrink-0`}>
+          <div className={`${colors.text} [&>svg]:w-5 [&>svg]:h-5 sm:[&>svg]:w-6 sm:[&>svg]:h-6`}>{icon}</div>
         </div>
         
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <h3 className="text-base font-semibold text-foreground mb-1">
+          <h3 className="text-sm sm:text-base font-semibold text-foreground mb-0.5 sm:mb-1">
             {title}
           </h3>
-          <p className="text-sm text-muted-foreground line-clamp-2">
+          <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">
             {description}
           </p>
           {subtitle && (
-            <p className={`text-xs font-medium ${colors.text} uppercase tracking-wider mt-2`}>
+            <p className={`text-[10px] sm:text-xs font-medium ${colors.text} uppercase tracking-wider mt-1.5 sm:mt-2`}>
               {subtitle}
             </p>
           )}
-          {badge && <div className="mt-3">{badge}</div>}
+          {badge && <div className="mt-2 sm:mt-3">{badge}</div>}
         </div>
         
         {/* Arrow */}
         <svg 
-          className="w-5 h-5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all flex-shrink-0 mt-1" 
+          className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all flex-shrink-0" 
           fill="none" 
           viewBox="0 0 24 24" 
           stroke="currentColor" 
@@ -100,13 +100,13 @@ export function JourneyCard({
       </div>
       
       {/* Extra content (focus areas, etc) */}
-      {children && <div className="mt-4 pt-4 border-t border-border/30">{children}</div>}
+      {children && <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-border/30">{children}</div>}
     </>
   )
 
   const baseClasses = `
     group block w-full text-left
-    bg-background rounded-lg p-5
+    bg-background rounded-xl p-3.5 sm:p-5
     border border-border/50 border-l-4 ${colors.border}
     shadow-sm hover:shadow-md
     transition-all duration-200

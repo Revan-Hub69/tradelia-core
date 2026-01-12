@@ -23,19 +23,22 @@ export interface PremiumDrawerProps {
   subtitle?: string | undefined
   icon?: ReactNode
   accentColor?: 'primary' | 'success' | 'warning' | 'error'
-  size?: 'sm' | 'md' | 'lg' | 'xl'
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'
   showCloseButton?: boolean
   closeOnBackdrop?: boolean
   closeOnEscape?: boolean
   footer?: ReactNode
   className?: string
+  /** Header minimalista mobile: solo "← Torna indietro" */
+  minimalHeader?: boolean
 }
 
 const SIZES = {
   sm: 'max-w-sm',
   md: 'max-w-md', 
   lg: 'max-w-lg',
-  xl: 'max-w-xl'
+  xl: 'max-w-xl',
+  full: 'max-w-full'
 }
 
 const ACCENT_COLORS = {
@@ -74,7 +77,8 @@ export function PremiumDrawer({
   closeOnBackdrop = true,
   closeOnEscape = true,
   footer,
-  className = ''
+  className = '',
+  minimalHeader = false
 }: PremiumDrawerProps) {
   const drawerRef = useRef<HTMLDivElement>(null)
   const previousActiveElement = useRef<HTMLElement | null>(null)
@@ -191,41 +195,56 @@ export function PremiumDrawer({
         style={{ height: '100vh', maxHeight: '100vh' }}
       >
         {/* Header */}
-        {(title || showCloseButton) && (
-          <header className="flex-shrink-0 px-6 py-5 border-b border-border/30">
-            <div className="flex items-start justify-between gap-4">
-              {title && (
-                <div className="flex items-center gap-4 min-w-0">
-                  {icon && (
-                    <div className={`w-12 h-12 rounded-xl ${accent.bg} border ${accent.border} flex items-center justify-center flex-shrink-0`}>
-                      <div className={accent.text}>{icon}</div>
-                    </div>
-                  )}
-                  <div className="min-w-0">
-                    {subtitle && (
-                      <p className={`text-xs font-semibold ${accent.text} uppercase tracking-wider mb-0.5`}>
-                        {subtitle}
-                      </p>
+        {(title || showCloseButton || minimalHeader) && (
+          <header className="flex-shrink-0 px-4 sm:px-6 py-4 border-b border-border/30">
+            {minimalHeader ? (
+              /* Header minimalista mobile: solo torna indietro */
+              <button
+                onClick={onClose}
+                className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-primary/30 rounded-lg px-2 py-1 -ml-2"
+                aria-label="Torna indietro"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                </svg>
+                Torna indietro
+              </button>
+            ) : (
+              /* Header standard con titolo */
+              <div className="flex items-start justify-between gap-4">
+                {title && (
+                  <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                    {icon && (
+                      <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${accent.bg} border ${accent.border} flex items-center justify-center flex-shrink-0`}>
+                        <div className={accent.text}>{icon}</div>
+                      </div>
                     )}
-                    <h2 id="drawer-title" className="text-xl font-semibold text-foreground truncate">
-                      {title}
-                    </h2>
+                    <div className="min-w-0">
+                      {subtitle && (
+                        <p className={`text-xs font-semibold ${accent.text} uppercase tracking-wider mb-0.5`}>
+                          {subtitle}
+                        </p>
+                      )}
+                      <h2 id="drawer-title" className="text-lg sm:text-xl font-semibold text-foreground truncate">
+                        {title}
+                      </h2>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {showCloseButton && (
-                <button
-                  onClick={onClose}
-                  className="w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center text-muted-foreground hover:text-foreground bg-muted/30 hover:bg-muted/50 border border-border/30 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/30"
-                  aria-label="Chiudi"
-                >
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              )}
-            </div>
+                {showCloseButton && (
+                  <button
+                    onClick={onClose}
+                    className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex-shrink-0 flex items-center justify-center text-muted-foreground hover:text-foreground bg-muted/30 hover:bg-muted/50 border border-border/30 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    aria-label="Chiudi"
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+            )}
           </header>
         )}
 
@@ -236,7 +255,7 @@ export function PremiumDrawer({
 
         {/* Footer */}
         {footer && (
-          <footer className="flex-shrink-0 px-6 py-4 border-t border-border/30 bg-muted/10">
+          <footer className="flex-shrink-0 px-4 sm:px-6 py-4 border-t border-border/30 bg-muted/10">
             {footer}
           </footer>
         )}

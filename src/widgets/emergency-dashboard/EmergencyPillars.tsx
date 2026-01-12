@@ -82,31 +82,46 @@ export function EmergencyPillars() {
         <PremiumDrawer
           isOpen={!!activePillar}
           onClose={() => setActivePillar(null)}
-          title={activeData.title}
-          subtitle={activeData.subtitle}
-          icon={<PillarIcon type={activeData.iconType} className="w-6 h-6" />}
           accentColor={activeData.accentColor}
-          size="lg"
+          size="full"
+          minimalHeader
+          showCloseButton={false}
           footer={
             <button
               onClick={() => console.log(`Start ${activeData.id}`)}
-              className="w-full py-3 px-4 rounded-lg text-sm font-medium bg-primary text-white hover:bg-primary/90 transition-colors"
+              className="w-full py-3.5 px-4 rounded-xl text-sm font-medium bg-primary text-white hover:bg-primary/90 transition-colors"
             >
-              {t('startPillar')}
+              Continua
             </button>
           }
         >
-          <div className="px-6 py-6 space-y-6">
-            <p className="text-base text-muted-foreground leading-relaxed">
+          <div className="px-4 sm:px-6 py-5 space-y-5">
+            {/* Title inside content */}
+            <div className="flex items-center gap-3">
+              <div className={`w-10 h-10 rounded-xl ${activeData.accentColor === 'primary' ? 'bg-primary/10' : activeData.accentColor === 'success' ? 'bg-emerald-500/10' : activeData.accentColor === 'warning' ? 'bg-amber-500/10' : 'bg-red-500/10'} flex items-center justify-center`}>
+                <PillarIcon type={activeData.iconType} className={`w-5 h-5 ${activeData.accentColor === 'primary' ? 'text-primary' : activeData.accentColor === 'success' ? 'text-emerald-600' : activeData.accentColor === 'warning' ? 'text-amber-600' : 'text-red-600'}`} />
+              </div>
+              <div>
+                <p className={`text-xs font-semibold uppercase tracking-wider ${activeData.accentColor === 'primary' ? 'text-primary' : activeData.accentColor === 'success' ? 'text-emerald-600' : activeData.accentColor === 'warning' ? 'text-amber-600' : 'text-red-600'}`}>
+                  {activeData.subtitle}
+                </p>
+                <h2 className="text-lg font-semibold text-foreground">
+                  {activeData.title}
+                </h2>
+              </div>
+            </div>
+
+            <p className="text-sm text-muted-foreground leading-relaxed">
               {activeData.description}
             </p>
-            <div className="space-y-4">
+            
+            <div className="space-y-3">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="p-4 rounded-lg bg-muted/30 border border-border/30">
-                  <h4 className="text-sm font-medium text-foreground mb-2">
+                <div key={i} className="p-4 rounded-xl bg-muted/30 border border-border/30">
+                  <h4 className="text-sm font-medium text-foreground mb-1.5">
                     {t('sectionTitle')} {i}
                   </h4>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
                     {t('sectionContent')}
                   </p>
                 </div>
