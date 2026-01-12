@@ -3,6 +3,8 @@
  * 
  * Sistema drawer unificato: professionale, elegante
  * Usa createPortal per renderizzare a livello body (fuori dal layout)
+ * Supporta deep linking con URL params (REQ 17.3, 17.4, 17.5)
+ * Supporta session continuity per tab restore (REQ 18.3)
  */
 
 'use client'
@@ -11,9 +13,12 @@ import {
   useEffect, 
   useRef,
   useState,
+  useCallback,
   type ReactNode
 } from 'react'
 import { createPortal } from 'react-dom'
+import { useDeepLink } from '../hooks/useDeepLink'
+import { useDrawerTabRestore } from '../hooks/useSessionContinuity'
 
 export interface PremiumDrawerProps {
   isOpen: boolean
@@ -31,6 +36,16 @@ export interface PremiumDrawerProps {
   className?: string
   /** Header minimalista mobile: solo "← Torna indietro" */
   minimalHeader?: boolean
+  /** Panel ID for deep linking - when set, URL updates with ?panel= */
+  panelId?: string
+  /** Current tab ID for deep linking - when set, URL updates with ?tab= */
+  activeTab?: string
+  /** Show copy link button in header (REQ 17.5) */
+  showCopyLink?: boolean
+  /** Callback when link is copied */
+  onCopyLink?: () => void
+  /** Callback when tab should be restored from session (REQ 18.3) */
+  onTabRestore?: (tab: string) => void
 }
 
 const SIZES = {
@@ -78,17 +93,92 @@ export function PremiumDrawer({
   closeOnEscape = true,
   footer,
   className = '',
-  minimalHeader = false
+  minimalHeader = false,
+  panelId,
+  activeTab,
+  showCopyLink = false,
+  onCopyLink,
+  onTabRestore
 }: PremiumDrawerProps) {
   const drawerRef = useRef<HTMLDivElement>(null)
   const previousActiveElement = useRef<HTMLElement | null>(null)
   const [mounted, setMounted] = useState(false)
+  const [copySuccess, setCopySuccess] = useState(false)
+  const [hasRestoredTab, setHasRestoredTab] = useState(false)
   const accent = ACCENT_COLORS[accentColor]
+  
+  // Deep linking support (REQ 17.3, 17.4)
+  const { setDeepLink, clearDeepLink, getCurrentUrl } = useDeepLink()
+  
+  // Session continuity for tab restore (REQ 18.3)
+  const { lastDrawerTab, setLastDrawerTab, isRestored: isSessionRestored } = useDrawerTabRestore()
 
   // Mount check for portal
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  // Update URL when drawer opens/closes (REQ 17.3)
+  useEffect(() => {
+    if (!panelId) return
+
+    if (isOpen) {
+      // Set panel param when drawer opens
+      const params: { panel: string; tab?: string } = { panel: panelId }
+      if (activeTab) {
+        params.tab = activeTab
+      }
+      setDeepLink(params)
+    } else {
+      // Clear panel and tab params when drawer closes
+      clearDeepLink(['panel', 'tab'])
+    }
+  }, [isOpen, panelId, activeTab, setDeepLink, clearDeepLink])
+
+  // Update tab in URL when activeTab changes (REQ 17.3)
+  useEffect(() => {
+    if (!isOpen || !panelId || !activeTab) return
+    setDeepLink({ tab: activeTab })
+  }, [activeTab, isOpen, panelId, setDeepLink])
+
+  // Restore tab from session when drawer opens (REQ 18.3)
+  useEffect(() => {
+    if (!isOpen || !isSessionRestored || hasRestoredTab) return
+    
+    // Only restore if we have a saved tab and a callback to handle it
+    if (lastDrawerTab && onTabRestore) {
+      onTabRestore(lastDrawerTab)
+    }
+    setHasRestoredTab(true)
+  }, [isOpen, isSessionRestored, hasRestoredTab, lastDrawerTab, onTabRestore])
+
+  // Remember current tab in session (REQ 18.3)
+  useEffect(() => {
+    if (!isOpen || !activeTab) return
+    setLastDrawerTab(activeTab)
+  }, [isOpen, activeTab, setLastDrawerTab])
+
+  // Reset tab restoration flag when drawer closes
+  useEffect(() => {
+    if (!isOpen) {
+      setHasRestoredTab(false)
+    }
+  }, [isOpen])
+
+  // Copy link handler (REQ 17.5)
+  const handleCopyLink = useCallback(async () => {
+    try {
+      const url = getCurrentUrl()
+      await navigator.clipboard.writeText(url)
+      setCopySuccess(true)
+      onCopyLink?.()
+      
+      // Reset success state after 2 seconds
+      setTimeout(() => setCopySuccess(false), 2000)
+    } catch (err) {
+      console.error('Failed to copy link:', err)
+    }
+  }, [getCurrentUrl, onCopyLink])
 
   // Scroll lock - nasconde ENTRAMBE le scrollbar
   useEffect(() => {
@@ -252,17 +342,41 @@ export function PremiumDrawer({
                   </div>
                 )}
 
-                {showCloseButton && (
-                  <button
-                    onClick={onClose}
-                    className="tap-target-icon w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex-shrink-0 flex items-center justify-center text-muted-foreground hover:text-foreground bg-muted/30 hover:bg-muted/50 border border-border/30 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/30"
-                    aria-label="Chiudi pannello"
-                  >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                )}
+                {/* Header action buttons */}
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  {/* Copy Link Button (REQ 17.5) */}
+                  {showCopyLink && panelId && (
+                    <button
+                      onClick={handleCopyLink}
+                      className="tap-target-icon w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-muted-foreground hover:text-foreground bg-muted/30 hover:bg-muted/50 border border-border/30 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/30"
+                      aria-label={copySuccess ? 'Link copiato!' : 'Copia link sezione'}
+                      title={copySuccess ? 'Link copiato!' : 'Copia link sezione'}
+                    >
+                      {copySuccess ? (
+                        <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      ) : (
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.193-9.193a4.5 4.5 0 00-6.364 0l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+                        </svg>
+                      )}
+                    </button>
+                  )}
+
+                  {/* Close Button */}
+                  {showCloseButton && (
+                    <button
+                      onClick={onClose}
+                      className="tap-target-icon w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-muted-foreground hover:text-foreground bg-muted/30 hover:bg-muted/50 border border-border/30 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/30"
+                      aria-label="Chiudi pannello"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
               </div>
             )}
           </header>

@@ -1,18 +1,23 @@
 ﻿/**
  * Dashboard Layout - Tradelia 2026
  * NO SIDEBAR - Solo header + bottom nav mobile
+ * 
+ * Session Continuity (REQ 18.1):
+ * - Ricorda ultimo journey visitato
+ * - Ripristina journey on load se su home
  */
 
 'use client'
 
-import type { ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useTranslations, useLocale } from 'next-intl'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
 import { useDashboardModal } from '@/contexts/DashboardModalContext'
 import { NetworkStatus } from '@/src/shared/ui/NetworkStatus'
 import { SkipLink } from '@/src/shared/ui/SkipLink'
+import { useSessionContinuity } from '@/src/shared/hooks/useSessionContinuity'
 import Logo from '@/components/Logo'
 import { UserMenu } from './UserMenu'
 import { JOURNEY_ORDER, type JourneyId } from '@/src/shared/config/journeys'
@@ -39,11 +44,19 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const pathname = usePathname()
+  const router = useRouter()
   const locale = useLocale()
   const tJourneys = useTranslations('journeys')
   const tDashboard = useTranslations('dashboard')
   const { state } = useDashboardAuth()
   const { openModal } = useDashboardModal()
+  
+  // Session Continuity (REQ 18.1, 18.2)
+  const { 
+    state: sessionState, 
+    setLastJourney, 
+    isRestored 
+  } = useSessionContinuity()
 
   const isOnHome = pathname === `/${locale}/dashboard` || pathname === `/${locale}/dashboard/`
   const getActiveJourney = (): JourneyId | null => {
@@ -54,6 +67,24 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     return null
   }
   const activeJourney = getActiveJourney()
+
+  // Remember current journey when navigating (REQ 18.1)
+  useEffect(() => {
+    if (activeJourney) {
+      setLastJourney(activeJourney)
+    }
+  }, [activeJourney, setLastJourney])
+
+  // Restore last journey when landing on home (REQ 18.1)
+  // Only restore once after session is restored from localStorage
+  useEffect(() => {
+    if (isRestored && isOnHome && sessionState.lastJourney) {
+      // Use replace to avoid adding to history
+      router.replace(`/${locale}/dashboard/${sessionState.lastJourney}`)
+    }
+    // Only run once when session is restored and we're on home
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRestored, isOnHome])
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden flex flex-col">
