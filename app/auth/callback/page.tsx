@@ -20,18 +20,18 @@ export default function AuthCallbackPage() {
           const { data: { session } } = await supabase.auth.getSession();
           
           if (session?.user) {
-            // Create profile if not exists
+            // Check if profile exists
             const { data: profile } = await supabase
               .from('user_profiles')
-              .select('id')
+              .select('id, nickname, country_code')
               .eq('id', session.user.id)
               .single();
 
             if (!profile) {
+              // Create profile without nickname/country - user will complete it
               await supabase.from('user_profiles').insert({
                 id: session.user.id,
                 email: session.user.email,
-                full_name: session.user.user_metadata?.full_name || session.user.user_metadata?.name,
                 avatar_url: session.user.user_metadata?.avatar_url,
                 storage_preference: 'register',
                 created_at: new Date().toISOString()
@@ -41,9 +41,17 @@ export default function AuthCallbackPage() {
             // Strip token from URL after consuming (security)
             window.history.replaceState({}, document.title, '/auth/callback');
             
-            // Use current locale for redirect
-            const dashboardPath = safeRedirect(`/${locale}/dashboard`, '/dashboard');
-            router.push(dashboardPath);
+            // Check if profile needs completion (missing nickname or country)
+            const needsCompletion = !profile?.nickname || !profile?.country_code;
+            
+            if (needsCompletion) {
+              // Redirect to complete profile page
+              router.push('/auth/complete-profile');
+            } else {
+              // Profile complete, go to dashboard
+              const dashboardPath = safeRedirect(`/${locale}/dashboard`, '/dashboard');
+              router.push(dashboardPath);
+            }
           }
         }
       } catch {
