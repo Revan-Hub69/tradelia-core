@@ -101,8 +101,8 @@ export function EmergencyPillars() {
 
   return (
     <>
-      {/* Grid 2x2 - Design premium */}
-      <div className="grid grid-cols-2 gap-4 md:gap-6 max-w-3xl mx-auto">
+      {/* Grid responsive: 1 col mobile, 2 col tablet, 4 col desktop */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5">
         {pillars.map((pillar) => {
           const accent = getAccentClasses(pillar.accentColor)
           const isActive = activePillar === pillar.id
@@ -115,7 +115,7 @@ export function EmergencyPillars() {
                 group relative text-left
                 bg-background/80 backdrop-blur-sm
                 border border-border/40
-                rounded-xl p-5 md:p-6
+                rounded-xl p-4 sm:p-5
                 transition-all duration-200 ease-out
                 ${accent.hover}
                 hover:shadow-lg hover:-translate-y-0.5
@@ -124,46 +124,55 @@ export function EmergencyPillars() {
               `}
               aria-expanded={isActive}
             >
-              {/* Accent line - refined */}
+              {/* Accent line - top on mobile/tablet, left on desktop */}
               <div className={`
-                absolute left-0 top-5 bottom-5 w-0.5 rounded-full
+                absolute lg:left-0 lg:top-4 lg:bottom-4 lg:w-0.5 lg:h-auto
+                left-4 right-4 top-0 h-0.5 w-auto
+                rounded-full
                 ${accent.border.replace('border-l-', 'bg-')}
                 opacity-40 group-hover:opacity-80
                 transition-opacity duration-200
               `} />
               
-              {/* Icon - elegant container */}
-              <div className={`
-                w-11 h-11 rounded-xl ${accent.bg} 
-                border border-current/10
-                flex items-center justify-center mb-4
-                transition-transform duration-200
-                group-hover:scale-105
-              `}>
-                <PillarIcon type={pillar.iconType} className={`w-5 h-5 ${accent.text}`} />
+              {/* Content wrapper */}
+              <div className="flex items-start gap-4 sm:block">
+                {/* Icon - inline on mobile, block on larger */}
+                <div className={`
+                  w-10 h-10 sm:w-11 sm:h-11 rounded-xl ${accent.bg} 
+                  border border-current/10
+                  flex items-center justify-center flex-shrink-0
+                  sm:mb-3
+                  transition-transform duration-200
+                  group-hover:scale-105
+                `}>
+                  <PillarIcon type={pillar.iconType} className={`w-5 h-5 ${accent.text}`} />
+                </div>
+
+                {/* Text content */}
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm sm:text-base font-semibold text-foreground mb-1 leading-tight">
+                    {pillar.title}
+                  </h3>
+                  <p className={`text-[10px] sm:text-[11px] font-semibold ${accent.text} uppercase tracking-wider mb-1.5 sm:mb-2`}>
+                    {pillar.subtitle}
+                  </p>
+                  <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 leading-relaxed hidden sm:block">
+                    {pillar.description}
+                  </p>
+                </div>
               </div>
 
-              {/* Content */}
-              <h3 className="text-base md:text-lg font-semibold text-foreground mb-1.5 leading-tight">
-                {pillar.title}
-              </h3>
-              <p className={`text-[11px] font-semibold ${accent.text} uppercase tracking-wider mb-2.5`}>
-                {pillar.subtitle}
-              </p>
-              <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
-                {pillar.description}
-              </p>
-
-              {/* Arrow indicator - refined */}
+              {/* Arrow indicator - hidden on mobile */}
               <div className={`
-                absolute bottom-5 right-5 
-                w-8 h-8 rounded-lg
-                flex items-center justify-center
+                absolute bottom-4 right-4 
+                w-7 h-7 rounded-lg
+                items-center justify-center
                 bg-muted/0 group-hover:bg-muted/50
                 opacity-0 group-hover:opacity-100
                 transition-all duration-200
+                hidden sm:flex
               `}>
-                <svg className="w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <svg className="w-3.5 h-3.5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                 </svg>
               </div>
