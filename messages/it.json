@@ -136,7 +136,8 @@
       "aria": {
         "closeModal": "Chiudi finestra"
       },
-      "backToHome": "Torna alla home"
+      "backToHome": "Torna alla home",
+      "errorGeneric": "Si è verificato un errore. Riprova."
     },
     "callback": {
       "title": "Autenticazione in corso",

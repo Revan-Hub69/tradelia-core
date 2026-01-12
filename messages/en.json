@@ -157,7 +157,8 @@
       "aria": {
         "closeModal": "Close window"
       },
-      "backToHome": "Back to home"
+      "backToHome": "Back to home",
+      "errorGeneric": "An error occurred. Please try again."
     },
     "callback": {
       "title": "Authenticating",
