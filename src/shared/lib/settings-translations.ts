@@ -115,7 +115,18 @@ export const settingsTranslations = {
 } as const
 
 export type SettingsLocale = keyof typeof settingsTranslations
-export type SettingsTranslation = (typeof settingsTranslations)[SettingsLocale]
+
+// Generic type for translation structure (not literal values)
+export type SettingsTranslation = {
+  page: { title: string; subtitle: string; guestSubtitle: string }
+  guest: { title: string; description: string; cta: string }
+  profile: { title: string }
+  nickname: { title: string; placeholder: string; hint: string; success: string; error: string; saveError: string }
+  country: { title: string; placeholder: string; search: string; success: string; error: string; saveError: string }
+  email: { title: string; currentLabel: string; placeholder: string; hint: string; success: string; invalidError: string; sameError: string; saveError: string; change: string }
+  security: { title: string; description: string; resetButton: string; success: string; error: string }
+  common: { save: string; saving: string }
+}
 
 export function getSettingsTranslations(locale: string): SettingsTranslation {
   const loc = locale as SettingsLocale
