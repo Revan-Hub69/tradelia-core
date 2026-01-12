@@ -250,7 +250,7 @@ export function validateForm<T>(
   
   // Convert Zod errors to field-level errors
   const errors: Record<string, string> = {}
-  for (const error of result.error.errors) {
+  for (const error of result.error.issues) {
     const path = error.path.join('.')
     if (!errors[path]) {
       errors[path] = error.message
@@ -269,7 +269,7 @@ export function validateField(
 ): string | null {
   const result = schema.safeParse(value)
   if (result.success) return null
-  return result.error.errors[0]?.message || 'Invalid value'
+  return result.error.issues[0]?.message || 'Invalid value'
 }
 
 // ============================================

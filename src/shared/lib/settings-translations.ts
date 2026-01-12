@@ -115,8 +115,12 @@ export const settingsTranslations = {
 } as const
 
 export type SettingsLocale = keyof typeof settingsTranslations
-export type SettingsTranslation = typeof settingsTranslations.it
+export type SettingsTranslation = (typeof settingsTranslations)[SettingsLocale]
 
 export function getSettingsTranslations(locale: string): SettingsTranslation {
-  return settingsTranslations[locale as SettingsLocale] ?? settingsTranslations.it
+  const loc = locale as SettingsLocale
+  if (loc in settingsTranslations) {
+    return settingsTranslations[loc]
+  }
+  return settingsTranslations.it
 }
