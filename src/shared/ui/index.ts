@@ -56,6 +56,13 @@ export {
 export { JourneyCard } from './JourneyCard';
 export { GuestModeAlert } from './GuestModeAlert';
 
+// Command Palette components (REQ 16)
+export { CommandProvider, useCommandPalette, useRegisterCommand } from './CommandProvider';
+export type { Command } from './CommandProvider';
+export { CommandPalette } from './CommandPalette';
+export { CommandPaletteWrapper } from './CommandPaletteWrapper';
+export { KeyboardHelpModal } from './KeyboardHelpModal';
+
 // Utility functions
 export { cn, focusRing, transitionSubtle, cardInteractive, supportsHover, prefersReducedMotion } from './utils';
 
