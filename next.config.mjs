@@ -146,6 +146,15 @@ const nextConfig = {
             key: 'Strict-Transport-Security',
             value: 'max-age=31536000; includeSubDomains; preload'
           },
+          // Cross-Origin Isolation headers
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin'
+          },
+          {
+            key: 'Cross-Origin-Resource-Policy',
+            value: 'same-origin'
+          },
           // Content Security Policy - Tradelia 2026 compliant
           {
             key: 'Content-Security-Policy',
