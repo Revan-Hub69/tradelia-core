@@ -132,7 +132,6 @@
     "confirmPasswordRequired": "Please confirm your password",
     "signingIn": "Signing in...",
     "signingUp": "Creating account...",
-    "resetPassword": "Reset password",
     "resetPasswordDescription": "Enter your email to receive a reset link",
     "sendResetLink": "Send reset link",
     "rememberPassword": "Remember your password? Sign in",
@@ -164,6 +163,24 @@
       "title": "Authenticating",
       "subtitle": "Please wait while we complete sign in...",
       "errorGeneric": "An error occurred during authentication"
+    },
+    "resetPassword": {
+      "title": "Reset password",
+      "subtitle": "Enter your new password",
+      "newPassword": "New password",
+      "newPasswordPlaceholder": "Enter your new password",
+      "confirmPassword": "Confirm password",
+      "confirmPasswordPlaceholder": "Repeat your new password",
+      "submit": "Reset password",
+      "submitting": "Resetting...",
+      "successTitle": "Password reset!",
+      "successSubtitle": "Your password has been updated successfully.",
+      "redirecting": "Redirecting to home...",
+      "errors": {
+        "invalidLink": "Invalid or expired link. Please request a new reset link.",
+        "mismatch": "Passwords do not match",
+        "minLength": "Password must be at least 8 characters"
+      }
     }
   },
   "softConfirmation": {

@@ -143,6 +143,24 @@
       "title": "Autenticazione in corso",
       "subtitle": "Attendi mentre completiamo l'accesso...",
       "errorGeneric": "Si è verificato un errore durante l'autenticazione"
+    },
+    "resetPassword": {
+      "title": "Reimposta password",
+      "subtitle": "Inserisci la tua nuova password",
+      "newPassword": "Nuova password",
+      "newPasswordPlaceholder": "Inserisci la nuova password",
+      "confirmPassword": "Conferma password",
+      "confirmPasswordPlaceholder": "Ripeti la nuova password",
+      "submit": "Reimposta password",
+      "submitting": "Reimpostazione...",
+      "successTitle": "Password reimpostata!",
+      "successSubtitle": "La tua password è stata aggiornata con successo.",
+      "redirecting": "Reindirizzamento alla home...",
+      "errors": {
+        "invalidLink": "Link non valido o scaduto. Richiedi un nuovo link di reset.",
+        "mismatch": "Le password non coincidono",
+        "minLength": "La password deve essere di almeno 8 caratteri"
+      }
     }
   },
   "softConfirmation": {

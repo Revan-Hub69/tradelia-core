@@ -1,8 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import { logger } from './lib/logger';
 import { recordApiRequest } from './lib/monitoring';
 import createIntlMiddleware from 'next-intl/middleware';
 import { routing } from './src/i18n/routing';
+import { Ratelimit } from '@upstash/ratelimit';
+import { Redis } from '@upstash/redis';
 
 // Create i18n middleware
 const intlMiddleware = createIntlMiddleware({
@@ -11,10 +14,150 @@ const intlMiddleware = createIntlMiddleware({
   localePrefix: 'always'
 });
 
-export function middleware(request: NextRequest) {
+/**
+ * Rate limiter for auth routes
+ * Limit: 5 requests per minute per IP + route + user-agent hash
+ * Requirements: 2.1
+ */
+let ratelimit: Ratelimit | null = null;
+
+// Initialize rate limiter only if Redis credentials are available
+if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+  ratelimit = new Ratelimit({
+    redis: Redis.fromEnv(),
+    limiter: Ratelimit.slidingWindow(5, '1 m'),
+    analytics: true,
+    prefix: 'tradelia:ratelimit',
+  });
+}
+
+/**
+ * Auth routes that should be rate limited
+ */
+const AUTH_ROUTES = [
+  '/auth/login',
+  '/auth/callback',
+  '/auth/forgot-password',
+  '/auth/reset-password',
+  '/auth/verify-email',
+  '/api/auth',
+];
+
+/**
+ * Check if the current path is an auth route that should be rate limited
+ */
+function isAuthRoute(pathname: string): boolean {
+  return AUTH_ROUTES.some(route => pathname.startsWith(route));
+}
+
+/**
+ * Generate a hash from user-agent for rate limiting key
+ */
+function hashUserAgent(userAgent: string | null): string {
+  if (!userAgent) return 'unknown';
+  // Simple hash for user-agent
+  let hash = 0;
+  for (let i = 0; i < userAgent.length; i++) {
+    const char = userAgent.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return Math.abs(hash).toString(36);
+}
+
+/**
+ * Apply rate limiting to auth routes
+ * Returns 429 if rate limit exceeded
+ */
+async function applyRateLimit(request: NextRequest): Promise<NextResponse | null> {
+  if (!ratelimit) {
+    // Rate limiting disabled if Redis not configured
+    return null;
+  }
+
+  const { pathname } = request.nextUrl;
+  
+  if (!isAuthRoute(pathname)) {
+    return null;
+  }
+
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() 
+    || request.headers.get('x-real-ip') 
+    || 'unknown';
+  const userAgent = request.headers.get('user-agent');
+  const uaHash = hashUserAgent(userAgent);
+  
+  // Rate limit key: IP + route + user-agent hash
+  const key = `${ip}:${pathname}:${uaHash}`;
+  
+  const { success, limit, reset, remaining } = await ratelimit.limit(key);
+  
+  if (!success) {
+    logger.warn('Rate limit exceeded', {
+      ip,
+      pathname,
+      limit,
+      reset,
+    });
+    
+    return new NextResponse(
+      JSON.stringify({
+        error: 'Too many requests',
+        message: 'Rate limit exceeded. Please try again later.',
+        retryAfter: Math.ceil((reset - Date.now()) / 1000),
+      }),
+      {
+        status: 429,
+        headers: {
+          'Content-Type': 'application/json',
+          'X-RateLimit-Limit': limit.toString(),
+          'X-RateLimit-Remaining': remaining.toString(),
+          'X-RateLimit-Reset': reset.toString(),
+          'Retry-After': Math.ceil((reset - Date.now()) / 1000).toString(),
+        },
+      }
+    );
+  }
+  
+  return null;
+}
+
+/**
+ * Content Security Policy configuration
+ * Using Report-Only mode for safe rollout - violations are logged but not blocked
+ * Requirements: 3.1, 3.2
+ */
+const CSP_POLICY = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // Next.js requires unsafe-inline/eval in dev
+  "style-src 'self' 'unsafe-inline'", // Tailwind requires unsafe-inline
+  "img-src 'self' data: blob: https:",
+  "font-src 'self' data:",
+  "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
+  "frame-ancestors 'none'", // Prevent clickjacking (REQ 3.2)
+  "base-uri 'self'",
+  "form-action 'self'",
+].join('; ');
+
+/**
+ * Adds security headers to the response
+ * CSP is in Report-Only mode for safe rollout
+ */
+function addSecurityHeaders(response: NextResponse): void {
+  // CSP in Report-Only mode for rollout (REQ 3.1, 3.2)
+  response.headers.set('Content-Security-Policy-Report-Only', CSP_POLICY);
+}
+
+export async function middleware(request: NextRequest) {
   const startTime = Date.now();
   const traceId = generateTraceId();
   const { pathname } = request.nextUrl;
+  
+  // Apply rate limiting to auth routes (REQ 2.1)
+  const rateLimitResponse = await applyRateLimit(request);
+  if (rateLimitResponse) {
+    return rateLimitResponse;
+  }
   
   // Set trace ID in logger context
   logger.setContext({ 
@@ -59,6 +202,9 @@ export function middleware(request: NextRequest) {
     response.headers.set('x-trace-id', traceId);
     response.headers.set('x-request-id', traceId);
     
+    // Add security headers (CSP in Report-Only mode)
+    addSecurityHeaders(response);
+    
     // Record metrics and log
     const duration = Date.now() - startTime;
     
@@ -87,8 +233,11 @@ export function middleware(request: NextRequest) {
   response.headers.set('x-trace-id', traceId);
   response.headers.set('x-request-id', traceId);
   
+  // Add security headers (CSP in Report-Only mode)
+  addSecurityHeaders(response);
+  
   // Log i18n request
-  const duration = Date.now() - startTime;
+  const _duration = Date.now() - startTime;
   logger.performance('i18n request processed', startTime, {
     method: request.method,
     url: request.url

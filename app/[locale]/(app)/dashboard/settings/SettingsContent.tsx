@@ -14,7 +14,8 @@ import {
   GlobeIcon, 
   LockIcon,
   SearchIcon,
-  CheckIcon
+  CheckIcon,
+  MailIcon
 } from '@/components/icons/TradeliaIcons'
 
 function getInitials(name: string): string {
@@ -50,6 +51,7 @@ export function SettingsContent() {
   
   const [nickname, setNickname] = useState('')
   const [country, setCountry] = useState('')
+  const [newEmail, setNewEmail] = useState('')
   const [saving, setSaving] = useState<string | null>(null)
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
   
@@ -136,6 +138,28 @@ export function SettingsContent() {
       showMessage('success', isIt ? 'Email di reset inviata!' : 'Reset email sent!')
     } catch {
       showMessage('error', isIt ? 'Errore' : 'Error')
+    } finally {
+      setSaving(null)
+    }
+  }
+
+  const handleChangeEmail = async () => {
+    if (!newEmail || !newEmail.includes('@')) {
+      showMessage('error', isIt ? 'Inserisci un\'email valida' : 'Enter a valid email')
+      return
+    }
+    if (newEmail === state.user?.email) {
+      showMessage('error', isIt ? 'La nuova email è uguale a quella attuale' : 'New email is the same as current')
+      return
+    }
+    setSaving('email')
+    try {
+      const { error } = await supabase.auth.updateUser({ email: newEmail })
+      if (error) throw error
+      showMessage('success', isIt ? 'Email di conferma inviata al nuovo indirizzo!' : 'Confirmation email sent to new address!')
+      setNewEmail('')
+    } catch {
+      showMessage('error', isIt ? 'Errore nel cambio email' : 'Error changing email')
     } finally {
       setSaving(null)
     }
@@ -289,6 +313,36 @@ export function SettingsContent() {
                 {saving === 'country' ? '...' : (isIt ? 'Salva' : 'Save')}
               </button>
             </div>
+          </div>
+
+          {/* Email */}
+          <div className="section-frame p-6">
+            <h2 className="text-lg font-semibold text-foreground mb-4">{isIt ? 'Cambia Email' : 'Change Email'}</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              {isIt ? 'Email attuale: ' : 'Current email: '}<span className="font-medium text-foreground">{state.user?.email}</span>
+            </p>
+            <div className="flex gap-3">
+              <div className="flex-1 relative">
+                <MailIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <input
+                  type="email"
+                  value={newEmail}
+                  onChange={(e) => setNewEmail(e.target.value)}
+                  className="w-full h-10 pl-10 pr-4 text-sm bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder={isIt ? 'Nuova email' : 'New email'}
+                />
+              </div>
+              <button
+                onClick={handleChangeEmail}
+                disabled={saving === 'email' || !newEmail}
+                className="px-4 h-10 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 disabled:opacity-50"
+              >
+                {saving === 'email' ? '...' : (isIt ? 'Cambia' : 'Change')}
+              </button>
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              {isIt ? 'Riceverai un\'email di conferma al nuovo indirizzo.' : 'You will receive a confirmation email at the new address.'}
+            </p>
           </div>
 
           {/* Password */}
