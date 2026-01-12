@@ -57,3 +57,14 @@ export interface DashboardConfig {
   created_at?: string
   updated_at?: string
 }
+
+export interface UserProgress {
+  id: string
+  user_id: string
+  journey_id: string
+  pillar_id: string
+  completed_sections: string[]
+  percentage: number
+  created_at?: string
+  updated_at?: string
+}
