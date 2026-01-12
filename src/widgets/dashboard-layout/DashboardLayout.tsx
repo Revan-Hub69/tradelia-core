@@ -89,7 +89,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </div>
       </main>
 
-      {/* Technical Footer - Desktop only */}
+      {/* Technical Footer - Desktop */}
       <footer className="hidden md:block border-t border-border/30 bg-muted/20 mt-auto">
         <div className="max-w-7xl mx-auto px-8 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
@@ -138,6 +138,44 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               {tDashboard('educationalTool')} • {tDashboard('noFinancialAdvice')} • {tDashboard('madeWithLove')}
             </p>
           </div>
+        </div>
+      </footer>
+
+      {/* Technical Footer - Mobile (sopra bottom nav) */}
+      <footer className="md:hidden border-t border-border/30 bg-muted/20 pb-20">
+        <div className="px-4 py-4">
+          {/* Trust Badges - Compact */}
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/20">
+              <div className="w-1 h-1 rounded-full bg-emerald-500" />
+              <ShieldIcon className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+              <span className="text-[10px] font-medium text-emerald-600 dark:text-emerald-400">SSL</span>
+            </div>
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-blue-500/10 border border-blue-500/20">
+              <div className="w-1 h-1 rounded-full bg-blue-500" />
+              <ShieldIcon className="w-3 h-3 text-blue-600 dark:text-blue-400" />
+              <span className="text-[10px] font-medium text-blue-600 dark:text-blue-400">Privacy</span>
+            </div>
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-amber-500/10 border border-amber-500/20">
+              <div className="w-1 h-1 rounded-full bg-amber-500" />
+              <GraduationCapIcon className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+              <span className="text-[10px] font-medium text-amber-600 dark:text-amber-400">Edu</span>
+            </div>
+          </div>
+
+          {/* Info & Links */}
+          <div className="flex items-center justify-center gap-3 text-[10px] text-muted-foreground mb-2">
+            <span>v2026.02</span>
+            <span>•</span>
+            <Link href={`/${locale}/privacy`} className="hover:text-foreground">Privacy</Link>
+            <span>•</span>
+            <Link href={`/${locale}/terms`} className="hover:text-foreground">Terms</Link>
+          </div>
+
+          {/* Disclaimer */}
+          <p className="text-[10px] text-muted-foreground/70 text-center">
+            {tDashboard('educationalTool')} • {tDashboard('noFinancialAdvice')}
+          </p>
         </div>
       </footer>
 
