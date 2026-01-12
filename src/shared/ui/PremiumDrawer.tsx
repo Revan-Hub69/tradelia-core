@@ -249,7 +249,7 @@ export function PremiumDrawer({
         )}
 
         {/* Content - SOLO questa parte scrolla */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto overscroll-contain">
           {children}
         </div>
 

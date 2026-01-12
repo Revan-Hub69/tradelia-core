@@ -18,8 +18,9 @@ interface Pillar {
   description: string
   iconType: 'book' | 'chart' | 'alert' | 'play'
   accentColor: 'primary' | 'success' | 'warning' | 'error'
-  completion: number // 0-3 pallini pieni
+  completionPercent: number
   focusAreas: string[]
+  hasCta: boolean // se true mostra il pulsante nel drawer
 }
 
 export function EmergencyPillars() {
@@ -33,8 +34,9 @@ export function EmergencyPillars() {
       description: t('academic.description'),
       iconType: 'book',
       accentColor: 'primary',
-      completion: 0,
-      focusAreas: [t('academic.focus1'), t('academic.focus2'), t('academic.focus3')]
+      completionPercent: 0,
+      focusAreas: [t('academic.focus1'), t('academic.focus2'), t('academic.focus3')],
+      hasCta: true
     },
     {
       id: 'analysis',
@@ -42,8 +44,9 @@ export function EmergencyPillars() {
       description: t('analysis.description'),
       iconType: 'chart',
       accentColor: 'success',
-      completion: 0,
-      focusAreas: [t('analysis.focus1'), t('analysis.focus2'), t('analysis.focus3')]
+      completionPercent: 0,
+      focusAreas: [t('analysis.focus1'), t('analysis.focus2'), t('analysis.focus3')],
+      hasCta: true
     },
     {
       id: 'errors',
@@ -51,8 +54,9 @@ export function EmergencyPillars() {
       description: t('errors.description'),
       iconType: 'alert',
       accentColor: 'warning',
-      completion: 0,
-      focusAreas: [t('errors.focus1'), t('errors.focus2'), t('errors.focus3')]
+      completionPercent: 0,
+      focusAreas: [t('errors.focus1'), t('errors.focus2'), t('errors.focus3')],
+      hasCta: true
     },
     {
       id: 'demo',
@@ -60,8 +64,9 @@ export function EmergencyPillars() {
       description: t('demo.description'),
       iconType: 'play',
       accentColor: 'error',
-      completion: 0,
-      focusAreas: [t('demo.focus1'), t('demo.focus2'), t('demo.focus3')]
+      completionPercent: 0,
+      focusAreas: [t('demo.focus1'), t('demo.focus2'), t('demo.focus3')],
+      hasCta: false // demo non ha CTA per ora
     }
   ]
 
@@ -78,7 +83,7 @@ export function EmergencyPillars() {
             icon={<PillarIcon type={pillar.iconType} className="w-6 h-6" />}
             accentColor={pillar.accentColor}
             onClick={() => setActivePillar(pillar.id)}
-            badge={<CompletionIndicator completed={pillar.completion} total={3} label={t('completion')} />}
+            badge={<CompletionIndicator percentage={pillar.completionPercent} label={t('completion')} />}
           >
             {/* Focus Areas */}
             <div className="space-y-2">
@@ -109,14 +114,14 @@ export function EmergencyPillars() {
           size="full"
           minimalHeader
           showCloseButton={false}
-          footer={
+          footer={activeData.hasCta ? (
             <button
               onClick={() => console.log(`Start ${activeData.id}`)}
               className="w-full py-3.5 px-4 rounded-xl text-sm font-medium bg-primary text-white hover:bg-primary/90 transition-colors"
             >
               Continua
             </button>
-          }
+          ) : undefined}
         >
           <div className="px-4 sm:px-6 py-5 space-y-5">
             {/* Title inside content */}
@@ -129,18 +134,37 @@ export function EmergencyPillars() {
               </h2>
             </div>
 
+            {/* Progress bar */}
+            <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-xl">
+              <span className="text-xs text-muted-foreground">{t('completion')}:</span>
+              <div className="flex-1 h-2 bg-muted-foreground/20 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-emerald-500 rounded-full transition-all duration-300"
+                  style={{ width: `${activeData.completionPercent}%` }}
+                />
+              </div>
+              <span className="text-xs font-medium text-muted-foreground">{activeData.completionPercent}%</span>
+            </div>
+
             <p className="text-sm text-muted-foreground leading-relaxed">
               {activeData.description}
             </p>
             
+            {/* Sezioni del pillar - contenuto scrollabile */}
             <div className="space-y-3">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="p-4 rounded-xl bg-muted/30 border border-border/30">
-                  <h4 className="text-sm font-medium text-foreground mb-1.5">
-                    Sezione {i}
-                  </h4>
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={`section-${i}`} className="p-4 rounded-xl bg-muted/30 border border-border/30">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="text-sm font-medium text-foreground">
+                      Sezione {i}
+                    </h4>
+                    <span className="text-xs text-muted-foreground px-2 py-0.5 bg-muted/50 rounded">
+                      Da completare
+                    </span>
+                  </div>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    Contenuto dettagliato per questa sezione sarà disponibile a breve.
+                    Contenuto dettagliato per questa sezione sarà disponibile a breve. 
+                    Ogni sezione include materiale educativo, esempi pratici e verifiche di comprensione.
                   </p>
                 </div>
               ))}
@@ -152,18 +176,19 @@ export function EmergencyPillars() {
   )
 }
 
-/** Indicatore completamento: ●●○ */
-function CompletionIndicator({ completed, total, label }: { completed: number; total: number; label: string }) {
+/** Indicatore completamento in percentuale */
+function CompletionIndicator({ percentage, label }: { percentage: number; label: string }) {
   return (
     <div className="flex items-center gap-2">
       <span className="text-xs text-muted-foreground">{label}:</span>
-      <div className="flex gap-1">
-        {Array.from({ length: total }).map((_, i) => (
+      <div className="flex items-center gap-1.5">
+        <div className="w-16 h-1.5 bg-muted-foreground/20 rounded-full overflow-hidden">
           <div 
-            key={i} 
-            className={`w-2 h-2 rounded-full ${i < completed ? 'bg-emerald-500' : 'bg-muted-foreground/30'}`}
+            className="h-full bg-emerald-500 rounded-full transition-all duration-300"
+            style={{ width: `${percentage}%` }}
           />
-        ))}
+        </div>
+        <span className="text-xs font-medium text-muted-foreground">{percentage}%</span>
       </div>
     </div>
   )
