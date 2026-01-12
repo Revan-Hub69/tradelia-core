@@ -2,7 +2,7 @@
  * Premium Drawer - Tradelia 2026
  * 
  * Sistema drawer unificato: professionale, elegante
- * z-index 100, scroll lock robusto, focus trap
+ * Scroll lock semplice (overflow: hidden), z-index 50
  */
 
 'use client'
@@ -10,7 +10,6 @@
 import { 
   useEffect, 
   useRef, 
-  useCallback, 
   type ReactNode
 } from 'react'
 
@@ -39,22 +38,22 @@ const SIZES = {
 
 const ACCENT_COLORS = {
   primary: {
-    bg: 'bg-primary/5',
+    bg: 'bg-primary/10',
     border: 'border-primary/20',
     text: 'text-primary'
   },
   success: {
-    bg: 'bg-emerald-500/5',
+    bg: 'bg-emerald-500/10',
     border: 'border-emerald-500/20', 
     text: 'text-emerald-600 dark:text-emerald-400'
   },
   warning: {
-    bg: 'bg-amber-500/5',
+    bg: 'bg-amber-500/10',
     border: 'border-amber-500/20',
     text: 'text-amber-600 dark:text-amber-400'
   },
   error: {
-    bg: 'bg-red-500/5',
+    bg: 'bg-red-500/10',
     border: 'border-red-500/20',
     text: 'text-red-600 dark:text-red-400'
   }
@@ -79,32 +78,15 @@ export function PremiumDrawer({
   const previousActiveElement = useRef<HTMLElement | null>(null)
   const accent = ACCENT_COLORS[accentColor]
 
-  // Scroll lock robusto
+  // Scroll lock SEMPLICE - come quello funzionante
   useEffect(() => {
     if (!isOpen) return
 
     previousActiveElement.current = document.activeElement as HTMLElement
-    
-    // Lock scroll
-    const scrollY = window.scrollY
-    const body = document.body
-    const html = document.documentElement
-    
-    body.style.position = 'fixed'
-    body.style.top = `-${scrollY}px`
-    body.style.left = '0'
-    body.style.right = '0'
-    body.style.overflow = 'hidden'
-    html.style.overflow = 'hidden'
+    document.body.style.overflow = 'hidden'
 
     return () => {
-      body.style.position = ''
-      body.style.top = ''
-      body.style.left = ''
-      body.style.right = ''
-      body.style.overflow = ''
-      html.style.overflow = ''
-      window.scrollTo(0, scrollY)
+      document.body.style.overflow = ''
     }
   }, [isOpen])
 
@@ -165,21 +147,15 @@ export function PremiumDrawer({
     return () => window.removeEventListener('keydown', handleTab)
   }, [isOpen])
 
-  const handleBackdropClick = useCallback(() => {
-    if (closeOnBackdrop) {
-      onClose()
-    }
-  }, [closeOnBackdrop, onClose])
-
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-[100]">
+    <div className="fixed inset-0 z-50">
       {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-        onClick={handleBackdropClick}
-        aria-hidden="true"
+      <button
+        className="absolute inset-0 bg-black/40 backdrop-blur-sm cursor-default"
+        onClick={closeOnBackdrop ? onClose : undefined}
+        aria-label="Chiudi"
       />
 
       {/* Drawer Panel */}
@@ -192,8 +168,9 @@ export function PremiumDrawer({
           absolute top-0 right-0 bottom-0
           w-full ${SIZES[size]}
           bg-background border-l border-border/50
-          shadow-2xl
+          shadow-xl
           flex flex-col
+          overflow-hidden
           animate-slide-in-right
           ${className}
         `}
@@ -238,7 +215,7 @@ export function PremiumDrawer({
         )}
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto overscroll-contain">
+        <div className="flex-1 overflow-y-auto">
           {children}
         </div>
 

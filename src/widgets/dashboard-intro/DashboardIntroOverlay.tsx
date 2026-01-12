@@ -59,17 +59,6 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
     }, 150)
   }
 
-  // Custom header with back button for risks step
-  const headerContent = currentStep === 'risks' ? (
-    <button
-      onClick={goBack}
-      className="p-2 rounded-lg bg-muted/40 hover:bg-muted/60 border border-border/30 text-muted-foreground hover:text-foreground transition-all mr-3"
-      aria-label={t('navigation.back')}
-    >
-      <BackIcon className="w-4 h-4" />
-    </button>
-  ) : null
-
   return (
     <PremiumDrawer
       isOpen={isOpen}
