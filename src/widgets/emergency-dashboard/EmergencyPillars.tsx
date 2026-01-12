@@ -105,21 +105,21 @@ export function EmergencyPillars() {
         ))}
       </div>
 
-      {/* Drawer */}
+      {/* Drawer - laterale su desktop, full su mobile */}
       {activeData && (
         <PremiumDrawer
           isOpen={!!activePillar}
           onClose={() => setActivePillar(null)}
           accentColor={activeData.accentColor}
-          size="full"
+          size="xl"
           minimalHeader
           showCloseButton={false}
           footer={activeData.hasCta ? (
             <button
               onClick={() => console.log(`Start ${activeData.id}`)}
-              className="w-full py-3.5 px-4 rounded-xl text-sm font-medium bg-primary text-white hover:bg-primary/90 transition-colors"
+              className="w-full py-2.5 px-4 rounded-lg text-sm font-medium bg-primary text-white hover:bg-primary/90 transition-colors"
             >
-              Continua
+              Inizia sezione
             </button>
           ) : undefined}
         >

@@ -7,18 +7,16 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useTranslations, useLocale } from 'next-intl'
+import { useTranslations } from 'next-intl'
 import { DashboardLayout } from '@/src/widgets/dashboard-layout'
 import { DashboardAuthGuard } from '@/src/widgets/dashboard-auth'
 import { DashboardIntroOverlay } from '@/src/widgets/dashboard-intro'
 import { EmergencyHeroAlert } from './EmergencyHeroAlert'
 import { EmergencyPillars } from './EmergencyPillars'
 import { ShieldIcon, InfoIcon } from '@/components/icons/TradeliaIcons'
-import { Breadcrumb } from '@/src/shared/ui/Breadcrumb'
 
 export function EmergencyDashboard() {
   const t = useTranslations()
-  const locale = useLocale()
   const [showEmergencyIntro, setShowEmergencyIntro] = useState(false)
 
   // Show emergency intro overlay on first visit
@@ -48,7 +46,7 @@ export function EmergencyDashboard() {
     <DashboardAuthGuard>
       <DashboardLayout>
         {/* Emergency Consultation Button - Top of page */}
-        <div className="px-6 py-4 border-b border-border/30">
+        <div className="py-3 border-b border-border/30 mb-6">
           <button
             onClick={() => setShowEmergencyIntro(true)}
             className="group inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-muted-foreground/20 focus:ring-offset-2 rounded-sm"
@@ -61,15 +59,8 @@ export function EmergencyDashboard() {
           </button>
         </div>
         
-        {/* Page Header */}
-        <div className="px-6 py-6 space-y-4">
-          <Breadcrumb
-            items={[
-              { label: 'Home', href: `/${locale}/dashboard` },
-              { label: t('journeys.emergency.name') }
-            ]}
-          />
-          
+        {/* Page Header - senza breadcrumb (ora è sticky nel layout) */}
+        <div className="mb-6">
           <div className="flex items-center gap-3">
             <ShieldIcon className="w-6 h-6 text-primary" />
             <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
@@ -79,7 +70,7 @@ export function EmergencyDashboard() {
         </div>
         
         {/* Main Dashboard Content */}
-        <div className="px-6 pb-16 space-y-8">
+        <div className="space-y-8 pb-8">
           {/* Hero Alert */}
           <EmergencyHeroAlert />
           
