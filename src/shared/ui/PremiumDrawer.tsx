@@ -2,16 +2,18 @@
  * Premium Drawer - Tradelia 2026
  * 
  * Sistema drawer unificato: professionale, elegante
- * Scroll lock semplice (overflow: hidden), z-index 50
+ * Usa createPortal per renderizzare a livello body (fuori dal layout)
  */
 
 'use client'
 
 import { 
   useEffect, 
-  useRef, 
+  useRef,
+  useState,
   type ReactNode
 } from 'react'
+import { createPortal } from 'react-dom'
 
 export interface PremiumDrawerProps {
   isOpen: boolean
@@ -76,9 +78,15 @@ export function PremiumDrawer({
 }: PremiumDrawerProps) {
   const drawerRef = useRef<HTMLDivElement>(null)
   const previousActiveElement = useRef<HTMLElement | null>(null)
+  const [mounted, setMounted] = useState(false)
   const accent = ACCENT_COLORS[accentColor]
 
-  // Scroll lock SEMPLICE - come quello funzionante
+  // Mount check for portal
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Scroll lock
   useEffect(() => {
     if (!isOpen) return
 
@@ -147,15 +155,18 @@ export function PremiumDrawer({
     return () => window.removeEventListener('keydown', handleTab)
   }, [isOpen])
 
-  if (!isOpen) return null
+  if (!isOpen || !mounted) return null
 
-  return (
-    <div className="fixed inset-0 z-50">
+  const drawerContent = (
+    <div 
+      className="fixed inset-0 z-[9999]"
+      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
+    >
       {/* Backdrop */}
-      <button
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm cursor-default"
+      <div
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={closeOnBackdrop ? onClose : undefined}
-        aria-label="Chiudi"
+        aria-hidden="true"
       />
 
       {/* Drawer Panel */}
@@ -165,15 +176,15 @@ export function PremiumDrawer({
         aria-modal="true"
         aria-labelledby={title ? 'drawer-title' : undefined}
         className={`
-          absolute top-0 right-0 bottom-0
+          absolute top-0 right-0 h-full
           w-full ${SIZES[size]}
           bg-background border-l border-border/50
-          shadow-xl
+          shadow-2xl
           flex flex-col
-          overflow-hidden
           animate-slide-in-right
           ${className}
         `}
+        style={{ height: '100vh', maxHeight: '100vh' }}
       >
         {/* Header */}
         {(title || showCloseButton) && (
@@ -214,7 +225,7 @@ export function PremiumDrawer({
           </header>
         )}
 
-        {/* Content */}
+        {/* Content - SOLO questa parte scrolla */}
         <div className="flex-1 overflow-y-auto">
           {children}
         </div>
@@ -228,6 +239,9 @@ export function PremiumDrawer({
       </div>
     </div>
   )
+
+  // Render via portal to body
+  return createPortal(drawerContent, document.body)
 }
 
 // Preset variants

@@ -1,14 +1,15 @@
 /**
  * Emergency Pillars - Tradelia 2026
  *
- * Design coerente con DashboardHome journey cards
- * Drawer inline (no portal) - funzionante
+ * Design IDENTICO a DashboardHome journey cards
+ * Usa PremiumDrawer unificato
  */
 
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState } from 'react'
 import { useTranslations } from 'next-intl'
+import { PremiumDrawer } from '@/src/shared/ui/PremiumDrawer'
 import { ArrowRightIcon } from '@/components/icons/TradeliaIcons'
 
 interface Pillar {
@@ -21,18 +22,15 @@ interface Pillar {
 }
 
 const PILLAR_COLORS = {
-  primary: { bg: 'bg-primary/10', text: 'text-primary', border: 'border-l-primary' },
-  success: { bg: 'bg-emerald-500/10', text: 'text-emerald-600 dark:text-emerald-400', border: 'border-l-emerald-500' },
-  warning: { bg: 'bg-amber-500/10', text: 'text-amber-600 dark:text-amber-400', border: 'border-l-amber-500' },
-  error: { bg: 'bg-red-500/10', text: 'text-red-600 dark:text-red-400', border: 'border-l-red-500' }
+  primary: { bg: 'bg-primary/10', text: 'text-primary' },
+  success: { bg: 'bg-emerald-500/10', text: 'text-emerald-600 dark:text-emerald-400' },
+  warning: { bg: 'bg-amber-500/10', text: 'text-amber-600 dark:text-amber-400' },
+  error: { bg: 'bg-red-500/10', text: 'text-red-600 dark:text-red-400' }
 }
 
 export function EmergencyPillars() {
   const t = useTranslations('emergencyDashboard.pillars')
   const [activePillar, setActivePillar] = useState<string | null>(null)
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-  const drawerRef = useRef<HTMLDivElement>(null)
-  const triggerRef = useRef<HTMLButtonElement | null>(null)
 
   const pillars: Pillar[] = [
     {
@@ -69,70 +67,28 @@ export function EmergencyPillars() {
     }
   ]
 
-  const openDrawer = useCallback((pillarId: string, buttonRef: HTMLButtonElement) => {
-    triggerRef.current = buttonRef
+  const openDrawer = (pillarId: string) => {
     setActivePillar(pillarId)
-    setIsDrawerOpen(true)
-    document.body.style.overflow = 'hidden'
-  }, [])
+  }
 
-  const closeDrawer = useCallback(() => {
-    setIsDrawerOpen(false)
-    document.body.style.overflow = ''
-    setTimeout(() => {
-      triggerRef.current?.focus()
-      setActivePillar(null)
-    }, 200)
-  }, [])
-
-  // ESC to close
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isDrawerOpen) {
-        closeDrawer()
-      }
-    }
-    window.addEventListener('keydown', handleEscape)
-    return () => window.removeEventListener('keydown', handleEscape)
-  }, [isDrawerOpen, closeDrawer])
-
-  // Focus trap
-  useEffect(() => {
-    if (isDrawerOpen && drawerRef.current) {
-      const focusable = drawerRef.current.querySelectorAll<HTMLElement>(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      )
-      const firstFocusable = focusable[0]
-      if (firstFocusable) {
-        firstFocusable.focus()
-      }
-    }
-  }, [isDrawerOpen])
+  const closeDrawer = () => {
+    setActivePillar(null)
+  }
 
   const activeData = pillars.find(p => p.id === activePillar)
 
   return (
     <>
-      {/* Grid - coerente con DashboardHome */}
+      {/* Grid - IDENTICO a DashboardHome */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {pillars.map((pillar) => {
           const colors = PILLAR_COLORS[pillar.accentColor]
-          const isActive = activePillar === pillar.id
 
           return (
             <button
               key={pillar.id}
-              onClick={(e) => openDrawer(pillar.id, e.currentTarget)}
-              className={`
-                card-2026 group relative p-6 text-left
-                border-l-4 ${colors.border}
-                transition-all duration-200
-                hover:shadow-md
-                focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
-                ${isActive ? 'ring-2 ring-primary ring-offset-2' : ''}
-              `}
-              aria-expanded={isActive}
-              aria-controls="pillar-drawer"
+              onClick={() => openDrawer(pillar.id)}
+              className="card-2026 group relative p-6 text-left transition-all duration-200 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
               <div className="flex items-start gap-4">
                 <div className={`w-12 h-12 rounded-xl ${colors.bg} flex items-center justify-center flex-shrink-0`}>
@@ -142,11 +98,11 @@ export function EmergencyPillars() {
                   <h3 className="text-lg font-semibold text-foreground mb-1">
                     {pillar.title}
                   </h3>
-                  <p className={`text-xs font-medium ${colors.text} uppercase tracking-wider mb-2`}>
-                    {pillar.subtitle}
-                  </p>
-                  <p className="text-sm text-muted-foreground line-clamp-2">
+                  <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
                     {pillar.description}
+                  </p>
+                  <p className={`text-xs font-medium ${colors.text} uppercase tracking-wider`}>
+                    {pillar.subtitle}
                   </p>
                 </div>
                 <ArrowRightIcon className="w-5 h-5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all flex-shrink-0" />
@@ -156,89 +112,43 @@ export function EmergencyPillars() {
         })}
       </div>
 
-      {/* Drawer Overlay - inline, no portal */}
-      {isDrawerOpen && (
-        <div className="fixed inset-0 z-50">
-          {/* Backdrop */}
-          <button
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm cursor-default"
-            onClick={closeDrawer}
-            aria-label="Chiudi"
-          />
-
-          {/* Drawer Panel */}
-          <div
-            ref={drawerRef}
-            id="pillar-drawer"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="drawer-title"
-            className="absolute top-0 right-0 bottom-0 w-full max-w-lg bg-background border-l border-border/50 shadow-xl overflow-hidden flex flex-col"
-          >
-            {activeData && (
-              <>
-                {/* Header */}
-                <div className="flex-shrink-0 px-6 py-5 border-b border-border/50">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-center gap-4">
-                      <div className={`w-12 h-12 rounded-xl ${PILLAR_COLORS[activeData.accentColor].bg} flex items-center justify-center`}>
-                        <PillarIcon type={activeData.iconType} className={`w-6 h-6 ${PILLAR_COLORS[activeData.accentColor].text}`} />
-                      </div>
-                      <div>
-                        <p className={`text-xs font-medium ${PILLAR_COLORS[activeData.accentColor].text} uppercase tracking-wider mb-0.5`}>
-                          {activeData.subtitle}
-                        </p>
-                        <h2 id="drawer-title" className="text-xl font-semibold text-foreground">
-                          {activeData.title}
-                        </h2>
-                      </div>
-                    </div>
-                    <button
-                      onClick={closeDrawer}
-                      className="w-9 h-9 rounded-lg border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/30"
-                      aria-label="Chiudi"
-                    >
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  </div>
+      {/* Drawer - usa PremiumDrawer unificato */}
+      {activeData && (
+        <PremiumDrawer
+          isOpen={!!activePillar}
+          onClose={closeDrawer}
+          title={activeData.title}
+          subtitle={activeData.subtitle}
+          icon={<PillarIcon type={activeData.iconType} className="w-6 h-6" />}
+          accentColor={activeData.accentColor}
+          size="lg"
+          footer={
+            <button
+              onClick={() => console.log(`Start ${activeData.id}`)}
+              className="w-full py-3 px-4 rounded-lg text-sm font-medium bg-primary text-white hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            >
+              {t('startPillar')}
+            </button>
+          }
+        >
+          <div className="px-6 py-6 space-y-6">
+            <p className="text-base text-muted-foreground leading-relaxed">
+              {activeData.description}
+            </p>
+            <div className="space-y-4">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="p-4 rounded-lg bg-muted/30 border border-border/30">
+                  <h4 className="text-sm font-medium text-foreground mb-2">
+                    {t('sectionTitle')} {i}
+                  </h4>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {t('sectionContent')}
+                  </p>
                 </div>
-
-                {/* Content */}
-                <div className="flex-1 overflow-y-auto px-6 py-6">
-                  <div className="space-y-6">
-                    <p className="text-base text-muted-foreground leading-relaxed">
-                      {activeData.description}
-                    </p>
-                    <div className="space-y-4">
-                      {[1, 2, 3].map((i) => (
-                        <div key={i} className="p-4 rounded-lg bg-muted/30 border border-border/30">
-                          <h4 className="text-sm font-medium text-foreground mb-2">
-                            {t('sectionTitle')} {i}
-                          </h4>
-                          <p className="text-sm text-muted-foreground leading-relaxed">
-                            {t('sectionContent')}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Footer */}
-                <div className="flex-shrink-0 px-6 py-4 border-t border-border/50 bg-muted/20">
-                  <button
-                    onClick={() => console.log(`Start ${activeData.id}`)}
-                    className="w-full py-3 px-4 rounded-lg text-sm font-medium bg-primary text-white hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                  >
-                    {t('startPillar')}
-                  </button>
-                </div>
-              </>
-            )}
+              ))}
+            </div>
           </div>
-        </div>
+        </PremiumDrawer>
       )}
     </>
   )
