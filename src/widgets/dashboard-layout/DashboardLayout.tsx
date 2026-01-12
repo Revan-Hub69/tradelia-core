@@ -20,7 +20,8 @@ import {
   BoltIcon,
   RefreshIcon,
   HomeIcon,
-  BellIcon
+  BellIcon,
+  GraduationCapIcon
 } from '@/components/icons/TradeliaIcons'
 
 const JOURNEY_ICONS: Record<JourneyId, React.ComponentType<{ className?: string }>> = {
@@ -52,7 +53,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const activeJourney = getActiveJourney()
 
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
+    <div className="min-h-screen bg-background overflow-x-hidden flex flex-col">
       {/* Header - sempre visibile */}
       <header className="h-16 section-frame border-b-0 rounded-none backdrop-blur-sm fixed top-0 left-0 right-0 z-50">
         <div className="h-full px-4 sm:px-6 md:px-8 flex items-center justify-between">
@@ -82,11 +83,63 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       </header>
 
       {/* Main content - full width */}
-      <main className="pt-16 pb-20 md:pb-8 dashboard-main-content">
+      <main className="pt-16 pb-20 md:pb-8 dashboard-main-content flex-1">
         <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto w-full">
           {children}
         </div>
       </main>
+
+      {/* Technical Footer - Desktop only */}
+      <footer className="hidden md:block border-t border-border/30 bg-muted/20 mt-auto">
+        <div className="max-w-7xl mx-auto px-8 py-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            {/* Trust Badges */}
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                <ShieldIcon className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">SSL Secure</span>
+              </div>
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20">
+                <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                <ShieldIcon className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                <span className="text-xs font-medium text-blue-600 dark:text-blue-400">Zero Tracking</span>
+              </div>
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20">
+                <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                <GraduationCapIcon className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                <span className="text-xs font-medium text-amber-600 dark:text-amber-400">Educational Only</span>
+              </div>
+            </div>
+
+            {/* Technical Info */}
+            <div className="flex items-center gap-6 text-xs text-muted-foreground">
+              <span>{tDashboard('version')} 2026.02</span>
+              <span className="flex items-center gap-1.5">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                {tDashboard('uptime')} 99.9%
+              </span>
+            </div>
+
+            {/* Legal Links */}
+            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+              <Link href={`/${locale}/privacy`} className="hover:text-foreground transition-colors">
+                {tDashboard('privacyPolicy')}
+              </Link>
+              <Link href={`/${locale}/terms`} className="hover:text-foreground transition-colors">
+                {tDashboard('termsOfService')}
+              </Link>
+            </div>
+          </div>
+
+          {/* Disclaimer */}
+          <div className="mt-4 pt-4 border-t border-border/20 text-center">
+            <p className="text-xs text-muted-foreground/80">
+              {tDashboard('educationalTool')} • {tDashboard('noFinancialAdvice')} • {tDashboard('madeWithLove')}
+            </p>
+          </div>
+        </div>
+      </footer>
 
       {/* Bottom navigation - solo mobile */}
       <nav className="fixed bottom-0 left-0 right-0 h-16 bg-background border-t border-border/50 z-30 safe-area-bottom md:hidden">
