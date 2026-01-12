@@ -12,8 +12,7 @@ import {
   GlobeIcon, 
   LockIcon,
   SearchIcon,
-  CheckIcon,
-  CameraIcon
+  CheckIcon
 } from '@/components/icons/TradeliaIcons'
 
 // Generate initials from nickname
@@ -279,3 +278,184 @@ export function SettingsContent() {
           </div>
         </div>
       </div>
+
+      {/* Nickname Section */}
+      <div className="rounded border border-border/50 bg-background p-6">
+        <h2 className="text-lg font-medium text-foreground mb-4">
+          {isIt ? 'Nickname' : 'Nickname'}
+        </h2>
+        <div className="space-y-3">
+          <div className="relative">
+            <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80" />
+            <input
+              type="text"
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+              className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border rounded focus:outline-none focus:ring-2 focus:ring-primary"
+              placeholder={isIt ? 'Il tuo nickname' : 'Your nickname'}
+            />
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {isIt ? '3-20 caratteri, solo lettere, numeri e _' : '3-20 characters, letters, numbers and _ only'}
+          </p>
+          <button
+            onClick={handleSaveNickname}
+            disabled={saving === 'nickname'}
+            className="px-4 py-2 text-sm font-medium bg-primary text-white rounded hover:bg-primary/90 disabled:opacity-50"
+          >
+            {saving === 'nickname' ? (isIt ? 'Salvataggio...' : 'Saving...') : (isIt ? 'Salva nickname' : 'Save nickname')}
+          </button>
+        </div>
+      </div>
+
+      {/* Country Section */}
+      <div className="rounded border border-border/50 bg-background p-6">
+        <h2 className="text-lg font-medium text-foreground mb-4">
+          {isIt ? 'Paese di residenza' : 'Country of residence'}
+        </h2>
+        <div className="space-y-3" ref={countryRef}>
+          <div className="relative">
+            <GlobeIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80 z-10" />
+            <button
+              type="button"
+              onClick={() => { setIsCountryOpen(!isCountryOpen); setCountrySearch('') }}
+              className={`w-full h-11 pl-10 pr-10 text-sm bg-background border border-border rounded text-left ${!country ? 'text-muted-foreground' : 'text-foreground'} focus:outline-none focus:ring-2 focus:ring-primary`}
+            >
+              {selectedCountry 
+                ? (locale === 'it' ? selectedCountry.nameIt : selectedCountry.name)
+                : (isIt ? 'Seleziona paese' : 'Select country')}
+            </button>
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+              <svg className={`w-4 h-4 text-muted-foreground transition-transform ${isCountryOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+
+            {isCountryOpen && (
+              <div className="absolute z-50 w-full mt-1 bg-background border border-border rounded-lg shadow-lg max-h-60 overflow-hidden">
+                <div className="p-2 border-b border-border/50">
+                  <div className="relative">
+                    <SearchIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <input
+                      ref={countryInputRef}
+                      type="text"
+                      value={countrySearch}
+                      onChange={(e) => setCountrySearch(e.target.value)}
+                      placeholder={isIt ? 'Cerca paese...' : 'Search country...'}
+                      className="w-full h-9 pl-8 pr-3 text-sm bg-muted/30 border-0 rounded focus:outline-none focus:ring-1 focus:ring-primary"
+                    />
+                  </div>
+                </div>
+                <div className="max-h-48 overflow-y-auto">
+                  {filteredCountries.length === 0 ? (
+                    <div className="px-3 py-2 text-sm text-muted-foreground text-center">
+                      {isIt ? 'Nessun paese trovato' : 'No country found'}
+                    </div>
+                  ) : (
+                    filteredCountries.map((c) => (
+                      <button
+                        key={c.code}
+                        type="button"
+                        onClick={() => {
+                          setCountry(c.code)
+                          setIsCountryOpen(false)
+                          setCountrySearch('')
+                        }}
+                        className={`w-full px-3 py-2 text-sm text-left hover:bg-muted/50 flex items-center gap-2 ${country === c.code ? 'bg-primary/10 text-primary' : 'text-foreground'}`}
+                      >
+                        <span className="text-xs text-muted-foreground w-6">{c.code}</span>
+                        <span>{locale === 'it' ? c.nameIt : c.name}</span>
+                        {country === c.code && <CheckIcon className="w-4 h-4 ml-auto" />}
+                      </button>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+          <button
+            onClick={handleSaveCountry}
+            disabled={saving === 'country'}
+            className="px-4 py-2 text-sm font-medium bg-primary text-white rounded hover:bg-primary/90 disabled:opacity-50"
+          >
+            {saving === 'country' ? (isIt ? 'Salvataggio...' : 'Saving...') : (isIt ? 'Salva paese' : 'Save country')}
+          </button>
+        </div>
+      </div>
+
+      {/* Email Section */}
+      <div className="rounded border border-border/50 bg-background p-6">
+        <h2 className="text-lg font-medium text-foreground mb-4">
+          {isIt ? 'Email' : 'Email'}
+        </h2>
+        <div className="space-y-3">
+          <div className="relative">
+            <MailIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80" />
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border rounded focus:outline-none focus:ring-2 focus:ring-primary"
+              placeholder="email@esempio.com"
+            />
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {isIt ? 'Riceverai un\'email di conferma al nuovo indirizzo' : 'You will receive a confirmation email at the new address'}
+          </p>
+          <button
+            onClick={handleChangeEmail}
+            disabled={saving === 'email'}
+            className="px-4 py-2 text-sm font-medium bg-primary text-white rounded hover:bg-primary/90 disabled:opacity-50"
+          >
+            {saving === 'email' ? (isIt ? 'Invio...' : 'Sending...') : (isIt ? 'Cambia email' : 'Change email')}
+          </button>
+        </div>
+      </div>
+
+      {/* Password Section */}
+      <div className="rounded border border-border/50 bg-background p-6">
+        <h2 className="text-lg font-medium text-foreground mb-4">
+          {isIt ? 'Password' : 'Password'}
+        </h2>
+        <div className="space-y-3">
+          <p className="text-sm text-muted-foreground">
+            {isIt 
+              ? 'Per cambiare la password, ti invieremo un link di reset via email.' 
+              : 'To change your password, we will send you a reset link via email.'}
+          </p>
+          <button
+            onClick={handleResetPassword}
+            disabled={saving === 'password'}
+            className="px-4 py-2 text-sm font-medium border border-border text-foreground rounded hover:bg-muted/50 disabled:opacity-50 flex items-center gap-2"
+          >
+            <LockIcon className="w-4 h-4" />
+            {saving === 'password' ? (isIt ? 'Invio...' : 'Sending...') : (isIt ? 'Reimposta password' : 'Reset password')}
+          </button>
+        </div>
+      </div>
+
+      {/* Danger Zone */}
+      <div className="rounded border border-error/30 bg-error/5 p-6">
+        <h2 className="text-lg font-medium text-error mb-4">
+          {isIt ? 'Zona pericolosa' : 'Danger zone'}
+        </h2>
+        <p className="text-sm text-muted-foreground mb-4">
+          {isIt 
+            ? 'Queste azioni sono irreversibili. Procedi con cautela.' 
+            : 'These actions are irreversible. Proceed with caution.'}
+        </p>
+        <button
+          onClick={() => {
+            if (confirm(isIt ? 'Sei sicuro di voler eliminare il tuo account? Questa azione è irreversibile.' : 'Are you sure you want to delete your account? This action is irreversible.')) {
+              // TODO: Implement account deletion
+              showMessage('error', isIt ? 'Funzione non ancora disponibile' : 'Feature not yet available')
+            }
+          }}
+          className="px-4 py-2 text-sm font-medium border border-error text-error rounded hover:bg-error/10"
+        >
+          {isIt ? 'Elimina account' : 'Delete account'}
+        </button>
+      </div>
+    </div>
+  )
+}
