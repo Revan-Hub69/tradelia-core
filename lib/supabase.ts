@@ -20,6 +20,13 @@ export const supabase: SupabaseClient =
   supabaseUrl && supabaseAnonKey ? createClient(supabaseUrl, supabaseAnonKey) : createUnconfiguredClient()
 
 // Types for our database
+export interface UserPreferences {
+  theme?: 'light' | 'dark' | 'system'
+  language?: string
+  notifications?: boolean
+  [key: string]: string | boolean | undefined
+}
+
 export interface UserProfile {
   id: string
   email?: string
@@ -30,16 +37,22 @@ export interface UserProfile {
   other_tools?: 'none' | 'pension' | 'diversified' | 'trading'
   storage_preference?: 'register' | 'guest'
   onboarding_completed_at?: string
-  preferences?: Record<string, any>
+  preferences?: UserPreferences
   created_at?: string
   updated_at?: string
+}
+
+export interface EncryptedData {
+  iv?: string
+  data?: string
+  [key: string]: string | undefined
 }
 
 export interface UserSession {
   id: string
   session_token: string
   user_id?: string
-  encrypted_data?: Record<string, any>
+  encrypted_data?: EncryptedData
   ip_address?: string
   user_agent?: string
   created_at?: string
@@ -47,13 +60,31 @@ export interface UserSession {
   expires_at?: string
 }
 
+export interface ObjectiveConfig {
+  primary?: string
+  secondary?: string[]
+  [key: string]: string | string[] | undefined
+}
+
+export interface RiskWarnings {
+  acknowledged?: string[]
+  dismissed?: string[]
+  [key: string]: string[] | undefined
+}
+
+export interface RecommendedTools {
+  tools?: string[]
+  priority?: string
+  [key: string]: string | string[] | undefined
+}
+
 export interface DashboardConfig {
   id: string
   user_id?: string
   session_token?: string
-  objective_config?: Record<string, any>
-  risk_warnings?: Record<string, any>
-  recommended_tools?: Record<string, any>
+  objective_config?: ObjectiveConfig
+  risk_warnings?: RiskWarnings
+  recommended_tools?: RecommendedTools
   created_at?: string
   updated_at?: string
 }

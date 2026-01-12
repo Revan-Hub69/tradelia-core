@@ -13,7 +13,6 @@ import { JourneyCard } from '@/src/shared/ui/JourneyCard'
 import { ComplexityIndicator } from '@/src/shared/ui/ComplexityIndicator'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
 import { JOURNEY_ORDER, JOURNEYS, type JourneyId } from '@/src/shared/config/journeys'
-import { useAnalyticsTracking } from '@/components/AnalyticsProvider'
 import {
   ShieldIcon,
   TrendingUpIcon,
@@ -40,16 +39,8 @@ export function DashboardHome() {
   const t = useTranslations()
   const tDashboard = useTranslations('dashboard')
   const { state } = useDashboardAuth()
-  const { trackUserAction } = useAnalyticsTracking()
   
   const userName = state.profile?.full_name || tDashboard('guestUser')
-
-  const _handleJourneyClick = (journeyId: string) => {
-    trackUserAction('journey_click', {
-      journey_id: journeyId,
-      section: 'dashboard_home'
-    })
-  }
 
   return (
     <DashboardAuthGuard>

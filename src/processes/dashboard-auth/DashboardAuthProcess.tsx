@@ -37,17 +37,16 @@ function DashboardAuthProviderInner({ children, locale }: DashboardAuthProviderP
   const getDefaultDashboardConfig = (): DashboardConfig => ({
     id: 'guest-config',
     objective_config: {
-      title: 'Configurazione di base',
-      description: 'Analisi generale degli strumenti finanziari'
+      primary: 'Configurazione di base',
+      secondary: ['Analisi generale degli strumenti finanziari']
     },
     risk_warnings: {
-      primary: 'Verifica sempre la coerenza tra obiettivo e strumento',
-      secondary: 'Gli strumenti complessi richiedono maggiore attenzione',
-      academicSource: 'Ricerca comportamentale finanziaria'
+      acknowledged: ['Verifica sempre la coerenza tra obiettivo e strumento'],
+      dismissed: []
     },
     recommended_tools: {
-      primary: ['ETF diversificati', 'Fondi indicizzati', 'Conti deposito'],
-      avoid: ['Prodotti strutturati complessi', 'Leva finanziaria elevata']
+      tools: ['ETF diversificati', 'Fondi indicizzati', 'Conti deposito'],
+      priority: 'medium'
     }
   })
 
