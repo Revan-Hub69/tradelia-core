@@ -12,8 +12,10 @@ import { useState, useMemo } from 'react'
 import { useTranslations } from 'next-intl'
 import { JourneyCard } from '@/src/shared/ui/JourneyCard'
 import { PremiumDrawer } from '@/src/shared/ui/PremiumDrawer'
+import { GuestModeAlert } from '@/src/shared/ui/GuestModeAlert'
 import { useProgressTracking } from '@/src/shared/hooks/useProgressTracking'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
+import { useDashboardModal } from '@/contexts/DashboardModalContext'
 
 // Configurazione sezioni per ogni pillar (espandibile)
 const PILLAR_SECTIONS: Record<string, { id: string; titleKey: string }[]> = {
@@ -61,6 +63,7 @@ export function EmergencyPillars() {
   const [activePillar, setActivePillar] = useState<string | null>(null)
   
   const { state } = useDashboardAuth()
+  const { openModal } = useDashboardModal()
   const { 
     getPillarProgress, 
     markSectionComplete, 
@@ -187,6 +190,16 @@ export function EmergencyPillars() {
           ) : undefined}
         >
           <div className="px-4 sm:px-6 py-5 space-y-5">
+            {/* Guest Mode Alert */}
+            {state.isGuestMode && (
+              <GuestModeAlert 
+                onRegisterClick={() => {
+                  setActivePillar(null)
+                  openModal()
+                }}
+              />
+            )}
+
             {/* Title inside content */}
             <div className="flex items-center gap-3">
               <div className={`w-10 h-10 rounded-xl ${activeData.accentColor === 'primary' ? 'bg-primary/10' : activeData.accentColor === 'success' ? 'bg-emerald-500/10' : activeData.accentColor === 'warning' ? 'bg-amber-500/10' : 'bg-red-500/10'} flex items-center justify-center`}>

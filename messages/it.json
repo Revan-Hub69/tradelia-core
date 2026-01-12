@@ -1,4 +1,12 @@
 {
+  "guestMode": {
+    "alertTitle": "Modalità ospite attiva",
+    "alertDescription": "I tuoi progressi sono salvati solo su questo dispositivo. Registrati gratuitamente per sincronizzarli su tutti i tuoi dispositivi.",
+    "registerFree": "Registrati gratis →",
+    "dismiss": "Ho capito",
+    "syncSuccess": "Progressi sincronizzati con successo!",
+    "syncError": "Errore durante la sincronizzazione"
+  },
   "modal": {
     "title": "Accedi a Tradelia",
     "actions": {

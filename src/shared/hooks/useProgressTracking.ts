@@ -43,6 +43,9 @@ interface UseProgressTrackingReturn {
   markSectionIncomplete: (journeyId: string, pillarId: string, sectionId: string, totalSections: number) => Promise<void>
   resetPillarProgress: (journeyId: string, pillarId: string) => Promise<void>
   
+  // Sync (per migrazione guest → registrato)
+  syncLocalToRemote: (newUserId: string) => Promise<{ success: boolean; synced: number }>
+  
   // Cache locale
   progressCache: Map<string, PillarProgress>
 }
@@ -209,6 +212,48 @@ export function useProgressTracking(options?: UseProgressTrackingOptions): UsePr
     await saveProgress(journeyId, pillarId, [], 0)
   }, [saveProgress])
 
+  /**
+   * Sincronizza progressi locali (IndexedDB) con Supabase
+   * Da chiamare dopo la registrazione/login di un utente guest
+   */
+  const syncLocalToRemote = useCallback(async (newUserId: string): Promise<{ success: boolean; synced: number }> => {
+    try {
+      const journeys = ['emergency', 'passive', 'longterm', 'speculation']
+      let syncedCount = 0
+
+      for (const journeyId of journeys) {
+        const localRecords = await getJourneyProgress(journeyId)
+        
+        for (const record of localRecords) {
+          if (record.completedItems.length > 0) {
+            // Upsert su Supabase (merge con eventuali dati esistenti)
+            const { error: upsertError } = await supabase
+              .from('user_progress')
+              .upsert({
+                user_id: newUserId,
+                journey_id: journeyId,
+                pillar_id: record.id,
+                completed_sections: record.completedItems,
+                percentage: record.percentage,
+                updated_at: record.lastUpdated
+              }, {
+                onConflict: 'user_id,journey_id,pillar_id'
+              })
+
+            if (!upsertError) {
+              syncedCount++
+            }
+          }
+        }
+      }
+
+      return { success: true, synced: syncedCount }
+    } catch (err) {
+      console.error('Error syncing progress:', err)
+      return { success: false, synced: 0 }
+    }
+  }, [])
+
   return useMemo(() => ({
     isLoading,
     error,
@@ -217,6 +262,7 @@ export function useProgressTracking(options?: UseProgressTrackingOptions): UsePr
     markSectionComplete,
     markSectionIncomplete,
     resetPillarProgress,
+    syncLocalToRemote,
     progressCache
-  }), [isLoading, error, getPillarProgress, getJourneyTotalProgress, markSectionComplete, markSectionIncomplete, resetPillarProgress, progressCache])
+  }), [isLoading, error, getPillarProgress, getJourneyTotalProgress, markSectionComplete, markSectionIncomplete, resetPillarProgress, syncLocalToRemote, progressCache])
 }

@@ -208,7 +208,11 @@ export function PremiumDrawer({
           animate-slide-in-right
           ${className}
         `}
-        style={{ height: '100vh', maxHeight: '100vh' }}
+        style={{ 
+          height: '100dvh', 
+          maxHeight: '100dvh',
+          paddingBottom: 'env(safe-area-inset-bottom, 0px)'
+        }}
       >
         {/* Header */}
         {(title || showCloseButton || minimalHeader) && (

@@ -54,6 +54,7 @@ export {
   ErrorDrawer 
 } from './PremiumDrawer';
 export { JourneyCard } from './JourneyCard';
+export { GuestModeAlert } from './GuestModeAlert';
 
 // Utility functions
 export { cn, focusRing, transitionSubtle, cardInteractive, supportsHover, prefersReducedMotion } from './utils';

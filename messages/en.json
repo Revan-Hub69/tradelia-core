@@ -1,4 +1,12 @@
 {
+  "guestMode": {
+    "alertTitle": "Guest mode active",
+    "alertDescription": "Your progress is saved only on this device. Register for free to sync across all your devices.",
+    "registerFree": "Register free →",
+    "dismiss": "Got it",
+    "syncSuccess": "Progress synced successfully!",
+    "syncError": "Error syncing progress"
+  },
   "modal": {
     "title": "Sign in to Tradelia",
     "actions": {
