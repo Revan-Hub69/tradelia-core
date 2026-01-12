@@ -20,7 +20,7 @@ export interface PremiumDrawerProps {
   onClose: () => void
   children: ReactNode
   title?: string
-  subtitle?: string
+  subtitle?: string | undefined
   icon?: ReactNode
   accentColor?: 'primary' | 'success' | 'warning' | 'error'
   size?: 'sm' | 'md' | 'lg' | 'xl'

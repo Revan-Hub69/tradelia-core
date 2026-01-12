@@ -1,16 +1,16 @@
 /**
- * Emergency Journey Introduction Drawer - Tradelia 2026 MODERNIZED
+ * Emergency Journey Introduction Drawer - Tradelia 2026
  * 
- * Professional & innovative drawer with system colors and advanced effects
+ * Unificato con PremiumDrawer system
+ * Navigazione interna: main → risks
  */
 
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
-import { useModalFocusTrap } from '@/src/shared/hooks/useFocusTrap'
+import { PremiumDrawer } from '@/src/shared/ui/PremiumDrawer'
 import { 
-  CloseIcon, 
   CheckIcon, 
   ArrowLeftIcon as BackIcon, 
   ArrowRightIcon as ForwardIcon 
@@ -27,134 +27,21 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
   const [currentStep, setCurrentStep] = useState<DrawerStep>('main')
   const [isAnimating, setIsAnimating] = useState(false)
   const t = useTranslations('emergencyIntro')
-
-  // Focus trap for drawer
-  const { containerRef: drawerRef } = useModalFocusTrap(isOpen, onClose)
-  
-  // Ref for content scrollable area
   const contentRef = useRef<HTMLDivElement>(null)
 
-  // Auto-scroll during text selection
+  // Reset step when drawer closes
   useEffect(() => {
-    if (!isOpen || !contentRef.current) return
-
-    const container = contentRef.current
-    let isSelecting = false
-    let scrollInterval: NodeJS.Timeout | null = null
-
-    const handleMouseDown = () => {
-      isSelecting = true
-    }
-
-    const handleMouseUp = () => {
-      isSelecting = false
-      if (scrollInterval) {
-        clearInterval(scrollInterval)
-        scrollInterval = null
-      }
-    }
-
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isSelecting || !container) return
-
-      const rect = container.getBoundingClientRect()
-      const scrollZone = 50 // pixels from edge to trigger scroll
-      const scrollSpeed = 3 // pixels per interval
-
-      // Clear existing interval
-      if (scrollInterval) {
-        clearInterval(scrollInterval)
-        scrollInterval = null
-      }
-
-      // Check if mouse is near top or bottom edge
-      if (e.clientY < rect.top + scrollZone) {
-        // Scroll up
-        scrollInterval = setInterval(() => {
-          container.scrollTop = Math.max(0, container.scrollTop - scrollSpeed)
-        }, 16) // ~60fps
-      } else if (e.clientY > rect.bottom - scrollZone) {
-        // Scroll down
-        scrollInterval = setInterval(() => {
-          const maxScroll = container.scrollHeight - container.clientHeight
-          container.scrollTop = Math.min(maxScroll, container.scrollTop + scrollSpeed)
-        }, 16) // ~60fps
-      }
-    }
-
-    // Add event listeners
-    container.addEventListener('mousedown', handleMouseDown)
-    document.addEventListener('mouseup', handleMouseUp)
-    document.addEventListener('mousemove', handleMouseMove)
-
-    return () => {
-      // Cleanup
-      container.removeEventListener('mousedown', handleMouseDown)
-      document.removeEventListener('mouseup', handleMouseUp)
-      document.removeEventListener('mousemove', handleMouseMove)
-      if (scrollInterval) {
-        clearInterval(scrollInterval)
-      }
+    if (!isOpen) {
+      setTimeout(() => setCurrentStep('main'), 300)
     }
   }, [isOpen])
 
-  // Auto-focus on drawer content start and scroll reset
+  // Scroll to top on step change
   useEffect(() => {
-    if (isOpen && contentRef.current) {
-      // Reset scroll to top when step changes
+    if (contentRef.current) {
       contentRef.current.scrollTop = 0
-      
-      // Focus on content area start after animation with timeout cleanup
-      const focusTimer = setTimeout(() => {
-        // Focus the scrollable content area itself for screen readers
-        if (contentRef.current) {
-          contentRef.current.focus()
-        }
-      }, isAnimating ? 400 : 100)
-
-      return () => clearTimeout(focusTimer)
     }
-  }, [currentStep, isOpen, isAnimating])
-
-  // Production-safe scroll lock with documentElement
-  useEffect(() => {
-    if (!isOpen) return
-
-    const html = document.documentElement
-    const prevOverflow = html.style.overflow
-    const prevPadding = html.style.paddingRight
-    const scrollbarWidth = window.innerWidth - html.clientWidth
-
-    // Apply robust scroll lock
-    html.style.overflow = 'hidden'
-    html.style.paddingRight = scrollbarWidth ? `${scrollbarWidth}px` : ''
-
-    // Enhanced main content push with refined animation
-    const mainContent = document.querySelector('.dashboard-main-content') as HTMLElement
-    if (mainContent && window.innerWidth >= 1024) {
-      mainContent.style.transform = 'translateX(-300px)'
-      mainContent.style.transition = 'transform 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94)'
-      mainContent.style.opacity = '0.7'
-    }
-    
-    // Animation complete with cleanup
-    const animationTimer = setTimeout(() => setIsAnimating(false), 300)
-
-    return () => {
-      // Restore scroll lock
-      html.style.overflow = prevOverflow
-      html.style.paddingRight = prevPadding
-      
-      // Reset main content position
-      if (mainContent) {
-        mainContent.style.transform = ''
-        mainContent.style.transition = 'transform 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94)'
-        mainContent.style.opacity = ''
-      }
-      
-      clearTimeout(animationTimer)
-    }
-  }, [isOpen])
+  }, [currentStep])
 
   const goToRisks = () => {
     setIsAnimating(true)
@@ -172,618 +59,388 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
     }, 150)
   }
 
-  if (!isOpen) return null
+  // Custom header with back button for risks step
+  const headerContent = currentStep === 'risks' ? (
+    <button
+      onClick={goBack}
+      className="p-2 rounded-lg bg-muted/40 hover:bg-muted/60 border border-border/30 text-muted-foreground hover:text-foreground transition-all mr-3"
+      aria-label={t('navigation.back')}
+    >
+      <BackIcon className="w-4 h-4" />
+    </button>
+  ) : null
 
   return (
-    <>
-      {/* Improved Backdrop with proper theme-aware contrast */}
-      <div 
-        className={`
-          fixed inset-0 z-[60] transition-all duration-300 ease-out
-          bg-black/60 dark:bg-white/20 backdrop-blur-lg backdrop-saturate-110
-          ${isOpen ? 'opacity-100' : 'opacity-0'}
-        `}
-        onClick={onClose}
-        aria-hidden="true"
-      />
-
-      {/* Refined Side Drawer with subtle glass morphism */}
-      <div 
-        ref={drawerRef as React.RefObject<HTMLDivElement>}
-        className={`
-          fixed top-0 right-0 bottom-0 w-full max-w-xl z-[65] 
-          section-frame border-l border-r-0 border-t-0 border-b-0 rounded-l-xl rounded-r-none
-          backdrop-blur-lg backdrop-saturate-105
-          shadow-xl shadow-primary/8
-          transform transition-all duration-300 ease-out overflow-hidden
-          flex flex-col
-          ${isOpen ? 'translate-x-0 scale-100' : 'translate-x-full scale-98'}
-        `}
-        style={{
-          background: 'hsl(var(--bg-section)/0.95)',
-          borderColor: 'hsl(var(--border-section))',
-        }}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="intro-title"
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={(e) => e.key === 'Escape' && onClose()}
-      >
-        {/* Refined Header with mobile-optimized layout */}
-        <div className="sticky top-0 z-10 flex items-center justify-between p-4 sm:p-6 border-b border-border/20 backdrop-blur-lg">
-          <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
-            {currentStep === 'risks' && (
-              <button
-                onClick={goBack}
-                className="
-                  p-2.5 rounded-lg transition-all duration-200 ease-out flex-shrink-0
-                  bg-muted/40 hover:bg-muted/60 active:scale-95
-                  border border-border/30 hover:border-border/50
-                  text-muted-foreground hover:text-foreground
-                  shadow-sm hover:shadow-md
-                  focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2
-                "
-                aria-label={t('navigation.back')}
-              >
-                <BackIcon />
-              </button>
-            )}
-            <div className="space-y-1 min-w-0 flex-1">
-              <h1 id="intro-title" className="text-lg sm:text-xl font-bold content-primary leading-tight truncate">
-                {currentStep === 'main' ? t('title') : t('risksTitle')}
-              </h1>
-              {currentStep === 'main' && (
-                <p className="text-sm content-secondary leading-tight">
-                  {t('subtitle')}
-                </p>
-              )}
-            </div>
-          </div>
+    <PremiumDrawer
+      isOpen={isOpen}
+      onClose={onClose}
+      title={currentStep === 'main' ? t('title') : t('risksTitle')}
+      subtitle={currentStep === 'main' ? t('subtitle') : undefined}
+      icon={currentStep === 'main' ? <IntroIcon /> : <RisksIcon />}
+      accentColor={currentStep === 'main' ? 'primary' : 'warning'}
+      size="xl"
+      footer={
+        currentStep === 'main' ? (
           <button
             onClick={onClose}
-            className="
-              p-2.5 rounded-lg transition-all duration-200 ease-out flex-shrink-0
-              bg-muted/30 hover:bg-error/10 active:scale-95
-              border border-border/20 hover:border-error/30
-              text-muted-foreground hover:text-error
-              shadow-sm hover:shadow-md
-              focus:outline-none focus:ring-2 focus:ring-error/50 focus:ring-offset-2
-            "
-            aria-label={t('navigation.close')}
+            className="w-full py-3.5 px-4 rounded-xl text-sm font-semibold bg-primary text-white shadow-lg shadow-primary/20 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center justify-center gap-2"
           >
-            <CloseIcon />
+            {t('buttons.understood')}
+            <CheckIcon className="w-4 h-4" />
           </button>
-        </div>
-
-        {/* Refined Content with smooth transitions and text selection auto-scroll */}
-        <div 
-          ref={contentRef}
-          className="flex-1 overflow-y-auto overscroll-contain min-h-0 max-h-full select-text"
-          tabIndex={-1}
-          role="region"
-          aria-label={currentStep === 'main' ? t('title') : t('risksTitle')}
-          style={{
-            scrollBehavior: 'smooth'
-          }}
-        >
-          <div className={`
-            transition-all duration-250 ease-out select-text
-            ${isAnimating ? 'opacity-60 transform translate-x-1 pointer-events-none' : 'opacity-100 transform translate-x-0'}
-          `}>
-            {currentStep === 'main' ? (
-              <div className="p-4 sm:p-6 pb-32 space-y-6 sm:space-y-8 min-h-full">
-                {/* Blocco 1 - ORIGINE con design mobile-first */}
-                <div className="card-2026 p-4 sm:p-6 space-y-4 hover:shadow-lg transition-all duration-200">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                      <OriginIcon />
-                    </div>
-                    <h2 className="text-lg sm:text-xl font-bold content-primary leading-tight">
-                      {t('sections.origin.title')}
-                    </h2>
-                  </div>
-                  <p className="text-base sm:text-sm content-secondary leading-relaxed font-medium">
-                    {t('sections.origin.content')}
-                  </p>
-                  <div className="section-frame-warning p-4 rounded-xl">
-                    <p className="text-base sm:text-sm font-bold content-primary mb-4">
-                      {t('sections.origin.situations.title')}
-                    </p>
-                    <ul className="text-base sm:text-sm content-secondary space-y-3">
-                      {t.raw('sections.origin.situations.items').map((item: string) => (
-                        <li key={`origin-situation-${item.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-3 leading-relaxed">
-                          <div className="w-2 h-2 rounded-full bg-warning flex-shrink-0 mt-2" />
-                          <span className="font-medium">{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <p className="text-base sm:text-sm content-secondary leading-relaxed font-semibold bg-muted/30 p-3 rounded-lg">
-                    {t('sections.origin.conclusion')}
-                  </p>
-                </div>
-
-                {/* Blocco 2 - EMERGENZE con design mobile ottimizzato */}
-                <div className="card-2026 p-4 sm:p-6 space-y-4 hover:shadow-lg transition-all duration-200">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-xl bg-error/10 flex items-center justify-center">
-                      <EmergencyIcon />
-                    </div>
-                    <h2 className="text-lg sm:text-xl font-bold content-primary leading-tight">
-                      {t('sections.emergencies.title')}
-                    </h2>
-                  </div>
-                  <p className="text-base sm:text-sm content-secondary leading-relaxed font-medium">
-                    {t('sections.emergencies.content')}
-                  </p>
-                  <div className="grid gap-4">
-                    {t.raw('sections.emergencies.types').map((type: { title: string; description: string }) => (
-                      <div key={`emergency-type-${type.title.replace(/\s+/g, '-').toLowerCase()}`} className="
-                        p-4 rounded-xl border border-border/50 
-                        bg-gradient-to-r from-muted/30 to-muted/10
-                        hover:border-border hover:shadow-sm
-                        transition-all duration-200
-                      ">
-                        <div className="font-bold text-base sm:text-sm content-primary mb-2">{type.title}</div>
-                        <div className="text-sm content-secondary leading-relaxed">{type.description}</div>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="section-frame-info p-4 rounded-xl">
-                    <p className="font-bold text-base sm:text-sm content-primary leading-relaxed">
-                      {t('sections.emergencies.keyPoint')}
-                    </p>
-                  </div>
-                  <button
-                    onClick={goToRisks}
-                    data-autofocus="true"
-                    className="
-                      inline-flex items-center gap-2 px-6 py-3 rounded-xl w-full sm:w-auto justify-center
-                      bg-primary/10 hover:bg-primary/20 active:scale-95
-                      border border-primary/20 hover:border-primary/40
-                      text-primary font-bold text-base sm:text-sm
-                      transition-all duration-200 ease-out
-                      focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2
-                    "
-                  >
-                    {t('sections.emergencies.deepDiveButton')}
-                    <ForwardIcon />
-                  </button>
-                </div>
-
-                {/* Blocco 3 - APPROCCIO con stile mobile-friendly */}
-                <div className="card-2026 p-4 sm:p-6 space-y-4 hover:shadow-lg transition-all duration-200">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-xl bg-success/10 flex items-center justify-center">
-                      <ApproachIcon />
-                    </div>
-                    <h2 className="text-lg sm:text-xl font-bold content-primary leading-tight">
-                      {t('sections.approach.title')}
-                    </h2>
-                  </div>
-                  <p className="text-base sm:text-sm content-secondary leading-relaxed font-medium">
-                    {t('sections.approach.content')}
-                  </p>
-                  {t('sections.approach.additionalContent') && (
-                    <p className="text-base sm:text-sm content-secondary leading-relaxed font-medium">
-                      {t('sections.approach.additionalContent')}
-                    </p>
-                  )}
-                  <div className="section-frame-success p-4 rounded-xl">
-                    <p className="font-bold text-base sm:text-sm content-primary leading-relaxed">
-                      {t('sections.approach.keyPoint')}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Blocco 4 - SCOPO con design finale mobile */}
-                <div className="card-2026 p-4 sm:p-6 space-y-4 hover:shadow-lg transition-all duration-200">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                      <PurposeIcon />
-                    </div>
-                    <h2 className="text-lg sm:text-xl font-bold content-primary leading-tight">
-                      {t('sections.purpose.title')}
-                    </h2>
-                  </div>
-                  <p className="text-base sm:text-sm content-secondary leading-relaxed font-medium">
-                    {t('sections.purpose.content')}
-                  </p>
-                  {t('sections.purpose.additionalContent') && (
-                    <p className="text-base sm:text-sm content-secondary leading-relaxed font-medium mb-4">
-                      {t('sections.purpose.additionalContent')}
-                    </p>
-                  )}
-                  <ul className="space-y-4">
-                    {t.raw('sections.purpose.items').map((item: string) => (
-                      <li key={`purpose-item-${item.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-4">
-                        <div className="w-6 h-6 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0 mt-1">
-                          <CheckIcon />
-                        </div>
-                        <span className="text-base sm:text-sm content-secondary leading-relaxed font-medium">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="section-frame-success p-4 rounded-xl">
-                    <p className="font-bold text-base sm:text-sm content-primary leading-relaxed">
-                      {t('sections.purpose.keyPoint')}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              /* Risks Detail View - Mobile Optimized */
-              <div className="p-4 sm:p-6 pb-32 space-y-6 sm:space-y-8 min-h-full">
-                {/* Sezione 1 - Cyber Risk */}
-                <div className="card-2026 p-4 sm:p-6 space-y-4 hover:shadow-lg transition-all duration-200">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-xl bg-error/10 flex items-center justify-center">
-                      <CyberIcon />
-                    </div>
-                    <h3 className="font-bold text-lg sm:text-xl content-primary leading-tight">
-                      {t('risks.cyber.title')}
-                    </h3>
-                  </div>
-                  <p className="text-base sm:text-sm content-secondary leading-relaxed font-medium">
-                    {t('risks.cyber.content')}
-                  </p>
-                  <ul className="text-base sm:text-sm content-secondary space-y-3">
-                    {t.raw('risks.cyber.points').map((point: string) => (
-                      <li key={`cyber-point-${point.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-3 leading-relaxed">
-                        <div className="w-2 h-2 rounded-full bg-error flex-shrink-0 mt-2" />
-                        <span className="font-medium">{point}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="section-frame p-4 rounded-xl bg-muted/30">
-                    <p className="text-sm font-bold content-primary mb-3">Fonti:</p>
-                    <ul className="text-xs content-secondary space-y-2">
-                      {t.raw('risks.cyber.sources').map((source: string) => (
-                        <li key={`cyber-source-${source.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-2 leading-relaxed">
-                          <div className="w-1 h-1 rounded-full bg-muted-foreground flex-shrink-0 mt-2" />
-                          <span>{source}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-
-                {/* Sezione 2 - Systemic Risk */}
-                <div className="card-2026 p-4 sm:p-6 space-y-4 hover:shadow-lg transition-all duration-200">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-xl bg-warning/10 flex items-center justify-center">
-                      <SystemicIcon />
-                    </div>
-                    <h3 className="font-bold text-lg sm:text-xl content-primary leading-tight">
-                      {t('risks.systemic.title')}
-                    </h3>
-                  </div>
-                  <p className="text-base sm:text-sm content-secondary leading-relaxed font-medium">
-                    {t('risks.systemic.content')}
-                  </p>
-                  <p className="text-base sm:text-sm content-secondary leading-relaxed font-medium bg-muted/20 p-3 rounded-lg">
-                    {t('risks.systemic.reason')}
-                  </p>
-                  <ul className="text-base sm:text-sm content-secondary space-y-3">
-                    {t.raw('risks.systemic.points').map((point: string) => (
-                      <li key={`systemic-point-${point.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-3 leading-relaxed">
-                        <div className="w-2 h-2 rounded-full bg-warning flex-shrink-0 mt-2" />
-                        <span className="font-medium">{point}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="section-frame p-4 rounded-xl bg-muted/30">
-                    <p className="text-sm font-bold content-primary mb-3">Fonti:</p>
-                    <ul className="text-xs content-secondary space-y-2">
-                      {t.raw('risks.systemic.sources').map((source: string) => (
-                        <li key={`systemic-source-${source.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-2 leading-relaxed">
-                          <div className="w-1 h-1 rounded-full bg-muted-foreground flex-shrink-0 mt-2" />
-                          <span>{source}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-
-                {/* Sezione 3 - Operational Disruptions */}
-                <div className="card-2026 p-4 sm:p-6 space-y-4 hover:shadow-lg transition-all duration-200">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                      <OperationalIcon />
-                    </div>
-                    <h3 className="font-bold text-lg sm:text-xl content-primary leading-tight">
-                      {t('risks.operational.title')}
-                    </h3>
-                  </div>
-                  <p className="text-base sm:text-sm content-secondary leading-relaxed font-medium">
-                    {t('risks.operational.content')}
-                  </p>
-                  <ul className="text-base sm:text-sm content-secondary space-y-3">
-                    {t.raw('risks.operational.points').map((point: string) => (
-                      <li key={`operational-point-${point.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-3 leading-relaxed">
-                        <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0 mt-2" />
-                        <span className="font-medium">{point}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="section-frame p-4 rounded-xl bg-muted/30">
-                    <p className="text-sm font-bold content-primary mb-3">Fonti:</p>
-                    <ul className="text-xs content-secondary space-y-2">
-                      {t.raw('risks.operational.sources').map((source: string) => (
-                        <li key={`operational-source-${source.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-2 leading-relaxed">
-                          <div className="w-1 h-1 rounded-full bg-muted-foreground flex-shrink-0 mt-2" />
-                          <span>{source}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-
-                {/* Conclusione con design finale mobile */}
-                <div className="section-frame-info p-4 sm:p-6 rounded-xl">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                      <ConclusionIcon />
-                    </div>
-                    <h4 className="font-bold text-lg sm:text-xl content-primary leading-tight">
-                      {t('risks.conclusion.title')}
-                    </h4>
-                  </div>
-                  <ul className="text-base sm:text-sm content-secondary space-y-3 mb-4">
-                    {t.raw('risks.conclusion.points').map((point: string) => (
-                      <li key={`conclusion-point-${point.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-start gap-3 leading-relaxed">
-                        <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0 mt-2" />
-                        <span className="font-medium">{point}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <p className="font-bold text-base sm:text-sm content-primary leading-relaxed bg-primary/10 p-3 rounded-lg">
-                    {t('risks.conclusion.keyPoint')}
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Refined Footer with mobile-optimized buttons */}
-        <div className="sticky bottom-0 p-4 sm:p-6 border-t border-border/20 backdrop-blur-lg">
-          {currentStep === 'main' ? (
+        ) : (
+          <div className="flex gap-3">
+            <button
+              onClick={goBack}
+              className="flex-1 py-3.5 px-4 rounded-xl text-sm font-medium bg-muted/40 hover:bg-muted/60 border border-border/30 text-muted-foreground hover:text-foreground transition-all flex items-center justify-center gap-2"
+            >
+              <BackIcon className="w-4 h-4" />
+              {t('buttons.backToIntro')}
+            </button>
             <button
               onClick={onClose}
-              data-autofocus="true"
-              className="
-                w-full h-14 sm:h-12 px-6 text-lg sm:text-base font-bold rounded-lg
-                bg-primary text-white shadow-lg shadow-primary/15
-                transition-all duration-200 ease-out
-                hover:shadow-xl hover:shadow-primary/25 hover:-translate-y-0.5
-                active:scale-[0.98]
-                focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2
-                flex items-center justify-center gap-2
-              "
+              className="flex-1 py-3.5 px-4 rounded-xl text-sm font-semibold bg-primary text-white shadow-lg shadow-primary/20 hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
             >
-              {t('buttons.understood')}
-              <CheckIcon />
+              {t('buttons.goToDashboard')}
+              <ForwardIcon className="w-4 h-4" />
             </button>
-          ) : (
-            <div className="flex flex-col sm:flex-row gap-3">
-              <button
-                onClick={goBack}
-                className="
-                  flex-1 h-14 sm:h-12 px-6 text-lg sm:text-base font-medium rounded-lg
-                  bg-muted/40 hover:bg-muted/60 active:scale-95
-                  border border-border/30 hover:border-border/50
-                  text-muted-foreground hover:text-foreground
-                  transition-all duration-200 ease-out
-                  focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2
-                  flex items-center justify-center gap-2
-                "
-              >
-                <BackIcon />
-                {t('buttons.backToIntro')}
-              </button>
-              <button
-                onClick={onClose}
-                data-autofocus="true"
-                className="
-                  flex-1 h-14 sm:h-12 px-6 text-lg sm:text-base font-bold rounded-lg
-                  bg-primary text-white shadow-lg shadow-primary/15
-                  transition-all duration-200 ease-out
-                  hover:shadow-xl hover:shadow-primary/25 hover:-translate-y-0.5
-                  active:scale-[0.98]
-                  focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2
-                  flex items-center justify-center gap-2
-                "
-              >
-                {t('buttons.goToDashboard')}
-                <ForwardIcon />
-              </button>
-            </div>
-          )}
-        </div>
+          </div>
+        )
+      }
+    >
+      <div 
+        ref={contentRef}
+        className={`transition-opacity duration-150 ${isAnimating ? 'opacity-50' : 'opacity-100'}`}
+      >
+        {currentStep === 'main' ? (
+          <MainContent t={t} onGoToRisks={goToRisks} />
+        ) : (
+          <RisksContent t={t} />
+        )}
       </div>
-    </>
+    </PremiumDrawer>
   )
 }
 
-// Refined SVG Icons - Standardized to 24x24 viewBox
+// Main content component
+function MainContent({ t, onGoToRisks }: { t: ReturnType<typeof useTranslations>; onGoToRisks: () => void }) {
+  return (
+    <div className="px-6 py-6 space-y-6">
+      {/* Blocco 1 - ORIGINE */}
+      <ContentCard
+        icon={<OriginIcon />}
+        iconBg="bg-primary/10"
+        title={t('sections.origin.title')}
+      >
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          {t('sections.origin.content')}
+        </p>
+        <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/20">
+          <p className="text-sm font-semibold text-foreground mb-3">
+            {t('sections.origin.situations.title')}
+          </p>
+          <ul className="text-sm text-muted-foreground space-y-2">
+            {t.raw('sections.origin.situations.items').map((item: string, i: number) => (
+              <li key={i} className="flex items-start gap-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-2 flex-shrink-0" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <p className="text-sm text-muted-foreground bg-muted/30 p-3 rounded-lg font-medium">
+          {t('sections.origin.conclusion')}
+        </p>
+      </ContentCard>
+
+      {/* Blocco 2 - EMERGENZE */}
+      <ContentCard
+        icon={<EmergencyIcon />}
+        iconBg="bg-red-500/10"
+        title={t('sections.emergencies.title')}
+      >
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          {t('sections.emergencies.content')}
+        </p>
+        <div className="space-y-3">
+          {t.raw('sections.emergencies.types').map((type: { title: string; description: string }, i: number) => (
+            <div key={i} className="p-4 rounded-xl border border-border/40 bg-muted/20 hover:bg-muted/30 transition-colors">
+              <div className="font-semibold text-sm text-foreground mb-1">{type.title}</div>
+              <div className="text-sm text-muted-foreground">{type.description}</div>
+            </div>
+          ))}
+        </div>
+        <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
+          <p className="text-sm font-semibold text-foreground">
+            {t('sections.emergencies.keyPoint')}
+          </p>
+        </div>
+        <button
+          onClick={onGoToRisks}
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary/10 hover:bg-primary/20 border border-primary/20 text-primary font-semibold text-sm transition-all"
+        >
+          {t('sections.emergencies.deepDiveButton')}
+          <ForwardIcon className="w-4 h-4" />
+        </button>
+      </ContentCard>
+
+      {/* Blocco 3 - APPROCCIO */}
+      <ContentCard
+        icon={<ApproachIcon />}
+        iconBg="bg-emerald-500/10"
+        title={t('sections.approach.title')}
+      >
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          {t('sections.approach.content')}
+        </p>
+        <div className="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/20">
+          <p className="text-sm font-semibold text-foreground">
+            {t('sections.approach.keyPoint')}
+          </p>
+        </div>
+      </ContentCard>
+
+      {/* Blocco 4 - SCOPO */}
+      <ContentCard
+        icon={<PurposeIcon />}
+        iconBg="bg-primary/10"
+        title={t('sections.purpose.title')}
+      >
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          {t('sections.purpose.content')}
+        </p>
+        <ul className="space-y-3">
+          {t.raw('sections.purpose.items').map((item: string, i: number) => (
+            <li key={i} className="flex items-start gap-3">
+              <div className="w-5 h-5 rounded-full bg-emerald-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <CheckIcon className="w-3 h-3 text-emerald-600" />
+              </div>
+              <span className="text-sm text-muted-foreground">{item}</span>
+            </li>
+          ))}
+        </ul>
+        <div className="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/20">
+          <p className="text-sm font-semibold text-foreground">
+            {t('sections.purpose.keyPoint')}
+          </p>
+        </div>
+      </ContentCard>
+    </div>
+  )
+}
+
+// Risks content component
+function RisksContent({ t }: { t: ReturnType<typeof useTranslations> }) {
+  return (
+    <div className="px-6 py-6 space-y-6">
+      {/* Cyber Risk */}
+      <ContentCard
+        icon={<CyberIcon />}
+        iconBg="bg-red-500/10"
+        title={t('risks.cyber.title')}
+      >
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          {t('risks.cyber.content')}
+        </p>
+        <ul className="text-sm text-muted-foreground space-y-2">
+          {t.raw('risks.cyber.points').map((point: string, i: number) => (
+            <li key={i} className="flex items-start gap-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-red-500 mt-2 flex-shrink-0" />
+              <span>{point}</span>
+            </li>
+          ))}
+        </ul>
+        <SourcesBox sources={t.raw('risks.cyber.sources')} />
+      </ContentCard>
+
+      {/* Systemic Risk */}
+      <ContentCard
+        icon={<SystemicIcon />}
+        iconBg="bg-amber-500/10"
+        title={t('risks.systemic.title')}
+      >
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          {t('risks.systemic.content')}
+        </p>
+        <p className="text-sm text-muted-foreground bg-muted/20 p-3 rounded-lg">
+          {t('risks.systemic.reason')}
+        </p>
+        <ul className="text-sm text-muted-foreground space-y-2">
+          {t.raw('risks.systemic.points').map((point: string, i: number) => (
+            <li key={i} className="flex items-start gap-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-2 flex-shrink-0" />
+              <span>{point}</span>
+            </li>
+          ))}
+        </ul>
+        <SourcesBox sources={t.raw('risks.systemic.sources')} />
+      </ContentCard>
+
+      {/* Operational Risk */}
+      <ContentCard
+        icon={<OperationalIcon />}
+        iconBg="bg-primary/10"
+        title={t('risks.operational.title')}
+      >
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          {t('risks.operational.content')}
+        </p>
+        <ul className="text-sm text-muted-foreground space-y-2">
+          {t.raw('risks.operational.points').map((point: string, i: number) => (
+            <li key={i} className="flex items-start gap-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
+              <span>{point}</span>
+            </li>
+          ))}
+        </ul>
+        <SourcesBox sources={t.raw('risks.operational.sources')} />
+      </ContentCard>
+
+      {/* Conclusion */}
+      <div className="p-5 rounded-xl bg-primary/5 border border-primary/20">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+            <ConclusionIcon />
+          </div>
+          <h4 className="font-semibold text-foreground">
+            {t('risks.conclusion.title')}
+          </h4>
+        </div>
+        <ul className="text-sm text-muted-foreground space-y-2 mb-4">
+          {t.raw('risks.conclusion.points').map((point: string, i: number) => (
+            <li key={i} className="flex items-start gap-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
+              <span>{point}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="text-sm font-semibold text-foreground bg-primary/10 p-3 rounded-lg">
+          {t('risks.conclusion.keyPoint')}
+        </p>
+      </div>
+    </div>
+  )
+}
+
+// Reusable content card
+function ContentCard({ 
+  icon, 
+  iconBg, 
+  title, 
+  children 
+}: { 
+  icon: React.ReactNode
+  iconBg: string
+  title: string
+  children: React.ReactNode 
+}) {
+  return (
+    <div className="p-5 rounded-xl bg-muted/20 border border-border/30 space-y-4 hover:bg-muted/30 transition-colors">
+      <div className="flex items-center gap-3">
+        <div className={`w-10 h-10 rounded-xl ${iconBg} flex items-center justify-center`}>
+          {icon}
+        </div>
+        <h3 className="font-semibold text-foreground">{title}</h3>
+      </div>
+      {children}
+    </div>
+  )
+}
+
+// Sources box
+function SourcesBox({ sources }: { sources: string[] }) {
+  return (
+    <div className="p-3 rounded-lg bg-muted/30">
+      <p className="text-xs font-semibold text-muted-foreground mb-2">Fonti:</p>
+      <ul className="text-xs text-muted-foreground/80 space-y-1">
+        {sources.map((source: string, i: number) => (
+          <li key={i} className="flex items-start gap-2">
+            <div className="w-1 h-1 rounded-full bg-muted-foreground/50 mt-1.5 flex-shrink-0" />
+            <span>{source}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+// Icons
+function IntroIcon() {
+  return (
+    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+    </svg>
+  )
+}
+
+function RisksIcon() {
+  return (
+    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+    </svg>
+  )
+}
+
 function OriginIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path 
-        d="M12 3L4 9V21H20V9L12 3Z" 
-        stroke="hsl(var(--primary))" 
-        strokeWidth="2" 
-        strokeLinecap="round" 
-        strokeLinejoin="round"
-        fill="none"
-      />
+    <svg className="w-5 h-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
     </svg>
   )
 }
 
 function EmergencyIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path 
-        d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" 
-        stroke="hsl(var(--error))" 
-        strokeWidth="2" 
-        strokeLinecap="round" 
-        strokeLinejoin="round"
-        fill="none"
-      />
+    <svg className="w-5 h-5 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
     </svg>
   )
 }
 
 function ApproachIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path 
-        d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" 
-        stroke="hsl(var(--success))" 
-        strokeWidth="2" 
-        strokeLinecap="round" 
-        strokeLinejoin="round"
-        fill="none"
-      />
+    <svg className="w-5 h-5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
     </svg>
   )
 }
 
 function PurposeIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path 
-        d="M12 2V12L18 18" 
-        stroke="hsl(var(--primary))" 
-        strokeWidth="2" 
-        strokeLinecap="round" 
-        strokeLinejoin="round"
-      />
-      <circle 
-        cx="12" 
-        cy="12" 
-        r="10" 
-        stroke="hsl(var(--primary))" 
-        strokeWidth="2"
-        fill="none"
-      />
+    <svg className="w-5 h-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
     </svg>
   )
 }
 
 function CyberIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <rect 
-        x="3" 
-        y="11" 
-        width="18" 
-        height="10" 
-        rx="2" 
-        stroke="hsl(var(--error))" 
-        strokeWidth="2"
-        fill="none"
-      />
-      <path 
-        d="M7 11V7A5 5 0 0 1 17 7V11" 
-        stroke="hsl(var(--error))" 
-        strokeWidth="2" 
-        strokeLinecap="round" 
-        strokeLinejoin="round"
-      />
+    <svg className="w-5 h-5 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
     </svg>
   )
 }
 
 function SystemicIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path 
-        d="M12 2L2 7L12 12L22 7L12 2Z" 
-        stroke="hsl(var(--warning))" 
-        strokeWidth="2" 
-        strokeLinecap="round" 
-        strokeLinejoin="round"
-        fill="none"
-      />
-      <path 
-        d="M2 17L12 22L22 17" 
-        stroke="hsl(var(--warning))" 
-        strokeWidth="2" 
-        strokeLinecap="round" 
-        strokeLinejoin="round"
-      />
-      <path 
-        d="M2 12L12 17L22 12" 
-        stroke="hsl(var(--warning))" 
-        strokeWidth="2" 
-        strokeLinecap="round" 
-        strokeLinejoin="round"
-      />
+    <svg className="w-5 h-5 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0l4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0l-5.571 3-5.571-3" />
     </svg>
   )
 }
 
 function OperationalIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <circle 
-        cx="12" 
-        cy="12" 
-        r="10" 
-        stroke="hsl(var(--primary))" 
-        strokeWidth="2"
-        fill="none"
-      />
-      <path 
-        d="M8 14S9.5 16 12 16S16 14 16 14" 
-        stroke="hsl(var(--primary))" 
-        strokeWidth="2" 
-        strokeLinecap="round" 
-        strokeLinejoin="round"
-      />
-      <line 
-        x1="9" 
-        y1="9" 
-        x2="9.01" 
-        y2="9" 
-        stroke="hsl(var(--primary))" 
-        strokeWidth="2" 
-        strokeLinecap="round"
-      />
-      <line 
-        x1="15" 
-        y1="9" 
-        x2="15.01" 
-        y2="9" 
-        stroke="hsl(var(--primary))" 
-        strokeWidth="2" 
-        strokeLinecap="round"
-      />
+    <svg className="w-5 h-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" />
     </svg>
   )
 }
 
 function ConclusionIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path 
-        d="M9 11L12 14L22 4" 
-        stroke="hsl(var(--primary))" 
-        strokeWidth="2" 
-        strokeLinecap="round" 
-        strokeLinejoin="round"
-      />
-      <path 
-        d="M21 12V19A2 2 0 0 1 19 21H5A2 2 0 0 1 3 19V5A2 2 0 0 1 5 3H16" 
-        stroke="hsl(var(--primary))" 
-        strokeWidth="2" 
-        strokeLinecap="round" 
-        strokeLinejoin="round"
-      />
+    <svg className="w-5 h-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
     </svg>
   )
 }
