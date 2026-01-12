@@ -4,6 +4,8 @@
 
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
+import { DashboardLayout } from '@/src/widgets/dashboard-layout'
+import { DashboardAuthGuard } from '@/src/widgets/dashboard-auth'
 import { SettingsContent } from './SettingsContent'
 
 interface SettingsPageProps {
@@ -21,5 +23,11 @@ export async function generateMetadata({ params }: SettingsPageProps): Promise<M
 }
 
 export default function SettingsPage() {
-  return <SettingsContent />
+  return (
+    <DashboardAuthGuard>
+      <DashboardLayout>
+        <SettingsContent />
+      </DashboardLayout>
+    </DashboardAuthGuard>
+  )
 }
