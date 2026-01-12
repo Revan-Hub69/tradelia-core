@@ -2,6 +2,7 @@
  * Emergency Pillars - Tradelia 2026
  *
  * Design unificato con JourneyCard + PremiumDrawer
+ * Struttura identica alle card della home: icon + title + description + completion + focus areas
  */
 
 'use client'
@@ -14,10 +15,11 @@ import { PremiumDrawer } from '@/src/shared/ui/PremiumDrawer'
 interface Pillar {
   id: string
   title: string
-  subtitle: string
   description: string
   iconType: 'book' | 'chart' | 'alert' | 'play'
   accentColor: 'primary' | 'success' | 'warning' | 'error'
+  completion: number // 0-3 pallini pieni
+  focusAreas: string[]
 }
 
 export function EmergencyPillars() {
@@ -28,34 +30,38 @@ export function EmergencyPillars() {
     {
       id: 'academic',
       title: t('academic.title'),
-      subtitle: t('academic.subtitle'),
       description: t('academic.description'),
       iconType: 'book',
-      accentColor: 'primary'
+      accentColor: 'primary',
+      completion: 0,
+      focusAreas: [t('academic.focus1'), t('academic.focus2'), t('academic.focus3')]
     },
     {
       id: 'analysis',
       title: t('analysis.title'),
-      subtitle: t('analysis.subtitle'),
       description: t('analysis.description'),
       iconType: 'chart',
-      accentColor: 'success'
+      accentColor: 'success',
+      completion: 0,
+      focusAreas: [t('analysis.focus1'), t('analysis.focus2'), t('analysis.focus3')]
     },
     {
       id: 'errors',
       title: t('errors.title'),
-      subtitle: t('errors.subtitle'),
       description: t('errors.description'),
       iconType: 'alert',
-      accentColor: 'warning'
+      accentColor: 'warning',
+      completion: 0,
+      focusAreas: [t('errors.focus1'), t('errors.focus2'), t('errors.focus3')]
     },
     {
       id: 'demo',
       title: t('demo.title'),
-      subtitle: t('demo.subtitle'),
       description: t('demo.description'),
       iconType: 'play',
-      accentColor: 'error'
+      accentColor: 'error',
+      completion: 0,
+      focusAreas: [t('demo.focus1'), t('demo.focus2'), t('demo.focus3')]
     }
   ]
 
@@ -69,11 +75,28 @@ export function EmergencyPillars() {
             key={pillar.id}
             title={pillar.title}
             description={pillar.description}
-            subtitle={pillar.subtitle}
             icon={<PillarIcon type={pillar.iconType} className="w-6 h-6" />}
             accentColor={pillar.accentColor}
             onClick={() => setActivePillar(pillar.id)}
-          />
+            badge={<CompletionIndicator completed={pillar.completion} total={3} label={t('completion')} />}
+          >
+            {/* Focus Areas */}
+            <div className="space-y-2">
+              <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                {t('focusOn')}:
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {pillar.focusAreas.map((area) => (
+                  <span 
+                    key={area}
+                    className="px-2 py-1 text-xs bg-muted/50 text-muted-foreground rounded-md"
+                  >
+                    {area}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </JourneyCard>
         ))}
       </div>
 
@@ -101,14 +124,9 @@ export function EmergencyPillars() {
               <div className={`w-10 h-10 rounded-xl ${activeData.accentColor === 'primary' ? 'bg-primary/10' : activeData.accentColor === 'success' ? 'bg-emerald-500/10' : activeData.accentColor === 'warning' ? 'bg-amber-500/10' : 'bg-red-500/10'} flex items-center justify-center`}>
                 <PillarIcon type={activeData.iconType} className={`w-5 h-5 ${activeData.accentColor === 'primary' ? 'text-primary' : activeData.accentColor === 'success' ? 'text-emerald-600' : activeData.accentColor === 'warning' ? 'text-amber-600' : 'text-red-600'}`} />
               </div>
-              <div>
-                <p className={`text-xs font-semibold uppercase tracking-wider ${activeData.accentColor === 'primary' ? 'text-primary' : activeData.accentColor === 'success' ? 'text-emerald-600' : activeData.accentColor === 'warning' ? 'text-amber-600' : 'text-red-600'}`}>
-                  {activeData.subtitle}
-                </p>
-                <h2 className="text-lg font-semibold text-foreground">
-                  {activeData.title}
-                </h2>
-              </div>
+              <h2 className="text-lg font-semibold text-foreground">
+                {activeData.title}
+              </h2>
             </div>
 
             <p className="text-sm text-muted-foreground leading-relaxed">
@@ -119,10 +137,10 @@ export function EmergencyPillars() {
               {[1, 2, 3].map((i) => (
                 <div key={i} className="p-4 rounded-xl bg-muted/30 border border-border/30">
                   <h4 className="text-sm font-medium text-foreground mb-1.5">
-                    {t('sectionTitle')} {i}
+                    Sezione {i}
                   </h4>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    {t('sectionContent')}
+                    Contenuto dettagliato per questa sezione sarà disponibile a breve.
                   </p>
                 </div>
               ))}
@@ -131,6 +149,23 @@ export function EmergencyPillars() {
         </PremiumDrawer>
       )}
     </>
+  )
+}
+
+/** Indicatore completamento: ●●○ */
+function CompletionIndicator({ completed, total, label }: { completed: number; total: number; label: string }) {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-xs text-muted-foreground">{label}:</span>
+      <div className="flex gap-1">
+        {Array.from({ length: total }).map((_, i) => (
+          <div 
+            key={i} 
+            className={`w-2 h-2 rounded-full ${i < completed ? 'bg-emerald-500' : 'bg-muted-foreground/30'}`}
+          />
+        ))}
+      </div>
+    </div>
   )
 }
 

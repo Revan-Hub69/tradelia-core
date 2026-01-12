@@ -110,25 +110,39 @@
       "moreInfoAriaLabel": "Maggiori informazioni"
     },
     "pillars": {
+      "completion": "Completamento",
+      "focusOn": "FOCUS SU",
       "academic": {
-        "title": "BASI ACCADEMICHE",
-        "subtitle": "PILASTRO 1",
-        "description": "Comprendi i fondamenti teorici e storici delle criptovalute come sistema di emergenza. Dalla crisi del 2008 alle implementazioni moderne."
+        "title": "Basi Accademiche",
+        "subtitle": "Pilastro 1",
+        "description": "Fondamenti teorici e storici delle criptovalute come sistema di emergenza.",
+        "focus1": "storia e contesto",
+        "focus2": "principi di funzionamento",
+        "focus3": "casi d'uso reali"
       },
       "analysis": {
-        "title": "ANALISI CRIPTO",
-        "subtitle": "PILASTRO 2", 
-        "description": "Strumenti per valutare tecnologie, rischi e caratteristiche operative delle diverse criptovalute in scenari di emergenza."
+        "title": "Analisi Cripto",
+        "subtitle": "Pilastro 2", 
+        "description": "Strumenti per valutare tecnologie, rischi e caratteristiche operative.",
+        "focus1": "valutazione tecnologie",
+        "focus2": "analisi rischi",
+        "focus3": "confronto soluzioni"
       },
       "errors": {
-        "title": "ERRORI COMUNI",
-        "subtitle": "PILASTRO 3",
-        "description": "Impara dagli errori più frequenti per evitare di scoprire i limiti delle crypto nel momento peggiore."
+        "title": "Errori Comuni",
+        "subtitle": "Pilastro 3",
+        "description": "Gli errori più frequenti per evitare di scoprire i limiti nel momento peggiore.",
+        "focus1": "errori operativi",
+        "focus2": "errori di valutazione",
+        "focus3": "errori di timing"
       },
       "demo": {
-        "title": "DEMO ASSISTITA",
-        "subtitle": "PILASTRO 4",
-        "description": "Simulazioni guidate per testare procedure e comprendere il funzionamento pratico senza rischi reali."
+        "title": "Demo Assistita",
+        "subtitle": "Pilastro 4",
+        "description": "Simulazioni guidate per testare procedure senza rischi reali.",
+        "focus1": "procedure pratiche",
+        "focus2": "test operativi",
+        "focus3": "verifica comprensione"
       },
       "expand": "Espandi",
       "collapse": "Riduci",

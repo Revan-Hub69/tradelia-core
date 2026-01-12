@@ -110,25 +110,39 @@
       "moreInfoAriaLabel": "More information"
     },
     "pillars": {
+      "completion": "Completion",
+      "focusOn": "FOCUS ON",
       "academic": {
-        "title": "ACADEMIC FOUNDATIONS",
-        "subtitle": "PILLAR 1",
-        "description": "Understand theoretical and historical foundations of cryptocurrencies as emergency systems. From 2008 crisis to modern implementations."
+        "title": "Academic Foundations",
+        "subtitle": "Pillar 1",
+        "description": "Theoretical and historical foundations of cryptocurrencies as emergency systems.",
+        "focus1": "history and context",
+        "focus2": "operating principles",
+        "focus3": "real use cases"
       },
       "analysis": {
-        "title": "CRYPTO ANALYSIS",
-        "subtitle": "PILLAR 2",
-        "description": "Tools to evaluate technologies, risks and operational characteristics of different cryptocurrencies in emergency scenarios."
+        "title": "Crypto Analysis",
+        "subtitle": "Pillar 2",
+        "description": "Tools to evaluate technologies, risks and operational characteristics.",
+        "focus1": "technology evaluation",
+        "focus2": "risk analysis",
+        "focus3": "solution comparison"
       },
       "errors": {
-        "title": "COMMON MISTAKES",
-        "subtitle": "PILLAR 3", 
-        "description": "Learn from most frequent errors to avoid discovering crypto limitations at the worst moment."
+        "title": "Common Mistakes",
+        "subtitle": "Pillar 3", 
+        "description": "Most frequent errors to avoid discovering limitations at the worst moment.",
+        "focus1": "operational errors",
+        "focus2": "evaluation errors",
+        "focus3": "timing errors"
       },
       "demo": {
-        "title": "GUIDED DEMO",
-        "subtitle": "PILLAR 4",
-        "description": "Guided simulations to test procedures and understand practical functioning without real risks."
+        "title": "Guided Demo",
+        "subtitle": "Pillar 4",
+        "description": "Guided simulations to test procedures without real risks.",
+        "focus1": "practical procedures",
+        "focus2": "operational tests",
+        "focus3": "comprehension check"
       },
       "expand": "Expand",
       "collapse": "Collapse", 
