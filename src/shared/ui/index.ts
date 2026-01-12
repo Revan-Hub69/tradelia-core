@@ -45,6 +45,15 @@ export type { Toast, ToastVariant, ToastContextType } from './Toast';
 // Form components
 export { PasswordStrength, usePasswordStrength } from './PasswordStrength';
 
+// Premium components
+export { 
+  PremiumDrawer, 
+  InfoDrawer, 
+  SuccessDrawer, 
+  WarningDrawer, 
+  ErrorDrawer 
+} from './PremiumDrawer';
+
 // Utility functions
 export { cn, focusRing, transitionSubtle, cardInteractive, supportsHover, prefersReducedMotion } from './utils';
 

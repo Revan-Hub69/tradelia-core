@@ -1,14 +1,15 @@
 /**
  * Emergency Pillars - Tradelia 2026
  * 
- * Design raffinato e professionale con drawer laterale
- * Approccio accademico: sostanza > effetti
+ * Design premium: professionale, elegante, innovativo
+ * Griglia 2x2 con drawer unificato
  */
 
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { useTranslations } from 'next-intl'
+import { PremiumDrawer } from '@/src/shared/ui/PremiumDrawer'
 
 interface Pillar {
   id: string
@@ -22,8 +23,6 @@ interface Pillar {
 export function EmergencyPillars() {
   const t = useTranslations('emergencyDashboard.pillars')
   const [activePillar, setActivePillar] = useState<string | null>(null)
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-  const drawerRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement | null>(null)
 
   const pillars: Pillar[] = [
@@ -64,57 +63,45 @@ export function EmergencyPillars() {
   const openDrawer = useCallback((pillarId: string, buttonRef: HTMLButtonElement) => {
     triggerRef.current = buttonRef
     setActivePillar(pillarId)
-    setIsDrawerOpen(true)
-    document.body.style.overflow = 'hidden'
   }, [])
 
   const closeDrawer = useCallback(() => {
-    setIsDrawerOpen(false)
-    document.body.style.overflow = ''
-    
-    // Restore focus
-    setTimeout(() => {
-      triggerRef.current?.focus()
-      setActivePillar(null)
-    }, 200)
+    setActivePillar(null)
+    setTimeout(() => triggerRef.current?.focus(), 200)
   }, [])
-
-  // ESC to close
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isDrawerOpen) {
-        closeDrawer()
-      }
-    }
-    window.addEventListener('keydown', handleEscape)
-    return () => window.removeEventListener('keydown', handleEscape)
-  }, [isDrawerOpen, closeDrawer])
-
-  // Focus trap
-  useEffect(() => {
-    if (isDrawerOpen && drawerRef.current) {
-      const focusable = drawerRef.current.querySelectorAll<HTMLElement>(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      )
-      const firstFocusable = focusable[0]
-      if (firstFocusable) {
-        firstFocusable.focus()
-      }
-    }
-  }, [isDrawerOpen])
 
   const activeData = pillars.find(p => p.id === activePillar)
 
   const getAccentClasses = (color: string) => ({
-    primary: { border: 'border-l-primary', text: 'text-primary', bg: 'bg-primary/5' },
-    success: { border: 'border-l-success', text: 'text-success', bg: 'bg-success/5' },
-    warning: { border: 'border-l-warning', text: 'text-warning', bg: 'bg-warning/5' },
-    error: { border: 'border-l-error', text: 'text-error', bg: 'bg-error/5' }
-  }[color] || { border: 'border-l-primary', text: 'text-primary', bg: 'bg-primary/5' })
+    primary: { 
+      border: 'border-l-primary', 
+      text: 'text-primary', 
+      bg: 'bg-primary/5',
+      hover: 'hover:border-primary/30 hover:shadow-primary/5'
+    },
+    success: { 
+      border: 'border-l-emerald-500', 
+      text: 'text-emerald-600 dark:text-emerald-400', 
+      bg: 'bg-emerald-500/5',
+      hover: 'hover:border-emerald-500/30 hover:shadow-emerald-500/5'
+    },
+    warning: { 
+      border: 'border-l-amber-500', 
+      text: 'text-amber-600 dark:text-amber-400', 
+      bg: 'bg-amber-500/5',
+      hover: 'hover:border-amber-500/30 hover:shadow-amber-500/5'
+    },
+    error: { 
+      border: 'border-l-red-500', 
+      text: 'text-red-600 dark:text-red-400', 
+      bg: 'bg-red-500/5',
+      hover: 'hover:border-red-500/30 hover:shadow-red-500/5'
+    }
+  }[color] || { border: 'border-l-primary', text: 'text-primary', bg: 'bg-primary/5', hover: '' })
 
   return (
     <>
-      {/* Grid 2x2 - Design pulito e raffinato */}
+      {/* Grid 2x2 - Design premium */}
       <div className="grid grid-cols-2 gap-4 md:gap-6 max-w-3xl mx-auto">
         {pillars.map((pillar) => {
           const accent = getAccentClasses(pillar.accentColor)
@@ -126,37 +113,56 @@ export function EmergencyPillars() {
               onClick={(e) => openDrawer(pillar.id, e.currentTarget)}
               className={`
                 group relative text-left
-                bg-background border border-border/60
-                rounded-lg p-5 md:p-6
+                bg-background/80 backdrop-blur-sm
+                border border-border/40
+                rounded-xl p-5 md:p-6
                 transition-all duration-200 ease-out
-                hover:border-border hover:shadow-sm
+                ${accent.hover}
+                hover:shadow-lg hover:-translate-y-0.5
                 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2
-                ${isActive ? 'ring-2 ring-primary/30' : ''}
+                ${isActive ? 'ring-2 ring-primary/30 shadow-lg' : ''}
               `}
               aria-expanded={isActive}
-              aria-controls="pillar-drawer"
             >
-              {/* Accent line */}
-              <div className={`absolute left-0 top-4 bottom-4 w-0.5 ${accent.border} rounded-full opacity-60 group-hover:opacity-100 transition-opacity`} />
+              {/* Accent line - refined */}
+              <div className={`
+                absolute left-0 top-5 bottom-5 w-0.5 rounded-full
+                ${accent.border.replace('border-l-', 'bg-')}
+                opacity-40 group-hover:opacity-80
+                transition-opacity duration-200
+              `} />
               
-              {/* Icon */}
-              <div className={`w-10 h-10 rounded-lg ${accent.bg} flex items-center justify-center mb-4`}>
+              {/* Icon - elegant container */}
+              <div className={`
+                w-11 h-11 rounded-xl ${accent.bg} 
+                border border-current/10
+                flex items-center justify-center mb-4
+                transition-transform duration-200
+                group-hover:scale-105
+              `}>
                 <PillarIcon type={pillar.iconType} className={`w-5 h-5 ${accent.text}`} />
               </div>
 
               {/* Content */}
-              <h3 className="text-base md:text-lg font-semibold text-foreground mb-1 leading-tight">
+              <h3 className="text-base md:text-lg font-semibold text-foreground mb-1.5 leading-tight">
                 {pillar.title}
               </h3>
-              <p className={`text-xs font-medium ${accent.text} uppercase tracking-wide mb-2`}>
+              <p className={`text-[11px] font-semibold ${accent.text} uppercase tracking-wider mb-2.5`}>
                 {pillar.subtitle}
               </p>
               <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
                 {pillar.description}
               </p>
 
-              {/* Arrow indicator */}
-              <div className="absolute bottom-5 right-5 opacity-0 group-hover:opacity-60 transition-opacity">
+              {/* Arrow indicator - refined */}
+              <div className={`
+                absolute bottom-5 right-5 
+                w-8 h-8 rounded-lg
+                flex items-center justify-center
+                bg-muted/0 group-hover:bg-muted/50
+                opacity-0 group-hover:opacity-100
+                transition-all duration-200
+              `}>
                 <svg className="w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                 </svg>
@@ -166,119 +172,91 @@ export function EmergencyPillars() {
         })}
       </div>
 
-      {/* Drawer Overlay */}
-      {isDrawerOpen && (
-        <div className="fixed inset-0 z-50">
-          {/* Backdrop */}
-          <button
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm cursor-default transition-opacity duration-200"
-            onClick={closeDrawer}
-            aria-label="Chiudi"
-          />
-          
-          {/* Drawer Panel */}
-          <div
-            ref={drawerRef}
-            id="pillar-drawer"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="drawer-title"
-            className={`
-              absolute top-0 right-0 bottom-0
-              w-full max-w-lg
-              bg-background border-l border-border/50
-              shadow-xl
-              transform transition-transform duration-200 ease-out
-              ${isDrawerOpen ? 'translate-x-0' : 'translate-x-full'}
-              overflow-hidden flex flex-col
-            `}
-          >
-            {activeData && (
-              <>
-                {/* Header */}
-                <div className="flex-shrink-0 px-6 py-5 border-b border-border/50">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-center gap-4">
-                      <div className={`w-12 h-12 rounded-xl ${getAccentClasses(activeData.accentColor).bg} flex items-center justify-center`}>
-                        <PillarIcon type={activeData.iconType} className={`w-6 h-6 ${getAccentClasses(activeData.accentColor).text}`} />
-                      </div>
-                      <div>
-                        <p className={`text-xs font-medium ${getAccentClasses(activeData.accentColor).text} uppercase tracking-wide mb-0.5`}>
-                          {activeData.subtitle}
-                        </p>
-                        <h2 id="drawer-title" className="text-xl font-semibold text-foreground">
-                          {activeData.title}
-                        </h2>
-                      </div>
+      {/* Premium Drawer */}
+      {activePillar && activeData && (
+        <PremiumDrawer
+          isOpen={true}
+          onClose={closeDrawer}
+          title={activeData.title}
+          subtitle={activeData.subtitle}
+          icon={<PillarIcon type={activeData.iconType} className="w-6 h-6" />}
+          accentColor={activeData.accentColor}
+          size="lg"
+          footer={
+            <button
+              onClick={() => console.log(`Start ${activeData.id}`)}
+              className={`
+                w-full py-3.5 px-4 rounded-xl
+                text-sm font-semibold
+                bg-gradient-to-r from-primary to-primary/90
+                text-white
+                shadow-lg shadow-primary/20
+                hover:shadow-xl hover:shadow-primary/30
+                hover:-translate-y-0.5
+                active:translate-y-0
+                transition-all duration-200
+                focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2
+              `}
+            >
+              {t('startPillar')}
+            </button>
+          }
+        >
+          <div className="px-6 py-6 space-y-6">
+            {/* Description */}
+            <p className="text-base text-muted-foreground leading-relaxed">
+              {activeData.description}
+            </p>
+
+            {/* Content Sections - Premium cards */}
+            <div className="space-y-4">
+              {[1, 2, 3].map((i) => (
+                <article 
+                  key={i}
+                  className={`
+                    p-5 rounded-xl
+                    bg-muted/20 border border-border/30
+                    hover:bg-muted/30 hover:border-border/40
+                    transition-colors duration-150
+                  `}
+                >
+                  <div className="flex items-start gap-4">
+                    {/* Section number */}
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <span className="text-sm font-bold text-primary">{i}</span>
                     </div>
                     
-                    <button
-                      onClick={closeDrawer}
-                      className="w-9 h-9 rounded-lg border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/30"
-                      aria-label="Chiudi"
-                    >
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="flex-1 overflow-y-auto px-6 py-6">
-                  <div className="space-y-6">
-                    {/* Description */}
-                    <p className="text-base text-muted-foreground leading-relaxed">
-                      {activeData.description}
-                    </p>
-
-                    {/* Sections */}
-                    <div className="space-y-4">
-                      {[1, 2, 3].map((i) => (
-                        <div 
-                          key={i}
-                          className="p-4 rounded-lg bg-muted/30 border border-border/30"
-                        >
-                          <h4 className="text-sm font-medium text-foreground mb-2">
-                            {t('sectionTitle')} {i}
-                          </h4>
-                          <p className="text-sm text-muted-foreground leading-relaxed">
-                            {t('sectionContent')}
-                          </p>
-                        </div>
-                      ))}
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-sm font-semibold text-foreground mb-1.5">
+                        {t('sectionTitle')} {i}
+                      </h4>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {t('sectionContent')}
+                      </p>
                     </div>
                   </div>
-                </div>
+                </article>
+              ))}
+            </div>
 
-                {/* Footer */}
-                <div className="flex-shrink-0 px-6 py-4 border-t border-border/50 bg-muted/20">
-                  <button
-                    onClick={() => console.log(`Start ${activeData.id}`)}
-                    className={`
-                      w-full py-3 px-4 rounded-lg
-                      text-sm font-medium
-                      ${getAccentClasses(activeData.accentColor).bg}
-                      ${getAccentClasses(activeData.accentColor).text}
-                      border border-current/20
-                      hover:border-current/40
-                      transition-colors duration-150
-                      focus:outline-none focus:ring-2 focus:ring-offset-2
-                    `}
-                  >
-                    {t('startPillar')}
-                  </button>
-                </div>
-              </>
-            )}
+            {/* Progress indicator */}
+            <div className="pt-4 border-t border-border/20">
+              <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
+                <span>Progresso</span>
+                <span>0%</span>
+              </div>
+              <div className="h-1.5 bg-muted/30 rounded-full overflow-hidden">
+                <div className="h-full w-0 bg-gradient-to-r from-primary to-primary/70 rounded-full transition-all duration-500" />
+              </div>
+            </div>
           </div>
-        </div>
+        </PremiumDrawer>
       )}
     </>
   )
 }
 
-// Elegant, lightweight SVG icons
+// Elegant, lightweight SVG icons - refined strokes
 function PillarIcon({ type, className }: { type: string; className?: string }) {
   const icons = {
     book: (
@@ -293,19 +271,20 @@ function PillarIcon({ type, className }: { type: string; className?: string }) {
       <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
         <path d="M3 3v18h18" />
         <path d="M7 16l4-4 4 4 6-6" />
+        <circle cx="21" cy="10" r="1" fill="currentColor" stroke="none" />
       </svg>
     ),
     alert: (
       <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 9v4" />
-        <path d="M12 17h.01" />
+        <circle cx="12" cy="16" r="0.5" fill="currentColor" stroke="none" />
         <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
       </svg>
     ),
     play: (
       <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10" />
-        <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none" />
+        <path d="M10 8l6 4-6 4V8z" fill="currentColor" stroke="none" />
       </svg>
     )
   }
