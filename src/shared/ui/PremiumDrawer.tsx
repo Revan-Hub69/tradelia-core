@@ -186,9 +186,9 @@ export function PremiumDrawer({
       className="fixed inset-0 z-[9999]"
       style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
     >
-      {/* Backdrop */}
+      {/* Backdrop - Premium Motion 2026 (REQ 15.2) */}
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-backdrop-in"
         onClick={closeOnBackdrop ? onClose : undefined}
         aria-hidden="true"
       />

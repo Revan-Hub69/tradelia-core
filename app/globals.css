@@ -24,6 +24,18 @@
     --focus-ring-offset: 2px;
     --focus-ring-color: hsl(215 55% 40% / 0.5);
     
+    /* Motion System Premium 2026 (REQ 15.1) */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --dur-1: 150ms;
+    --dur-2: 200ms;
+    --dur-3: 300ms;
+    
+    /* Motion Shadow System (REQ 15.1) */
+    --motion-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --motion-shadow-2: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --motion-shadow-3: 0 10px 15px rgba(0, 0, 0, 0.1);
+    
     /* 2026 COGNITIVE LOAD OPTIMIZATION - 3 Layer Hierarchy */
     /* Layer 0: Page Background - Never pure white/black */
     --bg-page: 0 0% 98%;              /* Slightly "dirty" white - prevents eye strain */
@@ -73,6 +85,11 @@
     
     /* Focus Ring System - Dark Mode */
     --focus-ring-color: hsl(215 55% 55% / 0.5);
+    
+    /* Motion Shadow System - Dark Mode (REQ 15.1) */
+    --motion-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.2);
+    --motion-shadow-2: 0 4px 6px rgba(0, 0, 0, 0.3);
+    --motion-shadow-3: 0 10px 15px rgba(0, 0, 0, 0.35);
     
     /* 2026 COGNITIVE LOAD OPTIMIZATION - Dark Mode 3 Layer Hierarchy */
     /* Layer 0: Page Background - Never pure black */
@@ -824,6 +841,120 @@
   /* Shadow Utilities */
   .shadow-premium { box-shadow: var(--shadow-xl); }
   .shadow-premium-lg { box-shadow: var(--shadow-2xl); }
+  
+  /* Card Hover Lift - Premium Motion 2026 (REQ 15.3) */
+  .card-hover-lift {
+    transition: transform var(--dur-2, 200ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
+                box-shadow var(--dur-2, 200ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+  }
+  
+  .card-hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--motion-shadow-2, 0 4px 6px rgba(0, 0, 0, 0.1));
+  }
+  
+  .card-hover-lift:active {
+    transform: translateY(-1px);
+    box-shadow: var(--motion-shadow-1, 0 1px 2px rgba(0, 0, 0, 0.05));
+  }
+  
+  /* Card Hover Lift Large - for prominent cards */
+  .card-hover-lift-lg {
+    transition: transform var(--dur-2, 200ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
+                box-shadow var(--dur-2, 200ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+  }
+  
+  .card-hover-lift-lg:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--motion-shadow-3, 0 10px 15px rgba(0, 0, 0, 0.1));
+  }
+  
+  .card-hover-lift-lg:active {
+    transform: translateY(-2px);
+    box-shadow: var(--motion-shadow-2, 0 4px 6px rgba(0, 0, 0, 0.1));
+  }
+  
+  /* Tab Underline Animation - Premium Motion 2026 (REQ 15.4) */
+  .tab-list {
+    position: relative;
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .tab-item {
+    position: relative;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    color: hsl(var(--muted-foreground));
+    transition: color var(--dur-1, 150ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+  }
+  
+  .tab-item:hover {
+    color: hsl(var(--foreground));
+  }
+  
+  .tab-item[data-state="active"],
+  .tab-item.active {
+    color: hsl(var(--foreground));
+  }
+  
+  /* Tab underline indicator - spring animation */
+  .tab-indicator {
+    position: absolute;
+    bottom: 0;
+    height: 2px;
+    background-color: hsl(var(--primary));
+    border-radius: 1px;
+    transition: transform var(--dur-2, 200ms) var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1)),
+                width var(--dur-2, 200ms) var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1));
+  }
+  
+  /* Tab underline using pseudo-element */
+  .tab-underline {
+    position: relative;
+  }
+  
+  .tab-underline::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background-color: hsl(var(--primary));
+    border-radius: 1px;
+    transform: translateX(-50%);
+    transition: width var(--dur-2, 200ms) var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1));
+  }
+  
+  .tab-underline:hover::after,
+  .tab-underline[data-state="active"]::after,
+  .tab-underline.active::after {
+    width: 100%;
+  }
+  
+  /* Tab underline from left */
+  .tab-underline-left {
+    position: relative;
+  }
+  
+  .tab-underline-left::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: hsl(var(--primary));
+    border-radius: 1px;
+    transition: width var(--dur-2, 200ms) var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1));
+  }
+  
+  .tab-underline-left:hover::after,
+  .tab-underline-left[data-state="active"]::after,
+  .tab-underline-left.active::after {
+    width: 100%;
+  }
 }
 
 /* Keyframes - Design Guide Compliant */
@@ -883,11 +1014,11 @@
   animation: slideInLeft 200ms ease-out forwards;
 }
 
-/* Drawer slide-in-right */
+/* Drawer slide-in-right - Premium Motion 2026 (REQ 15.2) */
 @keyframes slideInRight {
   from {
     opacity: 0;
-    transform: translateX(100%);
+    transform: translateX(8px);
   }
   to {
     opacity: 1;
@@ -896,16 +1027,85 @@
 }
 
 .animate-slide-in-right {
-  animation: slideInRight 250ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
+  animation: slideInRight var(--dur-3, 300ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) forwards;
+}
+
+/* Drawer backdrop animation - Premium Motion 2026 (REQ 15.2) */
+@keyframes backdropFadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(4px);
+  }
+}
+
+.animate-backdrop-in {
+  animation: backdropFadeIn var(--dur-2, 200ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) forwards;
+}
+
+/* Modal animation - Premium Motion 2026 (REQ 15.2) */
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-modal-in {
+  animation: modalIn var(--dur-3, 300ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-in,
   .animate-slide-in-left,
-  .animate-slide-in-right {
+  .animate-slide-in-right,
+  .animate-backdrop-in,
+  .animate-modal-in {
     animation: none;
     opacity: 1;
     transform: none;
+  }
+  
+  /* Card hover lift - only opacity on reduced motion (REQ 15.6) */
+  .card-hover-lift,
+  .card-hover-lift-lg {
+    transition: opacity var(--dur-1, 150ms) ease;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+  
+  .card-hover-lift:hover,
+  .card-hover-lift-lg:hover {
+    transform: none !important;
+    opacity: 0.9;
+  }
+  
+  /* Tab underline - only opacity on reduced motion (REQ 15.6) */
+  .tab-underline::after,
+  .tab-underline-left::after {
+    transition: opacity var(--dur-1, 150ms) ease;
+    width: 100% !important;
+    opacity: 0;
+  }
+  
+  .tab-underline:hover::after,
+  .tab-underline[data-state="active"]::after,
+  .tab-underline.active::after,
+  .tab-underline-left:hover::after,
+  .tab-underline-left[data-state="active"]::after,
+  .tab-underline-left.active::after {
+    opacity: 1;
+  }
+  
+  .tab-indicator {
+    transition: opacity var(--dur-1, 150ms) ease;
   }
 }
 

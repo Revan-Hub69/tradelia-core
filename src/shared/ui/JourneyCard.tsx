@@ -108,8 +108,7 @@ export function JourneyCard({
     group block w-full text-left
     bg-background rounded-xl p-3.5 sm:p-5
     border border-border/50 border-l-4 ${colors.border}
-    shadow-sm hover:shadow-md
-    transition-all duration-200
+    shadow-sm card-hover-lift
     focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
   `
 
