@@ -52,7 +52,6 @@
     "diversificationAnalysis": "Diversification analysis",
     "systemTradelia": "Tradelia System",
     "backToSite": "Back to Site",
-    "guestUser": "Guest User",
     "bitcoin": "Bitcoin",
     "ethereum": "Ethereum",
     "others": "Others",
@@ -87,33 +86,34 @@
         "close": "Close"
       }
     },
-    "chooseOrientation": "Choose the path closest to your situation. Each path helps you reason, it doesn't tell you what to buy or sell.",
-    "noImmediateAction": "No path requires real operations or money deposits.",
-    "tradeliaJourneys": "Tradelia Journeys",
-    "journeyExplanation": "The journeys don't indicate what to do, but how to orient yourself based on complexity level.",
+    "chooseOrientation": "Four ways to approach the crypto world. Four types of risk to understand first.",
+    "noImmediateAction": "No section requires real operations, deposits, payments, subscriptions or registrations.",
+    "understandFirst": "The goal is to understand real risks before anything else.",
+    "tradeliaJourneys": "Tradelia Sections",
+    "journeyExplanation": "Each section analyzes a different approach to crypto. None tells you what to do.",
     "focusOn": "Focus on",
     "betaFeatures": "Beta Features",
     "betaFeaturesDescription": "This section is controlled by feature flags and can be enabled/disabled dynamically.",
     "focusAreas": {
       "emergency": {
-        "accessibility": "accessibility and real liquidity",
-        "operationalRisks": "operational and regulatory risks",
-        "concreteLimits": "concrete limits and criticalities"
+        "accessibility": "crisis accessibility",
+        "operationalRisks": "self-custody vs custodial",
+        "concreteLimits": "regulatory constraints"
       },
       "passive": {
-        "yieldSource": "yield source",
-        "realExposure": "real exposure",
+        "yieldSource": "yield origin",
+        "realExposure": "counterparty risk",
         "failureConditions": "failure conditions"
       },
       "longterm": {
-        "timeHorizon": "time horizon",
-        "cumulativeRisk": "cumulative risk",
-        "personalCompatibility": "personal compatibility"
+        "timeHorizon": "realistic horizon",
+        "cumulativeRisk": "historical volatility",
+        "personalCompatibility": "behavioral errors"
       },
       "speculation": {
-        "asymmetricRisk": "asymmetric risk",
-        "cognitiveErrors": "frequent cognitive errors",
-        "operationalLimits": "active operation limits"
+        "asymmetricRisk": "risk/reward asymmetry",
+        "cognitiveErrors": "required skills",
+        "operationalLimits": "recurring errors"
       }
     }
   }

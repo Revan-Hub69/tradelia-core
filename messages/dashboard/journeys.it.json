@@ -1,10 +1,10 @@
 {
   "journeys": {
     "emergency": {
-      "name": "Emergenza",
-      "shortName": "Emergenza",
-      "description": "Per chi vuole una soluzione di riserva in caso di problemi con banca o conto principale.",
-      "action": "Valuta liquidità",
+      "name": "Riserva di Emergenza",
+      "shortName": "Riserva",
+      "description": "Capire se e quando le crypto possono funzionare come riserva in scenari di crisi sistemica: bail-in, controlli capitali, blocco conti, inflazione estrema. E soprattutto: i limiti reali.",
+      "action": "Esplora",
       "sections": {
         "overview": "Panoramica",
         "liquidAssets": "Asset liquidi",
@@ -31,10 +31,10 @@
       }
     },
     "longterm": {
-      "name": "Lungo termine",
-      "shortName": "L.Termine",
-      "description": "Per chi vuole accumulare nel tempo e dormire tranquillo durante i ribassi.",
-      "action": "Pianifica DCA",
+      "name": "Accumulo Crypto",
+      "shortName": "Accumulo",
+      "description": "Verificare best practice accademiche, rischi comuni e comprensione reale di cosa significa holdare nel tempo.",
+      "action": "Esplora",
       "sections": {
         "overview": "Panoramica",
         "dcaPlans": "Piani DCA",
@@ -44,9 +44,9 @@
     },
     "speculation": {
       "name": "Speculazione",
-      "shortName": "Trading",
-      "description": "Per chi è disposto a rischiare molto nel breve per tentare guadagni veloci.",
-      "action": "Analizza segnali",
+      "shortName": "Specula",
+      "description": "Comprendere rischi reali, capacità necessarie, strumenti e strategie sostenibili prima di operare attivamente.",
+      "action": "Esplora",
       "sections": {
         "overview": "Panoramica",
         "signals": "Segnali",
@@ -55,10 +55,10 @@
       }
     },
     "passive": {
-      "name": "Passivo",
-      "shortName": "Passivo",
-      "description": "Per chi cerca rendite automatiche o interessi, senza seguire il mercato ogni giorno.",
-      "action": "Configura staking",
+      "name": "Sistemi Automatici",
+      "shortName": "Automatici",
+      "description": "Analizzare i vari sistemi di rendita passiva nel mondo crypto, la sostenibilità dei progetti e i rischi reali senza marketing.",
+      "action": "Esplora",
       "sections": {
         "overview": "Panoramica",
         "staking": "Staking",

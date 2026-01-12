@@ -1,10 +1,10 @@
 {
   "journeys": {
     "emergency": {
-      "name": "Emergency",
-      "shortName": "Emergency",
-      "description": "For those who want a backup solution in case of problems with bank or main account.",
-      "action": "Assess liquidity",
+      "name": "Emergency Reserve",
+      "shortName": "Reserve",
+      "description": "Understand if and when crypto can work as a reserve in systemic crisis scenarios: bail-in, capital controls, account freezes, extreme inflation. And above all: the real limits.",
+      "action": "Explore",
       "sections": {
         "overview": "Overview",
         "liquidAssets": "Liquid assets",
@@ -31,10 +31,10 @@
       }
     },
     "longterm": {
-      "name": "Long term",
-      "shortName": "L.Term",
-      "description": "For those who want to accumulate over time and sleep peacefully during downturns.",
-      "action": "Plan DCA",
+      "name": "Crypto Accumulation",
+      "shortName": "Accumul",
+      "description": "Verify academic best practices, common risks, and real understanding of what it means to hold over time.",
+      "action": "Explore",
       "sections": {
         "overview": "Overview",
         "dcaPlans": "DCA Plans",
@@ -44,9 +44,9 @@
     },
     "speculation": {
       "name": "Speculation",
-      "shortName": "Trading",
-      "description": "For those willing to risk a lot in the short term to attempt quick gains.",
-      "action": "Analyze signals",
+      "shortName": "Specul",
+      "description": "Understand real risks, required skills, tools and sustainable strategies before actively trading.",
+      "action": "Explore",
       "sections": {
         "overview": "Overview",
         "signals": "Signals",
@@ -55,10 +55,10 @@
       }
     },
     "passive": {
-      "name": "Passive",
-      "shortName": "Passive",
-      "description": "For those seeking automatic returns or interest, without following the market every day.",
-      "action": "Configure staking",
+      "name": "Automated Systems",
+      "shortName": "Auto",
+      "description": "Analyze various passive income systems in the crypto world, project sustainability and real risks without marketing.",
+      "action": "Explore",
       "sections": {
         "overview": "Overview",
         "staking": "Staking",

@@ -86,33 +86,34 @@
         "close": "Chiudi"
       }
     },
-    "chooseOrientation": "Scegli il percorso più vicino alla tua situazione. Ogni percorso ti aiuta a ragionare, non ti dice cosa comprare o vendere.",
-    "noImmediateAction": "Nessun percorso richiede operazioni reali o deposito di denaro.",
-    "tradeliaJourneys": "Percorsi Tradelia",
-    "journeyExplanation": "I percorsi non indicano cosa fare, ma come orientarsi in base al livello di complessità.",
+    "chooseOrientation": "Quattro modi di approcciarsi al mondo crypto. Quattro tipi di rischio da capire prima.",
+    "noImmediateAction": "Nessuna sezione richiede operazioni reali, depositi, pagamenti, abbonamenti o registrazioni.",
+    "understandFirst": "L'obiettivo è comprendere i rischi reali prima di tutto.",
+    "tradeliaJourneys": "Sezioni Tradelia",
+    "journeyExplanation": "Ogni sezione analizza una modalità diversa di approccio alle crypto. Nessuna ti dice cosa fare.",
     "focusOn": "Focus su",
     "betaFeatures": "Funzionalità Beta",
     "betaFeaturesDescription": "Questa sezione è controllata da feature flags e può essere abilitata/disabilitata dinamicamente.",
     "focusAreas": {
       "emergency": {
-        "accessibility": "accessibilità e liquidità reale",
-        "operationalRisks": "rischi operativi e normativi",
-        "concreteLimits": "limiti e criticità concrete"
+        "accessibility": "accessibilità in crisi",
+        "operationalRisks": "self-custody vs custodial",
+        "concreteLimits": "vincoli normativi"
       },
       "passive": {
-        "yieldSource": "fonte del rendimento",
-        "realExposure": "esposizione reale",
+        "yieldSource": "origine del rendimento",
+        "realExposure": "rischio controparte",
         "failureConditions": "condizioni di fallimento"
       },
       "longterm": {
-        "timeHorizon": "orizzonte temporale",
-        "cumulativeRisk": "rischio cumulativo",
-        "personalCompatibility": "compatibilità personale"
+        "timeHorizon": "orizzonte realistico",
+        "cumulativeRisk": "volatilità storica",
+        "personalCompatibility": "errori comportamentali"
       },
       "speculation": {
-        "asymmetricRisk": "rischio asimmetrico",
-        "cognitiveErrors": "errori cognitivi frequenti",
-        "operationalLimits": "limiti dell'operatività attiva"
+        "asymmetricRisk": "asimmetria rischio/rendimento",
+        "cognitiveErrors": "competenze richieste",
+        "operationalLimits": "errori ricorrenti"
       }
     }
   }
