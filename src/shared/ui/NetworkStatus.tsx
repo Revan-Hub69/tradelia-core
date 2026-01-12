@@ -7,9 +7,10 @@
 
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslations } from 'next-intl'
-import { AlertTriangleIcon, WifiOffIcon, RefreshIcon, CheckIcon } from '@/components/icons/TradeliaIcons'
+import { AlertTriangleIcon, WifiOffIcon, WifiIcon, RefreshIcon, CheckIcon } from '@/components/icons/TradeliaIcons'
+import { StatusCenter } from './StatusCenter'
 
 interface NetworkStatusProps {
   className?: string
@@ -282,6 +283,85 @@ export function NetworkStatusProvider({ children }: { children: React.ReactNode 
     <>
       {children}
       <NetworkStatus />
+    </>
+  )
+}
+
+/**
+ * NetworkStatusIndicator - Compact indicator for header/toolbar
+ * Clicking opens the StatusCenter popover
+ * 
+ * @see Requirements 19.1
+ */
+interface NetworkStatusIndicatorProps {
+  /** Whether user is in guest mode - passed to StatusCenter */
+  isGuestMode?: boolean
+  className?: string
+}
+
+export function NetworkStatusIndicator({ isGuestMode = false, className = '' }: NetworkStatusIndicatorProps) {
+  const { isOnline, isSlowConnection } = useNetworkStatus()
+  const [isStatusCenterOpen, setIsStatusCenterOpen] = useState(false)
+  const indicatorRef = useRef<HTMLButtonElement>(null)
+
+  // Determine indicator state
+  const getIndicatorConfig = () => {
+    if (!isOnline) {
+      return {
+        icon: WifiOffIcon,
+        color: 'text-error',
+        bgColor: 'bg-error/10',
+        pulse: true,
+        ariaLabel: 'Offline - Click for status details'
+      }
+    }
+    if (isSlowConnection) {
+      return {
+        icon: AlertTriangleIcon,
+        color: 'text-warning',
+        bgColor: 'bg-warning/10',
+        pulse: true,
+        ariaLabel: 'Slow connection - Click for status details'
+      }
+    }
+    return {
+      icon: WifiIcon,
+      color: 'text-success',
+      bgColor: 'bg-success/10',
+      pulse: false,
+      ariaLabel: 'Online - Click for status details'
+    }
+  }
+
+  const config = getIndicatorConfig()
+  const Icon = config.icon
+
+  return (
+    <>
+      <button
+        ref={indicatorRef}
+        onClick={() => setIsStatusCenterOpen(prev => !prev)}
+        className={`
+          tap-target relative p-2 rounded-lg transition-colors
+          hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/50
+          ${config.bgColor} ${className}
+        `}
+        aria-label={config.ariaLabel}
+        aria-expanded={isStatusCenterOpen}
+        aria-haspopup="dialog"
+      >
+        <Icon className={`w-4 h-4 ${config.color}`} />
+        {config.pulse && (
+          <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-current animate-pulse" />
+        )}
+      </button>
+
+      <StatusCenter
+        isOpen={isStatusCenterOpen}
+        onClose={() => setIsStatusCenterOpen(false)}
+        isGuestMode={isGuestMode}
+        anchorRef={indicatorRef}
+      />
     </>
   )
 }

@@ -63,6 +63,11 @@ export { CommandPalette } from './CommandPalette';
 export { CommandPaletteWrapper } from './CommandPaletteWrapper';
 export { KeyboardHelpModal } from './KeyboardHelpModal';
 
+// Status Center components (REQ 19)
+export { StatusCenter } from './StatusCenter';
+export { SafeModeBanner } from './SafeModeBanner';
+export { NetworkStatusIndicator, useNetworkStatus, NetworkStatus, NetworkStatusProvider } from './NetworkStatus';
+
 // Utility functions
 export { cn, focusRing, transitionSubtle, cardInteractive, supportsHover, prefersReducedMotion } from './utils';
 

@@ -174,5 +174,28 @@
       "high": "Stai per utilizzare {toolName}. È uno strumento avanzato con rischi significativi."
     },
     "sectionWarning": "Stai per accedere alla sezione {sectionId}. Assicurati di aver letto le informazioni di base."
+  },
+  "statusCenter": {
+    "title": "Stato Sistema",
+    "close": "Chiudi stato sistema",
+    "connection": "Connessione",
+    "online": "Online",
+    "offline": "Offline",
+    "slow": "Connessione lenta",
+    "sync": "Sincronizzazione",
+    "synced": "Sincronizzato",
+    "paused": "In pausa",
+    "localOnly": "Solo locale",
+    "mode": "Modalità",
+    "guestMode": "Guest (dati locali)",
+    "privacy": "Privacy",
+    "localStorage": "Solo memoria locale",
+    "cloudSync": "Sincronizzazione cloud",
+    "slowConnectionHint": "La tua connessione è lenta. Alcune funzionalità potrebbero richiedere più tempo.",
+    "lastUpdated": "Ultimo aggiornamento: {time}"
+  },
+  "safeMode": {
+    "banner": "Connessione instabile — alcune azioni sono in pausa",
+    "dismiss": "Chiudi"
   }
 }

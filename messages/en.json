@@ -194,5 +194,28 @@
       "high": "You're about to use {toolName}. It's an advanced tool with significant risks."
     },
     "sectionWarning": "You're about to access the {sectionId} section. Make sure you've read the basic information."
+  },
+  "statusCenter": {
+    "title": "System Status",
+    "close": "Close status center",
+    "connection": "Connection",
+    "online": "Online",
+    "offline": "Offline",
+    "slow": "Slow connection",
+    "sync": "Sync",
+    "synced": "Synced",
+    "paused": "Paused",
+    "localOnly": "Local only",
+    "mode": "Mode",
+    "guestMode": "Guest (local data)",
+    "privacy": "Privacy",
+    "localStorage": "Local storage only",
+    "cloudSync": "Cloud sync",
+    "slowConnectionHint": "Your connection is slow. Some features may take longer to load.",
+    "lastUpdated": "Last updated: {time}"
+  },
+  "safeMode": {
+    "banner": "Unstable connection — some actions are paused",
+    "dismiss": "Dismiss"
   }
 }
