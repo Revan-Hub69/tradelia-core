@@ -3,38 +3,80 @@
  *
  * Design unificato con JourneyCard + PremiumDrawer
  * Struttura identica alle card della home: icon + title + description + completion + focus areas
+ * Progress tracking con IndexedDB (guest) o Supabase (registrati)
  */
 
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useTranslations } from 'next-intl'
 import { JourneyCard } from '@/src/shared/ui/JourneyCard'
 import { PremiumDrawer } from '@/src/shared/ui/PremiumDrawer'
+import { useProgressTracking } from '@/src/shared/hooks/useProgressTracking'
+import { useDashboardAuth } from '@/src/processes/dashboard-auth'
 
-interface Pillar {
+// Configurazione sezioni per ogni pillar (espandibile)
+const PILLAR_SECTIONS: Record<string, { id: string; titleKey: string }[]> = {
+  academic: [
+    { id: 'history', titleKey: 'Storia e contesto' },
+    { id: 'principles', titleKey: 'Principi di funzionamento' },
+    { id: 'usecases', titleKey: 'Casi d\'uso reali' },
+    { id: 'limits', titleKey: 'Limiti e rischi' },
+    { id: 'quiz', titleKey: 'Verifica comprensione' }
+  ],
+  analysis: [
+    { id: 'tech-eval', titleKey: 'Valutazione tecnologie' },
+    { id: 'risk-analysis', titleKey: 'Analisi rischi' },
+    { id: 'comparison', titleKey: 'Confronto soluzioni' },
+    { id: 'criteria', titleKey: 'Criteri di scelta' },
+    { id: 'quiz', titleKey: 'Verifica comprensione' }
+  ],
+  errors: [
+    { id: 'operational', titleKey: 'Errori operativi' },
+    { id: 'evaluation', titleKey: 'Errori di valutazione' },
+    { id: 'timing', titleKey: 'Errori di timing' },
+    { id: 'prevention', titleKey: 'Prevenzione' },
+    { id: 'quiz', titleKey: 'Verifica comprensione' }
+  ],
+  demo: [
+    { id: 'setup', titleKey: 'Setup ambiente' },
+    { id: 'procedures', titleKey: 'Procedure pratiche' },
+    { id: 'tests', titleKey: 'Test operativi' },
+    { id: 'verification', titleKey: 'Verifica finale' }
+  ]
+}
+
+interface PillarConfig {
   id: string
   title: string
   description: string
   iconType: 'book' | 'chart' | 'alert' | 'play'
   accentColor: 'primary' | 'success' | 'warning' | 'error'
-  completionPercent: number
   focusAreas: string[]
-  hasCta: boolean // se true mostra il pulsante nel drawer
+  hasCta: boolean
 }
 
 export function EmergencyPillars() {
   const t = useTranslations('emergencyDashboard.pillars')
   const [activePillar, setActivePillar] = useState<string | null>(null)
+  
+  const { state } = useDashboardAuth()
+  const { 
+    getPillarProgress, 
+    markSectionComplete, 
+    markSectionIncomplete
+  } = useProgressTracking({
+    isGuest: state.isGuestMode,
+    userId: state.user?.id
+  })
 
-  const pillars: Pillar[] = [
+  const pillarsConfig: PillarConfig[] = useMemo(() => [
     {
       id: 'academic',
       title: t('academic.title'),
       description: t('academic.description'),
       iconType: 'book',
       accentColor: 'primary',
-      completionPercent: 0,
       focusAreas: [t('academic.focus1'), t('academic.focus2'), t('academic.focus3')],
       hasCta: true
     },
@@ -44,7 +86,6 @@ export function EmergencyPillars() {
       description: t('analysis.description'),
       iconType: 'chart',
       accentColor: 'success',
-      completionPercent: 0,
       focusAreas: [t('analysis.focus1'), t('analysis.focus2'), t('analysis.focus3')],
       hasCta: true
     },
@@ -54,7 +95,6 @@ export function EmergencyPillars() {
       description: t('errors.description'),
       iconType: 'alert',
       accentColor: 'warning',
-      completionPercent: 0,
       focusAreas: [t('errors.focus1'), t('errors.focus2'), t('errors.focus3')],
       hasCta: true
     },
@@ -64,18 +104,41 @@ export function EmergencyPillars() {
       description: t('demo.description'),
       iconType: 'play',
       accentColor: 'error',
-      completionPercent: 0,
       focusAreas: [t('demo.focus1'), t('demo.focus2'), t('demo.focus3')],
-      hasCta: false // demo non ha CTA per ora
+      hasCta: false
     }
-  ]
+  ], [t])
 
-  const activeData = pillars.find(p => p.id === activePillar)
+  // Calcola percentuali dinamiche
+  const pillarsWithProgress = useMemo(() => {
+    return pillarsConfig.map(pillar => {
+      const progress = getPillarProgress('emergency', pillar.id)
+      const percentage = progress?.percentage || 0
+      return { ...pillar, completionPercent: percentage }
+    })
+  }, [pillarsConfig, getPillarProgress])
+
+  const activeData = pillarsWithProgress.find(p => p.id === activePillar)
+  const activeSections = activeData ? PILLAR_SECTIONS[activeData.id] || [] : []
+  const activeProgress = activeData ? getPillarProgress('emergency', activeData.id) : null
+
+  const handleToggleSection = async (sectionId: string) => {
+    if (!activeData) return
+    
+    const isCompleted = activeProgress?.completedSections?.includes(sectionId)
+    const totalSections = activeSections.length
+
+    if (isCompleted) {
+      await markSectionIncomplete('emergency', activeData.id, sectionId, totalSections)
+    } else {
+      await markSectionComplete('emergency', activeData.id, sectionId, totalSections)
+    }
+  }
 
   return (
     <>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {pillars.map((pillar) => (
+        {pillarsWithProgress.map((pillar) => (
           <JourneyCard
             key={pillar.id}
             title={pillar.title}
@@ -114,12 +177,12 @@ export function EmergencyPillars() {
           size="xl"
           minimalHeader
           showCloseButton={false}
-          footer={activeData.hasCta ? (
+          footer={activeData.hasCta && activeData.completionPercent === 100 ? (
             <button
-              onClick={() => console.log(`Start ${activeData.id}`)}
+              onClick={() => console.log(`Complete ${activeData.id}`)}
               className="w-full py-2.5 px-4 rounded-lg text-sm font-medium bg-primary text-white hover:bg-primary/90 transition-colors"
             >
-              Inizia sezione
+              Completa pilastro
             </button>
           ) : undefined}
         >
@@ -150,24 +213,51 @@ export function EmergencyPillars() {
               {activeData.description}
             </p>
             
-            {/* Sezioni del pillar - contenuto scrollabile */}
+            {/* Sezioni del pillar - con checkbox interattive */}
             <div className="space-y-3">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div key={`section-${i}`} className="p-4 rounded-xl bg-muted/30 border border-border/30">
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="text-sm font-medium text-foreground">
-                      Sezione {i}
-                    </h4>
-                    <span className="text-xs text-muted-foreground px-2 py-0.5 bg-muted/50 rounded">
-                      Da completare
-                    </span>
-                  </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    Contenuto dettagliato per questa sezione sarà disponibile a breve. 
-                    Ogni sezione include materiale educativo, esempi pratici e verifiche di comprensione.
-                  </p>
-                </div>
-              ))}
+              {activeSections.map((section, index) => {
+                const isCompleted = activeProgress?.completedSections?.includes(section.id)
+                return (
+                  <button
+                    key={section.id}
+                    onClick={() => handleToggleSection(section.id)}
+                    className={`w-full p-4 rounded-xl border text-left transition-all ${
+                      isCompleted 
+                        ? 'bg-emerald-500/10 border-emerald-500/30' 
+                        : 'bg-muted/30 border-border/30 hover:border-border/50'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
+                          isCompleted 
+                            ? 'bg-emerald-500 border-emerald-500' 
+                            : 'border-muted-foreground/30'
+                        }`}>
+                          {isCompleted && (
+                            <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                          )}
+                        </div>
+                        <h4 className={`text-sm font-medium ${isCompleted ? 'text-emerald-700 dark:text-emerald-400' : 'text-foreground'}`}>
+                          {index + 1}. {section.titleKey}
+                        </h4>
+                      </div>
+                      <span className={`text-xs px-2 py-0.5 rounded ${
+                        isCompleted 
+                          ? 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-400' 
+                          : 'bg-muted/50 text-muted-foreground'
+                      }`}>
+                        {isCompleted ? 'Completato' : 'Da completare'}
+                      </span>
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed pl-9">
+                      Contenuto educativo per questa sezione. Clicca per segnare come completato.
+                    </p>
+                  </button>
+                )
+              })}
             </div>
           </div>
         </PremiumDrawer>
