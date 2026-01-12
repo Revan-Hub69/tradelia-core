@@ -31,11 +31,11 @@ const JOURNEY_ICONS: Record<JourneyId, React.ComponentType<{ className?: string 
   passive: RefreshIcon
 }
 
-const JOURNEY_COLORS: Record<JourneyId, { bg: string; text: string; border: string }> = {
-  emergency: { bg: 'bg-warning/10', text: 'text-warning', border: 'border-warning/20' },
-  passive: { bg: 'bg-info/10', text: 'text-info', border: 'border-info/20' },
-  longterm: { bg: 'bg-success/10', text: 'text-success', border: 'border-success/20' },
-  speculation: { bg: 'bg-primary/10', text: 'text-primary', border: 'border-primary/20' }
+const JOURNEY_COLORS: Record<JourneyId, { bg: string; text: string; border: string; borderLeft: string }> = {
+  emergency: { bg: 'bg-warning/10', text: 'text-warning', border: 'border-warning/20', borderLeft: 'border-l-warning' },
+  passive: { bg: 'bg-info/10', text: 'text-info', border: 'border-info/20', borderLeft: 'border-l-info' },
+  longterm: { bg: 'bg-success/10', text: 'text-success', border: 'border-success/20', borderLeft: 'border-l-success' },
+  speculation: { bg: 'bg-primary/10', text: 'text-primary', border: 'border-primary/20', borderLeft: 'border-l-primary' }
 }
 
 export function DashboardHome() {
@@ -94,6 +94,7 @@ export function DashboardHome() {
                     onClick={() => handleJourneyClick(journeyId)}
                     className={`
                       card-2026 group relative p-6 transition-all duration-200
+                      border-l-4 ${colors.borderLeft}
                       hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
                     `}
                   >

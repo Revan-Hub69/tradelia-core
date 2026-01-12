@@ -86,15 +86,19 @@ export function PremiumDrawer({
     setMounted(true)
   }, [])
 
-  // Scroll lock
+  // Scroll lock - nasconde ENTRAMBE le scrollbar
   useEffect(() => {
     if (!isOpen) return
 
     previousActiveElement.current = document.activeElement as HTMLElement
+    
+    // Lock scroll su body E html
     document.body.style.overflow = 'hidden'
+    document.documentElement.style.overflow = 'hidden'
 
     return () => {
       document.body.style.overflow = ''
+      document.documentElement.style.overflow = ''
     }
   }, [isOpen])
 

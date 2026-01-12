@@ -22,10 +22,10 @@ interface Pillar {
 }
 
 const PILLAR_COLORS = {
-  primary: { bg: 'bg-primary/10', text: 'text-primary' },
-  success: { bg: 'bg-emerald-500/10', text: 'text-emerald-600 dark:text-emerald-400' },
-  warning: { bg: 'bg-amber-500/10', text: 'text-amber-600 dark:text-amber-400' },
-  error: { bg: 'bg-red-500/10', text: 'text-red-600 dark:text-red-400' }
+  primary: { bg: 'bg-primary/10', text: 'text-primary', borderLeft: 'border-l-primary' },
+  success: { bg: 'bg-emerald-500/10', text: 'text-emerald-600 dark:text-emerald-400', borderLeft: 'border-l-emerald-500' },
+  warning: { bg: 'bg-amber-500/10', text: 'text-amber-600 dark:text-amber-400', borderLeft: 'border-l-amber-500' },
+  error: { bg: 'bg-red-500/10', text: 'text-red-600 dark:text-red-400', borderLeft: 'border-l-red-500' }
 }
 
 export function EmergencyPillars() {
@@ -88,7 +88,7 @@ export function EmergencyPillars() {
             <button
               key={pillar.id}
               onClick={() => openDrawer(pillar.id)}
-              className="card-2026 group relative p-6 text-left transition-all duration-200 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              className={`card-2026 group relative p-6 text-left transition-all duration-200 border-l-4 ${colors.borderLeft} hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2`}
             >
               <div className="flex items-start gap-4">
                 <div className={`w-12 h-12 rounded-xl ${colors.bg} flex items-center justify-center flex-shrink-0`}>
