@@ -58,7 +58,7 @@ export function UserMenu() {
         </div>
         <div className="hidden sm:block text-left">
           <p className="text-sm font-medium text-foreground">
-            {state.profile?.full_name || tDashboard('guestUser')}
+            {state.profile?.nickname || state.profile?.full_name || tDashboard('guestUser')}
           </p>
         </div>
         <ChevronDownIcon className={`w-4 h-4 text-muted-foreground transition-transform ${isOpen ? 'rotate-180' : ''}`} />
@@ -79,7 +79,7 @@ export function UserMenu() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-foreground truncate">
-                  {state.profile?.full_name || tDashboard('guestUser')}
+                  {state.profile?.nickname || state.profile?.full_name || tDashboard('guestUser')}
                 </p>
                 <p className="text-xs text-muted-foreground">
                   {state.isGuestMode ? tDashboard('limitedMode') : tDashboard('verifiedAccount')}

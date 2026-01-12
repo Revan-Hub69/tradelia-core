@@ -10,7 +10,7 @@ import { SafeButton } from '@/src/shared/ui/SafeButton';
 import { mapAuthErrorToKey } from '@/lib/auth/error-mapping';
 import { loginSchema, registerSchema, resetRequestSchema, validateForm, validateField, emailSchema, passwordSchema, nicknameSchema, countrySchema, getMessages } from '@/src/shared/lib/validation';
 import { PasswordStrength } from '@/src/shared/ui/PasswordStrength';
-import { getCountriesSortedByLocale, type Country } from '@/lib/countries';
+import { getCountriesSortedByLocale } from '@/lib/countries';
 import Logo from './Logo';
 import { 
   CloseIcon, 

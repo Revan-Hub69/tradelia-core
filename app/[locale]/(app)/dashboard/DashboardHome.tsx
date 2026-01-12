@@ -40,7 +40,7 @@ export function DashboardHome() {
   const tDashboard = useTranslations('dashboard')
   const { state } = useDashboardAuth()
   
-  const userName = state.profile?.full_name || tDashboard('guestUser')
+  const userName = state.profile?.nickname || state.profile?.full_name || tDashboard('guestUser')
 
   return (
     <DashboardAuthGuard>
