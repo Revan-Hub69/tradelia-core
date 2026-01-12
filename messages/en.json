@@ -1,4 +1,31 @@
 {
+  "emergencyDashboard": {
+    "pillars": {
+      "academic": {
+        "title": "Academic Foundation",
+        "subtitle": "Theory & Principles",
+        "description": "Understand the theoretical foundations of emergency reserves and why crypto can serve as a hedge."
+      },
+      "analysis": {
+        "title": "Risk Analysis",
+        "subtitle": "Assessment Tools",
+        "description": "Evaluate your current situation and identify potential vulnerabilities in your financial safety net."
+      },
+      "errors": {
+        "title": "Common Errors",
+        "subtitle": "What to Avoid",
+        "description": "Learn from the most frequent mistakes people make when setting up emergency reserves."
+      },
+      "demo": {
+        "title": "Interactive Demo",
+        "subtitle": "Practice Mode",
+        "description": "Try the tools in a safe environment before making real decisions."
+      },
+      "sectionTitle": "Section",
+      "sectionContent": "Detailed content for this section will be available soon. We're building comprehensive educational materials.",
+      "startPillar": "Start Learning"
+    }
+  },
   "modal": {
     "title": "Sign in to Tradelia",
     "actions": {
@@ -575,6 +602,7 @@
   "journeys": {
     "emergency": {
       "name": "Emergency",
+      "shortName": "Emergency",
       "action": "Check liquidity",
       "description": "Crypto as emergency reserve",
       "introduction": {
@@ -602,6 +630,7 @@
     },
     "longterm": {
       "name": "Long term",
+      "shortName": "Long",
       "action": "Add plan",
       "description": "Growth strategies over time",
       "sections": {
@@ -613,6 +642,7 @@
     },
     "speculation": {
       "name": "Speculation",
+      "shortName": "Specul",
       "action": "Analyze signal",
       "description": "High variability contexts",
       "sections": {
@@ -624,6 +654,7 @@
     },
     "passive": {
       "name": "Passive",
+      "shortName": "Passive",
       "action": "Calculate yield",
       "description": "Automatic income mechanisms",
       "sections": {

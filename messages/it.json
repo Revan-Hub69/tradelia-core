@@ -1,4 +1,31 @@
 {
+  "emergencyDashboard": {
+    "pillars": {
+      "academic": {
+        "title": "Fondamenti Accademici",
+        "subtitle": "Teoria e Principi",
+        "description": "Comprendi le basi teoriche delle riserve di emergenza e perché le crypto possono servire come protezione."
+      },
+      "analysis": {
+        "title": "Analisi del Rischio",
+        "subtitle": "Strumenti di Valutazione",
+        "description": "Valuta la tua situazione attuale e identifica le potenziali vulnerabilità nella tua rete di sicurezza finanziaria."
+      },
+      "errors": {
+        "title": "Errori Comuni",
+        "subtitle": "Cosa Evitare",
+        "description": "Impara dagli errori più frequenti che le persone commettono quando configurano riserve di emergenza."
+      },
+      "demo": {
+        "title": "Demo Interattiva",
+        "subtitle": "Modalità Pratica",
+        "description": "Prova gli strumenti in un ambiente sicuro prima di prendere decisioni reali."
+      },
+      "sectionTitle": "Sezione",
+      "sectionContent": "Il contenuto dettagliato per questa sezione sarà disponibile presto. Stiamo costruendo materiali educativi completi.",
+      "startPillar": "Inizia ad Apprendere"
+    }
+  },
   "modal": {
     "title": "Accedi a Tradelia",
     "actions": {
@@ -504,6 +531,32 @@
       "gdpr": "Privacy by Design • Zero tracking • Dati mai venduti",
       "educational": "Strumento educativo • Nessun prodotto in vendita",
       "noAdvice": "Le informazioni sono solo a scopo formativo, mai commerciale"
+    }
+  },
+  "journeys": {
+    "emergency": {
+      "name": "Emergenza",
+      "shortName": "Emergenza",
+      "action": "Verifica liquidità",
+      "description": "Crypto come riserva di emergenza"
+    },
+    "longterm": {
+      "name": "Lungo termine",
+      "shortName": "Lungo",
+      "action": "Aggiungi piano",
+      "description": "Strategie di crescita nel tempo"
+    },
+    "speculation": {
+      "name": "Speculazione",
+      "shortName": "Specula",
+      "action": "Analizza segnale",
+      "description": "Contesti ad alta variabilità"
+    },
+    "passive": {
+      "name": "Passivo",
+      "shortName": "Passivo",
+      "action": "Calcola rendimento",
+      "description": "Meccanismi di reddito automatico"
     }
   }
 }

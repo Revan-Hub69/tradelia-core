@@ -123,12 +123,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
             {/* Legal Links */}
             <div className="flex items-center gap-4 text-xs text-muted-foreground">
-              <Link href={`/${locale}/privacy`} className="hover:text-foreground transition-colors">
+              <span className="cursor-default" title="Coming soon">
                 {tDashboard('privacyPolicy')}
-              </Link>
-              <Link href={`/${locale}/terms`} className="hover:text-foreground transition-colors">
+              </span>
+              <span className="cursor-default" title="Coming soon">
                 {tDashboard('termsOfService')}
-              </Link>
+              </span>
             </div>
           </div>
 
@@ -167,9 +167,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           <div className="flex items-center justify-center gap-3 text-[10px] text-muted-foreground mb-2">
             <span>v2026.02</span>
             <span>•</span>
-            <Link href={`/${locale}/privacy`} className="hover:text-foreground">Privacy</Link>
+            <span className="cursor-default">Privacy</span>
             <span>•</span>
-            <Link href={`/${locale}/terms`} className="hover:text-foreground">Terms</Link>
+            <span className="cursor-default">Terms</span>
           </div>
 
           {/* Disclaimer */}
