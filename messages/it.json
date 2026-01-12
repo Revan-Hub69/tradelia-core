@@ -75,6 +75,7 @@
   },
   "settings": {
     "title": "Impostazioni",
+    "description": "Gestisci il tuo profilo e le preferenze",
     "language": "Lingua",
     "theme": "Tema",
     "light": "Chiaro",
