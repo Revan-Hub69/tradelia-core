@@ -9,7 +9,7 @@
     --foreground: 220 15% 12%;        /* Grigio scuro blu */
     --primary: 215 55% 40%;           /* Blu più scuro - AAA compliant */
     --muted: 220 10% 96%;             /* Grigio chiaro */
-    --muted-foreground: 220 12% 30%;  /* Grigio scuro - WCAG AAA 7:1 target */
+    --muted-foreground: 220 12% 28%;  /* Grigio scuro - WCAG AAA 7:1+ verified */
     --subtle-foreground: 220 10% 45%; /* Testo terziario - AA only, uso limitato */
     --border: 220 10% 88%;            /* Grigio sottile */
     --accent: 220 10% 97%;            /* Accent chiarissimo */
@@ -61,7 +61,7 @@
     --foreground: 220 10% 95%;        /* Bianco puro */
     --primary: 215 55% 55%;           /* Blu brillante accessibile */
     --muted: 220 15% 15%;             /* Grigio scuro elevato */
-    --muted-foreground: 220 10% 70%;  /* Grigio chiaro - WCAG AAA 7:1 target */
+    --muted-foreground: 220 10% 72%;  /* Grigio chiaro - WCAG AAA 7:1+ verified */
     --subtle-foreground: 220 10% 50%; /* Testo terziario - AA only, uso limitato */
     --border: 220 15% 20%;            /* Bordo scuro visibile */
     --accent: 220 15% 12%;            /* Accent scuro profondo */
@@ -211,6 +211,59 @@
   /* Focus Ring Utility - Accessibility (REQ 5.1, 5.2) */
   .focus-ring {
     @apply focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2;
+  }
+  
+  /* Tap Target Utilities - Accessibility (REQ 7.5 - WCAG 2.5.8) */
+  /* Minimum 24x24px target size for all interactive elements */
+  .tap-target {
+    min-height: 24px;
+    min-width: 24px;
+    /* Ensure clickable area is at least 24x24 even with smaller visual */
+    position: relative;
+  }
+  
+  /* Ensure tap-target has adequate padding for touch */
+  .tap-target::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 24px;
+    min-height: 24px;
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Enhanced touch target for coarse pointer devices (44px recommended) */
+  @media (pointer: coarse) {
+    .tap-target-touch {
+      min-height: 44px;
+      min-width: 44px;
+    }
+    
+    .tap-target-touch::after {
+      min-width: 44px;
+      min-height: 44px;
+    }
+  }
+  
+  /* Icon button specific tap target - ensures icon buttons meet minimum */
+  .tap-target-icon {
+    min-height: 24px;
+    min-width: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+  }
+  
+  @media (pointer: coarse) {
+    .tap-target-icon {
+      min-height: 44px;
+      min-width: 44px;
+      padding: 10px;
+    }
   }
   
   /* Scroll margin for focused elements inside main content */

@@ -66,7 +66,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           <Logo />
           <div className="flex items-center gap-2 sm:gap-4">
             <button
-              className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/50 relative"
+              className="tap-target-icon p-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/50 relative"
               aria-label="Notifiche"
               disabled
               title="Notifiche in fase di implementazione"

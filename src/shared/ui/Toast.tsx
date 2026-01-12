@@ -210,7 +210,7 @@ function ToastItem({ toast, onDismiss }: ToastItemProps) {
       {/* Dismiss button */}
       <button
         onClick={handleDismiss}
-        className="flex-shrink-0 p-1 -mr-1 -mt-1 rounded text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
+        className="tap-target-icon flex-shrink-0 p-1.5 -mr-1 -mt-1 rounded text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
         aria-label="Chiudi notifica"
       >
         <CloseIcon className="w-4 h-4" />
