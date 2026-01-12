@@ -13,53 +13,49 @@ export function EmergencyHeroAlert() {
   const t = useTranslations('emergencyDashboard.heroAlert')
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 mb-8">
+    <div className="max-w-4xl mx-auto">
       <div className="relative">
-        {/* Main Alert Box */}
+        {/* Main Alert Box - più compatto su mobile */}
         <div className="
-          section-frame-warning p-6 sm:p-8
+          section-frame-warning p-4 sm:p-6
           transition-all duration-150
         ">
-          {/* Header with Icon */}
-          <div className="flex items-start gap-4 mb-6">
-            <div className="flex-shrink-0">
-              <div className="w-10 h-10 rounded-lg icon-bg-warning flex items-center justify-center">
-                <AlertTriangleIcon className="w-5 h-5 text-warning" />
-              </div>
+          {/* Header with Icon - inline su mobile */}
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg icon-bg-warning flex items-center justify-center flex-shrink-0">
+              <AlertTriangleIcon className="w-4 h-4 sm:w-5 sm:h-5 text-warning" />
             </div>
-            <div className="flex-1">
-              <h2 className="text-xl sm:text-2xl font-bold content-primary mb-4 leading-tight">
-                {t('title')}
-              </h2>
-            </div>
+            <h2 className="text-base sm:text-xl font-bold content-primary leading-tight">
+              {t('title')}
+            </h2>
           </div>
 
-          {/* Key Points */}
-          <div className="space-y-4 mb-6">
-            <div className="flex items-start gap-3">
-              <div className="w-2 h-2 rounded-full bg-warning flex-shrink-0 mt-2" />
-              <p className="text-base sm:text-lg content-primary font-medium leading-relaxed">
+          {/* Key Points - più compatti */}
+          <div className="space-y-2.5 sm:space-y-3 mb-4">
+            <div className="flex items-start gap-2.5">
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-warning flex-shrink-0 mt-1.5 sm:mt-2" />
+              <p className="text-sm sm:text-base content-primary font-medium leading-snug">
                 {t('point1')}
               </p>
             </div>
-            <div className="flex items-start gap-3">
-              <div className="w-2 h-2 rounded-full bg-warning flex-shrink-0 mt-2" />
-              <p className="text-base sm:text-lg content-primary font-medium leading-relaxed">
+            <div className="flex items-start gap-2.5">
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-warning flex-shrink-0 mt-1.5 sm:mt-2" />
+              <p className="text-sm sm:text-base content-primary font-medium leading-snug">
                 {t('point2')}
               </p>
             </div>
-            <div className="flex items-start gap-3">
-              <div className="w-2 h-2 rounded-full bg-warning flex-shrink-0 mt-2" />
-              <p className="text-base sm:text-lg content-primary font-medium leading-relaxed">
+            <div className="flex items-start gap-2.5">
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-warning flex-shrink-0 mt-1.5 sm:mt-2" />
+              <p className="text-sm sm:text-base content-primary font-medium leading-snug">
                 {t('point3')}
               </p>
             </div>
           </div>
 
-          {/* Warning Message */}
-          <div className="alert-error">
-            <InfoIcon className="w-5 h-5 alert-error-icon flex-shrink-0 mt-0.5" />
-            <p className="text-base alert-error-text font-semibold leading-relaxed">
+          {/* Warning Message - più compatto */}
+          <div className="alert-error p-3 sm:p-4">
+            <InfoIcon className="w-4 h-4 sm:w-5 sm:h-5 alert-error-icon flex-shrink-0" />
+            <p className="text-sm sm:text-base alert-error-text font-semibold leading-snug">
               {t('warning')}
             </p>
           </div>
@@ -68,7 +64,7 @@ export function EmergencyHeroAlert() {
         {/* Tooltip Trigger */}
         <button
           className="
-            absolute -top-2 -right-2 w-8 h-8 
+            absolute -top-2 -right-2 w-7 h-7 sm:w-8 sm:h-8 
             bg-primary text-white rounded-full
             flex items-center justify-center
             hover:bg-primary/90 transition-colors
@@ -77,12 +73,11 @@ export function EmergencyHeroAlert() {
           "
           aria-label={t('moreInfoAriaLabel')}
           onClick={() => {
-            // Trigger introduction overlay
             const event = new CustomEvent('openEmergencyIntro')
             window.dispatchEvent(event)
           }}
         >
-          <InfoIcon className="w-4 h-4" />
+          <InfoIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
         </button>
       </div>
     </div>
