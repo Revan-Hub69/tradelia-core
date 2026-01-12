@@ -53,6 +53,7 @@ export {
   WarningDrawer, 
   ErrorDrawer 
 } from './PremiumDrawer';
+export { JourneyCard } from './JourneyCard';
 
 // Utility functions
 export { cn, focusRing, transitionSubtle, cardInteractive, supportsHover, prefersReducedMotion } from './utils';
