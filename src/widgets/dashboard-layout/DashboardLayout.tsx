@@ -12,6 +12,7 @@ import { useTranslations, useLocale } from 'next-intl'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
 import { useDashboardModal } from '@/contexts/DashboardModalContext'
 import { NetworkStatus } from '@/src/shared/ui/NetworkStatus'
+import { SkipLink } from '@/src/shared/ui/SkipLink'
 import Logo from '@/components/Logo'
 import { UserMenu } from './UserMenu'
 import { JOURNEY_ORDER, type JourneyId } from '@/src/shared/config/journeys'
@@ -56,6 +57,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden flex flex-col">
+      {/* Skip Link - Accessibility (REQ 5.4, 5.5) */}
+      <SkipLink targetId="main-content" />
+
       {/* Header - sempre visibile */}
       <header className="h-16 section-frame border-b-0 rounded-none backdrop-blur-sm fixed top-0 left-0 right-0 z-50">
         <div className="h-full px-4 sm:px-6 md:px-8 flex items-center justify-between">
@@ -120,7 +124,11 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       )}
 
       {/* Main content - full width */}
-      <main className={`${isOnHome ? 'pt-16' : 'pt-[104px]'} pb-20 md:pb-8 dashboard-main-content flex-1`}>
+      <main 
+        id="main-content"
+        tabIndex={-1}
+        className={`${isOnHome ? 'pt-16' : 'pt-[104px]'} pb-20 md:pb-8 dashboard-main-content flex-1 focus:outline-none`}
+      >
         <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto w-full">
           {children}
         </div>
