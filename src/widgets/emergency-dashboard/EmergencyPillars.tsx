@@ -1,37 +1,30 @@
 /**
  * Emergency Pillars - Tradelia 2026
  * 
- * 4 pilastri in griglia 2x2 con espansione fullscreen cinematografica
- * Best Practices 2026: Transizioni lente, visibili, professionali
+ * Design raffinato e professionale con drawer laterale
+ * Approccio accademico: sostanza > effetti
  */
 
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useTranslations } from 'next-intl'
-import { 
-  BookOpenIcon, 
-  ChartBarIcon, 
-  AlertTriangleIcon, 
-  PlayIcon,
-  CloseIcon
-} from '@/components/icons/TradeliaIcons'
 
 interface Pillar {
   id: string
   title: string
   subtitle: string
   description: string
-  icon: React.ComponentType<{ className?: string }>
-  semanticType: 'primary' | 'success' | 'warning' | 'error'
+  iconType: 'book' | 'chart' | 'alert' | 'play'
+  accentColor: 'primary' | 'success' | 'warning' | 'error'
 }
 
 export function EmergencyPillars() {
   const t = useTranslations('emergencyDashboard.pillars')
-  const [expandedPillar, setExpandedPillar] = useState<string | null>(null)
-  const [animationPhase, setAnimationPhase] = useState<'idle' | 'opening' | 'open' | 'closing'>('idle')
-  const [clickPosition, setClickPosition] = useState({ x: 0, y: 0 })
-  const cardRefs = useRef<Record<string, HTMLButtonElement | null>>({})
+  const [activePillar, setActivePillar] = useState<string | null>(null)
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const drawerRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement | null>(null)
 
   const pillars: Pillar[] = [
     {
@@ -39,420 +32,283 @@ export function EmergencyPillars() {
       title: t('academic.title'),
       subtitle: t('academic.subtitle'),
       description: t('academic.description'),
-      icon: BookOpenIcon,
-      semanticType: 'primary'
+      iconType: 'book',
+      accentColor: 'primary'
     },
     {
       id: 'analysis',
       title: t('analysis.title'),
       subtitle: t('analysis.subtitle'),
       description: t('analysis.description'),
-      icon: ChartBarIcon,
-      semanticType: 'success'
+      iconType: 'chart',
+      accentColor: 'success'
     },
     {
       id: 'errors',
       title: t('errors.title'),
       subtitle: t('errors.subtitle'),
       description: t('errors.description'),
-      icon: AlertTriangleIcon,
-      semanticType: 'warning'
+      iconType: 'alert',
+      accentColor: 'warning'
     },
     {
       id: 'demo',
       title: t('demo.title'),
       subtitle: t('demo.subtitle'),
       description: t('demo.description'),
-      icon: PlayIcon,
-      semanticType: 'error'
+      iconType: 'play',
+      accentColor: 'error'
     }
   ]
 
-  const handleExpand = useCallback((pillarId: string, _e: React.MouseEvent) => {
-    const card = cardRefs.current[pillarId]
-    if (card) {
-      const rect = card.getBoundingClientRect()
-      setClickPosition({
-        x: rect.left + rect.width / 2,
-        y: rect.top + rect.height / 2
-      })
-    }
-    
-    setAnimationPhase('opening')
-    setExpandedPillar(pillarId)
+  const openDrawer = useCallback((pillarId: string, buttonRef: HTMLButtonElement) => {
+    triggerRef.current = buttonRef
+    setActivePillar(pillarId)
+    setIsDrawerOpen(true)
     document.body.style.overflow = 'hidden'
-    
-    // Transition to fully open after animation
-    setTimeout(() => setAnimationPhase('open'), 800)
   }, [])
 
-  const handleClose = useCallback(() => {
-    setAnimationPhase('closing')
+  const closeDrawer = useCallback(() => {
+    setIsDrawerOpen(false)
+    document.body.style.overflow = ''
     
+    // Restore focus
     setTimeout(() => {
-      setExpandedPillar(null)
-      setAnimationPhase('idle')
-      document.body.style.overflow = ''
-    }, 600)
+      triggerRef.current?.focus()
+      setActivePillar(null)
+    }, 200)
   }, [])
 
-  // Handle escape key
+  // ESC to close
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && expandedPillar && animationPhase === 'open') {
-        handleClose()
+      if (e.key === 'Escape' && isDrawerOpen) {
+        closeDrawer()
       }
     }
     window.addEventListener('keydown', handleEscape)
     return () => window.removeEventListener('keydown', handleEscape)
-  }, [expandedPillar, animationPhase, handleClose])
+  }, [isDrawerOpen, closeDrawer])
 
-  const getSemanticColors = (type: string) => {
-    const colors = {
-      primary: { 
-        text: 'text-primary', 
-        bg: 'bg-primary', 
-        bgLight: 'bg-primary/10',
-        border: 'border-primary/40',
-        gradient: 'from-primary/30 via-primary/10 to-transparent',
-        glow: 'shadow-primary/20'
-      },
-      success: { 
-        text: 'text-success', 
-        bg: 'bg-success', 
-        bgLight: 'bg-success/10',
-        border: 'border-success/40',
-        gradient: 'from-success/30 via-success/10 to-transparent',
-        glow: 'shadow-success/20'
-      },
-      warning: { 
-        text: 'text-warning', 
-        bg: 'bg-warning', 
-        bgLight: 'bg-warning/10',
-        border: 'border-warning/40',
-        gradient: 'from-warning/30 via-warning/10 to-transparent',
-        glow: 'shadow-warning/20'
-      },
-      error: { 
-        text: 'text-error', 
-        bg: 'bg-error', 
-        bgLight: 'bg-error/10',
-        border: 'border-error/40',
-        gradient: 'from-error/30 via-error/10 to-transparent',
-        glow: 'shadow-error/20'
+  // Focus trap
+  useEffect(() => {
+    if (isDrawerOpen && drawerRef.current) {
+      const focusable = drawerRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      const firstFocusable = focusable[0]
+      if (firstFocusable) {
+        firstFocusable.focus()
       }
     }
-    return colors[type as keyof typeof colors] || colors.primary
-  }
+  }, [isDrawerOpen])
 
-  const expandedData = pillars.find(p => p.id === expandedPillar)
-  const expandedColors = expandedData ? getSemanticColors(expandedData.semanticType) : null
+  const activeData = pillars.find(p => p.id === activePillar)
+
+  const getAccentClasses = (color: string) => ({
+    primary: { border: 'border-l-primary', text: 'text-primary', bg: 'bg-primary/5' },
+    success: { border: 'border-l-success', text: 'text-success', bg: 'bg-success/5' },
+    warning: { border: 'border-l-warning', text: 'text-warning', bg: 'bg-warning/5' },
+    error: { border: 'border-l-error', text: 'text-error', bg: 'bg-error/5' }
+  }[color] || { border: 'border-l-primary', text: 'text-primary', bg: 'bg-primary/5' })
 
   return (
     <>
-      {/* 2x2 Grid - Always 2 columns */}
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 max-w-4xl mx-auto px-2 sm:px-0">
-        {pillars.map((pillar, index) => {
-          const Icon = pillar.icon
-          const colors = getSemanticColors(pillar.semanticType)
+      {/* Grid 2x2 - Design pulito e raffinato */}
+      <div className="grid grid-cols-2 gap-4 md:gap-6 max-w-3xl mx-auto">
+        {pillars.map((pillar) => {
+          const accent = getAccentClasses(pillar.accentColor)
+          const isActive = activePillar === pillar.id
           
           return (
             <button
               key={pillar.id}
-              ref={(el) => { cardRefs.current[pillar.id] = el }}
-              onClick={(e) => handleExpand(pillar.id, e)}
-              disabled={animationPhase !== 'idle'}
+              onClick={(e) => openDrawer(pillar.id, e.currentTarget)}
               className={`
-                group relative overflow-hidden
-                aspect-[4/3] sm:aspect-[3/2]
-                bg-background border ${colors.border}
-                rounded-xl sm:rounded-2xl md:rounded-3xl
-                p-3 sm:p-5 md:p-8
-                text-left
-                transition-all duration-500 ease-out
-                hover:scale-[1.03] hover:-translate-y-1
-                hover:shadow-2xl ${colors.glow}
-                hover:border-opacity-80
-                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background
-                active:scale-[0.98] active:duration-150
-                disabled:pointer-events-none
+                group relative text-left
+                bg-background border border-border/60
+                rounded-lg p-5 md:p-6
+                transition-all duration-200 ease-out
+                hover:border-border hover:shadow-sm
+                focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2
+                ${isActive ? 'ring-2 ring-primary/30' : ''}
               `}
-              style={{
-                transitionDelay: `${index * 50}ms`
-              }}
-              aria-label={`${pillar.title} - Clicca per espandere`}
+              aria-expanded={isActive}
+              aria-controls="pillar-drawer"
             >
-              {/* Ambient Glow */}
-              <div className={`
-                absolute -inset-1 bg-gradient-to-br ${colors.gradient}
-                rounded-xl sm:rounded-2xl md:rounded-3xl
-                opacity-0 group-hover:opacity-100
-                transition-opacity duration-700 ease-out
-                blur-xl -z-10
-              `} />
-
-              {/* Content Container */}
-              <div className="relative z-10 h-full flex flex-col">
-                {/* Icon */}
-                <div className={`
-                  w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16
-                  rounded-lg sm:rounded-xl md:rounded-2xl
-                  ${colors.bgLight}
-                  flex items-center justify-center
-                  mb-2 sm:mb-3 md:mb-5
-                  group-hover:scale-110 group-hover:rotate-6
-                  transition-transform duration-500 ease-out
-                  shadow-lg ${colors.glow}
-                `}>
-                  <Icon className={`w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 ${colors.text}`} />
-                </div>
-
-                {/* Text Content */}
-                <div className="flex-1 min-h-0">
-                  <h3 className="text-sm sm:text-base md:text-xl font-bold text-foreground mb-0.5 sm:mb-1 leading-tight line-clamp-2">
-                    {pillar.title}
-                  </h3>
-                  <p className={`text-[10px] sm:text-xs md:text-sm font-semibold ${colors.text} uppercase tracking-wider mb-1 sm:mb-2`}>
-                    {pillar.subtitle}
-                  </p>
-                  <p className="hidden sm:block text-xs md:text-sm text-muted-foreground line-clamp-2 leading-relaxed">
-                    {pillar.description}
-                  </p>
-                </div>
-
-                {/* Expand Hint */}
-                <div className={`
-                  mt-auto pt-2 sm:pt-3
-                  flex items-center gap-1 sm:gap-2
-                  text-[10px] sm:text-xs md:text-sm font-medium ${colors.text}
-                  opacity-50 group-hover:opacity-100
-                  transition-all duration-500
-                `}>
-                  <span className="hidden sm:inline">{t('clickToExpand')}</span>
-                  <span className="sm:hidden">Espandi</span>
-                  <svg 
-                    className="w-3 h-3 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform duration-500" 
-                    fill="none" 
-                    viewBox="0 0 24 24" 
-                    stroke="currentColor"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
-                </div>
+              {/* Accent line */}
+              <div className={`absolute left-0 top-4 bottom-4 w-0.5 ${accent.border} rounded-full opacity-60 group-hover:opacity-100 transition-opacity`} />
+              
+              {/* Icon */}
+              <div className={`w-10 h-10 rounded-lg ${accent.bg} flex items-center justify-center mb-4`}>
+                <PillarIcon type={pillar.iconType} className={`w-5 h-5 ${accent.text}`} />
               </div>
 
-              {/* Corner Decoration */}
-              <div className={`
-                absolute -bottom-12 -right-12 w-32 h-32 sm:w-40 sm:h-40
-                rounded-full ${colors.bgLight}
-                opacity-20 group-hover:opacity-40 group-hover:scale-150
-                transition-all duration-700 ease-out
-                blur-2xl
-              `} />
+              {/* Content */}
+              <h3 className="text-base md:text-lg font-semibold text-foreground mb-1 leading-tight">
+                {pillar.title}
+              </h3>
+              <p className={`text-xs font-medium ${accent.text} uppercase tracking-wide mb-2`}>
+                {pillar.subtitle}
+              </p>
+              <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+                {pillar.description}
+              </p>
+
+              {/* Arrow indicator */}
+              <div className="absolute bottom-5 right-5 opacity-0 group-hover:opacity-60 transition-opacity">
+                <svg className="w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
+              </div>
             </button>
           )
         })}
       </div>
 
-      {/* Fullscreen Expanded View */}
-      {expandedPillar && expandedData && expandedColors && (
-        <div 
-          className="fixed inset-0 z-[100]"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="expanded-pillar-title"
-        >
-          {/* Backdrop - Slow fade */}
+      {/* Drawer Overlay */}
+      {isDrawerOpen && (
+        <div className="fixed inset-0 z-50">
+          {/* Backdrop */}
           <button
-            className={`
-              absolute inset-0 cursor-default
-              bg-black/90 backdrop-blur-xl
-              transition-opacity ease-out
-              ${animationPhase === 'opening' ? 'duration-700 opacity-100' : ''}
-              ${animationPhase === 'open' ? 'opacity-100' : ''}
-              ${animationPhase === 'closing' ? 'duration-500 opacity-0' : ''}
-              ${animationPhase === 'idle' ? 'opacity-0' : ''}
-            `}
-            onClick={animationPhase === 'open' ? handleClose : undefined}
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm cursor-default transition-opacity duration-200"
+            onClick={closeDrawer}
             aria-label="Chiudi"
-            disabled={animationPhase !== 'open'}
           />
           
-          {/* Expanding Circle Effect */}
-          <div 
+          {/* Drawer Panel */}
+          <div
+            ref={drawerRef}
+            id="pillar-drawer"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="drawer-title"
             className={`
-              absolute rounded-full ${expandedColors.bg}
-              transition-all ease-out
-              ${animationPhase === 'opening' ? 'duration-700 scale-[50] opacity-10' : ''}
-              ${animationPhase === 'open' ? 'scale-[50] opacity-5' : ''}
-              ${animationPhase === 'closing' ? 'duration-500 scale-0 opacity-0' : ''}
-              ${animationPhase === 'idle' ? 'scale-0 opacity-0' : ''}
-            `}
-            style={{
-              left: clickPosition.x,
-              top: clickPosition.y,
-              width: 100,
-              height: 100,
-              marginLeft: -50,
-              marginTop: -50,
-            }}
-          />
-
-          {/* Content Panel */}
-          <div 
-            className={`
-              absolute inset-2 sm:inset-4 md:inset-8 lg:inset-12
-              bg-background rounded-2xl sm:rounded-3xl
-              overflow-hidden
-              shadow-2xl
-              transition-all ease-out
-              ${animationPhase === 'opening' ? 'duration-700 opacity-100 scale-100 translate-y-0' : ''}
-              ${animationPhase === 'open' ? 'opacity-100 scale-100 translate-y-0' : ''}
-              ${animationPhase === 'closing' ? 'duration-500 opacity-0 scale-95 translate-y-8' : ''}
-              ${animationPhase === 'idle' ? 'opacity-0 scale-90 translate-y-16' : ''}
+              absolute top-0 right-0 bottom-0
+              w-full max-w-lg
+              bg-background border-l border-border/50
+              shadow-xl
+              transform transition-transform duration-200 ease-out
+              ${isDrawerOpen ? 'translate-x-0' : 'translate-x-full'}
+              overflow-hidden flex flex-col
             `}
           >
-            {/* Gradient Header */}
-            <div className={`
-              relative h-40 sm:h-52 md:h-64
-              bg-gradient-to-br ${expandedColors.gradient}
-              overflow-hidden
-            `}>
-              {/* Animated Background Pattern */}
-              <div className="absolute inset-0 opacity-30">
-                <div className={`absolute top-0 left-0 w-96 h-96 ${expandedColors.bgLight} rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2`} />
-                <div className={`absolute bottom-0 right-0 w-96 h-96 ${expandedColors.bgLight} rounded-full blur-3xl translate-x-1/2 translate-y-1/2`} />
-              </div>
-
-              {/* Close Button */}
-              <button
-                onClick={handleClose}
-                disabled={animationPhase !== 'open'}
-                className={`
-                  absolute top-3 right-3 sm:top-5 sm:right-5 md:top-6 md:right-6
-                  w-10 h-10 sm:w-12 sm:h-12
-                  rounded-full bg-background/95 backdrop-blur-sm
-                  border border-border/50
-                  flex items-center justify-center
-                  hover:bg-background hover:scale-110 hover:rotate-90
-                  transition-all duration-300
-                  focus:outline-none focus:ring-2 focus:ring-primary/50
-                  shadow-xl
-                  ${animationPhase === 'open' ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}
-                  transition-all duration-500 delay-300
-                `}
-                aria-label="Chiudi"
-              >
-                <CloseIcon className="w-4 h-4 sm:w-5 sm:h-5 text-foreground" />
-              </button>
-
-              {/* Header Content */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 md:p-10">
-                <div className="flex items-end gap-4 sm:gap-6">
-                  {/* Icon */}
-                  <div 
-                    className={`
-                      w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24
-                      rounded-xl sm:rounded-2xl
-                      ${expandedColors.bgLight} border ${expandedColors.border}
-                      flex items-center justify-center
-                      shadow-2xl ${expandedColors.glow}
-                      ${animationPhase === 'open' ? 'opacity-100 scale-100' : 'opacity-0 scale-75'}
-                      transition-all duration-700 delay-200
-                    `}
-                  >
-                    <expandedData.icon className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 ${expandedColors.text}`} />
-                  </div>
-                  
-                  {/* Title */}
-                  <div 
-                    className={`
-                      flex-1
-                      ${animationPhase === 'open' ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'}
-                      transition-all duration-700 delay-300
-                    `}
-                  >
-                    <p className={`text-xs sm:text-sm font-semibold ${expandedColors.text} uppercase tracking-wider mb-1 sm:mb-2`}>
-                      {expandedData.subtitle}
-                    </p>
-                    <h2 
-                      id="expanded-pillar-title" 
-                      className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground leading-tight"
-                    >
-                      {expandedData.title}
-                    </h2>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Scrollable Content */}
-            <div className="h-[calc(100%-10rem)] sm:h-[calc(100%-13rem)] md:h-[calc(100%-16rem)] overflow-y-auto">
-              <div className="p-4 sm:p-6 md:p-10 max-w-4xl mx-auto">
-                {/* Description */}
-                <p 
-                  className={`
-                    text-base sm:text-lg md:text-xl text-muted-foreground leading-relaxed mb-8 sm:mb-12
-                    ${animationPhase === 'open' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}
-                    transition-all duration-700 delay-400
-                  `}
-                >
-                  {expandedData.description}
-                </p>
-
-                {/* Content Sections */}
-                <div className="space-y-4 sm:space-y-6">
-                  {[1, 2, 3].map((i) => (
-                    <div 
-                      key={i}
-                      className={`
-                        p-4 sm:p-6 md:p-8 rounded-xl sm:rounded-2xl
-                        bg-muted/20 border border-border/30
-                        ${animationPhase === 'open' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}
-                        transition-all duration-700
-                      `}
-                      style={{ transitionDelay: `${400 + i * 150}ms` }}
-                    >
-                      <h4 className="text-base sm:text-lg font-semibold text-foreground mb-2 sm:mb-3">
-                        {t('sectionTitle')} {i}
-                      </h4>
-                      <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                        {t('sectionContent')}
-                      </p>
+            {activeData && (
+              <>
+                {/* Header */}
+                <div className="flex-shrink-0 px-6 py-5 border-b border-border/50">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                      <div className={`w-12 h-12 rounded-xl ${getAccentClasses(activeData.accentColor).bg} flex items-center justify-center`}>
+                        <PillarIcon type={activeData.iconType} className={`w-6 h-6 ${getAccentClasses(activeData.accentColor).text}`} />
+                      </div>
+                      <div>
+                        <p className={`text-xs font-medium ${getAccentClasses(activeData.accentColor).text} uppercase tracking-wide mb-0.5`}>
+                          {activeData.subtitle}
+                        </p>
+                        <h2 id="drawer-title" className="text-xl font-semibold text-foreground">
+                          {activeData.title}
+                        </h2>
+                      </div>
                     </div>
-                  ))}
+                    
+                    <button
+                      onClick={closeDrawer}
+                      className="w-9 h-9 rounded-lg border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/30"
+                      aria-label="Chiudi"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
 
-                {/* Action Button */}
-                <div 
-                  className={`
-                    mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-border/30
-                    ${animationPhase === 'open' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}
-                    transition-all duration-700 delay-[850ms]
-                  `}
-                >
+                {/* Content */}
+                <div className="flex-1 overflow-y-auto px-6 py-6">
+                  <div className="space-y-6">
+                    {/* Description */}
+                    <p className="text-base text-muted-foreground leading-relaxed">
+                      {activeData.description}
+                    </p>
+
+                    {/* Sections */}
+                    <div className="space-y-4">
+                      {[1, 2, 3].map((i) => (
+                        <div 
+                          key={i}
+                          className="p-4 rounded-lg bg-muted/30 border border-border/30"
+                        >
+                          <h4 className="text-sm font-medium text-foreground mb-2">
+                            {t('sectionTitle')} {i}
+                          </h4>
+                          <p className="text-sm text-muted-foreground leading-relaxed">
+                            {t('sectionContent')}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer */}
+                <div className="flex-shrink-0 px-6 py-4 border-t border-border/50 bg-muted/20">
                   <button
-                    onClick={() => console.log(`Start ${expandedData.id}`)}
+                    onClick={() => console.log(`Start ${activeData.id}`)}
                     className={`
-                      w-full sm:w-auto
-                      px-6 sm:px-10 py-3 sm:py-4
-                      rounded-xl sm:rounded-2xl
-                      font-semibold text-base sm:text-lg
-                      ${expandedColors.bg} text-white
-                      hover:scale-105 hover:shadow-2xl ${expandedColors.glow}
-                      active:scale-95
-                      transition-all duration-300
-                      focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background
+                      w-full py-3 px-4 rounded-lg
+                      text-sm font-medium
+                      ${getAccentClasses(activeData.accentColor).bg}
+                      ${getAccentClasses(activeData.accentColor).text}
+                      border border-current/20
+                      hover:border-current/40
+                      transition-colors duration-150
+                      focus:outline-none focus:ring-2 focus:ring-offset-2
                     `}
                   >
                     {t('startPillar')}
                   </button>
                 </div>
-              </div>
-            </div>
+              </>
+            )}
           </div>
         </div>
       )}
     </>
   )
+}
+
+// Elegant, lightweight SVG icons
+function PillarIcon({ type, className }: { type: string; className?: string }) {
+  const icons = {
+    book: (
+      <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+        <path d="M8 7h8" />
+        <path d="M8 11h6" />
+      </svg>
+    ),
+    chart: (
+      <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 3v18h18" />
+        <path d="M7 16l4-4 4 4 6-6" />
+      </svg>
+    ),
+    alert: (
+      <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 9v4" />
+        <path d="M12 17h.01" />
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+      </svg>
+    ),
+    play: (
+      <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10" />
+        <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none" />
+      </svg>
+    )
+  }
+  
+  return icons[type as keyof typeof icons] || icons.book
 }
