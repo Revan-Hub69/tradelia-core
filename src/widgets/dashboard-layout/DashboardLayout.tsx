@@ -82,8 +82,39 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </div>
       </header>
 
+      {/* Breadcrumb - sticky sotto header */}
+      {!isOnHome && (
+        <div className="fixed top-16 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border/30">
+          <div className="px-4 sm:px-6 md:px-8 py-2.5 max-w-7xl mx-auto">
+            <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm">
+              <Link 
+                href={`/${locale}/dashboard`}
+                className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
+              >
+                <HomeIcon className="w-4 h-4" />
+                <span className="hidden sm:inline">Home</span>
+              </Link>
+              {activeJourney && (
+                <>
+                  <svg className="w-4 h-4 text-muted-foreground/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                  </svg>
+                  <span className="font-medium text-foreground flex items-center gap-1.5">
+                    {(() => {
+                      const Icon = JOURNEY_ICONS[activeJourney]
+                      return <Icon className="w-4 h-4" />
+                    })()}
+                    {tJourneys(`${activeJourney}.name`)}
+                  </span>
+                </>
+              )}
+            </nav>
+          </div>
+        </div>
+      )}
+
       {/* Main content - full width */}
-      <main className="pt-16 pb-20 md:pb-8 dashboard-main-content flex-1">
+      <main className={`${isOnHome ? 'pt-16' : 'pt-[104px]'} pb-20 md:pb-8 dashboard-main-content flex-1`}>
         <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto w-full">
           {children}
         </div>
