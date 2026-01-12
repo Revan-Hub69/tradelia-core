@@ -224,9 +224,9 @@ export function NetworkStatus({ className = '' }: NetworkStatusProps) {
           <button
             onClick={() => setShowBanner(false)}
             className="p-1 text-muted-foreground hover:text-foreground transition-colors rounded focus:outline-none focus:ring-2 focus:ring-primary/50"
-            aria-label={t('closeNotification')}
+            aria-label="Chiudi notifica stato rete"
           >
-            ×
+            <span aria-hidden="true">×</span>
           </button>
         </div>
       </div>

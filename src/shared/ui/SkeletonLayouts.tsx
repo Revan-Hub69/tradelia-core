@@ -10,7 +10,12 @@ import { Skeleton, SkeletonText, SkeletonCard } from './Skeleton'
 // Journey Page Skeleton - matches JourneyPage structure exactly
 export function SkeletonJourneyPage() {
   return (
-    <div className="space-y-6">
+    <div 
+      className="space-y-6"
+      role="status"
+      aria-busy="true"
+      aria-label="Caricamento pagina in corso"
+    >
       {/* Breadcrumb skeleton (desktop only) */}
       <div className="hidden md:flex items-center space-x-2">
         <Skeleton className="h-4 w-12" />
@@ -56,7 +61,12 @@ export function SkeletonJourneyPage() {
 // Section Layout Skeleton - for SectionLayout component
 export function SkeletonSectionLayout() {
   return (
-    <div className="space-y-6">
+    <div 
+      className="space-y-6"
+      role="status"
+      aria-busy="true"
+      aria-label="Caricamento sezione in corso"
+    >
       {/* Header */}
       <div className="space-y-3">
         <div className="hidden md:flex items-center space-x-2">
@@ -102,7 +112,12 @@ export function SkeletonSectionLayout() {
 // Dashboard Home Skeleton
 export function SkeletonDashboardHome() {
   return (
-    <div className="space-y-8">
+    <div 
+      className="space-y-8"
+      role="status"
+      aria-busy="true"
+      aria-label="Caricamento dashboard in corso"
+    >
       {/* Welcome section */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">

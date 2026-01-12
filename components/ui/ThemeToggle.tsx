@@ -81,6 +81,8 @@ export function ThemeToggle({ variant = 'compact', className = '', labels }: The
                 }
               `}
               title={option.label}
+              aria-label={option.label}
+              aria-pressed={theme === option.value}
             >
               {option.icon}
             </button>

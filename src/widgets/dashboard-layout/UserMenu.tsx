@@ -1,13 +1,15 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useCallback, useId, useMemo } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
 import { useDashboardModal } from '@/contexts/DashboardModalContext'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { LanguageToggle } from '@/components/ui/LanguageToggle'
+import { useRovingTabindex } from '@/src/shared/hooks/useRovingTabindex'
+import { useDismissableLayer } from '@/src/shared/hooks/useDismissableLayer'
 import {
   UserIcon,
   SettingsIcon,
@@ -87,11 +89,26 @@ function UserAvatar({ profile, isGuest, size = 'sm' }: {
   )
 }
 
+
+// Menu item types for roving tabindex
+interface MenuItem {
+  id: string
+  type: 'link' | 'button' | 'component'
+  label: string
+  href?: string
+  onClick?: () => void
+  icon?: React.ReactNode
+  className?: string
+  component?: React.ReactNode
+}
+
 export function UserMenu() {
   const [isOpen, setIsOpen] = useState(false)
-  const menuRef = useRef<HTMLDivElement>(null)
+  const menuId = useId()
+  const buttonId = useId()
   const locale = useLocale()
   const pathname = usePathname()
+  const router = useRouter()
   const t = useTranslations('navigation')
   const tDashboard = useTranslations('dashboard')
   const { state, actions } = useDashboardAuth()
@@ -99,28 +116,137 @@ export function UserMenu() {
 
   const displayName = state.profile?.nickname || state.profile?.full_name || tDashboard('guestUser')
 
-  // Close menu when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsOpen(false)
-      }
-    }
+  // Close menu handler
+  const closeMenu = useCallback(() => {
+    setIsOpen(false)
+  }, [])
 
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
-      return () => document.removeEventListener('mousedown', handleClickOutside)
+  // Use dismissable layer for ESC and click outside
+  const menuRef = useDismissableLayer<HTMLDivElement>(isOpen, closeMenu, {
+    escapeKey: true,
+    clickOutside: true,
+    restoreFocus: true,
+  })
+
+  // Define menu items for roving tabindex
+  const menuItems: MenuItem[] = useMemo(() => [
+    {
+      id: 'settings',
+      type: 'link',
+      label: t('settings'),
+      href: `/${locale}/dashboard/settings`,
+      icon: <SettingsIcon className="w-4 h-4" />,
+      className: pathname.includes('/settings') 
+        ? 'bg-primary/10 text-primary' 
+        : 'text-muted-foreground hover:text-foreground hover:bg-muted/50',
+    },
+    {
+      id: 'theme',
+      type: 'component',
+      label: locale === 'en' ? 'Theme' : 'Tema',
+      component: (
+        <ThemeToggle 
+          variant="compact" 
+          labels={{
+            theme: locale === 'en' ? 'Theme' : 'Tema',
+            light: locale === 'en' ? 'Light' : 'Chiaro',
+            dark: locale === 'en' ? 'Dark' : 'Scuro',
+            system: locale === 'en' ? 'System' : 'Sistema'
+          }}
+        />
+      ),
+    },
+    {
+      id: 'language',
+      type: 'component',
+      label: locale === 'en' ? 'Language' : 'Lingua',
+      component: (
+        <LanguageToggle 
+          variant="compact" 
+          currentLocale={locale}
+          labelText={locale === 'en' ? 'Language' : 'Lingua'}
+        />
+      ),
+    },
+    state.isGuestMode ? {
+      id: 'register',
+      type: 'button',
+      label: locale === 'en' ? 'Register' : 'Registrati',
+      onClick: () => {
+        closeMenu()
+        openModal('gateway')
+      },
+      icon: <UserIcon className="w-4 h-4" />,
+      className: 'text-primary hover:text-primary hover:bg-primary/10',
+    } : {
+      id: 'logout',
+      type: 'button',
+      label: t('logout'),
+      onClick: () => {
+        closeMenu()
+        actions.signOut()
+      },
+      icon: <LogOutIcon className="w-4 h-4" />,
+      className: 'text-error hover:text-error hover:bg-error/10',
+    },
+  ], [t, locale, pathname, state.isGuestMode, closeMenu, openModal, actions])
+
+  // Handle menu item selection via keyboard
+  const handleMenuSelect = useCallback((index: number) => {
+    const item = menuItems[index]
+    if (!item) return
+
+    if (item.type === 'link' && item.href) {
+      closeMenu()
+      router.push(item.href)
+    } else if (item.type === 'button' && item.onClick) {
+      item.onClick()
     }
-  }, [isOpen])
+    // For 'component' type, let the component handle its own interaction
+  }, [menuItems, closeMenu, router])
+
+  // Roving tabindex for menu items
+  const { getItemProps, setActiveIndex } = useRovingTabindex<HTMLElement>(
+    menuItems.length,
+    {
+      orientation: 'vertical',
+      loop: true,
+      onSelect: handleMenuSelect,
+    }
+  )
+
+  // Toggle menu
+  const toggleMenu = useCallback(() => {
+    setIsOpen(prev => {
+      if (!prev) {
+        // Reset active index when opening
+        setActiveIndex(0)
+      }
+      return !prev
+    })
+  }, [setActiveIndex])
+
+  // Handle button keydown for ArrowDown to open menu
+  const handleButtonKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowDown' && !isOpen) {
+      e.preventDefault()
+      setIsOpen(true)
+      setActiveIndex(0)
+    }
+  }, [isOpen, setActiveIndex])
 
   return (
-    <div className="relative" ref={menuRef}>
+    <div className="relative">
       {/* User Button */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        id={buttonId}
+        onClick={toggleMenu}
+        onKeyDown={handleButtonKeyDown}
         className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50"
         aria-expanded={isOpen}
-        aria-haspopup="true"
+        aria-haspopup="menu"
+        aria-controls={isOpen ? menuId : undefined}
+        aria-label={`${displayName} menu`}
       >
         <UserAvatar profile={state.profile} isGuest={state.isGuestMode} size="sm" />
         <div className="hidden sm:block text-left">
@@ -133,7 +259,13 @@ export function UserMenu() {
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-56 bg-background border border-border rounded-lg shadow-lg z-50 overflow-hidden">
+        <div 
+          ref={menuRef}
+          id={menuId}
+          role="menu"
+          aria-labelledby={buttonId}
+          className="absolute right-0 top-full mt-2 w-56 bg-background border border-border rounded-lg shadow-lg z-50 overflow-hidden"
+        >
           {/* User Info */}
           <div className="p-3 border-b border-border/50">
             <div className="flex items-center gap-3">
@@ -150,75 +282,56 @@ export function UserMenu() {
           </div>
 
           {/* Menu Items */}
-          <div className="py-1">
-            {/* Settings */}
-            <Link
-              href={`/${locale}/dashboard/settings`}
-              onClick={() => setIsOpen(false)}
-              className={`
-                flex items-center gap-3 px-3 py-2 text-sm transition-colors
-                ${pathname.includes('/settings') 
-                  ? 'bg-primary/10 text-primary' 
-                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                }
-              `}
-            >
-              <SettingsIcon className="w-4 h-4" />
-              <span>{t('settings')}</span>
-            </Link>
+          <div className="py-1" role="none">
+            {menuItems.map((item, index) => {
+              const itemProps = getItemProps(index)
+              const baseClassName = "flex items-center gap-3 px-3 py-2 text-sm transition-colors w-full"
+              
+              // For component type items (Theme, Language toggles)
+              if (item.type === 'component') {
+                return (
+                  <div 
+                    key={item.id}
+                    role="menuitem"
+                    {...itemProps}
+                    className="px-3 py-2 focus:outline-none focus:bg-muted/50"
+                  >
+                    {item.component}
+                  </div>
+                )
+              }
 
-            {/* Divider */}
-            <div className="my-1 border-t border-border/50" />
+              // For link items
+              if (item.type === 'link' && item.href) {
+                return (
+                  <Link
+                    key={item.id}
+                    href={item.href}
+                    onClick={closeMenu}
+                    role="menuitem"
+                    {...itemProps}
+                    className={`${baseClassName} ${item.className} focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary/50`}
+                  >
+                    {item.icon}
+                    <span>{item.label}</span>
+                  </Link>
+                )
+              }
 
-            {/* Theme Toggle */}
-            <div className="px-3 py-2">
-              <ThemeToggle 
-                variant="compact" 
-                labels={{
-                  theme: locale === 'en' ? 'Theme' : 'Tema',
-                  light: locale === 'en' ? 'Light' : 'Chiaro',
-                  dark: locale === 'en' ? 'Dark' : 'Scuro',
-                  system: locale === 'en' ? 'System' : 'Sistema'
-                }}
-              />
-            </div>
-
-            {/* Language Toggle */}
-            <div className="px-3 py-2">
-              <LanguageToggle 
-                variant="compact" 
-                currentLocale={locale}
-                labelText={locale === 'en' ? 'Language' : 'Lingua'}
-              />
-            </div>
-
-            {/* Divider */}
-            <div className="my-1 border-t border-border/50" />
-
-            {/* Conditional: Register for guest, Logout for authenticated */}
-            {state.isGuestMode ? (
-              <button
-                onClick={() => {
-                  setIsOpen(false)
-                  openModal('gateway')
-                }}
-                className="w-full flex items-center gap-3 px-3 py-2 text-sm text-primary hover:text-primary hover:bg-primary/10 transition-colors"
-              >
-                <UserIcon className="w-4 h-4" />
-                <span>{locale === 'en' ? 'Register' : 'Registrati'}</span>
-              </button>
-            ) : (
-              <button
-                onClick={() => {
-                  setIsOpen(false)
-                  actions.signOut()
-                }}
-                className="w-full flex items-center gap-3 px-3 py-2 text-sm text-error hover:text-error hover:bg-error/10 transition-colors"
-              >
-                <LogOutIcon className="w-4 h-4" />
-                <span>{t('logout')}</span>
-              </button>
-            )}
+              // For button items
+              return (
+                <button
+                  key={item.id}
+                  onClick={item.onClick}
+                  role="menuitem"
+                  {...itemProps}
+                  className={`${baseClassName} ${item.className} focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary/50`}
+                >
+                  {item.icon}
+                  <span>{item.label}</span>
+                </button>
+              )
+            })}
           </div>
         </div>
       )}

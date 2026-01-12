@@ -16,6 +16,8 @@ interface UseRovingTabindexOptions {
   loop?: boolean
   /** Initial active index */
   initialIndex?: number
+  /** Callback when Enter or Space is pressed on an item */
+  onSelect?: (index: number) => void
 }
 
 interface ItemProps<T extends HTMLElement> {
@@ -29,7 +31,7 @@ export function useRovingTabindex<T extends HTMLElement>(
   itemCount: number,
   options: UseRovingTabindexOptions
 ) {
-  const { orientation, loop = true, initialIndex = 0 } = options
+  const { orientation, loop = true, initialIndex = 0, onSelect } = options
   const [activeIndex, setActiveIndex] = useState(initialIndex)
   const itemRefs = useRef<(T | null)[]>([])
 
@@ -75,7 +77,7 @@ export function useRovingTabindex<T extends HTMLElement>(
     })
   }, [itemCount, loop])
 
-  const handleKeyDown = useCallback((e: React.KeyboardEvent<T>, _index: number) => {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<T>, index: number) => {
     const isHorizontal = orientation === 'horizontal' || orientation === 'both'
     const isVertical = orientation === 'vertical' || orientation === 'both'
 
@@ -114,13 +116,20 @@ export function useRovingTabindex<T extends HTMLElement>(
         moveFocus('last')
         handled = true
         break
+      case 'Enter':
+      case ' ': // Space key
+        if (onSelect) {
+          onSelect(index)
+          handled = true
+        }
+        break
     }
 
     if (handled) {
       e.preventDefault()
       e.stopPropagation()
     }
-  }, [orientation, moveFocus])
+  }, [orientation, moveFocus, onSelect])
 
   const getItemProps = useCallback((index: number, disabled = false): ItemProps<T> => ({
     ref: (el: T | null) => {

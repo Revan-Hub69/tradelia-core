@@ -11,10 +11,12 @@ import { cn } from './utils'
 
 interface SkeletonProps {
   className?: string
+  /** Accessible label for screen readers */
+  'aria-label'?: string
 }
 
 // Base skeleton with pulse animation
-export function Skeleton({ className }: SkeletonProps) {
+export function Skeleton({ className, 'aria-label': ariaLabel }: SkeletonProps) {
   return (
     <div 
       className={cn(
@@ -22,6 +24,7 @@ export function Skeleton({ className }: SkeletonProps) {
         className
       )} 
       aria-hidden="true"
+      aria-label={ariaLabel}
     />
   )
 }
@@ -140,7 +143,12 @@ export function SkeletonButton({ className }: SkeletonProps) {
 // Full page loading skeleton (dashboard)
 export function SkeletonDashboard() {
   return (
-    <div className="space-y-8 animate-in fade-in duration-300">
+    <div 
+      className="space-y-8 animate-in fade-in duration-300"
+      role="status"
+      aria-busy="true"
+      aria-label="Caricamento dashboard in corso"
+    >
       {/* Header */}
       <div className="space-y-2">
         <Skeleton className="h-8 w-64" />

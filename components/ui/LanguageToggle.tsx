@@ -85,8 +85,10 @@ export function LanguageToggle({ variant = 'compact', className = '', currentLoc
                 }
               `}
               title={option.label}
+              aria-label={option.label}
+              aria-pressed={locale === option.value}
             >
-              <span className="text-sm">{option.flag}</span>
+              <span className="text-sm" aria-hidden="true">{option.flag}</span>
             </button>
           ))}
         </div>

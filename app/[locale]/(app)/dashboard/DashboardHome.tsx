@@ -94,9 +94,9 @@ export function DashboardHome() {
                   >
                     {/* Focus Areas */}
                     <div className="space-y-2">
-                      <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         {tDashboard('focusOn')}:
-                      </h4>
+                      </h3>
                       <div className="flex flex-wrap gap-2">
                         {getFocusAreas(journeyId, tDashboard).map((area) => (
                           <span 

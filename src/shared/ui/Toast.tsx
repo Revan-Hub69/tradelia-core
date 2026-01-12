@@ -119,6 +119,7 @@ function ToastContainer({ toasts, onDismiss }: ToastContainerProps) {
   return (
     <div 
       className="fixed top-4 right-4 z-[100] flex flex-col gap-3 pointer-events-none"
+      role="status"
       aria-live="polite"
       aria-label="Notifiche"
     >
