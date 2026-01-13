@@ -132,7 +132,7 @@ function SectionRenderer({ section, isFirst }: { section: ModuleSection; isFirst
               <div className="p-4 rounded-xl bg-muted/30 border border-border/50 transition-all duration-200 hover:bg-muted/50">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-5 h-5 rounded-full bg-muted-foreground/20 flex items-center justify-center">
-                    <span className="text-xs text-muted-foreground">🏦</span>
+                    <BankIcon className="w-3 h-3 text-muted-foreground" />
                   </div>
                   <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Banca</span>
                 </div>
@@ -144,7 +144,7 @@ function SectionRenderer({ section, isFirst }: { section: ModuleSection; isFirst
               <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 transition-all duration-200 hover:bg-primary/10 hover:border-primary/30">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center">
-                    <span className="text-xs">₿</span>
+                    <CryptoIcon className="w-3 h-3 text-primary" />
                   </div>
                   <span className="text-xs font-medium text-primary uppercase tracking-wide">Crypto</span>
                 </div>
@@ -306,6 +306,29 @@ function CheckCircleIcon({ className }: { className?: string }) {
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
       <circle cx="12" cy="12" r="10" />
       <path d="M9 12l2 2 4-4" />
+    </svg>
+  )
+}
+
+// Icona banca - edificio con colonne
+function BankIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+      <path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3" />
+    </svg>
+  )
+}
+
+// Icona crypto - rete decentralizzata
+function CryptoIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+      <circle cx="12" cy="12" r="3" />
+      <circle cx="4" cy="6" r="2" />
+      <circle cx="20" cy="6" r="2" />
+      <circle cx="4" cy="18" r="2" />
+      <circle cx="20" cy="18" r="2" />
+      <path d="M6 7l4 4M14 11l4-4M6 17l4-4M14 13l4 4" />
     </svg>
   )
 }
