@@ -1,17 +1,18 @@
 /**
  * Toast Notification System - Tradelia 2026
  * 
- * Seguendo ux-contract.md:
+ * Seguendo ux-contract.md + REQ 21.2, 21.3:
  * - Posizione: top-right
  * - Auto-dismiss: 5s (info/success), manual (error)
- * - Max 3 visibili contemporaneamente
+ * - Max 1 visibile (queue system) - REQ 21.3
  * - Animazioni enter/exit
  * - Accessibilità: role="alert", aria-live
+ * - Undo support for reversible actions - REQ 21.2
  */
 
 'use client'
 
-import { createContext, useContext, useState, useCallback, useEffect } from 'react'
+import { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
 import { 
   CheckIcon, 
@@ -23,22 +24,30 @@ import {
 // Types
 type ToastVariant = 'success' | 'error' | 'warning' | 'info'
 
+interface ToastAction {
+  label: string
+  onClick: () => void
+}
+
 interface Toast {
   id: string
   variant: ToastVariant
   title: string
   message?: string
   duration?: number // ms, 0 = manual dismiss
+  action?: ToastAction // For undo/retry actions (REQ 21.2)
 }
 
 interface ToastContextType {
   toasts: Toast[]
   addToast: (toast: Omit<Toast, 'id'>) => void
   removeToast: (id: string) => void
-  success: (title: string, message?: string) => void
-  error: (title: string, message?: string) => void
-  warning: (title: string, message?: string) => void
-  info: (title: string, message?: string) => void
+  success: (title: string, message?: string, action?: ToastAction) => void
+  error: (title: string, message?: string, action?: ToastAction) => void
+  warning: (title: string, message?: string, action?: ToastAction) => void
+  info: (title: string, message?: string, action?: ToastAction) => void
+  /** Show a toast with undo action for reversible operations */
+  successWithUndo: (title: string, onUndo: () => void, message?: string) => void
 }
 
 // Context
@@ -59,48 +68,118 @@ interface ToastProviderProps {
   maxToasts?: number
 }
 
-export function ToastProvider({ children, maxToasts = 3 }: ToastProviderProps) {
+export function ToastProvider({ children, maxToasts = 1 }: ToastProviderProps) {
   const [toasts, setToasts] = useState<Toast[]>([])
+  const [queue, setQueue] = useState<Toast[]>([])
+  const timeoutRef = useRef<Map<string, NodeJS.Timeout>>(new Map())
 
   const removeToast = useCallback((id: string) => {
+    // Clear any existing timeout for this toast
+    const timeout = timeoutRef.current.get(id)
+    if (timeout) {
+      clearTimeout(timeout)
+      timeoutRef.current.delete(id)
+    }
+    
     setToasts(prev => prev.filter(t => t.id !== id))
   }, [])
+
+  // Process queue when a toast is removed
+  useEffect(() => {
+    if (toasts.length < maxToasts && queue.length > 0) {
+      const nextToast = queue[0]
+      if (!nextToast) return
+      
+      const remainingQueue = queue.slice(1)
+      setQueue(remainingQueue)
+      setToasts(prev => [...prev, nextToast])
+      
+      // Set auto-dismiss timeout for the new toast
+      if (nextToast.duration && nextToast.duration > 0) {
+        const timeout = setTimeout(() => removeToast(nextToast.id), nextToast.duration)
+        timeoutRef.current.set(nextToast.id, timeout)
+      }
+    }
+  }, [toasts.length, queue, maxToasts, removeToast])
 
   const addToast = useCallback((toast: Omit<Toast, 'id'>) => {
     const id = `toast-${Date.now()}-${Math.random().toString(36).slice(2)}`
     const duration = toast.duration ?? (toast.variant === 'error' ? 0 : 5000)
+    const newToast = { ...toast, id, duration }
     
     setToasts(prev => {
-      const newToasts = [...prev, { ...toast, id, duration }]
-      // Keep only last maxToasts
-      return newToasts.slice(-maxToasts)
+      if (prev.length >= maxToasts) {
+        // Add to queue instead of showing immediately (REQ 21.3)
+        setQueue(q => [...q, newToast])
+        return prev
+      }
+      return [...prev, newToast]
     })
 
-    // Auto dismiss
+    // Auto dismiss (only if not queued)
     if (duration > 0) {
-      setTimeout(() => removeToast(id), duration)
+      // Check if toast was added directly or queued
+      setToasts(prev => {
+        if (prev.some(t => t.id === id)) {
+          const timeout = setTimeout(() => removeToast(id), duration)
+          timeoutRef.current.set(id, timeout)
+        }
+        return prev
+      })
     }
   }, [maxToasts, removeToast])
 
-  // Convenience methods
-  const success = useCallback((title: string, message?: string) => {
-    addToast({ variant: 'success', title, ...(message && { message }) })
+  // Convenience methods with action support
+  const success = useCallback((title: string, message?: string, action?: ToastAction) => {
+    addToast({ variant: 'success', title, ...(message && { message }), ...(action && { action }) })
   }, [addToast])
 
-  const error = useCallback((title: string, message?: string) => {
-    addToast({ variant: 'error', title, duration: 0, ...(message && { message }) })
+  const error = useCallback((title: string, message?: string, action?: ToastAction) => {
+    addToast({ variant: 'error', title, duration: 0, ...(message && { message }), ...(action && { action }) })
   }, [addToast])
 
-  const warning = useCallback((title: string, message?: string) => {
-    addToast({ variant: 'warning', title, ...(message && { message }) })
+  const warning = useCallback((title: string, message?: string, action?: ToastAction) => {
+    addToast({ variant: 'warning', title, ...(message && { message }), ...(action && { action }) })
   }, [addToast])
 
-  const info = useCallback((title: string, message?: string) => {
-    addToast({ variant: 'info', title, ...(message && { message }) })
+  const info = useCallback((title: string, message?: string, action?: ToastAction) => {
+    addToast({ variant: 'info', title, ...(message && { message }), ...(action && { action }) })
   }, [addToast])
+
+  // Undo helper for reversible actions (REQ 21.2)
+  const successWithUndo = useCallback((title: string, onUndo: () => void, message?: string) => {
+    addToast({
+      variant: 'success',
+      title,
+      ...(message && { message }),
+      duration: 8000, // Longer duration for undo actions
+      action: {
+        label: 'Annulla',
+        onClick: onUndo
+      }
+    })
+  }, [addToast])
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    const currentTimeouts = timeoutRef.current
+    return () => {
+      currentTimeouts.forEach(timeout => clearTimeout(timeout))
+      currentTimeouts.clear()
+    }
+  }, [])
 
   return (
-    <ToastContext.Provider value={{ toasts, addToast, removeToast, success, error, warning, info }}>
+    <ToastContext.Provider value={{ 
+      toasts, 
+      addToast, 
+      removeToast, 
+      success, 
+      error, 
+      warning, 
+      info,
+      successWithUndo 
+    }}>
       {children}
       <ToastContainer toasts={toasts} onDismiss={removeToast} />
     </ToastContext.Provider>
@@ -142,6 +221,13 @@ function ToastItem({ toast, onDismiss }: ToastItemProps) {
   const handleDismiss = () => {
     setIsExiting(true)
     setTimeout(() => onDismiss(toast.id), 150)
+  }
+
+  const handleAction = () => {
+    if (toast.action) {
+      toast.action.onClick()
+      handleDismiss()
+    }
   }
 
   // Keyboard dismiss
@@ -205,6 +291,15 @@ function ToastItem({ toast, onDismiss }: ToastItemProps) {
             {toast.message}
           </p>
         )}
+        {/* Action button for undo/retry (REQ 21.2) */}
+        {toast.action && (
+          <button
+            onClick={handleAction}
+            className="mt-2 text-xs font-medium text-primary hover:text-primary/80 underline underline-offset-2 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-1 rounded"
+          >
+            {toast.action.label}
+          </button>
+        )}
       </div>
 
       {/* Dismiss button */}
@@ -220,4 +315,4 @@ function ToastItem({ toast, onDismiss }: ToastItemProps) {
 }
 
 // Export types
-export type { Toast, ToastVariant, ToastContextType }
+export type { Toast, ToastVariant, ToastContextType, ToastAction }

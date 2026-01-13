@@ -40,7 +40,7 @@ export {
   ToastProvider, 
   useToast 
 } from './Toast';
-export type { Toast, ToastVariant, ToastContextType } from './Toast';
+export type { Toast, ToastVariant, ToastContextType, ToastAction } from './Toast';
 
 // Form components
 export { PasswordStrength, usePasswordStrength } from './PasswordStrength';
@@ -67,6 +67,10 @@ export { KeyboardHelpModal } from './KeyboardHelpModal';
 export { StatusCenter } from './StatusCenter';
 export { SafeModeBanner } from './SafeModeBanner';
 export { NetworkStatusIndicator, useNetworkStatus, NetworkStatus, NetworkStatusProvider } from './NetworkStatus';
+
+// Inline Feedback components (REQ 21)
+export { InlineStatus } from './InlineStatus';
+export type { InlineStatusType, InlineStatusProps } from './InlineStatus';
 
 // Utility functions
 export { cn, focusRing, transitionSubtle, cardInteractive, supportsHover, prefersReducedMotion } from './utils';
