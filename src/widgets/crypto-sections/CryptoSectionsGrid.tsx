@@ -105,12 +105,12 @@ export function CryptoSectionsGrid({
                 </div>
               </JourneyCard>
               
-              {/* Coming Soon Overlay */}
+              {/* Coming Soon Overlay - leggero per lasciare leggere la card */}
               {!isActive && (
-                <div className="absolute inset-0 bg-background/70 backdrop-blur-[2px] rounded-xl flex items-center justify-center cursor-not-allowed">
-                  <div className="flex items-center gap-2 px-4 py-2 bg-muted/80 rounded-full border border-border/50">
-                    <ClockIcon className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-sm font-medium text-muted-foreground">
+                <div className="absolute inset-0 bg-background/40 backdrop-blur-[1px] rounded-xl flex items-end justify-center pb-4 cursor-not-allowed">
+                  <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/90 rounded-full border border-border/50 shadow-sm">
+                    <ClockIcon className="w-3.5 h-3.5 text-muted-foreground" />
+                    <span className="text-xs font-medium text-muted-foreground">
                       {t('ui.comingSoon')}
                     </span>
                   </div>
