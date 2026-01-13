@@ -4,11 +4,14 @@
  * Componente card unificato per journey e pillar.
  * Design coerente: border-left colorato, icon box, title, description, arrow.
  * Density-aware: responds to compact/comfortable mode (REQ 20.2)
+ * Help button: contextual help for journey modules (REQ 23.1)
  */
 
 'use client'
 
 import { type ReactNode } from 'react'
+import { HelpButton } from './HelpButton'
+import type { HelpModuleId } from '@/src/shared/lib/help-content'
 
 export interface JourneyCardProps {
   title: string
@@ -20,6 +23,8 @@ export interface JourneyCardProps {
   subtitle?: string
   badge?: ReactNode
   children?: ReactNode
+  /** Module ID for contextual help (shows "?" button if provided) */
+  helpModuleId?: HelpModuleId | string
 }
 
 const COLORS = {
@@ -59,7 +64,8 @@ export function JourneyCard({
   href,
   subtitle,
   badge,
-  children
+  children,
+  helpModuleId
 }: JourneyCardProps) {
   const colors = COLORS[accentColor]
   
@@ -74,9 +80,20 @@ export function JourneyCard({
         
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <h3 className="density-text-secondary font-semibold text-foreground mb-0.5">
-            {title}
-          </h3>
+          <div className="flex items-center gap-2">
+            <h3 className="density-text-secondary font-semibold text-foreground mb-0.5">
+              {title}
+            </h3>
+            {/* Help button - REQ 23.1 */}
+            {helpModuleId && (
+              <HelpButton 
+                moduleId={helpModuleId} 
+                size="sm" 
+                stopPropagation={true}
+                panelPosition="bottom"
+              />
+            )}
+          </div>
           <p className="density-text-tertiary text-muted-foreground line-clamp-2">
             {description}
           </p>

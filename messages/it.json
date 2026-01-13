@@ -197,5 +197,110 @@
   "safeMode": {
     "banner": "Connessione instabile — alcune azioni sono in pausa",
     "dismiss": "Chiudi"
+  },
+  "help": {
+    "close": "Chiudi aiuto",
+    "whatIs": "Cos'è",
+    "commonErrors": "Errori comuni",
+    "whatToLook": "Cosa guardare",
+    "relatedLinks": "Link correlati",
+    "buttonLabel": "Aiuto",
+    "modules": {
+      "emergency": {
+        "title": "Fondo di Emergenza",
+        "definition": "Un fondo di emergenza è una rete di sicurezza finanziaria per spese impreviste come spese mediche, riparazioni auto o perdita del lavoro. Dovrebbe coprire 3-6 mesi di spese essenziali.",
+        "commonErrors": [
+          "Non iniziare perché l'obiettivo sembra troppo grande",
+          "Usare il fondo per non-emergenze",
+          "Tenerlo in un conto troppo facile da accedere",
+          "Non ricostituirlo dopo averlo usato"
+        ],
+        "whatToLook": [
+          "Calcola prima le tue spese mensili essenziali",
+          "Inizia con un obiettivo piccolo (€1.000) poi aumenta",
+          "Tienilo in un conto separato ad alto rendimento",
+          "Automatizza i contributi mensili"
+        ]
+      },
+      "longterm": {
+        "title": "Investimento a Lungo Termine",
+        "definition": "Investire a lungo termine significa mantenere investimenti per 5+ anni per beneficiare della crescita composta e superare la volatilità del mercato. È la base della costruzione di ricchezza.",
+        "commonErrors": [
+          "Cercare di prevedere il mercato",
+          "Controllare il portafoglio troppo frequentemente",
+          "Vendere durante i ribassi di mercato",
+          "Non diversificare tra classi di asset"
+        ],
+        "whatToLook": [
+          "Concentrati su fondi indicizzati a basso costo per diversificazione",
+          "Comprendi la tua tolleranza al rischio prima di investire",
+          "Ribilancia il portafoglio annualmente, non più spesso",
+          "Considera prima i conti con vantaggi fiscali"
+        ]
+      },
+      "passive": {
+        "title": "Reddito Passivo",
+        "definition": "Il reddito passivo è denaro guadagnato con sforzo minimo continuativo dopo la configurazione iniziale. Esempi includono dividendi, reddito da affitto e interessi da obbligazioni.",
+        "commonErrors": [
+          "Aspettarsi reddito passivo senza lavoro/capitale iniziale",
+          "Inseguire rendimenti alti senza capire i rischi",
+          "Non considerare le tasse sul reddito passivo",
+          "Confondere passivo con completamente automatico"
+        ],
+        "whatToLook": [
+          "Rendimento da dividendi vs strategie di crescita dei dividendi",
+          "Sostenibilità delle fonti di reddito",
+          "Implicazioni fiscali nella tua giurisdizione",
+          "Opzioni di reinvestimento per crescita composta"
+        ]
+      },
+      "speculation": {
+        "title": "Speculazione",
+        "definition": "La speculazione coinvolge investimenti ad alto rischio con potenziale di guadagni o perdite significative. Usa solo denaro che puoi permetterti di perdere completamente.",
+        "commonErrors": [
+          "Usare denaro necessario per le spese essenziali",
+          "Non impostare stop-loss",
+          "Decisioni guidate dalla FOMO",
+          "Sovra-leveraggio delle posizioni"
+        ],
+        "whatToLook": [
+          "Non investire mai più del 5-10% del portafoglio",
+          "Avere una strategia di uscita chiara prima di entrare",
+          "Comprendere l'asset/tecnologia sottostante",
+          "Separare le emozioni dalle decisioni"
+        ]
+      },
+      "riskLevel": {
+        "title": "Livelli di Rischio",
+        "definition": "Il livello di rischio indica quanta potenziale volatilità e perdita comporta un investimento o strumento. Rischio più alto significa rendimenti potenziali più alti ma anche perdite potenziali più alte.",
+        "commonErrors": [
+          "Ignorare il livello di rischio quando si scelgono gli strumenti",
+          "Assumere che basso rischio significhi nessun rischio",
+          "Non abbinare il rischio al proprio orizzonte temporale",
+          "Assumersi più rischio di quanto si possa gestire emotivamente"
+        ],
+        "whatToLook": [
+          "Verde (Basso): Adatto a principianti e fondi essenziali",
+          "Giallo (Medio): Richiede conoscenze base e monitoraggio",
+          "Rosso (Alto): Solo utenti avanzati, potenziale di perdita significativo"
+        ]
+      },
+      "diversification": {
+        "title": "Diversificazione",
+        "definition": "La diversificazione significa distribuire gli investimenti tra diverse classi di asset, settori e aree geografiche per ridurre il rischio complessivo del portafoglio.",
+        "commonErrors": [
+          "Sovra-diversificare (troppe posizioni)",
+          "Falsa diversificazione (asset simili)",
+          "Ignorare la correlazione tra asset",
+          "Non ribilanciare quando le allocazioni si spostano"
+        ],
+        "whatToLook": [
+          "Mix di azioni, obbligazioni e alternative",
+          "Diversificazione geografica (domestica + internazionale)",
+          "Diversificazione settoriale nelle azioni",
+          "Ribilanciamento regolare per mantenere l'allocazione target"
+        ]
+      }
+    }
   }
 }

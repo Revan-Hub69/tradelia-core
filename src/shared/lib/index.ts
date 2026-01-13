@@ -37,5 +37,9 @@ export { TRADELIA_CONSTANTS } from './constants';
 // Command Palette (REQ 16)
 export { getCoreCommands, NAVIGATION_SHORTCUTS, SINGLE_KEY_SHORTCUTS } from './core-commands';
 
+// Help Content (REQ 23)
+export { getHelpContent, journeyToHelpModule, hasHelpContent } from './help-content';
+export type { HelpModuleId } from './help-content';
+
 // Types
 export type { FormatterOptions } from './types';

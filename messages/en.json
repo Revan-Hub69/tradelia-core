@@ -217,5 +217,110 @@
   "safeMode": {
     "banner": "Unstable connection — some actions are paused",
     "dismiss": "Dismiss"
+  },
+  "help": {
+    "close": "Close help",
+    "whatIs": "What is it",
+    "commonErrors": "Common errors",
+    "whatToLook": "What to look for",
+    "relatedLinks": "Related links",
+    "buttonLabel": "Help",
+    "modules": {
+      "emergency": {
+        "title": "Emergency Fund",
+        "definition": "An emergency fund is a financial safety net for unexpected expenses like medical bills, car repairs, or job loss. It should cover 3-6 months of essential expenses.",
+        "commonErrors": [
+          "Not starting because the goal seems too big",
+          "Using the fund for non-emergencies",
+          "Keeping it in an account that's too easy to access",
+          "Not replenishing after using it"
+        ],
+        "whatToLook": [
+          "Calculate your monthly essential expenses first",
+          "Start with a small goal (€1,000) then build up",
+          "Keep it in a separate, high-yield savings account",
+          "Automate monthly contributions"
+        ]
+      },
+      "longterm": {
+        "title": "Long-term Investing",
+        "definition": "Long-term investing means holding investments for 5+ years to benefit from compound growth and ride out market volatility. It's the foundation of wealth building.",
+        "commonErrors": [
+          "Trying to time the market",
+          "Checking portfolio too frequently",
+          "Selling during market downturns",
+          "Not diversifying across asset classes"
+        ],
+        "whatToLook": [
+          "Focus on low-cost index funds for diversification",
+          "Understand your risk tolerance before investing",
+          "Rebalance portfolio annually, not more often",
+          "Consider tax-advantaged accounts first"
+        ]
+      },
+      "passive": {
+        "title": "Passive Income",
+        "definition": "Passive income is money earned with minimal ongoing effort after initial setup. Examples include dividends, rental income, and interest from bonds.",
+        "commonErrors": [
+          "Expecting passive income without initial work/capital",
+          "Chasing high yields without understanding risks",
+          "Not accounting for taxes on passive income",
+          "Confusing passive with completely hands-off"
+        ],
+        "whatToLook": [
+          "Dividend yield vs dividend growth strategies",
+          "Sustainability of income sources",
+          "Tax implications in your jurisdiction",
+          "Reinvestment options for compound growth"
+        ]
+      },
+      "speculation": {
+        "title": "Speculation",
+        "definition": "Speculation involves higher-risk investments with potential for significant gains or losses. Only use money you can afford to lose completely.",
+        "commonErrors": [
+          "Using money needed for essentials",
+          "Not setting stop-losses",
+          "FOMO-driven decisions",
+          "Overleveraging positions"
+        ],
+        "whatToLook": [
+          "Never invest more than 5-10% of portfolio",
+          "Have a clear exit strategy before entering",
+          "Understand the underlying asset/technology",
+          "Keep emotions separate from decisions"
+        ]
+      },
+      "riskLevel": {
+        "title": "Risk Levels",
+        "definition": "Risk level indicates how much potential volatility and loss an investment or tool carries. Higher risk means higher potential returns but also higher potential losses.",
+        "commonErrors": [
+          "Ignoring risk level when choosing tools",
+          "Assuming low risk means no risk",
+          "Not matching risk to your timeline",
+          "Taking on more risk than you can handle emotionally"
+        ],
+        "whatToLook": [
+          "Green (Low): Suitable for beginners and essential funds",
+          "Yellow (Medium): Requires basic knowledge and monitoring",
+          "Red (High): Advanced users only, significant loss potential"
+        ]
+      },
+      "diversification": {
+        "title": "Diversification",
+        "definition": "Diversification means spreading investments across different asset classes, sectors, and geographies to reduce overall portfolio risk.",
+        "commonErrors": [
+          "Over-diversifying (too many holdings)",
+          "False diversification (similar assets)",
+          "Ignoring correlation between assets",
+          "Not rebalancing when allocations drift"
+        ],
+        "whatToLook": [
+          "Mix of stocks, bonds, and alternatives",
+          "Geographic diversification (domestic + international)",
+          "Sector diversification within equities",
+          "Regular rebalancing to maintain target allocation"
+        ]
+      }
+    }
   }
 }

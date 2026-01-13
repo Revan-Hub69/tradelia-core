@@ -6,6 +6,7 @@
  * - Pulsante "Apri" rende ovvio l'intento
  * - Riduce misclick e aumenta accessibilità
  * - Density-aware: responds to compact/comfortable mode (REQ 20.2)
+ * - Help button: contextual help for tools (REQ 23.1)
  */
 
 'use client'
@@ -15,6 +16,8 @@ import { useTranslations } from 'next-intl'
 import { RiskBadge, type RiskLevel } from './RiskBadge'
 import { ToolPreview } from './ToolPreview'
 import { SmartEmptyState } from './SmartEmptyState'
+import { HelpButton } from './HelpButton'
+import type { HelpModuleId } from '@/src/shared/lib/help-content'
 import { CogIcon, ArrowRightIcon, StarIcon, ClockIcon } from '@/components/icons/TradeliaIcons'
 
 interface ToolCardProps {
@@ -38,6 +41,9 @@ interface ToolCardProps {
   icon?: React.ReactNode
   className?: string
   size?: 'sm' | 'md' | 'lg'
+  
+  // Help (REQ 23.1)
+  helpModuleId?: HelpModuleId | string
 }
 
 export function ToolCard({
@@ -53,7 +59,8 @@ export function ToolCard({
   onFavorite,
   icon,
   className = '',
-  size = 'md'
+  size = 'md',
+  helpModuleId
 }: ToolCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const t = useTranslations('common.toolCard')
@@ -108,9 +115,20 @@ export function ToolCard({
           
           {/* Title & Category */}
           <div>
-            <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors density-text-secondary">
-              {title}
-            </h3>
+            <div className="flex items-center gap-2">
+              <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors density-text-secondary">
+                {title}
+              </h3>
+              {/* Help button - REQ 23.1 */}
+              {helpModuleId && (
+                <HelpButton 
+                  moduleId={helpModuleId} 
+                  size="sm" 
+                  stopPropagation={true}
+                  panelPosition="bottom"
+                />
+              )}
+            </div>
             {category && (
               <p className="density-text-tertiary text-muted-foreground uppercase tracking-wider">
                 {category}

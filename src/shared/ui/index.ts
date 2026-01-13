@@ -73,6 +73,11 @@ export { NetworkStatusIndicator, useNetworkStatus, NetworkStatus, NetworkStatusP
 export { InlineStatus } from './InlineStatus';
 export type { InlineStatusType, InlineStatusProps } from './InlineStatus';
 
+// Contextual Help components (REQ 23)
+export { HelpPanel } from './HelpPanel';
+export type { HelpContent, HelpPanelProps } from './HelpPanel';
+export { HelpButton } from './HelpButton';
+
 // Utility functions
 export { cn, focusRing, transitionSubtle, cardInteractive, supportsHover, prefersReducedMotion } from './utils';
 
