@@ -139,28 +139,34 @@ export function DrawerEnterprise({
       // Store previous focus
       previousFocusRef.current = document.activeElement as HTMLElement;
       
-      // Focus first focusable element
-      setTimeout(() => {
-        firstFocusableRef.current?.focus();
-      }, 100);
-      
-      // Make page inert (not focusable)
+      // Make page inert (not focusable) - this replaces aria-hidden
       const mainContent = document.querySelector('main');
       if (mainContent) {
-        mainContent.setAttribute('aria-hidden', 'true');
         mainContent.setAttribute('inert', '');
       }
-    } else {
-      // Restore focus
-      if (previousFocusRef.current) {
-        previousFocusRef.current.focus();
-      }
       
+      // Focus first focusable element after a short delay to ensure drawer is rendered
+      const focusTimer = setTimeout(() => {
+        firstFocusableRef.current?.focus();
+      }, 150);
+      
+      return () => clearTimeout(focusTimer);
+    } else {
       // Remove inert from page
       const mainContent = document.querySelector('main');
       if (mainContent) {
-        mainContent.removeAttribute('aria-hidden');
         mainContent.removeAttribute('inert');
+      }
+      
+      // Restore focus with proper timing
+      if (previousFocusRef.current) {
+        const restoreTimer = setTimeout(() => {
+          if (previousFocusRef.current && document.body.contains(previousFocusRef.current)) {
+            previousFocusRef.current.focus();
+          }
+        }, 100);
+        
+        return () => clearTimeout(restoreTimer);
       }
     }
     
@@ -168,7 +174,6 @@ export function DrawerEnterprise({
       // Cleanup on unmount
       const mainContent = document.querySelector('main');
       if (mainContent) {
-        mainContent.removeAttribute('aria-hidden');
         mainContent.removeAttribute('inert');
       }
     };

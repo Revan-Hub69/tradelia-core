@@ -312,36 +312,38 @@ export function PremiumDrawer({
       // Store previous focus
       previousActiveElement.current = document.activeElement as HTMLElement
       
-      // Focus first focusable element
-      setTimeout(() => {
-        firstFocusableRef.current?.focus()
-      }, 100)
-      
-      // Make page inert (not focusable)
+      // Make page inert (not focusable) - this replaces aria-hidden
       const mainContent = document.querySelector('main')
       if (mainContent) {
-        mainContent.setAttribute('aria-hidden', 'true')
         mainContent.setAttribute('inert', '')
       }
+      
+      // Focus first focusable element after a short delay to ensure drawer is rendered
+      const focusTimer = setTimeout(() => {
+        firstFocusableRef.current?.focus()
+      }, 150)
+      
+      return () => clearTimeout(focusTimer)
     } else {
-      // Restore focus
+      // Remove inert from page
+      const mainContent = document.querySelector('main')
+      if (mainContent) {
+        mainContent.removeAttribute('inert')
+      }
+      
+      // Restore focus with proper timing
       if (previousActiveElement.current) {
         // Use requestAnimationFrame to ensure DOM is ready after route change
         requestAnimationFrame(() => {
-          setTimeout(() => {
+          const restoreTimer = setTimeout(() => {
             // Check if the element is still in the DOM (might be removed after route change)
             if (previousActiveElement.current && document.body.contains(previousActiveElement.current)) {
               previousActiveElement.current.focus()
             }
-          }, 200)
+          }, 100)
+          
+          return () => clearTimeout(restoreTimer)
         })
-      }
-      
-      // Remove inert from page
-      const mainContent = document.querySelector('main')
-      if (mainContent) {
-        mainContent.removeAttribute('aria-hidden')
-        mainContent.removeAttribute('inert')
       }
     }
     
@@ -349,7 +351,6 @@ export function PremiumDrawer({
       // Cleanup on unmount
       const mainContent = document.querySelector('main')
       if (mainContent) {
-        mainContent.removeAttribute('aria-hidden')
         mainContent.removeAttribute('inert')
       }
     }
