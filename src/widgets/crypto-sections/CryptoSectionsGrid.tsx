@@ -3,6 +3,8 @@
  * 
  * Pagina principale con le 4 sezioni educative.
  * Usa JourneyCard per design coerente con il resto dell'app.
+ * 
+ * Solo "own" (Possedere criptovalute) è attiva, le altre sono in "Coming Soon"
  */
 
 'use client'
@@ -15,6 +17,9 @@ import {
   SECTION_ORDER,
   type SectionId 
 } from '@/src/shared/config/crypto-sections'
+
+// Sezioni attive (le altre mostrano "Coming Soon")
+const ACTIVE_SECTIONS: SectionId[] = ['own']
 
 interface CryptoSectionsGridProps {
   onSectionClick?: (sectionId: SectionId) => void
@@ -44,6 +49,7 @@ export function CryptoSectionsGrid({
         {SECTION_ORDER.map((sectionId) => {
           const section = CRYPTO_SECTIONS[sectionId]
           const isCompleted = completedSections.includes(sectionId)
+          const isActive = ACTIVE_SECTIONS.includes(sectionId)
           
           // Map section color to JourneyCard accentColor
           const accentColorMap: Record<string, 'primary' | 'success' | 'warning' | 'error' | 'info'> = {
@@ -55,53 +61,76 @@ export function CryptoSectionsGrid({
           const accentColor = accentColorMap[section.color] || 'primary'
           
           return (
-            <JourneyCard
-              key={sectionId}
-              title={t(`${sectionId}.title`)}
-              description={t(`${sectionId}.description`)}
-              subtitle={t(`${sectionId}.subtitle`)}
-              icon={<SectionIcon type={section.icon} />}
-              accentColor={accentColor}
-              onClick={() => onSectionClick?.(sectionId)}
-              badge={
-                <div className="flex items-center gap-3">
-                  <ComplexityIndicator 
-                    level={section.complexity}
-                    size="sm"
-                    showTooltip={false}
-                  />
-                  <span className="text-xs text-muted-foreground">
-                    {t(`${sectionId}.complexity`)}
-                  </span>
-                  {isCompleted && (
-                    <span className="text-xs text-success font-medium">
-                      ✓ {t('ui.completed')}
+            <div key={sectionId} className="relative">
+              <JourneyCard
+                title={t(`${sectionId}.title`)}
+                description={t(`${sectionId}.description`)}
+                subtitle={t(`${sectionId}.subtitle`)}
+                icon={<SectionIcon type={section.icon} />}
+                accentColor={accentColor}
+                onClick={isActive ? () => onSectionClick?.(sectionId) : () => {}}
+                badge={
+                  <div className="flex items-center gap-3">
+                    <ComplexityIndicator 
+                      level={section.complexity}
+                      size="sm"
+                      showTooltip={false}
+                    />
+                    <span className="text-xs text-muted-foreground">
+                      {t(`${sectionId}.complexity`)}
                     </span>
-                  )}
+                    {isCompleted && (
+                      <span className="text-xs text-success font-medium">
+                        ✓ {t('ui.completed')}
+                      </span>
+                    )}
+                  </div>
+                }
+              >
+                {/* Focus Areas */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    {t('ui.focus')}
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {section.focusAreas.map((focus) => (
+                      <span 
+                        key={focus.id}
+                        className="px-2 py-1 text-xs bg-muted/50 text-muted-foreground rounded-md"
+                      >
+                        {t(`${sectionId}.focus.${focus.id}`)}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              }
-            >
-              {/* Focus Areas */}
-              <div className="space-y-2">
-                <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  {t('ui.focus')}
-                </h4>
-                <div className="flex flex-wrap gap-2">
-                  {section.focusAreas.map((focus) => (
-                    <span 
-                      key={focus.id}
-                      className="px-2 py-1 text-xs bg-muted/50 text-muted-foreground rounded-md"
-                    >
-                      {t(`${sectionId}.focus.${focus.id}`)}
+              </JourneyCard>
+              
+              {/* Coming Soon Overlay */}
+              {!isActive && (
+                <div className="absolute inset-0 bg-background/70 backdrop-blur-[2px] rounded-xl flex items-center justify-center cursor-not-allowed">
+                  <div className="flex items-center gap-2 px-4 py-2 bg-muted/80 rounded-full border border-border/50">
+                    <ClockIcon className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-sm font-medium text-muted-foreground">
+                      {t('ui.comingSoon')}
                     </span>
-                  ))}
+                  </div>
                 </div>
-              </div>
-            </JourneyCard>
+              )}
+            </div>
           )
         })}
       </div>
     </div>
+  )
+}
+
+// Clock icon for Coming Soon
+function ClockIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+      <circle cx="12" cy="12" r="10" />
+      <polyline points="12 6 12 12 16 14" />
+    </svg>
   )
 }
 

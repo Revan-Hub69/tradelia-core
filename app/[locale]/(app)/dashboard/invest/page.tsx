@@ -3,10 +3,12 @@
  * 
  * Sezione educativa: orizzonte realistico, volatilità, errori comportamentali
  * Complessità: Alta
+ * 
+ * STATUS: Coming Soon
  */
 
 import { setRequestLocale } from 'next-intl/server'
-import { SectionDashboard } from '@/src/widgets/section-dashboards/SectionDashboard'
+import { ComingSoonSection } from '@/src/widgets/section-dashboards/ComingSoonSection'
 
 interface InvestPageProps {
   params: Promise<{ locale: string }>
@@ -16,5 +18,5 @@ export default async function InvestPage({ params }: InvestPageProps) {
   const { locale } = await params
   setRequestLocale(locale)
   
-  return <SectionDashboard sectionId="invest" />
+  return <ComingSoonSection sectionId="invest" />
 }
