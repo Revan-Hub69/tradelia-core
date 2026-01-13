@@ -1,0 +1,229 @@
+{
+  "academic": {
+    "pillarTitle": "Academic Foundations",
+    "pillarDescription": "Understand emergency reserves before any operational decision",
+    "totalModules": "17 modules",
+    "estimatedTime": "~2 hours",
+    
+    "sections": {
+      "definition": {
+        "title": "Definition",
+        "description": "What emergency reserves are and what they're for"
+      },
+      "prerequisites": {
+        "title": "Personal Prerequisites",
+        "description": "Check if you have the basics to consider alternative reserves"
+      },
+      "risks": {
+        "title": "Risk Framework",
+        "description": "Understand risks before evaluating any tool"
+      },
+      "crypto": {
+        "title": "Crypto: Technical Perimeter",
+        "description": "What cryptocurrencies solve and what they worsen"
+      },
+      "application": {
+        "title": "Application",
+        "description": "Real scenarios and final decision"
+      }
+    },
+
+    "modules": {
+      "whatAreReserves": {
+        "title": "What are reserves",
+        "description": "Functional definition and distinction from investments",
+        "topics": {
+          "functionalDefinition": "Functional definition",
+          "emergencyVsInvestment": "Difference between emergency and investment",
+          "accessVsValue": "Access vs value concept",
+          "whatTheyAreNot": "What they are NOT"
+        }
+      },
+      "reserveCategories": {
+        "title": "Reserve categories",
+        "description": "The 5 academic categories and how they fail",
+        "topics": {
+          "immediateCash": "Immediate liquidity (cash)",
+          "bankLiquidity": "Bank liquidity",
+          "physicalReserves": "Physical reserves",
+          "digitalNonBank": "Non-bank digital reserves",
+          "jurisdictionalDiversification": "Jurisdictional diversification",
+          "failurePrinciple": "Principle: each category fails differently"
+        }
+      },
+      "whatTheySolve": {
+        "title": "What they solve",
+        "description": "Problems that emergency reserves address",
+        "topics": {
+          "liquidityShocks": "Liquidity shocks",
+          "operationalBlocks": "Operational blocks",
+          "withdrawalLimits": "Withdrawal limits",
+          "paymentInterruptions": "Temporary payment interruptions",
+          "buyingTimeOptions": "Buying time and options"
+        }
+      },
+      "whatTheyDontSolve": {
+        "title": "What they DON'T solve",
+        "description": "Wrong expectations to avoid",
+        "topics": {
+          "yield": "Yield",
+          "marketRiskProtection": "Market risk protection",
+          "inflationHedge": "Primary inflation hedge",
+          "investmentReplacement": "Investment replacement"
+        }
+      },
+      "prerequisites": {
+        "title": "Non-negotiable prerequisites",
+        "description": "Minimum conditions before considering alternative reserves",
+        "topics": {
+          "essentialExpenses": "Essential expenses covered",
+          "classicEmergencyFund": "Classic emergency fund",
+          "cashFlowStability": "Cash flow stability",
+          "emotionalStability": "Minimum emotional stability"
+        }
+      },
+      "economicPerimeter": {
+        "title": "Personal economic perimeter",
+        "description": "Map of your wealth and sacrificable quota",
+        "topics": {
+          "wealthMap": "Wealth map",
+          "sacrificableQuota": "Sacrificable quota",
+          "nonUseHorizon": "Non-use horizon",
+          "essentialNeedsImpact": "Impact on essential needs"
+        }
+      },
+      "stressTolerance": {
+        "title": "Stress tolerance",
+        "description": "How you react to losses and access blocks",
+        "topics": {
+          "drawdownReaction": "Drawdown reaction",
+          "accessBlockReaction": "Access block reaction",
+          "panicVsControl": "Panic vs control",
+          "errorsUnderPressure": "Errors under pressure"
+        }
+      },
+      "riskTypes": {
+        "title": "Risk types",
+        "description": "The 5 fundamental risks of reserves",
+        "topics": {
+          "valueLoss": "Value loss risk",
+          "inaccessibility": "Inaccessibility risk",
+          "regulatory": "Regulatory risk",
+          "operational": "Operational risk",
+          "human": "Human risk"
+        }
+      },
+      "riskBudget": {
+        "title": "Risk budget",
+        "description": "How much risk you can afford",
+        "topics": {
+          "personalBudgeting": "Personal risk budgeting",
+          "accessStabilityTradeoff": "Access / stability trade-off",
+          "concentrationVsRedundancy": "Concentration vs redundancy",
+          "acceptableErrorThreshold": "Acceptable error threshold"
+        }
+      },
+      "quantitativeRanges": {
+        "title": "Quantitative ranges",
+        "description": "Allocation percentages and why they're low",
+        "topics": {
+          "zeroPercent": "0% (valid choice)",
+          "oneToThree": "1–3% (minimal backup)",
+          "threeToFive": "3–5% (maximum limit)",
+          "fivePercentStop": "5% (structural stop)",
+          "whyLowPercentages": "Why low percentages"
+        }
+      },
+      "failureModes": {
+        "title": "Failure modes",
+        "description": "How and when each category fails",
+        "topics": {
+          "howEachFails": "How each category fails",
+          "whenItFails": "When it fails",
+          "accessImpact": "What happens to access",
+          "valueImpact": "What happens to value"
+        }
+      },
+      "toolsRiskMatrix": {
+        "title": "Tools × risks matrix",
+        "description": "Systematic comparison between tools and risks",
+        "topics": {
+          "access": "Access",
+          "censorability": "Censorability",
+          "thirdPartyDependency": "Third-party dependency",
+          "humanError": "Human error",
+          "errorRecoverability": "Error recoverability"
+        }
+      },
+      "cryptoPerimeter": {
+        "title": "Crypto: technical perimeter",
+        "description": "What cryptocurrencies solve and what they worsen",
+        "topics": {
+          "whatTheySolve": "What they solve",
+          "whatTheyWorsen": "What they worsen",
+          "volatility": "Volatility",
+          "operationalComplexity": "Operational complexity",
+          "structuralLimits": "Structural limits"
+        }
+      },
+      "custodyCost": {
+        "title": "Custody and cognitive cost",
+        "description": "Direct responsibility and mental maintenance",
+        "topics": {
+          "directResponsibility": "Direct responsibility",
+          "irreversibleErrors": "Irreversible errors",
+          "mentalMaintenance": "Mental maintenance",
+          "recoverableComparison": "Comparison with recoverable systems"
+        }
+      },
+      "realScenarios": {
+        "title": "Real scenarios",
+        "description": "Concrete situations where alternative reserves are needed",
+        "topics": {
+          "blockedBank": "Blocked bank",
+          "atmFailures": "Non-working ATMs",
+          "rejectedCards": "Rejected cards",
+          "intermittentInternet": "Intermittent internet",
+          "crossBorderBlocks": "Cross-border blocks"
+        }
+      },
+      "decisionGate": {
+        "title": "Decision gate",
+        "description": "Final filter: are you suitable or not?",
+        "topics": {
+          "notSuitable": "Not suitable",
+          "minimalBackupOnly": "Suitable only as minimal backup",
+          "suitableWithLimits": "Suitable with limits",
+          "coherenceCheck": "Coherence with previous modules"
+        }
+      },
+      "mifidBlock": {
+        "title": "Operational block (MiFID)",
+        "description": "Clear separation between education and operations",
+        "topics": {
+          "noPurchaseIndication": "No purchase indication",
+          "noPlatform": "No platform",
+          "noStrategy": "No strategy",
+          "educationOperationSeparation": "Education / operations separation"
+        }
+      }
+    },
+
+    "ui": {
+      "sectionLocked": "Complete the previous section to unlock",
+      "moduleCompleted": "Completed",
+      "markComplete": "Got it",
+      "continue": "Continue",
+      "back": "Back",
+      "close": "Close",
+      "progress": "Progress",
+      "estimatedTime": "Estimated time",
+      "minutes": "min",
+      "criticalModule": "Critical module",
+      "nextModule": "Next module",
+      "previousModule": "Previous module",
+      "allSectionsComplete": "You've completed all sections!",
+      "readyForDecision": "Now you can make an informed decision"
+    }
+  }
+}

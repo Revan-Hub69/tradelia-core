@@ -1,16 +1,18 @@
 /**
  * Journey Configuration - Tradelia 2026
  * 
- * I 4 percorsi anti-errore ordinati per complessità cognitiva:
- * - Emergenza: liquidità immediata, protezione (MEDIA)
- * - Passivo: rendite automatiche, staking (MEDIO-ALTA)
- * - Lungo termine: crescita stabile, DCA (ALTA)
- * - Speculazione: trading attivo, opportunità (ALTISSIMA)
+ * I 4 percorsi operativi, ciascuno preceduto da una sezione educativa.
+ * Ordinati per complessità cognitiva crescente:
+ * 
+ * 1. Emergency (Possedere) - custodia, controllo, responsabilità
+ * 2. Passive (Rendite) - yield, staking, rischio controparte  
+ * 3. Longterm (Investire) - DCA, holding, errori comportamentali
+ * 4. Speculation (Speculare) - trading attivo, competenze richieste
  */
 
 import type { ComplexityLevel } from '@/src/shared/ui/ComplexityIndicator'
 
-export type JourneyId = 'emergency' | 'longterm' | 'speculation' | 'passive'
+export type JourneyId = 'emergency' | 'passive' | 'longterm' | 'speculation'
 
 export interface JourneySection {
   id: string

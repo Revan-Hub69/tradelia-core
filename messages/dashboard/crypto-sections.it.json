@@ -1,0 +1,90 @@
+{
+  "sections": {
+    "pageTitle": "Sezioni Tradelia",
+    "pageSubtitle": "Ogni sezione analizza un modo diverso di rapportarsi alle criptovalute. Nessuna ti dice cosa fare. Tutte ti aiutano ad evitare errori costosi.",
+    
+    "own": {
+      "title": "Possedere criptovalute",
+      "subtitle": "Custodia, controllo, responsabilità",
+      "description": "Cosa significa possedere cripto, differenza tra detenere, usare, lasciare a terzi. Cosa può andare storto anche con piccole cifre.",
+      "whatItAnalyzes": "Cosa analizza",
+      "whatItAnalyzesList": [
+        "Cosa significa possedere cripto (custodia, controllo, responsabilità)",
+        "Differenza tra detenere, usare, lasciare a terzi",
+        "Cosa può andare storto anche con piccole cifre"
+      ],
+      "focus": {
+        "custody": "Self-custody vs custodiale",
+        "errors": "Errori irreversibili",
+        "limits": "Limiti pratici e normativi"
+      },
+      "complexity": "Bassa – Media"
+    },
+    
+    "yield": {
+      "title": "Ottenere rendite con le criptovalute",
+      "subtitle": "Non \"passive\" per marketing",
+      "description": "Da dove nasce davvero una rendita, perché il \"passivo\" è spesso solo apparente, quando il rendimento è rischio mascherato.",
+      "whatItAnalyzes": "Cosa analizza",
+      "whatItAnalyzesList": [
+        "Da dove nasce davvero una rendita",
+        "Perché il \"passivo\" è spesso solo apparente",
+        "Quando il rendimento è rischio mascherato"
+      ],
+      "focus": {
+        "origin": "Origine del rendimento",
+        "counterparty": "Rischio di controparte",
+        "failure": "Condizioni di fallimento"
+      },
+      "complexity": "Media – Alta"
+    },
+    
+    "invest": {
+      "title": "Investire in criptovalute",
+      "subtitle": "Gestione nel tempo: PAC, DCA, holding",
+      "description": "Cosa significa investire nel tempo, non \"comprare\". Esposizione graduale come gestione dell'errore umano. Perché molti sbagliano anche con strategie semplici.",
+      "whatItAnalyzes": "Cosa analizza",
+      "whatItAnalyzesList": [
+        "Cosa significa investire nel tempo, non \"comprare\"",
+        "Esposizione graduale (PAC/DCA) come gestione dell'errore umano",
+        "Perché molti sbagliano anche con strategie semplici"
+      ],
+      "focus": {
+        "horizon": "Orizzonte realistico",
+        "volatility": "Volatilità storica",
+        "behavioral": "Errori comportamentali"
+      },
+      "complexity": "Alta"
+    },
+    
+    "speculate": {
+      "title": "Speculare",
+      "subtitle": "Operatività attiva, senza illusioni",
+      "description": "Perché la maggioranza perde, quali competenze sono davvero necessarie, che tipo di stress e rischio sono inevitabili.",
+      "whatItAnalyzes": "Cosa analizza",
+      "whatItAnalyzesList": [
+        "Perché la maggioranza perde",
+        "Quali competenze sono davvero necessarie",
+        "Che tipo di stress e rischio sono inevitabili"
+      ],
+      "focus": {
+        "asymmetry": "Asimmetria rischio/perdita",
+        "skills": "Competenze richieste",
+        "mistakes": "Errori ricorrenti"
+      },
+      "complexity": "Molto Alta"
+    },
+
+    "ui": {
+      "complexity": "Complessità",
+      "focus": "Focus",
+      "startLearning": "Inizia il percorso",
+      "continueLearning": "Continua",
+      "completed": "Completato",
+      "modules": "moduli",
+      "minutes": "min",
+      "locked": "Completa la sezione precedente",
+      "comingSoon": "In arrivo"
+    }
+  }
+}

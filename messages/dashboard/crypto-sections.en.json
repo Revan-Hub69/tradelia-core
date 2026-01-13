@@ -1,0 +1,90 @@
+{
+  "sections": {
+    "pageTitle": "Tradelia Sections",
+    "pageSubtitle": "Each section analyzes a different way of relating to cryptocurrencies. None tells you what to do. All help you avoid costly mistakes.",
+    
+    "own": {
+      "title": "Owning cryptocurrencies",
+      "subtitle": "Custody, control, responsibility",
+      "description": "What it means to own crypto, difference between holding, using, leaving to third parties. What can go wrong even with small amounts.",
+      "whatItAnalyzes": "What it analyzes",
+      "whatItAnalyzesList": [
+        "What it means to own crypto (custody, control, responsibility)",
+        "Difference between holding, using, leaving to third parties",
+        "What can go wrong even with small amounts"
+      ],
+      "focus": {
+        "custody": "Self-custody vs custodial",
+        "errors": "Irreversible errors",
+        "limits": "Practical and regulatory limits"
+      },
+      "complexity": "Low – Medium"
+    },
+    
+    "yield": {
+      "title": "Earning yield with cryptocurrencies",
+      "subtitle": "Not \"passive\" for marketing",
+      "description": "Where yield really comes from, why \"passive\" is often just apparent, when yield is disguised risk.",
+      "whatItAnalyzes": "What it analyzes",
+      "whatItAnalyzesList": [
+        "Where yield really comes from",
+        "Why \"passive\" is often just apparent",
+        "When yield is disguised risk"
+      ],
+      "focus": {
+        "origin": "Yield origin",
+        "counterparty": "Counterparty risk",
+        "failure": "Failure conditions"
+      },
+      "complexity": "Medium – High"
+    },
+    
+    "invest": {
+      "title": "Investing in cryptocurrencies",
+      "subtitle": "Time management: DCA, holding",
+      "description": "What it means to invest over time, not \"buy\". Gradual exposure as human error management. Why many fail even with simple strategies.",
+      "whatItAnalyzes": "What it analyzes",
+      "whatItAnalyzesList": [
+        "What it means to invest over time, not \"buy\"",
+        "Gradual exposure (DCA) as human error management",
+        "Why many fail even with simple strategies"
+      ],
+      "focus": {
+        "horizon": "Realistic horizon",
+        "volatility": "Historical volatility",
+        "behavioral": "Behavioral errors"
+      },
+      "complexity": "High"
+    },
+    
+    "speculate": {
+      "title": "Speculating",
+      "subtitle": "Active trading, no illusions",
+      "description": "Why the majority loses, what skills are really needed, what kind of stress and risk are inevitable.",
+      "whatItAnalyzes": "What it analyzes",
+      "whatItAnalyzesList": [
+        "Why the majority loses",
+        "What skills are really needed",
+        "What kind of stress and risk are inevitable"
+      ],
+      "focus": {
+        "asymmetry": "Risk/loss asymmetry",
+        "skills": "Required skills",
+        "mistakes": "Recurring mistakes"
+      },
+      "complexity": "Very High"
+    },
+
+    "ui": {
+      "complexity": "Complexity",
+      "focus": "Focus",
+      "startLearning": "Start learning",
+      "continueLearning": "Continue",
+      "completed": "Completed",
+      "modules": "modules",
+      "minutes": "min",
+      "locked": "Complete previous section",
+      "comingSoon": "Coming soon"
+    }
+  }
+}

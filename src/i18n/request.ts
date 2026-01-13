@@ -17,6 +17,7 @@ async function loadMessages(locale: Locale) {
   const pagesModule = (await import(`../../messages/dashboard/pages.${locale}.json`)).default;
   const journeysModule = (await import(`../../messages/dashboard/journeys.${locale}.json`)).default;
   const emergencyIntroModule = (await import(`../../messages/dashboard/emergency-intro.${locale}.json`)).default;
+  const cryptoSectionsModule = (await import(`../../messages/dashboard/crypto-sections.${locale}.json`)).default;
   
   // Merge dei messaggi con priorità ai moduli dashboard
   return {
@@ -25,6 +26,7 @@ async function loadMessages(locale: Locale) {
     ...layoutModule,
     ...pagesModule,
     ...journeysModule,
+    ...cryptoSectionsModule,
     emergencyIntro: emergencyIntroModule.emergencyIntro
   };
 }

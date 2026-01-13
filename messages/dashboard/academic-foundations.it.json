@@ -1,0 +1,229 @@
+{
+  "academic": {
+    "pillarTitle": "Basi Accademiche",
+    "pillarDescription": "Comprendi le riserve di emergenza prima di qualsiasi decisione operativa",
+    "totalModules": "17 moduli",
+    "estimatedTime": "~2 ore",
+    
+    "sections": {
+      "definition": {
+        "title": "Definizione",
+        "description": "Cosa sono le riserve di emergenza e a cosa servono"
+      },
+      "prerequisites": {
+        "title": "Prerequisiti Personali",
+        "description": "Verifica se hai le basi per considerare riserve alternative"
+      },
+      "risks": {
+        "title": "Framework Rischi",
+        "description": "Comprendi i rischi prima di valutare qualsiasi strumento"
+      },
+      "crypto": {
+        "title": "Crypto: Perimetro Tecnico",
+        "description": "Cosa risolvono e cosa peggiorano le criptovalute"
+      },
+      "application": {
+        "title": "Applicazione",
+        "description": "Scenari reali e decisione finale"
+      }
+    },
+
+    "modules": {
+      "whatAreReserves": {
+        "title": "Cosa sono le riserve",
+        "description": "Definizione funzionale e distinzione da investimenti",
+        "topics": {
+          "functionalDefinition": "Definizione funzionale",
+          "emergencyVsInvestment": "Differenza tra emergenza e investimento",
+          "accessVsValue": "Concetto di accesso vs valore",
+          "whatTheyAreNot": "Cosa NON sono"
+        }
+      },
+      "reserveCategories": {
+        "title": "Categorie di riserve",
+        "description": "Le 5 categorie accademiche e come falliscono",
+        "topics": {
+          "immediateCash": "Liquidità immediata (contante)",
+          "bankLiquidity": "Liquidità bancaria",
+          "physicalReserves": "Riserve fisiche",
+          "digitalNonBank": "Riserve digitali non bancarie",
+          "jurisdictionalDiversification": "Diversificazione giurisdizionale",
+          "failurePrinciple": "Principio: ogni categoria fallisce in modo diverso"
+        }
+      },
+      "whatTheySolve": {
+        "title": "A cosa servono",
+        "description": "Problemi che le riserve di emergenza risolvono",
+        "topics": {
+          "liquidityShocks": "Shock di liquidità",
+          "operationalBlocks": "Blocchi operativi",
+          "withdrawalLimits": "Limiti ai prelievi",
+          "paymentInterruptions": "Interruzioni temporanee dei pagamenti",
+          "buyingTimeOptions": "Acquisto di tempo e opzioni"
+        }
+      },
+      "whatTheyDontSolve": {
+        "title": "A cosa NON servono",
+        "description": "Aspettative sbagliate da evitare",
+        "topics": {
+          "yield": "Rendimento",
+          "marketRiskProtection": "Protezione dal rischio di mercato",
+          "inflationHedge": "Copertura inflattiva primaria",
+          "investmentReplacement": "Sostituzione degli investimenti"
+        }
+      },
+      "prerequisites": {
+        "title": "Prerequisiti non negoziabili",
+        "description": "Condizioni minime prima di considerare riserve alternative",
+        "topics": {
+          "essentialExpenses": "Spese essenziali coperte",
+          "classicEmergencyFund": "Fondo emergenza classico",
+          "cashFlowStability": "Stabilità dei flussi",
+          "emotionalStability": "Stabilità emotiva minima"
+        }
+      },
+      "economicPerimeter": {
+        "title": "Perimetro economico personale",
+        "description": "Mappa del tuo patrimonio e quota sacrificabile",
+        "topics": {
+          "wealthMap": "Mappa del patrimonio",
+          "sacrificableQuota": "Quota sacrificabile",
+          "nonUseHorizon": "Orizzonte di non utilizzo",
+          "essentialNeedsImpact": "Impatto su bisogni essenziali"
+        }
+      },
+      "stressTolerance": {
+        "title": "Tolleranza allo stress",
+        "description": "Come reagisci a perdite e blocchi di accesso",
+        "topics": {
+          "drawdownReaction": "Reazione a drawdown",
+          "accessBlockReaction": "Reazione a blocchi di accesso",
+          "panicVsControl": "Panico vs controllo",
+          "errorsUnderPressure": "Errori sotto pressione"
+        }
+      },
+      "riskTypes": {
+        "title": "Tipi di rischio",
+        "description": "I 5 rischi fondamentali delle riserve",
+        "topics": {
+          "valueLoss": "Rischio di perdita di valore",
+          "inaccessibility": "Rischio di inaccessibilità",
+          "regulatory": "Rischio normativo",
+          "operational": "Rischio operativo",
+          "human": "Rischio umano"
+        }
+      },
+      "riskBudget": {
+        "title": "Budget di rischio",
+        "description": "Quanto rischio puoi permetterti",
+        "topics": {
+          "personalBudgeting": "Risk budgeting personale",
+          "accessStabilityTradeoff": "Trade-off accesso / stabilità",
+          "concentrationVsRedundancy": "Concentrazione vs ridondanza",
+          "acceptableErrorThreshold": "Soglia di errore accettabile"
+        }
+      },
+      "quantitativeRanges": {
+        "title": "Range quantitativi",
+        "description": "Percentuali di allocazione e perché sono basse",
+        "topics": {
+          "zeroPercent": "0% (scelta valida)",
+          "oneToThree": "1–3% (backup minimo)",
+          "threeToFive": "3–5% (limite massimo)",
+          "fivePercentStop": "5% (stop strutturale)",
+          "whyLowPercentages": "Perché percentuali basse"
+        }
+      },
+      "failureModes": {
+        "title": "Modalità di fallimento",
+        "description": "Come e quando fallisce ogni categoria",
+        "topics": {
+          "howEachFails": "Come fallisce ogni categoria",
+          "whenItFails": "Quando fallisce",
+          "accessImpact": "Cosa succede all'accesso",
+          "valueImpact": "Cosa succede al valore"
+        }
+      },
+      "toolsRiskMatrix": {
+        "title": "Matrice strumenti × rischi",
+        "description": "Confronto sistematico tra strumenti e rischi",
+        "topics": {
+          "access": "Accesso",
+          "censorability": "Censurabilità",
+          "thirdPartyDependency": "Dipendenza da terzi",
+          "humanError": "Errore umano",
+          "errorRecoverability": "Recuperabilità degli errori"
+        }
+      },
+      "cryptoPerimeter": {
+        "title": "Crypto: perimetro tecnico",
+        "description": "Cosa risolvono e cosa peggiorano le criptovalute",
+        "topics": {
+          "whatTheySolve": "Cosa risolvono",
+          "whatTheyWorsen": "Cosa peggiorano",
+          "volatility": "Volatilità",
+          "operationalComplexity": "Complessità operativa",
+          "structuralLimits": "Limiti strutturali"
+        }
+      },
+      "custodyCost": {
+        "title": "Custodia e costo cognitivo",
+        "description": "Responsabilità diretta e manutenzione mentale",
+        "topics": {
+          "directResponsibility": "Responsabilità diretta",
+          "irreversibleErrors": "Errori irreversibili",
+          "mentalMaintenance": "Manutenzione mentale",
+          "recoverableComparison": "Confronto con sistemi recuperabili"
+        }
+      },
+      "realScenarios": {
+        "title": "Scenari reali",
+        "description": "Situazioni concrete in cui servono riserve alternative",
+        "topics": {
+          "blockedBank": "Banca bloccata",
+          "atmFailures": "ATM non funzionanti",
+          "rejectedCards": "Carte rifiutate",
+          "intermittentInternet": "Internet intermittente",
+          "crossBorderBlocks": "Blocchi transfrontalieri"
+        }
+      },
+      "decisionGate": {
+        "title": "Decision gate",
+        "description": "Filtro finale: sei adatto o no?",
+        "topics": {
+          "notSuitable": "Non adatto",
+          "minimalBackupOnly": "Adatto solo come backup minimo",
+          "suitableWithLimits": "Adatto con limiti",
+          "coherenceCheck": "Coerenza con moduli precedenti"
+        }
+      },
+      "mifidBlock": {
+        "title": "Blocco operativo (MiFID)",
+        "description": "Separazione netta tra educazione e operatività",
+        "topics": {
+          "noPurchaseIndication": "Nessuna indicazione di acquisto",
+          "noPlatform": "Nessuna piattaforma",
+          "noStrategy": "Nessuna strategia",
+          "educationOperationSeparation": "Separazione education / operatività"
+        }
+      }
+    },
+
+    "ui": {
+      "sectionLocked": "Completa la sezione precedente per sbloccare",
+      "moduleCompleted": "Completato",
+      "markComplete": "Ho capito",
+      "continue": "Continua",
+      "back": "Indietro",
+      "close": "Chiudi",
+      "progress": "Progresso",
+      "estimatedTime": "Tempo stimato",
+      "minutes": "min",
+      "criticalModule": "Modulo critico",
+      "nextModule": "Prossimo modulo",
+      "previousModule": "Modulo precedente",
+      "allSectionsComplete": "Hai completato tutte le sezioni!",
+      "readyForDecision": "Ora puoi prendere una decisione informata"
+    }
+  }
+}
