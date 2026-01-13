@@ -251,38 +251,19 @@ export function PremiumDrawer({
   }, [enableSwipeClose, touchStart, swipeOffset, onClose])
 
   // Scroll lock - iOS safe (REQ 24.1)
-  // Uses overflow hidden on both body and html, plus touch-action for iOS
+  // Uses overflow hidden on both body and html
   useEffect(() => {
     if (!isOpen) return
 
     previousActiveElement.current = document.activeElement as HTMLElement
     
-    // Store original styles
-    const originalBodyOverflow = document.body.style.overflow
-    const originalHtmlOverflow = document.documentElement.style.overflow
-    const originalBodyPosition = document.body.style.position
-    const originalBodyTop = document.body.style.top
-    const originalBodyWidth = document.body.style.width
-    const scrollY = window.scrollY
-    
-    // Lock scroll on body AND html (iOS fix)
+    // Lock scroll on body AND html
     document.body.style.overflow = 'hidden'
     document.documentElement.style.overflow = 'hidden'
-    
-    // iOS Safari specific fix - prevent background scroll
-    document.body.style.position = 'fixed'
-    document.body.style.top = `-${scrollY}px`
-    document.body.style.width = '100%'
 
     return () => {
-      document.body.style.overflow = originalBodyOverflow
-      document.documentElement.style.overflow = originalHtmlOverflow
-      document.body.style.position = originalBodyPosition
-      document.body.style.top = originalBodyTop
-      document.body.style.width = originalBodyWidth
-      
-      // Restore scroll position
-      window.scrollTo(0, scrollY)
+      document.body.style.overflow = ''
+      document.documentElement.style.overflow = ''
     }
   }, [isOpen])
 

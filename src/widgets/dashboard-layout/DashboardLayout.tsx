@@ -76,15 +76,29 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   }, [activeJourney, setLastJourney])
 
   // Restore last journey when landing on home (REQ 18.1)
-  // Only restore once after session is restored from localStorage
+  // Only restore ONCE on initial page load, not on every navigation to home
+  // This allows users to intentionally navigate back to home
   useEffect(() => {
-    if (isRestored && isOnHome && sessionState.lastJourney) {
-      // Use replace to avoid adding to history
+    // Skip if not restored yet or not on home
+    if (!isRestored || !isOnHome || !sessionState.lastJourney) return
+    
+    // Only auto-redirect on initial page load (when coming from external URL)
+    // Check if this is a fresh page load vs internal navigation
+    const isInitialLoad = window.performance?.navigation?.type === 0 || 
+                          window.performance?.getEntriesByType?.('navigation')?.[0]?.type === 'navigate'
+    
+    // Don't redirect if user explicitly navigated to home (internal navigation)
+    // The navigation entry type will be 'navigate' for fresh loads, but we also need
+    // to check if there's a referrer from the same origin
+    const referrer = document.referrer
+    const isSameOrigin = referrer && new URL(referrer).origin === window.location.origin
+    
+    // Only redirect on fresh page load from external source or direct URL entry
+    if (isInitialLoad && !isSameOrigin) {
       router.replace(`/${locale}/dashboard/${sessionState.lastJourney}`)
     }
-    // Only run once when session is restored and we're on home
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isRestored, isOnHome])
+  }, [isRestored])
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden flex flex-col">
