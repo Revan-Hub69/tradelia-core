@@ -235,7 +235,7 @@ export function useEducationMemory(sectionId: string) {
   const getRecommendedAction = useCallback(() => {
     const hasReadErrors = state.hasReadErrors[sectionId] || false
     const hasSeenIntro = state.hasSeenIntro[sectionId] || false
-    const _hasReadEducational = state.hasReadEducational[sectionId] || false
+    const hasReadEducational = state.hasReadEducational[sectionId] || false
 
     if (!hasSeenIntro && !hasReadErrors) {
       return { tab: 'intro', reason: t('actions.startWithIntro') }
