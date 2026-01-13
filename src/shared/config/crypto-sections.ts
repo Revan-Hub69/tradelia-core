@@ -33,7 +33,7 @@ export interface CryptoSection {
   descriptionKey: string
   whatItAnalyzesKey: string
   icon: 'wallet' | 'percent' | 'trending' | 'zap'
-  color: 'success' | 'warning' | 'orange' | 'error' // Gradiente difficoltà: verde → giallo → arancione → rosso
+  color: 'success' | 'warning' | 'error' | 'info' // Colori del design system
   complexity: ComplexityLevel
   complexityLabel: string // "Bassa – Media", "Media – Alta", etc.
   // Focus areas (3 per sezione)
@@ -93,7 +93,7 @@ export const CRYPTO_SECTIONS: Record<SectionId, CryptoSection> = {
     descriptionKey: 'sections.invest.description',
     whatItAnalyzesKey: 'sections.invest.whatItAnalyzes',
     icon: 'trending',
-    color: 'orange', // Arancione = complessità alta
+    color: 'warning', // Warning più intenso per complessità alta
     complexity: 'high',
     complexityLabel: 'Alta',
     focusAreas: [
