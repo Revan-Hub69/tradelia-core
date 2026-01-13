@@ -1,23 +1,22 @@
 /**
- * Premium Drawer - Tradelia 2026
+ * Premium Drawer - Tradelia 2026 Enterprise Edition
  * 
- * Sistema drawer unificato: professionale, elegante
- * Usa createPortal per renderizzare a livello body (fuori dal layout)
- * Supporta deep linking con URL params (REQ 17.3, 17.4, 17.5)
- * Supporta session continuity per tab restore (REQ 18.3)
+ * Google/OpenAI/Binance-Level Standards Implementation
  * 
- * Enterprise Enhancements (REQ 24):
- * - Scroll shadow on header (REQ 24.6)
- * - Swipe to close on mobile (REQ 24.3)
- * - Sticky header with breadcrumb (REQ 24.4)
- * - Scroll to top on tab change (REQ 24.5)
- * - Scroll lock on iOS (REQ 24.1)
- * - Focus restore after route change (REQ 24.2)
+ * Enterprise Enhancements:
+ * - WAI-ARIA APG dialog/modal pattern compliance
+ * - WCAG 2.2 Focus Not Obscured (scroll-margin)
+ * - Enterprise contrast standards (≥7:1, 4.5:1, 3.5:1)
+ * - Professional motion system (160-280ms)
+ * - I18N safety with user-safe fallbacks
+ * - Semantic alert correctness (warning ≠ danger)
+ * - Content structure optimization for scanning
+ * - Apple HIG dark mode compliance
  */
 
 'use client'
 
-import { 
+import React, { 
   useEffect, 
   useRef,
   useState,
@@ -26,9 +25,11 @@ import {
   type TouchEvent as ReactTouchEvent
 } from 'react'
 import { createPortal } from 'react-dom'
+import { CloseIcon, InfoIcon, AlertTriangleIcon, CheckIcon } from '@/components/icons/TradeliaIcons'
 import { useDeepLink } from '../hooks/useDeepLink'
 import { useDrawerTabRestore } from '../hooks/useSessionContinuity'
 import { useScrollShadow } from '../hooks/useScrollShadow'
+import { useSafeTranslations } from '../lib/i18n-safe'
 
 export interface PremiumDrawerProps {
   isOpen: boolean
@@ -62,6 +63,38 @@ export interface PremiumDrawerProps {
   enableSwipeClose?: boolean
 }
 
+interface AlertEnterpriseProps {
+  type: 'info' | 'warning' | 'danger' | 'success'
+  title: string
+  message: string
+  className?: string
+}
+
+interface DrawerListItemProps {
+  children: ReactNode
+  className?: string
+  onClick?: () => void
+}
+
+interface ProgressStateBadgeProps {
+  state: 'not-started' | 'fundamental' | 'in-progress' | 'completed'
+  timeEstimate?: string
+}
+
+interface CTAEnterpriseProps {
+  variant?: 'primary' | 'secondary'
+  children: ReactNode
+  onClick?: () => void
+  disabled?: boolean
+  className?: string
+}
+
+interface FocusChipProps {
+  children: ReactNode
+  isPrimary?: boolean
+  className?: string
+}
+
 const SIZES = {
   sm: 'max-w-sm',
   md: 'max-w-md', 
@@ -93,6 +126,134 @@ const ACCENT_COLORS = {
   }
 }
 
+/**
+ * Enterprise Alert Component with semantic correctness
+ */
+export function AlertEnterprise({ type, title, message, className = '' }: AlertEnterpriseProps) {
+  const iconMap = {
+    info: InfoIcon,
+    warning: AlertTriangleIcon,
+    danger: AlertTriangleIcon, // Using AlertTriangleIcon for danger too
+    success: CheckIcon
+  }
+  
+  const Icon = iconMap[type]
+  
+  return (
+    <div className={`alert-enterprise-${type} ${className}`} role="alert">
+      <div className="flex items-start gap-3">
+        <Icon className="w-5 h-5 mt-0.5 flex-shrink-0" aria-hidden="true" />
+        <div className="flex-1 min-w-0">
+          <h4 className="text-sm font-semibold mb-1">{title}</h4>
+          <p className="text-sm reading-line-height">{message}</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Enterprise Drawer List Item
+ * Optimized for scanning with proper spacing and hierarchy
+ */
+export function DrawerListItem({ 
+  children, 
+  className = '',
+  onClick 
+}: DrawerListItemProps) {
+  const Component = onClick ? 'button' : 'div'
+  
+  return (
+    <Component
+      onClick={onClick}
+      className={`drawer-list-item ${onClick ? 'tap-target focus-enterprise-ring cursor-pointer' : ''} ${className}`}
+    >
+      {children}
+    </Component>
+  )
+}
+
+/**
+ * Enterprise Progress State Badge
+ * Clear, specific states instead of generic "Da completare"
+ */
+export function ProgressStateBadge({ 
+  state, 
+  timeEstimate 
+}: ProgressStateBadgeProps) {
+  const stateConfig = {
+    'not-started': {
+      label: 'Non iniziato',
+      className: 'progress-state-not-started'
+    },
+    'fundamental': {
+      label: 'Fondamentale',
+      className: 'progress-state-fundamental'
+    },
+    'in-progress': {
+      label: 'In corso',
+      className: 'progress-state-not-started'
+    },
+    'completed': {
+      label: 'Completato',
+      className: 'progress-state-completed'
+    }
+  }
+  
+  const config = stateConfig[state]
+  
+  return (
+    <span className={config.className}>
+      {config.label}
+      {timeEstimate && state === 'fundamental' && (
+        <span className="text-xs opacity-75"> · {timeEstimate}</span>
+      )}
+    </span>
+  )
+}
+
+/**
+ * Enterprise CTA Button
+ * Clear action description, not generic
+ */
+export function CTAEnterprise({
+  variant = 'primary',
+  children,
+  onClick,
+  disabled = false,
+  className = ''
+}: CTAEnterpriseProps) {
+  const baseClass = variant === 'primary' ? 'cta-enterprise-primary' : 'cta-enterprise-secondary'
+  
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={`${baseClass} focus-enterprise-ring disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+    >
+      {children}
+    </button>
+  )
+}
+
+/**
+ * Focus Chip with hierarchy
+ * First chip primary, others secondary for better scanning
+ */
+export function FocusChip({
+  children,
+  isPrimary = false,
+  className = ''
+}: FocusChipProps) {
+  const chipClass = isPrimary ? 'focus-chip-primary' : 'focus-chip-secondary'
+  
+  return (
+    <span className={`${chipClass} ${className}`}>
+      {children}
+    </span>
+  )
+}
+
 export function PremiumDrawer({
   isOpen,
   onClose,
@@ -119,10 +280,12 @@ export function PremiumDrawer({
   const drawerRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
   const previousActiveElement = useRef<HTMLElement | null>(null)
+  const firstFocusableRef = useRef<HTMLButtonElement>(null)
   const [mounted, setMounted] = useState(false)
   const [copySuccess, setCopySuccess] = useState(false)
   const [hasRestoredTab, setHasRestoredTab] = useState(false)
   const accent = ACCENT_COLORS[accentColor]
+  const safeT = useSafeTranslations()
   
   // Swipe to close state (REQ 24.3)
   const [touchStart, setTouchStart] = useState<number | null>(null)
@@ -142,6 +305,55 @@ export function PremiumDrawer({
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  // Focus management - WAI-ARIA APG pattern
+  useEffect(() => {
+    if (isOpen) {
+      // Store previous focus
+      previousActiveElement.current = document.activeElement as HTMLElement
+      
+      // Focus first focusable element
+      setTimeout(() => {
+        firstFocusableRef.current?.focus()
+      }, 100)
+      
+      // Make page inert (not focusable)
+      const mainContent = document.querySelector('main')
+      if (mainContent) {
+        mainContent.setAttribute('aria-hidden', 'true')
+        mainContent.setAttribute('inert', '')
+      }
+    } else {
+      // Restore focus
+      if (previousActiveElement.current) {
+        // Use requestAnimationFrame to ensure DOM is ready after route change
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            // Check if the element is still in the DOM (might be removed after route change)
+            if (previousActiveElement.current && document.body.contains(previousActiveElement.current)) {
+              previousActiveElement.current.focus()
+            }
+          }, 200)
+        })
+      }
+      
+      // Remove inert from page
+      const mainContent = document.querySelector('main')
+      if (mainContent) {
+        mainContent.removeAttribute('aria-hidden')
+        mainContent.removeAttribute('inert')
+      }
+    }
+    
+    return () => {
+      // Cleanup on unmount
+      const mainContent = document.querySelector('main')
+      if (mainContent) {
+        mainContent.removeAttribute('aria-hidden')
+        mainContent.removeAttribute('inert')
+      }
+    }
+  }, [isOpen])
 
   // Update URL when drawer opens/closes (REQ 17.3)
   useEffect(() => {
@@ -254,8 +466,6 @@ export function PremiumDrawer({
   // Uses overflow hidden on both body and html
   useEffect(() => {
     if (!isOpen) return
-
-    previousActiveElement.current = document.activeElement as HTMLElement
     
     // Lock scroll on body AND html
     document.body.style.overflow = 'hidden'
@@ -267,23 +477,7 @@ export function PremiumDrawer({
     }
   }, [isOpen])
 
-  // Restore focus on close (REQ 24.2)
-  // Also handles focus restore after route changes
-  useEffect(() => {
-    if (!isOpen && previousActiveElement.current) {
-      // Use requestAnimationFrame to ensure DOM is ready after route change
-      requestAnimationFrame(() => {
-        setTimeout(() => {
-          // Check if the element is still in the DOM (might be removed after route change)
-          if (previousActiveElement.current && document.body.contains(previousActiveElement.current)) {
-            previousActiveElement.current.focus()
-          }
-        }, 200)
-      })
-    }
-  }, [isOpen])
-
-  // ESC to close
+  // ESC to close - WCAG requirement
   useEffect(() => {
     if (!closeOnEscape || !isOpen) return
     
@@ -323,11 +517,6 @@ export function PremiumDrawer({
     const firstElement = focusableElements[0]
     const lastElement = focusableElements[focusableElements.length - 1]
 
-    // Focus on first element
-    setTimeout(() => {
-      firstElement?.focus()
-    }, 100)
-
     const handleTab = (e: KeyboardEvent) => {
       if (e.key !== 'Tab') return
 
@@ -362,17 +551,16 @@ export function PremiumDrawer({
         aria-hidden="true"
       />
 
-      {/* Drawer Panel */}
+      {/* Drawer Panel - Enterprise Pattern */}
       <div
         ref={drawerRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby={title ? 'drawer-title' : undefined}
         className={`
+          drawer-enterprise
           absolute top-0 right-0 h-full
           w-full ${SIZES[size]}
-          bg-background border-l border-border/50
-          shadow-2xl
           flex flex-col
           animate-slide-in-right
           ${className}
@@ -389,42 +577,38 @@ export function PremiumDrawer({
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {/* Header with scroll shadow (REQ 24.4, 24.6) */}
+        {/* Header with Enterprise styling and scroll shadow */}
         {(title || showCloseButton || minimalHeader) && (
           <header 
-            className={`
-              flex-shrink-0 px-4 sm:px-6 py-4 border-b border-border/30
-              sticky top-0 z-10 bg-background
-              transition-shadow duration-200
-              ${isScrolled ? 'shadow-md' : ''}
-            `}
+            className={`drawer-enterprise-header ${isScrolled ? 'scrolled' : ''}`}
           >
             {minimalHeader ? (
               /* Header minimalista mobile: solo torna indietro */
               <button
+                ref={firstFocusableRef}
                 onClick={onClose}
-                className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-primary/30 rounded-lg px-2 py-1 -ml-2"
-                aria-label="Torna indietro e chiudi pannello"
+                className="flex items-center gap-2 text-sm font-medium text-enterprise-secondary hover:text-enterprise-primary transition-colors focus-enterprise-ring rounded-lg px-2 py-1 -ml-2"
+                aria-label={safeT('drawer.backAndClose', 'Torna indietro e chiudi pannello')}
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                 </svg>
-                Torna indietro
+                {safeT('drawer.back', 'Torna indietro')}
               </button>
             ) : (
-              /* Header standard with title and breadcrumb (REQ 24.4) */
+              /* Header standard with enterprise styling */
               <div className="flex flex-col gap-2">
                 {/* Breadcrumb row */}
                 {breadcrumb && breadcrumb.length > 0 && (
-                  <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-xs text-enterprise-secondary">
                     {breadcrumb.map((item, index) => (
-                      <span key={`breadcrumb-${item}-${index}`} className="flex items-center gap-1">
+                      <span key={`breadcrumb-${item.replace(/\s+/g, '-').toLowerCase()}-${index}`} className="flex items-center gap-1">
                         {index > 0 && (
                           <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                           </svg>
                         )}
-                        <span className={index === breadcrumb.length - 1 ? 'text-foreground font-medium' : ''}>
+                        <span className={index === breadcrumb.length - 1 ? 'text-enterprise-primary font-medium' : ''}>
                           {item}
                         </span>
                       </span>
@@ -447,7 +631,7 @@ export function PremiumDrawer({
                             {subtitle}
                           </p>
                         )}
-                        <h2 id="drawer-title" className="text-lg sm:text-xl font-semibold text-foreground truncate">
+                        <h2 id="drawer-title" className="text-enterprise-primary text-lg sm:text-xl font-semibold truncate">
                           {title}
                         </h2>
                       </div>
@@ -460,18 +644,14 @@ export function PremiumDrawer({
                     {showCopyLink && panelId && (
                       <button
                         onClick={handleCopyLink}
-                        className="tap-target-icon w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-muted-foreground hover:text-foreground bg-muted/30 hover:bg-muted/50 border border-border/30 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/30"
-                        aria-label={copySuccess ? 'Link copiato!' : 'Copia link sezione'}
-                        title={copySuccess ? 'Link copiato!' : 'Copia link sezione'}
+                        className="tap-target-icon focus-enterprise-ring p-2 rounded-lg hover:bg-muted/50 transition-colors"
+                        aria-label={copySuccess ? safeT('drawer.linkCopied', 'Link copiato!') : safeT('drawer.copyLink', 'Copia link sezione')}
+                        title={copySuccess ? safeT('drawer.linkCopied', 'Link copiato!') : safeT('drawer.copyLink', 'Copia link sezione')}
                       >
                         {copySuccess ? (
-                          <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                          </svg>
+                          <CheckIcon className="w-4 h-4 text-success" aria-hidden="true" />
                         ) : (
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.193-9.193a4.5 4.5 0 00-6.364 0l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
-                          </svg>
+                          <InfoIcon className="w-4 h-4" aria-hidden="true" />
                         )}
                       </button>
                     )}
@@ -479,13 +659,12 @@ export function PremiumDrawer({
                     {/* Close Button */}
                     {showCloseButton && (
                       <button
+                        ref={!minimalHeader ? firstFocusableRef : undefined}
                         onClick={onClose}
-                        className="tap-target-icon w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-muted-foreground hover:text-foreground bg-muted/30 hover:bg-muted/50 border border-border/30 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/30"
-                        aria-label="Chiudi pannello"
+                        className="tap-target-icon focus-enterprise-ring p-2 rounded-lg hover:bg-muted/50 transition-colors"
+                        aria-label={safeT('drawer.close', 'Chiudi pannello')}
                       >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                        <CloseIcon className="w-4 h-4" aria-hidden="true" />
                       </button>
                     )}
                   </div>
@@ -495,19 +674,31 @@ export function PremiumDrawer({
           </header>
         )}
 
-        {/* Content - SOLO questa parte scrolla */}
+        {/* Content with Enterprise styling and focus scroll-margin */}
         <div 
           ref={contentRef}
-          className="flex-1 overflow-y-auto overscroll-contain"
+          className="drawer-enterprise-content flex-1 overflow-y-auto drawer-scrollable"
         >
           {children}
         </div>
 
         {/* Footer */}
         {footer && (
-          <footer className="flex-shrink-0 px-4 sm:px-6 py-4 border-t border-border/30 bg-muted/10">
+          <footer className="border-t border-enterprise-soft p-6 bg-card">
             {footer}
           </footer>
+        )}
+        
+        {/* Hidden close button for screen readers */}
+        {!showCloseButton && !minimalHeader && (
+          <button
+            ref={firstFocusableRef}
+            onClick={onClose}
+            className="sr-only"
+            aria-label={safeT('drawer.close', 'Chiudi drawer')}
+          >
+            {safeT('drawer.close', 'Chiudi')}
+          </button>
         )}
       </div>
     </div>
@@ -517,7 +708,7 @@ export function PremiumDrawer({
   return createPortal(drawerContent, document.body)
 }
 
-// Preset variants
+// Preset variants with enterprise styling
 export function InfoDrawer(props: Omit<PremiumDrawerProps, 'accentColor'>) {
   return <PremiumDrawer {...props} accentColor="primary" />
 }

@@ -11,7 +11,14 @@
 import { useState, useMemo } from 'react'
 import { useTranslations } from 'next-intl'
 import { JourneyCard } from '@/src/shared/ui/JourneyCard'
-import { PremiumDrawer } from '@/src/shared/ui/PremiumDrawer'
+import { 
+  PremiumDrawer, 
+  AlertEnterprise, 
+  DrawerListItem, 
+  ProgressStateBadge, 
+  CTAEnterprise,
+  FocusChip 
+} from '@/src/shared/ui/PremiumDrawer'
 import { GuestModeAlert } from '@/src/shared/ui/GuestModeAlert'
 import { useProgressTracking } from '@/src/shared/hooks/useProgressTracking'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
@@ -171,107 +178,138 @@ export function EmergencyPillars() {
         ))}
       </div>
 
-      {/* Drawer - laterale su desktop, full su mobile */}
+      {/* Enterprise Drawer with improved UX */}
       {activeData && (
         <PremiumDrawer
           isOpen={!!activePillar}
           onClose={() => setActivePillar(null)}
+          title={activeData.title}
+          subtitle="Pilastro di emergenza"
+          icon={<PillarIcon type={activeData.iconType} className="w-6 h-6" />}
           accentColor={activeData.accentColor}
           size="xl"
-          minimalHeader
-          showCloseButton={false}
+          showCopyLink={true}
+          panelId={`pillar-${activeData.id}`}
+          onCopyLink={() => {
+            // Toast notification would go here
+            console.log('Link copiato per pilastro:', activeData.id)
+          }}
           footer={activeData.hasCta && activeData.completionPercent === 100 ? (
-            <button
-              onClick={() => console.log(`Complete ${activeData.id}`)}
-              className="w-full py-2.5 px-4 rounded-lg text-sm font-medium bg-primary text-white hover:bg-primary/90 transition-colors"
-            >
-              Completa pilastro
-            </button>
-          ) : undefined}
+            <div className="flex gap-3">
+              <CTAEnterprise variant="primary" onClick={() => console.log(`Complete ${activeData.id}`)}>
+                Completa pilastro
+              </CTAEnterprise>
+              <CTAEnterprise variant="secondary" onClick={() => setActivePillar(null)}>
+                Rivedi contenuto
+              </CTAEnterprise>
+            </div>
+          ) : (
+            <div className="flex gap-3">
+              <CTAEnterprise variant="primary" onClick={() => setActivePillar(null)}>
+                Prosegui nel percorso
+              </CTAEnterprise>
+            </div>
+          )}
         >
-          <div className="px-4 sm:px-6 py-5 space-y-5">
-            {/* Guest Mode Alert */}
+          <div className="space-y-6">
+            {/* Guest Mode Alert with enterprise styling */}
             {state.isGuestMode && (
-              <GuestModeAlert 
-                onRegisterClick={() => {
-                  setActivePillar(null)
-                  openModal()
-                }}
+              <AlertEnterprise
+                type="info"
+                title="Modalità ospite attiva"
+                message="Registrati per salvare i tuoi progressi e accedere a tutte le funzionalità."
+                className="mb-6"
               />
             )}
 
-            {/* Title inside content */}
-            <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-xl ${activeData.accentColor === 'primary' ? 'bg-primary/10' : activeData.accentColor === 'success' ? 'bg-emerald-500/10' : activeData.accentColor === 'warning' ? 'bg-amber-500/10' : 'bg-red-500/10'} flex items-center justify-center`}>
-                <PillarIcon type={activeData.iconType} className={`w-5 h-5 ${activeData.accentColor === 'primary' ? 'text-primary' : activeData.accentColor === 'success' ? 'text-emerald-600' : activeData.accentColor === 'warning' ? 'text-amber-600' : 'text-red-600'}`} />
-              </div>
-              <h2 className="text-lg font-semibold text-foreground">
-                {activeData.title}
-              </h2>
+            {/* Focus areas with hierarchy */}
+            <div className="flex flex-wrap gap-2">
+              <FocusChip isPrimary>preparazione emergenze</FocusChip>
+              <FocusChip>gestione risorse</FocusChip>
+              <FocusChip>sicurezza finanziaria</FocusChip>
             </div>
 
-            {/* Progress bar */}
-            <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-xl">
-              <span className="text-xs text-muted-foreground">{t('completion')}:</span>
-              <div className="flex-1 h-2 bg-muted-foreground/20 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-emerald-500 rounded-full transition-all duration-300"
-                  style={{ width: `${activeData.completionPercent}%` }}
-                />
+            {/* Progress section with enterprise styling */}
+            <section>
+              <h3 className="text-enterprise-primary text-base font-semibold mb-3">
+                Progresso completamento
+              </h3>
+              <div className="flex items-center gap-3 p-4 alert-enterprise-info">
+                <span className="text-sm font-medium">Completamento:</span>
+                <div className="flex-1 h-2 bg-muted-foreground/20 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-success rounded-full transition-all duration-300"
+                    style={{ width: `${activeData.completionPercent}%` }}
+                  />
+                </div>
+                <span className="text-sm font-semibold">{activeData.completionPercent}%</span>
               </div>
-              <span className="text-xs font-medium text-muted-foreground">{activeData.completionPercent}%</span>
-            </div>
+            </section>
 
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              {activeData.description}
-            </p>
+            {/* Description with reading optimization */}
+            <section>
+              <h3 className="text-enterprise-primary text-base font-semibold mb-3">
+                Cosa imparerai
+              </h3>
+              <div className="reading-width">
+                <p className="text-enterprise-body reading-line-height reading-paragraph-spacing">
+                  {activeData.description}
+                </p>
+              </div>
+            </section>
             
-            {/* Sezioni del pillar - con checkbox interattive */}
-            <div className="space-y-3">
-              {activeSections.map((section, index) => {
-                const isCompleted = activeProgress?.completedSections?.includes(section.id)
-                return (
-                  <button
-                    key={section.id}
-                    onClick={() => handleToggleSection(section.id)}
-                    className={`w-full p-4 rounded-xl border text-left transition-all ${
-                      isCompleted 
-                        ? 'bg-emerald-500/10 border-emerald-500/30' 
-                        : 'bg-muted/30 border-border/30 hover:border-border/50'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
-                          isCompleted 
-                            ? 'bg-emerald-500 border-emerald-500' 
-                            : 'border-muted-foreground/30'
-                        }`}>
-                          {isCompleted && (
-                            <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                            </svg>
-                          )}
+            {/* Sections with enterprise list styling */}
+            <section>
+              <h3 className="text-enterprise-primary text-base font-semibold mb-4">
+                Moduli del percorso
+              </h3>
+              <div className="space-y-1">
+                {activeSections.map((section, index) => {
+                  const isCompleted = activeProgress?.completedSections?.includes(section.id)
+                  return (
+                    <DrawerListItem
+                      key={section.id}
+                      onClick={() => handleToggleSection(section.id)}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
+                            isCompleted 
+                              ? 'bg-success border-success' 
+                              : 'border-enterprise-soft'
+                          }`}>
+                            {isCompleted && (
+                              <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                              </svg>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-enterprise-body font-medium mb-1">
+                              {index + 1}. {section.titleKey}
+                            </h4>
+                            <p className="text-enterprise-secondary text-sm reading-line-height">
+                              Brevi contenuti per capire quando e perché usare questo strumento in situazioni di emergenza.
+                            </p>
+                          </div>
                         </div>
-                        <h4 className={`text-sm font-medium ${isCompleted ? 'text-emerald-700 dark:text-emerald-400' : 'text-foreground'}`}>
-                          {index + 1}. {section.titleKey}
-                        </h4>
+                        <ProgressStateBadge 
+                          state={isCompleted ? 'completed' : 'fundamental'} 
+                          timeEstimate={isCompleted ? undefined : '~5 min'}
+                        />
                       </div>
-                      <span className={`text-xs px-2 py-0.5 rounded ${
-                        isCompleted 
-                          ? 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-400' 
-                          : 'bg-muted/50 text-muted-foreground'
-                      }`}>
-                        {isCompleted ? 'Completato' : 'Da completare'}
-                      </span>
-                    </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed pl-9">
-                      Contenuto educativo per questa sezione. Clicca per segnare come completato.
-                    </p>
-                  </button>
-                )
-              })}
-            </div>
+                    </DrawerListItem>
+                  )
+                })}
+              </div>
+            </section>
+
+            {/* Educational alert for context */}
+            <AlertEnterprise
+              type="warning"
+              title="Importante da sapere"
+              message="Questi strumenti sono progettati per situazioni di emergenza reale. Valuta attentamente la tua situazione prima di implementare le strategie."
+            />
           </div>
         </PremiumDrawer>
       )}

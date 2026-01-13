@@ -65,6 +65,43 @@
     
     /* Theme Transition Duration */
     --theme-transition: 150ms;
+    
+    /* ============================================
+       ENTERPRISE TOKENS 2026 - Google/OpenAI/Binance Level
+       ============================================ */
+    
+    /* Enterprise Typography Contrast - Beyond WCAG (REQ 21.1) */
+    --text-primary: 220 15% 12%;      /* ≥7:1 - Titles, primary data */
+    --text-body: 220 12% 20%;         /* 4.5-5.5:1 - Main content */
+    --text-secondary: 220 10% 35%;    /* ≥3.5:1 - Descriptions, hints */
+    --text-disabled: 220 8% 55%;      /* ≥3:1 - Disabled states */
+    
+    /* Enterprise Dividers & Borders */
+    --border-subtle: 220 10% 92%;     /* Micro-separations */
+    --border-soft: 220 10% 88%;       /* Soft divisions */
+    --border-strong: 220 12% 80%;     /* Clear separations */
+    
+    /* Enterprise Focus System */
+    --focus-ring: 215 55% 40%;        /* ≥3:1 contrast */
+    --focus-offset: 2px;
+    --focus-width: 2px;
+    
+    /* Enterprise Alert Semantics */
+    --info-bg: 215 55% 95%;           /* Info backgrounds */
+    --info-border: 215 55% 85%;       /* Info borders */
+    --info-text: 215 55% 30%;         /* Info text */
+    
+    --warning-bg: 38 100% 95%;        /* Warning (educational) */
+    --warning-border: 38 100% 80%;    /* Warning borders */
+    --warning-text: 38 100% 25%;      /* Warning text */
+    
+    --danger-bg: 0 90% 95%;           /* Danger (errors only) */
+    --danger-border: 0 90% 80%;       /* Danger borders */
+    --danger-text: 0 90% 35%;         /* Danger text */
+    
+    --success-bg: 142 80% 95%;        /* Success backgrounds */
+    --success-border: 142 80% 80%;    /* Success borders */
+    --success-text: 142 80% 25%;      /* Success text */
   }
 
   /* Dark Mode - Design Guide Compliant */
@@ -117,6 +154,41 @@
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.6), 0 4px 6px -4px rgb(0 0 0 / 0.5);
     --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.5);
     --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.7);
+    
+    /* ============================================
+       ENTERPRISE TOKENS DARK MODE - Apple HIG Compliant
+       ============================================ */
+    
+    /* Enterprise Typography Contrast - Dark Mode */
+    --text-primary: 220 10% 95%;      /* ≥7:1 - No pure white */
+    --text-body: 220 8% 85%;          /* 4.5-5.5:1 - Readable body */
+    --text-secondary: 220 6% 70%;     /* ≥3.5:1 - Never below #AEB5BF */
+    --text-disabled: 220 5% 50%;      /* ≥3:1 - Disabled but visible */
+    
+    /* Enterprise Dividers & Borders - Dark Mode */
+    --border-subtle: 220 15% 15%;     /* Micro-separations */
+    --border-soft: 220 15% 18%;       /* Soft divisions */
+    --border-strong: 220 15% 25%;     /* Clear separations */
+    
+    /* Enterprise Focus System - Dark Mode */
+    --focus-ring: 215 55% 55%;        /* Brighter for dark backgrounds */
+    
+    /* Enterprise Alert Semantics - Dark Mode */
+    --info-bg: 215 55% 10%;           /* Info backgrounds */
+    --info-border: 215 55% 20%;       /* Info borders */
+    --info-text: 215 55% 70%;         /* Info text */
+    
+    --warning-bg: 38 95% 12%;         /* Warning (educational) */
+    --warning-border: 38 95% 25%;     /* Warning borders */
+    --warning-text: 38 95% 75%;       /* Warning text */
+    
+    --danger-bg: 0 85% 14%;           /* Danger (errors only) */
+    --danger-border: 0 85% 30%;       /* Danger borders */
+    --danger-text: 0 85% 80%;         /* Danger text */
+    
+    --success-bg: 142 70% 12%;        /* Success backgrounds */
+    --success-border: 142 70% 25%;    /* Success borders */
+    --success-text: 142 70% 75%;      /* Success text */
   }
 
   /* ============================================
@@ -268,6 +340,229 @@
 @layer utilities {
   /* 2026 COGNITIVE LOAD OPTIMIZATION UTILITIES */
   
+  /* ============================================
+     ENTERPRISE UTILITY CLASSES 2026
+     ============================================ */
+  
+  /* Enterprise Typography Classes */
+  .text-enterprise-primary {
+    color: hsl(var(--text-primary));
+    font-weight: 600;
+  }
+  
+  .text-enterprise-body {
+    color: hsl(var(--text-body));
+    font-weight: 500;
+  }
+  
+  .text-enterprise-secondary {
+    color: hsl(var(--text-secondary));
+    font-weight: 400;
+  }
+  
+  .text-enterprise-disabled {
+    color: hsl(var(--text-disabled));
+    font-weight: 400;
+  }
+  
+  /* Enterprise Alert Components */
+  .alert-enterprise-info {
+    background-color: hsl(var(--info-bg));
+    border: 1px solid hsl(var(--info-border));
+    color: hsl(var(--info-text));
+    @apply p-4 rounded-lg;
+  }
+  
+  .alert-enterprise-warning {
+    background-color: hsl(var(--warning-bg));
+    border: 1px solid hsl(var(--warning-border));
+    color: hsl(var(--warning-text));
+    @apply p-4 rounded-lg;
+  }
+  
+  .alert-enterprise-danger {
+    background-color: hsl(var(--danger-bg));
+    border: 1px solid hsl(var(--danger-border));
+    color: hsl(var(--danger-text));
+    @apply p-4 rounded-lg;
+  }
+  
+  .alert-enterprise-success {
+    background-color: hsl(var(--success-bg));
+    border: 1px solid hsl(var(--success-border));
+    color: hsl(var(--success-text));
+    @apply p-4 rounded-lg;
+  }
+  
+  /* Enterprise Focus Ring */
+  .focus-enterprise-ring {
+    @apply focus:outline-none;
+    box-shadow: 0 0 0 var(--focus-width) hsl(var(--focus-ring) / 0.5);
+    outline-offset: var(--focus-offset);
+  }
+  
+  /* Enterprise Borders */
+  .border-enterprise-subtle {
+    border-color: hsl(var(--border-subtle));
+  }
+  
+  .border-enterprise-soft {
+    border-color: hsl(var(--border-soft));
+  }
+  
+  .border-enterprise-strong {
+    border-color: hsl(var(--border-strong));
+  }
+  
+  /* Enterprise Drawer Pattern */
+  .drawer-enterprise {
+    /* Desktop: Side sheet 420-520px, max 640px */
+    width: min(520px, 90vw);
+    max-width: 640px;
+    min-height: 100vh;
+    background-color: hsl(var(--bg-card));
+    border-left: 1px solid hsl(var(--border-soft));
+    box-shadow: var(--shadow-xl);
+  }
+  
+  @media (max-width: 1024px) {
+    .drawer-enterprise {
+      /* Mobile: Modal bottom sheet */
+      width: 100vw;
+      max-width: 100vw;
+      min-height: 60vh;
+      max-height: 90vh;
+      border-left: none;
+      border-top: 1px solid hsl(var(--border-soft));
+      border-radius: 16px 16px 0 0;
+    }
+  }
+  
+  /* Enterprise Drawer Header */
+  .drawer-enterprise-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: hsl(var(--bg-card));
+    border-bottom: 1px solid transparent;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+    padding: 1.5rem;
+  }
+  
+  .drawer-enterprise-header.scrolled {
+    border-bottom-color: hsl(var(--border-soft));
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  }
+  
+  /* Enterprise Drawer Content */
+  .drawer-enterprise-content {
+    padding: 0 1.5rem 1.5rem;
+    /* Ensure focus not obscured (WCAG 2.2) */
+  }
+  
+  .drawer-enterprise-content :focus {
+    scroll-margin-top: 80px;
+  }
+  
+  /* Enterprise List Items for Drawer */
+  .drawer-list-item {
+    padding: 14px 0;
+    line-height: 1.6;
+    border-bottom: 1px solid hsl(var(--border-subtle));
+    transition: background-color 150ms ease;
+  }
+  
+  .drawer-list-item:hover {
+    background-color: hsl(var(--bg-section));
+  }
+  
+  .drawer-list-item:last-child {
+    border-bottom: none;
+  }
+  
+  /* Enterprise CTA Buttons */
+  .cta-enterprise-primary {
+    @apply px-6 py-3 text-base font-semibold rounded-lg;
+    background-color: hsl(var(--primary));
+    color: white;
+    min-height: 44px;
+    transition: all 150ms ease;
+  }
+  
+  .cta-enterprise-primary:hover {
+    background-color: hsl(var(--primary) / 0.9);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .cta-enterprise-secondary {
+    @apply px-6 py-3 text-base font-medium rounded-lg;
+    background-color: transparent;
+    color: hsl(var(--text-body));
+    border: 1px solid hsl(var(--border-soft));
+    min-height: 44px;
+    transition: all 150ms ease;
+  }
+  
+  .cta-enterprise-secondary:hover {
+    background-color: hsl(var(--bg-section));
+    border-color: hsl(var(--border-strong));
+  }
+  
+  /* Enterprise Progress States */
+  .progress-state-not-started {
+    @apply inline-flex items-center gap-2 px-3 py-1 text-sm font-medium rounded-full;
+    background-color: hsl(var(--info-bg));
+    color: hsl(var(--info-text));
+    border: 1px solid hsl(var(--info-border));
+  }
+  
+  .progress-state-fundamental {
+    @apply inline-flex items-center gap-2 px-3 py-1 text-sm font-medium rounded-full;
+    background-color: hsl(var(--warning-bg));
+    color: hsl(var(--warning-text));
+    border: 1px solid hsl(var(--warning-border));
+  }
+  
+  .progress-state-completed {
+    @apply inline-flex items-center gap-2 px-3 py-1 text-sm font-medium rounded-full;
+    background-color: hsl(var(--success-bg));
+    color: hsl(var(--success-text));
+    border: 1px solid hsl(var(--success-border));
+  }
+  
+  /* Enterprise Focus Chip Hierarchy */
+  .focus-chip-primary {
+    @apply px-3 py-1 text-sm font-semibold rounded-full;
+    background-color: hsl(var(--primary) / 0.1);
+    color: hsl(var(--primary));
+    border: 1px solid hsl(var(--primary) / 0.2);
+  }
+  
+  .focus-chip-secondary {
+    @apply px-3 py-1 text-sm font-medium rounded-full;
+    background-color: hsl(var(--text-secondary) / 0.1);
+    color: hsl(var(--text-secondary));
+    border: 1px solid hsl(var(--border-soft));
+  }
+  
+  /* Readability Optimization Classes */
+  .reading-width {
+    max-width: 65ch;
+  }
+  
+  .reading-line-height {
+    line-height: 1.6;
+  }
+  
+  .reading-paragraph-spacing {
+    margin-bottom: 1rem;
+  }
+  
+  .reading-paragraph-spacing:last-child {
+    margin-bottom: 0;
+  }
+
   /* Focus Ring Utility - Accessibility (REQ 5.1, 5.2) */
   .focus-ring {
     @apply focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2;

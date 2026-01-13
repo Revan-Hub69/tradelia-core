@@ -1,16 +1,21 @@
 /**
- * Network Status Component - Tradelia 2026
+ * Network Status Component - Tradelia 2026 Enterprise Edition
  * 
- * Banner per gestire connessione offline/instabile
- * Qualità percepita enorme senza errori brutali
+ * Implements enterprise I18N safety and semantic correctness:
+ * - Network offline = WARNING (amber), not DANGER (red)
+ * - User-safe fallbacks for all translations
+ * - Semantic alert types (info/warning/danger/success)
+ * - Enterprise contrast standards
+ * - Clear, anxiety-reducing messaging
  */
 
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { useTranslations } from 'next-intl'
 import { AlertTriangleIcon, WifiOffIcon, WifiIcon, RefreshIcon, CheckIcon } from '@/components/icons/TradeliaIcons'
 import { StatusCenter } from './StatusCenter'
+import { AlertEnterprise } from './PremiumDrawer'
+import { useSafeTranslations, networkStatusTranslations } from '../lib/i18n-safe'
 
 interface NetworkStatusProps {
   className?: string
@@ -19,7 +24,7 @@ interface NetworkStatusProps {
 type NetworkState = 'online' | 'offline' | 'slow' | 'reconnecting'
 
 export function NetworkStatus({ className = '' }: NetworkStatusProps) {
-  const t = useTranslations('common.networkStatus')
+  const safeT = useSafeTranslations()
   const [networkState, setNetworkState] = useState<NetworkState>('online')
   const [showBanner, setShowBanner] = useState(false)
   const [retryCount, setRetryCount] = useState(0)
@@ -129,103 +134,79 @@ export function NetworkStatus({ className = '' }: NetworkStatusProps) {
     return null
   }
 
-  const getConfig = () => {
+  // Enterprise semantic correctness: offline = warning, not danger
+  const getAlertProps = () => {
     switch (networkState) {
       case 'offline':
         return {
+          type: 'warning' as const,
+          title: networkStatusTranslations.offline.title,
+          message: networkStatusTranslations.offline.message,
           icon: WifiOffIcon,
-          title: t('offline'),
-          message: t('offlineMessage'),
-          bgColor: 'bg-error/10',
-          borderColor: 'border-error/20',
-          textColor: 'text-error',
           showRetry: true
         }
       case 'slow':
         return {
+          type: 'warning' as const,
+          title: networkStatusTranslations.unstable.title,
+          message: networkStatusTranslations.unstable.message,
           icon: AlertTriangleIcon,
-          title: t('slow'),
-          message: t('slowMessage'),
-          bgColor: 'bg-warning/10',
-          borderColor: 'border-warning/20',
-          textColor: 'text-warning',
           showRetry: true
         }
       case 'reconnecting':
         return {
+          type: 'info' as const,
+          title: safeT('network.reconnecting', 'Riconnessione in corso'),
+          message: safeT('network.reconnectingMessage', 'Tentativo di ripristino della connessione...'),
           icon: RefreshIcon,
-          title: t('reconnecting'),
-          message: t('reconnectingMessage'),
-          bgColor: 'bg-primary/10',
-          borderColor: 'border-primary/20',
-          textColor: 'text-primary',
           showRetry: false
         }
       case 'online':
         return {
+          type: 'success' as const,
+          title: safeT('network.restored', 'Connessione ripristinata'),
+          message: safeT('network.restoredMessage', 'La connessione è stata ripristinata correttamente.'),
           icon: CheckIcon,
-          title: t('restored'),
-          message: t('restoredMessage'),
-          bgColor: 'bg-success/10',
-          borderColor: 'border-success/20',
-          textColor: 'text-success',
           showRetry: false
         }
     }
   }
 
-  const config = getConfig()
-  const Icon = config.icon
+  const alertProps = getAlertProps()
+  const Icon = alertProps.icon
 
   return (
     <div className={`
       fixed top-16 left-0 right-0 z-30 mx-4 md:left-64 md:mx-8
       animate-in slide-in-from-top-2 duration-300 ${className}
     `}>
-      <div className={`
-        flex items-center justify-between p-4 rounded-lg border
-        ${config.bgColor} ${config.borderColor}
-      `}>
-        <div className="flex items-center gap-3">
-          <div className={`
-            w-8 h-8 rounded-lg ${config.bgColor.replace('/10', '/20')} 
-            flex items-center justify-center
-          `}>
-            <Icon className={`w-4 h-4 ${config.textColor} ${
-              networkState === 'reconnecting' ? 'animate-spin' : ''
-            }`} />
-          </div>
-          
-          <div>
-            <h4 className={`font-medium ${config.textColor}`}>
-              {config.title}
-            </h4>
-            <p className="text-sm text-muted-foreground">
-              {config.message}
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          {config.showRetry && (
+      <div className="relative">
+        <AlertEnterprise
+          type={alertProps.type}
+          title={alertProps.title}
+          message={alertProps.message}
+          className="pr-20"
+        />
+        
+        {/* Action buttons overlay */}
+        <div className="absolute top-4 right-4 flex items-center gap-2">
+          {alertProps.showRetry && (
             <button
               onClick={handleRetry}
               disabled={networkState === 'reconnecting'}
-              className={`
-                px-3 py-1.5 text-sm font-medium rounded-lg transition-colors
-                focus:outline-none focus:ring-2 focus:ring-offset-2
-                ${config.textColor} hover:opacity-80 disabled:opacity-50
-                border border-current hover:bg-current hover:text-white
-              `}
+              className="cta-enterprise-secondary text-sm px-3 py-1 disabled:opacity-50"
             >
-              {networkState === 'reconnecting' ? t('retryingButton') : t('retryButton')}
+              {networkState === 'reconnecting' 
+                ? safeT('network.retrying', 'Riprova...') 
+                : networkStatusTranslations.offline.retry
+              }
             </button>
           )}
           
           <button
             onClick={() => setShowBanner(false)}
-            className="tap-target-icon p-2 text-muted-foreground hover:text-foreground transition-colors rounded focus:outline-none focus:ring-2 focus:ring-primary/50"
-            aria-label="Chiudi notifica stato rete"
+            className="tap-target-icon focus-enterprise-ring p-2 text-enterprise-secondary hover:text-enterprise-primary transition-colors rounded"
+            aria-label={safeT('network.close', 'Chiudi notifica stato rete')}
           >
             <span aria-hidden="true">×</span>
           </button>
@@ -289,9 +270,7 @@ export function NetworkStatusProvider({ children }: { children: React.ReactNode 
 
 /**
  * NetworkStatusIndicator - Compact indicator for header/toolbar
- * Clicking opens the StatusCenter popover
- * 
- * @see Requirements 19.1
+ * Enterprise version with semantic correctness
  */
 interface NetworkStatusIndicatorProps {
   /** Whether user is in guest mode - passed to StatusCenter */
@@ -301,18 +280,19 @@ interface NetworkStatusIndicatorProps {
 
 export function NetworkStatusIndicator({ isGuestMode = false, className = '' }: NetworkStatusIndicatorProps) {
   const { isOnline, isSlowConnection } = useNetworkStatus()
+  const safeT = useSafeTranslations()
   const [isStatusCenterOpen, setIsStatusCenterOpen] = useState(false)
   const indicatorRef = useRef<HTMLButtonElement>(null)
 
-  // Determine indicator state
+  // Determine indicator state with enterprise semantics
   const getIndicatorConfig = () => {
     if (!isOnline) {
       return {
         icon: WifiOffIcon,
-        color: 'text-error',
-        bgColor: 'bg-error/10',
+        color: 'text-warning', // Warning, not danger
+        bgColor: 'bg-warning/10',
         pulse: true,
-        ariaLabel: 'Offline - Click for status details'
+        ariaLabel: safeT('network.offlineIndicator', 'Offline - Clicca per dettagli stato')
       }
     }
     if (isSlowConnection) {
@@ -321,7 +301,7 @@ export function NetworkStatusIndicator({ isGuestMode = false, className = '' }: 
         color: 'text-warning',
         bgColor: 'bg-warning/10',
         pulse: true,
-        ariaLabel: 'Slow connection - Click for status details'
+        ariaLabel: safeT('network.slowIndicator', 'Connessione lenta - Clicca per dettagli stato')
       }
     }
     return {
@@ -329,7 +309,7 @@ export function NetworkStatusIndicator({ isGuestMode = false, className = '' }: 
       color: 'text-success',
       bgColor: 'bg-success/10',
       pulse: false,
-      ariaLabel: 'Online - Click for status details'
+      ariaLabel: safeT('network.onlineIndicator', 'Online - Clicca per dettagli stato')
     }
   }
 
@@ -342,9 +322,8 @@ export function NetworkStatusIndicator({ isGuestMode = false, className = '' }: 
         ref={indicatorRef}
         onClick={() => setIsStatusCenterOpen(prev => !prev)}
         className={`
-          tap-target relative p-2 rounded-lg transition-colors
-          hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/50
-          ${config.bgColor} ${className}
+          tap-target focus-enterprise-ring relative p-2 rounded-lg transition-colors
+          hover:bg-muted/50 ${config.bgColor} ${className}
         `}
         aria-label={config.ariaLabel}
         aria-expanded={isStatusCenterOpen}
