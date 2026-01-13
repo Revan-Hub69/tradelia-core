@@ -188,7 +188,7 @@ function SectionRenderer({ section, isFirst }: { section: ModuleSection; isFirst
                   </div>
                   <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Banca</span>
                 </div>
-                <p className="text-sm text-muted-foreground reading-line-height">
+                <p className="text-sm text-foreground/70 reading-line-height">
                   {item.left}
                 </p>
               </div>
