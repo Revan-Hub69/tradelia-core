@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { X, Copy, Info, TriangleAlert, OctagonAlert, CheckCircle } from 'lucide-react';
+import { CloseIcon, InfoIcon, AlertTriangleIcon, CheckIcon } from '@/components/icons/TradeliaIcons';
 import { useSafeTranslations } from '../lib/i18n-safe';
 
 /**
@@ -29,9 +29,9 @@ interface DrawerEnterpriseProps {
 
 interface DrawerHeaderProps {
   title: string;
-  subtitle?: string;
+  subtitle?: string | undefined;
   onClose: () => void;
-  onCopyLink?: () => void;
+  onCopyLink?: (() => void) | undefined;
   isScrolled: boolean;
 }
 
@@ -47,10 +47,10 @@ interface AlertEnterpriseProps {
  */
 export function AlertEnterprise({ type, title, message, className = '' }: AlertEnterpriseProps) {
   const iconMap = {
-    info: Info,
-    warning: TriangleAlert,
-    danger: OctagonAlert,
-    success: CheckCircle
+    info: InfoIcon,
+    warning: AlertTriangleIcon,
+    danger: AlertTriangleIcon, // Using AlertTriangleIcon for danger too
+    success: CheckIcon
   };
   
   const Icon = iconMap[type];
@@ -98,7 +98,7 @@ function DrawerHeader({ title, subtitle, onClose, onCopyLink, isScrolled }: Draw
               className="tap-target-icon focus-enterprise-ring p-2 rounded-lg hover:bg-muted/50 transition-colors"
               aria-label={safeT('drawer.copyLink', 'Copia link')}
             >
-              <Copy className="w-4 h-4" aria-hidden="true" />
+              <InfoIcon className="w-4 h-4" aria-hidden="true" />
             </button>
           )}
           
@@ -107,7 +107,7 @@ function DrawerHeader({ title, subtitle, onClose, onCopyLink, isScrolled }: Draw
             className="tap-target-icon focus-enterprise-ring p-2 rounded-lg hover:bg-muted/50 transition-colors"
             aria-label={safeT('drawer.close', 'Chiudi')}
           >
-            <X className="w-4 h-4" aria-hidden="true" />
+            <CloseIcon className="w-4 h-4" aria-hidden="true" />
           </button>
         </div>
       </div>
@@ -328,7 +328,7 @@ export function ProgressStateBadge({
   timeEstimate 
 }: { 
   state: 'not-started' | 'fundamental' | 'in-progress' | 'completed';
-  timeEstimate?: string;
+  timeEstimate?: string | undefined;
 }) {
   const stateConfig = {
     'not-started': {

@@ -295,7 +295,7 @@ export function EmergencyPillars() {
                         </div>
                         <ProgressStateBadge 
                           state={isCompleted ? 'completed' : 'fundamental'} 
-                          timeEstimate={isCompleted ? undefined : '~5 min'}
+                          {...(!isCompleted && { timeEstimate: '~5 min' })}
                         />
                       </div>
                     </DrawerListItem>
