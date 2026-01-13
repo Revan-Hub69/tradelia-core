@@ -50,7 +50,8 @@ export function ModuleContent({ module, onComplete, isCompleted }: ModuleContent
           </div>
           <button
             onClick={onComplete}
-            className={`px-5 py-2.5 rounded-lg font-medium transition-all min-h-[44px] ${
+            aria-label={isCompleted ? 'Modulo completato, clicca per rimuovere completamento' : 'Segna questo modulo come letto'}
+            className={`px-5 py-2.5 rounded-lg font-medium transition-all min-h-[44px] min-w-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
               isCompleted
                 ? 'bg-success/10 text-success border border-success/30 hover:bg-success/20'
                 : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm'

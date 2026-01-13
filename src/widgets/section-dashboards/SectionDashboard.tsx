@@ -254,7 +254,8 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
                 <div className="flex items-center gap-3 pb-4 border-b border-border/50">
                   <button
                     onClick={closeDrawer}
-                    className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg px-2 py-1 -ml-2 min-h-[44px]"
+                    aria-label="Chiudi drawer"
+                    className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg px-3 py-2 -ml-2 min-h-[44px] min-w-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                   >
                     <span className="text-lg">←</span>
                     Chiudi
@@ -263,8 +264,15 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
 
                 {/* Progress */}
                 <div className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg">
-                  <span className="text-sm font-medium">Completamento:</span>
-                  <div className="flex-1 h-2 bg-muted-foreground/20 rounded-full overflow-hidden">
+                  <span className="text-sm font-medium" id="progress-label">Completamento:</span>
+                  <div 
+                    className="flex-1 h-2 bg-muted-foreground/20 rounded-full overflow-hidden"
+                    role="progressbar"
+                    aria-valuenow={activePillarData.completionPercent}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-labelledby="progress-label"
+                  >
                     <div 
                       className="h-full bg-success rounded-full transition-all duration-300"
                       style={{ width: `${activePillarData.completionPercent}%` }}
@@ -292,7 +300,8 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
                           <button
                             key={module.id}
                             onClick={() => handleSelectModule(module.id)}
-                            className="w-full flex items-center justify-between p-4 rounded-lg border border-border/50 hover:border-primary/50 hover:bg-muted/30 transition-colors text-left min-h-[56px]"
+                            aria-label={`${isCompleted ? 'Completato: ' : ''}${module.title}, ${module.estimatedMinutes} minuti`}
+                            className="w-full flex items-center justify-between p-4 rounded-lg border border-border/50 hover:border-primary/50 hover:bg-muted/30 transition-colors text-left min-h-[56px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                           >
                             <div className="flex items-center gap-3">
                               <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
@@ -355,7 +364,8 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
                   <div className="flex items-center justify-between">
                     <button
                       onClick={handleBack}
-                      className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg px-2 py-1 -ml-2 min-h-[44px]"
+                      aria-label="Torna alla lista moduli"
+                      className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg px-3 py-2 -ml-2 min-h-[44px] min-w-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                     >
                       <span>←</span>
                       Indietro
@@ -371,8 +381,8 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
                           }
                         }}
                         disabled={activeModules.findIndex(m => m.id === activeModule) === 0}
-                        className="w-10 h-10 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-muted hover:bg-muted-foreground/20"
-                        title="Modulo precedente"
+                        aria-label="Modulo precedente"
+                        className="w-11 h-11 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-muted hover:bg-muted-foreground/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                       >
                         ‹
                       </button>
@@ -384,8 +394,8 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
                           }
                         }}
                         disabled={activeModules.findIndex(m => m.id === activeModule) === activeModules.length - 1}
-                        className="w-10 h-10 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-muted hover:bg-muted-foreground/20"
-                        title="Modulo successivo"
+                        aria-label="Modulo successivo"
+                        className="w-11 h-11 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-muted hover:bg-muted-foreground/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                       >
                         ›
                       </button>
