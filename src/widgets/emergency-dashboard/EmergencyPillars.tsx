@@ -12,11 +12,7 @@ import { useState, useMemo } from 'react'
 import { useTranslations } from 'next-intl'
 import { JourneyCard } from '@/src/shared/ui/JourneyCard'
 import { 
-  PremiumDrawer, 
-  AlertEnterprise, 
-  DrawerListItem, 
-  ProgressStateBadge, 
-  FocusChip 
+  PremiumDrawer
 } from '@/src/shared/ui/PremiumDrawer'
 import { useProgressTracking } from '@/src/shared/hooks/useProgressTracking'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
@@ -65,7 +61,7 @@ interface PillarConfig {
 export function EmergencyPillars() {
   const t = useTranslations('emergencyDashboard.pillars')
   const [activePillar, setActivePillar] = useState<string | null>(null)
-  const [activeSubmodule, setActiveSubmodule] = useState<string | null>(null)
+  const [activeSection, setActiveSection] = useState<string | null>(null)
   
   const { state } = useDashboardAuth()
   const { 
@@ -128,13 +124,7 @@ export function EmergencyPillars() {
   const activeData = pillarsWithProgress.find(p => p.id === activePillar)
   const activeSections = activeData ? PILLAR_SECTIONS[activeData.id] || [] : []
   const activeProgress = activeData ? getPillarProgress('emergency', activeData.id) : null
-
-  const handleToggleSection = async (sectionId: string) => {
-    if (!activeData) return
-    
-    // Open submodule instead of just toggling completion
-    setActiveSubmodule(sectionId)
-  }
+  const activeSectionData = activeSections.find(s => s.id === activeSection)
 
   const handleCompleteSection = async (sectionId: string) => {
     if (!activeData) return
@@ -151,16 +141,22 @@ export function EmergencyPillars() {
 
   const handleCloseDrawer = () => {
     // Reset all states
-    setActiveSubmodule(null)
+    setActiveSection(null)
     setActivePillar(null)
   }
 
-  const handleBackToMain = () => {
-    setActiveSubmodule(null)
-  }
-
-  const handleOpenPillar = (pillarId: string) => {
+  const handleOpenPillar = (pillarId: string, sectionId?: string) => {
     setActivePillar(pillarId)
+    // If sectionId provided, open that section directly
+    if (sectionId) {
+      setActiveSection(sectionId)
+    } else {
+      // Open first section by default
+      const sections = PILLAR_SECTIONS[pillarId]
+      if (sections && sections.length > 0) {
+        setActiveSection(sections[0]?.id || null)
+      }
+    }
   }
 
   return (
@@ -196,19 +192,13 @@ export function EmergencyPillars() {
         ))}
       </div>
 
-      {/* Enterprise Drawer - SIMPLIFIED without deep linking */}
-      {activeData && (
+      {/* Enterprise Drawer - Direct module content */}
+      {activeData && activeSectionData && (
         <PremiumDrawer
-          isOpen={!!activePillar}
+          isOpen={!!activePillar && !!activeSection}
           onClose={handleCloseDrawer}
-          title={activeSubmodule ? 
-            activeSections.find(s => s.id === activeSubmodule)?.titleKey || activeData.title :
-            activeData.title
-          }
-          subtitle={activeSubmodule ? 
-            `${activeData.title} • Modulo` : 
-            "Pilastro di emergenza"
-          }
+          title={activeSectionData.titleKey}
+          subtitle={`${activeData.title} • Modulo`}
           icon={<PillarIcon type={activeData.iconType} className="w-6 h-6" />}
           accentColor={activeData.accentColor}
           size="xl"
@@ -216,13 +206,13 @@ export function EmergencyPillars() {
           closeOnEscape={true}
           // NO panelId - no deep linking to avoid URL conflicts
         >
-          {activeSubmodule ? (
-            // Submodule content with back button
-            <div className="space-y-6">
-              {/* Back button */}
-              <div className="flex items-center gap-3 pb-4 border-b border-enterprise-soft">
+          {/* Module navigation header */}
+          <div className="space-y-6">
+            {/* Navigation between sections */}
+            <div className="flex items-center justify-between pb-4 border-b border-enterprise-soft">
+              <div className="flex items-center gap-3">
                 <button
-                  onClick={handleBackToMain}
+                  onClick={handleCloseDrawer}
                   className="flex items-center gap-2 text-sm font-medium text-enterprise-secondary hover:text-enterprise-primary transition-colors focus-enterprise-ring rounded-lg px-2 py-1 -ml-2"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -232,23 +222,39 @@ export function EmergencyPillars() {
                 </button>
               </div>
               
-              <SubmoduleContent 
-                pillarId={activeData.id}
-                sectionId={activeSubmodule}
-                onComplete={() => handleCompleteSection(activeSubmodule)}
-                isCompleted={activeProgress?.completedSections?.includes(activeSubmodule) || false}
-              />
+              {/* Section navigation */}
+              <div className="flex items-center gap-2">
+                {activeSections.map((section, index) => {
+                  const isActive = section.id === activeSection
+                  const isCompleted = activeProgress?.completedSections?.includes(section.id)
+                  return (
+                    <button
+                      key={section.id}
+                      onClick={() => setActiveSection(section.id)}
+                      className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-colors ${
+                        isActive 
+                          ? 'bg-primary text-white' 
+                          : isCompleted
+                          ? 'bg-success text-white'
+                          : 'bg-muted text-muted-foreground hover:bg-muted-foreground/20'
+                      }`}
+                      title={section.titleKey}
+                    >
+                      {isCompleted ? '✓' : index + 1}
+                    </button>
+                  )
+                })}
+              </div>
             </div>
-          ) : (
-            // Main pillar content
-            <MainPillarContent 
-              pillar={activeData}
-              sections={activeSections}
-              progress={activeProgress}
-              onSectionClick={handleToggleSection}
-              isGuestMode={state.isGuestMode}
+            
+            {/* Module content */}
+            <SubmoduleContent 
+              pillarId={activeData.id}
+              sectionId={activeSection}
+              onComplete={() => handleCompleteSection(activeSection!)}
+              isCompleted={activeProgress?.completedSections?.includes(activeSection || '') || false}
             />
-          )}
+          </div>
         </PremiumDrawer>
       )}
     </>
@@ -307,129 +313,6 @@ function PillarIcon({ type, className }: { type: string; className?: string }) {
   )
 }
 
-// Component for main pillar content
-function MainPillarContent({ 
-  pillar, 
-  sections, 
-  progress, 
-  onSectionClick, 
-  isGuestMode 
-}: {
-  pillar: PillarConfig & { completionPercent: number }
-  sections: { id: string; titleKey: string }[]
-  progress: { completedSections?: string[]; percentage?: number } | null
-  onSectionClick: (sectionId: string) => void
-  isGuestMode: boolean
-}) {
-  return (
-    <div className="space-y-6">
-      {/* Guest Mode Alert with enterprise styling */}
-      {isGuestMode && (
-        <AlertEnterprise
-          type="info"
-          title="Modalità ospite attiva"
-          message="Registrati per salvare i tuoi progressi e accedere a tutte le funzionalità."
-          className="mb-6"
-        />
-      )}
-
-      {/* Focus areas with hierarchy */}
-      <div className="flex flex-wrap gap-2">
-        <FocusChip isPrimary>preparazione emergenze</FocusChip>
-        <FocusChip>gestione risorse</FocusChip>
-        <FocusChip>sicurezza finanziaria</FocusChip>
-      </div>
-
-      {/* Progress section with enterprise styling */}
-      <section>
-        <h3 className="text-enterprise-primary text-base font-semibold mb-3">
-          Progresso completamento
-        </h3>
-        <div className="flex items-center gap-3 p-4 alert-enterprise-info">
-          <span className="text-sm font-medium">Completamento:</span>
-          <div className="flex-1 h-2 bg-muted-foreground/20 rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-success rounded-full transition-all duration-300"
-              style={{ width: `${pillar.completionPercent}%` }}
-            />
-          </div>
-          <span className="text-sm font-semibold">{pillar.completionPercent}%</span>
-        </div>
-      </section>
-
-      {/* Description with reading optimization */}
-      <section>
-        <h3 className="text-enterprise-primary text-base font-semibold mb-3">
-          Cosa imparerai
-        </h3>
-        <div className="reading-width">
-          <p className="text-enterprise-body reading-line-height reading-paragraph-spacing">
-            {pillar.description}
-          </p>
-        </div>
-      </section>
-      
-      {/* Sections with enterprise list styling - now clickable to open submodules */}
-      <section>
-        <h3 className="text-enterprise-primary text-base font-semibold mb-4">
-          Moduli del percorso
-        </h3>
-        <div className="space-y-1">
-          {sections.map((section, index) => {
-            const isCompleted = progress?.completedSections?.includes(section.id)
-            return (
-              <DrawerListItem
-                key={section.id}
-                onClick={() => onSectionClick(section.id)}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3 flex-1 min-w-0">
-                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
-                      isCompleted 
-                        ? 'bg-success border-success' 
-                        : 'border-enterprise-soft'
-                    }`}>
-                      {isCompleted && (
-                        <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                        </svg>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-enterprise-body font-medium mb-1">
-                        {index + 1}. {section.titleKey}
-                      </h4>
-                      <p className="text-enterprise-secondary text-sm reading-line-height">
-                        Clicca per aprire il modulo e accedere ai contenuti dettagliati.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <ProgressStateBadge 
-                      state={isCompleted ? 'completed' : 'fundamental'} 
-                      {...(!isCompleted && { timeEstimate: '~5 min' })}
-                    />
-                    <svg className="w-4 h-4 text-enterprise-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                    </svg>
-                  </div>
-                </div>
-              </DrawerListItem>
-            )
-          })}
-        </div>
-      </section>
-
-      {/* Educational alert for context */}
-      <AlertEnterprise
-        type="warning"
-        title="Importante da sapere"
-        message="Questi strumenti sono progettati per situazioni di emergenza reale. Valuta attentamente la tua situazione prima di implementare le strategie."
-      />
-    </div>
-  )
-}
-
 // Component for submodule content
 function SubmoduleContent({ 
   pillarId, 
@@ -438,10 +321,11 @@ function SubmoduleContent({
   isCompleted 
 }: {
   pillarId: string
-  sectionId: string
+  sectionId: string | null
   onComplete: () => void
   isCompleted: boolean
 }) {
+  if (!sectionId) return null
   // Mock content - in real app this would come from CMS or API
   const getSubmoduleContent = (pillarId: string, sectionId: string) => {
     return {
