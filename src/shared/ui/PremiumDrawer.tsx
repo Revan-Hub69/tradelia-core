@@ -21,8 +21,7 @@ import React, {
   useRef,
   useState,
   useCallback,
-  type ReactNode,
-  type TouchEvent as ReactTouchEvent
+  type ReactNode
 } from 'react'
 import { createPortal } from 'react-dom'
 import { CloseIcon, InfoIcon, AlertTriangleIcon, CheckIcon } from '@/components/icons/TradeliaIcons'
@@ -426,72 +425,108 @@ export function PremiumDrawer({
 
   // Swipe to close handlers (REQ 24.3)
   // Only trigger when content is at top (scrollTop === 0) to avoid conflicts with pull-to-refresh
-  const handleTouchStart = useCallback((e: ReactTouchEvent) => {
-    if (!enableSwipeClose) return
+  // NOTE: We use native event listeners with { passive: false } to properly call preventDefault
+  
+  // Store refs for touch tracking to avoid stale closures in native event handlers
+  const touchStartRef = useRef<number | null>(null)
+  const touchStartXRef = useRef<number | null>(null)
+  const swipeOffsetRef = useRef(0)
+  
+  // Sync state with refs
+  useEffect(() => {
+    touchStartRef.current = touchStart
+    touchStartXRef.current = touchStartX
+    swipeOffsetRef.current = swipeOffset
+  }, [touchStart, touchStartX, swipeOffset])
+  
+  // Native touch event handlers for proper preventDefault support
+  useEffect(() => {
+    if (!enableSwipeClose || !isOpen) return
     
-    // Only track swipe if content is scrolled to top
-    const content = contentRef.current
-    if (content && content.scrollTop > 5) return // Allow small tolerance
+    const drawer = drawerRef.current
+    if (!drawer) return
     
-    const touch = e.touches[0]
-    if (!touch) return
-    setTouchStart(touch.clientY)
-    setTouchStartX(touch.clientX)
-  }, [enableSwipeClose])
-
-  const handleTouchMove = useCallback((e: ReactTouchEvent) => {
-    if (!enableSwipeClose || touchStart === null || touchStartX === null) return
+    const handleNativeTouchStart = (e: TouchEvent) => {
+      // Only track swipe if content is scrolled to top
+      const content = contentRef.current
+      if (content && content.scrollTop > 5) return
+      
+      const touch = e.touches[0]
+      if (!touch) return
+      
+      setTouchStart(touch.clientY)
+      setTouchStartX(touch.clientX)
+    }
     
-    // Double-check content is still at top
-    const content = contentRef.current
-    if (content && content.scrollTop > 5) {
-      // Content started scrolling, cancel swipe tracking
+    const handleNativeTouchMove = (e: TouchEvent) => {
+      const startY = touchStartRef.current
+      const startX = touchStartXRef.current
+      
+      if (startY === null || startX === null) return
+      
+      // Double-check content is still at top
+      const content = contentRef.current
+      if (content && content.scrollTop > 5) {
+        setTouchStart(null)
+        setTouchStartX(null)
+        setSwipeOffset(0)
+        return
+      }
+      
+      const touch = e.touches[0]
+      if (!touch) return
+      
+      const currentY = touch.clientY
+      const currentX = touch.clientX
+      const diffY = currentY - startY
+      const diffX = Math.abs(currentX - startX)
+      
+      // Only track vertical swipes (swipe down only)
+      // Require significant vertical movement (>20px) before tracking
+      if (diffY > 20 && diffY > diffX * 2) {
+        // Prevent pull-to-refresh - this works because we use { passive: false }
+        e.preventDefault()
+        setSwipeOffset(Math.min(diffY - 20, 130))
+      } else if (diffY < 0 || diffX > diffY) {
+        // User is scrolling up or horizontally, cancel swipe
+        setTouchStart(null)
+        setTouchStartX(null)
+        setSwipeOffset(0)
+      }
+    }
+    
+    const handleNativeTouchEnd = () => {
+      const startY = touchStartRef.current
+      const offset = swipeOffsetRef.current
+      
+      if (startY === null) {
+        setTouchStart(null)
+        setTouchStartX(null)
+        setSwipeOffset(0)
+        return
+      }
+      
+      // Close if swiped down more than 80px (after threshold)
+      if (offset > 80) {
+        onClose()
+      }
+      
       setTouchStart(null)
       setTouchStartX(null)
       setSwipeOffset(0)
-      return
     }
     
-    const touch = e.touches[0]
-    if (!touch) return
+    // Add native event listeners with { passive: false } to allow preventDefault
+    drawer.addEventListener('touchstart', handleNativeTouchStart, { passive: true })
+    drawer.addEventListener('touchmove', handleNativeTouchMove, { passive: false })
+    drawer.addEventListener('touchend', handleNativeTouchEnd, { passive: true })
     
-    const currentY = touch.clientY
-    const currentX = touch.clientX
-    const diffY = currentY - touchStart
-    const diffX = Math.abs(currentX - touchStartX)
-    
-    // Only track vertical swipes (not horizontal scrolling)
-    // Swipe down only (positive diff) and more vertical than horizontal
-    // Require significant vertical movement (>20px) before tracking
-    if (diffY > 20 && diffY > diffX * 2) {
-      // Prevent default to stop pull-to-refresh
-      e.preventDefault()
-      setSwipeOffset(Math.min(diffY - 20, 130)) // Cap at 130px, subtract threshold
-    } else if (diffY < 0 || diffX > diffY) {
-      // User is scrolling up or horizontally, cancel swipe
-      setTouchStart(null)
-      setTouchStartX(null)
-      setSwipeOffset(0)
+    return () => {
+      drawer.removeEventListener('touchstart', handleNativeTouchStart)
+      drawer.removeEventListener('touchmove', handleNativeTouchMove)
+      drawer.removeEventListener('touchend', handleNativeTouchEnd)
     }
-  }, [enableSwipeClose, touchStart, touchStartX])
-
-  const handleTouchEnd = useCallback(() => {
-    if (!enableSwipeClose || touchStart === null) {
-      setTouchStart(null)
-      setTouchStartX(null)
-      setSwipeOffset(0)
-      return
-    }
-    
-    // Close if swiped down more than 80px (after threshold)
-    if (swipeOffset > 80) {
-      onClose()
-    }
-    
-    setTouchStart(null)
-    setTouchStartX(null)
-    setSwipeOffset(0)
-  }, [enableSwipeClose, touchStart, swipeOffset, onClose])
+  }, [enableSwipeClose, isOpen, onClose])
 
   // Scroll lock - iOS safe (REQ 24.1)
   // Uses overflow hidden on both body and html
@@ -604,9 +639,6 @@ export function PremiumDrawer({
           transition: swipeOffset === 0 ? 'transform 0.2s ease-out' : 'none',
           touchAction: 'pan-x' // Allow horizontal scroll, control vertical
         }}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
       >
         {/* Header with Enterprise styling and scroll shadow */}
         {(title || showCloseButton || minimalHeader) && (

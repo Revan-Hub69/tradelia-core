@@ -67,7 +67,7 @@
       "errorsStudied": "Errori studiati",
       "educationalSection": "Sezione educativa",
       "completed": "Completato",
-      "toDo": "Da fare",
+      "toDo": "Non iniziato",
       "nextStep": "Prossimo passo",
       "markAsRead": "Segna come letto",
       "introductionCompleted": "Introduzione completata",
@@ -93,7 +93,7 @@
       "identifiedErrors": "Hai identificato gli errori più comuni.",
       "educationalResources": "Risorse educative",
       "lesson": "Lezione",
-      "educationalContentWithContext": "Contenuto educativo specifico per il contesto del percorso {journeyId}.",
+      "educationalContentWithContext": "Brevi contenuti per capire quando e perché usare questo strumento nel percorso {journeyId}.",
       "sectionEstablishesFoundation": "Questa sezione stabilisce le basi teoriche necessarie.",
       "toolsEmptyState": {
         "title": "Strumenti non ancora disponibili",
@@ -117,7 +117,7 @@
       "point1": "Serve quando il resto non funziona",
       "point2": "Non serve a fare soldi",
       "point3": "Non serve se la tratti come un investimento",
-      "warning": "Se la usi per lo scopo sbagliato, diventa un problema",
+      "warning": "Se usata fuori contesto, può creare più problemi che benefici",
       "moreInfoAriaLabel": "Maggiori informazioni"
     },
     "pillars": {

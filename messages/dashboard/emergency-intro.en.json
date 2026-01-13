@@ -18,7 +18,7 @@
         "conclusion": "The basic idea was simple: create a transfer system that didn't depend on a single bank or authority."
       },
       "emergencies": {
-        "title": "What type of emergencies are we talking about",
+        "title": "In which real situations can it help",
         "content": "Not hypothetical scenarios, but situations that have already happened:",
         "types": [
           {
@@ -119,7 +119,7 @@
       }
     },
     "buttons": {
-      "understood": "Ok, I understand",
+      "understood": "Continue",
       "backToIntro": "Back to introduction", 
       "goToDashboard": "Go to dashboard",
       "consultIntroduction": "Consult introduction"

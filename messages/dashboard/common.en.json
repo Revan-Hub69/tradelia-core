@@ -67,7 +67,7 @@
       "errorsStudied": "Errors studied",
       "educationalSection": "Educational section",
       "completed": "Completed",
-      "toDo": "To do",
+      "toDo": "Not started",
       "nextStep": "Next step",
       "markAsRead": "Mark as read",
       "introductionCompleted": "Introduction completed",
@@ -93,7 +93,7 @@
       "identifiedErrors": "You have identified the most common errors.",
       "educationalResources": "Educational Resources",
       "lesson": "Lesson",
-      "educationalContentWithContext": "Educational content specific to the {journeyId} journey context.",
+      "educationalContentWithContext": "Brief content to understand when and why to use this tool in the {journeyId} journey.",
       "sectionEstablishesFoundation": "This section establishes the necessary theoretical foundations.",
       "toolsEmptyState": {
         "title": "Tools not yet available",
@@ -117,7 +117,7 @@
       "point1": "Useful when everything else fails",
       "point2": "Not for making money",
       "point3": "Not useful if treated as investment",
-      "warning": "If used for wrong purpose, it becomes a problem",
+      "warning": "If used out of context, it can create more problems than benefits",
       "moreInfoAriaLabel": "More information"
     },
     "pillars": {
