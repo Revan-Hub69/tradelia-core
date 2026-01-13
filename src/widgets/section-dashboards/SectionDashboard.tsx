@@ -23,6 +23,8 @@ import { JourneyCard } from '@/src/shared/ui/JourneyCard'
 import { PremiumDrawer } from '@/src/shared/ui/PremiumDrawer'
 import { ComplexityIndicator } from '@/src/shared/ui/ComplexityIndicator'
 import { CRYPTO_SECTIONS, type SectionId } from '@/src/shared/config/crypto-sections'
+import { OWN_MODULE_LIST, getModuleById } from '@/src/shared/config/own-learning-path'
+import { ModuleContent } from './ModuleContent'
 import { useProgressTracking } from '@/src/shared/hooks/useProgressTracking'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
 
@@ -72,13 +74,20 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
   const section = CRYPTO_SECTIONS[sectionId]
   const pillars = SECTION_PILLARS[sectionId]
 
-  // Drawer state
+  // Drawer state - state machine like EmergencyPillars
+  type DrawerView = 'list' | 'module'
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [drawerView, setDrawerView] = useState<DrawerView>('list')
   const [activePillar, setActivePillar] = useState<string | null>(null)
+  const [activeModule, setActiveModule] = useState<string | null>(null)
 
   // Progress tracking
   const { state } = useDashboardAuth()
-  const { getPillarProgress } = useProgressTracking({
+  const { 
+    getPillarProgress,
+    markSectionComplete,
+    markSectionIncomplete
+  } = useProgressTracking({
     isGuest: state.isGuestMode,
     userId: state.user?.id
   })
@@ -96,14 +105,50 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
     ? pillarsWithProgress.find(p => p.id === activePillar) 
     : null
 
+  // Get modules for active pillar (only learning-path has real modules for now)
+  const activeModules = activePillar === 'learning-path' ? OWN_MODULE_LIST : []
+  const activeProgress = activePillarData ? getPillarProgress(sectionId, activePillarData.id) : null
+  const activeModuleData = activeModule ? getModuleById(activeModule) : null
+
   const handleOpenPillar = (pillarId: string) => {
     setActivePillar(pillarId)
+    setActiveModule(null)
+    setDrawerView('list')
     setDrawerOpen(true)
+  }
+
+  const handleSelectModule = (moduleId: string) => {
+    setActiveModule(moduleId)
+    setDrawerView('module')
+  }
+
+  const handleBack = () => {
+    if (drawerView === 'module') {
+      setActiveModule(null)
+      setDrawerView('list')
+      return
+    }
+    closeDrawer()
+  }
+
+  const handleCompleteModule = async (moduleId: string) => {
+    if (!activePillarData) return
+    
+    const isCompleted = activeProgress?.completedSections?.includes(moduleId)
+    const totalModules = activeModules.length
+
+    if (isCompleted) {
+      await markSectionIncomplete(sectionId, activePillarData.id, moduleId, totalModules)
+    } else {
+      await markSectionComplete(sectionId, activePillarData.id, moduleId, totalModules)
+    }
   }
 
   // CLOSE: Reset everything and cleanup inert
   const closeDrawer = () => {
     setDrawerOpen(false)
+    setDrawerView('list')
+    setActiveModule(null)
     
     // Hard cleanup - ensure inert is removed BEFORE unmounting
     const mainContent = document.querySelector('#main-content') as HTMLElement | null
@@ -191,30 +236,173 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
           <PremiumDrawer
             isOpen={drawerOpen}
             onClose={closeDrawer}
-            title={t(activePillarData.titleKey)}
-            subtitle={t(`${sectionId}.title`)}
+            title={drawerView === 'module' && activeModuleData ? activeModuleData.title : t(activePillarData.titleKey)}
+            subtitle={drawerView === 'module' && activeModuleData 
+              ? `${t(activePillarData.titleKey)} • Modulo ${activeModules.findIndex(m => m.id === activeModule) + 1} di ${activeModules.length}`
+              : t(`${sectionId}.title`)
+            }
             icon={<PillarIcon type={activePillarData.icon} className="w-6 h-6" />}
             accentColor={activePillarData.color}
             size="xl"
+            closeOnBackdrop={true}
+            closeOnEscape={true}
           >
-            <div className="space-y-6">
-              <p className="text-muted-foreground">
-                {t(activePillarData.descriptionKey)}
-              </p>
-              
-              {/* Placeholder per contenuto */}
-              <div className="p-8 rounded-lg border border-dashed border-border/50 text-center">
-                <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-4">
-                  <PillarIcon type={activePillarData.icon} className="w-8 h-8 text-muted-foreground" />
+            {drawerView === 'list' ? (
+              /* LIST VIEW - Show all modules or placeholder */
+              <div className="space-y-6">
+                {/* Back button */}
+                <div className="flex items-center gap-3 pb-4 border-b border-border/50">
+                  <button
+                    onClick={closeDrawer}
+                    className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg px-2 py-1 -ml-2 min-h-[44px]"
+                  >
+                    <span className="text-lg">←</span>
+                    Chiudi
+                  </button>
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">
-                  Contenuto in arrivo
-                </h3>
-                <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                  I moduli per questo pilastro sono in fase di sviluppo.
-                </p>
+
+                {/* Progress */}
+                <div className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg">
+                  <span className="text-sm font-medium">Completamento:</span>
+                  <div className="flex-1 h-2 bg-muted-foreground/20 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-success rounded-full transition-all duration-300"
+                      style={{ width: `${activePillarData.completionPercent}%` }}
+                    />
+                  </div>
+                  <span className="text-sm font-semibold">{activePillarData.completionPercent}%</span>
+                </div>
+
+                {/* Description */}
+                <div>
+                  <h3 className="text-base font-semibold mb-2">Cosa imparerai</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {t(activePillarData.descriptionKey)}
+                  </p>
+                </div>
+
+                {/* Modules list or placeholder */}
+                {activeModules.length > 0 ? (
+                  <div>
+                    <h3 className="text-base font-semibold mb-4">Moduli del percorso</h3>
+                    <div className="space-y-2">
+                      {activeModules.map((module, index) => {
+                        const isCompleted = activeProgress?.completedSections?.includes(module.id)
+                        return (
+                          <button
+                            key={module.id}
+                            onClick={() => handleSelectModule(module.id)}
+                            className="w-full flex items-center justify-between p-4 rounded-lg border border-border/50 hover:border-primary/50 hover:bg-muted/30 transition-colors text-left min-h-[56px]"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                                isCompleted 
+                                  ? 'bg-success border-success' 
+                                  : 'border-muted-foreground/30'
+                              }`}>
+                                {isCompleted && (
+                                  <span className="text-white text-xs">✓</span>
+                                )}
+                              </div>
+                              <div>
+                                <span className="font-medium">{index + 1}. {module.title}</span>
+                                <span className="text-xs text-muted-foreground ml-2">~{module.estimatedMinutes} min</span>
+                              </div>
+                            </div>
+                            <span className="text-muted-foreground">→</span>
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                ) : (
+                  /* Placeholder for pillars without modules yet */
+                  <div className="p-8 rounded-lg border border-dashed border-border/50 text-center">
+                    <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-4">
+                      <PillarIcon type={activePillarData.icon} className="w-8 h-8 text-muted-foreground" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-foreground mb-2">
+                      Contenuto in arrivo
+                    </h3>
+                    <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                      I moduli per questo pilastro sono in fase di sviluppo.
+                    </p>
+                  </div>
+                )}
               </div>
-            </div>
+            ) : (
+              /* MODULE VIEW - Show module content */
+              <div className="space-y-6">
+                {/* Navigation header */}
+                <div className="space-y-4 pb-4 border-b border-border/50">
+                  {/* Progress bar */}
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-muted-foreground whitespace-nowrap">Progresso:</span>
+                    <div className="flex-1 h-2 bg-muted-foreground/20 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-primary rounded-full transition-all duration-300"
+                        style={{ 
+                          width: `${((activeModules.findIndex(m => m.id === activeModule) + 1) / activeModules.length) * 100}%` 
+                        }}
+                      />
+                    </div>
+                    <span className="text-xs text-muted-foreground whitespace-nowrap">
+                      {activeModules.findIndex(m => m.id === activeModule) + 1}/{activeModules.length}
+                    </span>
+                  </div>
+                  
+                  {/* Navigation controls */}
+                  <div className="flex items-center justify-between">
+                    <button
+                      onClick={handleBack}
+                      className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg px-2 py-1 -ml-2 min-h-[44px]"
+                    >
+                      <span>←</span>
+                      Indietro
+                    </button>
+                    
+                    {/* Prev/Next navigation */}
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => {
+                          const currentIndex = activeModules.findIndex(m => m.id === activeModule)
+                          if (currentIndex > 0) {
+                            setActiveModule(activeModules[currentIndex - 1]?.id || '')
+                          }
+                        }}
+                        disabled={activeModules.findIndex(m => m.id === activeModule) === 0}
+                        className="w-10 h-10 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-muted hover:bg-muted-foreground/20"
+                        title="Modulo precedente"
+                      >
+                        ‹
+                      </button>
+                      <button
+                        onClick={() => {
+                          const currentIndex = activeModules.findIndex(m => m.id === activeModule)
+                          if (currentIndex < activeModules.length - 1) {
+                            setActiveModule(activeModules[currentIndex + 1]?.id || '')
+                          }
+                        }}
+                        disabled={activeModules.findIndex(m => m.id === activeModule) === activeModules.length - 1}
+                        className="w-10 h-10 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-muted hover:bg-muted-foreground/20"
+                        title="Modulo successivo"
+                      >
+                        ›
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Module content */}
+                {activeModuleData && (
+                  <ModuleContent 
+                    module={activeModuleData}
+                    onComplete={() => handleCompleteModule(activeModule!)}
+                    isCompleted={activeProgress?.completedSections?.includes(activeModule!) || false}
+                  />
+                )}
+              </div>
+            )}
           </PremiumDrawer>
         )}
       </DashboardLayout>
