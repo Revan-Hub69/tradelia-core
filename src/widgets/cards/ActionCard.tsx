@@ -3,6 +3,7 @@
  * 
  * Card per CTA, form e operazioni utente
  * Design discreto seguendo i principi Tradelia
+ * Density-aware: responds to compact/comfortable mode (REQ 20.2)
  */
 
 'use client';
@@ -50,27 +51,27 @@ export function ActionCard({
 
   return (
     <div className={cn(
-      "rounded-lg border-2 border-border bg-background p-4 shadow-sm",
+      "rounded-lg border-2 border-border bg-background density-card shadow-sm",
       "hover:border-primary/30 hover:bg-muted/20 hover:shadow-md hover:-translate-y-0.5",
       "transition-all duration-150 ease-out",
       className
     )}>
-      <div className="space-y-4">
+      <div className="density-gap flex flex-col">
         {/* Content */}
-        <div className="space-y-2">
+        <div className="density-gap flex flex-col">
           <h3 className="text-lg font-bold text-foreground tracking-tight">
             {title}
           </h3>
-          <p className="text-sm text-muted-foreground font-medium leading-relaxed">
+          <p className="density-text-secondary text-muted-foreground font-medium leading-relaxed">
             {description}
           </p>
         </div>
 
-        {/* Actions */}
-        <div className="flex flex-col sm:flex-row gap-2 pt-1">
+        {/* Actions - min 24px target size */}
+        <div className="flex flex-col sm:flex-row density-gap pt-1">
           <Button
             onClick={() => handleAction(primaryAction.actionId)}
-            className="flex-1 h-10"
+            className="flex-1 min-h-[var(--density-row-height)]"
           >
             {primaryAction.label}
           </Button>
@@ -78,7 +79,7 @@ export function ActionCard({
             <Button
               variant="outline"
               onClick={() => handleAction(secondaryAction.actionId)}
-              className="flex-1 h-10"
+              className="flex-1 min-h-[var(--density-row-height)]"
             >
               {secondaryAction.label}
             </Button>

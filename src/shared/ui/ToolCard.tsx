@@ -5,6 +5,7 @@
  * - Tutta la card è clickable
  * - Pulsante "Apri" rende ovvio l'intento
  * - Riduce misclick e aumenta accessibilità
+ * - Density-aware: responds to compact/comfortable mode (REQ 20.2)
  */
 
 'use client'
@@ -56,10 +57,11 @@ export function ToolCard({
   const [isHovered, setIsHovered] = useState(false)
   const t = useTranslations('common.toolCard')
 
+  // Size classes now use density variables for responsive sizing
   const sizeClasses = {
-    sm: 'p-4',
-    md: 'p-6',
-    lg: 'p-8'
+    sm: 'density-card',
+    md: 'density-card',
+    lg: 'p-8' // Large keeps fixed padding for emphasis
   }
 
   const handleCardClick = () => {
@@ -78,7 +80,7 @@ export function ToolCard({
       onMouseLeave={() => setIsHovered(false)}
       className={`
         relative bg-background border border-border/50 rounded-xl cursor-pointer
-        card-hover-lift group
+        card-hover-lift group min-h-[24px]
         hover:border-border focus-within:ring-2 focus-within:ring-primary/50
         ${sizeClasses[size]} ${className}
       `}
@@ -92,24 +94,24 @@ export function ToolCard({
       }}
       aria-label={t('openToolLabel', { title })}
     >
-      {/* Header */}
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-3">
-          {/* Icon */}
+      {/* Header - density-aware spacing */}
+      <div className="flex items-start justify-between mb-[var(--density-item-gap)]">
+        <div className="flex items-center density-gap">
+          {/* Icon - density-aware sizing with min 24px for WCAG 2.5.8 */}
           <div className={`
-            w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center
+            density-icon-box rounded-lg bg-primary/10 flex items-center justify-center
             transition-colors group-hover:bg-primary/15
           `}>
-            {icon || <CogIcon className="w-5 h-5 text-primary" />}
+            {icon || <CogIcon className="density-icon text-primary" />}
           </div>
           
           {/* Title & Category */}
           <div>
-            <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+            <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors density-text-secondary">
               {title}
             </h3>
             {category && (
-              <p className="text-xs text-muted-foreground uppercase tracking-wider">
+              <p className="density-text-tertiary text-muted-foreground uppercase tracking-wider">
                 {category}
               </p>
             )}
@@ -120,17 +122,18 @@ export function ToolCard({
         <div className="flex items-center gap-2">
           {/* New Badge */}
           {isNew && (
-            <span className="px-2 py-1 text-xs font-medium bg-primary text-white rounded-full">
+            <span className="px-2 py-1 density-text-tertiary font-medium bg-primary text-white rounded-full">
               {t('new')}
             </span>
           )}
           
-          {/* Favorite Button */}
+          {/* Favorite Button - min 24px touch target */}
           {onFavorite && (
             <button
               onClick={handleFavoriteClick}
               className={`
                 p-1.5 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50
+                min-w-[24px] min-h-[24px] flex items-center justify-center
                 ${isFavorite 
                   ? 'text-warning bg-warning/10 hover:bg-warning/20' 
                   : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
@@ -138,32 +141,32 @@ export function ToolCard({
               `}
               aria-label={isFavorite ? t('removeFromFavorites') : t('addToFavorites')}
             >
-              <StarIcon className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
+              <StarIcon className={`density-icon ${isFavorite ? 'fill-current' : ''}`} />
             </button>
           )}
         </div>
       </div>
 
-      {/* Description */}
-      <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+      {/* Description - density-aware text */}
+      <p className="density-text-secondary text-muted-foreground mb-[var(--density-item-gap)] line-clamp-2">
         {description}
       </p>
 
-      {/* Metadata */}
-      <div className="flex items-center justify-between mb-4">
+      {/* Metadata - density-aware spacing */}
+      <div className="flex items-center justify-between mb-[var(--density-item-gap)]">
         {/* Risk Badge */}
         <RiskBadge level={riskLevel} size="sm" showExplanation={false} />
         
         {/* Estimated Time */}
         {estimatedTime && (
-          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+          <div className="flex items-center gap-1 density-text-tertiary text-muted-foreground">
             <ClockIcon className="w-3 h-3" />
             <span>{estimatedTime}</span>
           </div>
         )}
       </div>
 
-      {/* Action Button */}
+      {/* Action Button - density-aware with min 24px target */}
       <button
         onClick={(e) => {
           e.stopPropagation() // Prevent double-click
@@ -171,7 +174,8 @@ export function ToolCard({
         }}
         className={`
           w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg
-          font-medium text-sm transition-all duration-200
+          font-medium density-text-secondary transition-all duration-200
+          min-h-[var(--density-row-height)]
           ${isHovered 
             ? 'bg-primary text-white shadow-md' 
             : 'bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground'
@@ -180,7 +184,7 @@ export function ToolCard({
         `}
       >
         <span>{t('openTool')}</span>
-        <ArrowRightIcon className={`w-4 h-4 transition-transform ${isHovered ? 'translate-x-1' : ''}`} />
+        <ArrowRightIcon className={`density-icon transition-transform ${isHovered ? 'translate-x-1' : ''}`} />
       </button>
 
       {/* Hover Overlay Effect */}
@@ -193,7 +197,7 @@ export function ToolCard({
   )
 }
 
-// Grid container for tool cards
+// Grid container for tool cards - density-aware gaps
 export function ToolGrid({ 
   tools, 
   onToolOpen, 
@@ -221,23 +225,23 @@ export function ToolGrid({
   
   if (tools.length === 0) {
     return (
-      <div className="space-y-8">
+      <div className="density-section-gap flex flex-col">
         {/* Original empty state */}
         <div className="text-center py-12">
-          <div className="w-16 h-16 rounded-2xl bg-muted/50 flex items-center justify-center mx-auto mb-4">
+          <div className="density-icon-box rounded-2xl bg-muted/50 flex items-center justify-center mx-auto mb-4" style={{ width: '4rem', height: '4rem' }}>
             <CogIcon className="w-8 h-8 text-muted-foreground" />
           </div>
           <h3 className="text-lg font-semibold text-foreground mb-2">
             {t('noToolsAvailable')}
           </h3>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground density-text-secondary">
             {t('toolsComingSoon')}
           </p>
         </div>
 
         {/* Ultra-Chicche: Preview upcoming tools */}
         {showPreviewTools && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 density-section-gap">
             <ToolPreview
               toolId="risk-analyzer-pro"
               title="Risk Analyzer Pro"
@@ -284,7 +288,7 @@ export function ToolGrid({
   }
 
   return (
-    <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ${className}`}>
+    <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 density-section-gap ${className}`}>
       {tools.map((tool) => (
         <ToolCard
           key={tool.id}
@@ -297,7 +301,7 @@ export function ToolGrid({
   )
 }
 
-// Compact tool card for lists
+// Compact tool card for lists - density-aware with min 24px target
 export function CompactToolCard({
   id,
   title,
@@ -310,7 +314,7 @@ export function CompactToolCard({
     <div
       onClick={() => onOpen(id)}
       className={`
-        flex items-center gap-4 p-4 bg-background border border-border/50 rounded-lg
+        flex items-center density-gap density-list-item bg-background border border-border/50 rounded-lg
         cursor-pointer transition-all duration-200 hover:border-border hover:bg-muted/30
         focus:outline-none focus:ring-2 focus:ring-primary/50 ${className}
       `}
@@ -323,21 +327,23 @@ export function CompactToolCard({
         }
       }}
     >
-      {/* Icon */}
-      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-        <CogIcon className="w-4 h-4 text-primary" />
+      {/* Icon - density-aware with min 24px */}
+      <div className="density-icon-box rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+        <CogIcon className="density-icon text-primary" />
       </div>
       
       {/* Content */}
       <div className="flex-1 min-w-0">
-        <h4 className="font-medium text-foreground truncate">{title}</h4>
-        <p className="text-sm text-muted-foreground truncate">{description}</p>
+        <h4 className="font-medium text-foreground truncate density-text-secondary">{title}</h4>
+        <p className="density-text-tertiary text-muted-foreground truncate">{description}</p>
       </div>
       
-      {/* Risk & Action */}
+      {/* Risk & Action - min 24px touch target */}
       <div className="flex items-center gap-3">
         <RiskBadge level={riskLevel} size="sm" showExplanation={false} />
-        <ArrowRightIcon className="w-4 h-4 text-muted-foreground" />
+        <div className="min-w-[24px] min-h-[24px] flex items-center justify-center">
+          <ArrowRightIcon className="density-icon text-muted-foreground" />
+        </div>
       </div>
     </div>
   )

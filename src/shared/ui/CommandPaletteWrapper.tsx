@@ -15,6 +15,7 @@ import { useLocale } from 'next-intl';
 import { CommandProvider, useCommandPalette, type Command } from './CommandProvider';
 import { CommandPalette } from './CommandPalette';
 import { getCoreCommands, NAVIGATION_SHORTCUTS, SINGLE_KEY_SHORTCUTS } from '@/src/shared/lib/core-commands';
+import { useDensity } from '@/src/shared/hooks/useDensity';
 
 interface CommandPaletteWrapperProps {
   children: ReactNode;
@@ -125,6 +126,7 @@ export function CommandPaletteWrapper({
   const router = useRouter();
   const locale = useLocale();
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const { toggleDensity } = useDensity();
 
   // Sync with document theme on mount
   useEffect(() => {
@@ -169,6 +171,7 @@ export function CommandPaletteWrapper({
     locale,
     toggleTheme,
     currentTheme: theme,
+    toggleDensity,
     openHelp: onOpenHelp,
     logout: onLogout,
   });

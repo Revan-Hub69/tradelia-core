@@ -3,6 +3,7 @@
  * 
  * Card per visualizzare metriche chiave e KPI
  * Design minimalista seguendo i principi Tradelia
+ * Density-aware: responds to compact/comfortable mode (REQ 20.2)
  */
 
 'use client';
@@ -28,14 +29,14 @@ export function SummaryCard({
 }: SummaryCardProps) {
   return (
     <div className={cn(
-      "rounded-lg border-2 border-border bg-background p-4 shadow-sm",
+      "rounded-lg border-2 border-border bg-background density-card shadow-sm",
       "hover:border-primary/30 hover:bg-muted/20 hover:shadow-md hover:-translate-y-0.5",
       "transition-all duration-150 ease-out",
       className
     )}>
-      <div className="space-y-2">
-        {/* Title */}
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+      <div className="density-gap flex flex-col">
+        {/* Title - density-aware text */}
+        <p className="density-text-tertiary font-semibold uppercase tracking-wide text-muted-foreground">
           {title}
         </p>
         
@@ -46,7 +47,7 @@ export function SummaryCard({
           </p>
           {change && (
             <span className={cn(
-              "text-sm font-semibold px-2 py-1 rounded-full",
+              "density-text-secondary font-semibold px-2 py-1 rounded-full min-h-[24px] flex items-center",
               trend === 'positive' && "bg-green-50 text-green-700 border border-green-200",
               trend === 'negative' && "bg-red-50 text-red-700 border border-red-200", 
               trend === 'warning' && "bg-amber-50 text-amber-700 border border-amber-200",
@@ -57,9 +58,9 @@ export function SummaryCard({
           )}
         </div>
         
-        {/* Subtitle */}
+        {/* Subtitle - density-aware text */}
         {subtitle && (
-          <p className="text-sm text-muted-foreground font-medium">
+          <p className="density-text-secondary text-muted-foreground font-medium">
             {subtitle}
           </p>
         )}

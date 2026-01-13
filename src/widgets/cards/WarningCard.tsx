@@ -3,6 +3,7 @@
  * 
  * Card per errori, alert e notifiche critiche
  * Design neutrale senza allarmismo
+ * Density-aware: responds to compact/comfortable mode (REQ 20.2)
  */
 
 'use client';
@@ -60,22 +61,22 @@ export function WarningCard({
 
   return (
     <div className={cn(
-      "rounded-lg border-2 bg-background p-5 shadow-sm",
+      "rounded-lg border-2 bg-background density-card shadow-sm",
       style.border,
       style.bg,
       "hover:shadow-md hover:-translate-y-0.5 transition-all duration-150 ease-out",
       className
     )}>
-      <div className="flex items-start gap-4">
-        {/* Icon */}
-        <div className={cn("flex-shrink-0 mt-1", style.icon)}>
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="flex items-start density-gap">
+        {/* Icon - density-aware sizing with min 24px */}
+        <div className={cn("flex-shrink-0 mt-1 density-icon-box flex items-center justify-center", style.icon)}>
+          <svg className="density-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={style.iconPath} />
           </svg>
         </div>
 
         {/* Content */}
-        <div className="flex-1 space-y-3">
+        <div className="flex-1 density-gap flex flex-col">
           <div className="flex items-start justify-between">
             <h4 className="text-base font-bold text-foreground">
               {title}
@@ -85,22 +86,22 @@ export function WarningCard({
                 variant="ghost"
                 size="sm"
                 onClick={handleDismiss}
-                className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground -mt-1"
+                className="min-h-[24px] min-w-[24px] p-0 text-muted-foreground hover:text-foreground -mt-1"
                 aria-label="Dismiss"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="density-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </Button>
             )}
           </div>
           
-          <p className="text-sm text-muted-foreground font-medium leading-relaxed">
+          <p className="density-text-secondary text-muted-foreground font-medium leading-relaxed">
             {message}
           </p>
           
           {source && (
-            <p className="text-xs text-muted-foreground font-medium">
+            <p className="density-text-tertiary text-muted-foreground font-medium">
               Fonte: {source}
             </p>
           )}

@@ -119,20 +119,63 @@
     --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.7);
   }
 
-  /* Density Modes - Optional */
+  /* ============================================
+     DENSITY SYSTEM - Premium 2026 (REQ 20.1, 20.2)
+     ============================================ */
+  
+  /* Default density values (comfortable mode) */
+  :root {
+    /* Card and container padding */
+    --density-padding-card: 1.5rem;      /* 24px */
+    --density-padding-section: 1.5rem;   /* 24px */
+    --density-padding-input: 0.75rem;    /* 12px */
+    
+    /* Typography scaling */
+    --density-font-secondary: 0.875rem;  /* 14px */
+    --density-font-tertiary: 0.75rem;    /* 12px */
+    
+    /* Row and item heights */
+    --density-row-height: 3rem;          /* 48px */
+    --density-item-gap: 1rem;            /* 16px */
+    --density-section-gap: 1.5rem;       /* 24px */
+    
+    /* Icon sizes */
+    --density-icon-size: 1.25rem;        /* 20px */
+    --density-icon-box: 2.5rem;          /* 40px */
+  }
+  
+  /* Compact density mode - reduced spacing while maintaining 24px min target */
   [data-density="compact"] {
-    --spacing-unit: 0.75;
-    --text-scale: 0.9;
+    --density-padding-card: 1rem;        /* 16px */
+    --density-padding-section: 1rem;     /* 16px */
+    --density-padding-input: 0.5rem;     /* 8px */
+    
+    --density-font-secondary: 0.75rem;   /* 12px */
+    --density-font-tertiary: 0.625rem;   /* 10px */
+    
+    --density-row-height: 2.5rem;        /* 40px - still above 24px min */
+    --density-item-gap: 0.75rem;         /* 12px */
+    --density-section-gap: 1rem;         /* 16px */
+    
+    --density-icon-size: 1rem;           /* 16px */
+    --density-icon-box: 2rem;            /* 32px - still above 24px min */
   }
-
+  
+  /* Comfortable density mode (explicit, same as default) */
   [data-density="comfortable"] {
-    --spacing-unit: 1;
-    --text-scale: 1;
-  }
-
-  [data-density="spacious"] {
-    --spacing-unit: 1.25;
-    --text-scale: 1.05;
+    --density-padding-card: 1.5rem;
+    --density-padding-section: 1.5rem;
+    --density-padding-input: 0.75rem;
+    
+    --density-font-secondary: 0.875rem;
+    --density-font-tertiary: 0.75rem;
+    
+    --density-row-height: 3rem;
+    --density-item-gap: 1rem;
+    --density-section-gap: 1.5rem;
+    
+    --density-icon-size: 1.25rem;
+    --density-icon-box: 2.5rem;
   }
 
 
@@ -286,6 +329,77 @@
   /* Scroll margin for focused elements inside main content */
   #main-content :focus {
     scroll-margin-top: 80px; /* Header height */
+  }
+  
+  /* ============================================
+     DENSITY UTILITY CLASSES - Premium 2026 (REQ 20.2)
+     ============================================ */
+  
+  /* Density-aware card padding */
+  .density-card {
+    padding: var(--density-padding-card);
+  }
+  
+  /* Density-aware section padding */
+  .density-section {
+    padding: var(--density-padding-section);
+  }
+  
+  /* Density-aware row height */
+  .density-row {
+    min-height: var(--density-row-height);
+    /* Ensure minimum 24px target size in all density modes */
+    min-height: max(var(--density-row-height), 24px);
+  }
+  
+  /* Density-aware item gap */
+  .density-gap {
+    gap: var(--density-item-gap);
+  }
+  
+  /* Density-aware section gap */
+  .density-section-gap {
+    gap: var(--density-section-gap);
+  }
+  
+  /* Density-aware secondary text */
+  .density-text-secondary {
+    font-size: var(--density-font-secondary);
+  }
+  
+  /* Density-aware tertiary text */
+  .density-text-tertiary {
+    font-size: var(--density-font-tertiary);
+  }
+  
+  /* Density-aware icon box */
+  .density-icon-box {
+    width: var(--density-icon-box);
+    height: var(--density-icon-box);
+    /* Ensure minimum 24px target size */
+    min-width: 24px;
+    min-height: 24px;
+  }
+  
+  /* Density-aware icon size */
+  .density-icon {
+    width: var(--density-icon-size);
+    height: var(--density-icon-size);
+  }
+  
+  /* Combined density-aware card component */
+  .density-card-component {
+    padding: var(--density-padding-card);
+    gap: var(--density-item-gap);
+  }
+  
+  /* Density-aware list item */
+  .density-list-item {
+    padding: var(--density-padding-input) var(--density-padding-card);
+    min-height: var(--density-row-height);
+    /* Ensure minimum 24px target size */
+    min-height: max(var(--density-row-height), 24px);
+    gap: var(--density-item-gap);
   }
   
   /* Section Frame Pattern - The core of 2026 design */

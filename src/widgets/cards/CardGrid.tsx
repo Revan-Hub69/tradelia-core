@@ -3,6 +3,7 @@
  * 
  * Sistema di layout per organizzare le card della dashboard
  * con supporto per drag & drop e responsive design
+ * Density-aware: responds to compact/comfortable mode (REQ 20.2)
  */
 
 'use client';
@@ -18,7 +19,7 @@ interface CardGridProps {
 export function CardGrid({ children, className }: CardGridProps) {
   return (
     <div className={cn(
-      "space-y-8",
+      "density-section-gap flex flex-col",
       className
     )}>
       {children}

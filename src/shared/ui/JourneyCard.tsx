@@ -3,6 +3,7 @@
  * 
  * Componente card unificato per journey e pillar.
  * Design coerente: border-left colorato, icon box, title, description, arrow.
+ * Density-aware: responds to compact/comfortable mode (REQ 20.2)
  */
 
 'use client'
@@ -64,52 +65,56 @@ export function JourneyCard({
   
   const cardContent = (
     <>
-      {/* Main row - più compatto su mobile */}
-      <div className="flex items-center gap-3 sm:gap-4">
-        {/* Icon - più piccolo su mobile */}
-        <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${colors.bg} flex items-center justify-center flex-shrink-0`}>
-          <div className={`${colors.text} [&>svg]:w-5 [&>svg]:h-5 sm:[&>svg]:w-6 sm:[&>svg]:h-6`}>{icon}</div>
+      {/* Main row - density-aware gaps */}
+      <div className="flex items-center density-gap">
+        {/* Icon - density-aware sizing with min 24px for WCAG 2.5.8 */}
+        <div className={`density-icon-box rounded-xl ${colors.bg} flex items-center justify-center flex-shrink-0`}>
+          <div className={`${colors.text} density-icon [&>svg]:w-[var(--density-icon-size)] [&>svg]:h-[var(--density-icon-size)]`}>{icon}</div>
         </div>
         
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <h3 className="text-sm sm:text-base font-semibold text-foreground mb-0.5 sm:mb-1">
+          <h3 className="density-text-secondary font-semibold text-foreground mb-0.5">
             {title}
           </h3>
-          <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">
+          <p className="density-text-tertiary text-muted-foreground line-clamp-2">
             {description}
           </p>
           {subtitle && (
-            <p className={`text-[10px] sm:text-xs font-medium ${colors.text} uppercase tracking-wider mt-1.5 sm:mt-2`}>
+            <p className={`density-text-tertiary font-medium ${colors.text} uppercase tracking-wider mt-1.5`}>
               {subtitle}
             </p>
           )}
-          {badge && <div className="mt-2 sm:mt-3">{badge}</div>}
+          {badge && <div className="mt-2">{badge}</div>}
         </div>
         
-        {/* Arrow */}
-        <svg 
-          className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all flex-shrink-0" 
-          fill="none" 
-          viewBox="0 0 24 24" 
-          stroke="currentColor" 
-          strokeWidth={1.5}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-        </svg>
+        {/* Arrow - min 24px touch target */}
+        <div className="flex items-center justify-center min-w-[24px] min-h-[24px]">
+          <svg 
+            className="density-icon text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all flex-shrink-0" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor" 
+            strokeWidth={1.5}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+        </div>
       </div>
       
-      {/* Extra content (focus areas, etc) */}
-      {children && <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-border/30">{children}</div>}
+      {/* Extra content (focus areas, etc) - density-aware spacing */}
+      {children && <div className="mt-[var(--density-item-gap)] pt-[var(--density-item-gap)] border-t border-border/30">{children}</div>}
     </>
   )
 
+  // Density-aware padding with min 24px target size for interactive elements
   const baseClasses = `
     group block w-full text-left
-    bg-background rounded-xl p-3.5 sm:p-5
+    bg-background rounded-xl density-card
     border border-border/50 border-l-4 ${colors.border}
     shadow-sm card-hover-lift
     focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
+    min-h-[24px]
   `
 
   if (href) {

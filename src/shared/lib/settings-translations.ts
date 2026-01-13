@@ -54,6 +54,15 @@ export const settingsTranslations = {
       success: 'Email di reset inviata!',
       error: 'Errore'
     },
+    density: {
+      title: 'Densità interfaccia',
+      description: 'Regola la spaziatura e le dimensioni degli elementi.',
+      compact: 'Compatto',
+      compactHint: 'Più contenuto visibile, spaziatura ridotta',
+      comfortable: 'Comodo',
+      comfortableHint: 'Spaziatura standard, più leggibile',
+      success: 'Densità aggiornata!'
+    },
     common: {
       save: 'Salva',
       saving: '...'
@@ -107,6 +116,15 @@ export const settingsTranslations = {
       success: 'Reset email sent!',
       error: 'Error'
     },
+    density: {
+      title: 'Interface density',
+      description: 'Adjust spacing and element sizes.',
+      compact: 'Compact',
+      compactHint: 'More content visible, reduced spacing',
+      comfortable: 'Comfortable',
+      comfortableHint: 'Standard spacing, more readable',
+      success: 'Density updated!'
+    },
     common: {
       save: 'Save',
       saving: '...'
@@ -125,6 +143,7 @@ export type SettingsTranslation = {
   country: { title: string; placeholder: string; search: string; success: string; error: string; saveError: string }
   email: { title: string; currentLabel: string; placeholder: string; hint: string; success: string; invalidError: string; sameError: string; saveError: string; change: string }
   security: { title: string; description: string; resetButton: string; success: string; error: string }
+  density: { title: string; description: string; compact: string; compactHint: string; comfortable: string; comfortableHint: string; success: string }
   common: { save: string; saving: string }
 }
 
