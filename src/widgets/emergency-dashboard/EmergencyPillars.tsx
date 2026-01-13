@@ -68,9 +68,9 @@ interface PillarConfig {
 export function EmergencyPillars() {
   const t = useTranslations('emergencyDashboard.pillars')
   const [activePillar, setActivePillar] = useState<string | null>(null)
+  const [activeSubmodule, setActiveSubmodule] = useState<string | null>(null)
   
   const { state } = useDashboardAuth()
-  const { openModal } = useDashboardModal()
   const { 
     getPillarProgress, 
     markSectionComplete, 
@@ -135,6 +135,13 @@ export function EmergencyPillars() {
   const handleToggleSection = async (sectionId: string) => {
     if (!activeData) return
     
+    // Open submodule instead of just toggling completion
+    setActiveSubmodule(sectionId)
+  }
+
+  const handleCompleteSection = async (sectionId: string) => {
+    if (!activeData) return
+    
     const isCompleted = activeProgress?.completedSections?.includes(sectionId)
     const totalSections = activeSections.length
 
@@ -143,6 +150,15 @@ export function EmergencyPillars() {
     } else {
       await markSectionComplete('emergency', activeData.id, sectionId, totalSections)
     }
+  }
+
+  const handleCloseDrawer = () => {
+    setActiveSubmodule(null)
+    setActivePillar(null)
+  }
+
+  const handleBackToMain = () => {
+    setActiveSubmodule(null)
   }
 
   return (
@@ -178,139 +194,55 @@ export function EmergencyPillars() {
         ))}
       </div>
 
-      {/* Enterprise Drawer with improved UX */}
+      {/* Enterprise Drawer with improved UX and submodule navigation */}
       {activeData && (
         <PremiumDrawer
           isOpen={!!activePillar}
-          onClose={() => setActivePillar(null)}
-          title={activeData.title}
-          subtitle="Pilastro di emergenza"
+          onClose={handleCloseDrawer}
+          title={activeSubmodule ? 
+            activeSections.find(s => s.id === activeSubmodule)?.titleKey || activeData.title :
+            activeData.title
+          }
+          subtitle={activeSubmodule ? 
+            `${activeData.title} • Modulo` : 
+            "Pilastro di emergenza"
+          }
           icon={<PillarIcon type={activeData.iconType} className="w-6 h-6" />}
           accentColor={activeData.accentColor}
           size="xl"
-          showCopyLink={true}
+          showCopyLink={false}
           panelId={`pillar-${activeData.id}`}
+          closeOnBackdrop={false} // Prevent accidental closing
+          breadcrumb={activeSubmodule ? 
+            [activeData.title, activeSections.find(s => s.id === activeSubmodule)?.titleKey || ''] :
+            [activeData.title]
+          }
+          minimalHeader={!!activeSubmodule} // Use back button for submodules
           onCopyLink={() => {
             // Toast notification would go here
             console.log('Link copiato per pilastro:', activeData.id)
           }}
-          footer={activeData.hasCta && activeData.completionPercent === 100 ? (
-            <div className="flex gap-3">
-              <CTAEnterprise variant="primary" onClick={() => console.log(`Complete ${activeData.id}`)}>
-                Completa pilastro
-              </CTAEnterprise>
-              <CTAEnterprise variant="secondary" onClick={() => setActivePillar(null)}>
-                Rivedi contenuto
-              </CTAEnterprise>
-            </div>
-          ) : (
-            <div className="flex gap-3">
-              <CTAEnterprise variant="primary" onClick={() => setActivePillar(null)}>
-                Prosegui nel percorso
-              </CTAEnterprise>
-            </div>
-          )}
+          // Remove footer CTA - this is an informational drawer
         >
-          <div className="space-y-6">
-            {/* Guest Mode Alert with enterprise styling */}
-            {state.isGuestMode && (
-              <AlertEnterprise
-                type="info"
-                title="Modalità ospite attiva"
-                message="Registrati per salvare i tuoi progressi e accedere a tutte le funzionalità."
-                className="mb-6"
-              />
-            )}
-
-            {/* Focus areas with hierarchy */}
-            <div className="flex flex-wrap gap-2">
-              <FocusChip isPrimary>preparazione emergenze</FocusChip>
-              <FocusChip>gestione risorse</FocusChip>
-              <FocusChip>sicurezza finanziaria</FocusChip>
-            </div>
-
-            {/* Progress section with enterprise styling */}
-            <section>
-              <h3 className="text-enterprise-primary text-base font-semibold mb-3">
-                Progresso completamento
-              </h3>
-              <div className="flex items-center gap-3 p-4 alert-enterprise-info">
-                <span className="text-sm font-medium">Completamento:</span>
-                <div className="flex-1 h-2 bg-muted-foreground/20 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-success rounded-full transition-all duration-300"
-                    style={{ width: `${activeData.completionPercent}%` }}
-                  />
-                </div>
-                <span className="text-sm font-semibold">{activeData.completionPercent}%</span>
-              </div>
-            </section>
-
-            {/* Description with reading optimization */}
-            <section>
-              <h3 className="text-enterprise-primary text-base font-semibold mb-3">
-                Cosa imparerai
-              </h3>
-              <div className="reading-width">
-                <p className="text-enterprise-body reading-line-height reading-paragraph-spacing">
-                  {activeData.description}
-                </p>
-              </div>
-            </section>
-            
-            {/* Sections with enterprise list styling */}
-            <section>
-              <h3 className="text-enterprise-primary text-base font-semibold mb-4">
-                Moduli del percorso
-              </h3>
-              <div className="space-y-1">
-                {activeSections.map((section, index) => {
-                  const isCompleted = activeProgress?.completedSections?.includes(section.id)
-                  return (
-                    <DrawerListItem
-                      key={section.id}
-                      onClick={() => handleToggleSection(section.id)}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3 flex-1 min-w-0">
-                          <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
-                            isCompleted 
-                              ? 'bg-success border-success' 
-                              : 'border-enterprise-soft'
-                          }`}>
-                            {isCompleted && (
-                              <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                              </svg>
-                            )}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="text-enterprise-body font-medium mb-1">
-                              {index + 1}. {section.titleKey}
-                            </h4>
-                            <p className="text-enterprise-secondary text-sm reading-line-height">
-                              Brevi contenuti per capire quando e perché usare questo strumento in situazioni di emergenza.
-                            </p>
-                          </div>
-                        </div>
-                        <ProgressStateBadge 
-                          state={isCompleted ? 'completed' : 'fundamental'} 
-                          {...(!isCompleted && { timeEstimate: '~5 min' })}
-                        />
-                      </div>
-                    </DrawerListItem>
-                  )
-                })}
-              </div>
-            </section>
-
-            {/* Educational alert for context */}
-            <AlertEnterprise
-              type="warning"
-              title="Importante da sapere"
-              message="Questi strumenti sono progettati per situazioni di emergenza reale. Valuta attentamente la tua situazione prima di implementare le strategie."
+          {activeSubmodule ? (
+            // Submodule content
+            <SubmoduleContent 
+              pillarId={activeData.id}
+              sectionId={activeSubmodule}
+              onComplete={() => handleCompleteSection(activeSubmodule)}
+              onBack={handleBackToMain}
+              isCompleted={activeProgress?.completedSections?.includes(activeSubmodule) || false}
             />
-          </div>
+          ) : (
+            // Main pillar content
+            <MainPillarContent 
+              pillar={activeData}
+              sections={activeSections}
+              progress={activeProgress}
+              onSectionClick={handleToggleSection}
+              isGuestMode={state.isGuestMode}
+            />
+          )}
         </PremiumDrawer>
       )}
     </>
@@ -366,5 +298,226 @@ function PillarIcon({ type, className }: { type: string; className?: string }) {
       <circle cx="12" cy="12" r="10" />
       <polygon points="10 8 16 12 10 16 10 8" />
     </svg>
+  )
+}
+
+// Component for main pillar content
+function MainPillarContent({ 
+  pillar, 
+  sections, 
+  progress, 
+  onSectionClick, 
+  isGuestMode 
+}: {
+  pillar: PillarConfig & { completionPercent: number }
+  sections: { id: string; titleKey: string }[]
+  progress: any
+  onSectionClick: (sectionId: string) => void
+  isGuestMode: boolean
+}) {
+  return (
+    <div className="space-y-6">
+      {/* Guest Mode Alert with enterprise styling */}
+      {isGuestMode && (
+        <AlertEnterprise
+          type="info"
+          title="Modalità ospite attiva"
+          message="Registrati per salvare i tuoi progressi e accedere a tutte le funzionalità."
+          className="mb-6"
+        />
+      )}
+
+      {/* Focus areas with hierarchy */}
+      <div className="flex flex-wrap gap-2">
+        <FocusChip isPrimary>preparazione emergenze</FocusChip>
+        <FocusChip>gestione risorse</FocusChip>
+        <FocusChip>sicurezza finanziaria</FocusChip>
+      </div>
+
+      {/* Progress section with enterprise styling */}
+      <section>
+        <h3 className="text-enterprise-primary text-base font-semibold mb-3">
+          Progresso completamento
+        </h3>
+        <div className="flex items-center gap-3 p-4 alert-enterprise-info">
+          <span className="text-sm font-medium">Completamento:</span>
+          <div className="flex-1 h-2 bg-muted-foreground/20 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-success rounded-full transition-all duration-300"
+              style={{ width: `${pillar.completionPercent}%` }}
+            />
+          </div>
+          <span className="text-sm font-semibold">{pillar.completionPercent}%</span>
+        </div>
+      </section>
+
+      {/* Description with reading optimization */}
+      <section>
+        <h3 className="text-enterprise-primary text-base font-semibold mb-3">
+          Cosa imparerai
+        </h3>
+        <div className="reading-width">
+          <p className="text-enterprise-body reading-line-height reading-paragraph-spacing">
+            {pillar.description}
+          </p>
+        </div>
+      </section>
+      
+      {/* Sections with enterprise list styling - now clickable to open submodules */}
+      <section>
+        <h3 className="text-enterprise-primary text-base font-semibold mb-4">
+          Moduli del percorso
+        </h3>
+        <div className="space-y-1">
+          {sections.map((section, index) => {
+            const isCompleted = progress?.completedSections?.includes(section.id)
+            return (
+              <DrawerListItem
+                key={section.id}
+                onClick={() => onSectionClick(section.id)}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
+                      isCompleted 
+                        ? 'bg-success border-success' 
+                        : 'border-enterprise-soft'
+                    }`}>
+                      {isCompleted && (
+                        <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-enterprise-body font-medium mb-1">
+                        {index + 1}. {section.titleKey}
+                      </h4>
+                      <p className="text-enterprise-secondary text-sm reading-line-height">
+                        Clicca per aprire il modulo e accedere ai contenuti dettagliati.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <ProgressStateBadge 
+                      state={isCompleted ? 'completed' : 'fundamental'} 
+                      {...(!isCompleted && { timeEstimate: '~5 min' })}
+                    />
+                    <svg className="w-4 h-4 text-enterprise-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </div>
+              </DrawerListItem>
+            )
+          })}
+        </div>
+      </section>
+
+      {/* Educational alert for context */}
+      <AlertEnterprise
+        type="warning"
+        title="Importante da sapere"
+        message="Questi strumenti sono progettati per situazioni di emergenza reale. Valuta attentamente la tua situazione prima di implementare le strategie."
+      />
+    </div>
+  )
+}
+
+// Component for submodule content
+function SubmoduleContent({ 
+  pillarId, 
+  sectionId, 
+  onComplete, 
+  onBack, 
+  isCompleted 
+}: {
+  pillarId: string
+  sectionId: string
+  onComplete: () => void
+  onBack: () => void
+  isCompleted: boolean
+}) {
+  // Mock content - in real app this would come from CMS or API
+  const getSubmoduleContent = (pillarId: string, sectionId: string) => {
+    return {
+      title: `Contenuto per ${sectionId}`,
+      content: [
+        {
+          type: 'text',
+          content: 'Questo è il contenuto dettagliato del modulo. Qui troverai informazioni approfondite, esempi pratici e linee guida specifiche.'
+        },
+        {
+          type: 'list',
+          title: 'Punti chiave:',
+          items: [
+            'Concetto fondamentale 1',
+            'Applicazione pratica 2', 
+            'Considerazioni importanti 3'
+          ]
+        },
+        {
+          type: 'text',
+          content: 'Dopo aver letto e compreso questi contenuti, potrai segnare il modulo come completato.'
+        }
+      ]
+    }
+  }
+
+  const content = getSubmoduleContent(pillarId, sectionId)
+
+  return (
+    <div className="space-y-6">
+      {/* Content sections */}
+      {content.content.map((section, index) => (
+        <section key={index}>
+          {section.type === 'text' && (
+            <div className="reading-width">
+              <p className="text-enterprise-body reading-line-height reading-paragraph-spacing">
+                {section.content}
+              </p>
+            </div>
+          )}
+          
+          {section.type === 'list' && (
+            <div>
+              <h4 className="text-enterprise-primary font-semibold mb-3">{section.title}</h4>
+              <ul className="space-y-2">
+                {section.items?.map((item, itemIndex) => (
+                  <li key={itemIndex} className="flex items-start gap-3">
+                    <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0" />
+                    <span className="text-enterprise-body reading-line-height">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </section>
+      ))}
+
+      {/* Completion section */}
+      <section className="border-t border-enterprise-soft pt-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h4 className="text-enterprise-primary font-semibold mb-1">
+              Completamento modulo
+            </h4>
+            <p className="text-enterprise-secondary text-sm">
+              {isCompleted ? 'Modulo completato' : 'Segna come completato quando hai finito di leggere'}
+            </p>
+          </div>
+          <button
+            onClick={onComplete}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              isCompleted
+                ? 'bg-success/10 text-success border border-success/20'
+                : 'bg-primary text-white hover:bg-primary/90'
+            }`}
+          >
+            {isCompleted ? 'Completato ✓' : 'Segna completato'}
+          </button>
+        </div>
+      </section>
+    </div>
   )
 }
