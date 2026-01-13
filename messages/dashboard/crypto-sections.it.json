@@ -6,19 +6,31 @@
     "pillars": {
       "learningPath": {
         "title": "Percorso dinamico",
-        "description": "Moduli educativi sequenziali per comprendere i concetti fondamentali"
+        "description": "Moduli educativi sequenziali per comprendere i concetti fondamentali",
+        "focus1": "Concetti chiave",
+        "focus2": "Esempi pratici",
+        "focus3": "Verifica comprensione"
       },
       "checklist": {
         "title": "Checklist anti-errore",
-        "description": "Verifica sistematica per evitare gli errori più comuni"
+        "description": "Verifica sistematica per evitare gli errori più comuni",
+        "focus1": "Errori frequenti",
+        "focus2": "Controlli preventivi",
+        "focus3": "Best practice"
       },
       "indicators": {
         "title": "Indicatori base",
-        "description": "Metriche essenziali per valutare la tua situazione"
+        "description": "Metriche essenziali per valutare la tua situazione",
+        "focus1": "Metriche chiave",
+        "focus2": "Soglie di attenzione",
+        "focus3": "Interpretazione dati"
       },
       "demo": {
         "title": "Demo assistita",
-        "description": "Simulazioni pratiche in ambiente protetto"
+        "description": "Simulazioni pratiche in ambiente protetto",
+        "focus1": "Ambiente sicuro",
+        "focus2": "Procedure guidate",
+        "focus3": "Test operativi"
       }
     },
     

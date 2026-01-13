@@ -33,28 +33,28 @@ interface SectionDashboardProps {
 // Configurazione 4 pilastri per ogni sezione
 const SECTION_PILLARS: Record<SectionId, PillarConfig[]> = {
   own: [
-    { id: 'learning-path', titleKey: 'pillars.learningPath.title', descriptionKey: 'pillars.learningPath.description', icon: 'book', color: 'primary' },
-    { id: 'checklist', titleKey: 'pillars.checklist.title', descriptionKey: 'pillars.checklist.description', icon: 'check', color: 'success' },
-    { id: 'indicators', titleKey: 'pillars.indicators.title', descriptionKey: 'pillars.indicators.description', icon: 'chart', color: 'warning' },
-    { id: 'demo', titleKey: 'pillars.demo.title', descriptionKey: 'pillars.demo.description', icon: 'play', color: 'error' }
+    { id: 'learning-path', titleKey: 'pillars.learningPath.title', descriptionKey: 'pillars.learningPath.description', icon: 'book', color: 'primary', focusKeys: ['pillars.learningPath.focus1', 'pillars.learningPath.focus2', 'pillars.learningPath.focus3'] },
+    { id: 'checklist', titleKey: 'pillars.checklist.title', descriptionKey: 'pillars.checklist.description', icon: 'check', color: 'success', focusKeys: ['pillars.checklist.focus1', 'pillars.checklist.focus2', 'pillars.checklist.focus3'] },
+    { id: 'indicators', titleKey: 'pillars.indicators.title', descriptionKey: 'pillars.indicators.description', icon: 'chart', color: 'warning', focusKeys: ['pillars.indicators.focus1', 'pillars.indicators.focus2', 'pillars.indicators.focus3'] },
+    { id: 'demo', titleKey: 'pillars.demo.title', descriptionKey: 'pillars.demo.description', icon: 'play', color: 'error', focusKeys: ['pillars.demo.focus1', 'pillars.demo.focus2', 'pillars.demo.focus3'] }
   ],
   yield: [
-    { id: 'learning-path', titleKey: 'pillars.learningPath.title', descriptionKey: 'pillars.learningPath.description', icon: 'book', color: 'primary' },
-    { id: 'checklist', titleKey: 'pillars.checklist.title', descriptionKey: 'pillars.checklist.description', icon: 'check', color: 'success' },
-    { id: 'indicators', titleKey: 'pillars.indicators.title', descriptionKey: 'pillars.indicators.description', icon: 'chart', color: 'warning' },
-    { id: 'demo', titleKey: 'pillars.demo.title', descriptionKey: 'pillars.demo.description', icon: 'play', color: 'error' }
+    { id: 'learning-path', titleKey: 'pillars.learningPath.title', descriptionKey: 'pillars.learningPath.description', icon: 'book', color: 'primary', focusKeys: ['pillars.learningPath.focus1', 'pillars.learningPath.focus2', 'pillars.learningPath.focus3'] },
+    { id: 'checklist', titleKey: 'pillars.checklist.title', descriptionKey: 'pillars.checklist.description', icon: 'check', color: 'success', focusKeys: ['pillars.checklist.focus1', 'pillars.checklist.focus2', 'pillars.checklist.focus3'] },
+    { id: 'indicators', titleKey: 'pillars.indicators.title', descriptionKey: 'pillars.indicators.description', icon: 'chart', color: 'warning', focusKeys: ['pillars.indicators.focus1', 'pillars.indicators.focus2', 'pillars.indicators.focus3'] },
+    { id: 'demo', titleKey: 'pillars.demo.title', descriptionKey: 'pillars.demo.description', icon: 'play', color: 'error', focusKeys: ['pillars.demo.focus1', 'pillars.demo.focus2', 'pillars.demo.focus3'] }
   ],
   invest: [
-    { id: 'learning-path', titleKey: 'pillars.learningPath.title', descriptionKey: 'pillars.learningPath.description', icon: 'book', color: 'primary' },
-    { id: 'checklist', titleKey: 'pillars.checklist.title', descriptionKey: 'pillars.checklist.description', icon: 'check', color: 'success' },
-    { id: 'indicators', titleKey: 'pillars.indicators.title', descriptionKey: 'pillars.indicators.description', icon: 'chart', color: 'warning' },
-    { id: 'demo', titleKey: 'pillars.demo.title', descriptionKey: 'pillars.demo.description', icon: 'play', color: 'error' }
+    { id: 'learning-path', titleKey: 'pillars.learningPath.title', descriptionKey: 'pillars.learningPath.description', icon: 'book', color: 'primary', focusKeys: ['pillars.learningPath.focus1', 'pillars.learningPath.focus2', 'pillars.learningPath.focus3'] },
+    { id: 'checklist', titleKey: 'pillars.checklist.title', descriptionKey: 'pillars.checklist.description', icon: 'check', color: 'success', focusKeys: ['pillars.checklist.focus1', 'pillars.checklist.focus2', 'pillars.checklist.focus3'] },
+    { id: 'indicators', titleKey: 'pillars.indicators.title', descriptionKey: 'pillars.indicators.description', icon: 'chart', color: 'warning', focusKeys: ['pillars.indicators.focus1', 'pillars.indicators.focus2', 'pillars.indicators.focus3'] },
+    { id: 'demo', titleKey: 'pillars.demo.title', descriptionKey: 'pillars.demo.description', icon: 'play', color: 'error', focusKeys: ['pillars.demo.focus1', 'pillars.demo.focus2', 'pillars.demo.focus3'] }
   ],
   speculate: [
-    { id: 'learning-path', titleKey: 'pillars.learningPath.title', descriptionKey: 'pillars.learningPath.description', icon: 'book', color: 'primary' },
-    { id: 'checklist', titleKey: 'pillars.checklist.title', descriptionKey: 'pillars.checklist.description', icon: 'check', color: 'success' },
-    { id: 'indicators', titleKey: 'pillars.indicators.title', descriptionKey: 'pillars.indicators.description', icon: 'chart', color: 'warning' },
-    { id: 'demo', titleKey: 'pillars.demo.title', descriptionKey: 'pillars.demo.description', icon: 'play', color: 'error' }
+    { id: 'learning-path', titleKey: 'pillars.learningPath.title', descriptionKey: 'pillars.learningPath.description', icon: 'book', color: 'primary', focusKeys: ['pillars.learningPath.focus1', 'pillars.learningPath.focus2', 'pillars.learningPath.focus3'] },
+    { id: 'checklist', titleKey: 'pillars.checklist.title', descriptionKey: 'pillars.checklist.description', icon: 'check', color: 'success', focusKeys: ['pillars.checklist.focus1', 'pillars.checklist.focus2', 'pillars.checklist.focus3'] },
+    { id: 'indicators', titleKey: 'pillars.indicators.title', descriptionKey: 'pillars.indicators.description', icon: 'chart', color: 'warning', focusKeys: ['pillars.indicators.focus1', 'pillars.indicators.focus2', 'pillars.indicators.focus3'] },
+    { id: 'demo', titleKey: 'pillars.demo.title', descriptionKey: 'pillars.demo.description', icon: 'play', color: 'error', focusKeys: ['pillars.demo.focus1', 'pillars.demo.focus2', 'pillars.demo.focus3'] }
   ]
 }
 
@@ -64,6 +64,7 @@ interface PillarConfig {
   descriptionKey: string
   icon: 'book' | 'check' | 'chart' | 'play'
   color: 'primary' | 'success' | 'warning' | 'error'
+  focusKeys: string[]
 }
 
 export function SectionDashboard({ sectionId }: SectionDashboardProps) {
@@ -86,9 +87,10 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
   const pillarsWithProgress = useMemo(() => {
     return pillars.map(pillar => {
       const progress = getPillarProgress(sectionId, pillar.id)
-      return { ...pillar, completionPercent: progress?.percentage || 0 }
+      const focusAreas = pillar.focusKeys.map(key => t(key))
+      return { ...pillar, completionPercent: progress?.percentage || 0, focusAreas }
     })
-  }, [pillars, getPillarProgress, sectionId])
+  }, [pillars, getPillarProgress, sectionId, t])
 
   const activePillarData = activePillar 
     ? pillarsWithProgress.find(p => p.id === activePillar) 
@@ -149,7 +151,24 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
                 accentColor={pillar.color}
                 onClick={() => handleOpenPillar(pillar.id)}
                 badge={<CompletionBadge percentage={pillar.completionPercent} />}
-              />
+              >
+                {/* Focus Areas - come in EmergencyPillars */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    {t('ui.focus')}:
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {pillar.focusAreas.map((area) => (
+                      <span 
+                        key={area}
+                        className="px-2 py-1 text-xs bg-muted/50 text-muted-foreground rounded-md"
+                      >
+                        {area}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </JourneyCard>
             ))}
           </div>
         </div>

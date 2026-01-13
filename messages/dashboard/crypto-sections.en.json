@@ -6,19 +6,31 @@
     "pillars": {
       "learningPath": {
         "title": "Learning Path",
-        "description": "Sequential educational modules to understand fundamental concepts"
+        "description": "Sequential educational modules to understand fundamental concepts",
+        "focus1": "Key concepts",
+        "focus2": "Practical examples",
+        "focus3": "Comprehension check"
       },
       "checklist": {
         "title": "Anti-error Checklist",
-        "description": "Systematic verification to avoid the most common mistakes"
+        "description": "Systematic verification to avoid the most common mistakes",
+        "focus1": "Common errors",
+        "focus2": "Preventive checks",
+        "focus3": "Best practices"
       },
       "indicators": {
         "title": "Basic Indicators",
-        "description": "Essential metrics to evaluate your situation"
+        "description": "Essential metrics to evaluate your situation",
+        "focus1": "Key metrics",
+        "focus2": "Warning thresholds",
+        "focus3": "Data interpretation"
       },
       "demo": {
         "title": "Guided Demo",
-        "description": "Practical simulations in a protected environment"
+        "description": "Practical simulations in a protected environment",
+        "focus1": "Safe environment",
+        "focus2": "Guided procedures",
+        "focus3": "Operational tests"
       }
     },
     

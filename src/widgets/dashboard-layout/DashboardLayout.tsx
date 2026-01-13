@@ -21,6 +21,7 @@ import { useSessionContinuity } from '@/src/shared/hooks/useSessionContinuity'
 import Logo from '@/components/Logo'
 import { UserMenu } from './UserMenu'
 import { JOURNEY_ORDER, type JourneyId } from '@/src/shared/config/journeys'
+import { type SectionId } from '@/src/shared/config/crypto-sections'
 import {
   ShieldIcon,
   TrendingUpIcon,
@@ -38,6 +39,31 @@ const JOURNEY_ICONS: Record<JourneyId, React.ComponentType<{ className?: string 
   passive: RefreshIcon
 }
 
+// Inline icons for new crypto sections (not in TradeliaIcons yet)
+function WalletIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
+    </svg>
+  )
+}
+
+function PercentIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  )
+}
+
+// Icons for new crypto sections
+const SECTION_ICONS: Record<SectionId, React.ComponentType<{ className?: string }>> = {
+  own: WalletIcon,
+  yield: PercentIcon,
+  invest: TrendingUpIcon,
+  speculate: BoltIcon
+}
+
 interface DashboardLayoutProps {
   children: ReactNode
 }
@@ -47,6 +73,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const router = useRouter()
   const locale = useLocale()
   const tJourneys = useTranslations('journeys')
+  const tSections = useTranslations('sections')
   const tDashboard = useTranslations('dashboard')
   const { state } = useDashboardAuth()
   const { openModal } = useDashboardModal()
@@ -59,6 +86,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   } = useSessionContinuity()
 
   const isOnHome = pathname === `/${locale}/dashboard` || pathname === `/${locale}/dashboard/`
+  
+  // Get active journey (old routes)
   const getActiveJourney = (): JourneyId | null => {
     if (pathname.includes('/emergency')) return 'emergency'
     if (pathname.includes('/longterm')) return 'longterm'
@@ -67,6 +96,16 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     return null
   }
   const activeJourney = getActiveJourney()
+  
+  // Get active section (new routes)
+  const getActiveSection = (): SectionId | null => {
+    if (pathname.includes('/own')) return 'own'
+    if (pathname.includes('/yield')) return 'yield'
+    if (pathname.includes('/invest')) return 'invest'
+    if (pathname.includes('/speculate')) return 'speculate'
+    return null
+  }
+  const activeSection = getActiveSection()
 
   // Remember current journey when navigating (REQ 18.1)
   useEffect(() => {
@@ -147,8 +186,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
               >
                 <HomeIcon className="w-4 h-4" />
-                <span className="hidden sm:inline">Home</span>
+                <span className="hidden sm:inline">Dashboard</span>
               </Link>
+              {/* Old journey routes */}
               {activeJourney && (
                 <>
                   <svg className="w-4 h-4 text-muted-foreground/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
@@ -160,6 +200,21 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                       return <Icon className="w-4 h-4" />
                     })()}
                     {tJourneys(`${activeJourney}.name`)}
+                  </span>
+                </>
+              )}
+              {/* New section routes */}
+              {activeSection && (
+                <>
+                  <svg className="w-4 h-4 text-muted-foreground/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                  </svg>
+                  <span className="font-medium text-foreground flex items-center gap-1.5" aria-current="page">
+                    {(() => {
+                      const Icon = SECTION_ICONS[activeSection]
+                      return <Icon className="w-4 h-4" />
+                    })()}
+                    {tSections(`${activeSection}.title`)}
                   </span>
                 </>
               )}
