@@ -56,8 +56,6 @@ export function ThemeProvider({
       }, 100);
       return () => clearTimeout(timeout);
     }
-    
-    setMounted(true);
   }, [disableTransitionOnLoad]);
 
   // Resolve theme based on system preference
