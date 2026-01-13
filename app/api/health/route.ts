@@ -104,7 +104,14 @@ async function checkDatabase(): Promise<{ status: string; message: string; respo
   }
 }
 
-function checkMemory(): { status: string; message: string; usage?: any } {
+// Memory usage type
+interface MemoryUsage {
+  used: number;
+  total: number;
+  percent: number;
+}
+
+function checkMemory(): { status: string; message: string; usage?: MemoryUsage } {
   try {
     if (typeof process !== 'undefined' && process.memoryUsage) {
       const usage = process.memoryUsage();
@@ -138,7 +145,20 @@ function checkMemory(): { status: string; message: string; usage?: any } {
   }
 }
 
-function checkErrorBudgets(budgets: any[]): { status: string; message: string; details: any } {
+// Error budget type
+interface ErrorBudget {
+  name: string;
+  status: string;
+  remaining: number;
+}
+
+// Budget details type
+interface BudgetDetail {
+  name: string;
+  remaining: number;
+}
+
+function checkErrorBudgets(budgets: ErrorBudget[]): { status: string; message: string; details: BudgetDetail[] } {
   const criticalBudgets = budgets.filter(b => b.status === 'critical');
   const warningBudgets = budgets.filter(b => b.status === 'warning');
   

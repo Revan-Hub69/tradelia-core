@@ -20,9 +20,17 @@ export type HelpModuleId =
 
 /**
  * Get help content for a module using translations
+ * 
  * @param moduleId - The module identifier
  * @param t - Translation function from useTranslations('help.modules')
  * @returns HelpContent object or null if module not found
+ * 
+ * @example
+ * const t = useTranslations('help.modules')
+ * const content = getHelpContent('emergency', t)
+ * if (content) {
+ *   console.log(content.title, content.definition)
+ * }
  */
 export function getHelpContent(
   moduleId: HelpModuleId,
@@ -71,6 +79,14 @@ export const journeyToHelpModule: Record<string, HelpModuleId> = {
 
 /**
  * Check if a module has help content available
+ * 
+ * @param moduleId - The module identifier to check
+ * @returns True if the module has help content, false otherwise
+ * 
+ * @example
+ * if (hasHelpContent('emergency')) {
+ *   const content = getHelpContent('emergency', t)
+ * }
  */
 export function hasHelpContent(moduleId: string): moduleId is HelpModuleId {
   const validModules: string[] = [

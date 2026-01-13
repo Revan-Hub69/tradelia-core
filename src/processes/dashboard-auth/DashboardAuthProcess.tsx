@@ -72,7 +72,7 @@ function DashboardAuthProviderInner({ children, locale }: DashboardAuthProviderP
         const { data: { session } } = await Promise.race([
           sessionPromise,
           timeoutPromise
-        ]) as any
+        ]) as Awaited<typeof sessionPromise>
         
         if (session?.user) {
           // Authenticated user - set loading false immediately
@@ -225,10 +225,11 @@ function DashboardAuthProviderInner({ children, locale }: DashboardAuthProviderP
         
         // Redirect will happen via auth state change
         router.push(`/${locale}/dashboard`)
-      } catch (error: any) {
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Errore durante il login'
         setState(prev => ({ 
           ...prev, 
-          error: error.message || 'Errore durante il login',
+          error: errorMessage,
           loading: false 
         }))
         throw error
@@ -252,10 +253,11 @@ function DashboardAuthProviderInner({ children, locale }: DashboardAuthProviderP
         if (error) throw error
         
         router.push(`/${locale}/dashboard`)
-      } catch (error: any) {
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Errore durante la registrazione'
         setState(prev => ({ 
           ...prev, 
-          error: error.message || 'Errore durante la registrazione',
+          error: errorMessage,
           loading: false 
         }))
         throw error
@@ -274,10 +276,11 @@ function DashboardAuthProviderInner({ children, locale }: DashboardAuthProviderP
         })
         
         if (error) throw error
-      } catch (error: any) {
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Errore durante il login con Google'
         setState(prev => ({ 
           ...prev, 
-          error: error.message || 'Errore durante il login con Google',
+          error: errorMessage,
           loading: false 
         }))
         throw error
@@ -295,10 +298,11 @@ function DashboardAuthProviderInner({ children, locale }: DashboardAuthProviderP
         if (error) throw error
         
         router.push('/')
-      } catch (error: any) {
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Errore durante il logout'
         setState(prev => ({ 
           ...prev, 
-          error: error.message || 'Errore durante il logout' 
+          error: errorMessage 
         }))
         throw error
       }
@@ -341,10 +345,11 @@ function DashboardAuthProviderInner({ children, locale }: DashboardAuthProviderP
         if (error) throw error
         
         await fetchProfile(state.user.id)
-      } catch (error: any) {
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Errore durante l\'aggiornamento del profilo'
         setState(prev => ({ 
           ...prev, 
-          error: error.message || 'Errore durante l\'aggiornamento del profilo' 
+          error: errorMessage 
         }))
         throw error
       }
@@ -360,10 +365,11 @@ function DashboardAuthProviderInner({ children, locale }: DashboardAuthProviderP
         })
         
         if (error) throw error
-      } catch (error: any) {
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Errore durante l\'invio della verifica'
         setState(prev => ({ 
           ...prev, 
-          error: error.message || 'Errore durante l\'invio della verifica' 
+          error: errorMessage 
         }))
         throw error
       }

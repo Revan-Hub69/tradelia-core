@@ -1,0 +1,179 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nicolo-ribaudo/performance-budget-schema/main/schema.json",
+  "name": "Tradelia 2026 Performance Budget",
+  "version": "1.0.0",
+  "description": "Performance budgets for Core Web Vitals and bundle sizes",
+  
+  "coreWebVitals": {
+    "LCP": {
+      "description": "Largest Contentful Paint - measures loading performance",
+      "good": 2500,
+      "needsImprovement": 4000,
+      "unit": "ms",
+      "target": "good",
+      "requirement": "11.1"
+    },
+    "INP": {
+      "description": "Interaction to Next Paint - measures interactivity",
+      "good": 200,
+      "needsImprovement": 500,
+      "unit": "ms",
+      "target": "good",
+      "requirement": "11.2"
+    },
+    "CLS": {
+      "description": "Cumulative Layout Shift - measures visual stability",
+      "good": 0.1,
+      "needsImprovement": 0.25,
+      "unit": "score",
+      "target": "good",
+      "requirement": "11.3"
+    },
+    "FCP": {
+      "description": "First Contentful Paint - measures initial render",
+      "good": 1800,
+      "needsImprovement": 3000,
+      "unit": "ms",
+      "target": "good"
+    },
+    "TBT": {
+      "description": "Total Blocking Time - measures main thread blocking",
+      "good": 200,
+      "needsImprovement": 600,
+      "unit": "ms",
+      "target": "good"
+    },
+    "TTFB": {
+      "description": "Time to First Byte - measures server response time",
+      "good": 800,
+      "needsImprovement": 1800,
+      "unit": "ms",
+      "target": "good"
+    }
+  },
+
+  "bundleBudgets": {
+    "marketing": {
+      "description": "Marketing pages bundle (lightweight, Italian-only)",
+      "maxSize": 153600,
+      "maxSizeFormatted": "150KB",
+      "requirement": "11.4"
+    },
+    "dashboard": {
+      "description": "Dashboard bundle (full-featured, i18n)",
+      "maxSize": 307200,
+      "maxSizeFormatted": "300KB",
+      "requirement": "11.4"
+    },
+    "shared": {
+      "description": "Shared chunks across routes",
+      "maxSize": 102400,
+      "maxSizeFormatted": "100KB"
+    },
+    "initialJS": {
+      "description": "Initial JavaScript bundle",
+      "maxSize": 204800,
+      "maxSizeFormatted": "200KB",
+      "requirement": "11.4"
+    }
+  },
+
+  "resourceBudgets": {
+    "images": {
+      "maxSize": 512000,
+      "maxSizeFormatted": "500KB",
+      "formats": ["webp", "avif"],
+      "lazyLoad": true
+    },
+    "fonts": {
+      "maxSize": 102400,
+      "maxSizeFormatted": "100KB",
+      "fontDisplay": "swap"
+    },
+    "thirdParty": {
+      "maxSize": 51200,
+      "maxSizeFormatted": "50KB",
+      "description": "Third-party scripts budget"
+    }
+  },
+
+  "lighthouseScores": {
+    "performance": {
+      "min": 90,
+      "target": 95
+    },
+    "accessibility": {
+      "min": 95,
+      "target": 100
+    },
+    "bestPractices": {
+      "min": 90,
+      "target": 95
+    },
+    "seo": {
+      "min": 90,
+      "target": 95
+    },
+    "pwa": {
+      "min": 80,
+      "target": 90
+    }
+  },
+
+  "pages": {
+    "/": {
+      "description": "Marketing homepage",
+      "LCP": 2500,
+      "INP": 200,
+      "CLS": 0.1,
+      "maxBundleSize": 153600
+    },
+    "/dashboard": {
+      "description": "Dashboard main page",
+      "LCP": 2500,
+      "INP": 200,
+      "CLS": 0.1,
+      "maxBundleSize": 307200
+    },
+    "/dashboard/emergency": {
+      "description": "Emergency journey page",
+      "LCP": 2500,
+      "INP": 200,
+      "CLS": 0.1
+    },
+    "/dashboard/longterm": {
+      "description": "Long-term journey page",
+      "LCP": 2500,
+      "INP": 200,
+      "CLS": 0.1
+    },
+    "/dashboard/settings": {
+      "description": "Settings page",
+      "LCP": 2500,
+      "INP": 200,
+      "CLS": 0.1
+    }
+  },
+
+  "thresholds": {
+    "error": {
+      "LCP": 4000,
+      "INP": 500,
+      "CLS": 0.25,
+      "description": "Values above these trigger build failure"
+    },
+    "warning": {
+      "LCP": 2500,
+      "INP": 200,
+      "CLS": 0.1,
+      "description": "Values above these trigger warnings"
+    }
+  },
+
+  "monitoring": {
+    "enabled": true,
+    "reportUrl": null,
+    "sampleRate": 1.0,
+    "metrics": ["LCP", "INP", "CLS", "FCP", "TTFB"]
+  }
+}

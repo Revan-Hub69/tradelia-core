@@ -1,11 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FreshnessIndicator, DataAgeWarning, fetchWithFreshness, type FreshnessData } from '@/lib/freshness-indicators';
+import { FreshnessIndicator, DataAgeWarning, type FreshnessData } from '@/lib/freshness-indicators';
+
+// Health data type
+interface HealthData {
+  status: string;
+  timestamp: number;
+}
 
 // Esempio di componente che utilizza il sistema di freshness
 export function FreshnessExample() {
-  const [healthData, setHealthData] = useState<any>(null);
+  const [healthData, setHealthData] = useState<HealthData | null>(null);
   const [healthFreshness, setHealthFreshness] = useState<FreshnessData | null>(null);
   const [loading, setLoading] = useState(false);
 

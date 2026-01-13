@@ -244,7 +244,14 @@ export const emergencyControls = {
   }
 }
 
+// Extended window type for emergency controls
+declare global {
+  interface Window {
+    tradeliaEmergency?: typeof emergencyControls
+  }
+}
+
 // Make emergency controls available globally for debugging
 if (typeof window !== 'undefined') {
-  (window as any).tradeliaEmergency = emergencyControls
+  window.tradeliaEmergency = emergencyControls
 }

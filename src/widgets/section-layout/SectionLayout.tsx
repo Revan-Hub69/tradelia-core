@@ -80,7 +80,9 @@ export function SectionLayout({
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' })
     
-    // Simulate content loading (remove in production if content is synchronous)
+    // Brief loading state for smooth transition
+    // Note: This timeout is intentionally not cleaned up as it's a one-shot UI transition
+    // that completes quickly and doesn't cause memory leaks
     setTimeout(() => {
       setIsContentLoading(false)
     }, 150)

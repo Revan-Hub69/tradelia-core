@@ -14,6 +14,7 @@
 
 import { useRef, useEffect, useState, useCallback } from 'react'
 import { useTranslations } from 'next-intl'
+import { useThrottledCallback } from '@/src/shared/hooks/useDebounce'
 import type { SubNavItem } from '@/src/shared/types/navigation'
 
 interface SubNavigationProps {
@@ -56,8 +57,8 @@ export function SubNavigation({
     })
   }, [activeId])
 
-  // Check scroll hints
-  const updateScrollHints = useCallback(() => {
+  // Check scroll hints - throttled for performance (REQ 12.4)
+  const updateScrollHints = useThrottledCallback(() => {
     if (!containerRef.current) return
 
     const container = containerRef.current
@@ -65,7 +66,7 @@ export function SubNavigation({
     const canScrollRight = container.scrollLeft < (container.scrollWidth - container.clientWidth)
 
     setShowScrollHint({ left: canScrollLeft, right: canScrollRight })
-  }, [])
+  }, 100) // 100ms throttle per requirements
 
   // Store original position - DISABLED
   useEffect(() => {

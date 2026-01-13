@@ -13,6 +13,14 @@ export interface FormatterOptions {
 /**
  * Formatta i byte in formato leggibile
  * Utilizzato per il monitoraggio delle dimensioni dei bundle
+ * 
+ * @param bytes - The number of bytes to format
+ * @param precision - Number of decimal places (default: 2)
+ * @returns Formatted string like "1.5 MB"
+ * 
+ * @example
+ * formatBytes(1536) // "1.5 KB"
+ * formatBytes(1048576) // "1 MB"
  */
 export function formatBytes(bytes: number, precision = 2): string {
   if (bytes === 0) return '0 Bytes';
@@ -27,6 +35,14 @@ export function formatBytes(bytes: number, precision = 2): string {
 /**
  * Formatta le date in formato italiano/inglese
  * Supporta i18n per dashboard multilingua
+ * 
+ * @param date - Date to format (Date object, string, or timestamp)
+ * @param options - Intl.DateTimeFormatOptions with optional locale
+ * @returns Formatted date string
+ * 
+ * @example
+ * formatDate(new Date()) // "13 gen 2026"
+ * formatDate(new Date(), { locale: 'en-US' }) // "Jan 13, 2026"
  */
 export function formatDate(
   date: Date | string | number,
@@ -52,6 +68,14 @@ export function formatDate(
 /**
  * Formatta i valori monetari
  * Utilizzato per visualizzare prezzi e costi in modo neutrale
+ * 
+ * @param amount - The amount to format
+ * @param options - Formatting options (locale, currency, precision)
+ * @returns Formatted currency string
+ * 
+ * @example
+ * formatCurrency(1234.56) // "1.234,56 €"
+ * formatCurrency(1234.56, { currency: 'USD', locale: 'en-US' }) // "$1,234.56"
  */
 export function formatCurrency(
   amount: number,
@@ -70,6 +94,14 @@ export function formatCurrency(
 /**
  * Formatta le percentuali seguendo i principi Tradelia 2026
  * Evita percentuali inventate o non verificabili
+ * 
+ * @param value - The decimal value to format (0.5 = 50%)
+ * @param options - Formatting options (precision, showSign)
+ * @returns Formatted percentage string
+ * 
+ * @example
+ * formatPercentage(0.156) // "15.6%"
+ * formatPercentage(0.05, { showSign: true }) // "+5.0%"
  */
 export function formatPercentage(
   value: number,
@@ -85,6 +117,14 @@ export function formatPercentage(
 /**
  * Formatta i numeri grandi in formato compatto
  * Utilizzato per metriche e statistiche
+ * 
+ * @param value - The number to format
+ * @param options - Formatting options (locale, notation)
+ * @returns Formatted compact number string
+ * 
+ * @example
+ * formatCompactNumber(1500) // "1,5K"
+ * formatCompactNumber(1500000) // "1,5M"
  */
 export function formatCompactNumber(
   value: number,
@@ -101,6 +141,14 @@ export function formatCompactNumber(
 /**
  * Formatta la durata in formato leggibile
  * Utilizzato per metriche di performance
+ * 
+ * @param milliseconds - Duration in milliseconds
+ * @returns Formatted duration string
+ * 
+ * @example
+ * formatDuration(500) // "500ms"
+ * formatDuration(2500) // "2.5s"
+ * formatDuration(125000) // "2m 5s"
  */
 export function formatDuration(milliseconds: number): string {
   if (milliseconds < 1000) {
@@ -120,6 +168,13 @@ export function formatDuration(milliseconds: number): string {
 
 /**
  * Formatta l'età dei dati per indicatori di freshness
+ * 
+ * @param timestamp - The timestamp to calculate age from
+ * @returns Human-readable age string in Italian
+ * 
+ * @example
+ * formatDataAge(Date.now() - 30000) // "Appena aggiornato"
+ * formatDataAge(Date.now() - 3600000) // "1 ore fa"
  */
 export function formatDataAge(timestamp: Date | string | number): string {
   const now = new Date();

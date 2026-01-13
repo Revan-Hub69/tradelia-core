@@ -10,6 +10,7 @@ import { mapAuthErrorToKey } from '@/lib/auth/error-mapping';
 import { loginSchema, registerSchema, resetRequestSchema, validateForm, validateField, emailSchema, passwordSchema, nicknameSchema, countrySchema, getMessages } from '@/src/shared/lib/validation';
 import { PasswordStrength } from '@/src/shared/ui/PasswordStrength';
 import { getCountriesSortedByLocale } from '@/lib/countries';
+import { useDebounce } from '@/src/shared/hooks/useDebounce';
 import Logo from './Logo';
 import { 
   CloseIcon, 
@@ -51,14 +52,17 @@ function CountrySelect({ value, onChange, onBlur, locale, error, label, placehol
   
   const countries = useMemo(() => getCountriesSortedByLocale(locale), [locale]);
   
+  // Debounce search for performance (REQ 12.4 - 300ms)
+  const debouncedSearch = useDebounce(search, 300);
+  
   const filteredCountries = useMemo(() => {
-    if (!search.trim()) return countries;
-    const q = search.toLowerCase();
+    if (!debouncedSearch.trim()) return countries;
+    const q = debouncedSearch.toLowerCase();
     return countries.filter(c => {
       const name = locale === 'it' ? c.nameIt : c.name;
       return name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q);
     });
-  }, [countries, search, locale]);
+  }, [countries, debouncedSearch, locale]);
   
   const selectedCountry = countries.find(c => c.code === value);
   const displayValue = selectedCountry 

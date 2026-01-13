@@ -489,9 +489,10 @@ export function usePrivacyConsent() {
     // Show modal if no consent given and not in development
     if (!hasGivenConsent && process.env.NODE_ENV === 'production') {
       // Delay to avoid showing immediately on page load
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         setIsModalOpen(true)
       }, 2000)
+      return () => clearTimeout(timer)
     }
   }, [])
 

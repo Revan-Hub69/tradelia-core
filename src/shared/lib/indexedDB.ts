@@ -19,6 +19,12 @@ interface ProgressRecord {
 
 let dbInstance: IDBDatabase | null = null
 
+/**
+ * Gets or creates the IndexedDB database instance
+ * 
+ * @returns Promise resolving to the IDBDatabase instance
+ * @internal
+ */
 async function getDB(): Promise<IDBDatabase> {
   if (dbInstance) return dbInstance
 
@@ -43,6 +49,18 @@ async function getDB(): Promise<IDBDatabase> {
   })
 }
 
+/**
+ * Retrieves a progress record by ID from IndexedDB
+ * 
+ * @param id - The unique identifier of the progress record (pillarId or sectionId)
+ * @returns Promise resolving to the progress record or null if not found
+ * 
+ * @example
+ * const progress = await getProgress('emergency-pillar-1')
+ * if (progress) {
+ *   console.log('Completed items:', progress.completedItems)
+ * }
+ */
 export async function getProgress(id: string): Promise<ProgressRecord | null> {
   try {
     const db = await getDB()
@@ -60,6 +78,21 @@ export async function getProgress(id: string): Promise<ProgressRecord | null> {
   }
 }
 
+/**
+ * Saves or updates a progress record in IndexedDB
+ * 
+ * @param record - The progress record to save
+ * @returns Promise that resolves when the record is saved
+ * 
+ * @example
+ * await setProgress({
+ *   id: 'emergency-pillar-1',
+ *   journeyId: 'emergency',
+ *   completedItems: ['item-1', 'item-2'],
+ *   percentage: 50,
+ *   lastUpdated: new Date().toISOString()
+ * })
+ */
 export async function setProgress(record: ProgressRecord): Promise<void> {
   try {
     const db = await getDB()
@@ -76,6 +109,16 @@ export async function setProgress(record: ProgressRecord): Promise<void> {
   }
 }
 
+/**
+ * Retrieves all progress records for a specific journey
+ * 
+ * @param journeyId - The journey identifier to filter by
+ * @returns Promise resolving to an array of progress records
+ * 
+ * @example
+ * const journeyProgress = await getJourneyProgress('emergency')
+ * const totalPercentage = journeyProgress.reduce((sum, p) => sum + p.percentage, 0) / journeyProgress.length
+ */
 export async function getJourneyProgress(journeyId: string): Promise<ProgressRecord[]> {
   try {
     const db = await getDB()
@@ -94,6 +137,15 @@ export async function getJourneyProgress(journeyId: string): Promise<ProgressRec
   }
 }
 
+/**
+ * Clears all progress records from IndexedDB
+ * 
+ * @returns Promise that resolves when all records are cleared
+ * 
+ * @example
+ * // Reset all user progress
+ * await clearAllProgress()
+ */
 export async function clearAllProgress(): Promise<void> {
   try {
     const db = await getDB()

@@ -112,6 +112,43 @@ const eslintConfig = [
       "import/order": "off",
       "import/no-anonymous-default-export": "off",
 
+      // Security rules - Prevent common vulnerabilities
+      "no-eval": "error",
+      "no-implied-eval": "error",
+      "no-new-func": "error",
+      "no-script-url": "error",
+      "no-proto": "error",
+      "no-extend-native": "error",
+      "no-iterator": "error",
+      "no-restricted-globals": [
+        "error",
+        {
+          name: "event",
+          message: "Use local parameter instead of global event object"
+        },
+        {
+          name: "fdescribe",
+          message: "Do not commit fdescribe. Use describe instead."
+        },
+        {
+          name: "fit",
+          message: "Do not commit fit. Use it instead."
+        }
+      ],
+      "no-restricted-properties": [
+        "error",
+        {
+          object: "document",
+          property: "write",
+          message: "document.write is a security risk. Use DOM manipulation instead."
+        },
+        {
+          object: "document",
+          property: "writeln",
+          message: "document.writeln is a security risk. Use DOM manipulation instead."
+        }
+      ],
+
       // Accessibility rules (jsx-a11y) - Enhanced for WCAG AAA+
       "jsx-a11y/alt-text": "error",
       "jsx-a11y/anchor-has-content": "error",

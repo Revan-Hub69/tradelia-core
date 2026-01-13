@@ -7,17 +7,20 @@
 'use client'
 
 import { onCLS, onINP, onFCP, onLCP, onTTFB, type Metric } from 'web-vitals'
+import { type GenericAnalyticsEvent, getWindowAnalytics } from './types/analytics-window'
 
-interface AnalyticsEvent {
-  event: string
-  properties: Record<string, string | number | boolean>
+// Extended navigator type for connection info
+interface NavigatorWithConnection extends Navigator {
+  connection?: {
+    effectiveType?: string
+  }
 }
 
 // Track analytics event
-function trackEvent(event: AnalyticsEvent) {
+function trackEvent(event: GenericAnalyticsEvent) {
   // Integration with existing analytics system
   if (typeof window !== 'undefined') {
-    const analytics = (window as any).__TRADELIA_ANALYTICS__
+    const analytics = getWindowAnalytics()
     if (analytics?.trackEvent) {
       analytics.trackEvent(event)
     }
@@ -42,7 +45,7 @@ function sendToAnalytics(metric: Metric) {
       // Add context
       url: window.location.pathname,
       user_agent: navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop',
-      connection: (navigator as any).connection?.effectiveType || 'unknown'
+      connection: (navigator as NavigatorWithConnection).connection?.effectiveType || 'unknown'
     }
   })
 }

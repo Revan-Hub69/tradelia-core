@@ -19,6 +19,7 @@ import {
 import { useTranslations } from 'next-intl';
 import { useCommandPalette, type Command } from './CommandProvider';
 import { useDismissableLayer } from '@/src/shared/hooks/useDismissableLayer';
+import { useDebounce } from '@/src/shared/hooks/useDebounce';
 import { cn } from './utils';
 import { SearchIcon } from '@/components/icons/TradeliaIcons';
 
@@ -130,20 +131,23 @@ export function CommandPalette() {
   const listRef = useRef<HTMLDivElement>(null);
   const layerRef = useDismissableLayer<HTMLDivElement>(isOpen, close);
 
-  // Filter commands based on query
+  // Debounce search query for performance (REQ 12.4 - 300ms debounce)
+  const debouncedQuery = useDebounce(query, 300);
+
+  // Filter commands based on debounced query
   const filteredCommands = useMemo(() => {
-    if (!query.trim()) {
+    if (!debouncedQuery.trim()) {
       // Show recent commands first, then all commands
       const recentIds = new Set(recentCommands.map(c => c.id));
       const nonRecent = commands.filter(c => !recentIds.has(c.id) && !c.hidden && !c.disabled);
       return [...recentCommands, ...nonRecent];
     }
-    return fuzzySearch(query, commands);
-  }, [query, commands, recentCommands]);
+    return fuzzySearch(debouncedQuery, commands);
+  }, [debouncedQuery, commands, recentCommands]);
 
   // Group filtered commands by category
   const groupedCommands = useMemo(() => {
-    if (!query.trim() && recentCommands.length > 0) {
+    if (!debouncedQuery.trim() && recentCommands.length > 0) {
       // Show recent as separate section
       const groups = new Map<string, Command[]>();
       groups.set('recent', recentCommands);
@@ -159,7 +163,7 @@ export function CommandPalette() {
       return groups;
     }
     return groupCommands(filteredCommands);
-  }, [query, filteredCommands, recentCommands, commands]);
+  }, [debouncedQuery, filteredCommands, recentCommands, commands]);
 
   // Flat list for keyboard navigation
   const flatCommands = useMemo(() => {

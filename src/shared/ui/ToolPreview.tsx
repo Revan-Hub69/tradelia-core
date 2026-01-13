@@ -116,8 +116,8 @@ export function ToolPreview({
     }
 
     // Track analytics
-    if (typeof window !== 'undefined' && (window as any).trackEvent) {
-      (window as any).trackEvent({
+    if (typeof window !== 'undefined' && 'trackEvent' in window && typeof (window as Window & { trackEvent?: (event: { event: string; properties: Record<string, string | undefined> }) => void }).trackEvent === 'function') {
+      (window as Window & { trackEvent: (event: { event: string; properties: Record<string, string | undefined> }) => void }).trackEvent({
         event: 'tool_interest_shown',
         properties: { toolId, title, category }
       })
@@ -144,8 +144,8 @@ export function ToolPreview({
     }
 
     // Track analytics
-    if (typeof window !== 'undefined' && (window as any).trackEvent) {
-      (window as any).trackEvent({
+    if (typeof window !== 'undefined' && 'trackEvent' in window && typeof (window as Window & { trackEvent?: (event: { event: string; properties: Record<string, string | undefined> }) => void }).trackEvent === 'function') {
+      (window as Window & { trackEvent: (event: { event: string; properties: Record<string, string | undefined> }) => void }).trackEvent({
         event: 'tool_notification_requested',
         properties: { toolId, title, category }
       })

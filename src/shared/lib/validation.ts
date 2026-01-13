@@ -92,6 +92,12 @@ export const validationMessages = {
 type Locale = 'it' | 'en'
 type Messages = typeof validationMessages.it
 
+/**
+ * Get validation messages for a specific locale
+ * 
+ * @param locale - The locale to get messages for ('it' or 'en')
+ * @returns Validation messages object for the specified locale
+ */
 export function getMessages(locale: Locale = 'it'): Messages {
   return validationMessages[locale] || validationMessages.it
 }
@@ -100,21 +106,36 @@ export function getMessages(locale: Locale = 'it'): Messages {
 // ZOD SCHEMAS
 // ============================================
 
-// Email schema
+/**
+ * Creates an email validation schema
+ * 
+ * @param messages - Validation messages object
+ * @returns Zod schema for email validation
+ */
 export const emailSchema = (messages: Messages) => 
   z.string()
     .min(1, messages.email.required)
     .email(messages.email.invalid)
     .max(255, messages.generic.tooLong)
 
-// Password schema (basic)
+/**
+ * Creates a basic password validation schema
+ * 
+ * @param messages - Validation messages object
+ * @returns Zod schema for password validation
+ */
 export const passwordSchema = (messages: Messages) =>
   z.string()
     .min(1, messages.password.required)
     .min(8, messages.password.minLength)
     .max(100, messages.password.maxLength)
 
-// Password schema (strong - with pattern)
+/**
+ * Creates a strong password validation schema with pattern requirements
+ * 
+ * @param messages - Validation messages object
+ * @returns Zod schema for strong password validation
+ */
 export const strongPasswordSchema = (messages: Messages) =>
   z.string()
     .min(1, messages.password.required)
@@ -122,7 +143,12 @@ export const strongPasswordSchema = (messages: Messages) =>
     .max(100, messages.password.maxLength)
     .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, messages.password.weak)
 
-// Name schema
+/**
+ * Creates a name validation schema
+ * 
+ * @param messages - Validation messages object
+ * @returns Zod schema for name validation
+ */
 export const nameSchema = (messages: Messages) =>
   z.string()
     .min(1, messages.name.required)
@@ -130,7 +156,12 @@ export const nameSchema = (messages: Messages) =>
     .max(100, messages.name.maxLength)
     .trim()
 
-// Nickname schema (3-20 chars, alphanumeric + underscore)
+/**
+ * Creates a nickname validation schema (3-20 chars, alphanumeric + underscore)
+ * 
+ * @param messages - Validation messages object
+ * @returns Zod schema for nickname validation
+ */
 export const nicknameSchema = (messages: Messages) =>
   z.string()
     .min(1, messages.nickname.required)
@@ -138,7 +169,12 @@ export const nicknameSchema = (messages: Messages) =>
     .max(20, messages.nickname.maxLength)
     .regex(/^[a-zA-Z0-9_]+$/, messages.nickname.invalid)
 
-// Country schema (any valid ISO 3166-1 alpha-2 code)
+/**
+ * Creates a country validation schema (ISO 3166-1 alpha-2 code)
+ * 
+ * @param messages - Validation messages object
+ * @returns Zod schema for country code validation
+ */
 export const countrySchema = (messages: Messages) =>
   z.string()
     .length(2, messages.country.required)
@@ -146,8 +182,13 @@ export const countrySchema = (messages: Messages) =>
 
 /**
  * Validates a nickname string
+ * 
  * @param nickname - The nickname to validate
- * @returns { success: true } if valid, { success: false, error: string } if invalid
+ * @returns Object with success status and optional error code
+ * 
+ * @example
+ * validateNickname('user_123') // { success: true }
+ * validateNickname('ab') // { success: false, error: 'minLength' }
  */
 export function validateNickname(nickname: string): { success: true } | { success: false; error: string } {
   // Check length
@@ -168,7 +209,16 @@ export function validateNickname(nickname: string): { success: true } | { succes
 // FORM SCHEMAS
 // ============================================
 
-// Login form
+/**
+ * Creates a login form validation schema
+ * 
+ * @param locale - The locale for validation messages ('it' or 'en')
+ * @returns Zod schema for login form validation
+ * 
+ * @example
+ * const schema = loginSchema('en')
+ * const result = schema.safeParse({ email: 'user@example.com', password: 'secret' })
+ */
 export const loginSchema = (locale: Locale = 'it') => {
   const m = getMessages(locale)
   return z.object({
@@ -177,7 +227,22 @@ export const loginSchema = (locale: Locale = 'it') => {
   })
 }
 
-// Registration form
+/**
+ * Creates a registration form validation schema
+ * 
+ * @param locale - The locale for validation messages ('it' or 'en')
+ * @returns Zod schema for registration form validation with password confirmation
+ * 
+ * @example
+ * const schema = registerSchema('en')
+ * const result = schema.safeParse({
+ *   nickname: 'user123',
+ *   country: 'IT',
+ *   email: 'user@example.com',
+ *   password: 'Secret123',
+ *   confirmPassword: 'Secret123'
+ * })
+ */
 export const registerSchema = (locale: Locale = 'it') => {
   const m = getMessages(locale)
   return z.object({
@@ -192,7 +257,13 @@ export const registerSchema = (locale: Locale = 'it') => {
   })
 }
 
-// Registration form (legacy - with fullName for backward compatibility)
+/**
+ * Creates a legacy registration form validation schema (with fullName)
+ * 
+ * @param locale - The locale for validation messages ('it' or 'en')
+ * @returns Zod schema for legacy registration form validation
+ * @deprecated Use registerSchema instead for new implementations
+ */
 export const registerSchemaLegacy = (locale: Locale = 'it') => {
   const m = getMessages(locale)
   return z.object({
@@ -206,7 +277,16 @@ export const registerSchemaLegacy = (locale: Locale = 'it') => {
   })
 }
 
-// Password reset request
+/**
+ * Creates a password reset request validation schema
+ * 
+ * @param locale - The locale for validation messages ('it' or 'en')
+ * @returns Zod schema for password reset request form
+ * 
+ * @example
+ * const schema = resetRequestSchema('en')
+ * const result = schema.safeParse({ email: 'user@example.com' })
+ */
 export const resetRequestSchema = (locale: Locale = 'it') => {
   const m = getMessages(locale)
   return z.object({
@@ -214,7 +294,19 @@ export const resetRequestSchema = (locale: Locale = 'it') => {
   })
 }
 
-// Password reset (new password)
+/**
+ * Creates a password reset (new password) validation schema
+ * 
+ * @param locale - The locale for validation messages ('it' or 'en')
+ * @returns Zod schema for setting a new password with confirmation
+ * 
+ * @example
+ * const schema = resetPasswordSchema('en')
+ * const result = schema.safeParse({
+ *   password: 'NewSecret123',
+ *   confirmPassword: 'NewSecret123'
+ * })
+ */
 export const resetPasswordSchema = (locale: Locale = 'it') => {
   const m = getMessages(locale)
   return z.object({
@@ -235,8 +327,19 @@ export type ValidationResult<T> =
   | { success: false; errors: Record<string, string> }
 
 /**
- * Validate form data with Zod schema
- * Returns either validated data or field-level errors
+ * Validates form data against a Zod schema
+ * 
+ * @param schema - The Zod schema to validate against
+ * @param data - The form data to validate
+ * @returns ValidationResult with either validated data or field-level errors
+ * 
+ * @example
+ * const result = validateForm(loginSchema('en'), { email: 'test@example.com', password: 'secret' })
+ * if (result.success) {
+ *   console.log('Valid data:', result.data)
+ * } else {
+ *   console.log('Errors:', result.errors)
+ * }
  */
 export function validateForm<T>(
   schema: z.ZodSchema<T>,
@@ -261,7 +364,17 @@ export function validateForm<T>(
 }
 
 /**
- * Validate single field (for real-time validation)
+ * Validates a single field value against a Zod schema
+ * 
+ * @param schema - The Zod schema to validate against
+ * @param value - The field value to validate
+ * @returns Error message string if invalid, null if valid
+ * 
+ * @example
+ * const error = validateField(emailSchema(getMessages('en')), 'invalid-email')
+ * if (error) {
+ *   console.log('Validation error:', error)
+ * }
  */
 export function validateField(
   schema: z.ZodSchema,
@@ -283,6 +396,35 @@ interface UseFormValidationOptions<T> {
   onSubmit: (data: T) => Promise<void> | void
 }
 
+/**
+ * React hook for form validation with Zod schemas
+ * 
+ * Provides form validation state management, field-level validation,
+ * and submission handling with automatic error tracking.
+ * 
+ * @param options - Configuration object with schema and onSubmit handler
+ * @returns Object with validation state and helper functions
+ * 
+ * @example
+ * ```tsx
+ * const { errors, isSubmitting, handleSubmit, validateSingleField } = useFormValidation({
+ *   schema: loginSchema('en'),
+ *   onSubmit: async (data) => {
+ *     await api.login(data)
+ *   }
+ * })
+ * 
+ * return (
+ *   <form onSubmit={(e) => { e.preventDefault(); handleSubmit(formData) }}>
+ *     <input
+ *       name="email"
+ *       onBlur={(e) => validateSingleField('email', e.target.value)}
+ *     />
+ *     {errors.email && <span>{errors.email}</span>}
+ *   </form>
+ * )
+ * ```
+ */
 export function useFormValidation<T extends Record<string, unknown>>({
   schema,
   onSubmit

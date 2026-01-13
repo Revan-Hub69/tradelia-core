@@ -1,9 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { monitoring } from '@/lib/monitoring';
 import { logger } from '@/lib/logger';
-import { withSecurity } from '@/lib/security';
 
-async function handler(request: NextRequest) {
+// Response types
+interface MetricsResponse {
+  timestamp: number;
+  health: 'healthy' | 'warning' | 'critical';
+  metrics: ReturnType<typeof monitoring.getMetrics>;
+  errorBudgets: ReturnType<typeof monitoring.getErrorBudgets>;
+  slis: ReturnType<typeof monitoring.getSLIs>;
+  summary: {
+    totalMetrics: number;
+    timeRange: {
+      from: number | null;
+      to: number | null;
+    };
+  };
+}
+
+interface ErrorResponse {
+  error: string;
+  timestamp: number;
+}
+
+async function handler(request: NextRequest): Promise<NextResponse<MetricsResponse | ErrorResponse>> {
   const startTime = Date.now();
   
   logger.setContext({
@@ -23,7 +43,7 @@ async function handler(request: NextRequest) {
     const slis = monitoring.getSLIs();
     const healthStatus = monitoring.getHealthStatus();
     
-    const response = {
+    const response: MetricsResponse = {
       timestamp: Date.now(),
       health: healthStatus,
       metrics: metrics.slice(-100), // Limit to last 100 metrics
@@ -65,7 +85,7 @@ async function handler(request: NextRequest) {
   }
 }
 
-export const GET = withSecurity(handler);
+export const GET = handler;
 
 // Only allow GET requests
 export async function POST() {

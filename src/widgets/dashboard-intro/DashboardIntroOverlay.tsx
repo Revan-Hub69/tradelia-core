@@ -32,7 +32,8 @@ export function DashboardIntroOverlay({ isOpen, onClose }: DashboardIntroOverlay
   // Reset step when drawer closes
   useEffect(() => {
     if (!isOpen) {
-      setTimeout(() => setCurrentStep('main'), 300)
+      const timer = setTimeout(() => setCurrentStep('main'), 300)
+      return () => clearTimeout(timer)
     }
   }, [isOpen])
 

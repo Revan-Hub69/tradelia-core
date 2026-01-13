@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase';
 import { useLanguage } from '@/components/LanguageSelector';
 import { getCountriesSortedByLocale } from '@/lib/countries';
 import { validateNickname } from '@/src/shared/lib/validation';
+import { useDebounce } from '@/src/shared/hooks/useDebounce';
 import Logo from '@/components/Logo';
 import { 
   UserIcon, 
@@ -32,14 +33,17 @@ export default function CompleteProfilePage() {
   const validationLocale = (locale === 'it' || locale === 'en') ? locale : 'it';
   const countries = useMemo(() => getCountriesSortedByLocale(validationLocale), [validationLocale]);
   
+  // Debounce search for performance (REQ 12.4 - 300ms)
+  const debouncedCountrySearch = useDebounce(countrySearch, 300);
+  
   const filteredCountries = useMemo(() => {
-    if (!countrySearch.trim()) return countries;
-    const q = countrySearch.toLowerCase();
+    if (!debouncedCountrySearch.trim()) return countries;
+    const q = debouncedCountrySearch.toLowerCase();
     return countries.filter(c => {
       const name = validationLocale === 'it' ? c.nameIt : c.name;
       return name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q);
     });
-  }, [countries, countrySearch, validationLocale]);
+  }, [countries, debouncedCountrySearch, validationLocale]);
 
   const selectedCountry = countries.find(c => c.code === country);
 

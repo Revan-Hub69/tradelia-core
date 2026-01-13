@@ -9,7 +9,7 @@ export interface LogContext {
   sessionId?: string;
   component: string;
   action: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface LogEntry {
@@ -21,7 +21,7 @@ export interface LogEntry {
   action?: string;
   userId?: string;
   sessionId?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   error?: {
     message: string;
     stack?: string;
@@ -31,6 +31,20 @@ export interface LogEntry {
     duration: number;
     memory?: number;
   };
+}
+
+// Extended performance type for memory info
+interface PerformanceWithMemory extends Performance {
+  memory?: {
+    usedJSHeapSize: number;
+    totalJSHeapSize: number;
+    jsHeapSizeLimit: number;
+  };
+}
+
+// Error with optional code property
+interface ErrorWithCode extends Error {
+  code?: string;
 }
 
 class Logger {
@@ -58,23 +72,23 @@ class Logger {
     this.context = traceId ? { traceId } : {};
   }
   
-  debug(message: string, extra?: Record<string, any>): void {
+  debug(message: string, extra?: Record<string, unknown>): void {
     this.log('debug', message, extra);
   }
   
-  info(message: string, extra?: Record<string, any>): void {
+  info(message: string, extra?: Record<string, unknown>): void {
     this.log('info', message, extra);
   }
   
-  warn(message: string, extra?: Record<string, any>): void {
+  warn(message: string, extra?: Record<string, unknown>): void {
     this.log('warn', message, extra);
   }
   
-  error(message: string, error?: Error, extra?: Record<string, any>): void {
+  error(message: string, error?: Error, extra?: Record<string, unknown>): void {
     const errorData = error ? {
       message: error.message,
       stack: error.stack,
-      code: (error as any).code
+      code: (error as ErrorWithCode).code
     } : undefined;
     
     this.log('error', message, { 
@@ -83,10 +97,11 @@ class Logger {
     });
   }
   
-  performance(message: string, startTime: number, extra?: Record<string, any>): void {
+  performance(message: string, startTime: number, extra?: Record<string, unknown>): void {
     const duration = Date.now() - startTime;
-    const memory = typeof performance !== 'undefined' && (performance as any).memory ? 
-      Math.round((performance as any).memory.usedJSHeapSize / 1024 / 1024) : undefined;
+    const perfWithMemory = typeof performance !== 'undefined' ? performance as PerformanceWithMemory : undefined;
+    const memory = perfWithMemory?.memory ? 
+      Math.round(perfWithMemory.memory.usedJSHeapSize / 1024 / 1024) : undefined;
     
     this.log('info', message, {
       ...extra,
@@ -97,7 +112,7 @@ class Logger {
     });
   }
   
-  private log(level: LogEntry['level'], message: string, extra?: Record<string, any>): void {
+  private log(level: LogEntry['level'], message: string, extra?: Record<string, unknown>): void {
     const logEntry: LogEntry = {
       timestamp: new Date().toISOString(),
       level,
@@ -125,7 +140,7 @@ class Logger {
     }
     
     // Sanitize the entire entry
-    const sanitized = this.sanitize(logEntry);
+    const sanitized = this.sanitize(logEntry) as LogEntry;
     
     // Output based on environment
     if (typeof window !== 'undefined') {
@@ -166,7 +181,7 @@ class Logger {
     return styles[level];
   }
   
-  private sanitize(entry: any): any {
+  private sanitize(entry: unknown): unknown {
     if (typeof entry === 'string') {
       return this.sanitizeString(entry);
     }
@@ -176,7 +191,7 @@ class Logger {
     }
     
     if (entry && typeof entry === 'object') {
-      const sanitized: any = {};
+      const sanitized: Record<string, unknown> = {};
       for (const [key, value] of Object.entries(entry)) {
         // Skip sensitive fields
         if (this.isSensitiveField(key)) {

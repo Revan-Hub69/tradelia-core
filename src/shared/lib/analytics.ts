@@ -379,21 +379,22 @@ export function useAnalytics() {
 }
 
 // Development helpers
-if (process.env.NODE_ENV === 'development') {
-  (window as WindowWithAnalytics).__TRADELIA_ANALYTICS__ = {
+if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
+  // Use a type assertion to set the analytics object
+  // The trackEvent function accepts the local AnalyticsEvent type which is more specific
+  // than the generic type, but compatible for tracking purposes
+  const windowWithAnalytics = window as typeof window & {
+    __TRADELIA_ANALYTICS__?: {
+      getQueue: () => AnalyticsEvent[]
+      getSettings: () => PrivacySettings
+      flushNow: () => Promise<void>
+      trackEvent: (event: AnalyticsEvent) => void
+    }
+  }
+  windowWithAnalytics.__TRADELIA_ANALYTICS__ = {
     getQueue: () => eventQueue,
     getSettings: getPrivacySettings,
     flushNow: flushEvents,
     trackEvent
-  }
-}
-
-// Add interface for window
-interface WindowWithAnalytics extends Window {
-  __TRADELIA_ANALYTICS__?: {
-    getQueue: () => AnalyticsEvent[]
-    getSettings: () => PrivacySettings
-    flushNow: () => Promise<void>
-    trackEvent: (event: AnalyticsEvent) => void
   }
 }

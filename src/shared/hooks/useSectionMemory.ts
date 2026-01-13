@@ -171,11 +171,14 @@ export function useScrollMemory(sectionId: string, tabId: string) {
   }
 }
 
+// Import shared analytics window type
+import { getWindowAnalytics } from '@/src/shared/lib/types/analytics-window'
+
 // Analytics integration
 export function trackSectionMemoryUsage(sectionId: string, wasRemembered: boolean) {
   // This would integrate with our analytics system
   if (typeof window !== 'undefined') {
-    const analytics = (window as WindowWithAnalytics).__TRADELIA_ANALYTICS__
+    const analytics = getWindowAnalytics()
     if (analytics) {
       analytics.trackEvent({
         event: 'feature_usage',
@@ -187,15 +190,5 @@ export function trackSectionMemoryUsage(sectionId: string, wasRemembered: boolea
         }
       })
     }
-  }
-}
-
-// Add interface for window with analytics
-interface WindowWithAnalytics extends Window {
-  __TRADELIA_ANALYTICS__?: {
-    trackEvent: (event: {
-      event: string
-      properties: Record<string, string | number | boolean>
-    }) => void
   }
 }

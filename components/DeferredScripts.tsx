@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 // Extend Window interface for gtag
 declare global {
   interface Window {
-    gtag?: (...args: any[]) => void;
+    gtag?: (...args: [string, string | Date, Record<string, unknown>?]) => void;
   }
 }
 

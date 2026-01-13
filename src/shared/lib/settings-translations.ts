@@ -147,6 +147,16 @@ export type SettingsTranslation = {
   common: { save: string; saving: string }
 }
 
+/**
+ * Gets settings translations for a specific locale
+ * 
+ * @param locale - The locale code (e.g., 'it', 'en')
+ * @returns Settings translation object for the specified locale, falls back to Italian
+ * 
+ * @example
+ * const t = getSettingsTranslations('en')
+ * console.log(t.page.title) // 'Settings'
+ */
 export function getSettingsTranslations(locale: string): SettingsTranslation {
   const loc = locale as SettingsLocale
   if (loc in settingsTranslations) {

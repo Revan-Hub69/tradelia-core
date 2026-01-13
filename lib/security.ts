@@ -36,21 +36,23 @@ export class SecurityValidator {
   }
 
   // Validate user preferences object
-  static validateUserPreferences(prefs: any): boolean {
+  static validateUserPreferences(prefs: unknown): boolean {
     if (!prefs || typeof prefs !== 'object') return false;
+    
+    const prefsObj = prefs as Record<string, unknown>;
     
     // Check for dangerous properties
     const dangerousKeys = ['__proto__', 'constructor', 'prototype'];
     for (const key of dangerousKeys) {
-      if (key in prefs) return false;
+      if (key in prefsObj) return false;
     }
     
     // Validate specific preference types
-    if (prefs.theme && !['light', 'dark', 'auto'].includes(prefs.theme)) {
+    if (prefsObj.theme && !['light', 'dark', 'auto'].includes(prefsObj.theme as string)) {
       return false;
     }
     
-    if (prefs.language && !['it', 'en'].includes(prefs.language)) {
+    if (prefsObj.language && !['it', 'en'].includes(prefsObj.language as string)) {
       return false;
     }
     
@@ -120,7 +122,7 @@ export class TokenSecurity {
   }
   
   // Extract payload from JWT (without verification - for client-side use only)
-  static extractJWTPayload(token: string): any | null {
+  static extractJWTPayload(token: string): Record<string, unknown> | null {
     try {
       if (!this.isValidJWTFormat(token)) return null;
       
@@ -128,37 +130,34 @@ export class TokenSecurity {
       if (!payload) return null;
       
       const decoded = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
-      return JSON.parse(decoded);
+      return JSON.parse(decoded) as Record<string, unknown>;
     } catch {
       return null;
     }
   }
 }
 
+// Audit log entry type
+interface AuditLogEntry {
+  timestamp: number;
+  action: string;
+  userId?: string;
+  details: Record<string, unknown>;
+  severity: 'info' | 'warning' | 'error';
+}
+
 // Audit logging utilities
 export class AuditLogger {
-  private static logs: Array<{
-    timestamp: number;
-    action: string;
-    userId?: string;
-    details: any;
-    severity: 'info' | 'warning' | 'error';
-  }> = [];
+  private static logs: AuditLogEntry[] = [];
   
-  static log(action: string, details: any, userId?: string, severity: 'info' | 'warning' | 'error' = 'info'): void {
+  static log(action: string, details: unknown, userId?: string, severity: 'info' | 'warning' | 'error' = 'info'): void {
     // Sanitize details to prevent log injection
     const sanitizedDetails = this.sanitizeLogData(details);
     
-    const logEntry: {
-      timestamp: number;
-      action: string;
-      userId?: string;
-      details: any;
-      severity: 'info' | 'warning' | 'error';
-    } = {
+    const logEntry: AuditLogEntry = {
       timestamp: Date.now(),
       action: SecurityValidator.sanitizeInput(action),
-      details: sanitizedDetails,
+      details: sanitizedDetails as Record<string, unknown>,
       severity
     };
     
@@ -179,7 +178,7 @@ export class AuditLogger {
     }
   }
   
-  private static sanitizeLogData(data: any): any {
+  private static sanitizeLogData(data: unknown): unknown {
     if (typeof data === 'string') {
       return SecurityValidator.sanitizeInput(data);
     }
@@ -189,7 +188,7 @@ export class AuditLogger {
     }
     
     if (data && typeof data === 'object') {
-      const sanitized: any = {};
+      const sanitized: Record<string, unknown> = {};
       for (const [key, value] of Object.entries(data)) {
         // Skip sensitive fields
         if (['password', 'token', 'secret', 'key'].some(sensitive => 
@@ -205,11 +204,11 @@ export class AuditLogger {
     return data;
   }
   
-  static getLogs(limit: number = 100): typeof AuditLogger.logs {
+  static getLogs(limit: number = 100): AuditLogEntry[] {
     return this.logs.slice(-limit);
   }
   
-  static getSecurityEvents(): typeof AuditLogger.logs {
+  static getSecurityEvents(): AuditLogEntry[] {
     return this.logs.filter(log => 
       log.severity === 'warning' || 
       log.severity === 'error' ||
@@ -219,9 +218,18 @@ export class AuditLogger {
   }
 }
 
+// CSP violation report type
+interface CSPViolationReport {
+  'blocked-uri'?: string;
+  'violated-directive'?: string;
+  'original-policy'?: string;
+  'source-file'?: string;
+  'line-number'?: number;
+}
+
 // Content Security Policy violation handler
 export class CSPViolationHandler {
-  static handleViolation(violationReport: any): void {
+  static handleViolation(violationReport: CSPViolationReport): void {
     AuditLogger.log('csp_violation', {
       blockedURI: violationReport['blocked-uri'],
       violatedDirective: violationReport['violated-directive'],
@@ -238,45 +246,51 @@ export class CSPViolationHandler {
   }
 }
 
-// Security middleware for API routes
-export function withSecurity(handler: Function) {
-  return async (req: any, res: any) => {
-    const clientIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'unknown';
+import { type NextRequest, NextResponse } from 'next/server';
+
+// Security middleware for Next.js API routes
+export function withSecurity<T>(handler: (request: NextRequest) => Promise<NextResponse<T>>) {
+  return async (request: NextRequest): Promise<NextResponse<T | { error: string }>> => {
+    const forwardedFor = request.headers.get('x-forwarded-for');
+    const clientIP = forwardedFor || 'unknown';
     
     // Rate limiting
     if (!RateLimiter.isAllowed(clientIP, 100, 60000)) { // 100 requests per minute
       AuditLogger.log('rate_limit_exceeded', { ip: clientIP }, undefined, 'warning');
-      return res.status(429).json({ error: 'Rate limit exceeded' });
+      return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
     }
     
     // Input validation for POST/PUT requests
-    if (['POST', 'PUT', 'PATCH'].includes(req.method) && req.body) {
+    if (['POST', 'PUT', 'PATCH'].includes(request.method)) {
       try {
-        // Validate JSON structure
-        if (typeof req.body === 'string') {
-          JSON.parse(req.body);
+        // Validate JSON structure if body exists
+        const contentType = request.headers.get('content-type');
+        if (contentType?.includes('application/json')) {
+          await request.clone().json();
         }
       } catch {
-        AuditLogger.log('invalid_json', { method: req.method, url: req.url }, undefined, 'warning');
-        return res.status(400).json({ error: 'Invalid JSON' });
+        AuditLogger.log('invalid_json', { method: request.method, url: request.url }, undefined, 'warning');
+        return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
       }
     }
     
-    // Add security headers
-    res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('X-Frame-Options', 'DENY');
-    res.setHeader('Cache-Control', 'no-store');
-    
     try {
-      return await handler(req, res);
+      const response = await handler(request);
+      
+      // Add security headers to response
+      response.headers.set('X-Content-Type-Options', 'nosniff');
+      response.headers.set('X-Frame-Options', 'DENY');
+      response.headers.set('Cache-Control', 'no-store');
+      
+      return response;
     } catch (error) {
       AuditLogger.log('api_error', { 
-        method: req.method, 
-        url: req.url, 
+        method: request.method, 
+        url: request.url, 
         error: error instanceof Error ? error.message : 'Unknown error' 
       }, undefined, 'error');
       
-      return res.status(500).json({ error: 'Internal server error' });
+      return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
   };
 }

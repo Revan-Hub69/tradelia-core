@@ -1,6 +1,5 @@
 'use client';
 
-import { useTranslations } from '@/hooks/useTranslations';
 import { useLanguage } from '@/components/LanguageSelector';
 import { translations } from '@/lib/translations';
 
@@ -12,7 +11,7 @@ export default function FaqSchema() {
   const faqData = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "mainEntity": faqQuestions.map((item: any) => ({
+    "mainEntity": faqQuestions.map((item) => ({
       "@type": "Question",
       "name": item.question,
       "acceptedAnswer": {

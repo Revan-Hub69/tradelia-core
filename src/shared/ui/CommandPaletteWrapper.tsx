@@ -4,18 +4,42 @@
  * Wrapper component that integrates CommandProvider, CommandPalette,
  * and keyboard shortcuts (Ctrl+K to open).
  * 
- * @see Requirements: 16.1
+ * Uses dynamic imports for CommandPalette to reduce initial bundle size.
+ * 
+ * @see Requirements: 16.1, 11.4
  */
 
 'use client';
 
-import { useEffect, useCallback, useState, type ReactNode } from 'react';
+import { useEffect, useCallback, useState, Suspense, lazy, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { CommandProvider, useCommandPalette, type Command } from './CommandProvider';
-import { CommandPalette } from './CommandPalette';
 import { getCoreCommands, NAVIGATION_SHORTCUTS, SINGLE_KEY_SHORTCUTS } from '@/src/shared/lib/core-commands';
 import { useDensity } from '@/src/shared/hooks/useDensity';
+
+// Dynamic import for CommandPalette - only loaded when needed (REQ 11.4)
+const CommandPalette = lazy(() => 
+  import('./CommandPalette').then(m => ({ default: m.CommandPalette }))
+);
+
+// Skeleton fallback for CommandPalette while loading
+const CommandPaletteSkeleton = () => (
+  <div className="fixed inset-0 z-[100]" role="presentation">
+    <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+    <div className="absolute left-1/2 top-[20%] -translate-x-1/2 w-full max-w-lg mx-4 bg-background border-2 border-border rounded-xl shadow-2xl overflow-hidden">
+      <div className="flex items-center gap-3 p-4 border-b border-border/50">
+        <div className="w-5 h-5 bg-muted rounded animate-pulse" />
+        <div className="flex-1 h-6 bg-muted rounded animate-pulse" />
+      </div>
+      <div className="p-4 space-y-2">
+        <div className="h-10 bg-muted rounded animate-pulse" />
+        <div className="h-10 bg-muted rounded animate-pulse" />
+        <div className="h-10 bg-muted rounded animate-pulse" />
+      </div>
+    </div>
+  </div>
+);
 
 interface CommandPaletteWrapperProps {
   children: ReactNode;
@@ -111,7 +135,14 @@ function CommandPaletteHotkeys({ onOpenHelp }: { onOpenHelp?: (() => void) | und
     };
   }, [isOpen, toggle, executeCommand, commands, onOpenHelp]);
 
-  return <CommandPalette />;
+  // Only render CommandPalette when open (lazy loaded)
+  if (!isOpen) return null;
+
+  return (
+    <Suspense fallback={<CommandPaletteSkeleton />}>
+      <CommandPalette />
+    </Suspense>
+  );
 }
 
 /**
