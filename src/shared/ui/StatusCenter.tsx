@@ -9,10 +9,32 @@
 
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
-import { useNetworkStatus } from './NetworkStatus'
 import { useDismissableLayer } from '@/src/shared/hooks/useDismissableLayer'
+
+// Inline network status hook to break circular dependency
+function useNetworkStatusLocal() {
+  const [isOnline, setIsOnline] = useState(true)
+  const [isSlowConnection, setIsSlowConnection] = useState(false)
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true)
+    const handleOffline = () => setIsOnline(false)
+
+    setIsOnline(navigator.onLine)
+
+    window.addEventListener('online', handleOnline)
+    window.addEventListener('offline', handleOffline)
+
+    return () => {
+      window.removeEventListener('online', handleOnline)
+      window.removeEventListener('offline', handleOffline)
+    }
+  }, [])
+
+  return { isOnline, isSlowConnection }
+}
 import { cn } from './utils'
 import {
   WifiIcon,
@@ -73,7 +95,7 @@ interface StatusCenterProps {
 
 export function StatusCenter({ isOpen, onClose, isGuestMode = false, anchorRef }: StatusCenterProps) {
   const t = useTranslations('statusCenter')
-  const { isOnline, isSlowConnection } = useNetworkStatus()
+  const { isOnline, isSlowConnection } = useNetworkStatusLocal()
   const layerRef = useDismissableLayer<HTMLDivElement>(isOpen, onClose)
   const popoverRef = useRef<HTMLDivElement>(null)
 

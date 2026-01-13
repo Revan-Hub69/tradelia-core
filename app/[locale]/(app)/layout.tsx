@@ -3,6 +3,8 @@
  * 
  * Layout UNICO per dashboard internazionalizzata.
  * Include: Sidebar (desktop) + BottomNav (mobile) + Header + Performance Monitoring
+ * 
+ * IMPORTANT: This layout includes <html> and <body> tags to properly set lang attribute
  */
 
 import type { Metadata } from 'next';
@@ -18,6 +20,7 @@ import { DashboardModalProvider } from '@/contexts/DashboardModalContext';
 import { ToastProvider } from '@/src/shared/ui';
 import AuthModal from '@/components/AuthModal';
 import { PerformanceMonitor } from '@/src/shared/components/PerformanceMonitor';
+import { SkipLink } from '@/components/SkipLink';
 import { routing, type Locale } from '@/src/i18n/routing';
 import '@/app/globals.css';
 
@@ -82,25 +85,30 @@ export default async function LocalizedAppLayout({
   const messages = await getMessages({ locale });
 
   return (
-    <NextIntlClientProvider locale={locale} messages={messages}>
-      <QueryProvider>
-        <ThemeProvider>
-          <PWAProvider>
-            <DashboardModalProvider>
-              <ToastProvider>
-                <DashboardAuthProvider locale={locale}>
-                      <div className={`min-h-screen bg-background antialiased text-foreground ${inter.className}`}>
+    <html lang={locale} dir="ltr" className="scroll-smooth" suppressHydrationWarning>
+      <body className={`${inter.className} antialiased min-h-screen bg-background text-foreground`} suppressHydrationWarning>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <QueryProvider>
+            <ThemeProvider>
+              <PWAProvider>
+                <DashboardModalProvider>
+                  <ToastProvider>
+                    <DashboardAuthProvider locale={locale}>
+                      <SkipLink />
+                      <div className="min-h-screen bg-background">
                         {children}
                       </div>
                       <AuthModal />
                       <PerformanceMonitor />
                       <SpeedInsights />
-                </DashboardAuthProvider>
-              </ToastProvider>
-            </DashboardModalProvider>
-          </PWAProvider>
-        </ThemeProvider>
-      </QueryProvider>
-    </NextIntlClientProvider>
+                    </DashboardAuthProvider>
+                  </ToastProvider>
+                </DashboardModalProvider>
+              </PWAProvider>
+            </ThemeProvider>
+          </QueryProvider>
+        </NextIntlClientProvider>
+      </body>
+    </html>
   );
 }
