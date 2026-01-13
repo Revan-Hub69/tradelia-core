@@ -1,9 +1,10 @@
 /**
  * Module Content Renderer
  * 
- * Renderizza il contenuto dei moduli educativi
- * Usa i token enterprise da globals.css
- * Target: persona normale, non universitario
+ * Design basato su best practice:
+ * - Duolingo (learning path)
+ * - Khan Academy (educational content)
+ * - Typography hierarchy (contrast + spacing)
  */
 
 'use client'
@@ -18,46 +19,52 @@ interface ModuleContentProps {
 
 export function ModuleContent({ module, onComplete, isCompleted }: ModuleContentProps) {
   return (
-    <article className="space-y-6 reading-width">
-      {/* Tempo stimato - discreto */}
-      <div className="text-sm text-muted-foreground">
-        ~{module.estimatedMinutes} minuti di lettura
-      </div>
+    <article className="reading-width">
+      {/* Header con tempo stimato */}
+      <header className="flex items-center gap-2 text-sm text-muted-foreground mb-8 pb-4 border-b border-border/30">
+        <ClockIcon className="w-4 h-4" />
+        <span>~{module.estimatedMinutes} minuti di lettura</span>
+      </header>
 
-      {/* Sezioni contenuto */}
-      <div className="space-y-8">
+      {/* Sezioni contenuto con spacing variabile */}
+      <div className="space-y-10">
         {module.sections.map((section, index) => (
           <SectionRenderer 
             key={`${module.id}-${section.type}-${index}`} 
-            section={section} 
+            section={section}
+            isFirst={index === 0}
           />
         ))}
       </div>
 
-      {/* Completamento */}
-      <footer className="border-t border-border/50 pt-6 mt-10">
+      {/* Footer con CTA - sticky su mobile */}
+      <footer className="mt-12 pt-6 border-t border-border/50 sticky bottom-0 bg-background/95 backdrop-blur-sm pb-4 -mx-4 px-4 sm:static sm:bg-transparent sm:backdrop-blur-none sm:mx-0 sm:px-0">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <p className="text-foreground font-medium">
-              {isCompleted ? 'Hai completato questo modulo' : 'Hai finito di leggere?'}
+            <p className="text-foreground font-semibold">
+              {isCompleted ? '✓ Modulo completato' : 'Hai finito di leggere?'}
             </p>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="text-sm text-muted-foreground mt-0.5">
               {isCompleted 
                 ? 'Puoi sempre tornare a rileggerlo' 
-                : 'Segna come completato per tracciare i tuoi progressi'
+                : 'Traccia i tuoi progressi'
               }
             </p>
           </div>
           <button
             onClick={onComplete}
-            aria-label={isCompleted ? 'Modulo completato, clicca per rimuovere completamento' : 'Segna questo modulo come letto'}
-            className={`px-5 py-2.5 rounded-lg font-medium transition-all min-h-[44px] min-w-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
-              isCompleted
-                ? 'bg-success/10 text-success border border-success/30 hover:bg-success/20'
-                : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm'
-            }`}
+            aria-label={isCompleted ? 'Rimuovi completamento' : 'Segna come letto'}
+            className={`
+              px-6 py-3 rounded-xl font-semibold transition-all duration-200
+              min-h-[48px] min-w-[160px]
+              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2
+              ${isCompleted
+                ? 'bg-success/10 text-success border-2 border-success/30 hover:bg-success/20'
+                : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-md hover:shadow-lg hover:-translate-y-0.5'
+              }
+            `}
           >
-            {isCompleted ? '✓ Completato' : 'Segna come letto'}
+            {isCompleted ? 'Completato' : 'Segna come letto'}
           </button>
         </div>
       </footer>
@@ -65,61 +72,83 @@ export function ModuleContent({ module, onComplete, isCompleted }: ModuleContent
   )
 }
 
-function SectionRenderer({ section }: { section: ModuleSection }) {
+function SectionRenderer({ section, isFirst }: { section: ModuleSection; isFirst: boolean }) {
   switch (section.type) {
-    // HOOK - Cattura attenzione, stile quote
+    // HOOK - Quote style con icona
     case 'hook':
       return (
-        <div className="py-4 px-5 bg-primary/5 border-l-4 border-primary rounded-r-lg">
-          <p className="text-lg text-foreground reading-line-height font-medium">
+        <div className="relative py-5 px-6 bg-gradient-to-r from-primary/8 to-primary/3 border-l-4 border-primary rounded-r-xl animate-fade-in">
+          <QuoteIcon className="absolute top-4 right-4 w-8 h-8 text-primary/20" />
+          <p className="text-lg text-foreground reading-line-height font-medium pr-8">
             {section.content}
           </p>
         </div>
       )
 
-    // HEADING - Titolo sezione
+    // HEADING - Con icona e più contrasto
     case 'heading':
       return (
-        <h3 className="text-lg font-semibold text-foreground pt-4 first:pt-0">
-          {section.title}
-        </h3>
+        <div className={`flex items-center gap-3 ${isFirst ? '' : 'pt-6 mt-6 border-t border-border/30'}`}>
+          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+            <SectionIcon className="w-4 h-4 text-primary" />
+          </div>
+          <h3 className="text-xl font-bold text-foreground">
+            {section.title}
+          </h3>
+        </div>
       )
 
-    // TEXT - Paragrafo normale
+    // TEXT - Con grassetto per termini chiave
     case 'text':
       return (
-        <p className="text-foreground reading-line-height reading-paragraph-spacing">
-          {section.content}
+        <p className="text-foreground reading-line-height text-base leading-7">
+          {formatTextWithEmphasis(section.content || '')}
         </p>
       )
 
-    // EXAMPLE - Esempio concreto
+    // EXAMPLE - Box con icona
     case 'example':
       return (
-        <div className="p-4 bg-muted/40 rounded-lg border border-border/50">
-          <p className="text-sm font-medium text-muted-foreground mb-2">Esempio</p>
+        <div className="p-5 bg-muted/40 rounded-xl border border-border/50 animate-fade-in">
+          <div className="flex items-center gap-2 mb-3">
+            <LightbulbIcon className="w-4 h-4 text-warning" />
+            <span className="text-sm font-semibold text-warning">Esempio</span>
+          </div>
           <p className="text-foreground reading-line-height">{section.content}</p>
         </div>
       )
 
-    // COMPARISON - Confronto side by side (semplificato)
+    // COMPARISON - Cards con hover effect
     case 'comparison':
       return (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {section.items?.map((item, i) => (
             <div 
               key={`comparison-${i}`}
-              className="grid grid-cols-1 md:grid-cols-2 gap-3"
+              className="grid grid-cols-1 md:grid-cols-2 gap-3 animate-fade-in"
+              style={{ animationDelay: `${i * 100}ms` }}
             >
-              {/* Lato sinistro - tradizionale */}
-              <div className="p-3 rounded-lg bg-muted/30 border border-border/50">
+              {/* Tradizionale */}
+              <div className="p-4 rounded-xl bg-muted/30 border border-border/50 transition-all duration-200 hover:bg-muted/50">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-5 h-5 rounded-full bg-muted-foreground/20 flex items-center justify-center">
+                    <span className="text-xs text-muted-foreground">🏦</span>
+                  </div>
+                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Banca</span>
+                </div>
                 <p className="text-sm text-muted-foreground reading-line-height">
                   {item.left}
                 </p>
               </div>
-              {/* Lato destro - crypto */}
-              <div className="p-3 rounded-lg bg-primary/5 border border-primary/20">
-                <p className="text-sm text-foreground reading-line-height">
+              {/* Crypto */}
+              <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 transition-all duration-200 hover:bg-primary/10 hover:border-primary/30">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center">
+                    <span className="text-xs">₿</span>
+                  </div>
+                  <span className="text-xs font-medium text-primary uppercase tracking-wide">Crypto</span>
+                </div>
+                <p className="text-sm text-foreground reading-line-height font-medium">
                   {item.right}
                 </p>
               </div>
@@ -128,36 +157,51 @@ function SectionRenderer({ section }: { section: ModuleSection }) {
         </div>
       )
 
-    // CALLOUT - Box informativo/warning/insight
+    // CALLOUT - Con icona semantica
     case 'callout': {
-      const calloutStyles = {
-        info: 'bg-primary/10 border-primary/30',
-        warning: 'bg-warning/10 border-warning/30',
-        insight: 'bg-muted/50 border-border'
+      const styles = {
+        info: {
+          bg: 'bg-primary/8',
+          border: 'border-primary/25',
+          icon: <InfoIcon className="w-5 h-5 text-primary" />,
+          text: 'text-foreground'
+        },
+        warning: {
+          bg: 'bg-warning/8',
+          border: 'border-warning/25',
+          icon: <AlertIcon className="w-5 h-5 text-warning" />,
+          text: 'text-foreground'
+        },
+        insight: {
+          bg: 'bg-muted/60',
+          border: 'border-border',
+          icon: <SparkleIcon className="w-5 h-5 text-muted-foreground" />,
+          text: 'text-foreground'
+        }
       }
-      const textStyles = {
-        info: 'text-primary',
-        warning: 'text-warning',
-        insight: 'text-foreground'
-      }
-      const style = calloutStyles[section.calloutType || 'info']
-      const textStyle = textStyles[section.calloutType || 'info']
+      const style = styles[section.calloutType || 'info']
       
       return (
-        <div className={`p-4 rounded-lg border ${style}`}>
-          <p className={`reading-line-height ${textStyle}`}>
-            {section.content}
-          </p>
+        <div className={`p-5 rounded-xl border ${style.bg} ${style.border} animate-fade-in`}>
+          <div className="flex gap-4">
+            <div className="flex-shrink-0 mt-0.5">{style.icon}</div>
+            <p className={`reading-line-height ${style.text}`}>
+              {section.content}
+            </p>
+          </div>
         </div>
       )
     }
 
-    // TAKEAWAY - Conclusione chiave
+    // TAKEAWAY - Highlight finale
     case 'takeaway':
       return (
-        <div className="p-5 rounded-lg bg-success/5 border border-success/20">
-          <p className="text-sm font-medium text-success mb-2">Da ricordare</p>
-          <p className="text-foreground reading-line-height font-medium">
+        <div className="p-6 rounded-xl bg-gradient-to-r from-success/10 to-success/5 border border-success/25 animate-fade-in">
+          <div className="flex items-center gap-2 mb-3">
+            <CheckCircleIcon className="w-5 h-5 text-success" />
+            <span className="text-sm font-bold text-success uppercase tracking-wide">Da ricordare</span>
+          </div>
+          <p className="text-foreground reading-line-height font-semibold text-lg">
             {section.content}
           </p>
         </div>
@@ -166,4 +210,102 @@ function SectionRenderer({ section }: { section: ModuleSection }) {
     default:
       return null
   }
+}
+
+// Formatta testo con grassetto per termini chiave
+function formatTextWithEmphasis(text: string): React.ReactNode {
+  // Pattern per termini da evidenziare (tra asterischi o termini chiave noti)
+  const keyTerms = [
+    'soldi digitali',
+    'senza banche',
+    'sei tu la banca',
+    'controllo totale',
+    'responsabilità totale'
+  ]
+  
+  let result = text
+  keyTerms.forEach(term => {
+    if (result.toLowerCase().includes(term.toLowerCase())) {
+      const regex = new RegExp(`(${term})`, 'gi')
+      result = result.replace(regex, '**$1**')
+    }
+  })
+  
+  // Converti **testo** in <strong>
+  const parts = result.split(/(\*\*[^*]+\*\*)/g)
+  return parts.map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={i} className="font-semibold text-foreground">{part.slice(2, -2)}</strong>
+    }
+    return part
+  })
+}
+
+// Icons - minimal, consistent stroke
+function ClockIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 6v6l4 2" />
+    </svg>
+  )
+}
+
+function QuoteIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+    </svg>
+  )
+}
+
+function SectionIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+      <path d="M4 6h16M4 12h16M4 18h10" />
+    </svg>
+  )
+}
+
+function LightbulbIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+      <path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.3A7 7 0 0 0 12 2z" />
+    </svg>
+  )
+}
+
+function InfoIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 16v-4M12 8h.01" />
+    </svg>
+  )
+}
+
+function AlertIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01" />
+    </svg>
+  )
+}
+
+function SparkleIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+      <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707" />
+      <circle cx="12" cy="12" r="4" />
+    </svg>
+  )
+}
+
+function CheckCircleIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+      <circle cx="12" cy="12" r="10" />
+      <path d="M9 12l2 2 4-4" />
+    </svg>
+  )
 }
