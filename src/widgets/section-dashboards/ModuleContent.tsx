@@ -2,7 +2,7 @@
  * Module Content Renderer
  * 
  * Renderizza il contenuto dei moduli educativi
- * Design: pulito, leggibile, gerarchia visiva chiara
+ * Usa i token enterprise da globals.css
  * Target: persona normale, non universitario
  */
 
@@ -18,7 +18,7 @@ interface ModuleContentProps {
 
 export function ModuleContent({ module, onComplete, isCompleted }: ModuleContentProps) {
   return (
-    <article className="space-y-6">
+    <article className="space-y-6 reading-width">
       {/* Tempo stimato - discreto */}
       <div className="text-sm text-muted-foreground">
         ~{module.estimatedMinutes} minuti di lettura
@@ -70,7 +70,7 @@ function SectionRenderer({ section }: { section: ModuleSection }) {
     case 'hook':
       return (
         <div className="py-4 px-5 bg-primary/5 border-l-4 border-primary rounded-r-lg">
-          <p className="text-lg text-foreground leading-relaxed font-medium">
+          <p className="text-lg text-foreground reading-line-height font-medium">
             {section.content}
           </p>
         </div>
@@ -87,7 +87,7 @@ function SectionRenderer({ section }: { section: ModuleSection }) {
     // TEXT - Paragrafo normale
     case 'text':
       return (
-        <p className="text-foreground leading-relaxed" style={{ lineHeight: '1.7' }}>
+        <p className="text-foreground reading-line-height reading-paragraph-spacing">
           {section.content}
         </p>
       )
@@ -97,7 +97,7 @@ function SectionRenderer({ section }: { section: ModuleSection }) {
       return (
         <div className="p-4 bg-muted/40 rounded-lg border border-border/50">
           <p className="text-sm font-medium text-muted-foreground mb-2">Esempio</p>
-          <p className="text-foreground leading-relaxed">{section.content}</p>
+          <p className="text-foreground reading-line-height">{section.content}</p>
         </div>
       )
 
@@ -112,13 +112,13 @@ function SectionRenderer({ section }: { section: ModuleSection }) {
             >
               {/* Lato sinistro - tradizionale */}
               <div className="p-3 rounded-lg bg-muted/30 border border-border/50">
-                <p className="text-sm text-muted-foreground leading-relaxed">
+                <p className="text-sm text-muted-foreground reading-line-height">
                   {item.left}
                 </p>
               </div>
               {/* Lato destro - crypto */}
               <div className="p-3 rounded-lg bg-primary/5 border border-primary/20">
-                <p className="text-sm text-foreground leading-relaxed">
+                <p className="text-sm text-foreground reading-line-height">
                   {item.right}
                 </p>
               </div>
@@ -128,28 +128,35 @@ function SectionRenderer({ section }: { section: ModuleSection }) {
       )
 
     // CALLOUT - Box informativo/warning/insight
-    case 'callout':
+    case 'callout': {
       const calloutStyles = {
-        info: 'bg-primary/10 border-primary/30 text-primary',
-        warning: 'bg-warning/10 border-warning/30 text-warning',
-        insight: 'bg-muted/50 border-border text-foreground'
+        info: 'bg-primary/10 border-primary/30',
+        warning: 'bg-warning/10 border-warning/30',
+        insight: 'bg-muted/50 border-border'
+      }
+      const textStyles = {
+        info: 'text-primary',
+        warning: 'text-warning',
+        insight: 'text-foreground'
       }
       const style = calloutStyles[section.calloutType || 'info']
+      const textStyle = textStyles[section.calloutType || 'info']
       
       return (
-        <div className={`p-4 rounded-lg border ${style.split(' ').slice(0, 2).join(' ')}`}>
-          <p className={`leading-relaxed ${style.split(' ').slice(2).join(' ')}`}>
+        <div className={`p-4 rounded-lg border ${style}`}>
+          <p className={`reading-line-height ${textStyle}`}>
             {section.content}
           </p>
         </div>
       )
+    }
 
     // TAKEAWAY - Conclusione chiave
     case 'takeaway':
       return (
         <div className="p-5 rounded-lg bg-success/5 border border-success/20">
           <p className="text-sm font-medium text-success mb-2">Da ricordare</p>
-          <p className="text-foreground leading-relaxed font-medium">
+          <p className="text-foreground reading-line-height font-medium">
             {section.content}
           </p>
         </div>
