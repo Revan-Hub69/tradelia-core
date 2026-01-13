@@ -7,6 +7,10 @@
     "syncSuccess": "Progress synced successfully!",
     "syncError": "Error syncing progress"
   },
+  "drawer": {
+    "close": "Close",
+    "back": "Back"
+  },
   "modal": {
     "title": "Sign in to Tradelia",
     "actions": {

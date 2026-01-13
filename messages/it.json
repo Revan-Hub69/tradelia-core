@@ -7,6 +7,10 @@
     "syncSuccess": "Progressi sincronizzati con successo!",
     "syncError": "Errore durante la sincronizzazione"
   },
+  "drawer": {
+    "close": "Chiudi",
+    "back": "Indietro"
+  },
   "modal": {
     "title": "Accedi a Tradelia",
     "actions": {
