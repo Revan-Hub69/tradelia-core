@@ -38,6 +38,11 @@ export {
   FullPageError 
 } from './ErrorState';
 export { 
+  ErrorBoundary,
+  RouteErrorBoundary,
+  SectionErrorBoundary
+} from './ErrorBoundary';
+export { 
   ToastProvider, 
   useToast 
 } from './Toast';
@@ -77,6 +82,10 @@ export type { InlineStatusType, InlineStatusProps } from './InlineStatus';
 export { HelpPanel } from './HelpPanel';
 export type { HelpContent, HelpPanelProps } from './HelpPanel';
 export { HelpButton } from './HelpButton';
+
+// Scrollspy Navigation (REQ 26.3)
+export { ScrollspyNav } from './ScrollspyNav';
+export type { ScrollspyNavItem, ScrollspyNavProps } from './ScrollspyNav';
 
 // Utility functions
 export { cn, focusRing, transitionSubtle, cardInteractive, supportsHover, prefersReducedMotion } from './utils';

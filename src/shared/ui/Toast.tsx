@@ -48,6 +48,8 @@ interface ToastContextType {
   info: (title: string, message?: string, action?: ToastAction) => void
   /** Show a toast with undo action for reversible operations */
   successWithUndo: (title: string, onUndo: () => void, message?: string) => void
+  /** Show an error toast with retry action (REQ 25.4) */
+  errorWithRetry: (title: string, onRetry: () => void, message?: string) => void
 }
 
 // Context
@@ -160,6 +162,20 @@ export function ToastProvider({ children, maxToasts = 1 }: ToastProviderProps) {
     })
   }, [addToast])
 
+  // Error with retry helper (REQ 25.4)
+  const errorWithRetry = useCallback((title: string, onRetry: () => void, message?: string) => {
+    addToast({
+      variant: 'error',
+      title,
+      ...(message && { message }),
+      duration: 0, // Manual dismiss for errors
+      action: {
+        label: 'Riprova',
+        onClick: onRetry
+      }
+    })
+  }, [addToast])
+
   // Cleanup timeouts on unmount
   useEffect(() => {
     const currentTimeouts = timeoutRef.current
@@ -178,7 +194,8 @@ export function ToastProvider({ children, maxToasts = 1 }: ToastProviderProps) {
       error, 
       warning, 
       info,
-      successWithUndo 
+      successWithUndo,
+      errorWithRetry
     }}>
       {children}
       <ToastContainer toasts={toasts} onDismiss={removeToast} />

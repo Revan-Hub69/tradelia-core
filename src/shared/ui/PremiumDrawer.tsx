@@ -418,7 +418,7 @@ export function PremiumDrawer({
                 {breadcrumb && breadcrumb.length > 0 && (
                   <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-xs text-muted-foreground">
                     {breadcrumb.map((item, index) => (
-                      <span key={index} className="flex items-center gap-1">
+                      <span key={`breadcrumb-${item}-${index}`} className="flex items-center gap-1">
                         {index > 0 && (
                           <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
