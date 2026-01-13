@@ -295,7 +295,7 @@ export function PremiumDrawer({
   // Scroll shadow for header (REQ 24.6)
   const { isScrolled } = useScrollShadow(contentRef)
   
-  // Deep linking support (REQ 17.3, 17.4)
+  // Deep linking support (REQ 17.3, 17.4) - ONLY when panelId is provided
   const { setDeepLink, clearDeepLink, getCurrentUrl } = useDeepLink()
   
   // Session continuity for tab restore (REQ 18.3)
@@ -356,9 +356,9 @@ export function PremiumDrawer({
     }
   }, [isOpen])
 
-  // Update URL when drawer opens/closes (REQ 17.3)
+  // Update URL when drawer opens/closes (REQ 17.3) - ONLY when panelId is provided
   useEffect(() => {
-    if (!panelId) return
+    if (!panelId) return // Skip deep linking when no panelId
 
     if (isOpen) {
       // Set panel param when drawer opens
@@ -373,28 +373,28 @@ export function PremiumDrawer({
     }
   }, [isOpen, panelId, activeTab, setDeepLink, clearDeepLink])
 
-  // Update tab in URL when activeTab changes (REQ 17.3)
+  // Update tab in URL when activeTab changes (REQ 17.3) - ONLY when panelId is provided
   useEffect(() => {
     if (!isOpen || !panelId || !activeTab) return
     setDeepLink({ tab: activeTab })
   }, [activeTab, isOpen, panelId, setDeepLink])
 
-  // Restore tab from session when drawer opens (REQ 18.3)
+  // Restore tab from session when drawer opens (REQ 18.3) - ONLY when panelId is provided
   useEffect(() => {
-    if (!isOpen || !isSessionRestored || hasRestoredTab) return
+    if (!isOpen || !isSessionRestored || hasRestoredTab || !panelId) return
     
     // Only restore if we have a saved tab and a callback to handle it
     if (lastDrawerTab && onTabRestore) {
       onTabRestore(lastDrawerTab)
     }
     setHasRestoredTab(true)
-  }, [isOpen, isSessionRestored, hasRestoredTab, lastDrawerTab, onTabRestore])
+  }, [isOpen, isSessionRestored, hasRestoredTab, lastDrawerTab, onTabRestore, panelId])
 
-  // Remember current tab in session (REQ 18.3)
+  // Remember current tab in session (REQ 18.3) - ONLY when panelId is provided
   useEffect(() => {
-    if (!isOpen || !activeTab) return
+    if (!isOpen || !activeTab || !panelId) return
     setLastDrawerTab(activeTab)
-  }, [isOpen, activeTab, setLastDrawerTab])
+  }, [isOpen, activeTab, setLastDrawerTab, panelId])
 
   // Reset tab restoration flag when drawer closes
   useEffect(() => {
@@ -403,8 +403,10 @@ export function PremiumDrawer({
     }
   }, [isOpen])
 
-  // Copy link handler (REQ 17.5)
+  // Copy link handler (REQ 17.5) - ONLY when panelId is provided
   const handleCopyLink = useCallback(async () => {
+    if (!panelId) return // No copy link without panelId
+    
     try {
       const url = getCurrentUrl()
       await navigator.clipboard.writeText(url)
@@ -416,7 +418,7 @@ export function PremiumDrawer({
     } catch (err) {
       console.error('Failed to copy link:', err)
     }
-  }, [getCurrentUrl, onCopyLink])
+  }, [getCurrentUrl, onCopyLink, panelId])
 
   // Swipe to close handlers (REQ 24.3)
   const handleTouchStart = useCallback((e: ReactTouchEvent) => {
@@ -603,7 +605,7 @@ export function PremiumDrawer({
                 {breadcrumb && breadcrumb.length > 0 && (
                   <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-xs text-enterprise-secondary">
                     {breadcrumb.map((item, index) => (
-                      <span key={`breadcrumb-${item.replace(/\s+/g, '-').toLowerCase()}-${index}`} className="flex items-center gap-1">
+                      <span key={`breadcrumb-${item.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-center gap-1">
                         {index > 0 && (
                           <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
@@ -641,7 +643,7 @@ export function PremiumDrawer({
 
                   {/* Header action buttons */}
                   <div className="flex items-center gap-2 flex-shrink-0">
-                    {/* Copy Link Button (REQ 17.5) */}
+                    {/* Copy Link Button (REQ 17.5) - ONLY when panelId is provided */}
                     {showCopyLink && panelId && (
                       <button
                         onClick={handleCopyLink}

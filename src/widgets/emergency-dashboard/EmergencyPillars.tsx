@@ -8,7 +8,7 @@
 
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { useTranslations } from 'next-intl'
 import { JourneyCard } from '@/src/shared/ui/JourneyCard'
 import { 
@@ -76,31 +76,6 @@ export function EmergencyPillars() {
     isGuest: state.isGuestMode,
     userId: state.user?.id
   })
-
-  // Clean URL params when component unmounts or drawer closes
-  useEffect(() => {
-    return () => {
-      // Clean up URL params on unmount
-      if (typeof window !== 'undefined') {
-        const url = new URL(window.location.href)
-        url.searchParams.delete('panel')
-        url.searchParams.delete('tab')
-        window.history.replaceState({}, '', url.toString())
-      }
-    }
-  }, [])
-
-  // Clean URL when drawer closes
-  useEffect(() => {
-    if (!activePillar && typeof window !== 'undefined') {
-      const url = new URL(window.location.href)
-      if (url.searchParams.has('panel')) {
-        url.searchParams.delete('panel')
-        url.searchParams.delete('tab')
-        window.history.replaceState({}, '', url.toString())
-      }
-    }
-  }, [activePillar])
 
   const pillarsConfig: PillarConfig[] = useMemo(() => [
     {
@@ -178,14 +153,6 @@ export function EmergencyPillars() {
     // Reset all states
     setActiveSubmodule(null)
     setActivePillar(null)
-    
-    // Force clean URL
-    if (typeof window !== 'undefined') {
-      const url = new URL(window.location.href)
-      url.searchParams.delete('panel')
-      url.searchParams.delete('tab')
-      window.history.replaceState({}, '', url.toString())
-    }
   }
 
   const handleBackToMain = () => {
@@ -193,15 +160,6 @@ export function EmergencyPillars() {
   }
 
   const handleOpenPillar = (pillarId: string) => {
-    // Clean any existing URL params first
-    if (typeof window !== 'undefined') {
-      const url = new URL(window.location.href)
-      url.searchParams.delete('panel')
-      url.searchParams.delete('tab')
-      window.history.replaceState({}, '', url.toString())
-    }
-    
-    // Then set the active pillar
     setActivePillar(pillarId)
   }
 
@@ -254,7 +212,8 @@ export function EmergencyPillars() {
           icon={<PillarIcon type={activeData.iconType} className="w-6 h-6" />}
           accentColor={activeData.accentColor}
           size="xl"
-          closeOnBackdrop={false}
+          closeOnBackdrop={true}
+          closeOnEscape={true}
           // NO panelId - no deep linking to avoid URL conflicts
         >
           {activeSubmodule ? (
@@ -514,8 +473,8 @@ function SubmoduleContent({
   return (
     <div className="space-y-6">
       {/* Content sections */}
-      {content.content.map((section, index) => (
-        <section key={`section-${sectionId}-${index}`}>
+              {content.content.map((section) => (
+        <section key={`content-${sectionId}-${section.type}-${section.content?.slice(0, 20) || section.title?.slice(0, 20) || 'section'}`}>
           {section.type === 'text' && (
             <div className="reading-width">
               <p className="text-enterprise-body reading-line-height reading-paragraph-spacing">
@@ -528,8 +487,8 @@ function SubmoduleContent({
             <div>
               <h4 className="text-enterprise-primary font-semibold mb-3">{section.title}</h4>
               <ul className="space-y-2">
-                {section.items?.map((item, itemIndex) => (
-                  <li key={`item-${sectionId}-${index}-${itemIndex}`} className="flex items-start gap-3">
+                {section.items?.map((item) => (
+                  <li key={`list-item-${sectionId}-${item.slice(0, 20).replace(/\s+/g, '-')}`} className="flex items-start gap-3">
                     <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0" />
                     <span className="text-enterprise-body reading-line-height">{item}</span>
                   </li>
