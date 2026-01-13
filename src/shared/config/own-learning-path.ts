@@ -33,10 +33,10 @@ export const OWN_LEARNING_MODULES: LearningModule[] = [
         content: 'Immagina di avere dei soldi che nessuna banca può bloccarti, ma che nessuno può recuperare se li perdi. Questo è il punto di partenza per capire le criptovalute.'
       },
 
-      // SEZIONE 1: La versione semplice
+      // SEZIONE 1: Cosa sono davvero
       {
         type: 'heading',
-        title: 'La versione semplice'
+        title: 'In pratica'
       },
       {
         type: 'text',
