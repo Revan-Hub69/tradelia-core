@@ -1,19 +1,13 @@
 /**
- * Speculation Journey - Tradelia 2026
- * Speculazione: trading attivo, opportunità
+ * Redirect: /speculation → /speculate
  */
+import { redirect } from 'next/navigation'
 
-import dynamic from 'next/dynamic'
-import { SkeletonJourneyPage } from '@/src/shared/ui/SkeletonLayouts'
+interface SpeculationPageProps {
+  params: Promise<{ locale: string }>
+}
 
-const JourneyPageComponent = dynamic(
-  () => import('@/src/widgets/journey-page/JourneyPage').then(mod => mod.JourneyPage),
-  {
-    loading: () => <SkeletonJourneyPage />,
-    ssr: true
-  }
-)
-
-export default function SpeculationPage() {
-  return <JourneyPageComponent journeyId="speculation" />
+export default async function SpeculationPage({ params }: SpeculationPageProps) {
+  const { locale } = await params
+  redirect(`/${locale}/dashboard/speculate`)
 }

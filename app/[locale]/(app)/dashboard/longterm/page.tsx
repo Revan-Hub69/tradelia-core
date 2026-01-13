@@ -1,28 +1,13 @@
 /**
- * Long Term Journey Page - Route-Level Code Splitting
+ * Redirect: /longterm → /invest
  */
+import { redirect } from 'next/navigation'
 
-'use client'
-
-import dynamic from 'next/dynamic'
-import { SkeletonJourneyPage } from '@/src/shared/ui/SkeletonLayouts'
-import { type JourneyId } from '@/src/shared/config/journeys'
-
-// Props type for JourneyPage
-interface JourneyPageProps {
-  journeyId?: JourneyId;
+interface LongtermPageProps {
+  params: Promise<{ locale: string }>
 }
 
-const LongTermJourneyPage = dynamic(
-  () => import('@/src/widgets/journey-page/JourneyPage').then(mod => ({
-    default: (props: JourneyPageProps) => <mod.JourneyPage journeyId="longterm" {...props} />
-  })),
-  {
-    loading: () => <SkeletonJourneyPage />,
-    ssr: false
-  }
-)
-
-export default function LongTermPage() {
-  return <LongTermJourneyPage />
+export default async function LongtermPage({ params }: LongtermPageProps) {
+  const { locale } = await params
+  redirect(`/${locale}/dashboard/invest`)
 }

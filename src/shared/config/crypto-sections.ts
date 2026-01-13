@@ -25,8 +25,8 @@ export interface SectionFocus {
 export interface CryptoSection {
   id: SectionId
   order: number
-  // Mapping al Journey operativo corrispondente
-  journeyId: 'emergency' | 'passive' | 'longterm' | 'speculation'
+  // Slug per la route (es. /dashboard/own)
+  journeyId: 'own' | 'yield' | 'invest' | 'speculate'
   // UI
   titleKey: string
   subtitleKey: string
@@ -47,7 +47,7 @@ export const CRYPTO_SECTIONS: Record<SectionId, CryptoSection> = {
   own: {
     id: 'own',
     order: 1,
-    journeyId: 'emergency',
+    journeyId: 'own', // Nuovo slug
     titleKey: 'sections.own.title',
     subtitleKey: 'sections.own.subtitle',
     descriptionKey: 'sections.own.description',
@@ -67,7 +67,7 @@ export const CRYPTO_SECTIONS: Record<SectionId, CryptoSection> = {
   yield: {
     id: 'yield',
     order: 2,
-    journeyId: 'passive',
+    journeyId: 'yield', // Nuovo slug
     titleKey: 'sections.yield.title',
     subtitleKey: 'sections.yield.subtitle',
     descriptionKey: 'sections.yield.description',
@@ -87,7 +87,7 @@ export const CRYPTO_SECTIONS: Record<SectionId, CryptoSection> = {
   invest: {
     id: 'invest',
     order: 3,
-    journeyId: 'longterm',
+    journeyId: 'invest', // Nuovo slug
     titleKey: 'sections.invest.title',
     subtitleKey: 'sections.invest.subtitle',
     descriptionKey: 'sections.invest.description',
@@ -107,7 +107,7 @@ export const CRYPTO_SECTIONS: Record<SectionId, CryptoSection> = {
   speculate: {
     id: 'speculate',
     order: 4,
-    journeyId: 'speculation',
+    journeyId: 'speculate', // Nuovo slug
     titleKey: 'sections.speculate.title',
     subtitleKey: 'sections.speculate.subtitle',
     descriptionKey: 'sections.speculate.description',
