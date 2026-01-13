@@ -60,6 +60,11 @@ interface PillarConfig {
 
 export function EmergencyPillars() {
   const t = useTranslations('emergencyDashboard.pillars')
+  
+  // State machine: drawerOpen controls existence, drawerView controls content
+  type DrawerView = 'list' | 'module'
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [drawerView, setDrawerView] = useState<DrawerView>('list')
   const [activePillar, setActivePillar] = useState<string | null>(null)
   const [activeSection, setActiveSection] = useState<string | null>(null)
   
@@ -121,10 +126,10 @@ export function EmergencyPillars() {
     })
   }, [pillarsConfig, getPillarProgress])
 
-  const activeData = pillarsWithProgress.find(p => p.id === activePillar)
+  const activeData = activePillar ? pillarsWithProgress.find(p => p.id === activePillar) : null
   const activeSections = activeData ? PILLAR_SECTIONS[activeData.id] || [] : []
   const activeProgress = activeData ? getPillarProgress('emergency', activeData.id) : null
-  const activeSectionData = activeSections.find(s => s.id === activeSection)
+  const activeSectionData = activeSection ? activeSections.find(s => s.id === activeSection) : null
 
   const handleCompleteSection = async (sectionId: string) => {
     if (!activeData) return
@@ -139,30 +144,46 @@ export function EmergencyPillars() {
     }
   }
 
-  const handleCloseDrawer = () => {
-    // Reset all states properly
+  // CLOSE: Reset everything and cleanup
+  const closeDrawer = () => {
+    setDrawerOpen(false)
+    setDrawerView('list')
     setActiveSection(null)
     setActivePillar(null)
     
-    // Force re-enable interactions by ensuring clean state
-    setTimeout(() => {
-      // This ensures the UI is fully reset after animation
-      document.body.style.pointerEvents = ''
-    }, 300)
+    // Hard cleanup - ensure inert is removed
+    const mainContent = document.querySelector('#main-content') as HTMLElement | null
+    if (mainContent) {
+      mainContent.removeAttribute('inert')
+    }
+    document.body.style.overflow = ''
+    document.documentElement.style.overflow = ''
   }
 
-  const handleOpenPillar = (pillarId: string, sectionId?: string) => {
-    setActivePillar(pillarId)
-    // If sectionId provided, open that section directly
-    if (sectionId) {
-      setActiveSection(sectionId)
-    } else {
-      // Open first section by default
-      const sections = PILLAR_SECTIONS[pillarId]
-      if (sections && sections.length > 0) {
-        setActiveSection(sections[0]?.id || null)
-      }
+  // BACK: If in module, go to list. If in list, close.
+  const handleBack = () => {
+    if (drawerView === 'module') {
+      // Go back to list view
+      setActiveSection(null)
+      setDrawerView('list')
+      return
     }
+    // Already in list, close drawer
+    closeDrawer()
+  }
+
+  // OPEN: From dashboard card click
+  const handleOpenPillar = (pillarId: string) => {
+    setActivePillar(pillarId)
+    setActiveSection(null)
+    setDrawerView('list')
+    setDrawerOpen(true)
+  }
+
+  // SELECT MODULE: From list view
+  const handleSelectModule = (sectionId: string) => {
+    setActiveSection(sectionId)
+    setDrawerView('module')
   }
 
   return (
@@ -198,105 +219,173 @@ export function EmergencyPillars() {
         ))}
       </div>
 
-      {/* Enterprise Drawer - Direct module content */}
-      {activeData && activeSectionData && (
+      {/* Enterprise Drawer - State Machine: LIST or MODULE view */}
+      {activeData && (
         <PremiumDrawer
-          isOpen={!!activePillar && !!activeSection}
-          onClose={handleCloseDrawer}
-          title={activeSectionData.titleKey}
-          subtitle={`${activeData.title} • Modulo ${activeSections.findIndex(s => s.id === activeSection) + 1} di ${activeSections.length}`}
+          isOpen={drawerOpen}
+          onClose={closeDrawer}
+          title={drawerView === 'module' && activeSectionData ? activeSectionData.titleKey : activeData.title}
+          subtitle={drawerView === 'module' && activeSectionData 
+            ? `${activeData.title} • Modulo ${activeSections.findIndex(s => s.id === activeSection) + 1} di ${activeSections.length}`
+            : 'Pilastro di emergenza'
+          }
           icon={<PillarIcon type={activeData.iconType} className="w-6 h-6" />}
           accentColor={activeData.accentColor}
           size="xl"
           closeOnBackdrop={true}
           closeOnEscape={true}
-          // NO panelId - no deep linking to avoid URL conflicts
         >
-          {/* Module navigation header */}
-          <div className="space-y-6">
-            {/* Navigation between sections */}
-            <div className="space-y-4 pb-4 border-b border-enterprise-soft">
-              {/* Progress bar */}
-              <div className="flex items-center gap-3">
-                <span className="text-xs text-enterprise-secondary whitespace-nowrap">
-                  Progresso:
-                </span>
-                <div className="flex-1 h-2 bg-muted-foreground/20 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-primary rounded-full transition-all duration-300"
-                    style={{ 
-                      width: `${((activeSections.findIndex(s => s.id === activeSection) + 1) / activeSections.length) * 100}%` 
-                    }}
-                  />
-                </div>
-                <span className="text-xs text-enterprise-secondary whitespace-nowrap">
-                  {activeSections.findIndex(s => s.id === activeSection) + 1}/{activeSections.length}
-                </span>
-              </div>
-              
-              {/* Navigation controls */}
-              <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
+          {drawerView === 'list' ? (
+            /* LIST VIEW - Show all modules */
+            <div className="space-y-6">
+              {/* Back button */}
+              <div className="flex items-center gap-3 pb-4 border-b border-enterprise-soft">
                 <button
-                  onClick={handleCloseDrawer}
+                  onClick={closeDrawer}
                   className="flex items-center gap-2 text-sm font-medium text-enterprise-secondary hover:text-enterprise-primary transition-colors focus-enterprise-ring rounded-lg px-2 py-1 -ml-2"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                   </svg>
-                  Indietro
+                  Chiudi
                 </button>
               </div>
-              
-              {/* Section navigation - Scalable for many modules */}
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-enterprise-secondary">
-                  {activeSections.findIndex(s => s.id === activeSection) + 1} di {activeSections.length}
-                </span>
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={() => {
-                      const currentIndex = activeSections.findIndex(s => s.id === activeSection)
-                      if (currentIndex > 0) {
-                        setActiveSection(activeSections[currentIndex - 1]?.id || activeSections[0]?.id || '')
-                      }
-                    }}
-                    disabled={activeSections.findIndex(s => s.id === activeSection) === 0}
-                    className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-muted hover:bg-muted-foreground/20"
-                    title="Modulo precedente"
-                  >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                    </svg>
-                  </button>
-                  <button
-                    onClick={() => {
-                      const currentIndex = activeSections.findIndex(s => s.id === activeSection)
-                      if (currentIndex < activeSections.length - 1) {
-                        setActiveSection(activeSections[currentIndex + 1]?.id || '')
-                      }
-                    }}
-                    disabled={activeSections.findIndex(s => s.id === activeSection) === activeSections.length - 1}
-                    className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-muted hover:bg-muted-foreground/20"
-                    title="Modulo successivo"
-                  >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                    </svg>
-                  </button>
+
+              {/* Progress */}
+              <div className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg">
+                <span className="text-sm font-medium">Completamento:</span>
+                <div className="flex-1 h-2 bg-muted-foreground/20 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-success rounded-full transition-all duration-300"
+                    style={{ width: `${activeData.completionPercent}%` }}
+                  />
+                </div>
+                <span className="text-sm font-semibold">{activeData.completionPercent}%</span>
+              </div>
+
+              {/* Description */}
+              <div>
+                <h3 className="text-base font-semibold mb-2">Cosa imparerai</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {activeData.description}
+                </p>
+              </div>
+
+              {/* Modules list */}
+              <div>
+                <h3 className="text-base font-semibold mb-4">Moduli del percorso</h3>
+                <div className="space-y-2">
+                  {activeSections.map((section, index) => {
+                    const isCompleted = activeProgress?.completedSections?.includes(section.id)
+                    return (
+                      <button
+                        key={section.id}
+                        onClick={() => handleSelectModule(section.id)}
+                        className="w-full flex items-center justify-between p-4 rounded-lg border border-border/50 hover:border-primary/50 hover:bg-muted/30 transition-colors text-left"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                            isCompleted 
+                              ? 'bg-success border-success' 
+                              : 'border-muted-foreground/30'
+                          }`}>
+                            {isCompleted && (
+                              <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                              </svg>
+                            )}
+                          </div>
+                          <span className="font-medium">{index + 1}. {section.titleKey}</span>
+                        </div>
+                        <svg className="w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
             </div>
+          ) : (
+            /* MODULE VIEW - Show module content */
+            <div className="space-y-6">
+              {/* Navigation header */}
+              <div className="space-y-4 pb-4 border-b border-enterprise-soft">
+                {/* Progress bar */}
+                <div className="flex items-center gap-3">
+                  <span className="text-xs text-muted-foreground whitespace-nowrap">Progresso:</span>
+                  <div className="flex-1 h-2 bg-muted-foreground/20 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-primary rounded-full transition-all duration-300"
+                      style={{ 
+                        width: `${((activeSections.findIndex(s => s.id === activeSection) + 1) / activeSections.length) * 100}%` 
+                      }}
+                    />
+                  </div>
+                  <span className="text-xs text-muted-foreground whitespace-nowrap">
+                    {activeSections.findIndex(s => s.id === activeSection) + 1}/{activeSections.length}
+                  </span>
+                </div>
+                
+                {/* Navigation controls */}
+                <div className="flex items-center justify-between">
+                  <button
+                    onClick={handleBack}
+                    className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg px-2 py-1 -ml-2"
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                    </svg>
+                    Indietro
+                  </button>
+                  
+                  {/* Prev/Next navigation */}
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => {
+                        const currentIndex = activeSections.findIndex(s => s.id === activeSection)
+                        if (currentIndex > 0) {
+                          setActiveSection(activeSections[currentIndex - 1]?.id || '')
+                        }
+                      }}
+                      disabled={activeSections.findIndex(s => s.id === activeSection) === 0}
+                      className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-muted hover:bg-muted-foreground/20"
+                      title="Modulo precedente"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={() => {
+                        const currentIndex = activeSections.findIndex(s => s.id === activeSection)
+                        if (currentIndex < activeSections.length - 1) {
+                          setActiveSection(activeSections[currentIndex + 1]?.id || '')
+                        }
+                      }}
+                      disabled={activeSections.findIndex(s => s.id === activeSection) === activeSections.length - 1}
+                      className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-muted hover:bg-muted-foreground/20"
+                      title="Modulo successivo"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Module content */}
+              {activeSection && (
+                <SubmoduleContent 
+                  pillarId={activeData.id}
+                  sectionId={activeSection}
+                  onComplete={() => handleCompleteSection(activeSection)}
+                  isCompleted={activeProgress?.completedSections?.includes(activeSection) || false}
+                />
+              )}
             </div>
-            
-            {/* Module content */}
-            <SubmoduleContent 
-              pillarId={activeData.id}
-              sectionId={activeSection}
-              onComplete={() => handleCompleteSection(activeSection!)}
-              isCompleted={activeProgress?.completedSections?.includes(activeSection || '') || false}
-            />
-          </div>
+          )}
         </PremiumDrawer>
       )}
     </>

@@ -308,12 +308,14 @@ export function PremiumDrawer({
 
   // Focus management - WAI-ARIA APG pattern
   useEffect(() => {
+    // Use specific #main-content selector for robust cleanup
+    const mainContent = document.querySelector('#main-content') as HTMLElement | null
+    
     if (isOpen) {
       // Store previous focus
       previousActiveElement.current = document.activeElement as HTMLElement
       
       // Make page inert (not focusable) - this replaces aria-hidden
-      const mainContent = document.querySelector('main')
       if (mainContent) {
         mainContent.setAttribute('inert', '')
       }
@@ -325,8 +327,7 @@ export function PremiumDrawer({
       
       return () => clearTimeout(focusTimer)
     } else {
-      // Remove inert from page
-      const mainContent = document.querySelector('main')
+      // Remove inert from page - ALWAYS cleanup
       if (mainContent) {
         mainContent.removeAttribute('inert')
       }
@@ -348,11 +349,14 @@ export function PremiumDrawer({
     }
     
     return () => {
-      // Cleanup on unmount
-      const mainContent = document.querySelector('main')
-      if (mainContent) {
-        mainContent.removeAttribute('inert')
+      // Cleanup on unmount - ALWAYS remove inert
+      const mainEl = document.querySelector('#main-content') as HTMLElement | null
+      if (mainEl) {
+        mainEl.removeAttribute('inert')
       }
+      // Also cleanup scroll locks
+      document.body.style.overflow = ''
+      document.documentElement.style.overflow = ''
     }
   }, [isOpen])
 
