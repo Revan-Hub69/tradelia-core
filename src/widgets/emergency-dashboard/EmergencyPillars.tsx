@@ -140,9 +140,15 @@ export function EmergencyPillars() {
   }
 
   const handleCloseDrawer = () => {
-    // Reset all states
+    // Reset all states properly
     setActiveSection(null)
     setActivePillar(null)
+    
+    // Force re-enable interactions by ensuring clean state
+    setTimeout(() => {
+      // This ensures the UI is fully reset after animation
+      document.body.style.pointerEvents = ''
+    }, 300)
   }
 
   const handleOpenPillar = (pillarId: string, sectionId?: string) => {
@@ -198,7 +204,7 @@ export function EmergencyPillars() {
           isOpen={!!activePillar && !!activeSection}
           onClose={handleCloseDrawer}
           title={activeSectionData.titleKey}
-          subtitle={`${activeData.title} • Modulo`}
+          subtitle={`${activeData.title} • Modulo ${activeSections.findIndex(s => s.id === activeSection) + 1} di ${activeSections.length}`}
           icon={<PillarIcon type={activeData.iconType} className="w-6 h-6" />}
           accentColor={activeData.accentColor}
           size="xl"
@@ -209,7 +215,27 @@ export function EmergencyPillars() {
           {/* Module navigation header */}
           <div className="space-y-6">
             {/* Navigation between sections */}
-            <div className="flex items-center justify-between pb-4 border-b border-enterprise-soft">
+            <div className="space-y-4 pb-4 border-b border-enterprise-soft">
+              {/* Progress bar */}
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-enterprise-secondary whitespace-nowrap">
+                  Progresso:
+                </span>
+                <div className="flex-1 h-2 bg-muted-foreground/20 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-primary rounded-full transition-all duration-300"
+                    style={{ 
+                      width: `${((activeSections.findIndex(s => s.id === activeSection) + 1) / activeSections.length) * 100}%` 
+                    }}
+                  />
+                </div>
+                <span className="text-xs text-enterprise-secondary whitespace-nowrap">
+                  {activeSections.findIndex(s => s.id === activeSection) + 1}/{activeSections.length}
+                </span>
+              </div>
+              
+              {/* Navigation controls */}
+              <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <button
                   onClick={handleCloseDrawer}
@@ -218,33 +244,49 @@ export function EmergencyPillars() {
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                   </svg>
-                  Torna a {activeData.title}
+                  Indietro
                 </button>
               </div>
               
-              {/* Section navigation */}
+              {/* Section navigation - Scalable for many modules */}
               <div className="flex items-center gap-2">
-                {activeSections.map((section, index) => {
-                  const isActive = section.id === activeSection
-                  const isCompleted = activeProgress?.completedSections?.includes(section.id)
-                  return (
-                    <button
-                      key={section.id}
-                      onClick={() => setActiveSection(section.id)}
-                      className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-colors ${
-                        isActive 
-                          ? 'bg-primary text-white' 
-                          : isCompleted
-                          ? 'bg-success text-white'
-                          : 'bg-muted text-muted-foreground hover:bg-muted-foreground/20'
-                      }`}
-                      title={section.titleKey}
-                    >
-                      {isCompleted ? '✓' : index + 1}
-                    </button>
-                  )
-                })}
+                <span className="text-xs text-enterprise-secondary">
+                  {activeSections.findIndex(s => s.id === activeSection) + 1} di {activeSections.length}
+                </span>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => {
+                      const currentIndex = activeSections.findIndex(s => s.id === activeSection)
+                      if (currentIndex > 0) {
+                        setActiveSection(activeSections[currentIndex - 1]?.id || activeSections[0]?.id || '')
+                      }
+                    }}
+                    disabled={activeSections.findIndex(s => s.id === activeSection) === 0}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-muted hover:bg-muted-foreground/20"
+                    title="Modulo precedente"
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => {
+                      const currentIndex = activeSections.findIndex(s => s.id === activeSection)
+                      if (currentIndex < activeSections.length - 1) {
+                        setActiveSection(activeSections[currentIndex + 1]?.id || '')
+                      }
+                    }}
+                    disabled={activeSections.findIndex(s => s.id === activeSection) === activeSections.length - 1}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-muted hover:bg-muted-foreground/20"
+                    title="Modulo successivo"
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
               </div>
+            </div>
             </div>
             
             {/* Module content */}
