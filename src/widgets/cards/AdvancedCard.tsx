@@ -140,10 +140,16 @@ export const AdvancedCard = forwardRef<HTMLDivElement, BaseCardProps>(
         )}
         draggable={isDraggable}
         tabIndex={isDraggable || isExpandable ? 0 : undefined}
-        role={isDraggable ? 'button' : undefined}
-        aria-label={isDraggable ? `Trascina ${title}` : undefined}
+        role={isDraggable || isExpandable ? 'button' : undefined}
+        aria-label={isDraggable ? `Trascina ${title}` : isExpandable ? `${localExpanded ? 'Comprimi' : 'Espandi'} ${title}` : undefined}
         aria-expanded={isExpandable ? localExpanded : undefined}
         onClick={isExpandable ? handleToggleExpand : undefined}
+        onKeyDown={isExpandable ? (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleToggleExpand();
+          }
+        } : undefined}
         {...props}
       >
         {/* Header - density-aware spacing */}
