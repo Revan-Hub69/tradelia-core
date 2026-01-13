@@ -16,13 +16,10 @@ import {
   AlertEnterprise, 
   DrawerListItem, 
   ProgressStateBadge, 
-  CTAEnterprise,
   FocusChip 
 } from '@/src/shared/ui/PremiumDrawer'
-import { GuestModeAlert } from '@/src/shared/ui/GuestModeAlert'
 import { useProgressTracking } from '@/src/shared/hooks/useProgressTracking'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
-import { useDashboardModal } from '@/contexts/DashboardModalContext'
 
 // Configurazione sezioni per ogni pillar (espandibile)
 const PILLAR_SECTIONS: Record<string, { id: string; titleKey: string }[]> = {
@@ -210,29 +207,33 @@ export function EmergencyPillars() {
           icon={<PillarIcon type={activeData.iconType} className="w-6 h-6" />}
           accentColor={activeData.accentColor}
           size="xl"
-          showCopyLink={false}
-          panelId={`pillar-${activeData.id}`}
           closeOnBackdrop={false} // Prevent accidental closing
-          breadcrumb={activeSubmodule ? 
-            [activeData.title, activeSections.find(s => s.id === activeSubmodule)?.titleKey || ''] :
-            [activeData.title]
-          }
-          minimalHeader={!!activeSubmodule} // Use back button for submodules
-          onCopyLink={() => {
-            // Toast notification would go here
-            console.log('Link copiato per pilastro:', activeData.id)
-          }}
-          // Remove footer CTA - this is an informational drawer
+          panelId={`pillar-${activeData.id}`}
+          // Remove problematic props for now
         >
           {activeSubmodule ? (
-            // Submodule content
-            <SubmoduleContent 
-              pillarId={activeData.id}
-              sectionId={activeSubmodule}
-              onComplete={() => handleCompleteSection(activeSubmodule)}
-              onBack={handleBackToMain}
-              isCompleted={activeProgress?.completedSections?.includes(activeSubmodule) || false}
-            />
+            // Submodule content with back button
+            <div className="space-y-6">
+              {/* Back button */}
+              <div className="flex items-center gap-3 pb-4 border-b border-enterprise-soft">
+                <button
+                  onClick={handleBackToMain}
+                  className="flex items-center gap-2 text-sm font-medium text-enterprise-secondary hover:text-enterprise-primary transition-colors focus-enterprise-ring rounded-lg px-2 py-1 -ml-2"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                  </svg>
+                  Torna a {activeData.title}
+                </button>
+              </div>
+              
+              <SubmoduleContent 
+                pillarId={activeData.id}
+                sectionId={activeSubmodule}
+                onComplete={() => handleCompleteSection(activeSubmodule)}
+                isCompleted={activeProgress?.completedSections?.includes(activeSubmodule) || false}
+              />
+            </div>
           ) : (
             // Main pillar content
             <MainPillarContent 
@@ -311,7 +312,7 @@ function MainPillarContent({
 }: {
   pillar: PillarConfig & { completionPercent: number }
   sections: { id: string; titleKey: string }[]
-  progress: any
+  progress: { completedSections?: string[]; percentage?: number } | null
   onSectionClick: (sectionId: string) => void
   isGuestMode: boolean
 }) {
@@ -429,13 +430,11 @@ function SubmoduleContent({
   pillarId, 
   sectionId, 
   onComplete, 
-  onBack, 
   isCompleted 
 }: {
   pillarId: string
   sectionId: string
   onComplete: () => void
-  onBack: () => void
   isCompleted: boolean
 }) {
   // Mock content - in real app this would come from CMS or API
@@ -470,7 +469,7 @@ function SubmoduleContent({
     <div className="space-y-6">
       {/* Content sections */}
       {content.content.map((section, index) => (
-        <section key={index}>
+        <section key={`section-${sectionId}-${index}`}>
           {section.type === 'text' && (
             <div className="reading-width">
               <p className="text-enterprise-body reading-line-height reading-paragraph-spacing">
@@ -484,7 +483,7 @@ function SubmoduleContent({
               <h4 className="text-enterprise-primary font-semibold mb-3">{section.title}</h4>
               <ul className="space-y-2">
                 {section.items?.map((item, itemIndex) => (
-                  <li key={itemIndex} className="flex items-start gap-3">
+                  <li key={`item-${sectionId}-${index}-${itemIndex}`} className="flex items-start gap-3">
                     <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0" />
                     <span className="text-enterprise-body reading-line-height">{item}</span>
                   </li>
