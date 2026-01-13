@@ -425,8 +425,14 @@ export function PremiumDrawer({
   }, [getCurrentUrl, onCopyLink, panelId])
 
   // Swipe to close handlers (REQ 24.3)
+  // Only trigger when content is at top (scrollTop === 0) to avoid conflicts with pull-to-refresh
   const handleTouchStart = useCallback((e: ReactTouchEvent) => {
     if (!enableSwipeClose) return
+    
+    // Only track swipe if content is scrolled to top
+    const content = contentRef.current
+    if (content && content.scrollTop > 5) return // Allow small tolerance
+    
     const touch = e.touches[0]
     if (!touch) return
     setTouchStart(touch.clientY)
@@ -435,6 +441,16 @@ export function PremiumDrawer({
 
   const handleTouchMove = useCallback((e: ReactTouchEvent) => {
     if (!enableSwipeClose || touchStart === null || touchStartX === null) return
+    
+    // Double-check content is still at top
+    const content = contentRef.current
+    if (content && content.scrollTop > 5) {
+      // Content started scrolling, cancel swipe tracking
+      setTouchStart(null)
+      setTouchStartX(null)
+      setSwipeOffset(0)
+      return
+    }
     
     const touch = e.touches[0]
     if (!touch) return
@@ -446,8 +462,16 @@ export function PremiumDrawer({
     
     // Only track vertical swipes (not horizontal scrolling)
     // Swipe down only (positive diff) and more vertical than horizontal
-    if (diffY > 0 && diffY > diffX) {
-      setSwipeOffset(Math.min(diffY, 150)) // Cap at 150px
+    // Require significant vertical movement (>20px) before tracking
+    if (diffY > 20 && diffY > diffX * 2) {
+      // Prevent default to stop pull-to-refresh
+      e.preventDefault()
+      setSwipeOffset(Math.min(diffY - 20, 130)) // Cap at 130px, subtract threshold
+    } else if (diffY < 0 || diffX > diffY) {
+      // User is scrolling up or horizontally, cancel swipe
+      setTouchStart(null)
+      setTouchStartX(null)
+      setSwipeOffset(0)
     }
   }, [enableSwipeClose, touchStart, touchStartX])
 
@@ -459,8 +483,8 @@ export function PremiumDrawer({
       return
     }
     
-    // Close if swiped down more than 100px
-    if (swipeOffset > 100) {
+    // Close if swiped down more than 80px (after threshold)
+    if (swipeOffset > 80) {
       onClose()
     }
     
