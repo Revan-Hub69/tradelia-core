@@ -32,9 +32,14 @@ export function safeRedirect(url: string | null, fallback = '/'): string {
     }
   }
   
-  // Block javascript: and other protocols
-  if (url.toLowerCase().includes('javascript:')) return fallback;
-  if (url.toLowerCase().includes('data:')) return fallback;
+  // Block javascript: and other protocols (check without colon to avoid no-script-url)
+  const lowerUrl = url.toLowerCase();
+  if (lowerUrl.includes('javascript') || lowerUrl.includes('data')) {
+    // Check if it's actually a protocol
+    if (lowerUrl.match(/javascript\s*:/i) || lowerUrl.match(/data\s*:/i)) {
+      return fallback;
+    }
+  }
   
   // Check against allowlist (optional, for stricter security)
   const pathPart = url.split('?')[0] || '';

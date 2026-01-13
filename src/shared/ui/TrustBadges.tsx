@@ -36,7 +36,7 @@ interface BadgeConfig {
 export function TrustBadges({ 
   placement = 'footer',
   variant = 'detailed',
-  showTooltips = false, // Disabled by default
+  showTooltips: _showTooltips = false, // Disabled by default
   className = ''
 }: TrustBadgesProps) {
   const [mounted, setMounted] = useState(false)

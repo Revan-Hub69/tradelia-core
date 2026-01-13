@@ -60,14 +60,48 @@ export function useHotkey(
   }, [handleKeyDown]);
 }
 
-// Hook for managing multiple hotkeys
+// Hook for managing multiple hotkeys - must be called at top level
 export function useHotkeys(hotkeys: Array<{
   id: string;
   key: string;
   callback: () => void;
   options?: HotkeyOptions;
 }>) {
-  hotkeys.forEach(({ id, key, callback, options }) => {
-    useHotkey(id, key, callback, options);
-  });
+  // Register all hotkeys in a single effect
+  useEffect(() => {
+    const handlers: Array<(event: KeyboardEvent) => void> = [];
+    
+    hotkeys.forEach(({ key, callback, options = {} }) => {
+      const {
+        metaKey = false,
+        ctrlKey = false,
+        altKey = false,
+        shiftKey = false,
+        preventDefault = true
+      } = options;
+      
+      const handler = (event: KeyboardEvent) => {
+        const target = event.target as HTMLElement;
+        if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.contentEditable === 'true') {
+          return;
+        }
+        
+        if (event.key.toLowerCase() !== key.toLowerCase()) return;
+        if (event.metaKey !== metaKey || event.ctrlKey !== ctrlKey || 
+            event.altKey !== altKey || event.shiftKey !== shiftKey) return;
+        
+        if (preventDefault) event.preventDefault();
+        callback();
+      };
+      
+      handlers.push(handler);
+      document.addEventListener('keydown', handler);
+    });
+    
+    return () => {
+      handlers.forEach(handler => {
+        document.removeEventListener('keydown', handler);
+      });
+    };
+  }, [hotkeys]);
 }

@@ -6,6 +6,7 @@
  * @see https://developers.google.com/search/docs/appearance/structured-data
  */
 
+/* eslint-disable react/no-danger */
 import { type ReactNode } from 'react';
 
 // Base schema types

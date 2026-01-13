@@ -138,7 +138,7 @@ function checkMemory(): { status: string; message: string; usage?: MemoryUsage }
       status: 'healthy',
       message: 'Memory check not available in this environment'
     };
-  } catch (_error) {
+  } catch {
     return {
       status: 'warning',
       message: 'Memory check failed'
@@ -195,7 +195,7 @@ function checkLogging(): { status: string; message: string } {
       status: 'healthy',
       message: 'Logging system operational'
     };
-  } catch (_error) {
+  } catch {
     return {
       status: 'critical',
       message: 'Logging system failed'

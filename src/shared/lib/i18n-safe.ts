@@ -13,43 +13,31 @@
 import { useTranslations } from 'next-intl';
 
 /**
- * Safe translation function with mandatory fallback
- * Never shows raw keys to users
- */
-export function safeT(key: string, fallback: string, params?: Record<string, any>): string {
-  try {
-    // In a real implementation, you'd use your i18n library here
-    // This is a placeholder that simulates the translation lookup
-    const t = useTranslations();
-    const value = t(key, params);
-    
-    // Check if translation failed (returns the key itself)
-    if (value === key || value.startsWith(key.split('.')[0] + '.')) {
-      // Log in development for debugging
-      if (process.env.NODE_ENV !== 'production') {
-        console.warn(`Missing i18n key: ${key}, using fallback: ${fallback}`);
-      }
-      return fallback;
-    }
-    
-    return value;
-  } catch (error) {
-    // Always return fallback on any error
-    if (process.env.NODE_ENV !== 'production') {
-      console.error(`I18n error for key ${key}:`, error);
-    }
-    return fallback;
-  }
-}
-
-/**
  * Safe translation hook for React components
+ * This is the primary way to use translations safely
  */
 export function useSafeTranslations() {
   const t = useTranslations();
   
-  return (key: string, fallback: string, params?: Record<string, any>) => {
-    return safeT(key, fallback, params);
+  return (key: string, fallback: string, params?: Record<string, string | number>) => {
+    try {
+      const value = t(key, params);
+      
+      // Check if translation failed (returns the key itself)
+      if (value === key || value.startsWith(key.split('.')[0] + '.')) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn(`Missing i18n key: ${key}, using fallback: ${fallback}`);
+        }
+        return fallback;
+      }
+      
+      return value;
+    } catch {
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn(`I18n error for key ${key}, using fallback: ${fallback}`);
+      }
+      return fallback;
+    }
   };
 }
 

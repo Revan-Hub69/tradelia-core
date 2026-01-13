@@ -7,11 +7,12 @@
 
 'use client'
 
-import { createContext, useContext, useEffect, useState, ReactNode, Suspense } from 'react'
+import { createContext, useContext, useEffect, useState, Suspense } from 'react'
+import type { ReactNode } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { User } from '@supabase/supabase-js'
-import { supabase, UserProfile, DashboardConfig } from '@/lib/supabase'
-import { DashboardAuthState, DashboardAuthActions, DashboardAuthFlow } from './types'
+import { supabase } from '@/lib/supabase'
+import type { UserProfile, DashboardConfig } from '@/lib/supabase'
+import type { DashboardAuthState, DashboardAuthActions, DashboardAuthFlow } from './types'
 
 const DashboardAuthContext = createContext<DashboardAuthFlow | null>(null)
 

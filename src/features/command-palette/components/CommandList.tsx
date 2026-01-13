@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { Command } from '../store/command-store';
+import type { Command } from '../store/command-store';
 import { CommandItem } from './CommandItem';
 import { SmartEmptyState } from '@/src/shared/ui/SmartEmptyState';
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { Command } from '../store/command-store';
+import type { Command } from '../store/command-store';
 import { highlightMatch } from '../lib/fuzzy-search';
 import { cn } from '@/shared/ui/utils';
 
@@ -47,8 +47,8 @@ export function CommandItem({ command, isSelected, query, onSelect }: CommandIte
       
       {command.shortcut && (
         <kbd className="hidden sm:inline-flex items-center gap-1 rounded bg-muted px-2 py-1 density-text-tertiary text-muted-foreground min-h-[24px]">
-          {command.shortcut.split('+').map((key, index) => (
-            <span key={index} className="density-text-tertiary">
+          {command.shortcut.split('+').map((key) => (
+            <span key={`shortcut-${key}`} className="density-text-tertiary">
               {key}
             </span>
           ))}

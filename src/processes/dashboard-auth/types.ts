@@ -5,8 +5,8 @@
  * seguendo i principi FSD (Feature-Sliced Design)
  */
 
-import { User } from '@supabase/supabase-js'
-import { UserProfile, DashboardConfig } from '@/lib/supabase'
+import type { User } from '@supabase/supabase-js'
+import type { UserProfile, DashboardConfig } from '@/lib/supabase'
 
 export interface DashboardAuthState {
   user: User | null

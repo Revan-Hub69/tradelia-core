@@ -253,7 +253,7 @@ export const logApiRequest = (method: string, url: string, startTime: number) =>
   });
 };
 
-export const logUserAction = (action: string, userId?: string, metadata?: Record<string, any>) => {
+export const logUserAction = (action: string, userId?: string, metadata?: Record<string, unknown>) => {
   const context: Partial<LogContext> = { 
     component: 'user_interaction', 
     action
@@ -286,23 +286,23 @@ export const logPerformance = (operation: string, startTime: number, component: 
 // React hook for component logging
 export const useLogger = (component: string) => {
   const componentLogger = {
-    debug: (message: string, extra?: Record<string, any>) => {
+    debug: (message: string, extra?: Record<string, unknown>) => {
       logger.setContext({ component });
       logger.debug(message, extra);
     },
-    info: (message: string, extra?: Record<string, any>) => {
+    info: (message: string, extra?: Record<string, unknown>) => {
       logger.setContext({ component });
       logger.info(message, extra);
     },
-    warn: (message: string, extra?: Record<string, any>) => {
+    warn: (message: string, extra?: Record<string, unknown>) => {
       logger.setContext({ component });
       logger.warn(message, extra);
     },
-    error: (message: string, error?: Error, extra?: Record<string, any>) => {
+    error: (message: string, error?: Error, extra?: Record<string, unknown>) => {
       logger.setContext({ component });
       logger.error(message, error, extra);
     },
-    performance: (message: string, startTime: number, extra?: Record<string, any>) => {
+    performance: (message: string, startTime: number, extra?: Record<string, unknown>) => {
       logger.setContext({ component });
       logger.performance(message, startTime, extra);
     }

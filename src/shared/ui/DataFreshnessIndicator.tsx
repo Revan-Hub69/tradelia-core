@@ -8,7 +8,9 @@
 
 import { forwardRef, useEffect, useState } from 'react';
 import { cn } from './utils';
-import type { DataFreshness } from '@/entities/card';
+
+// Define DataFreshness type locally to avoid import from entities layer
+type DataFreshness = 'fresh' | 'stale' | 'offline' | 'error';
 
 interface DataFreshnessIndicatorProps {
   freshness: DataFreshness;

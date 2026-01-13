@@ -13,9 +13,16 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { AlertTriangleIcon, WifiOffIcon, WifiIcon, RefreshIcon, CheckIcon } from '@/components/icons/TradeliaIcons'
-import { StatusCenter } from './StatusCenter'
 import { AlertEnterprise } from './PremiumDrawer'
 import { useSafeTranslations, networkStatusTranslations } from '../lib/i18n-safe'
+
+// Lazy import StatusCenter to break circular dependency
+const StatusCenter = dynamic(() => import('./StatusCenter').then(mod => ({ default: mod.StatusCenter })), {
+  ssr: false,
+  loading: () => null
+})
+
+import dynamic from 'next/dynamic'
 
 interface NetworkStatusProps {
   className?: string

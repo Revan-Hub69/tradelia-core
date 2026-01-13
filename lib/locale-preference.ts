@@ -39,8 +39,8 @@ export function getLocale(): Locale {
       const saved = localStorage.getItem('tradelia-language');
       if (saved === 'it' || saved === 'en') return saved;
     }
-  } catch (_e) {
-    // Ignore
+  } catch {
+    // Ignore localStorage errors
   }
   
   // Browser detection fallback

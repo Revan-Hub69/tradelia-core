@@ -33,7 +33,6 @@ export function ThemeProvider({
   const [theme, setThemeState] = useState<Theme>(defaultTheme);
   const [density, setDensityState] = useState<Density>(defaultDensity);
   const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
-  const [mounted, setMounted] = useState(false);
 
   // Load saved preferences on mount
   useEffect(() => {

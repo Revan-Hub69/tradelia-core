@@ -1,6 +1,10 @@
 'use client'
 
-import { supabase, UserSession, DashboardConfig } from './supabase'
+import { supabase } from './supabase'
+import type { UserSession, DashboardConfig } from './supabase'
+
+// Re-export types for consumers
+export type { UserSession, DashboardConfig }
 
 // Generate a secure session token
 export function generateSessionToken(): string {

@@ -12,7 +12,7 @@ export interface FreshnessData {
 }
 
 export function FreshnessIndicator({ data }: { data: FreshnessData }) {
-  const { category, status, timestamp, age, nextUpdate } = data;
+  const { category, status, timestamp, nextUpdate } = data;
 
   // Freshness-Critical indicators
   if (category === 'freshness-critical') {
@@ -107,7 +107,6 @@ export function formatDate(timestamp: number): string {
 export function useFreshnessData(response: Response): FreshnessData {
   const category = (response.headers.get('X-Data-Category') as DataCategory) || 'freshness-critical';
   const freshness = response.headers.get('X-Data-Freshness') as FreshnessStatus || 'fresh';
-  const cacheStatus = response.headers.get('X-Cache-Status');
   const ageHeader = response.headers.get('X-Data-Age');
   
   const result: FreshnessData = {
@@ -127,10 +126,28 @@ export function useFreshnessData(response: Response): FreshnessData {
   return result;
 }
 
-// Utility for API calls with freshness awareness
+// Utility for API calls with freshness awareness - NOT a hook, just a utility function
 export async function fetchWithFreshness(url: string, options?: RequestInit) {
   const response = await fetch(url, options);
-  const freshnessData = useFreshnessData(response);
+  
+  // Extract freshness data inline (not using hook)
+  const category = (response.headers.get('X-Data-Category') as DataCategory) || 'freshness-critical';
+  const freshness = response.headers.get('X-Data-Freshness') as FreshnessStatus || 'fresh';
+  const ageHeader = response.headers.get('X-Data-Age');
+  
+  const freshnessData: FreshnessData = {
+    category,
+    status: freshness,
+    timestamp: Date.now()
+  };
+  
+  if (ageHeader) {
+    const parsedAge = parseInt(ageHeader) * 1000;
+    if (!isNaN(parsedAge)) {
+      freshnessData.age = parsedAge;
+    }
+  }
+  
   const data = await response.json();
   
   return {

@@ -1,4 +1,4 @@
-import { Command } from '../store/command-store';
+import type { Command } from '../store/command-store';
 import React from 'react';
 
 export function fuzzySearch(query: string, items: Command[]): Command[] {

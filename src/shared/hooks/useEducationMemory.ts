@@ -176,7 +176,7 @@ export function useEducationMemory(sectionId: string) {
   }, [sectionId, saveState])
 
   // Check if tool is unlocked
-  const isToolUnlocked = useCallback((toolId: string) => {
+  const isToolUnlocked = useCallback((_toolId: string) => {
     const hasReadErrors = state.hasReadErrors[sectionId] || false
     const hasSeenIntro = state.hasSeenIntro[sectionId] || false
     const hasReadEducational = state.hasReadEducational[sectionId] || false
@@ -203,7 +203,7 @@ export function useEducationMemory(sectionId: string) {
 
   // Get personalized message based on progress
   const getPersonalizedMessage = useCallback(() => {
-    const hasReadErrors = state.hasReadErrors[sectionId] || false
+    const _hasReadErrors = state.hasReadErrors[sectionId] || false
     const hasSeenIntro = state.hasSeenIntro[sectionId] || false
     const hasReadEducational = state.hasReadEducational[sectionId] || false
     const educationLevel = getEducationLevel()
@@ -235,7 +235,7 @@ export function useEducationMemory(sectionId: string) {
   const getRecommendedAction = useCallback(() => {
     const hasReadErrors = state.hasReadErrors[sectionId] || false
     const hasSeenIntro = state.hasSeenIntro[sectionId] || false
-    const hasReadEducational = state.hasReadEducational[sectionId] || false
+    const _hasReadEducational = state.hasReadEducational[sectionId] || false
 
     if (!hasSeenIntro && !hasReadErrors) {
       return { tab: 'intro', reason: t('actions.startWithIntro') }

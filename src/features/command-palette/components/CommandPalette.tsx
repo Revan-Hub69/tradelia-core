@@ -3,7 +3,8 @@
 import { useEffect, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import * as Dialog from '@radix-ui/react-dialog';
-import { useCommandStore, Command } from '../store/command-store';
+import { useCommandStore } from '../store/command-store';
+import type { Command } from '../store/command-store';
 import { fuzzySearch } from '../lib/fuzzy-search';
 import { CommandList } from './CommandList';
 import { CommandInput } from './CommandInput';

@@ -118,8 +118,8 @@ export function useRobustDragDrop({
     };
   }, [onDragStart]);
 
-  const handleTouchMove = useCallback((event: React.TouchEvent) => {
-    const touch = event.touches[0];
+  const handleTouchMove = useCallback((_event: React.TouchEvent) => {
+    const touch = _event.touches[0];
     if (!touch) return;
     
     if (!touchState.current.isLongPress) {
