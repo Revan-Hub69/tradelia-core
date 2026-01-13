@@ -22,6 +22,7 @@ import {
   InfoIcon
 } from '@/components/icons/TradeliaIcons'
 import { SafeButton } from '@/src/shared/ui/SafeButton'
+import { SmartEmptyState } from './SmartEmptyState'
 
 export interface ToolPreviewProps {
   toolId: string
@@ -351,17 +352,18 @@ export function ToolPreviewGrid({
 }) {
   if (previews.length === 0) {
     return (
-      <div className="text-center py-12">
-        <div className="w-16 h-16 rounded-2xl bg-muted/50 flex items-center justify-center mx-auto mb-4">
-          <CogIcon className="w-8 h-8 text-muted-foreground" />
-        </div>
-        <h3 className="text-lg font-semibold text-foreground mb-2">
-          Nessun tool in anteprima
-        </h3>
-        <p className="text-muted-foreground">
-          I tool per questa sezione saranno disponibili presto.
-        </p>
-      </div>
+      <SmartEmptyState
+        icon={<CogIcon className="w-8 h-8 text-muted-foreground" />}
+        title="Nessun tool in anteprima"
+        description="Non ci sono ancora tool in anteprima per questa sezione. Stiamo lavorando per portarti nuovi strumenti."
+        action={{
+          label: "Esplora altri journey",
+          onClick: () => {
+            window.location.href = '/dashboard'
+          }
+        }}
+        hint="I tool per questa sezione saranno disponibili presto."
+      />
     )
   }
 

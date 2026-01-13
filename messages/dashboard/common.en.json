@@ -1,5 +1,16 @@
 {
   "common": {
+    "toolCard": {
+      "openToolLabel": "Open {title}",
+      "new": "New",
+      "removeFromFavorites": "Remove from favorites",
+      "addToFavorites": "Add to favorites",
+      "openTool": "Open tool",
+      "noToolsAvailable": "No tools available",
+      "toolsComingSoon": "Tools for this section will be available soon.",
+      "exploreOtherJourneys": "Explore other journeys",
+      "toolsWillAppearHere": "Tools will appear here as they become available."
+    },
     "complexity": {
       "label": "Complexity",
       "tooltip": "Indicates the level of cognitive complexity required for this journey",

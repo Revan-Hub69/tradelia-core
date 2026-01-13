@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { Command } from '../store/command-store';
 import { CommandItem } from './CommandItem';
+import { SmartEmptyState } from '@/src/shared/ui/SmartEmptyState';
 
 interface CommandListProps {
   commands: Command[];
@@ -23,11 +24,28 @@ export function CommandList({
 
   if (commands.length === 0) {
     return (
-      <div className="p-8 text-center">
-        <p className="text-sm text-muted-foreground">
-          {query ? t('noResults') : t('noCommands')}
-        </p>
-      </div>
+      <SmartEmptyState
+        icon={
+          <svg className="w-8 h-8 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
+          </svg>
+        }
+        title={query ? t('noResults') : t('noCommands')}
+        description={query 
+          ? t('tryDifferentSearch')
+          : t('noCommandsDescription')
+        }
+        action={{
+          label: query ? t('clearSearch') : t('closePanel'),
+          onClick: () => {
+            // This will be handled by the parent component
+            const event = new CustomEvent('commandPalette:clearSearch');
+            window.dispatchEvent(event);
+          }
+        }}
+        className="py-4"
+      />
     );
   }
 

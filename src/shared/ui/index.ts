@@ -17,6 +17,7 @@ export { DataFreshnessIndicator } from './DataFreshnessIndicator';
 
 // State components (ux-contract compliant)
 export { EmptyState } from './EmptyState';
+export { SmartEmptyState } from './SmartEmptyState';
 export { 
   Skeleton, 
   SkeletonText, 

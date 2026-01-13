@@ -14,6 +14,7 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { RiskBadge, type RiskLevel } from './RiskBadge'
 import { ToolPreview } from './ToolPreview'
+import { SmartEmptyState } from './SmartEmptyState'
 import { CogIcon, ArrowRightIcon, StarIcon, ClockIcon } from '@/components/icons/TradeliaIcons'
 
 interface ToolCardProps {
@@ -226,18 +227,20 @@ export function ToolGrid({
   if (tools.length === 0) {
     return (
       <div className="density-section-gap flex flex-col">
-        {/* Original empty state */}
-        <div className="text-center py-12">
-          <div className="density-icon-box rounded-2xl bg-muted/50 flex items-center justify-center mx-auto mb-4" style={{ width: '4rem', height: '4rem' }}>
-            <CogIcon className="w-8 h-8 text-muted-foreground" />
-          </div>
-          <h3 className="text-lg font-semibold text-foreground mb-2">
-            {t('noToolsAvailable')}
-          </h3>
-          <p className="text-muted-foreground density-text-secondary">
-            {t('toolsComingSoon')}
-          </p>
-        </div>
+        {/* SmartEmptyState - REQ 22 compliant */}
+        <SmartEmptyState
+          icon={<CogIcon className="w-8 h-8 text-muted-foreground" />}
+          title={t('noToolsAvailable')}
+          description={t('toolsComingSoon')}
+          action={{
+            label: t('exploreOtherJourneys'),
+            onClick: () => {
+              // Navigate to dashboard home
+              window.location.href = '/dashboard'
+            }
+          }}
+          hint={t('toolsWillAppearHere')}
+        />
 
         {/* Ultra-Chicche: Preview upcoming tools */}
         {showPreviewTools && (
