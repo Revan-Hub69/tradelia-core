@@ -1,3 +1,5 @@
+'use client'
+
 /**
  * Error State Components - Tradelia 2026
  * 
