@@ -9,11 +9,10 @@
 
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { DashboardLayout } from '@/src/widgets/dashboard-layout'
 import { DashboardAuthGuard } from '@/src/widgets/dashboard-auth'
-import { DashboardIntroOverlay } from '@/src/widgets/dashboard-intro'
 import { SectionLayout } from '@/src/widgets/section-layout/SectionLayout'
 import { SafeButton } from '@/src/shared/ui/SafeButton'
 import { useEducationMemory } from '@/src/shared/hooks/useEducationMemory'
@@ -44,26 +43,8 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
   const journey = JOURNEYS[journeyId]
   const Icon = JOURNEY_ICONS[journeyId]
 
-  // Emergency intro overlay state
-  const [showEmergencyIntro, setShowEmergencyIntro] = useState(false)
-
   // Ultra-Chicche: Education Memory for intelligent guidance
   const educationMemory = useEducationMemory(journeyId)
-
-  // Show emergency intro overlay on first visit to emergency journey
-  useEffect(() => {
-    if (journeyId === 'emergency') {
-      const hasSeenEmergencyIntro = localStorage.getItem('tradelia-emergency-intro-seen-v2')
-      if (!hasSeenEmergencyIntro) {
-        setShowEmergencyIntro(true)
-      }
-    }
-  }, [journeyId])
-
-  const handleCloseEmergencyIntro = () => {
-    setShowEmergencyIntro(false)
-    localStorage.setItem('tradelia-emergency-intro-seen-v2', 'true')
-  }
 
   // Handle tab switching from empty state
   useEffect(() => {
@@ -538,22 +519,6 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
   return (
     <DashboardAuthGuard>
       <DashboardLayout>
-        {/* Emergency Consultation Button - Top of page, before breadcrumb */}
-        {journeyId === 'emergency' && (
-          <div className="px-6 py-4 border-b border-border/30">
-            <button
-              onClick={() => setShowEmergencyIntro(true)}
-              className="group inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-muted-foreground/20 focus:ring-offset-2 rounded-sm"
-            >
-              <ConsultIcon className="w-4 h-4 transition-colors" />
-              <span className="relative">
-                {t('emergencyIntro.buttons.consultIntroduction')}
-                <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-current transition-all duration-200 group-hover:w-full"></span>
-              </span>
-            </button>
-          </div>
-        )}
-        
         <SectionLayout
           sectionId={journeyId}
           breadcrumb={[
@@ -572,28 +537,8 @@ export function JourneyPage({ journeyId }: JourneyPageProps) {
           subNavItems={subNavItems}
           defaultActiveTab="intro"
         />
-        
-        {/* Emergency Introduction Overlay - Only for emergency journey */}
-        {journeyId === 'emergency' && (
-          <DashboardIntroOverlay 
-            isOpen={showEmergencyIntro}
-            onClose={handleCloseEmergencyIntro}
-          />
-        )}
       </DashboardLayout>
     </DashboardAuthGuard>
-  )
-}
-
-// SVG Icons - Tradelia Design System Compliant
-function ConsultIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path 
-        d="M8 1C4.134 1 1 4.134 1 8s3.134 7 7 7 7-3.134 7-7-3.134-7-7-7zM8 11.5a.75.75 0 01-.75-.75V7.25a.75.75 0 011.5 0v3.5a.75.75 0 01-.75.75zM8 6a.75.75 0 110-1.5.75.75 0 010 1.5z" 
-        fill="currentColor"
-      />
-    </svg>
   )
 }
 
