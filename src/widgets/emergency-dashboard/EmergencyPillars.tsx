@@ -8,7 +8,7 @@
 
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import { JourneyCard } from '@/src/shared/ui/JourneyCard'
 import { 
@@ -76,6 +76,31 @@ export function EmergencyPillars() {
     isGuest: state.isGuestMode,
     userId: state.user?.id
   })
+
+  // Clean URL params when component unmounts or drawer closes
+  useEffect(() => {
+    return () => {
+      // Clean up URL params on unmount
+      if (typeof window !== 'undefined') {
+        const url = new URL(window.location.href)
+        url.searchParams.delete('panel')
+        url.searchParams.delete('tab')
+        window.history.replaceState({}, '', url.toString())
+      }
+    }
+  }, [])
+
+  // Clean URL when drawer closes
+  useEffect(() => {
+    if (!activePillar && typeof window !== 'undefined') {
+      const url = new URL(window.location.href)
+      if (url.searchParams.has('panel')) {
+        url.searchParams.delete('panel')
+        url.searchParams.delete('tab')
+        window.history.replaceState({}, '', url.toString())
+      }
+    }
+  }, [activePillar])
 
   const pillarsConfig: PillarConfig[] = useMemo(() => [
     {
@@ -150,12 +175,34 @@ export function EmergencyPillars() {
   }
 
   const handleCloseDrawer = () => {
+    // Reset all states
     setActiveSubmodule(null)
     setActivePillar(null)
+    
+    // Force clean URL
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href)
+      url.searchParams.delete('panel')
+      url.searchParams.delete('tab')
+      window.history.replaceState({}, '', url.toString())
+    }
   }
 
   const handleBackToMain = () => {
     setActiveSubmodule(null)
+  }
+
+  const handleOpenPillar = (pillarId: string) => {
+    // Clean any existing URL params first
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href)
+      url.searchParams.delete('panel')
+      url.searchParams.delete('tab')
+      window.history.replaceState({}, '', url.toString())
+    }
+    
+    // Then set the active pillar
+    setActivePillar(pillarId)
   }
 
   return (
@@ -168,7 +215,7 @@ export function EmergencyPillars() {
             description={pillar.description}
             icon={<PillarIcon type={pillar.iconType} className="w-6 h-6" />}
             accentColor={pillar.accentColor}
-            onClick={() => setActivePillar(pillar.id)}
+            onClick={() => handleOpenPillar(pillar.id)}
             badge={<CompletionIndicator percentage={pillar.completionPercent} label={t('completion')} />}
           >
             {/* Focus Areas */}
@@ -191,7 +238,7 @@ export function EmergencyPillars() {
         ))}
       </div>
 
-      {/* Enterprise Drawer with improved UX and submodule navigation */}
+      {/* Enterprise Drawer - SIMPLIFIED without deep linking */}
       {activeData && (
         <PremiumDrawer
           isOpen={!!activePillar}
@@ -207,9 +254,8 @@ export function EmergencyPillars() {
           icon={<PillarIcon type={activeData.iconType} className="w-6 h-6" />}
           accentColor={activeData.accentColor}
           size="xl"
-          closeOnBackdrop={false} // Prevent accidental closing
-          panelId={`pillar-${activeData.id}`}
-          // Remove problematic props for now
+          closeOnBackdrop={false}
+          // NO panelId - no deep linking to avoid URL conflicts
         >
           {activeSubmodule ? (
             // Submodule content with back button
