@@ -440,8 +440,7 @@
   
   /* Enterprise Drawer Header */
   .drawer-enterprise-header {
-    position: sticky;
-    top: 0;
+    flex-shrink: 0;
     z-index: 10;
     background-color: hsl(var(--bg-card));
     border-bottom: 1px solid transparent;
@@ -456,7 +455,10 @@
   
   /* Enterprise Drawer Content */
   .drawer-enterprise-content {
-    padding: 0 1.5rem 1.5rem;
+    flex: 1;
+    min-height: 0; /* Important for flex overflow */
+    padding: 1.5rem;
+    overflow-y: auto;
     /* Ensure focus not obscured (WCAG 2.2) */
   }
   

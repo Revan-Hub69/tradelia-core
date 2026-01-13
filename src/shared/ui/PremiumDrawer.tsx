@@ -684,7 +684,7 @@ export function PremiumDrawer({
         {/* Content with Enterprise styling and focus scroll-margin */}
         <div 
           ref={contentRef}
-          className="drawer-enterprise-content flex-1 overflow-y-auto drawer-scrollable"
+          className="drawer-enterprise-content"
         >
           {children}
         </div>
