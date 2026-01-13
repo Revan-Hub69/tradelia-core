@@ -3,6 +3,25 @@
     "pageTitle": "Sezioni Tradelia",
     "pageSubtitle": "Ogni sezione analizza un modo diverso di rapportarsi alle criptovalute. Nessuna ti dice cosa fare. Tutte ti aiutano ad evitare errori costosi.",
     
+    "pillars": {
+      "learningPath": {
+        "title": "Percorso dinamico",
+        "description": "Moduli educativi sequenziali per comprendere i concetti fondamentali"
+      },
+      "checklist": {
+        "title": "Checklist anti-errore",
+        "description": "Verifica sistematica per evitare gli errori più comuni"
+      },
+      "indicators": {
+        "title": "Indicatori base",
+        "description": "Metriche essenziali per valutare la tua situazione"
+      },
+      "demo": {
+        "title": "Demo assistita",
+        "description": "Simulazioni pratiche in ambiente protetto"
+      }
+    },
+    
     "own": {
       "title": "Possedere criptovalute",
       "subtitle": "Custodia, controllo, responsabilità",

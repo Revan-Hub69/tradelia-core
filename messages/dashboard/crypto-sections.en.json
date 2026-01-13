@@ -3,6 +3,25 @@
     "pageTitle": "Tradelia Sections",
     "pageSubtitle": "Each section analyzes a different way of relating to cryptocurrencies. None tells you what to do. All help you avoid costly mistakes.",
     
+    "pillars": {
+      "learningPath": {
+        "title": "Learning Path",
+        "description": "Sequential educational modules to understand fundamental concepts"
+      },
+      "checklist": {
+        "title": "Anti-error Checklist",
+        "description": "Systematic verification to avoid the most common mistakes"
+      },
+      "indicators": {
+        "title": "Basic Indicators",
+        "description": "Essential metrics to evaluate your situation"
+      },
+      "demo": {
+        "title": "Guided Demo",
+        "description": "Practical simulations in a protected environment"
+      }
+    },
+    
     "own": {
       "title": "Owning cryptocurrencies",
       "subtitle": "Custody, control, responsibility",
