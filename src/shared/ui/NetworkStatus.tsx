@@ -180,7 +180,8 @@ export function NetworkStatus({ className = '' }: NetworkStatusProps) {
   }
 
   const alertProps = getAlertProps()
-  const Icon = alertProps.icon
+  // Icon is available in alertProps.icon if needed for custom rendering
+  const _Icon = alertProps.icon
 
   return (
     <div className={`

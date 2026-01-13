@@ -118,8 +118,8 @@ export function useRobustDragDrop({
     };
   }, [onDragStart]);
 
-  const handleTouchMove = useCallback((_event: React.TouchEvent) => {
-    const touch = _event.touches[0];
+  const handleTouchMove = useCallback((event: React.TouchEvent) => {
+    const touch = event.touches[0];
     if (!touch) return;
     
     if (!touchState.current.isLongPress) {
@@ -158,7 +158,7 @@ export function useRobustDragDrop({
     }
   }, [dragState.draggedItem]);
 
-  const handleTouchEnd = useCallback((event: React.TouchEvent) => {
+  const handleTouchEnd = useCallback((_event: React.TouchEvent) => {
     // Clear long press timer
     if (touchState.current.longPressTimer) {
       clearTimeout(touchState.current.longPressTimer);
