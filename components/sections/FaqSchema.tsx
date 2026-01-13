@@ -1,5 +1,6 @@
 'use client';
 
+/* eslint-disable react/no-danger */
 import { useLanguage } from '@/components/LanguageSelector';
 import { translations } from '@/lib/translations';
 

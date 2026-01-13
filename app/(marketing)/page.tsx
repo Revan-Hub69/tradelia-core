@@ -1,5 +1,6 @@
 'use client';
 
+/* eslint-disable react/no-danger */
 import { useFadeInObserver } from '@/hooks/useFadeInObserver';
 import HeroSection from '@/components/sections/HeroSection';
 import ResearchSection from '@/components/sections/ResearchSection';

@@ -123,29 +123,31 @@ async function applyRateLimit(request: NextRequest): Promise<NextResponse | null
 }
 
 /**
- * Content Security Policy configuration
- * Using Report-Only mode for safe rollout - violations are logged but not blocked
+ * Content Security Policy - Report-Only mode for monitoring
+ * The actual CSP is defined in next.config.mjs headers (single source of truth)
+ * This Report-Only version catches violations without blocking
  * Requirements: 3.1, 3.2
  */
-const CSP_POLICY = [
+const CSP_REPORT_ONLY = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // Next.js requires unsafe-inline/eval in dev
-  "style-src 'self' 'unsafe-inline'", // Tailwind requires unsafe-inline
+  "script-src 'self' 'unsafe-inline'", // NO unsafe-eval - monitor violations
+  "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
   "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
-  "frame-ancestors 'none'", // Prevent clickjacking (REQ 3.2)
+  "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",
+  "report-uri /api/security/csp-report",
 ].join('; ');
 
 /**
  * Adds security headers to the response
- * CSP is in Report-Only mode for safe rollout
+ * CSP is in Report-Only mode for monitoring (actual CSP in next.config.mjs)
  */
 function addSecurityHeaders(response: NextResponse): void {
-  // CSP in Report-Only mode for rollout (REQ 3.1, 3.2)
-  response.headers.set('Content-Security-Policy-Report-Only', CSP_POLICY);
+  // CSP Report-Only for monitoring violations (REQ 3.1, 3.2)
+  response.headers.set('Content-Security-Policy-Report-Only', CSP_REPORT_ONLY);
 }
 
 export async function middleware(request: NextRequest) {

@@ -1,8 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import { monitoring } from '@/lib/monitoring';
 import { logger } from '@/lib/logger';
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   const startTime = Date.now();
   
   logger.setContext({
@@ -11,7 +12,7 @@ export async function GET(request: NextRequest) {
   });
   
   try {
-    const healthStatus = monitoring.getHealthStatus();
+    const _healthStatus = monitoring.getHealthStatus();
     const errorBudgets = monitoring.getErrorBudgets();
     
     // Check system components
@@ -99,7 +100,7 @@ async function checkDatabase(): Promise<{ status: string; message: string; respo
   } catch (error) {
     return {
       status: 'critical',
-      message: 'Database connection failed'
+      message: `Database connection failed: ${error instanceof Error ? error.message : 'Unknown error'}`
     };
   }
 }
@@ -137,7 +138,7 @@ function checkMemory(): { status: string; message: string; usage?: MemoryUsage }
       status: 'healthy',
       message: 'Memory check not available in this environment'
     };
-  } catch (error) {
+  } catch (_error) {
     return {
       status: 'warning',
       message: 'Memory check failed'
@@ -194,7 +195,7 @@ function checkLogging(): { status: string; message: string } {
       status: 'healthy',
       message: 'Logging system operational'
     };
-  } catch (error) {
+  } catch (_error) {
     return {
       status: 'critical',
       message: 'Logging system failed'

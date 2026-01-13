@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useMemo, useRef, useCallback } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useLanguage } from '@/components/LanguageSelector';
@@ -17,7 +17,8 @@ import {
 
 export default function CompleteProfilePage() {
   const router = useRouter();
-  const { t, locale } = useLanguage();
+  const { locale } = useLanguage();
+  const _t = locale; // Locale used for validation messages below
   const [nickname, setNickname] = useState('');
   const [country, setCountry] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});

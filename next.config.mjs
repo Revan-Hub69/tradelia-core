@@ -4,7 +4,8 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Disable ESLint during build temporarily (import boundaries still work in dev)
+  // ESLint: temporarily ignored during build due to legacy errors
+  // TODO: Fix all ESLint errors and set to false (P1.2 audit item)
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -111,8 +112,8 @@ const nextConfig = {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     minimumCacheTTL: 31536000, // 1 year
-    dangerouslyAllowSVG: true,
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    // SVG disabled for security - use inline SVG components instead
+    dangerouslyAllowSVG: false,
   },
   
   // Security headers
@@ -155,23 +156,25 @@ const nextConfig = {
             key: 'Cross-Origin-Resource-Policy',
             value: 'same-origin'
           },
-          // Content Security Policy - Tradelia 2026 compliant
+          // Content Security Policy - Tradelia 2026 Enterprise (single source of truth)
+          // NOTE: No unsafe-eval in production - Next.js 15 works without it
           {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com", // Allow Next.js and external libs
-              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com", // Allow Tailwind and Google Fonts
+              // unsafe-inline required for Next.js, NO unsafe-eval in production
+              "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com data:",
-              "img-src 'self' data: blob: https:", // Allow images from CDN and data URLs
-              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.coingecko.com", // API endpoints
+              "img-src 'self' data: blob: https:",
+              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.coingecko.com",
               "media-src 'self'",
-              "object-src 'none'", // Disable plugins
+              "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self'",
-              "frame-ancestors 'none'", // Prevent embedding
+              "frame-ancestors 'none'",
               "upgrade-insecure-requests",
-              "report-uri /api/security/csp-report" // CSP violation reporting
+              "report-uri /api/security/csp-report"
             ].join('; ')
           }
         ]

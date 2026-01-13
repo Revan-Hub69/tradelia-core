@@ -1,7 +1,6 @@
 'use client';
 
 import { useTranslations } from '@/hooks/useTranslations';
-import { ProcessIcon } from '@/components/icons/TradeliaIcons';
 
 interface StepProps {
   step: {
@@ -68,9 +67,9 @@ export default function HowItWorksSection() {
           </p>
         </header>
         
-        <ol className="space-y-8" role="list">
+        <ol className="space-y-8">
           {howItWorks.steps.map((step, index) => (
-            <li key={`step-${index + 1}`} role="listitem">
+            <li key={`step-${index + 1}`}>
               <Step step={step} index={index} />
             </li>
           ))}

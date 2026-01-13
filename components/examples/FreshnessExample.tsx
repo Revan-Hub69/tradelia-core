@@ -29,7 +29,7 @@ export function FreshnessExample() {
         status: 'fresh',
         timestamp: Date.now()
       });
-    } catch (error) {
+    } catch (_error) {
       // Simula dati offline
       setHealthFreshness({
         category: 'freshness-critical',
