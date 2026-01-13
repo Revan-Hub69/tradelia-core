@@ -76,8 +76,9 @@ export function SectionLayout({
     // Remember this tab choice
     rememberTab(newTabId)
     
-    // Scroll to top on tab change (UX best practice)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    // Scroll to top on tab change (UX best practice) - Respects reduced motion (REQ 26.4)
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' })
     
     // Simulate content loading (remove in production if content is synchronous)
     setTimeout(() => {
