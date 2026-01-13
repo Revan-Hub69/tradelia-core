@@ -101,9 +101,22 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
     setDrawerOpen(true)
   }
 
+  // CLOSE: Reset everything and cleanup inert
   const closeDrawer = () => {
     setDrawerOpen(false)
-    setActivePillar(null)
+    
+    // Hard cleanup - ensure inert is removed BEFORE unmounting
+    const mainContent = document.querySelector('#main-content') as HTMLElement | null
+    if (mainContent) {
+      mainContent.removeAttribute('inert')
+    }
+    document.body.style.overflow = ''
+    document.documentElement.style.overflow = ''
+    
+    // Delay resetting activePillar to allow drawer animation to complete
+    setTimeout(() => {
+      setActivePillar(null)
+    }, 200)
   }
 
   // Color mapping for section
