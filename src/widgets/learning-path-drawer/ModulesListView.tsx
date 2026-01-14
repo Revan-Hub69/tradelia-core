@@ -48,29 +48,37 @@ export function ModulesListView({
   const completionPercent = Math.round((completedModules.length / modules.length) * 100)
 
   return (
-    <div className="density-section-gap flex flex-col">
+    <div className="flex flex-col gap-section">
       {/* Back button */}
       <button
         onClick={onBack}
-        className="flex items-center density-gap density-text-secondary font-medium text-enterprise-secondary hover:text-enterprise-primary transition-subtle rounded-lg density-card -ml-2 tap-target-touch focus-enterprise-ring"
+        className="
+          flex items-center gap-inline
+          text-enterprise-small font-medium text-enterprise-secondary
+          hover:text-enterprise-primary
+          transition-enterprise-fast
+          rounded-lg px-3 py-2 -ml-2
+          tap-target-touch
+          focus-enterprise-ring
+        "
       >
         <span className="text-lg">←</span>
         {tNav('back')}
       </button>
 
       {/* Progress */}
-      <div className="section-frame density-card density-section-gap">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-enterprise-primary">
+      <div className="card-enterprise-flat space-element">
+        <div className="flex items-center justify-between mb-element">
+          <h2 className="text-enterprise-h2 text-enterprise-primary">
             {groupTitle}
           </h2>
-          <span className="density-text-secondary font-semibold text-enterprise-body">
+          <span className="text-enterprise-small font-numeric font-semibold text-enterprise-secondary">
             {completedModules.length}/{modules.length}
           </span>
         </div>
         
         <div 
-          className="h-2 bg-muted-foreground/20 rounded-full overflow-hidden"
+          className="progress-enterprise"
           role="progressbar"
           aria-valuenow={completionPercent}
           aria-valuemin={0}
@@ -78,16 +86,16 @@ export function ModulesListView({
           aria-label={t('progress')}
         >
           <div 
-            className="h-full bg-success rounded-full transition-all duration-300"
+            className="progress-enterprise-fill"
             style={{ width: `${completionPercent}%` }}
           />
         </div>
 
         {completionPercent === 100 && (
-          <div className="alert-enterprise-success">
-            <div className="flex items-center density-gap">
-              <CheckCircleIcon className="w-5 h-5 flex-shrink-0" />
-              <span className="density-text-secondary font-medium">
+          <div className="mt-element">
+            <div className="badge-enterprise-success flex items-center gap-inline animate-fade-in">
+              <CheckCircleIcon className="w-3 h-3 flex-shrink-0" />
+              <span className="font-medium">
                 {tGroups('completed')}
               </span>
             </div>
@@ -96,46 +104,52 @@ export function ModulesListView({
       </div>
 
       {/* Modules list */}
-      <div className="space-y-2">
+      <div className="flex flex-col gap-2">
         {modules.map((module, index) => {
           const isCompleted = completedModules.includes(module.id)
           return (
             <button
               key={module.id}
               onClick={() => onSelectModule(module.id)}
-              className="w-full drawer-list-item card-2026 card-hover-lift tap-target-touch focus-enterprise-ring"
+              className="
+                w-full card-enterprise
+                hover-enterprise-lift
+                tap-target-touch
+                focus-enterprise-ring
+                text-left
+              "
             >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center density-gap flex-1 min-w-0">
+              <div className="flex items-center justify-between gap-element">
+                <div className="flex items-center gap-element flex-1 min-w-0">
                   {/* Completion indicator */}
                   <div className={`
                     w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0
-                    transition-subtle
+                    transition-enterprise
                     ${isCompleted 
-                      ? 'bg-success border-success animate-check-pop' 
-                      : 'border-muted-foreground/30'
+                      ? 'bg-success border-success' 
+                      : 'border-neutral-300 dark:border-neutral-700'
                     }
                   `}>
                     {isCompleted && (
-                      <CheckIcon className="w-3.5 h-3.5 text-white" />
+                      <CheckIcon className="w-3.5 h-3.5 text-white animate-zoom-in" />
                     )}
                   </div>
 
                   {/* Module info */}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center density-gap mb-1">
-                      <span className="font-medium text-enterprise-primary truncate">
+                    <div className="flex items-center gap-inline mb-1">
+                      <span className="text-enterprise-body font-medium text-enterprise-primary truncate">
                         {index + 1}. {module.title}
                       </span>
                     </div>
-                    <span className="density-text-tertiary text-enterprise-secondary">
+                    <span className="text-enterprise-small text-enterprise-secondary">
                       ~{module.estimatedMinutes} min
                     </span>
                   </div>
                 </div>
 
                 {/* Arrow */}
-                <ArrowRightIcon className="w-5 h-5 text-muted-foreground flex-shrink-0 ml-2" />
+                <ArrowRightIcon className="w-5 h-5 text-muted-foreground flex-shrink-0 transition-enterprise group-hover:translate-x-1" />
               </div>
             </button>
           )

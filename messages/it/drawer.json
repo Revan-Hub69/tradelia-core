@@ -5,7 +5,9 @@
     "previous": "Precedente",
     "next": "Successivo",
     "previousModule": "Modulo precedente",
-    "nextModule": "Modulo successivo"
+    "nextModule": "Modulo successivo",
+    "progress": "Progresso",
+    "moduleProgress": "Progresso moduli"
   },
   "groups": {
     "title": "Scegli il gruppo",
