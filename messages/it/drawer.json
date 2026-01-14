@@ -11,10 +11,10 @@
   },
   "groups": {
     "title": "Scegli il gruppo",
-    "subtitle": "Il percorso è progressivo: completa Phase 0 per sbloccare Phase 1, poi gli approfondimenti tecnici.",
+    "subtitle": "Il percorso è progressivo: completa Fondamenti per sbloccare Applicazioni, poi gli Approfondimenti.",
     "locked": "Completa {phase} per sbloccare questo gruppo",
-    "phase0": "Phase 0",
-    "phase1": "Phase 1",
+    "phase0": "Fondamenti",
+    "phase1": "Applicazioni",
     "completed": "Gruppo completato! 🎉"
   },
   "modules": {

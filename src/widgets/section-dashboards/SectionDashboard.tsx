@@ -363,12 +363,13 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
             )}
 
             {/* Level 2: Modules List */}
-            {drawerView === 'modules-list' && (
+            {drawerView === 'modules-list' && selectedGroup && (
               <ModulesListView
+                groupId={selectedGroup}
                 groupTitle={
-                  selectedGroup === 'phase-0' ? 'Phase 0 - Alfabetizzazione'
-                    : selectedGroup === 'phase-1' ? `Phase 1 - ${t(`${sectionId}.title`)}`
-                    : 'Approfondimenti Tecnici'
+                  selectedGroup === 'phase-0' ? 'Fondamenti - Alfabetizzazione'
+                    : selectedGroup === 'phase-1' ? `Applicazioni - ${t(`${sectionId}.title`)}`
+                    : 'Approfondimenti'
                 }
                 modules={activeModules}
                 completedModules={activeProgress?.completedSections || []}

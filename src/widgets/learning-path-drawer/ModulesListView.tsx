@@ -26,6 +26,7 @@ interface Module {
 
 interface ModulesListViewProps {
   groupTitle: string
+  groupId?: string // 'phase-0', 'phase-1', 'technical-deep-dives'
   modules: Module[]
   completedModules: string[]
   onSelectModule: (moduleId: string) => void
@@ -34,6 +35,7 @@ interface ModulesListViewProps {
 
 export function ModulesListView({ 
   groupTitle,
+  groupId,
   modules, 
   completedModules,
   onSelectModule, 
@@ -43,6 +45,9 @@ export function ModulesListView({
   const tNav = useTranslations('drawer.navigation')
   const tGroups = useTranslations('drawer.groups')
   const completionPercent = Math.round((completedModules.length / modules.length) * 100)
+  
+  // Determine group number for module numbering (0.01, 1.01, 2.01)
+  const groupNumber = groupId === 'phase-0' ? 0 : groupId === 'phase-1' ? 1 : 2
 
   return (
     <div className="flex flex-col gap-section font-professional">
@@ -144,13 +149,19 @@ export function ModulesListView({
           const previousModule = index > 0 ? modules[index - 1] : null
           const isLocked = previousModule ? !completedModules.includes(previousModule.id) : false
           
+          // Calculate overall progress percentage for this module
+          // Each module contributes equally to the total progress
+          const moduleProgressPercent = ((index + (isCompleted ? 1 : 0)) / modules.length) * 100
+          
           return (
             <AnimatedCard key={module.id} delay={index * 80}>
               <ModuleCard
                 module={module}
                 index={index}
+                groupNumber={groupNumber}
                 isCompleted={isCompleted}
                 isLocked={isLocked}
+                progressPercent={moduleProgressPercent}
                 onSelect={() => onSelectModule(module.id)}
               />
             </AnimatedCard>
@@ -201,120 +212,154 @@ function AnimatedCard({ children, delay = 0 }: { children: React.ReactNode; dela
 function ModuleCard({
   module,
   index,
+  groupNumber,
   isCompleted,
   isLocked,
+  progressPercent,
   onSelect
 }: {
   module: Module
   index: number
+  groupNumber: number
   isCompleted: boolean
   isLocked: boolean
+  progressPercent: number
   onSelect: () => void
 }) {
   if (isLocked) {
     return (
-      <div className="relative p-5 rounded-xl bg-gradient-to-br from-neutral-500/8 to-neutral-500/4 border border-neutral-500/20 overflow-hidden cursor-not-allowed">
-        {/* Decorative pattern */}
-        <div className="absolute inset-0 opacity-20" style={{
-          backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(115, 115, 115, 0.1) 0%, transparent 50%)'
-        }} />
+      <div className="relative">
+        {/* Progress bar on left side - shows overall journey progress */}
+        <div className="absolute left-0 top-0 bottom-0 w-1 bg-neutral-200 dark:bg-neutral-800 rounded-l-xl overflow-hidden">
+          <div 
+            className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-primary-500 via-primary-500 to-emerald-500 transition-all duration-500"
+            style={{ height: `${progressPercent}%` }}
+          />
+        </div>
         
-        <div className="relative z-10 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4 flex-1 min-w-0">
-            {/* Lock indicator with gradient */}
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-neutral-400 to-neutral-500 shadow-lg shadow-neutral-500/25 flex items-center justify-center flex-shrink-0">
-              <LockIcon className="w-4 h-4 text-white" />
-            </div>
+        <div className="pl-4 p-5 rounded-xl bg-gradient-to-br from-neutral-500/8 to-neutral-500/4 border border-neutral-500/20 overflow-hidden cursor-not-allowed">
+          {/* Decorative pattern */}
+          <div className="absolute inset-0 opacity-20" style={{
+            backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(115, 115, 115, 0.1) 0%, transparent 50%)'
+          }} />
+          
+          <div className="relative z-10 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-4 flex-1 min-w-0">
+              {/* Lock indicator with gradient */}
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-neutral-400 to-neutral-500 shadow-lg shadow-neutral-500/25 flex items-center justify-center flex-shrink-0">
+                <LockIcon className="w-4 h-4 text-white" />
+              </div>
 
-            {/* Module info */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-base font-semibold text-foreground/60 truncate tracking-tight">
-                  {index + 1}. {module.title}
-                </span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-neutral-50 dark:bg-neutral-900/20 text-neutral-700 dark:text-neutral-300 text-xs font-medium ring-1 ring-inset ring-neutral-600/20 flex-shrink-0">
-                  Bloccato
+              {/* Module info */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  {/* Premium typography numbering: 0 big + .01 medium */}
+                  <span className="flex items-baseline gap-0.5">
+                    <span className="text-2xl font-bold text-foreground/60 font-numeric leading-none">{groupNumber}</span>
+                    <span className="text-base font-semibold text-foreground/60 font-numeric leading-none">.{String(index + 1).padStart(2, '0')}</span>
+                  </span>
+                  <span className="text-base font-semibold text-foreground/60 truncate tracking-tight">
+                    {module.title}
+                  </span>
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-neutral-50 dark:bg-neutral-900/20 text-neutral-700 dark:text-neutral-300 text-xs font-medium ring-1 ring-inset ring-neutral-600/20 flex-shrink-0">
+                    Bloccato
+                  </span>
+                </div>
+                <span className="text-sm text-muted-foreground">
+                  ~{module.estimatedMinutes} min
                 </span>
               </div>
-              <span className="text-sm text-muted-foreground">
-                ~{module.estimatedMinutes} min
-              </span>
             </div>
-          </div>
 
-          {/* Lock icon */}
-          <LockIcon className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+            {/* Lock icon */}
+            <LockIcon className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+          </div>
         </div>
       </div>
     )
   }
   
   return (
-    <button
-      onClick={onSelect}
-      className="
-        group relative w-full p-5 rounded-xl border text-left
-        bg-background
-        border-neutral-200 dark:border-neutral-800
-        transition-all duration-200 ease-out
-        hover:border-primary-300 dark:hover:border-primary-700
-        hover:shadow-lg hover:translate-y-[-2px]
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-2
-        tap-target-touch
-      "
-    >
-      {/* Gradient overlay on hover */}
-      <div className="
-        absolute inset-0 rounded-xl
-        bg-gradient-to-br from-primary/0 to-primary/5
-        opacity-0 group-hover:opacity-100
-        transition-opacity duration-200
-        pointer-events-none
-      " />
-      
-      {/* Shine effect on hover */}
-      <div className="
-        absolute inset-0 rounded-xl
-        bg-gradient-to-r from-transparent via-white/10 to-transparent
-        translate-x-[-100%] group-hover:translate-x-[100%]
-        transition-transform duration-1000
-        pointer-events-none
-      " />
-
-      <div className="relative z-10 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-4 flex-1 min-w-0">
-          {/* Completion indicator with gradient */}
-          <div className={`
-            w-8 h-8 rounded-full border-2 flex items-center justify-center flex-shrink-0
-            transition-all duration-200
-            ${isCompleted 
-              ? 'bg-gradient-to-br from-emerald-500 to-emerald-600 border-emerald-500 shadow-lg shadow-emerald-500/25' 
-              : 'border-neutral-300 dark:border-neutral-700 group-hover:border-primary-400'
-            }
-          `}>
-            {isCompleted && (
-              <CheckIcon className="w-4 h-4 text-white animate-zoom-in" />
-            )}
-          </div>
-
-          {/* Module info */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-base font-semibold text-foreground truncate tracking-tight">
-                {index + 1}. {module.title}
-              </span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <ClockIcon className="w-3.5 h-3.5" />
-              <span>~{module.estimatedMinutes} min</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Arrow with animation */}
-        <ArrowRightIcon className="w-5 h-5 text-muted-foreground flex-shrink-0 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-primary" />
+    <div className="relative">
+      {/* Progress bar on left side - shows overall journey progress */}
+      <div className="absolute left-0 top-0 bottom-0 w-1 bg-neutral-200 dark:bg-neutral-800 rounded-l-xl overflow-hidden">
+        <div 
+          className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-primary-500 via-primary-500 to-emerald-500 transition-all duration-500"
+          style={{ height: `${progressPercent}%` }}
+        />
       </div>
-    </button>
+      
+      <button
+        onClick={onSelect}
+        className="
+          group relative w-full pl-4 p-5 rounded-xl border text-left
+          bg-background
+          border-neutral-200 dark:border-neutral-800
+          transition-all duration-200 ease-out
+          hover:border-primary-300 dark:hover:border-primary-700
+          hover:shadow-lg hover:translate-y-[-2px]
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-2
+          tap-target-touch
+        "
+      >
+        {/* Gradient overlay on hover */}
+        <div className="
+          absolute inset-0 rounded-xl
+          bg-gradient-to-br from-primary/0 to-primary/5
+          opacity-0 group-hover:opacity-100
+          transition-opacity duration-200
+          pointer-events-none
+        " />
+        
+        {/* Shine effect on hover */}
+        <div className="
+          absolute inset-0 rounded-xl
+          bg-gradient-to-r from-transparent via-white/10 to-transparent
+          translate-x-[-100%] group-hover:translate-x-[100%]
+          transition-transform duration-1000
+          pointer-events-none
+        " />
+
+        <div className="relative z-10 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4 flex-1 min-w-0">
+            {/* Completion indicator with gradient */}
+            <div className={`
+              w-8 h-8 rounded-full border-2 flex items-center justify-center flex-shrink-0
+              transition-all duration-200
+              ${isCompleted 
+                ? 'bg-gradient-to-br from-emerald-500 to-emerald-600 border-emerald-500 shadow-lg shadow-emerald-500/25' 
+                : 'border-neutral-300 dark:border-neutral-700 group-hover:border-primary-400'
+              }
+            `}>
+              {isCompleted && (
+                <CheckIcon className="w-4 h-4 text-white animate-zoom-in" />
+              )}
+            </div>
+
+            {/* Module info */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                {/* Premium typography numbering: 0 big + .01 medium */}
+                <span className="flex items-baseline gap-0.5 flex-shrink-0">
+                  <span className="text-2xl font-bold text-foreground font-numeric leading-none">{groupNumber}</span>
+                  <span className="text-base font-semibold text-foreground font-numeric leading-none">.{String(index + 1).padStart(2, '0')}</span>
+                </span>
+                <span className="text-base font-semibold text-foreground truncate tracking-tight">
+                  {module.title}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <ClockIcon className="w-3.5 h-3.5" />
+                <span>~{module.estimatedMinutes} min</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Arrow with animation */}
+          <ArrowRightIcon className="w-5 h-5 text-muted-foreground flex-shrink-0 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-primary" />
+        </div>
+      </button>
+    </div>
   )
 }
 

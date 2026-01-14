@@ -20,19 +20,19 @@
     "description": "Adatteremo la complessità dei contenuti al tuo livello di conoscenza",
     "change": "Cambia livello",
     "noob": {
-      "title": "Noob",
+      "title": "Principiante",
       "shortTitle": "Principiante",
       "description": "Inizio da zero, spiegami tutto con parole semplici",
       "details": "Contenuti semplificati, spiegazioni dettagliate, nessun termine tecnico"
     },
     "informato": {
-      "title": "Informato",
+      "title": "Intermedio",
       "shortTitle": "Intermedio",
       "description": "Conosco le basi, voglio approfondire",
       "details": "Contenuti bilanciati, termini tecnici con contesto, esempi pratici"
     },
     "smart": {
-      "title": "Smart",
+      "title": "Avanzato",
       "shortTitle": "Avanzato",
       "description": "Sono esperto, dammi contenuti avanzati",
       "details": "Contenuti tecnici completi, terminologia professionale, analisi approfondite"

@@ -198,7 +198,7 @@ function GroupCard({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2">
               <h3 className="text-base font-semibold text-foreground tracking-tight">
-                {index === 0 ? 'Phase 0' : index === 1 ? 'Phase 1' : 'Approfondimenti Tecnici'}
+                {index === 0 ? 'Fondamenti' : index === 1 ? 'Applicazioni' : 'Approfondimenti'}
               </h3>
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-neutral-50 dark:bg-neutral-900/20 text-neutral-700 dark:text-neutral-300 text-xs font-medium ring-1 ring-inset ring-neutral-600/20">
                 <LockIcon className="w-3 h-3" />
@@ -269,7 +269,7 @@ function GroupCard({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-2">
             <h3 className="text-base font-semibold text-foreground tracking-tight">
-              {index === 0 ? 'Phase 0' : index === 1 ? 'Phase 1' : 'Approfondimenti Tecnici'}
+              {index === 0 ? 'Fondamenti' : index === 1 ? 'Applicazioni' : 'Approfondimenti'}
             </h3>
             <span className={`
               inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium

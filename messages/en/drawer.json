@@ -11,10 +11,10 @@
   },
   "groups": {
     "title": "Choose a group",
-    "subtitle": "The path is progressive: complete Phase 0 to unlock Phase 1, then technical deep dives.",
+    "subtitle": "The path is progressive: complete Foundations to unlock Applications, then Deep Dives.",
     "locked": "Complete {phase} to unlock this group",
-    "phase0": "Phase 0",
-    "phase1": "Phase 1",
+    "phase0": "Foundations",
+    "phase1": "Applications",
     "completed": "Group completed! 🎉"
   },
   "modules": {
