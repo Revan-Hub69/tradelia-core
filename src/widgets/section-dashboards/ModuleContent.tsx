@@ -115,14 +115,14 @@ export function ModuleContent({ module, onComplete, isCompleted }: ModuleContent
               </div>
               <p className="text-sm text-muted-foreground mt-0.5">
                 {isCompleted 
-                  ? 'Puoi sempre tornare a rileggerlo' 
-                  : 'Traccia i tuoi progressi'
+                  ? 'Puoi sempre rifare il test' 
+                  : 'Verifica la tua comprensione con un breve test'
                 }
               </p>
             </div>
             <button
               onClick={onComplete}
-              aria-label={isCompleted ? 'Rimuovi completamento' : 'Segna come letto'}
+              aria-label={isCompleted ? 'Rifai il test' : 'Fai il test di completamento'}
               className={`
                 group relative px-6 py-3 rounded-xl font-semibold
                 min-h-[48px] min-w-[140px] sm:min-w-[160px]
@@ -138,7 +138,7 @@ export function ModuleContent({ module, onComplete, isCompleted }: ModuleContent
                 inline-flex items-center gap-2 transition-transform duration-300
                 ${!isCompleted ? 'group-hover:translate-x-0.5' : ''}
               `}>
-                {isCompleted ? 'Completato' : 'Segna come letto'}
+                {isCompleted ? 'Test completato ✓' : 'Fai il test'}
                 {!isCompleted && <ArrowRightIcon className="w-4 h-4" />}
               </span>
             </button>
