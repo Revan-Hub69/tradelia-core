@@ -242,9 +242,9 @@ function AnimatedSection({ children, delay = 0 }: { children: React.ReactNode; d
 }
 
 interface ProcessedSection extends ModuleSection {
-  sectionNumber?: number
-  isFirstText?: boolean
-  showDivider?: boolean
+  sectionNumber: number | undefined
+  isFirstText: boolean
+  showDivider: boolean
 }
 
 function SectionRenderer({ 
@@ -253,8 +253,8 @@ function SectionRenderer({
   isFirstText 
 }: { 
   section: ProcessedSection
-  sectionNumber?: number
-  isFirstText?: boolean
+  sectionNumber: number | undefined
+  isFirstText: boolean
 }) {
   switch (section.type) {
     // HOOK - Quote elegante con virgolette decorative
@@ -530,3 +530,4 @@ function DiamondIcon({ className }: { className?: string }) {
     </svg>
   )
 }
+
