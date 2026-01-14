@@ -14,7 +14,7 @@
 
 'use client'
 
-import { useEffect, useRef, useState, useMemo, useCallback } from 'react'
+import { useEffect, useRef, useState, useMemo } from 'react'
 import { type LearningModule, type ModuleSection } from '@/src/shared/config/own-learning-path'
 
 interface ModuleContentProps {
@@ -26,6 +26,21 @@ interface ModuleContentProps {
 export function ModuleContent({ module, onComplete, isCompleted }: ModuleContentProps) {
   const [showCheckAnimation, setShowCheckAnimation] = useState(false)
   const articleRef = useRef<HTMLElement>(null)
+
+  // Calculate reading time based on word count (250 words per minute)
+  const estimatedMinutes = useMemo(() => {
+    const wordCount = module.sections.reduce((total, section) => {
+      let text = ''
+      if (section.content) text += section.content
+      if (section.title) text += section.title
+      if (section.items) {
+        text += section.items.map(item => `${item.left} ${item.right}`).join(' ')
+      }
+      return total + text.split(/\s+/).filter(word => word.length > 0).length
+    }, 0)
+    
+    return Math.max(1, Math.ceil(wordCount / 250))
+  }, [module.sections])
 
   // Pre-calculate section numbers and first text detection
   const processedSections = useMemo(() => {
@@ -70,7 +85,7 @@ export function ModuleContent({ module, onComplete, isCompleted }: ModuleContent
         {/* Header con tempo stimato */}
         <header className="flex items-center gap-2 text-sm text-muted-foreground mb-8 pb-4 border-b border-border/30">
           <ClockIcon className="w-4 h-4" />
-          <span>~{module.estimatedMinutes} minuti di lettura</span>
+          <span>~{estimatedMinutes} {estimatedMinutes === 1 ? 'minuto' : 'minuti'} di lettura</span>
         </header>
 
         {/* Sezioni contenuto con animazioni viewport */}
