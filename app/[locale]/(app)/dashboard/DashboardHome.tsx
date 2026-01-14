@@ -53,19 +53,41 @@ export function DashboardHome() {
   return (
     <DashboardAuthGuard>
       <DashboardLayout>
-        <div className="space-y-8">
-          {/* Welcome Header */}
-          <div className="section-frame p-6 space-y-2">
-            <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
-              {tDashboard('welcome')}, {userName}
-            </h1>
-            <p className="text-muted-foreground">
-              {tDashboard('chooseOrientation')}
-            </p>
-            <div className="mt-4 p-3 bg-muted/30 rounded-lg">
-              <p className="text-sm text-muted-foreground">
-                <strong>{tDashboard('noImmediateAction')}</strong> {tDashboard('understandFirst')}
+        <div className="space-y-8 font-professional">
+          {/* Welcome Header with premium gradient - matching drawer design */}
+          <div className="relative p-8 rounded-xl bg-gradient-to-br from-primary-500/8 to-primary-500/3 border border-primary-500/20 overflow-hidden">
+            {/* Decorative background pattern */}
+            <div className="absolute inset-0 opacity-30" style={{
+              backgroundImage: 'radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 50%)'
+            }} />
+            
+            <div className="relative z-10 space-y-4">
+              <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
+                {tDashboard('welcome')}, {userName}
+              </h1>
+              <p className="text-base text-muted-foreground reading-line-height leading-relaxed">
+                {tDashboard('chooseOrientation')}
               </p>
+              
+              {/* Info box with gradient - matching ModuleContent callout style */}
+              <div className="p-5 rounded-xl bg-gradient-to-br from-amber-500/8 to-amber-500/4 border border-amber-500/20">
+                <div className="flex gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 shadow-lg shadow-amber-500/25 flex items-center justify-center flex-shrink-0">
+                    <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M12 16v-4M12 8h.01" />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-amber-700 dark:text-amber-300 mb-1">
+                      {tDashboard('noImmediateAction')}
+                    </p>
+                    <p className="text-sm text-foreground/70 reading-line-height leading-relaxed">
+                      {tDashboard('understandFirst')}
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
