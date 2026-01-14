@@ -172,8 +172,18 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
   const activeModuleData = activeModule ? getModuleById(activeModule) : null
   
   // Check completion for unlock logic
-  const phase0Completed = false // TODO: implement real check
-  const phase1Completed = false // TODO: implement real check
+  // Phase 0 is complete when all 0.x modules are done
+  const phase0Modules = OWN_MODULE_LIST.filter(m => m.id.startsWith('0.'))
+  const phase0Progress = getPillarProgress(sectionId, 'phase-0')
+  const phase0CompletedCount = phase0Progress?.completedSections?.length || 0
+  const phase0Completed = phase0CompletedCount >= phase0Modules.length && phase0Modules.length > 0
+  
+  // Phase 1 is complete when all 1.x modules are done (journey-specific)
+  const phase1Modules = getModulesForGroup('phase-1')
+  const phase1Progress = getPillarProgress(sectionId, 'phase-1')
+  const phase1CompletedCount = phase1Progress?.completedSections?.length || 0
+  const phase1Completed = phase1CompletedCount >= phase1Modules.length && phase1Modules.length > 0
+  
   const groups = activePillar === 'learning-path' 
     ? getLearningPathGroups(sectionId, phase0Completed, phase1Completed)
     : []

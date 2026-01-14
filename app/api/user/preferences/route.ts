@@ -2,7 +2,7 @@
  * User Preferences API Route
  * 
  * Handles GET and POST requests for user preferences.
- * Uses Supabase for data persistence.
+ * Stores in user_profiles.preferences JSONB column.
  */
 
 import { type NextRequest, NextResponse } from 'next/server';
@@ -26,15 +26,14 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Try to get from dashboard_configs first (main preferences table)
+    // Get from user_profiles.preferences
     const { data, error } = await supabaseAdmin
-      .from('dashboard_configs')
-      .select('*')
-      .eq('user_id', userId)
+      .from('user_profiles')
+      .select('preferences')
+      .eq('id', userId)
       .single();
 
     if (error && error.code !== 'PGRST116') {
-      // PGRST116 = no rows returned, which is fine for new users
       console.error('Error fetching preferences:', error);
       return NextResponse.json(
         { error: 'Failed to fetch preferences' },
@@ -42,14 +41,12 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Return preferences or empty defaults
+    // Return preferences from JSONB or defaults
+    const prefs = data?.preferences || {};
     return NextResponse.json({
-      preferences: data || {
-        density: 'comfortable',
-        config: {},
-        last_journey: null,
-        last_section: null,
-      }
+      country: prefs.country || null,
+      technicalLevel: prefs.technicalLevel || 'beginner',
+      language: prefs.language || 'it',
     });
   } catch (error) {
     console.error('Preferences GET error:', error);
@@ -63,7 +60,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { userId, preferences } = body;
+    const { userId, country, technicalLevel, language } = body;
 
     if (!userId) {
       return NextResponse.json(
@@ -72,24 +69,30 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Upsert preferences into dashboard_configs
-    const { data, error } = await supabaseAdmin
-      .from('dashboard_configs')
-      .upsert(
-        {
-          user_id: userId,
-          density: preferences?.density || 'comfortable',
-          config: preferences?.config || {},
-          last_journey: preferences?.last_journey || null,
-          last_section: preferences?.last_section || null,
-          updated_at: new Date().toISOString(),
-        },
-        {
-          onConflict: 'user_id',
-        }
-      )
-      .select()
+    // Get current preferences
+    const { data: current } = await supabaseAdmin
+      .from('user_profiles')
+      .select('preferences')
+      .eq('id', userId)
       .single();
+
+    // Merge with new preferences
+    const newPrefs = {
+      ...(current?.preferences || {}),
+      ...(country !== undefined && { country }),
+      ...(technicalLevel !== undefined && { technicalLevel }),
+      ...(language !== undefined && { language }),
+      updatedAt: new Date().toISOString(),
+    };
+
+    // Update user_profiles.preferences
+    const { error } = await supabaseAdmin
+      .from('user_profiles')
+      .update({ 
+        preferences: newPrefs,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', userId);
 
     if (error) {
       console.error('Error saving preferences:', error);
@@ -99,7 +102,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    return NextResponse.json({ success: true, preferences: data });
+    return NextResponse.json({ 
+      success: true, 
+      country: newPrefs.country,
+      technicalLevel: newPrefs.technicalLevel,
+      language: newPrefs.language,
+    });
   } catch (error) {
     console.error('Preferences POST error:', error);
     return NextResponse.json(
