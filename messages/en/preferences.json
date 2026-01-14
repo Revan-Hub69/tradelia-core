@@ -1,0 +1,69 @@
+{
+  "onboarding": {
+    "title": "Customize your experience",
+    "subtitle": "We'll adapt content to your needs",
+    "continue": "Continue",
+    "skip": "Skip for now",
+    "canChange": "You can change these settings anytime"
+  },
+  "country": {
+    "label": "Your country",
+    "placeholder": "Select your country",
+    "search": "Search country...",
+    "noResults": "No country found",
+    "description": "We'll use this to show you tax and legal content specific to your country",
+    "autoDetected": "Auto-detected",
+    "change": "Change country"
+  },
+  "technicalLevel": {
+    "label": "Your technical level",
+    "description": "We'll adapt content complexity to your knowledge level",
+    "change": "Change level",
+    "noob": {
+      "title": "Beginner",
+      "shortTitle": "Beginner",
+      "description": "Starting from scratch, explain everything simply",
+      "details": "Simplified content, detailed explanations, no technical jargon"
+    },
+    "informato": {
+      "title": "Intermediate",
+      "shortTitle": "Intermediate",
+      "description": "I know the basics, want to go deeper",
+      "details": "Balanced content, technical terms with context, practical examples"
+    },
+    "smart": {
+      "title": "Advanced",
+      "shortTitle": "Advanced",
+      "description": "I'm experienced, give me advanced content",
+      "details": "Full technical content, professional terminology, in-depth analysis"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Customize your experience",
+    "save": "Save changes",
+    "cancel": "Cancel",
+    "saved": "Settings saved",
+    "error": "Error saving settings"
+  },
+  "header": {
+    "country": "Country",
+    "level": "Level",
+    "settings": "Settings",
+    "changeCountry": "Change country",
+    "changeLevel": "Change technical level",
+    "openSettings": "Open settings"
+  },
+  "contentAdaptation": {
+    "tier1": "Full content for your country",
+    "tier2": "Regional content for your area",
+    "tier3": "Global content applicable everywhere",
+    "levelNoob": "Simplified content for beginners",
+    "levelInformato": "Balanced content for intermediate users",
+    "levelSmart": "Advanced content for experts"
+  },
+  "validation": {
+    "countryRequired": "Select a country",
+    "levelRequired": "Select a technical level"
+  }
+}

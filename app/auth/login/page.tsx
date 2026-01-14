@@ -6,6 +6,8 @@ import { useAuth } from '@/hooks/useAuth'
 import { useLanguage } from '@/components/LanguageSelector'
 import { mapAuthErrorToKey } from '@/lib/auth/error-mapping'
 import { safeRedirect } from '@/lib/auth/safe-redirect'
+import { OnboardingPreferencesModal } from '@/src/shared/components/OnboardingPreferencesModal'
+import { type TechnicalLevel } from '@/src/shared/components/TechnicalLevelSelector'
 import { 
   MailIcon, 
   LockIcon,
@@ -17,7 +19,7 @@ import Logo from '@/components/Logo'
 export default function Login() {
   const router = useRouter()
   const { t } = useLanguage()
-  const { signInWithEmail, signInWithGoogle, loading } = useAuth()
+  const { signInWithEmail, signInWithGoogle, loading, user } = useAuth()
   
   const [formData, setFormData] = useState({
     email: '',
@@ -26,6 +28,7 @@ export default function Login() {
   
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showOnboarding, setShowOnboarding] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -40,13 +43,11 @@ export default function Login() {
     
     try {
       await signInWithEmail(formData.email, formData.password)
-      // Redirect to localized dashboard
-      const locale = document.documentElement.lang || 'it'
-      router.push(safeRedirect(`/${locale}/dashboard`, `/${locale}/dashboard`))
+      // Show onboarding modal before redirecting
+      setShowOnboarding(true)
     } catch (err: unknown) {
       const key = mapAuthErrorToKey(err)
       setError(t(key))
-    } finally {
       setIsSubmitting(false)
     }
   }
@@ -54,10 +55,18 @@ export default function Login() {
   const handleGoogleSignIn = async () => {
     try {
       await signInWithGoogle()
+      // OAuth redirect will handle the flow
     } catch (err: unknown) {
       const key = mapAuthErrorToKey(err)
       setError(t(key))
     }
+  }
+
+  const handleOnboardingComplete = (_preferences: { country: string; technicalLevel: TechnicalLevel }) => {
+    setShowOnboarding(false)
+    // Redirect to localized dashboard
+    const locale = document.documentElement.lang || 'it'
+    router.push(safeRedirect(`/${locale}/dashboard`, `/${locale}/dashboard`))
   }
 
   return (
@@ -192,6 +201,15 @@ export default function Login() {
           </p>
         </div>
       </div>
+
+      {/* Onboarding Preferences Modal */}
+      {showOnboarding && user && (
+        <OnboardingPreferencesModal
+          isOpen={showOnboarding}
+          onComplete={handleOnboardingComplete}
+          userId={user.id}
+        />
+      )}
     </div>
   )
 }

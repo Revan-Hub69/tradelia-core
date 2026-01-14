@@ -1,0 +1,37 @@
+{
+  "navigation": {
+    "back": "Back",
+    "close": "Close",
+    "previous": "Previous",
+    "next": "Next",
+    "previousModule": "Previous module",
+    "nextModule": "Next module"
+  },
+  "groups": {
+    "title": "Choose a group",
+    "subtitle": "The path is progressive: complete Phase 0 to unlock Phase 1, then technical deep dives.",
+    "locked": "Complete {phase} to unlock this group",
+    "phase0": "Phase 0",
+    "phase1": "Phase 1",
+    "completed": "Group completed! 🎉"
+  },
+  "modules": {
+    "title": "Modules",
+    "subtitle": "Module {current} of {total}",
+    "progress": "Module completion progress",
+    "completed": "Module completed",
+    "notCompleted": "Finished reading?",
+    "markComplete": "Take the test",
+    "markCompleted": "Test completed ✓",
+    "ariaComplete": "Take completion test",
+    "ariaCompleted": "Retake test"
+  },
+  "content": {
+    "inDevelopment": "Content coming soon",
+    "inDevelopmentDescription": "Content for this pillar is under development."
+  },
+  "completion": {
+    "label": "Completion:",
+    "percentage": "{percentage}%"
+  }
+}

@@ -8,13 +8,16 @@
 
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations, useLocale } from 'next-intl'
 import { DashboardLayout } from '@/src/widgets/dashboard-layout'
 import { DashboardAuthGuard } from '@/src/widgets/dashboard-auth'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
 import { CryptoSectionsGrid } from '@/src/widgets/crypto-sections'
+import { OnboardingPreferencesModal } from '@/src/shared/components/OnboardingPreferencesModal'
+import { type TechnicalLevel } from '@/src/shared/components/TechnicalLevelSelector'
+import { useUserPreferences } from '@/src/shared/hooks/useUserPreferences'
 import { type SectionId, CRYPTO_SECTIONS } from '@/src/shared/config/crypto-sections'
 
 export function DashboardHome() {
@@ -22,14 +25,29 @@ export function DashboardHome() {
   const locale = useLocale()
   const tDashboard = useTranslations('dashboard')
   const { state } = useDashboardAuth()
+  const { country, isLoading: prefsLoading } = useUserPreferences(
+    state.isGuestMode ? undefined : state.user?.id
+  )
   
   const userName = state.profile?.nickname || state.profile?.full_name || tDashboard('guestUser')
   const [completedSections] = useState<SectionId[]>([]) // TODO: persistenza
+  const [showOnboarding, setShowOnboarding] = useState(false)
+
+  // Show onboarding modal if preferences not set (first time user)
+  useEffect(() => {
+    if (!prefsLoading && !country) {
+      setShowOnboarding(true)
+    }
+  }, [country, prefsLoading])
 
   const handleSectionClick = (sectionId: SectionId) => {
     const section = CRYPTO_SECTIONS[sectionId]
     // Naviga al journey corrispondente
     router.push(`/${locale}/dashboard/${section.journeyId}`)
+  }
+
+  const handleOnboardingComplete = (_preferences: { country: string; technicalLevel: TechnicalLevel }) => {
+    setShowOnboarding(false)
   }
 
   return (
@@ -59,6 +77,13 @@ export function DashboardHome() {
             />
           </div>
         </div>
+
+        {/* Onboarding Preferences Modal */}
+        <OnboardingPreferencesModal
+          isOpen={showOnboarding}
+          onComplete={handleOnboardingComplete}
+          userId={state.user?.id}
+        />
       </DashboardLayout>
     </DashboardAuthGuard>
   )

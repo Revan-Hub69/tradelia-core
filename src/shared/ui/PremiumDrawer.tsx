@@ -29,6 +29,7 @@ import { useDeepLink } from '../hooks/useDeepLink'
 import { useDrawerTabRestore } from '../hooks/useSessionContinuity'
 import { useScrollShadow } from '../hooks/useScrollShadow'
 import { useSafeTranslations } from '../lib/i18n-safe'
+import { DrawerTechnicalLevelToggle } from '@/src/shared/components/DrawerTechnicalLevelToggle'
 
 export interface PremiumDrawerProps {
   isOpen: boolean
@@ -60,6 +61,10 @@ export interface PremiumDrawerProps {
   breadcrumb?: string[]
   /** Enable swipe to close on mobile (REQ 24.3) */
   enableSwipeClose?: boolean
+  /** Show technical level toggle in header (for learning content) */
+  showTechnicalLevelToggle?: boolean
+  /** User ID for syncing technical level preferences */
+  userId?: string
 }
 
 interface AlertEnterpriseProps {
@@ -274,7 +279,9 @@ export function PremiumDrawer({
   onCopyLink,
   onTabRestore,
   breadcrumb,
-  enableSwipeClose = true
+  enableSwipeClose = true,
+  showTechnicalLevelToggle = false,
+  userId
 }: PremiumDrawerProps) {
   const drawerRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
@@ -703,6 +710,11 @@ export function PremiumDrawer({
 
                   {/* Header action buttons */}
                   <div className="flex items-center gap-2 flex-shrink-0">
+                    {/* Technical Level Toggle (for learning content) */}
+                    {showTechnicalLevelToggle && (
+                      <DrawerTechnicalLevelToggle userId={userId} />
+                    )}
+                    
                     {/* Copy Link Button (REQ 17.5) - ONLY when panelId is provided */}
                     {showCopyLink && panelId && (
                       <button

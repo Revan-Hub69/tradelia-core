@@ -8,6 +8,7 @@
 
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { ModuleContent } from '@/src/widgets/section-dashboards/ModuleContent'
 import { type LearningModule } from '@/src/shared/config/own-learning-path'
 
@@ -36,6 +37,7 @@ export function ModuleContentView({
   hasPrevious,
   hasNext
 }: ModuleContentViewProps) {
+  const tNav = useTranslations('drawer.navigation')
   const progressPercent = Math.round(((currentIndex + 1) / totalModules) * 100)
 
   return (
@@ -72,7 +74,7 @@ export function ModuleContentView({
             className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg px-3 py-2 -ml-2 min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           >
             <span className="text-lg">←</span>
-            Indietro
+            {tNav('back')}
           </button>
           
           {/* Prev/Next navigation */}
@@ -80,7 +82,7 @@ export function ModuleContentView({
             <button
               onClick={onPrevious}
               disabled={!hasPrevious}
-              aria-label="Modulo precedente"
+              aria-label={tNav('previousModule')}
               className="w-11 h-11 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-muted hover:bg-muted-foreground/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
               ‹
@@ -88,7 +90,7 @@ export function ModuleContentView({
             <button
               onClick={onNext}
               disabled={!hasNext}
-              aria-label="Modulo successivo"
+              aria-label={tNav('nextModule')}
               className="w-11 h-11 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-muted hover:bg-muted-foreground/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
               ›

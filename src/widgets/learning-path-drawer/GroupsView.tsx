@@ -19,6 +19,7 @@
 
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { type LearningPathGroup } from '@/src/shared/config/learning-path-groups'
 
 interface GroupsViewProps {
@@ -28,6 +29,9 @@ interface GroupsViewProps {
 }
 
 export function GroupsView({ groups, onSelectGroup, onBack }: GroupsViewProps) {
+  const t = useTranslations('drawer.groups')
+  const tNav = useTranslations('drawer.navigation')
+  
   return (
     <div className="density-section-gap flex flex-col">
       {/* Back button */}
@@ -36,16 +40,16 @@ export function GroupsView({ groups, onSelectGroup, onBack }: GroupsViewProps) {
         className="flex items-center density-gap density-text-secondary font-medium text-enterprise-secondary hover:text-enterprise-primary transition-subtle rounded-lg density-card -ml-2 tap-target-touch focus-enterprise-ring"
       >
         <span className="text-lg">←</span>
-        Modifica impostazioni
+        {tNav('back')}
       </button>
 
       {/* Intro */}
       <div className="section-frame density-card">
         <h2 className="text-xl font-bold text-enterprise-primary mb-2">
-          Scegli da dove iniziare
+          {t('title')}
         </h2>
         <p className="density-text-secondary text-enterprise-secondary reading-line-height">
-          Il percorso è progressivo: completa Phase 0 per sbloccare Phase 1, poi gli approfondimenti tecnici.
+          {t('subtitle')}
         </p>
       </div>
 
@@ -73,6 +77,8 @@ function GroupCard({
   index: number
   onSelect: () => void
 }) {
+  const t = useTranslations('drawer.groups')
+  
   const colorStyles = {
     primary: {
       bg: 'bg-primary/5',
@@ -118,7 +124,7 @@ function GroupCard({
             
             <div className="alert-enterprise-info">
               <p className="density-text-secondary reading-line-height">
-                Completa {index === 1 ? 'Phase 0' : 'Phase 1'} per sbloccare questo gruppo
+                {t('locked', { phase: index === 1 ? t('phase0') : t('phase1') })}
               </p>
             </div>
           </div>

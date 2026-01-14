@@ -1,10 +1,10 @@
 /**
- * Learning Path Drawer - 4-Level Navigation
+ * Learning Path Drawer - 3-Level Navigation
  * 
- * Export all views for the learning path drawer
+ * Setup moved to OnboardingPreferencesModal (shown during login/signup)
+ * Drawer now starts directly at Groups view
  */
 
-export { SetupView } from './SetupView'
 export { GroupsView } from './GroupsView'
 export { ModulesListView } from './ModulesListView'
 export { ModuleContentView } from './ModuleContentView'

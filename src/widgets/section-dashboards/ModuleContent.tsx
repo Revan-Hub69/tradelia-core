@@ -15,6 +15,7 @@
 'use client'
 
 import { useEffect, useRef, useState, useMemo } from 'react'
+import { useTranslations } from 'next-intl'
 import { type LearningModule, type ModuleSection } from '@/src/shared/config/own-learning-path'
 
 interface ModuleContentProps {
@@ -24,6 +25,7 @@ interface ModuleContentProps {
 }
 
 export function ModuleContent({ module, onComplete, isCompleted }: ModuleContentProps) {
+  const t = useTranslations('drawer.modules')
   const [showCheckAnimation, setShowCheckAnimation] = useState(false)
   const articleRef = useRef<HTMLElement>(null)
 
@@ -125,7 +127,7 @@ export function ModuleContent({ module, onComplete, isCompleted }: ModuleContent
                   </div>
                 )}
                 <p className="text-foreground font-semibold text-base">
-                  {isCompleted ? 'Modulo completato' : 'Hai finito di leggere?'}
+                  {isCompleted ? t('completed') : t('notCompleted')}
                 </p>
               </div>
               <p className="text-sm text-muted-foreground mt-0.5">
@@ -137,7 +139,7 @@ export function ModuleContent({ module, onComplete, isCompleted }: ModuleContent
             </div>
             <button
               onClick={onComplete}
-              aria-label={isCompleted ? 'Rifai il test' : 'Fai il test di completamento'}
+              aria-label={isCompleted ? t('ariaCompleted') : t('ariaComplete')}
               className={`
                 group relative px-6 py-3 rounded-xl font-semibold
                 min-h-[48px] min-w-[140px] sm:min-w-[160px]
@@ -153,7 +155,7 @@ export function ModuleContent({ module, onComplete, isCompleted }: ModuleContent
                 inline-flex items-center gap-2 transition-transform duration-300
                 ${!isCompleted ? 'group-hover:translate-x-0.5' : ''}
               `}>
-                {isCompleted ? 'Test completato ✓' : 'Fai il test'}
+                {isCompleted ? t('markCompleted') : t('markComplete')}
                 {!isCompleted && <ArrowRightIcon className="w-4 h-4" />}
               </span>
             </button>

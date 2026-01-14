@@ -1,0 +1,69 @@
+{
+  "onboarding": {
+    "title": "Personalizza la tua esperienza",
+    "subtitle": "Adatteremo i contenuti alle tue esigenze",
+    "continue": "Continua",
+    "skip": "Salta per ora",
+    "canChange": "Puoi cambiare queste impostazioni in qualsiasi momento"
+  },
+  "country": {
+    "label": "Il tuo paese",
+    "placeholder": "Seleziona il tuo paese",
+    "search": "Cerca paese...",
+    "noResults": "Nessun paese trovato",
+    "description": "Useremo questa informazione per mostrarti contenuti fiscali e legali specifici per il tuo paese",
+    "autoDetected": "Rilevato automaticamente",
+    "change": "Cambia paese"
+  },
+  "technicalLevel": {
+    "label": "Il tuo livello tecnico",
+    "description": "Adatteremo la complessità dei contenuti al tuo livello di conoscenza",
+    "change": "Cambia livello",
+    "noob": {
+      "title": "Noob",
+      "shortTitle": "Principiante",
+      "description": "Inizio da zero, spiegami tutto con parole semplici",
+      "details": "Contenuti semplificati, spiegazioni dettagliate, nessun termine tecnico"
+    },
+    "informato": {
+      "title": "Informato",
+      "shortTitle": "Intermedio",
+      "description": "Conosco le basi, voglio approfondire",
+      "details": "Contenuti bilanciati, termini tecnici con contesto, esempi pratici"
+    },
+    "smart": {
+      "title": "Smart",
+      "shortTitle": "Avanzato",
+      "description": "Sono esperto, dammi contenuti avanzati",
+      "details": "Contenuti tecnici completi, terminologia professionale, analisi approfondite"
+    }
+  },
+  "settings": {
+    "title": "Impostazioni",
+    "subtitle": "Personalizza la tua esperienza",
+    "save": "Salva modifiche",
+    "cancel": "Annulla",
+    "saved": "Impostazioni salvate",
+    "error": "Errore nel salvare le impostazioni"
+  },
+  "header": {
+    "country": "Paese",
+    "level": "Livello",
+    "settings": "Impostazioni",
+    "changeCountry": "Cambia paese",
+    "changeLevel": "Cambia livello tecnico",
+    "openSettings": "Apri impostazioni"
+  },
+  "contentAdaptation": {
+    "tier1": "Contenuti completi per il tuo paese",
+    "tier2": "Contenuti regionali per la tua area",
+    "tier3": "Contenuti globali applicabili ovunque",
+    "levelNoob": "Contenuti semplificati per principianti",
+    "levelInformato": "Contenuti bilanciati per utenti intermedi",
+    "levelSmart": "Contenuti avanzati per esperti"
+  },
+  "validation": {
+    "countryRequired": "Seleziona un paese",
+    "levelRequired": "Seleziona un livello tecnico"
+  }
+}

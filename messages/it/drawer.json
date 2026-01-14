@@ -1,0 +1,37 @@
+{
+  "navigation": {
+    "back": "Indietro",
+    "close": "Chiudi",
+    "previous": "Precedente",
+    "next": "Successivo",
+    "previousModule": "Modulo precedente",
+    "nextModule": "Modulo successivo"
+  },
+  "groups": {
+    "title": "Scegli il gruppo",
+    "subtitle": "Il percorso è progressivo: completa Phase 0 per sbloccare Phase 1, poi gli approfondimenti tecnici.",
+    "locked": "Completa {phase} per sbloccare questo gruppo",
+    "phase0": "Phase 0",
+    "phase1": "Phase 1",
+    "completed": "Gruppo completato! 🎉"
+  },
+  "modules": {
+    "title": "Moduli",
+    "subtitle": "Modulo {current} di {total}",
+    "progress": "Progresso completamento moduli",
+    "completed": "Modulo completato",
+    "notCompleted": "Hai finito di leggere?",
+    "markComplete": "Fai il test",
+    "markCompleted": "Test completato ✓",
+    "ariaComplete": "Fai il test di completamento",
+    "ariaCompleted": "Rifai il test"
+  },
+  "content": {
+    "inDevelopment": "Contenuto in arrivo",
+    "inDevelopmentDescription": "I contenuti per questo pilastro sono in fase di sviluppo."
+  },
+  "completion": {
+    "label": "Completamento:",
+    "percentage": "{percentage}%"
+  }
+}

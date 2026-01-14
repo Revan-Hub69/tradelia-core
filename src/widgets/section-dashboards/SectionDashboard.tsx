@@ -29,15 +29,12 @@ import { INVEST_MODULE_LIST, getInvestModuleById } from '@/src/shared/config/inv
 import { SPECULATE_MODULE_LIST, getSpeculateModuleById } from '@/src/shared/config/speculate-learning-path'
 import { TECHNICAL_MODULE_LIST, getTechnicalModuleById } from '@/src/shared/config/technical-deep-dives'
 import { 
-  SetupView, 
   GroupsView, 
   ModulesListView, 
   ModuleContentView 
 } from '@/src/widgets/learning-path-drawer'
 import { 
-  getLearningPathGroups,
-  type Country,
-  type TechnicalLevel
+  getLearningPathGroups
 } from '@/src/shared/config/learning-path-groups'
 import { useProgressTracking } from '@/src/shared/hooks/useProgressTracking'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
@@ -88,13 +85,11 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
   const section = CRYPTO_SECTIONS[sectionId]
   const pillars = SECTION_PILLARS[sectionId]
 
-  // Drawer state - 4-level navigation
-  type DrawerView = 'setup' | 'groups' | 'modules-list' | 'module-content'
+  // Drawer state - 3-level navigation (setup removed, now in onboarding modal)
+  type DrawerView = 'groups' | 'modules-list' | 'module-content'
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const [drawerView, setDrawerView] = useState<DrawerView>('setup')
+  const [drawerView, setDrawerView] = useState<DrawerView>('groups')
   const [activePillar, setActivePillar] = useState<string | null>(null)
-  const [selectedCountry, setSelectedCountry] = useState<Country | null>(null)
-  const [selectedLevel, setSelectedLevel] = useState<TechnicalLevel | null>(null)
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null)
   const [activeModule, setActiveModule] = useState<string | null>(null)
 
@@ -184,28 +179,8 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
 
   const handleOpenPillar = (pillarId: string) => {
     setActivePillar(pillarId)
-    
-    // Only learning-path uses 4-level navigation
-    if (pillarId === 'learning-path') {
-      // Check if setup is already done
-      if (selectedCountry && selectedLevel) {
-        setDrawerView('groups')
-      } else {
-        setDrawerView('setup')
-      }
-    } else {
-      // Other pillars use placeholder for now
-      setDrawerView('groups')
-    }
-    
-    setDrawerOpen(true)
-  }
-
-  const handleSetupComplete = (country: Country, level: TechnicalLevel) => {
-    setSelectedCountry(country)
-    setSelectedLevel(level)
     setDrawerView('groups')
-    // TODO: persist to localStorage or backend
+    setDrawerOpen(true)
   }
 
   const handleSelectGroup = (groupId: string) => {
@@ -219,11 +194,7 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
   }
 
   const handleBackFromGroups = () => {
-    if (activePillar === 'learning-path') {
-      setDrawerView('setup')
-    } else {
-      closeDrawer()
-    }
+    closeDrawer()
   }
 
   const handleBackFromModulesList = () => {
@@ -280,7 +251,7 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
       setActivePillar(null)
       setSelectedGroup(null)
       setActiveModule(null)
-      setDrawerView('setup')
+      setDrawerView('groups')
     }, 200)
   }
 
@@ -366,7 +337,10 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
             }
             subtitle={
               drawerView === 'module-content' && activeModuleData
-                ? `Modulo ${activeModules.findIndex(m => m.id === activeModule) + 1} di ${activeModules.length}`
+                ? t('drawer.modules.subtitle', { 
+                    current: activeModules.findIndex(m => m.id === activeModule) + 1,
+                    total: activeModules.length 
+                  })
                 : drawerView === 'modules-list'
                 ? t(activePillarData.titleKey)
                 : t(`${sectionId}.title`)
@@ -376,17 +350,10 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
             size="xl"
             closeOnBackdrop={true}
             closeOnEscape={true}
+            showTechnicalLevelToggle={activePillar === 'learning-path'}
+            {...(state.user?.id && { userId: state.user.id })}
           >
-            {/* Level 1: Setup */}
-            {drawerView === 'setup' && activePillar === 'learning-path' && (
-              <SetupView
-                currentCountry={selectedCountry}
-                currentLevel={selectedLevel}
-                onComplete={handleSetupComplete}
-              />
-            )}
-
-            {/* Level 2: Groups */}
+            {/* Level 1: Groups */}
             {drawerView === 'groups' && activePillar === 'learning-path' && (
               <GroupsView
                 groups={groups}
@@ -395,7 +362,7 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
               />
             )}
 
-            {/* Level 3: Modules List */}
+            {/* Level 2: Modules List */}
             {drawerView === 'modules-list' && (
               <ModulesListView
                 groupTitle={
@@ -410,7 +377,7 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
               />
             )}
 
-            {/* Level 4: Module Content */}
+            {/* Level 3: Module Content */}
             {drawerView === 'module-content' && activeModuleData && (
               <ModuleContentView
                 module={activeModuleData}
@@ -434,7 +401,7 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
                   className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg px-3 py-2 -ml-2 min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                 >
                   <span className="text-lg">←</span>
-                  Chiudi
+                  {t('drawer.navigation.close')}
                 </button>
                 
                 <div className="p-8 rounded-lg border border-dashed border-border/50 text-center">
@@ -442,10 +409,10 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
                     <PillarIcon type={activePillarData.icon} className="w-8 h-8 text-muted-foreground" />
                   </div>
                   <h3 className="text-lg font-semibold text-foreground mb-2">
-                    Contenuto in arrivo
+                    {t('drawer.content.inDevelopment')}
                   </h3>
                   <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                    I contenuti per questo pilastro sono in fase di sviluppo.
+                    {t('drawer.content.inDevelopmentDescription')}
                   </p>
                 </div>
               </div>

@@ -19,6 +19,8 @@
 
 'use client'
 
+import { useTranslations } from 'next-intl'
+
 interface Module {
   id: string
   title: string
@@ -38,8 +40,11 @@ export function ModulesListView({
   modules, 
   completedModules,
   onSelectModule, 
-  onBack 
+  onBack
 }: ModulesListViewProps) {
+  const t = useTranslations('drawer.modules')
+  const tNav = useTranslations('drawer.navigation')
+  const tGroups = useTranslations('drawer.groups')
   const completionPercent = Math.round((completedModules.length / modules.length) * 100)
 
   return (
@@ -50,7 +55,7 @@ export function ModulesListView({
         className="flex items-center density-gap density-text-secondary font-medium text-enterprise-secondary hover:text-enterprise-primary transition-subtle rounded-lg density-card -ml-2 tap-target-touch focus-enterprise-ring"
       >
         <span className="text-lg">←</span>
-        Torna ai gruppi
+        {tNav('back')}
       </button>
 
       {/* Progress */}
@@ -70,7 +75,7 @@ export function ModulesListView({
           aria-valuenow={completionPercent}
           aria-valuemin={0}
           aria-valuemax={100}
-          aria-label="Progresso completamento moduli"
+          aria-label={t('progress')}
         >
           <div 
             className="h-full bg-success rounded-full transition-all duration-300"
@@ -83,7 +88,7 @@ export function ModulesListView({
             <div className="flex items-center density-gap">
               <CheckCircleIcon className="w-5 h-5 flex-shrink-0" />
               <span className="density-text-secondary font-medium">
-                Gruppo completato! 🎉
+                {tGroups('completed')}
               </span>
             </div>
           </div>
