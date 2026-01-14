@@ -182,29 +182,43 @@ function GroupCard({
 
   if (group.isLocked) {
     return (
-      <div className="relative p-5 rounded-xl bg-muted/30 border border-border/40 opacity-60">
-        <div className="flex items-start gap-4">
-          {/* Icon with muted background */}
-          <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
-            <LockIcon className="w-5 h-5 text-muted-foreground" />
+      <div className="relative p-5 rounded-xl bg-gradient-to-br from-neutral-500/8 to-neutral-500/4 border border-neutral-500/20 overflow-hidden">
+        {/* Decorative pattern */}
+        <div className="absolute inset-0 opacity-20" style={{
+          backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(115, 115, 115, 0.1) 0%, transparent 50%)'
+        }} />
+        
+        <div className="relative z-10 flex items-start gap-4">
+          {/* Icon with gradient + glow */}
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-neutral-400 to-neutral-500 shadow-lg shadow-neutral-500/25 flex items-center justify-center flex-shrink-0">
+            <LockIcon className="w-5 h-5 text-white" />
           </div>
 
           {/* Content */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2">
-              <h3 className="text-base font-semibold text-foreground">
+              <h3 className="text-base font-semibold text-foreground tracking-tight">
                 {index === 0 ? 'Phase 0' : index === 1 ? 'Phase 1' : 'Approfondimenti Tecnici'}
               </h3>
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 text-xs font-medium ring-1 ring-inset ring-neutral-300/50">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-neutral-50 dark:bg-neutral-900/20 text-neutral-700 dark:text-neutral-300 text-xs font-medium ring-1 ring-inset ring-neutral-600/20">
                 <LockIcon className="w-3 h-3" />
                 Bloccato
               </span>
             </div>
             
-            <div className="p-4 rounded-lg bg-primary-50/50 dark:bg-primary-900/10 border border-primary-200/30 dark:border-primary-800/30">
-              <p className="text-sm text-foreground/70 reading-line-height leading-relaxed">
-                {t('locked', { phase: index === 1 ? t('phase0') : t('phase1') })}
-              </p>
+            {/* Info box premium */}
+            <div className="p-4 rounded-lg bg-gradient-to-br from-primary-500/8 to-primary-500/4 border border-primary-500/20">
+              <div className="flex gap-3">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-600 shadow-lg shadow-primary-500/25 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 16v-4M12 8h.01" />
+                  </svg>
+                </div>
+                <p className="text-sm text-foreground/70 reading-line-height leading-relaxed">
+                  {t('locked', { phase: index === 1 ? t('phase0') : t('phase1') })}
+                </p>
+              </div>
             </div>
           </div>
         </div>

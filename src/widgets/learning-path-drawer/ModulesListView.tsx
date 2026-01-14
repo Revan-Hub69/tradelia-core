@@ -140,12 +140,17 @@ export function ModulesListView({
       <div className="flex flex-col gap-3">
         {modules.map((module, index) => {
           const isCompleted = completedModules.includes(module.id)
+          // Progressive unlock: modulo locked se il precedente non è completato
+          const previousModule = index > 0 ? modules[index - 1] : null
+          const isLocked = previousModule ? !completedModules.includes(previousModule.id) : false
+          
           return (
             <AnimatedCard key={module.id} delay={index * 80}>
               <ModuleCard
                 module={module}
                 index={index}
                 isCompleted={isCompleted}
+                isLocked={isLocked}
                 onSelect={() => onSelectModule(module.id)}
               />
             </AnimatedCard>
@@ -197,13 +202,53 @@ function ModuleCard({
   module,
   index,
   isCompleted,
+  isLocked,
   onSelect
 }: {
   module: Module
   index: number
   isCompleted: boolean
+  isLocked: boolean
   onSelect: () => void
 }) {
+  if (isLocked) {
+    return (
+      <div className="relative p-5 rounded-xl bg-gradient-to-br from-neutral-500/8 to-neutral-500/4 border border-neutral-500/20 overflow-hidden cursor-not-allowed">
+        {/* Decorative pattern */}
+        <div className="absolute inset-0 opacity-20" style={{
+          backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(115, 115, 115, 0.1) 0%, transparent 50%)'
+        }} />
+        
+        <div className="relative z-10 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4 flex-1 min-w-0">
+            {/* Lock indicator with gradient */}
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-neutral-400 to-neutral-500 shadow-lg shadow-neutral-500/25 flex items-center justify-center flex-shrink-0">
+              <LockIcon className="w-4 h-4 text-white" />
+            </div>
+
+            {/* Module info */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-base font-semibold text-foreground/60 truncate tracking-tight">
+                  {index + 1}. {module.title}
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-neutral-50 dark:bg-neutral-900/20 text-neutral-700 dark:text-neutral-300 text-xs font-medium ring-1 ring-inset ring-neutral-600/20 flex-shrink-0">
+                  Bloccato
+                </span>
+              </div>
+              <span className="text-sm text-muted-foreground">
+                ~{module.estimatedMinutes} min
+              </span>
+            </div>
+          </div>
+
+          {/* Lock icon */}
+          <LockIcon className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+        </div>
+      </div>
+    )
+  }
+  
   return (
     <button
       onClick={onSelect}
@@ -311,6 +356,15 @@ function ArrowRightIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
       <path d="M5 12h14M12 5l7 7-7 7" />
+    </svg>
+  )
+}
+
+function LockIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
     </svg>
   )
 }

@@ -110,8 +110,8 @@ export function CryptoSectionsGrid({
               
               {/* Coming Soon Overlay - FUORI dall'AnimatedCard per non essere animato */}
               {!isActive && (
-                <div className="absolute inset-0 bg-background/40 backdrop-blur-[1px] rounded-xl flex items-end justify-center pb-4 cursor-not-allowed pointer-events-none">
-                  <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/90 rounded-full border border-border/50 shadow-sm pointer-events-auto">
+                <div className="absolute inset-0 bg-background/40 backdrop-blur-[1px] rounded-xl flex items-end justify-center pb-4 cursor-not-allowed">
+                  <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/90 rounded-full border border-border/50 shadow-sm">
                     <ClockIcon className="w-3.5 h-3.5 text-muted-foreground" />
                     <span className="text-xs font-medium text-muted-foreground">
                       {t('ui.comingSoon')}
