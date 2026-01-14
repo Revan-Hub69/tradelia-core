@@ -24,7 +24,6 @@ interface ModuleContentProps {
 }
 
 export function ModuleContent({ module, onComplete, isCompleted }: ModuleContentProps) {
-  const [scrollProgress, setScrollProgress] = useState(0)
   const [showCheckAnimation, setShowCheckAnimation] = useState(false)
   const articleRef = useRef<HTMLElement>(null)
 
@@ -55,30 +54,6 @@ export function ModuleContent({ module, onComplete, isCompleted }: ModuleContent
     })
   }, [module.sections])
 
-  // Scroll progress handler
-  const handleScroll = useCallback(() => {
-    const drawerContent = document.querySelector('.drawer-enterprise-content')
-    if (!drawerContent) return
-    
-    const scrollTop = drawerContent.scrollTop
-    const scrollHeight = drawerContent.scrollHeight - drawerContent.clientHeight
-    const progress = scrollHeight > 0 ? Math.min((scrollTop / scrollHeight) * 100, 100) : 0
-    setScrollProgress(progress)
-  }, [])
-
-  // Attach scroll listener to drawer content
-  useEffect(() => {
-    const drawerContent = document.querySelector('.drawer-enterprise-content')
-    if (!drawerContent) return
-    
-    drawerContent.addEventListener('scroll', handleScroll, { passive: true })
-    handleScroll() // Initial calculation
-    
-    return () => {
-      drawerContent.removeEventListener('scroll', handleScroll)
-    }
-  }, [handleScroll])
-
   // Trigger checkmark animation on completion
   useEffect(() => {
     if (isCompleted) {
@@ -92,19 +67,6 @@ export function ModuleContent({ module, onComplete, isCompleted }: ModuleContent
         ref={articleRef}
         className="reading-width selection:bg-primary-500/20 selection:text-foreground"
       >
-        {/* Reading Progress Bar - Sticky at top */}
-        <div className="sticky top-0 left-0 right-0 z-50 h-1 bg-border/20 mb-6">
-          <div 
-            className="h-full bg-gradient-to-r from-primary-500 to-primary-400 transition-all duration-150 ease-out"
-            style={{ width: `${scrollProgress}%` }}
-            role="progressbar"
-            aria-valuenow={Math.round(scrollProgress)}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-label="Progresso lettura"
-          />
-        </div>
-
         {/* Header con tempo stimato */}
         <header className="flex items-center gap-2 text-sm text-muted-foreground mb-8 pb-4 border-b border-border/30">
           <ClockIcon className="w-4 h-4" />
