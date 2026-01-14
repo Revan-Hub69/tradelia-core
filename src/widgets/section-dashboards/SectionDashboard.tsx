@@ -86,7 +86,8 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
   const { 
     getPillarProgress,
     markSectionComplete,
-    markSectionIncomplete
+    markSectionIncomplete,
+    progressCache
   } = useProgressTracking({
     isGuest: state.isGuestMode,
     userId: state.user?.id
@@ -109,7 +110,7 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
   const activeModules = activePillar === 'learning-path' ? OWN_MODULE_LIST : []
   const activeProgress = useMemo(() => 
     activePillarData ? getPillarProgress(sectionId, activePillarData.id) : null,
-    [activePillarData, getPillarProgress, sectionId]
+    [activePillarData, getPillarProgress, sectionId, progressCache]
   )
   const activeModuleData = activeModule ? getModuleById(activeModule) : null
 
