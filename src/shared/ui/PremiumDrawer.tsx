@@ -650,7 +650,7 @@ export function PremiumDrawer({
         {/* Header with Enterprise styling and scroll shadow */}
         {(title || showCloseButton || minimalHeader) && (
           <header 
-            className={`drawer-enterprise-header ${isScrolled ? 'scrolled' : ''}`}
+            className={`drawer-enterprise-header border-b border-border-card ${isScrolled ? 'scrolled' : ''}`}
           >
             {minimalHeader ? (
               /* Header minimalista mobile: solo torna indietro */
@@ -710,6 +710,13 @@ export function PremiumDrawer({
 
                   {/* Header action buttons */}
                   <div className="flex items-center gap-2 flex-shrink-0">
+                    {/* Technical Level Toggle in header */}
+                    {showTechnicalLevelToggle && (
+                      <div className="mr-2">
+                        <DrawerTechnicalLevelToggle userId={userId} />
+                      </div>
+                    )}
+
                     {/* Copy Link Button (REQ 17.5) - ONLY when panelId is provided */}
                     {showCopyLink && panelId && (
                       <button
@@ -749,13 +756,6 @@ export function PremiumDrawer({
           ref={contentRef}
           className="drawer-enterprise-content"
         >
-          {/* Technical Level Toggle (moved to content top) */}
-          {showTechnicalLevelToggle && (
-            <div className="px-6 pt-4 pb-2">
-              <DrawerTechnicalLevelToggle userId={userId} />
-            </div>
-          )}
-          
           {children}
         </div>
 

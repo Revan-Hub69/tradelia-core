@@ -61,14 +61,14 @@ export function ModulesListView({
       </button>
 
       {/* Progress header with gradient background */}
-      <div className="relative density-card rounded-xl bg-gradient-to-br from-primary-500/8 to-primary-500/3 border border-primary-500/20 overflow-hidden">
+      <div className="relative px-4 py-3 rounded-xl bg-gradient-to-br from-primary-500/8 to-primary-500/3 border border-primary-500/20 overflow-hidden">
         {/* Decorative background pattern */}
         <div className="absolute inset-0 opacity-30" style={{
           backgroundImage: 'radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 50%)'
         }} />
         
         <div className="relative z-10">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-2">
             <h2 className="text-xl font-semibold text-enterprise-primary tracking-tight">
               {groupTitle}
             </h2>
@@ -79,7 +79,7 @@ export function ModulesListView({
           
           {/* Progress bar with shimmer (matching ModuleContent style) */}
           <div 
-            className="relative h-2 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden"
+            className="relative h-1.5 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden"
             role="progressbar"
             aria-valuenow={completionPercent}
             aria-valuemin={0}
@@ -112,7 +112,7 @@ export function ModulesListView({
 
           {/* Completion badge with animation */}
           {completionPercent === 100 && (
-            <div className="mt-4 animate-fade-in">
+            <div className="mt-2 animate-fade-in">
               <div className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 text-sm font-medium ring-1 ring-inset ring-emerald-600/20 shadow-sm">
                 <CheckCircleFilledIcon className="w-4 h-4 animate-zoom-in" />
                 <span>{tGroups('completed')}</span>
@@ -228,13 +228,8 @@ function ModuleCard({
           />
         </div>
         
-        <div className="pl-6 density-card rounded-xl bg-card border border-border-card overflow-hidden relative shadow-sm">
-          <div className="flex items-center gap-6">
-            {/* SVG Number - pastel blue-gray "stampato" */}
-            <div className="flex-shrink-0">
-              <StampatoNumber groupNumber={groupNumber} moduleNumber={index + 1} />
-            </div>
-
+        <div className="pl-4 density-card rounded-xl bg-card border border-border-card overflow-hidden relative shadow-sm">
+          <div className="flex items-center gap-4">
             {/* Module info */}
             <div className="flex-1 min-w-0">
               <h3 className="text-base font-semibold text-enterprise-primary truncate tracking-tight mb-1">
@@ -282,12 +277,7 @@ function ModuleCard({
         <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 pointer-events-none" />
 
         <div className="relative z-10 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-6 flex-1 min-w-0">
-            {/* SVG Number - pastel blue-gray "stampato" */}
-            <div className="flex-shrink-0">
-              <StampatoNumber groupNumber={groupNumber} moduleNumber={index + 1} />
-            </div>
-
+          <div className="flex items-center gap-4 flex-1 min-w-0">
             {/* Module info */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
@@ -362,55 +352,6 @@ function LockIcon({ className }: { className?: string }) {
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
       <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
       <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-    </svg>
-  )
-}
-
-
-// SVG "Stampato" Number Component - Pastel Blue-Gray
-function StampatoNumber({ groupNumber, moduleNumber }: { groupNumber: number; moduleNumber: number }) {
-  const moduleStr = String(moduleNumber).padStart(2, '0')
-  
-  return (
-    <svg width="80" height="48" viewBox="0 0 80 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="opacity-90">
-      {/* Group number (large) */}
-      <text
-        x="0"
-        y="38"
-        fontSize="42"
-        fontWeight="900"
-        fill="currentColor"
-        className="text-slate-400 dark:text-slate-500"
-        style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}
-      >
-        {groupNumber}
-      </text>
-      
-      {/* Dot */}
-      <text
-        x="32"
-        y="38"
-        fontSize="42"
-        fontWeight="900"
-        fill="currentColor"
-        className="text-slate-400 dark:text-slate-500"
-        style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}
-      >
-        .
-      </text>
-      
-      {/* Module number (medium) */}
-      <text
-        x="42"
-        y="36"
-        fontSize="28"
-        fontWeight="700"
-        fill="currentColor"
-        className="text-slate-400 dark:text-slate-500"
-        style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}
-      >
-        {moduleStr}
-      </text>
     </svg>
   )
 }

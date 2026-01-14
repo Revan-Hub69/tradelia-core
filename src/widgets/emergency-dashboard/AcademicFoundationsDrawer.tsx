@@ -209,17 +209,17 @@ export function AcademicFoundationsDrawer({
           </button>
         </div>
 
-        {/* Progress bar (always visible) */}
-        <div className="flex items-center gap-3 density-card rounded-lg bg-gradient-to-br from-primary-500/8 to-primary-500/3 border border-primary-500/20">
-          <span className="text-sm font-medium text-enterprise-primary">{t('ui.progress')}:</span>
-          <div className="flex-1 h-2 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-gradient-to-r from-primary-500 to-emerald-500 rounded-full transition-all duration-300"
-              style={{ width: `${totalProgress.percentage}%` }}
-            />
-          </div>
-          <span className="text-sm font-semibold text-enterprise-primary">{totalProgress.percentage}%</span>
+      {/* Progress bar (always visible) */}
+      <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-primary-500/8 to-primary-500/3 border border-primary-500/20 rounded-lg">
+        <span className="text-xs font-medium text-enterprise-primary">{t('ui.progress')}:</span>
+        <div className="flex-1 h-1.5 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-gradient-to-r from-primary-500 to-emerald-500 rounded-full transition-all duration-300"
+            style={{ width: `${totalProgress.percentage}%` }}
+          />
         </div>
+        <span className="text-xs font-semibold text-enterprise-primary">{totalProgress.percentage}%</span>
+      </div>
 
         {/* SECTIONS VIEW */}
         {view === 'sections' && (

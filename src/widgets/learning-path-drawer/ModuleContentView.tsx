@@ -51,32 +51,30 @@ export function ModuleContentView({
   return (
     <div className="flex flex-col gap-section">
       {/* Navigation header */}
-      <div className="density-card rounded-xl bg-card border-b border-enterprise-soft pb-4">
-        {/* Progress bar */}
-        <div className="flex items-center gap-3 mb-4">
-          <span className="text-sm text-enterprise-secondary whitespace-nowrap">
-            {tNav('progress')}:
-          </span>
+      <div className="flex items-center gap-2 px-4 py-2 bg-card border-b border-border-card">
+        <span className="text-xs text-enterprise-secondary whitespace-nowrap">
+          {tNav('progress')}:
+        </span>
+        <div 
+          className="flex-1 h-1.5 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden"
+          role="progressbar"
+          aria-valuenow={progressPercent}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label={tNav('moduleProgress')}
+        >
           <div 
-            className="flex-1 h-2 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden"
-            role="progressbar"
-            aria-valuenow={progressPercent}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-label={tNav('moduleProgress')}
-          >
-            <div 
-              className="h-full rounded-full bg-gradient-to-r from-primary-500 to-primary-600 shadow-sm transition-all duration-500 ease-out"
-              style={{ width: `${progressPercent}%` }}
-            />
-          </div>
-          <span className="text-sm font-semibold text-enterprise-primary whitespace-nowrap">
-            {currentIndex + 1}/{totalModules}
-          </span>
+            className="h-full rounded-full bg-gradient-to-r from-primary-500 to-primary-600 shadow-sm transition-all duration-500 ease-out"
+            style={{ width: `${progressPercent}%` }}
+          />
+        </div>
+        <span className="text-xs font-semibold text-enterprise-primary whitespace-nowrap">
+          {currentIndex + 1}/{totalModules}
+        </span>
         </div>
         
         {/* Navigation controls */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between px-4 py-2 border-b border-border-card">
           <button
             onClick={onBack}
             className="flex items-center gap-2 text-sm font-medium text-enterprise-secondary hover:text-enterprise-primary transition-colors rounded-lg px-3 py-2 -ml-2 tap-target-touch focus-enterprise-ring"
@@ -104,7 +102,6 @@ export function ModuleContentView({
               <ChevronRightIcon className="w-5 h-5 text-enterprise-primary" />
             </button>
           </div>
-        </div>
       </div>
       
       {/* Module content */}
