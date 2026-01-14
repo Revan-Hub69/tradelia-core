@@ -76,9 +76,6 @@ export function CryptoSectionsGrid({
                       size="sm"
                       showTooltip={false}
                     />
-                    <span className="text-xs text-muted-foreground">
-                      {t(`${sectionId}.complexity`)}
-                    </span>
                     {isCompleted && (
                       <span className="text-xs text-success font-medium">
                         ✓ {t('ui.completed')}
