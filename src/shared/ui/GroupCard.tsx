@@ -20,27 +20,27 @@ export interface GroupCardProps {
   /** Titolo del gruppo */
   title: string;
   /** Descrizione o sottotitolo */
-  description?: string;
+  description?: string | undefined;
   /** Numero di moduli nel gruppo */
-  moduleCount?: number;
+  moduleCount?: number | undefined;
   /** Ore stimate */
-  estimatedHours?: number;
+  estimatedHours?: number | undefined;
   /** Icona del gruppo */
   icon: ReactNode;
   /** Colore del tema */
   color: GroupCardColor;
   /** Se il gruppo è bloccato */
-  isLocked?: boolean;
+  isLocked?: boolean | undefined;
   /** Messaggio per stato bloccato */
-  lockedMessage?: string;
+  lockedMessage?: string | undefined;
   /** Badge aggiuntivo (es. "Completato") */
-  badge?: ReactNode;
+  badge?: ReactNode | undefined;
   /** Testo CTA (es. "Inizia", "Continua") */
-  ctaText?: string;
+  ctaText?: string | undefined;
   /** Callback click */
-  onClick?: () => void;
+  onClick?: (() => void) | undefined;
   /** Classi CSS aggiuntive */
-  className?: string;
+  className?: string | undefined;
 }
 
 const COLOR_STYLES: Record<GroupCardColor, {
