@@ -509,3 +509,18 @@
       0 2px 4px -2px rgb(0 0 0 / 0.4);
   }
 }
+
+
+/* Shimmer animation slow (for progress bars) */
+@keyframes shimmer-slow {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer-slow {
+  animation: shimmer-slow 3s infinite;
+}
