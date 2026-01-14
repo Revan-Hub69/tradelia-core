@@ -50,42 +50,45 @@ export function ModulesListView({
   const groupNumber = groupId === 'phase-0' ? 0 : groupId === 'phase-1' ? 1 : 2
 
   return (
-    <div className="flex flex-col gap-section font-professional">
-      {/* Back button */}
+    <div className="flex flex-col gap-8">
+      {/* Back button - 44px touch target */}
       <button
         onClick={onBack}
         className="
-          flex items-center gap-inline
-          text-enterprise-small font-medium text-enterprise-secondary
-          hover:text-enterprise-primary
-          transition-enterprise-fast
+          flex items-center gap-3
+          min-h-[44px]
+          text-sm font-medium
+          text-muted-foreground hover:text-foreground
+          transition-colors duration-200
           rounded-lg px-3 py-2 -ml-2
-          tap-target-touch
-          focus-enterprise-ring
+          focus-visible:outline-none
+          focus-visible:ring-2
+          focus-visible:ring-primary/20
+          focus-visible:ring-offset-2
         "
       >
         <ArrowLeftIcon className="w-4 h-4" />
         {tNav('back')}
       </button>
 
-      {/* Progress header with gradient background */}
-      <div className="relative p-6 rounded-xl bg-gradient-to-br from-primary-500/8 to-primary-500/3 border border-primary-500/20 overflow-hidden">
-        {/* Decorative background pattern */}
+      {/* Progress header - Enterprise Premium */}
+      <div className="relative p-6 rounded-xl bg-gradient-to-br from-primary-500/8 to-primary-500/3 border border-primary-500/20 overflow-hidden shadow-sm">
+        {/* Decorative Pattern */}
         <div className="absolute inset-0 opacity-30" style={{
           backgroundImage: 'radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 50%)'
         }} />
         
         <div className="relative z-10">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-enterprise-h2 text-enterprise-primary tracking-tight">
+            <h2 className="text-2xl font-semibold text-foreground tracking-tight leading-tight">
               {groupTitle}
             </h2>
-            <span className="text-enterprise-body font-numeric font-semibold text-enterprise-primary px-3 py-1 rounded-full bg-background/50 backdrop-blur-sm border border-primary-500/20">
+            <span className="text-sm font-semibold text-foreground px-3 py-1.5 rounded-full bg-background/50 backdrop-blur-sm border border-primary-500/20">
               {completedModules.length}/{modules.length}
             </span>
           </div>
           
-          {/* Progress bar with shimmer (matching ModuleContent style) */}
+          {/* Progress bar with shimmer */}
           <div 
             className="relative h-2 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden"
             role="progressbar"
@@ -94,11 +97,6 @@ export function ModulesListView({
             aria-valuemax={100}
             aria-label={t('progress')}
           >
-            {/* Background pattern */}
-            <div className="absolute inset-0 opacity-50" style={{
-              backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 10px, rgba(0,0,0,0.03) 10px, rgba(0,0,0,0.03) 20px)'
-            }} />
-            
             {/* Progress fill with gradient and shimmer */}
             <div 
               className="h-full rounded-full bg-gradient-to-r from-primary-500 to-primary-600 shadow-sm transition-all duration-500 ease-out relative overflow-hidden"
@@ -130,19 +128,8 @@ export function ModulesListView({
         </div>
       </div>
 
-      {/* Decorative divider */}
-      <div className="flex items-center gap-4 py-2">
-        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border/60 to-transparent" />
-        <div className="flex gap-1.5">
-          <div className="w-1.5 h-1.5 rounded-full bg-primary-500/40" />
-          <div className="w-1.5 h-1.5 rounded-full bg-primary-500/60" />
-          <div className="w-1.5 h-1.5 rounded-full bg-primary-500/40" />
-        </div>
-        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border/60 to-transparent" />
-      </div>
-
-      {/* Modules list with viewport animations */}
-      <div className="flex flex-col gap-3">
+      {/* Modules list - Red Hat spacing (gap-4 = 16px) */}
+      <div className="flex flex-col gap-4">
         {modules.map((module, index) => {
           const isCompleted = completedModules.includes(module.id)
           // Progressive unlock: modulo locked se il precedente non è completato
@@ -229,39 +216,42 @@ function ModuleCard({
   if (isLocked) {
     return (
       <div className="relative">
-        {/* Progress bar on left side - 3-4px width with rounded corners */}
-        <div className="absolute left-0 top-0 bottom-0 w-1 bg-neutral-200 dark:bg-neutral-800 rounded-full overflow-hidden">
-          <div 
-            className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-primary-500 to-emerald-500 transition-all duration-500 rounded-full"
-            style={{ height: `${progressPercent}%`, width: '4px' }}
-          />
-        </div>
-        
-        <div className="pl-6 p-6 rounded-xl bg-background border border-border/50 overflow-hidden relative shadow-sm">
-          <div className="flex items-center gap-6">
-            {/* SVG Number - pastel blue-gray "stampato" */}
+        {/* Card - Enterprise elevation system */}
+        <div className="
+          p-6
+          rounded-xl
+          bg-card
+          border border-border/10
+          shadow-sm
+          overflow-hidden relative
+        ">
+          <div className="flex items-center gap-4">
+            {/* SVG Number - high contrast */}
             <div className="flex-shrink-0">
               <StampatoNumber groupNumber={groupNumber} moduleNumber={index + 1} />
             </div>
 
-            {/* Module info */}
+            {/* Module info - Enterprise typography */}
             <div className="flex-1 min-w-0">
-              <h3 className="text-base font-semibold text-foreground truncate tracking-tight mb-1">
+              <h3 className="text-base font-semibold text-foreground truncate tracking-tight leading-normal mb-1">
                 {module.title}
               </h3>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground font-medium">
                 <ClockIcon className="w-3.5 h-3.5" />
                 <span>~{module.estimatedMinutes} min</span>
               </div>
             </div>
           </div>
 
-          {/* Glassmorphism overlay - dashboard style */}
-          <div className="absolute inset-0 bg-background/40 backdrop-blur-[1px] rounded-xl flex items-end justify-center pb-4 cursor-not-allowed">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/90 rounded-full border border-border/50 shadow-sm">
-              <LockIcon className="w-3.5 h-3.5 text-muted-foreground" />
-              <span className="text-xs font-medium text-muted-foreground">
+          {/* Premium glassmorphism overlay - centered */}
+          <div className="absolute inset-0 bg-background/70 backdrop-blur-md rounded-xl flex items-center justify-center cursor-not-allowed">
+            <div className="flex flex-col items-center gap-2 px-6 py-4 bg-muted/95 rounded-2xl border border-border shadow-lg">
+              <LockIcon className="w-6 h-6 text-muted-foreground" />
+              <span className="text-sm font-semibold text-foreground">
                 Bloccato
+              </span>
+              <span className="text-xs text-muted-foreground text-center leading-normal">
+                Completa il modulo precedente
               </span>
             </div>
           </div>
@@ -271,56 +261,63 @@ function ModuleCard({
   }
   
   return (
-    <div className="relative">
-      {/* Progress bar on left side - 3-4px width with rounded corners and glow */}
-      <div className="absolute left-0 top-0 bottom-0 w-1 bg-neutral-200 dark:bg-neutral-800 rounded-full overflow-hidden">
-        <div 
-          className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-primary-500 to-emerald-500 transition-all duration-500 rounded-full shadow-lg shadow-primary-500/30"
-          style={{ height: `${progressPercent}%`, width: '4px' }}
-        />
-      </div>
+    <button
+      onClick={onSelect}
+      className="
+        group relative w-full
+        p-6
+        rounded-xl
+        text-left
+        bg-card
+        border border-border/10
+        shadow-sm
+        transition-all duration-200 ease-out
+        hover:border-border/20
+        hover:shadow-md
+        hover:bg-muted/30
+        focus-visible:outline-none
+        focus-visible:ring-2
+        focus-visible:ring-primary/20
+        focus-visible:ring-offset-2
+        focus-visible:border-primary/50
+      "
+    >
+      {/* Gradient overlay on hover */}
+      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary/0 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
       
-      <button
-        onClick={onSelect}
-        className="group relative w-full pl-6 p-6 rounded-xl border text-left bg-background border-border/50 transition-all duration-200 ease-out hover:border-primary-300 dark:hover:border-primary-700 hover:shadow-lg hover:translate-y-[-2px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-2"
-      >
-        {/* Gradient overlay on hover */}
-        <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary/0 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
-        
-        {/* Shine effect */}
-        <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 pointer-events-none" />
+      {/* Shine effect */}
+      <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 pointer-events-none" />
 
-        <div className="relative z-10 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-6 flex-1 min-w-0">
-            {/* SVG Number - pastel blue-gray "stampato" */}
-            <div className="flex-shrink-0">
-              <StampatoNumber groupNumber={groupNumber} moduleNumber={index + 1} />
-            </div>
-
-            {/* Module info */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <h3 className="text-base font-semibold text-foreground truncate tracking-tight">
-                  {module.title}
-                </h3>
-                {isCompleted && (
-                  <div className="w-5 h-5 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-sm">
-                    <CheckIcon className="w-3 h-3 text-white" />
-                  </div>
-                )}
-              </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <ClockIcon className="w-3.5 h-3.5" />
-                <span>~{module.estimatedMinutes} min</span>
-              </div>
-            </div>
+      <div className="relative z-10 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-4 flex-1 min-w-0">
+          {/* SVG Number - high contrast */}
+          <div className="flex-shrink-0">
+            <StampatoNumber groupNumber={groupNumber} moduleNumber={index + 1} />
           </div>
 
-          {/* Arrow */}
-          <ArrowRightIcon className="w-5 h-5 text-muted-foreground flex-shrink-0 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-primary" />
+          {/* Module info - Enterprise typography */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <h3 className="text-base font-semibold text-foreground truncate tracking-tight leading-normal">
+                {module.title}
+              </h3>
+              {isCompleted && (
+                <div className="w-5 h-5 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-sm ring-2 ring-emerald-500/20">
+                  <CheckIcon className="w-3 h-3 text-white" />
+                </div>
+              )}
+            </div>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground font-medium">
+              <ClockIcon className="w-3.5 h-3.5" />
+              <span>~{module.estimatedMinutes} min</span>
+            </div>
+          </div>
         </div>
-      </button>
-    </div>
+
+        {/* Arrow */}
+        <ArrowRightIcon className="w-5 h-5 text-muted-foreground flex-shrink-0 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-primary" />
+      </div>
+    </button>
   )
 }
 
@@ -376,47 +373,50 @@ function LockIcon({ className }: { className?: string }) {
 }
 
 
-// SVG "Stampato" Number Component - Pastel Blue-Gray
+// SVG "Stampato" Number Component - High Contrast Premium
 function StampatoNumber({ groupNumber, moduleNumber }: { groupNumber: number; moduleNumber: number }) {
   const moduleStr = String(moduleNumber).padStart(2, '0')
   
   return (
-    <svg width="80" height="48" viewBox="0 0 80 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="opacity-90">
-      {/* Group number (large) */}
+    <svg width="90" height="56" viewBox="0 0 90 56" fill="none" xmlns="http://www.w3.org/2000/svg" className="opacity-95">
+      {/* Group number (large, high contrast) */}
       <text
         x="0"
-        y="38"
-        fontSize="42"
+        y="42"
+        fontSize="52"
         fontWeight="900"
         fill="currentColor"
-        className="text-slate-400 dark:text-slate-500"
-        style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}
+        className="text-foreground"
+        dominantBaseline="mathematical"
+        style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif' }}
       >
         {groupNumber}
       </text>
       
       {/* Dot */}
       <text
-        x="32"
-        y="38"
-        fontSize="42"
+        x="38"
+        y="42"
+        fontSize="52"
         fontWeight="900"
         fill="currentColor"
-        className="text-slate-400 dark:text-slate-500"
-        style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}
+        className="text-foreground"
+        dominantBaseline="mathematical"
+        style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif' }}
       >
         .
       </text>
       
-      {/* Module number (medium) */}
+      {/* Module number (medium, high contrast) */}
       <text
-        x="42"
-        y="36"
-        fontSize="28"
-        fontWeight="700"
+        x="50"
+        y="40"
+        fontSize="32"
+        fontWeight="800"
         fill="currentColor"
-        className="text-slate-400 dark:text-slate-500"
-        style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}
+        className="text-foreground"
+        dominantBaseline="mathematical"
+        style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif' }}
       >
         {moduleStr}
       </text>
