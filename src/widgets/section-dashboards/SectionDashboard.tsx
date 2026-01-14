@@ -107,7 +107,10 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
 
   // Get modules for active pillar (only learning-path has real modules for now)
   const activeModules = activePillar === 'learning-path' ? OWN_MODULE_LIST : []
-  const activeProgress = activePillarData ? getPillarProgress(sectionId, activePillarData.id) : null
+  const activeProgress = useMemo(() => 
+    activePillarData ? getPillarProgress(sectionId, activePillarData.id) : null,
+    [activePillarData, getPillarProgress, sectionId]
+  )
   const activeModuleData = activeModule ? getModuleById(activeModule) : null
 
   const handleOpenPillar = (pillarId: string) => {
