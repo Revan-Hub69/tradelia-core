@@ -33,8 +33,8 @@ Creare un percorso educativo completo che permetta a chi usa Tradelia di parlare
 
 ## 🎯 Percorso Cognitivo Tradelia (Completo)
 
-### **FASE 0: FONDAMENTI UNIVERSALI** (Prerequisito per tutte le sezioni)
-*Prima di Own/Yield/Invest/Speculate, tutti devono capire le basi*
+### **FASE 0A: ALFABETIZZAZIONE** (Prerequisito minimo)
+*Capire di cosa parliamo - Sblocca comprensione base*
 
 #### **Modulo 0.1: Cosa sono le criptovalute**
 **Obiettivo**: Capire COSA sono, PERCHÉ esistono, DOVE si collocano nel mondo finanziario
@@ -118,11 +118,12 @@ Creare un percorso educativo completo che permetta a chi usa Tradelia di parlare
 **Obiettivo**: Capire COME si raggiunge accordo senza autorità centrale
 
 **Contenuti**:
-- Problema del consenso distribuito
-- Proof of Work (PoW): mining, energia, sicurezza
-- Proof of Stake (PoS): validatori, staking, efficienza
-- Altri consensus (DPoS, PoA) - cenni
-- Trade-off: decentralizzazione vs velocità vs sicurezza
+- Synchrony, Asynchrony, Partial Synchrony
+- Threshold adversary, Dolev-Strong Authenticated Broadcast
+- **Byzantine Fault Tolerance (BFT)**: consenso con nodi malevoli (concetto, no teoremi)
+- **State Machine Replication (SMR)**: tutti eseguono stesse regole nello stesso ordine
+- Consensus for State Machine Replication
+- Synchronous consensus lower bound (optional)
 
 **Outcome**: "Capisco come le blockchain raggiungono consenso e i trade-off"
 
@@ -175,7 +176,7 @@ Creare un percorso educativo completo che permetta a chi usa Tradelia di parlare
 
 ---
 
-#### **Modulo 1.3: Chiavi private e seed phrase**
+#### **Modulo 1.4: Chiavi private e seed phrase** (ERA 1.3)
 **Obiettivo**: Capire il CUORE della sicurezza crypto
 
 **Contenuti**:
@@ -189,7 +190,7 @@ Creare un percorso educativo completo che permetta a chi usa Tradelia di parlare
 
 ---
 
-#### **Modulo 1.4: Self-custody vs Exchange custody**
+#### **Modulo 1.5: Self-custody vs Exchange custody** (ERA 1.4)
 **Obiettivo**: Capire il TRADE-OFF tra controllo e comodità
 
 **Contenuti**:
@@ -202,7 +203,8 @@ Creare un percorso educativo completo che permetta a chi usa Tradelia di parlare
 
 ---
 
-#### **Modulo 1.5: Errori irreversibili**
+#### **Modulo 1.3: Errori irreversibili** (SPOSTATO PRIMA)
+*Pedagogia del rischio: prima spaventi, poi insegni a proteggersi*
 **Obiettivo**: Capire COSA può andare storto e PERCHÉ
 
 **Contenuti**:
@@ -216,7 +218,7 @@ Creare un percorso educativo completo che permetta a chi usa Tradelia di parlare
 
 ---
 
-#### **Modulo 1.6: Indirizzi e network**
+#### **Modulo 1.6: Indirizzi e network** (ERA 1.6, invariato)
 **Obiettivo**: Capire COME funzionano gli indirizzi e le reti
 
 **Contenuti**:
@@ -247,6 +249,8 @@ Creare un percorso educativo completo che permetta a chi usa Tradelia di parlare
 ### **FASE 2: YIELD (Ottenere Rendite)**
 *Prerequisito: Fase 0 + Fase 1 completate*
 
+> **⚠️ FRAME COGNITIVO COSTANTE**: "Rendimento = rischio di perdita totale non immediatamente visibile"
+
 #### **Modulo 2.1: Da dove nasce una rendita crypto**
 **Obiettivo**: Capire le FONTI di rendimento
 
@@ -256,6 +260,9 @@ Creare un percorso educativo completo che permetta a chi usa Tradelia di parlare
 - Liquidity providing (AMM, impermanent loss)
 - Yield farming (composizione rendimenti)
 - Differenza tra APR e APY
+
+**Chiave di lettura** (game theory):
+> "Un protocollo funziona solo se fare la cosa giusta conviene e fare la cosa sbagliata costa"
 
 **Outcome**: "Capisco da dove nasce il rendimento crypto"
 
@@ -313,6 +320,9 @@ Creare un percorso educativo completo che permetta a chi usa Tradelia di parlare
 - Rischio oracle (manipolazione prezzi)
 - Audit e sicurezza (non garanzia)
 
+**Chiave di lettura** (incentive compatibility):
+> "Stablecoin regge finché tutti credono che regga. Lending funziona finché liquidazione è più veloce del panico."
+
 **Outcome**: "Capisco il rischio di controparte nel yield"
 
 ---
@@ -362,7 +372,21 @@ Creare un percorso educativo completo che permetta a chi usa Tradelia di parlare
 
 ---
 
-#### **Modulo 3.2: Dollar Cost Averaging (DCA)**
+#### **Modulo 3.2: Tassazione e aspetti legali** (ANTICIPATO, era 3.7)
+**Obiettivo**: Capire gli OBBLIGHI fiscali PRIMA di parlare di rendimenti
+
+**Contenuti**:
+- Capital gains tax (vendita crypto)
+- Staking rewards (reddito)
+- Airdrop (reddito)
+- Dichiarazione (quadro RW in Italia)
+- Record keeping (ogni transazione)
+
+**Outcome**: "Capisco gli obblighi fiscali del possedere crypto"
+
+---
+
+#### **Modulo 3.3: Dollar Cost Averaging (DCA)** (ERA 3.2)
 **Obiettivo**: Capire la STRATEGIA di accumulo graduale
 
 **Contenuti**:
@@ -376,7 +400,7 @@ Creare un percorso educativo completo che permetta a chi usa Tradelia di parlare
 
 ---
 
-#### **Modulo 3.3: Orizzonte temporale realistico**
+#### **Modulo 3.4: Orizzonte temporale realistico** (ERA 3.3)
 **Obiettivo**: Capire QUANTO tempo serve per investire in crypto
 
 **Contenuti**:
@@ -390,7 +414,7 @@ Creare un percorso educativo completo che permetta a chi usa Tradelia di parlare
 
 ---
 
-#### **Modulo 3.4: Volatilità storica**
+#### **Modulo 3.5: Volatilità storica** (ERA 3.4)
 **Obiettivo**: Capire la VOLATILITÀ crypto e come gestirla
 
 **Contenuti**:
@@ -404,7 +428,7 @@ Creare un percorso educativo completo che permetta a chi usa Tradelia di parlare
 
 ---
 
-#### **Modulo 3.5: Errori comportamentali**
+#### **Modulo 3.6: Errori comportamentali** (ERA 3.5)
 **Obiettivo**: Capire gli ERRORI psicologici comuni
 
 **Contenuti**:
@@ -418,7 +442,7 @@ Creare un percorso educativo completo che permetta a chi usa Tradelia di parlare
 
 ---
 
-#### **Modulo 3.6: Diversificazione**
+#### **Modulo 3.7: Diversificazione** (ERA 3.6)
 **Obiettivo**: Capire COME diversificare in crypto
 
 **Contenuti**:
@@ -429,20 +453,6 @@ Creare un percorso educativo completo che permetta a chi usa Tradelia di parlare
 - Diversificazione vs diworsification
 
 **Outcome**: "Capisco come diversificare un portfolio crypto"
-
----
-
-#### **Modulo 3.7: Tassazione e aspetti legali**
-**Obiettivo**: Capire gli OBBLIGHI fiscali
-
-**Contenuti**:
-- Capital gains tax (vendita crypto)
-- Staking rewards (reddito)
-- Airdrop (reddito)
-- Dichiarazione (quadro RW in Italia)
-- Record keeping (ogni transazione)
-
-**Outcome**: "Capisco gli obblighi fiscali del possedere crypto"
 
 ---
 
@@ -547,9 +557,30 @@ Creare un percorso educativo completo che permetta a chi usa Tradelia di parlare
 
 ---
 
-## 🎓 Moduli Trasversali (Opzionali ma Importanti)
+## 🎓 Approfondimenti Tecnici (Opzionali)
+*Non obbligatori - Per chi vuole andare più a fondo*
 
-### **Modulo T.1: Smart Contracts**
+### **T.0: Come leggere paper e documentazione** ⭐ NUOVO
+**Obiettivo**: Capire COME studiare materiale tecnico
+
+**Contenuti**:
+- Whitepaper vs Yellow Paper vs EIP vs RFC
+- Tecnica di lettura efficace:
+  - Abstract (cosa fanno)
+  - Introduzione (perché serve)
+  - Conclusioni (cosa hanno ottenuto)
+  - Figure (visualizzazione)
+  - Solo dopo: formule e pseudocode
+- Dove trovare documentazione affidabile
+- Come distinguere paper serio da marketing
+
+**Outcome**: "So come leggere documentazione tecnica senza perdermi"
+
+**Accessibile da**: versione Smart di ogni modulo
+
+---
+
+### **T.1: Smart Contracts**
 **Obiettivo**: Capire COSA sono e COME funzionano
 
 **Contenuti**:
@@ -563,7 +594,7 @@ Creare un percorso educativo completo che permetta a chi usa Tradelia di parlare
 
 ---
 
-### **Modulo T.2: DeFi (Decentralized Finance)**
+### **T.2: DeFi (Decentralized Finance)**
 **Obiettivo**: Capire l'ECOSISTEMA DeFi
 
 **Contenuti**:
@@ -577,7 +608,7 @@ Creare un percorso educativo completo che permetta a chi usa Tradelia di parlare
 
 ---
 
-### **Modulo T.3: NFT**
+### **T.3: NFT**
 **Obiettivo**: Capire COSA sono gli NFT
 
 **Contenuti**:
@@ -591,7 +622,7 @@ Creare un percorso educativo completo che permetta a chi usa Tradelia di parlare
 
 ---
 
-### **Modulo T.4: DAO**
+### **T.4: DAO**
 **Obiettivo**: Capire le ORGANIZZAZIONI decentralizzate
 
 **Contenuti**:
@@ -605,7 +636,7 @@ Creare un percorso educativo completo che permetta a chi usa Tradelia di parlare
 
 ---
 
-### **Modulo T.5: Privacy e Anonimato**
+### **T.5: Privacy e Anonimato**
 **Obiettivo**: Capire PRIVACY su blockchain pubblica
 
 **Contenuti**:
@@ -619,7 +650,7 @@ Creare un percorso educativo completo che permetta a chi usa Tradelia di parlare
 
 ---
 
-### **Modulo T.6: Scaling Solutions**
+### **T.6: Scaling Solutions**
 **Obiettivo**: Capire come si SCALA la blockchain
 
 **Contenuti**:
@@ -630,6 +661,124 @@ Creare un percorso educativo completo che permetta a chi usa Tradelia di parlare
 - Trade-off: decentralizzazione vs velocità
 
 **Outcome**: "Capisco le soluzioni di scaling"
+
+---
+
+### **T.7: Regolamentazione Globale** (RAFFORZATO)
+**Obiettivo**: Capire il PANORAMA regolamentare (MiCA, CBDC)
+
+**Contenuti**:
+
+**MiCA (Markets in Crypto-Assets) - UE**:
+- EMT (E-Money Token): stablecoin backed da fiat
+- ART (Asset-Referenced Token): stablecoin backed da basket
+- Other crypto-assets: tutto il resto
+- Cosa cambia per retail:
+  - Disclosure migliore (whitepaper obbligatori)
+  - Travel rule (tracciabilità transazioni)
+  - KYC ovunque (fine anonimato)
+  - Limiti a stablecoin "too big to fail"
+
+**USA**:
+- SEC: Howey Test, securities classification
+- CFTC: commodities (Bitcoin, Ethereum)
+- Enforcement vs regulation
+
+**Asia**:
+- China: ban totale
+- Singapore: friendly ma regolato
+- Hong Kong: apertura controllata
+
+**CBDC (Central Bank Digital Currency)**:
+- CBDC ≠ stablecoin privato
+- CBDC = moneta programmabile + sorvegliata
+- Ruolo: banche centrali, ESMA, EBA
+- Implicazioni:
+  - Pagamenti istantanei
+  - Privacy ridotta
+  - Competizione con crypto private
+  - Politica monetaria programmabile
+
+**Outcome**: "Capisco il panorama regolamentare globale e le implicazioni di MiCA e CBDC"
+
+---
+
+### **T.8: Money, Banking & Token Economics** ⭐ NUOVO
+**Obiettivo**: Capire COSA è la moneta e come funziona l'economia dei token
+
+**Prerequisito soft per**: Yield, Invest, Speculate
+
+**Contenuti**:
+
+**Parte A - Money & Banking** (base UNIC):
+- Cos'è la moneta:
+  - Mezzo di scambio
+  - Unità di conto
+  - Riserva di valore
+- Aggregati monetari: M0 / M1 / M2 (concetto, no macro avanzata)
+- Moneta bancaria vs moneta della banca centrale
+- Creazione di moneta tramite credito (cenni)
+
+**Parte B - Bitcoin come non-sovereign money**:
+- Perché Bitcoin non è debito di nessuno
+- Emissione predeterminata vs politica monetaria discrezionale
+- Fee come meccanismo di sicurezza (non "costo inutile")
+- Limiti: rigidità, volatilità, assenza lender of last resort
+
+**Parte C - Token Economics**:
+- Emissione token:
+  - Fixed supply (Bitcoin)
+  - Inflationary (Ethereum pre-merge)
+  - Deflationary (burn mechanisms)
+- Incentivi: staking rewards, fee distribution, burn
+- Treasury: DAO, protocol treasury, governance
+- Differenza tra:
+  - Token che cattura valore (fee accrual)
+  - Token che distribuisce incentivi (emission)
+
+**Versione Smart** (micro-ponte accademico):
+- Quantity Theory of Money (cenno: MV = PQ)
+- Incentive design (mechanism design theory)
+- Lettura guidata: 1-2 paper su token economics
+
+**Outcome**: "Capisco cosa è la moneta, perché Bitcoin è diverso, e come funziona l'economia dei token"
+
+---
+
+### **T.9: Security & Threat Modeling** ⭐ NUOVO
+**Obiettivo**: Capire COME ragionare sulla sicurezza crypto
+
+**Contenuti**:
+
+**Categorie di attacco**:
+1. **Social engineering**: phishing, fake support, impersonation
+2. **Key compromise**: malware, keylogger, physical theft
+3. **Smart contract bugs**: reentrancy, overflow, logic errors
+4. **Economic attacks**: 
+   - Flash loan attacks
+   - Oracle manipulation
+   - MEV exploitation
+   - Governance attacks
+
+**Concetto chiave: Assumptions** (cosa deve restare vero):
+- "Ethereum funziona se i validatori non colludono (>51%)"
+- "Stablecoin funziona se le riserve esistono davvero"
+- "DeFi funziona se gli oracoli non vengono manipolati"
+- "Wallet funziona se il seed phrase resta segreto"
+
+**Threat modeling pratico**:
+- Identificare asset (cosa proteggo?)
+- Identificare minacce (chi mi attacca? come?)
+- Identificare vulnerabilità (dove sono debole?)
+- Mitigazione (come mi proteggo?)
+
+**Esempi storici**:
+- Mt.Gox (key compromise + insider)
+- The DAO (smart contract bug)
+- Ronin Bridge (social engineering + key compromise)
+- Mango Markets (oracle manipulation)
+
+**Outcome**: "Capisco come ragionare sulla sicurezza crypto come un ingegnere"
 
 ---
 
@@ -647,17 +796,40 @@ Creare un percorso educativo completo che permetta a chi usa Tradelia di parlare
 
 ---
 
-## 📊 Struttura Finale Tradelia
+## 📊 Struttura Finale Tradelia (Aggiornata)
 
 ### **Percorso Completo** (ordine cognitivo)
-1. **FASE 0: Fondamenti** (7 moduli) - PREREQUISITO UNIVERSALE
-2. **FASE 1: Own** (7 moduli) - Possedere
-3. **FASE 2: Yield** (7 moduli) - Rendite
-4. **FASE 3: Invest** (7 moduli) - Investire
-5. **FASE 4: Speculate** (7 moduli) - Trading
-6. **Moduli Trasversali** (7 moduli) - Opzionali
 
-**Totale: 35 moduli core + 7 opzionali = 42 moduli**
+**FASE 0A: Alfabetizzazione** (4 moduli) - Prerequisito minimo
+- 0.1 → 0.4
+
+**FASE 0B: Meccanica & Sicurezza** (3 moduli) - Prerequisito per Own
+- 0.5 → 0.7
+
+**FASE 1: Own** (7 moduli) - Possedere
+- Ordine riorganizzato: 1.1 → 1.2 → **1.3 (errori)** → 1.4 (chiavi) → 1.5 → 1.6 → 1.7
+
+**FASE 2: Yield** (7 moduli) - Rendite
+- Con frame cognitivo costante + game theory
+
+**FASE 3: Invest** (7 moduli) - Investire
+- Con tassazione anticipata (3.2)
+
+**FASE 4: Speculate** (7 moduli) - Trading
+
+**Approfondimenti Tecnici** (10 moduli opzionali):
+- T.0: Come leggere paper ⭐ NUOVO
+- T.1: Smart Contracts
+- T.2: DeFi
+- T.3: NFT
+- T.4: DAO
+- T.5: Privacy
+- T.6: Scaling
+- T.7: Regolamentazione (rafforzato MiCA/CBDC)
+- T.8: Money, Banking & Token Economics ⭐ NUOVO
+- T.9: Security & Threat Modeling ⭐ NUOVO
+
+**Totale: 45 moduli** (35 core + 10 approfondimenti)
 
 ### **Ogni modulo in 3 versioni**:
 - **Noob**: Linguaggio semplice, analogie, zero tecnicismi
