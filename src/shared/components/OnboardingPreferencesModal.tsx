@@ -171,7 +171,6 @@ export function OnboardingPreferencesModal({
                 value={country}
                 onChange={setCountry}
                 placeholder={tCountry('placeholder')}
-                showTierBadge={true}
               />
             </label>
             
