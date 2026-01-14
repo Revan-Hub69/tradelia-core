@@ -229,50 +229,47 @@ function ModuleCard({
   if (isLocked) {
     return (
       <div className="relative">
-        {/* Progress bar on left side - shows overall journey progress */}
-        <div className="absolute left-0 top-0 bottom-0 w-1 bg-neutral-200 dark:bg-neutral-800 rounded-l-xl overflow-hidden">
+        {/* Progress bar on left side - 3-4px width with rounded corners */}
+        <div className="absolute left-0 top-0 bottom-0 w-1 bg-neutral-200 dark:bg-neutral-800 rounded-full overflow-hidden">
           <div 
-            className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-primary-500 via-primary-500 to-emerald-500 transition-all duration-500"
-            style={{ height: `${progressPercent}%` }}
+            className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-primary-500 to-emerald-500 transition-all duration-500 rounded-full"
+            style={{ height: `${progressPercent}%`, width: '4px' }}
           />
         </div>
         
-        <div className="pl-4 p-5 rounded-xl bg-gradient-to-br from-neutral-500/8 to-neutral-500/4 border border-neutral-500/20 overflow-hidden cursor-not-allowed">
-          {/* Decorative pattern */}
-          <div className="absolute inset-0 opacity-20" style={{
-            backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(115, 115, 115, 0.1) 0%, transparent 50%)'
-          }} />
-          
-          <div className="relative z-10 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-4 flex-1 min-w-0">
-              {/* Lock indicator with gradient */}
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-neutral-400 to-neutral-500 shadow-lg shadow-neutral-500/25 flex items-center justify-center flex-shrink-0">
-                <LockIcon className="w-4 h-4 text-white" />
-              </div>
+        <div className="pl-6 p-5 rounded-xl bg-background border border-neutral-200 dark:border-neutral-800 overflow-hidden relative">
+          {/* Module info */}
+          <div className="flex items-center gap-6 flex-1 min-w-0">
+            {/* Editorial "Stampato" Typography - GIGANTE */}
+            <span className="flex items-baseline gap-1 flex-shrink-0 font-editorial">
+              <span className="text-6xl font-black text-foreground leading-none tabular-nums antialiased" style={{ fontFeatureSettings: '"tnum"', fontVariantNumeric: 'tabular-nums' }}>
+                {groupNumber}
+              </span>
+              <span className="text-2xl font-bold text-foreground leading-none tabular-nums antialiased" style={{ fontFeatureSettings: '"tnum"', fontVariantNumeric: 'tabular-nums' }}>
+                .{String(index + 1).padStart(2, '0')}
+              </span>
+            </span>
 
-              {/* Module info */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  {/* Premium typography numbering: 0 big + .01 medium */}
-                  <span className="flex items-baseline gap-0.5">
-                    <span className="text-2xl font-bold text-foreground/60 font-numeric leading-none">{groupNumber}</span>
-                    <span className="text-base font-semibold text-foreground/60 font-numeric leading-none">.{String(index + 1).padStart(2, '0')}</span>
-                  </span>
-                  <span className="text-base font-semibold text-foreground/60 truncate tracking-tight">
-                    {module.title}
-                  </span>
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-neutral-50 dark:bg-neutral-900/20 text-neutral-700 dark:text-neutral-300 text-xs font-medium ring-1 ring-inset ring-neutral-600/20 flex-shrink-0">
-                    Bloccato
-                  </span>
-                </div>
-                <span className="text-sm text-muted-foreground">
-                  ~{module.estimatedMinutes} min
-                </span>
+            {/* Module details */}
+            <div className="flex-1 min-w-0">
+              <h3 className="text-base font-semibold text-foreground truncate tracking-tight mb-1">
+                {module.title}
+              </h3>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <ClockIcon className="w-3.5 h-3.5" />
+                <span>~{module.estimatedMinutes} min</span>
               </div>
             </div>
+          </div>
 
-            {/* Lock icon */}
-            <LockIcon className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+          {/* Glassmorphism Overlay - Dashboard Style */}
+          <div className="absolute inset-0 bg-background/40 backdrop-blur-[1px] rounded-xl flex items-end justify-center pb-4 cursor-not-allowed">
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/90 rounded-full border border-border/50 shadow-sm">
+              <LockIcon className="w-3.5 h-3.5 text-muted-foreground" />
+              <span className="text-xs font-medium text-muted-foreground">
+                Bloccato
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -281,18 +278,18 @@ function ModuleCard({
   
   return (
     <div className="relative">
-      {/* Progress bar on left side - shows overall journey progress */}
-      <div className="absolute left-0 top-0 bottom-0 w-1 bg-neutral-200 dark:bg-neutral-800 rounded-l-xl overflow-hidden">
+      {/* Progress bar on left side - 3-4px width with rounded corners and glow */}
+      <div className="absolute left-0 top-0 bottom-0 w-1 bg-neutral-200 dark:bg-neutral-800 rounded-full overflow-hidden">
         <div 
-          className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-primary-500 via-primary-500 to-emerald-500 transition-all duration-500"
-          style={{ height: `${progressPercent}%` }}
+          className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-primary-500 to-emerald-500 transition-all duration-500 rounded-full shadow-lg shadow-primary-500/30"
+          style={{ height: `${progressPercent}%`, width: '4px' }}
         />
       </div>
       
       <button
         onClick={onSelect}
         className="
-          group relative w-full pl-4 p-5 rounded-xl border text-left
+          group relative w-full pl-6 p-5 rounded-xl border text-left
           bg-background
           border-neutral-200 dark:border-neutral-800
           transition-all duration-200 ease-out
@@ -321,32 +318,28 @@ function ModuleCard({
         " />
 
         <div className="relative z-10 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4 flex-1 min-w-0">
-            {/* Completion indicator with gradient */}
-            <div className={`
-              w-8 h-8 rounded-full border-2 flex items-center justify-center flex-shrink-0
-              transition-all duration-200
-              ${isCompleted 
-                ? 'bg-gradient-to-br from-emerald-500 to-emerald-600 border-emerald-500 shadow-lg shadow-emerald-500/25' 
-                : 'border-neutral-300 dark:border-neutral-700 group-hover:border-primary-400'
-              }
-            `}>
-              {isCompleted && (
-                <CheckIcon className="w-4 h-4 text-white animate-zoom-in" />
-              )}
-            </div>
+          <div className="flex items-center gap-6 flex-1 min-w-0">
+            {/* Editorial "Stampato" Typography - GIGANTE */}
+            <span className="flex items-baseline gap-1 flex-shrink-0 font-editorial">
+              <span className="text-6xl font-black text-foreground leading-none tabular-nums antialiased" style={{ fontFeatureSettings: '"tnum"', fontVariantNumeric: 'tabular-nums' }}>
+                {groupNumber}
+              </span>
+              <span className="text-2xl font-bold text-foreground leading-none tabular-nums antialiased" style={{ fontFeatureSettings: '"tnum"', fontVariantNumeric: 'tabular-nums' }}>
+                .{String(index + 1).padStart(2, '0')}
+              </span>
+            </span>
 
             {/* Module info */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                {/* Premium typography numbering: 0 big + .01 medium */}
-                <span className="flex items-baseline gap-0.5 flex-shrink-0">
-                  <span className="text-2xl font-bold text-foreground font-numeric leading-none">{groupNumber}</span>
-                  <span className="text-base font-semibold text-foreground font-numeric leading-none">.{String(index + 1).padStart(2, '0')}</span>
-                </span>
-                <span className="text-base font-semibold text-foreground truncate tracking-tight">
+                <h3 className="text-base font-semibold text-foreground truncate tracking-tight">
                   {module.title}
-                </span>
+                </h3>
+                {isCompleted && (
+                  <div className="w-5 h-5 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-sm">
+                    <CheckIcon className="w-3 h-3 text-white" />
+                  </div>
+                )}
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <ClockIcon className="w-3.5 h-3.5" />

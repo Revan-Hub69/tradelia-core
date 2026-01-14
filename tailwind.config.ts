@@ -33,6 +33,12 @@ const config: Config = {
         'Courier New',
         'monospace'
       ],
+      'editorial': [
+        'Source Serif 4',
+        'Inter Tight',
+        'Georgia',
+        'serif'
+      ],
     },
     extend: {
       colors: {

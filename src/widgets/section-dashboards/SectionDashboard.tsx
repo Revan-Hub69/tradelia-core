@@ -330,9 +330,9 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
               drawerView === 'module-content' && activeModuleData 
                 ? activeModuleData.title 
                 : drawerView === 'modules-list' && selectedGroup
-                ? selectedGroup === 'phase-0' ? 'Phase 0 - Alfabetizzazione'
-                  : selectedGroup === 'phase-1' ? `Phase 1 - ${t(`${sectionId}.title`)}`
-                  : 'Approfondimenti Tecnici'
+                ? selectedGroup === 'phase-0' ? t('drawer.groups.phase0Title')
+                  : selectedGroup === 'phase-1' ? t('drawer.groups.phase1Title')
+                  : t('drawer.groups.technicalTitle')
                 : t(activePillarData.titleKey)
             }
             subtitle={
@@ -367,9 +367,9 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
               <ModulesListView
                 groupId={selectedGroup}
                 groupTitle={
-                  selectedGroup === 'phase-0' ? 'Fondamenti - Alfabetizzazione'
-                    : selectedGroup === 'phase-1' ? `Applicazioni - ${t(`${sectionId}.title`)}`
-                    : 'Approfondimenti'
+                  selectedGroup === 'phase-0' ? t('drawer.groups.phase0Title')
+                    : selectedGroup === 'phase-1' ? `${t('drawer.groups.phase1Title')} - ${t(`${sectionId}.title`)}`
+                    : t('drawer.groups.technicalTitle')
                 }
                 modules={activeModules}
                 completedModules={activeProgress?.completedSections || []}

@@ -15,6 +15,9 @@
     "locked": "Completa {phase} per sbloccare questo gruppo",
     "phase0": "Fondamenti",
     "phase1": "Applicazioni",
+    "phase0Title": "Fondamenti - Alfabetizzazione",
+    "phase1Title": "Applicazioni",
+    "technicalTitle": "Approfondimenti",
     "completed": "Gruppo completato! 🎉"
   },
   "modules": {

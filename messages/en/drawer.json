@@ -15,6 +15,9 @@
     "locked": "Complete {phase} to unlock this group",
     "phase0": "Foundations",
     "phase1": "Applications",
+    "phase0Title": "Foundations - Literacy",
+    "phase1Title": "Applications",
+    "technicalTitle": "Deep Dives",
     "completed": "Group completed! 🎉"
   },
   "modules": {
