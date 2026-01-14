@@ -237,20 +237,14 @@ function ModuleCard({
           />
         </div>
         
-        <div className="pl-6 p-5 rounded-xl bg-background border border-neutral-200 dark:border-neutral-800 overflow-hidden relative">
-          {/* Module info */}
-          <div className="flex items-center gap-6 flex-1 min-w-0">
-            {/* Editorial "Stampato" Typography - GIGANTE */}
-            <span className="flex items-baseline gap-1 flex-shrink-0 font-editorial">
-              <span className="text-6xl font-black text-foreground leading-none tabular-nums antialiased" style={{ fontFeatureSettings: '"tnum"', fontVariantNumeric: 'tabular-nums' }}>
-                {groupNumber}
-              </span>
-              <span className="text-2xl font-bold text-foreground leading-none tabular-nums antialiased" style={{ fontFeatureSettings: '"tnum"', fontVariantNumeric: 'tabular-nums' }}>
-                .{String(index + 1).padStart(2, '0')}
-              </span>
-            </span>
+        <div className="pl-6 p-6 rounded-xl bg-background border border-border/50 overflow-hidden relative shadow-sm">
+          <div className="flex items-center gap-6">
+            {/* SVG Number - pastel blue-gray "stampato" */}
+            <div className="flex-shrink-0">
+              <StampatoNumber groupNumber={groupNumber} moduleNumber={index + 1} />
+            </div>
 
-            {/* Module details */}
+            {/* Module info */}
             <div className="flex-1 min-w-0">
               <h3 className="text-base font-semibold text-foreground truncate tracking-tight mb-1">
                 {module.title}
@@ -262,7 +256,7 @@ function ModuleCard({
             </div>
           </div>
 
-          {/* Glassmorphism Overlay - Dashboard Style */}
+          {/* Glassmorphism overlay - dashboard style */}
           <div className="absolute inset-0 bg-background/40 backdrop-blur-[1px] rounded-xl flex items-end justify-center pb-4 cursor-not-allowed">
             <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/90 rounded-full border border-border/50 shadow-sm">
               <LockIcon className="w-3.5 h-3.5 text-muted-foreground" />
@@ -288,46 +282,20 @@ function ModuleCard({
       
       <button
         onClick={onSelect}
-        className="
-          group relative w-full pl-6 p-5 rounded-xl border text-left
-          bg-background
-          border-neutral-200 dark:border-neutral-800
-          transition-all duration-200 ease-out
-          hover:border-primary-300 dark:hover:border-primary-700
-          hover:shadow-lg hover:translate-y-[-2px]
-          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-2
-          tap-target-touch
-        "
+        className="group relative w-full pl-6 p-6 rounded-xl border text-left bg-background border-border/50 transition-all duration-200 ease-out hover:border-primary-300 dark:hover:border-primary-700 hover:shadow-lg hover:translate-y-[-2px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-2"
       >
         {/* Gradient overlay on hover */}
-        <div className="
-          absolute inset-0 rounded-xl
-          bg-gradient-to-br from-primary/0 to-primary/5
-          opacity-0 group-hover:opacity-100
-          transition-opacity duration-200
-          pointer-events-none
-        " />
+        <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary/0 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
         
-        {/* Shine effect on hover */}
-        <div className="
-          absolute inset-0 rounded-xl
-          bg-gradient-to-r from-transparent via-white/10 to-transparent
-          translate-x-[-100%] group-hover:translate-x-[100%]
-          transition-transform duration-1000
-          pointer-events-none
-        " />
+        {/* Shine effect */}
+        <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 pointer-events-none" />
 
         <div className="relative z-10 flex items-center justify-between gap-4">
           <div className="flex items-center gap-6 flex-1 min-w-0">
-            {/* Editorial "Stampato" Typography - GIGANTE */}
-            <span className="flex items-baseline gap-1 flex-shrink-0 font-editorial">
-              <span className="text-6xl font-black text-foreground leading-none tabular-nums antialiased" style={{ fontFeatureSettings: '"tnum"', fontVariantNumeric: 'tabular-nums' }}>
-                {groupNumber}
-              </span>
-              <span className="text-2xl font-bold text-foreground leading-none tabular-nums antialiased" style={{ fontFeatureSettings: '"tnum"', fontVariantNumeric: 'tabular-nums' }}>
-                .{String(index + 1).padStart(2, '0')}
-              </span>
-            </span>
+            {/* SVG Number - pastel blue-gray "stampato" */}
+            <div className="flex-shrink-0">
+              <StampatoNumber groupNumber={groupNumber} moduleNumber={index + 1} />
+            </div>
 
             {/* Module info */}
             <div className="flex-1 min-w-0">
@@ -348,7 +316,7 @@ function ModuleCard({
             </div>
           </div>
 
-          {/* Arrow with animation */}
+          {/* Arrow */}
           <ArrowRightIcon className="w-5 h-5 text-muted-foreground flex-shrink-0 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-primary" />
         </div>
       </button>
@@ -403,6 +371,55 @@ function LockIcon({ className }: { className?: string }) {
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
       <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
       <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+    </svg>
+  )
+}
+
+
+// SVG "Stampato" Number Component - Pastel Blue-Gray
+function StampatoNumber({ groupNumber, moduleNumber }: { groupNumber: number; moduleNumber: number }) {
+  const moduleStr = String(moduleNumber).padStart(2, '0')
+  
+  return (
+    <svg width="80" height="48" viewBox="0 0 80 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="opacity-90">
+      {/* Group number (large) */}
+      <text
+        x="0"
+        y="38"
+        fontSize="42"
+        fontWeight="900"
+        fill="currentColor"
+        className="text-slate-400 dark:text-slate-500"
+        style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}
+      >
+        {groupNumber}
+      </text>
+      
+      {/* Dot */}
+      <text
+        x="32"
+        y="38"
+        fontSize="42"
+        fontWeight="900"
+        fill="currentColor"
+        className="text-slate-400 dark:text-slate-500"
+        style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}
+      >
+        .
+      </text>
+      
+      {/* Module number (medium) */}
+      <text
+        x="42"
+        y="36"
+        fontSize="28"
+        fontWeight="700"
+        fill="currentColor"
+        className="text-slate-400 dark:text-slate-500"
+        style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}
+      >
+        {moduleStr}
+      </text>
     </svg>
   )
 }
