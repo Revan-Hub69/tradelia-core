@@ -82,6 +82,7 @@ interface PillarConfig {
 
 export function SectionDashboard({ sectionId }: SectionDashboardProps) {
   const t = useTranslations('sections')
+  const tDrawer = useTranslations('drawer')
   const section = CRYPTO_SECTIONS[sectionId]
   const pillars = SECTION_PILLARS[sectionId]
 
@@ -330,14 +331,14 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
               drawerView === 'module-content' && activeModuleData 
                 ? activeModuleData.title 
                 : drawerView === 'modules-list' && selectedGroup
-                ? selectedGroup === 'phase-0' ? t('drawer.groups.phase0Title')
-                  : selectedGroup === 'phase-1' ? t('drawer.groups.phase1Title')
-                  : t('drawer.groups.technicalTitle')
+                ? selectedGroup === 'phase-0' ? tDrawer('groups.phase0Title')
+                  : selectedGroup === 'phase-1' ? tDrawer('groups.phase1Title')
+                  : tDrawer('groups.technicalTitle')
                 : t(activePillarData.titleKey)
             }
             subtitle={
               drawerView === 'module-content' && activeModuleData
-                ? t('drawer.modules.subtitle', { 
+                ? tDrawer('modules.subtitle', { 
                     current: activeModules.findIndex(m => m.id === activeModule) + 1,
                     total: activeModules.length 
                   })
@@ -367,9 +368,9 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
               <ModulesListView
                 groupId={selectedGroup}
                 groupTitle={
-                  selectedGroup === 'phase-0' ? t('drawer.groups.phase0Title')
-                    : selectedGroup === 'phase-1' ? `${t('drawer.groups.phase1Title')} - ${t(`${sectionId}.title`)}`
-                    : t('drawer.groups.technicalTitle')
+                  selectedGroup === 'phase-0' ? tDrawer('groups.phase0Title')
+                    : selectedGroup === 'phase-1' ? `${tDrawer('groups.phase1Title')} - ${t(`${sectionId}.title`)}`
+                    : tDrawer('groups.technicalTitle')
                 }
                 modules={activeModules}
                 completedModules={activeProgress?.completedSections || []}
