@@ -28,35 +28,24 @@ export function GroupsView({ groups, onSelectGroup, onBack }: GroupsViewProps) {
   const tNav = useTranslations('drawer.navigation')
   
   return (
-    <div className="flex flex-col gap-8">
-      {/* Back button - 44px touch target */}
+    <div className="flex flex-col gap-6 font-sans">
+      {/* Back button */}
       <button
         onClick={onBack}
-        className="
-          flex items-center gap-3
-          min-h-[44px]
-          text-sm font-medium
-          text-muted-foreground hover:text-foreground
-          transition-colors duration-200
-          rounded-lg px-3 py-2 -ml-2
-          focus-visible:outline-none
-          focus-visible:ring-2
-          focus-visible:ring-primary/20
-          focus-visible:ring-offset-2
-        "
+        className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg px-3 py-2 -ml-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-2"
       >
         <ArrowLeftIcon className="w-4 h-4" />
         {tNav('back')}
       </button>
 
-      {/* Intro - Enterprise Premium */}
-      <div className="relative p-6 rounded-xl bg-gradient-to-br from-primary-500/8 to-primary-500/3 border border-primary-500/20 overflow-hidden shadow-sm">
+      {/* Intro - dashboard style */}
+      <div className="relative p-6 rounded-xl bg-gradient-to-br from-primary-500/8 to-primary-500/3 border border-primary-500/20 overflow-hidden">
         <div className="absolute inset-0 opacity-30" style={{
           backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%)'
         }} />
         
         <div className="relative z-10">
-          <h2 className="text-2xl font-semibold text-foreground mb-2 tracking-tight leading-tight">
+          <h2 className="text-xl font-semibold text-foreground mb-2 tracking-tight">
             {t('title')}
           </h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
@@ -65,7 +54,18 @@ export function GroupsView({ groups, onSelectGroup, onBack }: GroupsViewProps) {
         </div>
       </div>
 
-      {/* Groups - Red Hat spacing (gap-4 = 16px) */}
+      {/* Decorative divider */}
+      <div className="flex items-center gap-4 py-2">
+        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border/60 to-transparent" />
+        <div className="flex gap-1.5">
+          <div className="w-1.5 h-1.5 rounded-full bg-primary-500/40" />
+          <div className="w-1.5 h-1.5 rounded-full bg-primary-500/60" />
+          <div className="w-1.5 h-1.5 rounded-full bg-primary-500/40" />
+        </div>
+        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border/60 to-transparent" />
+      </div>
+
+      {/* Groups */}
       <div className="flex flex-col gap-4">
         {groups.map((group, index) => (
           <AnimatedCard key={group.id} delay={index * 100}>
@@ -173,17 +173,17 @@ function GroupCard({
 
   if (group.isLocked) {
     return (
-      <div className="relative p-6 rounded-xl bg-card border border-border/10 overflow-hidden shadow-sm">
+      <div className="relative p-6 rounded-xl bg-background border border-border/50 overflow-hidden shadow-sm">
         <div className="flex items-start gap-4">
           {/* Icon with gradient + glow */}
           <div className={`w-12 h-12 rounded-xl bg-gradient-to-br from-neutral-400 to-neutral-500 shadow-lg shadow-neutral-500/25 flex items-center justify-center flex-shrink-0`}>
             <LockIcon className="w-5 h-5 text-white" />
           </div>
 
-          {/* Content - Enterprise typography */}
+          {/* Content */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2">
-              <h3 className="text-lg font-semibold text-foreground tracking-tight leading-snug">
+              <h3 className="text-base font-semibold text-foreground tracking-tight">
                 {getGroupTitle()}
               </h3>
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-neutral-50 dark:bg-neutral-900/20 text-neutral-700 dark:text-neutral-300 text-xs font-medium ring-1 ring-inset ring-neutral-600/20">
@@ -192,7 +192,7 @@ function GroupCard({
               </span>
             </div>
             
-            {/* Info box premium */}
+            {/* Info box premium - dashboard style */}
             <div className="p-4 rounded-lg bg-gradient-to-br from-primary-500/8 to-primary-500/3 border border-primary-500/20">
               <div className="flex gap-3">
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-600 shadow-lg shadow-primary-500/25 flex items-center justify-center flex-shrink-0">
@@ -215,22 +215,7 @@ function GroupCard({
   return (
     <button
       onClick={onSelect}
-      className={`
-        group relative w-full
-        p-6
-        rounded-xl
-        text-left
-        bg-gradient-to-br ${style.bgGradient}
-        border ${style.border}
-        shadow-sm
-        transition-all duration-200 ease-out
-        hover:shadow-md
-        hover:bg-muted/30
-        focus-visible:outline-none
-        focus-visible:ring-2
-        focus-visible:ring-primary/20
-        focus-visible:ring-offset-2
-      `}
+      className={`group relative w-full p-6 rounded-xl border text-left bg-gradient-to-br ${style.bgGradient} ${style.border} transition-all duration-200 ease-out hover:translate-y-[-2px] hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-2`}
     >
       {/* Gradient overlay on hover */}
       <div className={`absolute inset-0 rounded-xl bg-gradient-to-br ${style.bgGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none`} />
@@ -244,10 +229,10 @@ function GroupCard({
           <GroupIcon type={group.id} className={`w-6 h-6 ${style.iconText}`} />
         </div>
 
-        {/* Content - Enterprise typography */}
+        {/* Content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-2">
-            <h3 className="text-lg font-semibold text-foreground tracking-tight leading-snug">
+            <h3 className="text-base font-semibold text-foreground tracking-tight">
               {getGroupTitle()}
             </h3>
             <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${style.badgeBg} ${style.badgeText} ${style.badgeRing}`}>
@@ -255,11 +240,11 @@ function GroupCard({
             </span>
           </div>
           
-          <p className="text-sm text-muted-foreground leading-relaxed mb-3 font-medium">
+          <p className="text-sm text-muted-foreground leading-relaxed mb-3">
             ~{group.estimatedHours}h di contenuti
           </p>
 
-          <div className={`flex items-center gap-2 text-sm font-semibold ${style.text}`}>
+          <div className={`flex items-center gap-2 text-sm font-medium ${style.text}`}>
             Inizia
             <ArrowRightIcon className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
           </div>

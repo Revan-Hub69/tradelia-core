@@ -647,18 +647,10 @@ export function PremiumDrawer({
           touchAction: 'pan-x' // Allow horizontal scroll, control vertical
         }}
       >
-        {/* Header with Enterprise styling - Red Hat Standard */}
+        {/* Header with Enterprise styling and scroll shadow */}
         {(title || showCloseButton || minimalHeader) && (
           <header 
-            role="banner"
-            className={`
-              sticky top-0 z-20
-              px-4 py-4 sm:px-6 sm:py-5 lg:px-6 lg:py-6
-              bg-card
-              border-b border-border/10
-              transition-shadow duration-200
-              ${isScrolled ? 'shadow-sm' : ''}
-            `}
+            className={`drawer-enterprise-header ${isScrolled ? 'scrolled' : ''}`}
           >
             {minimalHeader ? (
               /* Header minimalista mobile: solo torna indietro */
@@ -674,11 +666,11 @@ export function PremiumDrawer({
                 {safeT('drawer.back', 'Torna indietro')}
               </button>
             ) : (
-              /* Header standard - Enterprise Typography Scale */
+              /* Header standard with enterprise styling */
               <div className="flex flex-col gap-2">
                 {/* Breadcrumb row */}
                 {breadcrumb && breadcrumb.length > 0 && (
-                  <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-xs text-enterprise-secondary">
                     {breadcrumb.map((item, index) => (
                       <span key={`breadcrumb-${item.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-center gap-1">
                         {index > 0 && (
@@ -686,7 +678,7 @@ export function PremiumDrawer({
                             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                           </svg>
                         )}
-                        <span className={index === breadcrumb.length - 1 ? 'text-foreground font-medium' : ''}>
+                        <span className={index === breadcrumb.length - 1 ? 'text-enterprise-primary font-medium' : ''}>
                           {item}
                         </span>
                       </span>
@@ -694,97 +686,55 @@ export function PremiumDrawer({
                   </nav>
                 )}
                 
-                {/* Title row - Enterprise Standard */}
+                {/* Title row */}
                 <div className="flex items-start justify-between gap-4">
                   {title && (
-                    <div className="flex items-center gap-4 min-w-0">
+                    <div className="flex items-center gap-3 sm:gap-4 min-w-0">
                       {icon && (
-                        <div className={`
-                          w-12 h-12
-                          rounded-xl
-                          ${accent.bg} 
-                          border ${accent.border}
-                          flex items-center justify-center
-                          flex-shrink-0
-                        `}>
+                        <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${accent.bg} border ${accent.border} flex items-center justify-center flex-shrink-0`}>
                           <div className={accent.text}>{icon}</div>
                         </div>
                       )}
-                      <div className="min-w-0 flex-1">
+                      <div className="min-w-0">
                         {subtitle && (
-                          <p className={`
-                            text-sm font-medium
-                            ${accent.text}
-                            uppercase tracking-wider
-                            mb-2
-                          `}>
+                          <p className={`text-xs font-semibold ${accent.text} uppercase tracking-wider mb-0.5`}>
                             {subtitle}
                           </p>
                         )}
-                        <h2 
-                          id="drawer-title" 
-                          className="
-                            text-xl sm:text-2xl
-                            font-semibold
-                            text-foreground
-                            tracking-tight
-                            leading-tight
-                            truncate
-                          "
-                        >
+                        <h2 id="drawer-title" className="text-enterprise-primary text-lg sm:text-xl font-semibold truncate">
                           {title}
                         </h2>
                       </div>
                     </div>
                   )}
 
-                  {/* Header action buttons - 44px touch targets */}
+                  {/* Header action buttons */}
                   <div className="flex items-center gap-2 flex-shrink-0">
-                    {/* Copy Link Button - 44px touch target */}
+                    {/* Copy Link Button (REQ 17.5) - ONLY when panelId is provided */}
                     {showCopyLink && panelId && (
                       <button
                         onClick={handleCopyLink}
-                        className="
-                          min-w-[44px] min-h-[44px]
-                          flex items-center justify-center
-                          rounded-lg
-                          hover:bg-muted/50
-                          transition-colors duration-200
-                          focus-visible:outline-none
-                          focus-visible:ring-2
-                          focus-visible:ring-primary/20
-                          focus-visible:ring-offset-2
-                        "
+                        className="tap-target-icon focus-enterprise-ring p-2 rounded-lg hover:bg-muted/50 transition-colors"
                         aria-label={copySuccess ? safeT('drawer.linkCopied', 'Link copiato!') : safeT('drawer.copyLink', 'Copia link sezione')}
                         title={copySuccess ? safeT('drawer.linkCopied', 'Link copiato!') : safeT('drawer.copyLink', 'Copia link sezione')}
                       >
                         {copySuccess ? (
-                          <CheckIcon className="w-5 h-5 text-success" aria-hidden="true" />
+                          <CheckIcon className="w-4 h-4 text-success" aria-hidden="true" />
                         ) : (
-                          <InfoIcon className="w-5 h-5" aria-hidden="true" />
+                          <InfoIcon className="w-4 h-4" aria-hidden="true" />
                         )}
                       </button>
                     )}
 
-                    {/* Close Button - 44px touch target */}
+                    {/* Close Button */}
                     {showCloseButton && (
                       <button
                         ref={!minimalHeader ? firstFocusableRef : undefined}
                         onClick={onClose}
-                        className="
-                          min-w-[44px] min-h-[44px]
-                          flex items-center justify-center
-                          rounded-lg
-                          hover:bg-muted/50
-                          transition-colors duration-200
-                          focus-visible:outline-none
-                          focus-visible:ring-2
-                          focus-visible:ring-primary/20
-                          focus-visible:ring-offset-2
-                        "
+                        className="tap-target-icon focus-enterprise-ring p-2 rounded-lg hover:bg-muted/50 transition-colors"
                         aria-label={safeT('drawer.close', 'Chiudi pannello')}
                       >
-                        <CloseIcon className="w-5 h-5" aria-hidden="true" />
+                        <CloseIcon className="w-4 h-4" aria-hidden="true" />
                       </button>
                     )}
                   </div>
@@ -794,27 +744,18 @@ export function PremiumDrawer({
           </header>
         )}
 
-        {/* Sticky Toolbar for Technical Level Toggle - Red Hat Spacing */}
-        {showTechnicalLevelToggle && userId && (
-          <div className="
-            sticky top-0 z-10
-            bg-background/95 backdrop-blur-sm
-            border-b border-border/50
-            px-4 py-3 sm:px-6
-          ">
-            <DrawerTechnicalLevelToggle userId={userId} />
-          </div>
-        )}
-
-        {/* Content with Enterprise styling - Red Hat Spacing */}
+        {/* Content with Enterprise styling and focus scroll-margin */}
         <div 
           ref={contentRef}
-          className="
-            flex-1
-            overflow-y-auto
-            px-4 py-6 sm:px-6 lg:px-6
-          "
+          className="drawer-enterprise-content"
         >
+          {/* Technical Level Toggle (moved to content top) */}
+          {showTechnicalLevelToggle && (
+            <div className="px-6 pt-4 pb-2">
+              <DrawerTechnicalLevelToggle userId={userId} />
+            </div>
+          )}
+          
           {children}
         </div>
 
