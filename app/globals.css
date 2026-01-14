@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Enterprise Foundation - Typography, Spacing, Colors, Shadows */
+@import '../src/styles/enterprise-foundation.css';
+
 @layer base {
   :root {
     /* Tradelia 2026 - Design Guide Compliant Colors */

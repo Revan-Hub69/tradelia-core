@@ -33,28 +33,36 @@ export function GroupsView({ groups, onSelectGroup, onBack }: GroupsViewProps) {
   const tNav = useTranslations('drawer.navigation')
   
   return (
-    <div className="density-section-gap flex flex-col">
+    <div className="flex flex-col gap-section">
       {/* Back button */}
       <button
         onClick={onBack}
-        className="flex items-center density-gap density-text-secondary font-medium text-enterprise-secondary hover:text-enterprise-primary transition-subtle rounded-lg density-card -ml-2 tap-target-touch focus-enterprise-ring"
+        className="
+          flex items-center gap-inline
+          text-enterprise-small font-medium text-enterprise-secondary
+          hover:text-enterprise-primary
+          transition-enterprise-fast
+          rounded-lg px-3 py-2 -ml-2
+          tap-target-touch
+          focus-enterprise-ring
+        "
       >
         <span className="text-lg">←</span>
         {tNav('back')}
       </button>
 
       {/* Intro */}
-      <div className="section-frame density-card">
-        <h2 className="text-xl font-bold text-enterprise-primary mb-2">
+      <div className="card-enterprise-flat space-element">
+        <h2 className="text-enterprise-h2 text-enterprise-primary mb-2">
           {t('title')}
         </h2>
-        <p className="density-text-secondary text-enterprise-secondary reading-line-height">
+        <p className="text-enterprise-small text-enterprise-secondary reading-line-height">
           {t('subtitle')}
         </p>
       </div>
 
       {/* Groups */}
-      <div className="space-y-4">
+      <div className="flex flex-col gap-component">
         {groups.map((group, index) => (
           <GroupCard
             key={group.id}
