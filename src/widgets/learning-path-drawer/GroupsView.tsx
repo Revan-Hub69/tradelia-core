@@ -70,7 +70,7 @@ export function GroupsView({ groups, onSelectGroup, onBack }: GroupsViewProps) {
               moduleCount={group.moduleCount}
               estimatedHours={group.estimatedHours}
               isLocked={group.isLocked}
-              lockedMessage={group.isLocked ? t('locked', { phase: index === 1 ? t('phase0') : t('phase1') }) : undefined}
+              {...(group.isLocked && { lockedMessage: t('locked', { phase: index === 1 ? t('phase0') : t('phase1') }) })}
               onClick={() => onSelectGroup(group.id)}
             />
           </AnimatedCard>
