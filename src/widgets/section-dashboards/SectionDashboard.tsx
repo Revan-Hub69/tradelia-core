@@ -192,7 +192,6 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
               </h1>
               <div className="flex items-center gap-2 mt-1">
                 <ComplexityIndicator level={section.complexity} size="sm" showTooltip={false} />
-                <span className="text-sm text-muted-foreground">{t(`${sectionId}.complexity`)}</span>
               </div>
             </div>
           </div>
