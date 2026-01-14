@@ -88,22 +88,7 @@ export function ModuleContent({ module, onComplete, isCompleted }: ModuleContent
     }
   }, [isCompleted])
 
-  return (
-    <>
-      {/* Reading Progress Bar - Sticky at top */}
-      <div className="sticky top-0 left-0 right-0 z-50 h-1 bg-border/20">
-        <div 
-          className="h-full bg-gradient-to-r from-primary-500 to-primary-400 transition-all duration-150 ease-out"
-          style={{ width: `${scrollProgress}%` }}
-          role="progressbar"
-          aria-valuenow={Math.round(scrollProgress)}
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-label="Progresso lettura"
-        />
-      </div>
-
-      <article 
+  return (<><article 
         ref={articleRef}
         className="reading-width selection:bg-primary-500/20 selection:text-foreground"
       >
@@ -530,4 +515,5 @@ function DiamondIcon({ className }: { className?: string }) {
     </svg>
   )
 }
+
 
