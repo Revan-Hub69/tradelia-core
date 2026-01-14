@@ -128,6 +128,7 @@ const config: Config = {
         'spin-slow': 'spin 3s linear infinite',
         'bounce-subtle': 'bounceSubtle 2s ease-in-out infinite',
         'shimmer': 'shimmer 2s ease-in-out infinite',
+        'checkmark-pop': 'checkmarkPop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards',
       },
       keyframes: {
         fadeIn: {
@@ -174,6 +175,11 @@ const config: Config = {
         shimmer: {
           '0%': { backgroundPosition: '-200% 0' },
           '100%': { backgroundPosition: '200% 0' },
+        },
+        checkmarkPop: {
+          '0%': { opacity: '0', transform: 'scale(0)' },
+          '50%': { transform: 'scale(1.2)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
         },
       },
       boxShadow: {

@@ -15,7 +15,6 @@ import { DashboardLayout } from '@/src/widgets/dashboard-layout'
 import { DashboardAuthGuard } from '@/src/widgets/dashboard-auth'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
 import { CryptoSectionsGrid } from '@/src/widgets/crypto-sections'
-import { TechnicalLibrary } from '@/src/widgets/technical-library'
 import { type SectionId, CRYPTO_SECTIONS } from '@/src/shared/config/crypto-sections'
 
 export function DashboardHome() {
@@ -26,17 +25,11 @@ export function DashboardHome() {
   
   const userName = state.profile?.nickname || state.profile?.full_name || tDashboard('guestUser')
   const [completedSections] = useState<SectionId[]>([]) // TODO: persistenza
-  const [completedTechnicalModules] = useState<string[]>([]) // TODO: persistenza
 
   const handleSectionClick = (sectionId: SectionId) => {
     const section = CRYPTO_SECTIONS[sectionId]
     // Naviga al journey corrispondente
     router.push(`/${locale}/dashboard/${section.journeyId}`)
-  }
-
-  const handleTechnicalModuleClick = (moduleId: string) => {
-    // TODO: Aprire drawer con modulo tecnico
-    console.log('Open technical module:', moduleId)
   }
 
   return (
@@ -65,12 +58,6 @@ export function DashboardHome() {
               completedSections={completedSections}
             />
           </div>
-
-          {/* Technical Library - Expandable Widget */}
-          <TechnicalLibrary 
-            completedModules={completedTechnicalModules}
-            onModuleClick={handleTechnicalModuleClick}
-          />
         </div>
       </DashboardLayout>
     </DashboardAuthGuard>

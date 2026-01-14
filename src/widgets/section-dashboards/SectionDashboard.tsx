@@ -23,8 +23,22 @@ import { JourneyCard } from '@/src/shared/ui/JourneyCard'
 import { PremiumDrawer } from '@/src/shared/ui/PremiumDrawer'
 import { ComplexityIndicator } from '@/src/shared/ui/ComplexityIndicator'
 import { CRYPTO_SECTIONS, type SectionId } from '@/src/shared/config/crypto-sections'
-import { OWN_MODULE_LIST, getModuleById } from '@/src/shared/config/own-learning-path'
-import { ModuleContent } from './ModuleContent'
+import { OWN_MODULE_LIST, getModuleById as getOwnModuleById } from '@/src/shared/config/own-learning-path'
+import { YIELD_MODULE_LIST, getYieldModuleById } from '@/src/shared/config/yield-learning-path'
+import { INVEST_MODULE_LIST, getInvestModuleById } from '@/src/shared/config/invest-learning-path'
+import { SPECULATE_MODULE_LIST, getSpeculateModuleById } from '@/src/shared/config/speculate-learning-path'
+import { TECHNICAL_MODULE_LIST, getTechnicalModuleById } from '@/src/shared/config/technical-deep-dives'
+import { 
+  SetupView, 
+  GroupsView, 
+  ModulesListView, 
+  ModuleContentView 
+} from '@/src/widgets/learning-path-drawer'
+import { 
+  getLearningPathGroups,
+  type Country,
+  type TechnicalLevel
+} from '@/src/shared/config/learning-path-groups'
 import { useProgressTracking } from '@/src/shared/hooks/useProgressTracking'
 import { useDashboardAuth } from '@/src/processes/dashboard-auth'
 
@@ -74,11 +88,14 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
   const section = CRYPTO_SECTIONS[sectionId]
   const pillars = SECTION_PILLARS[sectionId]
 
-  // Drawer state - state machine like EmergencyPillars
-  type DrawerView = 'list' | 'module'
+  // Drawer state - 4-level navigation
+  type DrawerView = 'setup' | 'groups' | 'modules-list' | 'module-content'
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const [drawerView, setDrawerView] = useState<DrawerView>('list')
+  const [drawerView, setDrawerView] = useState<DrawerView>('setup')
   const [activePillar, setActivePillar] = useState<string | null>(null)
+  const [selectedCountry, setSelectedCountry] = useState<Country | null>(null)
+  const [selectedLevel, setSelectedLevel] = useState<TechnicalLevel | null>(null)
+  const [selectedGroup, setSelectedGroup] = useState<string | null>(null)
   const [activeModule, setActiveModule] = useState<string | null>(null)
 
   // Progress tracking
@@ -86,8 +103,7 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
   const { 
     getPillarProgress,
     markSectionComplete,
-    markSectionIncomplete,
-    progressCache
+    markSectionIncomplete
   } = useProgressTracking({
     isGuest: state.isGuestMode,
     userId: state.user?.id
@@ -106,33 +122,132 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
     ? pillarsWithProgress.find(p => p.id === activePillar) 
     : null
 
-  // Get modules for active pillar (only learning-path has real modules for now)
-  const activeModules = activePillar === 'learning-path' ? OWN_MODULE_LIST : []
+  // Get modules based on selected group and journey
+  const getModulesForGroup = (groupId: string) => {
+    if (groupId === 'phase-0') {
+      // Phase 0 modules (0.1-0.8) - same for all journeys
+      return OWN_MODULE_LIST.filter(m => m.id.startsWith('0.'))
+    }
+    
+    if (groupId === 'phase-1') {
+      // Phase 1 modules - journey specific
+      switch (sectionId) {
+        case 'own': return OWN_MODULE_LIST.filter(m => m.id.startsWith('1.'))
+        case 'yield': return YIELD_MODULE_LIST
+        case 'invest': return INVEST_MODULE_LIST
+        case 'speculate': return SPECULATE_MODULE_LIST
+        default: return []
+      }
+    }
+    
+    if (groupId === 'technical-deep-dives') {
+      return TECHNICAL_MODULE_LIST
+    }
+    
+    return []
+  }
+
+  const activeModules = selectedGroup ? getModulesForGroup(selectedGroup) : []
   const activeProgress = useMemo(() => 
     activePillarData ? getPillarProgress(sectionId, activePillarData.id) : null,
-    [activePillarData, getPillarProgress, sectionId, progressCache]
+    [activePillarData, getPillarProgress, sectionId]
   )
+  
+  // Get module by ID from correct source
+  const getModuleById = (moduleId: string) => {
+    if (moduleId.startsWith('0.') || moduleId.startsWith('1.')) {
+      return getOwnModuleById(moduleId)
+    }
+    if (moduleId.startsWith('2.')) {
+      return getYieldModuleById(moduleId)
+    }
+    if (moduleId.startsWith('3.')) {
+      return getInvestModuleById(moduleId)
+    }
+    if (moduleId.startsWith('4.')) {
+      return getSpeculateModuleById(moduleId)
+    }
+    if (moduleId.startsWith('t.')) {
+      return getTechnicalModuleById(moduleId)
+    }
+    return undefined
+  }
+  
   const activeModuleData = activeModule ? getModuleById(activeModule) : null
+  
+  // Check completion for unlock logic
+  const phase0Completed = false // TODO: implement real check
+  const phase1Completed = false // TODO: implement real check
+  const groups = activePillar === 'learning-path' 
+    ? getLearningPathGroups(sectionId, phase0Completed, phase1Completed)
+    : []
 
   const handleOpenPillar = (pillarId: string) => {
     setActivePillar(pillarId)
-    setActiveModule(null)
-    setDrawerView('list')
+    
+    // Only learning-path uses 4-level navigation
+    if (pillarId === 'learning-path') {
+      // Check if setup is already done
+      if (selectedCountry && selectedLevel) {
+        setDrawerView('groups')
+      } else {
+        setDrawerView('setup')
+      }
+    } else {
+      // Other pillars use placeholder for now
+      setDrawerView('groups')
+    }
+    
     setDrawerOpen(true)
+  }
+
+  const handleSetupComplete = (country: Country, level: TechnicalLevel) => {
+    setSelectedCountry(country)
+    setSelectedLevel(level)
+    setDrawerView('groups')
+    // TODO: persist to localStorage or backend
+  }
+
+  const handleSelectGroup = (groupId: string) => {
+    setSelectedGroup(groupId)
+    setDrawerView('modules-list')
   }
 
   const handleSelectModule = (moduleId: string) => {
     setActiveModule(moduleId)
-    setDrawerView('module')
+    setDrawerView('module-content')
   }
 
-  const handleBack = () => {
-    if (drawerView === 'module') {
-      setActiveModule(null)
-      setDrawerView('list')
-      return
+  const handleBackFromGroups = () => {
+    if (activePillar === 'learning-path') {
+      setDrawerView('setup')
+    } else {
+      closeDrawer()
     }
-    closeDrawer()
+  }
+
+  const handleBackFromModulesList = () => {
+    setSelectedGroup(null)
+    setDrawerView('groups')
+  }
+
+  const handleBackFromModuleContent = () => {
+    setActiveModule(null)
+    setDrawerView('modules-list')
+  }
+
+  const handlePreviousModule = () => {
+    const currentIndex = activeModules.findIndex(m => m.id === activeModule)
+    if (currentIndex > 0) {
+      setActiveModule(activeModules[currentIndex - 1]?.id || '')
+    }
+  }
+
+  const handleNextModule = () => {
+    const currentIndex = activeModules.findIndex(m => m.id === activeModule)
+    if (currentIndex < activeModules.length - 1) {
+      setActiveModule(activeModules[currentIndex + 1]?.id || '')
+    }
   }
 
   const handleCompleteModule = async (moduleId: string) => {
@@ -151,8 +266,6 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
   // CLOSE: Reset everything and cleanup inert
   const closeDrawer = () => {
     setDrawerOpen(false)
-    setDrawerView('list')
-    setActiveModule(null)
     
     // Hard cleanup - ensure inert is removed BEFORE unmounting
     const mainContent = document.querySelector('#main-content') as HTMLElement | null
@@ -162,9 +275,12 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
     document.body.style.overflow = ''
     document.documentElement.style.overflow = ''
     
-    // Delay resetting activePillar to allow drawer animation to complete
+    // Delay resetting state to allow drawer animation to complete
     setTimeout(() => {
       setActivePillar(null)
+      setSelectedGroup(null)
+      setActiveModule(null)
+      setDrawerView('setup')
     }, 200)
   }
 
@@ -239,10 +355,21 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
           <PremiumDrawer
             isOpen={drawerOpen}
             onClose={closeDrawer}
-            title={drawerView === 'module' && activeModuleData ? activeModuleData.title : t(activePillarData.titleKey)}
-            subtitle={drawerView === 'module' && activeModuleData 
-              ? `${t(activePillarData.titleKey)} • Modulo ${activeModules.findIndex(m => m.id === activeModule) + 1} di ${activeModules.length}`
-              : t(`${sectionId}.title`)
+            title={
+              drawerView === 'module-content' && activeModuleData 
+                ? activeModuleData.title 
+                : drawerView === 'modules-list' && selectedGroup
+                ? selectedGroup === 'phase-0' ? 'Phase 0 - Alfabetizzazione'
+                  : selectedGroup === 'phase-1' ? `Phase 1 - ${t(`${sectionId}.title`)}`
+                  : 'Approfondimenti Tecnici'
+                : t(activePillarData.titleKey)
+            }
+            subtitle={
+              drawerView === 'module-content' && activeModuleData
+                ? `Modulo ${activeModules.findIndex(m => m.id === activeModule) + 1} di ${activeModules.length}`
+                : drawerView === 'modules-list'
+                ? t(activePillarData.titleKey)
+                : t(`${sectionId}.title`)
             }
             icon={<PillarIcon type={activePillarData.icon} className="w-6 h-6" />}
             accentColor={activePillarData.color}
@@ -250,170 +377,77 @@ export function SectionDashboard({ sectionId }: SectionDashboardProps) {
             closeOnBackdrop={true}
             closeOnEscape={true}
           >
-            {drawerView === 'list' ? (
-              /* LIST VIEW - Show all modules or placeholder */
+            {/* Level 1: Setup */}
+            {drawerView === 'setup' && activePillar === 'learning-path' && (
+              <SetupView
+                currentCountry={selectedCountry}
+                currentLevel={selectedLevel}
+                onComplete={handleSetupComplete}
+              />
+            )}
+
+            {/* Level 2: Groups */}
+            {drawerView === 'groups' && activePillar === 'learning-path' && (
+              <GroupsView
+                groups={groups}
+                onSelectGroup={handleSelectGroup}
+                onBack={handleBackFromGroups}
+              />
+            )}
+
+            {/* Level 3: Modules List */}
+            {drawerView === 'modules-list' && (
+              <ModulesListView
+                groupTitle={
+                  selectedGroup === 'phase-0' ? 'Phase 0 - Alfabetizzazione'
+                    : selectedGroup === 'phase-1' ? `Phase 1 - ${t(`${sectionId}.title`)}`
+                    : 'Approfondimenti Tecnici'
+                }
+                modules={activeModules}
+                completedModules={activeProgress?.completedSections || []}
+                onSelectModule={handleSelectModule}
+                onBack={handleBackFromModulesList}
+              />
+            )}
+
+            {/* Level 4: Module Content */}
+            {drawerView === 'module-content' && activeModuleData && (
+              <ModuleContentView
+                module={activeModuleData}
+                currentIndex={activeModules.findIndex(m => m.id === activeModule)}
+                totalModules={activeModules.length}
+                isCompleted={activeProgress?.completedSections?.includes(activeModule!) || false}
+                onComplete={() => handleCompleteModule(activeModule!)}
+                onPrevious={handlePreviousModule}
+                onNext={handleNextModule}
+                onBack={handleBackFromModuleContent}
+                hasPrevious={activeModules.findIndex(m => m.id === activeModule) > 0}
+                hasNext={activeModules.findIndex(m => m.id === activeModule) < activeModules.length - 1}
+              />
+            )}
+
+            {/* Placeholder for other pillars */}
+            {drawerView === 'groups' && activePillar !== 'learning-path' && (
               <div className="space-y-6">
-                {/* Back button */}
-                <div className="flex items-center gap-3 pb-4 border-b border-border/50">
-                  <button
-                    onClick={closeDrawer}
-                    aria-label="Chiudi drawer"
-                    className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg px-3 py-2 -ml-2 min-h-[44px] min-w-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                  >
-                    <span className="text-lg">←</span>
-                    Chiudi
-                  </button>
-                </div>
-
-                {/* Progress */}
-                <div className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg">
-                  <span className="text-sm font-medium" id="progress-label">Completamento:</span>
-                  <div 
-                    className="flex-1 h-2 bg-muted-foreground/20 rounded-full overflow-hidden"
-                    role="progressbar"
-                    aria-valuenow={activePillarData.completionPercent}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                    aria-labelledby="progress-label"
-                  >
-                    <div 
-                      className="h-full bg-success rounded-full transition-all duration-300"
-                      style={{ width: `${activePillarData.completionPercent}%` }}
-                    />
+                <button
+                  onClick={closeDrawer}
+                  className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg px-3 py-2 -ml-2 min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                >
+                  <span className="text-lg">←</span>
+                  Chiudi
+                </button>
+                
+                <div className="p-8 rounded-lg border border-dashed border-border/50 text-center">
+                  <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-4">
+                    <PillarIcon type={activePillarData.icon} className="w-8 h-8 text-muted-foreground" />
                   </div>
-                  <span className="text-sm font-semibold">{activePillarData.completionPercent}%</span>
-                </div>
-
-                {/* Description */}
-                <div>
-                  <h3 className="text-base font-semibold mb-2">Cosa imparerai</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {t(activePillarData.descriptionKey)}
+                  <h3 className="text-lg font-semibold text-foreground mb-2">
+                    Contenuto in arrivo
+                  </h3>
+                  <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                    I contenuti per questo pilastro sono in fase di sviluppo.
                   </p>
                 </div>
-
-                {/* Modules list or placeholder */}
-                {activeModules.length > 0 ? (
-                  <div>
-                    <h3 className="text-base font-semibold mb-4">Moduli del percorso</h3>
-                    <div className="space-y-2">
-                      {activeModules.map((module, index) => {
-                        const isCompleted = activeProgress?.completedSections?.includes(module.id)
-                        return (
-                          <button
-                            key={module.id}
-                            onClick={() => handleSelectModule(module.id)}
-                            aria-label={`${isCompleted ? 'Completato: ' : ''}${module.title}, ${module.estimatedMinutes} minuti`}
-                            className="w-full flex items-center justify-between p-4 rounded-lg border border-border/50 hover:border-primary/50 hover:bg-muted/30 transition-colors text-left min-h-[56px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                          >
-                            <div className="flex items-center gap-3">
-                              <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                                isCompleted 
-                                  ? 'bg-success border-success' 
-                                  : 'border-muted-foreground/30'
-                              }`}>
-                                {isCompleted && (
-                                  <span className="text-white text-xs">✓</span>
-                                )}
-                              </div>
-                              <div>
-                                <span className="font-medium">{index + 1}. {module.title}</span>
-                                <span className="text-xs text-muted-foreground ml-2">~{module.estimatedMinutes} min</span>
-                              </div>
-                            </div>
-                            <span className="text-muted-foreground">→</span>
-                          </button>
-                        )
-                      })}
-                    </div>
-                  </div>
-                ) : (
-                  /* Placeholder for pillars without modules yet */
-                  <div className="p-8 rounded-lg border border-dashed border-border/50 text-center">
-                    <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-4">
-                      <PillarIcon type={activePillarData.icon} className="w-8 h-8 text-muted-foreground" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-foreground mb-2">
-                      Contenuto in arrivo
-                    </h3>
-                    <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                      I moduli per questo pilastro sono in fase di sviluppo.
-                    </p>
-                  </div>
-                )}
-              </div>
-            ) : (
-              /* MODULE VIEW - Show module content */
-              <div className="space-y-6">
-                {/* Navigation header */}
-                <div className="space-y-4 pb-4 border-b border-border/50">
-                  {/* Progress bar */}
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs text-muted-foreground whitespace-nowrap">Progresso:</span>
-                    <div className="flex-1 h-2 bg-muted-foreground/20 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-primary rounded-full transition-all duration-300"
-                        style={{ 
-                          width: `${((activeModules.findIndex(m => m.id === activeModule) + 1) / activeModules.length) * 100}%` 
-                        }}
-                      />
-                    </div>
-                    <span className="text-xs text-muted-foreground whitespace-nowrap">
-                      {activeModules.findIndex(m => m.id === activeModule) + 1}/{activeModules.length}
-                    </span>
-                  </div>
-                  
-                  {/* Navigation controls */}
-                  <div className="flex items-center justify-between">
-                    <button
-                      onClick={handleBack}
-                      aria-label="Torna alla lista moduli"
-                      className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg px-3 py-2 -ml-2 min-h-[44px] min-w-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                    >
-                      <span>←</span>
-                      Indietro
-                    </button>
-                    
-                    {/* Prev/Next navigation */}
-                    <div className="flex items-center gap-1">
-                      <button
-                        onClick={() => {
-                          const currentIndex = activeModules.findIndex(m => m.id === activeModule)
-                          if (currentIndex > 0) {
-                            setActiveModule(activeModules[currentIndex - 1]?.id || '')
-                          }
-                        }}
-                        disabled={activeModules.findIndex(m => m.id === activeModule) === 0}
-                        aria-label="Modulo precedente"
-                        className="w-11 h-11 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-muted hover:bg-muted-foreground/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                      >
-                        ‹
-                      </button>
-                      <button
-                        onClick={() => {
-                          const currentIndex = activeModules.findIndex(m => m.id === activeModule)
-                          if (currentIndex < activeModules.length - 1) {
-                            setActiveModule(activeModules[currentIndex + 1]?.id || '')
-                          }
-                        }}
-                        disabled={activeModules.findIndex(m => m.id === activeModule) === activeModules.length - 1}
-                        aria-label="Modulo successivo"
-                        className="w-11 h-11 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-muted hover:bg-muted-foreground/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                      >
-                        ›
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Module content */}
-                {activeModuleData && (
-                  <ModuleContent 
-                    module={activeModuleData}
-                    onComplete={() => handleCompleteModule(activeModule!)}
-                    isCompleted={activeProgress?.completedSections?.includes(activeModule!) || false}
-                  />
-                )}
               </div>
             )}
           </PremiumDrawer>
