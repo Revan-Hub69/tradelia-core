@@ -710,11 +710,6 @@ export function PremiumDrawer({
 
                   {/* Header action buttons */}
                   <div className="flex items-center gap-2 flex-shrink-0">
-                    {/* Technical Level Toggle (for learning content) */}
-                    {showTechnicalLevelToggle && (
-                      <DrawerTechnicalLevelToggle userId={userId} />
-                    )}
-                    
                     {/* Copy Link Button (REQ 17.5) - ONLY when panelId is provided */}
                     {showCopyLink && panelId && (
                       <button
@@ -754,6 +749,13 @@ export function PremiumDrawer({
           ref={contentRef}
           className="drawer-enterprise-content"
         >
+          {/* Technical Level Toggle (moved to content top) */}
+          {showTechnicalLevelToggle && (
+            <div className="px-6 pt-4 pb-2">
+              <DrawerTechnicalLevelToggle userId={userId} />
+            </div>
+          )}
+          
           {children}
         </div>
 

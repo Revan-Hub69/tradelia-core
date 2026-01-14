@@ -24,6 +24,7 @@
     "title": "Modules",
     "subtitle": "Module {current} of {total}",
     "progress": "Module completion progress",
+    "groupCompleted": "Group completed! 🎉",
     "completed": "Module completed",
     "notCompleted": "Finished reading?",
     "markComplete": "Take the test",
