@@ -91,6 +91,17 @@ export function DashboardHome() {
             </div>
           </div>
 
+          {/* Decorative divider - matching GroupsView */}
+          <div className="flex items-center gap-4 py-6">
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border/60 to-transparent" />
+            <div className="flex gap-1.5">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary-500/40" />
+              <div className="w-1.5 h-1.5 rounded-full bg-primary-500/60" />
+              <div className="w-1.5 h-1.5 rounded-full bg-primary-500/40" />
+            </div>
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border/60 to-transparent" />
+          </div>
+
           {/* 4 Crypto Sections */}
           <div className="section-frame p-6">
             <CryptoSectionsGrid 

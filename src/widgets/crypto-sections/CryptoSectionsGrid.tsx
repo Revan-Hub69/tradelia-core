@@ -1,14 +1,17 @@
 /**
- * Crypto Sections Grid - Tradelia 2026
+ * Crypto Sections Grid - Tradelia 2026 - PREMIUM EDITION
  * 
- * Pagina principale con le 4 sezioni educative.
- * Usa JourneyCard per design coerente con il resto dell'app.
+ * Premium features matching GroupsView:
+ * - Viewport-based animations for cards
+ * - Stagger delay for smooth entrance
+ * - Professional transitions
  * 
  * Solo "own" (Possedere criptovalute) è attiva, le altre sono in "Coming Soon"
  */
 
 'use client'
 
+import { useEffect, useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { JourneyCard } from '@/src/shared/ui/JourneyCard'
 import { ComplexityIndicator } from '@/src/shared/ui/ComplexityIndicator'
@@ -44,9 +47,9 @@ export function CryptoSectionsGrid({
         </p>
       </div>
 
-      {/* Grid */}
+      {/* Grid with viewport animations - matching GroupsView */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {SECTION_ORDER.map((sectionId) => {
+        {SECTION_ORDER.map((sectionId, index) => {
           const section = CRYPTO_SECTIONS[sectionId]
           const isCompleted = completedSections.includes(sectionId)
           const isActive = ACTIVE_SECTIONS.includes(sectionId)
@@ -61,8 +64,9 @@ export function CryptoSectionsGrid({
           const accentColor = accentColorMap[section.color] || 'primary'
           
           return (
-            <div key={sectionId} className="relative">
-              <JourneyCard
+            <AnimatedCard key={sectionId} delay={index * 100}>
+              <div className="relative">
+                <JourneyCard
                 title={t(`${sectionId}.title`)}
                 description={t(`${sectionId}.description`)}
                 subtitle={t(`${sectionId}.subtitle`)}
@@ -114,9 +118,47 @@ export function CryptoSectionsGrid({
                 </div>
               )}
             </div>
+            </AnimatedCard>
           )
         })}
       </div>
+    </div>
+  )
+}
+
+// Viewport-based animation component (matching GroupsView)
+function AnimatedCard({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [isVisible, setIsVisible] = useState(false)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setTimeout(() => setIsVisible(true), delay)
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.1, rootMargin: '50px' }
+    )
+
+    if (ref.current) {
+      observer.observe(ref.current)
+    }
+
+    return () => observer.disconnect()
+  }, [delay])
+
+  return (
+    <div
+      ref={ref}
+      className={`
+        transition-all duration-500 ease-out
+        ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
+      `}
+      style={{ transitionDelay: isVisible ? '0ms' : `${delay}ms` }}
+    >
+      {children}
     </div>
   )
 }
