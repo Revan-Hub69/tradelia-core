@@ -19,6 +19,10 @@ async function loadMessages(locale: Locale) {
   const emergencyIntroModule = (await import(`../../messages/dashboard/emergency-intro.${locale}.json`)).default;
   const cryptoSectionsModule = (await import(`../../messages/dashboard/crypto-sections.${locale}.json`)).default;
   
+  // Carica moduli preferences e drawer
+  const preferencesModule = (await import(`../../messages/${locale}/preferences.json`)).default;
+  const drawerModule = (await import(`../../messages/${locale}/drawer.json`)).default;
+  
   // Merge dei messaggi con priorità ai moduli dashboard
   return {
     ...mainMessages,
@@ -27,7 +31,9 @@ async function loadMessages(locale: Locale) {
     ...pagesModule,
     ...journeysModule,
     ...cryptoSectionsModule,
-    emergencyIntro: emergencyIntroModule.emergencyIntro
+    emergencyIntro: emergencyIntroModule.emergencyIntro,
+    preferences: preferencesModule,
+    drawer: drawerModule
   };
 }
 
