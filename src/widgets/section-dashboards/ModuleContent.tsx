@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Module Content Renderer - Premium Edition with ALL Chicche
  * 
  * Premium features:
@@ -124,7 +124,7 @@ export function ModuleContent({ module, onComplete, isCompleted }: ModuleContent
               {section.showDivider && <DecorativeDivider />}
               
               <SectionRenderer
-                section={section}
+                section={section as ProcessedSection}
                 sectionNumber={section.sectionNumber}
                 isFirstText={section.isFirstText}
               />
