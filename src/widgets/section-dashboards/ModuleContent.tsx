@@ -93,7 +93,7 @@ export function ModuleContent({ module, onComplete, isCompleted }: ModuleContent
         className="reading-width selection:bg-primary-500/20 selection:text-foreground"
       >
         {/* Reading Progress Bar - Sticky at top */}
-        <div className="sticky top-0 left-0 right-0 z-50 h-1 bg-border/20 -mx-6 mb-6">
+        <div className="sticky top-0 left-0 right-0 z-50 h-1 bg-border/20 mb-6">
           <div 
             className="h-full bg-gradient-to-r from-primary-500 to-primary-400 transition-all duration-150 ease-out"
             style={{ width: `${scrollProgress}%` }}
