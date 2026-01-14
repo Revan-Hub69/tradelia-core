@@ -23,7 +23,7 @@ export interface LearningModule {
 
 export const OWN_LEARNING_MODULES: LearningModule[] = [
   // ============================================
-  // FASE 0A: ALFABETIZZAZIONE (4 moduli)
+  // FASE 0A: ALFABETIZZAZIONE (5 moduli)
   // ============================================
   
   {
@@ -99,8 +99,40 @@ export const OWN_LEARNING_MODULES: LearningModule[] = [
   },
 
   {
-    id: '0.2-how-blockchain-works',
-    title: '0.2 - Come funziona la blockchain',
+    id: '0.15-what-crypto-for',
+    title: '0.15 - A cosa servono le criptovalute',
+    estimatedMinutes: 5,
+    sections: [
+      {
+        type: 'hook',
+        content: '[CONTENUTO DA SVILUPPARE] Perché esistono e quali problemi risolvono'
+      },
+      {
+        type: 'heading',
+        title: 'Problemi che risolvono'
+      },
+      {
+        type: 'text',
+        content: '[CONTENUTO DA SVILUPPARE]'
+      },
+      {
+        type: 'heading',
+        title: 'Casi d\'uso reali'
+      },
+      {
+        type: 'text',
+        content: '[CONTENUTO DA SVILUPPARE]'
+      },
+      {
+        type: 'takeaway',
+        content: '[CONTENUTO DA SVILUPPARE] Capisco perché esistono le criptovalute e a cosa servono'
+      }
+    ]
+  },
+
+  {
+    id: '0.3-how-blockchain-works',
+    title: '0.3 - Come funziona la blockchain',
     estimatedMinutes: 5,
     sections: [
       {
@@ -123,8 +155,8 @@ export const OWN_LEARNING_MODULES: LearningModule[] = [
   },
 
   {
-    id: '0.3-bitcoin-ethereum',
-    title: '0.3 - Bitcoin ed Ethereum - I due pilastri',
+    id: '0.4-bitcoin-ethereum',
+    title: '0.4 - Bitcoin ed Ethereum - I due pilastri',
     estimatedMinutes: 7,
     sections: [
       {
@@ -155,8 +187,8 @@ export const OWN_LEARNING_MODULES: LearningModule[] = [
   },
 
   {
-    id: '0.4-altcoins-ecosystem',
-    title: '0.4 - Altcoin ed ecosistema',
+    id: '0.5-altcoins-ecosystem',
+    title: '0.5 - Altcoin ed ecosistema',
     estimatedMinutes: 5,
     sections: [
       {
@@ -183,8 +215,8 @@ export const OWN_LEARNING_MODULES: LearningModule[] = [
   // ============================================
 
   {
-    id: '0.5-cryptography-basics',
-    title: '0.5 - Crittografia base (senza matematica)',
+    id: '0.6-cryptography-basics',
+    title: '0.6 - Crittografia base (senza matematica)',
     estimatedMinutes: 6,
     sections: [
       {
@@ -207,8 +239,8 @@ export const OWN_LEARNING_MODULES: LearningModule[] = [
   },
 
   {
-    id: '0.6-consensus-mechanisms',
-    title: '0.6 - Consensus mechanisms',
+    id: '0.7-consensus-mechanisms',
+    title: '0.7 - Consensus mechanisms',
     estimatedMinutes: 7,
     sections: [
       {
@@ -231,8 +263,8 @@ export const OWN_LEARNING_MODULES: LearningModule[] = [
   },
 
   {
-    id: '0.7-transactions-fees',
-    title: '0.7 - Transazioni e fee',
+    id: '0.8-transactions-fees',
+    title: '0.8 - Transazioni e fee',
     estimatedMinutes: 5,
     sections: [
       {
