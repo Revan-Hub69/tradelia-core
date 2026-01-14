@@ -133,6 +133,30 @@ export function AcademicFoundationsDrawer({
     }
   }, [activeModule, activeSection, completedModules, onModuleComplete])
 
+  // Generate tab ID for deep linking
+  const activeTabId = useMemo(() => {
+    if (view === 'content' && activeModule) return `module-${activeModule}`
+    if (view === 'modules' && activeSection) return `section-${activeSection}`
+    return 'sections'
+  }, [view, activeModule, activeSection])
+
+  // Tab restore handler
+  const handleTabRestore = useCallback((tabId: string) => {
+    if (tabId.startsWith('module-')) {
+      const moduleId = tabId.replace('module-', '') as ModuleId
+      const module = getModuleById(moduleId)
+      if (module) {
+        setActiveSection(module.sectionId)
+        setActiveModule(moduleId)
+        setView('content')
+      }
+    } else if (tabId.startsWith('section-')) {
+      const sectionId = tabId.replace('section-', '') as SectionId
+      setActiveSection(sectionId)
+      setView('modules')
+    }
+  }, [])
+
   // Dynamic title based on view
   const drawerTitle = useMemo(() => {
     if (view === 'content' && activeModuleData) {
@@ -167,13 +191,18 @@ export function AcademicFoundationsDrawer({
       size="xl"
       closeOnBackdrop={true}
       closeOnEscape={true}
+      panelId="academic-foundations"
+      activeTab={activeTabId}
+      showCopyLink={true}
+      onTabRestore={handleTabRestore}
+      enableSwipeClose={true}
     >
       <div className="space-y-6">
         {/* Navigation header */}
         <div className="flex items-center gap-3 pb-4 border-b border-enterprise-soft">
           <button
             onClick={handleBack}
-            className="flex items-center gap-2 text-sm font-medium text-enterprise-secondary hover:text-enterprise-primary transition-colors focus-enterprise-ring rounded-lg px-2 py-1 -ml-2"
+            className="flex items-center gap-2 text-sm font-medium text-enterprise-secondary hover:text-enterprise-primary transition-colors tap-target-touch focus-enterprise-ring rounded-lg px-2 py-1 -ml-2"
           >
             <ChevronLeftIcon className="w-4 h-4" />
             {view === 'sections' ? t('ui.close') : t('ui.back')}
@@ -181,15 +210,15 @@ export function AcademicFoundationsDrawer({
         </div>
 
         {/* Progress bar (always visible) */}
-        <div className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg">
-          <span className="text-sm font-medium">{t('ui.progress')}:</span>
-          <div className="flex-1 h-2 bg-muted-foreground/20 rounded-full overflow-hidden">
+        <div className="flex items-center gap-3 density-card rounded-lg bg-gradient-to-br from-primary-500/8 to-primary-500/3 border border-primary-500/20">
+          <span className="text-sm font-medium text-enterprise-primary">{t('ui.progress')}:</span>
+          <div className="flex-1 h-2 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden">
             <div 
-              className="h-full bg-success rounded-full transition-all duration-300"
+              className="h-full bg-gradient-to-r from-primary-500 to-emerald-500 rounded-full transition-all duration-300"
               style={{ width: `${totalProgress.percentage}%` }}
             />
           </div>
-          <span className="text-sm font-semibold">{totalProgress.percentage}%</span>
+          <span className="text-sm font-semibold text-enterprise-primary">{totalProgress.percentage}%</span>
         </div>
 
         {/* SECTIONS VIEW */}
@@ -255,18 +284,18 @@ function SectionsView({
             key={section.id}
             onClick={() => onSelectSection(section.id)}
             disabled={!isUnlocked}
-            className={`w-full p-4 rounded-xl border text-left transition-all ${
+            className={`w-full density-card rounded-xl border text-left transition-all duration-200 tap-target-touch focus-enterprise-ring ${
               isUnlocked
-                ? 'border-border/50 hover:border-primary/50 hover:bg-muted/30 cursor-pointer'
-                : 'border-border/30 bg-muted/10 cursor-not-allowed opacity-60'
+                ? 'border-border-card hover:border-primary-500/30 hover:bg-muted/30 cursor-pointer'
+                : 'border-border-card bg-muted/10 cursor-not-allowed opacity-60'
             }`}
           >
             <div className="flex items-start gap-4">
               {/* Icon */}
               <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                isComplete ? 'bg-success/10 text-success' :
-                isUnlocked ? `bg-${section.accentColor}/10 text-${section.accentColor}` :
-                'bg-muted text-muted-foreground'
+                isComplete ? 'bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 text-success' :
+                isUnlocked ? 'bg-gradient-to-br from-primary-500/10 to-primary-500/5 text-primary' :
+                'bg-muted text-enterprise-secondary'
               }`}>
                 {isComplete ? (
                   <CheckIcon className="w-5 h-5" />
@@ -283,7 +312,7 @@ function SectionsView({
                   <h3 className="font-semibold text-enterprise-primary">
                     {t(`sections.${section.id}.title`)}
                   </h3>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-xs text-enterprise-secondary">
                     ({section.modules.length} moduli)
                   </span>
                 </div>
@@ -302,7 +331,7 @@ function SectionsView({
                         style={{ width: `${progress.percentage}%` }}
                       />
                     </div>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-xs text-enterprise-secondary">
                       {progress.completed}/{progress.total}
                     </span>
                   </div>
@@ -317,7 +346,7 @@ function SectionsView({
               
               {/* Arrow */}
               {isUnlocked && (
-                <ChevronRightIcon className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                <ChevronRightIcon className="w-5 h-5 text-enterprise-secondary flex-shrink-0" />
               )}
             </div>
           </button>
@@ -343,8 +372,8 @@ function ModulesView({
   return (
     <div className="space-y-4">
       {/* Section description */}
-      <div className="p-4 bg-muted/20 rounded-lg">
-        <p className="text-sm text-enterprise-secondary">
+      <div className="density-card rounded-lg bg-gradient-to-br from-primary-500/8 to-primary-500/3 border border-primary-500/20">
+        <p className="text-sm text-enterprise-secondary reading-line-height">
           {t(`sections.${section.id}.description`)}
         </p>
       </div>
@@ -359,19 +388,19 @@ function ModulesView({
             <button
               key={module.id}
               onClick={() => onSelectModule(module.id)}
-              className="w-full flex items-center justify-between p-4 rounded-lg border border-border/50 hover:border-primary/50 hover:bg-muted/30 transition-colors text-left"
+              className="w-full flex items-center justify-between density-card rounded-lg border border-border-card hover:border-primary-500/30 hover:bg-muted/30 transition-all duration-200 text-left tap-target-touch focus-enterprise-ring"
             >
               <div className="flex items-center gap-3">
                 {/* Completion indicator */}
                 <div className={`w-7 h-7 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
                   isCompleted 
-                    ? 'bg-success border-success' 
+                    ? 'bg-gradient-to-br from-emerald-500 to-emerald-600 border-success' 
                     : 'border-muted-foreground/30'
                 }`}>
                   {isCompleted ? (
                     <CheckIcon className="w-4 h-4 text-white" />
                   ) : (
-                    <span className="text-xs text-muted-foreground">{index + 1}</span>
+                    <span className="text-xs text-enterprise-secondary">{index + 1}</span>
                   )}
                 </div>
                 
@@ -388,14 +417,14 @@ function ModulesView({
                     )}
                   </div>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-xs text-enterprise-secondary">
                       ~{module.estimatedMinutes} {t('ui.minutes')}
                     </span>
                   </div>
                 </div>
               </div>
               
-              <ChevronRightIcon className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+              <ChevronRightIcon className="w-4 h-4 text-enterprise-secondary flex-shrink-0" />
             </button>
           )
         })}
@@ -429,11 +458,11 @@ function ContentView({
               {t('ui.criticalModule')}
             </span>
           )}
-          <span className="text-xs text-muted-foreground">
+          <span className="text-xs text-enterprise-secondary">
             ~{module.estimatedMinutes} {t('ui.minutes')}
           </span>
         </div>
-        <p className="text-enterprise-secondary">
+        <p className="text-enterprise-secondary reading-line-height">
           {t(`modules.${translationKey}.description`)}
         </p>
       </div>
@@ -449,7 +478,7 @@ function ContentView({
             const topicName = topicKey.split('.').pop() || ''
             return (
               <li key={topicKey} className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center flex-shrink-0 text-xs font-medium">
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-primary-500/10 to-primary-500/5 text-primary flex items-center justify-center flex-shrink-0 text-xs font-medium">
                   {index + 1}
                 </div>
                 <span className="text-enterprise-body pt-0.5">
@@ -462,11 +491,11 @@ function ContentView({
       </div>
       
       {/* Placeholder for actual content */}
-      <div className="p-6 bg-muted/20 rounded-lg border border-dashed border-border/50 text-center">
-        <p className="text-sm text-muted-foreground">
+      <div className="density-card rounded-lg bg-gradient-to-br from-primary-500/8 to-primary-500/3 border border-dashed border-primary-500/20 text-center">
+        <p className="text-sm text-enterprise-secondary">
           Contenuto educativo del modulo
         </p>
-        <p className="text-xs text-muted-foreground mt-1">
+        <p className="text-xs text-enterprise-secondary mt-1">
           (da implementare)
         </p>
       </div>
@@ -477,13 +506,13 @@ function ContentView({
           <>
             <button
               onClick={onToggleComplete}
-              className="flex-1 px-4 py-3 rounded-lg font-medium border border-success/30 bg-success/5 text-success hover:bg-success/10 transition-colors"
+              className="cta-enterprise-secondary flex-1 tap-target-touch focus-enterprise-ring"
             >
               ✓ {t('ui.moduleCompleted')}
             </button>
             <button
               onClick={onContinue}
-              className="flex-1 px-4 py-3 rounded-lg font-medium bg-primary text-white hover:bg-primary/90 transition-colors"
+              className="cta-enterprise-primary flex-1 tap-target-touch focus-enterprise-ring"
             >
               {t('ui.continue')} →
             </button>
@@ -491,7 +520,7 @@ function ContentView({
         ) : (
           <button
             onClick={onContinue}
-            className="w-full px-4 py-3 rounded-lg font-medium bg-primary text-white hover:bg-primary/90 transition-colors"
+            className="cta-enterprise-primary w-full tap-target-touch focus-enterprise-ring"
           >
             {t('ui.markComplete')}
           </button>

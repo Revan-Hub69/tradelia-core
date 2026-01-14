@@ -54,22 +54,14 @@ export function ModulesListView({
       {/* Back button */}
       <button
         onClick={onBack}
-        className="
-          flex items-center gap-inline
-          text-enterprise-small font-medium text-enterprise-secondary
-          hover:text-enterprise-primary
-          transition-enterprise-fast
-          rounded-lg px-3 py-2 -ml-2
-          tap-target-touch
-          focus-enterprise-ring
-        "
+        className="flex items-center gap-2 text-sm font-medium text-enterprise-secondary hover:text-enterprise-primary transition-colors rounded-lg px-3 py-2 -ml-2 tap-target-touch focus-enterprise-ring"
       >
         <ArrowLeftIcon className="w-4 h-4" />
         {tNav('back')}
       </button>
 
       {/* Progress header with gradient background */}
-      <div className="relative p-6 rounded-xl bg-gradient-to-br from-primary-500/8 to-primary-500/3 border border-primary-500/20 overflow-hidden">
+      <div className="relative density-card rounded-xl bg-gradient-to-br from-primary-500/8 to-primary-500/3 border border-primary-500/20 overflow-hidden">
         {/* Decorative background pattern */}
         <div className="absolute inset-0 opacity-30" style={{
           backgroundImage: 'radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 50%)'
@@ -77,10 +69,10 @@ export function ModulesListView({
         
         <div className="relative z-10">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-enterprise-h2 text-enterprise-primary tracking-tight">
+            <h2 className="text-xl font-semibold text-enterprise-primary tracking-tight">
               {groupTitle}
             </h2>
-            <span className="text-enterprise-body font-numeric font-semibold text-enterprise-primary px-3 py-1 rounded-full bg-background/50 backdrop-blur-sm border border-primary-500/20">
+            <span className="text-sm font-semibold text-enterprise-primary px-3 py-1 rounded-full bg-background/50 backdrop-blur-sm border border-primary-500/20">
               {completedModules.length}/{modules.length}
             </span>
           </div>
@@ -229,7 +221,6 @@ function ModuleCard({
   if (isLocked) {
     return (
       <div className="relative">
-        {/* Progress bar on left side - 3-4px width with rounded corners */}
         <div className="absolute left-0 top-0 bottom-0 w-1 bg-neutral-200 dark:bg-neutral-800 rounded-full overflow-hidden">
           <div 
             className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-primary-500 to-emerald-500 transition-all duration-500 rounded-full"
@@ -237,7 +228,7 @@ function ModuleCard({
           />
         </div>
         
-        <div className="pl-6 p-6 rounded-xl bg-background border border-border/50 overflow-hidden relative shadow-sm">
+        <div className="pl-6 density-card rounded-xl bg-card border border-border-card overflow-hidden relative shadow-sm">
           <div className="flex items-center gap-6">
             {/* SVG Number - pastel blue-gray "stampato" */}
             <div className="flex-shrink-0">
@@ -246,10 +237,10 @@ function ModuleCard({
 
             {/* Module info */}
             <div className="flex-1 min-w-0">
-              <h3 className="text-base font-semibold text-foreground truncate tracking-tight mb-1">
+              <h3 className="text-base font-semibold text-enterprise-primary truncate tracking-tight mb-1">
                 {module.title}
               </h3>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2 text-sm text-enterprise-secondary">
                 <ClockIcon className="w-3.5 h-3.5" />
                 <span>~{module.estimatedMinutes} min</span>
               </div>
@@ -257,10 +248,10 @@ function ModuleCard({
           </div>
 
           {/* Glassmorphism overlay - dashboard style */}
-          <div className="absolute inset-0 bg-background/40 backdrop-blur-[1px] rounded-xl flex items-end justify-center pb-4 cursor-not-allowed">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/90 rounded-full border border-border/50 shadow-sm">
-              <LockIcon className="w-3.5 h-3.5 text-muted-foreground" />
-              <span className="text-xs font-medium text-muted-foreground">
+          <div className="absolute inset-0 bg-card/40 backdrop-blur-[1px] rounded-xl flex items-end justify-center pb-4 cursor-not-allowed">
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/90 rounded-full border border-border-card shadow-sm">
+              <LockIcon className="w-3.5 h-3.5 text-enterprise-secondary" />
+              <span className="text-xs font-medium text-enterprise-secondary">
                 Bloccato
               </span>
             </div>
@@ -282,7 +273,7 @@ function ModuleCard({
       
       <button
         onClick={onSelect}
-        className="group relative w-full pl-6 p-6 rounded-xl border text-left bg-background border-border/50 transition-all duration-200 ease-out hover:border-primary-300 dark:hover:border-primary-700 hover:shadow-lg hover:translate-y-[-2px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-2"
+        className="group relative w-full density-card rounded-xl border text-left bg-card border-border-card transition-all duration-200 ease-out hover:border-primary-500/30 hover:shadow-lg hover:translate-y-[-2px] tap-target-touch focus-enterprise-ring"
       >
         {/* Gradient overlay on hover */}
         <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary/0 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
@@ -300,7 +291,7 @@ function ModuleCard({
             {/* Module info */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <h3 className="text-base font-semibold text-foreground truncate tracking-tight">
+                <h3 className="text-base font-semibold text-enterprise-primary truncate tracking-tight">
                   {module.title}
                 </h3>
                 {isCompleted && (

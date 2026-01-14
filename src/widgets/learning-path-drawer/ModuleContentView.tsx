@@ -51,14 +51,14 @@ export function ModuleContentView({
   return (
     <div className="flex flex-col gap-section">
       {/* Navigation header */}
-      <div className="card-enterprise-flat space-element border-b border-enterprise-subtle pb-component">
+      <div className="density-card rounded-xl bg-card border-b border-enterprise-soft pb-4">
         {/* Progress bar */}
-        <div className="flex items-center gap-element mb-component">
-          <span className="text-enterprise-small text-enterprise-secondary whitespace-nowrap">
+        <div className="flex items-center gap-3 mb-4">
+          <span className="text-sm text-enterprise-secondary whitespace-nowrap">
             {tNav('progress')}:
           </span>
           <div 
-            className="flex-1 progress-enterprise"
+            className="flex-1 h-2 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden"
             role="progressbar"
             aria-valuenow={progressPercent}
             aria-valuemin={0}
@@ -66,11 +66,11 @@ export function ModuleContentView({
             aria-label={tNav('moduleProgress')}
           >
             <div 
-              className="progress-enterprise-fill"
+              className="h-full rounded-full bg-gradient-to-r from-primary-500 to-primary-600 shadow-sm transition-all duration-500 ease-out"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
-          <span className="text-enterprise-small font-numeric font-semibold text-enterprise-primary whitespace-nowrap">
+          <span className="text-sm font-semibold text-enterprise-primary whitespace-nowrap">
             {currentIndex + 1}/{totalModules}
           </span>
         </div>
@@ -79,15 +79,7 @@ export function ModuleContentView({
         <div className="flex items-center justify-between">
           <button
             onClick={onBack}
-            className="
-              flex items-center gap-inline
-              text-enterprise-small font-medium text-enterprise-secondary
-              hover:text-enterprise-primary
-              transition-enterprise-fast
-              rounded-lg px-3 py-2 -ml-2
-              tap-target-touch
-              focus-enterprise-ring
-            "
+            className="flex items-center gap-2 text-sm font-medium text-enterprise-secondary hover:text-enterprise-primary transition-colors rounded-lg px-3 py-2 -ml-2 tap-target-touch focus-enterprise-ring"
           >
             <ArrowLeftIcon className="w-4 h-4" />
             {tNav('back')}
@@ -99,15 +91,7 @@ export function ModuleContentView({
               onClick={onPrevious}
               disabled={!hasPrevious}
               aria-label={tNav('previousModule')}
-              className="
-                w-11 h-11 rounded-lg
-                flex items-center justify-center
-                transition-enterprise
-                disabled:opacity-50 disabled:cursor-not-allowed
-                bg-enterprise-muted hover:bg-enterprise-subtle
-                focus-enterprise-ring
-                tap-target-touch
-              "
+              className="w-11 h-11 rounded-lg flex items-center justify-center transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed bg-muted hover:bg-muted/70 tap-target-touch focus-enterprise-ring"
             >
               <ChevronLeftIcon className="w-5 h-5 text-enterprise-primary" />
             </button>
@@ -115,15 +99,7 @@ export function ModuleContentView({
               onClick={onNext}
               disabled={!hasNext}
               aria-label={tNav('nextModule')}
-              className="
-                w-11 h-11 rounded-lg
-                flex items-center justify-center
-                transition-enterprise
-                disabled:opacity-50 disabled:cursor-not-allowed
-                bg-enterprise-muted hover:bg-enterprise-subtle
-                focus-enterprise-ring
-                tap-target-touch
-              "
+              className="w-11 h-11 rounded-lg flex items-center justify-center transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed bg-muted hover:bg-muted/70 tap-target-touch focus-enterprise-ring"
             >
               <ChevronRightIcon className="w-5 h-5 text-enterprise-primary" />
             </button>
