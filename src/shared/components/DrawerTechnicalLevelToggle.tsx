@@ -154,7 +154,7 @@ export function DrawerTechnicalLevelToggle({
         <div className="
           absolute top-full right-0 mt-2 w-72
           bg-background border-2 border-border/50 rounded-xl
-          shadow-xl z-50
+          shadow-xl z-[10000]
           animate-in fade-in slide-in-from-top-2 duration-150
         ">
           <div className="p-2">
