@@ -230,6 +230,13 @@ function ModuleCard({
         
         <div className="pl-4 density-card rounded-xl bg-card border border-border-card overflow-hidden relative shadow-sm">
           <div className="flex items-center gap-4">
+            {/* Premium number badge */}
+            <div className="flex-shrink-0">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary-500/10 to-primary-500/5 border border-primary-500/20 flex items-center justify-center">
+                <span className="text-lg font-bold text-primary-600 dark:text-primary-400">{index + 1}</span>
+              </div>
+            </div>
+
             {/* Module info */}
             <div className="flex-1 min-w-0">
               <h3 className="text-base font-semibold text-enterprise-primary truncate tracking-tight mb-1">
@@ -278,6 +285,13 @@ function ModuleCard({
 
         <div className="relative z-10 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4 flex-1 min-w-0">
+            {/* Premium number badge */}
+            <div className="flex-shrink-0">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary-500/10 to-primary-500/5 border border-primary-500/20 flex items-center justify-center shadow-sm">
+                <span className="text-lg font-bold text-primary-600 dark:text-primary-400">{index + 1}</span>
+              </div>
+            </div>
+
             {/* Module info */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
