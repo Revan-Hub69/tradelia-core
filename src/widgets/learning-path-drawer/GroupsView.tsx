@@ -1,10 +1,20 @@
 /**
- * Groups View - Level 2
+ * Groups View - Level 2 - DESIGN SYSTEM 2026 COMPLIANT
  * 
  * Mostra i 3 gruppi principali:
  * - Phase 0 (sempre libero)
  * - Phase 1 (locked fino a completamento Phase 0)
  * - Technical Deep Dives (locked fino a completamento Phase 1)
+ * 
+ * DESIGN COMPLIANCE:
+ * - Enterprise typography (text-enterprise-*)
+ * - Density system (density-*)
+ * - Tap targets (tap-target-touch, min 44px mobile)
+ * - Focus rings (focus-enterprise-ring)
+ * - Card hover lift (card-hover-lift)
+ * - Progress state badges (progress-state-*)
+ * - Alert enterprise for locked states
+ * - Section frame for visual hierarchy
  */
 
 'use client'
@@ -19,22 +29,22 @@ interface GroupsViewProps {
 
 export function GroupsView({ groups, onSelectGroup, onBack }: GroupsViewProps) {
   return (
-    <div className="space-y-6">
+    <div className="density-section-gap flex flex-col">
       {/* Back button */}
       <button
         onClick={onBack}
-        className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg px-3 py-2 -ml-2 min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+        className="flex items-center density-gap density-text-secondary font-medium text-enterprise-secondary hover:text-enterprise-primary transition-subtle rounded-lg density-card -ml-2 tap-target-touch focus-enterprise-ring"
       >
         <span className="text-lg">←</span>
         Modifica impostazioni
       </button>
 
       {/* Intro */}
-      <div className="space-y-2">
-        <h2 className="text-xl font-bold text-foreground">
+      <div className="section-frame density-card">
+        <h2 className="text-xl font-bold text-enterprise-primary mb-2">
           Scegli da dove iniziare
         </h2>
-        <p className="text-sm text-muted-foreground">
+        <p className="density-text-secondary text-enterprise-secondary reading-line-height">
           Il percorso è progressivo: completa Phase 0 per sbloccare Phase 1, poi gli approfondimenti tecnici.
         </p>
       </div>
@@ -86,70 +96,82 @@ function GroupCard({
 
   const style = colorStyles[group.color]
 
+  if (group.isLocked) {
+    return (
+      <div className="section-frame density-card opacity-60">
+        <div className="flex items-start density-gap">
+          {/* Icon */}
+          <div className="density-icon-box flex items-center justify-center rounded-lg bg-muted flex-shrink-0">
+            <LockIcon className="density-icon text-muted-foreground" />
+          </div>
+
+          {/* Content */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center density-gap mb-2">
+              <h3 className="text-base font-bold text-enterprise-primary">
+                {index === 0 ? 'Phase 0' : index === 1 ? 'Phase 1' : 'Approfondimenti Tecnici'}
+              </h3>
+              <span className="progress-state-not-started">
+                Bloccato
+              </span>
+            </div>
+            
+            <div className="alert-enterprise-info">
+              <p className="density-text-secondary reading-line-height">
+                Completa {index === 1 ? 'Phase 0' : 'Phase 1'} per sbloccare questo gruppo
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <button
       onClick={onSelect}
-      disabled={group.isLocked}
       className={`
-        w-full p-5 rounded-xl border-2 text-left
-        transition-all duration-200
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2
-        ${group.isLocked
-          ? 'border-border/30 bg-muted/20 cursor-not-allowed opacity-60'
-          : `${style.border} ${style.bg} hover:shadow-md hover:scale-[1.01]`
-        }
+        w-full card-2026 card-hover-lift density-card
+        tap-target-touch focus-enterprise-ring
+        text-left transition-subtle
+        ${style.border} ${style.bg}
       `}
     >
-      <div className="flex items-start gap-4">
+      <div className="flex items-start density-gap">
         {/* Icon */}
         <div className={`
-          w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0
-          ${group.isLocked ? 'bg-muted' : style.iconBg}
+          density-icon-box flex items-center justify-center rounded-lg flex-shrink-0
+          ${style.iconBg}
         `}>
-          {group.isLocked ? (
-            <LockIcon className="w-6 h-6 text-muted-foreground" />
-          ) : (
-            <GroupIcon type={group.id} className={`w-6 h-6 ${style.text}`} />
-          )}
+          <GroupIcon type={group.id} className={`density-icon ${style.text}`} />
         </div>
 
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-2">
-            <h3 className={`text-base font-bold ${
-              group.isLocked ? 'text-muted-foreground' : 'text-foreground'
-            }`}>
+          <div className="flex items-center density-gap mb-2">
+            <h3 className="text-base font-bold text-enterprise-primary">
               {index === 0 ? 'Phase 0' : index === 1 ? 'Phase 1' : 'Approfondimenti Tecnici'}
             </h3>
-            {!group.isLocked && (
-              <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
-                {group.moduleCount} moduli
-              </span>
-            )}
+            <span className="focus-chip-secondary">
+              {group.moduleCount} moduli
+            </span>
           </div>
           
-          <p className={`text-sm mb-3 ${
-            group.isLocked ? 'text-muted-foreground/70' : 'text-muted-foreground'
-          }`}>
-            {group.isLocked 
-              ? `Completa ${index === 1 ? 'Phase 0' : 'Phase 1'} per sbloccare`
-              : `~${group.estimatedHours}h di contenuti`
-            }
+          <p className="density-text-secondary text-enterprise-secondary reading-line-height mb-3">
+            ~{group.estimatedHours}h di contenuti
           </p>
 
-          {!group.isLocked && (
-            <div className="flex items-center gap-2 text-sm font-medium text-primary">
-              Inizia
-              <ArrowRightIcon className="w-4 h-4" />
-            </div>
-          )}
+          <div className="flex items-center density-gap density-text-secondary font-medium text-primary">
+            Inizia
+            <ArrowRightIcon className="w-4 h-4" />
+          </div>
         </div>
       </div>
     </button>
   )
 }
 
-// SVG Icons
+// SVG Icons - Homemade, no emoji, no icon libraries
 function GroupIcon({ type, className }: { type: string; className?: string }) {
   if (type === 'phase-0') {
     return (

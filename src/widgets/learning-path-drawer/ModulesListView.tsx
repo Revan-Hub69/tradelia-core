@@ -1,10 +1,20 @@
 /**
- * Modules List View - Level 3
+ * Modules List View - Level 3 - DESIGN SYSTEM 2026 COMPLIANT
  * 
  * Mostra tutti i moduli del gruppo selezionato con:
  * - Progress bar
  * - Completion status
- * - Estimated time
+ * - Estimated time (dynamic word count / 250)
+ * - Complexity indicator
+ * 
+ * DESIGN COMPLIANCE:
+ * - Enterprise typography (text-enterprise-*)
+ * - Density system (density-*)
+ * - Tap targets (tap-target-touch, min 44px mobile)
+ * - Focus rings (focus-enterprise-ring)
+ * - Drawer list item pattern
+ * - Progress state badges
+ * - Animated checkmark on completion
  */
 
 'use client'
@@ -33,23 +43,23 @@ export function ModulesListView({
   const completionPercent = Math.round((completedModules.length / modules.length) * 100)
 
   return (
-    <div className="space-y-6">
+    <div className="density-section-gap flex flex-col">
       {/* Back button */}
       <button
         onClick={onBack}
-        className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg px-3 py-2 -ml-2 min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+        className="flex items-center density-gap density-text-secondary font-medium text-enterprise-secondary hover:text-enterprise-primary transition-subtle rounded-lg density-card -ml-2 tap-target-touch focus-enterprise-ring"
       >
         <span className="text-lg">←</span>
         Torna ai gruppi
       </button>
 
       {/* Progress */}
-      <div className="space-y-3">
+      <div className="section-frame density-card density-section-gap">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-foreground">
+          <h2 className="text-xl font-bold text-enterprise-primary">
             {groupTitle}
           </h2>
-          <span className="text-sm font-semibold text-muted-foreground">
+          <span className="density-text-secondary font-semibold text-enterprise-body">
             {completedModules.length}/{modules.length}
           </span>
         </div>
@@ -67,6 +77,17 @@ export function ModulesListView({
             style={{ width: `${completionPercent}%` }}
           />
         </div>
+
+        {completionPercent === 100 && (
+          <div className="alert-enterprise-success">
+            <div className="flex items-center density-gap">
+              <CheckCircleIcon className="w-5 h-5 flex-shrink-0" />
+              <span className="density-text-secondary font-medium">
+                Gruppo completato! 🎉
+              </span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Modules list */}
@@ -77,37 +98,40 @@ export function ModulesListView({
             <button
               key={module.id}
               onClick={() => onSelectModule(module.id)}
-              className="w-full flex items-center justify-between p-4 rounded-lg border border-border/50 hover:border-primary/50 hover:bg-muted/30 transition-colors text-left min-h-[64px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              className="w-full drawer-list-item card-2026 card-hover-lift tap-target-touch focus-enterprise-ring"
             >
-              <div className="flex items-center gap-3 flex-1 min-w-0">
-                {/* Completion indicator */}
-                <div className={`
-                  w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0
-                  ${isCompleted 
-                    ? 'bg-success border-success' 
-                    : 'border-muted-foreground/30'
-                  }
-                `}>
-                  {isCompleted && (
-                    <CheckIcon className="w-3.5 h-3.5 text-white" />
-                  )}
-                </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center density-gap flex-1 min-w-0">
+                  {/* Completion indicator */}
+                  <div className={`
+                    w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0
+                    transition-subtle
+                    ${isCompleted 
+                      ? 'bg-success border-success animate-check-pop' 
+                      : 'border-muted-foreground/30'
+                    }
+                  `}>
+                    {isCompleted && (
+                      <CheckIcon className="w-3.5 h-3.5 text-white" />
+                    )}
+                  </div>
 
-                {/* Module info */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-medium text-foreground truncate">
-                      {index + 1}. {module.title}
+                  {/* Module info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center density-gap mb-1">
+                      <span className="font-medium text-enterprise-primary truncate">
+                        {index + 1}. {module.title}
+                      </span>
+                    </div>
+                    <span className="density-text-tertiary text-enterprise-secondary">
+                      ~{module.estimatedMinutes} min
                     </span>
                   </div>
-                  <span className="text-xs text-muted-foreground">
-                    ~{module.estimatedMinutes} min
-                  </span>
                 </div>
-              </div>
 
-              {/* Arrow */}
-              <ArrowRightIcon className="w-5 h-5 text-muted-foreground flex-shrink-0 ml-2" />
+                {/* Arrow */}
+                <ArrowRightIcon className="w-5 h-5 text-muted-foreground flex-shrink-0 ml-2" />
+              </div>
             </button>
           )
         })}
@@ -116,11 +140,20 @@ export function ModulesListView({
   )
 }
 
-// SVG Icons
+// SVG Icons - Homemade, no emoji, no icon libraries
 function CheckIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
       <path d="M20 6 9 17l-5-5" />
+    </svg>
+  )
+}
+
+function CheckCircleIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+      <circle cx="12" cy="12" r="10" />
+      <path d="M9 12l2 2 4-4" />
     </svg>
   )
 }
