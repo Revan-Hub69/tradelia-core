@@ -64,52 +64,54 @@ export function CryptoSectionsGrid({
           const accentColor = accentColorMap[section.color] || 'primary'
           
           return (
-            <AnimatedCard key={sectionId} delay={index * 100}>
-              <div className="relative">
+            <div key={sectionId} className="relative">
+              {/* Card with animation */}
+              <AnimatedCard delay={index * 100}>
                 <JourneyCard
-                title={t(`${sectionId}.title`)}
-                description={t(`${sectionId}.description`)}
-                subtitle={t(`${sectionId}.subtitle`)}
-                icon={<SectionIcon type={section.icon} />}
-                accentColor={accentColor}
-                onClick={isActive ? () => onSectionClick?.(sectionId) : () => {}}
-                badge={
-                  <div className="flex items-center gap-3">
-                    <ComplexityIndicator 
-                      level={section.complexity}
-                      size="sm"
-                      showTooltip={false}
-                    />
-                    {isCompleted && (
-                      <span className="text-xs text-success font-medium">
-                        ✓ {t('ui.completed')}
-                      </span>
-                    )}
+                  title={t(`${sectionId}.title`)}
+                  description={t(`${sectionId}.description`)}
+                  subtitle={t(`${sectionId}.subtitle`)}
+                  icon={<SectionIcon type={section.icon} />}
+                  accentColor={accentColor}
+                  onClick={isActive ? () => onSectionClick?.(sectionId) : () => {}}
+                  badge={
+                    <div className="flex items-center gap-3">
+                      <ComplexityIndicator 
+                        level={section.complexity}
+                        size="sm"
+                        showTooltip={false}
+                      />
+                      {isCompleted && (
+                        <span className="text-xs text-success font-medium">
+                          ✓ {t('ui.completed')}
+                        </span>
+                      )}
+                    </div>
+                  }
+                >
+                  {/* Focus Areas */}
+                  <div className="space-y-2">
+                    <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      {t('ui.focus')}
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {section.focusAreas.map((focus) => (
+                        <span 
+                          key={focus.id}
+                          className="px-2 py-1 text-xs bg-muted/50 text-muted-foreground rounded-md"
+                        >
+                          {t(`${sectionId}.focus.${focus.id}`)}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                }
-              >
-                {/* Focus Areas */}
-                <div className="space-y-2">
-                  <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    {t('ui.focus')}
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    {section.focusAreas.map((focus) => (
-                      <span 
-                        key={focus.id}
-                        className="px-2 py-1 text-xs bg-muted/50 text-muted-foreground rounded-md"
-                      >
-                        {t(`${sectionId}.focus.${focus.id}`)}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </JourneyCard>
+                </JourneyCard>
+              </AnimatedCard>
               
-              {/* Coming Soon Overlay - leggero per lasciare leggere la card */}
+              {/* Coming Soon Overlay - FUORI dall'AnimatedCard per non essere animato */}
               {!isActive && (
-                <div className="absolute inset-0 bg-background/40 backdrop-blur-[1px] rounded-xl flex items-end justify-center pb-4 cursor-not-allowed">
-                  <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/90 rounded-full border border-border/50 shadow-sm">
+                <div className="absolute inset-0 bg-background/40 backdrop-blur-[1px] rounded-xl flex items-end justify-center pb-4 cursor-not-allowed pointer-events-none">
+                  <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/90 rounded-full border border-border/50 shadow-sm pointer-events-auto">
                     <ClockIcon className="w-3.5 h-3.5 text-muted-foreground" />
                     <span className="text-xs font-medium text-muted-foreground">
                       {t('ui.comingSoon')}
@@ -118,7 +120,6 @@ export function CryptoSectionsGrid({
                 </div>
               )}
             </div>
-            </AnimatedCard>
           )
         })}
       </div>
