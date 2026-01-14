@@ -24,12 +24,13 @@ import React, {
   type ReactNode
 } from 'react'
 import { createPortal } from 'react-dom'
-import { CloseIcon, InfoIcon, AlertTriangleIcon, CheckIcon } from '@/components/icons/TradeliaIcons'
+import { CloseIcon, InfoIcon, AlertTriangleIcon, CheckIcon, ChevronRightIcon } from '@/components/icons/TradeliaIcons'
 import { useDeepLink } from '../hooks/useDeepLink'
 import { useDrawerTabRestore } from '../hooks/useSessionContinuity'
 import { useScrollShadow } from '../hooks/useScrollShadow'
 import { useSafeTranslations } from '../lib/i18n-safe'
 import { DrawerTechnicalLevelToggle } from '@/src/shared/components/DrawerTechnicalLevelToggle'
+import { IconBox, type IconBoxColor } from './IconBox'
 
 export interface PremiumDrawerProps {
   isOpen: boolean
@@ -650,7 +651,7 @@ export function PremiumDrawer({
         {/* Header with Enterprise styling and scroll shadow */}
         {(title || showCloseButton || minimalHeader) && (
           <header 
-            className={`drawer-enterprise-header border-b border-border-card ${isScrolled ? 'scrolled' : ''}`}
+            className={`drawer-enterprise-header px-4 sm:px-5 lg:px-6 py-3 sm:py-4 border-b border-border-card ${isScrolled ? 'scrolled shadow-md' : ''}`}
           >
             {minimalHeader ? (
               /* Header minimalista mobile: solo torna indietro */
@@ -668,17 +669,15 @@ export function PremiumDrawer({
             ) : (
               /* Header standard with enterprise styling */
               <div className="flex flex-col gap-2">
-                {/* Breadcrumb row */}
+                {/* Breadcrumb row with chevron separators */}
                 {breadcrumb && breadcrumb.length > 0 && (
-                  <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-xs text-enterprise-secondary">
+                  <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-enterprise-secondary">
                     {breadcrumb.map((item, index) => (
-                      <span key={`breadcrumb-${item.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-center gap-1">
+                      <span key={`breadcrumb-${item.replace(/\s+/g, '-').toLowerCase()}`} className="flex items-center gap-1.5">
                         {index > 0 && (
-                          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                          </svg>
+                          <ChevronRightIcon className="w-3 h-3 text-enterprise-tertiary" aria-hidden="true" />
                         )}
-                        <span className={index === breadcrumb.length - 1 ? 'text-enterprise-primary font-medium' : ''}>
+                        <span className={index === breadcrumb.length - 1 ? 'text-enterprise-primary font-medium' : 'hover:text-enterprise-primary transition-colors'}>
                           {item}
                         </span>
                       </span>
@@ -689,11 +688,15 @@ export function PremiumDrawer({
                 {/* Title row */}
                 <div className="flex items-start justify-between gap-4">
                   {title && (
-                    <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                    <div className="flex items-center gap-3 sm:gap-4 min-w-0 group">
                       {icon && (
-                        <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${accent.bg} border ${accent.border} flex items-center justify-center flex-shrink-0`}>
-                          <div className={accent.text}>{icon}</div>
-                        </div>
+                        <IconBox 
+                          icon={icon} 
+                          color={accentColor as IconBoxColor} 
+                          size="md"
+                          animated={false}
+                          className="flex-shrink-0"
+                        />
                       )}
                       <div className="min-w-0">
                         {subtitle && (
@@ -701,7 +704,7 @@ export function PremiumDrawer({
                             {subtitle}
                           </p>
                         )}
-                        <h2 id="drawer-title" className="text-enterprise-primary text-lg sm:text-xl font-semibold truncate">
+                        <h2 id="drawer-title" className="text-enterprise-primary text-base sm:text-lg lg:text-xl font-semibold truncate tracking-tight" title={title}>
                           {title}
                         </h2>
                       </div>

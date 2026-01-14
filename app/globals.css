@@ -448,21 +448,33 @@
     background-color: hsl(var(--bg-card));
     border-bottom: 1px solid transparent;
     transition: border-color 150ms ease, box-shadow 150ms ease;
-    padding: 1.5rem;
+    /* Responsive padding now handled in component */
   }
   
   .drawer-enterprise-header.scrolled {
     border-bottom-color: hsl(var(--border-soft));
-    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   }
   
   /* Enterprise Drawer Content */
   .drawer-enterprise-content {
     flex: 1;
     min-height: 0; /* Important for flex overflow */
-    padding: 1.5rem;
+    padding: 1rem; /* Mobile: 16px */
     overflow-y: auto;
     /* Ensure focus not obscured (WCAG 2.2) */
+  }
+  
+  @media (min-width: 640px) {
+    .drawer-enterprise-content {
+      padding: 1.25rem; /* Tablet: 20px */
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .drawer-enterprise-content {
+      padding: 1.5rem; /* Desktop: 24px */
+    }
   }
   
   .drawer-enterprise-content :focus {

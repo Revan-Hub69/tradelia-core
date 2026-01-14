@@ -15,8 +15,11 @@
 
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
+import { ModuleCard } from '@/src/shared/ui/ModuleCard'
+import { DecorativeDivider } from '@/src/shared/ui/DecorativeDivider'
+import { AnimatedCard } from '@/src/shared/ui/AnimatedCard'
+import { ProgressBarPremium } from '@/src/shared/ui/ProgressBarPremium'
 
 interface Module {
   id: string
@@ -47,7 +50,7 @@ export function ModulesListView({
   const completionPercent = Math.round((completedModules.length / modules.length) * 100)
   
   // Determine group number for module numbering (0.01, 1.01, 2.01)
-  const groupNumber = groupId === 'phase-0' ? 0 : groupId === 'phase-1' ? 1 : 2
+  const _groupNumber = groupId === 'phase-0' ? 0 : groupId === 'phase-1' ? 1 : 2
 
   return (
     <div className="flex flex-col gap-section font-professional">
@@ -77,38 +80,14 @@ export function ModulesListView({
             </span>
           </div>
           
-          {/* Progress bar with shimmer (matching ModuleContent style) */}
-          <div 
-            className="relative h-1.5 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden"
-            role="progressbar"
-            aria-valuenow={completionPercent}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-label={t('progress')}
-          >
-            {/* Background pattern */}
-            <div className="absolute inset-0 opacity-50" style={{
-              backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 10px, rgba(0,0,0,0.03) 10px, rgba(0,0,0,0.03) 20px)'
-            }} />
-            
-            {/* Progress fill with gradient and shimmer */}
-            <div 
-              className="h-full rounded-full bg-gradient-to-r from-primary-500 to-primary-600 shadow-sm transition-all duration-500 ease-out relative overflow-hidden"
-              style={{ width: `${completionPercent}%` }}
-            >
-              {/* Shimmer effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer-slow" />
-            </div>
-            
-            {/* Glow effect */}
-            <div 
-              className="absolute top-0 h-full bg-primary-400/50 blur-sm transition-all duration-500"
-              style={{ 
-                width: `${completionPercent}%`,
-                right: `${100 - completionPercent}%`
-              }}
-            />
-          </div>
+          {/* Progress bar with shimmer - using ProgressBarPremium */}
+          <ProgressBarPremium
+            value={completionPercent}
+            size="md"
+            showShimmer={true}
+            showGlow={true}
+            orientation="horizontal"
+          />
 
           {/* Completion badge with animation */}
           {completionPercent === 100 && (
@@ -122,16 +101,8 @@ export function ModulesListView({
         </div>
       </div>
 
-      {/* Decorative divider */}
-      <div className="flex items-center gap-4 py-2">
-        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border/60 to-transparent" />
-        <div className="flex gap-1.5">
-          <div className="w-1.5 h-1.5 rounded-full bg-primary-500/40" />
-          <div className="w-1.5 h-1.5 rounded-full bg-primary-500/60" />
-          <div className="w-1.5 h-1.5 rounded-full bg-primary-500/40" />
-        </div>
-        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border/60 to-transparent" />
-      </div>
+      {/* Decorative divider - using primitive */}
+      <DecorativeDivider variant="dots" spacing="sm" />
 
       {/* Modules list with viewport animations */}
       <div className="flex flex-col gap-3">
@@ -148,173 +119,18 @@ export function ModulesListView({
           return (
             <AnimatedCard key={module.id} delay={index * 80}>
               <ModuleCard
-                module={module}
-                index={index}
-                groupNumber={groupNumber}
+                title={module.title}
+                moduleNumber={index + 1}
+                estimatedMinutes={module.estimatedMinutes}
                 isCompleted={isCompleted}
                 isLocked={isLocked}
                 progressPercent={moduleProgressPercent}
-                onSelect={() => onSelectModule(module.id)}
+                onClick={() => onSelectModule(module.id)}
               />
             </AnimatedCard>
           )
         })}
       </div>
-    </div>
-  )
-}
-
-// Viewport-based animation component (matching ModuleContent)
-function AnimatedCard({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [isVisible, setIsVisible] = useState(false)
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          setTimeout(() => setIsVisible(true), delay)
-          observer.disconnect()
-        }
-      },
-      { threshold: 0.1, rootMargin: '50px' }
-    )
-
-    if (ref.current) {
-      observer.observe(ref.current)
-    }
-
-    return () => observer.disconnect()
-  }, [delay])
-
-  return (
-    <div
-      ref={ref}
-      className={`
-        transition-all duration-500 ease-out
-        ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
-      `}
-      style={{ transitionDelay: isVisible ? '0ms' : `${delay}ms` }}
-    >
-      {children}
-    </div>
-  )
-}
-
-function ModuleCard({
-  module,
-  index,
-  groupNumber,
-  isCompleted,
-  isLocked,
-  progressPercent,
-  onSelect
-}: {
-  module: Module
-  index: number
-  groupNumber: number
-  isCompleted: boolean
-  isLocked: boolean
-  progressPercent: number
-  onSelect: () => void
-}) {
-  if (isLocked) {
-    return (
-      <div className="relative">
-        <div className="absolute left-0 top-0 bottom-0 w-1 bg-neutral-200 dark:bg-neutral-800 rounded-full overflow-hidden">
-          <div 
-            className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-primary-500 to-emerald-500 transition-all duration-500 rounded-full"
-            style={{ height: `${progressPercent}%`, width: '4px' }}
-          />
-        </div>
-        
-        <div className="pl-4 density-card rounded-xl bg-card border border-border-card overflow-hidden relative shadow-sm">
-          <div className="flex items-center gap-4">
-            {/* Premium number badge */}
-            <div className="flex-shrink-0">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary-500/10 to-primary-500/5 border border-primary-500/20 flex items-center justify-center">
-                <span className="text-lg font-bold text-primary-600 dark:text-primary-400">{index + 1}</span>
-              </div>
-            </div>
-
-            {/* Module info */}
-            <div className="flex-1 min-w-0">
-              <h3 className="text-base font-semibold text-enterprise-primary truncate tracking-tight mb-1">
-                {module.title}
-              </h3>
-              <div className="flex items-center gap-2 text-sm text-enterprise-secondary">
-                <ClockIcon className="w-3.5 h-3.5" />
-                <span>~{module.estimatedMinutes} min</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Glassmorphism overlay - dashboard style */}
-          <div className="absolute inset-0 bg-card/40 backdrop-blur-[1px] rounded-xl flex items-end justify-center pb-4 cursor-not-allowed">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/90 rounded-full border border-border-card shadow-sm">
-              <LockIcon className="w-3.5 h-3.5 text-enterprise-secondary" />
-              <span className="text-xs font-medium text-enterprise-secondary">
-                Bloccato
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-  
-  return (
-    <div className="relative">
-      {/* Progress bar on left side - 3-4px width with rounded corners and glow */}
-      <div className="absolute left-0 top-0 bottom-0 w-1 bg-neutral-200 dark:bg-neutral-800 rounded-full overflow-hidden">
-        <div 
-          className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-primary-500 to-emerald-500 transition-all duration-500 rounded-full shadow-lg shadow-primary-500/30"
-          style={{ height: `${progressPercent}%`, width: '4px' }}
-        />
-      </div>
-      
-      <button
-        onClick={onSelect}
-        className="group relative w-full density-card rounded-xl border text-left bg-card border-border-card transition-all duration-200 ease-out hover:border-primary-500/30 hover:shadow-lg hover:translate-y-[-2px] tap-target-touch focus-enterprise-ring"
-      >
-        {/* Gradient overlay on hover */}
-        <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary/0 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
-        
-        {/* Shine effect */}
-        <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 pointer-events-none" />
-
-        <div className="relative z-10 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4 flex-1 min-w-0">
-            {/* Premium number badge */}
-            <div className="flex-shrink-0">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary-500/10 to-primary-500/5 border border-primary-500/20 flex items-center justify-center shadow-sm">
-                <span className="text-lg font-bold text-primary-600 dark:text-primary-400">{index + 1}</span>
-              </div>
-            </div>
-
-            {/* Module info */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <h3 className="text-base font-semibold text-enterprise-primary truncate tracking-tight">
-                  {module.title}
-                </h3>
-                {isCompleted && (
-                  <div className="w-5 h-5 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-sm">
-                    <CheckIcon className="w-3 h-3 text-white" />
-                  </div>
-                )}
-              </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <ClockIcon className="w-3.5 h-3.5" />
-                <span>~{module.estimatedMinutes} min</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Arrow */}
-          <ArrowRightIcon className="w-5 h-5 text-muted-foreground flex-shrink-0 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-primary" />
-        </div>
-      </button>
     </div>
   )
 }
@@ -328,44 +144,10 @@ function ArrowLeftIcon({ className }: { className?: string }) {
   )
 }
 
-function CheckIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
-      <path d="M20 6 9 17l-5-5" />
-    </svg>
-  )
-}
-
 function CheckCircleFilledIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
       <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.707 8.707a1 1 0 0 0-1.414-1.414L11 13.586l-2.293-2.293a1 1 0 0 0-1.414 1.414l3 3a1 1 0 0 0 1.414 0l5-5z" />
-    </svg>
-  )
-}
-
-function ClockIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10" />
-      <path d="M12 6v6l4 2" />
-    </svg>
-  )
-}
-
-function ArrowRightIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-      <path d="M5 12h14M12 5l7 7-7 7" />
-    </svg>
-  )
-}
-
-function LockIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
     </svg>
   )
 }

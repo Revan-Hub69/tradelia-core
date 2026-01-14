@@ -3,17 +3,21 @@
  * 
  * Premium features matching ModuleContent.tsx:
  * - Gradient backgrounds with depth
- * - Icon backgrounds with gradients + glow
- * - Hover effects with lift + shine
+ * - Icon backgrounds with gradients + glow (using IconBox)
+ * - Hover effects with lift + shine (using ShineEffect)
  * - Professional shadows and transitions
  * - Density-aware (REQ 20.2)
  * - Help button contextual (REQ 23.1)
+ * 
+ * @requirements 4.1, 4.2, 4.3, 4.4, 4.5, 4.6 - Premium visual consistency
  */
 
 'use client'
 
 import { type ReactNode } from 'react'
 import { HelpButton } from './HelpButton'
+import { IconBox, type IconBoxColor } from './IconBox'
+import { ShineEffect } from './ShineEffect'
 import type { HelpModuleId } from '@/src/shared/lib/help-content'
 
 export interface JourneyCardProps {
@@ -35,41 +39,31 @@ const COLORS = {
     bgGradient: 'bg-gradient-to-br from-primary-500/8 to-primary-500/4',
     border: 'border-l-primary-500',
     text: 'text-primary-600 dark:text-primary-400',
-    iconBg: 'bg-gradient-to-br from-primary-500 to-primary-600',
-    iconText: 'text-white',
-    glow: 'shadow-lg shadow-primary-500/25'
+    iconColor: 'primary' as IconBoxColor,
   },
   success: {
     bgGradient: 'bg-gradient-to-br from-emerald-500/8 to-emerald-500/4',
     border: 'border-l-emerald-500',
     text: 'text-emerald-600 dark:text-emerald-400',
-    iconBg: 'bg-gradient-to-br from-emerald-500 to-emerald-600',
-    iconText: 'text-white',
-    glow: 'shadow-lg shadow-emerald-500/25'
+    iconColor: 'success' as IconBoxColor,
   },
   warning: {
     bgGradient: 'bg-gradient-to-br from-amber-500/8 to-amber-500/4',
     border: 'border-l-amber-500',
     text: 'text-amber-600 dark:text-amber-400',
-    iconBg: 'bg-gradient-to-br from-amber-500 to-amber-600',
-    iconText: 'text-white',
-    glow: 'shadow-lg shadow-amber-500/25'
+    iconColor: 'warning' as IconBoxColor,
   },
   error: {
     bgGradient: 'bg-gradient-to-br from-red-500/8 to-red-500/4',
     border: 'border-l-red-500',
     text: 'text-red-600 dark:text-red-400',
-    iconBg: 'bg-gradient-to-br from-red-500 to-red-600',
-    iconText: 'text-white',
-    glow: 'shadow-lg shadow-red-500/25'
+    iconColor: 'error' as IconBoxColor,
   },
   info: {
     bgGradient: 'bg-gradient-to-br from-blue-500/8 to-blue-500/4',
     border: 'border-l-blue-500',
     text: 'text-blue-600 dark:text-blue-400',
-    iconBg: 'bg-gradient-to-br from-blue-500 to-blue-600',
-    iconText: 'text-white',
-    glow: 'shadow-lg shadow-blue-500/25'
+    iconColor: 'primary' as IconBoxColor, // info uses primary color for IconBox
   }
 }
 
@@ -91,17 +85,14 @@ export function JourneyCard({
     <>
       {/* Main row - density-aware gaps */}
       <div className="relative z-10 flex items-center density-gap">
-        {/* Icon with gradient background and glow - matching ModuleContent */}
-        <div className={`
-          density-icon-box rounded-xl flex items-center justify-center flex-shrink-0
-          transition-all duration-200
-          ${colors.iconBg} ${colors.glow}
-          group-hover:scale-110 group-hover:shadow-xl
-        `}>
-          <div className={`${colors.iconText} density-icon [&>svg]:w-[var(--density-icon-size)] [&>svg]:h-[var(--density-icon-size)]`}>
-            {icon}
-          </div>
-        </div>
+        {/* Icon using IconBox primitive for consistency */}
+        <IconBox
+          icon={icon}
+          color={colors.iconColor}
+          size="lg"
+          animated={true}
+          className="density-icon-box"
+        />
         
         {/* Content */}
         <div className="flex-1 min-w-0">
@@ -130,15 +121,15 @@ export function JourneyCard({
           {badge && <div className="mt-2">{badge}</div>}
         </div>
         
-        {/* Arrow with enhanced animation - matching ModuleContent */}
+        {/* Arrow with enhanced animation */}
         <div className="flex items-center justify-center min-w-[24px] min-h-[24px]">
           <svg 
-            className={`
+            className="
               density-icon flex-shrink-0
               text-muted-foreground
               transition-all duration-200
               group-hover:text-primary group-hover:translate-x-1
-            `}
+            "
             fill="none" 
             viewBox="0 0 24 24" 
             stroke="currentColor" 
@@ -156,7 +147,7 @@ export function JourneyCard({
     </>
   )
 
-  // Premium card with gradient background, hover effects - matching ModuleContent
+  // Premium card with gradient background, hover effects
   const baseClasses = `
     group relative block w-full text-left
     rounded-xl density-card border border-l-4
@@ -172,21 +163,15 @@ export function JourneyCard({
   if (href) {
     return (
       <a href={href} className={baseClasses}>
-        {/* Gradient overlay on hover - matching ModuleContent */}
+        {/* Gradient overlay on hover */}
         <div className={`
           absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100
           transition-opacity duration-200 pointer-events-none
           ${colors.bgGradient}
         `} />
         
-        {/* Shine effect on hover - matching ModuleContent */}
-        <div className="
-          absolute inset-0 rounded-xl
-          bg-gradient-to-r from-transparent via-white/10 to-transparent
-          translate-x-[-100%] group-hover:translate-x-[100%]
-          transition-transform duration-1000
-          pointer-events-none
-        " />
+        {/* Shine effect using primitive */}
+        <ShineEffect />
         
         {cardContent}
       </a>
@@ -195,21 +180,15 @@ export function JourneyCard({
 
   return (
     <button onClick={onClick} className={baseClasses}>
-      {/* Gradient overlay on hover - matching ModuleContent */}
+      {/* Gradient overlay on hover */}
       <div className={`
         absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100
         transition-opacity duration-200 pointer-events-none
         ${colors.bgGradient}
       `} />
       
-      {/* Shine effect on hover - matching ModuleContent */}
-      <div className="
-        absolute inset-0 rounded-xl
-        bg-gradient-to-r from-transparent via-white/10 to-transparent
-        translate-x-[-100%] group-hover:translate-x-[100%]
-        transition-transform duration-1000
-        pointer-events-none
-      " />
+      {/* Shine effect using primitive */}
+      <ShineEffect />
       
       {cardContent}
     </button>

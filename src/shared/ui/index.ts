@@ -62,6 +62,24 @@ export {
 export { JourneyCard } from './JourneyCard';
 export { GuestModeAlert } from './GuestModeAlert';
 
+// Premium Primitives (Learning Path Visual Coherence)
+export { DecorativeDivider } from './DecorativeDivider';
+export type { DecorativeDividerProps } from './DecorativeDivider';
+export { IconBox } from './IconBox';
+export type { IconBoxProps, IconBoxColor, IconBoxSize } from './IconBox';
+export { ShineEffect } from './ShineEffect';
+export type { ShineEffectProps } from './ShineEffect';
+export { GlassmorphismOverlay } from './GlassmorphismOverlay';
+export type { GlassmorphismOverlayProps, GlassmorphismPosition } from './GlassmorphismOverlay';
+export { ProgressBarPremium } from './ProgressBarPremium';
+export type { ProgressBarPremiumProps, ProgressBarSize, ProgressBarOrientation } from './ProgressBarPremium';
+export { AnimatedCard } from './AnimatedCard';
+export type { AnimatedCardProps } from './AnimatedCard';
+export { GroupCard } from './GroupCard';
+export type { GroupCardProps, GroupCardColor } from './GroupCard';
+export { ModuleCard } from './ModuleCard';
+export type { ModuleCardProps } from './ModuleCard';
+
 // Command Palette components (REQ 16)
 export { CommandProvider, useCommandPalette, useRegisterCommand } from './CommandProvider';
 export type { Command } from './CommandProvider';

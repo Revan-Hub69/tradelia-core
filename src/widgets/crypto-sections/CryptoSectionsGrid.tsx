@@ -2,19 +2,22 @@
  * Crypto Sections Grid - Tradelia 2026 - PREMIUM EDITION
  * 
  * Premium features matching GroupsView:
- * - Viewport-based animations for cards
+ * - Viewport-based animations for cards (using shared AnimatedCard)
  * - Stagger delay for smooth entrance
  * - Professional transitions
+ * - Responsive grid (1 col mobile, 2 col desktop)
  * 
  * Solo "own" (Possedere criptovalute) è attiva, le altre sono in "Coming Soon"
+ * 
+ * @requirements 4.1, 4.2, 4.3, 5.6 - Premium visual consistency
  */
 
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { JourneyCard } from '@/src/shared/ui/JourneyCard'
 import { ComplexityIndicator } from '@/src/shared/ui/ComplexityIndicator'
+import { AnimatedCard } from '@/src/shared/ui/AnimatedCard'
 import { 
   CRYPTO_SECTIONS, 
   SECTION_ORDER,
@@ -123,43 +126,6 @@ export function CryptoSectionsGrid({
           )
         })}
       </div>
-    </div>
-  )
-}
-
-// Viewport-based animation component (matching GroupsView)
-function AnimatedCard({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [isVisible, setIsVisible] = useState(false)
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          setTimeout(() => setIsVisible(true), delay)
-          observer.disconnect()
-        }
-      },
-      { threshold: 0.1, rootMargin: '50px' }
-    )
-
-    if (ref.current) {
-      observer.observe(ref.current)
-    }
-
-    return () => observer.disconnect()
-  }, [delay])
-
-  return (
-    <div
-      ref={ref}
-      className={`
-        transition-all duration-500 ease-out
-        ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
-      `}
-      style={{ transitionDelay: isVisible ? '0ms' : `${delay}ms` }}
-    >
-      {children}
     </div>
   )
 }

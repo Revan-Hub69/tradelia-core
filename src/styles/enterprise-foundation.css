@@ -6,6 +6,103 @@
  */
 
 /* ============================================
+   CSS CUSTOM PROPERTIES - DENSITY SYSTEM
+   ============================================ */
+
+:root {
+  /* Density System - Comfortable (default) */
+  --density-card-padding: 24px;
+  --density-icon-size: 24px;
+  --density-icon-box: 48px;
+  --density-gap: 16px;
+  --density-item-gap: 16px;
+  --density-text-primary: 16px;
+  --density-text-secondary: 15px;
+  --density-text-tertiary: 13px;
+  
+  /* Animation Tokens */
+  --duration-instant: 150ms;
+  --duration-fast: 200ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+  --duration-shimmer: 3s;
+  
+  /* Easing Functions */
+  --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  
+  /* Stagger Delay */
+  --stagger-delay: 80ms;
+  
+  /* Touch Target */
+  --touch-target-min: 44px;
+  
+  /* Icon Box Sizes */
+  --icon-box-sm: 40px;
+  --icon-box-md: 44px;
+  --icon-box-lg: 48px;
+  
+  /* Progress Bar Heights */
+  --progress-height-sm: 4px;
+  --progress-height-md: 6px;
+  --progress-height-lg: 8px;
+  
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+}
+
+/* Density: Compact */
+.density-compact {
+  --density-card-padding: 16px;
+  --density-icon-size: 20px;
+  --density-icon-box: 40px;
+  --density-gap: 12px;
+  --density-item-gap: 12px;
+  --density-text-primary: 15px;
+  --density-text-secondary: 14px;
+  --density-text-tertiary: 12px;
+}
+
+/* Density: Comfortable (explicit class) */
+.density-comfortable {
+  --density-card-padding: 24px;
+  --density-icon-size: 24px;
+  --density-icon-box: 48px;
+  --density-gap: 16px;
+  --density-item-gap: 16px;
+  --density-text-primary: 16px;
+  --density-text-secondary: 15px;
+  --density-text-tertiary: 13px;
+}
+
+/* Density-aware utility classes */
+.density-card {
+  padding: var(--density-card-padding);
+}
+
+.density-icon {
+  width: var(--density-icon-size);
+  height: var(--density-icon-size);
+}
+
+.density-icon-box {
+  width: var(--density-icon-box);
+  height: var(--density-icon-box);
+}
+
+.density-gap {
+  gap: var(--density-gap);
+}
+
+.density-item-gap {
+  gap: var(--density-item-gap);
+}
+
+/* ============================================
    TYPOGRAPHY SYSTEM
    ============================================ */
 
@@ -461,25 +558,195 @@
   }
 }
 
+/* Shimmer animation slow (for progress bars) - 3s duration */
+@keyframes shimmer-slow {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Viewport fade-in animation */
+@keyframes viewport-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .animate-fade-in {
-  animation: fade-in 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fade-in var(--duration-fast) var(--ease-out);
 }
 
 .animate-slide-in-top {
-  animation: slide-in-from-top 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slide-in-from-top var(--duration-fast) var(--ease-out);
 }
 
 .animate-slide-in-bottom {
-  animation: slide-in-from-bottom 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slide-in-from-bottom var(--duration-fast) var(--ease-out);
 }
 
 .animate-zoom-in {
-  animation: zoom-in 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  animation: zoom-in var(--duration-fast) var(--ease-spring);
+}
+
+.animate-shimmer-slow {
+  animation: shimmer-slow var(--duration-shimmer) infinite;
+}
+
+.animate-viewport-fade-in {
+  animation: viewport-fade-in var(--duration-slow) var(--ease-out);
+}
+
+/* ============================================
+   TAP TARGET - ACCESSIBILITY (Apple HIG)
+   ============================================ */
+
+/* Minimum touch target size - 44x44px */
+.tap-target {
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+}
+
+/* Tap target for icon buttons */
+.tap-target-icon {
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Padding compensation for smaller visual elements */
+.tap-target-touch {
+  padding: 12px; /* Expands 20px icon to 44px touch area */
+}
+
+/* Tap target for inline elements */
+.tap-target-inline {
+  min-height: var(--touch-target-min);
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ============================================
+   SAFE AREA - iOS
+   ============================================ */
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+
+.safe-area-left {
+  padding-left: env(safe-area-inset-left, 0);
+}
+
+.safe-area-right {
+  padding-right: env(safe-area-inset-right, 0);
+}
+
+.safe-area-all {
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+  padding-left: env(safe-area-inset-left, 0);
+  padding-right: env(safe-area-inset-right, 0);
 }
 
 /* ============================================
    RESPONSIVE - MOBILE FIRST
    ============================================ */
+
+/* Responsive density adjustments */
+@media (max-width: 640px) {
+  :root {
+    /* Mobile: More compact density */
+    --density-card-padding: 16px;
+    --density-icon-box: 40px;
+    --density-gap: 12px;
+    --density-item-gap: 12px;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1024px) {
+  :root {
+    /* Tablet: Medium density */
+    --density-card-padding: 20px;
+    --density-icon-box: 44px;
+    --density-gap: 14px;
+    --density-item-gap: 14px;
+  }
+}
+
+/* Responsive typography utilities */
+.responsive-title {
+  font-size: 1rem; /* 16px mobile */
+}
+
+@media (min-width: 640px) {
+  .responsive-title {
+    font-size: 1.125rem; /* 18px tablet */
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-title {
+    font-size: 1.25rem; /* 20px desktop */
+  }
+}
+
+.responsive-body {
+  font-size: 0.875rem; /* 14px mobile */
+}
+
+@media (min-width: 640px) {
+  .responsive-body {
+    font-size: 0.9375rem; /* 15px tablet */
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-body {
+    font-size: 1rem; /* 16px desktop */
+  }
+}
+
+/* Responsive spacing utilities */
+.responsive-padding {
+  padding: 1rem; /* 16px mobile */
+}
+
+@media (min-width: 640px) {
+  .responsive-padding {
+    padding: 1.25rem; /* 20px tablet */
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-padding {
+    padding: 1.5rem; /* 24px desktop */
+  }
+}
+
+.responsive-gap {
+  gap: 1rem; /* 16px mobile */
+}
+
+@media (min-width: 640px) {
+  .responsive-gap {
+    gap: 1.25rem; /* 20px tablet */
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-gap {
+    gap: 1.5rem; /* 24px desktop */
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -508,19 +775,4 @@
       0 4px 6px -1px rgb(0 0 0 / 0.4),
       0 2px 4px -2px rgb(0 0 0 / 0.4);
   }
-}
-
-
-/* Shimmer animation slow (for progress bars) */
-@keyframes shimmer-slow {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-.animate-shimmer-slow {
-  animation: shimmer-slow 3s infinite;
 }
