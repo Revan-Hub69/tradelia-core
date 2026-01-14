@@ -1,16 +1,20 @@
-/**
- * Module Content Renderer - Premium Edition
+﻿/**
+ * Module Content Renderer - Premium Edition with ALL Chicche
  * 
- * Design principles:
- * - Tradelia color palette (primary-500, success, warning)
- * - Viewport-based fade-in animations (IntersectionObserver)
- * - Refined typography hierarchy
- * - Mobile-friendly sticky CTA (subtle, not invasive)
+ * Premium features:
+ * - Reading progress bar (scroll-based)
+ * - Drop cap for first paragraph
+ * - Decorative quote marks in hooks
+ * - Section numbers on headings (1, 2, 3)
+ * - Decorative dividers between sections
+ * - Animated checkmark on completion
+ * - Custom text selection highlight
+ * - Diamond divider at end
  */
 
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useMemo, useCallback } from 'react'
 import { type LearningModule, type ModuleSection } from '@/src/shared/config/own-learning-path'
 
 interface ModuleContentProps {
@@ -20,68 +24,183 @@ interface ModuleContentProps {
 }
 
 export function ModuleContent({ module, onComplete, isCompleted }: ModuleContentProps) {
-  return (
-    <article className="reading-width">
-      {/* Header con tempo stimato */}
-      <header className="flex items-center gap-2 text-sm text-muted-foreground mb-8 pb-4 border-b border-border/30">
-        <ClockIcon className="w-4 h-4" />
-        <span>~{module.estimatedMinutes} minuti di lettura</span>
-      </header>
+  const [scrollProgress, setScrollProgress] = useState(0)
+  const [showCheckAnimation, setShowCheckAnimation] = useState(false)
+  const articleRef = useRef<HTMLElement>(null)
 
-      {/* Sezioni contenuto con animazioni viewport */}
-      <div className="space-y-10">
-        {module.sections.map((section, index) => (
-          <AnimatedSection 
-            key={`${module.id}-${section.type}-${index}`}
-            delay={index * 80}
-          >
-            <SectionRenderer 
-              section={section}
-              isFirst={index === 0}
-            />
-          </AnimatedSection>
-        ))}
+  // Pre-calculate section numbers and first text detection
+  const processedSections = useMemo(() => {
+    let headingCount = 0
+    let foundFirstText = false
+    
+    return module.sections.map((section) => {
+      const isHeading = section.type === 'heading'
+      const isText = section.type === 'text'
+      
+      if (isHeading) {
+        headingCount++
+      }
+      
+      const isFirstText = isText && !foundFirstText
+      if (isText) {
+        foundFirstText = true
+      }
+      
+      return {
+        ...section,
+        sectionNumber: isHeading ? headingCount : undefined,
+        isFirstText,
+        showDivider: isHeading && headingCount > 1
+      }
+    })
+  }, [module.sections])
+
+  // Scroll progress handler
+  const handleScroll = useCallback(() => {
+    const drawerContent = document.querySelector('.drawer-enterprise-content')
+    if (!drawerContent) return
+    
+    const scrollTop = drawerContent.scrollTop
+    const scrollHeight = drawerContent.scrollHeight - drawerContent.clientHeight
+    const progress = scrollHeight > 0 ? Math.min((scrollTop / scrollHeight) * 100, 100) : 0
+    setScrollProgress(progress)
+  }, [])
+
+  // Attach scroll listener to drawer content
+  useEffect(() => {
+    const drawerContent = document.querySelector('.drawer-enterprise-content')
+    if (!drawerContent) return
+    
+    drawerContent.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll() // Initial calculation
+    
+    return () => {
+      drawerContent.removeEventListener('scroll', handleScroll)
+    }
+  }, [handleScroll])
+
+  // Trigger checkmark animation on completion
+  useEffect(() => {
+    if (isCompleted) {
+      setShowCheckAnimation(true)
+      const timer = setTimeout(() => setShowCheckAnimation(false), 1500)
+      return () => clearTimeout(timer)
+    }
+  }, [isCompleted])
+
+  return (
+    <>
+      {/* Reading Progress Bar - Sticky at top */}
+      <div className="sticky top-0 left-0 right-0 z-50 h-1 bg-border/20">
+        <div 
+          className="h-full bg-gradient-to-r from-primary-500 to-primary-400 transition-all duration-150 ease-out"
+          style={{ width: `${scrollProgress}%` }}
+          role="progressbar"
+          aria-valuenow={Math.round(scrollProgress)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label="Progresso lettura"
+        />
       </div>
 
-      {/* Footer CTA - subtle su mobile */}
-      <footer className="mt-12 pt-6 border-t border-border/40">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex-1">
-            <p className="text-foreground font-semibold text-base">
-              {isCompleted ? '✓ Modulo completato' : 'Hai finito di leggere?'}
-            </p>
-            <p className="text-sm text-muted-foreground mt-0.5">
-              {isCompleted 
-                ? 'Puoi sempre tornare a rileggerlo' 
-                : 'Traccia i tuoi progressi'
-              }
-            </p>
-          </div>
-          <button
-            onClick={onComplete}
-            aria-label={isCompleted ? 'Rimuovi completamento' : 'Segna come letto'}
-            className={`
-              group relative px-6 py-3 rounded-xl font-semibold
-              min-h-[48px] min-w-[140px] sm:min-w-[160px]
-              transition-all duration-300 ease-out
-              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
-              ${isCompleted
-                ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/15 focus-visible:ring-emerald-500'
-                : 'bg-primary-500 text-white hover:bg-primary-600 shadow-md hover:shadow-lg focus-visible:ring-primary-500'
-              }
-            `}
-          >
-            <span className={`
-              inline-flex items-center gap-2 transition-transform duration-300
-              ${!isCompleted ? 'group-hover:translate-x-0.5' : ''}
-            `}>
-              {isCompleted ? 'Completato' : 'Segna come letto'}
-              {!isCompleted && <ArrowRightIcon className="w-4 h-4" />}
-            </span>
-          </button>
+      <article 
+        ref={articleRef}
+        className="reading-width selection:bg-primary-500/20 selection:text-foreground"
+      >
+        {/* Header con tempo stimato */}
+        <header className="flex items-center gap-2 text-sm text-muted-foreground mb-8 pb-4 border-b border-border/30">
+          <ClockIcon className="w-4 h-4" />
+          <span>~{module.estimatedMinutes} minuti di lettura</span>
+        </header>
+
+        {/* Sezioni contenuto con animazioni viewport */}
+        <div className="space-y-10">
+          {processedSections.map((section, index) => (
+            <AnimatedSection
+              key={`${module.id}-${section.type}-${index}`}
+              delay={index * 80}
+            >
+              {/* Decorative divider before non-first headings */}
+              {section.showDivider && <DecorativeDivider />}
+              
+              <SectionRenderer
+                section={section}
+                sectionNumber={section.sectionNumber}
+                isFirstText={section.isFirstText}
+              />
+            </AnimatedSection>
+          ))}
         </div>
-      </footer>
-    </article>
+
+        {/* Diamond Divider at end */}
+        <div className="flex items-center justify-center gap-3 my-12">
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent to-border/50" />
+          <DiamondIcon className="w-4 h-4 text-primary-500/60" />
+          <div className="h-px flex-1 bg-gradient-to-l from-transparent to-border/50" />
+        </div>
+
+        {/* Footer CTA with animated checkmark */}
+        <footer className="mt-8 pt-6 border-t border-border/40">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                {showCheckAnimation && (
+                  <div className="animate-checkmark-pop">
+                    <CheckCircleFilledIcon className="w-6 h-6 text-emerald-500" />
+                  </div>
+                )}
+                <p className="text-foreground font-semibold text-base">
+                  {isCompleted ? 'Modulo completato' : 'Hai finito di leggere?'}
+                </p>
+              </div>
+              <p className="text-sm text-muted-foreground mt-0.5">
+                {isCompleted 
+                  ? 'Puoi sempre tornare a rileggerlo' 
+                  : 'Traccia i tuoi progressi'
+                }
+              </p>
+            </div>
+            <button
+              onClick={onComplete}
+              aria-label={isCompleted ? 'Rimuovi completamento' : 'Segna come letto'}
+              className={`
+                group relative px-6 py-3 rounded-xl font-semibold
+                min-h-[48px] min-w-[140px] sm:min-w-[160px]
+                transition-all duration-300 ease-out
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
+                ${isCompleted
+                  ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/15 focus-visible:ring-emerald-500'
+                  : 'bg-primary-500 text-white hover:bg-primary-600 shadow-md hover:shadow-lg focus-visible:ring-primary-500'
+                }
+              `}
+            >
+              <span className={`
+                inline-flex items-center gap-2 transition-transform duration-300
+                ${!isCompleted ? 'group-hover:translate-x-0.5' : ''}
+              `}>
+                {isCompleted ? 'Completato' : 'Segna come letto'}
+                {!isCompleted && <ArrowRightIcon className="w-4 h-4" />}
+              </span>
+            </button>
+          </div>
+        </footer>
+      </article>
+    </>
+  )
+}
+
+// Decorative divider between sections
+function DecorativeDivider() {
+  return (
+    <div className="flex items-center gap-4 py-6 mb-4">
+      <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border/60 to-transparent" />
+      <div className="flex gap-1.5">
+        <div className="w-1.5 h-1.5 rounded-full bg-primary-500/40" />
+        <div className="w-1.5 h-1.5 rounded-full bg-primary-500/60" />
+        <div className="w-1.5 h-1.5 rounded-full bg-primary-500/40" />
+      </div>
+      <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border/60 to-transparent" />
+    </div>
   )
 }
 
@@ -94,7 +213,6 @@ function AnimatedSection({ children, delay = 0 }: { children: React.ReactNode; d
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry?.isIntersecting) {
-          // Delay per effetto staggered
           setTimeout(() => setIsVisible(true), delay)
           observer.disconnect()
         }
@@ -114,47 +232,67 @@ function AnimatedSection({ children, delay = 0 }: { children: React.ReactNode; d
       ref={ref}
       className={`
         transition-all duration-500 ease-out
-        ${isVisible 
-          ? 'opacity-100 translate-y-0' 
-          : 'opacity-0 translate-y-4'
-        }
+        ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
       `}
-      style={{ 
-        transitionDelay: isVisible ? '0ms' : `${delay}ms`
-      }}
+      style={{ transitionDelay: isVisible ? '0ms' : `${delay}ms` }}
     >
       {children}
     </div>
   )
 }
 
-function SectionRenderer({ section, isFirst }: { section: ModuleSection; isFirst: boolean }) {
+interface ProcessedSection extends ModuleSection {
+  sectionNumber?: number
+  isFirstText?: boolean
+  showDivider?: boolean
+}
+
+function SectionRenderer({ 
+  section, 
+  sectionNumber,
+  isFirstText 
+}: { 
+  section: ProcessedSection
+  sectionNumber?: number
+  isFirstText?: boolean
+}) {
   switch (section.type) {
-    // HOOK - Quote elegante
+    // HOOK - Quote elegante con virgolette decorative
     case 'hook':
       return (
-        <div className="relative py-5 px-6 bg-gradient-to-r from-primary-500/8 to-primary-500/3 border-l-4 border-primary-500 rounded-r-xl">
-          <QuoteIcon className="absolute top-4 right-4 w-8 h-8 text-primary-500/15" />
-          <p className="text-lg text-foreground reading-line-height font-medium pr-8">
+        <div className="relative py-6 px-6 bg-gradient-to-r from-primary-500/8 to-primary-500/3 border-l-4 border-primary-500 rounded-r-xl">
+          {/* Decorative opening quote */}
+          <QuoteIcon className="absolute -top-2 -left-1 w-10 h-10 text-primary-500/20 transform -translate-x-1/2" />
+          <p className="text-lg text-foreground reading-line-height font-medium italic pl-4">
             {section.content}
           </p>
+          {/* Decorative closing quote */}
+          <QuoteIcon className="absolute -bottom-2 right-4 w-8 h-8 text-primary-500/15 transform rotate-180" />
         </div>
       )
 
-    // HEADING - Pulito con linea sottile
+    // HEADING - Con numero sezione
     case 'heading':
       return (
-        <div className={`${isFirst ? '' : 'pt-6 mt-6 border-t border-border/20'}`}>
+        <div className="flex items-center gap-3">
+          {sectionNumber && (
+            <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary-500/10 text-primary-500 font-bold text-sm border border-primary-500/20">
+              {sectionNumber}
+            </span>
+          )}
           <h3 className="text-xl font-bold text-foreground tracking-tight">
             {section.title}
           </h3>
         </div>
       )
 
-    // TEXT - Leggibile con termini evidenziati
+    // TEXT - Con drop cap per il primo paragrafo
     case 'text':
       return (
-        <p className="text-foreground reading-line-height text-base leading-7">
+        <p className={`
+          text-foreground reading-line-height text-base leading-7
+          ${isFirstText ? 'first-letter:text-5xl first-letter:font-bold first-letter:text-primary-500 first-letter:float-left first-letter:mr-3 first-letter:mt-1 first-letter:leading-none' : ''}
+        `}>
           {formatTextWithEmphasis(section.content || '')}
         </p>
       )
@@ -176,10 +314,7 @@ function SectionRenderer({ section, isFirst }: { section: ModuleSection; isFirst
       return (
         <div className="space-y-3">
           {section.items?.map((item, i) => (
-            <div 
-              key={`comparison-${i}`}
-              className="grid grid-cols-1 md:grid-cols-2 gap-3"
-            >
+            <div key={`comparison-${i}`} className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {/* Tradizionale */}
               <div className="group p-4 rounded-xl bg-muted/20 border border-border/30 transition-all duration-200 hover:bg-muted/30 hover:border-border/50">
                 <div className="flex items-center gap-2 mb-2">
@@ -188,9 +323,7 @@ function SectionRenderer({ section, isFirst }: { section: ModuleSection; isFirst
                   </div>
                   <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Banca</span>
                 </div>
-                <p className="text-sm text-foreground/70 reading-line-height">
-                  {item.left}
-                </p>
+                <p className="text-sm text-foreground/70 reading-line-height">{item.left}</p>
               </div>
               {/* Crypto */}
               <div className="group p-4 rounded-xl bg-primary-500/5 border border-primary-500/20 transition-all duration-200 hover:bg-primary-500/8 hover:border-primary-500/30">
@@ -200,9 +333,7 @@ function SectionRenderer({ section, isFirst }: { section: ModuleSection; isFirst
                   </div>
                   <span className="text-xs font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wider">Crypto</span>
                 </div>
-                <p className="text-sm text-foreground reading-line-height">
-                  {item.right}
-                </p>
+                <p className="text-sm text-foreground reading-line-height">{item.right}</p>
               </div>
             </div>
           ))}
@@ -232,16 +363,14 @@ function SectionRenderer({ section, isFirst }: { section: ModuleSection; isFirst
         }
       }
       const style = styles[section.calloutType || 'info']
-      
+
       return (
         <div className={`p-5 rounded-xl border ${style.bg} ${style.border}`}>
           <div className="flex gap-4">
             <div className={`w-8 h-8 rounded-lg ${style.iconBg} flex items-center justify-center flex-shrink-0`}>
               {style.icon}
             </div>
-            <p className="text-foreground reading-line-height pt-1">
-              {section.content}
-            </p>
+            <p className="text-foreground reading-line-height pt-1">{section.content}</p>
           </div>
         </div>
       )
@@ -275,7 +404,7 @@ function formatTextWithEmphasis(text: string): React.ReactNode {
     'senza banche',
     'sei tu la banca',
     'controllo totale',
-    'responsabilità totale'
+    'responsabilita totale'
   ]
   
   let result = text
@@ -285,7 +414,7 @@ function formatTextWithEmphasis(text: string): React.ReactNode {
       result = result.replace(regex, '**$1**')
     }
   })
-  
+
   const parts = result.split(/(\*\*[^*]+\*\*)/g)
   return parts.map((part, i) => {
     if (part.startsWith('**') && part.endsWith('**')) {
@@ -295,7 +424,8 @@ function formatTextWithEmphasis(text: string): React.ReactNode {
   })
 }
 
-// Icons - refined, consistent 1.5px stroke
+// ============ SVG ICONS ============
+
 function ClockIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
@@ -315,7 +445,7 @@ function ArrowRightIcon({ className }: { className?: string }) {
 
 function QuoteIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor" opacity={0.6}>
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
       <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
     </svg>
   )
@@ -364,6 +494,14 @@ function CheckCircleIcon({ className }: { className?: string }) {
   )
 }
 
+function CheckCircleFilledIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.707 8.707a1 1 0 0 0-1.414-1.414L11 13.586l-2.293-2.293a1 1 0 0 0-1.414 1.414l3 3a1 1 0 0 0 1.414 0l5-5z" />
+    </svg>
+  )
+}
+
 function BankIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
@@ -381,6 +519,14 @@ function CryptoIcon({ className }: { className?: string }) {
       <circle cx="4" cy="18" r="2" />
       <circle cx="20" cy="18" r="2" />
       <path d="M6 7l4 4M14 11l4-4M6 17l4-4M14 13l4 4" />
+    </svg>
+  )
+}
+
+function DiamondIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2L2 12l10 10 10-10L12 2z" />
     </svg>
   )
 }
