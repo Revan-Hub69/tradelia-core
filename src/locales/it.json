@@ -1,7 +1,7 @@
 {
   "Index": {
-    "meta_title": "Tradelia - Impara il mondo crypto, passo dopo passo",
-    "meta_description": "La piattaforma di apprendimento gamificata per entrare nel mondo delle criptovalute. Dai primi passi agli investimenti avanzati."
+    "meta_title": "Tradelia - Impara il mondo crypto, senza fuffa",
+    "meta_description": "Educazione crypto anti-hype. Impara cosa sono (e cosa NON sono) le criptovalute, prima di fare errori."
   },
   "Navbar": {
     "sign_in": "Accedi",
@@ -13,67 +13,40 @@
     "company": "Chi Siamo"
   },
   "Hero": {
-    "follow_twitter": "Seguici su Twitter",
-    "title": "Impara il mondo <important>crypto</important> come un gioco",
-    "description": "Percorsi formativi gamificati per tutti i livelli. Dalle basi delle criptovalute alle strategie avanzate di investimento e trading.",
+    "title": "Impara le <important>crypto</important> senza fuffa",
+    "description": "Educazione crypto anti-hype. Prima capisci cosa sono (e cosa NON sono), poi decidi se fanno per te.",
     "primary_button": "Inizia Gratis",
     "secondary_button": "Scopri i Percorsi"
   },
-  "Sponsors": {
-    "title": "Tecnologie utilizzate"
-  },
   "Features": {
     "section_subtitle": "Percorsi",
-    "section_title": "5 Percorsi per Ogni Livello",
-    "section_description": "Dal principiante assoluto all'esperto di blockchain. Ogni percorso è progettato per portarti al livello successivo.",
-    "feature1_title": "Crypto Base",
-    "feature2_title": "Rendite Passive",
-    "feature3_title": "Trading",
-    "feature4_title": "Investimenti",
-    "feature5_title": "DeFi Avanzata",
-    "feature6_title": "Blockchain Dev",
-    "feature_description": "Lezioni interattive, quiz, sfide pratiche e ricompense per ogni traguardo raggiunto."
-  },
-  "Pricing": {
-    "section_subtitle": "Piani",
-    "section_title": "Scegli il Tuo Percorso",
-    "section_description": "Inizia gratis e sblocca contenuti premium quando sei pronto.",
-    "button_text": "Inizia Ora"
-  },
-  "PricingPlan": {
-    "free_plan_name": "Explorer",
-    "premium_plan_name": "Trader",
-    "enterprise_plan_name": "Pro",
-    "free_plan_description": "Per chi inizia",
-    "premium_plan_description": "Per chi fa sul serio",
-    "enterprise_plan_description": "Per professionisti",
-    "feature_team_member": "{number} Percorsi",
-    "feature_website": "{number} Lezioni/mese",
-    "feature_storage": "{number} Quiz",
-    "feature_transfer": "{number} Strumenti",
-    "feature_email_support": "Supporto Email",
-    "plan_interval_month": "mese",
-    "plan_interval_year": "anno",
-    "next_renew_date": "Il tuo abbonamento si rinnova il {date}"
+    "section_title": "4 Percorsi, 4 Obiettivi Diversi",
+    "section_description": "Dopo il percorso base gratuito, scegli UN percorso di approfondimento.",
+    "feature1_title": "🟡 Custodia",
+    "feature1_description": "Come detenere crypto in sicurezza. Rischio: Basso",
+    "feature2_title": "🔵 Rendite Passive",
+    "feature2_description": "Staking, lending e i rischi reali. Rischio: Medio",
+    "feature3_title": "🟢 Investimento",
+    "feature3_description": "Orizzonte lungo termine, bias da evitare. Rischio: Medio-Alto",
+    "feature4_title": "🔴 Trading",
+    "feature4_description": "Perché è difficile (non come guadagnare). Rischio: Alto ⚠️"
   },
   "FAQ": {
     "question": "Devo avere esperienza con le criptovalute?",
-    "answer": "No! Tradelia è progettato per tutti i livelli. Il percorso 'Crypto Base' parte da zero e ti guida passo dopo passo. Non serve alcuna conoscenza pregressa."
+    "answer": "No! Il percorso base parte da zero. Anzi, se non sai nulla è meglio: meno errori da correggere."
   },
   "CTA": {
-    "title": "Pronto a iniziare?",
-    "description": "Unisciti a migliaia di persone che stanno imparando il mondo crypto con Tradelia.",
-    "button_text": "Inizia Gratis Ora"
+    "title": "Pronto a capire davvero le crypto?",
+    "description": "Niente promesse, niente hype. Solo educazione seria.",
+    "button_text": "Inizia il Percorso Base"
   },
   "Footer": {
     "product": "Percorsi",
     "docs": "Guide",
-    "blog": "Blog",
-    "community": "Community",
     "company": "Chi Siamo",
     "terms_of_service": "Termini di Servizio",
     "privacy_policy": "Privacy Policy",
-    "designed_by": "Made with ❤️ by <author></author>"
+    "disclaimer": "Contenuto educativo. Non costituisce consulenza finanziaria."
   },
   "ProtectFallback": {
     "not_enough_permission": "Non hai i permessi per eseguire questa azione"
@@ -82,7 +55,7 @@
     "meta_title": "Accedi",
     "meta_description": "Accedi al tuo account Tradelia",
     "title": "Bentornato",
-    "description": "Accedi per continuare il tuo percorso",
+    "description": "Continua il tuo percorso",
     "submit": "Accedi",
     "or_continue_with": "Oppure continua con",
     "no_account": "Non hai un account?",
@@ -92,90 +65,69 @@
     "meta_title": "Registrati",
     "meta_description": "Crea il tuo account Tradelia gratuito",
     "title": "Crea il tuo account",
-    "description": "Inizia il tuo viaggio nel mondo crypto",
+    "description": "Inizia dal percorso base gratuito",
     "submit": "Registrati",
     "confirm_password": "Conferma Password",
     "or_continue_with": "Oppure continua con",
     "have_account": "Hai già un account?",
     "sign_in_link": "Accedi",
     "check_email_title": "Controlla la tua email",
-    "check_email_description": "Ti abbiamo inviato un link di conferma. Controlla la tua email per verificare l'account."
+    "check_email_description": "Ti abbiamo inviato un link di conferma."
   },
   "DashboardLayout": {
-    "home": "Home",
-    "todos": "Attività",
-    "members": "Community",
-    "billing": "Abbonamento",
+    "home": "Dashboard",
+    "learn": "Il tuo Percorso",
     "settings": "Impostazioni"
   },
   "Dashboard": {
     "meta_title": "Dashboard - Tradelia",
-    "meta_description": "Il tuo centro di apprendimento crypto"
+    "meta_description": "Il tuo percorso di apprendimento"
   },
   "DashboardIndex": {
     "title_bar": "Dashboard",
-    "title_bar_description": "Benvenuto nel tuo percorso di apprendimento",
-    "message_state_title": "Inizia il tuo viaggio",
-    "message_state_description": "Scegli un percorso e inizia ad imparare. Ogni lezione completata ti avvicina ai tuoi obiettivi.",
-    "message_state_button": "Esplora i Percorsi",
-    "message_state_alternative": "Hai domande? Visita la nostra <url></url>."
+    "title_bar_description": "Il tuo percorso di apprendimento"
   },
   "UserProfile": {
     "title_bar": "Profilo",
     "title_bar_description": "Gestisci il tuo account"
   },
-  "OrganizationProfile": {
-    "title_bar": "Impostazioni",
-    "title_bar_description": "Gestisci le tue preferenze"
+  "Learning": {
+    "continue": "Continua",
+    "next_lesson": "Prossima lezione",
+    "complete_lesson": "Completa lezione",
+    "xp_earned": "+{xp} XP",
+    "progress": "{percent}% completato",
+    "checkpoint_title": "Checkpoint",
+    "checkpoint_confirm": "Confermo e procedo",
+    "checkpoint_cancel": "Annulla",
+    "error_to_avoid": "Errore da evitare",
+    "comprehension_check": "Verifica comprensione"
   },
-  "Billing": {
-    "title_bar": "Abbonamento",
-    "title_bar_description": "Gestisci il tuo piano",
-    "current_section_title": "Piano Attuale",
-    "current_section_description": "Scegli il piano più adatto alle tue esigenze",
-    "manage_subscription_button": "Gestisci Abbonamento"
+  "Paths": {
+    "base": {
+      "name": "Percorso Base",
+      "description": "Cosa sono le crypto, cosa NON sono, rischi reali"
+    },
+    "custody": {
+      "name": "Custodia",
+      "description": "Come detenere crypto in sicurezza"
+    },
+    "passive": {
+      "name": "Rendite Passive",
+      "description": "Staking, lending e i rischi reali"
+    },
+    "invest": {
+      "name": "Investimento",
+      "description": "Orizzonte lungo termine, bias da evitare"
+    },
+    "trading": {
+      "name": "Trading",
+      "description": "Perché è difficile (non come guadagnare)"
+    }
   },
-  "BillingOptions": {
-    "current_plan": "Piano Attuale",
-    "upgrade_plan": "Passa a questo piano"
-  },
-  "CheckoutConfirmation": {
-    "title_bar": "Conferma Pagamento",
-    "message_state_title": "Pagamento completato",
-    "message_state_description": "Il tuo pagamento è stato elaborato con successo. Grazie!",
-    "message_state_button": "Torna all'Abbonamento"
-  },
-  "DataTable": {
-    "no_results": "Nessun risultato."
-  },
-  "Todos": {
-    "title_bar": "Attività",
-    "title_bar_description": "Le tue attività e progressi",
-    "add_todo_button": "Nuova attività"
-  },
-  "TodoTableColumns": {
-    "open_menu": "Apri menu",
-    "edit": "Modifica",
-    "delete": "Elimina",
-    "title_header": "Titolo",
-    "message_header": "Descrizione",
-    "created_at_header": "Data creazione"
-  },
-  "AddTodo": {
-    "title_bar": "Aggiungi Attività",
-    "add_todo_section_title": "Crea nuova attività",
-    "add_todo_section_description": "Compila il form per creare una nuova attività"
-  },
-  "EditTodo": {
-    "title_bar": "Modifica Attività",
-    "edit_todo_section_title": "Modifica attività",
-    "edit_todo_section_description": "Modifica i dettagli dell'attività"
-  },
-  "TodoForm": {
-    "title_label": "Titolo",
-    "title_description": "Inserisci un titolo descrittivo",
-    "message_title": "Descrizione",
-    "message_description": "Inserisci una descrizione dettagliata",
-    "submit_button": "Salva"
+  "Disclaimers": {
+    "educational": "Contenuto educativo. Non costituisce consulenza finanziaria.",
+    "risk_high": "⚠️ Questo percorso tratta argomenti ad alto rischio.",
+    "acknowledgment": "Ho compreso che questo è materiale educativo"
   }
 }
