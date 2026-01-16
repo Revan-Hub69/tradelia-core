@@ -3,95 +3,60 @@ import { AppConfig } from '@/utils/AppConfig';
 type LogoProps = {
   isTextHidden?: boolean;
   size?: 'sm' | 'md' | 'lg';
-  variant?: 'default' | 'mono';
 };
 
 /**
- * Tradelia Logo
+ * Tradelia Logo - Minimal Fintech Style
  *
- * Concept: "Il Percorso Ascendente"
- * - Forma astratta che richiama una "T" stilizzata
- * - Tre blocchi ascendenti = progressione della conoscenza
- * - Geometria pulita = professionalità e fiducia
- * - Nessun simbolo crypto ovvio = educazione seria, non hype
+ * Ispirato a: Stripe, PayPal, Revolut
+ * Principi: Restraint, clarity, system-aware
+ * Solo tipografia + simbolo geometrico minimo
  */
-export const Logo = ({ isTextHidden = false, size = 'md', variant = 'default' }: LogoProps) => {
+export const Logo = ({ isTextHidden = false, size = 'md' }: LogoProps) => {
   const sizes = {
-    sm: { icon: 'size-6', text: 'text-base', gap: 'gap-1.5' },
-    md: { icon: 'size-8', text: 'text-xl', gap: 'gap-2' },
-    lg: { icon: 'size-10', text: 'text-2xl', gap: 'gap-2.5' },
+    sm: { icon: 'size-5', text: 'text-base', gap: 'gap-1.5' },
+    md: { icon: 'size-6', text: 'text-lg', gap: 'gap-2' },
+    lg: { icon: 'size-7', text: 'text-xl', gap: 'gap-2' },
   };
 
   const { icon, text, gap } = sizes[size];
 
   return (
     <div className={`flex items-center ${gap}`}>
+      {/* Simbolo: T stilizzata con barra ascendente - crescita */}
       <svg
         className={icon}
-        viewBox="0 0 40 40"
+        viewBox="0 0 24 24"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        aria-label="Tradelia logo"
+        aria-label="Tradelia"
       >
-        {/* Background circle - subtle, premium feel */}
-        <circle
-          cx="20"
-          cy="20"
-          r="19"
-          className={variant === 'mono' ? 'fill-foreground/5' : 'fill-primary/10'}
-        />
-
-        {/* Block 1 - Foundation (shortest) */}
         <rect
-          x="8"
-          y="24"
-          width="6"
-          height="8"
-          rx="1.5"
-          className={variant === 'mono' ? 'fill-foreground' : 'fill-primary/60'}
+          x="3"
+          y="3"
+          width="18"
+          height="18"
+          rx="4"
+          className="fill-primary"
         />
-
-        {/* Block 2 - Growth (medium) */}
-        <rect
-          x="17"
-          y="18"
-          width="6"
-          height="14"
-          rx="1.5"
-          className={variant === 'mono' ? 'fill-foreground' : 'fill-primary/80'}
-        />
-
-        {/* Block 3 - Mastery (tallest) */}
-        <rect
-          x="26"
-          y="10"
-          width="6"
-          height="22"
-          rx="1.5"
-          className={variant === 'mono' ? 'fill-foreground' : 'fill-primary'}
-        />
-
-        {/* Connecting line - the learning path */}
         <path
-          d="M11 22 L20 16 L29 8"
-          className={variant === 'mono' ? 'stroke-foreground' : 'stroke-accent'}
+          d="M7 8h10M12 8v9"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          className="stroke-primary-foreground"
+        />
+        <path
+          d="M16 11l-4-4"
+          stroke="currentColor"
           strokeWidth="2"
           strokeLinecap="round"
-          strokeLinejoin="round"
-          fill="none"
-        />
-
-        {/* Accent dot at peak - achievement */}
-        <circle
-          cx="29"
-          cy="8"
-          r="2.5"
-          className={variant === 'mono' ? 'fill-foreground' : 'fill-accent'}
+          className="stroke-accent"
         />
       </svg>
 
       {!isTextHidden && (
-        <span className={`font-semibold tracking-tight ${text}`}>
+        <span className={`font-semibold tracking-tight text-foreground ${text}`}>
           {AppConfig.name}
         </span>
       )}
@@ -100,30 +65,28 @@ export const Logo = ({ isTextHidden = false, size = 'md', variant = 'default' }:
 };
 
 /**
- * Logo Icon Only - per favicon, app icon, spazi ristretti
+ * Logo Icon Only - per favicon, app icon
  */
-export const LogoIcon = ({ size = 40, className }: { size?: number; className?: string }) => (
+export const LogoIcon = ({ className }: { className?: string }) => (
   <svg
-    width={size}
-    height={size}
-    viewBox="0 0 40 40"
+    viewBox="0 0 32 32"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     className={className}
     aria-label="Tradelia"
   >
-    {/* Background */}
-    <rect width="40" height="40" rx="8" fill="#0F172A" />
-
-    {/* Three ascending blocks */}
-    <rect x="8" y="24" width="6" height="8" rx="1.5" fill="#60A5FA" fillOpacity="0.6" />
-    <rect x="17" y="18" width="6" height="14" rx="1.5" fill="#60A5FA" fillOpacity="0.8" />
-    <rect x="26" y="10" width="6" height="22" rx="1.5" fill="#60A5FA" />
-
-    {/* Connecting path */}
-    <path d="M11 22 L20 16 L29 8" stroke="#059669" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-
-    {/* Peak dot */}
-    <circle cx="29" cy="8" r="2.5" fill="#059669" />
+    <rect width="32" height="32" rx="6" fill="#1D4ED8" />
+    <path
+      d="M8 10h16M16 10v14"
+      stroke="white"
+      strokeWidth="3"
+      strokeLinecap="round"
+    />
+    <path
+      d="M22 14l-6-5"
+      stroke="#059669"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+    />
   </svg>
 );

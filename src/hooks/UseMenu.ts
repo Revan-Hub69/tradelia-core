@@ -15,5 +15,5 @@ export const useMenu = () => {
     setShowMenu(false);
   };
 
-  return { showMenu, handleToggleMenu, handleClose };
+  return { showMenu, setShowMenu, handleToggleMenu, handleClose };
 };
