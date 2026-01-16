@@ -12,6 +12,13 @@ export const badgeVariants = cva(
         destructive:
           'border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80',
         outline: 'text-foreground',
+        // Tradelia semantic variants
+        success:
+          'border-accent/30 bg-accent/20 text-accent',
+        warning:
+          'border-warning/30 bg-warning/20 text-warning',
+        info:
+          'border-info/30 bg-info/20 text-info',
       },
     },
     defaultVariants: {

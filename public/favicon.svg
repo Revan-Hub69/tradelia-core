@@ -1,0 +1,15 @@
+<svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="40" height="40" rx="8" fill="#0F172A"/>
+  
+  <!-- Three ascending blocks - knowledge progression -->
+  <rect x="8" y="24" width="6" height="8" rx="1.5" fill="#60A5FA" fill-opacity="0.6"/>
+  <rect x="17" y="18" width="6" height="14" rx="1.5" fill="#60A5FA" fill-opacity="0.8"/>
+  <rect x="26" y="10" width="6" height="22" rx="1.5" fill="#60A5FA"/>
+  
+  <!-- Connecting learning path -->
+  <path d="M11 22 L20 16 L29 8" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Achievement dot -->
+  <circle cx="29" cy="8" r="2.5" fill="#059669"/>
+</svg>
