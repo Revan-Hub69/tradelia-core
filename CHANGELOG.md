@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/Revan-Hub69/tradelia-core/compare/v1.0.1...v1.0.2) (2026-01-16)
+
+
+### Bug Fixes
+
+* logo minimal fintech style, menu mobile overlay fullscreen, favicon in app folder ([ed1c729](https://github.com/Revan-Hub69/tradelia-core/commit/ed1c7298dfd8b84843566a8234565a1b0246cfba))
+
 ## [1.0.1](https://github.com/Revan-Hub69/tradelia-core/compare/v1.0.0...v1.0.1) (2026-01-16)
 
 
