@@ -1,11 +1,10 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import {
-  type NextFetchEvent,
   type NextRequest,
   NextResponse,
 } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 
+import { updateSession } from './libs/supabase/middleware';
 import { AllLocales, AppConfig } from './utils/AppConfig';
 
 const intlMiddleware = createMiddleware({
@@ -14,60 +13,48 @@ const intlMiddleware = createMiddleware({
   defaultLocale: AppConfig.defaultLocale,
 });
 
-const isProtectedRoute = createRouteMatcher([
-  '/dashboard(.*)',
-  '/:locale/dashboard(.*)',
-  '/onboarding(.*)',
-  '/:locale/onboarding(.*)',
-  '/api(.*)',
-  '/:locale/api(.*)',
-]);
+const protectedRoutes = ['/dashboard', '/onboarding'];
 
-export default function middleware(
-  request: NextRequest,
-  event: NextFetchEvent,
-) {
-  if (
-    request.nextUrl.pathname.includes('/sign-in')
-    || request.nextUrl.pathname.includes('/sign-up')
-    || isProtectedRoute(request)
-  ) {
-    return clerkMiddleware(async (auth, req) => {
-      if (isProtectedRoute(req)) {
-        const locale
-          = req.nextUrl.pathname.match(/(\/.*)\/dashboard/)?.at(1) ?? '';
+function isProtectedRoute(pathname: string): boolean {
+  return protectedRoutes.some(
+    route => pathname.includes(route),
+  );
+}
 
-        const signInUrl = new URL(`${locale}/sign-in`, req.url);
+export default async function middleware(request: NextRequest) {
+  const { supabaseResponse, user } = await updateSession(request);
+  const { pathname } = request.nextUrl;
 
-        await auth.protect({
-          // `unauthenticatedUrl` is needed to avoid error: "Unable to find `next-intl` locale because the middleware didn't run on this request"
-          unauthenticatedUrl: signInUrl.toString(),
-        });
-      }
-
-      const authObj = await auth();
-
-      if (
-        authObj.userId
-        && !authObj.orgId
-        && req.nextUrl.pathname.includes('/dashboard')
-        && !req.nextUrl.pathname.endsWith('/organization-selection')
-      ) {
-        const orgSelection = new URL(
-          '/onboarding/organization-selection',
-          req.url,
-        );
-
-        return NextResponse.redirect(orgSelection);
-      }
-
-      return intlMiddleware(req);
-    })(request, event);
+  // Handle protected routes
+  if (isProtectedRoute(pathname)) {
+    if (!user) {
+      // Get locale from path
+      const locale = pathname.match(/^\/([a-z]{2})\//)?.[1] || AppConfig.defaultLocale;
+      const signInUrl = new URL(`/${locale}/sign-in`, request.url);
+      signInUrl.searchParams.set('redirect', pathname);
+      return NextResponse.redirect(signInUrl);
+    }
   }
 
-  return intlMiddleware(request);
+  // Handle auth pages when user is already logged in
+  if (pathname.includes('/sign-in') || pathname.includes('/sign-up')) {
+    if (user) {
+      const locale = pathname.match(/^\/([a-z]{2})\//)?.[1] || AppConfig.defaultLocale;
+      return NextResponse.redirect(new URL(`/${locale}/dashboard`, request.url));
+    }
+  }
+
+  // Apply intl middleware
+  const intlResponse = intlMiddleware(request);
+
+  // Merge cookies from supabase response
+  supabaseResponse.cookies.getAll().forEach((cookie) => {
+    intlResponse.cookies.set(cookie.name, cookie.value, cookie);
+  });
+
+  return intlResponse;
 }
 
 export const config = {
-  matcher: ['/((?!.+\\.[\\w]+$|_next|monitoring).*)', '/', '/(api|trpc)(.*)'], // Also exclude tunnelRoute used in Sentry from the matcher
+  matcher: ['/((?!.+\\.[\\w]+$|_next|monitoring).*)', '/', '/(api|trpc)(.*)'],
 };

@@ -3,8 +3,10 @@ import React from 'react';
 
 import type { BillingInterval } from '@/types/Subscription';
 
+type PlanId = 'free' | 'premium' | 'enterprise';
+
 export const PricingCard = (props: {
-  planId: string;
+  planId: PlanId;
   price: number;
   interval: BillingInterval;
   button: React.ReactNode;
@@ -12,15 +14,27 @@ export const PricingCard = (props: {
 }) => {
   const t = useTranslations('PricingPlan');
 
+  const planNames: Record<PlanId, string> = {
+    free: t('free_plan_name'),
+    premium: t('premium_plan_name'),
+    enterprise: t('enterprise_plan_name'),
+  };
+
+  const planDescriptions: Record<PlanId, string> = {
+    free: t('free_plan_description'),
+    premium: t('premium_plan_description'),
+    enterprise: t('enterprise_plan_description'),
+  };
+
   return (
     <div className="rounded-xl border border-border px-6 py-8 text-center">
       <div className="text-lg font-semibold">
-        {t(`${props.planId}_plan_name`)}
+        {planNames[props.planId]}
       </div>
 
       <div className="mt-3 flex items-center justify-center">
         <div className="text-5xl font-bold">
-          {`$${props.price}`}
+          {`${props.price}`}
         </div>
 
         <div className="ml-1 text-muted-foreground">
@@ -29,7 +43,7 @@ export const PricingCard = (props: {
       </div>
 
       <div className="mt-2 text-sm text-muted-foreground">
-        {t(`${props.planId}_plan_description`)}
+        {planDescriptions[props.planId]}
       </div>
 
       {props.button}

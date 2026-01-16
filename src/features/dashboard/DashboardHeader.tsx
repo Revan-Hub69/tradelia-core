@@ -1,21 +1,23 @@
 'use client';
 
-import { OrganizationSwitcher, UserButton } from '@clerk/nextjs';
 import Link from 'next/link';
-import { useLocale } from 'next-intl';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 import { ActiveLink } from '@/components/ActiveLink';
 import { LocaleSwitcher } from '@/components/LocaleSwitcher';
 import { ToggleMenuButton } from '@/components/ToggleMenuButton';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
+import { createClient } from '@/libs/supabase/client';
 import { Logo } from '@/templates/Logo';
-import { getI18nPath } from '@/utils/Helpers';
 
 export const DashboardHeader = (props: {
   menu: {
@@ -23,7 +25,24 @@ export const DashboardHeader = (props: {
     label: string;
   }[];
 }) => {
-  const locale = useLocale();
+  const router = useRouter();
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      setUserEmail(user?.email || null);
+    };
+    getUser();
+  }, []);
+
+  const handleSignOut = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push('/');
+    router.refresh();
+  };
 
   return (
     <>
@@ -44,23 +63,11 @@ export const DashboardHeader = (props: {
           <path d="M17 5 7 19" />
         </svg>
 
-        <OrganizationSwitcher
-          organizationProfileMode="navigation"
-          organizationProfileUrl={getI18nPath(
-            '/dashboard/organization-profile',
-            locale,
-          )}
-          afterCreateOrganizationUrl="/dashboard"
-          hidePersonal
-          skipInvitationScreen
-          appearance={{
-            elements: {
-              organizationSwitcherTrigger: 'max-w-28 sm:max-w-52',
-            },
-          }}
-        />
+        <span className="ml-2 font-medium text-muted-foreground">
+          {userEmail}
+        </span>
 
-        <nav className="ml-3 max-lg:hidden">
+        <nav className="ml-6 max-lg:hidden">
           <ul className="flex flex-row items-center gap-x-3 text-lg font-medium [&_a:hover]:opacity-100 [&_a]:opacity-75">
             {props.menu.map(item => (
               <li key={item.href}>
@@ -90,8 +97,6 @@ export const DashboardHeader = (props: {
             </div>
           </li>
 
-          {/* PRO: Dark mode toggle button */}
-
           <li data-fade>
             <LocaleSwitcher />
           </li>
@@ -101,15 +106,24 @@ export const DashboardHeader = (props: {
           </li>
 
           <li>
-            <UserButton
-              userProfileMode="navigation"
-              userProfileUrl="/dashboard/user-profile"
-              appearance={{
-                elements: {
-                  rootBox: 'px-2 py-1.5',
-                },
-              }}
-            />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="gap-2">
+                  <div className="flex size-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                    {userEmail?.charAt(0).toUpperCase() || 'U'}
+                  </div>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <Link href="/dashboard/user-profile">Profile</Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut}>
+                  Sign out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </li>
         </ul>
       </div>
