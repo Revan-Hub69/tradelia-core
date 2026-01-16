@@ -25,10 +25,12 @@ const IndexPage = (props: { params: { locale: string } }) => {
   return (
     <>
       <Navbar />
-      <Hero />
-      <Features />
-      <FAQ />
-      <CTA />
+      <main>
+        <Hero />
+        <Features />
+        <FAQ />
+        <CTA />
+      </main>
       <Footer />
     </>
   );

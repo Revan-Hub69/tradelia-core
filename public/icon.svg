@@ -1,29 +1,5 @@
-<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Tradelia App Icon - High Resolution -->
-  
-  <!-- Background with subtle gradient -->
-  <defs>
-    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#0F172A"/>
-      <stop offset="100%" style="stop-color:#1E293B"/>
-    </linearGradient>
-    <linearGradient id="accentGradient" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#059669"/>
-      <stop offset="100%" style="stop-color:#10B981"/>
-    </linearGradient>
-  </defs>
-  
-  <!-- Background -->
-  <rect width="512" height="512" rx="102" fill="url(#bgGradient)"/>
-  
-  <!-- Three ascending blocks -->
-  <rect x="102" y="307" width="77" height="102" rx="19" fill="#60A5FA" fill-opacity="0.6"/>
-  <rect x="218" y="230" width="77" height="179" rx="19" fill="#60A5FA" fill-opacity="0.8"/>
-  <rect x="333" y="128" width="77" height="281" rx="19" fill="#60A5FA"/>
-  
-  <!-- Connecting learning path -->
-  <path d="M140 282 L256 205 L371 102" stroke="url(#accentGradient)" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
-  
-  <!-- Achievement dot -->
-  <circle cx="371" cy="102" r="32" fill="url(#accentGradient)"/>
+<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="32" height="32" rx="8" fill="#1D4ED8"/>
+  <path d="M8 11h16M16 11v12" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="22" cy="11" r="2" fill="#059669"/>
 </svg>
