@@ -13,6 +13,12 @@ import {
 import { usePathname, useRouter } from '@/libs/i18nNavigation';
 import { AppConfig } from '@/utils/AppConfig';
 
+/**
+ * LocaleSwitcher - Premium 2026
+ *
+ * Globe icon raffinata con hover blu
+ * Dropdown con glassmorphism
+ */
 export const LocaleSwitcher = () => {
   const router = useRouter();
   const pathname = usePathname();
@@ -26,25 +32,39 @@ export const LocaleSwitcher = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="p-2 focus-visible:ring-offset-0" variant="ghost" size="icon" aria-label="lang-switcher">
+        <Button
+          className="size-9 p-0 focus-visible:ring-offset-0"
+          variant="ghost"
+          size="icon"
+          aria-label="Cambia lingua"
+        >
+          {/* Globe Icon - Minimal & Premium */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="size-6 stroke-current stroke-2"
+            viewBox="0 0 24 24"
             fill="none"
+            className="size-5 text-muted-foreground transition-colors duration-200 group-hover:text-primary"
+            stroke="currentColor"
+            strokeWidth="1.5"
             strokeLinecap="round"
             strokeLinejoin="round"
-            viewBox="0 0 24 24"
           >
-            <path stroke="none" d="M0 0h24v24H0z" />
-            <path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0M3.6 9h16.8M3.6 15h16.8" />
-            <path d="M11.5 3a17 17 0 0 0 0 18M12.5 3a17 17 0 0 1 0 18" />
+            <circle cx="12" cy="12" r="9" />
+            <path d="M3.6 9h16.8" />
+            <path d="M3.6 15h16.8" />
+            <path d="M12 3c2.5 2.5 3.5 5.5 3.5 9s-1 6.5-3.5 9" />
+            <path d="M12 3c-2.5 2.5-3.5 5.5-3.5 9s1 6.5 3.5 9" />
           </svg>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent align="end" className="min-w-28">
         <DropdownMenuRadioGroup value={locale} onValueChange={handleChange}>
           {AppConfig.locales.map(elt => (
-            <DropdownMenuRadioItem key={elt.id} value={elt.id}>
+            <DropdownMenuRadioItem
+              key={elt.id}
+              value={elt.id}
+              className="cursor-pointer"
+            >
               {elt.name}
             </DropdownMenuRadioItem>
           ))}

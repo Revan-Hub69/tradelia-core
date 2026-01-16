@@ -45,13 +45,13 @@ export const Logo = ({ isTextHidden = false, size = 'md', href = '/' }: LogoProp
         <circle cx="22" cy="11" r="2" className="fill-accent" />
       </svg>
 
-      {/* Wordmark con gradient diagonale */}
+      {/* Wordmark con taglio diagonale SHARP 45° */}
       {!isTextHidden && (
         <span className="relative">
           <span
             className={`font-bold tracking-tight ${text}`}
             style={{
-              background: 'linear-gradient(135deg, #64748B 0%, #64748B 30%, #1D4ED8 70%, #1D4ED8 100%)',
+              background: 'linear-gradient(45deg, #64748B 50%, #1D4ED8 50%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',

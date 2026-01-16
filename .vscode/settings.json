@@ -1,4 +1,13 @@
 {
+  // Tailwind CSS - ignora warning @tailwind/@apply
+  "css.validate": false,
+  "scss.validate": false,
+  "less.validate": false,
+  "tailwindCSS.includeLanguages": {
+    "typescript": "javascript",
+    "typescriptreact": "javascript"
+  },
+
   "editor.tabSize": 2,
   "editor.detectIndentation": false,
   "search.exclude": {
