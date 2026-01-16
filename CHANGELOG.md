@@ -1,3 +1,10 @@
+# 1.0.0 (2026-01-16)
+
+
+### Features
+
+* Design System v1.1 - brand identity, logo, componenti premium ([d1c6b2c](https://github.com/Revan-Hub69/tradelia-core/commit/d1c6b2cd527066fbf28418af914cdfb6d6c59daf))
+
 ## [1.7.7](https://github.com/ixartz/SaaS-Boilerplate/compare/v1.7.6...v1.7.7) (2025-12-12)
 
 
