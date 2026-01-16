@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/Revan-Hub69/tradelia-core/compare/v1.0.0...v1.0.1) (2026-01-16)
+
+
+### Bug Fixes
+
+* rimuovi Pricing e billing non utilizzati, fix build ([49c3376](https://github.com/Revan-Hub69/tradelia-core/commit/49c337667d74f2020ddd010d00dbb743c013d1f6))
+
 # 1.0.0 (2026-01-16)
 
 
