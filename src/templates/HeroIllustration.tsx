@@ -1,225 +1,353 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
 
 export const HeroIllustration = () => {
-  const svgRef = useRef<SVGSVGElement>(null);
+  const [stage, setStage] = useState(0);
 
   useEffect(() => {
-    // Trigger animation on mount
-    const svg = svgRef.current;
-    if (svg) {
-      svg.classList.add('animate-in');
-    }
+    const timers = [
+      setTimeout(() => setStage(1), 300),
+      setTimeout(() => setStage(2), 1200),
+      setTimeout(() => setStage(3), 2000),
+    ];
+    return () => timers.forEach(clearTimeout);
   }, []);
 
   return (
-    <svg
-      ref={svgRef}
-      viewBox="0 0 500 400"
-      className="hero-illustration h-auto w-full max-w-lg"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+    <div
+      className="relative h-[420px] w-full max-w-[480px] md:h-[480px]"
+      style={{ perspective: '1200px' }}
     >
-      {/* Styles for animation */}
+      {/* Ambient glow background */}
+      <div
+        className="absolute inset-0 rounded-3xl transition-opacity duration-1000"
+        style={{
+          background: 'radial-gradient(ellipse at center, rgba(59, 130, 246, 0.15) 0%, transparent 70%)',
+          opacity: stage >= 2 ? 1 : 0,
+        }}
+      />
+
+      {/* 3D Book Container */}
+      <div
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 transition-all duration-1000 ease-out"
+        style={{
+          transform: `translateX(-50%) translateY(${stage >= 2 ? '20%' : '-50%'}) rotateX(${stage >= 1 ? '60deg' : '0deg'})`,
+          transformStyle: 'preserve-3d',
+        }}
+      >
+        {/* Book base/spine */}
+        <div
+          className="relative transition-all duration-700"
+          style={{
+            width: '200px',
+            height: '8px',
+            background: 'linear-gradient(90deg, #1e40af, #3b82f6, #1e40af)',
+            borderRadius: '4px',
+            boxShadow: '0 0 30px rgba(59, 130, 246, 0.5)',
+            opacity: stage >= 1 ? 1 : 0,
+          }}
+        />
+
+        {/* Left page */}
+        <div
+          className="absolute left-0 top-0 origin-right transition-all duration-1000 ease-out"
+          style={{
+            width: '100px',
+            height: '140px',
+            transform: `rotateY(${stage >= 2 ? '-75deg' : '0deg'}) translateZ(4px)`,
+            transformStyle: 'preserve-3d',
+          }}
+        >
+          <div
+            className="size-full rounded-l-lg border border-blue-500/30"
+            style={{
+              background: 'linear-gradient(135deg, rgba(30, 64, 175, 0.4) 0%, rgba(59, 130, 246, 0.2) 100%)',
+              backdropFilter: 'blur(10px)',
+              boxShadow: 'inset 0 0 30px rgba(59, 130, 246, 0.2), 0 0 20px rgba(59, 130, 246, 0.3)',
+            }}
+          >
+            {/* Page lines */}
+            <div className="flex flex-col gap-2 p-4 pt-6">
+              {[...Array(5)].map((_, i) => (
+                <div
+                  key={i}
+                  className="h-px rounded-full bg-blue-400/30"
+                  style={{ width: `${85 - i * 10}%` }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Right page */}
+        <div
+          className="absolute right-0 top-0 origin-left transition-all duration-1000 ease-out"
+          style={{
+            width: '100px',
+            height: '140px',
+            transform: `rotateY(${stage >= 2 ? '75deg' : '0deg'}) translateZ(4px)`,
+            transformStyle: 'preserve-3d',
+          }}
+        >
+          <div
+            className="size-full rounded-r-lg border border-blue-500/30"
+            style={{
+              background: 'linear-gradient(225deg, rgba(30, 64, 175, 0.4) 0%, rgba(59, 130, 246, 0.2) 100%)',
+              backdropFilter: 'blur(10px)',
+              boxShadow: 'inset 0 0 30px rgba(59, 130, 246, 0.2), 0 0 20px rgba(59, 130, 246, 0.3)',
+            }}
+          >
+            <div className="flex flex-col gap-2 p-4 pt-6">
+              {[...Array(5)].map((_, i) => (
+                <div
+                  key={i}
+                  className="ml-auto h-px rounded-full bg-blue-400/30"
+                  style={{ width: `${85 - i * 10}%` }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Light beam from book */}
+        <div
+          className="absolute left-1/2 top-0 -translate-x-1/2 transition-all duration-1000"
+          style={{
+            width: stage >= 2 ? '60px' : '0px',
+            height: stage >= 2 ? '200px' : '0px',
+            background: 'linear-gradient(to top, rgba(59, 130, 246, 0.6), rgba(59, 130, 246, 0) 80%)',
+            filter: 'blur(20px)',
+            transform: 'translateY(-100%) rotateX(-60deg)',
+            opacity: stage >= 2 ? 1 : 0,
+          }}
+        />
+      </div>
+
+      {/* Universe Network - emerges from book */}
+      <svg
+        viewBox="0 0 480 300"
+        className="absolute left-0 top-0 size-full transition-all duration-1000"
+        style={{
+          opacity: stage >= 2 ? 1 : 0,
+          transform: stage >= 2 ? 'translateY(0)' : 'translateY(30px)',
+        }}
+      >
+        <defs>
+          <linearGradient id="lineGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+            <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.8" />
+            <stop offset="100%" stopColor="#06B6D4" stopOpacity="0.3" />
+          </linearGradient>
+          <filter id="nodeGlow">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          <filter id="cryptoGlow">
+            <feGaussianBlur stdDeviation="4" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        {/* Network lines */}
+        <g stroke="url(#lineGrad)" strokeWidth="1" fill="none">
+          {/* Main vertical */}
+          <path d="M240 280 L240 60" strokeOpacity="0.5" />
+          {/* Branches */}
+          <path d="M240 280 Q180 220 100 160" strokeOpacity="0.4" />
+          <path d="M240 280 Q300 220 380 160" strokeOpacity="0.4" />
+          <path d="M240 280 Q200 200 140 100" strokeOpacity="0.35" />
+          <path d="M240 280 Q280 200 340 100" strokeOpacity="0.35" />
+          {/* Cross connections */}
+          <path d="M100 160 Q120 130 140 100" strokeOpacity="0.3" />
+          <path d="M380 160 Q360 130 340 100" strokeOpacity="0.3" />
+          <path d="M140 100 Q190 70 240 60" strokeOpacity="0.3" />
+          <path d="M340 100 Q290 70 240 60" strokeOpacity="0.3" />
+          <path d="M100 160 Q70 120 60 80" strokeOpacity="0.25" />
+          <path d="M380 160 Q410 120 420 80" strokeOpacity="0.25" />
+          <path d="M60 80 Q150 50 240 40" strokeOpacity="0.2" />
+          <path d="M420 80 Q330 50 240 40" strokeOpacity="0.2" />
+          <path d="M240 60 L240 40" strokeOpacity="0.3" />
+        </g>
+
+        {/* Network nodes with glow */}
+        <g filter="url(#nodeGlow)">
+          <circle cx="240" cy="60" r="5" fill="#3B82F6" />
+          <circle cx="240" cy="40" r="4" fill="#06B6D4" />
+          <circle cx="100" cy="160" r="4" fill="#3B82F6" fillOpacity="0.8" />
+          <circle cx="380" cy="160" r="4" fill="#3B82F6" fillOpacity="0.8" />
+          <circle cx="140" cy="100" r="3.5" fill="#60A5FA" fillOpacity="0.7" />
+          <circle cx="340" cy="100" r="3.5" fill="#60A5FA" fillOpacity="0.7" />
+          <circle cx="60" cy="80" r="3" fill="#06B6D4" fillOpacity="0.6" />
+          <circle cx="420" cy="80" r="3" fill="#06B6D4" fillOpacity="0.6" />
+        </g>
+
+        {/* Animated crypto symbols */}
+        {stage >= 3 && (
+          <>
+            {/* Bitcoin */}
+            <g filter="url(#cryptoGlow)">
+              <circle r="16" fill="#F59E0B">
+                <animateMotion
+                  dur="8s"
+                  repeatCount="indefinite"
+                  path="M240,280 Q240,170 240,60 Q190,50 140,100 Q120,80 60,80 Q150,60 240,40"
+                  calcMode="spline"
+                  keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1"
+                />
+              </circle>
+              <text
+                fontSize="14"
+                fill="white"
+                fontWeight="bold"
+                textAnchor="middle"
+                dominantBaseline="central"
+              >
+                <animateMotion
+                  dur="8s"
+                  repeatCount="indefinite"
+                  path="M240,280 Q240,170 240,60 Q190,50 140,100 Q120,80 60,80 Q150,60 240,40"
+                  calcMode="spline"
+                  keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1"
+                />
+                ₿
+              </text>
+            </g>
+
+            {/* Ethereum */}
+            <g filter="url(#cryptoGlow)">
+              <circle r="14" fill="#627EEA">
+                <animateMotion
+                  dur="10s"
+                  repeatCount="indefinite"
+                  path="M240,280 Q180,220 100,160 Q80,120 60,80 Q100,100 140,100 Q170,80 240,60"
+                  calcMode="spline"
+                  keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1"
+                />
+              </circle>
+              <text
+                fontSize="12"
+                fill="white"
+                fontWeight="bold"
+                textAnchor="middle"
+                dominantBaseline="central"
+              >
+                <animateMotion
+                  dur="10s"
+                  repeatCount="indefinite"
+                  path="M240,280 Q180,220 100,160 Q80,120 60,80 Q100,100 140,100 Q170,80 240,60"
+                  calcMode="spline"
+                  keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1"
+                />
+                Ξ
+              </text>
+            </g>
+
+            {/* Solana/USDC */}
+            <g filter="url(#cryptoGlow)">
+              <circle r="12" fill="#14F195">
+                <animateMotion
+                  dur="12s"
+                  repeatCount="indefinite"
+                  path="M240,280 Q300,220 380,160 Q400,120 420,80 Q380,100 340,100 Q310,80 240,60"
+                  calcMode="spline"
+                  keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1"
+                />
+              </circle>
+              <text
+                fontSize="10"
+                fill="#000"
+                fontWeight="bold"
+                textAnchor="middle"
+                dominantBaseline="central"
+              >
+                <animateMotion
+                  dur="12s"
+                  repeatCount="indefinite"
+                  path="M240,280 Q300,220 380,160 Q400,120 420,80 Q380,100 340,100 Q310,80 240,60"
+                  calcMode="spline"
+                  keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1"
+                />
+                ◎
+              </text>
+            </g>
+
+            {/* Small particles */}
+            <circle r="4" fill="#8B5CF6" fillOpacity="0.8" filter="url(#nodeGlow)">
+              <animateMotion
+                dur="5s"
+                repeatCount="indefinite"
+                path="M240,60 Q290,50 340,100 Q290,80 240,60 Q190,50 140,100 Q190,80 240,60"
+              />
+            </circle>
+            <circle r="3" fill="#EC4899" fillOpacity="0.7" filter="url(#nodeGlow)">
+              <animateMotion
+                dur="6s"
+                repeatCount="indefinite"
+                path="M100,160 Q130,130 140,100 Q170,80 240,60 Q170,80 140,100 Q130,130 100,160"
+              />
+            </circle>
+            <circle r="3" fill="#06B6D4" fillOpacity="0.7" filter="url(#nodeGlow)">
+              <animateMotion
+                dur="7s"
+                repeatCount="indefinite"
+                path="M380,160 Q350,130 340,100 Q310,80 240,60 Q310,80 340,100 Q350,130 380,160"
+              />
+            </circle>
+          </>
+        )}
+
+        {/* Ambient particles */}
+        <g opacity={stage >= 3 ? 0.6 : 0} style={{ transition: 'opacity 1s' }}>
+          <circle cx="30" cy="50" r="1.5" fill="#3B82F6">
+            <animate attributeName="opacity" values="0.3;0.8;0.3" dur="3s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="450" cy="40" r="1" fill="#06B6D4">
+            <animate attributeName="opacity" values="0.2;0.7;0.2" dur="4s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="50" cy="200" r="1.5" fill="#8B5CF6">
+            <animate attributeName="opacity" values="0.3;0.6;0.3" dur="3.5s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="430" cy="220" r="1" fill="#EC4899">
+            <animate attributeName="opacity" values="0.2;0.5;0.2" dur="4.5s" repeatCount="indefinite" />
+          </circle>
+        </g>
+      </svg>
+
+      {/* Floating orbs for premium feel */}
+      <div
+        className="absolute -left-10 top-10 size-32 rounded-full transition-all duration-1000"
+        style={{
+          background: 'radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%)',
+          filter: 'blur(40px)',
+          opacity: stage >= 2 ? 1 : 0,
+          animation: stage >= 2 ? 'float 6s ease-in-out infinite' : 'none',
+        }}
+      />
+      <div
+        className="absolute -right-10 top-20 size-24 rounded-full transition-all duration-1000"
+        style={{
+          background: 'radial-gradient(circle, rgba(6, 182, 212, 0.15) 0%, transparent 70%)',
+          filter: 'blur(30px)',
+          opacity: stage >= 2 ? 1 : 0,
+          animation: stage >= 2 ? 'float 8s ease-in-out infinite reverse' : 'none',
+        }}
+      />
+
       <style>
         {`
-          .hero-illustration path,
-          .hero-illustration circle,
-          .hero-illustration line,
-          .hero-illustration polyline {
-            stroke: currentColor;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            fill: none;
-          }
-          
-          .hero-illustration .wireframe {
-            stroke: hsl(var(--primary) / 0.3);
-            stroke-width: 0.5;
-          }
-          
-          .hero-illustration .book {
-            stroke: hsl(var(--primary));
-            stroke-width: 2;
-            stroke-dasharray: 1000;
-            stroke-dashoffset: 1000;
-          }
-          
-          .hero-illustration .crypto {
-            stroke: hsl(var(--primary));
-            stroke-width: 1.5;
-            stroke-dasharray: 500;
-            stroke-dashoffset: 500;
-          }
-          
-          .hero-illustration .glow {
-            stroke: hsl(var(--primary) / 0.5);
-            stroke-width: 1;
-            stroke-dasharray: 300;
-            stroke-dashoffset: 300;
-          }
-          
-          .hero-illustration .node {
-            fill: hsl(var(--primary));
-            opacity: 0;
-          }
-          
-          /* Animations */
-          .hero-illustration.animate-in .book {
-            animation: draw 1.5s ease-out forwards;
-          }
-          
-          .hero-illustration.animate-in .crypto {
-            animation: draw 1s ease-out 0.8s forwards;
-          }
-          
-          .hero-illustration.animate-in .glow {
-            animation: draw 1.2s ease-out 0.5s forwards;
-          }
-          
-          .hero-illustration.animate-in .node {
-            animation: fadeIn 0.5s ease-out forwards;
-          }
-          
-          .hero-illustration.animate-in .node:nth-child(1) { animation-delay: 1.2s; }
-          .hero-illustration.animate-in .node:nth-child(2) { animation-delay: 1.4s; }
-          .hero-illustration.animate-in .node:nth-child(3) { animation-delay: 1.6s; }
-          .hero-illustration.animate-in .node:nth-child(4) { animation-delay: 1.8s; }
-          .hero-illustration.animate-in .node:nth-child(5) { animation-delay: 2.0s; }
-          
-          @keyframes draw {
-            to {
-              stroke-dashoffset: 0;
-            }
-          }
-          
-          @keyframes fadeIn {
-            to {
-              opacity: 1;
-            }
-          }
-          
-          /* Respect reduced motion */
-          @media (prefers-reduced-motion: reduce) {
-            .hero-illustration .book,
-            .hero-illustration .crypto,
-            .hero-illustration .glow {
-              stroke-dasharray: none;
-              stroke-dashoffset: 0;
-              animation: none;
-            }
-            .hero-illustration .node {
-              opacity: 1;
-              animation: none;
-            }
+          @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
           }
         `}
       </style>
-
-      {/* Background wireframe grid */}
-      <g className="wireframe">
-        {/* Radial lines from center */}
-        <line x1="250" y1="200" x2="100" y2="50" />
-        <line x1="250" y1="200" x2="400" y2="50" />
-        <line x1="250" y1="200" x2="50" y2="200" />
-        <line x1="250" y1="200" x2="450" y2="200" />
-        <line x1="250" y1="200" x2="100" y2="350" />
-        <line x1="250" y1="200" x2="400" y2="350" />
-        <line x1="250" y1="200" x2="250" y2="50" />
-        <line x1="250" y1="200" x2="250" y2="350" />
-        
-        {/* Concentric circles */}
-        <circle cx="250" cy="200" r="60" />
-        <circle cx="250" cy="200" r="120" />
-        <circle cx="250" cy="200" r="180" />
-      </g>
-
-      {/* Book - opens from center */}
-      <g className="book">
-        {/* Left page */}
-        <path d="M250 140 L250 280 Q200 270 150 280 L150 140 Q200 130 250 140" />
-        {/* Right page */}
-        <path d="M250 140 L250 280 Q300 270 350 280 L350 140 Q300 130 250 140" />
-        {/* Spine */}
-        <line x1="250" y1="130" x2="250" y2="290" />
-        {/* Page lines left */}
-        <line x1="170" y1="160" x2="230" y2="155" />
-        <line x1="170" y1="180" x2="230" y2="175" />
-        <line x1="170" y1="200" x2="230" y2="195" />
-        <line x1="170" y1="220" x2="230" y2="215" />
-        {/* Page lines right */}
-        <line x1="270" y1="155" x2="330" y2="160" />
-        <line x1="270" y1="175" x2="330" y2="180" />
-        <line x1="270" y1="195" x2="330" y2="200" />
-        <line x1="270" y1="215" x2="330" y2="220" />
-      </g>
-
-      {/* Expanding glow/rays from book */}
-      <g className="glow">
-        <path d="M250 120 Q250 80 200 50" />
-        <path d="M250 120 Q250 80 300 50" />
-        <path d="M250 120 Q280 90 350 70" />
-        <path d="M250 120 Q220 90 150 70" />
-        <path d="M150 200 Q100 200 60 180" />
-        <path d="M350 200 Q400 200 440 180" />
-      </g>
-
-      {/* Crypto symbols floating - Bitcoin */}
-      <g className="crypto">
-        {/* Bitcoin at top */}
-        <g transform="translate(200, 40)">
-          <circle cx="0" cy="0" r="20" />
-          <path d="M-5 -12 L-5 12 M5 -12 L5 12" />
-          <path d="M-8 -6 L8 -6 Q12 -6 12 -2 Q12 2 8 2 L-8 2" />
-          <path d="M-8 2 L8 2 Q14 2 14 6 Q14 10 8 10 L-8 10" />
-        </g>
-        
-        {/* Ethereum at top right */}
-        <g transform="translate(350, 60)">
-          <circle cx="0" cy="0" r="18" />
-          <path d="M0 -10 L8 0 L0 4 L-8 0 Z" />
-          <path d="M0 4 L8 0 L0 10 L-8 0 Z" />
-        </g>
-        
-        {/* Generic coin left */}
-        <g transform="translate(80, 150)">
-          <circle cx="0" cy="0" r="15" />
-          <circle cx="0" cy="0" r="10" />
-        </g>
-        
-        {/* USDC style right */}
-        <g transform="translate(420, 160)">
-          <circle cx="0" cy="0" r="16" />
-          <path d="M-4 -6 Q-8 -6 -8 0 Q-8 6 -4 6" />
-          <path d="M4 -6 Q8 -6 8 0 Q8 6 4 6" />
-        </g>
-        
-        {/* Small coin bottom */}
-        <g transform="translate(300, 350)">
-          <circle cx="0" cy="0" r="12" />
-          <line x1="-6" y1="0" x2="6" y2="0" />
-          <line x1="0" y1="-6" x2="0" y2="6" />
-        </g>
-      </g>
-
-      {/* Connection nodes */}
-      <g>
-        <circle className="node" cx="200" cy="40" r="4" />
-        <circle className="node" cx="350" cy="60" r="4" />
-        <circle className="node" cx="80" cy="150" r="3" />
-        <circle className="node" cx="420" cy="160" r="3" />
-        <circle className="node" cx="300" cy="350" r="3" />
-      </g>
-
-      {/* Connection lines between nodes */}
-      <g className="glow">
-        <line x1="200" y1="60" x2="250" y2="130" />
-        <line x1="350" y1="78" x2="300" y2="130" />
-        <line x1="95" y1="150" x2="150" y2="180" />
-        <line x1="404" y1="160" x2="350" y2="180" />
-        <line x1="300" y1="338" x2="280" y2="290" />
-      </g>
-    </svg>
+    </div>
   );
 };
