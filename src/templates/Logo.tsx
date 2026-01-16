@@ -5,19 +5,27 @@ export const Logo = (props: {
 }) => (
   <div className="flex items-center text-xl font-semibold">
     <svg
-      className="mr-1 size-8 stroke-current stroke-2"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
+      className="mr-2 size-8"
+      viewBox="0 0 32 32"
       fill="none"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      xmlns="http://www.w3.org/2000/svg"
     >
-      <path d="M0 0h24v24H0z" stroke="none" />
-      <rect x="3" y="12" width="6" height="8" rx="1" />
-      <rect x="9" y="8" width="6" height="12" rx="1" />
-      <rect x="15" y="4" width="6" height="16" rx="1" />
-      <path d="M4 20h14" />
+      {/* Crypto/Learning icon - stylized T with blockchain elements */}
+      <circle cx="16" cy="16" r="14" className="stroke-primary" strokeWidth="2" />
+      <path
+        d="M10 12h12M16 12v10"
+        className="stroke-primary"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
+      <circle cx="16" cy="22" r="2" className="fill-primary" />
+      <circle cx="10" cy="12" r="1.5" className="fill-primary" />
+      <circle cx="22" cy="12" r="1.5" className="fill-primary" />
     </svg>
-    {!props.isTextHidden && AppConfig.name}
+    {!props.isTextHidden && (
+      <span className="bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">
+        {AppConfig.name}
+      </span>
+    )}
   </div>
 );
