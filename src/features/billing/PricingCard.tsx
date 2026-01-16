@@ -1,9 +1,13 @@
+/**
+ * PricingCard - Non utilizzato in Tradelia
+ * Mantenuto per compatibilità con il boilerplate
+ */
+
 import { useTranslations } from 'next-intl';
 import React from 'react';
 
-import type { BillingInterval } from '@/types/Subscription';
-
 type PlanId = 'free' | 'premium' | 'enterprise';
+type BillingInterval = 'month' | 'year';
 
 export const PricingCard = (props: {
   planId: PlanId;
