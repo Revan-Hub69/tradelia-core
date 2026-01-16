@@ -3,11 +3,13 @@
 import Link from 'next/link';
 
 import { AppConfig } from '@/utils/AppConfig';
+import { cn } from '@/utils/Helpers';
 
 type LogoProps = {
   isTextHidden?: boolean;
   size?: 'sm' | 'md' | 'lg';
   href?: string;
+  className?: string;
 };
 
 /**
@@ -16,7 +18,7 @@ type LogoProps = {
  * Testo con gradient diagonale: blu in basso, grigio in alto
  * Effetto underline moderno all'hover
  */
-export const Logo = ({ isTextHidden = false, size = 'md', href = '/' }: LogoProps) => {
+export const Logo = ({ isTextHidden = false, size = 'md', href = '/', className }: LogoProps) => {
   const sizes = {
     sm: { icon: 'size-6', text: 'text-lg', gap: 'gap-2' },
     md: { icon: 'size-7', text: 'text-xl', gap: 'gap-2.5' },
@@ -26,7 +28,7 @@ export const Logo = ({ isTextHidden = false, size = 'md', href = '/' }: LogoProp
   const { icon, text, gap } = sizes[size];
 
   const content = (
-    <div className={`group flex items-center ${gap}`}>
+    <div className={cn(`group flex items-center ${gap}`, className)}>
       {/* Icon: T stilizzata minimal */}
       <svg
         className={icon}
