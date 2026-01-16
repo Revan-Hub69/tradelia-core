@@ -1,134 +1,66 @@
 import { useTranslations } from 'next-intl';
 
 import { Background } from '@/components/Background';
-import { FeatureCard } from '@/features/landing/FeatureCard';
 import { Section } from '@/features/landing/Section';
 
 export const Features = () => {
   const t = useTranslations('Features');
 
+  const paths = [
+    {
+      color: 'bg-yellow-500',
+      title: t('feature1_title'),
+      description: t('feature1_description'),
+    },
+    {
+      color: 'bg-blue-500',
+      title: t('feature2_title'),
+      description: t('feature2_description'),
+    },
+    {
+      color: 'bg-green-500',
+      title: t('feature3_title'),
+      description: t('feature3_description'),
+    },
+    {
+      color: 'bg-red-500',
+      title: t('feature4_title'),
+      description: t('feature4_description'),
+    },
+  ];
+
   return (
     <Background>
       <Section
+        id="percorsi"
         subtitle={t('section_subtitle')}
         title={t('section_title')}
         description={t('section_description')}
       >
-        <div className="grid grid-cols-1 gap-x-3 gap-y-8 md:grid-cols-3">
-          <FeatureCard
-            icon={(
-              <svg
-                className="stroke-primary-foreground stroke-2"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M0 0h24v24H0z" stroke="none" />
-                <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3M12 12l8-4.5M12 12v9M12 12L4 7.5" />
-              </svg>
-            )}
-            title={t('feature1_title')}
-          >
-            {t('feature_description')}
-          </FeatureCard>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          {paths.map((path, index) => (
+            <div
+              key={index}
+              className="group relative overflow-hidden rounded-xl border border-border bg-card p-6 transition-all duration-300 hover:border-primary/50 hover:shadow-lg"
+            >
+              {/* Color indicator */}
+              <div className={`absolute left-0 top-0 h-full w-1 ${path.color}`} />
 
-          <FeatureCard
-            icon={(
-              <svg
-                className="stroke-primary-foreground stroke-2"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M0 0h24v24H0z" stroke="none" />
-                <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3M12 12l8-4.5M12 12v9M12 12L4 7.5" />
-              </svg>
-            )}
-            title={t('feature2_title')}
-          >
-            {t('feature_description')}
-          </FeatureCard>
-
-          <FeatureCard
-            icon={(
-              <svg
-                className="stroke-primary-foreground stroke-2"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M0 0h24v24H0z" stroke="none" />
-                <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3M12 12l8-4.5M12 12v9M12 12L4 7.5" />
-              </svg>
-            )}
-            title={t('feature3_title')}
-          >
-            {t('feature_description')}
-          </FeatureCard>
-
-          <FeatureCard
-            icon={(
-              <svg
-                className="stroke-primary-foreground stroke-2"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M0 0h24v24H0z" stroke="none" />
-                <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3M12 12l8-4.5M12 12v9M12 12L4 7.5" />
-              </svg>
-            )}
-            title={t('feature4_title')}
-          >
-            {t('feature_description')}
-          </FeatureCard>
-
-          <FeatureCard
-            icon={(
-              <svg
-                className="stroke-primary-foreground stroke-2"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M0 0h24v24H0z" stroke="none" />
-                <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3M12 12l8-4.5M12 12v9M12 12L4 7.5" />
-              </svg>
-            )}
-            title={t('feature5_title')}
-          >
-            {t('feature_description')}
-          </FeatureCard>
-
-          <FeatureCard
-            icon={(
-              <svg
-                className="stroke-primary-foreground stroke-2"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M0 0h24v24H0z" stroke="none" />
-                <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3M12 12l8-4.5M12 12v9M12 12L4 7.5" />
-              </svg>
-            )}
-            title={t('feature6_title')}
-          >
-            {t('feature_description')}
-          </FeatureCard>
+              <div className="pl-4">
+                <h3 className="text-xl font-semibold">{path.title}</h3>
+                <p className="mt-2 text-muted-foreground">{path.description}</p>
+              </div>
+            </div>
+          ))}
         </div>
+
+        {/* Base path note */}
+        <p className="mt-8 text-center text-sm text-muted-foreground">
+          Prima di scegliere un percorso, completa il
+          {' '}
+          <span className="font-medium text-foreground">Percorso Base gratuito</span>
+          .
+        </p>
       </Section>
     </Background>
   );

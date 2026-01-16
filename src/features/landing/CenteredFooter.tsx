@@ -22,30 +22,21 @@ export const CenteredFooter = (props: {
         {props.iconList}
       </ul>
 
-      <div className="mt-6 flex w-full items-center justify-between gap-y-2 border-t pt-3 text-sm text-muted-foreground max-md:flex-col">
-        <div>
-          {`© Copyright ${new Date().getFullYear()} ${props.name}. `}
-          {t.rich('designed_by', {
-            author: () => (
-              <a
-                className="text-blue-500 hover:text-blue-600"
-                href="https://creativedesignsguru.com"
-              >
-                Creative Designs Guru
-              </a>
-            ),
-          })}
-          {/*
-           * PLEASE READ THIS SECTION
-           * I'm an indie maker with limited resources and funds, I'll really appreciate if you could have a link to my website.
-           * The link doesn't need to appear on every pages, one link on one page is enough.
-           * For example, in the `About` page. Thank you for your support, it'll mean a lot to me.
-           */}
-        </div>
+      <div className="mt-6 flex w-full flex-col items-center gap-4 border-t pt-6 text-sm text-muted-foreground">
+        {/* Disclaimer educativo */}
+        <p className="text-xs text-muted-foreground/60">
+          {t('disclaimer')}
+        </p>
 
-        <ul className="flex gap-x-4 font-medium [&_a:hover]:opacity-100 [&_a]:opacity-60">
-          {props.legalLinks}
-        </ul>
+        <div className="flex w-full items-center justify-between gap-y-2 max-md:flex-col">
+          <div>
+            {`© ${new Date().getFullYear()} ${props.name}`}
+          </div>
+
+          <ul className="flex gap-x-4 font-medium [&_a:hover]:opacity-100 [&_a]:opacity-60">
+            {props.legalLinks}
+          </ul>
+        </div>
       </div>
     </div>
   );

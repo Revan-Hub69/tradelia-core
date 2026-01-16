@@ -43,6 +43,8 @@
   "Footer": {
     "product": "Percorsi",
     "docs": "Guide",
+    "blog": "Blog",
+    "community": "Community",
     "company": "Chi Siamo",
     "terms_of_service": "Termini di Servizio",
     "privacy_policy": "Privacy Policy",
@@ -129,5 +131,8 @@
     "educational": "Contenuto educativo. Non costituisce consulenza finanziaria.",
     "risk_high": "⚠️ Questo percorso tratta argomenti ad alto rischio.",
     "acknowledgment": "Ho compreso che questo è materiale educativo"
+  },
+  "DataTable": {
+    "no_results": "Nessun risultato."
   }
 }
