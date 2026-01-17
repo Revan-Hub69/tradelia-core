@@ -10,7 +10,6 @@ import { LearningPath } from '@/templates/LearningPath';
 import { Navbar } from '@/templates/Navbar';
 import { PremiumFooter } from '@/templates/PremiumFooter';
 import { SocialProof } from '@/templates/SocialProof';
-import { TradUsage } from '@/templates/TradUsage';
 
 export async function generateMetadata(props: { params: { locale: string } }) {
   const t = await getTranslations({
@@ -33,7 +32,6 @@ const IndexPage = (props: { params: { locale: string } }) => {
       <main>
         <Hero />
         <BenefitsOverview />
-        <TradUsage />
         <InteractiveDemo />
         <LearningPath />
         <SocialProof />
