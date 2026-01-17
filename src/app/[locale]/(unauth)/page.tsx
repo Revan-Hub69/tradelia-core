@@ -1,11 +1,15 @@
 import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 
+import { BenefitsOverview } from '@/templates/BenefitsOverview';
+import { FAQ } from '@/templates/FAQ';
+import { FinalCTA } from '@/templates/FinalCTA';
 import { Hero } from '@/templates/Hero';
 import { HowItWorks } from '@/templates/HowItWorks';
 import { InteractiveDemo } from '@/templates/InteractiveDemo';
+import { LearningPath } from '@/templates/LearningPath';
 import { Navbar } from '@/templates/Navbar';
 import { PremiumFooter } from '@/templates/PremiumFooter';
-import { FinalCTA } from '@/templates/FinalCTA';
+import { SocialProof } from '@/templates/SocialProof';
 
 export async function generateMetadata(props: { params: { locale: string } }) {
   const t = await getTranslations({
@@ -27,8 +31,12 @@ const IndexPage = (props: { params: { locale: string } }) => {
       <Navbar />
       <main>
         <Hero />
+        <BenefitsOverview />
         <InteractiveDemo />
+        <LearningPath />
+        <SocialProof />
         <HowItWorks />
+        <FAQ />
         <FinalCTA />
       </main>
       <PremiumFooter />

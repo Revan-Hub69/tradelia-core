@@ -155,10 +155,6 @@
     "feature4_title": "🔴 Trading",
     "feature4_description": "Perché è difficile (non come guadagnare). Rischio: Alto ⚠️"
   },
-  "FAQ": {
-    "question": "Devo avere esperienza con le criptovalute?",
-    "answer": "No! Il percorso base parte da zero. Anzi, se non sai nulla è meglio: meno errori da correggere."
-  },
   "CTA": {
     "title": "Pronto a capire davvero le crypto?",
     "description": "Niente promesse, niente hype. Solo educazione seria.",
@@ -258,5 +254,76 @@
   },
   "DataTable": {
     "no_results": "Nessun risultato."
+  },
+  "BenefitsOverview": {
+    "section_title": "Perché Tradelia è diverso",
+    "section_subtitle": "Educazione crypto seria, senza promesse irrealistiche",
+    "benefit1_title": "Fondamenta solide",
+    "benefit1_desc": "Parti dalle basi vere: cosa sono le blockchain, come funzionano i wallet, quali sono i rischi reali. Niente scorciatoie, niente fuffa.",
+    "benefit1_highlight": "Zero promesse irrealistiche",
+    "benefit2_title": "Tempo che vale",
+    "benefit2_desc": "5 minuti al giorno, progressione costante. Impari davvero senza stravolgere la tua routine quotidiana.",
+    "benefit2_highlight": "Risultati misurabili",
+    "benefit3_title": "Al tuo livello",
+    "benefit3_desc": "Linguaggio adattivo: da metafore semplici a terminologia tecnica. Stessi concetti, spiegazione giusta per te.",
+    "benefit3_highlight": "Personalizzazione intelligente",
+    "trust_indicator": "Educazione verificata da esperti"
+  },
+  "LearningPath": {
+    "section_title": "Il tuo percorso di apprendimento",
+    "section_subtitle": "4 moduli progressivi, dal principiante all'esperto",
+    "path_visual_title": "Progressione guidata",
+    "module1_title": "Fondamenti Blockchain",
+    "module1_desc": "Cos'è una blockchain, come funziona, perché è importante. Le basi senza tecnicismi.",
+    "module1_duration": "2 settimane",
+    "module1_lessons": "8 lezioni",
+    "module2_title": "Sicurezza e Wallet",
+    "module2_desc": "Come proteggere le tue crypto, tipi di wallet, backup e recovery. Sicurezza prima di tutto.",
+    "module2_duration": "1 settimana",
+    "module2_lessons": "5 lezioni",
+    "module3_title": "Mercati e Valutazione",
+    "module3_desc": "Come funzionano i mercati crypto, analisi fondamentale, gestione del rischio.",
+    "module3_duration": "3 settimane",
+    "module3_lessons": "12 lezioni",
+    "module4_title": "DeFi e Applicazioni",
+    "module4_desc": "Finanza decentralizzata, smart contracts, yield farming. Opportunità e rischi avanzati.",
+    "module4_duration": "2 settimane",
+    "module4_lessons": "10 lezioni",
+    "cta_badge": "Inizia il percorso gratuito"
+  },
+  "SocialProof": {
+    "section_title": "Cosa dicono i nostri studenti",
+    "section_subtitle": "Risultati reali da persone che hanno completato il percorso",
+    "testimonial1_name": "Marco Rossi",
+    "testimonial1_role": "Ingegnere Software",
+    "testimonial1_content": "Finalmente ho capito cosa sono davvero le crypto. Niente hype, solo fatti. Ora posso prendere decisioni informate.",
+    "testimonial2_name": "Laura Bianchi",
+    "testimonial2_role": "Project Manager",
+    "testimonial2_content": "5 minuti al giorno per 3 settimane e ho imparato più di quanto pensassi possibile. Spiegazioni chiare e pratiche.",
+    "testimonial3_name": "Giuseppe Verde",
+    "testimonial3_role": "Consulente Finanziario",
+    "testimonial3_content": "Uso Tradelia per aggiornarmi sui trend crypto. Contenuti sempre aggiornati e verificati da fonti affidabili.",
+    "stat1_label": "Studenti attivi",
+    "stat2_label": "Tasso completamento",
+    "stat3_label": "Valutazione media",
+    "stat4_label": "Tempo medio/giorno",
+    "trust_title": "Riconosciuto da:"
+  },
+  "FAQ": {
+    "section_title": "Domande frequenti",
+    "section_subtitle": "Tutto quello che devi sapere prima di iniziare",
+    "question1": "Devo avere esperienza con le criptovalute?",
+    "answer1": "No! Il percorso base parte da zero assoluto. Anzi, se non sai nulla è meglio: meno pregiudizi e errori da correggere. Iniziamo dalle basi vere.",
+    "question2": "Quanto tempo devo dedicarci ogni giorno?",
+    "answer2": "5 minuti al giorno sono sufficienti. Ogni lezione è progettata per essere completata in 2-3 minuti, più 1-2 minuti per il quiz di verifica. Qualità, non quantità.",
+    "question3": "È davvero gratuito o ci sono costi nascosti?",
+    "answer3": "Il percorso base è completamente gratuito, per sempre. Nessuna carta richiesta, nessun costo nascosto. I percorsi avanzati hanno un costo, ma solo dopo aver completato quello base.",
+    "question4": "Tradelia mi insegnerà a fare trading?",
+    "answer4": "No, non è questo l'obiettivo. Ti insegniamo a capire cosa sono le crypto, come funzionano, quali sono i rischi reali. Il trading è solo uno dei possibili utilizzi, e il più rischioso.",
+    "question5": "Posso fidarmi delle informazioni?",
+    "answer5": "Tutte le informazioni sono verificate e citate con fonti. Non facciamo promesse di guadagno, non vendiamo corsi miracolosi. Solo educazione seria e verificabile.",
+    "question6": "Cosa succede ai miei dati personali?",
+    "answer6": "I tuoi dati restano tuoi. Zero tracciamento pubblicitario, zero vendita a terzi. Usiamo solo i dati necessari per personalizzare il tuo percorso di apprendimento.",
+    "cta_badge": "Altre domande? Scrivici"
   }
 }

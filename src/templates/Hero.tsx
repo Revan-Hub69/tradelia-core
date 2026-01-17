@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
-import { FadeIn, SlideReveal, AnimatedCounter } from '@/components/ui/scroll-animations';
+import { Button } from '@/components/ui/button';
+import { AnimatedCounter, FadeIn, SlideReveal } from '@/components/ui/scroll-animations';
 
 /**
  * Hero Illustration - Crypto Community SVG
@@ -91,26 +92,26 @@ const HeroIllustration = () => (
   </svg>
 );
 
+/**
+ * Scroll cue component
+ */
+const ScrollCue = ({ t }: { t: (key: string) => string }) => (
+  <div className="mt-10 flex flex-col items-center gap-2 sm:mt-12">
+    <span className="text-sm text-muted-foreground">{t('scroll_cue')}</span>
+    <svg
+      className="size-5 animate-bounce text-muted-foreground sm:size-6"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      aria-hidden="true"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+    </svg>
+  </div>
+);
+
 export const Hero = () => {
   const t = useTranslations('Hero') as (key: string) => string;
-
-  /**
-   * Scroll cue component
-   */
-  const ScrollCue = () => (
-    <div className="mt-10 flex flex-col items-center gap-2 sm:mt-12">
-      <span className="text-sm text-muted-foreground">{t('scroll_cue')}</span>
-      <svg
-        className="size-5 animate-bounce text-muted-foreground sm:size-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        aria-hidden="true"
-      >
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-      </svg>
-    </div>
-  );
 
   return (
     <>
@@ -160,6 +161,21 @@ export const Hero = () => {
               </FadeIn>
 
               <FadeIn delay={600}>
+                {/* CTA Buttons - Premium positioning */}
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:gap-4">
+                  <Button asChild size="lg" className="h-12 px-6 text-base sm:h-14 sm:px-8 sm:text-lg">
+                    <Link href="/sign-up">{t('cta_primary')}</Link>
+                  </Button>
+                  <Button asChild variant="outline" size="default" className="h-11 px-5 text-sm sm:h-12 sm:px-6 sm:text-base">
+                    <Link href="#demo">{t('cta_secondary')}</Link>
+                  </Button>
+                </div>
+
+                {/* Trust signals */}
+                <p className="mt-4 text-sm text-muted-foreground">
+                  {t('trust')}
+                </p>
+
                 {/* Soft CTA - touch area 44px */}
                 <div className="mt-6 sm:mt-8">
                   <Link
@@ -173,7 +189,7 @@ export const Hero = () => {
                   </Link>
                 </div>
 
-                <ScrollCue />
+                <ScrollCue t={t} />
               </FadeIn>
             </div>
 
