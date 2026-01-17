@@ -79,15 +79,115 @@ export const SocialProof = () => {
           </div>
         </FadeIn>
 
-        {/* Community Growth Message */}
+        {/* Educational Principles Cards */}
         <FadeIn delay={200}>
-          <div className="mt-12 text-center">
-            <div className="mx-auto max-w-2xl rounded-xl border border-primary/20 bg-primary/5 p-6">
-              <h3 className="mb-2 text-lg font-semibold text-primary">
-                {t('section_title')}
-              </h3>
-              <p className="text-muted-foreground">
-                {t('section_subtitle')}
+          <div className="mt-12 grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {/* Spaced Repetition */}
+            <div className="rounded-xl border border-border/50 bg-card/50 p-4 backdrop-blur-sm">
+              <div className="mb-3 flex items-center gap-3">
+                <div className="size-10 rounded-lg bg-primary/10 p-2">
+                  <svg className="size-full text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="font-semibold">Spaced Repetition</h3>
+              </div>
+              <p className="mb-2 text-sm text-muted-foreground">
+                Ripeti i concetti a intervalli crescenti per migliorare la memoria a lungo termine del 200%.
+              </p>
+              <p className="text-xs text-muted-foreground/70">
+                Fonte: Ebbinghaus (1885), ricerca neuroscientifica moderna
+              </p>
+            </div>
+
+            {/* Active Recall */}
+            <div className="rounded-xl border border-border/50 bg-card/50 p-4 backdrop-blur-sm">
+              <div className="mb-3 flex items-center gap-3">
+                <div className="size-10 rounded-lg bg-accent/10 p-2">
+                  <svg className="size-full text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                </div>
+                <h3 className="font-semibold">Active Recall</h3>
+              </div>
+              <p className="mb-2 text-sm text-muted-foreground">
+                Richiama attivamente le informazioni dalla memoria invece di rileggerle passivamente.
+              </p>
+              <p className="text-xs text-muted-foreground/70">
+                Fonte: Cognitive Research Journal, meta-analisi 2017
+              </p>
+            </div>
+
+            {/* Microlearning */}
+            <div className="rounded-xl border border-border/50 bg-card/50 p-4 backdrop-blur-sm">
+              <div className="mb-3 flex items-center gap-3">
+                <div className="size-10 rounded-lg bg-blue-500/10 p-2">
+                  <svg className="size-full text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <h3 className="font-semibold">Microlearning</h3>
+              </div>
+              <p className="mb-2 text-sm text-muted-foreground">
+                Contenuti di 3-5 minuti riducono il carico cognitivo e aumentano l'engagement del 50%.
+              </p>
+              <p className="text-xs text-muted-foreground/70">
+                Fonte: TalentLMS Study 2020, ricerca Phillips Consulting
+              </p>
+            </div>
+
+            {/* Cognitive Load Theory */}
+            <div className="rounded-xl border border-border/50 bg-card/50 p-4 backdrop-blur-sm">
+              <div className="mb-3 flex items-center gap-3">
+                <div className="size-10 rounded-lg bg-green-500/10 p-2">
+                  <svg className="size-full text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                </div>
+                <h3 className="font-semibold">Cognitive Load Theory</h3>
+              </div>
+              <p className="mb-2 text-sm text-muted-foreground">
+                Gestisce la quantità di informazioni per evitare sovraccarico mentale e migliorare l'apprendimento.
+              </p>
+              <p className="text-xs text-muted-foreground/70">
+                Fonte: John Sweller (1988), Educational Psychology Research
+              </p>
+            </div>
+
+            {/* Dual Coding */}
+            <div className="rounded-xl border border-border/50 bg-card/50 p-4 backdrop-blur-sm">
+              <div className="mb-3 flex items-center gap-3">
+                <div className="size-10 rounded-lg bg-purple-500/10 p-2">
+                  <svg className="size-full text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                </div>
+                <h3 className="font-semibold">Dual Coding</h3>
+              </div>
+              <p className="mb-2 text-sm text-muted-foreground">
+                Combina testo e immagini per attivare entrambi i canali di memoria e migliorare la comprensione.
+              </p>
+              <p className="text-xs text-muted-foreground/70">
+                Fonte: Allan Paivio (1971), teoria della doppia codifica
+              </p>
+            </div>
+
+            {/* Interleaving */}
+            <div className="rounded-xl border border-border/50 bg-card/50 p-4 backdrop-blur-sm">
+              <div className="mb-3 flex items-center gap-3">
+                <div className="size-10 rounded-lg bg-orange-500/10 p-2">
+                  <svg className="size-full text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                  </svg>
+                </div>
+                <h3 className="font-semibold">Interleaving</h3>
+              </div>
+              <p className="mb-2 text-sm text-muted-foreground">
+                Alterna diversi argomenti invece di studiarne uno alla volta per migliorare il transfer di conoscenza.
+              </p>
+              <p className="text-xs text-muted-foreground/70">
+                Fonte: Rohrer & Taylor (2007), Journal of Educational Psychology
               </p>
             </div>
           </div>
@@ -138,53 +238,6 @@ export const SocialProof = () => {
           </StaggerChildren>
         )}
 
-        {/* Premium trust badges */}
-        <FadeIn delay={600}>
-          <div className="mt-16 text-center">
-            <p className="mb-6 text-sm font-medium text-muted-foreground">
-              {t('trust_title')}
-            </p>
-
-            <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
-              {/* Educational Principles */}
-              <div className="flex items-center gap-2 rounded-lg border border-border/50 bg-background/50 px-4 py-2">
-                <svg className="size-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span className="text-sm font-medium">Spaced Repetition</span>
-              </div>
-
-              <div className="flex items-center gap-2 rounded-lg border border-border/50 bg-background/50 px-4 py-2">
-                <svg className="size-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                </svg>
-                <span className="text-sm font-medium">Active Recall</span>
-              </div>
-
-              <div className="flex items-center gap-2 rounded-lg border border-border/50 bg-background/50 px-4 py-2">
-                <svg className="size-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                <span className="text-sm font-medium">Microlearning</span>
-              </div>
-
-              <div className="flex items-center gap-2 rounded-lg border border-border/50 bg-background/50 px-4 py-2">
-                <svg className="size-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-                <span className="text-sm font-medium">Cognitive Load Theory</span>
-              </div>
-
-              <div className="flex items-center gap-2 rounded-lg border border-border/50 bg-background/50 px-4 py-2">
-                <svg className="size-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-                <span className="text-sm font-medium">Dual Coding</span>
-              </div>
-            </div>
-          </div>
-        </FadeIn>
       </div>
     </section>
   );

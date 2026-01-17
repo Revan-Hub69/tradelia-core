@@ -969,6 +969,21 @@ const RegistrationStep = ({
 const SuccessStep = ({ data }: { data: OnboardingData }) => {
   const router = useRouter();
 
+  useEffect(() => {
+    // Scroll to button after animations complete
+    const timer = setTimeout(() => {
+      const button = document.querySelector('[data-success-button]');
+      if (button) {
+        button.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+      }
+    }, 1000); // Wait for animations to complete
+
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleStartLearning = () => {
     // Save complete onboarding data
     localStorage.setItem('tradelia_onboarding_complete', JSON.stringify(data));
@@ -1061,7 +1076,7 @@ const SuccessStep = ({ data }: { data: OnboardingData }) => {
       </FadeIn>
 
       <FadeIn delay={800}>
-        <Button onClick={handleStartLearning} size="lg" className="px-8">
+        <Button data-success-button onClick={handleStartLearning} size="lg" className="px-8">
           Iniziamo! →
         </Button>
       </FadeIn>
