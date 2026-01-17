@@ -6,10 +6,9 @@ import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { CleanCountryDropdown, type Country } from '@/components/ui/clean-country-dropdown';
 import { Input } from '@/components/ui/input';
-import { type Country, ModernCountryDropdown } from '@/components/ui/modern-country-dropdown';
 import { FadeIn, SlideReveal } from '@/components/ui/scroll-animations';
-import { Logo } from '@/templates/Logo';
 
 /**
  * Fixed Premium Onboarding Flow 2026
@@ -58,11 +57,46 @@ const ProgressIndicator = ({
       <div className="mx-auto max-w-4xl px-4 py-3 sm:px-6 sm:py-4">
         {/* Header row con layout fisso a 3 colonne */}
         <div className="grid grid-cols-3 items-center">
-          {/* Left: Logo + Back button - FORCED VERTICAL ALIGNMENT */}
+          {/* Left: Logo INLINE + Back button - NO COMPONENT ISSUES */}
           <div className="flex items-center justify-start">
-            <div className="flex items-center justify-center">
-              <Logo size="sm" href="/" className="leading-none sm:hidden" />
-              <Logo size="md" href="/" className="hidden leading-none sm:block" />
+            {/* Logo inline - mobile */}
+            <div className="flex items-center gap-2 sm:hidden">
+              <svg className="size-6 shrink-0" viewBox="0 0 32 32" fill="none">
+                <rect width="32" height="32" rx="8" className="fill-primary" />
+                <path d="M8 11h16M16 11v12" stroke="white" strokeWidth="3" strokeLinecap="round" />
+                <circle cx="22" cy="11" r="2" className="fill-accent" />
+              </svg>
+              <span
+                className="text-lg font-bold leading-none"
+                style={{
+                  background: 'linear-gradient(45deg, #64748B 50%, #1D4ED8 50%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}
+              >
+                Tradelia
+              </span>
+            </div>
+
+            {/* Logo inline - desktop */}
+            <div className="hidden items-center gap-2.5 sm:flex">
+              <svg className="size-7 shrink-0" viewBox="0 0 32 32" fill="none">
+                <rect width="32" height="32" rx="8" className="fill-primary" />
+                <path d="M8 11h16M16 11v12" stroke="white" strokeWidth="3" strokeLinecap="round" />
+                <circle cx="22" cy="11" r="2" className="fill-accent" />
+              </svg>
+              <span
+                className="text-xl font-bold leading-none"
+                style={{
+                  background: 'linear-gradient(45deg, #64748B 50%, #1D4ED8 50%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}
+              >
+                Tradelia
+              </span>
             </div>
 
             {onBack && currentStep !== 'welcome' && (
@@ -214,7 +248,7 @@ const CountryStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) => vo
               <label htmlFor="country-select" className="mb-3 block text-sm font-medium">
                 {t('country_select_label')}
               </label>
-              <ModernCountryDropdown
+              <CleanCountryDropdown
                 placeholder={t('country_placeholder')}
                 onChange={handleCountryChange}
                 disabled={false}
