@@ -223,7 +223,7 @@ const TrustStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) => void
       </FadeIn>
 
       <div className="text-center">
-        <Button onClick={handleStart} size="lg" className="px-8">
+        <Button data-focus-first onClick={handleStart} size="lg" className="px-8">
           Partiamo! →
         </Button>
         <p className="mt-2 text-xs text-muted-foreground">
@@ -739,6 +739,7 @@ const PersonalizationStep = ({
 
       <div className="text-center">
         <Button
+          data-focus-first
           onClick={handleContinue}
           disabled={!canContinue}
           size="lg"
@@ -1108,6 +1109,18 @@ export const OptimizedOnboardingFlow = () => {
       const nextStep = steps[currentIndex + 1];
       if (nextStep) {
         setCurrentStep(nextStep);
+
+        // Focus management for accessibility
+        setTimeout(() => {
+          const firstFocusable = document.querySelector('[data-focus-first]') as HTMLElement;
+          if (firstFocusable) {
+            firstFocusable.focus();
+          } else {
+            // Fallback to first interactive element
+            const firstInteractive = document.querySelector('button, input, [tabindex="0"]') as HTMLElement;
+            firstInteractive?.focus();
+          }
+        }, 100);
       }
     } else {
       // Onboarding complete - show success

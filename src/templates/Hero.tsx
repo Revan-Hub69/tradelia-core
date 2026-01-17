@@ -116,7 +116,7 @@ export const Hero = () => {
   return (
     <>
       {/* HERO SECTION - Awareness */}
-      <section className="relative overflow-hidden px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
+      <section className="relative overflow-hidden px-4 py-16 pt-24 sm:px-6 sm:py-20 sm:pt-28 lg:py-24 lg:pt-32">
         <div className="mx-auto max-w-7xl">
           <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
             {/* Text - FIRST on mobile, LEFT on desktop */}
