@@ -20,13 +20,13 @@
     "subheadline": "Amici che investono, notizie contrastanti, paura di perdere il treno. Prima di decidere qualsiasi cosa, serve chiarezza.",
     "cta_primary": "Inizia subito",
     "cta_secondary": "Come funziona",
-    "trust": "Gratis · Qualche minuto al giorno · Nessuna carta richiesta",
+    "trust": "Gratis · 3-15 minuti al giorno · Nessuna carta richiesta",
     "stats_text": "milioni le usano già",
     "stats_subtitle": "Alle volte anche senza conoscerle veramente e solo perdendo soldi. Con Tradelia le capisci davvero — senza rischiare nulla",
     "source_text": "Fonte: DemandSage 2026 (utenti crypto globali)",
     "soft_cta": "Scopri come funziona",
     "scroll_cue": "30 secondi per capire come funziona",
-    "section2_title": "Impara crypto quando hai tempo con Tradelia",
+    "section2_title": "Impara crypto in 3-15 minuti al giorno con Tradelia",
     "section2_cta_primary": "Prova gratis",
     "section2_cta_secondary": "Vedi una lezione",
     "section2_disclaimer": "Gratis · Nessuna carta · Puoi cancellarti quando vuoi",
@@ -264,7 +264,7 @@
     "benefit1_desc": "Parti dalle basi vere: cosa sono le blockchain, come funzionano i wallet, quali sono i rischi reali. Niente scorciatoie, niente fuffa.",
     "benefit1_highlight": "Zero promesse irrealistiche",
     "benefit2_title": "Tempo ben speso",
-    "benefit2_desc": "Qualche minuto al giorno, progressi costanti. Impari davvero senza stravolgere la tua routine quotidiana.",
+    "benefit2_desc": "3-15 minuti al giorno, progressi costanti. Impari davvero senza stravolgere la tua routine quotidiana.",
     "benefit2_highlight": "Progressi veri",
     "benefit3_title": "Su misura per te",
     "benefit3_desc": "Linguaggio adattivo: da metafore semplici a terminologia tecnica. Stessi concetti, spiegazione giusta per te.",
@@ -298,8 +298,8 @@
     "cta_badge": "Inizia il percorso gratuito"
   },
   "SocialProof": {
-    "section_title": "Community in crescita",
-    "section_subtitle": "Stiamo costruendo insieme la migliore risorsa per capire le crypto",
+    "section_title": "Basato su principi scientifici",
+    "section_subtitle": "Tradelia applica le migliori ricerche sull'apprendimento per risultati concreti",
     "testimonial1_name": "",
     "testimonial1_role": "",
     "testimonial1_content": "",
@@ -313,7 +313,7 @@
     "stat2_label": "Completano il percorso",
     "stat3_label": "Valutazione media",
     "stat4_label": "Minuti al giorno",
-    "trust_title": "Riconosciuto da:"
+    "trust_title": "Principi applicati:"
   },
   "FAQ": {
     "section_title": "Domande frequenti",
@@ -321,7 +321,7 @@
     "question1": "Devo avere esperienza con le criptovalute?",
     "answer1": "Per niente! Partiamo da zero assoluto. Anzi, se non sai nulla è meglio: meno pregiudizi e errori da correggere. Iniziamo dalle basi vere.",
     "question2": "Quanto tempo devo dedicarci ogni giorno?",
-    "answer2": "Bastano pochi minuti al giorno. Ogni guida è pensata per essere completata velocemente, più un breve quiz di verifica. Qualità, non quantità.",
+    "answer2": "Bastano 3-15 minuti al giorno. Ogni guida è pensata per essere completata velocemente, più un breve quiz di verifica. Qualità, non quantità.",
     "question3": "È davvero gratuito o ci sono costi nascosti?",
     "answer3": "Il percorso base è gratis, per sempre. Nessuna carta richiesta, nessun costo nascosto. I percorsi avanzati hanno un costo, ma solo dopo aver completato quello base.",
     "question4": "Tradelia mi insegnerà a fare trading?",

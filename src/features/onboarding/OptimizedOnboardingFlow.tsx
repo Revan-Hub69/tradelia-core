@@ -576,21 +576,21 @@ const PersonalizationStep = ({
   const timeOptions = [
     {
       id: 'focused' as TimeCommitment,
-      title: 'Sessioni brevi',
-      description: 'Poco ma spesso',
-      duration: 'breve',
+      title: '3-5 minuti',
+      description: 'Sessioni brevi',
+      duration: '3-5 min',
     },
     {
       id: 'balanced' as TimeCommitment,
-      title: 'Ritmo equilibrato',
-      description: 'Il giusto equilibrio',
-      duration: 'medio',
+      title: '10-15 minuti',
+      description: 'Ritmo equilibrato',
+      duration: '10-15 min',
     },
     {
       id: 'deep' as TimeCommitment,
-      title: 'Approfondimento',
-      description: 'Voglio sapere tutto',
-      duration: 'lungo',
+      title: '20+ minuti',
+      description: 'Approfondimento',
+      duration: '20+ min',
     },
   ];
 
@@ -726,7 +726,9 @@ const PersonalizationStep = ({
                           ? ' investire con criterio'
                           : selections.goal === 'career' ? ' lavorare nel settore' : ' esplorare'}
                     ,
-                    {selections.time === 'focused' ? ' poco ma spesso' : selections.time === 'balanced' ? ' con calma' : ' quando hai più tempo'}
+                    {selections.time === 'focused' ? ' 3-5 minuti' : selections.time === 'balanced' ? ' 10-15 minuti' : ' 20+ minuti'}
+                    {' '}
+                    al giorno
                   </p>
                 </div>
               </div>
@@ -847,8 +849,8 @@ const RegistrationStep = ({
               <span>Tempo:</span>
               <span className="font-medium">
                 {data.timeCommitment === 'focused'
-                  ? 'Sessioni brevi'
-                  : data.timeCommitment === 'balanced' ? 'Ritmo equilibrato' : 'Approfondimento'}
+                  ? '3-5 minuti al giorno'
+                  : data.timeCommitment === 'balanced' ? '10-15 minuti al giorno' : '20+ minuti al giorno'}
               </span>
             </div>
             <div className="flex justify-between">
@@ -1039,8 +1041,10 @@ const SuccessStep = ({ data }: { data: OnboardingData }) => {
                 </svg>
               </div>
               <span>
-                Al tuo ritmo
-                <strong>{data.timeCommitment === 'focused' ? ', poco ma spesso' : data.timeCommitment === 'balanced' ? ', con equilibrio' : ', quando hai più tempo'}</strong>
+                Solo
+                <strong>{data.timeCommitment === 'focused' ? ' 3-5 minuti' : data.timeCommitment === 'balanced' ? ' 10-15 minuti' : ' 20+ minuti'}</strong>
+                {' '}
+                al giorno
               </span>
             </div>
 
