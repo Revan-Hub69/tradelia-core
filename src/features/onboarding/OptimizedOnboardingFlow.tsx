@@ -80,7 +80,7 @@ const GamifiedProgress = ({
               <span className="text-sm font-semibold text-primary">
                 {xpEarned}
                 {' '}
-                XP
+                punti
               </span>
             </div>
 
@@ -96,8 +96,11 @@ const GamifiedProgress = ({
 
             {/* Step indicator */}
             <span className="text-sm font-medium text-muted-foreground">
+              Passo
+              {' '}
               {currentIndex + 1}
-              /4
+              {' '}
+              di 4
             </span>
           </div>
         </div>
@@ -129,13 +132,13 @@ const TrustStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) => void
       <div className="text-center">
         <SlideReveal>
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
-            Impara le crypto in modo sicuro
+            Impara le crypto senza confusione
           </h1>
         </SlideReveal>
 
         <FadeIn delay={200}>
           <p className="mt-4 text-lg text-muted-foreground sm:text-xl">
-            Educazione finanziaria basata su ricerca, non hype
+            Guide pratiche e consigli onesti. Niente fuffa.
           </p>
         </FadeIn>
       </div>
@@ -150,8 +153,8 @@ const TrustStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) => void
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
               </svg>
             </div>
-            <h3 className="font-semibold text-green-900">100% Sicuro</h3>
-            <p className="text-sm text-green-700">Dati crittografati, privacy garantita</p>
+            <h3 className="font-semibold text-green-900">Dati protetti</h3>
+            <p className="text-sm text-green-700">La tua privacy è importante</p>
           </div>
 
           {/* Social Proof */}
@@ -161,8 +164,8 @@ const TrustStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) => void
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
             </div>
-            <h3 className="font-semibold text-blue-900">50.000+ Studenti</h3>
-            <p className="text-sm text-blue-700">Community attiva e supportiva</p>
+            <h3 className="font-semibold text-blue-900">Community in crescita</h3>
+            <p className="text-sm text-blue-700">Impariamo insieme</p>
           </div>
 
           {/* Educational Focus */}
@@ -172,8 +175,8 @@ const TrustStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) => void
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
               </svg>
             </div>
-            <h3 className="font-semibold text-purple-900">Solo Educazione</h3>
-            <p className="text-sm text-purple-700">Niente vendite, solo conoscenza</p>
+            <h3 className="font-semibold text-purple-900">Solo guide utili</h3>
+            <p className="text-sm text-purple-700">Niente vendite o spam</p>
           </div>
         </div>
       </FadeIn>
@@ -181,7 +184,7 @@ const TrustStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) => void
       {/* Value Proposition */}
       <FadeIn delay={600}>
         <Card className="border-primary/20 bg-primary/5 p-6">
-          <h3 className="mb-4 text-center text-lg font-semibold">Cosa imparerai in 3 minuti:</h3>
+          <h3 className="mb-4 text-center text-lg font-semibold">Cosa scoprirai subito:</h3>
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="flex items-center gap-3">
               <div className="size-8 rounded-lg bg-primary/10 p-1.5">
@@ -189,7 +192,7 @@ const TrustStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) => void
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <span className="text-sm font-medium">Il tuo livello attuale</span>
+              <span className="text-sm font-medium">Da dove parti</span>
             </div>
             <div className="flex items-center gap-3">
               <div className="size-8 rounded-lg bg-primary/10 p-1.5">
@@ -197,7 +200,7 @@ const TrustStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) => void
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <span className="text-sm font-medium">Percorso personalizzato</span>
+              <span className="text-sm font-medium">Contenuti su misura per te</span>
             </div>
             <div className="flex items-center gap-3">
               <div className="size-8 rounded-lg bg-primary/10 p-1.5">
@@ -205,7 +208,7 @@ const TrustStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) => void
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
               </div>
-              <span className="text-sm font-medium">Protezione dalle truffe</span>
+              <span className="text-sm font-medium">Come evitare le fregature</span>
             </div>
             <div className="flex items-center gap-3">
               <div className="size-8 rounded-lg bg-primary/10 p-1.5">
@@ -213,7 +216,7 @@ const TrustStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) => void
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <span className="text-sm font-medium">Solo 5-15 min/giorno</span>
+              <span className="text-sm font-medium">Solo 5-15 minuti al giorno</span>
             </div>
           </div>
         </Card>
@@ -221,10 +224,10 @@ const TrustStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) => void
 
       <div className="text-center">
         <Button onClick={handleStart} size="lg" className="px-8">
-          Inizia il test (3 min) →
+          Partiamo! →
         </Button>
         <p className="mt-2 text-xs text-muted-foreground">
-          Gratuito • Niente spam • Cancellazione immediata
+          Gratis • Niente spam • Puoi cancellarti quando vuoi
         </p>
       </div>
     </div>
@@ -248,13 +251,13 @@ const AssessmentStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) =>
       {
         question: 'Bitcoin è principalmente:',
         options: [
-          'Una banca digitale',
-          'Denaro digitale decentralizzato',
-          'Un sito web per investimenti',
-          'Una carta di credito virtuale',
+          'Una banca online',
+          'Denaro digitale senza banche',
+          'Un sito di investimenti',
+          'Una carta virtuale',
         ],
         correct: 1,
-        explanation: 'Esatto! Bitcoin è denaro digitale che funziona senza banche centrali. È come avere monete d\'oro digitali.',
+        explanation: 'Perfetto! Bitcoin funziona senza banche centrali. È come avere monete d\'oro digitali.',
         xp: 15,
       },
     ],
@@ -268,7 +271,7 @@ const AssessmentStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) =>
           'La società Bitcoin Inc.',
         ],
         correct: 2,
-        explanation: 'Corretto! Migliaia di computer verificano le transazioni in modo decentralizzato, senza autorità centrale.',
+        explanation: 'Perfetto! Migliaia di computer verificano le transazioni in modo decentralizzato, senza autorità centrale.',
         xp: 20,
       },
     ],
@@ -282,7 +285,7 @@ const AssessmentStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) =>
           'Proof of Authority',
         ],
         correct: 0,
-        explanation: 'Perfetto! Bitcoin usa Proof of Work: i miner risolvono puzzle crittografici per validare transazioni.',
+        explanation: 'Ottimo! Bitcoin usa Proof of Work: i miner risolvono puzzle crittografici per validare transazioni.',
         xp: 25,
       },
     ],
@@ -373,13 +376,13 @@ const AssessmentStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) =>
       <div className="text-center">
         <SlideReveal>
           <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            Test di Livello Intelligente
+            Scopriamo da dove parti
           </h2>
         </SlideReveal>
 
         <FadeIn delay={200}>
           <p className="mt-3 text-muted-foreground">
-            3 domande che si adattano alle tue risposte
+            Qualche domanda veloce per conoscerti meglio
           </p>
         </FadeIn>
       </div>
@@ -389,11 +392,7 @@ const AssessmentStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) =>
           {/* Question Progress */}
           <div className="mb-6 flex items-center justify-between">
             <span className="text-sm font-medium text-muted-foreground">
-              Domanda
-              {' '}
-              {currentQuestion + 1}
-              {' '}
-              di 3
+              {currentQuestion === 0 ? 'Prima domanda - Ci siamo quasi!' : `Domanda ${currentQuestion + 1} di 3`}
             </span>
             <div className="flex gap-2">
               {[0, 1, 2].map(index => (
@@ -461,17 +460,17 @@ const AssessmentStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) =>
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
-                        <h4 className="font-semibold text-blue-900">Spiegazione:</h4>
+                        <h4 className="font-semibold text-blue-900">Ecco perché:</h4>
                         {selectedAnswer === currentQ?.correct && (
                           <div className="flex items-center gap-1 text-green-600">
                             <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                             </svg>
                             <span className="text-sm font-semibold">
-                              +
+                              Ben fatto! +
                               {currentQ?.xp}
                               {' '}
-                              XP
+                              punti
                             </span>
                           </div>
                         )}
@@ -508,8 +507,8 @@ const PersonalizationStep = ({
   const goals = [
     {
       id: 'understand' as LearningGoal,
-      title: 'Capire le Crypto',
-      description: 'Basi solide senza investire',
+      title: 'Capire le crypto',
+      description: 'Cosa sono e come funzionano',
       icon: (
         <svg className="size-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
@@ -519,8 +518,8 @@ const PersonalizationStep = ({
     },
     {
       id: 'protection' as LearningGoal,
-      title: 'Proteggermi dalle Truffe',
-      description: 'Riconoscere e evitare i rischi',
+      title: 'Evitare le fregature',
+      description: 'Riconoscere truffe e rischi',
       icon: (
         <svg className="size-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -530,8 +529,8 @@ const PersonalizationStep = ({
     },
     {
       id: 'invest' as LearningGoal,
-      title: 'Investire Consapevolmente',
-      description: 'Strategie e gestione del rischio',
+      title: 'Investire con criterio',
+      description: 'Quando e come farlo bene',
       icon: (
         <svg className="size-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
@@ -541,8 +540,8 @@ const PersonalizationStep = ({
     },
     {
       id: 'career' as LearningGoal,
-      title: 'Opportunità di Carriera',
-      description: 'Competenze professionali blockchain',
+      title: 'Lavorare nel settore',
+      description: 'Competenze richieste',
       icon: (
         <svg className="size-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0H8m8 0v2a2 2 0 01-2 2H10a2 2 0 01-2-2V6m8 0H8m0 0v2a2 2 0 002 2h4a2 2 0 002-2V6" />
@@ -566,20 +565,20 @@ const PersonalizationStep = ({
   const timeOptions = [
     {
       id: 'focused' as TimeCommitment,
-      title: '5 min/giorno',
-      description: 'Veloce e costante',
+      title: '5 minuti al giorno',
+      description: 'Poco ma spesso',
       duration: '5 min',
     },
     {
       id: 'balanced' as TimeCommitment,
-      title: '10 min/giorno',
-      description: 'Ritmo equilibrato',
+      title: '10 minuti al giorno',
+      description: 'Il giusto equilibrio',
       duration: '10 min',
     },
     {
       id: 'deep' as TimeCommitment,
-      title: '15+ min/giorno',
-      description: 'Approfondimento',
+      title: '15+ minuti al giorno',
+      description: 'Voglio sapere tutto',
       duration: '15+ min',
     },
   ];
@@ -606,13 +605,13 @@ const PersonalizationStep = ({
       <div className="text-center">
         <SlideReveal>
           <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            Personalizziamo il Tuo Percorso
+            Cosa ti interessa di più?
           </h2>
         </SlideReveal>
 
         <FadeIn delay={200}>
           <p className="mt-3 text-muted-foreground">
-            Livello rilevato:
+            Hai scelto:
             {' '}
             <span className="font-semibold text-primary">
               {data.level === 'novice'
@@ -626,7 +625,7 @@ const PersonalizationStep = ({
       <div className="space-y-6">
         {/* Goal Selection */}
         <div>
-          <h3 className="mb-4 text-lg font-semibold">Qual è il tuo obiettivo principale?</h3>
+          <h3 className="mb-4 text-lg font-semibold">Cosa ti ha portato qui?</h3>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {goals.map(goal => (
               <button
@@ -660,7 +659,7 @@ const PersonalizationStep = ({
 
         {/* Time Commitment */}
         <div>
-          <h3 className="mb-4 text-lg font-semibold">Quanto tempo hai a disposizione?</h3>
+          <h3 className="mb-4 text-lg font-semibold">Quanto tempo vuoi dedicarci?</h3>
           <div className="grid gap-3 sm:grid-cols-3">
             {timeOptions.map(option => (
               <button
@@ -701,7 +700,7 @@ const PersonalizationStep = ({
                   </svg>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-green-900">Percorso Pronto!</h4>
+                  <h4 className="font-semibold text-green-900">Perfetto!</h4>
                   <p className="text-sm text-green-800">
                     Contenuti
                     {' '}
@@ -709,16 +708,16 @@ const PersonalizationStep = ({
                     {' '}
                     per
                     {selections.goal === 'understand'
-                      ? 'capire le crypto'
+                      ? ' capire le crypto'
                       : selections.goal === 'protection'
-                        ? 'proteggerti dalle truffe'
+                        ? ' evitare le fregature'
                         : selections.goal === 'invest'
-                          ? 'investire consapevolmente'
-                          : selections.goal === 'career' ? 'opportunità di carriera' : 'esplorare'}
+                          ? ' investire con criterio'
+                          : selections.goal === 'career' ? ' lavorare nel settore' : ' esplorare'}
+                    ,
+                    {selections.time === 'focused' ? ' 5 minuti' : selections.time === 'balanced' ? ' 10 minuti' : ' 15+ minuti'}
                     {' '}
-                    in
-                    {selections.time === 'focused' ? '5 min' : selections.time === 'balanced' ? '10 min' : '15+ min'}
-                    /giorno
+                    al giorno
                   </p>
                 </div>
               </div>
@@ -734,7 +733,7 @@ const PersonalizationStep = ({
           size="lg"
           className="px-8"
         >
-          {canContinue ? 'Crea Account Gratuito →' : 'Completa le selezioni'}
+          {canContinue ? 'Inizia subito →' : 'Scegli tutto prima di continuare'}
         </Button>
       </div>
     </div>
@@ -799,13 +798,13 @@ const RegistrationStep = ({
       <div className="text-center">
         <SlideReveal>
           <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            Ultimo Passo: Crea il Tuo Account
+            Ultimo step!
           </h2>
         </SlideReveal>
 
         <FadeIn delay={200}>
           <p className="mt-3 text-muted-foreground">
-            Il tuo percorso personalizzato ti aspetta
+            Quasi fatto, promettiamo!
           </p>
         </FadeIn>
       </div>
@@ -813,7 +812,7 @@ const RegistrationStep = ({
       {/* Progress Summary */}
       <FadeIn delay={300}>
         <Card className="border-primary/20 bg-primary/5 p-4">
-          <h3 className="mb-3 font-semibold text-primary">Il Tuo Profilo:</h3>
+          <h3 className="mb-3 font-semibold text-primary">Ecco cosa abbiamo preparato per te:</h3>
           <div className="grid gap-2 text-sm">
             <div className="flex justify-between">
               <span>Livello:</span>
@@ -824,31 +823,29 @@ const RegistrationStep = ({
               </span>
             </div>
             <div className="flex justify-between">
-              <span>Obiettivo:</span>
+              <span>Interesse:</span>
               <span className="font-medium">
                 {data.primaryGoal === 'understand'
                   ? 'Capire le crypto'
                   : data.primaryGoal === 'protection'
-                    ? 'Proteggersi dalle truffe'
+                    ? 'Evitare le fregature'
                     : data.primaryGoal === 'invest'
-                      ? 'Investire consapevolmente'
-                      : data.primaryGoal === 'career' ? 'Opportunità di carriera' : 'Esplorare'}
+                      ? 'Investire con criterio'
+                      : data.primaryGoal === 'career' ? 'Lavorare nel settore' : 'Esplorare'}
               </span>
             </div>
             <div className="flex justify-between">
               <span>Tempo:</span>
               <span className="font-medium">
                 {data.timeCommitment === 'focused'
-                  ? '5 min/giorno'
-                  : data.timeCommitment === 'balanced' ? '10 min/giorno' : '15+ min/giorno'}
+                  ? '5 minuti al giorno'
+                  : data.timeCommitment === 'balanced' ? '10 minuti al giorno' : '15+ minuti al giorno'}
               </span>
             </div>
             <div className="flex justify-between">
-              <span>XP Guadagnati:</span>
+              <span>Punti guadagnati:</span>
               <span className="font-medium text-primary">
                 {data.xpEarned || 0}
-                {' '}
-                XP
               </span>
             </div>
           </div>
@@ -873,7 +870,7 @@ const RegistrationStep = ({
                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
               </svg>
-              Continua con Google (Consigliato)
+              Accedi con Google
             </Button>
 
             <div className="relative">
@@ -881,7 +878,7 @@ const RegistrationStep = ({
                 <span className="w-full border-t" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">oppure</span>
+                <span className="bg-background px-2 text-muted-foreground">o</span>
               </div>
             </div>
 
@@ -906,11 +903,11 @@ const RegistrationStep = ({
                   ? (
                       <div className="flex items-center gap-2">
                         <div className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                        Creazione account...
+                        Creando il tuo account...
                       </div>
                     )
                   : (
-                      'Crea Account Gratuito'
+                      'Inizia subito'
                     )}
               </Button>
             </form>
@@ -922,7 +919,7 @@ const RegistrationStep = ({
                   <svg className="size-3 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
-                  Sempre gratuito
+                  Gratis
                 </div>
                 <div className="flex items-center gap-1">
                   <svg className="size-3 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -934,18 +931,18 @@ const RegistrationStep = ({
                   <svg className="size-3 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  Cancellazione immediata
+                  Puoi cancellarti quando vuoi
                 </div>
               </div>
 
               <p className="text-xs text-muted-foreground">
-                Registrandoti accetti i nostri
+                Continuando accetti i nostri
                 {' '}
                 <a href="/terms" className="underline hover:text-primary">Termini</a>
                 {' '}
                 e
                 {' '}
-                <a href="/privacy" className="underline hover:text-primary">Privacy Policy</a>
+                <a href="/privacy" className="underline hover:text-primary">Privacy</a>
               </p>
             </div>
           </div>
@@ -990,7 +987,7 @@ const SuccessStep = ({ data }: { data: OnboardingData }) => {
           <span className="font-bold text-primary">
             {data.xpEarned}
             {' '}
-            XP
+            punti
           </span>
           {' '}
           e
@@ -998,7 +995,7 @@ const SuccessStep = ({ data }: { data: OnboardingData }) => {
           <span className="font-bold text-accent">
             {data.badges?.length}
             {' '}
-            badge
+            riconoscimenti
           </span>
           !
         </p>
@@ -1006,30 +1003,28 @@ const SuccessStep = ({ data }: { data: OnboardingData }) => {
 
       <FadeIn delay={600}>
         <Card className="border-primary/20 bg-primary/5 p-6">
-          <h3 className="mb-4 font-semibold">Il tuo percorso personalizzato è pronto:</h3>
+          <h3 className="mb-4 font-semibold">Il tuo percorso è pronto:</h3>
           <div className="space-y-2 text-sm">
             <p>
-              📚 Contenuti adatti al tuo livello
-              <strong>{data.level}</strong>
+              📚 Contenuti per il tuo livello
             </p>
             <p>
-              🎯 Focalizzati sul tuo obiettivo:
-              <strong>{data.primaryGoal}</strong>
+              🎯 Focalizzato su quello che ti interessa
             </p>
             <p>
               ⏰ Solo
-              <strong>{data.timeCommitment === 'focused' ? '5 min' : data.timeCommitment === 'balanced' ? '10 min' : '15+ min'}</strong>
+              <strong>{data.timeCommitment === 'focused' ? ' 10 minuti' : data.timeCommitment === 'balanced' ? ' 10 minuti' : ' 15+ minuti'}</strong>
               {' '}
               al giorno
             </p>
-            <p>🛡️ Protezione dalle truffe inclusa</p>
+            <p>🛡️ Ti aiutiamo a evitare le fregature</p>
           </div>
         </Card>
       </FadeIn>
 
       <FadeIn delay={800}>
         <Button onClick={handleStartLearning} size="lg" className="px-8">
-          Inizia a Imparare →
+          Iniziamo! →
         </Button>
       </FadeIn>
     </div>
