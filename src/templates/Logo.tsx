@@ -31,7 +31,7 @@ export const Logo = ({ isTextHidden = false, size = 'md', href = '/', className 
     <div className={cn(`group flex items-center ${gap}`, className)}>
       {/* Icon: T stilizzata minimal */}
       <svg
-        className={icon}
+        className={cn(icon, 'shrink-0')}
         viewBox="0 0 32 32"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -49,9 +49,9 @@ export const Logo = ({ isTextHidden = false, size = 'md', href = '/', className 
 
       {/* Wordmark con taglio diagonale SHARP 45° */}
       {!isTextHidden && (
-        <span className="relative">
+        <span className="relative flex items-center">
           <span
-            className={`font-bold tracking-tight ${text}`}
+            className={cn(`font-bold tracking-tight leading-none ${text}`)}
             style={{
               background: 'linear-gradient(45deg, #64748B 50%, #1D4ED8 50%)',
               WebkitBackgroundClip: 'text',

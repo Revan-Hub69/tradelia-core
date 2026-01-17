@@ -58,10 +58,12 @@ const ProgressIndicator = ({
       <div className="mx-auto max-w-4xl px-4 py-3 sm:px-6 sm:py-4">
         {/* Header row con layout fisso a 3 colonne */}
         <div className="grid grid-cols-3 items-center">
-          {/* Left: Logo + Back button */}
+          {/* Left: Logo + Back button - FORCED VERTICAL ALIGNMENT */}
           <div className="flex items-center justify-start">
-            <Logo size="sm" href="/" className="sm:hidden" />
-            <Logo size="md" href="/" className="hidden sm:block" />
+            <div className="flex items-center justify-center">
+              <Logo size="sm" href="/" className="leading-none sm:hidden" />
+              <Logo size="md" href="/" className="hidden leading-none sm:block" />
+            </div>
 
             {onBack && currentStep !== 'welcome' && (
               <Button
