@@ -160,7 +160,7 @@ const CountryDropdownComponent = (
                 .sort((a, b) => a.name.localeCompare(b.name))
                 .map((option, key: number) => (
                   <CommandItem
-                    className="flex w-full cursor-pointer items-center gap-3 px-4 py-3 transition-colors hover:bg-accent/50"
+                    className="flex w-full cursor-pointer items-center gap-3 px-4 py-3 transition-colors hover:bg-primary/5 hover:text-primary data-[selected]:bg-primary/10"
                     key={`country-${option.alpha2}-${key}`}
                     onSelect={() => handleSelect(option)}
                   >
@@ -171,7 +171,7 @@ const CountryDropdownComponent = (
                         width={24}
                       />
                     </div>
-                    <span className="flex-1 truncate text-left font-medium">
+                    <span className="min-w-0 flex-1 truncate text-left font-medium">
                       {option.name}
                     </span>
                     <CheckIcon
