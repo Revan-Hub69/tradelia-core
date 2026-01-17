@@ -58,12 +58,12 @@ const getLessonContent = (t: any) => ({
 });
 
 /**
- * Rewards based on level
+ * Rewards based on level - TRAD Educational tokens
  */
 const getRewards = (t: any) => ({
-  beginner: { xp: 15, unlock: t('reward_wallet_basics'), next: t('reward_wallet_next') },
-  curious: { xp: 25, unlock: t('reward_defi'), next: t('reward_defi_next') },
-  experienced: { xp: 35, unlock: t('reward_smart_contracts'), next: t('reward_smart_contracts_next') },
+  beginner: { trad: 15, unlock: t('reward_wallet_basics'), next: t('reward_wallet_next') },
+  curious: { trad: 25, unlock: t('reward_defi'), next: t('reward_defi_next') },
+  experienced: { trad: 35, unlock: t('reward_smart_contracts'), next: t('reward_smart_contracts_next') },
 });
 
 export const InteractiveDemo = () => {
@@ -135,9 +135,9 @@ export const InteractiveDemo = () => {
                       <div className="rounded-full bg-accent/20 px-2 py-1">
                         <span className="text-xs font-medium text-accent">
                           +
-                          {currentReward.xp}
+                          {currentReward.trad}
                           {' '}
-                          XP
+                          TRAD
                         </span>
                       </div>
                     )}
@@ -265,9 +265,9 @@ export const InteractiveDemo = () => {
                         <div className="mb-4 rounded-lg bg-accent/10 p-4">
                           <div className="mb-2 text-2xl font-bold text-accent">
                             +
-                            {currentReward.xp}
+                            {currentReward.trad}
                             {' '}
-                            XP
+                            TRAD
                           </div>
                           <div className="text-sm font-medium">{t('module_unlocked')}</div>
                           <div className="text-sm font-semibold text-accent">{currentReward.unlock}</div>

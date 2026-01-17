@@ -6,27 +6,31 @@ import { Card } from '@/components/ui/card';
 import { FadeIn, StaggerChildren } from '@/components/ui/scroll-animations';
 
 /**
- * Premium Benefits Icons - Enterprise grade SVGs
+ * TRAD Educational Icons - Token reward system
  */
 const BenefitIcons = {
-  foundation: (
+  quiz: (
     <svg viewBox="0 0 24 24" fill="none" className="size-8 sm:size-10" aria-hidden="true">
-      <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z" className="fill-primary" />
-      <path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" className="fill-primary/60" />
+      <rect x="3" y="4" width="18" height="16" rx="2" className="stroke-primary" strokeWidth="2" fill="none" />
+      <path d="M7 8h10M7 12h6M7 16h4" className="stroke-primary" strokeWidth="2" strokeLinecap="round" />
+      <circle cx="18" cy="8" r="3" className="fill-accent" />
+      <path d="M16.5 8l1 1 2-2" className="stroke-background" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   ),
-  efficiency: (
+  referral: (
     <svg viewBox="0 0 24 24" fill="none" className="size-8 sm:size-10" aria-hidden="true">
-      <circle cx="12" cy="12" r="9" className="stroke-primary" strokeWidth="2" fill="none" />
-      <path d="M12 7v5l3 3" className="stroke-primary" strokeWidth="2" strokeLinecap="round" />
-      <circle cx="12" cy="12" r="2" className="fill-primary" />
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" className="stroke-primary" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="9" cy="7" r="4" className="stroke-primary" strokeWidth="2" fill="none" />
+      <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" className="stroke-primary" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="20" cy="12" r="2" className="fill-accent" />
+      <path d="M19 12h2" className="stroke-background" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   ),
-  adaptive: (
+  missions: (
     <svg viewBox="0 0 24 24" fill="none" className="size-8 sm:size-10" aria-hidden="true">
-      <path d="M2 17l10 5 10-5M2 12l10 5 10-5" className="stroke-primary" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M2 7l10 5 10-5" className="stroke-primary" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="12" cy="12" r="3" className="fill-primary/20" />
+      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" className="fill-primary" />
+      <circle cx="12" cy="12" r="3" className="fill-accent" />
+      <path d="M10.5 12l1 1 2-2" className="stroke-background" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   ),
 };
@@ -36,19 +40,19 @@ export const BenefitsOverview = () => {
 
   const benefits = [
     {
-      icon: BenefitIcons.foundation,
+      icon: BenefitIcons.quiz,
       title: t('benefit1_title'),
       description: t('benefit1_desc'),
       highlight: t('benefit1_highlight'),
     },
     {
-      icon: BenefitIcons.efficiency,
+      icon: BenefitIcons.referral,
       title: t('benefit2_title'),
       description: t('benefit2_desc'),
       highlight: t('benefit2_highlight'),
     },
     {
-      icon: BenefitIcons.adaptive,
+      icon: BenefitIcons.missions,
       title: t('benefit3_title'),
       description: t('benefit3_desc'),
       highlight: t('benefit3_highlight'),
