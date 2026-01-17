@@ -32,13 +32,15 @@ export const Navbar = () => {
 
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isMenuOpen]);
 
   const navLinks = [
-    { 
-      href: '#percorsi', 
-      label: t('product'), 
+    {
+      href: '#percorsi',
+      label: t('product'),
       description: 'Esplora i percorsi formativi',
       icon: (
         <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -46,9 +48,9 @@ export const Navbar = () => {
         </svg>
       ),
     },
-    { 
-      href: '#features', 
-      label: t('docs'), 
+    {
+      href: '#features',
+      label: t('docs'),
       description: 'Scopri le funzionalità',
       icon: (
         <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -56,9 +58,9 @@ export const Navbar = () => {
         </svg>
       ),
     },
-    { 
-      href: '#faq', 
-      label: 'FAQ', 
+    {
+      href: '#faq',
+      label: 'FAQ',
       description: 'Domande frequenti',
       icon: (
         <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -104,7 +106,7 @@ export const Navbar = () => {
             >
               {t('sign_in')}
             </Link>
-            <Link href="/sign-up" className={buttonVariants({ size: 'sm' })}>
+            <Link href="/onboarding" className={buttonVariants({ size: 'sm' })}>
               {t('sign_up')}
             </Link>
           </div>
@@ -126,15 +128,18 @@ export const Navbar = () => {
                 <span className={cn(
                   'h-0.5 w-5 rounded-full bg-foreground transition-all duration-300',
                   isMenuOpen && 'translate-y-2 rotate-45',
-                )} />
+                )}
+                />
                 <span className={cn(
                   'h-0.5 w-5 rounded-full bg-foreground transition-all duration-300',
                   isMenuOpen && 'scale-0 opacity-0',
-                )} />
+                )}
+                />
                 <span className={cn(
                   'h-0.5 w-5 rounded-full bg-foreground transition-all duration-300',
                   isMenuOpen && '-translate-y-2 -rotate-45',
-                )} />
+                )}
+                />
               </div>
             </button>
           </div>
@@ -155,6 +160,13 @@ export const Navbar = () => {
             isMenuOpen ? 'opacity-100' : 'opacity-0',
           )}
           onClick={() => setIsMenuOpen(false)}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') {
+              setIsMenuOpen(false);
+            }
+          }}
+          role="button"
+          tabIndex={0}
         />
 
         {/* Drawer Panel */}
@@ -168,6 +180,7 @@ export const Navbar = () => {
           <div className="flex h-16 items-center justify-between border-b border-border/50 px-6">
             <span className="text-sm font-medium text-muted-foreground">Menu</span>
             <button
+              type="button"
               onClick={() => setIsMenuOpen(false)}
               className="flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             >
@@ -210,7 +223,8 @@ export const Navbar = () => {
           <div className="mx-6 h-px bg-border/50" />
 
           {/* Auth Buttons */}
-          <div className="flex flex-col gap-3 p-6"
+          <div
+            className="flex flex-col gap-3 p-6"
             style={{
               transform: isMenuOpen ? 'translateX(0)' : 'translateX(20px)',
               opacity: isMenuOpen ? 1 : 0,
@@ -225,7 +239,7 @@ export const Navbar = () => {
               {t('sign_in')}
             </Link>
             <Link
-              href="/sign-up"
+              href="/onboarding"
               onClick={() => setIsMenuOpen(false)}
               className="flex h-12 items-center justify-center rounded-xl bg-primary font-medium text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25 active:scale-[0.98]"
             >

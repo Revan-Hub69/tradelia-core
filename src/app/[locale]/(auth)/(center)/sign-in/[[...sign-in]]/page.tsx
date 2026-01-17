@@ -157,8 +157,9 @@ const SignInPage = () => {
       </Button>
 
       <p className="text-center text-sm text-muted-foreground">
-        {t('no_account')}{' '}
-        <a href="/sign-up" className="underline hover:text-primary">
+        {t('no_account')}
+        {' '}
+        <a href="/onboarding" className="underline hover:text-primary">
           {t('sign_up_link')}
         </a>
       </p>

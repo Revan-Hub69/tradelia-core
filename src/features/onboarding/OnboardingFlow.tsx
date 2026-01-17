@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -10,7 +10,7 @@ import { FadeIn, SlideReveal } from '@/components/ui/scroll-animations';
 
 /**
  * Research-Based Onboarding Flow (2024 Best Practices)
- * 
+ *
  * Key Principles Applied:
  * - Progressive Disclosure: Start simple, reveal complexity gradually
  * - Time-to-Value: First value within 3 minutes (not 10)
@@ -34,99 +34,6 @@ type OnboardingData = {
 };
 
 /**
- * Premium Onboarding Flow Component
- * Research-backed design for 65%+ activation rates
- */
-export const OnboardingFlow = () => {
-  const router = useRouter();
-  
-  const [currentStep, setCurrentStep] = useState<OnboardingStep>('welcome');
-  const [data, setData] = useState<OnboardingData>({});
-  const [isLoading, setIsLoading] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  // Fix hydration issues
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const handleNext = (stepData?: Partial<OnboardingData>) => {
-    if (stepData) {
-      setData(prev => ({ ...prev, ...stepData }));
-    }
-
-    const steps: OnboardingStep[] = ['welcome', 'quickWin', 'personalize', 'firstLesson', 'complete'];
-    const currentIndex = steps.indexOf(currentStep);
-    
-    if (currentIndex < steps.length - 1) {
-      const nextStep = steps[currentIndex + 1];
-      if (nextStep) {
-        setCurrentStep(nextStep);
-      }
-    } else {
-      handleComplete();
-    }
-  };
-
-  const handleComplete = async () => {
-    setIsLoading(true);
-    
-    try {
-      // Save onboarding data and redirect to personalized dashboard
-      // await saveOnboardingData(data);
-      router.push('/dashboard');
-    } catch (error) {
-      console.error('Onboarding completion failed:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const renderStep = () => {
-    if (!mounted) return null;
-    
-    switch (currentStep) {
-      case 'welcome':
-        return <WelcomeStep onNext={handleNext} />;
-      case 'quickWin':
-        return <QuickWinStep onNext={handleNext} />;
-      case 'personalize':
-        return <PersonalizeStep onNext={handleNext} />;
-      case 'firstLesson':
-        return <FirstLessonStep onNext={handleNext} data={data} />;
-      case 'complete':
-        return <CompleteStep isLoading={isLoading} />;
-      default:
-        return <WelcomeStep onNext={handleNext} />;
-    }
-  };
-
-  if (!mounted) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
-        <div className="flex min-h-screen items-center justify-center">
-          <div className="size-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
-      {/* Simplified Progress - Research shows complex progress bars increase anxiety */}
-      <OnboardingProgress currentStep={currentStep} />
-      
-      {/* Main content */}
-      <div className="flex min-h-screen items-center justify-center px-4 py-8">
-        <div className="w-full max-w-2xl">
-          {renderStep()}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-/**
  * Simplified Progress Indicator
  * Research: Complex progress bars increase cognitive load and anxiety
  */
@@ -136,8 +43,8 @@ const OnboardingProgress = ({ currentStep }: { currentStep: OnboardingStep }) =>
   const progress = ((currentIndex + 1) / steps.length) * 100;
 
   return (
-    <div className="fixed left-0 right-0 top-0 z-50 bg-background/80 backdrop-blur-sm">
-      <div className="mx-auto max-w-4xl px-4 py-4">
+    <div className="fixed inset-x-0 top-0 z-50 bg-background/80 backdrop-blur-sm">
+      <div className="mx-auto max-w-4xl p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="size-8 rounded-lg bg-primary/10 p-1.5">
@@ -148,16 +55,16 @@ const OnboardingProgress = ({ currentStep }: { currentStep: OnboardingStep }) =>
             </div>
             <span className="font-semibold">Tradelia</span>
           </div>
-          
+
           {/* Simple time indicator instead of step numbers */}
           <div className="text-sm text-muted-foreground">
             {currentStep === 'complete' ? 'Completato!' : '2-3 minuti'}
           </div>
         </div>
-        
+
         {/* Minimal progress bar */}
         <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-muted">
-          <div 
+          <div
             className="h-full bg-gradient-to-r from-primary to-accent transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
           />
@@ -166,7 +73,6 @@ const OnboardingProgress = ({ currentStep }: { currentStep: OnboardingStep }) =>
     </div>
   );
 };
-
 /**
  * Step 1: Welcome - Trust Building & Value Reinforcement
  * Research: First 30 seconds critical for fintech trust
@@ -183,7 +89,7 @@ const WelcomeStep = ({ onNext }: { onNext: () => void }) => {
               {t('welcome_title')}
             </h1>
           </SlideReveal>
-          
+
           <FadeIn delay={200}>
             <p className="mt-4 text-lg text-muted-foreground sm:text-xl">
               {t('welcome_subtitle')}
@@ -226,9 +132,9 @@ const WelcomeStep = ({ onNext }: { onNext: () => void }) => {
 
           <FadeIn delay={600}>
             <div className="mt-8">
-              <Button 
+              <Button
                 onClick={onNext}
-                size="lg" 
+                size="lg"
                 className="h-12 px-8 text-base sm:h-14 sm:px-12 sm:text-lg"
               >
                 {t('welcome_cta')}
@@ -260,26 +166,28 @@ const QuickWinStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) => v
 
   // Simple crypto knowledge test for immediate engagement
   const question = {
-    text: "Bitcoin è stato creato nel:",
+    text: 'Bitcoin è stato creato nel:',
     options: [
       { id: 'a', text: '2008', correct: true },
       { id: 'b', text: '2010', correct: false },
       { id: 'c', text: '2012', correct: false },
     ],
-    explanation: "Esatto! Bitcoin è stato proposto da Satoshi Nakamoto nel 2008. Questo è il tipo di conoscenza che costruiremo insieme."
+    explanation: 'Esatto! Bitcoin è stato proposto da Satoshi Nakamoto nel 2008. Questo è il tipo di conoscenza che costruiremo insieme.',
   };
 
   const handleAnswer = (answerId: string) => {
     setSelectedAnswer(answerId);
     setShowResult(true);
-    
+
     // Auto-advance after showing result
     setTimeout(() => {
       onNext({ completedFirstLesson: true });
     }, 2500);
   };
 
-  if (!mounted) return null;
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <FadeIn>
@@ -290,7 +198,7 @@ const QuickWinStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) => v
               {t('quickwin_title')}
             </h2>
           </SlideReveal>
-          
+
           <FadeIn delay={200}>
             <p className="mt-4 text-muted-foreground">
               {t('quickwin_subtitle')}
@@ -303,9 +211,10 @@ const QuickWinStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) => v
             <div className="mb-6 rounded-xl border border-primary/20 bg-primary/5 p-6">
               <h3 className="mb-4 text-lg font-semibold">{question.text}</h3>
               <div className="space-y-3">
-                {question.options.map((option) => (
+                {question.options.map(option => (
                   <button
                     key={option.id}
+                    type="button"
                     onClick={() => handleAnswer(option.id)}
                     disabled={showResult}
                     className={`w-full rounded-lg border p-4 text-left transition-all ${
@@ -313,8 +222,8 @@ const QuickWinStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) => v
                         ? option.correct
                           ? 'border-green-500 bg-green-50 text-green-700'
                           : selectedAnswer === option.id
-                          ? 'border-red-300 bg-red-50 text-red-600'
-                          : 'border-muted bg-muted/50 text-muted-foreground'
+                            ? 'border-red-300 bg-red-50 text-red-600'
+                            : 'border-muted bg-muted/50 text-muted-foreground'
                         : 'border-border bg-background hover:border-primary hover:bg-primary/5'
                     }`}
                   >
@@ -349,7 +258,6 @@ const QuickWinStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) => v
     </FadeIn>
   );
 };
-
 /**
  * Step 3: Personalize - Goal-Based Customization
  * Research: Personalization increases engagement by 137%
@@ -398,7 +306,9 @@ const PersonalizeStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) =
     }
   };
 
-  if (!mounted) return null;
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <FadeIn>
@@ -409,7 +319,7 @@ const PersonalizeStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) =
               {t('personalize_title')}
             </h2>
           </SlideReveal>
-          
+
           <FadeIn delay={200}>
             <p className="mt-4 text-muted-foreground">
               {t('personalize_subtitle')}
@@ -422,9 +332,10 @@ const PersonalizeStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) =
           <div>
             <h3 className="mb-4 font-medium">Il tuo livello attuale:</h3>
             <div className="grid gap-3 sm:grid-cols-3">
-              {levels.map((level) => (
+              {levels.map(level => (
                 <button
                   key={level.id}
+                  type="button"
                   onClick={() => setSelections(prev => ({ ...prev, level: level.id }))}
                   className={`rounded-lg border p-4 text-center transition-all ${
                     selections.level === level.id
@@ -443,9 +354,10 @@ const PersonalizeStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) =
           <div>
             <h3 className="mb-4 font-medium">Il tuo obiettivo principale:</h3>
             <div className="grid gap-3 sm:grid-cols-2">
-              {goals.map((goal) => (
+              {goals.map(goal => (
                 <button
                   key={goal.id}
+                  type="button"
                   onClick={() => setSelections(prev => ({ ...prev, goal: goal.id }))}
                   className={`flex items-center gap-3 rounded-lg border p-4 text-left transition-all ${
                     selections.goal === goal.id
@@ -464,9 +376,10 @@ const PersonalizeStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) =
           <div>
             <h3 className="mb-4 font-medium">Quanto tempo hai a disposizione?</h3>
             <div className="grid gap-3 sm:grid-cols-3">
-              {timeOptions.map((option) => (
+              {timeOptions.map(option => (
                 <button
                   key={option.id}
+                  type="button"
                   onClick={() => setSelections(prev => ({ ...prev, time: option.id }))}
                   className={`rounded-lg border p-4 text-center transition-all ${
                     selections.time === option.id
@@ -484,10 +397,10 @@ const PersonalizeStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) =
 
         <FadeIn delay={400}>
           <div className="mt-8 text-center">
-            <Button 
+            <Button
               onClick={handleContinue}
               disabled={!canContinue}
-              size="lg" 
+              size="lg"
               className="h-12 px-8 text-base"
             >
               {canContinue ? 'Crea il mio percorso' : 'Completa le selezioni'}
@@ -498,7 +411,6 @@ const PersonalizeStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) =
     </FadeIn>
   );
 };
-
 /**
  * Step 4: First Lesson - Personalized Learning Experience
  * Research: Adaptive content based on user level increases retention
@@ -518,9 +430,9 @@ const FirstLessonStep = ({ onNext, data }: { onNext: () => void; data: Onboardin
     switch (data.level) {
       case 'principiante':
         return {
-          title: "Cos'è Bitcoin?",
-          explanation: "Bitcoin è come denaro digitale che non ha bisogno di banche. È come avere monete d'oro digitali che puoi inviare a chiunque nel mondo.",
-          question: "Bitcoin è principalmente:",
+          title: 'Cos\'è Bitcoin?',
+          explanation: 'Bitcoin è come denaro digitale che non ha bisogno di banche. È come avere monete d\'oro digitali che puoi inviare a chiunque nel mondo.',
+          question: 'Bitcoin è principalmente:',
           options: [
             { id: 'a', text: 'Denaro digitale decentralizzato', correct: true },
             { id: 'b', text: 'Una banca online', correct: false },
@@ -530,9 +442,9 @@ const FirstLessonStep = ({ onNext, data }: { onNext: () => void; data: Onboardin
         };
       case 'curioso':
         return {
-          title: "Come funziona Bitcoin?",
-          explanation: "Bitcoin usa una tecnologia chiamata blockchain - un registro pubblico dove tutte le transazioni sono registrate e verificate da migliaia di computer.",
-          question: "Le transazioni Bitcoin sono verificate da:",
+          title: 'Come funziona Bitcoin?',
+          explanation: 'Bitcoin usa una tecnologia chiamata blockchain - un registro pubblico dove tutte le transazioni sono registrate e verificate da migliaia di computer.',
+          question: 'Le transazioni Bitcoin sono verificate da:',
           options: [
             { id: 'a', text: 'Una banca centrale', correct: false },
             { id: 'b', text: 'Una rete di computer (nodi)', correct: true },
@@ -542,9 +454,9 @@ const FirstLessonStep = ({ onNext, data }: { onNext: () => void; data: Onboardin
         };
       default:
         return {
-          title: "Consenso in Bitcoin",
-          explanation: "Bitcoin usa il Proof of Work: i miner competono per risolvere puzzle crittografici, il primo che risolve aggiunge il blocco e riceve la ricompensa.",
-          question: "Il meccanismo di consenso di Bitcoin è:",
+          title: 'Consenso in Bitcoin',
+          explanation: 'Bitcoin usa il Proof of Work: i miner competono per risolvere puzzle crittografici, il primo che risolve aggiunge il blocco e riceve la ricompensa.',
+          question: 'Il meccanismo di consenso di Bitcoin è:',
           options: [
             { id: 'a', text: 'Proof of Stake', correct: false },
             { id: 'b', text: 'Proof of Work', correct: true },
@@ -560,7 +472,7 @@ const FirstLessonStep = ({ onNext, data }: { onNext: () => void; data: Onboardin
   const handleAnswer = (answerId: string) => {
     setSelectedAnswer(answerId);
     setShowResult(true);
-    
+
     // Auto-advance after showing result
     setTimeout(() => {
       setCurrentScreen('result');
@@ -571,7 +483,9 @@ const FirstLessonStep = ({ onNext, data }: { onNext: () => void; data: Onboardin
     onNext();
   };
 
-  if (!mounted) return null;
+  if (!mounted) {
+    return null;
+  }
 
   if (currentScreen === 'intro') {
     return (
@@ -583,7 +497,7 @@ const FirstLessonStep = ({ onNext, data }: { onNext: () => void; data: Onboardin
                 {t('firstlesson_title')}
               </h2>
             </SlideReveal>
-            
+
             <FadeIn delay={200}>
               <p className="mt-4 text-muted-foreground">
                 {t('firstlesson_subtitle')}
@@ -594,19 +508,23 @@ const FirstLessonStep = ({ onNext, data }: { onNext: () => void; data: Onboardin
               <div className="mt-8 rounded-xl border border-primary/20 bg-primary/5 p-6">
                 <h3 className="mb-2 text-lg font-semibold">{lesson.title}</h3>
                 <p className="text-sm text-muted-foreground">
-                  Personalizzato per il tuo livello: {data.level}
+                  Personalizzato per il tuo livello:
+                  {' '}
+                  {data.level}
                 </p>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Tempo stimato: {data.timeCommitment || '5min'}
+                  Tempo stimato:
+                  {' '}
+                  {data.timeCommitment || '5min'}
                 </p>
               </div>
             </FadeIn>
 
             <FadeIn delay={600}>
               <div className="mt-8">
-                <Button 
+                <Button
                   onClick={() => setCurrentScreen('lesson')}
-                  size="lg" 
+                  size="lg"
                   className="h-12 px-8 text-base"
                 >
                   Inizia la lezione
@@ -642,9 +560,10 @@ const FirstLessonStep = ({ onNext, data }: { onNext: () => void; data: Onboardin
               <div>
                 <h4 className="mb-4 font-medium">{lesson.question}</h4>
                 <div className="space-y-3">
-                  {lesson.options.map((option) => (
+                  {lesson.options.map(option => (
                     <button
                       key={option.id}
+                      type="button"
                       onClick={() => handleAnswer(option.id)}
                       disabled={showResult}
                       className={`w-full rounded-lg border p-4 text-left transition-all ${
@@ -652,8 +571,8 @@ const FirstLessonStep = ({ onNext, data }: { onNext: () => void; data: Onboardin
                           ? option.correct
                             ? 'border-green-500 bg-green-50 text-green-700'
                             : selectedAnswer === option.id
-                            ? 'border-red-300 bg-red-50 text-red-600'
-                            : 'border-muted bg-muted/50 text-muted-foreground'
+                              ? 'border-red-300 bg-red-50 text-red-600'
+                              : 'border-muted bg-muted/50 text-muted-foreground'
                           : 'border-border bg-background hover:border-primary hover:bg-primary/5'
                       }`}
                     >
@@ -675,7 +594,12 @@ const FirstLessonStep = ({ onNext, data }: { onNext: () => void; data: Onboardin
                     <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
-                    <span className="font-medium">Esatto! +{lesson.xp} XP</span>
+                    <span className="font-medium">
+                      Esatto! +
+                      {lesson.xp}
+                      {' '}
+                      XP
+                    </span>
                   </div>
                   <p className="mt-2 text-sm text-green-600">
                     Hai completato la tua prima lezione personalizzata!
@@ -707,10 +631,14 @@ const FirstLessonStep = ({ onNext, data }: { onNext: () => void; data: Onboardin
               Prima lezione completata!
             </h2>
           </SlideReveal>
-          
+
           <FadeIn delay={400}>
             <p className="mt-4 text-lg text-muted-foreground">
-              Hai guadagnato {lesson.xp} XP e sbloccato il tuo percorso personalizzato
+              Hai guadagnato
+              {' '}
+              {lesson.xp}
+              {' '}
+              XP e sbloccato il tuo percorso personalizzato
             </p>
           </FadeIn>
 
@@ -724,19 +652,25 @@ const FirstLessonStep = ({ onNext, data }: { onNext: () => void; data: Onboardin
                   <svg className="size-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  Livello: {data.level}
+                  Livello:
+                  {' '}
+                  {data.level}
                 </li>
                 <li className="flex items-center gap-2">
                   <svg className="size-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  Obiettivo: {data.primaryGoal}
+                  Obiettivo:
+                  {' '}
+                  {data.primaryGoal}
                 </li>
                 <li className="flex items-center gap-2">
                   <svg className="size-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  Tempo giornaliero: {data.timeCommitment}
+                  Tempo giornaliero:
+                  {' '}
+                  {data.timeCommitment}
                 </li>
               </ul>
             </div>
@@ -744,13 +678,16 @@ const FirstLessonStep = ({ onNext, data }: { onNext: () => void; data: Onboardin
 
           <FadeIn delay={800}>
             <div className="mt-8">
-              <Button 
+              <Button
                 onClick={handleComplete}
-                size="lg" 
+                size="lg"
                 className="h-12 px-8 text-base"
               >
-                Accedi alla dashboard
+                Registrati e accedi
               </Button>
+              <p className="mt-3 text-xs text-muted-foreground">
+                Il tuo percorso personalizzato ti aspetta
+              </p>
             </div>
           </FadeIn>
         </div>
@@ -758,12 +695,11 @@ const FirstLessonStep = ({ onNext, data }: { onNext: () => void; data: Onboardin
     </FadeIn>
   );
 };
-
 /**
  * Step 5: Complete - Success State with Clear Next Steps
  * Research: Clear next steps reduce abandonment
  */
-const CompleteStep = ({ isLoading }: { isLoading: boolean; data?: OnboardingData }) => {
+const CompleteStep = ({ isLoading }: { isLoading: boolean }) => {
   const t = useTranslations('Onboarding' as any) as (key: string) => string;
 
   return (
@@ -803,5 +739,102 @@ const CompleteStep = ({ isLoading }: { isLoading: boolean; data?: OnboardingData
         </div>
       </Card>
     </FadeIn>
+  );
+};
+
+/**
+ * Premium Onboarding Flow Component
+ * Research-backed design for 65%+ activation rates
+ */
+export const OnboardingFlow = () => {
+  const router = useRouter();
+
+  const [currentStep, setCurrentStep] = useState<OnboardingStep>('welcome');
+  const [data, setData] = useState<OnboardingData>({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Fix hydration issues
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const handleComplete = async () => {
+    setIsLoading(true);
+
+    try {
+      // Save onboarding data to localStorage for registration flow
+      localStorage.setItem('tradelia_onboarding_data', JSON.stringify(data));
+
+      // Redirect to registration with onboarding context
+      router.push('/auth/register?from=onboarding');
+    } catch (error) {
+      console.error('Onboarding completion failed:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleNext = (stepData?: Partial<OnboardingData>) => {
+    if (stepData) {
+      setData(prev => ({ ...prev, ...stepData }));
+    }
+
+    const steps: OnboardingStep[] = ['welcome', 'quickWin', 'personalize', 'firstLesson', 'complete'];
+    const currentIndex = steps.indexOf(currentStep);
+
+    if (currentIndex < steps.length - 1) {
+      const nextStep = steps[currentIndex + 1];
+      if (nextStep) {
+        setCurrentStep(nextStep);
+      }
+    } else {
+      handleComplete();
+    }
+  };
+
+  const renderStep = () => {
+    if (!mounted) {
+      return null;
+    }
+
+    switch (currentStep) {
+      case 'welcome':
+        return <WelcomeStep onNext={handleNext} />;
+      case 'quickWin':
+        return <QuickWinStep onNext={handleNext} />;
+      case 'personalize':
+        return <PersonalizeStep onNext={handleNext} />;
+      case 'firstLesson':
+        return <FirstLessonStep onNext={handleNext} data={data} />;
+      case 'complete':
+        return <CompleteStep isLoading={isLoading} />;
+      default:
+        return <WelcomeStep onNext={handleNext} />;
+    }
+  };
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
+        <div className="flex min-h-screen items-center justify-center">
+          <div className="size-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
+      {/* Simplified Progress - Research shows complex progress bars increase anxiety */}
+      <OnboardingProgress currentStep={currentStep} />
+
+      {/* Main content */}
+      <div className="flex min-h-screen items-center justify-center px-4 py-8">
+        <div className="w-full max-w-2xl">
+          {renderStep()}
+        </div>
+      </div>
+    </div>
   );
 };
