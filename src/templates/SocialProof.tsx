@@ -203,11 +203,11 @@ export const SocialProof = () => {
                 Pronto a mettere in pratica questi principi?
               </h3>
               <p className="mt-3 text-muted-foreground">
-                Inizia il tuo percorso personalizzato basato su ricerca scientifica
+                Accesso gratuito per i primi 1.000 utenti - poi €29/mese
               </p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
                 <Button asChild size="lg" className="h-12 px-6 text-base">
-                  <Link href="/onboarding">Scopri il tuo livello</Link>
+                  <Link href="/onboarding">Inizia gratis ora</Link>
                 </Button>
                 <Button asChild variant="outline" size="default" className="h-11 px-5 text-sm">
                   <Link href="#features">Vedi come funziona</Link>
