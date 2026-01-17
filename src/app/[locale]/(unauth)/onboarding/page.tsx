@@ -1,6 +1,6 @@
 import { unstable_setRequestLocale } from 'next-intl/server';
 
-import { FixedOnboardingFlow } from '@/features/onboarding/FixedOnboardingFlow';
+import { OptimizedOnboardingFlow } from '@/features/onboarding/OptimizedOnboardingFlow';
 
 export async function generateMetadata() {
   return {
@@ -12,7 +12,7 @@ export async function generateMetadata() {
 const OnboardingPage = (props: { params: { locale: string } }) => {
   unstable_setRequestLocale(props.params.locale);
 
-  return <FixedOnboardingFlow />;
+  return <OptimizedOnboardingFlow />;
 };
 
 export default OnboardingPage;
