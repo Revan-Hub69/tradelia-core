@@ -216,7 +216,7 @@ const TrustStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) => void
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <span className="text-sm font-medium">Solo 5-15 minuti al giorno</span>
+              <span className="text-sm font-medium">Qualche minuto al giorno</span>
             </div>
           </div>
         </Card>
@@ -576,21 +576,21 @@ const PersonalizationStep = ({
   const timeOptions = [
     {
       id: 'focused' as TimeCommitment,
-      title: '5 minuti al giorno',
+      title: 'Sessioni brevi',
       description: 'Poco ma spesso',
-      duration: '5 min',
+      duration: 'breve',
     },
     {
       id: 'balanced' as TimeCommitment,
-      title: '10 minuti al giorno',
+      title: 'Ritmo equilibrato',
       description: 'Il giusto equilibrio',
-      duration: '10 min',
+      duration: 'medio',
     },
     {
       id: 'deep' as TimeCommitment,
-      title: '15+ minuti al giorno',
+      title: 'Approfondimento',
       description: 'Voglio sapere tutto',
-      duration: '15+ min',
+      duration: 'lungo',
     },
   ];
 
@@ -726,9 +726,7 @@ const PersonalizationStep = ({
                           ? ' investire con criterio'
                           : selections.goal === 'career' ? ' lavorare nel settore' : ' esplorare'}
                     ,
-                    {selections.time === 'focused' ? ' 5 minuti' : selections.time === 'balanced' ? ' 10 minuti' : ' 15+ minuti'}
-                    {' '}
-                    al giorno
+                    {selections.time === 'focused' ? ' poco ma spesso' : selections.time === 'balanced' ? ' con calma' : ' quando hai più tempo'}
                   </p>
                 </div>
               </div>
@@ -849,8 +847,8 @@ const RegistrationStep = ({
               <span>Tempo:</span>
               <span className="font-medium">
                 {data.timeCommitment === 'focused'
-                  ? '5 minuti al giorno'
-                  : data.timeCommitment === 'balanced' ? '10 minuti al giorno' : '15+ minuti al giorno'}
+                  ? 'Sessioni brevi'
+                  : data.timeCommitment === 'balanced' ? 'Ritmo equilibrato' : 'Approfondimento'}
               </span>
             </div>
             <div className="flex justify-between">
@@ -1041,10 +1039,8 @@ const SuccessStep = ({ data }: { data: OnboardingData }) => {
                 </svg>
               </div>
               <span>
-                Solo
-                <strong>{data.timeCommitment === 'focused' ? ' 10 minuti' : data.timeCommitment === 'balanced' ? ' 10 minuti' : ' 15+ minuti'}</strong>
-                {' '}
-                al giorno
+                Al tuo ritmo
+                <strong>{data.timeCommitment === 'focused' ? ', poco ma spesso' : data.timeCommitment === 'balanced' ? ', con equilibrio' : ', quando hai più tempo'}</strong>
               </span>
             </div>
 
