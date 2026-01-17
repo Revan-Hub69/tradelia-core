@@ -25,13 +25,13 @@ import { Logo } from '@/templates/Logo';
 type OnboardingStep = 'welcome' | 'country' | 'skillAssessment' | 'personalization' | 'registration' | 'complete';
 
 type UserLevel = 'novice' | 'intermediate' | 'advanced';
-type LearningGoal = 'understand' | 'invest' | 'career' | 'curiosity';
+type LearningGoal = 'foundation' | 'protection' | 'critical' | 'opportunity' | 'professional';
 
 type OnboardingData = {
   country?: Country;
   level?: UserLevel;
   primaryGoal?: LearningGoal;
-  timeCommitment?: '5min' | '10min' | '15min';
+  timeCommitment?: 'focused' | 'balanced' | 'deep';
   skillScore?: number;
   email?: string;
   password?: string;
@@ -342,16 +342,16 @@ const SkillAssessmentStep = ({ onNext }: { onNext: (data: Partial<OnboardingData
       </div>
 
       <FadeIn delay={400}>
-        <Card className="border-border/50 bg-card/50 p-8 backdrop-blur-sm">
-          <div className="mb-6 flex items-center justify-between">
-            <span className="text-sm font-medium text-muted-foreground">
+        <Card className="border-border/50 bg-card/50 p-4 backdrop-blur-sm lg:p-8">
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between lg:mb-6">
+            <span className="text-xs font-medium text-muted-foreground lg:text-sm">
               {t('skill_progress', { current: currentQuestion + 1, total: questions.length })}
             </span>
             <div className="flex gap-2">
               {questions.map((_, questionIndex) => (
                 <div
                   key={`progress-${questionIndex}`}
-                  className={`h-2 w-8 rounded-full transition-colors ${
+                  className={`h-2 w-6 rounded-full transition-colors lg:w-8 ${
                     questionIndex < currentQuestion
                       ? 'bg-green-500'
                       : questionIndex === currentQuestion
@@ -363,8 +363,8 @@ const SkillAssessmentStep = ({ onNext }: { onNext: (data: Partial<OnboardingData
             </div>
           </div>
 
-          <div className="space-y-6">
-            <h3 className="text-xl font-semibold leading-relaxed">
+          <div className="space-y-4 lg:space-y-6">
+            <h3 className="text-lg font-semibold leading-relaxed lg:text-xl">
               {currentQ.question}
             </h3>
 
@@ -375,7 +375,7 @@ const SkillAssessmentStep = ({ onNext }: { onNext: (data: Partial<OnboardingData
                   type="button"
                   onClick={() => handleAnswer(optionIndex)}
                   disabled={showExplanation}
-                  className={`w-full rounded-xl border p-4 text-left transition-all ${
+                  className={`w-full rounded-xl border p-3 text-left transition-all lg:p-4 ${
                     showExplanation
                       ? optionIndex === currentQ.correct
                         ? 'border-green-500 bg-green-50 text-green-700'
@@ -386,12 +386,12 @@ const SkillAssessmentStep = ({ onNext }: { onNext: (data: Partial<OnboardingData
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="flex size-8 items-center justify-center rounded-lg bg-muted font-mono text-sm font-semibold">
+                    <span className="flex size-7 items-center justify-center rounded-lg bg-muted font-mono text-xs font-semibold lg:size-8 lg:text-sm">
                       {String.fromCharCode(65 + optionIndex)}
                     </span>
-                    <span className="font-medium">{option}</span>
+                    <span className="min-w-0 flex-1 text-sm font-medium lg:text-base">{option}</span>
                     {showExplanation && optionIndex === currentQ.correct && (
-                      <svg className="ml-auto size-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="ml-auto size-5 shrink-0 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                     )}
@@ -402,16 +402,30 @@ const SkillAssessmentStep = ({ onNext }: { onNext: (data: Partial<OnboardingData
 
             {showExplanation && (
               <FadeIn>
-                <div className="rounded-xl border border-blue-200 bg-blue-50 p-6">
+                <div
+                  className="rounded-xl border border-blue-200 bg-blue-50 p-4 lg:p-6"
+                  ref={(el) => {
+                    if (el) {
+                      // Scroll automatico per mantenere la spiegazione in viewport
+                      setTimeout(() => {
+                        el.scrollIntoView({
+                          behavior: 'smooth',
+                          block: 'nearest',
+                          inline: 'nearest',
+                        });
+                      }, 100);
+                    }
+                  }}
+                >
                   <div className="flex items-start gap-3">
                     <div className="size-8 shrink-0 rounded-lg bg-blue-100 p-1.5">
                       <svg className="size-full text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </div>
-                    <div>
-                      <h4 className="mb-2 font-semibold text-blue-900">{t('skill_explanation_title')}</h4>
-                      <p className="text-blue-800">{currentQ.explanation}</p>
+                    <div className="min-w-0 flex-1">
+                      <h4 className="mb-2 text-sm font-semibold text-blue-900 lg:text-base">{t('skill_explanation_title')}</h4>
+                      <p className="text-sm leading-relaxed text-blue-800 lg:text-base">{currentQ.explanation}</p>
                     </div>
                   </div>
                 </div>
@@ -431,24 +445,44 @@ const PersonalizationStep = ({ onNext }: { onNext: (data: Partial<OnboardingData
   const t = useTranslations('Onboarding');
   const [selections, setSelections] = useState<{
     goal?: LearningGoal;
-    time?: '5min' | '10min' | '15min';
+    time?: 'focused' | 'balanced' | 'deep';
   }>({});
 
   const goals = [
     {
-      id: 'understand' as LearningGoal,
-      title: t('goal_understand_title'),
-      description: t('goal_understand_desc'),
+      id: 'foundation' as LearningGoal,
+      title: t('goal_foundation_title'),
+      description: t('goal_foundation_desc'),
       icon: (
         <svg className="size-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
         </svg>
       ),
     },
     {
-      id: 'invest' as LearningGoal,
-      title: t('goal_invest_title'),
-      description: t('goal_invest_desc'),
+      id: 'protection' as LearningGoal,
+      title: t('goal_protection_title'),
+      description: t('goal_protection_desc'),
+      icon: (
+        <svg className="size-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+      ),
+    },
+    {
+      id: 'critical' as LearningGoal,
+      title: t('goal_critical_title'),
+      description: t('goal_critical_desc'),
+      icon: (
+        <svg className="size-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
+    },
+    {
+      id: 'opportunity' as LearningGoal,
+      title: t('goal_opportunity_title'),
+      description: t('goal_opportunity_desc'),
       icon: (
         <svg className="size-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
@@ -456,22 +490,12 @@ const PersonalizationStep = ({ onNext }: { onNext: (data: Partial<OnboardingData
       ),
     },
     {
-      id: 'career' as LearningGoal,
-      title: t('goal_career_title'),
-      description: t('goal_career_desc'),
+      id: 'professional' as LearningGoal,
+      title: t('goal_professional_title'),
+      description: t('goal_professional_desc'),
       icon: (
         <svg className="size-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0H8m8 0v2a2 2 0 01-2 2H10a2 2 0 01-2-2V6m8 0H8m0 0v2a2 2 0 002 2h4a2 2 0 002-2V6" />
-        </svg>
-      ),
-    },
-    {
-      id: 'curiosity' as LearningGoal,
-      title: t('goal_curiosity_title'),
-      description: t('goal_curiosity_desc'),
-      icon: (
-        <svg className="size-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
       ),
     },
@@ -479,19 +503,19 @@ const PersonalizationStep = ({ onNext }: { onNext: (data: Partial<OnboardingData
 
   const timeOptions = [
     {
-      id: '5min' as const,
-      title: t('time_5min_title'),
-      description: t('time_5min_desc'),
+      id: 'focused' as const,
+      title: t('time_focused_title'),
+      description: t('time_focused_desc'),
     },
     {
-      id: '10min' as const,
-      title: t('time_10min_title'),
-      description: t('time_10min_desc'),
+      id: 'balanced' as const,
+      title: t('time_balanced_title'),
+      description: t('time_balanced_desc'),
     },
     {
-      id: '15min' as const,
-      title: t('time_15min_title'),
-      description: t('time_15min_desc'),
+      id: 'deep' as const,
+      title: t('time_deep_title'),
+      description: t('time_deep_desc'),
     },
   ];
 
@@ -507,40 +531,40 @@ const PersonalizationStep = ({ onNext }: { onNext: (data: Partial<OnboardingData
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 lg:space-y-8">
       <div className="text-center">
         <SlideReveal>
-          <h2 className="text-3xl font-bold tracking-tight">
+          <h2 className="text-2xl font-bold tracking-tight lg:text-3xl">
             {t('personalize_title')}
           </h2>
         </SlideReveal>
 
         <FadeIn delay={200}>
-          <p className="mt-4 text-lg text-muted-foreground">
+          <p className="mt-3 text-base text-muted-foreground lg:mt-4 lg:text-lg">
             {t('personalize_subtitle')}
           </p>
         </FadeIn>
       </div>
 
-      <div className="space-y-8">
+      <div className="space-y-6 lg:space-y-8">
         {/* Goal Selection */}
         <div>
-          <h3 className="mb-6 text-xl font-semibold">{t('personalize_goal_title')}</h3>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <h3 className="mb-4 text-lg font-semibold lg:mb-6 lg:text-xl">{t('personalize_goal_title')}</h3>
+          <div className="space-y-4 lg:grid lg:grid-cols-2 lg:gap-4 lg:space-y-0">
             {goals.map(goal => (
               <button
                 key={goal.id}
                 type="button"
                 onClick={() => setSelections(prev => ({ ...prev, goal: goal.id }))}
-                className={`group rounded-xl border p-6 text-left transition-all hover:shadow-lg ${
+                className={`group w-full rounded-xl border p-4 text-left transition-all hover:shadow-lg ${
                   selections.goal === goal.id
                     ? 'border-primary bg-primary/5 shadow-lg shadow-primary/10'
                     : 'border-border bg-background hover:border-primary/50'
                 }`}
               >
-                <div className="flex items-start gap-4">
+                <div className="flex items-start gap-3">
                   <div
-                    className={`size-12 rounded-xl p-2.5 transition-colors ${
+                    className={`size-10 shrink-0 rounded-lg p-2 transition-colors ${
                       selections.goal === goal.id
                         ? 'bg-primary text-white'
                         : 'bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary'
@@ -548,9 +572,9 @@ const PersonalizationStep = ({ onNext }: { onNext: (data: Partial<OnboardingData
                   >
                     {goal.icon}
                   </div>
-                  <div className="flex-1">
-                    <h4 className="mb-1 font-semibold">{goal.title}</h4>
-                    <p className="text-sm text-muted-foreground">{goal.description}</p>
+                  <div className="min-w-0 flex-1">
+                    <h4 className="mb-1 text-sm font-semibold lg:text-base">{goal.title}</h4>
+                    <p className="text-xs text-muted-foreground lg:text-sm">{goal.description}</p>
                   </div>
                 </div>
               </button>
@@ -560,21 +584,21 @@ const PersonalizationStep = ({ onNext }: { onNext: (data: Partial<OnboardingData
 
         {/* Time Commitment */}
         <div>
-          <h3 className="mb-6 text-xl font-semibold">{t('personalize_time_title')}</h3>
-          <div className="grid gap-4 sm:grid-cols-3">
+          <h3 className="mb-4 text-lg font-semibold lg:mb-6 lg:text-xl">{t('personalize_time_title')}</h3>
+          <div className="space-y-3 lg:grid lg:grid-cols-3 lg:gap-4 lg:space-y-0">
             {timeOptions.map(option => (
               <button
                 key={option.id}
                 type="button"
                 onClick={() => setSelections(prev => ({ ...prev, time: option.id }))}
-                className={`group rounded-xl border p-6 text-center transition-all hover:shadow-lg ${
+                className={`group w-full rounded-xl border p-4 text-center transition-all hover:shadow-lg ${
                   selections.time === option.id
                     ? 'border-primary bg-primary/5 shadow-lg shadow-primary/10'
                     : 'border-border bg-background hover:border-primary/50'
                 }`}
               >
                 <div
-                  className={`mx-auto mb-3 size-12 rounded-xl p-2.5 transition-colors ${
+                  className={`mx-auto mb-2 size-10 rounded-lg p-2 transition-colors ${
                     selections.time === option.id
                       ? 'bg-primary text-white'
                       : 'bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary'
@@ -584,12 +608,45 @@ const PersonalizationStep = ({ onNext }: { onNext: (data: Partial<OnboardingData
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <h4 className="mb-1 font-semibold">{option.title}</h4>
-                <p className="text-sm text-muted-foreground">{option.description}</p>
+                <h4 className="mb-1 text-sm font-semibold lg:text-base">{option.title}</h4>
+                <p className="text-xs text-muted-foreground lg:text-sm">{option.description}</p>
               </button>
             ))}
           </div>
         </div>
+
+        {/* Micro-feedback */}
+        {selections.goal && selections.time && (
+          <FadeIn>
+            <div
+              className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 lg:p-6"
+              ref={(el) => {
+                if (el) {
+                  // Scroll automatico per mantenere il feedback visibile
+                  setTimeout(() => {
+                    el.scrollIntoView({
+                      behavior: 'smooth',
+                      block: 'center',
+                      inline: 'nearest',
+                    });
+                  }, 200);
+                }
+              }}
+            >
+              <div className="flex items-start gap-3">
+                <div className="size-8 shrink-0 rounded-lg bg-emerald-100 p-1.5">
+                  <svg className="size-full text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h4 className="mb-2 text-sm font-semibold text-emerald-900 lg:text-base">{t('feedback_title')}</h4>
+                  <p className="text-sm leading-relaxed text-emerald-800 lg:text-base">{t(`feedback_${selections.goal}`)}</p>
+                </div>
+              </div>
+            </div>
+          </FadeIn>
+        )}
       </div>
 
       <div className="text-center">
@@ -837,14 +894,16 @@ const CompleteStep = ({ data }: { data: OnboardingData }) => {
 
   const getGoalLabel = (goal?: LearningGoal) => {
     switch (goal) {
-      case 'understand':
-        return t('goal_understand_title');
-      case 'invest':
-        return t('goal_invest_title');
-      case 'career':
-        return t('goal_career_title');
-      case 'curiosity':
-        return t('goal_curiosity_title');
+      case 'foundation':
+        return t('goal_foundation_title');
+      case 'protection':
+        return t('goal_protection_title');
+      case 'critical':
+        return t('goal_critical_title');
+      case 'opportunity':
+        return t('goal_opportunity_title');
+      case 'professional':
+        return t('goal_professional_title');
       default:
         return 'Non definito';
     }
@@ -852,12 +911,12 @@ const CompleteStep = ({ data }: { data: OnboardingData }) => {
 
   const getTimeLabel = (time?: string) => {
     switch (time) {
-      case '5min':
-        return t('time_5min_title');
-      case '10min':
-        return t('time_10min_title');
-      case '15min':
-        return t('time_15min_title');
+      case 'focused':
+        return t('time_focused_title');
+      case 'balanced':
+        return t('time_balanced_title');
+      case 'deep':
+        return t('time_deep_title');
       default:
         return 'Non definito';
     }

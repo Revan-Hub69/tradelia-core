@@ -111,14 +111,15 @@ const CountryDropdownComponent = (
         {selectedCountry
           ? (
               <div className="flex grow items-center gap-3 overflow-hidden">
-                <div className="inline-flex size-6 shrink-0 items-center justify-center overflow-hidden rounded-full">
+                <div className="flex size-6 shrink-0 items-center justify-center overflow-hidden rounded-full">
                   <CircleFlag
                     countryCode={selectedCountry.alpha2.toLowerCase()}
                     height={24}
+                    width={24}
                   />
                 </div>
                 {slim === false && (
-                  <span className="truncate font-medium">
+                  <span className="truncate text-left font-medium">
                     {selectedCountry.name}
                   </span>
                 )}
@@ -163,13 +164,14 @@ const CountryDropdownComponent = (
                     key={`country-${option.alpha2}-${key}`}
                     onSelect={() => handleSelect(option)}
                   >
-                    <div className="inline-flex size-6 shrink-0 items-center justify-center overflow-hidden rounded-full">
+                    <div className="flex size-6 shrink-0 items-center justify-center overflow-hidden rounded-full">
                       <CircleFlag
                         countryCode={option.alpha2.toLowerCase()}
                         height={24}
+                        width={24}
                       />
                     </div>
-                    <span className="flex-1 truncate font-medium">
+                    <span className="flex-1 truncate text-left font-medium">
                       {option.name}
                     </span>
                     <CheckIcon
