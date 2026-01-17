@@ -13,6 +13,8 @@
     "company": "About"
   },
   "Hero": {
+    "hero_title_part1": "Everyone around you talks about",
+    "hero_title_part2": "crypto",
     "badge": "Education, not speculation",
     "headline": "Everyone talks about crypto. <highlight>Almost no one understands what they're doing.</highlight>",
     "subheadline": "Friends investing, conflicting news, fear of missing out. Before deciding anything, you need clarity.",

@@ -123,10 +123,10 @@ export const Hero = () => {
             <div className="order-1">
               <SlideReveal>
                 <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-5xl">
-                  Tutti intorno a te parlano di
+                  {t('hero_title_part1')}
                   {' '}
                   <span className="relative inline-block text-primary">
-                    crypto
+                    {t('hero_title_part2')}
                     <span
                       className="absolute -bottom-1 left-0 h-1 w-full rounded-full bg-primary/50"
                       aria-hidden="true"

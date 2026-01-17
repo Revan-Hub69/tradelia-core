@@ -13,6 +13,8 @@
     "company": "Chi Siamo"
   },
   "Hero": {
+    "hero_title_part1": "Tutti intorno a te parlano di",
+    "hero_title_part2": "crypto",
     "badge": "Educazione, non speculazione",
     "headline": "Tutti parlano di crypto. <highlight>Quasi nessuno capisce cosa sta facendo.</highlight>",
     "subheadline": "Amici che investono, notizie contrastanti, paura di perdere il treno. Prima di decidere qualsiasi cosa, serve chiarezza.",
