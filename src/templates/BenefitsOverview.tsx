@@ -71,7 +71,7 @@ export const BenefitsOverview = () => {
 
         <StaggerChildren
           staggerDelay={150}
-          className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3 lg:gap-10"
+          className="mt-12 grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3 lg:gap-10"
         >
           {benefits.map((benefit, _index) => (
             <Card

@@ -348,6 +348,8 @@
 
     "country_title": "Seleziona il tuo paese di residenza",
     "country_subtitle": "Ci aiuta a fornirti contenuti fiscali e legali localizzati",
+    "country_select_label": "Paese di residenza",
+    "country_placeholder": "Cerca e seleziona il tuo paese...",
     "country_popular": "Paesi più comuni",
     "country_other_title": "Altri paesi",
     "country_italy": "Italia",

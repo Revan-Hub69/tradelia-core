@@ -6,6 +6,7 @@ import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { type Country, CountryDropdown } from '@/components/ui/country-dropdown';
 import { Input } from '@/components/ui/input';
 import { FadeIn, SlideReveal } from '@/components/ui/scroll-animations';
 import { Logo } from '@/templates/Logo';
@@ -25,7 +26,6 @@ type OnboardingStep = 'welcome' | 'country' | 'skillAssessment' | 'personalizati
 
 type UserLevel = 'novice' | 'intermediate' | 'advanced';
 type LearningGoal = 'understand' | 'invest' | 'career' | 'curiosity';
-type Country = 'IT' | 'US' | 'UK' | 'DE' | 'FR' | 'ES' | 'OTHER';
 
 type OnboardingData = {
   country?: Country;
@@ -55,31 +55,32 @@ const ProgressIndicator = ({
 
   return (
     <div className="fixed inset-x-0 top-0 z-50 border-b border-border/50 bg-background/95 backdrop-blur-md">
-      <div className="mx-auto max-w-4xl px-6 py-4">
+      <div className="mx-auto max-w-4xl px-4 py-3 sm:px-6 sm:py-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Logo size="md" href="/" />
+          <div className="flex items-center gap-2 sm:gap-4">
+            <Logo size="sm" href="/" className="sm:hidden" />
+            <Logo size="md" href="/" className="hidden sm:block" />
             {onBack && currentStep !== 'welcome' && (
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={onBack}
-                className="flex items-center gap-2"
+                className="flex items-center gap-1 sm:gap-2"
               >
                 <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
-                {t('back_button')}
+                <span className="hidden sm:inline">{t('back_button')}</span>
               </Button>
             )}
           </div>
 
-          <div className="text-sm font-medium text-muted-foreground">
+          <div className="text-xs font-medium text-muted-foreground sm:text-sm">
             {currentStep === 'complete' ? t('progress_complete') : t('progress_step', { current: currentIndex + 1, total: steps.length })}
           </div>
         </div>
 
-        <div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-muted">
+        <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-muted sm:mt-4">
           <div
             className="h-full bg-gradient-to-r from-primary via-accent to-primary transition-all duration-700 ease-out"
             style={{ width: `${progress}%` }}
@@ -97,48 +98,48 @@ const WelcomeStep = ({ onNext }: { onNext: () => void }) => {
   const t = useTranslations('Onboarding');
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <div className="text-center">
         <SlideReveal>
-          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl">
             {t('welcome_title')}
           </h1>
         </SlideReveal>
 
         <FadeIn delay={200}>
-          <p className="mt-4 text-lg text-muted-foreground sm:text-xl">
+          <p className="mt-3 text-base text-muted-foreground sm:mt-4 sm:text-lg lg:text-xl">
             {t('welcome_subtitle')}
           </p>
         </FadeIn>
       </div>
 
       <FadeIn delay={400}>
-        <Card className="border-border/50 bg-card/50 p-8 backdrop-blur-sm">
-          <div className="space-y-6">
-            <div className="rounded-xl border border-accent/20 bg-accent/5 p-6">
-              <div className="mb-4 flex items-center justify-center gap-2">
-                <svg className="size-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <Card className="border-border/50 bg-card/50 p-6 backdrop-blur-sm sm:p-8">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="rounded-xl border border-accent/20 bg-accent/5 p-4 sm:p-6">
+              <div className="mb-3 flex items-center justify-center gap-2 sm:mb-4">
+                <svg className="size-4 text-accent sm:size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
-                <h3 className="font-semibold text-accent">
+                <h3 className="text-sm font-semibold text-accent sm:text-base">
                   {t('welcome_promise_title')}
                 </h3>
               </div>
-              <ul className="space-y-2 text-sm text-muted-foreground">
+              <ul className="space-y-2 text-xs text-muted-foreground sm:text-sm">
                 <li className="flex items-center gap-2">
-                  <svg className="size-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="size-3 text-accent sm:size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   {t('welcome_promise_1')}
                 </li>
                 <li className="flex items-center gap-2">
-                  <svg className="size-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="size-3 text-accent sm:size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   {t('welcome_promise_2')}
                 </li>
                 <li className="flex items-center gap-2">
-                  <svg className="size-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="size-3 text-accent sm:size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   {t('welcome_promise_3')}
@@ -147,10 +148,10 @@ const WelcomeStep = ({ onNext }: { onNext: () => void }) => {
             </div>
 
             <div className="text-center">
-              <Button onClick={onNext} size="lg" className="px-8">
+              <Button onClick={onNext} size="lg" className="w-full px-6 sm:w-auto sm:px-8">
                 {t('welcome_cta')}
               </Button>
-              <p className="mt-3 text-xs text-muted-foreground">
+              <p className="mt-2 text-xs text-muted-foreground sm:mt-3">
                 {t('welcome_time_estimate')}
               </p>
             </div>
@@ -162,24 +163,15 @@ const WelcomeStep = ({ onNext }: { onNext: () => void }) => {
 };
 
 /**
- * Step 2: Country Selection - Critical for Compliance
+ * Step 2: Country Selection - Professional Implementation
  */
 const CountryStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) => void }) => {
   const t = useTranslations('Onboarding');
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
 
-  const countries = [
-    { code: 'IT' as Country, name: t('country_italy'), flag: '🇮🇹', popular: true },
-    { code: 'US' as Country, name: t('country_usa'), flag: '🇺🇸', popular: true },
-    { code: 'UK' as Country, name: t('country_uk'), flag: '🇬🇧', popular: true },
-    { code: 'DE' as Country, name: t('country_germany'), flag: '🇩🇪', popular: true },
-    { code: 'FR' as Country, name: t('country_france'), flag: '🇫🇷', popular: true },
-    { code: 'ES' as Country, name: t('country_spain'), flag: '🇪🇸', popular: true },
-    { code: 'OTHER' as Country, name: t('country_other'), flag: '🌍', popular: false },
-  ];
-
-  const popularCountries = countries.filter(c => c.popular);
-  const otherCountries = countries.filter(c => !c.popular);
+  const handleCountryChange = (country: Country) => {
+    setSelectedCountry(country);
+  };
 
   const handleContinue = () => {
     if (selectedCountry) {
@@ -188,77 +180,45 @@ const CountryStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) => vo
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <div className="text-center">
         <SlideReveal>
-          <h2 className="text-3xl font-bold tracking-tight">
+          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
             {t('country_title')}
           </h2>
         </SlideReveal>
 
         <FadeIn delay={200}>
-          <p className="mt-4 text-lg text-muted-foreground">
+          <p className="mt-3 text-base text-muted-foreground sm:mt-4 sm:text-lg">
             {t('country_subtitle')}
           </p>
         </FadeIn>
       </div>
 
       <FadeIn delay={400}>
-        <Card className="border-border/50 bg-card/50 p-8 backdrop-blur-sm">
-          <div className="space-y-6">
-            {/* Popular Countries */}
+        <Card className="border-border/50 bg-card/50 p-6 backdrop-blur-sm sm:p-8">
+          <div className="space-y-4 sm:space-y-6">
+            {/* Country Dropdown */}
             <div>
-              <h3 className="mb-4 font-semibold">{t('country_popular')}</h3>
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {popularCountries.map(country => (
-                  <button
-                    key={country.code}
-                    type="button"
-                    onClick={() => setSelectedCountry(country.code)}
-                    className={`flex items-center gap-3 rounded-xl border p-4 text-left transition-all hover:shadow-md ${
-                      selectedCountry === country.code
-                        ? 'border-primary bg-primary/5 shadow-lg shadow-primary/10'
-                        : 'border-border bg-background hover:border-primary/50'
-                    }`}
-                  >
-                    <span className="text-2xl">{country.flag}</span>
-                    <span className="font-medium">{country.name}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Other Countries */}
-            <div>
-              <h3 className="mb-4 font-semibold">{t('country_other_title')}</h3>
-              <div className="grid gap-3">
-                {otherCountries.map(country => (
-                  <button
-                    key={country.code}
-                    type="button"
-                    onClick={() => setSelectedCountry(country.code)}
-                    className={`flex items-center gap-3 rounded-xl border p-4 text-left transition-all hover:shadow-md ${
-                      selectedCountry === country.code
-                        ? 'border-primary bg-primary/5 shadow-lg shadow-primary/10'
-                        : 'border-border bg-background hover:border-primary/50'
-                    }`}
-                  >
-                    <span className="text-2xl">{country.flag}</span>
-                    <span className="font-medium">{country.name}</span>
-                  </button>
-                ))}
-              </div>
+              <label htmlFor="country-select" className="mb-2 block text-sm font-medium sm:mb-3">
+                {t('country_select_label')}
+              </label>
+              <CountryDropdown
+                placeholder={t('country_placeholder')}
+                onChange={handleCountryChange}
+                disabled={false}
+              />
             </div>
 
             {/* Legal Notice */}
-            <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-              <div className="flex items-start gap-3">
-                <svg className="mt-0.5 size-5 shrink-0 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 sm:p-4">
+              <div className="flex items-start gap-2 sm:gap-3">
+                <svg className="mt-0.5 size-4 shrink-0 text-blue-600 sm:size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <div>
-                  <h4 className="font-medium text-blue-900">{t('country_legal_title')}</h4>
-                  <p className="mt-1 text-sm text-blue-800">{t('country_legal_text')}</p>
+                  <h4 className="text-sm font-medium text-blue-900 sm:text-base">{t('country_legal_title')}</h4>
+                  <p className="mt-1 text-xs text-blue-800 sm:text-sm">{t('country_legal_text')}</p>
                 </div>
               </div>
             </div>
@@ -268,7 +228,7 @@ const CountryStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) => vo
                 onClick={handleContinue}
                 disabled={!selectedCountry}
                 size="lg"
-                className="px-8"
+                className="w-full px-6 sm:w-auto sm:px-8"
               >
                 {selectedCountry ? t('country_continue') : t('country_select_first')}
               </Button>
@@ -390,7 +350,7 @@ const SkillAssessmentStep = ({ onNext }: { onNext: (data: Partial<OnboardingData
             <div className="flex gap-2">
               {questions.map((_, questionIndex) => (
                 <div
-                  key={`question-${questionIndex}`}
+                  key={`progress-${questionIndex}`}
                   className={`h-2 w-8 rounded-full transition-colors ${
                     questionIndex < currentQuestion
                       ? 'bg-green-500'
@@ -411,7 +371,7 @@ const SkillAssessmentStep = ({ onNext }: { onNext: (data: Partial<OnboardingData
             <div className="space-y-3">
               {currentQ.options.map((option, optionIndex) => (
                 <button
-                  key={`option-${optionIndex}`}
+                  key={`q${currentQuestion}-option-${optionIndex}`}
                   type="button"
                   onClick={() => handleAnswer(optionIndex)}
                   disabled={showExplanation}
@@ -951,7 +911,7 @@ const CompleteStep = ({ data }: { data: OnboardingData }) => {
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">{t('complete_country_label')}</p>
-                      <p className="font-medium">{data.country || 'Non specificato'}</p>
+                      <p className="font-medium">{data.country?.name || 'Non specificato'}</p>
                     </div>
                   </div>
                 </div>
@@ -1073,7 +1033,7 @@ export const FixedOnboardingFlow = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
       <ProgressIndicator currentStep={currentStep} onBack={handleBack} />
 
-      <div className="px-4 pb-12 pt-24">
+      <div className="px-4 pb-8 pt-20 sm:px-6 sm:pb-12 sm:pt-24">
         <div className="mx-auto max-w-4xl">
           {renderStep()}
         </div>

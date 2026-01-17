@@ -379,6 +379,8 @@
 
     "country_title": "Select your country of residence",
     "country_subtitle": "Helps us provide localized fiscal and legal content",
+    "country_select_label": "Country of residence",
+    "country_placeholder": "Search and select your country...",
     "country_popular": "Most common countries",
     "country_other_title": "Other countries",
     "country_italy": "Italy",

@@ -104,7 +104,7 @@ export const SocialProof = () => {
 
         {/* Stats Grid - Premium animated counters */}
         <FadeIn delay={200}>
-          <div className="mt-12 grid grid-cols-2 gap-6 sm:grid-cols-4 lg:gap-8">
+          <div className="mt-12 grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-4 lg:gap-8">
             {stats.map((stat, _index) => (
               <div key={stat.label} className="text-center">
                 <div className="text-2xl font-bold text-primary sm:text-3xl lg:text-4xl">
@@ -125,7 +125,7 @@ export const SocialProof = () => {
         {/* Testimonials Grid */}
         <StaggerChildren
           staggerDelay={150}
-          className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8"
+          className="mt-16 grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8"
         >
           {testimonials.map((testimonial, _index) => (
             <Card

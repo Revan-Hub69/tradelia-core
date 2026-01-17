@@ -1,9 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
+import { useState } from 'react';
 
 import { cn } from '@/utils/Helpers';
 
@@ -112,14 +111,14 @@ export const InteractiveDemo = () => {
           </p>
         </div>
 
-        <div className="mt-10 grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
+        <div className="mt-10 grid items-center gap-6 sm:gap-8 lg:grid-cols-2 lg:gap-12">
           {/* Phone Mockup */}
           <div className="order-2 flex justify-center lg:order-1">
-            <div className="relative mx-auto w-full max-w-[280px] sm:max-w-[320px]">
+            <div className="relative mx-auto w-full max-w-[260px] sm:max-w-[300px] lg:max-w-[320px]">
               <div className="relative overflow-hidden rounded-[2.5rem] border-4 border-foreground/10 bg-card shadow-2xl">
                 {/* Notch */}
                 <div className="absolute left-1/2 top-2 z-10 h-6 w-24 -translate-x-1/2 rounded-full bg-foreground/10" />
-                
+
                 {/* Screen */}
                 <div className="aspect-[9/19] bg-background p-4 pt-10">
                   {/* Header */}
@@ -147,13 +146,13 @@ export const InteractiveDemo = () => {
                   {/* Progress Bar */}
                   {step !== 'level-select' && (
                     <div className="mb-4 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
-                      <div 
+                      <div
                         className={cn(
                           'h-full rounded-full bg-primary transition-all duration-500',
                           step === 'lesson' && 'w-1/4',
                           step === 'quiz' && 'w-2/4',
                           step === 'result' && 'w-3/4',
-                          step === 'rewards' && 'w-full'
+                          step === 'rewards' && 'w-full',
                         )}
                       />
                     </div>
@@ -174,7 +173,7 @@ export const InteractiveDemo = () => {
                             onClick={() => handleLevelSelect(key as UserLevel)}
                             className="w-full rounded-lg border border-border bg-background p-3 text-left transition-colors hover:border-primary hover:bg-primary/5"
                           >
-                            <div className="font-medium text-sm">{level.label}</div>
+                            <div className="text-sm font-medium">{level.label}</div>
                             <div className="text-xs text-muted-foreground">{level.desc}</div>
                           </button>
                         ))}
@@ -184,7 +183,7 @@ export const InteractiveDemo = () => {
                     {step === 'lesson' && (
                       <div>
                         <h3 className="mb-3 text-base font-semibold">{currentLesson.title}</h3>
-                        <p className="mb-4 text-sm text-muted-foreground leading-relaxed">
+                        <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
                           {currentLesson.explanation}
                         </p>
                         <button
@@ -222,25 +221,26 @@ export const InteractiveDemo = () => {
                       <div>
                         <div className={cn(
                           'mb-4 flex items-start gap-2 rounded-lg p-3',
-                          isCorrect ? 'bg-emerald-500/10' : 'bg-red-500/10'
-                        )}>
+                          isCorrect ? 'bg-emerald-500/10' : 'bg-red-500/10',
+                        )}
+                        >
                           <div className={cn(
                             'mt-0.5 size-4 rounded-full flex items-center justify-center',
                             isCorrect ? 'bg-emerald-500' : 'bg-red-500',
                           )}
-                        >
-                          {isCorrect
-                            ? (
-                                <svg className="size-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                </svg>
-                              )
-                            : (
-                                <svg className="size-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                                </svg>
-                              )}
-                        </div>
+                          >
+                            {isCorrect
+                              ? (
+                                  <svg className="size-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                  </svg>
+                                )
+                              : (
+                                  <svg className="size-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                  </svg>
+                                )}
+                          </div>
                           <div>
                             <p className={cn('text-sm font-semibold', isCorrect ? 'text-emerald-600' : 'text-red-600')}>
                               {isCorrect ? t('correct') : t('almost')}
@@ -270,7 +270,7 @@ export const InteractiveDemo = () => {
                             XP
                           </div>
                           <div className="text-sm font-medium">{t('module_unlocked')}</div>
-                          <div className="font-semibold text-sm text-accent">{currentReward.unlock}</div>
+                          <div className="text-sm font-semibold text-accent">{currentReward.unlock}</div>
                         </div>
                         <p className="mb-4 text-xs text-muted-foreground">
                           {currentReward.next}
@@ -295,7 +295,7 @@ export const InteractiveDemo = () => {
                   </div>
                 </div>
               </div>
-              
+
               {/* Glow effect */}
               <div className="absolute -inset-4 -z-10 rounded-[3rem] bg-gradient-to-b from-primary/20 to-accent/20 opacity-50 blur-2xl" />
             </div>

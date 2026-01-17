@@ -114,7 +114,7 @@ export const LearningPath = () => {
           </div>
         </FadeIn>
 
-        <div className="mt-12 grid gap-8 lg:grid-cols-2 lg:gap-12">
+        <div className="mt-12 grid gap-6 sm:gap-8 lg:grid-cols-2 lg:gap-12">
           {/* Learning Path Visual */}
           <FadeIn className="order-2 lg:order-1">
             <div className="relative rounded-2xl border border-border/50 bg-card/50 p-6 backdrop-blur-sm sm:p-8">
