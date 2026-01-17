@@ -20,7 +20,7 @@
     "cta_secondary": "How it works",
     "trust": "Free · 5 min/day · No card required",
     "stats_text": "millions already use them",
-    "stats_subtitle": "Sometimes even without really understanding them. You can understand them too — without risking money",
+    "stats_subtitle": "Sometimes even without really understanding them and just losing money. With Tradelia you can truly understand them — without risking money",
     "source_text": "Source: DemandSage 2026 (global crypto users)",
     "soft_cta": "See how it works",
     "scroll_cue": "30 seconds to understand how it works",
@@ -202,6 +202,10 @@
     "module4_desc": "Decentralized finance, smart contracts, yield farming. Advanced opportunities and risks.",
     "module4_duration": "2 weeks",
     "module4_lessons": "10 lessons",
+    "level_beginner": "Beginner",
+    "level_intermediate": "Intermediate",
+    "level_advanced": "Advanced",
+    "level_expert": "Expert",
     "cta_badge": "Start free path"
   },
   "SocialProof": {

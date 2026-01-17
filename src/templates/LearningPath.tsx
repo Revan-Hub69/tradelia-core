@@ -62,7 +62,7 @@ export const LearningPath = () => {
       description: t('module1_desc'),
       duration: t('module1_duration'),
       lessons: t('module1_lessons'),
-      level: 'Principiante',
+      level: t('level_beginner'),
       color: 'from-blue-500/20 to-primary/20',
     },
     {
@@ -71,7 +71,7 @@ export const LearningPath = () => {
       description: t('module2_desc'),
       duration: t('module2_duration'),
       lessons: t('module2_lessons'),
-      level: 'Intermedio',
+      level: t('level_intermediate'),
       color: 'from-emerald-500/20 to-accent/20',
     },
     {
@@ -80,7 +80,7 @@ export const LearningPath = () => {
       description: t('module3_desc'),
       duration: t('module3_duration'),
       lessons: t('module3_lessons'),
-      level: 'Avanzato',
+      level: t('level_advanced'),
       color: 'from-orange-500/20 to-yellow-500/20',
     },
     {
@@ -89,7 +89,7 @@ export const LearningPath = () => {
       description: t('module4_desc'),
       duration: t('module4_duration'),
       lessons: t('module4_lessons'),
-      level: 'Esperto',
+      level: t('level_expert'),
       color: 'from-purple-500/20 to-pink-500/20',
     },
   ];
