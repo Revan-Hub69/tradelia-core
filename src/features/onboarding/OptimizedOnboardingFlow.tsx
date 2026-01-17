@@ -332,6 +332,17 @@ const AssessmentStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) =>
       setXpEarned(prev => prev + currentQ.xp);
     }
 
+    // Scroll to explanation after it appears
+    setTimeout(() => {
+      const explanationElement = document.querySelector('[data-explanation]');
+      if (explanationElement) {
+        explanationElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+      }
+    }, 100);
+
     setTimeout(() => {
       if (currentQuestion < 2) {
         setCurrentQuestion(currentQuestion + 1);
@@ -451,7 +462,7 @@ const AssessmentStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) =>
             {/* Explanation with XP reward */}
             {showExplanation && (
               <FadeIn>
-                <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
+                <div data-explanation className="rounded-xl border border-blue-200 bg-blue-50 p-4">
                   <div className="flex items-start gap-3">
                     <div className="size-8 rounded-lg bg-blue-100 p-1.5">
                       <svg className="size-full text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
