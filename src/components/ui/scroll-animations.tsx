@@ -14,9 +14,16 @@ export const useInView = (options: {
   const { threshold = 0.1, rootMargin = '0px', triggerOnce = true } = options;
   const [isInView, setIsInView] = useState(false);
   const [hasTriggered, setHasTriggered] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry?.isIntersecting && (!triggerOnce || !hasTriggered)) {
@@ -38,9 +45,9 @@ export const useInView = (options: {
     }
 
     return () => observer.disconnect();
-  }, [threshold, rootMargin, triggerOnce, hasTriggered]);
+  }, [threshold, rootMargin, triggerOnce, hasTriggered, mounted]);
 
-  return { ref, isInView };
+  return { ref, isInView: mounted ? isInView : false };
 };
 
 /**
@@ -203,9 +210,14 @@ export const AnimatedCounter = ({
 }) => {
   const { ref, isInView } = useInView();
   const [count, setCount] = useState(0);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (!isInView) return;
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isInView || !mounted) return;
 
     let startTime: number;
     const startCount = 0;
@@ -225,7 +237,15 @@ export const AnimatedCounter = ({
     };
 
     requestAnimationFrame(animate);
-  }, [isInView, end, duration]);
+  }, [isInView, end, duration, mounted]);
+
+  if (!mounted) {
+    return (
+      <span ref={ref} className={className}>
+        {end.toLocaleString()}{suffix}
+      </span>
+    );
+  }
 
   return (
     <span ref={ref} className={className}>
@@ -247,9 +267,16 @@ export const Parallax = ({
   className?: string;
 }) => {
   const [offset, setOffset] = useState(0);
+  const [mounted, setMounted] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
     const handleScroll = () => {
       if (!ref.current) return;
       
@@ -264,13 +291,13 @@ export const Parallax = ({
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [speed]);
+  }, [speed, mounted]);
 
   return (
     <div ref={ref} className={className}>
       <div
         style={{
-          transform: `translate3d(0, ${offset}px, 0)`,
+          transform: mounted ? `translate3d(0, ${offset}px, 0)` : 'translate3d(0, 0, 0)',
           willChange: 'transform',
         }}
       >

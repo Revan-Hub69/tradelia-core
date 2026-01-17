@@ -325,5 +325,23 @@
     "question6": "Cosa succede ai miei dati personali?",
     "answer6": "I tuoi dati restano tuoi. Zero tracciamento pubblicitario, zero vendita a terzi. Usiamo solo i dati necessari per personalizzare il tuo percorso di apprendimento.",
     "cta_badge": "Altre domande? Scrivici"
+  },
+  "Onboarding": {
+    "welcome_title": "Benvenuto in Tradelia",
+    "welcome_subtitle": "Educazione crypto seria, senza promesse irrealistiche",
+    "welcome_promise_title": "Cosa ti promettiamo:",
+    "welcome_promise_1": "Chiarezza, non ricchezza facile",
+    "welcome_promise_2": "Basi solide, non scorciatoie",
+    "welcome_promise_3": "Rischi reali, non solo opportunità",
+    "welcome_cta": "Inizia il tuo percorso",
+    "welcome_time_estimate": "Richiede circa 2-3 minuti",
+    "quickwin_title": "Iniziamo subito",
+    "quickwin_subtitle": "Una domanda veloce per vedere come funziona Tradelia",
+    "personalize_title": "Personalizziamo il tuo percorso",
+    "personalize_subtitle": "3 semplici scelte per creare la tua esperienza ideale",
+    "firstlesson_title": "La tua prima lezione",
+    "firstlesson_subtitle": "Ecco come Tradelia si adatta al tuo livello",
+    "complete_title": "Tutto pronto!",
+    "complete_subtitle": "Il tuo percorso personalizzato ti aspetta"
   }
 }
