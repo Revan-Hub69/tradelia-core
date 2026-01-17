@@ -163,17 +163,15 @@ const CountryDropdownComponent = (
                     key={`country-${option.alpha2}-${key}`}
                     onSelect={() => handleSelect(option)}
                   >
-                    <div className="flex grow space-x-3 overflow-hidden">
-                      <div className="inline-flex size-6 shrink-0 items-center justify-center overflow-hidden rounded-full">
-                        <CircleFlag
-                          countryCode={option.alpha2.toLowerCase()}
-                          height={24}
-                        />
-                      </div>
-                      <span className="truncate font-medium">
-                        {option.name}
-                      </span>
+                    <div className="inline-flex size-6 shrink-0 items-center justify-center overflow-hidden rounded-full">
+                      <CircleFlag
+                        countryCode={option.alpha2.toLowerCase()}
+                        height={24}
+                      />
                     </div>
+                    <span className="flex-1 truncate font-medium">
+                      {option.name}
+                    </span>
                     <CheckIcon
                       className={cn(
                         'ml-auto size-4 shrink-0 text-primary',
