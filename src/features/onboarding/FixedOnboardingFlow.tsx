@@ -6,8 +6,8 @@ import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { type Country, CountryDropdown } from '@/components/ui/country-dropdown';
 import { Input } from '@/components/ui/input';
+import { type Country, ModernCountryDropdown } from '@/components/ui/modern-country-dropdown';
 import { FadeIn, SlideReveal } from '@/components/ui/scroll-animations';
 import { Logo } from '@/templates/Logo';
 
@@ -56,21 +56,19 @@ const ProgressIndicator = ({
   return (
     <div className="fixed inset-x-0 top-0 z-50 border-b border-border/50 bg-background/95 backdrop-blur-md">
       <div className="mx-auto max-w-4xl px-4 py-3 sm:px-6 sm:py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3 sm:gap-4">
-            {/* Logo sempre visibile e allineato */}
-            <div className="shrink-0">
-              <Logo size="sm" href="/" className="sm:hidden" />
-              <Logo size="md" href="/" className="hidden sm:block" />
-            </div>
+        {/* Header row con layout fisso a 3 colonne */}
+        <div className="grid grid-cols-3 items-center">
+          {/* Left: Logo + Back button */}
+          <div className="flex items-center justify-start">
+            <Logo size="sm" href="/" className="sm:hidden" />
+            <Logo size="md" href="/" className="hidden sm:block" />
 
-            {/* Back button con spacing corretto */}
             {onBack && currentStep !== 'welcome' && (
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={onBack}
-                className="flex shrink-0 items-center gap-1 sm:gap-2"
+                className="ml-3 flex items-center gap-1 sm:gap-2"
               >
                 <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -80,8 +78,14 @@ const ProgressIndicator = ({
             )}
           </div>
 
-          <div className="shrink-0 text-xs font-medium text-muted-foreground sm:text-sm">
-            {currentStep === 'complete' ? t('progress_complete') : t('progress_step', { current: currentIndex + 1, total: steps.length })}
+          {/* Center: Empty per bilanciamento */}
+          <div />
+
+          {/* Right: Progress text */}
+          <div className="flex justify-end">
+            <span className="text-xs font-medium text-muted-foreground sm:text-sm">
+              {currentStep === 'complete' ? t('progress_complete') : t('progress_step', { current: currentIndex + 1, total: steps.length })}
+            </span>
           </div>
         </div>
 
@@ -203,12 +207,12 @@ const CountryStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) => vo
       <FadeIn delay={400}>
         <Card className="border-border/50 bg-card/50 p-6 backdrop-blur-sm sm:p-8">
           <div className="space-y-4 sm:space-y-6">
-            {/* Country Dropdown */}
+            {/* Country Dropdown - Modern Implementation */}
             <div>
-              <label htmlFor="country-select" className="mb-2 block text-sm font-medium sm:mb-3">
+              <label htmlFor="country-select" className="mb-3 block text-sm font-medium">
                 {t('country_select_label')}
               </label>
-              <CountryDropdown
+              <ModernCountryDropdown
                 placeholder={t('country_placeholder')}
                 onChange={handleCountryChange}
                 disabled={false}
@@ -355,7 +359,7 @@ const SkillAssessmentStep = ({ onNext }: { onNext: (data: Partial<OnboardingData
             <div className="flex gap-2">
               {questions.map((_, questionIndex) => (
                 <div
-                  key={`progress-${questionIndex}`}
+                  key={`progress-q${questionIndex}`}
                   className={`h-2 w-6 rounded-full transition-colors md:w-7 lg:w-8 ${
                     questionIndex < currentQuestion
                       ? 'bg-green-500'
@@ -376,7 +380,7 @@ const SkillAssessmentStep = ({ onNext }: { onNext: (data: Partial<OnboardingData
             <div className="space-y-3">
               {currentQ.options.map((option, optionIndex) => (
                 <button
-                  key={`q${currentQuestion}-option-${optionIndex}`}
+                  key={`q${currentQuestion}-opt${optionIndex}`}
                   type="button"
                   role="radio"
                   aria-checked={selectedAnswer === optionIndex}
