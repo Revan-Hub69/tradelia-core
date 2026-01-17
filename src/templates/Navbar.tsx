@@ -250,6 +250,7 @@ export const Navbar = () => {
           }}
           role="button"
           tabIndex={0}
+          aria-label="Chiudi menu mobile"
         />
 
         {/* Drawer Panel */}

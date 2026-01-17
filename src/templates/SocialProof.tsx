@@ -1,7 +1,9 @@
 'use client';
 
+import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
+import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { FadeIn, StaggerChildren } from '@/components/ui/scroll-animations';
 
@@ -189,6 +191,28 @@ export const SocialProof = () => {
               <p className="text-xs text-muted-foreground/70">
                 Fonte: Rohrer & Taylor (2007), Journal of Educational Psychology
               </p>
+            </div>
+          </div>
+        </FadeIn>
+
+        {/* Strategic CTA after Educational Principles */}
+        <FadeIn delay={400}>
+          <div className="mt-12 text-center">
+            <div className="mx-auto max-w-2xl">
+              <h3 className="text-xl font-semibold text-foreground sm:text-2xl">
+                Pronto a mettere in pratica questi principi?
+              </h3>
+              <p className="mt-3 text-muted-foreground">
+                Inizia il tuo percorso personalizzato basato su ricerca scientifica
+              </p>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
+                <Button asChild size="lg" className="h-12 px-6 text-base">
+                  <Link href="/onboarding">Scopri il tuo livello</Link>
+                </Button>
+                <Button asChild variant="outline" size="default" className="h-11 px-5 text-sm">
+                  <Link href="#features">Vedi come funziona</Link>
+                </Button>
+              </div>
             </div>
           </div>
         </FadeIn>
