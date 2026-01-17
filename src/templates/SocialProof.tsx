@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 
 import { Card } from '@/components/ui/card';
-import { AnimatedCounter, FadeIn, StaggerChildren } from '@/components/ui/scroll-animations';
+import { FadeIn, StaggerChildren } from '@/components/ui/scroll-animations';
 
 /**
  * Premium Star Rating Component
@@ -65,29 +65,6 @@ export const SocialProof = () => {
     },
   ];
 
-  const stats = [
-    {
-      value: 2847,
-      suffix: '+',
-      label: t('stat1_label'),
-    },
-    {
-      value: 94,
-      suffix: '%',
-      label: t('stat2_label'),
-    },
-    {
-      value: 4.9,
-      suffix: '/5',
-      label: t('stat3_label'),
-    },
-    {
-      value: 15,
-      suffix: 'min',
-      label: t('stat4_label'),
-    },
-  ];
-
   return (
     <section className="border-t border-border/50 bg-gradient-to-b from-muted/30 to-background px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
       <div className="mx-auto max-w-7xl">
@@ -102,68 +79,64 @@ export const SocialProof = () => {
           </div>
         </FadeIn>
 
-        {/* Stats Grid - Premium animated counters */}
+        {/* Community Growth Message */}
         <FadeIn delay={200}>
-          <div className="mt-12 grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-4 lg:gap-8">
-            {stats.map((stat, _index) => (
-              <div key={stat.label} className="text-center">
-                <div className="text-2xl font-bold text-primary sm:text-3xl lg:text-4xl">
-                  <AnimatedCounter
-                    end={stat.value}
-                    suffix={stat.suffix}
-                    duration={2000}
-                  />
-                </div>
-                <div className="mt-2 text-sm font-medium text-muted-foreground">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
+          <div className="mt-12 text-center">
+            <div className="mx-auto max-w-2xl rounded-xl border border-primary/20 bg-primary/5 p-6">
+              <h3 className="mb-2 text-lg font-semibold text-primary">
+                {t('section_title')}
+              </h3>
+              <p className="text-muted-foreground">
+                {t('section_subtitle')}
+              </p>
+            </div>
           </div>
         </FadeIn>
 
-        {/* Testimonials Grid */}
-        <StaggerChildren
-          staggerDelay={150}
-          className="mt-16 grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8"
-        >
-          {testimonials.map((testimonial, _index) => (
-            <Card
-              key={testimonial.name}
-              className="group relative overflow-hidden border-border/50 bg-card/50 p-6 backdrop-blur-sm transition-all duration-300 hover:border-primary/20 hover:bg-card/80 hover:shadow-lg hover:shadow-primary/10"
-            >
-              {/* Premium gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+        {/* Testimonials Grid - Only show if testimonials exist */}
+        {testimonials.some(t => t.content) && (
+          <StaggerChildren
+            staggerDelay={150}
+            className="mt-16 grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8"
+          >
+            {testimonials.filter(t => t.content).map((testimonial, _index) => (
+              <Card
+                key={testimonial.name}
+                className="group relative overflow-hidden border-border/50 bg-card/50 p-6 backdrop-blur-sm transition-all duration-300 hover:border-primary/20 hover:bg-card/80 hover:shadow-lg hover:shadow-primary/10"
+              >
+                {/* Premium gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
-              <div className="relative">
-                {/* Quote icon */}
-                <div className="mb-4 flex size-10 items-center justify-center rounded-lg bg-primary/10">
-                  <svg className="size-5 text-primary" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                    <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-                  </svg>
+                <div className="relative">
+                  {/* Quote icon */}
+                  <div className="mb-4 flex size-10 items-center justify-center rounded-lg bg-primary/10">
+                    <svg className="size-5 text-primary" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                      <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+
+                  {/* Rating */}
+                  <div className="mb-4">
+                    <StarRating rating={testimonial.rating} />
+                  </div>
+
+                  {/* Content */}
+                  <blockquote className="mb-6 text-sm leading-relaxed text-muted-foreground sm:text-base">
+                    "
+                    {testimonial.content}
+                    "
+                  </blockquote>
+
+                  {/* Author */}
+                  <Avatar
+                    name={testimonial.name}
+                    role={testimonial.role}
+                  />
                 </div>
-
-                {/* Rating */}
-                <div className="mb-4">
-                  <StarRating rating={testimonial.rating} />
-                </div>
-
-                {/* Content */}
-                <blockquote className="mb-6 text-sm leading-relaxed text-muted-foreground sm:text-base">
-                  "
-                  {testimonial.content}
-                  "
-                </blockquote>
-
-                {/* Author */}
-                <Avatar
-                  name={testimonial.name}
-                  role={testimonial.role}
-                />
-              </div>
-            </Card>
-          ))}
-        </StaggerChildren>
+              </Card>
+            ))}
+          </StaggerChildren>
+        )}
 
         {/* Premium trust badges */}
         <FadeIn delay={600}>
