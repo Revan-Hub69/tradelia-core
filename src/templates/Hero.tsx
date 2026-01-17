@@ -3,9 +3,7 @@
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { FadeIn, SlideReveal, StaggerChildren, AnimatedCounter } from '@/components/ui/scroll-animations';
+import { FadeIn, SlideReveal, AnimatedCounter } from '@/components/ui/scroll-animations';
 
 /**
  * Hero Illustration - Crypto Community SVG
@@ -203,27 +201,9 @@ export const Hero = () => {
     </div>
   );
 
-  const claims = [
-    {
-      icon: ClaimIcons.solid,
-      title: t('claim1_title'),
-      description: t('claim1_desc'),
-    },
-    {
-      icon: ClaimIcons.time,
-      title: t('claim2_title'),
-      description: t('claim2_desc'),
-    },
-    {
-      icon: ClaimIcons.level,
-      title: t('claim3_title'),
-      description: t('claim3_desc'),
-    },
-  ];
-
   return (
     <>
-      {/* HERO SECTION 1 - Awareness */}
+      {/* HERO SECTION - Awareness */}
       <section className="relative overflow-hidden px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
         <div className="mx-auto max-w-7xl">
           <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
@@ -272,7 +252,7 @@ export const Hero = () => {
                 {/* Soft CTA - touch area 44px */}
                 <div className="mt-6 sm:mt-8">
                   <Link
-                    href="#come-funziona"
+                    href="#demo"
                     className="inline-flex items-center gap-1.5 py-2 text-sm font-medium text-primary transition-colors hover:text-primary/80 sm:text-base"
                   >
                     {t('soft_cta')}
@@ -290,64 +270,6 @@ export const Hero = () => {
             <FadeIn delay={300} direction="right" className="order-2 flex justify-center lg:justify-end">
               <HeroIllustration />
             </FadeIn>
-          </div>
-        </div>
-      </section>
-
-      {/* HERO SECTION 2 - CTA */}
-      <section
-        id="come-funziona"
-        className="relative overflow-hidden border-t bg-muted/30 px-4 py-16 sm:px-6 sm:py-20 lg:py-24"
-      >
-        <div className="mx-auto max-w-7xl">
-          <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-            {/* CTA Content - FIRST on mobile */}
-            <div className="order-1">
-              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl lg:text-4xl">
-                {t('section2_title')}
-              </h2>
-
-              {/* CTA Buttons */}
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:gap-4">
-                <Button asChild size="lg" className="h-12 px-6 text-base sm:h-14 sm:px-8 sm:text-lg">
-                  <Link href="/sign-up">{t('section2_cta_primary')}</Link>
-                </Button>
-                <Button asChild variant="outline" size="default" className="h-11 px-5 text-sm sm:h-12 sm:px-6 sm:text-base">
-                  <Link href="#demo">{t('section2_cta_secondary')}</Link>
-                </Button>
-              </div>
-
-              <p className="mt-4 text-sm text-muted-foreground">
-                {t('section2_disclaimer')}
-              </p>
-
-              {/* Trust Badge */}
-              <div className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-border/50 bg-background/50 px-3 py-1.5">
-                <svg viewBox="0 0 24 24" fill="none" className="size-4 text-accent" aria-hidden="true">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M9 12l2 2 4-4" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                <span className="text-xs text-muted-foreground">{t('trust_badge')}</span>
-              </div>
-
-              {/* Claim Cards */}
-              <StaggerChildren staggerDelay={100} className="mt-10 grid gap-3 sm:grid-cols-3 sm:gap-4">
-                {claims.map(claim => (
-                  <Card key={claim.title} className="p-3 sm:p-4">
-                    <div className="mb-2">{claim.icon}</div>
-                    <h3 className="text-xs font-semibold leading-tight sm:text-sm">{claim.title}</h3>
-                    <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground sm:text-xs">
-                      {claim.description}
-                    </p>
-                  </Card>
-                ))}
-              </StaggerChildren>
-            </div>
-
-            {/* Phone Mockup - SECOND on mobile, RIGHT on desktop */}
-            <div className="order-2 flex justify-center lg:justify-end">
-              <PhoneMockup />
-            </div>
           </div>
         </div>
       </section>
