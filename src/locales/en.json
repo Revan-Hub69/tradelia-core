@@ -481,7 +481,31 @@
     "complete_goal_label": "Goal:",
     "complete_time_label": "Daily time:",
     "complete_start_learning": "Start Learning",
-    "complete_dashboard": "Go to Dashboard"
+    "complete_dashboard": "Go to Dashboard",
+
+    "username_title": "Choose your username",
+    "username_subtitle": "How do you want to be called in the community?",
+    "username_label": "Username",
+    "username_taken": "Username already taken",
+    "username_available": "Username available!",
+    "username_invalid_chars": "Only letters, numbers and underscore",
+    "username_rules": "3-20 characters, only letters, numbers and underscore",
+
+    "notifications_title": "When do you want to learn?",
+    "notifications_subtitle": "We help you stay consistent with personalized reminders",
+    "notifications_time_title": "What's your ideal time?",
+    "notification_morning": "Morning",
+    "notification_afternoon": "Afternoon",
+    "notification_evening": "Evening",
+    "notification_flexible": "Flexible",
+    "notification_flexible_desc": "I decide when",
+    "notifications_permission_title": "Enable notifications",
+    "notifications_permission_desc": "We'll send you gentle reminders to keep your momentum",
+    "notifications_enable": "Enable Notifications",
+    "notifications_enabled": "Notifications enabled",
+    "notifications_denied": "You can enable them later in settings",
+    "skip_notifications": "Skip for now",
+    "continue": "Continue"
   },
   "AuthError": {
     "title": "Authentication Error",

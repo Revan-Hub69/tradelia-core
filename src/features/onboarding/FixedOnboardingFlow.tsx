@@ -9,6 +9,7 @@ import { Card } from '@/components/ui/card';
 import { CleanCountryDropdown, type Country } from '@/components/ui/clean-country-dropdown';
 import { Input } from '@/components/ui/input';
 import { FadeIn, SlideReveal } from '@/components/ui/scroll-animations';
+import { cn } from '@/utils/Helpers';
 
 /**
  * Fixed Premium Onboarding Flow 2026
@@ -21,10 +22,11 @@ import { FadeIn, SlideReveal } from '@/components/ui/scroll-animations';
  * ✅ Proper UX flow with clear navigation
  */
 
-type OnboardingStep = 'welcome' | 'country' | 'skillAssessment' | 'personalization' | 'registration' | 'complete';
+type OnboardingStep = 'welcome' | 'country' | 'skillAssessment' | 'personalization' | 'username' | 'notifications' | 'registration' | 'complete';
 
 type UserLevel = 'novice' | 'intermediate' | 'advanced';
 type LearningGoal = 'foundation' | 'protection' | 'critical' | 'opportunity' | 'professional';
+type NotificationTime = 'morning' | 'afternoon' | 'evening' | 'flexible';
 
 type OnboardingData = {
   country?: Country;
@@ -32,6 +34,9 @@ type OnboardingData = {
   primaryGoal?: LearningGoal;
   timeCommitment?: 'focused' | 'balanced' | 'deep';
   skillScore?: number;
+  username?: string;
+  notificationTime?: NotificationTime;
+  notificationsEnabled?: boolean;
   email?: string;
   password?: string;
   registrationMethod?: 'email' | 'google';
@@ -48,7 +53,7 @@ const ProgressIndicator = ({
   onBack?: () => void;
 }) => {
   const t = useTranslations('Onboarding');
-  const steps = ['welcome', 'country', 'skillAssessment', 'personalization', 'registration', 'complete'];
+  const steps = ['welcome', 'country', 'skillAssessment', 'personalization', 'username', 'notifications', 'registration', 'complete'];
   const currentIndex = steps.indexOf(currentStep);
   const progress = ((currentIndex + 1) / steps.length) * 100;
 
@@ -723,7 +728,308 @@ const PersonalizationStep = ({ onNext }: { onNext: (data: Partial<OnboardingData
 };
 
 /**
- * Step 5: Registration with Translations
+ * Step 5: Username Selection
+ */
+const UsernameStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) => void }) => {
+  const t = useTranslations('Onboarding');
+  const [username, setUsername] = useState('');
+  const [isChecking, setIsChecking] = useState(false);
+  const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
+  const [error, setError] = useState('');
+
+  const checkUsername = async (value: string) => {
+    if (value.length < 3) {
+      setIsAvailable(null);
+      setError('');
+      return;
+    }
+
+    setIsChecking(true);
+    setError('');
+
+    // Simulate username check
+    setTimeout(() => {
+      const unavailableUsernames = ['admin', 'test', 'user', 'tradelia', 'crypto'];
+      const available = !unavailableUsernames.includes(value.toLowerCase());
+      setIsAvailable(available);
+      setIsChecking(false);
+
+      if (!available) {
+        setError(t('username_taken'));
+      }
+    }, 800);
+  };
+
+  const handleUsernameChange = (value: string) => {
+    // Clean username: only letters, numbers, underscore
+    const cleanValue = value.replace(/\W/g, '').toLowerCase();
+    setUsername(cleanValue);
+
+    if (cleanValue !== value) {
+      setError(t('username_invalid_chars'));
+    } else {
+      setError('');
+    }
+
+    checkUsername(cleanValue);
+  };
+
+  const handleContinue = () => {
+    if (username && isAvailable) {
+      onNext({ username });
+    }
+  };
+
+  return (
+    <div className="space-y-6 md:space-y-8">
+      <div className="text-center">
+        <SlideReveal>
+          <h2 className="text-2xl font-bold tracking-tight md:text-3xl">
+            {t('username_title')}
+          </h2>
+        </SlideReveal>
+
+        <FadeIn delay={200}>
+          <p className="mt-3 text-base text-muted-foreground md:mt-4 lg:text-lg">
+            {t('username_subtitle')}
+          </p>
+        </FadeIn>
+      </div>
+
+      <FadeIn delay={400}>
+        <Card className="border-border/50 bg-card/50 p-6 backdrop-blur-sm md:p-8">
+          <div className="space-y-6">
+            <div>
+              <label htmlFor="username" className="mb-3 block text-sm font-medium">
+                {t('username_label')}
+              </label>
+              <div className="relative">
+                <Input
+                  id="username"
+                  type="text"
+                  value={username}
+                  onChange={e => handleUsernameChange(e.target.value)}
+                  placeholder="es. mario_rossi"
+                  className={cn(
+                    'pr-10',
+                    error && 'border-red-500',
+                    isAvailable === true && 'border-green-500',
+                    isAvailable === false && 'border-red-500',
+                  )}
+                  maxLength={20}
+                />
+
+                {/* Status icon */}
+                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                  {isChecking && (
+                    <div className="size-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                  )}
+                  {!isChecking && isAvailable === true && (
+                    <svg className="size-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
+                  {!isChecking && isAvailable === false && (
+                    <svg className="size-4 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  )}
+                </div>
+              </div>
+
+              {/* Status messages */}
+              {error && (
+                <p className="mt-2 text-sm text-red-600" role="alert">{error}</p>
+              )}
+              {isAvailable === true && (
+                <p className="mt-2 text-sm text-green-600">{t('username_available')}</p>
+              )}
+
+              <p className="mt-2 text-xs text-muted-foreground">
+                {t('username_rules')}
+              </p>
+            </div>
+
+            <div className="text-center">
+              <Button
+                onClick={handleContinue}
+                disabled={!username || !isAvailable || isChecking}
+                size="lg"
+                className="px-8"
+              >
+                {t('continue')}
+              </Button>
+            </div>
+          </div>
+        </Card>
+      </FadeIn>
+    </div>
+  );
+};
+
+/**
+ * Step 6: Notifications Setup
+ */
+const NotificationsStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) => void }) => {
+  const t = useTranslations('Onboarding');
+  const [notificationTime, setNotificationTime] = useState<NotificationTime>('flexible');
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const [permissionStatus, setPermissionStatus] = useState<'default' | 'granted' | 'denied'>('default');
+
+  const timeOptions = [
+    {
+      id: 'morning' as NotificationTime,
+      title: t('notification_morning'),
+      description: '8:00 - 12:00',
+      icon: '🌅',
+    },
+    {
+      id: 'afternoon' as NotificationTime,
+      title: t('notification_afternoon'),
+      description: '12:00 - 18:00',
+      icon: '☀️',
+    },
+    {
+      id: 'evening' as NotificationTime,
+      title: t('notification_evening'),
+      description: '18:00 - 22:00',
+      icon: '🌙',
+    },
+    {
+      id: 'flexible' as NotificationTime,
+      title: t('notification_flexible'),
+      description: t('notification_flexible_desc'),
+      icon: '⏰',
+    },
+  ];
+
+  const requestNotificationPermission = async () => {
+    if ('Notification' in window) {
+      try {
+        const permission = await Notification.requestPermission();
+        setPermissionStatus(permission);
+        setNotificationsEnabled(permission === 'granted');
+      } catch (error) {
+        console.error('Error requesting notification permission:', error);
+        setPermissionStatus('denied');
+      }
+    }
+  };
+
+  const handleContinue = () => {
+    onNext({
+      notificationTime,
+      notificationsEnabled,
+    });
+  };
+
+  const handleSkip = () => {
+    onNext({
+      notificationTime: 'flexible',
+      notificationsEnabled: false,
+    });
+  };
+
+  return (
+    <div className="space-y-6 md:space-y-8">
+      <div className="text-center">
+        <SlideReveal>
+          <h2 className="text-2xl font-bold tracking-tight md:text-3xl">
+            {t('notifications_title')}
+          </h2>
+        </SlideReveal>
+
+        <FadeIn delay={200}>
+          <p className="mt-3 text-base text-muted-foreground md:mt-4 lg:text-lg">
+            {t('notifications_subtitle')}
+          </p>
+        </FadeIn>
+      </div>
+
+      <FadeIn delay={400}>
+        <Card className="border-border/50 bg-card/50 p-6 backdrop-blur-sm md:p-8">
+          <div className="space-y-6">
+            {/* Time preference */}
+            <div>
+              <h3 className="mb-4 text-lg font-semibold">{t('notifications_time_title')}</h3>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {timeOptions.map(option => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    onClick={() => setNotificationTime(option.id)}
+                    className={cn(
+                      'group flex items-center gap-3 rounded-xl border p-4 text-left transition-all hover:shadow-md',
+                      notificationTime === option.id
+                        ? 'border-primary bg-primary/5 shadow-lg shadow-primary/10'
+                        : 'border-border bg-background hover:border-primary/50',
+                    )}
+                  >
+                    <span className="text-2xl">{option.icon}</span>
+                    <div>
+                      <h4 className="font-semibold">{option.title}</h4>
+                      <p className="text-sm text-muted-foreground">{option.description}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Notification permission */}
+            <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
+              <div className="flex items-start gap-3">
+                <span className="text-2xl">🔔</span>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-blue-900">{t('notifications_permission_title')}</h4>
+                  <p className="mt-1 text-sm text-blue-800">{t('notifications_permission_desc')}</p>
+
+                  {permissionStatus === 'default' && (
+                    <Button
+                      onClick={requestNotificationPermission}
+                      variant="outline"
+                      size="sm"
+                      className="mt-3 border-blue-300 text-blue-700 hover:bg-blue-100"
+                    >
+                      {t('notifications_enable')}
+                    </Button>
+                  )}
+
+                  {permissionStatus === 'granted' && (
+                    <p className="mt-2 text-sm font-medium text-green-700">
+                      ✅
+                      {' '}
+                      {t('notifications_enabled')}
+                    </p>
+                  )}
+
+                  {permissionStatus === 'denied' && (
+                    <p className="mt-2 text-sm text-orange-700">
+                      ⚠️
+                      {' '}
+                      {t('notifications_denied')}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Button onClick={handleContinue} size="lg" className="flex-1">
+                {t('continue')}
+              </Button>
+              <Button onClick={handleSkip} variant="outline" size="lg" className="flex-1">
+                {t('skip_notifications')}
+              </Button>
+            </div>
+          </div>
+        </Card>
+      </FadeIn>
+    </div>
+  );
+};
+
+/**
+ * Step 7: Registration with Translations
  */
 const RegistrationStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) => void }) => {
   const t = useTranslations('Onboarding');
@@ -1063,12 +1369,12 @@ const CompleteStep = ({ data }: { data: OnboardingData }) => {
     // Save onboarding data to localStorage
     localStorage.setItem('tradelia_onboarding', JSON.stringify(data));
 
-    // Redirect to dashboard or first lesson
-    router.push('/dashboard');
+    // Redirect to home page instead of dashboard (which might not exist)
+    router.push('/');
   };
 
   const handleGoToDashboard = () => {
-    router.push('/dashboard');
+    router.push('/');
   };
 
   return (
@@ -1188,7 +1494,7 @@ export const FixedOnboardingFlow = () => {
       setData(prev => ({ ...prev, ...stepData }));
     }
 
-    const steps: OnboardingStep[] = ['welcome', 'country', 'skillAssessment', 'personalization', 'registration', 'complete'];
+    const steps: OnboardingStep[] = ['welcome', 'country', 'skillAssessment', 'personalization', 'username', 'notifications', 'registration', 'complete'];
     const currentIndex = steps.indexOf(currentStep);
 
     if (currentIndex < steps.length - 1) {
@@ -1200,7 +1506,7 @@ export const FixedOnboardingFlow = () => {
   };
 
   const handleBack = () => {
-    const steps: OnboardingStep[] = ['welcome', 'country', 'skillAssessment', 'personalization', 'registration', 'complete'];
+    const steps: OnboardingStep[] = ['welcome', 'country', 'skillAssessment', 'personalization', 'username', 'notifications', 'registration', 'complete'];
     const currentIndex = steps.indexOf(currentStep);
 
     if (currentIndex > 0) {
@@ -1221,6 +1527,10 @@ export const FixedOnboardingFlow = () => {
         return <SkillAssessmentStep onNext={handleNext} />;
       case 'personalization':
         return <PersonalizationStep onNext={handleNext} />;
+      case 'username':
+        return <UsernameStep onNext={handleNext} />;
+      case 'notifications':
+        return <NotificationsStep onNext={handleNext} />;
       case 'registration':
         return <RegistrationStep onNext={handleNext} />;
       case 'complete':

@@ -450,7 +450,31 @@
     "complete_goal_label": "Obiettivo:",
     "complete_time_label": "Tempo giornaliero:",
     "complete_start_learning": "Inizia a Imparare",
-    "complete_dashboard": "Vai alla Dashboard"
+    "complete_dashboard": "Vai alla Dashboard",
+
+    "username_title": "Scegli il tuo username",
+    "username_subtitle": "Come vuoi essere chiamato nella community?",
+    "username_label": "Username",
+    "username_taken": "Username già in uso",
+    "username_available": "Username disponibile!",
+    "username_invalid_chars": "Solo lettere, numeri e underscore",
+    "username_rules": "3-20 caratteri, solo lettere, numeri e underscore",
+
+    "notifications_title": "Quando vuoi imparare?",
+    "notifications_subtitle": "Ti aiutiamo a mantenere la costanza con promemoria personalizzati",
+    "notifications_time_title": "Qual è il tuo momento ideale?",
+    "notification_morning": "Mattina",
+    "notification_afternoon": "Pomeriggio",
+    "notification_evening": "Sera",
+    "notification_flexible": "Flessibile",
+    "notification_flexible_desc": "Decido io quando",
+    "notifications_permission_title": "Abilita le notifiche",
+    "notifications_permission_desc": "Ti invieremo promemoria gentili per non perdere il ritmo",
+    "notifications_enable": "Abilita Notifiche",
+    "notifications_enabled": "Notifiche abilitate",
+    "notifications_denied": "Potrai abilitarle in seguito dalle impostazioni",
+    "skip_notifications": "Salta per ora",
+    "continue": "Continua"
   },
   "AuthError": {
     "title": "Errore di autenticazione",
