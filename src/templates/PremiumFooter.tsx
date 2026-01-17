@@ -109,7 +109,7 @@ const NavLink = ({
 );
 
 export const PremiumFooter = () => {
-  const t = useTranslations('PremiumFooter' as any);
+  const t = useTranslations('PremiumFooter' as any) as (key: string) => string;
 
   const footerSections = [
     {

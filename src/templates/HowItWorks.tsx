@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 
 export const HowItWorks = () => {
-  const t = useTranslations('HowItWorks' as any);
+  const t = useTranslations('HowItWorks' as any) as (key: string) => string;
   
   const steps = [
     {

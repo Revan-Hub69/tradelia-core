@@ -68,7 +68,7 @@ const getRewards = (t: any) => ({
 });
 
 export const InteractiveDemo = () => {
-  const t = useTranslations('InteractiveDemo' as any);
+  const t = useTranslations('InteractiveDemo' as any) as (key: string) => string;
   const [step, setStep] = useState<DemoStep>('level-select');
   const [userLevel, setUserLevel] = useState<UserLevel>('beginner');
   const [answer, setAnswer] = useState<string | null>(null);
