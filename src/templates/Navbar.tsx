@@ -73,7 +73,7 @@ const useFocusTrap = (isOpen: boolean, containerRef: React.RefObject<HTMLDivElem
  * - Focus trap for accessibility
  */
 export const Navbar = () => {
-  const t = useTranslations('Navbar');
+  const t = useTranslations('Navbar' as any) as (key: string) => string;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -98,7 +98,7 @@ export const Navbar = () => {
     {
       href: '#percorsi',
       label: t('product'),
-      description: 'Esplora i percorsi formativi',
+      description: t('nav_product_desc'),
       icon: (
         <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
@@ -108,7 +108,7 @@ export const Navbar = () => {
     {
       href: '#features',
       label: t('docs'),
-      description: 'Scopri le funzionalità',
+      description: t('nav_docs_desc'),
       icon: (
         <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
@@ -118,7 +118,7 @@ export const Navbar = () => {
     {
       href: '#faq',
       label: 'FAQ',
-      description: 'Domande frequenti',
+      description: t('nav_faq_desc'),
       icon: (
         <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
@@ -137,19 +137,19 @@ export const Navbar = () => {
               <svg className="size-3 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
               </svg>
-              <span>Dati protetti</span>
+              <span>{t('trust_data_protected')}</span>
             </div>
             <div className="hidden items-center gap-1.5 sm:flex">
               <svg className="size-3 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
-              <span>SSL sicuro</span>
+              <span>{t('trust_ssl_secure')}</span>
             </div>
             <div className="flex items-center gap-1.5">
               <svg className="size-3 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
-              <span>Niente spam</span>
+              <span>{t('trust_no_spam')}</span>
             </div>
           </div>
         </div>
@@ -205,7 +205,7 @@ export const Navbar = () => {
                 'hover:bg-primary/10',
                 isMenuOpen && 'bg-primary/10',
               )}
-              aria-label={isMenuOpen ? 'Chiudi menu' : 'Apri menu'}
+              aria-label={isMenuOpen ? t('menu_close') : t('menu_open')}
             >
               <div className="flex size-5 flex-col items-center justify-center gap-1.5">
                 <span className={cn(
@@ -250,7 +250,7 @@ export const Navbar = () => {
           }}
           role="button"
           tabIndex={0}
-          aria-label="Chiudi menu mobile"
+          aria-label={t('menu_close_mobile')}
         />
 
         {/* Drawer Panel */}
@@ -263,13 +263,13 @@ export const Navbar = () => {
         >
           {/* Header del drawer */}
           <div className="flex h-16 items-center justify-between border-b border-border/50 px-6">
-            <span className="text-sm font-medium text-muted-foreground">Menu</span>
+            <span className="text-sm font-medium text-muted-foreground">{t('menu_title')}</span>
             <button
               type="button"
               data-close-menu
               onClick={() => setIsMenuOpen(false)}
               className="flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-              aria-label="Chiudi menu"
+              aria-label={t('menu_close')}
             >
               <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
