@@ -2,13 +2,65 @@
 
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { LocaleSwitcher } from '@/components/LocaleSwitcher';
 import { buttonVariants } from '@/components/ui/buttonVariants';
 import { cn } from '@/utils/Helpers';
 
 import { Logo } from './Logo';
+
+/**
+ * Focus trap hook for mobile menu accessibility
+ */
+const useFocusTrap = (isOpen: boolean, containerRef: React.RefObject<HTMLDivElement>) => {
+  useEffect(() => {
+    if (!isOpen || !containerRef.current) {
+      return;
+    }
+
+    const container = containerRef.current;
+    const focusableElements = container.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+    );
+    const firstElement = focusableElements[0] as HTMLElement;
+    const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Tab') {
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement?.focus();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement?.focus();
+          }
+        }
+      }
+
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        // This will be handled by the parent component
+        const closeButton = container.querySelector('[data-close-menu]') as HTMLElement;
+        closeButton?.click();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    // Focus first element when menu opens
+    setTimeout(() => {
+      firstElement?.focus();
+    }, 100);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, containerRef]);
+};
 
 /**
  * Modern Navbar 2026
@@ -18,11 +70,16 @@ import { Logo } from './Logo';
  * - Staggered animations
  * - Icons + labels
  * - Smooth transitions
+ * - Focus trap for accessibility
  */
 export const Navbar = () => {
   const t = useTranslations('Navbar');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Use focus trap for mobile menu
+  useFocusTrap(isMenuOpen, menuRef);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -171,6 +228,7 @@ export const Navbar = () => {
 
         {/* Drawer Panel */}
         <div
+          ref={menuRef}
           className={cn(
             'absolute bottom-0 right-0 top-0 w-[85%] max-w-xs bg-background shadow-2xl transition-transform duration-300 ease-out sm:max-w-sm',
             isMenuOpen ? 'translate-x-0' : 'translate-x-full',
@@ -181,8 +239,10 @@ export const Navbar = () => {
             <span className="text-sm font-medium text-muted-foreground">Menu</span>
             <button
               type="button"
+              data-close-menu
               onClick={() => setIsMenuOpen(false)}
-              className="flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              className="flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              aria-label="Chiudi menu"
             >
               <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />

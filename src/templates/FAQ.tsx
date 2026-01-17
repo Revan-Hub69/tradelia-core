@@ -72,7 +72,13 @@ export const FAQ = () => {
               <button
                 type="button"
                 onClick={() => toggleItem(index)}
-                className="flex w-full items-center justify-between p-6 text-left transition-colors duration-200 hover:bg-muted/30"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleItem(index);
+                  }
+                }}
+                className="flex w-full items-center justify-between p-6 text-left transition-colors duration-200 hover:bg-muted/30 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                 aria-expanded={openItems.has(index)}
               >
                 <span className="text-base font-semibold sm:text-lg">

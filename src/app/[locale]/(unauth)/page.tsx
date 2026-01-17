@@ -29,7 +29,7 @@ const IndexPage = (props: { params: { locale: string } }) => {
   return (
     <>
       <Navbar />
-      <main>
+      <main id="main-content">
         <Hero />
         <BenefitsOverview />
         <InteractiveDemo />

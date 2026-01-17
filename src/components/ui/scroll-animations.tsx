@@ -3,6 +3,27 @@
 import { useEffect, useRef, useState } from 'react';
 
 /**
+ * Hook to detect user's motion preferences
+ */
+const useReducedMotion = () => {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setPrefersReducedMotion(mediaQuery.matches);
+
+    const handleChange = (event: MediaQueryListEvent) => {
+      setPrefersReducedMotion(event.matches);
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  return prefersReducedMotion;
+};
+
+/**
  * Intersection Observer hook for scroll animations
  * Optimized for performance with single-use observers
  */
@@ -22,14 +43,16 @@ export const useInView = (options: {
   }, []);
 
   useEffect(() => {
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry?.isIntersecting && (!triggerOnce || !hasTriggered)) {
           setIsInView(true);
           setHasTriggered(true);
-          
+
           if (triggerOnce) {
             observer.disconnect();
           }
@@ -53,15 +76,15 @@ export const useInView = (options: {
 /**
  * Fade in animation component
  */
-export const FadeIn = ({ 
-  children, 
+export const FadeIn = ({
+  children,
   delay = 0,
   duration = 700,
   direction = 'up',
   distance = 32,
   className = '',
   threshold = 0.1,
-}: { 
+}: {
   children: React.ReactNode;
   delay?: number;
   duration?: number;
@@ -71,10 +94,16 @@ export const FadeIn = ({
   threshold?: number;
 }) => {
   const { ref, isInView } = useInView({ threshold });
+  const prefersReducedMotion = useReducedMotion();
 
   const getTransform = () => {
-    if (isInView) return 'translate3d(0, 0, 0)';
-    
+    if (prefersReducedMotion) {
+      return 'translate3d(0, 0, 0)';
+    }
+    if (isInView) {
+      return 'translate3d(0, 0, 0)';
+    }
+
     switch (direction) {
       case 'up': return `translate3d(0, ${distance}px, 0)`;
       case 'down': return `translate3d(0, -${distance}px, 0)`;
@@ -84,6 +113,9 @@ export const FadeIn = ({
     }
   };
 
+  const animationDuration = prefersReducedMotion ? 0 : duration;
+  const animationDelay = prefersReducedMotion ? 0 : delay;
+
   return (
     <div
       ref={ref}
@@ -91,9 +123,9 @@ export const FadeIn = ({
       style={{
         transform: getTransform(),
         opacity: isInView ? 1 : 0,
-        transition: `all ${duration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`,
-        transitionDelay: `${delay}ms`,
-        willChange: 'transform, opacity',
+        transition: `all ${animationDuration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`,
+        transitionDelay: `${animationDelay}ms`,
+        willChange: prefersReducedMotion ? 'auto' : 'transform, opacity',
       }}
     >
       {children}
@@ -104,11 +136,11 @@ export const FadeIn = ({
 /**
  * Stagger children animation
  */
-export const StaggerChildren = ({ 
-  children, 
+export const StaggerChildren = ({
+  children,
   staggerDelay = 100,
   className = '',
-}: { 
+}: {
   children: React.ReactNode;
   staggerDelay?: number;
   className?: string;
@@ -117,14 +149,13 @@ export const StaggerChildren = ({
 
   return (
     <div ref={ref} className={className}>
-      {Array.isArray(children) 
+      {Array.isArray(children)
         ? children.map((child, index) => (
             <FadeIn key={index} delay={isInView ? index * staggerDelay : 0}>
               {child}
             </FadeIn>
           ))
-        : children
-      }
+        : children}
     </div>
   );
 };
@@ -132,29 +163,33 @@ export const StaggerChildren = ({
 /**
  * Scale in animation
  */
-export const ScaleIn = ({ 
-  children, 
+export const ScaleIn = ({
+  children,
   delay = 0,
   duration = 500,
   className = '',
-}: { 
+}: {
   children: React.ReactNode;
   delay?: number;
   duration?: number;
   className?: string;
 }) => {
   const { ref, isInView } = useInView();
+  const prefersReducedMotion = useReducedMotion();
+
+  const animationDuration = prefersReducedMotion ? 0 : duration;
+  const animationDelay = prefersReducedMotion ? 0 : delay;
 
   return (
     <div
       ref={ref}
       className={className}
       style={{
-        transform: isInView ? 'scale(1)' : 'scale(0.95)',
+        transform: prefersReducedMotion || isInView ? 'scale(1)' : 'scale(0.95)',
         opacity: isInView ? 1 : 0,
-        transition: `all ${duration}ms cubic-bezier(0.34, 1.56, 0.64, 1)`,
-        transitionDelay: `${delay}ms`,
-        willChange: 'transform, opacity',
+        transition: `all ${animationDuration}ms cubic-bezier(0.34, 1.56, 0.64, 1)`,
+        transitionDelay: `${animationDelay}ms`,
+        willChange: prefersReducedMotion ? 'auto' : 'transform, opacity',
       }}
     >
       {children}
@@ -165,27 +200,31 @@ export const ScaleIn = ({
 /**
  * Slide reveal animation (for text/content)
  */
-export const SlideReveal = ({ 
-  children, 
+export const SlideReveal = ({
+  children,
   delay = 0,
   duration = 800,
   className = '',
-}: { 
+}: {
   children: React.ReactNode;
   delay?: number;
   duration?: number;
   className?: string;
 }) => {
   const { ref, isInView } = useInView();
+  const prefersReducedMotion = useReducedMotion();
+
+  const animationDuration = prefersReducedMotion ? 0 : duration;
+  const animationDelay = prefersReducedMotion ? 0 : delay;
 
   return (
     <div ref={ref} className={`relative overflow-hidden ${className}`}>
       <div
         style={{
-          transform: isInView ? 'translateY(0)' : 'translateY(100%)',
-          transition: `transform ${duration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`,
-          transitionDelay: `${delay}ms`,
-          willChange: 'transform',
+          transform: prefersReducedMotion || isInView ? 'translateY(0)' : 'translateY(100%)',
+          transition: `transform ${animationDuration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`,
+          transitionDelay: `${animationDelay}ms`,
+          willChange: prefersReducedMotion ? 'auto' : 'transform',
         }}
       >
         {children}
@@ -197,12 +236,12 @@ export const SlideReveal = ({
 /**
  * Counter animation for numbers
  */
-export const AnimatedCounter = ({ 
-  end, 
+export const AnimatedCounter = ({
+  end,
   duration = 2000,
   suffix = '',
   className = '',
-}: { 
+}: {
   end: number;
   duration?: number;
   suffix?: string;
@@ -217,18 +256,22 @@ export const AnimatedCounter = ({
   }, []);
 
   useEffect(() => {
-    if (!isInView || !mounted) return;
+    if (!isInView || !mounted) {
+      return;
+    }
 
     let startTime: number;
     const startCount = 0;
 
     const animate = (currentTime: number) => {
-      if (!startTime) startTime = currentTime;
+      if (!startTime) {
+        startTime = currentTime;
+      }
       const progress = Math.min((currentTime - startTime) / duration, 1);
-      
-      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+
+      const easeOutQuart = 1 - (1 - progress) ** 4;
       const currentCount = Math.floor(startCount + (end - startCount) * easeOutQuart);
-      
+
       setCount(currentCount);
 
       if (progress < 1) {
@@ -242,14 +285,16 @@ export const AnimatedCounter = ({
   if (!mounted) {
     return (
       <span ref={ref} className={className}>
-        {end.toLocaleString()}{suffix}
+        {end.toLocaleString()}
+        {suffix}
       </span>
     );
   }
 
   return (
     <span ref={ref} className={className}>
-      {count.toLocaleString()}{suffix}
+      {count.toLocaleString()}
+      {suffix}
     </span>
   );
 };
@@ -257,11 +302,11 @@ export const AnimatedCounter = ({
 /**
  * Parallax scroll effect
  */
-export const Parallax = ({ 
-  children, 
+export const Parallax = ({
+  children,
   speed = 0.5,
   className = '',
-}: { 
+}: {
   children: React.ReactNode;
   speed?: number;
   className?: string;
@@ -269,21 +314,26 @@ export const Parallax = ({
   const [offset, setOffset] = useState(0);
   const [mounted, setMounted] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   useEffect(() => {
-    if (!mounted) return;
+    if (!mounted || prefersReducedMotion) {
+      return;
+    }
 
     const handleScroll = () => {
-      if (!ref.current) return;
-      
+      if (!ref.current) {
+        return;
+      }
+
       const rect = ref.current.getBoundingClientRect();
       const scrolled = window.pageYOffset;
       const rate = scrolled * -speed;
-      
+
       if (rect.top <= window.innerHeight && rect.bottom >= 0) {
         setOffset(rate);
       }
@@ -291,14 +341,14 @@ export const Parallax = ({
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [speed, mounted]);
+  }, [speed, mounted, prefersReducedMotion]);
 
   return (
     <div ref={ref} className={className}>
       <div
         style={{
-          transform: mounted ? `translate3d(0, ${offset}px, 0)` : 'translate3d(0, 0, 0)',
-          willChange: 'transform',
+          transform: mounted && !prefersReducedMotion ? `translate3d(0, ${offset}px, 0)` : 'translate3d(0, 0, 0)',
+          willChange: prefersReducedMotion ? 'auto' : 'transform',
         }}
       >
         {children}

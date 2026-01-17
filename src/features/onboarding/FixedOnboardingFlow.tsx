@@ -373,9 +373,17 @@ const SkillAssessmentStep = ({ onNext }: { onNext: (data: Partial<OnboardingData
                 <button
                   key={`q${currentQuestion}-option-${optionIndex}`}
                   type="button"
+                  role="radio"
+                  aria-checked={selectedAnswer === optionIndex}
                   onClick={() => handleAnswer(optionIndex)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleAnswer(optionIndex);
+                    }
+                  }}
                   disabled={showExplanation}
-                  className={`w-full rounded-xl border p-3 text-left transition-all md:p-4 xl:p-5 ${
+                  className={`w-full rounded-xl border p-3 text-left transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 md:p-4 xl:p-5 ${
                     showExplanation
                       ? optionIndex === currentQ.correct
                         ? 'border-green-500 bg-green-50 text-green-700'
@@ -404,6 +412,9 @@ const SkillAssessmentStep = ({ onNext }: { onNext: (data: Partial<OnboardingData
               <FadeIn>
                 <div
                   className="rounded-xl border border-blue-200 bg-blue-50 p-4 lg:p-6"
+                  role="status"
+                  aria-live="polite"
+                  aria-label="Spiegazione della risposta"
                   ref={(el) => {
                     if (el) {
                       // Scroll automatico per mantenere la spiegazione in viewport
@@ -620,6 +631,9 @@ const PersonalizationStep = ({ onNext }: { onNext: (data: Partial<OnboardingData
           <FadeIn>
             <div
               className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 md:p-5 lg:p-6 xl:p-7"
+              role="status"
+              aria-live="polite"
+              aria-label="Feedback personalizzato"
               ref={(el) => {
                 if (el) {
                   // Scroll automatico per mantenere il feedback visibile
@@ -680,24 +694,44 @@ const RegistrationStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) 
     const newErrors: Record<string, string> = {};
 
     if (!formData.email) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S[^\s@]*@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+      newErrors.email = t('registration_error_email_required');
+    } else if (!/^[^\s@]+@[^\s@][^\s.@]*\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = t('registration_error_email_invalid');
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = t('registration_error_password_required');
     } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
+      newErrors.password = t('registration_error_password_length');
+    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
+      newErrors.password = t('registration_error_password_strength');
     }
 
     if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = t('registration_error_password_match');
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+
+  const getPasswordStrength = (password: string) => {
+    if (password.length < 8) {
+      return { level: 'weak', label: t('password_strength_weak') };
+    }
+    if (!/[A-Z]/.test(password)) {
+      return { level: 'medium', label: t('password_strength_medium') };
+    }
+    if (!/\d/.test(password)) {
+      return { level: 'medium', label: t('password_strength_medium') };
+    }
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      return { level: 'good', label: t('password_strength_good') };
+    }
+    return { level: 'strong', label: t('password_strength_strong') };
+  };
+
+  const passwordStrength = formData.password ? getPasswordStrength(formData.password) : null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -805,7 +839,7 @@ const RegistrationStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) 
                   placeholder="your@email.com"
                 />
                 {errors.email && (
-                  <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                  <p className="mt-1 text-sm text-red-600" role="alert">{errors.email}</p>
                 )}
               </div>
 
@@ -820,9 +854,41 @@ const RegistrationStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) 
                   onChange={e => setFormData(prev => ({ ...prev, password: e.target.value }))}
                   className={errors.password ? 'border-red-500' : ''}
                   placeholder="••••••••"
+                  aria-describedby={formData.password ? 'password-strength' : undefined}
                 />
+                {formData.password && passwordStrength && (
+                  <div id="password-strength" className="mt-2">
+                    <div className="flex items-center gap-2">
+                      <div className="h-2 flex-1 overflow-hidden rounded-full bg-gray-200">
+                        <div
+                          className={`h-full transition-all duration-300 ${
+                            passwordStrength.level === 'weak'
+                              ? 'w-1/4 bg-red-500'
+                              : passwordStrength.level === 'medium'
+                                ? 'w-2/4 bg-yellow-500'
+                                : passwordStrength.level === 'good'
+                                  ? 'w-3/4 bg-blue-500'
+                                  : 'w-full bg-green-500'
+                          }`}
+                        />
+                      </div>
+                      <span className={`text-xs font-medium ${
+                        passwordStrength.level === 'weak'
+                          ? 'text-red-600'
+                          : passwordStrength.level === 'medium'
+                            ? 'text-yellow-600'
+                            : passwordStrength.level === 'good'
+                              ? 'text-blue-600'
+                              : 'text-green-600'
+                      }`}
+                      >
+                        {passwordStrength.label}
+                      </span>
+                    </div>
+                  </div>
+                )}
                 {errors.password && (
-                  <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+                  <p className="mt-1 text-sm text-red-600" role="alert">{errors.password}</p>
                 )}
               </div>
 
@@ -839,7 +905,7 @@ const RegistrationStep = ({ onNext }: { onNext: (data: Partial<OnboardingData>) 
                   placeholder="••••••••"
                 />
                 {errors.confirmPassword && (
-                  <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
+                  <p className="mt-1 text-sm text-red-600" role="alert">{errors.confirmPassword}</p>
                 )}
               </div>
 
