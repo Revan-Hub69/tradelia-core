@@ -203,7 +203,7 @@ export const SocialProof = () => {
                 Pronto a mettere in pratica questi principi?
               </h3>
               <p className="mt-3 text-muted-foreground">
-                Percorso base sempre gratis · Moduli avanzati €29 ciascuno
+                Percorso principale gratuito per sempre · Moduli avanzati €29 ciascuno
               </p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
                 <Button asChild size="lg" className="h-12 px-6 text-base">

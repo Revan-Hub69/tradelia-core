@@ -20,7 +20,7 @@ export const Footer = () => {
             Costruisci il tuo vantaggio crypto oggi
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Percorso base sempre gratis · Moduli avanzati €29 ciascuno
+            Percorso principale gratuito per sempre · Moduli avanzati €29 ciascuno
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
             <Button asChild size="lg" className="h-12 px-8 text-base">

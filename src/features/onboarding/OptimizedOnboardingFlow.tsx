@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { FadeIn, SlideReveal } from '@/components/ui/scroll-animations';
+import { Logo } from '@/templates/Logo';
 
 /**
  * Optimized Onboarding Flow 2026 - Research-Based Implementation
@@ -61,14 +62,7 @@ const GamifiedProgress = ({
         {/* Header with XP and Badges */}
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center gap-2">
-            <svg className="size-7 shrink-0" viewBox="0 0 32 32" fill="none">
-              <rect width="32" height="32" rx="8" className="fill-primary" />
-              <path d="M8 11h16M16 11v12" stroke="white" strokeWidth="3" strokeLinecap="round" />
-              <circle cx="22" cy="11" r="2" className="fill-accent" />
-            </svg>
-            <span className="text-xl font-bold">Tradelia</span>
-          </div>
+          <Logo size="sm" />
 
           {/* XP and Progress */}
           <div className="flex items-center gap-3">
