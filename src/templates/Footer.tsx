@@ -20,11 +20,11 @@ export const Footer = () => {
             Costruisci il tuo vantaggio crypto oggi
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Modulo base gratuito per i primi 1.000 utenti, poi €29 una tantum
+            Percorso base sempre gratis · Moduli avanzati €29 ciascuno
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
             <Button asChild size="lg" className="h-12 px-8 text-base">
-              <Link href="/onboarding">Inizia gratis ora</Link>
+              <Link href="/onboarding">Inizia gratis</Link>
             </Button>
             <Button asChild variant="outline" size="default" className="h-11 px-6 text-sm">
               <Link href="#percorsi">Esplora i contenuti</Link>
