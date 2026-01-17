@@ -160,24 +160,6 @@ const PhoneMockup = () => (
 // );
 
 /**
- * Scroll cue
- */
-const ScrollCue = () => (
-  <div className="mt-10 flex flex-col items-center gap-2 sm:mt-12">
-    <span className="text-sm text-muted-foreground">{t('scroll_cue')}</span>
-    <svg
-      className="size-5 animate-bounce text-muted-foreground sm:size-6"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      aria-hidden="true"
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-    </svg>
-  </div>
-);
-
-/**
  * Claim icons - SVG minimal
  */
 const ClaimIcons = {
@@ -201,7 +183,25 @@ const ClaimIcons = {
 };
 
 export const Hero = () => {
-  const t = useTranslations('Hero');
+  const t = useTranslations('Hero') as (key: string) => string;
+
+  /**
+   * Scroll cue component
+   */
+  const ScrollCue = () => (
+    <div className="mt-10 flex flex-col items-center gap-2 sm:mt-12">
+      <span className="text-sm text-muted-foreground">{t('scroll_cue')}</span>
+      <svg
+        className="size-5 animate-bounce text-muted-foreground sm:size-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        aria-hidden="true"
+      >
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+      </svg>
+    </div>
+  );
 
   const claims = [
     {
