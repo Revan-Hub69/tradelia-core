@@ -138,6 +138,67 @@
   }
 }
 
+/*
+ * SCROLLBAR - Premium minimal design
+ * Standard CSS (scrollbar-color, scrollbar-width) + WebKit fallback
+ * Based on Chrome DevRel recommendations 2024
+ */
+
+/* Modern browsers - Standard CSS */
+@supports (scrollbar-width: auto) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(217 33% 30%) transparent;
+  }
+
+  .dark * {
+    scrollbar-color: hsl(217 33% 35%) transparent;
+  }
+
+  *:hover {
+    scrollbar-color: hsl(224 76% 48%) hsl(217 33% 17% / 0.3);
+  }
+
+  .dark *:hover {
+    scrollbar-color: hsl(213 94% 68%) hsl(217 33% 20% / 0.3);
+  }
+}
+
+/* WebKit fallback (Chrome, Safari, Edge) */
+@supports selector(::-webkit-scrollbar) {
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(217 33% 30%);
+    border-radius: 3px;
+    transition: background 0.2s ease;
+  }
+
+  .dark ::-webkit-scrollbar-thumb {
+    background: hsl(217 33% 35%);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(224 76% 48%);
+  }
+
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: hsl(213 94% 68%);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+}
+
 @layer utilities {
   .text-gradient-primary {
     @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;

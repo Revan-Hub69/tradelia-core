@@ -13,10 +13,12 @@
     "company": "About"
   },
   "Hero": {
-    "title": "Learn <important>crypto</important> without the BS",
-    "description": "Anti-hype crypto education. First understand what it is (and what it's NOT), then decide if it's for you.",
-    "primary_button": "Start Free",
-    "secondary_button": "Explore Paths"
+    "badge": "Free path available",
+    "headline": "Understand blockchain and crypto <highlight>before you decide</highlight>",
+    "subheadline": "A structured path that separates technology, tools, and decisions. No promises, no rush, no BS.",
+    "cta_primary": "Start free",
+    "cta_secondary": "How it works",
+    "trust": "Free · 5 min/day · No card required"
   },
   "Features": {
     "section_subtitle": "Paths",
