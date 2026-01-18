@@ -41,6 +41,9 @@ export type ProgressData = {
   totalXP: number;
   level: number;
   nextRecommendedLesson?: string;
+  totalStudyTime?: number;
+  lastActivity?: Date;
+  completedLessons?: string[];
 };
 
 export type PathProgress = {

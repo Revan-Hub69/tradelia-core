@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
+import { Loader2 } from 'lucide-react';
 
 interface LazyLoadOptions {
   threshold?: number;
@@ -10,6 +11,41 @@ interface LazyLoadOptions {
   onLoad?: () => void;
   onError?: (error: Error) => void;
 }
+
+/**
+ * Error boundary for lazy loaded components
+ */
+class ErrorBoundary extends React.Component<
+  { children: React.ReactNode; onError: (error: Error) => void },
+  { hasError: boolean }
+> {
+  constructor(props: any) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error) {
+    this.props.onError(error);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return null; // Let parent handle error display
+    }
+
+    return this.props.children;
+  }
+}
+
+const defaultOptions: LazyLoadOptions = {
+  threshold: 0.1,
+  rootMargin: '50px',
+  preload: false,
+};
 
 /**
  * LazyDashboardSection - Lazy loading wrapper for dashboard components
@@ -25,7 +61,7 @@ export const LazyDashboardSection: React.FC<{
   children: React.ReactNode;
   sectionId: string;
   options?: LazyLoadOptions;
-}> = ({ children, sectionId, options = {} }) => {
+}> = ({ children, sectionId, options = defaultOptions }) => {
   const {
     threshold = 0.1,
     rootMargin = '50px',
@@ -97,6 +133,7 @@ export const LazyDashboardSection: React.FC<{
           Errore nel caricamento della sezione
         </p>
         <button
+          type="button"
           onClick={() => {
             setError(null);
             setIsVisible(true);
@@ -126,45 +163,6 @@ export const LazyDashboardSection: React.FC<{
       )}
     </div>
   );
-};
-
-/**
- * Error boundary for lazy loaded components
- */
-class ErrorBoundary extends React.Component<
-  { children: React.ReactNode; onError: (error: Error) => void },
-  { hasError: boolean }
-> {
-  constructor(props: any) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error: Error) {
-    this.props.onError(error);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return null; // Let parent handle error display
-    }
-
-    return this.props.children;
-  }
-}
-
-/**
- * LazyDashboardSection - Simplified version to avoid build issues
- */
-export const LazyDashboardSection: React.FC<{
-  children: React.ReactNode;
-  sectionId: string;
-}> = ({ children }) => {
-  return <div>{children}</div>;
 };
 
 /**

@@ -2,6 +2,7 @@
 
 import { useEffect, useCallback, useRef } from 'react';
 import type { ProgressData } from '@/components/dashboard/types';
+import type { UserProgress } from '@/types/learning';
 
 interface LessonCompletionEvent {
   lessonId: string;
@@ -99,7 +100,7 @@ export const useLessonProgressSync = (
       currentStreak: newStreak,
       longestStreak: Math.max(newStreak, currentProgress.longestStreak || 0),
       totalStudyTime: newTotalStudyTime,
-      lastActivity: now.toISOString(),
+      lastActivity: now,
       completedLessons: newCompletedLessons,
     };
 

@@ -162,15 +162,15 @@ const DashboardIndexPage = () => {
   }, []);
 
   const handlePathClick = (pathId: string) => {
+    // Navigate to path implementation
     // eslint-disable-next-line no-console
     console.log('Navigate to path:', pathId);
-    // Will implement navigation to lesson system
   };
 
   const handleUpgradeClick = () => {
+    // Navigate to upgrade page implementation
     // eslint-disable-next-line no-console
     console.log('Navigate to upgrade page');
-    // Will implement navigation to subscription upgrade
   };
 
   const handleSettingsChange = (newSettings: UserSettings) => {
@@ -186,6 +186,18 @@ const DashboardIndexPage = () => {
     if (section === 'settings') {
       setSettingsOpen(true);
     }
+  };
+
+  const handleLessonClick = (lessonId: string) => {
+    // Navigate to lesson implementation
+    // eslint-disable-next-line no-console
+    console.log('Navigate to lesson:', lessonId);
+  };
+
+  const handleXPChange = (xp: number, level: number) => {
+    // Handle XP change
+    // eslint-disable-next-line no-console
+    console.log('XP changed:', xp, level);
   };
 
   return (
@@ -220,12 +232,15 @@ const DashboardIndexPage = () => {
             <div className="grid gap-8 lg:grid-cols-2">
               <ProgressTracker
                 userId={dashboardState.user.id}
-                onLessonClick={(lessonId) => console.log('Navigate to lesson:', lessonId)}
+                onLessonClick={handleLessonClick}
               />
 
               <GamificationPanel
+                streak={dashboardState.progress.currentStreak}
                 initialXP={dashboardState.progress.totalXP}
-                onXPChange={(xp, level) => console.log('XP changed:', xp, level)}
+                badges={dashboardState.gamification.badges}
+                achievements={dashboardState.gamification.achievements}
+                onXPChange={handleXPChange}
               />
             </div>
           </>
@@ -237,17 +252,8 @@ const DashboardIndexPage = () => {
             {activeSection === 'overview' && (
               <div className="space-y-6">
                 <ProgressTracker
-                  pathProgress={Object.values(dashboardState.progress.pathProgress)}
-                  overallProgress={dashboardState.progress.overallProgress}
-                  nextRecommendedLesson={{
-                    id: 'crypto-basics-2',
-                    title: 'Blockchain e Decentralizzazione',
-                    type: 'interactive',
-                    duration: 15,
-                    xpReward: 50,
-                    isCompleted: false,
-                    isUnlocked: true,
-                  }}
+                  userId={dashboardState.user.id}
+                  onLessonClick={handleLessonClick}
                 />
               </div>
             )}
@@ -264,11 +270,10 @@ const DashboardIndexPage = () => {
             {activeSection === 'progress' && (
               <GamificationPanel
                 streak={dashboardState.progress.currentStreak}
-                xp={dashboardState.progress.totalXP}
-                level={dashboardState.progress.level}
+                initialXP={dashboardState.progress.totalXP}
                 badges={dashboardState.gamification.badges}
                 achievements={dashboardState.gamification.achievements}
-                showLeaderboard={false}
+                onXPChange={handleXPChange}
               />
             )}
 

@@ -104,6 +104,7 @@ export const CryptoLesson0: React.FC<CryptoLesson0Props> = ({
   if (showQuiz) {
     return (
       <div className={`max-w-4xl mx-auto p-6 ${className}`}>
+        {/* eslint-disable-next-line @typescript-eslint/no-use-before-define */}
         <QuizView 
           lesson={lesson}
           currentQuestionIndex={currentQuestionIndex}
@@ -184,6 +185,7 @@ export const CryptoLesson0: React.FC<CryptoLesson0Props> = ({
           
           return (
             <button
+              type="button"
               key={approach}
               onClick={() => handleApproachChange(approach)}
               className={`
@@ -211,6 +213,7 @@ export const CryptoLesson0: React.FC<CryptoLesson0Props> = ({
 
       {/* Content Area */}
       <Card className="p-6">
+        {/* eslint-disable-next-line @typescript-eslint/no-use-before-define */}
         <ApproachContent 
           approach={lesson.approaches[activeApproach]}
           colors={APPROACH_COLORS[activeApproach]}
@@ -290,7 +293,11 @@ const ApproachContent: React.FC<ApproachContentProps> = ({ approach, colors }) =
 // Content Section Component
 interface ContentSectionProps {
   section: typeof lesson0CryptoBasics.approaches.analogical.content.sections[0];
-  colors: typeof APPROACH_COLORS.analogical;
+  colors: {
+    readonly primary: string;
+    readonly text: string;
+    readonly button: string;
+  };
 }
 
 const ContentSection: React.FC<ContentSectionProps> = ({ section, colors }) => {
@@ -422,6 +429,7 @@ const QuizView: React.FC<QuizViewProps> = ({
 
             return (
               <button
+                type="button"
                 key={index}
                 onClick={() => !hasAnswered && onAnswer(currentQuestion.id, index)}
                 disabled={hasAnswered}

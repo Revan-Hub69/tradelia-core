@@ -65,6 +65,7 @@ export interface UserProgress {
   approachesExplored: Set<ApproachType>;
   lastActivity: Date;
   badges: Badge[];
+  totalStudyTime?: number;
 }
 
 export interface Badge {
