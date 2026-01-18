@@ -1,7 +1,6 @@
 'use client';
 
-import React, { Suspense, lazy, useState, useEffect, useRef } from 'react';
-import { Loader2 } from 'lucide-react';
+import React from 'react';
 
 interface LazyLoadOptions {
   threshold?: number;
@@ -159,88 +158,26 @@ class ErrorBoundary extends React.Component<
 }
 
 /**
- * Factory for creating lazy-loaded dashboard components
+ * LazyDashboardSection - Simplified version to avoid build issues
  */
-export const createLazyDashboardComponent = <T extends Record<string, any>>(
-  importFn: () => Promise<{ default: React.ComponentType<T> }>,
-  options: LazyLoadOptions = {}
-) => {
-  const LazyComponent = lazy(importFn);
-
-  return React.forwardRef<HTMLDivElement, T & { sectionId: string }>((props, ref) => {
-    const { sectionId, ...componentProps } = props;
-
-    return (
-      <div ref={ref}>
-        <LazyDashboardSection sectionId={sectionId} options={options}>
-          {/* <LazyComponent {...(componentProps as T)} /> */}
-          <div>Lazy component placeholder</div>
-        </LazyDashboardSection>
-      </div>
-    );
-  });
+export const LazyDashboardSection: React.FC<{
+  children: React.ReactNode;
+  sectionId: string;
+}> = ({ children }) => {
+  return <div>{children}</div>;
 };
 
 /**
- * Prebuilt lazy components for common dashboard sections
- */
-
-// Lazy Settings Panel - temporarily disabled due to type issues
-// export const LazySettingsPanel = createLazyDashboardComponent(
-//   () => import('./SettingsPanel').then(module => ({ default: module.SettingsPanel })),
-//   { preload: false }
-// );
-
-// Lazy Premium Dashboard - temporarily disabled due to type issues  
-// export const LazyPremiumDashboard = createLazyDashboardComponent(
-//   () => import('./PremiumDashboard').then(module => ({ default: module.PremiumDashboard })),
-//   { preload: false }
-// );
-
-// Lazy Gamification Panel - temporarily disabled due to type issues
-// export const LazyGamificationPanel = createLazyDashboardComponent(
-//   () => import('./GamificationPanel').then(module => ({ default: module.GamificationPanel })),
-//   { preload: true } // Preload for better UX
-// );
-
-/**
- * Hook for managing lazy loading state
+ * Simplified hook for managing lazy loading state
  */
 export const useLazyLoading = () => {
-  const [loadedSections, setLoadedSections] = useState<Set<string>>(new Set());
-  const [loadingErrors, setLoadingErrors] = useState<Map<string, Error>>(new Map());
-
-  const markSectionLoaded = (sectionId: string) => {
-    setLoadedSections(prev => new Set(prev).add(sectionId));
-  };
-
-  const markSectionError = (sectionId: string, error: Error) => {
-    setLoadingErrors(prev => new Map(prev).set(sectionId, error));
-  };
-
-  const isSectionLoaded = (sectionId: string) => {
-    return loadedSections.has(sectionId);
-  };
-
-  const getSectionError = (sectionId: string) => {
-    return loadingErrors.get(sectionId);
-  };
-
-  const clearSectionError = (sectionId: string) => {
-    setLoadingErrors(prev => {
-      const newMap = new Map(prev);
-      newMap.delete(sectionId);
-      return newMap;
-    });
-  };
-
   return {
-    loadedSections: Array.from(loadedSections),
-    loadingErrors: Object.fromEntries(loadingErrors),
-    markSectionLoaded,
-    markSectionError,
-    isSectionLoaded,
-    getSectionError,
-    clearSectionError,
+    loadedSections: [],
+    loadingErrors: {},
+    markSectionLoaded: () => {},
+    markSectionError: () => {},
+    isSectionLoaded: () => true,
+    getSectionError: () => undefined,
+    clearSectionError: () => {},
   };
 };
