@@ -7,12 +7,13 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { lesson0CryptoBasics } from '@/data/lessons/lesson0-crypto-basics';
 import { ApproachType, UserProgress } from '@/types/learning';
+import { Theater, Wrench, BookOpen, Target } from 'lucide-react';
 
-// Temporary icons - will be replaced with custom SVGs
+// Professional icons replacing emojis
 const APPROACH_ICONS = {
-  analogical: '🎭',
-  procedural: '🔧', 
-  conceptual: '📚'
+  analogical: Theater,
+  procedural: Wrench, 
+  conceptual: BookOpen
 } as const;
 
 const APPROACH_COLORS = {
@@ -196,7 +197,9 @@ export const CryptoLesson0: React.FC<CryptoLesson0Props> = ({
                 }
               `}
             >
-              <span className="text-2xl">{APPROACH_ICONS[approach]}</span>
+              <span className="flex items-center justify-center text-2xl">
+                {React.createElement(APPROACH_ICONS[approach], { className: "size-6" })}
+              </span>
               <div className="text-left">
                 <div className="font-medium flex items-center gap-2">
                   {approachData.title}
@@ -226,9 +229,10 @@ export const CryptoLesson0: React.FC<CryptoLesson0Props> = ({
           <Button 
             onClick={handleStartQuiz}
             size="lg"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 flex items-center gap-2"
           >
-            Inizia il Quiz Finale 🎯
+            <Target className="size-4" />
+            Inizia il Quiz Finale
           </Button>
         ) : (
           <p className="text-gray-600">

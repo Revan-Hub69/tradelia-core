@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Trophy, Star, Target, Award, ChevronRight, Sparkles, Plus } from 'lucide-react';
+import { StreakIcon, BadgeIcon, AchievementIcon } from '@/components/icons';
 
 import { cn } from '@/utils/Helpers';
 import { useXPSystem } from '@/hooks/useXPSystem';
@@ -213,10 +214,10 @@ export const GamificationPanel: React.FC<GamificationPanelWithXPProps> = ({
           <div className="mt-4 flex items-center justify-between rounded-lg bg-gradient-to-r from-orange-500/10 to-red-500/10 p-3">
             <div className="flex items-center gap-3">
               <div className={cn(
-                'text-2xl transition-all duration-300',
+                'transition-all duration-300',
                 streak >= 7 && 'animate-bounce'
               )}>
-                🔥
+                <StreakIcon size={28} className="text-orange-500" />
               </div>
               <div>
                 <div className="text-sm font-medium">
@@ -273,7 +274,9 @@ export const GamificationPanel: React.FC<GamificationPanelWithXPProps> = ({
                     )}
                   >
                     <div className="text-center">
-                      <div className="mb-2 text-2xl">{badge.icon}</div>
+                      <div className="mb-2">
+                        <BadgeIcon size={32} rarity={badge.rarity} className="mx-auto" />
+                      </div>
                       <div className={cn('text-sm font-medium', styles.text)}>
                         {badge.name}
                       </div>
@@ -336,7 +339,9 @@ export const GamificationPanel: React.FC<GamificationPanelWithXPProps> = ({
                       )}
                     >
                       <div className="text-center">
-                        <div className="mb-2 text-2xl">{badge.icon}</div>
+                        <div className="mb-2">
+                          <BadgeIcon size={32} rarity={badge.rarity} className="mx-auto" />
+                        </div>
                         <div className={cn('text-sm font-medium', styles.text)}>
                           {badge.name}
                         </div>
@@ -406,7 +411,11 @@ export const GamificationPanel: React.FC<GamificationPanelWithXPProps> = ({
                           className="rounded-lg border border-white/20 bg-white/40 p-4 backdrop-blur-sm dark:border-white/10 dark:bg-white/5"
                         >
                           <div className="flex items-start gap-3">
-                            <div className="text-2xl">{achievement.icon}</div>
+                            <AchievementIcon 
+                              size={32} 
+                              progress={(achievement.progress / achievement.maxProgress) * 100}
+                              className="text-primary flex-shrink-0 mt-1"
+                            />
                             <div className="flex-1">
                               <h5 className="font-medium">{achievement.title}</h5>
                               <p className="text-sm text-muted-foreground">
@@ -449,7 +458,11 @@ export const GamificationPanel: React.FC<GamificationPanelWithXPProps> = ({
                           className="rounded-lg border border-green-200/50 bg-green-50/50 p-3 backdrop-blur-sm dark:border-green-800/50 dark:bg-green-950/20"
                         >
                           <div className="flex items-center gap-3">
-                            <div className="text-xl">{achievement.icon}</div>
+                            <AchievementIcon 
+                              size={24} 
+                              progress={100}
+                              className="text-green-600 dark:text-green-400 flex-shrink-0"
+                            />
                             <div className="flex-1">
                               <h5 className="text-sm font-medium">{achievement.title}</h5>
                               <p className="text-xs text-muted-foreground">

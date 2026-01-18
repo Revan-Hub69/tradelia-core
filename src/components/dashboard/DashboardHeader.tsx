@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 
 import { Settings, User, LogOut, Crown } from 'lucide-react';
+import { StreakIcon, XPIcon } from '@/components/icons';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -61,7 +62,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           <div className="hidden lg:flex items-center gap-4 md:gap-6">
             {/* Streak Counter - Glassmorphism styling matching LessonHeader pattern */}
             <div className="group relative flex items-center gap-2 rounded-xl bg-white/60 px-3 py-2 backdrop-blur-sm transition-all hover:bg-white/80 dark:bg-white/10 dark:hover:bg-white/20">
-              <div className="text-lg" role="img" aria-label="Streak fire">🔥</div>
+              <StreakIcon size={18} className="text-orange-500" />
               <div className="text-sm font-semibold">
                 <span className="sr-only">Streak corrente:</span>
                 {currentStreak} giorni
@@ -70,7 +71,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
             {/* XP and Level - Consistent glassmorphism */}
             <div className="flex items-center gap-2 rounded-xl bg-white/60 px-3 py-2 backdrop-blur-sm dark:bg-white/10">
-              <div className="text-lg" role="img" aria-label="Experience points">⭐</div>
+              <XPIcon size={18} className="text-primary" />
               <div className="text-sm">
                 <span className="font-semibold">{totalXP}</span>
                 <span className="text-muted-foreground"> XP</span>
@@ -95,11 +96,11 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           {/* Mobile Gamification - Requirement 5.2 - Optimized for viewport < 768px */}
           {showGamification && (
             <div className="flex lg:hidden items-center gap-2 rounded-lg bg-white/60 px-2 py-1 backdrop-blur-sm dark:bg-white/10 transition-all hover:bg-white/80 dark:hover:bg-white/20">
-              <span className="text-sm" role="img" aria-label="Streak">🔥</span>
+              <StreakIcon size={14} className="text-orange-500" />
               <span className="text-xs font-medium">{currentStreak}</span>
               {/* Show XP on larger mobile screens */}
               <div className="hidden sm:flex lg:hidden items-center gap-1 ml-2 pl-2 border-l border-white/20">
-                <span className="text-xs" role="img" aria-label="XP">⭐</span>
+                <XPIcon size={12} className="text-primary" />
                 <span className="text-xs font-medium">{totalXP}</span>
               </div>
             </div>

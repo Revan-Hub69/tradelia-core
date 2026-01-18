@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ArrowRight, Check, Crown } from 'lucide-react';
+import { ArrowRight, Check, Crown, BookOpen } from 'lucide-react';
 
 import { cn } from '@/utils/Helpers';
 import type { LearningPath } from './types';
@@ -101,7 +101,7 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({
       <div className="mb-6 rounded-lg border border-primary/20 bg-gradient-to-r from-primary/10 to-primary/5 p-4">
         <div className="flex items-center gap-3">
           <div className="flex size-10 items-center justify-center rounded-lg bg-primary/20">
-            <span className="text-lg">📚</span>
+            <BookOpen className="size-5 text-primary" />
           </div>
           <div>
             <h4 className="font-medium">{path.title}</h4>

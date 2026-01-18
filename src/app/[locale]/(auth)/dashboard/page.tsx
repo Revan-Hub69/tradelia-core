@@ -100,7 +100,7 @@ const DashboardIndexPage = () => {
           id: 'first-lesson',
           name: 'Primo Passo',
           description: 'Hai completato la tua prima lezione!',
-          icon: '🎯',
+          icon: 'target', // Will use BadgeIcon component
           unlockedAt: new Date(),
           rarity: 'common',
         },
@@ -110,7 +110,7 @@ const DashboardIndexPage = () => {
           id: 'streak-7',
           title: 'Streak di 7 giorni',
           description: 'Studia per 7 giorni consecutivi',
-          icon: '🔥',
+          icon: 'streak', // Will use AchievementIcon component
           progress: 3,
           maxProgress: 7,
           isUnlocked: false,
