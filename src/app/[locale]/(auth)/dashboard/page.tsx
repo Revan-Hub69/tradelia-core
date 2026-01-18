@@ -227,8 +227,6 @@ const DashboardIndexPage = () => {
                 initialXP={dashboardState.progress.totalXP}
                 onXPChange={(xp, level) => console.log('XP changed:', xp, level)}
               />
-                showLeaderboard={false}
-              />
             </div>
           </>
         )}
