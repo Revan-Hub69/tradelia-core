@@ -6,7 +6,7 @@ import { Trophy, Star, Target, Award, ChevronRight, Sparkles, Plus } from 'lucid
 import { cn } from '@/utils/Helpers';
 import { useXPSystem } from '@/hooks/useXPSystem';
 import { LevelUpAnimation, XPGainAnimation } from './LevelUpAnimation';
-import type { GamificationPanelProps, Badge, Achievement } from './types';
+import type { GamificationPanelProps, Badge } from './types';
 
 /**
  * GamificationPanel - Badges and achievements display component with XP system
@@ -37,13 +37,12 @@ export const GamificationPanel: React.FC<GamificationPanelWithXPProps> = ({
   initialXP = 0,
   badges,
   achievements,
-  showLeaderboard = false,
   onXPChange,
 }) => {
   const [expandedSection, setExpandedSection] = useState<'badges' | 'achievements' | null>('badges');
   
   // XP System integration
-  const { xpState, addXP, triggerLevelUpAnimation, clearRecentXPGain, isAnimating } = useXPSystem(initialXP);
+  const { xpState, addXP, clearRecentXPGain, isAnimating } = useXPSystem(initialXP);
 
   // Notify parent of XP changes
   React.useEffect(() => {

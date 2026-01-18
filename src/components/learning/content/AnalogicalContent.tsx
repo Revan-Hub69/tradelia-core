@@ -1,7 +1,7 @@
 // Professional Analogical Content - Zero Emoji, Cognitive Design
 // Follows Tradelia Design System v1.1 and cognitive load principles
 
-import { RepresentationData } from '@/types/multipleRepresentations';
+// import { RepresentationData } from '@/types/multipleRepresentations';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { ArrowRight, AlertTriangle, Lightbulb } from 'lucide-react';
@@ -65,7 +65,7 @@ export const AnalogicalContent: React.FC<AnalogicalContentProps> = ({
         </CardHeader>
         <CardContent className="pt-0">
           <div className="space-y-3">
-            {metaphor.mapping.map((item, index) => (
+            {metaphor.mapping.map((item: any, index: number) => (
               <div 
                 key={index} 
                 className="flex items-center gap-4 p-3 rounded-lg bg-muted/30 border border-border/50"
@@ -95,7 +95,7 @@ export const AnalogicalContent: React.FC<AnalogicalContentProps> = ({
             Limitazioni dell'Analogia
           </h4>
           <div className="space-y-2">
-            {metaphor.limitations.map((limitation, index) => (
+            {metaphor.limitations.map((limitation: any, index: number) => (
               <p key={index} className="text-sm leading-relaxed text-warning/90">
                 {limitation}
               </p>

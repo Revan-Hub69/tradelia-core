@@ -1,4 +1,4 @@
-import { render, screen, cleanup, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, cleanup, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as fc from 'fast-check';
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
@@ -10,10 +10,10 @@ import type { DashboardHeaderProps } from './types';
 const userGenerator = () => fc.record({
   id: fc.string({ minLength: 1 }),
   email: fc.emailAddress(),
-  name: fc.option(fc.string({ minLength: 1 })),
-  avatar: fc.option(fc.webUrl()),
+  name: fc.option(fc.string({ minLength: 1 }), { nil: undefined }),
+  avatar: fc.option(fc.webUrl(), { nil: undefined }),
   subscription: fc.constantFrom('free', 'premium'),
-  subscriptionExpiry: fc.option(fc.date()),
+  subscriptionExpiry: fc.option(fc.date(), { nil: undefined }),
 });
 
 const dashboardHeaderPropsGenerator = () => fc.record({
@@ -21,7 +21,7 @@ const dashboardHeaderPropsGenerator = () => fc.record({
   currentStreak: fc.integer({ min: 0, max: 365 }),
   totalXP: fc.integer({ min: 0, max: 100000 }),
   onSettingsClick: fc.constant(vi.fn()),
-  showGamification: fc.option(fc.boolean()),
+  showGamification: fc.option(fc.boolean(), { nil: undefined }),
 });
 
 describe('DashboardHeader Unit Tests', () => {

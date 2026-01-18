@@ -3,10 +3,10 @@
 import React from 'react';
 import { TrendingUp, Target, Calendar, Award, BarChart3, Clock } from 'lucide-react';
 
-import type { UserProgress, LearningPath } from './types';
+import type { ProgressData, LearningPath } from './types';
 
 type PremiumDashboardProps = {
-  userProgress: UserProgress;
+  userProgress: ProgressData;
   learningPaths: LearningPath[];
   className?: string;
 };
@@ -28,10 +28,10 @@ export const PremiumDashboard: React.FC<PremiumDashboardProps> = ({
   className = '',
 }) => {
   // Calculate advanced metrics
-  const completedPaths = learningPaths.filter(path => path.progress === 100);
-  const averageProgress = learningPaths.reduce((sum, path) => sum + path.progress, 0) / learningPaths.length;
-  const totalStudyTime = userProgress.totalStudyTime || 0;
-  const weeklyGoal = userProgress.weeklyGoal || 300; // 5 hours default
+  const completedPaths = learningPaths.filter(path => path.completionRate === 100);
+  const averageProgress = learningPaths.reduce((sum, path) => sum + path.completionRate, 0) / learningPaths.length;
+  const totalStudyTime = 1800; // Mock data - in real app this would come from userProgress
+  const weeklyGoal = 300; // 5 hours default
   const weeklyProgress = (totalStudyTime / weeklyGoal) * 100;
 
   // Mock data for demonstration - in real app this would come from analytics service

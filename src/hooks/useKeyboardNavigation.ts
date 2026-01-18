@@ -147,12 +147,18 @@ export const useDashboardKeyboardNavigation = (
     switch (direction) {
       case 'left':
         if (currentIndex > 0) {
-          onSectionChange(sections[currentIndex - 1]);
+          const prevSection = sections[currentIndex - 1];
+          if (prevSection) {
+            onSectionChange(prevSection);
+          }
         }
         break;
       case 'right':
         if (currentIndex < sections.length - 1) {
-          onSectionChange(sections[currentIndex + 1]);
+          const nextSection = sections[currentIndex + 1];
+          if (nextSection) {
+            onSectionChange(nextSection);
+          }
         }
         break;
       case 'up':

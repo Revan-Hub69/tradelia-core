@@ -48,7 +48,7 @@ export const LessonNavigationCard: React.FC<LessonNavigationCardProps> = ({
   const getActionText = () => {
     if (isLocked) return 'Bloccato';
     if (isCompleted) return 'Rivedi';
-    if (lesson.progress && lesson.progress > 0) return 'Continua';
+    // if (lesson.progress && lesson.progress > 0) return 'Continua';
     return 'Inizia';
   };
 
@@ -68,15 +68,15 @@ export const LessonNavigationCard: React.FC<LessonNavigationCardProps> = ({
       ${isLocked ? 'opacity-60' : ''}
       ${className}
     `}>
-      {/* Progress Bar */}
-      {lesson.progress && lesson.progress > 0 && (
+      {/* Progress Bar - temporarily disabled */}
+      {/* {lesson.progress && lesson.progress > 0 && (
         <div className="absolute top-0 left-0 h-1 bg-primary/20">
           <div 
             className="h-full bg-primary transition-all duration-500"
             style={{ width: `${lesson.progress}%` }}
           />
         </div>
-      )}
+      )} */}
 
       <div className="p-4">
         {/* Header */}
@@ -85,11 +85,11 @@ export const LessonNavigationCard: React.FC<LessonNavigationCardProps> = ({
             <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
               {lesson.title}
             </h3>
-            {lesson.description && (
+            {/* {lesson.description && (
               <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
                 {lesson.description}
               </p>
-            )}
+            )} */}
           </div>
           
           {/* Status Icon */}
@@ -115,17 +115,7 @@ export const LessonNavigationCard: React.FC<LessonNavigationCardProps> = ({
             </div>
           )}
           
-          {lesson.difficulty && (
-            <div className="flex items-center gap-1">
-              <div className={`
-                size-2 rounded-full
-                ${lesson.difficulty === 'beginner' ? 'bg-green-500' : ''}
-                ${lesson.difficulty === 'intermediate' ? 'bg-yellow-500' : ''}
-                ${lesson.difficulty === 'advanced' ? 'bg-red-500' : ''}
-              `} />
-              <span className="capitalize">{lesson.difficulty}</span>
-            </div>
-          )}
+          {/* Difficulty indicator temporarily disabled */}
 
           {lesson.type && (
             <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">

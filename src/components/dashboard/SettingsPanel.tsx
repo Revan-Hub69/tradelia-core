@@ -92,7 +92,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent 
-        ref={keyboardRef}
+        ref={keyboardRef as React.RefObject<HTMLDivElement>}
         className="max-h-[80vh] max-w-2xl overflow-y-auto border-white/20 bg-white/90 backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/90"
       >
         <DialogHeader>

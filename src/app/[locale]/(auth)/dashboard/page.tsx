@@ -219,25 +219,14 @@ const DashboardIndexPage = () => {
 
             <div className="grid gap-8 lg:grid-cols-2">
               <ProgressTracker
-                pathProgress={Object.values(dashboardState.progress.pathProgress)}
-                overallProgress={dashboardState.progress.overallProgress}
-                nextRecommendedLesson={{
-                  id: 'crypto-basics-2',
-                  title: 'Blockchain e Decentralizzazione',
-                  type: 'interactive',
-                  duration: 15,
-                  xpReward: 50,
-                  isCompleted: false,
-                  isUnlocked: true,
-                }}
+                userId={dashboardState.user.id}
+                onLessonClick={(lessonId) => console.log('Navigate to lesson:', lessonId)}
               />
 
               <GamificationPanel
-                streak={dashboardState.progress.currentStreak}
-                xp={dashboardState.progress.totalXP}
-                level={dashboardState.progress.level}
-                badges={dashboardState.gamification.badges}
-                achievements={dashboardState.gamification.achievements}
+                initialXP={dashboardState.progress.totalXP}
+                onXPChange={(xp, level) => console.log('XP changed:', xp, level)}
+              />
                 showLeaderboard={false}
               />
             </div>

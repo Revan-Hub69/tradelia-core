@@ -45,7 +45,6 @@ export const useDynamicPathLoading = (config: DynamicPathConfig = {}) => {
   });
 
   const abortControllerRef = useRef<AbortController | null>(null);
-  const prefetchQueueRef = useRef<string[]>([]);
 
   // Load path metadata
   const loadPathMetadata = useCallback(async (pathId: string): Promise<LearningPath> => {
@@ -237,7 +236,7 @@ export const useDynamicPathLoading = (config: DynamicPathConfig = {}) => {
         return false;
       }
 
-      const { compatible, version } = await response.json();
+      const { compatible } = await response.json();
       return compatible;
     } catch (error) {
       console.warn(`Failed to validate compatibility for path ${pathId}:`, error);

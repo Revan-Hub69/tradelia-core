@@ -86,7 +86,7 @@ export const CryptoLesson0: React.FC<CryptoLesson0Props> = ({
   };
 
   const handleLessonComplete = () => {
-    const score = calculateQuizScore();
+    // const score = calculateQuizScore();
     const newProgress: UserProgress = {
       currentStreak: 1, // This would come from existing progress
       longestStreak: 1,
@@ -240,7 +240,11 @@ export const CryptoLesson0: React.FC<CryptoLesson0Props> = ({
 // Approach Content Component
 interface ApproachContentProps {
   approach: typeof lesson0CryptoBasics.approaches.analogical;
-  colors: typeof APPROACH_COLORS.analogical;
+  colors: {
+    readonly primary: string;
+    readonly text: string;
+    readonly button: string;
+  };
 }
 
 const ApproachContent: React.FC<ApproachContentProps> = ({ approach, colors }) => {
@@ -390,6 +394,10 @@ const QuizView: React.FC<QuizViewProps> = ({
   }
 
   const currentQuestion = lesson.quiz[currentQuestionIndex];
+  if (!currentQuestion) {
+    return <div>Errore: Domanda non trovata</div>;
+  }
+  
   const hasAnswered = answers[currentQuestion.id] !== undefined;
 
   return (

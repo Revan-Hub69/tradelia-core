@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useCallback, useRef } from 'react';
-import type { UserProgress } from '@/components/dashboard/types';
+import type { ProgressData } from '@/components/dashboard/types';
 
 interface LessonCompletionEvent {
   lessonId: string;
@@ -13,7 +13,7 @@ interface LessonCompletionEvent {
 }
 
 interface ProgressSyncOptions {
-  onProgressUpdate?: (progress: Partial<UserProgress>) => void;
+  onProgressUpdate?: (progress: Partial<ProgressData>) => void;
   onXPGained?: (xp: number, source: string) => void;
   onStreakUpdate?: (streak: number) => void;
   onAchievementUnlocked?: (achievement: string) => void;
@@ -30,7 +30,7 @@ interface ProgressSyncOptions {
  * - Event-driven architecture
  */
 export const useLessonProgressSync = (
-  currentProgress: UserProgress,
+  currentProgress: ProgressData,
   options: ProgressSyncOptions = {}
 ) => {
   const {
@@ -52,10 +52,8 @@ export const useLessonProgressSync = (
   const handleLessonCompletion = useCallback((event: LessonCompletionEvent) => {
     const {
       lessonId,
-      pathId,
       xpGained,
       timeSpent,
-      completionPercentage,
       achievements = [],
     } = event;
 
@@ -199,7 +197,7 @@ export const useLessonProgressSync = (
   }, [handleLessonCompletion]);
 
   // Utility function to sync progress to storage
-  const syncToStorage = useCallback((progress: UserProgress) => {
+  const syncToStorage = useCallback((progress: ProgressData) => {
     try {
       const progressWithSync = {
         ...progress,

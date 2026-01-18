@@ -5,7 +5,7 @@ import { ArrowRight, BookOpen, Clock, Trophy, TrendingUp, RefreshCw } from 'luci
 
 import { cn } from '@/utils/Helpers';
 import { useProgressUpdates } from '@/hooks/useProgressUpdates';
-import type { ProgressTrackerProps, PathProgress, Lesson } from './types';
+import type { PathProgress, Lesson } from './types';
 
 /**
  * ProgressTracker - Progress overview dashboard component with real-time updates

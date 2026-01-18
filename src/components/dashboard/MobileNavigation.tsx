@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { Home, BookOpen, BarChart3, Settings, User } from 'lucide-react';
+import { Home, BookOpen, BarChart3, User } from 'lucide-react';
 
 type MobileNavigationProps = {
   activeSection: 'overview' | 'paths' | 'progress' | 'settings';

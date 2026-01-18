@@ -10,8 +10,8 @@ interface MicroLessonContainerProps {
 }
 
 export const MicroLessonContainer: React.FC<MicroLessonContainerProps> = ({ 
-  lesson, 
-  onComplete 
+  // lesson, 
+  // onComplete 
 }) => {
   return (
     <div className="max-w-4xl mx-auto p-6">

@@ -36,7 +36,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const swipeRef = useDashboardSwipeNavigation(activeSection, onSectionChange);
 
   return (
-    <div className={`min-h-screen bg-background ${className}`} ref={swipeRef}>
+    <div className={`min-h-screen bg-background ${className}`} ref={swipeRef as React.RefObject<HTMLDivElement>}>
       {/* Main Dashboard Container */}
       <div className="mx-auto max-w-screen-xl px-3 pb-16 pt-6">
         {/* Loading State */}

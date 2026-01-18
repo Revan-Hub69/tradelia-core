@@ -24,8 +24,6 @@ export const TestHeader: React.FC = () => {
       <LessonHeader
         currentStep={currentStep}
         totalSteps={5}
-        lessonTitle="Test Header"
-        duration="5 min"
         onBack={currentStep > 0 ? handleBack : undefined}
         onClose={handleClose}
         showLogo

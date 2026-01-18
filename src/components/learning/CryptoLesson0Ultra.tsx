@@ -666,7 +666,7 @@ export const CryptoLesson0Ultra: React.FC = () => {
               Esplora tutti e 3 gli approcci per sbloccare il quiz di verifica
             </p>
             <div className="flex justify-center gap-3">
-              {Object.keys(approaches).map((approach, i) => (
+              {Object.keys(approaches).map((approach) => (
                 <div
                   key={approach}
                   className={`size-3 rounded-full transition-all duration-300 ${

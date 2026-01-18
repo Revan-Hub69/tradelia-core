@@ -43,17 +43,21 @@ export const useSwipeNavigation = (
       }
       
       const touch = e.touches[0];
-      touchStartRef.current = {
-        x: touch.clientX,
-        y: touch.clientY,
-        time: Date.now(),
-      };
+      if (touch) {
+        touchStartRef.current = {
+          x: touch.clientX,
+          y: touch.clientY,
+          time: Date.now(),
+        };
+      }
     };
 
     const handleTouchEnd = (e: TouchEvent) => {
       if (!touchStartRef.current) return;
 
       const touch = e.changedTouches[0];
+      if (!touch) return;
+      
       const deltaX = touch.clientX - touchStartRef.current.x;
       const deltaY = touch.clientY - touchStartRef.current.y;
       const deltaTime = Date.now() - touchStartRef.current.time;
@@ -125,10 +129,16 @@ export const useDashboardSwipeNavigation = (
     
     if (direction === 'left' && currentIndex < sections.length - 1) {
       // Swipe left = next section
-      onSectionChange(sections[currentIndex + 1]);
+      const nextSection = sections[currentIndex + 1];
+      if (nextSection) {
+        onSectionChange(nextSection);
+      }
     } else if (direction === 'right' && currentIndex > 0) {
       // Swipe right = previous section
-      onSectionChange(sections[currentIndex - 1]);
+      const prevSection = sections[currentIndex - 1];
+      if (prevSection) {
+        onSectionChange(prevSection);
+      }
     }
   };
 

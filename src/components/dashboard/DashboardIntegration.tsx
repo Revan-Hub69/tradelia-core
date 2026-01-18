@@ -18,7 +18,7 @@ import { useSubscriptionDegradation } from '@/hooks/useSubscriptionDegradation';
 import { useNetworkErrorHandling } from '@/hooks/useNetworkErrorHandling';
 import { useDynamicPathLoading } from '@/hooks/useDynamicPathLoading';
 
-import type { DashboardState, UserProgress, LearningPath, UserSettings } from './types';
+import type { DashboardState, UserSettings } from './types';
 
 /**
  * DashboardIntegration - Complete dashboard integration component
@@ -39,18 +39,25 @@ export const DashboardIntegration: React.FC = () => {
       id: 'demo-user',
       name: 'Demo User',
       email: 'demo@tradelia.com',
-      tier: 'free',
-      avatar: null,
+      subscription: 'free',
+      avatar: undefined,
     },
     progress: {
-      totalXP: 2450,
-      level: 3,
+      overallProgress: 65,
+      pathProgress: {
+        'crypto-basics': {
+          pathId: 'crypto-basics',
+          completionRate: 65,
+          currentModule: 1,
+          timeSpent: 1800,
+          lastAccessed: new Date(),
+        },
+      },
       currentStreak: 5,
       longestStreak: 12,
-      completedLessons: ['lesson-1', 'lesson-2', 'lesson-3'],
-      lastActivity: new Date().toISOString(),
-      totalStudyTime: 1800, // 30 hours in minutes
-      weeklyGoal: 300, // 5 hours
+      totalXP: 2450,
+      level: 3,
+      nextRecommendedLesson: 'lesson-2',
     },
     learningPaths: [
       {
@@ -58,43 +65,58 @@ export const DashboardIntegration: React.FC = () => {
         title: 'Fondamenti di Criptovalute',
         description: 'Impara le basi delle criptovalute e della blockchain',
         difficulty: 'beginner',
-        estimatedTime: 120,
-        progress: 65,
-        isLocked: false,
         isPremium: false,
-        lessons: [
+        prerequisites: [],
+        modules: [
           {
-            id: 'lesson-1',
-            title: 'Cos\'è una Criptovaluta?',
-            description: 'Introduzione alle criptovalute',
-            type: 'theory',
-            difficulty: 'beginner',
+            id: 'module-1',
+            title: 'Introduzione',
+            lessons: [
+              {
+                id: 'lesson-1',
+                title: 'Cos\'è una Criptovaluta?',
+                type: 'interactive',
+                duration: 15,
+                xpReward: 50,
+                isCompleted: true,
+                isUnlocked: true,
+              },
+            ],
+            isLocked: false,
+            completionRate: 100,
             estimatedTime: 15,
-            progress: 100,
-          },
-          {
-            id: 'lesson-2',
-            title: 'Come Funziona la Blockchain',
-            description: 'Tecnologia blockchain spiegata',
-            type: 'interactive',
-            difficulty: 'beginner',
-            estimatedTime: 20,
-            progress: 75,
           },
         ],
-      },
-      {
-        id: 'advanced-trading',
-        title: 'Trading Avanzato',
-        description: 'Strategie di trading professionali',
-        difficulty: 'advanced',
-        estimatedTime: 300,
-        progress: 0,
-        isLocked: true,
-        isPremium: true,
-        lessons: [],
+        estimatedDuration: 120,
+        completionRate: 65,
+        isLocked: false,
       },
     ],
+    gamification: {
+      badges: [
+        {
+          id: 'first-lesson',
+          name: 'Prima Lezione',
+          description: 'Completa la tua prima lezione',
+          icon: '🎓',
+          unlockedAt: new Date(),
+          rarity: 'common',
+        },
+      ],
+      achievements: [
+        {
+          id: 'streak-7',
+          title: 'Streak di 7 giorni',
+          description: 'Studia per 7 giorni consecutivi',
+          icon: '🔥',
+          progress: 5,
+          maxProgress: 7,
+          isUnlocked: false,
+        },
+      ],
+      streakHistory: [],
+      xpHistory: [],
+    },
     settings: {
       preferences: {
         language: 'it',
@@ -115,37 +137,19 @@ export const DashboardIntegration: React.FC = () => {
       },
     },
     ui: {
-      isMobile: false,
       isLoading: false,
-      error: null,
+      error: undefined,
+      activeSection: 'overview',
+      isMobile: false,
     },
   });
 
   // Hooks integration
-  const xpSystem = useXPSystem(dashboardState.progress.totalXP);
-  const progressUpdates = useProgressUpdates(dashboardState.progress);
   const subscriptionState = useSubscriptionDegradation({
-    tier: dashboardState.user.tier,
+    tier: dashboardState.user.subscription,
     status: 'active',
   });
   const networkHandling = useNetworkErrorHandling();
-  const dynamicPaths = useDynamicPathLoading();
-
-  // Progress sync
-  const lessonSync = useLessonProgressSync(dashboardState.progress, {
-    onProgressUpdate: (progress) => {
-      setDashboardState(prev => ({
-        ...prev,
-        progress: { ...prev.progress, ...progress },
-      }));
-    },
-    onXPGained: (xp, source) => {
-      console.log(`XP gained: ${xp} from ${source}`);
-    },
-    onStreakUpdate: (streak) => {
-      console.log(`Streak updated: ${streak}`);
-    },
-  });
 
   // Mobile detection
   useEffect(() => {
@@ -185,12 +189,10 @@ export const DashboardIntegration: React.FC = () => {
   };
 
   const handleLessonStart = (lessonId: string) => {
-    console.log(`Starting lesson: ${lessonId}`);
     // In real app, navigate to lesson
   };
 
   const handleUpgrade = () => {
-    console.log('Upgrade to premium');
     // In real app, open upgrade flow
   };
 
@@ -202,25 +204,29 @@ export const DashboardIntegration: React.FC = () => {
           <div className="space-y-6">
             <DashboardHeader
               user={dashboardState.user}
-              progress={dashboardState.progress}
+              currentStreak={dashboardState.progress.currentStreak}
+              totalXP={dashboardState.progress.totalXP}
               onSettingsClick={handleSettingsOpen}
             />
             
-            {dashboardState.user.tier === 'premium' ? (
+            {dashboardState.user.subscription === 'premium' ? (
               <PremiumDashboard
                 userProgress={dashboardState.progress}
                 learningPaths={dashboardState.learningPaths}
               />
             ) : (
               <PremiumBenefitsDisplay
-                userTier={dashboardState.user.tier}
+                userTier={dashboardState.user.subscription}
                 onUpgrade={handleUpgrade}
               />
             )}
             
             <GamificationPanel
-              userProgress={dashboardState.progress}
-              onXPUpdate={(xp) => console.log('XP updated:', xp)}
+              streak={dashboardState.progress.currentStreak}
+              initialXP={dashboardState.progress.totalXP}
+              badges={dashboardState.gamification.badges}
+              achievements={dashboardState.gamification.achievements}
+              onXPChange={() => {}}
             />
           </div>
         );
@@ -228,18 +234,18 @@ export const DashboardIntegration: React.FC = () => {
       case 'paths':
         return (
           <LearningPathsSection
-            learningPaths={dashboardState.learningPaths}
-            userTier={dashboardState.user.tier}
-            onLessonStart={handleLessonStart}
-            onUpgrade={handleUpgrade}
+            paths={dashboardState.learningPaths}
+            userSubscription={dashboardState.user.subscription}
+            onPathClick={handleLessonStart}
+            onUpgradeClick={handleUpgrade}
           />
         );
 
       case 'progress':
         return (
           <ProgressTracker
-            userProgress={dashboardState.progress}
-            learningPaths={dashboardState.learningPaths}
+            userId={dashboardState.user.id}
+            onLessonClick={handleLessonStart}
           />
         );
 

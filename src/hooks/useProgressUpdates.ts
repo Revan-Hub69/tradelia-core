@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 
-import type { ProgressData, PathProgress } from '@/components/dashboard/types';
+import type { ProgressData } from '@/components/dashboard/types';
 
 /**
  * useProgressUpdates - Real-time progress synchronization hook
