@@ -8,7 +8,7 @@ const jiti = createJiti(fileURLToPath(import.meta.url));
 
 jiti('./src/libs/Env');
 
-const withNextIntlConfig = withNextIntl('./src/libs/i18n.ts');
+const withNextIntlConfig = withNextIntl();
 
 const bundleAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
@@ -17,14 +17,9 @@ const bundleAnalyzer = withBundleAnalyzer({
 /** @type {import('next').NextConfig} */
 export default bundleAnalyzer(
   withNextIntlConfig({
-    eslint: {
-      dirs: ['.'],
-    },
     poweredByHeader: false,
     reactStrictMode: true,
-    experimental: {
-      serverComponentsExternalPackages: ['@electric-sql/pglite'],
-    },
+    serverExternalPackages: ['@electric-sql/pglite'],
     async headers() {
       return [
         {

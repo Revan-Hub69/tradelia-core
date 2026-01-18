@@ -9,8 +9,9 @@ export async function generateMetadata() {
   };
 }
 
-const OnboardingPage = (props: { params: { locale: string } }) => {
-  unstable_setRequestLocale(props.params.locale);
+const OnboardingPage = async (props: { params: Promise<{ locale: string }> }) => {
+  const params = await props.params;
+  unstable_setRequestLocale(params.locale);
 
   return <OptimizedOnboardingFlow />;
 };

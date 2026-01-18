@@ -1,11 +1,10 @@
 import { useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 
-import { DashboardHeader } from '@/features/dashboard/DashboardHeader';
-
-export async function generateMetadata(props: { params: { locale: string } }) {
+export async function generateMetadata(props: { params: Promise<{ locale: string }> }) {
+  const params = await props.params;
   const t = await getTranslations({
-    locale: props.params.locale,
+    locale: params.locale,
     namespace: 'Dashboard',
   });
 
@@ -16,33 +15,14 @@ export async function generateMetadata(props: { params: { locale: string } }) {
 }
 
 export default function DashboardLayout(props: { children: React.ReactNode }) {
-  const t = useTranslations('DashboardLayout');
-
+  // Simplified layout - main dashboard logic moved to page component
+  // This maintains the existing Next.js app router structure while
+  // allowing the new dashboard architecture to handle the UI
+  
   return (
-    <>
-      <div className="shadow-md">
-        <div className="mx-auto flex max-w-screen-xl items-center justify-between px-3 py-4">
-          <DashboardHeader
-            menu={[
-              {
-                href: '/dashboard',
-                label: t('home'),
-              },
-              {
-                href: '/dashboard/user-profile',
-                label: t('settings'),
-              },
-            ]}
-          />
-        </div>
-      </div>
-
-      <div className="min-h-[calc(100vh-72px)] bg-muted">
-        <div className="mx-auto max-w-screen-xl px-3 pb-16 pt-6">
-          {props.children}
-        </div>
-      </div>
-    </>
+    <div className="min-h-screen bg-background">
+      {props.children}
+    </div>
   );
 }
 

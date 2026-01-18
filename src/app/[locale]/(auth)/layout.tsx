@@ -1,6 +1,8 @@
-export default function AuthLayout(props: {
+export default async function AuthLayout(props: {
   children: React.ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }) {
+  // params is awaited but not used in this layout
+  await props.params;
   return <>{props.children}</>;
 }

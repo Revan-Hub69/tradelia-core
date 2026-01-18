@@ -209,7 +209,7 @@ export const PremiumFooter = () => {
                     </h3>
                     <ul className="space-y-3">
                       {section.links.map(link => (
-                        <li key={link.label}>
+                        <li key={link.href}>
                           <NavLink href={link.href}>
                             {link.label}
                           </NavLink>

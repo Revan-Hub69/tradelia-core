@@ -6,88 +6,121 @@ import { useState } from 'react';
 
 import { cn } from '@/utils/Helpers';
 
-type DemoStep = 'level-select' | 'lesson' | 'quiz' | 'result' | 'rewards';
-type UserLevel = 'beginner' | 'curious' | 'experienced';
+type DemoStep = 'cognitive-select' | 'lesson' | 'quiz' | 'result' | 'rewards';
+type CognitiveStyle = 'analogical' | 'procedural' | 'conceptual';
 
 /**
- * Level definitions
+ * Interactive Demo 2026 - Research-Based Cognitive Approaches
+ * 
+ * Based on Adaptive Communication Styles Research 2026:
+ * - Shows same crypto concept (Bitcoin) in 3 cognitive approaches
+ * - Demonstrates cognitive flexibility and style switching
+ * - Implements research findings on multiple representations
  */
-const getLevels = (t: any) => ({
-  beginner: { label: t('level_beginner'), desc: t('level_beginner_desc') },
-  curious: { label: t('level_curious'), desc: t('level_curious_desc') },
-  experienced: { label: t('level_experienced'), desc: t('level_experienced_desc') },
+
+/**
+ * Cognitive Style definitions based on research
+ */
+const getCognitiveStyles = (t: any) => ({
+  analogical: { 
+    label: t('cognitive_analogical'), 
+    desc: t('cognitive_analogical_desc'),
+    icon: '🎭',
+    process: 'Analogical mapping'
+  },
+  procedural: { 
+    label: t('cognitive_procedural'), 
+    desc: t('cognitive_procedural_desc'),
+    icon: '🔧', 
+    process: 'Sequential learning'
+  },
+  conceptual: { 
+    label: t('cognitive_conceptual'), 
+    desc: t('cognitive_conceptual_desc'),
+    icon: '📚',
+    process: 'Structured understanding'
+  },
 });
 
 /**
- * Lesson content based on level
+ * Lesson content based on cognitive style - same concept, different approaches
  */
 const getLessonContent = (t: any) => ({
-  beginner: {
+  analogical: {
     title: t('lesson_title'),
-    explanation: t('lesson_beginner_explanation'),
-    question: t('lesson_beginner_question'),
+    explanation: t('lesson_analogical_explanation'),
+    question: t('lesson_analogical_question'),
     options: [
-      { id: 'a', text: t('lesson_beginner_option_a') },
-      { id: 'b', text: t('lesson_beginner_option_b') },
-      { id: 'c', text: t('lesson_beginner_option_c') },
+      { id: 'a', text: t('lesson_analogical_option_a') },
+      { id: 'b', text: t('lesson_analogical_option_b') },
+      { id: 'c', text: t('lesson_analogical_option_c') },
     ],
     correct: 'a',
+    visual: '🪙 → 💻 → 🌐'
   },
-  curious: {
+  procedural: {
     title: t('lesson_title'),
-    explanation: t('lesson_curious_explanation'),
-    question: t('lesson_curious_question'),
+    explanation: t('lesson_procedural_explanation'),
+    question: t('lesson_procedural_question'),
     options: [
-      { id: 'a', text: t('lesson_curious_option_a') },
-      { id: 'b', text: t('lesson_curious_option_b') },
-      { id: 'c', text: t('lesson_curious_option_c') },
+      { id: 'a', text: t('lesson_procedural_option_a') },
+      { id: 'b', text: t('lesson_procedural_option_b') },
+      { id: 'c', text: t('lesson_procedural_option_c') },
     ],
     correct: 'b',
+    visual: '👤 → 🌐 → 👤'
   },
-  experienced: {
+  conceptual: {
     title: t('lesson_title'),
-    explanation: t('lesson_experienced_explanation'),
-    question: t('lesson_experienced_question'),
+    explanation: t('lesson_conceptual_explanation'),
+    question: t('lesson_conceptual_question'),
     options: [
-      { id: 'a', text: t('lesson_experienced_option_a') },
-      { id: 'b', text: t('lesson_experienced_option_b') },
-      { id: 'c', text: t('lesson_experienced_option_c') },
+      { id: 'a', text: t('lesson_conceptual_option_a') },
+      { id: 'b', text: t('lesson_conceptual_option_b') },
+      { id: 'c', text: t('lesson_conceptual_option_c') },
     ],
     correct: 'a',
+    visual: '⛓️ → 🔐 → ✅'
   },
 });
 
 /**
- * Rewards based on level
+ * Rewards based on cognitive exploration
  */
 const getRewards = (t: any) => ({
-  beginner: { xp: 15, unlock: t('reward_wallet_basics'), next: t('reward_wallet_next') },
-  curious: { xp: 25, unlock: t('reward_defi'), next: t('reward_defi_next') },
-  experienced: { xp: 35, unlock: t('reward_smart_contracts'), next: t('reward_smart_contracts_next') },
+  analogical: { xp: 15, unlock: t('reward_metaphorical_thinking'), next: t('reward_try_procedural') },
+  procedural: { xp: 20, unlock: t('reward_practical_skills'), next: t('reward_try_conceptual') },
+  conceptual: { xp: 25, unlock: t('reward_theoretical_foundation'), next: t('reward_cognitive_flexibility') },
 });
 
 export const InteractiveDemo = () => {
   const t = useTranslations('InteractiveDemo' as any) as (key: string) => string;
-  const [step, setStep] = useState<DemoStep>('level-select');
-  const [userLevel, setUserLevel] = useState<UserLevel>('beginner');
+  const [step, setStep] = useState<DemoStep>('cognitive-select');
+  const [cognitiveStyle, setCognitiveStyle] = useState<CognitiveStyle>('analogical');
   const [answer, setAnswer] = useState<string | null>(null);
+  const [exploredStyles, setExploredStyles] = useState<Set<CognitiveStyle>>(new Set());
 
-  const levels = getLevels(t);
+  const cognitiveStyles = getCognitiveStyles(t);
   const rewards = getRewards(t);
   const lessonContent = getLessonContent(t);
 
-  const currentLesson = lessonContent[userLevel];
-  const currentReward = rewards[userLevel];
+  const currentLesson = lessonContent[cognitiveStyle];
+  const currentReward = rewards[cognitiveStyle];
   const isCorrect = answer === currentLesson.correct;
 
-  const handleLevelSelect = (level: UserLevel) => {
-    setUserLevel(level);
+  const handleCognitiveSelect = (style: CognitiveStyle) => {
+    setCognitiveStyle(style);
     setStep('lesson');
   };
 
   const handleAnswer = (selectedAnswer: string) => {
     setAnswer(selectedAnswer);
     setStep('result');
+    
+    // Track explored style
+    const newExploredStyles = new Set(exploredStyles);
+    newExploredStyles.add(cognitiveStyle);
+    setExploredStyles(newExploredStyles);
   };
 
   const showRewards = () => {
@@ -95,8 +128,21 @@ export const InteractiveDemo = () => {
   };
 
   const restart = () => {
-    setStep('level-select');
+    setStep('cognitive-select');
     setAnswer(null);
+  };
+
+  const tryAnotherStyle = () => {
+    const unexploredStyles = (['analogical', 'procedural', 'conceptual'] as CognitiveStyle[])
+      .filter(style => !exploredStyles.has(style));
+    
+    if (unexploredStyles.length > 0) {
+      setCognitiveStyle(unexploredStyles[0]!);
+      setStep('lesson');
+      setAnswer(null);
+    } else {
+      restart();
+    }
   };
 
   return (
@@ -128,23 +174,23 @@ export const InteractiveDemo = () => {
                         <span className="text-sm font-bold text-primary-foreground">T</span>
                       </div>
                       <span className="text-sm font-semibold">
-                        {step === 'level-select' ? t('welcome') : `${t('quiz')} ${userLevel === 'beginner' ? '1' : userLevel === 'curious' ? '5' : '12'}`}
+                        {step === 'cognitive-select' 
+                          ? t('welcome') 
+                          : `${cognitiveStyles[cognitiveStyle].icon} ${cognitiveStyles[cognitiveStyle].label}`
+                        }
                       </span>
                     </div>
-                    {step !== 'level-select' && (
+                    {step !== 'cognitive-select' && (
                       <div className="rounded-full bg-accent/20 px-2 py-1">
                         <span className="text-xs font-medium text-accent">
-                          +
-                          {currentReward.xp}
-                          {' '}
-                          XP
+                          +{currentReward.xp} XP
                         </span>
                       </div>
                     )}
                   </div>
 
                   {/* Progress Bar */}
-                  {step !== 'level-select' && (
+                  {step !== 'cognitive-select' && (
                     <div className="mb-4 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
                       <div
                         className={cn(
@@ -158,23 +204,47 @@ export const InteractiveDemo = () => {
                     </div>
                   )}
 
+                  {/* Cognitive Flexibility Indicator */}
+                  {exploredStyles.size > 0 && step !== 'cognitive-select' && (
+                    <div className="mb-3 flex items-center justify-center gap-1">
+                      {(['analogical', 'procedural', 'conceptual'] as CognitiveStyle[]).map(style => (
+                        <div
+                          key={style}
+                          className={cn(
+                            'size-2 rounded-full transition-colors',
+                            exploredStyles.has(style) ? 'bg-accent' : 'bg-muted'
+                          )}
+                        />
+                      ))}
+                      <span className="ml-2 text-xs text-muted-foreground">
+                        {exploredStyles.size}/3 approcci
+                      </span>
+                    </div>
+                  )}
+
                   {/* Content */}
                   <div className="flex-1">
-                    {step === 'level-select' && (
+                    {step === 'cognitive-select' && (
                       <div className="space-y-3">
-                        <h3 className="text-base font-semibold">{t('level_question')}</h3>
+                        <h3 className="text-base font-semibold">{t('cognitive_question')}</h3>
                         <p className="text-xs text-muted-foreground">
-                          {t('level_subtitle')}
+                          {t('cognitive_subtitle')}
                         </p>
-                        {Object.entries(levels).map(([key, level]) => (
+                        {Object.entries(cognitiveStyles).map(([key, style]) => (
                           <button
                             key={key}
                             type="button"
-                            onClick={() => handleLevelSelect(key as UserLevel)}
+                            onClick={() => handleCognitiveSelect(key as CognitiveStyle)}
                             className="w-full rounded-lg border border-border bg-background p-3 text-left transition-colors hover:border-primary hover:bg-primary/5"
                           >
-                            <div className="text-sm font-medium">{level.label}</div>
-                            <div className="text-xs text-muted-foreground">{level.desc}</div>
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-lg">{style.icon}</span>
+                              <span className="text-sm font-medium">{style.label}</span>
+                            </div>
+                            <div className="text-xs text-muted-foreground">{style.desc}</div>
+                            <div className="text-xs text-muted-foreground/70 mt-1">
+                              {style.process}
+                            </div>
                           </button>
                         ))}
                       </div>
@@ -182,7 +252,10 @@ export const InteractiveDemo = () => {
 
                     {step === 'lesson' && (
                       <div>
-                        <h3 className="mb-3 text-base font-semibold">{currentLesson.title}</h3>
+                        <div className="mb-3 text-center">
+                          <div className="text-2xl mb-2">{currentLesson.visual}</div>
+                          <h3 className="text-base font-semibold">{currentLesson.title}</h3>
+                        </div>
                         <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
                           {currentLesson.explanation}
                         </p>
@@ -221,32 +294,24 @@ export const InteractiveDemo = () => {
                       <div>
                         <div className={cn(
                           'mb-4 flex items-start gap-2 rounded-lg p-3',
-                          isCorrect ? 'bg-emerald-500/10' : 'bg-red-500/10',
+                          isCorrect ? 'bg-emerald-500/10' : 'bg-blue-500/10',
                         )}
                         >
                           <div className={cn(
                             'mt-0.5 size-4 rounded-full flex items-center justify-center',
-                            isCorrect ? 'bg-emerald-500' : 'bg-red-500',
+                            isCorrect ? 'bg-emerald-500' : 'bg-blue-500',
                           )}
                           >
-                            {isCorrect
-                              ? (
-                                  <svg className="size-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                  </svg>
-                                )
-                              : (
-                                  <svg className="size-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                                  </svg>
-                                )}
+                            <svg className="size-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
                           </div>
                           <div>
-                            <p className={cn('text-sm font-semibold', isCorrect ? 'text-emerald-600' : 'text-red-600')}>
-                              {isCorrect ? t('correct') : t('almost')}
+                            <p className={cn('text-sm font-semibold', isCorrect ? 'text-emerald-600' : 'text-blue-600')}>
+                              {isCorrect ? t('correct') : t('good_try')}
                             </p>
                             <p className="text-xs text-muted-foreground">
-                              {isCorrect ? t('correct_desc') : t('almost_desc')}
+                              {isCorrect ? t('correct_desc') : t('learning_desc')}
                             </p>
                           </div>
                         </div>
@@ -255,7 +320,7 @@ export const InteractiveDemo = () => {
                           onClick={showRewards}
                           className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground"
                         >
-                          {t('rewards')}
+                          {t('see_progress')}
                         </button>
                       </div>
                     )}
@@ -264,17 +329,29 @@ export const InteractiveDemo = () => {
                       <div className="text-center">
                         <div className="mb-4 rounded-lg bg-accent/10 p-4">
                           <div className="mb-2 text-2xl font-bold text-accent">
-                            +
-                            {currentReward.xp}
-                            {' '}
-                            XP
+                            +{currentReward.xp} XP
                           </div>
-                          <div className="text-sm font-medium">{t('module_unlocked')}</div>
+                          <div className="text-sm font-medium">{t('approach_unlocked')}</div>
                           <div className="text-sm font-semibold text-accent">{currentReward.unlock}</div>
                         </div>
+                        
+                        {/* Cognitive Flexibility Achievement */}
+                        {exploredStyles.size === 3 && (
+                          <div className="mb-4 rounded-lg bg-green-500/10 p-3 border border-green-200">
+                            <div className="text-lg mb-1">🧠✨</div>
+                            <div className="text-sm font-semibold text-green-700">
+                              Flessibilità Cognitiva Raggiunta!
+                            </div>
+                            <div className="text-xs text-green-600">
+                              Hai esplorato tutti e 3 gli approcci cognitivi
+                            </div>
+                          </div>
+                        )}
+                        
                         <p className="mb-4 text-xs text-muted-foreground">
-                          {currentReward.next}
+                          {exploredStyles.size < 3 ? currentReward.next : t('cognitive_mastery_desc')}
                         </p>
+                        
                         <div className="space-y-2">
                           <Link
                             href="/sign-up"
@@ -282,13 +359,24 @@ export const InteractiveDemo = () => {
                           >
                             {t('continue_free')}
                           </Link>
-                          <button
-                            type="button"
-                            onClick={restart}
-                            className="w-full py-2 text-xs text-muted-foreground"
-                          >
-                            {t('try_other')}
-                          </button>
+                          
+                          {exploredStyles.size < 3 ? (
+                            <button
+                              type="button"
+                              onClick={tryAnotherStyle}
+                              className="w-full py-2 text-xs text-primary hover:underline"
+                            >
+                              {t('try_another_approach')}
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={restart}
+                              className="w-full py-2 text-xs text-muted-foreground"
+                            >
+                              {t('restart_demo')}
+                            </button>
+                          )}
                         </div>
                       </div>
                     )}
@@ -305,23 +393,23 @@ export const InteractiveDemo = () => {
           <div className="order-1 lg:order-2">
             <div className="space-y-6">
               <div>
-                <h3 className="mb-2 text-lg font-semibold">{t('adaptive_title')}</h3>
+                <h3 className="mb-2 text-lg font-semibold">{t('cognitive_flexibility_title')}</h3>
                 <p className="text-sm text-muted-foreground">
-                  {t('adaptive_desc')}
+                  {t('cognitive_flexibility_desc')}
                 </p>
               </div>
 
               <div>
-                <h3 className="mb-2 text-lg font-semibold">{t('rewards_title')}</h3>
+                <h3 className="mb-2 text-lg font-semibold">{t('research_based_title')}</h3>
                 <p className="text-sm text-muted-foreground">
-                  {t('rewards_desc')}
+                  {t('research_based_desc')}
                 </p>
               </div>
 
               <div>
-                <h3 className="mb-2 text-lg font-semibold">{t('microlearning_title')}</h3>
+                <h3 className="mb-2 text-lg font-semibold">{t('same_content_title')}</h3>
                 <p className="text-sm text-muted-foreground">
-                  {t('microlearning_desc')}
+                  {t('same_content_desc')}
                 </p>
               </div>
 
