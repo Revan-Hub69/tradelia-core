@@ -94,7 +94,7 @@ const getRewards = (t: any) => ({
 });
 
 export const InteractiveDemo = () => {
-  const t = useTranslations('InteractiveDemo' as any) as (key: string) => string;
+  const t = useTranslations('InteractiveDemo');
   const [step, setStep] = useState<DemoStep>('cognitive-select');
   const [cognitiveStyle, setCognitiveStyle] = useState<CognitiveStyle>('analogical');
   const [answer, setAnswer] = useState<string | null>(null);

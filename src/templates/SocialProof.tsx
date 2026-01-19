@@ -44,7 +44,7 @@ const Avatar = ({ name, role }: { name: string; role: string }) => (
 );
 
 export const SocialProof = () => {
-  const t = useTranslations('SocialProof' as any) as (key: string) => string;
+  const t = useTranslations('SocialProof');
 
   const testimonials = [
     {

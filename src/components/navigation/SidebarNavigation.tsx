@@ -97,7 +97,7 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
       )}
       aria-current={isActive ? 'page' : undefined}
       aria-disabled={!canNavigate}
-      title={isCollapsed ? t(item.labelKey as any) : undefined}
+      title={isCollapsed ? tGeneral(item.labelKey) : undefined}
     >
       <div className="relative shrink-0">
         <DynamicIcon
@@ -126,7 +126,7 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
       </div>
 
       {/* Label - Hidden when collapsed */}
-      {!isCollapsed && <span className="truncate">{t(item.labelKey as any)}</span>}
+      {!isCollapsed && <span className="truncate">{tGeneral(item.labelKey)}</span>}
 
       {/* Keyboard shortcut hint */}
       {!isCollapsed && !isActive && canNavigate && (
@@ -139,7 +139,7 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
       {/* Tooltip for collapsed state */}
       {isCollapsed && (
         <div className="pointer-events-none absolute left-full z-50 ml-2 rounded bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
-          {t(item.labelKey as any)}
+          {tGeneral(item.labelKey)}
         </div>
       )}
     </Link>
@@ -151,7 +151,8 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
   defaultCollapsed = false,
 }) => {
   const pathname = usePathname();
-  const t = useTranslations();
+  const t = useTranslations('Dashboard');
+  const tGeneral = useTranslations();
   const navigationItems = getVisibleNavigationItems();
   const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
   const [isLoading, setIsLoading] = useState(true);
@@ -212,7 +213,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
         className,
       )}
       role="navigation"
-      aria-label={t('Dashboard.nav_aria_sidebar' as any)}
+      aria-label={t('nav_aria_sidebar')}
     >
       <div className="flex h-full flex-col">
         {/* Sidebar Header */}
@@ -235,8 +236,8 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
             className="size-8 p-0 hover-scale hover:bg-primary/10 dark:hover:bg-primary/10"
             aria-label={
               isCollapsed
-                ? (t('Dashboard.expand_sidebar' as any) as string)
-                : (t('Dashboard.collapse_sidebar' as any) as string)
+                ? (t('expand_sidebar') as string)
+                : (t('collapse_sidebar') as string)
             }
           >
             <DynamicIcon
@@ -275,9 +276,9 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
             <div className="text-xs text-muted-foreground">
               <div className="mb-2 flex items-center gap-2">
                 <div className="size-2 animate-pulse rounded-full bg-green-500" />
-                <span>{t('Dashboard.online_status' as any)}</span>
+                <span>{t('online_status')}</span>
               </div>
-              <div>{t('Dashboard.keyboard_shortcuts_hint' as any)}</div>
+              <div>{t('keyboard_shortcuts_hint')}</div>
             </div>
           )}
         </div>

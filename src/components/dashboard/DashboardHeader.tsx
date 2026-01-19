@@ -49,7 +49,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   className,
   showScrollShadow = true,
 }) => {
-  const t = useTranslations();
+  const t = useTranslations('Dashboard');
+  const tGeneral = useTranslations();
   const { userData, isLoading } = useUserData();
   const [hasScrolled, setHasScrolled] = useState(false);
 
@@ -76,7 +77,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             <div className="flex items-center gap-1.5">
               <div className="size-2 bg-accent rounded-full animate-pulse" />
               <span className="text-sm font-medium">
-                {status.value} {t('Dashboard.days' as any)}
+                {status.value} {t('days')}
               </span>
             </div>
           );
@@ -85,14 +86,14 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             <div className="flex items-center gap-1.5">
               <div className="size-2 bg-primary rounded-full" />
               <span className="text-sm font-medium">
-                {t('Dashboard.focus_mode_active' as any)}
+                {t('focus_mode_active')}
               </span>
             </div>
           );
         case 'next':
           return (
             <span className="text-sm font-medium">
-              {status.labelKey ? t(status.labelKey as any) : status.value}
+              {status.labelKey ? t(status.labelKey) : status.value}
             </span>
           );
         case 'progress':
@@ -148,7 +149,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       >
         <div className="flex items-center gap-2">
           {primaryAction.icon}
-          <span>{t(primaryAction.labelKey as any)}</span>
+          <span>{t(primaryAction.labelKey)}</span>
         </div>
       </button>
     );
@@ -178,7 +179,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           {titleKey && (
             <div className="hidden sm:block">
               <h1 className="text-lg font-semibold text-foreground">
-                {t(titleKey as any)}
+                {tGeneral(titleKey)}
               </h1>
             </div>
           )}
@@ -208,7 +209,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               />
             ) : (
               <div className="text-xs text-muted-foreground">
-                {t('Dashboard.not_authenticated' as any)}
+                {t('not_authenticated')}
               </div>
             )}
           </div>

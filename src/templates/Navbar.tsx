@@ -73,7 +73,7 @@ const useFocusTrap = (isOpen: boolean, containerRef: React.RefObject<HTMLDivElem
  * - Focus trap for accessibility
  */
 export const Navbar = () => {
-  const t = useTranslations('Navbar' as any) as (key: string) => string;
+  const t = useTranslations('Navbar');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);

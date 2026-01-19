@@ -55,7 +55,7 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
             'glass-surface hover:bg-white/60 dark:hover:bg-white/10',
             'press-depth focus-ring touch-optimized',
           )}
-          aria-label={t('nav_open_user_menu' as any)}
+          aria-label={t('nav_open_user_menu')}
           aria-expanded={isOpen}
           aria-haspopup="menu"
         >
@@ -82,7 +82,7 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
       </DropdownMenuTrigger>
 
       <DropdownMenuContent 
-        ref={focusTrapRef as any}
+        ref={focusTrapRef}
         align="end" 
         className="w-56 glass-surface layer-popover"
         onCloseAutoFocus={(e) => {
@@ -108,7 +108,7 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
           className="flex cursor-pointer items-center gap-2 focus-ring"
         >
           <ProfileIcon size={16} />
-          <span>{t('profile' as any)}</span>
+          <span>{t('profile')}</span>
         </DropdownMenuItem>
 
         {/* Settings temporaneamente rimosso - route non esiste */}
@@ -118,7 +118,7 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
           className="flex cursor-pointer items-center gap-2 focus-ring"
         >
           <SettingsIcon size={16} />
-          <span>{t('settings' as any)}</span>
+          <span>{t('settings')}</span>
         </DropdownMenuItem>
         */}
 
@@ -129,7 +129,7 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
           className="flex cursor-pointer items-center gap-2 text-destructive focus:text-destructive focus-ring"
         >
           <LogoutIcon size={16} />
-          <span>{t('logout' as any)}</span>
+          <span>{t('logout')}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
