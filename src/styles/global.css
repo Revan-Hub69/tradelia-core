@@ -306,27 +306,34 @@
     box-shadow: var(--shadow-soft);
   }
 
-  /* Motion classes - Performance optimized & responsive */
+  /* Motion classes - Performance optimized & responsive with SPRING PHYSICS 2026 */
   .motion-fast {
     transition-duration: var(--motion-fast);
-    transition-timing-function: var(--ease-out);
+    transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); /* Spring bounce */
     transition-property: transform, opacity;
-    /* GPU acceleration for smooth animations */
     will-change: transform, opacity;
   }
 
   .motion-base {
     transition-duration: var(--motion-base);
-    transition-timing-function: var(--ease-out);
+    transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); /* Spring bounce */
     transition-property: transform, opacity;
     will-change: transform, opacity;
   }
 
   .motion-spring {
     transition-duration: var(--motion-base);
-    transition-timing-function: var(--ease-spring);
+    transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Premium spring */
     transition-property: transform, opacity;
     will-change: transform, opacity;
+  }
+
+  /* Enterprise premium spring physics */
+  .motion-spring-premium {
+    transition-duration: 400ms;
+    transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Elastic spring */
+    transition-property: transform, opacity, box-shadow;
+    will-change: transform, opacity, box-shadow;
   }
 
   /* Device-specific motion optimization */
@@ -348,42 +355,40 @@
     .motion-base { transition-duration: calc(var(--motion-base) * 0.8); }
   }
 
-  /* Press depth - Enterprise touch feedback with device optimization */
+  /* Press depth - Enterprise touch feedback with SPRING PHYSICS 2026 */
   .press-depth {
-    transition: transform var(--motion-fast) var(--ease-out),
-                box-shadow var(--motion-fast) var(--ease-out);
+    transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
     will-change: transform, box-shadow;
   }
 
   .press-depth:active {
-    transform: scale(0.98);
-    box-shadow: var(--shadow-soft);
+    transform: scale(0.96) translateY(1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
 
-  /* Touch device optimization */
-  @media (hover: none) and (pointer: coarse) {
-    .press-depth:active {
-      transform: scale(0.96); /* More pronounced on touch */
-      transition-duration: 0ms; /* Immediate feedback */
-    }
-  }
-
-  /* Desktop optimization */
-  @media (hover: hover) and (pointer: fine) {
-    .press-depth:active {
-      transform: scale(0.99); /* Subtle on desktop */
-    }
-  }
-
-  /* Hover lift - Subtle elevation */
+  /* Premium hover lift with spring physics */
   .hover-lift {
-    transition: transform var(--motion-base) var(--ease-out),
-                box-shadow var(--motion-base) var(--ease-out);
+    transition: transform 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                box-shadow 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    will-change: transform, box-shadow;
   }
 
   .hover-lift:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Enterprise premium hover with glow effect */
+  .hover-glow {
+    transition: all 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    will-change: transform, box-shadow, background-color;
+  }
+
+  .hover-glow:hover {
     transform: translateY(-1px);
-    box-shadow: var(--shadow-medium);
+    box-shadow: 0 4px 20px rgba(var(--primary-rgb, 29, 78, 216), 0.25);
+    background-color: rgba(var(--primary-rgb, 29, 78, 216), 0.05);
   }
 
   /* Layout classes */
@@ -605,6 +610,41 @@
   @keyframes fade-in {
     0% { opacity: 0; }
     100% { opacity: 1; }
+  }
+
+  /* Premium skeleton wave animation */
+  @keyframes wave {
+    0% {
+      transform: translateX(-100%);
+    }
+    50% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  .animate-wave {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .animate-wave::after {
+    animation: wave 2s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
+    content: '';
+    position: absolute;
+    transform: translateX(-100%);
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
   }
 
   .animate-in {

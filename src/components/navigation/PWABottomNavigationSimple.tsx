@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePathname } from '@/libs/i18nNavigation';
 import { cn } from '@/utils/Helpers';
@@ -14,14 +15,20 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
   const pathname = usePathname();
   const t = useTranslations();
   const navigationItems = getVisibleNavigationItems();
+  const [isNavigating, setIsNavigating] = useState<string | null>(null);
 
-  const handleNavigation = (href: string) => {
+  const handleNavigation = (href: string, itemId: string) => {
     if (pathname === href) {
       return;
     }
     
-    // Simple, reliable navigation
-    window.location.href = href;
+    // Set loading state for premium feedback
+    setIsNavigating(itemId);
+    
+    // Simple, reliable navigation with loading feedback
+    setTimeout(() => {
+      window.location.href = href;
+    }, 150); // Small delay for visual feedback
   };
 
   return (
@@ -48,17 +55,18 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
             <button
               key={item.id}
               type="button"
-              onClick={() => handleNavigation(item.href)}
+              onClick={() => handleNavigation(item.href, item.id)}
               className={cn(
                 'flex flex-col items-center justify-center min-w-0 flex-1 px-1 py-2',
                 'min-h-[44px] tap-target',
                 'text-xs font-medium',
-                'transition-all duration-200',
-                'touch-action-manipulation',
+                'transition-all duration-300 motion-spring-premium',
+                'touch-action-manipulation press-depth',
                 'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
                 {
                   'text-primary': isActive,
-                  'text-muted-foreground hover:text-foreground': !isActive,
+                  'text-muted-foreground hover:text-foreground hover-glow': !isActive,
+                  'animate-pulse': isNavigating === item.id,
                 },
               )}
               aria-label={t(item.labelKey as any)}
@@ -69,8 +77,9 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
                   name={item.iconName as IconName}
                   size={20}
                   className={cn(
-                    'transition-transform duration-200',
+                    'transition-transform duration-300 motion-spring',
                     isActive && 'scale-110',
+                    isNavigating === item.id && 'animate-pulse',
                   )}
                 />
               </div>

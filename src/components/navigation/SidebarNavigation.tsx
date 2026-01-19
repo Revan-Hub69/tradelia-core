@@ -16,6 +16,7 @@ import { getVisibleNavigationItems, trackNavigationEvent } from '@/data/navigati
 import { useNavigationState } from '@/hooks/useNavigationState';
 import { Logo } from '@/templates/Logo';
 import { Button } from '@/components/ui/button';
+import { NavigationSkeleton } from '@/components/ui/skeleton';
 
 type SidebarNavigationProps = {
   className?: string;
@@ -85,12 +86,11 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
       onClick={handleClick}
       className={cn(
         'group relative flex items-center gap-3 rounded-lg px-3 py-2',
-        'text-sm font-medium transition-all duration-200',
-        'tap-target press-depth focus-ring touch-optimized',
+        'text-sm font-medium transition-all duration-300',
+        'tap-target press-depth focus-ring touch-optimized hover-glow',
         {
           'bg-primary/10 text-primary shadow-sm': isActive && canNavigate,
-          'text-muted-foreground hover:bg-white/60 hover:text-foreground dark:hover:bg-white/10':
-            !isActive && canNavigate,
+          'text-muted-foreground hover:text-foreground': !isActive && canNavigate,
           'cursor-not-allowed text-muted-foreground/40': !canNavigate,
         },
         isCollapsed && 'justify-center px-2',
@@ -154,12 +154,50 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
   const t = useTranslations();
   const navigationItems = getVisibleNavigationItems();
   const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Simulate loading state for premium UX
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Update CSS custom property for dynamic grid layout
   React.useEffect(() => {
     const root = document.documentElement;
     root.style.setProperty('--sidebar-width-current', isCollapsed ? '64px' : '256px');
   }, [isCollapsed]);
+
+  if (isLoading) {
+    return (
+      <aside
+        className={cn(
+          'hidden md:block',
+          'layout-sidebar border-r border-border/20 glass-surface',
+          'transition-all duration-300 ease-out',
+          isCollapsed ? 'w-16' : 'w-64',
+          className,
+        )}
+      >
+        <div className="flex h-full flex-col">
+          <div className="flex items-center justify-between border-b border-border/20 p-4">
+            <div className="flex items-center">
+              {isCollapsed ? (
+                <div className="size-6 animate-pulse bg-muted rounded" />
+              ) : (
+                <div className="flex items-center gap-2">
+                  <div className="size-6 animate-pulse bg-muted rounded" />
+                  <div className="h-4 w-20 animate-pulse bg-muted rounded" />
+                </div>
+              )}
+            </div>
+            <div className="size-8 animate-pulse bg-muted rounded" />
+          </div>
+          <NavigationSkeleton isCollapsed={isCollapsed} />
+        </div>
+      </aside>
+    );
+  }
 
   return (
     <aside
@@ -177,7 +215,14 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
       <div className="flex h-full flex-col">
         {/* Sidebar Header */}
         <div className="flex items-center justify-between border-b border-border/20 p-4">
-          {!isCollapsed && <Logo size="sm" />}
+          {/* Logo - Full when expanded, icon-only when collapsed */}
+          <div className="flex items-center">
+            {isCollapsed ? (
+              <Logo isTextHidden={true} size="sm" />
+            ) : (
+              <Logo size="sm" />
+            )}
+          </div>
 
           <Button
             variant="ghost"
