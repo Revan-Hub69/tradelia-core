@@ -7,8 +7,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { ChevronDown, LogOut, Settings, User } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/libs/i18nNavigation';
+import { useTranslations } from 'next-intl';
+import { ChevronDownIcon, LogoutIcon, ProfileIcon } from '@/components/icons';
+import { cn } from '@/utils/Helpers';
+import { useFocusTrap } from '@/hooks/useFocusManagement';
+import { useState } from 'react';
 import React from 'react';
 
 type UserDropdownProps = {
@@ -21,6 +25,9 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
   userEmail,
 }) => {
   const router = useRouter();
+  const t = useTranslations('Dashboard');
+  const [isOpen, setIsOpen] = useState(false);
+  const focusTrapRef = useFocusTrap(isOpen);
 
   const handleSignOut = async () => {
     const supabase = createClient();
@@ -39,11 +46,18 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
   };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="flex h-10 items-center gap-3 px-3 rounded-xl hover:bg-white/60 dark:hover:bg-white/10 transition-all backdrop-blur-sm"
+          className={cn(
+            'flex h-10 items-center gap-3 px-3 rounded-xl',
+            'glass-surface hover:bg-white/60 dark:hover:bg-white/10',
+            'press-depth focus-ring touch-optimized',
+          )}
+          aria-label={t('nav_open_user_menu' as any)}
+          aria-expanded={isOpen}
+          aria-haspopup="menu"
         >
           {/* Avatar - Premium styling */}
           <div className="flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80 text-sm font-semibold text-primary-foreground shadow-lg">
@@ -57,13 +71,27 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
             </div>
           </div>
 
-          <ChevronDown className="size-4 text-muted-foreground" />
+          <ChevronDownIcon 
+            size={16} 
+            className={cn(
+              'text-muted-foreground motion-fast',
+              isOpen && 'rotate-180'
+            )} 
+          />
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" className="w-56 bg-background/95 backdrop-blur-sm border-border/50">
+      <DropdownMenuContent 
+        ref={focusTrapRef as any}
+        align="end" 
+        className="w-56 glass-surface layer-popover"
+        onCloseAutoFocus={(e) => {
+          // Prevent default to handle focus restoration manually
+          e.preventDefault();
+        }}
+      >
         {/* User Info */}
-        <div className="px-3 py-2">
+        <div className="px-3 py-2" role="presentation">
           <div className="truncate text-sm font-medium text-foreground">
             {userName}
           </div>
@@ -76,29 +104,32 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
 
         {/* Menu Items */}
         <DropdownMenuItem
-          onClick={() => router.push('/dashboard/user-profile')}
-          className="flex cursor-pointer items-center gap-2"
+          onClick={() => router.push('/dashboard/profile')}
+          className="flex cursor-pointer items-center gap-2 focus-ring"
         >
-          <User className="size-4" />
-          <span>Profilo</span>
+          <ProfileIcon size={16} />
+          <span>{t('profile' as any)}</span>
         </DropdownMenuItem>
 
+        {/* Settings temporaneamente rimosso - route non esiste */}
+        {/* 
         <DropdownMenuItem
           onClick={() => router.push('/dashboard/settings')}
-          className="flex cursor-pointer items-center gap-2"
+          className="flex cursor-pointer items-center gap-2 focus-ring"
         >
-          <Settings className="size-4" />
-          <span>Impostazioni</span>
+          <SettingsIcon size={16} />
+          <span>{t('settings' as any)}</span>
         </DropdownMenuItem>
+        */}
 
         <DropdownMenuSeparator />
 
         <DropdownMenuItem
           onClick={handleSignOut}
-          className="flex cursor-pointer items-center gap-2 text-destructive focus:text-destructive"
+          className="flex cursor-pointer items-center gap-2 text-destructive focus:text-destructive focus-ring"
         >
-          <LogOut className="size-4" />
-          <span>Esci</span>
+          <LogoutIcon size={16} />
+          <span>{t('logout' as any)}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

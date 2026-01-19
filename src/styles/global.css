@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import design tokens */
+@import './tokens.css';
+
 /*
  * TRADELIA DESIGN SYSTEM v1.1
  *
@@ -200,6 +203,34 @@
 }
 
 @layer utilities {
+  /*
+   * SAFE AREA UTILITIES - PWA 2026 Standard
+   * Supports iPhone notch, Android gesture bar, landscape orientation
+   * Fallback values ensure compatibility across all devices
+   */
+  .pb-safe-bottom { 
+    padding-bottom: max(12px, env(safe-area-inset-bottom)); 
+  }
+  
+  .pt-safe-top { 
+    padding-top: max(0px, env(safe-area-inset-top)); 
+  }
+  
+  .pl-safe-left { 
+    padding-left: max(0px, env(safe-area-inset-left)); 
+  }
+  
+  .pr-safe-right { 
+    padding-right: max(0px, env(safe-area-inset-right)); 
+  }
+
+  /* Landscape iPhone optimization */
+  @media (orientation: landscape) and (max-height: 500px) {
+    .pb-safe-bottom { 
+      padding-bottom: max(8px, env(safe-area-inset-bottom)); 
+    }
+  }
+
   .text-gradient-primary {
     @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
   }

@@ -1,0 +1,528 @@
+/*
+ * TRADELIA DESIGN TOKENS v2.0 - Enterprise 2026
+ * 
+ * Sistema unificato per navigation shell enterprise
+ * Basato su best practice Apple/Linear/Stripe
+ */
+
+:root {
+  /* MOTION TOKENS - Performance optimized */
+  --motion-fast: 120ms;
+  --motion-base: 180ms;
+  --motion-slow: 240ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* LAYOUT TOKENS - Shell dimensions (Mobile First) */
+  --nav-height: 64px;
+  --header-height: 56px;
+  --tap-target: 44px;
+  --nav-padding: 8px;
+  --header-padding: 16px;
+  --sidebar-width: 256px;
+
+  /* RADIUS TOKENS - Consistent curvature */
+  --radius-nav: 12px;
+  --radius-pill: 16px;
+  --radius-button: 8px;
+  --radius-card: 12px;
+  --radius-modal: 16px;
+
+  /* ICON TOKENS - Optical consistency */
+  --icon-size-sm: 16px;
+  --icon-size-md: 20px;
+  --icon-size-lg: 24px;
+  --icon-stroke: 1.75;
+  --icon-stroke-bold: 2;
+
+  /* GLASS TOKENS - Unified glassmorphism */
+  --glass-bg: rgba(255, 255, 255, 0.95);
+  --glass-bg-dark: rgba(15, 23, 42, 0.95);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-border-dark: rgba(255, 255, 255, 0.1);
+  --glass-blur: 12px;
+  --glass-saturate: 150%;
+
+  /* Z-INDEX SCALE - Overlay governance */
+  --z-base: 0;
+  --z-nav: 50;
+  --z-header: 40;
+  --z-popover: 60;
+  --z-modal: 70;
+  --z-toast: 80;
+  --z-debug: 9999;
+
+  /* SPACING SCALE - Mathematical progression */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-2xl: 32px;
+
+  /* SHADOW TOKENS - Depth system */
+  --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-strong: 0 8px 24px rgba(0, 0, 0, 0.15);
+  --shadow-nav: 0 -1px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* TABLET RESPONSIVE TOKENS */
+@media (min-width: 768px) {
+  :root {
+    --nav-padding: 12px;
+    --header-padding: 20px;
+    --tap-target: 48px;
+    --icon-size-md: 22px;
+    --radius-nav: 14px;
+    --glass-blur: 16px;
+  }
+}
+
+/* DESKTOP RESPONSIVE TOKENS */
+@media (min-width: 1024px) {
+  :root {
+    --nav-padding: 16px;
+    --header-padding: 24px;
+    --tap-target: 40px; /* Mouse precision */
+    --icon-size-md: 24px;
+    --radius-nav: 16px;
+    --glass-blur: 20px;
+    --motion-fast: 100ms; /* Snappier on desktop */
+    --motion-base: 150ms;
+  }
+}
+
+/* HIGH REFRESH RATE OPTIMIZATION */
+@media (min-resolution: 120dpi) {
+  :root {
+    --motion-fast: 80ms;
+    --motion-base: 120ms;
+  }
+}
+
+.dark {
+  --glass-bg: var(--glass-bg-dark);
+  --glass-border: var(--glass-border-dark);
+  --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-strong: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-nav: 0 -1px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* REDUCED MOTION - Accessibility compliance */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-fast: 0ms;
+    --motion-base: 0ms;
+    --motion-slow: 0ms;
+    --ease-out: linear;
+    --ease-spring: linear;
+    --ease-bounce: linear;
+  }
+}
+
+/* SAFE AREA UTILITIES - Complete responsive system */
+@layer utilities {
+  /* Safe area - Mobile portrait (default) */
+  .pb-safe-bottom { 
+    padding-bottom: max(12px, env(safe-area-inset-bottom)); 
+  }
+  .pt-safe-top { 
+    padding-top: max(0px, env(safe-area-inset-top)); 
+  }
+  .pl-safe-left { 
+    padding-left: max(0px, env(safe-area-inset-left)); 
+  }
+  .pr-safe-right { 
+    padding-right: max(0px, env(safe-area-inset-right)); 
+  }
+
+  /* Safe area - Mobile landscape optimization */
+  @media (orientation: landscape) and (max-height: 500px) {
+    .pb-safe-bottom { 
+      padding-bottom: max(8px, env(safe-area-inset-bottom)); 
+    }
+    .nav-height { 
+      height: 56px; /* Reduced from 64px for landscape */
+    }
+  }
+
+  /* Safe area - Tablet optimization */
+  @media (min-width: 768px) {
+    .pb-safe-bottom { 
+      padding-bottom: max(4px, env(safe-area-inset-bottom)); 
+    }
+  }
+
+  /* Safe area - Desktop (minimal) */
+  @media (min-width: 1024px) {
+    .pb-safe-bottom { 
+      padding-bottom: 4px; /* Fixed minimal padding */
+    }
+  }
+
+  /* Glass surfaces */
+  .glass-surface {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  }
+
+  .glass-nav {
+    @apply glass-surface;
+    box-shadow: var(--shadow-nav);
+  }
+
+  .glass-header {
+    @apply glass-surface;
+    box-shadow: var(--shadow-soft);
+  }
+
+  /* Motion classes - Performance optimized & responsive */
+  .motion-fast {
+    transition-duration: var(--motion-fast);
+    transition-timing-function: var(--ease-out);
+    transition-property: transform, opacity;
+    /* GPU acceleration for smooth animations */
+    will-change: transform, opacity;
+  }
+
+  .motion-base {
+    transition-duration: var(--motion-base);
+    transition-timing-function: var(--ease-out);
+    transition-property: transform, opacity;
+    will-change: transform, opacity;
+  }
+
+  .motion-spring {
+    transition-duration: var(--motion-base);
+    transition-timing-function: var(--ease-spring);
+    transition-property: transform, opacity;
+    will-change: transform, opacity;
+  }
+
+  /* Device-specific motion optimization */
+  @media (hover: hover) and (pointer: fine) {
+    /* Desktop - Snappier interactions */
+    .motion-fast { transition-duration: var(--motion-fast); }
+    .motion-base { transition-duration: var(--motion-base); }
+  }
+
+  @media (hover: none) and (pointer: coarse) {
+    /* Touch devices - Slightly slower for better feedback */
+    .motion-fast { transition-duration: calc(var(--motion-fast) + 20ms); }
+    .motion-base { transition-duration: calc(var(--motion-base) + 30ms); }
+  }
+
+  /* High refresh rate optimization */
+  @media (min-resolution: 120dpi) {
+    .motion-fast { transition-duration: calc(var(--motion-fast) * 0.8); }
+    .motion-base { transition-duration: calc(var(--motion-base) * 0.8); }
+  }
+
+  /* Press depth - Enterprise touch feedback with device optimization */
+  .press-depth {
+    transition: transform var(--motion-fast) var(--ease-out),
+                box-shadow var(--motion-fast) var(--ease-out);
+    will-change: transform, box-shadow;
+  }
+
+  .press-depth:active {
+    transform: scale(0.98);
+    box-shadow: var(--shadow-soft);
+  }
+
+  /* Touch device optimization */
+  @media (hover: none) and (pointer: coarse) {
+    .press-depth:active {
+      transform: scale(0.96); /* More pronounced on touch */
+      transition-duration: 0ms; /* Immediate feedback */
+    }
+  }
+
+  /* Desktop optimization */
+  @media (hover: hover) and (pointer: fine) {
+    .press-depth:active {
+      transform: scale(0.99); /* Subtle on desktop */
+    }
+  }
+
+  /* Hover lift - Subtle elevation */
+  .hover-lift {
+    transition: transform var(--motion-base) var(--ease-out),
+                box-shadow var(--motion-base) var(--ease-out);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-medium);
+  }
+
+  /* Layout classes */
+  .nav-height {
+    height: var(--nav-height);
+  }
+
+  .header-height {
+    height: var(--header-height);
+  }
+
+  .tap-target {
+    min-height: var(--tap-target);
+    min-width: var(--tap-target);
+  }
+
+  /* Z-index layers */
+  .layer-nav { z-index: var(--z-nav); }
+  .layer-header { z-index: var(--z-header); }
+  .layer-popover { z-index: var(--z-popover); }
+  .layer-modal { z-index: var(--z-modal); }
+  .layer-toast { z-index: var(--z-toast); }
+
+  /* Touch optimization - Ghost click prevention */
+  .touch-optimized {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Focus ring enterprise */
+  .focus-ring {
+    outline: none;
+    transition: box-shadow var(--motion-fast) var(--ease-out);
+  }
+
+  .focus-ring:focus-visible {
+    box-shadow: 0 0 0 2px hsl(var(--ring));
+  }
+
+  /* Active/pressed states for native feel */
+  .press-depth:active {
+    transform: scale(0.98) !important;
+    transition-duration: 0ms;
+  }
+
+  .touch-optimized:active {
+    opacity: 0.8;
+    transition-duration: 0ms;
+  }
+
+  /* Sliding indicator spring animation */
+  .motion-spring {
+    transition: transform var(--motion-base) var(--ease-spring);
+  }
+
+  /* Hover states for desktop */
+  @media (hover: hover) {
+    .hover-lift:hover {
+      transform: translateY(-1px);
+    }
+  }
+
+  /* Reduced motion overrides */
+  @media (prefers-reduced-motion: reduce) {
+    .press-depth:active {
+      transform: none !important;
+      opacity: 0.7;
+    }
+    
+    .motion-spring {
+      transition: transform var(--motion-fast) linear;
+    }
+  }
+
+  /* CLS PREVENTION - Complete layout stability */
+  .layout-stable {
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: var(--header-height) auto 1fr var(--nav-height);
+    grid-template-areas: 
+      "header"
+      "header-nav"
+      "main"
+      "nav";
+    transition: grid-template-rows 300ms ease-out;
+  }
+
+  /* Tablet layout - Header nav visible, no bottom nav */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .layout-stable {
+      grid-template-rows: var(--header-height) auto 1fr;
+      grid-template-areas: 
+        "header"
+        "header-nav"
+        "main";
+    }
+  }
+
+  /* Desktop layout - Sidebar visible, no other nav */
+  @media (min-width: 1024px) {
+    .layout-stable {
+      grid-template-columns: var(--sidebar-width) 1fr;
+      grid-template-rows: var(--header-height) 1fr;
+      grid-template-areas: 
+        "sidebar header"
+        "sidebar main";
+    }
+  }
+
+  /* Grid area assignments */
+  .layout-header { 
+    grid-area: header; 
+    position: sticky;
+    top: 0;
+    z-index: var(--z-header);
+  }
+  .layout-header-nav { 
+    grid-area: header-nav; 
+    position: sticky;
+    top: var(--header-height);
+    z-index: calc(var(--z-header) - 1);
+  }
+  .layout-main { 
+    grid-area: main; 
+    overflow: auto;
+    /* Prevent content jumping */
+    min-height: 0;
+  }
+  .layout-nav { 
+    grid-area: nav; 
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: var(--z-nav);
+  }
+  .layout-sidebar { 
+    grid-area: sidebar; 
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    z-index: calc(var(--z-header) + 1);
+  }
+
+  /* Content stability - Prevent reflow */
+  .content-stable {
+    /* Reserve space for dynamic content */
+    min-height: calc(100vh - var(--header-height) - var(--nav-height));
+  }
+
+  @media (min-width: 768px) {
+    .content-stable {
+      min-height: calc(100vh - var(--header-height));
+    }
+  }
+
+  /* Dimensional stability for text content */
+  .text-stable {
+    /* Prevent reflow on font loading */
+    font-display: swap;
+    /* Reserve space for longer translations */
+    min-width: fit-content;
+  }
+
+  /* Image stability */
+  .img-stable {
+    /* Prevent layout shift on image load */
+    aspect-ratio: attr(width) / attr(height);
+    object-fit: cover;
+  }
+
+  /* Responsive touch targets */
+  .tap-target {
+    min-height: var(--tap-target);
+    min-width: var(--tap-target);
+  }
+
+  /* Responsive spacing */
+  .nav-padding { padding: var(--nav-padding); }
+  .header-padding { padding: var(--header-padding); }
+
+  /* Screen reader only utility */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .sr-only.focus:not(.focus\:not-sr-only):focus,
+  .sr-only.focus-within:not(.focus-within\:not-sr-only):focus-within {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+
+  /* Skip links styling */
+  .skip-links a:focus {
+    position: fixed !important;
+    top: 1rem !important;
+    left: 1rem !important;
+    z-index: 9999 !important;
+    padding: 0.5rem 1rem !important;
+    background: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
+    border-radius: 0.375rem !important;
+    font-weight: 500 !important;
+    text-decoration: none !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+  }
+
+  /* Quick Actions Menu animations */
+  @keyframes zoom-in-95 {
+    0% { transform: scale(0.95); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes slide-in-from-bottom-2 {
+    0% { transform: translateY(0.5rem); }
+    100% { transform: translateY(0); }
+  }
+
+  @keyframes fade-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+  .animate-in {
+    animation-fill-mode: both;
+  }
+
+  .zoom-in-95 {
+    animation-name: zoom-in-95;
+  }
+
+  .slide-in-from-bottom-2 {
+    animation-name: slide-in-from-bottom-2;
+  }
+
+  .fade-in {
+    animation-name: fade-in;
+  }
+
+  .duration-200 {
+    animation-duration: 200ms;
+  }
+
+  /* Long press visual feedback */
+  .long-press-active {
+    transform: scale(1.05);
+    background: rgba(var(--primary-rgb), 0.05);
+    transition: all var(--motion-fast) var(--ease-out);
+  }
+}
