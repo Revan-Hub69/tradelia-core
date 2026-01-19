@@ -21,12 +21,13 @@ export default bundleAnalyzer(
     reactStrictMode: true,
     serverExternalPackages: ['@electric-sql/pglite', '@supabase/supabase-js'],
     eslint: {
-      // Temporarily disable ESLint during build due to config issues
+      // Enterprise 2026: Temporarily disable for initial deployment
       ignoreDuringBuilds: true,
+      dirs: ['src', 'components', 'lib', 'utils', 'hooks'],
     },
     typescript: {
-      // Temporarily disable TypeScript checking during build
-      ignoreBuildErrors: true,
+      // Enterprise 2026: Enable TypeScript checking for type safety
+      ignoreBuildErrors: false,
     },
     webpack: (config, { isServer }) => {
       // Fix for Supabase client-side imports

@@ -203,7 +203,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               <div className="size-8 animate-pulse rounded-full bg-muted" />
             ) : userData ? (
               <UserDropdown
-                userName={userData.name || userData.email.split('@')[0] || 'Utente'}
+                userName={userData.name || userData.email.split('@')[0] || 'User'}
                 userEmail={userData.email}
               />
             ) : (
