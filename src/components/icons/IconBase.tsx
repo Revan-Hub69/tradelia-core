@@ -43,7 +43,7 @@ export const IconBase: React.FC<IconProps> = ({
         // Base styles
         'flex-shrink-0',
         // Motion - solo transform/opacity per performance
-        'transition-transform duration-[var(--motion-fast)] ease-[var(--ease-out)]',
+        'transition-transform duration-150 ease-out',
         // State variations
         {
           'scale-100 opacity-100': state === 'default',
