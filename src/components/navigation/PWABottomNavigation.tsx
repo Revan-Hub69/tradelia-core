@@ -1,6 +1,6 @@
 'use client';
 
-import { Home, BookOpen, Wrench, Users, User } from 'lucide-react';
+import { Home, BookOpen, User } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
@@ -21,35 +21,18 @@ export const PWABottomNavigation = ({ className }: PWABottomNavigationProps) => 
       label: t('nav_home'),
       href: '/dashboard',
       icon: Home,
-      description: 'Il tuo stato attuale e prossimi passi',
     },
     {
       id: 'learn',
       label: t('nav_learn'),
       href: '/dashboard/learn',
       icon: BookOpen,
-      description: 'Contenuti educativi senza pressioni',
-    },
-    {
-      id: 'tools',
-      label: t('nav_tools'),
-      href: '/dashboard/tools',
-      icon: Wrench,
-      description: 'Strumenti reali, non affiliazioni',
-    },
-    {
-      id: 'people',
-      label: t('nav_people'),
-      href: '/dashboard/community',
-      icon: Users,
-      description: 'Comunità di persone reali',
     },
     {
       id: 'profile',
       label: t('nav_profile'),
       href: '/dashboard/profile',
       icon: User,
-      description: 'Le tue impostazioni e preferenze',
     },
   ];
 
@@ -93,7 +76,7 @@ export const PWABottomNavigation = ({ className }: PWABottomNavigationProps) => 
                     ? 'text-primary bg-primary/10'
                     : 'text-muted-foreground hover:text-foreground hover:bg-white/40 dark:hover:bg-white/10',
                 )}
-                aria-label={`${item.label}: ${item.description}`}
+                aria-label={item.label}
                 aria-current={isActive ? 'page' : undefined}
               >
                 <Icon
