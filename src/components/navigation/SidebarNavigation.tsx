@@ -15,8 +15,8 @@ import { Button } from '@/components/ui/button';
 import { NavigationSkeleton } from '@/components/ui/skeleton';
 import { DynamicIcon, type IconName } from '@/components/icons';
 import { getVisibleNavigationItems, trackNavigationEvent } from '@/data/navigation.config';
-import { useNavigationLoading } from '@/hooks/useNavigationLoading';
 import { useNavigationState } from '@/hooks/useNavigationState';
+import { useOptimizedNavigation } from '@/hooks/useOptimizedNavigation';
 import { Logo } from '@/templates/Logo';
 
 type SidebarNavigationProps = {
@@ -38,14 +38,14 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
   isCollapsed,
   t,
 }) => {
-  const { navigateWithLoading, isNavigating } = useNavigationLoading();
+  const { navigate, isPending, navigationTarget } = useOptimizedNavigation();
   const [visualState, setVisualState] = useState<'default' | 'pressed'>('default');
   const { uxState, canNavigate } = useNavigationState(
     item.href,
     item.id,
   );
 
-  // Auto-reset pressed state
+  // Auto-reset pressed state with proper cleanup
   useEffect(() => {
     if (visualState === 'pressed') {
       const timer = setTimeout(() => setVisualState('default'), 150);
@@ -61,7 +61,7 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
       return;
     }
 
-    // Simple programmatic navigation with smooth transitions
+    // Visual feedback
     setVisualState('pressed');
 
     // Track navigation event
@@ -72,9 +72,11 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
       metadata: { href: item.href, isOnline: true, isEnabled: true },
     });
 
-    // Navigate with proper loading states
-    navigateWithLoading(item.href, 'sidebar');
+    // Optimized navigation with React 19 concurrent features
+    navigate(item.href);
   };
+
+  const isNavigating = isPending && navigationTarget === item.href;
 
   return (
     <Link

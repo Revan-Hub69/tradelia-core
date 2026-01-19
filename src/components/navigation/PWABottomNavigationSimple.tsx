@@ -5,7 +5,7 @@ import { usePathname } from '@/libs/i18nNavigation';
 import { cn } from '@/utils/Helpers';
 import { DynamicIcon, type IconName } from '@/components/icons';
 import { getVisibleNavigationItems } from '@/data/navigation.config';
-import { useNavigationLoading } from '@/hooks/useNavigationLoading';
+import { useOptimizedNavigation } from '@/hooks/useOptimizedNavigation';
 
 type PWABottomNavigationSimpleProps = {
   className?: string;
@@ -15,14 +15,14 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
   const pathname = usePathname();
   const t = useTranslations();
   const navigationItems = getVisibleNavigationItems();
-  const { navigateWithLoading, isNavigating, navigationTarget } = useNavigationLoading();
+  const { navigate, isPending, navigationTarget } = useOptimizedNavigation();
 
   const handleNavigation = (href: string) => {
     if (pathname === href) {
       return;
     }
     
-    navigateWithLoading(href, 'bottom');
+    navigate(href);
   };
 
   return (
@@ -60,7 +60,7 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
                 {
                   'text-primary': isActive,
                   'text-muted-foreground hover:text-foreground': !isActive,
-                  'animate-pulse navigation-skeleton': isNavigating && navigationTarget === item.href,
+                  'animate-pulse navigation-skeleton': isPending && navigationTarget === item.href,
                 },
               )}
               aria-label={t(item.labelKey as any)}
@@ -73,7 +73,7 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
                   className={cn(
                     'transition-transform duration-300 motion-spring',
                     isActive && 'scale-110',
-                    isNavigating && navigationTarget === item.href && 'animate-pulse',
+                    isPending && navigationTarget === item.href && 'animate-pulse',
                   )}
                 />
               </div>
