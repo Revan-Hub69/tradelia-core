@@ -2,7 +2,6 @@
 // Modular learning system components following glassmorphism design
 
 export { DashboardLayout } from './DashboardLayout';
-export { DashboardHeader } from './DashboardHeader';
 export { SimpleDashboardHeader } from './SimpleDashboardHeader';
 export { LearningPathsSection } from './LearningPathsSection';
 export { LearningPathCard } from './LearningPathCard';
