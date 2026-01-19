@@ -35,6 +35,8 @@ type SimpleDashboardHeaderProps = {
   showNotifications?: boolean;
   showSearch?: boolean;
   showQuickActions?: boolean;
+  focusMode?: boolean;
+  gamificationIntensity?: 'minimal' | 'standard' | 'high';
 };
 
 export const SimpleDashboardHeader = ({
@@ -43,18 +45,33 @@ export const SimpleDashboardHeader = ({
   showNotifications = true,
   showSearch = true,
   showQuickActions = true,
+  focusMode = false,
+  gamificationIntensity = 'standard',
 }: SimpleDashboardHeaderProps) => {
   const { userData, isLoading } = useUserData();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [notificationCount] = useState(3); // Mock notifications
+  const [hasNotifications] = useState(true); // Dot only, no count
+  const [temporaryXP, setTemporaryXP] = useState<number | null>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  // Single Signal Rule: Only show one motivational element at a time
+  const shouldShowStreak = showGamification && !focusMode && gamificationIntensity !== 'minimal';
+  const shouldShowXP = temporaryXP !== null; // Only show XP temporarily after earning
+  
+  // Auto-hide temporary XP after 3 seconds
+  useEffect(() => {
+    if (temporaryXP !== null) {
+      const timer = setTimeout(() => setTemporaryXP(null), 3000);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [temporaryXP]);
+
   const isPremium = false; // TODO: Add subscription field to userData type
-  const level = userData ? Math.floor(userData.progress.totalXP / 100) + 1 : 1;
 
   return (
     <header
@@ -77,10 +94,10 @@ export const SimpleDashboardHeader = ({
           {/* Breadcrumb separator */}
           <div className="hidden md:block h-6 w-px bg-border/50" />
           
-          {/* Current page indicator */}
+          {/* Current page indicator - Truth-first language */}
           <nav className="hidden md:block">
             <div className="text-sm font-medium text-muted-foreground">
-              Dashboard
+              Home
             </div>
           </nav>
         </div>
@@ -99,29 +116,45 @@ export const SimpleDashboardHeader = ({
             />
           ) : null}
 
-          {/* Gamification Elements */}
-          {showGamification && userData && (
+          {/* Gamification Elements - Single Signal Rule Applied */}
+          {shouldShowStreak && userData && (
             <div className="flex items-center gap-3">
-              {/* Streak Counter */}
-              <div className="group relative flex items-center gap-2 rounded-xl bg-white/40 dark:bg-white/10 px-3 py-2 backdrop-blur-sm transition-all hover:bg-white/60 dark:hover:bg-white/20 border border-white/20 dark:border-white/10">
-                <StreakIcon size={16} className="text-orange-500" />
-                <div className="text-sm font-semibold">
-                  <span className="sr-only">Streak corrente:</span>
-                  {userData.progress.currentStreak}
+              {/* Primary Signal: Streak Counter (Loss Aversion) or Recovery Message */}
+              {userData.progress.currentStreak > 0 ? (
+                <div className="group relative flex items-center gap-2 rounded-xl bg-white/40 dark:bg-white/10 px-3 py-2 backdrop-blur-sm transition-all hover:bg-white/60 dark:hover:bg-white/20 border border-white/20 dark:border-white/10">
+                  <StreakIcon size={16} className="text-orange-500" />
+                  <div className="text-sm font-semibold">
+                    <span className="sr-only">Costanza di apprendimento:</span>
+                    {userData.progress.currentStreak}
+                  </div>
+                  <div className="text-xs text-muted-foreground">giorni</div>
                 </div>
-                <div className="text-xs text-muted-foreground">giorni</div>
-              </div>
+              ) : (
+                <div className="group relative flex items-center gap-2 rounded-xl bg-blue-500/20 dark:bg-blue-500/10 px-3 py-2 backdrop-blur-sm transition-all hover:bg-blue-500/30 dark:hover:bg-blue-500/20 border border-blue-500/30">
+                  <div className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                    Ripartiamo insieme
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
 
-              {/* XP and Level */}
-              <div className="flex items-center gap-2 rounded-xl bg-white/40 dark:bg-white/10 px-3 py-2 backdrop-blur-sm border border-white/20 dark:border-white/10">
-                <XPIcon size={16} className="text-primary" />
-                <div className="text-sm">
-                  <span className="font-semibold">{userData.progress.totalXP}</span>
-                  <span className="text-muted-foreground text-xs ml-1">XP</span>
-                </div>
-                <div className="text-xs text-muted-foreground ml-2 pl-2 border-l border-white/20">
-                  Lv. {level}
-                </div>
+          {/* Temporary XP Display (Flash and Disappear) */}
+          {shouldShowXP && temporaryXP && (
+            <div className="flex items-center gap-2 rounded-xl bg-primary/20 dark:bg-primary/10 px-3 py-2 backdrop-blur-sm border border-primary/30 animate-in fade-in-0 slide-in-from-top-2">
+              <XPIcon size={16} className="text-primary" />
+              <div className="text-sm font-semibold text-primary">
+                +{temporaryXP} XP
+              </div>
+            </div>
+          )}
+
+          {/* Focus Mode Indicator */}
+          {focusMode && (
+            <div className="flex items-center gap-2 rounded-xl bg-blue-500/20 dark:bg-blue-500/10 px-3 py-2 backdrop-blur-sm border border-blue-500/30">
+              <div className="size-2 rounded-full bg-blue-500" />
+              <div className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                Modalità concentrazione
               </div>
             </div>
           )}
@@ -138,15 +171,26 @@ export const SimpleDashboardHeader = ({
             </div>
           )}
 
-          {/* Mobile Gamification */}
-          {showGamification && userData && (
+          {/* Mobile Gamification - Single Signal Rule */}
+          {shouldShowStreak && userData && (
             <div className="flex lg:hidden items-center gap-2 rounded-lg bg-white/40 dark:bg-white/10 px-2 py-1 backdrop-blur-sm border border-white/20 dark:border-white/10">
-              <StreakIcon size={14} className="text-orange-500" />
-              <span className="text-xs font-medium">{userData.progress.currentStreak}</span>
-              <div className="hidden sm:flex lg:hidden items-center gap-1 ml-2 pl-2 border-l border-white/20">
-                <XPIcon size={12} className="text-primary" />
-                <span className="text-xs font-medium">{userData.progress.totalXP}</span>
-              </div>
+              {userData.progress.currentStreak > 0 ? (
+                <>
+                  <StreakIcon size={14} className="text-orange-500" />
+                  <span className="text-xs font-medium">{userData.progress.currentStreak}</span>
+                  <span className="text-xs text-muted-foreground">giorni</span>
+                </>
+              ) : (
+                <span className="text-xs font-medium text-blue-700 dark:text-blue-300">Ripartiamo insieme</span>
+              )}
+            </div>
+          )}
+
+          {/* Mobile Focus Mode Indicator */}
+          {focusMode && (
+            <div className="flex lg:hidden items-center gap-1 rounded-lg bg-blue-500/20 dark:bg-blue-500/10 px-2 py-1 backdrop-blur-sm border border-blue-500/30">
+              <div className="size-1.5 rounded-full bg-blue-500" />
+              <span className="text-xs font-medium text-blue-700 dark:text-blue-300">Focus</span>
             </div>
           )}
 
@@ -173,18 +217,20 @@ export const SimpleDashboardHeader = ({
                 <DropdownMenuItem className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Search className="size-4" />
-                    <span>Cerca lezioni</span>
+                    <span>Cerca contenuti</span>
                   </div>
                   <Badge variant="secondary" className="text-xs">⌘K</Badge>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <User className="size-4 mr-2" />
-                  <span>Continua lezione</span>
+                  <span>Continua apprendimento</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Settings className="size-4 mr-2" />
-                  <span>Visualizza progresso</span>
-                </DropdownMenuItem>
+                {!focusMode && (
+                  <DropdownMenuItem onClick={() => {/* TODO: Enable focus mode */}}>
+                    <Settings className="size-4 mr-2" />
+                    <span>Modalità concentrazione</span>
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           )}
@@ -207,7 +253,7 @@ export const SimpleDashboardHeader = ({
             </Button>
           )}
 
-          {/* Notifications */}
+          {/* Notifications - Dot Only (No Anxiety-Inducing Numbers) */}
           {showNotifications && (
             <Button
               variant="ghost"
@@ -221,13 +267,8 @@ export const SimpleDashboardHeader = ({
               )}
             >
               <Bell className="size-4" />
-              {notificationCount > 0 && (
-                <Badge 
-                  variant="destructive" 
-                  className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs flex items-center justify-center"
-                >
-                  {notificationCount}
-                </Badge>
+              {hasNotifications && (
+                <div className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500" />
               )}
               <span className="sr-only">Notifiche</span>
             </Button>
@@ -300,18 +341,25 @@ export const SimpleDashboardHeader = ({
               className="flex-1"
             />
             
-            {/* Mobile Gamification Row */}
-            {showGamification && (
+            {/* Mobile Gamification Row - Single Signal Rule */}
+            {shouldShowStreak && (
               <div className="flex items-center justify-center gap-4 mt-3 pt-3 border-t border-white/10">
-                <div className="flex items-center gap-2 text-sm">
-                  <StreakIcon size={16} className="text-orange-500" />
-                  <span className="font-medium">{userData.progress.currentStreak} giorni</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <XPIcon size={16} className="text-primary" />
-                  <span className="font-medium">{userData.progress.totalXP} XP</span>
-                  <span className="text-muted-foreground">• Lv. {level}</span>
-                </div>
+                {userData.progress.currentStreak > 0 ? (
+                  <div className="flex items-center gap-2 text-sm">
+                    <StreakIcon size={16} className="text-orange-500" />
+                    <span className="font-medium">{userData.progress.currentStreak} giorni</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 text-sm text-blue-700 dark:text-blue-300">
+                    <span className="font-medium">Ripartiamo insieme</span>
+                  </div>
+                )}
+                {focusMode && (
+                  <div className="flex items-center gap-2 text-sm text-blue-700 dark:text-blue-300">
+                    <div className="size-2 rounded-full bg-blue-500" />
+                    <span className="font-medium">Modalità concentrazione</span>
+                  </div>
+                )}
               </div>
             )}
           </div>

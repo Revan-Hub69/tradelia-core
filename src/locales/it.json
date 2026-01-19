@@ -724,6 +724,31 @@
     "first_lesson_objective": "Inizia con la prima lezione: \"Introduzione alle Criptovalute\"",
     "continue_path_objective": "Continua con la prossima lezione del percorso",
     "unlock_specialist_paths": "Sblocca percorsi specialistici completando il \"Percorso Fondamentale\"",
-    "earn_tradelia_coins_objective": "Guadagna Tradelia Coin per sconti su corsi avanzati e strumenti premium"
+    "earn_tradelia_coins_objective": "Guadagna Tradelia Coin per sconti su corsi avanzati e strumenti premium",
+    
+    "header_aria_label": "Intestazione principale della dashboard",
+    "breadcrumb_aria_label": "Navigazione breadcrumb",
+    "breadcrumb_mobile_aria_label": "Navigazione breadcrumb mobile",
+    "nav_home": "Home",
+    "nav_dashboard": "Dashboard", 
+    "nav_learn": "Impara",
+    "nav_tools": "Strumenti",
+    "nav_people": "Persone",
+    "nav_community": "Community",
+    "nav_profile": "Profilo",
+    "days": "giorni",
+    "streak_aria_label": "Costanza di apprendimento: {count} giorni consecutivi",
+    "xp_level_aria_label": "Esperienza: {xp} punti, livello {level}",
+    "quick_actions_aria_label": "Azioni rapide",
+    "search_aria_label": "Cerca contenuti",
+    "notifications_aria_label": "Notifiche",
+    "theme_toggle_aria_label": "Cambia tema",
+    "help_aria_label": "Aiuto e supporto",
+    "not_authenticated": "Non autenticato",
+    "search_content": "Cerca contenuti",
+    "continue_learning": "Continua apprendimento",
+    "enable_focus_mode": "Modalità concentrazione",
+    "focus_mode_active": "Modalità concentrazione attiva",
+    "recovery_message": "Ripartiamo insieme"
   }
 }

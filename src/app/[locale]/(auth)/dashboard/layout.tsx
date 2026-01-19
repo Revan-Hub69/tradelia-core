@@ -15,9 +15,21 @@ export async function generateMetadata(props: { params: Promise<{ locale: string
 }
 
 export default function DashboardLayout(props: { children: React.ReactNode }) {
+  // TODO: Get user state from database to determine gamification settings
+  // For now, using safe defaults based on 2026 best practices
+  const focusMode = false; // TODO: Get from user preferences
+  const gamificationIntensity = 'standard'; // TODO: Adapt based on user behavior
+
   return (
     <div className="min-h-screen bg-background">
-      <SimpleDashboardHeader />
+      <SimpleDashboardHeader 
+        focusMode={focusMode}
+        gamificationIntensity={gamificationIntensity}
+        showGamification={!focusMode}
+        showNotifications={true}
+        showSearch={true}
+        showQuickActions={true}
+      />
       <main className="pt-14 md:pt-16">
         {props.children}
       </main>
