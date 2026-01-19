@@ -1,7 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 import { PWABottomNavigationSimple } from '@/components/navigation/PWABottomNavigationSimple';
-import { HeaderNavigation } from '@/components/navigation/HeaderNavigation';
 import { SidebarNavigation } from '@/components/navigation/SidebarNavigation';
 import { CommandPalette } from '@/components/navigation/CommandPalette';
 import { SkipLinks } from '@/components/accessibility/SkipLinks';
@@ -27,7 +26,7 @@ export default function DashboardLayout(props: { children: React.ReactNode }) {
       <div className="layout-stable bg-background">
         <SkipLinks />
         
-        {/* Sidebar Navigation - Desktop only (1024px+) */}
+        {/* Sidebar Navigation - Tablet and Desktop (768px+) */}
         <SidebarNavigation className="layout-sidebar" />
         
         {/* Header - Always visible */}
@@ -38,7 +37,7 @@ export default function DashboardLayout(props: { children: React.ReactNode }) {
         />
         
         {/* Header Navigation - Tablet only (768px-1023px) */}
-        <HeaderNavigation />
+        {/* REMOVED: Header navigation replaced with sidebar for better UX */}
         
         {/* Main Content */}
         <main 

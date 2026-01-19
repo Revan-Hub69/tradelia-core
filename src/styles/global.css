@@ -473,19 +473,8 @@
     transition: grid-template-rows 300ms ease-out;
   }
 
-  /* Tablet layout - Header nav visible, no bottom nav */
-  @media (min-width: 768px) and (max-width: 1023px) {
-    .layout-stable {
-      grid-template-rows: var(--header-height) auto 1fr;
-      grid-template-areas: 
-        "header"
-        "header-nav"
-        "main";
-    }
-  }
-
-  /* Desktop layout - Sidebar visible, no other nav */
-  @media (min-width: 1024px) {
+  /* Tablet and Desktop layout - Sidebar visible */
+  @media (min-width: 768px) {
     .layout-stable {
       grid-template-columns: var(--sidebar-width-current, var(--sidebar-width)) 1fr;
       grid-template-rows: var(--header-height) 1fr;

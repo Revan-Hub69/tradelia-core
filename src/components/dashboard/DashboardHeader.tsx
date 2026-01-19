@@ -166,9 +166,13 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       )}
     >
       <div className="mx-auto flex header-height max-w-screen-xl items-center justify-between px-4">
-        {/* Left Section */}
+        {/* Left Section - No logo on desktop when sidebar is visible */}
         <div className="flex items-center gap-4">
-          {leftSlot || <Logo size="sm" />}
+          {leftSlot || (
+            <div className="md:hidden">
+              <Logo size="sm" />
+            </div>
+          )}
 
           {/* Context Title */}
           {titleKey && (

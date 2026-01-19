@@ -53,17 +53,11 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
   }, [visualState]);
 
   const handleClick = (e: React.MouseEvent) => {
-    console.log('🔥 SIDEBAR CLICK:', item.id, item.href);
     e.preventDefault(); // Always prevent default
     
-    console.log('🔍 canNavigate:', canNavigate, 'uxState:', uxState);
-    
     if (!canNavigate) {
-      console.log('❌ Sidebar navigation blocked');
       return;
     }
-    
-    console.log('✅ Starting sidebar navigation to:', item.href);
     
     // Simple programmatic navigation
     setVisualState('pressed');
@@ -78,11 +72,9 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
     
     // Direct navigation using router
     try {
-      console.log('🚀 Sidebar calling router.push...');
       router.push(item.href);
-      console.log('✅ Sidebar router.push called successfully');
     } catch (error) {
-      console.error('❌ Sidebar router.push failed:', error);
+      console.error('Sidebar navigation failed:', error);
     }
   };
 
@@ -172,8 +164,8 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
   return (
     <aside
       className={cn(
-        // Responsive visibility - Only show on desktop
-        'hidden lg:block',
+        // Responsive visibility - Show on tablet and desktop (768px+)
+        'hidden md:block',
         'layout-sidebar border-r border-border/20 glass-surface',
         'transition-all duration-300 ease-out',
         isCollapsed ? 'w-16' : 'w-64',
