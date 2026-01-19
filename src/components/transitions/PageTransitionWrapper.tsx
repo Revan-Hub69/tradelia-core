@@ -1,8 +1,7 @@
 /*
- * PAGE TRANSITION WRAPPER - Enterprise 2026
+ * PAGE TRANSITION WRAPPER - Simplified 2026
  * 
- * Wrapper per gestire enter animations e layout stability
- * Previene CLS e garantisce smooth transitions
+ * Simple enter animations without interfering with Next.js routing
  */
 
 'use client';
@@ -29,19 +28,19 @@ export const PageTransitionWrapper: React.FC<PageTransitionWrapperProps> = ({
     if (previousPathnameRef.current !== pathname) {
       const element = contentRef.current;
       if (element) {
-        // Enter animation
+        // Simple enter animation
         element.style.opacity = '0';
-        element.style.transform = 'translateY(12px) scale(0.98)';
+        element.style.transform = 'translateY(8px)';
         element.style.transition = 'none';
 
         // Force reflow
         element.offsetHeight;
 
-        // Animate in with spring physics
+        // Animate in
         requestAnimationFrame(() => {
-          element.style.transition = 'opacity 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+          element.style.transition = 'opacity 200ms ease-out, transform 200ms ease-out';
           element.style.opacity = '1';
-          element.style.transform = 'translateY(0) scale(1)';
+          element.style.transform = 'translateY(0)';
         });
 
         // Cleanup after animation
@@ -49,7 +48,7 @@ export const PageTransitionWrapper: React.FC<PageTransitionWrapperProps> = ({
           element.style.transition = '';
           element.style.transform = '';
           element.style.opacity = '';
-        }, 300);
+        }, 200);
 
         previousPathnameRef.current = pathname;
 
@@ -62,11 +61,7 @@ export const PageTransitionWrapper: React.FC<PageTransitionWrapperProps> = ({
   return (
     <div
       ref={contentRef}
-      className={cn(
-        'transition-wrapper',
-        'min-h-0', // Prevent flex issues
-        className,
-      )}
+      className={cn('transition-wrapper', className)}
       data-pathname={pathname}
     >
       {children}

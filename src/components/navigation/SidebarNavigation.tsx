@@ -9,12 +9,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { usePathname, Link } from '@/libs/i18nNavigation';
+import { usePathname, Link, useRouter } from '@/libs/i18nNavigation';
 import { cn } from '@/utils/Helpers';
 import { DynamicIcon, type IconName } from '@/components/icons';
 import { getVisibleNavigationItems, trackNavigationEvent } from '@/data/navigation.config';
 import { useNavigationState } from '@/hooks/useNavigationState';
-import { usePageTransitions } from '@/hooks/usePageTransitions';
 import { Logo } from '@/templates/Logo';
 import { Button } from '@/components/ui/button';
 import { NavigationSkeleton } from '@/components/ui/skeleton';
@@ -38,7 +37,7 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
   isCollapsed,
   t,
 }) => {
-  const { navigateWithTransition } = usePageTransitions();
+  const router = useRouter();
   const [visualState, setVisualState] = useState<'default' | 'pressed'>('default');
   const { uxState, canNavigate } = useNavigationState(
     item.href,
@@ -72,13 +71,30 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
       metadata: { href: item.href, isOnline: true, isEnabled: true },
     });
     
-    // Navigate with smooth enterprise transition
-    navigateWithTransition(item.href, {
-      type: 'enterprise',
-      duration: 300,
-      preload: true,
-      stagger: false,
-    });
+    // Navigate with simple reliable transition
+    try {
+      // Simple fade out current content
+      const mainContent = document.querySelector('main');
+      if (mainContent) {
+        mainContent.style.transition = 'opacity 150ms ease-out';
+        mainContent.style.opacity = '0.7';
+      }
+
+      // Navigate immediately - let Next.js handle the rest
+      router.push(item.href);
+      
+      // Reset opacity after a short delay
+      setTimeout(() => {
+        if (mainContent) {
+          mainContent.style.opacity = '';
+          mainContent.style.transition = '';
+        }
+      }, 200);
+    } catch (error) {
+      console.error('Navigation failed:', error);
+      // Fallback: direct navigation
+      window.location.href = item.href;
+    }
   };
 
   return (
