@@ -14,7 +14,7 @@ import { cn } from '@/utils/Helpers';
 import { DynamicIcon, type IconName } from '@/components/icons';
 import { getVisibleNavigationItems, trackNavigationEvent } from '@/data/navigation.config';
 import { useNavigationState } from '@/hooks/useNavigationState';
-import { useViewTransitions } from '@/hooks/useViewTransitions';
+import { usePageTransitions } from '@/hooks/usePageTransitions';
 import { Logo } from '@/templates/Logo';
 import { Button } from '@/components/ui/button';
 import { NavigationSkeleton } from '@/components/ui/skeleton';
@@ -38,7 +38,7 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
   isCollapsed,
   t,
 }) => {
-  const { navigateWithTransition } = useViewTransitions();
+  const { navigateWithTransition } = usePageTransitions();
   const [visualState, setVisualState] = useState<'default' | 'pressed'>('default');
   const { uxState, canNavigate } = useNavigationState(
     item.href,
@@ -72,11 +72,12 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
       metadata: { href: item.href, isOnline: true, isEnabled: true },
     });
     
-    // Navigate with smooth transition
+    // Navigate with smooth enterprise transition
     navigateWithTransition(item.href, {
+      type: 'enterprise',
       duration: 300,
-      easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-      name: 'page-transition',
+      preload: true,
+      stagger: false,
     });
   };
 
