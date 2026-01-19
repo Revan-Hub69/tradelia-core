@@ -11,8 +11,8 @@ import {
 import { useState, useEffect, useRef } from 'react';
 import { useNavigationState, usePendingAnnouncement } from '@/hooks/useNavigationState';
 import { LiveRegion, useLiveRegion } from '@/components/accessibility/LiveRegion';
-import { useLongPress, useQuickActions, type QuickAction } from '@/hooks/useLongPress';
-import { QuickActionsMenu } from './QuickActionsMenu';
+// import { useLongPress, useQuickActions, type QuickAction } from '@/hooks/useLongPress';
+// import { QuickActionsMenu } from './QuickActionsMenu';
 import { useGesturePolicy, useTouchOptimization, useHapticFeedback } from '@/hooks/useGesturePolicy';
 import { useScrollRestoration } from '@/hooks/useScrollRestoration';
 
@@ -197,80 +197,84 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
   haptic,
 }) => {
   const t = useTranslations();
-  const { visualState, uxState, navigate, canNavigate } = useNavigationState(
+  const { visualState, uxState, canNavigate } = useNavigationState(
     item.href,
     item.id as NavigationItemId
   );
   
   const shouldAnnounce = usePendingAnnouncement(visualState === 'pending');
 
-  // Quick actions for long press
-  const getQuickActions = (): QuickAction[] => {
-    switch (item.id) {
-      case 'learn':
-        return [
-          {
-            id: 'continue',
-            labelKey: 'Dashboard.continue_learning',
-            onClick: () => navigate(),
-            variant: 'primary',
-          },
-        ];
-      case 'profile':
-        return [
-          {
-            id: 'badges',
-            labelKey: 'Dashboard.view_badges',
-            onClick: () => navigate(),
-            variant: 'primary',
-          },
-        ];
-      default:
-        return [
-          {
-            id: 'open',
-            labelKey: 'Dashboard.open_section',
-            onClick: () => navigate(),
-            variant: 'primary',
-          },
-        ];
-    }
-  };
+  // Temporarily disable quick actions
+  // const getQuickActions = (): QuickAction[] => {
+  //   switch (item.id) {
+  //     case 'learn':
+  //       return [
+  //         {
+  //           id: 'continue',
+  //           labelKey: 'Dashboard.continue_learning',
+  //           onClick: () => navigate(),
+  //           variant: 'primary',
+  //         },
+  //       ];
+  //     case 'profile':
+  //       return [
+  //         {
+  //           id: 'badges',
+  //           labelKey: 'Dashboard.view_badges',
+  //           onClick: () => navigate(),
+  //           variant: 'primary',
+  //         },
+  //       ];
+  //     default:
+  //       return [
+  //         {
+  //           id: 'open',
+  //           labelKey: 'Dashboard.open_section',
+  //           onClick: () => navigate(),
+  //           variant: 'primary',
+  //         },
+  //       ];
+  //   }
+  // };
 
-  const { isOpen, position, openQuickActions, closeQuickActions } = useQuickActions(
-    getQuickActions()
-  );
+  // Temporarily disable quick actions
+  // const { isOpen, position, openQuickActions, closeQuickActions } = useQuickActions(
+  //   getQuickActions()
+  // );
 
-  const longPressProps = useLongPress(
-    () => {
-      if (canNavigate) {
-        // Create a synthetic event for openQuickActions
-        const syntheticEvent = {
-          currentTarget: {
-            getBoundingClientRect: () => ({
-              left: 0,
-              top: 0,
-              width: 44,
-              height: 44,
-            }),
-          },
-        } as React.TouchEvent | React.MouseEvent;
+  // Temporarily disable long press to fix navigation
+  // const longPressProps = useLongPress(
+  //   () => {
+  //     if (canNavigate) {
+  //       // Create a synthetic event for openQuickActions
+  //       const syntheticEvent = {
+  //         currentTarget: {
+  //           getBoundingClientRect: () => ({
+  //             left: 0,
+  //             top: 0,
+  //             width: 44,
+  //             height: 44,
+  //           }),
+  //         },
+  //       } as React.TouchEvent | React.MouseEvent;
         
-        openQuickActions(syntheticEvent);
-        announce(t('Dashboard.quick_actions_opened' as any));
-      }
-    },
-    {
-      threshold: 500,
-      onStart: () => haptic.light(),
-      onFinish: () => haptic.medium(),
-    },
-  );
+  //       openQuickActions(syntheticEvent);
+  //       announce(t('Dashboard.quick_actions_opened' as any));
+  //     }
+  //   },
+  //   {
+  //     threshold: 500,
+  //     onStart: () => haptic.light(),
+  //     onFinish: () => haptic.medium(),
+  //   },
+  // );
 
-  const handleQuickAction = (action: QuickAction) => {
-    action.onClick();
-    announce(t('Dashboard.quick_action_executed' as any));
-  };
+  const longPressProps = { isLongPressing: false }; // Mock for now
+
+  // const handleQuickAction = (action: QuickAction) => {
+  //   action.onClick();
+  //   announce(t('Dashboard.quick_action_executed' as any));
+  // };
 
   return (
     <>
@@ -299,30 +303,25 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
           onFocus={onFocus}
           onBlur={onBlur}
           onClick={(e) => {
-            // Don't prevent default - let Link handle navigation
-            // Only prevent if we need to show UX states or handle long press
-            if (!canNavigate || longPressProps.isLongPressing) {
+            // Simple navigation - let Link handle it
+            if (!canNavigate) {
               e.preventDefault();
-              if (!longPressProps.isLongPressing && !canNavigate) {
-                // Show UX feedback for blocked/offline states
-                if (uxState === 'blocked') {
-                  announce(t('Dashboard.nav_blocked' as any), 'assertive');
-                  haptic.error();
-                } else if (uxState === 'offline') {
-                  announce(t('Dashboard.nav_offline' as any), 'assertive');
-                  haptic.error();
-                }
+              // Show UX feedback for blocked/offline states
+              if (uxState === 'blocked') {
+                announce(t('Dashboard.nav_blocked' as any), 'assertive');
+                haptic.error();
+              } else if (uxState === 'offline') {
+                announce(t('Dashboard.nav_offline' as any), 'assertive');
+                haptic.error();
               }
               return;
             }
 
-            if (!longPressProps.isLongPressing) {
-              // Let Link handle navigation, just provide feedback
-              announce(t('Dashboard.nav_navigating' as any));
-              haptic.success();
-            }
+            // Provide feedback but let Link navigate
+            announce(t('Dashboard.nav_navigating' as any));
+            haptic.success();
           }}
-          {...longPressProps}
+          // {...longPressProps} // Temporarily disabled
           aria-label={t(item.ariaKey as any)}
           aria-current={isActive ? 'page' : undefined}
           aria-disabled={!canNavigate}
@@ -335,7 +334,6 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
                 'motion-fast',
                 isActive && 'scale-110',
                 !canNavigate && 'opacity-40',
-                longPressProps.isLongPressing && 'scale-125',
               )}
             />
 
@@ -374,13 +372,14 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
         </Link>
       </li>
 
-      <QuickActionsMenu
+      {/* Temporarily disabled QuickActionsMenu */}
+      {/* <QuickActionsMenu
         isOpen={isOpen}
         position={position}
         actions={getQuickActions()}
         onClose={closeQuickActions}
         onAction={handleQuickAction}
-      />
+      /> */}
     </>
   );
 };
