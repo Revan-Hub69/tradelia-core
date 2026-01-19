@@ -87,7 +87,7 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
       className={cn(
         'group relative flex items-center gap-3 rounded-lg px-3 py-2',
         'text-sm font-medium transition-all duration-300',
-        'tap-target press-depth focus-ring touch-optimized hover-glow',
+        'tap-target press-depth focus-ring touch-optimized nav-item-hover',
         {
           'bg-primary/10 text-primary shadow-sm': isActive && canNavigate,
           'text-muted-foreground hover:text-foreground': !isActive && canNavigate,
@@ -216,7 +216,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
         {/* Sidebar Header */}
         <div className="flex items-center justify-between border-b border-border/20 p-4">
           {/* Logo - Full when expanded, icon-only when collapsed */}
-          <div className="flex items-center">
+          <div className="flex items-center hover-lift-subtle rounded-lg p-1">
             {isCollapsed ? (
               <Logo isTextHidden={true} size="sm" />
             ) : (
@@ -228,7 +228,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
             variant="ghost"
             size="sm"
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="size-8 p-0 hover:bg-white/60 dark:hover:bg-white/10"
+            className="size-8 p-0 hover-scale hover:bg-primary/10 dark:hover:bg-primary/10"
             aria-label={
               isCollapsed
                 ? (t('Dashboard.expand_sidebar' as any) as string)

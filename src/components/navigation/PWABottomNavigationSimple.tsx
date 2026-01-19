@@ -61,11 +61,11 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
                 'min-h-[44px] tap-target',
                 'text-xs font-medium',
                 'transition-all duration-300 motion-spring-premium',
-                'touch-action-manipulation press-depth',
+                'touch-action-manipulation press-depth nav-item-hover',
                 'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
                 {
                   'text-primary': isActive,
-                  'text-muted-foreground hover:text-foreground hover-glow': !isActive,
+                  'text-muted-foreground hover:text-foreground': !isActive,
                   'animate-pulse': isNavigating === item.id,
                 },
               )}
