@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePathname } from '@/libs/i18nNavigation';
 import { cn } from '@/utils/Helpers';
 import { DynamicIcon, type IconName } from '@/components/icons';
 import { getVisibleNavigationItems } from '@/data/navigation.config';
+import { useNavigationLoading } from '@/hooks/useNavigationLoading';
 
 type PWABottomNavigationSimpleProps = {
   className?: string;
@@ -15,33 +15,14 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
   const pathname = usePathname();
   const t = useTranslations();
   const navigationItems = getVisibleNavigationItems();
-  const [isNavigating, setIsNavigating] = useState<string | null>(null);
+  const { navigateWithLoading, isNavigating, navigationTarget } = useNavigationLoading();
 
-  const handleNavigation = (href: string, itemId: string) => {
+  const handleNavigation = (href: string) => {
     if (pathname === href) {
       return;
     }
     
-    // Set loading state for premium feedback
-    setIsNavigating(itemId);
-    
-    // Navigate with simple reliable transition
-    setIsNavigating(itemId);
-    
-    try {
-      // Simple fade effect
-      const mainContent = document.querySelector('main');
-      if (mainContent) {
-        mainContent.style.transition = 'opacity 150ms ease-out';
-        mainContent.style.opacity = '0.7';
-      }
-
-      // Navigate immediately
-      window.location.href = href;
-    } catch (error) {
-      console.error('Navigation failed:', error);
-      window.location.href = href;
-    }
+    navigateWithLoading(href, 'bottom');
   };
 
   return (
@@ -68,7 +49,7 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
             <button
               key={item.id}
               type="button"
-              onClick={() => handleNavigation(item.href, item.id)}
+              onClick={() => handleNavigation(item.href)}
               className={cn(
                 'flex flex-col items-center justify-center min-w-0 flex-1 px-1 py-2',
                 'min-h-[44px] tap-target',
@@ -79,7 +60,7 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
                 {
                   'text-primary': isActive,
                   'text-muted-foreground hover:text-foreground': !isActive,
-                  'animate-pulse': isNavigating === item.id,
+                  'animate-pulse navigation-skeleton': isNavigating && navigationTarget === item.href,
                 },
               )}
               aria-label={t(item.labelKey as any)}
@@ -92,7 +73,7 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
                   className={cn(
                     'transition-transform duration-300 motion-spring',
                     isActive && 'scale-110',
-                    isNavigating === item.id && 'animate-pulse',
+                    isNavigating && navigationTarget === item.href && 'animate-pulse',
                   )}
                 />
               </div>

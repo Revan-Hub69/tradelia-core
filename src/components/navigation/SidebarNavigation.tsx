@@ -9,14 +9,15 @@
 
 import React, { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { usePathname, Link, useRouter } from '@/libs/i18nNavigation';
+import { usePathname, Link } from '@/libs/i18nNavigation';
 import { cn } from '@/utils/Helpers';
-import { DynamicIcon, type IconName } from '@/components/icons';
-import { getVisibleNavigationItems, trackNavigationEvent } from '@/data/navigation.config';
-import { useNavigationState } from '@/hooks/useNavigationState';
-import { Logo } from '@/templates/Logo';
 import { Button } from '@/components/ui/button';
 import { NavigationSkeleton } from '@/components/ui/skeleton';
+import { DynamicIcon, type IconName } from '@/components/icons';
+import { getVisibleNavigationItems, trackNavigationEvent } from '@/data/navigation.config';
+import { useNavigationLoading } from '@/hooks/useNavigationLoading';
+import { useNavigationState } from '@/hooks/useNavigationState';
+import { Logo } from '@/templates/Logo';
 
 type SidebarNavigationProps = {
   className?: string;
@@ -37,7 +38,7 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
   isCollapsed,
   t,
 }) => {
-  const router = useRouter();
+  const { navigateWithLoading, isNavigating } = useNavigationLoading();
   const [visualState, setVisualState] = useState<'default' | 'pressed'>('default');
   const { uxState, canNavigate } = useNavigationState(
     item.href,
@@ -55,14 +56,14 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault(); // Always prevent default
-    
+
     if (!canNavigate) {
       return;
     }
-    
+
     // Simple programmatic navigation with smooth transitions
     setVisualState('pressed');
-    
+
     // Track navigation event
     trackNavigationEvent({
       action: 'nav_click',
@@ -70,31 +71,9 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
       timestamp: Date.now(),
       metadata: { href: item.href, isOnline: true, isEnabled: true },
     });
-    
-    // Navigate with simple reliable transition
-    try {
-      // Simple fade out current content
-      const mainContent = document.querySelector('main');
-      if (mainContent) {
-        mainContent.style.transition = 'opacity 150ms ease-out';
-        mainContent.style.opacity = '0.7';
-      }
 
-      // Navigate immediately - let Next.js handle the rest
-      router.push(item.href);
-      
-      // Reset opacity after a short delay
-      setTimeout(() => {
-        if (mainContent) {
-          mainContent.style.opacity = '';
-          mainContent.style.transition = '';
-        }
-      }, 200);
-    } catch (error) {
-      console.error('Navigation failed:', error);
-      // Fallback: direct navigation
-      window.location.href = item.href;
-    }
+    // Navigate with proper loading states
+    navigateWithLoading(item.href, 'sidebar');
   };
 
   return (
@@ -110,6 +89,7 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
           'bg-primary/10 text-primary shadow-sm': isActive && canNavigate,
           'text-muted-foreground hover:text-foreground': !isActive && canNavigate,
           'cursor-not-allowed text-muted-foreground/40': !canNavigate,
+          'navigation-skeleton': isNavigating,
         },
         isCollapsed && 'justify-center px-2',
       )}
@@ -156,7 +136,7 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
 
       {/* Tooltip for collapsed state */}
       {isCollapsed && (
-        <div className="pointer-events-none absolute left-full ml-2 z-50 rounded bg-popover px-2 py-1 text-xs text-popover-foreground shadow-lg opacity-0 transition-opacity group-hover:opacity-100">
+        <div className="pointer-events-none absolute left-full z-50 ml-2 rounded bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
           {t(item.labelKey as any)}
         </div>
       )}
@@ -200,16 +180,18 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
         <div className="flex h-full flex-col">
           <div className="flex items-center justify-between border-b border-border/20 p-4">
             <div className="flex items-center">
-              {isCollapsed ? (
-                <div className="size-6 animate-pulse bg-muted rounded" />
-              ) : (
-                <div className="flex items-center gap-2">
-                  <div className="size-6 animate-pulse bg-muted rounded" />
-                  <div className="h-4 w-20 animate-pulse bg-muted rounded" />
-                </div>
-              )}
+              {isCollapsed
+                ? (
+                    <div className="size-6 animate-pulse rounded bg-muted" />
+                  )
+                : (
+                    <div className="flex items-center gap-2">
+                      <div className="size-6 animate-pulse rounded bg-muted" />
+                      <div className="h-4 w-20 animate-pulse rounded bg-muted" />
+                    </div>
+                  )}
             </div>
-            <div className="size-8 animate-pulse bg-muted rounded" />
+            <div className="size-8 animate-pulse rounded bg-muted" />
           </div>
           <NavigationSkeleton isCollapsed={isCollapsed} />
         </div>
@@ -234,12 +216,14 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
         {/* Sidebar Header */}
         <div className="flex items-center justify-between border-b border-border/20 p-4">
           {/* Logo - Full when expanded, icon-only when collapsed */}
-          <div className="flex items-center hover-lift-subtle rounded-lg p-1">
-            {isCollapsed ? (
-              <Logo isTextHidden={true} size="sm" />
-            ) : (
-              <Logo size="sm" />
-            )}
+          <div className="flex items-center rounded-lg p-1 hover-lift-subtle">
+            {isCollapsed
+              ? (
+                  <Logo isTextHidden size="sm" />
+                )
+              : (
+                  <Logo size="sm" />
+                )}
           </div>
 
           <Button
@@ -266,9 +250,9 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
 
         {/* Navigation Items */}
         <nav className="flex-1 space-y-2 p-4">
-          {navigationItems.map(item => {
-            const isActive =
-              pathname === item.href
+          {navigationItems.map((item) => {
+            const isActive
+              = pathname === item.href
               || (item.href !== '/dashboard' && pathname.startsWith(item.href));
 
             return (

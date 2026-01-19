@@ -28,17 +28,17 @@ export const PageTransitionWrapper: React.FC<PageTransitionWrapperProps> = ({
     if (previousPathnameRef.current !== pathname) {
       const element = contentRef.current;
       if (element) {
-        // Simple enter animation
+        // Slower, more deliberate enter animation to balance with faster loading
         element.style.opacity = '0';
-        element.style.transform = 'translateY(8px)';
+        element.style.transform = 'translateY(24px)';
         element.style.transition = 'none';
 
         // Force reflow
         element.offsetHeight;
 
-        // Animate in
+        // Animate in with slower, more premium timing
         requestAnimationFrame(() => {
-          element.style.transition = 'opacity 200ms ease-out, transform 200ms ease-out';
+          element.style.transition = 'opacity 600ms cubic-bezier(0.4, 0.0, 0.2, 1), transform 600ms cubic-bezier(0.4, 0.0, 0.2, 1)';
           element.style.opacity = '1';
           element.style.transform = 'translateY(0)';
         });
@@ -48,7 +48,7 @@ export const PageTransitionWrapper: React.FC<PageTransitionWrapperProps> = ({
           element.style.transition = '';
           element.style.transform = '';
           element.style.opacity = '';
-        }, 200);
+        }, 600);
 
         previousPathnameRef.current = pathname;
 
