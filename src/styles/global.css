@@ -488,11 +488,12 @@
   /* Desktop layout - Sidebar visible, no other nav */
   @media (min-width: 1024px) {
     .layout-stable {
-      grid-template-columns: var(--sidebar-width) 1fr;
+      grid-template-columns: var(--sidebar-width-current, var(--sidebar-width)) 1fr;
       grid-template-rows: var(--header-height) 1fr;
       grid-template-areas: 
         "sidebar header"
         "sidebar main";
+      transition: grid-template-columns 300ms ease-out;
     }
   }
 

@@ -60,6 +60,32 @@ export const QuickActionsMenu: React.FC<QuickActionsMenuProps> = ({
 
   if (!isOpen) return null;
 
+  // Calculate safe position within viewport
+  const calculateSafePosition = () => {
+    const menuWidth = 192; // min-w-48 = 192px
+    const menuHeight = actions.length * 48 + 80; // Approximate height
+    const padding = 16;
+
+    let safeX = position.x - menuWidth / 2;
+    let safeY = position.y - menuHeight - 10;
+
+    // Keep within horizontal bounds
+    if (safeX < padding) {
+      safeX = padding;
+    } else if (safeX + menuWidth > window.innerWidth - padding) {
+      safeX = window.innerWidth - menuWidth - padding;
+    }
+
+    // Keep within vertical bounds
+    if (safeY < padding) {
+      safeY = position.y + 10; // Show below if not enough space above
+    }
+
+    return { x: safeX, y: safeY };
+  };
+
+  const safePosition = calculateSafePosition();
+
   const handleAction = (action: QuickAction) => {
     // Haptic feedback
     if ('vibrate' in navigator) {
@@ -93,9 +119,8 @@ export const QuickActionsMenu: React.FC<QuickActionsMenuProps> = ({
           'pointer-events-auto'
         )}
         style={{
-          left: position.x - 96, // Center horizontally (min-w-48 / 2)
-          top: position.y - 10,
-          transform: 'translateY(-100%)',
+          left: safePosition.x,
+          top: safePosition.y,
         }}
       >
         {/* Arrow pointer */}

@@ -7,12 +7,12 @@
 
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePathname, Link } from '@/libs/i18nNavigation';
 import { cn } from '@/utils/Helpers';
 import { DynamicIcon, type IconName } from '@/components/icons';
-import { getVisibleNavigationItems } from '@/data/navigation.config';
+import { getVisibleNavigationItems, trackNavigationEvent } from '@/data/navigation.config';
 import { useNavigationState } from '@/hooks/useNavigationState';
 
 type HeaderNavigationProps = {
@@ -69,16 +69,39 @@ const HeaderNavigationItem: React.FC<HeaderNavigationItemProps> = ({
   isActive,
   t,
 }) => {
-  const { visualState, uxState, navigate, canNavigate } = useNavigationState(
+  const [visualState, setVisualState] = useState<'default' | 'pressed'>('default');
+  const { uxState, canNavigate } = useNavigationState(
     item.href,
-    item.id
+    item.id,
   );
 
-  const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (canNavigate) {
-      navigate();
+  // Auto-reset pressed state
+  useEffect(() => {
+    if (visualState === 'pressed') {
+      const timer = setTimeout(() => setVisualState('default'), 150);
+      return () => clearTimeout(timer);
     }
+    return undefined;
+  }, [visualState]);
+
+  const handleClick = (e: React.MouseEvent) => {
+    // Don't prevent default - let Link handle navigation
+    // Only prevent if we need to show UX states
+    if (!canNavigate) {
+      e.preventDefault();
+      return;
+    }
+    
+    // Let the Link handle navigation, we just track state
+    setVisualState('pressed');
+    
+    // Track navigation event
+    trackNavigationEvent({
+      action: 'nav_click',
+      itemId: item.id,
+      timestamp: Date.now(),
+      metadata: { href: item.href, isOnline: true, isEnabled: true },
+    });
   };
 
   return (
@@ -113,10 +136,6 @@ const HeaderNavigationItem: React.FC<HeaderNavigationItemProps> = ({
         />
 
         {/* State indicators */}
-        {visualState === 'pending' && (
-          <div className="absolute -top-1 -right-1 size-2 bg-primary rounded-full animate-pulse" />
-        )}
-
         {uxState === 'blocked' && (
           <div className="absolute -top-1 -right-1 size-2 bg-warning rounded-full" />
         )}

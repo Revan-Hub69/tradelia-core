@@ -267,23 +267,6 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
     },
   );
 
-  const handleNavigation = () => {
-    if (!canNavigate) {
-      if (uxState === 'blocked') {
-        announce(t('Dashboard.nav_blocked' as any), 'assertive');
-        haptic.error();
-      } else if (uxState === 'offline') {
-        announce(t('Dashboard.nav_offline' as any), 'assertive');
-        haptic.error();
-      }
-      return;
-    }
-
-    announce(t('Dashboard.nav_navigating' as any));
-    haptic.success();
-    navigate();
-  };
-
   const handleQuickAction = (action: QuickAction) => {
     action.onClick();
     announce(t('Dashboard.quick_action_executed' as any));
@@ -316,9 +299,27 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
           onFocus={onFocus}
           onBlur={onBlur}
           onClick={(e) => {
-            e.preventDefault();
+            // Don't prevent default - let Link handle navigation
+            // Only prevent if we need to show UX states or handle long press
+            if (!canNavigate || longPressProps.isLongPressing) {
+              e.preventDefault();
+              if (!longPressProps.isLongPressing && !canNavigate) {
+                // Show UX feedback for blocked/offline states
+                if (uxState === 'blocked') {
+                  announce(t('Dashboard.nav_blocked' as any), 'assertive');
+                  haptic.error();
+                } else if (uxState === 'offline') {
+                  announce(t('Dashboard.nav_offline' as any), 'assertive');
+                  haptic.error();
+                }
+              }
+              return;
+            }
+
             if (!longPressProps.isLongPressing) {
-              handleNavigation();
+              // Let Link handle navigation, just provide feedback
+              announce(t('Dashboard.nav_navigating' as any));
+              haptic.success();
             }
           }}
           {...longPressProps}
