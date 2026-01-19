@@ -19,7 +19,7 @@ export interface SecurityHeaders {
 export function getSecurityHeaders(isDevelopment = false): SecurityHeaders {
   const cspDirectives = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://apis.google.com",
+    "script-src 'self' https://accounts.google.com https://apis.google.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data: https: blob:",
@@ -29,7 +29,7 @@ export function getSecurityHeaders(isDevelopment = false): SecurityHeaders {
     "base-uri 'self'",
     "form-action 'self'",
     "frame-ancestors 'none'",
-    isDevelopment ? "upgrade-insecure-requests" : "",
+    isDevelopment ? "" : "upgrade-insecure-requests",
   ].filter(Boolean).join('; ');
 
   return {

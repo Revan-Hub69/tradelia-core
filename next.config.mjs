@@ -21,8 +21,8 @@ export default bundleAnalyzer(
     reactStrictMode: true,
     serverExternalPackages: ['@electric-sql/pglite', '@supabase/supabase-js'],
     eslint: {
-      // Enterprise 2026: Temporarily disable for initial deployment
-      ignoreDuringBuilds: true,
+      // ENTERPRISE 2026: Enable ESLint with gradual enforcement
+      ignoreDuringBuilds: false,
       dirs: ['src', 'components', 'lib', 'utils', 'hooks'],
     },
     typescript: {
