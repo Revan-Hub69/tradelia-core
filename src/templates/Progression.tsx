@@ -15,7 +15,7 @@ export const Progression = () => {
           {/* Active */}
           <div className="rounded-xl border-2 border-primary bg-primary/5 p-4">
             <div className="flex items-center justify-between">
-              <span className="font-semibold">Percorso Base</span>
+              <span className="font-semibold">Percorso Fondamentale</span>
               <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
                 Attivo
               </span>

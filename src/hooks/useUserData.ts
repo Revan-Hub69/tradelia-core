@@ -38,7 +38,7 @@ export const useUserData = () => {
         const { profile, progress, completions, badges } = completeData;
         
         // Calculate progress
-        const totalLessons = 12; // Base path has 12 lessons
+        const totalLessons = 12; // Foundation Programme has 12 lessons
         const completedLessons = completions?.length || 0;
         const progressPercentage = Math.round((completedLessons / totalLessons) * 100);
         
@@ -48,7 +48,7 @@ export const useUserData = () => {
           name: profile?.name || user.user_metadata?.name || user.email?.split('@')[0] || 'Utente',
           progress: {
             currentPath: 'base',
-            pathName: 'Percorso Base',
+            pathName: 'Percorso Fondamentale',
             completedLessons,
             totalLessons,
             progressPercentage,
@@ -73,7 +73,7 @@ export const useUserData = () => {
           name: user.user_metadata?.name || user.email?.split('@')[0] || 'Utente',
           progress: {
             currentPath: 'base',
-            pathName: 'Percorso Base',
+            pathName: 'Percorso Fondamentale',
             completedLessons: 0,
             totalLessons: 12,
             progressPercentage: 0,

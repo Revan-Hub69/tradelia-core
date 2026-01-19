@@ -45,7 +45,7 @@ export const Expansions = () => {
             Approfondimenti a pagamento
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-            Sbloccabili solo dopo il Percorso Base. Pagamento unico, nessun abbonamento.
+            Sbloccabili solo dopo il Percorso Fondamentale. Pagamento unico, nessun abbonamento.
           </p>
         </div>
 

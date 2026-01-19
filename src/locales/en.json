@@ -52,7 +52,7 @@
   "Features": {
     "section_subtitle": "Paths",
     "section_title": "4 Paths, 4 Different Goals",
-    "section_description": "After completing the free base path, choose ONE specialization path.",
+    "section_description": "After completing the free Foundation Programme, choose ONE specialization path.",
     "feature1_title": "🟡 Custody",
     "feature1_description": "How to hold crypto safely. Risk: Low",
     "feature2_title": "🔵 Passive Income",
@@ -113,7 +113,7 @@
     "meta_title": "Sign Up",
     "meta_description": "Create your free Tradelia account",
     "title": "Create your account",
-    "description": "Start with the free base path",
+    "description": "Start with the free Foundation Programme",
     "submit": "Sign Up",
     "confirm_password": "Confirm Password",
     "or_continue_with": "Or continue with",
@@ -153,7 +153,7 @@
   },
   "Paths": {
     "base": {
-      "name": "Base Path",
+      "name": "Foundation Programme",
       "description": "What crypto is, what it's NOT, real risks"
     },
     "custody": {
@@ -339,6 +339,7 @@
     "title": "Ready to understand crypto?",
     "subtitle": "Main path free forever · Advanced tools available",
     "cta_button": "Start free",
+    "cta_secondary": "Explore content",
     "trust1": "Zero tracking",
     "trust2": "3-15 min/day",
     "trust3": "Cancel anytime"

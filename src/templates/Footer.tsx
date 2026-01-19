@@ -10,6 +10,7 @@ import { Logo } from './Logo';
 
 export const Footer = () => {
   const t = useTranslations('Footer');
+  const finalCTA = useTranslations('FinalCTA');
 
   return (
     <>
@@ -17,21 +18,21 @@ export const Footer = () => {
       <Section className="border-t border-border/50 bg-gradient-to-b from-background to-muted/30 pb-0 pt-16">
         <div className="mx-auto max-w-4xl text-center">
           <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            Costruisci il tuo vantaggio crypto oggi
+            {finalCTA('title')}
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Percorso principale gratuito per sempre · Moduli avanzati €29 ciascuno
+            {finalCTA('subtitle')}
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
             <Button asChild size="lg" className="h-12 px-8 text-base">
-              <Link href="/lesson-0">Inizia gratis</Link>
+              <Link href="/lesson-0">{finalCTA('cta_button')}</Link>
             </Button>
             <Button asChild variant="outline" size="default" className="h-11 px-6 text-sm">
-              <Link href="#percorsi">Esplora i contenuti</Link>
+              <Link href="#percorsi">{finalCTA('cta_secondary')}</Link>
             </Button>
           </div>
           <p className="mt-4 text-sm text-muted-foreground">
-            Niente spam, dati protetti, cancellazione facile
+            {finalCTA('trust1')} · {finalCTA('trust2')} · {finalCTA('trust3')}
           </p>
         </div>
       </Section>

@@ -120,6 +120,7 @@
     "title": "Pronto a capire le crypto?",
     "subtitle": "Percorso principale gratuito per sempre · Strumenti avanzati disponibili",
     "cta_button": "Inizia gratis",
+    "cta_secondary": "Esplora i contenuti",
     "trust1": "Zero tracciamento",
     "trust2": "Quando hai tempo",
     "trust3": "Cancella quando vuoi"
@@ -160,7 +161,7 @@
   "Features": {
     "section_subtitle": "Percorsi",
     "section_title": "4 Percorsi, 4 Obiettivi Diversi",
-    "section_description": "Dopo il percorso base gratuito, scegli UN percorso di approfondimento.",
+    "section_description": "Dopo il Percorso Fondamentale gratuito, scegli UN percorso di approfondimento.",
     "feature1_title": "🟡 Custodia",
     "feature1_description": "Come detenere crypto in sicurezza. Rischio: Basso",
     "feature2_title": "🔵 Rendite Passive",
@@ -202,7 +203,7 @@
     "meta_title": "Registrati",
     "meta_description": "Crea il tuo account Tradelia gratuito",
     "title": "Crea il tuo account",
-    "description": "Inizia dal percorso base gratuito",
+    "description": "Inizia dal Percorso Fondamentale gratuito",
     "submit": "Registrati",
     "confirm_password": "Conferma Password",
     "or_continue_with": "Oppure continua con",
@@ -242,7 +243,7 @@
   },
   "Paths": {
     "base": {
-      "name": "Percorso Base",
+      "name": "Percorso Fondamentale",
       "description": "Cosa sono le crypto, cosa NON sono, rischi reali"
     },
     "custody": {

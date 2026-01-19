@@ -30,7 +30,7 @@ export const FreeIncludes = () => {
             Sempre gratuito
           </span>
           <h2 className="mt-4 text-2xl font-bold sm:text-3xl">
-            Il percorso base
+            Il Percorso Fondamentale
           </h2>
           <p className="mt-2 text-muted-foreground">
             Tutto quello che serve sapere prima di qualsiasi decisione.

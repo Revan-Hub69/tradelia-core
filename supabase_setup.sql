@@ -100,7 +100,7 @@ CREATE TRIGGER on_lesson_completed
 INSERT INTO learning_path (id, title, description, difficulty, "isPremium", "estimatedDuration", "lessonOrder", prerequisites, "isActive")
 VALUES (
   'base',
-  'Percorso Base',
+  'Percorso Fondamentale',
   'Fondamenti delle criptovalute: cosa sono, come funzionano, rischi e opportunità',
   'beginner',
   false,
