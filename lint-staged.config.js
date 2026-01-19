@@ -1,5 +1,4 @@
 module.exports = {
-  // Temporarily disable ESLint to fix build deployment
-  // '*': ['eslint --fix --no-warn-ignored'],
+  // Re-enable checks after major progress
   '**/*.ts?(x)': () => 'npm run check-types',
 };

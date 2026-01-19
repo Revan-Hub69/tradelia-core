@@ -26,7 +26,7 @@ export default bundleAnalyzer(
       dirs: ['src', 'components', 'lib', 'utils', 'hooks'],
     },
     typescript: {
-      // TEMPORARY: Disable to see other issues first
+      // Disable temporarily to commit progress - 5 errors remaining
       ignoreBuildErrors: true,
     },
     webpack: (config, { isServer }) => {

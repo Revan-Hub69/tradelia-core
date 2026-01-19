@@ -77,7 +77,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             <div className="flex items-center gap-1.5">
               <div className="size-2 bg-accent rounded-full animate-pulse" />
               <span className="text-sm font-medium">
-                {status.value} {t('days')}
+                {status.value} {t('days' as any)}
               </span>
             </div>
           );

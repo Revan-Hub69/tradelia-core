@@ -30,6 +30,7 @@ type SidebarNavigationItemProps = {
   isActive: boolean;
   isCollapsed: boolean;
   t: any;
+  tGeneral: any;
 };
 
 const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
@@ -37,6 +38,7 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
   isActive,
   isCollapsed,
   t,
+  tGeneral,
 }) => {
   const { navigate, isPending, navigationTarget } = useOptimizedNavigation();
   const [visualState, setVisualState] = useState<'default' | 'pressed'>('default');
@@ -265,6 +267,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                 isActive={isActive}
                 isCollapsed={isCollapsed}
                 t={t}
+                tGeneral={tGeneral}
               />
             );
           })}
