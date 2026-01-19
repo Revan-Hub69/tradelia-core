@@ -5,7 +5,7 @@ import React from 'react';
 import { Card } from '@/components/ui/card';
 import { FadeIn, SlideReveal } from '@/components/ui/scroll-animations';
 import { useLessonCompletion } from '@/hooks/useLessonCompletion';
-import { ProfessionalGamificationEngine, LearningApproach } from '@/libs/gamification/professionalSystem';
+import { ProfessionalGamificationEngine, LearningApproach } from '@/libs/gamification';
 
 import { LessonFooter } from './LessonFooter';
 import { LessonHeader } from './LessonHeader';
@@ -14,7 +14,7 @@ export const CryptoLesson0Clean: React.FC = () => {
   const [currentStep, setCurrentStep] = React.useState(0);
   const [startTime] = React.useState(Date.now());
   const [approachesUsed, setApproachesUsed] = React.useState<string[]>([]);
-  const { completeLesson, isCompleting } = useLessonCompletion();
+  const { completeLesson } = useLessonCompletion();
 
   const steps = [
     {
@@ -71,7 +71,7 @@ export const CryptoLesson0Clean: React.FC = () => {
       const quizScore = 100; // Assume perfect for lesson 0
       
       // Calculate XP with professional system
-      const { totalXP, bonuses } = ProfessionalGamificationEngine.calculateLessonXP({
+      const { totalXP } = ProfessionalGamificationEngine.calculateLessonXP({
         baseXP,
         timeSpent,
         targetTime,

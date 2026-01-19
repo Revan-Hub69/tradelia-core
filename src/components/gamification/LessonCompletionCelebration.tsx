@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 
 import { ProfessionalBadgeComponent } from './ProfessionalBadge';
-import type { ProfessionalBadge } from '@/libs/gamification/professionalSystem';
+import type { ProfessionalBadge } from '@/libs/gamification';
 
 type CompletionData = {
   xpEarned: number;

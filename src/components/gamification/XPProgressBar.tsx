@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { ProfessionalGamificationEngine } from '@/libs/gamification/professionalSystem';
+import { ProfessionalGamificationEngine } from '@/libs/gamification';
 
 type XPProgressBarProps = {
   totalXP: number;
@@ -308,8 +308,8 @@ export const XPProgressBar = ({
                   <div className="pt-2 border-t border-border">
                     <p className="text-xs font-medium text-foreground mb-1">{t('achievements')}:</p>
                     <ul className="text-xs text-muted-foreground space-y-1">
-                      {current.benefits.slice(0, 2).map((benefit, index) => (
-                        <li key={index} className="flex items-center gap-1">
+                      {current.benefits.slice(0, 2).map((benefit: string, benefitIndex: number) => (
+                        <li key={benefitIndex} className="flex items-center gap-1">
                           <span className="text-accent">✓</span>
                           {benefit}
                         </li>

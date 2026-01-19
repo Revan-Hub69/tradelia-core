@@ -3,8 +3,8 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import type { ProfessionalBadge } from '@/libs/gamification/professionalSystem';
-import { RARITY_COLORS } from '@/libs/gamification/professionalSystem';
+import type { ProfessionalBadge } from '@/libs/gamification';
+import { RARITY_COLORS } from '@/libs/gamification';
 
 type ProfessionalBadgeProps = {
   badge: ProfessionalBadge;
@@ -181,7 +181,7 @@ export const ProfessionalBadgeComponent = ({
           {/* Badge Icon with Micro-interactions */}
           <motion.div
             className="size-3/4 flex items-center justify-center text-white relative z-10"
-            dangerouslySetInnerHTML={{ __html: badge.icon.content }}
+            dangerouslySetInnerHTML={{ __html: badge.icon?.content || '<div>🏆</div>' }}
             animate={{
               filter: isHovered ? 'brightness(1.2) saturate(1.1)' : 'brightness(1) saturate(1)',
             }}
@@ -306,7 +306,7 @@ export const ProfessionalBadgeComponent = ({
                     style={{ backgroundColor: rarityColors.primary }}
                     whileHover={{ scale: 1.05 }}
                   >
-                    {t(`rarity_${badge.rarity}`).toUpperCase()}
+                    {t(`rarity_${badge.rarity}` as any).toUpperCase()}
                   </motion.span>
                   <motion.span 
                     className="text-warning font-semibold flex items-center gap-1"

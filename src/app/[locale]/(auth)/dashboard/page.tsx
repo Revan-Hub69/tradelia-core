@@ -6,7 +6,7 @@ import { XPProgressBar } from '@/components/gamification/XPProgressBar';
 import { PremiumButton } from '@/components/ui/premium-button';
 import { TitleBar } from '@/features/dashboard/TitleBar';
 import { useUserData } from '@/hooks/useUserData';
-import { PROFESSIONAL_BADGES, type ProfessionalBadge } from '@/libs/gamification/professionalSystem';
+import { PROFESSIONAL_BADGES, type ProfessionalBadge } from '@/libs/gamification';
 
 const DashboardIndexPage = () => {
   const { userData, isLoading } = useUserData();

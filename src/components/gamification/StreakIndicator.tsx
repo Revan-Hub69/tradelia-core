@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import { ProfessionalGamificationEngine, STREAK_MILESTONES } from '@/libs/gamification/professionalSystem';
+import { STREAK_MILESTONES, type StreakMilestone } from '@/libs/gamification';
 
 interface StreakIndicatorProps {
   currentStreak: number;
@@ -23,8 +23,8 @@ export const StreakIndicator = ({
   const isActive = lastActivityDate && 
     new Date().getTime() - lastActivityDate.getTime() < 24 * 60 * 60 * 1000; // Within 24 hours
   
-  const nextMilestone = STREAK_MILESTONES.find(m => m.days > currentStreak);
-  const achievedMilestones = STREAK_MILESTONES.filter(m => m.days <= currentStreak);
+  const nextMilestone = STREAK_MILESTONES.find((m: StreakMilestone) => m.days > currentStreak);
+  const achievedMilestones = STREAK_MILESTONES.filter((m: StreakMilestone) => m.days <= currentStreak);
   
   // Responsive size classes using 4px spacing scale
   const sizeClasses = {
@@ -143,13 +143,13 @@ export const StreakIndicator = ({
             {t('milestones_achieved')}
           </h4>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {achievedMilestones.map((milestone, index) => (
+            {achievedMilestones.map((milestone: StreakMilestone, milestoneIndex: number) => (
               <motion.div
                 key={milestone.days}
                 className="bg-gradient-to-r from-warning/10 to-warning/5 rounded-lg p-2 border border-warning/20"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
+                transition={{ delay: milestoneIndex * 0.1 }}
               >
                 <div className="flex items-center space-x-2">
                   <div className="w-5 h-5 sm:w-6 sm:h-6 bg-warning rounded-full flex items-center justify-center">
