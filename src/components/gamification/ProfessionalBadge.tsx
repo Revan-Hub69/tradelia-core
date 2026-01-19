@@ -181,7 +181,7 @@ export const ProfessionalBadgeComponent = ({
           {/* Badge Icon with Micro-interactions */}
           <motion.div
             className="size-3/4 flex items-center justify-center text-white relative z-10"
-            dangerouslySetInnerHTML={{ __html: badge.icon?.content || '<div>🏆</div>' }}
+            dangerouslySetInnerHTML={{ __html: badge.icon.content }}
             animate={{
               filter: isHovered ? 'brightness(1.2) saturate(1.1)' : 'brightness(1) saturate(1)',
             }}

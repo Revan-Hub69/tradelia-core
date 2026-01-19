@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useLessonCompletion } from '@/hooks/useLessonCompletion';
 
-export default function AuthSyncPage() {
+function AuthSyncContent() {
   const [, setIsLoading] = useState(true);
   const [syncStatus, setSyncStatus] = useState<'syncing' | 'success' | 'error'>('syncing');
   const searchParams = useSearchParams();
@@ -133,5 +133,17 @@ export default function AuthSyncPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AuthSyncPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="mx-auto size-16 animate-spin rounded-full border-4 border-primary/20 border-t-primary" />
+      </div>
+    }>
+      <AuthSyncContent />
+    </Suspense>
   );
 }
