@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { usePathname, Link } from '@/libs/i18nNavigation';
+import { usePathname, Link, useRouter } from '@/libs/i18nNavigation';
 import { cn } from '@/utils/Helpers';
 import { DynamicIcon, type IconName } from '@/components/icons';
 import {
@@ -197,6 +197,7 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
   haptic,
 }) => {
   const t = useTranslations();
+  const router = useRouter();
   const { visualState, uxState, canNavigate } = useNavigationState(
     item.href,
     item.id as NavigationItemId
@@ -303,9 +304,9 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
           onFocus={onFocus}
           onBlur={onBlur}
           onClick={(e) => {
-            // Simple navigation - let Link handle it
+            e.preventDefault(); // Always prevent default
+            
             if (!canNavigate) {
-              e.preventDefault();
               // Show UX feedback for blocked/offline states
               if (uxState === 'blocked') {
                 announce(t('Dashboard.nav_blocked' as any), 'assertive');
@@ -317,9 +318,12 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
               return;
             }
 
-            // Provide feedback but let Link navigate
+            // Simple programmatic navigation
             announce(t('Dashboard.nav_navigating' as any));
             haptic.success();
+            
+            // Direct navigation using router
+            router.push(item.href);
           }}
           // {...longPressProps} // Temporarily disabled
           aria-label={t(item.ariaKey as any)}

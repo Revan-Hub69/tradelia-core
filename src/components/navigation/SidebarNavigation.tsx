@@ -9,7 +9,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { usePathname, Link } from '@/libs/i18nNavigation';
+import { usePathname, Link, useRouter } from '@/libs/i18nNavigation';
 import { cn } from '@/utils/Helpers';
 import { DynamicIcon, type IconName } from '@/components/icons';
 import { getVisibleNavigationItems, trackNavigationEvent } from '@/data/navigation.config';
@@ -36,6 +36,7 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
   isCollapsed,
   t,
 }) => {
+  const router = useRouter();
   const [visualState, setVisualState] = useState<'default' | 'pressed'>('default');
   const { uxState, canNavigate } = useNavigationState(
     item.href,
@@ -52,14 +53,13 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
   }, [visualState]);
 
   const handleClick = (e: React.MouseEvent) => {
-    // Don't prevent default - let Link handle navigation
-    // Only prevent if we need to show UX states
+    e.preventDefault(); // Always prevent default
+    
     if (!canNavigate) {
-      e.preventDefault();
       return;
     }
     
-    // Let the Link handle navigation, we just track state
+    // Simple programmatic navigation
     setVisualState('pressed');
     
     // Track navigation event
@@ -69,6 +69,9 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
       timestamp: Date.now(),
       metadata: { href: item.href, isOnline: true, isEnabled: true },
     });
+    
+    // Direct navigation using router
+    router.push(item.href);
   };
 
   return (
