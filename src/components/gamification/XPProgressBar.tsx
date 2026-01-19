@@ -25,7 +25,7 @@ export const XPProgressBar = ({
   const [isHovered, setIsHovered] = useState(false);
   const [showTooltipState, setShowTooltipState] = useState(false);
   const { current, next, progress } = ProfessionalGamificationEngine.getTierProgress(totalXP);
-  const t = useTranslations('Gamification');
+  const t = useTranslations('Learning');
   
   // Responsive height classes using 4px spacing scale
   const sizeClasses = {
@@ -344,7 +344,7 @@ export const XPGainAnimation = ({
   onComplete,
   celebration = false,
 }: XPGainAnimationProps) => {
-  const t = useTranslations('Gamification');
+  const t = useTranslations('Learning');
   
   return (
     <motion.div

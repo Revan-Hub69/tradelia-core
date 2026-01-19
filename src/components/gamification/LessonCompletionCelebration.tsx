@@ -38,7 +38,7 @@ export const LessonCompletionCelebration = ({
 }: LessonCompletionCelebrationProps) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
-  const t = useTranslations('Gamification');
+  const t = useTranslations('Learning');
   const tLearning = useTranslations('Learning');
 
   const steps = [
@@ -143,7 +143,7 @@ export const LessonCompletionCelebration = ({
                   🎉
                 </motion.div>
                 <h2 className="mb-2 text-xl font-bold text-foreground sm:text-2xl">
-                  {tLearning('complete_lesson')}
+                  {tLearning('lesson_complete')}
                   !
                 </h2>
                 <p className="text-base text-muted-foreground sm:text-lg">
@@ -154,7 +154,7 @@ export const LessonCompletionCelebration = ({
                   animate={{ opacity: [0.5, 1, 0.5] }}
                   transition={{ duration: 1.5, repeat: Infinity }}
                 >
-                  {t('congratulations')}
+                  {t('excellent_work')}
                   ! 👏
                 </motion.div>
               </motion.div>

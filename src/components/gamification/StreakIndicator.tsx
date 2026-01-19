@@ -19,7 +19,7 @@ export const StreakIndicator = ({
   size = 'md',
   showMilestones = false 
 }: StreakIndicatorProps) => {
-  const t = useTranslations('Gamification');
+  const t = useTranslations('Learning');
   const isActive = lastActivityDate && 
     new Date().getTime() - lastActivityDate.getTime() < 24 * 60 * 60 * 1000; // Within 24 hours
   

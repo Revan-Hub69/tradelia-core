@@ -28,7 +28,7 @@ export const ProfessionalBadgeComponent = ({
   const [isHovered, setIsHovered] = useState(false);
   const [showTooltipState, setShowTooltipState] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
-  const t = useTranslations('Gamification');
+  const t = useTranslations('Learning');
 
   // Responsive size classes using Tradelia's 4px spacing scale
   const sizeClasses = {
