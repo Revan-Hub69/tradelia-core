@@ -1,12 +1,12 @@
 'use client';
 
-import { BadgeShowcase } from '@/components/gamification/ProfessionalBadge';
-import { StreakIndicator } from '@/components/gamification/StreakIndicator';
-import { XPProgressBar } from '@/components/gamification/XPProgressBar';
+import { CertificationShowcase } from '@/components/learning/ProfessionalCertification';
+import { CompetencyProgressBar } from '@/components/learning/CompetencyProgressBar';
+import { TradeliaCoinDisplay } from '@/components/learning/TradeliaCoinDisplay';
 import { PremiumButton } from '@/components/ui/premium-button';
 import { TitleBar } from '@/features/dashboard/TitleBar';
 import { useUserData } from '@/hooks/useUserData';
-import { PROFESSIONAL_BADGES, type ProfessionalBadge } from '@/libs/gamification';
+import { PROFESSIONAL_CERTIFICATIONS, type ProfessionalCertification } from '@/libs/learningAnalytics';
 
 const DashboardIndexPage = () => {
   const { userData, isLoading } = useUserData();
@@ -15,11 +15,11 @@ const DashboardIndexPage = () => {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="space-y-6">
-          <div className="h-8 w-64 animate-pulse rounded-lg bg-muted" />
-          <div className="h-4 w-96 animate-pulse rounded-lg bg-muted" />
+          <div className="h-8 w-64 animate-pulse rounded-xl bg-muted" />
+          <div className="h-4 w-96 animate-pulse rounded-xl bg-muted" />
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {[...Array(3)].map((_, i) => (
-              <div key={`skeleton-${i}`} className="h-32 animate-pulse rounded-lg bg-muted" />
+              <div key={`skeleton-${i}`} className="h-32 animate-pulse rounded-xl bg-muted" />
             ))}
           </div>
         </div>
@@ -42,110 +42,181 @@ const DashboardIndexPage = () => {
     );
   }
 
-  // Mock badges for demonstration (in real app, fetch from API)
-  const userBadges: ProfessionalBadge[] = [
-    PROFESSIONAL_BADGES.foundation_specialist,
-    ...(userData.progress.completedLessons > 0 && userData.progress.badges > 1 ? [PROFESSIONAL_BADGES.methodology_expert] : []),
-    ...(userData.progress.currentStreak >= 7 ? [PROFESSIONAL_BADGES.consistency_professional] : []),
-  ].filter((badge): badge is ProfessionalBadge => badge !== undefined);
+  // Mock certifications for demonstration (in real app, fetch from API)
+  const userCertifications: ProfessionalCertification[] = [
+    PROFESSIONAL_CERTIFICATIONS.blockchain_foundations,
+    ...(userData.progress.completedLessons > 5 && userData.progress.badges > 1 
+      ? [PROFESSIONAL_CERTIFICATIONS.crypto_analysis] 
+      : []
+    ),
+    ...(userData.progress.completedLessons > 15 
+      ? [PROFESSIONAL_CERTIFICATIONS.risk_management] 
+      : []
+    ),
+  ].filter((cert): cert is ProfessionalCertification => cert !== undefined);
+
+  // Convert XP to competency score (temporary mapping)
+  const competencyScore = Math.floor(userData.progress.totalXP * 0.8);
+  const tradeliaCoins = Math.floor(userData.progress.totalXP * 0.3);
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="space-y-8">
-        {/* Welcome Section with Gamification */}
-        <div className="space-y-4">
+        {/* Welcome Section with Professional Analytics */}
+        <div className="space-y-6">
           <TitleBar
             title={`Benvenuto, ${userData.name}!`}
-            description="Continua il tuo percorso di apprendimento crypto"
+            description="Continua il tuo percorso di formazione professionale crypto"
           />
 
-          {/* XP Progress */}
-          <div className="rounded-lg border bg-white p-6 shadow-sm dark:bg-gray-800">
-            <XPProgressBar
-              totalXP={userData.progress.totalXP}
-              showDetails
-              size="lg"
-              animated
-            />
+          {/* Professional Progress Card */}
+          <div className="rounded-xl border bg-gradient-to-br from-card to-card/80 p-6 shadow-lg backdrop-blur-sm">
+            <div className="space-y-6">
+              {/* Competency Progress */}
+              <CompetencyProgressBar
+                competencyScore={competencyScore}
+                showDetails
+                size="lg"
+                animated
+              />
+              
+              {/* Tradelia Coins Display */}
+              <div className="flex justify-center">
+                <TradeliaCoinDisplay
+                  totalCoins={tradeliaCoins}
+                  showDetails
+                  size="md"
+                  animated
+                />
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Stats Grid */}
+        {/* Professional Stats Grid */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {/* Lessons Completed */}
-          <div className="rounded-lg border bg-card p-4 text-center">
-            <div className="text-2xl font-bold text-primary">
+          <div className="rounded-xl border bg-gradient-to-br from-card to-card/90 p-6 text-center shadow-sm backdrop-blur-sm">
+            <div className="text-3xl font-bold text-blue-600 mb-2">
               {userData.progress.completedLessons}
             </div>
-            <div className="text-sm text-muted-foreground">Lezioni completate</div>
-          </div>
-
-          {/* Total XP */}
-          <div className="rounded-lg border bg-card p-4 text-center">
-            <div className="text-2xl font-bold text-yellow-600">
-              {userData.progress.totalXP.toLocaleString()}
+            <div className="text-sm text-muted-foreground font-medium">
+              Lezioni completate
             </div>
-            <div className="text-sm text-muted-foreground">Punti XP</div>
           </div>
 
-          {/* Current Streak */}
-          <div className="rounded-lg border bg-card p-4 text-center">
-            <div className="text-2xl font-bold text-orange-600">
+          {/* Competency Score */}
+          <div className="rounded-xl border bg-gradient-to-br from-card to-card/90 p-6 text-center shadow-sm backdrop-blur-sm">
+            <div className="text-3xl font-bold text-green-600 mb-2">
+              {competencyScore.toLocaleString()}
+            </div>
+            <div className="text-sm text-muted-foreground font-medium">
+              Punti Competenza
+            </div>
+          </div>
+
+          {/* Learning Consistency */}
+          <div className="rounded-xl border bg-gradient-to-br from-card to-card/90 p-6 text-center shadow-sm backdrop-blur-sm">
+            <div className="text-3xl font-bold text-orange-600 mb-2">
               {userData.progress.currentStreak}
             </div>
-            <div className="text-sm text-muted-foreground">Giorni consecutivi</div>
+            <div className="text-sm text-muted-foreground font-medium">
+              Giorni di costanza
+            </div>
           </div>
 
-          {/* Badges */}
-          <div className="rounded-lg border bg-card p-4 text-center">
-            <div className="text-2xl font-bold text-purple-600">
-              {userData.progress.badges}
+          {/* Certifications */}
+          <div className="rounded-xl border bg-gradient-to-br from-card to-card/90 p-6 text-center shadow-sm backdrop-blur-sm">
+            <div className="text-3xl font-bold text-purple-600 mb-2">
+              {userCertifications.length}
             </div>
-            <div className="text-sm text-muted-foreground">Certificazioni</div>
+            <div className="text-sm text-muted-foreground font-medium">
+              Certificazioni
+            </div>
           </div>
         </div>
 
-        {/* Gamification Section */}
+        {/* Professional Learning Section */}
         <div className="grid gap-6 lg:grid-cols-2">
-          {/* Streak & Milestones */}
-          <div className="rounded-lg border bg-card p-6 shadow-sm">
-            <h2 className="mb-4 text-xl font-semibold">Streak & Traguardi</h2>
-            <StreakIndicator
-              currentStreak={userData.progress.currentStreak}
-              longestStreak={userData.progress.currentStreak} // In real app, track separately
-              lastActivityDate={new Date()}
-              size="md"
-              showMilestones
-            />
+          {/* Learning Consistency */}
+          <div className="rounded-xl border bg-gradient-to-br from-card to-card/90 p-6 shadow-sm backdrop-blur-sm">
+            <h2 className="mb-6 text-xl font-semibold text-foreground">
+              Costanza Apprendimento
+            </h2>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Giorni consecutivi</span>
+                <span className="text-2xl font-bold text-orange-600">
+                  {userData.progress.currentStreak}
+                </span>
+              </div>
+              <div className="h-2 w-full rounded-full bg-muted">
+                <div
+                  className="h-2 rounded-full bg-gradient-to-r from-orange-500 to-red-500 transition-all duration-300"
+                  style={{ width: `${Math.min(100, (userData.progress.currentStreak / 30) * 100)}%` }}
+                />
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {userData.progress.currentStreak > 0 
+                  ? `Ottimo lavoro! Mantieni questa costanza per massimizzare l'apprendimento.`
+                  : `Inizia oggi il tuo percorso di apprendimento costante.`
+                }
+              </p>
+            </div>
           </div>
 
-          {/* Badges Showcase */}
-          <div className="rounded-lg border bg-card p-6 shadow-sm">
-            <h2 className="mb-4 text-xl font-semibold">Certificazioni Professionali</h2>
-            {userBadges.length > 0 ? (
-              <div className="space-y-4">
-                <BadgeShowcase badges={userBadges} maxDisplay={6} size="lg" showCelebration={false} />
-                <div className="text-sm text-muted-foreground">
-                  Hai ottenuto {userBadges.length} certificazione{userBadges.length !== 1 ? 'i' : ''} professionale{userBadges.length !== 1 ? 'i' : ''}!
-                </div>
-              </div>
-            ) : (
-              <div className="text-center text-muted-foreground">
-                <div className="mb-2 text-4xl">�</div>
-                <p>Completa le lezioni per ottenere le tue prime certificazioni professionali!</p>
-              </div>
-            )}
+          {/* Professional Certifications */}
+          <div className="rounded-xl border bg-gradient-to-br from-card to-card/90 p-6 shadow-sm backdrop-blur-sm">
+            <h2 className="mb-6 text-xl font-semibold text-foreground">
+              Certificazioni Professionali
+            </h2>
+            {userCertifications.length > 0 
+              ? (
+                  <div className="space-y-4">
+                    <CertificationShowcase 
+                      certifications={userCertifications} 
+                      maxDisplay={6} 
+                      size="lg" 
+                      showNew={false} 
+                    />
+                    <div className="text-sm text-muted-foreground">
+                      Hai ottenuto
+                      {' '}
+                      {userCertifications.length}
+                      {' '}
+                      certificazione
+                      {userCertifications.length !== 1 ? 'i' : ''}
+                      {' '}
+                      professionale
+                      {userCertifications.length !== 1 ? 'i' : ''}
+                      !
+                    </div>
+                  </div>
+                )
+              : (
+                  <div className="text-center text-muted-foreground">
+                    <div className="mb-4 text-4xl">🎓</div>
+                    <p className="text-sm">
+                      Completa le lezioni per ottenere le tue prime certificazioni professionali!
+                    </p>
+                  </div>
+                )
+            }
           </div>
         </div>
 
         {/* Learning Path Progress */}
-        <div className="rounded-lg border bg-card p-6 shadow-sm">
-          <h2 className="mb-4 text-xl font-semibold">Il tuo percorso attuale</h2>
+        <div className="rounded-xl border bg-gradient-to-br from-card to-card/90 p-6 shadow-sm backdrop-blur-sm">
+          <h2 className="mb-6 text-xl font-semibold text-foreground">
+            Il tuo percorso formativo
+          </h2>
 
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-medium">{userData.progress.pathName}</h3>
+                <h3 className="text-lg font-semibold text-foreground">
+                  Percorso Fondamentale Crypto
+                </h3>
                 <p className="text-sm text-muted-foreground">
                   {userData.progress.completedLessons}
                   {' '}
@@ -157,23 +228,26 @@ const DashboardIndexPage = () => {
                 </p>
               </div>
               <div className="text-right">
-                <div className="text-2xl font-bold text-primary">
+                <div className="text-3xl font-bold text-blue-600">
                   {userData.progress.progressPercentage}
                   %
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  completato
                 </div>
               </div>
             </div>
 
-            {/* Progress Bar */}
-            <div className="h-3 w-full rounded-full bg-muted">
+            {/* Professional Progress Bar */}
+            <div className="h-4 w-full rounded-full bg-muted shadow-inner">
               <div
-                className="h-3 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 transition-all duration-300"
+                className="h-4 rounded-full bg-gradient-to-r from-blue-500 via-blue-600 to-purple-600 shadow-sm transition-all duration-500 ease-out"
                 style={{ width: `${userData.progress.progressPercentage}%` }}
               />
             </div>
 
             {/* Action Button */}
-            <div className="pt-4">
+            <div className="pt-2">
               <PremiumButton
                 variant="primary"
                 size="lg"
@@ -183,35 +257,49 @@ const DashboardIndexPage = () => {
                 iconPosition="left"
               >
                 {userData.progress.completedLessons === 0
-                  ? 'Inizia il Percorso Professionale'
-                  : 'Continua la Formazione'}
+                  ? 'Inizia il Percorso Fondamentale'
+                  : 'Continua la Formazione Professionale'}
               </PremiumButton>
             </div>
           </div>
         </div>
 
         {/* Next Steps */}
-        <div className="rounded-lg border bg-card p-6">
-          <h2 className="mb-4 text-xl font-semibold">Prossimi passi</h2>
-          <div className="space-y-3">
+        <div className="rounded-xl border bg-gradient-to-br from-card to-card/90 p-6 shadow-sm backdrop-blur-sm">
+          <h2 className="mb-6 text-xl font-semibold text-foreground">
+            Prossimi obiettivi
+          </h2>
+          <div className="space-y-4">
             {userData.progress.completedLessons === 0
               ? (
-                  <div className="flex items-center gap-3 rounded-lg bg-muted/50 p-3">
-                    <div className="size-2 rounded-full bg-primary" />
-                    <span>Inizia con la prima lezione: "Che cos'è Bitcoin?"</span>
+                  <div className="flex items-center gap-4 rounded-lg bg-blue-50 dark:bg-blue-950/30 p-4 border border-blue-200 dark:border-blue-800">
+                    <div className="size-3 rounded-full bg-blue-600 flex-shrink-0" />
+                    <span className="text-blue-900 dark:text-blue-100 font-medium">
+                      Inizia con la prima lezione: "Introduzione alle Criptovalute"
+                    </span>
                   </div>
                 )
               : (
-                  <div className="flex items-center gap-3 rounded-lg bg-muted/50 p-3">
-                    <div className="size-2 rounded-full bg-primary" />
-                    <span>Continua con la prossima lezione del percorso</span>
+                  <div className="flex items-center gap-4 rounded-lg bg-green-50 dark:bg-green-950/30 p-4 border border-green-200 dark:border-green-800">
+                    <div className="size-3 rounded-full bg-green-600 flex-shrink-0" />
+                    <span className="text-green-900 dark:text-green-100 font-medium">
+                      Continua con la prossima lezione del percorso
+                    </span>
                   </div>
-                )}
+                )
+            }
 
-            <div className="flex items-center gap-3 rounded-lg bg-muted/20 p-3">
-              <div className="size-2 rounded-full bg-muted-foreground" />
+            <div className="flex items-center gap-4 rounded-lg bg-muted/50 p-4 border border-border">
+              <div className="size-3 rounded-full bg-muted-foreground flex-shrink-0" />
               <span className="text-muted-foreground">
-                Sblocca percorsi avanzati completando "Percorso Base"
+                Sblocca percorsi specialistici completando il "Percorso Fondamentale"
+              </span>
+            </div>
+
+            <div className="flex items-center gap-4 rounded-lg bg-purple-50 dark:bg-purple-950/30 p-4 border border-purple-200 dark:border-purple-800">
+              <div className="size-3 rounded-full bg-purple-600 flex-shrink-0" />
+              <span className="text-purple-900 dark:text-purple-100">
+                Guadagna Tradelia Coin per sconti su corsi avanzati e strumenti premium
               </span>
             </div>
           </div>

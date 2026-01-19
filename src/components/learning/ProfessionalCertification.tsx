@@ -146,15 +146,15 @@ export const ProfessionalCertificationComponent = ({
           transition={{ duration: 0.3 }}
         />
 
-        {/* Certification Container */}
+        {/* Certification Container with consistent design */}
         <motion.div
-          className={`relative ${sizeClasses[size]} rounded-lg flex items-center justify-center border-2 backdrop-blur-sm`}
+          className={`relative ${sizeClasses[size]} rounded-xl flex items-center justify-center border-2 backdrop-blur-sm shadow-lg`}
           style={{
-            background: `linear-gradient(135deg, ${colors.primary}F0, ${colors.secondary}E0)`,
+            background: `linear-gradient(135deg, ${colors.primary}F5, ${colors.secondary}E8)`,
             borderColor: colors.accent,
             boxShadow: `
-              0 2px 8px hsl(var(--background) / 0.1),
-              0 4px 16px ${colors.glow}20,
+              0 4px 12px hsl(var(--background) / 0.1),
+              0 8px 24px ${colors.glow}25,
               inset 0 1px 0 rgba(255,255,255,0.15)
             `,
           }}
@@ -225,10 +225,10 @@ export const ProfessionalCertificationComponent = ({
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
           >
             <motion.div
-              className="relative px-4 py-3 bg-card/95 backdrop-blur-xl rounded-lg shadow-xl border border-border min-w-64 max-w-80"
+              className="relative px-4 py-3 bg-card/95 backdrop-blur-xl rounded-xl shadow-xl border border-border min-w-64 max-w-80"
               style={{
                 boxShadow: `
-                  0 10px 25px hsl(var(--background) / 0.15),
+                  0 20px 40px hsl(var(--background) / 0.15),
                   0 0 0 1px hsl(var(--border) / 0.1)
                 `,
               }}
@@ -332,12 +332,12 @@ export const CertificationShowcase = ({
       <AnimatePresence>
         {remainingCount > 0 && (
           <motion.div 
-            className={`${overflowSizeClasses[size]} rounded-lg bg-gradient-to-br from-muted to-muted/80 flex items-center justify-center border border-border backdrop-blur-sm`}
+            className={`${overflowSizeClasses[size]} rounded-xl bg-gradient-to-br from-muted to-muted/80 flex items-center justify-center border border-border backdrop-blur-sm shadow-sm`}
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
             whileHover={{ 
               scale: 1.05,
-              boxShadow: '0 4px 12px hsl(var(--background) / 0.15)',
+              boxShadow: '0 8px 25px hsl(var(--background) / 0.15)',
             }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
           >

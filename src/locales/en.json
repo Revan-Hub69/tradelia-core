@@ -717,6 +717,17 @@
     "streak_broken": "Resume your journey today",
     "next_milestone": "Next milestone",
     "days_remaining": "days remaining",
-    "max_level_reached": "Excellence Achieved!"
+    "max_level_reached": "Excellence Achieved!",
+    "path_fundamental": "Fundamental Path",
+    "path_advanced": "Advanced Path",
+    "path_specialist": "Specialist Path",
+    "path_professional": "Professional Path",
+    "intro_cryptocurrencies": "Introduction to Cryptocurrencies",
+    "blockchain_fundamentals": "Blockchain Fundamentals",
+    "crypto_analysis": "Crypto Analysis",
+    "risk_management": "Risk Management",
+    "professional_formation": "Professional Formation",
+    "learning_objectives": "Learning Objectives",
+    "competency_development": "Competency Development"
   }
 }

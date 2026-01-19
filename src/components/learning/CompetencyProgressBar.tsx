@@ -137,7 +137,7 @@ export const CompetencyProgressBar = ({
       {/* Professional Progress Bar Container */}
       <div className="relative">
         <motion.div
-          className={`w-full ${sizeClasses[size]} bg-gradient-to-r from-muted via-muted/90 to-muted rounded-md overflow-hidden shadow-inner border border-border/50`}
+          className={`w-full ${sizeClasses[size]} bg-gradient-to-r from-muted via-muted/90 to-muted rounded-xl overflow-hidden shadow-inner border border-border/50`}
           onHoverStart={() => interactive && setIsHovered(true)}
           onHoverEnd={() => interactive && setIsHovered(false)}
           whileHover={interactive ? { scale: 1.01 } : undefined}
@@ -145,7 +145,7 @@ export const CompetencyProgressBar = ({
         >
           {/* Progress Fill */}
           <motion.div
-            className={`${sizeClasses[size]} rounded-md relative overflow-hidden shadow-sm`}
+            className={`${sizeClasses[size]} rounded-xl relative overflow-hidden shadow-sm`}
             style={{ 
               background: getProgressGradient(),
               boxShadow: `inset 0 1px 0 rgba(255,255,255,0.2), 0 0 4px ${current.color}30`,
@@ -219,7 +219,7 @@ export const CompetencyProgressBar = ({
       {/* Next Level Preview */}
       {showDetails && next && (
         <motion.div 
-          className="flex items-center justify-between p-3 bg-gradient-to-r from-muted/40 to-muted/20 rounded-lg border border-border/50 backdrop-blur-sm"
+          className="flex items-center justify-between p-3 bg-gradient-to-r from-muted/40 to-muted/20 rounded-xl border border-border/50 backdrop-blur-sm"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
@@ -249,7 +249,7 @@ export const CompetencyProgressBar = ({
       {/* Expert Level Achievement */}
       {!next && showDetails && (
         <motion.div 
-          className="text-center p-4 bg-gradient-to-r from-blue-500/10 to-blue-600/5 rounded-lg border border-blue-500/20"
+          className="text-center p-4 bg-gradient-to-r from-blue-500/10 to-blue-600/5 rounded-xl border border-blue-500/20"
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.5, type: 'spring', stiffness: 200, damping: 20 }}
@@ -280,7 +280,7 @@ export const CompetencyProgressBar = ({
             exit={{ opacity: 0, y: 10, scale: 0.9 }}
             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
           >
-            <div className="relative px-4 py-3 bg-card/95 backdrop-blur-xl rounded-lg shadow-xl border border-border min-w-64">
+            <div className="relative px-4 py-3 bg-card/95 backdrop-blur-xl rounded-xl shadow-xl border border-border min-w-64">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-sm text-foreground">{t('competency_progress')}</span>
