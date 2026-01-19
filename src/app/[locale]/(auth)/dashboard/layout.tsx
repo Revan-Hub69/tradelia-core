@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { SimpleDashboardHeader } from '@/components/dashboard/SimpleDashboardHeader';
+import { PWABottomNavigation } from '@/components/navigation/PWABottomNavigation';
 
 export async function generateMetadata(props: { params: Promise<{ locale: string }> }) {
   const params = await props.params;
@@ -30,9 +31,11 @@ export default function DashboardLayout(props: { children: React.ReactNode }) {
         showSearch={true}
         showQuickActions={true}
       />
-      <main className="pt-14 md:pt-16">
+      <main className="pt-14 md:pt-16 pb-20 md:pb-4">
         {props.children}
       </main>
+      {/* PWA Bottom Navigation - Mobile Only */}
+      <PWABottomNavigation className="md:hidden" />
     </div>
   );
 }

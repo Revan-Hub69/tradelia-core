@@ -15,6 +15,7 @@ import {
   Zap
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { useTranslations } from 'next-intl';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -50,6 +51,7 @@ export const SimpleDashboardHeader = ({
 }: SimpleDashboardHeaderProps) => {
   const { userData, isLoading } = useUserData();
   const { theme, setTheme } = useTheme();
+  const t = useTranslations('Dashboard') as (key: string, params?: any) => string;
   const [mounted, setMounted] = useState(false);
   const [hasNotifications] = useState(true); // Dot only, no count
   const [temporaryXP, setTemporaryXP] = useState<number | null>(null);
@@ -97,7 +99,7 @@ export const SimpleDashboardHeader = ({
           {/* Current page indicator - Truth-first language */}
           <nav className="hidden md:block">
             <div className="text-sm font-medium text-muted-foreground">
-              Home
+              {t('nav_home')}
             </div>
           </nav>
         </div>
@@ -124,15 +126,15 @@ export const SimpleDashboardHeader = ({
                 <div className="group relative flex items-center gap-2 rounded-xl bg-white/40 dark:bg-white/10 px-3 py-2 backdrop-blur-sm transition-all hover:bg-white/60 dark:hover:bg-white/20 border border-white/20 dark:border-white/10">
                   <StreakIcon size={16} className="text-orange-500" />
                   <div className="text-sm font-semibold">
-                    <span className="sr-only">Costanza di apprendimento:</span>
+                    <span className="sr-only">{t('streak_aria_label', { count: userData.progress.currentStreak })}</span>
                     {userData.progress.currentStreak}
                   </div>
-                  <div className="text-xs text-muted-foreground">giorni</div>
+                  <div className="text-xs text-muted-foreground">{t('days')}</div>
                 </div>
               ) : (
                 <div className="group relative flex items-center gap-2 rounded-xl bg-blue-500/20 dark:bg-blue-500/10 px-3 py-2 backdrop-blur-sm transition-all hover:bg-blue-500/30 dark:hover:bg-blue-500/20 border border-blue-500/30">
                   <div className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                    Ripartiamo insieme
+                    {t('recovery_message')}
                   </div>
                 </div>
               )}
@@ -154,7 +156,7 @@ export const SimpleDashboardHeader = ({
             <div className="flex items-center gap-2 rounded-xl bg-blue-500/20 dark:bg-blue-500/10 px-3 py-2 backdrop-blur-sm border border-blue-500/30">
               <div className="size-2 rounded-full bg-blue-500" />
               <div className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                Modalità concentrazione
+                {t('focus_mode_active')}
               </div>
             </div>
           )}
@@ -178,10 +180,10 @@ export const SimpleDashboardHeader = ({
                 <>
                   <StreakIcon size={14} className="text-orange-500" />
                   <span className="text-xs font-medium">{userData.progress.currentStreak}</span>
-                  <span className="text-xs text-muted-foreground">giorni</span>
+                  <span className="text-xs text-muted-foreground">{t('days')}</span>
                 </>
               ) : (
-                <span className="text-xs font-medium text-blue-700 dark:text-blue-300">Ripartiamo insieme</span>
+                <span className="text-xs font-medium text-blue-700 dark:text-blue-300">{t('recovery_message')}</span>
               )}
             </div>
           )}
@@ -190,7 +192,7 @@ export const SimpleDashboardHeader = ({
           {focusMode && (
             <div className="flex lg:hidden items-center gap-1 rounded-lg bg-blue-500/20 dark:bg-blue-500/10 px-2 py-1 backdrop-blur-sm border border-blue-500/30">
               <div className="size-1.5 rounded-full bg-blue-500" />
-              <span className="text-xs font-medium text-blue-700 dark:text-blue-300">Focus</span>
+              <span className="text-xs font-medium text-blue-700 dark:text-blue-300">{t('focus_mode_active')}</span>
             </div>
           )}
 
@@ -210,25 +212,25 @@ export const SimpleDashboardHeader = ({
                   )}
                 >
                   <Zap className="size-4" />
-                  <span className="sr-only">Azioni rapide</span>
+                  <span className="sr-only">{t('quick_actions_aria_label')}</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56 bg-background/95 backdrop-blur-sm">
                 <DropdownMenuItem className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Search className="size-4" />
-                    <span>Cerca contenuti</span>
+                    <span>{t('search_content')}</span>
                   </div>
                   <Badge variant="secondary" className="text-xs">⌘K</Badge>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <User className="size-4 mr-2" />
-                  <span>Continua apprendimento</span>
+                  <span>{t('continue_learning')}</span>
                 </DropdownMenuItem>
                 {!focusMode && (
                   <DropdownMenuItem onClick={() => {/* TODO: Enable focus mode */}}>
                     <Settings className="size-4 mr-2" />
-                    <span>Modalità concentrazione</span>
+                    <span>{t('enable_focus_mode')}</span>
                   </DropdownMenuItem>
                 )}
               </DropdownMenuContent>
@@ -249,7 +251,7 @@ export const SimpleDashboardHeader = ({
               )}
             >
               <Search className="size-4" />
-              <span className="sr-only">Cerca</span>
+              <span className="sr-only">{t('search_aria_label')}</span>
             </Button>
           )}
 
@@ -270,7 +272,7 @@ export const SimpleDashboardHeader = ({
               {hasNotifications && (
                 <div className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500" />
               )}
-              <span className="sr-only">Notifiche</span>
+              <span className="sr-only">{t('notifications_aria_label')}</span>
             </Button>
           )}
 
@@ -293,7 +295,7 @@ export const SimpleDashboardHeader = ({
               ) : (
                 <Moon className="size-4" />
               )}
-              <span className="sr-only">Cambia tema</span>
+              <span className="sr-only">{t('theme_toggle_aria_label')}</span>
             </Button>
           )}
 
@@ -310,7 +312,7 @@ export const SimpleDashboardHeader = ({
             )}
           >
             <HelpCircle className="size-4" />
-            <span className="sr-only">Aiuto</span>
+            <span className="sr-only">{t('help_aria_label')}</span>
           </Button>
 
           {/* User Menu */}
@@ -319,11 +321,11 @@ export const SimpleDashboardHeader = ({
               <div className="size-9 animate-pulse rounded-full bg-white/20 dark:bg-white/10" />
             ) : userData ? (
               <UserDropdown
-                userName={userData.name || userData.email.split('@')[0] || 'Utente'}
+                userName={userData.name || userData.email.split('@')[0] || t('not_authenticated')}
                 userEmail={userData.email}
               />
             ) : (
-              <div className="text-xs text-muted-foreground">Non autenticato</div>
+              <div className="text-xs text-muted-foreground">{t('not_authenticated')}</div>
             )}
           </div>
         </div>
@@ -347,17 +349,17 @@ export const SimpleDashboardHeader = ({
                 {userData.progress.currentStreak > 0 ? (
                   <div className="flex items-center gap-2 text-sm">
                     <StreakIcon size={16} className="text-orange-500" />
-                    <span className="font-medium">{userData.progress.currentStreak} giorni</span>
+                    <span className="font-medium">{userData.progress.currentStreak} {t('days')}</span>
                   </div>
                 ) : (
                   <div className="flex items-center gap-2 text-sm text-blue-700 dark:text-blue-300">
-                    <span className="font-medium">Ripartiamo insieme</span>
+                    <span className="font-medium">{t('recovery_message')}</span>
                   </div>
                 )}
                 {focusMode && (
                   <div className="flex items-center gap-2 text-sm text-blue-700 dark:text-blue-300">
                     <div className="size-2 rounded-full bg-blue-500" />
-                    <span className="font-medium">Modalità concentrazione</span>
+                    <span className="font-medium">{t('focus_mode_active')}</span>
                   </div>
                 )}
               </div>
