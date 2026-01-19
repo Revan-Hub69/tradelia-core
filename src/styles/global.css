@@ -461,14 +461,13 @@
     }
   }
 
-  /* CLS Prevention - Complete layout stability */
+  /* Mobile layout - Bottom nav visible */
   .layout-stable {
     min-height: 100vh;
     display: grid;
-    grid-template-rows: var(--header-height) auto 1fr var(--nav-height);
+    grid-template-rows: var(--header-height) 1fr var(--nav-height);
     grid-template-areas: 
       "header"
-      "header-nav"
       "main"
       "nav";
     transition: grid-template-rows 300ms ease-out;

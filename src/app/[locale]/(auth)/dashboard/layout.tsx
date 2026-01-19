@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
-import { PWABottomNavigation } from '@/components/navigation/PWABottomNavigation';
+import { PWABottomNavigationSimple } from '@/components/navigation/PWABottomNavigationSimple';
 import { HeaderNavigation } from '@/components/navigation/HeaderNavigation';
 import { SidebarNavigation } from '@/components/navigation/SidebarNavigation';
 import { CommandPalette } from '@/components/navigation/CommandPalette';
@@ -48,8 +48,8 @@ export default function DashboardLayout(props: { children: React.ReactNode }) {
           {props.children}
         </main>
         
-        {/* Bottom Navigation - Mobile/Tablet (< 1024px) */}
-        <PWABottomNavigation className="layout-nav" />
+        {/* Bottom Navigation - Mobile only (< 768px) */}
+        <PWABottomNavigationSimple className="layout-nav" />
         
         {/* Command Palette - Desktop feature */}
         <CommandPalette />
