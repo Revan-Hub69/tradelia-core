@@ -15,11 +15,15 @@ export interface SecurityHeaders {
 
 /**
  * Generate security headers for different environments
+ * 
+ * NOTE: 'unsafe-inline' is temporarily required for Next.js inline scripts
+ * TODO: Implement nonce-based CSP for enterprise security
  */
 export function getSecurityHeaders(isDevelopment = false): SecurityHeaders {
   const cspDirectives = [
     "default-src 'self'",
-    "script-src 'self' https://accounts.google.com https://apis.google.com",
+    // TEMPORARY: 'unsafe-inline' needed for Next.js - replace with nonce in enterprise version
+    "script-src 'self' 'unsafe-inline' https://accounts.google.com https://apis.google.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data: https: blob:",
