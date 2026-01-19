@@ -22,6 +22,7 @@ import { FadeIn, SlideReveal } from '@/components/ui/scroll-animations';
 import { Link, useRouter } from '@/libs/i18nNavigation';
 import { createClient } from '@/libs/supabase/client';
 import { Logo } from '@/templates/Logo';
+import { PasswordStrength } from '@/components/ui/password-strength';
 import { useAuthRateLimit } from '@/hooks/useRateLimit';
 
 /**
@@ -272,6 +273,12 @@ const ResetPasswordContent = () => {
                                   </div>
                                 </FormControl>
                                 <FormMessage />
+                                
+                                {/* Password Strength Indicator */}
+                                <PasswordStrength 
+                                  password={field.value || ''} 
+                                  className="mt-3"
+                                />
                               </FormItem>
                             )}
                           />

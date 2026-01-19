@@ -4,12 +4,17 @@ import React from 'react';
 
 import { Card } from '@/components/ui/card';
 import { FadeIn, SlideReveal } from '@/components/ui/scroll-animations';
+import { useLessonCompletion } from '@/hooks/useLessonCompletion';
+import { ProfessionalGamificationEngine, LearningApproach } from '@/libs/gamification/professionalSystem';
 
 import { LessonFooter } from './LessonFooter';
 import { LessonHeader } from './LessonHeader';
 
 export const CryptoLesson0Clean: React.FC = () => {
   const [currentStep, setCurrentStep] = React.useState(0);
+  const [startTime] = React.useState(Date.now());
+  const [approachesUsed, setApproachesUsed] = React.useState<string[]>([]);
+  const { completeLesson, isCompleting } = useLessonCompletion();
 
   const steps = [
     {
@@ -17,48 +22,114 @@ export const CryptoLesson0Clean: React.FC = () => {
       title: 'Il Problema di Alice',
       subtitle: 'Un caso reale che ti farà capire tutto',
       duration: '30 sec',
+      approach: 'hook',
     },
     {
       id: 'analogical',
       title: 'Come un Registro Bancario',
       subtitle: 'La metafora che rende tutto chiaro',
       duration: '60 sec',
+      approach: 'analogical',
     },
     {
       id: 'procedural',
       title: 'Come Funziona in Pratica',
       subtitle: 'Seguiamo una transazione dal vivo',
       duration: '90 sec',
+      approach: 'procedural',
     },
     {
       id: 'conceptual',
       title: 'La Definizione Tecnica',
       subtitle: 'Ora che hai le basi, approfondiamo',
       duration: '60 sec',
+      approach: 'conceptual',
     },
     {
       id: 'check',
       title: 'Verifica Rapida',
       subtitle: 'Una domanda per consolidare',
       duration: '30 sec',
+      approach: 'quiz',
     },
   ];
 
-  const handleNext = () => {
+  const handleNext = async () => {
+    // Track approach used
+    const currentApproach = steps[currentStep]?.approach;
+    if (currentApproach && !approachesUsed.includes(currentApproach)) {
+      setApproachesUsed(prev => [...prev, currentApproach]);
+    }
+
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      // Lesson completion flow - goes to dashboard
-      const completionData = {
-        lessonId: 'lesson-0',
-        completed: true,
-        completedAt: new Date().toISOString(),
-        totalSteps: steps.length
-      };
-      localStorage.setItem('lesson-0-completion', JSON.stringify(completionData));
+      // Lesson completion with professional gamification
+      const timeSpent = Math.floor((Date.now() - startTime) / 1000); // seconds
+      const baseXP = 50;
+      const targetTime = 300; // 5 minutes target
+      const quizScore = 100; // Assume perfect for lesson 0
       
-      // Navigate to dashboard (progression after completion)
-      window.location.href = '/dashboard';
+      // Calculate XP with professional system
+      const { totalXP, bonuses } = ProfessionalGamificationEngine.calculateLessonXP({
+        baseXP,
+        timeSpent,
+        targetTime,
+        quizScore,
+        approachesUsed: approachesUsed as LearningApproach[],
+        isFirstCompletion: true,
+        currentStreak: 0 // Will be updated by backend
+      });
+      
+      // Generate professional badges
+      const badges = [];
+      
+      // Crypto Pioneer badge (always awarded for first lesson)
+      badges.push({
+        id: 'crypto_pioneer',
+        name: 'Pioniere Crypto',
+        description: 'Hai iniziato il tuo viaggio nel mondo delle criptovalute',
+        icon: '🎯',
+        rarity: 'common',
+      });
+      
+      // Cognitive Architect badge (if used multiple approaches)
+      if (approachesUsed.length >= 3) {
+        badges.push({
+          id: 'cognitive_architect',
+          name: 'Architetto Cognitivo',
+          description: 'Maestria nell\'utilizzo di diversi approcci di apprendimento',
+          icon: '🧠',
+          rarity: 'rare',
+        });
+      }
+      
+      // Velocity Learner badge (if completed quickly)
+      if (timeSpent < targetTime) {
+        badges.push({
+          id: 'velocity_learner',
+          name: 'Apprendimento Veloce',
+          description: 'Completamento rapido ed efficace delle lezioni',
+          icon: '⚡',
+          rarity: 'rare',
+        });
+      }
+
+      try {
+        await completeLesson({
+          lessonId: 'lesson-0',
+          pathId: 'base',
+          xpEarned: totalXP,
+          approachesUsed,
+          quizScore,
+          timeSpent,
+          badges,
+        });
+      } catch (error) {
+        console.error('Error completing lesson:', error);
+        // Fallback: still redirect to dashboard
+        window.location.href = '/dashboard';
+      }
     }
   };
 

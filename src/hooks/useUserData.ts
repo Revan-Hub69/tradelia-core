@@ -8,6 +8,10 @@ type UserProgress = {
   completedLessons: number;
   totalLessons: number;
   progressPercentage: number;
+  totalXP: number;
+  level: number;
+  currentStreak: number;
+  badges: number;
 };
 
 type UserData = {
@@ -21,36 +25,78 @@ export const useUserData = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const supabase = createClient();
-        const { data: { user } } = await supabase.auth.getUser();
+  const fetchUserData = async () => {
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
 
-        if (user) {
-          // Usa i dati REALI dell'utente autenticato
-          setUserData({
-            id: user.id,
-            email: user.email || '',
-            name: user.user_metadata?.name || user.email?.split('@')[0] || 'Utente',
-            progress: {
-              currentPath: 'fondamenti',
-              pathName: 'Fondamenti Crypto',
-              completedLessons: 0, // Per ora fisso, poi collegheremo alle lezioni vere
-              totalLessons: 12,
-              progressPercentage: 0,
-            },
-          });
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      } finally {
-        setIsLoading(false);
+      if (user) {
+        // Fetch complete user data from API
+        const response = await fetch('/api/user/progress');
+        const completeData = await response.json();
+        
+        const { profile, progress, completions, badges } = completeData;
+        
+        // Calculate progress
+        const totalLessons = 12; // Base path has 12 lessons
+        const completedLessons = completions?.length || 0;
+        const progressPercentage = Math.round((completedLessons / totalLessons) * 100);
+        
+        setUserData({
+          id: user.id,
+          email: user.email || '',
+          name: profile?.name || user.user_metadata?.name || user.email?.split('@')[0] || 'Utente',
+          progress: {
+            currentPath: 'base',
+            pathName: 'Percorso Base',
+            completedLessons,
+            totalLessons,
+            progressPercentage,
+            totalXP: progress?.totalXP || 0,
+            level: progress?.level || 1,
+            currentStreak: progress?.currentStreak || 0,
+            badges: badges?.length || 0,
+          },
+        });
       }
-    };
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      
+      // Fallback to basic auth data if API fails
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        setUserData({
+          id: user.id,
+          email: user.email || '',
+          name: user.user_metadata?.name || user.email?.split('@')[0] || 'Utente',
+          progress: {
+            currentPath: 'base',
+            pathName: 'Percorso Base',
+            completedLessons: 0,
+            totalLessons: 12,
+            progressPercentage: 0,
+            totalXP: 0,
+            level: 1,
+            currentStreak: 0,
+            badges: 0,
+          },
+        });
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchUserData();
   }, []);
 
-  return { userData, isLoading };
+  const refreshUserData = async () => {
+    setIsLoading(true);
+    await fetchUserData();
+  };
+
+  return { userData, isLoading, refreshUserData };
 };

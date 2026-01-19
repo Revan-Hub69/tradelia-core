@@ -1,6 +1,5 @@
 import { unstable_setRequestLocale } from 'next-intl/server';
-
-import { OptimizedOnboardingFlow } from '@/features/onboarding/OptimizedOnboardingFlow';
+import { redirect } from 'next/navigation';
 
 export async function generateMetadata() {
   return {
@@ -13,7 +12,8 @@ const OnboardingPage = async (props: { params: Promise<{ locale: string }> }) =>
   const params = await props.params;
   unstable_setRequestLocale(params.locale);
 
-  return <OptimizedOnboardingFlow />;
+  // Redirect to dashboard since onboarding was removed
+  redirect(`/${params.locale}/dashboard`);
 };
 
 export default OnboardingPage;
