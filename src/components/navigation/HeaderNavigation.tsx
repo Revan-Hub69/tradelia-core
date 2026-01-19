@@ -86,11 +86,17 @@ const HeaderNavigationItem: React.FC<HeaderNavigationItemProps> = ({
   }, [visualState]);
 
   const handleClick = (e: React.MouseEvent) => {
+    console.log('🔥 HEADER CLICK:', item.id, item.href);
     e.preventDefault(); // Always prevent default
     
+    console.log('🔍 canNavigate:', canNavigate, 'uxState:', uxState);
+    
     if (!canNavigate) {
+      console.log('❌ Header navigation blocked');
       return;
     }
+    
+    console.log('✅ Starting header navigation to:', item.href);
     
     // Simple programmatic navigation
     setVisualState('pressed');
@@ -104,7 +110,13 @@ const HeaderNavigationItem: React.FC<HeaderNavigationItemProps> = ({
     });
     
     // Direct navigation using router
-    router.push(item.href);
+    try {
+      console.log('🚀 Header calling router.push...');
+      router.push(item.href);
+      console.log('✅ Header router.push called successfully');
+    } catch (error) {
+      console.error('❌ Header router.push failed:', error);
+    }
   };
 
   return (

@@ -304,9 +304,13 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
           onFocus={onFocus}
           onBlur={onBlur}
           onClick={(e) => {
+            console.log('🔥 CLICK DETECTED:', item.id, item.href);
             e.preventDefault(); // Always prevent default
             
+            console.log('🔍 canNavigate:', canNavigate, 'uxState:', uxState);
+            
             if (!canNavigate) {
+              console.log('❌ Navigation blocked');
               // Show UX feedback for blocked/offline states
               if (uxState === 'blocked') {
                 announce(t('Dashboard.nav_blocked' as any), 'assertive');
@@ -318,12 +322,20 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
               return;
             }
 
+            console.log('✅ Starting navigation to:', item.href);
+            
             // Simple programmatic navigation
             announce(t('Dashboard.nav_navigating' as any));
             haptic.success();
             
             // Direct navigation using router
-            router.push(item.href);
+            try {
+              console.log('🚀 Calling router.push...');
+              router.push(item.href);
+              console.log('✅ router.push called successfully');
+            } catch (error) {
+              console.error('❌ router.push failed:', error);
+            }
           }}
           // {...longPressProps} // Temporarily disabled
           aria-label={t(item.ariaKey as any)}

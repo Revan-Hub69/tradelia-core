@@ -53,11 +53,17 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
   }, [visualState]);
 
   const handleClick = (e: React.MouseEvent) => {
+    console.log('🔥 SIDEBAR CLICK:', item.id, item.href);
     e.preventDefault(); // Always prevent default
     
+    console.log('🔍 canNavigate:', canNavigate, 'uxState:', uxState);
+    
     if (!canNavigate) {
+      console.log('❌ Sidebar navigation blocked');
       return;
     }
+    
+    console.log('✅ Starting sidebar navigation to:', item.href);
     
     // Simple programmatic navigation
     setVisualState('pressed');
@@ -71,7 +77,13 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
     });
     
     // Direct navigation using router
-    router.push(item.href);
+    try {
+      console.log('🚀 Sidebar calling router.push...');
+      router.push(item.href);
+      console.log('✅ Sidebar router.push called successfully');
+    } catch (error) {
+      console.error('❌ Sidebar router.push failed:', error);
+    }
   };
 
   return (

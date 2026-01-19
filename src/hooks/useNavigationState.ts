@@ -63,6 +63,8 @@ export const useNavigationState = (
   const isOnline = useOnlineStatus();
   const isEnabled = useFeatureFlag(href);
 
+  console.log('🔍 useNavigationState:', { itemId, href, isOnline, isEnabled, canNavigate: isEnabled && isOnline });
+
   // Auto-reset pressed state
   useEffect(() => {
     if (visualState === 'pressed') {
