@@ -147,6 +147,114 @@ export const PROFESSIONAL_BADGES: Record<string, ProfessionalBadge> = {
       en: '🏅 Certified discipline: You have demonstrated continuous professional commitment to learning.',
     },
   },
+  efficiency_analyst: {
+    id: 'efficiency_analyst',
+    name: { it: 'Analista Efficienza', en: 'Efficiency Analyst' },
+    description: { it: 'Capacità dimostrata di ottimizzazione dei tempi di apprendimento', en: 'Demonstrated capability in learning time optimization' },
+    category: 'achievement',
+    rarity: 'rare',
+    xpReward: 40,
+    icon: { 
+      type: 'svg',
+      content: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 12L7 8L11 12L21 2" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="7" cy="8" r="2" fill="currentColor"/><circle cx="11" cy="12" r="2" fill="currentColor"/><circle cx="21" cy="2" r="2" fill="currentColor"/></svg>' 
+    },
+    colors: {
+      primary: '#059669',
+      secondary: '#047857',
+      accent: '#10B981',
+      glow: '#059669',
+    },
+    requirements: {
+      type: 'speed_completion',
+      value: 300, // 5 minutes in seconds
+      metadata: { lessonId: 'lesson-0' },
+    },
+    unlockMessage: {
+      it: '⚡ Ottimizzazione certificata: Hai dimostrato eccellenza nell\'efficienza di apprendimento.',
+      en: '⚡ Certified optimization: You have demonstrated excellence in learning efficiency.',
+    },
+  },
+  precision_specialist: {
+    id: 'precision_specialist',
+    name: { it: 'Specialista Precisione', en: 'Precision Specialist' },
+    description: { it: 'Standard di eccellenza mantenuti in tutte le valutazioni completate', en: 'Excellence standards maintained across all completed assessments' },
+    category: 'mastery',
+    rarity: 'epic',
+    xpReward: 75,
+    icon: { 
+      type: 'svg',
+      content: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="12" cy="12" r="6" stroke="currentColor" stroke-width="1" fill="none"/><circle cx="12" cy="12" r="2" fill="currentColor"/><path d="M12 2V6M12 18V22M2 12H6M18 12H22" stroke="currentColor" stroke-width="1"/></svg>' 
+    },
+    colors: {
+      primary: '#7C3AED',
+      secondary: '#6D28D9',
+      accent: '#8B5CF6',
+      glow: '#7C3AED',
+    },
+    requirements: {
+      type: 'perfect_score',
+      value: 100,
+      metadata: { minLessons: 3 },
+    },
+    unlockMessage: {
+      it: '🎯 Precisione certificata: Hai mantenuto standard di eccellenza in tutte le valutazioni.',
+      en: '🎯 Certified precision: You have maintained excellence standards across all assessments.',
+    },
+  },
+  blockchain_analyst: {
+    id: 'blockchain_analyst',
+    name: { it: 'Analista Blockchain', en: 'Blockchain Analyst' },
+    description: { it: 'Competenza professionale certificata nel percorso fondamentale blockchain', en: 'Certified professional competency in fundamental blockchain pathway' },
+    category: 'milestone',
+    rarity: 'legendary',
+    xpReward: 200,
+    icon: { 
+      type: 'svg',
+      content: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="6" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/><rect x="9" y="6" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/><rect x="16" y="6" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M8 9H9M15 9H16" stroke="currentColor" stroke-width="2"/><circle cx="5" cy="9" r="1.5" fill="currentColor"/><circle cx="12" cy="9" r="1.5" fill="currentColor"/><circle cx="19" cy="9" r="1.5" fill="currentColor"/></svg>' 
+    },
+    colors: {
+      primary: '#F59E0B',
+      secondary: '#D97706',
+      accent: '#FCD34D',
+      glow: '#F59E0B',
+    },
+    requirements: {
+      type: 'milestone',
+      value: 12,
+      metadata: { pathId: 'base', minAvgScore: 85 },
+    },
+    unlockMessage: {
+      it: '🏆 Certificazione professionale: Hai acquisito competenza analitica certificata nel settore blockchain.',
+      en: '🏆 Professional certification: You have acquired certified analytical competency in the blockchain sector.',
+    },
+  },
+  crypto_strategist: {
+    id: 'crypto_strategist',
+    name: { it: 'Strategist Crypto', en: 'Crypto Strategist' },
+    description: { it: 'Competenza strategica avanzata certificata in tutti i domini delle criptovalute', en: 'Certified advanced strategic competency across all cryptocurrency domains' },
+    category: 'milestone',
+    rarity: 'mythic',
+    xpReward: 500,
+    icon: { 
+      type: 'svg',
+      content: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L16 8L22 9L17 14L19 21L12 18L5 21L7 14L2 9L8 8L12 2Z" fill="currentColor"/><circle cx="12" cy="12" r="6" stroke="white" stroke-width="1.5" fill="none"/><circle cx="12" cy="12" r="3" stroke="white" stroke-width="1" fill="none"/><circle cx="12" cy="12" r="1" fill="white"/><path d="M12 6V8M12 16V18M6 12H8M16 12H18" stroke="white" stroke-width="1"/></svg>' 
+    },
+    colors: {
+      primary: '#1F2937',
+      secondary: '#111827',
+      accent: '#374151',
+      glow: '#1F2937',
+    },
+    requirements: {
+      type: 'milestone',
+      value: 50,
+      metadata: { allPaths: true, minAvgScore: 90 },
+    },
+    unlockMessage: {
+      it: '👑 Eccellenza strategica: Hai raggiunto il livello più alto di competenza professionale nel settore crypto.',
+      en: '👑 Strategic excellence: You have achieved the highest level of professional competency in the crypto sector.',
+    },
+  },
 };
 
 export const XP_TIERS: XPTier[] = [
@@ -339,6 +447,78 @@ export class ProfessionalGamificationEngine {
     }
 
     return { totalXP, bonuses };
+  }
+
+  /**
+   * Check which badges should be awarded based on user progress
+   */
+  static checkBadgeEligibility(userStats: {
+    lessonsCompleted: number;
+    totalXP: number;
+    currentStreak: number;
+    approachesUsed: Set<LearningApproach>;
+    averageQuizScore: number;
+    fastestCompletion: number;
+    pathsCompleted: string[];
+    perfectScores: number;
+  }): ProfessionalBadge[] {
+    const eligibleBadges: ProfessionalBadge[] = [];
+
+    Object.values(PROFESSIONAL_BADGES).forEach((badge) => {
+      const { requirements } = badge;
+      let isEligible = false;
+
+      switch (requirements.type) {
+        case 'lesson_count': {
+          isEligible = userStats.lessonsCompleted >= requirements.value;
+          break;
+        }
+
+        case 'streak_days': {
+          isEligible = userStats.currentStreak >= requirements.value;
+          break;
+        }
+
+        case 'xp_total': {
+          isEligible = userStats.totalXP >= requirements.value;
+          break;
+        }
+
+        case 'approach_diversity': {
+          isEligible = userStats.approachesUsed.size >= requirements.value;
+          break;
+        }
+
+        case 'speed_completion': {
+          isEligible = userStats.fastestCompletion > 0 && userStats.fastestCompletion <= requirements.value;
+          break;
+        }
+
+        case 'perfect_score': {
+          const minLessons = requirements.metadata?.minLessons || 1;
+          isEligible = userStats.perfectScores >= minLessons
+            && userStats.averageQuizScore >= requirements.value;
+          break;
+        }
+
+        case 'milestone': {
+          if (requirements.metadata?.pathId) {
+            isEligible = userStats.pathsCompleted.includes(requirements.metadata.pathId)
+              && userStats.averageQuizScore >= (requirements.metadata.minAvgScore || 0);
+          } else if (requirements.metadata?.allPaths) {
+            isEligible = userStats.pathsCompleted.length >= requirements.value
+              && userStats.averageQuizScore >= (requirements.metadata.minAvgScore || 0);
+          }
+          break;
+        }
+      }
+
+      if (isEligible) {
+        eligibleBadges.push(badge);
+      }
+    });
+
+    return eligibleBadges;
   }
 
   /**
