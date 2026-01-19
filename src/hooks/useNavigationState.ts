@@ -39,9 +39,9 @@ const useOnlineStatus = () => {
 };
 
 // Feature flag hook (mock - in produzione da database)
-const useFeatureFlag = (href: string): boolean => {
-  // Mock feature gating logic
-  if (href.includes('/tools')) return false; // Tools temporaneamente disabilitato
+const useFeatureFlag = (): boolean => {
+  // Mock feature gating logic - TOOLS NOW ENABLED
+  // All features enabled for now
   return true;
 };
 
@@ -61,7 +61,7 @@ export const useNavigationState = (
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const isOnline = useOnlineStatus();
-  const isEnabled = useFeatureFlag(href);
+  const isEnabled = useFeatureFlag();
 
   console.log('🔍 useNavigationState:', { itemId, href, isOnline, isEnabled, canNavigate: isEnabled && isOnline });
 

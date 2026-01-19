@@ -379,55 +379,52 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   }
 
-  /* Enterprise premium hover with glow effect */
-  .hover-glow {
-    transition: all 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    will-change: transform, box-shadow, background-color;
-  }
-
-  .hover-glow:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 20px rgba(var(--primary-rgb), 0.25);
-    background-color: rgba(var(--primary-rgb), 0.05);
-  }
-
-  /* Subtle hover lift for navigation items */
-  .hover-lift-subtle {
-    transition: all 250ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    will-change: transform, box-shadow;
-  }
-
-  .hover-lift-subtle:hover {
-    transform: translateY(-0.5px);
-    box-shadow: 0 2px 12px rgba(var(--primary-rgb), 0.15);
-  }
-
-  /* Premium hover scale effect */
-  .hover-scale {
-    transition: all 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
-    will-change: transform;
-  }
-
-  .hover-scale:hover {
-    transform: scale(1.02);
-  }
-
-  /* Navigation item hover - Enterprise premium */
+  /* Enterprise premium hover with glow effect - HIGH SPECIFICITY */
   .nav-item-hover {
-    transition: all 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
     will-change: transform, box-shadow, background-color;
     position: relative;
   }
 
   .nav-item-hover:hover {
-    transform: translateY(-1px) scale(1.01);
-    box-shadow: 0 4px 16px rgba(var(--primary-rgb), 0.2);
-    background-color: rgba(var(--primary-rgb), 0.08);
+    transform: translateY(-1px) scale(1.01) !important;
+    box-shadow: 0 4px 16px rgba(var(--primary-rgb), 0.2) !important;
+    background-color: rgba(var(--primary-rgb), 0.08) !important;
   }
 
   .nav-item-hover:active {
-    transform: translateY(0) scale(0.98);
-    transition-duration: 100ms;
+    transform: translateY(0) scale(0.98) !important;
+    transition-duration: 100ms !important;
+  }
+
+  .hover-lift-subtle {
+    transition: all 250ms cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    will-change: transform, box-shadow;
+  }
+
+  .hover-lift-subtle:hover {
+    transform: translateY(-0.5px) !important;
+    box-shadow: 0 2px 12px rgba(var(--primary-rgb), 0.15) !important;
+  }
+
+  .hover-scale {
+    transition: all 200ms cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    will-change: transform;
+  }
+
+  .hover-scale:hover {
+    transform: scale(1.02) !important;
+  }
+
+  .hover-glow {
+    transition: all 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    will-change: transform, box-shadow, background-color;
+  }
+
+  .hover-glow:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 20px rgba(var(--primary-rgb), 0.25) !important;
+    background-color: rgba(var(--primary-rgb), 0.05) !important;
   }
 
   /* Layout classes */
@@ -711,6 +708,52 @@
     transform: scale(1.05);
     background: rgba(var(--primary-rgb), 0.05);
     transition: all var(--motion-fast) var(--ease-out);
+  }
+
+  /* VIEW TRANSITIONS API - Enterprise 2026 */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 300ms;
+    animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  /* Fade transition (default) */
+  ::view-transition-old(root) {
+    animation-name: fade-out-smooth;
+  }
+
+  ::view-transition-new(root) {
+    animation-name: fade-in-smooth;
+  }
+
+  @keyframes fade-out-smooth {
+    from { 
+      opacity: 1; 
+      transform: scale(1);
+    }
+    to { 
+      opacity: 0; 
+      transform: scale(0.98);
+    }
+  }
+
+  @keyframes fade-in-smooth {
+    from { 
+      opacity: 0; 
+      transform: scale(1.02);
+    }
+    to { 
+      opacity: 1; 
+      transform: scale(1);
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation-duration: 0ms !important;
+    }
   }
 }
 }

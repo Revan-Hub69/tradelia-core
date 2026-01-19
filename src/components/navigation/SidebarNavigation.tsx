@@ -9,11 +9,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { usePathname, Link, useRouter } from '@/libs/i18nNavigation';
+import { usePathname, Link } from '@/libs/i18nNavigation';
 import { cn } from '@/utils/Helpers';
 import { DynamicIcon, type IconName } from '@/components/icons';
 import { getVisibleNavigationItems, trackNavigationEvent } from '@/data/navigation.config';
 import { useNavigationState } from '@/hooks/useNavigationState';
+import { useViewTransitions } from '@/hooks/useViewTransitions';
 import { Logo } from '@/templates/Logo';
 import { Button } from '@/components/ui/button';
 import { NavigationSkeleton } from '@/components/ui/skeleton';
@@ -37,7 +38,7 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
   isCollapsed,
   t,
 }) => {
-  const router = useRouter();
+  const { navigateWithTransition } = useViewTransitions();
   const [visualState, setVisualState] = useState<'default' | 'pressed'>('default');
   const { uxState, canNavigate } = useNavigationState(
     item.href,
@@ -60,7 +61,7 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
       return;
     }
     
-    // Simple programmatic navigation
+    // Simple programmatic navigation with smooth transitions
     setVisualState('pressed');
     
     // Track navigation event
@@ -71,12 +72,12 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
       metadata: { href: item.href, isOnline: true, isEnabled: true },
     });
     
-    // Direct navigation using router
-    try {
-      router.push(item.href);
-    } catch (error) {
-      console.error('Sidebar navigation failed:', error);
-    }
+    // Navigate with smooth transition
+    navigateWithTransition(item.href, {
+      duration: 300,
+      easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+      name: 'page-transition',
+    });
   };
 
   return (

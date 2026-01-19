@@ -71,7 +71,7 @@ export const NAVIGATION_CONFIG: NavigationConfig = {
       href: '/dashboard/tools',
       iconName: 'ToolsIcon',
       featureFlag: 'TOOLS_ENABLED',
-      disabled: !FEATURE_FLAGS.TOOLS_ENABLED, // Temporaneamente disabilitato
+      // disabled: !FEATURE_FLAGS.TOOLS_ENABLED, // ENABLED NOW
     },
     {
       id: 'community',

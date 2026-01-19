@@ -6,6 +6,7 @@ import { usePathname } from '@/libs/i18nNavigation';
 import { cn } from '@/utils/Helpers';
 import { DynamicIcon, type IconName } from '@/components/icons';
 import { getVisibleNavigationItems } from '@/data/navigation.config';
+import { useViewTransitions } from '@/hooks/useViewTransitions';
 
 type PWABottomNavigationSimpleProps = {
   className?: string;
@@ -16,6 +17,7 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
   const t = useTranslations();
   const navigationItems = getVisibleNavigationItems();
   const [isNavigating, setIsNavigating] = useState<string | null>(null);
+  const { navigateWithTransition } = useViewTransitions();
 
   const handleNavigation = (href: string, itemId: string) => {
     if (pathname === href) {
@@ -25,10 +27,14 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
     // Set loading state for premium feedback
     setIsNavigating(itemId);
     
-    // Simple, reliable navigation with loading feedback
-    setTimeout(() => {
-      window.location.href = href;
-    }, 150); // Small delay for visual feedback
+    // Navigate with smooth transition
+    navigateWithTransition(href, {
+      duration: 300,
+      easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+      name: 'page-transition',
+    }).finally(() => {
+      setIsNavigating(null);
+    });
   };
 
   return (
