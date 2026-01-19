@@ -37,7 +37,7 @@ export const FinalCTA = () => {
 
         <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
           <Button asChild size="lg" className="h-12 w-full px-8 text-base sm:h-14 sm:w-auto sm:text-lg">
-            <Link href="/onboarding">{t('cta_button')}</Link>
+            <Link href="/lesson-0">{t('cta_button')}</Link>
           </Button>
         </div>
 

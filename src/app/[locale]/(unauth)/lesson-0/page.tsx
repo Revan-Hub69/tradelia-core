@@ -1,7 +1,7 @@
 'use client';
 
-import { CryptoLesson0Clean } from '@/components/learning/CryptoLesson0Clean';
+import { CryptoLesson0WithAuth } from '@/components/learning/CryptoLesson0WithAuth';
 
 export default function Lesson0Page() {
-  return <CryptoLesson0Clean />;
+  return <CryptoLesson0WithAuth />;
 }

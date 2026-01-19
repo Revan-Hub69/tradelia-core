@@ -1,298 +1,149 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-
-import {
-  DashboardHeader,
-  DashboardLayout,
-  GamificationPanel,
-  LearningPathsSection,
-  MobileNavigation,
-  ProgressTracker,
-  SettingsPanel,
-} from '@/components/dashboard';
-import type { DashboardState, GamificationData, LearningPath, ProgressData, UserSettings } from '@/components/dashboard/types';
 import { TitleBar } from '@/features/dashboard/TitleBar';
+import { useUserData } from '@/hooks/useUserData';
 
 const DashboardIndexPage = () => {
-  const [settingsOpen, setSettingsOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const [activeSection, setActiveSection] = useState<'overview' | 'paths' | 'progress' | 'settings'>('overview');
+  const { userData, isLoading } = useUserData();
 
-  // Mock data - will be replaced with real data fetching
-  const [dashboardState, setDashboardState] = useState<DashboardState>({
-    user: {
-      id: '1',
-      email: 'user@example.com',
-      name: 'Utente Demo',
-      subscription: 'free',
-    },
-    learningPaths: [
-      {
-        id: 'fondamenti',
-        title: 'Fondamenti Crypto',
-        description: 'Impara le basi delle criptovalute e della blockchain',
-        difficulty: 'beginner',
-        isPremium: false,
-        prerequisites: [],
-        modules: [],
-        estimatedDuration: 180,
-        completionRate: 25,
-        isLocked: false,
-      },
-      {
-        id: 'investitore',
-        title: 'Investitore Crypto',
-        description: 'Strategie di investimento e gestione del portafoglio',
-        difficulty: 'intermediate',
-        isPremium: true,
-        prerequisites: ['fondamenti'],
-        modules: [],
-        estimatedDuration: 240,
-        completionRate: 0,
-        isLocked: true,
-      },
-      {
-        id: 'trader',
-        title: 'Trader Avanzato',
-        description: 'Trading avanzato e analisi tecnica',
-        difficulty: 'advanced',
-        isPremium: true,
-        prerequisites: ['fondamenti', 'investitore'],
-        modules: [],
-        estimatedDuration: 300,
-        completionRate: 0,
-        isLocked: true,
-      },
-      {
-        id: 'web3',
-        title: 'Web3 Developer',
-        description: 'Sviluppo di applicazioni decentralizzate',
-        difficulty: 'advanced',
-        isPremium: true,
-        prerequisites: ['fondamenti'],
-        modules: [],
-        estimatedDuration: 360,
-        completionRate: 0,
-        isLocked: true,
-      },
-    ] as LearningPath[],
-    progress: {
-      overallProgress: 12.5,
-      pathProgress: {
-        fondamenti: {
-          pathId: 'fondamenti',
-          completionRate: 25,
-          currentModule: 1,
-          timeSpent: 45,
-          lastAccessed: new Date(),
-        },
-      },
-      currentStreak: 3,
-      longestStreak: 7,
-      totalXP: 150,
-      level: 2,
-      nextRecommendedLesson: 'crypto-basics-2',
-    } as ProgressData,
-    gamification: {
-      badges: [
-        {
-          id: 'first-lesson',
-          name: 'Primo Passo',
-          description: 'Hai completato la tua prima lezione!',
-          icon: 'target', // Will use BadgeIcon component
-          unlockedAt: new Date(),
-          rarity: 'common',
-        },
-      ],
-      achievements: [
-        {
-          id: 'streak-7',
-          title: 'Streak di 7 giorni',
-          description: 'Studia per 7 giorni consecutivi',
-          icon: 'streak', // Will use AchievementIcon component
-          progress: 3,
-          maxProgress: 7,
-          isUnlocked: false,
-        },
-      ],
-      streakHistory: [],
-      xpHistory: [],
-    } as GamificationData,
-    settings: {
-      notifications: {
-        email: true,
-        push: true,
-        dailyReminder: true,
-        streakReminder: true,
-      },
-      preferences: {
-        language: 'it',
-        theme: 'system',
-        difficulty: 'adaptive',
-        autoPlay: true,
-      },
-      privacy: {
-        profileVisible: true,
-        progressVisible: true,
-        leaderboardVisible: true,
-      },
-    } as UserSettings,
-    ui: {
-      isLoading: false,
-      activeSection: 'overview',
-      isMobile: false,
-    },
-  });
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="space-y-6">
+          <div className="h-8 w-64 animate-pulse rounded-lg bg-muted" />
+          <div className="h-4 w-96 animate-pulse rounded-lg bg-muted" />
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {[...Array(3)].map((_, i) => (
+              <div key={`skeleton-${i}`} className="h-32 animate-pulse rounded-lg bg-muted" />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-  // Handle mobile detection
-  useEffect(() => {
-    const checkMobile = () => {
-      const mobile = window.innerWidth < 768;
-      setIsMobile(mobile);
-      setDashboardState(prev => ({
-        ...prev,
-        ui: { ...prev.ui, isMobile: mobile },
-      }));
-    };
-
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  const handlePathClick = (pathId: string) => {
-    // Navigate to path implementation
-    // eslint-disable-next-line no-console
-    console.log('Navigate to path:', pathId);
-  };
-
-  const handleUpgradeClick = () => {
-    // Navigate to upgrade page implementation
-    // eslint-disable-next-line no-console
-    console.log('Navigate to upgrade page');
-  };
-
-  const handleSettingsChange = (newSettings: UserSettings) => {
-    setDashboardState(prev => ({
-      ...prev,
-      settings: newSettings,
-    }));
-    // Auto-save settings - will implement API call
-  };
-
-  const handleSectionChange = (section: 'overview' | 'paths' | 'progress' | 'settings') => {
-    setActiveSection(section);
-    if (section === 'settings') {
-      setSettingsOpen(true);
-    }
-  };
-
-  const handleLessonClick = (lessonId: string) => {
-    // Navigate to lesson implementation
-    // eslint-disable-next-line no-console
-    console.log('Navigate to lesson:', lessonId);
-  };
-
-  const handleXPChange = (xp: number, level: number) => {
-    // Handle XP change
-    // eslint-disable-next-line no-console
-    console.log('XP changed:', xp, level);
-  };
+  if (!userData) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-muted-foreground">
+            Errore di autenticazione
+          </h1>
+          <p className="mt-2 text-muted-foreground">
+            Non è stato possibile caricare i dati utente.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <DashboardLayout dashboardState={dashboardState}>
-      {/* Enhanced Dashboard Header */}
-      <DashboardHeader
-        user={dashboardState.user}
-        currentStreak={dashboardState.progress.currentStreak}
-        totalXP={dashboardState.progress.totalXP}
-        onSettingsClick={() => setSettingsOpen(true)}
-        showGamification
-      />
-
-      {/* Main Dashboard Content */}
+    <div className="container mx-auto px-4 py-8">
       <div className="space-y-8">
         {/* Welcome Section */}
         <TitleBar
-          title={`Benvenuto, ${dashboardState.user.name || 'Utente'}!`}
+          title={`Benvenuto, ${userData.name}!`}
           description="Continua il tuo percorso di apprendimento crypto"
         />
 
-        {/* Desktop Layout */}
-        {!isMobile && (
-          <>
-            <LearningPathsSection
-              paths={dashboardState.learningPaths}
-              userSubscription={dashboardState.user.subscription}
-              onPathClick={handlePathClick}
-              onUpgradeClick={handleUpgradeClick}
-            />
+        {/* Learning Path Card */}
+        <div className="rounded-lg border bg-card p-6 shadow-sm">
+          <h2 className="mb-4 text-xl font-semibold">Il tuo percorso attuale</h2>
 
-            <div className="grid gap-8 lg:grid-cols-2">
-              <ProgressTracker
-                userId={dashboardState.user.id}
-                onLessonClick={handleLessonClick}
-              />
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-medium">{userData.progress.pathName}</h3>
+                <p className="text-sm text-muted-foreground">
+                  {userData.progress.completedLessons}
+                  {' '}
+                  di
+                  {' '}
+                  {userData.progress.totalLessons}
+                  {' '}
+                  lezioni completate
+                </p>
+              </div>
+              <div className="text-right">
+                <div className="text-2xl font-bold text-primary">
+                  {userData.progress.progressPercentage}
+                  %
+                </div>
+              </div>
+            </div>
 
-              <GamificationPanel
-                streak={dashboardState.progress.currentStreak}
-                initialXP={dashboardState.progress.totalXP}
-                badges={dashboardState.gamification.badges}
-                achievements={dashboardState.gamification.achievements}
-                onXPChange={handleXPChange}
+            {/* Progress Bar */}
+            <div className="h-2 w-full rounded-full bg-muted">
+              <div
+                className="h-2 rounded-full bg-primary transition-all duration-300"
+                style={{ width: `${userData.progress.progressPercentage}%` }}
               />
             </div>
-          </>
-        )}
 
-        {/* Mobile Layout */}
-        {isMobile && (
-          <>
-            {activeSection === 'overview' && (
-              <div className="space-y-6">
-                <ProgressTracker
-                  userId={dashboardState.user.id}
-                  onLessonClick={handleLessonClick}
-                />
-              </div>
-            )}
+            {/* Action Button */}
+            <div className="pt-4">
+              <button
+                type="button"
+                className="w-full rounded-lg bg-primary px-4 py-2 font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+              >
+                {userData.progress.completedLessons === 0
+                  ? 'Inizia il percorso'
+                  : 'Continua a studiare'}
+              </button>
+            </div>
+          </div>
+        </div>
 
-            {activeSection === 'paths' && (
-              <LearningPathsSection
-                paths={dashboardState.learningPaths}
-                userSubscription={dashboardState.user.subscription}
-                onPathClick={handlePathClick}
-                onUpgradeClick={handleUpgradeClick}
-              />
-            )}
+        {/* Quick Stats */}
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="rounded-lg border bg-card p-4 text-center">
+            <div className="text-2xl font-bold text-primary">
+              {userData.progress.completedLessons}
+            </div>
+            <div className="text-sm text-muted-foreground">Lezioni completate</div>
+          </div>
 
-            {activeSection === 'progress' && (
-              <GamificationPanel
-                streak={dashboardState.progress.currentStreak}
-                initialXP={dashboardState.progress.totalXP}
-                badges={dashboardState.gamification.badges}
-                achievements={dashboardState.gamification.achievements}
-                onXPChange={handleXPChange}
-              />
-            )}
+          <div className="rounded-lg border bg-card p-4 text-center">
+            <div className="text-2xl font-bold text-primary">
+              {userData.progress.totalLessons - userData.progress.completedLessons}
+            </div>
+            <div className="text-sm text-muted-foreground">Lezioni rimanenti</div>
+          </div>
 
-            <MobileNavigation
-              activeSection={activeSection}
-              onSectionChange={handleSectionChange}
-            />
-          </>
-        )}
+          <div className="rounded-lg border bg-card p-4 text-center">
+            <div className="text-2xl font-bold text-primary">1</div>
+            <div className="text-sm text-muted-foreground">Percorso attivo</div>
+          </div>
+        </div>
+
+        {/* Next Steps */}
+        <div className="rounded-lg border bg-card p-6">
+          <h2 className="mb-4 text-xl font-semibold">Prossimi passi</h2>
+          <div className="space-y-3">
+            {userData.progress.completedLessons === 0
+              ? (
+                  <div className="flex items-center gap-3 rounded-lg bg-muted/50 p-3">
+                    <div className="size-2 rounded-full bg-primary" />
+                    <span>Inizia con la prima lezione: "Che cos'è Bitcoin?"</span>
+                  </div>
+                )
+              : (
+                  <div className="flex items-center gap-3 rounded-lg bg-muted/50 p-3">
+                    <div className="size-2 rounded-full bg-primary" />
+                    <span>Continua con la prossima lezione del percorso</span>
+                  </div>
+                )}
+
+            <div className="flex items-center gap-3 rounded-lg bg-muted/20 p-3">
+              <div className="size-2 rounded-full bg-muted-foreground" />
+              <span className="text-muted-foreground">
+                Sblocca percorsi avanzati completando "Fondamenti Crypto"
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
-
-      {/* Settings Panel */}
-      <SettingsPanel
-        isOpen={settingsOpen}
-        onClose={() => setSettingsOpen(false)}
-        settings={dashboardState.settings}
-        onSettingsChange={handleSettingsChange}
-      />
-    </DashboardLayout>
+    </div>
   );
 };
 

@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server';
+import { SimpleDashboardHeader } from '@/components/dashboard/SimpleDashboardHeader';
 
 export async function generateMetadata(props: { params: Promise<{ locale: string }> }) {
   const params = await props.params;
@@ -14,13 +15,12 @@ export async function generateMetadata(props: { params: Promise<{ locale: string
 }
 
 export default function DashboardLayout(props: { children: React.ReactNode }) {
-  // Simplified layout - main dashboard logic moved to page component
-  // This maintains the existing Next.js app router structure while
-  // allowing the new dashboard architecture to handle the UI
-  
   return (
     <div className="min-h-screen bg-background">
-      {props.children}
+      <SimpleDashboardHeader />
+      <main className="pt-14 md:pt-16">
+        {props.children}
+      </main>
     </div>
   );
 }

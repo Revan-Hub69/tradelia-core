@@ -1,8 +1,7 @@
 'use client';
 
-import Link from 'next/link';
-
 import { AppConfig } from '@/utils/AppConfig';
+import { Link } from '@/libs/i18nNavigation';
 import { cn } from '@/utils/Helpers';
 
 type LogoProps = {

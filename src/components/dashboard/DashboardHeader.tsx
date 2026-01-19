@@ -44,9 +44,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       <div className="mx-auto flex h-14 max-w-screen-xl items-center justify-between px-4 md:h-16 md:px-6">
         {/* Left Section - Logo and Navigation */}
         <div className="flex items-center gap-4">
-          <Link href="/dashboard" className="flex items-center">
-            <Logo size="sm" />
-          </Link>
+          <Logo size="sm" href="/dashboard" />
           
           <div className="hidden md:block h-6 w-px bg-border" />
           

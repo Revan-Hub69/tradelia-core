@@ -19,10 +19,22 @@ export default bundleAnalyzer(
   withNextIntlConfig({
     poweredByHeader: false,
     reactStrictMode: true,
-    serverExternalPackages: ['@electric-sql/pglite'],
+    serverExternalPackages: ['@electric-sql/pglite', '@supabase/supabase-js'],
     eslint: {
       // Temporarily disable ESLint during build due to config issues
       ignoreDuringBuilds: true,
+    },
+    webpack: (config, { isServer }) => {
+      // Fix for Supabase client-side imports
+      if (!isServer) {
+        config.resolve.fallback = {
+          ...config.resolve.fallback,
+          fs: false,
+          net: false,
+          tls: false,
+        };
+      }
+      return config;
     },
     async headers() {
       return [

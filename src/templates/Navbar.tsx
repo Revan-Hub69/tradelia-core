@@ -1,11 +1,11 @@
 'use client';
 
-import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 
 import { LocaleSwitcher } from '@/components/LocaleSwitcher';
 import { buttonVariants } from '@/components/ui/buttonVariants';
+import { Link } from '@/libs/i18nNavigation';
 import { cn } from '@/utils/Helpers';
 
 import { Logo } from './Logo';
@@ -183,14 +183,8 @@ export const Navbar = () => {
           {/* Desktop Right - visible from md */}
           <div className="hidden items-center gap-2 md:flex lg:gap-3">
             <LocaleSwitcher />
-            <Link
-              href="/sign-in"
-              className="px-3 py-2 text-sm font-medium text-foreground/80 transition-all duration-200 hover:text-primary lg:px-4"
-            >
-              {t('sign_in')}
-            </Link>
-            <Link href="/onboarding" className={buttonVariants({ size: 'sm' })}>
-              {t('sign_up')}
+            <Link href="/auth" className={buttonVariants({ size: 'sm' })}>
+              {t('enter')}
             </Link>
           </div>
 
@@ -309,7 +303,7 @@ export const Navbar = () => {
           {/* Divider */}
           <div className="mx-6 h-px bg-border/50" />
 
-          {/* Auth Buttons */}
+          {/* Auth Button */}
           <div
             className="flex flex-col gap-3 p-6"
             style={{
@@ -319,18 +313,11 @@ export const Navbar = () => {
             }}
           >
             <Link
-              href="/sign-in"
-              onClick={() => setIsMenuOpen(false)}
-              className="flex h-12 items-center justify-center rounded-xl border border-border font-medium text-foreground transition-all hover:border-primary/50 hover:bg-primary/5 hover:text-primary active:scale-[0.98]"
-            >
-              {t('sign_in')}
-            </Link>
-            <Link
-              href="/onboarding"
+              href="/auth"
               onClick={() => setIsMenuOpen(false)}
               className="flex h-12 items-center justify-center rounded-xl bg-primary font-medium text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25 active:scale-[0.98]"
             >
-              {t('sign_up')}
+              {t('enter')}
             </Link>
           </div>
         </div>

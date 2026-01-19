@@ -207,7 +207,7 @@ export const SocialProof = () => {
               </p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
                 <Button asChild size="lg" className="h-12 px-6 text-base">
-                  <Link href="/onboarding">{t('cta_primary')}</Link>
+                  <Link href="/lesson-0">{t('cta_primary')}</Link>
                 </Button>
                 <Button asChild variant="outline" size="default" className="h-11 px-5 text-sm">
                   <Link href="#features">{t('cta_secondary')}</Link>

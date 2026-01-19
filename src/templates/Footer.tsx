@@ -24,7 +24,7 @@ export const Footer = () => {
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
             <Button asChild size="lg" className="h-12 px-8 text-base">
-              <Link href="/onboarding">Inizia gratis</Link>
+              <Link href="/lesson-0">Inizia gratis</Link>
             </Button>
             <Button asChild variant="outline" size="default" className="h-11 px-6 text-sm">
               <Link href="#percorsi">Esplora i contenuti</Link>
