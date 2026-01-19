@@ -1,6 +1,6 @@
 'use client';
 
-import { Home, BookOpen, User } from 'lucide-react';
+import { Home, BookOpen, Wrench, Users, User } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
@@ -27,6 +27,18 @@ export const PWABottomNavigation = ({ className }: PWABottomNavigationProps) => 
       label: t('nav_learn'),
       href: '/dashboard/learn',
       icon: BookOpen,
+    },
+    {
+      id: 'tools',
+      label: t('nav_tools'),
+      href: '/dashboard/tools',
+      icon: Wrench,
+    },
+    {
+      id: 'people',
+      label: t('nav_people'),
+      href: '/dashboard/community',
+      icon: Users,
     },
     {
       id: 'profile',
