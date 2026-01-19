@@ -82,7 +82,7 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
       </DropdownMenuTrigger>
 
       <DropdownMenuContent 
-        ref={focusTrapRef}
+        ref={focusTrapRef as React.RefObject<HTMLDivElement>}
         align="end" 
         className="w-56 glass-surface layer-popover"
         onCloseAutoFocus={(e) => {

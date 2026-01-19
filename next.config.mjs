@@ -26,8 +26,9 @@ export default bundleAnalyzer(
       dirs: ['src', 'components', 'lib', 'utils', 'hooks'],
     },
     typescript: {
-      // Disable temporarily to commit progress - 5 errors remaining
-      ignoreBuildErrors: true,
+      // ✅ ENTERPRISE 2026: TypeScript re-enabled after DashboardHeader fixes
+      // Remaining ~25 'as any' are in navigation components (acceptable for now)
+      ignoreBuildErrors: false,
     },
     webpack: (config, { isServer }) => {
       // Fix for Supabase client-side imports

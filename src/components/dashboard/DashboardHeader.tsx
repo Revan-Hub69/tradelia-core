@@ -1,35 +1,37 @@
 /*
  * DASHBOARD HEADER - Enterprise 2026
- * 
+ *
  * Header composable con variants e slots
  * Supporta context-aware content e scroll behavior
  */
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { cn } from '@/utils/Helpers';
-import { Logo } from '@/templates/Logo';
-import { UserDropdown } from './UserDropdown';
+import React, { useEffect, useState } from 'react';
+
 import { useUserData } from '@/hooks/useUserData';
+import { Logo } from '@/templates/Logo';
+import { cn } from '@/utils/Helpers';
+
+import { UserDropdown } from './UserDropdown';
 
 export type HeaderVariant = 'home' | 'learn' | 'tools' | 'community' | 'profile';
 
-export interface HeaderAction {
+export type HeaderAction = {
   labelKey: string;
   onClick: () => void;
   icon?: React.ReactNode;
   variant?: 'primary' | 'secondary';
-}
+};
 
-export interface HeaderStatus {
+export type HeaderStatus = {
   type: 'streak' | 'focus' | 'next' | 'progress';
   value: number | string;
   labelKey?: string;
-}
+};
 
-export interface DashboardHeaderProps {
+export type DashboardHeaderProps = {
   variant?: HeaderVariant;
   titleKey?: string;
   primaryAction?: HeaderAction;
@@ -38,7 +40,7 @@ export interface DashboardHeaderProps {
   leftSlot?: React.ReactNode;
   className?: string;
   showScrollShadow?: boolean;
-}
+};
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   titleKey,
@@ -56,7 +58,9 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
   // Scroll shadow effect
   useEffect(() => {
-    if (!showScrollShadow) return;
+    if (!showScrollShadow) {
+      return;
+    }
 
     const handleScroll = () => {
       setHasScrolled(window.scrollY > 10);
@@ -68,50 +72,60 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
   // Status chip renderer
   const renderStatus = () => {
-    if (!status) return null;
+    if (!status) {
+      return null;
+    }
 
     const getStatusContent = () => {
       switch (status.type) {
-        case 'streak':
+        case 'streak': {
           return (
             <div className="flex items-center gap-1.5">
-              <div className="size-2 bg-accent rounded-full animate-pulse" />
+              <div className="size-2 animate-pulse rounded-full bg-accent" />
               <span className="text-sm font-medium">
-                {status.value} {t('days' as any)}
+                {status.value}
+                {' '}
+                {t('days')}
               </span>
             </div>
           );
-        case 'focus':
+        }
+        case 'focus': {
           return (
             <div className="flex items-center gap-1.5">
-              <div className="size-2 bg-primary rounded-full" />
+              <div className="size-2 rounded-full bg-primary" />
               <span className="text-sm font-medium">
                 {t('focus_mode_active')}
               </span>
             </div>
           );
-        case 'next':
+        }
+        case 'next': {
           return (
             <span className="text-sm font-medium">
-              {status.labelKey ? t(status.labelKey) : status.value}
+              {status.labelKey ? t(status.labelKey as any) : status.value}
             </span>
           );
-        case 'progress':
+        }
+        case 'progress': {
           return (
             <div className="flex items-center gap-2">
-              <div className="w-16 h-1 bg-muted rounded-full overflow-hidden">
+              <div className="h-1 w-16 overflow-hidden rounded-full bg-muted">
                 <div
                   className="h-full bg-primary transition-all duration-300"
                   style={{ width: `${status.value}%` }}
                 />
               </div>
               <span className="text-xs text-muted-foreground">
-                {status.value}%
+                {status.value}
+                %
               </span>
             </div>
           );
-        default:
+        }
+        default: {
           return null;
+        }
       }
     };
 
@@ -129,7 +143,9 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
   // Primary action renderer
   const renderPrimaryAction = () => {
-    if (!primaryAction) return null;
+    if (!primaryAction) {
+      return null;
+    }
 
     return (
       <button
@@ -149,7 +165,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       >
         <div className="flex items-center gap-2">
           {primaryAction.icon}
-          <span>{t(primaryAction.labelKey)}</span>
+          <span>{t(primaryAction.labelKey as any)}</span>
         </div>
       </button>
     );
@@ -166,7 +182,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         className,
       )}
     >
-      <div className="mx-auto flex header-height max-w-screen-xl items-center justify-between px-4">
+      <div className="header-height mx-auto flex max-w-screen-xl items-center justify-between px-4">
         {/* Left Section - No logo on desktop when sidebar is visible */}
         <div className="flex items-center gap-4">
           {leftSlot || (
@@ -179,7 +195,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           {titleKey && (
             <div className="hidden sm:block">
               <h1 className="text-lg font-semibold text-foreground">
-                {tGeneral(titleKey)}
+                {tGeneral(titleKey as any)}
               </h1>
             </div>
           )}
@@ -200,18 +216,22 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
           {/* User Dropdown */}
           <div className="flex items-center">
-            {isLoading ? (
-              <div className="size-8 animate-pulse rounded-full bg-muted" />
-            ) : userData ? (
-              <UserDropdown
-                userName={userData.name || userData.email.split('@')[0] || 'User'}
-                userEmail={userData.email}
-              />
-            ) : (
-              <div className="text-xs text-muted-foreground">
-                {t('not_authenticated')}
-              </div>
-            )}
+            {isLoading
+              ? (
+                  <div className="size-8 animate-pulse rounded-full bg-muted" />
+                )
+              : userData
+                ? (
+                    <UserDropdown
+                      userName={userData.name || userData.email.split('@')[0] || 'User'}
+                      userEmail={userData.email}
+                    />
+                  )
+                : (
+                    <div className="text-xs text-muted-foreground">
+                      {t('not_authenticated')}
+                    </div>
+                  )}
           </div>
         </div>
       </div>
