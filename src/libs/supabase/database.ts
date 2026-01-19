@@ -52,12 +52,12 @@ export const createUserProgress = async (userId: string, initialXP = 0) => {
   const { data, error } = await supabase
     .from('user_progress')
     .insert([{
-      userId,
-      totalXP: initialXP,
+      user_id: userId,
+      total_xp: initialXP,
       level: Math.floor(initialXP / 100) + 1,
-      currentStreak: 0,
-      longestStreak: 0,
-      lastActivityDate: new Date().toISOString().split('T')[0],
+      current_streak: 0,
+      longest_streak: 0,
+      last_activity_date: new Date().toISOString().split('T')[0],
     }])
     .select()
     .single();
@@ -72,7 +72,7 @@ export const getUserProgress = async (userId: string) => {
   const { data, error } = await supabase
     .from('user_progress')
     .select('*')
-    .eq('userId', userId)
+    .eq('user_id', userId)
     .single();
     
   if (error && error.code !== 'PGRST116') throw error;
@@ -85,7 +85,7 @@ export const updateUserProgress = async (userId: string, updates: any) => {
   const { data, error } = await supabase
     .from('user_progress')
     .update(updates)
-    .eq('userId', userId)
+    .eq('user_id', userId)
     .select()
     .single();
     
@@ -109,8 +109,8 @@ export const completeLessonForUser = async (lessonData: {
   const { data: existing } = await supabase
     .from('lesson_completion')
     .select('id')
-    .eq('userId', lessonData.userId)
-    .eq('lessonId', lessonData.lessonId)
+    .eq('user_id', lessonData.userId)
+    .eq('lesson_id', lessonData.lessonId)
     .single();
     
   if (existing) {
@@ -121,8 +121,13 @@ export const completeLessonForUser = async (lessonData: {
   const { data: completion, error: completionError } = await supabase
     .from('lesson_completion')
     .insert([{
-      ...lessonData,
-      approachesUsed: JSON.stringify(lessonData.approachesUsed || []),
+      user_id: lessonData.userId,
+      lesson_id: lessonData.lessonId,
+      path_id: lessonData.pathId,
+      xp_earned: lessonData.xpEarned,
+      approaches_used: JSON.stringify(lessonData.approachesUsed || []),
+      quiz_score: lessonData.quizScore,
+      time_spent: lessonData.timeSpent,
     }])
     .select()
     .single();
@@ -132,13 +137,13 @@ export const completeLessonForUser = async (lessonData: {
   // Update user progress
   const currentProgress = await getUserProgress(lessonData.userId);
   if (currentProgress) {
-    const newTotalXP = currentProgress.totalXP + lessonData.xpEarned;
+    const newTotalXP = currentProgress.total_xp + lessonData.xpEarned;
     const newLevel = Math.floor(newTotalXP / 100) + 1;
     
     await updateUserProgress(lessonData.userId, {
-      totalXP: newTotalXP,
+      total_xp: newTotalXP,
       level: newLevel,
-      lastActivityDate: new Date().toISOString().split('T')[0],
+      last_activity_date: new Date().toISOString().split('T')[0],
     });
   }
   
@@ -151,8 +156,8 @@ export const getUserLessonCompletions = async (userId: string) => {
   const { data, error } = await supabase
     .from('lesson_completion')
     .select('*')
-    .eq('userId', userId)
-    .order('completedAt', { ascending: false });
+    .eq('user_id', userId)
+    .order('completed_at', { ascending: false });
     
   if (error) throw error;
   return data || [];
@@ -173,8 +178,8 @@ export const awardBadgeToUser = async (badgeData: {
   const { data: existing } = await supabase
     .from('user_badges')
     .select('id')
-    .eq('userId', badgeData.userId)
-    .eq('badgeId', badgeData.badgeId)
+    .eq('user_id', badgeData.userId)
+    .eq('badge_id', badgeData.badgeId)
     .single();
     
   if (existing) {
@@ -183,7 +188,14 @@ export const awardBadgeToUser = async (badgeData: {
   
   const { data, error } = await supabase
     .from('user_badges')
-    .insert([badgeData])
+    .insert([{
+      user_id: badgeData.userId,
+      badge_id: badgeData.badgeId,
+      badge_name: badgeData.badgeName,
+      badge_description: badgeData.badgeDescription,
+      badge_icon: badgeData.badgeIcon,
+      rarity: badgeData.rarity,
+    }])
     .select()
     .single();
     
@@ -197,8 +209,8 @@ export const getUserBadges = async (userId: string) => {
   const { data, error } = await supabase
     .from('user_badges')
     .select('*')
-    .eq('userId', userId)
-    .order('unlockedAt', { ascending: false });
+    .eq('user_id', userId)
+    .order('unlocked_at', { ascending: false });
     
   if (error) throw error;
   return data || [];

@@ -52,9 +52,9 @@ export const useUserData = () => {
             completedLessons,
             totalLessons,
             progressPercentage,
-            totalXP: progress?.totalXP || 0,
+            totalXP: progress?.total_xp || 0,
             level: progress?.level || 1,
-            currentStreak: progress?.currentStreak || 0,
+            currentStreak: progress?.current_streak || 0,
             badges: badges?.length || 0,
           },
         });
