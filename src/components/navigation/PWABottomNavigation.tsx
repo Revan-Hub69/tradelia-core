@@ -305,6 +305,7 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
           onBlur={onBlur}
           onClick={(e) => {
             console.log('🔥 CLICK DETECTED:', item.id, item.href);
+            console.log('🔍 Current pathname:', window.location.pathname);
             e.preventDefault(); // Always prevent default
             
             console.log('🔍 canNavigate:', canNavigate, 'uxState:', uxState);
@@ -322,19 +323,36 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
               return;
             }
 
+            // Check if we're already on the target page
+            if (window.location.pathname === item.href) {
+              console.log('⚠️ Already on target page, skipping navigation');
+              return;
+            }
+
             console.log('✅ Starting navigation to:', item.href);
             
             // Simple programmatic navigation
             announce(t('Dashboard.nav_navigating' as any));
             haptic.success();
             
-            // Direct navigation using router
+            // Force navigation using window.location as fallback
             try {
               console.log('🚀 Calling router.push...');
               router.push(item.href);
               console.log('✅ router.push called successfully');
+              
+              // Fallback: if router.push doesn't work, use window.location
+              setTimeout(() => {
+                if (window.location.pathname !== item.href) {
+                  console.log('🔄 router.push failed, using window.location fallback');
+                  window.location.href = item.href;
+                }
+              }, 100);
+              
             } catch (error) {
               console.error('❌ router.push failed:', error);
+              console.log('🔄 Using window.location fallback');
+              window.location.href = item.href;
             }
           }}
           // {...longPressProps} // Temporarily disabled
