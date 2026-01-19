@@ -696,5 +696,33 @@
     "professional_formation": "Formazione Professionale",
     "learning_objectives": "Obiettivi di Apprendimento",
     "competency_development": "Sviluppo Competenze"
+  },
+  "Dashboard": {
+    "meta_title": "Dashboard - Tradelia",
+    "meta_description": "Il tuo percorso di formazione professionale crypto",
+    "welcome_title": "Benvenuto, {name}!",
+    "welcome_description": "Continua il tuo percorso di formazione professionale crypto",
+    "auth_error_title": "Errore di autenticazione",
+    "auth_error_description": "Non è stato possibile caricare i dati utente.",
+    "lessons_completed": "Lezioni completate",
+    "consistency_days": "Giorni di costanza",
+    "learning_consistency_title": "Costanza Apprendimento",
+    "consecutive_days": "Giorni consecutivi",
+    "consistency_message_active": "Ottimo lavoro! Mantieni questa costanza per massimizzare l'apprendimento.",
+    "consistency_message_start": "Inizia oggi il tuo percorso di apprendimento costante.",
+    "professional_certifications_title": "Certificazioni Professionali",
+    "certifications_earned": "Hai ottenuto {count} certificazione{count, plural, one {} other {i}} professionale{count, plural, one {} other {i}}!",
+    "certifications_empty_message": "Completa le lezioni per ottenere le tue prime certificazioni professionali!",
+    "learning_path_title": "Il tuo percorso formativo",
+    "fundamental_crypto_path": "Percorso Fondamentale Crypto",
+    "lessons_progress": "{completed} di {total} lezioni completate",
+    "completed": "completato",
+    "start_fundamental_path": "Inizia il Percorso Fondamentale",
+    "continue_professional_formation": "Continua la Formazione Professionale",
+    "next_objectives_title": "Prossimi obiettivi",
+    "first_lesson_objective": "Inizia con la prima lezione: \"Introduzione alle Criptovalute\"",
+    "continue_path_objective": "Continua con la prossima lezione del percorso",
+    "unlock_specialist_paths": "Sblocca percorsi specialistici completando il \"Percorso Fondamentale\"",
+    "earn_tradelia_coins_objective": "Guadagna Tradelia Coin per sconti su corsi avanzati e strumenti premium"
   }
 }

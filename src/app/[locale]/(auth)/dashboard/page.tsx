@@ -7,9 +7,12 @@ import { PremiumButton } from '@/components/ui/premium-button';
 import { TitleBar } from '@/features/dashboard/TitleBar';
 import { useUserData } from '@/hooks/useUserData';
 import { PROFESSIONAL_CERTIFICATIONS, type ProfessionalCertification } from '@/libs/learningAnalytics';
+import { useTranslations } from 'next-intl';
 
 const DashboardIndexPage = () => {
   const { userData, isLoading } = useUserData();
+  const t = useTranslations('Dashboard');
+  const tLearning = useTranslations('Learning');
 
   if (isLoading) {
     return (
@@ -32,10 +35,10 @@ const DashboardIndexPage = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-muted-foreground">
-            Errore di autenticazione
+            {t('auth_error_title')}
           </h1>
           <p className="mt-2 text-muted-foreground">
-            Non è stato possibile caricare i dati utente.
+            {t('auth_error_description')}
           </p>
         </div>
       </div>
@@ -65,8 +68,8 @@ const DashboardIndexPage = () => {
         {/* Welcome Section with Professional Analytics */}
         <div className="space-y-6">
           <TitleBar
-            title={`Benvenuto, ${userData.name}!`}
-            description="Continua il tuo percorso di formazione professionale crypto"
+            title={t('welcome_title', { name: userData.name })}
+            description={t('welcome_description')}
           />
 
           {/* Professional Progress Card */}
@@ -101,7 +104,7 @@ const DashboardIndexPage = () => {
               {userData.progress.completedLessons}
             </div>
             <div className="text-sm text-muted-foreground font-medium">
-              Lezioni completate
+              {t('lessons_completed')}
             </div>
           </div>
 
@@ -111,7 +114,7 @@ const DashboardIndexPage = () => {
               {competencyScore.toLocaleString()}
             </div>
             <div className="text-sm text-muted-foreground font-medium">
-              Punti Competenza
+              {tLearning('competency_points')}
             </div>
           </div>
 
@@ -121,7 +124,7 @@ const DashboardIndexPage = () => {
               {userData.progress.currentStreak}
             </div>
             <div className="text-sm text-muted-foreground font-medium">
-              Giorni di costanza
+              {t('consistency_days')}
             </div>
           </div>
 
@@ -131,7 +134,7 @@ const DashboardIndexPage = () => {
               {userCertifications.length}
             </div>
             <div className="text-sm text-muted-foreground font-medium">
-              Certificazioni
+              {tLearning('certifications')}
             </div>
           </div>
         </div>
@@ -141,11 +144,11 @@ const DashboardIndexPage = () => {
           {/* Learning Consistency */}
           <div className="rounded-xl border bg-gradient-to-br from-card to-card/90 p-6 shadow-sm backdrop-blur-sm">
             <h2 className="mb-6 text-xl font-semibold text-foreground">
-              Costanza Apprendimento
+              {t('learning_consistency_title')}
             </h2>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Giorni consecutivi</span>
+                <span className="text-muted-foreground">{t('consecutive_days')}</span>
                 <span className="text-2xl font-bold text-orange-600">
                   {userData.progress.currentStreak}
                 </span>
@@ -158,8 +161,8 @@ const DashboardIndexPage = () => {
               </div>
               <p className="text-sm text-muted-foreground">
                 {userData.progress.currentStreak > 0 
-                  ? `Ottimo lavoro! Mantieni questa costanza per massimizzare l'apprendimento.`
-                  : `Inizia oggi il tuo percorso di apprendimento costante.`
+                  ? t('consistency_message_active')
+                  : t('consistency_message_start')
                 }
               </p>
             </div>
@@ -168,7 +171,7 @@ const DashboardIndexPage = () => {
           {/* Professional Certifications */}
           <div className="rounded-xl border bg-gradient-to-br from-card to-card/90 p-6 shadow-sm backdrop-blur-sm">
             <h2 className="mb-6 text-xl font-semibold text-foreground">
-              Certificazioni Professionali
+              {t('professional_certifications_title')}
             </h2>
             {userCertifications.length > 0 
               ? (
@@ -180,16 +183,7 @@ const DashboardIndexPage = () => {
                       showNew={false} 
                     />
                     <div className="text-sm text-muted-foreground">
-                      Hai ottenuto
-                      {' '}
-                      {userCertifications.length}
-                      {' '}
-                      certificazione
-                      {userCertifications.length !== 1 ? 'i' : ''}
-                      {' '}
-                      professionale
-                      {userCertifications.length !== 1 ? 'i' : ''}
-                      !
+                      {t('certifications_earned', { count: userCertifications.length })}
                     </div>
                   </div>
                 )
@@ -197,7 +191,7 @@ const DashboardIndexPage = () => {
                   <div className="text-center text-muted-foreground">
                     <div className="mb-4 text-4xl">🎓</div>
                     <p className="text-sm">
-                      Completa le lezioni per ottenere le tue prime certificazioni professionali!
+                      {t('certifications_empty_message')}
                     </p>
                   </div>
                 )
@@ -208,32 +202,28 @@ const DashboardIndexPage = () => {
         {/* Learning Path Progress */}
         <div className="rounded-xl border bg-gradient-to-br from-card to-card/90 p-6 shadow-sm backdrop-blur-sm">
           <h2 className="mb-6 text-xl font-semibold text-foreground">
-            Il tuo percorso formativo
+            {t('learning_path_title')}
           </h2>
 
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-lg font-semibold text-foreground">
-                  Percorso Fondamentale Crypto
+                  {t('fundamental_crypto_path')}
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  {userData.progress.completedLessons}
-                  {' '}
-                  di
-                  {' '}
-                  {userData.progress.totalLessons}
-                  {' '}
-                  lezioni completate
+                  {t('lessons_progress', { 
+                    completed: userData.progress.completedLessons,
+                    total: userData.progress.totalLessons 
+                  })}
                 </p>
               </div>
               <div className="text-right">
                 <div className="text-3xl font-bold text-blue-600">
-                  {userData.progress.progressPercentage}
-                  %
+                  {userData.progress.progressPercentage}%
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  completato
+                  {t('completed')}
                 </div>
               </div>
             </div>
@@ -257,8 +247,8 @@ const DashboardIndexPage = () => {
                 iconPosition="left"
               >
                 {userData.progress.completedLessons === 0
-                  ? 'Inizia il Percorso Fondamentale'
-                  : 'Continua la Formazione Professionale'}
+                  ? t('start_fundamental_path')
+                  : t('continue_professional_formation')}
               </PremiumButton>
             </div>
           </div>
@@ -267,7 +257,7 @@ const DashboardIndexPage = () => {
         {/* Next Steps */}
         <div className="rounded-xl border bg-gradient-to-br from-card to-card/90 p-6 shadow-sm backdrop-blur-sm">
           <h2 className="mb-6 text-xl font-semibold text-foreground">
-            Prossimi obiettivi
+            {t('next_objectives_title')}
           </h2>
           <div className="space-y-4">
             {userData.progress.completedLessons === 0
@@ -275,7 +265,7 @@ const DashboardIndexPage = () => {
                   <div className="flex items-center gap-4 rounded-lg bg-blue-50 dark:bg-blue-950/30 p-4 border border-blue-200 dark:border-blue-800">
                     <div className="size-3 rounded-full bg-blue-600 flex-shrink-0" />
                     <span className="text-blue-900 dark:text-blue-100 font-medium">
-                      Inizia con la prima lezione: "Introduzione alle Criptovalute"
+                      {t('first_lesson_objective')}
                     </span>
                   </div>
                 )
@@ -283,7 +273,7 @@ const DashboardIndexPage = () => {
                   <div className="flex items-center gap-4 rounded-lg bg-green-50 dark:bg-green-950/30 p-4 border border-green-200 dark:border-green-800">
                     <div className="size-3 rounded-full bg-green-600 flex-shrink-0" />
                     <span className="text-green-900 dark:text-green-100 font-medium">
-                      Continua con la prossima lezione del percorso
+                      {t('continue_path_objective')}
                     </span>
                   </div>
                 )
@@ -292,14 +282,14 @@ const DashboardIndexPage = () => {
             <div className="flex items-center gap-4 rounded-lg bg-muted/50 p-4 border border-border">
               <div className="size-3 rounded-full bg-muted-foreground flex-shrink-0" />
               <span className="text-muted-foreground">
-                Sblocca percorsi specialistici completando il "Percorso Fondamentale"
+                {t('unlock_specialist_paths')}
               </span>
             </div>
 
             <div className="flex items-center gap-4 rounded-lg bg-purple-50 dark:bg-purple-950/30 p-4 border border-purple-200 dark:border-purple-800">
               <div className="size-3 rounded-full bg-purple-600 flex-shrink-0" />
               <span className="text-purple-900 dark:text-purple-100">
-                Guadagna Tradelia Coin per sconti su corsi avanzati e strumenti premium
+                {t('earn_tradelia_coins_objective')}
               </span>
             </div>
           </div>

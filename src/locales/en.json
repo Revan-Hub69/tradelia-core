@@ -729,5 +729,33 @@
     "professional_formation": "Professional Formation",
     "learning_objectives": "Learning Objectives",
     "competency_development": "Competency Development"
+  },
+  "Dashboard": {
+    "meta_title": "Dashboard - Tradelia",
+    "meta_description": "Your professional crypto education journey",
+    "welcome_title": "Welcome, {name}!",
+    "welcome_description": "Continue your professional crypto education journey",
+    "auth_error_title": "Authentication Error",
+    "auth_error_description": "Unable to load user data.",
+    "lessons_completed": "Lessons Completed",
+    "consistency_days": "Consistency Days",
+    "learning_consistency_title": "Learning Consistency",
+    "consecutive_days": "Consecutive Days",
+    "consistency_message_active": "Great work! Maintain this consistency to maximize learning.",
+    "consistency_message_start": "Start your consistent learning journey today.",
+    "professional_certifications_title": "Professional Certifications",
+    "certifications_earned": "You have earned {count} professional certification{count, plural, one {} other {s}}!",
+    "certifications_empty_message": "Complete lessons to earn your first professional certifications!",
+    "learning_path_title": "Your Learning Path",
+    "fundamental_crypto_path": "Fundamental Crypto Path",
+    "lessons_progress": "{completed} of {total} lessons completed",
+    "completed": "completed",
+    "start_fundamental_path": "Start Fundamental Path",
+    "continue_professional_formation": "Continue Professional Formation",
+    "next_objectives_title": "Next Objectives",
+    "first_lesson_objective": "Start with the first lesson: \"Introduction to Cryptocurrencies\"",
+    "continue_path_objective": "Continue with the next lesson in the path",
+    "unlock_specialist_paths": "Unlock specialist paths by completing the \"Fundamental Path\"",
+    "earn_tradelia_coins_objective": "Earn Tradelia Coins for discounts on advanced courses and premium tools"
   }
 }
