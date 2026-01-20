@@ -53,3 +53,21 @@ export {
 } from './AdaptiveMicroCopy';
 
 export { AdaptiveMicroCopyExample } from './AdaptiveMicroCopyExample';
+
+// Semantic Loading States System - TODO: Fix module export issue
+// export { useSemanticLoading } from './SemanticLoadingStates';
+// export { SemanticSpinner } from './SemanticLoadingStates';
+// export { SemanticProgress } from './SemanticLoadingStates';
+// export { SemanticSkeleton } from './SemanticLoadingStates';
+// export { MorseCodeLoader } from './SemanticLoadingStates';
+// export { SemanticToast } from './SemanticLoadingStates';
+// export type { LoadingContext } from './SemanticLoadingStates';
+// export type { LoadingType } from './SemanticLoadingStates';
+// export type { TimeThreshold } from './SemanticLoadingStates';
+// export type { LoadingIntensity } from './SemanticLoadingStates';
+// export type { SemanticLoadingConfig } from './SemanticLoadingStates';
+// export type { LoadingState } from './SemanticLoadingStates';
+
+export { 
+  SemanticLoadingStatesShowcase,
+} from './SemanticLoadingStatesExample';
