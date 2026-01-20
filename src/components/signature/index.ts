@@ -1,73 +1,43 @@
 /**
- * Tradelia Signature Design System
- * 
- * Enterprise-grade components with signature visual fingerprint
- * Based on 2026 design trends: Liquid Glass, Anti-AI Crafting, Signature Branding
+ * SIGNATURE COMPONENTS EXPORTS - Enterprise 2026
+ *
+ * Esportazioni centrali per tutti i componenti signature di Tradelia
  */
 
-export { TradelliaGlass, type TradelliaGlassProps } from './TradelliaGlass';
-export { GlassCard, type GlassCardProps } from './GlassCard';
-export { GlassSurface, type GlassSurfaceProps } from './GlassSurface';
-export { GlassModal, type GlassModalProps } from './GlassModal';
-export { SignatureShape, type SignatureShapeProps } from './SignatureShapes';
+// Signature Moment - L'animazione definitiva di Tradelia
 export { 
-  VisualWeight, 
-  HeroBanner, 
-  ContentCard, 
-  SupportingElement,
-  type VisualWeightProps 
-} from './VisualHierarchy';
+  TradeliaSignatureMoment,
+  type SignatureMomentType,
+  type SignatureMomentIntensity,
+  type TradeliaSignatureMomentProps 
+} from './TradeliaSignatureMoment';
 
-// Signature Micro-Interactions System
-export {
-  useSignaturePressFeeback,
-  HapticVisualFeedback,
-  SignatureButton,
-  SignatureCard,
-  SignatureMicroInteractionsShowcase,
-  type PressDepth,
-  type InteractionContext,
-  type DeviceType,
-  type HapticIntensity,
-  type SignaturePressConfig,
-  type MicroInteractionState,
-} from './SignatureMicroInteractions';
+// Signature Moment Example
+export { SignatureMomentExample } from './SignatureMomentExample';
 
+// Existing signature components
+export { GlassCard } from './GlassCard';
+export { GlassSurface } from './GlassSurface';
+export { SignatureShape } from './SignatureShapes';
+export { VisualWeight, HeroBanner, ContentCard, SupportingElement } from './VisualHierarchy';
+export { TradelliaGlass } from './TradelliaGlass';
+export { SignatureShowcase } from './SignatureShowcase';
+export { SignatureLearningPathCard, SignatureComparisonShowcase } from './SignatureIntegrationExample';
+
+// Micro-interactions
+export { SignatureMicroInteractionsShowcase, SignatureButton, SignatureCard, HapticVisualFeedback } from './SignatureMicroInteractions';
 export { SignatureMicroInteractionsExample } from './SignatureMicroInteractionsExample';
 
-// Adaptive Micro-Copy System
-export {
-  MicroCopyProvider,
-  useMicroCopyContext,
-  useAdaptiveMicroCopy,
-  AdaptiveButton,
-  AdaptiveStatus,
-  AdaptiveMicroCopyShowcase,
-  type UserState,
-  type EmotionalState,
-  type TaskContext,
-  type ActionType,
-  type ToneStyle,
-  type MicroCopyContext,
-  type AdaptiveMicroCopyConfig,
-} from './AdaptiveMicroCopy';
-
+// Adaptive micro-copy
+export { AdaptiveMicroCopyShowcase, AdaptiveButton, AdaptiveStatus, useAdaptiveMicroCopy, MicroCopyProvider } from './AdaptiveMicroCopy';
 export { AdaptiveMicroCopyExample } from './AdaptiveMicroCopyExample';
 
-// Semantic Loading States System - TODO: Fix module export issue
-// export { useSemanticLoading } from './SemanticLoadingStates';
-// export { SemanticSpinner } from './SemanticLoadingStates';
-// export { SemanticProgress } from './SemanticLoadingStates';
-// export { SemanticSkeleton } from './SemanticLoadingStates';
-// export { MorseCodeLoader } from './SemanticLoadingStates';
-// export { SemanticToast } from './SemanticLoadingStates';
-// export type { LoadingContext } from './SemanticLoadingStates';
-// export type { LoadingType } from './SemanticLoadingStates';
-// export type { TimeThreshold } from './SemanticLoadingStates';
-// export type { LoadingIntensity } from './SemanticLoadingStates';
-// export type { SemanticLoadingConfig } from './SemanticLoadingStates';
-// export type { LoadingState } from './SemanticLoadingStates';
-
-export { 
-  SemanticLoadingStatesShowcase,
-} from './SemanticLoadingStatesExample';
+// Semantic loading states
+// export { 
+//   useSemanticLoading, 
+//   SemanticSpinner, 
+//   SemanticProgress, 
+//   SemanticSkeleton, 
+//   MorseCodeLoader, 
+//   SemanticToast 
+// } from './SemanticLoadingStates';
