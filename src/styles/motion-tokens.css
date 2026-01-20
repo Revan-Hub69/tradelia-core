@@ -1,0 +1,240 @@
+/*
+ * TRADELIA MOTION PERSONALITY TOKENS v2.0 - Enterprise 2026
+ * 
+ * Sistema di motion design basato su best practice enterprise:
+ * - Microsoft Fluent 2 Design System
+ * - Apple Human Interface Guidelines
+ * - Material Design Motion
+ * - Linear/Stripe performance standards
+ */
+
+:root {
+  /* CORE TIMING TOKENS - Basato su ricerca 2026 */
+  
+  /* Micro-interactions: 100-200ms (best practice universale) */
+  --motion-instant: 0ms;
+  --motion-micro: 120ms;        /* Button press, toggle, hover feedback */
+  --motion-quick: 180ms;        /* Small element transitions */
+  
+  /* Standard transitions: 200-400ms (Fluent 2 + Material Design) */
+  --motion-base: 280ms;         /* Modal open, card expand */
+  --motion-smooth: 350ms;       /* Page transitions, large movements */
+  --motion-slow: 450ms;         /* Complex animations, onboarding */
+  
+  /* SIGNATURE TRADELIA DELAYS - Premium feel con micro-delays */
+  
+  /* Anticipatory delays: 40-60ms (Apple HIG + ricerca UX) */
+  --delay-micro: 45ms;          /* Subtle anticipation before action */
+  --delay-small: 65ms;          /* Staggered animations start */
+  --delay-medium: 100ms;        /* Sequential element reveals */
+  --delay-large: 150ms;         /* Dramatic effect spacing */
+  
+  /* SIGNATURE EASING CURVES - Personalità Tradelia */
+  
+  /* Tradelia signature: cubic-bezier con personalità */
+  --ease-tradelia: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-tradelia-gentle: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-tradelia-confident: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* Context-specific easing (Fluent 2 inspired) */
+  --ease-enter: cubic-bezier(0.25, 0.46, 0.45, 0.94);    /* Welcoming entry */
+  --ease-exit: cubic-bezier(0.55, 0.055, 0.675, 0.19);   /* Confident exit */
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Playful feedback */
+  --ease-elastic: cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Elastic response */
+  
+  /* SEMANTIC MOTION PATTERNS - Significato attraverso movimento */
+  
+  /* Success/Achievement animations */
+  --motion-success-duration: 600ms;
+  --motion-success-ease: var(--ease-tradelia);
+  --motion-success-delay: var(--delay-small);
+  
+  /* Error/Warning animations */
+  --motion-error-duration: 400ms;
+  --motion-error-ease: var(--ease-bounce);
+  --motion-error-delay: var(--delay-micro);
+  
+  /* Loading/Progress animations */
+  --motion-loading-duration: 1200ms;
+  --motion-loading-ease: linear;
+  --motion-loading-delay: 0ms;
+  
+  /* Focus/Attention animations */
+  --motion-focus-duration: 200ms;
+  --motion-focus-ease: var(--ease-tradelia-gentle);
+  --motion-focus-delay: var(--delay-micro);
+  
+  /* ANTICIPATORY FEEDBACK SYSTEM - Premium UX */
+  
+  /* Press feedback con anticipazione (Apple inspired) */
+  --press-anticipation-delay: var(--delay-micro);
+  --press-feedback-duration: var(--motion-micro);
+  --press-recovery-duration: calc(var(--motion-micro) * 1.2);
+  --press-feedback-ease: var(--ease-tradelia-confident);
+  
+  /* Hover anticipation */
+  --hover-anticipation-delay: 20ms;
+  --hover-feedback-duration: var(--motion-quick);
+  --hover-feedback-ease: var(--ease-tradelia-gentle);
+  
+  /* STAGGERED ANIMATION SYSTEM - Choreografia intelligente */
+  
+  /* Stagger delays per liste e gruppi */
+  --stagger-micro: 30ms;        /* Tight grouping */
+  --stagger-small: 50ms;        /* Related items */
+  --stagger-medium: 80ms;       /* Distinct groups */
+  --stagger-large: 120ms;       /* Dramatic reveals */
+  
+  /* RESPONSIVE MOTION - Adattamento al contesto */
+  
+  /* Mobile: Più veloce per touch immediato */
+  --motion-mobile-multiplier: 0.8;
+  
+  /* Desktop: Più raffinato per precisione mouse */
+  --motion-desktop-multiplier: 1.0;
+  
+  /* High refresh rate: Ottimizzazione per 120Hz+ */
+  --motion-high-refresh-multiplier: 0.7;
+}
+
+/* RESPONSIVE MOTION ADJUSTMENTS */
+
+/* Mobile: Touch-first, velocità immediata */
+@media (max-width: 768px) {
+  :root {
+    --motion-micro: calc(120ms * var(--motion-mobile-multiplier));
+    --motion-quick: calc(180ms * var(--motion-mobile-multiplier));
+    --motion-base: calc(280ms * var(--motion-mobile-multiplier));
+    
+    /* Touch feedback più immediato */
+    --press-anticipation-delay: 30ms;
+    --hover-anticipation-delay: 0ms;
+  }
+}
+
+/* Desktop: Mouse precision, motion più raffinato */
+@media (min-width: 1024px) {
+  :root {
+    --motion-micro: calc(120ms * var(--motion-desktop-multiplier));
+    --motion-quick: calc(180ms * var(--motion-desktop-multiplier));
+    --motion-base: calc(280ms * var(--motion-desktop-multiplier));
+    
+    /* Hover più sofisticato su desktop */
+    --hover-anticipation-delay: 25ms;
+  }
+}
+
+/* High refresh rate: 120Hz+ optimization */
+@media (min-resolution: 120dpi) {
+  :root {
+    --motion-micro: calc(120ms * var(--motion-high-refresh-multiplier));
+    --motion-quick: calc(180ms * var(--motion-high-refresh-multiplier));
+    --motion-base: calc(280ms * var(--motion-high-refresh-multiplier));
+  }
+}
+
+/* ACCESSIBILITY: Reduced motion compliance */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    /* Mantieni micro-feedback ma riduci motion complesso */
+    --motion-micro: 50ms;
+    --motion-quick: 100ms;
+    --motion-base: 150ms;
+    --motion-smooth: 200ms;
+    --motion-slow: 250ms;
+    
+    /* Elimina delays per utenti sensibili al motion */
+    --delay-micro: 0ms;
+    --delay-small: 0ms;
+    --delay-medium: 0ms;
+    --delay-large: 0ms;
+    
+    /* Easing più lineare per ridurre disorientamento */
+    --ease-tradelia: ease-out;
+    --ease-tradelia-gentle: ease-out;
+    --ease-tradelia-confident: ease-out;
+    --ease-bounce: ease-out;
+    --ease-elastic: ease-out;
+  }
+}
+
+/* UTILITY CLASSES - Applicazione pratica dei tokens */
+
+/* Signature Tradelia Animations */
+.animate-tradelia-enter {
+  animation-duration: var(--motion-base);
+  animation-timing-function: var(--ease-enter);
+  animation-delay: var(--delay-small);
+  animation-fill-mode: both;
+}
+
+.animate-tradelia-exit {
+  animation-duration: var(--motion-quick);
+  animation-timing-function: var(--ease-exit);
+  animation-fill-mode: both;
+}
+
+.animate-tradelia-success {
+  animation-duration: var(--motion-success-duration);
+  animation-timing-function: var(--motion-success-ease);
+  animation-delay: var(--motion-success-delay);
+  animation-fill-mode: both;
+}
+
+.animate-tradelia-error {
+  animation-duration: var(--motion-error-duration);
+  animation-timing-function: var(--motion-error-ease);
+  animation-delay: var(--motion-error-delay);
+  animation-fill-mode: both;
+}
+
+/* Press Feedback System */
+.press-feedback {
+  transition: 
+    transform var(--press-feedback-duration) var(--press-feedback-ease),
+    box-shadow var(--press-feedback-duration) var(--press-feedback-ease);
+  transition-delay: var(--press-anticipation-delay);
+}
+
+.press-feedback:active {
+  transform: scale(0.96) translateY(1px);
+  transition-delay: 0ms;
+}
+
+/* Hover Anticipation System */
+.hover-anticipation {
+  transition: 
+    transform var(--hover-feedback-duration) var(--hover-feedback-ease),
+    opacity var(--hover-feedback-duration) var(--hover-feedback-ease);
+  transition-delay: var(--hover-anticipation-delay);
+}
+
+.hover-anticipation:hover {
+  transform: scale(1.02) translateY(-1px);
+  transition-delay: 0ms;
+}
+
+/* Staggered Animation Utilities */
+.stagger-children > * {
+  animation-delay: calc(var(--stagger-small) * var(--stagger-index, 0));
+}
+
+.stagger-children-micro > * {
+  animation-delay: calc(var(--stagger-micro) * var(--stagger-index, 0));
+}
+
+.stagger-children-large > * {
+  animation-delay: calc(var(--stagger-large) * var(--stagger-index, 0));
+}
+
+/* Focus Motion */
+.focus-motion {
+  transition: 
+    box-shadow var(--motion-focus-duration) var(--motion-focus-ease),
+    border-color var(--motion-focus-duration) var(--motion-focus-ease);
+  transition-delay: var(--motion-focus-delay);
+}
+
+.focus-motion:focus-visible {
+  transition-delay: 0ms;
+}

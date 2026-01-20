@@ -4,6 +4,9 @@
 
 /* Import design tokens */
 @import './tokens.css';
+@import './motion-tokens.css';
+@import './semantic-animations.css';
+@import './anticipatory-feedback.css';
 
 /*
  * TRADELIA DESIGN SYSTEM v1.1

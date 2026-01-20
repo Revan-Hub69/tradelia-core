@@ -6,13 +6,16 @@
  */
 
 :root {
-  /* MOTION TOKENS - Performance optimized */
+  /* MOTION TOKENS - Enterprise 2026 (Enhanced) */
   --motion-fast: 120ms;
   --motion-base: 180ms;
   --motion-slow: 240ms;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-spring: cubic-bezier(0.68, -0.55, 0.265, 1.55);
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  
+  /* SIGNATURE MOTION PERSONALITY - Tradelia 2026 */
+  /* Importato da motion-tokens.css per sistema completo */
 
   /* LAYOUT TOKENS - Shell dimensions (Mobile First) */
   --nav-height: 64px;

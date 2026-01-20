@@ -1,0 +1,490 @@
+/*
+ * SEMANTIC ANIMATIONS CSS v2.0 - Enterprise 2026
+ * 
+ * Definizioni CSS per animazioni semantiche Tradelia
+ * Ogni animazione ha significato specifico e intento comunicativo
+ * 
+ * Basato su ricerca UX 2026:
+ * - Enter ≠ Exit ≠ Error ≠ Success
+ * - Timing e easing semanticamente appropriati
+ * - Accessibilità e reduced motion compliance
+ */
+
+/* BASE SEMANTIC ANIMATION CLASSES */
+
+.semantic-animation {
+  /* Base per tutte le animazioni semantiche */
+  animation-fill-mode: both;
+  animation-timing-function: var(--ease-tradelia-gentle);
+  will-change: transform, opacity;
+}
+
+.semantic-disabled {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* SEMANTIC ENTER ANIMATIONS - Welcoming e inviting */
+
+.semantic-enter {
+  animation-name: semantic-enter-fade-up;
+  animation-duration: var(--motion-base);
+  animation-timing-function: var(--ease-enter);
+  animation-delay: var(--delay-small);
+}
+
+@keyframes semantic-enter-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Context-specific enter animations */
+.semantic-context-navigation.semantic-enter {
+  animation-name: semantic-enter-slide-right;
+  animation-duration: var(--motion-smooth);
+}
+
+@keyframes semantic-enter-slide-right {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.semantic-context-modal.semantic-enter {
+  animation-name: semantic-enter-scale-fade;
+  animation-duration: var(--motion-base);
+}
+
+@keyframes semantic-enter-scale-fade {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* SEMANTIC EXIT ANIMATIONS - Gentle departure */
+
+.semantic-exit {
+  animation-name: semantic-exit-fade-down;
+  animation-duration: var(--motion-quick);
+  animation-timing-function: var(--ease-exit);
+}
+
+@keyframes semantic-exit-fade-down {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px) scale(1.02);
+  }
+}
+
+.semantic-context-navigation.semantic-exit {
+  animation-name: semantic-exit-slide-left;
+}
+
+@keyframes semantic-exit-slide-left {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+}
+
+/* SEMANTIC SUCCESS ANIMATIONS - Celebration senza eccesso */
+
+.semantic-success {
+  animation-name: semantic-success-celebrate;
+  animation-duration: var(--motion-success-duration);
+  animation-timing-function: var(--motion-success-ease);
+  animation-delay: var(--motion-success-delay);
+}
+
+@keyframes semantic-success-celebrate {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  30% {
+    transform: scale(1.05) rotate(2deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.semantic-intensity-prominent.semantic-success {
+  animation-name: semantic-success-prominent;
+  animation-duration: 800ms;
+}
+
+@keyframes semantic-success-prominent {
+  0% {
+    transform: scale(1) rotate(0deg) translateY(0);
+  }
+  25% {
+    transform: scale(1.1) rotate(3deg) translateY(-5px);
+  }
+  50% {
+    transform: scale(1.05) rotate(-1deg) translateY(-2px);
+  }
+  100% {
+    transform: scale(1) rotate(0deg) translateY(0);
+  }
+}
+
+/* SEMANTIC ERROR ANIMATIONS - Attention senza jarring */
+
+.semantic-error {
+  animation-name: semantic-error-shake;
+  animation-duration: var(--motion-error-duration);
+  animation-timing-function: var(--motion-error-ease);
+  animation-delay: var(--motion-error-delay);
+}
+
+@keyframes semantic-error-shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-4px);
+  }
+  40% {
+    transform: translateX(4px);
+  }
+  60% {
+    transform: translateX(-2px);
+  }
+  80% {
+    transform: translateX(2px);
+  }
+}
+
+.semantic-context-form.semantic-error {
+  animation-name: semantic-error-form-highlight;
+}
+
+@keyframes semantic-error-form-highlight {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+/* SEMANTIC WARNING ANIMATIONS - Cautious attention */
+
+.semantic-warning {
+  animation-name: semantic-warning-pulse;
+  animation-duration: 350ms;
+  animation-timing-function: var(--ease-tradelia-gentle);
+}
+
+@keyframes semantic-warning-pulse {
+  0% {
+    transform: scale(1) translateY(0);
+  }
+  50% {
+    transform: scale(1.02) translateY(-2px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* SEMANTIC INFO ANIMATIONS - Neutral presentation */
+
+.semantic-info {
+  animation-name: semantic-info-slide-in;
+  animation-duration: 250ms;
+  animation-timing-function: var(--ease-tradelia-gentle);
+}
+
+@keyframes semantic-info-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* SEMANTIC LOADING ANIMATIONS - Patient waiting */
+
+.semantic-loading {
+  animation-name: semantic-loading-spin;
+  animation-duration: var(--motion-loading-duration);
+  animation-timing-function: var(--motion-loading-ease);
+  animation-iteration-count: infinite;
+}
+
+@keyframes semantic-loading-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.semantic-context-content.semantic-loading {
+  animation-name: semantic-loading-pulse;
+  animation-duration: 1500ms;
+}
+
+@keyframes semantic-loading-pulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* SEMANTIC FOCUS ANIMATIONS - Gentle emphasis */
+
+.semantic-focus {
+  animation-name: semantic-focus-glow;
+  animation-duration: var(--motion-focus-duration);
+  animation-timing-function: var(--motion-focus-ease);
+  animation-delay: var(--motion-focus-delay);
+}
+
+@keyframes semantic-focus-glow {
+  from {
+    box-shadow: 0 0 0 0 rgba(var(--primary-rgb), 0.4);
+  }
+  to {
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.2);
+  }
+}
+
+/* SEMANTIC HOVER ANIMATIONS - Anticipatory */
+
+.semantic-hover {
+  transition: transform var(--hover-feedback-duration) var(--hover-feedback-ease);
+  transition-delay: var(--hover-anticipation-delay);
+}
+
+.semantic-hover:hover {
+  transform: translateY(-1px) scale(1.02);
+  transition-delay: 0ms;
+}
+
+/* SEMANTIC PRESS ANIMATIONS - Immediate response */
+
+.semantic-press {
+  transition: transform var(--press-feedback-duration) var(--press-feedback-ease);
+  transition-delay: var(--press-anticipation-delay);
+}
+
+.semantic-press:active {
+  transform: scale(0.96) translateY(1px);
+  transition-delay: 0ms;
+}
+
+/* SEMANTIC COMPLETE ANIMATIONS - Achievement celebration */
+
+.semantic-complete {
+  animation-name: semantic-complete-achievement;
+  animation-duration: 800ms;
+  animation-timing-function: var(--ease-elastic);
+  animation-delay: var(--delay-small);
+}
+
+@keyframes semantic-complete-achievement {
+  0% {
+    transform: scale(1) rotate(0deg) translateY(0);
+  }
+  40% {
+    transform: scale(1.1) rotate(5deg) translateY(-5px);
+  }
+  70% {
+    transform: scale(1.05) rotate(-2deg) translateY(-2px);
+  }
+  100% {
+    transform: scale(1) rotate(0deg) translateY(0);
+  }
+}
+
+/* SEMANTIC PROGRESS ANIMATIONS - Forward momentum */
+
+.semantic-progress {
+  animation-name: semantic-progress-forward;
+  animation-duration: 400ms;
+  animation-timing-function: var(--ease-tradelia-gentle);
+}
+
+@keyframes semantic-progress-forward {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(10px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* INTENSITY MODIFIERS */
+
+.semantic-intensity-subtle {
+  animation-duration: calc(var(--motion-base) * 0.7);
+  transform: scale(0.98); /* Più sottile */
+}
+
+.semantic-intensity-normal {
+  /* Default - nessuna modifica */
+}
+
+.semantic-intensity-prominent {
+  animation-duration: calc(var(--motion-base) * 1.3);
+  transform: scale(1.02); /* Più evidente */
+}
+
+/* DURATION MODIFIERS */
+
+.semantic-duration-fast {
+  animation-duration: var(--motion-quick);
+}
+
+.semantic-duration-normal {
+  animation-duration: var(--motion-base);
+}
+
+.semantic-duration-slow {
+  animation-duration: var(--motion-smooth);
+}
+
+/* CONTEXT-SPECIFIC ADJUSTMENTS */
+
+/* Navigation context - Più fluido */
+.semantic-context-navigation {
+  animation-timing-function: var(--ease-tradelia-gentle);
+}
+
+/* Modal context - Più drammatico */
+.semantic-context-modal {
+  animation-timing-function: var(--ease-tradelia);
+}
+
+/* Form context - Più preciso */
+.semantic-context-form {
+  animation-timing-function: var(--ease-tradelia-confident);
+}
+
+/* Feedback context - Più espressivo */
+.semantic-context-feedback {
+  animation-timing-function: var(--ease-bounce);
+}
+
+/* ACCESSIBILITY - Reduced motion compliance */
+
+@media (prefers-reduced-motion: reduce) {
+  .semantic-animation {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  /* Mantieni solo feedback essenziali */
+  .semantic-focus,
+  .semantic-error {
+    animation-duration: 150ms !important;
+    animation-timing-function: ease-out !important;
+  }
+  
+  /* Elimina animazioni decorative */
+  .semantic-success,
+  .semantic-complete,
+  .semantic-loading {
+    animation: none !important;
+  }
+  
+  /* Feedback immediato per interazioni */
+  .semantic-hover:hover {
+    transform: none !important;
+    background-color: rgba(var(--primary-rgb), 0.1) !important;
+  }
+  
+  .semantic-press:active {
+    transform: none !important;
+    opacity: 0.8 !important;
+  }
+}
+
+/* HIGH CONTRAST MODE - Accessibility */
+
+@media (prefers-contrast: high) {
+  .semantic-focus {
+    animation-name: semantic-focus-high-contrast;
+  }
+  
+  @keyframes semantic-focus-high-contrast {
+    from {
+      outline: 2px solid transparent;
+    }
+    to {
+      outline: 2px solid currentColor;
+    }
+  }
+}
+
+/* RESPONSIVE ADJUSTMENTS */
+
+/* Mobile - Animazioni più immediate */
+@media (max-width: 768px) {
+  .semantic-animation {
+    animation-duration: calc(var(--motion-base) * 0.8);
+  }
+  
+  .semantic-hover {
+    /* Disabilita hover su touch */
+    transition: none;
+  }
+  
+  .semantic-press {
+    /* Feedback più immediato su touch */
+    transition-duration: calc(var(--press-feedback-duration) * 0.7);
+  }
+}
+
+/* Desktop - Animazioni più raffinate */
+@media (min-width: 1024px) {
+  .semantic-hover:hover {
+    transform: translateY(-2px) scale(1.02);
+  }
+}
+
+/* High refresh rate - Animazioni più fluide */
+@media (min-resolution: 120dpi) {
+  .semantic-animation {
+    animation-duration: calc(var(--motion-base) * 0.8);
+  }
+}

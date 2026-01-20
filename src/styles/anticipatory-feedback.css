@@ -1,0 +1,411 @@
+/*
+ * ANTICIPATORY FEEDBACK CSS v2.0 - Enterprise 2026
+ * 
+ * Sistema CSS per feedback anticipatorio che guida le azioni dell'utente
+ * Implementa micro-delays (40-60ms) per premium feel
+ * 
+ * Basato su ricerca UX 2026:
+ * - Feedback che anticipa l'azione, non la segue
+ * - Haptic-like visual feedback senza haptic reale
+ * - Press feedback con buildup progressivo
+ */
+
+/* BASE ANTICIPATORY FEEDBACK CLASSES */
+
+.anticipatory-feedback {
+  position: relative;
+  transition: all var(--press-feedback-duration) var(--press-feedback-ease);
+  will-change: transform, box-shadow, background-color;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.feedback-disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* PRESS ANTICIPATORY FEEDBACK */
+
+.feedback-press {
+  /* Base per press feedback */
+  transform: translate3d(0, 0, 0); /* Force GPU layer */
+}
+
+.feedback-press.feedback-anticipating {
+  /* Stato di anticipazione - subtle preparation */
+  transform: translate3d(0, 0, 0) scale(0.99);
+  transition-delay: 0ms;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.feedback-press.feedback-active {
+  /* Stato attivo - press depth */
+  transform: translate3d(0, 1px, 0) scale(0.96);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  transition-delay: 0ms;
+}
+
+/* Press intensity variations */
+.feedback-intensity-subtle.feedback-press.feedback-active {
+  transform: translate3d(0, 0.5px, 0) scale(0.98);
+}
+
+.feedback-intensity-prominent.feedback-press.feedback-active {
+  transform: translate3d(0, 2px, 0) scale(0.94);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* HOVER ANTICIPATORY FEEDBACK */
+
+.feedback-hover {
+  transition: 
+    transform var(--hover-feedback-duration) var(--hover-feedback-ease),
+    box-shadow var(--hover-feedback-duration) var(--hover-feedback-ease),
+    background-color var(--hover-feedback-duration) var(--hover-feedback-ease);
+  transition-delay: var(--hover-anticipation-delay);
+}
+
+.feedback-hover.feedback-anticipating {
+  /* Micro-preparation per hover */
+  transform: translate3d(0, -0.5px, 0) scale(1.005);
+  transition-delay: 0ms;
+}
+
+.feedback-hover.feedback-active {
+  /* Full hover state */
+  transform: translate3d(0, -2px, 0) scale(1.02);
+  box-shadow: 0 4px 16px rgba(var(--primary-rgb), 0.15);
+  background-color: rgba(var(--primary-rgb), 0.05);
+  transition-delay: 0ms;
+}
+
+/* FOCUS ANTICIPATORY FEEDBACK */
+
+.feedback-focus {
+  transition: 
+    box-shadow var(--motion-focus-duration) var(--motion-focus-ease),
+    border-color var(--motion-focus-duration) var(--motion-focus-ease);
+  transition-delay: var(--motion-focus-delay);
+}
+
+.feedback-focus.feedback-anticipating {
+  /* Subtle focus preparation */
+  box-shadow: 0 0 0 1px rgba(var(--primary-rgb), 0.2);
+  transition-delay: 0ms;
+}
+
+.feedback-focus.feedback-active {
+  /* Full focus ring */
+  box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.3);
+  border-color: rgb(var(--primary-rgb));
+  transition-delay: 0ms;
+}
+
+/* HAPTIC PATTERN VARIATIONS */
+
+/* Light haptic pattern */
+.feedback-haptic-light.feedback-active {
+  transform: translate3d(0, 0.5px, 0) scale(0.98);
+  transition-duration: 80ms;
+}
+
+/* Medium haptic pattern (default) */
+.feedback-haptic-medium.feedback-active {
+  transform: translate3d(0, 1px, 0) scale(0.96);
+  transition-duration: 120ms;
+}
+
+/* Heavy haptic pattern */
+.feedback-haptic-heavy.feedback-active {
+  transform: translate3d(0, 2px, 0) scale(0.94);
+  transition-duration: 160ms;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Success haptic pattern */
+.feedback-haptic-success.feedback-active {
+  transform: translate3d(0, -1px, 0) scale(1.02);
+  transition-duration: 200ms;
+  box-shadow: 0 4px 16px rgba(var(--accent-rgb), 0.2);
+  background-color: rgba(var(--accent-rgb), 0.1);
+}
+
+/* Warning haptic pattern */
+.feedback-haptic-warning.feedback-active {
+  animation: haptic-warning-shake 150ms ease-out;
+  background-color: rgba(var(--warning-rgb), 0.1);
+}
+
+@keyframes haptic-warning-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+/* Error haptic pattern */
+.feedback-haptic-error.feedback-active {
+  animation: haptic-error-shake 180ms ease-out;
+  background-color: rgba(var(--destructive-rgb), 0.1);
+}
+
+@keyframes haptic-error-shake {
+  0%, 100% { transform: translateX(0) scale(1); }
+  20% { transform: translateX(-3px) scale(0.98); }
+  40% { transform: translateX(3px) scale(0.98); }
+  60% { transform: translateX(-2px) scale(0.99); }
+  80% { transform: translateX(2px) scale(0.99); }
+}
+
+/* SPECIALIZED PRESS ANTICIPATORY COMPONENT */
+
+.press-anticipatory {
+  position: relative;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all var(--press-feedback-duration) var(--press-feedback-ease);
+  transition-delay: var(--press-anticipation-delay);
+  will-change: transform, box-shadow;
+  transform: translate3d(0, 0, 0);
+}
+
+.press-anticipatory.press-state-anticipating {
+  /* Micro-preparation prima del press */
+  transform: translate3d(0, 0, 0) scale(0.995);
+  transition-delay: 0ms;
+}
+
+.press-anticipatory.press-state-pressed {
+  /* Full press state */
+  transform: translate3d(0, 1px, 0) scale(0.96);
+  transition-delay: 0ms;
+}
+
+.press-anticipatory.press-disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none !important;
+}
+
+/* Press intensity variations */
+.press-intensity-subtle.press-state-pressed {
+  transform: translate3d(0, 0.5px, 0) scale(0.98);
+}
+
+.press-intensity-prominent.press-state-pressed {
+  transform: translate3d(0, 2px, 0) scale(0.94);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* HOVER ANTICIPATORY COMPONENT */
+
+.hover-anticipatory {
+  transition: 
+    transform var(--hover-feedback-duration) var(--hover-feedback-ease),
+    box-shadow var(--hover-feedback-duration) var(--hover-feedback-ease),
+    background-color var(--hover-feedback-duration) var(--hover-feedback-ease);
+  transition-delay: var(--hover-anticipation-delay);
+  will-change: transform, box-shadow, background-color;
+}
+
+.hover-anticipatory.hover-state-anticipating {
+  /* Micro-preparation per hover */
+  transform: translate3d(0, -0.5px, 0) scale(1.005);
+  transition-delay: 0ms;
+}
+
+.hover-anticipatory.hover-state-hovering {
+  /* Full hover effect */
+  transform: translate3d(0, -2px, 0) scale(1.02);
+  box-shadow: 0 4px 16px rgba(var(--primary-rgb), 0.15);
+  background-color: rgba(var(--primary-rgb), 0.05);
+  transition-delay: 0ms;
+}
+
+.hover-intensity-subtle.hover-state-hovering {
+  transform: translate3d(0, -1px, 0) scale(1.01);
+  box-shadow: 0 2px 8px rgba(var(--primary-rgb), 0.1);
+}
+
+.hover-intensity-prominent.hover-state-hovering {
+  transform: translate3d(0, -3px, 0) scale(1.03);
+  box-shadow: 0 6px 24px rgba(var(--primary-rgb), 0.2);
+}
+
+.hover-anticipatory.hover-disabled {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* LONG PRESS ANTICIPATORY COMPONENT */
+
+.long-press-anticipatory {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  overflow: hidden;
+}
+
+.long-press-anticipatory.long-press-active {
+  transform: scale(0.98);
+  transition: transform 100ms ease-out;
+}
+
+.long-press-progress-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(var(--primary-rgb), 0.2);
+  border-radius: 0 0 var(--radius-button) var(--radius-button);
+}
+
+.long-press-progress-fill {
+  height: 100%;
+  background: rgb(var(--primary-rgb));
+  border-radius: inherit;
+  transition: width 16ms linear;
+  transform-origin: left center;
+}
+
+/* RESPONSIVE ADJUSTMENTS */
+
+/* Mobile - Touch optimized */
+@media (max-width: 768px) {
+  .anticipatory-feedback {
+    /* Più immediato su touch */
+    transition-delay: calc(var(--press-anticipation-delay) * 0.7);
+  }
+  
+  .feedback-hover {
+    /* Disabilita hover su touch */
+    transition: none;
+  }
+  
+  .feedback-hover.feedback-active {
+    transform: none;
+    box-shadow: none;
+    background-color: rgba(var(--primary-rgb), 0.1);
+  }
+  
+  .press-anticipatory {
+    /* Touch feedback più pronunciato */
+    transition-delay: calc(var(--press-anticipation-delay) * 0.5);
+  }
+  
+  .press-anticipatory.press-state-pressed {
+    transform: translate3d(0, 1px, 0) scale(0.95);
+  }
+}
+
+/* Desktop - Mouse precision */
+@media (min-width: 1024px) {
+  .hover-anticipatory.hover-state-hovering {
+    transform: translate3d(0, -2px, 0) scale(1.02);
+  }
+  
+  .press-anticipatory {
+    /* Più raffinato su desktop */
+    transition-delay: var(--press-anticipation-delay);
+  }
+}
+
+/* High refresh rate optimization */
+@media (min-resolution: 120dpi) {
+  .anticipatory-feedback {
+    transition-duration: calc(var(--press-feedback-duration) * 0.8);
+  }
+  
+  .hover-anticipatory {
+    transition-duration: calc(var(--hover-feedback-duration) * 0.8);
+  }
+}
+
+/* ACCESSIBILITY - Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .anticipatory-feedback {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+  
+  .feedback-press.feedback-active {
+    transform: none !important;
+    opacity: 0.8;
+  }
+  
+  .feedback-hover.feedback-active {
+    transform: none !important;
+    background-color: rgba(var(--primary-rgb), 0.1) !important;
+    box-shadow: none !important;
+  }
+  
+  .press-anticipatory.press-state-pressed {
+    transform: none !important;
+    opacity: 0.8;
+  }
+  
+  .hover-anticipatory.hover-state-hovering {
+    transform: none !important;
+    background-color: rgba(var(--primary-rgb), 0.1) !important;
+    box-shadow: none !important;
+  }
+  
+  .long-press-anticipatory.long-press-active {
+    transform: none !important;
+    opacity: 0.9;
+  }
+  
+  /* Mantieni solo progress indicator per long press */
+  .long-press-progress-indicator {
+    display: block;
+  }
+}
+
+/* HIGH CONTRAST MODE */
+@media (prefers-contrast: high) {
+  .feedback-focus.feedback-active {
+    box-shadow: 0 0 0 3px currentColor !important;
+    border-color: currentColor !important;
+  }
+  
+  .feedback-hover.feedback-active {
+    background-color: rgba(var(--primary-rgb), 0.2) !important;
+    border: 2px solid rgb(var(--primary-rgb)) !important;
+  }
+}
+
+/* DARK MODE ADJUSTMENTS */
+.dark .anticipatory-feedback {
+  /* Feedback più visibile in dark mode */
+}
+
+.dark .feedback-press.feedback-active {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+.dark .feedback-hover.feedback-active {
+  box-shadow: 0 4px 16px rgba(var(--primary-rgb), 0.25);
+  background-color: rgba(var(--primary-rgb), 0.1);
+}
+
+.dark .long-press-progress-indicator {
+  background: rgba(var(--primary-rgb), 0.3);
+}
+
+/* CLEANUP WILL-CHANGE */
+.anticipatory-feedback:not(.feedback-anticipating):not(.feedback-active) {
+  will-change: auto;
+}
+
+.press-anticipatory:not(.press-state-anticipating):not(.press-state-pressed) {
+  will-change: auto;
+}
+
+.hover-anticipatory:not(.hover-state-anticipating):not(.hover-state-hovering) {
+  will-change: auto;
+}
