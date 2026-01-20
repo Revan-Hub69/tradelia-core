@@ -57,11 +57,11 @@ const config = {
       },
       // Spacing scale 4px base (già default Tailwind, ma esplicito)
       spacing: {
-        '4.5': '1.125rem', // 18px
-        '13': '3.25rem',   // 52px
-        '15': '3.75rem',   // 60px
-        '18': '4.5rem',    // 72px
-        '22': '5.5rem',    // 88px
+        4.5: '1.125rem', // 18px
+        13: '3.25rem', // 52px
+        15: '3.75rem', // 60px
+        18: '4.5rem', // 72px
+        22: '5.5rem', // 88px
       },
       // Font sizes con line-height ottimizzato
       fontSize: {
@@ -127,7 +127,7 @@ const config = {
   plugins: [
     require('tailwindcss-animate'),
     // Add signature utilities plugin
-    function({ addUtilities }) {
+    function ({ addUtilities }: { addUtilities: (utilities: Record<string, Record<string, string>>) => void }) {
       addUtilities({
         '.weight-primary': {
           'background': 'var(--weight-primary-bg)',
