@@ -34,3 +34,22 @@ export {
 } from './SignatureMicroInteractions';
 
 export { SignatureMicroInteractionsExample } from './SignatureMicroInteractionsExample';
+
+// Adaptive Micro-Copy System
+export {
+  MicroCopyProvider,
+  useMicroCopyContext,
+  useAdaptiveMicroCopy,
+  AdaptiveButton,
+  AdaptiveStatus,
+  AdaptiveMicroCopyShowcase,
+  type UserState,
+  type EmotionalState,
+  type TaskContext,
+  type ActionType,
+  type ToneStyle,
+  type MicroCopyContext,
+  type AdaptiveMicroCopyConfig,
+} from './AdaptiveMicroCopy';
+
+export { AdaptiveMicroCopyExample } from './AdaptiveMicroCopyExample';
