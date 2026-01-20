@@ -1,0 +1,373 @@
+/**
+ * PERFORMANCE OPTIMIZATIONS - Enterprise 2026
+ *
+ * Sistema di ottimizzazione performance per animazioni signature basato su:
+ * - Motion.dev performance guide 2026
+ * - GPU acceleration best practices
+ * - Battery-aware motion reduction
+ * - Hardware acceleration optimization
+ * - 60fps/120fps target performance
+ */
+
+/* ============================================================================
+   GPU ACCELERATION OPTIMIZATION
+   ============================================================================ */
+
+/* Force GPU acceleration for signature animations */
+.gpu-accelerated {
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0); /* Force GPU layer */
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Cleanup will-change when not animating to prevent memory bloat */
+.gpu-accelerated:not(:hover):not(:focus):not(:active):not(.animating) {
+  will-change: auto;
+}
+
+/* High-performance transform-only animations */
+.transform-only {
+  /* Only animate transform and opacity for best performance */
+  transition-property: transform, opacity;
+  will-change: transform, opacity;
+}
+
+/* Optimized for 60fps rendering (16.7ms budget) */
+.fps-60-optimized {
+  animation-duration: 0.2s; /* Fast enough for 60fps */
+  animation-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1); /* Optimized easing */
+  animation-fill-mode: both;
+}
+
+/* Optimized for 120fps rendering (8ms budget) */
+.fps-120-optimized {
+  animation-duration: 0.15s; /* Even faster for 120fps */
+  animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smoother easing */
+  animation-fill-mode: both;
+}
+
+/* ============================================================================
+   BATTERY-AWARE MOTION REDUCTION
+   ============================================================================ */
+
+/* Default: Full animations for good battery/performance */
+.battery-aware-animation {
+  animation-duration: var(--motion-base, 300ms);
+  animation-timing-function: var(--ease-tradelia, cubic-bezier(0.34, 1.56, 0.64, 1));
+  transition-duration: var(--motion-base, 300ms);
+  transition-timing-function: var(--ease-tradelia, cubic-bezier(0.34, 1.56, 0.64, 1));
+}
+
+/* Reduced motion for accessibility preferences */
+@media (prefers-reduced-motion: reduce) {
+  .battery-aware-animation {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transform: none !important;
+  }
+  
+  /* Provide alternative feedback for reduced motion users */
+  .battery-aware-animation::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(var(--primary-rgb), 0.1);
+    opacity: 0;
+    transition: opacity 0.1s ease;
+    pointer-events: none;
+  }
+  
+  .battery-aware-animation:hover::after,
+  .battery-aware-animation:focus::after {
+    opacity: 1;
+  }
+}
+
+/* Battery-aware performance scaling */
+@media (max-resolution: 1dppx) {
+  /* Low-resolution displays: reduce animation complexity */
+  .battery-aware-animation {
+    animation-duration: calc(var(--motion-base, 300ms) * 0.7);
+    transition-duration: calc(var(--motion-base, 300ms) * 0.7);
+  }
+}
+
+@media (min-resolution: 2dppx) {
+  /* High-resolution displays: can handle more complex animations */
+  .battery-aware-animation {
+    animation-duration: var(--motion-base, 300ms);
+    transition-duration: var(--motion-base, 300ms);
+  }
+}
+
+/* ============================================================================
+   SIGNATURE ANIMATION PERFORMANCE CLASSES
+   ============================================================================ */
+
+/* Tradelia signature press feedback - GPU optimized */
+.signature-press-optimized {
+  will-change: transform, box-shadow;
+  transform: translate3d(0, 0, 0);
+  transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.signature-press-optimized:active {
+  transform: translate3d(0, 1px, 0) scale(0.98);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.signature-press-optimized:not(:active) {
+  will-change: auto;
+}
+
+/* Signature hover lift - Performance optimized */
+.signature-hover-optimized {
+  will-change: transform, box-shadow;
+  transform: translate3d(0, 0, 0);
+  transition: transform 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275),
+              box-shadow 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.signature-hover-optimized:hover {
+  transform: translate3d(0, -2px, 0) scale(1.02);
+  box-shadow: 0 8px 25px rgba(var(--primary-rgb), 0.15);
+}
+
+.signature-hover-optimized:not(:hover):not(:focus) {
+  will-change: auto;
+}
+
+/* Signature glass shimmer - GPU accelerated */
+.signature-shimmer-optimized {
+  position: relative;
+  overflow: hidden;
+  will-change: background-position;
+}
+
+.signature-shimmer-optimized::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: signature-shimmer 2s infinite;
+  will-change: background-position;
+}
+
+@keyframes signature-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.signature-shimmer-optimized:not(.animating)::after {
+  will-change: auto;
+}
+
+/* ============================================================================
+   DEVICE-SPECIFIC OPTIMIZATIONS
+   ============================================================================ */
+
+/* Mobile devices: Lighter animations */
+@media (hover: none) and (pointer: coarse) {
+  .device-optimized {
+    animation-duration: calc(var(--motion-base, 300ms) * 0.8);
+    transition-duration: calc(var(--motion-base, 300ms) * 0.8);
+    /* Reduce complexity on touch devices */
+    filter: none !important;
+    backdrop-filter: none !important;
+  }
+}
+
+/* Desktop devices: Full animations */
+@media (hover: hover) and (pointer: fine) {
+  .device-optimized {
+    animation-duration: var(--motion-base, 300ms);
+    transition-duration: var(--motion-base, 300ms);
+  }
+}
+
+/* Low-powered devices: Minimal animations */
+@media (max-width: 768px) and (max-resolution: 1.5dppx) {
+  .low-power-optimized {
+    animation-duration: calc(var(--motion-base, 300ms) * 0.5) !important;
+    transition-duration: calc(var(--motion-base, 300ms) * 0.5) !important;
+    transform: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+  }
+}
+
+/* High-refresh rate displays: Smoother animations */
+@media (min-resolution: 120dpi) {
+  .high-refresh-optimized {
+    animation-duration: calc(var(--motion-base, 300ms) * 0.8);
+    transition-duration: calc(var(--motion-base, 300ms) * 0.8);
+  }
+}
+
+/* ============================================================================
+   PERFORMANCE MONITORING CLASSES
+   ============================================================================ */
+
+/* Performance-critical animations - Use sparingly */
+.performance-critical {
+  /* Only animate compositor-only properties */
+  transition-property: transform, opacity, filter;
+  will-change: transform, opacity, filter;
+  contain: layout style paint;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Performance-safe animations - Use freely */
+.performance-safe {
+  transition-property: transform, opacity;
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Performance monitoring helper */
+.performance-monitor {
+  /* Add visual indicator for performance debugging */
+  position: relative;
+}
+
+.performance-monitor::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 4px;
+  height: 4px;
+  background: #00ff00; /* Green = good performance */
+  border-radius: 50%;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+
+/* Show performance indicator during animations */
+.performance-monitor.animating::before {
+  opacity: 1;
+}
+
+/* ============================================================================
+   CLEANUP AND MEMORY MANAGEMENT
+   ============================================================================ */
+
+/* Automatic cleanup of will-change */
+.auto-cleanup {
+  will-change: auto;
+}
+
+.auto-cleanup:hover,
+.auto-cleanup:focus,
+.auto-cleanup:active,
+.auto-cleanup.animating {
+  will-change: transform, opacity;
+}
+
+/* Memory-efficient layer management */
+.layer-efficient {
+  /* Create layers only when needed */
+  transform: translateZ(0);
+}
+
+.layer-efficient:not(:hover):not(:focus):not(:active):not(.animating) {
+  transform: none;
+}
+
+/* ============================================================================
+   ACCESSIBILITY AND REDUCED MOTION
+   ============================================================================ */
+
+/* Comprehensive reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  /* Disable all signature animations */
+  .signature-press-optimized,
+  .signature-hover-optimized,
+  .signature-shimmer-optimized,
+  .battery-aware-animation,
+  .performance-critical,
+  .performance-safe {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+  
+  /* Provide alternative visual feedback */
+  .signature-press-optimized:active {
+    opacity: 0.8;
+    background-color: rgba(var(--primary-rgb), 0.1);
+  }
+  
+  .signature-hover-optimized:hover {
+    background-color: rgba(var(--primary-rgb), 0.05);
+    border-color: rgba(var(--primary-rgb), 0.3);
+  }
+}
+
+/* High contrast mode optimizations */
+@media (prefers-contrast: high) {
+  .signature-press-optimized,
+  .signature-hover-optimized {
+    /* Ensure visibility in high contrast mode */
+    border: 2px solid ButtonText;
+    background: ButtonFace;
+    color: ButtonText;
+  }
+  
+  .signature-shimmer-optimized::after {
+    display: none; /* Remove shimmer in high contrast */
+  }
+}
+
+/* ============================================================================
+   PERFORMANCE UTILITIES
+   ============================================================================ */
+
+/* Force hardware acceleration */
+.force-gpu {
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+}
+
+/* Optimize for 60fps */
+.optimize-60fps {
+  animation-duration: 0.2s;
+  transition-duration: 0.2s;
+}
+
+/* Optimize for 120fps */
+.optimize-120fps {
+  animation-duration: 0.15s;
+  transition-duration: 0.15s;
+}
+
+/* Disable animations completely */
+.no-animations {
+  animation: none !important;
+  transition: none !important;
+  transform: none !important;
+}
+
+/* Enable animations */
+.enable-animations {
+  animation: unset;
+  transition: unset;
+  transform: unset;
+}
