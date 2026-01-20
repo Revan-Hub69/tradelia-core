@@ -245,7 +245,7 @@ export const useSemanticAnimations = () => {
   const [animationQueue, setAnimationQueue] = React.useState<SemanticType[]>([]);
 
   // Trigger animazione semantica
-  const triggerAnimation = React.useCallback((type: SemanticType, context?: AnimationContext) => {
+  const triggerAnimation = React.useCallback((type: SemanticType) => {
     setCurrentAnimation(type);
     
     // Durate basate sul tipo semantico
@@ -280,8 +280,10 @@ export const useSemanticAnimations = () => {
   React.useEffect(() => {
     if (animationQueue.length > 0 && !currentAnimation) {
       const nextAnimation = animationQueue[0];
-      setAnimationQueue(prev => prev.slice(1));
-      triggerAnimation(nextAnimation);
+      if (nextAnimation) {
+        setAnimationQueue(prev => prev.slice(1));
+        triggerAnimation(nextAnimation);
+      }
     }
   }, [animationQueue, currentAnimation, triggerAnimation]);
 

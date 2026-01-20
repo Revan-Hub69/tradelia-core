@@ -39,10 +39,9 @@ import {
 export const MotionSystemExample: React.FC = () => {
   const [showElements, setShowElements] = useState(true);
   const [feedbackMessage, setFeedbackMessage] = useState('');
-  const [longPressProgress, setLongPressProgress] = useState(0);
 
   // Hooks del sistema motion
-  const { triggerMotion, shouldAnimate, motionPreference } = useTradeliaMotion();
+  const { motionPreference } = useTradeliaMotion();
   const { triggerAnimation, currentAnimation } = useSemanticAnimations();
   const { feedbackState, triggerAnticipation } = useAnticipatoryFeedback();
 

@@ -244,7 +244,7 @@ export const useTradeliaMotion = () => {
   }, []);
 
   // Funzioni per controllo animazioni
-  const triggerMotion = React.useCallback((type: MotionType, duration?: number) => {
+  const triggerMotion = React.useCallback((duration?: number) => {
     if (motionPreference === 'none') {
       return;
     }
