@@ -22,7 +22,6 @@ import {
   StaggerContainer,
   SemanticAnimation,
   EnterAnimation,
-  ExitAnimation,
   SuccessAnimation,
   ErrorAnimation,
   AnticipatoryFeedback,
