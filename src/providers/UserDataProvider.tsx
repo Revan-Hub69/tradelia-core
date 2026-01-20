@@ -55,35 +55,35 @@ const fetchUserData = async (): Promise<UserData | null> => {
   }
 
   try {
-    // Fetch complete user data from API
+    // Fetch complete user data from API (now returns normalized data)
     const response = await fetch('/api/user/progress');
 
     if (!response.ok) {
       throw new Error('Failed to fetch user progress');
     }
 
-    const completeData = await response.json();
-    const { profile, progress, completions, badges } = completeData;
+    const normalizedData = await response.json();
+    const { profile, progress, completions, badges } = normalizedData;
 
-    // Calculate progress
+    // Calculate progress (data is now guaranteed to be non-null)
     const totalLessons = 12; // Foundation Programme has 12 lessons
-    const completedLessons = completions?.length || 0;
+    const completedLessons = completions.length; // No more null check needed
     const progressPercentage = Math.round((completedLessons / totalLessons) * 100);
 
     return {
       id: user.id,
       email: user.email || '',
-      name: profile?.name || user.user_metadata?.name || user.email?.split('@')[0] || 'Utente',
+      name: profile.name || user.user_metadata?.name || user.email?.split('@')[0] || 'Utente',
       progress: {
         currentPath: 'base',
         pathName: 'Percorso Fondamentale',
         completedLessons,
         totalLessons,
         progressPercentage,
-        totalXP: progress?.total_xp || 0,
-        level: progress?.level || 1,
-        currentStreak: progress?.current_streak || 0,
-        badges: badges?.length || 0,
+        totalXP: progress.total_xp, // No more null check needed
+        level: progress.level, // No more null check needed
+        currentStreak: progress.current_streak, // No more null check needed
+        badges: badges.length, // No more null check needed
       },
     };
   } catch (error) {
