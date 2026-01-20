@@ -660,6 +660,21 @@
     "skip_notifications": "Salta per ora",
     "continue": "Continua"
   },
+  "Tools": {
+    "title": "Strumenti",
+    "description": "Strumenti reali per l'analisi e la gestione crypto.",
+    "portfolio_tracker": "Portfolio Tracker",
+    "portfolio_tracker_description": "Monitora il tuo portafoglio crypto in tempo reale.",
+    "dca_calculator": "Calcolatore DCA",
+    "dca_calculator_description": "Calcola la strategia Dollar Cost Averaging ottimale.",
+    "risk_analyzer": "Analizzatore di Rischio",
+    "risk_analyzer_description": "Analizza il profilo di rischio dei tuoi investimenti.",
+    "yield_calculator": "Calcolatore di Rendimento",
+    "yield_calculator_description": "Calcola i potenziali rendimenti da staking e DeFi.",
+    "in_development": "In sviluppo - Disponibile presto",
+    "coming_soon": "Prossimamente",
+    "affiliate_disclaimer": "Alcuni strumenti potrebbero contenere link di affiliazione. Raccomandiamo solo strumenti che usiamo e di cui ci fidiamo realmente."
+  },
   "AuthError": {
     "title": "Errore di autenticazione",
     "description": "Si è verificato un problema durante l'accesso. Riprova o contatta il supporto se il problema persiste.",

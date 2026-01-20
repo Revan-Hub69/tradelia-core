@@ -1,5 +1,5 @@
-import { CommunitySkeleton } from '@/components/dashboard/DashboardSkeleton';
+import { DashboardSkeleton } from '@/components/dashboard/DashboardSkeleton';
 
-export default function CommunityLoading() {
-  return <CommunitySkeleton />;
+export default function Loading() {
+  return <DashboardSkeleton variant="community" />;
 }

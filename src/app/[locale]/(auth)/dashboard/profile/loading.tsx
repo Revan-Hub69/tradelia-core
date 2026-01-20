@@ -1,5 +1,5 @@
-import { ProfileSkeleton } from '@/components/dashboard/DashboardSkeleton';
+import { DashboardSkeleton } from '@/components/dashboard/DashboardSkeleton';
 
-export default function ProfileLoading() {
-  return <ProfileSkeleton />;
+export default function Loading() {
+  return <DashboardSkeleton variant="profile" />;
 }

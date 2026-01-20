@@ -1,6 +1,28 @@
 import { Skeleton } from '@/components/ui/skeleton';
 
-export const DashboardSkeleton = () => {
+export type DashboardSkeletonVariant = 'home' | 'learn' | 'tools' | 'community' | 'profile';
+
+export interface DashboardSkeletonProps {
+  variant?: DashboardSkeletonVariant;
+}
+
+export const DashboardSkeleton = ({ variant = 'home' }: DashboardSkeletonProps) => {
+  switch (variant) {
+    case 'learn':
+      return <LearnSkeleton />;
+    case 'tools':
+      return <ToolsSkeleton />;
+    case 'community':
+      return <CommunitySkeleton />;
+    case 'profile':
+      return <ProfileSkeleton />;
+    case 'home':
+    default:
+      return <HomeSkeleton />;
+  }
+};
+
+const HomeSkeleton = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="space-y-8">

@@ -689,6 +689,21 @@
     "skip_notifications": "Skip for now",
     "continue": "Continue"
   },
+  "Tools": {
+    "title": "Tools",
+    "description": "Real tools for crypto analysis and management.",
+    "portfolio_tracker": "Portfolio Tracker",
+    "portfolio_tracker_description": "Monitor your crypto portfolio in real time.",
+    "dca_calculator": "DCA Calculator",
+    "dca_calculator_description": "Calculate the optimal Dollar Cost Averaging strategy.",
+    "risk_analyzer": "Risk Analyzer",
+    "risk_analyzer_description": "Analyze the risk profile of your investments.",
+    "yield_calculator": "Yield Calculator",
+    "yield_calculator_description": "Calculate potential returns from staking and DeFi.",
+    "in_development": "In development - Available soon",
+    "coming_soon": "Coming soon",
+    "affiliate_disclaimer": "Some tools may contain affiliate links. We only recommend tools we actually use and trust."
+  },
   "AuthError": {
     "title": "Authentication Error",
     "description": "There was a problem signing you in. Please try again or contact support if the issue persists.",

@@ -108,13 +108,13 @@ export const EmotionalFeedbackExample: React.FC = () => {
       <div className="flex justify-center">
         <div className="glass-surface inline-flex rounded-lg p-1">
           {[
-            { key: 'micro-moments', label: 'Micro-Moments' },
-            { key: 'reassurance', label: 'Reassurance' },
-            { key: 'empty-states', label: 'Empty States' },
+            { key: 'micro-moments' as const, label: 'Micro-Moments' },
+            { key: 'reassurance' as const, label: 'Reassurance' },
+            { key: 'empty-states' as const, label: 'Empty States' },
           ].map(tab => (
             <button
               key={tab.key}
-              onClick={() => setActiveDemo(tab.key as any)}
+              onClick={() => setActiveDemo(tab.key)}
               className={cn(
                 'px-4 py-2 rounded-md text-sm font-medium transition-all duration-200',
                 activeDemo === tab.key

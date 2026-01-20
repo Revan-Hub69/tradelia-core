@@ -1,5 +1,5 @@
-import { ToolsSkeleton } from '@/components/dashboard/DashboardSkeleton';
+import { DashboardSkeleton } from '@/components/dashboard/DashboardSkeleton';
 
-export default function ToolsLoading() {
-  return <ToolsSkeleton />;
+export default function Loading() {
+  return <DashboardSkeleton variant="tools" />;
 }

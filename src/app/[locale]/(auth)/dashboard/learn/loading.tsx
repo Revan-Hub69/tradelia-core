@@ -1,5 +1,5 @@
-import { LearnSkeleton } from '@/components/dashboard/DashboardSkeleton';
+import { DashboardSkeleton } from '@/components/dashboard/DashboardSkeleton';
 
-export default function LearnLoading() {
-  return <LearnSkeleton />;
+export default function Loading() {
+  return <DashboardSkeleton variant="learn" />;
 }
