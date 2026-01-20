@@ -1,14 +1,15 @@
 'use client';
 
-import { cn } from '@/utils/Helpers';
 import { forwardRef, type HTMLAttributes } from 'react';
+
+import { cn } from '@/utils/Helpers';
 import { TradelliaGlass } from './TradelliaGlass';
 
-interface GlassCardProps extends HTMLAttributes<HTMLDivElement> {
-  variant?: 'primary' | 'secondary' | 'tertiary';
+type GlassCardProps = HTMLAttributes<HTMLDivElement> & {
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'card' | 'modal';
   interactive?: boolean;
   children?: React.ReactNode;
-}
+};
 
 const GlassCard = forwardRef<HTMLDivElement, GlassCardProps>(
   ({ className, variant = 'card', interactive = false, children, ...props }, ref) => {
@@ -19,7 +20,7 @@ const GlassCard = forwardRef<HTMLDivElement, GlassCardProps>(
         shape="default"
         className={cn(
           'p-6 transition-all duration-200',
-          
+
           // Interactive states with signature micro-animations
           interactive && [
             'cursor-pointer',
@@ -27,15 +28,15 @@ const GlassCard = forwardRef<HTMLDivElement, GlassCardProps>(
             'active:scale-[0.98] active:transition-transform active:duration-75',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50',
           ],
-          
-          className
+
+          className,
         )}
         {...props}
       >
         {children}
       </TradelliaGlass>
     );
-  }
+  },
 );
 
 GlassCard.displayName = 'GlassCard';
