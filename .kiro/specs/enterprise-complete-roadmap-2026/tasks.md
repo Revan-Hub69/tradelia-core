@@ -61,12 +61,12 @@ Roadmap completa per portare Tradelia dal 70% al 95% di enterprise readiness att
   - Implement skeleton components for immediate feedback
   - _Requirements: 7.1_
 
-- [ ] 3. Complete i18n Coverage
+- [x] 3. Complete i18n Coverage
   - Remove all hardcoded Italian text from dashboard pages
   - Add missing translations to en.json/it.json
   - _Requirements: 1.4_
 
-- [ ] 3.1 Fix hardcoded text in dashboard pages
+- [x] 3.1 Fix hardcoded text in dashboard pages
   - src/app/[locale]/(auth)/dashboard/page.tsx
   - src/app/[locale]/(auth)/dashboard/learn/page.tsx
   - src/app/[locale]/(auth)/dashboard/profile/page.tsx

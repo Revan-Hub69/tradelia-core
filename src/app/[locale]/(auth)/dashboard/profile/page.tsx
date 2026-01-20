@@ -1,8 +1,10 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useUserData } from '@/hooks/useUserData';
 
 export default function ProfilePage() {
+  const t = useTranslations();
   const { userData, isLoading } = useUserData();
 
   if (isLoading) {
@@ -18,7 +20,7 @@ export default function ProfilePage() {
       <div className="container mx-auto px-4 py-8">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-muted-foreground">
-            Errore di autenticazione
+            {t('ProfilePage.auth_error_title')}
           </h1>
         </div>
       </div>
@@ -29,22 +31,22 @@ export default function ProfilePage() {
     <div className="container mx-auto px-4 py-8">
       <div className="space-y-8">
         <div>
-          <h1 className="text-2xl font-bold">Profilo</h1>
+          <h1 className="text-2xl font-bold">{t('ProfilePage.title')}</h1>
           <p className="text-muted-foreground">
-            Gestisci il tuo account e le tue preferenze.
+            {t('ProfilePage.description')}
           </p>
         </div>
 
         <div className="rounded-lg border bg-card p-6">
-          <h2 className="text-lg font-semibold mb-4">Informazioni Account</h2>
+          <h2 className="text-lg font-semibold mb-4">{t('ProfilePage.account_info_title')}</h2>
           <div className="space-y-4">
             <div>
-              <div className="text-sm text-muted-foreground">Email</div>
+              <div className="text-sm text-muted-foreground">{t('ProfilePage.email_label')}</div>
               <div className="font-medium">{userData.email}</div>
             </div>
             {userData.name && (
               <div>
-                <div className="text-sm text-muted-foreground">Nome</div>
+                <div className="text-sm text-muted-foreground">{t('ProfilePage.name_label')}</div>
                 <div className="font-medium">{userData.name}</div>
               </div>
             )}
