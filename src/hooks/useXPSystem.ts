@@ -4,11 +4,11 @@ import { useCallback, useEffect, useState } from 'react';
 
 /**
  * useXPSystem - XP and level management hook
- * 
+ *
  * Requirements: 3.2
  * - Mostrare XP corrente e progress verso next level
  * - Implementare level-up animations
- * 
+ *
  * Features:
  * - XP calculation and level progression
  * - Level-up detection and animations
@@ -40,11 +40,13 @@ const XP_MULTIPLIER = 1.1; // Each level requires 10% more XP
 
 // Calculate XP required for a specific level
 const calculateXPForLevel = (level: number): number => {
-  if (level <= 1) return 0;
-  
+  if (level <= 1) {
+    return 0;
+  }
+
   let totalXP = 0;
   for (let i = 1; i < level; i++) {
-    totalXP += Math.floor(BASE_XP_PER_LEVEL * Math.pow(XP_MULTIPLIER, i - 1));
+    totalXP += Math.floor(BASE_XP_PER_LEVEL * XP_MULTIPLIER ** (i - 1));
   }
   return totalXP;
 };
@@ -53,12 +55,12 @@ const calculateXPForLevel = (level: number): number => {
 const calculateLevelFromXP = (totalXP: number): number => {
   let level = 1;
   let xpNeeded = 0;
-  
+
   while (xpNeeded <= totalXP) {
     level++;
     xpNeeded = calculateXPForLevel(level);
   }
-  
+
   return level - 1;
 };
 
@@ -89,30 +91,30 @@ export const useXPSystem = (initialXP: number = 0): XPSystemHook => {
     const previousLevel = calculateLevelFromXP(currentXP);
     const newXP = currentXP + amount;
     const newLevel = calculateLevelFromXP(newXP);
-    
+
     // Show XP gain animation
     setRecentXPGain(amount);
     setIsAnimating(true);
-    
+
     // Update XP with animation delay
     setTimeout(() => {
       setCurrentXP(newXP);
-      
+
       // Check for level up
       if (newLevel > previousLevel) {
         setTimeout(() => {
           setIsLevelingUp(true);
-          
+
           // Trigger level-up celebration
           triggerLevelUpCelebration(newLevel);
-          
+
           // Clear level-up state after animation
           setTimeout(() => {
             setIsLevelingUp(false);
           }, 3000);
         }, 500);
       }
-      
+
       // Clear XP gain indicator
       setTimeout(() => {
         setRecentXPGain(null);
@@ -134,7 +136,7 @@ export const useXPSystem = (initialXP: number = 0): XPSystemHook => {
   const triggerLevelUpCelebration = (newLevel: number) => {
     // Dispatch custom event for other components to listen to
     const levelUpEvent = new CustomEvent('levelUp', {
-      detail: { newLevel, previousLevel: newLevel - 1 }
+      detail: { newLevel, previousLevel: newLevel - 1 },
     });
     window.dispatchEvent(levelUpEvent);
 
@@ -144,7 +146,7 @@ export const useXPSystem = (initialXP: number = 0): XPSystemHook => {
       window.confetti({
         particleCount: 100,
         spread: 70,
-        origin: { y: 0.6 }
+        origin: { y: 0.6 },
       });
     }
 
@@ -164,7 +166,7 @@ export const useXPSystem = (initialXP: number = 0): XPSystemHook => {
   const triggerLevelUpAnimation = useCallback(() => {
     setIsLevelingUp(true);
     triggerLevelUpCelebration(level);
-    
+
     setTimeout(() => {
       setIsLevelingUp(false);
     }, 3000);
@@ -183,7 +185,7 @@ export const useXPSystem = (initialXP: number = 0): XPSystemHook => {
     };
 
     window.addEventListener('xpGain', handleXPGain as EventListener);
-    
+
     return () => {
       window.removeEventListener('xpGain', handleXPGain as EventListener);
     };
@@ -201,7 +203,7 @@ export const useXPSystem = (initialXP: number = 0): XPSystemHook => {
 // Utility function to trigger XP gain from other components
 export const triggerXPGain = (amount: number, source: string = 'lesson') => {
   const xpGainEvent = new CustomEvent('xpGain', {
-    detail: { amount, source }
+    detail: { amount, source },
   });
   window.dispatchEvent(xpGainEvent);
 };

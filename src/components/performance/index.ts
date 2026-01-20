@@ -1,34 +1,31 @@
 /**
  * Performance Optimization Components
- * 
+ *
  * Enterprise-grade performance optimization system for animations
  */
 
 export {
-  PerformanceOptimizedAnimation,
-  PerformanceOptimizedButton,
-  PerformanceOptimizedCard,
-  type PerformanceOptimizedAnimationProps,
-  type PerformanceOptimizedButtonProps,
-  type PerformanceOptimizedCardProps,
-  type AnimationPriority,
-  type AnimationType,
-} from './PerformanceOptimizedAnimation';
-
-export { PerformanceShowcase } from './PerformanceShowcase';
-
-export {
-  usePerformanceOptimization,
-  type PerformanceLevel,
-  type DeviceCapabilities,
-  type BatteryStatus,
-  type PerformanceConfig,
-  type NetworkQuality,
-} from '../../hooks/usePerformanceOptimization';
-
-export {
-  useAccessibility,
+  type AccessibilityPreferences,
   type AnnouncementPriority,
   type FocusTrapOptions,
-  type AccessibilityPreferences,
+  useAccessibility,
 } from '../../hooks/useAccessibility';
+export {
+  type BatteryStatus,
+  type DeviceCapabilities,
+  type NetworkQuality,
+  type PerformanceConfig,
+  type PerformanceLevel,
+  usePerformanceOptimization,
+} from '../../hooks/usePerformanceOptimization';
+export {
+  type AnimationPriority,
+  type AnimationType,
+  PerformanceOptimizedAnimation,
+  type PerformanceOptimizedAnimationProps,
+  PerformanceOptimizedButton,
+  type PerformanceOptimizedButtonProps,
+  PerformanceOptimizedCard,
+  type PerformanceOptimizedCardProps,
+} from './PerformanceOptimizedAnimation';
+export { PerformanceShowcase } from './PerformanceShowcase';

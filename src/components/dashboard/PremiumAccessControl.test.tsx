@@ -1,14 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import * as fc from 'fast-check';
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
-import type { LearningPath } from './types';
-import { 
-  isPremiumRequired, 
-  canAccessPath, 
+import {
+  canAccessPath,
+  isPremiumRequired,
   shouldShowUpgradePrompt,
-  UpgradePrompt 
+  UpgradePrompt,
 } from './PremiumAccessControl';
+import type { LearningPath } from './types';
 
 // Generators for property-based testing
 const learningPathGenerator = (): fc.Arbitrary<LearningPath> => {
@@ -29,15 +29,15 @@ const learningPathGenerator = (): fc.Arbitrary<LearningPath> => {
         duration: fc.integer({ min: 1, max: 120 }),
         xpReward: fc.integer({ min: 0, max: 100 }),
         isCompleted: fc.boolean(),
-        isUnlocked: fc.boolean()
+        isUnlocked: fc.boolean(),
       })),
       isLocked: fc.boolean(),
       completionRate: fc.integer({ min: 0, max: 100 }),
-      estimatedTime: fc.integer({ min: 1, max: 300 })
+      estimatedTime: fc.integer({ min: 1, max: 300 }),
     })),
     estimatedDuration: fc.integer({ min: 1, max: 1000 }),
     completionRate: fc.integer({ min: 0, max: 100 }),
-    isLocked: fc.boolean()
+    isLocked: fc.boolean(),
   });
 };
 
@@ -48,7 +48,7 @@ const fondamentiPathGenerator = (): fc.Arbitrary<LearningPath> => {
       fc.constant('Fondamenti'),
       fc.constant('Fondamenti Crypto'),
       fc.constant('Crypto Fondamenti'),
-      fc.string().filter(s => s.toLowerCase().includes('fondamenti'))
+      fc.string().filter(s => s.toLowerCase().includes('fondamenti')),
     ),
     description: fc.string({ minLength: 1 }),
     difficulty: fc.constantFrom('beginner', 'intermediate', 'advanced'),
@@ -64,15 +64,15 @@ const fondamentiPathGenerator = (): fc.Arbitrary<LearningPath> => {
         duration: fc.integer({ min: 1, max: 120 }),
         xpReward: fc.integer({ min: 0, max: 100 }),
         isCompleted: fc.boolean(),
-        isUnlocked: fc.boolean()
+        isUnlocked: fc.boolean(),
       })),
       isLocked: fc.boolean(),
       completionRate: fc.integer({ min: 0, max: 100 }),
-      estimatedTime: fc.integer({ min: 1, max: 300 })
+      estimatedTime: fc.integer({ min: 1, max: 300 }),
     })),
     estimatedDuration: fc.integer({ min: 1, max: 1000 }),
     completionRate: fc.integer({ min: 0, max: 100 }),
-    isLocked: fc.boolean()
+    isLocked: fc.boolean(),
   });
 };
 
@@ -92,12 +92,12 @@ describe('PremiumAccessControl Property Tests', () => {
           const hasAccess = canAccessPath(fondamentiPath, userSubscription);
           const requiresPremium = isPremiumRequired(fondamentiPath);
           const shouldShowUpgrade = shouldShowUpgradePrompt(fondamentiPath, userSubscription);
-          
+
           // Assertions for free access guarantee
           expect(hasAccess).toBe(true);
           expect(requiresPremium).toBe(false);
           expect(shouldShowUpgrade).toBe(false);
-        }
+        },
       ), { numRuns: 20 });
     });
 
@@ -108,9 +108,9 @@ describe('PremiumAccessControl Property Tests', () => {
         (fondamentiPath) => {
           // Property: Fondamenti identification should work for both ID and title patterns
           const requiresPremium = isPremiumRequired(fondamentiPath);
-          
+
           expect(requiresPremium).toBe(false);
-        }
+        },
       ), { numRuns: 20 });
     });
   });
@@ -119,10 +119,10 @@ describe('PremiumAccessControl Property Tests', () => {
     it('should show upgrade prompts for free users accessing premium paths', () => {
       // Feature: dashboard-modular-learning-system, Property 4: Premium Access Control
       fc.assert(fc.property(
-        learningPathGenerator().filter(path => 
-          path.isPremium && 
-          path.id !== 'fondamenti' && 
-          !path.title.toLowerCase().includes('fondamenti')
+        learningPathGenerator().filter(path =>
+          path.isPremium
+          && path.id !== 'fondamenti'
+          && !path.title.toLowerCase().includes('fondamenti'),
         ),
         (premiumPath) => {
           // Property: Free users should see upgrade prompts for premium paths
@@ -130,15 +130,15 @@ describe('PremiumAccessControl Property Tests', () => {
           const premiumUserAccess = canAccessPath(premiumPath, 'premium');
           const freeUserUpgradePrompt = shouldShowUpgradePrompt(premiumPath, 'free');
           const premiumUserUpgradePrompt = shouldShowUpgradePrompt(premiumPath, 'premium');
-          
+
           // Free users should not have access and should see upgrade prompt
           expect(freeUserAccess).toBe(false);
           expect(freeUserUpgradePrompt).toBe(true);
-          
+
           // Premium users should have access and not see upgrade prompt
           expect(premiumUserAccess).toBe(true);
           expect(premiumUserUpgradePrompt).toBe(false);
-        }
+        },
       ), { numRuns: 20 });
     });
 
@@ -152,11 +152,11 @@ describe('PremiumAccessControl Property Tests', () => {
           const hasAccess = canAccessPath(nonPremiumPath, userSubscription);
           const requiresPremium = isPremiumRequired(nonPremiumPath);
           const shouldShowUpgrade = shouldShowUpgradePrompt(nonPremiumPath, userSubscription);
-          
+
           expect(hasAccess).toBe(true);
           expect(requiresPremium).toBe(false);
           expect(shouldShowUpgrade).toBe(false);
-        }
+        },
       ), { numRuns: 20 });
     });
 
@@ -168,10 +168,10 @@ describe('PremiumAccessControl Property Tests', () => {
           // Property: Premium users should have access to all paths
           const hasAccess = canAccessPath(path, 'premium');
           const shouldShowUpgrade = shouldShowUpgradePrompt(path, 'premium');
-          
+
           expect(hasAccess).toBe(true);
           expect(shouldShowUpgrade).toBe(false);
-        }
+        },
       ), { numRuns: 20 });
     });
   });
@@ -188,16 +188,16 @@ describe('PremiumAccessControl Property Tests', () => {
         modules: [],
         estimatedDuration: 120,
         completionRate: 0,
-        isLocked: false
+        isLocked: false,
       };
 
       const mockOnUpgrade = () => {};
-      
+
       render(
-        <UpgradePrompt 
-          path={mockPath} 
+        <UpgradePrompt
+          path={mockPath}
           onUpgradeClick={mockOnUpgrade}
-        />
+        />,
       );
 
       // Verify upgrade prompt displays path information

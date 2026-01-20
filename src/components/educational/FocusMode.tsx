@@ -1,12 +1,12 @@
 /**
  * FOCUS MODE SYSTEM - Educational UX Patterns 2026
- * 
+ *
  * Sistema di riduzione del carico cognitivo basato su ricerca 2026:
  * - Neuro-adaptive design patterns (Microsoft, Apple)
  * - Progressive disclosure per gerarchia informativa
  * - Cognitive Load Theory applicata alle interfacce educative
  * - Anti-distraction patterns per learning flow
- * 
+ *
  * Implementa:
  * - Visual noise reduction durante l'apprendimento
  * - Progressive disclosure per gerarchia informativa
@@ -14,8 +14,8 @@
  * - Adaptive interface density
  */
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
 // ============================================================================
 // TYPES & INTERFACES
@@ -25,7 +25,7 @@ export type FocusLevel = 'minimal' | 'moderate' | 'deep' | 'immersive';
 export type FocusContext = 'learning' | 'reading' | 'practicing' | 'testing' | 'exploring';
 export type DistractionLevel = 'none' | 'low' | 'medium' | 'high';
 
-export interface FocusState {
+export type FocusState = {
   level: FocusLevel;
   context: FocusContext;
   isActive: boolean;
@@ -37,27 +37,27 @@ export interface FocusState {
     simplifyNavigation: boolean;
     enableProgressiveDisclosure: boolean;
   };
-}
+};
 
-export interface FocusSettings {
+export type FocusSettings = {
   autoActivate: boolean;
   learningSessionThreshold: number; // minutes
   adaptToTimeOfDay: boolean;
   respectSystemPreferences: boolean;
   cognitiveLoadAwareness: boolean;
-}
+};
 
-export interface ProgressiveDisclosureConfig {
-  primary: string[];    // Always visible
-  secondary: string[];  // Visible on hover/focus
-  tertiary: string[];   // Visible on explicit request
-}
+export type ProgressiveDisclosureConfig = {
+  primary: string[]; // Always visible
+  secondary: string[]; // Visible on hover/focus
+  tertiary: string[]; // Visible on explicit request
+};
 
 // ============================================================================
 // FOCUS MODE CONTEXT
 // ============================================================================
 
-interface FocusContextType {
+type FocusContextType = {
   focusState: FocusState;
   settings: FocusSettings;
   activateFocus: (level: FocusLevel, context: FocusContext) => void;
@@ -65,7 +65,7 @@ interface FocusContextType {
   updateSettings: (settings: Partial<FocusSettings>) => void;
   getDisclosureLevel: (elementId: string) => 'primary' | 'secondary' | 'tertiary';
   isElementVisible: (elementId: string) => boolean;
-}
+};
 
 const FocusContext = createContext<FocusContextType | null>(null);
 
@@ -178,18 +178,24 @@ export const FocusModeProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Get disclosure level for element
   const getDisclosureLevel = useCallback((elementId: string): 'primary' | 'secondary' | 'tertiary' => {
     const config = disclosureConfig[focusState.context];
-    
-    if (config.primary.includes(elementId)) return 'primary';
-    if (config.secondary.includes(elementId)) return 'secondary';
+
+    if (config.primary.includes(elementId)) {
+      return 'primary';
+    }
+    if (config.secondary.includes(elementId)) {
+      return 'secondary';
+    }
     return 'tertiary';
   }, [focusState.context]);
 
   // Check if element should be visible
   const isElementVisible = useCallback((elementId: string): boolean => {
-    if (!focusState.isActive) return true;
-    
+    if (!focusState.isActive) {
+      return true;
+    }
+
     const level = getDisclosureLevel(elementId);
-    
+
     switch (focusState.level) {
       case 'minimal':
         return true;
@@ -206,7 +212,9 @@ export const FocusModeProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   // Auto-activate based on context and time
   useEffect(() => {
-    if (!settings.autoActivate) return;
+    if (!settings.autoActivate) {
+      return;
+    }
 
     const handleLearningSession = () => {
       // Auto-activate moderate focus for learning sessions
@@ -221,7 +229,9 @@ export const FocusModeProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   // Respect system preferences
   useEffect(() => {
-    if (!settings.respectSystemPreferences) return;
+    if (!settings.respectSystemPreferences) {
+      return;
+    }
 
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     const handleChange = () => {
@@ -275,12 +285,12 @@ export const useFocusMode = () => {
 // FOCUS WRAPPER COMPONENT
 // ============================================================================
 
-interface FocusWrapperProps {
+type FocusWrapperProps = {
   elementId: string;
   disclosureLevel?: 'primary' | 'secondary' | 'tertiary';
   children: React.ReactNode;
   className?: string;
-}
+};
 
 export const FocusWrapper: React.FC<FocusWrapperProps> = ({
   elementId,
@@ -289,13 +299,15 @@ export const FocusWrapper: React.FC<FocusWrapperProps> = ({
   className = '',
 }) => {
   const { focusState, isElementVisible, getDisclosureLevel } = useFocusMode();
-  
+
   const actualLevel = disclosureLevel || getDisclosureLevel(elementId);
   const isVisible = isElementVisible(elementId);
-  
+
   const getOpacity = () => {
-    if (!focusState.isActive) return 1;
-    
+    if (!focusState.isActive) {
+      return 1;
+    }
+
     switch (actualLevel) {
       case 'primary':
         return 1;
@@ -309,7 +321,9 @@ export const FocusWrapper: React.FC<FocusWrapperProps> = ({
   };
 
   const getScale = () => {
-    if (!focusState.isActive) return 1;
+    if (!focusState.isActive) {
+      return 1;
+    }
     return actualLevel === 'primary' ? 1 : 0.98;
   };
 
@@ -320,16 +334,16 @@ export const FocusWrapper: React.FC<FocusWrapperProps> = ({
           key={elementId}
           className={`focus-wrapper focus-level-${actualLevel} ${className}`}
           initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ 
-            opacity: getOpacity(), 
+          animate={{
+            opacity: getOpacity(),
             scale: getScale(),
             transition: {
               duration: focusState.adaptiveSettings.reduceAnimations ? 0.1 : 0.3,
               ease: 'easeOut',
             },
           }}
-          exit={{ 
-            opacity: 0, 
+          exit={{
+            opacity: 0,
             scale: 0.95,
             transition: {
               duration: 0.2,
@@ -366,7 +380,7 @@ export const FocusControl: React.FC<{ className?: string }> = ({ className = '' 
         <h3>Modalità Focus</h3>
         <p>Riduci le distrazioni per concentrarti meglio</p>
       </div>
-      
+
       <div className="focus-levels">
         {focusLevels.map(({ level, label, description }) => (
           <button
@@ -397,7 +411,10 @@ export const FocusControl: React.FC<{ className?: string }> = ({ className = '' 
         >
           <div className="focus-status-indicator">
             <div className="focus-pulse" />
-            <span>Focus attivo: {focusLevels.find(l => l.level === focusState.level)?.label}</span>
+            <span>
+              Focus attivo:
+              {focusLevels.find(l => l.level === focusState.level)?.label}
+            </span>
           </div>
           <button
             className="focus-deactivate"
@@ -415,13 +432,13 @@ export const FocusControl: React.FC<{ className?: string }> = ({ className = '' 
 // PROGRESSIVE DISCLOSURE COMPONENT
 // ============================================================================
 
-interface ProgressiveDisclosureProps {
+type ProgressiveDisclosureProps = {
   title: string;
   level: 'secondary' | 'tertiary';
   children: React.ReactNode;
   defaultExpanded?: boolean;
   className?: string;
-}
+};
 
 export const ProgressiveDisclosure: React.FC<ProgressiveDisclosureProps> = ({
   title,
@@ -460,7 +477,7 @@ export const ProgressiveDisclosure: React.FC<ProgressiveDisclosureProps> = ({
           </motion.div>
         </button>
       )}
-      
+
       <AnimatePresence>
         {(isExpanded || !shouldShowToggle) && (
           <motion.div
@@ -468,7 +485,7 @@ export const ProgressiveDisclosure: React.FC<ProgressiveDisclosureProps> = ({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ 
+            transition={{
               duration: focusState.adaptiveSettings.reduceAnimations ? 0.1 : 0.3,
               ease: 'easeInOut',
             }}

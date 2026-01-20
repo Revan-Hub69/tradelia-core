@@ -7,48 +7,54 @@ export const createUserProfile = async (userData: {
   name?: string;
 }) => {
   const supabase = createClient();
-  
+
   const { data, error } = await supabase
     .from('user_profile')
     .insert([userData])
     .select()
     .single();
-    
-  if (error) throw error;
+
+  if (error) {
+    throw error;
+  }
   return data;
 };
 
 export const getUserProfile = async (userId: string) => {
   const supabase = createClient();
-  
+
   const { data, error } = await supabase
     .from('user_profile')
     .select('*')
     .eq('id', userId)
     .single();
-    
-  if (error && error.code !== 'PGRST116') throw error; // PGRST116 = no rows
+
+  if (error && error.code !== 'PGRST116') {
+    throw error;
+  } // PGRST116 = no rows
   return data;
 };
 
 export const updateUserProfile = async (userId: string, updates: any) => {
   const supabase = createClient();
-  
+
   const { data, error } = await supabase
     .from('user_profile')
     .update(updates)
     .eq('id', userId)
     .select()
     .single();
-    
-  if (error) throw error;
+
+  if (error) {
+    throw error;
+  }
   return data;
 };
 
 // User Progress Operations
 export const createUserProgress = async (userId: string, initialXP = 0) => {
   const supabase = createClient();
-  
+
   const { data, error } = await supabase
     .from('user_progress')
     .insert([{
@@ -61,35 +67,41 @@ export const createUserProgress = async (userId: string, initialXP = 0) => {
     }])
     .select()
     .single();
-    
-  if (error) throw error;
+
+  if (error) {
+    throw error;
+  }
   return data;
 };
 
 export const getUserProgress = async (userId: string) => {
   const supabase = createClient();
-  
+
   const { data, error } = await supabase
     .from('user_progress')
     .select('*')
     .eq('user_id', userId)
     .single();
-    
-  if (error && error.code !== 'PGRST116') throw error;
+
+  if (error && error.code !== 'PGRST116') {
+    throw error;
+  }
   return data;
 };
 
 export const updateUserProgress = async (userId: string, updates: any) => {
   const supabase = createClient();
-  
+
   const { data, error } = await supabase
     .from('user_progress')
     .update(updates)
     .eq('user_id', userId)
     .select()
     .single();
-    
-  if (error) throw error;
+
+  if (error) {
+    throw error;
+  }
   return data;
 };
 
@@ -104,7 +116,7 @@ export const completeLessonForUser = async (lessonData: {
   timeSpent?: number;
 }) => {
   const supabase = createClient();
-  
+
   // Check if lesson already completed
   const { data: existing } = await supabase
     .from('lesson_completion')
@@ -112,11 +124,11 @@ export const completeLessonForUser = async (lessonData: {
     .eq('user_id', lessonData.userId)
     .eq('lesson_id', lessonData.lessonId)
     .single();
-    
+
   if (existing) {
     throw new Error('Lesson already completed');
   }
-  
+
   // Insert lesson completion
   const { data: completion, error: completionError } = await supabase
     .from('lesson_completion')
@@ -131,35 +143,39 @@ export const completeLessonForUser = async (lessonData: {
     }])
     .select()
     .single();
-    
-  if (completionError) throw completionError;
-  
+
+  if (completionError) {
+    throw completionError;
+  }
+
   // Update user progress
   const currentProgress = await getUserProgress(lessonData.userId);
   if (currentProgress) {
     const newTotalXP = currentProgress.total_xp + lessonData.xpEarned;
     const newLevel = Math.floor(newTotalXP / 100) + 1;
-    
+
     await updateUserProgress(lessonData.userId, {
       total_xp: newTotalXP,
       level: newLevel,
       last_activity_date: new Date().toISOString().split('T')[0],
     });
   }
-  
+
   return completion;
 };
 
 export const getUserLessonCompletions = async (userId: string) => {
   const supabase = createClient();
-  
+
   const { data, error } = await supabase
     .from('lesson_completion')
     .select('*')
     .eq('user_id', userId)
     .order('completed_at', { ascending: false });
-    
-  if (error) throw error;
+
+  if (error) {
+    throw error;
+  }
   return data || [];
 };
 
@@ -173,7 +189,7 @@ export const awardBadgeToUser = async (badgeData: {
   rarity: string;
 }) => {
   const supabase = createClient();
-  
+
   // Check if badge already awarded
   const { data: existing } = await supabase
     .from('user_badges')
@@ -181,11 +197,11 @@ export const awardBadgeToUser = async (badgeData: {
     .eq('user_id', badgeData.userId)
     .eq('badge_id', badgeData.badgeId)
     .single();
-    
+
   if (existing) {
     return existing; // Badge already awarded
   }
-  
+
   const { data, error } = await supabase
     .from('user_badges')
     .insert([{
@@ -198,21 +214,25 @@ export const awardBadgeToUser = async (badgeData: {
     }])
     .select()
     .single();
-    
-  if (error) throw error;
+
+  if (error) {
+    throw error;
+  }
   return data;
 };
 
 export const getUserBadges = async (userId: string) => {
   const supabase = createClient();
-  
+
   const { data, error } = await supabase
     .from('user_badges')
     .select('*')
     .eq('user_id', userId)
     .order('unlocked_at', { ascending: false });
-    
-  if (error) throw error;
+
+  if (error) {
+    throw error;
+  }
   return data || [];
 };
 
@@ -224,7 +244,7 @@ export const getCompleteUserData = async (userId: string) => {
     getUserLessonCompletions(userId),
     getUserBadges(userId),
   ]);
-  
+
   return {
     profile,
     progress,

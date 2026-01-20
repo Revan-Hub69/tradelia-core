@@ -5,14 +5,15 @@
  * Validates: Requirements 1.1
  */
 
-import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
+import { describe, expect, it } from 'vitest';
+
+import type { IconName } from '@/components/icons';
 import {
   getVisibleNavigationItems,
   type NavigationItem,
   type NavigationItemId,
 } from '@/data/navigation.config';
-import type { IconName } from '@/components/icons';
 
 // Mock useTranslations for testing
 const mockTranslations = {
@@ -119,10 +120,11 @@ describe('Command Palette Type Safety Property Tests', () => {
 
                 // Keywords should include the item ID
                 const itemId = command.id.replace('nav-', '');
+
                 expect(command.keywords).toContain(itemId);
 
                 // Keywords should include alt+number shortcut
-                expect(command.keywords.some((k) => k.startsWith('alt+'))).toBe(true);
+                expect(command.keywords.some(k => k.startsWith('alt+'))).toBe(true);
 
                 // Label should be non-empty
                 expect(command.label.length).toBeGreaterThan(0);
@@ -168,14 +170,15 @@ describe('Command Palette Type Safety Property Tests', () => {
             ];
 
             const allCommands = [...navigationCommands, ...actionCommands];
-            const commandIds = allCommands.map((cmd) => cmd.id);
+            const commandIds = allCommands.map(cmd => cmd.id);
 
             // All IDs should be unique
             const uniqueIds = new Set(commandIds);
+
             expect(uniqueIds.size).toBe(commandIds.length);
 
             // No empty IDs
-            expect(commandIds.every((id) => id.length > 0)).toBe(true);
+            expect(commandIds.every(id => id.length > 0)).toBe(true);
 
             // IDs should follow consistent patterns
             for (const command of allCommands) {
@@ -201,7 +204,7 @@ describe('Command Palette Type Safety Property Tests', () => {
             // Property: i18n key transformation should be consistent and type-safe
 
             const navigationItems = getVisibleNavigationItems();
-            const targetItem = navigationItems.find((item) => item.id === itemId);
+            const targetItem = navigationItems.find(item => item.id === itemId);
 
             if (targetItem) {
               const commands = generateNavigationCommands([targetItem], t);
@@ -213,11 +216,13 @@ describe('Command Palette Type Safety Property Tests', () => {
               // Label should be derived from the correct i18n key
               const expectedLabelKey = targetItem.labelKey.replace('Dashboard.', '');
               const expectedLabel = t(expectedLabelKey);
+
               expect(command!.label).toBe(expectedLabel);
 
               // Description should follow the pattern nav_{id}_desc
               const expectedDescKey = `nav_${targetItem.id}_desc`;
               const expectedDesc = t(expectedDescKey, { defaultValue: '' });
+
               expect(command!.description).toBe(expectedDesc);
 
               // Icon should match the navigation item's icon
@@ -251,7 +256,7 @@ describe('Command Palette Type Safety Property Tests', () => {
               expect(command.keywords.length).toBeGreaterThan(0);
 
               // All keywords should be strings
-              expect(command.keywords.every((k) => typeof k === 'string')).toBe(true);
+              expect(command.keywords.every(k => typeof k === 'string')).toBe(true);
 
               // Navigation commands should include specific keyword patterns
               if (command.category === 'navigation') {
@@ -264,12 +269,13 @@ describe('Command Palette Type Safety Property Tests', () => {
                 expect(command.keywords).toContain(command.label.toLowerCase());
 
                 // Should include an alt+number shortcut
-                expect(command.keywords.some((k) => k.match(/^alt\+\d+$/))).toBe(true);
+                expect(command.keywords.some(k => k.match(/^alt\+\d+$/))).toBe(true);
 
                 // Alt shortcut should be valid (alt+1 through alt+5 for navigation items)
-                const altShortcut = command.keywords.find((k) => k.startsWith('alt+'));
+                const altShortcut = command.keywords.find(k => k.startsWith('alt+'));
                 if (altShortcut) {
                   const shortcutNumber = Number.parseInt(altShortcut.replace('alt+', ''), 10);
+
                   expect(shortcutNumber).toBeGreaterThanOrEqual(1);
                   expect(shortcutNumber).toBeLessThanOrEqual(navigationItems.length);
                 }

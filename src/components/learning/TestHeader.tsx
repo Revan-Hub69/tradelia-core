@@ -32,10 +32,13 @@ export const TestHeader: React.FC = () => {
       <div className="p-8">
         <h1 className="text-2xl font-bold">Test Content</h1>
         <p>Se vedi questo, l'header dovrebbe essere visibile sopra.</p>
-        <p className="mt-4">Current Step: {currentStep}</p>
-        <button 
+        <p className="mt-4">
+          Current Step:
+          {currentStep}
+        </p>
+        <button
           onClick={() => setCurrentStep(Math.min(4, currentStep + 1))}
-          className="mt-4 px-4 py-2 bg-primary text-white rounded"
+          className="mt-4 rounded bg-primary px-4 py-2 text-white"
         >
           Next Step
         </button>

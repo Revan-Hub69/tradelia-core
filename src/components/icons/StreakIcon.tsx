@@ -1,13 +1,13 @@
 import React from 'react';
 
-interface StreakIconProps {
+type StreakIconProps = {
   className?: string;
   size?: number;
-}
+};
 
-export const StreakIcon: React.FC<StreakIconProps> = ({ 
-  className = '', 
-  size = 24 
+export const StreakIcon: React.FC<StreakIconProps> = ({
+  className = '',
+  size = 24,
 }) => {
   return (
     <svg

@@ -1,9 +1,9 @@
 /**
  * MOTION TOKENS v2.0 - Enterprise 2026
- * 
+ *
  * Esportazione programmatica dei motion tokens per uso in JavaScript/TypeScript
  * Sincronizzato con motion-tokens.css
- * 
+ *
  * Basato su best practice enterprise:
  * - Microsoft Fluent 2 Design System
  * - Apple Human Interface Guidelines
@@ -14,19 +14,19 @@
 // Durate base (in millisecondi)
 export const duration = {
   instant: 0,
-  micro: 120,        // Button press, toggle, hover feedback
-  quick: 180,        // Small element transitions
-  base: 280,         // Modal open, card expand
-  smooth: 350,       // Page transitions, large movements
-  slow: 450,         // Complex animations, onboarding
+  micro: 120, // Button press, toggle, hover feedback
+  quick: 180, // Small element transitions
+  base: 280, // Modal open, card expand
+  smooth: 350, // Page transitions, large movements
+  slow: 450, // Complex animations, onboarding
 } as const;
 
 // Delays per anticipatory feedback (in millisecondi)
 export const delay = {
-  micro: 45,         // Subtle anticipation before action
-  small: 65,         // Staggered animations start
-  medium: 100,       // Sequential element reveals
-  large: 150,        // Dramatic effect spacing
+  micro: 45, // Subtle anticipation before action
+  small: 65, // Staggered animations start
+  medium: 100, // Sequential element reveals
+  large: 150, // Dramatic effect spacing
 } as const;
 
 // Easing curves signature Tradelia
@@ -35,10 +35,10 @@ export const easing = {
   tradelia: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
   gentle: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
   confident: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
-  
+
   // Context-specific easing
-  enter: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',    // Welcoming entry
-  exit: 'cubic-bezier(0.55, 0.055, 0.675, 0.19)',   // Confident exit
+  enter: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)', // Welcoming entry
+  exit: 'cubic-bezier(0.55, 0.055, 0.675, 0.19)', // Confident exit
   bounce: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)', // Playful feedback
   elastic: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)', // Elastic response
 } as const;
@@ -84,17 +84,17 @@ export const anticipatory = {
 
 // Stagger timing per choreografia
 export const stagger = {
-  micro: 30,         // Tight grouping
-  small: 50,         // Related items
-  medium: 80,        // Distinct groups
-  large: 120,        // Dramatic reveals
+  micro: 30, // Tight grouping
+  small: 50, // Related items
+  medium: 80, // Distinct groups
+  large: 120, // Dramatic reveals
 } as const;
 
 // Responsive multipliers
 export const responsive = {
-  mobile: 0.8,       // Più veloce per touch immediato
-  desktop: 1.0,      // Standard per precisione mouse
-  highRefresh: 0.7,  // Ottimizzazione per 120Hz+
+  mobile: 0.8, // Più veloce per touch immediato
+  desktop: 1.0, // Standard per precisione mouse
+  highRefresh: 0.7, // Ottimizzazione per 120Hz+
 } as const;
 
 // Haptic-like patterns
@@ -258,9 +258,9 @@ export const validators = {
    * Verifica se un easing è valido
    */
   isValidEasing: (value: string): boolean => {
-    return Object.values(easing).includes(value as any) || 
-           /^cubic-bezier\([\d\.\-,\s]+\)$/.test(value) ||
-           ['linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out'].includes(value);
+    return Object.values(easing).includes(value as any)
+      || /^cubic-bezier\([\d.\-,\s]+\)$/.test(value)
+      || ['linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out'].includes(value);
   },
 } as const;
 

@@ -1,6 +1,6 @@
 /**
  * VISUAL NOISE REDUCTION - CSS Styles
- * 
+ *
  * Stili per la riduzione del rumore visivo e miglioramento della concentrazione
  * Basato su ricerca 2026 su cognitive load e attention restoration theory
  */
@@ -17,17 +17,17 @@
   --noise-color: 0;
   --noise-typography: 0;
   --noise-spacing: 0;
-  
+
   /* Calm Interface Variables */
   --calm-opacity: 1;
   --calm-saturation: 1;
   --calm-contrast: 1;
   --calm-brightness: 1;
-  
+
   /* Breathing Space Variables */
   --breathing-space-multiplier: 1;
   --breathing-space-base: 1rem;
-  
+
   /* Essential Highlighting */
   --essential-glow-intensity: 0;
   --essential-border-intensity: 0;
@@ -89,21 +89,21 @@
    ============================================================================ */
 
 .noise-reduction-wrapper {
-  transition: 
+  transition:
     opacity 0.3s ease-out,
     filter 0.3s ease-out,
     transform 0.3s ease-out;
 }
 
-.noise-reduction-wrapper[data-noise-reduced="true"] {
+.noise-reduction-wrapper[data-noise-reduced='true'] {
   position: relative;
 }
 
-.noise-reduction-wrapper[data-element-type="decoration"][data-noise-reduced="true"] {
+.noise-reduction-wrapper[data-element-type='decoration'][data-noise-reduced='true'] {
   transform: scale(0.98);
 }
 
-.noise-reduction-wrapper[data-element-priority="low"][data-noise-reduced="true"] {
+.noise-reduction-wrapper[data-element-priority='low'][data-noise-reduced='true'] {
   z-index: -1;
 }
 
@@ -123,22 +123,19 @@
 
 .calm-interface {
   transition: all 0.5s ease-out;
-  filter: 
-    opacity(var(--calm-opacity))
-    saturate(var(--calm-saturation))
-    contrast(var(--calm-contrast))
+  filter: opacity(var(--calm-opacity)) saturate(var(--calm-saturation)) contrast(var(--calm-contrast))
     brightness(var(--calm-brightness));
 }
 
-.calm-interface[data-calm-level="subtle"] {
+.calm-interface[data-calm-level='subtle'] {
   --calm-transition-duration: 0.3s;
 }
 
-.calm-interface[data-calm-level="moderate"] {
+.calm-interface[data-calm-level='moderate'] {
   --calm-transition-duration: 0.5s;
 }
 
-.calm-interface[data-calm-level="strong"] {
+.calm-interface[data-calm-level='strong'] {
   --calm-transition-duration: 0.7s;
 }
 
@@ -163,7 +160,7 @@
    ============================================================================ */
 
 .breathing-space {
-  transition: 
+  transition:
     height 0.4s ease-out,
     margin 0.4s ease-out;
   background: transparent;
@@ -189,7 +186,7 @@
 
 .essential-highlighter {
   position: relative;
-  transition: 
+  transition:
     box-shadow 0.4s ease-out,
     border-color 0.4s ease-out,
     background-color 0.4s ease-out;
@@ -403,11 +400,11 @@
   .noise-reduction-active {
     --breathing-space-multiplier: 1.5;
   }
-  
+
   .test-elements {
     grid-template-columns: 1fr;
   }
-  
+
   .tester-status {
     grid-template-columns: 1fr;
   }
@@ -424,7 +421,7 @@
   .essential-highlighter {
     transition: opacity 0.1s ease;
   }
-  
+
   .essential-highlighter::before {
     transition: opacity 0.1s ease;
   }
@@ -436,7 +433,7 @@
     opacity: 0.8;
     filter: none;
   }
-  
+
   .essential-highlighter {
     border-width: 2px;
   }
@@ -447,11 +444,11 @@
   .calm-interface {
     --calm-brightness: 0.9;
   }
-  
+
   .test-card {
     background: rgba(255, 255, 255, 0.02);
   }
-  
+
   .test-fallback {
     background: rgba(255, 255, 255, 0.01);
   }

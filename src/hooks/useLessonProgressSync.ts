@@ -1,28 +1,29 @@
 'use client';
 
-import { useEffect, useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
+
 import type { ProgressData } from '@/components/dashboard/types';
 import type { UserProgress } from '@/types/learning';
 
-interface LessonCompletionEvent {
+type LessonCompletionEvent = {
   lessonId: string;
   pathId: string;
   xpGained: number;
   timeSpent: number;
   completionPercentage: number;
   achievements?: string[];
-}
+};
 
-interface ProgressSyncOptions {
+type ProgressSyncOptions = {
   onProgressUpdate?: (progress: Partial<ProgressData>) => void;
   onXPGained?: (xp: number, source: string) => void;
   onStreakUpdate?: (streak: number) => void;
   onAchievementUnlocked?: (achievement: string) => void;
-}
+};
 
 /**
  * Hook for syncing progress updates from lesson completions
- * 
+ *
  * Features:
  * - Real-time progress synchronization
  * - XP and streak updates
@@ -32,7 +33,7 @@ interface ProgressSyncOptions {
  */
 export const useLessonProgressSync = (
   currentProgress: ProgressData,
-  options: ProgressSyncOptions = {}
+  options: ProgressSyncOptions = {},
 ) => {
   const {
     onProgressUpdate,
@@ -64,13 +65,13 @@ export const useLessonProgressSync = (
     // Calculate new progress values
     const newTotalXP = currentProgress.totalXP + xpGained;
     const newTotalStudyTime = (currentProgress.totalStudyTime || 0) + timeSpent;
-    
+
     // Update streak logic
     const lastActivity = new Date(currentProgress.lastActivity || now);
     const daysSinceLastActivity = Math.floor(
-      (now.getTime() - lastActivity.getTime()) / (24 * 60 * 60 * 1000)
+      (now.getTime() - lastActivity.getTime()) / (24 * 60 * 60 * 1000),
     );
-    
+
     let newStreak = currentProgress.currentStreak;
     if (daysSinceLastActivity === 0) {
       // Same day, maintain streak
@@ -118,7 +119,7 @@ export const useLessonProgressSync = (
     }
 
     // Handle achievements
-    achievements.forEach(achievement => {
+    achievements.forEach((achievement) => {
       if (onAchievementUnlocked) {
         onAchievementUnlocked(achievement);
       }
@@ -132,7 +133,7 @@ export const useLessonProgressSync = (
     // Streak achievements
     if (newStreak > currentProgress.currentStreak) {
       const streakMilestones = [7, 14, 30, 60, 100];
-      streakMilestones.forEach(milestone => {
+      streakMilestones.forEach((milestone) => {
         if (newStreak === milestone && onAchievementUnlocked) {
           onAchievementUnlocked(`streak-${milestone}`);
         }
@@ -166,7 +167,7 @@ export const useLessonProgressSync = (
         if (storedProgress) {
           const parsed = JSON.parse(storedProgress);
           const storedDate = new Date(parsed.lastSync || 0);
-          
+
           // Only sync if stored data is newer
           if (storedDate > lastSyncRef.current) {
             if (onProgressUpdate) {
@@ -182,7 +183,7 @@ export const useLessonProgressSync = (
 
     // Sync on focus (when user returns to tab)
     window.addEventListener('focus', syncWithStorage);
-    
+
     // Sync periodically
     const interval = setInterval(syncWithStorage, 30000); // Every 30 seconds
 

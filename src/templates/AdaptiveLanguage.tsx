@@ -78,11 +78,11 @@ export const AdaptiveLanguage = () => {
               {explanations[selectedLevel].complexity}
             </span>
           </div>
-          
+
           <p className="leading-relaxed text-muted-foreground">
             {explanations[selectedLevel].content}
           </p>
-          
+
           {/* Visual indicator */}
           <div className="mt-6 flex items-center gap-2 text-sm text-muted-foreground">
             <svg viewBox="0 0 24 24" fill="none" className="size-4" aria-hidden="true">

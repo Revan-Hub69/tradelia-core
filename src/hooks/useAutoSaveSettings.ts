@@ -1,13 +1,14 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+
 import type { UserSettings } from '@/components/dashboard/types';
 
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
 /**
  * Hook for auto-saving user settings
- * 
+ *
  * Features:
  * - Debounced auto-save (500ms delay)
  * - Visual feedback for save status
@@ -16,7 +17,7 @@ type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
  */
 export const useAutoSaveSettings = (
   settings: UserSettings,
-  onSave: (settings: UserSettings) => Promise<void>
+  onSave: (settings: UserSettings) => Promise<void>,
 ) => {
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
   const timeoutRef = useRef<NodeJS.Timeout>();

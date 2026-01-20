@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState, Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
+
 import { useLessonCompletion } from '@/hooks/useLessonCompletion';
 
 function AuthSyncContent() {
@@ -15,10 +16,10 @@ function AuthSyncContent() {
     const syncData = async () => {
       try {
         setSyncStatus('syncing');
-        
+
         // Sync any pending lesson completions
         await syncPendingCompletions();
-        
+
         // Create user profile and progress if they don't exist
         const profileResponse = await fetch('/api/user/profile', {
           method: 'POST',
@@ -29,7 +30,7 @@ function AuthSyncContent() {
             // Basic profile data - will be enhanced during onboarding
           }),
         });
-        
+
         if (profileResponse.ok) {
           // Create initial progress record
           await fetch('/api/user/progress', {
@@ -42,19 +43,18 @@ function AuthSyncContent() {
             }),
           });
         }
-        
+
         setSyncStatus('success');
-        
+
         // Redirect after successful sync
         const redirectTo = searchParams.get('redirect') || '/dashboard';
         setTimeout(() => {
           router.push(redirectTo);
         }, 1500);
-        
       } catch (error) {
         console.error('Error syncing user data:', error);
         setSyncStatus('error');
-        
+
         // Still redirect on error, but to dashboard
         setTimeout(() => {
           router.push('/dashboard');
@@ -72,7 +72,7 @@ function AuthSyncContent() {
       <div className="w-full max-w-md space-y-6 text-center">
         {/* Loading Animation */}
         <div className="mx-auto size-16 animate-spin rounded-full border-4 border-primary/20 border-t-primary" />
-        
+
         {/* Status Messages */}
         {syncStatus === 'syncing' && (
           <div className="space-y-2">
@@ -82,7 +82,7 @@ function AuthSyncContent() {
             </p>
           </div>
         )}
-        
+
         {syncStatus === 'success' && (
           <div className="space-y-2">
             <div className="mx-auto size-16 rounded-full bg-green-100 p-4 dark:bg-green-900/30">
@@ -98,7 +98,7 @@ function AuthSyncContent() {
             </p>
           </div>
         )}
-        
+
         {syncStatus === 'error' && (
           <div className="space-y-2">
             <div className="mx-auto size-16 rounded-full bg-orange-100 p-4 dark:bg-orange-900/30">
@@ -114,14 +114,14 @@ function AuthSyncContent() {
             </p>
           </div>
         )}
-        
+
         {/* Progress Indicator */}
         <div className="space-y-2">
           <div className="h-2 w-full rounded-full bg-muted">
-            <div 
+            <div
               className="h-2 rounded-full bg-primary transition-all duration-1000"
-              style={{ 
-                width: syncStatus === 'syncing' ? '60%' : '100%' 
+              style={{
+                width: syncStatus === 'syncing' ? '60%' : '100%',
               }}
             />
           </div>
@@ -138,11 +138,12 @@ function AuthSyncContent() {
 
 export default function AuthSyncPage() {
   return (
-    <Suspense fallback={
+    <Suspense fallback={(
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="mx-auto size-16 animate-spin rounded-full border-4 border-primary/20 border-t-primary" />
       </div>
-    }>
+    )}
+    >
       <AuthSyncContent />
     </Suspense>
   );

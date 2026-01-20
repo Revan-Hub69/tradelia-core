@@ -1,24 +1,25 @@
 /*
  * TRADELIA ICON BASE v2.0 - Enterprise 2026
- * 
+ *
  * Base component per tutte le icone SVG custom
  * Standard: 24x24 grid, stroke 1.75, optical balance
  */
 
-import { cn } from '@/utils/Helpers';
 import React from 'react';
 
-export interface IconBaseProps {
-  size?: 16 | 20 | 24;
-  strokeWidth?: 1.5 | 1.75 | 2;
-  state?: 'default' | 'active' | 'pressed' | 'disabled';
-  className?: string;
-  'aria-hidden'?: boolean;
-}
+import { cn } from '@/utils/Helpers';
 
-export interface IconProps extends IconBaseProps {
+export type IconBaseProps = {
+  'size'?: 16 | 20 | 24;
+  'strokeWidth'?: 1.5 | 1.75 | 2;
+  'state'?: 'default' | 'active' | 'pressed' | 'disabled';
+  'className'?: string;
+  'aria-hidden'?: boolean;
+};
+
+export type IconProps = {
   children: React.ReactNode;
-}
+} & IconBaseProps;
 
 export const IconBase: React.FC<IconProps> = ({
   size = 20,
@@ -51,7 +52,7 @@ export const IconBase: React.FC<IconProps> = ({
           'scale-95 opacity-90': state === 'pressed',
           'scale-100 opacity-40': state === 'disabled',
         },
-        className
+        className,
       )}
     >
       {children}

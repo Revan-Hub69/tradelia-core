@@ -1,9 +1,9 @@
 'use client';
 
+import { Award, BarChart3, Calendar, Clock, Target, TrendingUp } from 'lucide-react';
 import React from 'react';
-import { TrendingUp, Target, Calendar, Award, BarChart3, Clock } from 'lucide-react';
 
-import type { ProgressData, LearningPath } from './types';
+import type { LearningPath, ProgressData } from './types';
 
 type PremiumDashboardProps = {
   userProgress: ProgressData;
@@ -13,7 +13,7 @@ type PremiumDashboardProps = {
 
 /**
  * PremiumDashboard - Enhanced analytics and features for premium users
- * 
+ *
  * Features:
  * - Advanced analytics dashboard
  * - Detailed progress insights
@@ -65,7 +65,10 @@ export const PremiumDashboard: React.FC<PremiumDashboardProps> = ({
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Progresso Medio</p>
-              <p className="text-2xl font-bold">{Math.round(averageProgress)}%</p>
+              <p className="text-2xl font-bold">
+                {Math.round(averageProgress)}
+                %
+              </p>
             </div>
           </div>
         </div>
@@ -91,7 +94,10 @@ export const PremiumDashboard: React.FC<PremiumDashboardProps> = ({
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Obiettivo Settimanale</p>
-              <p className="text-2xl font-bold">{Math.round(weeklyProgress)}%</p>
+              <p className="text-2xl font-bold">
+                {Math.round(weeklyProgress)}
+                %
+              </p>
             </div>
           </div>
         </div>
@@ -104,7 +110,10 @@ export const PremiumDashboard: React.FC<PremiumDashboardProps> = ({
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Tempo di Studio</p>
-              <p className="text-2xl font-bold">{Math.round(totalStudyTime / 60)}h</p>
+              <p className="text-2xl font-bold">
+                {Math.round(totalStudyTime / 60)}
+                h
+              </p>
             </div>
           </div>
         </div>
@@ -116,22 +125,26 @@ export const PremiumDashboard: React.FC<PremiumDashboardProps> = ({
           <BarChart3 className="size-5 text-primary" />
           <h3 className="text-lg font-semibold">Attività Settimanale</h3>
         </div>
-        
-        <div className="flex items-end justify-between gap-2 h-32">
+
+        <div className="flex h-32 items-end justify-between gap-2">
           {weeklyStats.map((stat, index) => (
-            <div key={index} className="flex flex-col items-center gap-2 flex-1">
-              <div className="relative w-full bg-gray-200 rounded-t dark:bg-gray-700">
-                <div 
-                  className="bg-gradient-to-t from-primary to-primary/70 rounded-t transition-all duration-500"
-                  style={{ 
+            <div key={index} className="flex flex-1 flex-col items-center gap-2">
+              <div className="relative w-full rounded-t bg-gray-200 dark:bg-gray-700">
+                <div
+                  className="rounded-t bg-gradient-to-t from-primary to-primary/70 transition-all duration-500"
+                  style={{
                     height: `${(stat.minutes / maxMinutes) * 100}px`,
-                    minHeight: stat.minutes > 0 ? '4px' : '0px'
+                    minHeight: stat.minutes > 0 ? '4px' : '0px',
                   }}
-                ></div>
+                >
+                </div>
               </div>
               <div className="text-center">
                 <p className="text-xs font-medium">{stat.day}</p>
-                <p className="text-xs text-muted-foreground">{stat.minutes}m</p>
+                <p className="text-xs text-muted-foreground">
+                  {stat.minutes}
+                  m
+                </p>
               </div>
             </div>
           ))}
@@ -165,11 +178,19 @@ export const PremiumDashboard: React.FC<PremiumDashboardProps> = ({
           <div className="space-y-3">
             <div className="flex justify-between">
               <span className="text-sm">Streak corrente</span>
-              <span className="font-medium">{userProgress.currentStreak} giorni</span>
+              <span className="font-medium">
+                {userProgress.currentStreak}
+                {' '}
+                giorni
+              </span>
             </div>
             <div className="flex justify-between">
               <span className="text-sm">Streak più lungo</span>
-              <span className="font-medium">{userProgress.longestStreak || 0} giorni</span>
+              <span className="font-medium">
+                {userProgress.longestStreak || 0}
+                {' '}
+                giorni
+              </span>
             </div>
             <div className="flex justify-between">
               <span className="text-sm">Giorni attivi questo mese</span>
@@ -194,7 +215,7 @@ export const PremiumDashboard: React.FC<PremiumDashboardProps> = ({
               </p>
             </div>
           </div>
-          
+
           <div className="flex items-start gap-3 rounded-lg bg-amber-50 p-3 dark:bg-amber-950">
             <div className="rounded-full bg-amber-100 p-1 dark:bg-amber-900">
               <Target className="size-3 text-amber-600 dark:text-amber-400" />

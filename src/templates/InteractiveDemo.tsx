@@ -11,7 +11,7 @@ type CognitiveStyle = 'analogical' | 'procedural' | 'conceptual';
 
 /**
  * Interactive Demo 2026 - Research-Based Cognitive Approaches
- * 
+ *
  * Based on Adaptive Communication Styles Research 2026:
  * - Shows same crypto concept (Bitcoin) in 3 cognitive approaches
  * - Demonstrates cognitive flexibility and style switching
@@ -22,23 +22,23 @@ type CognitiveStyle = 'analogical' | 'procedural' | 'conceptual';
  * Cognitive Style definitions based on research
  */
 const getCognitiveStyles = (t: any) => ({
-  analogical: { 
-    label: t('cognitive_analogical'), 
+  analogical: {
+    label: t('cognitive_analogical'),
     desc: t('cognitive_analogical_desc'),
     icon: '🎭',
-    process: 'Analogical mapping'
+    process: 'Analogical mapping',
   },
-  procedural: { 
-    label: t('cognitive_procedural'), 
+  procedural: {
+    label: t('cognitive_procedural'),
     desc: t('cognitive_procedural_desc'),
-    icon: '🔧', 
-    process: 'Sequential learning'
+    icon: '🔧',
+    process: 'Sequential learning',
   },
-  conceptual: { 
-    label: t('cognitive_conceptual'), 
+  conceptual: {
+    label: t('cognitive_conceptual'),
     desc: t('cognitive_conceptual_desc'),
     icon: '📚',
-    process: 'Structured understanding'
+    process: 'Structured understanding',
   },
 });
 
@@ -56,7 +56,7 @@ const getLessonContent = (t: any) => ({
       { id: 'c', text: t('lesson_analogical_option_c') },
     ],
     correct: 'a',
-    visual: '🪙 → 💻 → 🌐'
+    visual: '🪙 → 💻 → 🌐',
   },
   procedural: {
     title: t('lesson_title'),
@@ -68,7 +68,7 @@ const getLessonContent = (t: any) => ({
       { id: 'c', text: t('lesson_procedural_option_c') },
     ],
     correct: 'b',
-    visual: '👤 → 🌐 → 👤'
+    visual: '👤 → 🌐 → 👤',
   },
   conceptual: {
     title: t('lesson_title'),
@@ -80,7 +80,7 @@ const getLessonContent = (t: any) => ({
       { id: 'c', text: t('lesson_conceptual_option_c') },
     ],
     correct: 'a',
-    visual: '⛓️ → 🔐 → ✅'
+    visual: '⛓️ → 🔐 → ✅',
   },
 });
 
@@ -116,7 +116,7 @@ export const InteractiveDemo = () => {
   const handleAnswer = (selectedAnswer: string) => {
     setAnswer(selectedAnswer);
     setStep('result');
-    
+
     // Track explored style
     const newExploredStyles = new Set(exploredStyles);
     newExploredStyles.add(cognitiveStyle);
@@ -135,7 +135,7 @@ export const InteractiveDemo = () => {
   const tryAnotherStyle = () => {
     const unexploredStyles = (['analogical', 'procedural', 'conceptual'] as CognitiveStyle[])
       .filter(style => !exploredStyles.has(style));
-    
+
     if (unexploredStyles.length > 0) {
       setCognitiveStyle(unexploredStyles[0]!);
       setStep('lesson');
@@ -174,16 +174,18 @@ export const InteractiveDemo = () => {
                         <span className="text-sm font-bold text-primary-foreground">T</span>
                       </div>
                       <span className="text-sm font-semibold">
-                        {step === 'cognitive-select' 
-                          ? t('welcome') 
-                          : `${cognitiveStyles[cognitiveStyle].icon} ${cognitiveStyles[cognitiveStyle].label}`
-                        }
+                        {step === 'cognitive-select'
+                          ? t('welcome')
+                          : `${cognitiveStyles[cognitiveStyle].icon} ${cognitiveStyles[cognitiveStyle].label}`}
                       </span>
                     </div>
                     {step !== 'cognitive-select' && (
                       <div className="rounded-full bg-accent/20 px-2 py-1">
                         <span className="text-xs font-medium text-accent">
-                          +{currentReward.xp} XP
+                          +
+                          {currentReward.xp}
+                          {' '}
+                          XP
                         </span>
                       </div>
                     )}
@@ -212,12 +214,13 @@ export const InteractiveDemo = () => {
                           key={style}
                           className={cn(
                             'size-2 rounded-full transition-colors',
-                            exploredStyles.has(style) ? 'bg-accent' : 'bg-muted'
+                            exploredStyles.has(style) ? 'bg-accent' : 'bg-muted',
                           )}
                         />
                       ))}
                       <span className="ml-2 text-xs text-muted-foreground">
-                        {exploredStyles.size}/3 approcci
+                        {exploredStyles.size}
+                        /3 approcci
                       </span>
                     </div>
                   )}
@@ -237,12 +240,12 @@ export const InteractiveDemo = () => {
                             onClick={() => handleCognitiveSelect(key as CognitiveStyle)}
                             className="w-full rounded-lg border border-border bg-background p-3 text-left transition-colors hover:border-primary hover:bg-primary/5"
                           >
-                            <div className="flex items-center gap-2 mb-1">
+                            <div className="mb-1 flex items-center gap-2">
                               <span className="text-lg">{style.icon}</span>
                               <span className="text-sm font-medium">{style.label}</span>
                             </div>
                             <div className="text-xs text-muted-foreground">{style.desc}</div>
-                            <div className="text-xs text-muted-foreground/70 mt-1">
+                            <div className="mt-1 text-xs text-muted-foreground/70">
                               {style.process}
                             </div>
                           </button>
@@ -253,7 +256,7 @@ export const InteractiveDemo = () => {
                     {step === 'lesson' && (
                       <div>
                         <div className="mb-3 text-center">
-                          <div className="text-2xl mb-2">{currentLesson.visual}</div>
+                          <div className="mb-2 text-2xl">{currentLesson.visual}</div>
                           <h3 className="text-base font-semibold">{currentLesson.title}</h3>
                         </div>
                         <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
@@ -329,16 +332,19 @@ export const InteractiveDemo = () => {
                       <div className="text-center">
                         <div className="mb-4 rounded-lg bg-accent/10 p-4">
                           <div className="mb-2 text-2xl font-bold text-accent">
-                            +{currentReward.xp} XP
+                            +
+                            {currentReward.xp}
+                            {' '}
+                            XP
                           </div>
                           <div className="text-sm font-medium">{t('approach_unlocked')}</div>
                           <div className="text-sm font-semibold text-accent">{currentReward.unlock}</div>
                         </div>
-                        
+
                         {/* Cognitive Flexibility Achievement */}
                         {exploredStyles.size === 3 && (
-                          <div className="mb-4 rounded-lg bg-green-500/10 p-3 border border-green-200">
-                            <div className="text-lg mb-1">🧠✨</div>
+                          <div className="mb-4 rounded-lg border border-green-200 bg-green-500/10 p-3">
+                            <div className="mb-1 text-lg">🧠✨</div>
                             <div className="text-sm font-semibold text-green-700">
                               Flessibilità Cognitiva Raggiunta!
                             </div>
@@ -347,11 +353,11 @@ export const InteractiveDemo = () => {
                             </div>
                           </div>
                         )}
-                        
+
                         <p className="mb-4 text-xs text-muted-foreground">
                           {exploredStyles.size < 3 ? currentReward.next : t('cognitive_mastery_desc')}
                         </p>
-                        
+
                         <div className="space-y-2">
                           <Link
                             href="/sign-up"
@@ -359,24 +365,26 @@ export const InteractiveDemo = () => {
                           >
                             {t('continue_free')}
                           </Link>
-                          
-                          {exploredStyles.size < 3 ? (
-                            <button
-                              type="button"
-                              onClick={tryAnotherStyle}
-                              className="w-full py-2 text-xs text-primary hover:underline"
-                            >
-                              {t('try_another_approach')}
-                            </button>
-                          ) : (
-                            <button
-                              type="button"
-                              onClick={restart}
-                              className="w-full py-2 text-xs text-muted-foreground"
-                            >
-                              {t('restart_demo')}
-                            </button>
-                          )}
+
+                          {exploredStyles.size < 3
+                            ? (
+                                <button
+                                  type="button"
+                                  onClick={tryAnotherStyle}
+                                  className="w-full py-2 text-xs text-primary hover:underline"
+                                >
+                                  {t('try_another_approach')}
+                                </button>
+                              )
+                            : (
+                                <button
+                                  type="button"
+                                  onClick={restart}
+                                  className="w-full py-2 text-xs text-muted-foreground"
+                                >
+                                  {t('restart_demo')}
+                                </button>
+                              )}
                         </div>
                       </div>
                     )}

@@ -1,6 +1,6 @@
 /**
  * MICRO-MOMENTS ANIMATIONS - Enterprise 2026
- * 
+ *
  * Animazioni per i micro-momenti di successo
  * Basate su ricerca UX educativa e best practice 2026
  */
@@ -48,11 +48,21 @@
 }
 
 @keyframes celebrationBounce {
-  0% { transform: scale(1) rotate(0deg); }
-  25% { transform: scale(1.1) rotate(2deg); }
-  50% { transform: scale(1.05) rotate(-1deg); }
-  75% { transform: scale(1.02) rotate(0.5deg); }
-  100% { transform: scale(1) rotate(0deg); }
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.1) rotate(2deg);
+  }
+  50% {
+    transform: scale(1.05) rotate(-1deg);
+  }
+  75% {
+    transform: scale(1.02) rotate(0.5deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
 }
 
 /* Pulse per streak e milestone */
@@ -61,11 +71,12 @@
 }
 
 @keyframes streakPulse {
-  0%, 100% { 
+  0%,
+  100% {
     transform: scale(1);
     box-shadow: 0 0 0 0 rgba(251, 146, 60, 0.4);
   }
-  50% { 
+  50% {
     transform: scale(1.02);
     box-shadow: 0 0 0 8px rgba(251, 146, 60, 0);
   }
@@ -101,24 +112,24 @@
 }
 
 @keyframes achievementCelebration {
-  0% { 
+  0% {
     transform: scale(0.5) rotate(-10deg);
     opacity: 0;
   }
-  15% { 
+  15% {
     transform: scale(1.2) rotate(5deg);
     opacity: 1;
   }
-  30% { 
+  30% {
     transform: scale(0.95) rotate(-2deg);
   }
-  45% { 
+  45% {
     transform: scale(1.05) rotate(1deg);
   }
-  60% { 
+  60% {
     transform: scale(1) rotate(0deg);
   }
-  100% { 
+  100% {
     transform: scale(1) rotate(0deg);
     opacity: 1;
   }
@@ -150,7 +161,8 @@
 }
 
 @keyframes understandingGlow {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     filter: brightness(1);
   }
@@ -165,15 +177,15 @@
   .animate-in {
     animation-duration: 0.3s;
   }
-  
+
   .animate-out {
     animation-duration: 0.2s;
   }
-  
+
   .celebration-bounce {
     animation-duration: 0.4s;
   }
-  
+
   .achievement-celebration {
     animation-duration: 2.5s;
   }
@@ -191,13 +203,13 @@
   .understanding-glow {
     animation: none !important;
   }
-  
+
   /* Fallback per utenti con motion ridotto */
   .animate-in {
     opacity: 1;
     transform: none;
   }
-  
+
   .animate-out {
     opacity: 0;
     transform: none;
@@ -217,7 +229,7 @@
   .streak-pulse {
     box-shadow: 0 0 0 0 rgba(251, 146, 60, 0.6);
   }
-  
+
   .understanding-glow {
     filter: brightness(1) drop-shadow(0 0 8px rgba(99, 102, 241, 0.6));
   }
@@ -271,7 +283,7 @@
     top: 1rem;
     transform: none;
   }
-  
+
   .micro-moment-lesson {
     left: 1rem;
     right: 1rem;

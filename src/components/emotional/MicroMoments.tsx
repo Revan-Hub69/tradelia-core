@@ -1,12 +1,12 @@
 /**
  * SUCCESS MICRO-MOMENTS SYSTEM v2.0 - Enterprise 2026
- * 
+ *
  * Sistema di micro-momenti emotivi per celebrare i successi dell'utente
  * Basato su ricerca UX 2026 e best practice da:
  * - Apple Human Interface Guidelines (celebrazioni discrete)
  * - Microsoft Fluent Design (emotional resonance)
  * - Educational psychology (positive reinforcement)
- * 
+ *
  * Principi chiave:
  * - Celebrazione appropriata al contesto educativo
  * - Rinforzo positivo senza essere eccessivo
@@ -17,32 +17,33 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+
 import { cn } from '../../utils/Helpers';
-import { CompleteAnimation, SuccessAnimation } from '../motion/SemanticAnimations';
 import { PressAnticipatory } from '../motion/AnticipatoryFeedback';
+import { CompleteAnimation, SuccessAnimation } from '../motion/SemanticAnimations';
 
 // Tipi per i micro-momenti
-export type MicroMomentType = 
-  | 'lesson_complete'     // Lezione completata
-  | 'streak_saved'        // Streak mantenuto
-  | 'progress_milestone'  // Milestone raggiunto
-  | 'xp_gained'          // XP guadagnato
-  | 'path_unlocked'      // Nuovo percorso sbloccato
+export type MicroMomentType =
+  | 'lesson_complete' // Lezione completata
+  | 'streak_saved' // Streak mantenuto
+  | 'progress_milestone' // Milestone raggiunto
+  | 'xp_gained' // XP guadagnato
+  | 'path_unlocked' // Nuovo percorso sbloccato
   | 'achievement_earned' // Achievement ottenuto
-  | 'daily_goal_met'     // Obiettivo giornaliero raggiunto
-  | 'concept_mastered';  // Concetto padroneggiato
+  | 'daily_goal_met' // Obiettivo giornaliero raggiunto
+  | 'concept_mastered'; // Concetto padroneggiato
 
 export type MicroMomentIntensity = 'subtle' | 'normal' | 'celebration';
 
-export type MicroMomentContext = 
-  | 'lesson'      // Durante una lezione
-  | 'dashboard'   // Nella dashboard
-  | 'progress'    // Nella pagina progressi
-  | 'profile'     // Nel profilo
-  | 'global';     // Notifica globale
+export type MicroMomentContext =
+  | 'lesson' // Durante una lezione
+  | 'dashboard' // Nella dashboard
+  | 'progress' // Nella pagina progressi
+  | 'profile' // Nel profilo
+  | 'global'; // Notifica globale
 
 // Props per il componente principale
-interface MicroMomentProps {
+type MicroMomentProps = {
   type: MicroMomentType;
   intensity?: MicroMomentIntensity;
   context?: MicroMomentContext;
@@ -56,7 +57,7 @@ interface MicroMomentProps {
   };
   onComplete?: () => void;
   className?: string;
-}
+};
 
 /**
  * Configurazione dei micro-momenti basata su ricerca UX educativa 2026
@@ -149,9 +150,9 @@ export const MicroMoment: React.FC<MicroMomentProps> = ({
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
-  
+
   const config = microMomentConfig[type];
-  
+
   // Interpola i dati nel testo
   const interpolateText = (text: string) => {
     return text
@@ -167,7 +168,7 @@ export const MicroMoment: React.FC<MicroMomentProps> = ({
   useEffect(() => {
     setIsVisible(true);
     setIsAnimating(true);
-    
+
     const timer = setTimeout(() => {
       setIsAnimating(false);
       setTimeout(() => {
@@ -179,22 +180,24 @@ export const MicroMoment: React.FC<MicroMomentProps> = ({
     return () => clearTimeout(timer);
   }, [config.duration, onComplete]);
 
-  if (!isVisible) return null;
+  if (!isVisible) {
+    return null;
+  }
 
   const containerClasses = cn(
     // Base styles
     'fixed z-50 pointer-events-none',
-    
+
     // Positioning based on context
     context === 'global' && 'top-4 right-4',
     context === 'lesson' && 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
     context === 'dashboard' && 'top-6 right-6',
     context === 'progress' && 'bottom-6 right-6',
     context === 'profile' && 'top-4 left-4',
-    
+
     // Animation classes
     isAnimating ? 'animate-in' : 'animate-out',
-    
+
     className,
   );
 
@@ -202,7 +205,7 @@ export const MicroMoment: React.FC<MicroMomentProps> = ({
     // Base card styles
     'glass-surface rounded-lg p-4 shadow-lg border',
     'backdrop-blur-md bg-white/10 dark:bg-black/10',
-    
+
     // Color theming based on micro-moment type
     config.color === 'emerald' && 'border-emerald-200/30 bg-emerald-50/10',
     config.color === 'orange' && 'border-orange-200/30 bg-orange-50/10',
@@ -212,7 +215,7 @@ export const MicroMoment: React.FC<MicroMomentProps> = ({
     config.color === 'gold' && 'border-yellow-200/30 bg-yellow-50/10',
     config.color === 'green' && 'border-green-200/30 bg-green-50/10',
     config.color === 'indigo' && 'border-indigo-200/30 bg-indigo-50/10',
-    
+
     // Intensity variations
     intensity === 'subtle' && 'scale-95 opacity-80',
     intensity === 'celebration' && 'scale-105 shadow-xl',
@@ -224,18 +227,18 @@ export const MicroMoment: React.FC<MicroMomentProps> = ({
         <div className={cardClasses}>
           <div className="flex items-start gap-3">
             {/* Icon with animation */}
-            <div className="text-2xl flex-shrink-0">
+            <div className="shrink-0 text-2xl">
               <SuccessAnimation context="feedback" prominent={intensity === 'celebration'}>
                 <span className="block">{config.icon}</span>
               </SuccessAnimation>
             </div>
-            
+
             {/* Content */}
-            <div className="flex-1 min-w-0">
-              <div className="font-semibold text-sm text-foreground">
+            <div className="min-w-0 flex-1">
+              <div className="text-sm font-semibold text-foreground">
                 {interpolateText(config.title)}
               </div>
-              <div className="text-xs text-muted-foreground mt-1">
+              <div className="mt-1 text-xs text-muted-foreground">
                 {interpolateText(config.subtitle)}
               </div>
             </div>
@@ -264,7 +267,7 @@ export const useMicroMoments = () => {
       intensity?: MicroMomentIntensity;
       context?: MicroMomentContext;
       data?: any;
-    } = {}
+    } = {},
   ) => {
     const id = `${type}-${Date.now()}`;
     const newMoment = {
@@ -392,33 +395,33 @@ export const MicroMomentTester: React.FC = () => {
       label: 'Lezione Completata',
       action: () => triggerMicroMoment('lesson_complete', {
         intensity: 'celebration',
-        data: { lessonTitle: 'Blockchain Basics', xp: 50 }
-      })
+        data: { lessonTitle: 'Blockchain Basics', xp: 50 },
+      }),
     },
     {
       label: 'Streak Salvato',
       action: () => triggerMicroMoment('streak_saved', {
-        data: { streakDays: 7 }
-      })
+        data: { streakDays: 7 },
+      }),
     },
     {
       label: 'XP Guadagnato',
       action: () => triggerMicroMoment('xp_gained', {
         intensity: 'subtle',
-        data: { xp: 25 }
-      })
+        data: { xp: 25 },
+      }),
     },
     {
       label: 'Achievement',
       action: () => triggerMicroMoment('achievement_earned', {
         intensity: 'celebration',
-        data: { achievementName: 'First Week Complete' }
-      })
+        data: { achievementName: 'First Week Complete' },
+      }),
     },
   ];
 
   return (
-    <div className="space-y-4 p-6 rounded-lg border bg-card">
+    <div className="space-y-4 rounded-lg border bg-card p-6">
       <h3 className="text-lg font-semibold">Test Micro-Moments</h3>
       <div className="grid grid-cols-2 gap-2">
         {testMoments.map((test, index) => (
@@ -427,7 +430,7 @@ export const MicroMomentTester: React.FC = () => {
             intensity="normal"
             hapticPattern="light"
             onPress={test.action}
-            className="px-3 py-2 bg-primary text-primary-foreground rounded text-sm text-center cursor-pointer"
+            className="cursor-pointer rounded bg-primary px-3 py-2 text-center text-sm text-primary-foreground"
           >
             {test.label}
           </PressAnticipatory>

@@ -33,13 +33,18 @@ export function LevelIndicator({
     <div className={cn('flex flex-col gap-1.5', className)}>
       <div className={cn('flex items-center justify-between', sizeClasses[size])}>
         <span className="font-medium">
-          <span className="tabular-nums">Lv.{level}</span>
+          <span className="tabular-nums">
+            Lv.
+            {level}
+          </span>
           {' '}
           {levelName}
         </span>
         {showProgress && (
           <span className="tabular-nums text-muted-foreground">
-            {currentXP.toLocaleString('it-IT')}/{xpForNextLevel.toLocaleString('it-IT')}
+            {currentXP.toLocaleString('it-IT')}
+            /
+            {xpForNextLevel.toLocaleString('it-IT')}
           </span>
         )}
       </div>

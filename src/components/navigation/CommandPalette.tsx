@@ -7,12 +7,10 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { useRouter } from '@/libs/i18nNavigation';
-import { cn } from '@/utils/Helpers';
+import React, { useEffect, useState } from 'react';
+
 import { DynamicIcon, type IconName } from '@/components/icons';
-import { getVisibleNavigationItems } from '@/data/navigation.config';
 import {
   Dialog,
   DialogContent,
@@ -20,6 +18,9 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { getVisibleNavigationItems } from '@/data/navigation.config';
+import { useRouter } from '@/libs/i18nNavigation';
+import { cn } from '@/utils/Helpers';
 
 type CommandPaletteProps = {
   className?: string;
@@ -87,9 +88,9 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ className }) => 
   ];
 
   // Filter commands based on search
-  const filteredCommands = commands.filter((command) =>
+  const filteredCommands = commands.filter(command =>
     command.label.toLowerCase().includes(search.toLowerCase())
-    || command.keywords.some((keyword) => keyword.includes(search.toLowerCase())),
+    || command.keywords.some(keyword => keyword.includes(search.toLowerCase())),
   );
 
   // Keyboard shortcuts
@@ -112,12 +113,12 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ className }) => 
       if (open) {
         if (e.key === 'ArrowDown') {
           e.preventDefault();
-          setSelectedIndex((prev) =>
+          setSelectedIndex(prev =>
             prev < filteredCommands.length - 1 ? prev + 1 : 0,
           );
         } else if (e.key === 'ArrowUp') {
           e.preventDefault();
-          setSelectedIndex((prev) =>
+          setSelectedIndex(prev =>
             prev > 0 ? prev - 1 : filteredCommands.length - 1,
           );
         } else if (e.key === 'Enter') {
@@ -163,8 +164,8 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ className }) => 
         )}
         aria-describedby="command-palette-description"
       >
-        <DialogHeader className="px-4 py-3 border-b border-border/20">
-          <DialogTitle className="text-sm font-medium text-left">
+        <DialogHeader className="border-b border-border/20 px-4 py-3">
+          <DialogTitle className="text-left text-sm font-medium">
             {t('command_palette_title')}
           </DialogTitle>
           <p id="command-palette-description" className="sr-only">
@@ -173,11 +174,11 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ className }) => 
         </DialogHeader>
 
         {/* Search Input */}
-        <div className="px-4 py-3 border-b border-border/20">
+        <div className="border-b border-border/20 px-4 py-3">
           <Input
             placeholder={t('command_palette_placeholder')}
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={e => setSearch(e.target.value)}
             className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
           />
         </div>
@@ -186,7 +187,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ className }) => 
         <div className="max-h-96 overflow-y-auto">
           {Object.entries(groupedCommands).map(([category, categoryCommands]) => (
             <div key={category} className="p-2">
-              <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              <div className="px-2 py-1 text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 {t(`command_category_${category}` as 'command_category_navigation')}
               </div>
 
@@ -212,21 +213,21 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ className }) => 
                       className="shrink-0"
                     />
 
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium truncate">
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate font-medium">
                         {command.label}
                       </div>
                       {command.description && (
-                        <div className="text-xs text-muted-foreground truncate">
+                        <div className="truncate text-xs text-muted-foreground">
                           {command.description}
                         </div>
                       )}
                     </div>
 
                     {/* Keyboard shortcut hint */}
-                    {command.keywords.find((k) => k.startsWith('alt+')) && (
-                      <div className="text-xs text-muted-foreground/60 bg-muted px-1.5 py-0.5 rounded">
-                        {command.keywords.find((k) => k.startsWith('alt+'))?.toUpperCase()}
+                    {command.keywords.find(k => k.startsWith('alt+')) && (
+                      <div className="rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground/60">
+                        {command.keywords.find(k => k.startsWith('alt+'))?.toUpperCase()}
                       </div>
                     )}
                   </button>
@@ -246,7 +247,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ className }) => 
         </div>
 
         {/* Footer */}
-        <div className="px-4 py-2 border-t border-border/20 bg-muted/20">
+        <div className="border-t border-border/20 bg-muted/20 px-4 py-2">
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <div className="flex items-center gap-4">
               <span>
@@ -266,7 +267,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ className }) => 
               </span>
             </div>
             <div>
-              <kbd className="px-1.5 py-0.5 bg-muted rounded text-xs">
+              <kbd className="rounded bg-muted px-1.5 py-0.5 text-xs">
                 {navigator.platform.includes('Mac') ? '⌘' : 'Ctrl'}
                 +K
               </kbd>

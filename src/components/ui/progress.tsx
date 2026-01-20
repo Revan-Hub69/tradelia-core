@@ -42,7 +42,8 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
         </div>
         {showLabel && (
           <span className="mt-1 block text-xs text-muted-foreground">
-            {clampedValue}%
+            {clampedValue}
+            %
           </span>
         )}
       </div>

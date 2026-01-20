@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 type ButtonVariant = 'primary' | 'secondary' | 'success' | 'warning' | 'ghost';
 type ButtonSize = 'sm' | 'md' | 'lg' | 'xl';
@@ -99,31 +99,35 @@ export const PremiumButton = ({
 
   const buttonVariants = {
     initial: { scale: 1 },
-    hover: { 
+    hover: {
       scale: disabled ? 1 : 1.02,
       transition: { type: 'spring' as const, stiffness: 400, damping: 25 },
     },
-    tap: { 
+    tap: {
       scale: disabled ? 1 : 0.98,
       transition: { duration: 0.1 },
     },
   };
 
   const glowVariants = {
-    animate: glow ? {
-      boxShadow: [
-        `0 0 0 0 ${variantStyles.glow}00`,
-        `0 0 0 8px ${variantStyles.glow}20`,
-        `0 0 0 0 ${variantStyles.glow}00`,
-      ],
-    } : {},
+    animate: glow
+      ? {
+          boxShadow: [
+            `0 0 0 0 ${variantStyles.glow}00`,
+            `0 0 0 8px ${variantStyles.glow}20`,
+            `0 0 0 0 ${variantStyles.glow}00`,
+          ],
+        }
+      : {},
   };
 
   const pulseVariants = {
-    animate: pulse ? {
-      scale: [1, 1.05, 1],
-      opacity: [1, 0.8, 1],
-    } : {},
+    animate: pulse
+      ? {
+          scale: [1, 1.05, 1],
+          opacity: [1, 0.8, 1],
+        }
+      : {},
   };
 
   return (
@@ -131,7 +135,7 @@ export const PremiumButton = ({
       {/* Glow Effect */}
       {glow && !disabled && (
         <motion.div
-          className="absolute inset-0 rounded-xl blur-lg opacity-30"
+          className="absolute inset-0 rounded-xl opacity-30 blur-lg"
           style={{ backgroundColor: variantStyles.glow }}
           variants={glowVariants}
           animate="animate"
@@ -146,11 +150,11 @@ export const PremiumButton = ({
           ${sizeStyles.padding} ${sizeStyles.text} ${sizeStyles.height}
           ${variantStyles.bg} ${variantStyles.text} ${variantStyles.shadow}
           border ${variantStyles.border}
-          rounded-xl font-semibold
-          transition-all duration-300
-          focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-          disabled:opacity-50 disabled:cursor-not-allowed
-          overflow-hidden
+          overflow-hidden rounded-xl
+          font-semibold transition-all
+          duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500
+          focus:ring-offset-2 disabled:cursor-not-allowed
+          disabled:opacity-50
           ${className}
         `}
         variants={buttonVariants}
@@ -168,7 +172,7 @@ export const PremiumButton = ({
             animate={{ opacity: 1 }}
           >
             <motion.div
-              className="w-5 h-5 border-2 border-current border-t-transparent rounded-full"
+              className="size-5 rounded-full border-2 border-current border-t-transparent"
               animate={{ rotate: 360 }}
               transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
             />
@@ -182,19 +186,19 @@ export const PremiumButton = ({
         >
           {icon && iconPosition === 'left' && (
             <motion.span
-              className="flex-shrink-0"
+              className="shrink-0"
               animate={{ rotate: disabled ? 0 : [0, 10, -10, 0] }}
               transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
             >
               {icon}
             </motion.span>
           )}
-          
+
           <span className="font-semibold">{children}</span>
-          
+
           {icon && iconPosition === 'right' && (
             <motion.span
-              className="flex-shrink-0"
+              className="shrink-0"
               animate={{ rotate: disabled ? 0 : [0, 10, -10, 0] }}
               transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
             >
@@ -208,9 +212,9 @@ export const PremiumButton = ({
           <motion.div
             className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
             animate={{ x: ['-100%', '200%'] }}
-            transition={{ 
-              duration: 2, 
-              repeat: Infinity, 
+            transition={{
+              duration: 2,
+              repeat: Infinity,
               repeatDelay: 3,
               ease: 'linear',
             }}

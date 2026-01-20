@@ -1,6 +1,6 @@
 /*
  * TRADELIA DESIGN TOKENS v2.0 - Enterprise 2026
- * 
+ *
  * Sistema unificato per navigation shell enterprise
  * Basato su best practice Apple/Linear/Stripe
  */
@@ -13,7 +13,7 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-spring: cubic-bezier(0.68, -0.55, 0.265, 1.55);
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-  
+
   /* SIGNATURE MOTION PERSONALITY - Tradelia 2026 */
   /* Importato da motion-tokens.css per sistema completo */
 
@@ -77,17 +77,17 @@
   --destructive-rgb: 239, 68, 68; /* Red-500 */
 
   /* SIGNATURE TRADELIA TOKENS - 2026 Visual Fingerprint */
-  
+
   /* Signature Glass Treatments */
   --glass-tradelia-bg: rgba(255, 255, 255, 0.1);
   --glass-tradelia-border: rgba(255, 255, 255, 0.2);
   --glass-tradelia-highlight: rgba(var(--primary-rgb), 0.1);
   --glass-tradelia-shadow: 0 12px 48px rgba(var(--primary-rgb), 0.15);
-  
+
   /* Micro-grain texture pattern */
-  --texture-grain: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0);
+  --texture-grain: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.15) 1px, transparent 0);
   --texture-size: 20px 20px;
-  
+
   /* Signature Motion Personality */
   --motion-tradelia-micro: 120ms;
   --motion-tradelia-quick: 200ms;
@@ -97,16 +97,16 @@
   --ease-tradelia: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-tradelia-gentle: cubic-bezier(0.25, 0.46, 0.45, 0.94);
   --ease-tradelia-confident: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  
+
   /* Visual Hierarchy Weights */
   --weight-primary-bg: var(--glass-tradelia-bg);
   --weight-primary-border: 2px solid rgba(var(--primary-rgb), 0.3);
   --weight-primary-shadow: var(--glass-tradelia-shadow);
-  
+
   --weight-secondary-bg: rgba(255, 255, 255, 0.08);
   --weight-secondary-border: 1px solid rgba(255, 255, 255, 0.1);
   --weight-secondary-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  
+
   --weight-tertiary-bg: rgba(255, 255, 255, 0.05);
   --weight-tertiary-border: 1px solid rgba(255, 255, 255, 0.05);
   --weight-tertiary-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
@@ -157,13 +157,13 @@
   /* Dark mode RGB values */
   --primary-rgb: 96, 165, 250; /* Blue-400 for dark mode */
   --accent-rgb: 52, 211, 153; /* Emerald-400 for dark mode */
-  
+
   /* Dark mode signature tokens */
   --glass-tradelia-bg: rgba(15, 23, 42, 0.1);
   --glass-tradelia-border: rgba(255, 255, 255, 0.1);
   --glass-tradelia-highlight: rgba(var(--primary-rgb), 0.15);
   --glass-tradelia-shadow: 0 12px 48px rgba(var(--primary-rgb), 0.15);
-  --texture-grain: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.1) 1px, transparent 0);
+  --texture-grain: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.1) 1px, transparent 0);
 }
 
 /* REDUCED MOTION - Accessibility compliance */
@@ -229,13 +229,13 @@
   background: var(--glass-tradelia-bg);
   backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid var(--glass-tradelia-border);
-  
+
   /* Signature micro-grain texture */
   background-image: var(--texture-grain);
   background-size: var(--texture-size);
-  
+
   /* Signature highlight line */
-  box-shadow: 
+  box-shadow:
     inset 0 1px 0 var(--glass-tradelia-highlight),
     var(--glass-tradelia-shadow);
 }

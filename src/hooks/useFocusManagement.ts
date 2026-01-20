@@ -1,11 +1,11 @@
 /*
  * FOCUS MANAGEMENT - Enterprise 2026
- * 
+ *
  * Sistema completo per gestione focus keyboard e screen reader
  * Standard WCAG AAA + best practice enterprise
  */
 
-import { useEffect, useRef, useCallback } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 // Focus trap per modal/dropdown
 export const useFocusTrap = (isActive: boolean) => {
@@ -13,14 +13,16 @@ export const useFocusTrap = (isActive: boolean) => {
   const previousFocusRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    if (!isActive || !containerRef.current) return;
+    if (!isActive || !containerRef.current) {
+      return;
+    }
 
     // Salva focus precedente
     previousFocusRef.current = document.activeElement as HTMLElement;
 
     // Trova elementi focusabili
     const focusableElements = containerRef.current.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
     );
 
     const firstElement = focusableElements[0] as HTMLElement;
@@ -30,7 +32,9 @@ export const useFocusTrap = (isActive: boolean) => {
     firstElement?.focus();
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab') return;
+      if (e.key !== 'Tab') {
+        return;
+      }
 
       if (e.shiftKey) {
         // Shift + Tab
@@ -64,14 +68,14 @@ export const useFocusTrap = (isActive: boolean) => {
 // Roving tabindex per navigation
 export const useRovingTabindex = <T extends HTMLElement>(
   items: T[],
-  orientation: 'horizontal' | 'vertical' = 'horizontal'
+  orientation: 'horizontal' | 'vertical' = 'horizontal',
 ) => {
   const activeIndexRef = useRef(0);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     const { key } = e;
     const isHorizontal = orientation === 'horizontal';
-    
+
     let newIndex = activeIndexRef.current;
 
     switch (key) {
@@ -113,7 +117,7 @@ export const useRovingTabindex = <T extends HTMLElement>(
     activeIndexRef.current = activeIndex;
 
     return () => {
-      items.forEach(item => {
+      items.forEach((item) => {
         item.removeEventListener('keydown', handleKeyDown);
       });
     };
@@ -172,7 +176,9 @@ export const useAnnouncer = () => {
   const announcerRef = useRef<HTMLDivElement>(null);
 
   const announce = useCallback((message: string, priority: 'polite' | 'assertive' = 'polite') => {
-    if (!announcerRef.current) return;
+    if (!announcerRef.current) {
+      return;
+    }
 
     announcerRef.current.setAttribute('aria-live', priority);
     announcerRef.current.textContent = message;

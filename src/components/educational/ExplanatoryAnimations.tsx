@@ -15,8 +15,9 @@
  * - Context-aware educational micro-interactions
  */
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { motion, AnimatePresence, useAnimation } from 'framer-motion';
+import { AnimatePresence, motion, useAnimation } from 'framer-motion';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+
 import { useFocusMode } from './FocusMode';
 
 // ============================================================================

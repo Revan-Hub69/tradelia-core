@@ -9,7 +9,7 @@
  * - Live regions
  */
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 // ============================================================================
 // TYPES & INTERFACES
@@ -117,7 +117,9 @@ export const useAccessibility = () => {
 
   // Announce message to screen readers
   const announce = useCallback((message: string, priority: AnnouncementPriority = 'polite') => {
-    if (!liveRegionRef.current) return;
+    if (!liveRegionRef.current) {
+      return;
+    }
 
     liveRegionRef.current.setAttribute('aria-live', priority);
     liveRegionRef.current.textContent = message;
@@ -132,7 +134,9 @@ export const useAccessibility = () => {
 
   // Focus management
   const focusElement = useCallback((element: HTMLElement | null, options?: { preventScroll?: boolean }) => {
-    if (!element) return;
+    if (!element) {
+      return;
+    }
 
     // Store current focus in history
     const currentFocus = document.activeElement as HTMLElement;
@@ -154,7 +158,7 @@ export const useAccessibility = () => {
   // Focus trap for modals and overlays
   const createFocusTrap = useCallback((container: HTMLElement, options: FocusTrapOptions = {}) => {
     const focusableElements = container.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
     ) as NodeListOf<HTMLElement>;
 
     const firstElement = focusableElements[0];
@@ -207,7 +211,7 @@ export const useAccessibility = () => {
       if (options.allowOutsideClick) {
         document.removeEventListener('click', handleClickOutside);
       }
-      
+
       if (options.returnFocus) {
         focusElement(options.returnFocus);
       } else {
@@ -220,13 +224,17 @@ export const useAccessibility = () => {
   const getAccessibleLabel = useCallback((element: HTMLElement): string => {
     // Check aria-label
     const ariaLabel = element.getAttribute('aria-label');
-    if (ariaLabel) return ariaLabel;
+    if (ariaLabel) {
+      return ariaLabel;
+    }
 
     // Check aria-labelledby
     const labelledBy = element.getAttribute('aria-labelledby');
     if (labelledBy) {
       const labelElement = document.getElementById(labelledBy);
-      if (labelElement) return labelElement.textContent || '';
+      if (labelElement) {
+        return labelElement.textContent || '';
+      }
     }
 
     // Check associated label
@@ -234,7 +242,9 @@ export const useAccessibility = () => {
       const id = element.getAttribute('id');
       if (id) {
         const label = document.querySelector(`label[for="${id}"]`);
-        if (label) return label.textContent || '';
+        if (label) {
+          return label.textContent || '';
+        }
       }
     }
 
@@ -250,12 +260,12 @@ export const useAccessibility = () => {
   // Check if element is visible to screen readers
   const isVisibleToScreenReader = useCallback((element: HTMLElement): boolean => {
     const style = window.getComputedStyle(element);
-    
+
     return !(
-      style.display === 'none' ||
-      style.visibility === 'hidden' ||
-      element.getAttribute('aria-hidden') === 'true' ||
-      element.hasAttribute('hidden')
+      style.display === 'none'
+      || style.visibility === 'hidden'
+      || element.getAttribute('aria-hidden') === 'true'
+      || element.hasAttribute('hidden')
     );
   }, []);
 
@@ -274,8 +284,8 @@ export const useAccessibility = () => {
     ].join(', ');
 
     const elements = Array.from(container.querySelectorAll(focusableSelectors)) as HTMLElement[];
-    
-    return elements.filter(element => {
+
+    return elements.filter((element) => {
       return isVisibleToScreenReader(element) && element.offsetParent !== null;
     });
   }, [isVisibleToScreenReader]);
@@ -285,7 +295,7 @@ export const useAccessibility = () => {
     event: KeyboardEvent,
     elements: HTMLElement[],
     currentIndex: number,
-    orientation: 'horizontal' | 'vertical' | 'both' = 'both'
+    orientation: 'horizontal' | 'vertical' | 'both' = 'both',
   ) => {
     let newIndex = currentIndex;
 

@@ -26,7 +26,7 @@ type PasswordStrengthResult = {
 const RequirementItem = ({ met, text }: { met: boolean; text: string }) => {
   return (
     <div className="flex items-center gap-2">
-      <div className={`size-3 rounded-full flex items-center justify-center ${
+      <div className={`flex size-3 items-center justify-center rounded-full ${
         met
           ? 'bg-emerald-500 text-white'
           : 'bg-slate-200 dark:bg-slate-700'

@@ -1,9 +1,9 @@
 /*
  * ANTICIPATORY FEEDBACK CSS v2.0 - Enterprise 2026
- * 
+ *
  * Sistema CSS per feedback anticipatorio che guida le azioni dell'utente
  * Implementa micro-delays (40-60ms) per premium feel
- * 
+ *
  * Basato su ricerca UX 2026:
  * - Feedback che anticipa l'azione, non la segue
  * - Haptic-like visual feedback senza haptic reale
@@ -61,7 +61,7 @@
 /* HOVER ANTICIPATORY FEEDBACK */
 
 .feedback-hover {
-  transition: 
+  transition:
     transform var(--hover-feedback-duration) var(--hover-feedback-ease),
     box-shadow var(--hover-feedback-duration) var(--hover-feedback-ease),
     background-color var(--hover-feedback-duration) var(--hover-feedback-ease);
@@ -85,7 +85,7 @@
 /* FOCUS ANTICIPATORY FEEDBACK */
 
 .feedback-focus {
-  transition: 
+  transition:
     box-shadow var(--motion-focus-duration) var(--motion-focus-ease),
     border-color var(--motion-focus-duration) var(--motion-focus-ease);
   transition-delay: var(--motion-focus-delay);
@@ -140,9 +140,16 @@
 }
 
 @keyframes haptic-warning-shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-2px); }
-  75% { transform: translateX(2px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  75% {
+    transform: translateX(2px);
+  }
 }
 
 /* Error haptic pattern */
@@ -152,11 +159,22 @@
 }
 
 @keyframes haptic-error-shake {
-  0%, 100% { transform: translateX(0) scale(1); }
-  20% { transform: translateX(-3px) scale(0.98); }
-  40% { transform: translateX(3px) scale(0.98); }
-  60% { transform: translateX(-2px) scale(0.99); }
-  80% { transform: translateX(2px) scale(0.99); }
+  0%,
+  100% {
+    transform: translateX(0) scale(1);
+  }
+  20% {
+    transform: translateX(-3px) scale(0.98);
+  }
+  40% {
+    transform: translateX(3px) scale(0.98);
+  }
+  60% {
+    transform: translateX(-2px) scale(0.99);
+  }
+  80% {
+    transform: translateX(2px) scale(0.99);
+  }
 }
 
 /* SPECIALIZED PRESS ANTICIPATORY COMPONENT */
@@ -203,7 +221,7 @@
 /* HOVER ANTICIPATORY COMPONENT */
 
 .hover-anticipatory {
-  transition: 
+  transition:
     transform var(--hover-feedback-duration) var(--hover-feedback-ease),
     box-shadow var(--hover-feedback-duration) var(--hover-feedback-ease),
     background-color var(--hover-feedback-duration) var(--hover-feedback-ease);
@@ -281,23 +299,23 @@
     /* Più immediato su touch */
     transition-delay: calc(var(--press-anticipation-delay) * 0.7);
   }
-  
+
   .feedback-hover {
     /* Disabilita hover su touch */
     transition: none;
   }
-  
+
   .feedback-hover.feedback-active {
     transform: none;
     box-shadow: none;
     background-color: rgba(var(--primary-rgb), 0.1);
   }
-  
+
   .press-anticipatory {
     /* Touch feedback più pronunciato */
     transition-delay: calc(var(--press-anticipation-delay) * 0.5);
   }
-  
+
   .press-anticipatory.press-state-pressed {
     transform: translate3d(0, 1px, 0) scale(0.95);
   }
@@ -308,7 +326,7 @@
   .hover-anticipatory.hover-state-hovering {
     transform: translate3d(0, -2px, 0) scale(1.02);
   }
-  
+
   .press-anticipatory {
     /* Più raffinato su desktop */
     transition-delay: var(--press-anticipation-delay);
@@ -320,7 +338,7 @@
   .anticipatory-feedback {
     transition-duration: calc(var(--press-feedback-duration) * 0.8);
   }
-  
+
   .hover-anticipatory {
     transition-duration: calc(var(--hover-feedback-duration) * 0.8);
   }
@@ -332,34 +350,34 @@
     transition-duration: 0.01ms !important;
     transition-delay: 0ms !important;
   }
-  
+
   .feedback-press.feedback-active {
     transform: none !important;
     opacity: 0.8;
   }
-  
+
   .feedback-hover.feedback-active {
     transform: none !important;
     background-color: rgba(var(--primary-rgb), 0.1) !important;
     box-shadow: none !important;
   }
-  
+
   .press-anticipatory.press-state-pressed {
     transform: none !important;
     opacity: 0.8;
   }
-  
+
   .hover-anticipatory.hover-state-hovering {
     transform: none !important;
     background-color: rgba(var(--primary-rgb), 0.1) !important;
     box-shadow: none !important;
   }
-  
+
   .long-press-anticipatory.long-press-active {
     transform: none !important;
     opacity: 0.9;
   }
-  
+
   /* Mantieni solo progress indicator per long press */
   .long-press-progress-indicator {
     display: block;
@@ -372,7 +390,7 @@
     box-shadow: 0 0 0 3px currentColor !important;
     border-color: currentColor !important;
   }
-  
+
   .feedback-hover.feedback-active {
     background-color: rgba(var(--primary-rgb), 0.2) !important;
     border: 2px solid rgb(var(--primary-rgb)) !important;

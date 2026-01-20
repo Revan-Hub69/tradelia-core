@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+
 import { useUserData } from '@/hooks/useUserData';
 
 export default function ProfilePage() {
@@ -38,7 +39,7 @@ export default function ProfilePage() {
         </div>
 
         <div className="rounded-lg border bg-card p-6">
-          <h2 className="text-lg font-semibold mb-4">{t('ProfilePage.account_info_title')}</h2>
+          <h2 className="mb-4 text-lg font-semibold">{t('ProfilePage.account_info_title')}</h2>
           <div className="space-y-4">
             <div>
               <div className="text-sm text-muted-foreground">{t('ProfilePage.email_label')}</div>

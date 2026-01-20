@@ -133,7 +133,7 @@ export const CryptoLesson0WithAuth: React.FC = () => {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       setIsAuthenticated(!!user);
-      
+
       // If authenticated, redirect to dashboard
       if (user) {
         router.push('/dashboard');
@@ -167,17 +167,17 @@ export const CryptoLesson0WithAuth: React.FC = () => {
   return (
     <>
       <CryptoLesson0Clean />
-      
+
       {/* Optional Registration Banner */}
       {showRegistrationBanner && (
-        <OptionalRegistrationBanner 
-          onClose={() => setShowRegistrationBanner(false)} 
+        <OptionalRegistrationBanner
+          onClose={() => setShowRegistrationBanner(false)}
         />
       )}
 
       {/* Floating CTA for non-authenticated users */}
       {!isAuthenticated && (
-        <div className="fixed bottom-4 left-4 right-4 z-40 md:left-auto md:right-4 md:w-80">
+        <div className="fixed inset-x-4 bottom-4 z-40 md:left-auto md:right-4 md:w-80">
           <Card className="border-primary/20 bg-primary/5 p-4 backdrop-blur-sm">
             <div className="flex items-center gap-3">
               <div className="size-10 rounded-lg bg-primary/10 p-2">

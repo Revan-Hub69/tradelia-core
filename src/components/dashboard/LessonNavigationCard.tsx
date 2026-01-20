@@ -1,9 +1,10 @@
 'use client';
 
+import { ArrowRight, CheckCircle, Clock, Lock, Play } from 'lucide-react';
 import React from 'react';
-import { Play, Clock, CheckCircle, Lock, ArrowRight } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+
 import type { Lesson } from './types';
 
 type LessonNavigationCardProps = {
@@ -18,7 +19,7 @@ type LessonNavigationCardProps = {
 
 /**
  * LessonNavigationCard - Card for navigating to lessons from dashboard
- * 
+ *
  * Features:
  * - Consistent with LessonHeader styling
  * - Smooth transitions to lesson view
@@ -36,8 +37,10 @@ export const LessonNavigationCard: React.FC<LessonNavigationCardProps> = ({
   className = '',
 }) => {
   const handleLessonAction = () => {
-    if (isLocked) return;
-    
+    if (isLocked) {
+      return;
+    }
+
     if (isCompleted && onContinueLesson) {
       onContinueLesson(lesson.id);
     } else {
@@ -46,15 +49,23 @@ export const LessonNavigationCard: React.FC<LessonNavigationCardProps> = ({
   };
 
   const getActionText = () => {
-    if (isLocked) return 'Bloccato';
-    if (isCompleted) return 'Rivedi';
+    if (isLocked) {
+      return 'Bloccato';
+    }
+    if (isCompleted) {
+      return 'Rivedi';
+    }
     // if (lesson.progress && lesson.progress > 0) return 'Continua';
     return 'Inizia';
   };
 
   const getActionIcon = () => {
-    if (isLocked) return Lock;
-    if (isCompleted) return CheckCircle;
+    if (isLocked) {
+      return Lock;
+    }
+    if (isCompleted) {
+      return CheckCircle;
+    }
     return Play;
   };
 
@@ -67,11 +78,12 @@ export const LessonNavigationCard: React.FC<LessonNavigationCardProps> = ({
       dark:border-white/10 dark:bg-white/5 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:shadow-black/20
       ${isLocked ? 'opacity-60' : ''}
       ${className}
-    `}>
+    `}
+    >
       {/* Progress Bar - temporarily disabled */}
       {/* {lesson.progress && lesson.progress > 0 && (
         <div className="absolute top-0 left-0 h-1 bg-primary/20">
-          <div 
+          <div
             className="h-full bg-primary transition-all duration-500"
             style={{ width: `${lesson.progress}%` }}
           />
@@ -82,7 +94,7 @@ export const LessonNavigationCard: React.FC<LessonNavigationCardProps> = ({
         {/* Header */}
         <div className="mb-3 flex items-start justify-between">
           <div className="flex-1">
-            <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+            <h3 className="font-semibold text-foreground transition-colors group-hover:text-primary">
               {lesson.title}
             </h3>
             {/* {lesson.description && (
@@ -91,17 +103,18 @@ export const LessonNavigationCard: React.FC<LessonNavigationCardProps> = ({
               </p>
             )} */}
           </div>
-          
+
           {/* Status Icon */}
           <div className={`
             ml-3 rounded-full p-2 transition-colors
-            ${isCompleted 
-              ? 'bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-400' 
-              : isLocked
-                ? 'bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500'
-                : 'bg-primary/10 text-primary'
-            }
-          `}>
+            ${isCompleted
+      ? 'bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-400'
+      : isLocked
+        ? 'bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500'
+        : 'bg-primary/10 text-primary'
+    }
+          `}
+          >
             <ActionIcon className="size-4" />
           </div>
         </div>
@@ -111,10 +124,14 @@ export const LessonNavigationCard: React.FC<LessonNavigationCardProps> = ({
           {estimatedTime && (
             <div className="flex items-center gap-1">
               <Clock className="size-3" />
-              <span>{estimatedTime} min</span>
+              <span>
+                {estimatedTime}
+                {' '}
+                min
+              </span>
             </div>
           )}
-          
+
           {/* Difficulty indicator temporarily disabled */}
 
           {lesson.type && (
@@ -128,8 +145,8 @@ export const LessonNavigationCard: React.FC<LessonNavigationCardProps> = ({
         <Button
           onClick={handleLessonAction}
           disabled={isLocked}
-          variant={isCompleted ? "outline" : "default"}
-          className="w-full group-hover:shadow-md transition-shadow"
+          variant={isCompleted ? 'outline' : 'default'}
+          className="w-full transition-shadow group-hover:shadow-md"
         >
           <ActionIcon className="mr-2 size-4" />
           {getActionText()}

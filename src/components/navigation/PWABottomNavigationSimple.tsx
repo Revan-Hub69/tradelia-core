@@ -1,11 +1,12 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { usePathname } from '@/libs/i18nNavigation';
-import { cn } from '@/utils/Helpers';
+
 import { DynamicIcon, type IconName } from '@/components/icons';
 import { getVisibleNavigationItems } from '@/data/navigation.config';
 import { useOptimizedNavigation } from '@/hooks/useOptimizedNavigation';
+import { usePathname } from '@/libs/i18nNavigation';
+import { cn } from '@/utils/Helpers';
 
 type PWABottomNavigationSimpleProps = {
   className?: string;
@@ -21,7 +22,7 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
     if (pathname === href) {
       return;
     }
-    
+
     navigate(href);
   };
 
@@ -42,8 +43,8 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
     >
       <div className="flex h-16 items-center justify-around px-2">
         {navigationItems.map((item) => {
-          const isActive = pathname === item.href || 
-            (item.href !== '/dashboard' && pathname.startsWith(item.href));
+          const isActive = pathname === item.href
+            || (item.href !== '/dashboard' && pathname.startsWith(item.href));
 
           return (
             <button

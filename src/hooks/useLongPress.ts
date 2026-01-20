@@ -1,30 +1,30 @@
 /*
  * LONG PRESS HOOK - Apple/Linear/Stripe Level 2026
- * 
+ *
  * Sistema long press per quick actions mobile
  * Haptic feedback simulation + context menu premium
  */
 
 import { useCallback, useRef, useState } from 'react';
 
-export interface LongPressOptions {
+export type LongPressOptions = {
   threshold?: number; // ms per attivare long press
   onStart?: () => void;
   onFinish?: () => void;
   onCancel?: () => void;
-}
+};
 
-export interface QuickAction {
+export type QuickAction = {
   id: string;
   labelKey: string;
   icon?: React.ReactNode;
   onClick: () => void;
   variant?: 'default' | 'primary' | 'destructive';
-}
+};
 
 export const useLongPress = (
   callback: () => void,
-  options: LongPressOptions = {}
+  options: LongPressOptions = {},
 ) => {
   const { threshold = 500, onStart, onFinish, onCancel } = options;
   const [isLongPressing, setIsLongPressing] = useState(false);
@@ -33,7 +33,9 @@ export const useLongPress = (
 
   const start = useCallback((event: React.TouchEvent | React.MouseEvent) => {
     // Prevent context menu on right click
-    if ('button' in event && event.button === 2) return;
+    if ('button' in event && event.button === 2) {
+      return;
+    }
 
     target.current = event.target;
     onStart?.();
@@ -44,7 +46,7 @@ export const useLongPress = (
       if ('vibrate' in navigator) {
         navigator.vibrate(50);
       }
-      
+
       callback();
       onFinish?.();
       setIsLongPressing(false);

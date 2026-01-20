@@ -94,22 +94,22 @@
 
 .loading-phase-short {
   opacity: 1;
-  animation: fade-in-gentle 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
+  animation: fade-in-gentle 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .loading-phase-medium {
   opacity: 1;
-  animation: fade-in-with-scale 400ms cubic-bezier(0.4, 0.0, 0.2, 1);
+  animation: fade-in-with-scale 400ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .loading-phase-long {
   opacity: 1;
-  animation: fade-in-with-lift 500ms cubic-bezier(0.4, 0.0, 0.2, 1);
+  animation: fade-in-with-lift 500ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .loading-phase-extended {
   opacity: 1;
-  animation: fade-in-comprehensive 600ms cubic-bezier(0.4, 0.0, 0.2, 1);
+  animation: fade-in-comprehensive 600ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes fade-in-gentle {
@@ -164,7 +164,7 @@
 }
 
 .semantic-progress__bar {
-  transition: width 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
+  transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1);
   will-change: width;
 }
 
@@ -188,7 +188,7 @@
 /* Indeterminate progress animation for unknown durations */
 .semantic-progress--indeterminate .semantic-progress__bar {
   width: 30% !important;
-  animation: indeterminate-progress 2s infinite cubic-bezier(0.4, 0.0, 0.2, 1);
+  animation: indeterminate-progress 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes indeterminate-progress {
@@ -235,7 +235,9 @@
 }
 
 @keyframes morse-pulse {
-  0%, 80%, 100% {
+  0%,
+  80%,
+  100% {
     transform: scale(0.8);
     opacity: 0.5;
   }
@@ -252,10 +254,10 @@
 .semantic-toast {
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  box-shadow: 
+  box-shadow:
     0 10px 25px rgba(0, 0, 0, 0.1),
     0 4px 12px rgba(0, 0, 0, 0.05);
-  animation: toast-slide-in 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
+  animation: toast-slide-in 300ms cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform, opacity;
 }
 
@@ -271,7 +273,7 @@
 }
 
 .semantic-toast--dismissing {
-  animation: toast-slide-out 200ms cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
+  animation: toast-slide-out 200ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 @keyframes toast-slide-out {
@@ -297,7 +299,7 @@
   .semantic-progress--indeterminate .semantic-progress__bar {
     animation: none !important;
   }
-  
+
   .loading-phase-short,
   .loading-phase-medium,
   .loading-phase-long,
@@ -306,12 +308,12 @@
     opacity: 1 !important;
     transform: none !important;
   }
-  
+
   .semantic-toast {
     animation: none !important;
     transform: none !important;
   }
-  
+
   .semantic-progress__bar {
     transition: none !important;
   }
@@ -323,7 +325,7 @@
     background-color: ButtonFace;
     border: 1px solid ButtonText;
   }
-  
+
   .semantic-spinner--financial,
   .semantic-spinner--learning,
   .semantic-spinner--social,
@@ -332,22 +334,22 @@
   .semantic-spinner--error {
     color: ButtonText;
   }
-  
+
   .semantic-progress__bar {
     background: ButtonText !important;
   }
-  
+
   .morse-code-dot {
     background-color: ButtonText;
   }
 }
 
 /* Focus management for loading states */
-.semantic-loading-container[aria-busy="true"] {
+.semantic-loading-container[aria-busy='true'] {
   position: relative;
 }
 
-.semantic-loading-container[aria-busy="true"]::before {
+.semantic-loading-container[aria-busy='true']::before {
   content: '';
   position: absolute;
   top: 0;
@@ -359,7 +361,7 @@
   pointer-events: none;
 }
 
-.dark .semantic-loading-container[aria-busy="true"]::before {
+.dark .semantic-loading-container[aria-busy='true']::before {
   background: rgba(0, 0, 0, 0.8);
 }
 
@@ -387,11 +389,11 @@
     right: 1rem;
     max-width: none;
   }
-  
+
   .semantic-skeleton {
     border-radius: 8px;
   }
-  
+
   .morse-code-dot {
     width: 6px;
     height: 6px;
@@ -403,7 +405,7 @@
   .semantic-skeleton::after {
     animation-duration: 1.5s;
   }
-  
+
   .semantic-progress__bar {
     transition-duration: 200ms;
   }

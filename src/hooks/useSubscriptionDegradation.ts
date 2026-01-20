@@ -5,25 +5,25 @@ import { useEffect, useState } from 'react';
 type SubscriptionStatus = 'active' | 'expired' | 'cancelled' | 'grace_period';
 type UserTier = 'free' | 'premium';
 
-interface SubscriptionState {
+type SubscriptionState = {
   tier: UserTier;
   status: SubscriptionStatus;
   expiresAt?: Date;
   gracePeriodEnds?: Date;
   isInGracePeriod: boolean;
   daysUntilExpiry: number;
-}
+};
 
-interface DegradationOptions {
+type DegradationOptions = {
   gracePeriodDays?: number;
   warningDays?: number;
   onTierChange?: (newTier: UserTier) => void;
   onStatusChange?: (status: SubscriptionStatus) => void;
-}
+};
 
 /**
  * Hook for handling subscription degradation gracefully
- * 
+ *
  * Features:
  * - Grace period management
  * - Gradual feature restriction
@@ -37,7 +37,7 @@ export const useSubscriptionDegradation = (
     status: SubscriptionStatus;
     expiresAt?: string;
   },
-  options: DegradationOptions = {}
+  options: DegradationOptions = {},
 ) => {
   const {
     gracePeriodDays = 7,
@@ -50,14 +50,14 @@ export const useSubscriptionDegradation = (
     const expiresAt = initialSubscription.expiresAt ? new Date(initialSubscription.expiresAt) : undefined;
     const now = new Date();
     const gracePeriodEnds = expiresAt ? new Date(expiresAt.getTime() + gracePeriodDays * 24 * 60 * 60 * 1000) : undefined;
-    
-    const isInGracePeriod = expiresAt ? 
-      now > expiresAt && gracePeriodEnds ? now < gracePeriodEnds : false : 
-      false;
-    
-    const daysUntilExpiry = expiresAt ? 
-      Math.ceil((expiresAt.getTime() - now.getTime()) / (24 * 60 * 60 * 1000)) : 
-      0;
+
+    const isInGracePeriod = expiresAt
+      ? now > expiresAt && gracePeriodEnds ? now < gracePeriodEnds : false
+      : false;
+
+    const daysUntilExpiry = expiresAt
+      ? Math.ceil((expiresAt.getTime() - now.getTime()) / (24 * 60 * 60 * 1000))
+      : 0;
 
     return {
       tier: initialSubscription.tier,
@@ -103,9 +103,9 @@ export const useSubscriptionDegradation = (
           status: newStatus,
           tier: newTier,
           isInGracePeriod: newStatus === 'grace_period',
-          daysUntilExpiry: expiresAt ? 
-            Math.ceil((expiresAt.getTime() - now.getTime()) / (24 * 60 * 60 * 1000)) : 
-            0,
+          daysUntilExpiry: expiresAt
+            ? Math.ceil((expiresAt.getTime() - now.getTime()) / (24 * 60 * 60 * 1000))
+            : 0,
         }));
 
         // Notify callbacks
@@ -173,10 +173,10 @@ export const useSubscriptionDegradation = (
     }
 
     if (isInGracePeriod) {
-      const graceDaysLeft = subscriptionState.gracePeriodEnds ? 
-        Math.ceil((subscriptionState.gracePeriodEnds.getTime() - new Date().getTime()) / (24 * 60 * 60 * 1000)) : 
-        0;
-      
+      const graceDaysLeft = subscriptionState.gracePeriodEnds
+        ? Math.ceil((subscriptionState.gracePeriodEnds.getTime() - new Date().getTime()) / (24 * 60 * 60 * 1000))
+        : 0;
+
       warnings.push({
         type: 'error',
         title: 'Periodo di Grazia Attivo',

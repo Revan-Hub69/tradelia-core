@@ -6,10 +6,11 @@
  */
 
 import React, { useState } from 'react';
-import { 
-  TradeliaSignatureMoment, 
-  type SignatureMomentType, 
-  type SignatureMomentIntensity 
+
+import {
+  type SignatureMomentIntensity,
+  type SignatureMomentType,
+  TradeliaSignatureMoment,
 } from './TradeliaSignatureMoment';
 
 // ============================================================================
@@ -27,10 +28,10 @@ export const SignatureMomentExample: React.FC = () => {
   const triggerSignatureMoment = (
     type: SignatureMomentType,
     intensity: SignatureMomentIntensity = 'standard',
-    value?: number
+    value?: number,
   ) => {
     setActiveMoment({ type, intensity, trigger: true, value });
-    
+
     // Reset trigger after animation
     setTimeout(() => {
       setActiveMoment(prev => prev ? { ...prev, trigger: false } : null);
@@ -94,20 +95,20 @@ export const SignatureMomentExample: React.FC = () => {
   ];
 
   return (
-    <div className="signature-moment-example p-8 space-y-8">
+    <div className="signature-moment-example space-y-8 p-8">
       {/* Header */}
-      <div className="text-center space-y-4">
+      <div className="space-y-4 text-center">
         <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
           Tradelia Signature Moments
         </h2>
-        <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-          L'animazione definitiva che grida "Tradelia" - basata su ricerca 2026 per 
+        <p className="mx-auto max-w-2xl text-lg text-gray-600 dark:text-gray-400">
+          L'animazione definitiva che grida "Tradelia" - basata su ricerca 2026 per
           signature moments che creano brand memory e connessioni neurali durature.
         </p>
       </div>
 
       {/* Demo Area */}
-      <div className="demo-area bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-8 min-h-[400px] flex items-center justify-center">
+      <div className="demo-area flex min-h-[400px] items-center justify-center rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-100 p-8 dark:from-gray-800 dark:to-gray-900">
         <TradeliaSignatureMoment
           type={activeMoment?.type || 'lesson-complete'}
           intensity={activeMoment?.intensity || 'standard'}
@@ -117,8 +118,8 @@ export const SignatureMomentExample: React.FC = () => {
             // Signature moment completed
           }}
         >
-          <div className="text-center space-y-4">
-            <div className="w-32 h-32 mx-auto bg-white dark:bg-gray-800 rounded-full flex items-center justify-center shadow-lg">
+          <div className="space-y-4 text-center">
+            <div className="mx-auto flex size-32 items-center justify-center rounded-full bg-white shadow-lg dark:bg-gray-800">
               <div className="text-4xl">🎯</div>
             </div>
             <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
@@ -133,32 +134,32 @@ export const SignatureMomentExample: React.FC = () => {
 
       {/* Controls */}
       <div className="controls space-y-6">
-        <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 text-center">
+        <h3 className="text-center text-xl font-semibold text-gray-800 dark:text-gray-200">
           Signature Moments Disponibili
         </h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {signatureMoments.map((moment) => (
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {signatureMoments.map(moment => (
             <button
               key={moment.type}
               onClick={() => triggerSignatureMoment(moment.type, moment.intensity, moment.value)}
               className={`
-                ${moment.color} text-white p-6 rounded-xl shadow-lg
-                hover:shadow-xl transform hover:scale-105 transition-all duration-200
-                focus:outline-none focus:ring-4 focus:ring-blue-500/50
-                active:scale-95
+                ${moment.color} rounded-xl p-6 text-white shadow-lg
+                transition-all duration-200 hover:scale-105 hover:shadow-xl focus:outline-none
+                focus:ring-4 focus:ring-blue-500/50 active:scale-95
               `}
             >
               <div className="space-y-3">
-                <h4 className="font-bold text-lg">{moment.title}</h4>
+                <h4 className="text-lg font-bold">{moment.title}</h4>
                 <p className="text-sm opacity-90">{moment.description}</p>
-                <div className="flex justify-between items-center text-xs">
-                  <span className="bg-white/20 px-2 py-1 rounded">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="rounded bg-white/20 px-2 py-1">
                     {moment.intensity}
                   </span>
                   {moment.value && (
-                    <span className="bg-white/20 px-2 py-1 rounded">
-                      +{moment.value}
+                    <span className="rounded bg-white/20 px-2 py-1">
+                      +
+                      {moment.value}
                     </span>
                   )}
                 </div>
@@ -169,53 +170,53 @@ export const SignatureMomentExample: React.FC = () => {
       </div>
 
       {/* Technical Details */}
-      <div className="technical-details bg-white dark:bg-gray-800 rounded-xl p-6 space-y-4">
+      <div className="technical-details space-y-4 rounded-xl bg-white p-6 dark:bg-gray-800">
         <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
           Caratteristiche Tecniche 2026
         </h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="space-y-3">
             <h4 className="font-semibold text-gray-700 dark:text-gray-300">
               🧠 Neural Connection Building
             </h4>
-            <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+            <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
               <li>• Multi-sensory visual feedback (haptic-like)</li>
               <li>• Signature particle system con forme uniche</li>
               <li>• Timing ottimizzato per memoria a lungo termine</li>
               <li>• Colori e pattern distintivi per brand recognition</li>
             </ul>
           </div>
-          
+
           <div className="space-y-3">
             <h4 className="font-semibold text-gray-700 dark:text-gray-300">
               ⚡ Performance & Accessibility
             </h4>
-            <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+            <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
               <li>• GPU acceleration per 60fps garantiti</li>
               <li>• Battery-aware motion reduction</li>
               <li>• WCAG 2.1 AA compliant con screen reader</li>
               <li>• Prefers-reduced-motion support</li>
             </ul>
           </div>
-          
+
           <div className="space-y-3">
             <h4 className="font-semibold text-gray-700 dark:text-gray-300">
               🎨 Signature Design Elements
             </h4>
-            <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+            <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
               <li>• Rounded diamond particles (forma signature)</li>
               <li>• Anticipatory micro-delays (40-60ms)</li>
               <li>• Elastic bounce con controlled imperfection</li>
               <li>• Sound wave visualization per accessibility</li>
             </ul>
           </div>
-          
+
           <div className="space-y-3">
             <h4 className="font-semibold text-gray-700 dark:text-gray-300">
               📊 Business Impact
             </h4>
-            <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+            <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
               <li>• +30% brand recall (ricerca 2026)</li>
               <li>• +25% user engagement su key moments</li>
               <li>• +40% completion rate per gamified actions</li>
@@ -226,50 +227,50 @@ export const SignatureMomentExample: React.FC = () => {
       </div>
 
       {/* Usage Examples */}
-      <div className="usage-examples bg-gray-50 dark:bg-gray-900 rounded-xl p-6 space-y-4">
+      <div className="usage-examples space-y-4 rounded-xl bg-gray-50 p-6 dark:bg-gray-900">
         <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
           Esempi di Utilizzo in Tradelia
         </h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg">
-            <h4 className="font-semibold text-gray-700 dark:text-gray-300 mb-2">
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="rounded-lg bg-white p-4 dark:bg-gray-800">
+            <h4 className="mb-2 font-semibold text-gray-700 dark:text-gray-300">
               📚 Learning Journey
             </h4>
-            <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+            <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
               <li>• Lesson Complete: Fine di ogni lezione</li>
               <li>• Perfect Score: Quiz con 100% di accuratezza</li>
               <li>• First Success: Prima lezione completata</li>
             </ul>
           </div>
-          
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg">
-            <h4 className="font-semibold text-gray-700 dark:text-gray-300 mb-2">
+
+          <div className="rounded-lg bg-white p-4 dark:bg-gray-800">
+            <h4 className="mb-2 font-semibold text-gray-700 dark:text-gray-300">
               🏆 Gamification
             </h4>
-            <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+            <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
               <li>• Achievement Unlock: Badge e traguardi</li>
               <li>• Level Up: Avanzamento di livello</li>
               <li>• Streak Milestone: 7, 30, 100 giorni consecutivi</li>
             </ul>
           </div>
-          
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg">
-            <h4 className="font-semibold text-gray-700 dark:text-gray-300 mb-2">
+
+          <div className="rounded-lg bg-white p-4 dark:bg-gray-800">
+            <h4 className="mb-2 font-semibold text-gray-700 dark:text-gray-300">
               💪 Motivation
             </h4>
-            <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+            <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
               <li>• Comeback Victory: Ritorno dopo pausa</li>
               <li>• Streak Milestone: Mantenimento abitudini</li>
               <li>• Perfect Score: Rinforzo positivo</li>
             </ul>
           </div>
-          
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg">
-            <h4 className="font-semibold text-gray-700 dark:text-gray-300 mb-2">
+
+          <div className="rounded-lg bg-white p-4 dark:bg-gray-800">
+            <h4 className="mb-2 font-semibold text-gray-700 dark:text-gray-300">
               🎯 Key Moments
             </h4>
-            <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+            <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
               <li>• Trading success: Primo profitto</li>
               <li>• Portfolio milestone: Obiettivi raggiunti</li>
               <li>• Knowledge mastery: Competenza acquisita</li>

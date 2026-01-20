@@ -1,6 +1,6 @@
 /**
  * ANTI-ERROR EXAMPLE - CSS Styles
- * 
+ *
  * Stili per l'esempio di integrazione del sistema anti-errore
  * Dimostra l'applicazione pratica in scenari educativi crypto
  */
@@ -182,8 +182,9 @@
   left: -2px;
   right: -2px;
   bottom: -2px;
-  background: linear-gradient(45deg, 
-    rgba(var(--risk-dangerous), 0.3), 
+  background: linear-gradient(
+    45deg,
+    rgba(var(--risk-dangerous), 0.3),
     rgba(var(--risk-risky), 0.3),
     rgba(var(--risk-dangerous), 0.3)
   );
@@ -193,8 +194,13 @@
 }
 
 @keyframes danger-pulse {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.6; }
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.6;
+  }
 }
 
 .danger-warning {
@@ -384,29 +390,29 @@
   .anti-error-example {
     padding: 1rem;
   }
-  
+
   .example-header h1 {
     font-size: 2rem;
   }
-  
+
   .crypto-learning-scenario {
     padding: 1.5rem;
   }
-  
+
   .transaction-form {
     padding: 1.5rem;
   }
-  
+
   .danger-stats {
     gap: 0.5rem;
   }
-  
+
   .stat {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.25rem;
   }
-  
+
   .wallet-balance {
     flex-direction: column;
     text-align: center;
@@ -417,27 +423,27 @@
   .example-header h1 {
     font-size: 1.75rem;
   }
-  
+
   .scenario-header h2 {
     font-size: 1.5rem;
   }
-  
+
   .transaction-form {
     padding: 1rem;
   }
-  
+
   .transaction-form h3 {
     font-size: 1.125rem;
     flex-direction: column;
     text-align: center;
     gap: 0.25rem;
   }
-  
+
   .btn {
     width: 100%;
     padding: 1rem;
   }
-  
+
   .form-group input {
     padding: 1rem;
   }
@@ -452,12 +458,12 @@
   .btn {
     transition: opacity 0.1s ease;
   }
-  
+
   .dangerous-form::before {
     animation: none;
     opacity: 0.3;
   }
-  
+
   .btn-danger::before {
     transition: none;
   }
@@ -467,19 +473,19 @@
   .transaction-form {
     border-width: 3px;
   }
-  
+
   .safe-form {
     border-color: rgb(var(--risk-safe));
   }
-  
+
   .risky-form {
     border-color: rgb(var(--risk-risky));
   }
-  
+
   .dangerous-form {
     border-color: rgb(var(--risk-dangerous));
   }
-  
+
   .form-group input {
     border-width: 2px;
   }
@@ -490,11 +496,11 @@
   .danger-stats {
     background: rgba(0, 0, 0, 0.4);
   }
-  
+
   .form-group input {
     background: rgba(255, 255, 255, 0.03);
   }
-  
+
   .form-group input:focus {
     background: rgba(255, 255, 255, 0.06);
   }

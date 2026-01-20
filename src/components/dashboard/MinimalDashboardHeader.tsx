@@ -28,16 +28,20 @@ export const MinimalDashboardHeader = ({ className }: MinimalDashboardHeaderProp
 
         {/* Right: User only */}
         <div className="flex items-center">
-          {isLoading ? (
-            <div className="size-8 animate-pulse rounded-full bg-muted" />
-          ) : userData ? (
-            <UserDropdown
-              userName={userData.name || userData.email.split('@')[0] || 'Utente'}
-              userEmail={userData.email}
-            />
-          ) : (
-            <div className="text-xs text-muted-foreground">Non autenticato</div>
-          )}
+          {isLoading
+            ? (
+                <div className="size-8 animate-pulse rounded-full bg-muted" />
+              )
+            : userData
+              ? (
+                  <UserDropdown
+                    userName={userData.name || userData.email.split('@')[0] || 'Utente'}
+                    userEmail={userData.email}
+                  />
+                )
+              : (
+                  <div className="text-xs text-muted-foreground">Non autenticato</div>
+                )}
         </div>
       </div>
     </header>

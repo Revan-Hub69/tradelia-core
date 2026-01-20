@@ -18,11 +18,13 @@
 .focus-enhanced {
   outline: none;
   position: relative;
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .focus-enhanced:focus-visible {
-  box-shadow: 
+  box-shadow:
     0 0 0 2px hsl(var(--background)),
     0 0 0 4px hsl(var(--ring)),
     0 0 8px rgba(var(--ring-rgb), 0.3);
@@ -129,11 +131,11 @@
   overflow: hidden;
 }
 
-.live-region[aria-live="polite"] {
+.live-region[aria-live='polite'] {
   /* Announced when user is idle */
 }
 
-.live-region[aria-live="assertive"] {
+.live-region[aria-live='assertive'] {
   /* Announced immediately */
 }
 
@@ -146,7 +148,7 @@
   overflow: hidden;
 }
 
-.loading-announcement[aria-live="polite"] {
+.loading-announcement[aria-live='polite'] {
   /* Announce loading states politely */
 }
 
@@ -168,16 +170,16 @@
   position: relative;
 }
 
-.keyboard-navigable [role="button"],
-.keyboard-navigable [role="menuitem"],
-.keyboard-navigable [role="tab"] {
+.keyboard-navigable [role='button'],
+.keyboard-navigable [role='menuitem'],
+.keyboard-navigable [role='tab'] {
   cursor: pointer;
   user-select: none;
 }
 
-.keyboard-navigable [role="button"]:focus,
-.keyboard-navigable [role="menuitem"]:focus,
-.keyboard-navigable [role="tab"]:focus {
+.keyboard-navigable [role='button']:focus,
+.keyboard-navigable [role='menuitem']:focus,
+.keyboard-navigable [role='tab']:focus {
   outline: 2px solid hsl(var(--ring));
   outline-offset: 2px;
 }
@@ -201,39 +203,39 @@
   .signature-hover-optimized,
   .performance-optimized,
   button,
-  [role="button"],
+  [role='button'],
   a {
     border: 2px solid ButtonText !important;
     background: ButtonFace !important;
     color: ButtonText !important;
   }
-  
+
   /* Remove subtle effects that may not be visible */
   .signature-shimmer-optimized::after,
   .glass-surface,
   .backdrop-blur {
     display: none !important;
   }
-  
+
   /* Ensure focus indicators are visible */
   .focus-enhanced:focus-visible {
     outline: 3px solid Highlight !important;
     outline-offset: 2px !important;
     box-shadow: none !important;
   }
-  
+
   /* High contrast loading states */
   .loading-spinner {
     border-color: ButtonText !important;
     border-top-color: transparent !important;
   }
-  
+
   /* High contrast progress bars */
   .progress-bar {
     background: ButtonFace !important;
     border: 1px solid ButtonText !important;
   }
-  
+
   .progress-fill {
     background: Highlight !important;
   }
@@ -254,17 +256,17 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  
+
   /* Provide alternative feedback for interactive elements */
   .signature-press-optimized:active,
   .signature-hover-optimized:hover,
   button:active,
-  [role="button"]:active {
+  [role='button']:active {
     background-color: rgba(var(--primary-rgb), 0.1) !important;
     border-color: rgba(var(--primary-rgb), 0.3) !important;
     transform: none !important;
   }
-  
+
   /* Alternative loading indicators */
   .loading-spinner {
     animation: none !important;
@@ -272,7 +274,7 @@
     border-radius: 50%;
     opacity: 0.6;
   }
-  
+
   /* Static progress indicators */
   .progress-bar {
     background: linear-gradient(
@@ -282,7 +284,7 @@
       transparent var(--progress, 0%)
     );
   }
-  
+
   /* Remove parallax and scroll-triggered animations */
   .parallax,
   .scroll-triggered {
@@ -403,7 +405,9 @@
   color: hsl(var(--foreground));
   font-size: 1rem;
   line-height: 1.5;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .form-input:focus {
@@ -412,11 +416,11 @@
   box-shadow: 0 0 0 3px rgba(var(--ring-rgb), 0.1);
 }
 
-.form-input[aria-invalid="true"] {
+.form-input[aria-invalid='true'] {
   border-color: hsl(var(--destructive));
 }
 
-.form-input[aria-invalid="true"]:focus {
+.form-input[aria-invalid='true']:focus {
   box-shadow: 0 0 0 3px rgba(var(--destructive-rgb), 0.1);
 }
 
@@ -524,11 +528,11 @@
     min-width: 48px;
     min-height: 48px;
   }
-  
+
   .form-input {
     font-size: 16px; /* Prevent zoom on iOS */
   }
-  
+
   .modal-content {
     margin: 1rem;
     max-width: calc(100vw - 2rem);
@@ -550,15 +554,15 @@
     clip: auto !important;
     white-space: normal !important;
   }
-  
+
   /* Remove interactive elements that don't work in print */
   .modal-backdrop,
   .loading-spinner,
-  [role="button"],
+  [role='button'],
   button {
     display: none !important;
   }
-  
+
   /* Ensure sufficient contrast for printing */
   * {
     background: white !important;

@@ -1,14 +1,15 @@
 /*
  * PAGE TRANSITIONS ENTERPRISE 2026
- * 
+ *
  * Sistema avanzato di transizioni basato su GSAP + View Transitions API
  * Ispirato a Linear, Stripe, GitHub per esperienza premium
  */
 
 'use client';
 
-import { useRouter } from '@/libs/i18nNavigation';
 import { useCallback, useState } from 'react';
+
+import { useRouter } from '@/libs/i18nNavigation';
 
 export type TransitionType = 'fade' | 'slide' | 'scale' | 'enterprise';
 
@@ -45,7 +46,7 @@ export const usePageTransitions = () => {
 
     // Phase 1: Exit animation
     const mainContent = document.querySelector('main');
-    
+
     if (mainContent) {
       mainContent.style.transition = 'opacity 200ms cubic-bezier(0.4, 0.0, 0.2, 1), transform 200ms cubic-bezier(0.4, 0.0, 0.2, 1)';
       mainContent.style.opacity = '0';
@@ -77,7 +78,7 @@ export const usePageTransitions = () => {
 
     await new Promise(resolve => setTimeout(resolve, 150));
     router.push(href);
-    
+
     setTimeout(() => setIsTransitioning(false), 300);
   }, [router]);
 
@@ -95,16 +96,16 @@ export const usePageTransitions = () => {
 
     await new Promise(resolve => setTimeout(resolve, 125));
     router.push(href);
-    
+
     setTimeout(() => setIsTransitioning(false), 250);
   }, [router]);
 
   // Main navigation function with intelligent transition selection
   const navigateWithTransition = useCallback(async (
-    href: string, 
-    options: PageTransitionOptions = {}
+    href: string,
+    options: PageTransitionOptions = {},
   ) => {
-    const { 
+    const {
       type = 'enterprise',
       preload = true,
     } = options;

@@ -9,7 +9,8 @@
  * - Hardware acceleration availability
  */
 
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+
 import { usePerformanceOptimization } from '../../hooks/usePerformanceOptimization';
 
 // ============================================================================
@@ -18,7 +19,7 @@ import { usePerformanceOptimization } from '../../hooks/usePerformanceOptimizati
 
 export type AnimationPriority = 'low' | 'medium' | 'high' | 'critical';
 
-export type AnimationType = 
+export type AnimationType =
   | 'signature-press'
   | 'signature-hover'
   | 'signature-shimmer'
@@ -27,7 +28,7 @@ export type AnimationType =
   | 'loading-state'
   | 'custom';
 
-export interface PerformanceOptimizedAnimationProps {
+export type PerformanceOptimizedAnimationProps = {
   children: React.ReactNode;
   type: AnimationType;
   priority?: AnimationPriority;
@@ -38,7 +39,7 @@ export interface PerformanceOptimizedAnimationProps {
   onAnimationEnd?: () => void;
   customDuration?: number;
   enableGPUAcceleration?: boolean;
-}
+};
 
 // ============================================================================
 // PERFORMANCE OPTIMIZED ANIMATION COMPONENT
@@ -85,29 +86,29 @@ export const PerformanceOptimizedAnimation: React.FC<PerformanceOptimizedAnimati
   // Calculate final classes
   const finalClasses = React.useMemo(() => {
     const baseClasses = [className];
-    
+
     // Add animation type classes
     baseClasses.push(getAnimationTypeClasses());
-    
+
     // Add performance optimization classes
     baseClasses.push(getPerformanceClasses());
-    
+
     // Add animating state
     if (isAnimating) {
       baseClasses.push('animating');
     }
-    
+
     // Add GPU acceleration if enabled and supported
     if (enableGPUAcceleration && performanceConfig.enableGPUAcceleration) {
       baseClasses.push('gpu-accelerated');
     }
-    
+
     // Add fallback classes if animations are disabled
     if (!shouldAnimate(priority) || disabled) {
       baseClasses.push(fallbackClassName);
       baseClasses.push('no-animations');
     }
-    
+
     return baseClasses.filter(Boolean).join(' ');
   }, [
     className,
@@ -127,7 +128,7 @@ export const PerformanceOptimizedAnimation: React.FC<PerformanceOptimizedAnimati
     if (!shouldAnimate(priority) || disabled) {
       return 0;
     }
-    
+
     const baseDuration = customDuration || 300;
     return getAnimationDuration(baseDuration);
   }, [shouldAnimate, priority, disabled, customDuration, getAnimationDuration]);
@@ -136,12 +137,12 @@ export const PerformanceOptimizedAnimation: React.FC<PerformanceOptimizedAnimati
   const handleAnimationStart = useCallback(() => {
     setIsAnimating(true);
     onAnimationStart?.();
-    
+
     // Clear any existing timeout
     if (animationTimeoutRef.current) {
       clearTimeout(animationTimeoutRef.current);
     }
-    
+
     // Set timeout to end animation state
     if (animationDuration > 0) {
       animationTimeoutRef.current = setTimeout(() => {
@@ -155,7 +156,7 @@ export const PerformanceOptimizedAnimation: React.FC<PerformanceOptimizedAnimati
   const handleAnimationEnd = useCallback(() => {
     setIsAnimating(false);
     onAnimationEnd?.();
-    
+
     if (animationTimeoutRef.current) {
       clearTimeout(animationTimeoutRef.current);
       animationTimeoutRef.current = null;
@@ -165,7 +166,9 @@ export const PerformanceOptimizedAnimation: React.FC<PerformanceOptimizedAnimati
   // Set up event listeners
   useEffect(() => {
     const element = elementRef.current;
-    if (!element) return;
+    if (!element) {
+      return;
+    }
 
     element.addEventListener('animationstart', handleAnimationStart);
     element.addEventListener('animationend', handleAnimationEnd);
@@ -177,7 +180,7 @@ export const PerformanceOptimizedAnimation: React.FC<PerformanceOptimizedAnimati
       element.removeEventListener('animationend', handleAnimationEnd);
       element.removeEventListener('transitionstart', handleAnimationStart);
       element.removeEventListener('transitionend', handleAnimationEnd);
-      
+
       if (animationTimeoutRef.current) {
         clearTimeout(animationTimeoutRef.current);
       }
@@ -187,12 +190,12 @@ export const PerformanceOptimizedAnimation: React.FC<PerformanceOptimizedAnimati
   // Apply custom CSS properties
   const customStyles = React.useMemo(() => {
     const styles: React.CSSProperties = {};
-    
+
     if (animationDuration > 0) {
       (styles as any)['--animation-duration'] = `${animationDuration}ms`;
       (styles as any)['--transition-duration'] = `${animationDuration}ms`;
     }
-    
+
     return styles;
   }, [animationDuration]);
 
@@ -215,12 +218,12 @@ export const PerformanceOptimizedAnimation: React.FC<PerformanceOptimizedAnimati
 // PERFORMANCE OPTIMIZED BUTTON COMPONENT
 // ============================================================================
 
-export interface PerformanceOptimizedButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export type PerformanceOptimizedButtonProps = {
   variant?: 'primary' | 'secondary' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   animationPriority?: AnimationPriority;
   children: React.ReactNode;
-}
+} & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const PerformanceOptimizedButton: React.FC<PerformanceOptimizedButtonProps> = ({
   variant = 'primary',
@@ -264,13 +267,13 @@ export const PerformanceOptimizedButton: React.FC<PerformanceOptimizedButtonProp
 // PERFORMANCE OPTIMIZED CARD COMPONENT
 // ============================================================================
 
-export interface PerformanceOptimizedCardProps {
+export type PerformanceOptimizedCardProps = {
   children: React.ReactNode;
   className?: string;
   animationPriority?: AnimationPriority;
   enableHover?: boolean;
   enablePress?: boolean;
-}
+};
 
 export const PerformanceOptimizedCard: React.FC<PerformanceOptimizedCardProps> = ({
   children,

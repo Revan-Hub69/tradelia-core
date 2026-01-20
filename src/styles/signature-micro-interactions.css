@@ -30,29 +30,29 @@
   /* 3D transform context for depth effects */
   perspective: 1000px;
   transform-style: preserve-3d;
-  
+
   /* Smooth transitions for all press states */
-  transition: 
+  transition:
     transform var(--duration-tradelia-press, 180ms) var(--ease-tradelia),
     box-shadow var(--duration-tradelia-press, 180ms) var(--ease-tradelia);
 }
 
 /* Press depth variations based on device type */
-.signature-press-feedback[data-device="mobile"] {
+.signature-press-feedback[data-device='mobile'] {
   --press-depth-subtle: 1px;
   --press-depth-medium: 2px;
   --press-depth-deep: 3px;
   --press-depth-dramatic: 4px;
 }
 
-.signature-press-feedback[data-device="tablet"] {
+.signature-press-feedback[data-device='tablet'] {
   --press-depth-subtle: 2px;
   --press-depth-medium: 3px;
   --press-depth-deep: 5px;
   --press-depth-dramatic: 7px;
 }
 
-.signature-press-feedback[data-device="desktop"] {
+.signature-press-feedback[data-device='desktop'] {
   --press-depth-subtle: 2px;
   --press-depth-medium: 4px;
   --press-depth-deep: 6px;
@@ -100,7 +100,7 @@
 }
 
 .haptic-medium {
-  --haptic-scale: 2.0;
+  --haptic-scale: 2;
   --haptic-opacity-start: 0.5;
   --haptic-duration: 0.5s;
 }
@@ -146,30 +146,27 @@
   border-radius: var(--radius-tradelia-pill);
   font-weight: 500;
   letter-spacing: -0.01em;
-  
+
   /* Signature Tradelia shadow system */
-  box-shadow: 
+  box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.05),
     0 0 0 1px rgba(0, 0, 0, 0.05);
-  
+
   /* Smooth transitions */
-  transition: 
+  transition:
     all var(--duration-tradelia-micro, 120ms) var(--ease-tradelia),
     transform var(--duration-tradelia-press, 180ms) var(--ease-tradelia);
 }
 
 /* Button press states */
 .signature-button:active {
-  transform: 
-    translateY(var(--press-depth-medium)) 
-    rotateX(calc(var(--press-depth-medium) * 0.5deg))
-    scale(0.98);
+  transform: translateY(var(--press-depth-medium)) rotateX(calc(var(--press-depth-medium) * 0.5deg)) scale(0.98);
 }
 
 /* Button hover enhancement */
 .signature-button:hover:not(:disabled) {
   transform: translateY(-1px) scale(1.01);
-  box-shadow: 
+  box-shadow:
     0 4px 12px rgba(0, 0, 0, 0.1),
     0 0 0 1px rgba(0, 0, 0, 0.05);
 }
@@ -177,7 +174,7 @@
 /* Button focus enhancement */
 .signature-button:focus-visible {
   outline: none;
-  box-shadow: 
+  box-shadow:
     0 0 0 2px var(--color-background),
     0 0 0 4px var(--color-primary),
     0 4px 12px rgba(0, 0, 0, 0.1);
@@ -199,39 +196,36 @@
   background: var(--color-background);
   border-radius: var(--radius-tradelia-card);
   border: 1px solid var(--color-border);
-  
+
   /* Signature Tradelia glass effect */
   backdrop-filter: blur(8px);
   background: rgba(255, 255, 255, 0.95);
-  
+
   /* Subtle shadow system */
-  box-shadow: 
+  box-shadow:
     0 1px 3px rgba(0, 0, 0, 0.05),
     0 0 0 1px rgba(0, 0, 0, 0.02);
-  
+
   /* Smooth transitions */
-  transition: 
+  transition:
     all var(--duration-tradelia-micro, 120ms) var(--ease-tradelia),
     transform var(--duration-tradelia-press, 180ms) var(--ease-tradelia);
 }
 
 /* Card interactive states */
-.signature-card[data-interactive="true"] {
+.signature-card[data-interactive='true'] {
   cursor: pointer;
 }
 
-.signature-card[data-interactive="true"]:hover {
+.signature-card[data-interactive='true']:hover {
   transform: translateY(-2px) scale(1.005);
-  box-shadow: 
+  box-shadow:
     0 8px 25px rgba(0, 0, 0, 0.08),
     0 0 0 1px rgba(0, 0, 0, 0.02);
 }
 
-.signature-card[data-interactive="true"]:active {
-  transform: 
-    translateY(var(--press-depth-subtle)) 
-    rotateX(calc(var(--press-depth-subtle) * 0.3deg))
-    scale(0.995);
+.signature-card[data-interactive='true']:active {
+  transform: translateY(var(--press-depth-subtle)) rotateX(calc(var(--press-depth-subtle) * 0.3deg)) scale(0.995);
 }
 
 /* ============================================================================
@@ -277,10 +271,10 @@
     transition-duration: 0.01ms !important;
     transform: none !important;
   }
-  
+
   /* Maintain basic hover feedback for usability */
   .signature-button:hover:not(:disabled),
-  .signature-card[data-interactive="true"]:hover {
+  .signature-card[data-interactive='true']:hover {
     opacity: 0.9;
     transform: none !important;
   }
@@ -293,7 +287,7 @@
     border-width: 2px;
     box-shadow: none;
   }
-  
+
   .haptic-visual-feedback {
     opacity: 0.8;
   }
@@ -308,7 +302,7 @@
 .signature-card {
   /* Use GPU layers for smooth animations */
   transform: translateZ(0);
-  
+
   /* Optimize repaints */
   contain: layout style paint;
 }
@@ -317,7 +311,7 @@
 .haptic-ripple {
   /* Use transform instead of changing dimensions */
   transform: translate(-50%, -50%) scale(0);
-  
+
   /* Optimize for GPU */
   will-change: transform, opacity;
 }
@@ -333,13 +327,13 @@
     min-height: 44px;
     padding: 12px 16px;
   }
-  
+
   /* Reduce motion intensity on mobile */
   .signature-button:hover:not(:disabled) {
     transform: scale(1.005);
   }
-  
-  .signature-card[data-interactive="true"]:hover {
+
+  .signature-card[data-interactive='true']:hover {
     transform: scale(1.002);
   }
 }
@@ -349,8 +343,8 @@
   .signature-button:hover:not(:disabled) {
     transform: translateY(-2px) scale(1.02);
   }
-  
-  .signature-card[data-interactive="true"]:hover {
+
+  .signature-card[data-interactive='true']:hover {
     transform: translateY(-4px) scale(1.01);
   }
 }

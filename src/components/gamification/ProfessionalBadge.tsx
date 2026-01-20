@@ -1,8 +1,9 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import { useEffect, useState } from 'react';
+
 import type { ProfessionalBadge } from '@/libs/gamification';
 import { RARITY_COLORS } from '@/libs/gamification';
 
@@ -42,15 +43,15 @@ export const ProfessionalBadgeComponent = ({
 
   // Premium 2026 animations
   const containerVariants = {
-    initial: { 
-      scale: 0, 
-      rotate: -180, 
+    initial: {
+      scale: 0,
+      rotate: -180,
       opacity: 0,
       filter: 'blur(10px)',
     },
-    animate: { 
-      scale: 1, 
-      rotate: 0, 
+    animate: {
+      scale: 1,
+      rotate: 0,
       opacity: 1,
       filter: 'blur(0px)',
       transition: {
@@ -81,8 +82,8 @@ export const ProfessionalBadgeComponent = ({
 
   const glowVariants = {
     initial: { opacity: 0, scale: 0.8 },
-    animate: { 
-      opacity: [0.3, 0.6, 0.3], 
+    animate: {
+      opacity: [0.3, 0.6, 0.3],
       scale: [0.8, 1.2, 0.8],
       transition: {
         duration: 2,
@@ -166,7 +167,7 @@ export const ProfessionalBadgeComponent = ({
 
         {/* Badge Container with Premium Materials */}
         <motion.div
-          className={`relative ${sizeClasses[size]} rounded-full flex items-center justify-center border-2 backdrop-blur-sm`}
+          className={`relative ${sizeClasses[size]} flex items-center justify-center rounded-full border-2 backdrop-blur-sm`}
           style={{
             background: `linear-gradient(135deg, ${rarityColors.primary}E6, ${rarityColors.secondary}CC)`,
             borderColor: rarityColors.accent,
@@ -180,7 +181,7 @@ export const ProfessionalBadgeComponent = ({
         >
           {/* Badge Icon with Micro-interactions */}
           <motion.div
-            className="size-3/4 flex items-center justify-center text-white relative z-10"
+            className="relative z-10 flex size-3/4 items-center justify-center text-white"
             dangerouslySetInnerHTML={{ __html: badge.icon.content }}
             animate={{
               filter: isHovered ? 'brightness(1.2) saturate(1.1)' : 'brightness(1) saturate(1)',
@@ -206,10 +207,10 @@ export const ProfessionalBadgeComponent = ({
         <AnimatePresence>
           {isNew && (
             <motion.div
-              className="absolute -top-1 -right-1 size-4 sm:size-5 bg-gradient-to-r from-destructive to-pink-500 rounded-full flex items-center justify-center shadow-lg"
+              className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-r from-destructive to-pink-500 shadow-lg sm:size-5"
               initial={{ scale: 0, rotate: -180 }}
-              animate={{ 
-                scale: [1, 1.2, 1], 
+              animate={{
+                scale: [1, 1.2, 1],
                 rotate: 0,
                 boxShadow: [
                   '0 0 0 0 hsl(var(--destructive) / 0.7)',
@@ -218,13 +219,13 @@ export const ProfessionalBadgeComponent = ({
                 ],
               }}
               exit={{ scale: 0, opacity: 0 }}
-              transition={{ 
+              transition={{
                 scale: { duration: 1, repeat: Infinity },
                 boxShadow: { duration: 1.5, repeat: Infinity },
               }}
             >
-              <motion.span 
-                className="text-white text-xs font-bold"
+              <motion.span
+                className="text-xs font-bold text-white"
                 animate={{ rotate: [0, 10, -10, 0] }}
                 transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 2 }}
               >
@@ -236,7 +237,7 @@ export const ProfessionalBadgeComponent = ({
 
         {/* Rarity Border Animation */}
         <motion.div
-          className="absolute inset-0 rounded-full border-2 pointer-events-none"
+          className="pointer-events-none absolute inset-0 rounded-full border-2"
           style={{ borderColor: rarityColors.accent }}
           animate={{
             borderColor: [rarityColors.accent, rarityColors.primary, rarityColors.accent],
@@ -253,14 +254,14 @@ export const ProfessionalBadgeComponent = ({
       <AnimatePresence>
         {showTooltipState && (
           <motion.div
-            className="absolute bottom-full left-1/2 mb-3 z-50"
+            className="absolute bottom-full left-1/2 z-50 mb-3"
             initial={{ opacity: 0, y: 10, scale: 0.8, filter: 'blur(4px)' }}
             animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
             exit={{ opacity: 0, y: 10, scale: 0.8, filter: 'blur(4px)' }}
             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
           >
             <motion.div
-              className="relative px-4 py-3 bg-card/95 backdrop-blur-xl rounded-xl shadow-2xl border border-border min-w-64 max-w-80"
+              className="relative min-w-64 max-w-80 rounded-xl border border-border bg-card/95 px-4 py-3 shadow-2xl backdrop-blur-xl"
               style={{
                 boxShadow: `
                   0 20px 40px hsl(var(--background) / 0.15),
@@ -272,10 +273,10 @@ export const ProfessionalBadgeComponent = ({
               transition={{ type: 'spring', stiffness: 400, damping: 25 }}
             >
               {/* Tooltip Content */}
-              <div className="text-center space-y-3">
+              <div className="space-y-3 text-center">
                 {/* Badge Name with Rarity Color */}
-                <motion.h3 
-                  className="font-bold text-sm leading-tight text-foreground"
+                <motion.h3
+                  className="text-sm font-bold leading-tight text-foreground"
                   style={{ color: rarityColors.primary }}
                   initial={{ opacity: 0, y: 5 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -285,8 +286,8 @@ export const ProfessionalBadgeComponent = ({
                 </motion.h3>
 
                 {/* Description */}
-                <motion.p 
-                  className="text-xs text-muted-foreground leading-relaxed"
+                <motion.p
+                  className="text-xs leading-relaxed text-muted-foreground"
                   initial={{ opacity: 0, y: 5 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
@@ -295,36 +296,39 @@ export const ProfessionalBadgeComponent = ({
                 </motion.p>
 
                 {/* Badge Stats */}
-                <motion.div 
-                  className="flex items-center justify-between text-xs pt-2 border-t border-border"
+                <motion.div
+                  className="flex items-center justify-between border-t border-border pt-2 text-xs"
                   initial={{ opacity: 0, y: 5 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
                 >
                   <motion.span
-                    className="px-2 py-1 rounded-full text-white font-medium text-xs"
+                    className="rounded-full px-2 py-1 text-xs font-medium text-white"
                     style={{ backgroundColor: rarityColors.primary }}
                     whileHover={{ scale: 1.05 }}
                   >
                     {t(`rarity_${badge.rarity}` as any).toUpperCase()}
                   </motion.span>
-                  <motion.span 
-                    className="text-warning font-semibold flex items-center gap-1"
+                  <motion.span
+                    className="flex items-center gap-1 font-semibold text-warning"
                     whileHover={{ scale: 1.05 }}
                   >
                     <span className="text-warning">✦</span>
-                    +{badge.xpReward} {t('xp')}
+                    +
+                    {badge.xpReward}
+                    {' '}
+                    {t('xp')}
                   </motion.span>
                 </motion.div>
               </div>
 
               {/* Tooltip Arrow */}
-              <div 
-                className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-card"
+              <div
+                className="absolute left-1/2 top-full size-0 -translate-x-1/2 border-x-4 border-t-4 border-transparent border-t-card"
               />
 
               {/* Subtle Glow */}
-              <div 
+              <div
                 className="absolute inset-0 rounded-xl opacity-20 blur-xl"
                 style={{ backgroundColor: rarityColors.glow }}
               />
@@ -343,9 +347,9 @@ type BadgeShowcaseProps = {
   showCelebration?: boolean;
 };
 
-export const BadgeShowcase = ({ 
-  badges, 
-  maxDisplay = 5, 
+export const BadgeShowcase = ({
+  badges,
+  maxDisplay = 5,
   size = 'md',
   showCelebration = false,
 }: BadgeShowcaseProps) => {
@@ -354,7 +358,7 @@ export const BadgeShowcase = ({
 
   // Responsive gap classes using 4px spacing scale
   const gapClasses = 'flex items-center gap-2 sm:gap-3 md:gap-4';
-  
+
   // Responsive size classes for overflow indicator
   const overflowSizeClasses = {
     sm: 'size-8 sm:size-10',
@@ -372,15 +376,15 @@ export const BadgeShowcase = ({
             initial={{ opacity: 0, x: -20, scale: 0.8 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 20, scale: 0.8 }}
-            transition={{ 
+            transition={{
               delay: index * 0.1,
               type: 'spring',
               stiffness: 300,
               damping: 20,
             }}
           >
-            <ProfessionalBadgeComponent 
-              badge={badge} 
+            <ProfessionalBadgeComponent
+              badge={badge}
               size={size}
               isNew={showCelebration && index === displayBadges.length - 1}
             />
@@ -391,21 +395,22 @@ export const BadgeShowcase = ({
       {/* Overflow Indicator with Premium Design */}
       <AnimatePresence>
         {remainingCount > 0 && (
-          <motion.div 
-            className={`${overflowSizeClasses[size]} rounded-full bg-gradient-to-br from-muted to-muted/80 flex items-center justify-center border-2 border-border backdrop-blur-sm`}
+          <motion.div
+            className={`${overflowSizeClasses[size]} flex items-center justify-center rounded-full border-2 border-border bg-gradient-to-br from-muted to-muted/80 backdrop-blur-sm`}
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
-            whileHover={{ 
+            whileHover={{
               scale: 1.1,
               boxShadow: '0 8px 25px hsl(var(--background) / 0.15)',
             }}
             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
           >
-            <motion.span 
-              className="text-muted-foreground font-semibold text-sm"
+            <motion.span
+              className="text-sm font-semibold text-muted-foreground"
               whileHover={{ scale: 1.1 }}
             >
-              +{remainingCount}
+              +
+              {remainingCount}
             </motion.span>
           </motion.div>
         )}

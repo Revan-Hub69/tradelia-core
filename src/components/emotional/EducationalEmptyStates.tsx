@@ -1,6 +1,6 @@
 /**
  * EDUCATIONAL EMPTY STATES SYSTEM v2.0 - Enterprise 2026
- * 
+ *
  * Sistema di stati vuoti educativi che guidano e incoraggiano
  * Basato su ricerca UX educativa 2026:
  * - Trasforma "nessun dato" in opportunità di apprendimento
@@ -12,41 +12,42 @@
 'use client';
 
 import React from 'react';
+
 import { cn } from '../../utils/Helpers';
-import { EnterAnimation, SuccessAnimation } from '../motion/SemanticAnimations';
 import { PressAnticipatory } from '../motion/AnticipatoryFeedback';
+import { EnterAnimation, SuccessAnimation } from '../motion/SemanticAnimations';
 
 // Tipi per gli empty states
-export type EmptyStateType = 
-  | 'no_dashboard_data'    // Nessun dato dashboard
-  | 'no_progress'          // Nessun progresso
-  | 'completed_path'       // Percorso completato
-  | 'no_lessons'          // Nessuna lezione
-  | 'no_achievements'     // Nessun achievement
-  | 'no_community'        // Nessuna attività community
-  | 'no_tools_unlocked'   // Nessun tool sbloccato
-  | 'no_search_results'   // Nessun risultato ricerca
-  | 'connection_error'    // Errore di connessione
-  | 'maintenance_mode';   // Modalità manutenzione
+export type EmptyStateType =
+  | 'no_dashboard_data' // Nessun dato dashboard
+  | 'no_progress' // Nessun progresso
+  | 'completed_path' // Percorso completato
+  | 'no_lessons' // Nessuna lezione
+  | 'no_achievements' // Nessun achievement
+  | 'no_community' // Nessuna attività community
+  | 'no_tools_unlocked' // Nessun tool sbloccato
+  | 'no_search_results' // Nessun risultato ricerca
+  | 'connection_error' // Errore di connessione
+  | 'maintenance_mode'; // Modalità manutenzione
 
-export type EmptyStateTone = 
-  | 'encouraging'   // Incoraggiante per principianti
-  | 'supportive'    // Di supporto per chi è in difficoltà
-  | 'celebratory'   // Celebrativo per completamenti
-  | 'motivational'  // Motivazionale per continuare
-  | 'informative';  // Informativo per stati tecnici
+export type EmptyStateTone =
+  | 'encouraging' // Incoraggiante per principianti
+  | 'supportive' // Di supporto per chi è in difficoltà
+  | 'celebratory' // Celebrativo per completamenti
+  | 'motivational' // Motivazionale per continuare
+  | 'informative'; // Informativo per stati tecnici
 
-export type EmptyStateContext = 
-  | 'dashboard'     // Dashboard principale
-  | 'learning'      // Sezione apprendimento
-  | 'progress'      // Pagina progressi
-  | 'community'     // Sezione community
-  | 'tools'         // Sezione strumenti
-  | 'search'        // Risultati ricerca
-  | 'profile';      // Profilo utente
+export type EmptyStateContext =
+  | 'dashboard' // Dashboard principale
+  | 'learning' // Sezione apprendimento
+  | 'progress' // Pagina progressi
+  | 'community' // Sezione community
+  | 'tools' // Sezione strumenti
+  | 'search' // Risultati ricerca
+  | 'profile'; // Profilo utente
 
 // Props per il componente empty state
-interface EducationalEmptyStateProps {
+type EducationalEmptyStateProps = {
   type: EmptyStateType;
   tone?: EmptyStateTone;
   context?: EmptyStateContext;
@@ -56,7 +57,7 @@ interface EducationalEmptyStateProps {
   onAction?: () => void;
   showIllustration?: boolean;
   className?: string;
-}
+};
 
 /**
  * Configurazione degli empty states educativi
@@ -67,15 +68,15 @@ const emptyStateConfig = {
     illustration: '🌟',
     title: {
       it: 'Il tuo percorso inizia qui',
-      en: 'Your journey starts here'
+      en: 'Your journey starts here',
     },
     description: {
       it: 'Perfetto! Sei all\'inizio. Iniziamo con le basi del mondo crypto.',
-      en: 'Perfect! You\'re at the beginning. Let\'s start with crypto basics.'
+      en: 'Perfect! You\'re at the beginning. Let\'s start with crypto basics.',
     },
     action: {
       it: 'Inizia la prima lezione',
-      en: 'Start first lesson'
+      en: 'Start first lesson',
     },
     tone: 'encouraging' as EmptyStateTone,
     color: 'blue',
@@ -84,15 +85,15 @@ const emptyStateConfig = {
     illustration: '🚀',
     title: {
       it: 'Ogni esperto è stato un principiante',
-      en: 'Every expert was once a beginner'
+      en: 'Every expert was once a beginner',
     },
     description: {
       it: 'Il primo passo è sempre il più importante. Inizia il tuo percorso di apprendimento oggi.',
-      en: 'The first step is always the most important. Start your learning journey today.'
+      en: 'The first step is always the most important. Start your learning journey today.',
     },
     action: {
       it: 'Fai il primo passo',
-      en: 'Take the first step'
+      en: 'Take the first step',
     },
     tone: 'supportive' as EmptyStateTone,
     color: 'emerald',
@@ -101,15 +102,15 @@ const emptyStateConfig = {
     illustration: '🏆',
     title: {
       it: 'Incredibile! Hai completato tutto',
-      en: 'Amazing! You\'ve completed everything'
+      en: 'Amazing! You\'ve completed everything',
     },
     description: {
       it: 'Ora sei pronto per i percorsi avanzati e specialistici. Continua a crescere!',
-      en: 'Now you\'re ready for advanced and specialized paths. Keep growing!'
+      en: 'Now you\'re ready for advanced and specialized paths. Keep growing!',
     },
     action: {
       it: 'Esplora percorsi specialistici',
-      en: 'Explore specialist paths'
+      en: 'Explore specialist paths',
     },
     tone: 'celebratory' as EmptyStateTone,
     color: 'gold',
@@ -118,15 +119,15 @@ const emptyStateConfig = {
     illustration: '📚',
     title: {
       it: 'Le tue lezioni ti aspettano',
-      en: 'Your lessons are waiting'
+      en: 'Your lessons are waiting',
     },
     description: {
       it: 'Abbiamo preparato un percorso personalizzato per te. Ogni lezione è progettata per il tuo livello.',
-      en: 'We\'ve prepared a personalized path for you. Each lesson is designed for your level.'
+      en: 'We\'ve prepared a personalized path for you. Each lesson is designed for your level.',
     },
     action: {
       it: 'Inizia a imparare',
-      en: 'Start learning'
+      en: 'Start learning',
     },
     tone: 'encouraging' as EmptyStateTone,
     color: 'purple',
@@ -135,15 +136,15 @@ const emptyStateConfig = {
     illustration: '🎯',
     title: {
       it: 'I tuoi primi achievement sono vicini',
-      en: 'Your first achievements are close'
+      en: 'Your first achievements are close',
     },
     description: {
       it: 'Completa le prime lezioni per sbloccare i tuoi primi riconoscimenti.',
-      en: 'Complete the first lessons to unlock your first achievements.'
+      en: 'Complete the first lessons to unlock your first achievements.',
     },
     action: {
       it: 'Guadagna il primo achievement',
-      en: 'Earn your first achievement'
+      en: 'Earn your first achievement',
     },
     tone: 'motivational' as EmptyStateTone,
     color: 'amber',
@@ -152,15 +153,15 @@ const emptyStateConfig = {
     illustration: '👥',
     title: {
       it: 'La community ti aspetta',
-      en: 'The community awaits you'
+      en: 'The community awaits you',
     },
     description: {
       it: 'Connettiti con altri studenti, condividi esperienze e impara insieme.',
-      en: 'Connect with other students, share experiences and learn together.'
+      en: 'Connect with other students, share experiences and learn together.',
     },
     action: {
       it: 'Unisciti alla community',
-      en: 'Join the community'
+      en: 'Join the community',
     },
     tone: 'encouraging' as EmptyStateTone,
     color: 'teal',
@@ -169,15 +170,15 @@ const emptyStateConfig = {
     illustration: '🛠️',
     title: {
       it: 'Gli strumenti si sbloccano con il progresso',
-      en: 'Tools unlock with progress'
+      en: 'Tools unlock with progress',
     },
     description: {
       it: 'Continua il tuo percorso di apprendimento per accedere a strumenti avanzati.',
-      en: 'Continue your learning journey to access advanced tools.'
+      en: 'Continue your learning journey to access advanced tools.',
     },
     action: {
       it: 'Continua a imparare',
-      en: 'Continue learning'
+      en: 'Continue learning',
     },
     tone: 'motivational' as EmptyStateTone,
     color: 'indigo',
@@ -186,15 +187,15 @@ const emptyStateConfig = {
     illustration: '🔍',
     title: {
       it: 'Nessun risultato trovato',
-      en: 'No results found'
+      en: 'No results found',
     },
     description: {
       it: 'Prova con termini diversi o esplora i contenuti suggeriti.',
-      en: 'Try different terms or explore suggested content.'
+      en: 'Try different terms or explore suggested content.',
     },
     action: {
       it: 'Esplora contenuti',
-      en: 'Explore content'
+      en: 'Explore content',
     },
     tone: 'supportive' as EmptyStateTone,
     color: 'slate',
@@ -203,15 +204,15 @@ const emptyStateConfig = {
     illustration: '📶',
     title: {
       it: 'Problema di connessione',
-      en: 'Connection issue'
+      en: 'Connection issue',
     },
     description: {
       it: 'Controlla la tua connessione internet e riprova. I tuoi progressi sono al sicuro.',
-      en: 'Check your internet connection and try again. Your progress is safe.'
+      en: 'Check your internet connection and try again. Your progress is safe.',
     },
     action: {
       it: 'Riprova',
-      en: 'Try again'
+      en: 'Try again',
     },
     tone: 'informative' as EmptyStateTone,
     color: 'orange',
@@ -220,15 +221,15 @@ const emptyStateConfig = {
     illustration: '🔧',
     title: {
       it: 'Stiamo migliorando l\'esperienza',
-      en: 'We\'re improving the experience'
+      en: 'We\'re improving the experience',
     },
     description: {
       it: 'Torneremo presto con nuove funzionalità. Grazie per la pazienza!',
-      en: 'We\'ll be back soon with new features. Thanks for your patience!'
+      en: 'We\'ll be back soon with new features. Thanks for your patience!',
     },
     action: {
       it: 'Torna più tardi',
-      en: 'Come back later'
+      en: 'Come back later',
     },
     tone: 'informative' as EmptyStateTone,
     color: 'blue',
@@ -250,10 +251,10 @@ export const EducationalEmptyState: React.FC<EducationalEmptyStateProps> = ({
   className,
 }) => {
   const [locale, setLocale] = React.useState<'it' | 'en'>('it');
-  
+
   const config = emptyStateConfig[type];
   const finalTone = tone || config.tone;
-  
+
   // Detect locale (simplified)
   React.useEffect(() => {
     const detectedLocale = navigator.language.startsWith('it') ? 'it' : 'en';
@@ -268,17 +269,17 @@ export const EducationalEmptyState: React.FC<EducationalEmptyStateProps> = ({
     // Base styles
     'flex flex-col items-center justify-center text-center p-8 space-y-6',
     'min-h-[400px] max-w-md mx-auto',
-    
+
     // Context-specific adjustments
     context === 'dashboard' && 'min-h-[300px]',
     context === 'search' && 'min-h-[200px] p-6',
-    
+
     className,
   );
 
   const illustrationClasses = cn(
     'text-6xl mb-4',
-    
+
     // Tone-based animations
     finalTone === 'encouraging' && 'animate-bounce',
     finalTone === 'celebratory' && 'animate-pulse',
@@ -287,7 +288,7 @@ export const EducationalEmptyState: React.FC<EducationalEmptyStateProps> = ({
 
   const titleClasses = cn(
     'text-xl font-semibold mb-3',
-    
+
     // Color theming
     config.color === 'blue' && 'text-blue-900 dark:text-blue-100',
     config.color === 'emerald' && 'text-emerald-900 dark:text-emerald-100',
@@ -302,7 +303,7 @@ export const EducationalEmptyState: React.FC<EducationalEmptyStateProps> = ({
 
   const descriptionClasses = cn(
     'text-muted-foreground leading-relaxed mb-6',
-    
+
     // Tone adjustments
     finalTone === 'celebratory' && 'text-lg',
     finalTone === 'encouraging' && 'text-base',
@@ -325,7 +326,7 @@ export const EducationalEmptyState: React.FC<EducationalEmptyStateProps> = ({
           <h2 className={titleClasses}>
             {title}
           </h2>
-          
+
           <p className={descriptionClasses}>
             {description}
           </p>
@@ -340,7 +341,7 @@ export const EducationalEmptyState: React.FC<EducationalEmptyStateProps> = ({
             className={cn(
               'px-6 py-3 rounded-lg font-medium transition-all duration-200',
               'hover:shadow-md active:scale-95',
-              
+
               // Color theming for button
               config.color === 'blue' && 'bg-blue-600 text-white hover:bg-blue-700',
               config.color === 'emerald' && 'bg-emerald-600 text-white hover:bg-emerald-700',
@@ -444,9 +445,9 @@ export const EmptyStateTester: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Controls */}
-      <div className="p-4 rounded-lg border bg-card">
-        <h3 className="text-lg font-semibold mb-4">Test Empty States</h3>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+      <div className="rounded-lg border bg-card p-4">
+        <h3 className="mb-4 text-lg font-semibold">Test Empty States</h3>
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
           {states.map(state => (
             <button
               key={state.type}
@@ -455,7 +456,7 @@ export const EmptyStateTester: React.FC = () => {
                 'px-3 py-2 rounded text-sm transition-colors',
                 currentState === state.type
                   ? 'bg-primary text-primary-foreground'
-                  : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                  : 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
               )}
             >
               {state.label}
@@ -465,7 +466,7 @@ export const EmptyStateTester: React.FC = () => {
       </div>
 
       {/* Preview */}
-      <div className="border rounded-lg bg-background">
+      <div className="rounded-lg border bg-background">
         <EducationalEmptyState
           type={currentState}
           onAction={() => console.log(`Action triggered for ${currentState}`)}

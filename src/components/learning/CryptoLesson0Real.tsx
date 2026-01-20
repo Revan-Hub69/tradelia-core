@@ -165,8 +165,10 @@ export const CryptoLesson0Real: React.FC = () => {
           <div className="space-y-6">
             <div className="text-lg leading-relaxed">
               <span className="float-left mr-3 text-5xl font-bold text-primary">I</span>
-              <span>magina di entrare in una banca molto speciale. Non c'è un direttore, non ci sono cassieri, 
-              ma migliaia di persone in tutto il mondo tengono una copia identica dello stesso registro dei conti.</span>
+              <span>
+                magina di entrare in una banca molto speciale. Non c'è un direttore, non ci sono cassieri,
+                ma migliaia di persone in tutto il mondo tengono una copia identica dello stesso registro dei conti.
+              </span>
             </div>
 
             <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
@@ -174,32 +176,48 @@ export const CryptoLesson0Real: React.FC = () => {
               <div className="space-y-2 text-sm text-blue-800">
                 <div className="flex items-center gap-2">
                   <div className="size-2 rounded-full bg-blue-500"></div>
-                  <span><strong>Registro tradizionale</strong> → Blockchain (catena di blocchi)</span>
+                  <span>
+                    <strong>Registro tradizionale</strong>
+                    {' '}
+                    → Blockchain (catena di blocchi)
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="size-2 rounded-full bg-blue-500"></div>
-                  <span><strong>Pagine del registro</strong> → Blocchi di transazioni</span>
+                  <span>
+                    <strong>Pagine del registro</strong>
+                    {' '}
+                    → Blocchi di transazioni
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="size-2 rounded-full bg-blue-500"></div>
-                  <span><strong>Contabili</strong> → Computer della rete</span>
+                  <span>
+                    <strong>Contabili</strong>
+                    {' '}
+                    → Computer della rete
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="size-2 rounded-full bg-blue-500"></div>
-                  <span><strong>Approvazione unanime</strong> → Consenso distribuito</span>
+                  <span>
+                    <strong>Approvazione unanime</strong>
+                    {' '}
+                    → Consenso distribuito
+                  </span>
                 </div>
               </div>
             </div>
 
             <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
               <div className="flex items-start gap-3">
-                <svg className="size-5 text-amber-600 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="mt-0.5 size-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
                 <div>
                   <h4 className="font-semibold text-amber-900">Importante da sapere:</h4>
                   <p className="mt-1 text-sm text-amber-800">
-                    A differenza di un registro fisico, la blockchain funziona 24/7 in tutto il mondo 
+                    A differenza di un registro fisico, la blockchain funziona 24/7 in tutto il mondo
                     e può crescere infinitamente. Inoltre garantisce privacy (pseudonimato) invece di trasparenza completa.
                   </p>
                 </div>
@@ -212,10 +230,10 @@ export const CryptoLesson0Real: React.FC = () => {
                 {[
                   'Nessuna autorità centrale controlla il sistema',
                   'La sicurezza deriva dalla verifica collettiva',
-                  'Una volta registrata, una transazione è praticamente immutabile'
+                  'Una volta registrata, una transazione è praticamente immutabile',
                 ].map((point, i) => (
                   <div key={i} className="flex items-start gap-2">
-                    <svg className="size-4 text-green-600 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="mt-0.5 size-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                     <span className="text-sm text-green-800">{point}</span>
@@ -249,8 +267,10 @@ export const CryptoLesson0Real: React.FC = () => {
           <div className="space-y-6">
             <div className="text-lg leading-relaxed">
               <span className="float-left mr-3 text-5xl font-bold text-primary">S</span>
-              <span>eguiamo passo dopo passo cosa succede quando Alice decide di inviare 1 Bitcoin a Bob. 
-              Ogni passaggio è verificabile e trasparente.</span>
+              <span>
+                eguiamo passo dopo passo cosa succede quando Alice decide di inviare 1 Bitcoin a Bob.
+                Ogni passaggio è verificabile e trasparente.
+              </span>
             </div>
 
             <div className="space-y-4">
@@ -259,50 +279,52 @@ export const CryptoLesson0Real: React.FC = () => {
                   number: 1,
                   title: 'Alice crea la transazione',
                   description: 'Apre il wallet, inserisce l\'indirizzo di Bob e l\'importo da inviare',
-                  checkpoint: 'Il sistema verifica che Alice abbia fondi sufficienti'
+                  checkpoint: 'Il sistema verifica che Alice abbia fondi sufficienti',
                 },
                 {
                   number: 2,
                   title: 'Alice firma digitalmente',
                   description: 'Usa la sua chiave privata segreta per autorizzare il trasferimento',
-                  checkpoint: 'La firma prova matematicamente che è davvero Alice'
+                  checkpoint: 'La firma prova matematicamente che è davvero Alice',
                 },
                 {
                   number: 3,
                   title: 'Trasmissione alla rete',
                   description: 'La transazione viene inviata a migliaia di computer nel mondo',
-                  checkpoint: 'Ogni nodo riceve e inizia la verifica'
+                  checkpoint: 'Ogni nodo riceve e inizia la verifica',
                 },
                 {
                   number: 4,
                   title: 'Validazione distribuita',
                   description: 'Ogni computer verifica indipendentemente che tutto sia corretto',
-                  checkpoint: 'Controlli matematici su firma, fondi e regole'
+                  checkpoint: 'Controlli matematici su firma, fondi e regole',
                 },
                 {
                   number: 5,
                   title: 'Inclusione nel blocco',
                   description: 'I miner competono per includere la transazione nel prossimo blocco',
-                  checkpoint: 'Transazione diventa parte permanente della blockchain'
+                  checkpoint: 'Transazione diventa parte permanente della blockchain',
                 },
                 {
                   number: 6,
                   title: 'Bob riceve i Bitcoin',
                   description: 'La transazione è completata e Bob può usare i fondi',
-                  checkpoint: 'Processo completato in 10-60 minuti'
-                }
+                  checkpoint: 'Processo completato in 10-60 minuti',
+                },
               ].map((step, i) => (
                 <div key={i} className="flex gap-4">
-                  <div className="flex-shrink-0">
+                  <div className="shrink-0">
                     <div className="flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80 text-sm font-bold text-white">
                       {step.number}
                     </div>
                   </div>
                   <div className="flex-1">
                     <h4 className="font-semibold text-foreground">{step.title}</h4>
-                    <p className="text-sm text-muted-foreground mt-1">{step.description}</p>
-                    <div className="text-xs text-green-600 font-medium mt-2">
-                      ✓ {step.checkpoint}
+                    <p className="mt-1 text-sm text-muted-foreground">{step.description}</p>
+                    <div className="mt-2 text-xs font-medium text-green-600">
+                      ✓
+                      {' '}
+                      {step.checkpoint}
                     </div>
                   </div>
                 </div>
@@ -311,14 +333,17 @@ export const CryptoLesson0Real: React.FC = () => {
 
             <div className="rounded-xl border border-green-200 bg-green-50 p-4">
               <div className="flex items-start gap-3">
-                <svg className="size-5 text-green-600 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="mt-0.5 size-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <div>
                   <h4 className="font-semibold text-green-900">Risultato:</h4>
                   <p className="mt-1 text-sm text-green-800">
-                    Alice ha trasferito valore a Bob senza banche, governi o intermediari. 
-                    La sicurezza deriva dalla <strong>matematica e dal consenso distribuito</strong>, non dalla fiducia.
+                    Alice ha trasferito valore a Bob senza banche, governi o intermediari.
+                    La sicurezza deriva dalla
+                    {' '}
+                    <strong>matematica e dal consenso distribuito</strong>
+                    , non dalla fiducia.
                   </p>
                 </div>
               </div>
@@ -349,13 +374,18 @@ export const CryptoLesson0Real: React.FC = () => {
           <div className="space-y-6">
             <div className="text-lg leading-relaxed">
               <span className="float-left mr-3 text-5xl font-bold text-primary">U</span>
-              <span>na criptovaluta è un <strong>asset digitale programmabile</strong> che utilizza 
-              la crittografia per garantire transazioni sicure, operando su una rete distribuita senza autorità centrale.</span>
+              <span>
+                na criptovaluta è un
+                <strong>asset digitale programmabile</strong>
+                {' '}
+                che utilizza
+                la crittografia per garantire transazioni sicure, operando su una rete distribuita senza autorità centrale.
+              </span>
             </div>
 
             <div className="grid gap-6 md:grid-cols-2">
               <div>
-                <h4 className="text-lg font-bold mb-4 flex items-center gap-2">
+                <h4 className="mb-4 flex items-center gap-2 text-lg font-bold">
                   <div className="size-2 rounded-full bg-primary"></div>
                   Componenti Fondamentali
                 </h4>
@@ -365,10 +395,10 @@ export const CryptoLesson0Real: React.FC = () => {
                     'Funzioni hash crittografiche (SHA-256)',
                     'Algoritmi di consenso (Proof of Work, Proof of Stake)',
                     'Strutture dati Merkle Tree',
-                    'Rete peer-to-peer distribuita'
+                    'Rete peer-to-peer distribuita',
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-2 text-sm">
-                      <div className="size-1.5 rounded-full bg-primary mt-2 flex-shrink-0"></div>
+                      <div className="mt-2 size-1.5 shrink-0 rounded-full bg-primary"></div>
                       <span>{item}</span>
                     </div>
                   ))}
@@ -376,7 +406,7 @@ export const CryptoLesson0Real: React.FC = () => {
               </div>
 
               <div>
-                <h4 className="text-lg font-bold mb-4 flex items-center gap-2">
+                <h4 className="mb-4 flex items-center gap-2 text-lg font-bold">
                   <div className="size-2 rounded-full bg-accent"></div>
                   Proprietà Emergenti
                 </h4>
@@ -385,7 +415,7 @@ export const CryptoLesson0Real: React.FC = () => {
                     { title: 'Decentralizzazione', desc: 'Nessun single point of failure' },
                     { title: 'Immutabilità', desc: 'Resistenza alle modifiche retroattive' },
                     { title: 'Trasparenza', desc: 'Tutte le transazioni verificabili' },
-                    { title: 'Pseudonimato', desc: 'Privacy con trasparenza selettiva' }
+                    { title: 'Pseudonimato', desc: 'Privacy con trasparenza selettiva' },
                   ].map((item, i) => (
                     <div key={i} className="text-sm">
                       <div className="font-medium text-foreground">{item.title}</div>
@@ -398,11 +428,27 @@ export const CryptoLesson0Real: React.FC = () => {
 
             <div className="rounded-xl border border-purple-200 bg-purple-50 p-4">
               <h4 className="mb-3 font-semibold text-purple-900">Implicazioni Sistemiche:</h4>
-              <div className="grid gap-2 sm:grid-cols-2 text-sm text-purple-800">
-                <div><strong>Trade-off:</strong> Decentralizzazione vs Efficienza</div>
-                <div><strong>Sicurezza:</strong> Crittografia vs Gestione chiavi</div>
-                <div><strong>Scalabilità:</strong> Throughput vs Decentralizzazione</div>
-                <div><strong>Governance:</strong> Immutabilità vs Correzione errori</div>
+              <div className="grid gap-2 text-sm text-purple-800 sm:grid-cols-2">
+                <div>
+                  <strong>Trade-off:</strong>
+                  {' '}
+                  Decentralizzazione vs Efficienza
+                </div>
+                <div>
+                  <strong>Sicurezza:</strong>
+                  {' '}
+                  Crittografia vs Gestione chiavi
+                </div>
+                <div>
+                  <strong>Scalabilità:</strong>
+                  {' '}
+                  Throughput vs Decentralizzazione
+                </div>
+                <div>
+                  <strong>Governance:</strong>
+                  {' '}
+                  Immutabilità vs Correzione errori
+                </div>
               </div>
             </div>
           </div>
@@ -434,9 +480,9 @@ export const CryptoLesson0Real: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h3 className="text-xl font-bold mb-2">Complimenti!</h3>
-            <p className="text-muted-foreground mb-4">
-              Hai completato la lezione base sulle criptovalute. 
+            <h3 className="mb-2 text-xl font-bold">Complimenti!</h3>
+            <p className="mb-4 text-muted-foreground">
+              Hai completato la lezione base sulle criptovalute.
               Ora sai cos'è una blockchain, come funziona una transazione e quali sono i concetti fondamentali.
             </p>
             <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
@@ -466,7 +512,7 @@ export const CryptoLesson0Real: React.FC = () => {
     }
 
     const stepId = currentStepData.id;
-    
+
     switch (stepId) {
       case 'intro':
         return renderIntroStep();
@@ -506,7 +552,13 @@ export const CryptoLesson0Real: React.FC = () => {
             {/* Progress info */}
             <div className="flex items-center gap-3">
               <span className="text-sm font-medium text-muted-foreground">
-                Passo {currentStep + 1} di {steps.length}
+                Passo
+                {' '}
+                {currentStep + 1}
+                {' '}
+                di
+                {' '}
+                {steps.length}
               </span>
             </div>
           </div>
@@ -528,16 +580,18 @@ export const CryptoLesson0Real: React.FC = () => {
 
           {/* Navigation - EXACTLY like Tradelia onboarding */}
           <div className="mt-8 text-center">
-            {currentStep < steps.length - 1 ? (
-              <Button onClick={handleNext} size="lg" className="px-8">
-                {currentStep === 0 ? 'Iniziamo! →' : 'Continua →'}
-              </Button>
-            ) : (
-              <Button size="lg" className="px-8">
-                Vai al Dashboard →
-              </Button>
-            )}
-            
+            {currentStep < steps.length - 1
+              ? (
+                  <Button onClick={handleNext} size="lg" className="px-8">
+                    {currentStep === 0 ? 'Iniziamo! →' : 'Continua →'}
+                  </Button>
+                )
+              : (
+                  <Button size="lg" className="px-8">
+                    Vai al Dashboard →
+                  </Button>
+                )}
+
             {currentStep === 0 && (
               <p className="mt-2 text-xs text-muted-foreground">
                 5 minuti • Niente spam • Informazioni verificate

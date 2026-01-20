@@ -1,16 +1,16 @@
 'use client';
 
-import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { Loader2 } from 'lucide-react';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
 
-interface LazyLoadOptions {
+type LazyLoadOptions = {
   threshold?: number;
   rootMargin?: string;
   preload?: boolean;
   fallback?: React.ReactNode;
   onLoad?: () => void;
   onError?: (error: Error) => void;
-}
+};
 
 /**
  * Error boundary for lazy loaded components
@@ -49,7 +49,7 @@ const defaultOptions: LazyLoadOptions = {
 
 /**
  * LazyDashboardSection - Lazy loading wrapper for dashboard components
- * 
+ *
  * Features:
  * - Intersection Observer for viewport-based loading
  * - Preloading support for critical components
@@ -78,7 +78,9 @@ export const LazyDashboardSection: React.FC<{
 
   // Intersection Observer for lazy loading
   useEffect(() => {
-    if (preload || hasLoaded) return;
+    if (preload || hasLoaded) {
+      return;
+    }
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -91,7 +93,7 @@ export const LazyDashboardSection: React.FC<{
       {
         threshold,
         rootMargin,
-      }
+      },
     );
 
     if (elementRef.current) {
@@ -129,7 +131,7 @@ export const LazyDashboardSection: React.FC<{
   const ErrorFallback = (
     <div className="flex items-center justify-center py-8">
       <div className="text-center">
-        <p className="text-sm text-destructive mb-2">
+        <p className="mb-2 text-sm text-destructive">
           Errore nel caricamento della sezione
         </p>
         <button
@@ -152,15 +154,17 @@ export const LazyDashboardSection: React.FC<{
 
   return (
     <div ref={elementRef} data-section={sectionId}>
-      {isVisible ? (
-        <Suspense fallback={LoadingFallback}>
-          <ErrorBoundary onError={handleError}>
-            {children}
-          </ErrorBoundary>
-        </Suspense>
-      ) : (
-        LoadingFallback
-      )}
+      {isVisible
+        ? (
+            <Suspense fallback={LoadingFallback}>
+              <ErrorBoundary onError={handleError}>
+                {children}
+              </ErrorBoundary>
+            </Suspense>
+          )
+        : (
+            LoadingFallback
+          )}
     </div>
   );
 };

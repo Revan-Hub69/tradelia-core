@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { UserProgress, ApproachType } from '@/types/learning';
+import { useEffect, useState } from 'react';
+
+import type { ApproachType, UserProgress } from '@/types/learning';
 
 const STORAGE_KEY = 'tradelia_learning_progress';
 
@@ -13,7 +14,7 @@ const defaultProgress: UserProgress = {
   completedLessons: [],
   approachesExplored: new Set(),
   lastActivity: new Date(),
-  badges: []
+  badges: [],
 };
 
 export const useLearningProgress = () => {
@@ -44,7 +45,7 @@ export const useLearningProgress = () => {
       // Convert Set to array for JSON serialization
       const toSave = {
         ...newProgress,
-        approachesExplored: Array.from(newProgress.approachesExplored)
+        approachesExplored: Array.from(newProgress.approachesExplored),
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
       setProgress(newProgress);
@@ -60,7 +61,7 @@ export const useLearningProgress = () => {
     const daysDiff = Math.floor((now.getTime() - lastActivity.getTime()) / (1000 * 60 * 60 * 24));
 
     let newStreak = progress.currentStreak;
-    
+
     if (daysDiff === 1) {
       // Consecutive day - increment streak
       newStreak = progress.currentStreak + 1;
@@ -74,7 +75,7 @@ export const useLearningProgress = () => {
       ...progress,
       currentStreak: newStreak,
       longestStreak: Math.max(progress.longestStreak, newStreak),
-      lastActivity: now
+      lastActivity: now,
     };
 
     saveProgress(newProgress);
@@ -84,13 +85,13 @@ export const useLearningProgress = () => {
   // Complete a lesson
   const completeLesson = (lessonId: string, xpGained: number, approachesUsed: ApproachType[]) => {
     const updatedProgress = updateStreak();
-    
+
     const newProgress: UserProgress = {
       ...updatedProgress,
       totalXP: updatedProgress.totalXP + xpGained,
       level: calculateLevel(updatedProgress.totalXP + xpGained),
       completedLessons: [...new Set([...updatedProgress.completedLessons, lessonId])],
-      approachesExplored: new Set([...updatedProgress.approachesExplored, ...approachesUsed])
+      approachesExplored: new Set([...updatedProgress.approachesExplored, ...approachesUsed]),
     };
 
     // Check for new badges
@@ -120,7 +121,7 @@ export const useLearningProgress = () => {
         description: 'Hai completato la tua prima lezione!',
         icon: '🎯',
         unlockedAt: new Date(),
-        rarity: 'common' as const
+        rarity: 'common' as const,
       });
     }
 
@@ -132,7 +133,7 @@ export const useLearningProgress = () => {
         description: 'Hai esplorato tutti e 3 gli approcci di apprendimento!',
         icon: '🧠',
         unlockedAt: new Date(),
-        rarity: 'rare' as const
+        rarity: 'rare' as const,
       });
     }
 
@@ -144,7 +145,7 @@ export const useLearningProgress = () => {
         description: 'Hai mantenuto una streak di 7 giorni!',
         icon: '🔥',
         unlockedAt: new Date(),
-        rarity: 'rare' as const
+        rarity: 'rare' as const,
       });
     }
 
@@ -163,6 +164,6 @@ export const useLearningProgress = () => {
     completeLesson,
     updateStreak,
     resetProgress,
-    saveProgress
+    saveProgress,
   };
 };

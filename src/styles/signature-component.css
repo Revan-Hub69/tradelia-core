@@ -1,0 +1,415 @@
+/**
+ * TRADELIA SIGNATURE COMPONENT STYLES - Enterprise 2026
+ *
+ * CSS per il componente signature che definisce il brand Tradelia
+ * Texture, interazioni e effetti visivi unici e riconoscibili
+ */
+
+/* ============================================================================
+   SIGNATURE TEXTURES
+   ============================================================================ */
+
+.signature-grain-texture {
+  position: relative;
+}
+
+.signature-grain-texture::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08) 0.5px, transparent 0.5px);
+  background-size:
+    16px 16px,
+    24px 24px,
+    12px 12px;
+  background-position:
+    0 0,
+    8px 8px,
+    4px 4px;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: 0.6;
+}
+
+.signature-glass-texture {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.signature-glass-texture::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.signature-metal-texture {
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 25%, #e2e8f0 50%, #cbd5e0 75%, #a0aec0 100%);
+  position: relative;
+}
+
+.signature-metal-texture::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.8) 50%, transparent 100%);
+  transform: translateX(-100%);
+  animation: metal-shine 3s ease-in-out infinite;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.signature-fabric-texture {
+  position: relative;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 255, 255, 0.03) 2px,
+      rgba(255, 255, 255, 0.03) 4px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 255, 255, 0.03) 2px,
+      rgba(255, 255, 255, 0.03) 4px
+    );
+}
+
+/* ============================================================================
+   SIGNATURE INTERACTIONS
+   ============================================================================ */
+
+.signature-interaction {
+  position: relative;
+  overflow: hidden;
+}
+
+.signature-interaction::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  transform: scale(0);
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.signature-interaction:hover::after {
+  transform: scale(1);
+}
+
+.signature-interaction:active::after {
+  transform: scale(1.2);
+  transition-duration: 0.1s;
+}
+
+.magnetic-interaction {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.magnetic-interaction:hover {
+  transform: translateY(-2px) scale(1.05);
+  filter: brightness(1.1);
+}
+
+.magnetic-interaction:active {
+  transform: translateY(0) scale(0.98);
+  transition-duration: 0.1s;
+}
+
+/* ============================================================================
+   SIGNATURE ANIMATIONS
+   ============================================================================ */
+
+@keyframes metal-shine {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes signature-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 0 rgba(59, 130, 246, 0.4),
+      0 4px 12px rgba(59, 130, 246, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 0 0 8px rgba(59, 130, 246, 0),
+      0 8px 24px rgba(59, 130, 246, 0.3);
+  }
+}
+
+@keyframes signature-glow {
+  0%,
+  100% {
+    filter: brightness(1) saturate(1);
+  }
+  50% {
+    filter: brightness(1.1) saturate(1.2);
+  }
+}
+
+/* ============================================================================
+   SIGNATURE SHAPES
+   ============================================================================ */
+
+.signature-shape-standard {
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+}
+
+.signature-shape-pill {
+  border-radius: 9999px;
+}
+
+.signature-shape-square {
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  aspect-ratio: 1;
+}
+
+.signature-shape-circle {
+  border-radius: 50%;
+  aspect-ratio: 1;
+}
+
+.signature-shape-diamond {
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  aspect-ratio: 1;
+}
+
+/* ============================================================================
+   SIGNATURE VARIANTS
+   ============================================================================ */
+
+.signature-primary {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+.signature-primary:hover {
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.4);
+  animation: signature-glow 2s ease-in-out infinite;
+}
+
+.signature-accent {
+  background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+}
+
+.signature-accent:hover {
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+  animation: signature-glow 2s ease-in-out infinite;
+}
+
+.signature-premium {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+  color: #1f2937;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.signature-premium:hover {
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.5);
+  animation: signature-glow 2s ease-in-out infinite;
+}
+
+/* ============================================================================
+   SIGNATURE SIZES
+   ============================================================================ */
+
+.signature-xs {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  min-height: 24px;
+}
+
+.signature-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  min-height: 32px;
+}
+
+.signature-md {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  min-height: 40px;
+}
+
+.signature-lg {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.125rem;
+  min-height: 48px;
+}
+
+.signature-xl {
+  padding: 1rem 2rem;
+  font-size: 1.25rem;
+  min-height: 56px;
+}
+
+.signature-hero {
+  padding: 1.5rem 3rem;
+  font-size: 1.5rem;
+  min-height: 72px;
+}
+
+/* ============================================================================
+   ACCESSIBILITY & REDUCED MOTION
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .signature-interaction::after {
+    transition: none;
+    animation: none;
+  }
+
+  .magnetic-interaction {
+    transition: none;
+  }
+
+  .signature-primary:hover,
+  .signature-accent:hover,
+  .signature-premium:hover {
+    animation: none;
+  }
+
+  @keyframes metal-shine {
+    0%,
+    100% {
+      transform: translateX(-100%);
+      opacity: 0.3;
+    }
+  }
+}
+
+/* ============================================================================
+   HIGH CONTRAST MODE
+   ============================================================================ */
+
+@media (prefers-contrast: high) {
+  .signature-grain-texture::before {
+    opacity: 0.8;
+  }
+
+  .signature-glass-texture {
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid currentColor;
+  }
+
+  .signature-primary,
+  .signature-accent,
+  .signature-premium {
+    border: 2px solid currentColor;
+  }
+}
+
+/* ============================================================================
+   DARK MODE ADAPTATIONS
+   ============================================================================ */
+
+.dark .signature-metal-texture {
+  background: linear-gradient(135deg, #374151 0%, #4b5563 25%, #6b7280 50%, #9ca3af 75%, #d1d5db 100%);
+}
+
+.dark .signature-fabric-texture {
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 255, 255, 0.05) 2px,
+      rgba(255, 255, 255, 0.05) 4px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 255, 255, 0.05) 2px,
+      rgba(255, 255, 255, 0.05) 4px
+    );
+}
+
+/* ============================================================================
+   MOBILE OPTIMIZATIONS
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  .signature-hero {
+    padding: 1rem 2rem;
+    font-size: 1.25rem;
+    min-height: 56px;
+  }
+
+  .signature-xl {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.125rem;
+    min-height: 48px;
+  }
+
+  .magnetic-interaction:hover {
+    transform: translateY(-1px) scale(1.02);
+  }
+}
+
+/* ============================================================================
+   BATTERY SAVING MODE
+   ============================================================================ */
+
+.battery-saving .signature-interaction::after {
+  display: none;
+}
+
+.battery-saving .signature-primary:hover,
+.battery-saving .signature-accent:hover,
+.battery-saving .signature-premium:hover {
+  animation: none;
+}
+
+.battery-saving .signature-metal-texture::before {
+  animation: none;
+}
+
+/* ============================================================================
+   LOW POWER OPTIMIZATIONS
+   ============================================================================ */
+
+.low-power-optimized .signature-interaction {
+  transition-duration: 0.15s;
+}
+
+.low-power-optimized .magnetic-interaction {
+  transition-duration: 0.15s;
+}
+
+.low-power-optimized @keyframes metal-shine {
+  animation-duration: 2s;
+}

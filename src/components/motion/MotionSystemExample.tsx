@@ -1,9 +1,9 @@
 /**
  * MOTION SYSTEM INTEGRATION EXAMPLE v2.0 - Enterprise 2026
- * 
+ *
  * Esempio di integrazione del sistema motion Tradelia
  * Dimostra l'uso pratico di tutti i componenti motion
- * 
+ *
  * Questo file serve come:
  * - Documentazione pratica del sistema
  * - Test di integrazione dei componenti
@@ -16,21 +16,21 @@ import React, { useState } from 'react';
 
 // Import del sistema motion completo
 import {
-  TradeliaMotion,
-  PressMotion,
-  HoverMotion,
-  StaggerContainer,
-  SemanticAnimation,
-  EnterAnimation,
-  SuccessAnimation,
-  ErrorAnimation,
   AnticipatoryFeedback,
-  PressAnticipatory,
+  EnterAnimation,
+  ErrorAnimation,
   HoverAnticipatory,
+  HoverMotion,
   LongPressAnticipatory,
-  useTradeliaMotion,
-  useSemanticAnimations,
+  PressAnticipatory,
+  PressMotion,
+  SemanticAnimation,
+  StaggerContainer,
+  SuccessAnimation,
+  TradeliaMotion,
   useAnticipatoryFeedback,
+  useSemanticAnimations,
+  useTradeliaMotion,
 } from './index';
 
 /**
@@ -68,20 +68,30 @@ export const MotionSystemExample: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-8 space-y-12">
+    <div className="mx-auto max-w-4xl space-y-12 p-8">
       {/* Header con motion info */}
       <EnterAnimation context="content">
-        <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold text-gradient-primary">
+        <div className="space-y-4 text-center">
+          <h1 className="text-gradient-primary text-4xl font-bold">
             Tradelia Motion System 2026
           </h1>
           <p className="text-lg text-muted-foreground">
             Sistema enterprise di motion design con personalità
           </p>
           <div className="text-sm text-muted-foreground">
-            Motion Preference: <span className="font-mono">{motionPreference}</span> | 
-            Current Animation: <span className="font-mono">{currentAnimation || 'none'}</span> |
-            Feedback State: <span className="font-mono">{feedbackState}</span>
+            Motion Preference:
+            {' '}
+            <span className="font-mono">{motionPreference}</span>
+            {' '}
+            |
+            Current Animation:
+            {' '}
+            <span className="font-mono">{currentAnimation || 'none'}</span>
+            {' '}
+            |
+            Feedback State:
+            {' '}
+            <span className="font-mono">{feedbackState}</span>
           </div>
         </div>
       </EnterAnimation>
@@ -89,7 +99,7 @@ export const MotionSystemExample: React.FC = () => {
       {/* Feedback Message */}
       {feedbackMessage && (
         <SuccessAnimation context="feedback">
-          <div className="bg-accent/10 border border-accent/30 rounded-lg p-4 text-center">
+          <div className="rounded-lg border border-accent/30 bg-accent/10 p-4 text-center">
             {feedbackMessage}
           </div>
         </SuccessAnimation>
@@ -98,11 +108,11 @@ export const MotionSystemExample: React.FC = () => {
       {/* 1. Basic Motion Components */}
       <section className="space-y-6">
         <h2 className="text-2xl font-semibold">1. Basic Motion Components</h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <TradeliaMotion type="enter" intensity="medium">
-            <div className="glass-surface p-6 rounded-lg text-center">
-              <h3 className="font-semibold mb-2">Enter Motion</h3>
+            <div className="glass-surface rounded-lg p-6 text-center">
+              <h3 className="mb-2 font-semibold">Enter Motion</h3>
               <p className="text-sm text-muted-foreground">
                 Welcoming entry animation
               </p>
@@ -110,8 +120,8 @@ export const MotionSystemExample: React.FC = () => {
           </TradeliaMotion>
 
           <PressMotion>
-            <div className="glass-surface p-6 rounded-lg text-center cursor-pointer">
-              <h3 className="font-semibold mb-2">Press Motion</h3>
+            <div className="glass-surface cursor-pointer rounded-lg p-6 text-center">
+              <h3 className="mb-2 font-semibold">Press Motion</h3>
               <p className="text-sm text-muted-foreground">
                 Click per feedback tattile
               </p>
@@ -119,8 +129,8 @@ export const MotionSystemExample: React.FC = () => {
           </PressMotion>
 
           <HoverMotion>
-            <div className="glass-surface p-6 rounded-lg text-center cursor-pointer">
-              <h3 className="font-semibold mb-2">Hover Motion</h3>
+            <div className="glass-surface cursor-pointer rounded-lg p-6 text-center">
+              <h3 className="mb-2 font-semibold">Hover Motion</h3>
               <p className="text-sm text-muted-foreground">
                 Hover per anticipazione
               </p>
@@ -132,15 +142,15 @@ export const MotionSystemExample: React.FC = () => {
       {/* 2. Semantic Animations */}
       <section className="space-y-6">
         <h2 className="text-2xl font-semibold">2. Semantic Animations</h2>
-        
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           <button
             onClick={handleSuccess}
-            className="glass-surface p-4 rounded-lg hover:bg-accent/10 transition-colors"
+            className="glass-surface rounded-lg p-4 transition-colors hover:bg-accent/10"
           >
             <SuccessAnimation context="feedback">
               <div className="text-center">
-                <div className="text-2xl mb-2">✅</div>
+                <div className="mb-2 text-2xl">✅</div>
                 <div className="text-sm">Success</div>
               </div>
             </SuccessAnimation>
@@ -148,26 +158,26 @@ export const MotionSystemExample: React.FC = () => {
 
           <button
             onClick={handleError}
-            className="glass-surface p-4 rounded-lg hover:bg-destructive/10 transition-colors"
+            className="glass-surface rounded-lg p-4 transition-colors hover:bg-destructive/10"
           >
             <ErrorAnimation context="feedback">
               <div className="text-center">
-                <div className="text-2xl mb-2">❌</div>
+                <div className="mb-2 text-2xl">❌</div>
                 <div className="text-sm">Error</div>
               </div>
             </ErrorAnimation>
           </button>
 
           <SemanticAnimation type="loading" context="ui">
-            <div className="glass-surface p-4 rounded-lg text-center">
-              <div className="text-2xl mb-2 animate-spin">⏳</div>
+            <div className="glass-surface rounded-lg p-4 text-center">
+              <div className="mb-2 animate-spin text-2xl">⏳</div>
               <div className="text-sm">Loading</div>
             </div>
           </SemanticAnimation>
 
           <SemanticAnimation type="complete" context="feedback">
-            <div className="glass-surface p-4 rounded-lg text-center">
-              <div className="text-2xl mb-2">🎉</div>
+            <div className="glass-surface rounded-lg p-4 text-center">
+              <div className="mb-2 text-2xl">🎉</div>
               <div className="text-sm">Complete</div>
             </div>
           </SemanticAnimation>
@@ -177,15 +187,15 @@ export const MotionSystemExample: React.FC = () => {
       {/* 3. Anticipatory Feedback */}
       <section className="space-y-6">
         <h2 className="text-2xl font-semibold">3. Anticipatory Feedback</h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <PressAnticipatory
             intensity="normal"
             hapticPattern="medium"
             onPress={() => triggerAnticipation()}
-            className="glass-surface p-6 rounded-lg text-center"
+            className="glass-surface rounded-lg p-6 text-center"
           >
-            <h3 className="font-semibold mb-2">Press Anticipatory</h3>
+            <h3 className="mb-2 font-semibold">Press Anticipatory</h3>
             <p className="text-sm text-muted-foreground">
               Feedback con micro-delay
             </p>
@@ -194,9 +204,9 @@ export const MotionSystemExample: React.FC = () => {
           <HoverAnticipatory
             intensity="normal"
             anticipationDelay={25}
-            className="glass-surface p-6 rounded-lg text-center"
+            className="glass-surface rounded-lg p-6 text-center"
           >
-            <h3 className="font-semibold mb-2">Hover Anticipatory</h3>
+            <h3 className="mb-2 font-semibold">Hover Anticipatory</h3>
             <p className="text-sm text-muted-foreground">
               Hover con anticipazione
             </p>
@@ -205,9 +215,9 @@ export const MotionSystemExample: React.FC = () => {
           <LongPressAnticipatory
             onLongPress={handleLongPress}
             duration={1500}
-            className="glass-surface p-6 rounded-lg text-center relative"
+            className="glass-surface relative rounded-lg p-6 text-center"
           >
-            <h3 className="font-semibold mb-2">Long Press</h3>
+            <h3 className="mb-2 font-semibold">Long Press</h3>
             <p className="text-sm text-muted-foreground">
               Tieni premuto per 1.5s
             </p>
@@ -218,28 +228,36 @@ export const MotionSystemExample: React.FC = () => {
       {/* 4. Staggered Animations */}
       <section className="space-y-6">
         <h2 className="text-2xl font-semibold">4. Staggered Animations</h2>
-        
-        <div className="flex gap-4 mb-4">
+
+        <div className="mb-4 flex gap-4">
           <button
             onClick={toggleElements}
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+            className="rounded-lg bg-primary px-4 py-2 text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            {showElements ? 'Hide' : 'Show'} Elements
+            {showElements ? 'Hide' : 'Show'}
+            {' '}
+            Elements
           </button>
         </div>
 
         {showElements && (
           <StaggerContainer intensity="medium" direction="up">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
               {Array.from({ length: 8 }, (_, i) => (
                 <EnterAnimation key={i} context="content">
-                  <div 
-                    className="glass-surface p-4 rounded-lg text-center"
+                  <div
+                    className="glass-surface rounded-lg p-4 text-center"
                     style={{ '--stagger-index': i } as React.CSSProperties}
                   >
-                    <div className="text-lg font-semibold">Item {i + 1}</div>
+                    <div className="text-lg font-semibold">
+                      Item
+                      {i + 1}
+                    </div>
                     <div className="text-sm text-muted-foreground">
-                      Stagger delay: {i * 50}ms
+                      Stagger delay:
+                      {' '}
+                      {i * 50}
+                      ms
                     </div>
                   </div>
                 </EnterAnimation>
@@ -252,8 +270,8 @@ export const MotionSystemExample: React.FC = () => {
       {/* 5. Complex Interactions */}
       <section className="space-y-6">
         <h2 className="text-2xl font-semibold">5. Complex Interactions</h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {/* Card interattiva con motion completo */}
           <AnticipatoryFeedback
             type="hover"
@@ -261,26 +279,26 @@ export const MotionSystemExample: React.FC = () => {
             anticipationDelay={30}
             className="group"
           >
-            <div className="glass-surface p-6 rounded-lg cursor-pointer transition-all duration-300 group-hover:shadow-lg">
+            <div className="glass-surface cursor-pointer rounded-lg p-6 transition-all duration-300 group-hover:shadow-lg">
               <TradeliaMotion type="enter" intensity="medium">
-                <h3 className="text-xl font-semibold mb-3">Interactive Card</h3>
-                <p className="text-muted-foreground mb-4">
+                <h3 className="mb-3 text-xl font-semibold">Interactive Card</h3>
+                <p className="mb-4 text-muted-foreground">
                   Questa card combina hover anticipatory, press feedback e semantic animations.
                 </p>
-                
+
                 <div className="flex gap-2">
                   <PressAnticipatory
                     intensity="subtle"
                     hapticPattern="light"
-                    className="px-3 py-1 bg-accent text-accent-foreground rounded text-sm"
+                    className="rounded bg-accent px-3 py-1 text-sm text-accent-foreground"
                   >
                     Action 1
                   </PressAnticipatory>
-                  
+
                   <PressAnticipatory
                     intensity="normal"
                     hapticPattern="medium"
-                    className="px-3 py-1 bg-primary text-primary-foreground rounded text-sm"
+                    className="rounded bg-primary px-3 py-1 text-sm text-primary-foreground"
                   >
                     Action 2
                   </PressAnticipatory>
@@ -290,34 +308,34 @@ export const MotionSystemExample: React.FC = () => {
           </AnticipatoryFeedback>
 
           {/* Form con feedback semantico */}
-          <div className="glass-surface p-6 rounded-lg">
-            <h3 className="text-xl font-semibold mb-4">Form with Semantic Feedback</h3>
-            
+          <div className="glass-surface rounded-lg p-6">
+            <h3 className="mb-4 text-xl font-semibold">Form with Semantic Feedback</h3>
+
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label className="mb-2 block text-sm font-medium">
                   Input con focus motion
                 </label>
                 <SemanticAnimation type="focus" context="form">
                   <input
                     type="text"
                     placeholder="Focus per vedere l'animazione"
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                    className="w-full rounded-lg border border-border px-3 py-2 transition-all focus:outline-none focus:ring-2 focus:ring-primary/50"
                   />
                 </SemanticAnimation>
               </div>
-              
+
               <div className="flex gap-2">
                 <button
                   onClick={handleSuccess}
-                  className="px-4 py-2 bg-accent text-accent-foreground rounded-lg hover:bg-accent/90 transition-colors"
+                  className="rounded-lg bg-accent px-4 py-2 text-accent-foreground transition-colors hover:bg-accent/90"
                 >
                   Submit (Success)
                 </button>
-                
+
                 <button
                   onClick={handleError}
-                  className="px-4 py-2 bg-destructive text-destructive-foreground rounded-lg hover:bg-destructive/90 transition-colors"
+                  className="rounded-lg bg-destructive px-4 py-2 text-destructive-foreground transition-colors hover:bg-destructive/90"
                 >
                   Submit (Error)
                 </button>
@@ -330,11 +348,11 @@ export const MotionSystemExample: React.FC = () => {
       {/* 6. Performance Info */}
       <section className="space-y-4">
         <h2 className="text-2xl font-semibold">6. Performance & Accessibility</h2>
-        
-        <div className="glass-surface p-6 rounded-lg">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+
+        <div className="glass-surface rounded-lg p-6">
+          <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-3">
             <div>
-              <h4 className="font-semibold mb-2">🚀 Performance</h4>
+              <h4 className="mb-2 font-semibold">🚀 Performance</h4>
               <ul className="space-y-1 text-muted-foreground">
                 <li>• GPU acceleration (transform/opacity)</li>
                 <li>• Will-change optimization</li>
@@ -342,9 +360,9 @@ export const MotionSystemExample: React.FC = () => {
                 <li>• Responsive timing</li>
               </ul>
             </div>
-            
+
             <div>
-              <h4 className="font-semibold mb-2">♿ Accessibility</h4>
+              <h4 className="mb-2 font-semibold">♿ Accessibility</h4>
               <ul className="space-y-1 text-muted-foreground">
                 <li>• Prefers-reduced-motion support</li>
                 <li>• High contrast mode</li>
@@ -352,9 +370,9 @@ export const MotionSystemExample: React.FC = () => {
                 <li>• Screen reader friendly</li>
               </ul>
             </div>
-            
+
             <div>
-              <h4 className="font-semibold mb-2">🎨 Design System</h4>
+              <h4 className="mb-2 font-semibold">🎨 Design System</h4>
               <ul className="space-y-1 text-muted-foreground">
                 <li>• Signature Tradelia timing</li>
                 <li>• Semantic meaning</li>

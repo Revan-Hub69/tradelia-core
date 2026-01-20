@@ -36,7 +36,7 @@
 /* Optimized for 60fps rendering (16.7ms budget) */
 .fps-60-optimized {
   animation-duration: 0.2s; /* Fast enough for 60fps */
-  animation-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1); /* Optimized easing */
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); /* Optimized easing */
   animation-fill-mode: both;
 }
 
@@ -67,7 +67,7 @@
     transition-duration: 0.01ms !important;
     transform: none !important;
   }
-  
+
   /* Provide alternative feedback for reduced motion users */
   .battery-aware-animation::after {
     content: '';
@@ -81,7 +81,7 @@
     transition: opacity 0.1s ease;
     pointer-events: none;
   }
-  
+
   .battery-aware-animation:hover::after,
   .battery-aware-animation:focus::after {
     opacity: 1;
@@ -113,8 +113,9 @@
 .signature-press-optimized {
   will-change: transform, box-shadow;
   transform: translate3d(0, 0, 0);
-  transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1),
-              box-shadow 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition:
+    transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .signature-press-optimized:active {
@@ -130,8 +131,9 @@
 .signature-hover-optimized {
   will-change: transform, box-shadow;
   transform: translate3d(0, 0, 0);
-  transition: transform 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275),
-              box-shadow 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition:
+    transform 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    box-shadow 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .signature-hover-optimized:hover {
@@ -157,20 +159,19 @@
   right: 0;
   bottom: 0;
   left: 0;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.2) 50%,
-    transparent 100%
-  );
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
   background-size: 200% 100%;
   animation: signature-shimmer 2s infinite;
   will-change: background-position;
 }
 
 @keyframes signature-shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 .signature-shimmer-optimized:not(.animating)::after {
@@ -308,13 +309,13 @@
     transition: none !important;
     transform: none !important;
   }
-  
+
   /* Provide alternative visual feedback */
   .signature-press-optimized:active {
     opacity: 0.8;
     background-color: rgba(var(--primary-rgb), 0.1);
   }
-  
+
   .signature-hover-optimized:hover {
     background-color: rgba(var(--primary-rgb), 0.05);
     border-color: rgba(var(--primary-rgb), 0.3);
@@ -330,7 +331,7 @@
     background: ButtonFace;
     color: ButtonText;
   }
-  
+
   .signature-shimmer-optimized::after {
     display: none; /* Remove shimmer in high contrast */
   }

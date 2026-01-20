@@ -1,13 +1,13 @@
 /*
  * TRADELIA NAVIGATION CONFIG v2.0 - Enterprise 2026
- * 
+ *
  * Single source of truth per navigation items
  * Supporta feature flags, badges, analytics tracking
  */
 
 export type NavigationItemId = 'home' | 'learn' | 'tools' | 'community' | 'profile';
 
-export interface NavigationItem {
+export type NavigationItem = {
   id: NavigationItemId;
   labelKey: string;
   ariaKey: string;
@@ -19,13 +19,13 @@ export interface NavigationItem {
   badgeValue?: number | string;
   disabled?: boolean;
   hidden?: boolean;
-}
+};
 
-export interface NavigationConfig {
+export type NavigationConfig = {
   items: NavigationItem[];
   ariaLabelKey: string;
   semanticRole: 'navigation';
-}
+};
 
 /*
  * FEATURE FLAGS - Controllo visibilità sezioni
@@ -100,15 +100,17 @@ export const NAVIGATION_CONFIG: NavigationConfig = {
  */
 
 export const getVisibleNavigationItems = (): NavigationItem[] => {
-  return NAVIGATION_CONFIG.items.filter(item => {
+  return NAVIGATION_CONFIG.items.filter((item) => {
     // Nascondi se hidden flag
-    if (item.hidden) return false;
-    
+    if (item.hidden) {
+      return false;
+    }
+
     // Controlla feature flag se presente
     if (item.featureFlag && !FEATURE_FLAGS[item.featureFlag as keyof typeof FEATURE_FLAGS]) {
       return false;
     }
-    
+
     return true;
   });
 };
@@ -129,13 +131,13 @@ export const getNavigationItemById = (id: NavigationItemId): NavigationItem | un
  * BADGE MANAGEMENT - Dynamic badge state
  * In futuro collegato a database/real-time updates
  */
-export interface NavigationBadgeState {
+export type NavigationBadgeState = {
   [key: string]: {
     type: 'dot' | 'count' | 'new';
     value?: number | string;
     timestamp?: number;
   };
-}
+};
 
 // Mock badge state - in produzione da database/context
 export const MOCK_BADGE_STATE: NavigationBadgeState = {
@@ -152,19 +154,19 @@ export const getBadgeForItem = (itemId: NavigationItemId): NavigationBadgeState[
  * ANALYTICS TRACKING - Navigation events
  * Preparato per implementazione analytics
  */
-export interface NavigationAnalyticsEvent {
+export type NavigationAnalyticsEvent = {
   action: 'nav_click' | 'nav_hover' | 'nav_focus';
   itemId: NavigationItemId;
   timestamp: number;
   metadata?: Record<string, any>;
-}
+};
 
 export const trackNavigationEvent = (event: NavigationAnalyticsEvent): void => {
   // TODO: Implementare tracking reale
   if (process.env.NODE_ENV === 'development') {
     console.log('Navigation Event:', event);
   }
-  
+
   // In produzione: inviare a analytics service
   // analytics.track('navigation', event);
 };

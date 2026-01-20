@@ -1,8 +1,9 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import { useEffect, useState } from 'react';
+
 import type { ProfessionalCertification } from '@/libs/learningAnalytics';
 
 type ProfessionalCertificationProps = {
@@ -72,13 +73,13 @@ export const ProfessionalCertificationComponent = ({
 
   // Professional animations (subtle, not gaming-style)
   const containerVariants = {
-    initial: { 
-      scale: 0.9, 
+    initial: {
+      scale: 0.9,
       opacity: 0,
       filter: 'blur(4px)',
     },
-    animate: { 
-      scale: 1, 
+    animate: {
+      scale: 1,
       opacity: 1,
       filter: 'blur(0px)',
       transition: {
@@ -137,9 +138,9 @@ export const ProfessionalCertificationComponent = ({
       >
         {/* Professional subtle glow */}
         <motion.div
-          className={`absolute inset-0 ${sizeClasses[size]} rounded-lg blur-sm opacity-20`}
+          className={`absolute inset-0 ${sizeClasses[size]} rounded-lg opacity-20 blur-sm`}
           style={{ backgroundColor: colors.glow }}
-          animate={{ 
+          animate={{
             opacity: isHovered ? 0.3 : 0.2,
             scale: isHovered ? 1.1 : 1,
           }}
@@ -148,7 +149,7 @@ export const ProfessionalCertificationComponent = ({
 
         {/* Certification Container with consistent design */}
         <motion.div
-          className={`relative ${sizeClasses[size]} rounded-xl flex items-center justify-center border-2 backdrop-blur-sm shadow-lg`}
+          className={`relative ${sizeClasses[size]} flex items-center justify-center rounded-xl border-2 shadow-lg backdrop-blur-sm`}
           style={{
             background: `linear-gradient(135deg, ${colors.primary}F5, ${colors.secondary}E8)`,
             borderColor: colors.accent,
@@ -188,9 +189,9 @@ export const ProfessionalCertificationComponent = ({
         <AnimatePresence>
           {isNew && (
             <motion.div
-              className="absolute -top-1 -right-1 size-3 sm:size-4 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg"
+              className="absolute -right-1 -top-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-blue-600 shadow-lg sm:size-4"
               initial={{ scale: 0 }}
-              animate={{ 
+              animate={{
                 scale: [1, 1.1, 1],
                 boxShadow: [
                   '0 0 0 0 hsl(213 94% 68% / 0.7)',
@@ -199,13 +200,13 @@ export const ProfessionalCertificationComponent = ({
                 ],
               }}
               exit={{ scale: 0, opacity: 0 }}
-              transition={{ 
+              transition={{
                 scale: { duration: 1, repeat: Infinity },
                 boxShadow: { duration: 1.5, repeat: Infinity },
               }}
             >
-              <motion.div 
-                className="size-1 bg-white rounded-full"
+              <motion.div
+                className="size-1 rounded-full bg-white"
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 0.8, repeat: Infinity }}
               />
@@ -218,14 +219,14 @@ export const ProfessionalCertificationComponent = ({
       <AnimatePresence>
         {showTooltipState && (
           <motion.div
-            className="absolute bottom-full left-1/2 mb-3 z-50"
+            className="absolute bottom-full left-1/2 z-50 mb-3"
             initial={{ opacity: 0, y: 10, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.9 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
           >
             <motion.div
-              className="relative px-4 py-3 bg-card/95 backdrop-blur-xl rounded-xl shadow-xl border border-border min-w-64 max-w-80"
+              className="relative min-w-64 max-w-80 rounded-xl border border-border bg-card/95 px-4 py-3 shadow-xl backdrop-blur-xl"
               style={{
                 boxShadow: `
                   0 20px 40px hsl(var(--background) / 0.15),
@@ -234,42 +235,45 @@ export const ProfessionalCertificationComponent = ({
               }}
             >
               {/* Tooltip Content */}
-              <div className="text-center space-y-3">
+              <div className="space-y-3 text-center">
                 {/* Certification Name */}
-                <h3 
-                  className="font-semibold text-sm leading-tight"
+                <h3
+                  className="text-sm font-semibold leading-tight"
                   style={{ color: colors.primary }}
                 >
                   {certification.name.it}
                 </h3>
 
                 {/* Description */}
-                <p className="text-xs text-muted-foreground leading-relaxed">
+                <p className="text-xs leading-relaxed text-muted-foreground">
                   {certification.description.it}
                 </p>
 
                 {/* Credential Value */}
-                <p className="text-xs text-foreground font-medium">
+                <p className="text-xs font-medium text-foreground">
                   {certification.credentialValue.it}
                 </p>
 
                 {/* Certification Stats */}
-                <div className="flex items-center justify-between text-xs pt-2 border-t border-border">
+                <div className="flex items-center justify-between border-t border-border pt-2 text-xs">
                   <span
-                    className="px-2 py-1 rounded-md text-white font-medium text-xs"
+                    className="rounded-md px-2 py-1 text-xs font-medium text-white"
                     style={{ backgroundColor: colors.primary }}
                   >
                     {t(`certification_${certification.type}`)}
                   </span>
-                  <span className="text-blue-600 font-semibold flex items-center gap-1">
+                  <span className="flex items-center gap-1 font-semibold text-blue-600">
                     <span className="text-blue-600">🪙</span>
-                    +{certification.tradeliaCoinsReward} {t('tradelia_coins')}
+                    +
+                    {certification.tradeliaCoinsReward}
+                    {' '}
+                    {t('tradelia_coins')}
                   </span>
                 </div>
               </div>
 
               {/* Tooltip Arrow */}
-              <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-card" />
+              <div className="absolute left-1/2 top-full size-0 -translate-x-1/2 border-x-4 border-t-4 border-transparent border-t-card" />
             </motion.div>
           </motion.div>
         )}
@@ -285,9 +289,9 @@ type CertificationShowcaseProps = {
   showNew?: boolean;
 };
 
-export const CertificationShowcase = ({ 
-  certifications, 
-  maxDisplay = 5, 
+export const CertificationShowcase = ({
+  certifications,
+  maxDisplay = 5,
   size = 'md',
   showNew = false,
 }: CertificationShowcaseProps) => {
@@ -295,7 +299,7 @@ export const CertificationShowcase = ({
   const remainingCount = Math.max(0, certifications.length - maxDisplay);
 
   const gapClasses = 'flex items-center gap-2 sm:gap-3 md:gap-4';
-  
+
   const overflowSizeClasses = {
     sm: 'size-8 sm:size-10',
     md: 'size-12 sm:size-14 md:size-16',
@@ -312,15 +316,15 @@ export const CertificationShowcase = ({
             initial={{ opacity: 0, x: -20, scale: 0.9 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 20, scale: 0.9 }}
-            transition={{ 
+            transition={{
               delay: index * 0.1,
               type: 'spring',
               stiffness: 300,
               damping: 25,
             }}
           >
-            <ProfessionalCertificationComponent 
-              certification={certification} 
+            <ProfessionalCertificationComponent
+              certification={certification}
               size={size}
               isNew={showNew && index === displayCertifications.length - 1}
             />
@@ -331,18 +335,19 @@ export const CertificationShowcase = ({
       {/* Overflow Indicator */}
       <AnimatePresence>
         {remainingCount > 0 && (
-          <motion.div 
-            className={`${overflowSizeClasses[size]} rounded-xl bg-gradient-to-br from-muted to-muted/80 flex items-center justify-center border border-border backdrop-blur-sm shadow-sm`}
+          <motion.div
+            className={`${overflowSizeClasses[size]} flex items-center justify-center rounded-xl border border-border bg-gradient-to-br from-muted to-muted/80 shadow-sm backdrop-blur-sm`}
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
-            whileHover={{ 
+            whileHover={{
               scale: 1.05,
               boxShadow: '0 8px 25px hsl(var(--background) / 0.15)',
             }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
           >
-            <span className="text-muted-foreground font-medium text-sm">
-              +{remainingCount}
+            <span className="text-sm font-medium text-muted-foreground">
+              +
+              {remainingCount}
             </span>
           </motion.div>
         )}

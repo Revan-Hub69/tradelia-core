@@ -6,7 +6,7 @@ export default async function AuthLayout(props: {
 }) {
   // params is awaited but not used in this layout
   await props.params;
-  
+
   return (
     <UserDataProvider>
       {props.children}

@@ -5,15 +5,15 @@ import { useEffect, useRef } from 'react';
 type SwipeDirection = 'left' | 'right' | 'up' | 'down';
 type SwipeCallback = (direction: SwipeDirection) => void;
 
-interface SwipeOptions {
+type SwipeOptions = {
   threshold?: number; // Minimum distance for swipe (default: 50px)
-  velocity?: number;  // Minimum velocity for swipe (default: 0.3)
+  velocity?: number; // Minimum velocity for swipe (default: 0.3)
   preventScroll?: boolean; // Prevent default scroll behavior
-}
+};
 
 /**
  * Hook for handling swipe gestures on mobile devices
- * 
+ *
  * Features:
  * - Touch-based swipe detection
  * - Configurable threshold and velocity
@@ -22,7 +22,7 @@ interface SwipeOptions {
  */
 export const useSwipeNavigation = (
   callback: SwipeCallback,
-  options: SwipeOptions = {}
+  options: SwipeOptions = {},
 ) => {
   const {
     threshold = 50,
@@ -35,13 +35,15 @@ export const useSwipeNavigation = (
 
   useEffect(() => {
     const element = elementRef.current;
-    if (!element) return;
+    if (!element) {
+      return;
+    }
 
     const handleTouchStart = (e: TouchEvent) => {
       if (preventScroll) {
         e.preventDefault();
       }
-      
+
       const touch = e.touches[0];
       if (touch) {
         touchStartRef.current = {
@@ -53,11 +55,15 @@ export const useSwipeNavigation = (
     };
 
     const handleTouchEnd = (e: TouchEvent) => {
-      if (!touchStartRef.current) return;
+      if (!touchStartRef.current) {
+        return;
+      }
 
       const touch = e.changedTouches[0];
-      if (!touch) return;
-      
+      if (!touch) {
+        return;
+      }
+
       const deltaX = touch.clientX - touchStartRef.current.x;
       const deltaY = touch.clientY - touchStartRef.current.y;
       const deltaTime = Date.now() - touchStartRef.current.time;
@@ -115,18 +121,18 @@ export const useSwipeNavigation = (
  */
 export const useDashboardSwipeNavigation = (
   currentSection: 'overview' | 'paths' | 'progress' | 'settings',
-  onSectionChange: (section: 'overview' | 'paths' | 'progress' | 'settings') => void
+  onSectionChange: (section: 'overview' | 'paths' | 'progress' | 'settings') => void,
 ) => {
   const sections: Array<'overview' | 'paths' | 'progress' | 'settings'> = [
     'overview',
-    'paths', 
+    'paths',
     'progress',
-    'settings'
+    'settings',
   ];
 
   const handleSwipe = (direction: SwipeDirection) => {
     const currentIndex = sections.indexOf(currentSection);
-    
+
     if (direction === 'left' && currentIndex < sections.length - 1) {
       // Swipe left = next section
       const nextSection = sections[currentIndex + 1];

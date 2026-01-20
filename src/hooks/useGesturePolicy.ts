@@ -1,21 +1,21 @@
 /*
  * GESTURE POLICY HOOK - Enterprise Touch Optimization
- * 
+ *
  * Prevents common mobile browser gestures that interfere with PWA UX
  * Configurable policies for different interaction contexts
  */
 
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
-export interface GesturePolicyOptions {
+export type GesturePolicyOptions = {
   preventPullToRefresh?: boolean;
   preventSwipeBack?: boolean;
   preventOverscroll?: boolean;
   preventZoom?: boolean;
   preventSelection?: boolean;
-}
+};
 
 export const useGesturePolicy = (options: GesturePolicyOptions = {}) => {
   const {
@@ -30,7 +30,9 @@ export const useGesturePolicy = (options: GesturePolicyOptions = {}) => {
 
   useEffect(() => {
     const element = elementRef.current;
-    if (!element) return;
+    if (!element) {
+      return;
+    }
 
     let preventPull: ((e: TouchEvent) => void) | undefined;
 
@@ -39,7 +41,7 @@ export const useGesturePolicy = (options: GesturePolicyOptions = {}) => {
       preventPull = (e: TouchEvent) => {
         const touch = e.touches[0];
         const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-        
+
         // If at top and pulling down, prevent
         if (scrollTop === 0 && touch && touch.clientY > touch.clientX) {
           e.preventDefault();
@@ -86,7 +88,7 @@ export const useTouchOptimization = () => {
     document.body.style.userSelect = 'none';
     (document.body.style as any).webkitUserSelect = 'none';
     (document.body.style as any).webkitTouchCallout = 'none';
-    
+
     return () => {
       // Cleanup on unmount
       document.body.style.touchAction = '';

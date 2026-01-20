@@ -1,13 +1,14 @@
 /*
  * NAVIGATION STATE MACHINE - Enterprise 2026
- * 
+ *
  * Gestisce tutti gli stati di navigazione con pattern enterprise
  * Separazione tra visual states e UX messaging
  */
 
-import { useState, useEffect, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
+
+import { type NavigationItemId, trackNavigationEvent } from '@/data/navigation.config';
 import { useRouter } from '@/libs/i18nNavigation';
-import { trackNavigationEvent, type NavigationItemId } from '@/data/navigation.config';
 
 // Visual states per UI
 export type NavigationVisualState = 'default' | 'pressed' | 'pending' | 'active';
@@ -45,16 +46,16 @@ const useFeatureFlag = (): boolean => {
   return true;
 };
 
-export interface NavigationStateHook {
+export type NavigationStateHook = {
   visualState: NavigationVisualState;
   uxState: NavigationUXState;
   navigate: () => void;
   canNavigate: boolean;
-}
+};
 
 export const useNavigationState = (
   href: string,
-  itemId: NavigationItemId
+  itemId: NavigationItemId,
 ): NavigationStateHook => {
   const [visualState, setVisualState] = useState<NavigationVisualState>('default');
   const [uxState, setUXState] = useState<NavigationUXState>(null);
@@ -82,7 +83,7 @@ export const useNavigationState = (
       setUXState('blocked');
       return;
     }
-    
+
     if (!isOnline) {
       setUXState('offline');
       return;

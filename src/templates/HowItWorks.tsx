@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 
 export const HowItWorks = () => {
   const t = useTranslations('HowItWorks');
-  
+
   const steps = [
     {
       num: '1',

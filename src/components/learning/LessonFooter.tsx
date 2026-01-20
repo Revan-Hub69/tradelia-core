@@ -1,8 +1,7 @@
 'use client';
 
-import React from 'react';
-
 import { ArrowRight, HelpCircle, MessageCircle } from 'lucide-react';
+import React from 'react';
 
 import { Button } from '@/components/ui/button';
 
@@ -22,7 +21,7 @@ type LessonFooterProps = {
  *
  * Based on analysis of top educational apps:
  * - NO step counter (redundant with header)
- * - NO back button (redundant with header)  
+ * - NO back button (redundant with header)
  * - NO progress summary (redundant with header)
  * - Focus on PRIMARY ACTION only
  * - Secondary actions (Help/Feedback) on desktop only
@@ -41,8 +40,8 @@ export const LessonFooter: React.FC<LessonFooterProps> = ({
 
   return (
     <footer className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background">
-      <div className="mx-auto max-w-4xl px-4 py-4 sm:px-6">
-        
+      <div className="mx-auto max-w-4xl p-4 sm:px-6">
+
         {/* Mobile Layout - Single Primary Action */}
         <div className="md:hidden">
           <Button
@@ -55,7 +54,7 @@ export const LessonFooter: React.FC<LessonFooterProps> = ({
             <ArrowRight className="ml-2 size-4" />
           </Button>
         </div>
-        
+
         {/* Desktop Layout - Actions Distributed */}
         <div className="hidden items-center justify-between md:flex">
           {/* Left: Secondary Actions */}
@@ -71,7 +70,7 @@ export const LessonFooter: React.FC<LessonFooterProps> = ({
                 Aiuto
               </Button>
             )}
-            
+
             {showFeedback && onFeedback && (
               <Button
                 variant="ghost"
@@ -84,7 +83,7 @@ export const LessonFooter: React.FC<LessonFooterProps> = ({
               </Button>
             )}
           </div>
-          
+
           {/* Right: Primary Action */}
           <Button
             onClick={onNext}

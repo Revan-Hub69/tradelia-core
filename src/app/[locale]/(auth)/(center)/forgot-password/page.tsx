@@ -18,14 +18,14 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { FadeIn, SlideReveal } from '@/components/ui/scroll-animations';
+import { useEmailCheckRateLimit } from '@/hooks/useRateLimit';
 import { Link } from '@/libs/i18nNavigation';
 import { createClient } from '@/libs/supabase/client';
 import { Logo } from '@/templates/Logo';
-import { useEmailCheckRateLimit } from '@/hooks/useRateLimit';
 
 /**
  * Forgot Password Page - 2026 Best Practices
- * 
+ *
  * Features:
  * - Secure password reset flow
  * - Rate limiting protection
@@ -91,15 +91,15 @@ const ForgotPasswordPage = () => {
 
       {/* Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 size-80 rounded-full bg-gradient-to-br from-blue-400/15 to-indigo-600/15 blur-2xl animate-pulse" />
-        <div className="absolute -bottom-40 -left-40 size-80 rounded-full bg-gradient-to-tr from-emerald-400/15 to-blue-500/15 blur-2xl animate-pulse delay-1000" />
+        <div className="absolute -right-40 -top-40 size-80 animate-pulse rounded-full bg-gradient-to-br from-blue-400/15 to-indigo-600/15 blur-2xl" />
+        <div className="absolute -bottom-40 -left-40 size-80 animate-pulse rounded-full bg-gradient-to-tr from-emerald-400/15 to-blue-500/15 blur-2xl delay-1000" />
       </div>
 
       <div className="relative flex min-h-screen flex-col">
         {/* Header */}
         <header className="flex items-center justify-between p-4 sm:p-6 lg:p-8">
           <Logo size="md" href="/" />
-          
+
           <div className="hidden items-center gap-3 text-xs text-slate-600 dark:text-slate-400 sm:flex">
             <div className="flex items-center gap-1.5">
               <div className="size-2 rounded-full bg-green-500" />
@@ -127,73 +127,76 @@ const ForgotPasswordPage = () => {
 
                   <FadeIn delay={200}>
                     <CardDescription className="text-slate-600 dark:text-slate-400">
-                      {success 
+                      {success
                         ? t('forgot_success_description', { email })
-                        : t('forgot_password_description')
-                      }
+                        : t('forgot_password_description')}
                     </CardDescription>
                   </FadeIn>
                 </CardHeader>
 
                 <CardContent className="space-y-6 pb-8">
-                  {success ? (
-                    <FadeIn delay={300}>
-                      <div className="text-center">
-                        <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30">
-                          <svg className="size-8 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                          </svg>
-                        </div>
-                        <p className="text-slate-600 dark:text-slate-400">
-                          {t('forgot_check_email')}
-                        </p>
-                      </div>
-                    </FadeIn>
-                  ) : (
-                    <FadeIn delay={300}>
-                      <Form {...form}>
-                        <form onSubmit={form.handleSubmit(handleForgotSubmit)} className="space-y-4">
-                          <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                                  {t('email_label')}
-                                </FormLabel>
-                                <FormControl>
-                                  <Input
-                                    type="email"
-                                    placeholder={t('email_placeholder')}
-                                    autoComplete="email"
-                                    className="h-12 border-slate-200 bg-white/50 text-slate-900 placeholder:text-slate-500 focus:border-blue-500 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-100 dark:placeholder:text-slate-400"
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
+                  {success
+                    ? (
+                        <FadeIn delay={300}>
+                          <div className="text-center">
+                            <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30">
+                              <svg className="size-8 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                              </svg>
+                            </div>
+                            <p className="text-slate-600 dark:text-slate-400">
+                              {t('forgot_check_email')}
+                            </p>
+                          </div>
+                        </FadeIn>
+                      )
+                    : (
+                        <FadeIn delay={300}>
+                          <Form {...form}>
+                            <form onSubmit={form.handleSubmit(handleForgotSubmit)} className="space-y-4">
+                              <FormField
+                                control={form.control}
+                                name="email"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                      {t('email_label')}
+                                    </FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        type="email"
+                                        placeholder={t('email_placeholder')}
+                                        autoComplete="email"
+                                        className="h-12 border-slate-200 bg-white/50 text-slate-900 placeholder:text-slate-500 focus:border-blue-500 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-100 dark:placeholder:text-slate-400"
+                                        {...field}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
 
-                          <Button
-                            type="submit"
-                            disabled={loading}
-                            size="lg"
-                            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg transition-all duration-300 hover:from-blue-700 hover:to-indigo-700 hover:shadow-xl hover:shadow-blue-500/25 disabled:opacity-50"
-                          >
-                            {loading ? (
-                              <div className="flex items-center gap-2">
-                                <div className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                                {t('loading_reset_send')}
-                              </div>
-                            ) : (
-                              t('send_reset_button')
-                            )}
-                          </Button>
-                        </form>
-                      </Form>
-                    </FadeIn>
-                  )}
+                              <Button
+                                type="submit"
+                                disabled={loading}
+                                size="lg"
+                                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg transition-all duration-300 hover:from-blue-700 hover:to-indigo-700 hover:shadow-xl hover:shadow-blue-500/25 disabled:opacity-50"
+                              >
+                                {loading
+                                  ? (
+                                      <div className="flex items-center gap-2">
+                                        <div className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                                        {t('loading_reset_send')}
+                                      </div>
+                                    )
+                                  : (
+                                      t('send_reset_button')
+                                    )}
+                              </Button>
+                            </form>
+                          </Form>
+                        </FadeIn>
+                      )}
 
                   {/* Error Message */}
                   {error && (
@@ -212,7 +215,10 @@ const ForgotPasswordPage = () => {
                   {/* Back to Login */}
                   <FadeIn delay={400}>
                     <Button asChild variant="ghost" className="w-full text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100">
-                      <Link href="/auth">← {t('back_to_login')}</Link>
+                      <Link href="/auth">
+                        ←
+                        {t('back_to_login')}
+                      </Link>
                     </Button>
                   </FadeIn>
                 </CardContent>
@@ -230,7 +236,7 @@ const ForgotPasswordPage = () => {
                     <span>{t('trust_secure_reset')}</span>
                   </div>
                 </div>
-                
+
                 <p className="text-xs text-slate-500 dark:text-slate-400">
                   {t('reset_security_note')}
                 </p>

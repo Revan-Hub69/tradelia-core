@@ -1,7 +1,7 @@
 'use client';
 
+import { AlertCircle, Bell, Check, Loader2, Palette, Shield, User } from 'lucide-react';
 import React from 'react';
-import { User, Bell, Shield, Palette, Check, AlertCircle, Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -10,10 +10,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-
-import type { UserSettings } from './types';
 import { useAutoSaveSettings } from '@/hooks/useAutoSaveSettings';
 import { useModalKeyboardNavigation } from '@/hooks/useKeyboardNavigation';
+
+import type { UserSettings } from './types';
 
 type SettingsPanelProps = {
   isOpen: boolean;
@@ -46,7 +46,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
     onSaveSettings || (async () => {
       // Default no-op save function
       await new Promise(resolve => setTimeout(resolve, 100));
-    })
+    }),
   );
 
   // Keyboard navigation
@@ -91,7 +91,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent 
+      <DialogContent
         ref={keyboardRef as React.RefObject<HTMLDivElement>}
         className="max-h-[80vh] max-w-2xl overflow-y-auto border-white/20 bg-white/90 backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/90"
       >
@@ -134,7 +134,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                 </div>
                 <select
                   value={settings.preferences.language}
-                  onChange={(e) => handleSettingChange('preferences', 'language', e.target.value)}
+                  onChange={e => handleSettingChange('preferences', 'language', e.target.value)}
                   className="rounded-md border border-white/20 bg-white/60 px-3 py-1 text-sm backdrop-blur-sm dark:border-white/10 dark:bg-white/10"
                 >
                   <option value="it">Italiano</option>
@@ -150,7 +150,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                 </div>
                 <select
                   value={settings.preferences.theme}
-                  onChange={(e) => handleSettingChange('preferences', 'theme', e.target.value)}
+                  onChange={e => handleSettingChange('preferences', 'theme', e.target.value)}
                   className="rounded-md border border-white/20 bg-white/60 px-3 py-1 text-sm backdrop-blur-sm dark:border-white/10 dark:bg-white/10"
                 >
                   <option value="system">Sistema</option>
@@ -167,7 +167,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                 </div>
                 <select
                   value={settings.preferences.difficulty}
-                  onChange={(e) => handleSettingChange('preferences', 'difficulty', e.target.value)}
+                  onChange={e => handleSettingChange('preferences', 'difficulty', e.target.value)}
                   className="rounded-md border border-white/20 bg-white/60 px-3 py-1 text-sm backdrop-blur-sm dark:border-white/10 dark:bg-white/10"
                 >
                   <option value="adaptive">Adattiva</option>
@@ -191,7 +191,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                     onChange={e => handleSettingChange('preferences', 'autoPlay', e.target.checked)}
                     className="peer sr-only"
                   />
-                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:size-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:bg-gray-700 dark:border-gray-600"></div>
+                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:size-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:border-gray-600 dark:bg-gray-700"></div>
                 </label>
               </div>
             </div>
@@ -218,7 +218,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                     onChange={e => handleSettingChange('notifications', 'email', e.target.checked)}
                     className="peer sr-only"
                   />
-                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:size-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:bg-gray-700 dark:border-gray-600"></div>
+                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:size-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:border-gray-600 dark:bg-gray-700"></div>
                 </label>
               </div>
 
@@ -236,7 +236,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                     onChange={e => handleSettingChange('notifications', 'push', e.target.checked)}
                     className="peer sr-only"
                   />
-                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:size-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:bg-gray-700 dark:border-gray-600"></div>
+                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:size-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:border-gray-600 dark:bg-gray-700"></div>
                 </label>
               </div>
 
@@ -254,7 +254,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                     onChange={e => handleSettingChange('notifications', 'dailyReminder', e.target.checked)}
                     className="peer sr-only"
                   />
-                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:size-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:bg-gray-700 dark:border-gray-600"></div>
+                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:size-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:border-gray-600 dark:bg-gray-700"></div>
                 </label>
               </div>
 
@@ -272,7 +272,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                     onChange={e => handleSettingChange('notifications', 'streakReminder', e.target.checked)}
                     className="peer sr-only"
                   />
-                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:size-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:bg-gray-700 dark:border-gray-600"></div>
+                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:size-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:border-gray-600 dark:bg-gray-700"></div>
                 </label>
               </div>
             </div>
@@ -299,7 +299,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                     onChange={e => handleSettingChange('privacy', 'profileVisible', e.target.checked)}
                     className="peer sr-only"
                   />
-                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:size-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:bg-gray-700 dark:border-gray-600"></div>
+                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:size-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:border-gray-600 dark:bg-gray-700"></div>
                 </label>
               </div>
 
@@ -317,7 +317,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                     onChange={e => handleSettingChange('privacy', 'progressVisible', e.target.checked)}
                     className="peer sr-only"
                   />
-                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:size-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:bg-gray-700 dark:border-gray-600"></div>
+                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:size-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:border-gray-600 dark:bg-gray-700"></div>
                 </label>
               </div>
 
@@ -335,7 +335,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                     onChange={e => handleSettingChange('privacy', 'leaderboardVisible', e.target.checked)}
                     className="peer sr-only"
                   />
-                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:size-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:bg-gray-700 dark:border-gray-600"></div>
+                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:size-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:border-gray-600 dark:bg-gray-700"></div>
                 </label>
               </div>
             </div>

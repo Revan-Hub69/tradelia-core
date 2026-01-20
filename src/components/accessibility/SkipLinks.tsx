@@ -1,14 +1,15 @@
 /*
  * SKIP LINKS - Enterprise Accessibility 2026
- * 
+ *
  * Skip navigation per keyboard users
  * Standard WCAG AAA compliance
  */
 
 'use client';
 
-import React from 'react';
 import { useTranslations } from 'next-intl';
+import React from 'react';
+
 import { cn } from '@/utils/Helpers';
 
 export const SkipLinks: React.FC = () => {

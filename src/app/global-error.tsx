@@ -13,7 +13,7 @@ export default function GlobalError({
   }
 
   // Get locale from URL or fallback to 'en'
-  const locale = typeof window !== 'undefined' 
+  const locale = typeof window !== 'undefined'
     ? window.location.pathname.split('/')[1] || 'en'
     : 'en';
 
@@ -22,15 +22,15 @@ export default function GlobalError({
       <body>
         <div className="flex min-h-screen items-center justify-center bg-gray-50">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            <h1 className="mb-4 text-2xl font-bold text-gray-900">
               Oops! Something went wrong
             </h1>
-            <p className="text-gray-600 mb-6">
+            <p className="mb-6 text-gray-600">
               We're sorry, but something unexpected happened.
             </p>
             <button
               onClick={reset}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
             >
               Try again
             </button>

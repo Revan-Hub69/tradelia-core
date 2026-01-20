@@ -3,19 +3,19 @@
  * Provides user feedback and prevents excessive requests
  */
 
-import { useState, useCallback, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
-interface RateLimitState {
+type RateLimitState = {
   isLimited: boolean;
   remainingAttempts: number;
   resetTime: number | null;
   lastAttempt: number | null;
-}
+};
 
-interface UseRateLimitOptions {
+type UseRateLimitOptions = {
   maxAttempts: number;
   windowMs: number;
-}
+};
 
 export function useRateLimit({ maxAttempts, windowMs }: UseRateLimitOptions) {
   const [state, setState] = useState<RateLimitState>({
@@ -30,49 +30,53 @@ export function useRateLimit({ maxAttempts, windowMs }: UseRateLimitOptions) {
   const checkLimit = useCallback(() => {
     const now = Date.now();
     const windowStart = now - windowMs;
-    
+
     // Remove attempts outside the window
     attemptsRef.current = attemptsRef.current.filter(time => time > windowStart);
-    
+
     const currentAttempts = attemptsRef.current.length;
     const remainingAttempts = Math.max(0, maxAttempts - currentAttempts);
     const isLimited = currentAttempts >= maxAttempts;
-    
+
     // Calculate reset time (when the oldest attempt expires)
     const resetTime = attemptsRef.current.length > 0 && attemptsRef.current[0]
-      ? attemptsRef.current[0] + windowMs 
+      ? attemptsRef.current[0] + windowMs
       : null;
-    
+
     setState({
       isLimited,
       remainingAttempts,
       resetTime,
       lastAttempt: attemptsRef.current[attemptsRef.current.length - 1] || null,
     });
-    
+
     return { allowed: !isLimited, remainingAttempts };
   }, [maxAttempts, windowMs]);
 
   const recordAttempt = useCallback(() => {
     const now = Date.now();
     attemptsRef.current.push(now);
-    
+
     // Trigger state update
     checkLimit();
   }, [checkLimit]);
 
   const getRemainingTime = useCallback(() => {
-    if (!state.resetTime) return 0;
+    if (!state.resetTime) {
+      return 0;
+    }
     return Math.max(0, state.resetTime - Date.now());
   }, [state.resetTime]);
 
   const getTimeUntilReset = useCallback(() => {
     const remaining = getRemainingTime();
-    if (remaining === 0) return null;
-    
+    if (remaining === 0) {
+      return null;
+    }
+
     const minutes = Math.floor(remaining / 60000);
     const seconds = Math.floor((remaining % 60000) / 1000);
-    
+
     if (minutes > 0) {
       return `${minutes}m ${seconds}s`;
     }

@@ -1,15 +1,15 @@
 import React from 'react';
 
-interface AchievementIconProps {
+type AchievementIconProps = {
   className?: string;
   size?: number;
   progress?: number; // 0-100
-}
+};
 
-export const AchievementIcon: React.FC<AchievementIconProps> = ({ 
-  className = '', 
+export const AchievementIcon: React.FC<AchievementIconProps> = ({
+  className = '',
   size = 24,
-  progress = 0
+  progress = 0,
 }) => {
   const circumference = 2 * Math.PI * 8; // radius = 8
   const strokeDasharray = circumference;
@@ -30,7 +30,7 @@ export const AchievementIcon: React.FC<AchievementIconProps> = ({
           <stop offset="100%" stopColor="#059669" />
         </linearGradient>
       </defs>
-      
+
       {/* Outer ring */}
       <circle
         cx="12"
@@ -40,7 +40,7 @@ export const AchievementIcon: React.FC<AchievementIconProps> = ({
         stroke="#e5e7eb"
         strokeWidth="2"
       />
-      
+
       {/* Progress ring */}
       <circle
         cx="12"
@@ -54,7 +54,7 @@ export const AchievementIcon: React.FC<AchievementIconProps> = ({
         strokeDashoffset={strokeDashoffset}
         transform="rotate(-90 12 12)"
       />
-      
+
       {/* Center target */}
       <circle
         cx="12"
@@ -62,7 +62,7 @@ export const AchievementIcon: React.FC<AchievementIconProps> = ({
         r="4"
         fill="currentColor"
       />
-      
+
       {/* Inner circle */}
       <circle
         cx="12"

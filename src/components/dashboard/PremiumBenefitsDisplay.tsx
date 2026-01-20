@@ -1,18 +1,18 @@
 'use client';
 
-import React from 'react';
-import { 
-  Crown, 
-  BarChart3, 
-  Target, 
-  Zap, 
-  Shield, 
-  Download,
-  Users,
-  Clock,
+import {
+  BarChart3,
   CheckCircle,
-  X
+  Clock,
+  Crown,
+  Download,
+  Shield,
+  Target,
+  Users,
+  X,
+  Zap,
 } from 'lucide-react';
+import React from 'react';
 
 import { Button } from '@/components/ui/button';
 
@@ -24,7 +24,7 @@ type PremiumBenefitsDisplayProps = {
 
 /**
  * PremiumBenefitsDisplay - Shows premium vs free benefits comparison
- * 
+ *
  * Features:
  * - Clear tier comparison
  * - Strategic upgrade prompts
@@ -94,7 +94,7 @@ export const PremiumBenefitsDisplay: React.FC<PremiumBenefitsDisplayProps> = ({
   if (userTier === 'premium') {
     return (
       <div className={`rounded-lg border border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50 p-6 dark:border-amber-800 dark:from-amber-950 dark:to-orange-950 ${className}`}>
-        <div className="flex items-center gap-3 mb-4">
+        <div className="mb-4 flex items-center gap-3">
           <Crown className="size-6 text-amber-600 dark:text-amber-400" />
           <div>
             <h3 className="text-lg font-semibold text-amber-800 dark:text-amber-200">
@@ -105,7 +105,7 @@ export const PremiumBenefitsDisplay: React.FC<PremiumBenefitsDisplayProps> = ({
             </p>
           </div>
         </div>
-        
+
         <div className="grid gap-3 md:grid-cols-2">
           {benefits.filter(b => b.premium).map((benefit, index) => {
             const Icon = benefit.icon;
@@ -205,7 +205,7 @@ export const PremiumBenefitsDisplay: React.FC<PremiumBenefitsDisplayProps> = ({
         </div>
 
         {/* CTA Button */}
-        <Button 
+        <Button
           onClick={onUpgrade}
           className="w-full bg-amber-600 text-white hover:bg-amber-700 dark:bg-amber-500 dark:hover:bg-amber-600"
         >
@@ -221,7 +221,7 @@ export const PremiumBenefitsDisplay: React.FC<PremiumBenefitsDisplayProps> = ({
       {/* Feature Comparison Table */}
       <div className="rounded-lg border border-white/20 bg-white/40 p-6 backdrop-blur-sm dark:border-white/10 dark:bg-white/5">
         <h3 className="mb-4 text-lg font-semibold">Confronto Funzionalità</h3>
-        
+
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -236,18 +236,22 @@ export const PremiumBenefitsDisplay: React.FC<PremiumBenefitsDisplayProps> = ({
                 <tr key={index} className="border-b border-white/10">
                   <td className="py-2">{benefit.title}</td>
                   <td className="py-2 text-center">
-                    {benefit.free ? (
-                      <CheckCircle className="mx-auto size-4 text-green-600" />
-                    ) : (
-                      <X className="mx-auto size-4 text-gray-400" />
-                    )}
+                    {benefit.free
+                      ? (
+                          <CheckCircle className="mx-auto size-4 text-green-600" />
+                        )
+                      : (
+                          <X className="mx-auto size-4 text-gray-400" />
+                        )}
                   </td>
                   <td className="py-2 text-center">
-                    {benefit.premium ? (
-                      <CheckCircle className="mx-auto size-4 text-green-600" />
-                    ) : (
-                      <X className="mx-auto size-4 text-gray-400" />
-                    )}
+                    {benefit.premium
+                      ? (
+                          <CheckCircle className="mx-auto size-4 text-green-600" />
+                        )
+                      : (
+                          <X className="mx-auto size-4 text-gray-400" />
+                        )}
                   </td>
                 </tr>
               ))}

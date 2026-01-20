@@ -1,20 +1,22 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+
+import { ApiError, withErrorHandler } from '@/libs/api/errorHandler';
+import { lessonCompletionSchema, validateRequest } from '@/libs/api/validation';
+import { awardBadgeToUser, completeLessonForUser } from '@/libs/supabase/database';
 import { createClient } from '@/libs/supabase/server';
-import { completeLessonForUser, awardBadgeToUser } from '@/libs/supabase/database';
-import { withErrorHandler, ApiError } from '@/libs/api/errorHandler';
-import { validateRequest, lessonCompletionSchema } from '@/libs/api/validation';
 
 export const POST = withErrorHandler(async (request: NextRequest) => {
   const supabase = await createClient();
   const { data: { user }, error: authError } = await supabase.auth.getUser();
-  
+
   if (authError || !user) {
     throw new ApiError('Unauthorized', 401, 'AUTH_REQUIRED');
   }
-  
+
   const body = await request.json();
   const validatedData = validateRequest(lessonCompletionSchema, body);
-  
+
   const {
     lessonId,
     pathId = 'base', // Default to 'base' path if not provided
@@ -22,9 +24,9 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     approachesUsed,
     quizScore,
     timeSpent,
-    badges = []
+    badges = [],
   } = validatedData;
-  
+
   // Complete the lesson
   const completion = await completeLessonForUser({
     userId: user.id,
@@ -35,7 +37,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     quizScore,
     timeSpent,
   });
-  
+
   // Award any badges
   const awardedBadges = [];
   for (const badge of badges) {
@@ -54,10 +56,10 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
       console.log('Badge already awarded:', badge.id);
     }
   }
-  
-  return NextResponse.json({ 
+
+  return NextResponse.json({
     completion,
     badges: awardedBadges,
-    success: true 
+    success: true,
   }, { status: 201 });
 });

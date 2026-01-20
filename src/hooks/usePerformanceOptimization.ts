@@ -9,7 +9,7 @@
  * - Hardware acceleration availability
  */
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 // ============================================================================
 // TYPES & INTERFACES
@@ -103,7 +103,7 @@ export const usePerformanceOptimization = () => {
     if ('getBattery' in navigator) {
       try {
         const battery = await (navigator as any).getBattery();
-        
+
         const updateBatteryStatus = () => {
           setBatteryStatus({
             level: battery.level,
@@ -114,10 +114,10 @@ export const usePerformanceOptimization = () => {
         };
 
         updateBatteryStatus();
-        
+
         battery.addEventListener('chargingchange', updateBatteryStatus);
         battery.addEventListener('levelchange', updateBatteryStatus);
-        
+
         return () => {
           battery.removeEventListener('chargingchange', updateBatteryStatus);
           battery.removeEventListener('levelchange', updateBatteryStatus);
@@ -134,10 +134,10 @@ export const usePerformanceOptimization = () => {
   const detectNetworkQuality = useCallback(() => {
     if ('connection' in navigator) {
       const connection = (navigator as any).connection;
-      
+
       const updateNetworkQuality = () => {
         const effectiveType = connection.effectiveType;
-        
+
         if (effectiveType === 'slow-2g' || effectiveType === '2g') {
           setNetworkQuality('slow');
         } else if (effectiveType === '3g') {
@@ -149,7 +149,7 @@ export const usePerformanceOptimization = () => {
 
       updateNetworkQuality();
       connection.addEventListener('change', updateNetworkQuality);
-      
+
       return () => {
         connection.removeEventListener('change', updateNetworkQuality);
       };
@@ -160,14 +160,14 @@ export const usePerformanceOptimization = () => {
   // Monitor user preferences
   const monitorUserPreferences = useCallback(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    
+
     const updatePreferences = () => {
       setPrefersReducedMotion(mediaQuery.matches);
     };
 
     updatePreferences();
     mediaQuery.addEventListener('change', updatePreferences);
-    
+
     return () => {
       mediaQuery.removeEventListener('change', updatePreferences);
     };
@@ -221,10 +221,10 @@ export const usePerformanceOptimization = () => {
     }
 
     // Enhance performance for capable devices
-    if (deviceCapabilities.memoryLevel === 'high' && 
-        deviceCapabilities.isHighRefreshRate && 
-        networkQuality === 'fast' &&
-        batteryStatus?.charging) {
+    if (deviceCapabilities.memoryLevel === 'high'
+      && deviceCapabilities.isHighRefreshRate
+      && networkQuality === 'fast'
+      && batteryStatus?.charging) {
       config.level = 'enhanced';
       config.animationDuration = 400;
       config.maxConcurrentAnimations = 20;
@@ -250,11 +250,11 @@ export const usePerformanceOptimization = () => {
     if (deviceCapabilities.isMobile) {
       classes.push('device-mobile');
     }
-    
+
     if (deviceCapabilities.isLowPowered) {
       classes.push('low-power-optimized');
     }
-    
+
     if (deviceCapabilities.isHighRefreshRate) {
       classes.push('high-refresh-optimized');
     }
@@ -310,10 +310,10 @@ export const usePerformanceOptimization = () => {
   useEffect(() => {
     detectDeviceCapabilities();
     monitorUserPreferences();
-    
+
     const cleanupBattery = monitorBatteryStatus();
     const cleanupNetwork = detectNetworkQuality();
-    
+
     return () => {
       cleanupBattery?.then(cleanup => cleanup?.());
       cleanupNetwork?.();

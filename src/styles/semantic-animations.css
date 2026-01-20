@@ -1,9 +1,9 @@
 /*
  * SEMANTIC ANIMATIONS CSS v2.0 - Enterprise 2026
- * 
+ *
  * Definizioni CSS per animazioni semantiche Tradelia
  * Ogni animazione ha significato specifico e intento comunicativo
- * 
+ *
  * Basato su ricerca UX 2026:
  * - Enter ≠ Exit ≠ Error ≠ Success
  * - Timing e easing semanticamente appropriati
@@ -162,7 +162,8 @@
 }
 
 @keyframes semantic-error-shake {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateX(0);
   }
   20% {
@@ -258,7 +259,8 @@
 }
 
 @keyframes semantic-loading-pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.6;
   }
   50% {
@@ -412,27 +414,27 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  
+
   /* Mantieni solo feedback essenziali */
   .semantic-focus,
   .semantic-error {
     animation-duration: 150ms !important;
     animation-timing-function: ease-out !important;
   }
-  
+
   /* Elimina animazioni decorative */
   .semantic-success,
   .semantic-complete,
   .semantic-loading {
     animation: none !important;
   }
-  
+
   /* Feedback immediato per interazioni */
   .semantic-hover:hover {
     transform: none !important;
     background-color: rgba(var(--primary-rgb), 0.1) !important;
   }
-  
+
   .semantic-press:active {
     transform: none !important;
     opacity: 0.8 !important;
@@ -445,7 +447,7 @@
   .semantic-focus {
     animation-name: semantic-focus-high-contrast;
   }
-  
+
   @keyframes semantic-focus-high-contrast {
     from {
       outline: 2px solid transparent;
@@ -463,12 +465,12 @@
   .semantic-animation {
     animation-duration: calc(var(--motion-base) * 0.8);
   }
-  
+
   .semantic-hover {
     /* Disabilita hover su touch */
     transition: none;
   }
-  
+
   .semantic-press {
     /* Feedback più immediato su touch */
     transition-duration: calc(var(--press-feedback-duration) * 0.7);

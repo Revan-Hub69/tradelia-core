@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import { ApiError } from './errorHandler';
 
 // Lesson completion validation schema

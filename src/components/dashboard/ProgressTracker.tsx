@@ -1,22 +1,23 @@
 'use client';
 
+import { ArrowRight, BookOpen, Clock, RefreshCw, TrendingUp, Trophy } from 'lucide-react';
 import React from 'react';
-import { ArrowRight, BookOpen, Clock, Trophy, TrendingUp, RefreshCw } from 'lucide-react';
 
-import { cn } from '@/utils/Helpers';
 import { useProgressUpdates } from '@/hooks/useProgressUpdates';
-import type { PathProgress, Lesson } from './types';
+import { cn } from '@/utils/Helpers';
+
+import type { Lesson, PathProgress } from './types';
 
 /**
  * ProgressTracker - Progress overview dashboard component with real-time updates
- * 
+ *
  * Requirements: 1.2, 6.2, 6.3, 3.2, 6.4
  * - Riutilizzare progress bar styling da LessonHeader
  * - Implementare overall progress calculation
  * - Mostrare next recommended lesson
  * - Real-time progress updates from lesson completions
  * - Immediate visual indicator updates
- * 
+ *
  * Features:
  * - Glass card styling consistent with existing design system
  * - Same progress bar patterns as LessonHeader
@@ -34,12 +35,12 @@ export const ProgressTracker: React.FC<ProgressTrackerWithUpdatesProps> = ({
   userId,
   onLessonClick,
 }) => {
-  const { 
-    progressData, 
-    isLoading, 
-    error, 
-    refreshProgress, 
-    isUpdating 
+  const {
+    progressData,
+    isLoading,
+    error,
+    refreshProgress,
+    isUpdating,
   } = useProgressUpdates(userId);
 
   if (isLoading) {
@@ -53,7 +54,7 @@ export const ProgressTracker: React.FC<ProgressTrackerWithUpdatesProps> = ({
         <div className="space-y-4">
           <div className="h-6 w-40 animate-pulse rounded bg-muted" />
           <div className="space-y-3">
-            {[1, 2, 3].map((i) => (
+            {[1, 2, 3].map(i => (
               <div key={i} className="h-20 animate-pulse rounded-xl bg-muted" />
             ))}
           </div>
@@ -82,15 +83,17 @@ export const ProgressTracker: React.FC<ProgressTrackerWithUpdatesProps> = ({
 
   // Convert progressData to the format expected by the component
   const pathProgressArray: PathProgress[] = Object.values(progressData.pathProgress);
-  const nextRecommendedLesson: Lesson | undefined = progressData.nextRecommendedLesson ? {
-    id: progressData.nextRecommendedLesson,
-    title: 'Crypto Wallets Avanzati',
-    type: 'interactive' as const,
-    duration: 25,
-    xpReward: 150,
-    isCompleted: false,
-    isUnlocked: true,
-  } : undefined;
+  const nextRecommendedLesson: Lesson | undefined = progressData.nextRecommendedLesson
+    ? {
+        id: progressData.nextRecommendedLesson,
+        title: 'Crypto Wallets Avanzati',
+        type: 'interactive' as const,
+        duration: 25,
+        xpReward: 150,
+        isCompleted: false,
+        isUnlocked: true,
+      }
+    : undefined;
 
   // Calculate total estimated time remaining
   const totalTimeRemaining = pathProgressArray.reduce((total, path) => {
@@ -109,9 +112,15 @@ export const ProgressTracker: React.FC<ProgressTrackerWithUpdatesProps> = ({
   };
 
   const getProgressColor = (progress: number) => {
-    if (progress >= 80) return 'bg-green-500';
-    if (progress >= 50) return 'bg-blue-500';
-    if (progress >= 20) return 'bg-yellow-500';
+    if (progress >= 80) {
+      return 'bg-green-500';
+    }
+    if (progress >= 50) {
+      return 'bg-blue-500';
+    }
+    if (progress >= 20) {
+      return 'bg-yellow-500';
+    }
     return 'bg-primary';
   };
 
@@ -136,7 +145,7 @@ export const ProgressTracker: React.FC<ProgressTrackerWithUpdatesProps> = ({
               'flex items-center gap-2 rounded-lg border border-white/20 bg-white/60 px-3 py-2 text-sm font-medium backdrop-blur-sm transition-all',
               'dark:border-white/10 dark:bg-white/10',
               'hover:bg-white/80 dark:hover:bg-white/20',
-              isUpdating && 'cursor-not-allowed opacity-50'
+              isUpdating && 'cursor-not-allowed opacity-50',
             )}
           >
             <RefreshCw className={cn('size-4', isUpdating && 'animate-spin')} />
@@ -151,8 +160,9 @@ export const ProgressTracker: React.FC<ProgressTrackerWithUpdatesProps> = ({
       <div className={cn(
         'relative overflow-hidden rounded-xl border border-white/20 bg-white/60 backdrop-blur-sm p-6 shadow-sm shadow-black/5',
         'dark:border-white/10 dark:bg-white/10 dark:shadow-black/20',
-        isUpdating && 'ring-2 ring-primary/20 ring-offset-2'
-      )}>
+        isUpdating && 'ring-2 ring-primary/20 ring-offset-2',
+      )}
+      >
         <div className="mb-4 flex items-center gap-3">
           <div className="flex size-12 items-center justify-center rounded-full bg-primary/20">
             <TrendingUp className="size-6 text-primary" />
@@ -164,7 +174,7 @@ export const ProgressTracker: React.FC<ProgressTrackerWithUpdatesProps> = ({
             </p>
           </div>
         </div>
-        
+
         {/* Progress Bar - Same styling as LessonHeader */}
         <div className="space-y-2">
           <div className="flex items-center justify-between text-sm">
@@ -174,12 +184,12 @@ export const ProgressTracker: React.FC<ProgressTrackerWithUpdatesProps> = ({
               %
             </span>
           </div>
-          
+
           <div className="h-2.5 overflow-hidden rounded-full bg-slate-200/80 dark:bg-slate-700/60">
             <div
               className={cn(
                 'relative h-2.5 overflow-hidden rounded-full transition-all duration-700 ease-out',
-                getProgressColor(progressData.overallProgress)
+                getProgressColor(progressData.overallProgress),
               )}
               style={{ width: `${progressData.overallProgress}%` }}
               role="progressbar"
@@ -190,7 +200,7 @@ export const ProgressTracker: React.FC<ProgressTrackerWithUpdatesProps> = ({
             >
               {/* Shimmer effect for active progress */}
               {progressData.overallProgress > 0 && progressData.overallProgress < 100 && (
-                <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                <div className="animate-shimmer absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
               )}
             </div>
           </div>
@@ -220,7 +230,7 @@ export const ProgressTracker: React.FC<ProgressTrackerWithUpdatesProps> = ({
             <Trophy className="size-5 text-primary" />
             <div>
               <div className="text-sm font-medium">
-                Livello 
+                Livello
                 {' '}
                 {progressData.level}
               </div>
@@ -233,14 +243,14 @@ export const ProgressTracker: React.FC<ProgressTrackerWithUpdatesProps> = ({
           </div>
           <div className="text-right">
             <div className="text-sm font-medium">
-              Streak: 
+              Streak:
               {' '}
               {progressData.currentStreak}
               {' '}
               giorni
             </div>
             <div className="text-xs text-muted-foreground">
-              Record: 
+              Record:
               {' '}
               {progressData.longestStreak}
             </div>
@@ -254,29 +264,32 @@ export const ProgressTracker: React.FC<ProgressTrackerWithUpdatesProps> = ({
           <Trophy className="size-5 text-primary" />
           Progresso per Percorso
         </h3>
-        
+
         <div className="grid gap-4">
           {pathProgressArray.map((path) => {
             const timeSpentHours = Math.round(path.timeSpent / 60 * 10) / 10;
             const lastAccessedDays = Math.floor((Date.now() - path.lastAccessed.getTime()) / (1000 * 60 * 60 * 24));
-            
+
             return (
-              <div key={path.pathId} className={cn(
-                'relative overflow-hidden rounded-xl border border-white/20 bg-white/60 backdrop-blur-sm p-4 shadow-sm shadow-black/5 transition-all duration-300',
-                'dark:border-white/10 dark:bg-white/10 dark:shadow-black/20',
-                'hover:scale-[1.01] hover:bg-white/80 hover:shadow-md dark:hover:bg-white/20'
-              )}>
+              <div
+                key={path.pathId}
+                className={cn(
+                  'relative overflow-hidden rounded-xl border border-white/20 bg-white/60 backdrop-blur-sm p-4 shadow-sm shadow-black/5 transition-all duration-300',
+                  'dark:border-white/10 dark:bg-white/10 dark:shadow-black/20',
+                  'hover:scale-[1.01] hover:bg-white/80 hover:shadow-md dark:hover:bg-white/20',
+                )}
+              >
                 <div className="mb-3 flex items-center justify-between">
                   <div>
                     <h4 className="font-medium capitalize">
                       {path.pathId.replace('-', ' ')}
                     </h4>
                     <p className="text-xs text-muted-foreground">
-                      Modulo 
+                      Modulo
                       {' '}
                       {path.currentModule + 1}
                       {' '}
-                      • 
+                      •
                       {timeSpentHours}
                       h studiate
                     </p>
@@ -291,19 +304,19 @@ export const ProgressTracker: React.FC<ProgressTrackerWithUpdatesProps> = ({
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Progress Bar - Same pattern as LessonHeader */}
                 <div className="h-2 overflow-hidden rounded-full bg-slate-200/80 dark:bg-slate-700/60">
                   <div
                     className={cn(
                       'relative h-2 overflow-hidden rounded-full transition-all duration-700 ease-out',
-                      getProgressColor(path.completionRate)
+                      getProgressColor(path.completionRate),
                     )}
                     style={{ width: `${path.completionRate}%` }}
                   >
                     {/* Shimmer effect */}
                     {path.completionRate > 0 && path.completionRate < 100 && (
-                      <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                      <div className="animate-shimmer absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
                     )}
                   </div>
                 </div>
@@ -317,8 +330,9 @@ export const ProgressTracker: React.FC<ProgressTrackerWithUpdatesProps> = ({
       {nextRecommendedLesson && (
         <div className={cn(
           'relative overflow-hidden rounded-xl border border-primary/20 bg-gradient-to-r from-primary/10 to-primary/5 p-6 shadow-sm shadow-black/5',
-          'dark:border-primary/30 dark:from-primary/20 dark:to-primary/10'
-        )}>
+          'dark:border-primary/30 dark:from-primary/20 dark:to-primary/10',
+        )}
+        >
           <div className="mb-4 flex items-center gap-3">
             <div className="flex size-12 items-center justify-center rounded-full bg-primary/20">
               <BookOpen className="size-6 text-primary" />
@@ -356,8 +370,8 @@ export const ProgressTracker: React.FC<ProgressTrackerWithUpdatesProps> = ({
                 </div>
               </div>
             </div>
-            
-            <button 
+
+            <button
               type="button"
               onClick={() => onLessonClick?.(nextRecommendedLesson.id)}
               className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-sm transition-all hover:scale-[1.02] hover:bg-primary/90 hover:shadow-md active:scale-[0.98]"

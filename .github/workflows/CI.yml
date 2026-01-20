@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    if: false  # Disabilitato
+    if: false # Disabilitato
     runs-on: ubuntu-latest
     steps:
       - run: echo "CI disabled"

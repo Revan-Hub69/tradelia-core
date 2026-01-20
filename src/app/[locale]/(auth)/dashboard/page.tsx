@@ -1,8 +1,9 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useUserData } from '@/hooks/useUserData';
+
 import { PageTransitionWrapper } from '@/components/transitions/PageTransitionWrapper';
+import { useUserData } from '@/hooks/useUserData';
 
 const DashboardIndexPage = () => {
   const t = useTranslations('Dashboard');
@@ -50,7 +51,7 @@ const DashboardIndexPage = () => {
 
           {/* Current Status */}
           <div className="stagger-item rounded-lg border bg-card p-6">
-            <h2 className="text-lg font-semibold mb-4">{t('current_status_title')}</h2>
+            <h2 className="mb-4 text-lg font-semibold">{t('current_status_title')}</h2>
             <div className="space-y-4">
               <div>
                 <div className="text-sm text-muted-foreground">{t('path_label')}</div>
@@ -59,9 +60,9 @@ const DashboardIndexPage = () => {
               <div>
                 <div className="text-sm text-muted-foreground">{t('progress_label')}</div>
                 <div className="font-medium">
-                  {t('lessons_progress', { 
-                    completed: userData.progress.completedLessons, 
-                    total: userData.progress.totalLessons 
+                  {t('lessons_progress', {
+                    completed: userData.progress.completedLessons,
+                    total: userData.progress.totalLessons,
                   })}
                 </div>
                 <div className="mt-2 h-2 w-full rounded-full bg-muted">
@@ -76,30 +77,32 @@ const DashboardIndexPage = () => {
 
           {/* Next Steps */}
           <div className="stagger-item rounded-lg border bg-card p-6">
-            <h2 className="text-lg font-semibold mb-4">{t('next_objectives_title')}</h2>
-            {userData.progress.completedLessons === 0 ? (
-              <div className="space-y-4">
-                <p className="text-muted-foreground">
-                  {t('not_started_message')}
-                </p>
-                <div className="rounded-lg bg-blue-50 dark:bg-blue-950/30 p-4 border border-blue-200 dark:border-blue-800">
-                  <div className="font-medium text-blue-900 dark:text-blue-100">
-                    {t('first_lesson_objective')}
+            <h2 className="mb-4 text-lg font-semibold">{t('next_objectives_title')}</h2>
+            {userData.progress.completedLessons === 0
+              ? (
+                  <div className="space-y-4">
+                    <p className="text-muted-foreground">
+                      {t('not_started_message')}
+                    </p>
+                    <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950/30">
+                      <div className="font-medium text-blue-900 dark:text-blue-100">
+                        {t('first_lesson_objective')}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <p className="text-muted-foreground">
-                  {t('continue_message')}
-                </p>
-                <div className="rounded-lg bg-green-50 dark:bg-green-950/30 p-4 border border-green-200 dark:border-green-800">
-                  <div className="font-medium text-green-900 dark:text-green-100">
-                    {t('continue_path_objective')}
+                )
+              : (
+                  <div className="space-y-4">
+                    <p className="text-muted-foreground">
+                      {t('continue_message')}
+                    </p>
+                    <div className="rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-950/30">
+                      <div className="font-medium text-green-900 dark:text-green-100">
+                        {t('continue_path_objective')}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            )}
+                )}
           </div>
         </div>
       </div>

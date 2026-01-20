@@ -25,24 +25,25 @@ export default function CommunityPage() {
 
         {/* Referral System */}
         <div className="rounded-lg border bg-card p-6">
-          <h2 className="text-lg font-semibold mb-4">Sistema Referral</h2>
+          <h2 className="mb-4 text-lg font-semibold">Sistema Referral</h2>
           <div className="space-y-4">
             <p className="text-muted-foreground">
               Invita amici a Tradelia e aiutali nel loro percorso di apprendimento crypto.
             </p>
-            
+
             {userData && (
-              <div className="rounded-lg bg-blue-50 dark:bg-blue-950/30 p-4 border border-blue-200 dark:border-blue-800">
-                <div className="text-sm text-blue-800 dark:text-blue-200 mb-2">
+              <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950/30">
+                <div className="mb-2 text-sm text-blue-800 dark:text-blue-200">
                   Il tuo link di invito:
                 </div>
-                <div className="font-mono text-sm bg-white dark:bg-slate-800 p-2 rounded border">
-                  https://tradelia.com/invite/{userData.id.slice(0, 8)}
+                <div className="rounded border bg-white p-2 font-mono text-sm dark:bg-slate-800">
+                  https://tradelia.com/invite/
+                  {userData.id.slice(0, 8)}
                 </div>
               </div>
             )}
 
-            <div className="text-sm text-orange-600 bg-orange-50 dark:bg-orange-950/30 p-3 rounded border border-orange-200 dark:border-orange-800">
+            <div className="rounded border border-orange-200 bg-orange-50 p-3 text-sm text-orange-600 dark:border-orange-800 dark:bg-orange-950/30">
               Sistema referral in sviluppo - Funzionalità complete disponibili presto
             </div>
           </div>
@@ -51,52 +52,52 @@ export default function CommunityPage() {
         {/* Community Features */}
         <div className="grid gap-6 md:grid-cols-2">
           <div className="rounded-lg border bg-card p-6">
-            <h3 className="text-lg font-semibold mb-2">Forum Discussioni</h3>
-            <p className="text-muted-foreground mb-4">
+            <h3 className="mb-2 text-lg font-semibold">Forum Discussioni</h3>
+            <p className="mb-4 text-muted-foreground">
               Discuti argomenti crypto con altri membri della community.
             </p>
-            <div className="text-sm text-orange-600 bg-orange-50 dark:bg-orange-950/30 p-3 rounded border border-orange-200 dark:border-orange-800">
+            <div className="rounded border border-orange-200 bg-orange-50 p-3 text-sm text-orange-600 dark:border-orange-800 dark:bg-orange-950/30">
               In sviluppo
             </div>
           </div>
 
           <div className="rounded-lg border bg-card p-6">
-            <h3 className="text-lg font-semibold mb-2">Gruppi di Studio</h3>
-            <p className="text-muted-foreground mb-4">
+            <h3 className="mb-2 text-lg font-semibold">Gruppi di Studio</h3>
+            <p className="mb-4 text-muted-foreground">
               Unisciti a gruppi di studio per apprendere insieme ad altri.
             </p>
-            <div className="text-sm text-orange-600 bg-orange-50 dark:bg-orange-950/30 p-3 rounded border border-orange-200 dark:border-orange-800">
+            <div className="rounded border border-orange-200 bg-orange-50 p-3 text-sm text-orange-600 dark:border-orange-800 dark:bg-orange-950/30">
               In sviluppo
             </div>
           </div>
 
           <div className="rounded-lg border bg-card p-6">
-            <h3 className="text-lg font-semibold mb-2">Mentorship</h3>
-            <p className="text-muted-foreground mb-4">
+            <h3 className="mb-2 text-lg font-semibold">Mentorship</h3>
+            <p className="mb-4 text-muted-foreground">
               Connettiti con mentor esperti o diventa mentor per altri.
             </p>
-            <div className="text-sm text-orange-600 bg-orange-50 dark:bg-orange-950/30 p-3 rounded border border-orange-200 dark:border-orange-800">
+            <div className="rounded border border-orange-200 bg-orange-50 p-3 text-sm text-orange-600 dark:border-orange-800 dark:bg-orange-950/30">
               In sviluppo
             </div>
           </div>
 
           <div className="rounded-lg border bg-card p-6">
-            <h3 className="text-lg font-semibold mb-2">Eventi Live</h3>
-            <p className="text-muted-foreground mb-4">
+            <h3 className="mb-2 text-lg font-semibold">Eventi Live</h3>
+            <p className="mb-4 text-muted-foreground">
               Partecipa a webinar e sessioni Q&A dal vivo.
             </p>
-            <div className="text-sm text-orange-600 bg-orange-50 dark:bg-orange-950/30 p-3 rounded border border-orange-200 dark:border-orange-800">
+            <div className="rounded border border-orange-200 bg-orange-50 p-3 text-sm text-orange-600 dark:border-orange-800 dark:bg-orange-950/30">
               In sviluppo
             </div>
           </div>
         </div>
 
         {/* Community Guidelines */}
-        <div className="rounded-lg bg-green-50 dark:bg-green-950/30 p-4 border border-green-200 dark:border-green-800">
-          <h3 className="font-semibold text-green-900 dark:text-green-100 mb-2">
+        <div className="rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-950/30">
+          <h3 className="mb-2 font-semibold text-green-900 dark:text-green-100">
             Linee Guida Community
           </h3>
-          <ul className="text-sm text-green-800 dark:text-green-200 space-y-1">
+          <ul className="space-y-1 text-sm text-green-800 dark:text-green-200">
             <li>• Rispetta tutti i membri della community</li>
             <li>• Condividi conoscenze, non consigli di investimento</li>
             <li>• Niente spam o promozioni non autorizzate</li>

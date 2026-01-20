@@ -1,12 +1,12 @@
 /**
  * ANTI-ERROR GUIDANCE SYSTEM - Educational UX 2026
- * 
+ *
  * Sistema di prevenzione errori basato su ricerca 2026:
  * - Safe path highlighting con visual cues
  * - Risky action warnings con confirmation patterns
  * - Progressive error prevention (prevent → warn → confirm)
  * - Context-aware guidance per educational interfaces
- * 
+ *
  * Basato su:
  * - Loom Design System error patterns
  * - Apple HIG confirmation dialogs
@@ -14,8 +14,9 @@
  * - Educational psychology error prevention
  */
 
-import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+
 import { useFocusMode } from './FocusMode';
 
 // ============================================================================
@@ -26,7 +27,7 @@ export type ActionRiskLevel = 'safe' | 'caution' | 'risky' | 'dangerous';
 export type ConfirmationType = 'none' | 'simple' | 'double' | 'typed';
 export type GuidanceIntensity = 'subtle' | 'moderate' | 'strong' | 'critical';
 
-export interface ActionGuidance {
+export type ActionGuidance = {
   id: string;
   riskLevel: ActionRiskLevel;
   confirmationType: ConfirmationType;
@@ -35,17 +36,17 @@ export interface ActionGuidance {
   alternativeAction?: string;
   educationalContext?: string;
   preventionStrategy: 'highlight' | 'warn' | 'block' | 'guide';
-}
+};
 
-export interface SafePathConfig {
+export type SafePathConfig = {
   elementId: string;
   pathType: 'recommended' | 'safe' | 'optimal';
   visualCue: 'glow' | 'border' | 'background' | 'pulse';
   intensity: GuidanceIntensity;
   message?: string;
-}
+};
 
-export interface RiskyActionConfig {
+export type RiskyActionConfig = {
   actionId: string;
   riskLevel: ActionRiskLevel;
   confirmationRequired: boolean;
@@ -53,13 +54,13 @@ export interface RiskyActionConfig {
   consequences?: string[];
   safeAlternatives?: string[];
   educationalTip?: string;
-}
+};
 
 // ============================================================================
 // ANTI-ERROR CONTEXT
 // ============================================================================
 
-interface AntiErrorContextType {
+type AntiErrorContextType = {
   registerSafePath: (config: SafePathConfig) => void;
   registerRiskyAction: (config: RiskyActionConfig) => void;
   highlightSafePath: (elementId: string, intensity?: GuidanceIntensity) => void;
@@ -67,7 +68,7 @@ interface AntiErrorContextType {
   getActionGuidance: (actionId: string) => ActionGuidance | null;
   isPathSafe: (elementId: string) => boolean;
   preventError: (actionId: string, context?: string) => boolean;
-}
+};
 
 const AntiErrorContext = createContext<AntiErrorContextType | null>(null);
 
@@ -94,8 +95,10 @@ export const AntiErrorProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Highlight safe path
   const highlightSafePath = useCallback((elementId: string, intensity: GuidanceIntensity = 'moderate') => {
     const pathConfig = safePaths.get(elementId);
-    if (!pathConfig) return;
-    
+    if (!pathConfig) {
+      return;
+    }
+
     // Apply CSS highlighting
     const element = document.querySelector(`[data-safe-path="${elementId}"]`);
     if (element) {
@@ -115,23 +118,27 @@ export const AntiErrorProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Show risk warning
   const showRiskWarning = useCallback(async (actionId: string): Promise<boolean> => {
     const riskConfig = riskyActions.get(actionId);
-    if (!riskConfig) return true;
+    if (!riskConfig) {
+      return true;
+    }
 
     return new Promise((resolve) => {
       const guidance: ActionGuidance = {
         id: actionId,
         riskLevel: riskConfig.riskLevel,
-        confirmationType: riskConfig.confirmationRequired ? 
-          (riskConfig.riskLevel === 'dangerous' ? 'double' : 'simple') : 'none',
+        confirmationType: riskConfig.confirmationRequired
+          ? (riskConfig.riskLevel === 'dangerous' ? 'double' : 'simple')
+          : 'none',
         message: riskConfig.warningMessage,
         safePath: riskConfig.safeAlternatives?.[0],
         educationalContext: riskConfig.educationalTip,
-        preventionStrategy: riskConfig.riskLevel === 'dangerous' ? 'block' : 
-                           riskConfig.riskLevel === 'risky' ? 'warn' : 'guide',
+        preventionStrategy: riskConfig.riskLevel === 'dangerous'
+          ? 'block'
+          : riskConfig.riskLevel === 'risky' ? 'warn' : 'guide',
       };
 
       setActiveGuidance(prev => new Map(prev.set(actionId, guidance)));
-      
+
       // Auto-resolve after timeout for non-critical actions
       if (riskConfig.riskLevel === 'safe' || riskConfig.riskLevel === 'caution') {
         setTimeout(() => resolve(true), 100);
@@ -153,7 +160,9 @@ export const AntiErrorProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Prevent error
   const preventError = useCallback((actionId: string, context?: string): boolean => {
     const riskConfig = riskyActions.get(actionId);
-    if (!riskConfig) return true;
+    if (!riskConfig) {
+      return true;
+    }
 
     // In focus mode, be more protective
     if (focusState.isActive && focusState.level === 'immersive') {
@@ -215,7 +224,7 @@ export const useAntiError = () => {
 // SAFE PATH HIGHLIGHTER COMPONENT
 // ============================================================================
 
-interface SafePathHighlighterProps {
+type SafePathHighlighterProps = {
   elementId: string;
   pathType?: 'recommended' | 'safe' | 'optimal';
   visualCue?: 'glow' | 'border' | 'background' | 'pulse';
@@ -223,7 +232,7 @@ interface SafePathHighlighterProps {
   message?: string;
   children: React.ReactNode;
   className?: string;
-}
+};
 
 export const SafePathHighlighter: React.FC<SafePathHighlighterProps> = ({
   elementId,
@@ -249,7 +258,9 @@ export const SafePathHighlighter: React.FC<SafePathHighlighterProps> = ({
 
   useEffect(() => {
     const element = document.querySelector(`[data-safe-path="${elementId}"]`);
-    if (!element) return;
+    if (!element) {
+      return;
+    }
 
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
@@ -275,10 +286,12 @@ export const SafePathHighlighter: React.FC<SafePathHighlighterProps> = ({
   };
 
   const getVisualStyles = () => {
-    if (!isHighlighted) return {};
+    if (!isHighlighted) {
+      return {};
+    }
 
     const glowIntensity = getGlowIntensity();
-    
+
     switch (visualCue) {
       case 'glow':
         return {
@@ -313,7 +326,7 @@ export const SafePathHighlighter: React.FC<SafePathHighlighterProps> = ({
       transition={{ duration: 0.3, ease: 'easeOut' }}
     >
       {children}
-      
+
       {isHighlighted && message && (
         <motion.div
           className="safe-path-tooltip"
@@ -336,7 +349,7 @@ export const SafePathHighlighter: React.FC<SafePathHighlighterProps> = ({
 // RISKY ACTION GUARD COMPONENT
 // ============================================================================
 
-interface RiskyActionGuardProps {
+type RiskyActionGuardProps = {
   actionId: string;
   riskLevel: ActionRiskLevel;
   warningMessage: string;
@@ -347,7 +360,7 @@ interface RiskyActionGuardProps {
   onCancel?: () => void;
   children: React.ReactNode;
   className?: string;
-}
+};
 
 export const RiskyActionGuard: React.FC<RiskyActionGuardProps> = ({
   actionId,
@@ -463,16 +476,18 @@ export const RiskyActionGuard: React.FC<RiskyActionGuardProps> = ({
               transition={{ duration: 0.3, ease: 'easeOut' }}
             >
               <div className="warning-header">
-                <div 
+                <div
                   className="warning-icon"
                   style={{ color: getRiskColor() }}
                 >
                   {getRiskIcon()}
                 </div>
                 <h3 className="warning-title">
-                  {riskLevel === 'dangerous' ? 'Azione Pericolosa' :
-                   riskLevel === 'risky' ? 'Azione Rischiosa' :
-                   'Attenzione Richiesta'}
+                  {riskLevel === 'dangerous'
+                    ? 'Azione Pericolosa'
+                    : riskLevel === 'risky'
+                      ? 'Azione Rischiosa'
+                      : 'Attenzione Richiesta'}
                 </h3>
               </div>
 
@@ -517,7 +532,7 @@ export const RiskyActionGuard: React.FC<RiskyActionGuardProps> = ({
                       id="confirmation-input"
                       type="text"
                       value={typedConfirmation}
-                      onChange={(e) => setTypedConfirmation(e.target.value)}
+                      onChange={e => setTypedConfirmation(e.target.value)}
                       placeholder="confirm"
                       className="confirmation-input"
                     />
@@ -533,7 +548,7 @@ export const RiskyActionGuard: React.FC<RiskyActionGuardProps> = ({
                 >
                   Annulla
                 </button>
-                
+
                 {safeAlternatives.length > 0 && (
                   <button
                     type="button"
@@ -543,17 +558,19 @@ export const RiskyActionGuard: React.FC<RiskyActionGuardProps> = ({
                     Usa Alternativa Sicura
                   </button>
                 )}
-                
+
                 <button
                   type="button"
                   className={`btn ${riskLevel === 'dangerous' ? 'btn-danger' : 'btn-warning'}`}
                   onClick={handleConfirm}
-                  disabled={riskLevel === 'dangerous' && confirmationStep === 1 && 
-                           typedConfirmation.toLowerCase() !== 'confirm'}
+                  disabled={riskLevel === 'dangerous' && confirmationStep === 1
+                  && typedConfirmation.toLowerCase() !== 'confirm'}
                 >
-                  {riskLevel === 'dangerous' && confirmationStep === 0 ? 'Sono Sicuro' :
-                   riskLevel === 'dangerous' && confirmationStep === 1 ? 'Conferma Definitivamente' :
-                   'Procedi Comunque'}
+                  {riskLevel === 'dangerous' && confirmationStep === 0
+                    ? 'Sono Sicuro'
+                    : riskLevel === 'dangerous' && confirmationStep === 1
+                      ? 'Conferma Definitivamente'
+                      : 'Procedi Comunque'}
                 </button>
               </div>
             </motion.div>
@@ -568,10 +585,10 @@ export const RiskyActionGuard: React.FC<RiskyActionGuardProps> = ({
 // ERROR PREVENTION GUIDE COMPONENT
 // ============================================================================
 
-interface ErrorPreventionGuideProps {
+type ErrorPreventionGuideProps = {
   context: 'learning' | 'trading' | 'settings' | 'general';
   className?: string;
-}
+};
 
 export const ErrorPreventionGuide: React.FC<ErrorPreventionGuideProps> = ({
   context,
@@ -654,7 +671,7 @@ export const ErrorPreventionGuide: React.FC<ErrorPreventionGuideProps> = ({
         <div className="safe-paths-section">
           <h4>Percorsi Sicuri:</h4>
           <div className="safe-paths-list">
-            {currentGuide.safePaths.map((pathId) => (
+            {currentGuide.safePaths.map(pathId => (
               <button
                 key={pathId}
                 type="button"
@@ -695,16 +712,16 @@ export const AntiErrorTester: React.FC = () => {
   return (
     <div className="anti-error-tester">
       <h3>Anti-Error System Tester</h3>
-      
+
       <div className="tester-controls">
         <button type="button" className="btn btn-primary" onClick={testSafePath}>
           Test Safe Path Highlighting
         </button>
-        
+
         <button type="button" className="btn btn-warning" onClick={testRiskWarning}>
           Test Risk Warning
         </button>
-        
+
         <button type="button" className="btn btn-danger" onClick={testErrorPrevention}>
           Test Error Prevention
         </button>
@@ -745,12 +762,12 @@ export const AntiErrorTester: React.FC = () => {
           consequences={[
             'Perdita permanente dei dati',
             'Reset completo del progresso',
-            'Impossibilità di recupero'
+            'Impossibilità di recupero',
           ]}
           safeAlternatives={[
             'Fai un backup prima di procedere',
             'Contatta il supporto tecnico',
-            'Usa la modalità di test'
+            'Usa la modalità di test',
           ]}
           educationalTip="Le azioni irreversibili richiedono sempre una doppia conferma e una comprensione completa delle conseguenze"
           onConfirm={() => alert('Azione pericolosa confermata - speriamo tu sappia cosa stai facendo!')}

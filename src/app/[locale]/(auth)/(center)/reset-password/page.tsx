@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Suspense, useState, useEffect } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -18,16 +18,16 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { PasswordStrength } from '@/components/ui/password-strength';
 import { FadeIn, SlideReveal } from '@/components/ui/scroll-animations';
+import { useAuthRateLimit } from '@/hooks/useRateLimit';
 import { Link, useRouter } from '@/libs/i18nNavigation';
 import { createClient } from '@/libs/supabase/client';
 import { Logo } from '@/templates/Logo';
-import { PasswordStrength } from '@/components/ui/password-strength';
-import { useAuthRateLimit } from '@/hooks/useRateLimit';
 
 /**
  * Password Reset Page - 2026 Best Practices
- * 
+ *
  * Features:
  * - Secure token validation
  * - Strong password requirements
@@ -46,12 +46,11 @@ const ResetPasswordContent = () => {
   const resetSchema = z.object({
     password: z.string()
       .min(8, t('error_password_length'))
-      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/, 
-        t('error_password_strength_full')),
+      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/, t('error_password_strength_full')),
     confirmPassword: z.string(),
-  }).refine((data) => data.password === data.confirmPassword, {
+  }).refine(data => data.password === data.confirmPassword, {
     message: t('error_password_mismatch'),
-    path: ["confirmPassword"],
+    path: ['confirmPassword'],
   });
 
   type ResetForm = z.infer<typeof resetSchema>;
@@ -74,7 +73,7 @@ const ResetPasswordContent = () => {
     const validateToken = async () => {
       const accessToken = searchParams.get('access_token');
       const refreshToken = searchParams.get('refresh_token');
-      
+
       if (!accessToken || !refreshToken) {
         setIsValidToken(false);
         return;
@@ -116,7 +115,7 @@ const ResetPasswordContent = () => {
     }
 
     setSuccess(true);
-    
+
     // Redirect to dashboard after success
     setTimeout(() => {
       router.push('/dashboard');
@@ -138,7 +137,7 @@ const ResetPasswordContent = () => {
       <div className="relative min-h-screen overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/50 dark:from-slate-900 dark:via-slate-800/50 dark:to-indigo-950/30" />
-        
+
         <div className="relative flex min-h-screen flex-col">
           <header className="flex items-center justify-between p-4 sm:p-6 lg:p-8">
             <Logo size="md" href="/" />
@@ -178,15 +177,15 @@ const ResetPasswordContent = () => {
 
       {/* Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 size-80 rounded-full bg-gradient-to-br from-blue-400/15 to-indigo-600/15 blur-2xl animate-pulse" />
-        <div className="absolute -bottom-40 -left-40 size-80 rounded-full bg-gradient-to-tr from-emerald-400/15 to-blue-500/15 blur-2xl animate-pulse delay-1000" />
+        <div className="absolute -right-40 -top-40 size-80 animate-pulse rounded-full bg-gradient-to-br from-blue-400/15 to-indigo-600/15 blur-2xl" />
+        <div className="absolute -bottom-40 -left-40 size-80 animate-pulse rounded-full bg-gradient-to-tr from-emerald-400/15 to-blue-500/15 blur-2xl delay-1000" />
       </div>
 
       <div className="relative flex min-h-screen flex-col">
         {/* Header */}
         <header className="flex items-center justify-between p-4 sm:p-6 lg:p-8">
           <Logo size="md" href="/" />
-          
+
           <div className="hidden items-center gap-3 text-xs text-slate-600 dark:text-slate-400 sm:flex">
             <div className="flex items-center gap-1.5">
               <div className="size-2 rounded-full bg-green-500" />
@@ -259,24 +258,26 @@ const ResetPasswordContent = () => {
                                       onClick={() => setShowPassword(!showPassword)}
                                       className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition-colors hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300"
                                     >
-                                      {showPassword ? (
-                                        <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
-                                        </svg>
-                                      ) : (
-                                        <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                        </svg>
-                                      )}
+                                      {showPassword
+                                        ? (
+                                            <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                                            </svg>
+                                          )
+                                        : (
+                                            <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
+                                          )}
                                     </button>
                                   </div>
                                 </FormControl>
                                 <FormMessage />
-                                
+
                                 {/* Password Strength Indicator */}
-                                <PasswordStrength 
-                                  password={field.value || ''} 
+                                <PasswordStrength
+                                  password={field.value || ''}
                                   className="mt-3"
                                 />
                               </FormItem>
@@ -305,16 +306,18 @@ const ResetPasswordContent = () => {
                                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                                       className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition-colors hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300"
                                     >
-                                      {showConfirmPassword ? (
-                                        <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
-                                        </svg>
-                                      ) : (
-                                        <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                        </svg>
-                                      )}
+                                      {showConfirmPassword
+                                        ? (
+                                            <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                                            </svg>
+                                          )
+                                        : (
+                                            <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
+                                          )}
                                     </button>
                                   </div>
                                 </FormControl>
@@ -329,14 +332,16 @@ const ResetPasswordContent = () => {
                             size="lg"
                             className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg transition-all duration-300 hover:from-blue-700 hover:to-indigo-700 hover:shadow-xl hover:shadow-blue-500/25 disabled:opacity-50"
                           >
-                            {loading ? (
-                              <div className="flex items-center gap-2">
-                                <div className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                                {t('loading_reset')}
-                              </div>
-                            ) : (
-                              t('reset_password_button')
-                            )}
+                            {loading
+                              ? (
+                                  <div className="flex items-center gap-2">
+                                    <div className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                                    {t('loading_reset')}
+                                  </div>
+                                )
+                              : (
+                                  t('reset_password_button')
+                                )}
                           </Button>
                         </form>
                       </Form>
@@ -361,7 +366,10 @@ const ResetPasswordContent = () => {
                   {!success && (
                     <FadeIn delay={400}>
                       <Button asChild variant="ghost" className="w-full text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100">
-                        <Link href="/auth">← {t('back_to_login')}</Link>
+                        <Link href="/auth">
+                          ←
+                          {t('back_to_login')}
+                        </Link>
                       </Button>
                     </FadeIn>
                   )}
@@ -395,7 +403,8 @@ const ResetPasswordPage = () => {
       <div className="flex min-h-screen items-center justify-center">
         <div className="size-8 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
       </div>
-    )}>
+    )}
+    >
       <ResetPasswordContent />
     </Suspense>
   );

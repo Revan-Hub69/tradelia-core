@@ -1,13 +1,13 @@
 import React from 'react';
 
-interface XPIconProps {
+type XPIconProps = {
   className?: string;
   size?: number;
-}
+};
 
-export const XPIcon: React.FC<XPIconProps> = ({ 
-  className = '', 
-  size = 24 
+export const XPIcon: React.FC<XPIconProps> = ({
+  className = '',
+  size = 24,
 }) => {
   return (
     <svg

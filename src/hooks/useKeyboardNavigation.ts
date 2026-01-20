@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react';
 type NavigationDirection = 'up' | 'down' | 'left' | 'right';
 type KeyboardHandler = (direction: NavigationDirection) => void;
 
-interface KeyboardNavigationOptions {
+type KeyboardNavigationOptions = {
   enableArrowKeys?: boolean;
   enableTabNavigation?: boolean;
   enableEscapeKey?: boolean;
@@ -14,11 +14,11 @@ interface KeyboardNavigationOptions {
   onEnter?: () => void;
   onArrowKey?: KeyboardHandler;
   trapFocus?: boolean;
-}
+};
 
 /**
  * Hook for comprehensive keyboard navigation support
- * 
+ *
  * Features:
  * - Arrow key navigation
  * - Tab navigation with focus trapping
@@ -28,7 +28,7 @@ interface KeyboardNavigationOptions {
  * - Accessibility compliance
  */
 export const useKeyboardNavigation = (
-  options: KeyboardNavigationOptions = {}
+  options: KeyboardNavigationOptions = {},
 ) => {
   const {
     enableArrowKeys = true,
@@ -45,7 +45,9 @@ export const useKeyboardNavigation = (
 
   useEffect(() => {
     const container = containerRef.current;
-    if (!container) return;
+    if (!container) {
+      return;
+    }
 
     const handleKeyDown = (event: KeyboardEvent) => {
       // Arrow key navigation
@@ -85,9 +87,9 @@ export const useKeyboardNavigation = (
       // Tab navigation with focus trapping
       if (enableTabNavigation && trapFocus && event.key === 'Tab') {
         const focusableElements = container.querySelectorAll(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
         );
-        
+
         const firstElement = focusableElements[0] as HTMLElement;
         const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
 
@@ -132,18 +134,18 @@ export const useKeyboardNavigation = (
 export const useDashboardKeyboardNavigation = (
   currentSection: 'overview' | 'paths' | 'progress' | 'settings',
   onSectionChange: (section: 'overview' | 'paths' | 'progress' | 'settings') => void,
-  onSettingsOpen?: () => void
+  onSettingsOpen?: () => void,
 ) => {
   const sections: Array<'overview' | 'paths' | 'progress' | 'settings'> = [
     'overview',
     'paths',
     'progress',
-    'settings'
+    'settings',
   ];
 
   const handleArrowKey = (direction: NavigationDirection) => {
     const currentIndex = sections.indexOf(currentSection);
-    
+
     switch (direction) {
       case 'left':
         if (currentIndex > 0) {
@@ -191,7 +193,7 @@ export const useDashboardKeyboardNavigation = (
  */
 export const useModalKeyboardNavigation = (
   isOpen: boolean,
-  onClose: () => void
+  onClose: () => void,
 ) => {
   return useKeyboardNavigation({
     enableEscapeKey: isOpen,

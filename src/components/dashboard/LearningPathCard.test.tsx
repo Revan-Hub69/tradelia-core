@@ -45,7 +45,7 @@ describe('LearningPathCard', () => {
         path={{ ...mockPath, isPremium: true }}
         progress={0}
         isLocked={false}
-        isPremium={true}
+        isPremium
         onPathClick={onPathClick}
       />,
     );
@@ -60,7 +60,7 @@ describe('LearningPathCard', () => {
       <LearningPathCard
         path={mockPath}
         progress={0}
-        isLocked={true}
+        isLocked
         isPremium={false}
         onPathClick={onPathClick}
       />,

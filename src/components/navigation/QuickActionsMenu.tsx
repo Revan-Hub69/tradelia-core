@@ -7,11 +7,12 @@
 
 'use client';
 
+import { useTranslations } from 'next-intl';
 import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { useTranslations } from 'next-intl';
-import { cn } from '@/utils/Helpers';
+
 import type { QuickAction } from '@/hooks/useLongPress';
+import { cn } from '@/utils/Helpers';
 
 export type QuickActionsMenuProps = {
   isOpen: boolean;
@@ -101,7 +102,7 @@ export const QuickActionsMenu: React.FC<QuickActionsMenuProps> = ({
   };
 
   return createPortal(
-    <div className="fixed inset-0 z-[9999] pointer-events-none">
+    <div className="pointer-events-none fixed inset-0 z-[9999]">
       {/* Backdrop */}
       <div
         className={cn(
@@ -127,7 +128,7 @@ export const QuickActionsMenu: React.FC<QuickActionsMenuProps> = ({
           'rounded-2xl shadow-2xl',
           'min-w-48 py-2',
           'animate-in zoom-in-95 slide-in-from-bottom-2 duration-200',
-          'pointer-events-auto'
+          'pointer-events-auto',
         )}
         style={{
           left: safePosition.x,
@@ -136,12 +137,12 @@ export const QuickActionsMenu: React.FC<QuickActionsMenuProps> = ({
       >
         {/* Arrow pointer */}
         <div
-          className="absolute top-full left-1/2 -translate-x-1/2 size-0 border-x-8 border-t-8 border-transparent border-t-border/50"
+          className="absolute left-1/2 top-full size-0 -translate-x-1/2 border-x-8 border-t-8 border-transparent border-t-border/50"
           style={{ filter: 'drop-shadow(0 1px 0 hsl(var(--background)))' }}
         />
 
         {/* Actions */}
-        {actions.map((action) => (
+        {actions.map(action => (
           <button
             key={action.id}
             type="button"
@@ -160,19 +161,19 @@ export const QuickActionsMenu: React.FC<QuickActionsMenuProps> = ({
             )}
           >
             {action.icon && (
-              <div className="shrink-0 size-5 flex items-center justify-center">
+              <div className="flex size-5 shrink-0 items-center justify-center">
                 {action.icon}
               </div>
             )}
-            <span className="font-medium text-sm">
+            <span className="text-sm font-medium">
               {t(action.labelKey.replace('Dashboard.', '') as 'nav_home')}
             </span>
           </button>
         ))}
 
         {/* Hint text */}
-        <div className="px-4 py-2 border-t border-border/20 mt-1">
-          <p className="text-xs text-muted-foreground text-center">
+        <div className="mt-1 border-t border-border/20 px-4 py-2">
+          <p className="text-center text-xs text-muted-foreground">
             {t('quick_actions_hint')}
           </p>
         </div>

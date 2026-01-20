@@ -48,14 +48,15 @@
 }
 
 @keyframes signature-glow-pulse {
-  0%, 100% {
-    box-shadow: 
+  0%,
+  100% {
+    box-shadow:
       0 0 20px rgba(59, 130, 246, 0.3),
       0 0 40px rgba(59, 130, 246, 0.2),
       0 0 60px rgba(59, 130, 246, 0.1);
   }
   50% {
-    box-shadow: 
+    box-shadow:
       0 0 30px rgba(59, 130, 246, 0.5),
       0 0 60px rgba(59, 130, 246, 0.3),
       0 0 90px rgba(59, 130, 246, 0.2);
@@ -121,18 +122,19 @@
   .tradelia-signature-moment {
     transition: none;
   }
-  
+
   .signature-moment-active::before {
     animation: none;
     opacity: 0.3;
   }
-  
+
   @keyframes signature-moment-indicator {
     0% {
       transform: translate(-50%, -50%) scale(0.95);
       opacity: 0;
     }
-    10%, 90% {
+    10%,
+    90% {
       transform: translate(-50%, -50%) scale(1);
       opacity: 1;
     }
@@ -141,7 +143,7 @@
       opacity: 0;
     }
   }
-  
+
   @keyframes signature-sound-pulse {
     0% {
       transform: translate(-50%, -50%) scale(1);
@@ -285,7 +287,7 @@
   .signature-moment-active::before {
     inset: -8px;
   }
-  
+
   @keyframes signature-moment-indicator {
     0% {
       transform: translate(-50%, -50%) scale(0.9) translateY(15px);
@@ -316,14 +318,9 @@
 
 @media (prefers-contrast: high) {
   .signature-moment-active::before {
-    background: radial-gradient(
-      circle at center,
-      rgba(0, 0, 0, 0.3) 0%,
-      rgba(0, 0, 0, 0.15) 50%,
-      transparent 100%
-    );
+    background: radial-gradient(circle at center, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.15) 50%, transparent 100%);
   }
-  
+
   .dark .signature-moment-active::before {
     background: radial-gradient(
       circle at center,
@@ -361,7 +358,8 @@
     transform: translate(-50%, -50%) scale(1);
     opacity: 0;
   }
-  20%, 80% {
+  20%,
+  80% {
     transform: translate(-50%, -50%) scale(1);
     opacity: 1;
   }

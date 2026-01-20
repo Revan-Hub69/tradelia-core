@@ -1,19 +1,20 @@
 /*
  * HEADER NAVIGATION - Tablet Navigation (768px-1023px)
- * 
+ *
  * Horizontal tab navigation for tablet breakpoint
  * Fills the navigation gap between mobile bottom nav and desktop sidebar
  */
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { usePathname, Link, useRouter } from '@/libs/i18nNavigation';
-import { cn } from '@/utils/Helpers';
+import React, { useEffect, useState } from 'react';
+
 import { DynamicIcon, type IconName } from '@/components/icons';
 import { getVisibleNavigationItems, trackNavigationEvent } from '@/data/navigation.config';
 import { useNavigationState } from '@/hooks/useNavigationState';
+import { Link, usePathname, useRouter } from '@/libs/i18nNavigation';
+import { cn } from '@/utils/Helpers';
 
 type HeaderNavigationProps = {
   className?: string;
@@ -25,7 +26,7 @@ export const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ className })
   const navigationItems = getVisibleNavigationItems();
 
   return (
-    <nav 
+    <nav
       className={cn(
         // Responsive visibility - Only show on tablet
         'hidden md:block lg:hidden',
@@ -39,8 +40,8 @@ export const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ className })
       <div className="mx-auto max-w-screen-xl">
         <div className="flex items-center justify-center space-x-1 px-4">
           {navigationItems.map((item) => {
-            const isActive = pathname === item.href || 
-              (item.href !== '/dashboard' && pathname.startsWith(item.href));
+            const isActive = pathname === item.href
+              || (item.href !== '/dashboard' && pathname.startsWith(item.href));
 
             return (
               <HeaderNavigationItem
@@ -87,14 +88,14 @@ const HeaderNavigationItem: React.FC<HeaderNavigationItemProps> = ({
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault(); // Always prevent default
-    
+
     if (!canNavigate) {
       return;
     }
-    
+
     // Simple programmatic navigation
     setVisualState('pressed');
-    
+
     // Track navigation event
     trackNavigationEvent({
       action: 'nav_click',
@@ -102,7 +103,7 @@ const HeaderNavigationItem: React.FC<HeaderNavigationItemProps> = ({
       timestamp: Date.now(),
       metadata: { href: item.href, isOnline: true, isEnabled: true },
     });
-    
+
     // Direct navigation using router
     try {
       router.push(item.href);
@@ -144,11 +145,11 @@ const HeaderNavigationItem: React.FC<HeaderNavigationItemProps> = ({
 
         {/* State indicators */}
         {uxState === 'blocked' && (
-          <div className="absolute -top-1 -right-1 size-2 bg-warning rounded-full" />
+          <div className="absolute -right-1 -top-1 size-2 rounded-full bg-warning" />
         )}
 
         {uxState === 'offline' && (
-          <div className="absolute -top-1 -right-1 size-2 bg-destructive rounded-full" />
+          <div className="absolute -right-1 -top-1 size-2 rounded-full bg-destructive" />
         )}
       </div>
 
@@ -158,8 +159,8 @@ const HeaderNavigationItem: React.FC<HeaderNavigationItemProps> = ({
 
       {/* Active indicator line */}
       {isActive && (
-        <div 
-          className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-6 h-0.5 bg-primary rounded-full"
+        <div
+          className="absolute bottom-0 left-1/2 h-0.5 w-6 -translate-x-1/2 rounded-full bg-primary"
           aria-hidden="true"
         />
       )}

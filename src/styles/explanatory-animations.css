@@ -1,6 +1,6 @@
 /**
  * EXPLANATORY ANIMATIONS - CSS Styles
- * 
+ *
  * Stili per animazioni educative che spiegano concetti
  * Basato su ricerca 2026 su progressive reveal e cognitive load management
  */
@@ -15,19 +15,19 @@
   --explain-duration-normal: 1.2s;
   --explain-duration-fast: 0.8s;
   --explain-delay-step: 0.3s;
-  
+
   /* Complexity Colors */
   --complexity-simple: 34, 197, 94;
   --complexity-moderate: 59, 130, 246;
   --complexity-complex: 249, 115, 22;
   --complexity-advanced: 239, 68, 68;
-  
+
   /* Educational Colors */
   --concept-primary: var(--brand-primary);
   --concept-secondary: var(--brand-secondary);
   --concept-highlight: var(--accent-color);
   --concept-connection: 156, 163, 175;
-  
+
   /* Visual Elements */
   --block-size: 120px;
   --connection-width: 3px;
@@ -124,8 +124,12 @@
 }
 
 @keyframes block-glow {
-  0% { box-shadow: 0 0 20px rgba(var(--concept-primary), 0.2); }
-  100% { box-shadow: 0 0 30px rgba(var(--concept-primary), 0.4); }
+  0% {
+    box-shadow: 0 0 20px rgba(var(--concept-primary), 0.2);
+  }
+  100% {
+    box-shadow: 0 0 30px rgba(var(--concept-primary), 0.4);
+  }
 }
 
 .block-header {
@@ -271,8 +275,13 @@
 }
 
 @keyframes arrow-pulse {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 .chain-link {
@@ -302,9 +311,15 @@
 }
 
 @keyframes chain-break {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2) rotate(10deg); }
-  100% { transform: scale(1) rotate(0deg); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2) rotate(10deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
 }
 
 /* Immutability Demo */
@@ -349,8 +364,12 @@
 }
 
 @keyframes tamper-warning {
-  0% { box-shadow: 0 0 10px rgba(var(--complexity-advanced), 0.3); }
-  100% { box-shadow: 0 0 20px rgba(var(--complexity-advanced), 0.6); }
+  0% {
+    box-shadow: 0 0 10px rgba(var(--complexity-advanced), 0.3);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(var(--complexity-advanced), 0.6);
+  }
 }
 
 /* Transaction Flow Animation */
@@ -430,8 +449,13 @@
 }
 
 @keyframes packet-pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
 }
 
 .network-nodes {
@@ -450,8 +474,12 @@
 }
 
 @keyframes node-activity {
-  0% { opacity: 0.6; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .broadcast-waves {
@@ -460,9 +488,15 @@
 }
 
 @keyframes broadcast-animation {
-  0% { transform: scale(1) rotate(0deg); }
-  50% { transform: scale(1.2) rotate(180deg); }
-  100% { transform: scale(1) rotate(360deg); }
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.2) rotate(180deg);
+  }
+  100% {
+    transform: scale(1) rotate(360deg);
+  }
 }
 
 .verification-process {
@@ -542,8 +576,12 @@
 }
 
 @keyframes tx-highlight {
-  0% { box-shadow: 0 0 5px rgba(var(--concept-highlight), 0.3); }
-  100% { box-shadow: 0 0 15px rgba(var(--concept-highlight), 0.6); }
+  0% {
+    box-shadow: 0 0 5px rgba(var(--concept-highlight), 0.3);
+  }
+  100% {
+    box-shadow: 0 0 15px rgba(var(--concept-highlight), 0.6);
+  }
 }
 
 .tx.confirmed {
@@ -565,8 +603,13 @@
 }
 
 @keyframes mining-animation {
-  0%, 100% { transform: rotate(-10deg); }
-  50% { transform: rotate(10deg); }
+  0%,
+  100% {
+    transform: rotate(-10deg);
+  }
+  50% {
+    transform: rotate(10deg);
+  }
 }
 
 .new-block {
@@ -861,37 +904,37 @@
     flex-direction: column;
     text-align: center;
   }
-  
+
   .step-visual {
     min-height: 120px;
   }
-  
+
   .animation-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .animation-controls {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .animation-controls .btn {
     width: 100%;
     max-width: 200px;
   }
-  
+
   .chain-formation,
   .original-chain,
   .tampered-chain {
     flex-wrap: wrap;
     justify-content: center;
   }
-  
+
   .transaction-creation {
     flex-direction: column;
     gap: 1rem;
   }
-  
+
   .mining-confirmation {
     flex-direction: column;
     gap: 1rem;
@@ -902,25 +945,25 @@
   .explanatory-animations-showcase {
     padding: 1rem;
   }
-  
+
   .concept-animation-player {
     padding: 1rem;
   }
-  
+
   .animation-card {
     padding: 1.5rem;
   }
-  
+
   .card-header {
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .animation-meta {
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .progress-bar {
     width: 150px;
   }
@@ -943,11 +986,11 @@
   .miner {
     animation: none;
   }
-  
+
   .animation-card:hover {
     transform: none;
   }
-  
+
   .block.new {
     animation: none;
     opacity: 1;
@@ -962,7 +1005,7 @@
   .animation-card {
     border-width: 2px;
   }
-  
+
   .complexity-badge {
     border: 1px solid currentColor;
   }
@@ -973,11 +1016,11 @@
   .step-content {
     background: rgba(255, 255, 255, 0.03);
   }
-  
+
   .animation-card {
     background: rgba(255, 255, 255, 0.02);
   }
-  
+
   .tx {
     background: rgba(255, 255, 255, 0.03);
   }

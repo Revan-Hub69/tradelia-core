@@ -1,13 +1,14 @@
 /*
  * NAVIGATION LOADING STATES - Enterprise 2026
- * 
+ *
  * Gestisce stati di loading durante navigazione per UX premium
  * Maschera i tempi di caricamento di Next.js con feedback appropriato
  */
 
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+
 import { useRouter } from '@/libs/i18nNavigation';
 
 export const useNavigationLoading = () => {
@@ -18,7 +19,9 @@ export const useNavigationLoading = () => {
   // Navigate with proper loading states
   const navigateWithLoading = useCallback(async (href: string, source: 'sidebar' | 'bottom' = 'sidebar') => {
     // Don't navigate if already navigating
-    if (isNavigating) return;
+    if (isNavigating) {
+      return;
+    }
 
     setIsNavigating(true);
     setNavigationTarget(href);
@@ -58,20 +61,19 @@ export const useNavigationLoading = () => {
         setIsNavigating(false);
         setNavigationTarget(null);
         document.body.classList.remove('navigation-loading');
-        
+
         if (mainContent) {
           mainContent.style.opacity = '';
           mainContent.style.transform = '';
           mainContent.style.transition = '';
         }
       }, 150);
-
     } catch (error) {
       console.error('Navigation failed:', error);
       setIsNavigating(false);
       setNavigationTarget(null);
       document.body.classList.remove('navigation-loading');
-      
+
       // Fallback navigation
       window.location.href = href;
     }

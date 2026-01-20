@@ -6,12 +6,13 @@
  */
 
 import React, { useState } from 'react';
+
 import {
+  type DeviceType,
+  type PressDepth,
   SignatureButton,
   SignatureCard,
   SignatureMicroInteractionsShowcase,
-  type PressDepth,
-  type DeviceType,
 } from './SignatureMicroInteractions';
 
 export const SignatureMicroInteractionsExample: React.FC = () => {
@@ -46,10 +47,10 @@ export const SignatureMicroInteractionsExample: React.FC = () => {
   return (
     <div className="signature-micro-interactions-example">
       <div className="example-header mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+        <h1 className="mb-4 text-3xl font-bold text-gray-900">
           Signature Micro-Interactions System
         </h1>
-        <p className="text-lg text-gray-600 max-w-3xl">
+        <p className="max-w-3xl text-lg text-gray-600">
           Sistema di micro-interazioni enterprise 2026 con press feedback signature,
           elastic response e haptic-like visual feedback. Basato su Microsoft Fluent Design
           e Apple Liquid Glass principles.
@@ -57,22 +58,22 @@ export const SignatureMicroInteractionsExample: React.FC = () => {
       </div>
 
       {/* Configuration Selector */}
-      <div className="config-selector mb-8 p-6 bg-gray-50 rounded-xl">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">
+      <div className="config-selector mb-8 rounded-xl bg-gray-50 p-6">
+        <h2 className="mb-4 text-xl font-semibold text-gray-800">
           Configurazione Micro-Interactions
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
           {configOptions.map(option => (
             <button
               key={option.id}
               type="button"
               onClick={() => setSelectedConfig(option.id)}
               className={`
-                px-4 py-2 rounded-lg text-sm font-medium transition-colors
+                rounded-lg px-4 py-2 text-sm font-medium transition-colors
                 ${selectedConfig === option.id
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-100'
-                }
+              ? 'bg-blue-600 text-white'
+              : 'bg-white text-gray-700 hover:bg-gray-100'
+            }
               `}
             >
               {option.name}
@@ -83,12 +84,12 @@ export const SignatureMicroInteractionsExample: React.FC = () => {
 
       {/* Interactive Demo */}
       <div className="interactive-demo mb-8">
-        <h2 className="text-xl font-semibold text-gray-800 mb-6">Demo Interattivo</h2>
-        
-        <div className="demo-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <h2 className="mb-6 text-xl font-semibold text-gray-800">Demo Interattivo</h2>
+
+        <div className="demo-grid grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {/* Button Variants */}
           <div className="demo-section">
-            <h3 className="text-lg font-medium text-gray-700 mb-4">Signature Buttons</h3>
+            <h3 className="mb-4 text-lg font-medium text-gray-700">Signature Buttons</h3>
             <div className="space-y-3">
               <SignatureButton
                 config={currentConfig}
@@ -117,14 +118,14 @@ export const SignatureMicroInteractionsExample: React.FC = () => {
 
           {/* Card Interactions */}
           <div className="demo-section">
-            <h3 className="text-lg font-medium text-gray-700 mb-4">Signature Cards</h3>
+            <h3 className="mb-4 text-lg font-medium text-gray-700">Signature Cards</h3>
             <div className="space-y-4">
               <SignatureCard
                 config={currentConfig}
                 onClick={() => setActionCount(prev => prev + 1)}
               >
                 <h4 className="font-semibold text-gray-900">Interactive Card</h4>
-                <p className="text-gray-600 text-sm mt-2">
+                <p className="mt-2 text-sm text-gray-600">
                   Clicca per testare il signature press feedback
                 </p>
               </SignatureCard>
@@ -133,7 +134,7 @@ export const SignatureMicroInteractionsExample: React.FC = () => {
                 onClick={() => setActionCount(prev => prev + 1)}
               >
                 <h4 className="font-semibold text-gray-900">Elastic Response</h4>
-                <p className="text-gray-600 text-sm mt-2">
+                <p className="mt-2 text-sm text-gray-600">
                   Animazione elastica con controlled imperfection
                 </p>
               </SignatureCard>
@@ -142,8 +143,8 @@ export const SignatureMicroInteractionsExample: React.FC = () => {
 
           {/* Stats & Feedback */}
           <div className="demo-section">
-            <h3 className="text-lg font-medium text-gray-700 mb-4">Feedback Stats</h3>
-            <div className="bg-white rounded-lg p-4 border border-gray-200">
+            <h3 className="mb-4 text-lg font-medium text-gray-700">Feedback Stats</h3>
+            <div className="rounded-lg border border-gray-200 bg-white p-4">
               <div className="text-center">
                 <div className="text-3xl font-bold text-blue-600">{actionCount}</div>
                 <div className="text-sm text-gray-600">Interazioni Totali</div>
@@ -171,55 +172,55 @@ export const SignatureMicroInteractionsExample: React.FC = () => {
       </div>
 
       {/* Technical Features */}
-      <div className="technical-features mb-8 p-6 bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl">
-        <h2 className="text-xl font-semibold text-gray-800 mb-6">
+      <div className="technical-features mb-8 rounded-xl bg-gradient-to-br from-blue-50 to-purple-50 p-6">
+        <h2 className="mb-6 text-xl font-semibold text-gray-800">
           Caratteristiche Tecniche Enterprise 2026
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="feature-card bg-white rounded-lg p-4 shadow-sm">
-            <div className="text-2xl mb-2">🎯</div>
-            <h3 className="font-semibold text-gray-900 mb-2">Press Depth Variations</h3>
-            <p className="text-gray-600 text-sm">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="feature-card rounded-lg bg-white p-4 shadow-sm">
+            <div className="mb-2 text-2xl">🎯</div>
+            <h3 className="mb-2 font-semibold text-gray-900">Press Depth Variations</h3>
+            <p className="text-sm text-gray-600">
               Adattamento automatico della profondità di pressione basato su device type,
               context e user preferences.
             </p>
           </div>
-          <div className="feature-card bg-white rounded-lg p-4 shadow-sm">
-            <div className="text-2xl mb-2">🌊</div>
-            <h3 className="font-semibold text-gray-900 mb-2">Elastic Response</h3>
-            <p className="text-gray-600 text-sm">
+          <div className="feature-card rounded-lg bg-white p-4 shadow-sm">
+            <div className="mb-2 text-2xl">🌊</div>
+            <h3 className="mb-2 font-semibold text-gray-900">Elastic Response</h3>
+            <p className="text-sm text-gray-600">
               Animazioni elastiche con controlled imperfection per aggiungere
               personalità umana alle interazioni.
             </p>
           </div>
-          <div className="feature-card bg-white rounded-lg p-4 shadow-sm">
-            <div className="text-2xl mb-2">📱</div>
-            <h3 className="font-semibold text-gray-900 mb-2">Haptic-like Visual</h3>
-            <p className="text-gray-600 text-sm">
+          <div className="feature-card rounded-lg bg-white p-4 shadow-sm">
+            <div className="mb-2 text-2xl">📱</div>
+            <h3 className="mb-2 font-semibold text-gray-900">Haptic-like Visual</h3>
+            <p className="text-sm text-gray-600">
               Feedback visivo che simula sensazioni tattili attraverso
               ripple effects e visual cues.
             </p>
           </div>
-          <div className="feature-card bg-white rounded-lg p-4 shadow-sm">
-            <div className="text-2xl mb-2">⚡</div>
-            <h3 className="font-semibold text-gray-900 mb-2">GPU Accelerated</h3>
-            <p className="text-gray-600 text-sm">
+          <div className="feature-card rounded-lg bg-white p-4 shadow-sm">
+            <div className="mb-2 text-2xl">⚡</div>
+            <h3 className="mb-2 font-semibold text-gray-900">GPU Accelerated</h3>
+            <p className="text-sm text-gray-600">
               Ottimizzato per 60fps con transform3d, will-change properties
               e GPU acceleration.
             </p>
           </div>
-          <div className="feature-card bg-white rounded-lg p-4 shadow-sm">
-            <div className="text-2xl mb-2">🎨</div>
-            <h3 className="font-semibold text-gray-900 mb-2">Context-Aware</h3>
-            <p className="text-gray-600 text-sm">
+          <div className="feature-card rounded-lg bg-white p-4 shadow-sm">
+            <div className="mb-2 text-2xl">🎨</div>
+            <h3 className="mb-2 font-semibold text-gray-900">Context-Aware</h3>
+            <p className="text-sm text-gray-600">
               Adattamento automatico basato su context (primary, danger, success)
               e device capabilities.
             </p>
           </div>
-          <div className="feature-card bg-white rounded-lg p-4 shadow-sm">
-            <div className="text-2xl mb-2">♿</div>
-            <h3 className="font-semibold text-gray-900 mb-2">Accessible</h3>
-            <p className="text-gray-600 text-sm">
+          <div className="feature-card rounded-lg bg-white p-4 shadow-sm">
+            <div className="mb-2 text-2xl">♿</div>
+            <h3 className="mb-2 font-semibold text-gray-900">Accessible</h3>
+            <p className="text-sm text-gray-600">
               Supporto completo per prefers-reduced-motion, high-contrast
               e screen readers.
             </p>
@@ -228,15 +229,15 @@ export const SignatureMicroInteractionsExample: React.FC = () => {
       </div>
 
       {/* Implementation Guide */}
-      <div className="implementation-guide mb-8 p-6 bg-gray-50 rounded-xl">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">
+      <div className="implementation-guide mb-8 rounded-xl bg-gray-50 p-6">
+        <h2 className="mb-4 text-xl font-semibold text-gray-800">
           Guida all'Implementazione
         </h2>
         <div className="prose prose-gray max-w-none">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
-              <h3 className="text-lg font-medium text-gray-900 mb-3">Basic Usage</h3>
-              <div className="bg-gray-900 rounded-lg p-4 text-sm">
+              <h3 className="mb-3 text-lg font-medium text-gray-900">Basic Usage</h3>
+              <div className="rounded-lg bg-gray-900 p-4 text-sm">
                 <pre className="text-green-400">
                   {`import { SignatureButton } from '@/components/signature';
 
@@ -255,8 +256,8 @@ export const SignatureMicroInteractionsExample: React.FC = () => {
               </div>
             </div>
             <div>
-              <h3 className="text-lg font-medium text-gray-900 mb-3">Advanced Config</h3>
-              <div className="bg-gray-900 rounded-lg p-4 text-sm">
+              <h3 className="mb-3 text-lg font-medium text-gray-900">Advanced Config</h3>
+              <div className="rounded-lg bg-gray-900 p-4 text-sm">
                 <pre className="text-green-400">
                   {`const config = {
   depth: 'dramatic',
@@ -275,7 +276,7 @@ export const SignatureMicroInteractionsExample: React.FC = () => {
 
       {/* Full Showcase */}
       <div className="full-showcase">
-        <h2 className="text-xl font-semibold text-gray-800 mb-6">
+        <h2 className="mb-6 text-xl font-semibold text-gray-800">
           Showcase Completo
         </h2>
         <SignatureMicroInteractionsShowcase />

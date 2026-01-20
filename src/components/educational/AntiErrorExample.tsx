@@ -5,8 +5,10 @@
  * Dimostra l'integrazione con Focus Mode e Visual Noise Reduction
  */
 
-import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+
+import { AntiErrorTester } from './AntiErrorGuidance';
 import {
   AntiErrorProvider,
   BreathingSpace,
@@ -17,7 +19,6 @@ import {
   RiskyActionGuard,
   SafePathHighlighter,
 } from './index';
-import { AntiErrorTester } from './AntiErrorGuidance';
 
 // ============================================================================
 // CRYPTO LEARNING SCENARIO
@@ -61,7 +62,13 @@ const CryptoLearningScenario: React.FC = () => {
           <h2>Scenario: Prima Transazione Crypto</h2>
           <p>Impara a inviare crypto in sicurezza con guidance anti-errore</p>
           <div className="wallet-balance">
-            Saldo Wallet: <strong>{walletBalance} USDT</strong>
+            Saldo Wallet:
+            {' '}
+            <strong>
+              {walletBalance}
+              {' '}
+              USDT
+            </strong>
           </div>
         </div>
 
@@ -213,7 +220,11 @@ const CryptoLearningScenario: React.FC = () => {
               <div className="danger-stats">
                 <div className="stat">
                   <span className="stat-label">Fondi da inviare:</span>
-                  <span className="stat-value">{walletBalance} USDT</span>
+                  <span className="stat-value">
+                    {walletBalance}
+                    {' '}
+                    USDT
+                  </span>
                 </div>
                 <div className="stat">
                   <span className="stat-label">Fondi rimanenti:</span>
@@ -265,7 +276,9 @@ const AntiErrorExample: React.FC = () => {
                 className="btn btn-outline"
                 onClick={() => setShowTester(!showTester)}
               >
-                {showTester ? 'Hide' : 'Show'} Testing Tools
+                {showTester ? 'Hide' : 'Show'}
+                {' '}
+                Testing Tools
               </button>
             </div>
           </div>

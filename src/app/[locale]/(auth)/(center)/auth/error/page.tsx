@@ -1,7 +1,7 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Suspense } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -12,7 +12,7 @@ import { Logo } from '@/templates/Logo';
 
 /**
  * Auth Error Page - 2026 Best Practices
- * 
+ *
  * Features:
  * - Clear error messaging
  * - Recovery options
@@ -22,7 +22,7 @@ import { Logo } from '@/templates/Logo';
 const AuthErrorContent = () => {
   const t = useTranslations('AuthError');
   const searchParams = useSearchParams();
-  
+
   const errorParam = searchParams.get('error');
   const description = searchParams.get('description');
 
@@ -59,7 +59,9 @@ const AuthErrorContent = () => {
                       {description || t('description')}
                       {errorParam && (
                         <div className="mt-2 text-xs text-slate-500">
-                          Error: {errorParam}
+                          Error:
+                          {' '}
+                          {errorParam}
                         </div>
                       )}
                     </CardDescription>
@@ -94,7 +96,8 @@ const AuthErrorPage = () => {
       <div className="flex min-h-screen items-center justify-center">
         <div className="size-8 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
       </div>
-    )}>
+    )}
+    >
       <AuthErrorContent />
     </Suspense>
   );

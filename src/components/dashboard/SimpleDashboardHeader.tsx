@@ -1,22 +1,22 @@
 'use client';
 
-import { useUserData } from '@/hooks/useUserData';
-import { Logo } from '@/templates/Logo';
-import { cn } from '@/utils/Helpers';
-import { 
-  Settings, 
-  User, 
-  Crown, 
+import {
   Bell,
-  Search,
+  Crown,
   HelpCircle,
   Moon,
+  Search,
+  Settings,
   Sun,
-  Zap
+  User,
+  Zap,
 } from 'lucide-react';
-import { useTheme } from 'next-themes';
 import { useTranslations } from 'next-intl';
-import { useState, useEffect } from 'react';
+import { useTheme } from 'next-themes';
+import { useEffect, useState } from 'react';
+
+import { StreakIcon, XPIcon } from '@/components/icons';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -24,8 +24,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Badge } from '@/components/ui/badge';
-import { StreakIcon, XPIcon } from '@/components/icons';
+import { useUserData } from '@/hooks/useUserData';
+import { Logo } from '@/templates/Logo';
+import { cn } from '@/utils/Helpers';
 
 import { ProgressDisplay } from './ProgressDisplay';
 import { UserDropdown } from './UserDropdown';
@@ -63,7 +64,7 @@ export const SimpleDashboardHeader = ({
   // Single Signal Rule: Only show one motivational element at a time
   const shouldShowStreak = showGamification && !focusMode && gamificationIntensity !== 'minimal';
   const shouldShowXP = temporaryXP !== null; // Only show XP temporarily after earning
-  
+
   // Auto-hide temporary XP after 3 seconds
   useEffect(() => {
     if (temporaryXP !== null) {
@@ -92,10 +93,10 @@ export const SimpleDashboardHeader = ({
         {/* Left Section: Logo + Navigation */}
         <div className="flex items-center gap-4">
           <Logo size="sm" />
-          
+
           {/* Breadcrumb separator */}
-          <div className="hidden md:block h-6 w-px bg-border/50" />
-          
+          <div className="hidden h-6 w-px bg-border/50 md:block" />
+
           {/* Current page indicator - Truth-first language */}
           <nav className="hidden md:block">
             <div className="text-sm font-medium text-muted-foreground">
@@ -107,53 +108,62 @@ export const SimpleDashboardHeader = ({
         {/* Center Section: Progress + Gamification (Desktop) */}
         <div className="hidden flex-1 items-center justify-center gap-6 lg:flex">
           {/* Progress Display */}
-          {isLoading ? (
-            <div className="h-8 w-48 animate-pulse rounded-xl bg-white/20 dark:bg-white/10" />
-          ) : userData ? (
-            <ProgressDisplay
-              pathName={userData.progress.pathName}
-              completedLessons={userData.progress.completedLessons}
-              totalLessons={userData.progress.totalLessons}
-              progressPercentage={userData.progress.progressPercentage}
-            />
-          ) : null}
+          {isLoading
+            ? (
+                <div className="h-8 w-48 animate-pulse rounded-xl bg-white/20 dark:bg-white/10" />
+              )
+            : userData
+              ? (
+                  <ProgressDisplay
+                    pathName={userData.progress.pathName}
+                    completedLessons={userData.progress.completedLessons}
+                    totalLessons={userData.progress.totalLessons}
+                    progressPercentage={userData.progress.progressPercentage}
+                  />
+                )
+              : null}
 
           {/* Gamification Elements - Single Signal Rule Applied */}
           {shouldShowStreak && userData && (
             <div className="flex items-center gap-3">
               {/* Primary Signal: Streak Counter (Loss Aversion) or Recovery Message */}
-              {userData.progress.currentStreak > 0 ? (
-                <div className="group relative flex items-center gap-2 rounded-xl bg-white/40 dark:bg-white/10 px-3 py-2 backdrop-blur-sm transition-all hover:bg-white/60 dark:hover:bg-white/20 border border-white/20 dark:border-white/10">
-                  <StreakIcon size={16} className="text-orange-500" />
-                  <div className="text-sm font-semibold">
-                    <span className="sr-only">{t('streak_aria_label', { count: userData.progress.currentStreak })}</span>
-                    {userData.progress.currentStreak}
-                  </div>
-                  <div className="text-xs text-muted-foreground">{t('days')}</div>
-                </div>
-              ) : (
-                <div className="group relative flex items-center gap-2 rounded-xl bg-blue-500/20 dark:bg-blue-500/10 px-3 py-2 backdrop-blur-sm transition-all hover:bg-blue-500/30 dark:hover:bg-blue-500/20 border border-blue-500/30">
-                  <div className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                    {t('recovery_message')}
-                  </div>
-                </div>
-              )}
+              {userData.progress.currentStreak > 0
+                ? (
+                    <div className="group relative flex items-center gap-2 rounded-xl border border-white/20 bg-white/40 px-3 py-2 backdrop-blur-sm transition-all hover:bg-white/60 dark:border-white/10 dark:bg-white/10 dark:hover:bg-white/20">
+                      <StreakIcon size={16} className="text-orange-500" />
+                      <div className="text-sm font-semibold">
+                        <span className="sr-only">{t('streak_aria_label', { count: userData.progress.currentStreak })}</span>
+                        {userData.progress.currentStreak}
+                      </div>
+                      <div className="text-xs text-muted-foreground">{t('days')}</div>
+                    </div>
+                  )
+                : (
+                    <div className="group relative flex items-center gap-2 rounded-xl border border-blue-500/30 bg-blue-500/20 px-3 py-2 backdrop-blur-sm transition-all hover:bg-blue-500/30 dark:bg-blue-500/10 dark:hover:bg-blue-500/20">
+                      <div className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                        {t('recovery_message')}
+                      </div>
+                    </div>
+                  )}
             </div>
           )}
 
           {/* Temporary XP Display (Flash and Disappear) */}
           {shouldShowXP && temporaryXP && (
-            <div className="flex items-center gap-2 rounded-xl bg-primary/20 dark:bg-primary/10 px-3 py-2 backdrop-blur-sm border border-primary/30 animate-in fade-in-0 slide-in-from-top-2">
+            <div className="flex items-center gap-2 rounded-xl border border-primary/30 bg-primary/20 px-3 py-2 backdrop-blur-sm animate-in fade-in-0 slide-in-from-top-2 dark:bg-primary/10">
               <XPIcon size={16} className="text-primary" />
               <div className="text-sm font-semibold text-primary">
-                +{temporaryXP} XP
+                +
+                {temporaryXP}
+                {' '}
+                XP
               </div>
             </div>
           )}
 
           {/* Focus Mode Indicator */}
           {focusMode && (
-            <div className="flex items-center gap-2 rounded-xl bg-blue-500/20 dark:bg-blue-500/10 px-3 py-2 backdrop-blur-sm border border-blue-500/30">
+            <div className="flex items-center gap-2 rounded-xl border border-blue-500/30 bg-blue-500/20 px-3 py-2 backdrop-blur-sm dark:bg-blue-500/10">
               <div className="size-2 rounded-full bg-blue-500" />
               <div className="text-sm font-medium text-blue-700 dark:text-blue-300">
                 {t('focus_mode_active')}
@@ -164,10 +174,10 @@ export const SimpleDashboardHeader = ({
 
         {/* Right Section: Actions + User */}
         <div className="flex items-center gap-2">
-          
+
           {/* Premium Badge */}
           {isPremium && (
-            <div className="hidden sm:flex items-center gap-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 px-2 py-1 text-xs font-medium text-white shadow-lg">
+            <div className="hidden items-center gap-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 px-2 py-1 text-xs font-medium text-white shadow-lg sm:flex">
               <Crown className="size-3" />
               Premium
             </div>
@@ -175,22 +185,24 @@ export const SimpleDashboardHeader = ({
 
           {/* Mobile Gamification - Single Signal Rule */}
           {shouldShowStreak && userData && (
-            <div className="flex lg:hidden items-center gap-2 rounded-lg bg-white/40 dark:bg-white/10 px-2 py-1 backdrop-blur-sm border border-white/20 dark:border-white/10">
-              {userData.progress.currentStreak > 0 ? (
-                <>
-                  <StreakIcon size={14} className="text-orange-500" />
-                  <span className="text-xs font-medium">{userData.progress.currentStreak}</span>
-                  <span className="text-xs text-muted-foreground">{t('days')}</span>
-                </>
-              ) : (
-                <span className="text-xs font-medium text-blue-700 dark:text-blue-300">{t('recovery_message')}</span>
-              )}
+            <div className="flex items-center gap-2 rounded-lg border border-white/20 bg-white/40 px-2 py-1 backdrop-blur-sm dark:border-white/10 dark:bg-white/10 lg:hidden">
+              {userData.progress.currentStreak > 0
+                ? (
+                    <>
+                      <StreakIcon size={14} className="text-orange-500" />
+                      <span className="text-xs font-medium">{userData.progress.currentStreak}</span>
+                      <span className="text-xs text-muted-foreground">{t('days')}</span>
+                    </>
+                  )
+                : (
+                    <span className="text-xs font-medium text-blue-700 dark:text-blue-300">{t('recovery_message')}</span>
+                  )}
             </div>
           )}
 
           {/* Mobile Focus Mode Indicator */}
           {focusMode && (
-            <div className="flex lg:hidden items-center gap-1 rounded-lg bg-blue-500/20 dark:bg-blue-500/10 px-2 py-1 backdrop-blur-sm border border-blue-500/30">
+            <div className="flex items-center gap-1 rounded-lg border border-blue-500/30 bg-blue-500/20 px-2 py-1 backdrop-blur-sm dark:bg-blue-500/10 lg:hidden">
               <div className="size-1.5 rounded-full bg-blue-500" />
               <span className="text-xs font-medium text-blue-700 dark:text-blue-300">{t('focus_mode_active')}</span>
             </div>
@@ -208,7 +220,7 @@ export const SimpleDashboardHeader = ({
                     'bg-white/40 dark:bg-white/10',
                     'hover:bg-white/60 dark:hover:bg-white/20',
                     'border border-white/20 dark:border-white/10',
-                    'backdrop-blur-sm transition-all duration-200'
+                    'backdrop-blur-sm transition-all duration-200',
                   )}
                 >
                   <Zap className="size-4" />
@@ -224,12 +236,12 @@ export const SimpleDashboardHeader = ({
                   <Badge variant="secondary" className="text-xs">⌘K</Badge>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <User className="size-4 mr-2" />
+                  <User className="mr-2 size-4" />
                   <span>{t('continue_learning')}</span>
                 </DropdownMenuItem>
                 {!focusMode && (
-                  <DropdownMenuItem onClick={() => {/* TODO: Enable focus mode */}}>
-                    <Settings className="size-4 mr-2" />
+                  <DropdownMenuItem onClick={() => { /* TODO: Enable focus mode */ }}>
+                    <Settings className="mr-2 size-4" />
                     <span>{t('enable_focus_mode')}</span>
                   </DropdownMenuItem>
                 )}
@@ -247,7 +259,7 @@ export const SimpleDashboardHeader = ({
                 'bg-white/40 dark:bg-white/10',
                 'hover:bg-white/60 dark:hover:bg-white/20',
                 'border border-white/20 dark:border-white/10',
-                'backdrop-blur-sm transition-all duration-200'
+                'backdrop-blur-sm transition-all duration-200',
               )}
             >
               <Search className="size-4" />
@@ -265,12 +277,12 @@ export const SimpleDashboardHeader = ({
                 'bg-white/40 dark:bg-white/10',
                 'hover:bg-white/60 dark:hover:bg-white/20',
                 'border border-white/20 dark:border-white/10',
-                'backdrop-blur-sm transition-all duration-200'
+                'backdrop-blur-sm transition-all duration-200',
               )}
             >
               <Bell className="size-4" />
               {hasNotifications && (
-                <div className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500" />
+                <div className="absolute -right-1 -top-1 size-2 rounded-full bg-red-500" />
               )}
               <span className="sr-only">{t('notifications_aria_label')}</span>
             </Button>
@@ -287,14 +299,16 @@ export const SimpleDashboardHeader = ({
                 'bg-white/40 dark:bg-white/10',
                 'hover:bg-white/60 dark:hover:bg-white/20',
                 'border border-white/20 dark:border-white/10',
-                'backdrop-blur-sm transition-all duration-200'
+                'backdrop-blur-sm transition-all duration-200',
               )}
             >
-              {theme === 'dark' ? (
-                <Sun className="size-4" />
-              ) : (
-                <Moon className="size-4" />
-              )}
+              {theme === 'dark'
+                ? (
+                    <Sun className="size-4" />
+                  )
+                : (
+                    <Moon className="size-4" />
+                  )}
               <span className="sr-only">{t('theme_toggle_aria_label')}</span>
             </Button>
           )}
@@ -308,7 +322,7 @@ export const SimpleDashboardHeader = ({
               'bg-white/40 dark:bg-white/10',
               'hover:bg-white/60 dark:hover:bg-white/20',
               'border border-white/20 dark:border-white/10',
-              'backdrop-blur-sm transition-all duration-200'
+              'backdrop-blur-sm transition-all duration-200',
             )}
           >
             <HelpCircle className="size-4" />
@@ -317,23 +331,27 @@ export const SimpleDashboardHeader = ({
 
           {/* User Menu */}
           <div className="ml-2">
-            {isLoading ? (
-              <div className="size-9 animate-pulse rounded-full bg-white/20 dark:bg-white/10" />
-            ) : userData ? (
-              <UserDropdown
-                userName={userData.name || userData.email.split('@')[0] || t('not_authenticated')}
-                userEmail={userData.email}
-              />
-            ) : (
-              <div className="text-xs text-muted-foreground">{t('not_authenticated')}</div>
-            )}
+            {isLoading
+              ? (
+                  <div className="size-9 animate-pulse rounded-full bg-white/20 dark:bg-white/10" />
+                )
+              : userData
+                ? (
+                    <UserDropdown
+                      userName={userData.name || userData.email.split('@')[0] || t('not_authenticated')}
+                      userEmail={userData.email}
+                    />
+                  )
+                : (
+                    <div className="text-xs text-muted-foreground">{t('not_authenticated')}</div>
+                  )}
           </div>
         </div>
       </div>
 
       {/* Mobile Progress Section */}
       {userData && (
-        <div className="border-t border-white/10 dark:border-white/5 bg-white/40 dark:bg-white/5 backdrop-blur-sm lg:hidden">
+        <div className="border-t border-white/10 bg-white/40 backdrop-blur-sm dark:border-white/5 dark:bg-white/5 lg:hidden">
           <div className="mx-auto max-w-screen-xl px-4 py-3">
             <ProgressDisplay
               pathName={userData.progress.pathName}
@@ -342,20 +360,26 @@ export const SimpleDashboardHeader = ({
               progressPercentage={userData.progress.progressPercentage}
               className="flex-1"
             />
-            
+
             {/* Mobile Gamification Row - Single Signal Rule */}
             {shouldShowStreak && (
-              <div className="flex items-center justify-center gap-4 mt-3 pt-3 border-t border-white/10">
-                {userData.progress.currentStreak > 0 ? (
-                  <div className="flex items-center gap-2 text-sm">
-                    <StreakIcon size={16} className="text-orange-500" />
-                    <span className="font-medium">{userData.progress.currentStreak} {t('days')}</span>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-2 text-sm text-blue-700 dark:text-blue-300">
-                    <span className="font-medium">{t('recovery_message')}</span>
-                  </div>
-                )}
+              <div className="mt-3 flex items-center justify-center gap-4 border-t border-white/10 pt-3">
+                {userData.progress.currentStreak > 0
+                  ? (
+                      <div className="flex items-center gap-2 text-sm">
+                        <StreakIcon size={16} className="text-orange-500" />
+                        <span className="font-medium">
+                          {userData.progress.currentStreak}
+                          {' '}
+                          {t('days')}
+                        </span>
+                      </div>
+                    )
+                  : (
+                      <div className="flex items-center gap-2 text-sm text-blue-700 dark:text-blue-300">
+                        <span className="font-medium">{t('recovery_message')}</span>
+                      </div>
+                    )}
                 {focusMode && (
                   <div className="flex items-center gap-2 text-sm text-blue-700 dark:text-blue-300">
                     <div className="size-2 rounded-full bg-blue-500" />

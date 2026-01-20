@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 
 type ToastType = 'success' | 'achievement' | 'milestone' | 'warning' | 'info';
 
@@ -63,7 +63,7 @@ export const PremiumToast = ({ toast, onDismiss }: PremiumToastProps) => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setProgress(prev => {
+      setProgress((prev) => {
         const newProgress = prev - (100 / (duration / 100));
         if (newProgress <= 0) {
           onDismiss(toast.id);
@@ -83,7 +83,7 @@ export const PremiumToast = ({ toast, onDismiss }: PremiumToastProps) => {
       animate={{ opacity: 1, x: 0, scale: 1 }}
       exit={{ opacity: 0, x: 300, scale: 0.8 }}
       transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-      className="relative group"
+      className="group relative"
     >
       {/* Glow Effect */}
       <motion.div
@@ -106,7 +106,7 @@ export const PremiumToast = ({ toast, onDismiss }: PremiumToastProps) => {
         <div className="flex items-start space-x-2 p-3 text-white sm:space-x-3 sm:p-4">
           {/* Icon */}
           <motion.div
-            className="flex shrink-0 size-7 items-center justify-center rounded-full bg-white/20 text-base sm:size-8 sm:text-lg"
+            className="flex size-7 shrink-0 items-center justify-center rounded-full bg-white/20 text-base sm:size-8 sm:text-lg"
             animate={{ rotate: [0, 10, -10, 0] }}
             transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
           >
@@ -150,7 +150,7 @@ export const PremiumToast = ({ toast, onDismiss }: PremiumToastProps) => {
 
           {/* Dismiss Button */}
           <motion.button
-            className="flex shrink-0 size-5 items-center justify-center rounded-full bg-white/20 text-white/80 transition-colors hover:bg-white/30 hover:text-white sm:size-6"
+            className="flex size-5 shrink-0 items-center justify-center rounded-full bg-white/20 text-white/80 transition-colors hover:bg-white/30 hover:text-white sm:size-6"
             onClick={() => onDismiss(toast.id)}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}

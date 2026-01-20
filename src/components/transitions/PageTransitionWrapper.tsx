@@ -1,12 +1,13 @@
 /*
  * PAGE TRANSITION WRAPPER - Simplified 2026
- * 
+ *
  * Simple enter animations without interfering with Next.js routing
  */
 
 'use client';
 
 import React, { useEffect, useRef } from 'react';
+
 import { usePathname } from '@/libs/i18nNavigation';
 import { cn } from '@/utils/Helpers';
 

@@ -16,7 +16,7 @@
  * - Emotional state-aware micro-copy
  */
 
-import React, { useState, useCallback, useMemo, useContext, createContext } from 'react';
+import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
 
 // ============================================================================
 // TYPES & INTERFACES
@@ -85,7 +85,7 @@ export const useAdaptiveMicroCopy = () => {
   const getToneStyle = useCallback((
     userState: UserState,
     emotionalState: EmotionalState,
-    taskContext: TaskContext
+    taskContext: TaskContext,
   ): ToneStyle => {
     // Financial contexts require more reassurance
     if (taskContext === 'financial') {
@@ -119,7 +119,7 @@ export const useAdaptiveMicroCopy = () => {
   const adaptMessage = useCallback((
     baseText: string,
     actionType: ActionType,
-    context: MicroCopyContext
+    context: MicroCopyContext,
   ): string => {
     const tone = getToneStyle(context.userState, context.emotionalState, context.taskContext);
     const locale = context.locale;
@@ -219,7 +219,7 @@ export const useAdaptiveMicroCopy = () => {
   // Progressive status messaging
   const getProgressMessage = useCallback((
     percentage: number,
-    context: MicroCopyContext
+    context: MicroCopyContext,
   ): string => {
     const { locale, taskContext, emotionalState } = context;
 
@@ -230,19 +230,19 @@ export const useAdaptiveMicroCopy = () => {
             'Ottimo inizio! 🌟',
             'Stai andando bene! 📈',
             'Quasi fatto! 🎯',
-            'Perfetto! Completato! ✨'
+            'Perfetto! Completato! ✨',
           ],
           uncertain: [
             'Passo dopo passo... 👣',
             'Stai facendo progressi 💪',
             'Ci siamo quasi! 🎯',
-            'Fatto! Sei stato bravo! 🎉'
+            'Fatto! Sei stato bravo! 🎉',
           ],
           frustrated: [
             'Respira, stai andando bene 🧘',
             'Ogni passo conta 💙',
             'Quasi finito, forza! 💪',
-            'Ce l\'hai fatta! 🎊'
+            'Ce l\'hai fatta! 🎊',
           ],
         },
         financial: {
@@ -250,13 +250,13 @@ export const useAdaptiveMicroCopy = () => {
             'Verifica in corso... 🔒',
             'Elaborazione sicura... 💳',
             'Finalizzazione... ⚡',
-            'Transazione completata! ✅'
+            'Transazione completata! ✅',
           ],
           uncertain: [
             'Tutto sotto controllo... 🛡️',
             'Verifichiamo per te... 🔍',
             'Quasi fatto, tranquillo... 😌',
-            'Completato in sicurezza! 🎉'
+            'Completato in sicurezza! 🎉',
           ],
         },
         trading: {
@@ -264,7 +264,7 @@ export const useAdaptiveMicroCopy = () => {
             'Analisi in corso... 📊',
             'Elaborazione ordine... 💹',
             'Esecuzione... ⚡',
-            'Operazione completata! ✅'
+            'Operazione completata! ✅',
           ],
         },
         onboarding: {
@@ -272,7 +272,7 @@ export const useAdaptiveMicroCopy = () => {
             'Configurazione... ⚙️',
             'Personalizzazione... 🎨',
             'Finalizzazione... ✨',
-            'Benvenuto in Tradelia! 🎉'
+            'Benvenuto in Tradelia! 🎉',
           ],
         },
         settings: {
@@ -280,7 +280,7 @@ export const useAdaptiveMicroCopy = () => {
             'Aggiornamento... ⚙️',
             'Sincronizzazione... 🔄',
             'Applicazione... ✨',
-            'Impostazioni salvate! ✅'
+            'Impostazioni salvate! ✅',
           ],
         },
         social: {
@@ -288,7 +288,7 @@ export const useAdaptiveMicroCopy = () => {
             'Preparazione... 🚀',
             'Condivisione... 📤',
             'Pubblicazione... ✨',
-            'Condiviso con successo! 🎊'
+            'Condiviso con successo! 🎊',
           ],
         },
       },
@@ -298,19 +298,19 @@ export const useAdaptiveMicroCopy = () => {
             'Great start! 🌟',
             'You\'re doing well! 📈',
             'Almost there! 🎯',
-            'Perfect! Complete! ✨'
+            'Perfect! Complete! ✨',
           ],
           uncertain: [
             'Step by step... 👣',
             'Making progress 💪',
             'Almost there! 🎯',
-            'Done! Well done! 🎉'
+            'Done! Well done! 🎉',
           ],
           frustrated: [
             'Breathe, you\'re doing fine 🧘',
             'Every step counts 💙',
             'Almost finished, keep going! 💪',
-            'You did it! 🎊'
+            'You did it! 🎊',
           ],
         },
         financial: {
@@ -318,13 +318,13 @@ export const useAdaptiveMicroCopy = () => {
             'Verifying... 🔒',
             'Processing securely... 💳',
             'Finalizing... ⚡',
-            'Transaction complete! ✅'
+            'Transaction complete! ✅',
           ],
           uncertain: [
             'All under control... 🛡️',
             'We\'re checking for you... 🔍',
             'Almost done, relax... 😌',
-            'Completed safely! 🎉'
+            'Completed safely! 🎉',
           ],
         },
         trading: {
@@ -332,7 +332,7 @@ export const useAdaptiveMicroCopy = () => {
             'Analyzing... 📊',
             'Processing order... 💹',
             'Executing... ⚡',
-            'Operation complete! ✅'
+            'Operation complete! ✅',
           ],
         },
         onboarding: {
@@ -340,7 +340,7 @@ export const useAdaptiveMicroCopy = () => {
             'Setting up... ⚙️',
             'Personalizing... 🎨',
             'Finalizing... ✨',
-            'Welcome to Tradelia! 🎉'
+            'Welcome to Tradelia! 🎉',
           ],
         },
         settings: {
@@ -348,7 +348,7 @@ export const useAdaptiveMicroCopy = () => {
             'Updating... ⚙️',
             'Syncing... 🔄',
             'Applying... ✨',
-            'Settings saved! ✅'
+            'Settings saved! ✅',
           ],
         },
         social: {
@@ -356,7 +356,7 @@ export const useAdaptiveMicroCopy = () => {
             'Preparing... 🚀',
             'Sharing... 📤',
             'Publishing... ✨',
-            'Shared successfully! 🎊'
+            'Shared successfully! 🎊',
           ],
         },
       },
@@ -365,9 +365,15 @@ export const useAdaptiveMicroCopy = () => {
     const contextMessages = progressMessages[locale]?.[taskContext] || progressMessages[locale]?.learning || progressMessages[locale]?.learning;
     const emotionalMessages = contextMessages?.[emotionalState] || contextMessages?.confident || ['Loading...', 'Processing...', 'Almost done...', 'Complete!'];
 
-    if (percentage < 25) return emotionalMessages[0] || 'Loading...';
-    if (percentage < 50) return emotionalMessages[1] || 'Processing...';
-    if (percentage < 100) return emotionalMessages[2] || 'Almost done...';
+    if (percentage < 25) {
+      return emotionalMessages[0] || 'Loading...';
+    }
+    if (percentage < 50) {
+      return emotionalMessages[1] || 'Processing...';
+    }
+    if (percentage < 100) {
+      return emotionalMessages[2] || 'Almost done...';
+    }
     return emotionalMessages[3] || 'Complete!';
   }, []);
 
@@ -419,8 +425,10 @@ export const AdaptiveButton: React.FC<AdaptiveButtonProps> = ({
   };
 
   const adaptedText = useMemo(() => {
-    if (!finalConfig.enableToneAdaptation) return children;
-    
+    if (!finalConfig.enableToneAdaptation) {
+      return children;
+    }
+
     const contextWithOverrides = { ...context, ...finalConfig.context };
     return adaptMessage(children, actionType, contextWithOverrides);
   }, [children, actionType, context, finalConfig, adaptMessage]);
@@ -446,23 +454,25 @@ export const AdaptiveButton: React.FC<AdaptiveButtonProps> = ({
       className={`
         relative rounded-lg font-medium transition-colors duration-200
         focus:outline-none focus:ring-2 focus:ring-offset-2
-        disabled:opacity-50 disabled:cursor-not-allowed
+        disabled:cursor-not-allowed disabled:opacity-50
         ${sizeClasses[size]}
         ${variantClasses[variant]}
         ${className}
       `}
     >
-      {loading ? (
-        <span className="flex items-center">
-          <svg className="animate-spin -ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-          </svg>
-          {context.locale === 'it' ? 'Caricamento...' : 'Loading...'}
-        </span>
-      ) : (
-        adaptedText
-      )}
+      {loading
+        ? (
+            <span className="flex items-center">
+              <svg className="-ml-1 mr-2 size-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+              {context.locale === 'it' ? 'Caricamento...' : 'Loading...'}
+            </span>
+          )
+        : (
+            adaptedText
+          )}
     </button>
   );
 };
@@ -490,7 +500,9 @@ export const AdaptiveStatus: React.FC<AdaptiveStatusProps> = ({
   const { getProgressMessage } = useAdaptiveMicroCopy();
 
   const displayMessage = useMemo(() => {
-    if (message) return message;
+    if (message) {
+      return message;
+    }
     if (showProgress && typeof progress === 'number') {
       return getProgressMessage(progress, context);
     }
@@ -511,20 +523,23 @@ export const AdaptiveStatus: React.FC<AdaptiveStatusProps> = ({
     error: '❌',
   };
 
-  if (!displayMessage) return null;
+  if (!displayMessage) {
+    return null;
+  }
 
   return (
     <div className={`
-      flex items-center p-3 rounded-lg border text-sm
+      flex items-center rounded-lg border p-3 text-sm
       ${typeClasses[type]}
       ${className}
-    `}>
+    `}
+    >
       <span className="mr-2">{typeIcons[type]}</span>
       <span className="flex-1">{displayMessage}</span>
       {showProgress && typeof progress === 'number' && (
-        <div className="ml-3 w-16 bg-white bg-opacity-50 rounded-full h-2">
+        <div className="ml-3 h-2 w-16 rounded-full bg-white bg-opacity-50">
           <div
-            className="bg-current h-2 rounded-full transition-all duration-300"
+            className="h-2 rounded-full bg-current transition-all duration-300"
             style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
           />
         </div>
@@ -560,7 +575,7 @@ export const AdaptiveMicroCopyShowcase: React.FC = () => {
   const handleProgressSimulation = useCallback(() => {
     setProgress(0);
     const interval = setInterval(() => {
-      setProgress(prev => {
+      setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
           return 100;
@@ -572,24 +587,24 @@ export const AdaptiveMicroCopyShowcase: React.FC = () => {
 
   return (
     <MicroCopyProvider context={currentContext}>
-      <div className="adaptive-micro-copy-showcase p-8 space-y-8">
+      <div className="adaptive-micro-copy-showcase space-y-8 p-8">
         <div className="showcase-header">
           <h2 className="text-3xl font-bold text-gray-900">Adaptive Micro-Copy System</h2>
-          <p className="text-lg text-gray-600 mt-2">
+          <p className="mt-2 text-lg text-gray-600">
             Sistema di micro-copy adattivo che si adatta al context, emotional state e user behavior
           </p>
         </div>
 
         {/* Context Controls */}
-        <div className="context-controls bg-gray-50 rounded-xl p-6">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Context Configuration</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="context-controls rounded-xl bg-gray-50 p-6">
+          <h3 className="mb-4 text-xl font-semibold text-gray-800">Context Configuration</h3>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">User State</label>
+              <label className="mb-2 block text-sm font-medium text-gray-700">User State</label>
               <select
                 value={currentContext.userState}
-                onChange={(e) => setCurrentContext(prev => ({ ...prev, userState: e.target.value as UserState }))}
-                className="w-full p-2 border border-gray-300 rounded-lg"
+                onChange={e => setCurrentContext(prev => ({ ...prev, userState: e.target.value as UserState }))}
+                className="w-full rounded-lg border border-gray-300 p-2"
               >
                 {contextOptions.userState.map(state => (
                   <option key={state} value={state}>{state}</option>
@@ -597,11 +612,11 @@ export const AdaptiveMicroCopyShowcase: React.FC = () => {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Emotional State</label>
+              <label className="mb-2 block text-sm font-medium text-gray-700">Emotional State</label>
               <select
                 value={currentContext.emotionalState}
-                onChange={(e) => setCurrentContext(prev => ({ ...prev, emotionalState: e.target.value as EmotionalState }))}
-                className="w-full p-2 border border-gray-300 rounded-lg"
+                onChange={e => setCurrentContext(prev => ({ ...prev, emotionalState: e.target.value as EmotionalState }))}
+                className="w-full rounded-lg border border-gray-300 p-2"
               >
                 {contextOptions.emotionalState.map(state => (
                   <option key={state} value={state}>{state}</option>
@@ -609,11 +624,11 @@ export const AdaptiveMicroCopyShowcase: React.FC = () => {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Task Context</label>
+              <label className="mb-2 block text-sm font-medium text-gray-700">Task Context</label>
               <select
                 value={currentContext.taskContext}
-                onChange={(e) => setCurrentContext(prev => ({ ...prev, taskContext: e.target.value as TaskContext }))}
-                className="w-full p-2 border border-gray-300 rounded-lg"
+                onChange={e => setCurrentContext(prev => ({ ...prev, taskContext: e.target.value as TaskContext }))}
+                className="w-full rounded-lg border border-gray-300 p-2"
               >
                 {contextOptions.taskContext.map(context => (
                   <option key={context} value={context}>{context}</option>
@@ -625,8 +640,8 @@ export const AdaptiveMicroCopyShowcase: React.FC = () => {
 
         {/* Adaptive Buttons Demo */}
         <div className="buttons-demo">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Adaptive Buttons</h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <h3 className="mb-4 text-xl font-semibold text-gray-800">Adaptive Buttons</h3>
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
             <AdaptiveButton actionType="primary">Inizia</AdaptiveButton>
             <AdaptiveButton actionType="financial">Paga</AdaptiveButton>
             <AdaptiveButton actionType="destructive" variant="outline">Elimina</AdaptiveButton>
@@ -637,25 +652,25 @@ export const AdaptiveMicroCopyShowcase: React.FC = () => {
 
         {/* Progressive Status Demo */}
         <div className="status-demo">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Progressive Status Messages</h3>
+          <h3 className="mb-4 text-xl font-semibold text-gray-800">Progressive Status Messages</h3>
           <div className="space-y-4">
             <AdaptiveStatus
               type="info"
               progress={progress}
-              showProgress={true}
+              showProgress
             />
             <div className="flex gap-4">
               <button
                 type="button"
                 onClick={handleProgressSimulation}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
               >
                 Simula Progresso
               </button>
               <button
                 type="button"
                 onClick={() => setProgress(0)}
-                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+                className="rounded-lg bg-gray-600 px-4 py-2 text-white hover:bg-gray-700"
               >
                 Reset
               </button>
@@ -664,44 +679,44 @@ export const AdaptiveMicroCopyShowcase: React.FC = () => {
         </div>
 
         {/* Technical Features */}
-        <div className="technical-features bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-6">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">
+        <div className="technical-features rounded-xl bg-gradient-to-br from-purple-50 to-blue-50 p-6">
+          <h3 className="mb-4 text-xl font-semibold text-gray-800">
             Caratteristiche Tecniche 2026
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div className="feature bg-white rounded-lg p-4 shadow-sm">
-              <h4 className="font-semibold text-gray-900 mb-2">🎯 Context-Aware</h4>
-              <p className="text-gray-600 text-sm">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="feature rounded-lg bg-white p-4 shadow-sm">
+              <h4 className="mb-2 font-semibold text-gray-900">🎯 Context-Aware</h4>
+              <p className="text-sm text-gray-600">
                 Adattamento automatico basato su user state, emotional state e task context
               </p>
             </div>
-            <div className="feature bg-white rounded-lg p-4 shadow-sm">
-              <h4 className="font-semibold text-gray-900 mb-2">🗣️ Tone Adaptation</h4>
-              <p className="text-gray-600 text-sm">
+            <div className="feature rounded-lg bg-white p-4 shadow-sm">
+              <h4 className="mb-2 font-semibold text-gray-900">🗣️ Tone Adaptation</h4>
+              <p className="text-sm text-gray-600">
                 5 stili di tono: professional, friendly, encouraging, reassuring, celebratory
               </p>
             </div>
-            <div className="feature bg-white rounded-lg p-4 shadow-sm">
-              <h4 className="font-semibold text-gray-900 mb-2">🌍 Multilingual</h4>
-              <p className="text-gray-600 text-sm">
+            <div className="feature rounded-lg bg-white p-4 shadow-sm">
+              <h4 className="mb-2 font-semibold text-gray-900">🌍 Multilingual</h4>
+              <p className="text-sm text-gray-600">
                 Supporto completo per italiano e inglese con adattamento culturale
               </p>
             </div>
-            <div className="feature bg-white rounded-lg p-4 shadow-sm">
-              <h4 className="font-semibold text-gray-900 mb-2">📈 Progressive</h4>
-              <p className="text-gray-600 text-sm">
+            <div className="feature rounded-lg bg-white p-4 shadow-sm">
+              <h4 className="mb-2 font-semibold text-gray-900">📈 Progressive</h4>
+              <p className="text-sm text-gray-600">
                 Status messaging che si evolve con il progresso dell'utente
               </p>
             </div>
-            <div className="feature bg-white rounded-lg p-4 shadow-sm">
-              <h4 className="font-semibold text-gray-900 mb-2">🛡️ Trust-Building</h4>
-              <p className="text-gray-600 text-sm">
+            <div className="feature rounded-lg bg-white p-4 shadow-sm">
+              <h4 className="mb-2 font-semibold text-gray-900">🛡️ Trust-Building</h4>
+              <p className="text-sm text-gray-600">
                 Messaging di sicurezza e privacy context-aware per financial actions
               </p>
             </div>
-            <div className="feature bg-white rounded-lg p-4 shadow-sm">
-              <h4 className="font-semibold text-gray-900 mb-2">🧠 Human-Centered</h4>
-              <p className="text-gray-600 text-sm">
+            <div className="feature rounded-lg bg-white p-4 shadow-sm">
+              <h4 className="mb-2 font-semibold text-gray-900">🧠 Human-Centered</h4>
+              <p className="text-sm text-gray-600">
                 Linguaggio umano che riduce friction e aumenta conversions
               </p>
             </div>

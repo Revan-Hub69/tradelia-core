@@ -1,75 +1,72 @@
 /**
  * TRADELIA MOTION SYSTEM - Export Index
- * 
+ *
  * Sistema completo di motion design enterprise 2026
  * Basato su best practice da Microsoft Fluent 2, Apple HIG, Material Design
  */
 
 export {
-  TradeliaMotion,
-  PressMotion,
-  HoverMotion,
-  StaggerContainer,
-  SuccessMotion,
-  ErrorMotion,
-  FocusMotion,
-  useTradeliaMotion,
-  motionTokens,
-  type MotionType,
-  type MotionIntensity,
-  type StaggerDirection,
-} from './TradeliaMotion';
-
-export {
-  SemanticAnimation,
-  EnterAnimation,
-  ExitAnimation,
-  SuccessAnimation,
-  ErrorAnimation,
-  WarningAnimation,
-  LoadingAnimation,
-  CompleteAnimation,
-  ProgressAnimation,
-  useSemanticAnimations,
-  semanticAnimationDefinitions,
-  getSemanticAnimation,
-  type SemanticType,
-  type AnimationContext,
-} from './SemanticAnimations';
-
-export {
   AnticipatoryFeedback,
-  PressAnticipatory,
+  type FeedbackIntensity,
+  type FeedbackType,
+  type HapticPattern,
+  hapticPatterns,
   HoverAnticipatory,
   LongPressAnticipatory,
+  PressAnticipatory,
   useAnticipatoryFeedback,
-  hapticPatterns,
-  type FeedbackType,
-  type FeedbackIntensity,
-  type HapticPattern,
 } from './AnticipatoryFeedback';
-
 export {
-  default as MotionTokens,
-  duration,
-  delay,
-  easing,
-  semantic,
   anticipatory,
-  stagger,
-  responsive,
-  haptic,
-  utils,
-  presets,
-  validators,
-  type Duration,
   type Delay,
+  delay,
+  type Duration,
+  duration,
   type Easing,
-  type StaggerType,
-  type ResponsiveMultiplier,
+  easing,
+  haptic,
   type HapticPattern as HapticPatternType,
+  default as MotionTokens,
   type PresetCategory,
+  presets,
+  responsive,
+  type ResponsiveMultiplier,
+  semantic,
+  stagger,
+  type StaggerType,
+  utils,
+  validators,
 } from './MotionTokens';
+export {
+  type AnimationContext,
+  CompleteAnimation,
+  EnterAnimation,
+  ErrorAnimation,
+  ExitAnimation,
+  getSemanticAnimation,
+  LoadingAnimation,
+  ProgressAnimation,
+  SemanticAnimation,
+  semanticAnimationDefinitions,
+  type SemanticType,
+  SuccessAnimation,
+  useSemanticAnimations,
+  WarningAnimation,
+} from './SemanticAnimations';
+export {
+  ErrorMotion,
+  FocusMotion,
+  HoverMotion,
+  type MotionIntensity,
+  motionTokens,
+  type MotionType,
+  PressMotion,
+  StaggerContainer,
+  type StaggerDirection,
+  SuccessMotion,
+  TradeliaMotion,
+  useTradeliaMotion,
+} from './TradeliaMotion';
 
 // Re-export tutto come default per convenienza
 export { default } from './TradeliaMotion';

@@ -16,8 +16,8 @@
  * - Performance-optimized GPU acceleration
  */
 
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { motion, useAnimation } from 'framer-motion';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 // ============================================================================
 // TYPES & INTERFACES
@@ -231,7 +231,7 @@ export const HapticVisualFeedback: React.FC<HapticVisualFeedbackProps> = ({
 
   return (
     <motion.div
-      className={`absolute inset-0 rounded-full pointer-events-none ${contextColors[context]} ${className}`}
+      className={`pointer-events-none absolute inset-0 rounded-full ${contextColors[context]} ${className}`}
       animate={rippleControls}
       initial={{ scale: 0, opacity: 0 }}
     />
@@ -308,7 +308,7 @@ export const SignatureButton: React.FC<SignatureButtonProps> = ({
         relative overflow-hidden rounded-lg font-medium
         transition-colors duration-200 ease-out
         focus:outline-none focus:ring-2 focus:ring-offset-2
-        disabled:opacity-50 disabled:cursor-not-allowed
+        disabled:cursor-not-allowed disabled:opacity-50
         ${sizeClasses[size]}
         ${variantClasses[variant]}
         ${className}
@@ -340,7 +340,7 @@ export const SignatureButton: React.FC<SignatureButtonProps> = ({
       {/* Focus Ring Enhancement */}
       {state.isFocused && (
         <motion.div
-          className="absolute inset-0 rounded-lg ring-2 ring-offset-2 ring-blue-500"
+          className="absolute inset-0 rounded-lg ring-2 ring-blue-500 ring-offset-2"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -396,7 +396,7 @@ export const SignatureCard: React.FC<SignatureCardProps> = ({
   return (
     <motion.div
       className={`
-        relative bg-white rounded-xl shadow-sm border border-gray-200
+        relative rounded-xl border border-gray-200 bg-white shadow-sm
         ${interactive ? 'cursor-pointer' : ''}
         ${className}
       `}
@@ -428,7 +428,7 @@ export const SignatureCard: React.FC<SignatureCardProps> = ({
       {/* Hover Enhancement */}
       {state.isHovered && (
         <motion.div
-          className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-purple-50/50 rounded-xl"
+          className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-50/50 to-purple-50/50"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -469,18 +469,18 @@ export const SignatureMicroInteractionsShowcase: React.FC = () => {
   ];
 
   return (
-    <div className="signature-micro-interactions-showcase p-8 space-y-8">
+    <div className="signature-micro-interactions-showcase space-y-8 p-8">
       <div className="showcase-header">
         <h2 className="text-3xl font-bold text-gray-900">Signature Micro-Interactions</h2>
-        <p className="text-lg text-gray-600 mt-2">
+        <p className="mt-2 text-lg text-gray-600">
           Enterprise 2026 micro-interactions con haptic-like feedback e elastic response
         </p>
       </div>
 
       {/* Button Demos */}
       <div className="demo-section">
-        <h3 className="text-xl font-semibold text-gray-800 mb-4">Signature Buttons</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <h3 className="mb-4 text-xl font-semibold text-gray-800">Signature Buttons</h3>
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           {demoConfigs.map(demo => (
             <SignatureButton
               key={demo.id}
@@ -496,8 +496,8 @@ export const SignatureMicroInteractionsShowcase: React.FC = () => {
 
       {/* Card Demos */}
       <div className="demo-section">
-        <h3 className="text-xl font-semibold text-gray-800 mb-4">Signature Cards</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <h3 className="mb-4 text-xl font-semibold text-gray-800">Signature Cards</h3>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {demoConfigs.slice(0, 3).map(demo => (
             <SignatureCard
               key={`card-${demo.id}`}
@@ -505,8 +505,11 @@ export const SignatureMicroInteractionsShowcase: React.FC = () => {
               onClick={() => setSelectedDemo(`card-${demo.id}`)}
             >
               <h4 className="font-semibold text-gray-900">{demo.title}</h4>
-              <p className="text-gray-600 mt-2">
-                Clicca per testare il signature press feedback con configurazione {demo.title.toLowerCase()}.
+              <p className="mt-2 text-gray-600">
+                Clicca per testare il signature press feedback con configurazione
+                {' '}
+                {demo.title.toLowerCase()}
+                .
               </p>
             </SignatureCard>
           ))}
@@ -514,30 +517,30 @@ export const SignatureMicroInteractionsShowcase: React.FC = () => {
       </div>
 
       {/* Technical Details */}
-      <div className="technical-details bg-gray-50 rounded-xl p-6">
-        <h3 className="text-xl font-semibold text-gray-800 mb-4">Caratteristiche Tecniche</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="technical-details rounded-xl bg-gray-50 p-6">
+        <h3 className="mb-4 text-xl font-semibold text-gray-800">Caratteristiche Tecniche</h3>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="feature">
             <h4 className="font-medium text-gray-900">🎯 Press Depth Variations</h4>
-            <p className="text-gray-600 text-sm mt-1">
+            <p className="mt-1 text-sm text-gray-600">
               Adattamento automatico della profondità di pressione basato su device type e context
             </p>
           </div>
           <div className="feature">
             <h4 className="font-medium text-gray-900">🌊 Elastic Response</h4>
-            <p className="text-gray-600 text-sm mt-1">
+            <p className="mt-1 text-sm text-gray-600">
               Animazioni elastiche con controlled imperfection per personalità umana
             </p>
           </div>
           <div className="feature">
             <h4 className="font-medium text-gray-900">📱 Haptic-like Visual</h4>
-            <p className="text-gray-600 text-sm mt-1">
+            <p className="mt-1 text-sm text-gray-600">
               Feedback visivo che simula sensazioni tattili attraverso ripple effects
             </p>
           </div>
           <div className="feature">
             <h4 className="font-medium text-gray-900">⚡ GPU Accelerated</h4>
-            <p className="text-gray-600 text-sm mt-1">
+            <p className="mt-1 text-sm text-gray-600">
               Ottimizzato per 60fps con transform3d e will-change properties
             </p>
           </div>
@@ -545,13 +548,13 @@ export const SignatureMicroInteractionsShowcase: React.FC = () => {
       </div>
 
       {selectedDemo && (
-        <div className="selected-demo bg-blue-50 rounded-xl p-6">
+        <div className="selected-demo rounded-xl bg-blue-50 p-6">
           <h4 className="font-semibold text-blue-900">
             Demo Selezionato:
             {' '}
             {selectedDemo}
           </h4>
-          <p className="text-blue-700 mt-2">
+          <p className="mt-2 text-blue-700">
             Hai testato il micro-interaction signature. Ogni interazione è ottimizzata per il context specifico.
           </p>
         </div>

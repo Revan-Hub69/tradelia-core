@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Suspense, useState, useEffect } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -18,12 +18,12 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { PasswordStrength } from '@/components/ui/password-strength';
 import { FadeIn, SlideReveal } from '@/components/ui/scroll-animations';
+import { useAuthRateLimit, useEmailCheckRateLimit } from '@/hooks/useRateLimit';
 import { Link, useRouter } from '@/libs/i18nNavigation';
 import { createClient } from '@/libs/supabase/client';
 import { Logo } from '@/templates/Logo';
-import { PasswordStrength } from '@/components/ui/password-strength';
-import { useAuthRateLimit, useEmailCheckRateLimit } from '@/hooks/useRateLimit';
 
 /**
  * Premium Auth Page 2026 - Best Practices Implementation
@@ -54,7 +54,7 @@ const UnifiedAuthPageContent = () => {
       authRateLimit.resetIfExpired();
       emailCheckRateLimit.resetIfExpired();
     }, 1000);
-    
+
     return () => clearInterval(interval);
   }, [authRateLimit, emailCheckRateLimit]);
 
@@ -94,18 +94,18 @@ const UnifiedAuthPageContent = () => {
   useEffect(() => {
     const errorParam = searchParams.get('error');
     const resetTimeParam = searchParams.get('resetTime');
-    
+
     if (errorParam === 'rate_limit' && resetTimeParam) {
-      const resetTime = parseInt(resetTimeParam);
+      const resetTime = Number.parseInt(resetTimeParam);
       const remainingMs = resetTime - Date.now();
-      
+
       if (remainingMs > 0) {
         const minutes = Math.floor(remainingMs / 60000);
         const seconds = Math.floor((remainingMs % 60000) / 1000);
         const timeString = minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`;
-        
+
         setError(`${t('error_rate_limit')} ${timeString}`);
-        
+
         // Auto-clear error when time expires
         const timeout = setTimeout(() => {
           setError(null);
@@ -115,11 +115,11 @@ const UnifiedAuthPageContent = () => {
           newUrl.searchParams.delete('resetTime');
           window.history.replaceState({}, '', newUrl.toString());
         }, remainingMs);
-        
+
         return () => clearTimeout(timeout);
       }
     }
-    
+
     return undefined;
   }, [searchParams, t]);
 
@@ -148,29 +148,28 @@ const UnifiedAuthPageContent = () => {
     try {
       // Try to sign up with a dummy password to check if email exists
       const { error } = await supabase.auth.signUp({
-        email: email,
+        email,
         password: 'temp-check-password-123',
         options: {
           emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       });
-      
+
       if (error) {
         const errorMsg = error.message.toLowerCase();
-        
+
         // Check for user already exists errors
-        if (errorMsg.includes('user already registered') || 
-            errorMsg.includes('email already registered') ||
-            errorMsg.includes('already been registered') ||
-            errorMsg.includes('email already exists') ||
-            errorMsg.includes('user already exists')) {
+        if (errorMsg.includes('user already registered')
+          || errorMsg.includes('email already registered')
+          || errorMsg.includes('already been registered')
+          || errorMsg.includes('email already exists')
+          || errorMsg.includes('user already exists')) {
           return true; // User exists
         }
       }
-      
+
       // If we get here, either no error (new user) or other error (assume new user)
       return false;
-      
     } catch {
       return false;
     }
@@ -279,7 +278,7 @@ const UnifiedAuthPageContent = () => {
     setError(null);
 
     const supabase = createClient();
-    
+
     // Use current origin for redirect (localhost in development)
     const redirectUrl = `${window.location.origin}/auth/callback`;
 
@@ -317,8 +316,8 @@ const UnifiedAuthPageContent = () => {
 
       {/* Optimized Background Elements - Reduced for Performance */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 size-80 rounded-full bg-gradient-to-br from-blue-400/15 to-indigo-600/15 blur-2xl animate-pulse" />
-        <div className="absolute -bottom-40 -left-40 size-80 rounded-full bg-gradient-to-tr from-emerald-400/15 to-blue-500/15 blur-2xl animate-pulse delay-1000" />
+        <div className="absolute -right-40 -top-40 size-80 animate-pulse rounded-full bg-gradient-to-br from-blue-400/15 to-indigo-600/15 blur-2xl" />
+        <div className="absolute -bottom-40 -left-40 size-80 animate-pulse rounded-full bg-gradient-to-tr from-emerald-400/15 to-blue-500/15 blur-2xl delay-1000" />
       </div>
 
       {/* Main Container - Mobile First */}
@@ -559,8 +558,8 @@ const UnifiedAuthPageContent = () => {
 
                           {/* Forgot Password Link */}
                           <div className="text-center">
-                            <Link 
-                              href="/forgot-password" 
+                            <Link
+                              href="/forgot-password"
                               className="text-sm text-blue-600 transition-colors hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
                             >
                               {t('forgot_password_link')}
@@ -634,10 +633,10 @@ const UnifiedAuthPageContent = () => {
                                   </div>
                                 </FormControl>
                                 <FormMessage />
-                                
+
                                 {/* Password Strength Indicator */}
-                                <PasswordStrength 
-                                  password={field.value || ''} 
+                                <PasswordStrength
+                                  password={field.value || ''}
                                   className="mt-3"
                                 />
                               </FormItem>
@@ -705,7 +704,7 @@ const UnifiedAuthPageContent = () => {
                         onClick={resetToEmail}
                         className="w-full text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
                       >
-                        ← 
+                        ←
                         {t('back_to_email')}
                       </Button>
                     </FadeIn>
@@ -757,7 +756,7 @@ const UnifiedAuthPageContent = () => {
               href="/"
               className="text-sm text-slate-500 transition-colors hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400"
             >
-              ← 
+              ←
               {t('back_home')}
             </Link>
           </FadeIn>

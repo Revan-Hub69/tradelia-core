@@ -1,11 +1,12 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import { useEffect, useState } from 'react';
+
+import type { ProfessionalBadge } from '@/libs/gamification';
 
 import { ProfessionalBadgeComponent } from './ProfessionalBadge';
-import type { ProfessionalBadge } from '@/libs/gamification';
 
 type CompletionData = {
   xpEarned: number;

@@ -1,9 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+
 import { createClient } from '@/libs/supabase/server';
 
 /**
  * Auth Callback Handler - 2026 Best Practices
- * 
+ *
  * Handles:
  * - Email confirmation
  * - Password reset
@@ -19,7 +21,7 @@ export async function GET(request: NextRequest) {
   if (code) {
     const supabase = await createClient();
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-    
+
     if (!error && data.user) {
       // Check if this is a new user and create profile if needed
       if (data.user && !data.user.user_metadata?.profile_created) {
@@ -36,13 +38,13 @@ export async function GET(request: NextRequest) {
               is_email_verified: true,
               verified_at: new Date().toISOString(),
             }, {
-              onConflict: 'id'
+              onConflict: 'id',
             });
 
           if (!profileError) {
             // Update user metadata to mark profile as created
             await supabase.auth.updateUser({
-              data: { profile_created: true }
+              data: { profile_created: true },
             });
           }
         } catch (profileError) {

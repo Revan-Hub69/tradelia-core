@@ -6,6 +6,7 @@
  */
 
 import React from 'react';
+
 import { ExplanatoryAnimationsShowcase } from './ExplanatoryAnimationsShowcase';
 
 export const ExplanatoryAnimationsExample: React.FC = () => {

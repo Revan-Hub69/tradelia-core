@@ -1,13 +1,14 @@
 /*
  * RESPONSIVE DEBUG COMPONENT - Development Tool
- * 
+ *
  * Shows current breakpoint and navigation state for testing
  * Only visible in development mode
  */
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+
 import { cn } from '@/utils/Helpers';
 
 type ResponsiveDebugProps = {
@@ -51,7 +52,7 @@ export const ResponsiveDebug: React.FC<ResponsiveDebugProps> = ({ className }) =
   }
 
   return (
-    <div 
+    <div
       className={cn(
         'fixed top-4 right-4 z-[9999] p-3 rounded-lg',
         'bg-black/80 text-white text-xs font-mono',
@@ -62,17 +63,44 @@ export const ResponsiveDebug: React.FC<ResponsiveDebugProps> = ({ className }) =
     >
       <div className="space-y-1">
         <div className="font-semibold text-yellow-400">Responsive Debug</div>
-        <div>Size: {windowSize.width} × {windowSize.height}</div>
-        <div>Breakpoint: <span className="text-green-400">{breakpoint}</span></div>
-        <div className="pt-1 border-t border-white/20">
+        <div>
+          Size:
+          {windowSize.width}
+          {' '}
+          ×
+          {windowSize.height}
+        </div>
+        <div>
+          Breakpoint:
+          <span className="text-green-400">{breakpoint}</span>
+        </div>
+        <div className="border-t border-white/20 pt-1">
           <div className="text-blue-400">Navigation:</div>
           <div className="ml-2">
-            <div className="lg:hidden">• Bottom Nav: <span className="text-green-400">Visible</span></div>
-            <div className="hidden lg:block">• Bottom Nav: <span className="text-red-400">Hidden</span></div>
-            <div className="hidden md:block lg:hidden">• Header Nav: <span className="text-green-400">Visible</span></div>
-            <div className="md:hidden lg:block">• Header Nav: <span className="text-red-400">Hidden</span></div>
-            <div className="hidden lg:block">• Sidebar: <span className="text-green-400">Visible</span></div>
-            <div className="lg:hidden">• Sidebar: <span className="text-red-400">Hidden</span></div>
+            <div className="lg:hidden">
+              • Bottom Nav:
+              <span className="text-green-400">Visible</span>
+            </div>
+            <div className="hidden lg:block">
+              • Bottom Nav:
+              <span className="text-red-400">Hidden</span>
+            </div>
+            <div className="hidden md:block lg:hidden">
+              • Header Nav:
+              <span className="text-green-400">Visible</span>
+            </div>
+            <div className="md:hidden lg:block">
+              • Header Nav:
+              <span className="text-red-400">Hidden</span>
+            </div>
+            <div className="hidden lg:block">
+              • Sidebar:
+              <span className="text-green-400">Visible</span>
+            </div>
+            <div className="lg:hidden">
+              • Sidebar:
+              <span className="text-red-400">Hidden</span>
+            </div>
           </div>
         </div>
       </div>

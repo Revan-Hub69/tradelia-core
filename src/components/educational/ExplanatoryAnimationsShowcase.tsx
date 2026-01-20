@@ -6,8 +6,9 @@
  */
 
 import React, { useState } from 'react';
-import { ConceptAnimationPlayer } from './ExplanatoryAnimations';
+
 import { BlockchainConceptAnimations } from './BlockchainConceptAnimations';
+import { ConceptAnimationPlayer } from './ExplanatoryAnimations';
 
 export const ExplanatoryAnimationsShowcase: React.FC = () => {
   const [selectedAnimation, setSelectedAnimation] = useState<string | null>(null);
@@ -23,70 +24,70 @@ export const ExplanatoryAnimationsShowcase: React.FC = () => {
 
       {!selectedAnimation
         ? (
-          <div className="animation-grid">
-            {animations.map(animation => (
-              <div key={animation.id} className="animation-card">
-                <div className="card-header">
-                  <h3>{animation.title}</h3>
-                  <span className={`complexity-badge ${animation.complexity}`}>
-                    {animation.complexity}
-                  </span>
+            <div className="animation-grid">
+              {animations.map(animation => (
+                <div key={animation.id} className="animation-card">
+                  <div className="card-header">
+                    <h3>{animation.title}</h3>
+                    <span className={`complexity-badge ${animation.complexity}`}>
+                      {animation.complexity}
+                    </span>
+                  </div>
+                  <p className="card-description">{animation.educationalGoal}</p>
+                  <div className="card-meta">
+                    <span>
+                      🎬
+                      {' '}
+                      {animation.type}
+                    </span>
+                    <span>
+                      ⏱️
+                      {' '}
+                      {Math.round(animation.totalDuration / 1000)}
+                      s
+                    </span>
+                    <span>
+                      📚
+                      {' '}
+                      {animation.steps.length}
+                      {' '}
+                      steps
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={() => setSelectedAnimation(animation.id)}
+                  >
+                    Guarda Animazione
+                  </button>
                 </div>
-                <p className="card-description">{animation.educationalGoal}</p>
-                <div className="card-meta">
-                  <span>
-                    🎬
-                    {' '}
-                    {animation.type}
-                  </span>
-                  <span>
-                    ⏱️
-                    {' '}
-                    {Math.round(animation.totalDuration / 1000)}
-                    s
-                  </span>
-                  <span>
-                    📚
-                    {' '}
-                    {animation.steps.length}
-                    {' '}
-                    steps
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={() => setSelectedAnimation(animation.id)}
-                >
-                  Guarda Animazione
-                </button>
-              </div>
-            ))}
-          </div>
-        )
+              ))}
+            </div>
+          )
         : (
-          <div className="animation-player-container">
-            <button
-              type="button"
-              className="btn btn-outline back-button"
-              onClick={() => setSelectedAnimation(null)}
-            >
-              ← Torna alla Lista
-            </button>
+            <div className="animation-player-container">
+              <button
+                type="button"
+                className="btn btn-outline back-button"
+                onClick={() => setSelectedAnimation(null)}
+              >
+                ← Torna alla Lista
+              </button>
 
-            <ConceptAnimationPlayer
-              animation={animations.find(a => a.id === selectedAnimation)!}
-              config={{
-                showControls: true,
-                autoPlay: false,
-                respectCognitiveLoad: true,
-              }}
-              onComplete={() => {
-                setTimeout(() => setSelectedAnimation(null), 2000);
-              }}
-            />
-          </div>
-        )}
+              <ConceptAnimationPlayer
+                animation={animations.find(a => a.id === selectedAnimation)!}
+                config={{
+                  showControls: true,
+                  autoPlay: false,
+                  respectCognitiveLoad: true,
+                }}
+                onComplete={() => {
+                  setTimeout(() => setSelectedAnimation(null), 2000);
+                }}
+              />
+            </div>
+          )}
     </div>
   );
 };

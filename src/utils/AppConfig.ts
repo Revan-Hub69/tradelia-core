@@ -2,7 +2,7 @@ const localePrefix = 'as-needed' as const;
 
 /**
  * Tradelia App Configuration
- * 
+ *
  * Piattaforma di educazione crypto seria.
  * Non hype, non FOMO - solo conoscenza strutturata.
  */
@@ -10,7 +10,7 @@ export const AppConfig = {
   name: 'Tradelia',
   tagline: 'Impara le crypto. Sul serio.',
   description: 'Piattaforma di educazione crypto basata su percorsi strutturati, gamification intelligente e approccio scientifico.',
-  
+
   // Localization
   locales: [
     { id: 'it', name: 'Italiano' },
@@ -18,20 +18,20 @@ export const AppConfig = {
   ],
   defaultLocale: 'it',
   localePrefix,
-  
+
   // Brand
   brand: {
     primaryColor: '#1D4ED8', // Deep Blue
-    accentColor: '#059669',  // Emerald
+    accentColor: '#059669', // Emerald
   },
-  
+
   // Social (da aggiornare)
   social: {
     twitter: '',
     github: '',
     discord: '',
   },
-  
+
   // Legal
   legal: {
     companyName: 'Tradelia',

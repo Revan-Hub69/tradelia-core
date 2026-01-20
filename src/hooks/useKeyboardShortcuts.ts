@@ -1,6 +1,6 @@
 /*
  * KEYBOARD SHORTCUTS HOOK - Enterprise Navigation
- * 
+ *
  * Global keyboard shortcuts for navigation and actions
  * Alt+1-5 for navigation, Cmd/Ctrl+K for command palette
  */
@@ -8,8 +8,9 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from '@/libs/i18nNavigation';
+
 import { getVisibleNavigationItems } from '@/data/navigation.config';
+import { useRouter } from '@/libs/i18nNavigation';
 
 export const useKeyboardShortcuts = () => {
   const router = useRouter();
@@ -19,17 +20,17 @@ export const useKeyboardShortcuts = () => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Skip if user is typing in an input
       if (
-        e.target instanceof HTMLInputElement ||
-        e.target instanceof HTMLTextAreaElement ||
-        e.target instanceof HTMLSelectElement ||
-        (e.target as HTMLElement)?.contentEditable === 'true'
+        e.target instanceof HTMLInputElement
+        || e.target instanceof HTMLTextAreaElement
+        || e.target instanceof HTMLSelectElement
+        || (e.target as HTMLElement)?.contentEditable === 'true'
       ) {
         return;
       }
 
       // Navigation shortcuts (Alt + 1-5)
       if (e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey) {
-        const keyNumber = parseInt(e.key);
+        const keyNumber = Number.parseInt(e.key);
         if (keyNumber >= 1 && keyNumber <= 5) {
           e.preventDefault();
           const targetItem = navigationItems[keyNumber - 1];

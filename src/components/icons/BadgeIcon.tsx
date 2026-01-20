@@ -1,15 +1,15 @@
 import React from 'react';
 
-interface BadgeIconProps {
+type BadgeIconProps = {
   className?: string;
   size?: number;
   rarity?: 'common' | 'rare' | 'epic' | 'legendary';
-}
+};
 
-export const BadgeIcon: React.FC<BadgeIconProps> = ({ 
-  className = '', 
+export const BadgeIcon: React.FC<BadgeIconProps> = ({
+  className = '',
   size = 24,
-  rarity = 'common'
+  rarity = 'common',
 }) => {
   const getGradient = () => {
     switch (rarity) {
@@ -51,14 +51,14 @@ export const BadgeIcon: React.FC<BadgeIconProps> = ({
           <stop offset="100%" stopColor="#d97706" />
         </linearGradient>
       </defs>
-      
+
       <path
         d="M12 2L15.5 8.5L22 9.5L17.5 14.5L18.5 21L12 18L5.5 21L6.5 14.5L2 9.5L8.5 8.5L12 2Z"
         fill={getGradient()}
         stroke="currentColor"
         strokeWidth="0.5"
       />
-      
+
       <circle
         cx="12"
         cy="12"
@@ -66,7 +66,7 @@ export const BadgeIcon: React.FC<BadgeIconProps> = ({
         fill="white"
         fillOpacity="0.9"
       />
-      
+
       <path
         d="M10.5 12L11.5 13L13.5 11"
         stroke="currentColor"

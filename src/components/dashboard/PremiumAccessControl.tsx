@@ -1,9 +1,10 @@
 'use client';
 
+import { ArrowRight, BookOpen, Check, Crown } from 'lucide-react';
 import React from 'react';
-import { ArrowRight, Check, Crown, BookOpen } from 'lucide-react';
 
 import { cn } from '@/utils/Helpers';
+
 import type { LearningPath } from './types';
 
 export type PremiumAccessControlProps = {

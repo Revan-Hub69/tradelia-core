@@ -1,7 +1,7 @@
 'use client';
 
-import React, { createContext, useContext } from 'react';
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
+import React, { createContext, useContext } from 'react';
 
 import { createClient } from '@/libs/supabase/client';
 
@@ -57,19 +57,19 @@ const fetchUserData = async (): Promise<UserData | null> => {
   try {
     // Fetch complete user data from API
     const response = await fetch('/api/user/progress');
-    
+
     if (!response.ok) {
       throw new Error('Failed to fetch user progress');
     }
-    
+
     const completeData = await response.json();
     const { profile, progress, completions, badges } = completeData;
-    
+
     // Calculate progress
     const totalLessons = 12; // Foundation Programme has 12 lessons
     const completedLessons = completions?.length || 0;
     const progressPercentage = Math.round((completedLessons / totalLessons) * 100);
-    
+
     return {
       id: user.id,
       email: user.email || '',
@@ -88,7 +88,7 @@ const fetchUserData = async (): Promise<UserData | null> => {
     };
   } catch (error) {
     console.error('Error fetching user data:', error);
-    
+
     // Fallback to basic auth data if API fails
     return {
       id: user.id,

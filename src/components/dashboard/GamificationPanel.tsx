@@ -1,24 +1,25 @@
 'use client';
 
+import { Award, ChevronRight, Plus, Sparkles, Star, Target, Trophy } from 'lucide-react';
 import React, { useState } from 'react';
-import { Trophy, Star, Target, Award, ChevronRight, Sparkles, Plus } from 'lucide-react';
-import { StreakIcon, BadgeIcon, AchievementIcon } from '@/components/icons';
 
-import { cn } from '@/utils/Helpers';
+import { AchievementIcon, BadgeIcon, StreakIcon } from '@/components/icons';
 import { useXPSystem } from '@/hooks/useXPSystem';
+import { cn } from '@/utils/Helpers';
+
 import { LevelUpAnimation, XPGainAnimation } from './LevelUpAnimation';
-import type { GamificationPanelProps, Badge } from './types';
+import type { Badge, GamificationPanelProps } from './types';
 
 /**
  * GamificationPanel - Badges and achievements display component with XP system
- * 
+ *
  * Requirements: 3.2, 3.3, 3.5
  * - Mostrare XP corrente e progress verso next level
  * - Implementare level-up animations
  * - Utilizzare micro-interazioni premium esistenti
  * - Creare sezione dedicata per achievements
  * - Implementare animation per nuovi badges
- * 
+ *
  * Features:
  * - Integrated XP and level system with animations
  * - Glass card styling consistent with existing design system
@@ -41,7 +42,7 @@ export const GamificationPanel: React.FC<GamificationPanelWithXPProps> = ({
   onXPChange,
 }) => {
   const [expandedSection, setExpandedSection] = useState<'badges' | 'achievements' | null>('badges');
-  
+
   // XP System integration
   const { xpState, addXP, clearRecentXPGain, isAnimating } = useXPSystem(initialXP);
 
@@ -89,11 +90,19 @@ export const GamificationPanel: React.FC<GamificationPanelWithXPProps> = ({
   const formatUnlockDate = (date: Date) => {
     const now = new Date();
     const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
-    
-    if (diffDays === 0) return 'Oggi';
-    if (diffDays === 1) return 'Ieri';
-    if (diffDays < 7) return `${diffDays} giorni fa`;
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)} settimane fa`;
+
+    if (diffDays === 0) {
+      return 'Oggi';
+    }
+    if (diffDays === 1) {
+      return 'Ieri';
+    }
+    if (diffDays < 7) {
+      return `${diffDays} giorni fa`;
+    }
+    if (diffDays < 30) {
+      return `${Math.floor(diffDays / 7)} settimane fa`;
+    }
     return date.toLocaleDateString('it-IT', { month: 'short', year: 'numeric' });
   };
 
@@ -119,14 +128,16 @@ export const GamificationPanel: React.FC<GamificationPanelWithXPProps> = ({
         <div className={cn(
           'relative overflow-hidden rounded-xl border border-white/20 bg-white/60 backdrop-blur-sm p-6 shadow-sm shadow-black/5',
           'dark:border-white/10 dark:bg-white/10 dark:shadow-black/20',
-          isAnimating && 'ring-2 ring-primary/50 ring-offset-2'
-        )}>
+          isAnimating && 'ring-2 ring-primary/50 ring-offset-2',
+        )}
+        >
           <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className={cn(
                 'flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80 transition-all duration-300',
-                xpState.isLevelingUp && 'animate-pulse scale-110 shadow-lg shadow-primary/50'
-              )}>
+                xpState.isLevelingUp && 'animate-pulse scale-110 shadow-lg shadow-primary/50',
+              )}
+              >
                 <Trophy className="size-6 text-primary-foreground" />
               </div>
               <div>
@@ -177,25 +188,25 @@ export const GamificationPanel: React.FC<GamificationPanelWithXPProps> = ({
                 %
               </span>
             </div>
-            
+
             <div className="h-2.5 overflow-hidden rounded-full bg-slate-200/80 dark:bg-slate-700/60">
               <div
                 className={cn(
                   'relative h-2.5 overflow-hidden rounded-full bg-gradient-to-r from-primary to-primary/80 transition-all duration-700 ease-out',
-                  isAnimating && 'animate-pulse'
+                  isAnimating && 'animate-pulse',
                 )}
                 style={{ width: `${xpState.progressToNextLevel}%` }}
               >
                 {/* Enhanced shimmer effect */}
-                <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-                
+                <div className="animate-shimmer absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+
                 {/* Glow effect when animating */}
                 {isAnimating && (
                   <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-primary/50 to-primary/30" />
                 )}
               </div>
             </div>
-            
+
             <div className="flex justify-between text-xs text-muted-foreground">
               <span>
                 {(xpState.currentXP - xpState.xpForCurrentLevel).toLocaleString()}
@@ -215,8 +226,9 @@ export const GamificationPanel: React.FC<GamificationPanelWithXPProps> = ({
             <div className="flex items-center gap-3">
               <div className={cn(
                 'transition-all duration-300',
-                streak >= 7 && 'animate-bounce'
-              )}>
+                streak >= 7 && 'animate-bounce',
+              )}
+              >
                 <StreakIcon size={28} className="text-orange-500" />
               </div>
               <div>
@@ -245,8 +257,9 @@ export const GamificationPanel: React.FC<GamificationPanelWithXPProps> = ({
         {recentBadges.length > 0 && (
           <div className={cn(
             'relative overflow-hidden rounded-xl border border-primary/20 bg-gradient-to-r from-primary/10 to-primary/5 p-6 shadow-sm shadow-black/5',
-            'dark:border-primary/30 dark:from-primary/20 dark:to-primary/10'
-          )}>
+            'dark:border-primary/30 dark:from-primary/20 dark:to-primary/10',
+          )}
+          >
             <div className="mb-4 flex items-center gap-3">
               <div className="flex size-12 items-center justify-center rounded-full bg-primary/20">
                 <Sparkles className="size-6 text-primary" />
@@ -270,7 +283,7 @@ export const GamificationPanel: React.FC<GamificationPanelWithXPProps> = ({
                       styles.bg,
                       styles.border,
                       styles.glow,
-                      'animate-bounce-in'
+                      'animate-bounce-in',
                     )}
                   >
                     <div className="text-center">
@@ -284,7 +297,7 @@ export const GamificationPanel: React.FC<GamificationPanelWithXPProps> = ({
                         {formatUnlockDate(badge.unlockedAt)}
                       </div>
                     </div>
-                    
+
                     {/* Tooltip */}
                     <div className="absolute -top-12 left-1/2 z-10 -translate-x-1/2 rounded-lg bg-black/90 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
                       {badge.description}
@@ -299,8 +312,9 @@ export const GamificationPanel: React.FC<GamificationPanelWithXPProps> = ({
         {/* Badges Section */}
         <div className={cn(
           'relative overflow-hidden rounded-xl border border-white/20 bg-white/60 backdrop-blur-sm shadow-sm shadow-black/5',
-          'dark:border-white/10 dark:bg-white/10 dark:shadow-black/20'
-        )}>
+          'dark:border-white/10 dark:bg-white/10 dark:shadow-black/20',
+        )}
+        >
           <button
             type="button"
             onClick={() => setExpandedSection(expandedSection === 'badges' ? null : 'badges')}
@@ -319,8 +333,9 @@ export const GamificationPanel: React.FC<GamificationPanelWithXPProps> = ({
             </div>
             <ChevronRight className={cn(
               'size-5 text-muted-foreground transition-transform',
-              expandedSection === 'badges' && 'rotate-90'
-            )} />
+              expandedSection === 'badges' && 'rotate-90',
+            )}
+            />
           </button>
 
           {expandedSection === 'badges' && (
@@ -335,7 +350,7 @@ export const GamificationPanel: React.FC<GamificationPanelWithXPProps> = ({
                         'group relative rounded-xl border p-4 transition-all duration-300 hover:scale-105',
                         styles.bg,
                         styles.border,
-                        styles.glow
+                        styles.glow,
                       )}
                     >
                       <div className="text-center">
@@ -349,7 +364,7 @@ export const GamificationPanel: React.FC<GamificationPanelWithXPProps> = ({
                           {badge.rarity}
                         </div>
                       </div>
-                      
+
                       {/* Tooltip */}
                       <div className="absolute -top-16 left-1/2 z-10 -translate-x-1/2 rounded-lg bg-black/90 px-3 py-2 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
                         <div className="font-medium">{badge.name}</div>
@@ -371,8 +386,9 @@ export const GamificationPanel: React.FC<GamificationPanelWithXPProps> = ({
         {/* Achievements Section */}
         <div className={cn(
           'relative overflow-hidden rounded-xl border border-white/20 bg-white/60 backdrop-blur-sm shadow-sm shadow-black/5',
-          'dark:border-white/10 dark:bg-white/10 dark:shadow-black/20'
-        )}>
+          'dark:border-white/10 dark:bg-white/10 dark:shadow-black/20',
+        )}
+        >
           <button
             type="button"
             onClick={() => setExpandedSection(expandedSection === 'achievements' ? null : 'achievements')}
@@ -393,8 +409,9 @@ export const GamificationPanel: React.FC<GamificationPanelWithXPProps> = ({
             </div>
             <ChevronRight className={cn(
               'size-5 text-muted-foreground transition-transform',
-              expandedSection === 'achievements' && 'rotate-90'
-            )} />
+              expandedSection === 'achievements' && 'rotate-90',
+            )}
+            />
           </button>
 
           {expandedSection === 'achievements' && (
@@ -405,23 +422,23 @@ export const GamificationPanel: React.FC<GamificationPanelWithXPProps> = ({
                   <div>
                     <h4 className="mb-3 text-sm font-medium text-muted-foreground">In Corso</h4>
                     <div className="space-y-3">
-                      {activeAchievements.slice(0, 3).map((achievement) => (
+                      {activeAchievements.slice(0, 3).map(achievement => (
                         <div
                           key={achievement.id}
                           className="rounded-lg border border-white/20 bg-white/40 p-4 backdrop-blur-sm dark:border-white/10 dark:bg-white/5"
                         >
                           <div className="flex items-start gap-3">
-                            <AchievementIcon 
-                              size={32} 
+                            <AchievementIcon
+                              size={32}
                               progress={(achievement.progress / achievement.maxProgress) * 100}
-                              className="text-primary flex-shrink-0 mt-1"
+                              className="mt-1 shrink-0 text-primary"
                             />
                             <div className="flex-1">
                               <h5 className="font-medium">{achievement.title}</h5>
                               <p className="text-sm text-muted-foreground">
                                 {achievement.description}
                               </p>
-                              
+
                               {/* Progress Bar */}
                               <div className="mt-2 space-y-1">
                                 <div className="flex justify-between text-xs">
@@ -452,16 +469,16 @@ export const GamificationPanel: React.FC<GamificationPanelWithXPProps> = ({
                   <div>
                     <h4 className="mb-3 text-sm font-medium text-muted-foreground">Completati</h4>
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                      {completedAchievements.map((achievement) => (
+                      {completedAchievements.map(achievement => (
                         <div
                           key={achievement.id}
                           className="rounded-lg border border-green-200/50 bg-green-50/50 p-3 backdrop-blur-sm dark:border-green-800/50 dark:bg-green-950/20"
                         >
                           <div className="flex items-center gap-3">
-                            <AchievementIcon 
-                              size={24} 
+                            <AchievementIcon
+                              size={24}
                               progress={100}
-                              className="text-green-600 dark:text-green-400 flex-shrink-0"
+                              className="shrink-0 text-green-600 dark:text-green-400"
                             />
                             <div className="flex-1">
                               <h5 className="text-sm font-medium">{achievement.title}</h5>

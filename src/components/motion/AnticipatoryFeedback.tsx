@@ -1,9 +1,9 @@
 /**
  * ANTICIPATORY FEEDBACK SYSTEM v2.0 - Enterprise 2026
- * 
+ *
  * Sistema di feedback anticipatorio che guida le azioni dell'utente
  * invece di limitarsi a seguirle
- * 
+ *
  * Basato su ricerca UX 2026:
  * - Micro-delays (40-60ms) per premium feel
  * - Feedback che anticipa l'azione, non la segue
@@ -13,30 +13,32 @@
 
 'use client';
 
-import React, { forwardRef, HTMLAttributes, ReactNode, useCallback, useRef, useState } from 'react';
+import type { HTMLAttributes, ReactNode } from 'react';
+import React, { forwardRef, useCallback, useRef, useState } from 'react';
+
 import { cn } from '../../utils/Helpers';
 
 // Tipi per feedback anticipatorio
-export type FeedbackType = 
-  | 'press'      // Feedback di pressione con anticipazione
-  | 'hover'      // Hover con micro-delay anticipatorio
-  | 'focus'      // Focus con preparazione visiva
-  | 'drag'       // Feedback per drag operations
-  | 'swipe'      // Feedback per swipe gestures
-  | 'long-press' // Long press con buildup progressivo;
+export type FeedbackType =
+  | 'press' // Feedback di pressione con anticipazione
+  | 'hover' // Hover con micro-delay anticipatorio
+  | 'focus' // Focus con preparazione visiva
+  | 'drag' // Feedback per drag operations
+  | 'swipe' // Feedback per swipe gestures
+  | 'long-press'; // Long press con buildup progressivo;
 
 export type FeedbackIntensity = 'subtle' | 'normal' | 'prominent';
 
-export type HapticPattern = 
-  | 'light'      // Tap leggero
-  | 'medium'     // Tap medio
-  | 'heavy'      // Tap pesante
-  | 'success'    // Pattern di successo
-  | 'warning'    // Pattern di warning
-  | 'error';     // Pattern di errore
+export type HapticPattern =
+  | 'light' // Tap leggero
+  | 'medium' // Tap medio
+  | 'heavy' // Tap pesante
+  | 'success' // Pattern di successo
+  | 'warning' // Pattern di warning
+  | 'error'; // Pattern di errore
 
 // Props per componente anticipatory feedback
-interface AnticipatoryFeedbackProps extends HTMLAttributes<HTMLDivElement> {
+type AnticipatoryFeedbackProps = {
   children: ReactNode;
   type?: FeedbackType;
   intensity?: FeedbackIntensity;
@@ -46,33 +48,33 @@ interface AnticipatoryFeedbackProps extends HTMLAttributes<HTMLDivElement> {
   onAnticipate?: () => void;
   onActivate?: () => void;
   onComplete?: () => void;
-}
+} & HTMLAttributes<HTMLDivElement>;
 
 // Props per press feedback specifico
-interface PressAnticipatoryProps extends HTMLAttributes<HTMLButtonElement> {
+type PressAnticipatoryProps = {
   children: ReactNode;
   intensity?: FeedbackIntensity;
   hapticPattern?: HapticPattern;
   disabled?: boolean;
   onPress?: () => void;
   onRelease?: () => void;
-}
+} & HTMLAttributes<HTMLButtonElement>;
 
 // Props per hover anticipatorio
-interface HoverAnticipatoryProps extends HTMLAttributes<HTMLDivElement> {
+type HoverAnticipatoryProps = {
   children: ReactNode;
   intensity?: FeedbackIntensity;
   anticipationDelay?: number;
   disabled?: boolean;
   onHoverStart?: () => void;
   onHoverEnd?: () => void;
-}
+} & HTMLAttributes<HTMLDivElement>;
 
 /**
  * Componente principale per feedback anticipatorio
  */
 export const AnticipatoryFeedback = forwardRef<HTMLDivElement, AnticipatoryFeedbackProps>(
-  ({ 
+  ({
     children,
     type = 'press',
     intensity = 'normal',
@@ -86,7 +88,6 @@ export const AnticipatoryFeedback = forwardRef<HTMLDivElement, AnticipatoryFeedb
     style,
     ...props
   }, ref) => {
-    
     const [isAnticipating, setIsAnticipating] = useState(false);
     const [isActive, setIsActive] = useState(false);
     const anticipationTimeoutRef = useRef<NodeJS.Timeout>();
@@ -104,10 +105,12 @@ export const AnticipatoryFeedback = forwardRef<HTMLDivElement, AnticipatoryFeedb
 
     // Handle anticipation start
     const handleAnticipationStart = useCallback(() => {
-      if (disabled) return;
-      
+      if (disabled) {
+        return;
+      }
+
       clearTimeouts();
-      
+
       // Start anticipation after micro-delay
       anticipationTimeoutRef.current = setTimeout(() => {
         setIsAnticipating(true);
@@ -117,13 +120,15 @@ export const AnticipatoryFeedback = forwardRef<HTMLDivElement, AnticipatoryFeedb
 
     // Handle activation
     const handleActivation = useCallback(() => {
-      if (disabled) return;
-      
+      if (disabled) {
+        return;
+      }
+
       clearTimeouts();
       setIsAnticipating(false);
       setIsActive(true);
       onActivate?.();
-      
+
       // Complete after feedback duration
       activeTimeoutRef.current = setTimeout(() => {
         setIsActive(false);
@@ -178,7 +183,7 @@ export const AnticipatoryFeedback = forwardRef<HTMLDivElement, AnticipatoryFeedb
       isAnticipating && 'feedback-anticipating',
       isActive && 'feedback-active',
       disabled && 'feedback-disabled',
-      className
+      className,
     );
 
     // Style con delay personalizzato
@@ -198,7 +203,7 @@ export const AnticipatoryFeedback = forwardRef<HTMLDivElement, AnticipatoryFeedb
         {children}
       </div>
     );
-  }
+  },
 );
 
 AnticipatoryFeedback.displayName = 'AnticipatoryFeedback';
@@ -207,7 +212,7 @@ AnticipatoryFeedback.displayName = 'AnticipatoryFeedback';
  * Press feedback anticipatorio specializzato
  */
 export const PressAnticipatory = forwardRef<HTMLButtonElement, PressAnticipatoryProps>(
-  ({ 
+  ({
     children,
     intensity = 'normal',
     hapticPattern = 'medium',
@@ -217,16 +222,17 @@ export const PressAnticipatory = forwardRef<HTMLButtonElement, PressAnticipatory
     className,
     ...props
   }, ref) => {
-    
     const [pressState, setPressState] = useState<'idle' | 'anticipating' | 'pressed'>('idle');
     const pressTimeoutRef = useRef<NodeJS.Timeout>();
 
     // Handle press start con anticipazione
     const handlePressStart = useCallback(() => {
-      if (disabled) return;
-      
+      if (disabled) {
+        return;
+      }
+
       setPressState('anticipating');
-      
+
       // Micro-delay per anticipazione
       pressTimeoutRef.current = setTimeout(() => {
         setPressState('pressed');
@@ -239,7 +245,7 @@ export const PressAnticipatory = forwardRef<HTMLButtonElement, PressAnticipatory
       if (pressTimeoutRef.current) {
         clearTimeout(pressTimeoutRef.current);
       }
-      
+
       setPressState('idle');
       onRelease?.();
     }, [onRelease]);
@@ -259,7 +265,7 @@ export const PressAnticipatory = forwardRef<HTMLButtonElement, PressAnticipatory
       `press-haptic-${hapticPattern}`,
       `press-state-${pressState}`,
       disabled && 'press-disabled',
-      className
+      className,
     );
 
     return (
@@ -277,7 +283,7 @@ export const PressAnticipatory = forwardRef<HTMLButtonElement, PressAnticipatory
         {children}
       </button>
     );
-  }
+  },
 );
 
 PressAnticipatory.displayName = 'PressAnticipatory';
@@ -286,7 +292,7 @@ PressAnticipatory.displayName = 'PressAnticipatory';
  * Hover feedback anticipatorio
  */
 export const HoverAnticipatory = forwardRef<HTMLDivElement, HoverAnticipatoryProps>(
-  ({ 
+  ({
     children,
     intensity = 'normal',
     anticipationDelay = 25, // Più veloce per hover
@@ -296,15 +302,16 @@ export const HoverAnticipatory = forwardRef<HTMLDivElement, HoverAnticipatoryPro
     className,
     ...props
   }, ref) => {
-    
     const [hoverState, setHoverState] = useState<'idle' | 'anticipating' | 'hovering'>('idle');
     const hoverTimeoutRef = useRef<NodeJS.Timeout>();
 
     const handleHoverStart = useCallback(() => {
-      if (disabled) return;
-      
+      if (disabled) {
+        return;
+      }
+
       setHoverState('anticipating');
-      
+
       hoverTimeoutRef.current = setTimeout(() => {
         setHoverState('hovering');
         onHoverStart?.();
@@ -315,7 +322,7 @@ export const HoverAnticipatory = forwardRef<HTMLDivElement, HoverAnticipatoryPro
       if (hoverTimeoutRef.current) {
         clearTimeout(hoverTimeoutRef.current);
       }
-      
+
       setHoverState('idle');
       onHoverEnd?.();
     }, [onHoverEnd]);
@@ -333,7 +340,7 @@ export const HoverAnticipatory = forwardRef<HTMLDivElement, HoverAnticipatoryPro
       `hover-intensity-${intensity}`,
       `hover-state-${hoverState}`,
       disabled && 'hover-disabled',
-      className
+      className,
     );
 
     const hoverStyle = {
@@ -352,7 +359,7 @@ export const HoverAnticipatory = forwardRef<HTMLDivElement, HoverAnticipatoryPro
         {children}
       </div>
     );
-  }
+  },
 );
 
 HoverAnticipatory.displayName = 'HoverAnticipatory';
@@ -365,11 +372,11 @@ export const LongPressAnticipatory: React.FC<{
   onLongPress: () => void;
   duration?: number;
   className?: string;
-}> = ({ 
-  children, 
-  onLongPress, 
+}> = ({
+  children,
+  onLongPress,
   duration = 800,
-  className 
+  className,
 }) => {
   const [progress, setProgress] = useState(0);
   const [isPressed, setIsPressed] = useState(false);
@@ -379,20 +386,20 @@ export const LongPressAnticipatory: React.FC<{
   const startLongPress = useCallback(() => {
     setIsPressed(true);
     setProgress(0);
-    
+
     const startTime = Date.now();
-    
+
     intervalRef.current = setInterval(() => {
       const elapsed = Date.now() - startTime;
       const newProgress = Math.min((elapsed / duration) * 100, 100);
       setProgress(newProgress);
-      
+
       if (newProgress >= 100) {
         clearInterval(intervalRef.current!);
         onLongPress();
       }
     }, 16); // 60fps updates
-    
+
     timeoutRef.current = setTimeout(() => {
       clearInterval(intervalRef.current!);
       onLongPress();
@@ -402,7 +409,7 @@ export const LongPressAnticipatory: React.FC<{
   const endLongPress = useCallback(() => {
     setIsPressed(false);
     setProgress(0);
-    
+
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
@@ -413,15 +420,19 @@ export const LongPressAnticipatory: React.FC<{
 
   React.useEffect(() => {
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
     };
   }, []);
 
   const longPressClasses = cn(
     'long-press-anticipatory',
     isPressed && 'long-press-active',
-    className
+    className,
   );
 
   const progressStyle = {
@@ -441,7 +452,7 @@ export const LongPressAnticipatory: React.FC<{
       {children}
       {isPressed && (
         <div className="long-press-progress-indicator">
-          <div 
+          <div
             className="long-press-progress-fill"
             style={{ width: `${progress}%` }}
           />
@@ -460,7 +471,7 @@ export const useAnticipatoryFeedback = () => {
 
   const triggerAnticipation = useCallback((delay: number = 45) => {
     setFeedbackState('anticipating');
-    
+
     timeoutRef.current = setTimeout(() => {
       setFeedbackState('active');
     }, delay);

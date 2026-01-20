@@ -5,10 +5,10 @@
  * Validates: Requirements 1.3, 7.2
  */
 
-import React from 'react';
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
+import { renderHook, waitFor } from '@testing-library/react';
+import React from 'react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Create a simple test hook that simulates the UserDataProvider behavior
 const useTestUserData = () => {
@@ -59,7 +59,7 @@ describe('UserDataProvider API Deduplication Tests', () => {
       if (url === '/api/user/progress') {
         apiCallCount++;
         // Simulate network delay
-        await new Promise((resolve) => setTimeout(resolve, 10));
+        await new Promise(resolve => setTimeout(resolve, 10));
         return {
           ok: true,
           json: async () => ({
@@ -113,7 +113,7 @@ describe('UserDataProvider API Deduplication Tests', () => {
         () => {
           expect(result1.current.isLoading).toBe(false);
         },
-        { timeout: 1000 }
+        { timeout: 1000 },
       );
 
       expect(result1.current.data).toBeDefined();
@@ -123,7 +123,7 @@ describe('UserDataProvider API Deduplication Tests', () => {
       unmount1();
 
       // Make second request quickly (within cache time)
-      await new Promise((resolve) => setTimeout(resolve, 50));
+      await new Promise(resolve => setTimeout(resolve, 50));
 
       const { result: result2, unmount: unmount2 } = renderHook(() => useTestUserData(), {
         wrapper: CachedWrapper,
@@ -133,7 +133,7 @@ describe('UserDataProvider API Deduplication Tests', () => {
         () => {
           expect(result2.current.isLoading).toBe(false);
         },
-        { timeout: 1000 }
+        { timeout: 1000 },
       );
 
       expect(result2.current.data).toBeDefined();
@@ -161,7 +161,7 @@ describe('UserDataProvider API Deduplication Tests', () => {
         () => {
           expect(result.current.isLoading).toBe(false);
         },
-        { timeout: 1000 }
+        { timeout: 1000 },
       );
 
       expect(result.current.data).toBeDefined();
@@ -175,7 +175,7 @@ describe('UserDataProvider API Deduplication Tests', () => {
         () => {
           expect(result.current.isLoading).toBe(false);
         },
-        { timeout: 1000 }
+        { timeout: 1000 },
       );
 
       // Should have made a second API call
@@ -232,7 +232,7 @@ describe('UserDataProvider API Deduplication Tests', () => {
           expect(hook1.result.current.isLoading).toBe(false);
           expect(hook2.result.current.isLoading).toBe(false);
         },
-        { timeout: 1000 }
+        { timeout: 1000 },
       );
 
       // Each QueryClient should make its own API call
@@ -310,7 +310,7 @@ describe('UserDataProvider API Deduplication Tests', () => {
           expect(hook1.result.current.isLoading).toBe(false);
           expect(hook2.result.current.isLoading).toBe(false);
         },
-        { timeout: 1000 }
+        { timeout: 1000 },
       );
 
       // Should make one API call per unique query key
@@ -363,7 +363,7 @@ describe('UserDataProvider API Deduplication Tests', () => {
           expect(hook2.result.current.isLoading).toBe(false);
           expect(hook3.result.current.isLoading).toBe(false);
         },
-        { timeout: 2000 }
+        { timeout: 2000 },
       );
 
       // Verify that only one API call was made despite multiple simultaneous requests

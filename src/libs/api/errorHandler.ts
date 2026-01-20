@@ -4,7 +4,7 @@ export class ApiError extends Error {
   constructor(
     message: string,
     public statusCode: number = 500,
-    public code?: string
+    public code?: string,
   ) {
     super(message);
     this.name = 'ApiError';
@@ -16,12 +16,12 @@ export const handleApiError = (error: unknown) => {
 
   if (error instanceof ApiError) {
     return NextResponse.json(
-      { 
+      {
         error: error.message,
         code: error.code,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
-      { status: error.statusCode }
+      { status: error.statusCode },
     );
   }
 
@@ -29,46 +29,46 @@ export const handleApiError = (error: unknown) => {
     // Known error types
     if (error.message.includes('duplicate key')) {
       return NextResponse.json(
-        { 
+        {
           error: 'Resource already exists',
           code: 'DUPLICATE_RESOURCE',
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
     if (error.message.includes('foreign key')) {
       return NextResponse.json(
-        { 
+        {
           error: 'Invalid reference',
           code: 'INVALID_REFERENCE',
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (error.message.includes('not found')) {
       return NextResponse.json(
-        { 
+        {
           error: 'Resource not found',
           code: 'NOT_FOUND',
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         },
-        { status: 404 }
+        { status: 404 },
       );
     }
   }
 
   // Generic server error
   return NextResponse.json(
-    { 
+    {
       error: 'Internal server error',
       code: 'INTERNAL_ERROR',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     },
-    { status: 500 }
+    { status: 500 },
   );
 };
 

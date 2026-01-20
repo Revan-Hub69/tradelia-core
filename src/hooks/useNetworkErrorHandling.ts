@@ -1,33 +1,33 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-interface NetworkState {
+type NetworkState = {
   isOnline: boolean;
   isConnecting: boolean;
   lastError: Error | null;
   retryCount: number;
   hasNetworkError: boolean;
-}
+};
 
-interface RetryOptions {
+type RetryOptions = {
   maxRetries?: number;
   baseDelay?: number;
   maxDelay?: number;
   backoffFactor?: number;
-}
+};
 
-interface CachedData {
+type CachedData = {
   [key: string]: {
     data: any;
     timestamp: number;
     ttl: number;
   };
-}
+};
 
 /**
  * Hook for handling network errors with cached data fallback
- * 
+ *
  * Features:
  * - Network status monitoring
  * - Automatic retry with exponential backoff
@@ -79,7 +79,7 @@ export const useNetworkErrorHandling = (options: RetryOptions = {}) => {
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
-      
+
       // Clear pending timeouts
       retryTimeoutsRef.current.forEach(timeout => clearTimeout(timeout));
     };
@@ -96,7 +96,9 @@ export const useNetworkErrorHandling = (options: RetryOptions = {}) => {
 
   const getCache = useCallback((key: string) => {
     const cached = cacheRef.current[key];
-    if (!cached) return null;
+    if (!cached) {
+      return null;
+    }
 
     const isExpired = Date.now() - cached.timestamp > cached.ttl;
     if (isExpired) {
@@ -123,7 +125,7 @@ export const useNetworkErrorHandling = (options: RetryOptions = {}) => {
       useCache?: boolean;
       cacheTTL?: number;
       retryOnFailure?: boolean;
-    } = {}
+    } = {},
   ): Promise<T> => {
     const {
       useCache = true,
@@ -153,9 +155,9 @@ export const useNetworkErrorHandling = (options: RetryOptions = {}) => {
     const executeRequest = async (attempt: number = 0): Promise<T> => {
       try {
         setNetworkState(prev => ({ ...prev, isConnecting: true }));
-        
+
         const result = await requestFn();
-        
+
         // Cache successful result
         if (useCache && cacheKey) {
           setCache(cacheKey, result, cacheTTL);
@@ -173,7 +175,7 @@ export const useNetworkErrorHandling = (options: RetryOptions = {}) => {
         return result;
       } catch (error) {
         const networkError = error as Error;
-        
+
         setNetworkState(prev => ({
           ...prev,
           isConnecting: false,
@@ -186,8 +188,8 @@ export const useNetworkErrorHandling = (options: RetryOptions = {}) => {
         if (retryOnFailure && attempt < maxRetries) {
           // Calculate delay with exponential backoff
           const delay = Math.min(
-            baseDelay * Math.pow(backoffFactor, attempt),
-            maxDelay
+            baseDelay * backoffFactor ** attempt,
+            maxDelay,
           );
 
           return new Promise((resolve, reject) => {
@@ -235,18 +237,18 @@ export const useNetworkErrorHandling = (options: RetryOptions = {}) => {
     if (!networkState.isOnline) {
       return 'Nessuna connessione internet. Modalità offline attiva.';
     }
-    
+
     if (networkState.isConnecting) {
       return 'Connessione in corso...';
     }
-    
+
     if (networkState.hasNetworkError && networkState.lastError) {
       if (networkState.retryCount > 0) {
         return `Errore di rete (tentativo ${networkState.retryCount}/${maxRetries}). Riprovo...`;
       }
       return 'Errore di connessione. Verifica la tua connessione internet.';
     }
-    
+
     return null;
   }, [networkState, maxRetries]);
 

@@ -3,17 +3,17 @@
  * Implements sliding window rate limiting for security
  */
 
-interface RateLimitConfig {
+type RateLimitConfig = {
   windowMs: number;
   maxAttempts: number;
   blockDurationMs: number;
-}
+};
 
-interface RateLimitEntry {
+type RateLimitEntry = {
   attempts: number;
   windowStart: number;
   blockedUntil?: number;
-}
+};
 
 class RateLimiter {
   private store = new Map<string, RateLimitEntry>();
@@ -21,7 +21,7 @@ class RateLimiter {
 
   constructor(config: RateLimitConfig) {
     this.config = config;
-    
+
     // Cleanup old entries every 5 minutes
     setInterval(() => this.cleanup(), 5 * 60 * 1000);
   }
@@ -42,8 +42,8 @@ class RateLimiter {
   }
 
   public async checkLimit(
-    identifier: string, 
-    action: 'email-check' | 'login' | 'signup' | 'oauth'
+    identifier: string,
+    action: 'email-check' | 'login' | 'signup' | 'oauth',
   ): Promise<{ allowed: boolean; remainingAttempts: number; resetTime: number }> {
     const key = this.getKey(identifier, action);
     const now = Date.now();
@@ -78,7 +78,7 @@ class RateLimiter {
     if (entry.attempts > this.config.maxAttempts) {
       entry.blockedUntil = now + this.config.blockDurationMs;
       this.store.set(key, entry);
-      
+
       return {
         allowed: false,
         remainingAttempts: 0,
@@ -122,14 +122,14 @@ export function getClientIdentifier(request: Request): string {
   const forwardedFor = request.headers.get('x-forwarded-for');
   const realIp = request.headers.get('x-real-ip');
   const cfConnectingIp = request.headers.get('cf-connecting-ip');
-  
+
   const ip = cfConnectingIp || realIp || forwardedFor?.split(',')[0] || 'unknown';
-  
+
   // Fallback to user agent hash if no IP
   if (ip === 'unknown') {
     const userAgent = request.headers.get('user-agent') || 'unknown-ua';
     return `ua-${btoa(userAgent).slice(0, 16)}`;
   }
-  
+
   return `ip-${ip}`;
 }

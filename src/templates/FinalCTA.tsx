@@ -24,7 +24,7 @@ import { Button } from '@/components/ui/button';
 
 export const FinalCTA = () => {
   const t = useTranslations('FinalCTA');
-  
+
   return (
     <section className="px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
       <div className="mx-auto max-w-2xl text-center">

@@ -75,9 +75,9 @@ export const PROFESSIONAL_BADGES: Record<string, ProfessionalBadge> = {
     category: 'learning',
     rarity: 'common',
     xpReward: 25,
-    icon: { 
+    icon: {
       type: 'svg',
-      content: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="3" fill="currentColor"/></svg>' 
+      content: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="3" fill="currentColor"/></svg>',
     },
     colors: {
       primary: '#475569',
@@ -101,9 +101,9 @@ export const PROFESSIONAL_BADGES: Record<string, ProfessionalBadge> = {
     category: 'mastery',
     rarity: 'rare',
     xpReward: 50,
-    icon: { 
+    icon: {
       type: 'svg',
-      content: '<svg viewBox="0 0 24 24"><path d="M12 2L15 9L22 9L17 14L19 21L12 17L5 21L7 14L2 9L9 9L12 2Z" fill="currentColor"/></svg>' 
+      content: '<svg viewBox="0 0 24 24"><path d="M12 2L15 9L22 9L17 14L19 21L12 17L5 21L7 14L2 9L9 9L12 2Z" fill="currentColor"/></svg>',
     },
     colors: {
       primary: '#2563EB',
@@ -128,9 +128,9 @@ export const PROFESSIONAL_BADGES: Record<string, ProfessionalBadge> = {
     category: 'consistency',
     rarity: 'epic',
     xpReward: 100,
-    icon: { 
+    icon: {
       type: 'svg',
-      content: '<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" fill="none"/></svg>' 
+      content: '<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" fill="none"/></svg>',
     },
     colors: {
       primary: '#DC2626',
@@ -154,9 +154,9 @@ export const PROFESSIONAL_BADGES: Record<string, ProfessionalBadge> = {
     category: 'achievement',
     rarity: 'rare',
     xpReward: 40,
-    icon: { 
+    icon: {
       type: 'svg',
-      content: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 12L7 8L11 12L21 2" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="7" cy="8" r="2" fill="currentColor"/><circle cx="11" cy="12" r="2" fill="currentColor"/><circle cx="21" cy="2" r="2" fill="currentColor"/></svg>' 
+      content: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 12L7 8L11 12L21 2" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="7" cy="8" r="2" fill="currentColor"/><circle cx="11" cy="12" r="2" fill="currentColor"/><circle cx="21" cy="2" r="2" fill="currentColor"/></svg>',
     },
     colors: {
       primary: '#059669',
@@ -181,9 +181,9 @@ export const PROFESSIONAL_BADGES: Record<string, ProfessionalBadge> = {
     category: 'mastery',
     rarity: 'epic',
     xpReward: 75,
-    icon: { 
+    icon: {
       type: 'svg',
-      content: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="12" cy="12" r="6" stroke="currentColor" stroke-width="1" fill="none"/><circle cx="12" cy="12" r="2" fill="currentColor"/><path d="M12 2V6M12 18V22M2 12H6M18 12H22" stroke="currentColor" stroke-width="1"/></svg>' 
+      content: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="12" cy="12" r="6" stroke="currentColor" stroke-width="1" fill="none"/><circle cx="12" cy="12" r="2" fill="currentColor"/><path d="M12 2V6M12 18V22M2 12H6M18 12H22" stroke="currentColor" stroke-width="1"/></svg>',
     },
     colors: {
       primary: '#7C3AED',
@@ -208,9 +208,9 @@ export const PROFESSIONAL_BADGES: Record<string, ProfessionalBadge> = {
     category: 'milestone',
     rarity: 'legendary',
     xpReward: 200,
-    icon: { 
+    icon: {
       type: 'svg',
-      content: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="6" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/><rect x="9" y="6" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/><rect x="16" y="6" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M8 9H9M15 9H16" stroke="currentColor" stroke-width="2"/><circle cx="5" cy="9" r="1.5" fill="currentColor"/><circle cx="12" cy="9" r="1.5" fill="currentColor"/><circle cx="19" cy="9" r="1.5" fill="currentColor"/></svg>' 
+      content: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="6" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/><rect x="9" y="6" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/><rect x="16" y="6" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M8 9H9M15 9H16" stroke="currentColor" stroke-width="2"/><circle cx="5" cy="9" r="1.5" fill="currentColor"/><circle cx="12" cy="9" r="1.5" fill="currentColor"/><circle cx="19" cy="9" r="1.5" fill="currentColor"/></svg>',
     },
     colors: {
       primary: '#F59E0B',
@@ -235,9 +235,9 @@ export const PROFESSIONAL_BADGES: Record<string, ProfessionalBadge> = {
     category: 'milestone',
     rarity: 'mythic',
     xpReward: 500,
-    icon: { 
+    icon: {
       type: 'svg',
-      content: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L16 8L22 9L17 14L19 21L12 18L5 21L7 14L2 9L8 8L12 2Z" fill="currentColor"/><circle cx="12" cy="12" r="6" stroke="white" stroke-width="1.5" fill="none"/><circle cx="12" cy="12" r="3" stroke="white" stroke-width="1" fill="none"/><circle cx="12" cy="12" r="1" fill="white"/><path d="M12 6V8M12 16V18M6 12H8M16 12H18" stroke="white" stroke-width="1"/></svg>' 
+      content: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L16 8L22 9L17 14L19 21L12 18L5 21L7 14L2 9L8 8L12 2Z" fill="currentColor"/><circle cx="12" cy="12" r="6" stroke="white" stroke-width="1.5" fill="none"/><circle cx="12" cy="12" r="3" stroke="white" stroke-width="1" fill="none"/><circle cx="12" cy="12" r="1" fill="white"/><path d="M12 6V8M12 16V18M6 12H8M16 12H18" stroke="white" stroke-width="1"/></svg>',
     },
     colors: {
       primary: '#1F2937',

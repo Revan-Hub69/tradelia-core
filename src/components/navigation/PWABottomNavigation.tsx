@@ -1,21 +1,22 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
-import { usePathname, Link, useRouter } from '@/libs/i18nNavigation';
-import { cn } from '@/utils/Helpers';
+import { useEffect, useRef, useState } from 'react';
+
+import { LiveRegion, useLiveRegion } from '@/components/accessibility/LiveRegion';
 import { DynamicIcon, type IconName } from '@/components/icons';
 import {
   getVisibleNavigationItems,
-  type NavigationItemId,
   type NavigationItem,
+  type NavigationItemId,
 } from '@/data/navigation.config';
-import { useNavigationState, usePendingAnnouncement } from '@/hooks/useNavigationState';
-import { LiveRegion, useLiveRegion } from '@/components/accessibility/LiveRegion';
 // import { useLongPress, useQuickActions, type QuickAction } from '@/hooks/useLongPress';
 // import { QuickActionsMenu } from './QuickActionsMenu';
-import { useGesturePolicy, useTouchOptimization, useHapticFeedback } from '@/hooks/useGesturePolicy';
+import { useGesturePolicy, useHapticFeedback, useTouchOptimization } from '@/hooks/useGesturePolicy';
+import { useNavigationState, usePendingAnnouncement } from '@/hooks/useNavigationState';
 import { useScrollRestoration } from '@/hooks/useScrollRestoration';
+import { Link, usePathname, useRouter } from '@/libs/i18nNavigation';
+import { cn } from '@/utils/Helpers';
 
 type PWABottomNavigationProps = {
   className?: string;
@@ -126,7 +127,7 @@ export const PWABottomNavigation = ({ className }: PWABottomNavigationProps) => 
         )}
       >
         <div className="mx-auto max-w-screen-xl">
-          <div className="relative nav-height flex items-center justify-around px-2">
+          <div className="nav-height relative flex items-center justify-around px-2">
             {/* Sliding Active Indicator */}
             <div
               className={cn(
@@ -142,7 +143,7 @@ export const PWABottomNavigation = ({ className }: PWABottomNavigationProps) => 
             />
 
             {/* Navigation Items */}
-            <ul 
+            <ul
               className="flex w-full items-center justify-around"
               role="tablist"
               aria-orientation="horizontal"
@@ -153,8 +154,8 @@ export const PWABottomNavigation = ({ className }: PWABottomNavigationProps) => 
                   item={item}
                   index={index}
                   isActive={
-                    pathname === item.href ||
-                    (item.href !== '/dashboard' && pathname.startsWith(item.href))
+                    pathname === item.href
+                    || (item.href !== '/dashboard' && pathname.startsWith(item.href))
                   }
                   onKeyDown={handleKeyDown}
                   onFocus={() => setFocusedIndex(index)}
@@ -261,7 +262,7 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
   //           }),
   //         },
   //       } as React.TouchEvent | React.MouseEvent;
-        
+
   //       openQuickActions(syntheticEvent);
   //       announce(t('Dashboard.quick_actions_opened' as any));
   //     }
@@ -303,7 +304,7 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
             },
           )}
           tabIndex={tabIndex}
-          onKeyDown={(e) => onKeyDown(e, index)}
+          onKeyDown={e => onKeyDown(e, index)}
           onFocus={onFocus}
           onBlur={onBlur}
           onClick={(e) => {
@@ -361,19 +362,19 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
             />
 
             {visualState === 'pending' && (
-              <div className="absolute -top-1 -right-1 size-2 bg-primary rounded-full animate-pulse" />
+              <div className="absolute -right-1 -top-1 size-2 animate-pulse rounded-full bg-primary" />
             )}
 
             {uxState === 'blocked' && (
-              <div className="absolute -top-1 -right-1 size-2 bg-warning rounded-full" />
+              <div className="absolute -right-1 -top-1 size-2 rounded-full bg-warning" />
             )}
 
             {uxState === 'offline' && (
-              <div className="absolute -top-1 -right-1 size-2 bg-destructive rounded-full" />
+              <div className="absolute -right-1 -top-1 size-2 rounded-full bg-destructive" />
             )}
 
             {canNavigate && (
-              <div className="absolute -bottom-1 -right-1 size-1 bg-accent rounded-full opacity-60" />
+              <div className="absolute -bottom-1 -right-1 size-1 rounded-full bg-accent opacity-60" />
             )}
           </div>
 

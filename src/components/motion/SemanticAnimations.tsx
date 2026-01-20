@@ -1,9 +1,9 @@
 /**
  * SEMANTIC ANIMATIONS SYSTEM v2.0 - Enterprise 2026
- * 
+ *
  * Sistema di animazioni semantiche che assegna significato specifico
  * a diversi tipi di transizioni e feedback
- * 
+ *
  * Basato su ricerca UX 2026:
  * - Enter ≠ Exit ≠ Error ≠ Success
  * - Ogni animazione comunica intento e stato
@@ -12,34 +12,36 @@
 
 'use client';
 
-import React, { forwardRef, HTMLAttributes, ReactNode } from 'react';
+import type { HTMLAttributes, ReactNode } from 'react';
+import React, { forwardRef } from 'react';
+
 import { cn } from '../../utils/Helpers';
 
 // Tipi semantici per le animazioni
-export type SemanticType = 
-  | 'enter'      // Elementi che entrano nella vista - welcoming
-  | 'exit'       // Elementi che escono dalla vista - gentle departure  
-  | 'success'    // Feedback positivo - celebration
-  | 'error'      // Feedback di errore - attention without jarring
-  | 'warning'    // Avvisi - cautious attention
-  | 'info'       // Informazioni - neutral presentation
-  | 'loading'    // Stati di caricamento - patient waiting
-  | 'focus'      // Stati di focus - gentle emphasis
-  | 'hover'      // Interazioni hover - anticipatory
-  | 'press'      // Feedback di pressione - immediate response
-  | 'complete'   // Completamento task - achievement
-  | 'progress'   // Progresso in corso - forward momentum;
+export type SemanticType =
+  | 'enter' // Elementi che entrano nella vista - welcoming
+  | 'exit' // Elementi che escono dalla vista - gentle departure
+  | 'success' // Feedback positivo - celebration
+  | 'error' // Feedback di errore - attention without jarring
+  | 'warning' // Avvisi - cautious attention
+  | 'info' // Informazioni - neutral presentation
+  | 'loading' // Stati di caricamento - patient waiting
+  | 'focus' // Stati di focus - gentle emphasis
+  | 'hover' // Interazioni hover - anticipatory
+  | 'press' // Feedback di pressione - immediate response
+  | 'complete' // Completamento task - achievement
+  | 'progress'; // Progresso in corso - forward momentum;
 
-export type AnimationContext = 
+export type AnimationContext =
   | 'navigation' // Navigazione tra pagine/sezioni
-  | 'modal'      // Apertura/chiusura modali
-  | 'form'       // Interazioni form
-  | 'feedback'   // Messaggi di feedback
-  | 'content'    // Contenuto dinamico
-  | 'ui'         // Elementi UI generici;
+  | 'modal' // Apertura/chiusura modali
+  | 'form' // Interazioni form
+  | 'feedback' // Messaggi di feedback
+  | 'content' // Contenuto dinamico
+  | 'ui'; // Elementi UI generici;
 
 // Props per animazioni semantiche
-interface SemanticAnimationProps extends HTMLAttributes<HTMLDivElement> {
+type SemanticAnimationProps = {
   children: ReactNode;
   type: SemanticType;
   context?: AnimationContext;
@@ -47,13 +49,13 @@ interface SemanticAnimationProps extends HTMLAttributes<HTMLDivElement> {
   duration?: 'fast' | 'normal' | 'slow' | number;
   delay?: number;
   disabled?: boolean;
-}
+} & HTMLAttributes<HTMLDivElement>;
 
 /**
  * Componente principale per animazioni semantiche
  */
 export const SemanticAnimation = forwardRef<HTMLDivElement, SemanticAnimationProps>(
-  ({ 
+  ({
     children,
     type,
     context = 'ui',
@@ -65,7 +67,6 @@ export const SemanticAnimation = forwardRef<HTMLDivElement, SemanticAnimationPro
     style,
     ...props
   }, ref) => {
-    
     // Calcola le classi CSS semantiche
     const semanticClasses = cn(
       'semantic-animation',
@@ -74,7 +75,7 @@ export const SemanticAnimation = forwardRef<HTMLDivElement, SemanticAnimationPro
       `semantic-intensity-${intensity}`,
       typeof duration === 'string' && `semantic-duration-${duration}`,
       disabled && 'semantic-disabled',
-      className
+      className,
     );
 
     // Style con durata personalizzata e delay
@@ -94,7 +95,7 @@ export const SemanticAnimation = forwardRef<HTMLDivElement, SemanticAnimationPro
         {children}
       </div>
     );
-  }
+  },
 );
 
 SemanticAnimation.displayName = 'SemanticAnimation';
@@ -109,8 +110,8 @@ export const EnterAnimation: React.FC<{
   context?: AnimationContext;
   className?: string;
 }> = ({ children, context = 'ui', className }) => (
-  <SemanticAnimation 
-    type="enter" 
+  <SemanticAnimation
+    type="enter"
     context={context}
     intensity="normal"
     className={cn('animate-enter', className)}
@@ -125,8 +126,8 @@ export const ExitAnimation: React.FC<{
   context?: AnimationContext;
   className?: string;
 }> = ({ children, context = 'ui', className }) => (
-  <SemanticAnimation 
-    type="exit" 
+  <SemanticAnimation
+    type="exit"
     context={context}
     intensity="normal"
     duration="fast"
@@ -143,8 +144,8 @@ export const SuccessAnimation: React.FC<{
   prominent?: boolean;
   className?: string;
 }> = ({ children, context = 'feedback', prominent = false, className }) => (
-  <SemanticAnimation 
-    type="success" 
+  <SemanticAnimation
+    type="success"
     context={context}
     intensity={prominent ? 'prominent' : 'normal'}
     duration="slow"
@@ -160,8 +161,8 @@ export const ErrorAnimation: React.FC<{
   context?: AnimationContext;
   className?: string;
 }> = ({ children, context = 'feedback', className }) => (
-  <SemanticAnimation 
-    type="error" 
+  <SemanticAnimation
+    type="error"
     context={context}
     intensity="normal"
     className={cn('animate-error', className)}
@@ -176,8 +177,8 @@ export const WarningAnimation: React.FC<{
   context?: AnimationContext;
   className?: string;
 }> = ({ children, context = 'feedback', className }) => (
-  <SemanticAnimation 
-    type="warning" 
+  <SemanticAnimation
+    type="warning"
     context={context}
     intensity="normal"
     className={cn('animate-warning', className)}
@@ -192,8 +193,8 @@ export const LoadingAnimation: React.FC<{
   context?: AnimationContext;
   className?: string;
 }> = ({ children, context = 'ui', className }) => (
-  <SemanticAnimation 
-    type="loading" 
+  <SemanticAnimation
+    type="loading"
     context={context}
     intensity="subtle"
     duration="slow"
@@ -209,8 +210,8 @@ export const CompleteAnimation: React.FC<{
   context?: AnimationContext;
   className?: string;
 }> = ({ children, context = 'feedback', className }) => (
-  <SemanticAnimation 
-    type="complete" 
+  <SemanticAnimation
+    type="complete"
     context={context}
     intensity="prominent"
     duration="slow"
@@ -227,8 +228,8 @@ export const ProgressAnimation: React.FC<{
   context?: AnimationContext;
   className?: string;
 }> = ({ children, context = 'ui', className }) => (
-  <SemanticAnimation 
-    type="progress" 
+  <SemanticAnimation
+    type="progress"
     context={context}
     intensity="subtle"
     className={cn('animate-progress', className)}
@@ -247,7 +248,7 @@ export const useSemanticAnimations = () => {
   // Trigger animazione semantica
   const triggerAnimation = React.useCallback((type: SemanticType) => {
     setCurrentAnimation(type);
-    
+
     // Durate basate sul tipo semantico
     const durations = {
       enter: 300,
@@ -265,7 +266,7 @@ export const useSemanticAnimations = () => {
     };
 
     const duration = durations[type];
-    
+
     setTimeout(() => {
       setCurrentAnimation(null);
     }, duration);
@@ -302,94 +303,94 @@ export const useSemanticAnimations = () => {
 export const semanticAnimationDefinitions = {
   enter: {
     initial: { opacity: 0, y: 20, scale: 0.95 },
-    animate: { 
-      opacity: 1, 
-      y: 0, 
+    animate: {
+      opacity: 1,
+      y: 0,
       scale: 1,
-      transition: { 
-        duration: 0.3, 
-        ease: [0.25, 0.46, 0.45, 0.94] // ease-enter
-      }
-    }
+      transition: {
+        duration: 0.3,
+        ease: [0.25, 0.46, 0.45, 0.94], // ease-enter
+      },
+    },
   },
-  
+
   exit: {
-    exit: { 
-      opacity: 0, 
-      y: -10, 
+    exit: {
+      opacity: 0,
+      y: -10,
       scale: 1.02,
-      transition: { 
-        duration: 0.2, 
-        ease: [0.55, 0.055, 0.675, 0.19] // ease-exit
-      }
-    }
+      transition: {
+        duration: 0.2,
+        ease: [0.55, 0.055, 0.675, 0.19], // ease-exit
+      },
+    },
   },
-  
+
   success: {
     animate: {
       scale: [1, 1.05, 1],
       rotate: [0, 2, 0],
-      transition: { 
-        duration: 0.6, 
+      transition: {
+        duration: 0.6,
         times: [0, 0.3, 1],
-        ease: [0.34, 1.56, 0.64, 1] // ease-tradelia
-      }
-    }
+        ease: [0.34, 1.56, 0.64, 1], // ease-tradelia
+      },
+    },
   },
-  
+
   error: {
     animate: {
       x: [0, -4, 4, -2, 2, 0],
-      transition: { 
-        duration: 0.4, 
-        ease: [0.68, -0.55, 0.265, 1.55] // ease-bounce
-      }
-    }
+      transition: {
+        duration: 0.4,
+        ease: [0.68, -0.55, 0.265, 1.55], // ease-bounce
+      },
+    },
   },
-  
+
   warning: {
     animate: {
       scale: [1, 1.02, 1],
       y: [0, -2, 0],
-      transition: { 
+      transition: {
         duration: 0.35,
-        ease: [0.25, 0.46, 0.45, 0.94] // ease-gentle
-      }
-    }
+        ease: [0.25, 0.46, 0.45, 0.94], // ease-gentle
+      },
+    },
   },
-  
+
   loading: {
     animate: {
       rotate: 360,
-      transition: { 
-        duration: 1.2, 
-        repeat: Infinity, 
-        ease: 'linear' 
-      }
-    }
+      transition: {
+        duration: 1.2,
+        repeat: Infinity,
+        ease: 'linear',
+      },
+    },
   },
-  
+
   complete: {
     animate: {
       scale: [1, 1.1, 1],
       rotate: [0, 5, 0],
       y: [0, -5, 0],
-      transition: { 
+      transition: {
         duration: 0.8,
         times: [0, 0.4, 1],
-        ease: [0.175, 0.885, 0.32, 1.275] // ease-elastic
-      }
-    }
+        ease: [0.175, 0.885, 0.32, 1.275], // ease-elastic
+      },
+    },
   },
-  
+
   progress: {
     animate: {
       x: [0, 10, 0],
-      transition: { 
+      transition: {
         duration: 0.4,
-        ease: [0.25, 0.46, 0.45, 0.94] // ease-gentle
-      }
-    }
+        ease: [0.25, 0.46, 0.45, 0.94], // ease-gentle
+      },
+    },
   },
 } as const;
 
@@ -399,7 +400,7 @@ export const semanticAnimationDefinitions = {
 export const getSemanticAnimation = (type: SemanticType, context?: AnimationContext) => {
   const baseClass = `semantic-${type}`;
   const contextClass = context ? `semantic-context-${context}` : '';
-  
+
   return cn(baseClass, contextClass);
 };
 

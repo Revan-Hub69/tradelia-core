@@ -1,6 +1,6 @@
 'use client';
 
-import { TrendingUp, Percent, AlertTriangle, Lock } from 'lucide-react';
+import { AlertTriangle, Lock, Percent, TrendingUp } from 'lucide-react';
 
 const expansions = [
   {
@@ -76,10 +76,13 @@ export const Expansions = () => {
 
               <div className="mt-4 space-y-1.5 border-t border-border pt-4 text-xs text-muted-foreground">
                 <p>
-                  <span className="text-foreground/70">Prerequisito:</span> {exp.prerequisite}
+                  <span className="text-foreground/70">Prerequisito:</span>
+                  {' '}
+                  {exp.prerequisite}
                 </p>
                 <p>
-                  <span className="text-foreground/70">Rischio:</span>{' '}
+                  <span className="text-foreground/70">Rischio:</span>
+                  {' '}
                   <span className={exp.title === 'Speculazione' ? 'font-medium text-red-500' : ''}>
                     {exp.risk}
                   </span>

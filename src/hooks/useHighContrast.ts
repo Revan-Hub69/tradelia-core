@@ -2,15 +2,15 @@
 
 import { useEffect, useState } from 'react';
 
-interface ContrastSettings {
+type ContrastSettings = {
   isHighContrast: boolean;
   contrastLevel: 'normal' | 'high' | 'maximum';
   reducedMotion: boolean;
-}
+};
 
 /**
  * Hook for high contrast and accessibility support
- * 
+ *
  * Features:
  * - Detects system high contrast preferences
  * - Provides contrast level controls
@@ -69,7 +69,7 @@ export const useHighContrast = () => {
       'contrast-normal',
       'contrast-high',
       'contrast-maximum',
-      'reduced-motion'
+      'reduced-motion',
     );
 
     // Add appropriate classes
@@ -90,7 +90,7 @@ export const useHighContrast = () => {
         'contrast-normal',
         'contrast-high',
         'contrast-maximum',
-        'reduced-motion'
+        'reduced-motion',
       );
     };
   }, [contrastSettings]);

@@ -9,8 +9,9 @@
  * - Context-aware adaptation
  */
 
-import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+
 import {
   CalmInterface,
   EssentialHighlighter,
@@ -63,7 +64,13 @@ const EducationalLesson: React.FC = () => {
                 />
               </div>
               <span className="progress-text">
-                Step {currentStep} of {totalSteps}
+                Step
+                {' '}
+                {currentStep}
+                {' '}
+                of
+                {' '}
+                {totalSteps}
               </span>
             </div>
           </EssentialHighlighter>
@@ -91,7 +98,9 @@ const EducationalLesson: React.FC = () => {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: block * 0.2 }}
                     >
-                      Block {block}
+                      Block
+                      {' '}
+                      {block}
                     </motion.div>
                   ))}
                 </div>
@@ -189,19 +198,21 @@ const EducationalLesson: React.FC = () => {
                 </button>
               )}
 
-              {currentStep < totalSteps ? (
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={() => setCurrentStep(prev => prev + 1)}
-                >
-                  Next: Hash Functions
-                </button>
-              ) : (
-                <button type="button" className="btn btn-success">
-                  Complete Lesson
-                </button>
-              )}
+              {currentStep < totalSteps
+                ? (
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={() => setCurrentStep(prev => prev + 1)}
+                    >
+                      Next: Hash Functions
+                    </button>
+                  )
+                : (
+                    <button type="button" className="btn btn-success">
+                      Complete Lesson
+                    </button>
+                  )}
             </div>
           </EssentialHighlighter>
         </FocusWrapper>
@@ -277,14 +288,16 @@ const EducationalUXExample: React.FC = () => {
             Demonstration of cognitive load reduction, focus modes, and progressive disclosure
             for educational interfaces.
           </p>
-          
+
           <div className="example-controls">
             <button
               type="button"
               className="btn btn-outline"
               onClick={() => setShowTester(!showTester)}
             >
-              {showTester ? 'Hide' : 'Show'} Testing Tools
+              {showTester ? 'Hide' : 'Show'}
+              {' '}
+              Testing Tools
             </button>
           </div>
         </div>

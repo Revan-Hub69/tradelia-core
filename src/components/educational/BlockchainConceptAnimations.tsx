@@ -6,7 +6,8 @@
  */
 
 import React from 'react';
-import type { ConceptAnimation, ConceptComplexity, AnimationType } from './ExplanatoryAnimations';
+
+import type { AnimationType, ConceptAnimation, ConceptComplexity } from './ExplanatoryAnimations';
 
 // ============================================================================
 // BLOCKCHAIN CONCEPT ANIMATIONS
@@ -98,7 +99,7 @@ export const BlockchainConceptAnimations = {
         duration: 1500,
         visual: (
           <div className="genesis-block">
-            <div className="block genesis-block">
+            <div className="genesis-block block">
               <div className="block-number">Blocco #0</div>
               <div className="prev-hash">Prev: 0x000...</div>
               <div className="block-hash">Hash: 0xabc...</div>
@@ -137,7 +138,7 @@ export const BlockchainConceptAnimations = {
             <div className="chain-link">🔗</div>
             <div className="block">Blocco #2</div>
             <div className="chain-link">🔗</div>
-            <div className="block new-block">Blocco #3</div>
+            <div className="new-block block">Blocco #3</div>
           </div>
         ),
       },
@@ -158,7 +159,7 @@ export const BlockchainConceptAnimations = {
               <div className="block">Blocco #3</div>
             </div>
             <div className="tampered-chain">
-              <div className="block tampered-block">Blocco #1*</div>
+              <div className="tampered-block block">Blocco #1*</div>
               <div className="chain-link broken">✗</div>
               <div className="block">Blocco #2</div>
               <div className="chain-link broken">✗</div>

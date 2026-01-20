@@ -1,6 +1,6 @@
 /**
  * EMOTIONAL FEEDBACK SYSTEM - Export Index
- * 
+ *
  * Sistema completo di feedback emotivo enterprise 2026
  * Basato su ricerca UX educativa e best practice da:
  * - Apple Human Interface Guidelines
@@ -11,49 +11,49 @@
 
 // Micro-Moments System
 export {
-  MicroMoment,
-  useMicroMoments,
-  MicroMomentsProvider,
-  LessonCompleteMoment,
-  StreakSavedMoment,
-  XPGainedMoment,
   AchievementMoment,
+  LessonCompleteMoment,
+  MicroMoment,
+  type MicroMomentContext,
+  type MicroMomentIntensity,
+  MicroMomentsProvider,
   MicroMomentTester,
   type MicroMomentType,
-  type MicroMomentIntensity,
-  type MicroMomentContext,
+  StreakSavedMoment,
+  useMicroMoments,
+  XPGainedMoment,
 } from './MicroMoments';
 
 // Reassurance System
 export {
-  ReassuranceMessage,
-  useReassurance,
-  ReassuranceProvider,
   AutoSaveIndicator,
-  ProgressSecurityMessage,
   LearningEncouragement,
-  SafeExplorationMessage,
-  ReassuranceTester,
-  type ReassuranceType,
+  ProgressSecurityMessage,
   type ReassuranceContext,
+  ReassuranceMessage,
+  ReassuranceProvider,
+  ReassuranceTester,
   type ReassuranceTone,
+  type ReassuranceType,
+  SafeExplorationMessage,
+  useReassurance,
 } from './ReassuranceSystem';
 
 // Educational Empty States
 export {
+  CompletedPathState,
+  ConnectionErrorState,
   EducationalEmptyState,
+  type EmptyStateContext,
+  EmptyStateTester,
+  type EmptyStateTone,
+  type EmptyStateType,
   NewUserDashboard,
   NoProgressState,
-  CompletedPathState,
   NoSearchResults,
-  ConnectionErrorState,
-  EmptyStateTester,
-  type EmptyStateType,
-  type EmptyStateTone,
-  type EmptyStateContext,
 } from './EducationalEmptyStates';
 
 // Re-export tutto come default per convenienza
+export { default as EmptyStatesSystem } from './EducationalEmptyStates';
 export { default as MicroMomentsSystem } from './MicroMoments';
 export { default as ReassuranceSystem } from './ReassuranceSystem';
-export { default as EmptyStatesSystem } from './EducationalEmptyStates';

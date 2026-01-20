@@ -1,5 +1,6 @@
-import { cn } from '@/utils/Helpers';
 import React from 'react';
+
+import { cn } from '@/utils/Helpers';
 
 type ProgressDisplayProps = {
   pathName: string;
@@ -31,11 +32,11 @@ export const ProgressDisplay: React.FC<ProgressDisplayProps> = ({
             style={{ width: `${progressPercentage}%` }}
           />
           {/* Shine effect */}
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
+          <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-transparent via-white/20 to-transparent" />
         </div>
 
         {/* Progress Text - Aligned properly */}
-        <div className="flex items-center whitespace-nowrap text-sm text-muted-foreground tabular-nums">
+        <div className="flex items-center whitespace-nowrap text-sm tabular-nums text-muted-foreground">
           <span className="font-semibold text-foreground">{completedLessons}</span>
           <span className="mx-1">/</span>
           <span>{totalLessons}</span>

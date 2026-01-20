@@ -70,13 +70,13 @@ export type LearningMilestone = {
 export const PROFESSIONAL_CERTIFICATIONS: Record<string, ProfessionalCertification> = {
   blockchain_foundations: {
     id: 'blockchain_foundations',
-    name: { 
-      it: 'Certificazione Fondamenti Blockchain', 
-      en: 'Blockchain Foundations Certification' 
+    name: {
+      it: 'Certificazione Fondamenti Blockchain',
+      en: 'Blockchain Foundations Certification',
     },
-    description: { 
-      it: 'Competenza certificata nei principi fondamentali della tecnologia blockchain', 
-      en: 'Certified competency in fundamental blockchain technology principles' 
+    description: {
+      it: 'Competenza certificata nei principi fondamentali della tecnologia blockchain',
+      en: 'Certified competency in fundamental blockchain technology principles',
     },
     type: 'foundation',
     competencyArea: 'blockchain_technology',
@@ -89,22 +89,22 @@ export const PROFESSIONAL_CERTIFICATIONS: Record<string, ProfessionalCertificati
     tradeliaCoinsReward: 50,
     credentialValue: {
       it: 'Dimostra comprensione solida dei concetti blockchain essenziali',
-      en: 'Demonstrates solid understanding of essential blockchain concepts'
+      en: 'Demonstrates solid understanding of essential blockchain concepts',
     },
     unlockMessage: {
       it: '🎓 Certificazione ottenuta: Hai acquisito competenza professionale nei fondamenti blockchain.',
-      en: '🎓 Certification earned: You have acquired professional competency in blockchain foundations.'
+      en: '🎓 Certification earned: You have acquired professional competency in blockchain foundations.',
     },
   },
   crypto_analysis: {
     id: 'crypto_analysis',
-    name: { 
-      it: 'Certificazione Analisi Crypto', 
-      en: 'Crypto Analysis Certification' 
+    name: {
+      it: 'Certificazione Analisi Crypto',
+      en: 'Crypto Analysis Certification',
     },
-    description: { 
-      it: 'Competenza avanzata nell\'analisi e valutazione delle criptovalute', 
-      en: 'Advanced competency in cryptocurrency analysis and evaluation' 
+    description: {
+      it: 'Competenza avanzata nell\'analisi e valutazione delle criptovalute',
+      en: 'Advanced competency in cryptocurrency analysis and evaluation',
     },
     type: 'intermediate',
     competencyArea: 'market_analysis',
@@ -117,22 +117,22 @@ export const PROFESSIONAL_CERTIFICATIONS: Record<string, ProfessionalCertificati
     tradeliaCoinsReward: 100,
     credentialValue: {
       it: 'Capacità di analizzare mercati crypto con metodologie professionali',
-      en: 'Ability to analyze crypto markets with professional methodologies'
+      en: 'Ability to analyze crypto markets with professional methodologies',
     },
     unlockMessage: {
       it: '📊 Certificazione ottenuta: Hai sviluppato competenze analitiche professionali nel settore crypto.',
-      en: '📊 Certification earned: You have developed professional analytical skills in the crypto sector.'
+      en: '📊 Certification earned: You have developed professional analytical skills in the crypto sector.',
     },
   },
   risk_management: {
     id: 'risk_management',
-    name: { 
-      it: 'Certificazione Gestione Rischi', 
-      en: 'Risk Management Certification' 
+    name: {
+      it: 'Certificazione Gestione Rischi',
+      en: 'Risk Management Certification',
     },
-    description: { 
-      it: 'Competenza professionale nella gestione dei rischi negli investimenti crypto', 
-      en: 'Professional competency in crypto investment risk management' 
+    description: {
+      it: 'Competenza professionale nella gestione dei rischi negli investimenti crypto',
+      en: 'Professional competency in crypto investment risk management',
     },
     type: 'advanced',
     competencyArea: 'risk_assessment',
@@ -145,11 +145,11 @@ export const PROFESSIONAL_CERTIFICATIONS: Record<string, ProfessionalCertificati
     tradeliaCoinsReward: 200,
     credentialValue: {
       it: 'Padronanza delle strategie di gestione del rischio per investimenti crypto',
-      en: 'Mastery of risk management strategies for crypto investments'
+      en: 'Mastery of risk management strategies for crypto investments',
     },
     unlockMessage: {
       it: '🛡️ Certificazione ottenuta: Hai acquisito expertise nella gestione professionale dei rischi.',
-      en: '🛡️ Certification earned: You have acquired expertise in professional risk management.'
+      en: '🛡️ Certification earned: You have acquired expertise in professional risk management.',
     },
   },
 };
@@ -304,11 +304,11 @@ export class ProfessionalLearningEngine {
 
     Object.values(PROFESSIONAL_CERTIFICATIONS).forEach((cert) => {
       const { requirements } = cert;
-      const isEligible = 
-        userProgress.lessonsCompleted >= requirements.lessonsCompleted &&
-        userProgress.averageScore >= requirements.minimumScore &&
-        userProgress.practicalApplications >= requirements.practicalApplications &&
-        userProgress.totalTimeInvested >= requirements.timeInvestment;
+      const isEligible
+        = userProgress.lessonsCompleted >= requirements.lessonsCompleted
+          && userProgress.averageScore >= requirements.minimumScore
+          && userProgress.practicalApplications >= requirements.practicalApplications
+          && userProgress.totalTimeInvested >= requirements.timeInvestment;
 
       if (isEligible) {
         eligibleCertifications.push(cert);
@@ -322,23 +322,23 @@ export class ProfessionalLearningEngine {
    * Get user's competency tier
    */
   static getCompetencyTier(competencyScore: number): CompetencyTier {
-    const tier = COMPETENCY_TIERS.find(t => 
-      competencyScore >= t.minCompetencyScore && competencyScore <= t.maxCompetencyScore
+    const tier = COMPETENCY_TIERS.find(t =>
+      competencyScore >= t.minCompetencyScore && competencyScore <= t.maxCompetencyScore,
     );
-    
+
     if (!tier) {
       return COMPETENCY_TIERS[0]!; // Return foundation level as fallback
     }
-    
+
     return tier;
   }
 
   /**
    * Calculate competency progress
    */
-  static getCompetencyProgress(competencyScore: number): { 
-    current: CompetencyTier; 
-    next: CompetencyTier | null; 
+  static getCompetencyProgress(competencyScore: number): {
+    current: CompetencyTier;
+    next: CompetencyTier | null;
     progress: number;
     coinsToNext: number;
   } {
@@ -378,16 +378,16 @@ export class ProfessionalLearningEngine {
     practicalApplicationScore: number;
   }): number {
     const { timeSpent, targetTime, retentionScore, practicalApplicationScore } = params;
-    
+
     // Time efficiency (0.4 weight)
     const timeEfficiency = Math.min(1, targetTime / timeSpent);
-    
+
     // Knowledge retention (0.3 weight)
     const retention = retentionScore / 100;
-    
+
     // Practical application (0.3 weight)
     const application = practicalApplicationScore / 100;
-    
+
     return Math.round((timeEfficiency * 0.4 + retention * 0.3 + application * 0.3) * 100);
   }
 }

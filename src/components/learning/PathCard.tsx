@@ -58,8 +58,16 @@ export function PathCard({
       </CardHeader>
       <CardContent className="mt-auto pt-0">
         <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <span className="tabular-nums">{estimatedHours}{hoursLabel}</span>
-          {isEnrolled && <span className="tabular-nums">{progress}%</span>}
+          <span className="tabular-nums">
+            {estimatedHours}
+            {hoursLabel}
+          </span>
+          {isEnrolled && (
+            <span className="tabular-nums">
+              {progress}
+              %
+            </span>
+          )}
         </div>
         {isEnrolled && (
           <Progress value={progress} className="mt-2" size="sm" />

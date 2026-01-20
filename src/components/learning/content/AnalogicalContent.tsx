@@ -1,37 +1,38 @@
 // Professional Analogical Content - Zero Emoji, Cognitive Design
 // Follows Tradelia Design System v1.1 and cognitive load principles
 
+import { AlertTriangle, ArrowRight, Lightbulb } from 'lucide-react';
+
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { ArrowRight, AlertTriangle, Lightbulb } from 'lucide-react';
 import { cn } from '@/utils/Helpers';
 
-interface MetaphorMapping {
+type MetaphorMapping = {
   from: string;
   to: string;
-}
+};
 
-interface MetaphorData {
+type MetaphorData = {
   title: string;
   description: string;
   mapping: MetaphorMapping[];
   limitations: string[];
-}
+};
 
-interface RepresentationData {
+type RepresentationData = {
   content: {
     metaphor: MetaphorData;
   };
-}
+};
 
-interface AnalogicalContentProps {
+type AnalogicalContentProps = {
   data: RepresentationData;
   className?: string;
-}
+};
 
-export const AnalogicalContent: React.FC<AnalogicalContentProps> = ({ 
-  data, 
-  className 
+export const AnalogicalContent: React.FC<AnalogicalContentProps> = ({
+  data,
+  className,
 }) => {
   const { metaphor } = data.content;
 
@@ -45,12 +46,12 @@ export const AnalogicalContent: React.FC<AnalogicalContentProps> = ({
 
   return (
     <div className={cn('space-y-6', className)}>
-      
+
       {/* Core Metaphor - Primary Focus */}
       <Card className="border-primary/20 bg-primary/5">
         <CardHeader className="pb-4">
           <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 border border-primary/20">
+            <div className="flex size-10 items-center justify-center rounded-lg border border-primary/20 bg-primary/10">
               <Lightbulb className="size-5 text-primary" strokeWidth={2} />
             </div>
             <div>
@@ -83,16 +84,16 @@ export const AnalogicalContent: React.FC<AnalogicalContentProps> = ({
         <CardContent className="pt-0">
           <div className="space-y-3">
             {metaphor.mapping.map((item: MetaphorMapping, index: number) => (
-              <div 
-                key={index} 
-                className="flex items-center gap-4 p-3 rounded-lg bg-muted/30 border border-border/50"
+              <div
+                key={index}
+                className="flex items-center gap-4 rounded-lg border border-border/50 bg-muted/30 p-3"
               >
                 <div className="flex-1">
                   <span className="text-sm font-medium text-foreground">
                     {item.from}
                   </span>
                 </div>
-                <ArrowRight className="size-4 text-muted-foreground flex-shrink-0" strokeWidth={2} />
+                <ArrowRight className="size-4 shrink-0 text-muted-foreground" strokeWidth={2} />
                 <div className="flex-1">
                   <span className="text-sm text-muted-foreground">
                     {item.to}
@@ -108,7 +109,7 @@ export const AnalogicalContent: React.FC<AnalogicalContentProps> = ({
       <Alert className="border-warning/30 bg-warning/10">
         <AlertTriangle className="size-5 text-warning" strokeWidth={2} />
         <AlertDescription>
-          <h4 className="text-base font-semibold text-warning mb-3">
+          <h4 className="mb-3 text-base font-semibold text-warning">
             Limitazioni dell'Analogia
           </h4>
           <div className="space-y-2">
@@ -118,7 +119,7 @@ export const AnalogicalContent: React.FC<AnalogicalContentProps> = ({
               </p>
             ))}
           </div>
-          <p className="text-xs text-warning/80 mt-3 font-medium">
+          <p className="mt-3 text-xs font-medium text-warning/80">
             Ricorda: le analogie aiutano la comprensione iniziale ma non sostituiscono la conoscenza tecnica precisa.
           </p>
         </AlertDescription>

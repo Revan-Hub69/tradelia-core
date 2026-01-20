@@ -6,11 +6,11 @@ import type { ProgressData } from '@/components/dashboard/types';
 
 /**
  * useProgressUpdates - Real-time progress synchronization hook
- * 
+ *
  * Requirements: 3.2, 6.4
  * - Sincronizzare con lesson completion events
  * - Aggiornare visual indicators immediatamente
- * 
+ *
  * Features:
  * - Real-time progress updates from lesson completions
  * - Optimistic UI updates for immediate feedback
@@ -49,21 +49,21 @@ export const useProgressUpdates = (userId: string): ProgressUpdateHook => {
       const mockProgressData: ProgressData = {
         overallProgress: 45,
         pathProgress: {
-          'fondamenti': {
+          fondamenti: {
             pathId: 'fondamenti',
             completionRate: 75,
             currentModule: 2,
             timeSpent: 180, // 3 hours
             lastAccessed: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
           },
-          'investitore': {
+          investitore: {
             pathId: 'investitore',
             completionRate: 30,
             currentModule: 1,
             timeSpent: 90, // 1.5 hours
             lastAccessed: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1 day ago
           },
-          'trader': {
+          trader: {
             pathId: 'trader',
             completionRate: 15,
             currentModule: 0,
@@ -90,7 +90,7 @@ export const useProgressUpdates = (userId: string): ProgressUpdateHook => {
     const initializeProgress = async () => {
       setIsLoading(true);
       setError(null);
-      
+
       try {
         const data = await fetchProgressData();
         setProgressData(data);
@@ -106,7 +106,9 @@ export const useProgressUpdates = (userId: string): ProgressUpdateHook => {
 
   // Update progress when lesson is completed
   const updateProgress = useCallback(async (event: LessonCompletionEvent) => {
-    if (!progressData) return;
+    if (!progressData) {
+      return;
+    }
 
     setIsUpdating(true);
     setError(null);
@@ -114,7 +116,7 @@ export const useProgressUpdates = (userId: string): ProgressUpdateHook => {
     try {
       // Optimistic update - immediately update UI
       const updatedProgressData = { ...progressData };
-      
+
       // Update path progress
       const pathProgress = updatedProgressData.pathProgress[event.pathId];
       if (pathProgress) {
@@ -122,7 +124,7 @@ export const useProgressUpdates = (userId: string): ProgressUpdateHook => {
         pathProgress.completionRate = Math.min(100, pathProgress.completionRate + 5);
         pathProgress.timeSpent += event.completionTime;
         pathProgress.lastAccessed = event.timestamp;
-        
+
         // Update current module if needed
         if (pathProgress.completionRate > (pathProgress.currentModule + 1) * 25) {
           pathProgress.currentModule += 1;
@@ -153,13 +155,12 @@ export const useProgressUpdates = (userId: string): ProgressUpdateHook => {
 
       // Sync with backend (in real implementation)
       // await syncProgressWithBackend(event, updatedProgressData);
-      
+
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 500));
-
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update progress');
-      
+
       // Revert optimistic update on error
       const originalData = await fetchProgressData();
       setProgressData(originalData);
@@ -172,7 +173,7 @@ export const useProgressUpdates = (userId: string): ProgressUpdateHook => {
   const refreshProgress = useCallback(async () => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const data = await fetchProgressData();
       setProgressData(data);
@@ -191,7 +192,7 @@ export const useProgressUpdates = (userId: string): ProgressUpdateHook => {
 
     // Listen for custom lesson completion events
     window.addEventListener('lessonCompleted', handleLessonCompletion as EventListener);
-    
+
     return () => {
       window.removeEventListener('lessonCompleted', handleLessonCompletion as EventListener);
     };
@@ -223,7 +224,7 @@ export const useProgressTrigger = () => {
       completionTime,
       timestamp: new Date(),
     };
-    
+
     triggerLessonCompletion(event);
   }, []);
 

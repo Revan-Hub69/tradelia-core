@@ -1,26 +1,27 @@
 'use client';
 
-import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { AlertTriangle, RefreshCw, Home, Bug } from 'lucide-react';
+import { AlertTriangle, Bug, Home, RefreshCw } from 'lucide-react';
+import type { ErrorInfo, ReactNode } from 'react';
+import React, { Component } from 'react';
 
 import { Button } from '@/components/ui/button';
 
-interface Props {
+type Props = {
   children: ReactNode;
   fallback?: ReactNode;
   onError?: (error: Error, errorInfo: ErrorInfo) => void;
-}
+};
 
-interface State {
+type State = {
   hasError: boolean;
   error: Error | null;
   errorInfo: ErrorInfo | null;
   retryCount: number;
-}
+};
 
 /**
  * DashboardErrorBoundary - Error boundary for graceful failure handling
- * 
+ *
  * Features:
  * - Graceful error handling with fallback UI
  * - Retry functionality with exponential backoff
@@ -79,14 +80,14 @@ export class DashboardErrorBoundary extends Component<Props, State> {
   handleRetry = () => {
     const { retryCount } = this.state;
     const maxRetries = 3;
-    
+
     if (retryCount >= maxRetries) {
       return;
     }
 
     // Exponential backoff: 1s, 2s, 4s
-    const delay = Math.pow(2, retryCount) * 1000;
-    
+    const delay = 2 ** retryCount * 1000;
+
     const timeout = setTimeout(() => {
       this.setState({
         hasError: false,
@@ -139,13 +140,13 @@ export class DashboardErrorBoundary extends Component<Props, State> {
             {/* Error Details (Development only) */}
             {process.env.NODE_ENV === 'development' && error && (
               <div className="mb-4 rounded-lg bg-red-50 p-3 dark:bg-red-950">
-                <div className="flex items-center gap-2 mb-2">
+                <div className="mb-2 flex items-center gap-2">
                   <Bug className="size-4 text-red-600 dark:text-red-400" />
                   <span className="text-sm font-medium text-red-800 dark:text-red-200">
                     Dettagli Errore (Dev)
                   </span>
                 </div>
-                <pre className="text-xs text-red-700 dark:text-red-300 overflow-x-auto">
+                <pre className="overflow-x-auto text-xs text-red-700 dark:text-red-300">
                   {error.toString()}
                 </pre>
               </div>
@@ -155,7 +156,13 @@ export class DashboardErrorBoundary extends Component<Props, State> {
             {retryCount > 0 && (
               <div className="mb-4 rounded-lg bg-blue-50 p-3 dark:bg-blue-950">
                 <p className="text-sm text-blue-800 dark:text-blue-200">
-                  Tentativo {retryCount} di {maxRetries}
+                  Tentativo
+                  {' '}
+                  {retryCount}
+                  {' '}
+                  di
+                  {' '}
+                  {maxRetries}
                 </p>
               </div>
             )}
@@ -213,7 +220,7 @@ export class DashboardErrorBoundary extends Component<Props, State> {
 export const useDashboardErrorHandler = () => {
   const handleError = React.useCallback((error: Error, errorInfo?: ErrorInfo) => {
     console.error('Dashboard error:', error, errorInfo);
-    
+
     // Report to monitoring service
     if (typeof window !== 'undefined' && (window as any).gtag) {
       (window as any).gtag('event', 'exception', {

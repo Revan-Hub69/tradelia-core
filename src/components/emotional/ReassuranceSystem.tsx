@@ -1,6 +1,6 @@
 /**
  * SOFT REASSURANCE SYSTEM v2.0 - Enterprise 2026
- * 
+ *
  * Sistema di messaggi rassicuranti per contesti educativi e finanziari
  * Basato su ricerca UX 2026 e psicologia educativa:
  * - Riduzione dell'ansia in contesti crypto/finanziari
@@ -12,37 +12,38 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+
 import { cn } from '../../utils/Helpers';
 import { EnterAnimation } from '../motion/SemanticAnimations';
 
 // Tipi per i messaggi di rassicurazione
-export type ReassuranceType = 
-  | 'auto_save'           // Salvataggio automatico
-  | 'safe_action'         // Azione sicura completata
-  | 'no_action_needed'    // Nessuna azione richiesta
-  | 'progress_secure'     // Progressi al sicuro
-  | 'learning_on_track'   // Apprendimento in linea
-  | 'data_protected'      // Dati protetti
-  | 'no_rush'            // Nessuna fretta
-  | 'safe_to_explore'    // Sicuro esplorare
-  | 'backup_complete'    // Backup completato
+export type ReassuranceType =
+  | 'auto_save' // Salvataggio automatico
+  | 'safe_action' // Azione sicura completata
+  | 'no_action_needed' // Nessuna azione richiesta
+  | 'progress_secure' // Progressi al sicuro
+  | 'learning_on_track' // Apprendimento in linea
+  | 'data_protected' // Dati protetti
+  | 'no_rush' // Nessuna fretta
+  | 'safe_to_explore' // Sicuro esplorare
+  | 'backup_complete' // Backup completato
   | 'connection_stable'; // Connessione stabile
 
-export type ReassuranceContext = 
-  | 'financial'    // Contesto finanziario/crypto
-  | 'educational'  // Contesto educativo
-  | 'technical'    // Contesto tecnico
-  | 'personal'     // Dati personali
-  | 'progress';    // Progressi di apprendimento
+export type ReassuranceContext =
+  | 'financial' // Contesto finanziario/crypto
+  | 'educational' // Contesto educativo
+  | 'technical' // Contesto tecnico
+  | 'personal' // Dati personali
+  | 'progress'; // Progressi di apprendimento
 
-export type ReassuranceTone = 
-  | 'gentle'       // Tono gentile e rassicurante
-  | 'confident'    // Tono sicuro e professionale
-  | 'supportive'   // Tono di supporto
+export type ReassuranceTone =
+  | 'gentle' // Tono gentile e rassicurante
+  | 'confident' // Tono sicuro e professionale
+  | 'supportive' // Tono di supporto
   | 'informative'; // Tono informativo
 
 // Props per il componente di rassicurazione
-interface ReassuranceMessageProps {
+type ReassuranceMessageProps = {
   type: ReassuranceType;
   context?: ReassuranceContext;
   tone?: ReassuranceTone;
@@ -51,7 +52,7 @@ interface ReassuranceMessageProps {
   persistent?: boolean;
   onDismiss?: () => void;
   className?: string;
-}
+};
 
 /**
  * Configurazione dei messaggi di rassicurazione
@@ -62,7 +63,7 @@ const reassuranceConfig = {
     icon: '💾',
     message: {
       it: 'Salvato automaticamente',
-      en: 'Saved automatically'
+      en: 'Saved automatically',
     },
     tone: 'gentle' as ReassuranceTone,
     duration: 2000,
@@ -72,7 +73,7 @@ const reassuranceConfig = {
     icon: '✅',
     message: {
       it: 'Sei a posto',
-      en: 'You\'re all set'
+      en: 'You\'re all set',
     },
     tone: 'confident' as ReassuranceTone,
     duration: 1500,
@@ -82,7 +83,7 @@ const reassuranceConfig = {
     icon: '😌',
     message: {
       it: 'Nessuna azione richiesta',
-      en: 'No action needed'
+      en: 'No action needed',
     },
     tone: 'gentle' as ReassuranceTone,
     duration: 2500,
@@ -92,7 +93,7 @@ const reassuranceConfig = {
     icon: '🔒',
     message: {
       it: 'I tuoi progressi sono al sicuro',
-      en: 'Your progress is secure'
+      en: 'Your progress is secure',
     },
     tone: 'confident' as ReassuranceTone,
     duration: 2200,
@@ -102,7 +103,7 @@ const reassuranceConfig = {
     icon: '📚',
     message: {
       it: 'Stai andando bene',
-      en: 'You\'re doing great'
+      en: 'You\'re doing great',
     },
     tone: 'supportive' as ReassuranceTone,
     duration: 2000,
@@ -112,7 +113,7 @@ const reassuranceConfig = {
     icon: '🛡️',
     message: {
       it: 'I tuoi dati sono protetti',
-      en: 'Your data is protected'
+      en: 'Your data is protected',
     },
     tone: 'confident' as ReassuranceTone,
     duration: 2500,
@@ -122,7 +123,7 @@ const reassuranceConfig = {
     icon: '⏰',
     message: {
       it: 'Prenditi il tempo che ti serve',
-      en: 'Take your time'
+      en: 'Take your time',
     },
     tone: 'gentle' as ReassuranceTone,
     duration: 3000,
@@ -132,7 +133,7 @@ const reassuranceConfig = {
     icon: '🧭',
     message: {
       it: 'Sicuro esplorare',
-      en: 'Safe to explore'
+      en: 'Safe to explore',
     },
     tone: 'supportive' as ReassuranceTone,
     duration: 2000,
@@ -142,7 +143,7 @@ const reassuranceConfig = {
     icon: '☁️',
     message: {
       it: 'Backup completato',
-      en: 'Backup complete'
+      en: 'Backup complete',
     },
     tone: 'informative' as ReassuranceTone,
     duration: 1800,
@@ -152,7 +153,7 @@ const reassuranceConfig = {
     icon: '📶',
     message: {
       it: 'Connessione stabile',
-      en: 'Connection stable'
+      en: 'Connection stable',
     },
     tone: 'informative' as ReassuranceTone,
     duration: 1500,
@@ -174,11 +175,11 @@ export const ReassuranceMessage: React.FC<ReassuranceMessageProps> = ({
 }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [locale, setLocale] = useState<'it' | 'en'>('it');
-  
+
   const config = reassuranceConfig[type];
   const finalTone = tone || config.tone;
   const finalDuration = duration || config.duration;
-  
+
   // Detect locale (simplified - in real app would use next-intl)
   useEffect(() => {
     const detectedLocale = navigator.language.startsWith('it') ? 'it' : 'en';
@@ -198,7 +199,9 @@ export const ReassuranceMessage: React.FC<ReassuranceMessageProps> = ({
     return undefined;
   }, [persistent, finalDuration, onDismiss]);
 
-  if (!isVisible) return null;
+  if (!isVisible) {
+    return null;
+  }
 
   const message = customMessage || config.message[locale];
 
@@ -207,7 +210,7 @@ export const ReassuranceMessage: React.FC<ReassuranceMessageProps> = ({
     'inline-flex items-center gap-2 px-3 py-2 rounded-lg',
     'glass-surface border backdrop-blur-sm',
     'text-sm font-medium',
-    
+
     // Color theming
     config.color === 'green' && 'bg-green-50/80 border-green-200/50 text-green-800 dark:bg-green-950/30 dark:border-green-800/50 dark:text-green-200',
     config.color === 'emerald' && 'bg-emerald-50/80 border-emerald-200/50 text-emerald-800 dark:bg-emerald-950/30 dark:border-emerald-800/50 dark:text-emerald-200',
@@ -218,20 +221,20 @@ export const ReassuranceMessage: React.FC<ReassuranceMessageProps> = ({
     config.color === 'amber' && 'bg-amber-50/80 border-amber-200/50 text-amber-800 dark:bg-amber-950/30 dark:border-amber-800/50 dark:text-amber-200',
     config.color === 'teal' && 'bg-teal-50/80 border-teal-200/50 text-teal-800 dark:bg-teal-950/30 dark:border-teal-800/50 dark:text-teal-200',
     config.color === 'sky' && 'bg-sky-50/80 border-sky-200/50 text-sky-800 dark:bg-sky-950/30 dark:border-sky-800/50 dark:text-sky-200',
-    
+
     // Tone variations
     finalTone === 'gentle' && 'shadow-sm',
     finalTone === 'confident' && 'shadow-md font-semibold',
     finalTone === 'supportive' && 'shadow-sm',
     finalTone === 'informative' && 'shadow-sm opacity-90',
-    
+
     className,
   );
 
   return (
     <EnterAnimation context="feedback">
       <div className={containerClasses}>
-        <span className="text-base flex-shrink-0">{config.icon}</span>
+        <span className="shrink-0 text-base">{config.icon}</span>
         <span>{message}</span>
         {persistent && (
           <button
@@ -239,7 +242,7 @@ export const ReassuranceMessage: React.FC<ReassuranceMessageProps> = ({
               setIsVisible(false);
               setTimeout(() => onDismiss?.(), 300);
             }}
-            className="ml-2 text-current/60 hover:text-current/80 transition-colors"
+            className="text-current/60 hover:text-current/80 ml-2 transition-colors"
             aria-label="Dismiss"
           >
             ×
@@ -270,7 +273,7 @@ export const useReassurance = () => {
       tone?: ReassuranceTone;
       customMessage?: string;
       persistent?: boolean;
-    } = {}
+    } = {},
   ) => {
     const id = `${type}-${Date.now()}`;
     const newMessage = {
@@ -318,8 +321,10 @@ export const AutoSaveIndicator: React.FC<{
   visible: boolean;
   context?: ReassuranceContext;
 }> = ({ visible, context = 'educational' }) => {
-  if (!visible) return null;
-  
+  if (!visible) {
+    return null;
+  }
+
   return (
     <ReassuranceMessage
       type="auto_save"
@@ -401,39 +406,39 @@ export const ReassuranceTester: React.FC = () => {
   const testMessages = [
     {
       label: 'Auto Save',
-      action: () => showReassurance('auto_save', { context: 'educational' })
+      action: () => showReassurance('auto_save', { context: 'educational' }),
     },
     {
       label: 'Sei a posto',
-      action: () => showReassurance('safe_action', { context: 'financial' })
+      action: () => showReassurance('safe_action', { context: 'financial' }),
     },
     {
       label: 'Progressi sicuri',
-      action: () => showReassurance('progress_secure', { context: 'progress' })
+      action: () => showReassurance('progress_secure', { context: 'progress' }),
     },
     {
       label: 'Stai andando bene',
-      action: () => showReassurance('learning_on_track', { context: 'educational' })
+      action: () => showReassurance('learning_on_track', { context: 'educational' }),
     },
     {
       label: 'Nessuna fretta',
-      action: () => showReassurance('no_rush', { context: 'educational' })
+      action: () => showReassurance('no_rush', { context: 'educational' }),
     },
     {
       label: 'Sicuro esplorare',
-      action: () => showReassurance('safe_to_explore', { context: 'educational' })
+      action: () => showReassurance('safe_to_explore', { context: 'educational' }),
     },
   ];
 
   return (
-    <div className="space-y-4 p-6 rounded-lg border bg-card">
+    <div className="space-y-4 rounded-lg border bg-card p-6">
       <h3 className="text-lg font-semibold">Test Reassurance Messages</h3>
       <div className="grid grid-cols-2 gap-2">
         {testMessages.map((test, index) => (
           <button
             key={index}
             onClick={test.action}
-            className="px-3 py-2 bg-secondary text-secondary-foreground rounded text-sm hover:bg-secondary/80 transition-colors"
+            className="rounded bg-secondary px-3 py-2 text-sm text-secondary-foreground transition-colors hover:bg-secondary/80"
           >
             {test.label}
           </button>

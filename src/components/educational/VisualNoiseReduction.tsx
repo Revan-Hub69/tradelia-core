@@ -1,6 +1,6 @@
 /**
  * VISUAL NOISE REDUCTION SYSTEM - Educational UX 2026
- * 
+ *
  * Sistema di riduzione del rumore visivo per migliorare la concentrazione
  * Basato su ricerca cognitiva e neuro-adaptive design patterns:
  * - Cognitive Load Theory applicata alle interfacce
@@ -9,8 +9,9 @@
  * - Context-aware interface adaptation
  */
 
-import React, { useEffect, useState, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import React, { useCallback, useEffect, useState } from 'react';
+
 import { useFocusMode } from './FocusMode';
 
 // ============================================================================
@@ -20,20 +21,20 @@ import { useFocusMode } from './FocusMode';
 export type NoiseLevel = 'none' | 'minimal' | 'moderate' | 'aggressive';
 export type NoiseType = 'visual' | 'motion' | 'color' | 'typography' | 'spacing';
 
-export interface NoiseReductionConfig {
+export type NoiseReductionConfig = {
   level: NoiseLevel;
   types: NoiseType[];
   preserveEssential: boolean;
   adaptToContext: boolean;
   respectAccessibility: boolean;
-}
+};
 
-export interface VisualElement {
+export type VisualElement = {
   id: string;
   type: 'decoration' | 'functional' | 'essential';
   priority: 'low' | 'medium' | 'high' | 'critical';
   context: string[];
-}
+};
 
 // ============================================================================
 // VISUAL NOISE REDUCTION HOOK
@@ -68,19 +69,19 @@ export const useVisualNoiseReduction = () => {
 
     const getNoiseTypes = (): NoiseType[] => {
       const types: NoiseType[] = [];
-      
+
       if (focusState.adaptiveSettings.reduceAnimations) {
         types.push('motion');
       }
-      
+
       if (focusState.adaptiveSettings.dimSecondary) {
         types.push('visual', 'color');
       }
-      
+
       if (focusState.adaptiveSettings.hideNonEssential) {
         types.push('visual', 'spacing', 'typography');
       }
-      
+
       return types;
     };
 
@@ -97,7 +98,7 @@ export const useVisualNoiseReduction = () => {
   useEffect(() => {
     const applyNoiseReduction = () => {
       const root = document.documentElement;
-      
+
       // Set CSS custom properties for noise reduction
       root.style.setProperty('--noise-level', noiseConfig.level);
       root.style.setProperty('--noise-visual', noiseConfig.types.includes('visual') ? '1' : '0');
@@ -105,7 +106,7 @@ export const useVisualNoiseReduction = () => {
       root.style.setProperty('--noise-color', noiseConfig.types.includes('color') ? '1' : '0');
       root.style.setProperty('--noise-typography', noiseConfig.types.includes('typography') ? '1' : '0');
       root.style.setProperty('--noise-spacing', noiseConfig.types.includes('spacing') ? '1' : '0');
-      
+
       // Apply noise reduction class
       if (noiseConfig.level !== 'none') {
         root.classList.add('noise-reduction-active');
@@ -127,16 +128,24 @@ export const useVisualNoiseReduction = () => {
   }, [noiseConfig]);
 
   const shouldReduceElement = useCallback((element: VisualElement): boolean => {
-    if (noiseConfig.level === 'none') return false;
-    if (element.priority === 'critical') return false;
-    if (noiseConfig.preserveEssential && element.type === 'essential') return false;
-    
+    if (noiseConfig.level === 'none') {
+      return false;
+    }
+    if (element.priority === 'critical') {
+      return false;
+    }
+    if (noiseConfig.preserveEssential && element.type === 'essential') {
+      return false;
+    }
+
     // Context-aware reduction
     if (noiseConfig.adaptToContext && focusState.isActive) {
       const isRelevantToContext = element.context.includes(focusState.context);
-      if (isRelevantToContext && element.priority === 'high') return false;
+      if (isRelevantToContext && element.priority === 'high') {
+        return false;
+      }
     }
-    
+
     // Apply reduction based on level and element type
     switch (noiseConfig.level) {
       case 'minimal':
@@ -161,12 +170,12 @@ export const useVisualNoiseReduction = () => {
 // NOISE REDUCTION WRAPPER COMPONENT
 // ============================================================================
 
-interface NoiseReductionWrapperProps {
+type NoiseReductionWrapperProps = {
   element: VisualElement;
   children: React.ReactNode;
   className?: string;
   fallback?: React.ReactNode;
-}
+};
 
 export const NoiseReductionWrapper: React.FC<NoiseReductionWrapperProps> = ({
   element,
@@ -176,12 +185,14 @@ export const NoiseReductionWrapper: React.FC<NoiseReductionWrapperProps> = ({
 }) => {
   const { shouldReduceElement } = useVisualNoiseReduction();
   const { focusState } = useFocusMode();
-  
+
   const isReduced = shouldReduceElement(element);
-  
+
   const getReductionLevel = () => {
-    if (!isReduced) return 1;
-    
+    if (!isReduced) {
+      return 1;
+    }
+
     switch (element.priority) {
       case 'low': return 0.1;
       case 'medium': return 0.3;
@@ -192,8 +203,10 @@ export const NoiseReductionWrapper: React.FC<NoiseReductionWrapperProps> = ({
   };
 
   const getBlurLevel = () => {
-    if (!isReduced) return 0;
-    
+    if (!isReduced) {
+      return 0;
+    }
+
     switch (element.type) {
       case 'decoration': return 2;
       case 'functional': return 1;
@@ -204,40 +217,42 @@ export const NoiseReductionWrapper: React.FC<NoiseReductionWrapperProps> = ({
 
   return (
     <AnimatePresence mode="wait">
-      {!isReduced || !fallback ? (
-        <motion.div
-          key="full-element"
-          className={`noise-reduction-wrapper ${className}`}
-          data-element-type={element.type}
-          data-element-priority={element.priority}
-          data-noise-reduced={isReduced}
-          animate={{
-            opacity: getReductionLevel(),
-            filter: `blur(${getBlurLevel()}px)`,
-            scale: isReduced ? 0.98 : 1,
-          }}
-          transition={{
-            duration: focusState.adaptiveSettings.reduceAnimations ? 0.1 : 0.3,
-            ease: 'easeOut',
-          }}
-        >
-          {children}
-        </motion.div>
-      ) : (
-        <motion.div
-          key="fallback-element"
-          className={`noise-reduction-fallback ${className}`}
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          transition={{
-            duration: 0.2,
-            ease: 'easeOut',
-          }}
-        >
-          {fallback}
-        </motion.div>
-      )}
+      {!isReduced || !fallback
+        ? (
+            <motion.div
+              key="full-element"
+              className={`noise-reduction-wrapper ${className}`}
+              data-element-type={element.type}
+              data-element-priority={element.priority}
+              data-noise-reduced={isReduced}
+              animate={{
+                opacity: getReductionLevel(),
+                filter: `blur(${getBlurLevel()}px)`,
+                scale: isReduced ? 0.98 : 1,
+              }}
+              transition={{
+                duration: focusState.adaptiveSettings.reduceAnimations ? 0.1 : 0.3,
+                ease: 'easeOut',
+              }}
+            >
+              {children}
+            </motion.div>
+          )
+        : (
+            <motion.div
+              key="fallback-element"
+              className={`noise-reduction-fallback ${className}`}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{
+                duration: 0.2,
+                ease: 'easeOut',
+              }}
+            >
+              {fallback}
+            </motion.div>
+          )}
     </AnimatePresence>
   );
 };
@@ -246,11 +261,11 @@ export const NoiseReductionWrapper: React.FC<NoiseReductionWrapperProps> = ({
 // CALM INTERFACE COMPONENT
 // ============================================================================
 
-interface CalmInterfaceProps {
+type CalmInterfaceProps = {
   children: React.ReactNode;
   intensity?: 'subtle' | 'moderate' | 'strong';
   className?: string;
-}
+};
 
 export const CalmInterface: React.FC<CalmInterfaceProps> = ({
   children,
@@ -312,11 +327,11 @@ export const CalmInterface: React.FC<CalmInterfaceProps> = ({
 // BREATHING SPACE COMPONENT
 // ============================================================================
 
-interface BreathingSpaceProps {
+type BreathingSpaceProps = {
   size?: 'small' | 'medium' | 'large';
   adaptive?: boolean;
   className?: string;
-}
+};
 
 export const BreathingSpace: React.FC<BreathingSpaceProps> = ({
   size = 'medium',
@@ -324,7 +339,7 @@ export const BreathingSpace: React.FC<BreathingSpaceProps> = ({
   className = '',
 }) => {
   const { focusState } = useFocusMode();
-  
+
   const getSpacing = () => {
     const baseSpacing = {
       small: 1,
@@ -332,7 +347,9 @@ export const BreathingSpace: React.FC<BreathingSpaceProps> = ({
       large: 3,
     }[size];
 
-    if (!adaptive || !focusState.isActive) return `${baseSpacing}rem`;
+    if (!adaptive || !focusState.isActive) {
+      return `${baseSpacing}rem`;
+    }
 
     const focusMultiplier = {
       minimal: 1.2,
@@ -364,11 +381,11 @@ export const BreathingSpace: React.FC<BreathingSpaceProps> = ({
 // ESSENTIAL CONTENT HIGHLIGHTER
 // ============================================================================
 
-interface EssentialHighlighterProps {
+type EssentialHighlighterProps = {
   children: React.ReactNode;
   priority: 'low' | 'medium' | 'high' | 'critical';
   className?: string;
-}
+};
 
 export const EssentialHighlighter: React.FC<EssentialHighlighterProps> = ({
   children,
@@ -376,10 +393,12 @@ export const EssentialHighlighter: React.FC<EssentialHighlighterProps> = ({
   className = '',
 }) => {
   const { focusState } = useFocusMode();
-  
+
   const getHighlightIntensity = () => {
-    if (!focusState.isActive) return 0;
-    
+    if (!focusState.isActive) {
+      return 0;
+    }
+
     const priorityMultiplier = {
       low: 0,
       medium: 0.2,
@@ -435,12 +454,24 @@ export const NoiseReductionTester: React.FC = () => {
   return (
     <div className="noise-reduction-tester">
       <h3>Visual Noise Reduction Tester</h3>
-      
+
       <div className="tester-status">
-        <p>Focus Active: {focusState.isActive ? 'Yes' : 'No'}</p>
-        <p>Focus Level: {focusState.level}</p>
-        <p>Noise Level: {noiseConfig.level}</p>
-        <p>Noise Types: {noiseConfig.types.join(', ') || 'None'}</p>
+        <p>
+          Focus Active:
+          {focusState.isActive ? 'Yes' : 'No'}
+        </p>
+        <p>
+          Focus Level:
+          {focusState.level}
+        </p>
+        <p>
+          Noise Level:
+          {noiseConfig.level}
+        </p>
+        <p>
+          Noise Types:
+          {noiseConfig.types.join(', ') || 'None'}
+        </p>
       </div>
 
       <div className="test-elements">
@@ -449,13 +480,27 @@ export const NoiseReductionTester: React.FC = () => {
             key={element.id}
             element={element}
             className="test-element"
-            fallback={<div className="test-fallback">Simplified: {element.id}</div>}
+            fallback={(
+              <div className="test-fallback">
+                Simplified:
+                {element.id}
+              </div>
+            )}
           >
             <div className={`test-card ${element.type} ${element.priority}`}>
               <h4>{element.id}</h4>
-              <p>Type: {element.type}</p>
-              <p>Priority: {element.priority}</p>
-              <p>Context: {element.context.join(', ')}</p>
+              <p>
+                Type:
+                {element.type}
+              </p>
+              <p>
+                Priority:
+                {element.priority}
+              </p>
+              <p>
+                Context:
+                {element.context.join(', ')}
+              </p>
             </div>
           </NoiseReductionWrapper>
         ))}

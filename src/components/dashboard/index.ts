@@ -2,14 +2,14 @@
 // Modular learning system components following glassmorphism design
 
 export { DashboardLayout } from './DashboardLayout';
-export { SimpleDashboardHeader } from './SimpleDashboardHeader';
-export { LearningPathsSection } from './LearningPathsSection';
-export { LearningPathCard } from './LearningPathCard';
-export { PremiumBanner, UpgradePrompt, isPremiumRequired, canAccessPath, shouldShowUpgradePrompt } from './PremiumAccessControl';
-export { ProgressTracker } from './ProgressTracker';
 export { GamificationPanel } from './GamificationPanel';
-export { SettingsPanel } from './SettingsPanel';
+export { LearningPathCard } from './LearningPathCard';
+export { LearningPathsSection } from './LearningPathsSection';
 export { MobileNavigation } from './MobileNavigation';
+export { canAccessPath, isPremiumRequired, PremiumBanner, shouldShowUpgradePrompt, UpgradePrompt } from './PremiumAccessControl';
+export { ProgressTracker } from './ProgressTracker';
+export { SettingsPanel } from './SettingsPanel';
+export { SimpleDashboardHeader } from './SimpleDashboardHeader';
 
 // Types
 export type * from './types';

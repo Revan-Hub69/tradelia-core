@@ -5,7 +5,8 @@ import React from 'react';
 import { Card } from '@/components/ui/card';
 import { FadeIn, SlideReveal } from '@/components/ui/scroll-animations';
 import { useLessonCompletion } from '@/hooks/useLessonCompletion';
-import { ProfessionalGamificationEngine, LearningApproach } from '@/libs/gamification';
+import type { LearningApproach } from '@/libs/gamification';
+import { ProfessionalGamificationEngine } from '@/libs/gamification';
 
 import { LessonFooter } from './LessonFooter';
 import { LessonHeader } from './LessonHeader';
@@ -69,7 +70,7 @@ export const CryptoLesson0Clean: React.FC = () => {
       const baseXP = 50;
       const targetTime = 300; // 5 minutes target
       const quizScore = 100; // Assume perfect for lesson 0
-      
+
       // Calculate XP with professional system
       const { totalXP } = ProfessionalGamificationEngine.calculateLessonXP({
         baseXP,
@@ -78,12 +79,12 @@ export const CryptoLesson0Clean: React.FC = () => {
         quizScore,
         approachesUsed: approachesUsed as LearningApproach[],
         isFirstCompletion: true,
-        currentStreak: 0 // Will be updated by backend
+        currentStreak: 0, // Will be updated by backend
       });
-      
+
       // Generate professional badges
       const badges = [];
-      
+
       // Crypto Pioneer badge (always awarded for first lesson)
       badges.push({
         id: 'crypto_pioneer',
@@ -92,7 +93,7 @@ export const CryptoLesson0Clean: React.FC = () => {
         icon: '🎯',
         rarity: 'common',
       });
-      
+
       // Cognitive Architect badge (if used multiple approaches)
       if (approachesUsed.length >= 3) {
         badges.push({
@@ -103,7 +104,7 @@ export const CryptoLesson0Clean: React.FC = () => {
           rarity: 'rare',
         });
       }
-      
+
       // Velocity Learner badge (if completed quickly)
       if (timeSpent < targetTime) {
         badges.push({
@@ -171,7 +172,7 @@ export const CryptoLesson0Clean: React.FC = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
                 </svg>
               </div>
-              <h2 className="text-xl font-bold mb-4">La Situazione</h2>
+              <h2 className="mb-4 text-xl font-bold">La Situazione</h2>
             </div>
 
             <div className="grid gap-6 md:grid-cols-2">
@@ -238,8 +239,8 @@ export const CryptoLesson0Clean: React.FC = () => {
 
             {/* La Domanda Provocatoria */}
             <div className="rounded-xl border border-accent/20 bg-accent/5 p-6 text-center">
-              <h3 className="text-lg font-bold mb-2">La Domanda</h3>
-              <p className="text-base leading-relaxed mb-6">
+              <h3 className="mb-2 text-lg font-bold">La Domanda</h3>
+              <p className="mb-6 text-base leading-relaxed">
                 Alice vuole mandare €100 a Bob in Giappone.
                 <br />
                 Come può Bitcoin essere
@@ -248,7 +249,7 @@ export const CryptoLesson0Clean: React.FC = () => {
                 {' '}
                 di una banca?
                 <br />
-                <span className="text-accent font-semibold">Cosa c'è dietro questa "magia"?</span>
+                <span className="font-semibold text-accent">Cosa c'è dietro questa "magia"?</span>
               </p>
             </div>
 
@@ -385,10 +386,10 @@ export const CryptoLesson0Clean: React.FC = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h3 className="text-lg font-semibold mb-4">
+              <h3 className="mb-4 text-lg font-semibold">
                 Torniamo al problema di Alice
               </h3>
-              <p className="text-base leading-relaxed mb-6">
+              <p className="mb-6 text-base leading-relaxed">
                 Alice vuole mandare €100 a Bob in Giappone.
                 <br />
                 Ora che conosci come funziona Bitcoin, quale di questi è il motivo principale
@@ -404,7 +405,7 @@ export const CryptoLesson0Clean: React.FC = () => {
                   correct: false,
                 },
                 {
-                  id: 'b', 
+                  id: 'b',
                   text: 'Bitcoin elimina gli intermediari e la verifica è automatica',
                   correct: true,
                 },
@@ -418,7 +419,7 @@ export const CryptoLesson0Clean: React.FC = () => {
                   text: 'Bitcoin è più nuovo e tecnologicamente avanzato',
                   correct: false,
                 },
-              ].map((option) => (
+              ].map(option => (
                 <button
                   key={option.id}
                   type="button"
@@ -442,8 +443,8 @@ export const CryptoLesson0Clean: React.FC = () => {
                   </svg>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-primary mb-1">Ricorda i 3 approcci:</h4>
-                  <div className="text-sm text-primary/80 space-y-1">
+                  <h4 className="mb-1 font-semibold text-primary">Ricorda i 3 approcci:</h4>
+                  <div className="space-y-1 text-sm text-primary/80">
                     <div>
                       <strong>Analogia:</strong>
                       {' '}
@@ -506,11 +507,11 @@ export const CryptoLesson0Clean: React.FC = () => {
           const progressData = {
             lessonId: 'lesson-0',
             currentStep,
-            completedSteps: Array.from({length: currentStep}, (_, i) => i),
-            timestamp: new Date().toISOString()
+            completedSteps: Array.from({ length: currentStep }, (_, i) => i),
+            timestamp: new Date().toISOString(),
           };
           localStorage.setItem('lesson-0-progress', JSON.stringify(progressData));
-          
+
           // Return to lessons overview (contextual return)
           window.location.href = '/lessons';
         }}

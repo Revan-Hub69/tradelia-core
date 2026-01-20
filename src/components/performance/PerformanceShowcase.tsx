@@ -9,9 +9,10 @@
  * - Screen reader support
  */
 
-import React, { useState, useCallback } from 'react';
-import { usePerformanceOptimization } from '../../hooks/usePerformanceOptimization';
+import React, { useCallback, useState } from 'react';
+
 import { useAccessibility } from '../../hooks/useAccessibility';
+import { usePerformanceOptimization } from '../../hooks/usePerformanceOptimization';
 import {
   PerformanceOptimizedAnimation,
   PerformanceOptimizedButton,
@@ -49,7 +50,7 @@ export const PerformanceShowcase: React.FC = () => {
       animationCount: prev.animationCount + 1,
       lastAction: action,
     }));
-    
+
     announce(`${action} executed. Animation ${shouldAnimate() ? 'enabled' : 'disabled'} based on performance settings.`);
   }, [announce, shouldAnimate]);
 
@@ -57,13 +58,13 @@ export const PerformanceShowcase: React.FC = () => {
   const animationsEnabled = performanceConfig.enableAnimations;
 
   return (
-    <div className="performance-showcase p-8 space-y-8">
+    <div className="performance-showcase space-y-8 p-8">
       {/* Header */}
       <div className="showcase-header">
         <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
           Performance & Accessibility System v2.0
         </h2>
-        <p className="text-lg text-gray-600 dark:text-gray-400 mt-2">
+        <p className="mt-2 text-lg text-gray-600 dark:text-gray-400">
           Sistema completo di ottimizzazione performance e accessibilità WCAG 2.1 AA
         </p>
       </div>
@@ -83,11 +84,11 @@ export const PerformanceShowcase: React.FC = () => {
 
       {/* Performance Status */}
       <section id="performance-status" className="performance-status">
-        <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">
+        <h3 className="mb-4 text-xl font-semibold text-gray-800 dark:text-gray-200">
           Current Performance Status
         </h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
           <PerformanceOptimizedCard
             animationPriority="low"
             enableHover={shouldAnimate('low')}
@@ -95,11 +96,15 @@ export const PerformanceShowcase: React.FC = () => {
           >
             <div className="space-y-2">
               <div className={`text-2xl font-bold ${
-                performanceLevel === 'enhanced' ? 'text-green-600' :
-                performanceLevel === 'standard' ? 'text-blue-600' :
-                performanceLevel === 'reduced' ? 'text-yellow-600' :
-                'text-red-600'
-              }`}>
+                performanceLevel === 'enhanced'
+                  ? 'text-green-600'
+                  : performanceLevel === 'standard'
+                    ? 'text-blue-600'
+                    : performanceLevel === 'reduced'
+                      ? 'text-yellow-600'
+                      : 'text-red-600'
+              }`}
+              >
                 {performanceLevel.toUpperCase()}
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-400">
@@ -131,7 +136,8 @@ export const PerformanceShowcase: React.FC = () => {
             <div className="space-y-2">
               <div className={`text-2xl font-bold ${
                 deviceCapabilities.supportsHardwareAcceleration ? 'text-green-600' : 'text-red-600'
-              }`}>
+              }`}
+              >
                 {deviceCapabilities.supportsHardwareAcceleration ? 'GPU' : 'CPU'}
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-400">
@@ -147,7 +153,8 @@ export const PerformanceShowcase: React.FC = () => {
           >
             <div className="space-y-2">
               <div className="text-2xl font-bold text-blue-600">
-                {getAnimationDuration(300)}ms
+                {getAnimationDuration(300)}
+                ms
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-400">
                 Animation Duration
@@ -159,11 +166,11 @@ export const PerformanceShowcase: React.FC = () => {
 
       {/* Demo Controls */}
       <section id="demo-controls" className="demo-controls">
-        <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">
+        <h3 className="mb-4 text-xl font-semibold text-gray-800 dark:text-gray-200">
           Interactive Demo
         </h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+
+        <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
           <PerformanceOptimizedButton
             variant="primary"
             animationPriority="high"
@@ -172,7 +179,7 @@ export const PerformanceShowcase: React.FC = () => {
           >
             Primary Action
           </PerformanceOptimizedButton>
-          
+
           <PerformanceOptimizedButton
             variant="secondary"
             animationPriority="medium"
@@ -181,7 +188,7 @@ export const PerformanceShowcase: React.FC = () => {
           >
             Secondary Action
           </PerformanceOptimizedButton>
-          
+
           <PerformanceOptimizedButton
             variant="ghost"
             animationPriority="low"
@@ -193,13 +200,17 @@ export const PerformanceShowcase: React.FC = () => {
         </div>
 
         {/* Demo State Display */}
-        <div className="demo-state bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+        <div className="demo-state rounded-lg bg-gray-50 p-4 dark:bg-gray-900">
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <strong>Actions Performed:</strong> {demoState.animationCount}
+              <strong>Actions Performed:</strong>
+              {' '}
+              {demoState.animationCount}
             </div>
             <div>
-              <strong>Last Action:</strong> {demoState.lastAction || 'None'}
+              <strong>Last Action:</strong>
+              {' '}
+              {demoState.lastAction || 'None'}
             </div>
           </div>
         </div>
@@ -207,19 +218,19 @@ export const PerformanceShowcase: React.FC = () => {
 
       {/* Animation Examples */}
       <section className="animation-examples">
-        <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">
+        <h3 className="mb-4 text-xl font-semibold text-gray-800 dark:text-gray-200">
           Animation Examples
         </h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           <PerformanceOptimizedAnimation
             type="signature-press"
             priority="high"
-            className="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer"
+            className="cursor-pointer rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800"
             fallbackClassName="bg-gray-100 dark:bg-gray-700"
           >
             <div className="text-center">
-              <div className="text-lg font-semibold mb-2">Signature Press</div>
+              <div className="mb-2 text-lg font-semibold">Signature Press</div>
               <div className="text-sm text-gray-600 dark:text-gray-400">
                 Click to see press feedback
               </div>
@@ -229,11 +240,11 @@ export const PerformanceShowcase: React.FC = () => {
           <PerformanceOptimizedAnimation
             type="signature-hover"
             priority="medium"
-            className="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+            className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800"
             fallbackClassName="bg-gray-100 dark:bg-gray-700"
           >
             <div className="text-center">
-              <div className="text-lg font-semibold mb-2">Signature Hover</div>
+              <div className="mb-2 text-lg font-semibold">Signature Hover</div>
               <div className="text-sm text-gray-600 dark:text-gray-400">
                 Hover to see lift effect
               </div>
@@ -243,11 +254,11 @@ export const PerformanceShowcase: React.FC = () => {
           <PerformanceOptimizedAnimation
             type="signature-shimmer"
             priority="low"
-            className="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+            className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800"
             fallbackClassName="bg-gray-100 dark:bg-gray-700"
           >
             <div className="text-center">
-              <div className="text-lg font-semibold mb-2">Signature Shimmer</div>
+              <div className="mb-2 text-lg font-semibold">Signature Shimmer</div>
               <div className="text-sm text-gray-600 dark:text-gray-400">
                 Shimmer loading effect
               </div>
@@ -258,14 +269,14 @@ export const PerformanceShowcase: React.FC = () => {
 
       {/* Technical Details */}
       <section id="technical-details" className="technical-details">
-        <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">
+        <h3 className="mb-4 text-xl font-semibold text-gray-800 dark:text-gray-200">
           Technical Details
         </h3>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           {/* Device Capabilities */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-            <h4 className="text-lg font-semibold mb-4">Device Capabilities</h4>
+          <div className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
+            <h4 className="mb-4 text-lg font-semibold">Device Capabilities</h4>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span>Mobile Device:</span>
@@ -288,10 +299,13 @@ export const PerformanceShowcase: React.FC = () => {
               <div className="flex justify-between">
                 <span>Memory Level:</span>
                 <span className={`${
-                  deviceCapabilities.memoryLevel === 'high' ? 'text-green-600' :
-                  deviceCapabilities.memoryLevel === 'medium' ? 'text-yellow-600' :
-                  'text-red-600'
-                }`}>
+                  deviceCapabilities.memoryLevel === 'high'
+                    ? 'text-green-600'
+                    : deviceCapabilities.memoryLevel === 'medium'
+                      ? 'text-yellow-600'
+                      : 'text-red-600'
+                }`}
+                >
                   {deviceCapabilities.memoryLevel}
                 </span>
               </div>
@@ -299,8 +313,8 @@ export const PerformanceShowcase: React.FC = () => {
           </div>
 
           {/* Accessibility Status */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-            <h4 className="text-lg font-semibold mb-4">Accessibility Status</h4>
+          <div className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
+            <h4 className="mb-4 text-lg font-semibold">Accessibility Status</h4>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span>Keyboard Navigation:</span>
@@ -331,17 +345,21 @@ export const PerformanceShowcase: React.FC = () => {
 
           {/* Battery Status */}
           {batteryStatus && (
-            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-              <h4 className="text-lg font-semibold mb-4">Battery Status</h4>
+            <div className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
+              <h4 className="mb-4 text-lg font-semibold">Battery Status</h4>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span>Level:</span>
                   <span className={`${
-                    batteryStatus.level > 0.5 ? 'text-green-600' :
-                    batteryStatus.level > 0.2 ? 'text-yellow-600' :
-                    'text-red-600'
-                  }`}>
-                    {Math.round(batteryStatus.level * 100)}%
+                    batteryStatus.level > 0.5
+                      ? 'text-green-600'
+                      : batteryStatus.level > 0.2
+                        ? 'text-yellow-600'
+                        : 'text-red-600'
+                  }`}
+                  >
+                    {Math.round(batteryStatus.level * 100)}
+                    %
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -355,16 +373,19 @@ export const PerformanceShowcase: React.FC = () => {
           )}
 
           {/* Network Quality */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-            <h4 className="text-lg font-semibold mb-4">Network Quality</h4>
+          <div className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
+            <h4 className="mb-4 text-lg font-semibold">Network Quality</h4>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span>Connection:</span>
                 <span className={`${
-                  networkQuality === 'fast' ? 'text-green-600' :
-                  networkQuality === 'medium' ? 'text-yellow-600' :
-                  'text-red-600'
-                }`}>
+                  networkQuality === 'fast'
+                    ? 'text-green-600'
+                    : networkQuality === 'medium'
+                      ? 'text-yellow-600'
+                      : 'text-red-600'
+                }`}
+                >
                   {networkQuality}
                 </span>
               </div>

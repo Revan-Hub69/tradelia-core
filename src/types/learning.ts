@@ -3,7 +3,7 @@
 
 export type ApproachType = 'analogical' | 'procedural' | 'conceptual';
 
-export interface LessonContent {
+export type LessonContent = {
   id: string;
   title: string;
   subtitle: string;
@@ -15,9 +15,9 @@ export interface LessonContent {
     conceptual: ApproachContent;
   };
   quiz: QuizQuestion[];
-}
+};
 
-export interface ApproachContent {
+export type ApproachContent = {
   id: string;
   title: string;
   description: string;
@@ -27,9 +27,9 @@ export interface ApproachContent {
     keyTakeaways: string[];
     interactiveElements?: InteractiveElement[];
   };
-}
+};
 
-export interface ContentSection {
+export type ContentSection = {
   id: string;
   type: 'text' | 'highlight' | 'example' | 'warning' | 'visual';
   content: string;
@@ -38,25 +38,25 @@ export interface ContentSection {
     icon?: string;
     emphasis?: boolean;
   };
-}
+};
 
-export interface InteractiveElement {
+export type InteractiveElement = {
   id: string;
   type: 'drag-drop' | 'click-reveal' | 'step-by-step' | 'comparison';
   prompt: string;
   feedback: string;
-}
+};
 
-export interface QuizQuestion {
+export type QuizQuestion = {
   id: string;
   question: string;
   options: string[];
   correctAnswer: number;
   explanation: string;
   approach: ApproachType; // which approach this tests
-}
+};
 
-export interface UserProgress {
+export type UserProgress = {
   currentStreak: number;
   longestStreak: number;
   totalXP: number;
@@ -66,19 +66,19 @@ export interface UserProgress {
   lastActivity: Date;
   badges: Badge[];
   totalStudyTime?: number;
-}
+};
 
-export interface Badge {
+export type Badge = {
   id: string;
   name: string;
   description: string;
   icon: string;
   unlockedAt: Date;
   rarity: 'common' | 'rare' | 'epic' | 'legendary';
-}
+};
 
 // Learning Analytics
-export interface LessonAnalytics {
+export type LessonAnalytics = {
   lessonId: string;
   userId?: string;
   startTime: Date;
@@ -88,4 +88,4 @@ export interface LessonAnalytics {
   quizScore: number;
   completed: boolean;
   feedbackGiven?: string;
-}
+};

@@ -2,9 +2,10 @@
 
 import React from 'react';
 
-import type { DashboardState } from './types';
-import { MobileNavigation } from './MobileNavigation';
 import { useDashboardSwipeNavigation } from '@/hooks/useSwipeNavigation';
+
+import { MobileNavigation } from './MobileNavigation';
+import type { DashboardState } from './types';
 
 type DashboardLayoutProps = {
   children: React.ReactNode;

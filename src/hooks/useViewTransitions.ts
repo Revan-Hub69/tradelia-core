@@ -1,14 +1,15 @@
 /*
  * VIEW TRANSITIONS API - Enterprise 2026
- * 
+ *
  * Smooth page transitions using native browser API
  * Fallback graceful per browser non supportati
  */
 
 'use client';
 
-import { useRouter } from '@/libs/i18nNavigation';
 import { useCallback } from 'react';
+
+import { useRouter } from '@/libs/i18nNavigation';
 
 export type ViewTransitionOptions = {
   duration?: number;

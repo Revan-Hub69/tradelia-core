@@ -254,7 +254,7 @@ Roadmap completa per portare Tradelia dal 70% al 95% di enterprise readiness att
   - Apply to lesson completion, achievement unlocks
   - _Requirements: 2.2_
 
-- [ ] 13.2 Create signature component
+- [x] 13.2 Create signature component
   - Design unique card/pill/indicator that's instantly Tradelia
   - Use across all key interface moments
   - _Requirements: 2.2_
@@ -264,7 +264,7 @@ Roadmap completa per portare Tradelia dal 70% al 95% di enterprise readiness att
   - Create calm UX that reduces stimuli intelligently
   - _Requirements: 6.2, 5.2_
 
-- [ ] 14.1 Create haptic-like visual feedback
+- [x] 14.1 Create haptic-like visual feedback
   - Simulate tactile feedback through visual micro-animations
   - Add to all key interaction points
   - _Requirements: 6.2_

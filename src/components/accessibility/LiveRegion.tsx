@@ -1,6 +1,6 @@
 /*
  * LIVE REGION - Enterprise Screen Reader Support 2026
- * 
+ *
  * Announcements intelligenti per screen reader
  * Evita spam e gestisce priorità
  */
@@ -9,12 +9,12 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 
-export interface LiveRegionProps {
+export type LiveRegionProps = {
   message?: string;
   priority?: 'polite' | 'assertive';
   clearDelay?: number;
   className?: string;
-}
+};
 
 export const LiveRegion: React.FC<LiveRegionProps> = ({
   message = '',
@@ -26,7 +26,9 @@ export const LiveRegion: React.FC<LiveRegionProps> = ({
   const timeoutRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
-    if (!message) return;
+    if (!message) {
+      return;
+    }
 
     // Clear previous timeout
     if (timeoutRef.current) {

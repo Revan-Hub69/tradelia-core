@@ -1,8 +1,8 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import { useState } from 'react';
 
 type TradeliaCoinDisplayProps = {
   totalCoins: number;
@@ -12,16 +12,16 @@ type TradeliaCoinDisplayProps = {
   recentEarnings?: Array<{ amount: number; reason: string; timestamp: Date }>;
 };
 
-export const TradeliaCoinDisplay = ({ 
-  totalCoins, 
-  showDetails = true, 
+export const TradeliaCoinDisplay = ({
+  totalCoins,
+  showDetails = true,
   size = 'md',
   animated = true,
   recentEarnings = [],
 }: TradeliaCoinDisplayProps) => {
   const [showEarnings, setShowEarnings] = useState(false);
   const t = useTranslations('Learning');
-  
+
   // Responsive classes
   const sizeClasses = {
     sm: 'text-sm',
@@ -39,12 +39,12 @@ export const TradeliaCoinDisplay = ({
   const CoinIcon = ({ className }: { className?: string }) => (
     <motion.div
       className={`${className} flex items-center justify-center`}
-      animate={{ 
+      animate={{
         rotateY: [0, 360],
       }}
-      transition={{ 
-        duration: 4, 
-        repeat: Infinity, 
+      transition={{
+        duration: 4,
+        repeat: Infinity,
         ease: 'linear',
         repeatDelay: 2,
       }}
@@ -52,7 +52,7 @@ export const TradeliaCoinDisplay = ({
       <svg viewBox="0 0 24 24" className="size-full text-blue-600" fill="currentColor">
         <circle cx="12" cy="12" r="10" fill="currentColor" />
         <circle cx="12" cy="12" r="8" fill="white" />
-        <text x="12" y="16" textAnchor="middle" className="text-xs font-bold fill-blue-600">T</text>
+        <text x="12" y="16" textAnchor="middle" className="fill-blue-600 text-xs font-bold">T</text>
       </svg>
     </motion.div>
   );
@@ -60,14 +60,14 @@ export const TradeliaCoinDisplay = ({
   return (
     <div className="space-y-3">
       {/* Main Coin Display */}
-      <motion.div 
+      <motion.div
         className="flex items-center justify-center gap-2 sm:gap-3"
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.1 }}
       >
         <CoinIcon className={iconSizes[size]} />
-        
+
         <motion.div
           className="flex items-baseline gap-1"
           key={totalCoins} // Re-animate when coins change
@@ -86,8 +86,8 @@ export const TradeliaCoinDisplay = ({
 
       {/* Coin Value Information */}
       {showDetails && (
-        <motion.div 
-          className="text-center space-y-2"
+        <motion.div
+          className="space-y-2 text-center"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
@@ -95,20 +95,32 @@ export const TradeliaCoinDisplay = ({
           <p className="text-xs text-muted-foreground">
             {t('coins_redeemable_for_discounts')}
           </p>
-          
+
           {/* Redemption Examples */}
           <div className="flex flex-wrap justify-center gap-2 text-xs">
-            <motion.span 
-              className="px-2 py-1 bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 rounded-md"
+            <motion.span
+              className="rounded-md bg-blue-50 px-2 py-1 text-blue-700 dark:bg-blue-950/30 dark:text-blue-300"
               whileHover={{ scale: 1.05 }}
             >
-              100 {t('coins')} = 10% {t('discount')}
+              100
+              {' '}
+              {t('coins')}
+              {' '}
+              = 10%
+              {' '}
+              {t('discount')}
             </motion.span>
-            <motion.span 
-              className="px-2 py-1 bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-300 rounded-md"
+            <motion.span
+              className="rounded-md bg-green-50 px-2 py-1 text-green-700 dark:bg-green-950/30 dark:text-green-300"
               whileHover={{ scale: 1.05 }}
             >
-              500 {t('coins')} = {t('premium_tool_access')}
+              500
+              {' '}
+              {t('coins')}
+              {' '}
+              =
+              {' '}
+              {t('premium_tool_access')}
             </motion.span>
           </div>
         </motion.div>
@@ -116,7 +128,7 @@ export const TradeliaCoinDisplay = ({
 
       {/* Recent Earnings */}
       {recentEarnings.length > 0 && (
-        <motion.div 
+        <motion.div
           className="space-y-2"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -125,7 +137,7 @@ export const TradeliaCoinDisplay = ({
           <button
             type="button"
             onClick={() => setShowEarnings(!showEarnings)}
-            className="w-full text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center justify-center gap-1"
+            className="flex w-full items-center justify-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
           >
             {t('recent_earnings')}
             <motion.span
@@ -139,7 +151,7 @@ export const TradeliaCoinDisplay = ({
           <AnimatePresence>
             {showEarnings && (
               <motion.div
-                className="space-y-1 p-3 bg-muted/30 rounded-lg border border-border/50"
+                className="space-y-1 rounded-lg border border-border/50 bg-muted/30 p-3"
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
@@ -154,9 +166,10 @@ export const TradeliaCoinDisplay = ({
                     transition={{ delay: index * 0.1 }}
                   >
                     <span className="text-muted-foreground">{earning.reason}</span>
-                    <span className="text-blue-600 font-semibold flex items-center gap-1">
+                    <span className="flex items-center gap-1 font-semibold text-blue-600">
                       <CoinIcon className="size-3" />
-                      +{earning.amount}
+                      +
+                      {earning.amount}
                     </span>
                   </motion.div>
                 ))}
@@ -176,17 +189,17 @@ type CoinEarningAnimationProps = {
   celebration?: boolean;
 };
 
-export const CoinEarningAnimation = ({ 
-  amount, 
-  bonuses = [], 
+export const CoinEarningAnimation = ({
+  amount,
+  bonuses = [],
   onComplete,
   celebration = false,
 }: CoinEarningAnimationProps) => {
   const t = useTranslations('Learning');
-  
+
   return (
     <motion.div
-      className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none"
+      className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -202,13 +215,13 @@ export const CoinEarningAnimation = ({
       >
         {/* Professional glow */}
         <motion.div
-          className="absolute inset-0 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl blur-xl opacity-40"
+          className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 opacity-40 blur-xl"
           animate={{ scale: [1, 1.1, 1] }}
           transition={{ duration: 1, repeat: Infinity }}
         />
 
         {/* Main Container */}
-        <div className="relative bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 sm:px-8 py-4 sm:py-6 rounded-2xl shadow-2xl border border-blue-400/30">
+        <div className="relative rounded-2xl border border-blue-400/30 bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-4 text-white shadow-2xl sm:px-8 sm:py-6">
           <motion.div
             className="text-center"
             initial={{ opacity: 0 }}
@@ -217,8 +230,8 @@ export const CoinEarningAnimation = ({
           >
             {/* Coin Amount */}
             <motion.div
-              className="flex items-center justify-center gap-3 mb-2"
-              animate={{ 
+              className="mb-2 flex items-center justify-center gap-3"
+              animate={{
                 scale: [1, 1.05, 1],
               }}
               transition={{ duration: 0.8, delay: 0.3 }}
@@ -231,52 +244,60 @@ export const CoinEarningAnimation = ({
                 <svg viewBox="0 0 24 24" className="size-full text-white" fill="currentColor">
                   <circle cx="12" cy="12" r="10" fill="currentColor" />
                   <circle cx="12" cy="12" r="8" fill="rgba(59, 130, 246, 0.8)" />
-                  <text x="12" y="16" textAnchor="middle" className="text-xs font-bold fill-white">T</text>
+                  <text x="12" y="16" textAnchor="middle" className="fill-white text-xs font-bold">T</text>
                 </svg>
               </motion.div>
-              
-              <div className="text-2xl sm:text-3xl font-bold">
-                +{amount} {t('tradelia_coins')}
+
+              <div className="text-2xl font-bold sm:text-3xl">
+                +
+                {amount}
+                {' '}
+                {t('tradelia_coins')}
               </div>
             </motion.div>
-            
+
             {/* Professional message */}
             {celebration && (
               <motion.div
-                className="text-base sm:text-lg font-semibold mb-3"
+                className="mb-3 text-base font-semibold sm:text-lg"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
               >
-                {t('coins_earned')}!
+                {t('coins_earned')}
+                !
               </motion.div>
             )}
 
             {/* Bonuses */}
             {bonuses.length > 0 && (
               <motion.div
-                className="text-sm space-y-1 bg-white/10 rounded-lg p-3 backdrop-blur-sm"
+                className="space-y-1 rounded-lg bg-white/10 p-3 text-sm backdrop-blur-sm"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.7 }}
               >
-                <div className="font-semibold mb-2">{t('earning_breakdown')}:</div>
+                <div className="mb-2 font-semibold">
+                  {t('earning_breakdown')}
+                  :
+                </div>
                 {bonuses.map((bonus, index) => (
-                  <motion.div 
-                    key={index} 
-                    className="flex justify-between items-center"
+                  <motion.div
+                    key={index}
+                    className="flex items-center justify-between"
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.8 + index * 0.1 }}
                   >
                     <span className="text-white/90">{bonus.reason}</span>
-                    <span className="font-bold text-white flex items-center gap-1">
+                    <span className="flex items-center gap-1 font-bold text-white">
                       <svg viewBox="0 0 24 24" className="size-3 text-white" fill="currentColor">
                         <circle cx="12" cy="12" r="10" fill="currentColor" />
                         <circle cx="12" cy="12" r="8" fill="rgba(59, 130, 246, 0.8)" />
-                        <text x="12" y="16" textAnchor="middle" className="text-xs font-bold fill-white">T</text>
+                        <text x="12" y="16" textAnchor="middle" className="fill-white text-xs font-bold">T</text>
                       </svg>
-                      +{bonus.amount}
+                      +
+                      {bonus.amount}
                     </span>
                   </motion.div>
                 ))}
@@ -290,7 +311,7 @@ export const CoinEarningAnimation = ({
               {[...Array(4)].map((_, i) => (
                 <motion.div
                   key={i}
-                  className="absolute size-2 bg-white rounded-full"
+                  className="absolute size-2 rounded-full bg-white"
                   style={{
                     left: `${25 + i * 20}%`,
                     top: `${20 + (i % 2) * 60}%`,

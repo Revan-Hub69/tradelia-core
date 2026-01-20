@@ -14,11 +14,11 @@ export const SemanticLoadingStatesShowcase: React.FC = () => {
       <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
         Semantic Loading States System v2.0
       </h2>
-      <p className="text-lg text-gray-600 dark:text-gray-400 mt-2">
+      <p className="mt-2 text-lg text-gray-600 dark:text-gray-400">
         Sistema di loading states semantici context-aware basato su Microsoft Fluent 2 Design System
       </p>
-      <div className="mt-8 p-6 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
-        <h3 className="text-lg font-semibold text-yellow-800 dark:text-yellow-200 mb-2">
+      <div className="mt-8 rounded-lg border border-yellow-200 bg-yellow-50 p-6 dark:border-yellow-800 dark:bg-yellow-900/20">
+        <h3 className="mb-2 text-lg font-semibold text-yellow-800 dark:text-yellow-200">
           🚧 In Development
         </h3>
         <p className="text-yellow-700 dark:text-yellow-300">

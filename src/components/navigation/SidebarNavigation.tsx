@@ -7,17 +7,18 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { usePathname, Link } from '@/libs/i18nNavigation';
-import { cn } from '@/utils/Helpers';
+import React, { useEffect, useState } from 'react';
+
+import { DynamicIcon, type IconName } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { NavigationSkeleton } from '@/components/ui/skeleton';
-import { DynamicIcon, type IconName } from '@/components/icons';
 import { getVisibleNavigationItems, trackNavigationEvent } from '@/data/navigation.config';
 import { useNavigationState } from '@/hooks/useNavigationState';
 import { useOptimizedNavigation } from '@/hooks/useOptimizedNavigation';
+import { Link, usePathname } from '@/libs/i18nNavigation';
 import { Logo } from '@/templates/Logo';
+import { cn } from '@/utils/Helpers';
 
 type SidebarNavigationProps = {
   className?: string;
@@ -219,7 +220,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
         {/* Sidebar Header */}
         <div className="flex items-center justify-between border-b border-border/20 p-4">
           {/* Logo - Full when expanded, icon-only when collapsed */}
-          <div className="flex items-center rounded-lg p-1 hover-lift-subtle">
+          <div className="hover-lift-subtle flex items-center rounded-lg p-1">
             {isCollapsed
               ? (
                   <Logo isTextHidden size="sm" />
@@ -233,7 +234,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
             variant="ghost"
             size="sm"
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="size-8 p-0 hover-scale hover:bg-primary/10 dark:hover:bg-primary/10"
+            className="hover-scale size-8 p-0 hover:bg-primary/10 dark:hover:bg-primary/10"
             aria-label={
               isCollapsed
                 ? (t('expand_sidebar') as string)
@@ -256,7 +257,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
           {navigationItems.map((item) => {
             const isActive
               = pathname === item.href
-              || (item.href !== '/dashboard' && pathname.startsWith(item.href));
+                || (item.href !== '/dashboard' && pathname.startsWith(item.href));
 
             return (
               <SidebarNavigationItem

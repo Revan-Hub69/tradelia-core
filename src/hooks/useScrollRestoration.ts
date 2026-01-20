@@ -1,22 +1,23 @@
 /*
  * SCROLL RESTORATION - Apple/Linear/Stripe Level 2026
- * 
+ *
  * Gestione intelligente scroll position per SPA navigation
  * Policy: tab switch → top, back button → restore
  */
 
 import { useEffect, useRef } from 'react';
+
 import { usePathname } from '@/libs/i18nNavigation';
 
-interface ScrollPosition {
+type ScrollPosition = {
   x: number;
   y: number;
   timestamp: number;
-}
+};
 
-interface ScrollHistory {
+type ScrollHistory = {
   [path: string]: ScrollPosition;
-}
+};
 
 export const useScrollRestoration = () => {
   const pathname = usePathname();
@@ -97,17 +98,17 @@ export const useScrollRestoration = () => {
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);
-    
+
     // Listen for navigation events
     const originalPushState = history.pushState;
     const originalReplaceState = history.replaceState;
 
-    history.pushState = function(...args) {
+    history.pushState = function (...args) {
       handleRouteChange();
       return originalPushState.apply(this, args);
     };
 
-    history.replaceState = function(...args) {
+    history.replaceState = function (...args) {
       handleRouteChange();
       return originalReplaceState.apply(this, args);
     };

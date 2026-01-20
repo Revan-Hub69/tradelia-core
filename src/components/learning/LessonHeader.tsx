@@ -1,8 +1,7 @@
 'use client';
 
-import React from 'react';
-
 import { ArrowLeft, Shield, X } from 'lucide-react';
+import React from 'react';
 
 import { Logo } from '@/templates/Logo';
 
@@ -62,7 +61,7 @@ export const LessonHeader: React.FC<LessonHeaderProps> = ({
         </div>
 
         {/* Center Section - Progress Bar (Primary Focus) */}
-        <div className="mx-4 flex-1 max-w-md md:mx-auto">
+        <div className="mx-4 max-w-md flex-1 md:mx-auto">
           {/* Progress Bar - 76% attention rate */}
           <div className="h-2 overflow-hidden rounded-full bg-muted">
             <div
@@ -78,7 +77,13 @@ export const LessonHeader: React.FC<LessonHeaderProps> = ({
 
           {/* Step Counter - 45% attention rate */}
           <div className="mt-1 text-center text-xs text-muted-foreground">
-            Passo {currentStep + 1} di {totalSteps}
+            Passo
+            {' '}
+            {currentStep + 1}
+            {' '}
+            di
+            {' '}
+            {totalSteps}
           </div>
         </div>
 

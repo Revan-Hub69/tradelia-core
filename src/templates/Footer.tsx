@@ -32,7 +32,13 @@ export const Footer = () => {
             </Button>
           </div>
           <p className="mt-4 text-sm text-muted-foreground">
-            {finalCTA('trust1')} · {finalCTA('trust2')} · {finalCTA('trust3')}
+            {finalCTA('trust1')}
+            {' '}
+            ·
+            {finalCTA('trust2')}
+            {' '}
+            ·
+            {finalCTA('trust3')}
           </p>
         </div>
       </Section>

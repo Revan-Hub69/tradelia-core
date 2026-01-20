@@ -4,6 +4,7 @@ import { CheckCircle, Clock, Crown, Lock } from 'lucide-react';
 import type React from 'react';
 
 import { cn } from '@/utils/Helpers';
+
 import { GlassCard, SignatureShape, VisualWeight } from './index';
 
 /**
@@ -134,7 +135,7 @@ export const SignatureLearningPathCard: React.FC<SignatureLearningPathCardProps>
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs">
               <span className="font-medium text-muted-foreground">Progresso</span>
-              <span className="tabular-nums font-semibold">
+              <span className="font-semibold tabular-nums">
                 {Math.round(progress)}
                 %
               </span>

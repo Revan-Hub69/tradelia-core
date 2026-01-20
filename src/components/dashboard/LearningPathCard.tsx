@@ -1,9 +1,10 @@
 'use client';
 
+import { CheckCircle, Clock, Crown, Lock } from 'lucide-react';
 import React from 'react';
-import { Lock, Crown, CheckCircle, Clock } from 'lucide-react';
 
 import { cn } from '@/utils/Helpers';
+
 import type { LearningPath } from './types';
 
 export type LearningPathCardProps = {
@@ -17,13 +18,13 @@ export type LearningPathCardProps = {
 
 /**
  * LearningPathCard - Individual learning path card component
- * 
+ *
  * Features:
  * - Glass card styling consistent with existing design system
  * - States: locked, premium, completed
  * - Progress indicators using same patterns as LessonHeader
  * - Hover effects and micro-interactions
- * 
+ *
  * Requirements: 2.1, 2.2, 6.1
  */
 export const LearningPathCard: React.FC<LearningPathCardProps> = ({
@@ -36,7 +37,7 @@ export const LearningPathCard: React.FC<LearningPathCardProps> = ({
 }) => {
   const isCompleted = progress >= 100;
   const isClickable = !isLocked;
-  
+
   const handleClick = () => {
     if (isClickable) {
       onPathClick(path.id);
@@ -72,20 +73,20 @@ export const LearningPathCard: React.FC<LearningPathCardProps> = ({
         // Base glassmorphism styling - consistent with existing system
         'group relative overflow-hidden rounded-xl border border-white/20 bg-white/60 backdrop-blur-sm shadow-sm shadow-black/5 transition-all duration-300',
         'dark:border-white/10 dark:bg-white/10 dark:shadow-black/20',
-        
+
         // Interactive states
         isClickable && 'cursor-pointer hover:bg-white/80 hover:shadow-md hover:scale-[1.02] dark:hover:bg-white/20',
         isLocked && 'cursor-not-allowed opacity-60',
-        
+
         // Completed state
         isCompleted && 'ring-2 ring-green-500/20 bg-green-50/60 dark:bg-green-900/10',
-        
-        className
+
+        className,
       )}
     >
       {/* Premium Badge */}
       {isPremium && (
-        <div className="absolute top-3 right-3 z-10 flex items-center gap-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 px-2 py-1 text-xs font-medium text-white shadow-sm">
+        <div className="absolute right-3 top-3 z-10 flex items-center gap-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 px-2 py-1 text-xs font-medium text-white shadow-sm">
           <Crown className="size-3" />
           <span>Premium</span>
         </div>
@@ -93,40 +94,43 @@ export const LearningPathCard: React.FC<LearningPathCardProps> = ({
 
       {/* Completed Badge */}
       {isCompleted && (
-        <div className="absolute top-3 left-3 z-10 flex items-center gap-1 rounded-full bg-green-500 px-2 py-1 text-xs font-medium text-white shadow-sm">
+        <div className="absolute left-3 top-3 z-10 flex items-center gap-1 rounded-full bg-green-500 px-2 py-1 text-xs font-medium text-white shadow-sm">
           <CheckCircle className="size-3" />
           <span>Completato</span>
         </div>
       )}
 
       {/* Card Content */}
-      <div className="p-6 space-y-4">
+      <div className="space-y-4 p-6">
         {/* Header */}
         <div className="space-y-2">
-          <h3 className="font-semibold text-lg leading-tight group-hover:text-primary transition-colors">
+          <h3 className="text-lg font-semibold leading-tight transition-colors group-hover:text-primary">
             {path.title}
           </h3>
-          <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+          <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">
             {path.description}
           </p>
         </div>
 
         {/* Progress Section - Using same pattern as LessonHeader */}
         <div className="space-y-2">
-          <div className="flex justify-between items-center text-xs">
-            <span className="text-muted-foreground font-medium">Progresso</span>
-            <span className="font-semibold tabular-nums">{Math.round(progress)}%</span>
+          <div className="flex items-center justify-between text-xs">
+            <span className="font-medium text-muted-foreground">Progresso</span>
+            <span className="font-semibold tabular-nums">
+              {Math.round(progress)}
+              %
+            </span>
           </div>
-          
+
           {/* Progress Bar - Same styling as LessonHeader */}
           <div className="h-2.5 overflow-hidden rounded-full bg-slate-200/80 dark:bg-slate-700/60">
             <div
-              className="h-2.5 rounded-full bg-primary transition-all duration-700 ease-out relative overflow-hidden"
+              className="relative h-2.5 overflow-hidden rounded-full bg-primary transition-all duration-700 ease-out"
               style={{ width: `${progress}%` }}
             >
               {/* Shimmer effect for active progress */}
               {progress > 0 && progress < 100 && (
-                <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                <div className="animate-shimmer absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
               )}
             </div>
           </div>
@@ -143,9 +147,11 @@ export const LearningPathCard: React.FC<LearningPathCardProps> = ({
               <span className="tabular-nums">{formatDuration(path.estimatedDuration)}</span>
             </div>
           </div>
-          
+
           <div className="text-muted-foreground">
-            {path.modules.length} moduli
+            {path.modules.length}
+            {' '}
+            moduli
           </div>
         </div>
 
@@ -160,9 +166,9 @@ export const LearningPathCard: React.FC<LearningPathCardProps> = ({
 
       {/* Lock Overlay */}
       {isLocked && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-sm rounded-xl">
-          <div className="text-center space-y-2">
-            <Lock className="size-8 mx-auto text-muted-foreground" />
+        <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-black/20 backdrop-blur-sm">
+          <div className="space-y-2 text-center">
+            <Lock className="mx-auto size-8 text-muted-foreground" />
             <div className="text-sm font-medium text-foreground">
               {isPremium ? 'Premium Richiesto' : 'Bloccato'}
             </div>
@@ -177,7 +183,7 @@ export const LearningPathCard: React.FC<LearningPathCardProps> = ({
 
       {/* Hover Effect Overlay */}
       {isClickable && (
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
+        <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
       )}
     </div>
   );
