@@ -1,5 +1,7 @@
 'use client';
 
+/// <reference path="../types/browser.d.ts" />
+
 import { AlertTriangle, Bug, Home, RefreshCw } from 'lucide-react';
 import type { ErrorInfo, ReactNode } from 'react';
 import React, { Component } from 'react';
@@ -64,8 +66,8 @@ export class DashboardErrorBoundary extends Component<Props, State> {
     }
 
     // Report to analytics/monitoring service
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'exception', {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'exception', {
         description: error.toString(),
         fatal: false,
       });
@@ -222,8 +224,8 @@ export const useDashboardErrorHandler = () => {
     console.error('Dashboard error:', error, errorInfo);
 
     // Report to monitoring service
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'exception', {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'exception', {
         description: error.toString(),
         fatal: false,
       });

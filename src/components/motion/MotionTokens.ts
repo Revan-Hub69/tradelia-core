@@ -258,7 +258,7 @@ export const validators = {
    * Verifica se un easing è valido
    */
   isValidEasing: (value: string): boolean => {
-    return Object.values(easing).includes(value as any)
+    return (Object.values(easing) as string[]).includes(value)
       || /^cubic-bezier\([\d.\-,\s]+\)$/.test(value)
       || ['linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out'].includes(value);
   },

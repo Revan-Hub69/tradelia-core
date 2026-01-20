@@ -31,7 +31,7 @@ export const SkipLinks: React.FC = () => {
           'motion-fast',
         )}
       >
-        {t('Dashboard.skip_to_content' as any)}
+        {t('Dashboard.skip_to_content')}
       </a>
       <a
         href="#navigation"
@@ -44,7 +44,7 @@ export const SkipLinks: React.FC = () => {
           'motion-fast',
         )}
       >
-        {t('Dashboard.skip_to_navigation' as any)}
+        {t('Dashboard.skip_to_navigation')}
       </a>
     </div>
   );

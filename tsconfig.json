@@ -63,6 +63,7 @@
   ],
   "include": [
     "next-env.d.ts",
+    "src/types/browser.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".storybook/*.ts",

@@ -77,7 +77,7 @@ export const usePerformanceOptimization = () => {
 
     // Detect memory level
     if ('memory' in navigator) {
-      const memory = (navigator as any).memory?.jsHeapSizeLimit || 0;
+      const memory = navigator.memory?.jsHeapSizeLimit || 0;
       if (memory < 1073741824) { // < 1GB
         capabilities.memoryLevel = 'low';
         capabilities.isLowPowered = true;
@@ -102,7 +102,7 @@ export const usePerformanceOptimization = () => {
   const monitorBatteryStatus = useCallback(async () => {
     if ('getBattery' in navigator) {
       try {
-        const battery = await (navigator as any).getBattery();
+        const battery = await navigator.getBattery();
 
         const updateBatteryStatus = () => {
           setBatteryStatus({
@@ -133,9 +133,11 @@ export const usePerformanceOptimization = () => {
   // Detect network quality
   const detectNetworkQuality = useCallback(() => {
     if ('connection' in navigator) {
-      const connection = (navigator as any).connection;
+      const connection = navigator.connection;
 
       const updateNetworkQuality = () => {
+        if (!connection) return;
+        
         const effectiveType = connection.effectiveType;
 
         if (effectiveType === 'slow-2g' || effectiveType === '2g') {
@@ -148,11 +150,14 @@ export const usePerformanceOptimization = () => {
       };
 
       updateNetworkQuality();
-      connection.addEventListener('change', updateNetworkQuality);
+      
+      if (connection) {
+        connection.addEventListener('change', updateNetworkQuality);
 
-      return () => {
-        connection.removeEventListener('change', updateNetworkQuality);
-      };
+        return () => {
+          connection.removeEventListener('change', updateNetworkQuality);
+        };
+      }
     }
     return undefined;
   }, []);

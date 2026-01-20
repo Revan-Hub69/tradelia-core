@@ -43,7 +43,7 @@ export const useViewTransitions = () => {
         document.documentElement.style.setProperty('--transition-name', name);
 
         // Start view transition using any type to avoid TypeScript conflicts
-        const startTransition = (document as any).startViewTransition;
+        const startTransition = document.startViewTransition;
         if (startTransition) {
           const transition = startTransition(() => {
             router.push(href);

@@ -211,7 +211,7 @@ export const IntelligentCalmUXExample: React.FC = () => {
         ].map(({ key, label }) => (
           <button
             key={key}
-            onClick={() => setSelectedDemo(key as any)}
+            onClick={() => setSelectedDemo(key as 'dashboard' | 'learning' | 'settings')}
             className={`px-6 py-3 rounded-lg font-medium transition-colors ${
               selectedDemo === key
                 ? 'bg-blue-600 text-white'

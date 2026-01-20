@@ -38,7 +38,7 @@ export const SignatureMicroInteractionsExample: React.FC = () => {
     {
       id: 'haptic-strong',
       name: 'Strong Haptic',
-      config: { hapticIntensity: 'strong' as any, enableHapticVisual: true },
+      config: { hapticIntensity: 'strong' as 'light' | 'medium' | 'strong', enableHapticVisual: true },
     },
   ];
 

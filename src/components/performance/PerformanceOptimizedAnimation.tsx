@@ -189,11 +189,14 @@ export const PerformanceOptimizedAnimation: React.FC<PerformanceOptimizedAnimati
 
   // Apply custom CSS properties
   const customStyles = React.useMemo(() => {
-    const styles: React.CSSProperties = {};
+    const styles: React.CSSProperties & {
+      '--animation-duration'?: string;
+      '--transition-duration'?: string;
+    } = {};
 
     if (animationDuration > 0) {
-      (styles as any)['--animation-duration'] = `${animationDuration}ms`;
-      (styles as any)['--transition-duration'] = `${animationDuration}ms`;
+      styles['--animation-duration'] = `${animationDuration}ms`;
+      styles['--transition-duration'] = `${animationDuration}ms`;
     }
 
     return styles;

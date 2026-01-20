@@ -121,7 +121,7 @@ export const usePageTransitions = () => {
     try {
       // Use View Transitions API if supported, otherwise fallback
       if (isViewTransitionsSupported() && type === 'fade') {
-        const startTransition = (document as any).startViewTransition;
+        const startTransition = document.startViewTransition;
         if (startTransition) {
           const transition = startTransition(() => {
             router.push(href);

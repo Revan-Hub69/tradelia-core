@@ -264,7 +264,7 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
   //       } as React.TouchEvent | React.MouseEvent;
 
   //       openQuickActions(syntheticEvent);
-  //       announce(t('Dashboard.quick_actions_opened' as any));
+  //       announce(t('Dashboard.quick_actions_opened'));
   //     }
   //   },
   //   {
@@ -278,7 +278,7 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
 
   // const handleQuickAction = (action: QuickAction) => {
   //   action.onClick();
-  //   announce(t('Dashboard.quick_action_executed' as any));
+  //   announce(t('Dashboard.quick_action_executed'));
   // };
 
   return (
