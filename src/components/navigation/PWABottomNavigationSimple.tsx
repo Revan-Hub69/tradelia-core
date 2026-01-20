@@ -13,7 +13,7 @@ type PWABottomNavigationSimpleProps = {
 
 export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps> = ({ className }) => {
   const pathname = usePathname();
-  const t = useTranslations();
+  const t = useTranslations('Dashboard');
   const navigationItems = getVisibleNavigationItems();
   const { navigate, isPending, navigationTarget } = useOptimizedNavigation();
 
@@ -63,7 +63,7 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
                   'animate-pulse navigation-skeleton': isPending && navigationTarget === item.href,
                 },
               )}
-              aria-label={t(item.labelKey as any)}
+              aria-label={t(item.labelKey.replace('Dashboard.', '') as 'nav_home')}
               aria-current={isActive ? 'page' : undefined}
             >
               <div className="relative mb-1">
@@ -79,7 +79,7 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
               </div>
 
               <span className="truncate leading-tight">
-                {t(item.labelKey as any)}
+                {t(item.labelKey.replace('Dashboard.', '') as 'nav_home')}
               </span>
             </button>
           );

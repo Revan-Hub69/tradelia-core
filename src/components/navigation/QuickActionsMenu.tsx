@@ -1,6 +1,6 @@
 /*
  * QUICK ACTIONS MENU - Apple/Linear/Stripe Level 2026
- * 
+ *
  * Context menu premium per long press navigation
  * Animazioni spring + glassmorphism + haptic feedback
  */
@@ -13,13 +13,13 @@ import { useTranslations } from 'next-intl';
 import { cn } from '@/utils/Helpers';
 import type { QuickAction } from '@/hooks/useLongPress';
 
-export interface QuickActionsMenuProps {
+export type QuickActionsMenuProps = {
   isOpen: boolean;
   position: { x: number; y: number };
   actions: QuickAction[];
   onClose: () => void;
   onAction: (action: QuickAction) => void;
-}
+};
 
 export const QuickActionsMenu: React.FC<QuickActionsMenuProps> = ({
   isOpen,
@@ -28,11 +28,13 @@ export const QuickActionsMenu: React.FC<QuickActionsMenuProps> = ({
   onClose,
   onAction,
 }) => {
-  const t = useTranslations();
+  const t = useTranslations('Dashboard');
 
   // Close on escape or outside click
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      return;
+    }
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -58,7 +60,9 @@ export const QuickActionsMenu: React.FC<QuickActionsMenuProps> = ({
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
 
   // Calculate safe position within viewport
   const calculateSafePosition = () => {
@@ -91,7 +95,7 @@ export const QuickActionsMenu: React.FC<QuickActionsMenuProps> = ({
     if ('vibrate' in navigator) {
       navigator.vibrate(30);
     }
-    
+
     onAction(action);
     onClose();
   };
@@ -99,13 +103,20 @@ export const QuickActionsMenu: React.FC<QuickActionsMenuProps> = ({
   return createPortal(
     <div className="fixed inset-0 z-[9999] pointer-events-none">
       {/* Backdrop */}
-      <div 
+      <div
         className={cn(
           'absolute inset-0 bg-black/20 backdrop-blur-sm',
           'animate-in fade-in duration-200',
-          'pointer-events-auto'
+          'pointer-events-auto',
         )}
         onClick={onClose}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            onClose();
+          }
+        }}
+        role="button"
+        tabIndex={0}
       />
 
       {/* Quick Actions Menu */}
@@ -124,8 +135,8 @@ export const QuickActionsMenu: React.FC<QuickActionsMenuProps> = ({
         }}
       >
         {/* Arrow pointer */}
-        <div 
-          className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-border/50"
+        <div
+          className="absolute top-full left-1/2 -translate-x-1/2 size-0 border-x-8 border-t-8 border-transparent border-t-border/50"
           style={{ filter: 'drop-shadow(0 1px 0 hsl(var(--background)))' }}
         />
 
@@ -133,6 +144,7 @@ export const QuickActionsMenu: React.FC<QuickActionsMenuProps> = ({
         {actions.map((action) => (
           <button
             key={action.id}
+            type="button"
             onClick={() => handleAction(action)}
             className={cn(
               'w-full px-4 py-3 text-left',
@@ -144,16 +156,16 @@ export const QuickActionsMenu: React.FC<QuickActionsMenuProps> = ({
                 'text-primary': action.variant === 'primary',
                 'text-destructive': action.variant === 'destructive',
                 'text-foreground': action.variant === 'default' || !action.variant,
-              }
+              },
             )}
           >
             {action.icon && (
-              <div className="flex-shrink-0 w-5 h-5 flex items-center justify-center">
+              <div className="shrink-0 size-5 flex items-center justify-center">
                 {action.icon}
               </div>
             )}
             <span className="font-medium text-sm">
-              {t(action.labelKey as any)}
+              {t(action.labelKey.replace('Dashboard.', '') as 'nav_home')}
             </span>
           </button>
         ))}
@@ -161,11 +173,11 @@ export const QuickActionsMenu: React.FC<QuickActionsMenuProps> = ({
         {/* Hint text */}
         <div className="px-4 py-2 border-t border-border/20 mt-1">
           <p className="text-xs text-muted-foreground text-center">
-            {t('Dashboard.quick_actions_hint' as any)}
+            {t('quick_actions_hint')}
           </p>
         </div>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 };

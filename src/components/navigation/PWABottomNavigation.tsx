@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePathname, Link, useRouter } from '@/libs/i18nNavigation';
 import { cn } from '@/utils/Helpers';
@@ -7,8 +8,8 @@ import { DynamicIcon, type IconName } from '@/components/icons';
 import {
   getVisibleNavigationItems,
   type NavigationItemId,
+  type NavigationItem,
 } from '@/data/navigation.config';
-import { useState, useEffect, useRef } from 'react';
 import { useNavigationState, usePendingAnnouncement } from '@/hooks/useNavigationState';
 import { LiveRegion, useLiveRegion } from '@/components/accessibility/LiveRegion';
 // import { useLongPress, useQuickActions, type QuickAction } from '@/hooks/useLongPress';
@@ -22,13 +23,12 @@ type PWABottomNavigationProps = {
 
 export const PWABottomNavigation = ({ className }: PWABottomNavigationProps) => {
   const pathname = usePathname();
-  const t = useTranslations();
+  const t = useTranslations('Dashboard');
   const [activeIndex, setActiveIndex] = useState(0);
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const navRef = useRef<HTMLElement>(null);
   const { message, priority, announce } = useLiveRegion();
   const haptic = useHapticFeedback();
-  
   // Apply gesture policy and touch optimizations
   const gestureRef = useGesturePolicy({
     preventPullToRefresh: true,
@@ -60,9 +60,11 @@ export const PWABottomNavigation = ({ className }: PWABottomNavigationProps) => 
         const prevIndex = index > 0 ? index - 1 : navigationItems.length - 1;
         setFocusedIndex(prevIndex);
         haptic.light();
-        announce(t('Dashboard.nav_focus_moved' as any, { 
-          item: t(navigationItems[prevIndex]?.labelKey as any) 
-        }));
+        const prevItem = navigationItems[prevIndex];
+        if (prevItem) {
+          const labelKey = prevItem.labelKey.replace('Dashboard.', '');
+          announce(t('nav_focus_moved', { item: t(labelKey as 'nav_home') }));
+        }
         break;
       }
       case 'ArrowRight': {
@@ -70,23 +72,25 @@ export const PWABottomNavigation = ({ className }: PWABottomNavigationProps) => 
         const nextIndex = index < navigationItems.length - 1 ? index + 1 : 0;
         setFocusedIndex(nextIndex);
         haptic.light();
-        announce(t('Dashboard.nav_focus_moved' as any, { 
-          item: t(navigationItems[nextIndex]?.labelKey as any) 
-        }));
+        const nextItem = navigationItems[nextIndex];
+        if (nextItem) {
+          const labelKey = nextItem.labelKey.replace('Dashboard.', '');
+          announce(t('nav_focus_moved', { item: t(labelKey as 'nav_home') }));
+        }
         break;
       }
       case 'Home': {
         e.preventDefault();
         setFocusedIndex(0);
         haptic.medium();
-        announce(t('Dashboard.nav_focus_first' as any));
+        announce(t('nav_focus_first'));
         break;
       }
       case 'End': {
         e.preventDefault();
         setFocusedIndex(navigationItems.length - 1);
         haptic.medium();
-        announce(t('Dashboard.nav_focus_last' as any));
+        announce(t('nav_focus_last'));
         break;
       }
       case 'Enter':
@@ -110,7 +114,7 @@ export const PWABottomNavigation = ({ className }: PWABottomNavigationProps) => 
         }}
         id="navigation"
         role="navigation"
-        aria-label={t('Dashboard.nav_aria_primary' as any)}
+        aria-label={t('nav_aria_primary')}
         className={cn(
           'fixed bottom-0 left-0 right-0 layer-nav',
           'glass-nav',
@@ -173,8 +177,8 @@ export const PWABottomNavigation = ({ className }: PWABottomNavigationProps) => 
 };
 
 // Navigation Item with Long Press Support
-interface NavigationItemProps {
-  item: any;
+type NavigationItemProps = {
+  item: NavigationItem;
   index: number;
   isActive: boolean;
   onKeyDown: (e: React.KeyboardEvent, index: number) => void;
@@ -183,7 +187,7 @@ interface NavigationItemProps {
   tabIndex: number;
   announce: (message: string, priority?: 'polite' | 'assertive') => void;
   haptic: ReturnType<typeof useHapticFeedback>;
-}
+};
 
 const NavigationItem: React.FC<NavigationItemProps> = ({
   item,
@@ -196,13 +200,12 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
   announce,
   haptic,
 }) => {
-  const t = useTranslations();
+  const t = useTranslations('Dashboard');
   const router = useRouter();
   const { visualState, uxState, canNavigate } = useNavigationState(
     item.href,
-    item.id as NavigationItemId
+    item.id as NavigationItemId,
   );
-  
   const shouldAnnounce = usePendingAnnouncement(visualState === 'pending');
 
   // Temporarily disable quick actions
@@ -304,20 +307,15 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
           onFocus={onFocus}
           onBlur={onBlur}
           onClick={(e) => {
-            console.log('🔥 CLICK DETECTED:', item.id, item.href);
-            console.log('🔍 Current pathname:', window.location.pathname);
             e.preventDefault(); // Always prevent default
-            
-            console.log('🔍 canNavigate:', canNavigate, 'uxState:', uxState);
-            
+
             if (!canNavigate) {
-              console.log('❌ Navigation blocked');
               // Show UX feedback for blocked/offline states
               if (uxState === 'blocked') {
-                announce(t('Dashboard.nav_blocked' as any), 'assertive');
+                announce(t('nav_blocked'), 'assertive');
                 haptic.error();
               } else if (uxState === 'offline') {
-                announce(t('Dashboard.nav_offline' as any), 'assertive');
+                announce(t('nav_offline'), 'assertive');
                 haptic.error();
               }
               return;
@@ -325,38 +323,29 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
 
             // Check if we're already on the target page
             if (window.location.pathname === item.href) {
-              console.log('⚠️ Already on target page, skipping navigation');
               return;
             }
 
-            console.log('✅ Starting navigation to:', item.href);
-            
             // Simple programmatic navigation
-            announce(t('Dashboard.nav_navigating' as any));
+            announce(t('nav_navigating'));
             haptic.success();
-            
+
             // Force navigation using window.location as fallback
             try {
-              console.log('🚀 Calling router.push...');
               router.push(item.href);
-              console.log('✅ router.push called successfully');
-              
+
               // Fallback: if router.push doesn't work, use window.location
               setTimeout(() => {
                 if (window.location.pathname !== item.href) {
-                  console.log('🔄 router.push failed, using window.location fallback');
                   window.location.href = item.href;
                 }
               }, 100);
-              
             } catch (error) {
-              console.error('❌ router.push failed:', error);
-              console.log('🔄 Using window.location fallback');
               window.location.href = item.href;
             }
           }}
           // {...longPressProps} // Temporarily disabled
-          aria-label={t(item.ariaKey as any)}
+          aria-label={t(item.ariaKey.replace('Dashboard.', '') as 'nav_home')}
           aria-current={isActive ? 'page' : undefined}
           aria-disabled={!canNavigate}
         >
@@ -395,12 +384,12 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
             )}
             style={{ lineHeight: '1.2' }}
           >
-            {t(item.labelKey as any)}
+            {t(item.labelKey.replace('Dashboard.', '') as 'nav_home')}
           </span>
 
           {shouldAnnounce && (
             <span className="sr-only" aria-live="polite">
-              {t('Dashboard.nav_loading' as any)}
+              {t('nav_loading')}
             </span>
           )}
         </Link>

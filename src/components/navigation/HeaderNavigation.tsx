@@ -21,7 +21,7 @@ type HeaderNavigationProps = {
 
 export const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ className }) => {
   const pathname = usePathname();
-  const t = useTranslations();
+  const t = useTranslations('Dashboard');
   const navigationItems = getVisibleNavigationItems();
 
   return (
@@ -34,7 +34,7 @@ export const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ className })
         className,
       )}
       role="navigation"
-      aria-label={t('Dashboard.nav_aria_secondary' as any)}
+      aria-label={t('nav_aria_secondary')}
     >
       <div className="mx-auto max-w-screen-xl">
         <div className="flex items-center justify-center space-x-1 px-4">
@@ -58,11 +58,11 @@ export const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ className })
 };
 
 // Header Navigation Item Component
-interface HeaderNavigationItemProps {
+type HeaderNavigationItemProps = {
   item: any;
   isActive: boolean;
   t: any;
-}
+};
 
 const HeaderNavigationItem: React.FC<HeaderNavigationItemProps> = ({
   item,
@@ -86,17 +86,11 @@ const HeaderNavigationItem: React.FC<HeaderNavigationItemProps> = ({
   }, [visualState]);
 
   const handleClick = (e: React.MouseEvent) => {
-    console.log('🔥 HEADER CLICK:', item.id, item.href);
     e.preventDefault(); // Always prevent default
     
-    console.log('🔍 canNavigate:', canNavigate, 'uxState:', uxState);
-    
     if (!canNavigate) {
-      console.log('❌ Header navigation blocked');
       return;
     }
-    
-    console.log('✅ Starting header navigation to:', item.href);
     
     // Simple programmatic navigation
     setVisualState('pressed');
@@ -111,11 +105,9 @@ const HeaderNavigationItem: React.FC<HeaderNavigationItemProps> = ({
     
     // Direct navigation using router
     try {
-      console.log('🚀 Header calling router.push...');
       router.push(item.href);
-      console.log('✅ Header router.push called successfully');
     } catch (error) {
-      console.error('❌ Header router.push failed:', error);
+      // Fallback handled by router
     }
   };
 
@@ -161,7 +153,7 @@ const HeaderNavigationItem: React.FC<HeaderNavigationItemProps> = ({
       </div>
 
       <span className="font-medium">
-        {t(item.labelKey as any)}
+        {t(item.labelKey.replace('Dashboard.', '') as 'nav_home')}
       </span>
 
       {/* Active indicator line */}

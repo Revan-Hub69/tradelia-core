@@ -39,7 +39,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ className }) => 
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const t = useTranslations();
+  const t = useTranslations('Dashboard');
   const router = useRouter();
   const navigationItems = getVisibleNavigationItems();
 
@@ -48,22 +48,22 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ className }) => 
     // Navigation commands
     ...navigationItems.map((item, index) => ({
       id: `nav-${item.id}`,
-      label: t(item.labelKey as any),
-      description: t(`Dashboard.nav_${item.id}_desc` as any, { defaultValue: '' }),
+      label: t(item.labelKey.replace('Dashboard.', '') as 'nav_home'),
+      description: t(`nav_${item.id}_desc` as 'nav_home_desc', { defaultValue: '' }),
       icon: item.iconName as IconName,
       action: () => {
         router.push(item.href);
         setOpen(false);
       },
       category: 'navigation' as const,
-      keywords: [t(item.labelKey as any).toLowerCase(), item.id, `alt+${index + 1}`],
+      keywords: [t(item.labelKey.replace('Dashboard.', '') as 'nav_home').toLowerCase(), item.id, `alt+${index + 1}`],
     })),
 
     // Action commands
     {
       id: 'theme-toggle',
-      label: t('Dashboard.toggle_theme' as any),
-      description: t('Dashboard.toggle_theme_desc' as any),
+      label: t('toggle_theme'),
+      description: t('toggle_theme_desc'),
       icon: 'SettingsIcon' as IconName,
       action: () => {
         // Theme toggle logic would go here
@@ -74,8 +74,8 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ className }) => 
     },
     {
       id: 'focus-mode',
-      label: t('Dashboard.enable_focus_mode' as any),
-      description: t('Dashboard.focus_mode_desc' as any),
+      label: t('enable_focus_mode'),
+      description: t('focus_mode_desc'),
       icon: 'HomeIcon' as IconName,
       action: () => {
         // Focus mode logic would go here
@@ -165,17 +165,17 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ className }) => 
       >
         <DialogHeader className="px-4 py-3 border-b border-border/20">
           <DialogTitle className="text-sm font-medium text-left">
-            {t('Dashboard.command_palette_title' as any)}
+            {t('command_palette_title')}
           </DialogTitle>
           <p id="command-palette-description" className="sr-only">
-            {t('Dashboard.command_palette_description' as any)}
+            {t('command_palette_description')}
           </p>
         </DialogHeader>
 
         {/* Search Input */}
         <div className="px-4 py-3 border-b border-border/20">
           <Input
-            placeholder={t('Dashboard.command_palette_placeholder' as any)}
+            placeholder={t('command_palette_placeholder')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -187,7 +187,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ className }) => 
           {Object.entries(groupedCommands).map(([category, categoryCommands]) => (
             <div key={category} className="p-2">
               <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                {t(`Dashboard.command_category_${category}` as any)}
+                {t(`command_category_${category}` as 'command_category_navigation')}
               </div>
 
               {categoryCommands.map((command) => {
@@ -239,7 +239,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ className }) => 
             <div className="p-8 text-center text-muted-foreground">
               <DynamicIcon name="HomeIcon" size={24} className="mx-auto mb-2 opacity-50" />
               <div className="text-sm">
-                {t('Dashboard.command_palette_no_results' as any)}
+                {t('command_palette_no_results')}
               </div>
             </div>
           )}
@@ -250,18 +250,25 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ className }) => 
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <div className="flex items-center gap-4">
               <span>
-                ↑↓ {t('Dashboard.navigate' as any)}
+                ↑↓
+                {' '}
+                {t('navigate')}
               </span>
               <span>
-                ↵ {t('Dashboard.select' as any)}
+                ↵
+                {' '}
+                {t('select')}
               </span>
               <span>
-                esc {t('Dashboard.close' as any)}
+                esc
+                {' '}
+                {t('close')}
               </span>
             </div>
             <div>
               <kbd className="px-1.5 py-0.5 bg-muted rounded text-xs">
-                {navigator.platform.includes('Mac') ? '⌘' : 'Ctrl'}+K
+                {navigator.platform.includes('Mac') ? '⌘' : 'Ctrl'}
+                +K
               </kbd>
             </div>
           </div>
