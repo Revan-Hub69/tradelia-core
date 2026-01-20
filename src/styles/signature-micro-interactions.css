@@ -1,0 +1,365 @@
+/**
+ * SIGNATURE MICRO-INTERACTIONS STYLES - Enterprise 2026
+ *
+ * CSS ottimizzato per micro-interazioni signature Tradelia
+ * Basato su ricerca 2026 enterprise patterns:
+ * - Microsoft Fluent Design System press feedback
+ * - Apple Liquid Glass optical response
+ * - GPU acceleration per 60fps performance
+ * - Haptic-like visual feedback simulation
+ */
+
+/* ============================================================================
+   PERFORMANCE OPTIMIZATION
+   ============================================================================ */
+
+.signature-micro-interactions-showcase *,
+.signature-button,
+.signature-card {
+  /* GPU acceleration for smooth animations */
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+/* ============================================================================
+   SIGNATURE PRESS FEEDBACK FOUNDATION
+   ============================================================================ */
+
+.signature-press-feedback {
+  /* 3D transform context for depth effects */
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  
+  /* Smooth transitions for all press states */
+  transition: 
+    transform var(--duration-tradelia-press, 180ms) var(--ease-tradelia),
+    box-shadow var(--duration-tradelia-press, 180ms) var(--ease-tradelia);
+}
+
+/* Press depth variations based on device type */
+.signature-press-feedback[data-device="mobile"] {
+  --press-depth-subtle: 1px;
+  --press-depth-medium: 2px;
+  --press-depth-deep: 3px;
+  --press-depth-dramatic: 4px;
+}
+
+.signature-press-feedback[data-device="tablet"] {
+  --press-depth-subtle: 2px;
+  --press-depth-medium: 3px;
+  --press-depth-deep: 5px;
+  --press-depth-dramatic: 7px;
+}
+
+.signature-press-feedback[data-device="desktop"] {
+  --press-depth-subtle: 2px;
+  --press-depth-medium: 4px;
+  --press-depth-deep: 6px;
+  --press-depth-dramatic: 8px;
+}
+
+/* ============================================================================
+   HAPTIC-LIKE VISUAL FEEDBACK
+   ============================================================================ */
+
+.haptic-visual-feedback {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Ripple effect that simulates haptic feedback */
+.haptic-ripple {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  animation: haptic-ripple-animation var(--haptic-duration, 0.5s) ease-out;
+}
+
+@keyframes haptic-ripple-animation {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: var(--haptic-opacity-start, 0.5);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(var(--haptic-scale, 2));
+    opacity: 0;
+  }
+}
+
+/* Haptic intensity variations */
+.haptic-light {
+  --haptic-scale: 1.5;
+  --haptic-opacity-start: 0.3;
+  --haptic-duration: 0.4s;
+}
+
+.haptic-medium {
+  --haptic-scale: 2.0;
+  --haptic-opacity-start: 0.5;
+  --haptic-duration: 0.5s;
+}
+
+.haptic-strong {
+  --haptic-scale: 2.5;
+  --haptic-opacity-start: 0.7;
+  --haptic-duration: 0.6s;
+}
+
+/* ============================================================================
+   ELASTIC RESPONSE ANIMATIONS
+   ============================================================================ */
+
+.elastic-response {
+  /* Elastic overshoot easing for personality */
+  transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Controlled imperfection variations */
+.elastic-low {
+  --elastic-overshoot: 1.01;
+  --elastic-duration: 0.3s;
+}
+
+.elastic-medium {
+  --elastic-overshoot: 1.02;
+  --elastic-duration: 0.35s;
+}
+
+.elastic-high {
+  --elastic-overshoot: 1.03;
+  --elastic-duration: 0.4s;
+}
+
+/* ============================================================================
+   SIGNATURE BUTTON STYLES
+   ============================================================================ */
+
+.signature-button {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-tradelia-pill);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  
+  /* Signature Tradelia shadow system */
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.05),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+  
+  /* Smooth transitions */
+  transition: 
+    all var(--duration-tradelia-micro, 120ms) var(--ease-tradelia),
+    transform var(--duration-tradelia-press, 180ms) var(--ease-tradelia);
+}
+
+/* Button press states */
+.signature-button:active {
+  transform: 
+    translateY(var(--press-depth-medium)) 
+    rotateX(calc(var(--press-depth-medium) * 0.5deg))
+    scale(0.98);
+}
+
+/* Button hover enhancement */
+.signature-button:hover:not(:disabled) {
+  transform: translateY(-1px) scale(1.01);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+/* Button focus enhancement */
+.signature-button:focus-visible {
+  outline: none;
+  box-shadow: 
+    0 0 0 2px var(--color-background),
+    0 0 0 4px var(--color-primary),
+    0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Button disabled state */
+.signature-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* ============================================================================
+   SIGNATURE CARD STYLES
+   ============================================================================ */
+
+.signature-card {
+  position: relative;
+  background: var(--color-background);
+  border-radius: var(--radius-tradelia-card);
+  border: 1px solid var(--color-border);
+  
+  /* Signature Tradelia glass effect */
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.95);
+  
+  /* Subtle shadow system */
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.05),
+    0 0 0 1px rgba(0, 0, 0, 0.02);
+  
+  /* Smooth transitions */
+  transition: 
+    all var(--duration-tradelia-micro, 120ms) var(--ease-tradelia),
+    transform var(--duration-tradelia-press, 180ms) var(--ease-tradelia);
+}
+
+/* Card interactive states */
+.signature-card[data-interactive="true"] {
+  cursor: pointer;
+}
+
+.signature-card[data-interactive="true"]:hover {
+  transform: translateY(-2px) scale(1.005);
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(0, 0, 0, 0.02);
+}
+
+.signature-card[data-interactive="true"]:active {
+  transform: 
+    translateY(var(--press-depth-subtle)) 
+    rotateX(calc(var(--press-depth-subtle) * 0.3deg))
+    scale(0.995);
+}
+
+/* ============================================================================
+   CONTEXT-AWARE VARIATIONS
+   ============================================================================ */
+
+/* Primary context */
+.signature-context-primary {
+  --haptic-color: rgba(59, 130, 246, 0.2);
+  --press-shadow: rgba(59, 130, 246, 0.1);
+}
+
+/* Secondary context */
+.signature-context-secondary {
+  --haptic-color: rgba(107, 114, 128, 0.2);
+  --press-shadow: rgba(107, 114, 128, 0.1);
+}
+
+/* Danger context */
+.signature-context-danger {
+  --haptic-color: rgba(239, 68, 68, 0.25);
+  --press-shadow: rgba(239, 68, 68, 0.1);
+}
+
+/* Success context */
+.signature-context-success {
+  --haptic-color: rgba(34, 197, 94, 0.25);
+  --press-shadow: rgba(34, 197, 94, 0.1);
+}
+
+/* ============================================================================
+   ACCESSIBILITY ENHANCEMENTS
+   ============================================================================ */
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .signature-micro-interactions-showcase *,
+  .signature-button,
+  .signature-card,
+  .haptic-ripple {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transform: none !important;
+  }
+  
+  /* Maintain basic hover feedback for usability */
+  .signature-button:hover:not(:disabled),
+  .signature-card[data-interactive="true"]:hover {
+    opacity: 0.9;
+    transform: none !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .signature-button,
+  .signature-card {
+    border-width: 2px;
+    box-shadow: none;
+  }
+  
+  .haptic-visual-feedback {
+    opacity: 0.8;
+  }
+}
+
+/* ============================================================================
+   PERFORMANCE OPTIMIZATIONS
+   ============================================================================ */
+
+/* Optimize for 60fps animations */
+.signature-button,
+.signature-card {
+  /* Use GPU layers for smooth animations */
+  transform: translateZ(0);
+  
+  /* Optimize repaints */
+  contain: layout style paint;
+}
+
+/* Optimize haptic feedback animations */
+.haptic-ripple {
+  /* Use transform instead of changing dimensions */
+  transform: translate(-50%, -50%) scale(0);
+  
+  /* Optimize for GPU */
+  will-change: transform, opacity;
+}
+
+/* ============================================================================
+   RESPONSIVE ADAPTATIONS
+   ============================================================================ */
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .signature-button {
+    /* Larger touch targets */
+    min-height: 44px;
+    padding: 12px 16px;
+  }
+  
+  /* Reduce motion intensity on mobile */
+  .signature-button:hover:not(:disabled) {
+    transform: scale(1.005);
+  }
+  
+  .signature-card[data-interactive="true"]:hover {
+    transform: scale(1.002);
+  }
+}
+
+/* Desktop enhancements */
+@media (min-width: 1024px) {
+  .signature-button:hover:not(:disabled) {
+    transform: translateY(-2px) scale(1.02);
+  }
+  
+  .signature-card[data-interactive="true"]:hover {
+    transform: translateY(-4px) scale(1.01);
+  }
+}
+
+/* High refresh rate displays */
+@media (min-resolution: 120dpi) {
+  .signature-button,
+  .signature-card {
+    /* Smoother animations for high-DPI displays */
+    transition-duration: calc(var(--duration-tradelia-press, 180ms) * 0.8);
+  }
+}

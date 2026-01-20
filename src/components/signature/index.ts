@@ -17,3 +17,20 @@ export {
   SupportingElement,
   type VisualWeightProps 
 } from './VisualHierarchy';
+
+// Signature Micro-Interactions System
+export {
+  useSignaturePressFeeback,
+  HapticVisualFeedback,
+  SignatureButton,
+  SignatureCard,
+  SignatureMicroInteractionsShowcase,
+  type PressDepth,
+  type InteractionContext,
+  type DeviceType,
+  type HapticIntensity,
+  type SignaturePressConfig,
+  type MicroInteractionState,
+} from './SignatureMicroInteractions';
+
+export { SignatureMicroInteractionsExample } from './SignatureMicroInteractionsExample';
