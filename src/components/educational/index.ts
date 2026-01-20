@@ -54,7 +54,28 @@ export {
   type RiskyActionConfig,
 } from './AntiErrorGuidance';
 
+// Explanatory Animations System
+export {
+  useExplanatoryAnimations,
+  ProgressiveReveal,
+  ConceptAnimationPlayer,
+  type AnimationType,
+  type AnimationSpeed,
+  type ConceptComplexity,
+  type AnimationStep,
+  type ConceptAnimation,
+  type AnimationConfig,
+} from './ExplanatoryAnimations';
+
+// Blockchain Concept Animations
+export { BlockchainConceptAnimations } from './BlockchainConceptAnimations';
+
+// Explanatory Animations Components
+export { ExplanatoryAnimationsShowcase } from './ExplanatoryAnimationsShowcase';
+export { ExplanatoryAnimationsExample } from './ExplanatoryAnimationsExample';
+
 // Re-export defaults for convenience
 export { default as FocusMode } from './FocusMode';
 export { default as VisualNoiseReduction } from './VisualNoiseReduction';
 export { default as AntiErrorGuidance } from './AntiErrorGuidance';
+export { default as ExplanatoryAnimations } from './ExplanatoryAnimations';

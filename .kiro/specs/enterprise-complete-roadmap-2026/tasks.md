@@ -183,7 +183,7 @@ Roadmap completa per portare Tradelia dal 70% al 95% di enterprise readiness att
   - Add risky action warnings with confirmation
   - _Requirements: 5.4_
 
-- [ ] 9.4 Add explanatory animations
+- [x] 9.4 Add explanatory animations
   - Create animations that explain concepts, not just decorate
   - Implement motion that guides user understanding
   - _Requirements: 5.5_
