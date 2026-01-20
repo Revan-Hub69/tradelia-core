@@ -60,9 +60,44 @@ export {
 } from './HapticVisualFeedback';
 export { HapticVisualFeedbackExample } from './HapticVisualFeedbackExample';
 
+// Intelligent Calm UX - Enterprise 2026
+export {
+  IntelligentCalmUX,
+  CalmElement,
+  BreathingElement,
+  FocusIndicator,
+  useCalmUX,
+  type CalmMode,
+  type CognitiveState,
+  type VisualIntensity,
+  type CalmUXConfig,
+  type CalmUXContextType,
+  type IntelligentCalmUXProps,
+} from './IntelligentCalmUX';
+export { IntelligentCalmUXExample } from './IntelligentCalmUXExample';
+
 // Adaptive micro-copy
 export { AdaptiveButton, AdaptiveMicroCopyShowcase, AdaptiveStatus, MicroCopyProvider, useAdaptiveMicroCopy } from './AdaptiveMicroCopy';
 export { AdaptiveMicroCopyExample } from './AdaptiveMicroCopyExample';
+
+// Brand Memory System - Enterprise 2026
+export {
+  BrandMemorySystem,
+  BrandMoment,
+  BrandConsistencyIndicator,
+  useBrandMemory,
+  type BrandMomentType,
+  type EmotionalTone,
+  type BrandTouchpoint,
+  type BrandMemoryConfig,
+  type BrandMemoryContextType,
+  type BrandMomentCustomization,
+  type BrandMomentData,
+  type BrandMemorySystemProps,
+  type BrandMomentProps,
+  type BrandConsistencyIndicatorProps,
+} from './BrandMemorySystem';
+export { BrandMemorySystemExample } from './BrandMemorySystemExample';
 
 // Semantic loading states
 // export {
