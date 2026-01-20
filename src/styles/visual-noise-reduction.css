@@ -265,7 +265,7 @@
 /* Motion Reduction */
 .noise-reduction-active * {
   animation-duration: calc(1s * (1 + var(--noise-motion)));
-  animation-iteration-count: calc(infinite * (1 - var(--noise-motion)));
+  animation-iteration-count: 1;
 }
 
 .noise-reduction-active .hover-effect:hover {

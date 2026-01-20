@@ -80,7 +80,6 @@ export const AntiErrorProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [safePaths, setSafePaths] = useState<Map<string, SafePathConfig>>(new Map());
   const [riskyActions, setRiskyActions] = useState<Map<string, RiskyActionConfig>>(new Map());
   const [activeGuidance, setActiveGuidance] = useState<Map<string, ActionGuidance>>(new Map());
-  const [highlightedPaths, setHighlightedPaths] = useState<Set<string>>(new Set());
 
   // Register safe path
   const registerSafePath = useCallback((config: SafePathConfig) => {
@@ -96,8 +95,6 @@ export const AntiErrorProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const highlightSafePath = useCallback((elementId: string, intensity: GuidanceIntensity = 'moderate') => {
     const pathConfig = safePaths.get(elementId);
     if (!pathConfig) return;
-
-    setHighlightedPaths(prev => new Set(prev.add(elementId)));
     
     // Apply CSS highlighting
     const element = document.querySelector(`[data-safe-path="${elementId}"]`);
@@ -108,12 +105,6 @@ export const AntiErrorProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
     // Auto-remove highlight after delay
     setTimeout(() => {
-      setHighlightedPaths(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(elementId);
-        return newSet;
-      });
-      
       if (element) {
         element.classList.remove('safe-path-highlighted');
         element.removeAttribute('data-guidance-intensity');
