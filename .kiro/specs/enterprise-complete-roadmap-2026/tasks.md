@@ -72,23 +72,24 @@ Roadmap completa per portare Tradelia dal 70% al 95% di enterprise readiness att
   - src/app/[locale]/(auth)/dashboard/profile/page.tsx
   - _Requirements: 1.4_
 
-- [ ]* 3.2 Write property test for i18n coverage
+- [x] 3.2 Write property test for i18n coverage
+
   - **Property 4: Complete i18n coverage**
   - **Validates: Requirements 1.4**
 
-- [ ] 4. Checkpoint - Technical Foundation Complete
+- [x] 4. Checkpoint - Technical Foundation Complete
   - Ensure all tests pass, verify 80% enterprise readiness achieved
 
 ---
 
 ### **PHASE 2: SIGNATURE DESIGN SYSTEM** (80% → 90%)
 
-- [ ] 5. Implement Signature Visual Fingerprint
+- [x] 5. Implement Signature Visual Fingerprint
   - Create Tradelia-specific glass treatments
   - Implement signature shapes system
   - _Requirements: 2.1, 2.2, 2.3_
 
-- [ ] 5.1 Create signature glass components
+- [x] 5.1 Create signature glass components
   - Implement micro-grain texture system
   - Add signature highlight lines in brand color
   - Create TradelliaGlass component library
@@ -98,12 +99,12 @@ Roadmap completa per portare Tradelia dal 70% al 95% di enterprise readiness att
   - **Property 5: Signature visual consistency**
   - **Validates: Requirements 2.1, 2.2**
 
-- [ ] 5.3 Implement signature shapes system
+- [x] 5.3 Implement signature shapes system
   - Create shape-tradelia-pill, shape-tradelia-notch, shape-tradelia-cut
   - Apply consistently across all components
   - _Requirements: 2.1, 2.4_
 
-- [ ] 5.4 Implement visual hierarchy system
+- [x] 5.4 Implement visual hierarchy system
   - Create weight-primary, weight-secondary, weight-tertiary classes
   - Apply consistent visual weight across interface
   - _Requirements: 2.4_

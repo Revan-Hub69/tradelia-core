@@ -97,9 +97,64 @@ const config = {
         'accordion-up': 'accordion-up 0.2s ease-out',
         'xp-pop': 'xp-pop 0.3s ease-out',
       },
+      // Tradelia signature utilities
+      utilities: {
+        '.shape-tradelia-pill': {
+          'border-radius': '24px',
+          'position': 'relative',
+        },
+        '.shape-tradelia-notch': {
+          'border-radius': '16px',
+          'clip-path': 'polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%)',
+        },
+        '.shape-tradelia-cut': {
+          'border-radius': '12px',
+          'position': 'relative',
+          '&::before': {
+            'content': '""',
+            'position': 'absolute',
+            'top': '-1px',
+            'right': '-1px',
+            'width': '8px',
+            'height': '8px',
+            'background': 'var(--background)',
+            'clip-path': 'polygon(0 0, 100% 100%, 0 100%)',
+          },
+        },
+      },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [
+    require('tailwindcss-animate'),
+    // Add signature utilities plugin
+    function({ addUtilities }) {
+      addUtilities({
+        '.weight-primary': {
+          'background': 'var(--weight-primary-bg)',
+          'border': 'var(--weight-primary-border)',
+          'box-shadow': 'var(--weight-primary-shadow)',
+        },
+        '.weight-secondary': {
+          'background': 'var(--weight-secondary-bg)',
+          'border': 'var(--weight-secondary-border)',
+          'box-shadow': 'var(--weight-secondary-shadow)',
+        },
+        '.weight-tertiary': {
+          'background': 'var(--weight-tertiary-bg)',
+          'border': 'var(--weight-tertiary-border)',
+          'box-shadow': 'var(--weight-tertiary-shadow)',
+        },
+        '.glass-tradelia': {
+          'background': 'var(--glass-tradelia-bg)',
+          'backdrop-filter': 'blur(20px) saturate(180%)',
+          'border': '1px solid var(--glass-tradelia-border)',
+          'background-image': 'var(--texture-grain)',
+          'background-size': 'var(--texture-size)',
+          'box-shadow': 'inset 0 1px 0 var(--glass-tradelia-highlight), var(--glass-tradelia-shadow)',
+        },
+      });
+    },
+  ],
 } satisfies Config;
 
 export default config;
