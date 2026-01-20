@@ -38,6 +38,23 @@ export {
   type VisualElement,
 } from './VisualNoiseReduction';
 
+// Anti-Error Guidance System
+export {
+  AntiErrorProvider,
+  useAntiError,
+  SafePathHighlighter,
+  RiskyActionGuard,
+  ErrorPreventionGuide,
+  AntiErrorTester,
+  type ActionRiskLevel,
+  type ConfirmationType,
+  type GuidanceIntensity,
+  type ActionGuidance,
+  type SafePathConfig,
+  type RiskyActionConfig,
+} from './AntiErrorGuidance';
+
 // Re-export defaults for convenience
 export { default as FocusMode } from './FocusMode';
 export { default as VisualNoiseReduction } from './VisualNoiseReduction';
+export { default as AntiErrorGuidance } from './AntiErrorGuidance';

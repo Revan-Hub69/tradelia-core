@@ -178,7 +178,7 @@ Roadmap completa per portare Tradelia dal 70% al 95% di enterprise readiness att
   - **Property 8: Educational UX effectiveness**
   - **Validates: Requirements 5.1, 5.2, 5.3**
 
-- [ ] 9.3 Implement anti-error guidance
+- [x] 9.3 Implement anti-error guidance
   - Create safe path highlighting (green subtle glow)
   - Add risky action warnings with confirmation
   - _Requirements: 5.4_
