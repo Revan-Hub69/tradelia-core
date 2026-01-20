@@ -20,7 +20,8 @@ Roadmap completa per portare Tradelia dal 70% al 95% di enterprise readiness att
   - Apply proper i18n key typing for navigation items
   - _Requirements: 1.1_
 
-- [ ]* 1.2 Write property test for navigation type safety
+- [x] 1.2 Write property test for navigation type safety
+
   - **Property 1: Navigation i18n key consistency**
   - **Validates: Requirements 1.1**
 
@@ -29,7 +30,8 @@ Roadmap completa per portare Tradelia dal 70% al 95% di enterprise readiness att
   - Implement type-safe command system
   - _Requirements: 1.1_
 
-- [ ]* 1.4 Write property test for command palette
+- [x] 1.4 Write property test for command palette
+
   - **Property 2: Command palette type consistency**
   - **Validates: Requirements 1.1**
 
@@ -39,21 +41,22 @@ Roadmap completa per portare Tradelia dal 70% al 95% di enterprise readiness att
   - QuickActionsMenu.tsx (2 occurrences)
   - _Requirements: 1.1_
 
-- [ ] 2. Performance Optimization Implementation
+- [x] 2. Performance Optimization Implementation
   - Implement UserDataProvider for API deduplication
   - Add route-level loading states
   - _Requirements: 1.3, 7.1, 7.2_
 
-- [ ] 2.1 Create UserDataProvider context
+- [x] 2.1 Create UserDataProvider context
   - Implement React Query/SWR for caching
   - Deduplicate useUserData calls across components
   - _Requirements: 1.3, 7.2_
 
-- [ ]* 2.2 Write property test for API deduplication
+- [x] 2.2 Write property test for API deduplication
+
   - **Property 3: API call deduplication**
   - **Validates: Requirements 1.3, 7.2**
 
-- [ ] 2.3 Add route-level loading states
+- [x] 2.3 Add route-level loading states
   - Create loading.tsx for all dashboard routes
   - Implement skeleton components for immediate feedback
   - _Requirements: 7.1_
