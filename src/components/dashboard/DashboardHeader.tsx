@@ -3,23 +3,27 @@
  *
  * Header composable con variants e slots
  * Supporta context-aware content e scroll behavior
+ * 
+ * MIGRATED: Using Signature Primitives v1
+ * - UiSurface variant="header"
+ * - UiButton for primary actions
+ * - UiStatusChip for status indicators
  */
 
 'use client';
 
 import { useTranslations } from 'next-intl';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
+import { UiButton, UiStatusChip, UiSurface } from '@/components/ui';
 import { useUserData } from '@/hooks/useUserData';
 import { Logo } from '@/templates/Logo';
 import { cn } from '@/utils/Helpers';
 
 import { UserDropdown } from './UserDropdown';
 
-export type HeaderVariant = 'home' | 'learn' | 'tools' | 'community' | 'profile';
-
 export type HeaderAction = {
-  labelKey: string;
+  label: string; // Already translated (no labelKey)
   onClick: () => void;
   icon?: React.ReactNode;
   variant?: 'primary' | 'secondary';
@@ -28,11 +32,10 @@ export type HeaderAction = {
 export type HeaderStatus = {
   type: 'streak' | 'focus' | 'next' | 'progress';
   value: number | string;
-  labelKey?: string;
+  label?: string; // Already translated (no labelKey)
 };
 
 export type DashboardHeaderProps = {
-  variant?: HeaderVariant;
   titleKey?: string;
   primaryAction?: HeaderAction;
   status?: HeaderStatus;
@@ -40,6 +43,7 @@ export type DashboardHeaderProps = {
   leftSlot?: React.ReactNode;
   className?: string;
   showScrollShadow?: boolean;
+  titleAs?: 'h1' | 'h2' | 'p'; // A11y: configurable heading level
 };
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
@@ -50,132 +54,127 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   leftSlot,
   className,
   showScrollShadow = true,
+  titleAs = 'h1', // Default h1, but configurable
 }) => {
   const t = useTranslations('Dashboard');
   const tGeneral = useTranslations();
   const { userData, isLoading } = useUserData();
   const [hasScrolled, setHasScrolled] = useState(false);
+  const rafRef = useRef<number>();
 
-  // Scroll shadow effect
+  // Scroll shadow effect with throttling via requestAnimationFrame
+  const handleScroll = useCallback(() => {
+    if (rafRef.current) {
+      return;
+    }
+
+    rafRef.current = requestAnimationFrame(() => {
+      setHasScrolled(window.scrollY > 10);
+      rafRef.current = undefined;
+    });
+  }, []);
+
   useEffect(() => {
     if (!showScrollShadow) {
       return;
     }
 
-    const handleScroll = () => {
-      setHasScrolled(window.scrollY > 10);
-    };
-
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [showScrollShadow]);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
+  }, [showScrollShadow, handleScroll]);
 
-  // Status chip renderer
+  // Status chip renderer (migrated to UiStatusChip)
   const renderStatus = () => {
     if (!status) {
       return null;
     }
 
-    const getStatusContent = () => {
-      switch (status.type) {
-        case 'streak': {
-          return (
-            <div className="flex items-center gap-1.5">
-              <div className="size-2 animate-pulse rounded-full bg-accent" />
-              <span className="text-sm font-medium">
-                {status.value}
-                {' '}
-                {t('days')}
-              </span>
-            </div>
-          );
-        }
-        case 'focus': {
-          return (
-            <div className="flex items-center gap-1.5">
-              <div className="size-2 rounded-full bg-primary" />
-              <span className="text-sm font-medium">
-                {t('focus_mode_active')}
-              </span>
-            </div>
-          );
-        }
-        case 'next': {
-          return (
-            <span className="text-sm font-medium">
-              {status.labelKey ? t(status.labelKey as any) : status.value}
-            </span>
-          );
-        }
-        case 'progress': {
-          return (
-            <div className="flex items-center gap-2">
-              <div className="h-1 w-16 overflow-hidden rounded-full bg-muted">
-                <div
-                  className="h-full bg-primary transition-all duration-300"
-                  style={{ width: `${status.value}%` }}
-                />
-              </div>
-              <span className="text-xs text-muted-foreground">
-                {status.value}
-                %
-              </span>
-            </div>
-          );
-        }
-        default: {
-          return null;
-        }
+    switch (status.type) {
+      case 'streak': {
+        return (
+          <UiStatusChip
+            variant="streak"
+            label={status.label || t('days')}
+            value={status.value}
+            dot
+          />
+        );
       }
-    };
-
-    return (
-      <div
-        className={cn(
-          'px-3 py-1.5 rounded-full glass-surface',
-          'motion-fast hover-lift',
-        )}
-      >
-        {getStatusContent()}
-      </div>
-    );
+      case 'focus': {
+        return (
+          <UiStatusChip
+            variant="info"
+            label={status.label || t('focus_mode_active')}
+            dot
+          />
+        );
+      }
+      case 'next': {
+        return (
+          <UiStatusChip
+            variant="info"
+            label={status.label || String(status.value)}
+          />
+        );
+      }
+      case 'progress': {
+        return (
+          <UiStatusChip
+            variant="progress"
+            label={status.label || t('completed')}
+            value={`${status.value}%`}
+          />
+        );
+      }
+      default: {
+        return null;
+      }
+    }
   };
 
-  // Primary action renderer
+  // Primary action renderer (migrated to UiButton)
   const renderPrimaryAction = () => {
     if (!primaryAction) {
       return null;
     }
 
     return (
-      <button
-        type="button"
+      <UiButton
+        variant={primaryAction.variant === 'secondary' ? 'secondary' : 'primary'}
+        size="sm"
         onClick={primaryAction.onClick}
-        className={cn(
-          'px-4 py-2 rounded-xl font-medium text-sm',
-          'press-depth touch-optimized focus-ring',
-          'motion-fast',
-          {
-            'bg-primary text-primary-foreground hover:bg-primary/90':
-              primaryAction.variant !== 'secondary',
-            'bg-secondary text-secondary-foreground hover:bg-secondary/80':
-              primaryAction.variant === 'secondary',
-          },
-        )}
       >
-        <div className="flex items-center gap-2">
-          {primaryAction.icon}
-          <span>{t(primaryAction.labelKey as any)}</span>
-        </div>
-      </button>
+        {primaryAction.icon}
+        <span>{primaryAction.label}</span>
+      </UiButton>
     );
   };
 
+  // Safe email fallback
+  const getUserDisplayName = () => {
+    if (!userData) {
+      return t('not_authenticated');
+    }
+    if (userData.name) {
+      return userData.name;
+    }
+    const safeEmail = userData.email ?? '';
+    return safeEmail.includes('@') ? safeEmail.split('@')[0] : 'User';
+  };
+
+  // Dynamic title component
+  const TitleComponent = titleAs;
+
   return (
-    <header
+    <UiSurface
+      variant="header"
       className={cn(
         'sticky top-0 layer-header',
-        'glass-header',
         'motion-base',
         // Scroll shadow
         hasScrolled && showScrollShadow && 'shadow-medium',
@@ -194,9 +193,9 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           {/* Context Title */}
           {titleKey && (
             <div className="hidden sm:block">
-              <h1 className="text-lg font-semibold text-foreground">
-                {tGeneral(titleKey as any)}
-              </h1>
+              <TitleComponent className="text-lg font-semibold text-foreground">
+                {tGeneral(titleKey)}
+              </TitleComponent>
             </div>
           )}
         </div>
@@ -223,7 +222,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               : userData
                 ? (
                     <UserDropdown
-                      userName={userData.name || userData.email.split('@')[0] || 'User'}
+                      userName={getUserDisplayName()}
                       userEmail={userData.email}
                     />
                   )
@@ -235,6 +234,6 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           </div>
         </div>
       </div>
-    </header>
+    </UiSurface>
   );
 };
