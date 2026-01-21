@@ -1,11 +1,8 @@
 /*
  * TOOLS ICON - Tradelia Signature Premium SVG
  *
- * Design: Wrench + screwdriver with signature animations
- * Optical weight: Bilanciato per 24px navigation
- * Animation: Tools cross and rotate
- * Motion: Respects prefers-reduced-motion (full/reduced/none)
- * Premium: Framer Motion + smooth transitions
+ * Design: Settings/sliders icon (lucide-react style)
+ * Clean, professional, well-proportioned
  */
 
 'use client';
@@ -28,46 +25,44 @@ export const ToolsIcon: React.FC<ToolsIconProps> = ({
   const prefersReducedMotion = useReducedMotion();
   const effectiveMotion = motionPreference || (prefersReducedMotion ? 'reduced' : 'full');
 
-  // Premium glow filter
-  const glowId = `tools-glow-${React.useId()}`;
+  const getVariants = () => {
+    if (effectiveMotion === 'none') {
+      return { initial: { scale: 1 }, active: { scale: 1 }, hover: { scale: 1 } };
+    }
+    if (effectiveMotion === 'reduced') {
+      return { initial: { scale: 1 }, active: { scale: 1.05 }, hover: { scale: 1.05 } };
+    }
+    return {
+      initial: { scale: 1 },
+      active: { scale: 1.05 },
+      hover: { scale: 1.1, y: -2 },
+    };
+  };
+
+  const variants = getVariants();
+  const transition = effectiveMotion === 'none' ? { duration: 0 } : { duration: 0.2 };
 
   return (
     <IconBase {...props}>
-      <defs>
-        {/* Premium glow effect */}
-        <filter id={glowId} x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="1.5" result="coloredBlur" />
-          <feMerge>
-            <feMergeNode in="coloredBlur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-      </defs>
-
-      <g filter={isActive && effectiveMotion !== 'none' ? `url(#${glowId})` : undefined}>
-        {/* Wrench */}
-        <motion.g
-          animate={
-            isActive && effectiveMotion === 'full'
-              ? { rotate: [0, -5, 5, 0] }
-              : {}
-          }
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            repeatDelay: 1,
-          }}
-          style={{ transformOrigin: '8px 16px' }}
-        >
-          <path
-            d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            fill="none"
-          />
-        </motion.g>
-      </g>
+      <motion.g
+        variants={variants}
+        initial="initial"
+        animate={isActive ? 'active' : 'initial'}
+        whileHover="hover"
+        transition={transition}
+        style={{ transformOrigin: 'center' }}
+      >
+        {/* Sliders icon - lucide style */}
+        <line x1="4" x2="4" y1="21" y2="14" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <line x1="4" x2="4" y1="10" y2="3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <line x1="12" x2="12" y1="21" y2="12" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <line x1="12" x2="12" y1="8" y2="3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <line x1="20" x2="20" y1="21" y2="16" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <line x1="20" x2="20" y1="12" y2="3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <line x1="1" x2="7" y1="14" y2="14" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <line x1="9" x2="15" y1="8" y2="8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <line x1="17" x2="23" y1="16" y2="16" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      </motion.g>
     </IconBase>
   );
 };

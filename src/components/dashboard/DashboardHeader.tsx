@@ -21,7 +21,6 @@ import { Logo } from '@/templates/Logo';
 import { cn } from '@/utils/Helpers';
 
 import { LanguageSwitcherDashboard } from './LanguageSwitcherDashboard';
-import { NotificationsBell } from './NotificationsBell';
 import { ThemeSwitcher } from './ThemeSwitcher';
 import { UserDropdown } from './UserDropdown';
 
@@ -216,9 +215,6 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
           {/* Custom Right Slot */}
           {rightSlot}
-
-          {/* Notifications Bell */}
-          <NotificationsBell />
 
           {/* Theme Switcher */}
           <ThemeSwitcher />
