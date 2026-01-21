@@ -710,6 +710,14 @@
     "try_again": "Try Again",
     "back_home": "Back to Home"
   },
+  "ErrorBoundary": {
+    "title": "Oops! Something went wrong",
+    "description": "An unexpected error occurred. Don't worry, your data is safe. Try refreshing or go back to the dashboard.",
+    "try_again": "Try again",
+    "back_home": "Back to Dashboard",
+    "actions_label": "Recovery actions",
+    "support_hint": "If the problem persists, contact support with this error ID"
+  },
   "Auth": {
     "meta_title": "Enter Tradelia",
     "meta_description": "Sign in to your account or create a new Tradelia account",

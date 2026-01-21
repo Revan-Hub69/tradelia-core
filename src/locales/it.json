@@ -681,6 +681,14 @@
     "try_again": "Riprova l'accesso",
     "back_home": "Torna alla home"
   },
+  "ErrorBoundary": {
+    "title": "Ops! Qualcosa è andato storto",
+    "description": "Si è verificato un errore imprevisto. Non preoccuparti, i tuoi dati sono al sicuro. Prova ad aggiornare o torna alla dashboard.",
+    "try_again": "Riprova",
+    "back_home": "Torna alla Dashboard",
+    "actions_label": "Azioni di recupero",
+    "support_hint": "Se il problema persiste, contatta il supporto con questo ID errore"
+  },
   "Auth": {
     "meta_title": "Entra in Tradelia",
     "meta_description": "Accedi al tuo account o crea un nuovo account Tradelia",
