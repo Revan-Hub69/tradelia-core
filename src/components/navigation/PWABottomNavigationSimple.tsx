@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 
 import { DynamicIcon, type IconName } from '@/components/icons';
+import { UiNavItem, UiSurface } from '@/components/ui';
 import { getVisibleNavigationItems } from '@/data/navigation.config';
 import { useOptimizedNavigation } from '@/hooks/useOptimizedNavigation';
 import { usePathname } from '@/libs/i18nNavigation';
@@ -27,12 +28,11 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
   };
 
   return (
-    <nav
+    <UiSurface
+      variant="panel"
       className={cn(
         'fixed bottom-0 left-0 right-0 z-50',
         'md:hidden', // Hide on tablet+ (768px+)
-        'bg-white/95 dark:bg-slate-900/95',
-        'backdrop-blur-2xl backdrop-saturate-150',
         'border-t border-white/20 dark:border-white/10',
         'shadow-lg shadow-black/10 dark:shadow-black/30',
         'pb-safe-bottom',
@@ -47,45 +47,37 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
             || (item.href !== '/dashboard' && pathname.startsWith(item.href));
 
           return (
-            <button
+            <UiNavItem
               key={item.id}
-              type="button"
-              onClick={() => handleNavigation(item.href)}
-              className={cn(
-                'flex flex-col items-center justify-center min-w-0 flex-1 px-1 py-2',
-                'min-h-[44px] tap-target',
-                'text-xs font-medium',
-                'transition-all duration-300 motion-spring-premium',
-                'touch-action-manipulation press-depth nav-item-hover',
-                'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
-                {
-                  'text-primary': isActive,
-                  'text-muted-foreground hover:text-foreground': !isActive,
-                  'animate-pulse navigation-skeleton': isPending && navigationTarget === item.href,
-                },
-              )}
-              aria-label={t(item.labelKey.replace('Dashboard.', '') as 'nav_home')}
-              aria-current={isActive ? 'page' : undefined}
-            >
-              <div className="relative mb-1">
+              active={isActive}
+              icon={
                 <DynamicIcon
                   name={item.iconName as IconName}
                   size={20}
                   className={cn(
                     'transition-transform duration-300 motion-spring',
-                    isActive && 'scale-110',
                     isPending && navigationTarget === item.href && 'animate-pulse',
                   )}
                 />
-              </div>
-
+              }
+              className={cn(
+                'flex flex-col items-center justify-center min-w-0 flex-1 px-1 py-2',
+                'min-h-[44px] tap-target',
+                'text-xs font-medium',
+                'touch-action-manipulation',
+                {
+                  'animate-pulse navigation-skeleton': isPending && navigationTarget === item.href,
+                },
+              )}
+              onClick={() => handleNavigation(item.href)}
+            >
               <span className="truncate leading-tight">
                 {t(item.labelKey.replace('Dashboard.', '') as 'nav_home')}
               </span>
-            </button>
+            </UiNavItem>
           );
         })}
       </div>
-    </nav>
+    </UiSurface>
   );
 };
