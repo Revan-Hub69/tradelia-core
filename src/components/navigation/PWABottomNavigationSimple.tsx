@@ -1,8 +1,9 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 
-import { DynamicIcon, type IconName } from '@/components/icons';
+import { DynamicIcon, HomeIcon, LearnIcon, ProfileIcon, type IconName } from '@/components/icons';
 import { UiNavItem, UiSurface } from '@/components/ui';
 import { getVisibleNavigationItems } from '@/data/navigation.config';
 import { useOptimizedNavigation } from '@/hooks/useOptimizedNavigation';
@@ -50,19 +51,9 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
             <UiNavItem
               key={item.id}
               active={isActive}
-              icon={(
-                <DynamicIcon
-                  name={item.iconName as IconName}
-                  size={20}
-                  className={cn(
-                    'transition-transform duration-300 motion-spring',
-                    isPending && navigationTarget === item.href && 'animate-pulse',
-                  )}
-                />
-              )}
               className={cn(
-                'flex flex-col items-center justify-center min-w-0 flex-1 px-1 py-2',
-                'min-h-[44px] tap-target',
+                'relative flex flex-col items-center justify-center min-w-0 flex-1 px-1 py-2',
+                'min-h-[56px] tap-target',
                 'text-xs font-medium',
                 'touch-action-manipulation',
                 {
@@ -70,8 +61,50 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
                 },
               )}
               onClick={() => handleNavigation(item.href)}
+              aria-current={isActive ? 'page' : undefined}
             >
-              <span className="truncate leading-tight">
+              {/* PREMIUM ACTIVE PILL INDICATOR */}
+              {isActive && (
+                <motion.div
+                  layoutId="mobileActivePill"
+                  className="absolute inset-0 bg-primary/10 rounded-2xl"
+                  transition={{
+                    type: 'spring',
+                    stiffness: 400,
+                    damping: 30,
+                  }}
+                />
+              )}
+              
+              {/* PREMIUM ANIMATED ICON */}
+              <motion.div
+                className="relative z-10"
+                whileTap={{ scale: [1, 0.9, 1.1, 1], y: [0, -3, 0] }}
+                transition={{ duration: 0.3 }}
+              >
+                {item.iconName === 'HomeIcon' && (
+                  <HomeIcon size={24} isActive={isActive} />
+                )}
+                {item.iconName === 'LearnIcon' && (
+                  <LearnIcon size={24} isActive={isActive} />
+                )}
+                {item.iconName === 'ProfileIcon' && (
+                  <ProfileIcon size={24} isActive={isActive} />
+                )}
+                {!['HomeIcon', 'LearnIcon', 'ProfileIcon'].includes(item.iconName) && (
+                  <DynamicIcon
+                    name={item.iconName as IconName}
+                    size={24}
+                    className={cn(
+                      'transition-all duration-300',
+                      isActive && 'text-primary',
+                      isPending && navigationTarget === item.href && 'animate-pulse',
+                    )}
+                  />
+                )}
+              </motion.div>
+              
+              <span className="relative z-10 truncate leading-tight mt-1">
                 {t(item.labelKey.replace('Dashboard.', '') as 'nav_home')}
               </span>
             </UiNavItem>

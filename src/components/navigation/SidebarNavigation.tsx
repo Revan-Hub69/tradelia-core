@@ -12,10 +12,11 @@
 
 'use client';
 
+import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 
-import { DynamicIcon, type IconName } from '@/components/icons';
+import { DynamicIcon, HomeIcon, LearnIcon, ProfileIcon, type IconName } from '@/components/icons';
 import { UiNavItem, UiSurface } from '@/components/ui';
 import { Button } from '@/components/ui/button';
 import { NavigationSkeleton } from '@/components/ui/skeleton';
@@ -90,7 +91,7 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
       asChild
       active={isActive && canNavigate}
       className={cn(
-        'group',
+        'group relative',
         {
           'cursor-not-allowed opacity-40': !canNavigate,
           'navigation-skeleton': isNavigating,
@@ -98,6 +99,18 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
         isCollapsed && 'justify-center px-2',
       )}
     >
+      {/* PREMIUM ACTIVE RAIL INDICATOR */}
+      {isActive && canNavigate && (
+        <motion.div
+          layoutId="activeRail"
+          className="absolute left-0 top-0 bottom-0 w-1 rounded-r-full bg-primary"
+          transition={{
+            type: 'spring',
+            stiffness: 300,
+            damping: 30,
+          }}
+        />
+      )}
       <Link
         href={item.href}
         prefetch={item.isPriority && canNavigate}
@@ -106,31 +119,60 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
         aria-disabled={!canNavigate}
         title={isCollapsed ? tGeneral(item.labelKey) : undefined}
       >
-        {/* Icon with state indicators */}
-        <div className="relative shrink-0">
-          <DynamicIcon
-            name={item.iconName as IconName}
-            size={20}
-            className={cn(
-              'motion-fast',
-              !canNavigate && 'opacity-40',
-            )}
-          />
+        {/* Icon with state indicators - PREMIUM ANIMATED */}
+        <motion.div 
+          className="relative shrink-0"
+          whileHover={{ scale: 1.05, rotate: [0, -2, 2, 0] }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ duration: 0.3 }}
+        >
+          {item.iconName === 'HomeIcon' && (
+            <HomeIcon size={24} isActive={isActive} />
+          )}
+          {item.iconName === 'LearnIcon' && (
+            <LearnIcon size={24} isActive={isActive} />
+          )}
+          {item.iconName === 'ProfileIcon' && (
+            <ProfileIcon size={24} isActive={isActive} />
+          )}
+          {!['HomeIcon', 'LearnIcon', 'ProfileIcon'].includes(item.iconName) && (
+            <DynamicIcon
+              name={item.iconName as IconName}
+              size={24}
+              className={cn(
+                'motion-fast',
+                !canNavigate && 'opacity-40',
+                isActive && 'text-primary'
+              )}
+            />
+          )}
 
-          {/* State indicators */}
+          {/* State indicators - PREMIUM */}
           {uxState === 'blocked' && (
-            <div className="absolute -right-1 -top-1 size-2 rounded-full bg-warning" />
+            <motion.div 
+              className="absolute -right-1 -top-1 size-3 rounded-full bg-warning ring-2 ring-background"
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            />
           )}
 
           {uxState === 'offline' && (
-            <div className="absolute -right-1 -top-1 size-2 rounded-full bg-destructive" />
+            <motion.div 
+              className="absolute -right-1 -top-1 size-3 rounded-full bg-destructive ring-2 ring-background"
+              animate={{ scale: [1, 1.2, 1], opacity: [1, 0.5, 1] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            />
           )}
 
-          {/* Badge dot for notifications */}
+          {/* Badge dot for notifications - PREMIUM PULSE */}
           {canNavigate && item.badgeType === 'dot' && (
-            <div className="absolute -right-1 -top-1 size-2 rounded-full bg-accent" />
+            <motion.div 
+              className="absolute -right-1 -top-1 size-3 rounded-full bg-accent ring-2 ring-background"
+              animate={{ scale: [1, 1.3, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            />
           )}
-        </div>
+        </motion.div>
 
         {/* Label - Hidden when collapsed */}
         {!isCollapsed && <span className="flex-1 truncate">{tGeneral(item.labelKey)}</span>}
