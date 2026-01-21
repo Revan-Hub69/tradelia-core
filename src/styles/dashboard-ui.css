@@ -1,0 +1,235 @@
+/**
+ * DASHBOARD UI - Semantic CSS Utilities
+ * 
+ * Semantic naming for navigation and dashboard UI components
+ * Anti-drift guardrails for design system consistency
+ * Based on design tokens and best practices 2026
+ */
+
+/* ============================================================================
+   GLASS SURFACES
+   ============================================================================ */
+
+.ui-glass-surface {
+  @apply relative;
+  @apply bg-white/80 dark:bg-slate-900/80;
+  @apply backdrop-blur-2xl backdrop-saturate-150;
+  @apply border border-white/10 dark:border-white/5;
+}
+
+.ui-glass-header {
+  @apply ui-glass-surface;
+  @apply sticky top-0 z-50;
+  @apply shadow-lg shadow-black/5 dark:shadow-black/20;
+}
+
+.ui-glass-card {
+  @apply ui-glass-surface;
+  @apply rounded-xl;
+  @apply shadow-md shadow-black/5 dark:shadow-black/10;
+}
+
+.ui-glass-panel {
+  @apply ui-glass-surface;
+  @apply rounded-2xl;
+  @apply shadow-xl shadow-black/10 dark:shadow-black/30;
+}
+
+/* ============================================================================
+   INTERACTIVE ELEMENTS
+   ============================================================================ */
+
+.ui-pressable {
+  @apply transition-all duration-200;
+  @apply active:scale-95 active:translate-y-0.5;
+  @apply active:shadow-inner;
+}
+
+.ui-hoverable {
+  @apply transition-all duration-300;
+  @apply hover:scale-105;
+  @apply hover:shadow-lg;
+}
+
+.ui-focusable {
+  @apply focus:outline-none;
+  @apply focus:ring-2 focus:ring-primary focus:ring-offset-2;
+  @apply focus:ring-offset-background;
+}
+
+/* ============================================================================
+   NAVIGATION ITEMS
+   ============================================================================ */
+
+.ui-nav-item {
+  @apply relative flex items-center gap-3;
+  @apply px-3 py-2 rounded-lg;
+  @apply text-sm font-medium;
+  @apply transition-all duration-300;
+  @apply ui-pressable ui-focusable;
+}
+
+.ui-nav-item-active {
+  @apply ui-nav-item;
+  @apply bg-primary/10 text-primary;
+  @apply shadow-sm;
+}
+
+.ui-nav-item-inactive {
+  @apply ui-nav-item;
+  @apply text-muted-foreground;
+  @apply hover:text-foreground hover:bg-accent/50;
+}
+
+.ui-nav-item-disabled {
+  @apply ui-nav-item;
+  @apply cursor-not-allowed;
+  @apply text-muted-foreground/40;
+  @apply opacity-50;
+}
+
+/* ============================================================================
+   STATUS CHIPS
+   ============================================================================ */
+
+.ui-status-chip {
+  @apply inline-flex items-center gap-2;
+  @apply px-3 py-1.5 rounded-full;
+  @apply text-sm font-medium;
+  @apply ui-glass-surface;
+  @apply transition-all duration-200;
+}
+
+.ui-status-chip-streak {
+  @apply ui-status-chip;
+  @apply border-orange-500/30 bg-orange-500/10;
+  @apply text-orange-700 dark:text-orange-300;
+}
+
+.ui-status-chip-progress {
+  @apply ui-status-chip;
+  @apply border-primary/30 bg-primary/10;
+  @apply text-primary;
+}
+
+.ui-status-chip-focus {
+  @apply ui-status-chip;
+  @apply border-blue-500/30 bg-blue-500/10;
+  @apply text-blue-700 dark:text-blue-300;
+}
+
+/* ============================================================================
+   BUTTONS
+   ============================================================================ */
+
+.ui-button-primary {
+  @apply px-4 py-2 rounded-xl;
+  @apply bg-primary text-primary-foreground;
+  @apply font-medium text-sm;
+  @apply ui-pressable ui-focusable;
+  @apply hover:bg-primary/90;
+  @apply disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.ui-button-secondary {
+  @apply px-4 py-2 rounded-xl;
+  @apply bg-secondary text-secondary-foreground;
+  @apply font-medium text-sm;
+  @apply ui-pressable ui-focusable;
+  @apply hover:bg-secondary/80;
+  @apply disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.ui-button-ghost {
+  @apply px-3 py-2 rounded-xl;
+  @apply bg-transparent;
+  @apply font-medium text-sm;
+  @apply ui-pressable ui-focusable;
+  @apply hover:bg-accent/50;
+  @apply disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.ui-icon-button {
+  @apply size-9 p-0 rounded-xl;
+  @apply flex items-center justify-center;
+  @apply ui-glass-surface;
+  @apply ui-pressable ui-focusable;
+  @apply hover:bg-white/60 dark:hover:bg-white/20;
+}
+
+/* ============================================================================
+   LAYOUT UTILITIES
+   ============================================================================ */
+
+.ui-sidebar {
+  @apply hidden md:block;
+  @apply border-r border-border/20;
+  @apply ui-glass-surface;
+  @apply transition-all duration-300 ease-out;
+}
+
+.ui-header {
+  @apply ui-glass-header;
+  @apply h-16 md:h-18;
+}
+
+.ui-bottom-nav {
+  @apply fixed bottom-0 left-0 right-0 z-50;
+  @apply md:hidden;
+  @apply ui-glass-surface;
+  @apply border-t border-white/20 dark:border-white/10;
+  @apply pb-safe-bottom;
+}
+
+/* ============================================================================
+   ANIMATIONS
+   ============================================================================ */
+
+.ui-fade-in {
+  @apply animate-in fade-in-0 duration-300;
+}
+
+.ui-slide-in-from-top {
+  @apply animate-in slide-in-from-top-2 duration-300;
+}
+
+.ui-slide-in-from-bottom {
+  @apply animate-in slide-in-from-bottom-2 duration-300;
+}
+
+.ui-scale-in {
+  @apply animate-in zoom-in-95 duration-200;
+}
+
+/* ============================================================================
+   ACCESSIBILITY
+   ============================================================================ */
+
+.ui-sr-only {
+  @apply sr-only;
+}
+
+.ui-skip-link {
+  @apply absolute -top-full left-0;
+  @apply px-4 py-2 rounded-md;
+  @apply bg-primary text-primary-foreground;
+  @apply focus:top-4 focus:left-4;
+  @apply ui-focusable;
+  @apply z-[9999];
+}
+
+/* ============================================================================
+   RESPONSIVE UTILITIES
+   ============================================================================ */
+
+.ui-mobile-only {
+  @apply md:hidden;
+}
+
+.ui-tablet-up {
+  @apply hidden md:block;
+}
+
+.ui-desktop-only {
+  @apply hidden lg:block;
+}
