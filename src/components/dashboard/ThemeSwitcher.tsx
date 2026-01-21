@@ -1,9 +1,11 @@
 /*
- * THEME SWITCHER - Tradelia Premium 2026
+ * THEME SWITCHER - Tradelia Signature Premium 2026
  *
  * Elegant theme toggle with signature animations
- * - Homemade Sun/Moon icons
- * - Smooth transitions (respects prefers-reduced-motion)
+ * - Signature Sun/Moon icons with premium animations
+ * - 180deg rotation on toggle
+ * - Ray pulse + glow effects (full motion)
+ * - Respects motion preferences
  * - Keyboard accessible (Space/Enter)
  * - Tooltip on hover
  * - 44px touch target
@@ -70,20 +72,18 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
             )}
             aria-label={t('theme_toggle_aria_label')}
           >
-            <div
-              className={cn(
-                'motion-base origin-center',
-                // Rotation animation on toggle
-                'transition-transform duration-300 ease-out',
-                // Respect prefers-reduced-motion
-                'motion-reduce:transition-none',
-              )}
-              style={{
-                transform: isDark ? 'rotate(0deg)' : 'rotate(180deg)',
-              }}
-            >
-              {isDark ? <MoonIcon size={16} /> : <SunIcon size={16} />}
-            </div>
+            {/* Signature icons with premium animations */}
+            {isDark ? (
+              <MoonIcon
+                size={16}
+                isActive={true}
+              />
+            ) : (
+              <SunIcon
+                size={16}
+                isActive={true}
+              />
+            )}
           </Button>
         </TooltipTrigger>
         <TooltipContent side="bottom" className="text-xs">

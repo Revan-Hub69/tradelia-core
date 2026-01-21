@@ -1,46 +1,50 @@
 /*
- * TRADELIA ICONS INDEX - Enterprise 2026
+ * TRADELIA ICONS INDEX - Signature Premium 2026
  *
- * Barrel export per tutte le icone custom
+ * Barrel export per tutte le icone custom con signature animations
  * Organizzate per categoria: navigation, interface, status
+ * Premium: Framer Motion integration, motion preferences
  */
 
 import React from 'react';
 
 import type { IconBaseProps } from './IconBase';
-import { BellIcon } from './interface/BellIcon';
+import { BellIcon, type BellIconProps } from './interface/BellIcon';
 import { ChevronDownIcon } from './interface/ChevronDownIcon';
+import { GlobeIcon, type GlobeIconProps } from './interface/GlobeIcon';
 import { LockIcon } from './interface/LockIcon';
 import { LogoutIcon } from './interface/LogoutIcon';
+import { MoonIcon, type MoonIconProps } from './interface/MoonIcon';
 import { MoreVerticalIcon } from './interface/MoreVerticalIcon';
 import { SettingsIcon } from './interface/SettingsIcon';
+import { SunIcon, type SunIconProps } from './interface/SunIcon';
 import { CommunityIcon } from './navigation/CommunityIcon';
 // Import all icons for mapping
-import { HomeIcon } from './navigation/HomeIcon';
-import { LearnIcon } from './navigation/LearnIcon';
-import { ProfileIcon } from './navigation/ProfileIcon';
+import { HomeIcon, type HomeIconProps } from './navigation/HomeIcon';
+import { LearnIcon, type LearnIconProps } from './navigation/LearnIcon';
+import { ProfileIcon, type ProfileIconProps } from './navigation/ProfileIcon';
 import { ToolsIcon } from './navigation/ToolsIcon';
 
 // Base component
 export { IconBase, type IconBaseProps, type IconProps } from './IconBase';
 
-// Navigation icons
+// Navigation icons (with signature animations)
 export { CommunityIcon } from './navigation/CommunityIcon';
-export { HomeIcon } from './navigation/HomeIcon';
-export { LearnIcon } from './navigation/LearnIcon';
-export { ProfileIcon } from './navigation/ProfileIcon';
+export { HomeIcon, type HomeIconProps } from './navigation/HomeIcon';
+export { LearnIcon, type LearnIconProps } from './navigation/LearnIcon';
+export { ProfileIcon, type ProfileIconProps } from './navigation/ProfileIcon';
 export { ToolsIcon } from './navigation/ToolsIcon';
 
-// Interface icons
-export { BellIcon } from './interface/BellIcon';
+// Interface icons (with signature animations)
+export { BellIcon, type BellIconProps } from './interface/BellIcon';
 export { ChevronDownIcon } from './interface/ChevronDownIcon';
-export { GlobeIcon } from './interface/GlobeIcon';
+export { GlobeIcon, type GlobeIconProps } from './interface/GlobeIcon';
 export { LockIcon } from './interface/LockIcon';
 export { LogoutIcon } from './interface/LogoutIcon';
-export { MoonIcon } from './interface/MoonIcon';
+export { MoonIcon, type MoonIconProps } from './interface/MoonIcon';
 export { MoreVerticalIcon } from './interface/MoreVerticalIcon';
 export { SettingsIcon } from './interface/SettingsIcon';
-export { SunIcon } from './interface/SunIcon';
+export { SunIcon, type SunIconProps } from './interface/SunIcon';
 
 // Status icons
 export { AchievementIcon } from './AchievementIcon';

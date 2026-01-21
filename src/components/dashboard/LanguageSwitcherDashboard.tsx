@@ -1,8 +1,9 @@
 /*
- * LANGUAGE SWITCHER DASHBOARD - Tradelia Premium 2026
+ * LANGUAGE SWITCHER DASHBOARD - Tradelia Signature Premium 2026
  *
  * Elegant language selector for dashboard
- * - Homemade Globe icon
+ * - Signature Globe icon with continuous rotation
+ * - Equator pulse + continent dots (full motion)
  * - Dual-language labels (Italiano / Italian)
  * - Preserves current path
  * - Keyboard accessible
@@ -38,6 +39,7 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
   const pathname = usePathname();
   const locale = useLocale();
   const t = useTranslations('Dashboard');
+  const [isOpen, setIsOpen] = React.useState(false);
 
   const handleChange = (value: string) => {
     router.push(pathname, { locale: value });
@@ -45,7 +47,7 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
   };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <TooltipProvider delayDuration={300}>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -71,18 +73,11 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
                 )}
                 aria-label={t('language_switcher_aria_label')}
               >
-                <div
-                  className={cn(
-                    'motion-base origin-center',
-                    // Subtle rotation on hover
-                    'transition-transform duration-200 ease-out',
-                    'group-hover:rotate-12',
-                    // Respect prefers-reduced-motion
-                    'motion-reduce:transition-none',
-                  )}
-                >
-                  <GlobeIcon size={16} />
-                </div>
+                {/* Signature Globe icon with continuous rotation */}
+                <GlobeIcon
+                  size={16}
+                  isActive={isOpen}
+                />
               </Button>
             </DropdownMenuTrigger>
           </TooltipTrigger>

@@ -1,9 +1,12 @@
 /*
- * TRADELIA ICON BASE v2.0 - Enterprise 2026
+ * TRADELIA ICON BASE v3.0 - Signature Premium 2026
  *
- * Base component per tutte le icone SVG custom
+ * Base component per tutte le icone SVG custom con signature animations
  * Standard: 24x24 grid, stroke 1.75, optical balance
+ * Premium: Framer Motion integration, motion preferences, haptic feedback
  */
+
+'use client';
 
 import React from 'react';
 
@@ -15,6 +18,7 @@ export type IconBaseProps = {
   'state'?: 'default' | 'active' | 'pressed' | 'disabled';
   'className'?: string;
   'aria-hidden'?: boolean;
+  'aria-label'?: string;
 };
 
 export type IconProps = {
@@ -27,6 +31,7 @@ export const IconBase: React.FC<IconProps> = ({
   state = 'default',
   className,
   'aria-hidden': ariaHidden = true,
+  'aria-label': ariaLabel,
   children,
 }) => {
   return (
@@ -40,6 +45,7 @@ export const IconBase: React.FC<IconProps> = ({
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden={ariaHidden}
+      aria-label={ariaLabel}
       className={cn(
         // Base styles
         'flex-shrink-0',
@@ -54,6 +60,13 @@ export const IconBase: React.FC<IconProps> = ({
         },
         className,
       )}
+      style={{
+        // Ensure proper rendering for 3D transforms
+        transformStyle: 'preserve-3d',
+        backfaceVisibility: 'hidden',
+        // Hardware acceleration
+        willChange: 'transform',
+      }}
     >
       {children}
     </svg>
