@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl';
 import { FileQuestion, Home, Search } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/libs/i18nNavigation';
 
 import { UiButton } from '@/components/ui/UiButton';
 import { UiSurface } from '@/components/ui/UiSurface';
