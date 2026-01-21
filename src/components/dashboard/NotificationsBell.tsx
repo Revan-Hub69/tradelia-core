@@ -17,11 +17,11 @@ import React, { useRef, useState } from 'react';
 import { BellIcon } from '@/components/icons';
 import {
   DropdownMenu,
-  DropdownMenuAnchor,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { UiButton, UiIconButton } from '@/components/ui';
 import { QuickActionsMenu } from '@/components/navigation/QuickActionsMenu';
@@ -118,17 +118,16 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
   };
 
-  const handleToggleMenu = () => {
-    if (longPressTriggeredRef.current) {
-      longPressTriggeredRef.current = false;
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (longPressTriggeredRef.current && nextOpen) {
       return;
     }
-    setIsOpen(prev => !prev);
+    setIsOpen(nextOpen);
   };
 
   return (
-    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-      <DropdownMenuAnchor asChild>
+    <DropdownMenu open={isOpen} onOpenChange={handleOpenChange}>
+      <DropdownMenuTrigger asChild>
         <UiIconButton
           ref={triggerRef}
           label={t('notifications_aria_label')}
@@ -150,7 +149,6 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
               )}
             </>
           )}
-          onClick={handleToggleMenu}
           aria-haspopup="menu"
           aria-expanded={isOpen}
           className={cn(
@@ -159,7 +157,7 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
           )}
           {...longPressHandlers}
         />
-      </DropdownMenuAnchor>
+      </DropdownMenuTrigger>
 
       <DropdownMenuContent
         align="end"

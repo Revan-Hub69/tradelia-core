@@ -18,10 +18,10 @@ import React, { useRef, useState } from 'react';
 import { GlobeIcon } from '@/components/icons';
 import {
   DropdownMenu,
-  DropdownMenuAnchor,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { UiIconButton } from '@/components/ui';
 import { QuickActionsMenu } from '@/components/navigation/QuickActionsMenu';
@@ -88,22 +88,20 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
     moveThreshold: 10,
   });
 
-  const handleToggleMenu = () => {
-    if (longPressTriggeredRef.current) {
-      longPressTriggeredRef.current = false;
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (longPressTriggeredRef.current && nextOpen) {
       return;
     }
-    setIsOpen(prev => !prev);
+    setIsOpen(nextOpen);
   };
 
   return (
-    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-      <DropdownMenuAnchor asChild>
+    <DropdownMenu open={isOpen} onOpenChange={handleOpenChange}>
+      <DropdownMenuTrigger asChild>
         <UiIconButton
           ref={triggerRef}
           label={t('language_switcher_aria_label')}
           icon={<GlobeIcon size={20} isActive={isOpen} />}
-          onClick={handleToggleMenu}
           aria-haspopup="menu"
           aria-expanded={isOpen}
           className={cn(
@@ -112,7 +110,7 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
           )}
           {...longPressHandlers}
         />
-      </DropdownMenuAnchor>
+      </DropdownMenuTrigger>
 
       <DropdownMenuContent
         align="end"

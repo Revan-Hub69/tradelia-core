@@ -265,10 +265,11 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
         // Responsive visibility - Show on tablet and desktop (768px+)
         'hidden md:block',
         'layout-sidebar border-r border-border/20',
-        'transition-[width] duration-300 ease-[var(--ease-tradelia-gentle)]',
+        'transition-[width] duration-300',
         isCollapsed ? 'w-16' : 'w-64',
         className,
       )}
+      style={{ transitionTimingFunction: 'var(--ease-tradelia-gentle)' }}
       role="navigation"
       aria-label={t('nav_aria_sidebar')}
     >
