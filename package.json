@@ -17,6 +17,7 @@
     "db:studio": "dotenv -c production -- drizzle-kit studio",
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build",
+    "i18n:validate": "tsx scripts/validate-translations.ts",
     "prepare": "husky"
   },
   "dependencies": {

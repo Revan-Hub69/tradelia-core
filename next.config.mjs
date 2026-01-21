@@ -1,4 +1,5 @@
 import { fileURLToPath } from 'node:url';
+import { execSync } from 'node:child_process';
 
 import withBundleAnalyzer from '@next/bundle-analyzer';
 import createJiti from 'jiti';
@@ -13,6 +14,18 @@ const withNextIntlConfig = withNextIntl();
 const bundleAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
 });
+
+// Validate translations during production build
+if (process.env.NODE_ENV === 'production' && !process.env.SKIP_I18N_VALIDATION) {
+  try {
+    console.log('🔍 Validating translations...');
+    execSync('npm run i18n:validate', { stdio: 'inherit' });
+    console.log('✅ Translation validation passed\n');
+  } catch (error) {
+    console.error('❌ Translation validation failed');
+    process.exit(1);
+  }
+}
 
 /** @type {import('next').NextConfig} */
 export default bundleAnalyzer(

@@ -1,0 +1,149 @@
+{
+  "appearance": {
+    "title": "Aspetto",
+    "description": "Personalizza l'aspetto di Tradelia",
+    "theme": {
+      "label": "Tema",
+      "light": "Chiaro",
+      "dark": "Scuro",
+      "auto": "Automatico",
+      "schedule": "Programmato",
+      "description": "Scegli il tuo tema colore preferito"
+    },
+    "fontSize": {
+      "label": "Dimensione Testo",
+      "small": "Piccolo",
+      "medium": "Medio",
+      "large": "Grande",
+      "extraLarge": "Extra Grande",
+      "description": "Regola la dimensione del testo per una migliore leggibilità"
+    },
+    "density": {
+      "label": "Densità",
+      "compact": "Compatta",
+      "comfortable": "Confortevole",
+      "spacious": "Spaziosa",
+      "description": "Controlla la spaziatura tra gli elementi dell'interfaccia"
+    },
+    "contrast": {
+      "label": "Contrasto",
+      "normal": "Normale",
+      "high": "Alto",
+      "auto": "Automatico",
+      "description": "Regola il contrasto dei colori per una migliore visibilità"
+    },
+    "motion": {
+      "label": "Movimento",
+      "full": "Completo",
+      "reduced": "Ridotto",
+      "none": "Nessuno",
+      "description": "Controlla gli effetti di animazione e transizione"
+    }
+  },
+  "preferences": {
+    "title": "Preferenze",
+    "description": "Gestisci le tue preferenze di apprendimento",
+    "language": {
+      "label": "Lingua",
+      "description": "Scegli la tua lingua preferita"
+    },
+    "difficulty": {
+      "label": "Difficoltà",
+      "beginner": "Principiante",
+      "intermediate": "Intermedio",
+      "advanced": "Avanzato",
+      "description": "Imposta il tuo livello di difficoltà di apprendimento"
+    },
+    "autoPlay": {
+      "label": "Avvio automatico prossima lezione",
+      "description": "Avvia automaticamente la prossima lezione dopo averne completata una"
+    }
+  },
+  "notifications": {
+    "title": "Notifiche",
+    "description": "Gestisci come ricevi le notifiche",
+    "email": {
+      "label": "Notifiche email",
+      "description": "Ricevi aggiornamenti via email"
+    },
+    "push": {
+      "label": "Notifiche push",
+      "description": "Ricevi notifiche push del browser"
+    },
+    "dailyReminder": {
+      "label": "Promemoria giornaliero",
+      "description": "Ricevi un promemoria per completare la lezione giornaliera"
+    },
+    "streakReminder": {
+      "label": "Promemoria serie",
+      "description": "Ricevi una notifica quando la tua serie è a rischio"
+    }
+  },
+  "privacy": {
+    "title": "Privacy",
+    "description": "Controlla le tue impostazioni di privacy",
+    "profileVisible": {
+      "label": "Profilo pubblico",
+      "description": "Rendi il tuo profilo visibile agli altri utenti"
+    },
+    "progressVisible": {
+      "label": "Mostra progresso",
+      "description": "Mostra pubblicamente il tuo progresso di apprendimento"
+    },
+    "leaderboardVisible": {
+      "label": "Partecipazione classifica",
+      "description": "Appari nelle classifiche pubbliche"
+    }
+  },
+  "policy": {
+    "locked": "Bloccato da policy",
+    "enforced": "Imposto da policy: {value}",
+    "managed": "Gestito da policy",
+    "description": "Questa impostazione è controllata dalla tua organizzazione"
+  },
+  "saveStatus": {
+    "saving": "Salvataggio...",
+    "saved": "Salvato",
+    "error": "Errore nel salvataggio delle impostazioni",
+    "offline": "Offline - le modifiche verranno sincronizzate quando online"
+  },
+  "actions": {
+    "save": "Salva",
+    "cancel": "Annulla",
+    "reset": "Ripristina predefiniti",
+    "resetConfirm": "Sei sicuro di voler ripristinare tutte le impostazioni ai valori predefiniti?"
+  },
+  "quickActions": {
+    "theme": {
+      "title": "Tema",
+      "light": "Modalità chiara",
+      "dark": "Modalità scura",
+      "auto": "Automatico (sistema)",
+      "schedule": "Programmato"
+    },
+    "language": {
+      "title": "Lingua",
+      "recent": "Lingue recenti"
+    },
+    "notifications": {
+      "title": "Notifiche",
+      "markAllRead": "Segna tutte come lette",
+      "settings": "Impostazioni notifiche",
+      "studyReminders": "Promemoria studio",
+      "doNotDisturb": "Non disturbare"
+    }
+  },
+  "keyboard": {
+    "shortcuts": {
+      "theme": "Cambia tema (Alt+T)",
+      "language": "Cambia lingua (Alt+L)",
+      "conflict": "La scorciatoia potrebbe essere in conflitto con il browser. Prova {alternative}",
+      "alternative": "Ctrl+Maiusc+{key}"
+    }
+  },
+  "coachmarks": {
+    "longPress": "Tieni premuto per azioni rapide",
+    "recentLanguages": "Tieni premuto per lingue recenti",
+    "themeOptions": "Tieni premuto per opzioni tema"
+  }
+}
