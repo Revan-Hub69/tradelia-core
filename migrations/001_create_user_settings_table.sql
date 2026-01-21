@@ -143,4 +143,3 @@ COMMENT ON COLUMN user_settings.created_at IS
 
 -- Grant access to authenticated users
 GRANT SELECT, INSERT, UPDATE, DELETE ON user_settings TO authenticated;
-GRANT USAGE ON SEQUENCE user_settings_id_seq TO authenticated;
