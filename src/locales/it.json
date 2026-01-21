@@ -697,7 +697,9 @@
     "popular_pages": "Pagine popolari:",
     "learn": "Impara",
     "tools": "Strumenti",
-    "community": "Community"
+    "community": "Community",
+    "report_hint": "Pensi sia un errore?",
+    "report_link": "Segnala link rotto"
   },
   "Auth": {
     "meta_title": "Entra in Tradelia",

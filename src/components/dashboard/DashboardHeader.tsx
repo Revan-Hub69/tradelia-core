@@ -187,7 +187,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         <div className="flex items-center gap-4">
           {leftSlot || (
             <div className="md:hidden">
-              <Logo size="sm" />
+              <Logo size="sm" href="/dashboard" />
             </div>
           )}
 

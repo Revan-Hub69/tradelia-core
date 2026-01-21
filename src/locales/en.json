@@ -726,7 +726,9 @@
     "popular_pages": "Popular pages:",
     "learn": "Learn",
     "tools": "Tools",
-    "community": "Community"
+    "community": "Community",
+    "report_hint": "Think this is a mistake?",
+    "report_link": "Report broken link"
   },
   "Auth": {
     "meta_title": "Enter Tradelia",
