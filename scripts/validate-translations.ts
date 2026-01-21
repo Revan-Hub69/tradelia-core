@@ -15,7 +15,7 @@
  */
 
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
-import { join, relative } from 'node:path';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
@@ -130,7 +130,7 @@ function validateICUFormat(message: string): string | null {
         const type = parts[1];
         const validTypes = ['number', 'date', 'time', 'plural', 'selectordinal', 'select'];
         
-        if (!validTypes.includes(type)) {
+        if (type && !validTypes.includes(type)) {
           return `Invalid placeholder type "${type}" in: ${placeholder}`;
         }
       }
@@ -165,9 +165,16 @@ function validateTranslations(): ValidationResult {
   // Get source messages (English)
   const sourceMessages = messagesByLocale[SOURCE_LOCALE];
   
+  if (!sourceMessages) {
+    console.error(`${colors.red}✗${colors.reset} Source locale ${SOURCE_LOCALE} not found`);
+    process.exit(1);
+  }
+  
   // Validate each namespace
   for (const namespace of Object.keys(sourceMessages)) {
     const sourceKeys = sourceMessages[namespace];
+    
+    if (!sourceKeys) continue;
     
     // Validate ICU format in source locale
     for (const [key, message] of Object.entries(sourceKeys)) {
@@ -186,7 +193,10 @@ function validateTranslations(): ValidationResult {
     for (const locale of LOCALES) {
       if (locale === SOURCE_LOCALE) continue;
       
-      const targetMessages = messagesByLocale[locale][namespace];
+      const localeMessages = messagesByLocale[locale];
+      if (!localeMessages) continue;
+      
+      const targetMessages = localeMessages[namespace];
       
       if (!targetMessages) {
         // Entire namespace missing
@@ -205,7 +215,8 @@ function validateTranslations(): ValidationResult {
       
       // Check for untranslated keys (same as source)
       for (const [key, message] of Object.entries(targetMessages)) {
-        if (sourceKeys[key] && message === sourceKeys[key]) {
+        const sourceValue = sourceKeys[key];
+        if (sourceValue && message === sourceValue) {
           result.untranslatedKeys.push({ locale, key, namespace });
         }
         
@@ -251,21 +262,21 @@ function printResults(result: ValidationResult): void {
     console.log(`${colors.red}✗ Missing Translation Keys (${result.missingKeys.length})${colors.reset}`);
     
     // Group by locale
-    const byLocale = result.missingKeys.reduce((acc, item) => {
+    const byLocale = result.missingKeys.reduce<Record<string, typeof result.missingKeys>>((acc, item) => {
       if (!acc[item.locale]) acc[item.locale] = [];
-      acc[item.locale].push(item);
+      acc[item.locale]!.push(item);
       return acc;
-    }, {} as Record<string, typeof result.missingKeys>);
+    }, {});
     
     for (const [locale, items] of Object.entries(byLocale)) {
       console.log(`  ${colors.gray}${locale}:${colors.reset} ${items.length} missing`);
       
       // Group by namespace
-      const byNamespace = items.reduce((acc, item) => {
+      const byNamespace = items.reduce<Record<string, string[]>>((acc, item) => {
         if (!acc[item.namespace]) acc[item.namespace] = [];
-        acc[item.namespace].push(item.key);
+        acc[item.namespace]!.push(item.key);
         return acc;
-      }, {} as Record<string, string[]>);
+      }, {});
       
       for (const [namespace, keys] of Object.entries(byNamespace)) {
         console.log(`    ${colors.gray}${namespace}:${colors.reset}`);
@@ -287,11 +298,11 @@ function printResults(result: ValidationResult): void {
     console.log(`  ${colors.gray}Keys that have the same value as source locale${colors.reset}`);
     
     // Group by locale
-    const byLocale = result.untranslatedKeys.reduce((acc, item) => {
+    const byLocale = result.untranslatedKeys.reduce<Record<string, typeof result.untranslatedKeys>>((acc, item) => {
       if (!acc[item.locale]) acc[item.locale] = [];
-      acc[item.locale].push(item);
+      acc[item.locale]!.push(item);
       return acc;
-    }, {} as Record<string, typeof result.untranslatedKeys>);
+    }, {});
     
     for (const [locale, items] of Object.entries(byLocale)) {
       console.log(`  ${colors.gray}${locale}:${colors.reset} ${items.length} untranslated`);

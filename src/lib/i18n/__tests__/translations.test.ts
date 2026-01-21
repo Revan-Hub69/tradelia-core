@@ -40,7 +40,7 @@ function validateICUFormat(message: string): string | null {
   let match;
   
   while ((match = placeholderRegex.exec(message)) !== null) {
-    const content = match[1].trim();
+    const content = match[1]?.trim() ?? '';
     
     // Empty placeholder
     if (!content) {
@@ -59,7 +59,7 @@ function validateICUFormat(message: string): string | null {
       const type = parts[1];
       const validTypes = ['number', 'date', 'time', 'plural', 'selectordinal', 'select'];
       
-      if (!validTypes.includes(type)) {
+      if (type && !validTypes.includes(type)) {
         return `Invalid placeholder type "${type}" in: ${match[0]}`;
       }
     }
@@ -190,8 +190,13 @@ describe('Translation Validation', () => {
         const itMessages = flattenKeys(itContent);
         
         for (const key of Object.keys(enMessages)) {
-          const enPlaceholders = (enMessages[key].match(/{([^}]+)}/g) || []).sort();
-          const itPlaceholders = (itMessages[key].match(/{([^}]+)}/g) || []).sort();
+          const enMessage = enMessages[key];
+          const itMessage = itMessages[key];
+          
+          if (!enMessage || !itMessage) continue;
+          
+          const enPlaceholders = (enMessage.match(/{([^}]+)}/g) || []).sort();
+          const itPlaceholders = (itMessage.match(/{([^}]+)}/g) || []).sort();
           
           expect(itPlaceholders, `${namespace}: ${key} has inconsistent placeholders`).toEqual(enPlaceholders);
         }
