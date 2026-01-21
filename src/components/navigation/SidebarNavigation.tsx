@@ -3,6 +3,11 @@
  *
  * Collapsible sidebar navigation for desktop experience
  * Enterprise-level navigation with keyboard shortcuts and advanced features
+ * 
+ * MIGRATED: Using Signature Primitives v1
+ * - UiNavItem for navigation items
+ * - UiSurface for sidebar container
+ * - UiIconButton for collapse button
  */
 
 'use client';
@@ -11,6 +16,7 @@ import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 
 import { DynamicIcon, type IconName } from '@/components/icons';
+import { UiIconButton, UiNavItem, UiSurface } from '@/components/ui';
 import { Button } from '@/components/ui/button';
 import { NavigationSkeleton } from '@/components/ui/skeleton';
 import { getVisibleNavigationItems, trackNavigationEvent } from '@/data/navigation.config';
@@ -80,70 +86,71 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
   const isNavigating = isPending && navigationTarget === item.href;
 
   return (
-    <Link
-      href={item.href}
-      prefetch={item.isPriority && canNavigate}
-      onClick={handleClick}
+    <UiNavItem
+      asChild
+      active={isActive && canNavigate}
+      icon={
+        <div className="relative">
+          <DynamicIcon
+            name={item.iconName as IconName}
+            size={20}
+            className={cn(
+              'motion-fast',
+              !canNavigate && 'opacity-40',
+            )}
+          />
+
+          {/* State indicators */}
+          {uxState === 'blocked' && (
+            <div className="absolute -right-1 -top-1 size-2 rounded-full bg-warning" />
+          )}
+
+          {uxState === 'offline' && (
+            <div className="absolute -right-1 -top-1 size-2 rounded-full bg-destructive" />
+          )}
+
+          {/* Badge dot for notifications */}
+          {canNavigate && item.badgeType === 'dot' && (
+            <div className="absolute -right-1 -top-1 size-2 rounded-full bg-accent" />
+          )}
+        </div>
+      }
       className={cn(
-        'group relative flex items-center gap-3 rounded-lg px-3 py-2',
-        'text-sm font-medium transition-all duration-300',
-        'tap-target press-depth focus-ring touch-optimized nav-item-hover',
+        'group',
         {
-          'bg-primary/10 text-primary shadow-sm': isActive && canNavigate,
-          'text-muted-foreground hover:text-foreground': !isActive && canNavigate,
-          'cursor-not-allowed text-muted-foreground/40': !canNavigate,
+          'cursor-not-allowed opacity-40': !canNavigate,
           'navigation-skeleton': isNavigating,
         },
         isCollapsed && 'justify-center px-2',
       )}
-      aria-current={isActive ? 'page' : undefined}
-      aria-disabled={!canNavigate}
-      title={isCollapsed ? tGeneral(item.labelKey) : undefined}
     >
-      <div className="relative shrink-0">
-        <DynamicIcon
-          name={item.iconName as IconName}
-          size={20}
-          className={cn(
-            'motion-fast',
-            isActive && 'scale-110',
-            !canNavigate && 'opacity-40',
-          )}
-        />
+      <Link
+        href={item.href}
+        prefetch={item.isPriority && canNavigate}
+        onClick={handleClick}
+        className="flex w-full items-center gap-3"
+        aria-disabled={!canNavigate}
+        title={isCollapsed ? tGeneral(item.labelKey) : undefined}
+      >
+        {/* Label - Hidden when collapsed */}
+        {!isCollapsed && <span className="truncate">{tGeneral(item.labelKey)}</span>}
 
-        {/* State indicators */}
-        {uxState === 'blocked' && (
-          <div className="absolute -right-1 -top-1 size-2 rounded-full bg-warning" />
+        {/* Keyboard shortcut hint */}
+        {!isCollapsed && !isActive && canNavigate && (
+          <span className="ml-auto text-xs text-muted-foreground/60 opacity-0 transition-opacity group-hover:opacity-100">
+            Alt+
+            {getVisibleNavigationItems().findIndex(nav => nav.id === item.id) + 1}
+          </span>
         )}
 
-        {uxState === 'offline' && (
-          <div className="absolute -right-1 -top-1 size-2 rounded-full bg-destructive" />
+        {/* Tooltip for collapsed state */}
+        {isCollapsed && (
+          <div className="pointer-events-none absolute left-full z-50 ml-2 rounded bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+            {tGeneral(item.labelKey)}
+          </div>
         )}
-
-        {/* Badge dot for notifications */}
-        {canNavigate && item.badgeType === 'dot' && (
-          <div className="absolute -right-1 -top-1 size-2 rounded-full bg-accent" />
-        )}
-      </div>
-
-      {/* Label - Hidden when collapsed */}
-      {!isCollapsed && <span className="truncate">{tGeneral(item.labelKey)}</span>}
-
-      {/* Keyboard shortcut hint */}
-      {!isCollapsed && !isActive && canNavigate && (
-        <span className="ml-auto text-xs text-muted-foreground/60 opacity-0 transition-opacity group-hover:opacity-100">
-          Alt+
-          {getVisibleNavigationItems().findIndex(nav => nav.id === item.id) + 1}
-        </span>
-      )}
-
-      {/* Tooltip for collapsed state */}
-      {isCollapsed && (
-        <div className="pointer-events-none absolute left-full z-50 ml-2 rounded bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
-          {tGeneral(item.labelKey)}
-        </div>
-      )}
-    </Link>
+      </Link>
+    </UiNavItem>
   );
 };
 
@@ -172,10 +179,11 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
 
   if (isLoading) {
     return (
-      <aside
+      <UiSurface
+        variant="panel"
         className={cn(
           'hidden md:block',
-          'layout-sidebar border-r border-border/20 glass-surface',
+          'layout-sidebar border-r border-border/20',
           'transition-all duration-300 ease-out',
           isCollapsed ? 'w-16' : 'w-64',
           className,
@@ -199,16 +207,17 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
           </div>
           <NavigationSkeleton isCollapsed={isCollapsed} />
         </div>
-      </aside>
+      </UiSurface>
     );
   }
 
   return (
-    <aside
+    <UiSurface
+      variant="panel"
       className={cn(
         // Responsive visibility - Show on tablet and desktop (768px+)
         'hidden md:block',
-        'layout-sidebar border-r border-border/20 glass-surface',
+        'layout-sidebar border-r border-border/20',
         'transition-all duration-300 ease-out',
         isCollapsed ? 'w-16' : 'w-64',
         className,
@@ -284,6 +293,6 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
           )}
         </div>
       </div>
-    </aside>
+    </UiSurface>
   );
 };
