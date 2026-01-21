@@ -9,20 +9,19 @@
 import React from 'react';
 
 import type { IconBaseProps } from './IconBase';
-import { BellIcon, type BellIconProps } from './interface/BellIcon';
+import { BellIcon } from './interface/BellIcon';
 import { ChevronDownIcon } from './interface/ChevronDownIcon';
-import { GlobeIcon, type GlobeIconProps } from './interface/GlobeIcon';
+import { GlobeIcon } from './interface/GlobeIcon';
 import { LockIcon } from './interface/LockIcon';
 import { LogoutIcon } from './interface/LogoutIcon';
-import { MoonIcon, type MoonIconProps } from './interface/MoonIcon';
+import { MoonIcon } from './interface/MoonIcon';
 import { MoreVerticalIcon } from './interface/MoreVerticalIcon';
 import { SettingsIcon } from './interface/SettingsIcon';
-import { SunIcon, type SunIconProps } from './interface/SunIcon';
+import { SunIcon } from './interface/SunIcon';
 import { CommunityIcon } from './navigation/CommunityIcon';
-// Import all icons for mapping
-import { HomeIcon, type HomeIconProps } from './navigation/HomeIcon';
-import { LearnIcon, type LearnIconProps } from './navigation/LearnIcon';
-import { ProfileIcon, type ProfileIconProps } from './navigation/ProfileIcon';
+import { HomeIcon } from './navigation/HomeIcon';
+import { LearnIcon } from './navigation/LearnIcon';
+import { ProfileIcon } from './navigation/ProfileIcon';
 import { ToolsIcon } from './navigation/ToolsIcon';
 
 // Base component
