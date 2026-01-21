@@ -20,6 +20,8 @@ import { useUserData } from '@/hooks/useUserData';
 import { Logo } from '@/templates/Logo';
 import { cn } from '@/utils/Helpers';
 
+import { LanguageSwitcherDashboard } from './LanguageSwitcherDashboard';
+import { ThemeSwitcher } from './ThemeSwitcher';
 import { UserDropdown } from './UserDropdown';
 
 export type HeaderAction = {
@@ -213,6 +215,12 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
           {/* Custom Right Slot */}
           {rightSlot}
+
+          {/* Theme Switcher */}
+          <ThemeSwitcher />
+
+          {/* Language Switcher */}
+          <LanguageSwitcherDashboard />
 
           {/* User Dropdown */}
           <div className="flex items-center">

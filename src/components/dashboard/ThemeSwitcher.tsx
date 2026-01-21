@@ -1,0 +1,94 @@
+/*
+ * THEME SWITCHER - Tradelia Premium 2026
+ *
+ * Elegant theme toggle with signature animations
+ * - Homemade Sun/Moon icons
+ * - Smooth transitions (respects prefers-reduced-motion)
+ * - Keyboard accessible (Space/Enter)
+ * - Tooltip on hover
+ * - 44px touch target
+ */
+
+'use client';
+
+import { useTheme } from 'next-themes';
+import { useTranslations } from 'next-intl';
+import React, { useEffect, useState } from 'react';
+
+import { MoonIcon, SunIcon } from '@/components/icons';
+import { Button } from '@/components/ui/button';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { cn } from '@/utils/Helpers';
+
+export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) => {
+  const { theme, setTheme } = useTheme();
+  const t = useTranslations('Dashboard');
+  const [mounted, setMounted] = useState(false);
+
+  // Avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className={cn('size-9 animate-pulse rounded-xl bg-muted/20', className)} />
+    );
+  }
+
+  const isDark = theme === 'dark';
+  const nextTheme = isDark ? 'light' : 'dark';
+
+  return (
+    <TooltipProvider delayDuration={300}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setTheme(nextTheme)}
+            className={cn(
+              // Size & shape
+              'size-9 rounded-xl',
+              // Surface
+              'bg-surface-secondary/40 hover:bg-surface-secondary/60',
+              'border border-border/20',
+              // Backdrop
+              'backdrop-blur-sm',
+              // Transitions
+              'motion-base',
+              // Focus
+              'focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+              className,
+            )}
+            aria-label={t('theme_toggle_aria_label')}
+          >
+            <div
+              className={cn(
+                'motion-base origin-center',
+                // Rotation animation on toggle
+                'transition-transform duration-300 ease-out',
+                // Respect prefers-reduced-motion
+                'motion-reduce:transition-none',
+              )}
+              style={{
+                transform: isDark ? 'rotate(0deg)' : 'rotate(180deg)',
+              }}
+            >
+              {isDark ? <MoonIcon size={16} /> : <SunIcon size={16} />}
+            </div>
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side="bottom" className="text-xs">
+          <p>{isDark ? t('switch_to_light') : t('switch_to_dark')}</p>
+          <p className="text-muted-foreground">Alt+T</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+};

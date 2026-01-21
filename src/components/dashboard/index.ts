@@ -2,8 +2,8 @@
 
 // Headers
 export { DashboardHeader } from './DashboardHeader';
-export { MinimalDashboardHeader } from './MinimalDashboardHeader';
-export { SimpleDashboardHeader } from './SimpleDashboardHeader';
+export { LanguageSwitcherDashboard } from './LanguageSwitcherDashboard';
+export { ThemeSwitcher } from './ThemeSwitcher';
 
 // Layout & Structure
 export { DashboardLayout } from './DashboardLayout';

@@ -30,8 +30,11 @@ export { ToolsIcon } from './navigation/ToolsIcon';
 
 // Interface icons
 export { ChevronDownIcon } from './interface/ChevronDownIcon';
+export { GlobeIcon } from './interface/GlobeIcon';
 export { LogoutIcon } from './interface/LogoutIcon';
+export { MoonIcon } from './interface/MoonIcon';
 export { SettingsIcon } from './interface/SettingsIcon';
+export { SunIcon } from './interface/SunIcon';
 
 // Status icons
 export { AchievementIcon } from './AchievementIcon';
