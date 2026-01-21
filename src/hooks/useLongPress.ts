@@ -19,6 +19,17 @@ import { useCallback, useRef, useState } from 'react';
 // Types
 // ============================================================================
 
+/**
+ * Quick Action definition for context menus
+ */
+export type QuickAction = {
+  id: string;
+  labelKey: string;
+  icon?: React.ReactNode;
+  onClick: () => void;
+  variant?: 'default' | 'primary' | 'destructive';
+};
+
 export type LongPressOptions = {
   /**
    * Time threshold in milliseconds to trigger long-press
