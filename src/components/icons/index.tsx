@@ -8,8 +8,11 @@
 import React from 'react';
 
 import type { IconBaseProps } from './IconBase';
+import { BellIcon } from './interface/BellIcon';
 import { ChevronDownIcon } from './interface/ChevronDownIcon';
+import { LockIcon } from './interface/LockIcon';
 import { LogoutIcon } from './interface/LogoutIcon';
+import { MoreVerticalIcon } from './interface/MoreVerticalIcon';
 import { SettingsIcon } from './interface/SettingsIcon';
 import { CommunityIcon } from './navigation/CommunityIcon';
 // Import all icons for mapping
@@ -29,10 +32,13 @@ export { ProfileIcon } from './navigation/ProfileIcon';
 export { ToolsIcon } from './navigation/ToolsIcon';
 
 // Interface icons
+export { BellIcon } from './interface/BellIcon';
 export { ChevronDownIcon } from './interface/ChevronDownIcon';
 export { GlobeIcon } from './interface/GlobeIcon';
+export { LockIcon } from './interface/LockIcon';
 export { LogoutIcon } from './interface/LogoutIcon';
 export { MoonIcon } from './interface/MoonIcon';
+export { MoreVerticalIcon } from './interface/MoreVerticalIcon';
 export { SettingsIcon } from './interface/SettingsIcon';
 export { SunIcon } from './interface/SunIcon';
 
@@ -49,8 +55,11 @@ export const ICON_MAP = {
   ToolsIcon,
   CommunityIcon,
   ProfileIcon,
+  BellIcon,
   ChevronDownIcon,
+  LockIcon,
   LogoutIcon,
+  MoreVerticalIcon,
   SettingsIcon,
 } as const;
 
