@@ -55,34 +55,34 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
             size="icon"
             onClick={() => setTheme(nextTheme)}
             className={cn(
-              // Size & shape
-              'size-9 rounded-xl',
-              // Surface - More visible
-              'bg-muted/60 hover:bg-primary/15',
-              'border border-border/30',
+              // Size & shape - LARGER for better visibility
+              'size-11 rounded-xl',
+              // Surface - MUCH more visible with stronger background
+              'bg-primary/10 hover:bg-primary/20',
+              'border-2 border-primary/20 hover:border-primary/30',
               // Backdrop
-              'backdrop-blur-sm',
-              // Hover effects
-              'hover:scale-105 hover:shadow-sm',
+              'backdrop-blur-md',
+              // Hover effects - MORE dramatic
+              'hover:scale-110 hover:shadow-lg hover:shadow-primary/20',
               // Transitions
               'motion-base',
-              // Focus
+              // Focus - STRONGER ring
               'focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
               className,
             )}
             aria-label={t('theme_toggle_aria_label')}
           >
-            {/* Signature icons with premium animations */}
+            {/* Signature icons with premium animations - LARGER 20px */}
             {isDark
               ? (
                   <MoonIcon
-                    size={16}
+                    size={20}
                     isActive
                   />
                 )
               : (
                   <SunIcon
-                    size={16}
+                    size={20}
                     isActive
                   />
                 )}
