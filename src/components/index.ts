@@ -1,62 +1,40 @@
-// Tradelia Components - Master Export
-// Tutti i componenti premium e universali in un unico posto
+// Tradelia Components - Explicit Exports Only
+// Following 2026 best practices: no wildcard exports to avoid cascading barrels
+// Reference: Atlassian 75% faster builds by removing barrel files
 
-// Layout System
-export * from './layout';
+// UI Primitives (Signature v1) - Explicit only
+export { UiSurface } from './ui/UiSurface';
+export { UiButton } from './ui/UiButton';
+export { UiIconButton } from './ui/UiIconButton';
+export { UiNavItem } from './ui/UiNavItem';
+export { UiPanel } from './ui/UiPanel';
+export { UiStatusChip } from './ui/UiStatusChip';
 
-// Navigation System
-export * from './navigation';
-
-// Dashboard System  
-export * from './dashboard';
-
-// UI Primitives (Signature v1)
-export * from './ui';
-
-// Shadcn UI Components (legacy)
-export * from './ui/button';
-export * from './ui/card';
-// export * from './ui/badge'; // Conflict with dashboard/types.ts
-export * from './ui/progress';
-export * from './ui/separator';
-export * from './ui/skeleton';
-export * from './ui/alert';
-export * from './ui/dialog';
-export * from './ui/dropdown-menu';
-export * from './ui/form';
-export * from './ui/input';
-export * from './ui/label';
-export * from './ui/tooltip';
-
-// Learning System
-export * from './learning';
-
-// Gamification System
-export * from './gamification';
-
-// Signature Components (Premium)
-export * from './signature';
-
-// Motion System
-export * from './motion';
-
-// Educational Components
-// export * from './educational'; // Conflict with performance
-
-// Emotional Design
-// export * from './emotional'; // Not used
-
-// Performance Optimized
-// export * from './performance'; // Conflict with educational
-
-// Accessibility
-// export * from './accessibility'; // Not a folder
+// Shadcn UI Components - Explicit only (avoid conflicts)
+export { Button } from './ui/button';
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from './ui/card';
+export { Progress } from './ui/progress';
+export { Separator } from './ui/separator';
+export { Skeleton } from './ui/skeleton';
+export { Alert, AlertTitle, AlertDescription } from './ui/alert';
+export { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from './ui/dialog';
+export { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuCheckboxItem, DropdownMenuRadioItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuGroup, DropdownMenuPortal, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuRadioGroup } from './ui/dropdown-menu';
+export { Form, FormItem, FormLabel, FormControl, FormDescription, FormMessage, FormField } from './ui/form';
+export { Input } from './ui/input';
+export { Label } from './ui/label';
+export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from './ui/tooltip';
 
 // Icons
-export * from './icons';
+export { DynamicIcon } from './icons';
+export type { IconName } from './icons';
 
 // Standalone Components
 export { ActiveLink } from './ActiveLink';
 export { LocaleSwitcher } from './LocaleSwitcher';
 export { ToggleMenuButton } from './ToggleMenuButton';
 export { Background } from './Background';
+
+// NOTE: For other components, use direct imports:
+// import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
+// import { SidebarNavigation } from '@/components/navigation/SidebarNavigation';
+// This avoids cascading barrel files and improves build performance.
