@@ -24,12 +24,6 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
 import { usePathname, useRouter } from '@/libs/i18nNavigation';
 import { AppConfig } from '@/utils/AppConfig';
 import { cn } from '@/utils/Helpers';
@@ -48,47 +42,37 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-      <TooltipProvider delayDuration={300}>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className={cn(
-                  // Size & shape - LARGER for better visibility
-                  'size-11 rounded-xl',
-                  // Surface - MUCH more visible with stronger background
-                  'bg-primary/10 hover:bg-primary/20',
-                  'border-2 border-primary/20 hover:border-primary/30',
-                  // Backdrop
-                  'backdrop-blur-md',
-                  // Hover effects - MORE dramatic
-                  'hover:scale-110 hover:shadow-lg hover:shadow-primary/20',
-                  // Open state
-                  isOpen && 'scale-95 bg-primary/25',
-                  // Transitions
-                  'motion-base',
-                  // Focus - STRONGER ring
-                  'focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-                  className,
-                )}
-                aria-label={t('language_switcher_aria_label')}
-              >
-                {/* Signature Globe icon with continuous rotation - LARGER 20px */}
-                <GlobeIcon
-                  size={20}
-                  isActive={isOpen}
-                />
-              </Button>
-            </DropdownMenuTrigger>
-          </TooltipTrigger>
-          <TooltipContent side="bottom" className="text-xs">
-            <p>{t('change_language')}</p>
-            <p className="text-muted-foreground">Alt+L</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn(
+            // Size & shape - LARGER for better visibility
+            'size-11 rounded-xl',
+            // Surface - MUCH more visible with stronger background
+            'bg-primary/10 hover:bg-primary/20',
+            'border-2 border-primary/20 hover:border-primary/30',
+            // Backdrop
+            'backdrop-blur-md',
+            // Hover effects - MORE dramatic
+            'hover:scale-110 hover:shadow-lg hover:shadow-primary/20',
+            // Open state
+            isOpen && 'scale-95 bg-primary/25',
+            // Transitions
+            'motion-base',
+            // Focus - STRONGER ring
+            'focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+            className,
+          )}
+          aria-label={t('language_switcher_aria_label')}
+        >
+          {/* Signature Globe icon with continuous rotation - LARGER 20px */}
+          <GlobeIcon
+            size={20}
+            isActive={isOpen}
+          />
+        </Button>
+      </DropdownMenuTrigger>
 
       <DropdownMenuContent
         align="end"
