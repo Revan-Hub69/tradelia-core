@@ -44,12 +44,6 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
     setMounted(true);
   }, []);
 
-  if (!mounted) {
-    return (
-      <div className={cn('size-11 animate-pulse rounded-xl bg-muted/20', className)} />
-    );
-  }
-
   const isDark = theme === 'dark';
   const nextTheme = isDark ? 'light' : 'dark';
 
@@ -93,6 +87,12 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
     threshold: 500,
     moveThreshold: 10,
   });
+
+  if (!mounted) {
+    return (
+      <div className={cn('size-11 animate-pulse rounded-xl bg-muted/20', className)} />
+    );
+  }
 
   const handleToggle = () => {
     if (longPressTriggeredRef.current) {
