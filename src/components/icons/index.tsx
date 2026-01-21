@@ -67,10 +67,13 @@ export const ICON_MAP = {
   ProfileIcon,
   BellIcon,
   ChevronDownIcon,
+  GlobeIcon,
   LockIcon,
   LogoutIcon,
+  MoonIcon,
   MoreVerticalIcon,
   SettingsIcon,
+  SunIcon,
 } as const;
 
 export type IconName = keyof typeof ICON_MAP;
