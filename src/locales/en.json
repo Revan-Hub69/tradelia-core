@@ -728,7 +728,12 @@
     "tools": "Tools",
     "community": "Community",
     "report_hint": "Think this is a mistake?",
-    "report_link": "Report broken link"
+    "report_link": "Report broken link",
+    "search_placeholder": "Search for lessons, tools, or topics...",
+    "go_back": "Go Back",
+    "sitemap": "View Sitemap",
+    "support_hint": "Need help? Contact our support team.",
+    "easter_egg_message": "You found the secret! Keep exploring Tradelia."
   },
   "Auth": {
     "meta_title": "Enter Tradelia",

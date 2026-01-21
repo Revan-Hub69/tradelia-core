@@ -699,7 +699,12 @@
     "tools": "Strumenti",
     "community": "Community",
     "report_hint": "Pensi sia un errore?",
-    "report_link": "Segnala link rotto"
+    "report_link": "Segnala link rotto",
+    "search_placeholder": "Cerca lezioni, strumenti o argomenti...",
+    "go_back": "Torna Indietro",
+    "sitemap": "Vedi Mappa Sito",
+    "support_hint": "Serve aiuto? Contatta il nostro team di supporto.",
+    "easter_egg_message": "Hai trovato il segreto! Continua a esplorare Tradelia."
   },
   "Auth": {
     "meta_title": "Entra in Tradelia",
