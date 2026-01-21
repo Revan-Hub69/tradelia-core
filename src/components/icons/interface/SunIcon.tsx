@@ -4,8 +4,8 @@
 
 'use client';
 
-import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
+import React from 'react';
 
 import { IconBase, type IconBaseProps } from '../IconBase';
 
@@ -37,7 +37,7 @@ export const SunIcon: React.FC<SunIconProps> = ({
   };
 
   const variants = getVariants();
-  const transition = effectiveMotion === 'none' ? { duration: 0 } : effectiveMotion === 'reduced' ? { duration: 0.15 } : { duration: 0.3, ease: [0.4, 0, 0.2, 1] };
+  const transition = effectiveMotion === 'none' ? { duration: 0 } : effectiveMotion === 'reduced' ? { duration: 0.15 } : { duration: 0.3 };
 
   return (
     <IconBase {...props}>

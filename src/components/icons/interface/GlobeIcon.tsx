@@ -4,8 +4,8 @@
 
 'use client';
 
-import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
+import React from 'react';
 
 import { IconBase, type IconBaseProps } from '../IconBase';
 
@@ -15,7 +15,7 @@ export type GlobeIconProps = IconBaseProps & {
 };
 
 export const GlobeIcon: React.FC<GlobeIconProps> = ({
-  isActive = false,
+  isActive: _isActive = false,
   motionPreference,
   ...props
 }) => {
