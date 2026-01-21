@@ -30,21 +30,28 @@ export { IconBase, type IconBaseProps, type IconProps } from './IconBase';
 
 // Navigation icons (with signature animations)
 export { CommunityIcon } from './navigation/CommunityIcon';
-export { HomeIcon, type HomeIconProps } from './navigation/HomeIcon';
-export { LearnIcon, type LearnIconProps } from './navigation/LearnIcon';
-export { ProfileIcon, type ProfileIconProps } from './navigation/ProfileIcon';
+export { HomeIcon } from './navigation/HomeIcon';
+export type { HomeIconProps } from './navigation/HomeIcon';
+export { LearnIcon } from './navigation/LearnIcon';
+export type { LearnIconProps } from './navigation/LearnIcon';
+export { ProfileIcon } from './navigation/ProfileIcon';
+export type { ProfileIconProps } from './navigation/ProfileIcon';
 export { ToolsIcon } from './navigation/ToolsIcon';
 
 // Interface icons (with signature animations)
-export { BellIcon, type BellIconProps } from './interface/BellIcon';
+export { BellIcon } from './interface/BellIcon';
+export type { BellIconProps } from './interface/BellIcon';
 export { ChevronDownIcon } from './interface/ChevronDownIcon';
-export { GlobeIcon, type GlobeIconProps } from './interface/GlobeIcon';
+export { GlobeIcon } from './interface/GlobeIcon';
+export type { GlobeIconProps } from './interface/GlobeIcon';
 export { LockIcon } from './interface/LockIcon';
 export { LogoutIcon } from './interface/LogoutIcon';
-export { MoonIcon, type MoonIconProps } from './interface/MoonIcon';
+export { MoonIcon } from './interface/MoonIcon';
+export type { MoonIconProps } from './interface/MoonIcon';
 export { MoreVerticalIcon } from './interface/MoreVerticalIcon';
 export { SettingsIcon } from './interface/SettingsIcon';
-export { SunIcon, type SunIconProps } from './interface/SunIcon';
+export { SunIcon } from './interface/SunIcon';
+export type { SunIconProps } from './interface/SunIcon';
 
 // Status icons
 export { AchievementIcon } from './AchievementIcon';
