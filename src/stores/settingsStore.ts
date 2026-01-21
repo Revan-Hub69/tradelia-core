@@ -158,7 +158,7 @@ export const useSettingsStore = create<SettingsStoreState>((set, get) => ({
    * updateSetting('appearance.fontSize', 1.125);
    * ```
    */
-  updateSetting: <T>(path: SettingsPath, value: T) => {
+  updateSetting: (path: SettingsPath, value: any) => {
     const { settings } = get();
 
     // Create new settings object with updated value
