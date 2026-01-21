@@ -33,6 +33,44 @@ export const UiNavItem = forwardRef<HTMLElement, UiNavItemProps>(
   ({ className, active = false, icon, children, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : 'div';
     
+    // When asChild, we can't render icon/children as separate elements
+    // The child (Link) must handle its own content
+    if (asChild) {
+      return (
+        <Comp
+          ref={ref as any}
+          aria-current={active ? 'page' : undefined}
+          data-active={active}
+          className={cn(
+            // Base styles
+            'relative flex items-center gap-3 px-3 py-2',
+            'rounded-xl',
+            'transition-all duration-200 ease-out',
+            'cursor-pointer',
+            
+            // Inactive state
+            'text-muted-foreground',
+            'hover:bg-accent/50 hover:text-accent-foreground',
+            
+            // Active state
+            'data-[active=true]:bg-primary/10 data-[active=true]:text-primary',
+            'data-[active=true]:font-medium',
+            
+            // Focus
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2',
+            
+            // Signature press feedback
+            'active:scale-[0.98] active:transition-transform active:duration-75',
+            
+            className,
+          )}
+          {...props}
+        >
+          {children}
+        </Comp>
+      );
+    }
+    
     return (
       <Comp
         ref={ref as any}

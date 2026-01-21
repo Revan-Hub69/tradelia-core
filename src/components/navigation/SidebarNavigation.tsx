@@ -89,8 +89,25 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
     <UiNavItem
       asChild
       active={isActive && canNavigate}
-      icon={
-        <div className="relative">
+      className={cn(
+        'group',
+        {
+          'cursor-not-allowed opacity-40': !canNavigate,
+          'navigation-skeleton': isNavigating,
+        },
+        isCollapsed && 'justify-center px-2',
+      )}
+    >
+      <Link
+        href={item.href}
+        prefetch={item.isPriority && canNavigate}
+        onClick={handleClick}
+        className="flex w-full items-center gap-3"
+        aria-disabled={!canNavigate}
+        title={isCollapsed ? tGeneral(item.labelKey) : undefined}
+      >
+        {/* Icon with state indicators */}
+        <div className="relative flex-shrink-0">
           <DynamicIcon
             name={item.iconName as IconName}
             size={20}
@@ -114,26 +131,9 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
             <div className="absolute -right-1 -top-1 size-2 rounded-full bg-accent" />
           )}
         </div>
-      }
-      className={cn(
-        'group',
-        {
-          'cursor-not-allowed opacity-40': !canNavigate,
-          'navigation-skeleton': isNavigating,
-        },
-        isCollapsed && 'justify-center px-2',
-      )}
-    >
-      <Link
-        href={item.href}
-        prefetch={item.isPriority && canNavigate}
-        onClick={handleClick}
-        className="flex w-full items-center gap-3"
-        aria-disabled={!canNavigate}
-        title={isCollapsed ? tGeneral(item.labelKey) : undefined}
-      >
+        
         {/* Label - Hidden when collapsed */}
-        {!isCollapsed && <span className="truncate">{tGeneral(item.labelKey)}</span>}
+        {!isCollapsed && <span className="flex-1 truncate">{tGeneral(item.labelKey)}</span>}
 
         {/* Keyboard shortcut hint */}
         {!isCollapsed && !isActive && canNavigate && (
