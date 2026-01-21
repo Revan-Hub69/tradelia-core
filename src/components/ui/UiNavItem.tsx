@@ -50,10 +50,10 @@ export const UiNavItem = forwardRef<HTMLElement, UiNavItemProps>(
             
             // Inactive state
             'text-muted-foreground',
-            'hover:bg-accent/50 hover:text-accent-foreground',
+            'hover:bg-primary/10 hover:text-foreground hover:scale-[1.02]',
             
             // Active state
-            'data-[active=true]:bg-primary/10 data-[active=true]:text-primary',
+            'data-[active=true]:bg-primary/15 data-[active=true]:text-primary',
             'data-[active=true]:font-medium',
             
             // Focus
@@ -85,10 +85,10 @@ export const UiNavItem = forwardRef<HTMLElement, UiNavItemProps>(
           
           // Inactive state
           'text-muted-foreground',
-          'hover:bg-accent/50 hover:text-accent-foreground',
+          'hover:bg-primary/10 hover:text-foreground hover:scale-[1.02]',
           
           // Active state
-          'data-[active=true]:bg-primary/10 data-[active=true]:text-primary',
+          'data-[active=true]:bg-primary/15 data-[active=true]:text-primary',
           'data-[active=true]:font-medium',
           
           // Focus

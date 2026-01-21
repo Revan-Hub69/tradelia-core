@@ -55,11 +55,13 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
             className={cn(
               // Size & shape
               'size-9 rounded-xl',
-              // Surface
-              'bg-surface-secondary/40 hover:bg-surface-secondary/60',
-              'border border-border/20',
+              // Surface - More visible
+              'bg-muted/60 hover:bg-primary/15',
+              'border border-border/30',
               // Backdrop
               'backdrop-blur-sm',
+              // Hover effects
+              'hover:scale-105 hover:shadow-sm',
               // Transitions
               'motion-base',
               // Focus
