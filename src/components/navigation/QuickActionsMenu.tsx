@@ -166,7 +166,7 @@ export const QuickActionsMenu: React.FC<QuickActionsMenuProps> = ({
               </div>
             )}
             <span className="text-sm font-medium">
-              {t(action.labelKey.replace('Dashboard.', '') as 'nav_home')}
+              {action.label || t(action.labelKey.replace('Dashboard.', '') as 'nav_home')}
             </span>
           </button>
         ))}

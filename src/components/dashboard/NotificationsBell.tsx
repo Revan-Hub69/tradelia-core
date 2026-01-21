@@ -12,18 +12,20 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { BellIcon } from '@/components/icons';
-import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
+  DropdownMenuAnchor,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { UiButton, UiIconButton } from '@/components/ui';
+import { QuickActionsMenu } from '@/components/navigation/QuickActionsMenu';
+import type { QuickAction } from '@/hooks/useLongPress';
 import { useLongPress } from '@/hooks/useLongPress';
 import { cn } from '@/utils/Helpers';
 
@@ -39,6 +41,10 @@ type Notification = {
 export const NotificationsBell: React.FC<{ className?: string }> = ({ className }) => {
   const t = useTranslations('Dashboard');
   const [isOpen, setIsOpen] = useState(false);
+  const [isQuickMenuOpen, setIsQuickMenuOpen] = useState(false);
+  const [quickMenuPosition, setQuickMenuPosition] = useState({ x: 0, y: 0 });
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const longPressTriggeredRef = useRef(false);
   const [notifications, setNotifications] = useState<Notification[]>([
     {
       id: '1',
@@ -60,16 +66,47 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
-  // Long-press handler for quick actions
-  const longPressHandlers = useLongPress(
-    () => {
-      // Mark all as read on long-press
-      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  const quickActions: QuickAction[] = [
+    {
+      id: 'notifications-open',
+      labelKey: 'Dashboard.notifications',
+      onClick: () => setIsOpen(true),
     },
     {
-      threshold: 500,
+      id: 'notifications-read',
+      labelKey: 'Dashboard.mark_all_read',
+      onClick: () => setNotifications(prev => prev.map(n => ({ ...n, read: true }))),
+      variant: 'primary',
     },
-  );
+  ];
+
+  // Long-press handler for quick actions
+  const openQuickMenu = () => {
+    const rect = triggerRef.current?.getBoundingClientRect();
+    if (rect) {
+      setQuickMenuPosition({
+        x: rect.left + rect.width / 2,
+        y: rect.top,
+      });
+    }
+    longPressTriggeredRef.current = true;
+    setIsOpen(false);
+    setIsQuickMenuOpen(true);
+  };
+
+  const closeQuickMenu = () => {
+    setIsQuickMenuOpen(false);
+    longPressTriggeredRef.current = false;
+  };
+
+  const {
+    isLongPressing: _isLongPressing,
+    isPressed: _isPressed,
+    ...longPressHandlers
+  } = useLongPress(openQuickMenu, {
+    threshold: 500,
+    moveThreshold: 10,
+  });
 
   const handleMarkAsRead = (id: string) => {
     setNotifications(prev =>
@@ -81,54 +118,48 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
   };
 
+  const handleToggleMenu = () => {
+    if (longPressTriggeredRef.current) {
+      longPressTriggeredRef.current = false;
+      return;
+    }
+    setIsOpen(prev => !prev);
+  };
+
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
+      <DropdownMenuAnchor asChild>
+        <UiIconButton
+          ref={triggerRef}
+          label={t('notifications_aria_label')}
+          icon={(
+            <>
+              <BellIcon size={20} hasNewNotification={unreadCount > 0} />
+              {unreadCount > 0 && (
+                <span
+                  className={cn(
+                    'absolute -right-2 -top-2',
+                    'flex size-5 items-center justify-center',
+                    'rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground',
+                    'ring-2 ring-background',
+                    'animate-pulse',
+                  )}
+                >
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
+            </>
+          )}
+          onClick={handleToggleMenu}
+          aria-haspopup="menu"
+          aria-expanded={isOpen}
           className={cn(
-            // Size & shape - LARGER for better visibility
-            'size-11 rounded-xl',
-            // Surface - MUCH more visible with stronger background
-            'bg-primary/10 hover:bg-primary/20',
-            'border-2 border-primary/20 hover:border-primary/30',
-            // Backdrop
-            'backdrop-blur-md',
-            // Hover effects - MORE dramatic
-            'hover:scale-110 hover:shadow-lg hover:shadow-primary/20',
-            // Open state
-            isOpen && 'scale-95 bg-primary/25',
-            // Transitions
-            'motion-base',
-            // Focus - STRONGER ring
-            'focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-            // Relative for badge positioning
-            'relative',
+            isOpen && 'scale-[0.98]',
             className,
           )}
-          aria-label={t('notifications_aria_label')}
           {...longPressHandlers}
-        >
-          {/* Signature Bell icon with ring animation - LARGER 20px */}
-          <BellIcon size={20} hasNewNotification={unreadCount > 0} />
-
-          {/* Badge count - PREMIUM PULSE */}
-          {unreadCount > 0 && (
-            <span
-              className={cn(
-                'absolute -right-1 -top-1',
-                'flex size-5 items-center justify-center',
-                'rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground',
-                'ring-2 ring-background',
-                'animate-pulse',
-              )}
-            >
-              {unreadCount > 9 ? '9+' : unreadCount}
-            </span>
-          )}
-        </Button>
-      </DropdownMenuTrigger>
+        />
+      </DropdownMenuAnchor>
 
       <DropdownMenuContent
         align="end"
@@ -144,14 +175,14 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
         <DropdownMenuLabel className="flex items-center justify-between">
           <span>{t('notifications')}</span>
           {unreadCount > 0 && (
-            <Button
+            <UiButton
               variant="ghost"
               size="sm"
               onClick={handleMarkAllAsRead}
               className="h-6 px-2 text-xs"
             >
               {t('mark_all_read')}
-            </Button>
+            </UiButton>
           )}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -201,6 +232,15 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
               </div>
             )}
       </DropdownMenuContent>
+      <QuickActionsMenu
+        isOpen={isQuickMenuOpen}
+        position={quickMenuPosition}
+        actions={quickActions}
+        onClose={closeQuickMenu}
+        onAction={(action) => {
+          action.onClick();
+        }}
+      />
     </DropdownMenu>
   );
 };

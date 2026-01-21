@@ -2,7 +2,7 @@ import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
 import { ChevronDownIcon, LogoutIcon, ProfileIcon } from '@/components/icons';
-import { Button } from '@/components/ui/button';
+import { UiButton } from '@/components/ui';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -48,12 +48,13 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
   return (
     <DropdownMenu onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
-        <Button
+        <UiButton
           variant="ghost"
+          size="sm"
           className={cn(
-            'flex h-10 items-center gap-3 px-3 rounded-xl',
-            'glass-surface hover:bg-white/60 dark:hover:bg-white/10',
-            'press-depth focus-ring touch-optimized',
+            'flex h-11 items-center gap-3 px-3 rounded-xl',
+            'glass-surface hover:bg-white/50 dark:hover:bg-white/10',
+            'hover-lift-subtle press-depth focus-ring touch-optimized',
           )}
           aria-label={t('nav_open_user_menu')}
           aria-expanded={isOpen}
@@ -78,13 +79,19 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
               isOpen && 'rotate-180',
             )}
           />
-        </Button>
+        </UiButton>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
         ref={focusTrapRef as React.RefObject<HTMLDivElement>}
         align="end"
-        className="glass-surface layer-popover w-56"
+        className={cn(
+          'w-56',
+          'bg-popover/95 backdrop-blur-xl',
+          'border border-border/20',
+          'rounded-2xl shadow-2xl',
+          'p-1.5',
+        )}
         onCloseAutoFocus={(e) => {
           // Prevent default to handle focus restoration manually
           e.preventDefault();
@@ -105,7 +112,7 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
         {/* Menu Items */}
         <DropdownMenuItem
           onClick={() => router.push('/dashboard/profile')}
-          className="focus-ring flex cursor-pointer items-center gap-2"
+          className="focus-ring motion-fast flex cursor-pointer items-center gap-2"
         >
           <ProfileIcon size={16} />
           <span>{t('profile')}</span>
@@ -126,7 +133,7 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
 
         <DropdownMenuItem
           onClick={handleSignOut}
-          className="focus-ring flex cursor-pointer items-center gap-2 text-destructive focus:text-destructive"
+          className="focus-ring motion-fast flex cursor-pointer items-center gap-2 text-destructive focus:text-destructive"
         >
           <LogoutIcon size={16} />
           <span>{t('logout')}</span>

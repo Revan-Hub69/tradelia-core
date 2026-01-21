@@ -1,8 +1,8 @@
 /*
  * TOOLS ICON - Tradelia Signature Premium SVG
  *
- * Design: Settings/sliders icon (lucide-react style)
- * Clean, professional, well-proportioned
+ * Design: Precision sliders with animated knobs
+ * Motion: Knob drift + subtle hover tilt
  */
 
 'use client';
@@ -30,20 +30,37 @@ export const ToolsIcon: React.FC<ToolsIconProps> = ({
       return { initial: { scale: 1 }, active: { scale: 1 }, hover: { scale: 1 } };
     }
     if (effectiveMotion === 'reduced') {
-      return { initial: { scale: 1 }, active: { scale: 1.05 }, hover: { scale: 1.05 } };
+      return { initial: { scale: 1 }, active: { scale: 1.04 }, hover: { scale: 1.04 } };
     }
     return {
       initial: { scale: 1 },
-      active: { scale: 1.05 },
-      hover: { scale: 1.1, y: -2 },
+      active: { scale: 1.06 },
+      hover: { scale: 1.08, rotate: -3 },
     };
   };
 
   const variants = getVariants();
   const transition = effectiveMotion === 'none' ? { duration: 0 } : { duration: 0.2 };
+  const shouldAnimate = isActive && effectiveMotion === 'full';
+
+  const knobs = [
+    { x: 5, y: 9, delay: 0 },
+    { x: 12, y: 15, delay: 0.25 },
+    { x: 19, y: 7, delay: 0.5 },
+  ];
 
   return (
     <IconBase {...props}>
+      <defs>
+        <filter id="tools-glow">
+          <feGaussianBlur stdDeviation="2.2" result="coloredBlur" />
+          <feMerge>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+
       <motion.g
         variants={variants}
         initial="initial"
@@ -52,16 +69,30 @@ export const ToolsIcon: React.FC<ToolsIconProps> = ({
         transition={transition}
         style={{ transformOrigin: 'center' }}
       >
-        {/* Sliders icon - lucide style */}
-        <line x1="4" x2="4" y1="21" y2="14" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        <line x1="4" x2="4" y1="10" y2="3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        <line x1="12" x2="12" y1="21" y2="12" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        <line x1="12" x2="12" y1="8" y2="3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        <line x1="20" x2="20" y1="21" y2="16" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        <line x1="20" x2="20" y1="12" y2="3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        <line x1="1" x2="7" y1="14" y2="14" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        <line x1="9" x2="15" y1="8" y2="8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        <line x1="17" x2="23" y1="16" y2="16" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        {/* Vertical rails */}
+        <line x1="5" x2="5" y1="4" y2="20" />
+        <line x1="12" x2="12" y1="4" y2="20" />
+        <line x1="19" x2="19" y1="4" y2="20" />
+
+        {/* Knobs */}
+        {knobs.map(knob => (
+          <motion.circle
+            key={`knob-${knob.x}-${knob.y}`}
+            cx={knob.x}
+            cy={knob.y}
+            r="2"
+            fill="currentColor"
+            stroke="none"
+            filter={shouldAnimate ? 'url(#tools-glow)' : undefined}
+            animate={shouldAnimate
+              ? {
+                  y: [0, -1.2, 0],
+                  opacity: [0.9, 1, 0.9],
+                }
+              : {}}
+            transition={{ duration: 2.2, repeat: Infinity, delay: knob.delay }}
+          />
+        ))}
       </motion.g>
     </IconBase>
   );

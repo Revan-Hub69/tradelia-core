@@ -40,7 +40,7 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
         className,
       )}
       role="navigation"
-      aria-label="Navigazione principale"
+      aria-label={t('nav_aria_primary')}
     >
       <div className="flex h-16 items-center justify-around px-2">
         {navigationItems.map((item) => {

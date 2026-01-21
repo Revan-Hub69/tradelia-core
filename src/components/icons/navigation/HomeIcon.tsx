@@ -73,6 +73,16 @@ export const HomeIcon: React.FC<HomeIconProps> = ({
 
   return (
     <IconBase {...props}>
+      <defs>
+        <filter id="home-glow">
+          <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
+          <feMerge>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+
       <motion.g
         variants={variants}
         initial="initial"
@@ -102,6 +112,11 @@ export const HomeIcon: React.FC<HomeIconProps> = ({
           cy="17"
           r="0.5"
           fill="currentColor"
+          filter={
+            isActive && effectiveMotion === 'full'
+              ? 'url(#home-glow)'
+              : undefined
+          }
           animate={isActive && effectiveMotion === 'full'
             ? {
                 opacity: [0.6, 1, 0.6],
@@ -117,6 +132,11 @@ export const HomeIcon: React.FC<HomeIconProps> = ({
           width="2"
           height="2"
           rx="0.5"
+          filter={
+            isActive && effectiveMotion === 'full'
+              ? 'url(#home-glow)'
+              : undefined
+          }
           animate={isActive && effectiveMotion === 'full'
             ? {
                 opacity: [0.4, 0.8, 0.4],

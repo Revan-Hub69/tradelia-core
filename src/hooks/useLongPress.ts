@@ -25,6 +25,7 @@ import { useCallback, useRef, useState } from 'react';
 export type QuickAction = {
   id: string;
   labelKey: string;
+  label?: string;
   icon?: React.ReactNode;
   onClick: () => void;
   variant?: 'default' | 'primary' | 'destructive';

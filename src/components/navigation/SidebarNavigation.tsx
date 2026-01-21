@@ -16,9 +16,8 @@ import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 
-import { CommunityIcon, DynamicIcon, HomeIcon, LearnIcon, ProfileIcon, ToolsIcon, type IconName } from '@/components/icons';
-import { UiNavItem, UiSurface } from '@/components/ui';
-import { Button } from '@/components/ui/button';
+import { CloseIcon, CommunityIcon, DynamicIcon, HomeIcon, LearnIcon, MenuIcon, ProfileIcon, ToolsIcon, type IconName } from '@/components/icons';
+import { UiIconButton, UiNavItem, UiSurface } from '@/components/ui';
 import { NavigationSkeleton } from '@/components/ui/skeleton';
 import { getVisibleNavigationItems, trackNavigationEvent } from '@/data/navigation.config';
 import { useNavigationState } from '@/hooks/useNavigationState';
@@ -99,18 +98,6 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
         isCollapsed && 'justify-center px-2',
       )}
     >
-      {/* PREMIUM ACTIVE RAIL INDICATOR */}
-      {isActive && canNavigate && (
-        <motion.div
-          layoutId="activeRail"
-          className="absolute left-0 top-0 bottom-0 w-1 rounded-r-full bg-primary"
-          transition={{
-            type: 'spring',
-            stiffness: 300,
-            damping: 30,
-          }}
-        />
-      )}
       <Link
         href={item.href}
         prefetch={item.isPriority && canNavigate}
@@ -119,6 +106,18 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
         aria-disabled={!canNavigate}
         title={isCollapsed ? tGeneral(item.labelKey) : undefined}
       >
+        {/* PREMIUM ACTIVE RAIL INDICATOR */}
+        {isActive && canNavigate && (
+          <motion.div
+            layoutId="activeRail"
+            className="absolute left-0 top-0 bottom-0 w-1 rounded-r-full bg-primary"
+            transition={{
+              type: 'spring',
+              stiffness: 300,
+              damping: 30,
+            }}
+          />
+        )}
         {/* Icon with state indicators - PREMIUM ANIMATED */}
         <motion.div 
           className="relative shrink-0"
@@ -266,7 +265,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
         // Responsive visibility - Show on tablet and desktop (768px+)
         'hidden md:block',
         'layout-sidebar border-r border-border/20',
-        'transition-all duration-300 ease-out',
+        'transition-[width] duration-300 ease-[var(--ease-tradelia-gentle)]',
         isCollapsed ? 'w-16' : 'w-64',
         className,
       )}
@@ -287,26 +286,19 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                 )}
           </div>
 
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className="hover-scale size-8 p-0 hover:bg-primary/10 dark:hover:bg-primary/10"
-            aria-label={
+          <UiIconButton
+            label={
               isCollapsed
                 ? (t('expand_sidebar') as string)
                 : (t('collapse_sidebar') as string)
             }
-          >
-            <DynamicIcon
-              name="ChevronDownIcon"
-              size={16}
-              className={cn(
-                'transition-transform duration-200',
-                isCollapsed && 'rotate-180',
-              )}
-            />
-          </Button>
+            icon={isCollapsed
+              ? <MenuIcon size={16} />
+              : <CloseIcon size={16} />}
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="size-9 hover:scale-[1.02]"
+            aria-pressed={!isCollapsed}
+          />
         </div>
 
         {/* Navigation Items */}

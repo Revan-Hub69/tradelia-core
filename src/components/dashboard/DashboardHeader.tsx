@@ -21,6 +21,7 @@ import { Logo } from '@/templates/Logo';
 import { cn } from '@/utils/Helpers';
 
 import { LanguageSwitcherDashboard } from './LanguageSwitcherDashboard';
+import { NotificationsBell } from './NotificationsBell';
 import { ThemeSwitcher } from './ThemeSwitcher';
 import { UserDropdown } from './UserDropdown';
 
@@ -176,6 +177,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   return (
     <UiSurface
       variant="header"
+      role="banner"
+      aria-label={t('header_aria_label')}
       className={cn(
         'sticky top-0 layer-header',
         'motion-base',
@@ -221,6 +224,9 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
           {/* Language Switcher */}
           <LanguageSwitcherDashboard />
+
+          {/* Notifications */}
+          <NotificationsBell />
 
           {/* User Dropdown */}
           <div className="flex items-center">

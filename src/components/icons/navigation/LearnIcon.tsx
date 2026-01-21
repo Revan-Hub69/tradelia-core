@@ -74,6 +74,16 @@ export const LearnIcon: React.FC<LearnIconProps> = ({
 
   return (
     <IconBase {...props}>
+      <defs>
+        <filter id="learn-glow">
+          <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
+          <feMerge>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+
       <motion.g
         variants={variants}
         initial="initial"
@@ -112,6 +122,7 @@ export const LearnIcon: React.FC<LearnIconProps> = ({
           <motion.path
             d="M12 3v7l2-2 2 2V3"
             fill="currentColor"
+            filter={effectiveMotion === 'full' ? 'url(#learn-glow)' : undefined}
             animate={effectiveMotion === 'full'
               ? {
                   opacity: [0.6, 1, 0.6],

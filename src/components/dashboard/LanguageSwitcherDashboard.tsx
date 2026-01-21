@@ -13,17 +13,20 @@
 'use client';
 
 import { useLocale, useTranslations } from 'next-intl';
-import React from 'react';
+import React, { useRef, useState } from 'react';
 
 import { GlobeIcon } from '@/components/icons';
-import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
+  DropdownMenuAnchor,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
-  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { UiIconButton } from '@/components/ui';
+import { QuickActionsMenu } from '@/components/navigation/QuickActionsMenu';
+import type { QuickAction } from '@/hooks/useLongPress';
+import { useLongPress } from '@/hooks/useLongPress';
 import { usePathname, useRouter } from '@/libs/i18nNavigation';
 import { AppConfig } from '@/utils/AppConfig';
 import { cn } from '@/utils/Helpers';
@@ -33,46 +36,83 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
   const pathname = usePathname();
   const locale = useLocale();
   const t = useTranslations('Dashboard');
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isQuickMenuOpen, setIsQuickMenuOpen] = useState(false);
+  const [quickMenuPosition, setQuickMenuPosition] = useState({ x: 0, y: 0 });
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const longPressTriggeredRef = useRef(false);
 
   const handleChange = (value: string) => {
     router.push(pathname, { locale: value });
     router.refresh();
   };
 
+  const quickLocales = [
+    AppConfig.locales.find(lang => lang.id === locale),
+    ...AppConfig.locales.filter(lang => lang.id !== locale),
+  ]
+    .filter((lang): lang is (typeof AppConfig.locales)[number] => Boolean(lang))
+    .slice(0, 3);
+
+  const quickActions: QuickAction[] = quickLocales.map(lang => ({
+    id: `lang-${lang.id}`,
+    labelKey: 'Dashboard.change_language',
+    label: lang.name,
+    onClick: () => handleChange(lang.id),
+  }));
+
+  const openQuickMenu = () => {
+    const rect = triggerRef.current?.getBoundingClientRect();
+    if (rect) {
+      setQuickMenuPosition({
+        x: rect.left + rect.width / 2,
+        y: rect.top,
+      });
+    }
+    longPressTriggeredRef.current = true;
+    setIsOpen(false);
+    setIsQuickMenuOpen(true);
+  };
+
+  const closeQuickMenu = () => {
+    setIsQuickMenuOpen(false);
+    longPressTriggeredRef.current = false;
+  };
+
+  const {
+    isLongPressing: _isLongPressing,
+    isPressed: _isPressed,
+    ...longPressHandlers
+  } = useLongPress(openQuickMenu, {
+    threshold: 500,
+    moveThreshold: 10,
+  });
+
+  const handleToggleMenu = () => {
+    if (longPressTriggeredRef.current) {
+      longPressTriggeredRef.current = false;
+      return;
+    }
+    setIsOpen(prev => !prev);
+  };
+
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
+      <DropdownMenuAnchor asChild>
+        <UiIconButton
+          ref={triggerRef}
+          label={t('language_switcher_aria_label')}
+          icon={<GlobeIcon size={20} isActive={isOpen} />}
+          onClick={handleToggleMenu}
+          aria-haspopup="menu"
+          aria-expanded={isOpen}
           className={cn(
-            // Size & shape - LARGER for better visibility
-            'size-11 rounded-xl',
-            // Surface - MUCH more visible with stronger background
-            'bg-primary/10 hover:bg-primary/20',
-            'border-2 border-primary/20 hover:border-primary/30',
-            // Backdrop
-            'backdrop-blur-md',
-            // Hover effects - MORE dramatic
-            'hover:scale-110 hover:shadow-lg hover:shadow-primary/20',
-            // Open state
-            isOpen && 'scale-95 bg-primary/25',
-            // Transitions
-            'motion-base',
-            // Focus - STRONGER ring
-            'focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+            isOpen && 'scale-[0.98]',
             className,
           )}
-          aria-label={t('language_switcher_aria_label')}
-        >
-          {/* Signature Globe icon with continuous rotation - LARGER 20px */}
-          <GlobeIcon
-            size={20}
-            isActive={isOpen}
-          />
-        </Button>
-      </DropdownMenuTrigger>
+          {...longPressHandlers}
+        />
+      </DropdownMenuAnchor>
 
       <DropdownMenuContent
         align="end"
@@ -109,6 +149,15 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
           ))}
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
+      <QuickActionsMenu
+        isOpen={isQuickMenuOpen}
+        position={quickMenuPosition}
+        actions={quickActions}
+        onClose={closeQuickMenu}
+        onAction={(action) => {
+          action.onClick();
+        }}
+      />
     </DropdownMenu>
   );
 };

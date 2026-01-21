@@ -73,6 +73,16 @@ export const ProfileIcon: React.FC<ProfileIconProps> = ({
 
   return (
     <IconBase {...props}>
+      <defs>
+        <filter id="profile-glow">
+          <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
+          <feMerge>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+
       <motion.g
         variants={variants}
         initial="initial"
@@ -112,6 +122,7 @@ export const ProfileIcon: React.FC<ProfileIconProps> = ({
             cy="9"
             r="1.5"
             fill="currentColor"
+            filter={effectiveMotion === 'full' ? 'url(#profile-glow)' : undefined}
             animate={effectiveMotion === 'full'
               ? {
                   opacity: [0.6, 1, 0.6],
