@@ -56,26 +56,28 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
                 variant="ghost"
                 size="icon"
                 className={cn(
-                  // Size & shape
-                  'size-9 rounded-xl',
-                  // Surface - More visible
-                  'bg-muted/60 hover:bg-primary/15',
-                  'border border-border/30',
+                  // Size & shape - LARGER for better visibility
+                  'size-11 rounded-xl',
+                  // Surface - MUCH more visible with stronger background
+                  'bg-primary/10 hover:bg-primary/20',
+                  'border-2 border-primary/20 hover:border-primary/30',
                   // Backdrop
-                  'backdrop-blur-sm',
-                  // Hover effects
-                  'hover:scale-105 hover:shadow-sm',
+                  'backdrop-blur-md',
+                  // Hover effects - MORE dramatic
+                  'hover:scale-110 hover:shadow-lg hover:shadow-primary/20',
+                  // Open state
+                  isOpen && 'scale-95 bg-primary/25',
                   // Transitions
                   'motion-base',
-                  // Focus
+                  // Focus - STRONGER ring
                   'focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
                   className,
                 )}
                 aria-label={t('language_switcher_aria_label')}
               >
-                {/* Signature Globe icon with continuous rotation */}
+                {/* Signature Globe icon with continuous rotation - LARGER 20px */}
                 <GlobeIcon
-                  size={16}
+                  size={20}
                   isActive={isOpen}
                 />
               </Button>
