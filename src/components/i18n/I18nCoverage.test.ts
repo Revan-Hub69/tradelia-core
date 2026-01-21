@@ -16,7 +16,8 @@ import enLocale from '@/locales/en.json';
 import itLocale from '@/locales/it.json';
 
 // Type for locale structure
-type LocaleStructure = Record<string, any>;
+// Unused type - removed for cleaner code
+// type LocaleStructure = Record<string, any>;
 
 // Generator for i18n key paths
 const i18nKeyGenerator = (): fc.Arbitrary<string> => {

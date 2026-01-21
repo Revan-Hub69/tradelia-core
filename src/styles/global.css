@@ -18,6 +18,9 @@
 @import './adaptive-micro-copy.css';
 @import './semantic-loading-states.css';
 @import './performance-optimizations.css';
+
+/* Dashboard semantic utilities - Anti-drift guardrails */
+@import './dashboard-ui.css';
 @import './accessibility-compliance.css';
 @import './signature-moment.css';
 @import './signature-component.css';

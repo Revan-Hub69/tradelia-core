@@ -273,6 +273,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ className }) => 
               </kbd>
             </div>
           </div>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

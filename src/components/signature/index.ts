@@ -38,7 +38,7 @@ export { GlassSurface } from './GlassSurface';
 export { SignatureComparisonShowcase, SignatureLearningPathCard } from './SignatureIntegrationExample';
 export { SignatureShape } from './SignatureShapes';
 export { SignatureShowcase } from './SignatureShowcase';
-export { TradelliaGlass } from './TradelliaGlass';
+export { TradelliaGlass, TradeliaGlass } from './TradelliaGlass';
 export { ContentCard, HeroBanner, SupportingElement, VisualWeight } from './VisualHierarchy';
 
 // Micro-interactions
@@ -99,12 +99,16 @@ export {
 } from './BrandMemorySystem';
 export { BrandMemorySystemExample } from './BrandMemorySystemExample';
 
-// Semantic loading states
-// export {
-//   useSemanticLoading,
-//   SemanticSpinner,
-//   SemanticProgress,
-//   SemanticSkeleton,
-//   MorseCodeLoader,
-//   SemanticToast
-// } from './SemanticLoadingStates';
+// Semantic loading states - Enterprise 2026
+export {
+  useSemanticLoading,
+  SemanticSpinner,
+  SemanticProgress,
+  SemanticSkeleton,
+  MorseCodeLoader,
+  SemanticToast,
+  type SemanticContext,
+  type LoadingIntensity,
+  type LoadingPersonality,
+  type SemanticLoadingConfig,
+} from './SemanticLoadingStates';
