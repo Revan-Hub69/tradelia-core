@@ -37,7 +37,7 @@ export const MoonIcon: React.FC<MoonIconProps> = ({
   };
 
   const variants = getVariants();
-  const transition = effectiveMotion === 'none' ? { duration: 0 } : effectiveMotion === 'reduced' ? { duration: 0.15 } : { duration: 0.3, ease: [0.4, 0, 0.2, 1] };
+  const transition = effectiveMotion === 'none' ? { duration: 0 } : effectiveMotion === 'reduced' ? { duration: 0.15 } : { duration: 0.3 };
 
   return (
     <IconBase {...props}>
