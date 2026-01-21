@@ -1,5 +1,6 @@
 /*
  * MOON ICON - Tradelia Signature Premium SVG (Dark Mode)
+ * PREMIUM EFFECTS: Glow + Breathing + Twinkling stars
  */
 
 'use client';
@@ -39,8 +40,25 @@ export const MoonIcon: React.FC<MoonIconProps> = ({
   const variants = getVariants();
   const transition = effectiveMotion === 'none' ? { duration: 0 } : effectiveMotion === 'reduced' ? { duration: 0.15 } : { duration: 0.3 };
 
+  const stars = [
+    { cx: 8, cy: 8, delay: 0 },
+    { cx: 16, cy: 6, delay: 0.7 },
+    { cx: 18, cy: 16, delay: 1.4 },
+  ];
+
   return (
     <IconBase {...props}>
+      {/* Premium SVG Filters */}
+      <defs>
+        <filter id="moon-glow">
+          <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+          <feMerge>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+
       <motion.g
         animate="animate"
         initial="initial"
@@ -49,35 +67,43 @@ export const MoonIcon: React.FC<MoonIconProps> = ({
         whileHover="hover"
         style={{ transformOrigin: 'center' }}
       >
+        {/* Moon crescent with breathing glow */}
         <motion.path
           d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
-          style={{ filter: effectiveMotion === 'full' ? 'drop-shadow(0 0 3px currentColor)' : 'none' }}
-          animate={effectiveMotion === 'full' ? { opacity: [1, 0.8, 1] } : {}}
+          filter={
+            effectiveMotion === 'full'
+              ? 'url(#moon-glow)'
+              : undefined
+          }
+          animate={
+            effectiveMotion === 'full'
+              ? { opacity: [0.8, 1, 0.8] }
+              : {}
+          }
           transition={{ duration: 3, repeat: Infinity }}
         />
+
+        {/* Twinkling stars - Premium effect (only full motion) */}
         {effectiveMotion === 'full' && (
           <g>
-            <motion.circle
-              cx="8"
-              cy="8"
-              r="0.5"
-              animate={{ opacity: [0, 1, 0], scale: [0, 1, 0] }}
-              transition={{ duration: 2, repeat: Infinity, delay: 0 }}
-            />
-            <motion.circle
-              cx="16"
-              cy="6"
-              r="0.5"
-              animate={{ opacity: [0, 1, 0], scale: [0, 1, 0] }}
-              transition={{ duration: 2, repeat: Infinity, delay: 0.7 }}
-            />
-            <motion.circle
-              cx="18"
-              cy="16"
-              r="0.5"
-              animate={{ opacity: [0, 1, 0], scale: [0, 1, 0] }}
-              transition={{ duration: 2, repeat: Infinity, delay: 1.4 }}
-            />
+            {stars.map(star => (
+              <motion.circle
+                key={`star-${star.cx}-${star.cy}`}
+                cx={star.cx}
+                cy={star.cy}
+                r="0.5"
+                fill="currentColor"
+                animate={{
+                  opacity: [0, 1, 0],
+                  scale: [0, 1.5, 0],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  delay: star.delay,
+                }}
+              />
+            ))}
           </g>
         )}
       </motion.g>

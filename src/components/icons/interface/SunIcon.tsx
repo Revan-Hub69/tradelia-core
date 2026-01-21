@@ -1,5 +1,6 @@
 /*
  * SUN ICON - Tradelia Signature Premium SVG (Light Mode)
+ * PREMIUM EFFECTS: Glow + Ray pulse with stagger + Rotation
  */
 
 'use client';
@@ -39,8 +40,21 @@ export const SunIcon: React.FC<SunIconProps> = ({
   const variants = getVariants();
   const transition = effectiveMotion === 'none' ? { duration: 0 } : effectiveMotion === 'reduced' ? { duration: 0.15 } : { duration: 0.3 };
 
+  const rayAngles = [0, 45, 90, 135, 180, 225, 270, 315];
+
   return (
     <IconBase {...props}>
+      {/* Premium SVG Filters */}
+      <defs>
+        <filter id="sun-glow">
+          <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+          <feMerge>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+
       <motion.g
         animate="animate"
         initial="initial"
@@ -49,21 +63,52 @@ export const SunIcon: React.FC<SunIconProps> = ({
         whileHover="hover"
         style={{ transformOrigin: 'center' }}
       >
-        <circle
+        {/* Center circle with glow */}
+        <motion.circle
           cx="12"
           cy="12"
           r="4"
-          style={{ filter: effectiveMotion === 'full' ? 'drop-shadow(0 0 2px currentColor)' : 'none' }}
+          filter={
+            effectiveMotion === 'full'
+              ? 'url(#sun-glow)'
+              : undefined
+          }
+          animate={
+            effectiveMotion === 'full'
+              ? {
+                  opacity: [0.8, 1, 0.8],
+                }
+              : {}
+          }
+          transition={{ duration: 2, repeat: Infinity }}
         />
+
+        {/* Rays with stagger animation */}
         <g>
-          <line x1="12" x2="12" y1="1" y2="3" />
-          <line x1="12" x2="12" y1="21" y2="23" />
-          <line x1="4.22" x2="5.64" y1="4.22" y2="5.64" />
-          <line x1="18.36" x2="19.78" y1="18.36" y2="19.78" />
-          <line x1="1" x2="3" y1="12" y2="12" />
-          <line x1="21" x2="23" y1="12" y2="12" />
-          <line x1="4.22" x2="5.64" y1="19.78" y2="18.36" />
-          <line x1="18.36" x2="19.78" y1="5.64" y2="4.22" />
+          {rayAngles.map((angle, i) => (
+            <motion.line
+              key={angle}
+              x1="12"
+              x2="12"
+              y1="1"
+              y2="3"
+              style={{ transformOrigin: '12px 12px' }}
+              transform={`rotate(${angle} 12 12)`}
+              animate={
+                effectiveMotion === 'full'
+                  ? {
+                      opacity: [0.6, 1, 0.6],
+                      y: [0, -0.5, 0],
+                    }
+                  : {}
+              }
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                delay: i * 0.1,
+              }}
+            />
+          ))}
         </g>
       </motion.g>
     </IconBase>

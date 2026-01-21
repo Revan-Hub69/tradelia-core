@@ -1,5 +1,6 @@
 /*
  * BELL ICON - Tradelia Signature Premium SVG (Notifications)
+ * PREMIUM EFFECTS: Ring animation + Sound waves + Glow
  */
 
 'use client';
@@ -43,6 +44,18 @@ export const BellIcon: React.FC<BellIconProps> = ({
 
   return (
     <IconBase {...props}>
+      {/* Premium SVG Filters */}
+      <defs>
+        <filter id="bell-glow">
+          <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+          <feMerge>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+
+      {/* Bell body with ring animation */}
       <motion.g
         animate={hasNewNotification ? 'animate' : 'initial'}
         initial="initial"
@@ -52,13 +65,52 @@ export const BellIcon: React.FC<BellIconProps> = ({
         style={{ transformOrigin: '12px 8px' }}
       >
         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+
+        {/* Clapper with glow when active */}
         <motion.path
           d="M13.73 21a2 2 0 0 1-3.46 0"
-          animate={hasNewNotification && effectiveMotion === 'full' ? { rotate: [0, 10, -10, 10, -10, 5, -5, 0] } : {}}
+          filter={
+            hasNewNotification && effectiveMotion === 'full'
+              ? 'url(#bell-glow)'
+              : undefined
+          }
+          animate={
+            hasNewNotification && effectiveMotion === 'full'
+              ? {
+                  opacity: [0.6, 1, 0.6],
+                  rotate: [0, 10, -10, 10, -10, 5, -5, 0],
+                }
+              : {}
+          }
           style={{ transformOrigin: '12px 17px' }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 1, repeat: Infinity }}
         />
       </motion.g>
+
+      {/* Sound waves - Premium effect (only full motion) */}
+      {hasNewNotification && effectiveMotion === 'full' && (
+        <g>
+          {[0, 1, 2].map(i => (
+            <motion.path
+              key={i}
+              d={`M${18 + i * 2},${8 - i} Q${20 + i * 2},${8} ${18 + i * 2},${8 + i}`}
+              stroke="currentColor"
+              strokeWidth="1.5"
+              fill="none"
+              animate={{
+                opacity: [0, 0.6, 0],
+                scale: [0.8, 1.2, 1.4],
+              }}
+              transition={{
+                duration: 1,
+                repeat: Infinity,
+                delay: i * 0.2,
+              }}
+              style={{ transformOrigin: '12px 8px' }}
+            />
+          ))}
+        </g>
+      )}
     </IconBase>
   );
 };
