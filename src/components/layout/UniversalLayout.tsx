@@ -2,12 +2,11 @@
 
 import React from 'react';
 
-import { DashboardHeader, MobileNavigation, SidebarNavigation } from '@/components/dashboard';
-import { NavigationProvider } from '@/components/navigation';
+import { DashboardHeader } from '@/components/dashboard';
+import { NavigationProvider, SidebarNavigation, PWABottomNavigationSimple } from '@/components/navigation';
 
 interface UniversalLayoutProps {
   children: React.ReactNode;
-  variant?: 'dashboard' | 'minimal' | 'mobile-first';
   showSidebar?: boolean;
   showMobileNav?: boolean;
   className?: string;
@@ -15,7 +14,6 @@ interface UniversalLayoutProps {
 
 export const UniversalLayout: React.FC<UniversalLayoutProps> = ({
   children,
-  variant = 'dashboard',
   showSidebar = true,
   showMobileNav = true,
   className = '',
@@ -43,7 +41,7 @@ export const UniversalLayout: React.FC<UniversalLayoutProps> = ({
         {/* Mobile navigation */}
         {showMobileNav && (
           <div className="lg:hidden">
-            <MobileNavigation />
+            <PWABottomNavigationSimple />
           </div>
         )}
       </div>

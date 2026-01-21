@@ -38,7 +38,7 @@ export { GlassSurface } from './GlassSurface';
 export { SignatureComparisonShowcase, SignatureLearningPathCard } from './SignatureIntegrationExample';
 export { SignatureShape } from './SignatureShapes';
 export { SignatureShowcase } from './SignatureShowcase';
-export { TradelliaGlass, TradeliaGlass } from './TradelliaGlass';
+export { TradelliaGlass } from './TradelliaGlass';
 export { ContentCard, HeroBanner, SupportingElement, VisualWeight } from './VisualHierarchy';
 
 // Micro-interactions

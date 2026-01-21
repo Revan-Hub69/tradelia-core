@@ -10,7 +10,7 @@ export { DashboardLayout } from './DashboardLayout';
 export { MobileNavigation } from './MobileNavigation';
 
 // Premium Components
-export { PremiumAccessControl } from './PremiumAccessControl';
+export type { PremiumAccessControlProps } from './PremiumAccessControl';
 export { PremiumBenefitsDisplay } from './PremiumBenefitsDisplay';
 export { PremiumDashboard } from './PremiumDashboard';
 

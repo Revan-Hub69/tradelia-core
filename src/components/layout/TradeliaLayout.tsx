@@ -3,13 +3,12 @@
 import React from 'react';
 
 // Import dei componenti esistenti
-import { DashboardHeader, MobileNavigation, SidebarNavigation } from '@/components/dashboard';
+import { DashboardHeader } from '@/components/dashboard';
+import { SidebarNavigation, PWABottomNavigationSimple } from '@/components/navigation';
 import { NavigationProvider } from '@/components/navigation';
 
 interface TradeliaLayoutProps {
   children: React.ReactNode;
-  variant?: 'dashboard' | 'minimal' | 'mobile-first' | 'premium';
-  headerVariant?: 'dashboard' | 'simple' | 'minimal';
   showSidebar?: boolean;
   showMobileNav?: boolean;
   className?: string;
@@ -21,8 +20,6 @@ interface TradeliaLayoutProps {
  */
 export const TradeliaLayout: React.FC<TradeliaLayoutProps> = ({
   children,
-  variant = 'dashboard',
-  headerVariant = 'dashboard',
   showSidebar = true,
   showMobileNav = true,
   className = '',
@@ -50,7 +47,7 @@ export const TradeliaLayout: React.FC<TradeliaLayoutProps> = ({
         {/* Mobile Navigation esistente */}
         {showMobileNav && (
           <div className="lg:hidden">
-            <MobileNavigation />
+            <PWABottomNavigationSimple />
           </div>
         )}
       </div>

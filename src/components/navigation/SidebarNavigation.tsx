@@ -16,7 +16,7 @@ import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 
 import { DynamicIcon, type IconName } from '@/components/icons';
-import { UiIconButton, UiNavItem, UiSurface } from '@/components/ui';
+import { UiNavItem, UiSurface } from '@/components/ui';
 import { Button } from '@/components/ui/button';
 import { NavigationSkeleton } from '@/components/ui/skeleton';
 import { getVisibleNavigationItems, trackNavigationEvent } from '@/data/navigation.config';

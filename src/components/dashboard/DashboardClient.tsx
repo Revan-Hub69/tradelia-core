@@ -29,7 +29,6 @@ export function DashboardClient({ children }: DashboardClientProps) {
 
         {/* Header - Always visible */}
         <DashboardHeader
-          variant="home"
           showScrollShadow
           className="layout-header"
         />

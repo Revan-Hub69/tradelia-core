@@ -156,7 +156,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   };
 
   // Safe email fallback
-  const getUserDisplayName = () => {
+  const getUserDisplayName = (): string => {
     if (!userData) {
       return t('not_authenticated');
     }
@@ -164,7 +164,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       return userData.name;
     }
     const safeEmail = userData.email ?? '';
-    return safeEmail.includes('@') ? safeEmail.split('@')[0] : 'User';
+    const parts = safeEmail.split('@');
+    return safeEmail.includes('@') && parts[0] ? parts[0] : 'User';
   };
 
   // Dynamic title component
@@ -194,7 +195,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           {titleKey && (
             <div className="hidden sm:block">
               <TitleComponent className="text-lg font-semibold text-foreground">
-                {tGeneral(titleKey)}
+                {tGeneral(titleKey as any)}
               </TitleComponent>
             </div>
           )}

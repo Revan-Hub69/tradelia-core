@@ -10,10 +10,13 @@ export * from './navigation';
 // Dashboard System  
 export * from './dashboard';
 
-// UI Components
+// UI Primitives (Signature v1)
+export * from './ui';
+
+// Shadcn UI Components (legacy)
 export * from './ui/button';
 export * from './ui/card';
-export * from './ui/badge';
+// export * from './ui/badge'; // Conflict with dashboard/types.ts
 export * from './ui/progress';
 export * from './ui/separator';
 export * from './ui/skeleton';
@@ -38,16 +41,16 @@ export * from './signature';
 export * from './motion';
 
 // Educational Components
-export * from './educational';
+// export * from './educational'; // Conflict with performance
 
 // Emotional Design
-export * from './emotional';
+// export * from './emotional'; // Not used
 
 // Performance Optimized
-export * from './performance';
+// export * from './performance'; // Conflict with educational
 
 // Accessibility
-export * from './accessibility';
+// export * from './accessibility'; // Not a folder
 
 // Icons
 export * from './icons';

@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export const UniversalLayoutExample: React.FC = () => {
   return (
-    <UniversalLayout variant="dashboard" showSidebar={true} showMobileNav={true}>
+    <UniversalLayout showSidebar={true} showMobileNav={true}>
       <div className="space-y-6">
         <h1 className="text-3xl font-bold">Dashboard Universale</h1>
         
