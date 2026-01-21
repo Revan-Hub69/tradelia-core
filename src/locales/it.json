@@ -689,6 +689,16 @@
     "actions_label": "Azioni di recupero",
     "support_hint": "Se il problema persiste, contatta il supporto con questo ID errore"
   },
+  "NotFound": {
+    "title": "Pagina non trovata",
+    "description": "La pagina che stai cercando non esiste o è stata spostata.",
+    "back_dashboard": "Torna alla Dashboard",
+    "start_learning": "Inizia a Imparare",
+    "popular_pages": "Pagine popolari:",
+    "learn": "Impara",
+    "tools": "Strumenti",
+    "community": "Community"
+  },
   "Auth": {
     "meta_title": "Entra in Tradelia",
     "meta_description": "Accedi al tuo account o crea un nuovo account Tradelia",

@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 
+import { ErrorBoundaryTest } from '@/components/dev/ErrorBoundaryTest';
 import { PageTransitionWrapper } from '@/components/transitions/PageTransitionWrapper';
 import { useUserData } from '@/hooks/useUserData';
 
@@ -37,6 +38,9 @@ const DashboardIndexPage = () => {
 
   return (
     <PageTransitionWrapper>
+      {/* Error Boundary Test (dev only) */}
+      <ErrorBoundaryTest />
+      
       <div className="container mx-auto px-4 py-8">
         <div className="space-y-8">
           {/* Welcome */}

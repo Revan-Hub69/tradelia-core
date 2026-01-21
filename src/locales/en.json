@@ -718,6 +718,16 @@
     "actions_label": "Recovery actions",
     "support_hint": "If the problem persists, contact support with this error ID"
   },
+  "NotFound": {
+    "title": "Page not found",
+    "description": "The page you're looking for doesn't exist or has been moved.",
+    "back_dashboard": "Back to Dashboard",
+    "start_learning": "Start Learning",
+    "popular_pages": "Popular pages:",
+    "learn": "Learn",
+    "tools": "Tools",
+    "community": "Community"
+  },
   "Auth": {
     "meta_title": "Enter Tradelia",
     "meta_description": "Sign in to your account or create a new Tradelia account",
