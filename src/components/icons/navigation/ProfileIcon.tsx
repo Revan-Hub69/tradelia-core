@@ -23,6 +23,7 @@ export type ProfileIconProps = IconBaseProps & {
 export const ProfileIcon: React.FC<ProfileIconProps> = ({
   isActive = false,
   motionPreference,
+  strokeWidth,
   ...props
 }) => {
   const prefersReducedMotion = useReducedMotion();
@@ -71,8 +72,10 @@ export const ProfileIcon: React.FC<ProfileIconProps> = ({
         ? { duration: 0.15 }
         : { duration: 0.2 };
 
+  const effectiveStrokeWidth = strokeWidth ?? 2;
+
   return (
-    <IconBase {...props}>
+    <IconBase strokeWidth={effectiveStrokeWidth} {...props}>
       <defs>
         <filter id="profile-glow">
           <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
@@ -91,9 +94,9 @@ export const ProfileIcon: React.FC<ProfileIconProps> = ({
         transition={transition}
         style={{ transformOrigin: 'center' }}
       >
-        {/* Avatar body con pulse effect quando active */}
+        {/* Avatar body */}
         <motion.path
-          d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"
+          d="M5.5 20c1.6-3 4.1-4.6 6.5-4.6s4.9 1.6 6.5 4.6"
           animate={isActive && effectiveMotion === 'full'
             ? {
                 opacity: [1, 0.7, 1],
@@ -102,11 +105,13 @@ export const ProfileIcon: React.FC<ProfileIconProps> = ({
           transition={{ duration: 2, repeat: Infinity }}
         />
 
-        {/* Avatar head con pulse effect quando active */}
+        {/* Avatar head */}
         <motion.circle
           cx="12"
-          cy="7"
-          r="4"
+          cy="8.5"
+          r="3.2"
+          fill="currentColor"
+          fillOpacity="0.12"
           animate={isActive && effectiveMotion === 'full'
             ? {
                 opacity: [1, 0.8, 1],
@@ -118,9 +123,9 @@ export const ProfileIcon: React.FC<ProfileIconProps> = ({
         {/* Status indicator (online dot - solo quando active) */}
         {isActive && (
           <motion.circle
-            cx="15"
-            cy="9"
-            r="1.5"
+            cx="16.2"
+            cy="9.2"
+            r="1.4"
             fill="currentColor"
             filter={effectiveMotion === 'full' ? 'url(#profile-glow)' : undefined}
             animate={effectiveMotion === 'full'

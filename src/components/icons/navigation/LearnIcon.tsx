@@ -23,6 +23,7 @@ export type LearnIconProps = IconBaseProps & {
 export const LearnIcon: React.FC<LearnIconProps> = ({
   isActive = false,
   motionPreference,
+  strokeWidth,
   ...props
 }) => {
   const prefersReducedMotion = useReducedMotion();
@@ -72,8 +73,10 @@ export const LearnIcon: React.FC<LearnIconProps> = ({
         ? { duration: 0.15 }
         : { duration: 0.3 };
 
+  const effectiveStrokeWidth = strokeWidth ?? 2;
+
   return (
-    <IconBase {...props}>
+    <IconBase strokeWidth={effectiveStrokeWidth} {...props}>
       <defs>
         <filter id="learn-glow">
           <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
@@ -95,9 +98,9 @@ export const LearnIcon: React.FC<LearnIconProps> = ({
           transformStyle: 'preserve-3d',
         }}
       >
-        {/* Pagina sinistra con page flip effect */}
+        {/* Pagina sinistra */}
         <motion.path
-          d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"
+          d="M4.5 6.5h5.8a3 3 0 0 1 3 3v9.5a2.3 2.3 0 0 0-2.3-2.3H4.5z"
           animate={effectiveMotion === 'full'
             ? {
                 opacity: [1, 0.8, 1],
@@ -106,9 +109,9 @@ export const LearnIcon: React.FC<LearnIconProps> = ({
           transition={{ duration: 3, repeat: Infinity }}
         />
 
-        {/* Pagina destra con page flip effect */}
+        {/* Pagina destra */}
         <motion.path
-          d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"
+          d="M19.5 6.5h-5.8a3 3 0 0 0-3 3v9.5a2.3 2.3 0 0 1 2.3-2.3h6.5z"
           animate={effectiveMotion === 'full'
             ? {
                 opacity: [1, 0.8, 1],
@@ -117,10 +120,21 @@ export const LearnIcon: React.FC<LearnIconProps> = ({
           transition={{ duration: 3, repeat: Infinity, delay: 1.5 }}
         />
 
+        {/* Spine line */}
+        <path
+          d="M12 7.5v10"
+          strokeWidth="1.5"
+          opacity="0.6"
+        />
+
+        {/* Page lines */}
+        <path d="M6.6 11h3.2" strokeWidth="1.5" opacity="0.6" />
+        <path d="M14.2 11h3.2" strokeWidth="1.5" opacity="0.6" />
+
         {/* Bookmark (solo quando active) */}
         {isActive && (
           <motion.path
-            d="M12 3v7l2-2 2 2V3"
+            d="M12 6.3v5.8l1.9-1.6 1.9 1.6V6.3"
             fill="currentColor"
             filter={effectiveMotion === 'full' ? 'url(#learn-glow)' : undefined}
             animate={effectiveMotion === 'full'

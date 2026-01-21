@@ -23,6 +23,7 @@ export type HomeIconProps = IconBaseProps & {
 export const HomeIcon: React.FC<HomeIconProps> = ({
   isActive = false,
   motionPreference,
+  strokeWidth,
   ...props
 }) => {
   const prefersReducedMotion = useReducedMotion();
@@ -71,8 +72,10 @@ export const HomeIcon: React.FC<HomeIconProps> = ({
         ? { duration: 0.15 }
         : { duration: 0.2 };
 
+  const effectiveStrokeWidth = strokeWidth ?? 2;
+
   return (
-    <IconBase {...props}>
+    <IconBase strokeWidth={effectiveStrokeWidth} {...props}>
       <defs>
         <filter id="home-glow">
           <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
@@ -91,12 +94,18 @@ export const HomeIcon: React.FC<HomeIconProps> = ({
         transition={transition}
         style={{ transformOrigin: 'center bottom' }}
       >
-        {/* Casa con tetto */}
-        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+        {/* Roof */}
+        <path d="M4 11l8-6 8 6" />
+
+        {/* House body */}
+        <path d="M6 10.5v9.5a2.2 2.2 0 0 0 2.2 2.2h7.6a2.2 2.2 0 0 0 2.2-2.2v-9.5" />
 
         {/* Porta con dettaglio - subtle swing on hover */}
         <motion.path
-          d="M9 22V12h6v10"
+          d="M10.2 20v-6.8a1 1 0 0 1 1-1h1.6a1 1 0 0 1 1 1V20"
+          fill="currentColor"
+          fillOpacity="0.08"
+          strokeWidth="1.6"
           animate={effectiveMotion === 'full'
             ? {
                 scaleX: [1, 0.95, 1],
@@ -108,9 +117,9 @@ export const HomeIcon: React.FC<HomeIconProps> = ({
 
         {/* Maniglia porta - dettaglio premium con glow */}
         <motion.circle
-          cx="13.5"
-          cy="17"
-          r="0.5"
+          cx="13.4"
+          cy="16.7"
+          r="0.6"
           fill="currentColor"
           filter={
             isActive && effectiveMotion === 'full'
@@ -127,11 +136,14 @@ export const HomeIcon: React.FC<HomeIconProps> = ({
 
         {/* Finestra - dettaglio premium con light effect */}
         <motion.rect
-          x="6"
-          y="7"
-          width="2"
-          height="2"
-          rx="0.5"
+          x="7.2"
+          y="12.3"
+          width="2.6"
+          height="2.6"
+          rx="0.6"
+          fill="currentColor"
+          fillOpacity="0.06"
+          strokeWidth="1.5"
           filter={
             isActive && effectiveMotion === 'full'
               ? 'url(#home-glow)'
@@ -149,8 +161,8 @@ export const HomeIcon: React.FC<HomeIconProps> = ({
         {isActive && effectiveMotion === 'full' && (
           <g className="chimney-smoke">
             <motion.circle
-              cx="16"
-              cy="4"
+              cx="17"
+              cy="5"
               r="0.5"
               animate={{
                 y: [-5, -10],

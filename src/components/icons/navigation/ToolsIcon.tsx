@@ -20,10 +20,12 @@ export type ToolsIconProps = IconBaseProps & {
 export const ToolsIcon: React.FC<ToolsIconProps> = ({
   isActive = false,
   motionPreference,
+  strokeWidth,
   ...props
 }) => {
   const prefersReducedMotion = useReducedMotion();
   const effectiveMotion = motionPreference || (prefersReducedMotion ? 'reduced' : 'full');
+  const effectiveStrokeWidth = strokeWidth ?? 2;
 
   const getVariants = () => {
     if (effectiveMotion === 'none') {
@@ -44,13 +46,13 @@ export const ToolsIcon: React.FC<ToolsIconProps> = ({
   const shouldAnimate = isActive && effectiveMotion === 'full';
 
   const knobs = [
-    { x: 5, y: 9, delay: 0 },
-    { x: 12, y: 15, delay: 0.25 },
-    { x: 19, y: 7, delay: 0.5 },
+    { x: 6, y: 11, delay: 0 },
+    { x: 12, y: 8, delay: 0.25 },
+    { x: 18, y: 14, delay: 0.5 },
   ];
 
   return (
-    <IconBase {...props}>
+    <IconBase strokeWidth={effectiveStrokeWidth} {...props}>
       <defs>
         <filter id="tools-glow">
           <feGaussianBlur stdDeviation="2.2" result="coloredBlur" />
@@ -70,9 +72,12 @@ export const ToolsIcon: React.FC<ToolsIconProps> = ({
         style={{ transformOrigin: 'center' }}
       >
         {/* Vertical rails */}
-        <line x1="5" x2="5" y1="4" y2="20" />
-        <line x1="12" x2="12" y1="4" y2="20" />
-        <line x1="19" x2="19" y1="4" y2="20" />
+        <line x1="6" x2="6" y1="4" y2="9" />
+        <line x1="6" x2="6" y1="13" y2="20" />
+        <line x1="12" x2="12" y1="4" y2="6" />
+        <line x1="12" x2="12" y1="10" y2="20" />
+        <line x1="18" x2="18" y1="4" y2="12" />
+        <line x1="18" x2="18" y1="16" y2="20" />
 
         {/* Knobs */}
         {knobs.map(knob => (
@@ -82,11 +87,13 @@ export const ToolsIcon: React.FC<ToolsIconProps> = ({
             cy={knob.y}
             r="2"
             fill="currentColor"
-            stroke="none"
+            fillOpacity="0.18"
+            stroke="currentColor"
+            strokeWidth="1.5"
             filter={shouldAnimate ? 'url(#tools-glow)' : undefined}
             animate={shouldAnimate
               ? {
-                  y: [0, -1.2, 0],
+                  cy: [knob.y, knob.y - 1, knob.y],
                   opacity: [0.9, 1, 0.9],
                 }
               : {}}

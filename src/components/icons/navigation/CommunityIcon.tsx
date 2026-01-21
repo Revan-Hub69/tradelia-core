@@ -20,10 +20,12 @@ export type CommunityIconProps = IconBaseProps & {
 export const CommunityIcon: React.FC<CommunityIconProps> = ({
   isActive = false,
   motionPreference,
+  strokeWidth,
   ...props
 }) => {
   const prefersReducedMotion = useReducedMotion();
   const effectiveMotion = motionPreference || (prefersReducedMotion ? 'reduced' : 'full');
+  const effectiveStrokeWidth = strokeWidth ?? 2;
 
   const getVariants = () => {
     if (effectiveMotion === 'none') {
@@ -59,7 +61,7 @@ export const CommunityIcon: React.FC<CommunityIconProps> = ({
   });
 
   return (
-    <IconBase {...props}>
+    <IconBase strokeWidth={effectiveStrokeWidth} {...props}>
       <defs>
         <filter id="community-glow">
           <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
@@ -81,46 +83,46 @@ export const CommunityIcon: React.FC<CommunityIconProps> = ({
         {shouldAnimate && (
           <motion.circle
             cx="12"
-            cy="9"
-            r="5.2"
+            cy="9.5"
+            r="6"
             fill="currentColor"
             stroke="none"
-            opacity="0.12"
+            opacity="0.08"
             filter="url(#community-glow)"
-            animate={{ opacity: [0.08, 0.18, 0.08], scale: [0.96, 1.02, 0.96] }}
-            transition={{ duration: 2.8, repeat: Infinity }}
+            animate={{ opacity: [0.06, 0.14, 0.06], scale: [0.96, 1.02, 0.96] }}
+            transition={{ duration: 3, repeat: Infinity }}
           />
         )}
 
         {/* Heads */}
         <motion.circle
           cx="12"
-          cy="8"
+          cy="8.5"
           r="3"
+          fill="currentColor"
+          fillOpacity="0.12"
           animate={pulse()}
           transition={pulseTransition(0)}
         />
         <motion.circle
-          cx="6.5"
-          cy="10"
-          r="2.25"
-          strokeWidth="1.5"
+          cx="6.6"
+          cy="10.2"
+          r="2.2"
           animate={pulse()}
           transition={pulseTransition(0.3)}
         />
         <motion.circle
-          cx="17.5"
-          cy="10"
-          r="2.25"
-          strokeWidth="1.5"
+          cx="17.4"
+          cy="10.2"
+          r="2.2"
           animate={pulse()}
           transition={pulseTransition(0.6)}
         />
 
         {/* Bodies */}
-        <path d="M4 20c1.6-3.2 4.5-4.8 8-4.8s6.4 1.6 8 4.8" />
-        <path d="M2.2 20c0-2.2 1.8-3.4 3.7-3.7" />
-        <path d="M21.8 20c0-2.2-1.8-3.4-3.7-3.7" />
+        <path d="M5.3 20c1.5-3.1 4.3-4.8 6.7-4.8s5.2 1.7 6.7 4.8" />
+        <path d="M2.4 19.4c0-2.1 1.6-3.4 3.6-3.9" />
+        <path d="M21.6 19.4c0-2.1-1.6-3.4-3.6-3.9" />
       </motion.g>
     </IconBase>
   );
