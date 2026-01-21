@@ -24,12 +24,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
 import { useLongPress } from '@/hooks/useLongPress';
 import { cn } from '@/utils/Helpers';
 
@@ -89,71 +83,52 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-      <TooltipProvider delayDuration={300}>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className={cn(
-                  // Size & shape - LARGER for better visibility
-                  'size-11 rounded-xl',
-                  // Surface - MUCH more visible with stronger background
-                  'bg-primary/10 hover:bg-primary/20',
-                  'border-2 border-primary/20 hover:border-primary/30',
-                  // Backdrop
-                  'backdrop-blur-md',
-                  // Hover effects - MORE dramatic
-                  'hover:scale-110 hover:shadow-lg hover:shadow-primary/20',
-                  // Open state
-                  isOpen && 'scale-95 bg-primary/25',
-                  // Transitions
-                  'motion-base',
-                  // Focus - STRONGER ring
-                  'focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-                  // Relative for badge positioning
-                  'relative',
-                  className,
-                )}
-                aria-label={t('notifications_aria_label')}
-                {...longPressHandlers}
-              >
-                {/* Signature Bell icon with ring animation - LARGER 20px */}
-                <BellIcon size={20} hasNewNotification={unreadCount > 0} />
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn(
+            // Size & shape - LARGER for better visibility
+            'size-11 rounded-xl',
+            // Surface - MUCH more visible with stronger background
+            'bg-primary/10 hover:bg-primary/20',
+            'border-2 border-primary/20 hover:border-primary/30',
+            // Backdrop
+            'backdrop-blur-md',
+            // Hover effects - MORE dramatic
+            'hover:scale-110 hover:shadow-lg hover:shadow-primary/20',
+            // Open state
+            isOpen && 'scale-95 bg-primary/25',
+            // Transitions
+            'motion-base',
+            // Focus - STRONGER ring
+            'focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+            // Relative for badge positioning
+            'relative',
+            className,
+          )}
+          aria-label={t('notifications_aria_label')}
+          {...longPressHandlers}
+        >
+          {/* Signature Bell icon with ring animation - LARGER 20px */}
+          <BellIcon size={20} hasNewNotification={unreadCount > 0} />
 
-                {/* Badge count - PREMIUM PULSE */}
-                {unreadCount > 0 && (
-                  <span
-                    className={cn(
-                      'absolute -right-1 -top-1',
-                      'flex size-5 items-center justify-center',
-                      'rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground',
-                      'ring-2 ring-background',
-                      'animate-pulse',
-                    )}
-                  >
-                    {unreadCount > 9 ? '9+' : unreadCount}
-                  </span>
-                )}
-              </Button>
-            </DropdownMenuTrigger>
-          </TooltipTrigger>
-          <TooltipContent side="bottom" className="text-xs">
-            <p>{t('notifications')}</p>
-            {unreadCount > 0 && (
-              <p className="text-muted-foreground">
-                {unreadCount}
-                {' '}
-                {t('unread')}
-              </p>
-            )}
-            <p className="text-muted-foreground">
-              {t('long_press_mark_all_read')}
-            </p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+          {/* Badge count - PREMIUM PULSE */}
+          {unreadCount > 0 && (
+            <span
+              className={cn(
+                'absolute -right-1 -top-1',
+                'flex size-5 items-center justify-center',
+                'rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground',
+                'ring-2 ring-background',
+                'animate-pulse',
+              )}
+            >
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </span>
+          )}
+        </Button>
+      </DropdownMenuTrigger>
 
       <DropdownMenuContent
         align="end"
