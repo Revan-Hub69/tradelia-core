@@ -20,6 +20,8 @@ import {
   isLocked as checkIsLocked,
   resolveSettingValue as resolveValue,
 } from '@/lib/settings/precedence';
+import { createClient } from '@/libs/supabase/client';
+import { saveUserSettings } from '@/libs/supabase/settings';
 import type {
   SystemPolicy,
   SystemPreferences,
@@ -190,11 +192,25 @@ export const useSettingsStore = create<SettingsStoreState>((set, get) => ({
     set({ saveStatus: 'saving' });
 
     try {
-      // TODO: Save to database (P1.T6)
-      // For now, just simulate success
-      await new Promise(resolve => setTimeout(resolve, 100));
+      const { settings } = get();
 
-      set({ saveStatus: 'saved', retryCount: 0 });
+      // Get current user
+      const supabase = createClient();
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+      if (authError || !user) {
+        throw new Error('User not authenticated');
+      }
+
+      // Save to database
+      const savedSettings = await saveUserSettings(user.id, settings);
+
+      // Update store with server timestamp
+      set({
+        settings: savedSettings,
+        saveStatus: 'saved',
+        retryCount: 0,
+      });
 
       // Reset to idle after 2 seconds
       setTimeout(() => {

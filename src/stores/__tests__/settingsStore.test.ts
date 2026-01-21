@@ -18,6 +18,38 @@ import { DEFAULT_SETTINGS } from '@/types/settings';
 import { useSettingsStore } from '../settingsStore';
 
 // ============================================================================
+// Mock Supabase
+// ============================================================================
+
+// Mock saveUserSettings
+vi.mock('@/libs/supabase/settings', () => ({
+  saveUserSettings: vi.fn(async (_userId: string, settings: any) => {
+    // Return settings with server timestamp
+    return {
+      ...settings,
+      updatedAt: new Date().toISOString(),
+    };
+  }),
+}));
+
+// Mock createClient
+vi.mock('@/libs/supabase/client', () => ({
+  createClient: vi.fn(() => ({
+    auth: {
+      getUser: vi.fn(async () => ({
+        data: {
+          user: {
+            id: 'test-user-id',
+            email: 'test@example.com',
+          },
+        },
+        error: null,
+      })),
+    },
+  })),
+}));
+
+// ============================================================================
 // Test Setup
 // ============================================================================
 
