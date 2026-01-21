@@ -63,15 +63,13 @@ export const HomeIcon: React.FC<HomeIconProps> = ({
   
   const variants = getAnimationVariants();
   
-  // Transition timing
-  const transition = {
-    none: { duration: 0 },
-    reduced: { duration: 0.15, ease: 'easeOut' },
-    full: { 
-      duration: 0.2, 
-      ease: [0.4, 0, 0.2, 1],
-    },
-  }[effectiveMotion];
+  // Transition timing - simplified for TypeScript compatibility
+  const transition = 
+    effectiveMotion === 'none' 
+      ? { duration: 0 } 
+      : effectiveMotion === 'reduced' 
+        ? { duration: 0.15 } 
+        : { duration: 0.2 };
   
   return (
     <IconBase {...props}>
@@ -92,10 +90,7 @@ export const HomeIcon: React.FC<HomeIconProps> = ({
           animate={effectiveMotion === 'full' ? {
             scaleX: [1, 0.95, 1],
           } : {}}
-          transition={{
-            duration: 0.3,
-            ease: 'easeInOut',
-          }}
+          transition={{ duration: 0.3 }}
           style={{ transformOrigin: 'left center' }}
         />
         
@@ -108,11 +103,7 @@ export const HomeIcon: React.FC<HomeIconProps> = ({
           animate={isActive && effectiveMotion === 'full' ? {
             opacity: [0.6, 1, 0.6],
           } : {}}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
+          transition={{ duration: 2, repeat: Infinity }}
         />
         
         {/* Finestra - dettaglio premium con light effect */}
@@ -125,11 +116,7 @@ export const HomeIcon: React.FC<HomeIconProps> = ({
           animate={isActive && effectiveMotion === 'full' ? {
             opacity: [0.4, 0.8, 0.4],
           } : {}}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
+          transition={{ duration: 3, repeat: Infinity }}
         />
         
         {/* Smoke from chimney (solo in full motion quando active) */}
@@ -144,11 +131,7 @@ export const HomeIcon: React.FC<HomeIconProps> = ({
                 opacity: [0.6, 0],
                 scale: [0.5, 1],
               }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: 'easeOut',
-              }}
+              transition={{ duration: 2, repeat: Infinity }}
             />
             <motion.circle
               cx="17"
@@ -159,12 +142,7 @@ export const HomeIcon: React.FC<HomeIconProps> = ({
                 opacity: [0.6, 0],
                 scale: [0.5, 1],
               }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: 'easeOut',
-                delay: 0.7,
-              }}
+              transition={{ duration: 2, repeat: Infinity, delay: 0.7 }}
             />
           </g>
         )}

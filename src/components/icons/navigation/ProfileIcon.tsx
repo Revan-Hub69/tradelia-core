@@ -63,15 +63,13 @@ export const ProfileIcon: React.FC<ProfileIconProps> = ({
   
   const variants = getAnimationVariants();
   
-  // Transition timing
-  const transition = {
-    none: { duration: 0 },
-    reduced: { duration: 0.15, ease: 'easeOut' },
-    full: { 
-      duration: 0.2, 
-      ease: [0.4, 0, 0.2, 1],
-    },
-  }[effectiveMotion];
+  // Transition timing - simplified for TypeScript compatibility
+  const transition = 
+    effectiveMotion === 'none' 
+      ? { duration: 0 } 
+      : effectiveMotion === 'reduced' 
+        ? { duration: 0.15 } 
+        : { duration: 0.2 };
   
   return (
     <IconBase {...props}>
@@ -89,11 +87,7 @@ export const ProfileIcon: React.FC<ProfileIconProps> = ({
           animate={isActive && effectiveMotion === 'full' ? {
             opacity: [1, 0.7, 1],
           } : {}}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
+          transition={{ duration: 2, repeat: Infinity }}
         />
         
         {/* Avatar head con pulse effect quando active */}
@@ -104,12 +98,7 @@ export const ProfileIcon: React.FC<ProfileIconProps> = ({
           animate={isActive && effectiveMotion === 'full' ? {
             opacity: [1, 0.8, 1],
           } : {}}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 1,
-          }}
+          transition={{ duration: 2, repeat: Infinity, delay: 1 }}
         />
         
         {/* Status indicator (online dot - solo quando active) */}
@@ -123,11 +112,7 @@ export const ProfileIcon: React.FC<ProfileIconProps> = ({
               opacity: [0.6, 1, 0.6],
               scale: [0.8, 1, 0.8],
             } : {}}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
+            transition={{ duration: 2, repeat: Infinity }}
           />
         )}
         

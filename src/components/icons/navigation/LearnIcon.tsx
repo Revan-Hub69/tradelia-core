@@ -64,15 +64,13 @@ export const LearnIcon: React.FC<LearnIconProps> = ({
   
   const variants = getAnimationVariants();
   
-  // Transition timing
-  const transition = {
-    none: { duration: 0 },
-    reduced: { duration: 0.15, ease: 'easeOut' },
-    full: { 
-      duration: 0.3, 
-      ease: [0.4, 0, 0.2, 1],
-    },
-  }[effectiveMotion];
+  // Transition timing - simplified for TypeScript compatibility
+  const transition = 
+    effectiveMotion === 'none' 
+      ? { duration: 0 } 
+      : effectiveMotion === 'reduced' 
+        ? { duration: 0.15 } 
+        : { duration: 0.3 };
   
   return (
     <IconBase {...props}>
@@ -93,11 +91,7 @@ export const LearnIcon: React.FC<LearnIconProps> = ({
           animate={effectiveMotion === 'full' ? {
             opacity: [1, 0.8, 1],
           } : {}}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
+          transition={{ duration: 3, repeat: Infinity }}
         />
         
         {/* Pagina destra con page flip effect */}
@@ -106,12 +100,7 @@ export const LearnIcon: React.FC<LearnIconProps> = ({
           animate={effectiveMotion === 'full' ? {
             opacity: [1, 0.8, 1],
           } : {}}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 1.5,
-          }}
+          transition={{ duration: 3, repeat: Infinity, delay: 1.5 }}
         />
         
         {/* Bookmark (solo quando active) */}
@@ -122,11 +111,7 @@ export const LearnIcon: React.FC<LearnIconProps> = ({
             animate={effectiveMotion === 'full' ? {
               opacity: [0.6, 1, 0.6],
             } : {}}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
+            transition={{ duration: 2, repeat: Infinity }}
           />
         )}
         
