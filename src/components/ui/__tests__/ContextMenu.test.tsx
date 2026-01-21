@@ -2,10 +2,10 @@
  * @vitest-environment jsdom
  */
 
-import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import React from 'react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { ContextMenu, type ContextMenuItemOrSeparator } from '../ContextMenu';
 
@@ -127,6 +127,7 @@ describe('ContextMenu', () => {
 
       await waitFor(() => {
         const disabledItem = screen.getByRole('menuitem', { name: 'Action 3' });
+
         expect(disabledItem).toBeDisabled();
         expect(disabledItem).toHaveAttribute('aria-disabled', 'true');
       });
@@ -163,6 +164,7 @@ describe('ContextMenu', () => {
       );
 
       const trigger = screen.getByRole('button', { name: 'Open Menu' });
+
       expect(trigger).toHaveAttribute('aria-haspopup', 'menu');
       expect(trigger).toHaveAttribute('aria-expanded', 'false');
     });
@@ -222,6 +224,7 @@ describe('ContextMenu', () => {
 
       await waitFor(() => {
         const firstItem = screen.getByRole('menuitem', { name: 'Action 1' });
+
         expect(firstItem).toHaveFocus();
       });
     });
@@ -371,6 +374,7 @@ describe('ContextMenu', () => {
       // Focus should remain in menu (not move to next element)
       await waitFor(() => {
         const menu = screen.getByRole('menu');
+
         expect(menu).toBeInTheDocument();
       });
     });

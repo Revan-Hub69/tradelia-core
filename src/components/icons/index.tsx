@@ -11,9 +11,11 @@ import React from 'react';
 import type { IconBaseProps } from './IconBase';
 import { BellIcon } from './interface/BellIcon';
 import { ChevronDownIcon } from './interface/ChevronDownIcon';
+import { CloseIcon } from './interface/CloseIcon';
 import { GlobeIcon } from './interface/GlobeIcon';
 import { LockIcon } from './interface/LockIcon';
 import { LogoutIcon } from './interface/LogoutIcon';
+import { MenuIcon } from './interface/MenuIcon';
 import { MoonIcon } from './interface/MoonIcon';
 import { MoreVerticalIcon } from './interface/MoreVerticalIcon';
 import { SettingsIcon } from './interface/SettingsIcon';
@@ -29,28 +31,33 @@ export { IconBase, type IconBaseProps, type IconProps } from './IconBase';
 
 // Navigation icons (with signature animations)
 export { CommunityIcon } from './navigation/CommunityIcon';
-export { HomeIcon } from './navigation/HomeIcon';
 export type { HomeIconProps } from './navigation/HomeIcon';
-export { LearnIcon } from './navigation/LearnIcon';
+export { HomeIcon } from './navigation/HomeIcon';
 export type { LearnIconProps } from './navigation/LearnIcon';
-export { ProfileIcon } from './navigation/ProfileIcon';
+export { LearnIcon } from './navigation/LearnIcon';
 export type { ProfileIconProps } from './navigation/ProfileIcon';
+export { ProfileIcon } from './navigation/ProfileIcon';
 export { ToolsIcon } from './navigation/ToolsIcon';
 
 // Interface icons (with signature animations)
-export { BellIcon } from './interface/BellIcon';
 export type { BellIconProps } from './interface/BellIcon';
+export { BellIcon } from './interface/BellIcon';
 export { ChevronDownIcon } from './interface/ChevronDownIcon';
-export { GlobeIcon } from './interface/GlobeIcon';
+export type { CloseIconProps } from './interface/CloseIcon';
+export { CloseIcon } from './interface/CloseIcon';
 export type { GlobeIconProps } from './interface/GlobeIcon';
+export { GlobeIcon } from './interface/GlobeIcon';
 export { LockIcon } from './interface/LockIcon';
+export type { LogoutIconProps } from './interface/LogoutIcon';
 export { LogoutIcon } from './interface/LogoutIcon';
-export { MoonIcon } from './interface/MoonIcon';
+export type { MenuIconProps } from './interface/MenuIcon';
+export { MenuIcon } from './interface/MenuIcon';
 export type { MoonIconProps } from './interface/MoonIcon';
+export { MoonIcon } from './interface/MoonIcon';
 export { MoreVerticalIcon } from './interface/MoreVerticalIcon';
 export { SettingsIcon } from './interface/SettingsIcon';
-export { SunIcon } from './interface/SunIcon';
 export type { SunIconProps } from './interface/SunIcon';
+export { SunIcon } from './interface/SunIcon';
 
 // Status icons
 export { AchievementIcon } from './AchievementIcon';
@@ -67,9 +74,11 @@ export const ICON_MAP = {
   ProfileIcon,
   BellIcon,
   ChevronDownIcon,
+  CloseIcon,
   GlobeIcon,
   LockIcon,
   LogoutIcon,
+  MenuIcon,
   MoonIcon,
   MoreVerticalIcon,
   SettingsIcon,

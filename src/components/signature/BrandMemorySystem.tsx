@@ -3,10 +3,10 @@
  *
  * Sistema che assicura che ogni interazione rinforzi il brand Tradelia
  * e crei momenti memorabili che costruiscono la fedeltà dell'utente
- * 
- * Basato su ricerca 2026: Brand Loyalty through UX, Memorable Moments, 
+ *
+ * Basato su ricerca 2026: Brand Loyalty through UX, Memorable Moments,
  * Emotional Connections, Affective Design
- * 
+ *
  * Principi chiave:
  * - Emotional UX Design: creare connessioni emotive durature
  * - Brand Consistency: identità coerente in ogni touchpoint
@@ -24,66 +24,66 @@ import { usePerformanceOptimization } from '../../hooks/usePerformanceOptimizati
 // TYPES & INTERFACES
 // ============================================================================
 
-export type BrandMomentType = 
-  | 'first-impression'    // Primo contatto con Tradelia
-  | 'learning-milestone'  // Traguardo di apprendimento
-  | 'achievement-unlock'  // Sblocco achievement
-  | 'skill-mastery'       // Padronanza di una skill
-  | 'community-connect'   // Connessione con la community
-  | 'premium-upgrade'     // Upgrade a premium
-  | 'knowledge-share'     // Condivisione conoscenza
-  | 'problem-solved'      // Risoluzione di un problema
-  | 'trust-building'      // Costruzione di fiducia
-  | 'loyalty-reward';     // Ricompensa per fedeltà
+export type BrandMomentType =
+  | 'first-impression' // Primo contatto con Tradelia
+  | 'learning-milestone' // Traguardo di apprendimento
+  | 'achievement-unlock' // Sblocco achievement
+  | 'skill-mastery' // Padronanza di una skill
+  | 'community-connect' // Connessione con la community
+  | 'premium-upgrade' // Upgrade a premium
+  | 'knowledge-share' // Condivisione conoscenza
+  | 'problem-solved' // Risoluzione di un problema
+  | 'trust-building' // Costruzione di fiducia
+  | 'loyalty-reward'; // Ricompensa per fedeltà
 
-export type EmotionalTone = 
-  | 'confident'           // Fiducia e sicurezza
-  | 'encouraging'         // Incoraggiamento e supporto
-  | 'celebratory'         // Celebrazione e gioia
-  | 'reassuring'          // Rassicurazione e calma
-  | 'inspiring'           // Ispirazione e motivazione
-  | 'professional'        // Professionalità e competenza
-  | 'warm'                // Calore e accoglienza
-  | 'empowering';         // Empowerment e crescita
+export type EmotionalTone =
+  | 'confident' // Fiducia e sicurezza
+  | 'encouraging' // Incoraggiamento e supporto
+  | 'celebratory' // Celebrazione e gioia
+  | 'reassuring' // Rassicurazione e calma
+  | 'inspiring' // Ispirazione e motivazione
+  | 'professional' // Professionalità e competenza
+  | 'warm' // Calore e accoglienza
+  | 'empowering'; // Empowerment e crescita
 
-export type BrandTouchpoint = 
-  | 'navigation'          // Navigazione e menu
-  | 'content'             // Contenuti e lezioni
-  | 'interactions'        // Interazioni e feedback
-  | 'notifications'       // Notifiche e messaggi
-  | 'achievements'        // Achievement e badge
-  | 'community'           // Community e social
-  | 'support'             // Supporto e help
-  | 'onboarding';         // Onboarding e welcome
+export type BrandTouchpoint =
+  | 'navigation' // Navigazione e menu
+  | 'content' // Contenuti e lezioni
+  | 'interactions' // Interazioni e feedback
+  | 'notifications' // Notifiche e messaggi
+  | 'achievements' // Achievement e badge
+  | 'community' // Community e social
+  | 'support' // Supporto e help
+  | 'onboarding'; // Onboarding e welcome
 
-export interface BrandMemoryConfig {
+export type BrandMemoryConfig = {
   brandPersonality: {
-    primary: string[];      // Tratti principali (es. "professionale", "affidabile")
-    secondary: string[];    // Tratti secondari (es. "innovativo", "accessibile")
-    voice: string;          // Tono di voce (es. "esperto ma amichevole")
-    values: string[];       // Valori core (es. "educazione di qualità", "crescita")
+    primary: string[]; // Tratti principali (es. "professionale", "affidabile")
+    secondary: string[]; // Tratti secondari (es. "innovativo", "accessibile")
+    voice: string; // Tono di voce (es. "esperto ma amichevole")
+    values: string[]; // Valori core (es. "educazione di qualità", "crescita")
   };
   emotionalGoals: {
-    primary: EmotionalTone;     // Emozione primaria da evocare
-    secondary: EmotionalTone;   // Emozione secondaria
-    avoid: EmotionalTone[];     // Emozioni da evitare
+    primary: EmotionalTone; // Emozione primaria da evocare
+    secondary: EmotionalTone; // Emozione secondaria
+    avoid: EmotionalTone[]; // Emozioni da evitare
   };
   memoryTriggers: {
-    visual: string[];       // Elementi visivi distintivi
-    interaction: string[];  // Interazioni memorabili
-    content: string[];      // Contenuti che rimangono impressi
-    timing: string[];       // Momenti temporali chiave
+    visual: string[]; // Elementi visivi distintivi
+    interaction: string[]; // Interazioni memorabili
+    content: string[]; // Contenuti che rimangono impressi
+    timing: string[]; // Momenti temporali chiave
   };
   loyaltyBuilders: {
-    consistency: boolean;   // Coerenza dell'esperienza
+    consistency: boolean; // Coerenza dell'esperienza
     personalization: boolean; // Personalizzazione
-    recognition: boolean;   // Riconoscimento dell'utente
-    rewards: boolean;       // Sistema di ricompense
-    community: boolean;     // Senso di appartenenza
+    recognition: boolean; // Riconoscimento dell'utente
+    rewards: boolean; // Sistema di ricompense
+    community: boolean; // Senso di appartenenza
   };
-}
+};
 
-export interface BrandMemoryContextType {
+export type BrandMemoryContextType = {
   config: BrandMemoryConfig;
   recordBrandMoment: (type: BrandMomentType, touchpoint: BrandTouchpoint, metadata?: any) => void;
   getBrandConsistencyScore: () => number;
@@ -97,18 +97,18 @@ export interface BrandMemoryContextType {
   generateBrandMoment: (type: BrandMomentType, customization?: Partial<BrandMomentCustomization>) => BrandMomentData;
   shouldShowBrandElement: (touchpoint: BrandTouchpoint) => boolean;
   getBrandStyles: (touchpoint: BrandTouchpoint) => React.CSSProperties;
-}
+};
 
-export interface BrandMomentCustomization {
+export type BrandMomentCustomization = {
   tone: EmotionalTone;
   intensity: 'subtle' | 'medium' | 'strong' | 'memorable';
   duration: number;
   personalMessage?: string;
   visualElements?: string[];
   soundCues?: boolean;
-}
+};
 
-export interface BrandMomentData {
+export type BrandMomentData = {
   id: string;
   type: BrandMomentType;
   touchpoint: BrandTouchpoint;
@@ -119,14 +119,14 @@ export interface BrandMomentData {
   visualElements: string[];
   interactionCues: string[];
   memoryScore: number; // 0-1, quanto è memorabile questo momento
-}
+};
 
-export interface BrandMemorySystemProps {
+export type BrandMemorySystemProps = {
   children: React.ReactNode;
   config?: Partial<BrandMemoryConfig>;
   onBrandMoment?: (moment: BrandMomentData) => void;
   onLoyaltyChange?: (indicators: any) => void;
-}
+};
 
 // ============================================================================
 // BRAND MEMORY CONTEXT
@@ -294,14 +294,14 @@ export const BrandMemorySystem: React.FC<BrandMemorySystemProps> = ({
 
   // Record a brand moment
   const recordBrandMoment = useCallback((
-    type: BrandMomentType, 
-    touchpoint: BrandTouchpoint, 
-    metadata?: any
+    type: BrandMomentType,
+    touchpoint: BrandTouchpoint,
+    metadata?: any,
   ) => {
     const moment = generateBrandMoment(type, { ...metadata, touchpoint });
     setBrandMoments(prev => [...prev.slice(-49), moment]); // Keep last 50 moments
     onBrandMoment?.(moment);
-    
+
     // Announce for accessibility
     if (moment.intensity === 'memorable' || moment.intensity === 'strong') {
       announce(moment.message, 'polite');
@@ -310,12 +310,12 @@ export const BrandMemorySystem: React.FC<BrandMemorySystemProps> = ({
 
   // Generate a brand moment
   const generateBrandMoment = useCallback((
-    type: BrandMomentType, 
-    customization?: Partial<BrandMomentCustomization> & { touchpoint?: BrandTouchpoint }
+    type: BrandMomentType,
+    customization?: Partial<BrandMomentCustomization> & { touchpoint?: BrandTouchpoint },
   ): BrandMomentData => {
     const template = BRAND_MOMENT_TEMPLATES[type];
     const id = `brand-moment-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    
+
     return {
       id,
       type,
@@ -334,15 +334,17 @@ export const BrandMemorySystem: React.FC<BrandMemorySystemProps> = ({
   const getBrandConsistencyScore = useCallback((): number => {
     // Analyze recent brand moments for consistency
     const recentMoments = brandMoments.slice(-10);
-    if (recentMoments.length === 0) return 1.0;
+    if (recentMoments.length === 0) {
+      return 1.0;
+    }
 
-    const toneConsistency = recentMoments.filter(m => 
-      m.tone === config.emotionalGoals.primary || 
-      m.tone === config.emotionalGoals.secondary
+    const toneConsistency = recentMoments.filter(m =>
+      m.tone === config.emotionalGoals.primary
+      || m.tone === config.emotionalGoals.secondary,
     ).length / recentMoments.length;
 
     const visualConsistency = recentMoments.filter(m =>
-      m.visualElements.some(el => config.memoryTriggers.visual.includes(el))
+      m.visualElements.some(el => config.memoryTriggers.visual.includes(el)),
     ).length / recentMoments.length;
 
     return (toneConsistency + visualConsistency) / 2;
@@ -351,11 +353,13 @@ export const BrandMemorySystem: React.FC<BrandMemorySystemProps> = ({
   // Calculate emotional resonance score
   const getEmotionalResonanceScore = useCallback((): number => {
     const recentMoments = brandMoments.slice(-20);
-    if (recentMoments.length === 0) return 0.8;
+    if (recentMoments.length === 0) {
+      return 0.8;
+    }
 
     const avgMemoryScore = recentMoments.reduce((sum, m) => sum + m.memoryScore, 0) / recentMoments.length;
-    const intensityScore = recentMoments.filter(m => 
-      m.intensity === 'strong' || m.intensity === 'memorable'
+    const intensityScore = recentMoments.filter(m =>
+      m.intensity === 'strong' || m.intensity === 'memorable',
     ).length / recentMoments.length;
 
     return (avgMemoryScore + intensityScore) / 2;
@@ -403,15 +407,15 @@ export const BrandMemorySystem: React.FC<BrandMemorySystemProps> = ({
   useEffect(() => {
     const consistencyScore = getBrandConsistencyScore();
     const resonanceScore = getEmotionalResonanceScore();
-    
-    setLoyaltyMetrics(prev => {
+
+    setLoyaltyMetrics((prev) => {
       const newMetrics = {
         engagement: Math.min(1, prev.engagement + (resonanceScore - 0.5) * 0.1),
         retention: Math.min(1, prev.retention + (consistencyScore - 0.5) * 0.1),
         advocacy: Math.min(1, prev.advocacy + (resonanceScore * consistencyScore - 0.5) * 0.1),
         satisfaction: Math.min(1, (consistencyScore + resonanceScore) / 2),
       };
-      
+
       onLoyaltyChange?.(newMetrics);
       return newMetrics;
     });
@@ -431,7 +435,7 @@ export const BrandMemorySystem: React.FC<BrandMemorySystemProps> = ({
 
   return (
     <BrandMemoryContext.Provider value={contextValue}>
-      <div 
+      <div
         className="brand-memory-system"
         data-brand-personality={config.brandPersonality.primary.join(',')}
         data-emotional-tone={config.emotionalGoals.primary}
@@ -447,13 +451,13 @@ export const BrandMemorySystem: React.FC<BrandMemorySystemProps> = ({
 // BRAND MEMORY COMPONENTS
 // ============================================================================
 
-export interface BrandMomentProps {
+export type BrandMomentProps = {
   type: BrandMomentType;
   touchpoint?: BrandTouchpoint;
   customization?: Partial<BrandMomentCustomization>;
   trigger?: boolean;
   children?: React.ReactNode;
-}
+};
 
 export const BrandMoment: React.FC<BrandMomentProps> = ({
   type,
@@ -470,10 +474,10 @@ export const BrandMoment: React.FC<BrandMomentProps> = ({
     if (trigger) {
       recordBrandMoment(type, touchpoint, customization);
       setIsActive(true);
-      
+
       const moment = generateBrandMoment(type, customization);
       const duration = customization?.duration || (moment.intensity === 'memorable' ? 3000 : 1500);
-      
+
       setTimeout(() => setIsActive(false), duration);
     }
   }, [trigger, type, touchpoint, customization, recordBrandMoment, generateBrandMoment]);
@@ -483,7 +487,7 @@ export const BrandMoment: React.FC<BrandMomentProps> = ({
   }
 
   return (
-    <div 
+    <div
       className={`brand-moment ${isActive ? 'active' : ''}`}
       data-moment-type={type}
       data-touchpoint={touchpoint}
@@ -493,15 +497,15 @@ export const BrandMoment: React.FC<BrandMomentProps> = ({
   );
 };
 
-export interface BrandConsistencyIndicatorProps {
+export type BrandConsistencyIndicatorProps = {
   className?: string;
-}
+};
 
 export const BrandConsistencyIndicator: React.FC<BrandConsistencyIndicatorProps> = ({
   className = '',
 }) => {
   const { getBrandConsistencyScore, getEmotionalResonanceScore } = useBrandMemory();
-  
+
   const consistencyScore = getBrandConsistencyScore();
   const resonanceScore = getEmotionalResonanceScore();
   const overallScore = (consistencyScore + resonanceScore) / 2;
@@ -510,14 +514,25 @@ export const BrandConsistencyIndicator: React.FC<BrandConsistencyIndicatorProps>
     <div className={`brand-consistency-indicator ${className}`}>
       <div className="score-display">
         <div className="score-label">Brand Consistency</div>
-        <div className="score-value">{Math.round(overallScore * 100)}%</div>
+        <div className="score-value">
+          {Math.round(overallScore * 100)}
+          %
+        </div>
       </div>
       <div className="score-breakdown">
         <div className="metric">
-          <span>Consistency: {Math.round(consistencyScore * 100)}%</span>
+          <span>
+            Consistency:
+            {Math.round(consistencyScore * 100)}
+            %
+          </span>
         </div>
         <div className="metric">
-          <span>Resonance: {Math.round(resonanceScore * 100)}%</span>
+          <span>
+            Resonance:
+            {Math.round(resonanceScore * 100)}
+            %
+          </span>
         </div>
       </div>
     </div>

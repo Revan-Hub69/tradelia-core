@@ -10,8 +10,8 @@
 
 'use client';
 
-import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
+import React from 'react';
 
 import { IconBase, type IconBaseProps } from '../IconBase';
 
@@ -26,10 +26,10 @@ export const HomeIcon: React.FC<HomeIconProps> = ({
   ...props
 }) => {
   const prefersReducedMotion = useReducedMotion();
-  
+
   // Determine motion level
   const effectiveMotion = motionPreference || (prefersReducedMotion ? 'reduced' : 'full');
-  
+
   // Animation variants based on motion preference
   const getAnimationVariants = () => {
     if (effectiveMotion === 'none') {
@@ -39,7 +39,7 @@ export const HomeIcon: React.FC<HomeIconProps> = ({
         hover: { scale: 1 },
       };
     }
-    
+
     if (effectiveMotion === 'reduced') {
       return {
         initial: { scale: 1 },
@@ -47,30 +47,30 @@ export const HomeIcon: React.FC<HomeIconProps> = ({
         hover: { scale: 1.05 },
       };
     }
-    
+
     // Full motion
     return {
       initial: { scale: 1 },
-      active: { 
+      active: {
         scale: 1.05,
       },
-      hover: { 
+      hover: {
         scale: 1.1,
         y: -2,
       },
     };
   };
-  
+
   const variants = getAnimationVariants();
-  
+
   // Transition timing - simplified for TypeScript compatibility
-  const transition = 
-    effectiveMotion === 'none' 
-      ? { duration: 0 } 
-      : effectiveMotion === 'reduced' 
-        ? { duration: 0.15 } 
+  const transition
+    = effectiveMotion === 'none'
+      ? { duration: 0 }
+      : effectiveMotion === 'reduced'
+        ? { duration: 0.15 }
         : { duration: 0.2 };
-  
+
   return (
     <IconBase {...props}>
       <motion.g
@@ -83,42 +83,48 @@ export const HomeIcon: React.FC<HomeIconProps> = ({
       >
         {/* Casa con tetto */}
         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-        
+
         {/* Porta con dettaglio - subtle swing on hover */}
-        <motion.path 
+        <motion.path
           d="M9 22V12h6v10"
-          animate={effectiveMotion === 'full' ? {
-            scaleX: [1, 0.95, 1],
-          } : {}}
+          animate={effectiveMotion === 'full'
+            ? {
+                scaleX: [1, 0.95, 1],
+              }
+            : {}}
           transition={{ duration: 0.3 }}
           style={{ transformOrigin: 'left center' }}
         />
-        
+
         {/* Maniglia porta - dettaglio premium con glow */}
-        <motion.circle 
-          cx="13.5" 
-          cy="17" 
-          r="0.5" 
+        <motion.circle
+          cx="13.5"
+          cy="17"
+          r="0.5"
           fill="currentColor"
-          animate={isActive && effectiveMotion === 'full' ? {
-            opacity: [0.6, 1, 0.6],
-          } : {}}
+          animate={isActive && effectiveMotion === 'full'
+            ? {
+                opacity: [0.6, 1, 0.6],
+              }
+            : {}}
           transition={{ duration: 2, repeat: Infinity }}
         />
-        
+
         {/* Finestra - dettaglio premium con light effect */}
-        <motion.rect 
-          x="6" 
-          y="7" 
-          width="2" 
-          height="2" 
+        <motion.rect
+          x="6"
+          y="7"
+          width="2"
+          height="2"
           rx="0.5"
-          animate={isActive && effectiveMotion === 'full' ? {
-            opacity: [0.4, 0.8, 0.4],
-          } : {}}
+          animate={isActive && effectiveMotion === 'full'
+            ? {
+                opacity: [0.4, 0.8, 0.4],
+              }
+            : {}}
           transition={{ duration: 3, repeat: Infinity }}
         />
-        
+
         {/* Smoke from chimney (solo in full motion quando active) */}
         {isActive && effectiveMotion === 'full' && (
           <g className="chimney-smoke">

@@ -1,16 +1,16 @@
 'use client';
 
-import { useEffect } from 'react';
+import { AlertTriangle, Home, RefreshCw } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
-import { Link } from '@/libs/i18nNavigation';
+import { useEffect } from 'react';
 
 import { UiButton } from '@/components/ui/UiButton';
 import { UiSurface } from '@/components/ui/UiSurface';
+import { Link } from '@/libs/i18nNavigation';
 
 /**
  * Dashboard Error Boundary
- * 
+ *
  * Best Practices 2026:
  * - Must be 'use client'
  * - Logs errors to monitoring (production-safe)
@@ -74,7 +74,7 @@ export default function DashboardError({
           )}
 
           {/* Actions */}
-          <div 
+          <div
             className="flex flex-col gap-3 sm:flex-row sm:justify-center"
             role="group"
             aria-label={t('actions_label')}
@@ -101,7 +101,10 @@ export default function DashboardError({
             {t('support_hint')}
             {error.digest && (
               <span className="ml-1 font-mono">
-                (ID: {error.digest.slice(0, 8)})
+                (ID:
+                {' '}
+                {error.digest.slice(0, 8)}
+                )
               </span>
             )}
           </p>

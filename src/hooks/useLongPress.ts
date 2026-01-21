@@ -173,7 +173,9 @@ export const useLongPress = (
 
   const handlePointerDown = useCallback((event: React.PointerEvent) => {
     // Ignore right-click
-    if (event.button === 2) return;
+    if (event.button === 2) {
+      return;
+    }
 
     // Prevent default to avoid text selection
     event.preventDefault();
@@ -201,7 +203,9 @@ export const useLongPress = (
   }, [callback, threshold, onStart, onFinish, clearLongPress]);
 
   const handlePointerMove = useCallback((event: React.PointerEvent) => {
-    if (!isPressed || !startPositionRef.current) return;
+    if (!isPressed || !startPositionRef.current) {
+      return;
+    }
 
     // Calculate distance moved
     const distance = calculateDistance(
@@ -237,7 +241,9 @@ export const useLongPress = (
     }
 
     const touch = event.touches[0];
-    if (!touch) return;
+    if (!touch) {
+      return;
+    }
 
     // Store start position
     startPositionRef.current = {
@@ -259,10 +265,14 @@ export const useLongPress = (
   }, [callback, threshold, onStart, onFinish, clearLongPress]);
 
   const handleTouchMove = useCallback((event: React.TouchEvent) => {
-    if (!isPressed || !startPositionRef.current) return;
+    if (!isPressed || !startPositionRef.current) {
+      return;
+    }
 
     const touch = event.touches[0];
-    if (!touch) return;
+    if (!touch) {
+      return;
+    }
 
     // Calculate distance moved
     const distance = calculateDistance(

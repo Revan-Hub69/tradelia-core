@@ -3,7 +3,7 @@
  *
  * Sistema UX intelligente che riduce gli stimoli visivi quando l'utente è in modalità focus
  * Basato su ricerca 2026: Calm Technology, Neuro-Adaptive Interfaces, Zero-Noise Design
- * 
+ *
  * Principi chiave:
  * - Calm Technology: informare senza richiedere focus
  * - Cognitive Load Reduction: minimizzare lo sforzo mentale
@@ -21,29 +21,29 @@ import { usePerformanceOptimization } from '../../hooks/usePerformanceOptimizati
 // TYPES & INTERFACES
 // ============================================================================
 
-export type CalmMode = 
-  | 'off'          // Modalità normale - tutti gli stimoli attivi
-  | 'learning'     // Modalità apprendimento - riduzione stimoli per focus
-  | 'deep-focus'   // Focus profondo - minimalismo estremo
-  | 'meditation'   // Modalità meditativa - calma totale
-  | 'adaptive';    // Modalità adattiva - si adatta automaticamente
+export type CalmMode =
+  | 'off' // Modalità normale - tutti gli stimoli attivi
+  | 'learning' // Modalità apprendimento - riduzione stimoli per focus
+  | 'deep-focus' // Focus profondo - minimalismo estremo
+  | 'meditation' // Modalità meditativa - calma totale
+  | 'adaptive'; // Modalità adattiva - si adatta automaticamente
 
-export type CognitiveState = 
-  | 'fresh'        // Utente riposato e concentrato
-  | 'focused'      // Utente in stato di flow
-  | 'tired'        // Utente affaticato cognitivamente
-  | 'stressed'     // Utente sotto stress
-  | 'distracted'   // Utente distratto
+export type CognitiveState =
+  | 'fresh' // Utente riposato e concentrato
+  | 'focused' // Utente in stato di flow
+  | 'tired' // Utente affaticato cognitivamente
+  | 'stressed' // Utente sotto stress
+  | 'distracted' // Utente distratto
   | 'overwhelmed'; // Utente sovraccaricato
 
-export type VisualIntensity = 
-  | 'minimal'      // Solo elementi essenziali
-  | 'reduced'      // Stimoli ridotti del 70%
-  | 'moderate'     // Stimoli ridotti del 40%
-  | 'standard'     // Intensità normale
-  | 'enhanced';    // Stimoli aumentati per engagement
+export type VisualIntensity =
+  | 'minimal' // Solo elementi essenziali
+  | 'reduced' // Stimoli ridotti del 70%
+  | 'moderate' // Stimoli ridotti del 40%
+  | 'standard' // Intensità normale
+  | 'enhanced'; // Stimoli aumentati per engagement
 
-export interface CalmUXConfig {
+export type CalmUXConfig = {
   mode: CalmMode;
   cognitiveState: CognitiveState;
   visualIntensity: VisualIntensity;
@@ -54,9 +54,9 @@ export interface CalmUXConfig {
   focusIndicators: boolean;
   ambientSounds: boolean;
   progressiveDisclosure: boolean;
-}
+};
 
-export interface CalmUXContextType {
+export type CalmUXContextType = {
   config: CalmUXConfig;
   updateMode: (mode: CalmMode) => void;
   updateCognitiveState: (state: CognitiveState) => void;
@@ -67,14 +67,14 @@ export interface CalmUXContextType {
   shouldReduceStimuli: boolean;
   shouldShowElement: (priority: 'essential' | 'important' | 'optional') => boolean;
   getCalmStyles: () => React.CSSProperties;
-}
+};
 
-export interface IntelligentCalmUXProps {
+export type IntelligentCalmUXProps = {
   children: React.ReactNode;
   initialMode?: CalmMode;
   onModeChange?: (mode: CalmMode) => void;
   onCognitiveStateChange?: (state: CognitiveState) => void;
-}
+};
 
 // ============================================================================
 // CALM UX CONTEXT
@@ -95,14 +95,14 @@ export const useCalmUX = (): CalmUXContextType => {
 // ============================================================================
 
 const CALM_MODE_CONFIGS: Record<CalmMode, Partial<CalmUXConfig>> = {
-  off: {
+  'off': {
     visualIntensity: 'standard',
     breathingAnimations: false,
     softTransitions: false,
     reducedMotion: false,
     progressiveDisclosure: false,
   },
-  learning: {
+  'learning': {
     visualIntensity: 'reduced',
     breathingAnimations: true,
     softTransitions: true,
@@ -118,7 +118,7 @@ const CALM_MODE_CONFIGS: Record<CalmMode, Partial<CalmUXConfig>> = {
     focusIndicators: true,
     progressiveDisclosure: true,
   },
-  meditation: {
+  'meditation': {
     visualIntensity: 'minimal',
     breathingAnimations: true,
     softTransitions: true,
@@ -127,7 +127,7 @@ const CALM_MODE_CONFIGS: Record<CalmMode, Partial<CalmUXConfig>> = {
     ambientSounds: true,
     progressiveDisclosure: false,
   },
-  adaptive: {
+  'adaptive': {
     adaptiveEnabled: true,
     breathingAnimations: true,
     softTransitions: true,
@@ -216,10 +216,10 @@ export const IntelligentCalmUX: React.FC<IntelligentCalmUXProps> = ({
   // Update cognitive state with adaptive response
   const updateCognitiveState = useCallback((state: CognitiveState) => {
     const stateConfig = COGNITIVE_STATE_ADAPTATIONS[state];
-    setConfig(prev => ({ 
-      ...prev, 
+    setConfig(prev => ({
+      ...prev,
       cognitiveState: state,
-      ...(prev.adaptiveEnabled ? stateConfig : {})
+      ...(prev.adaptiveEnabled ? stateConfig : {}),
     }));
     onCognitiveStateChange?.(state);
     announce(`Cognitive state detected: ${state}`, 'polite');
@@ -244,13 +244,15 @@ export const IntelligentCalmUX: React.FC<IntelligentCalmUXProps> = ({
 
   // Computed properties
   const isInCalmMode = config.mode !== 'off';
-  const shouldReduceStimuli = ['learning', 'deep-focus', 'meditation'].includes(config.mode) || 
-                              config.visualIntensity === 'minimal' || 
-                              config.visualIntensity === 'reduced';
+  const shouldReduceStimuli = ['learning', 'deep-focus', 'meditation'].includes(config.mode)
+    || config.visualIntensity === 'minimal'
+    || config.visualIntensity === 'reduced';
 
   // Element visibility based on priority and calm mode
   const shouldShowElement = useCallback((priority: 'essential' | 'important' | 'optional'): boolean => {
-    if (!isInCalmMode) return true;
+    if (!isInCalmMode) {
+      return true;
+    }
 
     switch (config.visualIntensity) {
       case 'minimal':
@@ -266,7 +268,9 @@ export const IntelligentCalmUX: React.FC<IntelligentCalmUXProps> = ({
 
   // Generate calm-specific styles
   const getCalmStyles = useCallback((): React.CSSProperties => {
-    if (!isInCalmMode) return {};
+    if (!isInCalmMode) {
+      return {};
+    }
 
     const baseStyles: React.CSSProperties = {
       transition: config.softTransitions ? 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)' : undefined,
@@ -297,7 +301,9 @@ export const IntelligentCalmUX: React.FC<IntelligentCalmUXProps> = ({
 
   // Adaptive behavior detection
   useEffect(() => {
-    if (!config.adaptiveEnabled) return;
+    if (!config.adaptiveEnabled) {
+      return;
+    }
 
     const detectCognitiveState = () => {
       const { clickAccuracy, errorRate, pauseDuration } = interactionMetrics;
@@ -335,7 +341,7 @@ export const IntelligentCalmUX: React.FC<IntelligentCalmUXProps> = ({
 
   return (
     <CalmUXContext.Provider value={contextValue}>
-      <div 
+      <div
         className={`intelligent-calm-ux ${config.mode !== 'off' ? `calm-mode-${config.mode}` : ''}`}
         style={getCalmStyles()}
         data-calm-mode={config.mode}
@@ -352,14 +358,14 @@ export const IntelligentCalmUX: React.FC<IntelligentCalmUXProps> = ({
 // CALM UX COMPONENTS
 // ============================================================================
 
-export interface CalmElementProps {
+export type CalmElementProps = {
   children: React.ReactNode;
   priority?: 'essential' | 'important' | 'optional';
   className?: string;
   calmClassName?: string;
   style?: React.CSSProperties;
   calmStyle?: React.CSSProperties;
-}
+};
 
 export const CalmElement: React.FC<CalmElementProps> = ({
   children,
@@ -385,12 +391,12 @@ export const CalmElement: React.FC<CalmElementProps> = ({
   );
 };
 
-export interface BreathingElementProps {
+export type BreathingElementProps = {
   children: React.ReactNode;
   className?: string;
   duration?: number;
   intensity?: 'subtle' | 'medium' | 'strong';
-}
+};
 
 export const BreathingElement: React.FC<BreathingElementProps> = ({
   children,
@@ -403,9 +409,11 @@ export const BreathingElement: React.FC<BreathingElementProps> = ({
 
   const shouldBreathe = config.breathingAnimations && performanceAnimate('low');
 
-  const breathingStyle: React.CSSProperties = shouldBreathe ? {
-    animation: `calm-breathing-${intensity} ${duration}ms ease-in-out infinite`,
-  } : {};
+  const breathingStyle: React.CSSProperties = shouldBreathe
+    ? {
+        animation: `calm-breathing-${intensity} ${duration}ms ease-in-out infinite`,
+      }
+    : {};
 
   return (
     <div className={`breathing-element ${className}`} style={breathingStyle}>
@@ -414,11 +422,11 @@ export const BreathingElement: React.FC<BreathingElementProps> = ({
   );
 };
 
-export interface FocusIndicatorProps {
+export type FocusIndicatorProps = {
   isActive?: boolean;
   children: React.ReactNode;
   className?: string;
-}
+};
 
 export const FocusIndicator: React.FC<FocusIndicatorProps> = ({
   isActive = false,
@@ -432,7 +440,7 @@ export const FocusIndicator: React.FC<FocusIndicatorProps> = ({
   }
 
   return (
-    <div 
+    <div
       className={`focus-indicator ${isActive ? 'active' : ''} ${className}`}
       data-focus-active={isActive}
     >

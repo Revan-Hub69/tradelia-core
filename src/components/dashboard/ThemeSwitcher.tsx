@@ -13,8 +13,8 @@
 
 'use client';
 
-import { useTheme } from 'next-themes';
 import { useTranslations } from 'next-intl';
+import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
 
 import { MoonIcon, SunIcon } from '@/components/icons';
@@ -73,17 +73,19 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
             aria-label={t('theme_toggle_aria_label')}
           >
             {/* Signature icons with premium animations */}
-            {isDark ? (
-              <MoonIcon
-                size={16}
-                isActive={true}
-              />
-            ) : (
-              <SunIcon
-                size={16}
-                isActive={true}
-              />
-            )}
+            {isDark
+              ? (
+                  <MoonIcon
+                    size={16}
+                    isActive
+                  />
+                )
+              : (
+                  <SunIcon
+                    size={16}
+                    isActive
+                  />
+                )}
           </Button>
         </TooltipTrigger>
         <TooltipContent side="bottom" className="text-xs">

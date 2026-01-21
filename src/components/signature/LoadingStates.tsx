@@ -20,12 +20,12 @@ export type LoadingContext =
 
 export type LoadingType = 'spinner' | 'progress' | 'skeleton';
 
-export interface LoadingConfig {
+export type LoadingConfig = {
   context: LoadingContext;
   type?: LoadingType;
   showProgress?: boolean;
   customMessage?: string;
-}
+};
 
 const LoadingStates: React.FC<{
   config: LoadingConfig;
@@ -64,7 +64,7 @@ const LoadingStates: React.FC<{
           </span>
         </div>
         <div className="h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700">
-          <div className="h-2 rounded-full bg-blue-600 animate-pulse" />
+          <div className="h-2 animate-pulse rounded-full bg-blue-600" />
         </div>
       </div>
     );

@@ -3,7 +3,7 @@
  *
  * Collapsible sidebar navigation for desktop experience
  * Enterprise-level navigation with keyboard shortcuts and advanced features
- * 
+ *
  * MIGRATED: Using Signature Primitives v1
  * - UiNavItem for navigation items
  * - UiSurface for sidebar container
@@ -107,7 +107,7 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
         title={isCollapsed ? tGeneral(item.labelKey) : undefined}
       >
         {/* Icon with state indicators */}
-        <div className="relative flex-shrink-0">
+        <div className="relative shrink-0">
           <DynamicIcon
             name={item.iconName as IconName}
             size={20}
@@ -131,7 +131,7 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
             <div className="absolute -right-1 -top-1 size-2 rounded-full bg-accent" />
           )}
         </div>
-        
+
         {/* Label - Hidden when collapsed */}
         {!isCollapsed && <span className="flex-1 truncate">{tGeneral(item.labelKey)}</span>}
 

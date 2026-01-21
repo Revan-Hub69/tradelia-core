@@ -193,7 +193,7 @@ export const TradeliaSignatureComponent: React.FC<TradeliaSignatureComponentProp
 }) => {
   const { shouldAnimate } = usePerformanceOptimization();
   const { announce, generateId } = useAccessibility();
-  
+
   const [isHovered, setIsHovered] = useState(false);
   const [triggerMoment, setTriggerMoment] = useState(false);
 

@@ -7,7 +7,7 @@
 
 import React, { useState } from 'react';
 
-import { HapticVisualFeedback, type HapticFeedbackType, type HapticIntensity, type HapticTexture } from './HapticVisualFeedback';
+import { type HapticFeedbackType, type HapticIntensity, type HapticTexture, HapticVisualFeedback } from './HapticVisualFeedback';
 
 // ============================================================================
 // HAPTIC VISUAL FEEDBACK EXAMPLE
@@ -20,14 +20,29 @@ export const HapticVisualFeedbackExample: React.FC = () => {
   const [triggerDemo, setTriggerDemo] = useState(false);
 
   const feedbackTypes: HapticFeedbackType[] = [
-    'press', 'tap', 'stroke', 'pulse', 'ripple', 
-    'friction', 'magnetic', 'elastic', 'texture', 'breath'
+    'press',
+    'tap',
+    'stroke',
+    'pulse',
+    'ripple',
+    'friction',
+    'magnetic',
+    'elastic',
+    'texture',
+    'breath',
   ];
 
   const intensityLevels: HapticIntensity[] = ['subtle', 'medium', 'strong', 'premium'];
-  
+
   const textureTypes: HapticTexture[] = [
-    'smooth', 'grain', 'fabric', 'metal', 'liquid', 'rubber', 'velvet', 'glass'
+    'smooth',
+    'grain',
+    'fabric',
+    'metal',
+    'liquid',
+    'rubber',
+    'velvet',
+    'glass',
   ];
 
   const handleTriggerDemo = () => {
@@ -36,36 +51,42 @@ export const HapticVisualFeedbackExample: React.FC = () => {
   };
 
   return (
-    <div className="haptic-visual-feedback-example max-w-6xl mx-auto p-8 space-y-8">
+    <div className="haptic-visual-feedback-example mx-auto max-w-6xl space-y-8 p-8">
       {/* Header */}
-      <div className="text-center space-y-4">
+      <div className="space-y-4 text-center">
         <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">
           Haptic Visual Feedback System
         </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-          Sistema di feedback visivo che simula sensazioni tattili attraverso micro-animazioni precise, 
+        <p className="mx-auto max-w-3xl text-lg text-gray-600 dark:text-gray-400">
+          Sistema di feedback visivo che simula sensazioni tattili attraverso micro-animazioni precise,
           texture visive e movimenti che "parlano al sistema nervoso" senza hardware aggiuntivo.
         </p>
       </div>
 
       {/* Interactive Demo */}
-      <div className="demo-area bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-8">
-        <h2 className="text-2xl font-semibold mb-6 text-center">Interactive Demo</h2>
-        
-        <div className="flex justify-center mb-8">
+      <div className="demo-area rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-100 p-8 dark:from-gray-800 dark:to-gray-900">
+        <h2 className="mb-6 text-center text-2xl font-semibold">Interactive Demo</h2>
+
+        <div className="mb-8 flex justify-center">
           <HapticVisualFeedback
             type={selectedType}
             intensity={selectedIntensity}
             texture={selectedTexture}
             trigger={triggerDemo}
-            className="px-8 py-4 bg-white dark:bg-gray-800 rounded-xl shadow-lg"
+            className="rounded-xl bg-white px-8 py-4 shadow-lg dark:bg-gray-800"
           >
             <div className="text-center">
-              <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+              <div className="mb-2 text-2xl font-bold text-gray-900 dark:text-gray-100">
                 Demo Button
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-400">
-                {selectedType} • {selectedIntensity} • {selectedTexture}
+                {selectedType}
+                {' '}
+                •
+                {selectedIntensity}
+                {' '}
+                •
+                {selectedTexture}
               </div>
             </div>
           </HapticVisualFeedback>
@@ -74,7 +95,7 @@ export const HapticVisualFeedbackExample: React.FC = () => {
         <div className="flex justify-center">
           <button
             onClick={handleTriggerDemo}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="rounded-lg bg-blue-600 px-6 py-2 text-white transition-colors hover:bg-blue-700"
           >
             Trigger Haptic Feedback
           </button>
@@ -82,19 +103,19 @@ export const HapticVisualFeedbackExample: React.FC = () => {
       </div>
 
       {/* Controls */}
-      <div className="controls grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="controls grid grid-cols-1 gap-8 md:grid-cols-3">
         {/* Feedback Type */}
         <div className="control-section">
-          <h3 className="text-xl font-semibold mb-4">Feedback Type</h3>
+          <h3 className="mb-4 text-xl font-semibold">Feedback Type</h3>
           <div className="grid grid-cols-2 gap-2">
-            {feedbackTypes.map((type) => (
+            {feedbackTypes.map(type => (
               <button
                 key={type}
                 onClick={() => setSelectedType(type)}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                   selectedType === type
                     ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
                 }`}
               >
                 {type}
@@ -105,16 +126,16 @@ export const HapticVisualFeedbackExample: React.FC = () => {
 
         {/* Intensity */}
         <div className="control-section">
-          <h3 className="text-xl font-semibold mb-4">Intensity</h3>
+          <h3 className="mb-4 text-xl font-semibold">Intensity</h3>
           <div className="space-y-2">
-            {intensityLevels.map((intensity) => (
+            {intensityLevels.map(intensity => (
               <button
                 key={intensity}
                 onClick={() => setSelectedIntensity(intensity)}
-                className={`w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`w-full rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                   selectedIntensity === intensity
                     ? 'bg-emerald-600 text-white'
-                    : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
                 }`}
               >
                 {intensity}
@@ -125,16 +146,16 @@ export const HapticVisualFeedbackExample: React.FC = () => {
 
         {/* Texture */}
         <div className="control-section">
-          <h3 className="text-xl font-semibold mb-4">Texture</h3>
+          <h3 className="mb-4 text-xl font-semibold">Texture</h3>
           <div className="grid grid-cols-2 gap-2">
-            {textureTypes.map((texture) => (
+            {textureTypes.map(texture => (
               <button
                 key={texture}
                 onClick={() => setSelectedTexture(texture)}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                   selectedTexture === texture
                     ? 'bg-purple-600 text-white'
-                    : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
                 }`}
               >
                 {texture}
@@ -146,70 +167,70 @@ export const HapticVisualFeedbackExample: React.FC = () => {
 
       {/* Preset Examples */}
       <div className="preset-examples">
-        <h2 className="text-2xl font-semibold mb-6 text-center">Preset Examples</h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <h2 className="mb-6 text-center text-2xl font-semibold">Preset Examples</h2>
+
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
           {/* Button Press */}
-          <div className="example-card bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
-            <h3 className="text-lg font-semibold mb-4">Button Press</h3>
+          <div className="example-card rounded-xl bg-white p-6 shadow-lg dark:bg-gray-800">
+            <h3 className="mb-4 text-lg font-semibold">Button Press</h3>
             <HapticVisualFeedback
               type="press"
               intensity="medium"
               texture="smooth"
-              className="w-full px-4 py-3 bg-blue-600 text-white rounded-lg"
+              className="w-full rounded-lg bg-blue-600 px-4 py-3 text-white"
             >
               Press Me
             </HapticVisualFeedback>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
               Simula la pressione di un pulsante fisico con feedback elastico
             </p>
           </div>
 
           {/* Card Tap */}
-          <div className="example-card bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
-            <h3 className="text-lg font-semibold mb-4">Card Tap</h3>
+          <div className="example-card rounded-xl bg-white p-6 shadow-lg dark:bg-gray-800">
+            <h3 className="mb-4 text-lg font-semibold">Card Tap</h3>
             <HapticVisualFeedback
               type="tap"
               intensity="subtle"
               texture="glass"
-              className="w-full px-4 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg"
+              className="w-full rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-3 text-white"
             >
               Tap Card
             </HapticVisualFeedback>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
               Tocco leggero con texture vetro per interazioni delicate
             </p>
           </div>
 
           {/* Premium Action */}
-          <div className="example-card bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
-            <h3 className="text-lg font-semibold mb-4">Premium Action</h3>
+          <div className="example-card rounded-xl bg-white p-6 shadow-lg dark:bg-gray-800">
+            <h3 className="mb-4 text-lg font-semibold">Premium Action</h3>
             <HapticVisualFeedback
               type="magnetic"
               intensity="premium"
               texture="velvet"
-              className="w-full px-4 py-3 bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-lg"
+              className="w-full rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 px-4 py-3 text-white"
             >
               Premium
             </HapticVisualFeedback>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
               Attrazione magnetica con texture velluto per azioni premium
             </p>
           </div>
 
           {/* Calm Breath */}
-          <div className="example-card bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
-            <h3 className="text-lg font-semibold mb-4">Calm Breath</h3>
+          <div className="example-card rounded-xl bg-white p-6 shadow-lg dark:bg-gray-800">
+            <h3 className="mb-4 text-lg font-semibold">Calm Breath</h3>
             <HapticVisualFeedback
               type="breath"
               intensity="subtle"
               texture="smooth"
               duration={2000}
-              className="w-full px-4 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg"
+              className="w-full rounded-lg bg-gradient-to-r from-green-500 to-emerald-600 px-4 py-3 text-white"
             >
               Breathe
             </HapticVisualFeedback>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
               Respirazione organica per momenti di calma e focus
             </p>
           </div>
@@ -218,16 +239,16 @@ export const HapticVisualFeedbackExample: React.FC = () => {
 
       {/* Texture Showcase */}
       <div className="texture-showcase">
-        <h2 className="text-2xl font-semibold mb-6 text-center">Texture Showcase</h2>
-        
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {textureTypes.map((texture) => (
+        <h2 className="mb-6 text-center text-2xl font-semibold">Texture Showcase</h2>
+
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          {textureTypes.map(texture => (
             <div key={texture} className="texture-demo text-center">
               <HapticVisualFeedback
                 type="texture"
                 intensity="medium"
                 texture={texture}
-                className="w-full h-24 rounded-lg border-2 border-gray-200 dark:border-gray-700 flex items-center justify-center"
+                className="flex h-24 w-full items-center justify-center rounded-lg border-2 border-gray-200 dark:border-gray-700"
               >
                 <span className="text-sm font-medium capitalize">{texture}</span>
               </HapticVisualFeedback>
@@ -237,12 +258,12 @@ export const HapticVisualFeedbackExample: React.FC = () => {
       </div>
 
       {/* Technical Implementation */}
-      <div className="technical-implementation bg-gray-50 dark:bg-gray-800 rounded-xl p-8">
-        <h2 className="text-2xl font-semibold mb-6">Technical Implementation</h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="technical-implementation rounded-xl bg-gray-50 p-8 dark:bg-gray-800">
+        <h2 className="mb-6 text-2xl font-semibold">Technical Implementation</h2>
+
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
           <div>
-            <h3 className="text-lg font-semibold mb-4">Key Features</h3>
+            <h3 className="mb-4 text-lg font-semibold">Key Features</h3>
             <ul className="space-y-2 text-gray-600 dark:text-gray-400">
               <li>• 10 tipi di feedback tattile simulato</li>
               <li>• 4 livelli di intensità (subtle → premium)</li>
@@ -254,9 +275,9 @@ export const HapticVisualFeedbackExample: React.FC = () => {
               <li>• Zero dipendenze hardware</li>
             </ul>
           </div>
-          
+
           <div>
-            <h3 className="text-lg font-semibold mb-4">2026 Research Insights</h3>
+            <h3 className="mb-4 text-lg font-semibold">2026 Research Insights</h3>
             <ul className="space-y-2 text-gray-600 dark:text-gray-400">
               <li>• Visual tactility che inganna il cervello</li>
               <li>• Micro-movements che creano mood emotivo</li>
@@ -273,49 +294,49 @@ export const HapticVisualFeedbackExample: React.FC = () => {
 
       {/* Usage Examples */}
       <div className="usage-examples">
-        <h2 className="text-2xl font-semibold mb-6 text-center">Usage Examples</h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="usage-card bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
-            <h3 className="text-lg font-semibold mb-4">Learning Interface</h3>
+        <h2 className="mb-6 text-center text-2xl font-semibold">Usage Examples</h2>
+
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <div className="usage-card rounded-xl bg-white p-6 shadow-lg dark:bg-gray-800">
+            <h3 className="mb-4 text-lg font-semibold">Learning Interface</h3>
             <div className="space-y-3">
-              <HapticVisualFeedback type="pulse" intensity="medium" texture="smooth" className="w-full px-3 py-2 bg-green-600 text-white rounded text-sm">
+              <HapticVisualFeedback type="pulse" intensity="medium" texture="smooth" className="w-full rounded bg-green-600 px-3 py-2 text-sm text-white">
                 Lesson Complete ✓
               </HapticVisualFeedback>
-              <HapticVisualFeedback type="tap" intensity="subtle" texture="glass" className="w-full px-3 py-2 bg-blue-600 text-white rounded text-sm">
+              <HapticVisualFeedback type="tap" intensity="subtle" texture="glass" className="w-full rounded bg-blue-600 px-3 py-2 text-sm text-white">
                 Next Chapter →
               </HapticVisualFeedback>
-              <HapticVisualFeedback type="breath" intensity="subtle" texture="smooth" className="w-full px-3 py-2 bg-purple-600 text-white rounded text-sm">
+              <HapticVisualFeedback type="breath" intensity="subtle" texture="smooth" className="w-full rounded bg-purple-600 px-3 py-2 text-sm text-white">
                 Focus Mode
               </HapticVisualFeedback>
             </div>
           </div>
 
-          <div className="usage-card bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
-            <h3 className="text-lg font-semibold mb-4">Premium Actions</h3>
+          <div className="usage-card rounded-xl bg-white p-6 shadow-lg dark:bg-gray-800">
+            <h3 className="mb-4 text-lg font-semibold">Premium Actions</h3>
             <div className="space-y-3">
-              <HapticVisualFeedback type="magnetic" intensity="premium" texture="velvet" className="w-full px-3 py-2 bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded text-sm">
+              <HapticVisualFeedback type="magnetic" intensity="premium" texture="velvet" className="w-full rounded bg-gradient-to-r from-amber-500 to-orange-600 px-3 py-2 text-sm text-white">
                 Upgrade to Pro
               </HapticVisualFeedback>
-              <HapticVisualFeedback type="elastic" intensity="strong" texture="metal" className="w-full px-3 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded text-sm">
+              <HapticVisualFeedback type="elastic" intensity="strong" texture="metal" className="w-full rounded bg-gradient-to-r from-purple-500 to-pink-600 px-3 py-2 text-sm text-white">
                 Unlock Feature
               </HapticVisualFeedback>
-              <HapticVisualFeedback type="ripple" intensity="premium" texture="glass" className="w-full px-3 py-2 bg-gradient-to-r from-blue-500 to-cyan-600 text-white rounded text-sm">
+              <HapticVisualFeedback type="ripple" intensity="premium" texture="glass" className="w-full rounded bg-gradient-to-r from-blue-500 to-cyan-600 px-3 py-2 text-sm text-white">
                 Premium Content
               </HapticVisualFeedback>
             </div>
           </div>
 
-          <div className="usage-card bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
-            <h3 className="text-lg font-semibold mb-4">Calm UX</h3>
+          <div className="usage-card rounded-xl bg-white p-6 shadow-lg dark:bg-gray-800">
+            <h3 className="mb-4 text-lg font-semibold">Calm UX</h3>
             <div className="space-y-3">
-              <HapticVisualFeedback type="breath" intensity="subtle" texture="fabric" className="w-full px-3 py-2 bg-green-500 text-white rounded text-sm">
+              <HapticVisualFeedback type="breath" intensity="subtle" texture="fabric" className="w-full rounded bg-green-500 px-3 py-2 text-sm text-white">
                 Meditation Mode
               </HapticVisualFeedback>
-              <HapticVisualFeedback type="stroke" intensity="subtle" texture="smooth" className="w-full px-3 py-2 bg-teal-500 text-white rounded text-sm">
+              <HapticVisualFeedback type="stroke" intensity="subtle" texture="smooth" className="w-full rounded bg-teal-500 px-3 py-2 text-sm text-white">
                 Gentle Reminder
               </HapticVisualFeedback>
-              <HapticVisualFeedback type="texture" intensity="subtle" texture="rubber" className="w-full px-3 py-2 bg-indigo-500 text-white rounded text-sm">
+              <HapticVisualFeedback type="texture" intensity="subtle" texture="rubber" className="w-full rounded bg-indigo-500 px-3 py-2 text-sm text-white">
                 Soft Interaction
               </HapticVisualFeedback>
             </div>

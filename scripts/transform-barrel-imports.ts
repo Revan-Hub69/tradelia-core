@@ -1,24 +1,25 @@
 /**
  * Barrel File Import Transformer - 2026 Best Practices
- * 
+ *
  * Based on:
  * - Atlassian: 75% faster builds by removing barrel files
  * - mmazzarolo.com: Production-ready codemod
- * 
+ *
  * This codemod automatically:
  * 1. Parses barrel files using TypeScript AST
  * 2. Builds export map (name → real path)
  * 3. Transforms imports from barrel to direct imports
- * 
+ *
  * Usage:
  *   npx jscodeshift -t ./scripts/transform-barrel-imports.ts --parser=tsx --dry ./src
  *   npx jscodeshift -t ./scripts/transform-barrel-imports.ts --parser=tsx ./src
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
-import * as ts from 'typescript';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+
 import type { API, FileInfo, Options, Transform } from 'jscodeshift';
+import * as ts from 'typescript';
 
 // Barrel files to eliminate
 const BARREL_IMPORTS = [
@@ -32,7 +33,7 @@ function getCompilerOptions(filePath: string): ts.CompilerOptions {
   const configPath = ts.findConfigFile(
     path.dirname(filePath),
     ts.sys.fileExists,
-    'tsconfig.json'
+    'tsconfig.json',
   );
   if (!configPath) {
     throw new Error('Could not find tsconfig.json');
@@ -42,7 +43,7 @@ function getCompilerOptions(filePath: string): ts.CompilerOptions {
   const { options } = ts.parseJsonConfigFileContent(
     config,
     ts.sys,
-    path.dirname(configPath)
+    path.dirname(configPath),
   );
 
   return options;
@@ -63,14 +64,16 @@ function resolveModule(importPath: string, containingFile: string): string | nul
     importPath,
     containingFile,
     options,
-    moduleResolutionHost
+    moduleResolutionHost,
   );
 
   return resolved.resolvedModule?.resolvedFileName || null;
 }
 
 function buildExportMap(filePath: string, visited = new Set<string>()) {
-  if (visited.has(filePath)) return;
+  if (visited.has(filePath)) {
+    return;
+  }
   visited.add(filePath);
 
   const fileContent = fs.readFileSync(filePath, 'utf-8');
@@ -78,7 +81,7 @@ function buildExportMap(filePath: string, visited = new Set<string>()) {
     filePath,
     fileContent,
     ts.ScriptTarget.Latest,
-    true
+    true,
   );
 
   function visit(node: ts.Node) {
@@ -115,7 +118,7 @@ const transform: Transform = (fileInfo: FileInfo, api: API, _options: Options) =
       // Resolve @/components to src/components/index.ts
       const barrelPath = barrelImport.replace('@/', 'src/');
       const fullPath = path.join(process.cwd(), barrelPath, 'index.ts');
-      
+
       if (fs.existsSync(fullPath)) {
         console.log(`Building export map from: ${fullPath}`);
         buildExportMap(fullPath);
@@ -131,23 +134,23 @@ const transform: Transform = (fileInfo: FileInfo, api: API, _options: Options) =
   root.find(j.ImportDeclaration).forEach((nodePath) => {
     const importPath = nodePath.node.source.value as string;
 
-    const matchingBarrel = BARREL_IMPORTS.find((barrel) => importPath === barrel);
+    const matchingBarrel = BARREL_IMPORTS.find(barrel => importPath === barrel);
 
     if (matchingBarrel) {
       const newImports = new Map<string, { valueSpecifiers: any[]; typeSpecifiers: any[] }>();
 
       nodePath.node.specifiers?.forEach((specifier) => {
         if (specifier.type === 'ImportSpecifier') {
-          const itemName = typeof specifier.imported.name === 'string' 
-            ? specifier.imported.name 
+          const itemName = typeof specifier.imported.name === 'string'
+            ? specifier.imported.name
             : specifier.imported.name.toString();
           const exportedItem = exportedItemsMap.get(itemName);
 
           if (exportedItem) {
             // Convert absolute path to @/ import
-            let newImportPath = exportedItem.path
+            const newImportPath = exportedItem.path
               .replace(/\\/g, '/')
-              .replace(process.cwd().replace(/\\/g, '/') + '/src/', '@/')
+              .replace(`${process.cwd().replace(/\\/g, '/')}/src/`, '@/')
               .replace(/\.(ts|tsx)$/, '');
 
             if (!newImports.has(newImportPath)) {
@@ -158,8 +161,8 @@ const transform: Transform = (fileInfo: FileInfo, api: API, _options: Options) =
             const newSpecifier = j.importSpecifier(j.identifier(itemName));
 
             // Check if it's a type import
-            const isTypeImport = exportedItem.kind === 'type' || 
-              (specifier as any).importKind === 'type';
+            const isTypeImport = exportedItem.kind === 'type'
+              || (specifier as any).importKind === 'type';
 
             if (isTypeImport) {
               importGroup.typeSpecifiers.push(newSpecifier);
@@ -182,7 +185,7 @@ const transform: Transform = (fileInfo: FileInfo, api: API, _options: Options) =
             imports.push(j.importDeclaration(typeSpecifiers, j.literal(importPath), 'type'));
           }
           return imports;
-        }
+        },
       );
 
       if (newImportNodes.length > 0) {

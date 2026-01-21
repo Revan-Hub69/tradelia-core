@@ -3,7 +3,7 @@
  *
  * Stili CSS per il sistema UX intelligente che riduce stimoli visivi
  * Basato su ricerca 2026: Calm Technology, Zero-Noise Interfaces, Neuro-Adaptive Design
- * 
+ *
  * Principi:
  * - Cognitive Load Reduction: minimizzare sforzo mentale
  * - Visual Noise Elimination: eliminare distrazioni
@@ -23,28 +23,28 @@
 }
 
 /* Calm mode states */
-.intelligent-calm-ux[data-calm-mode="learning"] {
+.intelligent-calm-ux[data-calm-mode='learning'] {
   --calm-opacity: 0.95;
   --calm-contrast: 0.9;
   --calm-brightness: 0.95;
   --calm-saturation: 0.8;
 }
 
-.intelligent-calm-ux[data-calm-mode="deep-focus"] {
+.intelligent-calm-ux[data-calm-mode='deep-focus'] {
   --calm-opacity: 0.9;
   --calm-contrast: 0.8;
   --calm-brightness: 0.9;
   --calm-saturation: 0.6;
 }
 
-.intelligent-calm-ux[data-calm-mode="meditation"] {
+.intelligent-calm-ux[data-calm-mode='meditation'] {
   --calm-opacity: 0.85;
   --calm-contrast: 0.7;
   --calm-brightness: 0.85;
   --calm-saturation: 0.5;
 }
 
-.intelligent-calm-ux[data-calm-mode="adaptive"] {
+.intelligent-calm-ux[data-calm-mode='adaptive'] {
   --calm-opacity: 0.95;
   --calm-contrast: 0.9;
   --calm-brightness: 0.95;
@@ -55,46 +55,44 @@
    ============================================================================ */
 
 /* Minimal Intensity - Solo elementi essenziali */
-.intelligent-calm-ux[data-visual-intensity="minimal"] {
-  filter: contrast(var(--calm-contrast, 0.8)) 
-          brightness(var(--calm-brightness, 0.9)) 
-          saturate(var(--calm-saturation, 0.6));
+.intelligent-calm-ux[data-visual-intensity='minimal'] {
+  filter: contrast(var(--calm-contrast, 0.8)) brightness(var(--calm-brightness, 0.9))
+    saturate(var(--calm-saturation, 0.6));
   opacity: var(--calm-opacity, 0.9);
 }
 
-.intelligent-calm-ux[data-visual-intensity="minimal"] .optional-element {
+.intelligent-calm-ux[data-visual-intensity='minimal'] .optional-element {
   display: none;
 }
 
-.intelligent-calm-ux[data-visual-intensity="minimal"] .important-element {
+.intelligent-calm-ux[data-visual-intensity='minimal'] .important-element {
   opacity: 0.7;
   filter: grayscale(0.3);
 }
 
 /* Reduced Intensity - Stimoli ridotti del 70% */
-.intelligent-calm-ux[data-visual-intensity="reduced"] {
-  filter: contrast(var(--calm-contrast, 0.9)) 
-          brightness(var(--calm-brightness, 0.95)) 
-          saturate(var(--calm-saturation, 0.8));
+.intelligent-calm-ux[data-visual-intensity='reduced'] {
+  filter: contrast(var(--calm-contrast, 0.9)) brightness(var(--calm-brightness, 0.95))
+    saturate(var(--calm-saturation, 0.8));
   opacity: var(--calm-opacity, 0.95);
 }
 
-.intelligent-calm-ux[data-visual-intensity="reduced"] .optional-element {
+.intelligent-calm-ux[data-visual-intensity='reduced'] .optional-element {
   opacity: 0.3;
   pointer-events: none;
 }
 
-.intelligent-calm-ux[data-visual-intensity="reduced"] .important-element {
+.intelligent-calm-ux[data-visual-intensity='reduced'] .important-element {
   opacity: 0.8;
 }
 
 /* Moderate Intensity - Stimoli ridotti del 40% */
-.intelligent-calm-ux[data-visual-intensity="moderate"] {
+.intelligent-calm-ux[data-visual-intensity='moderate'] {
   filter: contrast(var(--calm-contrast, 0.95));
   opacity: var(--calm-opacity, 0.98);
 }
 
-.intelligent-calm-ux[data-visual-intensity="moderate"] .optional-element {
+.intelligent-calm-ux[data-visual-intensity='moderate'] .optional-element {
   opacity: 0.6;
 }
 
@@ -103,58 +101,58 @@
    ============================================================================ */
 
 /* Fresh State - Utente riposato */
-.intelligent-calm-ux[data-cognitive-state="fresh"] {
+.intelligent-calm-ux[data-cognitive-state='fresh'] {
   --calm-transition-duration: 0.3s;
 }
 
 /* Focused State - Utente in flow */
-.intelligent-calm-ux[data-cognitive-state="focused"] {
+.intelligent-calm-ux[data-cognitive-state='focused'] {
   --calm-transition-duration: 0.2s;
 }
 
-.intelligent-calm-ux[data-cognitive-state="focused"] .focus-indicator {
+.intelligent-calm-ux[data-cognitive-state='focused'] .focus-indicator {
   opacity: 1;
   transform: scale(1);
 }
 
 /* Tired State - Utente affaticato */
-.intelligent-calm-ux[data-cognitive-state="tired"] {
+.intelligent-calm-ux[data-cognitive-state='tired'] {
   --calm-transition-duration: 0.8s;
   filter: contrast(0.85) brightness(1.05);
 }
 
-.intelligent-calm-ux[data-cognitive-state="tired"] * {
+.intelligent-calm-ux[data-cognitive-state='tired'] * {
   animation-duration: 1.5s !important;
 }
 
 /* Stressed State - Utente sotto stress */
-.intelligent-calm-ux[data-cognitive-state="stressed"] {
+.intelligent-calm-ux[data-cognitive-state='stressed'] {
   --calm-transition-duration: 1s;
   filter: contrast(0.8) brightness(1.1) saturate(0.7);
 }
 
-.intelligent-calm-ux[data-cognitive-state="stressed"] .breathing-element {
+.intelligent-calm-ux[data-cognitive-state='stressed'] .breathing-element {
   animation-duration: 6s !important;
 }
 
 /* Distracted State - Utente distratto */
-.intelligent-calm-ux[data-cognitive-state="distracted"] {
+.intelligent-calm-ux[data-cognitive-state='distracted'] {
   --calm-transition-duration: 0.6s;
 }
 
-.intelligent-calm-ux[data-cognitive-state="distracted"] .focus-indicator {
+.intelligent-calm-ux[data-cognitive-state='distracted'] .focus-indicator {
   opacity: 1;
   animation: gentle-pulse 2s ease-in-out infinite;
 }
 
 /* Overwhelmed State - Utente sovraccaricato */
-.intelligent-calm-ux[data-cognitive-state="overwhelmed"] {
+.intelligent-calm-ux[data-cognitive-state='overwhelmed'] {
   --calm-transition-duration: 1.2s;
   filter: contrast(0.7) brightness(1.15) saturate(0.5);
 }
 
-.intelligent-calm-ux[data-cognitive-state="overwhelmed"] .optional-element,
-.intelligent-calm-ux[data-cognitive-state="overwhelmed"] .important-element:not(.essential-element) {
+.intelligent-calm-ux[data-cognitive-state='overwhelmed'] .optional-element,
+.intelligent-calm-ux[data-cognitive-state='overwhelmed'] .important-element:not(.essential-element) {
   opacity: 0.2;
   pointer-events: none;
 }
@@ -165,37 +163,40 @@
 
 /* Subtle Breathing - Per elementi di background */
 @keyframes calm-breathing-subtle {
-  0%, 100% { 
-    transform: scale(1); 
-    opacity: 1; 
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
-  50% { 
-    transform: scale(1.005); 
-    opacity: 0.98; 
+  50% {
+    transform: scale(1.005);
+    opacity: 0.98;
   }
 }
 
 /* Medium Breathing - Per elementi interattivi */
 @keyframes calm-breathing-medium {
-  0%, 100% { 
-    transform: scale(1); 
-    opacity: 1; 
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
-  50% { 
-    transform: scale(1.01); 
-    opacity: 0.95; 
+  50% {
+    transform: scale(1.01);
+    opacity: 0.95;
   }
 }
 
 /* Strong Breathing - Per elementi di focus */
 @keyframes calm-breathing-strong {
-  0%, 100% { 
-    transform: scale(1); 
-    opacity: 1; 
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
-  50% { 
-    transform: scale(1.02); 
-    opacity: 0.9; 
+  50% {
+    transform: scale(1.02);
+    opacity: 0.9;
   }
 }
 
@@ -306,10 +307,7 @@
 
 /* Learning Mode - Ottimizzato per apprendimento */
 .calm-mode-learning {
-  background: linear-gradient(135deg, 
-    rgba(59, 130, 246, 0.02) 0%, 
-    rgba(16, 185, 129, 0.02) 100%
-  );
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.02) 0%, rgba(16, 185, 129, 0.02) 100%);
 }
 
 .calm-mode-learning .breathing-element {
@@ -318,10 +316,7 @@
 
 /* Deep Focus Mode - Minimalismo estremo */
 .calm-mode-deep-focus {
-  background: linear-gradient(135deg, 
-    rgba(75, 85, 99, 0.03) 0%, 
-    rgba(107, 114, 128, 0.03) 100%
-  );
+  background: linear-gradient(135deg, rgba(75, 85, 99, 0.03) 0%, rgba(107, 114, 128, 0.03) 100%);
 }
 
 .calm-mode-deep-focus .breathing-element {
@@ -334,10 +329,7 @@
 
 /* Meditation Mode - Calma totale */
 .calm-mode-meditation {
-  background: radial-gradient(circle at center, 
-    rgba(16, 185, 129, 0.02) 0%, 
-    rgba(6, 78, 59, 0.02) 100%
-  );
+  background: radial-gradient(circle at center, rgba(16, 185, 129, 0.02) 0%, rgba(6, 78, 59, 0.02) 100%);
 }
 
 .calm-mode-meditation .breathing-element {
@@ -353,29 +345,34 @@
    ============================================================================ */
 
 @keyframes gentle-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }
 
 @keyframes soft-fade-in {
-  from { 
-    opacity: 0; 
-    transform: translateY(10px); 
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-  to { 
-    opacity: 1; 
-    transform: translateY(0); 
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
 @keyframes soft-fade-out {
-  from { 
-    opacity: 1; 
-    transform: translateY(0); 
+  from {
+    opacity: 1;
+    transform: translateY(0);
   }
-  to { 
-    opacity: 0; 
-    transform: translateY(-10px); 
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
   }
 }
 
@@ -390,13 +387,13 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  
+
   .breathing-element {
     animation: none !important;
   }
-  
+
   /* Provide alternative calm feedback for reduced motion */
-  .intelligent-calm-ux[data-calm-mode]:not([data-calm-mode="off"]) {
+  .intelligent-calm-ux[data-calm-mode]:not([data-calm-mode='off']) {
     border-left: 3px solid rgba(59, 130, 246, 0.3);
   }
 }
@@ -406,7 +403,7 @@
   .intelligent-calm-ux {
     filter: none !important;
   }
-  
+
   .focus-indicator-ring {
     border-color: currentColor;
     border-width: 3px;

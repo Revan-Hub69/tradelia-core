@@ -2,9 +2,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export type DashboardSkeletonVariant = 'home' | 'learn' | 'tools' | 'community' | 'profile';
 
-export interface DashboardSkeletonProps {
+export type DashboardSkeletonProps = {
   variant?: DashboardSkeletonVariant;
-}
+};
 
 export const DashboardSkeleton = ({ variant = 'home' }: DashboardSkeletonProps) => {
   switch (variant) {

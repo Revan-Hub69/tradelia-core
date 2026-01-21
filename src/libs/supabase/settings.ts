@@ -39,7 +39,9 @@ export const getUserSettings = async (userId: string): Promise<UserSettingsV1 | 
     throw error;
   }
 
-  if (!data) return null;
+  if (!data) {
+    return null;
+  }
 
   // Parse settings JSON and add server timestamp
   const settings = typeof data.settings === 'string'

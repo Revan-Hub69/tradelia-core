@@ -17,14 +17,15 @@
  * Research: docs/SETTINGS_PRECEDENCE_BEST_PRACTICES_2026.md
  */
 
-import { DEFAULT_SETTINGS } from '@/types/settings';
 import type {
   PolicyLockMode,
   SystemPolicy,
   SystemPreferences,
   UserSettingsV1,
 } from '@/types/settings';
+import { DEFAULT_SETTINGS } from '@/types/settings';
 import type { SettingsPath } from '@/types/settingsPaths';
+
 import { getNestedValue, hasNestedPath } from './paths';
 
 // ============================================================================
@@ -161,7 +162,9 @@ export function getSystemPreference(
   key: SettingsPath,
   prefs?: SystemPreferences,
 ): unknown {
-  if (!prefs) return undefined;
+  if (!prefs) {
+    return undefined;
+  }
 
   switch (key) {
     case 'appearance.theme':
@@ -211,4 +214,3 @@ export function getSystemPreference(
 export function getDefaultValue(key: SettingsPath): unknown {
   return getNestedValue(DEFAULT_SETTINGS, key);
 }
-

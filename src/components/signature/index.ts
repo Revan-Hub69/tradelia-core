@@ -47,32 +47,32 @@ export { SignatureMicroInteractionsExample } from './SignatureMicroInteractionsE
 
 // Haptic Visual Feedback - Enterprise 2026
 export {
-  HapticVisualFeedback as HapticFeedback,
   HapticButton,
-  HapticCard,
-  HapticPremiumAction,
   HapticCalmBreath,
-  HapticTextureDemo,
+  HapticCard,
+  HapticVisualFeedback as HapticFeedback,
   type HapticFeedbackType,
   type HapticIntensity,
+  HapticPremiumAction,
   type HapticTexture,
+  HapticTextureDemo,
   type HapticVisualFeedbackProps,
 } from './HapticVisualFeedback';
 export { HapticVisualFeedbackExample } from './HapticVisualFeedbackExample';
 
 // Intelligent Calm UX - Enterprise 2026
 export {
-  IntelligentCalmUX,
-  CalmElement,
   BreathingElement,
-  FocusIndicator,
-  useCalmUX,
+  CalmElement,
   type CalmMode,
-  type CognitiveState,
-  type VisualIntensity,
   type CalmUXConfig,
   type CalmUXContextType,
+  type CognitiveState,
+  FocusIndicator,
+  IntelligentCalmUX,
   type IntelligentCalmUXProps,
+  useCalmUX,
+  type VisualIntensity,
 } from './IntelligentCalmUX';
 export { IntelligentCalmUXExample } from './IntelligentCalmUXExample';
 
@@ -82,33 +82,33 @@ export { AdaptiveMicroCopyExample } from './AdaptiveMicroCopyExample';
 
 // Brand Memory System - Enterprise 2026
 export {
-  BrandMemorySystem,
-  BrandMoment,
   BrandConsistencyIndicator,
-  useBrandMemory,
-  type BrandMomentType,
-  type EmotionalTone,
-  type BrandTouchpoint,
+  type BrandConsistencyIndicatorProps,
   type BrandMemoryConfig,
   type BrandMemoryContextType,
+  BrandMemorySystem,
+  type BrandMemorySystemProps,
+  BrandMoment,
   type BrandMomentCustomization,
   type BrandMomentData,
-  type BrandMemorySystemProps,
   type BrandMomentProps,
-  type BrandConsistencyIndicatorProps,
+  type BrandMomentType,
+  type BrandTouchpoint,
+  type EmotionalTone,
+  useBrandMemory,
 } from './BrandMemorySystem';
 export { BrandMemorySystemExample } from './BrandMemorySystemExample';
 
 // Semantic loading states - Enterprise 2026
 export {
-  useSemanticLoading,
-  SemanticSpinner,
-  SemanticProgress,
-  SemanticSkeleton,
-  MorseCodeLoader,
-  SemanticToast,
-  type SemanticContext,
   type LoadingIntensity,
   type LoadingPersonality,
+  MorseCodeLoader,
+  type SemanticContext,
   type SemanticLoadingConfig,
+  SemanticProgress,
+  SemanticSkeleton,
+  SemanticSpinner,
+  SemanticToast,
+  useSemanticLoading,
 } from './SemanticLoadingStates';

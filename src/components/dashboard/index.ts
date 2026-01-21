@@ -15,10 +15,10 @@ export { PremiumBenefitsDisplay } from './PremiumBenefitsDisplay';
 export { PremiumDashboard } from './PremiumDashboard';
 
 // Progress & Gamification
-export { ProgressDisplay } from './ProgressDisplay';
-export { ProgressTracker } from './ProgressTracker';
 export { GamificationPanel } from './GamificationPanel';
 export { LevelUpAnimation } from './LevelUpAnimation';
+export { ProgressDisplay } from './ProgressDisplay';
+export { ProgressTracker } from './ProgressTracker';
 
 // Learning Components
 export { LearningPathCard } from './LearningPathCard';

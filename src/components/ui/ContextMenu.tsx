@@ -1,8 +1,8 @@
 /**
  * CONTEXT MENU - Tradelia Premium 2026
- * 
+ *
  * Fully accessible context menu following W3C ARIA Authoring Practices Guide (APG).
- * 
+ *
  * Features:
  * - W3C APG Menu Pattern compliance
  * - Roving tabindex for keyboard navigation
@@ -13,7 +13,7 @@
  * - Motion preference respect
  * - 44px touch targets (WCAG 2.2 AA)
  * - Tradelia design system integration
- * 
+ *
  * @example
  * ```tsx
  * <ContextMenu
@@ -31,8 +31,8 @@
 
 'use client';
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { cn } from '@/utils/Helpers';
@@ -160,7 +160,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
   const actionableItems = items.filter(
     (item): item is ContextMenuItem => 'id' in item && !item.disabled,
   );
-  
+
   // ============================================================================
   // POSITIONING
   // ============================================================================
@@ -196,7 +196,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
       window.removeEventListener('resize', updatePosition);
     };
   }, [isOpen, updatePosition]);
-  
+
   // ============================================================================
   // OPEN/CLOSE
   // ============================================================================
@@ -216,7 +216,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
       triggerRef.current?.focus();
     });
   }, [onClose]);
-  
+
   // ============================================================================
   // KEYBOARD NAVIGATION (Roving Tabindex)
   // ============================================================================
@@ -230,12 +230,12 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault();
-        setFocusedIndex((prev) => (prev + 1) % actionableCount);
+        setFocusedIndex(prev => (prev + 1) % actionableCount);
         break;
 
       case 'ArrowUp':
         e.preventDefault();
-        setFocusedIndex((prev) => (prev - 1 + actionableCount) % actionableCount);
+        setFocusedIndex(prev => (prev - 1 + actionableCount) % actionableCount);
         break;
 
       case 'Home':
@@ -271,7 +271,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
       currentItem.focus();
     }
   }, [focusedIndex, isOpen]);
-  
+
   // ============================================================================
   // CLICK OUTSIDE
   // ============================================================================
@@ -303,7 +303,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
       document.removeEventListener('touchstart', handleClickOutside, true);
     };
   }, [isOpen, closeMenu]);
-  
+
   // ============================================================================
   // ITEM ACTIONS
   // ============================================================================
@@ -326,7 +326,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
       handleItemClick(item);
     }
   }, [handleItemClick]);
-  
+
   // ============================================================================
   // RENDER
   // ============================================================================
@@ -347,7 +347,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
     'aria-expanded': isOpen,
     'aria-controls': isOpen ? 'context-menu' : undefined,
   });
-  
+
   // Menu content
   const reducedMotion = prefersReducedMotion();
   const menuContent = (
@@ -399,7 +399,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 
             // Menu item
             const menuItem = item as ContextMenuItem;
-            const actionableIndex = actionableItems.findIndex((i) => i.id === menuItem.id);
+            const actionableIndex = actionableItems.findIndex(i => i.id === menuItem.id);
             const isFocused = actionableIndex === focusedIndex;
 
             return (

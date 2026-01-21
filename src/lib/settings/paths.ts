@@ -69,7 +69,7 @@ export function setNestedValue<T extends SettingsPath>(
   // Navigate to the parent of the target key
   for (let i = 0; i < keys.length - 1; i++) {
     const key = keys[i] as string;
-    
+
     // Create nested object if it doesn't exist
     if (current[key] === null || current[key] === undefined || typeof current[key] !== 'object') {
       current[key] = {};
@@ -77,7 +77,7 @@ export function setNestedValue<T extends SettingsPath>(
       // Clone the nested object to maintain immutability
       current[key] = { ...current[key] };
     }
-    
+
     current = current[key];
   }
 
@@ -139,11 +139,11 @@ export function deleteNestedValue(
   // Navigate to the parent of the target key
   for (let i = 0; i < keys.length - 1; i++) {
     const key = keys[i] as string;
-    
+
     if (current[key] === null || current[key] === undefined) {
       return result; // Path doesn't exist, return unchanged
     }
-    
+
     // Clone the nested object to maintain immutability
     current[key] = { ...current[key] };
     current = current[key];

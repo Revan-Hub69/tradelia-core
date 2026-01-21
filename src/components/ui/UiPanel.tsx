@@ -2,7 +2,7 @@
  * UI PANEL - Signature Primitive v1
  *
  * Sostituisce: Notification panel, Help panel, CommandPalette wrapper
- * 
+ *
  * REGOLE:
  * - focus trap
  * - ESC to close
@@ -29,12 +29,12 @@ export type UiPanelProps = {
 
 /**
  * UiPanel - Modal/Dialog panel with glass surface
- * 
+ *
  * Usage:
  * - Notifications: <UiPanel open={open} onClose={close} title="Notifications">...</UiPanel>
  * - Help: <UiPanel open={open} onClose={close} title="Help">...</UiPanel>
  * - Command: <UiPanel open={open} onClose={close}>...</UiPanel>
- * 
+ *
  * Features:
  * - Focus trap (Radix Dialog)
  * - ESC to close
@@ -44,7 +44,7 @@ export type UiPanelProps = {
 export const UiPanel = forwardRef<HTMLDivElement, UiPanelProps>(
   ({ open, onClose, title, description, children, className }, ref) => {
     return (
-      <Dialog.Root open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
+      <Dialog.Root open={open} onOpenChange={isOpen => !isOpen && onClose()}>
         <Dialog.Portal>
           {/* Backdrop */}
           <Dialog.Overlay
@@ -63,18 +63,18 @@ export const UiPanel = forwardRef<HTMLDivElement, UiPanelProps>(
               'fixed left-1/2 top-1/2 z-50',
               'w-full max-w-lg -translate-x-1/2 -translate-y-1/2',
               'max-h-[85vh] overflow-y-auto',
-              
+
               // Glass surface (from UiSurface)
               'bg-white/12 dark:bg-slate-900/12',
               'border border-white/25 dark:border-white/10',
               'rounded-xl',
               'shadow-[0_24px_64px_rgba(0,0,0,0.2)]',
               'backdrop-blur-[20px] backdrop-saturate-[180%]',
-              
+
               // Animations
               'data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
               'data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
-              
+
               className,
             )}
           >

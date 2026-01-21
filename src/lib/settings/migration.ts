@@ -108,10 +108,12 @@ function migrateLegacyToV1(legacy: any): UserSettingsV1 {
     // Appearance (NEW in V1)
     appearance: {
       // Map old 'darkMode' boolean to new 'theme' enum
-      theme: legacy.darkMode === true ? 'dark' 
-           : legacy.darkMode === false ? 'light'
-           : legacy.theme || 'system',
-      
+      theme: legacy.darkMode === true
+        ? 'dark'
+        : legacy.darkMode === false
+          ? 'light'
+          : legacy.theme || 'system',
+
       // New fields get defaults
       fontSize: legacy.fontSize || 1,
       density: legacy.density || 'comfortable',
@@ -154,12 +156,12 @@ function migrateLegacyToV1(legacy: any): UserSettingsV1 {
  */
 function isValidV1Structure(obj: any): boolean {
   return (
-    obj.version === 1 &&
-    typeof obj.updatedAt === 'string' &&
-    typeof obj.appearance === 'object' &&
-    typeof obj.preferences === 'object' &&
-    typeof obj.notifications === 'object' &&
-    typeof obj.privacy === 'object'
+    obj.version === 1
+    && typeof obj.updatedAt === 'string'
+    && typeof obj.appearance === 'object'
+    && typeof obj.preferences === 'object'
+    && typeof obj.notifications === 'object'
+    && typeof obj.privacy === 'object'
   );
 }
 

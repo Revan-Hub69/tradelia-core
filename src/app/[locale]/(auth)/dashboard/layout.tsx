@@ -18,6 +18,6 @@ export async function generateMetadata(props: { params: Promise<{ locale: string
 export default function DashboardLayout(props: { children: React.ReactNode }) {
   // Server-side layout - maintains SSR, streaming, and metadata
   // Client interactions delegated to DashboardShell -> DashboardClient
-  
+
   return <DashboardShell>{props.children}</DashboardShell>;
 }

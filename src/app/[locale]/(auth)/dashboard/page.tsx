@@ -40,7 +40,7 @@ const DashboardIndexPage = () => {
     <PageTransitionWrapper>
       {/* Error Boundary Test (dev only) */}
       <ErrorBoundaryTest />
-      
+
       <div className="container mx-auto px-4 py-8">
         <div className="space-y-8">
           {/* Welcome */}

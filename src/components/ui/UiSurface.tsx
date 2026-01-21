@@ -2,7 +2,7 @@
  * UI SURFACE - Signature Primitive v1
  *
  * Sostituisce: GlassSurface, glass-header, glass-surface
- * 
+ *
  * REGOLE:
  * - Solo CSS + tokens
  * - Zero JS
@@ -23,7 +23,7 @@ export type UiSurfaceProps = HTMLAttributes<HTMLDivElement> & {
 
 /**
  * UiSurface - Foundation glass surface component
- * 
+ *
  * Usage:
  * - Header: <UiSurface variant="header">...</UiSurface>
  * - Panel: <UiSurface variant="panel">...</UiSurface>

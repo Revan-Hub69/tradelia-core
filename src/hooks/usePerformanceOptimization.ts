@@ -136,8 +136,10 @@ export const usePerformanceOptimization = () => {
       const connection = navigator.connection;
 
       const updateNetworkQuality = () => {
-        if (!connection) return;
-        
+        if (!connection) {
+          return;
+        }
+
         const effectiveType = connection.effectiveType;
 
         if (effectiveType === 'slow-2g' || effectiveType === '2g') {
@@ -150,7 +152,7 @@ export const usePerformanceOptimization = () => {
       };
 
       updateNetworkQuality();
-      
+
       if (connection) {
         connection.addEventListener('change', updateNetworkQuality);
 

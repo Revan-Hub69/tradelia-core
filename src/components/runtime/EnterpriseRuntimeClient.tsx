@@ -1,7 +1,7 @@
 'use client';
 
-import * as React from 'react';
 import { ThemeProvider } from 'next-themes';
+import * as React from 'react';
 
 export function EnterpriseRuntimeClient(props: { children: React.ReactNode }) {
   React.useEffect(() => {

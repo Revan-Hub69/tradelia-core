@@ -9,12 +9,14 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_SETTINGS } from '@/types/settings';
+
 import type {
   SystemPolicy,
   SystemPreferences,
   UserSettingsV1,
 } from '@/types/settings';
+import { DEFAULT_SETTINGS } from '@/types/settings';
+
 import {
   getDefaultValue,
   getSystemPreference,
@@ -80,8 +82,8 @@ describe('resolveSettingValue', () => {
     it('should prioritize system policy over user settings', () => {
       const result = resolveSettingValue(
         'appearance.theme',
-        mockUserSettings,  // User wants 'light'
-        mockSystemPolicy,  // Policy forces 'dark'
+        mockUserSettings, // User wants 'light'
+        mockSystemPolicy, // Policy forces 'dark'
       );
 
       expect(result).toBe('dark'); // Policy wins
@@ -90,9 +92,9 @@ describe('resolveSettingValue', () => {
     it('should prioritize user settings over system preferences', () => {
       const result = resolveSettingValue(
         'appearance.theme',
-        mockUserSettings,       // User wants 'light'
-        undefined,              // No policy
-        mockSystemPreferences,  // OS prefers 'dark'
+        mockUserSettings, // User wants 'light'
+        undefined, // No policy
+        mockSystemPreferences, // OS prefers 'dark'
       );
 
       expect(result).toBe('light'); // User wins
@@ -110,8 +112,8 @@ describe('resolveSettingValue', () => {
       const result = resolveSettingValue(
         'appearance.theme',
         settingsWithoutTheme,
-        undefined,              // No policy
-        mockSystemPreferences,  // OS prefers 'dark'
+        undefined, // No policy
+        mockSystemPreferences, // OS prefers 'dark'
       );
 
       expect(result).toBe('dark'); // System preference wins
@@ -141,9 +143,9 @@ describe('resolveSettingValue', () => {
     it('should resolve with all layers present (policy wins)', () => {
       const result = resolveSettingValue(
         'appearance.theme',
-        mockUserSettings,       // Layer 2: 'light'
-        mockSystemPolicy,       // Layer 1: 'dark'
-        mockSystemPreferences,  // Layer 3: 'dark'
+        mockUserSettings, // Layer 2: 'light'
+        mockSystemPolicy, // Layer 1: 'dark'
+        mockSystemPreferences, // Layer 3: 'dark'
       );
 
       expect(result).toBe('dark'); // Layer 1 (policy) wins
@@ -159,9 +161,9 @@ describe('resolveSettingValue', () => {
 
       const result = resolveSettingValue(
         'appearance.theme',
-        mockUserSettings,       // Layer 2: 'light'
-        policyWithUndefined,    // Layer 1: undefined (skip)
-        mockSystemPreferences,  // Layer 3: 'dark'
+        mockUserSettings, // Layer 2: 'light'
+        policyWithUndefined, // Layer 1: undefined (skip)
+        mockSystemPreferences, // Layer 3: 'dark'
       );
 
       expect(result).toBe('light'); // Layer 2 (user) wins
@@ -178,9 +180,9 @@ describe('resolveSettingValue', () => {
 
       const result = resolveSettingValue(
         'appearance.theme',
-        settingsWithUndefined,  // Layer 2: undefined (skip)
-        undefined,              // Layer 1: none
-        mockSystemPreferences,  // Layer 3: 'dark'
+        settingsWithUndefined, // Layer 2: undefined (skip)
+        undefined, // Layer 1: none
+        mockSystemPreferences, // Layer 3: 'dark'
       );
 
       expect(result).toBe('dark'); // Layer 3 (system pref) wins
@@ -337,6 +339,7 @@ describe('isLocked', () => {
   describe('Nested Paths', () => {
     it('should handle nested appearance paths', () => {
       const result = isLocked('appearance.theme', mockSystemPolicy);
+
       expect(result.locked).toBe(true);
     });
 
@@ -347,6 +350,7 @@ describe('isLocked', () => {
       };
 
       const result = isLocked('preferences.language', policyWithLanguageLock);
+
       expect(result.locked).toBe(true);
     });
 
@@ -357,6 +361,7 @@ describe('isLocked', () => {
       };
 
       const result = isLocked('notifications.email', policyWithEmailLock);
+
       expect(result.locked).toBe(true);
     });
 
@@ -367,6 +372,7 @@ describe('isLocked', () => {
       };
 
       const result = isLocked('privacy.profileVisible', policyWithPrivacyLock);
+
       expect(result.locked).toBe(true);
     });
   });
@@ -445,12 +451,14 @@ describe('getSystemPreference', () => {
   describe('Edge Cases', () => {
     it('should handle undefined preferences', () => {
       const result = getSystemPreference('appearance.theme', undefined);
+
       expect(result).toBeUndefined();
     });
 
     it('should handle empty preferences', () => {
       const prefs: SystemPreferences = {};
       const result = getSystemPreference('appearance.theme', prefs);
+
       expect(result).toBeUndefined();
     });
   });
@@ -617,4 +625,3 @@ describe('Integration: Precedence + Locks', () => {
     expect(value).toBe('comfortable'); // User value
   });
 });
-

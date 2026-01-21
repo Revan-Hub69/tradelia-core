@@ -10,8 +10,8 @@
 
 'use client';
 
-import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
+import React from 'react';
 
 import { IconBase, type IconBaseProps } from '../IconBase';
 
@@ -26,10 +26,10 @@ export const ProfileIcon: React.FC<ProfileIconProps> = ({
   ...props
 }) => {
   const prefersReducedMotion = useReducedMotion();
-  
+
   // Determine motion level
   const effectiveMotion = motionPreference || (prefersReducedMotion ? 'reduced' : 'full');
-  
+
   // Animation variants based on motion preference
   const getAnimationVariants = () => {
     if (effectiveMotion === 'none') {
@@ -39,7 +39,7 @@ export const ProfileIcon: React.FC<ProfileIconProps> = ({
         hover: { scale: 1 },
       };
     }
-    
+
     if (effectiveMotion === 'reduced') {
       return {
         initial: { scale: 1 },
@@ -47,30 +47,30 @@ export const ProfileIcon: React.FC<ProfileIconProps> = ({
         hover: { scale: 1.05 },
       };
     }
-    
+
     // Full motion
     return {
       initial: { scale: 1 },
-      active: { 
+      active: {
         scale: 1.05,
       },
-      hover: { 
+      hover: {
         scale: 1.1,
         y: -2,
       },
     };
   };
-  
+
   const variants = getAnimationVariants();
-  
+
   // Transition timing - simplified for TypeScript compatibility
-  const transition = 
-    effectiveMotion === 'none' 
-      ? { duration: 0 } 
-      : effectiveMotion === 'reduced' 
-        ? { duration: 0.15 } 
+  const transition
+    = effectiveMotion === 'none'
+      ? { duration: 0 }
+      : effectiveMotion === 'reduced'
+        ? { duration: 0.15 }
         : { duration: 0.2 };
-  
+
   return (
     <IconBase {...props}>
       <motion.g
@@ -82,25 +82,29 @@ export const ProfileIcon: React.FC<ProfileIconProps> = ({
         style={{ transformOrigin: 'center' }}
       >
         {/* Avatar body con pulse effect quando active */}
-        <motion.path 
+        <motion.path
           d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"
-          animate={isActive && effectiveMotion === 'full' ? {
-            opacity: [1, 0.7, 1],
-          } : {}}
+          animate={isActive && effectiveMotion === 'full'
+            ? {
+                opacity: [1, 0.7, 1],
+              }
+            : {}}
           transition={{ duration: 2, repeat: Infinity }}
         />
-        
+
         {/* Avatar head con pulse effect quando active */}
-        <motion.circle 
-          cx="12" 
-          cy="7" 
+        <motion.circle
+          cx="12"
+          cy="7"
           r="4"
-          animate={isActive && effectiveMotion === 'full' ? {
-            opacity: [1, 0.8, 1],
-          } : {}}
+          animate={isActive && effectiveMotion === 'full'
+            ? {
+                opacity: [1, 0.8, 1],
+              }
+            : {}}
           transition={{ duration: 2, repeat: Infinity, delay: 1 }}
         />
-        
+
         {/* Status indicator (online dot - solo quando active) */}
         {isActive && (
           <motion.circle
@@ -108,14 +112,16 @@ export const ProfileIcon: React.FC<ProfileIconProps> = ({
             cy="9"
             r="1.5"
             fill="currentColor"
-            animate={effectiveMotion === 'full' ? {
-              opacity: [0.6, 1, 0.6],
-              scale: [0.8, 1, 0.8],
-            } : {}}
+            animate={effectiveMotion === 'full'
+              ? {
+                  opacity: [0.6, 1, 0.6],
+                  scale: [0.8, 1, 0.8],
+                }
+              : {}}
             transition={{ duration: 2, repeat: Infinity }}
           />
         )}
-        
+
         {/* Sparkle effect quando active (solo in full motion) */}
         {isActive && effectiveMotion === 'full' && (
           <g className="profile-sparkles">

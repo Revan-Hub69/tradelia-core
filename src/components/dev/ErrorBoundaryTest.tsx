@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
 import { Bug } from 'lucide-react';
+import { useState } from 'react';
 
 /**
  * Error Boundary Test Component
- * 
+ *
  * Only visible in development mode.
  * Allows testing error boundaries by throwing errors on demand.
  */

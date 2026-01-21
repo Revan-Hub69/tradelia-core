@@ -3,36 +3,36 @@
 // Reference: Atlassian 75% faster builds by removing barrel files
 
 // UI Primitives (Signature v1) - Explicit only
-export { UiSurface } from './ui/UiSurface';
 export { UiButton } from './ui/UiButton';
 export { UiIconButton } from './ui/UiIconButton';
 export { UiNavItem } from './ui/UiNavItem';
 export { UiPanel } from './ui/UiPanel';
 export { UiStatusChip } from './ui/UiStatusChip';
+export { UiSurface } from './ui/UiSurface';
 
 // Shadcn UI Components - Explicit only (avoid conflicts)
+export { Alert, AlertDescription, AlertTitle } from './ui/alert';
 export { Button } from './ui/button';
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from './ui/card';
+export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card';
+export { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
+export { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from './ui/dropdown-menu';
+export { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from './ui/form';
+export { Input } from './ui/input';
+export { Label } from './ui/label';
 export { Progress } from './ui/progress';
 export { Separator } from './ui/separator';
 export { Skeleton } from './ui/skeleton';
-export { Alert, AlertTitle, AlertDescription } from './ui/alert';
-export { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from './ui/dialog';
-export { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuCheckboxItem, DropdownMenuRadioItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuGroup, DropdownMenuPortal, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuRadioGroup } from './ui/dropdown-menu';
-export { Form, FormItem, FormLabel, FormControl, FormDescription, FormMessage, FormField } from './ui/form';
-export { Input } from './ui/input';
-export { Label } from './ui/label';
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from './ui/tooltip';
+export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
 // Icons
-export { DynamicIcon } from './icons';
 export type { IconName } from './icons';
+export { DynamicIcon } from './icons';
 
 // Standalone Components
 export { ActiveLink } from './ActiveLink';
+export { Background } from './Background';
 export { LocaleSwitcher } from './LocaleSwitcher';
 export { ToggleMenuButton } from './ToggleMenuButton';
-export { Background } from './Background';
 
 // NOTE: For other components, use direct imports:
 // import { DashboardHeader } from '@/components/dashboard/DashboardHeader';

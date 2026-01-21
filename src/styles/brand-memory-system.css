@@ -3,7 +3,7 @@
  *
  * Stili CSS per il sistema che rinforza il brand Tradelia in ogni interazione
  * Basato su ricerca 2026: Brand Loyalty through UX, Memorable Moments, Emotional Connections
- * 
+ *
  * Principi:
  * - Brand Consistency: identità coerente in ogni touchpoint
  * - Emotional Resonance: connessioni emotive durature
@@ -23,34 +23,34 @@
 }
 
 /* Brand personality data attributes */
-.brand-memory-system[data-brand-personality*="professionale"] {
+.brand-memory-system[data-brand-personality*='professionale'] {
   --brand-primary-hue: 224;
   --brand-accent-hue: 160;
   --brand-tone: professional;
 }
 
-.brand-memory-system[data-brand-personality*="affidabile"] {
+.brand-memory-system[data-brand-personality*='affidabile'] {
   --brand-trust-indicator: rgba(59, 130, 246, 0.1);
   --brand-stability: 1;
 }
 
-.brand-memory-system[data-brand-personality*="innovativo"] {
+.brand-memory-system[data-brand-personality*='innovativo'] {
   --brand-innovation-accent: rgba(16, 185, 129, 0.1);
   --brand-forward-thinking: 1;
 }
 
 /* Emotional tone adaptations */
-.brand-memory-system[data-emotional-tone="confident"] {
+.brand-memory-system[data-emotional-tone='confident'] {
   --brand-confidence-boost: 1.02;
   --brand-assurance-glow: rgba(59, 130, 246, 0.15);
 }
 
-.brand-memory-system[data-emotional-tone="empowering"] {
+.brand-memory-system[data-emotional-tone='empowering'] {
   --brand-empowerment-lift: translateY(-1px);
   --brand-growth-gradient: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
 }
 
-.brand-memory-system[data-emotional-tone="celebratory"] {
+.brand-memory-system[data-emotional-tone='celebratory'] {
   --brand-celebration-scale: 1.05;
   --brand-joy-animation: brand-celebration 2s ease-in-out;
 }
@@ -71,57 +71,60 @@
 }
 
 /* Brand moment types */
-.brand-moment[data-moment-type="first-impression"] {
+.brand-moment[data-moment-type='first-impression'] {
   animation: brand-first-impression 3s ease-out;
 }
 
-.brand-moment[data-moment-type="learning-milestone"] {
+.brand-moment[data-moment-type='learning-milestone'] {
   animation: brand-milestone-celebration 2s ease-out;
 }
 
-.brand-moment[data-moment-type="achievement-unlock"] {
+.brand-moment[data-moment-type='achievement-unlock'] {
   animation: brand-achievement-unlock 2.5s ease-out;
 }
 
-.brand-moment[data-moment-type="skill-mastery"] {
+.brand-moment[data-moment-type='skill-mastery'] {
   animation: brand-skill-mastery 2s ease-out;
 }
 
-.brand-moment[data-moment-type="community-connect"] {
+.brand-moment[data-moment-type='community-connect'] {
   animation: brand-community-connect 1.5s ease-out;
 }
 
-.brand-moment[data-moment-type="premium-upgrade"] {
+.brand-moment[data-moment-type='premium-upgrade'] {
   animation: brand-premium-upgrade 3s ease-out;
 }
 
-.brand-moment[data-moment-type="trust-building"] {
+.brand-moment[data-moment-type='trust-building'] {
   animation: brand-trust-building 1s ease-out;
 }
 
-.brand-moment[data-moment-type="loyalty-reward"] {
+.brand-moment[data-moment-type='loyalty-reward'] {
   animation: brand-loyalty-reward 2s ease-out;
 }
 
 /* Brand touchpoint styles */
-.brand-moment[data-touchpoint="navigation"] {
+.brand-moment[data-touchpoint='navigation'] {
   border-left: 3px solid hsl(var(--brand-primary-hue, 224), 76%, 48%);
   padding-left: 1rem;
 }
 
-.brand-moment[data-touchpoint="content"] {
-  background: var(--brand-growth-gradient, linear-gradient(135deg, rgba(59, 130, 246, 0.02) 0%, rgba(16, 185, 129, 0.02) 100%));
+.brand-moment[data-touchpoint='content'] {
+  background: var(
+    --brand-growth-gradient,
+    linear-gradient(135deg, rgba(59, 130, 246, 0.02) 0%, rgba(16, 185, 129, 0.02) 100%)
+  );
   border-radius: 0.75rem;
   padding: 1rem;
 }
 
-.brand-moment[data-touchpoint="achievements"] {
+.brand-moment[data-touchpoint='achievements'] {
   box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
   border: 2px solid rgba(16, 185, 129, 0.2);
   border-radius: 1rem;
 }
 
-.brand-moment[data-touchpoint="notifications"] {
+.brand-moment[data-touchpoint='notifications'] {
   background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
   border-radius: 0.5rem;
   padding: 0.75rem;
@@ -285,7 +288,8 @@
 
 /* General celebration animation */
 @keyframes brand-celebration {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {
@@ -366,8 +370,9 @@
   top: 0;
   bottom: 0;
   width: 3px;
-  background: linear-gradient(180deg, 
-    hsl(var(--brand-primary-hue, 224), 76%, 48%) 0%, 
+  background: linear-gradient(
+    180deg,
+    hsl(var(--brand-primary-hue, 224), 76%, 48%) 0%,
     hsl(var(--brand-accent-hue, 160), 84%, 39%) 100%
   );
   border-radius: 0 2px 2px 0;
@@ -383,7 +388,10 @@
 /* Content brand enhancement */
 .brand-enhanced-content {
   position: relative;
-  background: var(--brand-growth-gradient, linear-gradient(135deg, rgba(59, 130, 246, 0.02) 0%, rgba(16, 185, 129, 0.02) 100%));
+  background: var(
+    --brand-growth-gradient,
+    linear-gradient(135deg, rgba(59, 130, 246, 0.02) 0%, rgba(16, 185, 129, 0.02) 100%)
+  );
   border-radius: 0.75rem;
   transition: all 0.3s ease;
 }
@@ -397,8 +405,10 @@
 .brand-enhanced-achievement {
   position: relative;
   border: 2px solid transparent;
-  background: linear-gradient(white, white) padding-box,
-              linear-gradient(135deg, hsl(var(--brand-accent-hue, 160), 84%, 39%), hsl(var(--brand-primary-hue, 224), 76%, 48%)) border-box;
+  background:
+    linear-gradient(white, white) padding-box,
+    linear-gradient(135deg, hsl(var(--brand-accent-hue, 160), 84%, 39%), hsl(var(--brand-primary-hue, 224), 76%, 48%))
+      border-box;
   border-radius: 1rem;
   transition: all 0.3s ease;
 }
@@ -445,7 +455,8 @@
 }
 
 @keyframes brand-breathing {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     opacity: 1;
   }
@@ -507,7 +518,8 @@
 }
 
 @keyframes community-pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
     transform: scale(1);
   }
@@ -529,7 +541,7 @@
     animation: none !important;
     transition-duration: 0.01ms !important;
   }
-  
+
   /* Provide alternative brand feedback for reduced motion */
   .brand-moment.active {
     border: 2px solid hsl(var(--brand-primary-hue, 224), 76%, 48%);
@@ -542,7 +554,7 @@
   .brand-memory-system {
     border: 2px solid currentColor;
   }
-  
+
   .brand-consistency-indicator {
     border: 3px solid currentColor;
     background: white;

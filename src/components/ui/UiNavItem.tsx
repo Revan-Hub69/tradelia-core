@@ -2,7 +2,7 @@
  * UI NAV ITEM - Signature Primitive v1
  *
  * Unifica: sidebar, bottom nav, header breadcrumbs
- * 
+ *
  * REGOLE:
  * - aria-current="page" per active
  * - focus-visible
@@ -23,7 +23,7 @@ export type UiNavItemProps = HTMLAttributes<HTMLElement> & {
 
 /**
  * UiNavItem - Navigation item with consistent styling
- * 
+ *
  * Usage:
  * - Sidebar: <UiNavItem active icon={<HomeIcon />}>Home</UiNavItem>
  * - Bottom Nav: <UiNavItem active icon={<LearnIcon />}>Learn</UiNavItem>
@@ -32,7 +32,7 @@ export type UiNavItemProps = HTMLAttributes<HTMLElement> & {
 export const UiNavItem = forwardRef<HTMLElement, UiNavItemProps>(
   ({ className, active = false, icon, children, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : 'div';
-    
+
     // When asChild, we can't render icon/children as separate elements
     // The child (Link) must handle its own content
     if (asChild) {
@@ -47,21 +47,21 @@ export const UiNavItem = forwardRef<HTMLElement, UiNavItemProps>(
             'rounded-xl',
             'transition-all duration-200 ease-out',
             'cursor-pointer',
-            
+
             // Inactive state
             'text-muted-foreground',
             'hover:bg-primary/10 hover:text-foreground hover:scale-[1.02]',
-            
+
             // Active state
             'data-[active=true]:bg-primary/15 data-[active=true]:text-primary',
             'data-[active=true]:font-medium',
-            
+
             // Focus
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2',
-            
+
             // Signature press feedback
             'active:scale-[0.98] active:transition-transform active:duration-75',
-            
+
             className,
           )}
           {...props}
@@ -70,7 +70,7 @@ export const UiNavItem = forwardRef<HTMLElement, UiNavItemProps>(
         </Comp>
       );
     }
-    
+
     return (
       <Comp
         ref={ref as any}
@@ -82,28 +82,28 @@ export const UiNavItem = forwardRef<HTMLElement, UiNavItemProps>(
           'rounded-xl',
           'transition-all duration-200 ease-out',
           'cursor-pointer',
-          
+
           // Inactive state
           'text-muted-foreground',
           'hover:bg-primary/10 hover:text-foreground hover:scale-[1.02]',
-          
+
           // Active state
           'data-[active=true]:bg-primary/15 data-[active=true]:text-primary',
           'data-[active=true]:font-medium',
-          
+
           // Focus
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2',
-          
+
           // Signature press feedback
           'active:scale-[0.98] active:transition-transform active:duration-75',
-          
+
           className,
         )}
         {...props}
       >
         {/* Icon */}
         {icon && (
-          <span className="flex-shrink-0" aria-hidden="true">
+          <span className="shrink-0" aria-hidden="true">
             {icon}
           </span>
         )}

@@ -4,15 +4,14 @@ import React from 'react';
 
 // Import dei componenti esistenti
 import { DashboardHeader } from '@/components/dashboard';
-import { SidebarNavigation, PWABottomNavigationSimple } from '@/components/navigation';
-import { NavigationProvider } from '@/components/navigation';
+import { NavigationProvider, PWABottomNavigationSimple, SidebarNavigation } from '@/components/navigation';
 
-interface TradeliaLayoutProps {
+type TradeliaLayoutProps = {
   children: React.ReactNode;
   showSidebar?: boolean;
   showMobileNav?: boolean;
   className?: string;
-}
+};
 
 /**
  * Layout universale che orchestra tutti i componenti Tradelia esistenti
@@ -29,7 +28,7 @@ export const TradeliaLayout: React.FC<TradeliaLayoutProps> = ({
       <div className={`min-h-screen bg-background ${className}`}>
         {/* Header con sistema professionale Tradelia */}
         <DashboardHeader />
-        
+
         <div className="flex">
           {/* Sidebar Navigation esistente */}
           {showSidebar && (
@@ -37,13 +36,13 @@ export const TradeliaLayout: React.FC<TradeliaLayoutProps> = ({
               <SidebarNavigation />
             </aside>
           )}
-          
+
           {/* Main content con signature glass treatment */}
           <main className="flex-1 p-4 lg:p-6">
             {children}
           </main>
         </div>
-        
+
         {/* Mobile Navigation esistente */}
         {showMobileNav && (
           <div className="lg:hidden">

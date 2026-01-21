@@ -50,7 +50,7 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
             <UiNavItem
               key={item.id}
               active={isActive}
-              icon={
+              icon={(
                 <DynamicIcon
                   name={item.iconName as IconName}
                   size={20}
@@ -59,7 +59,7 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
                     isPending && navigationTarget === item.href && 'animate-pulse',
                   )}
                 />
-              }
+              )}
               className={cn(
                 'flex flex-col items-center justify-center min-w-0 flex-1 px-1 py-2',
                 'min-h-[44px] tap-target',

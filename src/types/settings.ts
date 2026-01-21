@@ -447,17 +447,19 @@ export const DEFAULT_SETTINGS: UserSettingsV1 = {
  * Type guard: Check if object is UserSettingsV1
  */
 export function isUserSettingsV1(obj: unknown): obj is UserSettingsV1 {
-  if (typeof obj !== 'object' || obj === null) return false;
+  if (typeof obj !== 'object' || obj === null) {
+    return false;
+  }
 
   const settings = obj as Partial<UserSettingsV1>;
 
   return (
-    settings.version === 1 &&
-    typeof settings.updatedAt === 'string' &&
-    typeof settings.appearance === 'object' &&
-    typeof settings.preferences === 'object' &&
-    typeof settings.notifications === 'object' &&
-    typeof settings.privacy === 'object'
+    settings.version === 1
+    && typeof settings.updatedAt === 'string'
+    && typeof settings.appearance === 'object'
+    && typeof settings.preferences === 'object'
+    && typeof settings.notifications === 'object'
+    && typeof settings.privacy === 'object'
   );
 }
 

@@ -1,12 +1,12 @@
-import {
-  UserProgressRaw,
-  UserProgressNormalized,
-  CompleteUserDataRaw,
+import type {
   CompleteUserDataNormalized,
+  CompleteUserDataRaw,
+  UserProgressNormalized,
+  UserProgressRaw,
 } from '@/contracts/userProgress.contract';
 
 export function normalizeUserProgress(
-  raw: UserProgressRaw | null | undefined
+  raw: UserProgressRaw | null | undefined,
 ): UserProgressNormalized {
   const today = new Date().toISOString().split('T')[0]!;
 
@@ -20,7 +20,7 @@ export function normalizeUserProgress(
 }
 
 export function normalizeCompleteUserData(
-  raw: CompleteUserDataRaw | null | undefined
+  raw: CompleteUserDataRaw | null | undefined,
 ): CompleteUserDataNormalized {
   return {
     profile: {

@@ -76,22 +76,22 @@ export type SettingsPath =
  */
 export type SettingsPathValue<T extends SettingsPath> =
   T extends 'appearance.theme' ? 'light' | 'dark' | 'system' | 'schedule'
-  : T extends 'appearance.scheduleMode' ? 'os' | 'manual' | 'geo'
-  : T extends 'appearance.manualSchedule.lightStart' ? string
-  : T extends 'appearance.manualSchedule.darkStart' ? string
-  : T extends 'appearance.geoConsent' ? boolean
-  : T extends 'appearance.fontSize' ? 0.875 | 1 | 1.125 | 1.25
-  : T extends 'appearance.density' ? 'compact' | 'comfortable' | 'spacious'
-  : T extends 'appearance.contrast' ? 'normal' | 'high' | 'auto'
-  : T extends 'appearance.motion' ? 'full' | 'reduced' | 'none'
-  : T extends 'preferences.language' ? string
-  : T extends 'preferences.difficulty' ? 'adaptive' | 'beginner' | 'intermediate' | 'advanced'
-  : T extends 'preferences.autoPlay' ? boolean
-  : T extends 'notifications.email' ? boolean
-  : T extends 'notifications.push' ? boolean
-  : T extends 'notifications.dailyReminder' ? boolean
-  : T extends 'notifications.streakReminder' ? boolean
-  : T extends 'privacy.profileVisible' ? boolean
-  : T extends 'privacy.progressVisible' ? boolean
-  : T extends 'privacy.leaderboardVisible' ? boolean
-  : never;
+    : T extends 'appearance.scheduleMode' ? 'os' | 'manual' | 'geo'
+      : T extends 'appearance.manualSchedule.lightStart' ? string
+        : T extends 'appearance.manualSchedule.darkStart' ? string
+          : T extends 'appearance.geoConsent' ? boolean
+            : T extends 'appearance.fontSize' ? 0.875 | 1 | 1.125 | 1.25
+              : T extends 'appearance.density' ? 'compact' | 'comfortable' | 'spacious'
+                : T extends 'appearance.contrast' ? 'normal' | 'high' | 'auto'
+                  : T extends 'appearance.motion' ? 'full' | 'reduced' | 'none'
+                    : T extends 'preferences.language' ? string
+                      : T extends 'preferences.difficulty' ? 'adaptive' | 'beginner' | 'intermediate' | 'advanced'
+                        : T extends 'preferences.autoPlay' ? boolean
+                          : T extends 'notifications.email' ? boolean
+                            : T extends 'notifications.push' ? boolean
+                              : T extends 'notifications.dailyReminder' ? boolean
+                                : T extends 'notifications.streakReminder' ? boolean
+                                  : T extends 'privacy.profileVisible' ? boolean
+                                    : T extends 'privacy.progressVisible' ? boolean
+                                      : T extends 'privacy.leaderboardVisible' ? boolean
+                                        : never;

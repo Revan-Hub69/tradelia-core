@@ -3,7 +3,7 @@
  *
  * Sistema di feedback visivo che simula sensazioni tattili senza suono
  * Basato su ricerca 2026: Sensory Web Design, Visual Tactility, Micro-Movements as Mood
- * 
+ *
  * Caratteristiche innovative:
  * - Simulazione tattile attraverso micro-animazioni precise
  * - Feedback visivo che "parla al sistema nervoso"
@@ -21,31 +21,31 @@ import { usePerformanceOptimization } from '../../hooks/usePerformanceOptimizati
 // TYPES & INTERFACES
 // ============================================================================
 
-export type HapticFeedbackType = 
-  | 'press'        // Pressione profonda con rimbalzo elastico
-  | 'tap'          // Tocco leggero con vibrazione visiva
-  | 'stroke'       // Carezza con movimento fluido
-  | 'pulse'        // Pulsazione ritmica per conferma
-  | 'ripple'       // Ondulazione che si espande
-  | 'friction'     // Attrito con resistenza visiva
-  | 'magnetic'     // Attrazione magnetica con snap
-  | 'elastic'      // Elasticità con overshoot controllato
-  | 'texture'      // Texture tattile con micro-movimenti
-  | 'breath';      // Respirazione organica per calma
+export type HapticFeedbackType =
+  | 'press' // Pressione profonda con rimbalzo elastico
+  | 'tap' // Tocco leggero con vibrazione visiva
+  | 'stroke' // Carezza con movimento fluido
+  | 'pulse' // Pulsazione ritmica per conferma
+  | 'ripple' // Ondulazione che si espande
+  | 'friction' // Attrito con resistenza visiva
+  | 'magnetic' // Attrazione magnetica con snap
+  | 'elastic' // Elasticità con overshoot controllato
+  | 'texture' // Texture tattile con micro-movimenti
+  | 'breath'; // Respirazione organica per calma
 
 export type HapticIntensity = 'subtle' | 'medium' | 'strong' | 'premium';
 
-export type HapticTexture = 
-  | 'smooth'       // Superficie liscia come vetro
-  | 'grain'        // Grana fine come carta
-  | 'fabric'       // Morbidezza tessile
-  | 'metal'        // Durezza metallica
-  | 'liquid'       // Fluidità liquida
-  | 'rubber'       // Elasticità gommosa
-  | 'velvet'       // Velluto premium
-  | 'glass';       // Cristallo trasparente
+export type HapticTexture =
+  | 'smooth' // Superficie liscia come vetro
+  | 'grain' // Grana fine come carta
+  | 'fabric' // Morbidezza tessile
+  | 'metal' // Durezza metallica
+  | 'liquid' // Fluidità liquida
+  | 'rubber' // Elasticità gommosa
+  | 'velvet' // Velluto premium
+  | 'glass'; // Cristallo trasparente
 
-export interface HapticVisualFeedbackProps {
+export type HapticVisualFeedbackProps = {
   children: React.ReactNode;
   type?: HapticFeedbackType;
   intensity?: HapticIntensity;
@@ -55,7 +55,7 @@ export interface HapticVisualFeedbackProps {
   className?: string;
   onFeedbackComplete?: () => void;
   disabled?: boolean;
-}
+};
 
 // ============================================================================
 // HAPTIC FEEDBACK CONFIGURATIONS
@@ -191,7 +191,7 @@ export const HapticVisualFeedback: React.FC<HapticVisualFeedbackProps> = ({
 }) => {
   const { shouldAnimate } = usePerformanceOptimization();
   const { announce } = useAccessibility();
-  
+
   const [isActive, setIsActive] = useState(false);
   const [isRecovering, setIsRecovering] = useState(false);
 
@@ -201,10 +201,12 @@ export const HapticVisualFeedback: React.FC<HapticVisualFeedbackProps> = ({
 
   // Handle haptic feedback trigger
   const triggerFeedback = useCallback(() => {
-    if (disabled || !shouldAnimate('medium')) return;
+    if (disabled || !shouldAnimate('medium')) {
+      return;
+    }
 
     setIsActive(true);
-    
+
     // Announce haptic feedback for accessibility
     announce(`${type} feedback activated`, 'polite');
 
@@ -212,7 +214,7 @@ export const HapticVisualFeedback: React.FC<HapticVisualFeedbackProps> = ({
     setTimeout(() => {
       setIsActive(false);
       setIsRecovering(true);
-      
+
       // Complete feedback cycle
       setTimeout(() => {
         setIsRecovering(false);
@@ -265,11 +267,13 @@ export const HapticVisualFeedback: React.FC<HapticVisualFeedbackProps> = ({
 
   // Generate texture overlay for premium effects
   const renderTextureOverlay = useCallback(() => {
-    if (!shouldAnimate('low') || texture === 'smooth') return null;
+    if (!shouldAnimate('low') || texture === 'smooth') {
+      return null;
+    }
 
     return (
-      <div 
-        className="absolute inset-0 pointer-events-none opacity-30"
+      <div
+        className="pointer-events-none absolute inset-0 opacity-30"
         style={{
           ...textureEffect,
           borderRadius: 'inherit',
@@ -281,11 +285,13 @@ export const HapticVisualFeedback: React.FC<HapticVisualFeedbackProps> = ({
 
   // Generate haptic pulse effect for premium intensity
   const renderPulseEffect = useCallback(() => {
-    if (!shouldAnimate('medium') || intensity !== 'premium' || !isActive) return null;
+    if (!shouldAnimate('medium') || intensity !== 'premium' || !isActive) {
+      return null;
+    }
 
     return (
-      <div 
-        className="absolute inset-0 pointer-events-none animate-ping opacity-20"
+      <div
+        className="pointer-events-none absolute inset-0 animate-ping opacity-20"
         style={{
           background: 'radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%)',
           borderRadius: 'inherit',
@@ -310,19 +316,19 @@ export const HapticVisualFeedback: React.FC<HapticVisualFeedbackProps> = ({
     >
       {/* Pulse Effect for Premium */}
       {renderPulseEffect()}
-      
+
       {/* Texture Overlay */}
       {renderTextureOverlay()}
-      
+
       {/* Content */}
       <div className="relative z-10">
         {children}
       </div>
-      
+
       {/* Haptic Indicator for Accessibility */}
       {isActive && (
-        <div 
-          className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full animate-pulse"
+        <div
+          className="absolute -right-1 -top-1 size-2 animate-pulse rounded-full bg-blue-500"
           aria-hidden="true"
         />
       )}
@@ -334,23 +340,23 @@ export const HapticVisualFeedback: React.FC<HapticVisualFeedbackProps> = ({
 // PRESET HAPTIC COMPONENTS
 // ============================================================================
 
-export const HapticButton: React.FC<Omit<HapticVisualFeedbackProps, 'type'>> = (props) => (
+export const HapticButton: React.FC<Omit<HapticVisualFeedbackProps, 'type'>> = props => (
   <HapticVisualFeedback type="press" texture="smooth" {...props} />
 );
 
-export const HapticCard: React.FC<Omit<HapticVisualFeedbackProps, 'type' | 'texture'>> = (props) => (
+export const HapticCard: React.FC<Omit<HapticVisualFeedbackProps, 'type' | 'texture'>> = props => (
   <HapticVisualFeedback type="tap" texture="glass" {...props} />
 );
 
-export const HapticPremiumAction: React.FC<Omit<HapticVisualFeedbackProps, 'type' | 'intensity' | 'texture'>> = (props) => (
+export const HapticPremiumAction: React.FC<Omit<HapticVisualFeedbackProps, 'type' | 'intensity' | 'texture'>> = props => (
   <HapticVisualFeedback type="magnetic" intensity="premium" texture="velvet" {...props} />
 );
 
-export const HapticCalmBreath: React.FC<Omit<HapticVisualFeedbackProps, 'type' | 'duration'>> = (props) => (
+export const HapticCalmBreath: React.FC<Omit<HapticVisualFeedbackProps, 'type' | 'duration'>> = props => (
   <HapticVisualFeedback type="breath" duration={2000} texture="smooth" {...props} />
 );
 
-export const HapticTextureDemo: React.FC<Omit<HapticVisualFeedbackProps, 'type'>> = (props) => (
+export const HapticTextureDemo: React.FC<Omit<HapticVisualFeedbackProps, 'type'>> = props => (
   <HapticVisualFeedback type="texture" {...props} />
 );
 

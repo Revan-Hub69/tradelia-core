@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
+import { useEffect } from 'react';
 
 /**
  * Global Error Boundary
- * 
+ *
  * Best Practices 2026:
  * - Catches errors not caught by error.tsx
  * - Must include <html> and <body> (replaces root layout)
@@ -159,7 +159,9 @@ export default function GlobalError({
                   color: '#9ca3af',
                 }}
               >
-                Error ID: <code style={{ fontFamily: 'monospace' }}>{error.digest.slice(0, 8)}</code>
+                Error ID:
+                {' '}
+                <code style={{ fontFamily: 'monospace' }}>{error.digest.slice(0, 8)}</code>
               </p>
             )}
           </div>

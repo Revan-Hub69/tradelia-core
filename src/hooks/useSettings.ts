@@ -15,15 +15,14 @@
 
 import { useEffect, useMemo, useRef } from 'react';
 
-import type { SettingsPath } from '@/types/settingsPaths';
-
 import { useSettingsStore } from '@/stores/settingsStore';
+import type { SettingsPath } from '@/types/settingsPaths';
 
 // ============================================================================
 // Types
 // ============================================================================
 
-interface UseSettingsReturn {
+type UseSettingsReturn = {
   /**
    * Update a setting value
    *
@@ -54,7 +53,7 @@ interface UseSettingsReturn {
    * Number of retry attempts
    */
   retryCount: number;
-}
+};
 
 // ============================================================================
 // Constants
@@ -78,7 +77,7 @@ const RETRY_FACTOR = 2;
  */
 function calculateRetryDelay(attempt: number): number {
   const exponentialDelay = Math.min(
-    INITIAL_RETRY_DELAY * Math.pow(RETRY_FACTOR, attempt - 1),
+    INITIAL_RETRY_DELAY * RETRY_FACTOR ** (attempt - 1),
     MAX_RETRY_DELAY,
   );
 
@@ -160,12 +159,13 @@ export function useSettings(): UseSettingsReturn {
 
   const syncToDatabase = useMemo(() => {
     return async () => {
-      if (!isMountedRef.current) return;
+      if (!isMountedRef.current) {
+        return;
+      }
 
       try {
         await store.saveSettings();
-      }
-      catch (error) {
+      } catch (error) {
         console.error('[useSettings] Sync failed:', error);
 
         // Retry with exponential backoff if error is retryable
@@ -181,8 +181,7 @@ export function useSettings(): UseSettingsReturn {
               syncToDatabase();
             }
           }, delay);
-        }
-        else {
+        } else {
           // Max retries reached or non-retryable error
           console.error('[useSettings] Max retries reached or non-retryable error');
 

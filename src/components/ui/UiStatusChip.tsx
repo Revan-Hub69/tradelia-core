@@ -2,12 +2,12 @@
  * UI STATUS CHIP - Signature Primitive v1
  *
  * Sostituisce: streak, progress, status header
- * 
+ *
  * REGOLE:
  * - Solo CSS + tokens (NO hardcoded colors)
  * - Zero JS
  * - Server-safe
- * 
+ *
  * USAGE:
  * - Dot indicator: <UiStatusChip variant="streak" label="days" value={7} dot />
  * - Icon: <UiStatusChip variant="info" label="Focus" icon={<Icon />} />
@@ -30,7 +30,7 @@ export type UiStatusChipProps = HTMLAttributes<HTMLDivElement> & {
 
 /**
  * UiStatusChip - Status indicator with glass surface
- * 
+ *
  * Usage:
  * - Streak: <UiStatusChip variant="streak" label="days" value={7} dot />
  * - Progress: <UiStatusChip variant="progress" label="Complete" value="75%" />
@@ -47,15 +47,15 @@ export const UiStatusChip = forwardRef<HTMLDivElement, UiStatusChipProps>(
           'rounded-full',
           'text-sm font-medium',
           'transition-all duration-200 ease-out',
-          
+
           // Glass surface
           'bg-white/40 dark:bg-white/10',
           'border border-white/20 dark:border-white/10',
           'backdrop-blur-sm',
-          
+
           // Hover lift (signature)
           'hover:scale-[1.02] hover:shadow-sm',
-          
+
           // Variant-specific colors (semantic tokens)
           {
             'text-foreground': variant === 'info',
@@ -64,7 +64,7 @@ export const UiStatusChip = forwardRef<HTMLDivElement, UiStatusChipProps>(
             'text-orange-700 dark:text-orange-300 border-orange-500/30 bg-orange-500/10': variant === 'streak',
             'text-primary border-primary/30 bg-primary/10': variant === 'progress',
           },
-          
+
           className,
         )}
         {...props}
@@ -88,7 +88,7 @@ export const UiStatusChip = forwardRef<HTMLDivElement, UiStatusChipProps>(
 
         {/* Custom icon (if provided) */}
         {icon && !dot && (
-          <span className="flex-shrink-0" aria-hidden="true">
+          <span className="shrink-0" aria-hidden="true">
             {icon}
           </span>
         )}

@@ -1,27 +1,26 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
-import { 
-  FileQuestion, 
-  Home, 
-  Search, 
-  Mail, 
-  Map,
+import {
   ArrowLeft,
+  FileQuestion,
+  Home,
+  Mail,
+  Map,
+  Search,
   Sparkles,
   TrendingUp,
 } from 'lucide-react';
-import { Link } from '@/libs/i18nNavigation';
-import { useRouter } from '@/libs/i18nNavigation';
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
 import { UiButton } from '@/components/ui/UiButton';
 import { UiSurface } from '@/components/ui/UiSurface';
+import { Link, useRouter } from '@/libs/i18nNavigation';
 import { cn } from '@/utils/Helpers';
 
 /**
  * Dashboard 404 Not Found Page - Enterprise 2026
- * 
+ *
  * Best Practices Implementation:
  * ✅ Clear messaging with helpful context
  * ✅ Search functionality (inline)
@@ -45,7 +44,7 @@ export default function DashboardNotFound() {
     // Track 404 for analytics
     const path = window.location.pathname;
     setAttemptedPath(path);
-    
+
     // TODO: Send to analytics
     console.log('404 Error tracked:', {
       path,
@@ -56,9 +55,16 @@ export default function DashboardNotFound() {
     // Easter egg: Konami code detection (↑↑↓↓←→←→BA)
     let konamiIndex = 0;
     const konamiCode = [
-      'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
-      'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight',
-      'b', 'a',
+      'ArrowUp',
+      'ArrowUp',
+      'ArrowDown',
+      'ArrowDown',
+      'ArrowLeft',
+      'ArrowRight',
+      'ArrowLeft',
+      'ArrowRight',
+      'b',
+      'a',
     ];
 
     const handleKonami = (e: KeyboardEvent) => {
@@ -104,7 +110,7 @@ export default function DashboardNotFound() {
         <div className="space-y-8 p-8">
           {/* Breadcrumb context */}
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Link href="/dashboard" className="hover:text-foreground transition-colors">
+            <Link href="/dashboard" className="transition-colors hover:text-foreground">
               Dashboard
             </Link>
             <span>/</span>
@@ -113,20 +119,20 @@ export default function DashboardNotFound() {
 
           {/* Icon with signature animation */}
           <div className="flex justify-center">
-            <div 
+            <div
               className={cn(
-                "relative flex size-24 items-center justify-center rounded-2xl",
-                "bg-gradient-to-br from-muted to-muted/50",
-                "transition-all duration-500",
-                showEasterEgg && "animate-bounce"
+                'relative flex size-24 items-center justify-center rounded-2xl',
+                'bg-gradient-to-br from-muted to-muted/50',
+                'transition-all duration-500',
+                showEasterEgg && 'animate-bounce',
               )}
             >
-              <FileQuestion 
+              <FileQuestion
                 className={cn(
-                  "size-12 text-muted-foreground transition-all duration-300",
-                  showEasterEgg && "text-primary"
-                )} 
-                aria-hidden="true" 
+                  'size-12 text-muted-foreground transition-all duration-300',
+                  showEasterEgg && 'text-primary',
+                )}
+                aria-hidden="true"
               />
               {showEasterEgg && (
                 <div className="absolute -right-2 -top-2 flex size-8 items-center justify-center rounded-full bg-accent text-white">
@@ -159,13 +165,13 @@ export default function DashboardNotFound() {
               <input
                 type="text"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 placeholder={t('search_placeholder')}
                 className={cn(
-                  "w-full rounded-xl border bg-background py-3 pl-10 pr-4",
-                  "transition-all duration-200",
-                  "focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20",
-                  "placeholder:text-muted-foreground/60"
+                  'w-full rounded-xl border bg-background py-3 pl-10 pr-4',
+                  'transition-all duration-200',
+                  'focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20',
+                  'placeholder:text-muted-foreground/60',
                 )}
               />
             </div>
@@ -206,10 +212,10 @@ export default function DashboardNotFound() {
                     key={page.href}
                     href={page.href}
                     className={cn(
-                      "group relative overflow-hidden rounded-xl border p-4",
-                      "transition-all duration-200",
-                      "hover:border-primary/50 hover:bg-accent/5",
-                      "active:scale-[0.98]"
+                      'group relative overflow-hidden rounded-xl border p-4',
+                      'transition-all duration-200',
+                      'hover:border-primary/50 hover:bg-accent/5',
+                      'active:scale-[0.98]',
                     )}
                   >
                     <div className="flex flex-col items-center gap-2 text-center">
@@ -248,8 +254,10 @@ export default function DashboardNotFound() {
 
             {/* Easter egg message */}
             {showEasterEgg && (
-              <div className="animate-in fade-in slide-in-from-bottom-4 rounded-lg bg-accent/10 px-4 py-2 text-xs text-accent-foreground">
-                🎮 {t('easter_egg_message')}
+              <div className="rounded-lg bg-accent/10 px-4 py-2 text-xs text-accent-foreground animate-in fade-in slide-in-from-bottom-4">
+                🎮
+                {' '}
+                {t('easter_egg_message')}
               </div>
             )}
 

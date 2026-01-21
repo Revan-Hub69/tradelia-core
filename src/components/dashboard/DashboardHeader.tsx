@@ -3,7 +3,7 @@
  *
  * Header composable con variants e slots
  * Supporta context-aware content e scroll behavior
- * 
+ *
  * MIGRATED: Using Signature Primitives v1
  * - UiSurface variant="header"
  * - UiButton for primary actions

@@ -19,7 +19,7 @@ describe('migrateSettings', () => {
 
   it('should return defaults for null', () => {
     const result = migrateSettings(null);
-    
+
     expect(result.version).toBe(1);
     expect(result.appearance).toBeDefined();
     expect(result.preferences).toBeDefined();
@@ -29,7 +29,7 @@ describe('migrateSettings', () => {
 
   it('should return defaults for undefined', () => {
     const result = migrateSettings(undefined);
-    
+
     expect(result.version).toBe(1);
     expect(result).toMatchObject({
       version: 1,
@@ -56,9 +56,9 @@ describe('migrateSettings', () => {
       language: 'it',
       difficulty: 'beginner',
     };
-    
+
     const result = migrateSettings(legacy);
-    
+
     expect(result.version).toBe(1);
     expect(result.appearance.theme).toBe('dark');
     expect(result.preferences.language).toBe('it');
@@ -70,9 +70,9 @@ describe('migrateSettings', () => {
       darkMode: false,
       language: 'en',
     };
-    
+
     const result = migrateSettings(legacy);
-    
+
     expect(result.version).toBe(1);
     expect(result.appearance.theme).toBe('light');
     expect(result.preferences.language).toBe('en');
@@ -83,9 +83,9 @@ describe('migrateSettings', () => {
       language: 'it',
       autoPlay: false,
     };
-    
+
     const result = migrateSettings(legacy);
-    
+
     expect(result.version).toBe(1);
     expect(result.appearance.theme).toBe('system'); // Default
     expect(result.preferences.language).toBe('it');
@@ -99,9 +99,9 @@ describe('migrateSettings', () => {
       dailyReminder: true,
       streakReminder: false,
     };
-    
+
     const result = migrateSettings(legacy);
-    
+
     expect(result.notifications.email).toBe(false);
     expect(result.notifications.push).toBe(true);
     expect(result.notifications.dailyReminder).toBe(true);
@@ -114,9 +114,9 @@ describe('migrateSettings', () => {
       progressVisible: true,
       leaderboardVisible: false,
     };
-    
+
     const result = migrateSettings(legacy);
-    
+
     expect(result.privacy.profileVisible).toBe(false);
     expect(result.privacy.progressVisible).toBe(true);
     expect(result.privacy.leaderboardVisible).toBe(false);
@@ -127,9 +127,9 @@ describe('migrateSettings', () => {
       language: 'it',
       // Missing: all other fields
     };
-    
+
     const result = migrateSettings(legacy);
-    
+
     expect(result.version).toBe(1);
     expect(result.appearance.fontSize).toBe(1);
     expect(result.appearance.density).toBe('comfortable');
@@ -141,9 +141,9 @@ describe('migrateSettings', () => {
 
   it('should handle empty legacy object', () => {
     const legacy = {};
-    
+
     const result = migrateSettings(legacy);
-    
+
     expect(result.version).toBe(1);
     expect(result.appearance.theme).toBe('system');
     expect(result.preferences.language).toBe('it'); // Default
@@ -181,9 +181,9 @@ describe('migrateSettings', () => {
         leaderboardVisible: false,
       },
     };
-    
+
     const result = migrateSettings(v1);
-    
+
     expect(result).toEqual(v1);
   });
 
@@ -196,9 +196,9 @@ describe('migrateSettings', () => {
       notifications: {},
       privacy: {},
     };
-    
+
     const result = migrateSettings(invalid);
-    
+
     expect(result.version).toBe(1);
     expect(result.appearance).toBeDefined();
   });
@@ -212,9 +212,9 @@ describe('migrateSettings', () => {
       notifications: {},
       privacy: {},
     };
-    
+
     const result = migrateSettings(invalid);
-    
+
     expect(result.version).toBe(1);
     expect(typeof result.appearance).toBe('object');
   });
@@ -228,9 +228,9 @@ describe('migrateSettings', () => {
       version: 2,
       // ... future fields
     };
-    
+
     const result = migrateSettings(future);
-    
+
     expect(result.version).toBe(1);
     expect(result).toMatchObject({
       version: 1,
@@ -245,9 +245,9 @@ describe('migrateSettings', () => {
   it('should handle circular references gracefully', () => {
     const circular: any = { language: 'it' };
     circular.self = circular;
-    
+
     const result = migrateSettings(circular);
-    
+
     expect(result.version).toBe(1);
   });
 
@@ -257,9 +257,9 @@ describe('migrateSettings', () => {
         throw new Error('Getter error');
       },
     };
-    
+
     const result = migrateSettings(throwing);
-    
+
     expect(result.version).toBe(1);
   });
 
@@ -270,11 +270,11 @@ describe('migrateSettings', () => {
   it('should set current timestamp for migrated settings', () => {
     const legacy = { language: 'it' };
     const before = new Date().toISOString();
-    
+
     const result = migrateSettings(legacy);
-    
+
     const after = new Date().toISOString();
-    
+
     expect(result.updatedAt).toBeDefined();
     expect(result.updatedAt >= before).toBe(true);
     expect(result.updatedAt <= after).toBe(true);
@@ -289,9 +289,9 @@ describe('migrateSettings', () => {
       notifications: { email: true, push: true, dailyReminder: false, streakReminder: true },
       privacy: { profileVisible: true, progressVisible: true, leaderboardVisible: true },
     };
-    
+
     const result = migrateSettings(v1);
-    
+
     expect(result.updatedAt).toBe('2026-01-01T00:00:00Z');
   });
 });
@@ -301,7 +301,7 @@ describe('getDefaultSettings', () => {
     const before = new Date().toISOString();
     const result = getDefaultSettings();
     const after = new Date().toISOString();
-    
+
     expect(result.version).toBe(1);
     expect(result.updatedAt >= before).toBe(true);
     expect(result.updatedAt <= after).toBe(true);
@@ -310,14 +310,14 @@ describe('getDefaultSettings', () => {
   it('should return a fresh copy each time', () => {
     const first = getDefaultSettings();
     const second = getDefaultSettings();
-    
+
     expect(first).not.toBe(second); // Different objects
     expect(first).toEqual(second); // Same values
   });
 
   it('should match DEFAULT_SETTINGS structure', () => {
     const result = getDefaultSettings();
-    
+
     expect(result.version).toBe(DEFAULT_SETTINGS.version);
     expect(result.appearance.theme).toBe(DEFAULT_SETTINGS.appearance.theme);
     expect(result.preferences.language).toBe(DEFAULT_SETTINGS.preferences.language);

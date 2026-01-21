@@ -2,7 +2,7 @@
  * UI BUTTON - Signature Primitive v1
  *
  * Sostituisce: SignatureButton, press-depth, CTA header
- * 
+ *
  * REGOLE:
  * - focus-visible
  * - aria compliant
@@ -12,7 +12,7 @@
 
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { forwardRef, type ButtonHTMLAttributes } from 'react';
+import { type ButtonHTMLAttributes, forwardRef } from 'react';
 
 import { cn } from '@/utils/Helpers';
 
@@ -71,7 +71,7 @@ export type UiButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
 
 /**
  * UiButton - Foundation button component
- * 
+ *
  * Usage:
  * - Primary: <UiButton variant="primary">Save</UiButton>
  * - Secondary: <UiButton variant="secondary">Cancel</UiButton>

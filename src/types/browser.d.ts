@@ -4,20 +4,20 @@
  */
 
 // Navigator Memory API
-interface NavigatorMemory {
+type NavigatorMemory = {
   readonly memory?: {
     readonly jsHeapSizeLimit: number;
     readonly totalJSHeapSize: number;
     readonly usedJSHeapSize: number;
   };
-}
+};
 
 // Navigator Battery API
-interface NavigatorBattery {
-  getBattery(): Promise<BatteryManager>;
-}
+type NavigatorBattery = {
+  getBattery: () => Promise<BatteryManager>;
+};
 
-interface BatteryManager extends EventTarget {
+type BatteryManager = {
   readonly charging: boolean;
   readonly chargingTime: number;
   readonly dischargingTime: number;
@@ -26,14 +26,14 @@ interface BatteryManager extends EventTarget {
   onchargingtimechange: ((this: BatteryManager, ev: Event) => any) | null;
   ondischargingtimechange: ((this: BatteryManager, ev: Event) => any) | null;
   onlevelchange: ((this: BatteryManager, ev: Event) => any) | null;
-}
+} & EventTarget;
 
 // Navigator Connection API
-interface NavigatorConnection {
+type NavigatorConnection = {
   readonly connection?: NetworkInformation;
-}
+};
 
-interface NetworkInformation extends EventTarget {
+type NetworkInformation = {
   readonly downlink: number;
   readonly downlinkMax: number;
   readonly effectiveType: 'slow-2g' | '2g' | '3g' | '4g';
@@ -41,35 +41,35 @@ interface NetworkInformation extends EventTarget {
   readonly saveData: boolean;
   readonly type: ConnectionType;
   onchange: ((this: NetworkInformation, ev: Event) => any) | null;
-}
+} & EventTarget;
 
-type ConnectionType = 
-  | 'bluetooth' 
-  | 'cellular' 
-  | 'ethernet' 
-  | 'none' 
-  | 'wifi' 
-  | 'wimax' 
-  | 'other' 
+type ConnectionType =
+  | 'bluetooth'
+  | 'cellular'
+  | 'ethernet'
+  | 'none'
+  | 'wifi'
+  | 'wimax'
+  | 'other'
   | 'unknown';
 
 // View Transitions API
-interface DocumentViewTransition {
-  startViewTransition(callback?: () => void | Promise<void>): ViewTransition;
-}
+type DocumentViewTransition = {
+  startViewTransition: (callback?: () => void | Promise<void>) => ViewTransition;
+};
 
-interface ViewTransition {
+type ViewTransition = {
   readonly finished: Promise<void>;
   readonly ready: Promise<void>;
   readonly updateCallbackDone: Promise<void>;
-  skipTransition(): void;
-}
+  skipTransition: () => void;
+};
 
 // CSS Style Extensions for WebKit
-interface CSSStyleDeclaration {
+type CSSStyleDeclaration = {
   webkitUserSelect?: string;
   webkitTouchCallout?: string;
-}
+};
 
 // Google Analytics
 declare global {

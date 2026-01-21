@@ -3,14 +3,14 @@
 import React from 'react';
 
 import { DashboardHeader } from '@/components/dashboard';
-import { NavigationProvider, SidebarNavigation, PWABottomNavigationSimple } from '@/components/navigation';
+import { NavigationProvider, PWABottomNavigationSimple, SidebarNavigation } from '@/components/navigation';
 
-interface UniversalLayoutProps {
+type UniversalLayoutProps = {
   children: React.ReactNode;
   showSidebar?: boolean;
   showMobileNav?: boolean;
   className?: string;
-}
+};
 
 export const UniversalLayout: React.FC<UniversalLayoutProps> = ({
   children,
@@ -23,7 +23,7 @@ export const UniversalLayout: React.FC<UniversalLayoutProps> = ({
       <div className={`min-h-screen bg-background ${className}`}>
         {/* Header universale */}
         <DashboardHeader />
-        
+
         <div className="flex">
           {/* Sidebar per desktop */}
           {showSidebar && (
@@ -31,13 +31,13 @@ export const UniversalLayout: React.FC<UniversalLayoutProps> = ({
               <SidebarNavigation />
             </aside>
           )}
-          
+
           {/* Main content */}
           <main className="flex-1 p-4 lg:p-6">
             {children}
           </main>
         </div>
-        
+
         {/* Mobile navigation */}
         {showMobileNav && (
           <div className="lg:hidden">

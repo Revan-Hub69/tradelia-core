@@ -1,5 +1,5 @@
-import { fileURLToPath } from 'node:url';
 import { execSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
 import withBundleAnalyzer from '@next/bundle-analyzer';
 import createJiti from 'jiti';

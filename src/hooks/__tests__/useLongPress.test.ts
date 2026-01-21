@@ -359,12 +359,14 @@ describe('useLongPress', () => {
     act(() => {
       vi.advanceTimersByTime(500);
     });
+
     expect(callback).not.toHaveBeenCalled();
 
     // 1000ms - should trigger
     act(() => {
       vi.advanceTimersByTime(500);
     });
+
     expect(callback).toHaveBeenCalledTimes(1);
   });
 });

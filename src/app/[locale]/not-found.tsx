@@ -1,13 +1,13 @@
-import { useTranslations } from 'next-intl';
 import { FileQuestion, Home, Search } from 'lucide-react';
-import { Link } from '@/libs/i18nNavigation';
+import { useTranslations } from 'next-intl';
 
 import { UiButton } from '@/components/ui/UiButton';
 import { UiSurface } from '@/components/ui/UiSurface';
+import { Link } from '@/libs/i18nNavigation';
 
 /**
  * 404 Not Found Page
- * 
+ *
  * Best Practices 2026:
  * - Server component (async, can fetch data)
  * - i18n support

@@ -3,7 +3,7 @@
  *
  * Stili CSS per simulazione tattile attraverso feedback visivo
  * Basato su ricerca 2026: Visual Tactility, Micro-Movements as Mood
- * 
+ *
  * Caratteristiche:
  * - Texture visive che simulano superfici fisiche
  * - Animazioni che "parlano al sistema nervoso"
@@ -22,7 +22,7 @@
   will-change: transform, box-shadow, filter;
   transform-origin: center center;
   backface-visibility: hidden;
-  
+
   /* Smooth transitions for all haptic effects */
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -42,10 +42,7 @@
 
 /* Smooth Glass Surface */
 .haptic-texture-smooth {
-  background: linear-gradient(135deg, 
-    rgba(255, 255, 255, 0.1) 0%, 
-    rgba(255, 255, 255, 0.05) 100%
-  );
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
   backdrop-filter: blur(0.5px);
 }
 
@@ -56,30 +53,29 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, 
-    transparent, 
-    rgba(255, 255, 255, 0.3), 
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
   pointer-events: none;
 }
 
 /* Fine Grain Texture */
 .haptic-texture-grain {
-  background-image: 
+  background-image:
     radial-gradient(circle at 1px 1px, rgba(0, 0, 0, 0.15) 1px, transparent 0),
     radial-gradient(circle at 2px 2px, rgba(255, 255, 255, 0.1) 0.5px, transparent 0);
-  background-size: 3px 3px, 5px 5px;
+  background-size:
+    3px 3px,
+    5px 5px;
 }
 
 .haptic-texture-grain::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(45deg, 
-    rgba(0, 0, 0, 0.02) 25%, 
-    transparent 25%, 
-    transparent 75%, 
+  background: linear-gradient(
+    45deg,
+    rgba(0, 0, 0, 0.02) 25%,
+    transparent 25%,
+    transparent 75%,
     rgba(0, 0, 0, 0.02) 75%
   );
   background-size: 2px 2px;
@@ -89,25 +85,28 @@
 /* Fabric Texture */
 .haptic-texture-fabric {
   background-image:
-    repeating-linear-gradient(45deg, 
-      rgba(0, 0, 0, 0.02) 0px, 
-      rgba(0, 0, 0, 0.02) 1px, 
-      transparent 1px, 
+    repeating-linear-gradient(
+      45deg,
+      rgba(0, 0, 0, 0.02) 0px,
+      rgba(0, 0, 0, 0.02) 1px,
+      transparent 1px,
       transparent 3px
     ),
-    repeating-linear-gradient(-45deg, 
-      rgba(255, 255, 255, 0.03) 0px, 
-      rgba(255, 255, 255, 0.03) 1px, 
-      transparent 1px, 
+    repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.03) 0px,
+      rgba(255, 255, 255, 0.03) 1px,
+      transparent 1px,
       transparent 3px
     );
 }
 
 /* Metal Surface */
 .haptic-texture-metal {
-  background: linear-gradient(90deg, 
-    rgba(255, 255, 255, 0.2) 0%, 
-    rgba(0, 0, 0, 0.1) 50%, 
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
     rgba(255, 255, 255, 0.2) 100%
   );
   background-size: 200% 100%;
@@ -115,76 +114,62 @@
 }
 
 @keyframes metal-shimmer {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 /* Liquid Surface */
 .haptic-texture-liquid {
-  background: radial-gradient(ellipse at center, 
-    rgba(59, 130, 246, 0.1) 0%, 
-    transparent 70%
-  );
+  background: radial-gradient(ellipse at center, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
   backdrop-filter: blur(1px);
   animation: liquid-ripple 4s ease-in-out infinite;
 }
 
 @keyframes liquid-ripple {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.02); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
 }
 
 /* Rubber Texture */
 .haptic-texture-rubber {
-  background: linear-gradient(135deg, 
-    rgba(0, 0, 0, 0.05) 0%, 
-    rgba(255, 255, 255, 0.1) 50%, 
-    rgba(0, 0, 0, 0.05) 100%
-  );
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(0, 0, 0, 0.05) 100%);
 }
 
 .haptic-texture-rubber:active {
-  background: linear-gradient(135deg, 
-    rgba(0, 0, 0, 0.1) 0%, 
-    rgba(255, 255, 255, 0.05) 50%, 
-    rgba(0, 0, 0, 0.1) 100%
-  );
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.1) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(0, 0, 0, 0.1) 100%);
 }
 
 /* Velvet Premium Texture */
 .haptic-texture-velvet {
   background-image:
-    radial-gradient(circle at 50% 50%, 
-      rgba(139, 69, 19, 0.1) 0%, 
-      transparent 50%
-    ),
-    linear-gradient(45deg, 
-      rgba(0, 0, 0, 0.02) 25%, 
-      transparent 25%, 
-      transparent 75%, 
-      rgba(0, 0, 0, 0.02) 75%
-    );
-  background-size: 4px 4px, 8px 8px;
+    radial-gradient(circle at 50% 50%, rgba(139, 69, 19, 0.1) 0%, transparent 50%),
+    linear-gradient(45deg, rgba(0, 0, 0, 0.02) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.02) 75%);
+  background-size:
+    4px 4px,
+    8px 8px;
 }
 
 .haptic-texture-velvet::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, 
-    rgba(139, 69, 19, 0.05) 0%, 
-    transparent 50%, 
-    rgba(139, 69, 19, 0.05) 100%
-  );
+  background: linear-gradient(135deg, rgba(139, 69, 19, 0.05) 0%, transparent 50%, rgba(139, 69, 19, 0.05) 100%);
   pointer-events: none;
 }
 
 /* Glass Surface */
 .haptic-texture-glass {
-  background: linear-gradient(135deg, 
-    rgba(255, 255, 255, 0.25) 0%, 
-    rgba(255, 255, 255, 0.05) 100%
-  );
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.05) 100%);
   backdrop-filter: blur(2px);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -196,11 +181,7 @@
   left: 10%;
   right: 10%;
   height: 1px;
-  background: linear-gradient(90deg, 
-    transparent, 
-    rgba(255, 255, 255, 0.4), 
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
   pointer-events: none;
 }
 
@@ -263,7 +244,7 @@
 /* Ripple Feedback */
 .haptic-ripple-active {
   transform: scale(1.05);
-  box-shadow: 
+  box-shadow:
     0 0 0 12px rgba(59, 130, 246, 0.1),
     0 0 0 24px rgba(59, 130, 246, 0.05);
   transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -400,7 +381,7 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  
+
   /* Provide alternative feedback for reduced motion */
   .haptic-visual-feedback:active {
     opacity: 0.8;
@@ -412,7 +393,7 @@
   .haptic-visual-feedback {
     border: 2px solid currentColor;
   }
-  
+
   .haptic-visual-feedback:focus {
     outline: 3px solid currentColor;
     outline-offset: 3px;

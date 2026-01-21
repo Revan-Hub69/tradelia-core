@@ -397,35 +397,36 @@ describe('I18n Coverage Property Tests', () => {
     });
   });
 });
-    it('should have all Tools namespace keys in both locales', () => {
-      // Feature: enterprise-complete-roadmap-2026, Property 4: Complete i18n coverage
-      // Test specifically for Tools namespace after fixing hardcoded Italian text
-      
-      const toolsKeysToCheck = [
-        'title',
-        'description',
-        'portfolio_tracker',
-        'portfolio_tracker_description',
-        'dca_calculator',
-        'dca_calculator_description',
-        'risk_analyzer',
-        'risk_analyzer_description',
-        'yield_calculator',
-        'yield_calculator_description',
-        'in_development',
-        'coming_soon',
-        'affiliate_disclaimer',
-      ];
 
-      toolsKeysToCheck.forEach((key) => {
-        const enValue = getNestedValue(enLocale, ['Tools', key]);
-        const itValue = getNestedValue(itLocale, ['Tools', key]);
+it('should have all Tools namespace keys in both locales', () => {
+  // Feature: enterprise-complete-roadmap-2026, Property 4: Complete i18n coverage
+  // Test specifically for Tools namespace after fixing hardcoded Italian text
 
-        expect(enValue, `Missing English key: Tools.${key}`).toBeDefined();
-        expect(itValue, `Missing Italian key: Tools.${key}`).toBeDefined();
-        expect(typeof enValue, `English Tools.${key} should be string`).toBe('string');
-        expect(typeof itValue, `Italian Tools.${key} should be string`).toBe('string');
-        expect(enValue.length, `English Tools.${key} should not be empty`).toBeGreaterThan(0);
-        expect(itValue.length, `Italian Tools.${key} should not be empty`).toBeGreaterThan(0);
-      });
-    });
+  const toolsKeysToCheck = [
+    'title',
+    'description',
+    'portfolio_tracker',
+    'portfolio_tracker_description',
+    'dca_calculator',
+    'dca_calculator_description',
+    'risk_analyzer',
+    'risk_analyzer_description',
+    'yield_calculator',
+    'yield_calculator_description',
+    'in_development',
+    'coming_soon',
+    'affiliate_disclaimer',
+  ];
+
+  toolsKeysToCheck.forEach((key) => {
+    const enValue = getNestedValue(enLocale, ['Tools', key]);
+    const itValue = getNestedValue(itLocale, ['Tools', key]);
+
+    expect(enValue, `Missing English key: Tools.${key}`).toBeDefined();
+    expect(itValue, `Missing Italian key: Tools.${key}`).toBeDefined();
+    expect(typeof enValue, `English Tools.${key} should be string`).toBe('string');
+    expect(typeof itValue, `Italian Tools.${key} should be string`).toBe('string');
+    expect(enValue.length, `English Tools.${key} should not be empty`).toBeGreaterThan(0);
+    expect(itValue.length, `Italian Tools.${key} should not be empty`).toBeGreaterThan(0);
+  });
+});
