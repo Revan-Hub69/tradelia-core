@@ -16,7 +16,7 @@ import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 
-import { DynamicIcon, HomeIcon, LearnIcon, ProfileIcon, type IconName } from '@/components/icons';
+import { CommunityIcon, DynamicIcon, HomeIcon, LearnIcon, ProfileIcon, ToolsIcon, type IconName } from '@/components/icons';
 import { UiNavItem, UiSurface } from '@/components/ui';
 import { Button } from '@/components/ui/button';
 import { NavigationSkeleton } from '@/components/ui/skeleton';
@@ -132,10 +132,16 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
           {item.iconName === 'LearnIcon' && (
             <LearnIcon size={24} isActive={isActive} />
           )}
+          {item.iconName === 'ToolsIcon' && (
+            <ToolsIcon size={24} isActive={isActive} />
+          )}
+          {item.iconName === 'CommunityIcon' && (
+            <CommunityIcon size={24} isActive={isActive} />
+          )}
           {item.iconName === 'ProfileIcon' && (
             <ProfileIcon size={24} isActive={isActive} />
           )}
-          {!['HomeIcon', 'LearnIcon', 'ProfileIcon'].includes(item.iconName) && (
+          {!['HomeIcon', 'LearnIcon', 'ToolsIcon', 'CommunityIcon', 'ProfileIcon'].includes(item.iconName) && (
             <DynamicIcon
               name={item.iconName as IconName}
               size={24}
