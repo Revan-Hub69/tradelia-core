@@ -60,6 +60,7 @@ export type DashboardHeaderProps = {
   // Tier-1 Research Enhancements
   breadcrumbs?: BreadcrumbItem[];
   showGlobalSearch?: boolean;
+  showOnlineStatus?: boolean;
   compactMode?: boolean;
 };
 
@@ -75,6 +76,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   // Tier-1 Research Features
   breadcrumbs,
   showGlobalSearch = true,
+  showOnlineStatus = true,
   compactMode = false,
 }) => {
   const t = useTranslations('Dashboard');
@@ -297,7 +299,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     );
   };
 
-  // Safe email fallback - Always show user info for authenticated users
+  // Safe email fallback
   const getUserDisplayName = (): string => {
     if (!userData) {
       return t('not_authenticated');
@@ -307,7 +309,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     }
     const safeEmail = userData.email ?? '';
     const parts = safeEmail.split('@');
-    return safeEmail.includes('@') && parts[0] ? parts[0] : t('default_user');
+    return safeEmail.includes('@') && parts[0] ? parts[0] : 'User';
   };
 
   // Dynamic title component
@@ -362,6 +364,15 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             
             {/* Status Indicators */}
             <div className="flex items-center gap-2">
+              {showOnlineStatus && (
+                <UiStatusChip
+                  variant={isOnline ? 'success' : 'warning'}
+                  label=""
+                  dot
+                  className="size-2"
+                  aria-label={isOnline ? t('online_status') : t('nav_offline')}
+                />
+              )}
               {renderStatus()}
             </div>
           </div>
