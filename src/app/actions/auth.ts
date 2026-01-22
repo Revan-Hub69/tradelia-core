@@ -1,7 +1,6 @@
 'use server';
 
 import { createClient } from '@supabase/supabase-js';
-import { redirect } from 'next/navigation';
 
 /**
  * Server-side Auth Actions using Supabase Admin API
@@ -95,6 +94,7 @@ export async function signUpWithEmailAndPassword(data: {
       const { error: emailError } = await supabase.auth.admin.generateLink({
         type: 'signup',
         email: data.email,
+        password: data.password,
         options: {
           redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/callback?redirect=/dashboard`,
         },

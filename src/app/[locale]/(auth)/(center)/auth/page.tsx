@@ -7,7 +7,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { signUpWithEmailAndPassword, checkEmailExistsServer, signInWithEmailAndPassword } from '@/app/actions/auth';
+import { checkEmailExistsServer, signInWithEmailAndPassword } from '@/app/actions/auth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -102,7 +102,6 @@ const UnifiedAuthPageContent = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  const [emailSignupDisabled, setEmailSignupDisabled] = useState(false);
 
   // Check for rate limit error from URL params
   useEffect(() => {
@@ -470,8 +469,8 @@ const UnifiedAuthPageContent = () => {
                     </>
                   )}
 
-                  {/* Email Form - Enhanced UX - Hide if disabled */}
-                  {authMode === 'email' && !emailSignupDisabled && (
+                  {/* Email Form - Enhanced UX */}
+                  {authMode === 'email' && (
                     <FadeIn delay={500}>
                       <Form {...emailForm}>
                         <form onSubmit={emailForm.handleSubmit(handleEmailSubmit)} className="space-y-4">
@@ -618,8 +617,8 @@ const UnifiedAuthPageContent = () => {
                     </FadeIn>
                   )}
 
-                  {/* Signup Form - Enhanced - Hide if disabled */}
-                  {authMode === 'signup' && !emailSignupDisabled && (
+                  {/* Signup Form - Enhanced */}
+                  {authMode === 'signup' && (
                     <FadeIn delay={500}>
                       <Form {...signupForm}>
                         <form onSubmit={signupForm.handleSubmit(handleSignupSubmit)} className="space-y-4">
