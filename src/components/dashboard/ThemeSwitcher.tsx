@@ -51,13 +51,13 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
     {
       id: 'theme-light',
       labelKey: 'Dashboard.switch_to_light',
-      icon: <SunIcon size={16} isActive={!isDark} variant="signature" intensity="medium" />,
+      icon: <SunIcon size={16} isActive={!isDark} variant="signature" />,
       onClick: () => setTheme('light'),
     },
     {
       id: 'theme-dark',
       labelKey: 'Dashboard.switch_to_dark',
-      icon: <MoonIcon size={16} isActive={isDark} variant="signature" phase="crescent" />,
+      icon: <MoonIcon size={16} isActive={isDark} variant="signature" />,
       onClick: () => setTheme('dark'),
     },
   ];
@@ -110,8 +110,8 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
             ref={triggerRef}
             label={t('theme_toggle_aria_label')}
             icon={isDark
-              ? <MoonIcon size={20} isActive variant="signature" phase="crescent" showStars />
-              : <SunIcon size={20} isActive variant="signature" intensity="high" />}
+              ? <MoonIcon size={20} isActive variant="signature" />
+              : <SunIcon size={20} isActive variant="signature" />}
             onClick={handleToggle}
             className={cn(className)}
             {...longPressHandlers}
