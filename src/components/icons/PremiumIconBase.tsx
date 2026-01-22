@@ -51,19 +51,19 @@ export const ICON_TOKENS = {
 } as const;
 
 export type PremiumIconProps = {
-  size?: IconSize;
-  weight?: IconWeight;
-  state?: IconState;
-  motionLevel?: MotionLevel;
-  className?: string;
+  'size'?: IconSize;
+  'weight'?: IconWeight;
+  'state'?: IconState;
+  'motionLevel'?: MotionLevel;
+  'className'?: string;
   'aria-hidden'?: boolean;
   'aria-label'?: string;
-  children: React.ReactNode;
+  'children': React.ReactNode;
   // Microinterazioni premium
-  onHover?: () => void;
-  onPress?: () => void;
+  'onHover'?: () => void;
+  'onPress'?: () => void;
   // Haptic feedback
-  enableHaptics?: boolean;
+  'enableHaptics'?: boolean;
 };
 
 // ============================================================================
@@ -93,33 +93,33 @@ const createIconVariants = (motionLevel: MotionLevel): Variants => {
 
   // Full motion - Premium microinterazioni
   return {
-    default: { 
-      scale: 1, 
-      rotate: 0, 
+    default: {
+      scale: 1,
+      rotate: 0,
       opacity: 1,
       filter: 'brightness(1) saturate(1)',
     },
-    hover: { 
-      scale: 1.1, 
+    hover: {
+      scale: 1.1,
       rotate: 2,
       opacity: 1,
       filter: 'brightness(1.1) saturate(1.1)',
     },
-    active: { 
-      scale: 1.15, 
+    active: {
+      scale: 1.15,
       rotate: 5,
       opacity: 1,
       filter: 'brightness(1.2) saturate(1.2)',
     },
-    pressed: { 
-      scale: 0.9, 
+    pressed: {
+      scale: 0.9,
       rotate: -1,
       opacity: 0.9,
       filter: 'brightness(0.9) saturate(0.9)',
     },
-    disabled: { 
-      scale: 1, 
-      rotate: 0, 
+    disabled: {
+      scale: 1,
+      rotate: 0,
       opacity: 0.4,
       filter: 'brightness(0.7) saturate(0.5)',
     },
@@ -145,11 +145,11 @@ export const PremiumIconBase: React.FC<PremiumIconProps> = ({
 }) => {
   const prefersReducedMotion = useReducedMotion();
   const effectiveMotion = motionLevel || (prefersReducedMotion ? 'reduced' : 'full');
-  
+
   const sizeToken = ICON_TOKENS.sizes[size];
   const strokeWidth = ICON_TOKENS.weights[weight];
   const variants = createIconVariants(effectiveMotion);
-  
+
   // Haptic feedback
   const triggerHaptic = (intensity: number = 30) => {
     if (enableHaptics && 'vibrate' in navigator) {
@@ -242,7 +242,9 @@ export const useIconSequence = (sequence: IconState[], duration: number = 500) =
   const [currentIndex, setCurrentIndex] = React.useState(0);
 
   React.useEffect(() => {
-    if (sequence.length <= 1) return;
+    if (sequence.length <= 1) {
+      return;
+    }
 
     const interval = setInterval(() => {
       setCurrentIndex(prev => (prev + 1) % sequence.length);

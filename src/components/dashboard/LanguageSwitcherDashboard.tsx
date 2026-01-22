@@ -16,6 +16,8 @@ import { useLocale, useTranslations } from 'next-intl';
 import React, { useRef, useState } from 'react';
 
 import { GlobeIcon } from '@/components/icons';
+import { QuickActionsMenu } from '@/components/navigation/QuickActionsMenu';
+import { UiIconButton } from '@/components/ui';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,8 +25,6 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { UiIconButton } from '@/components/ui';
-import { QuickActionsMenu } from '@/components/navigation/QuickActionsMenu';
 import type { QuickAction } from '@/hooks/useLongPress';
 import { useLongPress } from '@/hooks/useLongPress';
 import { usePathname, useRouter } from '@/libs/i18nNavigation';

@@ -1,274 +1,204 @@
 /*
- * PREMIUM ICONS CSS - Tradelia Signature 2026
+ * TRADELIA SIGNATURE ICONS CSS 2026
  *
- * CSS avanzato per icone premium con:
- * - Spring easing functions (linear() per performance)
- * - Hardware acceleration
+ * CSS ottimizzato per il sistema signature basato su ricerche approfondite:
+ * - Apple iOS 26 "Liquid Glass" aesthetic
+ * - Linear's professional minimalism
+ * - Mathematical precision (golden ratio)
+ * - Performance ottimizzate
  * - Motion preferences compliance
- * - Premium microinterazioni
  */
 
 /* ============================================================================
-   SPRING EASING FUNCTIONS - 2026 Standard
+   SIGNATURE DESIGN TOKENS 2026
    ============================================================================ */
 
 :root {
-  /* Spring physics easing curves usando linear() */
-  --spring-gentle: linear(
-    0, 0.006, 0.025 2.8%, 0.101 6.1%, 0.539 18.9%, 0.721 25.3%, 0.849 31.5%,
-    0.937 38.1%, 0.968 41.8%, 0.991 45.7%, 1.006 50.1%, 1.015 55%, 1.017 63.9%,
-    1.001
-  );
-  
-  --spring-bouncy: linear(
-    0, 0.004, 0.016, 0.035, 0.063, 0.098, 0.141 15.1%, 0.25 21.2%, 0.562 30.3%,
-    0.842 39.4%, 1.057 48.4%, 1.114 53%, 1.157 57.5%, 1.187 62.7%, 1.202 68.3%,
-    1.206 74.4%, 1.203 80.3%, 1.193 86.4%, 1.186 91%, 1.003 96.4%, 1
-  );
-  
-  --spring-snappy: linear(
-    0, 0.009, 0.035 2.1%, 0.141 4.4%, 0.723 12.9%, 0.938 16.7%, 1.017 20.8%,
-    1.077 25.9%, 1.099 31.2%, 1.092 36.4%, 1.062 41.8%, 1.021 47.3%, 0.991 52.6%,
-    0.977 57.8%, 0.974 63.1%, 0.981 68.3%, 0.995 73.6%, 1.006 78.8%, 1.009 84%,
-    1.006 89.2%, 1.002 94.4%, 1
-  );
+  /* Liquid glass transitions (Apple iOS 26 inspired) */
+  --signature-transition-liquid: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --signature-transition-glass: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* Premium glow effects */
-  --glow-primary: drop-shadow(0 0 8px hsl(var(--primary) / 0.3));
-  --glow-secondary: drop-shadow(0 0 6px hsl(var(--secondary) / 0.2));
-  --glow-accent: drop-shadow(0 0 10px hsl(var(--accent) / 0.4));
+  /* Signature glass effects with mathematical precision */
+  --signature-glass-subtle: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1)) drop-shadow(0 0 8px rgba(255, 255, 255, 0.1));
+  --signature-glass-medium: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15)) drop-shadow(0 0 12px rgba(255, 255, 255, 0.15));
+  --signature-glass-strong: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2)) drop-shadow(0 0 16px rgba(255, 255, 255, 0.2));
+
+  /* Golden ratio for perfect proportions */
+  --signature-phi: 1.618033988749;
+  --signature-radius: 0.618px; /* 1/φ */
 }
 
 /* ============================================================================
-   PREMIUM ICON BASE STYLES
+   SIGNATURE ICON BASE STYLES
    ============================================================================ */
 
-.premium-icon {
-  /* Hardware acceleration */
+.signature-icon {
+  /* Liquid glass foundation */
   transform: translateZ(0);
-  will-change: transform, filter;
+  will-change: transform, filter, backdrop-filter;
   backface-visibility: hidden;
-  
-  /* Smooth rendering */
+
+  /* Professional rendering */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
-  /* Base transition */
-  transition: 
-    transform 0.3s var(--spring-gentle),
-    filter 0.2s ease-out,
-    opacity 0.2s ease-out;
+
+  /* Signature transitions */
+  transition:
+    transform var(--signature-transition-liquid),
+    filter var(--signature-transition-glass),
+    backdrop-filter var(--signature-transition-glass),
+    opacity var(--signature-transition-glass);
+
+  /* Mathematical precision */
+  border-radius: var(--signature-radius);
 }
 
 /* ============================================================================
-   PREMIUM HOVER STATES
+   SIGNATURE INTERACTION STATES
    ============================================================================ */
 
-.premium-icon:hover {
-  transform: scale(1.05) translateZ(0);
-  filter: var(--glow-primary);
+/* Minimal variant - maximum performance */
+.signature-icon--minimal {
+  opacity: 0.9;
+  transition: opacity var(--signature-transition-glass);
 }
 
-.premium-icon:active {
-  transform: scale(0.95) translateZ(0);
-  transition-duration: 0.1s;
-  transition-timing-function: var(--spring-snappy);
+.signature-icon--minimal:hover {
+  opacity: 1;
+}
+
+/* Signature variant - balanced premium */
+.signature-icon--signature {
+  opacity: 1;
+  backdrop-filter: blur(2px);
+}
+
+.signature-icon--signature:hover {
+  filter: var(--signature-glass-subtle);
+  backdrop-filter: blur(4px);
+}
+
+/* Premium variant - full signature experience */
+.signature-icon--premium {
+  opacity: 1;
+  backdrop-filter: blur(4px);
+}
+
+.signature-icon--premium:hover {
+  filter: var(--signature-glass-medium);
+  backdrop-filter: blur(8px);
+}
+
+.signature-icon--premium:active {
+  filter: var(--signature-glass-strong);
+  backdrop-filter: blur(12px);
 }
 
 /* ============================================================================
-   PREMIUM ANIMATION CLASSES
+   SIGNATURE FOCUS STATES (PROFESSIONAL ACCESSIBILITY)
    ============================================================================ */
 
-/* Pulse animation per notifiche */
-@keyframes premium-pulse {
-  0%, 100% { 
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% { 
-    transform: scale(1.05);
-    opacity: 0.8;
-  }
-}
-
-.premium-pulse {
-  animation: premium-pulse 2s var(--spring-gentle) infinite;
-}
-
-/* Bounce animation per feedback */
-@keyframes premium-bounce {
-  0%, 20%, 53%, 80%, 100% {
-    transform: translateY(0) scale(1);
-  }
-  40%, 43% {
-    transform: translateY(-8px) scale(1.02);
-  }
-  70% {
-    transform: translateY(-4px) scale(1.01);
-  }
-  90% {
-    transform: translateY(-2px) scale(1.005);
-  }
-}
-
-.premium-bounce {
-  animation: premium-bounce 1s var(--spring-bouncy);
-}
-
-/* Shake animation per errori */
-@keyframes premium-shake {
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
-  20%, 40%, 60%, 80% { transform: translateX(2px); }
-}
-
-.premium-shake {
-  animation: premium-shake 0.5s var(--spring-snappy);
-}
-
-/* Glow animation per stati attivi */
-@keyframes premium-glow {
-  0%, 100% { 
-    filter: drop-shadow(0 0 4px hsl(var(--primary) / 0.2));
-  }
-  50% { 
-    filter: drop-shadow(0 0 12px hsl(var(--primary) / 0.4));
-  }
-}
-
-.premium-glow {
-  animation: premium-glow 2s ease-in-out infinite;
+.signature-icon:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+  border-radius: calc(var(--signature-radius) * 2);
+  filter: var(--signature-glass-medium);
+  backdrop-filter: blur(8px);
 }
 
 /* ============================================================================
-   MOTION PREFERENCES COMPLIANCE
+   SIGNATURE CONTEXTUAL STATES
+   ============================================================================ */
+
+/* Active state with signature glow */
+.signature-icon--active {
+  filter: var(--signature-glass-medium);
+  backdrop-filter: blur(8px);
+}
+
+/* Disabled state with professional degradation */
+.signature-icon--disabled {
+  opacity: 0.4;
+  filter: grayscale(1) blur(0.5px);
+  pointer-events: none;
+  backdrop-filter: none;
+}
+
+/* ============================================================================
+   MOTION PREFERENCES COMPLIANCE (ACCESSIBILITY FIRST)
    ============================================================================ */
 
 @media (prefers-reduced-motion: reduce) {
-  .premium-icon {
-    transition-duration: 0.1s;
-    animation-duration: 0.1s;
+  .signature-icon {
+    transition-duration: 0.05s;
+    backdrop-filter: none !important;
   }
-  
-  .premium-pulse,
-  .premium-bounce,
-  .premium-glow {
-    animation: none;
-  }
-  
-  .premium-icon:hover {
-    transform: scale(1.02) translateZ(0);
+
+  .signature-icon:hover,
+  .signature-icon:focus-visible {
     filter: none;
+    backdrop-filter: none;
+  }
+
+  /* Disable all signature animations */
+  .signature-icon * {
+    animation: none !important;
+    transition: none !important;
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  /* Enhanced animations per utenti che preferiscono il movimento */
-  .premium-icon:hover {
-    transition-timing-function: var(--spring-bouncy);
-  }
-}
-
 /* ============================================================================
-   PREMIUM ICON VARIANTS
-   ============================================================================ */
-
-/* Size variants con scaling ottimizzato */
-.premium-icon--xs { --icon-scale: 0.75; }
-.premium-icon--sm { --icon-scale: 0.875; }
-.premium-icon--md { --icon-scale: 1; }
-.premium-icon--lg { --icon-scale: 1.25; }
-.premium-icon--xl { --icon-scale: 1.5; }
-
-.premium-icon[class*="--"] {
-  transform: scale(var(--icon-scale, 1)) translateZ(0);
-}
-
-/* State variants */
-.premium-icon--active {
-  filter: var(--glow-primary);
-  transform: scale(1.1) translateZ(0);
-}
-
-.premium-icon--disabled {
-  opacity: 0.4;
-  filter: grayscale(1);
-  pointer-events: none;
-}
-
-.premium-icon--loading {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg) translateZ(0); }
-  to { transform: rotate(360deg) translateZ(0); }
-}
-
-/* ============================================================================
-   PREMIUM INTERACTION FEEDBACK
-   ============================================================================ */
-
-/* Haptic-style visual feedback */
-.premium-icon--haptic-light:active {
-  transform: scale(0.98) translateZ(0);
-  filter: brightness(1.1);
-}
-
-.premium-icon--haptic-medium:active {
-  transform: scale(0.95) translateZ(0);
-  filter: brightness(1.2) saturate(1.1);
-}
-
-.premium-icon--haptic-strong:active {
-  transform: scale(0.9) translateZ(0);
-  filter: brightness(1.3) saturate(1.2) drop-shadow(0 0 4px currentColor);
-}
-
-/* ============================================================================
-   PREMIUM FOCUS STATES
-   ============================================================================ */
-
-.premium-icon:focus-visible {
-  outline: 2px solid hsl(var(--primary));
-  outline-offset: 2px;
-  border-radius: 4px;
-  transform: scale(1.05) translateZ(0);
-  filter: var(--glow-primary);
-}
-
-/* ============================================================================
-   DARK MODE OPTIMIZATIONS
+   SIGNATURE DARK MODE OPTIMIZATIONS
    ============================================================================ */
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --glow-primary: drop-shadow(0 0 8px hsl(var(--primary) / 0.4));
-    --glow-secondary: drop-shadow(0 0 6px hsl(var(--secondary) / 0.3));
-    --glow-accent: drop-shadow(0 0 10px hsl(var(--accent) / 0.5));
+    --signature-glass-subtle: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2)) drop-shadow(0 0 8px rgba(255, 255, 255, 0.05));
+    --signature-glass-medium: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3)) drop-shadow(0 0 12px rgba(255, 255, 255, 0.08));
+    --signature-glass-strong: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4)) drop-shadow(0 0 16px rgba(255, 255, 255, 0.1));
   }
 }
 
 .dark {
-  --glow-primary: drop-shadow(0 0 8px hsl(var(--primary) / 0.4));
-  --glow-secondary: drop-shadow(0 0 6px hsl(var(--secondary) / 0.3));
-  --glow-accent: drop-shadow(0 0 10px hsl(var(--accent) / 0.5));
+  --signature-glass-subtle: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2)) drop-shadow(0 0 8px rgba(255, 255, 255, 0.05));
+  --signature-glass-medium: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3)) drop-shadow(0 0 12px rgba(255, 255, 255, 0.08));
+  --signature-glass-strong: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4)) drop-shadow(0 0 16px rgba(255, 255, 255, 0.1));
 }
 
 /* ============================================================================
-   HIGH CONTRAST MODE
+   HIGH CONTRAST MODE (PROFESSIONAL ACCESSIBILITY)
    ============================================================================ */
 
 @media (prefers-contrast: high) {
-  .premium-icon {
-    filter: contrast(1.2);
+  .signature-icon {
+    filter: contrast(1.3) !important;
+    backdrop-filter: none !important;
   }
-  
-  .premium-icon:hover {
-    filter: contrast(1.3) var(--glow-primary);
+
+  .signature-icon:hover {
+    filter: contrast(1.5) !important;
   }
-  
-  .premium-icon--active {
-    filter: contrast(1.4) var(--glow-primary);
+
+  .signature-icon--active {
+    filter: contrast(1.6) !important;
   }
+}
+
+/* ============================================================================
+   SIGNATURE PERFORMANCE OPTIMIZATIONS
+   ============================================================================ */
+
+/* GPU acceleration for signature effects */
+.signature-icon[data-gpu='true'] {
+  transform: translate3d(0, 0, 0);
+  will-change: transform, filter, backdrop-filter;
+}
+
+/* Signature hover optimization */
+.signature-icon:hover {
+  will-change: transform, filter, backdrop-filter;
+}
+
+.signature-icon:not(:hover) {
+  will-change: auto;
 }

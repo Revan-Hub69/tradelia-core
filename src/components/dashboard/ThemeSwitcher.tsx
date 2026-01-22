@@ -2,7 +2,7 @@
  * THEME SWITCHER - Tradelia Signature Premium 2026
  *
  * Elegant theme toggle with premium signature animations
- * - Premium Sun/Moon icons with advanced microinteractions
+ * - Unified Sun/Moon icons with advanced microinteractions
  * - Spring physics animations
  * - Haptic feedback integration
  * - Respects motion preferences
@@ -17,7 +17,8 @@ import { useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { MoonIconRefined, SunIconRefined } from '@/components/icons/refined';
+import { MoonIcon, SunIcon } from '@/components/icons/unified';
+import { QuickActionsMenu } from '@/components/navigation/QuickActionsMenu';
 import { UiIconButton } from '@/components/ui';
 import {
   Tooltip,
@@ -27,7 +28,6 @@ import {
 } from '@/components/ui/tooltip';
 import type { QuickAction } from '@/hooks/useLongPress';
 import { useLongPress } from '@/hooks/useLongPress';
-import { QuickActionsMenu } from '@/components/navigation/QuickActionsMenu';
 import { cn } from '@/utils/Helpers';
 
 export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) => {
@@ -51,13 +51,13 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
     {
       id: 'theme-light',
       labelKey: 'Dashboard.switch_to_light',
-      icon: <SunIconRefined size={16} isActive={!isDark} variant="elegant" />,
+      icon: <SunIcon size={16} isActive={!isDark} variant="signature" intensity="medium" />,
       onClick: () => setTheme('light'),
     },
     {
       id: 'theme-dark',
       labelKey: 'Dashboard.switch_to_dark',
-      icon: <MoonIconRefined size={16} isActive={isDark} variant="elegant" />,
+      icon: <MoonIcon size={16} isActive={isDark} variant="signature" phase="crescent" />,
       onClick: () => setTheme('dark'),
     },
   ];
@@ -110,8 +110,8 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
             ref={triggerRef}
             label={t('theme_toggle_aria_label')}
             icon={isDark
-              ? <MoonIconRefined size={20} isActive variant="elegant" phase="crescent" />
-              : <SunIconRefined size={20} isActive variant="elegant" />}
+              ? <MoonIcon size={20} isActive variant="signature" phase="crescent" showStars />
+              : <SunIcon size={20} isActive variant="signature" intensity="high" />}
             onClick={handleToggle}
             className={cn(className)}
             {...longPressHandlers}

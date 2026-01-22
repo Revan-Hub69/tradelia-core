@@ -3,6 +3,7 @@
 import { AlertCircle, Bell, Check, Loader2, Palette, Shield, User } from 'lucide-react';
 import React from 'react';
 
+import { useAutoSaveSettings } from '@/_legacy/hooks/useAutoSaveSettings';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -10,7 +11,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useAutoSaveSettings } from '@/_legacy/hooks/useAutoSaveSettings';
 import { useModalKeyboardNavigation } from '@/hooks/useKeyboardNavigation';
 
 import type { UserSettings } from './types';

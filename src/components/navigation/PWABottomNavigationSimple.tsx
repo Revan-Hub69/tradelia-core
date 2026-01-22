@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 
-import { CommunityIcon, DynamicIcon, HomeIcon, LearnIcon, ProfileIcon, ToolsIcon, type IconName } from '@/components/icons';
+import { CommunityIcon, DynamicIcon, HomeIcon, type IconName, LearnIcon, ProfileIcon, ToolsIcon } from '@/components/icons';
 import { UiNavItem, UiSurface } from '@/components/ui';
 import { getVisibleNavigationItems } from '@/data/navigation.config';
 import { useOptimizedNavigation } from '@/hooks/useOptimizedNavigation';
@@ -67,7 +67,7 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
               {isActive && (
                 <motion.div
                   layoutId="mobileActivePill"
-                  className="absolute inset-0 bg-primary/10 rounded-2xl"
+                  className="absolute inset-0 rounded-2xl bg-primary/10"
                   transition={{
                     type: 'spring',
                     stiffness: 400,
@@ -75,7 +75,7 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
                   }}
                 />
               )}
-              
+
               {/* PREMIUM ANIMATED ICON */}
               <motion.div
                 className="relative z-10"
@@ -109,8 +109,8 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
                   />
                 )}
               </motion.div>
-              
-              <span className="relative z-10 truncate leading-tight mt-1">
+
+              <span className="relative z-10 mt-1 truncate leading-tight">
                 {t(item.labelKey.replace('Dashboard.', '') as 'nav_home')}
               </span>
             </UiNavItem>

@@ -13,7 +13,7 @@ export default function IconsTestPage() {
   // Solo in development
   if (process.env.NODE_ENV !== 'development') {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex min-h-screen items-center justify-center">
         <p className="text-muted-foreground">Page available only in development</p>
       </div>
     );

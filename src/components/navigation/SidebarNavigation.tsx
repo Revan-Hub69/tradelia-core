@@ -16,7 +16,7 @@ import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 
-import { CloseIcon, CommunityIcon, DynamicIcon, HomeIcon, LearnIcon, MenuIcon, ProfileIcon, ToolsIcon, type IconName } from '@/components/icons';
+import { CloseIcon, CommunityIcon, DynamicIcon, HomeIcon, type IconName, LearnIcon, MenuIcon, ProfileIcon, ToolsIcon } from '@/components/icons';
 import { UiIconButton, UiNavItem, UiSurface } from '@/components/ui';
 import { NavigationSkeleton } from '@/components/ui/skeleton';
 import { getVisibleNavigationItems, trackNavigationEvent } from '@/data/navigation.config';
@@ -110,7 +110,7 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
         {isActive && canNavigate && (
           <motion.div
             layoutId="activeRail"
-            className="absolute left-0 top-0 bottom-0 w-1 rounded-r-full bg-primary"
+            className="absolute inset-y-0 left-0 w-1 rounded-r-full bg-primary"
             transition={{
               type: 'spring',
               stiffness: 300,
@@ -119,7 +119,7 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
           />
         )}
         {/* Icon with state indicators - PREMIUM ANIMATED */}
-        <motion.div 
+        <motion.div
           className="relative shrink-0"
           whileHover={{ scale: 1.05, rotate: [0, -2, 2, 0] }}
           whileTap={{ scale: 0.95 }}
@@ -147,14 +147,14 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
               className={cn(
                 'motion-fast',
                 !canNavigate && 'opacity-40',
-                isActive && 'text-primary'
+                isActive && 'text-primary',
               )}
             />
           )}
 
           {/* State indicators - PREMIUM */}
           {uxState === 'blocked' && (
-            <motion.div 
+            <motion.div
               className="absolute -right-1 -top-1 size-3 rounded-full bg-warning ring-2 ring-background"
               animate={{ scale: [1, 1.2, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
@@ -162,7 +162,7 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
           )}
 
           {uxState === 'offline' && (
-            <motion.div 
+            <motion.div
               className="absolute -right-1 -top-1 size-3 rounded-full bg-destructive ring-2 ring-background"
               animate={{ scale: [1, 1.2, 1], opacity: [1, 0.5, 1] }}
               transition={{ duration: 1.5, repeat: Infinity }}
@@ -171,7 +171,7 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
 
           {/* Badge dot for notifications - PREMIUM PULSE */}
           {canNavigate && item.badgeType === 'dot' && (
-            <motion.div 
+            <motion.div
               className="absolute -right-1 -top-1 size-3 rounded-full bg-accent ring-2 ring-background"
               animate={{ scale: [1, 1.3, 1] }}
               transition={{ duration: 2, repeat: Infinity }}

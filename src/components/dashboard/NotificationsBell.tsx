@@ -2,7 +2,7 @@
  * NOTIFICATIONS BELL - Tradelia Signature Premium 2026
  *
  * Premium notification bell with signature animations
- * - Signature Bell icon with ring animation
+ * - Unified Bell icon with ring animation
  * - Badge count with pulse
  * - Long-press for quick actions
  * - Dropdown menu with notifications
@@ -14,7 +14,9 @@
 import { useTranslations } from 'next-intl';
 import React, { useRef, useState } from 'react';
 
-import { BellIconRefined } from '@/components/icons/refined';
+import { BellIcon } from '@/components/icons/unified';
+import { QuickActionsMenu } from '@/components/navigation/QuickActionsMenu';
+import { UiButton, UiIconButton } from '@/components/ui';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,8 +25,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { UiButton, UiIconButton } from '@/components/ui';
-import { QuickActionsMenu } from '@/components/navigation/QuickActionsMenu';
 import type { QuickAction } from '@/hooks/useLongPress';
 import { useLongPress } from '@/hooks/useLongPress';
 import { cn } from '@/utils/Helpers';
@@ -132,11 +132,12 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
           ref={triggerRef}
           label={t('notifications_aria_label')}
           icon={(
-            <BellIconRefined
+            <BellIcon
               size={20}
               hasNotifications={unreadCount > 0}
               notificationCount={unreadCount}
-              variant="elegant"
+              variant="signature"
+              ringOnHover
             />
           )}
           aria-haspopup="menu"
