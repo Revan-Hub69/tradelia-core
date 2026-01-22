@@ -88,7 +88,6 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   // Scroll behavior following Nielsen Norman Group 2026 guidelines
   const { isScrollingDown, isScrolled } = useScrollDirection({
     threshold: 10, // Small threshold to prevent jank
-    debounceMs: 16, // 60fps smooth scrolling
   });
 
   // Global search keyboard shortcut (Cmd/Ctrl + K)
