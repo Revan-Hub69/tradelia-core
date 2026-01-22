@@ -22,71 +22,19 @@ const withPWAConfig = withPWA({
   register: true,
   skipWaiting: true,
   disable: process.env.NODE_ENV === 'development',
-  // Dashboard-specific runtime caching
-  runtimeCaching: [
-    // Dashboard pages - NetworkFirst for fresh data
-    {
-      urlPattern: /^\/dashboard.*$/i,
-      handler: 'NetworkFirst',
-      options: {
-        cacheName: 'dashboard-pages',
-        expiration: {
-          maxEntries: 20,
-          maxAgeSeconds: 60 * 60 * 24, // 24 hours
-        },
-        networkTimeoutSeconds: 3,
-      },
-    },
-    // Dashboard API calls - NetworkFirst with fallback
-    {
-      urlPattern: /\/api\/(user|dashboard|lessons)\/.*$/i,
-      handler: 'NetworkFirst',
-      method: 'GET',
-      options: {
-        cacheName: 'dashboard-api',
-        expiration: {
-          maxEntries: 50,
-          maxAgeSeconds: 60 * 60 * 2, // 2 hours
-        },
-        networkTimeoutSeconds: 5,
-      },
-    },
-    // Static assets for dashboard
-    {
-      urlPattern: /\.(?:js|css)$/i,
-      handler: 'StaleWhileRevalidate',
-      options: {
-        cacheName: 'dashboard-static-assets',
-        expiration: {
-          maxEntries: 32,
-          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
-        },
-      },
-    },
-    // Images and icons
-    {
-      urlPattern: /\.(?:jpg|jpeg|gif|png|svg|ico|webp)$/i,
-      handler: 'StaleWhileRevalidate',
-      options: {
-        cacheName: 'dashboard-images',
-        expiration: {
-          maxEntries: 64,
-          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
-        },
-      },
-    },
-    // Google Fonts
-    {
-      urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-      handler: 'CacheFirst',
-      options: {
-        cacheName: 'google-fonts-cache',
-        expiration: {
-          maxEntries: 10,
-          maxAgeSeconds: 60 * 60 * 24 * 365, // 365 days
-        },
-      },
-    },
+  // Use custom service worker
+  sw: 'sw-custom.js',
+  // Fix precaching issues
+  buildExcludes: [
+    /app-build-manifest\.json$/,
+    /middleware-manifest\.json$/,
+    /\.map$/,
+    /^build-manifest\.json$/,
+  ],
+  // Exclude problematic files from precaching
+  publicExcludes: [
+    '!workbox-*.js',
+    '!sw-custom.js',
   ],
 });
 
@@ -130,6 +78,36 @@ export default bundleAnalyzer(
             tls: false,
           };
         }
+
+        // Optimize CSS loading to reduce preload warnings
+        config.optimization = {
+          ...config.optimization,
+          splitChunks: {
+            ...config.optimization.splitChunks,
+            cacheGroups: {
+              ...config.optimization.splitChunks?.cacheGroups,
+              default: false,
+              vendors: false,
+              // Create a single CSS bundle to reduce preload warnings
+              styles: {
+                name: 'styles',
+                type: 'css/mini-extract',
+                chunks: 'all',
+                enforce: true,
+                priority: 20,
+              },
+              // Separate critical CSS
+              critical: {
+                name: 'critical',
+                type: 'css/mini-extract',
+                chunks: 'initial',
+                enforce: true,
+                priority: 30,
+              },
+            },
+          },
+        };
+
         return config;
       },
       async headers() {
