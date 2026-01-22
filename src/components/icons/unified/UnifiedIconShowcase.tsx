@@ -25,7 +25,7 @@ export const UnifiedIconShowcase: React.FC = () => {
   const [isDarkTheme, setIsDarkTheme] = useState(false);
 
   const sizes: IconSize[] = [16, 20, 24, 28, 32];
-  const variants: IconVariant[] = ['minimal', 'standard', 'premium'];
+  const variants: IconVariant[] = ['minimal', 'signature', 'premium'];
 
   return (
     <div className="space-y-8 p-8">
