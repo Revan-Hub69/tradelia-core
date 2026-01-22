@@ -167,7 +167,7 @@ async function sendPushNotification(subscription: any, payload: NotificationPayl
     console.error(`[Push Send] Failed to send to ${subscription.endpoint.substring(0, 50)}...`, error);
     
     // If subscription is invalid, remove it from database
-    if (error.statusCode === 410 || error.statusCode === 404) {
+    if ((error as any).statusCode === 410 || (error as any).statusCode === 404) {
       const supabase = await createClient();
       await supabase
         .from('push_subscriptions')
