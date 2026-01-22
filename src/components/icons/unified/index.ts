@@ -9,7 +9,6 @@
  * - Memorable, professional, innovative
  */
 
-export { UnifiedIconShowcase as SignatureIconShowcase } from './UnifiedIconShowcase';
 export type {
   IconSize,
   IconState,

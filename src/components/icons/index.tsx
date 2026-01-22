@@ -66,13 +66,6 @@ export type {
   SignatureIconProps,
 };
 
-// Legacy icons (keeping for compatibility)
-export { IconBase, type IconBaseProps, type IconProps } from './IconBase';
-export { AchievementIcon } from './AchievementIcon';
-export { BadgeIcon } from './BadgeIcon';
-export { StreakIcon } from './StreakIcon';
-export { XPIcon } from './XPIcon';
-
 // Icon mapping for dynamic loading (signature system)
 export const ICON_MAP = {
   HomeIcon,
