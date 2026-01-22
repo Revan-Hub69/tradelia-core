@@ -16,11 +16,10 @@ export type ScrollDirection = 'up' | 'down' | 'none';
 
 export type UseScrollDirectionOptions = {
   threshold?: number; // Minimum pixels to scroll before changing direction
-  debounceMs?: number; // Debounce scroll events
 };
 
 export const useScrollDirection = (options: UseScrollDirectionOptions = {}) => {
-  const { threshold = 10, debounceMs = 16 } = options; // 60fps debounce
+  const { threshold = 10 } = options; // Minimum pixels to prevent jank
   
   const [scrollDirection, setScrollDirection] = useState<ScrollDirection>('none');
   const [isScrolled, setIsScrolled] = useState(false);
