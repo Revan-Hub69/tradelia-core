@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
 import { createClient } from '@/libs/supabase/server';
 
@@ -8,7 +8,7 @@ import { createClient } from '@/libs/supabase/server';
  * Sends test push notifications for development and testing
  */
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     // Get authenticated user
     const supabase = await createClient();
