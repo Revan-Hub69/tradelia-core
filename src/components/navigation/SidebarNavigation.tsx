@@ -24,7 +24,9 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
 import { CloseIcon, DynamicIcon, type IconName, MenuIcon } from '@/components/icons';
-import { UiIconButton, UiNavItem, UiSurface } from '@/components/ui';
+import { UiIconButton } from '@/components/ui/UiIconButton';
+import { UiNavItem } from '@/components/ui/UiNavItem';
+import { UiSurface } from '@/components/ui/UiSurface';
 import { NavigationSkeleton } from '@/components/ui/skeleton';
 import { getVisibleNavigationItems, trackNavigationEvent } from '@/data/navigation.config';
 import { useNavigationState } from '@/hooks/useNavigationState';

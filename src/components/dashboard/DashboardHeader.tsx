@@ -15,7 +15,9 @@
 import { useTranslations } from 'next-intl';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-import { UiButton, UiStatusChip, UiSurface } from '@/components/ui';
+import { UiButton } from '@/components/ui/UiButton';
+import { UiStatusChip } from '@/components/ui/UiStatusChip';
+import { UiSurface } from '@/components/ui/UiSurface';
 import { useUserData } from '@/hooks/useUserData';
 import { Logo } from '@/templates/Logo';
 import { cn } from '@/utils/Helpers';

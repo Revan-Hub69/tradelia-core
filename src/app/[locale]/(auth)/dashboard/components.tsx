@@ -14,8 +14,9 @@
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
-import { UiSurface, UiStatusChip } from '@/components/ui';
-import { BellIcon, TrendingUpIcon, StarIcon, ClockIcon } from '@/components/icons';
+import { UiSurface } from '@/components/ui/UiSurface';
+import { UiStatusChip } from '@/components/ui/UiStatusChip';
+import { BellIcon, TrendingUpIcon, StarIcon, ClockIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import { useMemoryLeakDetection } from '@/hooks/useMemoryLeakDetection';
 
 // ✅ TIER 1: Type definitions for dashboard data

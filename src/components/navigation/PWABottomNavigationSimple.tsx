@@ -3,7 +3,8 @@
 import { useTranslations } from 'next-intl';
 
 import { DynamicIcon, type IconName } from '@/components/icons';
-import { UiNavItem, UiSurface } from '@/components/ui';
+import { UiNavItem } from '@/components/ui/UiNavItem';
+import { UiSurface } from '@/components/ui/UiSurface';
 import { getVisibleNavigationItems } from '@/data/navigation.config';
 import { useOptimizedNavigation } from '@/hooks/useOptimizedNavigation';
 import { usePathname } from '@/libs/i18nNavigation';

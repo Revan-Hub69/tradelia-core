@@ -1,8 +1,8 @@
 import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
-import { ChevronDownIcon, LogoutIcon, ProfileIcon } from '@/components/icons';
-import { UiButton } from '@/components/ui';
+import { ChevronDownIcon, LogoutIcon, ProfileIcon } from '@/components/icons/unified/UnifiedIconSystem';
+import { UiButton } from '@/components/ui/UiButton';
 import {
   DropdownMenu,
   DropdownMenuContent,

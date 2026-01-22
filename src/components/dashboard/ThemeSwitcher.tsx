@@ -17,9 +17,9 @@ import { useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { MoonIcon, SunIcon } from '@/components/icons';
+import { MoonIcon, SunIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import { QuickActionsMenu } from '@/components/navigation/QuickActionsMenu';
-import { UiIconButton } from '@/components/ui';
+import { UiIconButton } from '@/components/ui/UiIconButton';
 import {
   Tooltip,
   TooltipContent,

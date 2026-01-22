@@ -14,9 +14,10 @@
 import { useTranslations } from 'next-intl';
 import React, { useRef, useState } from 'react';
 
-import { BellIcon } from '@/components/icons';
+import { BellIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import { QuickActionsMenu } from '@/components/navigation/QuickActionsMenu';
-import { UiButton, UiIconButton } from '@/components/ui';
+import { UiButton } from '@/components/ui/UiButton';
+import { UiIconButton } from '@/components/ui/UiIconButton';
 import {
   DropdownMenu,
   DropdownMenuContent,

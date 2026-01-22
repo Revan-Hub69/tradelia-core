@@ -12,17 +12,12 @@ export const checkSupabaseConfig = async () => {
     supabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
     supabaseKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     connection: false,
-    oauth: false,
   };
 
   try {
     // Test basic connection
-    const { data, error } = await supabase.auth.getSession();
+    const { error } = await supabase.auth.getSession();
     checks.connection = !error;
-
-    // Test OAuth configuration (this will show available providers)
-    const { data: providers } = await supabase.auth.getOAuthProviders();
-    checks.oauth = providers && providers.length > 0;
 
     console.log('Supabase Configuration Check:', checks);
     
@@ -37,15 +32,11 @@ export const checkSupabaseConfig = async () => {
     if (!checks.connection) {
       console.error('❌ Cannot connect to Supabase');
     }
-    
-    if (!checks.oauth) {
-      console.warn('⚠️ No OAuth providers configured or available');
-    }
 
     return checks;
   } catch (error) {
     console.error('Supabase config check failed:', error);
-    return { ...checks, connection: false, oauth: false };
+    return { ...checks, connection: false };
   }
 };
 

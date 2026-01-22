@@ -14,9 +14,9 @@
 
 import { useEffect, useState, useMemo } from 'react';
 
-import { UiSurface } from '@/components/ui';
+import { UiSurface } from '@/components/ui/UiSurface';
 import { VirtualList } from '@/components/ui/VirtualScrollList';
-import { StarIcon } from '@/components/icons';
+import { StarIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import type { RecentActivity } from '@/app/[locale]/(auth)/dashboard/components';
 
 // ✅ TIER 1: Props interface for virtual activity feed

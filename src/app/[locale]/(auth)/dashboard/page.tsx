@@ -14,7 +14,7 @@ import { Suspense } from 'react';
 
 import { ErrorBoundaryTest } from '@/components/dev/ErrorBoundaryTest';
 import { PageTransitionWrapper } from '@/components/transitions/PageTransitionWrapper';
-import { UiSurface } from '@/components/ui';
+import { UiSurface } from '@/components/ui/UiSurface';
 import { VirtualActivityFeed } from '@/components/dashboard/VirtualActivityFeed';
 
 // ✅ TIER 1: Optimized data fetching

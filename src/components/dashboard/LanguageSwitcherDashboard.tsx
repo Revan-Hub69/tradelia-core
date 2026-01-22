@@ -15,9 +15,9 @@
 import { useLocale, useTranslations } from 'next-intl';
 import React, { useRef, useState } from 'react';
 
-import { GlobeIcon } from '@/components/icons';
+import { GlobeIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import { QuickActionsMenu } from '@/components/navigation/QuickActionsMenu';
-import { UiIconButton } from '@/components/ui';
+import { UiIconButton } from '@/components/ui/UiIconButton';
 import {
   DropdownMenu,
   DropdownMenuContent,
