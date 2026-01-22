@@ -272,9 +272,6 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   // Dynamic title component
   const TitleComponent = titleAs;
 
-  // Header visibility based on scroll direction (2026 best practices)
-  const isHeaderVisible = !hideOnScroll || !isScrollingDown;
-
   return (
     <>
       <UiSurface
