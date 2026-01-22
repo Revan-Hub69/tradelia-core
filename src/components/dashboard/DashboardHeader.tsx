@@ -86,7 +86,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   const [showSearchModal, setShowSearchModal] = useState(false);
 
   // Scroll behavior based on REAL applications research (Twitter, Medium, TutsPlus)
-  const { isScrollingDown, isScrolled, isHeaderVisible } = useScrollDirection({
+  const { isScrolled, isHeaderVisible } = useScrollDirection({
     threshold: 15, // Increased threshold based on real apps research
   });
 
