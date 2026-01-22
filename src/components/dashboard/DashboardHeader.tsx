@@ -85,9 +85,9 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   const { userData, isLoading } = useUserData();
   const [showSearchModal, setShowSearchModal] = useState(false);
 
-  // Scroll behavior following Nielsen Norman Group 2026 guidelines
-  const { isScrollingDown, isScrolled } = useScrollDirection({
-    threshold: 10, // Small threshold to prevent jank
+  // Scroll behavior based on REAL applications research (Twitter, Medium, TutsPlus)
+  const { isScrollingDown, isScrolled, isHeaderVisible } = useScrollDirection({
+    threshold: 15, // Increased threshold based on real apps research
   });
 
   // Global search keyboard shortcut (Cmd/Ctrl + K)
@@ -281,14 +281,12 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         role="banner"
         aria-label={t('header_aria_label')}
         className={cn(
-          'sticky top-0 layer-header',
+          'fixed top-0 w-full z-50', // Changed from sticky to fixed (real apps approach)
           'motion-base',
-          // Premium spring physics (Tier-1 research based)
+          // Real applications implementation (Twitter/Medium style)
           hideOnScroll && [
-            'transition-transform',
-            '[transition-duration:var(--spring-header-duration)]',
-            '[transition-timing-function:var(--spring-header-hide)]',
-            isScrollingDown && '-translate-y-full',
+            'transition-transform duration-300 ease-out', // Simplified, proven timing
+            !isHeaderVisible && '-translate-y-full', // Use visibility state, not scroll direction
           ],
           // Enhanced scroll shadow with liquid glass
           isScrolled && showScrollShadow && [
@@ -301,7 +299,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           className,
         )}
         style={{
-          // GPU acceleration for premium animations
+          // GPU acceleration for smooth animations (Twitter/Medium approach)
           transform: 'translate3d(0, 0, 0)',
           willChange: hideOnScroll ? 'transform' : 'auto',
         }}

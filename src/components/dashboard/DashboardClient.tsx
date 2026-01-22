@@ -57,7 +57,9 @@ export function DashboardClient({ children }: DashboardClientProps) {
         />
 
         {/* Main Content - Server Component passed as children */}
-        {children}
+        <div className="pt-16"> {/* Padding-top to compensate for fixed header */}
+          {children}
+        </div>
 
         {/* Bottom Navigation - Mobile only (< 768px) */}
         <PWABottomNavigationSimple className="layout-nav" />
