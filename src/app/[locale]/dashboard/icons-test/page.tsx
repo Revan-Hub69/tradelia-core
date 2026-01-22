@@ -1,13 +1,13 @@
 /*
- * ICONS TEST PAGE - Tradelia Premium 2026
+ * ICONS TEST PAGE - Tradelia Refined 2026
  *
- * Pagina di test per le nuove icone premium
+ * Pagina di test per le nuove icone raffinate
  * Accessibile solo in development
  */
 
 import React from 'react';
 
-import { PremiumIconShowcase } from '@/components/icons/premium/PremiumIconShowcase';
+import { RefinedIconShowcase } from '@/components/icons/refined/RefinedIconShowcase';
 
 export default function IconsTestPage() {
   // Solo in development
@@ -21,12 +21,12 @@ export default function IconsTestPage() {
 
   return (
     <div className="container mx-auto py-8">
-      <PremiumIconShowcase />
+      <RefinedIconShowcase />
     </div>
   );
 }
 
 export const metadata = {
-  title: 'Icons Test - Tradelia',
-  description: 'Test page for premium icons',
+  title: 'Refined Icons Test - Tradelia',
+  description: 'Test page for refined and elegant icons',
 };

@@ -17,7 +17,7 @@ import { useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { MoonIconPremium, SunIconPremium } from '@/components/icons/premium';
+import { MoonIconRefined, SunIconRefined } from '@/components/icons/refined';
 import { UiIconButton } from '@/components/ui';
 import {
   Tooltip,
@@ -51,13 +51,13 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
     {
       id: 'theme-light',
       labelKey: 'Dashboard.switch_to_light',
-      icon: <SunIconPremium size={16} isActive={!isDark} />,
+      icon: <SunIconRefined size={16} isActive={!isDark} variant="elegant" />,
       onClick: () => setTheme('light'),
     },
     {
       id: 'theme-dark',
       labelKey: 'Dashboard.switch_to_dark',
-      icon: <MoonIconPremium size={16} isActive={isDark} />,
+      icon: <MoonIconRefined size={16} isActive={isDark} variant="elegant" />,
       onClick: () => setTheme('dark'),
     },
   ];
@@ -110,8 +110,8 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
             ref={triggerRef}
             label={t('theme_toggle_aria_label')}
             icon={isDark
-              ? <MoonIconPremium size={20} isActive={true} phase="crescent" />
-              : <SunIconPremium size={20} isActive={true} intensity="medium" />}
+              ? <MoonIconRefined size={20} isActive variant="elegant" phase="crescent" />
+              : <SunIconRefined size={20} isActive variant="elegant" />}
             onClick={handleToggle}
             className={cn(className)}
             {...longPressHandlers}

@@ -14,7 +14,7 @@
 import { useTranslations } from 'next-intl';
 import React, { useRef, useState } from 'react';
 
-import { BellIconPremium } from '@/components/icons/premium';
+import { BellIconRefined } from '@/components/icons/refined';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -132,11 +132,11 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
           ref={triggerRef}
           label={t('notifications_aria_label')}
           icon={(
-            <BellIconPremium 
-              size={20} 
+            <BellIconRefined
+              size={20}
               hasNotifications={unreadCount > 0}
               notificationCount={unreadCount}
-              isRinging={unreadCount > 0}
+              variant="elegant"
             />
           )}
           aria-haspopup="menu"

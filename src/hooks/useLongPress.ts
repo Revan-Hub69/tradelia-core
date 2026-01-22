@@ -179,9 +179,12 @@ export const useLongPress = (
       return;
     }
 
-    // Only activate long press on touch devices or when explicitly using touch
-    // This prevents desktop mouse clicks from triggering long press
-    if (event.pointerType === 'mouse') {
+    // Allow long press on desktop only with modifier keys (Ctrl, Alt, Shift)
+    // or on touch devices
+    const isTouch = event.pointerType === 'touch' || event.pointerType === 'pen';
+    const hasModifier = event.ctrlKey || event.altKey || event.shiftKey;
+    
+    if (event.pointerType === 'mouse' && !hasModifier) {
       return;
     }
 
