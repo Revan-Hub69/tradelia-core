@@ -178,9 +178,6 @@ export const useLongPress = (
       return;
     }
 
-    // Prevent default to avoid text selection
-    event.preventDefault();
-
     // Mark touch as handled to prevent duplicate touch events
     touchHandledRef.current = true;
 

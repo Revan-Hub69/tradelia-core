@@ -43,8 +43,11 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
   const longPressTriggeredRef = useRef(false);
 
   const handleChange = (value: string) => {
-    router.push(pathname, { locale: value });
-    router.refresh();
+    if (value === locale) {
+      return;
+    }
+    setIsOpen(false);
+    router.replace(pathname, { locale: value });
   };
 
   const quickLocales = [
