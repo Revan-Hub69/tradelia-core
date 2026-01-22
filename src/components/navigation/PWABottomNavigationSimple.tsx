@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 
 import { DynamicIcon, type IconName } from '@/components/icons';
@@ -56,6 +55,9 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
                 'min-h-[56px] tap-target',
                 'text-xs font-medium',
                 'touch-action-manipulation',
+                // CSS-based active indicator instead of Framer Motion
+                'before:absolute before:inset-0 before:rounded-2xl before:bg-primary/10 before:opacity-0 before:transition-opacity before:duration-200',
+                isActive && 'before:opacity-100',
                 {
                   'animate-pulse navigation-skeleton': isPending && navigationTarget === item.href,
                 },
@@ -63,29 +65,15 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
               onClick={() => handleNavigation(item.href)}
               aria-current={isActive ? 'page' : undefined}
             >
-              {/* PREMIUM ACTIVE PILL INDICATOR */}
-              {isActive && (
-                <motion.div
-                  layoutId="mobileActivePill"
-                  className="absolute inset-0 rounded-2xl bg-primary/10"
-                  transition={{
-                    type: 'spring',
-                    stiffness: 400,
-                    damping: 30,
-                  }}
-                />
-              )}
-
-              {/* PREMIUM ANIMATED ICON */}
-              <motion.div
+              {/* OPTIMIZED ICON - CSS transforms instead of Framer Motion */}
+              <div
                 className={cn(
-                  'relative z-10 transition-colors',
+                  'relative z-10 transition-all duration-200 ease-out',
+                  'active:scale-90 active:-translate-y-1',
                   isActive
                     ? 'text-primary'
                     : 'text-foreground/80 group-hover:text-foreground',
                 )}
-                whileTap={{ scale: [1, 0.9, 1.1, 1], y: [0, -3, 0] }}
-                transition={{ duration: 0.3 }}
               >
                 <DynamicIcon
                   name={item.iconName as IconName}
@@ -93,15 +81,15 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
                   variant="premium"
                   isActive={isActive}
                   className={cn(
-                    'transition-all duration-300',
+                    'transition-all duration-200',
                     isPending && navigationTarget === item.href && 'animate-pulse',
                   )}
                 />
-              </motion.div>
+              </div>
 
               <span
                 className={cn(
-                  'relative z-10 mt-1 truncate leading-tight text-muted-foreground transition-colors',
+                  'relative z-10 mt-1 truncate leading-tight text-muted-foreground transition-colors duration-200',
                   'group-hover:text-foreground/90',
                   isActive && 'text-foreground',
                 )}

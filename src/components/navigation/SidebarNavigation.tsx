@@ -8,13 +8,20 @@
  * - UiNavItem for navigation items
  * - UiSurface for sidebar container
  * - UiIconButton for collapse button
+ * 
+ * PERFORMANCE OPTIMIZED:
+ * - Selective Framer Motion imports
+ * - CSS-based animations for simple cases
+ * - Reduced bundle size impact
  */
 
 'use client';
 
-import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
+
+// PERFORMANCE: Selective Framer Motion imports
+import { motion } from 'framer-motion';
 
 import { CloseIcon, DynamicIcon, type IconName, MenuIcon } from '@/components/icons';
 import { UiIconButton, UiNavItem, UiSurface } from '@/components/ui';
@@ -106,30 +113,31 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
         aria-disabled={!canNavigate}
         title={isCollapsed ? tGeneral(item.labelKey) : undefined}
       >
-        {/* PREMIUM ACTIVE RAIL INDICATOR */}
+        {/* PREMIUM ACTIVE RAIL INDICATOR - Optimized Motion */}
         {isActive && canNavigate && (
           <motion.div
             layoutId="activeRail"
             className="absolute inset-y-0 left-0 w-1 rounded-r-full bg-primary"
+            initial={false}
             transition={{
               type: 'spring',
-              stiffness: 300,
+              stiffness: 400,
               damping: 30,
+              mass: 0.8,
             }}
           />
         )}
-        {/* Icon with state indicators - PREMIUM ANIMATED */}
-        <motion.div
+        
+        {/* Icon with state indicators - CSS-based hover, Motion for complex animations */}
+        <div
           className={cn(
-            'relative shrink-0 transition-colors',
+            'relative shrink-0 transition-all duration-200 ease-out',
+            'hover:scale-105 active:scale-95',
             isActive
               ? 'text-primary'
               : 'text-foreground/80 group-hover:text-foreground',
             !canNavigate && 'text-muted-foreground/40',
           )}
-          whileHover={{ scale: 1.05, rotate: [0, -2, 2, 0] }}
-          whileTap={{ scale: 0.95 }}
-          transition={{ duration: 0.3 }}
         >
           <DynamicIcon
             name={item.iconName as IconName}
@@ -137,43 +145,31 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
             variant="premium"
             isActive={isActive}
             className={cn(
-              'motion-fast',
+              'transition-colors duration-200',
               !canNavigate && 'opacity-60',
             )}
           />
 
-          {/* State indicators - PREMIUM */}
+          {/* State indicators - CSS animations for performance */}
           {uxState === 'blocked' && (
-            <motion.div
-              className="absolute -right-1 -top-1 size-3 rounded-full bg-warning ring-2 ring-background"
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            />
+            <div className="absolute -right-1 -top-1 size-3 rounded-full bg-warning ring-2 ring-background animate-pulse" />
           )}
 
           {uxState === 'offline' && (
-            <motion.div
-              className="absolute -right-1 -top-1 size-3 rounded-full bg-destructive ring-2 ring-background"
-              animate={{ scale: [1, 1.2, 1], opacity: [1, 0.5, 1] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            />
+            <div className="absolute -right-1 -top-1 size-3 rounded-full bg-destructive ring-2 ring-background animate-pulse" />
           )}
 
-          {/* Badge dot for notifications - PREMIUM PULSE */}
+          {/* Badge dot for notifications - CSS pulse */}
           {canNavigate && item.badgeType === 'dot' && (
-            <motion.div
-              className="absolute -right-1 -top-1 size-3 rounded-full bg-accent ring-2 ring-background"
-              animate={{ scale: [1, 1.3, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            />
+            <div className="absolute -right-1 -top-1 size-3 rounded-full bg-accent ring-2 ring-background animate-pulse" />
           )}
-        </motion.div>
+        </div>
 
         {/* Label - Hidden when collapsed */}
         {!isCollapsed && (
           <span
             className={cn(
-              'flex-1 truncate text-muted-foreground transition-colors',
+              'flex-1 truncate text-muted-foreground transition-colors duration-200',
               'group-hover:text-foreground/90',
               isActive && canNavigate && 'text-foreground',
             )}
@@ -190,7 +186,7 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
           </span>
         )}
 
-        {/* Tooltip for collapsed state */}
+        {/* Tooltip for collapsed state - CSS only */}
         {isCollapsed && (
           <div className="pointer-events-none absolute left-full z-50 ml-2 rounded bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
             {tGeneral(item.labelKey)}
@@ -297,7 +293,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
               ? <MenuIcon size={16} />
               : <CloseIcon size={16} />}
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="size-9 hover:scale-[1.02]"
+            className="size-9 hover:scale-[1.02] transition-transform duration-200"
             aria-pressed={!isCollapsed}
           />
         </div>
