@@ -15,23 +15,23 @@ import { UiButton } from '@/components/ui/UiButton';
  * - Analytics tracking for install events
  */
 
-interface BeforeInstallPromptEvent extends Event {
+type BeforeInstallPromptEvent = Event & {
   readonly platforms: string[];
   readonly userChoice: Promise<{
     outcome: 'accepted' | 'dismissed';
     platform: string;
   }>;
   prompt(): Promise<void>;
-}
+};
 
-interface PWAInstallButtonProps {
-  variant?: 'primary' | 'secondary' | 'outline';
-  size?: 'sm' | 'md' | 'lg';
+type PWAInstallButtonProps = {
+  variant?: 'primary' | 'secondary' | 'ghost' | 'icon';
+  size?: 'sm' | 'md';
   className?: string;
   onInstallStart?: () => void;
   onInstallComplete?: () => void;
   onInstallDismissed?: () => void;
-}
+};
 
 export function PWAInstallButton2026({
   variant = 'primary',
@@ -52,8 +52,8 @@ export function PWAInstallButton2026({
     const checkIfInstalled = () => {
       // Check if running in standalone mode
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-      // Check if running as PWA
-      const isPWA = window.navigator.standalone === true;
+      // Check if running as PWA (iOS Safari specific)
+      const isPWA = (window.navigator as any).standalone === true;
       
       setIsInstalled(isStandalone || isPWA);
     };
@@ -261,7 +261,7 @@ export function PWAInstallBanner() {
           onInstallComplete={handleInstallComplete}
         />
         <UiButton
-          variant="outline"
+          variant="ghost"
           size="sm"
           onClick={handleDismiss}
         >
