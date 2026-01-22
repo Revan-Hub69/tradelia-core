@@ -16,3 +16,4 @@ export { UiNavItem, type UiNavItemProps } from './UiNavItem';
 export { UiPanel, type UiPanelProps } from './UiPanel';
 export { UiStatusChip, type UiStatusChipProps, type UiStatusChipVariant } from './UiStatusChip';
 export { UiSurface, type UiSurfaceProps, type UiSurfaceVariant } from './UiSurface';
+export { VirtualScrollList, VirtualList, type VirtualScrollListProps, type VirtualListProps } from './VirtualScrollList';
