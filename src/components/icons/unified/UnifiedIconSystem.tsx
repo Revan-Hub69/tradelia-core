@@ -96,27 +96,26 @@ export const SignatureIconBase = memo<SignatureIconProps>(({
       aria-hidden={ariaHidden}
       aria-label={ariaLabel}
       className={cn(
+        // Base signature icon class
+        'signature-icon',
+        // Variant-specific signature classes
+        {
+          'signature-icon--minimal': variant === 'minimal',
+          'signature-icon--signature': variant === 'signature',
+          'signature-icon--premium': variant === 'premium',
+          'signature-icon--active': state === 'active',
+          'signature-icon--disabled': state === 'disabled',
+        },
         // Base styles - professional grade
         'flex-shrink-0 select-none',
-        'transition-all duration-200 ease-out',
         // Optical corrections
         'antialiased',
-        // State management
-        {
-          'opacity-40 cursor-not-allowed': state === 'disabled',
-          'opacity-70': variant === 'minimal',
-          'opacity-90 hover:opacity-100': variant === 'signature',
-          'opacity-100': variant === 'premium',
-          'scale-95': state === 'active',
-          'hover:scale-105': state === 'hover' && variant === 'premium',
-        },
         className,
       )}
       onMouseEnter={onHover}
       onClick={handlePress}
+      data-gpu="true"
       style={{
-        // Hardware acceleration for smooth animations
-        willChange: 'transform, opacity',
         // Perfect pixel alignment
         shapeRendering: 'geometricPrecision',
       }}

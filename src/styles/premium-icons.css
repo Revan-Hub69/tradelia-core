@@ -29,10 +29,13 @@
 }
 
 /* ============================================================================
-   SIGNATURE ICON BASE STYLES
+   SIGNATURE ICON ISOLATION - HEADER COMPATIBILITY
    ============================================================================ */
 
+/* Isolate signature icons from parent backdrop-filter interference */
 .signature-icon {
+  /* Create new stacking context to isolate backdrop-filter */
+  isolation: isolate;
   /* Liquid glass foundation */
   transform: translateZ(0);
   will-change: transform, filter, backdrop-filter;
@@ -122,6 +125,23 @@
   filter: grayscale(1) blur(0.5px);
   pointer-events: none;
   backdrop-filter: none;
+}
+
+/* Header-specific signature effects - Override parent backdrop-filter */
+.ui-glass-header .signature-icon--signature {
+  /* Force new stacking context */
+  position: relative;
+  z-index: 1;
+  /* Override parent backdrop-filter with signature effects */
+  backdrop-filter: blur(2px) !important;
+}
+
+.ui-glass-header .signature-icon--signature:hover {
+  /* Enhanced signature effects in header context */
+  filter: var(--signature-glass-subtle) !important;
+  backdrop-filter: blur(4px) !important;
+  /* Subtle lift to separate from header background */
+  transform: translateZ(0) translateY(-0.5px);
 }
 
 /* ============================================================================
