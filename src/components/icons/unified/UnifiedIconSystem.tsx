@@ -601,8 +601,116 @@ export const MoonIcon = memo<Omit<SignatureIconProps, 'children'> & {
   );
 });
 
+// MENU ICON - Hamburger menu with signature animation
+export const MenuIcon = memo<Omit<SignatureIconProps, 'children'> & { 
+  isOpen?: boolean;
+}>(({
+  isOpen = false,
+  ...props
+}) => (
+  <SignatureIconBase {...props} state={isOpen ? 'active' : props.state}>
+    {/* Top line */}
+    <motion.line
+      x1="3"
+      y1="6"
+      x2="21"
+      y2="6"
+      animate={isOpen ? { rotate: 45, y: 6 } : { rotate: 0, y: 0 }}
+      transition={SIGNATURE_TOKENS.transitions.liquid}
+      style={{ transformOrigin: '12px 12px' }}
+    />
+    
+    {/* Middle line */}
+    <motion.line
+      x1="3"
+      y1="12"
+      x2="21"
+      y2="12"
+      animate={isOpen ? { opacity: 0 } : { opacity: 1 }}
+      transition={SIGNATURE_TOKENS.transitions.glass}
+    />
+    
+    {/* Bottom line */}
+    <motion.line
+      x1="3"
+      y1="18"
+      x2="21"
+      y2="18"
+      animate={isOpen ? { rotate: -45, y: -6 } : { rotate: 0, y: 0 }}
+      transition={SIGNATURE_TOKENS.transitions.liquid}
+      style={{ transformOrigin: '12px 12px' }}
+    />
+  </SignatureIconBase>
+));
+
+// CLOSE ICON - X with signature animation
+export const CloseIcon = memo<Omit<SignatureIconProps, 'children'>>(({
+  ...props
+}) => (
+  <SignatureIconBase {...props}>
+    <motion.line
+      x1="18"
+      y1="6"
+      x2="6"
+      y2="18"
+      initial={{ pathLength: 0 }}
+      animate={{ pathLength: 1 }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+    />
+    <motion.line
+      x1="6"
+      y1="6"
+      x2="18"
+      y2="18"
+      initial={{ pathLength: 0 }}
+      animate={{ pathLength: 1 }}
+      transition={{ duration: 0.3, ease: "easeInOut", delay: 0.1 }}
+    />
+  </SignatureIconBase>
+));
+
+// CHEVRON DOWN ICON - Directional with signature animation
+export const ChevronDownIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isOpen?: boolean;
+}>(({
+  isOpen = false,
+  ...props
+}) => (
+  <SignatureIconBase {...props} state={isOpen ? 'active' : props.state}>
+    <motion.polyline
+      points="6,9 12,15 18,9"
+      animate={isOpen ? { rotate: 180 } : { rotate: 0 }}
+      transition={SIGNATURE_TOKENS.transitions.liquid}
+      style={{ transformOrigin: '12px 12px' }}
+    />
+  </SignatureIconBase>
+));
+
+// SETTINGS ICON - Gear with signature precision
+export const SettingsIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isActive?: boolean;
+}>(({
+  isActive = false,
+  ...props
+}) => (
+  <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    {/* Outer gear */}
+    <motion.circle
+      cx="12"
+      cy="12"
+      r="3"
+      animate={isActive ? { rotate: 360 } : { rotate: 0 }}
+      transition={{ duration: 2, repeat: isActive ? Infinity : 0, ease: "linear" }}
+      style={{ transformOrigin: '12px 12px' }}
+    />
+    
+    {/* Gear teeth */}
+    <path d="M12 1v6m0 10v6m11-7h-6m-10 0H1m15.5-6.5l-4.24 4.24M6.74 17.26L2.5 21.5m15-15l-4.24 4.24M6.74 6.74L2.5 2.5" />
+  </SignatureIconBase>
+));
+
 // Display names for professional debugging
-HomeIcon.displayName = 'TradeliaSignatureHomeIcon';
-BellIcon.displayName = 'TradeliaSignatureBellIcon';
-SunIcon.displayName = 'TradeliaSignatureSunIcon';
-MoonIcon.displayName = 'TradeliaSignatureMoonIcon';
+MenuIcon.displayName = 'TradeliaSignatureMenuIcon';
+CloseIcon.displayName = 'TradeliaSignatureCloseIcon';
+ChevronDownIcon.displayName = 'TradeliaSignatureChevronDownIcon';
+SettingsIcon.displayName = 'TradeliaSignatureSettingsIcon';

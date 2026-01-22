@@ -18,8 +18,12 @@ export type {
 } from './UnifiedIconSystem';
 export {
   BellIcon,
+  ChevronDownIcon,
+  CloseIcon,
   HomeIcon,
+  MenuIcon,
   MoonIcon,
+  SettingsIcon,
   SIGNATURE_TOKENS,
   SignatureIconBase,
   SunIcon,
