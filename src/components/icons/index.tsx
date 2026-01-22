@@ -8,8 +8,8 @@
 
 import React from 'react';
 
-// Signature Icon System (unified)
-export {
+// Import signature icons first
+import {
   BellIcon,
   ChevronDownIcon,
   CloseIcon,
@@ -22,12 +22,33 @@ export {
   SunIcon,
 } from './unified';
 
-export type {
+import type {
   IconSize,
   IconState,
   IconVariant,
   SignatureIconProps,
 } from './unified';
+
+// Re-export signature icons
+export {
+  BellIcon,
+  ChevronDownIcon,
+  CloseIcon,
+  HomeIcon,
+  MenuIcon,
+  MoonIcon,
+  SettingsIcon,
+  SIGNATURE_TOKENS,
+  SignatureIconBase,
+  SunIcon,
+};
+
+export type {
+  IconSize,
+  IconState,
+  IconVariant,
+  SignatureIconProps,
+};
 
 // Legacy icons (keeping for compatibility)
 export { IconBase, type IconBaseProps, type IconProps } from './IconBase';
@@ -38,7 +59,7 @@ export { XPIcon } from './XPIcon';
 
 // Temporary compatibility aliases (will be removed)
 export const GlobeIcon = SettingsIcon; // Placeholder
-export const LockIcon = SettingsIcon; // Placeholder  
+export const LockIcon = SettingsIcon; // Placeholder
 export const LogoutIcon = SettingsIcon; // Placeholder
 export const MoreVerticalIcon = MenuIcon; // Placeholder
 
