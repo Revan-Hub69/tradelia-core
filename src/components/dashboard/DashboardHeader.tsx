@@ -91,6 +91,11 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     threshold: 15, // Increased threshold based on real apps research
   });
 
+  // Debug: log scroll state (remove in production)
+  useEffect(() => {
+    console.log('Header state:', { isScrolled, isHeaderVisible, hideOnScroll });
+  }, [isScrolled, isHeaderVisible, hideOnScroll]);
+
   // Global search keyboard shortcut (Cmd/Ctrl + K)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -297,6 +302,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           ],
           // Compact mode
           compactMode && 'py-2',
+          // Debug: add red border when hidden (remove in production)
+          !isHeaderVisible && 'border-4 border-red-500',
           className,
         )}
         style={{

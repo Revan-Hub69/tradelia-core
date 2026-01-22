@@ -53,6 +53,7 @@ export function DashboardClient({ children }: DashboardClientProps) {
         {/* Header - Always visible */}
         <DashboardHeader
           showScrollShadow
+          hideOnScroll={true}
           className="layout-header"
         />
 
