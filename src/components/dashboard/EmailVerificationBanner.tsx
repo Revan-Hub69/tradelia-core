@@ -26,7 +26,6 @@ export const EmailVerificationBanner = () => {
   const [email, setEmail] = useState<string>('');
   const [isResending, setIsResending] = useState(false);
   const [resendSuccess, setResendSuccess] = useState(false);
-  const [isDismissed, setIsDismissed] = useState(false);
 
   useEffect(() => {
     const emailVerification = searchParams.get('emailVerification');
@@ -78,7 +77,6 @@ export const EmailVerificationBanner = () => {
 
   const handleDismiss = () => {
     setIsVisible(false);
-    setIsDismissed(true);
     
     // Remember user's choice to dismiss (until they verify)
     const dismissedKey = `email-verification-dismissed-${email}`;
@@ -145,7 +143,7 @@ export const EmailVerificationBanner = () => {
                   📧 {t('email_verification_title')}
                 </h3>
                 <p className="mt-1 text-sm text-amber-800 dark:text-amber-200">
-                  {t('email_verification_message', { email: <strong>{email}</strong> })}
+                  {t('email_verification_message', { email })}
                 </p>
               </div>
               
