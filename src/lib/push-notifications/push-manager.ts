@@ -113,7 +113,7 @@ export class PushNotificationManager {
       // Subscribe to push notifications
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: this.urlBase64ToUint8Array(this.vapidPublicKey),
+        applicationServerKey: this.urlBase64ToUint8Array(this.vapidPublicKey) as BufferSource,
       });
 
       this.subscription = subscription;
@@ -133,7 +133,8 @@ export class PushNotificationManager {
       return subscriptionData;
     } catch (error) {
       console.error('[Push] Subscription failed:', error);
-      this.trackEvent('push_subscription_failed', { error: error.message });
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.trackEvent('push_subscription_failed', { error: errorMessage });
       throw error;
     }
   }
@@ -203,7 +204,8 @@ export class PushNotificationManager {
       }
     } catch (error) {
       console.error('[Push] Save subscription failed:', error);
-      this.trackEvent('subscription_save_failed', { error: error.message });
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.trackEvent('subscription_save_failed', { error: errorMessage });
       return false;
     }
   }
@@ -249,10 +251,8 @@ export class PushNotificationManager {
       body: payload.body,
       icon: payload.icon || '/icon-192x192.png',
       badge: payload.badge || '/favicon-32x32.png',
-      image: payload.image,
       tag: payload.tag || 'tradelia-notification',
       requireInteraction: false,
-      actions: payload.actions,
       data: payload.data,
     });
 
@@ -284,7 +284,7 @@ export class PushNotificationManager {
     const bytes = new Uint8Array(buffer);
     let binary = '';
     for (let i = 0; i < bytes.byteLength; i++) {
-      binary += String.fromCharCode(bytes[i]);
+      binary += String.fromCharCode(bytes[i]!);
     }
     return window.btoa(binary);
   }
