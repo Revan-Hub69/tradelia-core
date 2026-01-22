@@ -54,12 +54,31 @@ const fetchUserData = async (): Promise<UserData | null> => {
     return null;
   }
 
+  // Always return basic user data for authenticated users
+  const basicUserData = {
+    id: user.id,
+    email: user.email || '',
+    name: user.user_metadata?.name || user.email?.split('@')[0] || 'Utente',
+    progress: {
+      currentPath: 'base',
+      pathName: 'Percorso Fondamentale',
+      completedLessons: 0,
+      totalLessons: 12,
+      progressPercentage: 0,
+      totalXP: 0,
+      level: 1,
+      currentStreak: 0,
+      badges: 0,
+    },
+  };
+
   try {
-    // Fetch complete user data from API (now returns normalized data)
+    // Try to fetch complete user data from API (only works for verified users)
     const response = await fetch('/api/user/progress');
 
     if (!response.ok) {
-      throw new Error('Failed to fetch user progress');
+      // API failed (probably email not verified), return basic data
+      return basicUserData;
     }
 
     const normalizedData = await response.json();
@@ -89,23 +108,8 @@ const fetchUserData = async (): Promise<UserData | null> => {
   } catch (error) {
     console.error('Error fetching user data:', error);
 
-    // Fallback to basic auth data if API fails
-    return {
-      id: user.id,
-      email: user.email || '',
-      name: user.user_metadata?.name || user.email?.split('@')[0] || 'Utente',
-      progress: {
-        currentPath: 'base',
-        pathName: 'Percorso Fondamentale',
-        completedLessons: 0,
-        totalLessons: 12,
-        progressPercentage: 0,
-        totalXP: 0,
-        level: 1,
-        currentStreak: 0,
-        badges: 0,
-      },
-    };
+    // Always fallback to basic auth data for authenticated users
+    return basicUserData;
   }
 };
 
