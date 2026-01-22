@@ -52,6 +52,11 @@ export async function GET(request: Request) {
       // Map common Supabase errors to user-friendly messages
       if (exchangeError.message.includes('email not confirmed')) {
         errorUrl.searchParams.set('error', 'email_not_confirmed');
+      } else if (exchangeError.message.includes('User not found')) {
+        // This can happen when OAuth identity exists but user was deleted
+        console.error('Orphaned OAuth identity detected:', exchangeError.message);
+        errorUrl.searchParams.set('error', 'auth_failed');
+        errorUrl.searchParams.set('error_description', 'Account connection issue. Please try signing up again.');
       } else if (exchangeError.message.includes('invalid_grant')) {
         errorUrl.searchParams.set('error', 'expired_link');
         errorUrl.searchParams.set('error_description', exchangeError.message);
