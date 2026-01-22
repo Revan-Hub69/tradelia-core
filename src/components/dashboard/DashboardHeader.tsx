@@ -86,15 +86,9 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   const [showSearchModal, setShowSearchModal] = useState(false);
 
   // Scroll behavior based on REAL applications research (Twitter, Medium, TutsPlus)
-  // Fixed: removed unused isScrollingDown variable for TypeScript compliance
   const { isScrolled, isHeaderVisible } = useScrollDirection({
     threshold: 15, // Increased threshold based on real apps research
   });
-
-  // Debug: log scroll state (remove in production)
-  useEffect(() => {
-    console.log('Header state:', { isScrolled, isHeaderVisible, hideOnScroll });
-  }, [isScrolled, isHeaderVisible, hideOnScroll]);
 
   // Global search keyboard shortcut (Cmd/Ctrl + K)
   useEffect(() => {
@@ -107,6 +101,21 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Premium motion preferences detection
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setPrefersReducedMotion(mediaQuery.matches);
+    
+    const handleChange = (e: MediaQueryListEvent) => {
+      setPrefersReducedMotion(e.matches);
+    };
+    
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
   // Enhanced status chip renderer with real-time indicators
@@ -287,27 +296,37 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         role="banner"
         aria-label={t('header_aria_label')}
         className={cn(
-          'fixed top-0 w-full z-50', // Changed from sticky to fixed (real apps approach)
+          'fixed top-0 w-full z-50',
           'motion-base',
-          // Enhanced scroll shadow with liquid glass
+          // Premium liquid glass effects
           isScrolled && showScrollShadow && [
-            'shadow-xl',
-            'backdrop-blur-sm',
-            'bg-background/95',
+            'shadow-2xl shadow-black/10',
+            'backdrop-blur-xl',
+            'bg-background/80',
+            'border-b border-border/20',
           ],
           // Compact mode
           compactMode && 'py-2',
           className,
         )}
         style={{
-          // GPU acceleration for smooth animations (Twitter/Medium approach)
+          // Premium spring physics animation (Apple iOS 26 Liquid Glass)
           transform: hideOnScroll && !isHeaderVisible 
             ? 'translate3d(0, -100%, 0)' 
             : 'translate3d(0, 0, 0)',
           willChange: hideOnScroll ? 'transform' : 'auto',
-          transition: 'transform 300ms ease-out',
-          // Debug: red background when hidden
-          backgroundColor: !isHeaderVisible ? 'red' : undefined,
+          // Premium spring timing with motion preferences
+          transition: prefersReducedMotion 
+            ? 'transform 150ms ease-out' // Reduced motion
+            : 'transform 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94)', // Premium spring
+          // Liquid glass backdrop enhancement
+          backdropFilter: isScrolled && !prefersReducedMotion 
+            ? 'blur(20px) saturate(180%)' 
+            : isScrolled ? 'blur(8px)' : undefined,
+          // Premium shadow with depth
+          boxShadow: isScrolled && showScrollShadow 
+            ? '0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08)'
+            : undefined,
         }}
       >
         <div className={cn(
@@ -367,16 +386,22 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             >
               {/* Theme Switcher - Hidden on mobile, visible on tablet+ */}
               <div className="hidden md:block">
-                <ThemeSwitcher />
+                <div className="transition-all duration-200 hover:scale-105 active:scale-95">
+                  <ThemeSwitcher />
+                </div>
               </div>
 
               {/* Language Switcher - Hidden on mobile, visible on tablet+ */}
               <div className="hidden md:block">
-                <LanguageSwitcherDashboard />
+                <div className="transition-all duration-200 hover:scale-105 active:scale-95">
+                  <LanguageSwitcherDashboard />
+                </div>
               </div>
 
               {/* Notifications - Always visible (mobile, tablet, desktop) */}
-              <NotificationsBell />
+              <div className="transition-all duration-200 hover:scale-105 active:scale-95">
+                <NotificationsBell />
+              </div>
             </div>
 
             {/* User Dropdown */}
@@ -387,10 +412,12 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                   )
                 : userData
                   ? (
-                      <UserDropdown
-                        userName={getUserDisplayName()}
-                        userEmail={userData.email}
-                      />
+                      <div className="transition-all duration-200 hover:scale-105 active:scale-95">
+                        <UserDropdown
+                          userName={getUserDisplayName()}
+                          userEmail={userData.email}
+                        />
+                      </div>
                     )
                   : (
                       <div className="text-xs text-muted-foreground">
@@ -402,31 +429,48 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         </div>
       </UiSurface>
 
-      {/* Global Search Modal - Placeholder for future implementation */}
+      {/* Premium Global Search Modal with Liquid Glass */}
       {showSearchModal && (
         <div
-          className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 pt-20"
+          className="fixed inset-0 z-50 flex items-start justify-center pt-20"
+          style={{
+            backgroundColor: 'rgba(0, 0, 0, 0.4)',
+            backdropFilter: 'blur(8px)',
+          }}
           onClick={() => setShowSearchModal(false)}
         >
           <div
-            className="mx-4 w-full max-w-2xl rounded-lg border bg-background shadow-lg"
+            className="mx-4 w-full max-w-2xl rounded-2xl border shadow-2xl"
+            style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.95)',
+              backdropFilter: 'blur(20px) saturate(180%)',
+              borderColor: 'rgba(255, 255, 255, 0.2)',
+              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1)',
+            }}
             onClick={e => e.stopPropagation()}
           >
-            <div className="p-4">
-              <div className="mb-4 flex items-center gap-3">
-                <SearchIcon size={20} />
+            <div className="p-6">
+              <div className="mb-6 flex items-center gap-4">
+                <div className="rounded-full bg-primary/10 p-2">
+                  <SearchIcon size={20} className="text-primary" />
+                </div>
                 <input
                   type="text"
                   placeholder={t('command_palette_placeholder')}
-                  className="flex-1 border-none bg-transparent text-lg outline-none"
+                  className="flex-1 border-none bg-transparent text-lg outline-none placeholder:text-muted-foreground"
                   autoFocus
                 />
-                <kbd className="rounded bg-muted px-2 py-1 text-xs">ESC</kbd>
+                <kbd className="rounded-lg bg-muted/50 px-3 py-1.5 text-xs font-medium">
+                  ESC
+                </kbd>
               </div>
-              <div className="py-8 text-center text-sm text-muted-foreground">
-                {t('command_palette_no_results')}
-                <br />
-                <span className="text-xs">Global search coming soon...</span>
+              <div className="py-12 text-center text-sm text-muted-foreground">
+                <div className="mb-3 text-base font-medium">
+                  {t('command_palette_no_results')}
+                </div>
+                <span className="text-xs opacity-70">
+                  Global search coming soon...
+                </span>
               </div>
             </div>
           </div>
