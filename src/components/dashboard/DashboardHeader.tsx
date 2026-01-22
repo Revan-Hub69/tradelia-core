@@ -299,7 +299,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     );
   };
 
-  // Safe email fallback
+  // Safe email fallback with email verification status
   const getUserDisplayName = (): string => {
     if (!userData) {
       return t('not_authenticated');
@@ -310,6 +310,17 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     const safeEmail = userData.email ?? '';
     const parts = safeEmail.split('@');
     return safeEmail.includes('@') && parts[0] ? parts[0] : 'User';
+  };
+
+  // Check if user is authenticated but email not verified
+  const getUserStatus = async () => {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    return {
+      isAuthenticated: !!user,
+      isEmailVerified: !!user?.email_confirmed_at,
+      user
+    };
   };
 
   // Dynamic title component

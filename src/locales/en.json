@@ -229,6 +229,7 @@
     "change_language": "Change language",
     "help_aria_label": "Help and support",
     "not_authenticated": "Not authenticated",
+    "email_not_verified": "Email not verified",
     "search_content": "Search content",
     "continue_learning": "Continue learning",
     "focus_mode_active": "Focus mode active",
