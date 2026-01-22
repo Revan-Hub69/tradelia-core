@@ -15,6 +15,9 @@ const bundleAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
 });
 
+// Cache busting timestamp for force redeploy
+const CACHE_BUST_TIMESTAMP = Date.now();
+
 // Validate translations during production build
 if (process.env.NODE_ENV === 'production' && !process.env.SKIP_I18N_VALIDATION) {
   try {
@@ -88,6 +91,20 @@ export default bundleAnalyzer(
     },
     async headers() {
       return [
+        // Cache busting for force redeploy
+        {
+          source: '/:path*',
+          headers: [
+            {
+              key: 'X-Cache-Bust',
+              value: `${CACHE_BUST_TIMESTAMP}`,
+            },
+            {
+              key: 'X-Deploy-Time',
+              value: new Date().toISOString(),
+            },
+          ],
+        },
         {
           source: '/:path*',
           headers: [

@@ -1,1 +1,4 @@
-Force redeploy - 2026-01-21 15:30 (cache invalidation after barrel elimination)
+FORCE_REDEPLOY_CACHE_BUST=2026-01-22-15:30:00
+COMMIT=c89a47e
+REASON=Cache invalidation for mobile UX bug fixes
+TIMESTAMP=$(date +%s)
