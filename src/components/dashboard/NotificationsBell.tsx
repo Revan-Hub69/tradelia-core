@@ -137,7 +137,6 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
               hasNotifications={unreadCount > 0}
               notificationCount={unreadCount}
               variant="signature"
-              ringOnHover
             />
           )}
           aria-haspopup="menu"
