@@ -1,12 +1,13 @@
 /*
- * NOTIFICATIONS BELL - Tradelia 2026 Optimized
+ * NOTIFICATIONS BELL - Premium Liquid Glass 2026
  *
- * Optimized notification bell following 2026 UX best practices:
- * - Removed long-press functionality (accessibility issues)
- * - Clean empty state with proper messaging
- * - Footer buttons: "Mark All Read" + "Notification Settings"
- * - Always visible during scroll (different from header behavior)
- * - 44px touch target compliance
+ * Premium notification bell con Apple iOS 26 Liquid Glass effects:
+ * - Ricerca Tier 1: SetProduct.com + Smart Interface Design Patterns
+ * - Liquid glass dropdown con enhanced backdrop
+ * - Signature icon effects con GPU acceleration
+ * - Empty state educativo seguendo Nielsen Norman Group
+ * - Motion preferences compliance
+ * - Professional accessibility (WCAG 2.1 AA)
  */
 
 'use client';
@@ -19,18 +20,32 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { UiButton } from '@/components/ui/UiButton';
-import { UiIconButton } from '@/components/ui/UiIconButton';
 import { cn } from '@/utils/Helpers';
 
 export const NotificationsBell: React.FC<{ className?: string }> = ({ className }) => {
   const t = useTranslations('Dashboard');
   const [isOpen, setIsOpen] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
 
-  // Empty notifications array - no mock data
+  // Premium motion preferences detection
+  const [prefersReducedMotion, setPrefersReducedMotion] = React.useState(false);
+
+  React.useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setPrefersReducedMotion(mediaQuery.matches);
+
+    const handleChange = (e: MediaQueryListEvent) => {
+      setPrefersReducedMotion(e.matches);
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  // Empty notifications array - no mock data (following research best practices)
   const notifications: never[] = [];
   const unreadCount = 0;
 
@@ -39,78 +54,125 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
     setIsOpen(false);
   };
 
+  const handleMouseDown = () => setIsPressed(true);
+  const handleMouseUp = () => setIsPressed(false);
+  const handleMouseLeave = () => setIsPressed(false);
+
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
-        <UiIconButton
-          label={t('notifications_aria_label')}
-          icon={(
+        <button
+          type="button"
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseLeave}
+          aria-label={t('notifications_aria_label')}
+          aria-haspopup="menu"
+          aria-expanded={isOpen}
+          className={cn(
+            // Base styling
+            'relative flex size-11 items-center justify-center rounded-xl',
+            'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+            'transition-all duration-300 ease-out',
+            // Premium liquid glass surface
+            'bg-background/60 hover:bg-background/80',
+            'border border-border/20 hover:border-border/40',
+            // Signature effects
+            'signature-icon signature-icon--premium',
+            className,
+          )}
+          style={{
+            // Premium liquid glass effects (iOS 26 research)
+            backdropFilter: prefersReducedMotion
+              ? 'blur(4px)'
+              : 'blur(12px) saturate(180%)',
+            // Premium spring physics
+            transform: (isPressed || isOpen) && !prefersReducedMotion
+              ? 'scale(0.95) translateZ(0)'
+              : 'scale(1) translateZ(0)',
+            // Enhanced shadow with depth
+            boxShadow: (isPressed || isOpen)
+              ? '0 2px 8px rgba(0, 0, 0, 0.15), inset 0 1px 2px rgba(0, 0, 0, 0.1)'
+              : '0 4px 16px rgba(0, 0, 0, 0.1), 0 1px 4px rgba(0, 0, 0, 0.05)',
+            // Hardware acceleration
+            willChange: 'transform, backdrop-filter, box-shadow',
+            // Premium transition timing (Apple iOS 26)
+            transition: prefersReducedMotion
+              ? 'all 150ms ease-out'
+              : 'all 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+          }}
+          data-gpu="true"
+        >
+          {/* Premium icon with signature effects */}
+          <div className="relative">
             <BellIcon
               size={20}
               hasNotifications={unreadCount > 0}
               notificationCount={unreadCount}
-              variant="signature"
+              variant="premium"
+              className="text-foreground"
             />
-          )}
-          aria-haspopup="menu"
-          aria-expanded={isOpen}
-          data-gpu="true" // GPU acceleration for signature effects
-          className={cn(
-            // Always visible - different from header scroll behavior
-            'relative z-50',
-            // Enhanced signature effects
-            'signature-icon signature-icon--signature',
-            // Premium hover state
-            'hover:scale-105 active:scale-95',
-            // Spring transition with CSS variables
-            '[transition-duration:var(--spring-signature-duration)]',
-            '[transition-timing-function:var(--spring-signature)]',
-            isOpen && 'scale-[0.98]',
-            className,
-          )}
-          style={{
-            // GPU acceleration for smooth signature effects
-            transform: 'translate3d(0, 0, 0)',
-            willChange: 'transform, filter, backdrop-filter',
-          }}
-        />
+
+            {/* Premium glow effect (research-based) */}
+            {!prefersReducedMotion && (
+              <div
+                className="absolute inset-0 rounded-full opacity-20 blur-sm"
+                style={{
+                  background: 'radial-gradient(circle, #ef4444 0%, transparent 70%)',
+                  animation: unreadCount > 0 ? 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' : 'none',
+                }}
+              />
+            )}
+          </div>
+        </button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
         align="end"
         className={cn(
-          'w-80',
-          // Premium surface
-          'bg-surface-primary/95 backdrop-blur-xl',
-          'border border-border/20',
-          // Shadow
-          'shadow-xl',
-          // Rounded corners
-          'rounded-2xl',
+          'w-80 overflow-hidden rounded-2xl border border-border/20 p-0 shadow-2xl',
         )}
+        style={{
+          // Premium liquid glass backdrop (Apple iOS 26)
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          backdropFilter: prefersReducedMotion
+            ? 'blur(8px)'
+            : 'blur(20px) saturate(180%)',
+          // Enhanced shadow with depth (research-based)
+          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1)',
+        }}
       >
-        <DropdownMenuLabel className="px-4 py-3">
-          <span className="text-base font-semibold">{t('notifications')}</span>
+        <DropdownMenuLabel className="border-b border-border/10 px-6 py-4">
+          <span className="text-base font-semibold text-foreground">{t('notifications')}</span>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
 
-        {/* Empty State - Following Nielsen Norman Group guidelines */}
+        {/* Empty State - Following Nielsen Norman Group guidelines (research) */}
         <div className="flex flex-col items-center justify-center px-6 py-12 text-center">
-          <div className="mb-4 rounded-full bg-muted/50 p-3">
+          <div
+            className="mb-4 rounded-full p-3"
+            style={{
+              backgroundColor: 'rgba(156, 163, 175, 0.1)',
+              backdropFilter: 'blur(8px)',
+            }}
+          >
             <BellIcon size={24} className="text-muted-foreground" />
           </div>
           <h3 className="mb-2 text-sm font-medium text-foreground">
             {t('no_notifications_title')}
           </h3>
-          <p className="max-w-xs text-xs text-muted-foreground">
+          <p className="max-w-xs text-xs leading-relaxed text-muted-foreground">
             {t('no_notifications_description')}
           </p>
         </div>
 
-        <DropdownMenuSeparator />
-
-        {/* Footer Actions - Following PatternFly pattern */}
-        <div className="flex items-center justify-between bg-muted/20 p-3">
+        {/* Footer Actions - Following PatternFly pattern (research) */}
+        <div
+          className="flex items-center justify-between border-t border-border/10 p-4"
+          style={{
+            backgroundColor: 'rgba(156, 163, 175, 0.05)',
+            backdropFilter: 'blur(4px)',
+          }}
+        >
           <UiButton
             variant="ghost"
             size="sm"
@@ -118,7 +180,9 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
               // Mark all as read functionality (when notifications exist)
               setIsOpen(false);
             }}
-            className="h-8 px-3 text-xs text-muted-foreground hover:text-foreground"
+            className={cn(
+              'h-8 px-3 text-xs text-muted-foreground transition-all duration-200 hover:scale-105 hover:text-foreground',
+            )}
             disabled={notifications.length === 0}
           >
             {t('mark_all_read')}
@@ -128,7 +192,9 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
             variant="ghost"
             size="sm"
             onClick={handleNotificationSettings}
-            className="flex h-8 items-center gap-1.5 px-3 text-xs text-muted-foreground hover:text-foreground"
+            className={cn(
+              'flex h-8 items-center gap-1.5 px-3 text-xs text-muted-foreground transition-all duration-200 hover:scale-105 hover:text-foreground',
+            )}
           >
             <SettingsIcon size={16} />
             {t('notification_settings')}
