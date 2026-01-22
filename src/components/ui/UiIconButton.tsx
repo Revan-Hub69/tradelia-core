@@ -38,10 +38,10 @@ export const UiIconButton = forwardRef<HTMLButtonElement, UiIconButtonProps>(
         data-active={active}
         className={cn(
           // Base styles
+          'tradelia-icon-button',
           'relative inline-flex size-11 items-center justify-center',
           'rounded-xl',
           'motion-base',
-          'press-depth',
 
           // Signature glass surface
           'bg-primary/10 dark:bg-primary/10',
@@ -54,7 +54,7 @@ export const UiIconButton = forwardRef<HTMLButtonElement, UiIconButtonProps>(
           'hover:shadow-[0_10px_30px_rgba(0,0,0,0.12)]',
 
           // Focus
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2',
 
           // Active state
           'data-[active=true]:bg-primary/20 data-[active=true]:text-primary',
@@ -63,8 +63,8 @@ export const UiIconButton = forwardRef<HTMLButtonElement, UiIconButtonProps>(
           // Disabled
           'disabled:pointer-events-none disabled:opacity-50',
 
-          // Signature press feedback
-          'active:scale-[0.95] active:transition-transform active:duration-75',
+          // Motion safety
+          'motion-reduce:transition-none motion-reduce:transform-none',
 
           className,
         )}

@@ -12,7 +12,7 @@
 
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 
@@ -51,6 +51,7 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
     item.href,
     item.id,
   );
+  const prefersReducedMotion = useReducedMotion();
 
   // Auto-reset pressed state with proper cleanup
   useEffect(() => {
@@ -112,18 +113,20 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
             layoutId="activeRail"
             className="absolute left-0 top-0 bottom-0 w-1 rounded-r-full bg-primary"
             transition={{
-              type: 'spring',
-              stiffness: 300,
-              damping: 30,
+              type: 'tween',
+              duration: prefersReducedMotion ? 0 : 0.15,
+              ease: [0.16, 1, 0.3, 1],
             }}
           />
         )}
-        {/* Icon with state indicators - PREMIUM ANIMATED */}
-        <motion.div 
-          className="relative shrink-0"
-          whileHover={{ scale: 1.05, rotate: [0, -2, 2, 0] }}
-          whileTap={{ scale: 0.95 }}
-          transition={{ duration: 0.3 }}
+        {/* Icon with state indicators */}
+        <div
+          className={cn(
+            'relative shrink-0',
+            'transition-transform duration-150 ease-out',
+            'group-hover:-translate-y-0.5',
+            'motion-reduce:transform-none motion-reduce:transition-none',
+          )}
         >
           {item.iconName === 'HomeIcon' && (
             <HomeIcon size={24} isActive={isActive} />
@@ -145,7 +148,7 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
               name={item.iconName as IconName}
               size={24}
               className={cn(
-                'motion-fast',
+                'transition-colors duration-150',
                 !canNavigate && 'opacity-40',
                 isActive && 'text-primary'
               )}
@@ -154,30 +157,18 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
 
           {/* State indicators - PREMIUM */}
           {uxState === 'blocked' && (
-            <motion.div 
-              className="absolute -right-1 -top-1 size-3 rounded-full bg-warning ring-2 ring-background"
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            />
+            <div className="absolute -right-1 -top-1 size-3 rounded-full bg-warning ring-2 ring-background" />
           )}
 
           {uxState === 'offline' && (
-            <motion.div 
-              className="absolute -right-1 -top-1 size-3 rounded-full bg-destructive ring-2 ring-background"
-              animate={{ scale: [1, 1.2, 1], opacity: [1, 0.5, 1] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            />
+            <div className="absolute -right-1 -top-1 size-3 rounded-full bg-destructive ring-2 ring-background" />
           )}
 
-          {/* Badge dot for notifications - PREMIUM PULSE */}
+          {/* Badge dot for notifications */}
           {canNavigate && item.badgeType === 'dot' && (
-            <motion.div 
-              className="absolute -right-1 -top-1 size-3 rounded-full bg-accent ring-2 ring-background"
-              animate={{ scale: [1, 1.3, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            />
+            <div className="absolute -right-1 -top-1 size-3 rounded-full bg-accent ring-2 ring-background" />
           )}
-        </motion.div>
+        </div>
 
         {/* Label - Hidden when collapsed */}
         {!isCollapsed && <span className="flex-1 truncate">{tGeneral(item.labelKey)}</span>}

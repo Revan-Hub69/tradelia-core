@@ -45,22 +45,23 @@ export const UiNavItem = forwardRef<HTMLElement, UiNavItemProps>(
             // Base styles
             'relative flex items-center gap-3 px-3 py-2',
             'rounded-xl',
-            'transition-all duration-200 ease-out',
+            'transition-[color,background-color,transform,box-shadow] duration-150 ease-out',
             'cursor-pointer',
 
             // Inactive state
             'text-muted-foreground',
-            'hover:bg-primary/10 hover:text-foreground hover:scale-[1.02]',
+            'hover:bg-primary/10 hover:text-foreground hover:-translate-y-0.5',
 
             // Active state
             'data-[active=true]:bg-primary/15 data-[active=true]:text-primary',
             'data-[active=true]:font-medium',
 
             // Focus
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2',
+            'focus-visible:shadow-[0_8px_18px_rgba(0,0,0,0.12)]',
 
-            // Signature press feedback
-            'active:scale-[0.98] active:transition-transform active:duration-75',
+            // Motion safety
+            'motion-reduce:transition-none motion-reduce:transform-none',
 
             className,
           )}
@@ -80,22 +81,23 @@ export const UiNavItem = forwardRef<HTMLElement, UiNavItemProps>(
           // Base styles
           'relative flex items-center gap-3 px-3 py-2',
           'rounded-xl',
-          'transition-all duration-200 ease-out',
+          'transition-[color,background-color,transform,box-shadow] duration-150 ease-out',
           'cursor-pointer',
 
           // Inactive state
           'text-muted-foreground',
-          'hover:bg-primary/10 hover:text-foreground hover:scale-[1.02]',
+          'hover:bg-primary/10 hover:text-foreground hover:-translate-y-0.5',
 
           // Active state
           'data-[active=true]:bg-primary/15 data-[active=true]:text-primary',
           'data-[active=true]:font-medium',
 
           // Focus
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2',
+          'focus-visible:shadow-[0_8px_18px_rgba(0,0,0,0.12)]',
 
-          // Signature press feedback
-          'active:scale-[0.98] active:transition-transform active:duration-75',
+          // Motion safety
+          'motion-reduce:transition-none motion-reduce:transform-none',
 
           className,
         )}

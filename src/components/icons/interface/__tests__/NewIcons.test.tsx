@@ -120,21 +120,21 @@ describe('New Interface Icons', () => {
       const { container } = render(<BellIcon state="active" />);
       const svg = container.querySelector('svg');
 
-      expect(svg).toHaveClass('scale-110');
+      expect(svg).toHaveClass('icon-state-active');
     });
 
     it('should apply pressed state', () => {
       const { container } = render(<LockIcon state="pressed" />);
       const svg = container.querySelector('svg');
 
-      expect(svg).toHaveClass('scale-95');
+      expect(svg).toHaveClass('icon-state-pressed');
     });
 
     it('should apply disabled state', () => {
       const { container } = render(<MoreVerticalIcon state="disabled" />);
       const svg = container.querySelector('svg');
 
-      expect(svg).toHaveClass('opacity-40');
+      expect(svg).toHaveClass('icon-state-disabled');
     });
   });
 

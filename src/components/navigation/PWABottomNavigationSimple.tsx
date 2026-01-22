@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 
 import { CommunityIcon, DynamicIcon, HomeIcon, LearnIcon, ProfileIcon, ToolsIcon, type IconName } from '@/components/icons';
@@ -19,6 +19,7 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
   const t = useTranslations('Dashboard');
   const navigationItems = getVisibleNavigationItems();
   const { navigate, isPending, navigationTarget } = useOptimizedNavigation();
+  const prefersReducedMotion = useReducedMotion();
 
   const handleNavigation = (href: string) => {
     if (pathname === href) {
@@ -52,7 +53,7 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
               key={item.id}
               active={isActive}
               className={cn(
-                'relative flex flex-col items-center justify-center min-w-0 flex-1 px-1 py-2',
+                'group relative flex flex-col items-center justify-center min-w-0 flex-1 px-1 py-2',
                 'min-h-[56px] tap-target',
                 'text-xs font-medium',
                 'touch-action-manipulation',
@@ -69,18 +70,21 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
                   layoutId="mobileActivePill"
                   className="absolute inset-0 bg-primary/10 rounded-2xl"
                   transition={{
-                    type: 'spring',
-                    stiffness: 400,
-                    damping: 30,
+                    type: 'tween',
+                    duration: prefersReducedMotion ? 0 : 0.15,
+                    ease: [0.16, 1, 0.3, 1],
                   }}
                 />
               )}
               
-              {/* PREMIUM ANIMATED ICON */}
-              <motion.div
-                className="relative z-10"
-                whileTap={{ scale: [1, 0.9, 1.1, 1], y: [0, -3, 0] }}
-                transition={{ duration: 0.3 }}
+              {/* PRIMARY ICON */}
+              <div
+                className={cn(
+                  'relative z-10',
+                  'transition-transform duration-150 ease-out',
+                  'group-hover:-translate-y-0.5',
+                  'motion-reduce:transform-none motion-reduce:transition-none',
+                )}
               >
                 {item.iconName === 'HomeIcon' && (
                   <HomeIcon size={24} isActive={isActive} />
@@ -102,13 +106,13 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
                     name={item.iconName as IconName}
                     size={24}
                     className={cn(
-                      'transition-all duration-300',
+                      'transition-colors duration-150',
                       isActive && 'text-primary',
                       isPending && navigationTarget === item.href && 'animate-pulse',
                     )}
                   />
                 )}
-              </motion.div>
+              </div>
               
               <span className="relative z-10 truncate leading-tight mt-1">
                 {t(item.labelKey.replace('Dashboard.', '') as 'nav_home')}

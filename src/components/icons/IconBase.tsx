@@ -14,7 +14,7 @@ import { cn } from '@/utils/Helpers';
 
 export type IconBaseProps = {
   'size'?: 16 | 20 | 24;
-  'strokeWidth'?: 1.5 | 1.75 | 2;
+  'strokeWidth'?: 1.75 | 2;
   'state'?: 'default' | 'active' | 'pressed' | 'disabled';
   'className'?: string;
   'aria-hidden'?: boolean;
@@ -44,29 +44,17 @@ export const IconBase: React.FC<IconProps> = ({
       strokeWidth={strokeWidth}
       strokeLinecap="round"
       strokeLinejoin="round"
+      vectorEffect="non-scaling-stroke"
+      shapeRendering="geometricPrecision"
       aria-hidden={ariaHidden}
       aria-label={ariaLabel}
+      data-state={state}
       className={cn(
-        // Base styles
-        'flex-shrink-0',
-        // Motion - solo transform/opacity per performance
-        'transition-transform duration-150 ease-out',
-        // State variations
-        {
-          'scale-100 opacity-100': state === 'default',
-          'scale-110 opacity-100': state === 'active',
-          'scale-95 opacity-90': state === 'pressed',
-          'scale-100 opacity-40': state === 'disabled',
-        },
+        'tradelia-icon',
+        'icon-tone-default',
+        `icon-state-${state}`,
         className,
       )}
-      style={{
-        // Ensure proper rendering for 3D transforms
-        transformStyle: 'preserve-3d',
-        backfaceVisibility: 'hidden',
-        // Hardware acceleration
-        willChange: 'transform',
-      }}
     >
       {children}
     </svg>
