@@ -14,7 +14,7 @@ export default function CommunityPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container-safe container mx-auto px-4 py-8">
       <div className="space-y-8">
         <div>
           <h1 className="text-2xl font-bold">Community</h1>
@@ -37,9 +37,19 @@ export default function CommunityPage() {
                   Il tuo link di invito:
                 </div>
                 <div className="rounded border bg-white p-2 font-mono text-sm dark:bg-slate-800">
-                  https://tradelia.com/invite/
-                  {userData.id.slice(0, 8)}
+                  <div className="break-anywhere select-all">
+                    https://tradelia.com/invite/{userData.id.slice(0, 8)}
+                  </div>
                 </div>
+                <button
+                  onClick={() => {
+                    const link = `https://tradelia.com/invite/${userData.id.slice(0, 8)}`;
+                    navigator.clipboard.writeText(link);
+                  }}
+                  className="mt-2 rounded bg-blue-600 px-3 py-1 text-xs text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+                >
+                  Copia Link
+                </button>
               </div>
             )}
 

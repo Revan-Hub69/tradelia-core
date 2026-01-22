@@ -10,7 +10,60 @@
  */
 
 /* ============================================================================
-   SIGNATURE DESIGN TOKENS 2026
+   NAVIGATION ANTI-SELECTION (MOBILE UX OPTIMIZATION)
+   ============================================================================ */
+
+/* Prevent text selection on navigation elements */
+.nav-item,
+.nav-button,
+.tap-target {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent text selection on interactive elements */
+button,
+[role="button"],
+[role="tab"],
+[role="menuitem"] {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Allow text selection only on content areas */
+.selectable-text {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+/* ============================================================================
+   RESPONSIVE OVERFLOW FIXES
+   ============================================================================ */
+
+/* Prevent horizontal overflow on mobile */
+.break-anywhere {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+/* Container overflow protection */
+.container-safe {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* ============================================================================
+   EXISTING STYLES CONTINUE BELOW
    ============================================================================ */
 
 :root {

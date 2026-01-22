@@ -52,8 +52,9 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
               key={item.id}
               active={isActive}
               className={cn(
+                'nav-item tap-target', // Add navigation classes
                 'relative flex flex-col items-center justify-center min-w-0 flex-1 px-1 py-2',
-                'min-h-[56px] tap-target',
+                'min-h-[56px]',
                 'text-xs font-medium',
                 'touch-action-manipulation',
                 // CSS-based active indicator instead of Framer Motion

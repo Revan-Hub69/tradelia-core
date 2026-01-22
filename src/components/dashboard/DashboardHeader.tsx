@@ -96,6 +96,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   useEffect(() => {
     const checkSidebar = () => {
       // Sidebar is present on tablet+ (768px+) based on layout structure
+      // Using 768px to match md: breakpoint exactly
       const mediaQuery = window.matchMedia('(min-width: 768px)');
       setHasSidebar(mediaQuery.matches);
     };
