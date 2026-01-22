@@ -319,6 +319,28 @@ describe('useLongPress', () => {
     expect(result.current.isPressed).toBe(false);
   });
 
+  it('should ignore mouse pointer type', () => {
+    const callback = vi.fn();
+    const { result } = renderHook(() => useLongPress(callback));
+
+    act(() => {
+      result.current.onPointerDown({
+        button: 0,
+        clientX: 100,
+        clientY: 100,
+        pointerType: 'mouse',
+        preventDefault: vi.fn(),
+      } as any);
+    });
+
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
+
+    expect(result.current.isPressed).toBe(false);
+    expect(callback).not.toHaveBeenCalled();
+  });
+
   it('should handle touch cancel', () => {
     const callback = vi.fn();
     const onCancel = vi.fn();

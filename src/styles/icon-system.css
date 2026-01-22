@@ -1,0 +1,79 @@
+/*
+ * TRADELIA ICON SYSTEM v2026
+ *
+ * Signature enterprise-grade icon rules and interaction tokens.
+ */
+
+.tradelia-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+/* Tone variants (apply via className) */
+.icon-tone-default {
+  color: hsl(var(--foreground));
+}
+
+.icon-tone-muted {
+  color: hsl(var(--muted-foreground));
+}
+
+.icon-tone-active {
+  color: hsl(var(--primary));
+}
+
+.icon-tone-danger {
+  color: hsl(var(--destructive));
+}
+
+.icon-tone-success {
+  color: hsl(var(--accent));
+}
+
+/* State markers (no opacity, no scale) */
+.icon-state-default {
+  color: inherit;
+}
+
+.icon-state-active {
+  color: inherit;
+}
+
+.icon-state-pressed {
+  color: inherit;
+}
+
+.icon-state-disabled {
+  color: hsl(var(--muted-foreground));
+}
+
+/* Icon button interactions */
+.tradelia-icon-button {
+  transition:
+    transform var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out),
+    color var(--motion-fast) var(--ease-out);
+}
+
+.tradelia-icon-button:hover {
+  transform: translateY(-1px);
+}
+
+.tradelia-icon-button:active {
+  transform: translateY(0);
+}
+
+.tradelia-icon-button:focus-visible {
+  box-shadow:
+    0 0 0 2px hsl(var(--primary) / 0.35),
+    0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tradelia-icon-button {
+    transition: none;
+    transform: none;
+  }
+}

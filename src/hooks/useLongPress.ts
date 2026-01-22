@@ -178,6 +178,11 @@ export const useLongPress = (
       return;
     }
 
+    // Ignore mouse pointers to avoid desktop "long press" triggers
+    if (event.pointerType === 'mouse') {
+      return;
+    }
+
     // Mark touch as handled to prevent duplicate touch events
     touchHandledRef.current = true;
 
