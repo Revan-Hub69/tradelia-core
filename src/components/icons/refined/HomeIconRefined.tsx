@@ -16,7 +16,7 @@ import { RefinedIconBase, type RefinedIconProps } from './RefinedIconBase';
 
 export type HomeIconRefinedProps = Omit<RefinedIconProps, 'children'> & {
   isActive?: boolean;
-  variant?: 'minimal' | 'detailed';
+  variant?: 'minimal' | 'elegant';
 };
 
 export const HomeIconRefined: React.FC<HomeIconRefinedProps> = ({
@@ -54,7 +54,7 @@ export const HomeIconRefined: React.FC<HomeIconRefinedProps> = ({
       />
 
       {/* Dettagli raffinati solo se richiesti */}
-      {variant === 'detailed' && (
+      {variant === 'elegant' && (
         <>
           {/* Finestre simmetriche */}
           <rect
@@ -66,7 +66,7 @@ export const HomeIconRefined: React.FC<HomeIconRefinedProps> = ({
             strokeWidth="1"
             opacity="0.6"
           />
-          
+
           <rect
             x="16"
             y="14"

@@ -195,12 +195,23 @@ export const RefinedIconShowcase: React.FC = () => {
 
       {/* Long Press Instructions */}
       <div className="rounded-lg bg-blue-50 p-4 text-sm dark:bg-blue-950/20">
-        <h4 className="font-semibold mb-2">Long Press Instructions:</h4>
+        <h4 className="mb-2 font-semibold">Long Press Instructions:</h4>
         <ul className="space-y-1 text-muted-foreground">
-          <li>• <strong>Touch devices:</strong> Long press normally</li>
-          <li>• <strong>Desktop:</strong> Hold Ctrl/Alt/Shift + click for long press</li>
-          <li>• <strong>Icons:</strong> Only discrete animations on interaction</li>
-          <li>• <strong>Design:</strong> Refined, elegant, minimal aesthetic</li>
+          <li>
+            • <strong>Mobile/Touch:</strong> Long press works normally ✅
+          </li>
+          <li>
+            • <strong>Desktop:</strong> Long press disabled to prevent accidents
+          </li>
+          <li>
+            • <strong>Desktop testing:</strong> Hold Ctrl/Alt/Shift + click for long press
+          </li>
+          <li>
+            • <strong>Icons:</strong> Discrete animations only on interaction
+          </li>
+          <li>
+            • <strong>Design:</strong> Refined, elegant, minimal aesthetic
+          </li>
         </ul>
       </div>
 

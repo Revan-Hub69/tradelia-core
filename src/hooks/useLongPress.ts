@@ -3,11 +3,14 @@
  *
  * Production-ready long-press hook with Pointer Events (primary) and
  * touch events fallback (iOS Safari). Implements 10px movement threshold
- * to prevent conflicts with scrolling. Only activates on touch devices
- * to prevent desktop mouse clicks from triggering long press.
+ * to prevent conflicts with scrolling. 
+ * 
+ * BEHAVIOR:
+ * - Mobile/Touch: Always works normally
+ * - Desktop: Requires modifier key (Ctrl/Alt/Shift) to prevent accidental triggers
  *
  * @module hooks/useLongPress
- * @version 1.1.0
+ * @version 1.2.0
  * @since 2026-01-22
  *
  * Task: P1.T1
@@ -179,12 +182,12 @@ export const useLongPress = (
       return;
     }
 
-    // Allow long press on desktop only with modifier keys (Ctrl, Alt, Shift)
-    // or on touch devices
+    // Allow long press on touch devices always
+    // On desktop, require modifier keys (Ctrl, Alt, Shift) to prevent accidental triggers
     const isTouch = event.pointerType === 'touch' || event.pointerType === 'pen';
     const hasModifier = event.ctrlKey || event.altKey || event.shiftKey;
     
-    if (event.pointerType === 'mouse' && !hasModifier) {
+    if (!isTouch && !hasModifier) {
       return;
     }
 
