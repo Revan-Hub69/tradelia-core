@@ -1,13 +1,14 @@
 /*
- * ICONS TEST PAGE - Tradelia Refined 2026
+ * SIGNATURE ICONS TEST PAGE - Tradelia Signature 2026
  *
- * Pagina di test per le nuove icone raffinate
+ * Pagina di test per il nuovo sistema signature di icone
+ * Basato su ricerche approfondite Apple iOS 26 + Linear + Best Practices 2026
  * Accessibile solo in development
  */
 
 import React from 'react';
 
-import { RefinedIconShowcase } from '@/components/icons/refined/RefinedIconShowcase';
+import { SignatureIconShowcase } from '@/components/icons/unified';
 
 export default function IconsTestPage() {
   // Solo in development
@@ -21,12 +22,12 @@ export default function IconsTestPage() {
 
   return (
     <div className="container mx-auto py-8">
-      <RefinedIconShowcase />
+      <SignatureIconShowcase />
     </div>
   );
 }
 
 export const metadata = {
-  title: 'Refined Icons Test - Tradelia',
-  description: 'Test page for refined and elegant icons',
+  title: 'Signature Icons Test - Tradelia 2026',
+  description: 'Test page for signature icon system - memorable, professional, innovative',
 };
