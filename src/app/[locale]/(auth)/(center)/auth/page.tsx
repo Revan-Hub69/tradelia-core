@@ -155,12 +155,12 @@ const UnifiedAuthPageContent = () => {
     mode: 'onBlur',
   });
 
-  // Enhanced email checking with better security
+  // Enhanced email checking with Tier 1 2026 method
   const checkEmailExists = async (email: string): Promise<boolean> => {
     const supabase = createClient();
     try {
       // Try to sign up with a dummy password to check if email exists
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password: 'temp-check-password-123',
         options: {
@@ -169,21 +169,29 @@ const UnifiedAuthPageContent = () => {
       });
 
       if (error) {
-        const errorMsg = error.message.toLowerCase();
+        // Handle real errors (network, validation, etc.)
+        console.log('📧 Email check error (assuming new user):', error.message);
+        return false;
+      }
 
-        // Check for user already exists errors
-        if (errorMsg.includes('user already registered')
-          || errorMsg.includes('email already registered')
-          || errorMsg.includes('already been registered')
-          || errorMsg.includes('email already exists')
-          || errorMsg.includes('user already exists')) {
-          return true; // User exists
+      // ✅ TIER 1 2026: Check identities array for existing users
+      if (data.user) {
+        if (data.user.identities && data.user.identities.length === 0) {
+          // 🚨 USER ALREADY EXISTS (Security obfuscation detected)
+          console.log('📧 Email exists (detected via empty identities):', email);
+          return true;
+        } else {
+          // ✅ NEW USER (identities array populated)
+          console.log('📧 Email appears to be new (identities populated):', email);
+          return false;
         }
       }
 
-      // If we get here, either no error (new user) or other error (assume new user)
+      // Fallback: assume new user
+      console.log('📧 Email check inconclusive (assuming new user):', email);
       return false;
-    } catch {
+    } catch (err) {
+      console.log('📧 Email check failed (assuming new user):', err);
       return false;
     }
   };
@@ -266,7 +274,7 @@ const UnifiedAuthPageContent = () => {
     });
 
     const supabase = createClient();
-    const { error: signUpError } = await supabase.auth.signUp({
+    const { data: signupData, error: signUpError } = await supabase.auth.signUp({
       email: data.email,
       password: data.password,
       options: {
@@ -291,11 +299,6 @@ const UnifiedAuthPageContent = () => {
         setError('Troppi tentativi. Riprova tra qualche minuto.');
       } else if (signUpError.message.includes('Invalid email')) {
         setError('Email non valida. Controlla il formato.');
-      } else if (signUpError.message.includes('User already registered')) {
-        setError('Email già registrata. Prova ad accedere invece.');
-        setAuthMode('login');
-        loginForm.setValue('email', data.email);
-        return;
       } else {
         setError(`Errore registrazione: ${signUpError.message}`);
       }
@@ -304,9 +307,31 @@ const UnifiedAuthPageContent = () => {
       return;
     }
 
-    console.log('✅ Signup successful, check email for confirmation');
-    setAuthMode('success');
-    setError(null);
+    // ✅ TIER 1 2026: Check identities array for existing users (Security-compliant detection)
+    if (signupData.user) {
+      if (signupData.user.identities && signupData.user.identities.length === 0) {
+        // 🚨 USER ALREADY EXISTS (Supabase security obfuscation detected)
+        console.log('🔄 User already exists (detected via empty identities array - Tier 1 method)');
+        setError('📧 Questa email è già registrata! Ti porto alla pagina di accesso.');
+        
+        // Smooth transition to login after user reads the message
+        setTimeout(() => {
+          setAuthMode('login');
+          loginForm.setValue('email', data.email);
+          setError(null);
+        }, 2500);
+        
+        setLoading(false);
+        return;
+      } else {
+        // ✅ NEW USER CREATED SUCCESSFULLY
+        console.log('✅ New user created successfully (identities array populated)');
+        setAuthMode('success');
+        setError(null);
+      }
+    }
+
+    setLoading(false);
   };
 
   const handleGoogleAuth = async () => {
@@ -727,15 +752,42 @@ const UnifiedAuthPageContent = () => {
                     </FadeIn>
                   )}
 
-                  {/* Error Message - Enhanced */}
+                  {/* Error Message - Enhanced with Actions */}
                   {error && (
                     <FadeIn>
                       <div className="rounded-lg border border-red-200 bg-red-50/80 p-4 backdrop-blur-sm dark:border-red-800 dark:bg-red-900/20">
-                        <div className="flex items-center gap-3">
-                          <svg className="size-5 shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <div className="flex items-start gap-3">
+                          <svg className="size-5 shrink-0 text-red-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
-                          <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
+                          <div className="flex-1">
+                            <p className="text-sm text-red-700 dark:text-red-300 mb-3">{error}</p>
+                            
+                            {/* Show helpful actions for "User already registered" */}
+                            {error.includes('già registrata') && (
+                              <div className="flex flex-col gap-2 sm:flex-row">
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => {
+                                    setAuthMode('login');
+                                    loginForm.setValue('email', userEmail);
+                                    setError(null);
+                                  }}
+                                  className="text-xs border-red-300 text-red-700 hover:bg-red-100 dark:border-red-700 dark:text-red-300 dark:hover:bg-red-900/30"
+                                >
+                                  🔑 Accedi invece
+                                </Button>
+                                <Link
+                                  href="/forgot-password"
+                                  className="inline-flex items-center justify-center rounded-md border border-red-300 bg-transparent px-3 py-1.5 text-xs font-medium text-red-700 transition-colors hover:bg-red-100 dark:border-red-700 dark:text-red-300 dark:hover:bg-red-900/30"
+                                >
+                                  🔄 Password dimenticata
+                                </Link>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </FadeIn>
