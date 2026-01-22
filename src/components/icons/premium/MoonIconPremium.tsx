@@ -10,8 +10,8 @@
 
 'use client';
 
-import { motion, type Variants } from 'framer-motion';
 import React from 'react';
+import { motion, type Variants } from 'framer-motion';
 
 import { PremiumIconBase, type PremiumIconProps, ICON_TOKENS } from '../PremiumIconBase';
 
@@ -121,10 +121,12 @@ export const MoonIconPremium: React.FC<MoonIconPremiumProps> = ({
                   cy={star.y}
                   r={star.size}
                   fill="currentColor"
-                  animate={motionLevel === 'full' ? {
-                    opacity: [0.5, 1, 0.5],
-                    scale: [1, 1.3, 1],
-                  } : {}}
+                  animate={motionLevel === 'full' 
+                    ? {
+                        opacity: [0.5, 1, 0.5],
+                        scale: [1, 1.3, 1],
+                      }
+                    : {}}
                   transition={{
                     duration: 2 + (index * 0.3),
                     repeat: Infinity,
@@ -135,10 +137,12 @@ export const MoonIconPremium: React.FC<MoonIconPremiumProps> = ({
                 
                 {/* Star cross sparkle */}
                 <motion.g
-                  animate={motionLevel === 'full' ? {
-                    opacity: [0.3, 0.8, 0.3],
-                    scale: [0.8, 1.2, 0.8],
-                  } : {}}
+                  animate={motionLevel === 'full' 
+                    ? {
+                        opacity: [0.3, 0.8, 0.3],
+                        scale: [0.8, 1.2, 0.8],
+                      }
+                    : {}}
                   transition={{
                     duration: 1.5 + (index * 0.2),
                     repeat: Infinity,
@@ -185,9 +189,11 @@ export const MoonIconPremium: React.FC<MoonIconPremiumProps> = ({
           stroke="currentColor"
           strokeWidth="1.5"
           filter={isActive ? 'url(#moon-glow)' : undefined}
-          animate={motionLevel === 'full' ? {
-            opacity: [0.9, 1, 0.9],
-          } : {}}
+          animate={motionLevel === 'full' 
+            ? {
+                opacity: [0.9, 1, 0.9],
+              }
+            : {}}
           transition={{
             duration: 3,
             repeat: Infinity,
@@ -259,9 +265,11 @@ export const MoonIconPremium: React.FC<MoonIconPremiumProps> = ({
           ry="3"
           fill="currentColor"
           opacity="0.2"
-          animate={motionLevel === 'full' ? {
-            opacity: [0.2, 0.4, 0.2],
-          } : {}}
+          animate={motionLevel === 'full' 
+            ? {
+                opacity: [0.2, 0.4, 0.2],
+              }
+            : {}}
           transition={{
             duration: 4,
             repeat: Infinity,

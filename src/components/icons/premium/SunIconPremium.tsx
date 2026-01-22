@@ -10,8 +10,8 @@
 
 'use client';
 
-import { motion, type Variants } from 'framer-motion';
 import React from 'react';
+import { motion, type Variants } from 'framer-motion';
 
 import { PremiumIconBase, type PremiumIconProps, ICON_TOKENS } from '../PremiumIconBase';
 
@@ -113,11 +113,13 @@ export const SunIconPremium: React.FC<SunIconPremiumProps> = ({
             strokeWidth="2"
             strokeLinecap="round"
             variants={rayVariants}
-            animate={motionLevel === 'full' ? {
-              ...rayVariants[currentState],
-              opacity: [0.7, 1, 0.7],
-              scale: [1, 1.1, 1],
-            } : rayVariants[currentState]}
+            animate={motionLevel === 'full' 
+              ? {
+                  ...rayVariants[currentState] as object,
+                  opacity: [0.7, 1, 0.7],
+                  scale: [1, 1.1, 1],
+                }
+              : currentState}
             transition={{
               ...ICON_TOKENS.springs.gentle,
               delay: index * 0.05,
@@ -139,10 +141,12 @@ export const SunIconPremium: React.FC<SunIconPremiumProps> = ({
         stroke="currentColor"
         strokeWidth="1.5"
         variants={coreVariants}
-        animate={motionLevel === 'full' ? {
-          ...coreVariants[currentState],
-          scale: pulseScale,
-        } : coreVariants[currentState]}
+        animate={motionLevel === 'full' 
+          ? {
+              ...coreVariants[currentState] as object,
+              scale: pulseScale,
+            }
+          : currentState}
         transition={{
           ...ICON_TOKENS.springs.gentle,
           repeat: motionLevel === 'full' ? Infinity : 0,
@@ -159,10 +163,12 @@ export const SunIconPremium: React.FC<SunIconPremiumProps> = ({
         r="1.5"
         fill="currentColor"
         opacity="0.4"
-        animate={motionLevel === 'full' ? {
-          opacity: [0.4, 0.7, 0.4],
-          scale: [1, 1.2, 1],
-        } : {}}
+        animate={motionLevel === 'full' 
+          ? {
+              opacity: [0.4, 0.7, 0.4],
+              scale: [1, 1.2, 1],
+            }
+          : {}}
         transition={{
           duration: pulseDuration * 0.8,
           repeat: motionLevel === 'full' ? Infinity : 0,
