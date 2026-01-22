@@ -1,10 +1,10 @@
 /*
  * THEME SWITCHER - Tradelia Signature Premium 2026
  *
- * Elegant theme toggle with signature animations
- * - Signature Sun/Moon icons with premium animations
- * - 180deg rotation on toggle
- * - Ray pulse + glow effects (full motion)
+ * Elegant theme toggle with premium signature animations
+ * - Premium Sun/Moon icons with advanced microinteractions
+ * - Spring physics animations
+ * - Haptic feedback integration
  * - Respects motion preferences
  * - Keyboard accessible (Space/Enter)
  * - Tooltip on hover
@@ -17,7 +17,7 @@ import { useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { MoonIcon, SunIcon } from '@/components/icons';
+import { MoonIconPremium, SunIconPremium } from '@/components/icons/premium';
 import { UiIconButton } from '@/components/ui';
 import {
   Tooltip,
@@ -51,13 +51,13 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
     {
       id: 'theme-light',
       labelKey: 'Dashboard.switch_to_light',
-      icon: <SunIcon size={16} />,
+      icon: <SunIconPremium size={16} isActive={!isDark} />,
       onClick: () => setTheme('light'),
     },
     {
       id: 'theme-dark',
       labelKey: 'Dashboard.switch_to_dark',
-      icon: <MoonIcon size={16} />,
+      icon: <MoonIconPremium size={16} isActive={isDark} />,
       onClick: () => setTheme('dark'),
     },
   ];
@@ -110,8 +110,8 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
             ref={triggerRef}
             label={t('theme_toggle_aria_label')}
             icon={isDark
-              ? <MoonIcon size={20} isActive />
-              : <SunIcon size={20} isActive />}
+              ? <MoonIconPremium size={20} isActive={true} phase="crescent" />
+              : <SunIconPremium size={20} isActive={true} intensity="medium" />}
             onClick={handleToggle}
             className={cn(className)}
             {...longPressHandlers}

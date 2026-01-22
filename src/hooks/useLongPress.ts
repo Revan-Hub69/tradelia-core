@@ -3,11 +3,12 @@
  *
  * Production-ready long-press hook with Pointer Events (primary) and
  * touch events fallback (iOS Safari). Implements 10px movement threshold
- * to prevent conflicts with scrolling.
+ * to prevent conflicts with scrolling. Only activates on touch devices
+ * to prevent desktop mouse clicks from triggering long press.
  *
  * @module hooks/useLongPress
- * @version 1.0.0
- * @since 2026-01-21
+ * @version 1.1.0
+ * @since 2026-01-22
  *
  * Task: P1.T1
  * Design: .kiro/specs/dashboard-accessibility-personalization/design.md
@@ -175,6 +176,12 @@ export const useLongPress = (
   const handlePointerDown = useCallback((event: React.PointerEvent) => {
     // Ignore right-click
     if (event.button === 2) {
+      return;
+    }
+
+    // Only activate long press on touch devices or when explicitly using touch
+    // This prevents desktop mouse clicks from triggering long press
+    if (event.pointerType === 'mouse') {
       return;
     }
 
