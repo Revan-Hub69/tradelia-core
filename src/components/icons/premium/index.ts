@@ -10,6 +10,11 @@
 
 import React from 'react';
 
+import { BellIconPremium } from './BellIconPremium';
+import { HomeIconPremium } from './HomeIconPremium';
+import { MoonIconPremium } from './MoonIconPremium';
+import { SunIconPremium } from './SunIconPremium';
+
 // Base system
 export { PremiumIconBase, useIconState, useIconSequence, ICON_TOKENS } from '../PremiumIconBase';
 export type { PremiumIconProps, IconSize, IconWeight, IconState, MotionLevel } from '../PremiumIconBase';
