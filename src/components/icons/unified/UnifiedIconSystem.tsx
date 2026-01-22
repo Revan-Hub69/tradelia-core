@@ -1,16 +1,19 @@
 /*
- * TRADELIA SIGNATURE ICON SYSTEM 2026 - CLEAN & PROFESSIONAL
+ * TRADELIA SIGNATURE ICON SYSTEM 2026 - TIER 1 RESEARCH BASED
  *
- * Sistema di icone educative per piattaforma crypto
- * Basato su ricerche tier 1: Apple, Linear, IBM Design
+ * RICERCA APPROFONDITA DA FONTI TIER 1:
+ * - Apple Human Interface Guidelines 2024-2025: Clarity, precision, optical balance
+ * - Heroicons Official: Hand-crafted SVG, 1.5px stroke, 24x24 grid
+ * - Lucide Design System: Community-driven, consistent stroke, minimal modern
+ * - Linear App: Professional minimalism, mathematical precision
+ * - Structured Icon Libraries: Consistent geometry, optical correction
  *
- * SPECIFICHE:
- * - Grid: 24x24px con live area 20x20px
- * - Stroke: 2px uniforme per 24px icons
- * - Coordinate: Snap alla griglia 0.5px
- * - Colori: currentColor + design system
- * - Zero Framer Motion (solo CSS transitions)
- * - Oggetti appropriati per educazione crypto
+ * PRINCIPI FONDAMENTALI:
+ * - Clarity: Ogni elemento deve essere immediatamente riconoscibile
+ * - Consistency: Stroke weight uniforme, grid alignment perfetto
+ * - Recognition: Simboli universali, non interpretazioni creative
+ * - Optical Balance: Correzioni ottiche per perfetta percezione visiva
+ * - Professional Grade: Qualità enterprise, non consumer
  */
 
 'use client';
@@ -20,30 +23,35 @@ import React, { memo, useCallback } from 'react';
 import { cn } from '@/utils/Helpers';
 
 // ============================================================================
-// DESIGN TOKENS 2026 - CLEAN & MINIMAL
+// DESIGN TOKENS - TIER 1 RESEARCH BASED
 // ============================================================================
 
 export type IconSize = 16 | 20 | 24 | 28 | 32;
 export type IconVariant = 'minimal' | 'signature' | 'premium';
 export type IconState = 'default' | 'hover' | 'active' | 'disabled';
 
-// Clean design tokens - no complex animations
+// Mathematical precision based on Apple HIG and Linear App research
 export const SIGNATURE_TOKENS = {
   sizes: {
-    16: { size: 16, strokeWidth: 1.5, padding: 2 },
-    20: { size: 20, strokeWidth: 1.75, padding: 2.5 },
-    24: { size: 24, strokeWidth: 2, padding: 3 },
-    28: { size: 28, strokeWidth: 2, padding: 3.5 },
-    32: { size: 32, strokeWidth: 2.5, padding: 4 },
+    16: { size: 16, strokeWidth: 1.25, padding: 2 },    // Optical correction for small sizes
+    20: { size: 20, strokeWidth: 1.5, padding: 2.5 },   // Standard Heroicons weight
+    24: { size: 24, strokeWidth: 1.5, padding: 3 },     // Primary size, perfect grid
+    28: { size: 28, strokeWidth: 1.75, padding: 3.5 },  // Optical scaling
+    32: { size: 32, strokeWidth: 2, padding: 4 },       // Large size, increased weight
   },
-  transitions: {
-    fast: { duration: 0.15, ease: 'ease-out' },
-    base: { duration: 0.2, ease: 'ease-out' },
+  // Professional color system
+  colors: {
+    primary: 'currentColor',
+    secondary: 'hsl(var(--muted-foreground))',
+    accent: 'hsl(var(--primary))',
+    success: 'hsl(var(--success))',
+    warning: 'hsl(var(--warning))',
+    destructive: 'hsl(var(--destructive))',
   },
 } as const;
 
 // ============================================================================
-// SIGNATURE ICON BASE - CLEAN FOUNDATION
+// ICON BASE - PROFESSIONAL GRADE
 // ============================================================================
 
 export type SignatureIconProps = {
@@ -88,18 +96,30 @@ export const SignatureIconBase = memo<SignatureIconProps>(({
       aria-hidden={ariaHidden}
       aria-label={ariaLabel}
       className={cn(
+        // Base styles - professional grade
         'flex-shrink-0 select-none',
         'transition-all duration-200 ease-out',
-        'focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2',
+        // Optical corrections
+        'antialiased',
+        // State management
         {
-          'opacity-60': state === 'disabled',
-          'opacity-90': variant === 'minimal',
-          'opacity-100': variant === 'signature' || variant === 'premium',
+          'opacity-40 cursor-not-allowed': state === 'disabled',
+          'opacity-70': variant === 'minimal',
+          'opacity-90 hover:opacity-100': variant === 'signature',
+          'opacity-100': variant === 'premium',
+          'scale-95': state === 'active',
+          'hover:scale-105': state === 'hover' && variant === 'premium',
         },
         className,
       )}
       onMouseEnter={onHover}
       onClick={handlePress}
+      style={{
+        // Hardware acceleration for smooth animations
+        willChange: 'transform, opacity',
+        // Perfect pixel alignment
+        shapeRendering: 'geometricPrecision',
+      }}
     >
       {children}
     </svg>
@@ -109,10 +129,10 @@ export const SignatureIconBase = memo<SignatureIconProps>(({
 SignatureIconBase.displayName = 'SignatureIconBase';
 
 // ============================================================================
-// TRADELIA SIGNATURE ICONS 2026 - EDUCATIONAL & PROFESSIONAL
+// TIER 1 PROFESSIONAL ICONS - UNIVERSALLY RECOGNIZABLE
 // ============================================================================
 
-// HOME ICON - Dashboard home
+// HOME ICON - Universal house symbol, Apple HIG compliant
 export const HomeIcon = memo<Omit<SignatureIconProps, 'children'> & {
   isActive?: boolean;
 }>(({
@@ -120,13 +140,13 @@ export const HomeIcon = memo<Omit<SignatureIconProps, 'children'> & {
   ...props
 }) => (
   <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
-    <path d="M3 12l9-9 9 9" />
-    <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" />
-    <path d="M9 21v-6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v6" />
+    {/* Perfect house silhouette - universally recognized */}
+    <path d="M3 9.5L12 2l9 7.5v11a2 2 0 01-2 2H5a2 2 0 01-2-2v-11z" />
+    <path d="M9 22V12h6v10" />
   </SignatureIconBase>
 ));
 
-// BELL ICON - Notifications
+// BELL ICON - Classic notification bell, professional grade
 export const BellIcon = memo<Omit<SignatureIconProps, 'children'> & {
   hasNotifications?: boolean;
   notificationCount?: number;
@@ -136,72 +156,65 @@ export const BellIcon = memo<Omit<SignatureIconProps, 'children'> & {
   ...props
 }) => (
   <SignatureIconBase {...props} state={hasNotifications ? 'active' : props.state}>
-    <path d="M6 8A6 6 0 0 1 18 8c0 7 3 9 3 9H3s3-2 3-9" />
-    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+    {/* Classic bell shape - immediately recognizable */}
+    <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" />
+    <path d="M13.73 21a2 2 0 01-3.46 0" />
+    {/* Professional notification badge */}
     {hasNotifications && (
-      <circle
-        cx="18"
-        cy="6"
-        r="3"
-        fill="hsl(var(--destructive))"
-        stroke="hsl(var(--background))"
-        strokeWidth="2"
-      />
-    )}
-    {hasNotifications && notificationCount > 0 && (
-      <text
-        x="18"
-        y="7"
-        textAnchor="middle"
-        fontSize="6"
-        fill="hsl(var(--destructive-foreground))"
-        fontWeight="700"
-      >
-        {notificationCount > 9 ? '9+' : notificationCount}
-      </text>
+      <>
+        <circle
+          cx="19"
+          cy="6"
+          r="3"
+          fill="hsl(var(--destructive))"
+          stroke="hsl(var(--background))"
+          strokeWidth="2"
+        />
+        {notificationCount > 0 && (
+          <text
+            x="19"
+            y="7.5"
+            textAnchor="middle"
+            fontSize="7"
+            fontWeight="700"
+            fill="hsl(var(--destructive-foreground))"
+          >
+            {notificationCount > 9 ? '9+' : notificationCount}
+          </text>
+        )}
+      </>
     )}
   </SignatureIconBase>
 ));
 
-// LIGHT ICON - Light theme (monitor with sun)
-export const LightIcon = memo<Omit<SignatureIconProps, 'children'> & {
+// SUN ICON - Perfect solar symbol, 8-ray symmetry
+export const SunIcon = memo<Omit<SignatureIconProps, 'children'> & {
   isActive?: boolean;
 }>(({
   isActive = false,
   ...props
 }) => (
   <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
-    <rect x="2" y="4" width="20" height="14" rx="2" />
-    <path d="M8 21h8" />
-    <path d="M12 17v4" />
-    <circle cx="12" cy="11" r="3" />
-    <path d="M12 5v2" />
-    <path d="M12 15v2" />
-    <path d="M16.24 7.76l-1.41 1.41" />
-    <path d="M9.17 14.83l-1.41 1.41" />
-    <path d="M19 11h-2" />
-    <path d="M7 11H5" />
-    <path d="M16.24 14.24l-1.41-1.41" />
-    <path d="M9.17 9.17L7.76 7.76" />
+    {/* Perfect circle sun with mathematical ray positioning */}
+    <circle cx="12" cy="12" r="5" />
+    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
   </SignatureIconBase>
 ));
 
-// DARK ICON - Dark theme (monitor with moon)
-export const DarkIcon = memo<Omit<SignatureIconProps, 'children'> & {
+// MOON ICON - Crescent moon, perfect optical balance
+export const MoonIcon = memo<Omit<SignatureIconProps, 'children'> & {
   isActive?: boolean;
 }>(({
   isActive = false,
   ...props
 }) => (
   <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
-    <rect x="2" y="4" width="20" height="14" rx="2" />
-    <path d="M8 21h8" />
-    <path d="M12 17v4" />
-    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    {/* Perfect crescent shape - universally recognized */}
+    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
   </SignatureIconBase>
 ));
 
-// MENU ICON - Hamburger menu
+// MENU ICON - Three horizontal lines, perfect spacing
 export const MenuIcon = memo<Omit<SignatureIconProps, 'children'> & {
   isOpen?: boolean;
 }>(({
@@ -209,23 +222,22 @@ export const MenuIcon = memo<Omit<SignatureIconProps, 'children'> & {
   ...props
 }) => (
   <SignatureIconBase {...props} state={isOpen ? 'active' : props.state}>
-    <line x1="4" y1="6" x2="20" y2="6" />
-    <line x1="4" y1="12" x2="20" y2="12" />
-    <line x1="4" y1="18" x2="20" y2="18" />
+    {/* Perfect hamburger menu - mathematical spacing */}
+    <path d="M3 6h18M3 12h18M3 18h18" />
   </SignatureIconBase>
 ));
 
-// CLOSE ICON - X close
+// CLOSE ICON - Perfect X, diagonal balance
 export const CloseIcon = memo<Omit<SignatureIconProps, 'children'>>(({
   ...props
 }) => (
   <SignatureIconBase {...props}>
-    <line x1="18" y1="6" x2="6" y2="18" />
-    <line x1="6" y1="6" x2="18" y2="18" />
+    {/* Perfect X with optical balance */}
+    <path d="M18 6L6 18M6 6l12 12" />
   </SignatureIconBase>
 ));
 
-// CHEVRON DOWN ICON - Dropdown arrow
+// CHEVRON DOWN - Perfect arrow, mathematical precision
 export const ChevronDownIcon = memo<Omit<SignatureIconProps, 'children'> & {
   isOpen?: boolean;
 }>(({
@@ -233,18 +245,18 @@ export const ChevronDownIcon = memo<Omit<SignatureIconProps, 'children'> & {
   ...props
 }) => (
   <SignatureIconBase {...props} state={isOpen ? 'active' : props.state}>
-    <polyline
-      points="6,9 12,15 18,9"
+    <path
+      d="M6 9l6 6 6-6"
       style={{
         transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
         transformOrigin: '12px 12px',
-        transition: 'transform 0.2s ease-out',
+        transition: 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
       }}
     />
   </SignatureIconBase>
 ));
 
-// SETTINGS ICON - Gear
+// SETTINGS ICON - Classic gear, professional grade
 export const SettingsIcon = memo<Omit<SignatureIconProps, 'children'> & {
   isActive?: boolean;
 }>(({
@@ -252,12 +264,13 @@ export const SettingsIcon = memo<Omit<SignatureIconProps, 'children'> & {
   ...props
 }) => (
   <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    {/* Professional settings gear */}
     <circle cx="12" cy="12" r="3" />
-    <path d="M12 1v6m0 10v6m11-7h-6m-10 0H1m15.5-6.5l-4.24 4.24M6.74 17.26L2.5 21.5m15-15l-4.24 4.24M6.74 6.74L2.5 2.5" />
+    <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
   </SignatureIconBase>
 ));
 
-// LEARN ICON - Open book
+// BOOK ICON - Open book, learning symbol
 export const LearnIcon = memo<Omit<SignatureIconProps, 'children'> & {
   isActive?: boolean;
 }>(({
@@ -265,12 +278,13 @@ export const LearnIcon = memo<Omit<SignatureIconProps, 'children'> & {
   ...props
 }) => (
   <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
-    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+    {/* Classic open book */}
+    <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z" />
+    <path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z" />
   </SignatureIconBase>
 ));
 
-// CALCULATOR ICON - Crypto calculator tool
+// CALCULATOR ICON - Professional calculator
 export const CalculatorIcon = memo<Omit<SignatureIconProps, 'children'> & {
   isActive?: boolean;
 }>(({
@@ -278,20 +292,14 @@ export const CalculatorIcon = memo<Omit<SignatureIconProps, 'children'> & {
   ...props
 }) => (
   <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    {/* Professional calculator design */}
     <rect x="4" y="2" width="16" height="20" rx="2" />
-    <line x1="8" y1="6" x2="16" y2="6" />
-    <line x1="16" y1="14" x2="16" y2="18" />
-    <path d="M16 10h.01" />
-    <path d="M12 10h.01" />
-    <path d="M8 10h.01" />
-    <path d="M12 14h.01" />
-    <path d="M8 14h.01" />
-    <path d="M12 18h.01" />
-    <path d="M8 18h.01" />
+    <rect x="6" y="6" width="12" height="3" rx="1" />
+    <path d="M8 13h1M8 16h1M8 19h1M12 13h1M12 16h1M12 19h1M16 13h1M16 16v3" />
   </SignatureIconBase>
 ));
 
-// FORUM ICON - Community discussion
+// CHAT ICON - Speech bubble, communication
 export const ForumIcon = memo<Omit<SignatureIconProps, 'children'> & {
   isActive?: boolean;
 }>(({
@@ -299,13 +307,13 @@ export const ForumIcon = memo<Omit<SignatureIconProps, 'children'> & {
   ...props
 }) => (
   <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
-    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-    <path d="M8 9h8" />
-    <path d="M8 13h6" />
+    {/* Classic speech bubble */}
+    <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+    <path d="M8 9h8M8 13h6" />
   </SignatureIconBase>
 ));
 
-// PROFILE ICON - User profile
+// USER ICON - Person silhouette, profile
 export const ProfileIcon = memo<Omit<SignatureIconProps, 'children'> & {
   isActive?: boolean;
 }>(({
@@ -313,12 +321,13 @@ export const ProfileIcon = memo<Omit<SignatureIconProps, 'children'> & {
   ...props
 }) => (
   <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
-    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+    {/* Professional user icon */}
+    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
     <circle cx="12" cy="7" r="4" />
   </SignatureIconBase>
 ));
 
-// GLOBE ICON - Language/internationalization
+// GLOBE ICON - World symbol, language/global
 export const GlobeIcon = memo<Omit<SignatureIconProps, 'children'> & {
   isActive?: boolean;
 }>(({
@@ -326,13 +335,13 @@ export const GlobeIcon = memo<Omit<SignatureIconProps, 'children'> & {
   ...props
 }) => (
   <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    {/* Perfect globe with meridians */}
     <circle cx="12" cy="12" r="10" />
-    <line x1="2" y1="12" x2="22" y2="12" />
-    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+    <path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
   </SignatureIconBase>
 ));
 
-// LOCK ICON - Security/privacy
+// LOCK ICON - Security symbol
 export const LockIcon = memo<Omit<SignatureIconProps, 'children'> & {
   isActive?: boolean;
 }>(({
@@ -340,13 +349,13 @@ export const LockIcon = memo<Omit<SignatureIconProps, 'children'> & {
   ...props
 }) => (
   <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    {/* Professional lock icon */}
     <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-    <circle cx="12" cy="16" r="1" />
-    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+    <path d="M7 11V7a5 5 0 0110 0v4" />
   </SignatureIconBase>
 ));
 
-// EXIT ICON - Logout/sign out
+// EXIT ICON - Door with arrow, logout
 export const ExitIcon = memo<Omit<SignatureIconProps, 'children'> & {
   isActive?: boolean;
 }>(({
@@ -354,13 +363,12 @@ export const ExitIcon = memo<Omit<SignatureIconProps, 'children'> & {
   ...props
 }) => (
   <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
-    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-    <polyline points="16,17 21,12 16,7" />
-    <line x1="21" y1="12" x2="9" y2="12" />
+    {/* Professional exit icon */}
+    <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
   </SignatureIconBase>
 ));
 
-// MORE VERTICAL ICON - Overflow menu
+// MORE VERTICAL ICON - Three dots menu
 export const MoreVerticalIcon = memo<Omit<SignatureIconProps, 'children'> & {
   isActive?: boolean;
 }>(({
@@ -368,6 +376,7 @@ export const MoreVerticalIcon = memo<Omit<SignatureIconProps, 'children'> & {
   ...props
 }) => (
   <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    {/* Perfect three dots - mathematical spacing */}
     <circle cx="12" cy="12" r="1" />
     <circle cx="12" cy="5" r="1" />
     <circle cx="12" cy="19" r="1" />
@@ -377,8 +386,8 @@ export const MoreVerticalIcon = memo<Omit<SignatureIconProps, 'children'> & {
 // Display names for debugging
 HomeIcon.displayName = 'TradeliaHomeIcon';
 BellIcon.displayName = 'TradeliaBellIcon';
-LightIcon.displayName = 'TradeliaLightIcon';
-DarkIcon.displayName = 'TradeliaDarkIcon';
+SunIcon.displayName = 'TradeliaSunIcon';
+MoonIcon.displayName = 'TradeliaMoonIcon';
 MenuIcon.displayName = 'TradeliaMenuIcon';
 CloseIcon.displayName = 'TradeliaCloseIcon';
 ChevronDownIcon.displayName = 'TradeliaChevronDownIcon';
@@ -393,14 +402,14 @@ ExitIcon.displayName = 'TradeliaExitIcon';
 MoreVerticalIcon.displayName = 'TradeliaMoreVerticalIcon';
 
 // Legacy aliases for compatibility
-export const SunIcon = LightIcon;
-export const MoonIcon = DarkIcon;
+export const LightIcon = SunIcon;
+export const DarkIcon = MoonIcon;
 export const ToolsIcon = CalculatorIcon;
 export const CommunityIcon = ForumIcon;
 export const LogoutIcon = ExitIcon;
 
-SunIcon.displayName = 'TradeliaSunIcon';
-MoonIcon.displayName = 'TradeliaMoonIcon';
+LightIcon.displayName = 'TradeliaLightIcon';
+DarkIcon.displayName = 'TradeliaDarkIcon';
 ToolsIcon.displayName = 'TradeliaToolsIcon';
 CommunityIcon.displayName = 'TradeliaCommunityIcon';
 LogoutIcon.displayName = 'TradeliaLogoutIcon';
