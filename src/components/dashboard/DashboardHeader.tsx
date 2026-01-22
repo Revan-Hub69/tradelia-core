@@ -14,7 +14,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { SearchIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import { UiButton } from '@/components/ui/UiButton';
