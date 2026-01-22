@@ -7,6 +7,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { signUpWithEmailAndPassword, checkEmailExistsServer, signInWithEmailAndPassword } from '@/app/actions/auth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -155,43 +156,23 @@ const UnifiedAuthPageContent = () => {
     mode: 'onBlur',
   });
 
-  // Enhanced email checking with Tier 1 2026 method
+  // Server-side email checking - More reliable than client-side
   const checkEmailExists = async (email: string): Promise<boolean> => {
-    const supabase = createClient();
     try {
-      // Try to sign up with a dummy password to check if email exists
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password: 'temp-check-password-123',
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
-
-      if (error) {
-        // Handle real errors (network, validation, etc.)
-        console.log('📧 Email check error (assuming new user):', error.message);
+      console.log('📧 Server-side email check for:', email);
+      const result = await checkEmailExistsServer(email);
+      
+      if (result.error) {
+        console.error('❌ Email check error:', result.error);
+        // On error, assume new user to allow signup attempt
         return false;
       }
 
-      // ✅ TIER 1 2026: Check identities array for existing users
-      if (data.user) {
-        if (data.user.identities && data.user.identities.length === 0) {
-          // 🚨 USER ALREADY EXISTS (Security obfuscation detected)
-          console.log('📧 Email exists (detected via empty identities):', email);
-          return true;
-        } else {
-          // ✅ NEW USER (identities array populated)
-          console.log('📧 Email appears to be new (identities populated):', email);
-          return false;
-        }
-      }
-
-      // Fallback: assume new user
-      console.log('📧 Email check inconclusive (assuming new user):', email);
-      return false;
-    } catch (err) {
-      console.log('📧 Email check failed (assuming new user):', err);
+      console.log('📧 Email check result:', result.exists ? 'EXISTS' : 'NEW');
+      return result.exists;
+    } catch (error) {
+      console.error('💥 Email check exception:', error);
+      // On exception, assume new user
       return false;
     }
   };
@@ -238,22 +219,32 @@ const UnifiedAuthPageContent = () => {
     setLoading(true);
     setError(null);
 
-    const supabase = createClient();
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email: data.email,
-      password: data.password,
-    });
+    console.log('🔐 Server-side login attempt for:', data.email);
 
-    if (signInError) {
+    try {
+      const result = await signInWithEmailAndPassword({
+        email: data.email,
+        password: data.password,
+      });
+
+      if (!result.success) {
+        console.error('❌ Login failed:', result.error);
+        authRateLimit.recordAttempt();
+        setError(result.error || 'Errore durante l\'accesso');
+        setLoading(false);
+        return;
+      }
+
+      console.log('✅ Login successful');
+      const redirect = searchParams.get('redirect') || '/dashboard';
+      router.push(redirect);
+      router.refresh();
+    } catch (error) {
+      console.error('💥 Login exception:', error);
       authRateLimit.recordAttempt();
-      setError(t('error_invalid_credentials'));
+      setError('Errore del server. Riprova più tardi.');
       setLoading(false);
-      return;
     }
-
-    const redirect = searchParams.get('redirect') || '/dashboard';
-    router.push(redirect);
-    router.refresh();
   };
 
   const handleSignupSubmit = async (data: SignupForm) => {
@@ -267,71 +258,57 @@ const UnifiedAuthPageContent = () => {
     setLoading(true);
     setError(null);
 
-    console.log('🔐 Starting signup process...', {
-      email: data.email,
-      origin: window.location.origin,
-      redirectUrl: `${window.location.origin}/auth/callback?redirect=/dashboard`,
-    });
+    console.log('🔐 Client-side signup attempt for:', data.email);
 
-    const supabase = createClient();
-    const { data: signupData, error: signUpError } = await supabase.auth.signUp({
-      email: data.email,
-      password: data.password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback?redirect=/dashboard`,
-        data: {
-          // Add user metadata if needed
+    try {
+      // Use client-side signup with identities check (Tier 1 2026 method)
+      const supabase = createClient();
+      const { data: signupData, error: signUpError } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback?redirect=/dashboard`,
         },
-      },
-    });
+      });
 
-    if (signUpError) {
-      console.error('❌ Signup error:', signUpError);
-      authRateLimit.recordAttempt();
-      
-      // Handle specific Supabase errors
-      if (signUpError.message.includes('Error sending confirmation email')) {
-        setEmailSignupDisabled(true);
-        setError('⚠️ Problema temporaneo con email. Usa Google per registrarti rapidamente.');
-      } else if (signUpError.message.includes('Invalid redirect URL')) {
-        setError('Errore configurazione: URL di redirect non autorizzato. Contatta il supporto.');
-      } else if (signUpError.message.includes('Email rate limit')) {
-        setError('Troppi tentativi. Riprova tra qualche minuto.');
-      } else if (signUpError.message.includes('Invalid email')) {
-        setError('Email non valida. Controlla il formato.');
-      } else {
+      if (signUpError) {
+        console.error('❌ Signup error:', signUpError);
+        authRateLimit.recordAttempt();
         setError(`Errore registrazione: ${signUpError.message}`);
-      }
-      
-      setLoading(false);
-      return;
-    }
-
-    // ✅ TIER 1 2026: Check identities array for existing users (Security-compliant detection)
-    if (signupData.user) {
-      if (signupData.user.identities && signupData.user.identities.length === 0) {
-        // 🚨 USER ALREADY EXISTS (Supabase security obfuscation detected)
-        console.log('🔄 User already exists (detected via empty identities array - Tier 1 method)');
-        setError('📧 Questa email è già registrata! Ti porto alla pagina di accesso.');
-        
-        // Smooth transition to login after user reads the message
-        setTimeout(() => {
-          setAuthMode('login');
-          loginForm.setValue('email', data.email);
-          setError(null);
-        }, 2500);
-        
         setLoading(false);
         return;
-      } else {
-        // ✅ NEW USER CREATED SUCCESSFULLY
-        console.log('✅ New user created successfully (identities array populated)');
-        setAuthMode('success');
-        setError(null);
       }
-    }
 
-    setLoading(false);
+      // ✅ TIER 1 2026: Check identities array for existing users
+      if (signupData.user) {
+        if (signupData.user.identities && signupData.user.identities.length === 0) {
+          // 🚨 USER ALREADY EXISTS (Security obfuscation detected)
+          console.log('🔄 User already exists (detected via empty identities array)');
+          setError('📧 Questa email è già registrata! Ti porto alla pagina di accesso.');
+          
+          setTimeout(() => {
+            setAuthMode('login');
+            loginForm.setValue('email', data.email);
+            setError(null);
+          }, 2500);
+          
+          setLoading(false);
+          return;
+        } else {
+          // ✅ NEW USER CREATED
+          console.log('✅ New user created successfully');
+          setAuthMode('success');
+          setError(null);
+        }
+      }
+
+      setLoading(false);
+    } catch (error) {
+      console.error('💥 Signup exception:', error);
+      authRateLimit.recordAttempt();
+      setError('Errore del server. Riprova più tardi.');
+      setLoading(false);
+    }
   };
 
   const handleGoogleAuth = async () => {
