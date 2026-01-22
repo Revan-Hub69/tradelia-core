@@ -24,6 +24,7 @@ import { useAuthRateLimit, useEmailCheckRateLimit } from '@/hooks/useRateLimit';
 import { Link, useRouter } from '@/libs/i18nNavigation';
 import { createClient } from '@/libs/supabase/client';
 import { Logo } from '@/templates/Logo';
+import { checkSupabaseConfig } from '@/utils/supabase-config-check';
 
 /**
  * Premium Auth Page 2026 - Best Practices Implementation
@@ -57,6 +58,17 @@ const UnifiedAuthPageContent = () => {
 
     return () => clearInterval(interval);
   }, [authRateLimit, emailCheckRateLimit]);
+
+  // Check Supabase configuration in development
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      checkSupabaseConfig().then((config) => {
+        if (!config.connection) {
+          setError('Supabase connection failed. Check configuration.');
+        }
+      });
+    }
+  }, []);
 
   // Enhanced schemas with better validation
   const emailSchema = z.object({
@@ -290,12 +302,15 @@ const UnifiedAuthPageContent = () => {
           access_type: 'offline',
           prompt: 'consent',
         },
+        // Skip email confirmation for OAuth providers
+        skipBrowserRedirect: false,
       },
     });
 
     if (error) {
+      console.error('Google OAuth error:', error);
       authRateLimit.recordAttempt();
-      setError(t('error_google_auth'));
+      setError(`${t('error_google_auth')}: ${error.message}`);
       setIsGoogleLoading(false);
     }
   };
