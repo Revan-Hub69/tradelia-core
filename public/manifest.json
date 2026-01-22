@@ -7,7 +7,7 @@
   "background_color": "#ffffff",
   "theme_color": "#3b82f6",
   "orientation": "portrait-primary",
-  "scope": "/dashboard",
+  "scope": "/",
   "lang": "en",
   "categories": ["education", "finance", "productivity"],
   "icons": [
@@ -57,7 +57,7 @@
       "name": "Portfolio",
       "short_name": "Portfolio",
       "description": "View your crypto portfolio",
-      "url": "/dashboard/portfolio",
+      "url": "/dashboard/profile",
       "icons": [
         {
           "src": "/icon.svg",
@@ -80,10 +80,10 @@
       ]
     },
     {
-      "name": "Analytics",
-      "short_name": "Analytics",
-      "description": "View trading analytics",
-      "url": "/dashboard/analytics",
+      "name": "Community",
+      "short_name": "Community",
+      "description": "Join the trading community",
+      "url": "/dashboard/community",
       "icons": [
         {
           "src": "/icon.svg",
