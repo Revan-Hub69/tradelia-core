@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 
-import { CommunityIcon, DynamicIcon, HomeIcon, type IconName, LearnIcon, ProfileIcon, ToolsIcon } from '@/components/icons';
+import { DynamicIcon, type IconName } from '@/components/icons';
 import { UiNavItem, UiSurface } from '@/components/ui';
 import { getVisibleNavigationItems } from '@/data/navigation.config';
 import { useOptimizedNavigation } from '@/hooks/useOptimizedNavigation';
@@ -78,39 +78,34 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
 
               {/* PREMIUM ANIMATED ICON */}
               <motion.div
-                className="relative z-10"
+                className={cn(
+                  'relative z-10 transition-colors',
+                  isActive
+                    ? 'text-primary'
+                    : 'text-foreground/80 group-hover:text-foreground',
+                )}
                 whileTap={{ scale: [1, 0.9, 1.1, 1], y: [0, -3, 0] }}
                 transition={{ duration: 0.3 }}
               >
-                {item.iconName === 'HomeIcon' && (
-                  <HomeIcon size={24} isActive={isActive} />
-                )}
-                {item.iconName === 'LearnIcon' && (
-                  <LearnIcon size={24} isActive={isActive} />
-                )}
-                {item.iconName === 'ToolsIcon' && (
-                  <ToolsIcon size={24} isActive={isActive} />
-                )}
-                {item.iconName === 'CommunityIcon' && (
-                  <CommunityIcon size={24} isActive={isActive} />
-                )}
-                {item.iconName === 'ProfileIcon' && (
-                  <ProfileIcon size={24} isActive={isActive} />
-                )}
-                {!['HomeIcon', 'LearnIcon', 'ToolsIcon', 'CommunityIcon', 'ProfileIcon'].includes(item.iconName) && (
-                  <DynamicIcon
-                    name={item.iconName as IconName}
-                    size={24}
-                    className={cn(
-                      'transition-all duration-300',
-                      isActive && 'text-primary',
-                      isPending && navigationTarget === item.href && 'animate-pulse',
-                    )}
-                  />
-                )}
+                <DynamicIcon
+                  name={item.iconName as IconName}
+                  size={24}
+                  variant="premium"
+                  isActive={isActive}
+                  className={cn(
+                    'transition-all duration-300',
+                    isPending && navigationTarget === item.href && 'animate-pulse',
+                  )}
+                />
               </motion.div>
 
-              <span className="relative z-10 mt-1 truncate leading-tight">
+              <span
+                className={cn(
+                  'relative z-10 mt-1 truncate leading-tight text-muted-foreground transition-colors',
+                  'group-hover:text-foreground/90',
+                  isActive && 'text-foreground',
+                )}
+              >
                 {t(item.labelKey.replace('Dashboard.', '') as 'nav_home')}
               </span>
             </UiNavItem>

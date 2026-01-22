@@ -44,20 +44,20 @@ export const UiIconButton = forwardRef<HTMLButtonElement, UiIconButtonProps>(
           'press-depth',
 
           // Signature glass surface
-          'bg-primary/10 dark:bg-primary/10',
-          'hover:bg-primary/15 dark:hover:bg-primary/15',
-          'border border-primary/20 hover:border-primary/30',
+          'bg-background/70 dark:bg-slate-900/50',
+          'hover:bg-background/85 dark:hover:bg-slate-900/70',
+          'border border-border/60 dark:border-white/10',
           'backdrop-blur-md',
 
           // Premium depth
-          'shadow-[0_6px_18px_rgba(0,0,0,0.08)]',
-          'hover:shadow-[0_10px_30px_rgba(0,0,0,0.12)]',
+          'shadow-[0_8px_24px_rgba(0,0,0,0.12)]',
+          'hover:shadow-[0_12px_32px_rgba(0,0,0,0.16)]',
 
           // Focus
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2',
 
           // Active state
-          'data-[active=true]:bg-primary/20 data-[active=true]:text-primary',
+          'data-[active=true]:bg-primary/12 data-[active=true]:text-primary',
           'data-[active=true]:border-primary/40',
 
           // Disabled

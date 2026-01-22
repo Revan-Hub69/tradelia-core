@@ -43,17 +43,16 @@ export const UiNavItem = forwardRef<HTMLElement, UiNavItemProps>(
           data-active={active}
           className={cn(
             // Base styles
-            'relative flex items-center gap-3 px-3 py-2',
+            'group relative flex items-center gap-3 px-3 py-2',
             'rounded-xl',
             'transition-all duration-200 ease-out',
             'cursor-pointer',
 
             // Inactive state
-            'text-muted-foreground',
-            'hover:bg-primary/10 hover:text-foreground hover:scale-[1.02]',
+            'hover:bg-primary/10 hover:scale-[1.02]',
 
             // Active state
-            'data-[active=true]:bg-primary/15 data-[active=true]:text-primary',
+            'data-[active=true]:bg-primary/15',
             'data-[active=true]:font-medium',
 
             // Focus
@@ -78,17 +77,16 @@ export const UiNavItem = forwardRef<HTMLElement, UiNavItemProps>(
         data-active={active}
         className={cn(
           // Base styles
-          'relative flex items-center gap-3 px-3 py-2',
+          'group relative flex items-center gap-3 px-3 py-2',
           'rounded-xl',
           'transition-all duration-200 ease-out',
           'cursor-pointer',
 
           // Inactive state
-          'text-muted-foreground',
-          'hover:bg-primary/10 hover:text-foreground hover:scale-[1.02]',
+          'hover:bg-primary/10 hover:scale-[1.02]',
 
           // Active state
-          'data-[active=true]:bg-primary/15 data-[active=true]:text-primary',
+          'data-[active=true]:bg-primary/15',
           'data-[active=true]:font-medium',
 
           // Focus
@@ -103,13 +101,30 @@ export const UiNavItem = forwardRef<HTMLElement, UiNavItemProps>(
       >
         {/* Icon */}
         {icon && (
-          <span className="shrink-0" aria-hidden="true">
+          <span
+            data-active={active}
+            className={cn(
+              'shrink-0 text-foreground/80 transition-colors',
+              'group-hover:text-foreground',
+              'data-[active=true]:text-primary',
+            )}
+            aria-hidden="true"
+          >
             {icon}
           </span>
         )}
 
         {/* Label */}
-        <span className="flex-1">{children}</span>
+        <span
+          data-active={active}
+          className={cn(
+            'flex-1 text-muted-foreground transition-colors',
+            'group-hover:text-foreground/90',
+            'data-[active=true]:text-foreground',
+          )}
+        >
+          {children}
+        </span>
 
         {/* Active indicator (visual only) */}
         {active && (

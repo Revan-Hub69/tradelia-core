@@ -30,18 +30,14 @@ export type IconSize = 16 | 20 | 24 | 28 | 32;
 export type IconVariant = 'minimal' | 'signature' | 'premium';
 export type IconState = 'default' | 'hover' | 'active' | 'disabled';
 
-// Golden ratio and mathematical precision
-const PHI = 1.618033988749;
-const SIGNATURE_RADIUS = 0.618; // 1/φ for perfect curves
-
 export const SIGNATURE_TOKENS = {
   // Mathematically precise sizes based on 8px grid + golden ratio
   sizes: {
     16: { size: 16, strokeWidth: 1.5, padding: 2 },
-    20: { size: 20, strokeWidth: 1.618, padding: 2.5 }, // φ stroke
-    24: { size: 24, strokeWidth: 1.75, padding: 3 },
+    20: { size: 20, strokeWidth: 1.75, padding: 2.5 },
+    24: { size: 24, strokeWidth: 2, padding: 3 },
     28: { size: 28, strokeWidth: 2, padding: 3.5 },
-    32: { size: 32, strokeWidth: 2.236, padding: 4 }, // √5 stroke for harmony
+    32: { size: 32, strokeWidth: 2.25, padding: 4 },
   },
 
   // Liquid glass transitions (inspired by iOS 26)
@@ -64,32 +60,19 @@ export const SIGNATURE_TOKENS = {
     default: {
       scale: 1,
       opacity: 1,
-      filter: 'blur(0px) brightness(1) saturate(1)',
     },
     hover: {
-      scale: 1.05,
-      opacity: 0.95,
-      filter: 'blur(0px) brightness(1.1) saturate(1.1)',
-      backdropFilter: 'blur(8px)',
+      scale: 1.02,
+      opacity: 0.96,
     },
     active: {
-      scale: 1.1,
+      scale: 1.04,
       opacity: 1,
-      filter: 'blur(0px) brightness(1.2) saturate(1.2)',
-      backdropFilter: 'blur(12px)',
     },
     disabled: {
       scale: 1,
       opacity: 0.4,
-      filter: 'blur(0.5px) brightness(0.8) saturate(0.5)',
     },
-  },
-
-  // Signature glass effects
-  glass: {
-    subtle: 'drop-shadow(0 1px 2px rgba(0,0,0,0.1)) drop-shadow(0 0 8px rgba(255,255,255,0.1))',
-    medium: 'drop-shadow(0 2px 4px rgba(0,0,0,0.15)) drop-shadow(0 0 12px rgba(255,255,255,0.15))',
-    strong: 'drop-shadow(0 4px 8px rgba(0,0,0,0.2)) drop-shadow(0 0 16px rgba(255,255,255,0.2))',
   },
 } as const;
 
@@ -108,8 +91,6 @@ export type SignatureIconProps = {
   // Contextual interactions (only when meaningful)
   'onHover'?: () => void;
   'onPress'?: () => void;
-  // Signature features
-  'glassEffect'?: boolean;
   'contextualAnimation'?: boolean;
 };
 
@@ -123,7 +104,6 @@ export const SignatureIconBase = memo<SignatureIconProps>(({
   children,
   onHover,
   onPress,
-  glassEffect = true,
   contextualAnimation = true,
 }) => {
   const prefersReducedMotion = useReducedMotion();
@@ -150,39 +130,29 @@ export const SignatureIconBase = memo<SignatureIconProps>(({
       strokeWidth={sizeToken.strokeWidth}
       strokeLinecap="round"
       strokeLinejoin="round"
+      shapeRendering="geometricPrecision"
       aria-hidden={ariaHidden}
       aria-label={ariaLabel}
       className={cn(
         // Signature base styles
-        'flex-shrink-0 select-none cursor-pointer',
+        'flex-shrink-0 select-none',
         // Liquid glass foundation
         'transform-gpu will-change-transform',
-        // Professional accessibility
-        'focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2',
-        'focus-visible:ring-primary/50',
         // Variant-specific styles
         {
           'opacity-90': variant === 'minimal',
           'opacity-100 transition-all duration-200': variant === 'signature',
           'opacity-100': variant === 'premium',
         },
-        // Glass effect
-        glassEffect && variant !== 'minimal' && 'backdrop-blur-sm',
         className,
       )}
-      style={{
-        filter: glassEffect && variant !== 'minimal'
-          ? SIGNATURE_TOKENS.glass.subtle
-          : undefined,
-        borderRadius: `${SIGNATURE_RADIUS}px`,
-      }}
       // Liquid glass animations
       animate={shouldAnimate ? SIGNATURE_TOKENS.states[state] : undefined}
       transition={SIGNATURE_TOKENS.transitions.liquid}
       whileHover={shouldAnimate ? SIGNATURE_TOKENS.states.hover : undefined}
       whileTap={shouldAnimate
         ? {
-            scale: 0.95,
+            scale: 0.98,
             transition: SIGNATURE_TOKENS.transitions.glass,
           }
         : undefined}
@@ -207,76 +177,31 @@ export const HomeIcon = memo<Omit<SignatureIconProps, 'children'> & {
   showDetails?: boolean;
 }>(({
   isActive = false,
-  showDetails = true,
+  showDetails = false,
   ...props
 }) => (
   <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
-    {/* Architectural foundation - golden ratio proportions */}
+    {/* Architectural foundation */}
     <path
       d="M3 12l9-9 9 9"
-      strokeWidth={isActive ? 2.5 : undefined}
       opacity={isActive ? 1 : 0.9}
-      style={{
-        filter: isActive ? SIGNATURE_TOKENS.glass.medium : undefined,
-      }}
     />
 
-    {/* Main structure with liquid glass effect */}
+    {/* Main structure */}
     <path
       d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"
-      strokeWidth={isActive ? 2.5 : undefined}
       opacity={isActive ? 1 : 0.9}
-      style={{
-        filter: isActive ? SIGNATURE_TOKENS.glass.medium : undefined,
-      }}
     />
 
-    {/* Door with perfect proportions (φ ratio) */}
-    <rect
-      x="9.5"
-      y="15.5"
-      width="5"
-      height={5 * PHI}
-      rx={SIGNATURE_RADIUS}
-      strokeWidth="1.618"
-      opacity="0.85"
-    />
-
-    {/* Signature details - only when meaningful */}
     {showDetails && props.variant !== 'minimal' && (
-      <>
-        {/* Windows with mathematical spacing */}
-        <rect
-          x="6.5"
-          y="13.5"
-          width="1.618"
-          height="1.618"
-          rx={SIGNATURE_RADIUS * 0.5}
-          strokeWidth="1"
-          opacity="0.7"
-        />
-        <rect
-          x="15.882"
-          y="13.5"
-          width="1.618"
-          height="1.618"
-          rx={SIGNATURE_RADIUS * 0.5}
-          strokeWidth="1"
-          opacity="0.7"
-        />
-
-        {/* Door handle - subtle but professional */}
-        <circle
-          cx="13.5"
-          cy="18"
-          r="0.309"
-          fill="currentColor"
-          opacity="0.8"
-          style={{
-            filter: isActive ? SIGNATURE_TOKENS.glass.subtle : undefined,
-          }}
-        />
-      </>
+      <rect
+        x="9"
+        y="14"
+        width="6"
+        height="7"
+        rx="1"
+        opacity={isActive ? 0.9 : 0.7}
+      />
     )}
   </SignatureIconBase>
 ));
@@ -311,7 +236,6 @@ export const BellIcon = memo<Omit<SignatureIconProps, 'children'> & {
       {/* Bell body with liquid glass morphism */}
       <motion.path
         d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"
-        strokeWidth={hasNotifications ? 2.5 : 2}
         opacity={hasNotifications ? 1 : 0.9}
         animate={isRinging
           ? {
@@ -320,17 +244,12 @@ export const BellIcon = memo<Omit<SignatureIconProps, 'children'> & {
             }
           : {}}
         style={{
-          filter: hasNotifications ? SIGNATURE_TOKENS.glass.medium : SIGNATURE_TOKENS.glass.subtle,
           transformOrigin: '12px 8px',
         }}
       />
 
       {/* Bell clapper */}
-      <path
-        d="M13.73 21a2 2 0 0 1-3.46 0"
-        strokeWidth="1.618"
-        opacity="0.8"
-      />
+      <path d="M14 21a2 2 0 0 1-4 0" opacity="0.8" />
 
       {/* Signature notification badge - mathematically positioned */}
       {hasNotifications && (
@@ -346,9 +265,6 @@ export const BellIcon = memo<Omit<SignatureIconProps, 'children'> & {
             fill="hsl(var(--destructive))"
             stroke="hsl(var(--background))"
             strokeWidth="2"
-            style={{
-              filter: SIGNATURE_TOKENS.glass.strong,
-            }}
           />
 
           {notificationCount > 0 && (
@@ -381,20 +297,20 @@ export const SunIcon = memo<Omit<SignatureIconProps, 'children'> & {
 }) => {
   // Perfect 8-ray symmetry (45° intervals)
   const rayPositions = React.useMemo(() => [
-    { x1: 12, y1: 1, x2: 12, y2: 3, angle: 0 },
-    { x1: 21, y1: 12, x2: 19, y2: 12, angle: 90 },
-    { x1: 12, y1: 23, x2: 12, y2: 21, angle: 180 },
-    { x1: 3, y1: 12, x2: 5, y2: 12, angle: 270 },
-    { x1: 18.364, y1: 5.636, x2: 17.071, y2: 6.929, angle: 45 },
-    { x1: 18.364, y1: 18.364, x2: 17.071, y2: 17.071, angle: 135 },
-    { x1: 5.636, y1: 18.364, x2: 6.929, y2: 17.071, angle: 225 },
-    { x1: 5.636, y1: 5.636, x2: 6.929, y2: 6.929, angle: 315 },
+    { x1: 12, y1: 2, x2: 12, y2: 4, angle: 0 },
+    { x1: 20, y1: 12, x2: 22, y2: 12, angle: 90 },
+    { x1: 12, y1: 20, x2: 12, y2: 22, angle: 180 },
+    { x1: 2, y1: 12, x2: 4, y2: 12, angle: 270 },
+    { x1: 16.5, y1: 7.5, x2: 18, y2: 6, angle: 45 },
+    { x1: 16.5, y1: 16.5, x2: 18, y2: 18, angle: 135 },
+    { x1: 7.5, y1: 16.5, x2: 6, y2: 18, angle: 225 },
+    { x1: 7.5, y1: 7.5, x2: 6, y2: 6, angle: 315 },
   ], []);
 
   const intensityMap = {
-    low: { opacity: 0.6, glow: SIGNATURE_TOKENS.glass.subtle },
-    medium: { opacity: 0.8, glow: SIGNATURE_TOKENS.glass.medium },
-    high: { opacity: 1, glow: SIGNATURE_TOKENS.glass.strong },
+    low: { opacity: 0.6 },
+    medium: { opacity: 0.8 },
+    high: { opacity: 1 },
   };
 
   const currentIntensity = intensityMap[intensity];
@@ -409,7 +325,6 @@ export const SunIcon = memo<Omit<SignatureIconProps, 'children'> & {
           y1={ray.y1}
           x2={ray.x2}
           y2={ray.y2}
-          strokeWidth={isActive ? 2.5 : 2}
           strokeLinecap="round"
           opacity={isActive ? currentIntensity.opacity : 0.7}
           animate={isActive && props.variant === 'premium'
@@ -424,10 +339,7 @@ export const SunIcon = memo<Omit<SignatureIconProps, 'children'> & {
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          style={{
-            filter: isActive ? currentIntensity.glow : undefined,
-            transformOrigin: '12px 12px',
-          }}
+          style={{ transformOrigin: '12px 12px' }}
         />
       ))}
 
@@ -436,7 +348,6 @@ export const SunIcon = memo<Omit<SignatureIconProps, 'children'> & {
         cx="12"
         cy="12"
         r="4"
-        strokeWidth={isActive ? 2.5 : 2}
         opacity={isActive ? 1 : 0.9}
         animate={isActive
           ? {
@@ -448,9 +359,6 @@ export const SunIcon = memo<Omit<SignatureIconProps, 'children'> & {
           repeat: Infinity,
           ease: 'easeInOut',
         }}
-        style={{
-          filter: isActive ? currentIntensity.glow : SIGNATURE_TOKENS.glass.subtle,
-        }}
       />
 
       {/* Inner core for premium variant */}
@@ -461,9 +369,6 @@ export const SunIcon = memo<Omit<SignatureIconProps, 'children'> & {
           r="2.5"
           strokeWidth="1"
           opacity="0.4"
-          style={{
-            filter: SIGNATURE_TOKENS.glass.subtle,
-          }}
         />
       )}
     </SignatureIconBase>
@@ -478,7 +383,7 @@ export const MoonIcon = memo<Omit<SignatureIconProps, 'children'> & {
 }>(({
   isActive = false,
   phase = 'crescent',
-  showStars = true,
+  showStars = false,
   ...props
 }) => {
   const getMoonPath = useCallback(() => {
@@ -500,10 +405,10 @@ export const MoonIcon = memo<Omit<SignatureIconProps, 'children'> & {
 
   // Signature star positions (golden ratio spacing)
   const starPositions = React.useMemo(() => [
-    { x: 6, y: 4, size: 0.4, delay: 0 },
-    { x: 18.5, y: 6.5, size: 0.3, delay: 0.5 },
-    { x: 20, y: 16, size: 0.35, delay: 1 },
-    { x: 4.5, y: 18.5, size: 0.25, delay: 1.5 },
+    { x: 6.5, y: 5, size: 0.5, delay: 0 },
+    { x: 17.5, y: 7, size: 0.5, delay: 0.5 },
+    { x: 19, y: 16, size: 0.5, delay: 1 },
+    { x: 5, y: 18, size: 0.5, delay: 1.5 },
   ], []);
 
   return (
@@ -511,7 +416,6 @@ export const MoonIcon = memo<Omit<SignatureIconProps, 'children'> & {
       {/* Lunar body with phase-accurate geometry */}
       <motion.path
         d={getMoonPath()}
-        strokeWidth={isActive ? 2.5 : 2}
         opacity={isActive ? 1 : 0.9}
         animate={isActive
           ? {
@@ -523,33 +427,7 @@ export const MoonIcon = memo<Omit<SignatureIconProps, 'children'> & {
           repeat: Infinity,
           ease: 'easeInOut',
         }}
-        style={{
-          filter: isActive ? SIGNATURE_TOKENS.glass.medium : SIGNATURE_TOKENS.glass.subtle,
-        }}
       />
-
-      {/* Lunar surface details for premium */}
-      {props.variant === 'premium' && isActive && (
-        <>
-          {/* Craters with mathematical positioning */}
-          <circle
-            cx="10"
-            cy="8"
-            r="1"
-            strokeWidth="0.8"
-            opacity="0.3"
-            style={{ filter: SIGNATURE_TOKENS.glass.subtle }}
-          />
-          <circle
-            cx="14"
-            cy="14"
-            r="0.7"
-            strokeWidth="0.8"
-            opacity="0.25"
-            style={{ filter: SIGNATURE_TOKENS.glass.subtle }}
-          />
-        </>
-      )}
 
       {/* Signature stars with contextual sparkle */}
       {showStars && isActive && props.variant !== 'minimal' && (
@@ -574,24 +452,6 @@ export const MoonIcon = memo<Omit<SignatureIconProps, 'children'> & {
                 r={star.size}
                 fill="currentColor"
                 opacity="0.6"
-                style={{ filter: SIGNATURE_TOKENS.glass.subtle }}
-              />
-              {/* Star sparkle lines */}
-              <line
-                x1={star.x - star.size * 2}
-                y1={star.y}
-                x2={star.x + star.size * 2}
-                y2={star.y}
-                strokeWidth="0.3"
-                opacity="0.4"
-              />
-              <line
-                x1={star.x}
-                y1={star.y - star.size * 2}
-                x2={star.x}
-                y2={star.y + star.size * 2}
-                strokeWidth="0.3"
-                opacity="0.4"
               />
             </motion.g>
           ))}
@@ -705,7 +565,7 @@ export const SettingsIcon = memo<Omit<SignatureIconProps, 'children'> & {
     />
     
     {/* Gear teeth */}
-    <path d="M12 1v6m0 10v6m11-7h-6m-10 0H1m15.5-6.5l-4.24 4.24M6.74 17.26L2.5 21.5m15-15l-4.24 4.24M6.74 6.74L2.5 2.5" />
+    <path d="M12 2v3m0 14v3M19 12h3M2 12h3M16.5 7.5l2-2M5.5 16.5l-2 2M16.5 16.5l2 2M5.5 7.5l-2-2" />
   </SignatureIconBase>
 ));
 
@@ -719,19 +579,11 @@ export const LearnIcon = memo<Omit<SignatureIconProps, 'children'> & {
   <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
     <path
       d="M4 6h6a3 3 0 0 1 3 3v11a3 3 0 0 0-3-3H4z"
-      strokeWidth={isActive ? 2.5 : undefined}
       opacity={isActive ? 1 : 0.9}
-      style={{
-        filter: isActive ? SIGNATURE_TOKENS.glass.medium : undefined,
-      }}
     />
     <path
       d="M20 6h-6a3 3 0 0 0-3 3v11a3 3 0 0 1 3-3h6z"
-      strokeWidth={isActive ? 2.5 : undefined}
       opacity={isActive ? 1 : 0.9}
-      style={{
-        filter: isActive ? SIGNATURE_TOKENS.glass.medium : undefined,
-      }}
     />
     <line
       x1="12"
@@ -752,12 +604,8 @@ export const ToolsIcon = memo<Omit<SignatureIconProps, 'children'> & {
 }) => (
   <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
     <path
-      d="M14.7 6.3a3.5 3.5 0 0 0-4.95 4.95l-5.9 5.9a2 2 0 0 0 2.83 2.83l5.9-5.9a3.5 3.5 0 0 0 4.95-4.95l-2.12 2.12-2.83-2.83z"
-      strokeWidth={isActive ? 2.5 : undefined}
+      d="M14.5 6.5a3.5 3.5 0 0 0-5 5l-6 6a2 2 0 0 0 3 3l6-6a3.5 3.5 0 0 0 5-5l-2 2-3-3z"
       opacity={isActive ? 1 : 0.9}
-      style={{
-        filter: isActive ? SIGNATURE_TOKENS.glass.medium : undefined,
-      }}
     />
   </SignatureIconBase>
 ));
@@ -775,9 +623,6 @@ export const CommunityIcon = memo<Omit<SignatureIconProps, 'children'> & {
       cy="8"
       r="3"
       opacity={isActive ? 1 : 0.85}
-      style={{
-        filter: isActive ? SIGNATURE_TOKENS.glass.medium : undefined,
-      }}
     />
     <circle
       cx="17"
@@ -808,11 +653,7 @@ export const ProfileIcon = memo<Omit<SignatureIconProps, 'children'> & {
       cx="12"
       cy="8"
       r="3.5"
-      strokeWidth={isActive ? 2.5 : undefined}
       opacity={isActive ? 1 : 0.9}
-      style={{
-        filter: isActive ? SIGNATURE_TOKENS.glass.medium : undefined,
-      }}
     />
     <path
       d="M4 20a8 8 0 0 1 16 0"
@@ -833,7 +674,6 @@ export const GlobeIcon = memo<Omit<SignatureIconProps, 'children'> & {
       cx="12"
       cy="12"
       r="9"
-      strokeWidth={isActive ? 2.5 : undefined}
       opacity={isActive ? 1 : 0.9}
     />
     <path d="M3 12h18" opacity={isActive ? 0.9 : 0.7} />
@@ -864,7 +704,6 @@ export const LockIcon = memo<Omit<SignatureIconProps, 'children'> & {
       width="14"
       height="9"
       rx="2"
-      strokeWidth={isActive ? 2.5 : undefined}
       opacity={isActive ? 1 : 0.9}
     />
     <path

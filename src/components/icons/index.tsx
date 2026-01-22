@@ -96,6 +96,7 @@ export type DynamicIconProps = {
   className?: string;
   'aria-hidden'?: boolean;
   'aria-label'?: string;
+  isActive?: boolean;
 };
 
 export const DynamicIcon: React.FC<DynamicIconProps> = ({ name, ...props }) => {

@@ -16,7 +16,7 @@ import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 
-import { CloseIcon, CommunityIcon, DynamicIcon, HomeIcon, type IconName, LearnIcon, MenuIcon, ProfileIcon, ToolsIcon } from '@/components/icons';
+import { CloseIcon, DynamicIcon, type IconName, MenuIcon } from '@/components/icons';
 import { UiIconButton, UiNavItem, UiSurface } from '@/components/ui';
 import { NavigationSkeleton } from '@/components/ui/skeleton';
 import { getVisibleNavigationItems, trackNavigationEvent } from '@/data/navigation.config';
@@ -120,37 +120,27 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
         )}
         {/* Icon with state indicators - PREMIUM ANIMATED */}
         <motion.div
-          className="relative shrink-0"
+          className={cn(
+            'relative shrink-0 transition-colors',
+            isActive
+              ? 'text-primary'
+              : 'text-foreground/80 group-hover:text-foreground',
+            !canNavigate && 'text-muted-foreground/40',
+          )}
           whileHover={{ scale: 1.05, rotate: [0, -2, 2, 0] }}
           whileTap={{ scale: 0.95 }}
           transition={{ duration: 0.3 }}
         >
-          {item.iconName === 'HomeIcon' && (
-            <HomeIcon size={24} isActive={isActive} />
-          )}
-          {item.iconName === 'LearnIcon' && (
-            <LearnIcon size={24} isActive={isActive} />
-          )}
-          {item.iconName === 'ToolsIcon' && (
-            <ToolsIcon size={24} isActive={isActive} />
-          )}
-          {item.iconName === 'CommunityIcon' && (
-            <CommunityIcon size={24} isActive={isActive} />
-          )}
-          {item.iconName === 'ProfileIcon' && (
-            <ProfileIcon size={24} isActive={isActive} />
-          )}
-          {!['HomeIcon', 'LearnIcon', 'ToolsIcon', 'CommunityIcon', 'ProfileIcon'].includes(item.iconName) && (
-            <DynamicIcon
-              name={item.iconName as IconName}
-              size={24}
-              className={cn(
-                'motion-fast',
-                !canNavigate && 'opacity-40',
-                isActive && 'text-primary',
-              )}
-            />
-          )}
+          <DynamicIcon
+            name={item.iconName as IconName}
+            size={24}
+            variant="premium"
+            isActive={isActive}
+            className={cn(
+              'motion-fast',
+              !canNavigate && 'opacity-60',
+            )}
+          />
 
           {/* State indicators - PREMIUM */}
           {uxState === 'blocked' && (
@@ -180,7 +170,17 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
         </motion.div>
 
         {/* Label - Hidden when collapsed */}
-        {!isCollapsed && <span className="flex-1 truncate">{tGeneral(item.labelKey)}</span>}
+        {!isCollapsed && (
+          <span
+            className={cn(
+              'flex-1 truncate text-muted-foreground transition-colors',
+              'group-hover:text-foreground/90',
+              isActive && canNavigate && 'text-foreground',
+            )}
+          >
+            {tGeneral(item.labelKey)}
+          </span>
+        )}
 
         {/* Keyboard shortcut hint */}
         {!isCollapsed && !isActive && canNavigate && (
