@@ -383,6 +383,115 @@ export const MoreVerticalIcon = memo<Omit<SignatureIconProps, 'children'> & {
   </SignatureIconBase>
 ));
 
+// TRENDING UP ICON - Growth trajectory
+export const TrendingUpIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isActive?: boolean;
+}>(({
+  isActive = false,
+  ...props
+}) => (
+  <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    {/* Professional growth chart */}
+    <polyline points="22,7 13.5,15.5 8.5,10.5 2,17" />
+    <polyline points="16,7 22,7 22,13" />
+  </SignatureIconBase>
+));
+
+// STAR ICON - Perfect 5-point star
+export const StarIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isActive?: boolean;
+}>(({
+  isActive = false,
+  ...props
+}) => (
+  <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    {/* Perfect star with mathematical proportions */}
+    <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+  </SignatureIconBase>
+));
+
+// CLOCK ICON - Time precision
+export const ClockIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isActive?: boolean;
+}>(({
+  isActive = false,
+  ...props
+}) => (
+  <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    {/* Professional clock face */}
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="12,6 12,12 16,14" />
+  </SignatureIconBase>
+));
+
+// USER ICON - Person silhouette (alias for ProfileIcon)
+export const UserIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isActive?: boolean;
+}>(({
+  isActive = false,
+  ...props
+}) => (
+  <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    {/* Professional user icon */}
+    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+    <circle cx="12" cy="7" r="4" />
+  </SignatureIconBase>
+));
+
+// SEARCH ICON - Magnifying glass
+export const SearchIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isActive?: boolean;
+}>(({
+  isActive = false,
+  ...props
+}) => (
+  <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    {/* Professional search icon */}
+    <circle cx="11" cy="11" r="8" />
+    <path d="m21 21-4.35-4.35" />
+  </SignatureIconBase>
+));
+
+// PLUS ICON - Addition symbol
+export const PlusIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isActive?: boolean;
+}>(({
+  isActive = false,
+  ...props
+}) => (
+  <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    {/* Perfect plus sign */}
+    <path d="M5 12h14" />
+    <path d="M12 5v14" />
+  </SignatureIconBase>
+));
+
+// MINUS ICON - Subtraction symbol
+export const MinusIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isActive?: boolean;
+}>(({
+  isActive = false,
+  ...props
+}) => (
+  <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    {/* Perfect minus sign */}
+    <path d="M5 12h14" />
+  </SignatureIconBase>
+));
+
+// CHECK ICON - Checkmark
+export const CheckIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isActive?: boolean;
+}>(({
+  isActive = false,
+  ...props
+}) => (
+  <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    {/* Perfect checkmark */}
+    <path d="M20 6 9 17l-5-5" />
+  </SignatureIconBase>
+));
+
 // Display names for debugging
 HomeIcon.displayName = 'TradeliaHomeIcon';
 BellIcon.displayName = 'TradeliaBellIcon';
@@ -400,6 +509,14 @@ GlobeIcon.displayName = 'TradeliaGlobeIcon';
 LockIcon.displayName = 'TradeliaLockIcon';
 ExitIcon.displayName = 'TradeliaExitIcon';
 MoreVerticalIcon.displayName = 'TradeliaMoreVerticalIcon';
+TrendingUpIcon.displayName = 'TradeliaTrendingUpIcon';
+StarIcon.displayName = 'TradeliaStarIcon';
+ClockIcon.displayName = 'TradeliaClockIcon';
+UserIcon.displayName = 'TradeliaUserIcon';
+SearchIcon.displayName = 'TradeliaSearchIcon';
+PlusIcon.displayName = 'TradeliaPlusIcon';
+MinusIcon.displayName = 'TradeliaMinusIcon';
+CheckIcon.displayName = 'TradeliaCheckIcon';
 
 // Legacy aliases for compatibility
 export const LightIcon = SunIcon;

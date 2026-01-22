@@ -33,6 +33,16 @@ import {
   ExitIcon,
   MoreVerticalIcon,
   
+  // New Phase 3A icons
+  TrendingUpIcon,
+  StarIcon,
+  ClockIcon,
+  UserIcon,
+  SearchIcon,
+  PlusIcon,
+  MinusIcon,
+  CheckIcon,
+  
   // Legacy aliases (for compatibility)
   SunIcon,
   MoonIcon,
@@ -73,6 +83,16 @@ export {
   ExitIcon,
   MoreVerticalIcon,
   
+  // New Phase 3A icons
+  TrendingUpIcon,
+  StarIcon,
+  ClockIcon,
+  UserIcon,
+  SearchIcon,
+  PlusIcon,
+  MinusIcon,
+  CheckIcon,
+  
   // Legacy aliases (for compatibility)
   SunIcon,
   MoonIcon,
@@ -110,6 +130,16 @@ export const ICON_MAP = {
   LockIcon,
   ExitIcon,
   MoreVerticalIcon,
+  
+  // New Phase 3A icons
+  TrendingUpIcon,
+  StarIcon,
+  ClockIcon,
+  UserIcon,
+  SearchIcon,
+  PlusIcon,
+  MinusIcon,
+  CheckIcon,
   
   // Legacy aliases
   SunIcon,

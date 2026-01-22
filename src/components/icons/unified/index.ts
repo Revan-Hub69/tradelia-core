@@ -43,6 +43,16 @@ export {
   ExitIcon,
   MoreVerticalIcon,
   
+  // New Phase 3A icons
+  TrendingUpIcon,
+  StarIcon,
+  ClockIcon,
+  UserIcon,
+  SearchIcon,
+  PlusIcon,
+  MinusIcon,
+  CheckIcon,
+  
   // Legacy aliases (for compatibility)
   SunIcon,
   MoonIcon,
