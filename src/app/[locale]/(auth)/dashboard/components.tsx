@@ -1,10 +1,11 @@
 /*
- * DASHBOARD CLIENT COMPONENTS - PHASE 3A OPTIMIZED
+ * DASHBOARD CLIENT COMPONENTS - PHASE 3C OPTIMIZED
  * 
  * Tier 1 Implementation:
  * - Optimized client components with server data
  * - Granular loading states
  * - Error boundaries
+ * - Memory leak detection
  * - Performance-first rendering
  */
 
@@ -15,6 +16,7 @@ import { useEffect, useState } from 'react';
 
 import { UiSurface, UiStatusChip } from '@/components/ui';
 import { BellIcon, TrendingUpIcon, StarIcon, ClockIcon } from '@/components/icons';
+import { useMemoryLeakDetection } from '@/hooks/useMemoryLeakDetection';
 
 // ✅ TIER 1: Type definitions for dashboard data
 export type UserData = {
@@ -205,35 +207,52 @@ export const DashboardNextSteps = ({ userData }: DashboardNextStepsProps) => {
 export const DashboardStatsCard = ({ userId }: SecondaryDataProps) => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
+  
+  // ✅ PHASE 3C: Memory leak detection
+  useMemoryLeakDetection({
+    componentName: 'DashboardStatsCard',
+    enableInProduction: false,
+    memoryThreshold: 50, // 50MB threshold
+  });
 
   useEffect(() => {
+    let timeoutId: number | null = null;
+    
     // Simulate API call for stats
-    const loadStats = async () => {
+    const loadStats = () => {
       try {
-        await new Promise(resolve => setTimeout(resolve, 300));
-        setStats({
-          streak: 12,
-          xp: 2850,
-          level: 5,
-          nextMilestone: 'Complete Advanced Trading module',
-          weeklyGoal: {
-            target: 5,
-            completed: 3,
-            percentage: 60,
-          },
-          achievements: {
-            total: 18,
-            recent: ['Crypto Expert', 'Week Warrior', 'Quiz Master'],
-          },
-        });
+        timeoutId = window.setTimeout(() => {
+          setStats({
+            streak: 12,
+            xp: 2850,
+            level: 5,
+            nextMilestone: 'Complete Advanced Trading module',
+            weeklyGoal: {
+              target: 5,
+              completed: 3,
+              percentage: 60,
+            },
+            achievements: {
+              total: 18,
+              recent: ['Crypto Expert', 'Week Warrior', 'Quiz Master'],
+            },
+          });
+          setLoading(false);
+        }, 300);
       } catch (error) {
         console.error('Failed to load stats:', error);
-      } finally {
         setLoading(false);
       }
     };
 
     loadStats();
+
+    // Cleanup timeout on unmount
+    return () => {
+      if (timeoutId) {
+        window.clearTimeout(timeoutId);
+      }
+    };
   }, [userId]);
 
   if (loading) {
@@ -316,38 +335,53 @@ export const DashboardStatsCard = ({ userId }: SecondaryDataProps) => {
 export const DashboardNotifications = ({ userId }: SecondaryDataProps) => {
   const [notifications, setNotifications] = useState<NotificationData[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // ✅ PHASE 3C: Memory leak detection
+  useMemoryLeakDetection({
+    componentName: 'DashboardNotifications',
+    enableInProduction: false,
+  });
 
   useEffect(() => {
-    const loadNotifications = async () => {
+    let timeoutId: number | null = null;
+    
+    const loadNotifications = () => {
       try {
-        await new Promise(resolve => setTimeout(resolve, 200));
-        setNotifications([
-          {
-            id: '1',
-            type: 'info',
-            title: 'New Lesson Available',
-            message: 'Advanced NFT Trading is now available in your learning path',
-            timestamp: new Date(Date.now() - 3600000),
-            read: false,
-            actionUrl: '/dashboard/lessons/nft-trading',
-          },
-          {
-            id: '2',
-            type: 'success',
-            title: 'Weekly Goal Achieved',
-            message: 'Congratulations! You completed 5 lessons this week',
-            timestamp: new Date(Date.now() - 2 * 24 * 3600000),
-            read: true,
-          },
-        ]);
+        timeoutId = window.setTimeout(() => {
+          setNotifications([
+            {
+              id: '1',
+              type: 'info',
+              title: 'New Lesson Available',
+              message: 'Advanced NFT Trading is now available in your learning path',
+              timestamp: new Date(Date.now() - 3600000),
+              read: false,
+              actionUrl: '/dashboard/lessons/nft-trading',
+            },
+            {
+              id: '2',
+              type: 'success',
+              title: 'Weekly Goal Achieved',
+              message: 'Congratulations! You completed 5 lessons this week',
+              timestamp: new Date(Date.now() - 2 * 24 * 3600000),
+              read: true,
+            },
+          ]);
+          setLoading(false);
+        }, 200);
       } catch (error) {
         console.error('Failed to load notifications:', error);
-      } finally {
         setLoading(false);
       }
     };
 
     loadNotifications();
+
+    return () => {
+      if (timeoutId) {
+        window.clearTimeout(timeoutId);
+      }
+    };
   }, [userId]);
 
   if (loading) {
@@ -421,50 +455,65 @@ export const DashboardNotifications = ({ userId }: SecondaryDataProps) => {
 export const DashboardActivityFeed = ({ userId }: SecondaryDataProps) => {
   const [activity, setActivity] = useState<RecentActivity[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // ✅ PHASE 3C: Memory leak detection
+  useMemoryLeakDetection({
+    componentName: 'DashboardActivityFeed',
+    enableInProduction: false,
+  });
 
   useEffect(() => {
-    const loadActivity = async () => {
+    let timeoutId: number | null = null;
+    
+    const loadActivity = () => {
       try {
-        await new Promise(resolve => setTimeout(resolve, 250));
-        setActivity([
-          {
-            id: '1',
-            type: 'lesson_completed',
-            title: 'Completed: Smart Contracts Fundamentals',
-            description: 'Learned about Ethereum smart contracts and their applications',
-            timestamp: new Date(Date.now() - 2 * 3600000),
-            metadata: {
-              duration: 25,
-              difficulty: 'intermediate',
+        timeoutId = window.setTimeout(() => {
+          setActivity([
+            {
+              id: '1',
+              type: 'lesson_completed',
+              title: 'Completed: Smart Contracts Fundamentals',
+              description: 'Learned about Ethereum smart contracts and their applications',
+              timestamp: new Date(Date.now() - 2 * 3600000),
+              metadata: {
+                duration: 25,
+                difficulty: 'intermediate',
+              },
             },
-          },
-          {
-            id: '2',
-            type: 'achievement',
-            title: 'Achievement Unlocked: Crypto Expert',
-            description: 'Completed 10 advanced crypto lessons',
-            timestamp: new Date(Date.now() - 4 * 3600000),
-          },
-          {
-            id: '3',
-            type: 'quiz_passed',
-            title: 'Quiz Passed: DeFi Protocols',
-            description: 'Scored 95% on the DeFi protocols assessment',
-            timestamp: new Date(Date.now() - 6 * 3600000),
-            metadata: {
-              score: 95,
-              difficulty: 'advanced',
+            {
+              id: '2',
+              type: 'achievement',
+              title: 'Achievement Unlocked: Crypto Expert',
+              description: 'Completed 10 advanced crypto lessons',
+              timestamp: new Date(Date.now() - 4 * 3600000),
             },
-          },
-        ]);
+            {
+              id: '3',
+              type: 'quiz_passed',
+              title: 'Quiz Passed: DeFi Protocols',
+              description: 'Scored 95% on the DeFi protocols assessment',
+              timestamp: new Date(Date.now() - 6 * 3600000),
+              metadata: {
+                score: 95,
+                difficulty: 'advanced',
+              },
+            },
+          ]);
+          setLoading(false);
+        }, 250);
       } catch (error) {
         console.error('Failed to load activity:', error);
-      } finally {
         setLoading(false);
       }
     };
 
     loadActivity();
+
+    return () => {
+      if (timeoutId) {
+        window.clearTimeout(timeoutId);
+      }
+    };
   }, [userId]);
 
   const getActivityIcon = (type: string) => {
