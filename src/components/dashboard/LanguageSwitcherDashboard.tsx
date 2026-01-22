@@ -1,22 +1,20 @@
 /*
- * LANGUAGE SWITCHER DASHBOARD - Tradelia Signature Premium 2026
+ * LANGUAGE SWITCHER DASHBOARD - Tradelia 2026 Optimized
  *
- * Elegant language selector for dashboard
- * - Signature Globe icon with continuous rotation
- * - Equator pulse + continent dots (full motion)
- * - Dual-language labels (Italiano / Italian)
+ * Clean language selector following 2026 UX best practices:
+ * - Removed long-press functionality (accessibility issues)
+ * - Simple dropdown menu
+ * - Signature Globe icon
  * - Preserves current path
  * - Keyboard accessible
- * - 44px touch target
  */
 
 'use client';
 
 import { useLocale, useTranslations } from 'next-intl';
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 
 import { GlobeIcon } from '@/components/icons/unified/UnifiedIconSystem';
-import { QuickActionsMenu } from '@/components/navigation/QuickActionsMenu';
 import { UiIconButton } from '@/components/ui/UiIconButton';
 import {
   DropdownMenu,
@@ -25,8 +23,6 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import type { QuickAction } from '@/hooks/useLongPress';
-import { useLongPress } from '@/hooks/useLongPress';
 import { usePathname, useRouter } from '@/libs/i18nNavigation';
 import { AppConfig } from '@/utils/AppConfig';
 import { cn } from '@/utils/Helpers';
@@ -37,10 +33,6 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
   const locale = useLocale();
   const t = useTranslations('Dashboard');
   const [isOpen, setIsOpen] = useState(false);
-  const [isQuickMenuOpen, setIsQuickMenuOpen] = useState(false);
-  const [quickMenuPosition, setQuickMenuPosition] = useState({ x: 0, y: 0 });
-  const triggerRef = useRef<HTMLButtonElement>(null);
-  const longPressTriggeredRef = useRef(false);
 
   const handleChange = (value: string) => {
     if (value === locale) {
@@ -50,68 +42,18 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
     router.replace(pathname, { locale: value });
   };
 
-  const quickLocales = [
-    AppConfig.locales.find(lang => lang.id === locale),
-    ...AppConfig.locales.filter(lang => lang.id !== locale),
-  ]
-    .filter((lang): lang is (typeof AppConfig.locales)[number] => Boolean(lang))
-    .slice(0, 3);
-
-  const quickActions: QuickAction[] = quickLocales.map(lang => ({
-    id: `lang-${lang.id}`,
-    labelKey: 'Dashboard.change_language',
-    label: lang.name,
-    onClick: () => handleChange(lang.id),
-  }));
-
-  const openQuickMenu = () => {
-    const rect = triggerRef.current?.getBoundingClientRect();
-    if (rect) {
-      setQuickMenuPosition({
-        x: rect.left + rect.width / 2,
-        y: rect.top,
-      });
-    }
-    longPressTriggeredRef.current = true;
-    setIsOpen(false);
-    setIsQuickMenuOpen(true);
-  };
-
-  const closeQuickMenu = () => {
-    setIsQuickMenuOpen(false);
-    longPressTriggeredRef.current = false;
-  };
-
-  const {
-    isLongPressing: _isLongPressing,
-    isPressed: _isPressed,
-    ...longPressHandlers
-  } = useLongPress(openQuickMenu, {
-    threshold: 500,
-    moveThreshold: 10,
-  });
-
-  const handleOpenChange = (nextOpen: boolean) => {
-    if (longPressTriggeredRef.current && nextOpen) {
-      return;
-    }
-    setIsOpen(nextOpen);
-  };
-
   return (
-    <DropdownMenu open={isOpen} onOpenChange={handleOpenChange}>
+    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
         <UiIconButton
-          ref={triggerRef}
           label={t('language_switcher_aria_label')}
-          icon={<GlobeIcon size={20} isActive={isOpen} />}
+          icon={<GlobeIcon size={20} isActive={isOpen} variant="signature" />}
           aria-haspopup="menu"
           aria-expanded={isOpen}
           className={cn(
             isOpen && 'scale-[0.98]',
             className,
           )}
-          {...longPressHandlers}
         />
       </DropdownMenuTrigger>
 
@@ -143,22 +85,13 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
                 <span className="font-medium">{lang.name}</span>
                 {/* English name (secondary) */}
                 <span className="text-xs text-muted-foreground">
-                  {lang.id === 'it' ? 'Italian' : 'Inglese'}
+                  {lang.id === 'it' ? 'Italian' : 'English'}
                 </span>
               </div>
             </DropdownMenuRadioItem>
           ))}
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
-      <QuickActionsMenu
-        isOpen={isQuickMenuOpen}
-        position={quickMenuPosition}
-        actions={quickActions}
-        onClose={closeQuickMenu}
-        onAction={(action) => {
-          action.onClick();
-        }}
-      />
     </DropdownMenu>
   );
 };

@@ -20,6 +20,7 @@ import { SearchIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import { UiButton } from '@/components/ui/UiButton';
 import { UiStatusChip } from '@/components/ui/UiStatusChip';
 import { UiSurface } from '@/components/ui/UiSurface';
+import { useScrollDirection } from '@/hooks/useScrollDirection';
 import { useUserData } from '@/hooks/useUserData';
 import { Logo } from '@/templates/Logo';
 import { cn } from '@/utils/Helpers';
@@ -57,11 +58,11 @@ export type DashboardHeaderProps = {
   className?: string;
   showScrollShadow?: boolean;
   titleAs?: 'h1' | 'h2' | 'p'; // A11y: configurable heading level
-  // Tier-1 Research Enhancements
+  // Mobile Optimization 2026
   breadcrumbs?: BreadcrumbItem[];
   showGlobalSearch?: boolean;
-  showOnlineStatus?: boolean;
   compactMode?: boolean;
+  hideOnScroll?: boolean; // New: hide header on scroll down
 };
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
@@ -73,60 +74,22 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   className,
   showScrollShadow = true,
   titleAs = 'h1', // Default h1, but configurable
-  // Tier-1 Research Features
+  // Mobile Optimization 2026
   breadcrumbs,
-  showGlobalSearch = true,
-  showOnlineStatus = true,
+  showGlobalSearch = false, // Disabled by default for mobile optimization
   compactMode = false,
+  hideOnScroll = true, // Enable by default following 2026 best practices
 }) => {
   const t = useTranslations('Dashboard');
   const tGeneral = useTranslations();
   const { userData, isLoading } = useUserData();
-  const [hasScrolled, setHasScrolled] = useState(false);
-  const [isOnline, setIsOnline] = useState(true);
   const [showSearchModal, setShowSearchModal] = useState(false);
-  const rafRef = useRef<number>();
-
-  // Online status monitoring (Real-time status - 78% SaaS adoption)
-  useEffect(() => {
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
-
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-    setIsOnline(navigator.onLine);
-
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, []);
-
-  // Scroll shadow effect with throttling via requestAnimationFrame
-  const handleScroll = useCallback(() => {
-    if (rafRef.current) {
-      return;
-    }
-
-    rafRef.current = requestAnimationFrame(() => {
-      setHasScrolled(window.scrollY > 10);
-      rafRef.current = undefined;
-    });
-  }, []);
-
-  useEffect(() => {
-    if (!showScrollShadow) {
-      return;
-    }
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-      }
-    };
-  }, [showScrollShadow, handleScroll]);
+  
+  // Scroll behavior following Nielsen Norman Group 2026 guidelines
+  const { isScrollingDown, isScrolled } = useScrollDirection({
+    threshold: 10, // Small threshold to prevent jank
+    debounceMs: 16, // 60fps smooth scrolling
+  });
 
   // Global search keyboard shortcut (Cmd/Ctrl + K)
   useEffect(() => {
@@ -170,14 +133,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         );
       }
       case 'online': {
-        return (
-          <UiStatusChip
-            variant={isOnline ? 'success' : 'warning'}
-            label={isOnline ? t('online_status') : t('nav_offline')}
-            dot
-            aria-label={isOnline ? t('online_status') : t('nav_offline')}
-          />
-        );
+        // Online status removed for mobile optimization
+        return null;
       }
       case 'sync': {
         return (
@@ -315,6 +272,9 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   // Dynamic title component
   const TitleComponent = titleAs;
 
+  // Header visibility based on scroll direction (2026 best practices)
+  const isHeaderVisible = !hideOnScroll || !isScrollingDown;
+
   return (
     <>
       <UiSurface
@@ -324,8 +284,13 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         className={cn(
           'sticky top-0 layer-header',
           'motion-base',
+          // Scroll-based visibility (Nielsen Norman Group 2026)
+          hideOnScroll && [
+            'transition-transform duration-300 ease-out',
+            isScrollingDown && '-translate-y-full',
+          ],
           // Scroll shadow
-          hasScrolled && showScrollShadow && 'shadow-medium',
+          isScrolled && showScrollShadow && 'shadow-medium',
           // Compact mode
           compactMode && 'py-2',
           className,
@@ -358,21 +323,13 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             </div>
           </div>
 
-          {/* Center Section - Search + Status */}
+          {/* Center Section - Status Only (Search removed for mobile) */}
           <div className="flex items-center gap-3">
+            {/* Global Search - Desktop Only */}
             {renderGlobalSearch()}
             
             {/* Status Indicators */}
             <div className="flex items-center gap-2">
-              {showOnlineStatus && (
-                <UiStatusChip
-                  variant={isOnline ? 'success' : 'warning'}
-                  label=""
-                  dot
-                  className="size-2"
-                  aria-label={isOnline ? t('online_status') : t('nav_offline')}
-                />
-              )}
               {renderStatus()}
             </div>
           </div>
@@ -385,18 +342,23 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             {/* Custom Right Slot */}
             {rightSlot}
 
-            {/* Controls - Responsive hiding in compact mode */}
+            {/* Controls - Mobile Optimized: Only Notifications + User */}
             <div className={cn(
               'flex items-center gap-2',
+              // Hide theme/language switchers on mobile for cleaner header
               compactMode && 'hidden sm:flex'
             )}>
-              {/* Theme Switcher */}
-              <ThemeSwitcher />
+              {/* Theme Switcher - Hidden on mobile */}
+              <div className="hidden md:block">
+                <ThemeSwitcher />
+              </div>
 
-              {/* Language Switcher */}
-              <LanguageSwitcherDashboard />
+              {/* Language Switcher - Hidden on mobile */}
+              <div className="hidden md:block">
+                <LanguageSwitcherDashboard />
+              </div>
 
-              {/* Notifications */}
+              {/* Notifications - Always visible */}
               <NotificationsBell />
             </div>
 
