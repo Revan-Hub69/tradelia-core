@@ -709,8 +709,212 @@ export const SettingsIcon = memo<Omit<SignatureIconProps, 'children'> & {
   </SignatureIconBase>
 ));
 
+// LEARN ICON - Open book with signature clarity
+export const LearnIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isActive?: boolean;
+}>(({
+  isActive = false,
+  ...props
+}) => (
+  <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    <path
+      d="M4 6h6a3 3 0 0 1 3 3v11a3 3 0 0 0-3-3H4z"
+      strokeWidth={isActive ? 2.5 : undefined}
+      opacity={isActive ? 1 : 0.9}
+      style={{
+        filter: isActive ? SIGNATURE_TOKENS.glass.medium : undefined,
+      }}
+    />
+    <path
+      d="M20 6h-6a3 3 0 0 0-3 3v11a3 3 0 0 1 3-3h6z"
+      strokeWidth={isActive ? 2.5 : undefined}
+      opacity={isActive ? 1 : 0.9}
+      style={{
+        filter: isActive ? SIGNATURE_TOKENS.glass.medium : undefined,
+      }}
+    />
+    <line
+      x1="12"
+      y1="9"
+      x2="12"
+      y2="18"
+      opacity={isActive ? 0.8 : 0.6}
+    />
+  </SignatureIconBase>
+));
+
+// TOOLS ICON - Wrench silhouette for utilities
+export const ToolsIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isActive?: boolean;
+}>(({
+  isActive = false,
+  ...props
+}) => (
+  <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    <path
+      d="M14.7 6.3a3.5 3.5 0 0 0-4.95 4.95l-5.9 5.9a2 2 0 0 0 2.83 2.83l5.9-5.9a3.5 3.5 0 0 0 4.95-4.95l-2.12 2.12-2.83-2.83z"
+      strokeWidth={isActive ? 2.5 : undefined}
+      opacity={isActive ? 1 : 0.9}
+      style={{
+        filter: isActive ? SIGNATURE_TOKENS.glass.medium : undefined,
+      }}
+    />
+  </SignatureIconBase>
+));
+
+// COMMUNITY ICON - People group for social areas
+export const CommunityIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isActive?: boolean;
+}>(({
+  isActive = false,
+  ...props
+}) => (
+  <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    <circle
+      cx="9"
+      cy="8"
+      r="3"
+      opacity={isActive ? 1 : 0.85}
+      style={{
+        filter: isActive ? SIGNATURE_TOKENS.glass.medium : undefined,
+      }}
+    />
+    <circle
+      cx="17"
+      cy="10"
+      r="2.5"
+      opacity={isActive ? 1 : 0.8}
+    />
+    <path
+      d="M3.5 19a5.5 5.5 0 0 1 11 0"
+      opacity={isActive ? 1 : 0.9}
+    />
+    <path
+      d="M13.5 19a4.5 4.5 0 0 1 9 0"
+      opacity={isActive ? 0.9 : 0.7}
+    />
+  </SignatureIconBase>
+));
+
+// PROFILE ICON - User silhouette
+export const ProfileIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isActive?: boolean;
+}>(({
+  isActive = false,
+  ...props
+}) => (
+  <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    <circle
+      cx="12"
+      cy="8"
+      r="3.5"
+      strokeWidth={isActive ? 2.5 : undefined}
+      opacity={isActive ? 1 : 0.9}
+      style={{
+        filter: isActive ? SIGNATURE_TOKENS.glass.medium : undefined,
+      }}
+    />
+    <path
+      d="M4 20a8 8 0 0 1 16 0"
+      opacity={isActive ? 1 : 0.85}
+    />
+  </SignatureIconBase>
+));
+
+// GLOBE ICON - Language and internationalization
+export const GlobeIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isActive?: boolean;
+}>(({
+  isActive = false,
+  ...props
+}) => (
+  <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    <circle
+      cx="12"
+      cy="12"
+      r="9"
+      strokeWidth={isActive ? 2.5 : undefined}
+      opacity={isActive ? 1 : 0.9}
+    />
+    <path d="M3 12h18" opacity={isActive ? 0.9 : 0.7} />
+    <path d="M4.5 8.5h15" opacity={isActive ? 0.7 : 0.5} />
+    <path d="M4.5 15.5h15" opacity={isActive ? 0.7 : 0.5} />
+    <path
+      d="M12 3c-2.5 2-4 5.5-4 9s1.5 7 4 9"
+      opacity={isActive ? 0.9 : 0.7}
+    />
+    <path
+      d="M12 3c2.5 2 4 5.5 4 9s-1.5 7-4 9"
+      opacity={isActive ? 0.9 : 0.7}
+    />
+  </SignatureIconBase>
+));
+
+// LOCK ICON - Security access
+export const LockIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isActive?: boolean;
+}>(({
+  isActive = false,
+  ...props
+}) => (
+  <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    <rect
+      x="5"
+      y="11"
+      width="14"
+      height="9"
+      rx="2"
+      strokeWidth={isActive ? 2.5 : undefined}
+      opacity={isActive ? 1 : 0.9}
+    />
+    <path
+      d="M8 11V8a4 4 0 1 1 8 0v3"
+      opacity={isActive ? 1 : 0.85}
+    />
+  </SignatureIconBase>
+));
+
+// LOGOUT ICON - Sign out action
+export const LogoutIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isActive?: boolean;
+}>(({
+  isActive = false,
+  ...props
+}) => (
+  <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    <path
+      d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"
+      opacity={isActive ? 1 : 0.85}
+    />
+    <path d="M10 12H4" opacity={isActive ? 1 : 0.9} />
+    <path d="M7 9l-3 3 3 3" opacity={isActive ? 1 : 0.9} />
+  </SignatureIconBase>
+));
+
+// MORE VERTICAL ICON - Overflow menu
+export const MoreVerticalIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isActive?: boolean;
+}>(({
+  isActive = false,
+  ...props
+}) => (
+  <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    <circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none" opacity={isActive ? 1 : 0.7} />
+    <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" opacity={isActive ? 1 : 0.8} />
+    <circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none" opacity={isActive ? 1 : 0.7} />
+  </SignatureIconBase>
+));
+
 // Display names for professional debugging
 MenuIcon.displayName = 'TradeliaSignatureMenuIcon';
 CloseIcon.displayName = 'TradeliaSignatureCloseIcon';
 ChevronDownIcon.displayName = 'TradeliaSignatureChevronDownIcon';
 SettingsIcon.displayName = 'TradeliaSignatureSettingsIcon';
+LearnIcon.displayName = 'TradeliaSignatureLearnIcon';
+ToolsIcon.displayName = 'TradeliaSignatureToolsIcon';
+CommunityIcon.displayName = 'TradeliaSignatureCommunityIcon';
+ProfileIcon.displayName = 'TradeliaSignatureProfileIcon';
+GlobeIcon.displayName = 'TradeliaSignatureGlobeIcon';
+LockIcon.displayName = 'TradeliaSignatureLockIcon';
+LogoutIcon.displayName = 'TradeliaSignatureLogoutIcon';
+MoreVerticalIcon.displayName = 'TradeliaSignatureMoreVerticalIcon';

@@ -13,13 +13,21 @@ import {
   BellIcon,
   ChevronDownIcon,
   CloseIcon,
+  CommunityIcon,
+  GlobeIcon,
   HomeIcon,
+  LearnIcon,
+  LockIcon,
+  LogoutIcon,
   MenuIcon,
+  MoreVerticalIcon,
   MoonIcon,
+  ProfileIcon,
   SettingsIcon,
   SIGNATURE_TOKENS,
   SignatureIconBase,
   SunIcon,
+  ToolsIcon,
 } from './unified';
 
 import type {
@@ -34,13 +42,21 @@ export {
   BellIcon,
   ChevronDownIcon,
   CloseIcon,
+  CommunityIcon,
+  GlobeIcon,
   HomeIcon,
+  LearnIcon,
+  LockIcon,
+  LogoutIcon,
   MenuIcon,
+  MoreVerticalIcon,
   MoonIcon,
+  ProfileIcon,
   SettingsIcon,
   SIGNATURE_TOKENS,
   SignatureIconBase,
   SunIcon,
+  ToolsIcon,
 };
 
 export type {
@@ -57,18 +73,6 @@ export { BadgeIcon } from './BadgeIcon';
 export { StreakIcon } from './StreakIcon';
 export { XPIcon } from './XPIcon';
 
-// Temporary compatibility aliases (will be removed)
-export const GlobeIcon = SettingsIcon; // Placeholder
-export const LockIcon = SettingsIcon; // Placeholder
-export const LogoutIcon = SettingsIcon; // Placeholder
-export const MoreVerticalIcon = MenuIcon; // Placeholder
-
-// Navigation icons (placeholders - to be created if needed)
-export const CommunityIcon = HomeIcon; // Placeholder
-export const LearnIcon = HomeIcon; // Placeholder
-export const ProfileIcon = HomeIcon; // Placeholder
-export const ToolsIcon = SettingsIcon; // Placeholder
-
 // Icon mapping for dynamic loading (signature system)
 export const ICON_MAP = {
   HomeIcon,
@@ -79,7 +83,6 @@ export const ICON_MAP = {
   CloseIcon,
   ChevronDownIcon,
   SettingsIcon,
-  // Compatibility aliases
   GlobeIcon,
   LockIcon,
   LogoutIcon,
