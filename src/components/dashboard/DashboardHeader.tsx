@@ -289,11 +289,6 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         className={cn(
           'fixed top-0 w-full z-50', // Changed from sticky to fixed (real apps approach)
           'motion-base',
-          // Real applications implementation (Twitter/Medium style)
-          hideOnScroll && [
-            'transition-transform duration-300 ease-out', // Simplified, proven timing
-            !isHeaderVisible && '-translate-y-full', // Use visibility state, not scroll direction
-          ],
           // Enhanced scroll shadow with liquid glass
           isScrolled && showScrollShadow && [
             'shadow-xl',
@@ -302,14 +297,17 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           ],
           // Compact mode
           compactMode && 'py-2',
-          // Debug: add red border when hidden (remove in production)
-          !isHeaderVisible && 'border-4 border-red-500',
           className,
         )}
         style={{
           // GPU acceleration for smooth animations (Twitter/Medium approach)
-          transform: 'translate3d(0, 0, 0)',
+          transform: hideOnScroll && !isHeaderVisible 
+            ? 'translate3d(0, -100%, 0)' 
+            : 'translate3d(0, 0, 0)',
           willChange: hideOnScroll ? 'transform' : 'auto',
+          transition: 'transform 300ms ease-out',
+          // Debug: red background when hidden
+          backgroundColor: !isHeaderVisible ? 'red' : undefined,
         }}
       >
         <div className={cn(
