@@ -82,6 +82,43 @@ function AuthErrorContent() {
       };
     }
 
+    if (error === 'expired_link') {
+      return {
+        title: t('error_expired_link_title'),
+        description: t('error_expired_link_description'),
+        icon: 'clock',
+        color: 'orange',
+        actions: [
+          { label: t('try_again'), href: '/auth', primary: true },
+        ],
+      };
+    }
+
+    if (error === 'auth_failed') {
+      return {
+        title: t('error_auth_failed_title'),
+        description: t('error_auth_failed_description'),
+        icon: 'warning',
+        color: 'red',
+        actions: [
+          { label: t('try_again'), href: '/auth', primary: true },
+          { label: t('contact_support'), href: '/support', primary: false },
+        ],
+      };
+    }
+
+    if (error === 'invalid_callback') {
+      return {
+        title: t('error_invalid_callback_title'),
+        description: t('error_invalid_callback_description'),
+        icon: 'warning',
+        color: 'red',
+        actions: [
+          { label: t('try_again'), href: '/auth', primary: true },
+        ],
+      };
+    }
+
     // Generic error
     return {
       title: t('error_generic_title'),

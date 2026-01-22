@@ -36,7 +36,6 @@ export async function GET(request: Request) {
         console.log('Email signup requires confirmation');
         const errorUrl = new URL('/auth-error', origin);
         errorUrl.searchParams.set('error', 'email_not_confirmed');
-        errorUrl.searchParams.set('error_description', 'Please check your email and click the confirmation link before signing in.');
         return NextResponse.redirect(errorUrl);
       }
 
@@ -53,13 +52,11 @@ export async function GET(request: Request) {
       // Map common Supabase errors to user-friendly messages
       if (exchangeError.message.includes('email not confirmed')) {
         errorUrl.searchParams.set('error', 'email_not_confirmed');
-        errorUrl.searchParams.set('error_description', 'Please check your email and click the confirmation link.');
       } else if (exchangeError.message.includes('invalid_grant')) {
         errorUrl.searchParams.set('error', 'expired_link');
-        errorUrl.searchParams.set('error_description', 'The authentication link has expired. Please try signing in again.');
+        errorUrl.searchParams.set('error_description', exchangeError.message);
       } else if (exchangeError.message.includes('rate limit')) {
         errorUrl.searchParams.set('error', 'rate_limit');
-        errorUrl.searchParams.set('error_description', 'Too many attempts. Please wait a moment before trying again.');
       } else {
         errorUrl.searchParams.set('error', 'auth_failed');
         errorUrl.searchParams.set('error_description', exchangeError.message);
@@ -73,6 +70,5 @@ export async function GET(request: Request) {
   console.error('Invalid callback - no code parameter');
   const errorUrl = new URL('/auth-error', origin);
   errorUrl.searchParams.set('error', 'invalid_callback');
-  errorUrl.searchParams.set('error_description', 'Invalid authentication callback. Please try signing in again.');
   return NextResponse.redirect(errorUrl);
 }

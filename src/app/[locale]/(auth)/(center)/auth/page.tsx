@@ -267,6 +267,9 @@ const UnifiedAuthPageContent = () => {
         password: data.password,
         options: {
           emailRedirectTo: `${window.location.origin}/auth/callback?redirect=/dashboard`,
+          data: {
+            email_confirm: false, // Soft email confirmation
+          },
         },
       });
 
@@ -294,10 +297,16 @@ const UnifiedAuthPageContent = () => {
           setLoading(false);
           return;
         } else {
-          // ✅ NEW USER CREATED
-          console.log('✅ New user created successfully');
-          setAuthMode('success');
-          setError(null);
+          // ✅ NEW USER CREATED - SOFT EMAIL CONFIRMATION
+          console.log('✅ New user created successfully - redirecting to dashboard with email verification notice');
+          
+          // Redirect to dashboard immediately with email verification notice
+          const redirect = searchParams.get('redirect') || '/dashboard';
+          const redirectUrl = `${redirect}?emailVerification=pending&email=${encodeURIComponent(data.email)}`;
+          
+          router.push(redirectUrl);
+          router.refresh();
+          return;
         }
       }
 
