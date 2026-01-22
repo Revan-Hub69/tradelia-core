@@ -62,7 +62,7 @@ export type DashboardHeaderProps = {
   breadcrumbs?: BreadcrumbItem[];
   showGlobalSearch?: boolean;
   compactMode?: boolean;
-  hideOnScroll?: boolean; // New: hide header on scroll down
+  hideOnScroll?: boolean; // New: hide header on scroll down (only on mobile without sidebar)
 };
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
@@ -89,6 +89,26 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   const { isScrolled, isHeaderVisible } = useScrollDirection({
     threshold: 15, // Increased threshold based on real apps research
   });
+
+  // Sidebar detection for conditional hide behavior
+  const [hasSidebar, setHasSidebar] = useState(false);
+  
+  useEffect(() => {
+    const checkSidebar = () => {
+      // Sidebar is present on tablet+ (768px+) based on layout structure
+      const mediaQuery = window.matchMedia('(min-width: 768px)');
+      setHasSidebar(mediaQuery.matches);
+    };
+    
+    checkSidebar();
+    const mediaQuery = window.matchMedia('(min-width: 768px)');
+    mediaQuery.addEventListener('change', checkSidebar);
+    
+    return () => mediaQuery.removeEventListener('change', checkSidebar);
+  }, []);
+
+  // Header should only hide on mobile (no sidebar), stay fixed on tablet/desktop (with sidebar)
+  const shouldHideOnScroll = hideOnScroll && !hasSidebar;
 
   // Global search keyboard shortcut (Cmd/Ctrl + K)
   useEffect(() => {
@@ -311,10 +331,10 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         )}
         style={{
           // Premium spring physics animation (Apple iOS 26 Liquid Glass)
-          transform: hideOnScroll && !isHeaderVisible 
+          transform: shouldHideOnScroll && !isHeaderVisible 
             ? 'translate3d(0, -100%, 0)' 
             : 'translate3d(0, 0, 0)',
-          willChange: hideOnScroll ? 'transform' : 'auto',
+          willChange: shouldHideOnScroll ? 'transform' : 'auto',
           // Premium spring timing with motion preferences
           transition: prefersReducedMotion 
             ? 'transform 150ms ease-out' // Reduced motion
