@@ -104,7 +104,8 @@ export function PushNotificationManager({ className = '' }: PushNotificationMana
 
     } catch (error) {
       console.error('[Push UI] Enable failed:', error);
-      setTestStatus(`❌ Failed to enable notifications: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      setTestStatus(`❌ Failed to enable notifications: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
@@ -127,7 +128,8 @@ export function PushNotificationManager({ className = '' }: PushNotificationMana
 
     } catch (error) {
       console.error('[Push UI] Disable failed:', error);
-      setTestStatus(`❌ Failed to disable notifications: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      setTestStatus(`❌ Failed to disable notifications: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
@@ -153,7 +155,8 @@ export function PushNotificationManager({ className = '' }: PushNotificationMana
 
     } catch (error) {
       console.error('[Push UI] Test failed:', error);
-      setTestStatus(`❌ Test failed: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      setTestStatus(`❌ Test failed: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
@@ -178,7 +181,8 @@ export function PushNotificationManager({ className = '' }: PushNotificationMana
       setTestStatus('✅ Local notification shown');
     } catch (error) {
       console.error('[Push UI] Local test failed:', error);
-      setTestStatus(`❌ Local test failed: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      setTestStatus(`❌ Local test failed: ${errorMessage}`);
     }
   };
 
@@ -187,7 +191,7 @@ export function PushNotificationManager({ className = '' }: PushNotificationMana
     const bytes = new Uint8Array(buffer);
     let binary = '';
     for (let i = 0; i < bytes.byteLength; i++) {
-      binary += String.fromCharCode(bytes[i]);
+      binary += String.fromCharCode(bytes[i]!);
     }
     return window.btoa(binary);
   };
@@ -231,7 +235,7 @@ export function PushNotificationManager({ className = '' }: PushNotificationMana
           <div className="flex gap-2">
             {isSubscribed ? (
               <UiButton
-                variant="outline"
+                variant="ghost"
                 size="sm"
                 onClick={handleDisableNotifications}
                 disabled={isLoading}
@@ -260,7 +264,7 @@ export function PushNotificationManager({ className = '' }: PushNotificationMana
           <h4 className="mb-3 font-medium">Test Notifications</h4>
           <div className="flex flex-wrap gap-2">
             <UiButton
-              variant="outline"
+              variant="ghost"
               size="sm"
               onClick={handleTestNotification}
               disabled={isLoading}
@@ -270,7 +274,7 @@ export function PushNotificationManager({ className = '' }: PushNotificationMana
             </UiButton>
             
             <UiButton
-              variant="outline"
+              variant="ghost"
               size="sm"
               onClick={handleLocalTest}
               disabled={isLoading}
