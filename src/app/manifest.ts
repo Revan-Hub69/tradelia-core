@@ -14,7 +14,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: 'Tradelia Dashboard',
     short_name: 'Tradelia',
     description: 'Professional crypto trading dashboard with real-time analytics and portfolio management',
-    start_url: '/dashboard',
+    start_url: '/en/dashboard',
     display: 'standalone',
     background_color: '#ffffff',
     theme_color: '#3b82f6',
@@ -63,7 +63,7 @@ export default function manifest(): MetadataRoute.Manifest {
         name: 'Portfolio',
         short_name: 'Portfolio',
         description: 'View your crypto portfolio',
-        url: '/dashboard/profile',
+        url: '/en/dashboard/profile',
         icons: [
           {
             src: '/favicon-32x32.png',
@@ -76,7 +76,7 @@ export default function manifest(): MetadataRoute.Manifest {
         name: 'Learn',
         short_name: 'Learn',
         description: 'Access learning materials',
-        url: '/dashboard/learn',
+        url: '/en/dashboard/learn',
         icons: [
           {
             src: '/favicon-32x32.png',
