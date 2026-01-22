@@ -1,13 +1,13 @@
 {
-  "name": "Tradelia - Crypto Learning Platform",
-  "short_name": "Tradelia",
-  "description": "Professional crypto education platform with interactive lessons and real-time market insights",
-  "start_url": "/",
+  "name": "Tradelia Dashboard",
+  "short_name": "Dashboard",
+  "description": "Professional crypto trading dashboard with real-time analytics and portfolio management",
+  "start_url": "/dashboard",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#3b82f6",
   "orientation": "portrait-primary",
-  "scope": "/",
+  "scope": "/dashboard",
   "lang": "en",
   "categories": ["education", "finance", "productivity"],
   "icons": [
@@ -17,28 +17,47 @@
       "type": "image/png"
     },
     {
-      "src": "/favicon-32x32.png",
+      "src": "/favicon-32x32.png", 
       "sizes": "32x32",
       "type": "image/png"
+    },
+    {
+      "src": "/icon-192x192.svg",
+      "sizes": "192x192", 
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512x512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml", 
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192x192-maskable.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-512x512-maskable.svg", 
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     },
     {
       "src": "/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/favicon.ico",
-      "sizes": "48x48",
-      "type": "image/x-icon"
+      "purpose": "any"
     }
   ],
   "shortcuts": [
     {
-      "name": "Dashboard",
-      "short_name": "Dashboard",
-      "description": "Access your learning dashboard",
-      "url": "/dashboard",
+      "name": "Portfolio",
+      "short_name": "Portfolio",
+      "description": "View your crypto portfolio",
+      "url": "/dashboard/portfolio",
       "icons": [
         {
           "src": "/icon.svg",
@@ -50,8 +69,21 @@
     {
       "name": "Learn",
       "short_name": "Learn",
-      "description": "Start learning crypto",
+      "description": "Access learning materials",
       "url": "/dashboard/learn",
+      "icons": [
+        {
+          "src": "/icon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "short_name": "Analytics",
+      "description": "View trading analytics",
+      "url": "/dashboard/analytics",
       "icons": [
         {
           "src": "/icon.svg",

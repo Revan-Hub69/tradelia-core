@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background for maskable icons -->
+  <rect width="512" height="512" fill="#1D4ED8"/>
+  
+  <!-- Tradelia logo centered and scaled -->
+  <g transform="translate(51.19999999999999, 51.19999999999999) scale(12.8)">
+    <rect width="32" height="32" rx="8" fill="#1D4ED8"/>
+  <path d="M8 11h16M16 11v12" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="22" cy="11" r="2" fill="#059669"/>
+  </g>
+</svg>

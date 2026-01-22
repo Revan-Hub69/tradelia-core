@@ -16,14 +16,66 @@ const bundleAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
 });
 
-// ✅ TIER 1: PWA Configuration based on Google Chrome Official
+// ✅ TIER 1: Dashboard-specific PWA Configuration
 const withPWAConfig = withPWA({
   dest: 'public',
   register: true,
   skipWaiting: true,
   disable: process.env.NODE_ENV === 'development',
-  // Simplified runtime caching to avoid configuration errors
+  // Dashboard-specific runtime caching
   runtimeCaching: [
+    // Dashboard pages - NetworkFirst for fresh data
+    {
+      urlPattern: /^\/dashboard.*$/i,
+      handler: 'NetworkFirst',
+      options: {
+        cacheName: 'dashboard-pages',
+        expiration: {
+          maxEntries: 20,
+          maxAgeSeconds: 60 * 60 * 24, // 24 hours
+        },
+        networkTimeoutSeconds: 3,
+      },
+    },
+    // Dashboard API calls - NetworkFirst with fallback
+    {
+      urlPattern: /\/api\/(user|dashboard|lessons)\/.*$/i,
+      handler: 'NetworkFirst',
+      method: 'GET',
+      options: {
+        cacheName: 'dashboard-api',
+        expiration: {
+          maxEntries: 50,
+          maxAgeSeconds: 60 * 60 * 2, // 2 hours
+        },
+        networkTimeoutSeconds: 5,
+      },
+    },
+    // Static assets for dashboard
+    {
+      urlPattern: /\.(?:js|css)$/i,
+      handler: 'StaleWhileRevalidate',
+      options: {
+        cacheName: 'dashboard-static-assets',
+        expiration: {
+          maxEntries: 32,
+          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+        },
+      },
+    },
+    // Images and icons
+    {
+      urlPattern: /\.(?:jpg|jpeg|gif|png|svg|ico|webp)$/i,
+      handler: 'StaleWhileRevalidate',
+      options: {
+        cacheName: 'dashboard-images',
+        expiration: {
+          maxEntries: 64,
+          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+        },
+      },
+    },
+    // Google Fonts
     {
       urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
       handler: 'CacheFirst',
@@ -33,41 +85,6 @@ const withPWAConfig = withPWA({
           maxEntries: 10,
           maxAgeSeconds: 60 * 60 * 24 * 365, // 365 days
         },
-      },
-    },
-    {
-      urlPattern: /\.(?:jpg|jpeg|gif|png|svg|ico|webp)$/i,
-      handler: 'StaleWhileRevalidate',
-      options: {
-        cacheName: 'static-image-assets',
-        expiration: {
-          maxEntries: 64,
-          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
-        },
-      },
-    },
-    {
-      urlPattern: /\.(?:js|css)$/i,
-      handler: 'StaleWhileRevalidate',
-      options: {
-        cacheName: 'static-assets',
-        expiration: {
-          maxEntries: 32,
-          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
-        },
-      },
-    },
-    {
-      urlPattern: /\/api\/.*$/i,
-      handler: 'NetworkFirst',
-      method: 'GET',
-      options: {
-        cacheName: 'apis',
-        expiration: {
-          maxEntries: 16,
-          maxAgeSeconds: 60 * 60 * 24, // 24 hours
-        },
-        networkTimeoutSeconds: 10,
       },
     },
   ],

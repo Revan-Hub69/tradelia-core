@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Offline</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .offline-container {
+      max-width: 480px;
+      padding: 40px 30px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+    
+    .dashboard-icon {
+      font-size: 72px;
+      margin-bottom: 24px;
+      opacity: 0.9;
+    }
+    
+    h1 {
+      font-size: 32px;
+      margin-bottom: 16px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #60a5fa, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .subtitle {
+      font-size: 18px;
+      margin-bottom: 32px;
+      opacity: 0.8;
+      line-height: 1.6;
+    }
+    
+    .retry-button {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      border: none;
+      color: white;
+      padding: 16px 32px;
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+      margin-bottom: 32px;
+    }
+    
+    .retry-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(59, 130, 246, 0.4);
+    }
+    
+    .dashboard-features {
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
+    .dashboard-features h3 {
+      font-size: 20px;
+      margin-bottom: 16px;
+      color: #60a5fa;
+      font-weight: 600;
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      text-align: left;
+    }
+    
+    .feature-item {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      opacity: 0.9;
+      padding: 8px 0;
+    }
+    
+    .feature-item::before {
+      content: "📊";
+      margin-right: 8px;
+      font-size: 16px;
+    }
+    
+    .feature-item:nth-child(2)::before { content: "💰"; }
+    .feature-item:nth-child(3)::before { content: "📈"; }
+    .feature-item:nth-child(4)::before { content: "🎯"; }
+    .feature-item:nth-child(5)::before { content: "📚"; }
+    .feature-item:nth-child(6)::before { content: "⚡"; }
+    
+    .connection-status {
+      margin-top: 24px;
+      padding: 12px;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 12px;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    .connection-status.online {
+      background: rgba(34, 197, 94, 0.1);
+      border-color: rgba(34, 197, 94, 0.2);
+    }
+    
+    @media (max-width: 480px) {
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .offline-container {
+        padding: 30px 20px;
+      }
+      
+      h1 {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="offline-container">
+    <div class="dashboard-icon">📊</div>
+    <h1>Dashboard Offline</h1>
+    <p class="subtitle">Your trading dashboard is temporarily offline, but cached data is still available.</p>
+    
+    <button class="retry-button" onclick="retryConnection()">
+      Reconnect to Dashboard
+    </button>
+    
+    <div class="dashboard-features">
+      <h3>Available Offline:</h3>
+      <div class="features-grid">
+        <div class="feature-item">Portfolio overview</div>
+        <div class="feature-item">Recent transactions</div>
+        <div class="feature-item">Price charts</div>
+        <div class="feature-item">Learning progress</div>
+        <div class="feature-item">Saved lessons</div>
+        <div class="feature-item">Quick actions</div>
+      </div>
+    </div>
+    
+    <div class="connection-status" id="connectionStatus">
+      🔴 No internet connection
+    </div>
+  </div>
+
+  <script>
+    function updateConnectionStatus() {
+      const status = document.getElementById('connectionStatus');
+      if (navigator.onLine) {
+        status.textContent = '🟢 Connected - Ready to sync';
+        status.classList.add('online');
+      } else {
+        status.textContent = '🔴 No internet connection';
+        status.classList.remove('online');
+      }
+    }
+    
+    function retryConnection() {
+      const button = document.querySelector('.retry-button');
+      const originalText = button.textContent;
+      
+      if (navigator.onLine) {
+        button.textContent = 'Reconnecting...';
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 500);
+      } else {
+        button.textContent = 'Still offline...';
+        button.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+        
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.background = 'linear-gradient(135deg, #3b82f6, #1d4ed8)';
+        }, 2000);
+      }
+    }
+    
+    // Auto-redirect when back online
+    window.addEventListener('online', () => {
+      updateConnectionStatus();
+      setTimeout(() => {
+        window.location.href = '/dashboard';
+      }, 1000);
+    });
+    
+    window.addEventListener('offline', updateConnectionStatus);
+    
+    // Initial status check
+    updateConnectionStatus();
+    
+    // Periodic connection check
+    setInterval(updateConnectionStatus, 5000);
+  </script>
+</body>
+</html>
