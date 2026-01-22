@@ -1,12 +1,15 @@
 /*
  * TRADELIA SIGNATURE ICON SYSTEM 2026 - Exports
  *
- * Sistema signature di icone premium basato su ricerche approfondite:
- * - Apple iOS 26 "Liquid Glass" aesthetic
- * - Linear's professional minimalism
- * - Meaningful microinteractions only
- * - Mathematical precision (golden ratio)
- * - Memorable, professional, innovative
+ * Sistema signature di icone educative per piattaforma crypto
+ * Basato su ricerche tier 1: Apple, Linear, IBM Design
+ * 
+ * CARATTERISTICHE:
+ * - Grid 24x24px con stroke 2px uniforme
+ * - Coordinate snap alla griglia 0.5px
+ * - Oggetti appropriati per educazione crypto
+ * - Zero Framer Motion, solo CSS transitions
+ * - Colori design system (currentColor)
  */
 
 export type {
@@ -16,22 +19,34 @@ export type {
   SignatureIconProps,
 } from './UnifiedIconSystem';
 export {
+  // Core icons
   BellIcon,
   ChevronDownIcon,
   CloseIcon,
-  CommunityIcon,
-  GlobeIcon,
   HomeIcon,
-  LearnIcon,
-  LockIcon,
-  LogoutIcon,
   MenuIcon,
-  MoreVerticalIcon,
-  MoonIcon,
-  ProfileIcon,
   SettingsIcon,
   SIGNATURE_TOKENS,
   SignatureIconBase,
+  
+  // Theme icons (new clean versions)
+  LightIcon,
+  DarkIcon,
+  
+  // Educational icons
+  LearnIcon,
+  CalculatorIcon,
+  ForumIcon,
+  ProfileIcon,
+  GlobeIcon,
+  LockIcon,
+  ExitIcon,
+  MoreVerticalIcon,
+  
+  // Legacy aliases (for compatibility)
   SunIcon,
+  MoonIcon,
   ToolsIcon,
+  CommunityIcon,
+  LogoutIcon,
 } from './UnifiedIconSystem';

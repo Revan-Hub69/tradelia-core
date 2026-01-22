@@ -13,21 +13,32 @@ import {
   BellIcon,
   ChevronDownIcon,
   CloseIcon,
-  CommunityIcon,
-  GlobeIcon,
   HomeIcon,
-  LearnIcon,
-  LockIcon,
-  LogoutIcon,
   MenuIcon,
-  MoreVerticalIcon,
-  MoonIcon,
-  ProfileIcon,
   SettingsIcon,
   SIGNATURE_TOKENS,
   SignatureIconBase,
+  
+  // Theme icons (new clean versions)
+  LightIcon,
+  DarkIcon,
+  
+  // Educational icons
+  LearnIcon,
+  CalculatorIcon,
+  ForumIcon,
+  ProfileIcon,
+  GlobeIcon,
+  LockIcon,
+  ExitIcon,
+  MoreVerticalIcon,
+  
+  // Legacy aliases (for compatibility)
   SunIcon,
+  MoonIcon,
   ToolsIcon,
+  CommunityIcon,
+  LogoutIcon,
 } from './unified';
 
 import type {
@@ -42,21 +53,32 @@ export {
   BellIcon,
   ChevronDownIcon,
   CloseIcon,
-  CommunityIcon,
-  GlobeIcon,
   HomeIcon,
-  LearnIcon,
-  LockIcon,
-  LogoutIcon,
   MenuIcon,
-  MoreVerticalIcon,
-  MoonIcon,
-  ProfileIcon,
   SettingsIcon,
   SIGNATURE_TOKENS,
   SignatureIconBase,
+  
+  // Theme icons (new clean versions)
+  LightIcon,
+  DarkIcon,
+  
+  // Educational icons
+  LearnIcon,
+  CalculatorIcon,
+  ForumIcon,
+  ProfileIcon,
+  GlobeIcon,
+  LockIcon,
+  ExitIcon,
+  MoreVerticalIcon,
+  
+  // Legacy aliases (for compatibility)
   SunIcon,
+  MoonIcon,
   ToolsIcon,
+  CommunityIcon,
+  LogoutIcon,
 };
 
 export type {
@@ -70,20 +92,31 @@ export type {
 export const ICON_MAP = {
   HomeIcon,
   BellIcon,
-  SunIcon,
-  MoonIcon,
   MenuIcon,
   CloseIcon,
   ChevronDownIcon,
   SettingsIcon,
+  
+  // Theme icons
+  LightIcon,
+  DarkIcon,
+  
+  // Educational icons
+  LearnIcon,
+  CalculatorIcon,
+  ForumIcon,
+  ProfileIcon,
   GlobeIcon,
   LockIcon,
-  LogoutIcon,
+  ExitIcon,
   MoreVerticalIcon,
-  CommunityIcon,
-  LearnIcon,
-  ProfileIcon,
+  
+  // Legacy aliases
+  SunIcon,
+  MoonIcon,
   ToolsIcon,
+  CommunityIcon,
+  LogoutIcon,
 } as const;
 
 export type IconName = keyof typeof ICON_MAP;
