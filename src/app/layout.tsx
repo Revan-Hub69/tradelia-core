@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Page Not Found - Tradelia',
   description: 'The requested page could not be found.',
+  manifest: '/manifest.json',
 };
 
 /**

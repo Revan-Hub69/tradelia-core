@@ -8,7 +8,7 @@ import PWAProvider from '@/components/pwa/PWAProvider';
 import { AllLocales } from '@/utils/AppConfig';
 
 export const metadata: Metadata = {
-  manifest: '/manifest',
+  manifest: '/manifest.json',
   icons: [
     {
       rel: 'apple-touch-icon',
