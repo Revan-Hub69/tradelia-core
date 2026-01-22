@@ -10,8 +10,8 @@
 
 'use client';
 
-import { motion, type Variants } from 'framer-motion';
 import React from 'react';
+import { motion, type Variants } from 'framer-motion';
 
 import { PremiumIconBase, type PremiumIconProps, ICON_TOKENS } from '../PremiumIconBase';
 
@@ -26,7 +26,7 @@ const bellVariants: Variants = {
   default: { rotate: 0, scale: 1 },
   hover: { rotate: [0, -5, 5, -3, 3, 0], scale: 1.05 },
   active: { rotate: [0, -8, 8, -5, 5, -3, 3, 0], scale: 1.1 },
-  ringing: { 
+  ringing: {
     rotate: [0, -10, 10, -8, 8, -5, 5, -3, 3, 0],
     scale: [1, 1.05, 1, 1.03, 1],
   },
@@ -36,7 +36,7 @@ const clapperVariants: Variants = {
   default: { x: 0, rotate: 0 },
   hover: { x: [0, 1, -1, 0], rotate: [0, 5, -5, 0] },
   active: { x: [0, 2, -2, 1, -1, 0], rotate: [0, 10, -10, 5, -5, 0] },
-  ringing: { 
+  ringing: {
     x: [0, 3, -3, 2, -2, 1, -1, 0],
     rotate: [0, 15, -15, 10, -10, 5, -5, 0],
   },
@@ -44,7 +44,7 @@ const clapperVariants: Variants = {
 
 const waveVariants: Variants = {
   default: { scale: 0, opacity: 0 },
-  active: { 
+  active: {
     scale: [0, 1.5, 2.5],
     opacity: [0, 0.6, 0],
   },
@@ -66,6 +66,7 @@ export const BellIconPremium: React.FC<BellIconPremiumProps> = ({
       const timer = setTimeout(() => setIsAnimating(false), 1000);
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [isRinging]);
 
   const currentState = isAnimating ? 'ringing' : (hasNotifications ? 'active' : 'default');
@@ -85,7 +86,7 @@ export const BellIconPremium: React.FC<BellIconPremiumProps> = ({
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
-        
+
         <radialGradient id="notification-gradient" cx="50%" cy="50%" r="50%">
           <stop offset="0%" stopColor="#ff4444" />
           <stop offset="100%" stopColor="#cc0000" />
@@ -95,7 +96,7 @@ export const BellIconPremium: React.FC<BellIconPremiumProps> = ({
       {/* Sound waves (only when ringing) */}
       {isAnimating && motionLevel === 'full' && (
         <g>
-          {[1, 2, 3].map((i) => (
+          {[1, 2, 3].map(i => (
             <motion.circle
               key={i}
               cx="12"
@@ -164,15 +165,17 @@ export const BellIconPremium: React.FC<BellIconPremiumProps> = ({
             fill="url(#notification-gradient)"
             stroke="white"
             strokeWidth="1"
-            animate={isAnimating ? {
-              scale: [1, 1.2, 1],
-            } : {}}
+            animate={isAnimating
+              ? {
+                  scale: [1, 1.2, 1],
+                }
+              : {}}
             transition={{
               duration: 0.3,
               repeat: isAnimating ? 2 : 0,
             }}
           />
-          
+
           {/* Badge count */}
           {notificationCount > 0 && (
             <motion.text
@@ -182,16 +185,20 @@ export const BellIconPremium: React.FC<BellIconPremiumProps> = ({
               fontSize="6"
               fill="white"
               fontWeight="bold"
-              animate={isAnimating ? {
-                scale: [1, 1.1, 1],
-              } : {}}
+              animate={isAnimating
+                ? {
+                    scale: [1, 1.1, 1],
+                  }
+                : {}}
               transition={{
                 duration: 0.3,
                 repeat: isAnimating ? 2 : 0,
                 delay: 0.1,
               }}
             >
-              {notificationCount > 99 ? '99+' : notificationCount}
+              {notificationCount > 99
+                ? '99+'
+                : notificationCount}
             </motion.text>
           )}
         </motion.g>
@@ -204,9 +211,11 @@ export const BellIconPremium: React.FC<BellIconPremiumProps> = ({
         strokeWidth="0.5"
         opacity="0.3"
         fill="none"
-        animate={hasNotifications ? {
-          opacity: [0.3, 0.6, 0.3],
-        } : {}}
+        animate={hasNotifications
+          ? {
+              opacity: [0.3, 0.6, 0.3],
+            }
+          : {}}
         transition={{
           duration: 2,
           repeat: Infinity,
