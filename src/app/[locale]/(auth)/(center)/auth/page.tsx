@@ -101,6 +101,7 @@ const UnifiedAuthPageContent = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [emailSignupDisabled, setEmailSignupDisabled] = useState(false);
 
   // Check for rate limit error from URL params
   useEffect(() => {
@@ -282,13 +283,19 @@ const UnifiedAuthPageContent = () => {
       
       // Handle specific Supabase errors
       if (signUpError.message.includes('Error sending confirmation email')) {
-        setError('Problema temporaneo con l\'invio email. Prova con Google OAuth o contatta il supporto.');
+        setEmailSignupDisabled(true);
+        setError('⚠️ Problema temporaneo con email. Usa Google per registrarti rapidamente.');
       } else if (signUpError.message.includes('Invalid redirect URL')) {
         setError('Errore configurazione: URL di redirect non autorizzato. Contatta il supporto.');
       } else if (signUpError.message.includes('Email rate limit')) {
         setError('Troppi tentativi. Riprova tra qualche minuto.');
       } else if (signUpError.message.includes('Invalid email')) {
         setError('Email non valida. Controlla il formato.');
+      } else if (signUpError.message.includes('User already registered')) {
+        setError('Email già registrata. Prova ad accedere invece.');
+        setAuthMode('login');
+        loginForm.setValue('email', data.email);
+        return;
       } else {
         setError(`Errore registrazione: ${signUpError.message}`);
       }
@@ -461,8 +468,8 @@ const UnifiedAuthPageContent = () => {
                     </>
                   )}
 
-                  {/* Email Form - Enhanced UX */}
-                  {authMode === 'email' && (
+                  {/* Email Form - Enhanced UX - Hide if disabled */}
+                  {authMode === 'email' && !emailSignupDisabled && (
                     <FadeIn delay={500}>
                       <Form {...emailForm}>
                         <form onSubmit={emailForm.handleSubmit(handleEmailSubmit)} className="space-y-4">
@@ -609,8 +616,8 @@ const UnifiedAuthPageContent = () => {
                     </FadeIn>
                   )}
 
-                  {/* Signup Form - Enhanced */}
-                  {authMode === 'signup' && (
+                  {/* Signup Form - Enhanced - Hide if disabled */}
+                  {authMode === 'signup' && !emailSignupDisabled && (
                     <FadeIn delay={500}>
                       <Form {...signupForm}>
                         <form onSubmit={signupForm.handleSubmit(handleSignupSubmit)} className="space-y-4">
