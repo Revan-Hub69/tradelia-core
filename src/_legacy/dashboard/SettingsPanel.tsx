@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useAutoSaveSettings } from '@/hooks/useAutoSaveSettings';
+import { useAutoSaveSettings } from '@/_legacy/hooks/useAutoSaveSettings';
 import { useModalKeyboardNavigation } from '@/hooks/useKeyboardNavigation';
 
 import type { UserSettings } from './types';

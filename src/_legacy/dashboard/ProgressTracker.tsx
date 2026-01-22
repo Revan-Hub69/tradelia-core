@@ -3,7 +3,7 @@
 import { ArrowRight, BookOpen, Clock, RefreshCw, TrendingUp, Trophy } from 'lucide-react';
 import React from 'react';
 
-import { useProgressUpdates } from '@/hooks/useProgressUpdates';
+import { useProgressUpdates } from '@/_legacy/hooks/useProgressUpdates';
 import { cn } from '@/utils/Helpers';
 
 import type { Lesson, PathProgress } from './types';
