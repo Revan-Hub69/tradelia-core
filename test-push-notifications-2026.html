@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Push Notifications Test - Tradelia PWA 2026</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .success { color: #22c55e; }
+        .error { color: #ef4444; }
+        .warning { color: #f59e0b; }
+        .info { color: #3b82f6; }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #2563eb; }
+        button:disabled { background: #9ca3af; cursor: not-allowed; }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            background: #f3f4f6;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔔 Push Notifications Test - Tradelia PWA 2026</h1>
+    <p>Complete test suite for push notifications functionality</p>
+
+    <div class="test-section">
+        <h2>📱 Browser Support</h2>
+        <div id="support-status" class="status">Checking...</div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔐 Permission Management</h2>
+        <div id="permission-status" class="status">Checking...</div>
+        <button onclick="requestPermission()">Request Permission</button>
+    </div>
+
+    <div class="test-section">
+        <h2>📝 Subscription Management</h2>
+        <div id="subscription-status" class="status">Checking...</div>
+        <button onclick="subscribe()">Subscribe</button>
+        <button onclick="unsubscribe()">Unsubscribe</button>
+    </div>
+
+    <div class="test-section">
+        <h2>🧪 Test Notifications</h2>
+        <div id="test-status" class="status">Ready to test</div>
+        <button onclick="sendTestPush()">Send Test Push</button>
+        <button onclick="showLocalNotification()">Show Local Notification</button>
+    </div>
+
+    <div class="test-section">
+        <h2>📊 Debug Information</h2>
+        <div id="debug-info" class="status">
+            <pre id="debug-details">Loading...</pre>
+        </div>
+    </div>
+
+    <script>
+        let subscription = null;
+        const vapidPublicKey = 'MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE...'; // Will be loaded dynamically
+
+        // Initialize tests
+        window.addEventListener('load', () => {
+            checkSupport();
+            checkPermission();
+            checkSubscription();
+            updateDebugInfo();
+        });
+
+        function checkSupport() {
+            const statusDiv = document.getElementById('support-status');
+            
+            const isSupported = 
+                'serviceWorker' in navigator &&
+                'PushManager' in window &&
+                'Notification' in window;
+
+            if (isSupported) {
+                statusDiv.innerHTML = '<span class="success">✅ Push notifications supported</span>';
+            } else {
+                statusDiv.innerHTML = '<span class="error">❌ Push notifications not supported</span>';
+            }
+        }
+
+        function checkPermission() {
+            const statusDiv = document.getElementById('permission-status');
+            const permission = Notification.permission;
+            
+            let statusText = '';
+            let statusClass = '';
+            
+            switch (permission) {
+                case 'granted':
+                    statusText = '✅ Permission granted';
+                    statusClass = 'success';
+                    break;
+                case 'denied':
+                    statusText = '❌ Permission denied';
+                    statusClass = 'error';
+                    break;
+                default:
+                    statusText = '⏳ Permission not requested';
+                    statusClass = 'warning';
+            }
+            
+            statusDiv.innerHTML = `<span class="${statusClass}">${statusText}</span>`;
+        }
+
+        async function requestPermission() {
+            try {
+                const permission = await Notification.requestPermission();
+                checkPermission();
+                updateDebugInfo();
+                
+                if (permission === 'granted') {
+                    console.log('✅ Permission granted');
+                } else {
+                    console.log('❌ Permission denied');
+                }
+            } catch (error) {
+                console.error('Permission request failed:', error);
+            }
+        }
+
+        async function checkSubscription() {
+            const statusDiv = document.getElementById('subscription-status');
+            
+            try {
+                const registration = await navigator.serviceWorker.getRegistration();
+                if (!registration) {
+                    statusDiv.innerHTML = '<span class="warning">⚠️ Service worker not registered</span>';
+                    return;
+                }
+
+                subscription = await registration.pushManager.getSubscription();
+                
+                if (subscription) {
+                    statusDiv.innerHTML = '<span class="success">✅ Subscribed to push notifications</span>';
+                } else {
+                    statusDiv.innerHTML = '<span class="warning">⚠️ Not subscribed</span>';
+                }
+                
+                updateDebugInfo();
+            } catch (error) {
+                statusDiv.innerHTML = '<span class="error">❌ Error checking subscription</span>';
+                console.error('Check subscription error:', error);
+            }
+        }
+
+        async function subscribe() {
+            try {
+                // Register service worker first
+                const registration = await navigator.serviceWorker.register('/sw-2026.js');
+                await navigator.serviceWorker.ready;
+
+                // Subscribe to push
+                subscription = await registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
+                });
+
+                console.log('✅ Subscribed:', subscription);
+                checkSubscription();
+                
+                // Send subscription to server
+                await saveSubscription();
+                
+            } catch (error) {
+                console.error('❌ Subscribe failed:', error);
+                document.getElementById('subscription-status').innerHTML = 
+                    `<span class="error">❌ Subscribe failed: ${error.message}</span>`;
+            }
+        }
+
+        async function unsubscribe() {
+            if (!subscription) {
+                console.log('⚠️ No subscription to unsubscribe');
+                return;
+            }
+
+            try {
+                await subscription.unsubscribe();
+                subscription = null;
+                console.log('✅ Unsubscribed');
+                checkSubscription();
+            } catch (error) {
+                console.error('❌ Unsubscribe failed:', error);
+            }
+        }
+
+        async function saveSubscription() {
+            if (!subscription) return;
+
+            try {
+                const response = await fetch('/api/push/subscribe', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        subscription: {
+                            endpoint: subscription.endpoint,
+                            keys: {
+                                p256dh: arrayBufferToBase64(subscription.getKey('p256dh')),
+                                auth: arrayBufferToBase64(subscription.getKey('auth'))
+                            }
+                        }
+                    })
+                });
+
+                if (response.ok) {
+                    console.log('✅ Subscription saved to server');
+                } else {
+                    console.error('❌ Failed to save subscription');
+                }
+            } catch (error) {
+                console.error('❌ Save subscription error:', error);
+            }
+        }
+
+        async function sendTestPush() {
+            const statusDiv = document.getElementById('test-status');
+            statusDiv.innerHTML = 'Sending test notification...';
+
+            try {
+                const response = await fetch('/api/push/test', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    statusDiv.innerHTML = `<span class="success">✅ ${result.message}</span>`;
+                } else {
+                    const error = await response.json();
+                    statusDiv.innerHTML = `<span class="error">❌ ${error.error}</span>`;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `<span class="error">❌ Test failed: ${error.message}</span>`;
+            }
+        }
+
+        async function showLocalNotification() {
+            if (Notification.permission !== 'granted') {
+                alert('Please grant notification permission first');
+                return;
+            }
+
+            try {
+                const registration = await navigator.serviceWorker.getRegistration();
+                if (!registration) {
+                    throw new Error('Service worker not registered');
+                }
+
+                await registration.showNotification('🧪 Local Test Notification', {
+                    body: 'This is a local test notification from Tradelia Dashboard',
+                    icon: '/icon-192x192.png',
+                    badge: '/favicon-32x32.png',
+                    tag: 'local-test',
+                    requireInteraction: false,
+                    actions: [
+                        {
+                            action: 'open',
+                            title: 'Open Dashboard',
+                            icon: '/favicon-32x32.png'
+                        }
+                    ]
+                });
+
+                document.getElementById('test-status').innerHTML = 
+                    '<span class="success">✅ Local notification shown</span>';
+            } catch (error) {
+                document.getElementById('test-status').innerHTML = 
+                    `<span class="error">❌ Local notification failed: ${error.message}</span>`;
+            }
+        }
+
+        function updateDebugInfo() {
+            const debugDiv = document.getElementById('debug-details');
+            
+            const info = {
+                'Browser Support': {
+                    'Service Worker': 'serviceWorker' in navigator,
+                    'Push Manager': 'PushManager' in window,
+                    'Notifications': 'Notification' in window
+                },
+                'Permission': Notification.permission,
+                'Subscription': subscription ? {
+                    'Endpoint': subscription.endpoint.substring(0, 50) + '...',
+                    'P256DH Key': subscription.getKey('p256dh') ? 'Present' : 'Missing',
+                    'Auth Key': subscription.getKey('auth') ? 'Present' : 'Missing'
+                } : 'None',
+                'User Agent': navigator.userAgent.substring(0, 100) + '...',
+                'Timestamp': new Date().toISOString()
+            };
+
+            debugDiv.textContent = JSON.stringify(info, null, 2);
+        }
+
+        // Utility functions
+        function urlBase64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding)
+                .replace(/-/g, '+')
+                .replace(/_/g, '/');
+
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+        }
+
+        function arrayBufferToBase64(buffer) {
+            const bytes = new Uint8Array(buffer);
+            let binary = '';
+            for (let i = 0; i < bytes.byteLength; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return window.btoa(binary);
+        }
+    </script>
+</body>
+</html>

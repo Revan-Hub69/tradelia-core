@@ -22,8 +22,11 @@ export type SecurityHeaders = {
 export function getSecurityHeaders(isDevelopment = false): SecurityHeaders {
   const cspDirectives = [
     'default-src \'self\'',
-    // TEMPORARY: 'unsafe-inline' needed for Next.js - replace with nonce in enterprise version
-    'script-src \'self\' \'unsafe-inline\' https://accounts.google.com https://apis.google.com',
+    // TEMPORARY: 'unsafe-inline' and 'unsafe-eval' needed for Next.js development
+    // In development, React Refresh requires eval() for hot reloading
+    isDevelopment 
+      ? 'script-src \'self\' \'unsafe-inline\' \'unsafe-eval\' https://accounts.google.com https://apis.google.com'
+      : 'script-src \'self\' \'unsafe-inline\' https://accounts.google.com https://apis.google.com',
     'style-src \'self\' \'unsafe-inline\' https://fonts.googleapis.com',
     'font-src \'self\' https://fonts.gstatic.com',
     'img-src \'self\' data: https: blob:',

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSP and Icon Fix Test</title>
+</head>
+<body>
+    <h1>Testing CSP and Icon Fixes</h1>
+    
+    <h2>Icon Test</h2>
+    <p>Testing if icon.svg loads correctly:</p>
+    <img src="http://localhost:3001/icon.svg" alt="App Icon" width="64" height="64" />
+    
+    <h2>CSP Test</h2>
+    <p>Check browser console for CSP violations. If React Refresh works without errors, CSP is fixed.</p>
+    
+    <script>
+        // Test if we can access the icon
+        fetch('http://localhost:3001/icon.svg')
+            .then(response => {
+                if (response.ok) {
+                    console.log('✅ Icon loads successfully');
+                    console.log('Content-Type:', response.headers.get('content-type'));
+                } else {
+                    console.error('❌ Icon failed to load:', response.status);
+                }
+            })
+            .catch(error => {
+                console.error('❌ Icon fetch error:', error);
+            });
+            
+        // Test CSP by checking if we can use eval (should be allowed in dev)
+        try {
+            eval('console.log("✅ CSP allows eval in development")');
+        } catch (error) {
+            console.error('❌ CSP blocks eval:', error);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+{
+  "timestamp": "2026-01-22T18:45:03.934Z",
+  "summary": {
+    "successful": 6,
+    "partial": 1,
+    "failed": 3
+  },
+  "results": {
+    "pwa": {
+      "manifest": {
+        "status": "success",
+        "name": "Tradelia Dashboard",
+        "startUrl": "/dashboard",
+        "display": "standalone",
+        "icons": 6
+      },
+      "serviceWorker": {
+        "status": "success",
+        "size": "9KB",
+        "hasPushHandling": true,
+        "hasNotificationHandling": true
+      },
+      "assets": {
+        "status": "success",
+        "available": 3,
+        "total": 3
+      }
+    },
+    "push": {
+      "vapidKeys": {
+        "status": "missing",
+        "publicKeyPresent": false,
+        "privateKeyPresent": false
+      },
+      "subscribe": {
+        "status": "error",
+        "statusCode": 400
+      },
+      "send": {
+        "status": "error",
+        "statusCode": 400
+      },
+      "test": {
+        "status": "success",
+        "statusCode": 401
+      },
+      "migration": {
+        "status": "success",
+        "exists": true,
+        "hasRLS": true,
+        "hasIndexes": true,
+        "hasTriggers": true
+      },
+      "components": {
+        "push-manager.ts": {
+          "status": "success",
+          "exists": true,
+          "hasTypeScript": true,
+          "hasErrorHandling": true,
+          "size": "8KB"
+        },
+        "usePushNotifications.ts": {
+          "status": "success",
+          "exists": true,
+          "hasTypeScript": true,
+          "hasErrorHandling": true,
+          "size": "8KB"
+        },
+        "PushNotificationManager.tsx": {
+          "status": "success",
+          "exists": true,
+          "hasTypeScript": true,
+          "hasErrorHandling": true,
+          "size": "10KB"
+        }
+      },
+      "componentsOverall": {
+        "status": "success",
+        "available": 3,
+        "total": 3
+      }
+    },
+    "api": {},
+    "integration": {
+      "overall": {
+        "status": "partial",
+        "components": {
+          "manifest": true,
+          "serviceWorker": true,
+          "vapidKeys": false,
+          "apiEndpoints": false,
+          "clientComponents": true
+        }
+      }
+    }
+  },
+  "environment": {
+    "nodeVersion": "v22.16.0",
+    "platform": "win32",
+    "cwd": "C:\\Users\\Utente\\Downloads\\tradelia-core-main-sidebar-fix\\tradelia"
+  }
+}

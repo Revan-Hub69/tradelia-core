@@ -4,9 +4,11 @@ import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, unstable_setRequestLocale } from 'next-intl/server';
 
+import PWAProvider from '@/components/pwa/PWAProvider';
 import { AllLocales } from '@/utils/AppConfig';
 
 export const metadata: Metadata = {
+  manifest: '/manifest.json',
   icons: [
     {
       rel: 'apple-touch-icon',
@@ -29,6 +31,15 @@ export const metadata: Metadata = {
       url: '/favicon.ico',
     },
   ],
+  other: {
+    'mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-status-bar-style': 'default',
+    'apple-mobile-web-app-title': 'Tradelia',
+    'application-name': 'Tradelia',
+    'msapplication-TileColor': '#3b82f6',
+    'theme-color': '#3b82f6',
+  },
 };
 
 export function generateStaticParams() {
@@ -66,7 +77,9 @@ export default async function RootLayout(props: {
           locale={params.locale}
           messages={messages}
         >
-          {props.children}
+          <PWAProvider>
+            {props.children}
+          </PWAProvider>
         </NextIntlClientProvider>
       </body>
     </html>

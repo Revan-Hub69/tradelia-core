@@ -80,5 +80,15 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!.+\\.[\\w]+$|_next|monitoring|api).*)', '/'],
+  matcher: [
+    // Match all request paths except for the ones starting with:
+    // - api (API routes)
+    // - _next/static (static files)
+    // - _next/image (image optimization files)
+    // - favicon.ico, icon.svg, manifest.json and other static assets
+    // - sw.js, sw-2026.js and other service worker files
+    // - monitoring (health checks)
+    '/((?!api|_next/static|_next/image|favicon.ico|icon.svg|manifest.json|sw.js|sw-2026.js|sw-custom.js|workbox-.*\\.js|.*\\.svg$|.*\\.png$|.*\\.jpg$|.*\\.jpeg$|.*\\.gif$|.*\\.webp$|.*\\.ico$|monitoring).*)',
+    '/',
+  ],
 };
