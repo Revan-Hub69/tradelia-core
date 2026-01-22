@@ -160,7 +160,7 @@ const UnifiedAuthPageContent = () => {
     try {
       console.log('📧 Server-side email check for:', email);
       const result = await checkEmailExistsServer(email);
-      
+
       if (result.error) {
         console.error('❌ Email check error:', result.error);
         // On error, assume new user to allow signup attempt
@@ -287,23 +287,23 @@ const UnifiedAuthPageContent = () => {
           // 🚨 USER ALREADY EXISTS (Security obfuscation detected)
           console.log('🔄 User already exists (detected via empty identities array)');
           setError('📧 Questa email è già registrata! Ti porto alla pagina di accesso.');
-          
+
           setTimeout(() => {
             setAuthMode('login');
             loginForm.setValue('email', data.email);
             setError(null);
           }, 2500);
-          
+
           setLoading(false);
           return;
         } else {
           // ✅ NEW USER CREATED - SOFT EMAIL CONFIRMATION
           console.log('✅ New user created successfully - redirecting to dashboard with email verification notice');
-          
+
           // Redirect to dashboard immediately with email verification notice
           const redirect = searchParams.get('redirect') || '/dashboard';
           const redirectUrl = `${redirect}?emailVerification=pending&email=${encodeURIComponent(data.email)}`;
-          
+
           router.push(redirectUrl);
           router.refresh();
           return;
@@ -742,12 +742,12 @@ const UnifiedAuthPageContent = () => {
                     <FadeIn>
                       <div className="rounded-lg border border-red-200 bg-red-50/80 p-4 backdrop-blur-sm dark:border-red-800 dark:bg-red-900/20">
                         <div className="flex items-start gap-3">
-                          <svg className="size-5 shrink-0 text-red-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <svg className="mt-0.5 size-5 shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
                           <div className="flex-1">
-                            <p className="text-sm text-red-700 dark:text-red-300 mb-3">{error}</p>
-                            
+                            <p className="mb-3 text-sm text-red-700 dark:text-red-300">{error}</p>
+
                             {/* Show helpful actions for "User already registered" */}
                             {error.includes('già registrata') && (
                               <div className="flex flex-col gap-2 sm:flex-row">
@@ -760,7 +760,7 @@ const UnifiedAuthPageContent = () => {
                                     loginForm.setValue('email', userEmail);
                                     setError(null);
                                   }}
-                                  className="text-xs border-red-300 text-red-700 hover:bg-red-100 dark:border-red-700 dark:text-red-300 dark:hover:bg-red-900/30"
+                                  className="border-red-300 text-xs text-red-700 hover:bg-red-100 dark:border-red-700 dark:text-red-300 dark:hover:bg-red-900/30"
                                 >
                                   🔑 Accedi invece
                                 </Button>

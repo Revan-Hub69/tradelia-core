@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 /**
  * Root Layout for Global 404 Pages
- * 
+ *
  * This layout is required for the root not-found.tsx page
  * to prevent Next.js build errors about missing root layouts.
  */

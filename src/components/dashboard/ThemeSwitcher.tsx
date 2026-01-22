@@ -15,13 +15,13 @@ import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
 
 import { MoonIcon, SunIcon } from '@/components/icons/unified/UnifiedIconSystem';
-import { UiIconButton } from '@/components/ui/UiIconButton';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { UiIconButton } from '@/components/ui/UiIconButton';
 import { cn } from '@/utils/Helpers';
 
 export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) => {

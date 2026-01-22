@@ -23,14 +23,14 @@ export async function GET(request: Request) {
   if (code) {
     const supabase = await createClient();
     const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
-    
+
     if (!exchangeError && data.user) {
       console.log('OAuth success for user:', data.user.email);
-      
+
       // For OAuth providers (Google, etc.), we don't require email confirmation
       // The provider has already verified the email
       const isOAuthUser = data.user.app_metadata?.provider !== 'email';
-      
+
       if (!isOAuthUser && !data.user.email_confirmed_at) {
         // Only require email confirmation for email/password signups
         console.log('Email signup requires confirmation');
@@ -48,7 +48,7 @@ export async function GET(request: Request) {
     if (exchangeError) {
       console.error('Supabase exchange error:', exchangeError);
       const errorUrl = new URL('/auth-error', origin);
-      
+
       // Map common Supabase errors to user-friendly messages
       if (exchangeError.message.includes('email not confirmed')) {
         errorUrl.searchParams.set('error', 'email_not_confirmed');
@@ -66,7 +66,7 @@ export async function GET(request: Request) {
         errorUrl.searchParams.set('error', 'auth_failed');
         errorUrl.searchParams.set('error_description', exchangeError.message);
       }
-      
+
       return NextResponse.redirect(errorUrl);
     }
   }

@@ -8,7 +8,7 @@
  * - UiNavItem for navigation items
  * - UiSurface for sidebar container
  * - UiIconButton for collapse button
- * 
+ *
  * PERFORMANCE OPTIMIZED:
  * - Selective Framer Motion imports
  * - CSS-based animations for simple cases
@@ -17,17 +17,16 @@
 
 'use client';
 
+// PERFORMANCE: Selective Framer Motion imports
+import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 
-// PERFORMANCE: Selective Framer Motion imports
-import { motion } from 'framer-motion';
-
 import { CloseIcon, DynamicIcon, type IconName, MenuIcon } from '@/components/icons';
+import { NavigationSkeleton } from '@/components/ui/skeleton';
 import { UiIconButton } from '@/components/ui/UiIconButton';
 import { UiNavItem } from '@/components/ui/UiNavItem';
 import { UiSurface } from '@/components/ui/UiSurface';
-import { NavigationSkeleton } from '@/components/ui/skeleton';
 import { getVisibleNavigationItems, trackNavigationEvent } from '@/data/navigation.config';
 import { useNavigationState } from '@/hooks/useNavigationState';
 import { useOptimizedNavigation } from '@/hooks/useOptimizedNavigation';
@@ -129,7 +128,7 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
             }}
           />
         )}
-        
+
         {/* Icon with state indicators - CSS-based hover, Motion for complex animations */}
         <div
           className={cn(
@@ -154,16 +153,16 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
 
           {/* State indicators - CSS animations for performance */}
           {uxState === 'blocked' && (
-            <div className="absolute -right-1 -top-1 size-3 rounded-full bg-warning ring-2 ring-background animate-pulse" />
+            <div className="absolute -right-1 -top-1 size-3 animate-pulse rounded-full bg-warning ring-2 ring-background" />
           )}
 
           {uxState === 'offline' && (
-            <div className="absolute -right-1 -top-1 size-3 rounded-full bg-destructive ring-2 ring-background animate-pulse" />
+            <div className="absolute -right-1 -top-1 size-3 animate-pulse rounded-full bg-destructive ring-2 ring-background" />
           )}
 
           {/* Badge dot for notifications - CSS pulse */}
           {canNavigate && item.badgeType === 'dot' && (
-            <div className="absolute -right-1 -top-1 size-3 rounded-full bg-accent ring-2 ring-background animate-pulse" />
+            <div className="absolute -right-1 -top-1 size-3 animate-pulse rounded-full bg-accent ring-2 ring-background" />
           )}
         </div>
 
@@ -295,7 +294,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
               ? <MenuIcon size={16} />
               : <CloseIcon size={16} />}
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="size-9 hover:scale-[1.02] transition-transform duration-200"
+            className="size-9 transition-transform duration-200 hover:scale-[1.02]"
             aria-pressed={!isCollapsed}
           />
         </div>

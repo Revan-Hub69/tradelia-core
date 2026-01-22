@@ -1,6 +1,6 @@
 /*
  * DASHBOARD PAGE - PHASE 3B OPTIMIZED
- * 
+ *
  * Tier 1 Implementation:
  * - Server Component with parallel data fetching
  * - Preload pattern for critical data
@@ -12,34 +12,33 @@
 import { getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
 
+import { EmailVerificationBanner } from '@/components/dashboard/EmailVerificationBanner';
+import { VirtualActivityFeed } from '@/components/dashboard/VirtualActivityFeed';
 import { ErrorBoundaryTest } from '@/components/dev/ErrorBoundaryTest';
 import { PageTransitionWrapper } from '@/components/transitions/PageTransitionWrapper';
 import { UiSurface } from '@/components/ui/UiSurface';
-import { VirtualActivityFeed } from '@/components/dashboard/VirtualActivityFeed';
-import { EmailVerificationBanner } from '@/components/dashboard/EmailVerificationBanner';
-
 // ✅ TIER 1: Optimized data fetching
 import { getCriticalDashboardData, preloadDashboardData } from '@/libs/dashboard-data';
 
 // Client Components for user data
-import { 
-  DashboardStatusCard, 
-  DashboardNextSteps,
-  DashboardStatsCard,
+import {
   DashboardActivityFeed,
+  DashboardNextSteps,
   DashboardNotifications,
+  DashboardStatsCard,
+  DashboardStatusCard,
 } from './components';
 
 // ✅ TIER 1 PATTERN: Server Component with preloading
 const DashboardIndexPage = async () => {
   const t = await getTranslations('Dashboard');
-  
+
   // Mock user ID - replace with real auth
   const userId = 'user-123';
-  
+
   // ✅ TIER 1: Preload critical data
   preloadDashboardData(userId);
-  
+
   // ✅ TIER 1: Get critical data for initial render
   const { userData, error } = await getCriticalDashboardData(userId);
 
@@ -69,7 +68,7 @@ const DashboardIndexPage = async () => {
       <div className="mx-auto max-w-screen-xl space-y-6">
         {/* Email Verification Banner - Soft confirmation UX */}
         <EmailVerificationBanner />
-        
+
         {/* ✅ TIER 1: Personalized welcome with server-side data */}
         <div className="stagger-item">
           <h1 className="text-2xl font-bold">
@@ -94,8 +93,8 @@ const DashboardIndexPage = async () => {
           {/* Right Column */}
           <div className="space-y-6">
             {/* Stats - Suspense boundary for secondary data */}
-            <Suspense fallback={
-              <UiSurface variant="card" className="ui-glass-card p-6 stagger-item">
+            <Suspense fallback={(
+              <UiSurface variant="card" className="ui-glass-card stagger-item p-6">
                 <div className="space-y-4">
                   <div className="h-6 w-32 animate-pulse rounded bg-muted" />
                   <div className="grid grid-cols-2 gap-4">
@@ -110,13 +109,14 @@ const DashboardIndexPage = async () => {
                   </div>
                 </div>
               </UiSurface>
-            }>
+            )}
+            >
               <DashboardStatsCard userId={userId} />
             </Suspense>
 
             {/* Notifications - Suspense boundary for secondary data */}
-            <Suspense fallback={
-              <UiSurface variant="card" className="ui-glass-card p-6 stagger-item">
+            <Suspense fallback={(
+              <UiSurface variant="card" className="ui-glass-card stagger-item p-6">
                 <div className="space-y-4">
                   <div className="h-6 w-40 animate-pulse rounded bg-muted" />
                   <div className="space-y-3">
@@ -125,7 +125,8 @@ const DashboardIndexPage = async () => {
                   </div>
                 </div>
               </UiSurface>
-            }>
+            )}
+            >
               <DashboardNotifications userId={userId} />
             </Suspense>
           </div>
@@ -134,14 +135,14 @@ const DashboardIndexPage = async () => {
         {/* ✅ PHASE 3B: Virtual Activity Feed - Handles unlimited data */}
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Traditional Activity Feed (for comparison) */}
-          <Suspense fallback={
-            <UiSurface variant="card" className="ui-glass-card p-6 stagger-item">
+          <Suspense fallback={(
+            <UiSurface variant="card" className="ui-glass-card stagger-item p-6">
               <div className="space-y-4">
                 <div className="h-6 w-48 animate-pulse rounded bg-muted" />
                 <div className="space-y-3">
                   {Array.from({ length: 3 }).map((_, i) => (
                     <div key={i} className="flex space-x-3">
-                      <div className="h-10 w-10 animate-pulse rounded-full bg-muted" />
+                      <div className="size-10 animate-pulse rounded-full bg-muted" />
                       <div className="flex-1 space-y-2">
                         <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
                         <div className="h-3 w-1/2 animate-pulse rounded bg-muted" />
@@ -151,7 +152,8 @@ const DashboardIndexPage = async () => {
                 </div>
               </div>
             </UiSurface>
-          }>
+          )}
+          >
             <DashboardActivityFeed userId={userId} />
           </Suspense>
 

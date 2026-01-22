@@ -2,7 +2,7 @@
 
 /**
  * Push Notifications Manager - Tradelia PWA 2026
- * 
+ *
  * Modern push notifications implementation with:
  * - VAPID authentication
  * - Subscription management
@@ -11,15 +11,15 @@
  * - Analytics tracking
  */
 
-export interface PushSubscriptionData {
+export type PushSubscriptionData = {
   endpoint: string;
   keys: {
     p256dh: string;
     auth: string;
   };
-}
+};
 
-export interface NotificationPayload {
+export type NotificationPayload = {
   title: string;
   body: string;
   icon?: string;
@@ -33,7 +33,7 @@ export interface NotificationPayload {
     icon?: string;
   }>;
   data?: any;
-}
+};
 
 export class PushNotificationManager {
   private vapidPublicKey: string;
@@ -49,11 +49,11 @@ export class PushNotificationManager {
    * Check if push notifications are supported
    */
   private checkSupport(): void {
-    this.isSupported = 
-      typeof window !== 'undefined' &&
-      'serviceWorker' in navigator &&
-      'PushManager' in window &&
-      'Notification' in window;
+    this.isSupported
+      = typeof window !== 'undefined'
+        && 'serviceWorker' in navigator
+        && 'PushManager' in window
+        && 'Notification' in window;
   }
 
   /**
@@ -72,10 +72,10 @@ export class PushNotificationManager {
     }
 
     const permission = await Notification.requestPermission();
-    
+
     // Track permission result
     this.trackEvent('permission_requested', { result: permission });
-    
+
     return permission;
   }
 
@@ -86,7 +86,7 @@ export class PushNotificationManager {
     if (!this.isSupported) {
       return 'denied';
     }
-    
+
     return Notification.permission;
   }
 
@@ -295,7 +295,7 @@ export class PushNotificationManager {
   private trackEvent(event: string, data?: any): void {
     // In a real app, send to analytics service
     console.log(`[Push Analytics] ${event}`, data);
-    
+
     // Example: Send to Google Analytics, Mixpanel, etc.
     if (typeof window !== 'undefined' && (window as any).gtag) {
       (window as any).gtag('event', event, {

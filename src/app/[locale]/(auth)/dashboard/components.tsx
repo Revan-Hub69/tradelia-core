@@ -1,6 +1,6 @@
 /*
  * DASHBOARD CLIENT COMPONENTS - PHASE 3C OPTIMIZED
- * 
+ *
  * Tier 1 Implementation:
  * - Optimized client components with server data
  * - Granular loading states
@@ -14,9 +14,9 @@
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
-import { UiSurface } from '@/components/ui/UiSurface';
+import { BellIcon, ClockIcon, StarIcon, TrendingUpIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import { UiStatusChip } from '@/components/ui/UiStatusChip';
-import { BellIcon, TrendingUpIcon, StarIcon, ClockIcon } from '@/components/icons/unified/UnifiedIconSystem';
+import { UiSurface } from '@/components/ui/UiSurface';
 import { useMemoryLeakDetection } from '@/hooks/useMemoryLeakDetection';
 
 // ✅ TIER 1: Type definitions for dashboard data
@@ -81,48 +81,52 @@ export type NotificationData = {
 };
 
 // ✅ TIER 1: Props interface for type safety
-interface DashboardStatusCardProps {
+type DashboardStatusCardProps = {
   userData: UserData;
-}
+};
 
-interface DashboardNextStepsProps {
+type DashboardNextStepsProps = {
   userData: UserData;
-}
+};
 
-interface SecondaryDataProps {
+type SecondaryDataProps = {
   userId: string;
-}
+};
 
 // ✅ TIER 1: Optimized status card with server data
 export const DashboardStatusCard = ({ userData }: DashboardStatusCardProps) => {
   const t = useTranslations('Dashboard');
 
   return (
-    <UiSurface variant="card" className="ui-glass-card p-6 stagger-item">
-      <div className="flex items-center justify-between mb-4">
+    <UiSurface variant="card" className="ui-glass-card stagger-item p-6">
+      <div className="mb-4 flex items-center justify-between">
         <h2 className="text-lg font-semibold">{t('current_status_title')}</h2>
-        <UiStatusChip 
+        <UiStatusChip
           variant={userData.subscription === 'premium' ? 'success' : 'info'}
           label={userData.subscription.toUpperCase()}
         />
       </div>
-      
+
       <div className="space-y-4">
         <div>
           <div className="text-sm text-muted-foreground">{t('path_label')}</div>
           <div className="font-medium">{userData.progress.pathName}</div>
           {userData.progress.currentLesson && (
-            <div className="text-sm text-blue-600 dark:text-blue-400 mt-1">
-              Current: {userData.progress.currentLesson}
+            <div className="mt-1 text-sm text-blue-600 dark:text-blue-400">
+              Current:
+              {' '}
+              {userData.progress.currentLesson}
             </div>
           )}
         </div>
-        
+
         <div>
-          <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
+          <div className="mb-2 flex items-center justify-between text-sm text-muted-foreground">
             <span>{t('progress_label')}</span>
             <span>
-              {userData.progress.completedLessons}/{userData.progress.totalLessons}
+              {userData.progress.completedLessons}
+              /
+              {userData.progress.totalLessons}
             </span>
           </div>
           <div className="h-2 w-full rounded-full bg-muted">
@@ -131,12 +135,17 @@ export const DashboardStatusCard = ({ userData }: DashboardStatusCardProps) => {
               style={{ width: `${userData.progress.progressPercentage}%` }}
             />
           </div>
-          <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
-            <span>{userData.progress.progressPercentage}% completed</span>
+          <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
+            <span>
+              {userData.progress.progressPercentage}
+              % completed
+            </span>
             {userData.progress.estimatedTimeToComplete && (
               <span className="flex items-center gap-1">
-                <ClockIcon className="h-3 w-3" />
-                {userData.progress.estimatedTimeToComplete} remaining
+                <ClockIcon className="size-3" />
+                {userData.progress.estimatedTimeToComplete}
+                {' '}
+                remaining
               </span>
             )}
           </div>
@@ -154,52 +163,64 @@ export const DashboardNextSteps = ({ userData }: DashboardNextStepsProps) => {
   const isNearCompletion = userData.progress.progressPercentage > 80;
 
   return (
-    <UiSurface variant="card" className="ui-glass-card p-6 stagger-item">
+    <UiSurface variant="card" className="ui-glass-card stagger-item p-6">
       <h2 className="mb-4 text-lg font-semibold">{t('next_objectives_title')}</h2>
-      
-      {isJustStarted ? (
-        <div className="space-y-4">
-          <p className="text-muted-foreground">
-            Welcome {userData.name}! Let's start your crypto learning journey.
-          </p>
-          <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950/30">
-            <div className="font-medium text-blue-900 dark:text-blue-100">
-              {t('first_lesson_objective')}
+
+      {isJustStarted
+        ? (
+            <div className="space-y-4">
+              <p className="text-muted-foreground">
+                Welcome
+                {' '}
+                {userData.name}
+                ! Let's start your crypto learning journey.
+              </p>
+              <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950/30">
+                <div className="font-medium text-blue-900 dark:text-blue-100">
+                  {t('first_lesson_objective')}
+                </div>
+                <div className="mt-1 text-sm text-blue-700 dark:text-blue-300">
+                  Estimated time: 15 minutes
+                </div>
+              </div>
             </div>
-            <div className="text-sm text-blue-700 dark:text-blue-300 mt-1">
-              Estimated time: 15 minutes
-            </div>
-          </div>
-        </div>
-      ) : isNearCompletion ? (
-        <div className="space-y-4">
-          <p className="text-muted-foreground">
-            You're almost there! Just a few more lessons to complete.
-          </p>
-          <div className="rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-950/30">
-            <div className="font-medium text-green-900 dark:text-green-100">
-              Complete your learning path
-            </div>
-            <div className="text-sm text-green-700 dark:text-green-300 mt-1">
-              {userData.progress.totalLessons - userData.progress.completedLessons} lessons left
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          <p className="text-muted-foreground">
-            {t('continue_message')}
-          </p>
-          <div className="rounded-lg border border-purple-200 bg-purple-50 p-4 dark:border-purple-800 dark:bg-purple-950/30">
-            <div className="font-medium text-purple-900 dark:text-purple-100">
-              {userData.progress.currentLesson || t('continue_path_objective')}
-            </div>
-            <div className="text-sm text-purple-700 dark:text-purple-300 mt-1">
-              Progress so far: {userData.progress.progressPercentage}%
-            </div>
-          </div>
-        </div>
-      )}
+          )
+        : isNearCompletion
+          ? (
+              <div className="space-y-4">
+                <p className="text-muted-foreground">
+                  You're almost there! Just a few more lessons to complete.
+                </p>
+                <div className="rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-950/30">
+                  <div className="font-medium text-green-900 dark:text-green-100">
+                    Complete your learning path
+                  </div>
+                  <div className="mt-1 text-sm text-green-700 dark:text-green-300">
+                    {userData.progress.totalLessons - userData.progress.completedLessons}
+                    {' '}
+                    lessons left
+                  </div>
+                </div>
+              </div>
+            )
+          : (
+              <div className="space-y-4">
+                <p className="text-muted-foreground">
+                  {t('continue_message')}
+                </p>
+                <div className="rounded-lg border border-purple-200 bg-purple-50 p-4 dark:border-purple-800 dark:bg-purple-950/30">
+                  <div className="font-medium text-purple-900 dark:text-purple-100">
+                    {userData.progress.currentLesson || t('continue_path_objective')}
+                  </div>
+                  <div className="mt-1 text-sm text-purple-700 dark:text-purple-300">
+                    Progress so far:
+                    {' '}
+                    {userData.progress.progressPercentage}
+                    %
+                  </div>
+                </div>
+              </div>
+            )}
     </UiSurface>
   );
 };
@@ -208,7 +229,7 @@ export const DashboardNextSteps = ({ userData }: DashboardNextStepsProps) => {
 export const DashboardStatsCard = ({ userId }: SecondaryDataProps) => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
-  
+
   // ✅ PHASE 3C: Memory leak detection
   useMemoryLeakDetection({
     componentName: 'DashboardStatsCard',
@@ -218,7 +239,7 @@ export const DashboardStatsCard = ({ userId }: SecondaryDataProps) => {
 
   useEffect(() => {
     let timeoutId: number | null = null;
-    
+
     // Simulate API call for stats
     const loadStats = () => {
       try {
@@ -258,7 +279,7 @@ export const DashboardStatsCard = ({ userId }: SecondaryDataProps) => {
 
   if (loading) {
     return (
-      <UiSurface variant="card" className="ui-glass-card p-6 stagger-item">
+      <UiSurface variant="card" className="ui-glass-card stagger-item p-6">
         <div className="space-y-4">
           <div className="h-6 w-32 animate-pulse rounded bg-muted" />
           <div className="grid grid-cols-2 gap-4">
@@ -285,28 +306,28 @@ export const DashboardStatsCard = ({ userId }: SecondaryDataProps) => {
   }
 
   return (
-    <UiSurface variant="card" className="ui-glass-card p-6 stagger-item">
-      <h2 className="mb-4 text-lg font-semibold flex items-center gap-2">
-        <TrendingUpIcon className="h-5 w-5 text-green-500" />
+    <UiSurface variant="card" className="ui-glass-card stagger-item p-6">
+      <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold">
+        <TrendingUpIcon className="size-5 text-green-500" />
         Statistics
       </h2>
-      
+
       <div className="grid grid-cols-2 gap-4">
         <div className="text-center">
           <div className="text-2xl font-bold text-orange-500">{stats.streak}</div>
           <div className="text-sm text-muted-foreground">Day Streak</div>
         </div>
-        
+
         <div className="text-center">
           <div className="text-2xl font-bold text-blue-500">{stats.xp}</div>
           <div className="text-sm text-muted-foreground">Total XP</div>
         </div>
-        
+
         <div className="text-center">
           <div className="text-2xl font-bold text-purple-500">{stats.level}</div>
           <div className="text-sm text-muted-foreground">Current Level</div>
         </div>
-        
+
         <div className="text-center">
           <div className="text-2xl font-bold text-green-500">{stats.achievements.total}</div>
           <div className="text-sm text-muted-foreground">Achievements</div>
@@ -314,11 +335,13 @@ export const DashboardStatsCard = ({ userId }: SecondaryDataProps) => {
       </div>
 
       {/* Weekly Goal Progress */}
-      <div className="mt-4 pt-4 border-t border-border">
-        <div className="flex items-center justify-between text-sm mb-2">
+      <div className="mt-4 border-t border-border pt-4">
+        <div className="mb-2 flex items-center justify-between text-sm">
           <span className="text-muted-foreground">Weekly Goal</span>
           <span className="font-medium">
-            {stats.weeklyGoal.completed}/{stats.weeklyGoal.target}
+            {stats.weeklyGoal.completed}
+            /
+            {stats.weeklyGoal.target}
           </span>
         </div>
         <div className="h-2 w-full rounded-full bg-muted">
@@ -336,7 +359,7 @@ export const DashboardStatsCard = ({ userId }: SecondaryDataProps) => {
 export const DashboardNotifications = ({ userId }: SecondaryDataProps) => {
   const [notifications, setNotifications] = useState<NotificationData[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
   // ✅ PHASE 3C: Memory leak detection
   useMemoryLeakDetection({
     componentName: 'DashboardNotifications',
@@ -345,7 +368,7 @@ export const DashboardNotifications = ({ userId }: SecondaryDataProps) => {
 
   useEffect(() => {
     let timeoutId: number | null = null;
-    
+
     const loadNotifications = () => {
       try {
         timeoutId = window.setTimeout(() => {
@@ -387,7 +410,7 @@ export const DashboardNotifications = ({ userId }: SecondaryDataProps) => {
 
   if (loading) {
     return (
-      <UiSurface variant="card" className="ui-glass-card p-6 stagger-item">
+      <UiSurface variant="card" className="ui-glass-card stagger-item p-6">
         <div className="space-y-4">
           <div className="h-6 w-40 animate-pulse rounded bg-muted" />
           <div className="space-y-3">
@@ -402,52 +425,54 @@ export const DashboardNotifications = ({ userId }: SecondaryDataProps) => {
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
-    <UiSurface variant="card" className="ui-glass-card p-6 stagger-item">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold flex items-center gap-2">
-          <BellIcon className="h-5 w-5" />
+    <UiSurface variant="card" className="ui-glass-card stagger-item p-6">
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="flex items-center gap-2 text-lg font-semibold">
+          <BellIcon className="size-5" />
           Notifications
         </h2>
         {unreadCount > 0 && (
-          <UiStatusChip 
-            variant="warning" 
+          <UiStatusChip
+            variant="warning"
             label="unread"
             value={unreadCount}
             dot
           />
         )}
       </div>
-      
-      {notifications.length === 0 ? (
-        <div className="text-center py-4 text-muted-foreground">
-          No notifications
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {notifications.slice(0, 3).map((notification) => (
-            <div
-              key={notification.id}
-              className={`p-3 rounded-lg border transition-colors ${
-                notification.read 
-                  ? 'bg-muted/50 border-border' 
-                  : 'bg-blue-50 border-blue-200 dark:bg-blue-950/30 dark:border-blue-800'
-              }`}
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="font-medium text-sm">{notification.title}</div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    {notification.message}
+
+      {notifications.length === 0
+        ? (
+            <div className="py-4 text-center text-muted-foreground">
+              No notifications
+            </div>
+          )
+        : (
+            <div className="space-y-3">
+              {notifications.slice(0, 3).map(notification => (
+                <div
+                  key={notification.id}
+                  className={`rounded-lg border p-3 transition-colors ${
+                    notification.read
+                      ? 'border-border bg-muted/50'
+                      : 'border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950/30'
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="text-sm font-medium">{notification.title}</div>
+                      <div className="mt-1 text-xs text-muted-foreground">
+                        {notification.message}
+                      </div>
+                    </div>
+                    {!notification.read && (
+                      <div className="mt-1 size-2 rounded-full bg-blue-500" />
+                    )}
                   </div>
                 </div>
-                {!notification.read && (
-                  <div className="h-2 w-2 rounded-full bg-blue-500 mt-1" />
-                )}
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
-      )}
+          )}
     </UiSurface>
   );
 };
@@ -456,7 +481,7 @@ export const DashboardNotifications = ({ userId }: SecondaryDataProps) => {
 export const DashboardActivityFeed = ({ userId }: SecondaryDataProps) => {
   const [activity, setActivity] = useState<RecentActivity[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
   // ✅ PHASE 3C: Memory leak detection
   useMemoryLeakDetection({
     componentName: 'DashboardActivityFeed',
@@ -465,7 +490,7 @@ export const DashboardActivityFeed = ({ userId }: SecondaryDataProps) => {
 
   useEffect(() => {
     let timeoutId: number | null = null;
-    
+
     const loadActivity = () => {
       try {
         timeoutId = window.setTimeout(() => {
@@ -520,13 +545,13 @@ export const DashboardActivityFeed = ({ userId }: SecondaryDataProps) => {
   const getActivityIcon = (type: string) => {
     switch (type) {
       case 'achievement':
-        return <StarIcon className="h-5 w-5 text-yellow-500" />;
+        return <StarIcon className="size-5 text-yellow-500" />;
       case 'lesson_completed':
-        return <div className="h-5 w-5 rounded-full bg-green-500" />;
+        return <div className="size-5 rounded-full bg-green-500" />;
       case 'quiz_passed':
-        return <div className="h-5 w-5 rounded-full bg-blue-500" />;
+        return <div className="size-5 rounded-full bg-blue-500" />;
       default:
-        return <div className="h-5 w-5 rounded-full bg-gray-500" />;
+        return <div className="size-5 rounded-full bg-gray-500" />;
     }
   };
 
@@ -534,22 +559,26 @@ export const DashboardActivityFeed = ({ userId }: SecondaryDataProps) => {
     const now = new Date();
     const diff = now.getTime() - timestamp.getTime();
     const hours = Math.floor(diff / (1000 * 60 * 60));
-    
-    if (hours < 1) return 'Just now';
-    if (hours < 24) return `${hours} hours ago`;
+
+    if (hours < 1) {
+      return 'Just now';
+    }
+    if (hours < 24) {
+      return `${hours} hours ago`;
+    }
     const days = Math.floor(hours / 24);
     return `${days} days ago`;
   };
 
   if (loading) {
     return (
-      <UiSurface variant="card" className="ui-glass-card p-6 stagger-item">
+      <UiSurface variant="card" className="ui-glass-card stagger-item p-6">
         <div className="space-y-4">
           <div className="h-6 w-48 animate-pulse rounded bg-muted" />
           <div className="space-y-3">
             {Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="flex space-x-3">
-                <div className="h-10 w-10 animate-pulse rounded-full bg-muted" />
+                <div className="size-10 animate-pulse rounded-full bg-muted" />
                 <div className="flex-1 space-y-2">
                   <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
                   <div className="h-3 w-1/2 animate-pulse rounded bg-muted" />
@@ -563,45 +592,52 @@ export const DashboardActivityFeed = ({ userId }: SecondaryDataProps) => {
   }
 
   return (
-    <UiSurface variant="card" className="ui-glass-card p-6 stagger-item">
+    <UiSurface variant="card" className="ui-glass-card stagger-item p-6">
       <h2 className="mb-4 text-lg font-semibold">Recent Activity</h2>
-      
-      {activity.length === 0 ? (
-        <div className="text-center py-8 text-muted-foreground">
-          No recent activity
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {activity.map((activityItem) => (
-            <div key={activityItem.id} className="flex items-start space-x-3">
-              <div className="flex-shrink-0 mt-1">
-                {getActivityIcon(activityItem.type)}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="font-medium text-sm">{activityItem.title}</div>
-                {activityItem.description && (
-                  <div className="text-xs text-muted-foreground mt-1">
-                    {activityItem.description}
-                  </div>
-                )}
-                <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
-                  <span>{formatTimeAgo(activityItem.timestamp)}</span>
-                  {activityItem.metadata?.score && (
-                    <span className="text-green-600 dark:text-green-400">
-                      Score: {activityItem.metadata.score}%
-                    </span>
-                  )}
-                  {activityItem.metadata?.duration && (
-                    <span>
-                      {activityItem.metadata.duration} minutes
-                    </span>
-                  )}
-                </div>
-              </div>
+
+      {activity.length === 0
+        ? (
+            <div className="py-8 text-center text-muted-foreground">
+              No recent activity
             </div>
-          ))}
-        </div>
-      )}
+          )
+        : (
+            <div className="space-y-4">
+              {activity.map(activityItem => (
+                <div key={activityItem.id} className="flex items-start space-x-3">
+                  <div className="mt-1 shrink-0">
+                    {getActivityIcon(activityItem.type)}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-sm font-medium">{activityItem.title}</div>
+                    {activityItem.description && (
+                      <div className="mt-1 text-xs text-muted-foreground">
+                        {activityItem.description}
+                      </div>
+                    )}
+                    <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground">
+                      <span>{formatTimeAgo(activityItem.timestamp)}</span>
+                      {activityItem.metadata?.score && (
+                        <span className="text-green-600 dark:text-green-400">
+                          Score:
+                          {' '}
+                          {activityItem.metadata.score}
+                          %
+                        </span>
+                      )}
+                      {activityItem.metadata?.duration && (
+                        <span>
+                          {activityItem.metadata.duration}
+                          {' '}
+                          minutes
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
     </UiSurface>
   );
 };

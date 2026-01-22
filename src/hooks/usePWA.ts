@@ -1,6 +1,6 @@
 /**
  * PWA Hook - Native Next.js 15 Implementation
- * 
+ *
  * Manages service worker registration, install prompt, and PWA functionality
  * without external dependencies
  */
@@ -9,29 +9,29 @@
 
 import { useEffect, useState } from 'react';
 
-interface BeforeInstallPromptEvent extends Event {
+type BeforeInstallPromptEvent = {
   readonly platforms: string[];
   readonly userChoice: Promise<{
     outcome: 'accepted' | 'dismissed';
     platform: string;
   }>;
-  prompt(): Promise<void>;
-}
+  prompt: () => Promise<void>;
+} & Event;
 
-interface PWAState {
+type PWAState = {
   isSupported: boolean;
   isInstalled: boolean;
   isInstallable: boolean;
   isOnline: boolean;
   swRegistration: ServiceWorkerRegistration | null;
   installPrompt: BeforeInstallPromptEvent | null;
-}
+};
 
-interface PWAActions {
+type PWAActions = {
   installApp: () => Promise<boolean>;
   updateServiceWorker: () => Promise<void>;
   unregisterServiceWorker: () => Promise<boolean>;
-}
+};
 
 export function usePWA(): PWAState & PWAActions {
   const [state, setState] = useState<PWAState>({
@@ -45,22 +45,24 @@ export function usePWA(): PWAState & PWAActions {
 
   // Check PWA support
   useEffect(() => {
-    const isSupported = 
-      typeof window !== 'undefined' &&
-      'serviceWorker' in navigator &&
-      'PushManager' in window;
-    
+    const isSupported
+      = typeof window !== 'undefined'
+        && 'serviceWorker' in navigator
+        && 'PushManager' in window;
+
     setState(prev => ({ ...prev, isSupported }));
   }, []);
 
   // Register service worker
   useEffect(() => {
-    if (!state.isSupported) return;
+    if (!state.isSupported) {
+      return;
+    }
 
     const registerSW = async () => {
       try {
         console.log('[PWA] Registering service worker...');
-        
+
         const registration = await navigator.serviceWorker.register('/sw-2026.js', {
           scope: '/',
           updateViaCache: 'none', // Always check for updates
@@ -77,7 +79,7 @@ export function usePWA(): PWAState & PWAActions {
         registration.addEventListener('updatefound', () => {
           console.log('[PWA] New service worker found');
           const newWorker = registration.installing;
-          
+
           if (newWorker) {
             newWorker.addEventListener('statechange', () => {
               if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
@@ -89,7 +91,6 @@ export function usePWA(): PWAState & PWAActions {
         });
 
         setState(prev => ({ ...prev, swRegistration: registration }));
-
       } catch (error) {
         console.error('[PWA] Service worker registration failed:', error);
       }
@@ -100,27 +101,29 @@ export function usePWA(): PWAState & PWAActions {
 
   // Listen for install prompt
   useEffect(() => {
-    if (!state.isSupported) return;
+    if (!state.isSupported) {
+      return;
+    }
 
     const handleBeforeInstallPrompt = (e: Event) => {
       console.log('[PWA] Install prompt available');
       e.preventDefault(); // Prevent automatic prompt
-      
+
       const installEvent = e as BeforeInstallPromptEvent;
-      setState(prev => ({ 
-        ...prev, 
+      setState(prev => ({
+        ...prev,
         installPrompt: installEvent,
-        isInstallable: true 
+        isInstallable: true,
       }));
     };
 
     const handleAppInstalled = () => {
       console.log('[PWA] App installed successfully');
-      setState(prev => ({ 
-        ...prev, 
+      setState(prev => ({
+        ...prev,
         isInstalled: true,
         isInstallable: false,
-        installPrompt: null 
+        installPrompt: null,
       }));
     };
 
@@ -152,16 +155,18 @@ export function usePWA(): PWAState & PWAActions {
 
   // Check if app is already installed
   useEffect(() => {
-    if (!state.isSupported) return;
+    if (!state.isSupported) {
+      return;
+    }
 
     const checkInstallStatus = () => {
       // Check if running in standalone mode (installed PWA)
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
       const isIOSStandalone = (window.navigator as any).standalone === true;
-      
-      setState(prev => ({ 
-        ...prev, 
-        isInstalled: isStandalone || isIOSStandalone 
+
+      setState(prev => ({
+        ...prev,
+        isInstalled: isStandalone || isIOSStandalone,
       }));
     };
 
@@ -178,19 +183,19 @@ export function usePWA(): PWAState & PWAActions {
     try {
       console.log('[PWA] Showing install prompt...');
       await state.installPrompt.prompt();
-      
+
       const choiceResult = await state.installPrompt.userChoice;
       console.log('[PWA] User choice:', choiceResult.outcome);
-      
+
       if (choiceResult.outcome === 'accepted') {
-        setState(prev => ({ 
-          ...prev, 
+        setState(prev => ({
+          ...prev,
           installPrompt: null,
-          isInstallable: false 
+          isInstallable: false,
         }));
         return true;
       }
-      
+
       return false;
     } catch (error) {
       console.error('[PWA] Install failed:', error);
@@ -208,11 +213,11 @@ export function usePWA(): PWAState & PWAActions {
     try {
       console.log('[PWA] Checking for service worker updates...');
       await state.swRegistration.update();
-      
+
       if (state.swRegistration.waiting) {
         // Tell the waiting service worker to skip waiting
         state.swRegistration.waiting.postMessage({ type: 'SKIP_WAITING' });
-        
+
         // Reload the page to activate the new service worker
         window.location.reload();
       }
@@ -231,12 +236,12 @@ export function usePWA(): PWAState & PWAActions {
     try {
       console.log('[PWA] Unregistering service worker...');
       const result = await state.swRegistration.unregister();
-      
+
       if (result) {
         setState(prev => ({ ...prev, swRegistration: null }));
         console.log('[PWA] Service worker unregistered successfully');
       }
-      
+
       return result;
     } catch (error) {
       console.error('[PWA] Service worker unregistration failed:', error);

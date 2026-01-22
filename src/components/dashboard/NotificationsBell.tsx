@@ -15,8 +15,6 @@ import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
 import { BellIcon, SettingsIcon } from '@/components/icons/unified/UnifiedIconSystem';
-import { UiButton } from '@/components/ui/UiButton';
-import { UiIconButton } from '@/components/ui/UiIconButton';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,6 +22,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { UiButton } from '@/components/ui/UiButton';
+import { UiIconButton } from '@/components/ui/UiIconButton';
 import { cn } from '@/utils/Helpers';
 
 export const NotificationsBell: React.FC<{ className?: string }> = ({ className }) => {
@@ -54,12 +54,25 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
           )}
           aria-haspopup="menu"
           aria-expanded={isOpen}
+          data-gpu="true" // GPU acceleration for signature effects
           className={cn(
             // Always visible - different from header scroll behavior
             'relative z-50',
+            // Enhanced signature effects
+            'signature-icon signature-icon--signature',
+            // Premium hover state
+            'hover:scale-105 active:scale-95',
+            // Spring transition with CSS variables
+            '[transition-duration:var(--spring-signature-duration)]',
+            '[transition-timing-function:var(--spring-signature)]',
             isOpen && 'scale-[0.98]',
             className,
           )}
+          style={{
+            // GPU acceleration for smooth signature effects
+            transform: 'translate3d(0, 0, 0)',
+            willChange: 'transform, filter, backdrop-filter',
+          }}
         />
       </DropdownMenuTrigger>
 

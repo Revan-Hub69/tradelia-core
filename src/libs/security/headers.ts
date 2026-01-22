@@ -24,7 +24,7 @@ export function getSecurityHeaders(isDevelopment = false): SecurityHeaders {
     'default-src \'self\'',
     // TEMPORARY: 'unsafe-inline' and 'unsafe-eval' needed for Next.js development
     // In development, React Refresh requires eval() for hot reloading
-    isDevelopment 
+    isDevelopment
       ? 'script-src \'self\' \'unsafe-inline\' \'unsafe-eval\' https://accounts.google.com https://apis.google.com'
       : 'script-src \'self\' \'unsafe-inline\' https://accounts.google.com https://apis.google.com',
     'style-src \'self\' \'unsafe-inline\' https://fonts.googleapis.com',

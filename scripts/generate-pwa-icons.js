@@ -1,14 +1,14 @@
 /**
  * GENERATE PWA ICONS - TRADELIA LOGO BASED
- * 
+ *
  * Creates required PWA icons using the existing Tradelia logo:
  * - 192x192px PNG (required by Chrome)
  * - 512x512px PNG (required by Chrome)
  * - Maskable versions for better OS integration
  */
 
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 
 // Read the existing Tradelia logo
 function getTradeliaLogo() {
@@ -36,11 +36,11 @@ function generatePWAIcons() {
     { size: 192, filename: 'icon-192x192.png' },
     { size: 512, filename: 'icon-512x512.png' },
     { size: 192, filename: 'icon-192x192-maskable.png', maskable: true },
-    { size: 512, filename: 'icon-512x512-maskable.png', maskable: true }
+    { size: 512, filename: 'icon-512x512-maskable.png', maskable: true },
   ];
 
   console.log('📝 Icons to generate:');
-  icons.forEach(icon => {
+  icons.forEach((icon) => {
     console.log(`  - ${icon.filename} (${icon.size}x${icon.size}${icon.maskable ? ' maskable' : ''})`);
   });
 
@@ -50,36 +50,36 @@ function generatePWAIcons() {
 
 function createTradeliaPWAIcons(icons, originalLogo) {
   console.log('🔧 Creating Tradelia PWA icons...');
-  
+
   const createTradeliaSVGIcon = (size, maskable = false) => {
     const padding = maskable ? size * 0.1 : 0; // 10% padding for maskable
     const logoSize = size - (padding * 2);
     const centerX = size / 2;
     const centerY = size / 2;
-    
+
     // Extract the logo content (remove the outer SVG wrapper)
     const logoContent = originalLogo
       .replace(/<svg[^>]*>/, '')
       .replace(/<\/svg>/, '')
       .trim();
-    
+
     return `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
   <!-- Background for maskable icons -->
   ${maskable ? `<rect width="${size}" height="${size}" fill="#1D4ED8"/>` : ''}
   
   <!-- Tradelia logo centered and scaled -->
-  <g transform="translate(${centerX - logoSize/2}, ${centerY - logoSize/2}) scale(${logoSize/32})">
+  <g transform="translate(${centerX - logoSize / 2}, ${centerY - logoSize / 2}) scale(${logoSize / 32})">
     ${logoContent}
   </g>
 </svg>`;
   };
 
   // Generate SVG files with Tradelia logo
-  icons.forEach(icon => {
+  icons.forEach((icon) => {
     const svgContent = createTradeliaSVGIcon(icon.size, icon.maskable);
     const svgPath = path.join(__dirname, '..', 'public', icon.filename.replace('.png', '.svg'));
-    
+
     try {
       fs.writeFileSync(svgPath, svgContent);
       console.log(`✅ Created ${icon.filename.replace('.png', '.svg')}`);
@@ -110,7 +110,7 @@ function createFavicon() {
 </svg>`;
 
   const faviconPath = path.join(__dirname, '..', 'public', 'favicon-updated.svg');
-  
+
   try {
     fs.writeFileSync(faviconPath, faviconSVG);
     console.log('✅ Created updated favicon');

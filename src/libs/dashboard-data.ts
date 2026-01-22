@@ -1,12 +1,12 @@
 /*
  * DASHBOARD DATA FETCHING - PHASE 3A IMPLEMENTATION
- * 
+ *
  * Tier 1 Research Implementation:
  * - React cache() pattern (Next.js Official)
  * - Parallel Promise.all() fetching (Vercel Best Practices)
  * - Preload pattern for critical data (React 19)
  * - Server Components optimization (Next.js 15)
- * 
+ *
  * Expected Impact: -300ms loading time, better UX
  */
 
@@ -75,12 +75,14 @@ export type NotificationData = {
 
 // ✅ TIER 1 PATTERN: React cache() for request memoization
 export const getUserData = cache(async (userId?: string): Promise<UserData | null> => {
-  if (!userId) return null;
-  
+  if (!userId) {
+    return null;
+  }
+
   // Simulate realistic API call with proper error handling
   try {
     await new Promise(resolve => setTimeout(resolve, 120)); // Realistic DB query time
-    
+
     return {
       id: userId,
       name: 'Marco Rossi',
@@ -110,10 +112,10 @@ export const getUserData = cache(async (userId?: string): Promise<UserData | nul
 export const getDashboardStats = cache(async (userId: string): Promise<DashboardStats> => {
   try {
     await new Promise(resolve => setTimeout(resolve, 90));
-    
+
     // Use userId for future database queries
     console.log('Loading stats for user:', userId);
-    
+
     return {
       streak: 12,
       xp: 2850,
@@ -138,10 +140,10 @@ export const getDashboardStats = cache(async (userId: string): Promise<Dashboard
 export const getRecentActivity = cache(async (userId: string): Promise<RecentActivity[]> => {
   try {
     await new Promise(resolve => setTimeout(resolve, 70));
-    
+
     // Use userId for future database queries
     console.log('Loading activity for user:', userId);
-    
+
     return [
       {
         id: '1',
@@ -189,10 +191,10 @@ export const getRecentActivity = cache(async (userId: string): Promise<RecentAct
 export const getNotifications = cache(async (userId: string): Promise<NotificationData[]> => {
   try {
     await new Promise(resolve => setTimeout(resolve, 50));
-    
+
     // Use userId for future database queries
     console.log('Loading notifications for user:', userId);
-    
+
     return [
       {
         id: '1',
@@ -270,12 +272,14 @@ export const getDashboardData = cache(async (userId?: string) => {
 
 // ✅ TIER 1 PATTERN: Critical path optimization
 export const getCriticalDashboardData = cache(async (userId?: string) => {
-  if (!userId) return { userData: null, error: 'No user ID' };
+  if (!userId) {
+    return { userData: null, error: 'No user ID' };
+  }
 
   try {
     // Get only critical data for initial render
     const userData = await getUserData(userId);
-    
+
     return {
       userData,
       error: null,
@@ -320,7 +324,7 @@ export const getSecondaryDashboardData = cache(async (userId: string) => {
 export const getDashboardDataStream = async function* (userId: string) {
   // Yield critical data first
   yield await getCriticalDashboardData(userId);
-  
+
   // Then yield secondary data
   yield await getSecondaryDashboardData(userId);
 };

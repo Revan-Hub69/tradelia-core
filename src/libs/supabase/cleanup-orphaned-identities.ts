@@ -1,6 +1,6 @@
 /**
  * Utility to clean up orphaned OAuth identities
- * 
+ *
  * This can happen when users are deleted but their OAuth identities remain,
  * causing "User not found" errors during OAuth login attempts.
  */
@@ -9,7 +9,7 @@ import { createClient } from './server';
 
 export async function cleanupOrphanedIdentities() {
   const supabase = await createClient();
-  
+
   try {
     // Find orphaned identities (identities without corresponding users)
     const { data: orphanedIdentities, error: findError } = await supabase
@@ -47,12 +47,11 @@ export async function cleanupOrphanedIdentities() {
     }
 
     console.log(`Successfully cleaned up ${orphanedIdentities.length} orphaned identities`);
-    return { 
-      success: true, 
+    return {
+      success: true,
       cleaned: orphanedIdentities.length,
-      identities: orphanedIdentities 
+      identities: orphanedIdentities,
     };
-
   } catch (error) {
     console.error('Unexpected error during cleanup:', error);
     return { success: false, error };
@@ -64,7 +63,7 @@ export async function cleanupOrphanedIdentities() {
  */
 export async function checkEmailForOrphanedIdentities(email: string) {
   const supabase = await createClient();
-  
+
   try {
     const { data, error } = await supabase
       .from('auth.identities')
@@ -82,12 +81,11 @@ export async function checkEmailForOrphanedIdentities(email: string) {
       return { success: false, error };
     }
 
-    return { 
-      success: true, 
+    return {
+      success: true,
       hasOrphaned: data && data.length > 0,
-      identities: data || []
+      identities: data || [],
     };
-
   } catch (error) {
     console.error('Unexpected error during check:', error);
     return { success: false, error };

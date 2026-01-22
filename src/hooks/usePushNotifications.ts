@@ -6,7 +6,7 @@ import { getPushManager, type PushSubscriptionData } from '@/lib/push-notificati
 
 /**
  * Push Notifications Hook - Tradelia PWA 2026
- * 
+ *
  * React hook for managing push notifications:
  * - Subscription state management
  * - Permission handling
@@ -14,24 +14,24 @@ import { getPushManager, type PushSubscriptionData } from '@/lib/push-notificati
  * - Event tracking
  */
 
-interface UsePushNotificationsReturn {
+type UsePushNotificationsReturn = {
   isSupported: boolean;
   permission: NotificationPermission;
   isSubscribed: boolean;
   subscription: PushSubscriptionData | null;
   isLoading: boolean;
   error: string | null;
-  
+
   // Actions
   enableNotifications: () => Promise<boolean>;
   disableNotifications: () => Promise<boolean>;
   sendTestNotification: () => Promise<boolean>;
   requestPermission: () => Promise<NotificationPermission>;
-  
+
   // Utils
   clearError: () => void;
   refresh: () => Promise<void>;
-}
+};
 
 export function usePushNotifications(): UsePushNotificationsReturn {
   const [isSupported, setIsSupported] = useState(false);
@@ -80,7 +80,6 @@ export function usePushNotifications(): UsePushNotificationsReturn {
         };
         setSubscription(subscriptionData);
       }
-
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Initialization failed';
       setError(errorMessage);
@@ -102,14 +101,14 @@ export function usePushNotifications(): UsePushNotificationsReturn {
     try {
       // Subscribe to push notifications
       const subscriptionData = await pushManager.subscribe();
-      
+
       if (!subscriptionData) {
         throw new Error('Failed to create subscription');
       }
 
       // Save subscription to server
       const saved = await pushManager.saveSubscription(subscriptionData);
-      
+
       if (!saved) {
         throw new Error('Failed to save subscription to server');
       }
@@ -121,7 +120,6 @@ export function usePushNotifications(): UsePushNotificationsReturn {
 
       console.log('[usePushNotifications] Notifications enabled');
       return true;
-
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to enable notifications';
       setError(errorMessage);
@@ -138,7 +136,7 @@ export function usePushNotifications(): UsePushNotificationsReturn {
 
     try {
       const success = await pushManager.unsubscribe();
-      
+
       if (success) {
         setIsSubscribed(false);
         setSubscription(null);
@@ -147,7 +145,6 @@ export function usePushNotifications(): UsePushNotificationsReturn {
       } else {
         throw new Error('Failed to unsubscribe');
       }
-
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to disable notifications';
       setError(errorMessage);
@@ -169,14 +166,13 @@ export function usePushNotifications(): UsePushNotificationsReturn {
 
     try {
       const success = await pushManager.sendTestNotification();
-      
+
       if (!success) {
         throw new Error('Failed to send test notification');
       }
 
       console.log('[usePushNotifications] Test notification sent');
       return true;
-
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to send test notification';
       setError(errorMessage);
@@ -199,10 +195,9 @@ export function usePushNotifications(): UsePushNotificationsReturn {
     try {
       const newPermission = await pushManager.requestPermission();
       setPermission(newPermission);
-      
+
       console.log('[usePushNotifications] Permission requested:', newPermission);
       return newPermission;
-
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to request permission';
       setError(errorMessage);
@@ -238,12 +233,12 @@ export function usePushNotifications(): UsePushNotificationsReturn {
     subscription,
     isLoading,
     error,
-    
+
     enableNotifications,
     disableNotifications,
     sendTestNotification,
     requestPermission,
-    
+
     clearError,
     refresh,
   };
@@ -258,7 +253,7 @@ export function useDashboardNotifications() {
   const sendDashboardNotification = async (
     title: string,
     body: string,
-    url: string = '/dashboard'
+    url: string = '/dashboard',
   ): Promise<boolean> => {
     if (!pushNotifications.isSubscribed) {
       return false;
@@ -282,8 +277,8 @@ export function useDashboardNotifications() {
               {
                 action: 'open-dashboard',
                 title: 'Open Dashboard',
-                icon: '/favicon-32x32.png'
-              }
+                icon: '/favicon-32x32.png',
+              },
             ],
             data: {
               type: 'dashboard',

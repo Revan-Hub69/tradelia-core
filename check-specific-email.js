@@ -2,9 +2,10 @@
  * Check Specific Email - Verifica se un'email specifica esiste già
  */
 
+import readline from 'node:readline';
+
 import { createClient } from '@supabase/supabase-js';
 import { config } from 'dotenv';
-import readline from 'readline';
 
 // Load environment variables
 config({ path: '.env.local' });
@@ -21,7 +22,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 const rl = readline.createInterface({
   input: process.stdin,
-  output: process.stdout
+  output: process.stdout,
 });
 
 function askQuestion(question) {
@@ -36,7 +37,7 @@ async function checkSpecificEmail() {
   console.log('🔍 Controllo Email Specifica\n');
 
   const email = await askQuestion('📧 Inserisci l\'email da controllare: ');
-  
+
   if (!email || !email.includes('@')) {
     console.log('❌ Email non valida');
     rl.close();
@@ -49,7 +50,7 @@ async function checkSpecificEmail() {
     // Test 1: Prova a registrare l'email
     console.log('1️⃣ Test registrazione...');
     const { data: signupData, error: signupError } = await supabase.auth.signUp({
-      email: email,
+      email,
       password: 'TempPassword123!',
       options: {
         emailRedirectTo: 'https://tradelia.org/auth/callback',
@@ -58,17 +59,17 @@ async function checkSpecificEmail() {
 
     if (signupError) {
       console.log('❌ Errore registrazione:', signupError.message);
-      
+
       if (signupError.message.includes('User already registered')) {
         console.log('🚨 CONFERMATO: L\'utente esiste già!\n');
-        
+
         // Test 2: Prova il login per confermare
         console.log('2️⃣ Test login per conferma...');
         const testPassword = await askQuestion('🔐 Inserisci la password per testare il login (opzionale): ');
-        
+
         if (testPassword) {
           const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
-            email: email,
+            email,
             password: testPassword,
           });
 
@@ -94,7 +95,6 @@ async function checkSpecificEmail() {
     console.log('- Se l\'utente esiste, può usare "Password dimenticata"');
     console.log('- Può provare Google OAuth se si è registrato con Google');
     console.log('- Controlla se l\'email è scritta correttamente');
-
   } catch (error) {
     console.error('💥 Errore inaspettato:', error);
   }

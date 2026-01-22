@@ -4,7 +4,7 @@ import { createClient } from '@/libs/supabase/server';
 
 /**
  * Push Test API - Tradelia PWA 2026
- * 
+ *
  * Sends test push notifications for development and testing
  */
 
@@ -17,7 +17,7 @@ export async function POST() {
     if (authError || !user) {
       return NextResponse.json(
         { error: 'Authentication required' },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -31,14 +31,14 @@ export async function POST() {
       console.error('[Push Test] Database error:', dbError);
       return NextResponse.json(
         { error: 'Failed to get subscriptions' },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
     if (!subscriptions || subscriptions.length === 0) {
       return NextResponse.json(
         { error: 'No push subscriptions found. Please enable notifications first.' },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -54,13 +54,13 @@ export async function POST() {
         {
           action: 'open-dashboard',
           title: 'Open Dashboard',
-          icon: '/favicon-32x32.png'
+          icon: '/favicon-32x32.png',
         },
         {
           action: 'view-stats',
           title: 'View Stats',
-          icon: '/favicon-32x32.png'
-        }
+          icon: '/favicon-32x32.png',
+        },
       ],
       data: {
         type: 'test',
@@ -71,12 +71,12 @@ export async function POST() {
 
     // Send test notifications
     const webpush = await import('web-push');
-    
+
     // Configure VAPID
     webpush.default.setVapidDetails(
       'mailto:admin@tradelia.com',
       process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-      process.env.VAPID_PRIVATE_KEY!
+      process.env.VAPID_PRIVATE_KEY!,
     );
 
     const results = await Promise.allSettled(
@@ -91,11 +91,11 @@ export async function POST() {
 
         await webpush.default.sendNotification(
           pushSubscription,
-          JSON.stringify(testPayload)
+          JSON.stringify(testPayload),
         );
 
         return subscription.endpoint;
-      })
+      }),
     );
 
     const successful = results.filter(r => r.status === 'fulfilled').length;
@@ -114,15 +114,14 @@ export async function POST() {
       success: true,
       message: 'Test notification sent successfully!',
       sent: successful,
-      failed: failed,
+      failed,
       total: subscriptions.length,
     });
-
   } catch (error) {
     console.error('[Push Test] Error:', error);
     return NextResponse.json(
       { error: 'Failed to send test notification' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

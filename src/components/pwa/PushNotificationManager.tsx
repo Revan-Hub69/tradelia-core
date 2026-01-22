@@ -8,7 +8,7 @@ import { getPushManager, type PushSubscriptionData } from '@/lib/push-notificati
 
 /**
  * Push Notification Manager Component - Tradelia PWA 2026
- * 
+ *
  * Complete push notification management UI:
  * - Enable/disable notifications
  * - Test notifications
@@ -16,9 +16,9 @@ import { getPushManager, type PushSubscriptionData } from '@/lib/push-notificati
  * - Permission management
  */
 
-interface PushNotificationManagerProps {
+type PushNotificationManagerProps = {
   className?: string;
-}
+};
 
 export function PushNotificationManager({ className = '' }: PushNotificationManagerProps) {
   const [isSupported, setIsSupported] = useState(false);
@@ -69,7 +69,6 @@ export function PushNotificationManager({ className = '' }: PushNotificationMana
         permission: currentPermission,
         subscribed: !!existingSubscription,
       });
-
     } catch (error) {
       console.error('[Push UI] Initialization failed:', error);
     }
@@ -87,11 +86,11 @@ export function PushNotificationManager({ className = '' }: PushNotificationMana
     try {
       // Subscribe to push notifications
       const subscriptionData = await pushManager.subscribe();
-      
+
       if (subscriptionData) {
         // Save subscription to server
         const saved = await pushManager.saveSubscription(subscriptionData);
-        
+
         if (saved) {
           setIsSubscribed(true);
           setSubscription(subscriptionData);
@@ -101,7 +100,6 @@ export function PushNotificationManager({ className = '' }: PushNotificationMana
           setTestStatus('⚠️ Subscription created but failed to save to server');
         }
       }
-
     } catch (error) {
       console.error('[Push UI] Enable failed:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
@@ -117,7 +115,7 @@ export function PushNotificationManager({ className = '' }: PushNotificationMana
 
     try {
       const success = await pushManager.unsubscribe();
-      
+
       if (success) {
         setIsSubscribed(false);
         setSubscription(null);
@@ -125,7 +123,6 @@ export function PushNotificationManager({ className = '' }: PushNotificationMana
       } else {
         setTestStatus('⚠️ Failed to disable notifications');
       }
-
     } catch (error) {
       console.error('[Push UI] Disable failed:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
@@ -146,13 +143,12 @@ export function PushNotificationManager({ className = '' }: PushNotificationMana
 
     try {
       const success = await pushManager.sendTestNotification();
-      
+
       if (success) {
         setTestStatus('✅ Test notification sent! Check your device.');
       } else {
         setTestStatus('❌ Failed to send test notification');
       }
-
     } catch (error) {
       console.error('[Push UI] Test failed:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
@@ -177,7 +173,7 @@ export function PushNotificationManager({ className = '' }: PushNotificationMana
           },
         ],
       });
-      
+
       setTestStatus('✅ Local notification shown');
     } catch (error) {
       console.error('[Push UI] Local test failed:', error);
@@ -216,44 +212,47 @@ export function PushNotificationManager({ className = '' }: PushNotificationMana
       <div className="rounded-lg border bg-card p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            {isSubscribed ? (
-              <Bell className="size-5 text-green-600" />
-            ) : (
-              <BellOff className="size-5 text-gray-400" />
-            )}
+            {isSubscribed
+              ? (
+                  <Bell className="size-5 text-green-600" />
+                )
+              : (
+                  <BellOff className="size-5 text-gray-400" />
+                )}
             <div>
               <h3 className="font-medium">Push Notifications</h3>
               <p className="text-sm text-muted-foreground">
-                {isSubscribed 
+                {isSubscribed
                   ? 'Enabled - You\'ll receive dashboard updates'
-                  : 'Disabled - Enable to receive important updates'
-                }
+                  : 'Disabled - Enable to receive important updates'}
               </p>
             </div>
           </div>
-          
+
           <div className="flex gap-2">
-            {isSubscribed ? (
-              <UiButton
-                variant="ghost"
-                size="sm"
-                onClick={handleDisableNotifications}
-                disabled={isLoading}
-              >
-                <BellOff className="size-4" />
-                Disable
-              </UiButton>
-            ) : (
-              <UiButton
-                variant="primary"
-                size="sm"
-                onClick={handleEnableNotifications}
-                disabled={isLoading}
-              >
-                <Bell className="size-4" />
-                Enable
-              </UiButton>
-            )}
+            {isSubscribed
+              ? (
+                  <UiButton
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleDisableNotifications}
+                    disabled={isLoading}
+                  >
+                    <BellOff className="size-4" />
+                    Disable
+                  </UiButton>
+                )
+              : (
+                  <UiButton
+                    variant="primary"
+                    size="sm"
+                    onClick={handleEnableNotifications}
+                    disabled={isLoading}
+                  >
+                    <Bell className="size-4" />
+                    Enable
+                  </UiButton>
+                )}
           </div>
         </div>
       </div>
@@ -272,7 +271,7 @@ export function PushNotificationManager({ className = '' }: PushNotificationMana
               <Send className="size-4" />
               Send Test Push
             </UiButton>
-            
+
             <UiButton
               variant="ghost"
               size="sm"
@@ -299,16 +298,27 @@ export function PushNotificationManager({ className = '' }: PushNotificationMana
           <summary className="cursor-pointer text-sm font-medium">Debug Info</summary>
           <div className="mt-2 space-y-2 text-xs">
             <div>
-              <strong>Permission:</strong> {permission}
+              <strong>Permission:</strong>
+              {' '}
+              {permission}
             </div>
             <div>
-              <strong>Endpoint:</strong> {subscription.endpoint.substring(0, 50)}...
+              <strong>Endpoint:</strong>
+              {' '}
+              {subscription.endpoint.substring(0, 50)}
+              ...
             </div>
             <div>
-              <strong>P256DH:</strong> {subscription.keys.p256dh.substring(0, 20)}...
+              <strong>P256DH:</strong>
+              {' '}
+              {subscription.keys.p256dh.substring(0, 20)}
+              ...
             </div>
             <div>
-              <strong>Auth:</strong> {subscription.keys.auth.substring(0, 20)}...
+              <strong>Auth:</strong>
+              {' '}
+              {subscription.keys.auth.substring(0, 20)}
+              ...
             </div>
           </div>
         </details>

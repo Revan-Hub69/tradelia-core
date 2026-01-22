@@ -66,7 +66,7 @@ async function analyzeFalsePositive() {
 
     if (realError) {
       console.log('❌ SIGNUP REALE FALLISCE:', realError.message);
-      
+
       if (realError.message.includes('User already registered')) {
         console.log('\n🚨 FALSO POSITIVO CONFERMATO!');
         console.log('✅ checkEmailExists() dice: utente NON esiste');
@@ -101,7 +101,7 @@ async function analyzeFalsePositive() {
 
     // STEP 4: Analisi configurazione
     console.log('\n4️⃣ STEP 4: Analisi configurazione Supabase');
-    
+
     // Check auth settings
     const { data: settings } = await supabase.auth.getSession();
     console.log('🔧 Auth session check:', settings.session ? 'OK' : 'None');
@@ -112,7 +112,6 @@ async function analyzeFalsePositive() {
     console.log('3. ⏱️  Aggiungere delay tra checkEmailExists e signup');
     console.log('4. 🔄 Implementare retry logic per falsi positivi');
     console.log('5. 🚫 Temporaneamente disabilitare email confirmation');
-
   } catch (error) {
     console.error('💥 Errore durante analisi:', error);
   }

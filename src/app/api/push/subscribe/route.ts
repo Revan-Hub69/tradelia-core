@@ -1,23 +1,24 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 
 import { createClient } from '@/libs/supabase/server';
 
 /**
  * Push Subscription API - Tradelia PWA 2026
- * 
+ *
  * Handles push notification subscriptions:
  * - Store user subscriptions in database
  * - Associate with authenticated users
  * - Handle subscription updates
  */
 
-interface PushSubscriptionData {
+type PushSubscriptionData = {
   endpoint: string;
   keys: {
     p256dh: string;
     auth: string;
   };
-}
+};
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,7 +27,7 @@ export async function POST(request: NextRequest) {
     if (!subscription || !subscription.endpoint) {
       return NextResponse.json(
         { error: 'Invalid subscription data' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -37,7 +38,7 @@ export async function POST(request: NextRequest) {
     if (authError || !user) {
       return NextResponse.json(
         { error: 'Authentication required' },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -53,14 +54,14 @@ export async function POST(request: NextRequest) {
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       }, {
-        onConflict: 'user_id,endpoint'
+        onConflict: 'user_id,endpoint',
       });
 
     if (dbError) {
       console.error('[Push API] Database error:', dbError);
       return NextResponse.json(
         { error: 'Failed to save subscription' },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -70,12 +71,11 @@ export async function POST(request: NextRequest) {
       success: true,
       message: 'Subscription saved successfully',
     });
-
   } catch (error) {
     console.error('[Push API] Subscribe error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -87,7 +87,7 @@ export async function DELETE(request: NextRequest) {
     if (!endpoint) {
       return NextResponse.json(
         { error: 'Endpoint required' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -98,7 +98,7 @@ export async function DELETE(request: NextRequest) {
     if (authError || !user) {
       return NextResponse.json(
         { error: 'Authentication required' },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -113,7 +113,7 @@ export async function DELETE(request: NextRequest) {
       console.error('[Push API] Database error:', dbError);
       return NextResponse.json(
         { error: 'Failed to remove subscription' },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -123,12 +123,11 @@ export async function DELETE(request: NextRequest) {
       success: true,
       message: 'Subscription removed successfully',
     });
-
   } catch (error) {
     console.error('[Push API] Unsubscribe error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

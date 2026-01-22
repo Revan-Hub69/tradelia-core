@@ -84,7 +84,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   const tGeneral = useTranslations();
   const { userData, isLoading } = useUserData();
   const [showSearchModal, setShowSearchModal] = useState(false);
-  
+
   // Scroll behavior following Nielsen Norman Group 2026 guidelines
   const { isScrollingDown, isScrolled } = useScrollDirection({
     threshold: 10, // Small threshold to prevent jank
@@ -183,24 +183,26 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               {index > 0 && (
                 <span className="mx-2 text-muted-foreground">/</span>
               )}
-              {item.href && !item.current ? (
-                <a
-                  href={item.href}
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                  aria-current={item.current ? 'page' : undefined}
-                >
-                  {item.label}
-                </a>
-              ) : (
-                <span
-                  className={cn(
-                    item.current ? 'text-foreground font-medium' : 'text-muted-foreground'
+              {item.href && !item.current
+                ? (
+                    <a
+                      href={item.href}
+                      className="text-muted-foreground transition-colors hover:text-foreground"
+                      aria-current={item.current ? 'page' : undefined}
+                    >
+                      {item.label}
+                    </a>
+                  )
+                : (
+                    <span
+                      className={cn(
+                        item.current ? 'text-foreground font-medium' : 'text-muted-foreground',
+                      )}
+                      aria-current={item.current ? 'page' : undefined}
+                    >
+                      {item.label}
+                    </span>
                   )}
-                  aria-current={item.current ? 'page' : undefined}
-                >
-                  {item.label}
-                </span>
-              )}
             </li>
           ))}
         </ol>
@@ -222,14 +224,15 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           'bg-muted/50 hover:bg-muted transition-colors',
           'text-sm text-muted-foreground',
           'border border-border/50',
-          compactMode ? 'hidden lg:flex' : 'hidden md:flex'
+          compactMode ? 'hidden lg:flex' : 'hidden md:flex',
         )}
         aria-label={t('search_aria_label')}
       >
         <SearchIcon size={16} />
         <span className="hidden lg:inline">{t('search_content')}</span>
-        <kbd className="hidden lg:inline-flex items-center gap-1 rounded border bg-muted px-1.5 py-0.5 text-xs font-mono text-muted-foreground">
-          <span className="text-xs">⌘</span>K
+        <kbd className="hidden items-center gap-1 rounded border bg-muted px-1.5 py-0.5 font-mono text-xs text-muted-foreground lg:inline-flex">
+          <span className="text-xs">⌘</span>
+          K
         </kbd>
       </button>
     );
@@ -280,24 +283,36 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         className={cn(
           'sticky top-0 layer-header',
           'motion-base',
-          // Scroll-based visibility (Nielsen Norman Group 2026)
+          // Premium spring physics (Tier-1 research based)
           hideOnScroll && [
-            'transition-transform duration-300 ease-out',
+            'transition-transform',
+            '[transition-duration:var(--spring-header-duration)]',
+            '[transition-timing-function:var(--spring-header-hide)]',
             isScrollingDown && '-translate-y-full',
           ],
-          // Scroll shadow
-          isScrolled && showScrollShadow && 'shadow-medium',
+          // Enhanced scroll shadow with liquid glass
+          isScrolled && showScrollShadow && [
+            'shadow-xl',
+            'backdrop-blur-sm',
+            'bg-background/95',
+          ],
           // Compact mode
           compactMode && 'py-2',
           className,
         )}
+        style={{
+          // GPU acceleration for premium animations
+          transform: 'translate3d(0, 0, 0)',
+          willChange: hideOnScroll ? 'transform' : 'auto',
+        }}
       >
         <div className={cn(
           'mx-auto flex max-w-screen-xl items-center justify-between px-4',
-          compactMode ? 'header-height-compact' : 'header-height'
-        )}>
+          compactMode ? 'header-height-compact' : 'header-height',
+        )}
+        >
           {/* Left Section - Logo + Navigation */}
-          <div className="flex items-center gap-4 min-w-0 flex-1">
+          <div className="flex min-w-0 flex-1 items-center gap-4">
             {leftSlot || (
               <div className="md:hidden">
                 <Logo size="sm" href="/dashboard" />
@@ -305,13 +320,14 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             )}
 
             {/* Context Title + Breadcrumbs */}
-            <div className="hidden sm:block min-w-0 flex-1">
+            <div className="hidden min-w-0 flex-1 sm:block">
               {titleKey && (
                 <TitleComponent className={cn(
                   'font-semibold text-foreground',
                   compactMode ? 'text-base' : 'text-lg',
-                  breadcrumbs && 'mb-1'
-                )}>
+                  breadcrumbs && 'mb-1',
+                )}
+                >
                   {tGeneral(titleKey as any)}
                 </TitleComponent>
               )}
@@ -323,7 +339,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           <div className="flex items-center gap-3">
             {/* Global Search - Desktop Only */}
             {renderGlobalSearch()}
-            
+
             {/* Status Indicators */}
             <div className="flex items-center gap-2">
               {renderStatus()}
@@ -341,20 +357,21 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             {/* Controls - Mobile Optimized: Only Notifications + User */}
             <div className={cn(
               'flex items-center gap-2',
-              // Hide theme/language switchers on mobile for cleaner header
-              compactMode && 'hidden sm:flex'
-            )}>
-              {/* Theme Switcher - Hidden on mobile */}
+              // Show theme/language switchers on tablet+ (768px+)
+              'md:gap-3',
+            )}
+            >
+              {/* Theme Switcher - Hidden on mobile, visible on tablet+ */}
               <div className="hidden md:block">
                 <ThemeSwitcher />
               </div>
 
-              {/* Language Switcher - Hidden on mobile */}
+              {/* Language Switcher - Hidden on mobile, visible on tablet+ */}
               <div className="hidden md:block">
                 <LanguageSwitcherDashboard />
               </div>
 
-              {/* Notifications - Always visible */}
+              {/* Notifications - Always visible (mobile, tablet, desktop) */}
               <NotificationsBell />
             </div>
 
@@ -384,25 +401,25 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       {/* Global Search Modal - Placeholder for future implementation */}
       {showSearchModal && (
         <div
-          className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center pt-20"
+          className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 pt-20"
           onClick={() => setShowSearchModal(false)}
         >
           <div
-            className="bg-background border rounded-lg shadow-lg w-full max-w-2xl mx-4"
-            onClick={(e) => e.stopPropagation()}
+            className="mx-4 w-full max-w-2xl rounded-lg border bg-background shadow-lg"
+            onClick={e => e.stopPropagation()}
           >
             <div className="p-4">
-              <div className="flex items-center gap-3 mb-4">
+              <div className="mb-4 flex items-center gap-3">
                 <SearchIcon size={20} />
                 <input
                   type="text"
                   placeholder={t('command_palette_placeholder')}
-                  className="flex-1 bg-transparent border-none outline-none text-lg"
+                  className="flex-1 border-none bg-transparent text-lg outline-none"
                   autoFocus
                 />
-                <kbd className="px-2 py-1 bg-muted rounded text-xs">ESC</kbd>
+                <kbd className="rounded bg-muted px-2 py-1 text-xs">ESC</kbd>
               </div>
-              <div className="text-sm text-muted-foreground text-center py-8">
+              <div className="py-8 text-center text-sm text-muted-foreground">
                 {t('command_palette_no_results')}
                 <br />
                 <span className="text-xs">Global search coming soon...</span>

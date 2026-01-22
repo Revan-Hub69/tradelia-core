@@ -32,17 +32,17 @@ async function testOAuth() {
     // Test basic connection
     console.log('\n🔗 Testing connection...');
     const { data: session, error: sessionError } = await supabase.auth.getSession();
-    
+
     if (sessionError) {
       console.error('❌ Connection failed:', sessionError.message);
       return;
     }
-    
+
     console.log('✅ Connection successful');
-    
+
     // Test OAuth URL generation (this doesn't require actual OAuth setup)
     console.log('\n🔐 Testing OAuth URL generation...');
-    
+
     const { data: oauthData, error: oauthError } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
@@ -50,7 +50,7 @@ async function testOAuth() {
         skipBrowserRedirect: true, // Don't actually redirect, just test URL generation
       },
     });
-    
+
     if (oauthError) {
       console.error('❌ OAuth configuration error:', oauthError.message);
       console.log('\n🔧 Possible solutions:');
@@ -59,19 +59,18 @@ async function testOAuth() {
       console.log('3. Configure Google OAuth credentials');
       return;
     }
-    
+
     if (oauthData?.url) {
       console.log('✅ OAuth URL generated successfully');
       console.log(`🔗 OAuth URL: ${oauthData.url.substring(0, 100)}...`);
     }
-    
+
     console.log('\n✅ OAuth configuration appears to be working!');
     console.log('\n📋 Next steps:');
     console.log('1. Start the development server: npm run dev');
     console.log('2. Go to: http://localhost:3000/auth');
     console.log('3. Try "Continue with Google"');
     console.log('4. Check browser console for any errors');
-    
   } catch (error) {
     console.error('❌ Test failed:', error.message);
     console.log('\n🔧 Check your Supabase configuration:');

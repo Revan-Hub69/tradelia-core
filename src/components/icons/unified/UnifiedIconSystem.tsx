@@ -33,11 +33,11 @@ export type IconState = 'default' | 'hover' | 'active' | 'disabled';
 // Mathematical precision based on Apple HIG and Linear App research
 export const SIGNATURE_TOKENS = {
   sizes: {
-    16: { size: 16, strokeWidth: 1.25, padding: 2 },    // Optical correction for small sizes
-    20: { size: 20, strokeWidth: 1.5, padding: 2.5 },   // Standard Heroicons weight
-    24: { size: 24, strokeWidth: 1.5, padding: 3 },     // Primary size, perfect grid
-    28: { size: 28, strokeWidth: 1.75, padding: 3.5 },  // Optical scaling
-    32: { size: 32, strokeWidth: 2, padding: 4 },       // Large size, increased weight
+    16: { size: 16, strokeWidth: 1.25, padding: 2 }, // Optical correction for small sizes
+    20: { size: 20, strokeWidth: 1.5, padding: 2.5 }, // Standard Heroicons weight
+    24: { size: 24, strokeWidth: 1.5, padding: 3 }, // Primary size, perfect grid
+    28: { size: 28, strokeWidth: 1.75, padding: 3.5 }, // Optical scaling
+    32: { size: 32, strokeWidth: 2, padding: 4 }, // Large size, increased weight
   },
   // Professional color system
   colors: {
@@ -55,15 +55,15 @@ export const SIGNATURE_TOKENS = {
 // ============================================================================
 
 export type SignatureIconProps = {
-  size?: IconSize;
-  variant?: IconVariant;
-  state?: IconState;
-  className?: string;
+  'size'?: IconSize;
+  'variant'?: IconVariant;
+  'state'?: IconState;
+  'className'?: string;
   'aria-hidden'?: boolean;
   'aria-label'?: string;
-  children: React.ReactNode;
-  onHover?: () => void;
-  onPress?: () => void;
+  'children': React.ReactNode;
+  'onHover'?: () => void;
+  'onPress'?: () => void;
 };
 
 export const SignatureIconBase = memo<SignatureIconProps>(({

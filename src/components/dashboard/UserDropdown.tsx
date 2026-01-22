@@ -2,7 +2,6 @@ import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
 import { ChevronDownIcon, LogoutIcon, ProfileIcon } from '@/components/icons/unified/UnifiedIconSystem';
-import { UiButton } from '@/components/ui/UiButton';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,6 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { UiButton } from '@/components/ui/UiButton';
 import { useFocusTrap } from '@/hooks/useFocusManagement';
 import { useRouter } from '@/libs/i18nNavigation';
 import { createClient } from '@/libs/supabase/client';

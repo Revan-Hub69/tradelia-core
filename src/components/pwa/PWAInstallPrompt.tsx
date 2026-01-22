@@ -1,6 +1,6 @@
 /**
  * PWA Install Prompt Component
- * 
+ *
  * Modern install prompt with Tradelia branding
  * Shows when PWA is installable but not yet installed
  */
@@ -15,12 +15,12 @@ import { Card, CardContent } from '@/components/ui/card';
 import { usePWA } from '@/hooks/usePWA';
 import { cn } from '@/utils/Helpers';
 
-interface PWAInstallPromptProps {
+type PWAInstallPromptProps = {
   className?: string;
   variant?: 'banner' | 'card' | 'floating';
   showIcon?: boolean;
   autoHide?: boolean;
-}
+};
 
 export const PWAInstallPrompt: React.FC<PWAInstallPromptProps> = ({
   className,
@@ -39,10 +39,10 @@ export const PWAInstallPrompt: React.FC<PWAInstallPromptProps> = ({
 
   const handleInstall = async () => {
     setIsInstalling(true);
-    
+
     try {
       const success = await installApp();
-      
+
       if (success && autoHide) {
         setIsDismissed(true);
       }
@@ -63,9 +63,9 @@ export const PWAInstallPrompt: React.FC<PWAInstallPromptProps> = ({
   React.useEffect(() => {
     const dismissed = localStorage.getItem('pwa-install-dismissed');
     if (dismissed) {
-      const dismissedTime = parseInt(dismissed);
+      const dismissedTime = Number.parseInt(dismissed);
       const weekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
-      
+
       if (dismissedTime > weekAgo) {
         setIsDismissed(true);
       }
@@ -78,13 +78,14 @@ export const PWAInstallPrompt: React.FC<PWAInstallPromptProps> = ({
       'bg-gradient-to-r from-blue-600 to-indigo-600',
       'text-white shadow-lg',
       'transform transition-transform duration-300',
-      className
-    )}>
-      <div className="max-w-screen-xl mx-auto px-4 py-3">
+      className,
+    )}
+    >
+      <div className="mx-auto max-w-screen-xl px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             {showIcon && (
-              <div className="flex-shrink-0">
+              <div className="shrink-0">
                 <PlusIcon size={24} />
               </div>
             )}
@@ -97,21 +98,21 @@ export const PWAInstallPrompt: React.FC<PWAInstallPromptProps> = ({
               </p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <Button
               variant="secondary"
               size="sm"
               onClick={handleInstall}
               disabled={isInstalling}
-              className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+              className="border-white/30 bg-white/20 text-white hover:bg-white/30"
             >
               {isInstalling ? 'Installing...' : 'Install'}
             </Button>
-            
+
             <button
               onClick={handleDismiss}
-              className="p-1 hover:bg-white/20 rounded-md transition-colors"
+              className="rounded-md p-1 transition-colors hover:bg-white/20"
               aria-label="Dismiss"
             >
               <CloseIcon size={20} />
@@ -126,25 +127,26 @@ export const PWAInstallPrompt: React.FC<PWAInstallPromptProps> = ({
     <Card className={cn(
       'border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50',
       'dark:from-blue-950/50 dark:to-indigo-950/50 dark:border-blue-800',
-      className
-    )}>
+      className,
+    )}
+    >
       <CardContent className="p-6">
         <div className="flex items-start gap-4">
           {showIcon && (
-            <div className="flex-shrink-0 p-2 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
+            <div className="shrink-0 rounded-lg bg-blue-100 p-2 dark:bg-blue-900/50">
               <PlusIcon size={24} />
             </div>
           )}
-          
+
           <div className="flex-1">
-            <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+            <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">
               Install Tradelia App
             </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              Install our app for a better experience with offline access, 
+            <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
+              Install our app for a better experience with offline access,
               push notifications, and faster loading times.
             </p>
-            
+
             <div className="flex items-center gap-2">
               <Button
                 onClick={handleInstall}
@@ -154,7 +156,7 @@ export const PWAInstallPrompt: React.FC<PWAInstallPromptProps> = ({
               >
                 {isInstalling ? 'Installing...' : 'Install App'}
               </Button>
-              
+
               <Button
                 variant="ghost"
                 size="sm"
@@ -176,45 +178,46 @@ export const PWAInstallPrompt: React.FC<PWAInstallPromptProps> = ({
       'bg-white dark:bg-gray-900 rounded-lg shadow-lg border',
       'max-w-sm p-4',
       'transform transition-transform duration-300',
-      className
-    )}>
+      className,
+    )}
+    >
       <div className="flex items-start gap-3">
         {showIcon && (
-          <div className="flex-shrink-0 p-2 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
+          <div className="shrink-0 rounded-lg bg-blue-100 p-2 dark:bg-blue-900/50">
             <PlusIcon size={20} />
           </div>
         )}
-        
+
         <div className="flex-1">
-          <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-1">
+          <h4 className="mb-1 font-medium text-gray-900 dark:text-gray-100">
             Install Tradelia
           </h4>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
+          <p className="mb-3 text-xs text-gray-600 dark:text-gray-400">
             Get the app for better performance and offline access
           </p>
-          
+
           <div className="flex items-center gap-2">
             <Button
               onClick={handleInstall}
               disabled={isInstalling}
               size="sm"
-              className="text-xs px-3 py-1 h-7"
+              className="h-7 px-3 py-1 text-xs"
             >
               {isInstalling ? 'Installing...' : 'Install'}
             </Button>
-            
+
             <button
               onClick={handleDismiss}
-              className="text-xs text-gray-500 hover:text-gray-700 px-2"
+              className="px-2 text-xs text-gray-500 hover:text-gray-700"
             >
               Dismiss
             </button>
           </div>
         </div>
-        
+
         <button
           onClick={handleDismiss}
-          className="flex-shrink-0 p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
+          className="shrink-0 rounded p-1 hover:bg-gray-100 dark:hover:bg-gray-800"
           aria-label="Close"
         >
           <CloseIcon size={16} />

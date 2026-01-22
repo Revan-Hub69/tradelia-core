@@ -24,13 +24,13 @@ const createAdminClient = () => {
   });
 };
 
-export interface AuthResult {
+export type AuthResult = {
   success: boolean;
   error?: string;
   errorCode?: string;
   userId?: string;
   needsEmailConfirmation?: boolean;
-}
+};
 
 /**
  * Server-side signup using Admin API
@@ -117,7 +117,6 @@ export async function signUpWithEmailAndPassword(data: {
       error: 'Errore sconosciuto durante la registrazione.',
       errorCode: 'UNKNOWN_ERROR',
     };
-
   } catch (error) {
     console.error('💥 Server-side signup exception:', error);
     return {
@@ -141,7 +140,7 @@ export async function checkEmailExistsServer(email: string): Promise<{
 
     // Use the SQL function we created to check if email exists
     const { data, error } = await supabase.rpc('check_user_exists', {
-      user_email: email
+      user_email: email,
     });
 
     if (error) {
@@ -153,7 +152,6 @@ export async function checkEmailExistsServer(email: string): Promise<{
     console.log(`📧 Email check result for ${email}:`, userExists ? 'EXISTS' : 'NEW');
 
     return { exists: userExists };
-
   } catch (error) {
     console.error('💥 Server-side email check exception:', error);
     return { exists: false, error: 'Errore del server' };
@@ -171,7 +169,7 @@ export async function signInWithEmailAndPassword(data: {
     // For login, we still use the regular client since we need session management
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     );
 
     const { data: authData, error } = await supabase.auth.signInWithPassword({
@@ -218,7 +216,6 @@ export async function signInWithEmailAndPassword(data: {
       error: 'Errore sconosciuto durante l\'accesso.',
       errorCode: 'UNKNOWN_ERROR',
     };
-
   } catch (error) {
     console.error('💥 Server-side login exception:', error);
     return {

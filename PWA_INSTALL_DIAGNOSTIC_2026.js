@@ -9,43 +9,43 @@ console.log('🔍 PWA Install Diagnostic Starting...');
 console.log('\n1. 📋 MANIFEST VALIDATION');
 fetch('/manifest.json')
   .then(response => response.json())
-  .then(manifest => {
+  .then((manifest) => {
     console.log('✅ Manifest loaded successfully');
     console.log('📍 Start URL:', manifest.start_url);
     console.log('📱 Display mode:', manifest.display);
     console.log('🎨 Theme color:', manifest.theme_color);
     console.log('🖼️ Icons count:', manifest.icons?.length || 0);
-    
+
     // Check for required fields
     const required = ['name', 'start_url', 'display', 'icons'];
     const missing = required.filter(field => !manifest[field]);
-    
+
     if (missing.length > 0) {
       console.log('❌ Missing required fields:', missing);
     } else {
       console.log('✅ All required manifest fields present');
     }
-    
+
     // Check icon requirements
-    const hasValidIcons = manifest.icons?.some(icon => {
-      const size = parseInt(icon.sizes);
+    const hasValidIcons = manifest.icons?.some((icon) => {
+      const size = Number.parseInt(icon.sizes);
       return size >= 192;
     });
-    
+
     if (hasValidIcons) {
       console.log('✅ Valid icons (192px+) found');
     } else {
       console.log('❌ No valid icons found (need 192px+)');
     }
   })
-  .catch(error => {
+  .catch((error) => {
     console.log('❌ Manifest loading failed:', error);
   });
 
 // Check 2: Service Worker status
 console.log('\n2. ⚙️ SERVICE WORKER STATUS');
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(registrations => {
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
     if (registrations.length > 0) {
       console.log('✅ Service Worker registered');
       registrations.forEach((registration, index) => {
@@ -76,11 +76,11 @@ window.addEventListener('beforeinstallprompt', (e) => {
   installPromptReceived = true;
   console.log('✅ beforeinstallprompt event fired!');
   console.log('🎯 PWA is installable');
-  
+
   // Store the event for manual triggering
   window.deferredPrompt = e;
   e.preventDefault();
-  
+
   // Show custom install button
   console.log('💡 You can now trigger install manually');
 });
@@ -100,7 +100,7 @@ setTimeout(() => {
 // Check 5: User engagement heuristics
 console.log('\n5. 👤 USER ENGAGEMENT');
 const visitCount = localStorage.getItem('pwa-visit-count') || 0;
-const newCount = parseInt(visitCount) + 1;
+const newCount = Number.parseInt(visitCount) + 1;
 localStorage.setItem('pwa-visit-count', newCount.toString());
 
 console.log('📊 Visit count:', newCount);
@@ -122,7 +122,7 @@ console.log('🔍 Browser:', {
   Chrome: isChrome,
   Safari: isSafari,
   Firefox: isFirefox,
-  Edge: isEdge
+  Edge: isEdge,
 });
 
 if (isChrome || isEdge) {
@@ -151,20 +151,20 @@ console.log('🔄 Online status:', navigator.onLine ? 'Online' : 'Offline');
 // Check 8: Storage and permissions
 console.log('\n8. 💾 STORAGE & PERMISSIONS');
 if ('storage' in navigator && 'estimate' in navigator.storage) {
-  navigator.storage.estimate().then(estimate => {
+  navigator.storage.estimate().then((estimate) => {
     console.log('💾 Storage quota:', Math.round(estimate.quota / 1024 / 1024), 'MB');
     console.log('💾 Storage used:', Math.round(estimate.usage / 1024 / 1024), 'MB');
   });
 }
 
 // Manual install function
-window.triggerPWAInstall = function() {
+window.triggerPWAInstall = function () {
   console.log('\n🚀 MANUAL INSTALL TRIGGER');
-  
+
   if (window.deferredPrompt) {
     console.log('📱 Triggering install prompt...');
     window.deferredPrompt.prompt();
-    
+
     window.deferredPrompt.userChoice.then((choiceResult) => {
       console.log('👤 User choice:', choiceResult.outcome);
       if (choiceResult.outcome === 'accepted') {

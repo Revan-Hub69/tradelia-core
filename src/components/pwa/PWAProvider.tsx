@@ -1,6 +1,6 @@
 /**
  * PWA Provider Component
- * 
+ *
  * Initializes PWA functionality and provides context
  * Should be added to the root layout
  */
@@ -13,11 +13,11 @@ import { usePWA } from '@/hooks/usePWA';
 
 import PWAInstallPrompt from './PWAInstallPrompt';
 
-interface PWAProviderProps {
+type PWAProviderProps = {
   children: React.ReactNode;
   showInstallPrompt?: boolean;
   installPromptVariant?: 'banner' | 'card' | 'floating';
-}
+};
 
 export const PWAProvider: React.FC<PWAProviderProps> = ({
   children,
@@ -39,7 +39,9 @@ export const PWAProvider: React.FC<PWAProviderProps> = ({
 
   // Handle service worker updates
   useEffect(() => {
-    if (!swRegistration) return;
+    if (!swRegistration) {
+      return;
+    }
 
     const handleControllerChange = () => {
       console.log('[PWA] New service worker activated');
@@ -56,16 +58,26 @@ export const PWAProvider: React.FC<PWAProviderProps> = ({
   return (
     <>
       {children}
-      
+
       {/* Show install prompt if PWA is supported and user hasn't installed */}
       {showInstallPrompt && isSupported && (
         <PWAInstallPrompt variant={installPromptVariant} />
       )}
-      
+
       {/* Development PWA status indicator */}
       {process.env.NODE_ENV === 'development' && (
-        <div className="fixed bottom-2 left-2 z-50 text-xs bg-black/80 text-white px-2 py-1 rounded">
-          PWA: {isSupported ? '✅' : '❌'} | SW: {swRegistration ? '✅' : '❌'} | Online: {isOnline ? '✅' : '❌'}
+        <div className="fixed bottom-2 left-2 z-50 rounded bg-black/80 px-2 py-1 text-xs text-white">
+          PWA:
+          {' '}
+          {isSupported ? '✅' : '❌'}
+          {' '}
+          | SW:
+          {' '}
+          {swRegistration ? '✅' : '❌'}
+          {' '}
+          | Online:
+          {' '}
+          {isOnline ? '✅' : '❌'}
         </div>
       )}
     </>

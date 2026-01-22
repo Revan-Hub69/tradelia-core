@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 
 /**
  * PWA Manifest 2026 - Dashboard Focused
- * 
+ *
  * Modern PWA implementation following 2026 best practices:
  * - Dashboard-first start_url
  * - Simplified icon set (PNG only for reliability)

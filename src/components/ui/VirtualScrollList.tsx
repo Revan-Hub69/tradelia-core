@@ -1,30 +1,30 @@
 /*
  * VIRTUAL SCROLL LIST - PHASE 3B IMPLEMENTATION
- * 
+ *
  * Tier 1 Research Implementation:
  * - @tanstack/react-virtual (TanStack Official)
  * - LogRocket Deep Dive patterns
  * - 60 FPS performance with unlimited data
  * - Dynamic heights with measurement
- * 
+ *
  * Expected Impact: 60 FPS scrolling, unlimited data support
  */
 
 'use client';
 
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { useRef, forwardRef, type ReactNode } from 'react';
+import { forwardRef, type ReactNode, useRef } from 'react';
 
 import { cn } from '@/utils/Helpers';
 
 // ✅ TIER 1: Virtual scroll props interface
-export interface VirtualScrollItem {
+export type VirtualScrollItem = {
   id: string;
   content: ReactNode;
   estimatedHeight?: number;
-}
+};
 
-export interface VirtualScrollListProps {
+export type VirtualScrollListProps = {
   items: VirtualScrollItem[];
   height: number;
   estimateSize?: (index: number) => number;
@@ -32,7 +32,7 @@ export interface VirtualScrollListProps {
   className?: string;
   itemClassName?: string;
   gap?: number;
-}
+};
 
 // ✅ TIER 1: Virtual scroll implementation based on TanStack research
 export const VirtualScrollList = forwardRef<HTMLDivElement, VirtualScrollListProps>(({
@@ -54,7 +54,9 @@ export const VirtualScrollList = forwardRef<HTMLDivElement, VirtualScrollListPro
     overscan,
     // ✅ TIER 1: Dynamic height measurement for variable content
     measureElement: (element) => {
-      if (!element) return estimateSize(0);
+      if (!element) {
+        return estimateSize(0);
+      }
       return element.getBoundingClientRect().height;
     },
   });
@@ -81,7 +83,9 @@ export const VirtualScrollList = forwardRef<HTMLDivElement, VirtualScrollListPro
       >
         {rowVirtualizer.getVirtualItems().map((virtualItem) => {
           const item = items[virtualItem.index];
-          if (!item) return null;
+          if (!item) {
+            return null;
+          }
 
           return (
             <div
@@ -112,7 +116,7 @@ VirtualScrollList.displayName = 'VirtualScrollList';
 // ✅ TIER 1: Hook for virtual scroll state management
 export const useVirtualScrollState = (itemCount: number) => {
   const parentRef = useRef<HTMLDivElement>(null);
-  
+
   const virtualizer = useVirtualizer({
     count: itemCount,
     getScrollElement: () => parentRef.current,
@@ -129,14 +133,14 @@ export const useVirtualScrollState = (itemCount: number) => {
 };
 
 // ✅ TIER 1: Performance optimized virtual list for large datasets
-export interface VirtualListProps<T> {
+export type VirtualListProps<T> = {
   data: T[];
   height: number;
   itemHeight: number | ((index: number) => number);
   renderItem: (item: T, index: number) => ReactNode;
   className?: string;
   onScroll?: (scrollTop: number) => void;
-}
+};
 
 export function VirtualList<T extends { id: string }>({
   data,
@@ -173,7 +177,9 @@ export function VirtualList<T extends { id: string }>({
       >
         {virtualizer.getVirtualItems().map((virtualItem) => {
           const item = data[virtualItem.index];
-          if (!item) return null;
+          if (!item) {
+            return null;
+          }
 
           return (
             <div

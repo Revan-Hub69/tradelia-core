@@ -7,7 +7,7 @@ import { createClient } from '@/libs/supabase/client';
 
 export const checkSupabaseConfig = async () => {
   const supabase = createClient();
-  
+
   const checks = {
     supabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
     supabaseKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
@@ -20,15 +20,15 @@ export const checkSupabaseConfig = async () => {
     checks.connection = !error;
 
     console.log('Supabase Configuration Check:', checks);
-    
+
     if (!checks.supabaseUrl) {
       console.error('❌ NEXT_PUBLIC_SUPABASE_URL is missing');
     }
-    
+
     if (!checks.supabaseKey) {
       console.error('❌ NEXT_PUBLIC_SUPABASE_ANON_KEY is missing');
     }
-    
+
     if (!checks.connection) {
       console.error('❌ Cannot connect to Supabase');
     }

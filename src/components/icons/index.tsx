@@ -8,97 +8,88 @@
 
 import React from 'react';
 
-// Import signature icons first
-import {
-  BellIcon,
-  ChevronDownIcon,
-  CloseIcon,
-  HomeIcon,
-  MenuIcon,
-  SettingsIcon,
-  SIGNATURE_TOKENS,
-  SignatureIconBase,
-  
-  // Theme icons (new clean versions)
-  LightIcon,
-  DarkIcon,
-  
-  // Educational icons
-  LearnIcon,
-  CalculatorIcon,
-  ForumIcon,
-  ProfileIcon,
-  GlobeIcon,
-  LockIcon,
-  ExitIcon,
-  MoreVerticalIcon,
-  
-  // New Phase 3A icons
-  TrendingUpIcon,
-  StarIcon,
-  ClockIcon,
-  UserIcon,
-  SearchIcon,
-  PlusIcon,
-  MinusIcon,
-  CheckIcon,
-  
-  // Legacy aliases (for compatibility)
-  SunIcon,
-  MoonIcon,
-  ToolsIcon,
-  CommunityIcon,
-  LogoutIcon,
-} from './unified';
-
 import type {
   IconSize,
   IconState,
   IconVariant,
   SignatureIconProps,
 } from './unified';
+// Import signature icons first
+import {
+  BellIcon,
+  CalculatorIcon,
+  CheckIcon,
+  ChevronDownIcon,
+  ClockIcon,
+  CloseIcon,
+  CommunityIcon,
+  DarkIcon,
+  ExitIcon,
+  ForumIcon,
+  GlobeIcon,
+  HomeIcon,
+  // Educational icons
+  LearnIcon,
+  // Theme icons (new clean versions)
+  LightIcon,
+  LockIcon,
+  LogoutIcon,
+  MenuIcon,
+  MinusIcon,
+  MoonIcon,
+  MoreVerticalIcon,
+  PlusIcon,
+  ProfileIcon,
+  SearchIcon,
+  SettingsIcon,
+  SIGNATURE_TOKENS,
+  SignatureIconBase,
+  StarIcon,
+  // Legacy aliases (for compatibility)
+  SunIcon,
+  ToolsIcon,
+  // New Phase 3A icons
+  TrendingUpIcon,
+  UserIcon,
+} from './unified';
 
 // Re-export signature icons
 export {
   BellIcon,
+  CalculatorIcon,
+  CheckIcon,
   ChevronDownIcon,
+  ClockIcon,
   CloseIcon,
+  CommunityIcon,
+  DarkIcon,
+  ExitIcon,
+  ForumIcon,
+  GlobeIcon,
   HomeIcon,
+  // Educational icons
+  LearnIcon,
+  // Theme icons (new clean versions)
+  LightIcon,
+  LockIcon,
+  LogoutIcon,
   MenuIcon,
+  MinusIcon,
+  MoonIcon,
+  MoreVerticalIcon,
+  PlusIcon,
+  ProfileIcon,
+  SearchIcon,
   SettingsIcon,
   SIGNATURE_TOKENS,
   SignatureIconBase,
-  
-  // Theme icons (new clean versions)
-  LightIcon,
-  DarkIcon,
-  
-  // Educational icons
-  LearnIcon,
-  CalculatorIcon,
-  ForumIcon,
-  ProfileIcon,
-  GlobeIcon,
-  LockIcon,
-  ExitIcon,
-  MoreVerticalIcon,
-  
-  // New Phase 3A icons
-  TrendingUpIcon,
   StarIcon,
-  ClockIcon,
-  UserIcon,
-  SearchIcon,
-  PlusIcon,
-  MinusIcon,
-  CheckIcon,
-  
   // Legacy aliases (for compatibility)
   SunIcon,
-  MoonIcon,
   ToolsIcon,
-  CommunityIcon,
-  LogoutIcon,
+  // New Phase 3A icons
+  TrendingUpIcon,
+  UserIcon,
 };
 
 export type {
@@ -116,11 +107,11 @@ export const ICON_MAP = {
   CloseIcon,
   ChevronDownIcon,
   SettingsIcon,
-  
+
   // Theme icons
   LightIcon,
   DarkIcon,
-  
+
   // Educational icons
   LearnIcon,
   CalculatorIcon,
@@ -130,7 +121,7 @@ export const ICON_MAP = {
   LockIcon,
   ExitIcon,
   MoreVerticalIcon,
-  
+
   // New Phase 3A icons
   TrendingUpIcon,
   StarIcon,
@@ -140,7 +131,7 @@ export const ICON_MAP = {
   PlusIcon,
   MinusIcon,
   CheckIcon,
-  
+
   // Legacy aliases
   SunIcon,
   MoonIcon,
@@ -153,13 +144,13 @@ export type IconName = keyof typeof ICON_MAP;
 
 // Dynamic icon component
 export type DynamicIconProps = {
-  name: IconName;
-  size?: IconSize;
-  variant?: IconVariant;
-  className?: string;
+  'name': IconName;
+  'size'?: IconSize;
+  'variant'?: IconVariant;
+  'className'?: string;
   'aria-hidden'?: boolean;
   'aria-label'?: string;
-  isActive?: boolean;
+  'isActive'?: boolean;
 };
 
 export const DynamicIcon: React.FC<DynamicIconProps> = ({ name, ...props }) => {

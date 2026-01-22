@@ -98,7 +98,6 @@ export async function POST(request: NextRequest) {
       failed,
       total: subscriptions.length,
     });
-
   } catch (error) {
     console.error('[Push Send] Error:', error);
     return NextResponse.json(

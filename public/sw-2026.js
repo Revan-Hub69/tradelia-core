@@ -1,6 +1,6 @@
 /**
  * Tradelia PWA Service Worker - 2026 Edition
- * 
+ *
  * Modern PWA implementation with:
  * - Dashboard-focused caching strategy
  * - Offline-first for critical dashboard routes
@@ -41,7 +41,7 @@ console.log('[SW] Tradelia Service Worker loaded successfully');
 // Install event - cache critical resources
 self.addEventListener('install', (event) => {
   console.log('[SW] Installing service worker...');
-  
+
   event.waitUntil(
     Promise.all([
       // Cache static assets
@@ -58,31 +58,31 @@ self.addEventListener('install', (event) => {
       console.log('[SW] Service worker installed successfully');
       // Skip waiting to activate immediately
       return self.skipWaiting();
-    })
+    }),
   );
 });
 
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
   console.log('[SW] Activating service worker...');
-  
+
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME && 
-              cacheName !== DASHBOARD_CACHE && 
-              cacheName !== STATIC_CACHE) {
+          if (cacheName !== CACHE_NAME
+            && cacheName !== DASHBOARD_CACHE
+            && cacheName !== STATIC_CACHE) {
             console.log('[SW] Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
-        })
+        }),
       );
     }).then(() => {
       console.log('[SW] Service worker activated');
       // Take control of all clients immediately
       return self.clients.claim();
-    })
+    }),
   );
 });
 
@@ -109,9 +109,9 @@ self.addEventListener('fetch', (event) => {
   }
 
   // Static assets - Cache First
-  if (STATIC_ASSETS.includes(url.pathname) || 
-      url.pathname.startsWith('/_next/static/') ||
-      url.pathname.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2)$/)) {
+  if (STATIC_ASSETS.includes(url.pathname)
+    || url.pathname.startsWith('/_next/static/')
+    || url.pathname.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2)$/)) {
     event.respondWith(cacheFirstStrategy(request, STATIC_CACHE));
     return;
   }
@@ -125,7 +125,7 @@ async function cacheFirstStrategy(request, cacheName) {
   try {
     const cache = await caches.open(cacheName);
     const cachedResponse = await cache.match(request);
-    
+
     if (cachedResponse) {
       // Update cache in background
       fetch(request).then((response) => {
@@ -135,7 +135,7 @@ async function cacheFirstStrategy(request, cacheName) {
       }).catch(() => {
         // Ignore network errors in background update
       });
-      
+
       return cachedResponse;
     }
 
@@ -145,7 +145,6 @@ async function cacheFirstStrategy(request, cacheName) {
       cache.put(request, response.clone());
     }
     return response;
-    
   } catch (error) {
     console.error('[SW] Cache first strategy failed:', error);
     // Return offline fallback if available
@@ -157,24 +156,23 @@ async function cacheFirstStrategy(request, cacheName) {
 async function networkFirstStrategy(request, cacheName) {
   try {
     const response = await fetch(request);
-    
+
     if (response.ok) {
       const cache = await caches.open(cacheName);
       cache.put(request, response.clone());
     }
-    
+
     return response;
-    
   } catch (error) {
     console.log('[SW] Network failed, trying cache:', request.url);
-    
+
     const cache = await caches.open(cacheName);
     const cachedResponse = await cache.match(request);
-    
+
     if (cachedResponse) {
       return cachedResponse;
     }
-    
+
     // Return offline fallback
     return getOfflineFallback(request);
   }
@@ -183,36 +181,38 @@ async function networkFirstStrategy(request, cacheName) {
 // Offline fallback for when both network and cache fail
 async function getOfflineFallback(request) {
   const url = new URL(request.url);
-  
+
   // For dashboard routes, return cached dashboard
   if (url.pathname.startsWith('/dashboard')) {
     const cache = await caches.open(CACHE_NAME);
     const fallback = await cache.match('/dashboard');
-    if (fallback) return fallback;
+    if (fallback) {
+      return fallback;
+    }
   }
-  
+
   // For API routes, return empty response
   if (url.pathname.startsWith('/api/')) {
-    return new Response(JSON.stringify({ 
-      error: 'Offline', 
-      message: 'This feature requires an internet connection' 
+    return new Response(JSON.stringify({
+      error: 'Offline',
+      message: 'This feature requires an internet connection',
     }), {
       status: 503,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
   }
-  
+
   // Default offline response
   return new Response('Offline - Please check your internet connection', {
     status: 503,
-    headers: { 'Content-Type': 'text/plain' }
+    headers: { 'Content-Type': 'text/plain' },
   });
 }
 
 // Background Sync for offline actions
 self.addEventListener('sync', (event) => {
   console.log('[SW] Background sync triggered:', event.tag);
-  
+
   if (event.tag === 'dashboard-sync') {
     event.waitUntil(syncDashboardData());
   }
@@ -222,14 +222,14 @@ self.addEventListener('sync', (event) => {
 async function syncDashboardData() {
   try {
     console.log('[SW] Syncing dashboard data...');
-    
+
     // Get pending actions from IndexedDB or localStorage
     // This would sync user actions performed while offline
-    
+
     // For now, just refresh the dashboard cache
     const cache = await caches.open(DASHBOARD_CACHE);
     const requests = await cache.keys();
-    
+
     for (const request of requests) {
       try {
         const response = await fetch(request);
@@ -240,9 +240,8 @@ async function syncDashboardData() {
         console.log('[SW] Failed to sync:', request.url);
       }
     }
-    
+
     console.log('[SW] Dashboard sync completed');
-    
   } catch (error) {
     console.error('[SW] Background sync failed:', error);
   }
@@ -251,7 +250,7 @@ async function syncDashboardData() {
 // Push notification handling
 self.addEventListener('push', (event) => {
   console.log('[SW] Push notification received');
-  
+
   const options = {
     body: 'You have new updates in your dashboard',
     icon: '/icon-192x192.png',
@@ -262,14 +261,14 @@ self.addEventListener('push', (event) => {
       {
         action: 'open-dashboard',
         title: 'Open Dashboard',
-        icon: '/favicon-32x32.png'
+        icon: '/favicon-32x32.png',
       },
       {
         action: 'dismiss',
         title: 'Dismiss',
-        icon: '/favicon-32x32.png'
-      }
-    ]
+        icon: '/favicon-32x32.png',
+      },
+    ],
   };
 
   if (event.data) {
@@ -283,27 +282,27 @@ self.addEventListener('push', (event) => {
   }
 
   event.waitUntil(
-    self.registration.showNotification('Tradelia Dashboard', options)
+    self.registration.showNotification('Tradelia Dashboard', options),
   );
 });
 
 // Notification click handling
 self.addEventListener('notificationclick', (event) => {
   console.log('[SW] Notification clicked:', event.action);
-  
+
   event.notification.close();
 
   if (event.action === 'open-dashboard') {
     event.waitUntil(
-      clients.openWindow('/dashboard')
+      clients.openWindow('/dashboard'),
     );
   } else if (event.action === 'dismiss') {
     // Just close the notification
-    return;
+
   } else {
     // Default action - open dashboard
     event.waitUntil(
-      clients.openWindow('/dashboard')
+      clients.openWindow('/dashboard'),
     );
   }
 });

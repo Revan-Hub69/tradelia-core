@@ -4,7 +4,7 @@
  * Client-side interactive layer for dashboard
  * Handles all user interactions, state, and effects
  * Wraps navigation components and interactive features
- * 
+ *
  * PERFORMANCE OPTIMIZED:
  * - Dynamic imports for heavy components
  * - Suspense boundaries for better UX
@@ -41,11 +41,12 @@ export function DashboardClient({ children }: DashboardClientProps) {
     <NavigationProvider>
       <DashboardContextProvider>
         {/* Sidebar Navigation - Tablet and Desktop (768px+) */}
-        <Suspense fallback={
-          <div className="layout-sidebar hidden md:block w-64 border-r border-border/20">
+        <Suspense fallback={(
+          <div className="layout-sidebar hidden w-64 border-r border-border/20 md:block">
             <div className="h-full animate-pulse bg-muted/20" />
           </div>
-        }>
+        )}
+        >
           <SidebarNavigation className="layout-sidebar" />
         </Suspense>
 

@@ -78,14 +78,13 @@ async function testUserRegistration() {
       console.log('✅ Signin successful - user exists');
       console.log('👤 User data:', JSON.stringify(signinData.user, null, 2));
     }
-
   } catch (error) {
     console.error('💥 Unexpected error:', error);
   }
 
   // Test 4: Check Supabase configuration
   console.log('\n4️⃣ Checking Supabase configuration...');
-  
+
   try {
     const { data, error } = await supabase.auth.getSession();
     if (error) {
@@ -101,7 +100,7 @@ async function testUserRegistration() {
   console.log('Se vedi "User already registered" ma poi "Invalid login credentials",');
   console.log('significa che il problema è nella configurazione email di Supabase,');
   console.log('NON che l\'utente esiste già.\n');
-  
+
   console.log('🔧 SOLUZIONE:');
   console.log('1. Controllare configurazione email provider (Brevo)');
   console.log('2. Verificare SMTP settings in Supabase dashboard');

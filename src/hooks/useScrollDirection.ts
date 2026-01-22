@@ -20,7 +20,7 @@ export type UseScrollDirectionOptions = {
 
 export const useScrollDirection = (options: UseScrollDirectionOptions = {}) => {
   const { threshold = 10 } = options; // Minimum pixels to prevent jank
-  
+
   const [scrollDirection, setScrollDirection] = useState<ScrollDirection>('none');
   const [isScrolled, setIsScrolled] = useState(false);
   const lastScrollY = useRef(0);
