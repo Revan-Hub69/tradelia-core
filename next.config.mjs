@@ -144,58 +144,7 @@ export default bundleAnalyzer(
             },
           ],
         },
-        // Service Worker files
-        {
-          source: '/sw.js',
-          headers: [
-            {
-              key: 'Content-Type',
-              value: 'application/javascript',
-            },
-            {
-              key: 'Cache-Control',
-              value: 'no-cache, no-store, must-revalidate',
-            },
-            {
-              key: 'Service-Worker-Allowed',
-              value: '/',
-            },
-          ],
-        },
-        {
-          source: '/sw-2026.js',
-          headers: [
-            {
-              key: 'Content-Type',
-              value: 'application/javascript',
-            },
-            {
-              key: 'Cache-Control',
-              value: 'no-cache, no-store, must-revalidate',
-            },
-            {
-              key: 'Service-Worker-Allowed',
-              value: '/',
-            },
-          ],
-        },
-        {
-          source: '/sw-custom.js',
-          headers: [
-            {
-              key: 'Content-Type',
-              value: 'application/javascript',
-            },
-            {
-              key: 'Cache-Control',
-              value: 'no-cache, no-store, must-revalidate',
-            },
-            {
-              key: 'Service-Worker-Allowed',
-              value: '/',
-            },
-          ],
-        },
+
       ];
     },
   }),

@@ -1,7 +1,7 @@
 // Navigation Components - Universal Exports
 export { CommandPalette } from './CommandPalette';
 export { NavigationProvider } from './NavigationProvider';
-export { PWABottomNavigationSimple } from './PWABottomNavigationSimple';
+export { BottomNavigationSimple } from './BottomNavigationSimple';
 export { QuickActionsMenu } from './QuickActionsMenu';
 export { SidebarNavigation } from './SidebarNavigation';
 

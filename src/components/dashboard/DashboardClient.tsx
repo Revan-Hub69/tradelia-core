@@ -17,7 +17,7 @@ import dynamic from 'next/dynamic';
 import { Suspense } from 'react';
 
 import { NavigationProvider } from '@/components/navigation/NavigationProvider';
-import { PWABottomNavigationSimple } from '@/components/navigation/PWABottomNavigationSimple';
+import { BottomNavigationSimple } from '@/components/navigation/BottomNavigationSimple';
 import { SidebarNavigation } from '@/components/navigation/SidebarNavigation';
 import { DashboardContextProvider } from '@/contexts/DashboardContext';
 
@@ -63,7 +63,7 @@ export function DashboardClient({ children }: DashboardClientProps) {
         </div>
 
         {/* Bottom Navigation - Mobile only (< 768px) */}
-        <PWABottomNavigationSimple className="layout-nav" />
+        <BottomNavigationSimple className="layout-nav" />
 
         {/* Command Palette - Desktop feature (lazy loaded) */}
         <CommandPalette />

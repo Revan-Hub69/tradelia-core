@@ -10,11 +10,11 @@ import { useOptimizedNavigation } from '@/hooks/useOptimizedNavigation';
 import { usePathname } from '@/libs/i18nNavigation';
 import { cn } from '@/utils/Helpers';
 
-type PWABottomNavigationSimpleProps = {
+type BottomNavigationSimpleProps = {
   className?: string;
 };
 
-export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps> = ({ className }) => {
+export const BottomNavigationSimple: React.FC<BottomNavigationSimpleProps> = ({ className }) => {
   const pathname = usePathname();
   const t = useTranslations('Dashboard');
   const navigationItems = getVisibleNavigationItems();
@@ -37,6 +37,8 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
         'border-t border-white/20 dark:border-white/10',
         'shadow-lg shadow-black/10 dark:shadow-black/30',
         'pb-safe-bottom',
+        // Prevent text selection on navigation buttons
+        'select-none',
         className,
       )}
       role="navigation"
@@ -57,6 +59,8 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
                 'min-h-[56px]',
                 'text-xs font-medium',
                 'touch-action-manipulation',
+                // Prevent text selection
+                'select-none',
                 // CSS-based active indicator instead of Framer Motion
                 'before:absolute before:inset-0 before:rounded-2xl before:bg-primary/10 before:opacity-0 before:transition-opacity before:duration-200',
                 isActive && 'before:opacity-100',
@@ -93,6 +97,7 @@ export const PWABottomNavigationSimple: React.FC<PWABottomNavigationSimpleProps>
                 className={cn(
                   'relative z-10 mt-1 truncate leading-tight text-muted-foreground transition-colors duration-200',
                   'group-hover:text-foreground/90',
+                  'select-none', // Prevent text selection
                   isActive && 'text-foreground',
                 )}
               >
