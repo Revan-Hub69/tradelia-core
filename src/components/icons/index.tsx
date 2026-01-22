@@ -95,7 +95,12 @@ export type IconName = keyof typeof ICON_MAP;
 // Dynamic icon component
 export type DynamicIconProps = {
   name: IconName;
-} & SignatureIconProps;
+  size?: IconSize;
+  variant?: IconVariant;
+  className?: string;
+  'aria-hidden'?: boolean;
+  'aria-label'?: string;
+};
 
 export const DynamicIcon: React.FC<DynamicIconProps> = ({ name, ...props }) => {
   const IconComponent = ICON_MAP[name];
