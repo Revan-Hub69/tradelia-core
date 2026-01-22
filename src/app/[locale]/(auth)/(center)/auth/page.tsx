@@ -258,22 +258,46 @@ const UnifiedAuthPageContent = () => {
     setLoading(true);
     setError(null);
 
+    console.log('🔐 Starting signup process...', {
+      email: data.email,
+      origin: window.location.origin,
+      redirectUrl: `${window.location.origin}/auth/callback?redirect=/dashboard`,
+    });
+
     const supabase = createClient();
     const { error: signUpError } = await supabase.auth.signUp({
       email: data.email,
       password: data.password,
       options: {
         emailRedirectTo: `${window.location.origin}/auth/callback?redirect=/dashboard`,
+        data: {
+          // Add user metadata if needed
+        },
       },
     });
 
     if (signUpError) {
+      console.error('❌ Signup error:', signUpError);
       authRateLimit.recordAttempt();
-      setError(signUpError.message);
+      
+      // Handle specific Supabase errors
+      if (signUpError.message.includes('Error sending confirmation email')) {
+        setError('Problema temporaneo con l\'invio email. Prova con Google OAuth o contatta il supporto.');
+      } else if (signUpError.message.includes('Invalid redirect URL')) {
+        setError('Errore configurazione: URL di redirect non autorizzato. Contatta il supporto.');
+      } else if (signUpError.message.includes('Email rate limit')) {
+        setError('Troppi tentativi. Riprova tra qualche minuto.');
+      } else if (signUpError.message.includes('Invalid email')) {
+        setError('Email non valida. Controlla il formato.');
+      } else {
+        setError(`Errore registrazione: ${signUpError.message}`);
+      }
+      
       setLoading(false);
       return;
     }
 
+    console.log('✅ Signup successful, check email for confirmation');
     setAuthMode('success');
     setError(null);
   };
