@@ -140,40 +140,6 @@
     z-index: var(--z-toast);
   }
 
-  /* Dashboard layout */
-  .layout-stable {
-    min-height: 100vh;
-    display: grid;
-    grid-template-rows: var(--header-height) 1fr var(--nav-height);
-    grid-template-areas:
-      'header'
-      'main'
-      'nav';
-  }
-
-  @media (min-width: 768px) {
-    .layout-stable {
-      grid-template-columns: var(--sidebar-width-current, var(--sidebar-width)) 1fr;
-      grid-template-rows: var(--header-height) 1fr;
-      grid-template-areas:
-        'sidebar header'
-        'sidebar main';
-    }
-  }
-
-  .layout-header {
-    grid-area: header;
-  }
-  .layout-main {
-    grid-area: main;
-  }
-  .layout-nav {
-    grid-area: nav;
-  }
-  .layout-sidebar {
-    grid-area: sidebar;
-  }
-
   /* Dashboard badges */
   .badge-success {
     @apply border-accent/30 bg-accent/20 text-accent;

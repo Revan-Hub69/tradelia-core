@@ -42,28 +42,25 @@ export function DashboardClient({ children }: DashboardClientProps) {
       <DashboardContextProvider>
         {/* Sidebar Navigation - Tablet and Desktop (768px+) */}
         <Suspense fallback={(
-          <div className="layout-sidebar hidden w-64 border-r border-border/20 md:block">
+          <div className="fixed left-0 top-0 z-40 hidden h-screen w-64 border-r border-border/20 md:block">
             <div className="h-full animate-pulse bg-muted/20" />
           </div>
         )}
         >
-          <SidebarNavigation className="layout-sidebar" />
+          <SidebarNavigation />
         </Suspense>
 
         {/* Header - Always visible */}
         <DashboardHeader
           showScrollShadow
           hideOnScroll={true}
-          className="layout-header"
         />
 
         {/* Main Content - Server Component passed as children */}
-        <div className="pt-16 md:pl-[var(--sidebar-width-current)]"> {/* Padding-top for header + left padding for sidebar on desktop */}
-          {children}
-        </div>
+        {children}
 
         {/* Bottom Navigation - Mobile only (< 768px) */}
-        <BottomNavigationSimple className="layout-nav" />
+        <BottomNavigationSimple />
 
         {/* Command Palette - Desktop feature (lazy loaded) */}
         <CommandPalette />

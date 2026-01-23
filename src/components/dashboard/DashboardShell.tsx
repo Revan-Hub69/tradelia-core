@@ -15,12 +15,8 @@ type DashboardShellProps = {
 };
 
 export function DashboardShell({ children }: DashboardShellProps) {
-  // Server-side data fetching can go here
-  // const userData = await fetchUserData();
-  // const navigationItems = await fetchNavigationItems();
-
   return (
-    <div className="layout-stable bg-background">
+    <div className="min-h-screen bg-background">
       <SkipLinks />
 
       {/* Client boundary - all interactive components */}
@@ -28,7 +24,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
         {/* Main Content - passed as children to maintain server rendering */}
         <main
           id="main-content"
-          className="layout-main content-stable px-4 py-6"
+          className="min-h-screen px-4 py-6 pt-20 md:pl-[calc(var(--sidebar-width-current)+1rem)]"
         >
           {children}
         </main>
