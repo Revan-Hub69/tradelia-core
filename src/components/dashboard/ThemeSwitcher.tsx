@@ -74,8 +74,8 @@ export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) 
               // Base styling
               'relative flex size-11 items-center justify-center rounded-xl',
               'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-              // Optimized animation system - single animation class
-              'header-icon glass-button',
+              // Optimized animation system with explicit transitions
+              'header-icon glass-button transition-all duration-300 ease-out',
               className,
             )}
             style={{

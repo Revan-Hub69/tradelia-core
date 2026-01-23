@@ -80,10 +80,8 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
                     // Base styling
                     'relative flex size-11 items-center justify-center rounded-xl',
                     'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-                    // Performance optimized - NO TAILWIND TRANSFORMS (let header-icon handle it)
-                    'glass-button',
-                    // Visual hierarchy
-                    'header-icon header-icon-secondary',
+                    // Optimized animation system with explicit transitions
+                    'header-icon glass-button transition-all duration-300 ease-out',
                     className,
                   )}
                   style={{
