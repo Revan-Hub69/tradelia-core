@@ -153,38 +153,6 @@
   transform: translateZ(0) scale(0.95);
 }
 
-/* Status Indicator Animations */
-.status-indicator {
-  animation: pulse-glow 2s ease-in-out infinite;
-}
-
-@keyframes pulse-glow {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.1);
-  }
-}
-
-/* Role Badge Animations */
-.role-badge {
-  animation: badge-entrance 300ms ease-out;
-}
-
-@keyframes badge-entrance {
-  0% {
-    opacity: 0;
-    transform: scale(0.8) translateY(-2px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
 /* Reduced Motion - Avatar */
 @media (prefers-reduced-motion: reduce) {
   .avatar-liquid-glass-2026 {
@@ -193,13 +161,5 @@
 
   .avatar-liquid-glass-2026:hover {
     transform: translateZ(0);
-  }
-
-  .status-indicator {
-    animation: none;
-  }
-
-  .role-badge {
-    animation: none;
   }
 }
