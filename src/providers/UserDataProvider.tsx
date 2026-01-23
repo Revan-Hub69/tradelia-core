@@ -74,7 +74,8 @@ const fetchUserData = async (): Promise<UserData | null> => {
 
   try {
     // Try to fetch complete user data from API (only works for verified users)
-    const response = await fetch('/api/user/progress');
+    // Add timestamp to prevent caching issues when switching users
+    const response = await fetch(`/api/user/progress?t=${Date.now()}`);
 
     if (!response.ok) {
       // API failed (probably email not verified), return basic data
@@ -117,7 +118,8 @@ const UserDataProviderInner = ({ children }: { children: React.ReactNode }) => {
   const { data: userData, isLoading, error, refetch } = useQuery({
     queryKey: ['userData'],
     queryFn: fetchUserData,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 0, // Always fetch fresh data (no caching issues when switching users)
+    gcTime: 0, // Don't cache old user data
   });
 
   const contextValue: UserDataContextType = {

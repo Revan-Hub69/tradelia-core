@@ -124,33 +124,47 @@ export async function signUpWithEmailAndPassword(data: {
 }
 
 /**
- * Check if email exists using Admin API
- * More reliable than client-side checks
+ * Check if email exists
+ * 
+ * SIMPLIFIED APPROACH:
+ * - In development (no service role key): Skip check, let signup handle duplicates
+ * - In production (with service role key): Use admin API for better UX
+ * 
+ * This avoids errors in local development while maintaining good UX in production
  */
 export async function checkEmailExistsServer(email: string): Promise<{
   exists: boolean;
   error?: string;
 }> {
   try {
+    // Check if we have service role key (required for admin API)
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      console.log('ℹ️ Development mode - skipping email check (no service role key)');
+      // In development, always return false to allow signup attempt
+      // Supabase will handle "user already exists" error during signup
+      return { exists: false };
+    }
+
     const supabase = createAdminClient();
 
-    // Use the SQL function we created to check if email exists
-    const { data, error } = await supabase.rpc('check_user_exists', {
-      user_email: email,
-    });
+    // Use admin API to list users by email (production only)
+    const { data, error } = await supabase.auth.admin.listUsers();
 
     if (error) {
       console.error('❌ Admin email check error:', error);
-      return { exists: false, error: 'Errore durante la verifica email' };
+      // On error, assume new user to allow signup attempt
+      return { exists: false };
     }
 
-    const userExists = data && data.length > 0;
+    // Check if email exists in the users list
+    const userExists = data.users.some(user => user.email === email);
     console.log(`📧 Email check result for ${email}:`, userExists ? 'EXISTS' : 'NEW');
 
     return { exists: userExists };
   } catch (error) {
     console.error('💥 Server-side email check exception:', error);
-    return { exists: false, error: 'Errore del server' };
+    // On exception, assume new user to allow signup attempt
+    return { exists: false };
   }
 }
 

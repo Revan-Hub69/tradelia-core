@@ -17,18 +17,32 @@ import dynamic from 'next/dynamic';
 import { Suspense } from 'react';
 
 import { NavigationProvider } from '@/components/navigation/NavigationProvider';
-import { BottomNavigationSimple } from '@/components/navigation/BottomNavigationSimple';
-import { SidebarNavigation } from '@/components/navigation/SidebarNavigation';
 import { DashboardContextProvider } from '@/contexts/DashboardContext';
 
 import { DashboardHeader } from './DashboardHeader';
 
-// Dynamic imports for performance optimization
+// Dynamic imports for performance optimization - ALL heavy components lazy loaded
+const SidebarNavigation = dynamic(
+  () => import('@/components/navigation/SidebarNavigation').then(mod => ({ default: mod.SidebarNavigation })),
+  {
+    ssr: false,
+    loading: () => null,
+  },
+);
+
+const BottomNavigationSimple = dynamic(
+  () => import('@/components/navigation/BottomNavigationSimple').then(mod => ({ default: mod.BottomNavigationSimple })),
+  {
+    ssr: false,
+    loading: () => null,
+  },
+);
+
 const CommandPalette = dynamic(
   () => import('@/components/navigation/CommandPalette').then(mod => ({ default: mod.CommandPalette })),
   {
     ssr: false,
-    loading: () => null, // No loading state needed for command palette
+    loading: () => null,
   },
 );
 
@@ -52,8 +66,7 @@ export function DashboardClient({ children }: DashboardClientProps) {
           - No manual margin calculations needed
         */}
         <div className="grid min-h-screen md:grid-cols-[var(--sidebar-width-current)_1fr]" suppressHydrationWarning>
-          {/* Sidebar Navigation - Tablet and Desktop (768px+) */}
-          {/* Position sticky keeps it visible while scrolling */}
+          {/* Sidebar Navigation - Lazy loaded (framer-motion heavy) */}
           <Suspense fallback={null}>
             <SidebarNavigation />
           </Suspense>
@@ -70,10 +83,10 @@ export function DashboardClient({ children }: DashboardClientProps) {
           </div>
         </div>
 
-        {/* Bottom Navigation - Mobile only (< 768px) */}
+        {/* Bottom Navigation - Lazy loaded */}
         <BottomNavigationSimple />
 
-        {/* Command Palette - Desktop feature (lazy loaded) */}
+        {/* Command Palette - Lazy loaded */}
         <CommandPalette />
       </DashboardContextProvider>
     </NavigationProvider>

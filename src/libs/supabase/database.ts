@@ -236,17 +236,53 @@ export const getUserBadges = async (userId: string) => {
   return data || [];
 };
 
-// Combined user data fetch
+// Combined user data fetch - OPTIMIZED: Single query with joins
 export const getCompleteUserData = async (userId: string) => {
-  const [profile, progress, completions, badges] = await Promise.all([
-    getUserProfile(userId),
-    getUserProgress(userId),
-    getUserLessonCompletions(userId),
-    getUserBadges(userId),
-  ]);
+  const supabase = createClient();
+
+  // Single optimized query with all data
+  const { data: profile, error: profileError } = await supabase
+    .from('user_profile')
+    .select(`
+      *,
+      user_progress!user_progress_user_id_fkey(*),
+      lesson_completion!lesson_completion_user_id_fkey(*)
+    `)
+    .eq('id', userId)
+    .single();
+
+  if (profileError && profileError.code !== 'PGRST116') {
+    // Fallback to parallel queries if join fails
+    const [profileData, progress, completions, badges] = await Promise.all([
+      getUserProfile(userId),
+      getUserProgress(userId),
+      getUserLessonCompletions(userId),
+      getUserBadges(userId),
+    ]);
+
+    return {
+      profile: profileData,
+      progress,
+      completions,
+      badges,
+    };
+  }
+
+  // Extract nested data from single query
+  const progress = profile?.user_progress?.[0] || null;
+  const completions = profile?.lesson_completion || [];
+
+  // Badges still need separate query (not critical for initial load)
+  const badges = await getUserBadges(userId);
 
   return {
-    profile,
+    profile: profile ? {
+      id: profile.id,
+      email: profile.email,
+      name: profile.name,
+      created_at: profile.created_at,
+      updated_at: profile.updated_at,
+    } : null,
     progress,
     completions,
     badges,
