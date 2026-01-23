@@ -20,7 +20,7 @@ import { NavigationProvider } from '@/components/navigation/NavigationProvider';
 import { BottomNavigationSimple } from '@/components/navigation/BottomNavigationSimple';
 import { SidebarNavigation } from '@/components/navigation/SidebarNavigation';
 import { DashboardContextProvider } from '@/contexts/DashboardContext';
-import { ProductionCSSCollector } from '@/components/debug/ProductionCSSCollector';
+import { HoverCSSTracker } from '@/components/debug/HoverCSSTracker';
 
 import { DashboardHeader } from './DashboardHeader';
 
@@ -69,12 +69,8 @@ export function DashboardClient({ children }: DashboardClientProps) {
         {/* Command Palette - Desktop feature (lazy loaded) */}
         <CommandPalette />
 
-        {/* Production CSS Collector - CRITICAL: Fixes header overlapping through side effects */}
-        <ProductionCSSCollector 
-          enabled={true}
-          autoCollect={true}
-          position="top-right"
-        />
+        {/* Hover CSS Tracker - SEMPLICE: mostra solo chi gestisce gli hover */}
+        <HoverCSSTracker />
       </DashboardContextProvider>
     </NavigationProvider>
   );
