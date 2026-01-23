@@ -440,6 +440,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                         <UserDropdown
                           userName={getUserDisplayName()}
                           userEmail={userData.email}
+                          status="online"
+                          role="user"
                         />
                       </div>
                     )
