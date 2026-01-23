@@ -22,36 +22,53 @@ export const HoverCSSTracker: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   const trackHoverCSS = () => {
-    const headerButtons = document.querySelectorAll('header button, .dashboard-header button');
+    // Selettori più ampi per trovare TUTTI i button
+    const allButtons = document.querySelectorAll('button');
+    const headerElements = document.querySelectorAll('header, [class*="header"], [class*="Header"]');
+    
+    // eslint-disable-next-line no-console
+    console.log('🔍 RICERCA ELEMENTI:');
+    // eslint-disable-next-line no-console
+    console.log('  📊 Tutti i button trovati:', allButtons.length);
+    // eslint-disable-next-line no-console
+    console.log('  🎯 Elementi header trovati:', headerElements.length);
+    
     const data: HoverCSSData[] = [];
 
-    headerButtons.forEach((button, index) => {
-      if (button instanceof HTMLElement) {
+    // Analizza TUTTI i button, non solo quelli header
+    allButtons.forEach((button, index) => {
+      if (button instanceof HTMLElement && button.offsetWidth > 0 && button.offsetHeight > 0) {
         const classes = Array.from(button.classList);
-
-        // Trova SOLO le classi che gestiscono hover
+        const ariaLabel = button.getAttribute('aria-label') || button.textContent?.trim() || `Button ${index + 1}`;
+        
+        // Trova TUTTE le classi che potrebbero gestire hover
         const hoverClasses = classes.filter(cls =>
           cls.includes('hover:')
-          || cls.includes('glass-')
-          || cls.includes('header-icon'),
+          || cls.includes('glass')
+          || cls.includes('header')
+          || cls.includes('Header')
+          || cls.includes('theme')
+          || cls.includes('user')
+          || cls.includes('notification'),
         );
 
-        // Trova SOLO le classi di transizione
+        // Trova TUTTE le classi di transizione
         const transitionClasses = classes.filter(cls =>
           cls.includes('transition')
           || cls.includes('duration')
-          || cls.includes('ease'),
+          || cls.includes('ease')
+          || cls.includes('animate'),
         );
 
-        // Trova SOLO le classi di transform
+        // Trova TUTTE le classi di transform
         const transformClasses = classes.filter(cls =>
           cls.includes('scale')
           || cls.includes('transform')
-          || cls.includes('rotate'),
+          || cls.includes('rotate')
+          || cls.includes('translate'),
         );
 
-        const ariaLabel = button.getAttribute('aria-label') || `Button ${index + 1}`;
-
+        // Aggiungi TUTTI i button visibili, non solo quelli header
         data.push({
           element: ariaLabel,
           hoverCSS: hoverClasses,
@@ -65,18 +82,21 @@ export const HoverCSSTracker: React.FC = () => {
     setHoverData(data);
     setIsVisible(true);
 
-    // Log SEMPLICE nella console
+    // Log DETTAGLIATO nella console
     // eslint-disable-next-line no-console
-    console.group('🎯 HOVER CSS TRACKER - CHI GESTISCE GLI HOVER?');
-    data.forEach((item) => {
+    console.group('🎯 HOVER CSS TRACKER - TUTTI I BUTTON TROVATI');
+    // eslint-disable-next-line no-console
+    console.log(`📊 Totale button analizzati: ${data.length}`);
+    
+    data.forEach((item, index) => {
       // eslint-disable-next-line no-console
-      console.log(`\n📍 ${item.element}:`);
+      console.log(`\n📍 ${index + 1}. ${item.element}:`);
       // eslint-disable-next-line no-console
-      console.log('  🎨 Hover CSS:', item.hoverCSS);
+      console.log('  🎨 Hover CSS:', item.hoverCSS.length > 0 ? item.hoverCSS : 'NESSUNO');
       // eslint-disable-next-line no-console
-      console.log('  ⚡ Transition CSS:', item.transitionCSS);
+      console.log('  ⚡ Transition CSS:', item.transitionCSS.length > 0 ? item.transitionCSS : 'NESSUNO');
       // eslint-disable-next-line no-console
-      console.log('  🔄 Transform CSS:', item.transformCSS);
+      console.log('  🔄 Transform CSS:', item.transformCSS.length > 0 ? item.transformCSS : 'NESSUNO');
       // eslint-disable-next-line no-console
       console.log('  📋 Tutte le classi:', item.allClasses);
     });
@@ -92,7 +112,34 @@ export const HoverCSSTracker: React.FC = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  if (!isVisible || hoverData.length === 0) {
+  // Mostra sempre almeno un pulsante per rilanciare il tracker
+  if (hoverData.length === 0) {
+    return (
+      <button
+        type="button"
+        onClick={trackHoverCSS}
+        style={{
+          position: 'fixed',
+          top: '10px',
+          left: '10px',
+          background: '#00ff00',
+          color: '#000000',
+          border: '2px solid #00ff00',
+          borderRadius: '8px',
+          padding: '10px 15px',
+          fontFamily: 'monospace',
+          fontSize: '12px',
+          fontWeight: 'bold',
+          cursor: 'pointer',
+          zIndex: 999999,
+        }}
+      >
+        🎯 TROVA HOVER CSS
+      </button>
+    );
+  }
+
+  if (!isVisible) {
     return null;
   }
 
@@ -131,7 +178,7 @@ export const HoverCSSTracker: React.FC = () => {
         style={{
           position: 'absolute',
           top: '5px',
-          right: '10px',
+          right: '40px',
           background: 'transparent',
           color: '#ff6666',
           border: 'none',
@@ -140,6 +187,23 @@ export const HoverCSSTracker: React.FC = () => {
         }}
       >
         ❌
+      </button>
+
+      <button
+        type="button"
+        onClick={trackHoverCSS}
+        style={{
+          position: 'absolute',
+          top: '5px',
+          right: '10px',
+          background: 'transparent',
+          color: '#00ff00',
+          border: 'none',
+          cursor: 'pointer',
+          fontSize: '16px',
+        }}
+      >
+        🔄
       </button>
 
       {hoverData.map((item, index) => (
