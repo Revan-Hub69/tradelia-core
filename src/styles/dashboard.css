@@ -33,14 +33,7 @@
 }
 
 @import './dashboard-ui.css';
-@import './accessibility-compliance.css';
 @import './performance-optimizations.css';
-@import './signature-micro-interactions.css';
-@import './adaptive-micro-copy.css';
-@import './semantic-loading-states.css';
-@import './signature-component.css';
-@import './haptic-visual-feedback.css';
-@import './intelligent-calm-ux.css';
 
 /* Dashboard utilities */
 @layer utilities {

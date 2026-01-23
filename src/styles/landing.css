@@ -9,19 +9,6 @@
 
 /* Landing-specific design files */
 @import './premium-icons.css';
-@import './semantic-animations.css';
-@import './anticipatory-feedback.css';
-@import './micro-moments.css';
-@import './focus-mode.css';
-@import './visual-noise-reduction.css';
-@import './explanatory-animations.css';
-@import './signature-moment.css';
-@import './brand-memory-system.css';
-
-/* Educational components (used in landing demos) */
-@import './educational-example.css';
-@import './anti-error-example.css';
-@import './anti-error-guidance.css';
 
 /* Landing page utilities */
 @layer utilities {
