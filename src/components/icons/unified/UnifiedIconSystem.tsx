@@ -582,6 +582,103 @@ export const CheckIcon = memo<Omit<SignatureIconProps, 'children'> & {
   </SignatureIconBase>
 ));
 
+// SIDEBAR SPECIFIC ICONS - Premium Design 2026
+
+// SIDEBAR EXPAND ICON - Enhanced double chevron with depth
+export const SidebarExpandIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isAnimated?: boolean;
+}>(({
+  isAnimated = false,
+  ...props
+}) => (
+  <SignatureIconBase {...props}>
+    {/* Enhanced double chevron for sidebar expansion */}
+    <g style={{
+      transform: isAnimated ? 'translateX(2px)' : 'translateX(0px)',
+      transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    }}>
+      {/* First chevron - primary */}
+      <path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+      {/* Second chevron - depth indicator */}
+      <path d="M15 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" opacity="0.6" />
+    </g>
+  </SignatureIconBase>
+));
+
+// SIDEBAR COLLAPSE ICON - Enhanced double chevron reversed
+export const SidebarCollapseIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isAnimated?: boolean;
+}>(({
+  isAnimated = false,
+  ...props
+}) => (
+  <SignatureIconBase {...props}>
+    {/* Enhanced double chevron for sidebar collapse */}
+    <g style={{
+      transform: isAnimated ? 'translateX(-2px)' : 'translateX(0px)',
+      transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    }}>
+      {/* First chevron - primary */}
+      <path d="M15 6l-6 6 6 6" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+      {/* Second chevron - depth indicator */}
+      <path d="M9 6l-6 6 6 6" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" opacity="0.6" />
+    </g>
+  </SignatureIconBase>
+));
+
+// SIDEBAR TOGGLE ICON - Unified icon that morphs between states
+export const SidebarToggleIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isExpanded?: boolean;
+  showAnimation?: boolean;
+}>(({
+  isExpanded = false,
+  showAnimation = false,
+  ...props
+}) => (
+  <SignatureIconBase {...props}>
+    {/* Morphing sidebar toggle icon */}
+    <g style={{
+      transform: showAnimation 
+        ? (isExpanded ? 'rotate(180deg)' : 'rotate(0deg)')
+        : 'rotate(0deg)',
+      transformOrigin: '12px 12px',
+      transition: 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+    }}>
+      {/* Sidebar representation */}
+      <rect
+        x="3"
+        y="4"
+        width="6"
+        height="16"
+        rx="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+        opacity={isExpanded ? '1' : '0.6'}
+      />
+      {/* Content area representation */}
+      <rect
+        x="11"
+        y="4"
+        width="10"
+        height="16"
+        rx="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+        opacity="0.4"
+      />
+      {/* Toggle indicator */}
+      <path
+        d={isExpanded ? 'M9 10l-2 2 2 2' : 'M7 10l2 2-2 2'}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+      />
+    </g>
+  </SignatureIconBase>
+));
+
 // Display names for debugging
 HomeIcon.displayName = 'TradeliaHomeIcon';
 BellIcon.displayName = 'TradeliaBellIcon';
@@ -607,6 +704,9 @@ SearchIcon.displayName = 'TradeliaSearchIcon';
 PlusIcon.displayName = 'TradeliaPlusIcon';
 MinusIcon.displayName = 'TradeliaMinusIcon';
 CheckIcon.displayName = 'TradeliaCheckIcon';
+SidebarExpandIcon.displayName = 'TradeliaSidebarExpandIcon';
+SidebarCollapseIcon.displayName = 'TradeliaSidebarCollapseIcon';
+SidebarToggleIcon.displayName = 'TradeliaSidebarToggleIcon';
 
 // Legacy aliases for compatibility - Updated with enhanced versions
 export const LightIcon = SunIcon;

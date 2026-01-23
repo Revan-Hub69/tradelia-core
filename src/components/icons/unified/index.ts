@@ -46,6 +46,7 @@ export {
   ProfileIcon,
   SearchIcon,
   SettingsIcon,
+  SidebarToggleIcon,
   SIGNATURE_TOKENS,
   SignatureIconBase,
   StarIcon,

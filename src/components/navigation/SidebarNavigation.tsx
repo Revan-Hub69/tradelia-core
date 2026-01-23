@@ -1,18 +1,24 @@
 /*
- * SIDEBAR NAVIGATION - Desktop Navigation (1024px+)
+ * SIDEBAR NAVIGATION - Premium Liquid Glass 2026
  *
- * Collapsible sidebar navigation for desktop experience
- * Enterprise-level navigation with keyboard shortcuts and advanced features
+ * Enhanced with Apple Liquid Glass design language and Tier-1 research:
+ * - Liquid Glass material system (Apple 2026 standard)
+ * - Internal toggle button with optimal spacing (Figma UI3 lesson learned)
+ * - Premium spring physics animations
+ * - Educational calm integration
+ * - Enterprise-level accessibility
  *
- * MIGRATED: Using Signature Primitives v1
- * - UiNavItem for navigation items
- * - UiSurface for sidebar container
- * - UiIconButton for collapse button
+ * RESEARCH SOURCES:
+ * - Apple Liquid Glass Documentation 2026
+ * - Figma UI3 Design Lessons (floating panels failure)
+ * - Notion sidebar toggle positioning
+ * - Stripe enterprise patterns
  *
  * PERFORMANCE OPTIMIZED:
  * - Selective Framer Motion imports
  * - CSS-based animations for simple cases
- * - Reduced bundle size impact
+ * - GPU acceleration with will-change
+ * - Educational timing integration
  */
 
 'use client';
@@ -22,11 +28,9 @@ import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 
-import { CloseIcon, DynamicIcon, type IconName, MenuIcon } from '@/components/icons';
+import { DynamicIcon, type IconName, SidebarToggleIcon } from '@/components/icons';
 import { NavigationSkeleton } from '@/components/ui/skeleton';
-import { UiIconButton } from '@/components/ui/UiIconButton';
 import { UiNavItem } from '@/components/ui/UiNavItem';
-import { UiSurface } from '@/components/ui/UiSurface';
 import { getVisibleNavigationItems, trackNavigationEvent } from '@/data/navigation.config';
 import { useNavigationState } from '@/hooks/useNavigationState';
 import { useOptimizedNavigation } from '@/hooks/useOptimizedNavigation';
@@ -215,6 +219,19 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
     return () => clearTimeout(timer);
   }, []);
 
+  // Keyboard shortcut support - Cmd+\ (Tier-1 standard)
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === '\\') {
+        event.preventDefault();
+        setIsCollapsed(prev => !prev);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   // Update CSS custom property for dynamic grid layout
   React.useEffect(() => {
     const root = document.documentElement;
@@ -223,18 +240,22 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
 
   if (isLoading) {
     return (
-      <UiSurface
-        variant="panel"
+      <motion.div
         className={cn(
           'hidden md:block',
-          'layout-sidebar border-r border-border/20',
-          'transition-all duration-300 ease-out',
-          isCollapsed ? 'w-16' : 'w-64',
+          'fixed left-0 top-0 h-screen z-40',
+          'glass-sidebar',
+          'sidebar-premium-2026',
+          isCollapsed ? 'collapsed' : 'expanded',
           className,
         )}
+        initial={false}
+        animate={{
+          width: isCollapsed ? 'var(--sidebar-width-collapsed)' : 'var(--sidebar-width-expanded)',
+        }}
       >
         <div className="flex h-full flex-col">
-          <div className="flex items-center justify-between border-b border-border/20 p-4">
+          <div className="flex items-center border-b border-border/20 p-4">
             <div className="flex items-center">
               {isCollapsed
                 ? (
@@ -247,34 +268,55 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                     </div>
                   )}
             </div>
-            <div className="size-8 animate-pulse rounded bg-muted" />
+            <div className="size-8 animate-pulse rounded bg-muted ml-auto" />
           </div>
           <NavigationSkeleton isCollapsed={isCollapsed} />
         </div>
-      </UiSurface>
+      </motion.div>
     );
   }
 
   return (
-    <UiSurface
-      variant="panel"
+    <motion.div
       className={cn(
         // Responsive visibility - Show on tablet and desktop (768px+)
         'hidden md:block',
-        'layout-sidebar border-r border-border/20',
-        'transition-[width] duration-300',
-        isCollapsed ? 'w-16' : 'w-64',
+        'fixed left-0 top-0 h-screen z-40',
+        // Liquid Glass Material System - Apple 2026 Standard
+        'glass-sidebar',
+        // Premium Animation System
+        'sidebar-premium-2026',
+        isCollapsed ? 'collapsed' : 'expanded',
         className,
       )}
-      style={{ transitionTimingFunction: 'var(--ease-tradelia-gentle)' }}
+      initial={false}
+      animate={{
+        width: isCollapsed ? 'var(--sidebar-width-collapsed)' : 'var(--sidebar-width-expanded)',
+      }}
+      transition={{
+        type: 'spring',
+        stiffness: 400,
+        damping: 30,
+        mass: 0.8,
+        duration: 0.4,
+      }}
       role="navigation"
       aria-label={t('nav_aria_sidebar')}
     >
       <div className="flex h-full flex-col">
-        {/* Sidebar Header */}
-        <div className="flex items-center justify-between border-b border-border/20 p-4">
-          {/* Logo - Full when expanded, icon-only when collapsed */}
-          <div className="hover-lift-subtle flex items-center rounded-lg p-1">
+        {/* Sidebar Header with Liquid Glass */}
+        <div className="flex items-center border-b border-border/20 p-4 min-h-[72px]">
+          {/* Logo - Clickable to /dashboard */}
+          <Link
+            href="/dashboard"
+            className={cn(
+              'flex items-center rounded-lg p-1 transition-all duration-200',
+              'hover:bg-background/50 hover:scale-[1.02]',
+              'focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2',
+              isCollapsed ? 'justify-center' : 'flex-1',
+            )}
+            title={isCollapsed ? 'Go to Dashboard' : undefined}
+          >
             {isCollapsed
               ? (
                   <Logo isTextHidden size="sm" />
@@ -282,55 +324,102 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
               : (
                   <Logo size="sm" />
                 )}
-          </div>
+          </Link>
 
-          <UiIconButton
-            label={
+          {/* Internal Toggle Button with Optimal Spacing - Tier-1 Solution */}
+          <motion.button
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className={cn(
+              // Liquid Glass Toggle Button
+              'glass-toggle',
+              'relative size-10 rounded-xl border',
+              'flex items-center justify-center',
+              // Educational Calm Integration
+              'educational-hover educational-focus',
+              // Optimal Spacing - Not cramped to logo
+              isCollapsed ? 'ml-0' : 'ml-3'
+            )}
+            whileHover={{ scale: 1.02, y: -1 }}
+            whileTap={{ scale: 0.98 }}
+            transition={{
+              type: 'spring',
+              stiffness: 400,
+              damping: 25,
+            }}
+            aria-label={
               isCollapsed
                 ? (t('expand_sidebar') as string)
                 : (t('collapse_sidebar') as string)
             }
-            icon={isCollapsed
-              ? <MenuIcon size={16} />
-              : <CloseIcon size={16} />}
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className="size-9 transition-transform duration-200 hover:scale-[1.02]"
             aria-pressed={!isCollapsed}
-          />
+          >
+            <SidebarToggleIcon
+              isExpanded={!isCollapsed}
+              showAnimation
+              size={20}
+              variant="signature"
+            />
+          </motion.button>
         </div>
 
-        {/* Navigation Items */}
-        <nav className="flex-1 space-y-2 p-4">
-          {navigationItems.map((item) => {
+        {/* Navigation Items with Staggered Animation */}
+        <motion.nav
+          className="flex-1 space-y-2 p-4"
+          initial={false}
+          animate={{ opacity: 1 }}
+          transition={{ staggerChildren: 0.05 }}
+        >
+          {navigationItems.map((item, index) => {
             const isActive
               = pathname === item.href
                 || (item.href !== '/dashboard' && pathname.startsWith(item.href));
 
             return (
-              <SidebarNavigationItem
+              <motion.div
                 key={item.id}
-                item={item}
-                isActive={isActive}
-                isCollapsed={isCollapsed}
-                tGeneral={tGeneral}
-              />
+                initial={false}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{
+                  delay: index * 0.05,
+                  type: 'spring',
+                  stiffness: 400,
+                  damping: 30,
+                }}
+              >
+                <SidebarNavigationItem
+                  item={item}
+                  isActive={isActive}
+                  isCollapsed={isCollapsed}
+                  tGeneral={tGeneral}
+                />
+              </motion.div>
             );
           })}
-        </nav>
+        </motion.nav>
 
-        {/* Sidebar Footer */}
-        <div className="border-t border-border/20 p-4">
+        {/* Sidebar Footer with Liquid Glass */}
+        <motion.div
+          className="border-t border-border/20 p-4"
+          initial={false}
+          animate={{ opacity: isCollapsed ? 0 : 1 }}
+          transition={{ duration: 0.3, delay: isCollapsed ? 0 : 0.2 }}
+        >
           {!isCollapsed && (
-            <div className="text-xs text-muted-foreground">
-              <div className="mb-2 flex items-center gap-2">
+            <div className="text-xs text-muted-foreground space-y-2">
+              <div className="flex items-center gap-2">
                 <div className="size-2 animate-pulse rounded-full bg-green-500" />
                 <span>{t('online_status')}</span>
               </div>
-              <div>{t('keyboard_shortcuts_hint')}</div>
+              <div className="flex items-center gap-2 text-muted-foreground/70">
+                <kbd className="px-1.5 py-0.5 text-xs bg-muted rounded border">Cmd</kbd>
+                <span>+</span>
+                <kbd className="px-1.5 py-0.5 text-xs bg-muted rounded border">\</kbd>
+                <span>Toggle sidebar</span>
+              </div>
             </div>
           )}
-        </div>
+        </motion.div>
       </div>
-    </UiSurface>
+    </motion.div>
   );
 };
