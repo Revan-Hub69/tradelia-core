@@ -205,7 +205,7 @@
   border-color: var(--toggle-glass-border);
   box-shadow: var(--toggle-glass-shadow);
   backdrop-filter: blur(12px) saturate(180%);
-  transition: all var(--educational-gentle) var(--educational-gentle);
+  transition: all var(--motion-normal) var(--ease-out);
 }
 
 .glass-toggle:hover {

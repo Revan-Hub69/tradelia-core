@@ -52,10 +52,6 @@ export default async function RootLayout(props: {
   // which dynamically adds a `style` attribute to the body tag.
   return (
     <html lang={params.locale} suppressHydrationWarning>
-      <head>
-        {/* Service Worker Cleanup - Remove PWA residues */}
-        <script src="/sw-unregister.js" defer />
-      </head>
       <body className="bg-background text-foreground antialiased" suppressHydrationWarning>
         {/* Skip to content link for accessibility */}
         <a
