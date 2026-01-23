@@ -58,7 +58,7 @@ export function DashboardClient({ children }: DashboardClientProps) {
         />
 
         {/* Main Content - Server Component passed as children */}
-        <div className="pt-16"> {/* Padding-top to compensate for fixed header */}
+        <div className="pt-16 md:pl-[var(--sidebar-width-current)]"> {/* Padding-top for header + left padding for sidebar on desktop */}
           {children}
         </div>
 
