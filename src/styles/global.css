@@ -435,14 +435,14 @@
 
     .nav-item-hover:hover {
       will-change: transform, opacity, box-shadow;
-      transform: translate3d(0, -1px, 0) scale(1.01) !important;
-      box-shadow: 0 4px 16px rgba(var(--primary-rgb), 0.2) !important;
-      background-color: rgba(var(--primary-rgb), 0.08) !important;
+      transform: translate3d(0, -1px, 0) scale(1.01);
+      box-shadow: 0 4px 16px rgba(var(--primary-rgb), 0.2);
+      background-color: rgba(var(--primary-rgb), 0.08);
     }
 
     .nav-item-hover:active {
-      transform: translate3d(0, 0, 0) scale(0.98) !important;
-      transition-duration: 100ms !important;
+      transform: translate3d(0, 0, 0) scale(0.98);
+      transition-duration: 100ms;
     }
 
     /* Cleanup will-change when not interacting */
@@ -458,8 +458,8 @@
 
     .hover-lift-subtle:hover {
       will-change: transform, box-shadow;
-      transform: translate3d(0, -0.5px, 0) !important;
-      box-shadow: 0 2px 12px rgba(var(--primary-rgb), 0.15) !important;
+      transform: translate3d(0, -0.5px, 0);
+      box-shadow: 0 2px 12px rgba(var(--primary-rgb), 0.15);
     }
 
     .hover-lift-subtle:not(:hover):not(:focus) {
@@ -474,7 +474,7 @@
 
     .hover-scale:hover {
       will-change: transform;
-      transform: translate3d(0, 0, 0) scale(1.02) !important;
+      transform: translate3d(0, 0, 0) scale(1.01);
     }
 
     .hover-scale:not(:hover):not(:focus) {
@@ -487,9 +487,9 @@
     }
 
     .hover-glow:hover {
-      transform: translateY(-1px) !important;
-      box-shadow: 0 4px 20px rgba(var(--primary-rgb), 0.25) !important;
-      background-color: rgba(var(--primary-rgb), 0.05) !important;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(var(--primary-rgb), 0.25);
+      background-color: rgba(var(--primary-rgb), 0.05);
     }
 
     /* Layout classes */
@@ -542,9 +542,9 @@
       box-shadow: 0 0 0 2px hsl(var(--ring));
     }
 
-    /* Active/pressed states for native feel */
+    /* Active/pressed states for native feel - ENTERPRISE SIMPLIFIED */
     .press-depth:active {
-      transform: scale(0.98) !important;
+      transform: scale(0.98);
       transition-duration: 0ms;
     }
 
@@ -565,10 +565,10 @@
       }
     }
 
-    /* Reduced motion overrides */
+    /* Reduced motion overrides - ENTERPRISE SIMPLIFIED */
     @media (prefers-reduced-motion: reduce) {
       .press-depth:active {
-        transform: none !important;
+        transform: none;
         opacity: 0.7;
       }
 
@@ -921,9 +921,9 @@
       }
 
       .stagger-item {
-        animation-duration: 0ms !important;
-        opacity: 1 !important;
-        transform: none !important;
+        animation-duration: 0ms;
+        opacity: 1;
+        transform: none;
       }
     }
   }

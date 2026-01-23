@@ -318,7 +318,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         role="banner"
         aria-label={t('header_aria_label')}
         className={cn(
-          'fixed top-0 z-50',
+          'fixed top-0 layer-header',
           // Dynamic width based on sidebar state
           hasSidebar ? 'left-[var(--sidebar-width-current)] right-0' : 'left-0 right-0 w-full',
           'motion-base',
@@ -454,7 +454,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       {/* Premium Global Search Modal with Liquid Glass */}
       {showSearchModal && (
         <div
-          className="fixed inset-0 z-50 flex items-start justify-center pt-20"
+          className="fixed inset-0 layer-modal flex items-start justify-center pt-20"
           style={{
             backgroundColor: 'rgba(0, 0, 0, 0.4)',
             backdropFilter: 'blur(8px)',

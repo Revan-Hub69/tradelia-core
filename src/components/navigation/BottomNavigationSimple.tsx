@@ -32,7 +32,7 @@ export const BottomNavigationSimple: React.FC<BottomNavigationSimpleProps> = ({ 
     <UiSurface
       variant="panel"
       className={cn(
-        'fixed bottom-0 left-0 right-0 z-50',
+        'fixed bottom-0 left-0 right-0 layer-nav',
         'md:hidden', // Hide on tablet+ (768px+)
         'border-t border-white/20 dark:border-white/10',
         'shadow-lg shadow-black/10 dark:shadow-black/30',
