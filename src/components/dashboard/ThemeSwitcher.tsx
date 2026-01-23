@@ -89,24 +89,22 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
               // Base styling
               'relative flex size-11 items-center justify-center rounded-xl',
               'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-              // Premium spring physics + glass effects
-              'premium-hover premium-focus glass-interactive gpu-accelerated',
+              // Educational calm animations instead of premium spring physics
+              'educational-hover educational-focus educational-feedback educational-gpu-optimized',
               // Premium liquid glass surface
               'bg-background/60 hover:bg-background/80',
               'border border-border/20 hover:border-border/40',
-              // Signature effects + Visual hierarchy + Glow enhancement
-              'signature-icon signature-icon--premium header-icon header-icon-secondary glow-enhanced',
+              // Signature effects + Visual hierarchy
+              'signature-icon signature-icon--premium header-icon header-icon-secondary',
               className,
             )}
             style={{
-              // Premium glow color based on theme
-              ['--glow-color' as any]: isDark ? 'hsl(var(--info))' : 'hsl(var(--warning))',
               // Hardware acceleration
               willChange: 'transform, backdrop-filter, box-shadow',
-              // Premium transition timing
+              // Educational transition timing instead of premium spring
               transition: prefersReducedMotion
                 ? 'all 150ms ease-out'
-                : 'all var(--spring-normal) var(--spring-smooth)',
+                : 'all var(--educational-gentle) var(--educational-gentle)',
             }}
             data-gpu="true"
           >
@@ -114,10 +112,8 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
             <div
               className={cn(
                 'relative',
-                // Theme transition animations
-                isTransitioning && !prefersReducedMotion && (
-                  isDark ? 'theme-sun-to-moon' : 'theme-moon-to-sun'
-                ),
+                // Theme transition animations - Educational version
+                isTransitioning && !prefersReducedMotion && 'theme-transition-educational',
               )}
             >
               {isDark
@@ -138,20 +134,9 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
                     />
                   )}
 
-              {/* Premium glow effect with theme-based colors */}
-              {!prefersReducedMotion && (
-                <div
-                  className={cn(
-                    'absolute inset-0 rounded-full opacity-20 blur-sm',
-                    // Active glow when transitioning
-                    isTransitioning && 'glow-active',
-                  )}
-                  style={{
-                    background: isDark
-                      ? 'var(--glow-theme-dark)'
-                      : 'var(--glow-theme-light)',
-                  }}
-                />
+              {/* Educational feedback - discrete border instead of glow */}
+              {!prefersReducedMotion && isTransitioning && (
+                <div className="absolute inset-0 rounded-full border border-primary/20 pointer-events-none" />
               )}
             </div>
           </button>

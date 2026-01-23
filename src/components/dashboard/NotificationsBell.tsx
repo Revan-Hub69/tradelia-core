@@ -78,26 +78,24 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
             // Base styling
             'relative flex size-11 items-center justify-center rounded-xl',
             'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-            // Premium spring physics + glass effects
-            'premium-hover premium-focus glass-interactive gpu-accelerated',
+            // Premium spring physics + glass effects + Educational calm
+            'educational-hover educational-focus educational-feedback educational-gpu-optimized',
             // Premium liquid glass surface
             'bg-background/60 hover:bg-background/80',
             'border border-border/20 hover:border-border/40',
-            // Signature effects + Visual hierarchy + Glow enhancement
-            'signature-icon signature-icon--premium header-icon header-icon-primary glow-enhanced',
-            // Notification arrival animation
-            hasNewNotification && !prefersReducedMotion && 'notification-arrival',
+            // Signature effects + Visual hierarchy + Educational breathing
+            'signature-icon signature-icon--premium header-icon header-icon-primary educational-breathing',
+            // Notification arrival animation - Educational version
+            hasNewNotification && !prefersReducedMotion && 'notification-arrival-educational',
             className,
           )}
           style={{
-            // Premium glow color for notifications
-            ['--glow-color' as any]: 'hsl(var(--destructive))',
             // Hardware acceleration
             willChange: 'transform, backdrop-filter, box-shadow',
-            // Premium transition timing (Apple iOS 26)
+            // Educational transition timing instead of premium spring
             transition: prefersReducedMotion
               ? 'all 150ms ease-out'
-              : 'all var(--spring-normal) var(--spring-smooth)',
+              : 'all var(--educational-gentle) var(--educational-gentle)',
           }}
           data-gpu="true"
         >
@@ -110,19 +108,14 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
               variant="signature"
               className={cn(
                 'text-foreground',
-                // Add glow when notifications present
-                unreadCount > 0 && 'glow-active',
+                // Add subtle breathing when notifications present
+                unreadCount > 0 && 'educational-breathing-focus',
               )}
             />
 
-            {/* Premium notification pulse effect - only when notifications present */}
-            {unreadCount > 0 && !prefersReducedMotion && (
-              <div
-                className="absolute inset-0 rounded-full opacity-20 blur-sm glow-active"
-                style={{
-                  background: 'var(--glow-notification)',
-                }}
-              />
+            {/* Educational feedback - discrete border instead of glow */}
+            {unreadCount > 0 && (
+              <div className="pointer-events-none absolute inset-0 rounded-xl border border-destructive/20" />
             )}
           </div>
         </button>

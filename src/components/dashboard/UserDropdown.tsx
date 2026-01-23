@@ -81,8 +81,8 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
             // Base styling
             'flex h-11 items-center gap-3 px-3 rounded-xl',
             'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-            // Premium spring physics + glass effects
-            'premium-hover premium-focus glass-interactive gpu-accelerated',
+            // Educational calm animations instead of premium spring physics
+            'educational-hover educational-focus educational-feedback educational-gpu-optimized',
             // Premium liquid glass surface
             'bg-background/60 hover:bg-background/80',
             'border border-border/20 hover:border-border/40',
@@ -92,10 +92,10 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
           style={{
             // Hardware acceleration
             willChange: 'transform, backdrop-filter, box-shadow',
-            // Premium transition timing
+            // Educational transition timing instead of premium spring
             transition: prefersReducedMotion
               ? 'all 150ms ease-out'
-              : 'all var(--spring-normal) var(--spring-smooth)',
+              : 'all var(--educational-gentle) var(--educational-gentle)',
           }}
           data-gpu="true"
         >
@@ -103,8 +103,8 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
           <div
             className={cn(
               'flex size-8 items-center justify-center rounded-full text-sm font-semibold text-white shadow-lg',
-              // Premium avatar effects
-              'avatar-premium gpu-accelerated',
+              // Educational avatar effects instead of premium
+              'avatar-educational educational-gpu-optimized',
             )}
             style={{
               background: 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary)) 100%)',
@@ -138,8 +138,8 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
         align="end"
         className={cn(
           'w-56 overflow-hidden rounded-2xl border border-border/20 p-2 shadow-2xl',
-          // Premium dropdown entrance animation + glass effects
-          'dropdown-entrance glass-dropdown gpu-accelerated',
+          // Educational dropdown entrance animation
+          'dropdown-entrance-educational educational-gpu-optimized',
         )}
         onCloseAutoFocus={(e) => {
           // Prevent default to handle focus restoration manually
@@ -168,8 +168,8 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
           onClick={() => router.push('/dashboard/profile')}
           className={cn(
             'flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5',
-            // Premium spring physics
-            'premium-hover gpu-accelerated',
+            // Educational calm animations instead of premium spring physics
+            'educational-hover educational-gpu-optimized',
             'hover:bg-primary/10 focus:bg-primary/10',
           )}
         >
@@ -189,8 +189,8 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
           onClick={handleSignOut}
           className={cn(
             'flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5',
-            // Premium spring physics
-            'premium-hover gpu-accelerated',
+            // Educational calm animations instead of premium spring physics
+            'educational-hover educational-gpu-optimized',
             'hover:bg-destructive/10 focus:bg-destructive/10',
             'text-destructive hover:text-destructive focus:text-destructive',
           )}

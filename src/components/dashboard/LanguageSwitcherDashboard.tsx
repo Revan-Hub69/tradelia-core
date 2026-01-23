@@ -76,24 +76,22 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
             // Base styling
             'relative flex size-11 items-center justify-center rounded-xl',
             'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-            // Premium spring physics + glass effects
-            'premium-hover premium-focus glass-interactive gpu-accelerated',
+            // Educational calm animations instead of premium spring physics
+            'educational-hover educational-focus educational-feedback educational-gpu-optimized',
             // Premium liquid glass surface
             'bg-background/60 hover:bg-background/80',
             'border border-border/20 hover:border-border/40',
-            // Signature effects + Visual hierarchy + Glow enhancement
-            'signature-icon signature-icon--premium header-icon header-icon-secondary glow-enhanced',
+            // Signature effects + Visual hierarchy
+            'signature-icon signature-icon--premium header-icon header-icon-secondary',
             className,
           )}
           style={{
-            // Premium glow color for language
-            ['--glow-color' as any]: 'hsl(var(--success))',
             // Hardware acceleration
             willChange: 'transform, backdrop-filter, box-shadow',
-            // Premium transition timing
+            // Educational transition timing instead of premium spring
             transition: prefersReducedMotion
               ? 'all 150ms ease-out'
-              : 'all var(--spring-normal) var(--spring-smooth)',
+              : 'all var(--educational-gentle) var(--educational-gentle)',
           }}
           data-gpu="true"
         >
@@ -101,8 +99,8 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
           <div
             className={cn(
               'relative',
-              // Globe rotation animation on language change
-              isChangingLanguage && !prefersReducedMotion && 'globe-rotation',
+              // Globe rotation animation on language change - Educational version
+              isChangingLanguage && !prefersReducedMotion && 'globe-rotation-educational',
             )}
           >
             <GlobeIcon
@@ -112,18 +110,9 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
               className="text-foreground"
             />
 
-            {/* Premium glow effect */}
-            {!prefersReducedMotion && (
-              <div
-                className={cn(
-                  'absolute inset-0 rounded-full opacity-20 blur-sm',
-                  // Active glow when changing language or dropdown open
-                  (isChangingLanguage || isOpen) && 'glow-active',
-                )}
-                style={{
-                  background: 'var(--glow-language)',
-                }}
-              />
+            {/* Educational feedback - discrete border instead of glow */}
+            {!prefersReducedMotion && (isChangingLanguage || isOpen) && (
+              <div className="absolute inset-0 rounded-full border border-success/20 pointer-events-none" />
             )}
           </div>
         </button>
@@ -133,9 +122,9 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
         align="end"
         className={cn(
           'min-w-48',
-          // Premium liquid glass surface + dropdown entrance
+          // Educational dropdown entrance animation
           'border border-border/20 shadow-2xl rounded-2xl p-2',
-          'dropdown-entrance glass-dropdown gpu-accelerated',
+          'dropdown-entrance-educational educational-gpu-optimized',
         )}
       >
         <DropdownMenuRadioGroup value={locale} onValueChange={handleChange}>
@@ -145,8 +134,8 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
               value={lang.id}
               className={cn(
                 'cursor-pointer rounded-xl px-3 py-2.5',
-                // Premium spring physics
-                'premium-hover gpu-accelerated',
+                // Educational calm animations instead of premium spring physics
+                'educational-hover educational-gpu-optimized',
                 'hover:bg-primary/10 focus:bg-primary/10',
                 // Active state
                 locale === lang.id && 'bg-primary/5',
