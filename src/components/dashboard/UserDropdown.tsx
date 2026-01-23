@@ -1,13 +1,12 @@
 /*
- * USER DROPDOWN - Premium Liquid Glass 2026
+ * USER DROPDOWN - Premium Liquid Glass 2026 + Phase 2 Spring Physics
  *
- * Premium user dropdown con Apple iOS 26 Liquid Glass effects:
- * - Ricerca Tier 1: Modern app patterns (Linear, Figma, Slack)
- * - Avatar premium con gradient background
- * - Liquid glass dropdown con enhanced backdrop
- * - Focus trap implementation per accessibility
- * - Motion preferences compliance
- * - Professional keyboard navigation (WCAG 2.1 AA)
+ * Enhanced with:
+ * - Apple iOS 26 spring physics animations
+ * - Premium avatar hover effects with gradient borders
+ * - Dynamic glass effects with environmental response
+ * - Premium dropdown entrance animations
+ * - 120fps optimization
  */
 
 import { useTranslations } from 'next-intl';
@@ -37,7 +36,6 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
   const router = useRouter();
   const t = useTranslations('Dashboard');
   const [isOpen, setIsOpen] = useState(false);
-  const [isPressed, setIsPressed] = useState(false);
   const focusTrapRef = useFocusTrap(isOpen);
 
   // Premium motion preferences detection
@@ -55,13 +53,6 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
-  const handleSignOut = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.push('/');
-    router.refresh();
-  };
-
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -71,18 +62,11 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
       .slice(0, 2);
   };
 
-  const handleMouseDown = () => setIsPressed(true);
-  const handleMouseUp = () => setIsPressed(false);
-  const handleMouseLeave = () => setIsPressed(false);
-
   return (
     <DropdownMenu onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseLeave}
           aria-label={t('nav_open_user_menu')}
           aria-expanded={isOpen}
           aria-haspopup="menu"
@@ -90,7 +74,8 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
             // Base styling
             'flex h-11 items-center gap-3 px-3 rounded-xl',
             'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-            'transition-all duration-300 ease-out',
+            // Premium spring physics + glass effects
+            'premium-hover premium-focus glass-interactive gpu-accelerated',
             // Premium liquid glass surface
             'bg-background/60 hover:bg-background/80',
             'border border-border/20 hover:border-border/40',
@@ -98,30 +83,22 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
             'header-icon header-icon-primary',
           )}
           style={{
-            // Premium liquid glass effects (iOS 26 research)
-            backdropFilter: prefersReducedMotion
-              ? 'blur(4px)'
-              : 'blur(12px) saturate(180%)',
-            // Premium spring physics
-            transform: (isPressed || isOpen) && !prefersReducedMotion
-              ? 'scale(0.98) translateZ(0)'
-              : 'scale(1) translateZ(0)',
-            // Enhanced shadow with depth
-            boxShadow: (isPressed || isOpen)
-              ? '0 2px 8px rgba(0, 0, 0, 0.15), inset 0 1px 2px rgba(0, 0, 0, 0.1)'
-              : '0 4px 16px rgba(0, 0, 0, 0.1), 0 1px 4px rgba(0, 0, 0, 0.05)',
             // Hardware acceleration
             willChange: 'transform, backdrop-filter, box-shadow',
-            // Premium transition timing (Apple iOS 26)
+            // Premium transition timing
             transition: prefersReducedMotion
               ? 'all 150ms ease-out'
-              : 'all 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+              : 'all var(--spring-normal) var(--spring-smooth)',
           }}
           data-gpu="true"
         >
-          {/* Premium Avatar with gradient background */}
+          {/* Premium Avatar with gradient background + Phase 2 enhancements */}
           <div
-            className="flex size-8 items-center justify-center rounded-full text-sm font-semibold text-white shadow-lg"
+            className={cn(
+              'flex size-8 items-center justify-center rounded-full text-sm font-semibold text-white shadow-lg',
+              // Premium avatar effects
+              'avatar-premium gpu-accelerated',
+            )}
             style={{
               background: 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary)) 100%)',
               boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.2)',
@@ -154,16 +131,9 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
         align="end"
         className={cn(
           'w-56 overflow-hidden rounded-2xl border border-border/20 p-2 shadow-2xl',
+          // Premium dropdown entrance animation + glass effects
+          'dropdown-entrance glass-dropdown gpu-accelerated',
         )}
-        style={{
-          // Premium liquid glass backdrop (Apple iOS 26)
-          backgroundColor: 'var(--glass-dropdown-bg)',
-          backdropFilter: prefersReducedMotion
-            ? 'blur(8px)'
-            : `blur(var(--glass-dropdown-blur)) saturate(var(--glass-dropdown-saturate))`,
-          // Enhanced shadow with depth (research-based)
-          boxShadow: 'var(--glass-dropdown-shadow)',
-        }}
         onCloseAutoFocus={(e) => {
           // Prevent default to handle focus restoration manually
           e.preventDefault();
@@ -191,14 +161,10 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
           onClick={() => router.push('/dashboard/profile')}
           className={cn(
             'flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5',
-            'transition-all duration-200 ease-out',
-            'hover:bg-primary/10 hover:scale-[1.02]',
-            'focus:bg-primary/10 focus:scale-[1.02]',
+            // Premium spring physics
+            'premium-hover gpu-accelerated',
+            'hover:bg-primary/10 focus:bg-primary/10',
           )}
-          style={{
-            transform: 'translateZ(0)',
-            willChange: 'transform, background-color',
-          }}
         >
           <ProfileIcon size={16} variant="signature" />
           <span className="font-medium">{t('profile')}</span>
@@ -216,15 +182,11 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
           onClick={handleSignOut}
           className={cn(
             'flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5',
-            'transition-all duration-200 ease-out',
-            'hover:bg-destructive/10 hover:scale-[1.02]',
-            'focus:bg-destructive/10 focus:scale-[1.02]',
+            // Premium spring physics
+            'premium-hover gpu-accelerated',
+            'hover:bg-destructive/10 focus:bg-destructive/10',
             'text-destructive hover:text-destructive focus:text-destructive',
           )}
-          style={{
-            transform: 'translateZ(0)',
-            willChange: 'transform, background-color',
-          }}
         >
           <LogoutIcon size={16} variant="signature" />
           <span className="font-medium">{t('logout')}</span>

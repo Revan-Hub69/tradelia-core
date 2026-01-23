@@ -5,6 +5,7 @@
 /* Import design tokens */
 @import './tokens.css';
 @import './glass-effects-tokens.css';
+@import './premium-spring-physics.css';
 @import './premium-icons.css';
 @import './motion-tokens.css';
 @import './semantic-animations.css';

@@ -1,12 +1,12 @@
 /*
- * LANGUAGE SWITCHER DASHBOARD - Premium Liquid Glass 2026
+ * LANGUAGE SWITCHER DASHBOARD - Premium Liquid Glass 2026 + Phase 2 Spring Physics
  *
- * Premium language selector with Apple iOS 26 Liquid Glass effects:
- * - Premium micro-interactions with spring physics
- * - Liquid glass dropdown with enhanced backdrop
- * - Motion preferences compliance
- * - Signature Globe icon with premium effects
- * - Professional accessibility and keyboard navigation
+ * Enhanced with:
+ * - Apple iOS 26 spring physics animations
+ * - Semantic globe rotation on language change
+ * - Dynamic glass effects with environmental response
+ * - Premium micro-interactions
+ * - 120fps optimization
  */
 
 'use client';
@@ -32,7 +32,7 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
   const locale = useLocale();
   const t = useTranslations('Dashboard');
   const [isOpen, setIsOpen] = useState(false);
-  const [isPressed, setIsPressed] = useState(false);
+  const [isChangingLanguage, setIsChangingLanguage] = useState(false);
 
   // Premium motion preferences detection
   const [prefersReducedMotion, setPrefersReducedMotion] = React.useState(false);
@@ -53,22 +53,22 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
     if (value === locale) {
       return;
     }
+
+    if (!prefersReducedMotion) {
+      setIsChangingLanguage(true);
+      // Reset animation state after completion
+      setTimeout(() => setIsChangingLanguage(false), 800);
+    }
+
     setIsOpen(false);
     router.replace(pathname, { locale: value });
   };
-
-  const handleMouseDown = () => setIsPressed(true);
-  const handleMouseUp = () => setIsPressed(false);
-  const handleMouseLeave = () => setIsPressed(false);
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseLeave}
           aria-label={t('language_switcher_aria_label')}
           aria-haspopup="menu"
           aria-expanded={isOpen}
@@ -76,38 +76,35 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
             // Base styling
             'relative flex size-11 items-center justify-center rounded-xl',
             'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-            'transition-all duration-300 ease-out',
+            // Premium spring physics + glass effects
+            'premium-hover premium-focus glass-interactive gpu-accelerated',
             // Premium liquid glass surface
             'bg-background/60 hover:bg-background/80',
             'border border-border/20 hover:border-border/40',
-            // Signature effects + Visual hierarchy
-            'signature-icon signature-icon--premium header-icon header-icon-secondary',
+            // Signature effects + Visual hierarchy + Glow enhancement
+            'signature-icon signature-icon--premium header-icon header-icon-secondary glow-enhanced',
             className,
           )}
           style={{
-            // Premium liquid glass effects
-            backdropFilter: prefersReducedMotion
-              ? 'blur(4px)'
-              : 'blur(12px) saturate(180%)',
-            // Premium spring physics
-            transform: (isPressed || isOpen) && !prefersReducedMotion
-              ? 'scale(0.95) translateZ(0)'
-              : 'scale(1) translateZ(0)',
-            // Enhanced shadow with depth
-            boxShadow: (isPressed || isOpen)
-              ? '0 2px 8px rgba(0, 0, 0, 0.15), inset 0 1px 2px rgba(0, 0, 0, 0.1)'
-              : '0 4px 16px rgba(0, 0, 0, 0.1), 0 1px 4px rgba(0, 0, 0, 0.05)',
+            // Premium glow color for language
+            ['--glow-color' as any]: 'hsl(var(--success))',
             // Hardware acceleration
             willChange: 'transform, backdrop-filter, box-shadow',
             // Premium transition timing
             transition: prefersReducedMotion
               ? 'all 150ms ease-out'
-              : 'all 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+              : 'all var(--spring-normal) var(--spring-smooth)',
           }}
           data-gpu="true"
         >
-          {/* Premium icon with signature effects */}
-          <div className="relative">
+          {/* Premium icon with signature effects + globe rotation */}
+          <div
+            className={cn(
+              'relative',
+              // Globe rotation animation on language change
+              isChangingLanguage && !prefersReducedMotion && 'globe-rotation',
+            )}
+          >
             <GlobeIcon
               size={20}
               isActive={isOpen}
@@ -118,10 +115,13 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
             {/* Premium glow effect */}
             {!prefersReducedMotion && (
               <div
-                className="absolute inset-0 rounded-full opacity-20 blur-sm"
+                className={cn(
+                  'absolute inset-0 rounded-full opacity-20 blur-sm',
+                  // Active glow when changing language or dropdown open
+                  (isChangingLanguage || isOpen) && 'glow-active',
+                )}
                 style={{
                   background: 'var(--glow-language)',
-                  animation: isOpen ? 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite' : 'none',
                 }}
               />
             )}
@@ -133,21 +133,10 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
         align="end"
         className={cn(
           'min-w-48',
-          // Premium liquid glass surface
-          'border border-border/20',
-          'shadow-2xl',
-          'rounded-2xl',
-          'p-2',
+          // Premium liquid glass surface + dropdown entrance
+          'border border-border/20 shadow-2xl rounded-2xl p-2',
+          'dropdown-entrance glass-dropdown gpu-accelerated',
         )}
-        style={{
-          // Premium liquid glass backdrop
-          backgroundColor: 'var(--glass-dropdown-bg)',
-          backdropFilter: prefersReducedMotion
-            ? 'blur(8px)'
-            : `blur(var(--glass-dropdown-blur)) saturate(var(--glass-dropdown-saturate))`,
-          // Enhanced shadow with depth
-          boxShadow: 'var(--glass-dropdown-shadow)',
-        }}
       >
         <DropdownMenuRadioGroup value={locale} onValueChange={handleChange}>
           {AppConfig.locales.map(lang => (
@@ -156,18 +145,12 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
               value={lang.id}
               className={cn(
                 'cursor-pointer rounded-xl px-3 py-2.5',
-                'transition-all duration-200 ease-out',
-                // Premium hover state
-                'hover:bg-primary/10 hover:scale-[1.02]',
-                'focus:bg-primary/10 focus:scale-[1.02]',
+                // Premium spring physics
+                'premium-hover gpu-accelerated',
+                'hover:bg-primary/10 focus:bg-primary/10',
                 // Active state
                 locale === lang.id && 'bg-primary/5',
               )}
-              style={{
-                // Premium micro-interaction
-                transform: 'translateZ(0)',
-                willChange: 'transform, background-color',
-              }}
             >
               <div className="flex flex-col gap-0.5">
                 {/* Native name (primary) */}
