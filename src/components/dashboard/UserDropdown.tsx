@@ -80,10 +80,8 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
             // Base styling
             'flex h-11 items-center gap-3 px-3 rounded-xl',
             'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-            // Performance optimized - NO TAILWIND TRANSFORMS (let header-icon handle it)
-            'glass-button',
-            // Visual hierarchy
-            'header-icon header-icon-primary',
+            // Optimized animation system - single animation class
+            'header-icon glass-button',
           )}
           style={{
             // Hardware acceleration - GPU optimization
