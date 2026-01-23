@@ -10,7 +10,6 @@ export type SecurityHeaders = {
   'Referrer-Policy': string;
   'Permissions-Policy': string;
   'Strict-Transport-Security': string;
-  'X-XSS-Protection': string;
 };
 
 /**
@@ -53,7 +52,7 @@ export function getSecurityHeaders(isDevelopment = false): SecurityHeaders {
       'usb=()',
     ].join(', '),
     'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
-    'X-XSS-Protection': '1; mode=block',
+    // X-XSS-Protection removed - deprecated in modern browsers
   };
 }
 

@@ -930,3 +930,19 @@
     }
   }
 }
+
+/* 
+ * ENTERPRISE FIX: Prevent FOUC and first-render animation glitches
+ * Disable all transitions/animations until runtime is ready
+ * This prevents theme changes and state updates from triggering animations during hydration
+ */
+html:not([data-tradelia-runtime="ready"]) .header-icon,
+html:not([data-tradelia-runtime="ready"]) .glass-button,
+html:not([data-tradelia-runtime="ready"]) .glass-header,
+html:not([data-tradelia-runtime="ready"]) .glass-dropdown,
+html:not([data-tradelia-runtime="ready"]) .glass-toggle,
+html:not([data-tradelia-runtime="ready"]) .glass-nav {
+  transition: none !important;
+  animation: none !important;
+  transform: none !important;
+}
