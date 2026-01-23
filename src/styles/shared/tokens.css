@@ -36,9 +36,13 @@
   --radius: 0.625rem;
 
   /* Spacing */
+  /* NOTE: Core dimensions defined in src/config/layout.ts (Single Source of Truth) */
   --nav-height: 64px;
   --header-height: 64px;
-  --sidebar-width: 240px;
+  --header-height-mobile: 56px;
+  --sidebar-width-expanded: 240px;
+  --sidebar-width-collapsed: 64px;
+  --sidebar-width-current: var(--sidebar-width-expanded); /* Dynamic, set by JS */
   --tap-target: 44px;
   --nav-padding: 1rem;
   --header-padding: 1rem 1.5rem;

@@ -56,8 +56,10 @@
   --sidebar-glass-saturate: 180%;
 
   /* Sidebar Dimensions - Tier-1 Research */
+  /* NOTE: Core dimensions defined in src/config/layout.ts (Single Source of Truth) */
   --sidebar-width-expanded: 240px;
   --sidebar-width-collapsed: 64px;
+  --sidebar-width-current: var(--sidebar-width-expanded); /* Dynamic, set by JS */
   --sidebar-toggle-size: 40px;
 
   /* Sidebar Premium Animations - Apple Spring Physics */

@@ -12,7 +12,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { BellIcon, SettingsIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import {

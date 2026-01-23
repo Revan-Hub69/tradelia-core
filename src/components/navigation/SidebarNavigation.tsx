@@ -23,7 +23,6 @@
 
 'use client';
 
-// PERFORMANCE: Selective Framer Motion imports
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
@@ -31,6 +30,7 @@ import React, { useEffect, useState } from 'react';
 import { DynamicIcon, type IconName } from '@/components/icons';
 import { NavigationSkeleton } from '@/components/ui/skeleton';
 import { UiNavItem } from '@/components/ui/UiNavItem';
+import { getSidebarWidthCSS } from '@/config/layout';
 import { getVisibleNavigationItems, trackNavigationEvent } from '@/data/navigation.config';
 import { useNavigationState } from '@/hooks/useNavigationState';
 import { useOptimizedNavigation } from '@/hooks/useOptimizedNavigation';
@@ -233,9 +233,10 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
   }, []);
 
   // Update CSS custom property for dynamic grid layout
+  // Using Single Source of Truth from config/layout.ts
   React.useEffect(() => {
     const root = document.documentElement;
-    root.style.setProperty('--sidebar-width-current', isCollapsed ? '64px' : '240px');
+    root.style.setProperty('--sidebar-width-current', getSidebarWidthCSS(isCollapsed));
   }, [isCollapsed]);
 
   if (isLoading) {
@@ -283,7 +284,9 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
       className={cn(
         // Responsive visibility - Show on tablet and desktop (768px+)
         'hidden md:block',
-        'fixed left-0 top-0 h-screen z-40',
+        // Sticky positioning - stays visible while scrolling
+        // Research: https://akashhamirwasia.com/blog/how-to-and-not-to-build-sidebar-layouts/
+        'sticky top-0 h-screen',
         // Liquid Glass Material System - Apple 2026 Standard
         'glass-sidebar',
         // Premium Animation System

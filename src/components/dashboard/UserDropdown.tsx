@@ -10,7 +10,7 @@
  */
 
 import { useTranslations } from 'next-intl';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { ChevronDownIcon, LogoutIcon, ProfileIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import {

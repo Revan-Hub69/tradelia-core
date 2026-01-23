@@ -13,7 +13,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { MoonIcon, SunIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import {

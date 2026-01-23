@@ -12,7 +12,7 @@
 'use client';
 
 import { useLocale, useTranslations } from 'next-intl';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { GlobeIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import {

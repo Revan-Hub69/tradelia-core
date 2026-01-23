@@ -19,16 +19,21 @@ export function DashboardShell({ children }: DashboardShellProps) {
     <div className="min-h-screen bg-background">
       <SkipLinks />
 
-      {/* Client boundary - all interactive components */}
-      <DashboardClient>
-        {/* Main Content - passed as children to maintain server rendering */}
-        <main
-          id="main-content"
-          className="min-h-screen px-4 py-6 pt-20 md:pl-[calc(var(--sidebar-width-current)+1rem)]"
-        >
-          {children}
-        </main>
-      </DashboardClient>
+      {/* 
+        CSS Grid Layout - Best Practice 2026
+        Research: https://akashhamirwasia.com/blog/how-to-and-not-to-build-sidebar-layouts/
+        
+        Grid defines layout structure:
+        - Mobile: Single column (sidebar hidden, bottom nav shown)
+        - Tablet/Desktop: [sidebar | main content]
+        
+        Benefits:
+        - No manual margin/width synchronization
+        - Parent controls layout (Single Source of Truth)
+        - Sidebar uses position:sticky (stays visible while scrolling)
+        - Easy responsive adjustments
+      */}
+      <DashboardClient>{children}</DashboardClient>
     </div>
   );
 }

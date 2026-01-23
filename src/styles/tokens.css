@@ -26,12 +26,16 @@
   /* Importato da motion-tokens.css per sistema completo */
 
   /* LAYOUT TOKENS - Shell dimensions (Mobile First) */
+  /* NOTE: Core dimensions defined in src/config/layout.ts (Single Source of Truth) */
   --nav-height: 64px;
   --header-height: 56px;
+  --header-height-mobile: 56px;
+  --sidebar-width-expanded: 240px;
+  --sidebar-width-collapsed: 64px;
+  --sidebar-width-current: var(--sidebar-width-expanded); /* Dynamic, set by JS */
   --tap-target: 44px;
   --nav-padding: 8px;
   --header-padding: 16px;
-  --sidebar-width: 256px;
 
   /* RADIUS TOKENS - Consistent curvature */
   --radius-nav: 12px;

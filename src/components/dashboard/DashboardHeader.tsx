@@ -276,10 +276,9 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         role="banner"
         aria-label={t('header_aria_label')}
         className={cn(
-          'fixed top-0 layer-header',
-          // Responsive width - NO JS, pure CSS
-          'left-0 right-0 w-full',
-          'md:left-[var(--sidebar-width-current)] md:right-0',
+          // Sticky positioning - stays at top of content area
+          // Research: https://akashhamirwasia.com/blog/how-to-and-not-to-build-sidebar-layouts/
+          'sticky top-0 z-50',
           'motion-base',
           // Premium liquid glass effects
           isScrolled && showScrollShadow && [
