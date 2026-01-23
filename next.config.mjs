@@ -37,10 +37,9 @@ export default bundleAnalyzer(
     reactStrictMode: true,
     serverExternalPackages: ['@electric-sql/pglite', '@supabase/supabase-js'],
     eslint: {
-      // TEMPORARY: Disable ESLint during builds due to config issues
-      // TODO: Fix ESLint configuration (obsolete plugin options)
-      ignoreDuringBuilds: true,
-      dirs: ['src', 'components', 'lib', 'utils', 'hooks'],
+      // ESLint enabled - fixed configuration
+      ignoreDuringBuilds: false,
+      dirs: ['src'],
     },
     typescript: {
       // ✅ ENTERPRISE 2026: TypeScript re-enabled after DashboardHeader fixes
@@ -91,9 +90,9 @@ export default bundleAnalyzer(
     },
     async headers() {
       return [
-        // Cache busting for force redeploy
+        // Cache busting ONLY for API routes (not static assets)
         {
-          source: '/:path*',
+          source: '/api/:path*',
           headers: [
             {
               key: 'X-Cache-Bust',
@@ -103,9 +102,23 @@ export default bundleAnalyzer(
               key: 'X-Deploy-Time',
               value: new Date().toISOString(),
             },
+            {
+              key: 'Cache-Control',
+              value: 'no-cache, no-store, must-revalidate',
+            },
           ],
         },
-        // Ensure proper MIME type for SVG icons
+        // Optimal caching for static assets
+        {
+          source: '/_next/static/:path*',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'public, max-age=31536000, immutable',
+            },
+          ],
+        },
+        // Ensure proper MIME type for SVG icons with long cache
         {
           source: '/icon.svg',
           headers: [
@@ -113,6 +126,80 @@ export default bundleAnalyzer(
               key: 'Content-Type',
               value: 'image/svg+xml',
             },
+            {
+              key: 'Cache-Control',
+              value: 'public, max-age=31536000, immutable',
+            },
+          ],
+        },
+        // Cache PWA icons (specific patterns)
+        {
+          source: '/icon-192x192.:ext(png|svg)',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'public, max-age=31536000, immutable',
+            },
+          ],
+        },
+        {
+          source: '/icon-512x512.:ext(png|svg)',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'public, max-age=31536000, immutable',
+            },
+          ],
+        },
+        {
+          source: '/icon-192x192-maskable.:ext(png|svg)',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'public, max-age=31536000, immutable',
+            },
+          ],
+        },
+        {
+          source: '/icon-512x512-maskable.:ext(png|svg)',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'public, max-age=31536000, immutable',
+            },
+          ],
+        },
+        // Cache favicon files
+        {
+          source: '/favicon.ico',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'public, max-age=31536000, immutable',
+            },
+          ],
+        },
+        {
+          source: '/favicon.svg',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'public, max-age=31536000, immutable',
+            },
+          ],
+        },
+        {
+          source: '/favicon-16x16.png',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'public, max-age=31536000, immutable',
+            },
+          ],
+        },
+        {
+          source: '/favicon-32x32.png',
+          headers: [
             {
               key: 'Cache-Control',
               value: 'public, max-age=31536000, immutable',
