@@ -50,10 +50,7 @@
     box-shadow: var(--shadow-nav);
   }
 
-  .glass-header {
-    @apply glass-surface;
-    box-shadow: var(--shadow-soft);
-  }
+  /* .glass-header removed - defined in glass-effects-tokens.css */
 
   /* Motion classes - Dashboard specific */
   .motion-fast {
