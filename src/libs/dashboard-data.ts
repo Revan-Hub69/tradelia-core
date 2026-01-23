@@ -113,7 +113,8 @@ export const getDashboardStats = cache(async (userId: string): Promise<Dashboard
   try {
     await new Promise(resolve => setTimeout(resolve, 90));
 
-    // Use userId for future database queries
+    // TODO: Use userId for future database queries
+    void userId;
 
     return {
       streak: 12,
@@ -140,7 +141,8 @@ export const getRecentActivity = cache(async (userId: string): Promise<RecentAct
   try {
     await new Promise(resolve => setTimeout(resolve, 70));
 
-    // Use userId for future database queries
+    // TODO: Use userId for future database queries
+    void userId;
 
     return [
       {
@@ -190,7 +192,8 @@ export const getNotifications = cache(async (userId: string): Promise<Notificati
   try {
     await new Promise(resolve => setTimeout(resolve, 50));
 
-    // Use userId for future database queries
+    // TODO: Use userId for future database queries
+    void userId;
 
     return [
       {

@@ -37,9 +37,10 @@ export default bundleAnalyzer(
     reactStrictMode: true,
     serverExternalPackages: ['@electric-sql/pglite', '@supabase/supabase-js'],
     eslint: {
-      // ESLint enabled - fixed configuration
-      ignoreDuringBuilds: false,
-      dirs: ['src'],
+      // Temporarily disabled due to Next.js ESLint flat config compatibility issue
+      // Error: "Unknown options: useEslintrc, extensions"
+      // TODO: Re-enable when Next.js updates ESLint integration
+      ignoreDuringBuilds: true,
     },
     typescript: {
       // ✅ ENTERPRISE 2026: TypeScript re-enabled after DashboardHeader fixes
