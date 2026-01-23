@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header Overlaps Debug Tool</title>
+    <style>
+        body {
+            font-family: monospace;
+            margin: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .debug-panel {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.9);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            max-width: 400px;
+            z-index: 9999;
+        }
+        .element-info {
+            margin: 10px 0;
+            padding: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+        }
+        .overlap-warning {
+            background: rgba(255,0,0,0.2);
+            border: 1px solid red;
+        }
+        .z-index-info {
+            color: #4CAF50;
+        }
+        .position-info {
+            color: #2196F3;
+        }
+        .size-info {
+            color: #FF9800;
+        }
+        button {
+            background: #333;
+            color: white;
+            border: 1px solid #555;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #555;
+        }
+        .highlight {
+            outline: 2px solid red !important;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-panel">
+        <h3>🔍 Header Overlaps Debugger</h3>
+        <button onclick="scanHeaderElements()">Scan Header Elements</button>
+        <button onclick="detectOverlaps()">Detect Overlaps</button>
+        <button onclick="analyzeZIndex()">Analyze Z-Index</button>
+        <button onclick="clearHighlights()">Clear Highlights</button>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        let headerElements = [];
+        
+        function scanHeaderElements() {
+            // Scan for header-related elements
+            const selectors = [
+                'header',
+                '[role="banner"]',
+                '.header',
+                '.dashboard-header',
+                '.fixed',
+                '[class*="header"]',
+                '[class*="nav"]',
+                '[class*="dropdown"]',
+                '[class*="popover"]',
+                '[class*="tooltip"]',
+                '[class*="modal"]',
+                '[data-radix-popper-content-wrapper]',
+                '[data-radix-dropdown-menu-content]',
+                '[data-radix-popover-content]'
+            ];
+            
+            headerElements = [];
+            selectors.forEach(selector => {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(el => {
+                    if (isVisible(el)) {
+                        headerElements.push({
+                            element: el,
+                            selector: selector,
+                            rect: el.getBoundingClientRect(),
+                            zIndex: getComputedStyle(el).zIndex,
+                            position: getComputedStyle(el).position,
+                            className: el.className
+                        });
+                    }
+                });
+            });
+            
+            displayResults(`Found ${headerElements.length} header elements`);
+            logElementDetails();
+        }
+        
+        function isVisible(el) {
+            const style = getComputedStyle(el);
+            return style.display !== 'none' && 
+                   style.visibility !== 'hidden' && 
+                   style.opacity !== '0' &&
+                   el.offsetWidth > 0 && 
+                   el.offsetHeight > 0;
+        }
+        
+        function detectOverlaps() {
+            const overlaps = [];
+            
+            for (let i = 0; i < headerElements.length; i++) {
+                for (let j = i + 1; j < headerElements.length; j++) {
+                    const el1 = headerElements[i];
+                    const el2 = headerElements[j];
+                    
+                    if (rectsOverlap(el1.rect, el2.rect)) {
+                        overlaps.push({
+                            element1: el1,
+                            element2: el2,
+                            overlapArea: calculateOverlapArea(el1.rect, el2.rect)
+                        });
+                        
+                        // Highlight overlapping elements
+                        el1.element.classList.add('highlight');
+                        el2.element.classList.add('highlight');
+                    }
+                }
+            }
+            
+            displayOverlaps(overlaps);
+        }
+        
+        function rectsOverlap(rect1, rect2) {
+            return !(rect1.right < rect2.left || 
+                    rect2.right < rect1.left || 
+                    rect1.bottom < rect2.top || 
+                    rect2.bottom < rect1.top);
+        }
+        
+        function calculateOverlapArea(rect1, rect2) {
+            const left = Math.max(rect1.left, rect2.left);
+            const right = Math.min(rect1.right, rect2.right);
+            const top = Math.max(rect1.top, rect2.top);
+            const bottom = Math.min(rect1.bottom, rect2.bottom);
+            
+            if (left < right && top < bottom) {
+                return (right - left) * (bottom - top);
+            }
+            return 0;
+        }
+        
+        function analyzeZIndex() {
+            const zIndexAnalysis = headerElements.map(el => ({
+                element: el.element,
+                className: el.className,
+                zIndex: el.zIndex,
+                position: el.position,
+                rect: el.rect
+            })).sort((a, b) => {
+                const aZ = a.zIndex === 'auto' ? 0 : parseInt(a.zIndex);
+                const bZ = b.zIndex === 'auto' ? 0 : parseInt(b.zIndex);
+                return bZ - aZ;
+            });
+            
+            displayZIndexAnalysis(zIndexAnalysis);
+        }
+        
+        function clearHighlights() {
+            document.querySelectorAll('.highlight').forEach(el => {
+                el.classList.remove('highlight');
+            });
+        }
+        
+        function logElementDetails() {
+            console.group('🔍 Header Elements Details');
+            headerElements.forEach((el, index) => {
+                console.log(`Element ${index + 1}:`, {
+                    selector: el.selector,
+                    className: el.className,
+                    zIndex: el.zIndex,
+                    position: el.position,
+                    rect: el.rect,
+                    element: el.element
+                });
+            });
+            console.groupEnd();
+        }
+        
+        function displayResults(message) {
+            const results = document.getElementById('results');
+            results.innerHTML = `<div class="element-info">${message}</div>`;
+        }
+        
+        function displayOverlaps(overlaps) {
+            const results = document.getElementById('results');
+            let html = `<div class="element-info">Found ${overlaps.length} overlaps:</div>`;
+            
+            overlaps.forEach((overlap, index) => {
+                html += `
+                    <div class="element-info overlap-warning">
+                        <strong>Overlap ${index + 1}:</strong><br>
+                        <div class="z-index-info">
+                            El1 Z-Index: ${overlap.element1.zIndex} (${overlap.element1.className})<br>
+                            El2 Z-Index: ${overlap.element2.zIndex} (${overlap.element2.className})
+                        </div>
+                        <div class="size-info">
+                            Overlap Area: ${Math.round(overlap.overlapArea)}px²
+                        </div>
+                    </div>
+                `;
+            });
+            
+            results.innerHTML = html;
+        }
+        
+        function displayZIndexAnalysis(analysis) {
+            const results = document.getElementById('results');
+            let html = '<div class="element-info">Z-Index Analysis (highest first):</div>';
+            
+            analysis.forEach((el, index) => {
+                html += `
+                    <div class="element-info">
+                        <div class="z-index-info">Z-Index: ${el.zIndex}</div>
+                        <div class="position-info">Position: ${el.position}</div>
+                        <div class="size-info">Class: ${el.className.substring(0, 50)}...</div>
+                    </div>
+                `;
+            });
+            
+            results.innerHTML = html;
+        }
+        
+        // Auto-scan on load
+        window.addEventListener('load', () => {
+            setTimeout(scanHeaderElements, 1000);
+        });
+    </script>
+</body>
+</html>

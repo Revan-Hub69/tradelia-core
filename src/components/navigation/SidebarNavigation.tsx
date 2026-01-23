@@ -193,7 +193,7 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
 
         {/* Tooltip for collapsed state - CSS only */}
         {isCollapsed && (
-          <div className="pointer-events-none absolute left-full z-50 ml-2 rounded bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+          <div className="pointer-events-none absolute left-full layer-toast ml-2 rounded bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
             {tGeneral(item.labelKey)}
           </div>
         )}
@@ -404,7 +404,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                 )}
                 
                 {/* Hover tooltip */}
-                <div className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 rounded bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+                <div className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 rounded bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100 layer-toast">
                   {isCollapsed ? t('expand_sidebar') : t('collapse_sidebar')}
                 </div>
               </div>

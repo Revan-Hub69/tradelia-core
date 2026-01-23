@@ -23,7 +23,7 @@ export const SkipLinks: React.FC = () => {
           // Visually hidden by default
           'sr-only focus:not-sr-only',
           // Styling when focused
-          'focus:absolute focus:top-4 focus:left-4 focus:z-[9999]',
+          'focus:absolute focus:top-4 focus:left-4 layer-modal',
           'focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground',
           'focus:rounded-md focus:font-medium focus:text-sm',
           'focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-ring',
@@ -37,7 +37,7 @@ export const SkipLinks: React.FC = () => {
         href="#navigation"
         className={cn(
           'sr-only focus:not-sr-only',
-          'focus:absolute focus:top-4 focus:left-32 focus:z-[9999]',
+          'focus:absolute focus:top-4 focus:left-32 layer-modal',
           'focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground',
           'focus:rounded-md focus:font-medium focus:text-sm',
           'focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-ring',

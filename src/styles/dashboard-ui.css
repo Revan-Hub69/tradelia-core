@@ -215,7 +215,7 @@
   @apply bg-primary text-primary-foreground;
   @apply focus:top-4 focus:left-4;
   @apply ui-focusable;
-  @apply z-[9999];
+  @apply layer-modal;
 }
 
 /* ============================================================================
