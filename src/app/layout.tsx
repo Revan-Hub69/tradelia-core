@@ -2,6 +2,8 @@ import '@/styles/shared.css';
 
 import type { Metadata } from 'next';
 
+import { RuntimeReady } from '@/components/runtime/RuntimeReady';
+
 export const metadata: Metadata = {
   title: 'Tradelia - Learn Crypto Trading',
   description: 'Educational platform for cryptocurrency trading',
@@ -41,9 +43,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning data-tradelia-runtime="boot">
       <head />
       <body className="bg-background text-foreground antialiased" suppressHydrationWarning>
+        <RuntimeReady />
+        
         {/* Skip to content link for accessibility */}
         <a
           href="#main-content"

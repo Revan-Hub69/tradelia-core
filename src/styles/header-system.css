@@ -167,13 +167,4 @@ html:not([data-tradelia-runtime="ready"]) .glass-header {
    UI COMPONENTS (shadcn/ui compatibility)
    ============================================================================ */
 
-.ui-glass-header {
-  @apply glass-header;
-  @apply sticky top-0;
-  @apply layer-header;
-}
-
-.ui-header {
-  @apply ui-glass-header;
-  @apply header-height;
-}
+/* NOTE: .ui-glass-header and .ui-header removed - use .glass-header and .header-height directly */
