@@ -82,7 +82,7 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
             'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
             // Performance optimized - only transform animations
             'transition-transform duration-200 ease-out',
-            'hover:scale-[1.02] active:scale-[0.98]',
+            'hover:scale-[1.01] active:scale-[0.99]',
             // Liquid Glass surface - using design tokens
             'glass-button',
             // Visual hierarchy

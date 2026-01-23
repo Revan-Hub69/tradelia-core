@@ -410,20 +410,16 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             >
               {/* Theme Switcher - Hidden on mobile, visible on tablet+ */}
               <div className="hidden md:block">
-                <div className="transition-all duration-200 hover:scale-105 active:scale-95">
-                  <ThemeSwitcher />
-                </div>
+                <ThemeSwitcher />
               </div>
 
               {/* Language Switcher - Hidden on mobile, visible on tablet+ */}
               <div className="hidden md:block">
-                <div className="transition-all duration-200 hover:scale-105 active:scale-95">
-                  <LanguageSwitcherDashboard />
-                </div>
+                <LanguageSwitcherDashboard />
               </div>
 
               {/* Notifications - Always visible (mobile, tablet, desktop) */}
-              <div className="transition-all duration-200 hover:scale-105 active:scale-95">
+              <div>
                 <NotificationsBell />
               </div>
             </div>
@@ -436,7 +432,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                   )
                 : userData
                   ? (
-                      <div className="transition-all duration-200 hover:scale-105 active:scale-95">
+                      <div>
                         <UserDropdown
                           userName={getUserDisplayName()}
                           userEmail={userData.email}
