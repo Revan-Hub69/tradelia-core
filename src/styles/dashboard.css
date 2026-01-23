@@ -7,8 +7,9 @@
 
 @tailwind utilities;
 
-/* Import header system - SINGLE SOURCE OF TRUTH */
+/* Import unified systems - SINGLE SOURCE OF TRUTH */
 @import './header-system.css';
+@import './dropdown-system.css';
 
 /* Import dashboard-specific files */
 @import './glass-effects-tokens.css';
@@ -213,8 +214,7 @@
 }
 
 /* FOUC prevention - Disable animations until runtime ready */
-/* NOTE: Header classes moved to header-system.css */
-html:not([data-tradelia-runtime="ready"]) .glass-dropdown,
+/* NOTE: Header and dropdown classes moved to their respective system files */
 html:not([data-tradelia-runtime="ready"]) .glass-nav {
   transition: none !important;
   animation: none !important;
