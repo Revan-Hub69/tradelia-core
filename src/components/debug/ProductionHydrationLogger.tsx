@@ -292,13 +292,13 @@ export function ProductionHydrationLogger() {
       return;
     }
 
-    // Snapshot 1: After hydration (immediate)
+    // Snapshot 1: After hydration (IMMEDIATE - no delay)
     if (!hasLoggedHydration.current) {
       hasLoggedHydration.current = true;
       
-      setTimeout(() => {
-        console.log('🔍 Capturing AFTER-HYDRATION snapshot...');
-        const snapshot = captureFullSnapshot('after-hydration');
+      // Capture IMMEDIATELY without setTimeout to catch the real first render
+      console.log('🔍 Capturing IMMEDIATE snapshot (0ms delay)...');
+      const snapshot = captureFullSnapshot('after-hydration');
         
         // Log to console for immediate inspection
         console.log('📸 AFTER-HYDRATION SNAPSHOT:', {
@@ -330,9 +330,23 @@ export function ProductionHydrationLogger() {
           console.log(`  \n  📦 INLINE STYLE: ${btn.inlineStyle || 'none'}`);
         });
 
-        // Send to server
-        sendSnapshotToServer(snapshot);
-      }, 100); // Wait 100ms after hydration
+      // Send to server
+      sendSnapshotToServer(snapshot);
+      
+      // ALSO capture after 100ms to compare
+      setTimeout(() => {
+        console.log('🔍 Capturing DELAYED snapshot (100ms delay)...');
+        const delayedSnapshot = captureFullSnapshot('after-hydration');
+        console.log('📸 DELAYED SNAPSHOT (100ms):', {
+          timestamp: new Date(delayedSnapshot.timestamp).toISOString(),
+          theme: delayedSnapshot.theme,
+        });
+        delayedSnapshot.allGlassButtons.forEach((btn, idx) => {
+          console.log(`\n  Button #${idx + 1} (100ms):`);
+          console.log(`    backdrop-filter: ${btn.computedStyles.backdropFilter}`);
+          console.log(`    background: ${btn.computedStyles.background}`);
+        });
+      }, 100);
     }
 
     // Snapshot 2: After first user interaction
