@@ -20,6 +20,7 @@ import { NavigationProvider } from '@/components/navigation/NavigationProvider';
 import { BottomNavigationSimple } from '@/components/navigation/BottomNavigationSimple';
 import { SidebarNavigation } from '@/components/navigation/SidebarNavigation';
 import { DashboardContextProvider } from '@/contexts/DashboardContext';
+import { ProductionCSSCollector } from '@/components/debug/ProductionCSSCollector';
 
 import { DashboardHeader } from './DashboardHeader';
 
@@ -67,6 +68,13 @@ export function DashboardClient({ children }: DashboardClientProps) {
 
         {/* Command Palette - Desktop feature (lazy loaded) */}
         <CommandPalette />
+
+        {/* Production CSS Collector - Auto-collects CSS data in production */}
+        <ProductionCSSCollector 
+          enabled={true} // Enable in all environments for production debugging
+          autoCollect={true}
+          position="top-right"
+        />
       </DashboardContextProvider>
     </NavigationProvider>
   );

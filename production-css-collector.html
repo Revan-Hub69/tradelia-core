@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production CSS Class Collector</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            background: #0a0a0a;
+            color: #00ff00;
+            font-size: 11px;
+        }
+        .collector-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 500px;
+            height: 100vh;
+            background: rgba(0,0,0,0.95);
+            border-left: 2px solid #00ff00;
+            padding: 15px;
+            overflow-y: auto;
+            z-index: 999999;
+        }
+        .collector-header {
+            color: #00ffff;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .element-section {
+            margin: 10px 0;
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 8px;
+        }
+        .element-title {
+            color: #ffff00;
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 12px;
+        }
+        .class-list {
+            margin: 5px 0;
+            padding-left: 10px;
+        }
+        .class-item {
+            margin: 2px 0;
+            padding: 2px 4px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 2px;
+            font-size: 10px;
+        }
+        .class-item.animation {
+            background: rgba(255,165,0,0.2);
+            color: #ffa500;
+        }
+        .class-item.transform {
+            background: rgba(255,0,255,0.2);
+            color: #ff00ff;
+        }
+        .class-item.zindex {
+            background: rgba(255,0,0,0.2);
+            color: #ff6666;
+        }
+        .computed-styles {
+            margin: 5px 0;
+            padding: 5px;
+            background: rgba(0,255,0,0.1);
+            border-radius: 3px;
+        }
+        .computed-property {
+            font-size: 9px;
+            margin: 1px 0;
+        }
+        button {
+            background: #333;
+            color: #00ff00;
+            border: 1px solid #555;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 3px;
+            font-family: inherit;
+            font-size: 10px;
+        }
+        button:hover {
+            background: #555;
+            color: #00ffff;
+        }
+        .controls {
+            position: sticky;
+            top: 0;
+            background: rgba(0,0,0,0.9);
+            padding: 10px 0;
+            border-bottom: 1px solid #333;
+            margin-bottom: 10px;
+        }
+        .highlight-element {
+            outline: 3px solid #ff0000 !important;
+            outline-offset: 2px !important;
+            background: rgba(255,0,0,0.1) !important;
+        }
+        .stats {
+            background: rgba(0,0,0,0.8);
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="collector-panel">
+        <div class="collector-header">
+            <h2>🔍 PRODUCTION CSS COLLECTOR</h2>
+            <p>Raccoglie classi CSS effettivamente applicate</p>
+        </div>
+        
+        <div class="controls">
+            <button onclick="collectHeaderClasses()">🎯 Collect Header</button>
+            <button onclick="collectAllButtons()">🔘 Collect Buttons</button>
+            <button onclick="collectAnimations()">🎬 Collect Animations</button>
+            <button onclick="exportData()">📄 Export JSON</button>
+            <button onclick="clearHighlights()">🧹 Clear</button>
+        </div>
+        
+        <div id="stats" class="stats"></div>
+        <div id="collection-results"></div>
+    </div>
+
+    <script>
+        let collectedData = {};
+        
+        function collectHeaderClasses() {
+            const results = document.getElementById('collection-results');
+            const stats = document.getElementById('stats');
+            
+            // Selettori per elementi header
+            const headerSelectors = [
+                'header',
+                '[data-testid*="header"]',
+                '.dashboard-header',
+                '[class*="Header"]',
+                '[role="banner"]',
+                'button[aria-label*="theme"]',
+                'button[aria-label*="notification"]',
+                'button[aria-label*="user"]',
+                '[class*="ThemeSwitcher"]',
+                '[class*="NotificationsBell"]',
+                '[class*="UserDropdown"]'
+            ];
+            
+            let headerElements = [];
+            headerSelectors.forEach(selector => {
+                try {
+                    const elements = document.querySelectorAll(selector);
+                    elements.forEach(el => {
+                        if (isVisible(el)) {
+                            headerElements.push({
+                                element: el,
+                                selector: selector,
+                                tag: el.tagName.toLowerCase(),
+                                classes: Array.from(el.classList),
+                                computedStyle: getRelevantComputedStyles(el)
+                            });
+                        }
+                    });
+                } catch (e) {
+                    console.warn('Selector failed:', selector, e);
+                }
+            });
+            
+            // Update stats
+            stats.innerHTML = `
+                <div style="color: #00ffff;">📊 HEADER ELEMENTS FOUND: ${headerElements.length}</div>
+                <div style="color: #ffff00;">🌐 URL: ${window.location.href}</div>
+                <div style="color: #ff9900;">⏰ Time: ${new Date().toLocaleTimeString()}</div>
+            `;
+            
+            // Display results
+            let html = '';
+            headerElements.forEach((item, index) => {
+                const el = item.element;
+                
+                // Highlight element
+                el.classList.add('highlight-element');
+                
+                // Categorize classes
+                const animationClasses = item.classes.filter(cls => 
+                    cls.includes('transition') || cls.includes('animate') || 
+                    cls.includes('hover') || cls.includes('active') || 
+                    cls.includes('motion') || cls.includes('spring')
+                );
+                
+                const transformClasses = item.classes.filter(cls => 
+                    cls.includes('scale') || cls.includes('translate') || 
+                    cls.includes('rotate') || cls.includes('transform')
+                );
+                
+                const zIndexClasses = item.classes.filter(cls => 
+                    cls.includes('z-') || cls.includes('layer-')
+                );
+                
+                html += `
+                    <div class="element-section">
+                        <div class="element-title">
+                            HEADER ${index + 1}: &lt;${item.tag}&gt; (${item.selector})
+                        </div>
+                        
+                        <div class="class-list">
+                            <div style="color: #cccccc; font-weight: bold;">ALL CLASSES (${item.classes.length}):</div>
+                            ${item.classes.map(cls => `
+                                <div class="class-item ${getClassCategory(cls)}">${cls}</div>
+                            `).join('')}
+                        </div>
+                        
+                        ${animationClasses.length > 0 ? `
+                            <div class="class-list">
+                                <div style="color: #ffa500; font-weight: bold;">🎬 ANIMATION CLASSES:</div>
+                                ${animationClasses.map(cls => `<div class="class-item animation">${cls}</div>`).join('')}
+                            </div>
+                        ` : ''}
+                        
+                        ${transformClasses.length > 0 ? `
+                            <div class="class-list">
+                                <div style="color: #ff00ff; font-weight: bold;">🔄 TRANSFORM CLASSES:</div>
+                                ${transformClasses.map(cls => `<div class="class-item transform">${cls}</div>`).join('')}
+                            </div>
+                        ` : ''}
+                        
+                        ${zIndexClasses.length > 0 ? `
+                            <div class="class-list">
+                                <div style="color: #ff6666; font-weight: bold;">📚 Z-INDEX CLASSES:</div>
+                                ${zIndexClasses.map(cls => `<div class="class-item zindex">${cls}</div>`).join('')}
+                            </div>
+                        ` : ''}
+                        
+                        <div class="computed-styles">
+                            <div style="color: #00ff00; font-weight: bold;">💻 COMPUTED STYLES:</div>
+                            ${Object.entries(item.computedStyle).map(([prop, value]) => `
+                                <div class="computed-property">${prop}: ${value}</div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            results.innerHTML = html;
+            
+            // Store data for export
+            collectedData.headerElements = headerElements.map(item => ({
+                selector: item.selector,
+                tag: item.tag,
+                classes: item.classes,
+                computedStyle: item.computedStyle,
+                timestamp: new Date().toISOString(),
+                url: window.location.href
+            }));
+        }
+        
+        function collectAllButtons() {
+            const buttons = document.querySelectorAll('button');
+            const buttonData = [];
+            
+            buttons.forEach((btn, index) => {
+                if (isVisible(btn)) {
+                    const rect = btn.getBoundingClientRect();
+                    if (rect.top < window.innerHeight && rect.bottom > 0) { // Visible in viewport
+                        buttonData.push({
+                            index: index,
+                            classes: Array.from(btn.classList),
+                            computedStyle: getRelevantComputedStyles(btn),
+                            ariaLabel: btn.getAttribute('aria-label'),
+                            text: btn.textContent?.trim().substring(0, 50),
+                            position: { top: rect.top, left: rect.left, width: rect.width, height: rect.height }
+                        });
+                        
+                        btn.classList.add('highlight-element');
+                    }
+                }
+            });
+            
+            const results = document.getElementById('collection-results');
+            let html = `<div class="element-title">🔘 BUTTONS FOUND: ${buttonData.length}</div>`;
+            
+            buttonData.forEach((btn, index) => {
+                html += `
+                    <div class="element-section">
+                        <div class="element-title">BUTTON ${index + 1}: "${btn.ariaLabel || btn.text || 'No label'}"</div>
+                        <div class="class-list">
+                            ${btn.classes.map(cls => `<div class="class-item ${getClassCategory(cls)}">${cls}</div>`).join('')}
+                        </div>
+                        <div class="computed-styles">
+                            ${Object.entries(btn.computedStyle).map(([prop, value]) => `
+                                <div class="computed-property">${prop}: ${value}</div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            results.innerHTML = html;
+            collectedData.buttons = buttonData;
+        }
+        
+        function collectAnimations() {
+            const animatedElements = [];
+            const allElements = document.querySelectorAll('*');
+            
+            allElements.forEach(el => {
+                const computedStyle = getComputedStyle(el);
+                const hasAnimation = computedStyle.transition !== 'all 0s ease 0s' || 
+                                   computedStyle.transform !== 'none' ||
+                                   computedStyle.animation !== 'none';
+                
+                if (hasAnimation && isVisible(el)) {
+                    animatedElements.push({
+                        tag: el.tagName.toLowerCase(),
+                        classes: Array.from(el.classList),
+                        transition: computedStyle.transition,
+                        transform: computedStyle.transform,
+                        animation: computedStyle.animation,
+                        zIndex: computedStyle.zIndex
+                    });
+                    
+                    el.classList.add('highlight-element');
+                }
+            });
+            
+            const results = document.getElementById('collection-results');
+            let html = `<div class="element-title">🎬 ANIMATED ELEMENTS: ${animatedElements.length}</div>`;
+            
+            animatedElements.slice(0, 20).forEach((el, index) => { // Limit to first 20
+                html += `
+                    <div class="element-section">
+                        <div class="element-title">ANIMATED ${index + 1}: &lt;${el.tag}&gt;</div>
+                        <div class="computed-styles">
+                            <div class="computed-property">transition: ${el.transition}</div>
+                            <div class="computed-property">transform: ${el.transform}</div>
+                            <div class="computed-property">animation: ${el.animation}</div>
+                            <div class="computed-property">z-index: ${el.zIndex}</div>
+                        </div>
+                        <div class="class-list">
+                            ${el.classes.slice(0, 10).map(cls => `<div class="class-item">${cls}</div>`).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            results.innerHTML = html;
+            collectedData.animations = animatedElements;
+        }
+        
+        function getRelevantComputedStyles(element) {
+            const computedStyle = getComputedStyle(element);
+            return {
+                transition: computedStyle.transition,
+                transform: computedStyle.transform,
+                zIndex: computedStyle.zIndex,
+                position: computedStyle.position,
+                opacity: computedStyle.opacity,
+                visibility: computedStyle.visibility,
+                display: computedStyle.display,
+                backgroundColor: computedStyle.backgroundColor,
+                backdropFilter: computedStyle.backdropFilter
+            };
+        }
+        
+        function getClassCategory(className) {
+            if (className.includes('transition') || className.includes('animate') || 
+                className.includes('hover') || className.includes('active') || 
+                className.includes('motion') || className.includes('spring')) {
+                return 'animation';
+            }
+            if (className.includes('scale') || className.includes('translate') || 
+                className.includes('rotate') || className.includes('transform')) {
+                return 'transform';
+            }
+            if (className.includes('z-') || className.includes('layer-')) {
+                return 'zindex';
+            }
+            return '';
+        }
+        
+        function isVisible(el) {
+            const style = getComputedStyle(el);
+            return style.display !== 'none' && 
+                   style.visibility !== 'hidden' && 
+                   parseFloat(style.opacity) > 0 &&
+                   el.offsetWidth > 0 && 
+                   el.offsetHeight > 0;
+        }
+        
+        function clearHighlights() {
+            document.querySelectorAll('.highlight-element').forEach(el => {
+                el.classList.remove('highlight-element');
+            });
+        }
+        
+        function exportData() {
+            const report = {
+                timestamp: new Date().toISOString(),
+                url: window.location.href,
+                userAgent: navigator.userAgent,
+                viewport: {
+                    width: window.innerWidth,
+                    height: window.innerHeight
+                },
+                data: collectedData
+            };
+            
+            const blob = new Blob([JSON.stringify(report, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `production-css-analysis-${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        // Auto-collect on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                if (window.location.href.includes('dashboard')) {
+                    collectHeaderClasses();
+                }
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
