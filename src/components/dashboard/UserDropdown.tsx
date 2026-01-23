@@ -94,9 +94,7 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
             <div
               className={cn(
                 'flex size-8 items-center justify-center rounded-full text-sm font-semibold text-white',
-                // Performance optimized avatar
-                'transition-transform duration-200 ease-out',
-                'hover:scale-105 active:scale-95',
+                // NO transitions - let parent button handle hover
               )}
               style={{
                 // Liquid Glass Avatar - Tier-1 research based

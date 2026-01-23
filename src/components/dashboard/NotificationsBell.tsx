@@ -93,7 +93,7 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
                     transform: 'translateZ(0)', // Force GPU layer
                   }}
                 >
-                  {/* Optimized icon with notification indicator */}
+                  {/* Icon container - NO transitions */}
                   <div className="relative">
                     <BellIcon
                       size={20}
@@ -101,7 +101,7 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
                       notificationCount={unreadCount}
                       variant="signature"
                       className={cn(
-                        'text-foreground transition-colors duration-200',
+                        'text-foreground',
                         // Add subtle breathing when notifications present
                         unreadCount > 0 && 'animate-pulse',
                       )}

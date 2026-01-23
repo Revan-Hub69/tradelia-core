@@ -90,10 +90,10 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
                     transform: 'translateZ(0)', // Force GPU layer
                   }}
                 >
-                  {/* Optimized globe icon with semantic rotation */}
+                  {/* Icon container - NO transitions */}
                   <div
                     className={cn(
-                      'relative transition-transform duration-200 ease-out',
+                      'relative',
                       // Globe rotation animation on language change - Educational version
                       isChangingLanguage && !prefersReducedMotion && 'animate-spin',
                     )}
@@ -102,7 +102,7 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
                       size={20}
                       isActive={isOpen}
                       variant="signature"
-                      className="text-foreground transition-colors duration-200"
+                      className="text-foreground"
                     />
 
                     {/* Educational feedback - discrete border instead of glow */}

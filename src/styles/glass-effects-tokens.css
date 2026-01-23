@@ -162,7 +162,8 @@
   background-color: var(--glass-button-bg);
   border-color: var(--glass-button-border);
   box-shadow: var(--glass-button-shadow);
-  backdrop-filter: blur(var(--glass-button-blur)) saturate(var(--glass-button-saturate));
+  backdrop-filter: blur(var(--glass-button-blur)) saturate(var(--glass-button-saturate)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-button-blur)) saturate(var(--glass-button-saturate)) !important;
   /* NO TRANSFORM ANIMATIONS - Let header-icon handle it */
   transition: background-color var(--motion-normal) var(--ease-out), 
               border-color var(--motion-normal) var(--ease-out),

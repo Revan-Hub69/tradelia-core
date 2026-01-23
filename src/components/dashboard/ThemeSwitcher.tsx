@@ -84,10 +84,10 @@ export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) 
               transform: 'translateZ(0)', // Force GPU layer
             }}
           >
-            {/* Optimized icon with semantic transition */}
+            {/* Icon container - NO transitions */}
             <div
               className={cn(
-                'relative transition-transform duration-200 ease-out',
+                'relative',
                 // Theme transition animations - Educational version
                 isTransitioning && !prefersReducedMotion && 'animate-spin',
               )}
@@ -98,7 +98,7 @@ export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) 
                       size={20}
                       isActive
                       variant="signature"
-                      className="text-foreground transition-colors duration-200"
+                      className="text-foreground"
                     />
                   )
                 : (
@@ -106,7 +106,7 @@ export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) 
                       size={20}
                       isActive
                       variant="signature"
-                      className="text-foreground transition-colors duration-200"
+                      className="text-foreground"
                     />
                   )}
 
