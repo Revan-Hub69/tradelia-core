@@ -183,7 +183,7 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
               'flex h-8 items-center gap-1.5 px-3 text-xs text-muted-foreground transition-all duration-200 hover:scale-105 hover:text-foreground',
             )}
           >
-            <SettingsIcon size={16} />
+            <SettingsIcon size={16} className="text-muted-foreground" />
             {t('notification_settings')}
           </UiButton>
         </div>
