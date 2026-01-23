@@ -14,13 +14,12 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 
 import { NavigationProvider } from '@/components/navigation/NavigationProvider';
 import { BottomNavigationSimple } from '@/components/navigation/BottomNavigationSimple';
 import { SidebarNavigation } from '@/components/navigation/SidebarNavigation';
 import { DashboardContextProvider } from '@/contexts/DashboardContext';
-import { HoverCSSTracker } from '@/components/debug/HoverCSSTracker';
 
 import { DashboardHeader } from './DashboardHeader';
 
@@ -38,6 +37,27 @@ type DashboardClientProps = {
 };
 
 export function DashboardClient({ children }: DashboardClientProps) {
+  const [mounted, setMounted] = useState(false);
+
+  // Force re-render after hydration to fix CSS application
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Don't render until mounted to prevent hydration mismatch
+  if (!mounted) {
+    return (
+      <div className="layout-stable bg-background">
+        <div className="layout-sidebar hidden w-64 border-r border-border/20 md:block">
+          <div className="h-full animate-pulse bg-muted/20" />
+        </div>
+        <div className="layout-header h-16 animate-pulse bg-muted/20" />
+        <div className="pt-16 animate-pulse bg-muted/10">
+          {children}
+        </div>
+      </div>
+    );
+  }
   return (
     <NavigationProvider>
       <DashboardContextProvider>
@@ -68,9 +88,6 @@ export function DashboardClient({ children }: DashboardClientProps) {
 
         {/* Command Palette - Desktop feature (lazy loaded) */}
         <CommandPalette />
-
-        {/* Hover CSS Tracker - SEMPLICE: mostra solo chi gestisce gli hover */}
-        <HoverCSSTracker />
       </DashboardContextProvider>
     </NavigationProvider>
   );
