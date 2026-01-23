@@ -43,6 +43,8 @@ export const ProductionCSSCollector: React.FC<ProductionCSSCollectorProps> = ({
       
       return () => clearTimeout(timer);
     }
+    
+    return undefined; // Explicit return for TypeScript
   }, [enabled, autoCollect]);
 
   // Keyboard shortcut to toggle visibility
