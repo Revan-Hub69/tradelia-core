@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, unstable_setRequestLocale } from 'next-intl/server';
 
+import { ProductionHydrationLogger } from '@/components/debug/ProductionHydrationLogger';
 import { AllLocales } from '@/utils/AppConfig';
 
 export const metadata: Metadata = {
@@ -83,6 +84,9 @@ export default async function RootLayout(props: {
         }} />
       </head>
       <body className="bg-background text-foreground antialiased" suppressHydrationWarning>
+        {/* Production Hydration Logger - Only active in production */}
+        {process.env.NODE_ENV === 'production' && <ProductionHydrationLogger />}
+        
         {/* Skip to content link for accessibility */}
         <a
           href="#main-content"
