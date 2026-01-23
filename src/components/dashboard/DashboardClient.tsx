@@ -24,9 +24,7 @@ const DashboardHeader = dynamic(
   () => import('./DashboardHeader').then(mod => ({ default: mod.DashboardHeader })),
   {
     ssr: false,
-    loading: () => (
-      <div className="glass-header h-16 md:h-18 border-b border-border/20" />
-    ),
+    loading: () => null, // No loading placeholder - prevent flash
   },
 );
 
