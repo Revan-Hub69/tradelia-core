@@ -24,9 +24,9 @@
   --educational-meditation: 6s; /* Deep focus */
 
   /* EDUCATIONAL SCALE PRESETS - Subtle movements */
-  --scale-educational-hover: 1.005; /* Barely perceptible */
+  --scale-educational-hover: 1.01; /* Gentle and appropriate */
   --scale-educational-focus: 1.01; /* Gentle focus */
-  --scale-educational-press: 0.995; /* Subtle press */
+  --scale-educational-press: 0.99; /* Subtle press */
 
   /* EDUCATIONAL TRANSLATION PRESETS - Minimal movement */
   --lift-educational: -0.5px; /* Subtle lift */

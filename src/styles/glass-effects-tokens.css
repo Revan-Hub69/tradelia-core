@@ -129,7 +129,7 @@
 }
 
 .header-icon:hover {
-  transform: translateY(-1px) scale(1.02);
+  transform: translateY(-1px) scale(1.01);
   opacity: var(--icon-primary-opacity);
 }
 
