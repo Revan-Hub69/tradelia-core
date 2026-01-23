@@ -255,7 +255,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
         }}
       >
         <div className="flex h-full flex-col">
-          <div className="flex items-center border-b border-border/20 p-4">
+          <div className="flex flex-col border-b border-border/20 p-4 gap-3">
             <div className="flex items-center">
               {isCollapsed
                 ? (
@@ -268,7 +268,9 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                     </div>
                   )}
             </div>
-            <div className="size-8 animate-pulse rounded bg-muted ml-auto" />
+            <div className={cn('flex', isCollapsed ? 'justify-center' : 'justify-end')}>
+              <div className="size-9 animate-pulse rounded bg-muted" />
+            </div>
           </div>
           <NavigationSkeleton isCollapsed={isCollapsed} />
         </div>
@@ -305,7 +307,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
     >
       <div className="flex h-full flex-col">
         {/* Sidebar Header with Liquid Glass */}
-        <div className="flex items-center border-b border-border/20 p-4 min-h-[72px]">
+        <div className="flex flex-col border-b border-border/20 p-4 min-h-[80px] gap-3">
           {/* Logo - Clickable to /dashboard */}
           <Link
             href="/dashboard"
@@ -313,7 +315,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
               'flex items-center rounded-lg p-1 transition-all duration-200',
               'hover:bg-background/50 hover:scale-[1.02]',
               'focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2',
-              isCollapsed ? 'justify-center' : 'flex-1',
+              isCollapsed ? 'justify-center' : 'justify-start',
             )}
             title={isCollapsed ? 'Go to Dashboard' : undefined}
           >
@@ -326,40 +328,43 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                 )}
           </Link>
 
-          {/* Internal Toggle Button with Optimal Spacing - Tier-1 Solution */}
-          <motion.button
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className={cn(
-              // Liquid Glass Toggle Button
-              'glass-toggle',
-              'relative size-10 rounded-xl border',
-              'flex items-center justify-center',
-              // Educational Calm Integration
-              'educational-hover educational-focus',
-              // Optimal Spacing - Not cramped to logo
-              isCollapsed ? 'ml-0' : 'ml-3'
-            )}
-            whileHover={{ scale: 1.02, y: -1 }}
-            whileTap={{ scale: 0.98 }}
-            transition={{
-              type: 'spring',
-              stiffness: 400,
-              damping: 25,
-            }}
-            aria-label={
-              isCollapsed
-                ? (t('expand_sidebar') as string)
-                : (t('collapse_sidebar') as string)
-            }
-            aria-pressed={!isCollapsed}
-          >
-            <SidebarToggleIcon
-              isExpanded={!isCollapsed}
-              showAnimation
-              size={20}
-              variant="signature"
-            />
-          </motion.button>
+          {/* Toggle Button - Separated from logo */}
+          <div className={cn(
+            'flex',
+            isCollapsed ? 'justify-center' : 'justify-end'
+          )}>
+            <motion.button
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className={cn(
+                // Liquid Glass Toggle Button
+                'glass-toggle',
+                'relative size-9 rounded-lg border',
+                'flex items-center justify-center',
+                // Educational Calm Integration
+                'educational-hover educational-focus',
+              )}
+              whileHover={{ scale: 1.02, y: -1 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{
+                type: 'spring',
+                stiffness: 400,
+                damping: 25,
+              }}
+              aria-label={
+                isCollapsed
+                  ? (t('expand_sidebar') as string)
+                  : (t('collapse_sidebar') as string)
+              }
+              aria-pressed={!isCollapsed}
+            >
+              <SidebarToggleIcon
+                isExpanded={!isCollapsed}
+                showAnimation
+                size={16}
+                variant="signature"
+              />
+            </motion.button>
+          </div>
         </div>
 
         {/* Navigation Items with Staggered Animation */}

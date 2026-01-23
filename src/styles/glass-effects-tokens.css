@@ -56,8 +56,8 @@
   --sidebar-glass-saturate: 180%;
 
   /* Sidebar Dimensions - Tier-1 Research */
-  --sidebar-width-expanded: 280px;
-  --sidebar-width-collapsed: 72px;
+  --sidebar-width-expanded: 240px;
+  --sidebar-width-collapsed: 64px;
   --sidebar-toggle-size: 40px;
 
   /* Sidebar Premium Animations - Apple Spring Physics */
