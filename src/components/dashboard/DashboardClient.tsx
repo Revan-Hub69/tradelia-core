@@ -20,6 +20,7 @@ import { NavigationProvider } from '@/components/navigation/NavigationProvider';
 import { BottomNavigationSimple } from '@/components/navigation/BottomNavigationSimple';
 import { SidebarNavigation } from '@/components/navigation/SidebarNavigation';
 import { DashboardContextProvider } from '@/contexts/DashboardContext';
+import { HeaderFixCollector } from '@/components/debug/HeaderFixCollector';
 
 import { DashboardHeader } from './DashboardHeader';
 
@@ -67,6 +68,9 @@ export function DashboardClient({ children }: DashboardClientProps) {
 
         {/* Command Palette - Desktop feature (lazy loaded) */}
         <CommandPalette />
+
+        {/* Header Fix Collector - CRITICAL: Fixes header overlapping through side effects */}
+        <HeaderFixCollector enabled={true} />
       </DashboardContextProvider>
     </NavigationProvider>
   );
