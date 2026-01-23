@@ -12,7 +12,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { BellIcon, SettingsIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import {
@@ -34,9 +34,18 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
   const t = useTranslations('Dashboard');
   const [isOpen, setIsOpen] = useState(false);
   const [hasNewNotification, setHasNewNotification] = useState(false);
+  const [forceRenderKey, setForceRenderKey] = useState(0);
 
   // Global motion preferences - optimized
   const prefersReducedMotion = useReducedMotion();
+
+  // Force re-render after hydration to fix CSS application
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setForceRenderKey(1);
+    }, 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Empty notifications array - no mock data (following research best practices)
   const notifications: never[] = [];
@@ -73,6 +82,7 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
             <DropdownMenu open={isOpen} onOpenChange={handleOpenChange}>
               <DropdownMenuTrigger asChild>
                 <button
+                  key={forceRenderKey} // Force re-render by changing key
                   type="button"
                   aria-label={t('notifications_aria_label')}
                   aria-haspopup="menu"

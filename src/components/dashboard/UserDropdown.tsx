@@ -10,7 +10,7 @@
  */
 
 import { useTranslations } from 'next-intl';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ChevronDownIcon, LogoutIcon, ProfileIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import {
@@ -41,10 +41,19 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
   const router = useRouter();
   const t = useTranslations('Dashboard');
   const [isOpen, setIsOpen] = useState(false);
+  const [forceRenderKey, setForceRenderKey] = useState(0);
   const focusTrapRef = useFocusTrap(isOpen);
 
   // Global motion preferences - optimized
   useReducedMotion(); // Hook ensures global motion preferences are detected
+
+  // Force re-render after hydration to fix CSS application
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setForceRenderKey(1);
+    }, 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Memoized initials calculation - performance optimization
   const initials = useMemo(() => {
@@ -72,6 +81,7 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
     <DropdownMenu onOpenChange={handleOpenChange}>
       <DropdownMenuTrigger asChild>
         <button
+          key={forceRenderKey} // Force re-render by changing key
           type="button"
           aria-label={t('nav_open_user_menu')}
           aria-expanded={isOpen}

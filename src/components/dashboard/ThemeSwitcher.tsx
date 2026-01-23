@@ -13,7 +13,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { MoonIcon, SunIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import {
@@ -28,9 +28,18 @@ export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) 
   const t = useTranslations('Dashboard');
   const { theme, setTheme } = useTheme();
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [forceRenderKey, setForceRenderKey] = useState(0);
 
   // REMOVED: useReducedMotion and mounted state (cause hydration mismatch)
   // Now using pure CSS @media (prefers-reduced-motion: reduce)
+
+  // Force re-render after hydration to fix CSS application
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setForceRenderKey(1);
+    }, 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Memoized callbacks - prevent unnecessary re-renders
   const handleToggle = useCallback(() => {
@@ -47,6 +56,7 @@ export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) 
       <Tooltip>
         <TooltipTrigger asChild>
           <button
+            key={forceRenderKey} // Force re-render by changing key
             type="button"
             onClick={handleToggle}
             aria-label={t('theme_toggle_aria_label')}

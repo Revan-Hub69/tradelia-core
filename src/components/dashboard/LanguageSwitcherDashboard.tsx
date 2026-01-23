@@ -12,7 +12,7 @@
 'use client';
 
 import { useLocale, useTranslations } from 'next-intl';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { GlobeIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import {
@@ -40,9 +40,18 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
   const t = useTranslations('Dashboard');
   const [isOpen, setIsOpen] = useState(false);
   const [isChangingLanguage, setIsChangingLanguage] = useState(false);
+  const [forceRenderKey, setForceRenderKey] = useState(0);
 
   // Global motion preferences - optimized
   const prefersReducedMotion = useReducedMotion();
+
+  // Force re-render after hydration to fix CSS application
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setForceRenderKey(1);
+    }, 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Memoized callbacks - prevent unnecessary re-renders
   const handleOpenChange = useCallback((open: boolean) => {
@@ -72,6 +81,7 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
             <DropdownMenu open={isOpen} onOpenChange={handleOpenChange}>
               <DropdownMenuTrigger asChild>
                 <button
+                  key={forceRenderKey} // Force re-render by changing key
                   type="button"
                   aria-label={t('language_switcher_aria_label')}
                   aria-haspopup="menu"
