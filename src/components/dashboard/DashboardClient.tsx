@@ -51,16 +51,10 @@ export function DashboardClient({ children }: DashboardClientProps) {
           - Main content fills remaining space
           - No manual margin calculations needed
         */}
-        <div className="grid min-h-screen md:grid-cols-[var(--sidebar-width-current)_1fr]">
+        <div className="grid min-h-screen md:grid-cols-[var(--sidebar-width-current)_1fr]" suppressHydrationWarning>
           {/* Sidebar Navigation - Tablet and Desktop (768px+) */}
           {/* Position sticky keeps it visible while scrolling */}
-          <Suspense
-            fallback={(
-              <div className="hidden h-screen border-r border-border/20 md:block">
-                <div className="h-full animate-pulse bg-muted/20" />
-              </div>
-            )}
-          >
+          <Suspense fallback={null}>
             <SidebarNavigation />
           </Suspense>
 

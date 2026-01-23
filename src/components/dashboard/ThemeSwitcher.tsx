@@ -63,6 +63,7 @@ export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) 
           >
             {/* Icon container - NO transitions */}
             <div
+              suppressHydrationWarning
               className={cn(
                 'relative',
                 // Theme transition animations - CSS handles reduced motion

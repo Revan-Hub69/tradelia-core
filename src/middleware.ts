@@ -15,8 +15,8 @@ const intlMiddleware = createMiddleware({
 export default async function middleware(request: NextRequest) {
   const isDevelopment = process.env.NODE_ENV === 'development';
 
-  // Apply rate limiting for auth endpoints
-  if (request.nextUrl.pathname.includes('/auth')) {
+  // Apply rate limiting for auth endpoints (ONLY in production)
+  if (!isDevelopment && request.nextUrl.pathname.includes('/auth')) {
     const clientId = getClientIdentifier(request);
 
     // Different rate limits for different actions

@@ -58,11 +58,11 @@ const AuthErrorContent = () => {
                     <CardDescription className="text-slate-600 dark:text-slate-400">
                       {description || t('description')}
                       {errorParam && (
-                        <div className="mt-2 text-xs text-slate-500">
+                        <span className="mt-2 block text-xs text-slate-500">
                           Error:
                           {' '}
                           {errorParam}
-                        </div>
+                        </span>
                       )}
                     </CardDescription>
                   </FadeIn>

@@ -11,6 +11,27 @@
 @import './glass-effects-tokens.css';
 @import './premium-spring-physics.css';
 @import './motion-tokens.css';
+
+/* Dashboard utilities - MUST BE BEFORE dashboard-ui.css */
+@layer utilities {
+  /* Z-index layers - Used by dashboard-ui.css */
+  .layer-nav {
+    z-index: var(--z-nav);
+  }
+  .layer-header {
+    z-index: var(--z-header);
+  }
+  .layer-popover {
+    z-index: var(--z-popover);
+  }
+  .layer-modal {
+    z-index: var(--z-modal);
+  }
+  .layer-toast {
+    z-index: var(--z-toast);
+  }
+}
+
 @import './dashboard-ui.css';
 @import './accessibility-compliance.css';
 @import './performance-optimizations.css';
@@ -121,23 +142,6 @@
   .tap-target {
     min-height: var(--tap-target);
     min-width: var(--tap-target);
-  }
-
-  /* Z-index layers */
-  .layer-nav {
-    z-index: var(--z-nav);
-  }
-  .layer-header {
-    z-index: var(--z-header);
-  }
-  .layer-popover {
-    z-index: var(--z-popover);
-  }
-  .layer-modal {
-    z-index: var(--z-modal);
-  }
-  .layer-toast {
-    z-index: var(--z-toast);
   }
 
   /* Dashboard badges */

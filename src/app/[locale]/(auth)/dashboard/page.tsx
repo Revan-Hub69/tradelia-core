@@ -14,7 +14,6 @@ import { Suspense } from 'react';
 
 import { EmailVerificationBanner } from '@/components/dashboard/EmailVerificationBanner';
 import { VirtualActivityFeed } from '@/components/dashboard/VirtualActivityFeed';
-import { ErrorBoundaryTest } from '@/components/dev/ErrorBoundaryTest';
 import { PageTransitionWrapper } from '@/components/transitions/PageTransitionWrapper';
 import { UiSurface } from '@/components/ui/UiSurface';
 // ✅ TIER 1: Optimized data fetching
@@ -62,9 +61,6 @@ const DashboardIndexPage = async () => {
 
   return (
     <PageTransitionWrapper>
-      {/* Error Boundary Test (dev only) */}
-      <ErrorBoundaryTest />
-
       <div className="mx-auto max-w-screen-xl space-y-6">
         {/* Email Verification Banner - Soft confirmation UX */}
         <EmailVerificationBanner />

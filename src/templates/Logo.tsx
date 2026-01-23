@@ -9,6 +9,7 @@ type LogoProps = {
   size?: 'sm' | 'md' | 'lg';
   href?: string;
   className?: string;
+  asChild?: boolean; // When true, don't wrap in Link (already inside a Link)
 };
 
 /**
@@ -17,7 +18,7 @@ type LogoProps = {
  * Testo con gradient diagonale: blu in basso, grigio in alto
  * Effetto underline moderno all'hover
  */
-export const Logo = ({ isTextHidden = false, size = 'md', href, className }: LogoProps) => {
+export const Logo = ({ isTextHidden = false, size = 'md', href, className, asChild = false }: LogoProps) => {
   const sizes = {
     sm: { icon: 'size-6', text: 'text-lg', gap: 'gap-2' },
     md: { icon: 'size-7', text: 'text-xl', gap: 'gap-2.5' },
@@ -69,7 +70,8 @@ export const Logo = ({ isTextHidden = false, size = 'md', href, className }: Log
     </div>
   );
 
-  if (href) {
+  // Don't wrap in Link if already inside a Link (asChild) or no href provided
+  if (href && !asChild) {
     return <Link href={href}>{content}</Link>;
   }
 

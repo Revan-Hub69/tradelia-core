@@ -324,10 +324,10 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
           >
             {isCollapsed
               ? (
-                  <Logo isTextHidden size="sm" />
+                  <Logo isTextHidden size="sm" asChild />
                 )
               : (
-                  <Logo size="sm" />
+                  <Logo size="sm" asChild />
                 )}
           </Link>
 
