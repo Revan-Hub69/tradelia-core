@@ -28,17 +28,12 @@ export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) 
   const t = useTranslations('Dashboard');
   const { theme, setTheme } = useTheme();
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [forceRenderKey, setForceRenderKey] = useState(0);
+  const [mounted, setMounted] = useState(false);
 
-  // REMOVED: useReducedMotion and mounted state (cause hydration mismatch)
-  // Now using pure CSS @media (prefers-reduced-motion: reduce)
-
-  // Force re-render after hydration to fix CSS application
+  // Wait for client-side hydration to complete before rendering
+  // This prevents hydration mismatch with next-themes (localStorage access)
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setForceRenderKey(1);
-    }, 50);
-    return () => clearTimeout(timer);
+    setMounted(true);
   }, []);
 
   // Memoized callbacks - prevent unnecessary re-renders
@@ -51,12 +46,27 @@ export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) 
 
   const isDark = theme === 'dark';
 
+  // Render placeholder during SSR to prevent hydration mismatch
+  if (!mounted) {
+    return (
+      <div
+        className={cn(
+          'relative flex size-11 items-center justify-center rounded-xl',
+          'header-icon glass-button',
+          className,
+        )}
+        aria-hidden="true"
+      >
+        <div className="size-5" /> {/* Empty placeholder */}
+      </div>
+    );
+  }
+
   return (
     <TooltipProvider delayDuration={300}>
       <Tooltip>
         <TooltipTrigger asChild>
           <button
-            key={forceRenderKey} // Force re-render by changing key
             type="button"
             onClick={handleToggle}
             aria-label={t('theme_toggle_aria_label')}

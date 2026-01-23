@@ -41,18 +41,15 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
   const router = useRouter();
   const t = useTranslations('Dashboard');
   const [isOpen, setIsOpen] = useState(false);
-  const [forceRenderKey, setForceRenderKey] = useState(0);
+  const [mounted, setMounted] = useState(false);
   const focusTrapRef = useFocusTrap(isOpen);
 
   // Global motion preferences - optimized
   useReducedMotion(); // Hook ensures global motion preferences are detected
 
-  // Force re-render after hydration to fix CSS application
+  // Wait for client-side hydration to complete before rendering
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setForceRenderKey(1);
-    }, 50);
-    return () => clearTimeout(timer);
+    setMounted(true);
   }, []);
 
   // Memoized initials calculation - performance optimization
@@ -77,11 +74,27 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
     setIsOpen(open);
   }, []);
 
+  // Render placeholder during SSR to prevent hydration mismatch
+  if (!mounted) {
+    return (
+      <div
+        className={cn(
+          'flex h-11 items-center gap-3 px-3 rounded-xl',
+          'header-icon glass-button',
+        )}
+        aria-hidden="true"
+      >
+        <div className="size-8 rounded-full bg-muted/50" /> {/* Avatar placeholder */}
+        <div className="hidden sm:block h-4 w-20 bg-muted/50 rounded" /> {/* Name placeholder */}
+        <div className="size-4" /> {/* Chevron placeholder */}
+      </div>
+    );
+  }
+
   return (
     <DropdownMenu onOpenChange={handleOpenChange}>
       <DropdownMenuTrigger asChild>
         <button
-          key={forceRenderKey} // Force re-render by changing key
           type="button"
           aria-label={t('nav_open_user_menu')}
           aria-expanded={isOpen}

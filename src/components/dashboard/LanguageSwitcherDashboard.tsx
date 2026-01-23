@@ -40,17 +40,14 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
   const t = useTranslations('Dashboard');
   const [isOpen, setIsOpen] = useState(false);
   const [isChangingLanguage, setIsChangingLanguage] = useState(false);
-  const [forceRenderKey, setForceRenderKey] = useState(0);
+  const [mounted, setMounted] = useState(false);
 
   // Global motion preferences - optimized
   const prefersReducedMotion = useReducedMotion();
 
-  // Force re-render after hydration to fix CSS application
+  // Wait for client-side hydration to complete before rendering
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setForceRenderKey(1);
-    }, 50);
-    return () => clearTimeout(timer);
+    setMounted(true);
   }, []);
 
   // Memoized callbacks - prevent unnecessary re-renders
@@ -73,6 +70,22 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
     router.replace(pathname, { locale: value });
   }, [locale, prefersReducedMotion, pathname, router]);
 
+  // Render placeholder during SSR to prevent hydration mismatch
+  if (!mounted) {
+    return (
+      <div
+        className={cn(
+          'relative flex size-11 items-center justify-center rounded-xl',
+          'header-icon glass-button',
+          className,
+        )}
+        aria-hidden="true"
+      >
+        <div className="size-5" /> {/* Empty placeholder */}
+      </div>
+    );
+  }
+
   return (
     <TooltipProvider delayDuration={300}>
       <Tooltip>
@@ -81,7 +94,6 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
             <DropdownMenu open={isOpen} onOpenChange={handleOpenChange}>
               <DropdownMenuTrigger asChild>
                 <button
-                  key={forceRenderKey} // Force re-render by changing key
                   type="button"
                   aria-label={t('language_switcher_aria_label')}
                   aria-haspopup="menu"

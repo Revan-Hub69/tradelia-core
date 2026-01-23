@@ -34,17 +34,14 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
   const t = useTranslations('Dashboard');
   const [isOpen, setIsOpen] = useState(false);
   const [hasNewNotification, setHasNewNotification] = useState(false);
-  const [forceRenderKey, setForceRenderKey] = useState(0);
+  const [mounted, setMounted] = useState(false);
 
   // Global motion preferences - optimized
   const prefersReducedMotion = useReducedMotion();
 
-  // Force re-render after hydration to fix CSS application
+  // Wait for client-side hydration to complete before rendering
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setForceRenderKey(1);
-    }, 50);
-    return () => clearTimeout(timer);
+    setMounted(true);
   }, []);
 
   // Empty notifications array - no mock data (following research best practices)
@@ -74,6 +71,22 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
     setIsOpen(false);
   }, []);
 
+  // Render placeholder during SSR to prevent hydration mismatch
+  if (!mounted) {
+    return (
+      <div
+        className={cn(
+          'relative flex size-11 items-center justify-center rounded-xl',
+          'header-icon glass-button',
+          className,
+        )}
+        aria-hidden="true"
+      >
+        <div className="size-5" /> {/* Empty placeholder */}
+      </div>
+    );
+  }
+
   return (
     <TooltipProvider delayDuration={300}>
       <Tooltip>
@@ -82,7 +95,6 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
             <DropdownMenu open={isOpen} onOpenChange={handleOpenChange}>
               <DropdownMenuTrigger asChild>
                 <button
-                  key={forceRenderKey} // Force re-render by changing key
                   type="button"
                   aria-label={t('notifications_aria_label')}
                   aria-haspopup="menu"
