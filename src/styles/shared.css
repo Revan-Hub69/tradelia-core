@@ -1,0 +1,21 @@
+/*
+ * TRADELIA SHARED STYLES
+ * Entry point for styles shared across all routes
+ * 
+ * Imported in root layout.tsx
+ */
+
+@tailwind base;
+@tailwind components;
+
+/* Design tokens */
+@import './shared/tokens.css';
+
+/* Base styles (reset, HTML elements) */
+@import './shared/base.css';
+
+/* Tailwind utilities */
+@tailwind utilities;
+
+/* Shared utilities */
+@import './shared/utilities.css';

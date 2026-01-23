@@ -1,4 +1,4 @@
-import '@/styles/global.css';
+import '@/styles/shared.css';
 
 import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';

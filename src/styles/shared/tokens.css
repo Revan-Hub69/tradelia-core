@@ -1,0 +1,103 @@
+/*
+ * TRADELIA DESIGN TOKENS
+ * Shared across all routes (landing + dashboard)
+ * 
+ * Based on 2026 best practices:
+ * - CSS custom properties for theming
+ * - HSL color space for easy manipulation
+ * - Semantic naming (not presentational)
+ */
+
+:root {
+  /* Colors - Light mode */
+  --background: 210 20% 98%;
+  --foreground: 224 71% 4%;
+  --card: 0 0% 100%;
+  --card-foreground: 224 71% 4%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 224 71% 4%;
+  --primary: 224 76% 48%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 224 71% 4%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215 16% 40%;
+  --accent: 213 50% 50%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --warning: 38 92% 50%;
+  --warning-foreground: 0 0% 0%;
+  --info: 199 89% 48%;
+  --info-foreground: 0 0% 100%;
+  --border: 214 32% 91%;
+  --input: 214 32% 91%;
+  --ring: 224 76% 48%;
+  --radius: 0.625rem;
+
+  /* Spacing */
+  --nav-height: 64px;
+  --header-height: 64px;
+  --sidebar-width: 240px;
+  --tap-target: 44px;
+  --nav-padding: 1rem;
+  --header-padding: 1rem 1.5rem;
+
+  /* Motion */
+  --motion-fast: 150ms;
+  --motion-base: 250ms;
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  /* Z-index layers */
+  --z-nav: 40;
+  --z-header: 50;
+  --z-popover: 60;
+  --z-modal: 70;
+  --z-toast: 80;
+
+  /* Glass effects */
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-blur: 12px;
+  --glass-saturate: 1.8;
+
+  /* Shadows */
+  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-nav: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.dark {
+  /* Colors - Dark mode */
+  --background: 222 47% 11%;
+  --foreground: 210 40% 98%;
+  --card: 217 33% 17%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222 47% 13%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 213 94% 68%;
+  --primary-foreground: 222 47% 11%;
+  --secondary: 217 33% 25%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217 33% 25%;
+  --muted-foreground: 215 20% 65%;
+  --accent: 213 60% 60%;
+  --accent-foreground: 222 47% 11%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --warning: 38 92% 50%;
+  --warning-foreground: 0 0% 0%;
+  --info: 199 89% 48%;
+  --info-foreground: 0 0% 100%;
+  --border: 217 33% 25%;
+  --input: 217 33% 25%;
+  --ring: 213 94% 68%;
+
+  /* Glass effects - Dark mode */
+  --glass-bg: rgba(15, 23, 42, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.1);
+
+  /* Shadows - Dark mode */
+  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-nav: 0 4px 16px rgba(0, 0, 0, 0.3);
+}

@@ -7,7 +7,6 @@
  */
 
 import { SkipLinks } from '@/components/accessibility/SkipLinks';
-import { ResponsiveDebug } from '@/components/debug/ResponsiveDebug';
 
 import { DashboardClient } from './DashboardClient';
 
@@ -34,9 +33,6 @@ export function DashboardShell({ children }: DashboardShellProps) {
           {children}
         </main>
       </DashboardClient>
-
-      {/* Responsive Debug - Development only */}
-      <ResponsiveDebug />
     </div>
   );
 }

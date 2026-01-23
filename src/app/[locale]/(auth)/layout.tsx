@@ -1,3 +1,5 @@
+import '@/styles/dashboard.css';
+
 import { EnterpriseRuntimeClient } from '@/components/runtime/EnterpriseRuntimeClient';
 import { UserDataProvider } from '@/providers/UserDataProvider';
 

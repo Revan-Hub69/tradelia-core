@@ -1,0 +1,295 @@
+/*
+ * TRADELIA DASHBOARD STYLES
+ * Entry point for dashboard-specific styles
+ * 
+ * Imported in (auth)/layout.tsx
+ */
+
+@tailwind utilities;
+
+/* Import dashboard-specific files */
+@import './glass-effects-tokens.css';
+@import './premium-spring-physics.css';
+@import './motion-tokens.css';
+@import './dashboard-ui.css';
+@import './accessibility-compliance.css';
+@import './performance-optimizations.css';
+
+/* Dashboard utilities */
+@layer utilities {
+  /* Glass surfaces */
+  .glass-surface {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  }
+
+  .glass-nav {
+    @apply glass-surface;
+    box-shadow: var(--shadow-nav);
+  }
+
+  .glass-header {
+    @apply glass-surface;
+    box-shadow: var(--shadow-soft);
+  }
+
+  /* Motion classes - Dashboard specific */
+  .motion-fast {
+    transition-duration: var(--motion-fast);
+    transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition-property: transform, opacity;
+    will-change: transform, opacity;
+  }
+
+  .motion-base {
+    transition-duration: var(--motion-base);
+    transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition-property: transform, opacity;
+    will-change: transform, opacity;
+  }
+
+  .motion-spring {
+    transition-duration: var(--motion-base);
+    transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition-property: transform, opacity;
+    will-change: transform, opacity;
+  }
+
+  .motion-spring-premium {
+    transition-duration: 400ms;
+    transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transition-property: transform, opacity, box-shadow;
+    will-change: transform, opacity, box-shadow;
+  }
+
+  /* Press depth - Dashboard touch feedback */
+  .press-depth {
+    will-change: transform, box-shadow;
+    transform: translate3d(0, 0, 0);
+    transition:
+      transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .press-depth:active {
+    transform: translate3d(0, 1px, 0) scale(0.96);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Hover effects */
+  .hover-lift {
+    transition:
+      transform 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275),
+      box-shadow 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    will-change: transform, box-shadow;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .nav-item-hover {
+    will-change: transform, opacity, box-shadow;
+    transform: translate3d(0, 0, 0);
+    transition: all 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+  }
+
+  .nav-item-hover:hover {
+    transform: translate3d(0, -1px, 0) scale(1.01);
+    box-shadow: 0 4px 16px rgba(var(--primary-rgb), 0.2);
+    background-color: rgba(var(--primary-rgb), 0.08);
+  }
+
+  /* Layout classes */
+  .nav-height {
+    height: var(--nav-height);
+  }
+
+  .header-height {
+    height: var(--header-height);
+  }
+
+  .tap-target {
+    min-height: var(--tap-target);
+    min-width: var(--tap-target);
+  }
+
+  /* Z-index layers */
+  .layer-nav {
+    z-index: var(--z-nav);
+  }
+  .layer-header {
+    z-index: var(--z-header);
+  }
+  .layer-popover {
+    z-index: var(--z-popover);
+  }
+  .layer-modal {
+    z-index: var(--z-modal);
+  }
+  .layer-toast {
+    z-index: var(--z-toast);
+  }
+
+  /* Dashboard layout */
+  .layout-stable {
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: var(--header-height) 1fr var(--nav-height);
+    grid-template-areas:
+      'header'
+      'main'
+      'nav';
+  }
+
+  @media (min-width: 768px) {
+    .layout-stable {
+      grid-template-columns: var(--sidebar-width-current, var(--sidebar-width)) 1fr;
+      grid-template-rows: var(--header-height) 1fr;
+      grid-template-areas:
+        'sidebar header'
+        'sidebar main';
+    }
+  }
+
+  .layout-header {
+    grid-area: header;
+  }
+  .layout-main {
+    grid-area: main;
+  }
+  .layout-nav {
+    grid-area: nav;
+  }
+  .layout-sidebar {
+    grid-area: sidebar;
+  }
+
+  /* Dashboard badges */
+  .badge-success {
+    @apply border-accent/30 bg-accent/20 text-accent;
+  }
+
+  .badge-warning {
+    @apply border-warning/30 bg-warning/20 text-warning;
+  }
+
+  .badge-info {
+    @apply border-info/30 bg-info/20 text-info;
+  }
+
+  /* Dashboard progress */
+  .progress-track {
+    @apply h-2 w-full rounded-full bg-secondary;
+  }
+
+  .progress-fill {
+    @apply h-full rounded-full bg-accent transition-all duration-300 ease-out;
+  }
+
+  /* Dashboard cards */
+  .card-interactive {
+    @apply transition-all duration-150 ease-out;
+  }
+
+  .card-interactive:hover {
+    @apply border-primary/50 shadow-lg;
+  }
+
+  /* Touch optimization */
+  .touch-optimized {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Focus ring */
+  .focus-ring {
+    outline: none;
+    transition: box-shadow var(--motion-fast) var(--ease-out);
+  }
+
+  .focus-ring:focus-visible {
+    box-shadow: 0 0 0 2px hsl(var(--ring));
+  }
+
+  /* Skeleton loading */
+  .navigation-skeleton {
+    will-change: background-position;
+    background: linear-gradient(
+      90deg,
+      rgba(var(--primary-rgb), 0.1) 25%,
+      rgba(var(--primary-rgb), 0.2) 50%,
+      rgba(var(--primary-rgb), 0.1) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+  }
+
+  @keyframes skeleton-loading {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  /* Stagger animations */
+  .stagger-item {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: stagger-in 700ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .stagger-item:nth-child(1) { animation-delay: 150ms; }
+  .stagger-item:nth-child(2) { animation-delay: 250ms; }
+  .stagger-item:nth-child(3) { animation-delay: 350ms; }
+  .stagger-item:nth-child(4) { animation-delay: 450ms; }
+  .stagger-item:nth-child(5) { animation-delay: 550ms; }
+
+  @keyframes stagger-in {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Reduced motion overrides */
+  @media (prefers-reduced-motion: reduce) {
+    .press-depth:active {
+      transform: none;
+      opacity: 0.7;
+    }
+
+    .motion-spring {
+      transition: transform var(--motion-fast) linear;
+    }
+
+    .stagger-item {
+      animation-duration: 0ms;
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/* FOUC prevention - Disable animations until runtime ready */
+html:not([data-tradelia-runtime="ready"]) .header-icon,
+html:not([data-tradelia-runtime="ready"]) .glass-button,
+html:not([data-tradelia-runtime="ready"]) .glass-header,
+html:not([data-tradelia-runtime="ready"]) .glass-dropdown,
+html:not([data-tradelia-runtime="ready"]) .glass-nav {
+  transition: none !important;
+  animation: none !important;
+  transform: none !important;
+}
