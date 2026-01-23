@@ -1,8 +1,7 @@
 @tailwind base;
 @tailwind components;
-@tailwind utilities;
 
-/* Import design tokens */
+/* Import design tokens BEFORE utilities for proper cascade */
 @import './tokens.css';
 @import './glass-effects-tokens.css';
 @import './premium-spring-physics.css';
@@ -30,6 +29,9 @@
 @import './haptic-visual-feedback.css';
 @import './intelligent-calm-ux.css';
 @import './brand-memory-system.css';
+
+/* Tailwind utilities LAST for proper specificity */
+@tailwind utilities;
 
 /*
  * TRADELIA DESIGN SYSTEM v1.1
