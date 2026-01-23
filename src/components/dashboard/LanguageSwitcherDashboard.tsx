@@ -40,15 +40,9 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
   const t = useTranslations('Dashboard');
   const [isOpen, setIsOpen] = useState(false);
   const [isChangingLanguage, setIsChangingLanguage] = useState(false);
-  const [mounted, setMounted] = useState(false);
 
   // Global motion preferences - optimized
   const prefersReducedMotion = useReducedMotion();
-
-  // Wait for client-side hydration to complete before rendering
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // Memoized callbacks - prevent unnecessary re-renders
   const handleOpenChange = useCallback((open: boolean) => {
@@ -69,22 +63,6 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
     setIsOpen(false);
     router.replace(pathname, { locale: value });
   }, [locale, prefersReducedMotion, pathname, router]);
-
-  // Render placeholder during SSR to prevent hydration mismatch
-  if (!mounted) {
-    return (
-      <div
-        className={cn(
-          'relative flex size-11 items-center justify-center rounded-xl',
-          'header-icon glass-button',
-          className,
-        )}
-        aria-hidden="true"
-      >
-        <div className="size-5" /> {/* Empty placeholder */}
-      </div>
-    );
-  }
 
   return (
     <TooltipProvider delayDuration={300}>

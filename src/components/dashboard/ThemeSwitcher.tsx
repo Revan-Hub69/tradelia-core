@@ -28,13 +28,6 @@ export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) 
   const t = useTranslations('Dashboard');
   const { theme, setTheme } = useTheme();
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  // Wait for client-side hydration to complete before rendering
-  // This prevents hydration mismatch with next-themes (localStorage access)
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // Memoized callbacks - prevent unnecessary re-renders
   const handleToggle = useCallback(() => {
@@ -45,22 +38,6 @@ export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) 
   }, [theme, setTheme]);
 
   const isDark = theme === 'dark';
-
-  // Render placeholder during SSR to prevent hydration mismatch
-  if (!mounted) {
-    return (
-      <div
-        className={cn(
-          'relative flex size-11 items-center justify-center rounded-xl',
-          'header-icon glass-button',
-          className,
-        )}
-        aria-hidden="true"
-      >
-        <div className="size-5" /> {/* Empty placeholder */}
-      </div>
-    );
-  }
 
   return (
     <TooltipProvider delayDuration={300}>

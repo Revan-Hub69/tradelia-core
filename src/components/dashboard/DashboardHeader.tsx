@@ -381,20 +381,20 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
             {/* User Dropdown */}
             <div className="flex items-center">
-              {isLoading
+              {userData
                 ? (
-                    <div className="size-8 animate-pulse rounded-full bg-muted" />
+                    <div>
+                      <UserDropdown
+                        userName={getUserDisplayName()}
+                        userEmail={userData.email}
+                        status="online"
+                        role="user"
+                      />
+                    </div>
                   )
-                : userData
+                : isLoading
                   ? (
-                      <div>
-                        <UserDropdown
-                          userName={getUserDisplayName()}
-                          userEmail={userData.email}
-                          status="online"
-                          role="user"
-                        />
-                      </div>
+                      <div className="size-8 animate-pulse rounded-full bg-muted" />
                     )
                   : (
                       <div className="text-xs text-muted-foreground">

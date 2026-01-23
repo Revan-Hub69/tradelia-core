@@ -213,9 +213,9 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
   const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Simulate loading state for premium UX
+  // Minimal loading state for premium UX (reduced from 800ms)
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 800);
+    const timer = setTimeout(() => setIsLoading(false), 200);
     return () => clearTimeout(timer);
   }, []);
 

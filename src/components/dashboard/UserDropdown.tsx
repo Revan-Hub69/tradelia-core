@@ -41,16 +41,10 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
   const router = useRouter();
   const t = useTranslations('Dashboard');
   const [isOpen, setIsOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const focusTrapRef = useFocusTrap(isOpen);
 
   // Global motion preferences - optimized
   useReducedMotion(); // Hook ensures global motion preferences are detected
-
-  // Wait for client-side hydration to complete before rendering
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // Memoized initials calculation - performance optimization
   const initials = useMemo(() => {
@@ -73,23 +67,6 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
   const handleOpenChange = useCallback((open: boolean) => {
     setIsOpen(open);
   }, []);
-
-  // Render placeholder during SSR to prevent hydration mismatch
-  if (!mounted) {
-    return (
-      <div
-        className={cn(
-          'flex h-11 items-center gap-3 px-3 rounded-xl',
-          'header-icon glass-button',
-        )}
-        aria-hidden="true"
-      >
-        <div className="size-8 rounded-full bg-muted/50" /> {/* Avatar placeholder */}
-        <div className="hidden sm:block h-4 w-20 bg-muted/50 rounded" /> {/* Name placeholder */}
-        <div className="size-4" /> {/* Chevron placeholder */}
-      </div>
-    );
-  }
 
   return (
     <DropdownMenu onOpenChange={handleOpenChange}>

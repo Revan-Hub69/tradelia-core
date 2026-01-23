@@ -34,15 +34,9 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
   const t = useTranslations('Dashboard');
   const [isOpen, setIsOpen] = useState(false);
   const [hasNewNotification, setHasNewNotification] = useState(false);
-  const [mounted, setMounted] = useState(false);
 
   // Global motion preferences - optimized
   const prefersReducedMotion = useReducedMotion();
-
-  // Wait for client-side hydration to complete before rendering
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // Empty notifications array - no mock data (following research best practices)
   const notifications: never[] = [];
@@ -70,22 +64,6 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
     // TODO: Navigate to notification settings page
     setIsOpen(false);
   }, []);
-
-  // Render placeholder during SSR to prevent hydration mismatch
-  if (!mounted) {
-    return (
-      <div
-        className={cn(
-          'relative flex size-11 items-center justify-center rounded-xl',
-          'header-icon glass-button',
-          className,
-        )}
-        aria-hidden="true"
-      >
-        <div className="size-5" /> {/* Empty placeholder */}
-      </div>
-    );
-  }
 
   return (
     <TooltipProvider delayDuration={300}>
