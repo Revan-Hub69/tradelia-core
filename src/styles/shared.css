@@ -11,6 +11,9 @@
 /* Design tokens */
 @import './shared/tokens.css';
 
+/* Animation tokens */
+@import './shared/animation-tokens.css';
+
 /* Base styles (reset, HTML elements) */
 @import './shared/base.css';
 

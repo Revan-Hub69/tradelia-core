@@ -1,0 +1,226 @@
+/* ============================================
+   ANIMATION TOKENS - 2026
+   Consolidated animation system
+   Single source of truth for all animations
+   ============================================ */
+
+:root {
+  /* ===== TIMING ===== */
+  --animation-duration-instant: 100ms;
+  --animation-duration-fast: 150ms;
+  --animation-duration-normal: 300ms;
+  --animation-duration-slow: 500ms;
+  --animation-duration-slower: 700ms;
+  
+  /* ===== EASING ===== */
+  --animation-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --animation-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --animation-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --animation-ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --animation-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  
+  /* ===== PULSE PARAMETERS ===== */
+  --pulse-opacity-min: 0.6;
+  --pulse-opacity-max: 1;
+  --pulse-duration: 2s;
+  
+  /* ===== GLOW PARAMETERS ===== */
+  --glow-intensity-min: 0.2;
+  --glow-intensity-max: 0.4;
+  --glow-radius-min: 10px;
+  --glow-radius-max: 20px;
+  --glow-color: var(--primary);
+  
+  /* ===== FADE PARAMETERS ===== */
+  --fade-distance: 20px;
+  --fade-scale-start: 0.95;
+}
+
+/* ============================================
+   BASE ANIMATIONS
+   ============================================ */
+
+/* Pulse - For attention-grabbing elements */
+@keyframes pulse-base {
+  0%, 100% { 
+    opacity: var(--pulse-opacity-min); 
+  }
+  50% { 
+    opacity: var(--pulse-opacity-max); 
+  }
+}
+
+/* Fade In Up - For content appearing from bottom */
+@keyframes fade-in-up {
+  0% { 
+    opacity: 0; 
+    transform: translateY(var(--fade-distance)); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+/* Fade In Scale - For modals and overlays */
+@keyframes fade-in-scale {
+  0% { 
+    opacity: 0; 
+    transform: scale(var(--fade-scale-start)); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: scale(1); 
+  }
+}
+
+/* Fade Out - For exit animations */
+@keyframes fade-out {
+  0% { 
+    opacity: 1; 
+  }
+  100% { 
+    opacity: 0; 
+  }
+}
+
+/* Glow - For highlighting important elements */
+@keyframes glow-base {
+  0% { 
+    box-shadow: 0 0 var(--glow-radius-min) rgba(var(--glow-color), var(--glow-intensity-min)); 
+  }
+  100% { 
+    box-shadow: 0 0 var(--glow-radius-max) rgba(var(--glow-color), var(--glow-intensity-max)); 
+  }
+}
+
+/* Spin - For loading indicators */
+@keyframes spin {
+  0% { 
+    transform: rotate(0deg); 
+  }
+  100% { 
+    transform: rotate(360deg); 
+  }
+}
+
+/* Skeleton Loading - For content placeholders */
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+.animate-pulse {
+  animation: pulse-base var(--pulse-duration) ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up var(--animation-duration-normal) var(--animation-ease-out) forwards;
+}
+
+.animate-fade-in-scale {
+  animation: fade-in-scale var(--animation-duration-normal) var(--animation-ease-out) forwards;
+}
+
+.animate-fade-out {
+  animation: fade-out var(--animation-duration-normal) var(--animation-ease-in) forwards;
+}
+
+.animate-glow {
+  animation: glow-base var(--pulse-duration) ease-in-out infinite alternate;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+.animate-skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(var(--skeleton-base), 0.1) 0%,
+    rgba(var(--skeleton-highlight), 0.2) 50%,
+    rgba(var(--skeleton-base), 0.1) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+}
+
+/* ============================================
+   STAGGER ANIMATIONS
+   For sequential item appearances
+   ============================================ */
+
+.stagger-item {
+  opacity: 0;
+  transform: translateY(var(--fade-distance));
+  animation: fade-in-up var(--animation-duration-slower) var(--animation-ease-out) forwards;
+}
+
+.stagger-item:nth-child(1) { animation-delay: 50ms; }
+.stagger-item:nth-child(2) { animation-delay: 150ms; }
+.stagger-item:nth-child(3) { animation-delay: 250ms; }
+.stagger-item:nth-child(4) { animation-delay: 350ms; }
+.stagger-item:nth-child(5) { animation-delay: 450ms; }
+.stagger-item:nth-child(6) { animation-delay: 550ms; }
+.stagger-item:nth-child(7) { animation-delay: 650ms; }
+.stagger-item:nth-child(8) { animation-delay: 750ms; }
+
+/* ============================================
+   ACCESSIBILITY
+   Respect user's motion preferences
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  /* Disable all custom animations */
+  .animate-pulse,
+  .animate-fade-in-up,
+  .animate-fade-in-scale,
+  .animate-fade-out,
+  .animate-glow,
+  .animate-spin,
+  .animate-skeleton,
+  .stagger-item {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ============================================
+   PERFORMANCE OPTIMIZATIONS
+   ============================================ */
+
+/* Promote animated elements to their own layer */
+.animate-pulse,
+.animate-fade-in-up,
+.animate-fade-in-scale,
+.animate-glow,
+.animate-spin {
+  will-change: transform, opacity;
+}
+
+/* Remove will-change after animation completes */
+.animate-pulse:not(:hover),
+.animate-fade-in-up:not(:hover),
+.animate-fade-in-scale:not(:hover),
+.animate-glow:not(:hover),
+.animate-spin:not(:hover) {
+  will-change: auto;
+}
