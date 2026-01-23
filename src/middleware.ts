@@ -52,26 +52,25 @@ export default async function middleware(request: NextRequest) {
   // Handle Supabase auth
   const { user } = await updateSession(request);
 
-  // AUTH DISABLED FOR TESTING
   // Protected routes that require authentication
-  // const protectedPaths = ['/dashboard', '/profile'];
+  const protectedPaths = ['/dashboard', '/profile'];
 
   // Lesson routes that require auth (exclude lesson-0 which is free)
-  // const isProtectedLesson = request.nextUrl.pathname.includes('/lesson')
-  //   && !request.nextUrl.pathname.includes('/lesson-0')
-  //   && !request.nextUrl.pathname.includes('/lesson-demo');
+  const isProtectedLesson = request.nextUrl.pathname.includes('/lesson')
+    && !request.nextUrl.pathname.includes('/lesson-0')
+    && !request.nextUrl.pathname.includes('/lesson-demo');
 
-  // const isProtectedPath = protectedPaths.some(path =>
-  //   request.nextUrl.pathname.includes(path),
-  // ) || isProtectedLesson;
+  const isProtectedPath = protectedPaths.some(path =>
+    request.nextUrl.pathname.includes(path),
+  ) || isProtectedLesson;
 
   // If accessing protected route without auth, redirect to sign-in
-  // if (isProtectedPath && !user) {
-  //   const signInUrl = new URL('/auth', request.url);
-  //   signInUrl.searchParams.set('redirect', request.nextUrl.pathname);
-  //   const response = Response.redirect(signInUrl);
-  //   return applySecurityHeaders(response, isDevelopment);
-  // }
+  if (isProtectedPath && !user) {
+    const signInUrl = new URL('/auth', request.url);
+    signInUrl.searchParams.set('redirect', request.nextUrl.pathname);
+    const response = Response.redirect(signInUrl);
+    return applySecurityHeaders(response, isDevelopment);
+  }
 
   // Apply internationalization
   const response = intlMiddleware(request);
