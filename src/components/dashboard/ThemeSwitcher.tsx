@@ -13,7 +13,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { MoonIcon, SunIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import {
@@ -22,7 +22,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/utils/Helpers';
 
 export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) => {
