@@ -146,40 +146,52 @@ export const HomeIcon = memo<Omit<SignatureIconProps, 'children'> & {
   </SignatureIconBase>
 ));
 
-// BELL ICON - Classic notification bell, professional grade
+// BELL ICON - Enhanced notification bell with professional details
 export const BellIcon = memo<Omit<SignatureIconProps, 'children'> & {
   hasNotifications?: boolean;
   notificationCount?: number;
+  isRinging?: boolean;
 }>(({
   hasNotifications = false,
   notificationCount = 0,
+  isRinging = false,
   ...props
 }) => (
   <SignatureIconBase {...props} state={hasNotifications ? 'active' : props.state}>
-    {/* Classic bell shape - immediately recognizable */}
-    <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" />
-    <path d="M13.73 21a2 2 0 01-3.46 0" />
-    {/* Professional notification badge */}
+    {/* Enhanced bell with better proportions and details */}
+    <g style={{
+      transform: isRinging ? 'rotate(15deg)' : 'rotate(0deg)',
+      transformOrigin: '12px 8px',
+      transition: 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+    }}>
+      {/* Bell body - enhanced curve for better visual appeal */}
+      <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" strokeLinecap="round" strokeLinejoin="round" />
+      {/* Bell clapper - subtle detail */}
+      <path d="M13.73 21a2 2 0 01-3.46 0" strokeLinecap="round" strokeLinejoin="round" />
+      {/* Bell top - small detail for realism */}
+      <path d="M12 2v2" strokeLinecap="round" />
+    </g>
+    {/* Enhanced notification badge with better positioning */}
     {hasNotifications && (
       <>
         <circle
-          cx="19"
-          cy="6"
-          r="3"
+          cx="18.5"
+          cy="5.5"
+          r="3.5"
           fill="hsl(var(--destructive))"
           stroke="hsl(var(--background))"
           strokeWidth="2"
         />
         {notificationCount > 0 && (
           <text
-            x="19"
-            y="7.5"
+            x="18.5"
+            y="7"
             textAnchor="middle"
-            fontSize="7"
+            fontSize="8"
             fontWeight="700"
             fill="hsl(var(--destructive-foreground))"
           >
-            {notificationCount > 9 ? '9+' : notificationCount}
+            {notificationCount > 99 ? '99+' : notificationCount}
           </text>
         )}
       </>
@@ -214,7 +226,7 @@ export const MoonIcon = memo<Omit<SignatureIconProps, 'children'> & {
   </SignatureIconBase>
 ));
 
-// MENU ICON - Three horizontal lines, perfect spacing
+// MENU ICON - Enhanced hamburger with perfect optical balance
 export const MenuIcon = memo<Omit<SignatureIconProps, 'children'> & {
   isOpen?: boolean;
 }>(({
@@ -222,51 +234,87 @@ export const MenuIcon = memo<Omit<SignatureIconProps, 'children'> & {
   ...props
 }) => (
   <SignatureIconBase {...props} state={isOpen ? 'active' : props.state}>
-    {/* Perfect hamburger menu - mathematical spacing */}
-    <path d="M3 6h18M3 12h18M3 18h18" />
+    {/* Enhanced hamburger menu with optical corrections */}
+    <g style={{
+      transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)',
+      transformOrigin: '12px 12px',
+      transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    }}>
+      {/* Top line - slightly shorter for optical balance */}
+      <path d="M4 6h16" strokeLinecap="round" />
+      {/* Middle line - full width for stability */}
+      <path d="M3 12h18" strokeLinecap="round" />
+      {/* Bottom line - slightly shorter, mirroring top */}
+      <path d="M4 18h16" strokeLinecap="round" />
+    </g>
   </SignatureIconBase>
 ));
 
-// CLOSE ICON - Perfect X, diagonal balance
-export const CloseIcon = memo<Omit<SignatureIconProps, 'children'>>(({
+// CLOSE ICON - Enhanced X with perfect diagonal balance and animation
+export const CloseIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isAnimated?: boolean;
+}>(({
+  isAnimated = false,
   ...props
 }) => (
   <SignatureIconBase {...props}>
-    {/* Perfect X with optical balance */}
-    <path d="M18 6L6 18M6 6l12 12" />
+    {/* Enhanced X with perfect optical balance and smooth animation */}
+    <g style={{
+      transform: isAnimated ? 'rotate(180deg)' : 'rotate(0deg)',
+      transformOrigin: '12px 12px',
+      transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    }}>
+      {/* First diagonal - precise positioning */}
+      <path d="M17.5 6.5L6.5 17.5" strokeLinecap="round" />
+      {/* Second diagonal - perfect cross */}
+      <path d="M6.5 6.5L17.5 17.5" strokeLinecap="round" />
+    </g>
   </SignatureIconBase>
 ));
 
-// CHEVRON DOWN - Perfect arrow, mathematical precision
+// CHEVRON DOWN - Enhanced arrow with perfect animation
 export const ChevronDownIcon = memo<Omit<SignatureIconProps, 'children'> & {
   isOpen?: boolean;
+  animationDuration?: number;
 }>(({
   isOpen = false,
+  animationDuration = 300,
   ...props
 }) => (
   <SignatureIconBase {...props} state={isOpen ? 'active' : props.state}>
-    <path
-      d="M6 9l6 6 6-6"
-      style={{
-        transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-        transformOrigin: '12px 12px',
-        transition: 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-      }}
-    />
+    {/* Enhanced chevron with smooth rotation and optical corrections */}
+    <g style={{
+      transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+      transformOrigin: '12px 12px',
+      transition: `transform ${animationDuration}ms cubic-bezier(0.4, 0, 0.2, 1)`,
+    }}>
+      {/* Perfect chevron with rounded caps for elegance */}
+      <path d="M7 10l5 5 5-5" strokeLinecap="round" strokeLinejoin="round" />
+    </g>
   </SignatureIconBase>
 ));
 
-// SETTINGS ICON - Classic gear, professional grade
+// SETTINGS ICON - Enhanced gear with professional details
 export const SettingsIcon = memo<Omit<SignatureIconProps, 'children'> & {
   isActive?: boolean;
+  showRotation?: boolean;
 }>(({
   isActive = false,
+  showRotation = false,
   ...props
 }) => (
   <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
-    {/* Professional settings gear */}
-    <circle cx="12" cy="12" r="3" />
-    <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
+    {/* Enhanced settings gear with smooth rotation */}
+    <g style={{
+      transform: showRotation ? 'rotate(45deg)' : 'rotate(0deg)',
+      transformOrigin: '12px 12px',
+      transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+    }}>
+      {/* Center circle - enhanced size */}
+      <circle cx="12" cy="12" r="3.5" strokeLinecap="round" />
+      {/* Gear teeth - refined positioning for better balance */}
+      <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" strokeLinecap="round" strokeLinejoin="round" />
+    </g>
   </SignatureIconBase>
 ));
 
@@ -313,31 +361,60 @@ export const ForumIcon = memo<Omit<SignatureIconProps, 'children'> & {
   </SignatureIconBase>
 ));
 
-// USER ICON - Person silhouette, profile
+// USER ICON - Enhanced profile with professional details
 export const ProfileIcon = memo<Omit<SignatureIconProps, 'children'> & {
   isActive?: boolean;
+  showStatus?: boolean;
 }>(({
   isActive = false,
+  showStatus = false,
   ...props
 }) => (
   <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
-    {/* Professional user icon */}
-    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
-    <circle cx="12" cy="7" r="4" />
+    {/* Enhanced professional user icon with better proportions */}
+    {/* Head - perfect circle with optical corrections */}
+    <circle cx="12" cy="8" r="4.5" strokeWidth="1.5" />
+    {/* Body - professional silhouette with rounded shoulders */}
+    <path d="M4 21v-1.5c0-2.5 2-4.5 4.5-4.5h7c2.5 0 4.5 2 4.5 4.5V21" strokeLinecap="round" />
+    {/* Optional status indicator for active state */}
+    {showStatus && isActive && (
+      <circle
+        cx="18"
+        cy="6"
+        r="2.5"
+        fill="hsl(var(--success))"
+        stroke="hsl(var(--background))"
+        strokeWidth="1.5"
+      />
+    )}
   </SignatureIconBase>
 ));
 
-// GLOBE ICON - World symbol, language/global
+// GLOBE ICON - Enhanced world symbol with refined meridians
 export const GlobeIcon = memo<Omit<SignatureIconProps, 'children'> & {
   isActive?: boolean;
+  showRotation?: boolean;
 }>(({
   isActive = false,
+  showRotation = false,
   ...props
 }) => (
   <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
-    {/* Perfect globe with meridians */}
-    <circle cx="12" cy="12" r="10" />
-    <path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
+    {/* Enhanced globe with refined details */}
+    <g style={{
+      transform: showRotation ? 'rotateY(15deg)' : 'rotateY(0deg)',
+      transformOrigin: '12px 12px',
+      transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+    }}>
+      {/* Main globe circle */}
+      <circle cx="12" cy="12" r="10" strokeLinecap="round" />
+      {/* Equator line */}
+      <path d="M2 12h20" strokeLinecap="round" />
+      {/* Meridian lines - enhanced for better visual balance */}
+      <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" strokeLinecap="round" />
+      {/* Additional meridian for depth */}
+      <path d="M8 4.5c2 3 2 13 0 15M16 4.5c-2 3-2 13 0 15" strokeLinecap="round" opacity="0.6" />
+    </g>
   </SignatureIconBase>
 ));
 
@@ -355,16 +432,29 @@ export const LockIcon = memo<Omit<SignatureIconProps, 'children'> & {
   </SignatureIconBase>
 ));
 
-// EXIT ICON - Door with arrow, logout
-export const ExitIcon = memo<Omit<SignatureIconProps, 'children'> & {
+// LOGOUT ICON - Enhanced exit with professional door and arrow
+export const LogoutIcon = memo<Omit<SignatureIconProps, 'children'> & {
   isActive?: boolean;
+  showAnimation?: boolean;
 }>(({
   isActive = false,
+  showAnimation = false,
   ...props
 }) => (
   <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
-    {/* Professional exit icon */}
-    <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
+    {/* Enhanced professional logout icon */}
+    <g style={{
+      transform: showAnimation ? 'translateX(2px)' : 'translateX(0px)',
+      transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    }}>
+      {/* Door frame - professional design */}
+      <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" strokeLinecap="round" strokeLinejoin="round" />
+      {/* Exit arrow - enhanced with better proportions */}
+      <path d="M16 17l4-5-4-5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M20 12H9" strokeLinecap="round" />
+      {/* Door handle - subtle detail for professionalism */}
+      <circle cx="7" cy="12" r="0.5" fill="currentColor" />
+    </g>
   </SignatureIconBase>
 ));
 
@@ -507,7 +597,7 @@ ForumIcon.displayName = 'TradeliaForumIcon';
 ProfileIcon.displayName = 'TradeliaProfileIcon';
 GlobeIcon.displayName = 'TradeliaGlobeIcon';
 LockIcon.displayName = 'TradeliaLockIcon';
-ExitIcon.displayName = 'TradeliaExitIcon';
+LogoutIcon.displayName = 'TradeliaLogoutIcon';
 MoreVerticalIcon.displayName = 'TradeliaMoreVerticalIcon';
 TrendingUpIcon.displayName = 'TradeliaTrendingUpIcon';
 StarIcon.displayName = 'TradeliaStarIcon';
@@ -518,15 +608,15 @@ PlusIcon.displayName = 'TradeliaPlusIcon';
 MinusIcon.displayName = 'TradeliaMinusIcon';
 CheckIcon.displayName = 'TradeliaCheckIcon';
 
-// Legacy aliases for compatibility
+// Legacy aliases for compatibility - Updated with enhanced versions
 export const LightIcon = SunIcon;
 export const DarkIcon = MoonIcon;
 export const ToolsIcon = CalculatorIcon;
 export const CommunityIcon = ForumIcon;
-export const LogoutIcon = ExitIcon;
+export const ExitIcon = LogoutIcon; // Use the enhanced LogoutIcon
 
 LightIcon.displayName = 'TradeliaLightIcon';
 DarkIcon.displayName = 'TradeliaDarkIcon';
 ToolsIcon.displayName = 'TradeliaToolsIcon';
 CommunityIcon.displayName = 'TradeliaCommunityIcon';
-LogoutIcon.displayName = 'TradeliaLogoutIcon';
+ExitIcon.displayName = 'TradeliaExitIcon';
