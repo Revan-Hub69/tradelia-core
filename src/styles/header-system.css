@@ -1,0 +1,179 @@
+/*
+ * HEADER SYSTEM - SINGLE SOURCE OF TRUTH
+ * 
+ * Unico file per TUTTI gli stili header del progetto
+ * Elimina duplicazioni, conflitti, e animazioni fantasma
+ */
+
+/* ============================================================================
+   HEADER VARIABLES - Design Tokens
+   ============================================================================ */
+
+:root {
+  /* Dimensions */
+  --header-height: 64px;
+  --header-height-mobile: 56px;
+  --header-padding: 1rem 1.5rem;
+  
+  /* Z-index */
+  --z-header: 50;
+  
+  /* Glass Effects */
+  --header-glass-bg: rgba(255, 255, 255, 0.95);
+  --header-glass-border: rgba(255, 255, 255, 0.2);
+  --header-glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
+  --header-glass-blur: 20px;
+  --header-glass-saturate: 180%;
+  
+  /* Icon Hierarchy */
+  --header-icon-primary-opacity: 1;
+  --header-icon-secondary-opacity: 0.85;
+  --header-icon-tertiary-opacity: 0.7;
+  
+  /* Transitions */
+  --header-transition: 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.dark {
+  --header-glass-bg: rgba(15, 23, 42, 0.95);
+  --header-glass-border: rgba(255, 255, 255, 0.1);
+  --header-glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================================================
+   HEADER CONTAINER
+   ============================================================================ */
+
+.glass-header {
+  background-color: var(--header-glass-bg);
+  border-color: var(--header-glass-border);
+  box-shadow: var(--header-glass-shadow);
+  backdrop-filter: blur(var(--header-glass-blur)) saturate(var(--header-glass-saturate));
+  -webkit-backdrop-filter: blur(var(--header-glass-blur)) saturate(var(--header-glass-saturate));
+}
+
+.header-height {
+  height: var(--header-height);
+}
+
+@media (max-width: 768px) {
+  .header-height {
+    height: var(--header-height-mobile);
+  }
+}
+
+.layer-header {
+  z-index: var(--z-header);
+}
+
+/* ============================================================================
+   HEADER ICONS - Unified System
+   ============================================================================ */
+
+.header-icon {
+  /* NO transitions - prevent ghost animations */
+  opacity: var(--header-icon-primary-opacity);
+  transform: translateZ(0); /* GPU acceleration */
+}
+
+.header-icon-primary {
+  opacity: var(--header-icon-primary-opacity);
+}
+
+.header-icon-secondary {
+  opacity: var(--header-icon-secondary-opacity);
+}
+
+.header-icon-tertiary {
+  opacity: var(--header-icon-tertiary-opacity);
+}
+
+/* Hover - ONLY on pointer devices */
+@media (hover: hover) and (pointer: fine) {
+  .header-icon:hover {
+    opacity: 1;
+    transform: translateZ(0) scale(1.01);
+    transition: opacity var(--header-transition), transform var(--header-transition);
+  }
+}
+
+/* Active - ALL devices */
+.header-icon:active {
+  transform: translateZ(0) scale(0.98);
+  transition: transform 150ms ease-out;
+}
+
+/* Focus - Accessibility */
+.header-icon:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* ============================================================================
+   GLASS BUTTON (Header Icons Container)
+   ============================================================================ */
+
+.glass-button {
+  background-color: var(--header-glass-bg);
+  border: 1px solid var(--header-glass-border);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  /* NO transitions - prevent conflicts with header-icon */
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .glass-button:hover {
+    background-color: rgba(var(--primary-rgb), 0.05);
+    transition: background-color var(--header-transition);
+  }
+}
+
+.glass-button:active {
+  background-color: rgba(var(--primary-rgb), 0.1);
+}
+
+/* ============================================================================
+   FOUC PREVENTION - Disable animations until ready
+   ============================================================================ */
+
+html:not([data-tradelia-runtime="ready"]) .header-icon,
+html:not([data-tradelia-runtime="ready"]) .glass-button,
+html:not([data-tradelia-runtime="ready"]) .glass-header {
+  transition: none !important;
+  animation: none !important;
+  transform: translateZ(0) !important;
+}
+
+/* ============================================================================
+   REDUCED MOTION - Accessibility
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .header-icon,
+  .glass-button,
+  .glass-header {
+    transition: none !important;
+    animation: none !important;
+  }
+  
+  .header-icon:hover {
+    transform: translateZ(0);
+    opacity: 1;
+  }
+}
+
+/* ============================================================================
+   UI COMPONENTS (shadcn/ui compatibility)
+   ============================================================================ */
+
+.ui-glass-header {
+  @apply glass-header;
+  @apply sticky top-0;
+  @apply layer-header;
+}
+
+.ui-header {
+  @apply ui-glass-header;
+  @apply header-height;
+}

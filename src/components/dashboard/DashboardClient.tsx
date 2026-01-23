@@ -19,7 +19,16 @@ import { Suspense } from 'react';
 import { NavigationProvider } from '@/components/navigation/NavigationProvider';
 import { DashboardContextProvider } from '@/contexts/DashboardContext';
 
-import { DashboardHeader } from './DashboardHeader';
+// Dynamic import for DashboardHeader - prevent SSR mismatch with theme
+const DashboardHeader = dynamic(
+  () => import('./DashboardHeader').then(mod => ({ default: mod.DashboardHeader })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="glass-header h-16 md:h-18 border-b border-border/20" />
+    ),
+  },
+);
 
 // Dynamic imports for performance optimization - ALL heavy components lazy loaded
 const SidebarNavigation = dynamic(

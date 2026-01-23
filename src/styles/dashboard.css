@@ -7,6 +7,9 @@
 
 @tailwind utilities;
 
+/* Import header system - SINGLE SOURCE OF TRUTH */
+@import './header-system.css';
+
 /* Import dashboard-specific files */
 @import './glass-effects-tokens.css';
 @import './premium-spring-physics.css';
@@ -18,9 +21,7 @@
   .layer-nav {
     z-index: var(--z-nav);
   }
-  .layer-header {
-    z-index: var(--z-header);
-  }
+  /* .layer-header removed - defined in header-system.css */
   .layer-popover {
     z-index: var(--z-popover);
   }
@@ -125,9 +126,7 @@
     height: var(--nav-height);
   }
 
-  .header-height {
-    height: var(--header-height);
-  }
+  /* .header-height removed - defined in header-system.css */
 
   .tap-target {
     min-height: var(--tap-target);
@@ -214,9 +213,7 @@
 }
 
 /* FOUC prevention - Disable animations until runtime ready */
-html:not([data-tradelia-runtime="ready"]) .header-icon,
-html:not([data-tradelia-runtime="ready"]) .glass-button,
-html:not([data-tradelia-runtime="ready"]) .glass-header,
+/* NOTE: Header classes moved to header-system.css */
 html:not([data-tradelia-runtime="ready"]) .glass-dropdown,
 html:not([data-tradelia-runtime="ready"]) .glass-nav {
   transition: none !important;
