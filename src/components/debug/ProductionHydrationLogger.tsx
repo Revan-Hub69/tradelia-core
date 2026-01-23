@@ -42,7 +42,6 @@ interface ElementSnapshot {
     opacity: string;
     visibility: string;
     // Flexbox
-    display: string;
     justifyContent: string;
     alignItems: string;
     gap: string;
