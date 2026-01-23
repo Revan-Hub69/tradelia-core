@@ -130,7 +130,7 @@ button,
 .signature-icon--signature:hover {
   filter: var(--signature-glass-medium);
   backdrop-filter: blur(6px); /* Enhanced from 4px */
-  transform: scale(1.05); /* Subtle scale for premium feel */
+  transform: scale(1.01); /* Refined from 1.05 */
 }
 
 /* Premium variant - full signature experience */

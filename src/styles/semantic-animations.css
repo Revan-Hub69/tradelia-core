@@ -294,7 +294,7 @@
 }
 
 .semantic-hover:hover {
-  transform: translateY(-1px) scale(1.02);
+  transform: translateY(-1px) scale(1.01);
   transition-delay: 0ms;
 }
 
@@ -480,7 +480,7 @@
 /* Desktop - Animazioni più raffinate */
 @media (min-width: 1024px) {
   .semantic-hover:hover {
-    transform: translateY(-2px) scale(1.02);
+    transform: translateY(-2px) scale(1.01);
   }
 }
 

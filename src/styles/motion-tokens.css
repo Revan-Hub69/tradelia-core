@@ -210,7 +210,7 @@
 }
 
 .hover-anticipation:hover {
-  transform: scale(1.02) translateY(-1px);
+  transform: scale(1.01) translateY(-1px);
   transition-delay: 0ms;
 }
 

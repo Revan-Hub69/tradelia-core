@@ -137,7 +137,7 @@
 }
 
 .signature-hover-optimized:hover {
-  transform: translate3d(0, -2px, 0) scale(1.02);
+  transform: translate3d(0, -2px, 0) scale(1.01);
   box-shadow: 0 8px 25px rgba(var(--primary-rgb), 0.15);
 }
 

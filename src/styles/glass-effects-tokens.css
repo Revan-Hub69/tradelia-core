@@ -206,7 +206,7 @@
 
 .glass-toggle:hover {
   box-shadow: var(--toggle-glass-hover-shadow);
-  transform: translateY(-1px) scale(1.02);
+  transform: translateY(-1px) scale(1.01);
 }
 
 /* Reduced Motion Support */
@@ -252,7 +252,7 @@
 
 /* Hover State - Optimized for 60fps */
 .avatar-liquid-glass-2026:hover {
-  transform: translateZ(0) scale(1.05);
+  transform: translateZ(0) scale(1.01);
   box-shadow: var(--avatar-glass-hover-shadow);
 }
 
