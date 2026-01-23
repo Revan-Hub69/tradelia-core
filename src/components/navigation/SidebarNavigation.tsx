@@ -405,7 +405,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                 
                 {/* Hover tooltip */}
                 <div className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 rounded bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
-                  {isCollapsed ? 'Expand' : 'Collapse'}
+                  {isCollapsed ? t('expand_sidebar') : t('collapse_sidebar')}
                 </div>
               </div>
             </motion.button>

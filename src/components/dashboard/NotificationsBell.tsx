@@ -21,7 +21,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { UiButton } from '@/components/ui/UiButton';
 import { cn } from '@/utils/Helpers';
 
 export const NotificationsBell: React.FC<{ className?: string }> = ({ className }) => {
@@ -160,36 +159,37 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
             backdropFilter: 'blur(4px)',
           }}
         >
-          <UiButton
-            variant="ghost"
-            size="sm"
+          <button
             onClick={() => {
               // Mark all as read functionality (when notifications exist)
               setIsOpen(false);
             }}
+            disabled={notifications.length === 0}
             className={cn(
               'h-8 px-3 text-xs transition-all duration-200 hover:scale-105',
-              // Use design system colors like sidebar navigation
-              'text-muted-foreground hover:text-foreground/90',
+              'rounded-md hover:bg-accent/10 focus:bg-accent/10',
+              // Use design system colors like sidebar navigation - force override
+              'text-muted-foreground hover:text-foreground/90 focus:text-foreground/90',
+              'disabled:opacity-50 disabled:cursor-not-allowed',
             )}
-            disabled={notifications.length === 0}
           >
             {t('mark_all_read')}
-          </UiButton>
+          </button>
 
-          <UiButton
-            variant="ghost"
-            size="sm"
+          <button
             onClick={handleNotificationSettings}
             className={cn(
               'flex h-8 items-center gap-1.5 px-3 text-xs transition-all duration-200 hover:scale-105',
-              // Use design system colors like sidebar navigation
-              'text-muted-foreground hover:text-foreground/90',
+              'rounded-md hover:bg-accent/10 focus:bg-accent/10',
+              // Use design system colors like sidebar navigation - force override
+              'text-muted-foreground hover:text-foreground/90 focus:text-foreground/90',
+              // Ensure icon inherits color
+              '[&>svg]:text-muted-foreground hover:[&>svg]:text-foreground/90',
             )}
           >
             <SettingsIcon size={16} className="transition-colors duration-200" />
             {t('notification_settings')}
-          </UiButton>
+          </button>
         </div>
       </DropdownMenuContent>
     </DropdownMenu>
