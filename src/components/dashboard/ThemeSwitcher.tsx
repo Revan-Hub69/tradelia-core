@@ -1,19 +1,19 @@
 /*
- * THEME SWITCHER - Premium Liquid Glass 2026 + Phase 2 Spring Physics
+ * THEME SWITCHER - Performance Optimized 2026
  *
  * Enhanced with:
- * - Apple iOS 26 spring physics animations
+ * - React.memo + useCallback for 60fps smooth hover
+ * - Global useReducedMotion hook prevents unnecessary re-renders
+ * - Transform-only animations with GPU optimization
+ * - Educational-appropriate micro-interactions
  * - Semantic theme transition animations (sun/moon rotation)
- * - Dynamic glass effects with environmental response
- * - Premium micro-interactions
- * - 120fps optimization
  */
 
 'use client';
 
 import { useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { MoonIcon, SunIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import {
@@ -22,43 +22,31 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/utils/Helpers';
 
-export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) => {
+export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) => {
   const t = useTranslations('Dashboard');
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  // Premium motion preferences detection
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  // Global motion preferences - optimized
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     setMounted(true);
-
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setPrefersReducedMotion(mediaQuery.matches);
-
-    const handleChange = (e: MediaQueryListEvent) => {
-      setPrefersReducedMotion(e.matches);
-    };
-
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
-  const handleToggle = () => {
+  // Memoized callbacks - prevent unnecessary re-renders
+  const handleToggle = useCallback(() => {
     if (!prefersReducedMotion) {
       setIsTransitioning(true);
       // Reset transition state after animation completes
       setTimeout(() => setIsTransitioning(false), 400);
     }
     setTheme(theme === 'dark' ? 'light' : 'dark');
-  };
-
-  const handleMouseDown = () => {};
-  const handleMouseUp = () => {};
-  const handleMouseLeave = () => {};
+  }, [theme, setTheme, prefersReducedMotion]);
 
   if (!mounted) {
     return (
@@ -81,39 +69,32 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
           <button
             type="button"
             onClick={handleToggle}
-            onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseLeave}
             aria-label={t('theme_toggle_aria_label')}
             className={cn(
               // Base styling
               'relative flex size-11 items-center justify-center rounded-xl',
               'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-              // Educational calm animations instead of premium spring physics
-              'educational-hover educational-focus educational-feedback educational-gpu-optimized',
-              // Premium liquid glass surface
-              'bg-background/60 hover:bg-background/80',
-              'border border-border/20 hover:border-border/40',
-              // Signature effects + Visual hierarchy
-              'signature-icon signature-icon--premium header-icon header-icon-secondary',
+              // Performance optimized - only transform animations
+              'transition-transform duration-200 ease-out',
+              'hover:scale-[1.02] active:scale-[0.98]',
+              // Liquid Glass surface - using design tokens
+              'glass-button',
+              // Visual hierarchy
+              'header-icon header-icon-secondary',
               className,
             )}
             style={{
-              // Hardware acceleration
-              willChange: 'transform, backdrop-filter, box-shadow',
-              // Educational transition timing instead of premium spring
-              transition: prefersReducedMotion
-                ? 'all 150ms ease-out'
-                : 'all var(--educational-gentle) var(--educational-gentle)',
+              // Hardware acceleration - GPU optimization
+              willChange: 'transform',
+              transform: 'translateZ(0)', // Force GPU layer
             }}
-            data-gpu="true"
           >
-            {/* Premium icon with signature effects */}
+            {/* Optimized icon with semantic transition */}
             <div
               className={cn(
-                'relative',
+                'relative transition-transform duration-200 ease-out',
                 // Theme transition animations - Educational version
-                isTransitioning && !prefersReducedMotion && 'theme-transition-educational',
+                isTransitioning && !prefersReducedMotion && 'animate-spin',
               )}
             >
               {isDark
@@ -122,7 +103,7 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
                       size={20}
                       isActive
                       variant="signature"
-                      className="text-foreground"
+                      className="text-foreground transition-colors duration-200"
                     />
                   )
                 : (
@@ -130,13 +111,13 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
                       size={20}
                       isActive
                       variant="signature"
-                      className="text-foreground"
+                      className="text-foreground transition-colors duration-200"
                     />
                   )}
 
               {/* Educational feedback - discrete border instead of glow */}
               {!prefersReducedMotion && isTransitioning && (
-                <div className="absolute inset-0 rounded-full border border-primary/20 pointer-events-none" />
+                <div className="absolute inset-0 rounded-full border border-primary/20 pointer-events-none animate-pulse" />
               )}
             </div>
           </button>
@@ -145,14 +126,9 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
           side="bottom"
           className={cn(
             'text-xs',
-            // Premium tooltip styling
-            'bg-background/95 backdrop-blur-xl',
-            'border border-border/20',
-            'shadow-xl',
+            // Liquid Glass tooltip
+            'glass-dropdown',
           )}
-          style={{
-            backdropFilter: 'blur(20px) saturate(180%)',
-          }}
         >
           <p className="font-medium">{isDark ? t('switch_to_light') : t('switch_to_dark')}</p>
           <p className="text-muted-foreground">Alt+T</p>
@@ -160,4 +136,4 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
       </Tooltip>
     </TooltipProvider>
   );
-};
+});
