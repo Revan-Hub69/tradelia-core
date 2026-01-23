@@ -71,9 +71,6 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseLeave}
           aria-label={t('notifications_aria_label')}
           aria-haspopup="menu"
           aria-expanded={isOpen}

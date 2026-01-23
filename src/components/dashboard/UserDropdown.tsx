@@ -53,6 +53,13 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
+  const handleSignOut = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push('/');
+    router.refresh();
+  };
+
   const getInitials = (name: string) => {
     return name
       .split(' ')
