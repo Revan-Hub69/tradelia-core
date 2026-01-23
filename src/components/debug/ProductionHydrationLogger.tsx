@@ -244,19 +244,40 @@ function captureFullSnapshot(type: HydrationSnapshot['snapshotType']): Hydration
 
 async function sendSnapshotToServer(snapshot: HydrationSnapshot) {
   try {
-    const response = await fetch('/api/debug/hydration-snapshot', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(snapshot),
+    // Save to localStorage for easy access
+    const storageKey = `hydration-${snapshot.snapshotType}-${snapshot.timestamp}`;
+    localStorage.setItem(storageKey, JSON.stringify(snapshot));
+    
+    // Also maintain a list of all snapshots
+    const snapshotsList = JSON.parse(localStorage.getItem('hydration-snapshots-list') || '[]');
+    snapshotsList.push({
+      key: storageKey,
+      timestamp: snapshot.timestamp,
+      type: snapshot.snapshotType,
+      url: snapshot.url,
     });
+    localStorage.setItem('hydration-snapshots-list', JSON.stringify(snapshotsList));
+    
+    console.log(`✅ Snapshot saved to localStorage: ${storageKey}`);
+    
+    // Try to send to server (optional, will fail on Vercel but that's ok)
+    try {
+      const response = await fetch('/api/debug/hydration-snapshot', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(snapshot),
+      });
 
-    if (!response.ok) {
-      console.error('Failed to send snapshot:', response.statusText);
+      if (!response.ok) {
+        console.warn('Server save failed (expected on Vercel), but localStorage save succeeded');
+      }
+    } catch {
+      // Ignore server errors, localStorage is the primary storage
     }
   } catch (error) {
-    console.error('Error sending snapshot:', error);
+    console.error('Error saving snapshot:', error);
   }
 }
 
@@ -292,14 +313,21 @@ export function ProductionHydrationLogger() {
         
         // Detailed log for glass buttons
         snapshot.allGlassButtons.forEach((btn, idx) => {
-          console.log(`  Button #${idx + 1}:`, {
-            selector: btn.selector,
-            classes: btn.classes,
-            backdropFilter: btn.computedStyles.backdropFilter,
-            background: btn.computedStyles.background,
-            transform: btn.computedStyles.transform,
-            transition: btn.computedStyles.transition,
-          });
+          console.log(`\n  ========== Button #${idx + 1} ==========`);
+          console.log(`  Selector: ${btn.selector}`);
+          console.log(`  Classes: ${btn.classes.join(', ')}`);
+          console.log(`  \n  🎨 COMPUTED STYLES:`);
+          console.log(`    backdrop-filter: ${btn.computedStyles.backdropFilter}`);
+          console.log(`    background: ${btn.computedStyles.background}`);
+          console.log(`    backgroundColor: ${btn.computedStyles.backgroundColor}`);
+          console.log(`    transform: ${btn.computedStyles.transform}`);
+          console.log(`    transition: ${btn.computedStyles.transition}`);
+          console.log(`    animation: ${btn.computedStyles.animation}`);
+          console.log(`    boxShadow: ${btn.computedStyles.boxShadow}`);
+          console.log(`    border: ${btn.computedStyles.border}`);
+          console.log(`    outline: ${btn.computedStyles.outline}`);
+          console.log(`    opacity: ${btn.computedStyles.opacity}`);
+          console.log(`  \n  📦 INLINE STYLE: ${btn.inlineStyle || 'none'}`);
         });
 
         // Send to server
