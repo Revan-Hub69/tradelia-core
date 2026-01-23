@@ -28,7 +28,7 @@ import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 
-import { DynamicIcon, type IconName, SidebarToggleIcon } from '@/components/icons';
+import { DynamicIcon, type IconName } from '@/components/icons';
 import { NavigationSkeleton } from '@/components/ui/skeleton';
 import { UiNavItem } from '@/components/ui/UiNavItem';
 import { getVisibleNavigationItems, trackNavigationEvent } from '@/data/navigation.config';
