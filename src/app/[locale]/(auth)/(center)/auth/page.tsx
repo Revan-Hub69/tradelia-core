@@ -257,8 +257,6 @@ const UnifiedAuthPageContent = () => {
     setLoading(true);
     setError(null);
 
-    console.log('🔐 Client-side signup attempt for:', data.email);
-
     try {
       // Use client-side signup with identities check (Tier 1 2026 method)
       const supabase = createClient();
@@ -298,7 +296,6 @@ const UnifiedAuthPageContent = () => {
           return;
         } else {
           // ✅ NEW USER CREATED - SOFT EMAIL CONFIRMATION
-          console.log('✅ New user created successfully - redirecting to dashboard with email verification notice');
 
           // Redirect to dashboard immediately with email verification notice
           const redirect = searchParams.get('redirect') || '/dashboard';

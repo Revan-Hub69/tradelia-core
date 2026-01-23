@@ -169,9 +169,6 @@ export const VirtualActivityFeed = ({
         // Generate large dataset for virtual scrolling demo
         const mockData = generateMockActivityData(1000); // 1000 items for testing
 
-        console.log(`Loading activities for user: ${userId}`);
-        console.log(`Generated ${mockData.length} activity items for virtual scrolling`);
-
         setActivities(mockData);
         setTotalCount(mockData.length);
       } catch (error) {

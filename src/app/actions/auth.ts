@@ -41,8 +41,6 @@ export async function signUpWithEmailAndPassword(data: {
   password: string;
 }): Promise<AuthResult> {
   try {
-    console.log('🔐 Server-side signup attempt:', { email: data.email });
-
     const supabase = createAdminClient();
 
     // Use admin.createUser for reliable error handling
@@ -88,8 +86,6 @@ export async function signUpWithEmailAndPassword(data: {
     }
 
     if (userData.user) {
-      console.log('✅ User created successfully:', userData.user.id);
-
       // Send confirmation email manually if needed
       const { error: emailError } = await supabase.auth.admin.generateLink({
         type: 'signup',
