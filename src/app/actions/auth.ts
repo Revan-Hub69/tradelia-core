@@ -126,28 +126,18 @@ export async function signUpWithEmailAndPassword(data: {
 /**
  * Check if email exists
  * 
- * SIMPLIFIED APPROACH:
- * - In development (no service role key): Skip check, let signup handle duplicates
- * - In production (with service role key): Use admin API for better UX
- * 
- * This avoids errors in local development while maintaining good UX in production
+ * PRODUCTION-SAFE APPROACH:
+ * - Try admin API if available
+ * - Gracefully fallback on any error (dev or prod)
  */
 export async function checkEmailExistsServer(email: string): Promise<{
   exists: boolean;
   error?: string;
 }> {
   try {
-    // Check if we have service role key (required for admin API)
-    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      console.log('ℹ️ Development mode - skipping email check (no service role key)');
-      // In development, always return false to allow signup attempt
-      // Supabase will handle "user already exists" error during signup
-      return { exists: false };
-    }
-
     const supabase = createAdminClient();
 
-    // Use admin API to list users by email (production only)
+    // Use admin API to list users by email
     const { data, error } = await supabase.auth.admin.listUsers();
 
     if (error) {
@@ -163,7 +153,7 @@ export async function checkEmailExistsServer(email: string): Promise<{
     return { exists: userExists };
   } catch (error) {
     console.error('💥 Server-side email check exception:', error);
-    // On exception, assume new user to allow signup attempt
+    // On exception (missing env vars in dev), assume new user
     return { exists: false };
   }
 }
