@@ -90,26 +90,12 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     threshold: 15, // Increased threshold based on real apps research
   });
 
-  // Sidebar detection for conditional hide behavior
-  const [hasSidebar, setHasSidebar] = useState(false);
-  
-  useEffect(() => {
-    const checkSidebar = () => {
-      // Sidebar is present on tablet+ (768px+) based on layout structure
-      // Using 768px to match md: breakpoint exactly
-      const mediaQuery = window.matchMedia('(min-width: 768px)');
-      setHasSidebar(mediaQuery.matches);
-    };
-    
-    checkSidebar();
-    const mediaQuery = window.matchMedia('(min-width: 768px)');
-    mediaQuery.addEventListener('change', checkSidebar);
-    
-    return () => mediaQuery.removeEventListener('change', checkSidebar);
-  }, []);
+  // REMOVED: hasSidebar JS detection (causes layout shift)
+  // Now using pure CSS responsive classes (md:)
 
   // Header should only hide on mobile (no sidebar), stay fixed on tablet/desktop (with sidebar)
-  const shouldHideOnScroll = hideOnScroll && !hasSidebar;
+  // SIMPLIFIED: hideOnScroll only on mobile (CSS handles sidebar presence)
+  const shouldHideOnScroll = hideOnScroll;
 
   // Global search keyboard shortcut (Cmd/Ctrl + K)
   useEffect(() => {
@@ -319,8 +305,9 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         aria-label={t('header_aria_label')}
         className={cn(
           'fixed top-0 layer-header',
-          // Dynamic width based on sidebar state
-          hasSidebar ? 'left-[var(--sidebar-width-current)] right-0' : 'left-0 right-0 w-full',
+          // Responsive width - NO JS, pure CSS
+          'left-0 right-0 w-full',
+          'md:left-[var(--sidebar-width-current)] md:right-0',
           'motion-base',
           // Premium liquid glass effects
           isScrolled && showScrollShadow && [

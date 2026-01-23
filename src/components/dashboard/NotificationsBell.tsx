@@ -81,8 +81,8 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
                     // Base styling
                     'relative flex size-11 items-center justify-center rounded-xl',
                     'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-                    // Optimized animation system with explicit transitions
-                    'header-icon glass-button transition-all duration-300 ease-out',
+                    // ONLY design tokens - NO Tailwind transitions
+                    'header-icon glass-button',
                     // Notification arrival animation - Educational version
                     hasNewNotification && !prefersReducedMotion && 'animate-pulse',
                     className,
