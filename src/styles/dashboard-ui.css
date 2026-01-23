@@ -178,7 +178,26 @@
   @apply md:hidden;
   @apply ui-glass-surface;
   @apply border-t border-white/20 dark:border-white/10;
-  @apply pb-safe-bottom;
+  /* Safe area padding */
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .ui-bottom-nav {
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+}
+
+@media (min-width: 768px) {
+  .ui-bottom-nav {
+    padding-bottom: max(4px, env(safe-area-inset-bottom));
+  }
+}
+
+@media (min-width: 1024px) {
+  .ui-bottom-nav {
+    padding-bottom: 4px;
+  }
 }
 
 /* ============================================================================
