@@ -1,7 +1,7 @@
 /**
  * Quick MIME Type Fix Test
  *
- * Tests if service worker no longer interferes with Next.js static assets
+ * Tests if static assets are served correctly by Next.js
  */
 
 const fetch = require('node-fetch');

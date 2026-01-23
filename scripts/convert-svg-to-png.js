@@ -1,5 +1,5 @@
 /**
- * Convert SVG PWA icons to PNG using Sharp
+ * Convert SVG icons to PNG using Sharp
  */
 
 const sharp = require('sharp');

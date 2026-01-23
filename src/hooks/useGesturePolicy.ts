@@ -1,7 +1,7 @@
 /*
  * GESTURE POLICY HOOK - Enterprise Touch Optimization
  *
- * Prevents common mobile browser gestures that interfere with PWA UX
+ * Prevents common mobile browser gestures that interfere with app UX
  * Configurable policies for different interaction contexts
  */
 

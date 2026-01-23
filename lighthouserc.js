@@ -12,8 +12,8 @@ module.exports = {
       settings: {
         // ✅ TIER 1: Chrome flags for consistent testing
         chromeFlags: '--no-sandbox --disable-dev-shm-usage --disable-gpu',
-        // Focus on PWA audits for dashboard
-        skipAudits: process.env.CI ? ['installable-manifest', 'splash-screen', 'themed-omnibox'] : [],
+        // Focus on performance and accessibility audits
+        skipAudits: process.env.CI ? ['installable-manifest', 'splash-screen', 'themed-omnibox', 'service-worker'] : ['installable-manifest', 'service-worker'],
       },
     },
     assert: {
@@ -35,10 +35,6 @@ module.exports = {
         // Dashboard bundle size budgets
         'total-byte-weight': ['warn', { maxNumericValue: 800000 }], // < 800KB total (dashboard focused)
         'unused-javascript': ['warn', { maxNumericValue: 80000 }], // < 80KB unused JS
-
-        // PWA requirements for dashboard
-        'installable-manifest': process.env.CI ? 'off' : ['error', { minScore: 1 }],
-        'service-worker': process.env.CI ? 'off' : ['error', { minScore: 1 }],
 
         // Security (important for financial dashboard)
         'is-on-https': process.env.CI ? 'off' : ['error', { minScore: 1 }],

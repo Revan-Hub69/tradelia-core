@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Inspector - Header & Menu Elements</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            background: #0a0a0a;
+            color: #00ff00;
+            font-size: 12px;
+        }
+        .inspector-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 450px;
+            height: 100vh;
+            background: rgba(0,0,0,0.95);
+            border-left: 2px solid #00ff00;
+            padding: 15px;
+            overflow-y: auto;
+            z-index: 999999;
+        }
+        .inspector-header {
+            color: #00ffff;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .element-section {
+            margin: 15px 0;
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 10px;
+        }
+        .element-title {
+            color: #ffff00;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .css-property {
+            margin: 3px 0;
+            padding-left: 10px;
+        }
+        .css-property.important {
+            color: #ff6666;
+        }
+        .css-property.zindex {
+            color: #ff9900;
+            font-weight: bold;
+        }
+        .css-property.position {
+            color: #9999ff;
+        }
+        .css-property.transform {
+            color: #ff99ff;
+        }
+        .css-source {
+            color: #666;
+            font-size: 10px;
+            margin-left: 20px;
+        }
+        button {
+            background: #333;
+            color: #00ff00;
+            border: 1px solid #555;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-family: inherit;
+        }
+        button:hover {
+            background: #555;
+            color: #00ffff;
+        }
+        .highlight-element {
+            outline: 3px solid #ff0000 !important;
+            outline-offset: 2px !important;
+            background: rgba(255,0,0,0.1) !important;
+        }
+        .controls {
+            position: sticky;
+            top: 0;
+            background: rgba(0,0,0,0.9);
+            padding: 10px 0;
+            border-bottom: 1px solid #333;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="inspector-panel">
+        <div class="inspector-header">
+            <h2>🔍 CSS INSPECTOR</h2>
+            <p>Header & Menu Elements Analysis</p>
+        </div>
+        
+        <div class="controls">
+            <button onclick="inspectHeaderElements()">🎯 Inspect Header</button>
+            <button onclick="inspectMenuElements()">📋 Inspect Menus</button>
+            <button onclick="inspectTooltips()">💬 Inspect Tooltips</button>
+            <button onclick="clearHighlights()">🧹 Clear Highlights</button>
+            <button onclick="exportReport()">📄 Export Report</button>
+        </div>
+        
+        <div id="inspection-results"></div>
+    </div>
+
+    <script>
+        let inspectionData = {};
+        
+        function inspectHeaderElements() {
+            const results = document.getElementById('inspection-results');
+            results.innerHTML = '<div class="element-title">🔍 SCANNING HEADER ELEMENTS...</div>';
+            
+            // Selettori specifici per header
+            const headerSelectors = [
+                'header',
+                '[data-testid*="header"]',
+                '.dashboard-header',
+                '.header',
+                '[class*="Header"]',
+                '[role="banner"]'
+            ];
+            
+            let headerElements = [];
+            headerSelectors.forEach(selector => {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(el => headerElements.push({element: el, selector}));
+            });
+            
+            if (headerElements.length === 0) {
+                results.innerHTML = '<div class="element-title">❌ NO HEADER ELEMENTS FOUND</div><p>Assicurati di essere sulla dashboard di Tradelia</p>';
+                return;
+            }
+            
+            let html = '<div class="element-title">📊 HEADER ELEMENTS FOUND: ' + headerElements.length + '</div>';
+            
+            headerElements.forEach((item, index) => {
+                const el = item.element;
+                const computedStyle = getComputedStyle(el);
+                
+                // Highlight element
+                el.classList.add('highlight-element');
+                
+                html += `
+                    <div class="element-section">
+                        <div class="element-title">HEADER ${index + 1}: ${item.selector}</div>
+                        <div class="css-property">Tag: &lt;${el.tagName.toLowerCase()}&gt;</div>
+                        <div class="css-property">Classes: ${el.className}</div>
+                        
+                        <div class="css-property zindex">z-index: ${computedStyle.zIndex}</div>
+                        <div class="css-property position">position: ${computedStyle.position}</div>
+                        <div class="css-property">display: ${computedStyle.display}</div>
+                        
+                        ${computedStyle.transform !== 'none' ? 
+                            `<div class="css-property transform">transform: ${computedStyle.transform}</div>` : ''}
+                        
+                        <div class="css-property">width: ${computedStyle.width}</div>
+                        <div class="css-property">height: ${computedStyle.height}</div>
+                        
+                        ${computedStyle.backgroundColor !== 'rgba(0, 0, 0, 0)' ? 
+                            `<div class="css-property">background: ${computedStyle.backgroundColor}</div>` : ''}
+                        
+                        ${computedStyle.backdropFilter !== 'none' ? 
+                            `<div class="css-property">backdrop-filter: ${computedStyle.backdropFilter}</div>` : ''}
+                    </div>
+                `;
+                
+                // Store data for export
+                inspectionData[`header_${index}`] = {
+                    selector: item.selector,
+                    tagName: el.tagName,
+                    className: el.className,
+                    zIndex: computedStyle.zIndex,
+                    position: computedStyle.position,
+                    transform: computedStyle.transform,
+                    display: computedStyle.display
+                };
+            });
+            
+            results.innerHTML = html;
+        }
+        
+        function inspectMenuElements() {
+            const results = document.getElementById('inspection-results');
+            results.innerHTML = '<div class="element-title">🔍 SCANNING MENU ELEMENTS...</div>';
+            
+            // Selettori per menu/dropdown
+            const menuSelectors = [
+                '[role="menu"]',
+                '[role="menubar"]',
+                '[role="menuitem"]',
+                '[data-radix-dropdown-menu-content]',
+                '[data-radix-popover-content]',
+                '[data-radix-tooltip-content]',
+                '.dropdown-menu',
+                '.popover',
+                '.menu',
+                '[class*="Menu"]',
+                '[class*="Dropdown"]',
+                '[class*="Popover"]'
+            ];
+            
+            let menuElements = [];
+            menuSelectors.forEach(selector => {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(el => {
+                    if (isVisible(el)) {
+                        menuElements.push({element: el, selector});
+                    }
+                });
+            });
+            
+            if (menuElements.length === 0) {
+                results.innerHTML = '<div class="element-title">❌ NO VISIBLE MENU ELEMENTS</div><p>Prova ad aprire un dropdown o menu prima di ispezionare</p>';
+                return;
+            }
+            
+            let html = '<div class="element-title">📋 MENU ELEMENTS FOUND: ' + menuElements.length + '</div>';
+            
+            menuElements.forEach((item, index) => {
+                const el = item.element;
+                const computedStyle = getComputedStyle(el);
+                
+                // Highlight element
+                el.classList.add('highlight-element');
+                
+                html += `
+                    <div class="element-section">
+                        <div class="element-title">MENU ${index + 1}: ${item.selector}</div>
+                        <div class="css-property">Tag: &lt;${el.tagName.toLowerCase()}&gt;</div>
+                        <div class="css-property">Classes: ${el.className}</div>
+                        
+                        <div class="css-property zindex">z-index: ${computedStyle.zIndex}</div>
+                        <div class="css-property position">position: ${computedStyle.position}</div>
+                        
+                        <div class="css-property">top: ${computedStyle.top}</div>
+                        <div class="css-property">left: ${computedStyle.left}</div>
+                        <div class="css-property">right: ${computedStyle.right}</div>
+                        <div class="css-property">bottom: ${computedStyle.bottom}</div>
+                        
+                        ${computedStyle.transform !== 'none' ? 
+                            `<div class="css-property transform">transform: ${computedStyle.transform}</div>` : ''}
+                        
+                        <div class="css-property">visibility: ${computedStyle.visibility}</div>
+                        <div class="css-property">opacity: ${computedStyle.opacity}</div>
+                        
+                        ${el.hasAttribute('data-state') ? 
+                            `<div class="css-property">data-state: ${el.getAttribute('data-state')}</div>` : ''}
+                    </div>
+                `;
+                
+                inspectionData[`menu_${index}`] = {
+                    selector: item.selector,
+                    zIndex: computedStyle.zIndex,
+                    position: computedStyle.position,
+                    visibility: computedStyle.visibility,
+                    opacity: computedStyle.opacity
+                };
+            });
+            
+            results.innerHTML = html;
+        }
+        
+        function inspectTooltips() {
+            const results = document.getElementById('inspection-results');
+            results.innerHTML = '<div class="element-title">🔍 SCANNING TOOLTIP ELEMENTS...</div>';
+            
+            const tooltipSelectors = [
+                '[role="tooltip"]',
+                '[data-radix-tooltip-content]',
+                '.tooltip',
+                '[class*="tooltip"]',
+                '[class*="Tooltip"]',
+                '[title]:not([title=""])'
+            ];
+            
+            let tooltipElements = [];
+            tooltipSelectors.forEach(selector => {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(el => tooltipElements.push({element: el, selector}));
+            });
+            
+            let html = '<div class="element-title">💬 TOOLTIP ELEMENTS FOUND: ' + tooltipElements.length + '</div>';
+            
+            tooltipElements.forEach((item, index) => {
+                const el = item.element;
+                const computedStyle = getComputedStyle(el);
+                
+                el.classList.add('highlight-element');
+                
+                html += `
+                    <div class="element-section">
+                        <div class="element-title">TOOLTIP ${index + 1}: ${item.selector}</div>
+                        <div class="css-property">Classes: ${el.className}</div>
+                        
+                        <div class="css-property zindex">z-index: ${computedStyle.zIndex}</div>
+                        <div class="css-property position">position: ${computedStyle.position}</div>
+                        <div class="css-property">visibility: ${computedStyle.visibility}</div>
+                        <div class="css-property">opacity: ${computedStyle.opacity}</div>
+                        
+                        ${el.hasAttribute('title') ? 
+                            `<div class="css-property">title: "${el.getAttribute('title')}"</div>` : ''}
+                        
+                        ${computedStyle.pointerEvents !== 'auto' ? 
+                            `<div class="css-property">pointer-events: ${computedStyle.pointerEvents}</div>` : ''}
+                    </div>
+                `;
+            });
+            
+            results.innerHTML = html;
+        }
+        
+        function isVisible(el) {
+            const style = getComputedStyle(el);
+            return style.display !== 'none' && 
+                   style.visibility !== 'hidden' && 
+                   parseFloat(style.opacity) > 0;
+        }
+        
+        function clearHighlights() {
+            document.querySelectorAll('.highlight-element').forEach(el => {
+                el.classList.remove('highlight-element');
+            });
+        }
+        
+        function exportReport() {
+            const report = {
+                timestamp: new Date().toISOString(),
+                url: window.location.href,
+                userAgent: navigator.userAgent,
+                data: inspectionData
+            };
+            
+            const blob = new Blob([JSON.stringify(report, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'css-inspection-report.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        // Auto-start inspection when loaded
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                if (window.location.href.includes('localhost:3000')) {
+                    inspectHeaderElements();
+                }
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
