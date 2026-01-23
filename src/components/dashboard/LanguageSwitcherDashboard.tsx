@@ -80,8 +80,8 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
             // Premium liquid glass surface
             'bg-background/60 hover:bg-background/80',
             'border border-border/20 hover:border-border/40',
-            // Signature effects
-            'signature-icon signature-icon--premium',
+            // Signature effects + Visual hierarchy
+            'signature-icon signature-icon--premium header-icon header-icon-secondary',
             className,
           )}
           style={{
@@ -111,7 +111,7 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
             <GlobeIcon
               size={20}
               isActive={isOpen}
-              variant="premium"
+              variant="signature"
               className="text-foreground"
             />
 
@@ -120,7 +120,7 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
               <div
                 className="absolute inset-0 rounded-full opacity-20 blur-sm"
                 style={{
-                  background: 'radial-gradient(circle, #10b981 0%, transparent 70%)',
+                  background: 'var(--glow-language)',
                   animation: isOpen ? 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite' : 'none',
                 }}
               />
@@ -141,12 +141,12 @@ export const LanguageSwitcherDashboard: React.FC<{ className?: string }> = ({ cl
         )}
         style={{
           // Premium liquid glass backdrop
-          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          backgroundColor: 'var(--glass-dropdown-bg)',
           backdropFilter: prefersReducedMotion
             ? 'blur(8px)'
-            : 'blur(20px) saturate(180%)',
+            : `blur(var(--glass-dropdown-blur)) saturate(var(--glass-dropdown-saturate))`,
           // Enhanced shadow with depth
-          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1)',
+          boxShadow: 'var(--glass-dropdown-shadow)',
         }}
       >
         <DropdownMenuRadioGroup value={locale} onValueChange={handleChange}>

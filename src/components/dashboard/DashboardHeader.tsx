@@ -260,11 +260,12 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           'bg-muted/50 hover:bg-muted transition-colors',
           'text-sm text-muted-foreground',
           'border border-border/50',
+          'header-icon header-icon-tertiary',
           compactMode ? 'hidden lg:flex' : 'hidden md:flex',
         )}
         aria-label={t('search_aria_label')}
       >
-        <SearchIcon size={16} />
+        <SearchIcon size={20} variant="signature" />
         <span className="hidden lg:inline">{t('search_content')}</span>
         <kbd className="hidden items-center gap-1 rounded border bg-muted px-1.5 py-0.5 font-mono text-xs text-muted-foreground lg:inline-flex">
           <span className="text-xs">⌘</span>

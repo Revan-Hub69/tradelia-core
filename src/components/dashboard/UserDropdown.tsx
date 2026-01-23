@@ -94,6 +94,8 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
             // Premium liquid glass surface
             'bg-background/60 hover:bg-background/80',
             'border border-border/20 hover:border-border/40',
+            // Visual hierarchy
+            'header-icon header-icon-primary',
           )}
           style={{
             // Premium liquid glass effects (iOS 26 research)
@@ -140,7 +142,7 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
             <ChevronDownIcon
               size={16}
               isOpen={isOpen}
-              variant="premium"
+              variant="signature"
               className="text-muted-foreground"
             />
           </div>
@@ -155,12 +157,12 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
         )}
         style={{
           // Premium liquid glass backdrop (Apple iOS 26)
-          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          backgroundColor: 'var(--glass-dropdown-bg)',
           backdropFilter: prefersReducedMotion
             ? 'blur(8px)'
-            : 'blur(20px) saturate(180%)',
+            : `blur(var(--glass-dropdown-blur)) saturate(var(--glass-dropdown-saturate))`,
           // Enhanced shadow with depth (research-based)
-          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1)',
+          boxShadow: 'var(--glass-dropdown-shadow)',
         }}
         onCloseAutoFocus={(e) => {
           // Prevent default to handle focus restoration manually
@@ -172,7 +174,7 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
           className="mb-2 rounded-xl p-3"
           role="presentation"
           style={{
-            backgroundColor: 'rgba(156, 163, 175, 0.05)',
+            backgroundColor: 'var(--glass-header-hover)',
             backdropFilter: 'blur(4px)',
           }}
         >
@@ -198,7 +200,7 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
             willChange: 'transform, background-color',
           }}
         >
-          <ProfileIcon size={16} variant="premium" />
+          <ProfileIcon size={16} variant="signature" />
           <span className="font-medium">{t('profile')}</span>
         </DropdownMenuItem>
 
@@ -224,7 +226,7 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
             willChange: 'transform, background-color',
           }}
         >
-          <LogoutIcon size={16} variant="premium" />
+          <LogoutIcon size={16} variant="signature" />
           <span className="font-medium">{t('logout')}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -32,17 +32,17 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
 
   // Premium motion preferences detection
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  
+
   useEffect(() => {
     setMounted(true);
-    
+
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setPrefersReducedMotion(mediaQuery.matches);
-    
+
     const handleChange = (e: MediaQueryListEvent) => {
       setPrefersReducedMotion(e.matches);
     };
-    
+
     mediaQuery.addEventListener('change', handleChange);
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
@@ -57,7 +57,7 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
 
   if (!mounted) {
     return (
-      <div 
+      <div
         className={cn('size-11 animate-pulse rounded-xl bg-muted/20', className)}
         style={{
           backdropFilter: 'blur(8px)',
@@ -74,6 +74,7 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
       <Tooltip>
         <TooltipTrigger asChild>
           <button
+            type="button"
             onClick={handleToggle}
             onMouseDown={handleMouseDown}
             onMouseUp={handleMouseUp}
@@ -87,18 +88,18 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
               // Premium liquid glass surface
               'bg-background/60 hover:bg-background/80',
               'border border-border/20 hover:border-border/40',
-              // Signature effects
-              'signature-icon signature-icon--premium',
+              // Signature effects + Visual hierarchy
+              'signature-icon signature-icon--premium header-icon header-icon-secondary',
               className,
             )}
             style={{
               // Premium liquid glass effects
-              backdropFilter: prefersReducedMotion 
-                ? 'blur(4px)' 
+              backdropFilter: prefersReducedMotion
+                ? 'blur(4px)'
                 : 'blur(12px) saturate(180%)',
               // Premium spring physics
               transform: isPressed && !prefersReducedMotion
-                ? 'scale(0.95) translateZ(0)' 
+                ? 'scale(0.95) translateZ(0)'
                 : 'scale(1) translateZ(0)',
               // Enhanced shadow with depth
               boxShadow: isPressed
@@ -115,30 +116,32 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
           >
             {/* Premium icon with signature effects */}
             <div className="relative">
-              {isDark ? (
-                <MoonIcon 
-                  size={20} 
-                  isActive 
-                  variant="premium"
-                  className="text-foreground"
-                />
-              ) : (
-                <SunIcon 
-                  size={20} 
-                  isActive 
-                  variant="premium"
-                  className="text-foreground"
-                />
-              )}
-              
+              {isDark
+                ? (
+                    <MoonIcon
+                      size={20}
+                      isActive
+                      variant="signature"
+                      className="text-foreground"
+                    />
+                  )
+                : (
+                    <SunIcon
+                      size={20}
+                      isActive
+                      variant="signature"
+                      className="text-foreground"
+                    />
+                  )}
+
               {/* Premium glow effect */}
               {!prefersReducedMotion && (
-                <div 
+                <div
                   className="absolute inset-0 rounded-full opacity-20 blur-sm"
                   style={{
-                    background: isDark 
-                      ? 'radial-gradient(circle, #60a5fa 0%, transparent 70%)'
-                      : 'radial-gradient(circle, #f59e0b 0%, transparent 70%)',
+                    background: isDark
+                      ? 'var(--glow-theme-dark)'
+                      : 'var(--glow-theme-light)',
                     animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                   }}
                 />
@@ -146,8 +149,8 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({ className }) =
             </div>
           </button>
         </TooltipTrigger>
-        <TooltipContent 
-          side="bottom" 
+        <TooltipContent
+          side="bottom"
           className={cn(
             'text-xs',
             // Premium tooltip styling

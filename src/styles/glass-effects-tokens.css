@@ -1,0 +1,152 @@
+/*
+ * GLASS EFFECTS DESIGN TOKENS 2026
+ *
+ * Centralized design tokens for liquid glass effects
+ * Based on Apple iOS 26 + Tier-1 research
+ * Replaces all hardcoded rgba() values
+ */
+
+:root {
+  /* Glass Header Effects */
+  --glass-header-bg: rgba(255, 255, 255, 0.95);
+  --glass-header-border: rgba(255, 255, 255, 0.2);
+  --glass-header-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
+  --glass-header-blur: 20px;
+  --glass-header-saturate: 180%;
+  --glass-header-hover: rgba(255, 255, 255, 0.1);
+
+  /* Glass Dropdown Effects */
+  --glass-dropdown-bg: rgba(255, 255, 255, 0.95);
+  --glass-dropdown-border: rgba(255, 255, 255, 0.2);
+  --glass-dropdown-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
+  --glass-dropdown-blur: 20px;
+  --glass-dropdown-saturate: 180%;
+
+  /* Glass Button Effects */
+  --glass-button-bg: rgba(255, 255, 255, 0.6);
+  --glass-button-hover: rgba(255, 255, 255, 0.8);
+  --glass-button-border: rgba(255, 255, 255, 0.2);
+  --glass-button-shadow: 0 4px 16px rgba(0, 0, 0, 0.1), 0 1px 4px rgba(0, 0, 0, 0.05);
+  --glass-button-shadow-pressed: 0 2px 8px rgba(0, 0, 0, 0.15), inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  --glass-button-blur: 12px;
+
+  /* Glow Effects */
+  --glow-notification: radial-gradient(circle, #ef4444 0%, transparent 70%);
+  --glow-theme-light: radial-gradient(circle, #f59e0b 0%, transparent 70%);
+  --glow-theme-dark: radial-gradient(circle, #60a5fa 0%, transparent 70%);
+  --glow-language: radial-gradient(circle, #10b981 0%, transparent 70%);
+
+  /* Motion Tokens */
+  --motion-fast: 150ms;
+  --motion-normal: 300ms;
+  --motion-slow: 400ms;
+  --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-spring: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Header Icon Hierarchy */
+  --icon-primary-opacity: 1.0;
+  --icon-secondary-opacity: 0.85;
+  --icon-tertiary-opacity: 0.7;
+}
+
+/* Dark Mode Variants */
+.dark {
+  --glass-header-bg: rgba(15, 23, 42, 0.95);
+  --glass-header-border: rgba(255, 255, 255, 0.1);
+  --glass-header-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0, 0, 0, 0.2);
+  --glass-header-hover: rgba(255, 255, 255, 0.05);
+
+  --glass-dropdown-bg: rgba(15, 23, 42, 0.95);
+  --glass-dropdown-border: rgba(255, 255, 255, 0.1);
+  --glass-dropdown-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0, 0, 0, 0.2);
+
+  --glass-button-bg: rgba(15, 23, 42, 0.6);
+  --glass-button-hover: rgba(15, 23, 42, 0.8);
+  --glass-button-border: rgba(255, 255, 255, 0.1);
+  --glass-button-shadow: 0 4px 16px rgba(0, 0, 0, 0.2), 0 1px 4px rgba(0, 0, 0, 0.1);
+  --glass-button-shadow-pressed: 0 2px 8px rgba(0, 0, 0, 0.25), inset 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Header Icon Hierarchy Classes */
+.header-icon-primary {
+  opacity: var(--icon-primary-opacity);
+}
+
+.header-icon-secondary {
+  opacity: var(--icon-secondary-opacity);
+}
+
+.header-icon-tertiary {
+  opacity: var(--icon-tertiary-opacity);
+}
+
+/* Consistent Header Icon Interactions */
+.header-icon {
+  transition: all var(--motion-normal) var(--ease-out);
+}
+
+.header-icon:hover {
+  transform: translateY(-1px) scale(1.02);
+  opacity: var(--icon-primary-opacity);
+}
+
+.header-icon:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.header-icon:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* Glass Effect Utilities */
+.glass-header {
+  background-color: var(--glass-header-bg);
+  border-color: var(--glass-header-border);
+  box-shadow: var(--glass-header-shadow);
+  backdrop-filter: blur(var(--glass-header-blur)) saturate(var(--glass-header-saturate));
+}
+
+.glass-dropdown {
+  background-color: var(--glass-dropdown-bg);
+  border-color: var(--glass-dropdown-border);
+  box-shadow: var(--glass-dropdown-shadow);
+  backdrop-filter: blur(var(--glass-dropdown-blur)) saturate(var(--glass-dropdown-saturate));
+}
+
+.glass-button {
+  background-color: var(--glass-button-bg);
+  border-color: var(--glass-button-border);
+  box-shadow: var(--glass-button-shadow);
+  backdrop-filter: blur(var(--glass-button-blur)) saturate(var(--glass-button-saturate));
+}
+
+.glass-button:hover {
+  background-color: var(--glass-button-hover);
+}
+
+.glass-button:active {
+  box-shadow: var(--glass-button-shadow-pressed);
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .header-icon {
+    transition: opacity var(--motion-fast) ease-out;
+  }
+  
+  .header-icon:hover {
+    transform: none;
+  }
+  
+  .header-icon:active {
+    transform: none;
+  }
+  
+  .glass-header,
+  .glass-dropdown,
+  .glass-button {
+    backdrop-filter: blur(8px);
+  }
+}

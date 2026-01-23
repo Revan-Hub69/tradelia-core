@@ -77,8 +77,8 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
             // Premium liquid glass surface
             'bg-background/60 hover:bg-background/80',
             'border border-border/20 hover:border-border/40',
-            // Signature effects
-            'signature-icon signature-icon--premium',
+            // Signature effects + Visual hierarchy
+            'signature-icon signature-icon--premium header-icon header-icon-primary',
             className,
           )}
           style={{
@@ -109,7 +109,7 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
               size={20}
               hasNotifications={unreadCount > 0}
               notificationCount={unreadCount}
-              variant="premium"
+              variant="signature"
               className="text-foreground"
             />
 
@@ -118,7 +118,7 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
               <div
                 className="absolute inset-0 rounded-full opacity-20 blur-sm"
                 style={{
-                  background: 'radial-gradient(circle, #ef4444 0%, transparent 70%)',
+                  background: 'var(--glow-notification)',
                   animation: unreadCount > 0 ? 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' : 'none',
                 }}
               />
@@ -134,12 +134,12 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
         )}
         style={{
           // Premium liquid glass backdrop (Apple iOS 26)
-          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          backgroundColor: 'var(--glass-dropdown-bg)',
           backdropFilter: prefersReducedMotion
             ? 'blur(8px)'
-            : 'blur(20px) saturate(180%)',
+            : `blur(var(--glass-dropdown-blur)) saturate(var(--glass-dropdown-saturate))`,
           // Enhanced shadow with depth (research-based)
-          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1)',
+          boxShadow: 'var(--glass-dropdown-shadow)',
         }}
       >
         <DropdownMenuLabel className="border-b border-border/10 px-6 py-4">
@@ -151,8 +151,8 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
           <div
             className="mb-4 rounded-full p-3"
             style={{
-              backgroundColor: 'rgba(156, 163, 175, 0.1)',
-              backdropFilter: 'blur(8px)',
+              backgroundColor: 'var(--glass-header-hover)',
+              backdropFilter: 'blur(4px)',
             }}
           >
             <BellIcon size={24} className="text-muted-foreground" />
@@ -169,7 +169,7 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
         <div
           className="flex items-center justify-between border-t border-border/10 p-4"
           style={{
-            backgroundColor: 'rgba(156, 163, 175, 0.05)',
+            backgroundColor: 'var(--glass-header-hover)',
             backdropFilter: 'blur(4px)',
           }}
         >
