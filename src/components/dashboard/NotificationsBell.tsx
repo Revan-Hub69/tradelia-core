@@ -168,7 +168,9 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
               setIsOpen(false);
             }}
             className={cn(
-              'h-8 px-3 text-xs text-muted-foreground transition-all duration-200 hover:scale-105 hover:text-foreground',
+              'h-8 px-3 text-xs transition-all duration-200 hover:scale-105',
+              // Use design system colors like sidebar navigation
+              'text-muted-foreground hover:text-foreground/90',
             )}
             disabled={notifications.length === 0}
           >
@@ -180,7 +182,9 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
             size="sm"
             onClick={handleNotificationSettings}
             className={cn(
-              'flex h-8 items-center gap-1.5 px-3 text-xs text-muted-foreground transition-all duration-200 hover:scale-105 hover:text-foreground',
+              'flex h-8 items-center gap-1.5 px-3 text-xs transition-all duration-200 hover:scale-105',
+              // Use design system colors like sidebar navigation
+              'text-muted-foreground hover:text-foreground/90',
             )}
           >
             <SettingsIcon size={16} className="transition-colors duration-200" />

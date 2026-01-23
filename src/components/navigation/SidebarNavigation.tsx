@@ -235,7 +235,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
   // Update CSS custom property for dynamic grid layout
   React.useEffect(() => {
     const root = document.documentElement;
-    root.style.setProperty('--sidebar-width-current', isCollapsed ? '64px' : '256px');
+    root.style.setProperty('--sidebar-width-current', isCollapsed ? '64px' : '240px');
   }, [isCollapsed]);
 
   if (isLoading) {
@@ -330,7 +330,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
 
           {/* Toggle Button - Separated from logo */}
           <div className={cn(
-            'flex',
+            'flex group',
             isCollapsed ? 'justify-center' : 'justify-end'
           )}>
             <motion.button
@@ -340,8 +340,14 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                 'glass-toggle',
                 'relative size-9 rounded-lg border',
                 'flex items-center justify-center',
+                // Enhanced Visual Feedback - Nielsen Norman Group research
+                'hover:bg-background/80 hover:border-border/60',
+                'hover:shadow-lg hover:scale-[1.02]',
+                'active:scale-[0.98] active:bg-background/90',
+                'focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
                 // Educational Calm Integration
                 'educational-hover educational-focus',
+                'transition-all duration-200 ease-out',
               )}
               whileHover={{ scale: 1.02, y: -1 }}
               whileTap={{ scale: 0.98 }}
@@ -357,12 +363,51 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
               }
               aria-pressed={!isCollapsed}
             >
-              <SidebarToggleIcon
-                isExpanded={!isCollapsed}
-                showAnimation
-                size={16}
-                variant="signature"
-              />
+              {/* Clear Visual Indicator - Research-based */}
+              <div className="relative flex items-center justify-center">
+                {isCollapsed ? (
+                  // Expand indicator - Double chevron right
+                  <div className="flex items-center">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="text-muted-foreground transition-colors duration-200"
+                    >
+                      <path d="M9 18l6-6-6-6" />
+                      <path d="M15 18l6-6-6-6" opacity="0.6" />
+                    </svg>
+                  </div>
+                ) : (
+                  // Collapse indicator - Double chevron left
+                  <div className="flex items-center">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="text-muted-foreground transition-colors duration-200"
+                    >
+                      <path d="M15 6l-6 6 6 6" />
+                      <path d="M9 6l-6 6 6 6" opacity="0.6" />
+                    </svg>
+                  </div>
+                )}
+                
+                {/* Hover tooltip */}
+                <div className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 rounded bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+                  {isCollapsed ? 'Expand' : 'Collapse'}
+                </div>
+              </div>
             </motion.button>
           </div>
         </div>

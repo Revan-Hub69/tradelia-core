@@ -318,7 +318,9 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         role="banner"
         aria-label={t('header_aria_label')}
         className={cn(
-          'fixed top-0 w-full z-50',
+          'fixed top-0 z-50',
+          // Dynamic width based on sidebar state
+          hasSidebar ? 'left-[var(--sidebar-width-current)] right-0' : 'left-0 right-0 w-full',
           'motion-base',
           // Premium liquid glass effects
           isScrolled && showScrollShadow && [
