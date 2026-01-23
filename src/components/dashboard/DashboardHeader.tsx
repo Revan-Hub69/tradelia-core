@@ -90,42 +90,14 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     threshold: 15, // Increased threshold based on real apps research
   });
 
-  // REMOVED: hasSidebar JS detection (causes layout shift)
-  // Now using pure CSS responsive classes (md:)
+  // REMOVED: prefersReducedMotion state (causes hydration mismatch)
+  // Now using pure CSS @media (prefers-reduced-motion: reduce)
 
   // Header should only hide on mobile (no sidebar), stay fixed on tablet/desktop (with sidebar)
   // SIMPLIFIED: hideOnScroll only on mobile (CSS handles sidebar presence)
   const shouldHideOnScroll = hideOnScroll;
 
   // Global search keyboard shortcut (Cmd/Ctrl + K)
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        setShowSearchModal(true);
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  // Premium motion preferences detection
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setPrefersReducedMotion(mediaQuery.matches);
-    
-    const handleChange = (e: MediaQueryListEvent) => {
-      setPrefersReducedMotion(e.matches);
-    };
-    
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
-  }, []);
-
-  // Enhanced status chip renderer with real-time indicators
   const renderStatus = () => {
     if (!status) {
       return null;
@@ -326,14 +298,10 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             ? 'translate3d(0, -100%, 0)' 
             : 'translate3d(0, 0, 0)',
           willChange: shouldHideOnScroll ? 'transform' : 'auto',
-          // Premium spring timing with motion preferences
-          transition: prefersReducedMotion 
-            ? 'transform 150ms ease-out' // Reduced motion
-            : 'transform 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94)', // Premium spring
+          // Premium spring timing - always use spring (CSS handles reduced motion)
+          transition: 'transform 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
           // Liquid glass backdrop enhancement
-          backdropFilter: isScrolled && !prefersReducedMotion 
-            ? 'blur(20px) saturate(180%)' 
-            : isScrolled ? 'blur(8px)' : undefined,
+          backdropFilter: isScrolled ? 'blur(20px) saturate(180%)' : undefined,
           // Premium shadow with depth
           boxShadow: isScrolled && showScrollShadow 
             ? '0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08)'

@@ -28,37 +28,18 @@ import { cn } from '@/utils/Helpers';
 export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) => {
   const t = useTranslations('Dashboard');
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  // Global motion preferences - optimized
-  const prefersReducedMotion = useReducedMotion();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  // REMOVED: useReducedMotion and mounted state (cause hydration mismatch)
+  // Now using pure CSS @media (prefers-reduced-motion: reduce)
 
   // Memoized callbacks - prevent unnecessary re-renders
   const handleToggle = useCallback(() => {
-    if (!prefersReducedMotion) {
-      setIsTransitioning(true);
-      // Reset transition state after animation completes
-      setTimeout(() => setIsTransitioning(false), 400);
-    }
+    setIsTransitioning(true);
+    // Reset transition state after animation completes
+    setTimeout(() => setIsTransitioning(false), 400);
     setTheme(theme === 'dark' ? 'light' : 'dark');
-  }, [theme, setTheme, prefersReducedMotion]);
-
-  if (!mounted) {
-    return (
-      <div
-        className={cn('size-11 animate-pulse rounded-xl bg-muted/20', className)}
-        style={{
-          backdropFilter: 'blur(8px)',
-          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-        }}
-      />
-    );
-  }
+  }, [theme, setTheme]);
 
   const isDark = theme === 'dark';
 
@@ -88,8 +69,8 @@ export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) 
             <div
               className={cn(
                 'relative',
-                // Theme transition animations - Educational version
-                isTransitioning && !prefersReducedMotion && 'animate-spin',
+                // Theme transition animations - CSS handles reduced motion
+                isTransitioning && 'animate-spin',
               )}
             >
               {isDark
@@ -110,8 +91,8 @@ export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) 
                     />
                   )}
 
-              {/* Educational feedback - discrete border instead of glow */}
-              {!prefersReducedMotion && isTransitioning && (
+              {/* Educational feedback - CSS handles reduced motion */}
+              {isTransitioning && (
                 <div className="absolute inset-0 rounded-full border border-primary/20 pointer-events-none animate-pulse" />
               )}
             </div>
