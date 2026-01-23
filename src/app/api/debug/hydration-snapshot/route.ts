@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
 }
 
 // GET endpoint to retrieve snapshots
-export async function GET(request: NextRequest) {
+export async function GET() {
   if (process.env.NODE_ENV !== 'production') {
     return NextResponse.json(
       { ok: false, reason: 'Only available in production' },
