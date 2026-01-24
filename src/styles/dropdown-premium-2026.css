@@ -75,9 +75,6 @@
    ============================================================================ */
 
 .dropdown-premium-container {
-  /* CRITICAL: Position fixed for Radix Portal */
-  position: fixed !important;
-  
   /* Professional Glass Material - Educational Platform */
   background-color: var(--dropdown-glass-bg);
   border: 1px solid var(--dropdown-glass-border);
@@ -99,9 +96,6 @@
 
 /* Legacy class support (deprecated - use dropdown-premium-container) */
 .glass-dropdown {
-  /* CRITICAL: Position fixed for Radix Portal */
-  position: fixed !important;
-  
   /* Duplicate rules for legacy support (no @extend in vanilla CSS) */
   background-color: var(--dropdown-glass-bg);
   border: 1px solid var(--dropdown-glass-border);
