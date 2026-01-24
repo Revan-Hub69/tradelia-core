@@ -228,6 +228,8 @@ export const MobileDropdownPopover = React.memo<MobileDropdownPopoverProps>(({
   triggerRect,
   triggerRef,
 }) => {
+  console.log('[MobileDropdownPopover] Render:', { isOpen, triggerRect });
+  
   const popoverRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState<Position>({ top: 0, left: 0 });
   const [placement, setPlacement] = useState<Placement>('bottom-end');
