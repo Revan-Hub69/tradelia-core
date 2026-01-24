@@ -14,7 +14,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { SearchIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import { UiButton } from '@/components/ui/UiButton';
@@ -86,17 +86,23 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   const { userData, isLoading } = useUserData();
   const [showSearchModal, setShowSearchModal] = useState(false);
 
+  // Responsive mobile detection (reactive to window resize)
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile(); // Initial check
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   // Scroll behavior based on REAL applications research (Twitter, Medium, TutsPlus)
   const { isScrolled, isHeaderVisible } = useScrollDirection({
     threshold: 15, // Increased threshold based on real apps research
   });
 
-  // REMOVED: prefersReducedMotion state (causes hydration mismatch)
-  // Now using pure CSS @media (prefers-reduced-motion: reduce)
-
-  // Header should only hide on mobile (no sidebar), stay fixed on tablet/desktop (with sidebar)
-  // Mobile detection: hideOnScroll only applies on mobile
-  const shouldHideOnScroll = hideOnScroll && typeof window !== 'undefined' && window.innerWidth < 768;
+  // Header visibility logic: hide only on mobile when scrolling down
+  const shouldHide = isMobile && hideOnScroll && !isHeaderVisible;
 
   // Global search keyboard shortcut (Cmd/Ctrl + K)
   const renderStatus = () => {
@@ -279,17 +285,17 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         className={cn(
           // Use new header-2026 class
           'header-2026',
-          // Premium scroll effects
+          // Premium scroll shadow - applied during entire scroll (independent of visibility)
           showScrollShadow && isScrolled && 'header-scrolled',
           className,
         )}
         style={{
           // Premium spring physics animation (Apple iOS 26 Liquid Glass)
-          transform: shouldHideOnScroll && !isHeaderVisible
-            ? 'translate3d(0, -100%, 0)'
-            : 'translate3d(0, 0, 0)',
-          willChange: shouldHideOnScroll ? 'transform' : 'auto',
-          // Premium spring timing - always use spring (CSS handles reduced motion)
+          // Hide only on mobile, always visible on desktop/tablet
+          transform: shouldHide ? 'translate3d(0, -100%, 0)' : 'translate3d(0, 0, 0)',
+          // Optimize for animation only when needed
+          willChange: isMobile && hideOnScroll ? 'transform' : 'auto',
+          // Premium spring timing - always apply transition for smooth interactions
           transition: 'transform 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
         }}
       >
