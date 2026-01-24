@@ -301,7 +301,7 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
           isOpen={isOpen}
           onClose={handleClose}
           title={t('nav_open_user_menu')}
-          triggerRect={triggerRef.current?.getBoundingClientRect() || null}
+          triggerRect={triggerRect}
           triggerRef={triggerRef}
         >
           {renderMenuContent()}
