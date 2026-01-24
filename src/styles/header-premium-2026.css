@@ -37,7 +37,9 @@
 .glass-header {
   background-color: rgba(252, 251, 248, 0.95);
   border-color: rgba(0, 0, 0, 0.06);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    0 8px 16px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
 }
@@ -45,7 +47,9 @@
 .dark .glass-header {
   background-color: rgba(28, 28, 30, 0.95);
   border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0, 0, 0, 0.2);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .header-height {
@@ -119,7 +123,7 @@
   background-color: rgba(28, 28, 30, 0.95);
   border-color: rgba(255, 255, 255, 0.1);
   /* CRITICAL FIX: Explicit icon color for dark mode */
-  color: #E2E8F0; /* Slate 200 - Light Gray (NOT white) */
+  color: #e2e8f0; /* Slate 200 - Light Gray (NOT white) */
 }
 
 /* Background hover effect - VISIBILE (12% opacity) */
@@ -150,7 +154,7 @@
 /* Hover - ONLY on pointer devices with VISIBLE effects */
 @media (hover: hover) and (pointer: fine) {
   .header-icon:hover {
-    color: #0F172A; /* Slate 900 - Darker on hover (light mode) */
+    color: #0f172a; /* Slate 900 - Darker on hover (light mode) */
     opacity: 1;
     /* Unified scale - NO conflicts */
     transform: translateZ(0) scale(1.08);
@@ -159,7 +163,7 @@
   }
 
   .dark .header-icon:hover {
-    color: #FFFFFF; /* Pure white on hover (dark mode) */
+    color: #ffffff; /* Pure white on hover (dark mode) */
   }
 
   .header-icon:hover::before {
@@ -223,13 +227,17 @@
 }
 
 .header-scrolled {
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    0 8px 16px rgba(0, 0, 0, 0.1);
   /* Slightly less rounded when scrolled for compact look */
   border-radius: 0 0 12px 12px;
 }
 
 .dark .header-scrolled {
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0, 0, 0, 0.2);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .header-compact-edge {
@@ -283,13 +291,17 @@
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-color: rgba(0, 0, 0, 0.06);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
 .dark .search-modal-content {
   background-color: rgba(28, 28, 30, 0.95);
   border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0, 0, 0, 0.2);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 /* ============================================================================
