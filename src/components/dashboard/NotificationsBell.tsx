@@ -28,6 +28,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useTooltip } from '@/hooks/useTooltip';
 import { cn } from '@/utils/Helpers';
 
 export const NotificationsBell = React.memo<{ className?: string }>(({ className }) => {
@@ -37,6 +38,9 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
 
   // Global motion preferences - optimized
   const prefersReducedMotion = useReducedMotion();
+
+  // Tooltip best practices 2026
+  const { shouldShowTooltip, tooltipProps, handleClick: handleTooltipClick } = useTooltip();
 
   // Empty notifications array - no mock data (following research best practices)
   const notifications: never[] = [];
@@ -67,10 +71,10 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
 
   return (
     <TooltipProvider delayDuration={300}>
-      <Tooltip>
+      <Tooltip {...tooltipProps}>
         <TooltipTrigger asChild>
           <div>
-            <DropdownMenu open={isOpen} onOpenChange={handleOpenChange}>
+            <DropdownMenu open={isOpen} onOpenChange={(open) => { handleOpenChange(open); if (open) handleTooltipClick(); }}>
               <DropdownMenuTrigger asChild>
                 <button
                   type="button"
@@ -194,17 +198,19 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
             </DropdownMenu>
           </div>
         </TooltipTrigger>
-        <TooltipContent
-          side="bottom"
-          className={cn(
-            'text-xs',
-            // Liquid Glass tooltip
-            'glass-dropdown',
-          )}
-        >
-          <p className="font-medium">{t('notifications')}</p>
-          <p className="text-muted-foreground">Alt+N</p>
-        </TooltipContent>
+        {shouldShowTooltip && (
+          <TooltipContent
+            side="bottom"
+            className={cn(
+              'text-xs',
+              // Liquid Glass tooltip
+              'glass-dropdown',
+            )}
+          >
+            <p className="font-medium">{t('notifications')}</p>
+            <p className="text-muted-foreground">Alt+N</p>
+          </TooltipContent>
+        )}
       </Tooltip>
     </TooltipProvider>
   );
