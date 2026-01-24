@@ -25,10 +25,19 @@ import { useUserData } from '@/hooks/useUserData';
 import { Logo } from '@/templates/Logo';
 import { cn } from '@/utils/Helpers';
 
-import { LanguageSwitcherDashboard } from './LanguageSwitcherDashboard';
-import { NotificationsBell } from './NotificationsBell';
-import { ThemeSwitcher } from './ThemeSwitcher';
-import { UserDropdown } from './UserDropdown';
+// ORIGINAL COMPONENTS (commented out for A/B test)
+// import { LanguageSwitcherDashboard } from './LanguageSwitcherDashboard';
+// import { NotificationsBell } from './NotificationsBell';
+// import { ThemeSwitcher } from './ThemeSwitcher';
+// import { UserDropdown } from './UserDropdown';
+
+// TEST COMPONENTS - Using completely different CSS classes
+import {
+  LanguageSwitcherTest,
+  NotificationsBellTest,
+  ThemeSwitcherTest,
+  UserDropdownTest,
+} from './HeaderTestElements';
 
 export type HeaderAction = {
   label: string; // Already translated (no labelKey)
@@ -364,17 +373,17 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             >
               {/* Theme Switcher - Hidden on mobile, visible on tablet+ */}
               <div className="hidden md:block">
-                <ThemeSwitcher />
+                <ThemeSwitcherTest />
               </div>
 
               {/* Language Switcher - Hidden on mobile, visible on tablet+ */}
               <div className="hidden md:block">
-                <LanguageSwitcherDashboard />
+                <LanguageSwitcherTest />
               </div>
 
               {/* Notifications - Always visible (mobile, tablet, desktop) */}
               <div>
-                <NotificationsBell />
+                <NotificationsBellTest />
               </div>
             </div>
 
@@ -383,11 +392,9 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               {userData
                 ? (
                     <div>
-                      <UserDropdown
+                      <UserDropdownTest
                         userName={getUserDisplayName()}
                         userEmail={userData.email}
-                        status="online"
-                        role="user"
                       />
                     </div>
                   )
