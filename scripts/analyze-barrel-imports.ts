@@ -54,7 +54,7 @@ function analyzeFile(filePath: string): BarrelUsage[] {
       // Check if it's a barrel import
       const isBarrel = BARREL_PATTERNS.some(pattern => importPath === pattern);
       
-      if (isBarrel && importsList) {
+      if (isBarrel && importsList && importPath) {
         const imports = importsList
           .split(',')
           .map(i => i.trim())
