@@ -36,11 +36,11 @@
    ============================================================================ */
 
 :root {
-  /* iOS 26 Liquid Glass - Tier-1 Compliant */
-  --dropdown-glass-bg: rgba(252, 251, 248, 0.95); /* Soft Cream - Educational */
-  --dropdown-glass-border: rgba(0, 0, 0, 0.06);    /* Subtle border */
-  --dropdown-glass-blur: 20px; /* iOS 26 standard */
-  --dropdown-glass-saturate: 180%; /* Color richness */
+  /* iOS 26 Liquid Glass - Use shared material variables */
+  --dropdown-glass-bg: var(--glass-material-bg);
+  --dropdown-glass-border: var(--glass-material-border);
+  --dropdown-glass-blur: var(--glass-material-blur);
+  --dropdown-glass-saturate: var(--glass-material-saturate);
 
   /* iOS 26 Multi-layer Shadows */
   --dropdown-shadow-layer-1: 0 8px 16px rgba(0, 0, 0, 0.12);
@@ -65,8 +65,9 @@
 }
 
 .dark {
-  --dropdown-glass-bg: rgba(15, 23, 42, 0.95); /* iOS 26 standard */
-  --dropdown-glass-border: rgba(255, 255, 255, 0.1); /* White glass edge (low opacity) */
+  /* Glass Effects - Use shared material variables (dark mode) */
+  --dropdown-glass-bg: var(--glass-material-bg);
+  --dropdown-glass-border: var(--glass-material-border);
 
   /* iOS 26 shadows for dark mode */
   --dropdown-shadow-layer-1: 0 8px 16px rgba(0, 0, 0, 0.24);

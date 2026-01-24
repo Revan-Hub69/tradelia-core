@@ -309,20 +309,17 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           showScrollShadow && isScrolled && 'header-scrolled',
           // Dynamic compact mode at scroll edges
           isAtScrollEdge && 'header-compact-edge',
+          // Hide/show animation classes (mobile only)
+          shouldHide ? 'header-hide-animation' : 'header-show-animation',
+          // Dynamic will-change optimization
+          isMobile && hideOnScroll ? 'header-will-change-transform' : isAtScrollEdge ? 'header-will-change-effects' : '',
           className,
         )}
-        style={{
-          // Premium spring physics animation (Apple iOS 26 Liquid Glass)
-          // Hide only on mobile, always visible on desktop/tablet
-          transform: shouldHide ? 'translate3d(0, -100%, 0)' : 'translate3d(0, 0, 0)',
-          // Optimize for animation only when needed
-          willChange: isMobile && hideOnScroll ? 'transform' : isAtScrollEdge ? 'backdrop-filter, transform, box-shadow' : 'auto',
-          // Premium spring timing - always apply transition for smooth interactions
-          transition: 'transform 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94), backdrop-filter 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-        }}
       >
         <div className={cn(
-          'mx-auto flex max-w-screen-xl items-center justify-between px-4',
+          'mx-auto flex items-center justify-between px-4',
+          // Responsive max-width: full on mobile, xl on desktop
+          'max-w-full md:max-w-screen-xl',
           compactMode ? 'header-height-compact' : 'header-height',
         )}
         >
@@ -385,27 +382,23 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               <NotificationsBell />
             </div>
 
-            {/* User Dropdown */}
-            <div className="flex items-center">
-              {userData
+            {/* User Dropdown - Always visible */}
+            {userData
+              ? (
+                  <UserDropdown
+                    userName={getUserDisplayName()}
+                    userEmail={userData.email}
+                  />
+                )
+              : isLoading
                 ? (
-                    <div>
-                      <UserDropdown
-                        userName={getUserDisplayName()}
-                        userEmail={userData.email}
-                      />
-                    </div>
+                    <div className="size-8 animate-pulse rounded-full bg-muted" />
                   )
-                : isLoading
-                  ? (
-                      <div className="size-8 animate-pulse rounded-full bg-muted" />
-                    )
-                  : (
-                      <div className="text-xs text-muted-foreground">
-                        {t('not_authenticated')}
-                      </div>
-                    )}
-            </div>
+                : (
+                    <div className="text-xs text-muted-foreground">
+                      {t('not_authenticated')}
+                    </div>
+                  )}
           </div>
         </div>
       </header>
@@ -413,21 +406,17 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       {/* Premium Global Search Modal with Liquid Glass */}
       {showSearchModal && (
         <div
-          className="layer-modal fixed inset-0 flex items-start justify-center pt-20"
-          style={{
-            backgroundColor: 'rgba(0, 0, 0, 0.4)',
-            backdropFilter: 'blur(8px)',
-          }}
+          className={cn(
+            'layer-modal fixed inset-0 flex items-start justify-center pt-20',
+            'search-modal-backdrop',
+          )}
           onClick={() => setShowSearchModal(false)}
         >
           <div
-            className="mx-4 w-full max-w-2xl rounded-2xl border shadow-2xl"
-            style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.95)',
-              backdropFilter: 'blur(20px) saturate(180%)',
-              borderColor: 'rgba(255, 255, 255, 0.2)',
-              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1)',
-            }}
+            className={cn(
+              'mx-4 w-full max-w-2xl rounded-2xl border shadow-2xl',
+              'search-modal-content',
+            )}
             onClick={e => e.stopPropagation()}
           >
             <div className="p-6">

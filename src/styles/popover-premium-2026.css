@@ -29,11 +29,11 @@
   --popover-padding: 16px;
   --popover-gap: 8px; /* Gap from trigger */
 
-  /* Liquid Glass - Light Mode (Soft Cream - Educational) */
-  --popover-glass-bg: rgba(252, 251, 248, 0.95);
-  --popover-glass-border: rgba(0, 0, 0, 0.06);
-  --popover-glass-blur: 24px;
-  --popover-glass-saturate: 180%;
+  /* Liquid Glass - Use shared material variables */
+  --popover-glass-bg: var(--glass-material-bg);
+  --popover-glass-border: var(--glass-material-border);
+  --popover-glass-blur: var(--glass-material-blur);
+  --popover-glass-saturate: var(--glass-material-saturate);
 
   /* Premium Shadows - Multi-layer */
   --popover-shadow-1: 0 12px 32px rgba(0, 0, 0, 0.15);
@@ -46,8 +46,8 @@
 
   /* Footer */
   --popover-footer-height: 64px;
-  --popover-footer-bg: rgba(252, 251, 248, 0.98);  /* Soft Cream */
-  --popover-footer-border: rgba(0, 0, 0, 0.06);
+  --popover-footer-bg: var(--glass-material-bg);
+  --popover-footer-border: var(--glass-material-border);
 
   /* Transitions */
   --popover-transition: 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -58,13 +58,14 @@
 }
 
 .dark {
-  --popover-glass-bg: rgba(15, 23, 42, 0.95);
-  --popover-glass-border: rgba(255, 255, 255, 0.08);
+  /* Glass Effects - Use shared material variables (dark mode) */
+  --popover-glass-bg: var(--glass-material-bg);
+  --popover-glass-border: var(--glass-material-border);
   --popover-shadow-1: 0 12px 32px rgba(0, 0, 0, 0.3);
   --popover-shadow-2: 0 4px 12px rgba(0, 0, 0, 0.2);
   --popover-shadow-3: 0 1px 3px rgba(0, 0, 0, 0.1);
-  --popover-footer-bg: rgba(15, 23, 42, 0.98);
-  --popover-footer-border: rgba(255, 255, 255, 0.06);
+  --popover-footer-bg: var(--glass-material-bg);
+  --popover-footer-border: var(--glass-material-border);
 }
 
 /* ============================================================================

@@ -55,7 +55,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning data-tradelia-runtime="boot">
       <head />
-      <body className="bg-background text-foreground antialiased" suppressHydrationWarning>
+      <body className="bg-background text-foreground antialiased overflow-x-hidden" suppressHydrationWarning>
         <RuntimeReady />
         <ServiceWorkerCleanup />
 

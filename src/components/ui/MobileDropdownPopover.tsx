@@ -240,22 +240,26 @@ export const MobileDropdownPopover = React.memo<MobileDropdownPopoverProps>(({
       return;
     }
 
-    // CRITICAL FIX: Fallback if triggerRect is null
-    if (!triggerRect) {
-      console.warn('[MobileDropdownPopover] triggerRect is null, using fallback position');
-      setPosition({
-        top: HEADER_HEIGHT + SAFE_AREA_TOP + 8, // Below header
-        right: EDGE_PADDING, // 16px from right edge
-      });
-      setPlacement('bottom-end');
-      return;
-    }
-
     measureCount += 1;
 
     // Development warning for layout thrash
     if (process.env.NODE_ENV === 'development' && measureCount > 2) {
       console.warn(`[MobileDropdownPopover] Layout thrash detected: ${measureCount} measurements`);
+    }
+
+    // CRITICAL FIX: Better fallback if triggerRect is null or invalid
+    if (!triggerRect || triggerRect.width === 0 || triggerRect.height === 0) {
+      console.warn('[MobileDropdownPopover] triggerRect is null or invalid, using smart fallback position');
+      
+      // Smart fallback: position below header, right-aligned
+      const fallbackPosition: Position = {
+        top: HEADER_HEIGHT + SAFE_AREA_TOP + TRIGGER_GAP,
+        right: EDGE_PADDING,
+      };
+      
+      setPosition(fallbackPosition);
+      setPlacement('bottom-end');
+      return;
     }
 
     const popoverElement = popoverRef.current;

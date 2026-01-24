@@ -19,12 +19,12 @@
   /* Z-index */
   --z-header: 50;
 
-  /* Glass Effects - Soft Cream (Educational & Warm) */
-  --header-glass-bg: rgba(252, 251, 248, 0.95);  /* Warm cream */
-  --header-glass-border: rgba(0, 0, 0, 0.06);     /* Subtle border */
-  --header-glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
-  --header-glass-blur: 20px;
-  --header-glass-saturate: 180%;
+  /* Glass Effects - Use shared material variables */
+  --header-glass-bg: var(--glass-material-bg);
+  --header-glass-border: var(--glass-material-border);
+  --header-glass-shadow: var(--glass-material-shadow);
+  --header-glass-blur: var(--glass-material-blur);
+  --header-glass-saturate: var(--glass-material-saturate);
 
   /* Icon Hierarchy */
   --header-icon-primary-opacity: 1;
@@ -36,10 +36,10 @@
 }
 
 .dark {
-  /* iOS 26 Standard Dark Mode: rgb(28, 28, 30) = #1C1C1E */
-  --header-glass-bg: rgba(28, 28, 30, 0.95);
-  --header-glass-border: rgba(255, 255, 255, 0.1);
-  --header-glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0, 0, 0, 0.2);
+  /* Glass Effects - Use shared material variables (dark mode) */
+  --header-glass-bg: var(--glass-material-bg);
+  --header-glass-border: var(--glass-material-border);
+  --header-glass-shadow: var(--glass-material-shadow);
 }
 
 /* ============================================================================
@@ -220,6 +220,56 @@
 
 .header-height-compact {
   height: 48px;
+}
+
+/* ============================================================================
+   HEADER ANIMATIONS - Hide/Show on Scroll (Mobile Only)
+   ============================================================================ */
+
+.header-hide-animation {
+  transform: translate3d(0, -100%, 0);
+  will-change: transform;
+  transition: transform 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.header-show-animation {
+  transform: translate3d(0, 0, 0);
+  transition:
+    transform 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    backdrop-filter 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    box-shadow 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Dynamic will-change based on scroll state */
+.header-will-change-transform {
+  will-change: transform;
+}
+
+.header-will-change-effects {
+  will-change: backdrop-filter, transform, box-shadow;
+}
+
+/* ============================================================================
+   SEARCH MODAL - Liquid Glass (Desktop Only)
+   ============================================================================ */
+
+.search-modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.search-modal-content {
+  background-color: var(--header-glass-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-color: var(--header-glass-border);
+  box-shadow: var(--header-glass-shadow);
+}
+
+.dark .search-modal-content {
+  background-color: var(--header-glass-bg);
+  border-color: var(--header-glass-border);
 }
 
 /* ============================================================================
