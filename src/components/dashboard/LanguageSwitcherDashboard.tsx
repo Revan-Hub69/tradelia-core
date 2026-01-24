@@ -61,6 +61,10 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
 
   // Memoized callbacks - MUST be called before early return (Rules of Hooks)
   const handleOpenChange = useCallback((open: boolean) => {
+    // Haptic feedback on open
+    if (open && 'vibrate' in navigator) {
+      navigator.vibrate(10);
+    }
     setIsOpen(open);
     // Auto-dismiss tooltip when dropdown opens
     if (open) {
@@ -71,6 +75,11 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
   const handleChange = useCallback((value: string) => {
     if (value === locale) {
       return;
+    }
+
+    // Haptic feedback
+    if ('vibrate' in navigator) {
+      navigator.vibrate(10);
     }
 
     if (!prefersReducedMotion) {
@@ -140,6 +149,7 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
 
               <DropdownMenuContent
                 align="end"
+                disablePortal={isMobile}
                 className={cn(
                   'min-w-48 overflow-hidden p-2',
                   // iOS 26 Liquid Glass dropdown

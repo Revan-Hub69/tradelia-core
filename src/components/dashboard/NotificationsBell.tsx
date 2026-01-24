@@ -64,6 +64,10 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
 
   // Memoized callbacks - prevent unnecessary re-renders
   const handleOpenChange = useCallback((open: boolean) => {
+    // Haptic feedback on open
+    if (open && 'vibrate' in navigator) {
+      navigator.vibrate(10);
+    }
     setIsOpen(open);
     if (open) {
       handleTooltipClick();
@@ -75,7 +79,20 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
   }, []);
 
   const handleNotificationSettings = useCallback(() => {
+    // Haptic feedback
+    if ('vibrate' in navigator) {
+      navigator.vibrate(10);
+    }
     // TODO: Navigate to notification settings page
+    handleClose();
+  }, [handleClose]);
+
+  const handleMarkAllRead = useCallback(() => {
+    // Haptic feedback
+    if ('vibrate' in navigator) {
+      navigator.vibrate(10);
+    }
+    // Mark all as read functionality (when notifications exist)
     handleClose();
   }, [handleClose]);
 
@@ -131,6 +148,7 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
 
               <DropdownMenuContent
                 align="end"
+                disablePortal={isMobile}
                 className={cn(
                   'w-80 overflow-hidden rounded-2xl border border-border/20 p-0',
                   // Liquid Glass dropdown
@@ -175,10 +193,7 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
                 >
                   <button
                     type="button"
-                    onClick={() => {
-                      // Mark all as read functionality (when notifications exist)
-                      handleClose();
-                    }}
+                    onClick={handleMarkAllRead}
                     disabled={notifications.length === 0}
                     className={cn(
                       'h-8 px-3 text-xs transition-colors duration-200',

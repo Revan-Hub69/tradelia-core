@@ -43,6 +43,11 @@ export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) 
 
   // Memoized callbacks - MUST be called before early return (Rules of Hooks)
   const handleToggle = useCallback(() => {
+    // Haptic feedback
+    if ('vibrate' in navigator) {
+      navigator.vibrate(10);
+    }
+    
     setIsTransitioning(true);
     // Reset transition state after animation completes
     setTimeout(() => setIsTransitioning(false), 400);

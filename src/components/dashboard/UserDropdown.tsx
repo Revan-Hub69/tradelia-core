@@ -60,6 +60,11 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
 
   // Memoized callbacks - prevent unnecessary re-renders
   const handleSignOut = useCallback(async () => {
+    // Haptic feedback
+    if ('vibrate' in navigator) {
+      navigator.vibrate(10);
+    }
+    
     const supabase = createClient();
     await supabase.auth.signOut();
     router.push('/');
@@ -67,12 +72,25 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
   }, [router]);
 
   const handleOpenChange = useCallback((open: boolean) => {
+    // Haptic feedback on open
+    if (open && 'vibrate' in navigator) {
+      navigator.vibrate(10);
+    }
     setIsOpen(open);
   }, []);
 
   const handleClose = useCallback(() => {
     setIsOpen(false);
   }, []);
+
+  const handleProfileClick = useCallback(() => {
+    // Haptic feedback
+    if ('vibrate' in navigator) {
+      navigator.vibrate(10);
+    }
+    router.push('/dashboard/profile');
+    handleClose();
+  }, [router, handleClose]);
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={handleOpenChange}>
@@ -169,6 +187,7 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
       <DropdownMenuContent
         ref={focusTrapRef as React.RefObject<HTMLDivElement>}
         align="end"
+        disablePortal={isMobile}
         className={cn(
           'w-56 overflow-hidden rounded-2xl border border-border/20 p-2',
           // Liquid Glass dropdown
@@ -224,10 +243,7 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
         {/* Menu Items with optimized styling */}
         <button
           type="button"
-          onClick={() => {
-            router.push('/dashboard/profile');
-            handleClose();
-          }}
+          onClick={handleProfileClick}
           className={cn(
             'flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5',
             // Performance optimized hover
@@ -249,10 +265,7 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
 
         <button
           type="button"
-          onClick={() => {
-            handleSignOut();
-            handleClose();
-          }}
+          onClick={handleSignOut}
           className={cn(
             'flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5',
             // Performance optimized hover
