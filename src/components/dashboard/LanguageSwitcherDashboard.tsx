@@ -52,12 +52,7 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
     setMounted(true);
   }, []);
 
-  // SSR + First Paint: Render skeleton to prevent hydration mismatch
-  if (!mounted) {
-    return <LanguageSwitcherSkeleton />;
-  }
-
-  // Memoized callbacks - prevent unnecessary re-renders
+  // Memoized callbacks - MUST be called before early return (Rules of Hooks)
   const handleOpenChange = useCallback((open: boolean) => {
     setIsOpen(open);
   }, []);
@@ -76,6 +71,12 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
     setIsOpen(false);
     router.replace(pathname, { locale: value });
   }, [locale, prefersReducedMotion, pathname, router]);
+
+  // SSR + First Paint: Render skeleton to prevent hydration mismatch
+  // IMPORTANT: Early return AFTER all hooks (Rules of Hooks)
+  if (!mounted) {
+    return <LanguageSwitcherSkeleton />;
+  }
 
   return (
     <TooltipProvider delayDuration={300}>

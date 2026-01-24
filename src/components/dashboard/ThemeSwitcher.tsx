@@ -37,12 +37,7 @@ export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) 
     setMounted(true);
   }, []);
 
-  // SSR + First Paint: Render skeleton to prevent hydration mismatch
-  if (!mounted) {
-    return <ThemeSwitcherSkeleton />;
-  }
-
-  // Memoized callbacks - prevent unnecessary re-renders
+  // Memoized callbacks - MUST be called before early return (Rules of Hooks)
   const handleToggle = useCallback(() => {
     setIsTransitioning(true);
     // Reset transition state after animation completes
@@ -51,6 +46,12 @@ export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) 
   }, [theme, setTheme]);
 
   const isDark = theme === 'dark';
+
+  // SSR + First Paint: Render skeleton to prevent hydration mismatch
+  // IMPORTANT: Early return AFTER all hooks (Rules of Hooks)
+  if (!mounted) {
+    return <ThemeSwitcherSkeleton />;
+  }
 
   return (
     <TooltipProvider delayDuration={300}>
