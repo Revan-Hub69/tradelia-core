@@ -43,6 +43,24 @@
    ============================================================================ */
 
 @media (max-width: 767px) {
+  /* Backdrop overlay - rendered by Radix UI Portal */
+  [data-radix-popper-content-wrapper] {
+    /* Check if dropdown is open */
+    &:has(.dropdown-mobile.open) {
+      /* Create backdrop */
+      &::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background: var(--backdrop-bg);
+        backdrop-filter: blur(var(--backdrop-blur));
+        -webkit-backdrop-filter: blur(var(--backdrop-blur));
+        z-index: var(--z-backdrop);
+        animation: fadeIn 200ms ease-out;
+      }
+    }
+  }
+
   /* Override dropdown positioning on mobile */
   .dropdown-mobile {
     /* Fixed to bottom */
@@ -83,76 +101,9 @@
     transform: translateY(0);
   }
 
-  /* Backdrop overlay */
-  .dropdown-backdrop {
-    /* Fixed full screen */
-    position: fixed;
-    inset: 0;
-
-    /* Visual */
-    background: var(--backdrop-bg);
-    backdrop-filter: blur(var(--backdrop-blur));
-    -webkit-backdrop-filter: blur(var(--backdrop-blur));
-
-    /* Z-index */
-    z-index: var(--z-backdrop);
-
-    /* Fade in */
-    opacity: 0;
-    transition: opacity 200ms ease-out;
-
-    /* Pointer events */
-    pointer-events: none;
-  }
-
-  .dropdown-backdrop.open {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  /* Close button - visible and accessible */
-  .bottom-sheet-close {
-    /* Positioning */
-    position: absolute;
-    top: 16px;
-    right: 16px;
-
-    /* Size - 44px minimum (Apple HIG) */
-    width: 44px;
-    height: 44px;
-
-    /* Visual */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 12px;
-    background: rgba(0, 0, 0, 0.05);
-
-    /* Transitions */
-    transition: all 200ms ease-out;
-
-    /* Z-index */
-    z-index: 1;
-  }
-
-  .dark .bottom-sheet-close {
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  .bottom-sheet-close:hover {
-    background: rgba(0, 0, 0, 0.1);
-  }
-
-  .dark .bottom-sheet-close:hover {
-    background: rgba(255, 255, 255, 0.15);
-  }
-
-  .bottom-sheet-close:active {
-    transform: scale(0.95);
-  }
-
   /* Grab handle (optional visual indicator) */
-  .bottom-sheet-handle {
+  .dropdown-mobile::before {
+    content: '';
     /* Positioning */
     position: absolute;
     top: 12px;
@@ -171,8 +122,18 @@
     pointer-events: none;
   }
 
-  .dark .bottom-sheet-handle {
+  .dark .dropdown-mobile::before {
     background: rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
