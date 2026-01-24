@@ -121,7 +121,7 @@
   .header-premium-icon:hover {
     color: hsl(var(--primary));
     opacity: 1;
-    transform: translateZ(0) scale(1.12) translateY(-3px); /* 12% scale + 3px lift VISIBILE */
+    transform: translateZ(0) scale(1.25) translateY(-4px); /* 25% scale + 4px lift VISIBILE */
   }
   
   .header-premium-icon:hover::before {
@@ -182,7 +182,7 @@
   .header-icon:hover {
     color: hsl(var(--primary));
     opacity: 1;
-    transform: translateZ(0) scale(1.12) translateY(-3px);
+    transform: translateZ(0) scale(1.25) translateY(-4px); /* 25% scale + 4px lift VISIBILE */
   }
   
   .header-icon:hover::before {

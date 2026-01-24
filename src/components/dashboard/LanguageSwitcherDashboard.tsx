@@ -231,6 +231,8 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
 
           <DropdownMenuContent
             align="end"
+            sideOffset={12}
+            collisionPadding={16}
             className={cn(
               'min-w-48 overflow-hidden p-2',
               // iOS 26 Liquid Glass dropdown

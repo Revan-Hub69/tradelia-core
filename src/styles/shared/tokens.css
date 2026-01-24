@@ -18,6 +18,9 @@
   --popover-foreground: 224 71% 4%;
   --primary: 224 76% 48%;
   --primary-foreground: 0 0% 100%;
+  
+  /* Primary RGB (for rgba() usage in premium effects) */
+  --primary-rgb: 29, 78, 216;  /* hsl(224 76% 48%) converted to RGB */
   --secondary: 210 40% 96%;
   --secondary-foreground: 224 71% 4%;
   --muted: 210 40% 96%;
@@ -80,6 +83,9 @@
   --popover-foreground: 210 40% 98%;
   --primary: 213 94% 68%;
   --primary-foreground: 222 47% 11%;
+  
+  /* Primary RGB (for rgba() usage in premium effects) */
+  --primary-rgb: 96, 165, 250;  /* hsl(213 94% 68%) converted to RGB */
   --secondary: 217 33% 25%;
   --secondary-foreground: 210 40% 98%;
   --muted: 217 33% 25%;

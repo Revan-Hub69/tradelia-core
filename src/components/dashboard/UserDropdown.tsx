@@ -387,12 +387,12 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
       <DropdownMenuContent
         ref={focusTrapRef as React.RefObject<HTMLDivElement>}
         align="end"
+        sideOffset={12}
+        collisionPadding={16}
         className={cn(
           'w-56 overflow-hidden rounded-2xl border border-border/20 p-2',
           // Liquid Glass dropdown
           'glass-dropdown',
-          // Performance optimized entrance
-          'animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200',
         )}
         onCloseAutoFocus={(e) => {
           // Prevent default to handle focus restoration manually

@@ -238,9 +238,11 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
+            sideOffset={12}
+            collisionPadding={16}
             className={cn(
               'w-80 overflow-hidden rounded-2xl border border-border/20 p-0',
-              'dropdown-premium-container animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200',
+              'dropdown-premium-container',
             )}
           >
             <DropdownMenuLabel className="border-b border-border/10 px-6 py-4">
