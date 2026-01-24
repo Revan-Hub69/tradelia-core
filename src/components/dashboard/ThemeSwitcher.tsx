@@ -76,8 +76,8 @@ export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) 
               // Base styling
               'relative flex size-11 items-center justify-center rounded-xl',
               'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-              // ONLY design tokens - NO Tailwind transitions
-              'header-icon glass-button',
+              // Unified header icon class (includes glass effect)
+              'header-icon',
               className,
             )}
             style={{

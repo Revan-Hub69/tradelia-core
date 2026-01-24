@@ -162,8 +162,8 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
                 // Base styling
                 'relative flex size-11 items-center justify-center rounded-xl',
                 'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-                // ONLY design tokens - NO Tailwind transitions
-                'header-icon glass-button',
+                // Unified header icon class (includes glass effect)
+                'header-icon',
                 className,
               )}
               style={{
@@ -233,7 +233,7 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
             variant="premium"
             align="end"
             sideOffset={12}
-            collisionPadding={16}
+            collisionPadding={32}
             className={cn(
               'min-w-48 overflow-hidden p-2',
               // iOS 26 Liquid Glass dropdown

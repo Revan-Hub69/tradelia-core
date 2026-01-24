@@ -199,8 +199,8 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
             // Base styling
             'flex h-11 items-center gap-3 px-3 rounded-xl',
             'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-            // ONLY design tokens - NO Tailwind transitions
-            'header-icon glass-button',
+            // Unified header icon class (includes glass effect)
+            'header-icon',
           )}
           data-active={isOpen}
           style={{
@@ -304,8 +304,8 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
             // Base styling
             'flex h-11 items-center gap-3 px-3 rounded-xl',
             'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-            // ONLY design tokens - NO Tailwind transitions
-            'header-icon glass-button',
+            // Unified header icon class (includes glass effect)
+            'header-icon',
           )}
           style={{
             // Hardware acceleration - GPU optimization
@@ -389,7 +389,7 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
         variant="premium"
         align="end"
         sideOffset={12}
-        collisionPadding={16}
+        collisionPadding={32}
         className={cn(
           'w-56 overflow-hidden rounded-2xl border border-border/20 p-2',
           // Liquid Glass dropdown
