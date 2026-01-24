@@ -19,7 +19,6 @@ import React, { useEffect, useState } from 'react';
 import { SearchIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import { UiButton } from '@/components/ui/UiButton';
 import { UiStatusChip } from '@/components/ui/UiStatusChip';
-import { UiSurface } from '@/components/ui/UiSurface';
 import { useScrollDirection } from '@/hooks/useScrollDirection';
 import { useUserData } from '@/hooks/useUserData';
 import { Logo } from '@/templates/Logo';
@@ -278,12 +277,11 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
   return (
     <>
-      <UiSurface
-        variant="header"
+      <header
         role="banner"
         aria-label={t('header_aria_label')}
         className={cn(
-          // Use new header-2026 class
+          // Use new header-2026 class (includes all liquid glass effects)
           'header-2026',
           // Premium scroll shadow - applied during entire scroll (independent of visibility)
           showScrollShadow && isScrolled && 'header-scrolled',
@@ -393,7 +391,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             </div>
           </div>
         </div>
-      </UiSurface>
+      </header>
 
       {/* Premium Global Search Modal with Liquid Glass */}
       {showSearchModal && (
