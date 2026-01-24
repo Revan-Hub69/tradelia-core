@@ -37,8 +37,8 @@
 
 :root {
   /* iOS 26 Liquid Glass - Tier-1 Compliant */
-  --dropdown-glass-bg: rgba(255, 255, 255, 0.95); /* iOS 26 standard */
-  --dropdown-glass-border: rgba(255, 255, 255, 0.2); /* White glass edge */
+  --dropdown-glass-bg: rgba(242, 242, 247, 0.95); /* iOS systemBackground */
+  --dropdown-glass-border: rgba(0, 0, 0, 0.08);    /* Nero sottile */
   --dropdown-glass-blur: 20px; /* iOS 26 standard */
   --dropdown-glass-saturate: 180%; /* Color richness */
 

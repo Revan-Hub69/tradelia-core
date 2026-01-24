@@ -222,7 +222,42 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
         /* Desktop: Standard Dropdown */
         <DropdownMenu open={isOpen} onOpenChange={handleOpenChange}>
           <DropdownMenuTrigger asChild>
-            <div style={{ display: 'none' }} />
+            <button
+              ref={triggerRef}
+              type="button"
+              onClick={() => handleOpenChange(!isOpen)}
+              aria-label={t('language_switcher_aria_label')}
+              aria-haspopup="menu"
+              aria-expanded={isOpen}
+              data-active={isOpen}
+              className={cn(
+                'relative flex size-11 items-center justify-center rounded-xl',
+                'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+                'header-icon',
+                className,
+              )}
+              style={{
+                willChange: 'transform',
+                transform: 'translateZ(0)',
+              }}
+            >
+              <div
+                className={cn(
+                  'relative',
+                  isChangingLanguage && !prefersReducedMotion && 'animate-spin',
+                )}
+              >
+                <GlobeIcon
+                  size={20}
+                  isActive={isOpen}
+                  variant="signature"
+                  className="text-foreground"
+                />
+                {!prefersReducedMotion && (isChangingLanguage || isOpen) && (
+                  <div className="pointer-events-none absolute inset-0 animate-pulse rounded-full border border-green-500/20" />
+                )}
+              </div>
+            </button>
           </DropdownMenuTrigger>
 
           <DropdownMenuContent

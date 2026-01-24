@@ -236,7 +236,18 @@ export const MobileDropdownPopover = React.memo<MobileDropdownPopoverProps>(({
 
   // Rule 8: Measure once per open (layout thrash prevention)
   useEffect(() => {
-    if (!isOpen || !triggerRect || !popoverRef.current) {
+    if (!isOpen || !popoverRef.current) {
+      return;
+    }
+
+    // CRITICAL FIX: Fallback if triggerRect is null
+    if (!triggerRect) {
+      console.warn('[MobileDropdownPopover] triggerRect is null, using fallback position');
+      setPosition({
+        top: HEADER_HEIGHT + SAFE_AREA_TOP + 8, // Below header
+        right: EDGE_PADDING, // 16px from right edge
+      });
+      setPlacement('bottom-end');
       return;
     }
 

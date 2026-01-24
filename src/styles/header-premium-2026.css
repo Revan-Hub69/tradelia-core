@@ -18,9 +18,9 @@
   /* Z-index */
   --z-header: 50;
 
-  /* Glass Effects */
-  --header-glass-bg: rgba(255, 255, 255, 0.95);
-  --header-glass-border: rgba(255, 255, 255, 0.2);
+  /* Glass Effects - iOS 26 Compliant (Light Mode) */
+  --header-glass-bg: rgba(242, 242, 247, 0.95);  /* iOS systemBackground - grigio chiarissimo */
+  --header-glass-border: rgba(0, 0, 0, 0.08);     /* Nero sottile per contrasto */
   --header-glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
   --header-glass-blur: 20px;
   --header-glass-saturate: 180%;
@@ -35,7 +35,8 @@
 }
 
 .dark {
-  --header-glass-bg: rgba(15, 23, 42, 0.95);
+  /* iOS 26 Standard Dark Mode: rgb(28, 28, 30) = #1C1C1E */
+  --header-glass-bg: rgba(28, 28, 30, 0.95);
   --header-glass-border: rgba(255, 255, 255, 0.1);
   --header-glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0, 0, 0, 0.2);
 }

@@ -24,8 +24,8 @@
   --bottom-nav-radius: 24px; /* Capsule shape */
   --bottom-nav-padding: 8px 12px;
 
-  /* Liquid Glass - Light Mode */
-  --bottom-nav-bg: rgba(255, 255, 255, 0.95);
+  /* Liquid Glass - Light Mode (iOS systemBackground) */
+  --bottom-nav-bg: rgba(242, 242, 247, 0.95);
   --bottom-nav-border: rgba(0, 0, 0, 0.08);
   --bottom-nav-blur: 20px;
 

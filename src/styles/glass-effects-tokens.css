@@ -21,9 +21,9 @@
   --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
   --ease-spring: cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* Sidebar Liquid Glass 2026 - Apple Standard */
-  --sidebar-glass-bg: rgba(255, 255, 255, 0.95);
-  --sidebar-glass-border: rgba(255, 255, 255, 0.2);
+  /* Sidebar Liquid Glass 2026 - iOS systemBackground */
+  --sidebar-glass-bg: rgba(242, 242, 247, 0.95);  /* iOS systemBackground */
+  --sidebar-glass-border: rgba(0, 0, 0, 0.08);     /* Nero sottile */
   --sidebar-glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
   --sidebar-glass-blur: 20px;
   --sidebar-glass-saturate: 180%;
@@ -41,8 +41,8 @@
   --sidebar-stagger: 50ms;
 
   /* Toggle Button Liquid Glass */
-  --toggle-glass-bg: rgba(255, 255, 255, 0.9);
-  --toggle-glass-border: rgba(255, 255, 255, 0.3);
+  --toggle-glass-bg: rgba(242, 242, 247, 0.9);  /* iOS systemBackground */
+  --toggle-glass-border: rgba(0, 0, 0, 0.08);    /* Nero sottile */
   --toggle-glass-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   --toggle-glass-hover-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 
@@ -142,12 +142,12 @@
   /* Shape - visionOS Standard */
   border-radius: 32px;
 
-  /* Material - ultraThinMaterial */
-  background: rgba(255, 255, 255, 0.95);
+  /* Material - ultraThinMaterial (iOS systemBackground) */
+  background: rgba(242, 242, 247, 0.95);
   backdrop-filter: blur(20px) saturate(180%);
 
   /* Border - Glass Edge Effect */
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 
   /* Shadow - Multi-layer Elevation */
   box-shadow:

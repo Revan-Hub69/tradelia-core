@@ -369,27 +369,16 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             {/* Custom Right Slot */}
             {rightSlot}
 
-            {/* Controls - Mobile Optimized: Only Notifications + User */}
-            <div className={cn(
-              'flex items-center gap-2',
-              // Show theme/language switchers on tablet+ (768px+)
-              'md:gap-3',
-            )}
-            >
-              {/* Theme Switcher - Hidden on mobile, visible on tablet+ */}
-              <div className="hidden md:block">
-                <ThemeSwitcher />
-              </div>
+            {/* Controls - All icons always visible */}
+            <div className="flex items-center gap-2 md:gap-3">
+              {/* Theme Switcher - Always visible */}
+              <ThemeSwitcher />
 
-              {/* Language Switcher - Hidden on mobile, visible on tablet+ */}
-              <div className="hidden md:block">
-                <LanguageSwitcherDashboard />
-              </div>
+              {/* Language Switcher - Always visible */}
+              <LanguageSwitcherDashboard />
 
-              {/* Notifications - Always visible (mobile, tablet, desktop) */}
-              <div>
-                <NotificationsBell />
-              </div>
+              {/* Notifications - Always visible */}
+              <NotificationsBell />
             </div>
 
             {/* User Dropdown */}
