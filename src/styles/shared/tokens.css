@@ -9,22 +9,22 @@
  */
 
 :root {
-  /* Colors - Light mode */
+  /* Colors - Light mode (WCAG AA Compliant) */
   --background: 210 20% 98%;
-  --foreground: 224 71% 4%;
+  --foreground: 215 25% 27%; /* Slate 700 #475569 - Professional Dark Gray */
   --card: 0 0% 100%;
-  --card-foreground: 224 71% 4%;
+  --card-foreground: 215 25% 27%;
   --popover: 0 0% 100%;
-  --popover-foreground: 224 71% 4%;
+  --popover-foreground: 215 25% 27%;
   --primary: 224 76% 48%;
   --primary-foreground: 0 0% 100%;
 
   /* Primary RGB (for rgba() usage in premium effects) */
   --primary-rgb: 29, 78, 216; /* hsl(224 76% 48%) converted to RGB */
   --secondary: 210 40% 96%;
-  --secondary-foreground: 224 71% 4%;
+  --secondary-foreground: 215 25% 27%;
   --muted: 210 40% 96%;
-  --muted-foreground: 215 16% 40%;
+  --muted-foreground: 215 20% 45%; /* Slate 600 #64748B - Readable Gray */
   --accent: 213 50% 50%;
   --accent-foreground: 0 0% 100%;
   --destructive: 0 84% 60%;
@@ -78,9 +78,7 @@
   --glass-material-border: rgba(0, 0, 0, 0.06);
   --glass-material-blur: 20px;
   --glass-material-saturate: 180%;
-  --glass-material-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.15),
-    0 8px 16px rgba(0, 0, 0, 0.1);
+  --glass-material-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
 
   /* Shadows */
   --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -88,22 +86,22 @@
 }
 
 .dark {
-  /* Colors - Dark mode */
+  /* Colors - Dark mode (WCAG AA Compliant) */
   --background: 222 47% 11%;
-  --foreground: 210 40% 98%;
+  --foreground: 214 32% 91%; /* Slate 200 #E2E8F0 - Readable Light Gray */
   --card: 217 33% 17%;
-  --card-foreground: 210 40% 98%;
+  --card-foreground: 214 32% 91%;
   --popover: 222 47% 13%;
-  --popover-foreground: 210 40% 98%;
+  --popover-foreground: 214 32% 91%;
   --primary: 213 94% 68%;
   --primary-foreground: 222 47% 11%;
 
   /* Primary RGB (for rgba() usage in premium effects) */
   --primary-rgb: 96, 165, 250; /* hsl(213 94% 68%) converted to RGB */
   --secondary: 217 33% 25%;
-  --secondary-foreground: 210 40% 98%;
+  --secondary-foreground: 214 32% 91%;
   --muted: 217 33% 25%;
-  --muted-foreground: 215 20% 65%;
+  --muted-foreground: 215 20% 60%; /* Slate 400 #94A3B8 - Readable Gray */
   --accent: 213 60% 60%;
   --accent-foreground: 222 47% 11%;
   --destructive: 0 72% 51%;
@@ -127,9 +125,7 @@
   /* Dark Mode - iOS 26 Standard */
   --glass-material-bg: rgba(28, 28, 30, 0.95);
   --glass-material-border: rgba(255, 255, 255, 0.1);
-  --glass-material-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.3),
-    0 8px 16px rgba(0, 0, 0, 0.2);
+  --glass-material-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0, 0, 0, 0.2);
 
   /* Shadows - Dark mode */
   --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.2);

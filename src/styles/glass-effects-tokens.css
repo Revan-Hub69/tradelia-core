@@ -24,9 +24,7 @@
   /* Sidebar Liquid Glass 2026 - Soft Cream (Educational) */
   --sidebar-glass-bg: rgba(252, 251, 248, 0.95); /* Soft Cream */
   --sidebar-glass-border: rgba(0, 0, 0, 0.06); /* Subtle border */
-  --sidebar-glass-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.15),
-    0 8px 16px rgba(0, 0, 0, 0.1);
+  --sidebar-glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
   --sidebar-glass-blur: 20px;
   --sidebar-glass-saturate: 180%;
 
@@ -59,9 +57,7 @@
   /* Sidebar Dark Mode */
   --sidebar-glass-bg: rgba(15, 23, 42, 0.95);
   --sidebar-glass-border: rgba(255, 255, 255, 0.1);
-  --sidebar-glass-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.3),
-    0 8px 16px rgba(0, 0, 0, 0.2);
+  --sidebar-glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0, 0, 0, 0.2);
 
   /* Toggle Button Dark Mode */
   --toggle-glass-bg: rgba(15, 23, 42, 0.9);
