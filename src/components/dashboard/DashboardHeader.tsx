@@ -73,7 +73,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   rightSlot,
   leftSlot,
   className,
-  showScrollShadow = true,
+  // showScrollShadow = true, // Removed: not used (scroll shadow always active)
   titleAs = 'h1', // Default h1, but configurable
   // Mobile Optimization 2026
   breadcrumbs,
