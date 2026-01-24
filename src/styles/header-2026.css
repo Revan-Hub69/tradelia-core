@@ -95,6 +95,13 @@
   background-color: rgba(15, 23, 42, 0.98);
 }
 
+/* Header Compact Edge - Dynamic height reduction at scroll edges (iOS elastic effect) */
+.header-2026.header-compact-edge {
+  /* Slightly reduce blur for subtle elastic effect */
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+}
+
 @media (max-width: 768px) {
   .header-2026 {
     height: var(--header-2026-height-mobile);
@@ -321,5 +328,11 @@ html[data-tradelia-runtime='boot'] .header-2026-avatar {
   .header-2026-btn:hover,
   .header-2026-btn-text:hover {
     transform: translateZ(0);
+  }
+  
+  /* Disable compact edge effect for reduced motion */
+  .header-2026.header-compact-edge {
+    backdrop-filter: blur(var(--header-2026-blur)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--header-2026-blur)) saturate(180%);
   }
 }

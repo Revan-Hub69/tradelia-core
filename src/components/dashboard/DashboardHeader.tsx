@@ -87,12 +87,34 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
   // Responsive mobile detection (reactive to window resize)
   const [isMobile, setIsMobile] = useState(false);
+  
+  // Scroll edge detection for dynamic height effect
+  const [isAtScrollEdge, setIsAtScrollEdge] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile(); // Initial check
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Detect scroll edges (top/bottom) for dynamic height effect
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight;
+      const clientHeight = document.documentElement.clientHeight;
+      
+      // At top (within 10px) or at bottom (within 10px)
+      const atTop = scrollTop < 10;
+      const atBottom = scrollTop + clientHeight >= scrollHeight - 10;
+      
+      setIsAtScrollEdge(atTop || atBottom);
+    };
+
+    handleScroll(); // Initial check
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   // Scroll behavior based on REAL applications research (Twitter, Medium, TutsPlus)
@@ -285,16 +307,21 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           'header-2026',
           // Premium scroll shadow - applied during entire scroll (independent of visibility)
           showScrollShadow && isScrolled && 'header-scrolled',
+          // Dynamic compact mode at scroll edges
+          isAtScrollEdge && 'header-compact-edge',
           className,
         )}
         style={{
           // Premium spring physics animation (Apple iOS 26 Liquid Glass)
           // Hide only on mobile, always visible on desktop/tablet
           transform: shouldHide ? 'translate3d(0, -100%, 0)' : 'translate3d(0, 0, 0)',
+          // Dynamic padding reduction at scroll edges (elastic effect)
+          paddingTop: isAtScrollEdge ? '0.75rem' : '1rem',
+          paddingBottom: isAtScrollEdge ? '0.75rem' : '1rem',
           // Optimize for animation only when needed
-          willChange: isMobile && hideOnScroll ? 'transform' : 'auto',
+          willChange: isMobile && hideOnScroll ? 'transform, padding' : isAtScrollEdge ? 'padding' : 'auto',
           // Premium spring timing - always apply transition for smooth interactions
-          transition: 'transform 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+          transition: 'transform 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94), padding 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
         }}
       >
         <div className={cn(
