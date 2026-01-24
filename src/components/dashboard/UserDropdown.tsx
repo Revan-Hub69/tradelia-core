@@ -52,6 +52,7 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
   const router = useRouter();
   const t = useTranslations('Dashboard');
   const [isOpen, setIsOpen] = useState(false);
+  const [triggerRect, setTriggerRect] = useState<DOMRect | null>(null);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
   const focusTrapRef = useFocusTrap(isOpen);
   const isMobile = useMobileDetection();
@@ -88,8 +89,26 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
       navigator.vibrate(10);
     }
 
+    // Capture trigger position for mobile popover
+    if (open && isMobile && triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      console.log('[UserDropdown] triggerRect:', {
+        top: rect.top,
+        right: rect.right,
+        bottom: rect.bottom,
+        left: rect.left,
+        width: rect.width,
+        height: rect.height,
+      });
+      console.log('[UserDropdown] viewport:', {
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+      setTriggerRect(rect);
+    }
+
     setIsOpen(open);
-  }, []);
+  }, [isMobile]);
 
   const handleClose = useCallback(() => {
     setIsOpen(false);

@@ -73,7 +73,20 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
 
     // Capture trigger position for mobile popover
     if (open && isMobile && triggerRef.current) {
-      setTriggerRect(triggerRef.current.getBoundingClientRect());
+      const rect = triggerRef.current.getBoundingClientRect();
+      console.log('[LanguageSwitcher] triggerRect:', {
+        top: rect.top,
+        right: rect.right,
+        bottom: rect.bottom,
+        left: rect.left,
+        width: rect.width,
+        height: rect.height,
+      });
+      console.log('[LanguageSwitcher] viewport:', {
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+      setTriggerRect(rect);
     }
 
     setIsOpen(open);

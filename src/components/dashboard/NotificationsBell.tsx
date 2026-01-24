@@ -79,7 +79,20 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
 
     // Capture trigger position for mobile popover
     if (open && isMobile && triggerRef.current) {
-      setTriggerRect(triggerRef.current.getBoundingClientRect());
+      const rect = triggerRef.current.getBoundingClientRect();
+      console.log('[NotificationsBell] triggerRect:', {
+        top: rect.top,
+        right: rect.right,
+        bottom: rect.bottom,
+        left: rect.left,
+        width: rect.width,
+        height: rect.height,
+      });
+      console.log('[NotificationsBell] viewport:', {
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+      setTriggerRect(rect);
     }
 
     setIsOpen(open);
