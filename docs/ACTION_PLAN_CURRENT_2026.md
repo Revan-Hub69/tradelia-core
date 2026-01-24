@@ -210,22 +210,118 @@
 
 ### P2 - Medium Priority (Prossima Settimana)
 
-#### Task 3: Empty States Library (3-4 ore)
-**Obiettivo**: Creare libreria empty states professionale
+#### Task 3: Loading States, Empty States & Mobile Viewport Fixes (4-5 ore) 🔥
+**Obiettivo**: Sistema completo di feedback UX con iOS 26 standards
+
+**Scope Espanso**:
+1. **Pull-to-Refresh Loading (Mobile)** - iOS 26 Pattern
+   - Sostituire loading di sistema con custom iOS 26
+   - Liquid Glass spinner con spring physics
+   - Haptic feedback (light vibration)
+   - Smooth animation (no jank)
+   
+2. **Empty States Library** - 3 Tipi
+   - Informational (first use, no data)
+   - Action-oriented (call-to-action)
+   - Celebratory (completed tasks)
+   - iOS 26 illustrations/icons
+   - Micro-interactions
+   
+3. **Mobile Viewport Fixes** - Dropdown/Popup Positioning
+   - User menu dropdown (fuori viewport)
+   - Language switcher dropdown (fuori viewport)
+   - Notifications dropdown (fuori viewport)
+   - Bottom sheet pattern per mobile (< 768px)
+   - Safe area insets (iOS notch/home indicator)
+   
+4. **Loading Skeletons Enhancement**
+   - Liquid Glass shimmer effect
+   - Concentric corners (card system)
+   - Smooth transitions to content
+
+**Tier-1 Research Necessaria**:
+- Apple HIG: Pull-to-Refresh Patterns (iOS 26)
+- Material Design 3: Loading States
+- Radix UI: Dropdown Positioning Algorithms
+- iOS Safe Area Guidelines
+- Empty States Best Practices (Shopify, Stripe, Notion)
 
 **Deliverables**:
-- [ ] `empty-states-2026.css`
-- [ ] 3 tipi: Informational, Action-oriented, Celebratory
-- [ ] Reusable components
-- [ ] Copy guidelines
-- [ ] Illustrations
+- [ ] Tier-1 research document: `LOADING_EMPTY_STATES_MOBILE_TIER1_2026.md`
+- [ ] `pull-to-refresh-ios-26.css` - Custom pull-to-refresh
+- [ ] `empty-states-2026.css` - Empty states library
+- [ ] `mobile-viewport-fixes.css` - Dropdown positioning
+- [ ] `loading-skeletons-ios-26.css` - Enhanced skeletons
+- [ ] React components:
+  - `PullToRefresh.tsx` - iOS 26 pull-to-refresh
+  - `EmptyState.tsx` - Reusable empty state
+  - `LoadingSkeleton.tsx` - Enhanced skeleton
+- [ ] Fix dropdown positioning in:
+  - `UserDropdown.tsx`
+  - `LanguageSwitcherDashboard.tsx`
+  - `NotificationsBell.tsx`
+- [ ] Update `dropdown-system.css` with mobile positioning
 
-**Locations**:
-- Dashboard (first use)
+**Specifiche Tecniche**:
+
+**Pull-to-Refresh**:
+```css
+.pull-to-refresh-ios-26 {
+  /* Liquid Glass spinner */
+  backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 24px;
+  /* Spring physics */
+  transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+```
+
+**Mobile Dropdown Positioning**:
+```css
+@media (max-width: 767px) {
+  .dropdown-mobile {
+    /* Bottom sheet pattern */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    /* Safe area insets */
+    padding-bottom: env(safe-area-inset-bottom);
+    /* Slide up animation */
+    transform: translateY(100%);
+  }
+}
+```
+
+**Empty State Structure**:
+```tsx
+<EmptyState
+  type="informational" // or "action" or "celebratory"
+  icon={<Icon />}
+  title="No activities yet"
+  description="Start learning to see your progress"
+  action={{
+    label: "Start Learning",
+    onClick: () => navigate('/learn')
+  }}
+/>
+```
+
+**Benefici**:
+- ✅ iOS 26 native feel (pull-to-refresh)
+- ✅ No more viewport overflow (mobile dropdowns)
+- ✅ Professional empty states
+- ✅ Enhanced loading feedback
+- ✅ Safe area compliance (iOS notch)
+- ✅ Haptic feedback integration
+- ✅ Smooth animations (60fps)
+
+**Locations da Aggiornare**:
+- Dashboard (first use empty state)
 - Activity feed (no activities)
 - Notifications (no notifications)
-- Search (no results)
+- Search results (no results)
 - Completed tasks (celebratory)
+- All mobile dropdowns (viewport fixes)
 
 #### Task 4: Error Pages Redesign (2-3 ore)
 **Obiettivo**: Friendly error pages con brand personality
