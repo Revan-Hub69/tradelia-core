@@ -237,6 +237,7 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
             <div style={{ display: 'none' }} />
           </DropdownMenuTrigger>
           <DropdownMenuContent
+            variant="premium"
             align="end"
             sideOffset={12}
             collisionPadding={16}

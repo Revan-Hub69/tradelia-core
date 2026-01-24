@@ -386,6 +386,7 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
 
       <DropdownMenuContent
         ref={focusTrapRef as React.RefObject<HTMLDivElement>}
+        variant="premium"
         align="end"
         sideOffset={12}
         collisionPadding={16}

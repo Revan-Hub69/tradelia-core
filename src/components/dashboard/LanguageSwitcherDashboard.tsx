@@ -230,6 +230,7 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
           </DropdownMenuTrigger>
 
           <DropdownMenuContent
+            variant="premium"
             align="end"
             sideOffset={12}
             collisionPadding={16}
