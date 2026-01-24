@@ -102,9 +102,11 @@
 /* Hover - ONLY on pointer devices */
 @media (hover: hover) and (pointer: fine) {
   .header-icon:hover {
+    color: hsl(var(--primary));
     opacity: 1;
-    transform: translateZ(0) scale(1.01);
+    transform: translateZ(0) scale(1.05);
     transition:
+      color var(--header-transition),
       opacity var(--header-transition),
       transform var(--header-transition);
   }
@@ -112,8 +114,14 @@
 
 /* Active - ALL devices */
 .header-icon:active {
-  transform: translateZ(0) scale(0.98);
-  transition: transform 150ms ease-out;
+  transform: translateZ(0) scale(0.95);
+  transition: transform 100ms ease-out;
+}
+
+/* Active State (Open Dropdown) */
+.header-icon[data-active='true'] {
+  color: hsl(var(--primary));
+  transform: translateZ(0) scale(1.05);
 }
 
 /* Focus - Accessibility */
