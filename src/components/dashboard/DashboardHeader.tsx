@@ -315,13 +315,10 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           // Premium spring physics animation (Apple iOS 26 Liquid Glass)
           // Hide only on mobile, always visible on desktop/tablet
           transform: shouldHide ? 'translate3d(0, -100%, 0)' : 'translate3d(0, 0, 0)',
-          // Dynamic padding reduction at scroll edges (elastic effect)
-          paddingTop: isAtScrollEdge ? '0.75rem' : '1rem',
-          paddingBottom: isAtScrollEdge ? '0.75rem' : '1rem',
           // Optimize for animation only when needed
-          willChange: isMobile && hideOnScroll ? 'transform, padding' : isAtScrollEdge ? 'padding' : 'auto',
+          willChange: isMobile && hideOnScroll ? 'transform' : isAtScrollEdge ? 'backdrop-filter' : 'auto',
           // Premium spring timing - always apply transition for smooth interactions
-          transition: 'transform 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94), padding 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+          transition: 'transform 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94), backdrop-filter 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
         }}
       >
         <div className={cn(
