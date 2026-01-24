@@ -25,53 +25,49 @@
    ============================================================================ */
 
 :root {
-  /* iOS 26 Liquid Glass - Dropdown Specific - ENTERPRISE PREMIUM */
-  --dropdown-glass-bg: rgba(255, 255, 255, 0.98);  /* Più opaco per premium */
-  --dropdown-glass-border: rgba(255, 255, 255, 0.3);  /* Bordo più visibile */
-  --dropdown-glass-blur: 32px;  /* Blur aumentato per effetto WOW */
-  --dropdown-glass-saturate: 200%;  /* Saturazione aumentata */
+  /* Educational Platform - Professional Glass Effects */
+  --dropdown-glass-bg: rgba(255, 255, 255, 0.97);  /* Solid, trustworthy */
+  --dropdown-glass-border: rgba(0, 0, 0, 0.08);  /* Subtle, professional */
+  --dropdown-glass-blur: 24px;  /* Clear but refined */
+  --dropdown-glass-saturate: 100%;  /* Natural, not oversaturated */
 
-  /* iOS 26 Multi-Layer Shadows - ENTERPRISE DEPTH */
-  --dropdown-shadow-layer-1: 0 20px 60px rgba(0, 0, 0, 0.25);  /* Shadow profonda */
-  --dropdown-shadow-layer-2: 0 10px 30px rgba(0, 0, 0, 0.15);  /* Shadow media */
-  --dropdown-shadow-layer-3: 0 4px 12px rgba(0, 0, 0, 0.1);  /* Shadow sottile */
-  --dropdown-shadow-layer-4: 0 0 0 1px rgba(0, 0, 0, 0.05);  /* Bordo sottile */
+  /* Professional Shadows - Trust & Depth */
+  --dropdown-shadow-layer-1: 0 12px 32px rgba(0, 0, 0, 0.12);  /* Depth without drama */
+  --dropdown-shadow-layer-2: 0 4px 12px rgba(0, 0, 0, 0.08);  /* Subtle definition */
+  --dropdown-shadow-layer-3: 0 0 0 1px rgba(0, 0, 0, 0.04);  /* Clean border */
   --dropdown-glass-shadow:
     var(--dropdown-shadow-layer-1), 
     var(--dropdown-shadow-layer-2), 
-    var(--dropdown-shadow-layer-3),
-    var(--dropdown-shadow-layer-4);
+    var(--dropdown-shadow-layer-3);
 
-  /* iOS 26 Border Radius - 16px per dropdowns PREMIUM */
-  --dropdown-radius: 16px;
-  --dropdown-item-radius: 10px;
+  /* Professional Border Radius - Modern but Serious */
+  --dropdown-radius: 12px;  /* Clean, professional */
+  --dropdown-item-radius: 8px;  /* Subtle, not playful */
 
-  /* Spring Physics Transitions - ENTERPRISE SMOOTH */
-  --dropdown-transition: 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  --dropdown-spring-transition: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);  /* Bounce premium */
+  /* Smooth Transitions - Professional, Not Bouncy */
+  --dropdown-transition: 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);  /* Smooth ease-out */
+  --dropdown-spring-transition: 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);  /* No bounce */
 
-  /* Touch Targets - 44px minimum (Apple HIG) */
+  /* Touch Targets - Accessibility First */
   --dropdown-item-min-height: 44px;
-  --dropdown-item-padding: 14px;
+  --dropdown-item-padding: 12px;
 
   /* Z-index */
   --z-dropdown: 60;
 }
 
 .dark {
-  --dropdown-glass-bg: rgba(15, 23, 42, 0.98);  /* Più opaco per premium */
-  --dropdown-glass-border: rgba(255, 255, 255, 0.15);  /* Bordo più visibile */
+  --dropdown-glass-bg: rgba(15, 23, 42, 0.97);  /* Solid, professional */
+  --dropdown-glass-border: rgba(255, 255, 255, 0.08);  /* Subtle, refined */
 
-  /* Enhanced shadows for dark mode - ENTERPRISE DEPTH */
-  --dropdown-shadow-layer-1: 0 20px 60px rgba(0, 0, 0, 0.6);
-  --dropdown-shadow-layer-2: 0 10px 30px rgba(0, 0, 0, 0.4);
-  --dropdown-shadow-layer-3: 0 4px 12px rgba(0, 0, 0, 0.3);
-  --dropdown-shadow-layer-4: 0 0 0 1px rgba(255, 255, 255, 0.1);
+  /* Professional shadows for dark mode */
+  --dropdown-shadow-layer-1: 0 12px 32px rgba(0, 0, 0, 0.4);
+  --dropdown-shadow-layer-2: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --dropdown-shadow-layer-3: 0 0 0 1px rgba(255, 255, 255, 0.08);
   --dropdown-glass-shadow:
     var(--dropdown-shadow-layer-1), 
     var(--dropdown-shadow-layer-2), 
-    var(--dropdown-shadow-layer-3),
-    var(--dropdown-shadow-layer-4);
+    var(--dropdown-shadow-layer-3);
 }
 
 /* ============================================================================
@@ -82,7 +78,7 @@
   /* CRITICAL: Position fixed for Radix Portal */
   position: fixed !important;
   
-  /* iOS 26 Liquid Glass Material - ENTERPRISE PREMIUM */
+  /* Professional Glass Material - Educational Platform */
   background-color: var(--dropdown-glass-bg);
   border: 1px solid var(--dropdown-glass-border);
   border-radius: var(--dropdown-radius);
@@ -97,12 +93,8 @@
   transform: translateZ(0);
   will-change: transform, opacity;
 
-  /* Smooth entrance with spring physics - ENTERPRISE BOUNCE */
-  animation: dropdown-entrance var(--dropdown-spring-transition) cubic-bezier(0.34, 1.56, 0.64, 1);
-  
-  /* Premium glow effect */
-  outline: 1px solid rgba(var(--primary-rgb), 0.1);
-  outline-offset: -1px;
+  /* Smooth entrance - Professional, not bouncy */
+  animation: dropdown-entrance var(--dropdown-spring-transition) ease-out;
 }
 
 /* Legacy class support (deprecated - use dropdown-premium-container) */
@@ -120,11 +112,7 @@
   z-index: var(--z-dropdown);
   transform: translateZ(0);
   will-change: transform, opacity;
-  animation: dropdown-entrance var(--dropdown-spring-transition) cubic-bezier(0.34, 1.56, 0.64, 1);
-  
-  /* Premium glow effect */
-  outline: 1px solid rgba(var(--primary-rgb), 0.1);
-  outline-offset: -1px;
+  animation: dropdown-entrance var(--dropdown-spring-transition) ease-out;
 }
 
 /* ============================================================================
@@ -143,16 +131,15 @@
   font-weight: 500;
   position: relative;
 
-  /* Spring physics transitions - ENTERPRISE SMOOTH */
+  /* Professional transitions - Smooth, not flashy */
   transition:
     background-color var(--dropdown-transition),
     color var(--dropdown-transition),
-    transform var(--dropdown-spring-transition),
-    box-shadow var(--dropdown-transition);
+    transform var(--dropdown-transition);
 
   /* GPU optimization */
   transform: translateZ(0);
-  will-change: background-color, transform, box-shadow;
+  will-change: background-color, transform;
 
   /* Touch optimization */
   touch-action: manipulation;
@@ -163,19 +150,7 @@
   cursor: pointer;
 }
 
-/* Premium glow effect on hover */
-.dropdown-premium-item::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: var(--dropdown-item-radius);
-  background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.15), rgba(var(--primary-rgb), 0.05));
-  opacity: 0;
-  transition: opacity var(--dropdown-transition);
-  pointer-events: none;
-}
-
-/* Hover - ONLY on pointer devices (iOS 26 standard) - ENTERPRISE PREMIUM */
+/* Hover - Professional feedback, not dramatic */
 @media (hover: hover) and (pointer: fine) {
   .dropdown-premium-item {
     min-height: 36px; /* Smaller for mouse */
@@ -183,21 +158,15 @@
   }
 
   .dropdown-premium-item:hover {
-    background-color: rgba(var(--primary-rgb), 0.12); /* 12% VISIBILE */
-    transform: translateZ(0) scale(1.03) translateY(-1px); /* Lift effect */
-    box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.15); /* Premium shadow */
-  }
-  
-  .dropdown-premium-item:hover::before {
-    opacity: 1; /* Gradient glow appears */
+    background-color: rgba(var(--primary-rgb), 0.08); /* Subtle, professional */
+    transform: translateZ(0); /* No scale, no lift - professional */
   }
 }
 
-/* Active - ALL devices with spring physics - ENTERPRISE FEEDBACK */
+/* Active - Subtle press feedback */
 .dropdown-premium-item:active {
-  background-color: rgba(var(--primary-rgb), 0.18); /* 18% VISIBILE */
-  transform: translateZ(0) scale(0.97); /* Press feedback */
-  box-shadow: 0 2px 6px rgba(var(--primary-rgb), 0.1); /* Subtle shadow */
+  background-color: rgba(var(--primary-rgb), 0.12); /* Slightly more visible */
+  transform: translateZ(0); /* No scale - professional */
   transition:
     transform 150ms cubic-bezier(0.34, 1.56, 0.64, 1),
     background-color 150ms ease-out;
