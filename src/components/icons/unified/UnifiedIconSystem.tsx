@@ -163,7 +163,8 @@ export const BellIcon = memo<Omit<SignatureIconProps, 'children'> & {
       transform: isRinging ? 'rotate(15deg)' : 'rotate(0deg)',
       transformOrigin: '12px 8px',
       transition: 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-    }}>
+    }}
+    >
       {/* Bell body - enhanced curve for better visual appeal */}
       <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" strokeLinecap="round" strokeLinejoin="round" />
       {/* Bell clapper - subtle detail */}
@@ -239,7 +240,8 @@ export const MenuIcon = memo<Omit<SignatureIconProps, 'children'> & {
       transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)',
       transformOrigin: '12px 12px',
       transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-    }}>
+    }}
+    >
       {/* Top line - slightly shorter for optical balance */}
       <path d="M4 6h16" strokeLinecap="round" />
       {/* Middle line - full width for stability */}
@@ -263,7 +265,8 @@ export const CloseIcon = memo<Omit<SignatureIconProps, 'children'> & {
       transform: isAnimated ? 'rotate(180deg)' : 'rotate(0deg)',
       transformOrigin: '12px 12px',
       transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-    }}>
+    }}
+    >
       {/* First diagonal - precise positioning */}
       <path d="M17.5 6.5L6.5 17.5" strokeLinecap="round" />
       {/* Second diagonal - perfect cross */}
@@ -287,7 +290,8 @@ export const ChevronDownIcon = memo<Omit<SignatureIconProps, 'children'> & {
       transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
       transformOrigin: '12px 12px',
       transition: `transform ${animationDuration}ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    }}>
+    }}
+    >
       {/* Perfect chevron with rounded caps for elegance */}
       <path d="M7 10l5 5 5-5" strokeLinecap="round" strokeLinejoin="round" />
     </g>
@@ -309,7 +313,8 @@ export const SettingsIcon = memo<Omit<SignatureIconProps, 'children'> & {
       transform: showRotation ? 'rotate(45deg)' : 'rotate(0deg)',
       transformOrigin: '12px 12px',
       transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-    }}>
+    }}
+    >
       {/* Center circle - enhanced size */}
       <circle cx="12" cy="12" r="3.5" strokeLinecap="round" />
       {/* Gear teeth - refined positioning for better balance */}
@@ -405,7 +410,8 @@ export const GlobeIcon = memo<Omit<SignatureIconProps, 'children'> & {
       transform: showRotation ? 'rotateY(15deg)' : 'rotateY(0deg)',
       transformOrigin: '12px 12px',
       transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-    }}>
+    }}
+    >
       {/* Main globe circle */}
       <circle cx="12" cy="12" r="10" strokeLinecap="round" />
       {/* Equator line */}
@@ -446,7 +452,8 @@ export const LogoutIcon = memo<Omit<SignatureIconProps, 'children'> & {
     <g style={{
       transform: showAnimation ? 'translateX(2px)' : 'translateX(0px)',
       transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-    }}>
+    }}
+    >
       {/* Door frame - professional design */}
       <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" strokeLinecap="round" strokeLinejoin="round" />
       {/* Exit arrow - enhanced with better proportions */}
@@ -596,7 +603,8 @@ export const SidebarExpandIcon = memo<Omit<SignatureIconProps, 'children'> & {
     <g style={{
       transform: isAnimated ? 'translateX(2px)' : 'translateX(0px)',
       transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-    }}>
+    }}
+    >
       {/* First chevron - primary */}
       <path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
       {/* Second chevron - depth indicator */}
@@ -617,7 +625,8 @@ export const SidebarCollapseIcon = memo<Omit<SignatureIconProps, 'children'> & {
     <g style={{
       transform: isAnimated ? 'translateX(-2px)' : 'translateX(0px)',
       transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-    }}>
+    }}
+    >
       {/* First chevron - primary */}
       <path d="M15 6l-6 6 6 6" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
       {/* Second chevron - depth indicator */}
@@ -638,12 +647,13 @@ export const SidebarToggleIcon = memo<Omit<SignatureIconProps, 'children'> & {
   <SignatureIconBase {...props}>
     {/* Morphing sidebar toggle icon */}
     <g style={{
-      transform: showAnimation 
+      transform: showAnimation
         ? (isExpanded ? 'rotate(180deg)' : 'rotate(0deg)')
         : 'rotate(0deg)',
       transformOrigin: '12px 12px',
       transition: 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-    }}>
+    }}
+    >
       {/* Sidebar representation */}
       <rect
         x="3"

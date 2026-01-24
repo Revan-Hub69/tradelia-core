@@ -276,13 +276,15 @@ export const getCompleteUserData = async (userId: string) => {
   const badges = await getUserBadges(userId);
 
   return {
-    profile: profile ? {
-      id: profile.id,
-      email: profile.email,
-      name: profile.name,
-      created_at: profile.created_at,
-      updated_at: profile.updated_at,
-    } : null,
+    profile: profile
+      ? {
+          id: profile.id,
+          email: profile.email,
+          name: profile.name,
+          created_at: profile.created_at,
+          updated_at: profile.updated_at,
+        }
+      : null,
     progress,
     completions,
     badges,

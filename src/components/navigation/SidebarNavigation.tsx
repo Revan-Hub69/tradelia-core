@@ -193,7 +193,7 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
 
         {/* Tooltip for collapsed state - CSS only */}
         {isCollapsed && (
-          <div className="pointer-events-none absolute left-full layer-toast ml-2 rounded bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+          <div className="layer-toast pointer-events-none absolute left-full ml-2 rounded bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
             {tGeneral(item.labelKey)}
           </div>
         )}
@@ -256,7 +256,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
         }}
       >
         <div className="flex h-full flex-col">
-          <div className="flex flex-col border-b border-border/20 p-4 gap-3">
+          <div className="flex flex-col gap-3 border-b border-border/20 p-4">
             <div className="flex items-center">
               {isCollapsed
                 ? (
@@ -310,7 +310,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
     >
       <div className="flex h-full flex-col">
         {/* Sidebar Header with Liquid Glass */}
-        <div className="flex flex-col border-b border-border/20 p-4 min-h-[80px] gap-3">
+        <div className="flex min-h-[80px] flex-col gap-3 border-b border-border/20 p-4">
           {/* Logo - Clickable to /dashboard */}
           <Link
             href="/dashboard"
@@ -334,8 +334,9 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
           {/* Toggle Button - Separated from logo */}
           <div className={cn(
             'flex group',
-            isCollapsed ? 'justify-center' : 'justify-end'
-          )}>
+            isCollapsed ? 'justify-center' : 'justify-end',
+          )}
+          >
             <motion.button
               onClick={() => setIsCollapsed(!isCollapsed)}
               className={cn(
@@ -405,9 +406,9 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                     </svg>
                   </div>
                 )}
-                
+
                 {/* Hover tooltip */}
-                <div className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 rounded bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100 layer-toast">
+                <div className="layer-toast pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 rounded bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
                   {isCollapsed ? t('expand_sidebar') : t('collapse_sidebar')}
                 </div>
               </div>
@@ -458,15 +459,15 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
           transition={{ duration: 0.3, delay: isCollapsed ? 0 : 0.2 }}
         >
           {!isCollapsed && (
-            <div className="text-xs text-muted-foreground space-y-2">
+            <div className="space-y-2 text-xs text-muted-foreground">
               <div className="flex items-center gap-2">
                 <div className="size-2 animate-pulse rounded-full bg-green-500" />
                 <span>{t('online_status')}</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground/70">
-                <kbd className="px-1.5 py-0.5 text-xs bg-muted rounded border">Cmd</kbd>
+                <kbd className="rounded border bg-muted px-1.5 py-0.5 text-xs">Cmd</kbd>
                 <span>+</span>
-                <kbd className="px-1.5 py-0.5 text-xs bg-muted rounded border">\</kbd>
+                <kbd className="rounded border bg-muted px-1.5 py-0.5 text-xs">\</kbd>
                 <span>Toggle sidebar</span>
               </div>
             </div>

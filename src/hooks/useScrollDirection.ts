@@ -29,10 +29,10 @@ export const useScrollDirection = (options: UseScrollDirectionOptions = {}) => {
 
   const updateScrollDirection = useCallback(() => {
     const scrollY = window.scrollY;
-    
+
     // Update scrolled state
     setIsScrolled(scrollY > 10);
-    
+
     // Always show header at top of page
     if (scrollY <= 0) {
       setIsHeaderVisible(true);
@@ -43,7 +43,7 @@ export const useScrollDirection = (options: UseScrollDirectionOptions = {}) => {
     }
 
     const difference = scrollY - lastScrollY.current;
-    
+
     // Only update if we've scrolled past the threshold
     if (Math.abs(difference) > threshold) {
       if (difference > 0) {
@@ -57,7 +57,7 @@ export const useScrollDirection = (options: UseScrollDirectionOptions = {}) => {
       }
       lastScrollY.current = scrollY;
     }
-    
+
     ticking.current = false;
   }, [threshold]);
 

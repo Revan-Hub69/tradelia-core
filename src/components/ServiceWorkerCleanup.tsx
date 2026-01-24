@@ -68,4 +68,3 @@ export function ServiceWorkerCleanup() {
   // This component renders nothing
   return null;
 }
-

@@ -121,7 +121,7 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
 
                     {/* Educational feedback - discrete border instead of glow */}
                     {!prefersReducedMotion && (isChangingLanguage || isOpen) && (
-                      <div className="absolute inset-0 rounded-full border border-green-500/20 pointer-events-none animate-pulse" />
+                      <div className="pointer-events-none absolute inset-0 animate-pulse rounded-full border border-green-500/20" />
                     )}
                   </div>
                 </button>

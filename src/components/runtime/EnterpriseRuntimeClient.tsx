@@ -11,9 +11,9 @@ export function EnterpriseRuntimeClient(props: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <ThemeProvider 
-      attribute="class" 
-      defaultTheme="dark" 
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="dark"
       enableSystem
       disableTransitionOnChange
     >

@@ -9,7 +9,7 @@ export function generateStaticParams() {
 
 /**
  * Locale Layout - ONLY providers, NO html/head/body
- * 
+ *
  * This is a nested layout that provides i18n context.
  * The root layout (src/app/layout.tsx) handles html/head/body.
  */

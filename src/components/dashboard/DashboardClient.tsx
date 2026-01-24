@@ -75,12 +75,12 @@ export function DashboardClient({ children }: DashboardClientProps) {
   return (
     <NavigationProvider>
       <DashboardContextProvider>
-        {/* 
+        {/*
           CSS Grid Layout Container - Best Practice 2026
-          
+
           Mobile (<768px): Single column, sidebar hidden
           Tablet/Desktop (≥768px): Two columns [sidebar | content]
-          
+
           Grid automatically handles:
           - Sidebar width allocation
           - Main content fills remaining space
@@ -95,7 +95,7 @@ export function DashboardClient({ children }: DashboardClientProps) {
           {/* Main Content Area - Grid automatically sizes this */}
           <div className="flex min-h-screen flex-col">
             {/* Header - Sticky at top of content area */}
-            <DashboardHeader showScrollShadow hideOnScroll={true} />
+            <DashboardHeader showScrollShadow hideOnScroll />
 
             {/* Main Content - Server Component passed as children */}
             <main id="main-content" className="flex-1 px-4 py-6 pt-20">

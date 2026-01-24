@@ -1,12 +1,12 @@
 /*
  * RUNTIME READY - FOUC Prevention Bootstrap
- * 
+ *
  * Sets data-tradelia-runtime attribute on <html> to control CSS transitions
- * 
+ *
  * States:
  * - "boot" = Initial load, all transitions disabled
  * - "ready" = After hydration, transitions enabled
- * 
+ *
  * This prevents "ghost animations" on first render
  */
 

@@ -80,10 +80,7 @@
   -webkit-backdrop-filter: blur(var(--bottom-nav-blur)) saturate(180%);
 
   /* Floating Shadow - iOS 26 Premium */
-  box-shadow:
-    var(--bottom-nav-shadow-1),
-    var(--bottom-nav-shadow-2),
-    var(--bottom-nav-shadow-3);
+  box-shadow: var(--bottom-nav-shadow-1), var(--bottom-nav-shadow-2), var(--bottom-nav-shadow-3);
 
   /* GPU Optimization */
   transform: translate3d(0, 0, 0);
@@ -250,7 +247,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {

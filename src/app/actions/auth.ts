@@ -125,7 +125,7 @@ export async function signUpWithEmailAndPassword(data: {
 
 /**
  * Check if email exists
- * 
+ *
  * PRODUCTION-SAFE APPROACH:
  * - Try admin API if available
  * - Gracefully fallback on any error (dev or prod)

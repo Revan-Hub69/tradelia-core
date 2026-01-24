@@ -109,7 +109,7 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
 
                     {/* Educational feedback - discrete border instead of glow */}
                     {unreadCount > 0 && (
-                      <div className="pointer-events-none absolute inset-0 rounded-xl border border-destructive/20 animate-pulse" />
+                      <div className="pointer-events-none absolute inset-0 animate-pulse rounded-xl border border-destructive/20" />
                     )}
                   </div>
                 </button>

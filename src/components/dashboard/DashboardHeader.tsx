@@ -87,7 +87,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
   // Responsive mobile detection (reactive to window resize)
   const [isMobile, setIsMobile] = useState(false);
-  
+
   // Scroll edge detection for dynamic height effect
   const [isAtScrollEdge, setIsAtScrollEdge] = useState(false);
 
@@ -104,11 +104,11 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       const scrollTop = window.scrollY || document.documentElement.scrollTop;
       const scrollHeight = document.documentElement.scrollHeight;
       const clientHeight = document.documentElement.clientHeight;
-      
+
       // At top (within 10px) or at bottom (within 10px)
       const atTop = scrollTop < 10;
       const atBottom = scrollTop + clientHeight >= scrollHeight - 10;
-      
+
       setIsAtScrollEdge(atTop || atBottom);
     };
 
@@ -423,7 +423,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       {/* Premium Global Search Modal with Liquid Glass */}
       {showSearchModal && (
         <div
-          className="fixed inset-0 layer-modal flex items-start justify-center pt-20"
+          className="layer-modal fixed inset-0 flex items-start justify-center pt-20"
           style={{
             backgroundColor: 'rgba(0, 0, 0, 0.4)',
             backdropFilter: 'blur(8px)',

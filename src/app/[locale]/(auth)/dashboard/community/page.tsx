@@ -38,7 +38,8 @@ export default function CommunityPage() {
                 </div>
                 <div className="rounded border bg-white p-2 font-mono text-sm dark:bg-slate-800">
                   <div className="break-anywhere select-all">
-                    https://tradelia.com/invite/{userData.id.slice(0, 8)}
+                    https://tradelia.com/invite/
+                    {userData.id.slice(0, 8)}
                   </div>
                 </div>
                 <button

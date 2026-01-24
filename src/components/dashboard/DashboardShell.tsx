@@ -19,14 +19,14 @@ export function DashboardShell({ children }: DashboardShellProps) {
     <div className="min-h-screen bg-background">
       <SkipLinks />
 
-      {/* 
+      {/*
         CSS Grid Layout - Best Practice 2026
         Research: https://akashhamirwasia.com/blog/how-to-and-not-to-build-sidebar-layouts/
-        
+
         Grid defines layout structure:
         - Mobile: Single column (sidebar hidden, bottom nav shown)
         - Tablet/Desktop: [sidebar | main content]
-        
+
         Benefits:
         - No manual margin/width synchronization
         - Parent controls layout (Single Source of Truth)

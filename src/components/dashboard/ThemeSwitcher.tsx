@@ -104,7 +104,7 @@ export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) 
 
               {/* Educational feedback - CSS handles reduced motion */}
               {isTransitioning && (
-                <div className="absolute inset-0 rounded-full border border-primary/20 pointer-events-none animate-pulse" />
+                <div className="pointer-events-none absolute inset-0 animate-pulse rounded-full border border-primary/20" />
               )}
             </div>
           </button>

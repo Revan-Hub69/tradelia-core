@@ -2,12 +2,12 @@ const localePrefix = 'as-needed' as const;
 
 /**
  * Tradelia App Configuration
- * 
+ *
  * ONLY ACTIVE CONFIG - Dead code removed
  */
 export const AppConfig = {
   name: 'Tradelia',
-  
+
   // Localization (USED)
   locales: [
     { id: 'it', name: 'Italiano' },

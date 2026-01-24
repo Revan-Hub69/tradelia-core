@@ -329,7 +329,7 @@ html[data-tradelia-runtime='boot'] .header-2026-avatar {
   .header-2026-btn-text:hover {
     transform: translateZ(0);
   }
-  
+
   /* Disable compact edge effect for reduced motion */
   .header-2026.header-compact-edge {
     backdrop-filter: blur(var(--header-2026-blur)) saturate(180%);

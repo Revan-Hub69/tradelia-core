@@ -33,9 +33,9 @@ type BottomNavigationSimpleProps = {
 const triggerHaptic = (type: 'light' | 'medium' | 'heavy' = 'light') => {
   if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
     const patterns = {
-      light: [10],   // Navigation tap
-      medium: [20],  // Action button
-      heavy: [30],   // Primary action
+      light: [10], // Navigation tap
+      medium: [20], // Action button
+      heavy: [30], // Primary action
     };
     navigator.vibrate(patterns[type]);
   }

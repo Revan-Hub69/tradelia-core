@@ -27,9 +27,9 @@
 
 /* Prevent text selection on interactive elements */
 button,
-[role="button"],
-[role="tab"],
-[role="menuitem"] {
+[role='button'],
+[role='tab'],
+[role='menuitem'] {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -129,7 +129,9 @@ button,
   /* Constant filter - NO changes on hover */
   filter: var(--signature-glass-medium);
   /* Only compositor-only properties transition */
-  transition: transform 200ms ease-out, opacity 200ms ease-out;
+  transition:
+    transform 200ms ease-out,
+    opacity 200ms ease-out;
 }
 
 .signature-icon--signature:hover {
@@ -147,7 +149,9 @@ button,
   /* Constant filter - NO changes on hover */
   filter: var(--signature-glass-medium);
   /* Only compositor-only properties transition */
-  transition: transform 200ms ease-out, opacity 200ms ease-out;
+  transition:
+    transform 200ms ease-out,
+    opacity 200ms ease-out;
 }
 
 .signature-icon--premium:hover {
