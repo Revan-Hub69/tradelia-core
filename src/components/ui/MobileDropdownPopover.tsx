@@ -76,6 +76,7 @@ export type MobileDropdownPopoverProps = {
   onClose: () => void;
   children: React.ReactNode;
   title?: string;
+  footer?: React.ReactNode; // Fixed footer (always visible)
   className?: string;
   triggerRect?: DOMRect | null; // Position of trigger button
   triggerRef?: React.RefObject<HTMLElement>; // Ref to trigger (for focus return)
@@ -198,6 +199,7 @@ export const MobileDropdownPopover = React.memo<MobileDropdownPopoverProps>(({
   onClose,
   children,
   title,
+  footer,
   className,
   triggerRect,
   triggerRef,
@@ -353,9 +355,7 @@ export const MobileDropdownPopover = React.memo<MobileDropdownPopoverProps>(({
             // Rounded corners
             'rounded-2xl',
             // Liquid Glass
-            'glass-dropdown',
-            // Max height - Rule 4: Cognitive load threshold
-            'overflow-y-auto',
+            'popover-premium-container',
             // Animations - slide based on placement
             'data-[state=open]:animate-in data-[state=closed]:animate-out',
             'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
@@ -407,15 +407,22 @@ export const MobileDropdownPopover = React.memo<MobileDropdownPopoverProps>(({
 
           {/* Title */}
           {title && (
-            <Dialog.Title className="px-4 pb-2 pr-12 pt-4 text-base font-semibold text-foreground">
+            <Dialog.Title className="popover-premium-header">
               {title}
             </Dialog.Title>
           )}
 
-          {/* Content */}
-          <div className={cn(title ? 'px-4 pb-4 pt-2' : 'px-4 pb-4 pt-4')}>
+          {/* Content - SCROLLABLE */}
+          <div className="popover-premium-content">
             {children}
           </div>
+
+          {/* Footer - FIXED (Always Visible) */}
+          {footer && (
+            <div className="popover-premium-footer">
+              {footer}
+            </div>
+          )}
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

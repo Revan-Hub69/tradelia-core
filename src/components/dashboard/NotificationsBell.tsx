@@ -131,47 +131,44 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
           {t('no_notifications_description')}
         </p>
       </div>
-
-      {/* Footer Actions - Following PatternFly pattern (research) */}
-      <div
-        className="flex items-center justify-between border-t border-border/10 p-4"
-        style={{
-          backgroundColor: 'var(--glass-header-hover)',
-          backdropFilter: 'blur(4px)',
-        }}
-      >
-        <button
-          type="button"
-          onClick={handleMarkAllRead}
-          disabled={notifications.length === 0}
-          className={cn(
-            'h-8 px-3 text-xs transition-colors duration-200',
-            'rounded-md hover:bg-accent/10 focus:bg-accent/10',
-            // Use design system colors like sidebar navigation - force override
-            'text-muted-foreground hover:text-foreground/90 focus:text-foreground/90',
-            'disabled:opacity-50 disabled:cursor-not-allowed',
-          )}
-        >
-          {t('mark_all_read')}
-        </button>
-
-        <button
-          type="button"
-          onClick={handleNotificationSettings}
-          className={cn(
-            'flex h-8 items-center gap-1.5 px-3 text-xs transition-colors duration-200',
-            'rounded-md hover:bg-accent/10 focus:bg-accent/10',
-            // Use design system colors like sidebar navigation - force override
-            'text-muted-foreground hover:text-foreground/90 focus:text-foreground/90',
-            // Ensure icon inherits color
-            '[&>svg]:text-muted-foreground hover:[&>svg]:text-foreground/90',
-          )}
-        >
-          <SettingsIcon size={16} className="transition-colors duration-200" />
-          {t('notification_settings')}
-        </button>
-      </div>
     </>
+  );
+
+  // Footer component (fixed - always visible)
+  const NotificationFooter = () => (
+    <div className="flex items-center justify-between">
+      <button
+        type="button"
+        onClick={handleMarkAllRead}
+        disabled={notifications.length === 0}
+        className={cn(
+          'h-10 px-4 text-sm font-medium transition-colors duration-200',
+          'rounded-lg hover:bg-accent/10 focus:bg-accent/10',
+          'text-muted-foreground hover:text-foreground/90 focus:text-foreground/90',
+          'disabled:opacity-50 disabled:cursor-not-allowed',
+          // Touch target
+          'min-h-[44px]',
+        )}
+      >
+        {t('mark_all_read')}
+      </button>
+
+      <button
+        type="button"
+        onClick={handleNotificationSettings}
+        className={cn(
+          'flex h-10 items-center gap-2 px-4 text-sm font-medium transition-colors duration-200',
+          'rounded-lg hover:bg-accent/10 focus:bg-accent/10',
+          'text-muted-foreground hover:text-foreground/90 focus:text-foreground/90',
+          '[&>svg]:text-muted-foreground hover:[&>svg]:text-foreground/90',
+          // Touch target
+          'min-h-[44px]',
+        )}
+      >
+        <SettingsIcon size={18} className="transition-colors duration-200" />
+        {t('notification_settings')}
+      </button>
+    </div>
   );
 
   return (
@@ -248,6 +245,7 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
           title={t('notifications')}
           triggerRect={triggerRect}
           triggerRef={triggerRef}
+          footer={<NotificationFooter />}
           className="w-80"
         >
           <NotificationContent />
@@ -264,7 +262,7 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
             className={cn(
               'w-80 overflow-hidden rounded-2xl border border-border/20 p-0',
               // Liquid Glass dropdown
-              'glass-dropdown',
+              'dropdown-premium-container',
               // Performance optimized entrance
               'animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200',
             )}
@@ -273,6 +271,10 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
               <span className="text-base font-semibold text-foreground">{t('notifications')}</span>
             </DropdownMenuLabel>
             <NotificationContent />
+            {/* Footer for desktop */}
+            <div className="border-t border-border/10 p-4">
+              <NotificationFooter />
+            </div>
           </DropdownMenuContent>
         </DropdownMenu>
       )}
