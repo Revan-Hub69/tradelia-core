@@ -5,7 +5,6 @@ import { useTranslations } from 'next-intl';
 import { useEffect } from 'react';
 
 import { UiButton } from '@/components/ui/UiButton';
-import { UiSurface } from '@/components/ui/UiSurface';
 import { Link } from '@/libs/i18nNavigation';
 
 /**
@@ -43,7 +42,7 @@ export default function DashboardError({
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center p-6">
-      <UiSurface variant="card" className="max-w-lg">
+      <div className="glass-panel max-w-lg">
         <div className="space-y-6 p-8 text-center">
           {/* Icon */}
           <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-destructive/10">
@@ -109,7 +108,7 @@ export default function DashboardError({
             )}
           </p>
         </div>
-      </UiSurface>
+      </div>
     </div>
   );
 }

@@ -2,7 +2,6 @@ import { FileQuestion, Home, Search } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 import { UiButton } from '@/components/ui/UiButton';
-import { UiSurface } from '@/components/ui/UiSurface';
 import { Link } from '@/libs/i18nNavigation';
 
 /**
@@ -20,7 +19,7 @@ export default function NotFound() {
 
   return (
     <div className="flex min-h-screen items-center justify-center p-6">
-      <UiSurface variant="card" className="max-w-2xl">
+      <div className="glass-panel max-w-2xl">
         <div className="space-y-6 p-8 text-center">
           {/* Icon */}
           <div className="mx-auto flex size-20 items-center justify-center rounded-full bg-muted">
@@ -84,7 +83,7 @@ export default function NotFound() {
             </div>
           </div>
         </div>
-      </UiSurface>
+      </div>
     </div>
   );
 }

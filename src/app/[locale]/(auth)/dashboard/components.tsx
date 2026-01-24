@@ -16,7 +16,6 @@ import { useEffect, useState } from 'react';
 
 import { BellIcon, ClockIcon, StarIcon, TrendingUpIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import { UiStatusChip } from '@/components/ui/UiStatusChip';
-import { UiSurface } from '@/components/ui/UiSurface';
 import { useMemoryLeakDetection } from '@/hooks/useMemoryLeakDetection';
 
 // ✅ TIER 1: Type definitions for dashboard data
@@ -98,7 +97,7 @@ export const DashboardStatusCard = ({ userData }: DashboardStatusCardProps) => {
   const t = useTranslations('Dashboard');
 
   return (
-    <UiSurface variant="card" className="ui-glass-card stagger-item p-6">
+    <div className="glass-panel ui-glass-card stagger-item p-6">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-lg font-semibold">{t('current_status_title')}</h2>
         <UiStatusChip
@@ -151,7 +150,7 @@ export const DashboardStatusCard = ({ userData }: DashboardStatusCardProps) => {
           </div>
         </div>
       </div>
-    </UiSurface>
+    </div>
   );
 };
 
@@ -163,7 +162,7 @@ export const DashboardNextSteps = ({ userData }: DashboardNextStepsProps) => {
   const isNearCompletion = userData.progress.progressPercentage > 80;
 
   return (
-    <UiSurface variant="card" className="ui-glass-card stagger-item p-6">
+    <div className="glass-panel ui-glass-card stagger-item p-6">
       <h2 className="mb-4 text-lg font-semibold">{t('next_objectives_title')}</h2>
 
       {isJustStarted
@@ -221,7 +220,7 @@ export const DashboardNextSteps = ({ userData }: DashboardNextStepsProps) => {
                 </div>
               </div>
             )}
-    </UiSurface>
+    </div>
   );
 };
 
@@ -279,7 +278,7 @@ export const DashboardStatsCard = ({ userId }: SecondaryDataProps) => {
 
   if (loading) {
     return (
-      <UiSurface variant="card" className="ui-glass-card stagger-item p-6">
+      <div className="glass-panel ui-glass-card stagger-item p-6">
         <div className="space-y-4">
           <div className="h-6 w-32 animate-pulse rounded bg-muted" />
           <div className="grid grid-cols-2 gap-4">
@@ -293,20 +292,20 @@ export const DashboardStatsCard = ({ userId }: SecondaryDataProps) => {
             </div>
           </div>
         </div>
-      </UiSurface>
+      </div>
     );
   }
 
   if (!stats) {
     return (
-      <UiSurface variant="card" className="ui-glass-card p-6 text-center">
+      <div className="glass-panel ui-glass-card p-6 text-center">
         <div className="text-muted-foreground">Failed to load statistics</div>
-      </UiSurface>
+      </div>
     );
   }
 
   return (
-    <UiSurface variant="card" className="ui-glass-card stagger-item p-6">
+    <div className="glass-panel ui-glass-card stagger-item p-6">
       <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold">
         <TrendingUpIcon className="size-5 text-green-500" />
         Statistics
@@ -351,7 +350,7 @@ export const DashboardStatsCard = ({ userId }: SecondaryDataProps) => {
           />
         </div>
       </div>
-    </UiSurface>
+    </div>
   );
 };
 
@@ -410,7 +409,7 @@ export const DashboardNotifications = ({ userId }: SecondaryDataProps) => {
 
   if (loading) {
     return (
-      <UiSurface variant="card" className="ui-glass-card stagger-item p-6">
+      <div className="glass-panel ui-glass-card stagger-item p-6">
         <div className="space-y-4">
           <div className="h-6 w-40 animate-pulse rounded bg-muted" />
           <div className="space-y-3">
@@ -418,14 +417,14 @@ export const DashboardNotifications = ({ userId }: SecondaryDataProps) => {
             <div className="h-12 w-full animate-pulse rounded bg-muted" />
           </div>
         </div>
-      </UiSurface>
+      </div>
     );
   }
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
-    <UiSurface variant="card" className="ui-glass-card stagger-item p-6">
+    <div className="glass-panel ui-glass-card stagger-item p-6">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="flex items-center gap-2 text-lg font-semibold">
           <BellIcon className="size-5" />
@@ -572,7 +571,7 @@ export const DashboardActivityFeed = ({ userId }: SecondaryDataProps) => {
 
   if (loading) {
     return (
-      <UiSurface variant="card" className="ui-glass-card stagger-item p-6">
+      <div className="glass-panel ui-glass-card stagger-item p-6">
         <div className="space-y-4">
           <div className="h-6 w-48 animate-pulse rounded bg-muted" />
           <div className="space-y-3">
@@ -587,12 +586,12 @@ export const DashboardActivityFeed = ({ userId }: SecondaryDataProps) => {
             ))}
           </div>
         </div>
-      </UiSurface>
+      </div>
     );
   }
 
   return (
-    <UiSurface variant="card" className="ui-glass-card stagger-item p-6">
+    <div className="glass-panel ui-glass-card stagger-item p-6">
       <h2 className="mb-4 text-lg font-semibold">Recent Activity</h2>
 
       {activity.length === 0

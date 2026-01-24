@@ -16,7 +16,6 @@ import { useEffect, useMemo, useState } from 'react';
 
 import type { RecentActivity } from '@/app/[locale]/(auth)/dashboard/components';
 import { StarIcon } from '@/components/icons/unified/UnifiedIconSystem';
-import { UiSurface } from '@/components/ui/UiSurface';
 import { VirtualList } from '@/components/ui/VirtualScrollList';
 
 // ✅ TIER 1: Props interface for virtual activity feed
@@ -191,7 +190,7 @@ export const VirtualActivityFeed = ({
 
   if (loading) {
     return (
-      <UiSurface variant="card" className="ui-glass-card p-6">
+      <div className="glass-panel ui-glass-card p-6">
         <div className="space-y-4">
           <div className="h-6 w-48 animate-pulse rounded bg-muted" />
           <div className="space-y-3">
@@ -206,12 +205,12 @@ export const VirtualActivityFeed = ({
             ))}
           </div>
         </div>
-      </UiSurface>
+      </div>
     );
   }
 
   return (
-    <UiSurface variant="card" className="ui-glass-card p-6">
+    <div className="glass-panel ui-glass-card p-6">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-lg font-semibold">Recent Activity</h2>
         <div className="text-sm text-muted-foreground">
@@ -254,7 +253,7 @@ export const VirtualActivityFeed = ({
           <div>• Scroll performance: 60 FPS with unlimited data</div>
         </div>
       )}
-    </UiSurface>
+    </div>
   );
 };
 

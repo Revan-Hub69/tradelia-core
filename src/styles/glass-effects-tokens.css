@@ -121,6 +121,60 @@
   }
 }
 
+/* ============================================================================
+   GLASS PANEL - iOS 26 Liquid Glass Standard (Tier-1 Research)
+   ============================================================================
+   
+   Sources:
+   - TechsWill: iOS 26 UI Patterns from visionOS (July 2025)
+   - Donny Wals: Designing Custom UI with Liquid Glass (July 2025)
+   - Apple HIG: visionOS Design Guidelines (2026)
+   
+   Specifications:
+   - Corner Radius: 32px (visionOS standard)
+   - Material: ultraThinMaterial (blur 20px + saturate 180%)
+   - Shadow: Multi-layer elevation (8px + 4px)
+   - Border: Subtle translucent edge
+   - Philosophy: Layer ON TOP of content (not part of main UI)
+   ============================================================================ */
+
+.glass-panel {
+  /* Shape - visionOS Standard */
+  border-radius: 32px;
+  
+  /* Material - ultraThinMaterial */
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px) saturate(180%);
+  
+  /* Border - Glass Edge Effect */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  
+  /* Shadow - Multi-layer Elevation */
+  box-shadow: 
+    0 8px 16px rgba(0, 0, 0, 0.12),
+    0 4px 8px rgba(0, 0, 0, 0.08);
+  
+  /* Performance Optimization */
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Dark Mode - Liquid Glass */
+.dark .glass-panel {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 8px 16px rgba(0, 0, 0, 0.24),
+    0 4px 8px rgba(0, 0, 0, 0.16);
+}
+
+/* Reduced Motion - Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .glass-panel {
+    backdrop-filter: blur(12px);
+  }
+}
+
 /* Modern Avatar Liquid Glass 2026 - Tier-1 Research Based */
 .avatar-liquid-glass-2026 {
   /* Dynamic Gradient Background */

@@ -15,7 +15,6 @@ import { Suspense } from 'react';
 import { EmailVerificationBanner } from '@/components/dashboard/EmailVerificationBanner';
 import { VirtualActivityFeed } from '@/components/dashboard/VirtualActivityFeed';
 import { PageTransitionWrapper } from '@/components/transitions/PageTransitionWrapper';
-import { UiSurface } from '@/components/ui/UiSurface';
 // ✅ TIER 1: Optimized data fetching
 import { getCriticalDashboardData, preloadDashboardData } from '@/libs/dashboard-data';
 
@@ -46,14 +45,14 @@ const DashboardIndexPage = async () => {
     return (
       <PageTransitionWrapper>
         <div className="mx-auto max-w-screen-xl">
-          <UiSurface variant="card" className="ui-glass-card p-8 text-center">
+          <div className="glass-panel ui-glass-card p-8 text-center">
             <h1 className="text-2xl font-bold text-destructive">
               {t('auth_error_title')}
             </h1>
             <p className="mt-2 text-muted-foreground">
               {error || t('auth_error_description')}
             </p>
-          </UiSurface>
+          </div>
         </div>
       </PageTransitionWrapper>
     );
@@ -90,7 +89,7 @@ const DashboardIndexPage = async () => {
           <div className="space-y-6">
             {/* Stats - Suspense boundary for secondary data */}
             <Suspense fallback={(
-              <UiSurface variant="card" className="ui-glass-card stagger-item p-6">
+              <div className="glass-panel ui-glass-card stagger-item p-6">
                 <div className="space-y-4">
                   <div className="h-6 w-32 animate-pulse rounded bg-muted" />
                   <div className="grid grid-cols-2 gap-4">
@@ -104,7 +103,7 @@ const DashboardIndexPage = async () => {
                     </div>
                   </div>
                 </div>
-              </UiSurface>
+              </div>
             )}
             >
               <DashboardStatsCard userId={userId} />
@@ -112,7 +111,7 @@ const DashboardIndexPage = async () => {
 
             {/* Notifications - Suspense boundary for secondary data */}
             <Suspense fallback={(
-              <UiSurface variant="card" className="ui-glass-card stagger-item p-6">
+              <div className="glass-panel ui-glass-card stagger-item p-6">
                 <div className="space-y-4">
                   <div className="h-6 w-40 animate-pulse rounded bg-muted" />
                   <div className="space-y-3">
@@ -120,7 +119,7 @@ const DashboardIndexPage = async () => {
                     <div className="h-12 w-full animate-pulse rounded bg-muted" />
                   </div>
                 </div>
-              </UiSurface>
+              </div>
             )}
             >
               <DashboardNotifications userId={userId} />
@@ -132,7 +131,7 @@ const DashboardIndexPage = async () => {
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Traditional Activity Feed (for comparison) */}
           <Suspense fallback={(
-            <UiSurface variant="card" className="ui-glass-card stagger-item p-6">
+            <div className="glass-panel ui-glass-card stagger-item p-6">
               <div className="space-y-4">
                 <div className="h-6 w-48 animate-pulse rounded bg-muted" />
                 <div className="space-y-3">
@@ -147,7 +146,7 @@ const DashboardIndexPage = async () => {
                   ))}
                 </div>
               </div>
-            </UiSurface>
+            </div>
           )}
           >
             <DashboardActivityFeed userId={userId} />

@@ -14,7 +14,6 @@ import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
 import { UiButton } from '@/components/ui/UiButton';
-import { UiSurface } from '@/components/ui/UiSurface';
 import { Link, useRouter } from '@/libs/i18nNavigation';
 import { cn } from '@/utils/Helpers';
 
@@ -106,7 +105,7 @@ export default function DashboardNotFound() {
         <div className="absolute -right-1/4 bottom-0 size-96 rounded-full bg-accent/5 blur-3xl" />
       </div>
 
-      <UiSurface variant="card" className="relative z-10 w-full max-w-3xl">
+      <div className="glass-panel relative z-10 w-full max-w-3xl">
         <div className="space-y-8 p-8">
           {/* Breadcrumb context */}
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -266,7 +265,7 @@ export default function DashboardNotFound() {
             </p>
           </div>
         </div>
-      </UiSurface>
+      </div>
     </div>
   );
 }
