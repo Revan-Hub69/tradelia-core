@@ -7,7 +7,13 @@
  * - Modern status indicators and role badges
  * - 60fps smooth hover interactions
  * - Educational-appropriate animations
- * - Mobile bottom sheet pattern (< 768px) - Dialog-based
+ * - Mobile popover pattern (< 768px) - Fitts's Law compliant
+ *
+ * MOBILE UX (Fitts's Law):
+ * - Popover appears NEAR trigger button (not far away)
+ * - Reduces interaction time (proximity principle)
+ * - Maintains spatial relationship
+ * - High z-index (150+) above navbar (100)
  */
 
 import { useTranslations } from 'next-intl';
@@ -19,7 +25,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { MobileDropdownDialog } from '@/components/ui/MobileDropdownDialog';
+import { MobileDropdownPopover } from '@/components/ui/MobileDropdownPopover';
 import { useFocusTrap } from '@/hooks/useFocusManagement';
 import { useMobileDetection } from '@/hooks/useMobileDetection';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -43,6 +49,8 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
   const router = useRouter();
   const t = useTranslations('Dashboard');
   const [isOpen, setIsOpen] = useState(false);
+  const [triggerRect, setTriggerRect] = useState<DOMRect | null>(null);
+  const triggerRef = React.useRef<HTMLButtonElement>(null);
   const focusTrapRef = useFocusTrap(isOpen);
   const isMobile = useMobileDetection();
 
@@ -77,8 +85,14 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
     if (open && 'vibrate' in navigator) {
       navigator.vibrate(10);
     }
+
+    // Capture trigger position for mobile popover
+    if (open && isMobile && triggerRef.current) {
+      setTriggerRect(triggerRef.current.getBoundingClientRect());
+    }
+
     setIsOpen(open);
-  }, []);
+  }, [isMobile]);
 
   const handleClose = useCallback(() => {
     setIsOpen(false);
@@ -173,11 +187,12 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
     </>
   );
 
-  // Mobile: Dialog-based bottom sheet
+  // Mobile: Popover near trigger (Fitts's Law compliant)
   if (isMobile) {
     return (
       <>
         <button
+          ref={triggerRef}
           type="button"
           aria-label={t('nav_open_user_menu')}
           aria-expanded={isOpen}
@@ -266,13 +281,13 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
           </div>
         </button>
 
-        <MobileDropdownDialog
+        <MobileDropdownPopover
           isOpen={isOpen}
           onClose={handleClose}
-          title={t('nav_open_user_menu')}
+          triggerRect={triggerRect}
         >
           {renderMenuContent()}
-        </MobileDropdownDialog>
+        </MobileDropdownPopover>
       </>
     );
   }
