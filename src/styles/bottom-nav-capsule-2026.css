@@ -1,0 +1,311 @@
+/*
+ * BOTTOM NAVIGATION CAPSULE - iOS 26 Standard
+ *
+ * Based on Apple iOS 26 design language:
+ * - Capsule-shaped, inset from screen edges
+ * - Floating effect with premium shadows
+ * - Liquid Glass material system
+ * - Optimized for thumb reachability
+ *
+ * RESEARCH SOURCES:
+ * - iOS 26 Tab Bar Design (Michael Tsai, 2026)
+ * - Bottom Tab Bar Best Practices (Nick Babich, 2022)
+ * - Mobile Navigation Deep Research 2026
+ */
+
+/* ============================================================================
+   DESIGN TOKENS - iOS 26 Capsule
+   ============================================================================ */
+
+:root {
+  /* Capsule Dimensions */
+  --bottom-nav-height: 64px;
+  --bottom-nav-inset: 16px; /* Inset from edges */
+  --bottom-nav-radius: 24px; /* Capsule shape */
+  --bottom-nav-padding: 8px 12px;
+
+  /* Liquid Glass - Light Mode */
+  --bottom-nav-bg: rgba(255, 255, 255, 0.95);
+  --bottom-nav-border: rgba(0, 0, 0, 0.08);
+  --bottom-nav-blur: 20px;
+
+  /* Floating Shadow - iOS 26 Standard */
+  --bottom-nav-shadow-1: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --bottom-nav-shadow-2: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --bottom-nav-shadow-3: 0 1px 2px rgba(0, 0, 0, 0.04);
+
+  /* Item Dimensions */
+  --bottom-nav-item-size: 56px; /* Touch target */
+  --bottom-nav-icon-size: 24px;
+  --bottom-nav-label-size: 10px;
+
+  /* Active State */
+  --bottom-nav-active-bg: rgba(var(--primary-rgb), 0.1);
+  --bottom-nav-active-radius: 16px;
+
+  /* Z-index */
+  --bottom-nav-z: 100;
+}
+
+.dark {
+  /* Liquid Glass - Dark Mode */
+  --bottom-nav-bg: rgba(15, 23, 42, 0.95);
+  --bottom-nav-border: rgba(255, 255, 255, 0.08);
+  --bottom-nav-shadow-1: 0 8px 24px rgba(0, 0, 0, 0.3);
+  --bottom-nav-shadow-2: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --bottom-nav-shadow-3: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================================================
+   CAPSULE CONTAINER - iOS 26 Standard
+   ============================================================================ */
+
+.bottom-nav-capsule-2026 {
+  /* Layout */
+  position: fixed;
+  bottom: var(--bottom-nav-inset);
+  left: var(--bottom-nav-inset);
+  right: var(--bottom-nav-inset);
+  z-index: var(--bottom-nav-z);
+
+  /* Capsule Shape */
+  border-radius: var(--bottom-nav-radius);
+  padding: var(--bottom-nav-padding);
+  height: var(--bottom-nav-height);
+
+  /* Liquid Glass Effect */
+  background-color: var(--bottom-nav-bg);
+  border: 1px solid var(--bottom-nav-border);
+  backdrop-filter: blur(var(--bottom-nav-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--bottom-nav-blur)) saturate(180%);
+
+  /* Floating Shadow - iOS 26 Premium */
+  box-shadow:
+    var(--bottom-nav-shadow-1),
+    var(--bottom-nav-shadow-2),
+    var(--bottom-nav-shadow-3);
+
+  /* GPU Optimization */
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+
+  /* Safe Area Support */
+  padding-bottom: max(var(--bottom-nav-padding), env(safe-area-inset-bottom));
+
+  /* Prevent text selection */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Responsive - Smaller screens */
+@media (max-width: 375px) {
+  .bottom-nav-capsule-2026 {
+    --bottom-nav-inset: 12px;
+    --bottom-nav-radius: 20px;
+  }
+}
+
+/* ============================================================================
+   NAVIGATION ITEMS - iOS 26 Style
+   ============================================================================ */
+
+.bottom-nav-item-2026 {
+  /* Layout */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-width: 0;
+  padding: 8px 4px;
+  min-height: var(--bottom-nav-item-size);
+
+  /* Touch Target */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+
+  /* Cursor */
+  cursor: pointer;
+
+  /* Prevent text selection */
+  user-select: none;
+  -webkit-user-select: none;
+
+  /* Transitions */
+  transition: transform 150ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Active State Background */
+.bottom-nav-item-2026::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: var(--bottom-nav-active-radius);
+  background-color: var(--bottom-nav-active-bg);
+  opacity: 0;
+  transition: opacity 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: 0;
+}
+
+.bottom-nav-item-2026[data-active='true']::before {
+  opacity: 1;
+}
+
+/* Hover - Desktop only */
+@media (hover: hover) and (pointer: fine) {
+  .bottom-nav-item-2026:hover {
+    transform: translateY(-2px);
+  }
+
+  .bottom-nav-item-2026:hover::before {
+    opacity: 0.5;
+  }
+}
+
+/* Active Press */
+.bottom-nav-item-2026:active {
+  transform: scale(0.95);
+  transition: transform 100ms ease-out;
+}
+
+/* ============================================================================
+   ICON - Premium Style
+   ============================================================================ */
+
+.bottom-nav-icon-2026 {
+  /* Layout */
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--bottom-nav-icon-size);
+  height: var(--bottom-nav-icon-size);
+
+  /* Colors */
+  color: hsl(var(--foreground) / 0.6);
+  transition: all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Active Icon */
+.bottom-nav-item-2026[data-active='true'] .bottom-nav-icon-2026 {
+  color: hsl(var(--primary));
+  transform: scale(1.05);
+}
+
+/* Icon Animation on Tap */
+.bottom-nav-item-2026:active .bottom-nav-icon-2026 {
+  transform: scale(0.9) translateY(-2px);
+}
+
+/* ============================================================================
+   LABEL - iOS 26 Typography
+   ============================================================================ */
+
+.bottom-nav-label-2026 {
+  /* Layout */
+  position: relative;
+  z-index: 1;
+  margin-top: 4px;
+
+  /* Typography - iOS 26 Standard */
+  font-size: var(--bottom-nav-label-size);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+
+  /* Colors */
+  color: hsl(var(--muted-foreground));
+  transition: color 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  /* Truncate */
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  /* Prevent text selection */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Active Label */
+.bottom-nav-item-2026[data-active='true'] .bottom-nav-label-2026 {
+  color: hsl(var(--foreground));
+  font-weight: 600;
+}
+
+/* ============================================================================
+   LOADING STATE - Skeleton
+   ============================================================================ */
+
+.bottom-nav-item-2026[data-loading='true'] {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.bottom-nav-item-2026[data-loading='true'] .bottom-nav-icon-2026 {
+  animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* ============================================================================
+   ACCESSIBILITY - Reduced Motion
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .bottom-nav-capsule-2026,
+  .bottom-nav-item-2026,
+  .bottom-nav-icon-2026,
+  .bottom-nav-label-2026 {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .bottom-nav-item-2026:hover {
+    transform: none;
+  }
+
+  .bottom-nav-item-2026:active {
+    transform: none;
+  }
+}
+
+/* ============================================================================
+   FOCUS VISIBLE - Keyboard Navigation
+   ============================================================================ */
+
+.bottom-nav-item-2026:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+  border-radius: var(--bottom-nav-active-radius);
+}
+
+/* ============================================================================
+   SAFE AREA - iOS Notch Support
+   ============================================================================ */
+
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .bottom-nav-capsule-2026 {
+    padding-bottom: calc(8px + env(safe-area-inset-bottom));
+  }
+}
+
+/* ============================================================================
+   RESPONSIVE - Hide on Desktop/Tablet
+   ============================================================================ */
+
+@media (min-width: 768px) {
+  .bottom-nav-capsule-2026 {
+    display: none;
+  }
+}

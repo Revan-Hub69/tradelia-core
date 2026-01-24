@@ -1,4 +1,5 @@
 import '@/styles/shared.css';
+import '@/styles/bottom-nav-capsule-2026.css';
 
 import type { Metadata } from 'next';
 

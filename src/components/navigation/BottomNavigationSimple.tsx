@@ -1,10 +1,25 @@
+/*
+ * BOTTOM NAVIGATION - iOS 26 Capsule Design
+ *
+ * Enhanced with Apple iOS 26 design language:
+ * - Capsule-shaped, inset from screen edges
+ * - Floating effect with premium shadows
+ * - Liquid Glass material system
+ * - Haptic feedback on interactions
+ * - Optimized for thumb reachability
+ *
+ * RESEARCH SOURCES:
+ * - iOS 26 Tab Bar Design (Michael Tsai, 2026)
+ * - Bottom Tab Bar Best Practices (Nick Babich, 2022)
+ * - Mobile Navigation Deep Research 2026
+ */
+
 'use client';
 
 import { useTranslations } from 'next-intl';
+import { useCallback } from 'react';
 
 import { DynamicIcon, type IconName } from '@/components/icons';
-import { UiNavItem } from '@/components/ui/UiNavItem';
-import { UiSurface } from '@/components/ui/UiSurface';
 import { getVisibleNavigationItems } from '@/data/navigation.config';
 import { useOptimizedNavigation } from '@/hooks/useOptimizedNavigation';
 import { usePathname } from '@/libs/i18nNavigation';
@@ -14,99 +29,80 @@ type BottomNavigationSimpleProps = {
   className?: string;
 };
 
+// Haptic feedback helper (Phase 2)
+const triggerHaptic = (type: 'light' | 'medium' | 'heavy' = 'light') => {
+  if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+    const patterns = {
+      light: [10],   // Navigation tap
+      medium: [20],  // Action button
+      heavy: [30],   // Primary action
+    };
+    navigator.vibrate(patterns[type]);
+  }
+};
+
 export const BottomNavigationSimple: React.FC<BottomNavigationSimpleProps> = ({ className }) => {
   const pathname = usePathname();
   const t = useTranslations('Dashboard');
   const navigationItems = getVisibleNavigationItems();
   const { navigate, isPending, navigationTarget } = useOptimizedNavigation();
 
-  const handleNavigation = (href: string) => {
+  const handleNavigation = useCallback((href: string) => {
     if (pathname === href) {
       return;
     }
 
+    // Haptic feedback on tap
+    triggerHaptic('light');
+
     navigate(href);
-  };
+  }, [pathname, navigate]);
 
   return (
-    <UiSurface
-      variant="panel"
+    <nav
       className={cn(
-        'fixed bottom-0 left-0 right-0 layer-nav',
-        'md:hidden', // Hide on tablet+ (768px+)
-        'border-t border-white/20 dark:border-white/10',
-        'shadow-lg shadow-black/10 dark:shadow-black/30',
-        'pb-safe-bottom',
-        // Prevent text selection on navigation buttons
-        'select-none',
+        // iOS 26 Capsule Design
+        'bottom-nav-capsule-2026',
         className,
       )}
       role="navigation"
       aria-label={t('nav_aria_primary')}
     >
-      <div className="flex h-16 items-center justify-around px-2">
+      <div className="flex h-full items-center justify-around gap-1">
         {navigationItems.map((item) => {
           const isActive = pathname === item.href
             || (item.href !== '/dashboard' && pathname.startsWith(item.href));
+          const isLoading = isPending && navigationTarget === item.href;
 
           return (
-            <UiNavItem
+            <button
               key={item.id}
-              active={isActive}
-              className={cn(
-                'nav-item tap-target', // Add navigation classes
-                'relative flex flex-col items-center justify-center min-w-0 flex-1 px-1 py-2',
-                'min-h-[56px]',
-                'text-xs font-medium',
-                'touch-action-manipulation',
-                // Prevent text selection
-                'select-none',
-                // CSS-based active indicator instead of Framer Motion
-                'before:absolute before:inset-0 before:rounded-2xl before:bg-primary/10 before:opacity-0 before:transition-opacity before:duration-200',
-                isActive && 'before:opacity-100',
-                {
-                  'animate-pulse navigation-skeleton': isPending && navigationTarget === item.href,
-                },
-              )}
+              type="button"
+              className="bottom-nav-item-2026"
+              data-active={isActive}
+              data-loading={isLoading}
               onClick={() => handleNavigation(item.href)}
               aria-current={isActive ? 'page' : undefined}
+              aria-label={t(item.labelKey.replace('Dashboard.', '') as 'nav_home')}
             >
-              {/* OPTIMIZED ICON - CSS transforms instead of Framer Motion */}
-              <div
-                className={cn(
-                  'relative z-10 transition-all duration-200 ease-out',
-                  'active:scale-90 active:-translate-y-1',
-                  isActive
-                    ? 'text-primary'
-                    : 'text-foreground/80 group-hover:text-foreground',
-                )}
-              >
+              {/* Icon */}
+              <div className="bottom-nav-icon-2026">
                 <DynamicIcon
                   name={item.iconName as IconName}
                   size={24}
                   variant="premium"
                   isActive={isActive}
-                  className={cn(
-                    'transition-all duration-200',
-                    isPending && navigationTarget === item.href && 'animate-pulse',
-                  )}
                 />
               </div>
 
-              <span
-                className={cn(
-                  'relative z-10 mt-1 truncate leading-tight text-muted-foreground transition-colors duration-200',
-                  'group-hover:text-foreground/90',
-                  'select-none', // Prevent text selection
-                  isActive && 'text-foreground',
-                )}
-              >
+              {/* Label */}
+              <span className="bottom-nav-label-2026">
                 {t(item.labelKey.replace('Dashboard.', '') as 'nav_home')}
               </span>
-            </UiNavItem>
+            </button>
           );
         })}
       </div>
-    </UiSurface>
+    </nav>
   );
 };
