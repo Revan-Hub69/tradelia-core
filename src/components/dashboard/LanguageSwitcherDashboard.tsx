@@ -7,13 +7,15 @@
  * - Transform-only animations with GPU optimization
  * - Educational-appropriate micro-interactions
  * - Semantic globe rotation on language change
- * - Mobile bottom sheet pattern (< 768px)
+ * - MobileDropdownPopover with 10 enterprise guardrails
+ *
+ * RESEARCH: docs/research/HEADER_DROPDOWN_DUAL_NAV_RESEARCH_TIER1_2026.md
  */
 
 'use client';
 
 import { useLocale, useTranslations } from 'next-intl';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { GlobeIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import {
@@ -23,6 +25,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { MobileDropdownPopover } from '@/components/ui/MobileDropdownPopover';
 import {
   Tooltip,
   TooltipContent,
@@ -46,7 +49,9 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
   const [isOpen, setIsOpen] = useState(false);
   const [isChangingLanguage, setIsChangingLanguage] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [triggerRect, setTriggerRect] = useState<DOMRect | null>(null);
   const isMobile = useMobileDetection();
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   // Global motion preferences - optimized
   const prefersReducedMotion = useReducedMotion();
@@ -65,12 +70,22 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
     if (open && 'vibrate' in navigator) {
       navigator.vibrate(10);
     }
+    
+    // Capture trigger position for mobile popover
+    if (open && isMobile && triggerRef.current) {
+      setTriggerRect(triggerRef.current.getBoundingClientRect());
+    }
+    
     setIsOpen(open);
     // Auto-dismiss tooltip when dropdown opens
     if (open) {
       handleTooltipClick();
     }
-  }, [handleTooltipClick]);
+  }, [handleTooltipClick, isMobile]);
+
+  const handleClose = useCallback(() => {
+    setIsOpen(false);
+  }, []);
 
   const handleChange = useCallback((value: string) => {
     if (value === locale) {
@@ -88,9 +103,9 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
       setTimeout(() => setIsChangingLanguage(false), 800);
     }
 
-    setIsOpen(false);
+    handleClose();
     router.replace(pathname, { locale: value });
-  }, [locale, prefersReducedMotion, pathname, router]);
+  }, [locale, prefersReducedMotion, pathname, router, handleClose]);
 
   // SSR + First Paint: Render skeleton to prevent hydration mismatch
   // IMPORTANT: Early return AFTER all hooks (Rules of Hooks)
@@ -98,108 +113,156 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
     return <LanguageSwitcherSkeleton />;
   }
 
+  // Language options component (shared between desktop and mobile)
+  const LanguageOptions = () => (
+    <div className="flex flex-col gap-1">
+      {AppConfig.locales.map(lang => (
+        <button
+          key={lang.id}
+          type="button"
+          onClick={() => handleChange(lang.id)}
+          className={cn(
+            'flex flex-col gap-0.5 rounded-lg px-4 py-3 text-left transition-colors',
+            'hover:bg-accent/10 focus:bg-accent/10',
+            locale === lang.id && 'bg-accent/10',
+            // Rule 9: Touch target
+            'min-h-[44px]',
+          )}
+        >
+          {/* Native name (primary) */}
+          <span className={cn(
+            'font-medium text-foreground',
+            locale === lang.id && 'font-semibold',
+          )}>
+            {lang.name}
+          </span>
+          {/* English name (secondary) */}
+          <span className="text-xs text-muted-foreground">
+            {lang.id === 'it' ? 'Italian' : 'English'}
+          </span>
+        </button>
+      ))}
+    </div>
+  );
+
   return (
-    <TooltipProvider delayDuration={300}>
-      <Tooltip {...tooltipProps}>
-        <TooltipTrigger asChild>
-          <div>
-            <DropdownMenu open={isOpen} onOpenChange={handleOpenChange}>
-              <DropdownMenuTrigger asChild>
-                <button
-                  type="button"
-                  aria-label={t('language_switcher_aria_label')}
-                  aria-haspopup="menu"
-                  aria-expanded={isOpen}
-                  className={cn(
-                    // Base styling
-                    'relative flex size-11 items-center justify-center rounded-xl',
-                    'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-                    // ONLY design tokens - NO Tailwind transitions
-                    'header-icon glass-button',
-                    className,
-                  )}
-                  style={{
-                    // Hardware acceleration - GPU optimization
-                    willChange: 'transform',
-                    transform: 'translateZ(0)', // Force GPU layer
-                  }}
-                >
-                  {/* Icon container - NO transitions */}
-                  <div
-                    className={cn(
-                      'relative',
-                      // Globe rotation animation on language change - Educational version
-                      isChangingLanguage && !prefersReducedMotion && 'animate-spin',
-                    )}
-                  >
-                    <GlobeIcon
-                      size={20}
-                      isActive={isOpen}
-                      variant="signature"
-                      className="text-foreground"
-                    />
-
-                    {/* Educational feedback - discrete border instead of glow */}
-                    {!prefersReducedMotion && (isChangingLanguage || isOpen) && (
-                      <div className="pointer-events-none absolute inset-0 animate-pulse rounded-full border border-green-500/20" />
-                    )}
-                  </div>
-                </button>
-              </DropdownMenuTrigger>
-
-              <DropdownMenuContent
-                align="end"
-                disablePortal={isMobile}
+    <>
+      <TooltipProvider delayDuration={300}>
+        <Tooltip {...tooltipProps}>
+          <TooltipTrigger asChild>
+            <button
+              ref={triggerRef}
+              type="button"
+              onClick={() => handleOpenChange(!isOpen)}
+              aria-label={t('language_switcher_aria_label')}
+              aria-haspopup="menu"
+              aria-expanded={isOpen}
+              data-active={isOpen}
+              className={cn(
+                // Base styling
+                'relative flex size-11 items-center justify-center rounded-xl',
+                'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+                // ONLY design tokens - NO Tailwind transitions
+                'header-icon glass-button',
+                className,
+              )}
+              style={{
+                // Hardware acceleration - GPU optimization
+                willChange: 'transform',
+                transform: 'translateZ(0)', // Force GPU layer
+              }}
+            >
+              {/* Icon container - NO transitions */}
+              <div
                 className={cn(
-                  'min-w-48 overflow-hidden p-2',
-                  // iOS 26 Liquid Glass dropdown
-                  'glass-dropdown',
-                  // Mobile: Bottom sheet style
-                  isMobile && 'dropdown-mobile',
-                  isMobile && isOpen && 'open',
+                  'relative',
+                  // Globe rotation animation on language change - Educational version
+                  isChangingLanguage && !prefersReducedMotion && 'animate-spin',
                 )}
               >
-                <DropdownMenuRadioGroup value={locale} onValueChange={handleChange}>
-                  {AppConfig.locales.map(lang => (
-                    <DropdownMenuRadioItem
-                      key={lang.id}
-                      value={lang.id}
-                      className={cn(
-                        'dropdown-item',
-                        // Selected state handled by dropdown-item CSS
-                        locale === lang.id && 'font-semibold',
-                      )}
-                    >
-                      <div className="flex flex-col gap-0.5">
-                        {/* Native name (primary) */}
-                        <span className="font-medium text-foreground">{lang.name}</span>
-                        {/* English name (secondary) */}
-                        <span className="text-xs text-muted-foreground">
-                          {lang.id === 'it' ? 'Italian' : 'English'}
-                        </span>
-                      </div>
-                    </DropdownMenuRadioItem>
-                  ))}
-                </DropdownMenuRadioGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </TooltipTrigger>
-        {shouldShowTooltip && (
-          <TooltipContent
-            side="bottom"
+                <GlobeIcon
+                  size={20}
+                  isActive={isOpen}
+                  variant="signature"
+                  className="text-foreground"
+                />
+
+                {/* Educational feedback - discrete border instead of glow */}
+                {!prefersReducedMotion && (isChangingLanguage || isOpen) && (
+                  <div className="pointer-events-none absolute inset-0 animate-pulse rounded-full border border-green-500/20" />
+                )}
+              </div>
+            </button>
+          </TooltipTrigger>
+          {shouldShowTooltip && (
+            <TooltipContent
+              side="bottom"
+              className={cn(
+                'text-xs',
+                // Liquid Glass tooltip
+                'glass-dropdown',
+              )}
+            >
+              <p className="font-medium">{t('change_language')}</p>
+              <p className="text-muted-foreground">Alt+L</p>
+            </TooltipContent>
+          )}
+        </Tooltip>
+      </TooltipProvider>
+
+      {/* Mobile: Inline Popover with 10 Enterprise Guardrails */}
+      {isMobile ? (
+        <MobileDropdownPopover
+          isOpen={isOpen}
+          onClose={handleClose}
+          title={t('change_language')}
+          triggerRect={triggerRect}
+          triggerRef={triggerRef}
+          className="w-64"
+        >
+          <LanguageOptions />
+        </MobileDropdownPopover>
+      ) : (
+        /* Desktop: Standard Dropdown */
+        <DropdownMenu open={isOpen} onOpenChange={handleOpenChange}>
+          <DropdownMenuTrigger asChild>
+            <div style={{ display: 'none' }} />
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent
+            align="end"
             className={cn(
-              'text-xs',
-              // Liquid Glass tooltip
+              'min-w-48 overflow-hidden p-2',
+              // iOS 26 Liquid Glass dropdown
               'glass-dropdown',
             )}
           >
-            <p className="font-medium">{t('change_language')}</p>
-            <p className="text-muted-foreground">Alt+L</p>
-          </TooltipContent>
-        )}
-      </Tooltip>
-    </TooltipProvider>
+            <DropdownMenuRadioGroup value={locale} onValueChange={handleChange}>
+              {AppConfig.locales.map(lang => (
+                <DropdownMenuRadioItem
+                  key={lang.id}
+                  value={lang.id}
+                  className={cn(
+                    'dropdown-item',
+                    // Selected state handled by dropdown-item CSS
+                    locale === lang.id && 'font-semibold',
+                  )}
+                >
+                  <div className="flex flex-col gap-0.5">
+                    {/* Native name (primary) */}
+                    <span className="font-medium text-foreground">{lang.name}</span>
+                    {/* English name (secondary) */}
+                    <span className="text-xs text-muted-foreground">
+                      {lang.id === 'it' ? 'Italian' : 'English'}
+                    </span>
+                  </div>
+                </DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
+    </>
   );
 });
 
