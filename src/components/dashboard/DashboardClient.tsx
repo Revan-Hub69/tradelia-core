@@ -19,11 +19,11 @@ import { Suspense } from 'react';
 import { NavigationProvider } from '@/components/navigation/NavigationProvider';
 import { DashboardContextProvider } from '@/contexts/DashboardContext';
 
-// Dynamic import for DashboardHeader - prevent SSR mismatch with theme
+// Dynamic import for DashboardHeader - SSR-safe with skeleton components
 const DashboardHeader = dynamic(
   () => import('./DashboardHeader').then(mod => ({ default: mod.DashboardHeader })),
   {
-    ssr: false,
+    ssr: true, // ENABLED: Components inside use mounted flag + skeletons
     loading: () => (
       <div
         className="glass-header header-height layer-header"

@@ -3,11 +3,10 @@
  *
  * Centralized design tokens for liquid glass effects
  * Based on Apple iOS 26 + Tier-1 research
- * 
+ *
  * NOTE: Header styles moved to header-system.css
  * NOTE: Dropdown styles moved to dropdown-system.css
  */
-
 :root {
   /* Glow Effects */
   --glow-notification: radial-gradient(circle, #ef4444 0%, transparent 70%);

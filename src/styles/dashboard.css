@@ -1,7 +1,7 @@
 /*
  * TRADELIA DASHBOARD STYLES
  * Entry point for dashboard-specific styles
- * 
+ *
  * Imported in (auth)/layout.tsx
  */
 
@@ -219,7 +219,17 @@
 /* NOTE: Header and dropdown classes moved to their respective system files */
 
 /* CRITICAL: Disable ALL animations during boot - prevent ghost animations */
-html[data-tradelia-runtime='boot'] *,
+html[data-tradelia-runtime='boot'],
+html[data-tradelia-runtime='boot'] * {
+  transition: none !important;
+  animation: none !important;
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  /* Force immediate visibility for stagger items */
+  opacity: 1 !important;
+  transform: none !important;
+}
+
 html[data-tradelia-runtime='boot'] *::before,
 html[data-tradelia-runtime='boot'] *::after {
   transition: none !important;
@@ -234,4 +244,3 @@ html:not([data-tradelia-runtime='ready']) .glass-nav {
   animation: none !important;
   transform: none !important;
 }
-

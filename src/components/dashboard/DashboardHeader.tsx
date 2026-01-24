@@ -25,19 +25,11 @@ import { useUserData } from '@/hooks/useUserData';
 import { Logo } from '@/templates/Logo';
 import { cn } from '@/utils/Helpers';
 
-// ORIGINAL COMPONENTS (commented out for A/B test)
-// import { LanguageSwitcherDashboard } from './LanguageSwitcherDashboard';
-// import { NotificationsBell } from './NotificationsBell';
-// import { ThemeSwitcher } from './ThemeSwitcher';
-// import { UserDropdown } from './UserDropdown';
-
-// TEST COMPONENTS - Using completely different CSS classes
-import {
-  LanguageSwitcherTest,
-  NotificationsBellTest,
-  ThemeSwitcherTest,
-  UserDropdownTest,
-} from './HeaderTestElements';
+// Header Elements - Original working components
+import { LanguageSwitcherDashboard } from './LanguageSwitcherDashboard';
+import { NotificationsBell } from './NotificationsBell';
+import { ThemeSwitcher } from './ThemeSwitcher';
+import { UserDropdown } from './UserDropdown';
 
 export type HeaderAction = {
   label: string; // Already translated (no labelKey)
@@ -103,8 +95,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   // Now using pure CSS @media (prefers-reduced-motion: reduce)
 
   // Header should only hide on mobile (no sidebar), stay fixed on tablet/desktop (with sidebar)
-  // SIMPLIFIED: hideOnScroll only on mobile (CSS handles sidebar presence)
-  const shouldHideOnScroll = hideOnScroll;
+  // Mobile detection: hideOnScroll only applies on mobile
+  const shouldHideOnScroll = hideOnScroll && typeof window !== 'undefined' && window.innerWidth < 768;
 
   // Global search keyboard shortcut (Cmd/Ctrl + K)
   const renderStatus = () => {
@@ -285,35 +277,20 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         role="banner"
         aria-label={t('header_aria_label')}
         className={cn(
-          // Sticky positioning - stays at top of content area
-          // Research: https://akashhamirwasia.com/blog/how-to-and-not-to-build-sidebar-layouts/
-          'sticky top-0 z-50',
-          'motion-base',
-          // Premium liquid glass effects
-          isScrolled && showScrollShadow && [
-            'shadow-2xl shadow-black/10',
-            'backdrop-blur-xl',
-            'bg-background/80',
-            'border-b border-border/20',
-          ],
-          // Compact mode
-          compactMode && 'py-2',
+          // Use new header-2026 class
+          'header-2026',
+          // Premium scroll effects
+          isScrolled && 'header-scrolled',
           className,
         )}
         style={{
           // Premium spring physics animation (Apple iOS 26 Liquid Glass)
-          transform: shouldHideOnScroll && !isHeaderVisible 
-            ? 'translate3d(0, -100%, 0)' 
+          transform: shouldHideOnScroll && !isHeaderVisible
+            ? 'translate3d(0, -100%, 0)'
             : 'translate3d(0, 0, 0)',
           willChange: shouldHideOnScroll ? 'transform' : 'auto',
           // Premium spring timing - always use spring (CSS handles reduced motion)
           transition: 'transform 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-          // Liquid glass backdrop enhancement
-          backdropFilter: isScrolled ? 'blur(20px) saturate(180%)' : undefined,
-          // Premium shadow with depth
-          boxShadow: isScrolled && showScrollShadow 
-            ? '0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08)'
-            : undefined,
         }}
       >
         <div className={cn(
@@ -373,17 +350,17 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             >
               {/* Theme Switcher - Hidden on mobile, visible on tablet+ */}
               <div className="hidden md:block">
-                <ThemeSwitcherTest />
+                <ThemeSwitcher />
               </div>
 
               {/* Language Switcher - Hidden on mobile, visible on tablet+ */}
               <div className="hidden md:block">
-                <LanguageSwitcherTest />
+                <LanguageSwitcherDashboard />
               </div>
 
               {/* Notifications - Always visible (mobile, tablet, desktop) */}
               <div>
-                <NotificationsBellTest />
+                <NotificationsBell />
               </div>
             </div>
 
@@ -392,7 +369,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               {userData
                 ? (
                     <div>
-                      <UserDropdownTest
+                      <UserDropdown
                         userName={getUserDisplayName()}
                         userEmail={userData.email}
                       />

@@ -3,6 +3,7 @@ import '@/styles/shared.css';
 import type { Metadata } from 'next';
 
 import { RuntimeReady } from '@/components/runtime/RuntimeReady';
+import { ServiceWorkerCleanup } from '@/components/ServiceWorkerCleanup';
 
 export const metadata: Metadata = {
   title: 'Tradelia - Learn Crypto Trading',
@@ -47,6 +48,7 @@ export default function RootLayout({
       <head />
       <body className="bg-background text-foreground antialiased" suppressHydrationWarning>
         <RuntimeReady />
+        <ServiceWorkerCleanup />
         
         {/* Skip to content link for accessibility */}
         <a
