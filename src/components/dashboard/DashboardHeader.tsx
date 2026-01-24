@@ -73,7 +73,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   rightSlot,
   leftSlot,
   className,
-  // showScrollShadow = true, // Removed: not used (scroll shadow always active)
+  showScrollShadow = true,
   titleAs = 'h1', // Default h1, but configurable
   // Mobile Optimization 2026
   breadcrumbs,
@@ -280,7 +280,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           // Use new header-2026 class
           'header-2026',
           // Premium scroll effects
-          isScrolled && 'header-scrolled',
+          showScrollShadow && isScrolled && 'header-scrolled',
           className,
         )}
         style={{
