@@ -53,8 +53,12 @@ interface Position {
 const MAX_PREVIEW_HEIGHT = 260; // px - one viewport interaction chunk
 
 // Viewport clamping (Rule 3)
-const EDGE_PADDING = 8; // px from viewport edges
+const EDGE_PADDING = 16; // px from viewport edges (increased from 8px)
 const TRIGGER_GAP = 8; // px gap between trigger and popover
+const HEADER_HEIGHT = 64; // px - header height to avoid overlap
+const BOTTOM_NAV_HEIGHT = 80; // px - bottom navbar height (64px + 16px inset)
+const SAFE_AREA_TOP = 20; // px - iOS status bar / notch
+const SAFE_AREA_BOTTOM = 34; // px - iOS home indicator
 
 // Placement priority cascade (Rule 3)
 const PLACEMENT_PRIORITY: Placement[] = [
@@ -97,25 +101,33 @@ function isTriggerInViewport(rect: DOMRect | null): boolean {
   );
 }
 
-// Rule 3: Calculate placement with collision handling
+// Rule 3: Calculate placement with collision handling (viewport-aware)
 function calculatePlacement(
   triggerRect: DOMRect,
   popoverWidth: number,
   popoverHeight: number,
 ): { placement: Placement; position: Position } {
+  // Calculate safe viewport bounds (avoid header and bottom navbar)
+  const safeViewport = {
+    top: HEADER_HEIGHT + SAFE_AREA_TOP,
+    bottom: window.innerHeight - BOTTOM_NAV_HEIGHT - SAFE_AREA_BOTTOM,
+    left: EDGE_PADDING,
+    right: window.innerWidth - EDGE_PADDING,
+  };
+
   for (const placement of PLACEMENT_PRIORITY) {
     const position = getPositionForPlacement(placement, triggerRect, popoverWidth, popoverHeight);
     
-    if (fitsInViewport(position, popoverWidth, popoverHeight)) {
+    if (fitsInSafeViewport(position, popoverWidth, popoverHeight, safeViewport)) {
       return { placement, position };
     }
   }
   
-  // Last resort: clamp to viewport edges
+  // Last resort: clamp to safe viewport
   const fallbackPosition = getPositionForPlacement('bottom-end', triggerRect, popoverWidth, popoverHeight);
   return {
     placement: 'bottom-end',
-    position: clampToViewport(fallbackPosition, popoverWidth, popoverHeight),
+    position: clampToSafeViewport(fallbackPosition, popoverWidth, popoverHeight, safeViewport),
   };
 }
 
@@ -150,25 +162,35 @@ function getPositionForPlacement(
   return positions[placement];
 }
 
-function fitsInViewport(position: Position, width: number, height: number): boolean {
+function fitsInSafeViewport(
+  position: Position,
+  width: number,
+  height: number,
+  safeViewport: { top: number; bottom: number; left: number; right: number },
+): boolean {
   const left = position.left ?? (window.innerWidth - (position.right ?? 0) - width);
   const right = left + width;
   
   return (
-    position.top >= EDGE_PADDING &&
-    left >= EDGE_PADDING &&
-    position.top + height <= window.innerHeight - EDGE_PADDING &&
-    right <= window.innerWidth - EDGE_PADDING
+    position.top >= safeViewport.top &&
+    left >= safeViewport.left &&
+    position.top + height <= safeViewport.bottom &&
+    right <= safeViewport.right
   );
 }
 
-function clampToViewport(position: Position, width: number, height: number): Position {
+function clampToSafeViewport(
+  position: Position,
+  width: number,
+  height: number,
+  safeViewport: { top: number; bottom: number; left: number; right: number },
+): Position {
   if (position.right !== undefined) {
     // Using right positioning
     return {
       top: Math.max(
-        EDGE_PADDING,
-        Math.min(position.top, window.innerHeight - height - EDGE_PADDING),
+        safeViewport.top,
+        Math.min(position.top, safeViewport.bottom - height),
       ),
       right: Math.max(
         EDGE_PADDING,
@@ -180,12 +202,12 @@ function clampToViewport(position: Position, width: number, height: number): Pos
   // Using left positioning
   return {
     top: Math.max(
-      EDGE_PADDING,
-      Math.min(position.top, window.innerHeight - height - EDGE_PADDING),
+      safeViewport.top,
+      Math.min(position.top, safeViewport.bottom - height),
     ),
     left: Math.max(
-      EDGE_PADDING,
-      Math.min(position.left ?? 0, window.innerWidth - width - EDGE_PADDING),
+      safeViewport.left,
+      Math.min(position.left ?? 0, safeViewport.right - width),
     ),
   };
 }
