@@ -21,12 +21,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { MobileBottomSheet } from '@/components/ui/MobileBottomSheet';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { useMobileDetection } from '@/hooks/useMobileDetection';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useTooltip } from '@/hooks/useTooltip';
 import { cn } from '@/utils/Helpers';
@@ -35,6 +37,7 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
   const t = useTranslations('Dashboard');
   const [isOpen, setIsOpen] = useState(false);
   const [hasNewNotification, setHasNewNotification] = useState(false);
+  const isMobile = useMobileDetection();
 
   // Global motion preferences - optimized
   const prefersReducedMotion = useReducedMotion();
@@ -64,145 +67,181 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
     setIsOpen(open);
   }, []);
 
-  const handleNotificationSettings = useCallback(() => {
-    // TODO: Navigate to notification settings page
+  const handleClose = useCallback(() => {
     setIsOpen(false);
   }, []);
+
+  const handleNotificationSettings = useCallback(() => {
+    // TODO: Navigate to notification settings page
+    handleClose();
+  }, [handleClose]);
+
+  // Shared content (empty state + footer)
+  const notificationContent = (
+    <>
+      {/* Empty State - Following Nielsen Norman Group guidelines (research) */}
+      <div className="flex flex-col items-center justify-center px-6 py-12 text-center">
+        <div
+          className="mb-4 rounded-full p-3"
+          style={{
+            backgroundColor: 'var(--glass-header-hover)',
+            backdropFilter: 'blur(4px)',
+          }}
+        >
+          <BellIcon size={24} className="text-muted-foreground" />
+        </div>
+        <h3 className="mb-2 text-sm font-medium text-foreground">
+          {t('no_notifications_title')}
+        </h3>
+        <p className="max-w-xs text-xs leading-relaxed text-muted-foreground">
+          {t('no_notifications_description')}
+        </p>
+      </div>
+
+      {/* Footer Actions - Following PatternFly pattern (research) */}
+      <div
+        className="flex items-center justify-between border-t border-border/10 p-4"
+        style={{
+          backgroundColor: 'var(--glass-header-hover)',
+          backdropFilter: 'blur(4px)',
+        }}
+      >
+        <button
+          type="button"
+          onClick={() => {
+            // Mark all as read functionality (when notifications exist)
+            handleClose();
+          }}
+          disabled={notifications.length === 0}
+          className={cn(
+            'h-8 px-3 text-xs transition-colors duration-200',
+            'rounded-md hover:bg-accent/10 focus:bg-accent/10',
+            // Use design system colors like sidebar navigation - force override
+            'text-muted-foreground hover:text-foreground/90 focus:text-foreground/90',
+            'disabled:opacity-50 disabled:cursor-not-allowed',
+          )}
+        >
+          {t('mark_all_read')}
+        </button>
+
+        <button
+          type="button"
+          onClick={handleNotificationSettings}
+          className={cn(
+            'flex h-8 items-center gap-1.5 px-3 text-xs transition-colors duration-200',
+            'rounded-md hover:bg-accent/10 focus:bg-accent/10',
+            // Use design system colors like sidebar navigation - force override
+            'text-muted-foreground hover:text-foreground/90 focus:text-foreground/90',
+            // Ensure icon inherits color
+            '[&>svg]:text-muted-foreground hover:[&>svg]:text-foreground/90',
+          )}
+        >
+          <SettingsIcon size={16} className="transition-colors duration-200" />
+          {t('notification_settings')}
+        </button>
+      </div>
+    </>
+  );
+
+  // Shared trigger button
+  const triggerButton = (
+    <button
+      type="button"
+      aria-label={t('notifications_aria_label')}
+      aria-haspopup="menu"
+      aria-expanded={isOpen}
+      onClick={isMobile ? () => setIsOpen(true) : undefined}
+      className={cn(
+        // Base styling
+        'relative flex size-11 items-center justify-center rounded-xl',
+        'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+        // ONLY design tokens - NO Tailwind transitions
+        'header-icon glass-button',
+        // Notification arrival animation - Educational version
+        hasNewNotification && !prefersReducedMotion && 'animate-pulse',
+        className,
+      )}
+      style={{
+        // Hardware acceleration - GPU optimization
+        willChange: 'transform',
+        transform: 'translateZ(0)', // Force GPU layer
+      }}
+    >
+      {/* Icon container - NO transitions */}
+      <div className="relative">
+        <BellIcon
+          size={20}
+          hasNotifications={unreadCount > 0}
+          notificationCount={unreadCount}
+          variant="signature"
+          className={cn(
+            'text-foreground',
+            // Add subtle breathing when notifications present
+            unreadCount > 0 && 'animate-pulse',
+          )}
+        />
+
+        {/* Educational feedback - discrete border instead of glow */}
+        {unreadCount > 0 && (
+          <div className="pointer-events-none absolute inset-0 animate-pulse rounded-xl border border-destructive/20" />
+        )}
+      </div>
+    </button>
+  );
 
   return (
     <TooltipProvider delayDuration={300}>
       <Tooltip {...tooltipProps}>
         <TooltipTrigger asChild>
           <div>
-            <DropdownMenu
-              open={isOpen}
-              onOpenChange={(open) => {
-                handleOpenChange(open); if (open) {
-                  handleTooltipClick();
-                }
-              }}
-            >
-              <DropdownMenuTrigger asChild>
-                <button
-                  type="button"
-                  aria-label={t('notifications_aria_label')}
-                  aria-haspopup="menu"
-                  aria-expanded={isOpen}
-                  className={cn(
-                    // Base styling
-                    'relative flex size-11 items-center justify-center rounded-xl',
-                    'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-                    // ONLY design tokens - NO Tailwind transitions
-                    'header-icon glass-button',
-                    // Notification arrival animation - Educational version
-                    hasNewNotification && !prefersReducedMotion && 'animate-pulse',
-                    className,
-                  )}
-                  style={{
-                    // Hardware acceleration - GPU optimization
-                    willChange: 'transform',
-                    transform: 'translateZ(0)', // Force GPU layer
-                  }}
+            {/* Mobile: Bottom Sheet */}
+            {isMobile && (
+              <>
+                {triggerButton}
+                <MobileBottomSheet
+                  isOpen={isOpen}
+                  onClose={handleClose}
+                  title={t('notifications')}
+                  className="glass-dropdown"
                 >
-                  {/* Icon container - NO transitions */}
-                  <div className="relative">
-                    <BellIcon
-                      size={20}
-                      hasNotifications={unreadCount > 0}
-                      notificationCount={unreadCount}
-                      variant="signature"
-                      className={cn(
-                        'text-foreground',
-                        // Add subtle breathing when notifications present
-                        unreadCount > 0 && 'animate-pulse',
-                      )}
-                    />
+                  {notificationContent}
+                </MobileBottomSheet>
+              </>
+            )}
 
-                    {/* Educational feedback - discrete border instead of glow */}
-                    {unreadCount > 0 && (
-                      <div className="pointer-events-none absolute inset-0 animate-pulse rounded-xl border border-destructive/20" />
-                    )}
-                  </div>
-                </button>
-              </DropdownMenuTrigger>
-
-              <DropdownMenuContent
-                align="end"
-                className={cn(
-                  'w-80 overflow-hidden rounded-2xl border border-border/20 p-0',
-                  // Liquid Glass dropdown
-                  'glass-dropdown',
-                  // Performance optimized entrance
-                  'animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200',
-                )}
+            {/* Desktop: Dropdown Menu */}
+            {!isMobile && (
+              <DropdownMenu
+                open={isOpen}
+                onOpenChange={(open) => {
+                  handleOpenChange(open);
+                  if (open) {
+                    handleTooltipClick();
+                  }
+                }}
               >
-                <DropdownMenuLabel className="border-b border-border/10 px-6 py-4">
-                  <span className="text-base font-semibold text-foreground">{t('notifications')}</span>
-                </DropdownMenuLabel>
+                <DropdownMenuTrigger asChild>
+                  {triggerButton}
+                </DropdownMenuTrigger>
 
-                {/* Empty State - Following Nielsen Norman Group guidelines (research) */}
-                <div className="flex flex-col items-center justify-center px-6 py-12 text-center">
-                  <div
-                    className="mb-4 rounded-full p-3"
-                    style={{
-                      backgroundColor: 'var(--glass-header-hover)',
-                      backdropFilter: 'blur(4px)',
-                    }}
-                  >
-                    <BellIcon size={24} className="text-muted-foreground" />
-                  </div>
-                  <h3 className="mb-2 text-sm font-medium text-foreground">
-                    {t('no_notifications_title')}
-                  </h3>
-                  <p className="max-w-xs text-xs leading-relaxed text-muted-foreground">
-                    {t('no_notifications_description')}
-                  </p>
-                </div>
-
-                {/* Footer Actions - Following PatternFly pattern (research) */}
-                <div
-                  className="flex items-center justify-between border-t border-border/10 p-4"
-                  style={{
-                    backgroundColor: 'var(--glass-header-hover)',
-                    backdropFilter: 'blur(4px)',
-                  }}
+                <DropdownMenuContent
+                  align="end"
+                  className={cn(
+                    'w-80 overflow-hidden rounded-2xl border border-border/20 p-0',
+                    // Liquid Glass dropdown
+                    'glass-dropdown',
+                    // Performance optimized entrance
+                    'animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200',
+                  )}
                 >
-                  <button
-                    type="button"
-                    onClick={() => {
-                      // Mark all as read functionality (when notifications exist)
-                      setIsOpen(false);
-                    }}
-                    disabled={notifications.length === 0}
-                    className={cn(
-                      'h-8 px-3 text-xs transition-colors duration-200',
-                      'rounded-md hover:bg-accent/10 focus:bg-accent/10',
-                      // Use design system colors like sidebar navigation - force override
-                      'text-muted-foreground hover:text-foreground/90 focus:text-foreground/90',
-                      'disabled:opacity-50 disabled:cursor-not-allowed',
-                    )}
-                  >
-                    {t('mark_all_read')}
-                  </button>
+                  <DropdownMenuLabel className="border-b border-border/10 px-6 py-4">
+                    <span className="text-base font-semibold text-foreground">{t('notifications')}</span>
+                  </DropdownMenuLabel>
 
-                  <button
-                    type="button"
-                    onClick={handleNotificationSettings}
-                    className={cn(
-                      'flex h-8 items-center gap-1.5 px-3 text-xs transition-colors duration-200',
-                      'rounded-md hover:bg-accent/10 focus:bg-accent/10',
-                      // Use design system colors like sidebar navigation - force override
-                      'text-muted-foreground hover:text-foreground/90 focus:text-foreground/90',
-                      // Ensure icon inherits color
-                      '[&>svg]:text-muted-foreground hover:[&>svg]:text-foreground/90',
-                    )}
-                  >
-                    <SettingsIcon size={16} className="transition-colors duration-200" />
-                    {t('notification_settings')}
-                  </button>
-                </div>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                  {notificationContent}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
         </TooltipTrigger>
         {shouldShowTooltip && (
