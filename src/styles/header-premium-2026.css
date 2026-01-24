@@ -187,13 +187,20 @@
   background-color: var(--header-glass-bg);
   backdrop-filter: blur(var(--header-glass-blur)) saturate(var(--header-glass-saturate));
   -webkit-backdrop-filter: blur(var(--header-glass-blur)) saturate(var(--header-glass-saturate));
+  
+  /* iOS 26 rounded corners - bottom only (sticky header) */
+  border-radius: 0 0 16px 16px;
+  
   transition:
     box-shadow var(--header-transition),
-    backdrop-filter var(--header-transition);
+    backdrop-filter var(--header-transition),
+    border-radius var(--header-transition);
 }
 
 .header-scrolled {
   box-shadow: var(--header-glass-shadow);
+  /* Slightly less rounded when scrolled for compact look */
+  border-radius: 0 0 12px 12px;
 }
 
 .header-compact-edge {

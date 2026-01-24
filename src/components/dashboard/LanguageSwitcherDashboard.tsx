@@ -148,70 +148,65 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
 
   return (
     <>
-      <TooltipProvider delayDuration={300}>
-        <Tooltip {...tooltipProps}>
-          <TooltipTrigger asChild>
-            <button
-              ref={triggerRef}
-              type="button"
-              onClick={() => handleOpenChange(!isOpen)}
-              aria-label={t('language_switcher_aria_label')}
-              aria-haspopup="menu"
-              aria-expanded={isOpen}
-              data-active={isOpen}
-              className={cn(
-                // Base styling
-                'relative flex size-11 items-center justify-center rounded-xl',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-                // Unified header icon class (includes glass effect)
-                'header-icon',
-                className,
-              )}
-              style={{
-                // Hardware acceleration - GPU optimization
-                willChange: 'transform',
-                transform: 'translateZ(0)', // Force GPU layer
-              }}
-            >
-              {/* Icon container - NO transitions */}
-              <div
+      {/* Mobile: Show button with tooltip */}
+      {isMobile && (
+        <TooltipProvider delayDuration={300}>
+          <Tooltip {...tooltipProps}>
+            <TooltipTrigger asChild>
+              <button
+                ref={triggerRef}
+                type="button"
+                onClick={() => handleOpenChange(!isOpen)}
+                aria-label={t('language_switcher_aria_label')}
+                aria-haspopup="menu"
+                aria-expanded={isOpen}
+                data-active={isOpen}
                 className={cn(
-                  'relative',
-                  // Globe rotation animation on language change - Educational version
-                  isChangingLanguage && !prefersReducedMotion && 'animate-spin',
+                  'relative flex size-11 items-center justify-center rounded-xl',
+                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+                  'header-icon',
+                  className,
+                )}
+                style={{
+                  willChange: 'transform',
+                  transform: 'translateZ(0)',
+                }}
+              >
+                <div
+                  className={cn(
+                    'relative',
+                    isChangingLanguage && !prefersReducedMotion && 'animate-spin',
+                  )}
+                >
+                  <GlobeIcon
+                    size={20}
+                    isActive={isOpen}
+                    variant="signature"
+                    className="text-foreground"
+                  />
+                  {!prefersReducedMotion && (isChangingLanguage || isOpen) && (
+                    <div className="pointer-events-none absolute inset-0 animate-pulse rounded-full border border-green-500/20" />
+                  )}
+                </div>
+              </button>
+            </TooltipTrigger>
+            {shouldShowTooltip && (
+              <TooltipContent
+                side="bottom"
+                className={cn(
+                  'text-xs',
+                  'glass-tooltip',
                 )}
               >
-                <GlobeIcon
-                  size={20}
-                  isActive={isOpen}
-                  variant="signature"
-                  className="text-foreground"
-                />
+                <p className="font-medium">{t('change_language')}</p>
+                <p className="text-muted-foreground">Alt+L</p>
+              </TooltipContent>
+            )}
+          </Tooltip>
+        </TooltipProvider>
+      )}
 
-                {/* Educational feedback - discrete border instead of glow */}
-                {!prefersReducedMotion && (isChangingLanguage || isOpen) && (
-                  <div className="pointer-events-none absolute inset-0 animate-pulse rounded-full border border-green-500/20" />
-                )}
-              </div>
-            </button>
-          </TooltipTrigger>
-          {shouldShowTooltip && (
-            <TooltipContent
-              side="bottom"
-              className={cn(
-                'text-xs',
-                // Liquid Glass tooltip (separate from dropdown)
-                'glass-tooltip',
-              )}
-            >
-              <p className="font-medium">{t('change_language')}</p>
-              <p className="text-muted-foreground">Alt+L</p>
-            </TooltipContent>
-          )}
-        </Tooltip>
-      </TooltipProvider>
-
-      {/* Mobile: Inline Popover with 10 Enterprise Guardrails */}
+      {/* Mobile: Inline Popover */}
       {isMobile ? (
         <MobileDropdownPopover
           isOpen={isOpen}

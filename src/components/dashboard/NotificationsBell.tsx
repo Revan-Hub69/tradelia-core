@@ -112,71 +112,65 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
 
   return (
     <>
-      <TooltipProvider delayDuration={300}>
-        <Tooltip {...tooltipProps}>
-          <TooltipTrigger asChild>
-            <button
-              ref={triggerRef}
-              type="button"
-              onClick={() => handleOpenChange(!isOpen)}
-              aria-label={t('notifications_aria_label')}
-              aria-haspopup="menu"
-              aria-expanded={isOpen}
-              data-active={isOpen}
-              className={cn(
-                // Base styling
-                'relative flex size-11 items-center justify-center rounded-xl',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-                // Unified header icon class (includes glass effect)
-                'header-icon',
-                // Notification arrival animation - Educational version
-                hasNewNotification && !prefersReducedMotion && 'animate-pulse',
-                className,
-              )}
-              style={{
-                // Hardware acceleration - GPU optimization
-                willChange: 'transform',
-                transform: 'translateZ(0)', // Force GPU layer
-              }}
-            >
-              {/* Icon container - NO transitions */}
-              <div className="relative">
-                <BellIcon
-                  size={20}
-                  hasNotifications={unreadCount > 0}
-                  notificationCount={unreadCount}
-                  variant="signature"
-                  className={cn(
-                    'text-foreground',
-                    // Add subtle breathing when notifications present
-                    unreadCount > 0 && 'animate-pulse',
-                  )}
-                />
-
-                {/* Educational feedback - discrete border instead of glow */}
-                {unreadCount > 0 && (
-                  <div className="pointer-events-none absolute inset-0 animate-pulse rounded-xl border border-destructive/20" />
+      {/* Mobile: Show button with tooltip */}
+      {isMobile && (
+        <TooltipProvider delayDuration={300}>
+          <Tooltip {...tooltipProps}>
+            <TooltipTrigger asChild>
+              <button
+                ref={triggerRef}
+                type="button"
+                onClick={() => handleOpenChange(!isOpen)}
+                aria-label={t('notifications_aria_label')}
+                aria-haspopup="menu"
+                aria-expanded={isOpen}
+                data-active={isOpen}
+                className={cn(
+                  'relative flex size-11 items-center justify-center rounded-xl',
+                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+                  'header-icon',
+                  hasNewNotification && !prefersReducedMotion && 'animate-pulse',
+                  className,
                 )}
-              </div>
-            </button>
-          </TooltipTrigger>
-          {shouldShowTooltip && (
-            <TooltipContent
-              side="bottom"
-              className={cn(
-                'text-xs',
-                // Liquid Glass tooltip (separate from dropdown)
-                'glass-tooltip',
-              )}
-            >
-              <p className="font-medium">{t('notifications')}</p>
-              <p className="text-muted-foreground">Alt+N</p>
-            </TooltipContent>
-          )}
-        </Tooltip>
-      </TooltipProvider>
+                style={{
+                  willChange: 'transform',
+                  transform: 'translateZ(0)',
+                }}
+              >
+                <div className="relative">
+                  <BellIcon
+                    size={20}
+                    hasNotifications={unreadCount > 0}
+                    notificationCount={unreadCount}
+                    variant="signature"
+                    className={cn(
+                      'text-foreground',
+                      unreadCount > 0 && 'animate-pulse',
+                    )}
+                  />
+                  {unreadCount > 0 && (
+                    <div className="pointer-events-none absolute inset-0 animate-pulse rounded-xl border border-destructive/20" />
+                  )}
+                </div>
+              </button>
+            </TooltipTrigger>
+            {shouldShowTooltip && (
+              <TooltipContent
+                side="bottom"
+                className={cn(
+                  'text-xs',
+                  'glass-tooltip',
+                )}
+              >
+                <p className="font-medium">{t('notifications')}</p>
+                <p className="text-muted-foreground">Alt+N</p>
+              </TooltipContent>
+            )}
+          </Tooltip>
+        </TooltipProvider>
+      )}
 
-      {/* Mobile: Inline Popover with 10 Enterprise Guardrails */}
+      {/* Mobile: Inline Popover */}
       {isMobile && (
         <MobileDropdownPopover
           isOpen={isOpen}
@@ -234,7 +228,42 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
       {!isMobile && (
         <DropdownMenu open={isOpen} onOpenChange={handleOpenChange}>
           <DropdownMenuTrigger asChild>
-            <div style={{ display: 'none' }} />
+            <button
+              ref={triggerRef}
+              type="button"
+              onClick={() => handleOpenChange(!isOpen)}
+              aria-label={t('notifications_aria_label')}
+              aria-haspopup="menu"
+              aria-expanded={isOpen}
+              data-active={isOpen}
+              className={cn(
+                'relative flex size-11 items-center justify-center rounded-xl',
+                'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+                'header-icon',
+                hasNewNotification && !prefersReducedMotion && 'animate-pulse',
+                className,
+              )}
+              style={{
+                willChange: 'transform',
+                transform: 'translateZ(0)',
+              }}
+            >
+              <div className="relative">
+                <BellIcon
+                  size={20}
+                  hasNotifications={unreadCount > 0}
+                  notificationCount={unreadCount}
+                  variant="signature"
+                  className={cn(
+                    'text-foreground',
+                    unreadCount > 0 && 'animate-pulse',
+                  )}
+                />
+                {unreadCount > 0 && (
+                  <div className="pointer-events-none absolute inset-0 animate-pulse rounded-xl border border-destructive/20" />
+                )}
+              </div>
+            </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             variant="premium"
