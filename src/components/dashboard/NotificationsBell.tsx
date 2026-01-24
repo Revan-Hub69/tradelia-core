@@ -165,7 +165,7 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
           'min-h-[44px]',
         )}
       >
-        <SettingsIcon size={18} className="transition-colors duration-200" />
+        <SettingsIcon size={16} className="transition-colors duration-200" />
         {t('notification_settings')}
       </button>
     </div>
@@ -245,35 +245,103 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
           title={t('notifications')}
           triggerRect={triggerRect}
           triggerRef={triggerRef}
-          footer={<NotificationFooter />}
+          footer={
+            <div className="flex items-center justify-between">
+              <button
+                type="button"
+                onClick={handleMarkAllRead}
+                disabled={notifications.length === 0}
+                className={cn(
+                  'h-10 px-4 text-sm font-medium transition-colors duration-200',
+                  'rounded-lg hover:bg-accent/10 focus:bg-accent/10',
+                  'text-muted-foreground hover:text-foreground/90 focus:text-foreground/90',
+                  'disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]',
+                )}
+              >
+                {t('mark_all_read')}
+              </button>
+              <button
+                type="button"
+                onClick={handleNotificationSettings}
+                className={cn(
+                  'flex h-10 items-center gap-2 px-4 text-sm font-medium transition-colors duration-200',
+                  'rounded-lg hover:bg-accent/10 focus:bg-accent/10',
+                  'text-muted-foreground hover:text-foreground/90 focus:text-foreground/90',
+                  '[&>svg]:text-muted-foreground hover:[&>svg]:text-foreground/90 min-h-[44px]',
+                )}
+              >
+                <SettingsIcon size={16} className="transition-colors duration-200" />
+                {t('notification_settings')}
+              </button>
+            </div>
+          }
           className="w-80"
         >
-          <NotificationContent />
+          <div className="flex flex-col items-center justify-center px-6 py-12 text-center">
+            <div className="mb-4 rounded-full p-3 bg-muted/50">
+              <BellIcon size={24} className="text-muted-foreground" />
+            </div>
+            <h3 className="mb-2 text-sm font-medium text-foreground">
+              {t('no_notifications_title')}
+            </h3>
+            <p className="max-w-xs text-xs leading-relaxed text-muted-foreground">
+              {t('no_notifications_description')}
+            </p>
+          </div>
         </MobileDropdownPopover>
       ) : (
-        /* Desktop: Standard Dropdown */
         <DropdownMenu open={isOpen} onOpenChange={handleOpenChange}>
           <DropdownMenuTrigger asChild>
             <div style={{ display: 'none' }} />
           </DropdownMenuTrigger>
-
           <DropdownMenuContent
             align="end"
             className={cn(
               'w-80 overflow-hidden rounded-2xl border border-border/20 p-0',
-              // Liquid Glass dropdown
-              'dropdown-premium-container',
-              // Performance optimized entrance
-              'animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200',
+              'dropdown-premium-container animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200',
             )}
           >
             <DropdownMenuLabel className="border-b border-border/10 px-6 py-4">
               <span className="text-base font-semibold text-foreground">{t('notifications')}</span>
             </DropdownMenuLabel>
-            <NotificationContent />
-            {/* Footer for desktop */}
-            <div className="border-t border-border/10 p-4">
-              <NotificationFooter />
+            <div className="flex flex-col items-center justify-center px-6 py-12 text-center">
+              <div className="mb-4 rounded-full p-3 bg-muted/50">
+                <BellIcon size={24} className="text-muted-foreground" />
+              </div>
+              <h3 className="mb-2 text-sm font-medium text-foreground">
+                {t('no_notifications_title')}
+              </h3>
+              <p className="max-w-xs text-xs leading-relaxed text-muted-foreground">
+                {t('no_notifications_description')}
+              </p>
+            </div>
+            <div className="flex items-center justify-between border-t border-border/10 p-4">
+              <button
+                type="button"
+                onClick={handleMarkAllRead}
+                disabled={notifications.length === 0}
+                className={cn(
+                  'h-10 px-4 text-sm font-medium transition-colors duration-200',
+                  'rounded-lg hover:bg-accent/10 focus:bg-accent/10',
+                  'text-muted-foreground hover:text-foreground/90 focus:text-foreground/90',
+                  'disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]',
+                )}
+              >
+                {t('mark_all_read')}
+              </button>
+              <button
+                type="button"
+                onClick={handleNotificationSettings}
+                className={cn(
+                  'flex h-10 items-center gap-2 px-4 text-sm font-medium transition-colors duration-200',
+                  'rounded-lg hover:bg-accent/10 focus:bg-accent/10',
+                  'text-muted-foreground hover:text-foreground/90 focus:text-foreground/90',
+                  '[&>svg]:text-muted-foreground hover:[&>svg]:text-foreground/90 min-h-[44px]',
+                )}
+              >
+                <SettingsIcon size={16} className="transition-colors duration-200" />
+                {t('notification_settings')}
+              </button>
             </div>
           </DropdownMenuContent>
         </DropdownMenu>
