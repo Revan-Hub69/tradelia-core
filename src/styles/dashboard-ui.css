@@ -17,11 +17,7 @@
   @apply border border-white/10 dark:border-white/5;
 }
 
-.ui-glass-header {
-  @apply ui-glass-surface;
-  @apply sticky top-0 z-50;
-  @apply shadow-lg shadow-black/5 dark:shadow-black/20;
-}
+/* NOTE: .ui-glass-header removed - use header-system.css .glass-header directly */
 
 .ui-glass-card {
   @apply ui-glass-surface;
@@ -168,10 +164,7 @@
   @apply transition-all duration-300 ease-out;
 }
 
-.ui-header {
-  @apply ui-glass-header;
-  @apply h-16 md:h-18;
-}
+/* NOTE: .ui-header and .ui-glass-header removed - use header-system.css classes directly */
 
 .ui-bottom-nav {
   @apply fixed bottom-0 left-0 right-0 z-50;

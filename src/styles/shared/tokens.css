@@ -37,9 +37,8 @@
 
   /* Spacing */
   /* NOTE: Core dimensions defined in src/config/layout.ts (Single Source of Truth) */
+  /* NOTE: --header-height defined in header-system.css (Single Source of Truth) */
   --nav-height: 64px;
-  --header-height: 64px;
-  --header-height-mobile: 56px;
   --sidebar-width-expanded: 240px;
   --sidebar-width-collapsed: 64px;
   --sidebar-width-current: var(--sidebar-width-expanded); /* Dynamic, set by JS */

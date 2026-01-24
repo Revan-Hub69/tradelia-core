@@ -24,7 +24,14 @@ const DashboardHeader = dynamic(
   () => import('./DashboardHeader').then(mod => ({ default: mod.DashboardHeader })),
   {
     ssr: false,
-    loading: () => null, // No loading placeholder - prevent flash
+    loading: () => (
+      <div
+        className="glass-header header-height layer-header"
+        style={{ minHeight: '64px' }}
+        aria-hidden="true"
+        role="presentation"
+      />
+    ),
   },
 );
 
@@ -33,7 +40,14 @@ const SidebarNavigation = dynamic(
   () => import('@/components/navigation/SidebarNavigation').then(mod => ({ default: mod.SidebarNavigation })),
   {
     ssr: false,
-    loading: () => null,
+    loading: () => (
+      <aside
+        className="glass-sidebar"
+        style={{ width: '240px', minWidth: '240px' }}
+        aria-hidden="true"
+        role="presentation"
+      />
+    ),
   },
 );
 
@@ -41,7 +55,7 @@ const BottomNavigationSimple = dynamic(
   () => import('@/components/navigation/BottomNavigationSimple').then(mod => ({ default: mod.BottomNavigationSimple })),
   {
     ssr: false,
-    loading: () => null,
+    loading: () => null, // Bottom nav non causa layout shift (fixed bottom)
   },
 );
 
@@ -49,7 +63,7 @@ const CommandPalette = dynamic(
   () => import('@/components/navigation/CommandPalette').then(mod => ({ default: mod.CommandPalette })),
   {
     ssr: false,
-    loading: () => null,
+    loading: () => null, // Modal non causa layout shift
   },
 );
 
