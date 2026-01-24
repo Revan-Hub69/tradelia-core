@@ -235,7 +235,9 @@
   color: hsl(var(--foreground));
 
   /* Transitions */
-  transition: background-color var(--bottomsheet-transition), transform var(--bottomsheet-transition);
+  transition:
+    background-color var(--bottomsheet-transition),
+    transform var(--bottomsheet-transition);
 
   /* Touch optimization */
   touch-action: manipulation;

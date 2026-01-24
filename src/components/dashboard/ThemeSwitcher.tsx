@@ -47,7 +47,7 @@ export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) 
     if ('vibrate' in navigator) {
       navigator.vibrate(10);
     }
-    
+
     setIsTransitioning(true);
     // Reset transition state after animation completes
     setTimeout(() => setIsTransitioning(false), 400);
@@ -125,8 +125,8 @@ export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) 
             side="bottom"
             className={cn(
               'text-xs',
-              // Liquid Glass tooltip
-              'glass-dropdown',
+              // Liquid Glass tooltip (separate from dropdown)
+              'glass-tooltip',
             )}
           >
             <p className="font-medium">{isDark ? t('switch_to_light') : t('switch_to_dark')}</p>

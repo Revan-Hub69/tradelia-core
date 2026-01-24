@@ -36,7 +36,7 @@ export const MobileDropdownDialog = React.memo<MobileDropdownDialogProps>(({
   className,
 }) => {
   return (
-    <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Dialog.Root open={isOpen} onOpenChange={open => !open && onClose()}>
       <Dialog.Portal>
         {/* Backdrop */}
         <Dialog.Overlay
@@ -69,8 +69,8 @@ export const MobileDropdownDialog = React.memo<MobileDropdownDialogProps>(({
           )}
         >
           {/* Grab handle */}
-          <div className="flex justify-center pt-3 pb-2">
-            <div className="w-10 h-1 rounded-full bg-foreground/20" />
+          <div className="flex justify-center pb-2 pt-3">
+            <div className="h-1 w-10 rounded-full bg-foreground/20" />
           </div>
 
           {/* Close button */}

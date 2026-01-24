@@ -79,7 +79,9 @@ export function PullToRefresh({
   const hasTriggeredHaptic = useRef(false);
 
   useEffect(() => {
-    if (disabled) return;
+    if (disabled) {
+      return;
+    }
 
     const handleTouchStart = (e: TouchEvent) => {
       // Only trigger if at top of page

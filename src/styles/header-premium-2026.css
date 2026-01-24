@@ -76,16 +76,16 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  
+
   /* Glass Effect - Unified with glass-button */
   background-color: var(--header-glass-bg);
   border: 1px solid var(--header-glass-border);
   backdrop-filter: blur(12px) saturate(180%);
   -webkit-backdrop-filter: blur(12px) saturate(180%);
-  
+
   /* Opacity */
   opacity: var(--header-icon-primary-opacity);
-  
+
   /* GPU acceleration */
   transform: translateZ(0);
 
@@ -101,7 +101,7 @@
   cursor: pointer;
 
   /* Unified Transitions - NO conflicts */
-  transition: 
+  transition:
     transform 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
     background-color 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
     opacity 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -140,9 +140,9 @@
     /* Unified scale - NO conflicts */
     transform: translateZ(0) scale(1.08);
     /* Glass background on hover */
-    background-color: rgba(var(--primary-rgb), 0.10);
+    background-color: rgba(var(--primary-rgb), 0.1);
   }
-  
+
   .header-icon:hover::before {
     opacity: 1; /* Background appare */
   }
@@ -152,14 +152,16 @@
 .header-icon:active {
   transform: translateZ(0) scale(0.95);
   background-color: rgba(var(--primary-rgb), 0.15);
-  transition: transform 100ms ease-out, background-color 100ms ease-out;
+  transition:
+    transform 100ms ease-out,
+    background-color 100ms ease-out;
 }
 
 /* Active State (Open Dropdown) */
 .header-icon[data-active='true'] {
   color: hsl(var(--primary));
   transform: translateZ(0) scale(1.08);
-  background-color: rgba(var(--primary-rgb), 0.10);
+  background-color: rgba(var(--primary-rgb), 0.1);
 }
 
 .header-icon[data-active='true']::before {
@@ -185,7 +187,9 @@
   background-color: var(--header-glass-bg);
   backdrop-filter: blur(var(--header-glass-blur)) saturate(var(--header-glass-saturate));
   -webkit-backdrop-filter: blur(var(--header-glass-blur)) saturate(var(--header-glass-saturate));
-  transition: box-shadow var(--header-transition), backdrop-filter var(--header-transition);
+  transition:
+    box-shadow var(--header-transition),
+    backdrop-filter var(--header-transition);
 }
 
 .header-scrolled {

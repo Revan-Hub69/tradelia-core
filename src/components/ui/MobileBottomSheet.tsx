@@ -50,7 +50,9 @@ export const MobileBottomSheet = React.memo<MobileBottomSheetProps>(({
 
   // ESC key support
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      return;
+    }
 
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -64,7 +66,9 @@ export const MobileBottomSheet = React.memo<MobileBottomSheetProps>(({
 
   // Body scroll prevention
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      return;
+    }
 
     // Add class to body
     document.body.classList.add('bottom-sheet-open');
@@ -77,7 +81,9 @@ export const MobileBottomSheet = React.memo<MobileBottomSheetProps>(({
 
   // Focus trap - focus first focusable element
   useEffect(() => {
-    if (!isOpen || !sheetRef.current) return;
+    if (!isOpen || !sheetRef.current) {
+      return;
+    }
 
     const focusableElements = sheetRef.current.querySelectorAll<HTMLElement>(
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
@@ -99,7 +105,9 @@ export const MobileBottomSheet = React.memo<MobileBottomSheetProps>(({
   }, [onClose]);
 
   // Don't render if not open (performance)
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
 
   return (
     <>
@@ -142,7 +150,7 @@ export const MobileBottomSheet = React.memo<MobileBottomSheetProps>(({
 
         {/* Title (optional) */}
         {title && (
-          <div className="px-6 pt-8 pb-4">
+          <div className="px-6 pb-4 pt-8">
             <h2 className="text-lg font-semibold text-foreground">
               {title}
             </h2>
@@ -153,7 +161,8 @@ export const MobileBottomSheet = React.memo<MobileBottomSheetProps>(({
         <div className={cn(
           'px-6',
           title ? 'pb-6' : 'py-8',
-        )}>
+        )}
+        >
           {children}
         </div>
       </div>

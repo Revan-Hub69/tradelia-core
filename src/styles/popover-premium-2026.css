@@ -196,7 +196,9 @@
   color: hsl(var(--foreground));
 
   /* Transitions */
-  transition: background-color var(--popover-transition), transform var(--popover-transition);
+  transition:
+    background-color var(--popover-transition),
+    transform var(--popover-transition);
 
   /* Touch optimization */
   touch-action: manipulation;

@@ -43,11 +43,11 @@ import { cn } from '@/utils/Helpers';
 
 type Placement = 'bottom-end' | 'top-end' | 'bottom-start' | 'top-start';
 
-interface Position {
+type Position = {
   top: number;
   right?: number; // Use right for natural alignment
-  left?: number;  // Use left for fallback
-}
+  left?: number; // Use left for fallback
+};
 
 // Cognitive load threshold (Rule 4)
 const MAX_PREVIEW_HEIGHT = 260; // px - one viewport interaction chunk
@@ -62,10 +62,10 @@ const SAFE_AREA_BOTTOM = 34; // px - iOS home indicator
 
 // Placement priority cascade (Rule 3)
 const PLACEMENT_PRIORITY: Placement[] = [
-  'bottom-end',   // Default: below trigger, right-aligned
-  'top-end',      // Fallback 1: above trigger, right-aligned
+  'bottom-end', // Default: below trigger, right-aligned
+  'top-end', // Fallback 1: above trigger, right-aligned
   'bottom-start', // Fallback 2: below trigger, left-aligned
-  'top-start',    // Fallback 3: above trigger, left-aligned
+  'top-start', // Fallback 3: above trigger, left-aligned
 ];
 
 // Performance monitoring (Rule 8)
@@ -92,12 +92,14 @@ export type MobileDropdownPopoverProps = {
 
 // Rule 1: Check if trigger is in viewport
 function isTriggerInViewport(rect: DOMRect | null): boolean {
-  if (!rect) return false;
+  if (!rect) {
+    return false;
+  }
   return (
-    rect.top >= 0 &&
-    rect.left >= 0 &&
-    rect.bottom <= window.innerHeight &&
-    rect.right <= window.innerWidth
+    rect.top >= 0
+    && rect.left >= 0
+    && rect.bottom <= window.innerHeight
+    && rect.right <= window.innerWidth
   );
 }
 
@@ -117,12 +119,12 @@ function calculatePlacement(
 
   for (const placement of PLACEMENT_PRIORITY) {
     const position = getPositionForPlacement(placement, triggerRect, popoverWidth, popoverHeight);
-    
+
     if (fitsInSafeViewport(position, popoverWidth, popoverHeight, safeViewport)) {
       return { placement, position };
     }
   }
-  
+
   // Last resort: clamp to safe viewport
   const fallbackPosition = getPositionForPlacement('bottom-end', triggerRect, popoverWidth, popoverHeight);
   return {
@@ -139,7 +141,7 @@ function getPositionForPlacement(
 ): Position {
   // Calculate distance from right edge for natural alignment
   const rightEdgeDistance = window.innerWidth - triggerRect.right;
-  
+
   const positions: Record<Placement, Position> = {
     'bottom-end': {
       top: triggerRect.bottom + TRIGGER_GAP,
@@ -158,7 +160,7 @@ function getPositionForPlacement(
       left: triggerRect.left, // Align to left edge of trigger
     },
   };
-  
+
   return positions[placement];
 }
 
@@ -170,12 +172,12 @@ function fitsInSafeViewport(
 ): boolean {
   const left = position.left ?? (window.innerWidth - (position.right ?? 0) - width);
   const right = left + width;
-  
+
   return (
-    position.top >= safeViewport.top &&
-    left >= safeViewport.left &&
-    position.top + height <= safeViewport.bottom &&
-    right <= safeViewport.right
+    position.top >= safeViewport.top
+    && left >= safeViewport.left
+    && position.top + height <= safeViewport.bottom
+    && right <= safeViewport.right
   );
 }
 
@@ -198,7 +200,7 @@ function clampToSafeViewport(
       ),
     };
   }
-  
+
   // Using left positioning
   return {
     top: Math.max(
@@ -234,7 +236,9 @@ export const MobileDropdownPopover = React.memo<MobileDropdownPopoverProps>(({
 
   // Rule 8: Measure once per open (layout thrash prevention)
   useEffect(() => {
-    if (!isOpen || !triggerRect || !popoverRef.current) return;
+    if (!isOpen || !triggerRect || !popoverRef.current) {
+      return;
+    }
 
     measureCount += 1;
 
@@ -259,7 +263,9 @@ export const MobileDropdownPopover = React.memo<MobileDropdownPopoverProps>(({
 
   // Rule 1: Scroll & Layout Shift - Auto-dismiss
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      return;
+    }
 
     const handleScroll = () => {
       if (!isTriggerInViewport(triggerRect ?? null)) {
@@ -311,7 +317,9 @@ export const MobileDropdownPopover = React.memo<MobileDropdownPopoverProps>(({
 
   // Rule 6: Gesture Conflict Prevention - Swipe only on popover
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      return;
+    }
 
     const handleTouchStart = (e: TouchEvent) => {
       const target = e.target as HTMLElement;
@@ -328,7 +336,9 @@ export const MobileDropdownPopover = React.memo<MobileDropdownPopoverProps>(({
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      if (!isTouchOnPopoverRef.current || !e.touches[0]) return; // Not our gesture
+      if (!isTouchOnPopoverRef.current || !e.touches[0]) {
+        return;
+      } // Not our gesture
 
       const deltaY = e.touches[0].clientY - touchStartYRef.current;
 

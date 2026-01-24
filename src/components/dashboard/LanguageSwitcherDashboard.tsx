@@ -70,12 +70,12 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
     if (open && 'vibrate' in navigator) {
       navigator.vibrate(10);
     }
-    
+
     // Capture trigger position for mobile popover
     if (open && isMobile && triggerRef.current) {
       setTriggerRect(triggerRef.current.getBoundingClientRect());
     }
-    
+
     setIsOpen(open);
     // Auto-dismiss tooltip when dropdown opens
     if (open) {
@@ -133,7 +133,8 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
           <span className={cn(
             'font-medium text-foreground',
             locale === lang.id && 'font-semibold',
-          )}>
+          )}
+          >
             {lang.name}
           </span>
           {/* English name (secondary) */}
@@ -199,8 +200,8 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
               side="bottom"
               className={cn(
                 'text-xs',
-                // Liquid Glass tooltip
-                'glass-dropdown',
+                // Liquid Glass tooltip (separate from dropdown)
+                'glass-tooltip',
               )}
             >
               <p className="font-medium">{t('change_language')}</p>

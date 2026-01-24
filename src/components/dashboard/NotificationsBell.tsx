@@ -165,8 +165,8 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
               side="bottom"
               className={cn(
                 'text-xs',
-                // Liquid Glass tooltip
-                'glass-dropdown',
+                // Liquid Glass tooltip (separate from dropdown)
+                'glass-tooltip',
               )}
             >
               <p className="font-medium">{t('notifications')}</p>
@@ -240,10 +240,10 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
             variant="premium"
             align="end"
             sideOffset={12}
-            collisionPadding={16}
+            collisionPadding={32}
             className={cn(
-              'w-96 overflow-hidden rounded-2xl border border-border/20 p-0',  // w-96 invece di w-80
-              'dropdown-premium-container',
+              'w-96 overflow-hidden rounded-2xl border border-border/20 p-0', // w-96 invece di w-80
+              'glass-dropdown',
             )}
           >
             <DropdownMenuLabel className="border-b border-border/10 px-6 py-4">
