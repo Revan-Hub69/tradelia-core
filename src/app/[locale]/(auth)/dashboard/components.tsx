@@ -472,7 +472,7 @@ export const DashboardNotifications = ({ userId }: SecondaryDataProps) => {
               ))}
             </div>
           )}
-    </UiSurface>
+    </div>
   );
 };
 
@@ -637,6 +637,6 @@ export const DashboardActivityFeed = ({ userId }: SecondaryDataProps) => {
               ))}
             </div>
           )}
-    </UiSurface>
+    </div>
   );
 };
