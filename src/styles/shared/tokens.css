@@ -72,7 +72,7 @@
      GLASS MATERIAL - SINGLE SOURCE OF TRUTH (iOS 26 Liquid Glass)
      Used by: header, dropdown, popover, bottomsheet, cards, etc.
      ============================================================================ */
-  
+
   /* Light Mode - Soft Cream (Educational & Warm) */
   --glass-material-bg: rgba(252, 251, 248, 0.95);
   --glass-material-border: rgba(0, 0, 0, 0.06);
@@ -121,7 +121,7 @@
   /* ============================================================================
      GLASS MATERIAL - SINGLE SOURCE OF TRUTH (iOS 26 Liquid Glass Dark Mode)
      ============================================================================ */
-  
+
   /* Dark Mode - iOS 26 Standard */
   --glass-material-bg: rgba(28, 28, 30, 0.95);
   --glass-material-border: rgba(255, 255, 255, 0.1);

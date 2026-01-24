@@ -7,6 +7,9 @@
 
 @tailwind utilities;
 
+/* CRITICAL: Import shared tokens FIRST - required by all other files */
+@import './shared/tokens.css';
+
 /* Import unified systems - SINGLE SOURCE OF TRUTH */
 @import './header-premium-2026.css';
 @import './dropdown-premium-2026.css';

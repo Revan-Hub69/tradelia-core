@@ -45,8 +45,7 @@
   /* iOS 26 Multi-layer Shadows */
   --dropdown-shadow-layer-1: 0 8px 16px rgba(0, 0, 0, 0.12);
   --dropdown-shadow-layer-2: 0 4px 8px rgba(0, 0, 0, 0.08);
-  --dropdown-glass-shadow:
-    var(--dropdown-shadow-layer-1), var(--dropdown-shadow-layer-2);
+  --dropdown-glass-shadow: var(--dropdown-shadow-layer-1), var(--dropdown-shadow-layer-2);
 
   /* Professional Border Radius - Modern but Serious */
   --dropdown-radius: 12px; /* Clean, professional */
@@ -72,8 +71,7 @@
   /* iOS 26 shadows for dark mode */
   --dropdown-shadow-layer-1: 0 8px 16px rgba(0, 0, 0, 0.24);
   --dropdown-shadow-layer-2: 0 4px 8px rgba(0, 0, 0, 0.16);
-  --dropdown-glass-shadow:
-    var(--dropdown-shadow-layer-1), var(--dropdown-shadow-layer-2);
+  --dropdown-glass-shadow: var(--dropdown-shadow-layer-1), var(--dropdown-shadow-layer-2);
 }
 
 /* ============================================================================
@@ -189,16 +187,16 @@
   border-radius: 8px; /* Smaller than dropdown (12px) */
   padding: 8px 12px;
   font-size: 0.75rem;
-  
+
   /* Same iOS 26 Liquid Glass material */
   background-color: var(--dropdown-glass-bg);
   border: 1px solid var(--dropdown-glass-border);
-  box-shadow: 
+  box-shadow:
     0 4px 8px rgba(0, 0, 0, 0.12),
     0 2px 4px rgba(0, 0, 0, 0.08);
   backdrop-filter: blur(var(--dropdown-glass-blur)) saturate(var(--dropdown-glass-saturate));
   -webkit-backdrop-filter: blur(var(--dropdown-glass-blur)) saturate(var(--dropdown-glass-saturate));
-  
+
   /* GPU Optimization */
   transform: translateZ(0);
   z-index: var(--z-dropdown);

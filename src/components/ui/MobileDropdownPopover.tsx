@@ -250,13 +250,13 @@ export const MobileDropdownPopover = React.memo<MobileDropdownPopoverProps>(({
     // CRITICAL FIX: Better fallback if triggerRect is null or invalid
     if (!triggerRect || triggerRect.width === 0 || triggerRect.height === 0) {
       console.warn('[MobileDropdownPopover] triggerRect is null or invalid, using smart fallback position');
-      
+
       // Smart fallback: position below header, right-aligned
       const fallbackPosition: Position = {
         top: HEADER_HEIGHT + SAFE_AREA_TOP + TRIGGER_GAP,
         right: EDGE_PADDING,
       };
-      
+
       setPosition(fallbackPosition);
       setPlacement('bottom-end');
       return;
