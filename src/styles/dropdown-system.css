@@ -274,3 +274,73 @@ html:not([data-tradelia-runtime='ready']) .dropdown-item {
     }
   }
 }
+
+
+/* ============================================================================
+   MOBILE DROPDOWN POPOVER - Enterprise Guardrails
+   ============================================================================ */
+
+/* Rule 9: Pointer Capability - Touch vs Mouse */
+
+/* Default: Touch-friendly (coarse pointer) */
+.glass-dropdown .popover-item,
+.glass-dropdown button,
+.glass-dropdown [role="menuitem"] {
+  min-height: 44px; /* WCAG 2.2 AA - Touch target */
+  padding: 12px 16px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Fine pointer: Smaller targets OK + Hover affordances */
+@media (pointer: fine) {
+  .glass-dropdown .popover-item,
+  .glass-dropdown button,
+  .glass-dropdown [role="menuitem"] {
+    min-height: 36px;
+    padding: 8px 12px;
+  }
+  
+  /* Enable hover affordances */
+  .glass-dropdown .popover-item:hover,
+  .glass-dropdown button:hover,
+  .glass-dropdown [role="menuitem"]:hover {
+    background: var(--glass-header-hover);
+  }
+}
+
+/* Coarse pointer: No hover (touch) */
+@media (pointer: coarse) {
+  .glass-dropdown .popover-item:hover,
+  .glass-dropdown button:hover,
+  .glass-dropdown [role="menuitem"]:hover {
+    background: none; /* Disable hover on touch */
+  }
+}
+
+/* Rule 4: Cognitive Load Threshold */
+.glass-dropdown {
+  max-height: 260px; /* One viewport interaction chunk */
+  overflow-y: auto;
+  overscroll-behavior: contain; /* Prevent scroll chaining */
+}
+
+/* Rule 6: Gesture Conflict Prevention */
+.glass-dropdown {
+  /* Swipe-to-dismiss only on popover */
+  touch-action: pan-y; /* Allow vertical scroll, capture swipe */
+}
+
+/* Performance: GPU optimization */
+.glass-dropdown {
+  will-change: transform, opacity;
+  transform: translateZ(0); /* Force GPU layer */
+}
+
+/* Accessibility: Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .glass-dropdown {
+    animation: none !important;
+    transition: none !important;
+  }
+}

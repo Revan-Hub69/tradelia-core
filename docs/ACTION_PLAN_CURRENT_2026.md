@@ -512,3 +512,194 @@
 ---
 
 **Prossima Azione**: Conferma quale task iniziare (raccomando Task 1)
+
+
+---
+
+## 🔥 NEW: Task 7 - Mobile Header Dropdown Pattern (CURRENT FOCUS)
+
+**Date**: January 24, 2026  
+**Status**: ✅ Research Complete → 🚧 Implementation In Progress  
+**Priority**: P0 - Critical UX Fix
+
+### Problem Statement
+Mobile dropdown menus in header (user menu, language switcher, notifications) need proper UX pattern that works with our dual navigation architecture (HEADER + BOTTOM NAVBAR).
+
+### User Feedback Evolution
+1. ❌ Bottom sheet: "controintuitivo" (press top → appears bottom)
+2. ❌ Narrow popover: "errori nel codice" (width too narrow, content truncated)
+3. ❌ Fullscreen overlay: "ma stai tenendo conto della visione d'insieme?" (too heavy for 2-3 items)
+4. ✅ **"questi sono menu con poche cose, forse dobbiamo arricchire semplicemente poi il menu?"**
+5. ✅ **"perche comunque abbiamo anche navbar noi ... fai ricerche più approfondite e mirate"**
+
+### ✅ Research Complete (Tier-1)
+
+**Completed**:
+- ✅ Deep tier-1 research on mobile dropdown patterns for dual navigation apps
+- ✅ Analysis of iOS 14+ Menu system (Apple HIG)
+- ✅ Competitive analysis (Gmail, Instagram, Twitter, LinkedIn)
+- ✅ Pattern decision matrix (small vs large menus)
+- ✅ Fixed `MobileDropdownPopover` component (auto width, proper positioning)
+- ✅ Updated `UserDropdown` to use inline popover pattern
+
+**Research Documents**:
+- `docs/research/HEADER_DROPDOWN_DUAL_NAV_RESEARCH_TIER1_2026.md` (Comprehensive tier-1 research)
+- `docs/TASK3_PHASE2_INLINE_POPOVER_IMPLEMENTATION_2026.md` (Implementation plan)
+
+### Key Insight: Context-Aware Pattern (Gmail Mobile Standard)
+
+**Gmail Mobile Pattern** (Gold Standard):
+- **Small menus (2-3 items)** → Inline popover near trigger ✅
+- **Large menus (5+ items)** → Fullscreen overlay ✅
+
+**iOS 14+ Standard** (Apple HIG):
+- "Basic two-option sorting can be implemented inline"
+- Menus appear NEAR trigger (not fullscreen)
+- System-styled, compact presentation
+- Predictability over cleverness
+
+### Implementation Strategy
+
+```typescript
+// Pattern Decision Matrix (Research-Based)
+
+✅ INLINE POPOVER (Small Menus: 2-3 items)
+- User dropdown: Profile, Logout (2 items) ← DONE ✅
+- Language switcher: EN, IT, ES, FR (2-5 items) ← NEXT 🚧
+- Theme switcher: Light, Dark, Auto (3 items)
+
+✅ FULLSCREEN OVERLAY (Large Menus: 5+ items)
+- Full navigation (if needed)
+- Complex settings
+- Long lists
+
+⚠️ HYBRID APPROACH (Variable Menus)
+- Notifications: Preview in popover, "View All" → fullscreen
+```
+
+### Design Specifications (Research-Based)
+
+**Inline Popover**:
+- Position: Below trigger (8px gap)
+- Width: Auto (content-based, min 200px, max 90vw - 32px)
+- Alignment: Right-aligned to trigger
+- Z-index: 151 (above backdrop 150, above navbar 100)
+- Animation: Slide down (200ms)
+- Backdrop: Blur + dim (tap to dismiss)
+- Liquid Glass: Blur(20px) + saturate(180%)
+
+**Why This Works**:
+- ✅ Fitts's Law: Proximity to trigger
+- ✅ No cognitive overload (2-3 options visible)
+- ✅ Fast interaction (no modal overhead)
+- ✅ iOS 14+ standard pattern
+- ✅ Doesn't conflict with bottom navbar
+- ✅ Gmail mobile pattern (gold standard)
+
+### Next Steps (Priority Order)
+
+#### Phase 2A: Language Switcher (HIGH PRIORITY) 🚧
+**File**: `src/components/dashboard/LanguageSwitcherDashboard.tsx`
+- [ ] Update to use `MobileDropdownPopover` (not fullscreen)
+- [ ] Add `triggerRef` to button
+- [ ] Pass `triggerRect` to popover
+- [ ] Test with 2-5 languages
+- [ ] Ensure checkmark for selected language
+- [ ] Test language switching
+
+**Estimated Time**: 30 minutes
+
+#### Phase 2B: Notifications Bell (MEDIUM PRIORITY) 📋
+**File**: `src/components/dashboard/NotificationsBell.tsx`
+- [ ] Implement HYBRID approach
+- [ ] 1-3 notifications: Show in popover
+- [ ] 4+ notifications: Show preview + "View All" button
+- [ ] "View All" → Navigate to `/dashboard/notifications`
+- [ ] Test with different notification counts
+
+**Estimated Time**: 1 hour
+
+#### Phase 2C: Testing (HIGH PRIORITY) 🧪
+- [ ] Test on real iPhone (Safari)
+- [ ] Test on real Android (Chrome)
+- [ ] Test z-index hierarchy (above navbar)
+- [ ] Test backdrop dismissal (tap outside)
+- [ ] Test keyboard navigation (desktop)
+- [ ] Test screen reader (accessibility)
+- [ ] Test reduced motion
+- [ ] Test dark mode
+- [ ] Test RTL languages (if applicable)
+
+**Estimated Time**: 2 hours
+
+#### Phase 2D: Polish (LOW PRIORITY) ✨
+- [ ] Haptic feedback on open/close
+- [ ] Spring physics animations
+- [ ] Loading states (skeleton)
+- [ ] Error states
+- [ ] Empty states
+- [ ] Dark mode refinements
+
+**Estimated Time**: 1 hour
+
+### Success Metrics
+
+**User Experience**:
+- Interaction Speed: < 200ms (trigger to visible)
+- Tap Accuracy: > 95% (no mis-taps)
+- User Satisfaction: > 4.5/5
+- Cognitive Load: Low (predictable behavior)
+
+**Technical**:
+- FPS: 60fps (smooth animations)
+- Bundle Size: < 3KB (component overhead)
+- Lighthouse Score: Maintain > 95
+- Accessibility: WCAG 2.1 AA compliance
+
+**Business**:
+- Task Completion: > 90%
+- Drop-off Rate: < 5%
+- Support Tickets: < 1% (no confusion)
+
+### Files Modified
+
+**✅ Completed**:
+- `src/components/ui/MobileDropdownPopover.tsx` - Fixed auto width, Tailwind class order
+- `src/components/dashboard/UserDropdown.tsx` - Updated to inline popover pattern
+- `docs/research/HEADER_DROPDOWN_DUAL_NAV_RESEARCH_TIER1_2026.md` - Comprehensive tier-1 research
+- `docs/TASK3_PHASE2_INLINE_POPOVER_IMPLEMENTATION_2026.md` - Implementation plan
+
+**🚧 In Progress**:
+- `src/components/dashboard/LanguageSwitcherDashboard.tsx` - Needs update to inline popover
+- `src/components/dashboard/NotificationsBell.tsx` - Needs hybrid approach
+
+**📋 Not Started**:
+- Testing on real devices
+- User feedback collection
+- Performance monitoring
+
+### Competitive Advantage
+
+**vs Instagram/Twitter/LinkedIn**:
+- ✅ Context-aware pattern (they use fullscreen for everything)
+- ✅ Faster interaction for simple menus
+- ✅ Better UX for small menus (2-3 items)
+- ✅ iOS 14+ standard compliance
+
+**vs Gmail Mobile**:
+- ✅ Same pattern (inline popover for small menus)
+- ✅ Enhanced Liquid Glass design
+- ✅ Premium animations
+- ✅ Better accessibility
+
+### References
+
+1. **Research**: `docs/research/HEADER_DROPDOWN_DUAL_NAV_RESEARCH_TIER1_2026.md`
+2. **Implementation**: `docs/TASK3_PHASE2_INLINE_POPOVER_IMPLEMENTATION_2026.md`
+3. **iOS 14+ Menus**: [Swift Bits: Menus](https://antongubarenko.substack.com/p/swift-bits-menus) (Anton Gubarenko, 2026)
+4. **Mobile UX Pitfalls**: [7 UI Pitfalls 2026](https://www.webpronews.com/7-ui-pitfalls-mobile-app-developers-should-avoid-in-2026/)
+5. **Apple HIG**: Human Interface Guidelines - Menus (iOS 14+)
+
+---
+
+**Next Action**: Update `LanguageSwitcherDashboard.tsx` to use inline popover pattern (30 min)

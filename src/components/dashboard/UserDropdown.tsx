@@ -7,14 +7,16 @@
  * - Modern status indicators and role badges
  * - 60fps smooth hover interactions
  * - Educational-appropriate animations
- * - Mobile fullscreen menu (< 768px) - Enterprise standard (Gmail, Slack, Notion)
+ * - Mobile inline popover (< 768px) - iOS 14+ standard (Gmail pattern)
  *
- * MOBILE UX (Enterprise Pattern):
- * - Fullscreen overlay (not positioned dropdown)
- * - Slide-in from right (off-canvas style)
- * - Full width (not limited by trigger)
- * - Sticky header with close button
+ * MOBILE UX (Context-Aware Pattern):
+ * - Inline popover for small menus (2-3 items)
+ * - Appears NEAR trigger (not fullscreen)
+ * - Auto width (content-based, min 200px)
+ * - Right-aligned to trigger
  * - Z-index 150+ above navbar (100)
+ *
+ * RESEARCH: docs/research/HEADER_DROPDOWN_DUAL_NAV_RESEARCH_TIER1_2026.md
  */
 
 import { useTranslations } from 'next-intl';
@@ -26,7 +28,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { MobileFullscreenMenu } from '@/components/ui/MobileFullscreenMenu';
+import { MobileDropdownPopover } from '@/components/ui/MobileDropdownPopover';
 import { useFocusTrap } from '@/hooks/useFocusManagement';
 import { useMobileDetection } from '@/hooks/useMobileDetection';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -50,6 +52,7 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
   const router = useRouter();
   const t = useTranslations('Dashboard');
   const [isOpen, setIsOpen] = useState(false);
+  const triggerRef = React.useRef<HTMLButtonElement>(null);
   const focusTrapRef = useFocusTrap(isOpen);
   const isMobile = useMobileDetection();
 
@@ -181,11 +184,12 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
     </>
   );
 
-  // Mobile: Fullscreen overlay (Enterprise standard)
+  // Mobile: Inline popover (iOS 14+ standard, Gmail pattern)
   if (isMobile) {
     return (
       <>
         <button
+          ref={triggerRef}
           type="button"
           aria-label={t('nav_open_user_menu')}
           aria-expanded={isOpen}
@@ -274,14 +278,15 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
           </div>
         </button>
 
-        <MobileFullscreenMenu
+        <MobileDropdownPopover
           isOpen={isOpen}
           onClose={handleClose}
           title={t('nav_open_user_menu')}
-          slideFrom="right"
+          triggerRect={triggerRef.current?.getBoundingClientRect() || null}
+          triggerRef={triggerRef}
         >
           {renderMenuContent()}
-        </MobileFullscreenMenu>
+        </MobileDropdownPopover>
       </>
     );
   }
