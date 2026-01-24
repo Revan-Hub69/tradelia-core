@@ -164,7 +164,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             label={status.label || 'Syncing...'}
             dot
             className="animate-pulse"
-            aria-label="Data synchronization in progress"
+            aria-label={t('data_sync_in_progress')}
           />
         );
       }

@@ -320,7 +320,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
               'focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2',
               isCollapsed ? 'justify-center' : 'justify-start',
             )}
-            title={isCollapsed ? 'Go to Dashboard' : undefined}
+            title={isCollapsed ? (t('go_to_dashboard') as string) : undefined}
           >
             {isCollapsed
               ? (
@@ -407,8 +407,8 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                   </div>
                 )}
 
-                {/* Hover tooltip */}
-                <div className="layer-toast pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 rounded bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+                {/* Hover tooltip - Positioned to the right of sidebar */}
+                <div className="layer-toast pointer-events-none absolute left-full top-1/2 ml-2 -translate-y-1/2 rounded bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
                   {isCollapsed ? t('expand_sidebar') : t('collapse_sidebar')}
                 </div>
               </div>

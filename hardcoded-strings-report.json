@@ -1,0 +1,114 @@
+{
+  "timestamp": "2026-01-24T23:45:58.200Z",
+  "summary": {
+    "total": 13,
+    "high": 0,
+    "medium": 0,
+    "low": 13
+  },
+  "byFile": {
+    "src/components/dashboard/DashboardHeader.tsx": [
+      {
+        "line": 294,
+        "column": 60,
+        "string": "User",
+        "severity": "low",
+        "context": "return safeEmail.includes('@') && parts[0] ? parts[0] : 'User';"
+      }
+    ],
+    "src/components/dashboard/UserDropdown.tsx": [
+      {
+        "line": 161,
+        "column": 32,
+        "string": "Administrator",
+        "severity": "low",
+        "context": "{role === 'admin' ? 'Administrator' : 'Premium User'}"
+      },
+      {
+        "line": 161,
+        "column": 50,
+        "string": "Premium User",
+        "severity": "low",
+        "context": "{role === 'admin' ? 'Administrator' : 'Premium User'}"
+      },
+      {
+        "line": 428,
+        "column": 27,
+        "string": "UserDropdown",
+        "severity": "low",
+        "context": "UserDropdown.displayName = 'UserDropdown';"
+      }
+    ],
+    "src/components/dashboard/NotificationsBell.tsx": [
+      {
+        "line": 340,
+        "column": 32,
+        "string": "NotificationsBell",
+        "severity": "low",
+        "context": "NotificationsBell.displayName = 'NotificationsBell';"
+      }
+    ],
+    "src/components/dashboard/LanguageSwitcherDashboard.tsx": [
+      {
+        "line": 155,
+        "column": 32,
+        "string": "Italian",
+        "severity": "low",
+        "context": "{lang.id === 'it' ? 'Italian' : 'English'}"
+      },
+      {
+        "line": 155,
+        "column": 44,
+        "string": "English",
+        "severity": "low",
+        "context": "{lang.id === 'it' ? 'Italian' : 'English'}"
+      },
+      {
+        "line": 303,
+        "column": 42,
+        "string": "Italian",
+        "severity": "low",
+        "context": "{lang.id === 'it' ? 'Italian' : 'English'}"
+      },
+      {
+        "line": 303,
+        "column": 54,
+        "string": "English",
+        "severity": "low",
+        "context": "{lang.id === 'it' ? 'Italian' : 'English'}"
+      },
+      {
+        "line": 316,
+        "column": 40,
+        "string": "LanguageSwitcherDashboard",
+        "severity": "low",
+        "context": "LanguageSwitcherDashboard.displayName = 'LanguageSwitcherDashboard';"
+      }
+    ],
+    "src/components/navigation/SidebarNavigation.tsx": [
+      {
+        "line": 468,
+        "column": 78,
+        "string": "Cmd",
+        "severity": "low",
+        "context": "<kbd className=\"rounded border bg-muted px-1.5 py-0.5 text-xs\">Cmd</kbd>"
+      },
+      {
+        "line": 471,
+        "column": 21,
+        "string": "Toggle sidebar",
+        "severity": "low",
+        "context": "<span>Toggle sidebar</span>"
+      }
+    ],
+    "src/components/ui/MobileDropdownPopover.tsx": [
+      {
+        "line": 519,
+        "column": 36,
+        "string": "MobileDropdownPopover",
+        "severity": "low",
+        "context": "MobileDropdownPopover.displayName = 'MobileDropdownPopover';"
+      }
+    ]
+  }
+}

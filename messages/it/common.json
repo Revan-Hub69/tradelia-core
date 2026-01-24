@@ -1,0 +1,16 @@
+{
+  "close": "Chiudi",
+  "save": "Salva",
+  "cancel": "Annulla",
+  "delete": "Elimina",
+  "edit": "Modifica",
+  "confirm": "Conferma",
+  "back": "Indietro",
+  "next": "Avanti",
+  "previous": "Precedente",
+  "loading": "Caricamento...",
+  "error": "Errore",
+  "success": "Successo",
+  "warning": "Attenzione",
+  "info": "Info"
+}

@@ -32,6 +32,7 @@
 'use client';
 
 import * as Dialog from '@radix-ui/react-dialog';
+import { useTranslations } from 'next-intl';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { CloseIcon } from '@/components/icons/unified/UnifiedIconSystem';
@@ -229,6 +230,7 @@ export const MobileDropdownPopover = React.memo<MobileDropdownPopoverProps>(({
   triggerRect,
   triggerRef,
 }) => {
+  const t = useTranslations('Common');
   console.log('[MobileDropdownPopover] Render:', { isOpen, triggerRect });
   
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -484,7 +486,7 @@ export const MobileDropdownPopover = React.memo<MobileDropdownPopoverProps>(({
               'touch-action-manipulation',
               '-webkit-tap-highlight-color-transparent',
             )}
-            aria-label="Close"
+            aria-label={t('close')}
             onClick={handleClose}
           >
             <CloseIcon size={16} variant="premium" />
