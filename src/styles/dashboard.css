@@ -159,10 +159,12 @@
   /* Dashboard cards */
   .card-interactive {
     @apply transition-all duration-150 ease-out;
+    border: 1px solid transparent; /* Always present - prevent layout shift */
   }
 
   .card-interactive:hover {
-    @apply border-primary/50 shadow-lg;
+    border-color: hsl(var(--primary) / 0.5);
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
   }
 
   /* Touch optimization */

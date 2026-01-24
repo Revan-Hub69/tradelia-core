@@ -123,30 +123,41 @@ button,
 /* Signature variant - balanced premium */
 .signature-icon--signature {
   opacity: 1;
-  backdrop-filter: blur(3px); /* Enhanced from 2px */
-  filter: var(--signature-glass-subtle);
+  /* Constant backdrop-filter - NO changes on hover */
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  /* Constant filter - NO changes on hover */
+  filter: var(--signature-glass-medium);
+  /* Only compositor-only properties transition */
+  transition: transform 200ms ease-out, opacity 200ms ease-out;
 }
 
 .signature-icon--signature:hover {
-  filter: var(--signature-glass-medium);
-  backdrop-filter: blur(6px); /* Enhanced from 4px */
-  transform: scale(1.01); /* Refined from 1.05 */
+  /* ONLY compositor-only properties */
+  transform: scale(1.01);
+  opacity: 0.95;
 }
 
 /* Premium variant - full signature experience */
 .signature-icon--premium {
   opacity: 1;
-  backdrop-filter: blur(4px);
+  /* Constant backdrop-filter - NO changes on hover */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  /* Constant filter - NO changes on hover */
+  filter: var(--signature-glass-medium);
+  /* Only compositor-only properties transition */
+  transition: transform 200ms ease-out, opacity 200ms ease-out;
 }
 
 .signature-icon--premium:hover {
-  filter: var(--signature-glass-medium);
-  backdrop-filter: blur(8px);
+  /* ONLY compositor-only properties */
+  transform: scale(1.01);
+  opacity: 0.95;
 }
 
 .signature-icon--premium:active {
-  filter: var(--signature-glass-strong);
-  backdrop-filter: blur(12px);
+  transform: scale(0.98);
 }
 
 /* ============================================================================
@@ -246,12 +257,14 @@ button,
 /* GPU acceleration for signature effects */
 .signature-icon[data-gpu='true'] {
   transform: translate3d(0, 0, 0);
-  will-change: transform, filter, backdrop-filter;
+  /* ONLY compositor-only properties */
+  will-change: transform, opacity;
 }
 
 /* Signature hover optimization */
 .signature-icon:hover {
-  will-change: transform, filter, backdrop-filter;
+  /* ONLY compositor-only properties */
+  will-change: transform, opacity;
 }
 
 .signature-icon:not(:hover) {
