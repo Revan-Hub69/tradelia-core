@@ -12,7 +12,7 @@
 'use client';
 
 import { useLocale, useTranslations } from 'next-intl';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { GlobeIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import {
@@ -33,6 +33,8 @@ import { usePathname, useRouter } from '@/libs/i18nNavigation';
 import { AppConfig } from '@/utils/AppConfig';
 import { cn } from '@/utils/Helpers';
 
+import { LanguageSwitcherSkeleton } from './HeaderSkeletons';
+
 export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ className }) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -40,9 +42,20 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
   const t = useTranslations('Dashboard');
   const [isOpen, setIsOpen] = useState(false);
   const [isChangingLanguage, setIsChangingLanguage] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   // Global motion preferences - optimized
   const prefersReducedMotion = useReducedMotion();
+
+  // Wait for client-side mount to prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // SSR + First Paint: Render skeleton to prevent hydration mismatch
+  if (!mounted) {
+    return <LanguageSwitcherSkeleton />;
+  }
 
   // Memoized callbacks - prevent unnecessary re-renders
   const handleOpenChange = useCallback((open: boolean) => {

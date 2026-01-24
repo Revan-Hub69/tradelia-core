@@ -140,7 +140,9 @@
    ============================================================================ */
 
 html:not([data-tradelia-runtime='ready']) .header-icon,
+html:not([data-tradelia-runtime='ready']) .header-icon *,
 html:not([data-tradelia-runtime='ready']) .glass-button,
+html:not([data-tradelia-runtime='ready']) .glass-button *,
 html:not([data-tradelia-runtime='ready']) .glass-header {
   transition: none !important;
   animation: none !important;

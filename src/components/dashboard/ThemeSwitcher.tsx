@@ -13,7 +13,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { MoonIcon, SunIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import {
@@ -24,10 +24,23 @@ import {
 } from '@/components/ui/tooltip';
 import { cn } from '@/utils/Helpers';
 
+import { ThemeSwitcherSkeleton } from './HeaderSkeletons';
+
 export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) => {
   const t = useTranslations('Dashboard');
   const { theme, setTheme } = useTheme();
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Wait for client-side mount to prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // SSR + First Paint: Render skeleton to prevent hydration mismatch
+  if (!mounted) {
+    return <ThemeSwitcherSkeleton />;
+  }
 
   // Memoized callbacks - prevent unnecessary re-renders
   const handleToggle = useCallback(() => {
