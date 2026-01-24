@@ -140,8 +140,8 @@
    FOUC PREVENTION - Disable animations until ready
    ============================================================================ */
 
-html:not([data-tradelia-runtime="ready"]) .glass-dropdown,
-html:not([data-tradelia-runtime="ready"]) .dropdown-item {
+html:not([data-tradelia-runtime='ready']) .glass-dropdown,
+html:not([data-tradelia-runtime='ready']) .dropdown-item {
   transition: none !important;
   animation: none !important;
   transform: translateZ(0) !important;

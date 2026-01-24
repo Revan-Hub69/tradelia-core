@@ -125,21 +125,19 @@
 /* Modern Avatar Liquid Glass 2026 - Tier-1 Research Based */
 .avatar-liquid-glass-2026 {
   /* Dynamic Gradient Background */
-  background: linear-gradient(135deg, 
-    hsl(var(--primary)) 0%, 
-    hsl(var(--primary) / 0.8) 50%,
-    hsl(var(--primary)) 100%
-  );
-  
+  background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.8) 50%, hsl(var(--primary)) 100%);
+
   /* Liquid Glass Effects */
   backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid var(--avatar-glass-border);
   box-shadow: var(--avatar-glass-shadow);
-  
+
   /* Performance Optimizations */
   will-change: transform;
   transform: translateZ(0); /* Force GPU layer */
-  transition: transform 200ms ease-out, box-shadow 200ms ease-out;
+  transition:
+    transform 200ms ease-out,
+    box-shadow 200ms ease-out;
 }
 
 /* Hover State - Optimized for 60fps */
