@@ -105,8 +105,8 @@ export default function DashboardNotFound() {
         <div className="absolute -right-1/4 bottom-0 size-96 rounded-full bg-accent/5 blur-3xl" />
       </div>
 
-      <div className="glass-panel relative z-10 w-full max-w-3xl">
-        <div className="space-y-8 p-8">
+      <div className="card-ios-26 relative z-10 w-full max-w-3xl">
+        <div className="space-y-8">
           {/* Breadcrumb context */}
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Link href="/dashboard" className="transition-colors hover:text-foreground">

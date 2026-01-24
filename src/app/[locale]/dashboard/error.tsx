@@ -42,8 +42,8 @@ export default function DashboardError({
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center p-6">
-      <div className="glass-panel max-w-lg">
-        <div className="space-y-6 p-8 text-center">
+      <div className="card-ios-26 max-w-lg">
+        <div className="space-y-6 text-center">
           {/* Icon */}
           <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-destructive/10">
             <AlertTriangle className="size-8 text-destructive" aria-hidden="true" />

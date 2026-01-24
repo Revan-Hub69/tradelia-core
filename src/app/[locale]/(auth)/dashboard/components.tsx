@@ -97,7 +97,7 @@ export const DashboardStatusCard = ({ userData }: DashboardStatusCardProps) => {
   const t = useTranslations('Dashboard');
 
   return (
-    <div className="glass-panel ui-glass-card stagger-item p-6">
+    <div className="card-ios-26 stagger-item">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-lg font-semibold">{t('current_status_title')}</h2>
         <UiStatusChip
@@ -162,7 +162,7 @@ export const DashboardNextSteps = ({ userData }: DashboardNextStepsProps) => {
   const isNearCompletion = userData.progress.progressPercentage > 80;
 
   return (
-    <div className="glass-panel ui-glass-card stagger-item p-6">
+    <div className="card-ios-26 stagger-item">
       <h2 className="mb-4 text-lg font-semibold">{t('next_objectives_title')}</h2>
 
       {isJustStarted
@@ -298,14 +298,14 @@ export const DashboardStatsCard = ({ userId }: SecondaryDataProps) => {
 
   if (!stats) {
     return (
-      <div className="glass-panel ui-glass-card p-6 text-center">
+      <div className="card-ios-26 text-center">
         <div className="text-muted-foreground">Failed to load statistics</div>
       </div>
     );
   }
 
   return (
-    <div className="glass-panel ui-glass-card stagger-item p-6">
+    <div className="card-ios-26 stagger-item">
       <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold">
         <TrendingUpIcon className="size-5 text-green-500" />
         Statistics
@@ -409,7 +409,7 @@ export const DashboardNotifications = ({ userId }: SecondaryDataProps) => {
 
   if (loading) {
     return (
-      <div className="glass-panel ui-glass-card stagger-item p-6">
+      <div className="card-ios-26 stagger-item">
         <div className="space-y-4">
           <div className="h-6 w-40 animate-pulse rounded bg-muted" />
           <div className="space-y-3">
@@ -424,7 +424,7 @@ export const DashboardNotifications = ({ userId }: SecondaryDataProps) => {
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
-    <div className="glass-panel ui-glass-card stagger-item p-6">
+    <div className="card-ios-26 stagger-item">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="flex items-center gap-2 text-lg font-semibold">
           <BellIcon className="size-5" />
@@ -571,7 +571,7 @@ export const DashboardActivityFeed = ({ userId }: SecondaryDataProps) => {
 
   if (loading) {
     return (
-      <div className="glass-panel ui-glass-card stagger-item p-6">
+      <div className="card-ios-26 stagger-item">
         <div className="space-y-4">
           <div className="h-6 w-48 animate-pulse rounded bg-muted" />
           <div className="space-y-3">
@@ -591,7 +591,7 @@ export const DashboardActivityFeed = ({ userId }: SecondaryDataProps) => {
   }
 
   return (
-    <div className="glass-panel ui-glass-card stagger-item p-6">
+    <div className="card-ios-26 stagger-item">
       <h2 className="mb-4 text-lg font-semibold">Recent Activity</h2>
 
       {activity.length === 0

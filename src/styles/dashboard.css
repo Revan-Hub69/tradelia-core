@@ -13,6 +13,7 @@
 
 /* Import dashboard-specific files */
 @import './glass-effects-tokens.css';
+@import './card-ios-26.css';
 @import './premium-spring-physics.css';
 @import './motion-tokens.css';
 

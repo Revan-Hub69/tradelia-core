@@ -190,7 +190,7 @@ export const VirtualActivityFeed = ({
 
   if (loading) {
     return (
-      <div className="glass-panel ui-glass-card p-6">
+      <div className="card-ios-26">
         <div className="space-y-4">
           <div className="h-6 w-48 animate-pulse rounded bg-muted" />
           <div className="space-y-3">
@@ -210,7 +210,7 @@ export const VirtualActivityFeed = ({
   }
 
   return (
-    <div className="glass-panel ui-glass-card p-6">
+    <div className="card-ios-26">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-lg font-semibold">Recent Activity</h2>
         <div className="text-sm text-muted-foreground">

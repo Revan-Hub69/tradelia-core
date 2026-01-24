@@ -19,8 +19,8 @@ export default function NotFound() {
 
   return (
     <div className="flex min-h-screen items-center justify-center p-6">
-      <div className="glass-panel max-w-2xl">
-        <div className="space-y-6 p-8 text-center">
+      <div className="card-ios-26 max-w-2xl">
+        <div className="space-y-6 text-center">
           {/* Icon */}
           <div className="mx-auto flex size-20 items-center justify-center rounded-full bg-muted">
             <FileQuestion className="size-10 text-muted-foreground" aria-hidden="true" />

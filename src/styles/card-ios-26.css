@@ -1,0 +1,340 @@
+/*
+ * CARD SYSTEM - iOS 26 LIQUID GLASS
+ *
+ * Based on Tier-1 Research:
+ * - TechsWill: iOS 26 UI Patterns from visionOS
+ * - Apple: Liquid Glass Design Language
+ * - SAP Fiori: Elevation Guidelines
+ * - Mobile System Design: Spacing Systems
+ *
+ * Design Principles:
+ * - 32px border radius (visionOS standard)
+ * - Liquid Glass material (ultraThinMaterial)
+ * - Multi-layer shadows for depth
+ * - 8pt grid spacing system
+ * - Concentric corners for nested elements
+ * - Spring physics interactions
+ *
+ * RESEARCH DOCUMENT:
+ * docs/research/CARD_SYSTEM_IOS26_TIER1_2026.md
+ */
+
+/* ============================================================================
+   DESIGN TOKENS - iOS 26 Card System
+   ============================================================================ */
+
+:root {
+  /* Border Radius - visionOS Standard */
+  --card-radius-default: 32px;
+  --card-radius-compact: 24px;
+  --card-radius-mobile: 24px;
+
+  /* Padding - 8pt Grid System */
+  --card-padding-mobile: 16px;
+  --card-padding-tablet: 20px;
+  --card-padding-desktop: 24px;
+
+  /* Gaps - Between Cards */
+  --card-gap-mobile: 12px;
+  --card-gap-tablet: 16px;
+  --card-gap-desktop: 20px;
+
+  /* Liquid Glass Material */
+  --card-glass-bg: rgba(255, 255, 255, 0.95);
+  --card-glass-border: rgba(0, 0, 0, 0.08);
+  --card-glass-blur: 20px;
+  --card-glass-saturate: 180%;
+
+  /* Elevation - Level 2 (Cards Default) */
+  --card-shadow-umbra: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --card-shadow-penumbra: 0 2px 4px rgba(0, 0, 0, 0.04);
+
+  /* Elevation - Level 3 (Hover/Active) */
+  --card-shadow-hover-umbra: 0 8px 16px rgba(0, 0, 0, 0.12);
+  --card-shadow-hover-penumbra: 0 4px 8px rgba(0, 0, 0, 0.06);
+
+  /* Spring Physics Transitions */
+  --card-transition-spring: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  --card-transition-quick: 150ms ease-out;
+}
+
+.dark {
+  /* Dark Mode - Liquid Glass */
+  --card-glass-bg: rgba(15, 23, 42, 0.95);
+  --card-glass-border: rgba(255, 255, 255, 0.1);
+
+  /* Dark Mode - Enhanced Shadows */
+  --card-shadow-umbra: 0 4px 12px rgba(0, 0, 0, 0.24);
+  --card-shadow-penumbra: 0 2px 4px rgba(0, 0, 0, 0.12);
+  --card-shadow-hover-umbra: 0 8px 16px rgba(0, 0, 0, 0.32);
+  --card-shadow-hover-penumbra: 0 4px 8px rgba(0, 0, 0, 0.16);
+}
+
+/* ============================================================================
+   BASE CARD - iOS 26 Standard
+   ============================================================================ */
+
+.card-ios-26 {
+  /* Border Radius - visionOS Standard */
+  border-radius: var(--card-radius-default);
+
+  /* Liquid Glass Material */
+  background: var(--card-glass-bg);
+  backdrop-filter: blur(var(--card-glass-blur)) saturate(var(--card-glass-saturate));
+  -webkit-backdrop-filter: blur(var(--card-glass-blur)) saturate(var(--card-glass-saturate));
+  border: 1px solid var(--card-glass-border);
+
+  /* Elevation - Level 2 (Multi-layer) */
+  box-shadow: var(--card-shadow-umbra), var(--card-shadow-penumbra);
+
+  /* Spacing - 8pt Grid */
+  padding: var(--card-padding-tablet);
+
+  /* GPU Optimization */
+  transform: translateZ(0);
+  will-change: transform, box-shadow;
+
+  /* Spring Physics Transitions */
+  transition:
+    transform var(--card-transition-spring),
+    box-shadow var(--card-transition-spring);
+}
+
+/* Hover State - Desktop Only (iOS 26 Pattern) */
+@media (hover: hover) and (pointer: fine) {
+  .card-ios-26:hover {
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: var(--card-shadow-hover-umbra), var(--card-shadow-hover-penumbra);
+  }
+}
+
+/* Active State - All Devices */
+.card-ios-26:active {
+  transform: scale(0.98);
+  transition: transform var(--card-transition-quick);
+}
+
+/* Focus State - Accessibility (WCAG 2.1 AA) */
+.card-ios-26:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 767px) {
+  .card-ios-26 {
+    padding: var(--card-padding-mobile);
+    border-radius: var(--card-radius-mobile);
+  }
+}
+
+/* Desktop Adjustments */
+@media (min-width: 1024px) {
+  .card-ios-26 {
+    padding: var(--card-padding-desktop);
+  }
+}
+
+/* ============================================================================
+   CARD VARIANTS
+   ============================================================================ */
+
+/* Compact Card - Smaller Content */
+.card-ios-26-compact {
+  border-radius: var(--card-radius-compact);
+  padding: var(--card-padding-mobile);
+}
+
+/* Interactive Card - Clickable */
+.card-ios-26-interactive {
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card-ios-26-interactive:hover {
+    transform: translateY(-4px) scale(1.02);
+  }
+}
+
+/* Elevated Card - Important Content (Level 3) */
+.card-ios-26-elevated {
+  box-shadow: var(--card-shadow-hover-umbra), var(--card-shadow-hover-penumbra);
+}
+
+/* Flat Card - Minimal Elevation (Level 1) */
+.card-ios-26-flat {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+/* ============================================================================
+   CARD LAYOUTS
+   ============================================================================ */
+
+/* Card Grid - Responsive */
+.card-grid {
+  display: grid;
+  gap: var(--card-gap-mobile);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .card-grid {
+    gap: var(--card-gap-tablet);
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .card-grid {
+    gap: var(--card-gap-desktop);
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Card List - Vertical Stack */
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--card-gap-mobile);
+}
+
+@media (min-width: 768px) {
+  .card-list {
+    gap: var(--card-gap-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .card-list {
+    gap: var(--card-gap-desktop);
+  }
+}
+
+/* ============================================================================
+   CARD COMPONENTS - Concentric Corners
+   ============================================================================ */
+
+/* Card Header */
+.card-header {
+  padding: var(--card-padding-mobile);
+  border-bottom: 1px solid var(--card-glass-border);
+  border-radius: var(--card-radius-default) var(--card-radius-default) 0 0;
+}
+
+/* Card Body */
+.card-body {
+  padding: var(--card-padding-tablet);
+}
+
+/* Card Footer */
+.card-footer {
+  padding: var(--card-padding-mobile);
+  border-top: 1px solid var(--card-glass-border);
+  border-radius: 0 0 var(--card-radius-default) var(--card-radius-default);
+}
+
+/* Nested Element - Concentric Corners (iOS 26 Pattern) */
+.card-ios-26 .card-nested {
+  /* Inner Radius = Outer Radius - Padding */
+  border-radius: 16px; /* 32px - 16px */
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.dark .card-ios-26 .card-nested {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ============================================================================
+   CARD STATES
+   ============================================================================ */
+
+/* Loading State */
+.card-ios-26-loading {
+  pointer-events: none;
+  opacity: 0.6;
+  animation: card-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes card-pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Disabled State */
+.card-ios-26-disabled {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Selected State */
+.card-ios-26-selected {
+  border-color: hsl(var(--primary));
+  box-shadow:
+    var(--card-shadow-hover-umbra),
+    var(--card-shadow-hover-penumbra),
+    0 0 0 2px hsl(var(--primary) / 0.2);
+}
+
+/* Error State */
+.card-ios-26-error {
+  border-color: hsl(var(--destructive));
+  box-shadow:
+    var(--card-shadow-umbra),
+    var(--card-shadow-penumbra),
+    0 0 0 1px hsl(var(--destructive) / 0.2);
+}
+
+/* ============================================================================
+   FOUC PREVENTION - Disable animations until ready
+   ============================================================================ */
+
+html:not([data-tradelia-runtime='ready']) .card-ios-26,
+html:not([data-tradelia-runtime='ready']) .card-ios-26-interactive {
+  transition: none !important;
+  animation: none !important;
+  transform: translateZ(0) !important;
+}
+
+/* ============================================================================
+   REDUCED MOTION - Accessibility
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .card-ios-26,
+  .card-ios-26-interactive,
+  .card-ios-26-loading {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .card-ios-26:hover,
+  .card-ios-26-interactive:hover {
+    transform: translateZ(0);
+  }
+
+  .card-ios-26:active {
+    transform: translateZ(0);
+  }
+}
+
+/* ============================================================================
+   PRINT STYLES
+   ============================================================================ */
+
+@media print {
+  .card-ios-26 {
+    box-shadow: none;
+    border: 1px solid #ccc;
+    backdrop-filter: none;
+    background: white;
+  }
+}

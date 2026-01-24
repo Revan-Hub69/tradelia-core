@@ -45,7 +45,7 @@ const DashboardIndexPage = async () => {
     return (
       <PageTransitionWrapper>
         <div className="mx-auto max-w-screen-xl">
-          <div className="glass-panel ui-glass-card p-8 text-center">
+          <div className="card-ios-26 text-center">
             <h1 className="text-2xl font-bold text-destructive">
               {t('auth_error_title')}
             </h1>
@@ -89,7 +89,7 @@ const DashboardIndexPage = async () => {
           <div className="space-y-6">
             {/* Stats - Suspense boundary for secondary data */}
             <Suspense fallback={(
-              <div className="glass-panel ui-glass-card stagger-item p-6">
+              <div className="card-ios-26 stagger-item">
                 <div className="space-y-4">
                   <div className="h-6 w-32 animate-pulse rounded bg-muted" />
                   <div className="grid grid-cols-2 gap-4">
@@ -111,7 +111,7 @@ const DashboardIndexPage = async () => {
 
             {/* Notifications - Suspense boundary for secondary data */}
             <Suspense fallback={(
-              <div className="glass-panel ui-glass-card stagger-item p-6">
+              <div className="card-ios-26 stagger-item">
                 <div className="space-y-4">
                   <div className="h-6 w-40 animate-pulse rounded bg-muted" />
                   <div className="space-y-3">
@@ -131,7 +131,7 @@ const DashboardIndexPage = async () => {
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Traditional Activity Feed (for comparison) */}
           <Suspense fallback={(
-            <div className="glass-panel ui-glass-card stagger-item p-6">
+            <div className="card-ios-26 stagger-item">
               <div className="space-y-4">
                 <div className="h-6 w-48 animate-pulse rounded bg-muted" />
                 <div className="space-y-3">
