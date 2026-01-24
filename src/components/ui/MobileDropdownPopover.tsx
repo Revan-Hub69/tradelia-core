@@ -216,7 +216,7 @@ export const MobileDropdownPopover = React.memo<MobileDropdownPopoverProps>(({
     if (!isOpen) return;
 
     const handleScroll = () => {
-      if (!isTriggerInViewport(triggerRect)) {
+      if (!isTriggerInViewport(triggerRect ?? null)) {
         onClose();
       }
     };
@@ -275,12 +275,14 @@ export const MobileDropdownPopover = React.memo<MobileDropdownPopoverProps>(({
         return; // Ignore - let other handlers process
       }
 
-      touchStartYRef.current = e.touches[0].clientY;
-      isTouchOnPopoverRef.current = true;
+      if (e.touches[0]) {
+        touchStartYRef.current = e.touches[0].clientY;
+        isTouchOnPopoverRef.current = true;
+      }
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      if (!isTouchOnPopoverRef.current) return; // Not our gesture
+      if (!isTouchOnPopoverRef.current || !e.touches[0]) return; // Not our gesture
 
       const deltaY = e.touches[0].clientY - touchStartYRef.current;
 
