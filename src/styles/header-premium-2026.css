@@ -35,22 +35,14 @@
    ============================================================================ */
 
 .glass-header {
-  background-color: rgba(252, 251, 248, 0.95);
-  border-color: rgba(0, 0, 0, 0.06);
-  box-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.15),
-    0 8px 16px rgba(0, 0, 0, 0.1);
+  background-color: var(--glass-material-bg);
+  border-color: var(--glass-material-border);
+  box-shadow: var(--glass-material-shadow);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
 }
 
-.dark .glass-header {
-  background-color: rgba(28, 28, 30, 0.95);
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.3),
-    0 8px 16px rgba(0, 0, 0, 0.2);
-}
+/* Dark mode handled by CSS variables in tokens.css */
 
 .header-height {
   height: var(--header-height);
@@ -85,9 +77,9 @@
   align-items: center;
   justify-content: center;
 
-  /* Glass Effect - Direct values */
-  background-color: rgba(252, 251, 248, 0.95);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  /* Glass Effect - Use CSS variables */
+  background-color: var(--glass-material-bg);
+  border: 1px solid var(--glass-material-border);
   backdrop-filter: blur(12px) saturate(180%);
   -webkit-backdrop-filter: blur(12px) saturate(180%);
 
@@ -120,8 +112,7 @@
 }
 
 .dark .header-icon {
-  background-color: rgba(28, 28, 30, 0.95);
-  border-color: rgba(255, 255, 255, 0.1);
+  /* Dark mode handled by --glass-material-bg variable */
   /* CRITICAL FIX: Explicit icon color for dark mode */
   color: #e2e8f0; /* Slate 200 - Light Gray (NOT white) */
 }
@@ -207,8 +198,8 @@
   top: 0;
   z-index: var(--z-header);
   border-bottom: 1px solid hsl(var(--border) / 0.1);
-  /* CRITICAL: Direct color value - Soft Cream (Educational) */
-  background-color: rgba(252, 251, 248, 0.95);
+  /* CRITICAL: Use CSS variable for layer separation */
+  background-color: var(--glass-material-bg);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
 
@@ -221,10 +212,7 @@
     border-radius var(--header-transition);
 }
 
-/* Dark mode - iOS 26 Standard */
-.dark .header-2026 {
-  background-color: rgba(28, 28, 30, 0.95);
-}
+/* Dark mode handled by --glass-material-bg variable in tokens.css */
 
 .header-scrolled {
   box-shadow:
@@ -287,22 +275,14 @@
 }
 
 .search-modal-content {
-  background-color: rgba(252, 251, 248, 0.95);
+  background-color: var(--glass-material-bg);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-color: rgba(0, 0, 0, 0.06);
-  box-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.15),
-    0 8px 16px rgba(0, 0, 0, 0.1);
+  border-color: var(--glass-material-border);
+  box-shadow: var(--glass-material-shadow);
 }
 
-.dark .search-modal-content {
-  background-color: rgba(28, 28, 30, 0.95);
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.3),
-    0 8px 16px rgba(0, 0, 0, 0.2);
-}
+/* Dark mode handled by CSS variables in tokens.css */
 
 /* ============================================================================
    FOUC PREVENTION - Disable animations until ready
