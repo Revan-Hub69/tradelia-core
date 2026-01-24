@@ -369,15 +369,19 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             {/* Custom Right Slot */}
             {rightSlot}
 
-            {/* Controls - All icons always visible */}
+            {/* Controls - Mobile: Only Notifications, Desktop: All */}
             <div className="flex items-center gap-2 md:gap-3">
-              {/* Theme Switcher - Always visible */}
-              <ThemeSwitcher />
+              {/* Theme Switcher - Desktop only (>= 768px) */}
+              <div className="hidden md:block">
+                <ThemeSwitcher />
+              </div>
 
-              {/* Language Switcher - Always visible */}
-              <LanguageSwitcherDashboard />
+              {/* Language Switcher - Desktop only (>= 768px) */}
+              <div className="hidden md:block">
+                <LanguageSwitcherDashboard />
+              </div>
 
-              {/* Notifications - Always visible */}
+              {/* Notifications - Always visible (mobile + desktop) */}
               <NotificationsBell />
             </div>
 
