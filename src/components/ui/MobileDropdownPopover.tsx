@@ -45,7 +45,8 @@ type Placement = 'bottom-end' | 'top-end' | 'bottom-start' | 'top-start';
 
 interface Position {
   top: number;
-  left: number;
+  right?: number; // Use right for natural alignment
+  left?: number;  // Use left for fallback
 }
 
 // Cognitive load threshold (Rule 4)
@@ -120,25 +121,28 @@ function calculatePlacement(
 function getPositionForPlacement(
   placement: Placement,
   triggerRect: DOMRect,
-  popoverWidth: number,
+  _popoverWidth: number, // Prefixed with _ to indicate intentionally unused
   popoverHeight: number,
 ): Position {
+  // Calculate distance from right edge for natural alignment
+  const rightEdgeDistance = window.innerWidth - triggerRect.right;
+  
   const positions: Record<Placement, Position> = {
     'bottom-end': {
       top: triggerRect.bottom + TRIGGER_GAP,
-      left: triggerRect.right - popoverWidth,
+      right: rightEdgeDistance, // Align to right edge of trigger
     },
     'top-end': {
       top: triggerRect.top - popoverHeight - TRIGGER_GAP,
-      left: triggerRect.right - popoverWidth,
+      right: rightEdgeDistance, // Align to right edge of trigger
     },
     'bottom-start': {
       top: triggerRect.bottom + TRIGGER_GAP,
-      left: triggerRect.left,
+      left: triggerRect.left, // Align to left edge of trigger
     },
     'top-start': {
       top: triggerRect.top - popoverHeight - TRIGGER_GAP,
-      left: triggerRect.left,
+      left: triggerRect.left, // Align to left edge of trigger
     },
   };
   
@@ -146,15 +150,33 @@ function getPositionForPlacement(
 }
 
 function fitsInViewport(position: Position, width: number, height: number): boolean {
+  const left = position.left ?? (window.innerWidth - (position.right ?? 0) - width);
+  const right = left + width;
+  
   return (
     position.top >= EDGE_PADDING &&
-    position.left >= EDGE_PADDING &&
+    left >= EDGE_PADDING &&
     position.top + height <= window.innerHeight - EDGE_PADDING &&
-    position.left + width <= window.innerWidth - EDGE_PADDING
+    right <= window.innerWidth - EDGE_PADDING
   );
 }
 
 function clampToViewport(position: Position, width: number, height: number): Position {
+  if (position.right !== undefined) {
+    // Using right positioning
+    return {
+      top: Math.max(
+        EDGE_PADDING,
+        Math.min(position.top, window.innerHeight - height - EDGE_PADDING),
+      ),
+      right: Math.max(
+        EDGE_PADDING,
+        Math.min(position.right, window.innerWidth - width - EDGE_PADDING),
+      ),
+    };
+  }
+  
+  // Using left positioning
   return {
     top: Math.max(
       EDGE_PADDING,
@@ -162,7 +184,7 @@ function clampToViewport(position: Position, width: number, height: number): Pos
     ),
     left: Math.max(
       EDGE_PADDING,
-      Math.min(position.left, window.innerWidth - width - EDGE_PADDING),
+      Math.min(position.left ?? 0, window.innerWidth - width - EDGE_PADDING),
     ),
   };
 }
@@ -347,7 +369,9 @@ export const MobileDropdownPopover = React.memo<MobileDropdownPopoverProps>(({
           )}
           style={{
             top: `${position.top}px`,
-            left: `${position.left}px`,
+            ...(position.right !== undefined
+              ? { right: `${position.right}px` }
+              : { left: `${position.left}px` }),
             minWidth: '200px',
             maxWidth: 'calc(90vw - 32px)',
             maxHeight: `${MAX_PREVIEW_HEIGHT}px`,
