@@ -22,6 +22,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { useTooltip } from '@/hooks/useTooltip';
 import { cn } from '@/utils/Helpers';
 
 import { ThemeSwitcherSkeleton } from './HeaderSkeletons';
@@ -31,6 +32,9 @@ export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) 
   const { theme, setTheme } = useTheme();
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [mounted, setMounted] = useState(false);
+
+  // Tooltip best practices 2026
+  const { shouldShowTooltip, tooltipProps, handleClick: handleTooltipClick } = useTooltip();
 
   // Wait for client-side mount to prevent hydration mismatch
   useEffect(() => {
@@ -43,7 +47,9 @@ export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) 
     // Reset transition state after animation completes
     setTimeout(() => setIsTransitioning(false), 400);
     setTheme(theme === 'dark' ? 'light' : 'dark');
-  }, [theme, setTheme]);
+    // Auto-dismiss tooltip on click
+    handleTooltipClick();
+  }, [theme, setTheme, handleTooltipClick]);
 
   const isDark = theme === 'dark';
 
@@ -55,7 +61,7 @@ export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) 
 
   return (
     <TooltipProvider delayDuration={300}>
-      <Tooltip>
+      <Tooltip {...tooltipProps}>
         <TooltipTrigger asChild>
           <button
             type="button"
@@ -109,17 +115,19 @@ export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) 
             </div>
           </button>
         </TooltipTrigger>
-        <TooltipContent
-          side="bottom"
-          className={cn(
-            'text-xs',
-            // Liquid Glass tooltip
-            'glass-dropdown',
-          )}
-        >
-          <p className="font-medium">{isDark ? t('switch_to_light') : t('switch_to_dark')}</p>
-          <p className="text-muted-foreground">Alt+T</p>
-        </TooltipContent>
+        {shouldShowTooltip && (
+          <TooltipContent
+            side="bottom"
+            className={cn(
+              'text-xs',
+              // Liquid Glass tooltip
+              'glass-dropdown',
+            )}
+          >
+            <p className="font-medium">{isDark ? t('switch_to_light') : t('switch_to_dark')}</p>
+            <p className="text-muted-foreground">Alt+T</p>
+          </TooltipContent>
+        )}
       </Tooltip>
     </TooltipProvider>
   );
