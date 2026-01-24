@@ -1,13 +1,17 @@
 /*
- * NOTIFICATIONS BELL - Performance Optimized 2026
+ * NOTIFICATIONS BELL - Enterprise-Grade with Hybrid Approach
  *
  * Enhanced with:
  * - React.memo + useCallback for 60fps smooth hover
+ * - Mobile inline popover (< 768px) - Gmail pattern
+ * - Hybrid approach: 1-3 notifications in popover, 4+ show "View All"
  * - Global useReducedMotion hook prevents unnecessary re-renders
  * - Transform-only animations with GPU optimization
  * - Educational-appropriate micro-interactions
  * - Semantic notification arrival/dismiss animations
- * - Mobile bottom sheet pattern (< 768px)
+ * - WCAG 2.2 AA compliance
+ *
+ * RESEARCH: docs/research/HEADER_DROPDOWN_DUAL_NAV_RESEARCH_TIER1_2026.md
  */
 
 'use client';

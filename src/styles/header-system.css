@@ -104,11 +104,23 @@
   .header-icon:hover {
     color: hsl(var(--primary));
     opacity: 1;
-    transform: translateZ(0) scale(1.05);
+    transform: translateZ(0) scale(1.05) translateY(-1px); /* Subtle lift like navbar */
     transition:
       color var(--header-transition),
       opacity var(--header-transition),
       transform var(--header-transition);
+  }
+  
+  /* Background hover effect like navbar */
+  .glass-button:hover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-color: rgba(var(--primary-rgb), 0.08);
+    opacity: 1;
+    transition: opacity var(--header-transition);
+    z-index: -1;
   }
 }
 
@@ -136,6 +148,7 @@
    ============================================================================ */
 
 .glass-button {
+  position: relative; /* For ::before pseudo-element */
   background-color: var(--header-glass-bg);
 
   /* Touch optimization - iOS/Android */
@@ -154,13 +167,15 @@
 
 @media (hover: hover) and (pointer: fine) {
   .glass-button:hover {
-    background-color: rgba(var(--primary-rgb), 0.05);
+    background-color: rgba(var(--primary-rgb), 0.08); /* More visible like navbar */
     transition: background-color var(--header-transition);
   }
 }
 
 .glass-button:active {
-  background-color: rgba(var(--primary-rgb), 0.1);
+  background-color: rgba(var(--primary-rgb), 0.12); /* Enhanced feedback */
+  transform: scale(0.98); /* Subtle press effect */
+  transition: all 100ms ease-out;
 }
 
 /* ============================================================================
