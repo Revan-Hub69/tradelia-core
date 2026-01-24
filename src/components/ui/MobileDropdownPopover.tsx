@@ -238,66 +238,75 @@ export const MobileDropdownPopover = React.memo<MobileDropdownPopoverProps>(({
 
   // Rule 8: Measure once per open (layout thrash prevention)
   useEffect(() => {
-    if (!isOpen || !popoverRef.current) {
+    if (!isOpen || !triggerRect) {
+      console.log('[MobileDropdownPopover] useEffect skipped:', { isOpen, triggerRect: !!triggerRect });
       return;
     }
 
-    measureCount += 1;
+    // Wait for next frame to ensure popoverRef is mounted
+    requestAnimationFrame(() => {
+      if (!popoverRef.current) {
+        console.warn('[MobileDropdownPopover] popoverRef.current is null after RAF');
+        return;
+      }
 
-    // Development warning for layout thrash
-    if (process.env.NODE_ENV === 'development' && measureCount > 2) {
-      console.warn(`[MobileDropdownPopover] Layout thrash detected: ${measureCount} measurements`);
-    }
+      measureCount += 1;
 
-    // CRITICAL FIX: Better fallback if triggerRect is null or invalid
-    if (!triggerRect || triggerRect.width === 0 || triggerRect.height === 0) {
-      console.warn('[MobileDropdownPopover] triggerRect is null or invalid, using smart fallback position');
-      console.log('[MobileDropdownPopover] triggerRect:', triggerRect);
+      // Development warning for layout thrash
+      if (process.env.NODE_ENV === 'development' && measureCount > 2) {
+        console.warn(`[MobileDropdownPopover] Layout thrash detected: ${measureCount} measurements`);
+      }
 
-      // Smart fallback: position below header, right-aligned
-      const fallbackPosition: Position = {
-        top: HEADER_HEIGHT + SAFE_AREA_TOP + TRIGGER_GAP,
-        right: EDGE_PADDING,
-      };
+      // CRITICAL FIX: Better fallback if triggerRect is invalid
+      if (triggerRect.width === 0 || triggerRect.height === 0) {
+        console.warn('[MobileDropdownPopover] triggerRect is invalid, using smart fallback position');
+        console.log('[MobileDropdownPopover] triggerRect:', triggerRect);
 
-      console.log('[MobileDropdownPopover] Using fallback position:', fallbackPosition);
-      setPosition(fallbackPosition);
-      setPlacement('bottom-end');
-      return;
-    }
+        // Smart fallback: position below header, right-aligned
+        const fallbackPosition: Position = {
+          top: HEADER_HEIGHT + SAFE_AREA_TOP + TRIGGER_GAP,
+          right: EDGE_PADDING,
+        };
 
-    const popoverElement = popoverRef.current;
-    const popoverWidth = Math.max(200, Math.min(popoverElement.offsetWidth, window.innerWidth - 32));
-    const popoverHeight = Math.min(popoverElement.offsetHeight, MAX_PREVIEW_HEIGHT);
+        console.log('[MobileDropdownPopover] Using fallback position:', fallbackPosition);
+        setPosition(fallbackPosition);
+        setPlacement('bottom-end');
+        return;
+      }
 
-    console.log('[MobileDropdownPopover] Calculating position:', {
-      triggerRect: {
-        top: triggerRect.top,
-        right: triggerRect.right,
-        bottom: triggerRect.bottom,
-        left: triggerRect.left,
-      },
-      popoverWidth,
-      popoverHeight,
-      viewport: {
-        width: window.innerWidth,
-        height: window.innerHeight,
-      },
+      const popoverElement = popoverRef.current;
+      const popoverWidth = Math.max(200, Math.min(popoverElement.offsetWidth, window.innerWidth - 32));
+      const popoverHeight = Math.min(popoverElement.offsetHeight, MAX_PREVIEW_HEIGHT);
+
+      console.log('[MobileDropdownPopover] Calculating position:', {
+        triggerRect: {
+          top: triggerRect.top,
+          right: triggerRect.right,
+          bottom: triggerRect.bottom,
+          left: triggerRect.left,
+        },
+        popoverWidth,
+        popoverHeight,
+        viewport: {
+          width: window.innerWidth,
+          height: window.innerHeight,
+        },
+      });
+
+      const { placement: calculatedPlacement, position: calculatedPosition } = calculatePlacement(
+        triggerRect,
+        popoverWidth,
+        popoverHeight,
+      );
+
+      console.log('[MobileDropdownPopover] Calculated:', {
+        placement: calculatedPlacement,
+        position: calculatedPosition,
+      });
+
+      setPlacement(calculatedPlacement);
+      setPosition(calculatedPosition);
     });
-
-    const { placement: calculatedPlacement, position: calculatedPosition } = calculatePlacement(
-      triggerRect,
-      popoverWidth,
-      popoverHeight,
-    );
-
-    console.log('[MobileDropdownPopover] Calculated:', {
-      placement: calculatedPlacement,
-      position: calculatedPosition,
-    });
-
-    setPlacement(calculatedPlacement);
-    setPosition(calculatedPosition);
   }, [isOpen, triggerRect]);
 
   // Rule 1: Scroll & Layout Shift - Auto-dismiss
