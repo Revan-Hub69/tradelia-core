@@ -410,7 +410,7 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
         sideOffset={12}
         collisionPadding={32}
         className={cn(
-          'w-56 overflow-hidden rounded-2xl border border-border/20 p-2',
+          'w-72 overflow-hidden rounded-2xl border border-border/20 p-2',
           // Liquid Glass dropdown
           'glass-dropdown',
         )}

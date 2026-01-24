@@ -284,7 +284,7 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
             sideOffset={12}
             collisionPadding={32}
             className={cn(
-              'w-96 overflow-hidden rounded-2xl border border-border/20 p-0', // w-96 invece di w-80
+              'w-96 max-h-[480px] overflow-hidden rounded-2xl border border-border/20 p-0',
               'glass-dropdown',
             )}
           >

@@ -49,8 +49,9 @@ type Position = {
   left?: number; // Use left for fallback
 };
 
-// Cognitive load threshold (Rule 4)
-const MAX_PREVIEW_HEIGHT = 260; // px - one viewport interaction chunk
+// Cognitive load threshold (Rule 4) - Updated based on tier-1 research 2026
+const MAX_PREVIEW_HEIGHT_MOBILE = 400; // px - allows 5-7 notification items
+const MAX_PREVIEW_HEIGHT_DESKTOP = 480; // px - more vertical space on desktop
 
 // Viewport clamping (Rule 3)
 const EDGE_PADDING = 16; // px from viewport edges (increased from 8px)
@@ -235,6 +236,10 @@ export const MobileDropdownPopover = React.memo<MobileDropdownPopoverProps>(({
   const [placement, setPlacement] = useState<Placement>('bottom-end');
   const isTouchOnPopoverRef = useRef(false);
   const touchStartYRef = useRef(0);
+  
+  // Responsive max height based on viewport (tier-1 research 2026)
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const MAX_PREVIEW_HEIGHT = isMobile ? MAX_PREVIEW_HEIGHT_MOBILE : MAX_PREVIEW_HEIGHT_DESKTOP;
 
   // Rule 8: Measure once per open (layout thrash prevention)
   useEffect(() => {

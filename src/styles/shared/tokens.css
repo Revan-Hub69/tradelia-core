@@ -89,11 +89,11 @@
   /* Colors - Dark mode (WCAG AA Compliant) */
   --background: 222 47% 11%;
   --foreground: 214 32% 91%; /* Slate 200 #E2E8F0 - Readable Light Gray */
-  --card: 217 33% 17%;
+  --card: 220 40% 17%; /* #1E2330 - Slightly lighter with blue tint (Layer 2) */
   --card-foreground: 214 32% 91%;
-  --popover: 222 47% 13%;
+  --popover: 216 30% 26%; /* #343A4D - Most elevated surface (Layer 4) */
   --popover-foreground: 214 32% 91%;
-  --primary: 213 94% 68%;
+  --primary: 213 65% 68%; /* Reduced saturation from 94% to 65% for dark mode */
   --primary-foreground: 222 47% 11%;
 
   /* Primary RGB (for rgba() usage in premium effects) */
@@ -112,7 +112,7 @@
   --info-foreground: 0 0% 100%;
   --border: 217 33% 25%;
   --input: 217 33% 25%;
-  --ring: 213 94% 68%;
+  --ring: 213 65% 68%; /* Match reduced saturation primary */
 
   /* Glass effects - Dark mode */
   --glass-bg: rgba(15, 23, 42, 0.6);
@@ -120,10 +120,11 @@
 
   /* ============================================================================
      GLASS MATERIAL - SINGLE SOURCE OF TRUTH (iOS 26 Liquid Glass Dark Mode)
+     Layer 3: Header/Navbar - Clearly elevated from cards
      ============================================================================ */
 
-  /* Dark Mode - iOS 26 Standard */
-  --glass-material-bg: rgba(28, 28, 30, 0.95);
+  /* Dark Mode - iOS 26 Standard with Layer Separation */
+  --glass-material-bg: rgba(42, 47, 62, 0.95); /* #2A2F3E - Header/Navbar (Layer 3) */
   --glass-material-border: rgba(255, 255, 255, 0.1);
   --glass-material-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0, 0, 0, 0.2);
 

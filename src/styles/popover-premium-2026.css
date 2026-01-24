@@ -22,9 +22,10 @@
    ============================================================================ */
 
 :root {
-  /* Popover Dimensions */
+  /* Popover Dimensions - Updated based on tier-1 research 2026 */
   --popover-max-width: calc(90vw - 32px);
-  --popover-max-height: 260px; /* Cognitive load threshold */
+  --popover-max-height-mobile: 400px; /* Allows 5-7 notification items */
+  --popover-max-height-desktop: 480px; /* More vertical space on desktop */
   --popover-min-width: 200px;
   --popover-padding: 16px;
   --popover-gap: 8px; /* Gap from trigger */
