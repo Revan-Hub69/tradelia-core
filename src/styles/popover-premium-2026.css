@@ -1,0 +1,368 @@
+/*
+ * POPOVER PREMIUM SYSTEM 2026 - INLINE POPOVERS
+ *
+ * For small menus (2-3 items) positioned near trigger
+ * Based on iOS 14+ Menu system and Gmail mobile pattern
+ *
+ * RESEARCH SOURCES:
+ * - Apple HIG: Menus & Context Menus (2026)
+ * - Gmail Mobile Pattern (Gold Standard)
+ * - Notion Mobile Inline Popovers
+ *
+ * KEY FEATURES:
+ * - Fixed footer (always visible)
+ * - Scrollable content area
+ * - Viewport-aware positioning
+ * - Collision detection
+ * - Premium glass effects
+ */
+
+/* ============================================================================
+   DESIGN TOKENS - Popover Premium
+   ============================================================================ */
+
+:root {
+  /* Popover Dimensions */
+  --popover-max-width: calc(90vw - 32px);
+  --popover-max-height: 260px; /* Cognitive load threshold */
+  --popover-min-width: 200px;
+  --popover-padding: 16px;
+  --popover-gap: 8px; /* Gap from trigger */
+
+  /* Liquid Glass - Light Mode */
+  --popover-glass-bg: rgba(255, 255, 255, 0.95);
+  --popover-glass-border: rgba(0, 0, 0, 0.08);
+  --popover-glass-blur: 24px;
+  --popover-glass-saturate: 180%;
+
+  /* Premium Shadows - Multi-layer */
+  --popover-shadow-1: 0 12px 32px rgba(0, 0, 0, 0.15);
+  --popover-shadow-2: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --popover-shadow-3: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+  /* Border Radius */
+  --popover-radius: 16px;
+  --popover-item-radius: 10px;
+
+  /* Footer */
+  --popover-footer-height: 64px;
+  --popover-footer-bg: rgba(255, 255, 255, 0.98);
+  --popover-footer-border: rgba(0, 0, 0, 0.06);
+
+  /* Transitions */
+  --popover-transition: 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  /* Z-index */
+  --popover-z: 150;
+  --popover-overlay-z: 149;
+}
+
+.dark {
+  --popover-glass-bg: rgba(15, 23, 42, 0.95);
+  --popover-glass-border: rgba(255, 255, 255, 0.08);
+  --popover-shadow-1: 0 12px 32px rgba(0, 0, 0, 0.3);
+  --popover-shadow-2: 0 4px 12px rgba(0, 0, 0, 0.2);
+  --popover-shadow-3: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --popover-footer-bg: rgba(15, 23, 42, 0.98);
+  --popover-footer-border: rgba(255, 255, 255, 0.06);
+}
+
+/* ============================================================================
+   POPOVER CONTAINER - Premium Glass
+   ============================================================================ */
+
+.popover-premium-container {
+  /* Layout */
+  position: fixed;
+  z-index: var(--popover-z);
+  display: flex;
+  flex-direction: column;
+
+  /* Dimensions */
+  min-width: var(--popover-min-width);
+  max-width: var(--popover-max-width);
+  max-height: var(--popover-max-height);
+
+  /* Liquid Glass Effect */
+  background-color: var(--popover-glass-bg);
+  border: 1px solid var(--popover-glass-border);
+  border-radius: var(--popover-radius);
+  backdrop-filter: blur(var(--popover-glass-blur)) saturate(var(--popover-glass-saturate));
+  -webkit-backdrop-filter: blur(var(--popover-glass-blur)) saturate(var(--popover-glass-saturate));
+
+  /* Premium Shadow */
+  box-shadow: var(--popover-shadow-1), var(--popover-shadow-2), var(--popover-shadow-3);
+
+  /* GPU Optimization */
+  transform: translateZ(0);
+  will-change: transform, opacity;
+
+  /* Prevent text selection */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ============================================================================
+   POPOVER HEADER - Optional Title
+   ============================================================================ */
+
+.popover-premium-header {
+  /* Layout */
+  padding: var(--popover-padding);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--popover-glass-border);
+
+  /* Typography */
+  font-size: 1rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+
+  /* Prevent shrink */
+  flex-shrink: 0;
+}
+
+/* ============================================================================
+   POPOVER CONTENT - SCROLLABLE AREA
+   ============================================================================ */
+
+.popover-premium-content {
+  /* Layout */
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--popover-padding);
+
+  /* Custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+.popover-premium-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.popover-premium-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.popover-premium-content::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.dark .popover-premium-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ============================================================================
+   POPOVER FOOTER - FIXED (ALWAYS VISIBLE)
+   ============================================================================ */
+
+.popover-premium-footer {
+  /* Layout */
+  position: sticky;
+  bottom: 0;
+  padding: var(--popover-padding);
+  border-top: 1px solid var(--popover-footer-border);
+
+  /* Glass Effect - Enhanced */
+  background-color: var(--popover-footer-bg);
+  backdrop-filter: blur(var(--popover-glass-blur)) saturate(var(--popover-glass-saturate));
+  -webkit-backdrop-filter: blur(var(--popover-glass-blur)) saturate(var(--popover-glass-saturate));
+
+  /* Prevent shrink */
+  flex-shrink: 0;
+
+  /* Z-index above content */
+  z-index: 10;
+}
+
+/* ============================================================================
+   POPOVER ITEMS - Touch Optimized
+   ============================================================================ */
+
+.popover-premium-item {
+  /* Layout */
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  min-height: 44px; /* WCAG 2.2 AA touch target */
+  border-radius: var(--popover-item-radius);
+
+  /* Typography */
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: hsl(var(--foreground));
+
+  /* Transitions */
+  transition: background-color var(--popover-transition), transform var(--popover-transition);
+
+  /* Touch optimization */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+
+  /* GPU optimization */
+  transform: translateZ(0);
+  will-change: background-color, transform;
+}
+
+/* Hover - ONLY on pointer devices */
+@media (hover: hover) and (pointer: fine) {
+  .popover-premium-item {
+    min-height: 36px; /* Smaller for mouse */
+    padding: 8px 12px;
+  }
+
+  .popover-premium-item:hover {
+    background-color: rgba(var(--primary-rgb), 0.1);
+    transform: scale(1.02);
+  }
+}
+
+/* Active - ALL devices */
+.popover-premium-item:active {
+  background-color: rgba(var(--primary-rgb), 0.15);
+  transform: scale(0.98);
+  transition: all 150ms ease-out;
+}
+
+/* Selected state */
+.popover-premium-item[data-selected='true'],
+.popover-premium-item[aria-checked='true'] {
+  background-color: rgba(var(--primary-rgb), 0.12);
+  color: hsl(var(--primary));
+  font-weight: 600;
+}
+
+/* Focus - Accessibility */
+.popover-premium-item:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+/* Disabled */
+.popover-premium-item:disabled,
+.popover-premium-item[aria-disabled='true'] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ============================================================================
+   POPOVER OVERLAY - Backdrop
+   ============================================================================ */
+
+.popover-premium-overlay {
+  /* Layout */
+  position: fixed;
+  inset: 0;
+  z-index: var(--popover-overlay-z);
+
+  /* Backdrop */
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+
+  /* Cursor */
+  cursor: pointer;
+}
+
+/* ============================================================================
+   ANIMATIONS - Entrance/Exit
+   ============================================================================ */
+
+/* Entrance from top */
+.popover-premium-container[data-placement^='bottom'] {
+  animation: popover-entrance-bottom var(--popover-transition) ease-out;
+}
+
+/* Entrance from bottom */
+.popover-premium-container[data-placement^='top'] {
+  animation: popover-entrance-top var(--popover-transition) ease-out;
+}
+
+@keyframes popover-entrance-bottom {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes popover-entrance-top {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Overlay fade in */
+.popover-premium-overlay {
+  animation: overlay-fade-in 200ms ease-out;
+}
+
+@keyframes overlay-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ============================================================================
+   FOUC PREVENTION
+   ============================================================================ */
+
+html:not([data-tradelia-runtime='ready']) .popover-premium-container,
+html:not([data-tradelia-runtime='ready']) .popover-premium-item {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* ============================================================================
+   REDUCED MOTION - Accessibility
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .popover-premium-container,
+  .popover-premium-item,
+  .popover-premium-overlay {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .popover-premium-item:hover {
+    transform: translateZ(0);
+  }
+
+  @keyframes popover-entrance-bottom,
+  @keyframes popover-entrance-top {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+/* ============================================================================
+   MOBILE SPECIFIC - Smaller Screens
+   ============================================================================ */
+
+@media (max-width: 375px) {
+  .popover-premium-container {
+    --popover-max-width: calc(100vw - 24px);
+    --popover-padding: 12px;
+  }
+}

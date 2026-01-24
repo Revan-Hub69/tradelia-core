@@ -8,8 +8,10 @@
 @tailwind utilities;
 
 /* Import unified systems - SINGLE SOURCE OF TRUTH */
-@import './header-system.css';
-@import './dropdown-system.css';
+@import './header-premium-2026.css';
+@import './dropdown-premium-2026.css';
+@import './popover-premium-2026.css';
+@import './bottomsheet-premium-2026.css';
 
 /* Import dashboard-specific files */
 @import './glass-effects-tokens.css';

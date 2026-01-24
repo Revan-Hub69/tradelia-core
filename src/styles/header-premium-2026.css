@@ -67,11 +67,12 @@
 }
 
 /* ============================================================================
-   HEADER ICONS - Unified System
+   HEADER ICONS - Premium System with VISIBLE Effects
    ============================================================================ */
 
-.header-icon {
-  /* NO transitions - prevent ghost animations */
+.header-premium-icon {
+  /* Base state */
+  position: relative;
   opacity: var(--header-icon-primary-opacity);
   transform: translateZ(0); /* GPU acceleration */
 
@@ -85,69 +86,83 @@
 
   /* Cursor */
   cursor: pointer;
+
+  /* Transitions */
+  transition: transform 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.header-icon-primary {
+/* Background hover effect - VISIBILE (12% opacity) */
+.header-premium-icon::before {
+  content: '';
+  position: absolute;
+  inset: -6px; /* Extend 6px beyond icon for visible effect */
+  border-radius: 14px;
+  background-color: rgba(var(--primary-rgb), 0.12); /* 12% VISIBILE */
+  opacity: 0;
+  transition: opacity 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.header-premium-icon-primary {
   opacity: var(--header-icon-primary-opacity);
 }
 
-.header-icon-secondary {
+.header-premium-icon-secondary {
   opacity: var(--header-icon-secondary-opacity);
 }
 
-.header-icon-tertiary {
+.header-premium-icon-tertiary {
   opacity: var(--header-icon-tertiary-opacity);
 }
 
-/* Hover - ONLY on pointer devices */
+/* Hover - ONLY on pointer devices with VISIBLE effects */
 @media (hover: hover) and (pointer: fine) {
-  .header-icon:hover {
+  .header-premium-icon:hover {
     color: hsl(var(--primary));
     opacity: 1;
-    transform: translateZ(0) scale(1.05) translateY(-1px); /* Subtle lift like navbar */
-    transition:
-      color var(--header-transition),
-      opacity var(--header-transition),
-      transform var(--header-transition);
+    transform: translateZ(0) scale(1.12) translateY(-3px); /* 12% scale + 3px lift VISIBILE */
   }
   
-  /* Background hover effect like navbar */
-  .glass-button:hover::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background-color: rgba(var(--primary-rgb), 0.08);
-    opacity: 1;
-    transition: opacity var(--header-transition);
-    z-index: -1;
+  .header-premium-icon:hover::before {
+    opacity: 1; /* Background appare */
   }
 }
 
-/* Active - ALL devices */
-.header-icon:active {
-  transform: translateZ(0) scale(0.95);
+/* Active - ALL devices with VISIBLE feedback */
+.header-premium-icon:active {
+  transform: translateZ(0) scale(0.90); /* 10% reduction VISIBILE */
   transition: transform 100ms ease-out;
 }
 
 /* Active State (Open Dropdown) */
-.header-icon[data-active='true'] {
+.header-premium-icon[data-active='true'] {
   color: hsl(var(--primary));
-  transform: translateZ(0) scale(1.05);
+  transform: translateZ(0) scale(1.08);
+}
+
+.header-premium-icon[data-active='true']::before {
+  opacity: 0.6; /* Background semi-visible when active */
 }
 
 /* Focus - Accessibility */
-.header-icon:focus-visible {
+.header-premium-icon:focus-visible {
   outline: 2px solid hsl(var(--primary));
   outline-offset: 2px;
   border-radius: 8px;
 }
 
+/* Legacy class support (deprecated - use header-premium-icon) */
+.header-icon {
+  /* Redirect to new class */
+  @extend .header-premium-icon;
+}
+
 /* ============================================================================
-   GLASS BUTTON (Header Icons Container)
+   HEADER BUTTON - Premium Glass with VISIBLE Effects
    ============================================================================ */
 
-.glass-button {
+.header-premium-button {
   position: relative; /* For ::before pseudo-element */
   background-color: var(--header-glass-bg);
 
@@ -162,20 +177,28 @@
   border: 1px solid var(--header-glass-border);
   backdrop-filter: blur(12px) saturate(180%);
   -webkit-backdrop-filter: blur(12px) saturate(180%);
-  /* NO transitions - prevent conflicts with header-icon */
+  
+  /* Transitions */
+  transition: background-color 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .glass-button:hover {
-    background-color: rgba(var(--primary-rgb), 0.08); /* More visible like navbar */
-    transition: background-color var(--header-transition);
+  .header-premium-button:hover {
+    background-color: rgba(var(--primary-rgb), 0.10); /* 10% VISIBILE */
+    transform: scale(1.04); /* 4% scale VISIBILE */
   }
 }
 
-.glass-button:active {
-  background-color: rgba(var(--primary-rgb), 0.12); /* Enhanced feedback */
-  transform: scale(0.98); /* Subtle press effect */
+.header-premium-button:active {
+  background-color: rgba(var(--primary-rgb), 0.15); /* 15% VISIBILE */
+  transform: scale(0.96); /* 4% reduction VISIBILE */
   transition: all 100ms ease-out;
+}
+
+/* Legacy class support (deprecated - use header-premium-button) */
+.glass-button {
+  /* Redirect to new class */
+  @extend .header-premium-button;
 }
 
 /* ============================================================================

@@ -67,10 +67,10 @@
 }
 
 /* ============================================================================
-   DROPDOWN CONTAINER - iOS 26 Liquid Glass
+   DROPDOWN CONTAINER - iOS 26 Liquid Glass (Desktop/Tablet Only)
    ============================================================================ */
 
-.glass-dropdown {
+.dropdown-premium-container {
   /* iOS 26 Liquid Glass Material */
   background-color: var(--dropdown-glass-bg);
   border: 1px solid var(--dropdown-glass-border);
@@ -90,11 +90,17 @@
   animation: dropdown-entrance var(--dropdown-spring-transition) ease-out;
 }
 
+/* Legacy class support (deprecated - use dropdown-premium-container) */
+.glass-dropdown {
+  /* Redirect to new class */
+  @extend .dropdown-premium-container;
+}
+
 /* ============================================================================
    DROPDOWN ITEMS - iOS 26 Pattern
    ============================================================================ */
 
-.dropdown-item {
+.dropdown-premium-item {
   /* Base styling */
   display: flex;
   align-items: center;
@@ -126,15 +132,20 @@
 
 /* Hover - ONLY on pointer devices (iOS 26 standard) */
 @media (hover: hover) and (pointer: fine) {
-  .dropdown-item:hover {
-    background-color: rgba(var(--primary-rgb), 0.08);
-    transform: translateZ(0) scale(1.01);
+  .dropdown-premium-item {
+    min-height: 36px; /* Smaller for mouse */
+    padding: 8px 12px;
+  }
+
+  .dropdown-premium-item:hover {
+    background-color: rgba(var(--primary-rgb), 0.10); /* 10% VISIBILE */
+    transform: translateZ(0) scale(1.02);
   }
 }
 
 /* Active - ALL devices with spring physics */
-.dropdown-item:active {
-  background-color: rgba(var(--primary-rgb), 0.12);
+.dropdown-premium-item:active {
+  background-color: rgba(var(--primary-rgb), 0.15); /* 15% VISIBILE */
   transform: translateZ(0) scale(0.98);
   transition:
     transform 150ms cubic-bezier(0.34, 1.56, 0.64, 1),
@@ -142,26 +153,32 @@
 }
 
 /* Selected state - iOS 26 pattern */
-.dropdown-item[data-state='checked'],
-.dropdown-item[aria-checked='true'] {
-  background-color: rgba(var(--primary-rgb), 0.1);
+.dropdown-premium-item[data-state='checked'],
+.dropdown-premium-item[aria-checked='true'] {
+  background-color: rgba(var(--primary-rgb), 0.12);
   color: hsl(var(--primary));
   font-weight: 600;
 }
 
 /* Focus - Accessibility (WCAG 2.1 AA) */
-.dropdown-item:focus-visible {
+.dropdown-premium-item:focus-visible {
   outline: 2px solid hsl(var(--primary));
   outline-offset: 2px;
   background-color: rgba(var(--primary-rgb), 0.05);
 }
 
 /* Disabled state */
-.dropdown-item:disabled,
-.dropdown-item[aria-disabled='true'] {
+.dropdown-premium-item:disabled,
+.dropdown-premium-item[aria-disabled='true'] {
   opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
+}
+
+/* Legacy class support (deprecated - use dropdown-premium-item) */
+.dropdown-item {
+  /* Redirect to new class */
+  @extend .dropdown-premium-item;
 }
 
 /* ============================================================================
@@ -195,6 +212,14 @@
    FOUC PREVENTION - Disable animations until ready
    ============================================================================ */
 
+html:not([data-tradelia-runtime='ready']) .dropdown-premium-container,
+html:not([data-tradelia-runtime='ready']) .dropdown-premium-item {
+  transition: none !important;
+  animation: none !important;
+  transform: translateZ(0) !important;
+}
+
+/* Legacy support */
 html:not([data-tradelia-runtime='ready']) .glass-dropdown,
 html:not([data-tradelia-runtime='ready']) .dropdown-item {
   transition: none !important;
@@ -207,15 +232,22 @@ html:not([data-tradelia-runtime='ready']) .dropdown-item {
    ============================================================================ */
 
 @media (prefers-reduced-motion: reduce) {
-  .glass-dropdown,
-  .dropdown-item,
+  .dropdown-premium-container,
+  .dropdown-premium-item,
   .dropdown-header {
     transition: none !important;
     animation: none !important;
   }
 
-  .dropdown-item:active {
+  .dropdown-premium-item:active {
     transform: translateZ(0);
+  }
+
+  /* Legacy support */
+  .glass-dropdown,
+  .dropdown-item {
+    transition: none !important;
+    animation: none !important;
   }
 }
 
@@ -234,33 +266,8 @@ html:not([data-tradelia-runtime='ready']) .dropdown-item {
   }
 }
 
-/* Mobile: Bottom sheet entrance (< 768px) */
-@media (max-width: 767px) {
-  @keyframes dropdown-entrance {
-    from {
-      opacity: 0;
-      transform: translateY(16px) scale(0.98);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-
-  .glass-dropdown {
-    /* Bottom sheet on mobile */
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    max-height: 80vh;
-    overflow-y: auto;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
+  .dropdown-premium-container,
   .glass-dropdown {
     animation: none !important;
   }
@@ -272,75 +279,5 @@ html:not([data-tradelia-runtime='ready']) .dropdown-item {
     to {
       opacity: 1;
     }
-  }
-}
-
-
-/* ============================================================================
-   MOBILE DROPDOWN POPOVER - Enterprise Guardrails
-   ============================================================================ */
-
-/* Rule 9: Pointer Capability - Touch vs Mouse */
-
-/* Default: Touch-friendly (coarse pointer) */
-.glass-dropdown .popover-item,
-.glass-dropdown button,
-.glass-dropdown [role="menuitem"] {
-  min-height: 44px; /* WCAG 2.2 AA - Touch target */
-  padding: 12px 16px;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* Fine pointer: Smaller targets OK + Hover affordances */
-@media (pointer: fine) {
-  .glass-dropdown .popover-item,
-  .glass-dropdown button,
-  .glass-dropdown [role="menuitem"] {
-    min-height: 36px;
-    padding: 8px 12px;
-  }
-  
-  /* Enable hover affordances */
-  .glass-dropdown .popover-item:hover,
-  .glass-dropdown button:hover,
-  .glass-dropdown [role="menuitem"]:hover {
-    background: var(--glass-header-hover);
-  }
-}
-
-/* Coarse pointer: No hover (touch) */
-@media (pointer: coarse) {
-  .glass-dropdown .popover-item:hover,
-  .glass-dropdown button:hover,
-  .glass-dropdown [role="menuitem"]:hover {
-    background: none; /* Disable hover on touch */
-  }
-}
-
-/* Rule 4: Cognitive Load Threshold */
-.glass-dropdown {
-  max-height: 260px; /* One viewport interaction chunk */
-  overflow-y: auto;
-  overscroll-behavior: contain; /* Prevent scroll chaining */
-}
-
-/* Rule 6: Gesture Conflict Prevention */
-.glass-dropdown {
-  /* Swipe-to-dismiss only on popover */
-  touch-action: pan-y; /* Allow vertical scroll, capture swipe */
-}
-
-/* Performance: GPU optimization */
-.glass-dropdown {
-  will-change: transform, opacity;
-  transform: translateZ(0); /* Force GPU layer */
-}
-
-/* Accessibility: Reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  .glass-dropdown {
-    animation: none !important;
-    transition: none !important;
   }
 }

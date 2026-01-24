@@ -1,0 +1,400 @@
+/*
+ * BOTTOM SHEET PREMIUM SYSTEM 2026
+ *
+ * For large menus (5+ items) or content-heavy views
+ * Based on iOS Action Sheet and Material Design Bottom Sheet
+ *
+ * RESEARCH SOURCES:
+ * - Apple HIG: Action Sheets (2026)
+ * - Material Design 3: Bottom Sheets
+ * - Gmail Mobile: Notification Drawer
+ *
+ * KEY FEATURES:
+ * - Fixed footer (always visible)
+ * - Scrollable content area
+ * - Swipe to dismiss
+ * - Premium glass effects
+ * - Safe area support
+ */
+
+/* ============================================================================
+   DESIGN TOKENS - Bottom Sheet Premium
+   ============================================================================ */
+
+:root {
+  /* Bottom Sheet Dimensions */
+  --bottomsheet-max-height: 80vh;
+  --bottomsheet-min-height: 200px;
+  --bottomsheet-padding: 20px;
+  --bottomsheet-handle-height: 4px;
+  --bottomsheet-handle-width: 36px;
+
+  /* Liquid Glass - Light Mode */
+  --bottomsheet-glass-bg: rgba(255, 255, 255, 0.95);
+  --bottomsheet-glass-border: rgba(0, 0, 0, 0.08);
+  --bottomsheet-glass-blur: 24px;
+  --bottomsheet-glass-saturate: 180%;
+
+  /* Premium Shadows */
+  --bottomsheet-shadow-1: 0 -12px 32px rgba(0, 0, 0, 0.15);
+  --bottomsheet-shadow-2: 0 -4px 12px rgba(0, 0, 0, 0.1);
+  --bottomsheet-shadow-3: 0 -1px 3px rgba(0, 0, 0, 0.05);
+
+  /* Border Radius */
+  --bottomsheet-radius: 24px;
+  --bottomsheet-item-radius: 12px;
+
+  /* Footer */
+  --bottomsheet-footer-bg: rgba(255, 255, 255, 0.98);
+  --bottomsheet-footer-border: rgba(0, 0, 0, 0.06);
+
+  /* Handle */
+  --bottomsheet-handle-bg: rgba(0, 0, 0, 0.2);
+
+  /* Transitions */
+  --bottomsheet-transition: 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  /* Z-index */
+  --bottomsheet-z: 150;
+  --bottomsheet-overlay-z: 149;
+}
+
+.dark {
+  --bottomsheet-glass-bg: rgba(15, 23, 42, 0.95);
+  --bottomsheet-glass-border: rgba(255, 255, 255, 0.08);
+  --bottomsheet-shadow-1: 0 -12px 32px rgba(0, 0, 0, 0.4);
+  --bottomsheet-shadow-2: 0 -4px 12px rgba(0, 0, 0, 0.3);
+  --bottomsheet-shadow-3: 0 -1px 3px rgba(0, 0, 0, 0.2);
+  --bottomsheet-footer-bg: rgba(15, 23, 42, 0.98);
+  --bottomsheet-footer-border: rgba(255, 255, 255, 0.06);
+  --bottomsheet-handle-bg: rgba(255, 255, 255, 0.3);
+}
+
+/* ============================================================================
+   BOTTOM SHEET CONTAINER - Premium Glass
+   ============================================================================ */
+
+.bottomsheet-premium-container {
+  /* Layout */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--bottomsheet-z);
+  display: flex;
+  flex-direction: column;
+
+  /* Dimensions */
+  max-height: var(--bottomsheet-max-height);
+  min-height: var(--bottomsheet-min-height);
+
+  /* Liquid Glass Effect */
+  background-color: var(--bottomsheet-glass-bg);
+  border: 1px solid var(--bottomsheet-glass-border);
+  border-bottom: none;
+  border-top-left-radius: var(--bottomsheet-radius);
+  border-top-right-radius: var(--bottomsheet-radius);
+  backdrop-filter: blur(var(--bottomsheet-glass-blur)) saturate(var(--bottomsheet-glass-saturate));
+  -webkit-backdrop-filter: blur(var(--bottomsheet-glass-blur)) saturate(var(--bottomsheet-glass-saturate));
+
+  /* Premium Shadow */
+  box-shadow: var(--bottomsheet-shadow-1), var(--bottomsheet-shadow-2), var(--bottomsheet-shadow-3);
+
+  /* Safe Area Support */
+  padding-bottom: env(safe-area-inset-bottom);
+
+  /* GPU Optimization */
+  transform: translateZ(0);
+  will-change: transform;
+
+  /* Prevent text selection */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ============================================================================
+   BOTTOM SHEET HANDLE - Swipe Indicator
+   ============================================================================ */
+
+.bottomsheet-premium-handle {
+  /* Layout */
+  width: var(--bottomsheet-handle-width);
+  height: var(--bottomsheet-handle-height);
+  margin: 12px auto 8px;
+  border-radius: 2px;
+
+  /* Visual */
+  background-color: var(--bottomsheet-handle-bg);
+
+  /* Prevent shrink */
+  flex-shrink: 0;
+
+  /* Cursor */
+  cursor: grab;
+}
+
+.bottomsheet-premium-handle:active {
+  cursor: grabbing;
+}
+
+/* ============================================================================
+   BOTTOM SHEET HEADER - Optional Title
+   ============================================================================ */
+
+.bottomsheet-premium-header {
+  /* Layout */
+  padding: 0 var(--bottomsheet-padding) 16px;
+  border-bottom: 1px solid var(--bottomsheet-glass-border);
+
+  /* Typography */
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  text-align: center;
+
+  /* Prevent shrink */
+  flex-shrink: 0;
+}
+
+/* ============================================================================
+   BOTTOM SHEET CONTENT - SCROLLABLE AREA
+   ============================================================================ */
+
+.bottomsheet-premium-content {
+  /* Layout */
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--bottomsheet-padding);
+
+  /* Custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+.bottomsheet-premium-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.bottomsheet-premium-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.bottomsheet-premium-content::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.dark .bottomsheet-premium-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ============================================================================
+   BOTTOM SHEET FOOTER - FIXED (ALWAYS VISIBLE)
+   ============================================================================ */
+
+.bottomsheet-premium-footer {
+  /* Layout */
+  position: sticky;
+  bottom: 0;
+  padding: var(--bottomsheet-padding);
+  border-top: 1px solid var(--bottomsheet-footer-border);
+
+  /* Glass Effect - Enhanced */
+  background-color: var(--bottomsheet-footer-bg);
+  backdrop-filter: blur(var(--bottomsheet-glass-blur)) saturate(var(--bottomsheet-glass-saturate));
+  -webkit-backdrop-filter: blur(var(--bottomsheet-glass-blur)) saturate(var(--bottomsheet-glass-saturate));
+
+  /* Safe Area Support */
+  padding-bottom: calc(var(--bottomsheet-padding) + env(safe-area-inset-bottom));
+
+  /* Prevent shrink */
+  flex-shrink: 0;
+
+  /* Z-index above content */
+  z-index: 10;
+}
+
+/* ============================================================================
+   BOTTOM SHEET ITEMS - Touch Optimized
+   ============================================================================ */
+
+.bottomsheet-premium-item {
+  /* Layout */
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  min-height: 56px; /* Larger touch target for bottom sheet */
+  border-radius: var(--bottomsheet-item-radius);
+  margin-bottom: 8px;
+
+  /* Typography */
+  font-size: 1rem;
+  font-weight: 500;
+  color: hsl(var(--foreground));
+
+  /* Transitions */
+  transition: background-color var(--bottomsheet-transition), transform var(--bottomsheet-transition);
+
+  /* Touch optimization */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+
+  /* GPU optimization */
+  transform: translateZ(0);
+  will-change: background-color, transform;
+}
+
+/* Active - Touch feedback */
+.bottomsheet-premium-item:active {
+  background-color: rgba(var(--primary-rgb), 0.12);
+  transform: scale(0.98);
+  transition: all 150ms ease-out;
+}
+
+/* Selected state */
+.bottomsheet-premium-item[data-selected='true'],
+.bottomsheet-premium-item[aria-checked='true'] {
+  background-color: rgba(var(--primary-rgb), 0.1);
+  color: hsl(var(--primary));
+  font-weight: 600;
+}
+
+/* Focus - Accessibility */
+.bottomsheet-premium-item:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+/* Disabled */
+.bottomsheet-premium-item:disabled,
+.bottomsheet-premium-item[aria-disabled='true'] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ============================================================================
+   BOTTOM SHEET OVERLAY - Backdrop
+   ============================================================================ */
+
+.bottomsheet-premium-overlay {
+  /* Layout */
+  position: fixed;
+  inset: 0;
+  z-index: var(--bottomsheet-overlay-z);
+
+  /* Backdrop */
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+
+  /* Cursor */
+  cursor: pointer;
+}
+
+/* ============================================================================
+   ANIMATIONS - Entrance/Exit
+   ============================================================================ */
+
+/* Entrance from bottom */
+.bottomsheet-premium-container {
+  animation: bottomsheet-entrance var(--bottomsheet-transition) ease-out;
+}
+
+@keyframes bottomsheet-entrance {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Exit to bottom */
+.bottomsheet-premium-container[data-state='closing'] {
+  animation: bottomsheet-exit var(--bottomsheet-transition) ease-in;
+}
+
+@keyframes bottomsheet-exit {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
+/* Overlay fade in */
+.bottomsheet-premium-overlay {
+  animation: overlay-fade-in 300ms ease-out;
+}
+
+@keyframes overlay-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ============================================================================
+   SWIPE TO DISMISS - Touch Gesture
+   ============================================================================ */
+
+.bottomsheet-premium-container[data-swiping='true'] {
+  transition: none;
+  will-change: transform;
+}
+
+/* ============================================================================
+   FOUC PREVENTION
+   ============================================================================ */
+
+html:not([data-tradelia-runtime='ready']) .bottomsheet-premium-container,
+html:not([data-tradelia-runtime='ready']) .bottomsheet-premium-item {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* ============================================================================
+   REDUCED MOTION - Accessibility
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .bottomsheet-premium-container,
+  .bottomsheet-premium-item,
+  .bottomsheet-premium-overlay {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  @keyframes bottomsheet-entrance,
+  @keyframes bottomsheet-exit {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+/* ============================================================================
+   RESPONSIVE - Tablet/Desktop (Fallback to Popover)
+   ============================================================================ */
+
+@media (min-width: 768px) {
+  /* Bottom sheets should not be used on tablet/desktop */
+  /* Use popover-premium-2026.css instead */
+  .bottomsheet-premium-container {
+    display: none;
+  }
+}

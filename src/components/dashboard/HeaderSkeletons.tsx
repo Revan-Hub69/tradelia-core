@@ -9,7 +9,7 @@
 
 export const ThemeSwitcherSkeleton = () => (
   <div
-    className="header-icon glass-button flex size-11 items-center justify-center rounded-xl"
+    className="header-premium-icon header-premium-button flex size-11 items-center justify-center rounded-xl"
     aria-hidden="true"
     role="presentation"
   >
@@ -19,7 +19,7 @@ export const ThemeSwitcherSkeleton = () => (
 
 export const LanguageSwitcherSkeleton = () => (
   <div
-    className="header-icon glass-button flex size-11 items-center justify-center rounded-xl"
+    className="header-premium-icon header-premium-button flex size-11 items-center justify-center rounded-xl"
     aria-hidden="true"
     role="presentation"
   >
@@ -29,7 +29,7 @@ export const LanguageSwitcherSkeleton = () => (
 
 export const NotificationsBellSkeleton = () => (
   <div
-    className="header-icon glass-button flex size-11 items-center justify-center rounded-xl"
+    className="header-premium-icon header-premium-button flex size-11 items-center justify-center rounded-xl"
     aria-hidden="true"
     role="presentation"
   >
@@ -39,7 +39,7 @@ export const NotificationsBellSkeleton = () => (
 
 export const UserDropdownSkeleton = () => (
   <div
-    className="header-icon glass-button flex h-11 items-center gap-3 rounded-xl px-3"
+    className="header-premium-icon header-premium-button flex h-11 items-center gap-3 rounded-xl px-3"
     aria-hidden="true"
     role="presentation"
   >

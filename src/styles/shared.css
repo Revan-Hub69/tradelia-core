@@ -14,8 +14,8 @@
 /* Animation tokens */
 @import './shared/animation-tokens.css';
 
-/* Header 2026 - Enterprise Premium */
-@import './header-2026.css';
+/* Header Premium 2026 - Enterprise Grade (DEPRECATED - use dashboard.css imports) */
+/* @import './header-2026.css'; */
 
 /* Base styles (reset, HTML elements) */
 @import './shared/base.css';
