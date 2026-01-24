@@ -7,13 +7,14 @@
  * - Modern status indicators and role badges
  * - 60fps smooth hover interactions
  * - Educational-appropriate animations
- * - Mobile popover pattern (< 768px) - Fitts's Law compliant
+ * - Mobile fullscreen menu (< 768px) - Enterprise standard (Gmail, Slack, Notion)
  *
- * MOBILE UX (Fitts's Law):
- * - Popover appears NEAR trigger button (not far away)
- * - Reduces interaction time (proximity principle)
- * - Maintains spatial relationship
- * - High z-index (150+) above navbar (100)
+ * MOBILE UX (Enterprise Pattern):
+ * - Fullscreen overlay (not positioned dropdown)
+ * - Slide-in from right (off-canvas style)
+ * - Full width (not limited by trigger)
+ * - Sticky header with close button
+ * - Z-index 150+ above navbar (100)
  */
 
 import { useTranslations } from 'next-intl';
@@ -25,7 +26,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { MobileDropdownPopover } from '@/components/ui/MobileDropdownPopover';
+import { MobileFullscreenMenu } from '@/components/ui/MobileFullscreenMenu';
 import { useFocusTrap } from '@/hooks/useFocusManagement';
 import { useMobileDetection } from '@/hooks/useMobileDetection';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -49,8 +50,6 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
   const router = useRouter();
   const t = useTranslations('Dashboard');
   const [isOpen, setIsOpen] = useState(false);
-  const [triggerRect, setTriggerRect] = useState<DOMRect | null>(null);
-  const triggerRef = React.useRef<HTMLButtonElement>(null);
   const focusTrapRef = useFocusTrap(isOpen);
   const isMobile = useMobileDetection();
 
@@ -86,13 +85,8 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
       navigator.vibrate(10);
     }
 
-    // Capture trigger position for mobile popover
-    if (open && isMobile && triggerRef.current) {
-      setTriggerRect(triggerRef.current.getBoundingClientRect());
-    }
-
     setIsOpen(open);
-  }, [isMobile]);
+  }, []);
 
   const handleClose = useCallback(() => {
     setIsOpen(false);
@@ -187,12 +181,11 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
     </>
   );
 
-  // Mobile: Popover near trigger (Fitts's Law compliant)
+  // Mobile: Fullscreen overlay (Enterprise standard)
   if (isMobile) {
     return (
       <>
         <button
-          ref={triggerRef}
           type="button"
           aria-label={t('nav_open_user_menu')}
           aria-expanded={isOpen}
@@ -281,13 +274,14 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
           </div>
         </button>
 
-        <MobileDropdownPopover
+        <MobileFullscreenMenu
           isOpen={isOpen}
           onClose={handleClose}
-          triggerRect={triggerRect}
+          title={t('nav_open_user_menu')}
+          slideFrom="right"
         >
           {renderMenuContent()}
-        </MobileDropdownPopover>
+        </MobileFullscreenMenu>
       </>
     );
   }
