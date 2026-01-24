@@ -1,0 +1,266 @@
+/*
+ * MOBILE VIEWPORT FIXES - Bottom Sheet Pattern
+ *
+ * Based on Tier-1 Research:
+ * - Nielsen Norman Group: Bottom Sheets Guidelines
+ * - Mozilla MDN: CSS env() Function
+ * - Theosoti: Safe Area Insets
+ *
+ * Design Principles:
+ * - Bottom sheet pattern for mobile (< 768px)
+ * - iOS safe area insets (notch/home indicator)
+ * - Visible close button (accessibility)
+ * - Backdrop overlay
+ * - Spring physics animations
+ * - No stacking (single sheet only)
+ *
+ * RESEARCH DOCUMENT:
+ * docs/research/LOADING_EMPTY_STATES_MOBILE_TIER1_2026.md
+ */
+
+/* ============================================================================
+   DESIGN TOKENS - Mobile Bottom Sheet
+   ============================================================================ */
+
+:root {
+  /* Border Radius */
+  --bottom-sheet-radius: 24px;
+
+  /* Backdrop */
+  --backdrop-bg: rgba(0, 0, 0, 0.5);
+  --backdrop-blur: 4px;
+
+  /* Transitions */
+  --bottom-sheet-transition: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Z-index */
+  --z-backdrop: 70;
+  --z-bottom-sheet: 71;
+}
+
+/* ============================================================================
+   MOBILE BOTTOM SHEET - Dropdown Replacement
+   ============================================================================ */
+
+@media (max-width: 767px) {
+  /* Override dropdown positioning on mobile */
+  .dropdown-mobile {
+    /* Fixed to bottom */
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+
+    /* Full width */
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+
+    /* Rounded top corners only */
+    border-radius: var(--bottom-sheet-radius) var(--bottom-sheet-radius) 0 0 !important;
+
+    /* iOS Safe Area Insets */
+    padding-bottom: calc(16px + env(safe-area-inset-bottom)) !important;
+
+    /* Z-index */
+    z-index: var(--z-bottom-sheet);
+
+    /* Initial state - hidden below viewport */
+    transform: translateY(100%);
+    transition: transform var(--bottom-sheet-transition);
+
+    /* Max height - leave space for backdrop tap */
+    max-height: 80vh;
+    overflow-y: auto;
+
+    /* Smooth scrolling */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Open state */
+  .dropdown-mobile.open {
+    transform: translateY(0);
+  }
+
+  /* Backdrop overlay */
+  .dropdown-backdrop {
+    /* Fixed full screen */
+    position: fixed;
+    inset: 0;
+
+    /* Visual */
+    background: var(--backdrop-bg);
+    backdrop-filter: blur(var(--backdrop-blur));
+    -webkit-backdrop-filter: blur(var(--backdrop-blur));
+
+    /* Z-index */
+    z-index: var(--z-backdrop);
+
+    /* Fade in */
+    opacity: 0;
+    transition: opacity 200ms ease-out;
+
+    /* Pointer events */
+    pointer-events: none;
+  }
+
+  .dropdown-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Close button - visible and accessible */
+  .bottom-sheet-close {
+    /* Positioning */
+    position: absolute;
+    top: 16px;
+    right: 16px;
+
+    /* Size - 44px minimum (Apple HIG) */
+    width: 44px;
+    height: 44px;
+
+    /* Visual */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.05);
+
+    /* Transitions */
+    transition: all 200ms ease-out;
+
+    /* Z-index */
+    z-index: 1;
+  }
+
+  .dark .bottom-sheet-close {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .bottom-sheet-close:hover {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  .dark .bottom-sheet-close:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .bottom-sheet-close:active {
+    transform: scale(0.95);
+  }
+
+  /* Grab handle (optional visual indicator) */
+  .bottom-sheet-handle {
+    /* Positioning */
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    /* Size */
+    width: 40px;
+    height: 4px;
+
+    /* Visual */
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+
+    /* Pointer events */
+    pointer-events: none;
+  }
+
+  .dark .bottom-sheet-handle {
+    background: rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* ============================================================================
+   DESKTOP - Keep normal dropdown behavior
+   ============================================================================ */
+
+@media (min-width: 768px) {
+  .dropdown-mobile {
+    /* Normal dropdown positioning */
+    position: absolute;
+  }
+
+  .dropdown-backdrop,
+  .bottom-sheet-close,
+  .bottom-sheet-handle {
+    display: none;
+  }
+}
+
+/* ============================================================================
+   SAFE AREA INSETS - iOS Notch/Home Indicator
+   ============================================================================ */
+
+/* Apply to all fixed bottom elements */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Apply to all fixed top elements */
+.safe-area-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+/* Apply to all fixed left elements */
+.safe-area-left {
+  padding-left: env(safe-area-inset-left);
+}
+
+/* Apply to all fixed right elements */
+.safe-area-right {
+  padding-right: env(safe-area-inset-right);
+}
+
+/* All safe areas */
+.safe-area-all {
+  padding-top: env(safe-area-inset-top);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+}
+
+/* ============================================================================
+   PREVENT BODY SCROLL - When bottom sheet is open
+   ============================================================================ */
+
+body.bottom-sheet-open {
+  overflow: hidden;
+  /* iOS momentum scrolling fix */
+  position: fixed;
+  width: 100%;
+}
+
+/* ============================================================================
+   REDUCED MOTION - Accessibility
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .dropdown-mobile,
+  .dropdown-backdrop,
+  .bottom-sheet-close {
+    transition: none !important;
+  }
+
+  .dropdown-mobile {
+    /* Instant show/hide */
+  }
+
+  .dropdown-mobile.open {
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================================
+   FOUC PREVENTION
+   ============================================================================ */
+
+html:not([data-tradelia-runtime='ready']) .dropdown-mobile,
+html:not([data-tradelia-runtime='ready']) .dropdown-backdrop {
+  transition: none !important;
+}

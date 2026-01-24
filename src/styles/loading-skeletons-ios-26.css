@@ -1,0 +1,252 @@
+/*
+ * LOADING SKELETONS - iOS 26 LIQUID GLASS
+ *
+ * Based on Tier-1 Research:
+ * - Apple: Liquid Glass Design Language
+ * - MacRumors: iOS 26 Patterns
+ *
+ * Design Principles:
+ * - Liquid Glass shimmer effect
+ * - Concentric corners (match card system)
+ * - Smooth transitions to content
+ * - GPU-optimized animations
+ * - Reduced motion support
+ *
+ * RESEARCH DOCUMENT:
+ * docs/research/LOADING_EMPTY_STATES_MOBILE_TIER1_2026.md
+ */
+
+/* ============================================================================
+   DESIGN TOKENS - Loading Skeletons
+   ============================================================================ */
+
+:root {
+  /* Base Colors */
+  --skeleton-bg: rgba(var(--muted-rgb), 0.1);
+  --skeleton-shimmer-start: rgba(255, 255, 255, 0);
+  --skeleton-shimmer-mid: rgba(255, 255, 255, 0.2);
+  --skeleton-shimmer-end: rgba(255, 255, 255, 0);
+
+  /* Border Radius - Concentric Corners */
+  --skeleton-radius-default: 8px;
+  --skeleton-radius-compact: 6px;
+  --skeleton-radius-nested: 16px; /* Inside card-ios-26 (32px - 16px) */
+
+  /* Animation */
+  --skeleton-duration: 1.5s;
+  --skeleton-timing: ease-in-out;
+}
+
+.dark {
+  --skeleton-bg: rgba(255, 255, 255, 0.05);
+  --skeleton-shimmer-start: rgba(255, 255, 255, 0);
+  --skeleton-shimmer-mid: rgba(255, 255, 255, 0.1);
+  --skeleton-shimmer-end: rgba(255, 255, 255, 0);
+}
+
+/* ============================================================================
+   BASE SKELETON - iOS 26 Liquid Glass
+   ============================================================================ */
+
+.skeleton-ios-26 {
+  /* Base background */
+  background: var(--skeleton-bg);
+
+  /* Liquid Glass shimmer effect */
+  background-image: linear-gradient(
+    90deg,
+    var(--skeleton-shimmer-start) 0%,
+    var(--skeleton-shimmer-mid) 50%,
+    var(--skeleton-shimmer-end) 100%
+  );
+  background-size: 200% 100%;
+
+  /* Border radius */
+  border-radius: var(--skeleton-radius-default);
+
+  /* Animation */
+  animation: skeleton-shimmer var(--skeleton-duration) var(--skeleton-timing) infinite;
+
+  /* GPU Optimization */
+  will-change: background-position;
+  transform: translateZ(0);
+}
+
+/* Shimmer animation */
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* ============================================================================
+   SKELETON VARIANTS
+   ============================================================================ */
+
+/* Compact skeleton - smaller elements */
+.skeleton-ios-26-compact {
+  border-radius: var(--skeleton-radius-compact);
+}
+
+/* Nested skeleton - inside card-ios-26 */
+.skeleton-ios-26-nested {
+  border-radius: var(--skeleton-radius-nested);
+}
+
+/* Circle skeleton - avatars, icons */
+.skeleton-ios-26-circle {
+  border-radius: 50%;
+}
+
+/* ============================================================================
+   SKELETON SHAPES - Common Patterns
+   ============================================================================ */
+
+/* Text line */
+.skeleton-text {
+  height: 1rem;
+  width: 100%;
+}
+
+.skeleton-text-short {
+  height: 1rem;
+  width: 60%;
+}
+
+.skeleton-text-long {
+  height: 1rem;
+  width: 80%;
+}
+
+/* Title */
+.skeleton-title {
+  height: 1.5rem;
+  width: 40%;
+  margin-bottom: 0.5rem;
+}
+
+/* Avatar */
+.skeleton-avatar {
+  width: 40px;
+  height: 40px;
+}
+
+.skeleton-avatar-lg {
+  width: 64px;
+  height: 64px;
+}
+
+/* Button */
+.skeleton-button {
+  height: 44px;
+  width: 120px;
+}
+
+/* Card */
+.skeleton-card {
+  height: 200px;
+  width: 100%;
+}
+
+/* ============================================================================
+   SKELETON GROUPS - Common Layouts
+   ============================================================================ */
+
+/* Card skeleton group */
+.skeleton-card-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+}
+
+/* List item skeleton */
+.skeleton-list-item {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.75rem 0;
+}
+
+/* ============================================================================
+   FADE OUT TRANSITION - When content loads
+   ============================================================================ */
+
+.skeleton-fade-out {
+  animation: skeleton-fade-out 300ms ease-out forwards;
+}
+
+@keyframes skeleton-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* ============================================================================
+   PULSE VARIANT - Alternative to shimmer
+   ============================================================================ */
+
+.skeleton-pulse {
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* ============================================================================
+   REDUCED MOTION - Accessibility
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-ios-26,
+  .skeleton-pulse {
+    animation: none !important;
+  }
+
+  /* Static state instead of animation */
+  .skeleton-ios-26 {
+    background-image: none;
+    opacity: 0.6;
+  }
+}
+
+/* ============================================================================
+   FOUC PREVENTION
+   ============================================================================ */
+
+html:not([data-tradelia-runtime='ready']) .skeleton-ios-26 {
+  animation: none !important;
+}
+
+/* ============================================================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================================================ */
+
+@media (max-width: 767px) {
+  .skeleton-card-group {
+    padding: 1rem;
+  }
+
+  .skeleton-avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .skeleton-avatar-lg {
+    width: 48px;
+    height: 48px;
+  }
+}

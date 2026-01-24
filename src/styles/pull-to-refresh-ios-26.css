@@ -1,0 +1,184 @@
+/*
+ * PULL-TO-REFRESH - iOS 26 LIQUID GLASS
+ *
+ * Based on Tier-1 Research:
+ * - Apple: Liquid Glass Design Language
+ * - MacRumors: iOS 26 Patterns
+ * - Shakuro: Pull-to-Refresh Best Practices
+ * - AppCoda: Haptic Feedback iOS
+ *
+ * Design Principles:
+ * - Liquid Glass material (translucent)
+ * - Real-time rendering (dynamic)
+ * - Haptic feedback (10ms light vibration)
+ * - Spring physics (natural bounce)
+ * - 60fps smooth animation
+ *
+ * RESEARCH DOCUMENT:
+ * docs/research/LOADING_EMPTY_STATES_MOBILE_TIER1_2026.md
+ */
+
+/* ============================================================================
+   DESIGN TOKENS - Pull-to-Refresh
+   ============================================================================ */
+
+:root {
+  /* Thresholds */
+  --ptr-threshold: 70px;
+  --ptr-max-pull: 120px;
+
+  /* Liquid Glass */
+  --ptr-glass-bg: rgba(255, 255, 255, 0.95);
+  --ptr-glass-border: rgba(0, 0, 0, 0.08);
+  --ptr-glass-blur: 20px;
+  --ptr-glass-saturate: 180%;
+
+  /* Spinner */
+  --ptr-spinner-size: 32px;
+  --ptr-spinner-color: hsl(var(--primary));
+
+  /* Spring Physics */
+  --ptr-transition-spring: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ptr-transition-quick: 150ms ease-out;
+}
+
+.dark {
+  --ptr-glass-bg: rgba(15, 23, 42, 0.95);
+  --ptr-glass-border: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================================================
+   PULL-TO-REFRESH CONTAINER
+   ============================================================================ */
+
+.pull-to-refresh-container {
+  position: relative;
+  overflow: hidden;
+}
+
+/* ============================================================================
+   PULL INDICATOR - iOS 26 Liquid Glass
+   ============================================================================ */
+
+.pull-to-refresh-ios-26 {
+  /* Positioning */
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+
+  /* Size */
+  width: 48px;
+  height: 48px;
+
+  /* Liquid Glass Material */
+  background: var(--ptr-glass-bg);
+  backdrop-filter: blur(var(--ptr-glass-blur)) saturate(var(--ptr-glass-saturate));
+  -webkit-backdrop-filter: blur(var(--ptr-glass-blur)) saturate(var(--ptr-glass-saturate));
+  border: 1px solid var(--ptr-glass-border);
+  border-radius: 24px;
+
+  /* Shadow */
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.04);
+
+  /* Flexbox for centering */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* GPU Optimization */
+  will-change: transform, opacity;
+  transform: translateX(-50%) translateZ(0);
+
+  /* Spring Physics Transition */
+  transition:
+    transform var(--ptr-transition-spring),
+    opacity var(--ptr-transition-quick);
+}
+
+/* ============================================================================
+   SPINNER - iOS 26 Style
+   ============================================================================ */
+
+.ptr-spinner {
+  width: var(--ptr-spinner-size);
+  height: var(--ptr-spinner-size);
+  border: 3px solid transparent;
+  border-top-color: var(--ptr-spinner-color);
+  border-radius: 50%;
+
+  /* GPU Optimization */
+  will-change: transform;
+  transform: translateZ(0);
+
+  /* Smooth rotation */
+  transition: transform var(--ptr-transition-quick);
+}
+
+/* Spinning animation when refreshing */
+.ptr-spinner.spinning {
+  animation: ptr-spin 0.8s linear infinite;
+}
+
+@keyframes ptr-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================================================
+   STATES
+   ============================================================================ */
+
+/* Pulling state */
+.pull-to-refresh-ios-26.pulling {
+  opacity: 1;
+}
+
+/* Refreshing state */
+.pull-to-refresh-ios-26.refreshing {
+  opacity: 1;
+  transform: translateX(-50%) translateY(20px) translateZ(0);
+}
+
+/* ============================================================================
+   MOBILE ONLY - Hide on desktop
+   ============================================================================ */
+
+@media (min-width: 768px) {
+  .pull-to-refresh-ios-26 {
+    display: none;
+  }
+}
+
+/* ============================================================================
+   REDUCED MOTION - Accessibility
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .pull-to-refresh-ios-26,
+  .ptr-spinner {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .ptr-spinner.spinning {
+    /* Static rotation instead of animation */
+    transform: rotate(45deg);
+  }
+}
+
+/* ============================================================================
+   FOUC PREVENTION
+   ============================================================================ */
+
+html:not([data-tradelia-runtime='ready']) .pull-to-refresh-ios-26 {
+  transition: none !important;
+  animation: none !important;
+}

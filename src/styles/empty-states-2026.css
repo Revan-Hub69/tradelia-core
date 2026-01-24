@@ -1,0 +1,259 @@
+/*
+ * EMPTY STATES - iOS 26 PROFESSIONAL
+ *
+ * Based on Tier-1 Research:
+ * - Eleken: Empty State UX Best Practices
+ * - Toptal: Empty States Design
+ * - Shopify Polaris: Empty State Component
+ * - UXcel: Empty States Course
+ *
+ * Design Principles:
+ * - 3 types: Informational, Action-oriented, Celebratory
+ * - Descriptive and motivational messaging
+ * - Visual interest (icons/illustrations)
+ * - Clear guidance for next steps
+ * - Brand personality
+ *
+ * RESEARCH DOCUMENT:
+ * docs/research/LOADING_EMPTY_STATES_MOBILE_TIER1_2026.md
+ */
+
+/* ============================================================================
+   DESIGN TOKENS - Empty States
+   ============================================================================ */
+
+:root {
+  /* Spacing */
+  --empty-padding-mobile: 32px 24px;
+  --empty-padding-desktop: 48px 24px;
+
+  /* Icon */
+  --empty-icon-size: 120px;
+  --empty-icon-opacity: 0.6;
+
+  /* Typography */
+  --empty-title-size: 1.25rem;
+  --empty-title-weight: 600;
+  --empty-description-size: 0.875rem;
+
+  /* Colors */
+  --empty-title-color: var(--foreground);
+  --empty-description-color: var(--muted-foreground);
+
+  /* Transitions */
+  --empty-transition: 200ms ease-out;
+}
+
+/* ============================================================================
+   EMPTY STATE CONTAINER
+   ============================================================================ */
+
+.empty-state-ios-26 {
+  /* Spacing */
+  padding: var(--empty-padding-mobile);
+  text-align: center;
+
+  /* Flexbox for vertical centering */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  /* Min height for visual balance */
+  min-height: 300px;
+}
+
+@media (min-width: 768px) {
+  .empty-state-ios-26 {
+    padding: var(--empty-padding-desktop);
+  }
+}
+
+/* ============================================================================
+   ICON / ILLUSTRATION
+   ============================================================================ */
+
+.empty-icon {
+  /* Size */
+  width: var(--empty-icon-size);
+  height: var(--empty-icon-size);
+
+  /* Spacing */
+  margin: 0 auto 24px;
+
+  /* Visual */
+  opacity: var(--empty-icon-opacity);
+
+  /* Smooth entrance */
+  animation: empty-fade-in 400ms ease-out;
+}
+
+/* Icon variants for different types */
+.empty-icon.informational {
+  color: hsl(var(--primary));
+}
+
+.empty-icon.action {
+  color: hsl(var(--primary));
+}
+
+.empty-icon.celebratory {
+  color: hsl(var(--success));
+}
+
+/* ============================================================================
+   TITLE
+   ============================================================================ */
+
+.empty-title {
+  /* Typography */
+  font-size: var(--empty-title-size);
+  font-weight: var(--empty-title-weight);
+  color: var(--empty-title-color);
+
+  /* Spacing */
+  margin-bottom: 12px;
+
+  /* Smooth entrance */
+  animation: empty-fade-in 400ms ease-out 100ms backwards;
+}
+
+/* ============================================================================
+   DESCRIPTION
+   ============================================================================ */
+
+.empty-description {
+  /* Typography */
+  font-size: var(--empty-description-size);
+  color: var(--empty-description-color);
+  line-height: 1.5;
+
+  /* Spacing */
+  margin-bottom: 24px;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+
+  /* Smooth entrance */
+  animation: empty-fade-in 400ms ease-out 200ms backwards;
+}
+
+/* ============================================================================
+   ACTION BUTTON
+   ============================================================================ */
+
+.empty-action {
+  /* Use existing button styles */
+  /* Smooth entrance */
+  animation: empty-fade-in 400ms ease-out 300ms backwards;
+}
+
+/* ============================================================================
+   TYPE VARIANTS
+   ============================================================================ */
+
+/* Informational - Neutral, educational */
+.empty-state-ios-26.informational {
+  /* Default styles */
+}
+
+/* Action-oriented - Motivational, with CTA */
+.empty-state-ios-26.action {
+  /* Emphasize action button */
+}
+
+.empty-state-ios-26.action .empty-action {
+  /* Primary button styling */
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all var(--empty-transition);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .empty-state-ios-26.action .empty-action:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow:
+      0 8px 16px rgba(0, 0, 0, 0.12),
+      0 4px 8px rgba(0, 0, 0, 0.06);
+  }
+}
+
+.empty-state-ios-26.action .empty-action:active {
+  transform: scale(0.98);
+}
+
+/* Celebratory - Positive, congratulatory */
+.empty-state-ios-26.celebratory {
+  /* Positive vibes */
+}
+
+.empty-state-ios-26.celebratory .empty-title {
+  color: hsl(var(--success));
+}
+
+/* ============================================================================
+   ENTRANCE ANIMATION
+   ============================================================================ */
+
+@keyframes empty-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================================
+   REDUCED MOTION - Accessibility
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .empty-icon,
+  .empty-title,
+  .empty-description,
+  .empty-action {
+    animation: none !important;
+  }
+
+  .empty-state-ios-26.action .empty-action:hover {
+    transform: none;
+  }
+
+  .empty-state-ios-26.action .empty-action:active {
+    transform: none;
+  }
+}
+
+/* ============================================================================
+   FOUC PREVENTION
+   ============================================================================ */
+
+html:not([data-tradelia-runtime='ready']) .empty-state-ios-26 * {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* ============================================================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================================================ */
+
+@media (max-width: 767px) {
+  .empty-icon {
+    width: 96px;
+    height: 96px;
+  }
+
+  .empty-title {
+    font-size: 1.125rem;
+  }
+
+  .empty-description {
+    font-size: 0.8125rem;
+  }
+}

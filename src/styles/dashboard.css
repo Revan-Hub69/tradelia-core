@@ -14,6 +14,10 @@
 /* Import dashboard-specific files */
 @import './glass-effects-tokens.css';
 @import './card-ios-26.css';
+@import './pull-to-refresh-ios-26.css';
+@import './empty-states-2026.css';
+@import './mobile-viewport-fixes.css';
+@import './loading-skeletons-ios-26.css';
 @import './premium-spring-physics.css';
 @import './motion-tokens.css';
 

@@ -1,10 +1,18 @@
 import '@/styles/shared.css';
 import '@/styles/bottom-nav-capsule-2026.css';
 
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 
 import { RuntimeReady } from '@/components/runtime/RuntimeReady';
 import { ServiceWorkerCleanup } from '@/components/ServiceWorkerCleanup';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  viewportFit: 'cover', // iOS safe area insets support
+};
 
 export const metadata: Metadata = {
   title: 'Tradelia - Learn Crypto Trading',
