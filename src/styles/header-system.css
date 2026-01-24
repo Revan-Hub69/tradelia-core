@@ -74,6 +74,17 @@
   /* NO transitions - prevent ghost animations */
   opacity: var(--header-icon-primary-opacity);
   transform: translateZ(0); /* GPU acceleration */
+
+  /* Touch optimization - iOS/Android */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+
+  /* Prevent text selection */
+  user-select: none;
+  -webkit-user-select: none;
+
+  /* Cursor */
+  cursor: pointer;
 }
 
 .header-icon-primary {
@@ -118,6 +129,15 @@
 
 .glass-button {
   background-color: var(--header-glass-bg);
+
+  /* Touch optimization - iOS/Android */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+
+  /* Prevent text selection */
+  user-select: none;
+  -webkit-user-select: none;
+
   border: 1px solid var(--header-glass-border);
   backdrop-filter: blur(12px) saturate(180%);
   -webkit-backdrop-filter: blur(12px) saturate(180%);
