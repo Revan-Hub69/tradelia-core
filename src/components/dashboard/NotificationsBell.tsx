@@ -76,12 +76,12 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
     if (open && 'vibrate' in navigator) {
       navigator.vibrate(10);
     }
-    
+
     // Capture trigger position for mobile popover
     if (open && isMobile && triggerRef.current) {
       setTriggerRect(triggerRef.current.getBoundingClientRect());
     }
-    
+
     setIsOpen(open);
     if (open) {
       handleTooltipClick();
@@ -109,67 +109,6 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
     // Mark all as read functionality (when notifications exist)
     handleClose();
   }, [handleClose]);
-
-  // Notification content component (shared between desktop and mobile)
-  const NotificationContent = () => (
-    <>
-      {/* Empty State - Following Nielsen Norman Group guidelines (research) */}
-      <div className="flex flex-col items-center justify-center px-6 py-12 text-center">
-        <div
-          className="mb-4 rounded-full p-3"
-          style={{
-            backgroundColor: 'var(--glass-header-hover)',
-            backdropFilter: 'blur(4px)',
-          }}
-        >
-          <BellIcon size={24} className="text-muted-foreground" />
-        </div>
-        <h3 className="mb-2 text-sm font-medium text-foreground">
-          {t('no_notifications_title')}
-        </h3>
-        <p className="max-w-xs text-xs leading-relaxed text-muted-foreground">
-          {t('no_notifications_description')}
-        </p>
-      </div>
-    </>
-  );
-
-  // Footer component (fixed - always visible)
-  const NotificationFooter = () => (
-    <div className="flex items-center justify-between">
-      <button
-        type="button"
-        onClick={handleMarkAllRead}
-        disabled={notifications.length === 0}
-        className={cn(
-          'h-10 px-4 text-sm font-medium transition-colors duration-200',
-          'rounded-lg hover:bg-accent/10 focus:bg-accent/10',
-          'text-muted-foreground hover:text-foreground/90 focus:text-foreground/90',
-          'disabled:opacity-50 disabled:cursor-not-allowed',
-          // Touch target
-          'min-h-[44px]',
-        )}
-      >
-        {t('mark_all_read')}
-      </button>
-
-      <button
-        type="button"
-        onClick={handleNotificationSettings}
-        className={cn(
-          'flex h-10 items-center gap-2 px-4 text-sm font-medium transition-colors duration-200',
-          'rounded-lg hover:bg-accent/10 focus:bg-accent/10',
-          'text-muted-foreground hover:text-foreground/90 focus:text-foreground/90',
-          '[&>svg]:text-muted-foreground hover:[&>svg]:text-foreground/90',
-          // Touch target
-          'min-h-[44px]',
-        )}
-      >
-        <SettingsIcon size={16} className="transition-colors duration-200" />
-        {t('notification_settings')}
-      </button>
-    </div>
-  );
 
   return (
     <>
@@ -238,14 +177,14 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
       </TooltipProvider>
 
       {/* Mobile: Inline Popover with 10 Enterprise Guardrails */}
-      {isMobile ? (
+      {isMobile && (
         <MobileDropdownPopover
           isOpen={isOpen}
           onClose={handleClose}
           title={t('notifications')}
           triggerRect={triggerRect}
           triggerRef={triggerRef}
-          footer={
+          footer={(
             <div className="flex items-center justify-between">
               <button
                 type="button"
@@ -274,11 +213,11 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
                 {t('notification_settings')}
               </button>
             </div>
-          }
+          )}
           className="w-80"
         >
           <div className="flex flex-col items-center justify-center px-6 py-12 text-center">
-            <div className="mb-4 rounded-full p-3 bg-muted/50">
+            <div className="mb-4 rounded-full bg-muted/50 p-3">
               <BellIcon size={24} className="text-muted-foreground" />
             </div>
             <h3 className="mb-2 text-sm font-medium text-foreground">
@@ -289,7 +228,10 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
             </p>
           </div>
         </MobileDropdownPopover>
-      ) : (
+      )}
+
+      {/* Desktop: Radix Dropdown Menu */}
+      {!isMobile && (
         <DropdownMenu open={isOpen} onOpenChange={handleOpenChange}>
           <DropdownMenuTrigger asChild>
             <div style={{ display: 'none' }} />
@@ -305,7 +247,7 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
               <span className="text-base font-semibold text-foreground">{t('notifications')}</span>
             </DropdownMenuLabel>
             <div className="flex flex-col items-center justify-center px-6 py-12 text-center">
-              <div className="mb-4 rounded-full p-3 bg-muted/50">
+              <div className="mb-4 rounded-full bg-muted/50 p-3">
                 <BellIcon size={24} className="text-muted-foreground" />
               </div>
               <h3 className="mb-2 text-sm font-medium text-foreground">
