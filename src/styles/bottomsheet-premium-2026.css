@@ -29,9 +29,9 @@
   --bottomsheet-handle-height: 4px;
   --bottomsheet-handle-width: 36px;
 
-  /* Liquid Glass - Light Mode (iOS systemBackground) */
-  --bottomsheet-glass-bg: rgba(242, 242, 247, 0.95);
-  --bottomsheet-glass-border: rgba(0, 0, 0, 0.08);
+  /* Liquid Glass - Light Mode (Soft Cream - Educational) */
+  --bottomsheet-glass-bg: rgba(252, 251, 248, 0.95);
+  --bottomsheet-glass-border: rgba(0, 0, 0, 0.06);
   --bottomsheet-glass-blur: 24px;
   --bottomsheet-glass-saturate: 180%;
 
@@ -45,7 +45,7 @@
   --bottomsheet-item-radius: 12px;
 
   /* Footer */
-  --bottomsheet-footer-bg: rgba(242, 242, 247, 0.98);  /* iOS systemBackground */
+  --bottomsheet-footer-bg: rgba(252, 251, 248, 0.98);  /* Soft Cream */
   --bottomsheet-footer-border: rgba(0, 0, 0, 0.06);
 
   /* Handle */

@@ -27,9 +27,9 @@
   --ptr-threshold: 70px;
   --ptr-max-pull: 120px;
 
-  /* Liquid Glass (iOS systemBackground) */
-  --ptr-glass-bg: rgba(242, 242, 247, 0.95);
-  --ptr-glass-border: rgba(0, 0, 0, 0.08);
+  /* Liquid Glass (Soft Cream - Educational) */
+  --ptr-glass-bg: rgba(252, 251, 248, 0.95);
+  --ptr-glass-border: rgba(0, 0, 0, 0.06);
   --ptr-glass-blur: 20px;
   --ptr-glass-saturate: 180%;
 

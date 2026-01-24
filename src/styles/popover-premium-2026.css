@@ -29,9 +29,9 @@
   --popover-padding: 16px;
   --popover-gap: 8px; /* Gap from trigger */
 
-  /* Liquid Glass - Light Mode (iOS systemBackground) */
-  --popover-glass-bg: rgba(242, 242, 247, 0.95);
-  --popover-glass-border: rgba(0, 0, 0, 0.08);
+  /* Liquid Glass - Light Mode (Soft Cream - Educational) */
+  --popover-glass-bg: rgba(252, 251, 248, 0.95);
+  --popover-glass-border: rgba(0, 0, 0, 0.06);
   --popover-glass-blur: 24px;
   --popover-glass-saturate: 180%;
 
@@ -46,7 +46,7 @@
 
   /* Footer */
   --popover-footer-height: 64px;
-  --popover-footer-bg: rgba(242, 242, 247, 0.98);  /* iOS systemBackground */
+  --popover-footer-bg: rgba(252, 251, 248, 0.98);  /* Soft Cream */
   --popover-footer-border: rgba(0, 0, 0, 0.06);
 
   /* Transitions */

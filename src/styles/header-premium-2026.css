@@ -10,17 +10,18 @@
    ============================================================================ */
 
 :root {
-  /* Dimensions */
-  --header-height: 64px;
-  --header-height-mobile: 56px;
-  --header-padding: 1rem 1.5rem;
+  /* Dimensions - Fully Responsive */
+  --header-height: 56px;         /* Desktop/Tablet (>= 1024px) */
+  --header-height-tablet: 52px;  /* Tablet (768px - 1023px) */
+  --header-height-mobile: 48px;  /* Mobile (< 768px) */
+  --header-padding: 0.75rem 1.5rem; /* Reduced vertical padding */
 
   /* Z-index */
   --z-header: 50;
 
-  /* Glass Effects - iOS 26 Compliant (Light Mode) */
-  --header-glass-bg: rgba(242, 242, 247, 0.95);  /* iOS systemBackground - grigio chiarissimo */
-  --header-glass-border: rgba(0, 0, 0, 0.08);     /* Nero sottile per contrasto */
+  /* Glass Effects - Soft Cream (Educational & Warm) */
+  --header-glass-bg: rgba(252, 251, 248, 0.95);  /* Warm cream */
+  --header-glass-border: rgba(0, 0, 0, 0.06);     /* Subtle border */
   --header-glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
   --header-glass-blur: 20px;
   --header-glass-saturate: 180%;
@@ -57,7 +58,15 @@
   height: var(--header-height);
 }
 
-@media (max-width: 768px) {
+/* Tablet (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .header-height {
+    height: var(--header-height-tablet);
+  }
+}
+
+/* Mobile (< 768px) */
+@media (max-width: 767px) {
   .header-height {
     height: var(--header-height-mobile);
   }

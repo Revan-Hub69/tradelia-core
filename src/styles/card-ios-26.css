@@ -39,9 +39,9 @@
   --card-gap-tablet: 16px;
   --card-gap-desktop: 20px;
 
-  /* Liquid Glass Material (iOS systemBackground) */
-  --card-glass-bg: rgba(242, 242, 247, 0.95);
-  --card-glass-border: rgba(0, 0, 0, 0.08);
+  /* Liquid Glass Material (Soft Cream - Educational) */
+  --card-glass-bg: rgba(252, 251, 248, 0.95);
+  --card-glass-border: rgba(0, 0, 0, 0.06);
   --card-glass-blur: 20px;
   --card-glass-saturate: 180%;
 

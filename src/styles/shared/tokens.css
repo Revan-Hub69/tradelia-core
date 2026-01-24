@@ -62,9 +62,9 @@
   --z-modal: 70;
   --z-toast: 80;
 
-  /* Glass effects (iOS systemBackground) */
-  --glass-bg: rgba(242, 242, 247, 0.6);
-  --glass-border: rgba(0, 0, 0, 0.08);
+  /* Glass effects (Soft Cream - Educational) */
+  --glass-bg: rgba(252, 251, 248, 0.6);
+  --glass-border: rgba(0, 0, 0, 0.06);
   --glass-blur: 12px;
   --glass-saturate: 1.8;
 
