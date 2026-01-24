@@ -92,8 +92,17 @@
 
 /* Legacy class support (deprecated - use dropdown-premium-container) */
 .glass-dropdown {
-  /* Redirect to new class */
-  @extend .dropdown-premium-container;
+  /* Duplicate rules for legacy support (no @extend in vanilla CSS) */
+  background-color: var(--dropdown-glass-bg);
+  border: 1px solid var(--dropdown-glass-border);
+  border-radius: var(--dropdown-radius);
+  box-shadow: var(--dropdown-glass-shadow);
+  backdrop-filter: blur(var(--dropdown-glass-blur)) saturate(var(--dropdown-glass-saturate));
+  -webkit-backdrop-filter: blur(var(--dropdown-glass-blur)) saturate(var(--dropdown-glass-saturate));
+  z-index: var(--z-dropdown);
+  transform: translateZ(0);
+  will-change: transform, opacity;
+  animation: dropdown-entrance var(--dropdown-spring-transition) ease-out;
 }
 
 /* ============================================================================
@@ -177,8 +186,25 @@
 
 /* Legacy class support (deprecated - use dropdown-premium-item) */
 .dropdown-item {
-  /* Redirect to new class */
-  @extend .dropdown-premium-item;
+  /* Duplicate rules for legacy support (no @extend in vanilla CSS) */
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: var(--dropdown-item-padding);
+  min-height: var(--dropdown-item-min-height);
+  border-radius: var(--dropdown-item-radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition:
+    background-color var(--dropdown-transition),
+    color var(--dropdown-transition),
+    transform var(--dropdown-spring-transition);
+  transform: translateZ(0);
+  will-change: background-color, transform;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  cursor: pointer;
 }
 
 /* ============================================================================

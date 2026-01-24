@@ -154,8 +154,73 @@
 
 /* Legacy class support (deprecated - use header-premium-icon) */
 .header-icon {
-  /* Redirect to new class */
-  @extend .header-premium-icon;
+  /* Duplicate rules for legacy support (no @extend in vanilla CSS) */
+  position: relative;
+  opacity: var(--header-icon-primary-opacity);
+  transform: translateZ(0);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: pointer;
+  transition: transform 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.header-icon::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 14px;
+  background-color: rgba(var(--primary-rgb), 0.12);
+  opacity: 0;
+  transition: opacity 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: -1;
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .header-icon:hover {
+    color: hsl(var(--primary));
+    opacity: 1;
+    transform: translateZ(0) scale(1.12) translateY(-3px);
+  }
+  
+  .header-icon:hover::before {
+    opacity: 1;
+  }
+}
+
+.header-icon:active {
+  transform: translateZ(0) scale(0.90);
+  transition: transform 100ms ease-out;
+}
+
+.header-icon[data-active='true'] {
+  color: hsl(var(--primary));
+  transform: translateZ(0) scale(1.08);
+}
+
+.header-icon[data-active='true']::before {
+  opacity: 0.6;
+}
+
+.header-icon:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* Icon hierarchy classes */
+.header-icon-primary {
+  opacity: var(--header-icon-primary-opacity);
+}
+
+.header-icon-secondary {
+  opacity: var(--header-icon-secondary-opacity);
+}
+
+.header-icon-tertiary {
+  opacity: var(--header-icon-tertiary-opacity);
 }
 
 /* ============================================================================
@@ -197,8 +262,58 @@
 
 /* Legacy class support (deprecated - use header-premium-button) */
 .glass-button {
-  /* Redirect to new class */
-  @extend .header-premium-button;
+  /* Duplicate rules for legacy support (no @extend in vanilla CSS) */
+  position: relative;
+  background-color: var(--header-glass-bg);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  border: 1px solid var(--header-glass-border);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  transition: background-color 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .glass-button:hover {
+    background-color: rgba(var(--primary-rgb), 0.10);
+    transform: scale(1.04);
+  }
+}
+
+.glass-button:active {
+  background-color: rgba(var(--primary-rgb), 0.15);
+  transform: scale(0.96);
+  transition: all 100ms ease-out;
+}
+
+/* ============================================================================
+   HEADER CONTAINER VARIANTS - DashboardHeader Support
+   ============================================================================ */
+
+.header-2026 {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  border-bottom: 1px solid hsl(var(--border) / 0.1);
+  background-color: var(--header-glass-bg);
+  backdrop-filter: blur(var(--header-glass-blur)) saturate(var(--header-glass-saturate));
+  -webkit-backdrop-filter: blur(var(--header-glass-blur)) saturate(var(--header-glass-saturate));
+  transition: box-shadow var(--header-transition), backdrop-filter var(--header-transition);
+}
+
+.header-scrolled {
+  box-shadow: var(--header-glass-shadow);
+}
+
+.header-compact-edge {
+  backdrop-filter: blur(30px) saturate(200%);
+  -webkit-backdrop-filter: blur(30px) saturate(200%);
+}
+
+.header-height-compact {
+  height: 48px;
 }
 
 /* ============================================================================
