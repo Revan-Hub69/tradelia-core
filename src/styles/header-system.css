@@ -139,6 +139,17 @@
    FOUC PREVENTION - Disable animations until ready
    ============================================================================ */
 
+/* Disable ALL animations during boot - prevent ghost animations */
+html[data-tradelia-runtime='boot'] *,
+html[data-tradelia-runtime='boot'] *::before,
+html[data-tradelia-runtime='boot'] *::after {
+  transition: none !important;
+  animation: none !important;
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+}
+
+/* Specific header elements - extra safety */
 html:not([data-tradelia-runtime='ready']) .header-icon,
 html:not([data-tradelia-runtime='ready']) .header-icon *,
 html:not([data-tradelia-runtime='ready']) .glass-button,
