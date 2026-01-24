@@ -1,30 +1,54 @@
 /*
- * DROPDOWN SYSTEM - SINGLE SOURCE OF TRUTH
+ * DROPDOWN SYSTEM - iOS 26 LIQUID GLASS
  *
- * Unified dropdown styles following Tradelia design system
- * Based on sidebar/navbar patterns (glass-sidebar, UiSurface)
+ * Based on Tier-1 Research:
+ * - Apple HIG: Menus & Dropdowns (2026)
+ * - Red Hat Design System: Dropdown Best Practices
+ * - NHS Digital: Accessible Dropdowns
  *
  * Design Principles:
- * - Liquid Glass material (Apple 2026)
- * - Minimal animations (200ms max)
+ * - iOS 26 Liquid Glass (12px radius for dropdowns, NOT 32px like panels)
+ * - Multi-layer shadows for depth
+ * - Spring physics transitions
+ * - 44px minimum touch targets (mobile)
  * - GPU optimized
  * - Accessibility first
+ *
+ * RESEARCH SOURCES:
+ * - https://developer.apple.com/design/human-interface-guidelines/menus
+ * - https://www.redhat.com/en/blog/dropdown-design-patterns
+ * - https://service-manual.nhs.uk/design-system/components/select
  */
 
 /* ============================================================================
-   DROPDOWN VARIABLES - Design Tokens
+   DROPDOWN VARIABLES - iOS 26 Design Tokens
    ============================================================================ */
 
 :root {
-  /* Glass Effects */
+  /* iOS 26 Liquid Glass - Dropdown Specific */
   --dropdown-glass-bg: rgba(255, 255, 255, 0.95);
   --dropdown-glass-border: rgba(255, 255, 255, 0.2);
-  --dropdown-glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
   --dropdown-glass-blur: 20px;
   --dropdown-glass-saturate: 180%;
 
-  /* Transitions - Tradelia Standard */
+  /* iOS 26 Multi-Layer Shadows - Dropdown depth */
+  --dropdown-shadow-layer-1: 0 12px 24px rgba(0, 0, 0, 0.15);
+  --dropdown-shadow-layer-2: 0 6px 12px rgba(0, 0, 0, 0.1);
+  --dropdown-shadow-layer-3: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --dropdown-glass-shadow:
+    var(--dropdown-shadow-layer-1), var(--dropdown-shadow-layer-2), var(--dropdown-shadow-layer-3);
+
+  /* iOS 26 Border Radius - 12px for dropdowns (NOT 32px) */
+  --dropdown-radius: 12px;
+  --dropdown-item-radius: 8px;
+
+  /* Spring Physics Transitions - iOS 26 Standard */
   --dropdown-transition: 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --dropdown-spring-transition: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Touch Targets - 44px minimum (Apple HIG) */
+  --dropdown-item-min-height: 44px;
+  --dropdown-item-padding: 12px;
 
   /* Z-index */
   --z-dropdown: 60;
@@ -33,24 +57,41 @@
 .dark {
   --dropdown-glass-bg: rgba(15, 23, 42, 0.95);
   --dropdown-glass-border: rgba(255, 255, 255, 0.1);
-  --dropdown-glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0, 0, 0, 0.2);
+
+  /* Enhanced shadows for dark mode */
+  --dropdown-shadow-layer-1: 0 12px 24px rgba(0, 0, 0, 0.4);
+  --dropdown-shadow-layer-2: 0 6px 12px rgba(0, 0, 0, 0.3);
+  --dropdown-shadow-layer-3: 0 2px 4px rgba(0, 0, 0, 0.2);
+  --dropdown-glass-shadow:
+    var(--dropdown-shadow-layer-1), var(--dropdown-shadow-layer-2), var(--dropdown-shadow-layer-3);
 }
 
 /* ============================================================================
-   DROPDOWN CONTAINER - Liquid Glass
+   DROPDOWN CONTAINER - iOS 26 Liquid Glass
    ============================================================================ */
 
 .glass-dropdown {
+  /* iOS 26 Liquid Glass Material */
   background-color: var(--dropdown-glass-bg);
-  border-color: var(--dropdown-glass-border);
+  border: 1px solid var(--dropdown-glass-border);
+  border-radius: var(--dropdown-radius);
   box-shadow: var(--dropdown-glass-shadow);
   backdrop-filter: blur(var(--dropdown-glass-blur)) saturate(var(--dropdown-glass-saturate));
   -webkit-backdrop-filter: blur(var(--dropdown-glass-blur)) saturate(var(--dropdown-glass-saturate));
+
+  /* Z-index */
   z-index: var(--z-dropdown);
+
+  /* GPU Optimization */
+  transform: translateZ(0);
+  will-change: transform, opacity;
+
+  /* Smooth entrance with spring physics */
+  animation: dropdown-entrance var(--dropdown-spring-transition) ease-out;
 }
 
 /* ============================================================================
-   DROPDOWN ITEMS - Tradelia Pattern
+   DROPDOWN ITEMS - iOS 26 Pattern
    ============================================================================ */
 
 .dropdown-item {
@@ -58,46 +99,61 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.625rem 0.75rem;
-  border-radius: 0.75rem;
+  padding: var(--dropdown-item-padding);
+  min-height: var(--dropdown-item-min-height);
+  border-radius: var(--dropdown-item-radius);
   font-size: 0.875rem;
   font-weight: 500;
 
-  /* Transitions - NO animations, only hover feedback */
+  /* Spring physics transitions */
   transition:
     background-color var(--dropdown-transition),
-    color var(--dropdown-transition);
+    color var(--dropdown-transition),
+    transform var(--dropdown-spring-transition);
 
   /* GPU optimization */
   transform: translateZ(0);
-  will-change: background-color;
+  will-change: background-color, transform;
 
   /* Touch optimization */
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
+
+  /* Cursor */
+  cursor: pointer;
 }
 
-/* Hover - ONLY on pointer devices (Tradelia standard) */
+/* Hover - ONLY on pointer devices (iOS 26 standard) */
 @media (hover: hover) and (pointer: fine) {
   .dropdown-item:hover {
     background-color: rgba(var(--primary-rgb), 0.08);
+    transform: translateZ(0) scale(1.01);
   }
 }
 
-/* Active - ALL devices */
+/* Active - ALL devices with spring physics */
 .dropdown-item:active {
   background-color: rgba(var(--primary-rgb), 0.12);
   transform: translateZ(0) scale(0.98);
   transition:
-    transform 150ms ease-out,
+    transform 150ms cubic-bezier(0.34, 1.56, 0.64, 1),
     background-color 150ms ease-out;
 }
 
-/* Focus - Accessibility */
+/* Selected state - iOS 26 pattern */
+.dropdown-item[data-state='checked'],
+.dropdown-item[aria-checked='true'] {
+  background-color: rgba(var(--primary-rgb), 0.1);
+  color: hsl(var(--primary));
+  font-weight: 600;
+}
+
+/* Focus - Accessibility (WCAG 2.1 AA) */
 .dropdown-item:focus-visible {
   outline: 2px solid hsl(var(--primary));
   outline-offset: 2px;
+  background-color: rgba(var(--primary-rgb), 0.05);
 }
 
 /* Disabled state */
@@ -164,17 +220,13 @@ html:not([data-tradelia-runtime='ready']) .dropdown-item {
 }
 
 /* ============================================================================
-   ENTRANCE ANIMATION - Minimal (Tradelia standard)
+   ENTRANCE ANIMATION - iOS 26 Spring Physics
    ============================================================================ */
 
-.dropdown-entrance {
-  animation: dropdown-fade-in var(--dropdown-transition) ease-out;
-}
-
-@keyframes dropdown-fade-in {
+@keyframes dropdown-entrance {
   from {
     opacity: 0;
-    transform: translateY(-4px) scale(0.98);
+    transform: translateY(-8px) scale(0.96);
   }
   to {
     opacity: 1;
@@ -182,8 +234,43 @@ html:not([data-tradelia-runtime='ready']) .dropdown-item {
   }
 }
 
+/* Mobile: Bottom sheet entrance (< 768px) */
+@media (max-width: 767px) {
+  @keyframes dropdown-entrance {
+    from {
+      opacity: 0;
+      transform: translateY(16px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .glass-dropdown {
+    /* Bottom sheet on mobile */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .dropdown-entrance {
-    animation: none;
+  .glass-dropdown {
+    animation: none !important;
+  }
+
+  @keyframes dropdown-entrance {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 }

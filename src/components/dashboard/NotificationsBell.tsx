@@ -74,7 +74,14 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
       <Tooltip {...tooltipProps}>
         <TooltipTrigger asChild>
           <div>
-            <DropdownMenu open={isOpen} onOpenChange={(open) => { handleOpenChange(open); if (open) handleTooltipClick(); }}>
+            <DropdownMenu
+              open={isOpen}
+              onOpenChange={(open) => {
+                handleOpenChange(open); if (open) {
+                  handleTooltipClick();
+                }
+              }}
+            >
               <DropdownMenuTrigger asChild>
                 <button
                   type="button"

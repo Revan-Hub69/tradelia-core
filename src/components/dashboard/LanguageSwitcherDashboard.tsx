@@ -29,6 +29,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useTooltip } from '@/hooks/useTooltip';
 import { usePathname, useRouter } from '@/libs/i18nNavigation';
 import { AppConfig } from '@/utils/AppConfig';
 import { cn } from '@/utils/Helpers';
@@ -47,6 +48,9 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
   // Global motion preferences - optimized
   const prefersReducedMotion = useReducedMotion();
 
+  // Tooltip best practices 2026
+  const { shouldShowTooltip, tooltipProps, handleClick: handleTooltipClick } = useTooltip();
+
   // Wait for client-side mount to prevent hydration mismatch
   useEffect(() => {
     setMounted(true);
@@ -55,7 +59,11 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
   // Memoized callbacks - MUST be called before early return (Rules of Hooks)
   const handleOpenChange = useCallback((open: boolean) => {
     setIsOpen(open);
-  }, []);
+    // Auto-dismiss tooltip when dropdown opens
+    if (open) {
+      handleTooltipClick();
+    }
+  }, [handleTooltipClick]);
 
   const handleChange = useCallback((value: string) => {
     if (value === locale) {
@@ -80,7 +88,7 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
 
   return (
     <TooltipProvider delayDuration={300}>
-      <Tooltip>
+      <Tooltip {...tooltipProps}>
         <TooltipTrigger asChild>
           <div>
             <DropdownMenu open={isOpen} onOpenChange={handleOpenChange}>
@@ -130,11 +138,9 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
               <DropdownMenuContent
                 align="end"
                 className={cn(
-                  'min-w-48 overflow-hidden rounded-2xl border border-border/20 p-2',
-                  // Liquid Glass dropdown
+                  'min-w-48 overflow-hidden p-2',
+                  // iOS 26 Liquid Glass dropdown
                   'glass-dropdown',
-                  // Performance optimized entrance
-                  'animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200',
                 )}
               >
                 <DropdownMenuRadioGroup value={locale} onValueChange={handleChange}>
@@ -143,12 +149,9 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
                       key={lang.id}
                       value={lang.id}
                       className={cn(
-                        'cursor-pointer rounded-xl px-3 py-2.5',
-                        // Performance optimized hover
-                        'transition-colors duration-200 ease-out',
-                        'hover:bg-primary/10 focus:bg-primary/10',
-                        // Active state
-                        locale === lang.id && 'bg-primary/5',
+                        'dropdown-item',
+                        // Selected state handled by dropdown-item CSS
+                        locale === lang.id && 'font-semibold',
                       )}
                     >
                       <div className="flex flex-col gap-0.5">
@@ -166,17 +169,19 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
             </DropdownMenu>
           </div>
         </TooltipTrigger>
-        <TooltipContent
-          side="bottom"
-          className={cn(
-            'text-xs',
-            // Liquid Glass tooltip
-            'glass-dropdown',
-          )}
-        >
-          <p className="font-medium">{t('change_language')}</p>
-          <p className="text-muted-foreground">Alt+L</p>
-        </TooltipContent>
+        {shouldShowTooltip && (
+          <TooltipContent
+            side="bottom"
+            className={cn(
+              'text-xs',
+              // Liquid Glass tooltip
+              'glass-dropdown',
+            )}
+          >
+            <p className="font-medium">{t('change_language')}</p>
+            <p className="text-muted-foreground">Alt+L</p>
+          </TooltipContent>
+        )}
       </Tooltip>
     </TooltipProvider>
   );

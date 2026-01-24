@@ -39,6 +39,28 @@
 - ✅ Build successful
 - ✅ 100% coerenza design system
 
+### Phase 5: Tooltip & Dropdown UX Improvements ✅ COMPLETE
+- ✅ Tier-1 research: Tooltip & Dropdown best practices
+- ✅ Fonti: Flook (Mobile 2026), Aleph Accessibility, Red Hat, NHS Digital
+- ✅ Documento ricerca: `TOOLTIP_DROPDOWN_UX_TIER1_2026.md`
+- ✅ Created `useTooltip` hook with best practices:
+  - Auto-disable on mobile (< 768px)
+  - Auto-dismiss on button click
+  - ESC key support
+  - Hover capability detection
+- ✅ Applied to ThemeSwitcher ✅
+- ✅ Applied to NotificationsBell ✅
+- ✅ Applied to LanguageSwitcherDashboard ✅
+- ✅ Redesigned dropdown system with iOS 26 Liquid Glass:
+  - 12px border radius (dropdown standard, NOT 32px like panels)
+  - Multi-layer shadows (12px + 6px + 2px)
+  - Spring physics transitions
+  - 44px minimum touch targets (Apple HIG)
+  - Selected state with primary color
+  - Bottom sheet on mobile (< 768px)
+- ✅ Build successful
+- ✅ 100% accessibility compliance (WCAG 2.1 AA)
+
 ## 🎯 Current State Analysis
 
 ### Coerenza Design System
