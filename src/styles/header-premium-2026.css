@@ -121,8 +121,8 @@
   .header-premium-icon:hover {
     color: hsl(var(--primary));
     opacity: 1;
-    /* Subtle scale for professional feel */
-    transform: translateZ(0) scale(1.05);
+    /* Professional scale - visible but not exaggerated (8% growth) */
+    transform: translateZ(0) scale(1.08);
   }
   
   .header-premium-icon:hover::before {
@@ -183,8 +183,8 @@
   .header-icon:hover {
     color: hsl(var(--primary));
     opacity: 1;
-    /* Subtle scale for professional feel */
-    transform: translateZ(0) scale(1.05);
+    /* Professional scale - visible but not exaggerated (8% growth) */
+    transform: translateZ(0) scale(1.08);
   }
   
   .header-icon:hover::before {

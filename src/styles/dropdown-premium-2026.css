@@ -83,7 +83,7 @@
   backdrop-filter: blur(var(--dropdown-glass-blur)) saturate(var(--dropdown-glass-saturate));
   -webkit-backdrop-filter: blur(var(--dropdown-glass-blur)) saturate(var(--dropdown-glass-saturate));
 
-  /* Z-index */
+  /* Z-index - NO position property, Radix handles positioning */
   z-index: var(--z-dropdown);
 
   /* GPU Optimization */
@@ -103,6 +103,7 @@
   box-shadow: var(--dropdown-glass-shadow);
   backdrop-filter: blur(var(--dropdown-glass-blur)) saturate(var(--dropdown-glass-saturate));
   -webkit-backdrop-filter: blur(var(--dropdown-glass-blur)) saturate(var(--dropdown-glass-saturate));
+  /* Z-index - NO position property, Radix handles positioning */
   z-index: var(--z-dropdown);
   transform: translateZ(0);
   will-change: transform, opacity;
