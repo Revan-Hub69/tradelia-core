@@ -3,6 +3,8 @@
  *
  * Unico file per TUTTI gli stili header del progetto
  * Elimina duplicazioni, conflitti, e animazioni fantasma
+ *
+ * CRITICAL FIX: Direct color values to ensure visibility
  */
 
 /* ============================================================================
@@ -19,27 +21,13 @@
   /* Z-index */
   --z-header: 50;
 
-  /* Glass Effects - Use shared material variables */
-  --header-glass-bg: var(--glass-material-bg);
-  --header-glass-border: var(--glass-material-border);
-  --header-glass-shadow: var(--glass-material-shadow);
-  --header-glass-blur: var(--glass-material-blur);
-  --header-glass-saturate: var(--glass-material-saturate);
+  /* Transitions */
+  --header-transition: 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
   /* Icon Hierarchy */
   --header-icon-primary-opacity: 1;
   --header-icon-secondary-opacity: 0.85;
   --header-icon-tertiary-opacity: 0.7;
-
-  /* Transitions */
-  --header-transition: 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.dark {
-  /* Glass Effects - Use shared material variables (dark mode) */
-  --header-glass-bg: var(--glass-material-bg);
-  --header-glass-border: var(--glass-material-border);
-  --header-glass-shadow: var(--glass-material-shadow);
 }
 
 /* ============================================================================
@@ -47,11 +35,21 @@
    ============================================================================ */
 
 .glass-header {
-  background-color: var(--header-glass-bg);
-  border-color: var(--header-glass-border);
-  box-shadow: var(--header-glass-shadow);
-  backdrop-filter: blur(var(--header-glass-blur)) saturate(var(--header-glass-saturate));
-  -webkit-backdrop-filter: blur(var(--header-glass-blur)) saturate(var(--header-glass-saturate));
+  background-color: rgba(252, 251, 248, 0.95);
+  border-color: rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    0 8px 16px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+
+.dark .glass-header {
+  background-color: rgba(28, 28, 30, 0.95);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .header-height {
@@ -87,9 +85,9 @@
   align-items: center;
   justify-content: center;
 
-  /* Glass Effect - Unified with glass-button */
-  background-color: var(--header-glass-bg);
-  border: 1px solid var(--header-glass-border);
+  /* Glass Effect - Direct values */
+  background-color: rgba(252, 251, 248, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   backdrop-filter: blur(12px) saturate(180%);
   -webkit-backdrop-filter: blur(12px) saturate(180%);
 
@@ -115,6 +113,11 @@
     transform 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
     background-color 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
     opacity 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.dark .header-icon {
+  background-color: rgba(28, 28, 30, 0.95);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Background hover effect - VISIBILE (12% opacity) */
@@ -194,9 +197,10 @@
   top: 0;
   z-index: var(--z-header);
   border-bottom: 1px solid hsl(var(--border) / 0.1);
-  background-color: var(--header-glass-bg);
-  backdrop-filter: blur(var(--header-glass-blur)) saturate(var(--header-glass-saturate));
-  -webkit-backdrop-filter: blur(var(--header-glass-blur)) saturate(var(--header-glass-saturate));
+  /* CRITICAL: Direct color value - Soft Cream (Educational) */
+  background-color: rgba(252, 251, 248, 0.95);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
 
   /* iOS 26 rounded corners - bottom only (sticky header) */
   border-radius: 0 0 16px 16px;
@@ -207,10 +211,23 @@
     border-radius var(--header-transition);
 }
 
+/* Dark mode - iOS 26 Standard */
+.dark .header-2026 {
+  background-color: rgba(28, 28, 30, 0.95);
+}
+
 .header-scrolled {
-  box-shadow: var(--header-glass-shadow);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    0 8px 16px rgba(0, 0, 0, 0.1);
   /* Slightly less rounded when scrolled for compact look */
   border-radius: 0 0 12px 12px;
+}
+
+.dark .header-scrolled {
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .header-compact-edge {
@@ -260,16 +277,21 @@
 }
 
 .search-modal-content {
-  background-color: var(--header-glass-bg);
+  background-color: rgba(252, 251, 248, 0.95);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-color: var(--header-glass-border);
-  box-shadow: var(--header-glass-shadow);
+  border-color: rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
 .dark .search-modal-content {
-  background-color: var(--header-glass-bg);
-  border-color: var(--header-glass-border);
+  background-color: rgba(28, 28, 30, 0.95);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 /* ============================================================================
