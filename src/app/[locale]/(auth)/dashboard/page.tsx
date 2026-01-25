@@ -12,7 +12,6 @@
 import { getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
 
-import { EmailVerificationBanner } from '@/components/dashboard/EmailVerificationBanner';
 import { VirtualActivityFeed } from '@/components/dashboard/VirtualActivityFeed';
 import { PageTransitionWrapper } from '@/components/transitions/PageTransitionWrapper';
 // ✅ TIER 1: Optimized data fetching
@@ -61,9 +60,6 @@ const DashboardIndexPage = async () => {
   return (
     <PageTransitionWrapper>
       <div className="mx-auto max-w-screen-xl space-y-6">
-        {/* Email Verification Banner - Soft confirmation UX */}
-        <EmailVerificationBanner />
-
         {/* ✅ TIER 1: Personalized welcome with server-side data */}
         <div className="stagger-item">
           <h1 className="text-2xl font-bold">
