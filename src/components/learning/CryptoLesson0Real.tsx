@@ -311,7 +311,7 @@ export const CryptoLesson0Real: React.FC = () => {
                   description: 'La transazione è completata e Bob può usare i fondi',
                   checkpoint: 'Processo completato in 10-60 minuti',
                 },
-              ].map((step, i) => (
+              ].map((step) => (
                 <div key={`transaction-step-${step.number}`} className="flex gap-4">
                   <div className="shrink-0">
                     <div className="flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80 text-sm font-bold text-white">
