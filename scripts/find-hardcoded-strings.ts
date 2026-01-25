@@ -86,7 +86,7 @@ function shouldIgnore(str: string): boolean {
   return IGNORE_PATTERNS.some(pattern => pattern.test(str));
 }
 
-function detectSeverity(str: string, context: string): 'high' | 'medium' | 'low' {
+function detectSeverity(_str: string, context: string): 'high' | 'medium' | 'low' {
   // High severity: User-facing UI text
   if (
     context.includes('aria-label')
