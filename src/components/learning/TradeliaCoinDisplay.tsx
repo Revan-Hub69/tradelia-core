@@ -163,7 +163,7 @@ export const TradeliaCoinDisplay = ({
               >
                 {recentEarnings.slice(0, 3).map((earning, index) => (
                   <motion.div
-                    key={index}
+                    key={`earning-${earning.timestamp.getTime()}-${index}`}
                     className="flex items-center justify-between text-xs"
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -290,7 +290,7 @@ export const CoinEarningAnimation = ({
                 </div>
                 {bonuses.map((bonus, index) => (
                   <motion.div
-                    key={index}
+                    key={`bonus-${bonus.type}-${bonus.amount}-${index}`}
                     className="flex items-center justify-between"
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
