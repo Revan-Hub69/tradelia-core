@@ -1,6 +1,8 @@
 import '@/styles/shared.css';
 import '@/styles/bottom-nav-capsule-2026.css';
 
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata, Viewport } from 'next';
 
 import { RuntimeReady } from '@/components/runtime/RuntimeReady';
@@ -68,6 +70,10 @@ export default function RootLayout({
         <RuntimeReady />
         <ServiceWorkerCleanup />
         <WebVitalsMonitor />
+        
+        {/* Vercel Analytics - Real User Monitoring */}
+        <Analytics />
+        <SpeedInsights />
 
         {/* Skip to content link for accessibility */}
         <a

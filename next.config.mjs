@@ -89,11 +89,51 @@ export default bundleAnalyzer(
       return config;
     },
     async headers() {
+      // OWASP Security Headers (2026)
+      const securityHeaders = [
+        // Prevent clickjacking
+        {
+          key: 'X-Frame-Options',
+          value: 'DENY',
+        },
+        // Prevent MIME sniffing
+        {
+          key: 'X-Content-Type-Options',
+          value: 'nosniff',
+        },
+        // XSS Protection (legacy browsers)
+        {
+          key: 'X-XSS-Protection',
+          value: '1; mode=block',
+        },
+        // Referrer Policy
+        {
+          key: 'Referrer-Policy',
+          value: 'strict-origin-when-cross-origin',
+        },
+        // HSTS (Force HTTPS) - 2 years
+        {
+          key: 'Strict-Transport-Security',
+          value: 'max-age=63072000; includeSubDomains; preload',
+        },
+        // Permissions Policy (disable unused features)
+        {
+          key: 'Permissions-Policy',
+          value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+        },
+      ];
+
       return [
+        // Apply security headers to all routes
+        {
+          source: '/:path*',
+          headers: securityHeaders,
+        },
         // Cache busting ONLY for API routes (not static assets)
         {
           source: '/api/:path*',
           headers: [
+            ...securityHeaders,
             {
               key: 'X-Cache-Bust',
               value: `${CACHE_BUST_TIMESTAMP}`,

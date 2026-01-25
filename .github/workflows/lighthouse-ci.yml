@@ -1,53 +1,49 @@
-# LIGHTHOUSE CI WORKFLOW - SIMPLIFIED & ROBUST
-#
-# Simplified version that focuses on essential performance monitoring
-# without complex artifact handling that causes failures
-
 name: Lighthouse CI
 
 on:
-  push:
-    branches: [main]
   pull_request:
+    branches: [main]
+  push:
     branches: [main]
 
 jobs:
   lighthouse:
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
+        
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: npm
-
+          node-version: '20'
+          cache: 'npm'
+          
       - name: Install dependencies
         run: npm ci
-
+        env:
+          SKIP_I18N_VALIDATION: true
+        
       - name: Build application
         run: npm run build
         env:
           SKIP_I18N_VALIDATION: true
-
-      - name: Start application
-        run: npm run start &
-        env:
-          PORT: 3000
-
-      - name: Wait for application to be ready
-        run: |
-          timeout 60 bash -c 'until curl -f http://localhost:3000/dashboard; do sleep 2; done'
-
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          
       - name: Install Lighthouse CI
-        run: npm install -g @lhci/cli@0.12.x
-
+        run: npm install -g @lhci/cli@0.13.x
+        
       - name: Run Lighthouse CI
-        run: lhci autorun --upload.target=temporary-public-storage
-        continue-on-error: true
-
-      - name: Performance Check Complete
-        run: echo "✅ Lighthouse CI completed - check logs for results"
+        run: lhci autorun
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+          
+      - name: Upload Lighthouse results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-results
+          path: .lighthouseci
+          retention-days: 30
