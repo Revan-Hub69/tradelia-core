@@ -27,6 +27,7 @@ import {
   ExitIcon,
   ForumIcon,
   GlobeIcon,
+  HelpIcon,
   HomeIcon,
   // Educational icons
   LearnIcon,
@@ -67,6 +68,7 @@ export {
   ExitIcon,
   ForumIcon,
   GlobeIcon,
+  HelpIcon,
   HomeIcon,
   // Educational icons
   LearnIcon,
@@ -123,6 +125,7 @@ export const ICON_MAP = {
   LockIcon,
   ExitIcon,
   MoreVerticalIcon,
+  HelpIcon,
 
   // New Phase 3A icons
   TrendingUpIcon,

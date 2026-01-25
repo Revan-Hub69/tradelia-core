@@ -5,7 +5,7 @@
  * Supporta feature flags, badges, analytics tracking
  */
 
-export type NavigationItemId = 'home' | 'learn' | 'tools' | 'community' | 'profile';
+export type NavigationItemId = 'home' | 'learn' | 'tools' | 'community' | 'help' | 'profile';
 
 export type NavigationItem = {
   id: NavigationItemId;
@@ -81,6 +81,14 @@ export const NAVIGATION_CONFIG: NavigationConfig = {
       iconName: 'CommunityIcon',
       featureFlag: 'COMMUNITY_ENABLED',
       badgeType: 'dot', // Nuovi messaggi/reply
+    },
+    {
+      id: 'help',
+      labelKey: 'Dashboard.nav_help',
+      ariaKey: 'Dashboard.nav_help',
+      href: '/dashboard/help',
+      iconName: 'HelpIcon',
+      isPriority: false,
     },
     {
       id: 'profile',

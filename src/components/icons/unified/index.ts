@@ -31,6 +31,7 @@ export {
   ExitIcon,
   ForumIcon,
   GlobeIcon,
+  HelpIcon,
   HomeIcon,
   // Educational icons
   LearnIcon,

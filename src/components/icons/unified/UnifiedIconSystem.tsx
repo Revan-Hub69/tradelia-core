@@ -719,6 +719,23 @@ SidebarExpandIcon.displayName = 'TradeliaSidebarExpandIcon';
 SidebarCollapseIcon.displayName = 'TradeliaSidebarCollapseIcon';
 SidebarToggleIcon.displayName = 'TradeliaSidebarToggleIcon';
 
+// HELP ICON - Question mark in circle, universal help symbol
+export const HelpIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isActive?: boolean;
+}>(({
+  isActive = false,
+  ...props
+}) => (
+  <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    {/* Circle with question mark - universally recognized help symbol */}
+    <circle cx="12" cy="12" r="10" />
+    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+    <path d="M12 17h.01" />
+  </SignatureIconBase>
+));
+
+HelpIcon.displayName = 'TradeliaHelpIcon';
+
 // Legacy aliases for compatibility - Updated with enhanced versions
 export const LightIcon = SunIcon;
 export const DarkIcon = MoonIcon;
