@@ -51,9 +51,8 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
         rarity: badge.rarity,
       });
       awardedBadges.push(awardedBadge);
-    } catch (error) {
-      // Badge already awarded - not an error
-      console.log('Badge already awarded:', badge.id);
+    } catch {
+      // Badge already awarded - not an error (unique constraint)
     }
   }
 

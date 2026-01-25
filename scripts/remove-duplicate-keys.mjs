@@ -4,8 +4,7 @@
  * Keeps the first occurrence of each key.
  */
 
-import { readFileSync, writeFileSync } from 'fs';
-import { join } from 'path';
+import { readFileSync, writeFileSync } from 'node:fs';
 
 function removeDuplicates(filePath) {
   console.log(`\n🔍 Processing ${filePath}...`);

@@ -7,7 +7,6 @@
  */
 
 import { readFileSync, writeFileSync } from 'node:fs';
-import { glob } from 'glob';
 
 const filesToProcess = [
   'src/app/[locale]/(auth)/(center)/auth/page.tsx',

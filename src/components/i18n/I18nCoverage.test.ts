@@ -107,9 +107,8 @@ const getDashboardPageContent = (): string[] => {
     if (fs.existsSync(learnPath)) {
       pageFiles.push(fs.readFileSync(learnPath, 'utf-8'));
     }
-  } catch (error) {
+  } catch {
     // If files don't exist in test environment, return empty array
-    console.warn('Dashboard page files not found in test environment');
   }
 
   return pageFiles;
@@ -226,7 +225,7 @@ describe('I18n Coverage Property Tests', () => {
       // Feature: enterprise-complete-roadmap-2026, Property 4: Complete i18n coverage
       fc.assert(fc.property(
         fc.constant(['Dashboard']),
-        (namespace) => {
+        (_namespace) => {
           // Property: Dashboard namespace should have complete and consistent structure
 
           const enDashboard = enLocale.Dashboard;
@@ -276,7 +275,7 @@ describe('I18n Coverage Property Tests', () => {
       // Feature: enterprise-complete-roadmap-2026, Property 4: Complete i18n coverage
       fc.assert(fc.property(
         fc.constant(['LearnPage']),
-        (namespace) => {
+        (_namespace) => {
           // Property: LearnPage namespace should have complete i18n coverage
 
           const enLearnPage = enLocale.LearnPage;

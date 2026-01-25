@@ -18,7 +18,7 @@ import {
 } from '@/data/navigation.config';
 
 // Mock i18n keys that should exist for navigation
-const REQUIRED_I18N_KEYS = [
+const _REQUIRED_I18N_KEYS = [
   'nav_home',
   'nav_learn',
   'nav_tools',

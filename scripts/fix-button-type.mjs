@@ -4,8 +4,7 @@
  * WCAG 2.1 Level AA compliance fix.
  */
 
-import { readFileSync, writeFileSync } from 'fs';
-import { glob } from 'glob';
+import { readFileSync, writeFileSync } from 'node:fs';
 
 const files = [
   'src/components/dashboard/DashboardHeader.tsx',

@@ -151,7 +151,7 @@ export async function checkEmailExistsServer(email: string): Promise<{
     // Email check result logged to server
 
     return { exists: userExists };
-  } catch (error) {
+  } catch {
     // On exception (missing env vars in dev), assume new user
     return { exists: false };
   }
