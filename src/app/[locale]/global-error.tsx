@@ -146,6 +146,12 @@ export default function GlobalError({
               onMouseOut={(e) => {
                 e.currentTarget.style.backgroundColor = '#2563eb';
               }}
+              onFocus={(e) => {
+                e.currentTarget.style.backgroundColor = '#1d4ed8';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.backgroundColor = '#2563eb';
+              }}
             >
               <RefreshCw style={{ width: '1rem', height: '1rem' }} />
               Try again

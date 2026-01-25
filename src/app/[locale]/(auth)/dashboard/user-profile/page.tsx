@@ -44,12 +44,12 @@ const UserProfilePage = () => {
         {user && (
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium text-muted-foreground">Email</label>
+              <div className="text-sm font-medium text-muted-foreground">Email</div>
               <p className="text-lg">{user.email}</p>
             </div>
 
             <div>
-              <label className="text-sm font-medium text-muted-foreground">User ID</label>
+              <div className="text-sm font-medium text-muted-foreground">User ID</div>
               <p className="font-mono text-sm text-muted-foreground">{user.id}</p>
             </div>
 

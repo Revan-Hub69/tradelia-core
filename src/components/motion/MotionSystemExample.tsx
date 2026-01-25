@@ -313,11 +313,12 @@ export const MotionSystemExample: React.FC = () => {
 
             <div className="space-y-4">
               <div>
-                <label className="mb-2 block text-sm font-medium">
+                <label htmlFor="focus-input" className="mb-2 block text-sm font-medium">
                   Input con focus motion
                 </label>
                 <SemanticAnimation type="focus" context="form">
                   <input
+                    id="focus-input"
                     type="text"
                     placeholder="Focus per vedere l'animazione"
                     className="w-full rounded-lg border border-border px-3 py-2 transition-all focus:outline-none focus:ring-2 focus:ring-primary/50"
