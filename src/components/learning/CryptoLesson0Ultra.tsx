@@ -383,7 +383,7 @@ export const CryptoLesson0Ultra: React.FC = () => {
               'Algoritmi di consenso (PoW, PoS)',
               'Strutture dati Merkle Tree',
               'Rete peer-to-peer distribuita',
-            ].map((item) => (
+            ].map(item => (
               <div key={`tech-foundation-ultra-${item.substring(0, 15)}`} className="flex items-start gap-3 rounded-lg bg-muted/30 p-3">
                 <div className="mt-2 size-1.5 shrink-0 rounded-full bg-primary"></div>
                 <span className="text-sm leading-relaxed">{item}</span>
@@ -403,7 +403,7 @@ export const CryptoLesson0Ultra: React.FC = () => {
               { title: 'Immutabilità', desc: 'Resistenza alle modifiche retroattive' },
               { title: 'Trasparenza', desc: 'Tutte le transazioni verificabili' },
               { title: 'Pseudonimato', desc: 'Privacy con trasparenza selettiva' },
-            ].map((item) => (
+            ].map(item => (
               <div key={`property-${item.title}`} className="rounded-lg bg-muted/30 p-3">
                 <div className="text-sm font-medium text-foreground">{item.title}</div>
                 <div className="mt-1 text-xs text-muted-foreground">{item.desc}</div>
@@ -576,7 +576,8 @@ export const CryptoLesson0Ultra: React.FC = () => {
           const isExplored = exploredApproaches.has(key as ApproachType);
 
           return (
-            <button type="button"
+            <button
+              type="button"
               key={key}
               onClick={() => handleApproachChange(key as ApproachType)}
               className={`
@@ -659,7 +660,7 @@ export const CryptoLesson0Ultra: React.FC = () => {
                 'Nessuna autorità centrale controlla il sistema',
                 'La sicurezza deriva dalla verifica collettiva',
                 'Una volta registrata, una transazione è immutabile',
-              ].map((point) => (
+              ].map(point => (
                 <div key={`analogical-point-${point.substring(0, 20)}`} className="flex items-start gap-3 rounded-xl bg-white/50 p-4">
                   <div className="mt-2 size-2 shrink-0 rounded-full bg-blue-500"></div>
                   <span className="text-sm font-medium leading-relaxed">{point}</span>
@@ -670,7 +671,7 @@ export const CryptoLesson0Ultra: React.FC = () => {
                 'Ogni step è verificabile matematicamente',
                 'Non serve fiducia in intermediari',
                 'Il processo è trasparente e auditabile',
-              ].map((point) => (
+              ].map(point => (
                 <div key={`procedural-point-${point.substring(0, 20)}`} className="flex items-start gap-3 rounded-xl bg-white/50 p-4">
                   <div className="mt-2 size-2 shrink-0 rounded-full bg-green-500"></div>
                   <span className="text-sm font-medium leading-relaxed">{point}</span>
@@ -681,7 +682,7 @@ export const CryptoLesson0Ultra: React.FC = () => {
                 'Sistema basato su matematica, non fiducia',
                 'Consenso distribuito sostituisce autorità centrale',
                 'Trade-off tra decentralizzazione e scalabilità',
-              ].map((point) => (
+              ].map(point => (
                 <div key={`conceptual-point-${point.substring(0, 20)}`} className="flex items-start gap-3 rounded-xl bg-white/50 p-4">
                   <div className="mt-2 size-2 shrink-0 rounded-full bg-purple-500"></div>
                   <span className="text-sm font-medium leading-relaxed">{point}</span>

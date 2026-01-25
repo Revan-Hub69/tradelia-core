@@ -239,7 +239,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     }
 
     return (
-      <button type="button"
+      <button
+        type="button"
         onClick={() => setShowSearchModal(true)}
         className={cn(
           'flex items-center gap-2 px-3 py-1.5 rounded-md',

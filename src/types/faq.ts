@@ -1,10 +1,10 @@
-export interface FAQItem {
+export type FAQItem = {
   id: string;
   question: string;
   answer: string;
   category: FAQCategory;
   keywords?: string[]; // For search
-}
+};
 
 export type FAQCategory =
   | 'general'
@@ -14,8 +14,8 @@ export type FAQCategory =
   | 'billing'
   | 'privacy';
 
-export interface FAQCategoryInfo {
+export type FAQCategoryInfo = {
   id: FAQCategory;
   label: string;
   icon?: string;
-}
+};

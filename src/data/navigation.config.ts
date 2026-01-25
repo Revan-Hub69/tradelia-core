@@ -172,7 +172,7 @@ export type NavigationAnalyticsEvent = {
 export const trackNavigationEvent = (_event: NavigationAnalyticsEvent): void => {
   // TODO: Implementare tracking reale
   // Development logging removed for production readiness
-  
+
   // In produzione: inviare a analytics service
   // analytics.track('navigation', _event);
 };

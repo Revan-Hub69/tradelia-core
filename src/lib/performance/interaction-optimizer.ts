@@ -1,6 +1,6 @@
 /**
  * Interaction Optimizer for INP Improvement
- * 
+ *
  * Provides utilities to optimize heavy interactions and prevent long tasks
  * Based on 2026 Core Web Vitals best practices
  */
@@ -14,7 +14,7 @@
  * Use this to break up long computations
  */
 export function yieldToMain(): Promise<void> {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(resolve, 0);
   });
 }
@@ -30,7 +30,7 @@ export async function executeWithYielding<T>(
 ): Promise<void> {
   for (let i = 0; i < items.length; i++) {
     await callback(items[i]!, i);
-    
+
     // Yield to main thread periodically
     if (i % yieldEvery === 0 && i > 0) {
       await yieldToMain();
@@ -48,18 +48,18 @@ export async function processInChunks<T, R>(
   chunkSize = 50,
 ): Promise<R[]> {
   const results: R[] = [];
-  
+
   for (let i = 0; i < items.length; i += chunkSize) {
     const chunk = items.slice(i, i + chunkSize);
     const chunkResults = await processor(chunk);
     results.push(...chunkResults);
-    
+
     // Yield after each chunk
     if (i + chunkSize < items.length) {
       await yieldToMain();
     }
   }
-  
+
   return results;
 }
 
@@ -76,12 +76,12 @@ export function debounce<T extends (...args: any[]) => any>(
   delay: number,
 ): (...args: Parameters<T>) => void {
   let timeoutId: NodeJS.Timeout | null = null;
-  
+
   return function debounced(...args: Parameters<T>) {
     if (timeoutId) {
       clearTimeout(timeoutId);
     }
-    
+
     timeoutId = setTimeout(() => {
       func(...args);
       timeoutId = null;
@@ -99,11 +99,11 @@ export function throttle<T extends (...args: any[]) => any>(
 ): (...args: Parameters<T>) => void {
   let lastCall = 0;
   let timeoutId: NodeJS.Timeout | null = null;
-  
+
   return function throttled(...args: Parameters<T>) {
     const now = Date.now();
     const timeSinceLastCall = now - lastCall;
-    
+
     if (timeSinceLastCall >= interval) {
       // Execute immediately
       lastCall = now;
@@ -113,7 +113,7 @@ export function throttle<T extends (...args: any[]) => any>(
       if (timeoutId) {
         clearTimeout(timeoutId);
       }
-      
+
       timeoutId = setTimeout(() => {
         lastCall = Date.now();
         func(...args);
@@ -131,12 +131,12 @@ export function rafThrottle<T extends (...args: any[]) => any>(
   func: T,
 ): (...args: Parameters<T>) => void {
   let rafId: number | null = null;
-  
+
   return function throttled(...args: Parameters<T>) {
     if (rafId !== null) {
       return;
     }
-    
+
     rafId = requestAnimationFrame(() => {
       func(...args);
       rafId = null;
@@ -226,13 +226,13 @@ export function observeInteraction(
   };
 
   // Add event listeners
-  events.forEach(event => {
+  events.forEach((event) => {
     element.addEventListener(event, handler, { passive: true, once });
   });
 
   // Cleanup function
   const cleanup = () => {
-    events.forEach(event => {
+    events.forEach((event) => {
       element.removeEventListener(event, handler);
     });
   };

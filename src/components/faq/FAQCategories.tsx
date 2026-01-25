@@ -2,11 +2,11 @@
 
 import type { FAQCategory, FAQCategoryInfo } from '@/types/faq';
 
-interface FAQCategoriesProps {
+type FAQCategoriesProps = {
   categories: FAQCategoryInfo[];
   activeCategory: FAQCategory | 'all';
   onCategoryChange: (category: FAQCategory | 'all') => void;
-}
+};
 
 export function FAQCategories({
   categories,
@@ -26,7 +26,7 @@ export function FAQCategories({
       >
         All
       </button>
-      {categories.map((category) => (
+      {categories.map(category => (
         <button
           key={category.id}
           type="button"

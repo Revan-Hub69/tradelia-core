@@ -61,7 +61,8 @@ export const CryptoLesson0Simple: React.FC = () => {
       {/* Tabs */}
       <div className="flex gap-2 rounded-lg bg-gray-100 p-1">
         {Object.entries(content).map(([key, data]) => (
-          <button type="button"
+          <button
+            type="button"
             key={key}
             onClick={() => handleTabClick(key as any)}
             className={`

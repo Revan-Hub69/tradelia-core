@@ -1,0 +1,37 @@
+TRADELIA
+========
+
+Your Tradelia magic link
+
+
+🇬🇧 ENGLISH
+============
+
+Sign in to Tradelia
+
+Click the button below to sign in to your account. This link will expire in 1 hour.
+
+Sign in by clicking this link:
+{{.ConfirmationURL}}
+
+If you didn't request this link, you can safely ignore this email.
+
+
+🇮🇹 ITALIANO
+=============
+
+Accedi a Tradelia
+
+Clicca il pulsante qui sotto per accedere al tuo account. Questo link scadrà tra 1 ora.
+
+Accedi cliccando questo link:
+{{.ConfirmationURL}}
+
+Se non hai richiesto questo link, puoi ignorare questa email.
+
+
+---
+Tradelia - Learn crypto trading through gamification
+Visit Website: {{.SiteURL}}
+Contact Support: {{.SiteURL}}/contact
+© 2026 Tradelia. All rights reserved.

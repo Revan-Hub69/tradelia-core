@@ -29,7 +29,7 @@ for (const file of filesToProcess) {
     content = content.replace(/\s*console\.log\([^)]*\);?\s*/g, '');
 
     // Remove console.warn statements (keep those with eslint-disable)
-    content = content.replace(/(?<!\/\/ eslint-disable-next-line no-console\s*)\s*console\.warn\([^)]*\);?\s*/g, '');
+    content = content.replace(/(?<!\/\/ eslint-disable-next-line no-console)\s*console\.warn\([^)]*\);?\s*/g, '');
 
     // Remove console.info statements
     content = content.replace(/\s*console\.info\([^)]*\);?\s*/g, '');

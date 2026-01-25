@@ -1,6 +1,6 @@
 /**
  * Landing Page Loading State
- * 
+ *
  * Streaming SSR: Shows skeleton while landing page loads
  * Provides instant feedback to users
  */

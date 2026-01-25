@@ -1,6 +1,6 @@
 /**
  * Optimized Interaction Hook
- * 
+ *
  * Provides optimized event handlers to improve INP
  * Automatically debounces, throttles, or defers heavy operations
  */
@@ -17,11 +17,11 @@ import { debounce, rafThrottle, runWhenIdle, throttle, yieldToMain } from '@/lib
 
 type OptimizationStrategy = 'debounce' | 'throttle' | 'raf' | 'idle' | 'yield';
 
-interface UseOptimizedInteractionOptions {
+type UseOptimizedInteractionOptions = {
   strategy?: OptimizationStrategy;
   delay?: number; // For debounce/throttle
   immediate?: boolean; // Execute immediately then optimize
-}
+};
 
 // ============================================================================
 // HOOK: useOptimizedClick
@@ -50,16 +50,16 @@ export function useOptimizedClick<T extends (...args: any[]) => any>(
     switch (strategy) {
       case 'debounce':
         return debounce(execute, delay)();
-      
+
       case 'throttle':
         return throttle(execute, delay)();
-      
+
       case 'raf':
         return rafThrottle(execute)();
-      
+
       case 'idle':
         return runWhenIdle(execute)();
-      
+
       case 'yield':
       default:
         if (immediate) {
@@ -89,13 +89,13 @@ export function useOptimizedChange<T extends (...args: any[]) => any>(
   callbackRef.current = callback;
 
   const debouncedRef = useRef(
-    debounce((...args: Parameters<T>) => callbackRef.current(...args), delay)
+    debounce((...args: Parameters<T>) => callbackRef.current(...args), delay),
   );
 
   useEffect(() => {
     debouncedRef.current = debounce(
       (...args: Parameters<T>) => callbackRef.current(...args),
-      delay
+      delay,
     );
   }, [delay]);
 
@@ -120,13 +120,13 @@ export function useOptimizedScroll<T extends (...args: any[]) => any>(
   callbackRef.current = callback;
 
   const throttledRef = useRef(
-    throttle((...args: Parameters<T>) => callbackRef.current(...args), interval)
+    throttle((...args: Parameters<T>) => callbackRef.current(...args), interval),
   );
 
   useEffect(() => {
     throttledRef.current = throttle(
       (...args: Parameters<T>) => callbackRef.current(...args),
-      interval
+      interval,
     );
   }, [interval]);
 
@@ -150,7 +150,7 @@ export function useOptimizedResize<T extends (...args: any[]) => any>(
   callbackRef.current = callback;
 
   const rafThrottledRef = useRef(
-    rafThrottle((...args: Parameters<T>) => callbackRef.current(...args))
+    rafThrottle((...args: Parameters<T>) => callbackRef.current(...args)),
   );
 
   return useCallback((...args: Parameters<T>) => {
@@ -194,13 +194,13 @@ export function useHeavyComputation<T, R>(
   return useCallback(async (data: T): Promise<R> => {
     // Yield to main thread first
     await yieldToMain();
-    
+
     // Execute computation
     const result = await computationRef.current(data);
-    
+
     // Yield again before returning
     await yieldToMain();
-    
+
     return result;
   }, []);
 }
@@ -295,7 +295,9 @@ export function useInteractionObserver(
       cleanupRef.current = null;
     }
 
-    if (!element) return;
+    if (!element) {
+ return;
+}
 
     const {
       events = ['mouseenter', 'touchstart', 'focus'],
@@ -310,13 +312,13 @@ export function useInteractionObserver(
     };
 
     // Add event listeners
-    events.forEach(event => {
+    events.forEach((event) => {
       element.addEventListener(event, handler, { passive: true, once });
     });
 
     // Cleanup function
     const cleanup = () => {
-      events.forEach(event => {
+      events.forEach((event) => {
         element.removeEventListener(event, handler);
       });
     };

@@ -45,7 +45,7 @@ export const FloatingProgress: React.FC<FloatingProgressProps> = ({
   const strokeDashoffset = circumference - (progress / 100) * circumference;
 
   return (
-    <div className="z-sticky fixed right-6 top-1/2 hidden -translate-y-1/2 lg:block">
+    <div className="fixed right-6 top-1/2 z-sticky hidden -translate-y-1/2 lg:block">
       <div
         className="group relative rounded-2xl border border-white/20 bg-white/90 p-4 shadow-xl shadow-black/10 backdrop-blur-xl transition-all duration-300 hover:bg-white/95 hover:shadow-2xl dark:border-white/10 dark:bg-slate-900/90 dark:shadow-black/30 dark:hover:bg-slate-900/95"
         onMouseEnter={() => setIsExpanded(true)}

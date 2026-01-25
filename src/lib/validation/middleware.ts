@@ -1,6 +1,6 @@
 /**
  * Validation Middleware for API Routes (2026)
- * 
+ *
  * Provides type-safe validation for Next.js API routes
  * with comprehensive error handling and sanitization
  */
@@ -28,7 +28,7 @@ export class ValidationError extends Error {
 // VALIDATION RESULT TYPES
 // ============================================================================
 
-export type ValidationResult<T> = 
+export type ValidationResult<T> =
   | { success: true; data: T }
   | { success: false; error: string; errors: Array<{ field: string; message: string }> };
 
@@ -52,14 +52,14 @@ export function validate<T>(
         field: err.path.join('.'),
         message: err.message,
       }));
-      
+
       return {
         success: false,
         error: 'Validation failed',
         errors,
       };
     }
-    
+
     return {
       success: false,
       error: 'Unknown validation error',
@@ -76,11 +76,11 @@ export function validateOrThrow<T>(
   data: unknown,
 ): T {
   const result = validate(schema, data);
-  
+
   if (!result.success) {
     throw new ValidationError(result.error, result.errors);
   }
-  
+
   return result.data;
 }
 
@@ -115,11 +115,11 @@ export async function validateBodyOrThrow<T>(
   schema: z.ZodSchema<T>,
 ): Promise<T> {
   const result = await validateBody(request, schema);
-  
+
   if (!result.success) {
     throw new ValidationError(result.error, result.errors);
   }
-  
+
   return result.data;
 }
 
@@ -136,11 +136,11 @@ export function validateQuery<T>(
 ): ValidationResult<T> {
   const { searchParams } = new URL(request.url);
   const query: Record<string, string> = {};
-  
+
   searchParams.forEach((value, key) => {
     query[key] = value;
   });
-  
+
   return validate(schema, query);
 }
 
@@ -152,11 +152,11 @@ export function validateQueryOrThrow<T>(
   schema: z.ZodSchema<T>,
 ): T {
   const result = validateQuery(request, schema);
-  
+
   if (!result.success) {
     throw new ValidationError(result.error, result.errors);
   }
-  
+
   return result.data;
 }
 
@@ -182,11 +182,11 @@ export function validateParamsOrThrow<T>(
   schema: z.ZodSchema<T>,
 ): T {
   const result = validateParams(params, schema);
-  
+
   if (!result.success) {
     throw new ValidationError(result.error, result.errors);
   }
-  
+
   return result.data;
 }
 
@@ -196,7 +196,7 @@ export function validateParamsOrThrow<T>(
 
 /**
  * Wrap an API route handler with validation
- * 
+ *
  * @example
  * export const POST = withValidation(
  *   { body: userSchema },
@@ -231,7 +231,7 @@ export function withValidation<
     try {
       // Convert Request to NextRequest for validation
       const nextRequest = request as NextRequest;
-      
+
       const validated: {
         body?: TBody;
         query?: TQuery;
@@ -291,7 +291,7 @@ export function sanitizeObject<T extends Record<string, any>>(obj: T): T {
       sanitized[key] = value.map(item =>
         typeof item === 'string' ? sanitizeHTML(item) :
         typeof item === 'object' ? sanitizeObject(item) :
-        item
+        item,
       );
     } else if (typeof value === 'object' && value !== null) {
       sanitized[key] = sanitizeObject(value);

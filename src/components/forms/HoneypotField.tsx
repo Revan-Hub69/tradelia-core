@@ -13,7 +13,7 @@
 export function HoneypotField() {
   return (
     <div
-      className="absolute left-0 top-0 -z-10 h-0 w-0 opacity-0"
+      className="absolute left-0 top-0 -z-10 size-0 opacity-0"
       aria-hidden="true"
       tabIndex={-1}
     >

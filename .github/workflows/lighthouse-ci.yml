@@ -9,37 +9,37 @@ on:
 jobs:
   lighthouse:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          
+          cache: npm
+
       - name: Install dependencies
         run: npm ci
         env:
           SKIP_I18N_VALIDATION: true
-        
+
       - name: Build application
         run: npm run build
         env:
           SKIP_I18N_VALIDATION: true
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          
+
       - name: Install Lighthouse CI
         run: npm install -g @lhci/cli@0.13.x
-        
+
       - name: Run Lighthouse CI
         run: lhci autorun
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-          
+
       - name: Upload Lighthouse results
         uses: actions/upload-artifact@v4
         if: always()

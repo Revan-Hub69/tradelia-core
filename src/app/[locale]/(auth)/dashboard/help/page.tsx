@@ -1,8 +1,8 @@
 import { Mail } from 'lucide-react';
 import type { Metadata } from 'next';
 
-import { ContactForm } from '@/components/forms/ContactForm';
 import { FAQSection } from '@/components/faq/FAQSection';
+import { ContactForm } from '@/components/forms/ContactForm';
 
 export const metadata: Metadata = {
   title: 'Help & Support - Tradelia Dashboard',
@@ -24,27 +24,31 @@ export default function DashboardHelpPage() {
       <div className="rounded-lg border bg-card p-6 shadow-sm">
         <div className="flex items-start gap-4">
           <div className="rounded-full bg-primary/10 p-3">
-            <Mail className="h-6 w-6 text-primary" />
+            <Mail className="size-6 text-primary" />
           </div>
           <div className="flex-1">
             <h2 className="text-lg font-semibold">Need Help?</h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Our support team is here to help. Email us at{' '}
+              Our support team is here to help. Email us at
+{' '}
               <a
                 href="mailto:support@tradelia.org"
                 className="text-primary hover:underline"
               >
                 support@tradelia.org
-              </a>{' '}
+              </a>
+{' '}
               or use the contact form below.
             </p>
             <div className="mt-3 flex flex-wrap gap-4 text-sm">
               <div>
-                <span className="font-medium">Response Time:</span>{' '}
+                <span className="font-medium">Response Time:</span>
+{' '}
                 <span className="text-muted-foreground">Within 24 hours</span>
               </div>
               <div>
-                <span className="font-medium">Availability:</span>{' '}
+                <span className="font-medium">Availability:</span>
+{' '}
                 <span className="text-muted-foreground">Monday - Friday, 9AM - 6PM CET</span>
               </div>
             </div>

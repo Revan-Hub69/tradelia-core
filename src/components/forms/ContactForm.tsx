@@ -2,9 +2,9 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useTranslations } from 'next-intl';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -23,10 +23,10 @@ import { contactFormSchema, INQUIRY_TYPES } from '@/types/contact';
 
 import { HoneypotField } from './HoneypotField';
 
-interface ContactFormProps {
+type ContactFormProps = {
   variant?: 'landing' | 'dashboard';
   onSuccess?: () => void;
-}
+};
 
 export function ContactForm({
   variant = 'landing',
@@ -104,7 +104,9 @@ export function ContactForm({
           {/* Name field */}
           <div className="space-y-2">
             <Label htmlFor="name">
-              {t('name')} <span className="text-destructive" aria-label="required">*</span>
+              {t('name')}
+{' '}
+<span className="text-destructive" aria-label="required">*</span>
             </Label>
             <Input
               id="name"
@@ -130,7 +132,9 @@ export function ContactForm({
           {/* Email field */}
           <div className="space-y-2">
             <Label htmlFor="email">
-              {t('email')} <span className="text-destructive" aria-label="required">*</span>
+              {t('email')}
+{' '}
+<span className="text-destructive" aria-label="required">*</span>
             </Label>
             <Input
               id="email"
@@ -156,7 +160,13 @@ export function ContactForm({
           {/* Phone field (optional) */}
           <div className="space-y-2">
             <Label htmlFor="phone">
-              {t('phone')} <span className="text-sm text-muted-foreground">({t('optional')})</span>
+              {t('phone')}
+{' '}
+<span className="text-sm text-muted-foreground">
+(
+{t('optional')}
+)
+</span>
             </Label>
             <Input
               id="phone"
@@ -181,12 +191,13 @@ export function ContactForm({
           {/* Inquiry Type dropdown */}
           <div className="space-y-2">
             <Label htmlFor="inquiryType">
-              {t('inquiryType')} <span className="text-destructive" aria-label="required">*</span>
+              {t('inquiryType')}
+{' '}
+<span className="text-destructive" aria-label="required">*</span>
             </Label>
             <Select
-              onValueChange={(value) =>
-                setValue('inquiryType', value as ContactFormData['inquiryType'])
-              }
+              onValueChange={value =>
+                setValue('inquiryType', value as ContactFormData['inquiryType'])}
             >
               <SelectTrigger
                 id="inquiryType"
@@ -199,7 +210,7 @@ export function ContactForm({
                 <SelectValue placeholder={t('inquiryTypePlaceholder')} />
               </SelectTrigger>
               <SelectContent>
-                {INQUIRY_TYPES.map((type) => (
+                {INQUIRY_TYPES.map(type => (
                   <SelectItem key={type} value={type}>
                     {t(`inquiryTypes.${type}`)}
                   </SelectItem>
@@ -220,7 +231,9 @@ export function ContactForm({
           {/* Subject field */}
           <div className="space-y-2">
             <Label htmlFor="subject">
-              {t('subject')} <span className="text-destructive" aria-label="required">*</span>
+              {t('subject')}
+{' '}
+<span className="text-destructive" aria-label="required">*</span>
             </Label>
             <Input
               id="subject"
@@ -246,7 +259,9 @@ export function ContactForm({
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="message">
-                {t('message')} <span className="text-destructive" aria-label="required">*</span>
+                {t('message')}
+{' '}
+<span className="text-destructive" aria-label="required">*</span>
               </Label>
               <span
                 className={`text-xs ${
@@ -256,7 +271,8 @@ export function ContactForm({
                 }`}
                 aria-live="polite"
               >
-                {messageLength}/2000
+                {messageLength}
+/2000
               </span>
             </div>
             <Textarea
@@ -267,7 +283,7 @@ export function ContactForm({
               aria-invalid={!!errors.message}
               aria-describedby={errors.message ? 'message-error' : undefined}
               {...register('message', {
-                onChange: (e) => setMessageLength(e.target.value.length),
+                onChange: e => setMessageLength(e.target.value.length),
               })}
             />
             {errors.message && (
@@ -287,9 +303,8 @@ export function ContactForm({
               <Checkbox
                 id="privacyConsent"
                 checked={privacyConsent}
-                onCheckedChange={(checked) =>
-                  setValue('privacyConsent', checked as boolean)
-                }
+                onCheckedChange={checked =>
+                  setValue('privacyConsent', checked as boolean)}
                 aria-required="true"
                 aria-invalid={!!errors.privacyConsent}
                 aria-describedby={
@@ -300,7 +315,8 @@ export function ContactForm({
                 htmlFor="privacyConsent"
                 className="text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
-                {t('privacyConsent')}{' '}
+                {t('privacyConsent')}
+{' '}
                 <Link
                   href="/privacy-policy"
                   className="text-primary hover:underline"
@@ -338,7 +354,7 @@ export function ContactForm({
         >
           <div className="flex items-start gap-3">
             <svg
-              className="mt-0.5 h-5 w-5 flex-shrink-0 text-green-600 dark:text-green-400"
+              className="mt-0.5 size-5 shrink-0 text-green-600 dark:text-green-400"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -374,7 +390,7 @@ export function ContactForm({
         >
           <div className="flex items-start gap-3">
             <svg
-              className="mt-0.5 h-5 w-5 flex-shrink-0 text-destructive"
+              className="mt-0.5 size-5 shrink-0 text-destructive"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"

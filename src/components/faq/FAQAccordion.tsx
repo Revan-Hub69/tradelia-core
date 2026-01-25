@@ -4,10 +4,10 @@ import type { FAQItem as FAQItemType } from '@/types/faq';
 
 import { FAQItem } from './FAQItem';
 
-interface FAQAccordionProps {
+type FAQAccordionProps = {
   items: FAQItemType[];
   defaultOpenFirst?: boolean;
-}
+};
 
 export function FAQAccordion({
   items,

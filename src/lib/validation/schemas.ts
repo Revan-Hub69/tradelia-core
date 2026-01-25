@@ -1,6 +1,6 @@
 /**
  * Comprehensive Validation Schemas (2026)
- * 
+ *
  * Based on tier-1 research:
  * - Zod official documentation
  * - OWASP input validation best practices
@@ -29,8 +29,8 @@ const sanitizeString = (str: string): string => {
  */
 const noPathTraversal = (str: string): boolean => {
   const dangerous = ['../', '..\\', '%2e%2e/', '%2e%2e\\'];
-  return !dangerous.some(pattern => 
-    str.toLowerCase().includes(pattern.toLowerCase())
+  return !dangerous.some(pattern =>
+    str.toLowerCase().includes(pattern.toLowerCase()),
   );
 };
 
@@ -81,7 +81,7 @@ export const emailSchema = z.string()
 export const usernameSchema = z.string()
   .min(3, 'Username must be at least 3 characters')
   .max(30, 'Username must be at most 30 characters')
-  .regex(/^[a-zA-Z0-9_]+$/, 'Username can only contain letters, numbers, and underscores')
+  .regex(/^\w+$/, 'Username can only contain letters, numbers, and underscores')
   .transform(sanitizeString)
   .refine(noPathTraversal, 'Invalid characters detected')
   .refine(noNullBytes, 'Invalid characters detected');
@@ -94,8 +94,8 @@ export const passwordSchema = z.string()
   .max(128, 'Password too long')
   .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
   .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-  .regex(/[0-9]/, 'Password must contain at least one number')
-  .regex(/[^A-Za-z0-9]/, 'Password must contain at least one special character');
+  .regex(/\d/, 'Password must contain at least one number')
+  .regex(/[^A-Z0-9]/i, 'Password must contain at least one special character');
 
 /**
  * URL validation (only http/https)
@@ -111,7 +111,7 @@ export const urlSchema = z.string()
         return false;
       }
     },
-    'Only HTTP and HTTPS URLs are allowed'
+    'Only HTTP and HTTPS URLs are allowed',
   );
 
 /**
@@ -130,7 +130,7 @@ export const positiveIntSchema = z.number()
 /**
  * Bounded number validation
  */
-export const boundedNumberSchema = (min: number, max: number) => 
+export const boundedNumberSchema = (min: number, max: number) =>
   z.number()
     .min(min, `Must be at least ${min}`)
     .max(max, `Must be at most ${max}`);
@@ -140,9 +140,9 @@ export const boundedNumberSchema = (min: number, max: number) =>
  */
 export const filenameSchema = z.string()
   .max(255, 'Filename too long')
-  .regex(/^[a-zA-Z0-9._-]+$/, 'Invalid filename format')
-  .refine((name) => !name.startsWith('.'), 'Filename cannot start with dot')
-  .refine((name) => !name.includes('..'), 'Filename cannot contain double dots')
+  .regex(/^[\w.-]+$/, 'Invalid filename format')
+  .refine(name => !name.startsWith('.'), 'Filename cannot start with dot')
+  .refine(name => !name.includes('..'), 'Filename cannot contain double dots')
   .transform(sanitizeString)
   .refine(noPathTraversal, 'Invalid characters detected')
   .refine(noNullBytes, 'Invalid characters detected');

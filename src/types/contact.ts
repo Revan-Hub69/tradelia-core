@@ -26,7 +26,7 @@ export const contactFormSchema = z.object({
 
   phone: z
     .string()
-    .regex(/^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/, {
+    .regex(/^\+?\(?\d{1,4}\)?[-\s.]?\(?\d{1,4}\)?[-\s.]?\d{1,9}$/, {
       message: 'Please enter a valid phone number',
     })
     .optional()
@@ -46,7 +46,7 @@ export const contactFormSchema = z.object({
     .min(20, 'Message must be at least 20 characters')
     .max(2000, 'Message must be less than 2000 characters'),
 
-  privacyConsent: z.boolean().refine((val) => val === true, {
+  privacyConsent: z.boolean().refine(val => val === true, {
     message: 'You must accept the privacy policy',
   }),
 
@@ -57,8 +57,8 @@ export const contactFormSchema = z.object({
 export type ContactFormData = z.infer<typeof contactFormSchema>;
 
 // API response types
-export interface ContactFormResponse {
+export type ContactFormResponse = {
   success: boolean;
   message: string;
   error?: string;
-}
+};

@@ -5,10 +5,10 @@ import { useState } from 'react';
 
 import type { FAQItem as FAQItemType } from '@/types/faq';
 
-interface FAQItemProps {
+type FAQItemProps = {
   item: FAQItemType;
   defaultOpen?: boolean;
-}
+};
 
 export function FAQItem({ item, defaultOpen = false }: FAQItemProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
@@ -29,7 +29,7 @@ export function FAQItem({ item, defaultOpen = false }: FAQItemProps) {
       >
         <span className="text-base font-medium">{item.question}</span>
         <ChevronDown
-          className={`h-5 w-5 shrink-0 transition-transform duration-200 ${
+          className={`size-5 shrink-0 transition-transform duration-200 ${
             isOpen ? 'rotate-180' : ''
           }`}
           aria-hidden="true"

@@ -256,7 +256,7 @@ const UnifiedAuthPageContent = () => {
 
     try {
       // Get current locale for email language
-      const locale = window.location.pathname.split('/')[1] || 'en';
+      const currentLocale = window.location.pathname.split('/')[1] || 'en';
 
       // Use client-side signup with identities check (Tier 1 2026 method)
       const supabase = createClient();
@@ -266,7 +266,7 @@ const UnifiedAuthPageContent = () => {
         options: {
           emailRedirectTo: `${window.location.origin}/dashboard`,
           data: {
-            language: locale === 'it' ? 'it' : 'en', // For email template
+            language: currentLocale === 'it' ? 'it' : 'en', // For email template
             email_confirm: false, // Soft email confirmation
           },
         },
@@ -352,9 +352,6 @@ const UnifiedAuthPageContent = () => {
 
     const supabase = createClient();
 
-    // Get current locale for email language
-    const locale = window.location.pathname.split('/')[1] || 'en';
-
     // Use current origin for redirect (localhost in development)
     const redirectUrl = `${window.location.origin}/auth/callback`;
 
@@ -365,9 +362,6 @@ const UnifiedAuthPageContent = () => {
         queryParams: {
           access_type: 'offline',
           prompt: 'consent',
-        },
-        data: {
-          language: locale === 'it' ? 'it' : 'en', // For email template
         },
         // Skip email confirmation for OAuth providers
         skipBrowserRedirect: false,

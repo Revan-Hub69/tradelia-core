@@ -21,27 +21,27 @@ let totalFixed = 0;
 
 for (const file of files) {
   console.log(`\n🔍 Processing ${file}...`);
-  
+
   try {
     let content = readFileSync(file, 'utf-8');
     let fixCount = 0;
-    
+
     // Pattern: <button without type= attribute
     // Matches: <button onClick=... or <button className=... etc
     // Does NOT match: <button type="..." or <Button (component)
-    const pattern = /<button(\s+(?!type=)[^>]*?)>/g;
-    
+    const pattern = /<button(\s+(?!type=)[^>]*)>/g;
+
     content = content.replace(pattern, (match, attributes) => {
       // Check if this is already a submit button or has type
       if (attributes.includes('type=')) {
         return match; // Already has type, skip
       }
-      
+
       fixCount++;
       // Add type="button" as first attribute
       return `<button type="button"${attributes}>`;
     });
-    
+
     if (fixCount > 0) {
       writeFileSync(file, content, 'utf-8');
       console.log(`✅ Fixed ${fixCount} button(s)`);

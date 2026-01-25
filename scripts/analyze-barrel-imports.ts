@@ -1,19 +1,20 @@
 #!/usr/bin/env tsx
 /**
  * BARREL IMPORTS ANALYZER - 2026
- * 
+ *
  * Analizza l'uso di barrel imports nel progetto e calcola l'impatto
- * 
+ *
  * Based on:
  * - Atlassian: 75% faster builds by removing barrel files
  * - Vercel: Bundle size reduction up to 40%
- * 
+ *
  * Usage:
  *   npx tsx scripts/analyze-barrel-imports.ts
  */
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+
 import { glob } from 'glob';
 
 // Barrel files to analyze
@@ -46,26 +47,28 @@ function analyzeFile(filePath: string): BarrelUsage[] {
 
   lines.forEach((line, index) => {
     // Match: import { X, Y, Z } from '@/components'
-    const importMatch = line.match(/import\s+(?:type\s+)?{([^}]+)}\s+from\s+['"]([^'"]+)['"]/);
-    
+    const importMatch = line.match(/import\s+(?:type\s+)?\{([^}]+)\}\s+from\s+['"]([^'"]+)['"]/);
+
     if (importMatch) {
       const [, importsList, importPath] = importMatch;
-      
-      // Check if it's a barrel import
-      const isBarrel = BARREL_PATTERNS.some(pattern => importPath === pattern);
-      
-      if (isBarrel && importsList && importPath) {
-        const imports = importsList
-          .split(',')
-          .map(i => i.trim())
-          .filter(Boolean);
-        
-        usages.push({
-          file: filePath,
-          line: index + 1,
-          importPath,
-          imports,
-        });
+
+      // Check if it's a barrel import (only if importPath is defined)
+      if (importPath) {
+        const isBarrel = BARREL_PATTERNS.includes(importPath);
+
+        if (isBarrel && importsList) {
+          const imports = importsList
+            .split(',')
+            .map(i => i.trim())
+            .filter(Boolean);
+
+          usages.push({
+            file: filePath,
+            line: index + 1,
+            importPath,
+            imports,
+          });
+        }
       }
     }
   });
@@ -94,18 +97,18 @@ function analyzeProject(): BarrelStats {
 
   files.forEach((file) => {
     const usages = analyzeFile(file);
-    
+
     if (usages.length > 0) {
       stats.totalFiles++;
-      
+
       usages.forEach((usage) => {
         stats.totalImports += usage.imports.length;
-        
+
         if (!stats.byBarrel.has(usage.importPath)) {
           stats.byBarrel.set(usage.importPath, []);
         }
         stats.byBarrel.get(usage.importPath)!.push(usage);
-        
+
         // Track file import counts
         const currentCount = fileImportCounts.get(file) || 0;
         fileImportCounts.set(file, currentCount + usage.imports.length);
@@ -138,7 +141,7 @@ function printReport(stats: BarrelStats) {
   // By barrel
   console.log('📦 BY BARREL FILE');
   console.log('─'.repeat(80));
-  
+
   const sortedBarrels = Array.from(stats.byBarrel.entries())
     .sort((a, b) => {
       const aCount = a[1].reduce((sum, u) => sum + u.imports.length, 0);
@@ -149,7 +152,7 @@ function printReport(stats: BarrelStats) {
   sortedBarrels.forEach(([barrel, usages]) => {
     const totalImports = usages.reduce((sum, u) => sum + u.imports.length, 0);
     const filesCount = new Set(usages.map(u => u.file)).size;
-    
+
     console.log(`\n${barrel}`);
     console.log(`  Files: ${filesCount}`);
     console.log(`  Imports: ${totalImports}`);
@@ -161,7 +164,7 @@ function printReport(stats: BarrelStats) {
   // Top files
   console.log('🔥 TOP 10 FILES WITH MOST BARREL IMPORTS');
   console.log('─'.repeat(80));
-  
+
   stats.largestFiles.forEach(({ file, count }, index) => {
     const relativePath = file.replace(process.cwd(), '').replace(/\\/g, '/');
     console.log(`${index + 1}. ${relativePath}`);
@@ -173,7 +176,7 @@ function printReport(stats: BarrelStats) {
   // Recommendations
   console.log('💡 RECOMMENDATIONS');
   console.log('─'.repeat(80));
-  
+
   if (stats.totalImports === 0) {
     console.log('✅ No barrel imports found! Great job!');
   } else if (stats.totalImports < 50) {

@@ -129,4 +129,3 @@ export function WebVitalsMonitor() {
   // No UI - monitoring only
   return null;
 }
-

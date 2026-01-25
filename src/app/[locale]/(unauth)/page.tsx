@@ -1,5 +1,5 @@
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 import dynamic from 'next/dynamic';
+import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 
 import { Skeleton } from '@/components/ui/skeleton';
 import { BenefitsOverview } from '@/templates/BenefitsOverview';
@@ -13,17 +13,17 @@ import { PremiumFooter } from '@/templates/PremiumFooter';
 // Dynamic imports for below-fold components (performance optimization P0)
 const InteractiveDemo = dynamic(() => import('@/templates/InteractiveDemo').then(mod => ({ default: mod.InteractiveDemo })), {
   ssr: true, // Keep SSR for SEO
-  loading: () => <div className="reserve-space-lg"><Skeleton className="h-full w-full" /></div>,
+  loading: () => <div className="reserve-space-lg"><Skeleton className="size-full" /></div>,
 });
 
 const SocialProof = dynamic(() => import('@/templates/SocialProof').then(mod => ({ default: mod.SocialProof })), {
   ssr: true,
-  loading: () => <div className="reserve-space-md"><Skeleton className="h-full w-full" /></div>,
+  loading: () => <div className="reserve-space-md"><Skeleton className="size-full" /></div>,
 });
 
 const FAQ = dynamic(() => import('@/templates/FAQ').then(mod => ({ default: mod.FAQ })), {
   ssr: true,
-  loading: () => <div className="reserve-space-lg"><Skeleton className="h-full w-full" /></div>,
+  loading: () => <div className="reserve-space-lg"><Skeleton className="size-full" /></div>,
 });
 
 export async function generateMetadata(props: { params: Promise<{ locale: string }> }) {

@@ -50,7 +50,7 @@ export const metadata: Metadata = {
  *
  * This is the true root layout for Next.js App Router.
  * Nested layouts (like [locale]/layout.tsx) should NOT render html/head/body.
- * 
+ *
  * CSP Configuration (2026):
  * - Domain-based CSP with 'unsafe-inline' (no nonces)
  * - See: docs/research/CSP_NONCE_NEXTJS15_TIER1_2026.md
@@ -68,7 +68,7 @@ export default async function RootLayout({
         {/* Performance P0: Preconnect to external origins */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        
+
         {/* Performance P0: DNS prefetch for faster lookups */}
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
@@ -80,18 +80,18 @@ export default async function RootLayout({
           initialPosition={0.08}
           crawlSpeed={200}
           height={4}
-          crawl={true}
+          crawl
           showSpinner={false}
           easing="ease"
           speed={400}
           shadow="0 0 10px hsl(var(--primary)),0 0 5px hsl(var(--primary))"
           zIndex={9999}
         />
-        
+
         <RuntimeReady />
         <ServiceWorkerCleanup />
         <WebVitalsMonitor />
-        
+
         {/* Vercel Analytics - Real User Monitoring */}
         <Analytics />
         <SpeedInsights />

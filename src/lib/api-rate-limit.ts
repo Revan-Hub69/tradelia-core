@@ -1,6 +1,6 @@
 /**
  * API Rate Limiting Middleware (2026)
- * 
+ *
  * Wraps API routes with rate limiting protection
  * Based on tier-1 research: OWASP, Next.js best practices
  */
@@ -11,15 +11,15 @@ import { getClientIp, rateLimit, RateLimitPresets } from './rate-limit';
 
 export type ApiHandler = (request: Request) => Promise<Response>;
 
-export interface RateLimitOptions {
+export type RateLimitOptions = {
   limit?: number;
   window?: string;
   identifier?: (request: Request) => string;
-}
+};
 
 /**
  * Wrap API route with rate limiting
- * 
+ *
  * @example
  * ```typescript
  * export const POST = withRateLimit(
@@ -40,13 +40,13 @@ export function withRateLimit(
     const identifier = options.identifier
       ? options.identifier(request)
       : getClientIp(request);
-    
+
     // Apply rate limit
     const result = await rateLimit(identifier, {
       limit: options.limit || RateLimitPresets.api.limit,
       window: options.window || RateLimitPresets.api.window,
     });
-    
+
     // If rate limit exceeded, return 429
     if (!result.success) {
       return NextResponse.json(
@@ -66,16 +66,16 @@ export function withRateLimit(
         },
       );
     }
-    
+
     // Call handler
     const response = await handler(request);
-    
+
     // Add rate limit headers to response
     const headers = new Headers(response.headers);
     headers.set('X-RateLimit-Limit', String(options.limit || RateLimitPresets.api.limit));
     headers.set('X-RateLimit-Remaining', String(result.remaining));
     headers.set('X-RateLimit-Reset', String(result.reset));
-    
+
     return new Response(response.body, {
       status: response.status,
       statusText: response.statusText,

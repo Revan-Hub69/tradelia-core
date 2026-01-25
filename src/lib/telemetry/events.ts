@@ -114,7 +114,7 @@ export type TelemetryPayload = Record<string, unknown>;
 export function track(_event: TelemetryEvent, _payload?: TelemetryPayload): void {
   // No-op in production
   if (process.env.NODE_ENV === 'production') {
-    return;
+
   }
 
   // Analytics integration point

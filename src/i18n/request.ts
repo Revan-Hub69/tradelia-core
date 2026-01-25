@@ -15,7 +15,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
 
   // Load main messages (includes Dashboard, Learning, etc.)
   const mainMessages = (await import(`../locales/${locale}.json`)).default;
-  
+
   // Load additional namespace messages
   const commonMessages = (await import(`../../messages/${locale}/common.json`)).default;
   const dashboardSettingsMessages = (await import(`../../messages/${locale}/dashboard-settings.json`)).default;

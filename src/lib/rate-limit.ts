@@ -1,19 +1,19 @@
 /**
  * Rate Limiting Utility (2026)
- * 
+ *
  * Multi-layer rate limiting:
  * 1. Edge Middleware (fast, global)
  * 2. API Routes (granular, per-endpoint)
  * 3. Database (backup, persistent)
- * 
+ *
  * Based on tier-1 research: OWASP, Upstash
  */
 
 // Simple in-memory rate limiter (fallback if Redis not available)
-interface RateLimitEntry {
+type RateLimitEntry = {
   count: number;
   resetTime: number;
-}
+};
 
 const rateLimitStore = new Map<string, RateLimitEntry>();
 
@@ -27,16 +27,16 @@ setInterval(() => {
   }
 }, 5 * 60 * 1000);
 
-export interface RateLimitConfig {
+export type RateLimitConfig = {
   limit: number; // Max requests
   window: string; // Time window (e.g., '1 m', '10 s')
-}
+};
 
-export interface RateLimitResult {
+export type RateLimitResult = {
   success: boolean;
   remaining: number;
   reset: number;
-}
+};
 
 /**
  * Parse time window string to milliseconds
@@ -46,10 +46,10 @@ function parseWindow(window: string): number {
   if (!match || !match[1] || !match[2]) {
     throw new Error(`Invalid window format: ${window}`);
   }
-  
+
   const value = Number.parseInt(match[1], 10);
   const unit = match[2];
-  
+
   switch (unit) {
     case 's': return value * 1000;
     case 'm': return value * 60 * 1000;
@@ -60,7 +60,7 @@ function parseWindow(window: string): number {
 
 /**
  * Rate limit a request
- * 
+ *
  * @param identifier - Unique identifier (IP, user ID, etc)
  * @param config - Rate limit configuration
  * @returns Rate limit result
@@ -72,10 +72,10 @@ export async function rateLimit(
   const windowMs = parseWindow(config.window);
   const now = Date.now();
   const resetTime = now + windowMs;
-  
+
   // Get or create entry
   let entry = rateLimitStore.get(identifier);
-  
+
   if (!entry || entry.resetTime < now) {
     // Create new entry
     entry = {
@@ -83,14 +83,14 @@ export async function rateLimit(
       resetTime,
     };
     rateLimitStore.set(identifier, entry);
-    
+
     return {
       success: true,
       remaining: config.limit - 1,
       reset: resetTime,
     };
   }
-  
+
   // Check if limit exceeded
   if (entry.count >= config.limit) {
     return {
@@ -99,10 +99,10 @@ export async function rateLimit(
       reset: entry.resetTime,
     };
   }
-  
+
   // Increment count
   entry.count++;
-  
+
   return {
     success: true,
     remaining: config.limit - entry.count,
@@ -116,7 +116,7 @@ export async function rateLimit(
 export function getClientIp(request: Request): string {
   // Try various headers (Vercel, Cloudflare, etc)
   const headers = request.headers;
-  
+
   return (
     headers.get('x-forwarded-for')?.split(',')[0]?.trim()
     || headers.get('x-real-ip')
@@ -134,19 +134,19 @@ export const RateLimitPresets = {
     limit: 5,
     window: '1 m', // 5 attempts per minute
   },
-  
+
   // API endpoints (moderate)
   api: {
     limit: 60,
     window: '1 m', // 60 requests per minute
   },
-  
+
   // Public endpoints (lenient)
   public: {
     limit: 100,
     window: '1 m', // 100 requests per minute
   },
-  
+
   // Global (very lenient)
   global: {
     limit: 10,

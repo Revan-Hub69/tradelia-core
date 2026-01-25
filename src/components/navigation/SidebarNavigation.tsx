@@ -100,9 +100,9 @@ const SidebarNavigationItem = React.memo<SidebarNavigationItemProps>(
 
         return (
             <UiNavItem
-                asChild
-                active={isActive && canNavigate}
-                className={cn(
+              asChild
+              active={isActive && canNavigate}
+              className={cn(
                     'group relative',
                     {
                         'cursor-not-allowed opacity-40': !canNavigate,
@@ -112,20 +112,20 @@ const SidebarNavigationItem = React.memo<SidebarNavigationItemProps>(
                 )}
             >
                 <Link
-                    href={item.href}
-                    prefetch={item.isPriority && canNavigate}
-                    onClick={handleClick}
-                    className="flex w-full items-center gap-3"
-                    aria-disabled={!canNavigate}
-                    title={isCollapsed ? tGeneral(item.labelKey) : undefined}
+                  href={item.href}
+                  prefetch={item.isPriority && canNavigate}
+                  onClick={handleClick}
+                  className="flex w-full items-center gap-3"
+                  aria-disabled={!canNavigate}
+                  title={isCollapsed ? tGeneral(item.labelKey) : undefined}
                 >
                     {/* PREMIUM ACTIVE RAIL INDICATOR - Optimized Motion */}
                     {isActive && canNavigate && (
                         <motion.div
-                            layoutId="activeRail"
-                            className="absolute inset-y-0 left-0 w-1 rounded-r-full bg-primary"
-                            initial={false}
-                            transition={{
+                          layoutId="activeRail"
+                          className="absolute inset-y-0 left-0 w-1 rounded-r-full bg-primary"
+                          initial={false}
+                          transition={{
                                 type: 'spring',
                                 stiffness: 400,
                                 damping: 30,
@@ -136,7 +136,7 @@ const SidebarNavigationItem = React.memo<SidebarNavigationItemProps>(
 
                     {/* Icon with state indicators - CSS-based hover, Motion for complex animations */}
                     <div
-                        className={cn(
+                      className={cn(
                             'relative shrink-0 transition-all duration-200 ease-out',
                             'hover:scale-105 active:scale-95',
                             isActive
@@ -146,11 +146,11 @@ const SidebarNavigationItem = React.memo<SidebarNavigationItemProps>(
                         )}
                     >
                         <DynamicIcon
-                            name={item.iconName as IconName}
-                            size={24}
-                            variant="premium"
-                            isActive={isActive}
-                            className={cn(
+                          name={item.iconName as IconName}
+                          size={24}
+                          variant="premium"
+                          isActive={isActive}
+                          className={cn(
                                 'transition-colors duration-200',
                                 !canNavigate && 'opacity-60',
                             )}
@@ -174,7 +174,7 @@ const SidebarNavigationItem = React.memo<SidebarNavigationItemProps>(
                     {/* Label - Hidden when collapsed */}
                     {!isCollapsed && (
                         <span
-                            className={cn(
+                          className={cn(
                                 'flex-1 truncate text-muted-foreground transition-colors duration-200',
                                 'group-hover:text-foreground/90',
                                 isActive && canNavigate && 'text-foreground',

@@ -1,9 +1,9 @@
 /**
  * INP (Interaction to Next Paint) Monitoring Hook
- * 
+ *
  * Monitors and reports INP metrics for performance optimization
  * Based on 2026 Core Web Vitals standards
- * 
+ *
  * INP Thresholds:
  * - Good: < 200ms
  * - Needs Improvement: 200-500ms
@@ -18,21 +18,21 @@ import { useEffect, useRef } from 'react';
 // TYPES
 // ============================================================================
 
-export interface INPMetric {
+export type INPMetric = {
   value: number; // Duration in milliseconds
   rating: 'good' | 'needs-improvement' | 'poor';
   target: string; // Element that was interacted with
   eventType: string; // click, keydown, etc.
   timestamp: number;
-}
+};
 
-export interface INPReport {
+export type INPReport = {
   metrics: INPMetric[];
   averageINP: number;
   maxINP: number;
   poorInteractions: number;
   totalInteractions: number;
-}
+};
 
 // ============================================================================
 // CONSTANTS
@@ -51,8 +51,12 @@ const INP_THRESHOLDS = {
  * Get INP rating based on value
  */
 function getINPRating(value: number): 'good' | 'needs-improvement' | 'poor' {
-  if (value <= INP_THRESHOLDS.GOOD) return 'good';
-  if (value <= INP_THRESHOLDS.NEEDS_IMPROVEMENT) return 'needs-improvement';
+  if (value <= INP_THRESHOLDS.GOOD) {
+ return 'good';
+}
+  if (value <= INP_THRESHOLDS.NEEDS_IMPROVEMENT) {
+ return 'needs-improvement';
+}
   return 'poor';
 }
 
@@ -61,28 +65,36 @@ function getINPRating(value: number): 'good' | 'needs-improvement' | 'poor' {
  * CRITICAL FIX: Robust check for getAttribute method (handles SVG, non-Element objects)
  */
 function getElementSelector(element: Element | null): string {
-  if (!element) return 'unknown';
-  
+  if (!element) {
+ return 'unknown';
+}
+
   // CRITICAL: Check if element has getAttribute method (handles non-Element objects)
   if (typeof element.getAttribute !== 'function') {
     return element.tagName?.toLowerCase() || 'unknown';
   }
-  
+
   // Try ID first
-  if (element.id) return `#${element.id}`;
-  
+  if (element.id) {
+ return `#${element.id}`;
+}
+
   // Try data attributes
-  const dataAttr = element.getAttribute('data-testid') || 
-                   element.getAttribute('data-name');
-  if (dataAttr) return `[data-*="${dataAttr}"]`;
-  
+  const dataAttr = element.getAttribute('data-testid') ||
+    element.getAttribute('data-name');
+  if (dataAttr) {
+ return `[data-*="${dataAttr}"]`;
+}
+
   // Try class (handle both HTMLElement and SVGElement)
   const className = element.getAttribute('class');
   if (className) {
     const classes = className.split(' ').filter(Boolean).slice(0, 2).join('.');
-    if (classes) return `.${classes}`;
+    if (classes) {
+ return `.${classes}`;
+}
   }
-  
+
   // Fallback to tag name
   return element.tagName.toLowerCase();
 }
@@ -108,7 +120,9 @@ export function useINPMonitoring(options: {
   const observerRef = useRef<PerformanceObserver | null>(null);
 
   useEffect(() => {
-    if (!enabled || typeof window === 'undefined') return undefined;
+    if (!enabled || typeof window === 'undefined') {
+ return undefined;
+}
 
     // Check if PerformanceObserver is supported
     if (!('PerformanceObserver' in window)) {
@@ -125,7 +139,7 @@ export function useINPMonitoring(options: {
           // Type guard for PerformanceEventTiming
           if ('processingStart' in entry && 'processingEnd' in entry) {
             const eventEntry = entry as PerformanceEventTiming;
-            
+
             // Calculate INP (processing + rendering)
             const processingTime = eventEntry.processingEnd - eventEntry.processingStart;
             const renderTime = eventEntry.startTime + eventEntry.duration - eventEntry.processingEnd;
@@ -164,7 +178,7 @@ export function useINPMonitoring(options: {
       });
 
       // Observe event timing entries
-      observer.observe({ 
+      observer.observe({
         type: 'event',
         buffered: true, // Include past events
         durationThreshold: 16, // Only events > 16ms (1 frame)
@@ -240,7 +254,9 @@ function generateReport(metrics: INPMetric[]): INPReport {
  * Send INP report to analytics
  */
 export function sendINPReport(report: INPReport) {
-  if (typeof window === 'undefined') return;
+  if (typeof window === 'undefined') {
+ return;
+}
 
   // Send to analytics (e.g., Vercel Analytics, Google Analytics)
   if ('gtag' in window) {

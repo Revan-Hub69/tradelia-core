@@ -9,7 +9,7 @@ type ContactMessages = typeof import('../../messages/en/contact.json');
 // Merge all message types
 type AllMessages = Messages & {
   Common: CommonMessages;
-  'DashboardSettings': DashboardSettingsMessages;
+  DashboardSettings: DashboardSettingsMessages;
   Contact: ContactMessages;
 };
 

@@ -1,29 +1,30 @@
 #!/usr/bin/env tsx
 /**
  * HARDCODED STRINGS FINDER - 2026
- * 
+ *
  * Trova tutte le stringhe hardcoded che dovrebbero essere tradotte
  * Focus su: Header, Sidebar, Tooltips, Dropdowns, Popups
- * 
+ *
  * Usage:
  *   npx tsx scripts/find-hardcoded-strings.ts
  */
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+
 import { glob } from 'glob';
 
 // Patterns to detect hardcoded strings
 const STRING_PATTERNS = [
   // JSX text content: >text<
   />([A-Z][a-zA-Z\s]{2,})</g,
-  
+
   // String literals in JSX attributes
   /(?:title|placeholder|aria-label|alt)=["']([^"']+)["']/g,
-  
+
   // String literals in template literals
   /`([A-Z][a-zA-Z\s]{2,})`/g,
-  
+
   // String literals in quotes
   /["']([A-Z][a-zA-Z\s]{3,})["']/g,
 ];
@@ -61,7 +62,7 @@ const IGNORE_PATTERNS = [
   /^(cn|clsx|twMerge)/, // Utility functions
   /^(\.|\/)/, // Paths
   /^(http|https|www)/, // URLs
-  /^#[0-9a-fA-F]{3,6}$/, // Hex colors
+  /^#[0-9a-f]{3,6}$/i, // Hex colors
   /^rgb|rgba|hsl|hsla/, // Color functions
   /^var\(--/, // CSS variables
   /^@\//, // Path aliases
@@ -74,7 +75,7 @@ type HardcodedString = {
   string: string;
   context: string;
   severity: 'high' | 'medium' | 'low';
-}
+};
 
 function shouldIgnore(str: string): boolean {
   // Empty or too short
@@ -130,10 +131,10 @@ function analyzeFile(filePath: string): HardcodedString[] {
     // Check for hardcoded strings
     STRING_PATTERNS.forEach((pattern) => {
       const matches = line.matchAll(pattern);
-      
+
       for (const match of matches) {
         const str = match[1]?.trim();
-        
+
         if (!str || shouldIgnore(str)) {
           continue;
         }
@@ -174,7 +175,7 @@ function analyzeProject(): HardcodedString[] {
   // Analyze target files
   TARGET_PATTERNS.forEach((pattern) => {
     const files = glob.sync(pattern);
-    
+
     files.forEach((file) => {
       if (fs.existsSync(file)) {
         const results = analyzeFile(file);
@@ -222,7 +223,7 @@ function printReport(results: HardcodedString[]) {
   if (bySeverity.high.length > 0) {
     console.log('🔴 HIGH SEVERITY (User-facing UI)');
     console.log('─'.repeat(80));
-    
+
     const highByFile = bySeverity.high.reduce<Record<string, HardcodedString[]>>((acc, result) => {
       const relativePath = result.file.replace(process.cwd(), '').replace(/\\/g, '/');
       if (!acc[relativePath]) {
@@ -246,7 +247,7 @@ function printReport(results: HardcodedString[]) {
   if (bySeverity.medium.length > 0) {
     console.log('🟡 MEDIUM SEVERITY (Tooltips, labels)');
     console.log('─'.repeat(80));
-    
+
     const mediumByFile = bySeverity.medium.reduce<Record<string, HardcodedString[]>>((acc, result) => {
       const relativePath = result.file.replace(process.cwd(), '').replace(/\\/g, '/');
       if (!acc[relativePath]) {
@@ -271,7 +272,7 @@ function printReport(results: HardcodedString[]) {
   // Recommendations
   console.log('💡 RECOMMENDATIONS');
   console.log('─'.repeat(80));
-  
+
   if (results.length === 0) {
     console.log('✅ No hardcoded strings found! Great job!');
   } else {

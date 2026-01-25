@@ -10,12 +10,12 @@ import { FAQAccordion } from './FAQAccordion';
 import { FAQCategories } from './FAQCategories';
 import { FAQSearch } from './FAQSearch';
 
-interface FAQSectionProps {
+type FAQSectionProps = {
   variant?: 'landing' | 'dashboard';
   showSearch?: boolean;
   showCategories?: boolean;
   defaultCategory?: FAQCategory | 'all';
-}
+};
 
 export function FAQSection({
   variant = 'landing',
@@ -33,17 +33,17 @@ export function FAQSection({
 
     // Filter by category
     if (activeCategory !== 'all') {
-      filtered = filtered.filter((item) => item.category === activeCategory);
+      filtered = filtered.filter(item => item.category === activeCategory);
     }
 
     // Filter by search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
-        (item) =>
+        item =>
           item.question.toLowerCase().includes(query) ||
           item.answer.toLowerCase().includes(query) ||
-          item.keywords?.some((keyword) =>
+          item.keywords?.some(keyword =>
             keyword.toLowerCase().includes(query),
           ),
       );
@@ -87,8 +87,11 @@ export function FAQSection({
       {/* Results count */}
       {(searchQuery || activeCategory !== 'all') && (
         <p className="text-sm text-muted-foreground">
-          {filteredFAQs.length}{' '}
-          {filteredFAQs.length === 1 ? 'result' : 'results'} found
+          {filteredFAQs.length}
+{' '}
+          {filteredFAQs.length === 1 ? 'result' : 'results'}
+{' '}
+found
         </p>
       )}
 

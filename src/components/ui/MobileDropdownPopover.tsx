@@ -231,13 +231,13 @@ export const MobileDropdownPopover = React.memo<MobileDropdownPopoverProps>(({
   triggerRef,
 }) => {
   const t = useTranslations('Common');
-  
+
   const popoverRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState<Position>({ top: 0, left: 0 });
   const [placement, setPlacement] = useState<Placement>('bottom-end');
   const isTouchOnPopoverRef = useRef(false);
   const touchStartYRef = useRef(0);
-  
+
   // Responsive max height based on viewport (tier-1 research 2026)
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
   const MAX_PREVIEW_HEIGHT = isMobile ? MAX_PREVIEW_HEIGHT_MOBILE : MAX_PREVIEW_HEIGHT_DESKTOP;
