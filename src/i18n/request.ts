@@ -13,8 +13,23 @@ export default getRequestConfig(async ({ requestLocale }) => {
     notFound();
   }
 
+  // Load main messages
+  const mainMessages = (await import(`../locales/${locale}.json`)).default;
+  
+  // Load namespace messages
+  const dashboardMessages = (await import(`../../messages/${locale}/dashboard.json`)).default;
+  const commonMessages = (await import(`../../messages/${locale}/common.json`)).default;
+  const dashboardSettingsMessages = (await import(`../../messages/${locale}/dashboard-settings.json`)).default;
+  const contactMessages = (await import(`../../messages/${locale}/contact.json`)).default;
+
   return {
     locale,
-    messages: (await import(`../locales/${locale}.json`)).default,
+    messages: {
+      ...mainMessages,
+      Dashboard: dashboardMessages,
+      Common: commonMessages,
+      DashboardSettings: dashboardSettingsMessages,
+      Contact: contactMessages,
+    },
   };
 });

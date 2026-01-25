@@ -1,0 +1,32 @@
+{
+  "name": "Nome",
+  "namePlaceholder": "Mario Rossi",
+  "email": "Email",
+  "emailPlaceholder": "mario@esempio.it",
+  "phone": "Telefono",
+  "phonePlaceholder": "+39 123 456 7890",
+  "optional": "facoltativo",
+  "inquiryType": "Tipo di Richiesta",
+  "inquiryTypePlaceholder": "Seleziona tipo di richiesta",
+  "inquiryTypes": {
+    "general": "Richiesta Generale",
+    "technical": "Supporto Tecnico",
+    "account": "Problema Account",
+    "billing": "Domanda Fatturazione",
+    "feedback": "Feedback",
+    "other": "Altro"
+  },
+  "subject": "Oggetto",
+  "subjectPlaceholder": "Breve descrizione della tua richiesta",
+  "message": "Messaggio",
+  "messagePlaceholder": "Fornisci dettagli sulla tua richiesta...",
+  "privacyConsent": "Accetto la",
+  "privacyPolicy": "Privacy Policy",
+  "submit": "Invia Messaggio",
+  "sending": "Invio in corso...",
+  "successTitle": "Messaggio Inviato con Successo!",
+  "successMessage": "Grazie per averci contattato. Abbiamo ricevuto il tuo messaggio e risponderemo entro 24 ore.",
+  "successNextSteps": "💡 Suggerimento: Controlla la cartella spam se non vedi la nostra risposta nella posta in arrivo.",
+  "errorTitle": "Invio Fallito",
+  "errorMessage": "Qualcosa è andato storto. Riprova o contattaci direttamente a support@tradelia.org"
+}

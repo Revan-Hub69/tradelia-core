@@ -52,9 +52,7 @@ export default function ContactPage() {
         </div>
 
         {/* Contact form */}
-        <div className="rounded-lg border bg-card p-6">
-          <ContactForm />
-        </div>
+        <ContactForm variant="landing" />
       </div>
     </div>
   );

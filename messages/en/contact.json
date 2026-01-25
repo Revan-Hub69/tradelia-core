@@ -1,0 +1,32 @@
+{
+  "name": "Name",
+  "namePlaceholder": "John Doe",
+  "email": "Email",
+  "emailPlaceholder": "john@example.com",
+  "phone": "Phone",
+  "phonePlaceholder": "+1 (555) 123-4567",
+  "optional": "optional",
+  "inquiryType": "Inquiry Type",
+  "inquiryTypePlaceholder": "Select inquiry type",
+  "inquiryTypes": {
+    "general": "General Inquiry",
+    "technical": "Technical Support",
+    "account": "Account Issue",
+    "billing": "Billing Question",
+    "feedback": "Feedback",
+    "other": "Other"
+  },
+  "subject": "Subject",
+  "subjectPlaceholder": "Brief description of your inquiry",
+  "message": "Message",
+  "messagePlaceholder": "Please provide details about your inquiry...",
+  "privacyConsent": "I agree to the",
+  "privacyPolicy": "Privacy Policy",
+  "submit": "Send Message",
+  "sending": "Sending...",
+  "successTitle": "Message Sent Successfully!",
+  "successMessage": "Thank you for contacting us. We've received your message and will respond within 24 hours.",
+  "successNextSteps": "💡 Tip: Check your spam folder if you don't see our reply in your inbox.",
+  "errorTitle": "Failed to Send Message",
+  "errorMessage": "Something went wrong. Please try again or contact us directly at support@tradelia.org"
+}
