@@ -9,6 +9,9 @@ import { RuntimeReady } from '@/components/runtime/RuntimeReady';
 import { ServiceWorkerCleanup } from '@/components/ServiceWorkerCleanup';
 import { WebVitalsMonitor } from '@/components/WebVitalsMonitor';
 
+// Force dynamic rendering for CSP nonces (2026 security)
+export const dynamic = 'force-dynamic';
+
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
@@ -49,8 +52,10 @@ export const metadata: Metadata = {
  *
  * This is the true root layout for Next.js App Router.
  * Nested layouts (like [locale]/layout.tsx) should NOT render html/head/body.
+ * 
+ * CSP Nonces (2026): Next.js automatically applies nonces from middleware
  */
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -72,6 +77,7 @@ export default function RootLayout({
         <WebVitalsMonitor />
         
         {/* Vercel Analytics - Real User Monitoring */}
+        {/* Note: Next.js automatically applies nonce to scripts */}
         <Analytics />
         <SpeedInsights />
 
