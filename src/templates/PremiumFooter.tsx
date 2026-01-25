@@ -163,7 +163,7 @@ export const PremiumFooter = () => {
           {/* Brand section */}
           <AnimatedSection className="lg:col-span-4">
             <div className="space-y-6">
-              <Logo />
+              <Logo href="/" />
               <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
                 {t('brand_description')}
               </p>

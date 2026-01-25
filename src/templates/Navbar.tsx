@@ -170,7 +170,7 @@ export const Navbar = () => {
         )}
       >
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:h-16 sm:px-6 lg:px-8">
-          <Logo size="md" />
+          <Logo size="md" href="/" />
 
           {/* Desktop Navigation - visible from md */}
           <nav className="hidden items-center gap-0.5 md:flex lg:gap-1">

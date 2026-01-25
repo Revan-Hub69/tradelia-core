@@ -58,22 +58,26 @@ h4 {
   }
 }
 
-/* Scrollbar - Premium minimal design */
+/* Scrollbar - Premium minimal design matching header colors */
 @supports (scrollbar-width: auto) {
   * {
     scrollbar-width: thin;
-    scrollbar-color: hsl(217 33% 30%) transparent;
+    /* Light mode: Match header icon color (Slate 700) */
+    scrollbar-color: hsl(215 20% 35%) transparent;
   }
 
   .dark * {
-    scrollbar-color: hsl(217 33% 35%) transparent;
+    /* Dark mode: Lighter for visibility (Slate 400) */
+    scrollbar-color: hsl(215 20% 50%) transparent;
   }
 
   *:hover {
+    /* Hover: Primary color with subtle track */
     scrollbar-color: hsl(224 76% 48%) hsl(217 33% 17% / 0.3);
   }
 
   .dark *:hover {
+    /* Dark hover: Lighter primary for contrast */
     scrollbar-color: hsl(213 94% 68%) hsl(217 33% 20% / 0.3);
   }
 }
@@ -90,20 +94,24 @@ h4 {
   }
 
   ::-webkit-scrollbar-thumb {
-    background: hsl(217 33% 30%);
+    /* Light mode: Match header icon color (Slate 700) */
+    background: hsl(215 20% 35%);
     border-radius: 3px;
     transition: background 0.2s ease;
   }
 
   .dark ::-webkit-scrollbar-thumb {
-    background: hsl(217 33% 35%);
+    /* Dark mode: Lighter for visibility (Slate 400) */
+    background: hsl(215 20% 50%);
   }
 
   ::-webkit-scrollbar-thumb:hover {
+    /* Hover: Primary color */
     background: hsl(224 76% 48%);
   }
 
   .dark ::-webkit-scrollbar-thumb:hover {
+    /* Dark hover: Lighter primary for contrast */
     background: hsl(213 94% 68%);
   }
 
