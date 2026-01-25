@@ -79,11 +79,11 @@ export default async function RootLayout({
           color="hsl(var(--primary))"
           initialPosition={0.08}
           crawlSpeed={200}
-          height={3}
+          height={4}
           crawl={true}
           showSpinner={false}
           easing="ease"
-          speed={200}
+          speed={400}
           shadow="0 0 10px hsl(var(--primary)),0 0 5px hsl(var(--primary))"
           zIndex={9999}
         />
