@@ -13,11 +13,10 @@ export default getRequestConfig(async ({ requestLocale }) => {
     notFound();
   }
 
-  // Load main messages
+  // Load main messages (includes Dashboard, Learning, etc.)
   const mainMessages = (await import(`../locales/${locale}.json`)).default;
   
-  // Load namespace messages
-  const dashboardMessages = (await import(`../../messages/${locale}/dashboard.json`)).default;
+  // Load additional namespace messages
   const commonMessages = (await import(`../../messages/${locale}/common.json`)).default;
   const dashboardSettingsMessages = (await import(`../../messages/${locale}/dashboard-settings.json`)).default;
   const contactMessages = (await import(`../../messages/${locale}/contact.json`)).default;
@@ -26,7 +25,6 @@ export default getRequestConfig(async ({ requestLocale }) => {
     locale,
     messages: {
       ...mainMessages,
-      Dashboard: dashboardMessages,
       Common: commonMessages,
       DashboardSettings: dashboardSettingsMessages,
       Contact: contactMessages,
