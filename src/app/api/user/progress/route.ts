@@ -3,6 +3,8 @@ import { NextResponse } from 'next/server';
 
 import { CompleteUserDataRawSchema } from '@/contracts/userProgress.contract';
 import { withApiRateLimit } from '@/lib/api-rate-limit';
+import { withValidation } from '@/lib/validation/middleware';
+import { userProgressSchema } from '@/lib/validation/schemas';
 import { ApiError, withErrorHandler } from '@/libs/api/errorHandler';
 import { createUserProgress, getCompleteUserData } from '@/libs/supabase/database';
 import { createClient } from '@/libs/supabase/server';
@@ -30,17 +32,23 @@ export const GET = withApiRateLimit(withErrorHandler(async () => {
   return NextResponse.json(normalized);
 }));
 
-export const POST = withApiRateLimit(withErrorHandler(async (request: NextRequest) => {
-  const supabase = await createClient();
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+// POST with validation middleware (2026 security)
+export const POST = withApiRateLimit(
+  withValidation(
+    { body: userProgressSchema },
+    withErrorHandler(async (_request: NextRequest, { body }) => {
+      const supabase = await createClient();
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-  if (authError || !user) {
-    throw new ApiError('Unauthorized', 401, 'AUTH_REQUIRED');
-  }
+      if (authError || !user) {
+        throw new ApiError('Unauthorized', 401, 'AUTH_REQUIRED');
+      }
 
-  const body = await request.json();
-  const initialXP = body.initialXP || 0;
+      // Body is already validated and sanitized
+      const initialXP = body?.initialXP || 0;
 
-  const progress = await createUserProgress(user.id, initialXP);
-  return NextResponse.json({ progress }, { status: 201 });
-}));
+      const progress = await createUserProgress(user.id, initialXP);
+      return NextResponse.json({ progress }, { status: 201 });
+    }),
+  ),
+);

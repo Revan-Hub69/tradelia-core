@@ -1,6 +1,8 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
+import { withValidation } from '@/lib/validation/middleware';
+import { userProfileSchema } from '@/lib/validation/schemas';
 import { ApiError, withErrorHandler } from '@/libs/api/errorHandler';
 import { createUserProfile, getUserProfile, updateUserProfile } from '@/libs/supabase/database';
 import { createClient } from '@/libs/supabase/server';
@@ -17,34 +19,42 @@ export const GET = withErrorHandler(async () => {
   return NextResponse.json({ profile });
 });
 
-export const POST = withErrorHandler(async (request: NextRequest) => {
-  const supabase = await createClient();
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+// POST with validation middleware (2026 security)
+export const POST = withValidation(
+  { body: userProfileSchema },
+  withErrorHandler(async (_request: NextRequest, { body }) => {
+    const supabase = await createClient();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-  if (authError || !user) {
-    throw new ApiError('Unauthorized', 401, 'AUTH_REQUIRED');
-  }
+    if (authError || !user) {
+      throw new ApiError('Unauthorized', 401, 'AUTH_REQUIRED');
+    }
 
-  const body = await request.json();
-  const profileData = {
-    id: user.id,
-    email: user.email!,
-    name: body.name || user.user_metadata?.name || user.email?.split('@')[0],
-  };
+    // Body is already validated and sanitized
+    const profileData = {
+      id: user.id,
+      email: user.email!,
+      name: body?.name || user.user_metadata?.name || user.email?.split('@')[0],
+    };
 
-  const profile = await createUserProfile(profileData);
-  return NextResponse.json({ profile }, { status: 201 });
-});
+    const profile = await createUserProfile(profileData);
+    return NextResponse.json({ profile }, { status: 201 });
+  }),
+);
 
-export const PUT = withErrorHandler(async (request: NextRequest) => {
-  const supabase = await createClient();
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+// PUT with validation middleware (2026 security)
+export const PUT = withValidation(
+  { body: userProfileSchema },
+  withErrorHandler(async (_request: NextRequest, { body }) => {
+    const supabase = await createClient();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-  if (authError || !user) {
-    throw new ApiError('Unauthorized', 401, 'AUTH_REQUIRED');
-  }
+    if (authError || !user) {
+      throw new ApiError('Unauthorized', 401, 'AUTH_REQUIRED');
+    }
 
-  const body = await request.json();
-  const profile = await updateUserProfile(user.id, body);
-  return NextResponse.json({ profile });
-});
+    // Body is already validated and sanitized
+    const profile = await updateUserProfile(user.id, body);
+    return NextResponse.json({ profile });
+  }),
+);

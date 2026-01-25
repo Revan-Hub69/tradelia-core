@@ -1,0 +1,345 @@
+/**
+ * Comprehensive Validation Schemas (2026)
+ * 
+ * Based on tier-1 research:
+ * - Zod official documentation
+ * - OWASP input validation best practices
+ * - XSS prevention patterns
+ * - Next.js API security
+ */
+
+import { z } from 'zod';
+
+// ============================================================================
+// SANITIZATION HELPERS
+// ============================================================================
+
+/**
+ * Remove HTML tags and dangerous characters
+ */
+const sanitizeString = (str: string): string => {
+  return str
+    .replace(/<[^>]*>/g, '') // Remove HTML tags
+    .replace(/[<>"']/g, '') // Remove dangerous characters
+    .trim();
+};
+
+/**
+ * Validate no path traversal attempts
+ */
+const noPathTraversal = (str: string): boolean => {
+  const dangerous = ['../', '..\\', '%2e%2e/', '%2e%2e\\'];
+  return !dangerous.some(pattern => 
+    str.toLowerCase().includes(pattern.toLowerCase())
+  );
+};
+
+/**
+ * Validate no null bytes
+ */
+const noNullBytes = (str: string): boolean => {
+  return !str.includes('\0');
+};
+
+/**
+ * Validate no SQL keywords (basic protection)
+ */
+const noSQLKeywords = (str: string): boolean => {
+  const sqlKeywords = [
+    'SELECT', 'INSERT', 'UPDATE', 'DELETE', 'DROP', 'UNION',
+    'ALTER', 'CREATE', 'TRUNCATE', '--', ';--', '/*', '*/',
+  ];
+  const upperValue = str.toUpperCase();
+  return !sqlKeywords.some(keyword => upperValue.includes(keyword));
+};
+
+// ============================================================================
+// BASE SCHEMAS (Reusable)
+// ============================================================================
+
+/**
+ * Safe string: no HTML, no path traversal, no null bytes
+ */
+export const safeStringSchema = z.string()
+  .transform(sanitizeString)
+  .refine(noPathTraversal, 'Invalid characters detected')
+  .refine(noNullBytes, 'Invalid characters detected')
+  .refine(noSQLKeywords, 'Invalid characters detected');
+
+/**
+ * Email validation (RFC 5322 compliant)
+ */
+export const emailSchema = z.string()
+  .email('Invalid email format')
+  .max(255, 'Email too long')
+  .toLowerCase()
+  .transform(sanitizeString);
+
+/**
+ * Username validation (alphanumeric + underscore)
+ */
+export const usernameSchema = safeStringSchema
+  .min(3, 'Username must be at least 3 characters')
+  .max(30, 'Username must be at most 30 characters')
+  .regex(/^[a-zA-Z0-9_]+$/, 'Username can only contain letters, numbers, and underscores');
+
+/**
+ * Password validation (strong password requirements)
+ */
+export const passwordSchema = z.string()
+  .min(8, 'Password must be at least 8 characters')
+  .max(128, 'Password too long')
+  .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+  .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+  .regex(/[0-9]/, 'Password must contain at least one number')
+  .regex(/[^A-Za-z0-9]/, 'Password must contain at least one special character');
+
+/**
+ * URL validation (only http/https)
+ */
+export const urlSchema = z.string()
+  .url('Invalid URL format')
+  .refine(
+    (url) => {
+      try {
+        const parsed = new URL(url);
+        return ['http:', 'https:'].includes(parsed.protocol);
+      } catch {
+        return false;
+      }
+    },
+    'Only HTTP and HTTPS URLs are allowed'
+  );
+
+/**
+ * UUID validation
+ */
+export const uuidSchema = z.string()
+  .uuid('Invalid UUID format');
+
+/**
+ * Positive integer validation
+ */
+export const positiveIntSchema = z.number()
+  .int('Must be an integer')
+  .positive('Must be positive');
+
+/**
+ * Bounded number validation
+ */
+export const boundedNumberSchema = (min: number, max: number) => 
+  z.number()
+    .min(min, `Must be at least ${min}`)
+    .max(max, `Must be at most ${max}`);
+
+/**
+ * Safe filename validation
+ */
+export const filenameSchema = safeStringSchema
+  .max(255, 'Filename too long')
+  .regex(/^[a-zA-Z0-9._-]+$/, 'Invalid filename format')
+  .refine((name) => !name.startsWith('.'), 'Filename cannot start with dot')
+  .refine((name) => !name.includes('..'), 'Filename cannot contain double dots');
+
+/**
+ * Phone number validation (E.164 format)
+ */
+export const phoneSchema = z.string()
+  .regex(/^\+?[1-9]\d{1,14}$/, 'Invalid phone number format');
+
+/**
+ * Search query validation
+ */
+export const searchQuerySchema = safeStringSchema
+  .max(200, 'Search query too long')
+  .refine((val) => val.length > 0, 'Search query cannot be empty');
+
+// ============================================================================
+// USER SCHEMAS
+// ============================================================================
+
+/**
+ * User profile creation/update
+ */
+export const userProfileSchema = z.object({
+  name: safeStringSchema
+    .min(1, 'Name is required')
+    .max(100, 'Name too long')
+    .optional(),
+  avatar: urlSchema.optional(),
+  bio: safeStringSchema
+    .max(500, 'Bio too long')
+    .optional(),
+});
+
+/**
+ * User registration
+ */
+export const userRegistrationSchema = z.object({
+  email: emailSchema,
+  password: passwordSchema,
+  name: safeStringSchema
+    .min(1, 'Name is required')
+    .max(100, 'Name too long'),
+});
+
+/**
+ * User login
+ */
+export const userLoginSchema = z.object({
+  email: emailSchema,
+  password: z.string().min(1, 'Password is required'),
+});
+
+/**
+ * Password reset request
+ */
+export const passwordResetRequestSchema = z.object({
+  email: emailSchema,
+});
+
+/**
+ * Password reset confirmation
+ */
+export const passwordResetSchema = z.object({
+  token: z.string().min(1, 'Token is required'),
+  password: passwordSchema,
+});
+
+// ============================================================================
+// LESSON SCHEMAS
+// ============================================================================
+
+/**
+ * Lesson ID validation
+ */
+export const lessonIdSchema = z.string()
+  .regex(/^lesson-\d+$/, 'Invalid lesson ID format');
+
+/**
+ * Lesson completion
+ */
+export const lessonCompletionSchema = z.object({
+  lessonId: lessonIdSchema,
+  pathId: safeStringSchema.default('base'),
+  xpEarned: boundedNumberSchema(0, 1000),
+  approachesUsed: z.array(safeStringSchema).max(10, 'Too many approaches').optional(),
+  quizScore: boundedNumberSchema(0, 100).optional(),
+  timeSpent: positiveIntSchema.max(86400, 'Time spent too large').optional(), // Max 24 hours
+  badges: z.array(z.object({
+    id: safeStringSchema,
+    name: safeStringSchema.max(100, 'Badge name too long'),
+    description: safeStringSchema.max(500, 'Badge description too long').optional(),
+    icon: safeStringSchema.max(100, 'Badge icon too long').optional(),
+    rarity: z.enum(['common', 'rare', 'epic', 'legendary']),
+  })).max(10, 'Too many badges').optional(),
+});
+
+// ============================================================================
+// PROGRESS SCHEMAS
+// ============================================================================
+
+/**
+ * User progress creation
+ */
+export const userProgressSchema = z.object({
+  initialXP: boundedNumberSchema(0, 10000).optional(),
+});
+
+/**
+ * User progress update
+ */
+export const userProgressUpdateSchema = z.object({
+  totalXP: positiveIntSchema.optional(),
+  level: positiveIntSchema.max(100, 'Level too high').optional(),
+  currentStreak: positiveIntSchema.max(1000, 'Streak too high').optional(),
+  longestStreak: positiveIntSchema.max(1000, 'Streak too high').optional(),
+});
+
+// ============================================================================
+// BADGE SCHEMAS
+// ============================================================================
+
+/**
+ * Badge award
+ */
+export const badgeAwardSchema = z.object({
+  badgeId: safeStringSchema,
+  badgeName: safeStringSchema.max(100, 'Badge name too long'),
+  badgeDescription: safeStringSchema.max(500, 'Badge description too long').optional(),
+  badgeIcon: safeStringSchema.max(100, 'Badge icon too long').optional(),
+  rarity: z.enum(['common', 'rare', 'epic', 'legendary']),
+});
+
+// ============================================================================
+// LEARNING PATH SCHEMAS
+// ============================================================================
+
+/**
+ * Learning path creation (admin only)
+ */
+export const learningPathSchema = z.object({
+  id: safeStringSchema.max(50, 'ID too long'),
+  title: safeStringSchema.min(1, 'Title is required').max(200, 'Title too long'),
+  description: safeStringSchema.max(1000, 'Description too long').optional(),
+  difficulty: z.enum(['beginner', 'intermediate', 'advanced']),
+  isPremium: z.boolean().default(false),
+  estimatedDuration: positiveIntSchema.max(10000, 'Duration too large').optional(),
+  lessonOrder: z.array(lessonIdSchema).max(100, 'Too many lessons'),
+  prerequisites: z.array(safeStringSchema).max(50, 'Too many prerequisites').default([]),
+  isActive: z.boolean().default(true),
+});
+
+// ============================================================================
+// PAGINATION SCHEMAS
+// ============================================================================
+
+/**
+ * Pagination parameters
+ */
+export const paginationSchema = z.object({
+  page: positiveIntSchema.max(10000, 'Page number too large').default(1),
+  limit: positiveIntSchema.max(100, 'Limit too large').default(20),
+  sortBy: safeStringSchema.max(50, 'Sort field too long').optional(),
+  sortOrder: z.enum(['asc', 'desc']).default('asc'),
+});
+
+// ============================================================================
+// SEARCH SCHEMAS
+// ============================================================================
+
+/**
+ * Search parameters
+ */
+export const searchSchema = z.object({
+  query: searchQuerySchema,
+  filters: z.record(safeStringSchema).optional(),
+  page: positiveIntSchema.default(1),
+  limit: positiveIntSchema.max(100, 'Limit too large').default(20),
+});
+
+// ============================================================================
+// RATE LIMITING SCHEMAS
+// ============================================================================
+
+/**
+ * Rate limit action validation
+ */
+export const rateLimitSchema = z.object({
+  action: z.enum(['lesson-complete', 'profile-update', 'badge-award', 'auth', 'api']),
+  identifier: safeStringSchema,
+});
+
+// ============================================================================
+// EXPORT TYPES
+// ============================================================================
+
+export type UserProfile = z.infer<typeof userProfileSchema>;
+export type UserRegistration = z.infer<typeof userRegistrationSchema>;
+export type UserLogin = z.infer<typeof userLoginSchema>;
+export type LessonCompletion = z.infer<typeof lessonCompletionSchema>;
+export type UserProgress = z.infer<typeof userProgressSchema>;
+export type BadgeAward = z.infer<typeof badgeAwardSchema>;
+export type LearningPath = z.infer<typeof learningPathSchema>;
+export type Pagination = z.infer<typeof paginationSchema>;
+export type Search = z.infer<typeof searchSchema>;
