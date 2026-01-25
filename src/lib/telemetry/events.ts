@@ -111,20 +111,17 @@ export type TelemetryPayload = Record<string, unknown>;
  * });
  * ```
  */
-export function track(event: TelemetryEvent, payload?: TelemetryPayload): void {
+export function track(_event: TelemetryEvent, _payload?: TelemetryPayload): void {
   // No-op in production
   if (process.env.NODE_ENV === 'production') {
     return;
   }
 
-  // Log in development for debugging (removed for production)
   // Analytics integration point
-}
-
   // Future: Send to analytics service
   // Example:
-  // analytics.track(event, {
-  //   ...payload,
+  // analytics.track(_event, {
+  //   ..._payload,
   //   timestamp: Date.now(),
   //   userId: getCurrentUserId(),
   //   sessionId: getSessionId(),
@@ -148,14 +145,14 @@ export function track(event: TelemetryEvent, payload?: TelemetryPayload): void {
  * ```
  */
 export function trackTiming(
-  event: TelemetryEvent,
-  duration: number,
-  payload?: TelemetryPayload,
+  _event: TelemetryEvent,
+  _duration: number,
+  _payload?: TelemetryPayload,
 ): void {
-  track(event, {
-    ...payload,
-    duration,
-    durationMs: duration,
+  track(_event, {
+    ..._payload,
+    duration: _duration,
+    durationMs: _duration,
   });
 }
 
@@ -180,15 +177,15 @@ export function trackTiming(
  * ```
  */
 export function trackError(
-  event: TelemetryEvent,
-  error: Error | string,
-  payload?: TelemetryPayload,
+  _event: TelemetryEvent,
+  _error: Error | string,
+  _payload?: TelemetryPayload,
 ): void {
-  const errorMessage = error instanceof Error ? error.message : error;
-  const errorStack = error instanceof Error ? error.stack : undefined;
+  const errorMessage = _error instanceof Error ? _error.message : _error;
+  const errorStack = _error instanceof Error ? _error.stack : undefined;
 
-  track(event, {
-    ...payload,
+  track(_event, {
+    ..._payload,
     error: errorMessage,
     errorStack,
   });
@@ -212,14 +209,14 @@ export function trackError(
  * ```
  */
 export function startTiming(
-  event: TelemetryEvent,
-  payload?: TelemetryPayload,
+  _event: TelemetryEvent,
+  _payload?: TelemetryPayload,
 ): () => void {
   const startTime = Date.now();
 
   return () => {
     const duration = Date.now() - startTime;
-    trackTiming(event, duration, payload);
+    trackTiming(_event, duration, _payload);
   };
 }
 
@@ -231,13 +228,10 @@ export function startTiming(
  * @param userId - User ID
  * @param traits - Optional user traits
  */
-export function identify(userId: string, traits?: Record<string, unknown>): void {
-  // Development logging removed for production
+export function identify(_userId: string, _traits?: Record<string, unknown>): void {
   // Analytics integration point
-}
-
   // Future: Send to analytics service
-  // analytics.identify(userId, traits);
+  // analytics.identify(_userId, _traits);
 }
 
 /**
@@ -247,10 +241,7 @@ export function identify(userId: string, traits?: Record<string, unknown>): void
  * Useful for clearing user data on logout.
  */
 export function reset(): void {
-  // Development logging removed for production
   // Analytics integration point
-}
-
   // Future: Clear analytics data
   // analytics.reset();
 }

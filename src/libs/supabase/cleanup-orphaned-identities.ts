@@ -28,11 +28,8 @@ export async function cleanupOrphanedIdentities() {
     }
 
     if (!orphanedIdentities || orphanedIdentities.length === 0) {
-      console.log('No orphaned identities found');
       return { success: true, cleaned: 0 };
     }
-
-    console.log(`Found ${orphanedIdentities.length} orphaned identities`);
 
     // Delete orphaned identities
     const orphanedIds = orphanedIdentities.map(identity => identity.id);
@@ -46,7 +43,6 @@ export async function cleanupOrphanedIdentities() {
       return { success: false, error: deleteError };
     }
 
-    console.log(`Successfully cleaned up ${orphanedIdentities.length} orphaned identities`);
     return {
       success: true,
       cleaned: orphanedIdentities.length,

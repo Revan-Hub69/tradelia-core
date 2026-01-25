@@ -63,8 +63,7 @@ export const useKeyboardShortcuts = () => {
         switch (e.key.toLowerCase()) {
           case '/': // Ctrl+/ or Cmd+/ for help
             e.preventDefault();
-            // Could open help modal or navigate to help
-            console.log('Help shortcut triggered');
+            // TODO: Open help modal or navigate to help
             break;
         }
       }

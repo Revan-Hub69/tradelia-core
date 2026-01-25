@@ -141,15 +141,6 @@ export const useMemoryLeakDetection = (options: MemoryLeakDetectionOptions = {})
 
       // Detect memory leaks
       detectMemoryLeak(currentMemory);
-
-      // Log memory usage in development
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`📊 Memory usage (${componentName}):`, {
-          current: `${currentMemory.used}MB`,
-          growth: `${currentMemory.used - initialMemoryRef.current}MB`,
-          activeComponents: activeComponents.size,
-        });
-      }
     }, logInterval);
 
     // ✅ TIER 1: Cleanup on unmount
@@ -164,13 +155,6 @@ export const useMemoryLeakDetection = (options: MemoryLeakDetectionOptions = {})
       const finalMemory = getMemoryUsage();
       if (finalMemory && process.env.NODE_ENV === 'development') {
         const memoryDelta = finalMemory.used - initialMemoryRef.current;
-        const componentLifetime = Date.now() - mountTimeRef.current;
-
-        console.log(`🧹 Component cleanup (${componentName}):`, {
-          lifetime: `${Math.round(componentLifetime / 1000)}s`,
-          memoryDelta: `${memoryDelta}MB`,
-          finalMemory: `${finalMemory.used}MB`,
-        });
 
         // Warn about potential leaks on unmount
         if (memoryDelta > 10) { // 10MB threshold

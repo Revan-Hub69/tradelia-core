@@ -19,8 +19,6 @@ export const checkSupabaseConfig = async () => {
     const { error } = await supabase.auth.getSession();
     checks.connection = !error;
 
-    console.log('Supabase Configuration Check:', checks);
-
     if (!checks.supabaseUrl) {
       console.error('❌ NEXT_PUBLIC_SUPABASE_URL is missing');
     }

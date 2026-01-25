@@ -231,7 +231,6 @@ export const MobileDropdownPopover = React.memo<MobileDropdownPopoverProps>(({
   triggerRef,
 }) => {
   const t = useTranslations('Common');
-  console.log('[MobileDropdownPopover] Render:', { isOpen, triggerRect });
   
   const popoverRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState<Position>({ top: 0, left: 0 });
@@ -246,36 +245,25 @@ export const MobileDropdownPopover = React.memo<MobileDropdownPopoverProps>(({
   // Rule 8: Measure once per open (layout thrash prevention)
   useEffect(() => {
     if (!isOpen || !triggerRect) {
-      console.log('[MobileDropdownPopover] useEffect skipped:', { isOpen, triggerRect: !!triggerRect });
       return;
     }
 
     // Wait for next frame to ensure popoverRef is mounted
     requestAnimationFrame(() => {
       if (!popoverRef.current) {
-        console.warn('[MobileDropdownPopover] popoverRef.current is null after RAF');
         return;
       }
 
       measureCount += 1;
 
-      // Development warning for layout thrash
-      if (process.env.NODE_ENV === 'development' && measureCount > 2) {
-        console.warn(`[MobileDropdownPopover] Layout thrash detected: ${measureCount} measurements`);
-      }
-
       // CRITICAL FIX: Better fallback if triggerRect is invalid
       if (triggerRect.width === 0 || triggerRect.height === 0) {
-        console.warn('[MobileDropdownPopover] triggerRect is invalid, using smart fallback position');
-        console.log('[MobileDropdownPopover] triggerRect:', triggerRect);
-
         // Smart fallback: position below header, right-aligned
         const fallbackPosition: Position = {
           top: HEADER_HEIGHT + SAFE_AREA_TOP + TRIGGER_GAP,
           right: EDGE_PADDING,
         };
 
-        console.log('[MobileDropdownPopover] Using fallback position:', fallbackPosition);
         setPosition(fallbackPosition);
         setPlacement('bottom-end');
         return;

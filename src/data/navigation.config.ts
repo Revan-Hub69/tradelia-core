@@ -161,10 +161,10 @@ export type NavigationAnalyticsEvent = {
   metadata?: Record<string, any>;
 };
 
-export const trackNavigationEvent = (event: NavigationAnalyticsEvent): void => {
+export const trackNavigationEvent = (_event: NavigationAnalyticsEvent): void => {
   // TODO: Implementare tracking reale
   // Development logging removed for production readiness
   
   // In produzione: inviare a analytics service
-  // analytics.track('navigation', event);
+  // analytics.track('navigation', _event);
 };
