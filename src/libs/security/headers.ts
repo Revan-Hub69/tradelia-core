@@ -26,12 +26,13 @@ export function getSecurityHeaders(isDevelopment = false, nonce?: string): Secur
   const cspDirectives = [
     'default-src \'self\'',
     // Script CSP with nonce (2026 best practice)
+    // 'unsafe-inline' is ignored by browsers that support 'strict-dynamic'
     nonce
-      ? `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://accounts.google.com https://apis.google.com ${isDevelopment ? '\'unsafe-eval\'' : ''}`
+      ? `script-src 'self' 'nonce-${nonce}' 'unsafe-inline' 'strict-dynamic' https://accounts.google.com https://apis.google.com ${isDevelopment ? '\'unsafe-eval\'' : ''}`
       : `script-src 'self' 'unsafe-inline' https://accounts.google.com https://apis.google.com ${isDevelopment ? '\'unsafe-eval\'' : ''}`,
     // Style CSP with nonce
     nonce
-      ? `style-src 'self' 'nonce-${nonce}' https://fonts.googleapis.com`
+      ? `style-src 'self' 'nonce-${nonce}' 'unsafe-inline' https://fonts.googleapis.com`
       : 'style-src \'self\' \'unsafe-inline\' https://fonts.googleapis.com',
     'font-src \'self\' data: https://fonts.gstatic.com',
     'img-src \'self\' data: https: blob:',

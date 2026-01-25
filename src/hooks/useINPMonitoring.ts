@@ -70,10 +70,11 @@ function getElementSelector(element: Element | null): string {
                    element.getAttribute('data-name');
   if (dataAttr) return `[data-*="${dataAttr}"]`;
   
-  // Try class
-  if (element.className) {
-    const classes = element.className.split(' ').slice(0, 2).join('.');
-    return `.${classes}`;
+  // Try class (handle both HTMLElement and SVGElement)
+  const className = element.getAttribute('class');
+  if (className) {
+    const classes = className.split(' ').filter(Boolean).slice(0, 2).join('.');
+    if (classes) return `.${classes}`;
   }
   
   // Fallback to tag name
