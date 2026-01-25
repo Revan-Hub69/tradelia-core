@@ -114,6 +114,15 @@ export const Footer = () => {
               <li>
                 <Link href="/sign-up">{t('privacy_policy')}</Link>
               </li>
+              <li className="text-muted-foreground">
+                {t('support')}:{' '}
+                <a
+                  href="mailto:support@tradelia.com"
+                  className="text-primary hover:underline"
+                >
+                  support@tradelia.com
+                </a>
+              </li>
             </>
           )}
         >
