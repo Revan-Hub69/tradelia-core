@@ -14,6 +14,7 @@ import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
 import { UiButton } from '@/components/ui/UiButton';
+import { useOptimizedChange } from '@/hooks/useOptimizedInteraction';
 import { Link, useRouter } from '@/libs/i18nNavigation';
 import { cn } from '@/utils/Helpers';
 
@@ -22,7 +23,7 @@ import { cn } from '@/utils/Helpers';
  *
  * Best Practices Implementation:
  * ✅ Clear messaging with helpful context
- * ✅ Search functionality (inline)
+ * ✅ Search functionality (inline) with Phase 3 Task 1 optimization
  * ✅ Multiple recovery paths
  * ✅ Report broken link
  * ✅ Popular pages suggestions
@@ -31,13 +32,23 @@ import { cn } from '@/utils/Helpers';
  * ✅ Signature glass treatment
  * ✅ Micro-interactions
  * ✅ Easter egg for power users
+ * ✅ Phase 3 Task 1: Debounced search input for better INP
  */
 export default function DashboardNotFound() {
   const t = useTranslations('NotFound');
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
   const [showEasterEgg, setShowEasterEgg] = useState(false);
   const [attemptedPath, setAttemptedPath] = useState('');
+
+  // Phase 3 Task 1: Optimized search input with debounce (300ms)
+  const handleSearchChange = useOptimizedChange(
+    (value: string) => {
+      setDebouncedQuery(value);
+    },
+    300, // Debounce 300ms - reduces INP on rapid typing
+  );
 
   useEffect(() => {
     // Track 404 for analytics
@@ -84,9 +95,10 @@ export default function DashboardNotFound() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
+    const query = debouncedQuery || searchQuery; // Use debounced or current
+    if (query.trim()) {
       // Navigate to learn page with search (or implement real search)
-      router.push(`/dashboard/learn?q=${encodeURIComponent(searchQuery)}`);
+      router.push(`/dashboard/learn?q=${encodeURIComponent(query)}`);
     }
   };
 
@@ -157,14 +169,18 @@ export default function DashboardNotFound() {
             )}
           </div>
 
-          {/* Search Bar - Best Practice 2026 */}
+          {/* Search Bar - Best Practice 2026 + Phase 3 Task 1 Optimization */}
           <form onSubmit={handleSearch} className="mx-auto max-w-md">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <input
                 type="text"
                 value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setSearchQuery(value);
+                  handleSearchChange(value); // Debounced update
+                }}
                 placeholder={t('search_placeholder')}
                 aria-label={t('search_placeholder')}
                 className={cn(

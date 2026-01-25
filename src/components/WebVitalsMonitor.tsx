@@ -1,12 +1,15 @@
 /**
- * Web Vitals Monitor - Performance P2
+ * Web Vitals Monitor - Performance P2 + Phase 3 Task 1
  *
  * Monitors Core Web Vitals (LCP, INP, CLS) in real-time
  * Logs to console in development, sends to analytics in production
  *
+ * Phase 3 Enhancement: Advanced INP monitoring with detailed interaction tracking
+ *
  * Based on tier-1 research:
  * - Google web-vitals library (official)
  * - Core Web Vitals 2026 standards
+ * - PerformanceObserver API for detailed INP tracking
  *
  * @see https://github.com/GoogleChrome/web-vitals
  */
@@ -15,7 +18,33 @@
 
 import { useEffect } from 'react';
 
+import { useINPMonitoring } from '@/hooks/useINPMonitoring';
+
 export function WebVitalsMonitor() {
+  // Phase 3 Task 1: Advanced INP monitoring with detailed interaction tracking
+  useINPMonitoring({
+    enabled: true,
+    reportThreshold: 200, // Report interactions > 200ms
+    debug: process.env.NODE_ENV === 'development',
+    onReport: (report) => {
+      // Log detailed INP report in development
+      if (process.env.NODE_ENV === 'development') {
+        console.log('📊 INP Report:', {
+          average: `${report.averageINP}ms`,
+          max: `${report.maxINP}ms`,
+          poorCount: report.poorInteractions,
+          total: report.totalInteractions,
+        });
+      }
+
+      // Send to analytics in production
+      if (process.env.NODE_ENV === 'production') {
+        // TODO: Send to Vercel Analytics or Google Analytics
+        // Example: sendToAnalytics('INP_DETAILED', report);
+      }
+    },
+  });
+
   useEffect(() => {
     // Only run in browser
     if (typeof window === 'undefined') {
