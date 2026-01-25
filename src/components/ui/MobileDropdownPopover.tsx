@@ -254,7 +254,7 @@ export const MobileDropdownPopover = React.memo<MobileDropdownPopoverProps>(({
         return;
       }
 
-      measureCount += 1;
+      _measureCount += 1;
 
       // CRITICAL FIX: Better fallback if triggerRect is invalid
       if (triggerRect.width === 0 || triggerRect.height === 0) {
