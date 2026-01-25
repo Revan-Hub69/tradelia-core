@@ -1,3 +1,10 @@
 {
-  "go_to_dashboard": "Vai alla Dashboard"
+  "go_to_dashboard": "Vai alla Dashboard",
+  "email_verification_title": "Verifica la tua email per sbloccare tutte le funzionalità",
+  "email_verification_message": "Abbiamo inviato un link di verifica a {email}. Cliccalo per salvare i tuoi progressi e accedere alle funzionalità premium.",
+  "email_verification_resend": "Invia di nuovo",
+  "email_verification_resending": "Invio...",
+  "email_verification_resent": "✓ Email inviata! Controlla la tua inbox",
+  "email_verification_dismiss": "Chiudi",
+  "email_verification_error": "Invio fallito. Riprova."
 }

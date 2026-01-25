@@ -255,14 +255,18 @@ const UnifiedAuthPageContent = () => {
     setError(null);
 
     try {
+      // Get current locale for email language
+      const locale = window.location.pathname.split('/')[1] || 'en';
+
       // Use client-side signup with identities check (Tier 1 2026 method)
       const supabase = createClient();
       const { data: signupData, error: signUpError } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback?redirect=/dashboard`,
+          emailRedirectTo: `${window.location.origin}/dashboard`,
           data: {
+            language: locale === 'it' ? 'it' : 'en', // For email template
             email_confirm: false, // Soft email confirmation
           },
         },
@@ -293,6 +297,31 @@ const UnifiedAuthPageContent = () => {
           return;
         } else {
           // ✅ NEW USER CREATED - SOFT EMAIL CONFIRMATION
+
+          // Get current locale for email language
+          const locale = window.location.pathname.split('/')[1] || 'en';
+
+          // ✅ MANUALLY SEND VERIFICATION EMAIL
+          // (Required because "Confirm email" is disabled for immediate login)
+          try {
+            const { error: resendError } = await supabase.auth.resend({
+              type: 'signup',
+              email: data.email,
+              options: {
+                emailRedirectTo: `${window.location.origin}/dashboard`,
+              },
+            });
+
+            if (resendError) {
+              console.error('⚠️ Failed to send verification email:', resendError);
+              // Don't block signup, just log the error
+            } else {
+              console.log('✅ Verification email sent to:', data.email);
+            }
+          } catch (emailError) {
+            console.error('⚠️ Email send exception:', emailError);
+            // Don't block signup
+          }
 
           // Redirect to dashboard immediately with email verification notice
           const redirect = searchParams.get('redirect') || '/dashboard';
@@ -326,6 +355,9 @@ const UnifiedAuthPageContent = () => {
 
     const supabase = createClient();
 
+    // Get current locale for email language
+    const locale = window.location.pathname.split('/')[1] || 'en';
+
     // Use current origin for redirect (localhost in development)
     const redirectUrl = `${window.location.origin}/auth/callback`;
 
@@ -336,6 +368,9 @@ const UnifiedAuthPageContent = () => {
         queryParams: {
           access_type: 'offline',
           prompt: 'consent',
+        },
+        data: {
+          language: locale === 'it' ? 'it' : 'en', // For email template
         },
         // Skip email confirmation for OAuth providers
         skipBrowserRedirect: false,

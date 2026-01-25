@@ -1,0 +1,43 @@
+{{if eq .Data.language "it"}}
+TRADELIA
+
+Verifica la tua email
+======================
+
+Clicca il link qui sotto per verificare il tuo indirizzo email e attivare il tuo account Tradelia.
+
+{{.ConfirmationURL}}
+
+Questo link scade tra 24 ore.
+
+Se non hai creato questo account, puoi ignorare questa email.
+
+---
+Tradelia
+Visita il sito: {{.SiteURL}}
+Supporto: {{.SiteURL}}/contact
+
+© 2026 Tradelia. Tutti i diritti riservati.
+
+{{else}}
+TRADELIA
+
+Verify your email
+==================
+
+Click the link below to verify your email address and activate your Tradelia account.
+
+{{.ConfirmationURL}}
+
+This link expires in 24 hours.
+
+If you didn't create this account, you can safely ignore this email.
+
+---
+Tradelia
+Visit website: {{.SiteURL}}
+Support: {{.SiteURL}}/contact
+
+© 2026 Tradelia. All rights reserved.
+
+{{end}}

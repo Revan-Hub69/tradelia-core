@@ -1,3 +1,10 @@
 {
-  "go_to_dashboard": "Go to Dashboard"
+  "go_to_dashboard": "Go to Dashboard",
+  "email_verification_title": "Verify your email to unlock all features",
+  "email_verification_message": "We sent a verification link to {email}. Click it to save your progress and access premium features.",
+  "email_verification_resend": "Resend email",
+  "email_verification_resending": "Sending...",
+  "email_verification_resent": "✓ Email sent! Check your inbox",
+  "email_verification_dismiss": "Dismiss",
+  "email_verification_error": "Failed to send email. Please try again."
 }

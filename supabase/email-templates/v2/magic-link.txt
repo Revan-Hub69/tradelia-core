@@ -1,0 +1,39 @@
+{{if eq .Data.language "it"}}
+ACCEDI A TRADELIA
+==================
+
+Clicca il link qui sotto per accedere al tuo account:
+
+{{.ConfirmationURL}}
+
+Questo link scade tra 1 ora.
+
+Se non hai richiesto questo link, puoi ignorare questa email.
+
+---
+Tradelia
+Visita il sito: {{.SiteURL}}
+Supporto: {{.SiteURL}}/contact
+
+© 2026 Tradelia. Tutti i diritti riservati.
+
+{{else}}
+SIGN IN TO TRADELIA
+===================
+
+Click the link below to sign in to your account:
+
+{{.ConfirmationURL}}
+
+This link expires in 1 hour.
+
+If you didn't request this link, you can safely ignore this email.
+
+---
+Tradelia
+Visit website: {{.SiteURL}}
+Support: {{.SiteURL}}/contact
+
+© 2026 Tradelia. All rights reserved.
+
+{{end}}

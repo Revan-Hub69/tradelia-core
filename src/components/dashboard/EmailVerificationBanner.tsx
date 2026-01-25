@@ -29,16 +29,58 @@ export const EmailVerificationBanner = () => {
   const [resendSuccess, setResendSuccess] = useState(false);
 
   useEffect(() => {
-    const emailVerification = searchParams.get('emailVerification');
-    const userEmail = searchParams.get('email');
+    // Check both query params (after signup) AND current user state (always)
+    const checkVerificationStatus = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
 
-    // Check if user has permanently dismissed the banner
-    const dismissedKey = `email-verification-dismissed-${userEmail}`;
-    const wasDismissed = localStorage.getItem(dismissedKey) === 'true';
+      if (!user) return;
 
-    if (emailVerification === 'pending' && userEmail && !wasDismissed) {
+      // If email is already verified, don't show banner
+      if (user.email_confirmed_at) {
+        setIsVisible(false);
+        // Clear any dismissed state
+        if (user.email) {
+          const dismissedKey = `email-verification-dismissed-${user.email}`;
+          localStorage.removeItem(dismissedKey);
+        }
+        return;
+      }
+
+      // Email not verified - check if we should show banner
+      const userEmail = user.email || '';
+      const dismissedKey = `email-verification-dismissed-${userEmail}`;
+      const dismissedTimestamp = localStorage.getItem(dismissedKey);
+
+      if (dismissedTimestamp) {
+        // Check if 24 hours have passed since dismiss
+        const dismissedAt = parseInt(dismissedTimestamp, 10);
+        const now = Date.now();
+        const oneDayMs = 24 * 60 * 60 * 1000;
+
+        if (now - dismissedAt < oneDayMs) {
+          // Still within 24h, don't show
+          return;
+        }
+        // More than 24h passed, clear and show again
+        localStorage.removeItem(dismissedKey);
+      }
+
+      // Show banner
       setIsVisible(true);
-      setEmail(decodeURIComponent(userEmail));
+      setEmail(userEmail);
+    };
+
+    // Check immediately
+    checkVerificationStatus();
+
+    // Also check query params for immediate post-signup flow
+    const emailVerification = searchParams.get('emailVerification');
+    const queryEmail = searchParams.get('email');
+
+    if (emailVerification === 'pending' && queryEmail) {
+      setIsVisible(true);
+      setEmail(decodeURIComponent(queryEmail));
 
       // Clean URL after showing banner
       const newUrl = new URL(window.location.href);
@@ -58,19 +100,27 @@ export const EmailVerificationBanner = () => {
         type: 'signup',
         email,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback?redirect=/dashboard`,
+          emailRedirectTo: `${window.location.origin}/dashboard`,
         },
       });
 
       if (error) {
         console.error('❌ Resend email error:', error);
+        console.error('Error details:', {
+          message: error.message,
+          status: error.status,
+          email,
+        });
+        // TODO: Add toast notification for user
+        alert(`Error: ${error.message}`);
       } else {
-        console.log('✅ Verification email resent successfully');
+        console.log('✅ Verification email resent successfully to:', email);
         setResendSuccess(true);
         setTimeout(() => setResendSuccess(false), 5000);
       }
     } catch (error) {
       console.error('💥 Resend email exception:', error);
+      alert('Failed to send email. Please try again.');
     } finally {
       setIsResending(false);
     }
@@ -79,9 +129,9 @@ export const EmailVerificationBanner = () => {
   const handleDismiss = () => {
     setIsVisible(false);
 
-    // Remember user's choice to dismiss (until they verify)
+    // Save timestamp instead of just 'true' - will re-show after 24h
     const dismissedKey = `email-verification-dismissed-${email}`;
-    localStorage.setItem(dismissedKey, 'true');
+    localStorage.setItem(dismissedKey, Date.now().toString());
   };
 
   // Auto-hide banner if user verifies email in another tab
@@ -155,7 +205,8 @@ export const EmailVerificationBanner = () => {
               </div>
 
               {/* Close button - Tier 1 positioning */}
-              <button type="button"
+              <button
+                type="button"
                 onClick={handleDismiss}
                 className="ml-4 shrink-0 rounded-md p-1.5 text-amber-600 hover:bg-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-500 dark:text-amber-400 dark:hover:bg-amber-900/30"
                 aria-label={t('email_verification_dismiss')}
