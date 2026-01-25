@@ -117,10 +117,9 @@ export function track(event: TelemetryEvent, payload?: TelemetryPayload): void {
     return;
   }
 
-  // Log in development for debugging
-  if (process.env.NODE_ENV === 'development') {
-    console.debug('[Telemetry]', event, payload);
-  }
+  // Log in development for debugging (removed for production)
+  // Analytics integration point
+}
 
   // Future: Send to analytics service
   // Example:
@@ -233,9 +232,9 @@ export function startTiming(
  * @param traits - Optional user traits
  */
 export function identify(userId: string, traits?: Record<string, unknown>): void {
-  if (process.env.NODE_ENV === 'development') {
-    console.debug('[Telemetry] Identify:', userId, traits);
-  }
+  // Development logging removed for production
+  // Analytics integration point
+}
 
   // Future: Send to analytics service
   // analytics.identify(userId, traits);
@@ -248,9 +247,9 @@ export function identify(userId: string, traits?: Record<string, unknown>): void
  * Useful for clearing user data on logout.
  */
 export function reset(): void {
-  if (process.env.NODE_ENV === 'development') {
-    console.debug('[Telemetry] Reset');
-  }
+  // Development logging removed for production
+  // Analytics integration point
+}
 
   // Future: Clear analytics data
   // analytics.reset();
