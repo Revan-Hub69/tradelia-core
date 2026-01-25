@@ -12,12 +12,16 @@ type TradeliaCoinDisplayProps = {
   recentEarnings?: Array<{ amount: number; reason: string; timestamp: Date }>;
 };
 
+// ✅ CRITICAL FIX: Stable default reference (prevents React.memo breaks)
+// Research: Qodo AI 2026 - "Array literals create new references on every render"
+const DEFAULT_RECENT_EARNINGS: Array<{ amount: number; reason: string; timestamp: Date }> = [];
+
 export const TradeliaCoinDisplay = ({
   totalCoins,
   showDetails = true,
   size = 'md',
   animated = true,
-  recentEarnings = [],
+  recentEarnings = DEFAULT_RECENT_EARNINGS,
 }: TradeliaCoinDisplayProps) => {
   const [showEarnings, setShowEarnings] = useState(false);
   const t = useTranslations('Learning');
@@ -189,9 +193,12 @@ type CoinEarningAnimationProps = {
   celebration?: boolean;
 };
 
+// ✅ CRITICAL FIX: Stable default reference (prevents React.memo breaks)
+const DEFAULT_BONUSES: Array<{ type: string; amount: number; reason: string }> = [];
+
 export const CoinEarningAnimation = ({
   amount,
-  bonuses = [],
+  bonuses = DEFAULT_BONUSES,
   onComplete,
   celebration = false,
 }: CoinEarningAnimationProps) => {

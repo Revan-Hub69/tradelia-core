@@ -82,8 +82,15 @@ export const CryptoLesson0Clean: React.FC = () => {
         currentStreak: 0, // Will be updated by backend
       });
 
-      // Generate professional badges
-      const badges = [];
+      // ✅ CRITICAL FIX: Stable array reference (prevents unnecessary re-renders)
+      // Research: Qodo AI 2026 - "Array literals create new references on every render"
+      const badges: Array<{
+        id: string;
+        name: string;
+        description: string;
+        icon: string;
+        rarity: string;
+      }> = [];
 
       // Crypto Pioneer badge (always awarded for first lesson)
       badges.push({
