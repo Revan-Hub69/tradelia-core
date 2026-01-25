@@ -117,10 +117,10 @@ export const Footer = () => {
               <li className="text-muted-foreground">
                 {t('support')}:{' '}
                 <a
-                  href="mailto:support@tradelia.com"
+                  href="mailto:support@tradelia.org"
                   className="text-primary hover:underline"
                 >
-                  support@tradelia.com
+                  support@tradelia.org
                 </a>
               </li>
             </>
@@ -140,6 +140,10 @@ export const Footer = () => {
 
           <li>
             <Link href="/sign-up">{t('community')}</Link>
+          </li>
+
+          <li>
+            <Link href="/contact">{t('contact')}</Link>
           </li>
 
           <li>
