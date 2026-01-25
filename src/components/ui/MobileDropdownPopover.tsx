@@ -71,7 +71,7 @@ const PLACEMENT_PRIORITY: Placement[] = [
 ];
 
 // Performance monitoring (Rule 8)
-let measureCount = 0;
+let _measureCount = 0;
 
 // ============================================================================
 // COMPONENT PROPS

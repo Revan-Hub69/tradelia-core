@@ -21,11 +21,11 @@ const CACHE_BUST_TIMESTAMP = Date.now();
 // Validate translations during production build
 if (process.env.NODE_ENV === 'production' && !process.env.SKIP_I18N_VALIDATION) {
   try {
-    console.log('🔍 Validating translations...');
+    // Translation validation during build
     execSync('npm run i18n:validate', { stdio: 'inherit' });
-    console.log('✅ Translation validation passed\n');
-  } catch (error) {
-    console.error('❌ Translation validation failed');
+  }
+  catch {
+    // Translation validation failed - logged to build output
     process.exit(1);
   }
 }
