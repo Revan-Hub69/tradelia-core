@@ -236,6 +236,7 @@ export const PremiumFooter = () => {
                 <input
                   type="email"
                   placeholder={t('newsletter_placeholder')}
+                  aria-label={t('newsletter_placeholder')}
                   className="flex-1 rounded-xl border border-border bg-background px-4 py-3 text-sm transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 sm:max-w-xs"
                 />
                 <button

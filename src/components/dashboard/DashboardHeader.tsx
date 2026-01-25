@@ -427,8 +427,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                 <input
                   type="text"
                   placeholder={t('command_palette_placeholder')}
+                  aria-label={t('command_palette_placeholder')}
                   className="flex-1 border-none bg-transparent text-lg outline-none placeholder:text-muted-foreground"
-                  autoFocus
                 />
                 <kbd className="rounded-lg bg-muted/50 px-3 py-1.5 text-xs font-medium">
                   ESC

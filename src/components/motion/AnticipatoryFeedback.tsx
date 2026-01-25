@@ -163,6 +163,8 @@ export const AnticipatoryFeedback = forwardRef<HTMLDivElement, AnticipatoryFeedb
           return {
             onMouseEnter: handleAnticipationStart,
             onMouseLeave: handleDeactivation,
+            onFocus: handleAnticipationStart,
+            onBlur: handleDeactivation,
           };
         case 'focus':
           return {
@@ -354,6 +356,9 @@ export const HoverAnticipatory = forwardRef<HTMLDivElement, HoverAnticipatoryPro
         style={hoverStyle}
         onMouseEnter={handleHoverStart}
         onMouseLeave={handleHoverEnd}
+        onFocus={handleHoverStart}
+        onBlur={handleHoverEnd}
+        tabIndex={0}
         {...props}
       >
         {children}

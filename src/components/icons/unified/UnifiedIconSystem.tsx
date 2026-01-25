@@ -113,6 +113,7 @@ export const SignatureIconBase = memo<SignatureIconProps>(({
         className,
       )}
       onMouseEnter={onHover}
+      onFocus={onHover}
       onClick={handlePress}
       style={{
         // Hardware acceleration for smooth animations

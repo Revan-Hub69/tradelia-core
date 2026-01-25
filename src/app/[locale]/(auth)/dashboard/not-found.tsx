@@ -166,6 +166,7 @@ export default function DashboardNotFound() {
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder={t('search_placeholder')}
+                aria-label={t('search_placeholder')}
                 className={cn(
                   'w-full rounded-xl border bg-background py-3 pl-10 pr-4',
                   'transition-all duration-200',

@@ -50,6 +50,9 @@ export const FloatingProgress: React.FC<FloatingProgressProps> = ({
         className="group relative rounded-2xl border border-white/20 bg-white/90 p-4 shadow-xl shadow-black/10 backdrop-blur-xl transition-all duration-300 hover:bg-white/95 hover:shadow-2xl dark:border-white/10 dark:bg-slate-900/90 dark:shadow-black/30 dark:hover:bg-slate-900/95"
         onMouseEnter={() => setIsExpanded(true)}
         onMouseLeave={() => setIsExpanded(false)}
+        onFocus={() => setIsExpanded(true)}
+        onBlur={() => setIsExpanded(false)}
+        tabIndex={0}
       >
         {/* Circular Progress Indicator */}
         <div className="relative flex items-center justify-center">
