@@ -43,7 +43,7 @@ type SidebarNavigationProps = {
   defaultCollapsed?: boolean;
 };
 
-// Sidebar Navigation Item Component
+// Sidebar Navigation Item Component - Performance P1: Memoized
 type SidebarNavigationItemProps = {
   item: any;
   isActive: boolean;
@@ -51,12 +51,13 @@ type SidebarNavigationItemProps = {
   tGeneral: any;
 };
 
-const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
-  item,
-  isActive,
-  isCollapsed,
-  tGeneral,
-}) => {
+const SidebarNavigationItem = React.memo<SidebarNavigationItemProps>(
+  ({
+    item,
+    isActive,
+    isCollapsed,
+    tGeneral,
+  }) => {
   const { navigate, isPending, navigationTarget } = useOptimizedNavigation();
   const [visualState, setVisualState] = useState<'default' | 'pressed'>('default');
   const { uxState, canNavigate } = useNavigationState(
@@ -200,7 +201,17 @@ const SidebarNavigationItem: React.FC<SidebarNavigationItemProps> = ({
       </Link>
     </UiNavItem>
   );
-};
+  },
+  // Performance P1: Custom comparison to prevent unnecessary re-renders
+  (prevProps, nextProps) => {
+    return (
+      prevProps.item.id === nextProps.item.id &&
+      prevProps.isActive === nextProps.isActive &&
+      prevProps.isCollapsed === nextProps.isCollapsed
+      // tGeneral is a function, doesn't change between renders
+    );
+  },
+);
 
 export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
   className,

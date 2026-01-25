@@ -155,7 +155,20 @@ export type DynamicIconProps = {
   'isActive'?: boolean;
 };
 
-export const DynamicIcon: React.FC<DynamicIconProps> = ({ name, ...props }) => {
-  const IconComponent = ICON_MAP[name];
-  return <IconComponent {...props} />;
-};
+// Dynamic icon component - Performance P1: Memoized
+export const DynamicIcon = React.memo<DynamicIconProps>(
+  ({ name, ...props }) => {
+    const IconComponent = ICON_MAP[name];
+    return <IconComponent {...props} />;
+  },
+  // Custom comparison: only re-render if name, size, variant, or isActive changes
+  (prevProps, nextProps) => {
+    return (
+      prevProps.name === nextProps.name &&
+      prevProps.size === nextProps.size &&
+      prevProps.variant === nextProps.variant &&
+      prevProps.isActive === nextProps.isActive &&
+      prevProps.className === nextProps.className
+    );
+  },
+);

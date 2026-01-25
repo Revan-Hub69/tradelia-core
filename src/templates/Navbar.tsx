@@ -7,6 +7,7 @@ import { LocaleSwitcher } from '@/components/LocaleSwitcher';
 import { buttonVariants } from '@/components/ui/buttonVariants';
 import { Link } from '@/libs/i18nNavigation';
 import { cn } from '@/utils/Helpers';
+import { throttle } from '@/utils/throttle';
 
 import { Logo } from './Logo';
 
@@ -82,8 +83,12 @@ export const Navbar = () => {
   useFocusTrap(isMenuOpen, menuRef);
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
+    // Performance P1: Throttle scroll event to 100ms (from 60+ events/second)
+    const handleScroll = throttle(() => {
+      setIsScrolled(window.scrollY > 20);
+    }, 100);
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []); // ✅ Correct: ComponentDidMount pattern, no external dependencies
 
