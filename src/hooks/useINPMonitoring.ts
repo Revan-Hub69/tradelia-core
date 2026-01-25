@@ -101,14 +101,14 @@ export function useINPMonitoring(options: {
   const observerRef = useRef<PerformanceObserver | null>(null);
 
   useEffect(() => {
-    if (!enabled || typeof window === 'undefined') return;
+    if (!enabled || typeof window === 'undefined') return undefined;
 
     // Check if PerformanceObserver is supported
     if (!('PerformanceObserver' in window)) {
       if (debug) {
         console.warn('[INP] PerformanceObserver not supported');
       }
-      return;
+      return undefined;
     }
 
     try {
@@ -174,6 +174,7 @@ export function useINPMonitoring(options: {
       if (debug) {
         console.error('[INP] Failed to initialize observer:', error);
       }
+      return undefined;
     }
   }, [enabled, reportThreshold, onReport, debug]);
 

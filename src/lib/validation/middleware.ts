@@ -226,9 +226,12 @@ export function withValidation<
   ) => Promise<NextResponse> | NextResponse,
 ) {
   return async (
-    request: NextRequest,
-  ): Promise<NextResponse> => {
+    request: Request,
+  ): Promise<Response> => {
     try {
+      // Convert Request to NextRequest for validation
+      const nextRequest = request as NextRequest;
+      
       const validated: {
         body?: TBody;
         query?: TQuery;
@@ -237,16 +240,16 @@ export function withValidation<
 
       // Validate body
       if (schemas.body) {
-        validated.body = await validateBodyOrThrow(request, schemas.body);
+        validated.body = await validateBodyOrThrow(nextRequest, schemas.body);
       }
 
       // Validate query
       if (schemas.query) {
-        validated.query = validateQueryOrThrow(request, schemas.query);
+        validated.query = validateQueryOrThrow(nextRequest, schemas.query);
       }
 
       // Call handler with validated data
-      return await handler(request, validated);
+      return await handler(nextRequest, validated);
     } catch (error) {
       if (error instanceof ValidationError) {
         return NextResponse.json(

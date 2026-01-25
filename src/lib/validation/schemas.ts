@@ -78,10 +78,13 @@ export const emailSchema = z.string()
 /**
  * Username validation (alphanumeric + underscore)
  */
-export const usernameSchema = safeStringSchema
+export const usernameSchema = z.string()
   .min(3, 'Username must be at least 3 characters')
   .max(30, 'Username must be at most 30 characters')
-  .regex(/^[a-zA-Z0-9_]+$/, 'Username can only contain letters, numbers, and underscores');
+  .regex(/^[a-zA-Z0-9_]+$/, 'Username can only contain letters, numbers, and underscores')
+  .transform(sanitizeString)
+  .refine(noPathTraversal, 'Invalid characters detected')
+  .refine(noNullBytes, 'Invalid characters detected');
 
 /**
  * Password validation (strong password requirements)
@@ -135,11 +138,14 @@ export const boundedNumberSchema = (min: number, max: number) =>
 /**
  * Safe filename validation
  */
-export const filenameSchema = safeStringSchema
+export const filenameSchema = z.string()
   .max(255, 'Filename too long')
   .regex(/^[a-zA-Z0-9._-]+$/, 'Invalid filename format')
   .refine((name) => !name.startsWith('.'), 'Filename cannot start with dot')
-  .refine((name) => !name.includes('..'), 'Filename cannot contain double dots');
+  .refine((name) => !name.includes('..'), 'Filename cannot contain double dots')
+  .transform(sanitizeString)
+  .refine(noPathTraversal, 'Invalid characters detected')
+  .refine(noNullBytes, 'Invalid characters detected');
 
 /**
  * Phone number validation (E.164 format)
@@ -150,9 +156,13 @@ export const phoneSchema = z.string()
 /**
  * Search query validation
  */
-export const searchQuerySchema = safeStringSchema
+export const searchQuerySchema = z.string()
+  .min(1, 'Search query cannot be empty')
   .max(200, 'Search query too long')
-  .refine((val) => val.length > 0, 'Search query cannot be empty');
+  .transform(sanitizeString)
+  .refine(noPathTraversal, 'Invalid characters detected')
+  .refine(noNullBytes, 'Invalid characters detected')
+  .refine(noSQLKeywords, 'Invalid characters detected');
 
 // ============================================================================
 // USER SCHEMAS
@@ -162,13 +172,15 @@ export const searchQuerySchema = safeStringSchema
  * User profile creation/update
  */
 export const userProfileSchema = z.object({
-  name: safeStringSchema
+  name: z.string()
     .min(1, 'Name is required')
     .max(100, 'Name too long')
+    .transform(sanitizeString)
     .optional(),
   avatar: urlSchema.optional(),
-  bio: safeStringSchema
+  bio: z.string()
     .max(500, 'Bio too long')
+    .transform(sanitizeString)
     .optional(),
 });
 
@@ -178,9 +190,10 @@ export const userProfileSchema = z.object({
 export const userRegistrationSchema = z.object({
   email: emailSchema,
   password: passwordSchema,
-  name: safeStringSchema
+  name: z.string()
     .min(1, 'Name is required')
-    .max(100, 'Name too long'),
+    .max(100, 'Name too long')
+    .transform(sanitizeString),
 });
 
 /**
@@ -221,16 +234,16 @@ export const lessonIdSchema = z.string()
  */
 export const lessonCompletionSchema = z.object({
   lessonId: lessonIdSchema,
-  pathId: safeStringSchema.default('base'),
+  pathId: z.string().default('base').transform(sanitizeString),
   xpEarned: boundedNumberSchema(0, 1000),
-  approachesUsed: z.array(safeStringSchema).max(10, 'Too many approaches').optional(),
+  approachesUsed: z.array(z.string().transform(sanitizeString)).max(10, 'Too many approaches').optional(),
   quizScore: boundedNumberSchema(0, 100).optional(),
   timeSpent: positiveIntSchema.max(86400, 'Time spent too large').optional(), // Max 24 hours
   badges: z.array(z.object({
-    id: safeStringSchema,
-    name: safeStringSchema.max(100, 'Badge name too long'),
-    description: safeStringSchema.max(500, 'Badge description too long').optional(),
-    icon: safeStringSchema.max(100, 'Badge icon too long').optional(),
+    id: z.string().transform(sanitizeString),
+    name: z.string().max(100, 'Badge name too long').transform(sanitizeString),
+    description: z.string().max(500, 'Badge description too long').transform(sanitizeString).optional(),
+    icon: z.string().max(100, 'Badge icon too long').transform(sanitizeString).optional(),
     rarity: z.enum(['common', 'rare', 'epic', 'legendary']),
   })).max(10, 'Too many badges').optional(),
 });
@@ -264,10 +277,10 @@ export const userProgressUpdateSchema = z.object({
  * Badge award
  */
 export const badgeAwardSchema = z.object({
-  badgeId: safeStringSchema,
-  badgeName: safeStringSchema.max(100, 'Badge name too long'),
-  badgeDescription: safeStringSchema.max(500, 'Badge description too long').optional(),
-  badgeIcon: safeStringSchema.max(100, 'Badge icon too long').optional(),
+  badgeId: z.string().transform(sanitizeString),
+  badgeName: z.string().max(100, 'Badge name too long').transform(sanitizeString),
+  badgeDescription: z.string().max(500, 'Badge description too long').transform(sanitizeString).optional(),
+  badgeIcon: z.string().max(100, 'Badge icon too long').transform(sanitizeString).optional(),
   rarity: z.enum(['common', 'rare', 'epic', 'legendary']),
 });
 
@@ -279,14 +292,14 @@ export const badgeAwardSchema = z.object({
  * Learning path creation (admin only)
  */
 export const learningPathSchema = z.object({
-  id: safeStringSchema.max(50, 'ID too long'),
-  title: safeStringSchema.min(1, 'Title is required').max(200, 'Title too long'),
-  description: safeStringSchema.max(1000, 'Description too long').optional(),
+  id: z.string().max(50, 'ID too long').transform(sanitizeString),
+  title: z.string().min(1, 'Title is required').max(200, 'Title too long').transform(sanitizeString),
+  description: z.string().max(1000, 'Description too long').transform(sanitizeString).optional(),
   difficulty: z.enum(['beginner', 'intermediate', 'advanced']),
   isPremium: z.boolean().default(false),
   estimatedDuration: positiveIntSchema.max(10000, 'Duration too large').optional(),
   lessonOrder: z.array(lessonIdSchema).max(100, 'Too many lessons'),
-  prerequisites: z.array(safeStringSchema).max(50, 'Too many prerequisites').default([]),
+  prerequisites: z.array(z.string().transform(sanitizeString)).max(50, 'Too many prerequisites').default([]),
   isActive: z.boolean().default(true),
 });
 
@@ -300,7 +313,7 @@ export const learningPathSchema = z.object({
 export const paginationSchema = z.object({
   page: positiveIntSchema.max(10000, 'Page number too large').default(1),
   limit: positiveIntSchema.max(100, 'Limit too large').default(20),
-  sortBy: safeStringSchema.max(50, 'Sort field too long').optional(),
+  sortBy: z.string().max(50, 'Sort field too long').transform(sanitizeString).optional(),
   sortOrder: z.enum(['asc', 'desc']).default('asc'),
 });
 
