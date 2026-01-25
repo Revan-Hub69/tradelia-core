@@ -5,6 +5,11 @@
  * Reset, HTML elements, accessibility
  */
 
+/* Performance P0: Font display optimization */
+@font-face {
+  font-display: swap; /* Prevent FOIT (Flash of Invisible Text) */
+}
+
 * {
   @apply border-border;
 }

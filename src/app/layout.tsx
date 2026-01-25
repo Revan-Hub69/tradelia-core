@@ -54,7 +54,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning data-tradelia-runtime="boot">
-      <head />
+      <head>
+        {/* Performance P0: Preconnect to external origins */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        
+        {/* Performance P0: DNS prefetch for faster lookups */}
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+      </head>
       <body className="overflow-x-hidden bg-background text-foreground antialiased" suppressHydrationWarning>
         <RuntimeReady />
         <ServiceWorkerCleanup />
