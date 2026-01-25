@@ -61,7 +61,6 @@
     "react-hook-form": "^7.71.1",
     "sharp": "^0.33.5",
     "tailwind-merge": "^2.6.0",
-
     "zod": "^3.25.76",
     "zustand": "^5.0.10"
   },
@@ -90,7 +89,6 @@
     "@types/pg": "^8.16.0",
     "@types/react": "^18.3.27",
     "@types/react-dom": "^18.3.7",
-
     "@vitejs/plugin-react": "^4.7.0",
     "@vitest/coverage-v8": "^2.1.9",
     "@vitest/expect": "^2.1.9",

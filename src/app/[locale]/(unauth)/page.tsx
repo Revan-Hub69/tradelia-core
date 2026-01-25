@@ -1,15 +1,29 @@
 import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import dynamic from 'next/dynamic';
 
 import { BenefitsOverview } from '@/templates/BenefitsOverview';
-import { FAQ } from '@/templates/FAQ';
 import { FinalCTA } from '@/templates/FinalCTA';
 import { Hero } from '@/templates/Hero';
 import { HowItWorks } from '@/templates/HowItWorks';
-import { InteractiveDemo } from '@/templates/InteractiveDemo';
 import { LearningPath } from '@/templates/LearningPath';
 import { Navbar } from '@/templates/Navbar';
 import { PremiumFooter } from '@/templates/PremiumFooter';
-import { SocialProof } from '@/templates/SocialProof';
+
+// Dynamic imports for below-fold components (performance optimization)
+const InteractiveDemo = dynamic(() => import('@/templates/InteractiveDemo').then(mod => ({ default: mod.InteractiveDemo })), {
+  ssr: true, // Keep SSR for SEO
+  loading: () => <div className="min-h-[600px]" />, // Prevent layout shift
+});
+
+const SocialProof = dynamic(() => import('@/templates/SocialProof').then(mod => ({ default: mod.SocialProof })), {
+  ssr: true,
+  loading: () => <div className="min-h-[400px]" />,
+});
+
+const FAQ = dynamic(() => import('@/templates/FAQ').then(mod => ({ default: mod.FAQ })), {
+  ssr: true,
+  loading: () => <div className="min-h-[500px]" />,
+});
 
 export async function generateMetadata(props: { params: Promise<{ locale: string }> }) {
   const params = await props.params;
