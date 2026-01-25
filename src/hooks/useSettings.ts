@@ -166,15 +166,11 @@ export function useSettings(): UseSettingsReturn {
       try {
         await store.saveSettings();
       } catch (error) {
-        console.error('[useSettings] Sync failed:', error);
+        // Sync failed, will retry with exponential backoff
 
         // Retry with exponential backoff if error is retryable
         if (isRetryableError(error) && store.retryCount < MAX_RETRY_ATTEMPTS) {
           const delay = calculateRetryDelay(store.retryCount + 1);
-
-          console.log(
-            `[useSettings] Retrying in ${Math.round(delay)}ms (attempt ${store.retryCount + 1}/${MAX_RETRY_ATTEMPTS})`,
-          );
 
           retryTimerRef.current = setTimeout(() => {
             if (isMountedRef.current) {
@@ -183,8 +179,6 @@ export function useSettings(): UseSettingsReturn {
           }, delay);
         } else {
           // Max retries reached or non-retryable error
-          console.error('[useSettings] Max retries reached or non-retryable error');
-
           // TODO: Show user notification (P2 - UI components)
           // toast.error('Failed to save settings. Changes are saved locally.');
         }
@@ -271,8 +265,7 @@ export function useSettings(): UseSettingsReturn {
 
   useEffect(() => {
     function handleOnline() {
-      console.log('[useSettings] Back online, syncing pending changes...');
-
+      // Back online, sync pending changes
       // Sync immediately when back online
       if (store.saveStatus === 'error') {
         syncToDatabase();
@@ -280,7 +273,7 @@ export function useSettings(): UseSettingsReturn {
     }
 
     function handleOffline() {
-      console.log('[useSettings] Offline mode - changes will sync when connection is restored');
+      // Offline mode - changes will sync when connection is restored
     }
 
     window.addEventListener('online', handleOnline);

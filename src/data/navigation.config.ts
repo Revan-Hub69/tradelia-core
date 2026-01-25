@@ -163,10 +163,8 @@ export type NavigationAnalyticsEvent = {
 
 export const trackNavigationEvent = (event: NavigationAnalyticsEvent): void => {
   // TODO: Implementare tracking reale
-  if (process.env.NODE_ENV === 'development') {
-    console.log('Navigation Event:', event);
-  }
-
+  // Development logging removed for production readiness
+  
   // In produzione: inviare a analytics service
   // analytics.track('navigation', event);
 };

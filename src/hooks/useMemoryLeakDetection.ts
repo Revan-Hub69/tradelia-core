@@ -118,7 +118,7 @@ export const useMemoryLeakDetection = (options: MemoryLeakDetectionOptions = {})
     // Skip if memory API not available
     const initialMemory = getMemoryUsage();
     if (!initialMemory) {
-      console.warn('Memory API not available (Chrome required for memory leak detection)');
+      // Memory API not available (Chrome required)
       return;
     }
 
