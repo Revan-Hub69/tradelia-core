@@ -58,9 +58,15 @@ function getINPRating(value: number): 'good' | 'needs-improvement' | 'poor' {
 
 /**
  * Get element selector for reporting
+ * CRITICAL FIX: Robust check for getAttribute method (handles SVG, non-Element objects)
  */
 function getElementSelector(element: Element | null): string {
   if (!element) return 'unknown';
+  
+  // CRITICAL: Check if element has getAttribute method (handles non-Element objects)
+  if (typeof element.getAttribute !== 'function') {
+    return element.tagName?.toLowerCase() || 'unknown';
+  }
   
   // Try ID first
   if (element.id) return `#${element.id}`;
