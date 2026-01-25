@@ -358,7 +358,7 @@ export const CryptoLesson0Professional: React.FC = () => {
 
           <div className="space-y-6">
             {activeApproachData.content.sections.map((section, index) => (
-              <div key={index} className="space-y-3">
+              <div key={`section-${activeApproachData.id}-${index}`} className="space-y-3">
                 {section.type === 'intro' && (
                   <p className="text-base leading-relaxed text-foreground">
                     {section.content}
@@ -373,7 +373,7 @@ export const CryptoLesson0Professional: React.FC = () => {
                     {section.items && (
                       <ul className={`space-y-2 ${activeApproachData.color.text}`}>
                         {section.items.map((item, i) => (
-                          <li key={i} className="flex items-start gap-2 text-sm">
+                          <li key={`highlight-item-${index}-${i}`} className="flex items-start gap-2 text-sm">
                             <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-current" />
                             <span>{item}</span>
                           </li>
@@ -391,7 +391,7 @@ export const CryptoLesson0Professional: React.FC = () => {
                     {section.items && (
                       <ol className="space-y-2">
                         {section.items.map((item, i) => (
-                          <li key={i} className="flex items-start gap-3 text-sm text-muted-foreground">
+                          <li key={`list-item-${index}-${i}`} className="flex items-start gap-3 text-sm text-muted-foreground">
                             <span className="flex size-6 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground">
                               {i + 1}
                             </span>
