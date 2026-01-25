@@ -296,35 +296,9 @@ const UnifiedAuthPageContent = () => {
           setLoading(false);
           return;
         } else {
-          // ✅ NEW USER CREATED - SOFT EMAIL CONFIRMATION
-
-          // ✅ MANUALLY SEND VERIFICATION EMAIL
-          // (Required because "Confirm email" is disabled for immediate login)
-          try {
-            const { error: resendError } = await supabase.auth.resend({
-              type: 'signup',
-              email: data.email,
-              options: {
-                emailRedirectTo: `${window.location.origin}/dashboard`,
-              },
-            });
-
-            if (resendError) {
-              console.error('⚠️ Failed to send verification email:', resendError);
-              // Don't block signup, just log the error
-            } else {
-              console.log('✅ Verification email sent to:', data.email);
-            }
-          } catch (emailError) {
-            console.error('⚠️ Email send exception:', emailError);
-            // Don't block signup
-          }
-
-          // Redirect to dashboard immediately with email verification notice
+          // ✅ NEW USER CREATED - Login immediato
           const redirect = searchParams.get('redirect') || '/dashboard';
-          const redirectUrl = `${redirect}?emailVerification=pending&email=${encodeURIComponent(data.email)}`;
-
-          router.push(redirectUrl);
+          router.push(redirect);
           router.refresh();
           return;
         }

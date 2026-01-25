@@ -6,8 +6,8 @@ import { contactFormSchema } from '@/types/contact';
 
 export async function POST(request: Request) {
   try {
-    // Check Brevo API key
-    const apiKey = process.env.BREVO_API_KEY;
+    // Check Resend API key
+    const apiKey = process.env.RESEND_API_KEY;
     if (!apiKey) {
       return NextResponse.json(
         {
@@ -57,31 +57,19 @@ export async function POST(request: Request) {
       other: 'Other',
     };
 
-    // Send notification email to support team
-    const supportResponse = await fetch('https://api.brevo.com/v3/smtp/email', {
+    // Send notification email to support team via Resend
+    const supportResponse = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
-        'Accept': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
-        'api-key': apiKey,
       },
       body: JSON.stringify({
-        sender: {
-          name: 'Tradelia Contact Form',
-          email: 'noreply@tradelia.org',
-        },
-        to: [
-          {
-            email: process.env.SUPPORT_EMAIL || 'support@tradelia.org',
-            name: 'Tradelia Support',
-          },
-        ],
-        replyTo: {
-          email: data.email,
-          name: data.name,
-        },
+        from: 'Tradelia Contact Form <noreply@tradelia.com>',
+        to: [process.env.SUPPORT_EMAIL || 'support@tradelia.com'],
+        reply_to: data.email,
         subject: `[${inquiryTypeLabels[data.inquiryType]}] ${data.subject}`,
-        htmlContent: `
+        html: `
           <!DOCTYPE html>
           <html>
             <head>
@@ -138,31 +126,22 @@ export async function POST(request: Request) {
 
     if (!supportResponse.ok) {
       const error = await supportResponse.json();
-      console.error('Brevo API error (support):', error);
+      console.error('Resend API error (support):', error);
       throw new Error('Failed to send notification email');
     }
 
-    // Send auto-reply confirmation to user
-    await fetch('https://api.brevo.com/v3/smtp/email', {
+    // Send auto-reply confirmation to user via Resend
+    await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
-        'Accept': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
-        'api-key': apiKey,
       },
       body: JSON.stringify({
-        sender: {
-          name: 'Tradelia Support',
-          email: 'support@tradelia.org',
-        },
-        to: [
-          {
-            email: data.email,
-            name: data.name,
-          },
-        ],
+        from: 'Tradelia Support <support@tradelia.com>',
+        to: [data.email],
         subject: `We received your message: ${data.subject}`,
-        htmlContent: `
+        html: `
           <!DOCTYPE html>
           <html>
             <head>
