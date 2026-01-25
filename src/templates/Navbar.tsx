@@ -59,7 +59,7 @@ const useFocusTrap = (isOpen: boolean, containerRef: React.RefObject<HTMLDivElem
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isOpen, containerRef]);
+  }, [isOpen, containerRef]); // ✅ Correct: both dependencies included
 };
 
 /**
@@ -85,14 +85,14 @@ export const Navbar = () => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, []); // ✅ Correct: ComponentDidMount pattern, no external dependencies
 
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? 'hidden' : '';
     return () => {
       document.body.style.overflow = '';
     };
-  }, [isMenuOpen]);
+  }, [isMenuOpen]); // ✅ Correct: isMenuOpen is the only dependency
 
   const navLinks = [
     {

@@ -151,7 +151,7 @@ export function useSettings(): UseSettingsReturn {
     return () => {
       isMountedRef.current = false;
     };
-  }, []);
+  }, [store]); // ✅ Correct: store is the only dependency
 
   // ============================================================================
   // Debounced Database Sync

@@ -195,7 +195,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
     return () => {
       window.removeEventListener('resize', updatePosition);
     };
-  }, [isOpen, updatePosition]);
+  }, [isOpen, updatePosition]); // ✅ Correct: both dependencies included
 
   // ============================================================================
   // OPEN/CLOSE
@@ -270,7 +270,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
     if (currentItem) {
       currentItem.focus();
     }
-  }, [focusedIndex, isOpen]);
+  }, [focusedIndex, isOpen]); // ✅ Correct: both dependencies included
 
   // ============================================================================
   // CLICK OUTSIDE
@@ -302,7 +302,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
       document.removeEventListener('mousedown', handleClickOutside, true);
       document.removeEventListener('touchstart', handleClickOutside, true);
     };
-  }, [isOpen, closeMenu]);
+  }, [isOpen, closeMenu]); // ✅ Correct: both dependencies included
 
   // ============================================================================
   // ITEM ACTIONS

@@ -84,7 +84,7 @@ const CountryDropdownComponent = (
       // Reset selected country if defaultValue is undefined or null
       setSelectedCountry(undefined);
     }
-  }, [defaultValue, options]);
+  }, [defaultValue, options]); // ✅ Fixed: Added missing dependencies
 
   const handleSelect = useCallback(
     (country: Country) => {

@@ -72,7 +72,7 @@ export const useNavigationState = (
     }
     // No cleanup needed for other states
     return undefined;
-  }, [visualState]);
+  }, [visualState]); // ✅ Correct: visualState is the only dependency
 
   // Navigation handler
   const navigate = () => {
@@ -134,7 +134,7 @@ export const usePendingAnnouncement = (isPending: boolean, delay = 250) => {
       // No cleanup needed when not pending
       return undefined;
     }
-  }, [isPending, delay]);
+  }, [isPending, delay]); // ✅ Correct: both dependencies included
 
   return shouldAnnounce;
 };

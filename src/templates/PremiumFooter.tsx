@@ -31,7 +31,7 @@ const useInView = (threshold = 0.1) => {
     }
 
     return () => observer.disconnect();
-  }, [threshold]);
+  }, [threshold]); // ✅ Correct: threshold is the only dependency
 
   return { ref, isInView };
 };
