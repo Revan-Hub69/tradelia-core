@@ -4,6 +4,7 @@ import '@/styles/bottom-nav-capsule-2026.css';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata, Viewport } from 'next';
+import NextTopLoader from 'nextjs-toploader';
 
 import { RuntimeReady } from '@/components/runtime/RuntimeReady';
 import { ServiceWorkerCleanup } from '@/components/ServiceWorkerCleanup';
@@ -73,6 +74,20 @@ export default async function RootLayout({
         <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
       </head>
       <body className="overflow-x-hidden bg-background text-foreground antialiased" suppressHydrationWarning>
+        {/* Global loading indicator for navigation transitions */}
+        <NextTopLoader
+          color="hsl(var(--primary))"
+          initialPosition={0.08}
+          crawlSpeed={200}
+          height={3}
+          crawl={true}
+          showSpinner={false}
+          easing="ease"
+          speed={200}
+          shadow="0 0 10px hsl(var(--primary)),0 0 5px hsl(var(--primary))"
+          zIndex={9999}
+        />
+        
         <RuntimeReady />
         <ServiceWorkerCleanup />
         <WebVitalsMonitor />
