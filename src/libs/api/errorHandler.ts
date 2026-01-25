@@ -72,7 +72,11 @@ export const handleApiError = (error: unknown) => {
   );
 };
 
-export const withErrorHandler = (handler: Function) => {
+// ✅ CRITICAL FIX: Explicit function signature (TypeScript best practice 2026)
+// Research: Feature-Sliced Design 2026 - "Function type is essentially 'any' for functions"
+type AsyncHandler = (...args: any[]) => Promise<any>;
+
+export const withErrorHandler = (handler: AsyncHandler) => {
   return async (...args: any[]) => {
     try {
       return await handler(...args);

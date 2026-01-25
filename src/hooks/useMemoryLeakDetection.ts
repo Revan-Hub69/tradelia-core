@@ -53,7 +53,9 @@ export const useMemoryLeakDetection = (options: MemoryLeakDetectionOptions = {})
       return null;
     }
 
-    // @ts-ignore - Chrome-specific API
+    // ✅ CRITICAL FIX: @ts-expect-error instead of @ts-ignore
+    // Research: Feature-Sliced Design 2026 - "@ts-expect-error fails if no error, forcing cleanup"
+    // @ts-expect-error - Chrome-specific API (performance.memory) not in standard types
     const memory = (performance as any).memory;
     if (!memory) {
       return null;

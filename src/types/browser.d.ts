@@ -72,8 +72,10 @@ type CSSStyleDeclaration = {
 };
 
 // Google Analytics
+// ✅ CRITICAL FIX: Use 'type' instead of 'interface' for consistency
+// Research: Feature-Sliced Design 2026 - "Prefer type over interface to prevent declaration merging"
 declare global {
-  interface Window {
+  type WindowWithGtag = Window & {
     gtag?: (
       command: 'config' | 'event' | 'exception',
       targetId: string,
@@ -83,10 +85,10 @@ declare global {
         [key: string]: any;
       }
     ) => void;
-  }
+  };
 
-  interface Navigator extends NavigatorMemory, NavigatorBattery, NavigatorConnection {}
-  interface Document extends DocumentViewTransition {}
+  type NavigatorExtended = Navigator & NavigatorMemory & NavigatorBattery & NavigatorConnection;
+  type DocumentExtended = Document & DocumentViewTransition;
 }
 
 export {};
