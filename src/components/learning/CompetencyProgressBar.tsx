@@ -309,7 +309,7 @@ export const CompetencyProgressBar = ({
                     </p>
                     <ul className="space-y-1 text-xs text-muted-foreground">
                       {current.benefits.slice(0, 2).map((benefit: string, benefitIndex: number) => (
-                        <li key={benefitIndex} className="flex items-center gap-1">
+                        <li key={`benefit-${benefitIndex}`} className="flex items-center gap-1">
                           <span className="text-blue-600">✓</span>
                           {benefit}
                         </li>

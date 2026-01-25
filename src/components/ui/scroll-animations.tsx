@@ -151,7 +151,7 @@ export const StaggerChildren = ({
     <div ref={ref} className={className}>
       {Array.isArray(children)
         ? children.map((child, index) => (
-            <FadeIn key={index} delay={isInView ? index * staggerDelay : 0}>
+            <FadeIn key={`stagger-child-${index}`} delay={isInView ? index * staggerDelay : 0}>
               {child}
             </FadeIn>
           ))

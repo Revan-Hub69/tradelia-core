@@ -136,7 +136,7 @@ const DashboardIndexPage = async () => {
                 <div className="h-6 w-48 animate-pulse rounded bg-muted" />
                 <div className="space-y-3">
                   {Array.from({ length: 3 }).map((_, i) => (
-                    <div key={i} className="flex space-x-3">
+                    <div key={`dashboard-skeleton-${i}`} className="flex space-x-3">
                       <div className="size-10 animate-pulse rounded-full bg-muted" />
                       <div className="flex-1 space-y-2">
                         <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />

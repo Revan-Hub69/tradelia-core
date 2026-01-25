@@ -85,7 +85,7 @@ export const AnalogicalContent: React.FC<AnalogicalContentProps> = ({
           <div className="space-y-3">
             {metaphor.mapping.map((item: MetaphorMapping, index: number) => (
               <div
-                key={index}
+                key={`mapping-${item.from}-${index}`}
                 className="flex items-center gap-4 rounded-lg border border-border/50 bg-muted/30 p-3"
               >
                 <div className="flex-1">
@@ -114,7 +114,7 @@ export const AnalogicalContent: React.FC<AnalogicalContentProps> = ({
           </h4>
           <div className="space-y-2">
             {metaphor.limitations.map((limitation: string, index: number) => (
-              <p key={index} className="text-sm leading-relaxed text-warning/90">
+              <p key={`limitation-${index}`} className="text-sm leading-relaxed text-warning/90">
                 {limitation}
               </p>
             ))}

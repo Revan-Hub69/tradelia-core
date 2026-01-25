@@ -430,7 +430,7 @@ export const CryptoLesson0Professional: React.FC = () => {
               </h4>
               <ul className="space-y-2">
                 {activeApproachData.content.keyPoints.map((point, i) => (
-                  <li key={i} className="flex items-start gap-3 text-sm text-muted-foreground">
+                  <li key={`keypoint-${activeApproachData.id}-${i}`} className="flex items-start gap-3 text-sm text-muted-foreground">
                     <CheckIcon className="mt-0.5 size-4 shrink-0 text-green-600" />
                     <span>{point}</span>
                   </li>

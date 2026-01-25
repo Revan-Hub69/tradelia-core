@@ -244,7 +244,7 @@ export const MotionSystemExample: React.FC = () => {
           <StaggerContainer intensity="medium" direction="up">
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
               {Array.from({ length: 8 }, (_, i) => (
-                <EnterAnimation key={i} context="content">
+                <EnterAnimation key={`motion-example-${i}`} context="content">
                   <div
                     className="glass-surface rounded-lg p-4 text-center"
                     style={{ '--stagger-index': i } as React.CSSProperties}
