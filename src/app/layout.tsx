@@ -9,9 +9,6 @@ import { RuntimeReady } from '@/components/runtime/RuntimeReady';
 import { ServiceWorkerCleanup } from '@/components/ServiceWorkerCleanup';
 import { WebVitalsMonitor } from '@/components/WebVitalsMonitor';
 
-// Force dynamic rendering for CSP nonces (2026 security)
-export const dynamic = 'force-dynamic';
-
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
@@ -53,7 +50,11 @@ export const metadata: Metadata = {
  * This is the true root layout for Next.js App Router.
  * Nested layouts (like [locale]/layout.tsx) should NOT render html/head/body.
  * 
- * CSP Nonces (2026): Next.js automatically applies nonces from middleware
+ * CSP Configuration (2026):
+ * - Domain-based CSP with 'unsafe-inline' (no nonces)
+ * - See: docs/research/CSP_NONCE_NEXTJS15_TIER1_2026.md
+ * - Nonce-based CSP removed due to Next.js 15 incompatibility
+ * - Static generation enabled (no force-dynamic required)
  */
 export default async function RootLayout({
   children,
@@ -77,7 +78,6 @@ export default async function RootLayout({
         <WebVitalsMonitor />
         
         {/* Vercel Analytics - Real User Monitoring */}
-        {/* Note: Next.js automatically applies nonce to scripts */}
         <Analytics />
         <SpeedInsights />
 

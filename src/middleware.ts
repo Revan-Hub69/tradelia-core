@@ -15,9 +15,6 @@ const intlMiddleware = createMiddleware({
 export default async function middleware(request: NextRequest) {
   const isDevelopment = process.env.NODE_ENV === 'development';
 
-  // Generate nonce for CSP (2026 security best practice)
-  const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
-
   // Apply rate limiting for auth endpoints (ONLY in production)
   if (!isDevelopment && request.nextUrl.pathname.includes('/auth')) {
     const clientId = getClientIdentifier(request);
@@ -48,7 +45,7 @@ export default async function middleware(request: NextRequest) {
       authUrl.searchParams.set('resetTime', rateLimit.resetTime.toString());
 
       const response = Response.redirect(authUrl);
-      return applySecurityHeaders(response, isDevelopment, nonce);
+      return applySecurityHeaders(response, isDevelopment);
     }
   }
 
@@ -72,14 +69,14 @@ export default async function middleware(request: NextRequest) {
     const signInUrl = new URL('/auth', request.url);
     signInUrl.searchParams.set('redirect', request.nextUrl.pathname);
     const response = Response.redirect(signInUrl);
-    return applySecurityHeaders(response, isDevelopment, nonce);
+    return applySecurityHeaders(response, isDevelopment);
   }
 
   // Apply internationalization
   const response = intlMiddleware(request);
 
-  // Apply security headers to all responses (including CSP with nonce)
-  return applySecurityHeaders(response, isDevelopment, nonce);
+  // Apply security headers to all responses
+  return applySecurityHeaders(response, isDevelopment);
 }
 
 export const config = {
