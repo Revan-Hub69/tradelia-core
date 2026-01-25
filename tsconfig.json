@@ -59,6 +59,7 @@
     "./out/**/*",
     "./node_modules/**/*",
     "./src/_legacy/**/*",
+    "./supabase/functions/**/*",
     "**/*.spec.ts",
     "**/*.e2e.ts"
   ],
