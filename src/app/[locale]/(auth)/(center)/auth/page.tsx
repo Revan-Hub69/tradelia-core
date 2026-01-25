@@ -298,9 +298,6 @@ const UnifiedAuthPageContent = () => {
         } else {
           // ✅ NEW USER CREATED - SOFT EMAIL CONFIRMATION
 
-          // Get current locale for email language
-          const locale = window.location.pathname.split('/')[1] || 'en';
-
           // ✅ MANUALLY SEND VERIFICATION EMAIL
           // (Required because "Confirm email" is disabled for immediate login)
           try {
