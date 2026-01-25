@@ -372,8 +372,8 @@ export const CryptoLesson0Professional: React.FC = () => {
                     </h4>
                     {section.items && (
                       <ul className={`space-y-2 ${activeApproachData.color.text}`}>
-                        {section.items.map((item, i) => (
-                          <li key={`highlight-item-${index}-${i}`} className="flex items-start gap-2 text-sm">
+                        {section.items.map((item) => (
+                          <li key={`highlight-item-${index}-${item.substring(0, 15)}`} className="flex items-start gap-2 text-sm">
                             <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-current" />
                             <span>{item}</span>
                           </li>
@@ -429,8 +429,8 @@ export const CryptoLesson0Professional: React.FC = () => {
                 Punti Chiave
               </h4>
               <ul className="space-y-2">
-                {activeApproachData.content.keyPoints.map((point, i) => (
-                  <li key={`keypoint-${activeApproachData.id}-${i}`} className="flex items-start gap-3 text-sm text-muted-foreground">
+                {activeApproachData.content.keyPoints.map((point) => (
+                  <li key={`keypoint-${activeApproachData.id}-${point.substring(0, 15)}`} className="flex items-start gap-3 text-sm text-muted-foreground">
                     <CheckIcon className="mt-0.5 size-4 shrink-0 text-green-600" />
                     <span>{point}</span>
                   </li>

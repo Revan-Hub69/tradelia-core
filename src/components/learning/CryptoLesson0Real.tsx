@@ -231,8 +231,8 @@ export const CryptoLesson0Real: React.FC = () => {
                   'Nessuna autorità centrale controlla il sistema',
                   'La sicurezza deriva dalla verifica collettiva',
                   'Una volta registrata, una transazione è praticamente immutabile',
-                ].map((point, i) => (
-                  <div key={`blockchain-benefit-${i}`} className="flex items-start gap-2">
+                ].map((point) => (
+                  <div key={`blockchain-benefit-${point.substring(0, 20)}`} className="flex items-start gap-2">
                     <svg className="mt-0.5 size-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
@@ -396,8 +396,8 @@ export const CryptoLesson0Real: React.FC = () => {
                     'Algoritmi di consenso (Proof of Work, Proof of Stake)',
                     'Strutture dati Merkle Tree',
                     'Rete peer-to-peer distribuita',
-                  ].map((item, i) => (
-                    <div key={`tech-foundation-${i}`} className="flex items-start gap-2 text-sm">
+                  ].map((item) => (
+                    <div key={`tech-foundation-${item.substring(0, 15)}`} className="flex items-start gap-2 text-sm">
                       <div className="mt-2 size-1.5 shrink-0 rounded-full bg-primary"></div>
                       <span>{item}</span>
                     </div>
@@ -416,7 +416,7 @@ export const CryptoLesson0Real: React.FC = () => {
                     { title: 'Immutabilità', desc: 'Resistenza alle modifiche retroattive' },
                     { title: 'Trasparenza', desc: 'Tutte le transazioni verificabili' },
                     { title: 'Pseudonimato', desc: 'Privacy con trasparenza selettiva' },
-                  ].map((item, i) => (
+                  ].map((item) => (
                     <div key={`blockchain-property-${item.title}`} className="text-sm">
                       <div className="font-medium text-foreground">{item.title}</div>
                       <div className="text-muted-foreground">{item.desc}</div>
