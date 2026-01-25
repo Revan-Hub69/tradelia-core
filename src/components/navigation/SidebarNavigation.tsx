@@ -320,7 +320,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
               'focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2',
               isCollapsed ? 'justify-center' : 'justify-start',
             )}
-            title={isCollapsed ? (t('go_to_dashboard') as string) : undefined}
+            title={isCollapsed ? (t('go_to_dashboard' as any) as string) : undefined}
           >
             {isCollapsed
               ? (
