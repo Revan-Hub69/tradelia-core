@@ -2,12 +2,14 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 import { CompleteUserDataRawSchema } from '@/contracts/userProgress.contract';
+import { withApiRateLimit } from '@/lib/api-rate-limit';
 import { ApiError, withErrorHandler } from '@/libs/api/errorHandler';
 import { createUserProgress, getCompleteUserData } from '@/libs/supabase/database';
 import { createClient } from '@/libs/supabase/server';
 import { normalizeCompleteUserData } from '@/normalizers/userProgress.normalizer';
 
-export const GET = withErrorHandler(async () => {
+// Apply rate limiting: 60 requests per minute
+export const GET = withApiRateLimit(withErrorHandler(async () => {
   const supabase = await createClient();
   const { data: { user }, error: authError } = await supabase.auth.getUser();
 
@@ -26,9 +28,9 @@ export const GET = withErrorHandler(async () => {
 
   // 4️⃣ Return ONLY normalized data
   return NextResponse.json(normalized);
-});
+}));
 
-export const POST = withErrorHandler(async (request: NextRequest) => {
+export const POST = withApiRateLimit(withErrorHandler(async (request: NextRequest) => {
   const supabase = await createClient();
   const { data: { user }, error: authError } = await supabase.auth.getUser();
 
@@ -41,4 +43,4 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
 
   const progress = await createUserProgress(user.id, initialXP);
   return NextResponse.json({ progress }, { status: 201 });
-});
+}));
