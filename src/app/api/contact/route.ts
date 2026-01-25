@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
 import { z } from 'zod';
 
 import { getClientIp, rateLimit } from '@/lib/rate-limit';
@@ -7,8 +6,8 @@ import { contactFormSchema } from '@/types/contact';
 
 export async function POST(request: Request) {
   try {
-    // Initialize Resend (only if API key is available)
-    const apiKey = process.env.RESEND_API_KEY;
+    // Check Brevo API key
+    const apiKey = process.env.BREVO_API_KEY;
     if (!apiKey) {
       return NextResponse.json(
         {
@@ -18,8 +17,6 @@ export async function POST(request: Request) {
         { status: 500 },
       );
     }
-
-    const resend = new Resend(apiKey);
 
     // Get IP for rate limiting
     const ip = getClientIp(request);
@@ -50,20 +47,45 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: true, message: 'Message sent' });
     }
 
-    // Send email via Resend
-    await resend.emails.send({
-      from: 'Tradelia Contact <noreply@tradelia.com>',
-      to: process.env.SUPPORT_EMAIL || 'support@tradelia.com',
-      replyTo: data.email,
-      subject: `[Contact Form] ${data.subject}`,
-      html: `
-        <h2>New Contact Form Submission</h2>
-        <p><strong>From:</strong> ${data.name} (${data.email})</p>
-        <p><strong>Subject:</strong> ${data.subject}</p>
-        <p><strong>Message:</strong></p>
-        <p>${data.message.replace(/\n/g, '<br>')}</p>
-      `,
+    // Send email via Brevo API
+    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'api-key': apiKey,
+      },
+      body: JSON.stringify({
+        sender: {
+          name: 'Tradelia Contact',
+          email: 'noreply@tradelia.org',
+        },
+        to: [
+          {
+            email: process.env.SUPPORT_EMAIL || 'support@tradelia.org',
+            name: 'Tradelia Support',
+          },
+        ],
+        replyTo: {
+          email: data.email,
+          name: data.name,
+        },
+        subject: `[Contact Form] ${data.subject}`,
+        htmlContent: `
+          <h2>New Contact Form Submission</h2>
+          <p><strong>From:</strong> ${data.name} (${data.email})</p>
+          <p><strong>Subject:</strong> ${data.subject}</p>
+          <p><strong>Message:</strong></p>
+          <p>${data.message.replace(/\n/g, '<br>')}</p>
+        `,
+      }),
     });
+
+    if (!response.ok) {
+      const error = await response.json();
+      console.error('Brevo API error:', error);
+      throw new Error('Failed to send email via Brevo');
+    }
 
     return NextResponse.json({
       success: true,
