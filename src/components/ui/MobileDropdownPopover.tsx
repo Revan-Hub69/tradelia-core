@@ -273,20 +273,8 @@ export const MobileDropdownPopover = React.memo<MobileDropdownPopoverProps>(({
       const popoverWidth = Math.max(200, Math.min(popoverElement.offsetWidth, window.innerWidth - 32));
       const popoverHeight = Math.min(popoverElement.offsetHeight, MAX_PREVIEW_HEIGHT);
 
-      console.log('[MobileDropdownPopover] Calculating position:', {
-        triggerRect: {
-          top: triggerRect.top,
-          right: triggerRect.right,
-          bottom: triggerRect.bottom,
-          left: triggerRect.left,
-        },
-        popoverWidth,
-        popoverHeight,
-        viewport: {
-          width: window.innerWidth,
-          height: window.innerHeight,
-        },
-      });
+      // Performance P0: Removed console.log for production
+      // Debug info available via React DevTools if needed
 
       const { placement: calculatedPlacement, position: calculatedPosition } = calculatePlacement(
         triggerRect,
@@ -294,10 +282,7 @@ export const MobileDropdownPopover = React.memo<MobileDropdownPopoverProps>(({
         popoverHeight,
       );
 
-      console.log('[MobileDropdownPopover] Calculated:', {
-        placement: calculatedPlacement,
-        position: calculatedPosition,
-      });
+      // Performance P0: Removed console.log for production
 
       setPlacement(calculatedPlacement);
       setPosition(calculatedPosition);
