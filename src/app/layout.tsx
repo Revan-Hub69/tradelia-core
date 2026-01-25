@@ -5,6 +5,7 @@ import type { Metadata, Viewport } from 'next';
 
 import { RuntimeReady } from '@/components/runtime/RuntimeReady';
 import { ServiceWorkerCleanup } from '@/components/ServiceWorkerCleanup';
+import { WebVitalsMonitor } from '@/components/WebVitalsMonitor';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -66,6 +67,7 @@ export default function RootLayout({
       <body className="overflow-x-hidden bg-background text-foreground antialiased" suppressHydrationWarning>
         <RuntimeReady />
         <ServiceWorkerCleanup />
+        <WebVitalsMonitor />
 
         {/* Skip to content link for accessibility */}
         <a
