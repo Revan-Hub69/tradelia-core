@@ -295,7 +295,7 @@ const ApproachContent: React.FC<ApproachContentProps> = ({ approach, colors }) =
         </h3>
         <ul className={`space-y-2 ${colors.text}`}>
           {approach.content.keyTakeaways.map((takeaway, index) => (
-            <li key={index} className="flex items-start gap-2">
+            <li key={`takeaway-${approach.id}-${index}`} className="flex items-start gap-2">
               <span className="mt-1 text-green-600">•</span>
               <span className="text-sm">{takeaway}</span>
             </li>
@@ -459,7 +459,7 @@ const QuizView: React.FC<QuizViewProps> = ({
             return (
               <button
                 type="button"
-                key={index}
+                key={`answer-${currentQuestion.id}-${index}`}
                 onClick={() => !hasAnswered && onAnswer(currentQuestion.id, index)}
                 disabled={hasAnswered}
                 className={`
