@@ -384,7 +384,7 @@ export const CryptoLesson0Ultra: React.FC = () => {
               'Strutture dati Merkle Tree',
               'Rete peer-to-peer distribuita',
             ].map((item, i) => (
-              <div key={i} className="flex items-start gap-3 rounded-lg bg-muted/30 p-3">
+              <div key={`tech-foundation-ultra-${i}`} className="flex items-start gap-3 rounded-lg bg-muted/30 p-3">
                 <div className="mt-2 size-1.5 shrink-0 rounded-full bg-primary"></div>
                 <span className="text-sm leading-relaxed">{item}</span>
               </div>
@@ -404,7 +404,7 @@ export const CryptoLesson0Ultra: React.FC = () => {
               { title: 'Trasparenza', desc: 'Tutte le transazioni verificabili' },
               { title: 'Pseudonimato', desc: 'Privacy con trasparenza selettiva' },
             ].map((item, i) => (
-              <div key={i} className="rounded-lg bg-muted/30 p-3">
+              <div key={`property-${item.title}`} className="rounded-lg bg-muted/30 p-3">
                 <div className="text-sm font-medium text-foreground">{item.title}</div>
                 <div className="mt-1 text-xs text-muted-foreground">{item.desc}</div>
               </div>
@@ -660,7 +660,7 @@ export const CryptoLesson0Ultra: React.FC = () => {
                 'La sicurezza deriva dalla verifica collettiva',
                 'Una volta registrata, una transazione è immutabile',
               ].map((point, i) => (
-                <div key={i} className="flex items-start gap-3 rounded-xl bg-white/50 p-4">
+                <div key={`analogical-point-${i}`} className="flex items-start gap-3 rounded-xl bg-white/50 p-4">
                   <div className="mt-2 size-2 shrink-0 rounded-full bg-blue-500"></div>
                   <span className="text-sm font-medium leading-relaxed">{point}</span>
                 </div>
@@ -671,7 +671,7 @@ export const CryptoLesson0Ultra: React.FC = () => {
                 'Non serve fiducia in intermediari',
                 'Il processo è trasparente e auditabile',
               ].map((point, i) => (
-                <div key={i} className="flex items-start gap-3 rounded-xl bg-white/50 p-4">
+                <div key={`procedural-point-${i}`} className="flex items-start gap-3 rounded-xl bg-white/50 p-4">
                   <div className="mt-2 size-2 shrink-0 rounded-full bg-green-500"></div>
                   <span className="text-sm font-medium leading-relaxed">{point}</span>
                 </div>
@@ -682,7 +682,7 @@ export const CryptoLesson0Ultra: React.FC = () => {
                 'Consenso distribuito sostituisce autorità centrale',
                 'Trade-off tra decentralizzazione e scalabilità',
               ].map((point, i) => (
-                <div key={i} className="flex items-start gap-3 rounded-xl bg-white/50 p-4">
+                <div key={`conceptual-point-${i}`} className="flex items-start gap-3 rounded-xl bg-white/50 p-4">
                   <div className="mt-2 size-2 shrink-0 rounded-full bg-purple-500"></div>
                   <span className="text-sm font-medium leading-relaxed">{point}</span>
                 </div>
