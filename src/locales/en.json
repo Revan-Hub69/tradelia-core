@@ -980,6 +980,7 @@
     "risk_management": "Risk Management",
     "professional_formation": "Professional Formation",
     "learning_objectives": "Learning Objectives",
-    "competency_development": "Competency Development"
+    "competency_development": "Competency Development",
+    "data_sync_in_progress": "Data synchronization in progress"
   }
 }
