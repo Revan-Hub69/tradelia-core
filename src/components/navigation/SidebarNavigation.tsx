@@ -52,165 +52,165 @@ type SidebarNavigationItemProps = {
 };
 
 const SidebarNavigationItem = React.memo<SidebarNavigationItemProps>(
-  ({
-    item,
-    isActive,
-    isCollapsed,
-    tGeneral,
-  }) => {
-  const { navigate, isPending, navigationTarget } = useOptimizedNavigation();
-  const [visualState, setVisualState] = useState<'default' | 'pressed'>('default');
-  const { uxState, canNavigate } = useNavigationState(
-    item.href,
-    item.id,
-  );
+    ({
+        item,
+        isActive,
+        isCollapsed,
+        tGeneral,
+    }) => {
+        const { navigate, isPending, navigationTarget } = useOptimizedNavigation();
+        const [visualState, setVisualState] = useState<'default' | 'pressed'>('default');
+        const { uxState, canNavigate } = useNavigationState(
+            item.href,
+            item.id,
+        );
 
-  // Auto-reset pressed state with proper cleanup
-  useEffect(() => {
-    if (visualState === 'pressed') {
-      const timer = setTimeout(() => setVisualState('default'), 150);
-      return () => clearTimeout(timer);
-    }
-    return undefined;
-  }, [visualState]);
+        // Auto-reset pressed state with proper cleanup
+        useEffect(() => {
+            if (visualState === 'pressed') {
+                const timer = setTimeout(() => setVisualState('default'), 150);
+                return () => clearTimeout(timer);
+            }
+            return undefined;
+        }, [visualState]);
 
-  const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault(); // Always prevent default
+        const handleClick = (e: React.MouseEvent) => {
+            e.preventDefault(); // Always prevent default
 
-    if (!canNavigate) {
-      return;
-    }
+            if (!canNavigate) {
+                return;
+            }
 
-    // Visual feedback
-    setVisualState('pressed');
+            // Visual feedback
+            setVisualState('pressed');
 
-    // Track navigation event
-    trackNavigationEvent({
-      action: 'nav_click',
-      itemId: item.id,
-      timestamp: Date.now(),
-      metadata: { href: item.href, isOnline: true, isEnabled: true },
-    });
+            // Track navigation event
+            trackNavigationEvent({
+                action: 'nav_click',
+                itemId: item.id,
+                timestamp: Date.now(),
+                metadata: { href: item.href, isOnline: true, isEnabled: true },
+            });
 
-    // Optimized navigation with React 19 concurrent features
-    navigate(item.href);
-  };
+            // Optimized navigation with React 19 concurrent features
+            navigate(item.href);
+        };
 
-  const isNavigating = isPending && navigationTarget === item.href;
+        const isNavigating = isPending && navigationTarget === item.href;
 
-  return (
-    <UiNavItem
-      asChild
-      active={isActive && canNavigate}
-      className={cn(
-        'group relative',
-        {
-          'cursor-not-allowed opacity-40': !canNavigate,
-          'navigation-skeleton': isNavigating,
-        },
-        isCollapsed && 'justify-center px-2',
-      )}
-    >
-      <Link
-        href={item.href}
-        prefetch={item.isPriority && canNavigate}
-        onClick={handleClick}
-        className="flex w-full items-center gap-3"
-        aria-disabled={!canNavigate}
-        title={isCollapsed ? tGeneral(item.labelKey) : undefined}
-      >
-        {/* PREMIUM ACTIVE RAIL INDICATOR - Optimized Motion */}
-        {isActive && canNavigate && (
-          <motion.div
-            layoutId="activeRail"
-            className="absolute inset-y-0 left-0 w-1 rounded-r-full bg-primary"
-            initial={false}
-            transition={{
-              type: 'spring',
-              stiffness: 400,
-              damping: 30,
-              mass: 0.8,
-            }}
-          />
-        )}
+        return (
+            <UiNavItem
+                asChild
+                active={isActive && canNavigate}
+                className={cn(
+                    'group relative',
+                    {
+                        'cursor-not-allowed opacity-40': !canNavigate,
+                        'navigation-skeleton': isNavigating,
+                    },
+                    isCollapsed && 'justify-center px-2',
+                )}
+            >
+                <Link
+                    href={item.href}
+                    prefetch={item.isPriority && canNavigate}
+                    onClick={handleClick}
+                    className="flex w-full items-center gap-3"
+                    aria-disabled={!canNavigate}
+                    title={isCollapsed ? tGeneral(item.labelKey) : undefined}
+                >
+                    {/* PREMIUM ACTIVE RAIL INDICATOR - Optimized Motion */}
+                    {isActive && canNavigate && (
+                        <motion.div
+                            layoutId="activeRail"
+                            className="absolute inset-y-0 left-0 w-1 rounded-r-full bg-primary"
+                            initial={false}
+                            transition={{
+                                type: 'spring',
+                                stiffness: 400,
+                                damping: 30,
+                                mass: 0.8,
+                            }}
+                        />
+                    )}
 
-        {/* Icon with state indicators - CSS-based hover, Motion for complex animations */}
-        <div
-          className={cn(
-            'relative shrink-0 transition-all duration-200 ease-out',
-            'hover:scale-105 active:scale-95',
-            isActive
-              ? 'text-primary'
-              : 'text-foreground/80 group-hover:text-foreground',
-            !canNavigate && 'text-muted-foreground/40',
-          )}
-        >
-          <DynamicIcon
-            name={item.iconName as IconName}
-            size={24}
-            variant="premium"
-            isActive={isActive}
-            className={cn(
-              'transition-colors duration-200',
-              !canNavigate && 'opacity-60',
-            )}
-          />
+                    {/* Icon with state indicators - CSS-based hover, Motion for complex animations */}
+                    <div
+                        className={cn(
+                            'relative shrink-0 transition-all duration-200 ease-out',
+                            'hover:scale-105 active:scale-95',
+                            isActive
+                                ? 'text-primary'
+                                : 'text-foreground/80 group-hover:text-foreground',
+                            !canNavigate && 'text-muted-foreground/40',
+                        )}
+                    >
+                        <DynamicIcon
+                            name={item.iconName as IconName}
+                            size={24}
+                            variant="premium"
+                            isActive={isActive}
+                            className={cn(
+                                'transition-colors duration-200',
+                                !canNavigate && 'opacity-60',
+                            )}
+                        />
 
-          {/* State indicators - CSS animations for performance */}
-          {uxState === 'blocked' && (
-            <div className="absolute -right-1 -top-1 size-3 animate-pulse rounded-full bg-warning ring-2 ring-background" />
-          )}
+                        {/* State indicators - CSS animations for performance */}
+                        {uxState === 'blocked' && (
+                            <div className="absolute -right-1 -top-1 size-3 animate-pulse rounded-full bg-warning ring-2 ring-background" />
+                        )}
 
-          {uxState === 'offline' && (
-            <div className="absolute -right-1 -top-1 size-3 animate-pulse rounded-full bg-destructive ring-2 ring-background" />
-          )}
+                        {uxState === 'offline' && (
+                            <div className="absolute -right-1 -top-1 size-3 animate-pulse rounded-full bg-destructive ring-2 ring-background" />
+                        )}
 
-          {/* Badge dot for notifications - CSS pulse */}
-          {canNavigate && item.badgeType === 'dot' && (
-            <div className="absolute -right-1 -top-1 size-3 animate-pulse rounded-full bg-accent ring-2 ring-background" />
-          )}
-        </div>
+                        {/* Badge dot for notifications - CSS pulse */}
+                        {canNavigate && item.badgeType === 'dot' && (
+                            <div className="absolute -right-1 -top-1 size-3 animate-pulse rounded-full bg-accent ring-2 ring-background" />
+                        )}
+                    </div>
 
-        {/* Label - Hidden when collapsed */}
-        {!isCollapsed && (
-          <span
-            className={cn(
-              'flex-1 truncate text-muted-foreground transition-colors duration-200',
-              'group-hover:text-foreground/90',
-              isActive && canNavigate && 'text-foreground',
-            )}
-          >
-            {tGeneral(item.labelKey)}
-          </span>
-        )}
+                    {/* Label - Hidden when collapsed */}
+                    {!isCollapsed && (
+                        <span
+                            className={cn(
+                                'flex-1 truncate text-muted-foreground transition-colors duration-200',
+                                'group-hover:text-foreground/90',
+                                isActive && canNavigate && 'text-foreground',
+                            )}
+                        >
+                            {tGeneral(item.labelKey)}
+                        </span>
+                    )}
 
-        {/* Keyboard shortcut hint */}
-        {!isCollapsed && !isActive && canNavigate && (
-          <span className="ml-auto text-xs text-muted-foreground/60 opacity-0 transition-opacity group-hover:opacity-100">
-            Alt+
-            {getVisibleNavigationItems().findIndex(nav => nav.id === item.id) + 1}
-          </span>
-        )}
+                    {/* Keyboard shortcut hint */}
+                    {!isCollapsed && !isActive && canNavigate && (
+                        <span className="ml-auto text-xs text-muted-foreground/60 opacity-0 transition-opacity group-hover:opacity-100">
+                            Alt+
+                            {getVisibleNavigationItems().findIndex(nav => nav.id === item.id) + 1}
+                        </span>
+                    )}
 
-        {/* Tooltip for collapsed state - CSS only */}
-        {isCollapsed && (
-          <div className="layer-toast pointer-events-none absolute left-full ml-2 rounded bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
-            {tGeneral(item.labelKey)}
-          </div>
-        )}
-      </Link>
-    </UiNavItem>
-  );
-  },
-  // Performance P1: Custom comparison to prevent unnecessary re-renders
-  (prevProps, nextProps) => {
-    return (
-      prevProps.item.id === nextProps.item.id &&
-      prevProps.isActive === nextProps.isActive &&
-      prevProps.isCollapsed === nextProps.isCollapsed
-      // tGeneral is a function, doesn't change between renders
-    );
-  },
+                    {/* Tooltip for collapsed state - CSS only */}
+                    {isCollapsed && (
+                        <div className="layer-toast pointer-events-none absolute left-full ml-2 rounded bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+                            {tGeneral(item.labelKey)}
+                        </div>
+                    )}
+                </Link>
+            </UiNavItem>
+        );
+    },
+    // Performance P1: Custom comparison to prevent unnecessary re-renders
+    (prevProps, nextProps) => {
+        return (
+            prevProps.item.id === nextProps.item.id
+            && prevProps.isActive === nextProps.isActive
+            && prevProps.isCollapsed === nextProps.isCollapsed
+            // tGeneral is a function, doesn't change between renders
+        );
+    },
 );
 
 export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
