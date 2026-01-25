@@ -28,5 +28,16 @@
   "successMessage": "Thank you for contacting us. We've received your message and will respond within 24 hours.",
   "successNextSteps": "💡 Tip: Check your spam folder if you don't see our reply in your inbox.",
   "errorTitle": "Failed to Send Message",
-  "errorMessage": "Something went wrong. Please try again or contact us directly at support@tradelia.org"
+  "errorMessage": "Something went wrong. Please try again or contact us directly at support@tradelia.org",
+  "meta_title": "Contact Us - Tradelia",
+  "meta_description": "Get in touch with the Tradelia team. We respond within 24 hours.",
+  "badge": "We're here to help",
+  "title": "Contact Us",
+  "description": "Have a question? We'd love to hear from you. Send us a message and we'll respond within 24 hours.",
+  "contact_methods_title": "Other ways to reach us",
+  "email_label": "Email",
+  "response_time_label": "Response time",
+  "response_time_value": "Within 24 hours",
+  "help_card_title": "Need immediate help?",
+  "help_card_description": "Check our FAQ section for quick answers to common questions."
 }

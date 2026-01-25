@@ -736,6 +736,22 @@ export const HelpIcon = memo<Omit<SignatureIconProps, 'children'> & {
 
 HelpIcon.displayName = 'TradeliaHelpIcon';
 
+// MAIL ICON - Envelope symbol for email/contact
+export const MailIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isActive?: boolean;
+}>(({
+  isActive = false,
+  ...props
+}) => (
+  <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    {/* Envelope - universal email symbol */}
+    <rect x="3" y="5" width="18" height="14" rx="2" />
+    <path d="M3 7l9 6 9-6" />
+  </SignatureIconBase>
+));
+
+MailIcon.displayName = 'TradeliaMailIcon';
+
 // Legacy aliases for compatibility - Updated with enhanced versions
 export const LightIcon = SunIcon;
 export const DarkIcon = MoonIcon;

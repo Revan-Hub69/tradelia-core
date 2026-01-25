@@ -35,6 +35,7 @@ import {
   LightIcon,
   LockIcon,
   LogoutIcon,
+  MailIcon,
   MenuIcon,
   MinusIcon,
   MoonIcon,
@@ -76,6 +77,7 @@ export {
   LightIcon,
   LockIcon,
   LogoutIcon,
+  MailIcon,
   MenuIcon,
   MinusIcon,
   MoonIcon,
@@ -126,6 +128,7 @@ export const ICON_MAP = {
   ExitIcon,
   MoreVerticalIcon,
   HelpIcon,
+  MailIcon,
 
   // New Phase 3A icons
   TrendingUpIcon,

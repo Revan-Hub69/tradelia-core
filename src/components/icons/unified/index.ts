@@ -39,6 +39,7 @@ export {
   LightIcon,
   LockIcon,
   LogoutIcon,
+  MailIcon,
   MenuIcon,
   MinusIcon,
   MoonIcon,
