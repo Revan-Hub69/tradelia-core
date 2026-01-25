@@ -125,6 +125,7 @@ export default function GlobalError({
 
             {/* Action */}
             <button
+              type="button"
               onClick={() => reset()}
               style={{
                 display: 'inline-flex',

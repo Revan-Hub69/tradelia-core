@@ -155,7 +155,7 @@ export const EmailVerificationBanner = () => {
               </div>
 
               {/* Close button - Tier 1 positioning */}
-              <button
+              <button type="button"
                 onClick={handleDismiss}
                 className="ml-4 shrink-0 rounded-md p-1.5 text-amber-600 hover:bg-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-500 dark:text-amber-400 dark:hover:bg-amber-900/30"
                 aria-label={t('email_verification_dismiss')}

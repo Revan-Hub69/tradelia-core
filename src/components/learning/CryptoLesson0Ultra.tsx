@@ -576,7 +576,7 @@ export const CryptoLesson0Ultra: React.FC = () => {
           const isExplored = exploredApproaches.has(key as ApproachType);
 
           return (
-            <button
+            <button type="button"
               key={key}
               onClick={() => handleApproachChange(key as ApproachType)}
               className={`

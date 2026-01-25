@@ -295,7 +295,7 @@ export const CryptoLesson0Professional: React.FC = () => {
           const isExplored = exploredApproaches.has(approach.id);
 
           return (
-            <button
+            <button type="button"
               key={approach.id}
               onClick={() => handleApproachChange(approach.id)}
               className={`
