@@ -10,12 +10,12 @@ export const TestHeader: React.FC = () => {
   const handleBack = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
-      console.log('Back clicked - new step:', currentStep - 1);
+      // Code Quality P0: Removed console.log for production
     }
   };
 
   const handleClose = () => {
-    console.log('Close clicked');
+    // Code Quality P0: Removed console.log for production
     // In a real app, this would navigate away
   };
 

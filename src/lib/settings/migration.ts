@@ -53,13 +53,13 @@ export function migrateSettings(raw: any): UserSettingsV1 {
   try {
     // Handle null/undefined
     if (raw === null || raw === undefined) {
-      console.warn('[Migration] Null/undefined settings, using defaults');
+      // Code Quality P0: Removed console.warn for production
       return getDefaultSettings();
     }
 
     // Handle non-object
     if (typeof raw !== 'object') {
-      console.warn('[Migration] Non-object settings, using defaults');
+      // Code Quality P0: Removed console.warn for production
       return getDefaultSettings();
     }
 
@@ -68,7 +68,7 @@ export function migrateSettings(raw: any): UserSettingsV1 {
 
     // No version = legacy (pre-V1)
     if (!version) {
-      console.info('[Migration] Migrating legacy settings to V1');
+      // Code Quality P0: Removed console.info for production
       return migrateLegacyToV1(raw);
     }
 
@@ -76,14 +76,14 @@ export function migrateSettings(raw: any): UserSettingsV1 {
     if (version === 1) {
       // Validate structure
       if (!isValidV1Structure(raw)) {
-        console.warn('[Migration] Invalid V1 structure, using defaults');
+        // Code Quality P0: Removed console.warn for production
         return getDefaultSettings();
       }
       return raw as UserSettingsV1;
     }
 
     // Future versions (V2, V3, etc.)
-    console.warn(`[Migration] Unsupported version ${version}, using defaults`);
+    // Code Quality P0: Removed console.warn for production
     return getDefaultSettings();
   } catch (error) {
     console.error('[Migration] Migration failed:', error);
