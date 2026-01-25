@@ -67,7 +67,7 @@ const IGNORE_PATTERNS = [
   /^@\//, // Path aliases
 ];
 
-interface HardcodedString {
+type HardcodedString = {
   file: string;
   line: number;
   column: number;

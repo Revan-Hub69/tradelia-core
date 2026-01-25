@@ -25,19 +25,19 @@ const BARREL_PATTERNS = [
   '@/features',
 ];
 
-interface BarrelUsage {
+type BarrelUsage = {
   file: string;
   line: number;
   importPath: string;
   imports: string[];
-}
+};
 
-interface BarrelStats {
+type BarrelStats = {
   totalFiles: number;
   totalImports: number;
   byBarrel: Map<string, BarrelUsage[]>;
   largestFiles: Array<{ file: string; count: number }>;
-}
+};
 
 function analyzeFile(filePath: string): BarrelUsage[] {
   const content = fs.readFileSync(filePath, 'utf-8');
