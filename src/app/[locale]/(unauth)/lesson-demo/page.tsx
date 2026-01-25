@@ -8,7 +8,7 @@ export default function LessonDemoPage() {
     <MicroLessonContainer
       lesson={microLesson0Wallet}
       onComplete={() => {
-        console.log('Micro-lesson completed!');
+        // Micro-lesson completed
       }}
     />
   );

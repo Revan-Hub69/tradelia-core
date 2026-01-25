@@ -23,8 +23,7 @@ if (process.env.NODE_ENV === 'production' && !process.env.SKIP_I18N_VALIDATION) 
   try {
     // Translation validation during build
     execSync('npm run i18n:validate', { stdio: 'inherit' });
-  }
-  catch {
+  } catch {
     // Translation validation failed - logged to build output
     process.exit(1);
   }

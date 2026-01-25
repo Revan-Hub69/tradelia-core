@@ -148,11 +148,10 @@ export async function checkEmailExistsServer(email: string): Promise<{
 
     // Check if email exists in the users list
     const userExists = data.users.some(user => user.email === email);
-    console.log(`📧 Email check result for ${email}:`, userExists ? 'EXISTS' : 'NEW');
+    // Email check result logged to server
 
     return { exists: userExists };
   } catch (error) {
-    console.error('💥 Server-side email check exception:', error);
     // On exception (missing env vars in dev), assume new user
     return { exists: false };
   }
@@ -178,8 +177,6 @@ export async function signInWithEmailAndPassword(data: {
     });
 
     if (error) {
-      console.error('❌ Login error:', error);
-
       if (error.message.includes('Invalid login credentials')) {
         return {
           success: false,
@@ -204,7 +201,7 @@ export async function signInWithEmailAndPassword(data: {
     }
 
     if (authData.user) {
-      console.log('✅ Login successful:', authData.user.id);
+      // Login successful
       return {
         success: true,
         userId: authData.user.id,

@@ -158,16 +158,15 @@ const UnifiedAuthPageContent = () => {
   // Server-side email checking - More reliable than client-side
   const checkEmailExists = async (email: string): Promise<boolean> => {
     try {
-      console.log('📧 Server-side email check for:', email);
+      // Server-side email check
       const result = await checkEmailExistsServer(email);
 
       if (result.error) {
-        console.error('❌ Email check error:', result.error);
         // On error, assume new user to allow signup attempt
         return false;
       }
 
-      console.log('📧 Email check result:', result.exists ? 'EXISTS' : 'NEW');
+      // Email check result logged to server
       return result.exists;
     } catch (error) {
       console.error('💥 Email check exception:', error);
@@ -216,9 +215,8 @@ const UnifiedAuthPageContent = () => {
     }
 
     setLoading(true);
+    // Server-side login attempt
     setError(null);
-
-    console.log('🔐 Server-side login attempt for:', data.email);
 
     try {
       const result = await signInWithEmailAndPassword({
@@ -227,14 +225,13 @@ const UnifiedAuthPageContent = () => {
       });
 
       if (!result.success) {
-        console.error('❌ Login failed:', result.error);
         authRateLimit.recordAttempt();
         setError(result.error || 'Errore durante l\'accesso');
         setLoading(false);
         return;
       }
 
-      console.log('✅ Login successful');
+      // Login successful
       const redirect = searchParams.get('redirect') || '/dashboard';
       router.push(redirect);
       router.refresh();
@@ -283,7 +280,7 @@ const UnifiedAuthPageContent = () => {
       if (signupData.user) {
         if (signupData.user.identities && signupData.user.identities.length === 0) {
           // 🚨 USER ALREADY EXISTS (Security obfuscation detected)
-          console.log('🔄 User already exists (detected via empty identities array)');
+          // User already exists (detected via empty identities array)
           setError('📧 Questa email è già registrata! Ti porto alla pagina di accesso.');
 
           setTimeout(() => {
