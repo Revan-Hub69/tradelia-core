@@ -22,6 +22,8 @@ export {
   // Core icons
   BellIcon,
   CalculatorIcon,
+  // Challenge Dashboard icons
+  ChallengesIcon,
   CheckIcon,
   ChevronDownIcon,
   ClockIcon,
@@ -44,6 +46,7 @@ export {
   MinusIcon,
   MoonIcon,
   MoreVerticalIcon,
+  MyChartsIcon,
   PlusIcon,
   ProfileIcon,
   SearchIcon,
@@ -51,6 +54,7 @@ export {
   SidebarToggleIcon,
   SIGNATURE_TOKENS,
   SignatureIconBase,
+  SignalsIcon,
   StarIcon,
   // Legacy aliases (for compatibility)
   SunIcon,
