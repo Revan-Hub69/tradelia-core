@@ -349,7 +349,20 @@
     "view_messages": "Visualizza messaggi",
     "invite_friends": "Invita amici",
     "quick_settings": "Impostazioni rapide",
-    "open_section": "Apri sezione"
+    "open_section": "Apri sezione",
+    "empty_state_no_lessons_title": "Inizia il Tuo Percorso di Apprendimento",
+    "empty_state_no_lessons_description": "Completa la tua prima lezione per iniziare a tracciare i tuoi progressi e guadagnare achievement.",
+    "empty_state_no_lessons_cta": "Esplora Lezioni",
+    "empty_state_no_progress_title": "Nessun Progresso Ancora",
+    "empty_state_no_progress_description": "I tuoi progressi appariranno qui una volta che inizierai a completare lezioni e quiz.",
+    "empty_state_no_achievements_title": "Guadagna il Tuo Primo Achievement",
+    "empty_state_no_achievements_description": "Completa lezioni, mantieni streak e supera quiz per sbloccare achievement e mostrare le tue competenze.",
+    "empty_state_no_achievements_cta": "Vedi Achievement",
+    "empty_state_no_notifications_title": "Tutto Aggiornato!",
+    "empty_state_no_notifications_description": "Non hai nuove notifiche. Ti avviseremo di aggiornamenti importanti, achievement e traguardi.",
+    "empty_state_no_search_results_title": "Nessun Risultato Trovato",
+    "empty_state_no_search_results_description": "Prova a modificare i termini di ricerca o esplora tutti i contenuti disponibili.",
+    "empty_state_no_search_results_cta": "Cancella Ricerca"
   },
   "DashboardIndex": {
     "title_bar": "Dashboard",

@@ -15,6 +15,7 @@ import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
 import { BellIcon, ClockIcon, StarIcon, TrendingUpIcon } from '@/components/icons/unified/UnifiedIconSystem';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { UiStatusChip } from '@/components/ui/UiStatusChip';
 import { useMemoryLeakDetection } from '@/hooks/useMemoryLeakDetection';
 
@@ -356,6 +357,7 @@ export const DashboardStatsCard = ({ userId }: SecondaryDataProps) => {
 
 // ✅ TIER 1: Notifications with client-side data loading
 export const DashboardNotifications = ({ userId }: SecondaryDataProps) => {
+  const t = useTranslations('Dashboard');
   const [notifications, setNotifications] = useState<NotificationData[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -442,9 +444,12 @@ export const DashboardNotifications = ({ userId }: SecondaryDataProps) => {
 
       {notifications.length === 0
         ? (
-            <div className="py-4 text-center text-muted-foreground">
-              No notifications
-            </div>
+            <EmptyState
+              type="informational"
+              icon={<BellIcon className="w-full h-full" />}
+              title={t('empty_state_no_notifications_title')}
+              description={t('empty_state_no_notifications_description')}
+            />
           )
         : (
             <div className="space-y-3">
@@ -478,6 +483,7 @@ export const DashboardNotifications = ({ userId }: SecondaryDataProps) => {
 
 // ✅ TIER 1: Activity feed with client-side data loading
 export const DashboardActivityFeed = ({ userId }: SecondaryDataProps) => {
+  const t = useTranslations('Dashboard');
   const [activity, setActivity] = useState<RecentActivity[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -596,9 +602,12 @@ export const DashboardActivityFeed = ({ userId }: SecondaryDataProps) => {
 
       {activity.length === 0
         ? (
-            <div className="py-8 text-center text-muted-foreground">
-              No recent activity
-            </div>
+            <EmptyState
+              type="informational"
+              icon={<TrendingUpIcon className="w-full h-full" />}
+              title={t('empty_state_no_progress_title')}
+              description={t('empty_state_no_progress_description')}
+            />
           )
         : (
             <div className="space-y-4">

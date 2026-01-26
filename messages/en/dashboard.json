@@ -6,5 +6,18 @@
   "email_verification_resending": "Sending...",
   "email_verification_resent": "✓ Email sent! Check your inbox",
   "email_verification_dismiss": "Dismiss",
-  "email_verification_error": "Failed to send email. Please try again."
+  "email_verification_error": "Failed to send email. Please try again.",
+  "empty_state_no_lessons_title": "Start Your Learning Journey",
+  "empty_state_no_lessons_description": "Complete your first lesson to begin tracking your progress and earning achievements.",
+  "empty_state_no_lessons_cta": "Browse Lessons",
+  "empty_state_no_progress_title": "No Progress Yet",
+  "empty_state_no_progress_description": "Your progress will appear here once you start completing lessons and quizzes.",
+  "empty_state_no_achievements_title": "Earn Your First Achievement",
+  "empty_state_no_achievements_description": "Complete lessons, maintain streaks, and pass quizzes to unlock achievements and showcase your skills.",
+  "empty_state_no_achievements_cta": "View Achievements",
+  "empty_state_no_notifications_title": "All Caught Up!",
+  "empty_state_no_notifications_description": "You have no new notifications. We'll notify you about important updates, achievements, and milestones.",
+  "empty_state_no_search_results_title": "No Results Found",
+  "empty_state_no_search_results_description": "Try adjusting your search terms or browse all available content.",
+  "empty_state_no_search_results_cta": "Clear Search"
 }
