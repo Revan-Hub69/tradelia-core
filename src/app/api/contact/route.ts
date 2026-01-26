@@ -27,16 +27,6 @@ export async function POST(request: Request) {
     const supportEmail = process.env.SUPPORT_EMAIL || 'support@tradelia.org';
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tradelia.org';
 
-    if (!smtpHost || !smtpUser || !smtpPass) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Email service not configured',
-        },
-        { status: 500 },
-      );
-    }
-
     // Get IP for rate limiting
     const ip = getClientIp(request);
 
@@ -73,52 +63,6 @@ export async function POST(request: Request) {
     // Generate ticket ID
     const ticketId = generateTicketId();
 
-    // Prepare email template data
-    const templateData: EmailTemplateData = {
-      name: data.name,
-      email: data.email,
-      phone: data.phone,
-      ticketId,
-      inquiryType: data.inquiryType,
-      subject: data.subject,
-      message: data.message,
-      createdAt: new Date(),
-      siteUrl,
-      faqUrl: `${siteUrl}/faq`,
-      supportEmail,
-    };
-
-    // Create Nodemailer transporter with Aruba SMTP
-    const transporter = nodemailer.createTransport({
-      host: smtpHost,
-      port: 465,
-      secure: true,
-      auth: {
-        user: smtpUser,
-        pass: smtpPass,
-      },
-    });
-
-    // Send notification email to support team
-    await transporter.sendMail({
-      from: `"Tradelia Contact Form" <${smtpUser}>`,
-      to: supportEmail,
-      replyTo: data.email,
-      subject: contactNotificationTemplate.subject(locale, templateData),
-      html: contactNotificationTemplate.html(locale, templateData),
-      text: contactNotificationTemplate.text(locale, templateData),
-    });
-
-    // Send confirmation email to user
-    await transporter.sendMail({
-      from: `"Tradelia Support" <${smtpUser}>`,
-      to: data.email,
-      replyTo: supportEmail,
-      subject: contactConfirmationTemplate.subject(locale, templateData),
-      html: contactConfirmationTemplate.html(locale, templateData),
-      text: contactConfirmationTemplate.text(locale, templateData),
-    });
-
     // Save ticket to database (only if DATABASE_URL is configured)
     if (process.env.DATABASE_URL) {
       try {
@@ -137,13 +81,67 @@ export async function POST(request: Request) {
           userAgent: request.headers.get('user-agent') || undefined,
           ipAddress: ip,
         });
+        console.log(`Ticket ${ticketId} saved to database`);
       } catch (dbError) {
-        // Log error but don't fail the request
-        // Emails were sent successfully, ticket creation is secondary
         console.error('Failed to save ticket to database:', dbError);
       }
+    }
+
+    // Try to send emails (but don't fail if SMTP is not configured)
+    if (smtpHost && smtpUser && smtpPass) {
+      try {
+        const templateData: EmailTemplateData = {
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          ticketId,
+          inquiryType: data.inquiryType,
+          subject: data.subject,
+          message: data.message,
+          createdAt: new Date(),
+          siteUrl,
+          faqUrl: `${siteUrl}/faq`,
+          supportEmail,
+        };
+
+        const transporter = nodemailer.createTransport({
+          host: smtpHost,
+          port: 465,
+          secure: true,
+          auth: {
+            user: smtpUser,
+            pass: smtpPass,
+          },
+        });
+
+        // Send notification email to support team
+        await transporter.sendMail({
+          from: `"Tradelia Contact Form" <${smtpUser}>`,
+          to: supportEmail,
+          replyTo: data.email,
+          subject: contactNotificationTemplate.subject(locale, templateData),
+          html: contactNotificationTemplate.html(locale, templateData),
+          text: contactNotificationTemplate.text(locale, templateData),
+        });
+
+        // Send confirmation email to user
+        await transporter.sendMail({
+          from: `"Tradelia Support" <${smtpUser}>`,
+          to: data.email,
+          replyTo: supportEmail,
+          subject: contactConfirmationTemplate.subject(locale, templateData),
+          html: contactConfirmationTemplate.html(locale, templateData),
+          text: contactConfirmationTemplate.text(locale, templateData),
+        });
+
+        console.log(`Emails sent successfully for ticket ${ticketId}`);
+      } catch (emailError) {
+        // Log error but don't fail the request
+        console.error('Failed to send emails (SMTP error):', emailError);
+        console.log('Ticket saved but emails not sent - check SMTP credentials');
+      }
     } else {
-      console.log('DATABASE_URL not configured, skipping ticket save');
+      console.log('SMTP not configured - ticket saved without sending emails');
     }
 
     return NextResponse.json({
