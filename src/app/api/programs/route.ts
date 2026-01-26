@@ -12,7 +12,7 @@ export async function GET() {
   try {
     const supabase = await createClient();
 
-    // Fetch programs with related data
+    // Check if programs table exists by trying a simple query
     const { data: programs, error: programsError } = await supabase
       .from('programs')
       .select(`
@@ -24,7 +24,18 @@ export async function GET() {
       `)
       .order('created_at', { ascending: false });
 
+    // Handle table not found error (migration not applied yet)
     if (programsError) {
+      // Check if it's a "relation does not exist" error (table not found)
+      if (programsError.message?.includes('relation') || programsError.message?.includes('does not exist')) {
+        console.warn('Programs table not found - migration 0006 not applied yet');
+        return NextResponse.json({
+          success: true,
+          data: [],
+          message: 'Challenge library not initialized yet. Please run migrations.',
+        });
+      }
+
       console.error('Error fetching programs:', programsError);
       return NextResponse.json(
         { success: false, error: 'Failed to fetch programs' },
