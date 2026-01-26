@@ -193,6 +193,254 @@ Database completo di **TUTTE** le opportunità di trading disponibili nel 2026:
 
 ---
 
+## PART 1B: ELITE & HIGH-STAKES COMPETITIONS
+
+### 1.8 World Cup Trading Championships (Robbins Cup)
+
+**Overview:**
+- Most prestigious trading competition globally
+- Real money trading (not demo)
+- Minimum account: $10,000 (Futures) / $5,000 (Forex)
+- Annual championship
+
+**Prizes:**
+- Coveted Bull & Bear Trophies (pewter for 1st, crystal for 2nd/3rd)
+- Global media attention
+- Career opportunities at WorldCupAdvisor.com
+- Industry recognition
+
+**Categories:**
+- Futures Trading
+- Forex Trading
+- Stocks Trading
+
+**Rules:**
+- Real account trading
+- Verified by independent auditors
+- Highest % return wins
+- Minimum starting balance required
+
+**Frequency:** Annual
+
+**Target Audience:** Professional traders, career builders
+
+**Notable:** Winners gain massive industry credibility and media coverage
+
+**Source:** [World Cup Trading Championships](https://www.worldcupchampionships.com/)
+
+---
+
+### 1.9 Global Cup Trading Championship
+
+**Overview:**
+- International trading competition
+- Real money trading
+- Multiple categories
+
+**Prizes:**
+- Bull & Bear Trophies
+- Global recognition
+- Career advancement opportunities
+
+**Minimum Balance:**
+- $10,000 for Futures
+- $5,000 for Forex
+
+**Benefits:**
+- Build impressive track record
+- Gain global media attention
+- Featured in trading publications
+- Potential team positions
+
+**Frequency:** Annual
+
+**Target Audience:** Serious professional traders
+
+**Source:** [Global Cup Championship](https://www.worldcupchampionships.com/global-cup-trading-championship)
+
+---
+
+### 1.10 World Trading Tournament
+
+**Overview:**
+- Growing prize pool competition
+- Starts at $275,000 base pool
+- Each entry adds $700 to total pool
+
+**Prize Pool:**
+- Base: $275,000
+- Grows with participants
+- Potential for $500,000+ total
+
+**Rules:**
+- Real trading
+- Performance-based rewards
+- Multiple winners
+
+**Frequency:** Annual/Quarterly
+
+**Target Audience:** High-stakes traders
+
+**Source:** [World Trading Tournament](https://worldtradingtournament.com/)
+
+---
+
+### 1.11 WSOT (World Series of Trading)
+
+**Overview:**
+- Elite trading competition
+- Exclusive "Legends Club" membership
+- Professional-level competition
+
+**Recent Winner:**
+- Silvan Abicht: 37.13% performance
+- WSOT Championship Bracelet awarded
+
+**Features:**
+- Professional trading standards
+- Elite trader community
+- Championship bracelet for winners
+- Legends Club membership
+
+**Frequency:** Annual
+
+**Target Audience:** Elite professional traders
+
+**Source:** [WSOT](https://www.wsot.com/)
+
+---
+
+### 1.12 TMGM Global Trading Competition
+
+**Overview:**
+- 11th edition in 2026
+- Record prize pool: $671,500 USD
+- Forex and CFD trading
+
+**Prize Pool:** $671,500 (highest in company history)
+
+**Features:**
+- Global participation
+- Multiple categories
+- Professional broker-backed
+
+**Frequency:** Annual
+
+**Target Audience:** Forex/CFD traders worldwide
+
+**Source:** [TMGM Competition](https://www.tmgm.com/)
+
+---
+
+### 1.13 Bitget Stock Futures Championship
+
+**Overview:**
+- Crypto exchange competition
+- Prize pool: Up to 1,551,000 USDT
+- Dynamic scaling with participants
+
+**Prize Pool:**
+- Base: 1,000,000+ USDT
+- Scales with entries
+- Maximum: 1,551,000 USDT
+
+**Features:**
+- Stock futures trading
+- Crypto payouts (USDT)
+- Growing prize pool
+
+**Frequency:** Annual
+
+**Target Audience:** Crypto futures traders
+
+**Source:** [Bitget Championship](https://www.bitget.com/academy/bitget-stock-futures-championship-2026-guideline)
+
+---
+
+### 1.14 IronFX Trading Tournaments
+
+**Overview:**
+- Large-scale broker tournaments
+- Prize pools exceeding $1,000,000
+- Multiple events per year
+
+**Prize Pool:** $1,000,000+ per event
+
+**Features:**
+- Multiple tournaments annually
+- Various trading categories
+- Professional-grade competition
+
+**Frequency:** Multiple per year
+
+**Target Audience:** High-volume traders
+
+**Source:** [IronFX Tournaments](https://www.ironfx.com/)
+
+---
+
+### 1.15 Bullish Pro Trader Competition
+
+**Overview:**
+- Elite institutional-level competition
+- $10,000,000 mandate prize
+- Professional trading opportunity
+
+**Prize:** $10M trading mandate
+
+**Features:**
+- Institutional backing
+- Professional career opportunity
+- Massive capital allocation
+
+**Frequency:** Annual
+
+**Target Audience:** Elite institutional-level traders
+
+**Source:** [Bullish Pro Trader](https://www.bullish.com/protrader)
+
+---
+
+### 1.16 MyFundingAccount Tournament
+
+**Overview:**
+- Cash prizes + funded accounts
+- Up to $500,000 in funding
+- Unique trading tools
+
+**Prizes:**
+- Cash rewards
+- Funded accounts up to $500K
+- Professional trading tools
+
+**Frequency:** Regular
+
+**Target Audience:** Aspiring funded traders
+
+**Source:** [MFA Tournament](https://myfundingaccount.com/tournament-mfa/)
+
+---
+
+### 1.17 WhiteBIT International Crypto Trading Cup
+
+**Overview:**
+- Crypto exchange competition
+- International participation
+- Crypto-focused trading
+
+**Features:**
+- Crypto trading competition
+- International scope
+- Exchange-backed prizes
+
+**Frequency:** Annual
+
+**Target Audience:** Crypto traders
+
+**Source:** [WhiteBIT ICTC](https://whitebit.com/m/ICTC-2025)
+
+---
+
 ## PART 2: Paid Prop Firm Challenges (COMPLETE LIST)
 
 ### TIER S: Industry Leaders ($450M+ Payouts)
