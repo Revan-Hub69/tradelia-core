@@ -19,7 +19,7 @@ import {
 import { db } from '@/libs/DB';
 import { supportTicketsSchema } from '@/models/Schema';
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
@@ -139,7 +139,7 @@ export async function GET(request: Request) {
       success: true,
       message: `Follow-up emails sent`,
       processed: ticketsNeedingFollowup.length,
-      success: successCount,
+      sent: successCount,
       errors: errorCount,
     });
   } catch (error) {
