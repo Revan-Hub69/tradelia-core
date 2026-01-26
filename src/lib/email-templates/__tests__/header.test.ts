@@ -1,10 +1,11 @@
 /**
  * @vitest-environment node
  */
-import { describe, expect, it } from 'vitest';
-import fc from 'fast-check';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+
+import fc from 'fast-check';
+import { describe, expect, it } from 'vitest';
 
 /**
  * Feature: supabase-bilingual-email-templates
@@ -27,10 +28,10 @@ describe('Feature: supabase-bilingual-email-templates', () => {
    */
   function parseInlineStyles(styleAttr: string): Record<string, string> {
     const styles: Record<string, string> = {};
-    const declarations = styleAttr.split(';').filter((d) => d.trim());
+    const declarations = styleAttr.split(';').filter(d => d.trim());
 
     for (const declaration of declarations) {
-      const [property, value] = declaration.split(':').map((s) => s.trim());
+      const [property, value] = declaration.split(':').map(s => s.trim());
       if (property && value) {
         styles[property] = value;
       }
@@ -175,7 +176,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
 
     it('should have gradient applied to header container element', () => {
       // Extract td element with gradient
-      const tdRegex = /<td[^>]*style=["']([^"']+)["'][^>]*>/i;
+      const tdRegex = /<td[^>]*style=["']([^"']+)["'][^>]*>/;
       const matches = headerHTML.matchAll(new RegExp(tdRegex, 'gi'));
 
       let foundGradient = false;

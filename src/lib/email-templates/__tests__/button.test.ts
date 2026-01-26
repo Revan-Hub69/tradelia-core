@@ -28,10 +28,10 @@ describe('Feature: supabase-bilingual-email-templates', () => {
    */
   function parseInlineStyles(styleAttr: string): Record<string, string> {
     const styles: Record<string, string> = {};
-    const declarations = styleAttr.split(';').filter((d) => d.trim());
+    const declarations = styleAttr.split(';').filter(d => d.trim());
 
     for (const declaration of declarations) {
-      const [property, value] = declaration.split(':').map((s) => s.trim());
+      const [property, value] = declaration.split(':').map(s => s.trim());
       if (property && value) {
         styles[property] = value;
       }
@@ -44,7 +44,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
    * Helper function to extract hex color codes from a string
    */
   function extractHexColors(text: string): string[] {
-    const hexColorRegex = /#[0-9A-Fa-f]{6}/g;
+    const hexColorRegex = /#[0-9A-F]{6}/gi;
     return text.match(hexColorRegex) || [];
   }
 
@@ -95,7 +95,8 @@ describe('Feature: supabase-bilingual-email-templates', () => {
       expect(hexColors.length).toBeGreaterThan(0);
 
       // At least one color should be a Tradelia brand color
-      const hasBrandColor = hexColors.some((color) => isTradeliaColor(color));
+      const hasBrandColor = hexColors.some(color => isTradeliaColor(color));
+
       expect(hasBrandColor).toBe(true);
     });
 
@@ -115,7 +116,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
       // At least one style should contain a brand color
       const hasBrandColorInStyles = allStyles.some((styleAttr) => {
         const hexColors = extractHexColors(styleAttr);
-        return hexColors.some((color) => isTradeliaColor(color));
+        return hexColors.some(color => isTradeliaColor(color));
       });
 
       expect(hasBrandColorInStyles).toBe(true);
@@ -148,7 +149,8 @@ describe('Feature: supabase-bilingual-email-templates', () => {
 
               // If there are hex colors, at least one should be a brand color
               if (hexColors.length > 0) {
-                const hasBrandColor = hexColors.some((color) => isTradeliaColor(color));
+                const hasBrandColor = hexColors.some(color => isTradeliaColor(color));
+
                 expect(hasBrandColor).toBe(true);
               }
             }
@@ -307,7 +309,8 @@ describe('Feature: supabase-bilingual-email-templates', () => {
       expect(borders.length).toBeGreaterThan(0);
 
       // At least one border should use rgba for transparency
-      const hasSemiTransparentBorder = borders.some((border) => border.includes('rgba'));
+      const hasSemiTransparentBorder = borders.some(border => border.includes('rgba'));
+
       expect(hasSemiTransparentBorder).toBe(true);
     });
 
@@ -366,7 +369,8 @@ describe('Feature: supabase-bilingual-email-templates', () => {
             // If shadow uses rgba, it should have low opacity (< 0.5)
             const rgbaMatch = shadow.match(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)/);
             if (rgbaMatch) {
-              const opacity = parseFloat(rgbaMatch[4]);
+              const opacity = Number.parseFloat(rgbaMatch[4]);
+
               expect(opacity).toBeLessThanOrEqual(0.5);
             }
           },
@@ -395,14 +399,16 @@ describe('Feature: supabase-bilingual-email-templates', () => {
             // Border should be thin (1px or 2px)
             const widthMatch = border.match(/(\d+)px/);
             if (widthMatch) {
-              const width = parseInt(widthMatch[1]);
+              const width = Number.parseInt(widthMatch[1]);
+
               expect(width).toBeLessThanOrEqual(2);
             }
 
             // If border uses rgba, it should have low opacity
             const rgbaMatch = border.match(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)/);
             if (rgbaMatch) {
-              const opacity = parseFloat(rgbaMatch[4]);
+              const opacity = Number.parseFloat(rgbaMatch[4]);
+
               expect(opacity).toBeLessThanOrEqual(0.3);
             }
           },

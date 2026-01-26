@@ -170,7 +170,7 @@ export const DashboardNextSteps = ({ userData }: DashboardNextStepsProps) => {
         ? (
             <EmptyState
               type="action"
-              icon={<LearnIcon className="w-full h-full" />}
+              icon={<LearnIcon className="size-full" />}
               title={t('empty_state_no_lessons_title')}
               description={t('empty_state_no_lessons_description')}
               action={{
@@ -313,7 +313,7 @@ export const DashboardStatsCard = ({ userId }: SecondaryDataProps) => {
         </h2>
         <EmptyState
           type="action"
-          icon={<StarIcon className="w-full h-full" />}
+          icon={<StarIcon className="size-full" />}
           title={t('empty_state_no_achievements_title')}
           description={t('empty_state_no_achievements_description')}
           action={{
@@ -469,7 +469,7 @@ export const DashboardNotifications = ({ userId }: SecondaryDataProps) => {
         ? (
             <EmptyState
               type="informational"
-              icon={<BellIcon className="w-full h-full" />}
+              icon={<BellIcon className="size-full" />}
               title={t('empty_state_no_notifications_title')}
               description={t('empty_state_no_notifications_description')}
             />
@@ -627,7 +627,7 @@ export const DashboardActivityFeed = ({ userId }: SecondaryDataProps) => {
         ? (
             <EmptyState
               type="informational"
-              icon={<TrendingUpIcon className="w-full h-full" />}
+              icon={<TrendingUpIcon className="size-full" />}
               title={t('empty_state_no_progress_title')}
               description={t('empty_state_no_progress_description')}
             />

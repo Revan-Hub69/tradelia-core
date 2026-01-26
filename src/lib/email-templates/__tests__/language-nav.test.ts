@@ -1,10 +1,11 @@
 /**
  * @vitest-environment node
  */
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
 import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
-import { readFileSync } from 'fs';
-import { join } from 'path';
 
 /**
  * Feature: supabase-bilingual-email-templates
@@ -50,15 +51,15 @@ describe('Feature: supabase-bilingual-email-templates', () => {
     const minWidth = styles['min-width'] || '0';
 
     // Parse padding (supports "12px 24px" format)
-    const paddingValues = padding.split(' ').map(v => parseInt(v) || 0);
+    const paddingValues = padding.split(' ').map(v => Number.parseInt(v) || 0);
     const paddingTop = paddingValues[0] || 0;
     const paddingRight = paddingValues[1] || paddingValues[0] || 0;
     const paddingBottom = paddingValues[2] || paddingValues[0] || 0;
     const paddingLeft = paddingValues[3] || paddingValues[1] || paddingValues[0] || 0;
 
     // Parse min dimensions
-    const minHeightPx = parseInt(minHeight) || 0;
-    const minWidthPx = parseInt(minWidth) || 0;
+    const minHeightPx = Number.parseInt(minHeight) || 0;
+    const minWidthPx = Number.parseInt(minWidth) || 0;
 
     // Calculate total size (padding + min dimensions)
     const totalHeight = Math.max(paddingTop + paddingBottom, minHeightPx);
@@ -78,7 +79,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
 
     it('should have anchor links that appear in the HTML structure', () => {
       // Extract all anchor tags
-      const anchorRegex = /<a\s+[^>]*href=["']#(en|it)["'][^>]*>/g;
+      const anchorRegex = /<a\s[^>]*href=["']#(en|it)["'][^>]*>/g;
       const matches = languageNavHTML.match(anchorRegex);
 
       // Should have at least 2 anchor links (one for EN, one for IT)
@@ -97,6 +98,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
           (langCode) => {
             // The navigation should contain a link targeting this language code
             const linkPattern = new RegExp(`href=["']#${langCode}["']`);
+
             expect(languageNavHTML).toMatch(linkPattern);
           },
         ),
@@ -122,7 +124,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
   describe('Property 5: Touch-Friendly Navigation Buttons', () => {
     it('should have navigation links with minimum 44x44px touch target', () => {
       // Extract anchor tag style attributes
-      const anchorRegex = /<a\s+[^>]*href=["']#(en|it)["'][^>]*style=["']([^"']+)["'][^>]*>/g;
+      const anchorRegex = /<a\s[^>]*href=["']#(en|it)["'][^>]*style=["']([^"']+)["'][^>]*>/g;
       let match;
       const touchTargets: Array<{ lang: string; size: { width: number; height: number } }> = [];
 
@@ -147,7 +149,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
 
     it('should have padding that contributes to touch target size', () => {
       // Extract padding from anchor tags
-      const anchorRegex = /<a\s+[^>]*href=["']#(en|it)["'][^>]*style=["']([^"']+)["'][^>]*>/g;
+      const anchorRegex = /<a\s[^>]*href=["']#(en|it)["'][^>]*style=["']([^"']+)["'][^>]*>/g;
       let match;
 
       while ((match = anchorRegex.exec(languageNavHTML)) !== null) {
@@ -172,7 +174,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
           (verticalPadding, horizontalPadding) => {
             // Simulate button with these padding values
             const styles = {
-              padding: `${verticalPadding}px ${horizontalPadding}px`,
+              'padding': `${verticalPadding}px ${horizontalPadding}px`,
               'min-height': '44px',
               'min-width': '44px',
             };
@@ -286,13 +288,14 @@ describe('Feature: supabase-bilingual-email-templates', () => {
 
       eventHandlers.forEach((handler) => {
         const pattern = new RegExp(`\\s${handler}=`, 'i');
+
         expect(languageNavHTML).not.toMatch(pattern);
       });
     });
 
     it('should use standard HTML anchor links for navigation', () => {
       // Extract all anchor tags
-      const anchorRegex = /<a\s+[^>]*href=["']#(en|it)["'][^>]*>/g;
+      const anchorRegex = /<a\s[^>]*href=["']#(en|it)["'][^>]*>/g;
       const matches = languageNavHTML.match(anchorRegex);
 
       // Should have anchor links

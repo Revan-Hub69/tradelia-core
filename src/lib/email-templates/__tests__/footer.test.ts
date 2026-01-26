@@ -27,10 +27,10 @@ describe('Feature: supabase-bilingual-email-templates', () => {
    */
   function parseInlineStyles(styleAttr: string): Record<string, string> {
     const styles: Record<string, string> = {};
-    const declarations = styleAttr.split(';').filter((d) => d.trim());
+    const declarations = styleAttr.split(';').filter(d => d.trim());
 
     for (const declaration of declarations) {
-      const [property, value] = declaration.split(':').map((s) => s.trim());
+      const [property, value] = declaration.split(':').map(s => s.trim());
       if (property && value) {
         styles[property] = value;
       }
@@ -45,7 +45,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
   function hasSystemFontStack(fontFamily: string): boolean {
     const requiredFonts = ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto'];
 
-    return requiredFonts.every((font) => fontFamily.includes(font));
+    return requiredFonts.every(font => fontFamily.includes(font));
   }
 
   describe('Property 13: System Font Stack', () => {
@@ -111,6 +111,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
 
         // Each font-family should use system font stack
         expect(hasSystemFontStack(fontFamily)).toBe(true);
+
         textElementsChecked++;
       }
 

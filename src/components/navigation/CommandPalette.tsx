@@ -241,7 +241,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ className }) => 
           {filteredCommands.length === 0 && (
             <EmptyState
               type="action"
-              icon={<SearchIcon className="w-full h-full" />}
+              icon={<SearchIcon className="size-full" />}
               title={t('empty_state_no_search_results_title')}
               description={t('empty_state_no_search_results_description')}
               action={{
