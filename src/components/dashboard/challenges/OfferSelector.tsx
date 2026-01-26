@@ -79,13 +79,17 @@ export function OfferSelector({
           <div className="flex items-center justify-between gap-2">
             <div className="min-w-0 flex-1">
               <div className="text-sm font-semibold">
-                {formatSize(selectedOffer.account_size)}
-                {' '}
-                <span className="text-muted-foreground">@</span>
-                {' '}
-                {formatFee(selectedOffer)}
+                {selectedOffer ? formatSize(selectedOffer.account_size) : 'Select offer'}
+                {selectedOffer && (
+                  <>
+                    {' '}
+                    <span className="text-muted-foreground">@</span>
+                    {' '}
+                    {formatFee(selectedOffer)}
+                  </>
+                )}
               </div>
-              {selectedOffer.refundable && (
+              {selectedOffer?.refundable && (
                 <div className="mt-0.5 text-xs text-green-600 dark:text-green-400">
                   Refundable
                 </div>
@@ -106,9 +110,12 @@ export function OfferSelector({
           {isOpen && (
             <>
               {/* Backdrop */}
-              <div
-                className="fixed inset-0 z-40"
+              <button
+                type="button"
+                className="fixed inset-0 z-40 cursor-default"
                 onClick={() => setIsOpen(false)}
+                aria-label="Close offer selector"
+                tabIndex={-1}
               />
 
               {/* Menu */}
@@ -118,6 +125,7 @@ export function OfferSelector({
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.15 }}
                 className="absolute inset-x-0 z-50 mt-2 overflow-hidden rounded-xl border border-border/50 bg-background shadow-xl"
+                role="listbox"
               >
                 <div className="max-h-[300px] overflow-y-auto p-1">
                   {offers.map(offer => (
@@ -170,13 +178,17 @@ export function OfferSelector({
           <div className="flex items-center justify-between gap-2">
             <div className="min-w-0 flex-1">
               <div className="text-sm font-semibold">
-                {formatSize(selectedOffer.account_size)}
-                {' '}
-                <span className="text-muted-foreground">@</span>
-                {' '}
-                {formatFee(selectedOffer)}
+                {selectedOffer ? formatSize(selectedOffer.account_size) : 'Select offer'}
+                {selectedOffer && (
+                  <>
+                    {' '}
+                    <span className="text-muted-foreground">@</span>
+                    {' '}
+                    {formatFee(selectedOffer)}
+                  </>
+                )}
               </div>
-              {selectedOffer.refundable && (
+              {selectedOffer?.refundable && (
                 <div className="mt-0.5 text-xs text-green-600 dark:text-green-400">
                   Refundable
                 </div>
