@@ -227,6 +227,7 @@ export const DashboardNextSteps = ({ userData }: DashboardNextStepsProps) => {
 
 // ✅ TIER 1: Stats card with client-side data loading
 export const DashboardStatsCard = ({ userId }: SecondaryDataProps) => {
+  const t = useTranslations('Dashboard');
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -301,6 +302,31 @@ export const DashboardStatsCard = ({ userId }: SecondaryDataProps) => {
     return (
       <div className="card-ios-26 text-center">
         <div className="text-muted-foreground">Failed to load statistics</div>
+      </div>
+    );
+  }
+
+  // ✅ EMPTY STATE: No achievements yet
+  if (stats.achievements.total === 0) {
+    return (
+      <div className="card-ios-26 stagger-item">
+        <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold">
+          <TrendingUpIcon className="size-5 text-green-500" />
+          Statistics
+        </h2>
+        <EmptyState
+          type="action"
+          icon={<StarIcon className="w-full h-full" />}
+          title={t('empty_state_no_achievements_title')}
+          description={t('empty_state_no_achievements_description')}
+          action={{
+            label: t('empty_state_no_achievements_cta'),
+            onClick: () => {
+              // Navigate to achievements page or lessons
+              window.location.href = '/dashboard/learn';
+            },
+          }}
+        />
       </div>
     );
   }
