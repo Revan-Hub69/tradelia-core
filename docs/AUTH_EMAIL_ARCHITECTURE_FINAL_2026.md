@@ -6,7 +6,7 @@
 ┌─────────────────────────────────────────────────┐
 │         SUPABASE (Built-in SMTP)                │
 │                                                 │
-│  ✅ Signup confirmation                        │
+│  ✅ Signup (immediate login, no verification)  │
 │  ✅ Password reset                             │
 │  ✅ Email change                               │
 │  ✅ Magic link                                 │
@@ -16,12 +16,12 @@
 └─────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────┐
-│              RESEND (API)                       │
+│         NODEMAILER + ARUBA SMTP                 │
 │                                                 │
 │  ✅ Contact form                               │
 │  ✅ Future: notifications, marketing           │
 │                                                 │
-│  📧 API: https://api.resend.com/emails         │
+│  📧 SMTP: smtp.aruba.it                        │
 │  📝 Templates: Inline HTML                     │
 └─────────────────────────────────────────────────┘
 ```
@@ -31,24 +31,17 @@
 ### Supabase Dashboard
 
 **Authentication > Email:**
-- ❌ Confirm email: **DISABLED** (soft verification)
+- ❌ Confirm email: **DISABLED** (no email verification)
 - ✅ Allow new users to sign up: **ENABLED**
-
-**Authentication > Email Templates:**
-- Upload 4 template HTML:
-  - `confirm-signup.html`
-  - `reset-password.html`
-  - `change-email.html`
-  - `magic-link.html`
 
 **Settings > Auth > SMTP:**
 - ❌ Custom SMTP: **DISABLED** (usa built-in)
 
-### Resend Dashboard
+### Aruba Email Setup
 
-1. Verifica dominio: `tradelia.com`
-2. Copia API key
-3. Aggiungi a Vercel: `RESEND_API_KEY=re_xxxxx`
+1. Usa casella email esistente: `support@tradelia.org`
+2. Ottieni credenziali SMTP da Aruba
+3. Aggiungi a Vercel environment variables (vedi sotto)
 
 ### Environment Variables
 
@@ -58,9 +51,11 @@ NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=xxx
 SUPABASE_SERVICE_ROLE_KEY=xxx
 
-# Resend
-RESEND_API_KEY=re_xxxxx
-SUPPORT_EMAIL=support@tradelia.com
+# Nodemailer + Aruba SMTP
+SMTP_HOST=smtp.aruba.it
+SMTP_USER=support@tradelia.org
+SMTP_PASS=your_aruba_email_password
+SUPPORT_EMAIL=support@tradelia.org
 ```
 
 ## 🔄 Flussi Email
@@ -72,18 +67,14 @@ User fa signup
     ↓
 Supabase crea user
     ↓
-Codice chiama resend() manualmente
+Login immediato (no email verification)
     ↓
-Supabase invia email via built-in SMTP
-    ↓
-User riceve email di verifica
-    ↓
-User clicca link
-    ↓
-email_confirmed_at viene settato
+Redirect a dashboard
 ```
 
-**File:** `src/app/[locale]/(auth)/(center)/auth/page.tsx` (lines 280-295)
+**File:** `src/app/[locale]/(auth)/(center)/auth/page.tsx`
+
+**Note:** Email verification è stata RIMOSSA completamente per semplicità.
 
 ### 2. Contact Form Flow
 
@@ -92,10 +83,10 @@ User compila form
     ↓
 Frontend chiama /api/contact
     ↓
-API route chiama Resend API
+API route usa Nodemailer + Aruba SMTP
     ↓
-Resend invia 2 email:
-  - A support@tradelia.com (notifica)
+Nodemailer invia 2 email:
+  - A support@tradelia.org (notifica)
   - All'utente (conferma)
 ```
 
@@ -112,10 +103,10 @@ Google verifica email
     ↓
 Callback crea sessione
     ↓
-email_confirmed_at già settato (Google verifica)
+Redirect a dashboard
 ```
 
-**File:** `src/app/[locale]/(auth)/(center)/auth/page.tsx` (handleGoogleAuth)
+**File:** `src/app/[locale]/(auth)/(center)/auth/page.tsx`
 
 ## 🧪 Testing
 
@@ -159,17 +150,15 @@ email_confirmed_at già settato (Google verifica)
 
 ### Contact form non invia
 
-1. Verifica `RESEND_API_KEY` in Vercel
-2. Verifica dominio verificato in Resend
+1. Verifica `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS` in Vercel
+2. Verifica credenziali Aruba email corrette
 3. Check logs in Vercel: `vercel logs`
 4. Check console browser per errori
+5. Verifica che porta 465 (SSL) sia aperta
 
-### Email verification non arriva
+### Email verification
 
-1. Verifica "Confirm email" sia DISABLED in Supabase
-2. Verifica che `resend()` venga chiamato nel codice (line 280-295)
-3. Check spam folder
-4. Verifica template caricati in Supabase
+**Non applicabile** - Email verification è stata rimossa completamente.
 
 ### OAuth non funziona
 
@@ -184,26 +173,28 @@ email_confirmed_at già settato (Google verifica)
 - **Limite:** Illimitato (production con dominio verificato)
 - **Deliverability:** Buona
 
-### Resend Free Tier
-- **Limite:** 100 email/giorno
-- **Limite:** 3,000 email/mese
-- **Deliverability:** Ottima
+### Aruba SMTP
+- **Limite:** Dipende dal piano Aruba
+- **Deliverability:** Buona (dominio già configurato)
+- **Vantaggio:** Nessuna modifica DNS necessaria
 
 ## ✅ Checklist Deployment
 
-- [ ] Supabase: "Confirm email" DISABLED
-- [ ] Supabase: Template HTML caricati
-- [ ] Supabase: Custom SMTP DISABLED
-- [ ] Resend: Dominio verificato
-- [ ] Resend: API key copiata
-- [ ] Vercel: `RESEND_API_KEY` aggiunta
-- [ ] Vercel: `SUPPORT_EMAIL` aggiunta
+- [x] Supabase: "Confirm email" DISABLED
+- [x] Supabase: Custom SMTP DISABLED
+- [x] Nodemailer: Package installato
+- [x] TypeScript: @types/nodemailer installato
+- [ ] Aruba: Ottieni credenziali SMTP
+- [ ] Vercel: `SMTP_HOST` aggiunta (smtp.aruba.it)
+- [ ] Vercel: `SMTP_USER` aggiunta (support@tradelia.org)
+- [ ] Vercel: `SMTP_PASS` aggiunta (password Aruba)
+- [ ] Vercel: `SUPPORT_EMAIL` aggiunta (support@tradelia.org)
 - [ ] Test: Contact form funziona
-- [ ] Test: Signup email arriva
+- [ ] Test: Signup funziona (login immediato)
 - [ ] Test: OAuth funziona
 
 ---
 
 **Data:** 2026-01-26  
-**Status:** ✅ Contact form migrato a Resend  
-**Next:** Test in production
+**Status:** ✅ Contact form migrato a Nodemailer + Aruba SMTP  
+**Next:** Aggiungi credenziali Aruba in Vercel e testa in production

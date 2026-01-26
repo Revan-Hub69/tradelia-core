@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import nodemailer from 'nodemailer';
 import { z } from 'zod';
 
 import { getClientIp, rateLimit } from '@/lib/rate-limit';
@@ -6,9 +7,12 @@ import { contactFormSchema } from '@/types/contact';
 
 export async function POST(request: Request) {
   try {
-    // Check Resend API key
-    const apiKey = process.env.RESEND_API_KEY;
-    if (!apiKey) {
+    // Check SMTP credentials
+    const smtpHost = process.env.SMTP_HOST;
+    const smtpUser = process.env.SMTP_USER;
+    const smtpPass = process.env.SMTP_PASS;
+
+    if (!smtpHost || !smtpUser || !smtpPass) {
       return NextResponse.json(
         {
           success: false,
@@ -57,19 +61,24 @@ export async function POST(request: Request) {
       other: 'Other',
     };
 
-    // Send notification email to support team via Resend
-    const supportResponse = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
+    // Create Nodemailer transporter with Aruba SMTP
+    const transporter = nodemailer.createTransport({
+      host: smtpHost,
+      port: 465,
+      secure: true,
+      auth: {
+        user: smtpUser,
+        pass: smtpPass,
       },
-      body: JSON.stringify({
-        from: 'Tradelia Contact Form <onboarding@resend.dev>',
-        to: [process.env.SUPPORT_EMAIL || 'support@tradelia.org'],
-        reply_to: data.email,
-        subject: `[${inquiryTypeLabels[data.inquiryType]}] ${data.subject}`,
-        html: `
+    });
+
+    // Send notification email to support team
+    await transporter.sendMail({
+      from: `"Tradelia Contact Form" <${smtpUser}>`,
+      to: process.env.SUPPORT_EMAIL || 'support@tradelia.org',
+      replyTo: data.email,
+      subject: `[${inquiryTypeLabels[data.inquiryType]}] ${data.subject}`,
+      html: `
           <!DOCTYPE html>
           <html>
             <head>
@@ -121,27 +130,14 @@ export async function POST(request: Request) {
             </body>
           </html>
         `,
-      }),
     });
 
-    if (!supportResponse.ok) {
-      const error = await supportResponse.json();
-      console.error('Resend API error (support):', error);
-      throw new Error('Failed to send notification email');
-    }
-
-    // Send auto-reply confirmation to user via Resend
-    await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: 'Tradelia Support <onboarding@resend.dev>',
-        to: [data.email],
-        subject: `We received your message: ${data.subject}`,
-        html: `
+    // Send auto-reply confirmation to user
+    await transporter.sendMail({
+      from: `"Tradelia Support" <${smtpUser}>`,
+      to: data.email,
+      subject: `We received your message: ${data.subject}`,
+      html: `
           <!DOCTYPE html>
           <html>
             <head>
@@ -182,7 +178,6 @@ export async function POST(request: Request) {
             </body>
           </html>
         `,
-      }),
     });
 
     return NextResponse.json({
