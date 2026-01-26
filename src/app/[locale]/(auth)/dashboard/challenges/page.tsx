@@ -221,12 +221,12 @@ export default function ChallengesPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto max-w-[100vw] overflow-x-hidden px-4 py-8">
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold">Challenge Library</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl font-bold sm:text-3xl">Challenge Library</h1>
+          <p className="text-sm text-muted-foreground sm:text-base">
             Browse and compare
             {' '}
             {challenges.length}
@@ -244,9 +244,9 @@ export default function ChallengesPage() {
         </div>
 
         {/* Main Content */}
-        <div className="flex gap-6">
-          {/* Filters Sidebar */}
-          <aside className="w-64 shrink-0">
+        <div className="flex flex-col gap-6 lg:flex-row">
+          {/* Filters Sidebar - Hidden on mobile, visible on desktop */}
+          <aside className="hidden w-64 shrink-0 lg:block">
             <ChallengeFilters
               filters={filters}
               onFilterChange={setFilters}
@@ -256,7 +256,7 @@ export default function ChallengesPage() {
           </aside>
 
           {/* Challenge Grid */}
-          <div className="flex-1">
+          <div className="min-w-0 flex-1">
             {comparisonIds.length > 0 && (
               <div className="mb-6 rounded-lg border border-primary/20 bg-primary/5 p-4">
                 <div className="flex items-center justify-between">
@@ -298,7 +298,7 @@ export default function ChallengesPage() {
                 </p>
               </div>
             ) : (
-              <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 {filteredChallenges.map(challenge => (
                   <ChallengeCard
                     key={challenge.id}
