@@ -4,12 +4,7 @@ import { motion } from 'framer-motion';
 import { ArrowUpDown, Check } from 'lucide-react';
 import { useState } from 'react';
 
-type SortOption =
-  | 'recommended'
-  | 'lowest_cost'
-  | 'highest_split'
-  | 'fastest_payout'
-  | 'largest_account';
+import type { SortOption } from '@/types/challenge';
 
 type ChallengeSortDropdownProps = {
   value: SortOption;

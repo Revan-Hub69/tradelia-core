@@ -2,36 +2,19 @@
 
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { 
-  TrendingUp, 
-  DollarSign, 
-  Calendar, 
+import {
   Award,
+  Calendar,
+  CheckCircle2,
+  DollarSign,
   ExternalLink,
   Info,
-  CheckCircle2
+  TrendingUp,
 } from 'lucide-react';
 
-interface Challenge {
-  id: string;
-  name: string;
-  description: string;
-  is_free: boolean;
-  entry_fee: number | null;
-  currency: string;
-  account_size: number;
-  profit_split: { initial: number; scaled?: number };
-  payout_speed: string;
-  popularity: number;
-  official_url: string;
-  prop_firms: {
-    name: string;
-    logo_url: string;
-    reputation: number;
-  };
-}
+import type { Challenge } from '@/types/challenge';
 
-interface ChallengeCardProps {
+type ChallengeCardProps = {
   challenge: Challenge;
   onViewDetails: (challenge: Challenge) => void;
   onCompareToggle: (id: string) => void;

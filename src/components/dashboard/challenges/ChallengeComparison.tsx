@@ -3,31 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { ExternalLink, Plus, X } from 'lucide-react';
 
-type Challenge = {
-  id: string;
-  name: string;
-  is_free: boolean;
-  entry_fee: number | null;
-  currency: string;
-  account_size: number;
-  profit_split: { initial: number; scaled?: number };
-  rules: {
-    profitTarget?: number;
-    maxDailyLoss?: number;
-    maxDrawdown?: number;
-    minTradingDays?: number;
-    timeLimit?: number;
-  };
-  payout_speed: string;
-  scaling_potential: number | null;
-  refundable: boolean;
-  markets: string[];
-  platforms: string[];
-  official_url: string;
-  prop_firms: {
-    name: string;
-  };
-};
+import type { Challenge } from '@/types/challenge';
 
 type ChallengeComparisonProps = {
   challenges: Challenge[];

@@ -4,14 +4,7 @@ import { motion } from 'framer-motion';
 import { Filter, X } from 'lucide-react';
 import { useState } from 'react';
 
-type FilterState = {
-  cost: string[];
-  accountSize: string[];
-  profitSplit: string[];
-  payoutSpeed: string[];
-  type: string[];
-  market: string[];
-};
+import type { FilterState } from '@/types/challenge';
 
 type ChallengeFiltersProps = {
   filters: FilterState;

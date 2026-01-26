@@ -8,59 +8,7 @@ import { ChallengeDrawer } from '@/components/dashboard/challenges/ChallengeDraw
 import { ChallengeFilters } from '@/components/dashboard/challenges/ChallengeFilters';
 import { ChallengeSearch } from '@/components/dashboard/challenges/ChallengeSearch';
 import { ChallengeSortDropdown } from '@/components/dashboard/challenges/ChallengeSortDropdown';
-
-type Challenge = {
-  id: string;
-  name: string;
-  description: string;
-  is_free: boolean;
-  entry_fee: number | null;
-  currency: string;
-  refundable: boolean;
-  account_size: number;
-  scaling_potential: number | null;
-  profit_split: { initial: number; scaled?: number; maximum?: number };
-  rules: {
-    profitTarget?: number;
-    maxDailyLoss?: number;
-    maxDrawdown?: number;
-    minTradingDays?: number;
-    timeLimit?: number;
-    consistencyRule?: string;
-  };
-  payout_speed: string;
-  first_payout_delay: number;
-  markets: string[];
-  platforms: string[];
-  pros: string[];
-  cons: string[];
-  best_for: string;
-  official_url: string;
-  popularity: number;
-  success_rate: number | null;
-  prop_firms: {
-    name: string;
-    logo_url: string;
-    reputation: number;
-    website_url: string;
-  };
-};
-
-type FilterState = {
-  cost: string[];
-  accountSize: string[];
-  profitSplit: string[];
-  payoutSpeed: string[];
-  type: string[];
-  market: string[];
-};
-
-type SortOption =
-  | 'recommended'
-  | 'lowest_cost'
-  | 'highest_split'
-  | 'fastest_payout'
-  | 'largest_account';
+import type { Challenge, FilterState, SortOption } from '@/types/challenge';
 
 export default function ChallengesPage() {
   const [challenges, setChallenges] = useState<Challenge[]>([]);
@@ -357,9 +305,7 @@ export default function ChallengesPage() {
                   <ChallengeCard
                     key={challenge.id}
                     challenge={challenge}
-                    onViewDetails={(c) => {
-                      return setSelectedChallenge(c);
-                    }}
+                    onViewDetails={setSelectedChallenge}
                     onCompareToggle={handleCompareToggle}
                     isComparing={comparisonIds.includes(challenge.id)}
                   />
