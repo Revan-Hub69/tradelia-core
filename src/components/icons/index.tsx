@@ -18,6 +18,8 @@ import type {
 import {
   BellIcon,
   CalculatorIcon,
+  // Challenge Dashboard icons
+  ChallengesIcon,
   CheckIcon,
   ChevronDownIcon,
   ClockIcon,
@@ -40,6 +42,7 @@ import {
   MinusIcon,
   MoonIcon,
   MoreVerticalIcon,
+  MyChartsIcon,
   PlusIcon,
   ProfileIcon,
   SearchIcon,
@@ -47,6 +50,7 @@ import {
   SidebarToggleIcon,
   SIGNATURE_TOKENS,
   SignatureIconBase,
+  SignalsIcon,
   StarIcon,
   // Legacy aliases (for compatibility)
   SunIcon,
@@ -60,6 +64,8 @@ import {
 export {
   BellIcon,
   CalculatorIcon,
+  // Challenge Dashboard icons
+  ChallengesIcon,
   CheckIcon,
   ChevronDownIcon,
   ClockIcon,
@@ -82,6 +88,7 @@ export {
   MinusIcon,
   MoonIcon,
   MoreVerticalIcon,
+  MyChartsIcon,
   PlusIcon,
   ProfileIcon,
   SearchIcon,
@@ -89,6 +96,7 @@ export {
   SidebarToggleIcon,
   SIGNATURE_TOKENS,
   SignatureIconBase,
+  SignalsIcon,
   StarIcon,
   // Legacy aliases (for compatibility)
   SunIcon,
@@ -117,6 +125,11 @@ export const ICON_MAP = {
   // Theme icons
   LightIcon,
   DarkIcon,
+
+  // Challenge Dashboard icons
+  ChallengesIcon,
+  MyChartsIcon,
+  SignalsIcon,
 
   // Educational icons
   LearnIcon,

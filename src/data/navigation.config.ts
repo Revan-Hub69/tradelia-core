@@ -1,11 +1,16 @@
 /*
- * TRADELIA NAVIGATION CONFIG v2.0 - Enterprise 2026
+ * TRADELIA NAVIGATION CONFIG v3.0 - Challenge Dashboard 2026
  *
  * Single source of truth per navigation items
  * Supporta feature flags, badges, analytics tracking
  */
 
-export type NavigationItemId = 'home' | 'learn' | 'tools' | 'community' | 'help' | 'profile';
+export type NavigationItemId = 
+  | 'home' 
+  | 'challenges' 
+  | 'my-challenges' 
+  | 'signals' 
+  | 'settings';
 
 export type NavigationItem = {
   id: NavigationItemId;
@@ -32,10 +37,10 @@ export type NavigationConfig = {
  * Collegato al database user permissions in futuro
  */
 export const FEATURE_FLAGS = {
-  TOOLS_ENABLED: true, // Strumenti trading
-  COMMUNITY_ENABLED: true, // Community features
-  PROFILE_BADGES: true, // Sistema badge profilo
-  LEARN_PROGRESS: true, // Progress tracking
+  SIGNALS_ENABLED: true, // AI Signal Generator
+  CHALLENGES_LIBRARY: true, // Challenge catalog
+  MY_CHALLENGES: true, // User's active challenges
+  ADVANCED_ANALYTICS: false, // Advanced performance analytics (V2)
 } as const;
 
 /*
@@ -55,50 +60,42 @@ export const NAVIGATION_CONFIG: NavigationConfig = {
       isPriority: true, // Prefetch priority
     },
     {
-      id: 'learn',
-      labelKey: 'Dashboard.nav_learn',
-      ariaKey: 'Dashboard.nav_learn',
-      href: '/dashboard/learn',
-      iconName: 'LearnIcon',
+      id: 'challenges',
+      labelKey: 'Dashboard.nav_challenges',
+      ariaKey: 'Dashboard.nav_challenges',
+      href: '/dashboard/challenges',
+      iconName: 'ChallengesIcon',
       isPriority: true, // Prefetch priority
-      featureFlag: 'LEARN_PROGRESS',
-      badgeType: 'dot', // Nuove lezioni disponibili
+      featureFlag: 'CHALLENGES_LIBRARY',
+      badgeType: 'new', // Nuove challenge disponibili
     },
     {
-      id: 'tools',
-      labelKey: 'Dashboard.nav_tools',
-      ariaKey: 'Dashboard.nav_tools',
-      href: '/dashboard/tools',
-      iconName: 'ToolsIcon',
-      featureFlag: 'TOOLS_ENABLED',
-      // disabled: !FEATURE_FLAGS.TOOLS_ENABLED, // ENABLED NOW
+      id: 'my-challenges',
+      labelKey: 'Dashboard.nav_my_challenges',
+      ariaKey: 'Dashboard.nav_my_challenges',
+      href: '/dashboard/my-challenges',
+      iconName: 'MyChartsIcon',
+      isPriority: true, // Prefetch priority
+      featureFlag: 'MY_CHALLENGES',
+      badgeType: 'dot', // Alert attivi (daily loss, etc.)
     },
     {
-      id: 'community',
-      labelKey: 'Dashboard.nav_community',
-      ariaKey: 'Dashboard.nav_community',
-      href: '/dashboard/community',
-      iconName: 'CommunityIcon',
-      featureFlag: 'COMMUNITY_ENABLED',
-      badgeType: 'dot', // Nuovi messaggi/reply
+      id: 'signals',
+      labelKey: 'Dashboard.nav_signals',
+      ariaKey: 'Dashboard.nav_signals',
+      href: '/dashboard/signals',
+      iconName: 'SignalsIcon',
+      isPriority: true, // Prefetch priority
+      featureFlag: 'SIGNALS_ENABLED',
+      badgeType: 'count', // Numero segnali attivi
     },
     {
-      id: 'help',
-      labelKey: 'Dashboard.nav_help',
-      ariaKey: 'Dashboard.nav_help',
-      href: '/dashboard/help',
-      iconName: 'HelpIcon',
+      id: 'settings',
+      labelKey: 'Dashboard.nav_settings',
+      ariaKey: 'Dashboard.nav_settings',
+      href: '/dashboard/settings',
+      iconName: 'SettingsIcon',
       isPriority: false,
-    },
-    {
-      id: 'profile',
-      labelKey: 'Dashboard.nav_profile',
-      ariaKey: 'Dashboard.nav_profile',
-      href: '/dashboard/profile',
-      iconName: 'ProfileIcon',
-      isPriority: false, // Non priority per prefetch
-      featureFlag: 'PROFILE_BADGES',
-      badgeType: 'new', // Badge temporaneo 24h
     },
   ],
 };
@@ -149,9 +146,9 @@ export type NavigationBadgeState = {
 
 // Mock badge state - in produzione da database/context
 export const MOCK_BADGE_STATE: NavigationBadgeState = {
-  learn: { type: 'dot' }, // Nuove lezioni
-  community: { type: 'count', value: 3 }, // 3 nuovi messaggi
-  profile: { type: 'new', timestamp: Date.now() }, // Badge nuovo temporaneo
+  challenges: { type: 'new' }, // Nuove challenge disponibili
+  'my-challenges': { type: 'dot' }, // Alert attivi (daily loss warning, etc.)
+  signals: { type: 'count', value: 5 }, // 5 segnali attivi
 };
 
 export const getBadgeForItem = (itemId: NavigationItemId): NavigationBadgeState[string] | null => {

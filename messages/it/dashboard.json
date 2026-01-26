@@ -1,5 +1,10 @@
 {
   "go_to_dashboard": "Vai alla Dashboard",
+  "nav_home": "Home",
+  "nav_challenges": "Libreria Challenge",
+  "nav_my_challenges": "Le Mie Challenge",
+  "nav_signals": "Segnali",
+  "nav_settings": "Impostazioni",
   "email_verification_title": "Verifica la tua email per sbloccare tutte le funzionalità",
   "email_verification_message": "Abbiamo inviato un link di verifica a {email}. Cliccalo per salvare i tuoi progressi e accedere alle funzionalità premium.",
   "email_verification_resend": "Invia di nuovo",

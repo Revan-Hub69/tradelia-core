@@ -752,6 +752,94 @@ export const MailIcon = memo<Omit<SignatureIconProps, 'children'> & {
 
 MailIcon.displayName = 'TradeliaMailIcon';
 
+// ============================================================================
+// CHALLENGE DASHBOARD ICONS - TIER 1 PROFESSIONAL 2026
+// ============================================================================
+
+// CHALLENGES ICON - Trophy with star, represents competitions/challenges
+export const ChallengesIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isActive?: boolean;
+}>(({
+  isActive = false,
+  ...props
+}) => (
+  <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    {/* Professional trophy design - universally recognized achievement symbol */}
+    {/* Trophy cup */}
+    <path d="M6 9H4.5a2.5 2.5 0 010-5H6" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M18 9h1.5a2.5 2.5 0 000-5H18" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M6 9a6 6 0 0012 0V4H6v5z" strokeLinecap="round" strokeLinejoin="round" />
+    {/* Trophy base */}
+    <path d="M12 15v3" strokeLinecap="round" />
+    <path d="M8 22h8" strokeLinecap="round" />
+    <path d="M10 18h4" strokeLinecap="round" />
+    {/* Star accent for challenge/competition */}
+    <path d="M12 2l1 2 2 .5-2 .5-1 2-1-2-2-.5 2-.5z" fill="currentColor" opacity="0.3" />
+  </SignatureIconBase>
+));
+
+// MY CHARTS ICON - Bar chart with upward trend, represents personal performance
+export const MyChartsIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isActive?: boolean;
+  showTrend?: boolean;
+}>(({
+  isActive = false,
+  showTrend = true,
+  ...props
+}) => (
+  <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    {/* Professional bar chart with trend line */}
+    {/* Chart bars - ascending pattern */}
+    <path d="M3 3v18h18" strokeLinecap="round" strokeLinejoin="round" />
+    <rect x="7" y="15" width="3" height="6" rx="1" strokeLinecap="round" strokeLinejoin="round" />
+    <rect x="14" y="11" width="3" height="10" rx="1" strokeLinecap="round" strokeLinejoin="round" />
+    <rect x="21" y="7" width="3" height="14" rx="1" strokeLinecap="round" strokeLinejoin="round" />
+    {/* Optional trend line overlay */}
+    {showTrend && (
+      <path 
+        d="M6 17l4-4 4 2 6-6" 
+        strokeLinecap="round" 
+        strokeLinejoin="round"
+        opacity="0.5"
+        strokeDasharray="2 2"
+      />
+    )}
+  </SignatureIconBase>
+));
+
+// SIGNALS ICON - Radar/broadcast waves, represents AI signals
+export const SignalsIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isActive?: boolean;
+  isPulsing?: boolean;
+}>(({
+  isActive = false,
+  isPulsing = false,
+  ...props
+}) => (
+  <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    {/* Professional signal/broadcast icon with radar waves */}
+    <g style={{
+      transform: isPulsing ? 'scale(1.1)' : 'scale(1)',
+      transformOrigin: '12px 12px',
+      transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    }}
+    >
+      {/* Center point - signal source */}
+      <circle cx="12" cy="12" r="2" fill="currentColor" />
+      {/* Inner wave */}
+      <path d="M8.5 8.5a5 5 0 017 0M8.5 15.5a5 5 0 007 0" strokeLinecap="round" />
+      {/* Outer wave */}
+      <path d="M5 5a10 10 0 0114 0M5 19a10 10 0 0014 0" strokeLinecap="round" opacity="0.6" />
+      {/* Directional indicators */}
+      <path d="M12 2v2M12 20v2M2 12h2M20 12h2" strokeLinecap="round" opacity="0.3" />
+    </g>
+  </SignatureIconBase>
+));
+
+ChallengesIcon.displayName = 'TradeliaChallengesIcon';
+MyChartsIcon.displayName = 'TradeliaMyChartsIcon';
+SignalsIcon.displayName = 'TradeliaSignalsIcon';
+
 // Legacy aliases for compatibility - Updated with enhanced versions
 export const LightIcon = SunIcon;
 export const DarkIcon = MoonIcon;
