@@ -68,7 +68,17 @@ export function ContactForm({
         body: JSON.stringify(data),
       });
 
-      const result = await response.json();
+      // Check if response has content
+      const contentType = response.headers.get('content-type');
+      let result;
+
+      if (contentType && contentType.includes('application/json')) {
+        result = await response.json();
+      } else {
+        // Response is not JSON (probably an error)
+        const text = await response.text();
+        throw new Error(text || 'Server error - no response');
+      }
 
       if (!response.ok) {
         throw new Error(result.error || 'Failed to send message');
@@ -79,6 +89,7 @@ export function ContactForm({
       setMessageLength(0);
       onSuccess?.();
     } catch (error) {
+      console.error('Contact form error:', error);
       setSubmitStatus('error');
       setErrorMessage(
         error instanceof Error ? error.message : 'Something went wrong',

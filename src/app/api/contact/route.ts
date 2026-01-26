@@ -15,6 +15,9 @@ import { db } from '@/libs/DB';
 import { supportTicketsSchema } from '@/models/Schema';
 import { contactFormSchema } from '@/types/contact';
 
+// Increase timeout for email sending
+export const maxDuration = 60; // 60 seconds
+
 export async function POST(request: Request) {
   try {
     // Check SMTP credentials
