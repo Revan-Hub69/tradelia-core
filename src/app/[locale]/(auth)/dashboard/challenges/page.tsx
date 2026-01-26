@@ -357,7 +357,9 @@ export default function ChallengesPage() {
                   <ChallengeCard
                     key={challenge.id}
                     challenge={challenge}
-                    onViewDetails={setSelectedChallenge}
+                    onViewDetails={(c) => {
+                      return setSelectedChallenge(c);
+                    }}
                     onCompareToggle={handleCompareToggle}
                     isComparing={comparisonIds.includes(challenge.id)}
                   />
