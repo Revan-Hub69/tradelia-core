@@ -64,7 +64,7 @@ export const NAVIGATION_CONFIG: NavigationConfig = {
       labelKey: 'Dashboard.nav_challenges',
       ariaKey: 'Dashboard.nav_challenges',
       href: '/dashboard/challenges',
-      iconName: 'ChallengesIcon',
+      iconName: 'StarIcon', // Temporary: using existing icon
       isPriority: true, // Prefetch priority
       featureFlag: 'CHALLENGES_LIBRARY',
       badgeType: 'new', // Nuove challenge disponibili
@@ -74,7 +74,7 @@ export const NAVIGATION_CONFIG: NavigationConfig = {
       labelKey: 'Dashboard.nav_my_challenges',
       ariaKey: 'Dashboard.nav_my_challenges',
       href: '/dashboard/my-challenges',
-      iconName: 'MyChartsIcon',
+      iconName: 'TrendingUpIcon', // Temporary: using existing icon
       isPriority: true, // Prefetch priority
       featureFlag: 'MY_CHALLENGES',
       badgeType: 'dot', // Alert attivi (daily loss, etc.)
@@ -84,7 +84,7 @@ export const NAVIGATION_CONFIG: NavigationConfig = {
       labelKey: 'Dashboard.nav_signals',
       ariaKey: 'Dashboard.nav_signals',
       href: '/dashboard/signals',
-      iconName: 'SignalsIcon',
+      iconName: 'BellIcon', // Temporary: using existing icon
       isPriority: true, // Prefetch priority
       featureFlag: 'SIGNALS_ENABLED',
       badgeType: 'count', // Numero segnali attivi
