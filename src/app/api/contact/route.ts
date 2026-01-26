@@ -65,7 +65,7 @@ export async function POST(request: Request) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Tradelia Contact Form <noreply@tradelia.org>',
+        from: 'Tradelia Contact Form <onboarding@resend.dev>',
         to: [process.env.SUPPORT_EMAIL || 'support@tradelia.org'],
         reply_to: data.email,
         subject: `[${inquiryTypeLabels[data.inquiryType]}] ${data.subject}`,
@@ -138,7 +138,7 @@ export async function POST(request: Request) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Tradelia Support <support@tradelia.org>',
+        from: 'Tradelia Support <onboarding@resend.dev>',
         to: [data.email],
         subject: `We received your message: ${data.subject}`,
         html: `
