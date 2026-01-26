@@ -14,10 +14,15 @@ Abbiamo migrato il contact form da Resend a **Nodemailer + Aruba SMTP** perché:
 
 Le credenziali SMTP sono le stesse della tua casella email `support@tradelia.org`:
 
-- **Host SMTP:** `smtp.aruba.it` (o `smtps.aruba.it` per SSL)
-- **Porta:** `465` (SSL) o `587` (TLS)
+- **Host SMTP:** `smtps.aruba.it` (nota la 's' finale - importante!)
+- **Porta:** `465` (SSL/TLS)
 - **Username:** `support@tradelia.org` (la tua email completa)
 - **Password:** La password della casella email Aruba
+
+**⚠️ IMPORTANTE:**
+- Il host deve essere `smtps.aruba.it` (con la 's') NON `smtp.aruba.it`
+- Lo username deve essere l'email completa, non solo il nome utente
+- Se hai 2FA attivo, devi creare una "App Password" nel pannello Aruba
 
 **Nota:** Se non ricordi la password, puoi reimpostarla dal pannello Aruba.
 
@@ -29,13 +34,13 @@ Le credenziali SMTP sono le stesse della tua casella email `support@tradelia.org
 4. Aggiungi queste 4 variabili:
 
 ```bash
-# Host SMTP Aruba
-SMTP_HOST=smtp.aruba.it
+# Host SMTP Aruba (IMPORTANTE: con la 's' finale!)
+SMTP_HOST=smtps.aruba.it
 
-# Email completa Aruba
+# Email completa Aruba (username deve essere email completa)
 SMTP_USER=support@tradelia.org
 
-# Password casella email Aruba
+# Password casella email Aruba (o App Password se 2FA attivo)
 SMTP_PASS=la_tua_password_aruba
 
 # Email di supporto (opzionale, default: support@tradelia.org)
@@ -124,12 +129,19 @@ Aruba SMTP (smtp.aruba.it:465)
 **Fix:** Aggiungi `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS`
 
 ### Errore: "Authentication failed"
-**Causa:** Password Aruba sbagliata  
-**Fix:** Reimposta password su pannello Aruba
+**Causa:** Password Aruba sbagliata o username non corretto  
+**Fix:** 
+- Verifica che `SMTP_HOST=smtps.aruba.it` (con la 's')
+- Verifica che `SMTP_USER` sia l'email completa: `support@tradelia.org`
+- Reimposta password su pannello Aruba
+- Se hai 2FA attivo, crea App Password nel pannello Aruba
 
 ### Errore: "Connection timeout"
 **Causa:** Host SMTP sbagliato o porta bloccata  
-**Fix:** Verifica `smtp.aruba.it` e porta 465
+**Fix:** 
+- Verifica `smtps.aruba.it` (con la 's' finale)
+- Verifica porta 465
+- Se porta 465 bloccata, prova porta 587 con `secure: false` e `requireTLS: true`
 
 ### Email non arriva
 **Causa:** Finisce in spam o email Aruba piena  

@@ -50,6 +50,12 @@ export async function POST(request: Request) {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
       },
+      tls: {
+        minVersion: 'TLSv1.2',
+        ciphers: 'HIGH:!aNULL:!MD5',
+      },
+      logger: true,
+      debug: true,
     });
     console.log('Transporter created');
 

@@ -112,6 +112,10 @@ export async function POST(request: Request) {
             user: smtpUser,
             pass: smtpPass,
           },
+          tls: {
+            minVersion: 'TLSv1.2',
+            ciphers: 'HIGH:!aNULL:!MD5',
+          },
         });
 
         // Send notification email to support team
