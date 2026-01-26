@@ -1,0 +1,337 @@
+#!/usr/bin/env tsx
+/**
+ * Seed script for trading challenges data
+ * Run with: npm run seed:challenges
+ */
+
+import { createClient } from '@supabase/supabase-js';
+import { config } from 'dotenv';
+import { resolve } from 'path';
+
+// Load environment variables
+config({ path: resolve(process.cwd(), '.env.local') });
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+if (!supabaseUrl || !supabaseKey) {
+  console.error('❌ Missing Supabase credentials');
+  console.error('   NEXT_PUBLIC_SUPABASE_URL:', supabaseUrl ? '✓' : '✗');
+  console.error('   SUPABASE_KEY:', supabaseKey ? '✓' : '✗');
+  process.exit(1);
+}
+
+const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: { persistSession: false }
+});
+
+// Prop Firms Data
+const propFirms = [
+  // Free Competition Platforms
+  {
+    id: 'tradingview',
+    name: 'TradingView',
+    slug: 'tradingview',
+    founded: 2011,
+    total_paid: 5000000,
+    reputation: 98,
+    logo_url: '/assets/logos/tradingview.svg',
+    website_url: 'https://www.tradingview.com',
+    description: 'Leading charting platform with free paper trading competitions'
+  },
+  {
+    id: 'deriv',
+    name: 'Deriv',
+    slug: 'deriv',
+    founded: 2000,
+    total_paid: 10000000,
+    reputation: 95,
+    logo_url: '/assets/logos/deriv.svg',
+    website_url: 'https://deriv.com',
+    description: 'Online broker with ongoing free trading tournaments'
+  },
+  {
+    id: 'gateio',
+    name: 'Gate.io',
+    slug: 'gateio',
+    founded: 2013,
+    total_paid: 50000000,
+    reputation: 92,
+    logo_url: '/assets/logos/gateio.svg',
+    website_url: 'https://www.gate.io',
+    description: 'Crypto exchange with demo trading challenges'
+  },
+  // Paid Prop Firms
+  {
+    id: 'ftmo',
+    name: 'FTMO',
+    slug: 'ftmo',
+    founded: 2015,
+    total_paid: 150000000,
+    reputation: 96,
+    logo_url: '/assets/logos/ftmo.svg',
+    website_url: 'https://ftmo.com',
+    description: 'Leading prop firm with 2-step evaluation'
+  },
+  {
+    id: 'fundednext',
+    name: 'FundedNext',
+    slug: 'fundednext',
+    founded: 2022,
+    total_paid: 20000000,
+    reputation: 94,
+    logo_url: '/assets/logos/fundednext.svg',
+    website_url: 'https://fundednext.com',
+    description: 'Fast-growing prop firm with flexible challenges'
+  },
+  {
+    id: 'the5ers',
+    name: 'The5ers',
+    slug: 'the5ers',
+    founded: 2016,
+    total_paid: 30000000,
+    reputation: 93,
+    logo_url: '/assets/logos/the5ers.svg',
+    website_url: 'https://the5ers.com',
+    description: 'Instant funding and evaluation programs'
+  },
+  {
+    id: 'myfundedfx',
+    name: 'MyFundedFX',
+    slug: 'myfundedfx',
+    founded: 2021,
+    total_paid: 15000000,
+    reputation: 91,
+    logo_url: '/assets/logos/myfundedfx.svg',
+    website_url: 'https://myfundedfx.com',
+    description: 'Prop firm with competitive profit splits'
+  },
+  {
+    id: 'e8funding',
+    name: 'E8 Funding',
+    slug: 'e8funding',
+    founded: 2021,
+    total_paid: 25000000,
+    reputation: 92,
+    logo_url: '/assets/logos/e8funding.svg',
+    website_url: 'https://e8funding.com',
+    description: 'Prop firm with instant funding options'
+  }
+];
+
+// Challenges Data
+const challenges = [
+  // FREE COMPETITIONS
+  {
+    id: 'tradingview-leap-feb-2026',
+    slug: 'tradingview-leap-feb-2026',
+    name: 'TradingView The Leap - February 2026',
+    prop_firm_id: 'tradingview',
+    type: 'free_competition',
+    challenge_type: 'competition',
+    is_free: true,
+    entry_fee: null,
+    currency: 'USD',
+    refundable: false,
+    refund_conditions: null,
+    account_size: 100000,
+    scaling_potential: null,
+    profit_split: JSON.stringify({ initial: 100, scaled: null, maximum: null }),
+    rules: JSON.stringify({
+      profitTarget: null,
+      maxDailyLoss: null,
+      maxDrawdown: null,
+      minTradingDays: 3,
+      timeLimit: 28,
+      consistencyRule: null
+    }),
+    payout_speed: 'instant',
+    first_payout_delay: 0,
+    markets: JSON.stringify(['forex', 'futures', 'crypto', 'stocks']),
+    platforms: JSON.stringify(['TradingView Paper Trading']),
+    status: 'active',
+    start_date: '2026-02-10',
+    end_date: '2026-03-09',
+    recurring: true,
+    frequency: 'quarterly',
+    description: 'The Leap is TradingView\'s flagship paper trading competition with $1M+ prize pool. Top 500 traders win cash prizes. Completely free, no deposit required.',
+    pros: JSON.stringify(['Zero cost entry', 'Top 500 win prizes', '$100,000 virtual capital', 'No withdrawal requirements', 'Prestigious competition']),
+    cons: JSON.stringify(['High competition (10,000+ participants)', 'Requires aggressive trading', 'Only 2-3 times per year']),
+    best_for: 'Traders wanting to test aggressive strategies risk-free and compete for substantial prizes',
+    official_url: 'https://www.tradingview.com/the-leap/february-2026/',
+    logo_url: '/assets/logos/tradingview.svg',
+    popularity: 98,
+    success_rate: 5,
+    average_pass_time: null
+  },
+  {
+    id: 'deriv-forex-tournament',
+    slug: 'deriv-forex-tournament',
+    name: 'Deriv Forex Trading Tournament',
+    prop_firm_id: 'deriv',
+    type: 'free_competition',
+    challenge_type: 'competition',
+    is_free: true,
+    entry_fee: null,
+    currency: 'USD',
+    refundable: false,
+    refund_conditions: null,
+    account_size: 10000,
+    scaling_potential: null,
+    profit_split: JSON.stringify({ initial: 100, scaled: null, maximum: null }),
+    rules: JSON.stringify({
+      profitTarget: null,
+      maxDailyLoss: null,
+      maxDrawdown: null,
+      minTradingDays: null,
+      timeLimit: 14,
+      consistencyRule: null
+    }),
+    payout_speed: 'same_day',
+    first_payout_delay: 7,
+    markets: JSON.stringify(['forex']),
+    platforms: JSON.stringify(['Deriv Trader', 'MT5']),
+    status: 'active',
+    start_date: null,
+    end_date: null,
+    recurring: true,
+    frequency: 'monthly',
+    description: 'Ongoing forex trading tournament with virtual funds. Multiple tournaments run simultaneously. Real cash prizes, KYC required for withdrawal.',
+    pros: JSON.stringify(['Always active', 'Multiple tournaments', 'Real cash prizes', 'No deposit required', '24/7 trading']),
+    cons: JSON.stringify(['KYC required for withdrawal', 'Smaller prize pools', 'High competition']),
+    best_for: 'Traders wanting consistent practice and regular competition opportunities',
+    official_url: 'https://deriv.com/trading-competitions',
+    logo_url: '/assets/logos/deriv.svg',
+    popularity: 92,
+    success_rate: 15,
+    average_pass_time: null
+  },
+  {
+    id: 'gateio-futures-demo',
+    slug: 'gateio-futures-demo',
+    name: 'Gate.io Futures Demo Challenge',
+    prop_firm_id: 'gateio',
+    type: 'free_competition',
+    challenge_type: 'competition',
+    is_free: true,
+    entry_fee: null,
+    currency: 'USD',
+    refundable: false,
+    refund_conditions: null,
+    account_size: 50000,
+    scaling_potential: null,
+    profit_split: JSON.stringify({ initial: 100, scaled: null, maximum: null }),
+    rules: JSON.stringify({
+      profitTarget: null,
+      maxDailyLoss: null,
+      maxDrawdown: null,
+      minTradingDays: null,
+      timeLimit: 30,
+      consistencyRule: null
+    }),
+    payout_speed: 'weekly',
+    first_payout_delay: 14,
+    markets: JSON.stringify(['crypto']),
+    platforms: JSON.stringify(['Gate.io Futures']),
+    status: 'active',
+    start_date: null,
+    end_date: null,
+    recurring: true,
+    frequency: 'monthly',
+    description: '$100,000 prize pool demo futures challenge. Prizes in crypto tokens (PEPE, XRP, ADA, DOGE) deposited to real account and withdrawable.',
+    pros: JSON.stringify(['Large prize pool ($100K)', '50,000 USDT demo funds', 'Prizes convertible to cash', 'Crypto-focused', 'Ongoing']),
+    cons: JSON.stringify(['Prizes in tokens (not direct cash)', 'KYC required', 'Crypto volatility']),
+    best_for: 'Crypto traders wanting to practice futures trading and win token prizes',
+    official_url: 'https://www.gate.io/competition/simulation',
+    logo_url: '/assets/logos/gateio.svg',
+    popularity: 88,
+    success_rate: 10,
+    average_pass_time: null
+  },
+  // PAID PROP FIRM CHALLENGES
+  {
+    id: 'ftmo-challenge-10k',
+    slug: 'ftmo-challenge-10k',
+    name: 'FTMO Challenge $10,000',
+    prop_firm_id: 'ftmo',
+    type: 'paid_evaluation',
+    challenge_type: '2-step',
+    is_free: false,
+    entry_fee: 155,
+    currency: 'EUR',
+    refundable: true,
+    refund_conditions: 'Refunded with first profit split',
+    account_size: 10000,
+    scaling_potential: 200000,
+    profit_split: JSON.stringify({ initial: 80, scaled: 90, maximum: 90 }),
+    rules: JSON.stringify({
+      profitTarget: 10,
+      maxDailyLoss: 5,
+      maxDrawdown: 10,
+      minTradingDays: 4,
+      timeLimit: 30,
+      consistencyRule: 'Best trading day cannot exceed 30% of total profit'
+    }),
+    payout_speed: 'bi_weekly',
+    first_payout_delay: 14,
+    markets: JSON.stringify(['forex', 'indices', 'commodities', 'crypto']),
+    platforms: JSON.stringify(['MT4', 'MT5', 'cTrader', 'DXtrade']),
+    status: 'active',
+    start_date: null,
+    end_date: null,
+    recurring: false,
+    frequency: null,
+    description: 'FTMO\'s most popular 2-step evaluation. Pass Phase 1 (10% profit target) and Phase 2 (5% profit target) to get funded. Industry-leading reputation.',
+    pros: JSON.stringify(['Excellent reputation', 'Refundable fee', 'Scaling to $200K', 'Multiple platforms', 'Bi-weekly payouts']),
+    cons: JSON.stringify(['€155 entry fee', 'Strict consistency rule', '5-10% pass rate', '30-day time limit']),
+    best_for: 'Serious traders ready to invest in evaluation and follow strict rules',
+    official_url: 'https://ftmo.com/en/evaluation/',
+    logo_url: '/assets/logos/ftmo.svg',
+    popularity: 96,
+    success_rate: 8,
+    average_pass_time: 45
+  }
+  // Add more challenges as needed...
+];
+
+async function seedChallenges() {
+  console.log('🌱 Starting seed process...\n');
+
+  try {
+    // Seed Prop Firms
+    console.log('📝 Seeding prop firms...');
+    const { error: firmsError } = await supabase
+      .from('prop_firms')
+      .upsert(propFirms, { onConflict: 'id' });
+
+    if (firmsError) {
+      console.error('❌ Error seeding prop firms:', firmsError);
+      throw firmsError;
+    }
+    console.log(`✅ Seeded ${propFirms.length} prop firms`);
+
+    // Seed Challenges
+    console.log('\n📝 Seeding challenges...');
+    const { error: challengesError } = await supabase
+      .from('challenges')
+      .upsert(challenges, { onConflict: 'id' });
+
+    if (challengesError) {
+      console.error('❌ Error seeding challenges:', challengesError);
+      throw challengesError;
+    }
+    console.log(`✅ Seeded ${challenges.length} challenges`);
+
+    console.log('\n✅ Seed completed successfully!');
+    console.log(`   - ${propFirms.length} Prop Firms`);
+    console.log(`   - ${challenges.filter(c => c.is_free).length} Free Competitions`);
+    console.log(`   - ${challenges.filter(c => !c.is_free).length} Paid Challenges`);
+    console.log(`   Total: ${challenges.length} challenges seeded\n`);
+
+  } catch (error) {
+    console.error('❌ Seed failed:', error);
+    process.exit(1);
+  }
+}
+
+seedChallenges();
