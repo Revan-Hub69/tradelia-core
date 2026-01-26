@@ -116,27 +116,31 @@ export async function POST(request: Request) {
       text: contactConfirmationTemplate.text(locale, templateData),
     });
 
-    // Save ticket to database
-    try {
-      await db.insert(supportTicketsSchema).values({
-        id: ticketId,
-        status: 'open',
-        priority: 'medium',
-        userName: data.name,
-        userEmail: data.email,
-        userPhone: data.phone,
-        userLocale: locale,
-        inquiryType: data.inquiryType,
-        subject: data.subject,
-        message: data.message,
-        source: 'contact_form',
-        userAgent: request.headers.get('user-agent') || undefined,
-        ipAddress: ip,
-      });
-    } catch (dbError) {
-      // Log error but don't fail the request
-      // Emails were sent successfully, ticket creation is secondary
-      console.error('Failed to save ticket to database:', dbError);
+    // Save ticket to database (only if DATABASE_URL is configured)
+    if (process.env.DATABASE_URL) {
+      try {
+        await db.insert(supportTicketsSchema).values({
+          id: ticketId,
+          status: 'open',
+          priority: 'medium',
+          userName: data.name,
+          userEmail: data.email,
+          userPhone: data.phone,
+          userLocale: locale,
+          inquiryType: data.inquiryType,
+          subject: data.subject,
+          message: data.message,
+          source: 'contact_form',
+          userAgent: request.headers.get('user-agent') || undefined,
+          ipAddress: ip,
+        });
+      } catch (dbError) {
+        // Log error but don't fail the request
+        // Emails were sent successfully, ticket creation is secondary
+        console.error('Failed to save ticket to database:', dbError);
+      }
+    } else {
+      console.log('DATABASE_URL not configured, skipping ticket save');
     }
 
     return NextResponse.json({
