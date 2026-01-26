@@ -1,0 +1,19 @@
+{
+  "title": "Challenge Library",
+  "description": "Browse and join trading challenges from top prop firms and competitions worldwide.",
+  "free_challenges_title": "Free Trading Competitions",
+  "free_challenges_description": "Compete for real prizes without any entry fees. Perfect for building your track record.",
+  "tradingview_leap_title": "TradingView The Leap",
+  "tradingview_leap_description": "$100K+ in prizes. Monthly competitions with real money rewards.",
+  "deriv_title": "Deriv Trading Competitions",
+  "deriv_description": "Regular contests with cash prizes. Trade demo accounts to win real money.",
+  "prop_challenges_title": "Prop Firm Challenges",
+  "prop_challenges_description": "Paid evaluation programs from leading proprietary trading firms. Pass to get funded.",
+  "ftmo_title": "FTMO",
+  "ftmo_description": "$10K-$200K accounts. Two-step evaluation. Industry leader since 2015.",
+  "fundednext_title": "FundedNext",
+  "fundednext_description": "$6K-$300K accounts. Express and standard challenges. Competitive pricing.",
+  "the5ers_title": "The5ers",
+  "the5ers_description": "$5K-$250K accounts. Bootcamp and instant funding options.",
+  "in_development": "⚠️ Challenge integration coming soon. This page shows available challenges you'll be able to track."
+}

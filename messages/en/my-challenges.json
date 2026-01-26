@@ -1,0 +1,18 @@
+{
+  "title": "My Challenges",
+  "description": "Track your active trading challenges and manage your trade journal.",
+  "active_challenges_title": "Active Challenges",
+  "active_challenges_description": "Monitor all your ongoing prop firm challenges and competitions in one place.",
+  "no_active_challenges": "No active challenges yet. Visit the Challenge Library to get started.",
+  "trade_journal_title": "Trade Journal",
+  "trade_journal_description": "Log and analyze your trades across all challenges. Track performance and stay compliant with prop firm rules.",
+  "journal_feature_tracking": "Multi-Account Tracking",
+  "journal_feature_tracking_description": "Log trades for multiple challenges simultaneously. Each trade is linked to its specific challenge.",
+  "journal_feature_analytics": "Performance Analytics",
+  "journal_feature_analytics_description": "Win rate, R-multiple, profit factor, and more. Understand what's working and what's not.",
+  "journal_feature_rules": "Rule Compliance",
+  "journal_feature_rules_description": "Real-time monitoring of daily loss limits, max drawdown, and consistency rules.",
+  "journal_feature_alerts": "Smart Alerts",
+  "journal_feature_alerts_description": "Get notified when approaching rule limits. Prevent violations before they happen.",
+  "in_development": "⚠️ Challenge tracking and trade journal coming soon. Full multi-account management system."
+}

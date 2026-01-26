@@ -1,5 +1,11 @@
 {
   "go_to_dashboard": "Vai alla Dashboard",
+  "nav_home": "Home",
+  "nav_challenges": "Sfide",
+  "nav_my_challenges": "Le Mie Sfide",
+  "nav_signals": "Segnali",
+  "nav_help": "Aiuto",
+  "nav_profile": "Profilo",
   "email_verification_title": "Verifica la tua email per sbloccare tutte le funzionalità",
   "email_verification_message": "Abbiamo inviato un link di verifica a {email}. Cliccalo per salvare i tuoi progressi e accedere alle funzionalità premium.",
   "email_verification_resend": "Invia di nuovo",
