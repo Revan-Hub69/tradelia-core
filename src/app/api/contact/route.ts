@@ -17,6 +17,7 @@ import { contactFormSchema } from '@/types/contact';
 
 // Increase timeout for email sending
 export const maxDuration = 60; // 60 seconds
+export const runtime = 'nodejs'; // Required for Nodemailer
 
 export async function POST(request: Request) {
   try {
