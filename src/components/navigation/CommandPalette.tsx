@@ -11,12 +11,14 @@ import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 
 import { DynamicIcon, type IconName } from '@/components/icons';
+import { SearchIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { Input } from '@/components/ui/input';
 import { getVisibleNavigationItems } from '@/data/navigation.config';
 import { useRouter } from '@/libs/i18nNavigation';
@@ -237,12 +239,19 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ className }) => 
           ))}
 
           {filteredCommands.length === 0 && (
-            <div className="p-8 text-center text-muted-foreground">
-              <DynamicIcon name="HomeIcon" size={24} className="mx-auto mb-2 opacity-50" />
-              <div className="text-sm">
-                {t('command_palette_no_results')}
-              </div>
-            </div>
+            <EmptyState
+              type="action"
+              icon={<SearchIcon className="w-full h-full" />}
+              title={t('empty_state_no_search_results_title')}
+              description={t('empty_state_no_search_results_description')}
+              action={{
+                label: t('empty_state_no_search_results_cta'),
+                onClick: () => {
+                  setSearch('');
+                  setSelectedIndex(0);
+                },
+              }}
+            />
           )}
         </div>
 

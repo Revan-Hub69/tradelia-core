@@ -14,7 +14,7 @@
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
-import { BellIcon, ClockIcon, StarIcon, TrendingUpIcon } from '@/components/icons/unified/UnifiedIconSystem';
+import { BellIcon, ClockIcon, LearnIcon, StarIcon, TrendingUpIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { UiStatusChip } from '@/components/ui/UiStatusChip';
 import { useMemoryLeakDetection } from '@/hooks/useMemoryLeakDetection';
@@ -168,22 +168,19 @@ export const DashboardNextSteps = ({ userData }: DashboardNextStepsProps) => {
 
       {isJustStarted
         ? (
-            <div className="space-y-4">
-              <p className="text-muted-foreground">
-                Welcome
-                {' '}
-                {userData.name}
-                ! Let's start your crypto learning journey.
-              </p>
-              <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950/30">
-                <div className="font-medium text-blue-900 dark:text-blue-100">
-                  {t('first_lesson_objective')}
-                </div>
-                <div className="mt-1 text-sm text-blue-700 dark:text-blue-300">
-                  Estimated time: 15 minutes
-                </div>
-              </div>
-            </div>
+            <EmptyState
+              type="action"
+              icon={<LearnIcon className="w-full h-full" />}
+              title={t('empty_state_no_lessons_title')}
+              description={t('empty_state_no_lessons_description')}
+              action={{
+                label: t('empty_state_no_lessons_cta'),
+                onClick: () => {
+                  // Navigate to lessons page
+                  window.location.href = '/dashboard/learn';
+                },
+              }}
+            />
           )
         : isNearCompletion
           ? (
