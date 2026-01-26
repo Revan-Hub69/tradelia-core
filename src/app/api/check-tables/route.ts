@@ -1,5 +1,6 @@
-import { createClient } from '@/libs/supabase/server';
 import { NextResponse } from 'next/server';
+
+import { createClient } from '@/libs/supabase/server';
 
 export async function GET() {
   try {
@@ -13,7 +14,7 @@ export async function GET() {
       'trades',
       'trading_signals',
       'signal_settings',
-      'alerts'
+      'alerts',
     ];
 
     const results: Record<string, boolean> = {};
@@ -30,9 +31,8 @@ export async function GET() {
     return NextResponse.json({
       success: true,
       tables: results,
-      allExist: Object.values(results).every(v => v)
+      allExist: Object.values(results).every(v => v),
     });
-
   } catch (error) {
     return NextResponse.json({ error: String(error) }, { status: 500 });
   }

@@ -65,7 +65,7 @@ export function ChallengeFilters({
   const toggleFilter = (category: keyof FilterState, value: string) => {
     const currentValues = filters[category];
     const newValues = currentValues.includes(value)
-      ? currentValues.filter((v) => v !== value)
+      ? currentValues.filter(v => v !== value)
       : [...currentValues, value];
 
     onFilterChange({
@@ -74,7 +74,7 @@ export function ChallengeFilters({
     });
   };
 
-  const hasActiveFilters = Object.values(filters).some((arr) => arr.length > 0);
+  const hasActiveFilters = Object.values(filters).some(arr => arr.length > 0);
 
   return (
     <>
@@ -124,7 +124,7 @@ export function ChallengeFilters({
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className="absolute inset-x-0 bottom-0 left-0 right-0 max-h-[80vh] overflow-y-auto rounded-t-2xl bg-background p-6"
+            className="absolute inset-x-0 bottom-0 max-h-[80vh] overflow-y-auto rounded-t-2xl bg-background p-6"
           >
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold">Filters</h3>

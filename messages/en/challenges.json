@@ -1,19 +1,146 @@
 {
-  "title": "Challenge Library",
-  "description": "Browse and join trading challenges from top prop firms and competitions worldwide.",
-  "free_challenges_title": "Free Trading Competitions",
-  "free_challenges_description": "Compete for real prizes without any entry fees. Perfect for building your track record.",
-  "tradingview_leap_title": "TradingView The Leap",
-  "tradingview_leap_description": "$100K+ in prizes. Monthly competitions with real money rewards.",
-  "deriv_title": "Deriv Trading Competitions",
-  "deriv_description": "Regular contests with cash prizes. Trade demo accounts to win real money.",
-  "prop_challenges_title": "Prop Firm Challenges",
-  "prop_challenges_description": "Paid evaluation programs from leading proprietary trading firms. Pass to get funded.",
-  "ftmo_title": "FTMO",
-  "ftmo_description": "$10K-$200K accounts. Two-step evaluation. Industry leader since 2015.",
-  "fundednext_title": "FundedNext",
-  "fundednext_description": "$6K-$300K accounts. Express and standard challenges. Competitive pricing.",
-  "the5ers_title": "The5ers",
-  "the5ers_description": "$5K-$250K accounts. Bootcamp and instant funding options.",
-  "in_development": "⚠️ Challenge integration coming soon. This page shows available challenges you'll be able to track."
+  "availability": {
+    "alwaysOpen": "Always Open",
+    "next": "Next:",
+    "registrationDeadline": "Registration Deadline"
+  },
+  "competition": {
+    "targetBased": "Target-Based",
+    "rankingBased": "Ranking-Based",
+    "vsTraders": "vs {count} Traders"
+  },
+  "accountType": {
+    "paper": "Paper Trading",
+    "demo": "Demo Account",
+    "sim": "Sim Account",
+    "live": "Live Account",
+    "hybrid": "Hybrid Account"
+  },
+  "permissions": {
+    "eaAllowed": "EA Allowed",
+    "noEa": "No EA",
+    "newsOk": "News OK",
+    "noNews": "No News",
+    "weekendOk": "Weekend OK",
+    "noWeekend": "No Weekend",
+    "title": "Trading Permissions",
+    "eaBot": "EA / Bots",
+    "newsTrading": "News Trading",
+    "weekendHolding": "Weekend Holding",
+    "allowed": "Allowed",
+    "notAllowed": "Not Allowed",
+    "positionLimits": "Position Limits",
+    "maxPositionSize": "Max Position Size",
+    "maxOpenPositions": "Max Open Positions",
+    "lots": "lots"
+  },
+  "tabs": {
+    "overview": "Overview",
+    "pricing": "Pricing",
+    "rules": "Rules",
+    "permissions": "Permissions",
+    "payout": "Payout",
+    "markets": "Markets",
+    "trust": "Trust & Audit"
+  },
+  "sections": {
+    "about": "About",
+    "bestFor": "Best For",
+    "pros": "Pros",
+    "cons": "Cons",
+    "keyMetrics": "Key Metrics",
+    "riskRules": "Risk Rules",
+    "payoutDetails": "Payout Details",
+    "tradingPermissions": "Trading Permissions",
+    "marketsAndPlatforms": "Markets & Platforms",
+    "dataQuality": "Data Quality & Sources",
+    "allAvailableSizes": "All Available Sizes",
+    "payoutSchedule": "Payout Schedule",
+    "withdrawalMethods": "Withdrawal Methods",
+    "availableMarkets": "Available Markets",
+    "tradingPlatforms": "Trading Platforms",
+    "dataFreshness": "Data Freshness",
+    "verifiedSources": "Verified Sources",
+    "foundOutdatedData": "Found outdated data?",
+    "helpUsKeepAccurate": "Help us keep information accurate by reporting any issues."
+  },
+  "metrics": {
+    "accountSize": "Account Size",
+    "profitSplit": "Profit Split",
+    "entryFee": "Entry Fee",
+    "profitTarget": "Profit Target",
+    "maxDrawdown": "Max Drawdown",
+    "maxDailyLoss": "Max Daily Loss",
+    "minTradingDays": "Min Trading Days",
+    "timeLimit": "Time Limit",
+    "phases": "Phases",
+    "payout": "Payout",
+    "free": "FREE",
+    "target": "Target",
+    "drawdown": "Drawdown",
+    "daily": "Daily",
+    "split": "Split",
+    "time": "Time",
+    "minDays": "Min Days",
+    "step": "Step",
+    "days": "days"
+  },
+  "pricing": {
+    "size": "Size",
+    "fee": "Fee",
+    "refund": "Refund",
+    "refundable": "Refundable",
+    "scaling": "Scaling",
+    "maxScaling": "Max Scaling"
+  },
+  "rules": {
+    "phase": "Phase",
+    "type": "Type",
+    "resetsAt": "Resets at",
+    "consistencyRule": "Consistency Rule",
+    "bestDayMax": "Best day max {percent}% of total profit"
+  },
+  "payout": {
+    "profitSplit": "Profit Split",
+    "initial": "Initial",
+    "scaled": "Scaled",
+    "maximum": "Maximum",
+    "frequency": "Frequency",
+    "firstPayoutDelay": "First Payout Delay",
+    "eligibleAfter": "Eligible After",
+    "processingTime": "Processing Time",
+    "minimumWithdrawal": "Minimum withdrawal: ${amount}"
+  },
+  "markets": {
+    "instrumentsAvailable": "{count} instruments available",
+    "leverage": "Leverage",
+    "commission": "Commission",
+    "tradingHours": "Trading Hours",
+    "forex": "Forex",
+    "indices": "Indices",
+    "commodities": "Commodities",
+    "crypto": "Crypto",
+    "perLot": "/lot"
+  },
+  "trust": {
+    "lastVerified": "Last verified: {date}",
+    "sourceTracking": "Source tracking coming soon. All data manually verified.",
+    "reportIssue": "Report Issue"
+  },
+  "actions": {
+    "viewDetails": "View Details",
+    "details": "Details",
+    "compare": "Compare",
+    "joinCompetition": "Join Competition",
+    "startChallenge": "Start Challenge",
+    "visitWebsite": "Visit Website",
+    "close": "Close"
+  },
+  "badges": {
+    "free": "Free",
+    "paid": "Paid",
+    "trial": "Trial",
+    "freeCompetition": "Free Competition",
+    "propFirm": "Prop Firm"
+  }
 }

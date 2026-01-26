@@ -4,9 +4,10 @@
  * Run with: npm run seed:challenges
  */
 
+import { resolve } from 'node:path';
+
 import { createClient } from '@supabase/supabase-js';
 import { config } from 'dotenv';
-import { resolve } from 'path';
 
 // Load environment variables
 config({ path: resolve(process.cwd(), '.env.local') });
@@ -22,7 +23,7 @@ if (!supabaseUrl || !supabaseKey) {
 }
 
 const supabase = createClient(supabaseUrl, supabaseKey, {
-  auth: { persistSession: false }
+  auth: { persistSession: false },
 });
 
 // Prop Firms Data
@@ -37,7 +38,7 @@ const propFirms = [
     reputation: 98,
     logo_url: '/assets/logos/tradingview.svg',
     website_url: 'https://www.tradingview.com',
-    description: 'Leading charting platform with free paper trading competitions'
+    description: 'Leading charting platform with free paper trading competitions',
   },
   {
     id: 'deriv',
@@ -48,7 +49,7 @@ const propFirms = [
     reputation: 95,
     logo_url: '/assets/logos/deriv.svg',
     website_url: 'https://deriv.com',
-    description: 'Online broker with ongoing free trading tournaments'
+    description: 'Online broker with ongoing free trading tournaments',
   },
   {
     id: 'gateio',
@@ -59,7 +60,7 @@ const propFirms = [
     reputation: 92,
     logo_url: '/assets/logos/gateio.svg',
     website_url: 'https://www.gate.io',
-    description: 'Crypto exchange with demo trading challenges'
+    description: 'Crypto exchange with demo trading challenges',
   },
   // Paid Prop Firms
   {
@@ -71,7 +72,7 @@ const propFirms = [
     reputation: 96,
     logo_url: '/assets/logos/ftmo.svg',
     website_url: 'https://ftmo.com',
-    description: 'Leading prop firm with 2-step evaluation'
+    description: 'Leading prop firm with 2-step evaluation',
   },
   {
     id: 'fundednext',
@@ -82,7 +83,7 @@ const propFirms = [
     reputation: 94,
     logo_url: '/assets/logos/fundednext.svg',
     website_url: 'https://fundednext.com',
-    description: 'Fast-growing prop firm with flexible challenges'
+    description: 'Fast-growing prop firm with flexible challenges',
   },
   {
     id: 'the5ers',
@@ -93,7 +94,7 @@ const propFirms = [
     reputation: 93,
     logo_url: '/assets/logos/the5ers.svg',
     website_url: 'https://the5ers.com',
-    description: 'Instant funding and evaluation programs'
+    description: 'Instant funding and evaluation programs',
   },
   {
     id: 'myfundedfx',
@@ -104,7 +105,7 @@ const propFirms = [
     reputation: 91,
     logo_url: '/assets/logos/myfundedfx.svg',
     website_url: 'https://myfundedfx.com',
-    description: 'Prop firm with competitive profit splits'
+    description: 'Prop firm with competitive profit splits',
   },
   {
     id: 'e8funding',
@@ -115,8 +116,8 @@ const propFirms = [
     reputation: 92,
     logo_url: '/assets/logos/e8funding.svg',
     website_url: 'https://e8funding.com',
-    description: 'Prop firm with instant funding options'
-  }
+    description: 'Prop firm with instant funding options',
+  },
 ];
 
 // Challenges Data
@@ -143,7 +144,7 @@ const challenges = [
       maxDrawdown: null,
       minTradingDays: 3,
       timeLimit: 28,
-      consistencyRule: null
+      consistencyRule: null,
     }),
     payout_speed: 'instant',
     first_payout_delay: 0,
@@ -162,7 +163,7 @@ const challenges = [
     logo_url: '/assets/logos/tradingview.svg',
     popularity: 98,
     success_rate: 5,
-    average_pass_time: null
+    average_pass_time: null,
   },
   {
     id: 'deriv-forex-tournament',
@@ -185,7 +186,7 @@ const challenges = [
       maxDrawdown: null,
       minTradingDays: null,
       timeLimit: 14,
-      consistencyRule: null
+      consistencyRule: null,
     }),
     payout_speed: 'same_day',
     first_payout_delay: 7,
@@ -204,7 +205,7 @@ const challenges = [
     logo_url: '/assets/logos/deriv.svg',
     popularity: 92,
     success_rate: 15,
-    average_pass_time: null
+    average_pass_time: null,
   },
   {
     id: 'gateio-futures-demo',
@@ -227,7 +228,7 @@ const challenges = [
       maxDrawdown: null,
       minTradingDays: null,
       timeLimit: 30,
-      consistencyRule: null
+      consistencyRule: null,
     }),
     payout_speed: 'weekly',
     first_payout_delay: 14,
@@ -246,7 +247,7 @@ const challenges = [
     logo_url: '/assets/logos/gateio.svg',
     popularity: 88,
     success_rate: 10,
-    average_pass_time: null
+    average_pass_time: null,
   },
   // PAID PROP FIRM CHALLENGES
   {
@@ -270,7 +271,7 @@ const challenges = [
       maxDrawdown: 10,
       minTradingDays: 4,
       timeLimit: 30,
-      consistencyRule: 'Best trading day cannot exceed 30% of total profit'
+      consistencyRule: 'Best trading day cannot exceed 30% of total profit',
     }),
     payout_speed: 'bi_weekly',
     first_payout_delay: 14,
@@ -289,8 +290,8 @@ const challenges = [
     logo_url: '/assets/logos/ftmo.svg',
     popularity: 96,
     success_rate: 8,
-    average_pass_time: 45
-  }
+    average_pass_time: 45,
+  },
   // Add more challenges as needed...
 ];
 
@@ -327,7 +328,6 @@ async function seedChallenges() {
     console.log(`   - ${challenges.filter(c => c.is_free).length} Free Competitions`);
     console.log(`   - ${challenges.filter(c => !c.is_free).length} Paid Challenges`);
     console.log(`   Total: ${challenges.length} challenges seeded\n`);
-
   } catch (error) {
     console.error('❌ Seed failed:', error);
     process.exit(1);

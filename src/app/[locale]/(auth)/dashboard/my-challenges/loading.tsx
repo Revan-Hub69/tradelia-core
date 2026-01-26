@@ -8,14 +8,14 @@ export default function MyChallengesLoading() {
         </div>
 
         <div className="rounded-lg border bg-card p-6">
-          <div className="h-6 w-40 animate-pulse rounded bg-muted mb-4" />
+          <div className="mb-4 h-6 w-40 animate-pulse rounded bg-muted" />
           <div className="space-y-4">
             <div className="h-32 animate-pulse rounded-lg bg-muted" />
           </div>
         </div>
 
         <div className="rounded-lg border bg-card p-6">
-          <div className="h-6 w-40 animate-pulse rounded bg-muted mb-4" />
+          <div className="mb-4 h-6 w-40 animate-pulse rounded bg-muted" />
           <div className="grid gap-4 md:grid-cols-2">
             <div className="h-32 animate-pulse rounded-lg bg-muted" />
             <div className="h-32 animate-pulse rounded-lg bg-muted" />

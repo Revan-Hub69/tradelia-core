@@ -36,9 +36,9 @@ export function ChallengeSearch({
       <input
         type="text"
         value={localValue}
-        onChange={(e) => setLocalValue(e.target.value)}
+        onChange={e => setLocalValue(e.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-lg border border-border bg-background py-2.5 pl-10 pr-10 text-sm transition-colors placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+        className="w-full rounded-lg border border-border bg-background px-10 py-2.5 text-sm transition-colors placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
       />
       {localValue && (
         <button

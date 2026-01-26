@@ -357,7 +357,10 @@ export function ChallengeDrawer({
                       <span className="text-muted-foreground">Reputation</span>
                       <div className="flex items-center gap-1">
                         <StarIcon filled />
-                        <span className="font-semibold">{rating.toFixed(1)}/5.0</span>
+                        <span className="font-semibold">
+{rating.toFixed(1)}
+/5.0
+                        </span>
                       </div>
                     </div>
                     <div className="flex justify-between text-sm">

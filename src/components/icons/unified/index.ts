@@ -18,58 +18,50 @@ export type {
   IconVariant,
   SignatureIconProps,
 } from './UnifiedIconSystem';
-
 export {
+  BellIcon,
+  CalculatorIcon,
+  // Challenge Dashboard icons
+  ChallengesIcon,
+  CheckIcon,
+  ChevronDownIcon,
+  ClockIcon,
+  CloseIcon,
+  CommunityIcon,
+  DarkIcon,
+  ExitIcon,
+  ForumIcon,
+  GlobeIcon,
+  HelpIcon,
+  // Core icons
+  HomeIcon,
+  // Educational icons
+  LearnIcon,
+  LightIcon,
+  LockIcon,
+  LogoutIcon,
+  MailIcon,
+  MenuIcon,
+  MinusIcon,
+  MoonIcon,
+  MoreVerticalIcon,
+  MyChartsIcon,
+  PlusIcon,
+  ProfileIcon,
+  SearchIcon,
+  SettingsIcon,
+  // Sidebar icons
+  SidebarToggleIcon,
+  SignalsIcon,
   // Base
   SIGNATURE_TOKENS,
   SignatureIconBase,
-  
-  // Core icons
-  HomeIcon,
-  BellIcon,
-  MenuIcon,
-  CloseIcon,
-  ChevronDownIcon,
-  SettingsIcon,
-  
+  StarIcon,
   // Theme icons
   SunIcon,
-  MoonIcon,
-  LightIcon,
-  DarkIcon,
-  
-  // Educational icons
-  LearnIcon,
-  CalculatorIcon,
-  ForumIcon,
-  ProfileIcon,
-  GlobeIcon,
-  LockIcon,
-  LogoutIcon,
-  MoreVerticalIcon,
-  HelpIcon,
-  MailIcon,
-  
-  // Challenge Dashboard icons
-  ChallengesIcon,
-  MyChartsIcon,
-  SignalsIcon,
-  
-  // Phase 3A icons
-  TrendingUpIcon,
-  StarIcon,
-  ClockIcon,
-  UserIcon,
-  SearchIcon,
-  PlusIcon,
-  MinusIcon,
-  CheckIcon,
-  
-  // Sidebar icons
-  SidebarToggleIcon,
-  
   // Legacy aliases
   ToolsIcon,
-  CommunityIcon,
-  ExitIcon,
+  // Phase 3A icons
+  TrendingUpIcon,
+  UserIcon,
 } from './UnifiedIconSystem';

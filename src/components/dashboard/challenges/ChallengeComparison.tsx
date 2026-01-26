@@ -154,7 +154,7 @@ export function ChallengeComparison({
           animate={{ y: 0 }}
           exit={{ y: '100%' }}
           transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-          className="absolute bottom-0 left-0 right-0 max-h-[90vh] overflow-hidden rounded-t-2xl bg-background shadow-2xl"
+          className="absolute inset-x-0 bottom-0 max-h-[90vh] overflow-hidden rounded-t-2xl bg-background shadow-2xl"
         >
           {/* Header */}
           <div className="sticky top-0 z-10 border-b border-border bg-background/95 p-6 backdrop-blur-sm">
@@ -215,7 +215,7 @@ export function ChallengeComparison({
                           <ExternalLink className="size-3" />
                         </a>
                       </div>
-                    </th>
+                      </th>
                     );
                   })}
                   {challenges.length < 3 && (

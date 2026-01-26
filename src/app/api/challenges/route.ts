@@ -1,5 +1,6 @@
-import { createClient } from '@/libs/supabase/server';
 import { NextResponse } from 'next/server';
+
+import { createClient } from '@/libs/supabase/server';
 
 export async function GET(request: Request) {
   try {
@@ -56,7 +57,7 @@ export async function GET(request: Request) {
     }
 
     // Transform database response to match Challenge type interface
-    const challenges = data?.map((challenge) => ({
+    const challenges = data?.map(challenge => ({
       id: challenge.id,
       name: challenge.name,
       description: challenge.description || '',
@@ -95,7 +96,7 @@ export async function GET(request: Request) {
     console.error('API Error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

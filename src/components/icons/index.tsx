@@ -14,7 +14,6 @@ import type {
   IconVariant,
   SignatureIconProps,
 } from './unified';
-
 // Import all signature icons
 import {
   BellIcon,
@@ -46,9 +45,9 @@ import {
   SearchIcon,
   SettingsIcon,
   SidebarToggleIcon,
+  SignalsIcon,
   SIGNATURE_TOKENS,
   SignatureIconBase,
-  SignalsIcon,
   StarIcon,
   SunIcon,
   ToolsIcon,
@@ -87,9 +86,9 @@ export {
   SearchIcon,
   SettingsIcon,
   SidebarToggleIcon,
+  SignalsIcon,
   SIGNATURE_TOKENS,
   SignatureIconBase,
-  SignalsIcon,
   StarIcon,
   SunIcon,
   ToolsIcon,

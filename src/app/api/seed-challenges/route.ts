@@ -1,5 +1,6 @@
-import { createClient } from '@/libs/supabase/server';
 import { NextResponse } from 'next/server';
+
+import { createClient } from '@/libs/supabase/server';
 
 // Prop Firms Data
 const propFirms = [
@@ -12,7 +13,7 @@ const propFirms = [
     reputation: 98,
     logo_url: '/assets/logos/tradingview.svg',
     website_url: 'https://www.tradingview.com',
-    description: 'Leading charting platform with free paper trading competitions'
+    description: 'Leading charting platform with free paper trading competitions',
   },
   {
     id: 'deriv',
@@ -23,7 +24,7 @@ const propFirms = [
     reputation: 95,
     logo_url: '/assets/logos/deriv.svg',
     website_url: 'https://deriv.com',
-    description: 'Online broker with ongoing free trading tournaments'
+    description: 'Online broker with ongoing free trading tournaments',
   },
   {
     id: 'gateio',
@@ -34,7 +35,7 @@ const propFirms = [
     reputation: 92,
     logo_url: '/assets/logos/gateio.svg',
     website_url: 'https://www.gate.io',
-    description: 'Crypto exchange with demo trading challenges'
+    description: 'Crypto exchange with demo trading challenges',
   },
   {
     id: 'ftmo',
@@ -45,7 +46,7 @@ const propFirms = [
     reputation: 96,
     logo_url: '/assets/logos/ftmo.svg',
     website_url: 'https://ftmo.com',
-    description: 'Leading prop firm with 2-step evaluation'
+    description: 'Leading prop firm with 2-step evaluation',
   },
   {
     id: 'fundednext',
@@ -56,8 +57,8 @@ const propFirms = [
     reputation: 94,
     logo_url: '/assets/logos/fundednext.svg',
     website_url: 'https://fundednext.com',
-    description: 'Fast-growing prop firm with flexible challenges'
-  }
+    description: 'Fast-growing prop firm with flexible challenges',
+  },
 ];
 
 // Challenges Data (sample - add more as needed)
@@ -74,7 +75,7 @@ const challenges = [
     profit_split: JSON.stringify({ initial: 100 }),
     rules: JSON.stringify({
       minTradingDays: 3,
-      timeLimit: 28
+      timeLimit: 28,
     }),
     payout_speed: 'instant',
     first_payout_delay: 0,
@@ -91,8 +92,8 @@ const challenges = [
     best_for: 'Traders wanting to test aggressive strategies risk-free',
     official_url: 'https://www.tradingview.com/the-leap/february-2026/',
     popularity: 98,
-    success_rate: 5
-  }
+    success_rate: 5,
+  },
 ];
 
 export async function POST() {
@@ -122,10 +123,9 @@ export async function POST() {
       message: 'Seed completed',
       data: {
         propFirms: propFirms.length,
-        challenges: challenges.length
-      }
+        challenges: challenges.length,
+      },
     });
-
   } catch (error) {
     return NextResponse.json({ error: String(error) }, { status: 500 });
   }

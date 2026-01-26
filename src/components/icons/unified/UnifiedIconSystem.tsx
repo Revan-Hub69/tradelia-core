@@ -796,9 +796,9 @@ export const MyChartsIcon = memo<Omit<SignatureIconProps, 'children'> & {
     <rect x="21" y="7" width="3" height="14" rx="1" strokeLinecap="round" strokeLinejoin="round" />
     {/* Optional trend line overlay */}
     {showTrend && (
-      <path 
-        d="M6 17l4-4 4 2 6-6" 
-        strokeLinecap="round" 
+      <path
+        d="M6 17l4-4 4 2 6-6"
+        strokeLinecap="round"
         strokeLinejoin="round"
         opacity="0.5"
         strokeDasharray="2 2"

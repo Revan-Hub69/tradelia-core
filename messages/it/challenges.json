@@ -1,19 +1,146 @@
 {
-  "title": "Libreria Sfide",
-  "description": "Esplora e partecipa a sfide di trading dalle migliori prop firm e competizioni mondiali.",
-  "free_challenges_title": "Competizioni Trading Gratuite",
-  "free_challenges_description": "Competi per premi reali senza costi di iscrizione. Perfetto per costruire il tuo track record.",
-  "tradingview_leap_title": "TradingView The Leap",
-  "tradingview_leap_description": "Oltre $100K in premi. Competizioni mensili con premi in denaro reale.",
-  "deriv_title": "Competizioni Deriv",
-  "deriv_description": "Contest regolari con premi in denaro. Fai trading su conti demo per vincere soldi veri.",
-  "prop_challenges_title": "Sfide Prop Firm",
-  "prop_challenges_description": "Programmi di valutazione a pagamento dalle principali prop firm. Supera per ottenere finanziamento.",
-  "ftmo_title": "FTMO",
-  "ftmo_description": "Conti $10K-$200K. Valutazione in due fasi. Leader del settore dal 2015.",
-  "fundednext_title": "FundedNext",
-  "fundednext_description": "Conti $6K-$300K. Sfide express e standard. Prezzi competitivi.",
-  "the5ers_title": "The5ers",
-  "the5ers_description": "Conti $5K-$250K. Opzioni bootcamp e finanziamento istantaneo.",
-  "in_development": "⚠️ Integrazione sfide in arrivo. Questa pagina mostra le sfide disponibili che potrai tracciare."
+  "availability": {
+    "alwaysOpen": "Sempre Aperto",
+    "next": "Prossima:",
+    "registrationDeadline": "Scadenza Iscrizione"
+  },
+  "competition": {
+    "targetBased": "Basato su Obiettivi",
+    "rankingBased": "Basato su Classifica",
+    "vsTraders": "vs {count} Trader"
+  },
+  "accountType": {
+    "paper": "Paper Trading",
+    "demo": "Account Demo",
+    "sim": "Account Simulato",
+    "live": "Account Reale",
+    "hybrid": "Account Ibrido"
+  },
+  "permissions": {
+    "eaAllowed": "EA Consentiti",
+    "noEa": "No EA",
+    "newsOk": "News OK",
+    "noNews": "No News",
+    "weekendOk": "Weekend OK",
+    "noWeekend": "No Weekend",
+    "title": "Permessi di Trading",
+    "eaBot": "EA / Bot",
+    "newsTrading": "Trading su News",
+    "weekendHolding": "Mantenimento Weekend",
+    "allowed": "Consentito",
+    "notAllowed": "Non Consentito",
+    "positionLimits": "Limiti Posizione",
+    "maxPositionSize": "Dimensione Max Posizione",
+    "maxOpenPositions": "Max Posizioni Aperte",
+    "lots": "lotti"
+  },
+  "tabs": {
+    "overview": "Panoramica",
+    "pricing": "Prezzi",
+    "rules": "Regole",
+    "permissions": "Permessi",
+    "payout": "Pagamenti",
+    "markets": "Mercati",
+    "trust": "Affidabilità"
+  },
+  "sections": {
+    "about": "Informazioni",
+    "bestFor": "Ideale Per",
+    "pros": "Pro",
+    "cons": "Contro",
+    "keyMetrics": "Metriche Chiave",
+    "riskRules": "Regole di Rischio",
+    "payoutDetails": "Dettagli Pagamento",
+    "tradingPermissions": "Permessi di Trading",
+    "marketsAndPlatforms": "Mercati e Piattaforme",
+    "dataQuality": "Qualità Dati e Fonti",
+    "allAvailableSizes": "Tutte le Dimensioni Disponibili",
+    "payoutSchedule": "Calendario Pagamenti",
+    "withdrawalMethods": "Metodi di Prelievo",
+    "availableMarkets": "Mercati Disponibili",
+    "tradingPlatforms": "Piattaforme di Trading",
+    "dataFreshness": "Freschezza Dati",
+    "verifiedSources": "Fonti Verificate",
+    "foundOutdatedData": "Hai trovato dati obsoleti?",
+    "helpUsKeepAccurate": "Aiutaci a mantenere le informazioni accurate segnalando eventuali problemi."
+  },
+  "metrics": {
+    "accountSize": "Dimensione Account",
+    "profitSplit": "Divisione Profitti",
+    "entryFee": "Quota Iscrizione",
+    "profitTarget": "Obiettivo Profitto",
+    "maxDrawdown": "Drawdown Massimo",
+    "maxDailyLoss": "Perdita Giornaliera Max",
+    "minTradingDays": "Giorni Trading Minimi",
+    "timeLimit": "Limite Tempo",
+    "phases": "Fasi",
+    "payout": "Pagamento",
+    "free": "GRATIS",
+    "target": "Obiettivo",
+    "drawdown": "Drawdown",
+    "daily": "Giornaliero",
+    "split": "Divisione",
+    "time": "Tempo",
+    "minDays": "Giorni Min",
+    "step": "Fase",
+    "days": "giorni"
+  },
+  "pricing": {
+    "size": "Dimensione",
+    "fee": "Quota",
+    "refund": "Rimborso",
+    "refundable": "Rimborsabile",
+    "scaling": "Scaling",
+    "maxScaling": "Scaling Massimo"
+  },
+  "rules": {
+    "phase": "Fase",
+    "type": "Tipo",
+    "resetsAt": "Reset alle",
+    "consistencyRule": "Regola Consistenza",
+    "bestDayMax": "Giorno migliore max {percent}% del profitto totale"
+  },
+  "payout": {
+    "profitSplit": "Divisione Profitti",
+    "initial": "Iniziale",
+    "scaled": "Scalato",
+    "maximum": "Massimo",
+    "frequency": "Frequenza",
+    "firstPayoutDelay": "Ritardo Primo Pagamento",
+    "eligibleAfter": "Idoneo Dopo",
+    "processingTime": "Tempo Elaborazione",
+    "minimumWithdrawal": "Prelievo minimo: ${amount}"
+  },
+  "markets": {
+    "instrumentsAvailable": "{count} strumenti disponibili",
+    "leverage": "Leva",
+    "commission": "Commissione",
+    "tradingHours": "Orari Trading",
+    "forex": "Forex",
+    "indices": "Indici",
+    "commodities": "Materie Prime",
+    "crypto": "Crypto",
+    "perLot": "/lotto"
+  },
+  "trust": {
+    "lastVerified": "Ultima verifica: {date}",
+    "sourceTracking": "Tracciamento fonti in arrivo. Tutti i dati verificati manualmente.",
+    "reportIssue": "Segnala Problema"
+  },
+  "actions": {
+    "viewDetails": "Vedi Dettagli",
+    "details": "Dettagli",
+    "compare": "Confronta",
+    "joinCompetition": "Partecipa alla Competizione",
+    "startChallenge": "Inizia Sfida",
+    "visitWebsite": "Visita Sito",
+    "close": "Chiudi"
+  },
+  "badges": {
+    "free": "Gratis",
+    "paid": "A Pagamento",
+    "trial": "Prova",
+    "freeCompetition": "Competizione Gratuita",
+    "propFirm": "Prop Firm"
+  }
 }
