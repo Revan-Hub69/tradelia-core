@@ -18,48 +18,58 @@ export type {
   IconVariant,
   SignatureIconProps,
 } from './UnifiedIconSystem';
+
 export {
-  // Core icons
-  BellIcon,
-  CalculatorIcon,
-  // Challenge Dashboard icons
-  ChallengesIcon,
-  CheckIcon,
-  ChevronDownIcon,
-  ClockIcon,
-  CloseIcon,
-  CommunityIcon,
-  DarkIcon,
-  ExitIcon,
-  ForumIcon,
-  GlobeIcon,
-  HelpIcon,
-  HomeIcon,
-  // Educational icons
-  LearnIcon,
-  // Theme icons (new clean versions)
-  LightIcon,
-  LockIcon,
-  LogoutIcon,
-  MailIcon,
-  MenuIcon,
-  MinusIcon,
-  MoonIcon,
-  MoreVerticalIcon,
-  MyChartsIcon,
-  PlusIcon,
-  ProfileIcon,
-  SearchIcon,
-  SettingsIcon,
-  SidebarToggleIcon,
+  // Base
   SIGNATURE_TOKENS,
   SignatureIconBase,
-  SignalsIcon,
-  StarIcon,
-  // Legacy aliases (for compatibility)
+  
+  // Core icons
+  HomeIcon,
+  BellIcon,
+  MenuIcon,
+  CloseIcon,
+  ChevronDownIcon,
+  SettingsIcon,
+  
+  // Theme icons
   SunIcon,
-  ToolsIcon,
-  // New Phase 3A icons
+  MoonIcon,
+  LightIcon,
+  DarkIcon,
+  
+  // Educational icons
+  LearnIcon,
+  CalculatorIcon,
+  ForumIcon,
+  ProfileIcon,
+  GlobeIcon,
+  LockIcon,
+  LogoutIcon,
+  MoreVerticalIcon,
+  HelpIcon,
+  MailIcon,
+  
+  // Challenge Dashboard icons
+  ChallengesIcon,
+  MyChartsIcon,
+  SignalsIcon,
+  
+  // Phase 3A icons
   TrendingUpIcon,
+  StarIcon,
+  ClockIcon,
   UserIcon,
+  SearchIcon,
+  PlusIcon,
+  MinusIcon,
+  CheckIcon,
+  
+  // Sidebar icons
+  SidebarToggleIcon,
+  
+  // Legacy aliases
+  ToolsIcon,
+  CommunityIcon,
+  ExitIcon,
 } from './UnifiedIconSystem';

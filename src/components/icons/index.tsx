@@ -14,11 +14,11 @@ import type {
   IconVariant,
   SignatureIconProps,
 } from './unified';
-// Import signature icons first
+
+// Import all signature icons
 import {
   BellIcon,
   CalculatorIcon,
-  // Challenge Dashboard icons
   ChallengesIcon,
   CheckIcon,
   ChevronDownIcon,
@@ -31,9 +31,7 @@ import {
   GlobeIcon,
   HelpIcon,
   HomeIcon,
-  // Educational icons
   LearnIcon,
-  // Theme icons (new clean versions)
   LightIcon,
   LockIcon,
   LogoutIcon,
@@ -52,19 +50,16 @@ import {
   SignatureIconBase,
   SignalsIcon,
   StarIcon,
-  // Legacy aliases (for compatibility)
   SunIcon,
   ToolsIcon,
-  // New Phase 3A icons
   TrendingUpIcon,
   UserIcon,
 } from './unified';
 
-// Re-export signature icons
+// Re-export all icons
 export {
   BellIcon,
   CalculatorIcon,
-  // Challenge Dashboard icons
   ChallengesIcon,
   CheckIcon,
   ChevronDownIcon,
@@ -77,9 +72,7 @@ export {
   GlobeIcon,
   HelpIcon,
   HomeIcon,
-  // Educational icons
   LearnIcon,
-  // Theme icons (new clean versions)
   LightIcon,
   LockIcon,
   LogoutIcon,
@@ -98,10 +91,8 @@ export {
   SignatureIconBase,
   SignalsIcon,
   StarIcon,
-  // Legacy aliases (for compatibility)
   SunIcon,
   ToolsIcon,
-  // New Phase 3A icons
   TrendingUpIcon,
   UserIcon,
 };
