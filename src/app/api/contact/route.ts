@@ -15,23 +15,19 @@ import { db } from '@/libs/DB';
 import { supportTicketsSchema } from '@/models/Schema';
 import { contactFormSchema } from '@/types/contact';
 
-// Increase timeout for email sending
-export const maxDuration = 60; // 60 seconds
-export const runtime = 'nodejs'; // Required for Nodemailer
+export const runtime = 'nodejs';
+export const maxDuration = 60;
 
 export async function POST(request: Request) {
   try {
-    // Check SMTP credentials
     const smtpHost = process.env.SMTP_HOST;
     const smtpUser = process.env.SMTP_USER;
     const smtpPass = process.env.SMTP_PASS;
     const supportEmail = process.env.SUPPORT_EMAIL || 'support@tradelia.org';
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tradelia.org';
 
-    // Get IP for rate limiting
     const ip = getClientIp(request);
 
-    // Check rate limit (3 requests per hour)
     const rateLimitResult = await rateLimit(ip, {
       limit: 3,
       window: '1 h',
@@ -47,24 +43,17 @@ export async function POST(request: Request) {
       );
     }
 
-    // Parse and validate request body
     const body = await request.json();
     const data = contactFormSchema.parse(body);
 
-    // Check honeypot field
     if (data.website) {
-      // Bot detected - return success but don't send email
       return NextResponse.json({ success: true, message: 'Message sent' });
     }
 
-    // Detect user locale
     const acceptLanguage = request.headers.get('accept-language');
     const locale: Locale = detectLocale(acceptLanguage);
-
-    // Generate ticket ID
     const ticketId = generateTicketId();
 
-    // Save ticket to database (only if DATABASE_URL is configured)
     if (process.env.DATABASE_URL) {
       try {
         await db.insert(supportTicketsSchema).values({
@@ -82,13 +71,11 @@ export async function POST(request: Request) {
           userAgent: request.headers.get('user-agent') || undefined,
           ipAddress: ip,
         });
-        console.log(`Ticket ${ticketId} saved to database`);
       } catch (dbError) {
-        console.error('Failed to save ticket to database:', dbError);
+        console.error('DB error:', dbError);
       }
     }
 
-    // Try to send emails (but don't fail if SMTP is not configured)
     if (smtpHost && smtpUser && smtpPass) {
       try {
         const templateData: EmailTemplateData = {
@@ -119,7 +106,6 @@ export async function POST(request: Request) {
           },
         });
 
-        // Send notification email to support team
         await transporter.sendMail({
           from: `"Tradelia Contact Form" <${smtpUser}>`,
           to: supportEmail,
@@ -129,7 +115,6 @@ export async function POST(request: Request) {
           text: contactNotificationTemplate.text(locale, templateData),
         });
 
-        // Send confirmation email to user
         await transporter.sendMail({
           from: `"Tradelia Support" <${smtpUser}>`,
           to: data.email,
@@ -138,15 +123,9 @@ export async function POST(request: Request) {
           html: contactConfirmationTemplate.html(locale, templateData),
           text: contactConfirmationTemplate.text(locale, templateData),
         });
-
-        console.log(`Emails sent successfully for ticket ${ticketId}`);
       } catch (emailError) {
-        // Log error but don't fail the request
-        console.error('Failed to send emails (SMTP error):', emailError);
-        console.log('Ticket saved but emails not sent - check SMTP credentials');
+        console.error('SMTP error:', emailError);
       }
-    } else {
-      console.log('SMTP not configured - ticket saved without sending emails');
     }
 
     return NextResponse.json({
@@ -162,7 +141,7 @@ export async function POST(request: Request) {
       );
     }
 
-    console.error('Contact form error:', error);
+    console.error('Contact error:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to send message' },
       { status: 500 },
