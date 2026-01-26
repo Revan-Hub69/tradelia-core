@@ -64,8 +64,7 @@ export default function ChallengesPage() {
 
     // Apply search
     if (searchQuery) {
-      result = result.filter(
-        (c) =>
+      result = result.filter(c =>
           c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           c.prop_firms.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           c.description.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -164,7 +163,7 @@ export default function ChallengesPage() {
 
   const handleCompareToggle = (id: string) => {
     if (comparisonIds.includes(id)) {
-      setComparisonIds(comparisonIds.filter((cid) => cid !== id));
+      setComparisonIds(comparisonIds.filter(cid => cid !== id));
     } else if (comparisonIds.length < 3) {
       setComparisonIds([...comparisonIds, id]);
     }
@@ -181,7 +180,7 @@ export default function ChallengesPage() {
     });
   };
 
-  const comparisonChallenges = challenges.filter((c) =>
+  const comparisonChallenges = challenges.filter(c =>
     comparisonIds.includes(c.id),
   );
 
@@ -192,7 +191,7 @@ export default function ChallengesPage() {
           <div className="h-8 w-64 animate-pulse rounded bg-muted" />
           <div className="h-4 w-96 animate-pulse rounded bg-muted" />
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
+            {[1, 2, 3, 4, 5, 6].map(i => (
               <div
                 key={i}
                 className="h-96 animate-pulse rounded-2xl bg-muted"
@@ -300,8 +299,7 @@ export default function ChallengesPage() {
               </div>
             ) : (
               <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-                {filteredChallenges.map((challenge) => {
-                  return (
+                {filteredChallenges.map(challenge => (
                   <ChallengeCard
                     key={challenge.id}
                     challenge={challenge}
@@ -309,8 +307,7 @@ export default function ChallengesPage() {
                     onCompareToggle={handleCompareToggle}
                     isComparing={comparisonIds.includes(challenge.id)}
                   />
-                  );
-                })}
+                ))}
               </div>
             )}
           </div>
@@ -332,9 +329,7 @@ export default function ChallengesPage() {
         <ChallengeComparison
           challenges={comparisonChallenges}
           onRemove={(id) => {
-            setComparisonIds(comparisonIds.filter((cid) => {
-              return cid !== id;
-            }));
+            setComparisonIds(comparisonIds.filter(cid => cid !== id));
             if (comparisonIds.length <= 2) {
               setShowComparison(false);
             }
