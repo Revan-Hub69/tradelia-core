@@ -20,6 +20,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
   const commonMessages = (await import(`../../messages/${locale}/common.json`)).default;
   const dashboardSettingsMessages = (await import(`../../messages/${locale}/dashboard-settings.json`)).default;
   const contactMessages = (await import(`../../messages/${locale}/contact.json`)).default;
+  const challengesMessages = (await import(`../../messages/${locale}/Challenges.json`)).default;
 
   return {
     locale,
@@ -28,6 +29,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
       Common: commonMessages,
       DashboardSettings: dashboardSettingsMessages,
       Contact: contactMessages,
+      Challenges: challengesMessages,
     },
   };
 });
