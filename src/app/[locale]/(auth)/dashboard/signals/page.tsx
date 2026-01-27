@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 
 export default function SignalsPage() {
-  const t = useTranslations('Signals');
+  const t = useTranslations('Signals') as any;
 
   return (
     <div className="container mx-auto px-4 py-8">

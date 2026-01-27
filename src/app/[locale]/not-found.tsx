@@ -15,7 +15,7 @@ import { Link } from '@/libs/i18nNavigation';
  * - Professional, not playful (educational context)
  */
 export default function NotFound() {
-  const t = useTranslations('NotFound');
+  const t = useTranslations('NotFound') as any;
 
   return (
     <div className="flex min-h-screen items-center justify-center p-6">

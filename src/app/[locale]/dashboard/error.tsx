@@ -25,7 +25,7 @@ export default function DashboardError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  const t = useTranslations('ErrorBoundary');
+  const t = useTranslations('ErrorBoundary') as any;
 
   useEffect(() => {
     // Log to monitoring service (Sentry, LogRocket, etc.)

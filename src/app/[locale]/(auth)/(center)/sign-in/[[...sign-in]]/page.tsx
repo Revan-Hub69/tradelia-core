@@ -27,7 +27,7 @@ const signInSchema = z.object({
 type SignInForm = z.infer<typeof signInSchema>;
 
 const SignInPage = () => {
-  const t = useTranslations('SignIn');
+  const t = useTranslations('SignIn') as any;
   const router = useRouter();
   const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);

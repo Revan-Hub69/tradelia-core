@@ -35,7 +35,7 @@ import { cn } from '@/utils/Helpers';
  * ✅ Phase 3 Task 1: Debounced search input for better INP
  */
 export default function DashboardNotFound() {
-  const t = useTranslations('NotFound');
+  const t = useTranslations('NotFound') as any;
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');

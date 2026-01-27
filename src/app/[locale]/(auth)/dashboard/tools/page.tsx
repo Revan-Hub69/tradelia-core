@@ -1,7 +1,7 @@
 import { useTranslations } from 'next-intl';
 
 export default function ToolsPage() {
-  const t = useTranslations('Tools');
+  const t = useTranslations('Tools') as any;
 
   return (
     <div className="container mx-auto px-4 py-8">

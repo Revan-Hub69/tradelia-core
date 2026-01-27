@@ -9,7 +9,7 @@ import { TitleBar } from '@/features/dashboard/TitleBar';
 import { createClient } from '@/libs/supabase/client';
 
 const UserProfilePage = () => {
-  const t = useTranslations('UserProfile');
+  const t = useTranslations('UserProfile') as any;
   const router = useRouter();
   const [user, setUser] = useState<{ email: string; id: string } | null>(null);
 

@@ -30,7 +30,7 @@ const signUpSchema = z.object({
 type SignUpForm = z.infer<typeof signUpSchema>;
 
 const SignUpPage = () => {
-  const t = useTranslations('SignUp');
+  const t = useTranslations('SignUp') as any;
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);

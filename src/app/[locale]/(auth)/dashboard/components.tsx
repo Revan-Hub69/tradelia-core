@@ -95,7 +95,7 @@ type SecondaryDataProps = {
 
 // ✅ TIER 1: Optimized status card with server data
 export const DashboardStatusCard = ({ userData }: DashboardStatusCardProps) => {
-  const t = useTranslations('Dashboard');
+  const t = useTranslations('Dashboard') as any;
 
   return (
     <div className="card-ios-26 stagger-item">
@@ -157,7 +157,7 @@ export const DashboardStatusCard = ({ userData }: DashboardStatusCardProps) => {
 
 // ✅ TIER 1: Optimized next steps with server data
 export const DashboardNextSteps = ({ userData }: DashboardNextStepsProps) => {
-  const t = useTranslations('Dashboard');
+  const t = useTranslations('Dashboard') as any;
 
   const isJustStarted = userData.progress.completedLessons === 0;
   const isNearCompletion = userData.progress.progressPercentage > 80;
@@ -224,7 +224,7 @@ export const DashboardNextSteps = ({ userData }: DashboardNextStepsProps) => {
 
 // ✅ TIER 1: Stats card with client-side data loading
 export const DashboardStatsCard = ({ userId }: SecondaryDataProps) => {
-  const t = useTranslations('Dashboard');
+  const t = useTranslations('Dashboard') as any;
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -380,7 +380,7 @@ export const DashboardStatsCard = ({ userId }: SecondaryDataProps) => {
 
 // ✅ TIER 1: Notifications with client-side data loading
 export const DashboardNotifications = ({ userId }: SecondaryDataProps) => {
-  const t = useTranslations('Dashboard');
+  const t = useTranslations('Dashboard') as any;
   const [notifications, setNotifications] = useState<NotificationData[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -506,7 +506,7 @@ export const DashboardNotifications = ({ userId }: SecondaryDataProps) => {
 
 // ✅ TIER 1: Activity feed with client-side data loading
 export const DashboardActivityFeed = ({ userId }: SecondaryDataProps) => {
-  const t = useTranslations('Dashboard');
+  const t = useTranslations('Dashboard') as any;
   const [activity, setActivity] = useState<RecentActivity[]>([]);
   const [loading, setLoading] = useState(true);
 
