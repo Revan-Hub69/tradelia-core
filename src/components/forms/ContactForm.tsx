@@ -32,7 +32,7 @@ export function ContactForm({
   variant = 'landing',
   onSuccess,
 }: ContactFormProps) {
-  const t = useTranslations('Contact');
+  const t = useTranslations('Contact') as any;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<
     'idle' | 'success' | 'error'

@@ -25,7 +25,7 @@ type MarketsSectionProps = {
 };
 
 export function MarketsSection({ marketAccess }: MarketsSectionProps) {
-  const t = useTranslations('Challenges');
+  const t = useTranslations('Challenges') as any;
   
   if (!marketAccess) {
     return null;

@@ -31,7 +31,7 @@ export function DataTable<TData, TValue>({
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
-  const t = useTranslations('DataTable');
+  const t = useTranslations('DataTable') as any;
 
   return (
     <div className="rounded-md border bg-card">

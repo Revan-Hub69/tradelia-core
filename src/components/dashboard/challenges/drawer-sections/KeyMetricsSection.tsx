@@ -27,7 +27,7 @@ export const KeyMetricsSection = React.memo(function KeyMetricsSection({
   offer,
   payoutTerms,
 }: KeyMetricsSectionProps) {
-  const t = useTranslations('Challenges');
+  const t = useTranslations('Challenges') as any;
   
   return (
     <section>

@@ -53,7 +53,7 @@ const ModuleIcons = {
 };
 
 export const LearningPath = () => {
-  const t = useTranslations('LearningPath');
+  const t = useTranslations('LearningPath') as any;
 
   const modules = [
     {

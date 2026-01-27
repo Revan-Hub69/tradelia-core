@@ -50,7 +50,7 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
   role,
 }) => {
   const router = useRouter();
-  const t = useTranslations('Dashboard');
+  const t = useTranslations('Dashboard') as any;
   const [isOpen, setIsOpen] = useState(false);
   const [triggerRect, setTriggerRect] = useState<DOMRect | null>(null);
   const triggerRef = React.useRef<HTMLButtonElement>(null);

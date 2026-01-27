@@ -43,7 +43,7 @@ const triggerHaptic = (type: 'light' | 'medium' | 'heavy' = 'light') => {
 
 export const BottomNavigationSimple: React.FC<BottomNavigationSimpleProps> = ({ className }) => {
   const pathname = usePathname();
-  const t = useTranslations('Dashboard');
+  const t = useTranslations('Dashboard') as any;
   const navigationItems = getVisibleNavigationItems();
   const { navigate, isPending, navigationTarget } = useOptimizedNavigation();
 

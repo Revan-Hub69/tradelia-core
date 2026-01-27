@@ -42,7 +42,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ className }) => 
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const t = useTranslations('Dashboard');
+  const t = useTranslations('Dashboard') as any;
   const router = useRouter();
   const navigationItems = getVisibleNavigationItems();
 

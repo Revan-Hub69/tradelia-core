@@ -22,7 +22,7 @@ type RiskRulesSectionProps = {
 };
 
 export function RiskRulesSection({ rulesets }: RiskRulesSectionProps) {
-  const t = useTranslations('Challenges');
+  const t = useTranslations('Challenges') as any;
   
   return (
     <section>

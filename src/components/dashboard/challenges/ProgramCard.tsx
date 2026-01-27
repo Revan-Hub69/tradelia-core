@@ -93,7 +93,7 @@ export function ProgramCard({
   onCompareToggle,
   isComparing,
 }: ProgramCardProps) {
-  const t = useTranslations('Challenges');
+  const t = useTranslations('Challenges') as any;
 
   // Default selection: featured > lowest fee > first (memoized)
   const defaultOffer = useMemo(

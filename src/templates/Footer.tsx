@@ -9,7 +9,7 @@ import { AppConfig } from '@/utils/AppConfig';
 import { Logo } from './Logo';
 
 export const Footer = () => {
-  const t = useTranslations('Footer');
+  const t = useTranslations('Footer') as any;
   const finalCTA = useTranslations('FinalCTA');
 
   return (

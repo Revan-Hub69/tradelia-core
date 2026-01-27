@@ -24,7 +24,7 @@ export const TradeliaCoinDisplay = ({
   recentEarnings = DEFAULT_RECENT_EARNINGS,
 }: TradeliaCoinDisplayProps) => {
   const [showEarnings, setShowEarnings] = useState(false);
-  const t = useTranslations('Learning');
+  const t = useTranslations('Learning') as any;
 
   // Responsive classes
   const sizeClasses = {
@@ -202,7 +202,7 @@ export const CoinEarningAnimation = ({
   onComplete,
   celebration = false,
 }: CoinEarningAnimationProps) => {
-  const t = useTranslations('Learning');
+  const t = useTranslations('Learning') as any;
 
   return (
     <motion.div

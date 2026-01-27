@@ -22,7 +22,7 @@ type AboutSectionProps = {
 };
 
 export const AboutSection = React.memo(function AboutSection({ program }: AboutSectionProps) {
-  const t = useTranslations('Challenges');
+  const t = useTranslations('Challenges') as any;
   
   const hasContent =
     program.description || program.best_for || program.pros || program.cons;

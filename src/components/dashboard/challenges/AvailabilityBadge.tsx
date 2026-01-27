@@ -30,7 +30,7 @@ export function AvailabilityBadge({
   date,
   spotsLeft,
 }: AvailabilityBadgeProps) {
-  const t = useTranslations('Challenges.availability');
+  const t = useTranslations('Challenges.availability') as any;
 
   // Get translated label with interpolation
   const getLabel = () => {

@@ -22,7 +22,7 @@ type PermissionsSectionProps = {
 };
 
 export function PermissionsSection({ phase1Rules }: PermissionsSectionProps) {
-  const t = useTranslations('Challenges');
+  const t = useTranslations('Challenges') as any;
   
   if (!phase1Rules) {
     return null;

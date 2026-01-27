@@ -153,7 +153,7 @@ const ErrorIllustration = () => (
 );
 
 export function EmptyState({ type, onAction }: EmptyStateProps) {
-  const t = useTranslations('Challenges.emptyStates');
+  const t = useTranslations('Challenges.emptyStates') as any;
 
   const config = {
     'no-programs': {

@@ -25,7 +25,7 @@ export const ProfessionalCertificationComponent = ({
 }: ProfessionalCertificationProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [showTooltipState, setShowTooltipState] = useState(false);
-  const t = useTranslations('Learning');
+  const t = useTranslations('Learning') as any;
 
   // Responsive size classes using Tradelia's 4px spacing scale
   const sizeClasses = {

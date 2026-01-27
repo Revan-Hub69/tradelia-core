@@ -32,7 +32,7 @@ const BenefitIcons = {
 };
 
 export const BenefitsOverview = () => {
-  const t = useTranslations('BenefitsOverview');
+  const t = useTranslations('BenefitsOverview') as any;
 
   const benefits = [
     {

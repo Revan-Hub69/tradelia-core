@@ -142,7 +142,7 @@ export function ProgramDrawer({
   onClose,
   onEnroll,
 }: ProgramDrawerProps) {
-  const t = useTranslations('Challenges');
+  const t = useTranslations('Challenges') as any;
 
   // Focus trap for accessibility
   const drawerRef = useFocusTrap({

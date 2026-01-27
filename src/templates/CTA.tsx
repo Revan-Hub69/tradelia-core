@@ -6,7 +6,7 @@ import { CTABanner } from '@/features/landing/CTABanner';
 import { Section } from '@/features/landing/Section';
 
 export const CTA = () => {
-  const t = useTranslations('CTA');
+  const t = useTranslations('CTA') as any;
 
   return (
     <Section>

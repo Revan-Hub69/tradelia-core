@@ -28,7 +28,7 @@ import { cn } from '@/utils/Helpers';
 import { ThemeSwitcherSkeleton } from './HeaderSkeletons';
 
 export const ThemeSwitcher = React.memo<{ className?: string }>(({ className }) => {
-  const t = useTranslations('Dashboard');
+  const t = useTranslations('Dashboard') as any;
   const { theme, setTheme } = useTheme();
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [mounted, setMounted] = useState(false);

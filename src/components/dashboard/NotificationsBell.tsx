@@ -40,7 +40,7 @@ import { useTooltip } from '@/hooks/useTooltip';
 import { cn } from '@/utils/Helpers';
 
 export const NotificationsBell = React.memo<{ className?: string }>(({ className }) => {
-  const t = useTranslations('Dashboard');
+  const t = useTranslations('Dashboard') as any;
   const [isOpen, setIsOpen] = useState(false);
   const [hasNewNotification, setHasNewNotification] = useState(false);
   const [triggerRect, setTriggerRect] = useState<DOMRect | null>(null);

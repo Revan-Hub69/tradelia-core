@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/tooltip';
 
 export const ProtectFallback = (props: { trigger: React.ReactNode }) => {
-  const t = useTranslations('ProtectFallback');
+  const t = useTranslations('ProtectFallback') as any;
 
   return (
     <TooltipProvider delayDuration={0}>

@@ -15,7 +15,7 @@ type SkipLinksProps = {
 };
 
 export function SkipLinks({ className }: SkipLinksProps) {
-  const t = useTranslations('Challenges.a11y');
+  const t = useTranslations('Challenges.a11y') as any;
 
   const skipTo = useCallback((id: string) => {
     const element = document.getElementById(id);

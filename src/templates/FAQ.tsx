@@ -9,7 +9,7 @@ import { FadeIn, StaggerChildren } from '@/components/ui/scroll-animations';
  * Premium FAQ Component - Addresses common objections
  */
 export const FAQ = () => {
-  const t = useTranslations('FAQ');
+  const t = useTranslations('FAQ') as any;
   const [openItems, setOpenItems] = useState<Set<number>>(new Set([0])); // First item open by default
 
   const toggleItem = (index: number) => {

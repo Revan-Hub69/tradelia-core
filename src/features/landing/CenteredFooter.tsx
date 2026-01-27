@@ -8,7 +8,7 @@ export const CenteredFooter = (props: {
   legalLinks: React.ReactNode;
   children: React.ReactNode;
 }) => {
-  const t = useTranslations('Footer');
+  const t = useTranslations('Footer') as any;
 
   return (
     <div className="flex flex-col items-center text-center">

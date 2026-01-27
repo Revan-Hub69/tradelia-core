@@ -21,7 +21,7 @@ type TrustSectionProps = {
 };
 
 export function TrustSection({ trustSignals, organizerName }: TrustSectionProps) {
-  const t = useTranslations('Challenges');
+  const t = useTranslations('Challenges') as any;
   
   return (
     <section>

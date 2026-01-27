@@ -24,7 +24,7 @@ type PayoutSectionProps = {
 };
 
 export function PayoutSection({ payoutTerms }: PayoutSectionProps) {
-  const t = useTranslations('Challenges');
+  const t = useTranslations('Challenges') as any;
   
   if (!payoutTerms) {
     return null;

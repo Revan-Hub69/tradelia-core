@@ -26,7 +26,7 @@ export const CompetencyProgressBar = ({
   const [isHovered, setIsHovered] = useState(false);
   const [showTooltipState, setShowTooltipState] = useState(false);
   const { current, next, progress, coinsToNext } = ProfessionalLearningEngine.getCompetencyProgress(competencyScore);
-  const t = useTranslations('Learning');
+  const t = useTranslations('Learning') as any;
 
   // Responsive height classes using 4px spacing scale
   const sizeClasses = {

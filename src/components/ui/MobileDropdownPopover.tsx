@@ -230,7 +230,7 @@ export const MobileDropdownPopover = React.memo<MobileDropdownPopoverProps>(({
   triggerRect,
   triggerRef,
 }) => {
-  const t = useTranslations('Common');
+  const t = useTranslations('Common') as any;
 
   const popoverRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState<Position>({ top: 0, left: 0 });

@@ -80,8 +80,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   compactMode = false,
   hideOnScroll = true, // Enable by default following 2026 best practices
 }) => {
-  const t = useTranslations('Dashboard');
-  const tGeneral = useTranslations();
+  const t = useTranslations('Dashboard') as any;
+  const tGeneral = useTranslations() as any;
   const { userData, isLoading } = useUserData();
   const [showSearchModal, setShowSearchModal] = useState(false);
 
