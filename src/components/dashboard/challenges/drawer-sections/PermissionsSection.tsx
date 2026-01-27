@@ -3,6 +3,8 @@
  * Modular component following best practices 2026
  */
 
+import { useTranslations } from 'next-intl';
+
 import { cn } from '@/utils/Helpers';
 
 import { BotIcon, NewsIcon, WeekendIcon } from '../PremiumIcons';
@@ -20,6 +22,8 @@ type PermissionsSectionProps = {
 };
 
 export function PermissionsSection({ phase1Rules }: PermissionsSectionProps) {
+  const t = useTranslations('Challenges');
+  
   if (!phase1Rules) {
     return null;
   }
@@ -28,7 +32,7 @@ export function PermissionsSection({ phase1Rules }: PermissionsSectionProps) {
     <section>
       <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
         <span>🔐</span>
-        Trading Permissions
+        {t('permissions.title')}
       </h3>
 
       <div className="space-y-3">
@@ -50,7 +54,7 @@ export function PermissionsSection({ phase1Rules }: PermissionsSectionProps) {
                   : 'text-red-600 dark:text-red-400'
               }
             />
-            <span className="font-medium">EA/Bot Trading</span>
+            <span className="font-medium">{t('permissions.eaBot')}</span>
           </div>
           <span
             className={cn(
@@ -60,7 +64,7 @@ export function PermissionsSection({ phase1Rules }: PermissionsSectionProps) {
                 : 'text-red-600 dark:text-red-400',
             )}
           >
-            {phase1Rules.ea_allowed ? 'Allowed' : 'Not Allowed'}
+            {phase1Rules.ea_allowed ? t('permissions.allowed') : t('permissions.notAllowed')}
           </span>
         </div>
 
@@ -82,7 +86,7 @@ export function PermissionsSection({ phase1Rules }: PermissionsSectionProps) {
                   : 'text-red-600 dark:text-red-400'
               }
             />
-            <span className="font-medium">News Trading</span>
+            <span className="font-medium">{t('permissions.newsTrading')}</span>
           </div>
           <span
             className={cn(
@@ -92,7 +96,7 @@ export function PermissionsSection({ phase1Rules }: PermissionsSectionProps) {
                 : 'text-red-600 dark:text-red-400',
             )}
           >
-            {phase1Rules.news_trading ? 'Allowed' : 'Not Allowed'}
+            {phase1Rules.news_trading ? t('permissions.allowed') : t('permissions.notAllowed')}
           </span>
         </div>
 
@@ -114,7 +118,7 @@ export function PermissionsSection({ phase1Rules }: PermissionsSectionProps) {
                   : 'text-red-600 dark:text-red-400'
               }
             />
-            <span className="font-medium">Weekend Holding</span>
+            <span className="font-medium">{t('permissions.weekendHolding')}</span>
           </div>
           <span
             className={cn(
@@ -124,24 +128,24 @@ export function PermissionsSection({ phase1Rules }: PermissionsSectionProps) {
                 : 'text-red-600 dark:text-red-400',
             )}
           >
-            {phase1Rules.weekend_holding ? 'Allowed' : 'Not Allowed'}
+            {phase1Rules.weekend_holding ? t('permissions.allowed') : t('permissions.notAllowed')}
           </span>
         </div>
 
         {/* Position Limits */}
         {(phase1Rules.max_position_size || phase1Rules.max_open_positions) && (
           <div className="rounded-xl border border-border/50 bg-muted/30 p-4">
-            <div className="mb-3 font-medium">Position Limits</div>
+            <div className="mb-3 font-medium">{t('permissions.positionLimits')}</div>
             <ul className="space-y-2 text-sm">
               {phase1Rules.max_position_size && (
                 <li className="flex items-start gap-2">
                   <span className="text-blue-600 dark:text-blue-400">✓</span>
                   <span>
-                    <strong>Max Position Size:</strong>
+                    <strong>{t('permissions.maxPositionSize')}:</strong>
                     {' '}
                     {phase1Rules.max_position_size}
                     {' '}
-                    lots
+                    {t('permissions.lots')}
                   </span>
                 </li>
               )}
@@ -149,7 +153,7 @@ export function PermissionsSection({ phase1Rules }: PermissionsSectionProps) {
                 <li className="flex items-start gap-2">
                   <span className="text-blue-600 dark:text-blue-400">✓</span>
                   <span>
-                    <strong>Max Open Positions:</strong>
+                    <strong>{t('permissions.maxOpenPositions')}:</strong>
                     {' '}
                     {phase1Rules.max_open_positions}
                   </span>

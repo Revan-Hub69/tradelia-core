@@ -3,6 +3,8 @@
  * Modular component following best practices 2026
  */
 
+import { useTranslations } from 'next-intl';
+
 import { ClockIcon, CommissionIcon, LeverageIcon } from '../PremiumIcons';
 
 type MarketAccess = {
@@ -23,6 +25,8 @@ type MarketsSectionProps = {
 };
 
 export function MarketsSection({ marketAccess }: MarketsSectionProps) {
+  const t = useTranslations('Challenges');
+  
   if (!marketAccess) {
     return null;
   }
@@ -31,12 +35,12 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
     <section>
       <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
         <span>📊</span>
-        Markets & Platforms
+        {t('markets.title')}
       </h3>
 
       {/* Available Markets */}
       <div className="mb-4">
-        <div className="mb-2 text-sm font-medium">Available Markets</div>
+        <div className="mb-2 text-sm font-medium">{t('markets.available')}</div>
         <div className="flex flex-wrap gap-2">
           {marketAccess.markets_available.map(market => (
             <span
@@ -51,7 +55,7 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
 
       {/* Platforms */}
       <div className="mb-4">
-        <div className="mb-2 text-sm font-medium">Trading Platforms</div>
+        <div className="mb-2 text-sm font-medium">{t('markets.platforms')}</div>
         <div className="flex flex-wrap gap-2">
           {marketAccess.platforms.map(platform => (
             <span
@@ -72,14 +76,14 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
         <div className="mb-4 rounded-xl border border-border/50 bg-muted/30 p-4">
           <div className="mb-3 flex items-center gap-2">
             <LeverageIcon size={20} className="text-purple-600 dark:text-purple-400" />
-            <span className="font-medium">Leverage</span>
+            <span className="font-medium">{t('markets.leverage')}</span>
           </div>
           <ul className="space-y-2 text-sm">
             {marketAccess.leverage_forex && (
               <li className="flex items-start gap-2">
                 <span className="text-purple-600 dark:text-purple-400">✓</span>
                 <span>
-                  <strong>Forex:</strong>
+                  <strong>{t('markets.forex')}:</strong>
                   {' '}
                   {marketAccess.leverage_forex}
                 </span>
@@ -89,7 +93,7 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
               <li className="flex items-start gap-2">
                 <span className="text-purple-600 dark:text-purple-400">✓</span>
                 <span>
-                  <strong>Indices:</strong>
+                  <strong>{t('markets.indices')}:</strong>
                   {' '}
                   {marketAccess.leverage_indices}
                 </span>
@@ -99,7 +103,7 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
               <li className="flex items-start gap-2">
                 <span className="text-purple-600 dark:text-purple-400">✓</span>
                 <span>
-                  <strong>Commodities:</strong>
+                  <strong>{t('markets.commodities')}:</strong>
                   {' '}
                   {marketAccess.leverage_commodities}
                 </span>
@@ -109,7 +113,7 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
               <li className="flex items-start gap-2">
                 <span className="text-purple-600 dark:text-purple-400">✓</span>
                 <span>
-                  <strong>Crypto:</strong>
+                  <strong>{t('markets.crypto')}:</strong>
                   {' '}
                   {marketAccess.leverage_crypto}
                 </span>
@@ -124,18 +128,18 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
         <div className="mb-4 rounded-xl border border-border/50 bg-muted/30 p-4">
           <div className="mb-3 flex items-center gap-2">
             <CommissionIcon size={20} className="text-orange-600 dark:text-orange-400" />
-            <span className="font-medium">Commission</span>
+            <span className="font-medium">{t('markets.commission')}</span>
           </div>
           <ul className="space-y-2 text-sm">
             {marketAccess.commission_forex && (
               <li className="flex items-start gap-2">
                 <span className="text-orange-600 dark:text-orange-400">✓</span>
                 <span>
-                  <strong>Forex:</strong>
+                  <strong>{t('markets.forex')}:</strong>
                   {' '}
                   $
                   {marketAccess.commission_forex}
-                  /lot
+                  {t('markets.perLot')}
                 </span>
               </li>
             )}
@@ -143,11 +147,11 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
               <li className="flex items-start gap-2">
                 <span className="text-orange-600 dark:text-orange-400">✓</span>
                 <span>
-                  <strong>Indices:</strong>
+                  <strong>{t('markets.indices')}:</strong>
                   {' '}
                   $
                   {marketAccess.commission_indices}
-                  /lot
+                  {t('markets.perLot')}
                 </span>
               </li>
             )}
@@ -160,7 +164,7 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
         <div className="rounded-xl border border-border/50 bg-muted/30 p-4">
           <div className="mb-2 flex items-center gap-2">
             <ClockIcon size={20} className="text-blue-600 dark:text-blue-400" />
-            <span className="font-medium">Trading Hours</span>
+            <span className="font-medium">{t('markets.tradingHours')}</span>
           </div>
           <div className="text-sm text-muted-foreground">{marketAccess.trading_hours}</div>
         </div>

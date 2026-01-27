@@ -3,6 +3,8 @@
  * Modular component following best practices 2026
  */
 
+import { useTranslations } from 'next-intl';
+
 import { FreshnessIcon, StarIcon, TrendingUpIcon } from '../PremiumIcons';
 
 type TrustSignals = {
@@ -19,13 +21,13 @@ type TrustSectionProps = {
 };
 
 export function TrustSection({ trustSignals, organizerName }: TrustSectionProps) {
+  const t = useTranslations('Challenges');
+  
   return (
     <section>
       <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
         <span>🏢</span>
-        About
-        {' '}
-        {organizerName}
+        {t('drawer.sections.aboutFirm', { name: organizerName })}
       </h3>
 
       <div className="space-y-3">
@@ -33,7 +35,7 @@ export function TrustSection({ trustSignals, organizerName }: TrustSectionProps)
         <div className="flex items-center justify-between rounded-xl border border-amber-500/20 bg-amber-500/5 p-4">
           <div className="flex items-center gap-2">
             <StarIcon size={20} className="text-amber-600 dark:text-amber-400" />
-            <span className="font-medium">Rating</span>
+            <span className="font-medium">{t('drawer.sections.rating')}</span>
           </div>
           <span className="text-lg font-bold text-amber-600 dark:text-amber-400">
             {trustSignals.rating}
@@ -45,7 +47,7 @@ export function TrustSection({ trustSignals, organizerName }: TrustSectionProps)
         <div className="flex items-center justify-between rounded-xl border border-green-500/20 bg-green-500/5 p-4">
           <div className="flex items-center gap-2">
             <TrendingUpIcon size={20} className="text-green-600 dark:text-green-400" />
-            <span className="font-medium">Pass Rate</span>
+            <span className="font-medium">{t('drawer.sections.passRate')}</span>
           </div>
           <span className="text-lg font-bold text-green-600 dark:text-green-400">
             {trustSignals.successRate}
@@ -56,14 +58,18 @@ export function TrustSection({ trustSignals, organizerName }: TrustSectionProps)
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-3">
           <div className="rounded-xl border border-border/50 bg-muted/30 p-4">
-            <div className="mb-1 text-xs text-muted-foreground">Active Traders</div>
+            <div className="mb-1 text-xs text-muted-foreground">
+              {t('drawer.sections.activeTradersStat')}
+            </div>
             <div className="text-xl font-bold">
               {trustSignals.traderCount.toLocaleString()}
             </div>
           </div>
 
           <div className="rounded-xl border border-border/50 bg-muted/30 p-4">
-            <div className="mb-1 text-xs text-muted-foreground">Total Paid</div>
+            <div className="mb-1 text-xs text-muted-foreground">
+              {t('drawer.sections.totalPaid')}
+            </div>
             <div className="text-xl font-bold text-green-600 dark:text-green-400">
               $
               {trustSignals.totalPaid}
@@ -72,7 +78,9 @@ export function TrustSection({ trustSignals, organizerName }: TrustSectionProps)
           </div>
 
           <div className="col-span-2 rounded-xl border border-border/50 bg-muted/30 p-4">
-            <div className="mb-1 text-xs text-muted-foreground">Founded</div>
+            <div className="mb-1 text-xs text-muted-foreground">
+              {t('drawer.sections.founded')}
+            </div>
             <div className="text-xl font-bold">{trustSignals.founded}</div>
           </div>
         </div>
@@ -81,10 +89,10 @@ export function TrustSection({ trustSignals, organizerName }: TrustSectionProps)
         <div className="rounded-xl border border-green-500/20 bg-green-500/5 p-4">
           <div className="mb-2 flex items-center gap-2">
             <FreshnessIcon size={20} className="text-green-600 dark:text-green-400" />
-            <span className="font-medium">Data Freshness</span>
+            <span className="font-medium">{t('drawer.sections.dataFreshness')}</span>
           </div>
           <div className="text-sm text-muted-foreground">
-            Last verified: Today (T-0)
+            {t('drawer.sections.lastVerified', { date: 'Today (T-0)' })}
           </div>
         </div>
       </div>

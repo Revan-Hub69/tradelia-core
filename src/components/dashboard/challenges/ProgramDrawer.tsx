@@ -23,6 +23,9 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { useEffect } from 'react';
 
+import { useFocusTrap } from '@/hooks/useFocusTrap';
+import { useScrollToFocus } from '@/hooks/useScrollToFocus';
+
 import {
   AboutSection,
   KeyMetricsSection,
@@ -141,6 +144,21 @@ export function ProgramDrawer({
 }: ProgramDrawerProps) {
   const t = useTranslations('Challenges');
 
+  // Focus trap for accessibility
+  const drawerRef = useFocusTrap({
+    isActive: isOpen,
+    onEscape: onClose,
+    restoreFocus: true,
+  });
+
+  // Scroll to focus for keyboard navigation
+  const scrollContainerRef = useScrollToFocus({
+    enabled: isOpen,
+    behavior: 'smooth',
+    block: 'nearest',
+    offset: 80, // Account for fixed header
+  });
+
   // Mock trust signals (TODO: Get from database)
   const trustSignals = {
     rating: 4.8,
@@ -190,6 +208,7 @@ export function ProgramDrawer({
 
           {/* Drawer */}
           <motion.aside
+            ref={drawerRef}
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
@@ -198,6 +217,7 @@ export function ProgramDrawer({
             role="dialog"
             aria-modal="true"
             aria-labelledby="drawer-title"
+            aria-describedby="drawer-description"
           >
             {/* Header - Fixed */}
             <header className="glass-panel sticky top-0 z-10 border-b border-border/50 backdrop-blur-xl">
@@ -249,7 +269,7 @@ export function ProgramDrawer({
                     <span>
                       {trustSignals.traderCount.toLocaleString()}
                       {' '}
-                      active traders
+                      {t('drawer.activeTraders')}
                     </span>
                   </div>
                 </div>
@@ -258,7 +278,7 @@ export function ProgramDrawer({
                 <button
                   onClick={onClose}
                   className="shrink-0 rounded-xl p-2.5 text-muted-foreground transition-all hover:bg-muted hover:text-foreground"
-                  aria-label="Close drawer"
+                  aria-label={t('a11y.closeDrawer')}
                   type="button"
                 >
                   <CloseIcon />
@@ -267,7 +287,10 @@ export function ProgramDrawer({
             </header>
 
             {/* Content - Single Scroll with Modular Sections */}
-            <div className="flex-1 overflow-y-auto">
+            <div
+              ref={scrollContainerRef as React.RefObject<HTMLDivElement>}
+              className="flex-1 overflow-y-auto"
+            >
               <div className="space-y-8 p-6">
                 {/* 📊 KEY METRICS */}
                 {firstOffer && (

@@ -8,6 +8,30 @@
     "error": "Errore nel caricamento",
     "retry": "Riprova"
   },
+  "errors": {
+    "loadFailed": "Impossibile caricare le sfide",
+    "networkError": "Errore di rete. Controlla la connessione.",
+    "serverError": "Errore del server. Riprova più tardi.",
+    "invalidData": "Dati sfida non validi ricevuti",
+    "notFound": "Sfida non trovata",
+    "unauthorized": "Devi effettuare l'accesso per visualizzare questa sfida",
+    "generic": "Qualcosa è andato storto. Riprova."
+  },
+  "a11y": {
+    "cardLabel": "Card sfida per {name}",
+    "openDrawer": "Apri dettagli per {name}",
+    "closeDrawer": "Chiudi dettagli sfida",
+    "compareToggle": "Attiva/disattiva confronto per {name}",
+    "filterButton": "Apri filtri",
+    "sortButton": "Cambia ordinamento",
+    "availabilityBadge": "Stato sfida: {status}",
+    "kpiLabel": "{label}: {value}",
+    "offerSelector": "Seleziona dimensione account",
+    "loading": "Caricamento sfide in corso, attendere",
+    "noResults": "Nessuna sfida corrisponde ai filtri",
+    "skipToContent": "Vai alla lista sfide",
+    "skipToFilters": "Vai ai filtri"
+  },
   "emptyStates": {
     "noPrograms": {
       "title": "Stiamo Costruendo la Libreria",
@@ -48,6 +72,8 @@
     "profitSplit": "Split",
     "entryFee": "Costo",
     "prizePool": "Premio",
+    "firstPrize": "1° Premio",
+    "participants": "Partecipanti",
     "free": "GRATIS",
     "compare": "Confronta",
     "details": "Dettagli",
@@ -137,6 +163,7 @@
     "visitWebsite": "Visita Sito",
     "startChallenge": "Inizia Sfida",
     "joinCompetition": "Partecipa",
+    "activeTraders": "trader attivi",
     "tabs": {
       "overview": "Panoramica",
       "pricing": "Prezzi",
@@ -148,12 +175,35 @@
     },
     "sections": {
       "about": "Informazioni",
+      "aboutChallenge": "Informazioni su Questa Sfida",
+      "aboutFirm": "Informazioni su {name}",
+      "keyMetrics": "Metriche Chiave",
+      "riskRules": "Regole di Rischio",
       "bestFor": "Ideale Per",
       "pros": "Pro",
       "cons": "Contro",
       "allSizes": "Tutte le Dimensioni Disponibili",
       "payoutDetails": "Dettagli Pagamento",
-      "permissionsTitle": "Permessi di Trading"
+      "permissionsTitle": "Permessi di Trading",
+      "accountSize": "Dimensione Account",
+      "profitSplit": "Split Profitto",
+      "entryFee": "Costo Iscrizione",
+      "firstPayout": "Primo Pagamento",
+      "phase": "Fase",
+      "profitTarget": "Target Profitto",
+      "maxDrawdown": "Drawdown Massimo",
+      "maxDailyLoss": "Perdita Giornaliera Max",
+      "minTradingDays": "Giorni Trading Minimi",
+      "consistencyRule": "Regola Consistenza",
+      "bestDayMax": "Giorno migliore max {percent}% del profitto totale",
+      "days": "giorni",
+      "rating": "Valutazione",
+      "passRate": "Tasso Successo",
+      "activeTradersStat": "Trader Attivi",
+      "totalPaid": "Totale Pagato",
+      "founded": "Fondata",
+      "dataFreshness": "Freschezza Dati",
+      "lastVerified": "Ultima verifica: {date}"
     }
   },
   "metrics": {
@@ -194,6 +244,7 @@
     "lots": "lotti"
   },
   "payout": {
+    "title": "Dettagli Pagamento",
     "profitSplit": "Split Profitto",
     "initial": "Iniziale",
     "scaled": "Scalato",
@@ -202,15 +253,22 @@
     "firstDelay": "Ritardo Primo Pagamento",
     "withdrawalMethods": "Metodi Prelievo",
     "minWithdrawal": "Prelievo Minimo",
-    "processingTime": "Tempo Elaborazione"
+    "processingTime": "Tempo Elaborazione",
+    "hours": "ore"
   },
   "markets": {
+    "title": "Mercati & Piattaforme",
     "available": "Mercati Disponibili",
     "platforms": "Piattaforme Trading",
     "instruments": "Strumenti",
     "leverage": "Leva",
     "commission": "Commissione",
-    "tradingHours": "Orari Trading"
+    "tradingHours": "Orari Trading",
+    "forex": "Forex",
+    "indices": "Indici",
+    "commodities": "Materie Prime",
+    "crypto": "Crypto",
+    "perLot": "/lotto"
   },
   "trust": {
     "dataSources": "Fonti Dati",
@@ -228,9 +286,16 @@
   },
   "availability": {
     "alwaysOpen": "Sempre Aperto",
-    "next": "Prossimo",
+    "live": "Live",
+    "liveWithDays": "Live - {days} giorni rimasti",
+    "upcoming": "In Arrivo",
+    "startsOn": "Inizia {date}",
     "closingSoon": "Chiusura Imminente",
-    "spotsLeft": "{count} posti rimasti"
+    "endsIn": "Termina tra {days} giorno/i",
+    "registerBy": "Iscriviti entro {date}",
+    "spotsLeft": "{count} posto/i rimasto/i",
+    "limitedSpots": "Posti Limitati",
+    "ended": "Terminato"
   },
   "competition": {
     "vsTraders": "vs {count} trader",

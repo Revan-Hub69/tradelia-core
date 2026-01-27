@@ -3,6 +3,8 @@
  * Modular component following best practices
  */
 
+import { useTranslations } from 'next-intl';
+
 type Ruleset = {
   phase_number: number;
   profit_target_pct: number | null;
@@ -20,17 +22,19 @@ type RiskRulesSectionProps = {
 };
 
 export function RiskRulesSection({ rulesets }: RiskRulesSectionProps) {
+  const t = useTranslations('Challenges');
+  
   return (
     <section>
       <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
         <span>⚠️</span>
-        Risk Rules
+        {t('drawer.sections.riskRules')}
       </h3>
       {rulesets.map(ruleset => (
         <div key={ruleset.phase_number} className="mb-4 space-y-3">
           {ruleset.phase_number > 1 && (
             <div className="text-sm font-bold text-muted-foreground">
-              Phase
+              {t('drawer.sections.phase')}
               {' '}
               {ruleset.phase_number}
             </div>
@@ -41,7 +45,7 @@ export function RiskRulesSection({ rulesets }: RiskRulesSectionProps) {
               <li className="flex items-start gap-2">
                 <span className="text-green-600 dark:text-green-400">✓</span>
                 <span>
-                  <strong>Profit Target:</strong>
+                  <strong>{t('drawer.sections.profitTarget')}:</strong>
                   {' '}
                   {ruleset.profit_target_pct}
                   %
@@ -52,7 +56,7 @@ export function RiskRulesSection({ rulesets }: RiskRulesSectionProps) {
               <li className="flex items-start gap-2">
                 <span className="text-red-600 dark:text-red-400">⚠</span>
                 <span>
-                  <strong>Max Drawdown:</strong>
+                  <strong>{t('drawer.sections.maxDrawdown')}:</strong>
                   {' '}
                   {ruleset.max_drawdown_pct}
                   %
@@ -65,7 +69,7 @@ export function RiskRulesSection({ rulesets }: RiskRulesSectionProps) {
               <li className="flex items-start gap-2">
                 <span className="text-orange-600 dark:text-orange-400">⚠</span>
                 <span>
-                  <strong>Max Daily Loss:</strong>
+                  <strong>{t('drawer.sections.maxDailyLoss')}:</strong>
                   {' '}
                   {ruleset.max_daily_loss_pct}
                   %
@@ -78,11 +82,11 @@ export function RiskRulesSection({ rulesets }: RiskRulesSectionProps) {
               <li className="flex items-start gap-2">
                 <span className="text-blue-600 dark:text-blue-400">✓</span>
                 <span>
-                  <strong>Min Trading Days:</strong>
+                  <strong>{t('drawer.sections.minTradingDays')}:</strong>
                   {' '}
                   {ruleset.min_trading_days}
                   {' '}
-                  days
+                  {t('drawer.sections.days')}
                 </span>
               </li>
             )}
@@ -90,12 +94,9 @@ export function RiskRulesSection({ rulesets }: RiskRulesSectionProps) {
               <li className="flex items-start gap-2">
                 <span className="text-purple-600 dark:text-purple-400">✓</span>
                 <span>
-                  <strong>Consistency Rule:</strong>
+                  <strong>{t('drawer.sections.consistencyRule')}:</strong>
                   {' '}
-                  Best day max
-                  {' '}
-                  {ruleset.best_day_max_pct}
-                  % of total profit
+                  {t('drawer.sections.bestDayMax', { percent: ruleset.best_day_max_pct })}
                 </span>
               </li>
             )}

@@ -3,6 +3,11 @@
  * Modular component following best practices 2026
  */
 
+import { useTranslations } from 'next-intl';
+import React from 'react';
+
+import { sanitizeHTML, sanitizeText } from '@/lib/sanitize';
+
 import { CheckCircleIcon } from '../PremiumIcons';
 
 type Program = {
@@ -16,7 +21,9 @@ type AboutSectionProps = {
   program: Program;
 };
 
-export function AboutSection({ program }: AboutSectionProps) {
+export const AboutSection = React.memo(function AboutSection({ program }: AboutSectionProps) {
+  const t = useTranslations('Challenges');
+  
   const hasContent =
     program.description || program.best_for || program.pros || program.cons;
 
@@ -28,22 +35,27 @@ export function AboutSection({ program }: AboutSectionProps) {
     <section>
       <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
         <span>🎯</span>
-        About This Challenge
+        {t('drawer.sections.aboutChallenge')}
       </h3>
 
       <div className="space-y-4">
         {/* Description */}
         {program.description && (
           <div>
-            <p className="leading-relaxed text-foreground">{program.description}</p>
+            <p
+              className="leading-relaxed text-foreground"
+              dangerouslySetInnerHTML={{ __html: sanitizeHTML(program.description) }}
+            />
           </div>
         )}
 
         {/* Best For */}
         {program.best_for && (
           <div>
-            <div className="mb-2 text-sm font-bold text-muted-foreground">BEST FOR</div>
-            <p className="leading-relaxed text-foreground">{program.best_for}</p>
+            <div className="mb-2 text-sm font-bold text-muted-foreground">
+              {t('drawer.sections.bestFor').toUpperCase()}
+            </div>
+            <p className="leading-relaxed text-foreground">{sanitizeText(program.best_for)}</p>
           </div>
         )}
 
@@ -55,13 +67,13 @@ export function AboutSection({ program }: AboutSectionProps) {
               <div>
                 <h4 className="mb-3 flex items-center gap-2 text-sm font-bold text-green-600 dark:text-green-400">
                   <CheckCircleIcon size={16} />
-                  Pros
+                  {t('drawer.sections.pros')}
                 </h4>
                 <ul className="space-y-2">
                   {program.pros.map(pro => (
                     <li key={pro} className="flex gap-2 text-sm">
                       <span className="mt-0.5 text-green-600 dark:text-green-400">•</span>
-                      <span>{pro}</span>
+                      <span>{sanitizeText(pro)}</span>
                     </li>
                   ))}
                 </ul>
@@ -73,13 +85,13 @@ export function AboutSection({ program }: AboutSectionProps) {
               <div>
                 <h4 className="mb-3 flex items-center gap-2 text-sm font-bold text-orange-600 dark:text-orange-400">
                   <span>⚠️</span>
-                  Cons
+                  {t('drawer.sections.cons')}
                 </h4>
                 <ul className="space-y-2">
                   {program.cons.map(con => (
                     <li key={con} className="flex gap-2 text-sm">
                       <span className="mt-0.5 text-orange-600 dark:text-orange-400">•</span>
-                      <span>{con}</span>
+                      <span>{sanitizeText(con)}</span>
                     </li>
                   ))}
                 </ul>
@@ -90,4 +102,4 @@ export function AboutSection({ program }: AboutSectionProps) {
       </div>
     </section>
   );
-}
+});

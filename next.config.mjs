@@ -91,6 +91,21 @@ export default bundleAnalyzer(
     async headers() {
       // OWASP Security Headers (2026)
       const securityHeaders = [
+        // Content Security Policy (CSP) - XSS Protection
+        {
+          key: 'Content-Security-Policy',
+          value: [
+            "default-src 'self'",
+            "script-src 'self' 'unsafe-eval' 'unsafe-inline'", // Next.js requires unsafe-inline for dev
+            "style-src 'self' 'unsafe-inline'", // Tailwind requires unsafe-inline
+            "img-src 'self' data: https:",
+            "font-src 'self' data:",
+            "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
+            "frame-ancestors 'none'",
+            "base-uri 'self'",
+            "form-action 'self'",
+          ].join('; '),
+        },
         // Prevent clickjacking
         {
           key: 'X-Frame-Options',

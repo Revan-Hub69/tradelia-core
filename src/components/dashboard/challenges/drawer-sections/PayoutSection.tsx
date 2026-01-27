@@ -3,6 +3,8 @@
  * Modular component following best practices 2026
  */
 
+import { useTranslations } from 'next-intl';
+
 import { PayoutIcon } from '../PremiumIcons';
 
 type PayoutTerms = {
@@ -22,6 +24,8 @@ type PayoutSectionProps = {
 };
 
 export function PayoutSection({ payoutTerms }: PayoutSectionProps) {
+  const t = useTranslations('Challenges');
+  
   if (!payoutTerms) {
     return null;
   }
@@ -30,18 +34,18 @@ export function PayoutSection({ payoutTerms }: PayoutSectionProps) {
     <section>
       <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
         <span>💰</span>
-        Payout Details
+        {t('payout.title')}
       </h3>
 
       {/* Profit Split */}
       <div className="mb-4 rounded-xl border border-border/50 bg-muted/30 p-4">
         <div className="mb-3 flex items-center gap-2">
           <PayoutIcon size={20} className="text-blue-600 dark:text-blue-400" />
-          <span className="font-medium">Profit Split</span>
+          <span className="font-medium">{t('payout.profitSplit')}</span>
         </div>
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Initial</span>
+            <span className="text-muted-foreground">{t('payout.initial')}</span>
             <span className="font-semibold">
               {payoutTerms.profit_split_initial}
               %
@@ -49,7 +53,7 @@ export function PayoutSection({ payoutTerms }: PayoutSectionProps) {
           </div>
           {payoutTerms.profit_split_scaled && (
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Scaled</span>
+              <span className="text-muted-foreground">{t('payout.scaled')}</span>
               <span className="font-semibold">
                 {payoutTerms.profit_split_scaled}
                 %
@@ -57,7 +61,7 @@ export function PayoutSection({ payoutTerms }: PayoutSectionProps) {
             </div>
           )}
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Maximum</span>
+            <span className="text-muted-foreground">{t('payout.maximum')}</span>
             <span className="font-semibold text-green-600 dark:text-green-400">
               {payoutTerms.profit_split_max}
               %
@@ -71,7 +75,7 @@ export function PayoutSection({ payoutTerms }: PayoutSectionProps) {
         <li className="flex items-start gap-2">
           <span className="text-blue-600 dark:text-blue-400">✓</span>
           <span>
-            <strong>Frequency:</strong>
+            <strong>{t('payout.frequency')}:</strong>
             {' '}
             {payoutTerms.payout_frequency}
           </span>
@@ -79,21 +83,21 @@ export function PayoutSection({ payoutTerms }: PayoutSectionProps) {
         <li className="flex items-start gap-2">
           <span className="text-blue-600 dark:text-blue-400">✓</span>
           <span>
-            <strong>First Payout:</strong>
+            <strong>{t('payout.firstDelay')}:</strong>
             {' '}
             {payoutTerms.first_payout_delay_days}
             {' '}
-            days
+            {t('drawer.sections.days')}
           </span>
         </li>
         {payoutTerms.payout_processing_time_hours && (
           <li className="flex items-start gap-2">
             <span className="text-blue-600 dark:text-blue-400">✓</span>
             <span>
-              <strong>Processing Time:</strong>
+              <strong>{t('payout.processingTime')}:</strong>
               {' '}
               {payoutTerms.payout_processing_time_hours}
-              h
+              {t('payout.hours')}
             </span>
           </li>
         )}
@@ -101,7 +105,7 @@ export function PayoutSection({ payoutTerms }: PayoutSectionProps) {
           <li className="flex items-start gap-2">
             <span className="text-blue-600 dark:text-blue-400">✓</span>
             <span>
-              <strong>Methods:</strong>
+              <strong>{t('payout.withdrawalMethods')}:</strong>
               {' '}
               {payoutTerms.withdrawal_methods.join(', ')}
             </span>
