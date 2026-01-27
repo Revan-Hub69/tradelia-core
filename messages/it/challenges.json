@@ -1,146 +1,220 @@
 {
-  "availability": {
-    "alwaysOpen": "Sempre Aperto",
-    "next": "Prossima:",
-    "registrationDeadline": "Scadenza Iscrizione"
+  "page": {
+    "title": "Libreria Sfide",
+    "subtitle": "Esplora e confronta {count} opportunità di trading dalle migliori prop firm mondiali",
+    "empty": "Nessun programma disponibile",
+    "emptyDescription": "I programmi appariranno qui una volta aggiunti al database.",
+    "loading": "Caricamento sfide...",
+    "error": "Errore nel caricamento",
+    "retry": "Riprova"
   },
-  "competition": {
-    "targetBased": "Basato su Obiettivi",
-    "rankingBased": "Basato su Classifica",
-    "vsTraders": "vs {count} Trader"
+  "categories": {
+    "all": "Tutti",
+    "free": "Competizioni Gratuite",
+    "challenges": "Challenge a Pagamento",
+    "tournaments": "Tornei",
+    "freeDescription": "Competizioni di trading gratuite con premi",
+    "challengesDescription": "Valutazioni prop firm a pagamento",
+    "tournamentsDescription": "Eventi di trading competitivi"
   },
-  "accountType": {
-    "paper": "Paper Trading",
-    "demo": "Account Demo",
-    "sim": "Account Simulato",
-    "live": "Account Reale",
-    "hybrid": "Account Ibrido"
+  "card": {
+    "accountSize": "Account",
+    "profitSplit": "Split",
+    "entryFee": "Costo",
+    "prizePool": "Premio",
+    "free": "GRATIS",
+    "compare": "Confronta",
+    "details": "Dettagli",
+    "step": "Step",
+    "days": "giorni",
+    "verified": "Verificato",
+    "topRated": "Top Rated",
+    "new": "Nuovo",
+    "hot": "Hot"
   },
-  "permissions": {
-    "eaAllowed": "EA Consentiti",
-    "noEa": "No EA",
-    "newsOk": "News OK",
-    "noNews": "No News",
-    "weekendOk": "Weekend OK",
-    "noWeekend": "No Weekend",
-    "title": "Permessi di Trading",
-    "eaBot": "EA / Bot",
-    "newsTrading": "Trading su News",
-    "weekendHolding": "Mantenimento Weekend",
-    "allowed": "Consentito",
-    "notAllowed": "Non Consentito",
-    "positionLimits": "Limiti Posizione",
-    "maxPositionSize": "Dimensione Max Posizione",
-    "maxOpenPositions": "Max Posizioni Aperte",
-    "lots": "lotti"
+  "filters": {
+    "title": "Filtri",
+    "clearAll": "Cancella tutto",
+    "results": "{count} risultati",
+    "apply": "Applica Filtri",
+    "cost": "Costo",
+    "accountSize": "Dimensione Account",
+    "profitSplit": "Split Profitto",
+    "type": "Tipo",
+    "market": "Mercato",
+    "platform": "Piattaforma",
+    "costOptions": {
+      "free": "Gratis",
+      "under50": "Sotto $50",
+      "50to200": "$50-$200",
+      "200to500": "$200-$500",
+      "500plus": "$500+"
+    },
+    "accountSizeOptions": {
+      "under10k": "Sotto $10K",
+      "10kto50k": "$10K-$50K",
+      "50kto100k": "$50K-$100K",
+      "100kplus": "$100K+"
+    },
+    "profitSplitOptions": {
+      "80plus": "80%+",
+      "90plus": "90%+",
+      "95plus": "95%+",
+      "100": "100%"
+    },
+    "typeOptions": {
+      "1step": "1-Step",
+      "2step": "2-Step",
+      "instant": "Funding Istantaneo"
+    },
+    "marketOptions": {
+      "forex": "Forex",
+      "futures": "Futures",
+      "crypto": "Crypto",
+      "stocks": "Azioni"
+    },
+    "platformOptions": {
+      "mt4": "MetaTrader 4",
+      "mt5": "MetaTrader 5",
+      "ctrader": "cTrader",
+      "dxtrade": "DXtrade",
+      "tradingview": "TradingView"
+    }
   },
-  "tabs": {
-    "overview": "Panoramica",
-    "pricing": "Prezzi",
-    "rules": "Regole",
-    "permissions": "Permessi",
-    "payout": "Pagamenti",
-    "markets": "Mercati",
-    "trust": "Affidabilità"
+  "sort": {
+    "label": "Ordina per",
+    "popularity": "Più Popolari",
+    "accountSizeAsc": "Account Più Piccolo",
+    "accountSizeDesc": "Account Più Grande",
+    "profitSplitDesc": "Split Più Alto",
+    "costAsc": "Costo Più Basso",
+    "freshness": "Verificati di Recente",
+    "ratingDesc": "Valutazione Più Alta"
   },
-  "sections": {
-    "about": "Informazioni",
-    "bestFor": "Ideale Per",
-    "pros": "Pro",
-    "cons": "Contro",
-    "keyMetrics": "Metriche Chiave",
-    "riskRules": "Regole di Rischio",
-    "payoutDetails": "Dettagli Pagamento",
-    "tradingPermissions": "Permessi di Trading",
-    "marketsAndPlatforms": "Mercati e Piattaforme",
-    "dataQuality": "Qualità Dati e Fonti",
-    "allAvailableSizes": "Tutte le Dimensioni Disponibili",
-    "payoutSchedule": "Calendario Pagamenti",
-    "withdrawalMethods": "Metodi di Prelievo",
-    "availableMarkets": "Mercati Disponibili",
-    "tradingPlatforms": "Piattaforme di Trading",
-    "dataFreshness": "Freschezza Dati",
-    "verifiedSources": "Fonti Verificate",
-    "foundOutdatedData": "Hai trovato dati obsoleti?",
-    "helpUsKeepAccurate": "Aiutaci a mantenere le informazioni accurate segnalando eventuali problemi."
+  "comparison": {
+    "title": "Confronta Sfide",
+    "selected": "{count} selezionati",
+    "compare": "Confronta",
+    "clear": "Cancella",
+    "max": "Massimo 3 sfide",
+    "export": "Esporta",
+    "share": "Condividi Link"
+  },
+  "drawer": {
+    "close": "Chiudi",
+    "visitWebsite": "Visita Sito",
+    "startChallenge": "Inizia Sfida",
+    "joinCompetition": "Partecipa",
+    "tabs": {
+      "overview": "Panoramica",
+      "pricing": "Prezzi",
+      "rules": "Regole",
+      "permissions": "Permessi",
+      "payout": "Pagamenti",
+      "markets": "Mercati",
+      "trust": "Trust & Audit"
+    },
+    "sections": {
+      "about": "Informazioni",
+      "bestFor": "Ideale Per",
+      "pros": "Pro",
+      "cons": "Contro",
+      "allSizes": "Tutte le Dimensioni Disponibili",
+      "payoutDetails": "Dettagli Pagamento",
+      "permissionsTitle": "Permessi di Trading"
+    }
   },
   "metrics": {
-    "accountSize": "Dimensione Account",
-    "profitSplit": "Divisione Profitti",
-    "entryFee": "Quota Iscrizione",
-    "profitTarget": "Obiettivo Profitto",
+    "profitTarget": "Target Profitto",
     "maxDrawdown": "Drawdown Massimo",
     "maxDailyLoss": "Perdita Giornaliera Max",
     "minTradingDays": "Giorni Trading Minimi",
     "timeLimit": "Limite Tempo",
     "phases": "Fasi",
-    "payout": "Pagamento",
+    "payout": "Primo Pagamento",
     "free": "GRATIS",
-    "target": "Obiettivo",
-    "drawdown": "Drawdown",
-    "daily": "Giornaliero",
-    "split": "Divisione",
-    "time": "Tempo",
-    "minDays": "Giorni Min",
-    "step": "Fase",
     "days": "giorni"
   },
   "pricing": {
-    "size": "Dimensione",
-    "fee": "Quota",
-    "refund": "Rimborso",
-    "refundable": "Rimborsabile",
-    "scaling": "Scaling",
-    "maxScaling": "Scaling Massimo"
+    "size": "Dimensione Account",
+    "fee": "Costo Iscrizione",
+    "refund": "Rimborsabile",
+    "scaling": "Scaling Massimo",
+    "refundable": "Rimborsabile"
   },
   "rules": {
     "phase": "Fase",
     "type": "Tipo",
     "resetsAt": "Reset alle",
     "consistencyRule": "Regola Consistenza",
-    "bestDayMax": "Giorno migliore max {percent}% del profitto totale"
+    "bestDayMax": "Il giorno migliore non può superare il {percent}% del profitto totale"
+  },
+  "permissions": {
+    "title": "Permessi di Trading",
+    "eaBot": "Trading EA/Bot",
+    "newsTrading": "Trading su News",
+    "weekendHolding": "Holding Weekend",
+    "allowed": "Permesso",
+    "notAllowed": "Non Permesso",
+    "positionLimits": "Limiti Posizione",
+    "maxPositionSize": "Dimensione Max Posizione",
+    "maxOpenPositions": "Posizioni Aperte Max",
+    "lots": "lotti"
   },
   "payout": {
-    "profitSplit": "Divisione Profitti",
+    "profitSplit": "Split Profitto",
     "initial": "Iniziale",
     "scaled": "Scalato",
     "maximum": "Massimo",
-    "frequency": "Frequenza",
-    "firstPayoutDelay": "Ritardo Primo Pagamento",
-    "eligibleAfter": "Idoneo Dopo",
-    "processingTime": "Tempo Elaborazione",
-    "minimumWithdrawal": "Prelievo minimo: ${amount}"
+    "frequency": "Frequenza Pagamento",
+    "firstDelay": "Ritardo Primo Pagamento",
+    "withdrawalMethods": "Metodi Prelievo",
+    "minWithdrawal": "Prelievo Minimo",
+    "processingTime": "Tempo Elaborazione"
   },
   "markets": {
-    "instrumentsAvailable": "{count} strumenti disponibili",
+    "available": "Mercati Disponibili",
+    "platforms": "Piattaforme Trading",
+    "instruments": "Strumenti",
     "leverage": "Leva",
     "commission": "Commissione",
-    "tradingHours": "Orari Trading",
-    "forex": "Forex",
-    "indices": "Indici",
-    "commodities": "Materie Prime",
-    "crypto": "Crypto",
-    "perLot": "/lotto"
+    "tradingHours": "Orari Trading"
   },
   "trust": {
-    "lastVerified": "Ultima verifica: {date}",
-    "sourceTracking": "Tracciamento fonti in arrivo. Tutti i dati verificati manualmente.",
-    "reportIssue": "Segnala Problema"
-  },
-  "actions": {
-    "viewDetails": "Vedi Dettagli",
-    "details": "Dettagli",
-    "compare": "Confronta",
-    "joinCompetition": "Partecipa alla Competizione",
-    "startChallenge": "Inizia Sfida",
-    "visitWebsite": "Visita Sito",
-    "close": "Chiudi"
+    "dataSources": "Fonti Dati",
+    "lastVerified": "Ultima Verifica",
+    "freshness": "Freschezza Dati",
+    "communityReviews": "Recensioni Community"
   },
   "badges": {
-    "free": "Gratis",
-    "paid": "A Pagamento",
-    "trial": "Prova",
+    "free": "GRATIS",
+    "paid": "PAGAMENTO",
+    "trial": "Prova Gratuita",
     "freeCompetition": "Competizione Gratuita",
-    "propFirm": "Prop Firm"
+    "propFirm": "Prop Firm",
+    "tournament": "Torneo"
+  },
+  "availability": {
+    "alwaysOpen": "Sempre Aperto",
+    "next": "Prossimo",
+    "closingSoon": "Chiusura Imminente",
+    "spotsLeft": "{count} posti rimasti"
+  },
+  "competition": {
+    "vsTraders": "vs {count} trader",
+    "targetBased": "Basato su Target",
+    "rankingBased": "Basato su Classifica"
+  },
+  "accountType": {
+    "live": "Account Live",
+    "paper": "Paper Trading",
+    "demo": "Demo",
+    "sim": "Simulato"
+  },
+  "actions": {
+    "compare": "Confronta",
+    "details": "Dettagli",
+    "enroll": "Iscriviti Ora",
+    "learnMore": "Scopri di Più"
   }
 }

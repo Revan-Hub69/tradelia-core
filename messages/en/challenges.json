@@ -1,30 +1,157 @@
 {
-  "availability": {
-    "alwaysOpen": "Always Open",
-    "next": "Next:",
-    "registrationDeadline": "Registration Deadline"
+  "page": {
+    "title": "Challenge Library",
+    "subtitle": "Browse and compare {count} trading opportunities from top prop firms worldwide",
+    "empty": "No programs available yet",
+    "emptyDescription": "Programs will appear here once they are added to the database.",
+    "loading": "Loading challenges...",
+    "error": "Failed to load programs",
+    "retry": "Retry"
   },
-  "competition": {
-    "targetBased": "Target-Based",
-    "rankingBased": "Ranking-Based",
-    "vsTraders": "vs {count} Traders"
+  "categories": {
+    "all": "All",
+    "free": "Free Competitions",
+    "challenges": "Paid Challenges",
+    "tournaments": "Tournaments",
+    "freeDescription": "Free trading competitions with prizes",
+    "challengesDescription": "Paid prop firm evaluations",
+    "tournamentsDescription": "Competitive trading events"
   },
-  "accountType": {
-    "paper": "Paper Trading",
-    "demo": "Demo Account",
-    "sim": "Sim Account",
-    "live": "Live Account",
-    "hybrid": "Hybrid Account"
+  "card": {
+    "accountSize": "Account",
+    "profitSplit": "Split",
+    "entryFee": "Cost",
+    "prizePool": "Prize",
+    "free": "FREE",
+    "compare": "Compare",
+    "details": "Details",
+    "step": "Step",
+    "days": "days",
+    "verified": "Verified",
+    "topRated": "Top Rated",
+    "new": "New",
+    "hot": "Hot"
+  },
+  "filters": {
+    "title": "Filters",
+    "clearAll": "Clear all",
+    "results": "{count} results",
+    "apply": "Apply Filters",
+    "cost": "Cost",
+    "accountSize": "Account Size",
+    "profitSplit": "Profit Split",
+    "type": "Type",
+    "market": "Market",
+    "platform": "Platform",
+    "costOptions": {
+      "free": "Free",
+      "under50": "Under $50",
+      "50to200": "$50-$200",
+      "200to500": "$200-$500",
+      "500plus": "$500+"
+    },
+    "accountSizeOptions": {
+      "under10k": "Under $10K",
+      "10kto50k": "$10K-$50K",
+      "50kto100k": "$50K-$100K",
+      "100kplus": "$100K+"
+    },
+    "profitSplitOptions": {
+      "80plus": "80%+",
+      "90plus": "90%+",
+      "95plus": "95%+",
+      "100": "100%"
+    },
+    "typeOptions": {
+      "1step": "1-Step",
+      "2step": "2-Step",
+      "instant": "Instant Funding"
+    },
+    "marketOptions": {
+      "forex": "Forex",
+      "futures": "Futures",
+      "crypto": "Crypto",
+      "stocks": "Stocks"
+    },
+    "platformOptions": {
+      "mt4": "MetaTrader 4",
+      "mt5": "MetaTrader 5",
+      "ctrader": "cTrader",
+      "dxtrade": "DXtrade",
+      "tradingview": "TradingView"
+    }
+  },
+  "sort": {
+    "label": "Sort by",
+    "popularity": "Most Popular",
+    "accountSizeAsc": "Smallest Account",
+    "accountSizeDesc": "Largest Account",
+    "profitSplitDesc": "Highest Split",
+    "costAsc": "Lowest Cost",
+    "freshness": "Recently Verified",
+    "ratingDesc": "Highest Rated"
+  },
+  "comparison": {
+    "title": "Compare Challenges",
+    "selected": "{count} selected",
+    "compare": "Compare",
+    "clear": "Clear",
+    "max": "Maximum 3 challenges",
+    "export": "Export",
+    "share": "Share Link"
+  },
+  "drawer": {
+    "close": "Close",
+    "visitWebsite": "Visit Website",
+    "startChallenge": "Start Challenge",
+    "joinCompetition": "Join Competition",
+    "tabs": {
+      "overview": "Overview",
+      "pricing": "Pricing",
+      "rules": "Rules",
+      "permissions": "Permissions",
+      "payout": "Payout",
+      "markets": "Markets",
+      "trust": "Trust & Audit"
+    },
+    "sections": {
+      "about": "About",
+      "bestFor": "Best For",
+      "pros": "Pros",
+      "cons": "Cons",
+      "allSizes": "All Available Sizes",
+      "payoutDetails": "Payout Details",
+      "permissionsTitle": "Trading Permissions"
+    }
+  },
+  "metrics": {
+    "profitTarget": "Profit Target",
+    "maxDrawdown": "Max Drawdown",
+    "maxDailyLoss": "Max Daily Loss",
+    "minTradingDays": "Min Trading Days",
+    "timeLimit": "Time Limit",
+    "phases": "Phases",
+    "payout": "First Payout",
+    "free": "FREE",
+    "days": "days"
+  },
+  "pricing": {
+    "size": "Account Size",
+    "fee": "Entry Fee",
+    "refund": "Refundable",
+    "scaling": "Max Scaling",
+    "refundable": "Refundable"
+  },
+  "rules": {
+    "phase": "Phase",
+    "type": "Type",
+    "resetsAt": "Resets at",
+    "consistencyRule": "Consistency Rule",
+    "bestDayMax": "Best day cannot exceed {percent}% of total profit"
   },
   "permissions": {
-    "eaAllowed": "EA Allowed",
-    "noEa": "No EA",
-    "newsOk": "News OK",
-    "noNews": "No News",
-    "weekendOk": "Weekend OK",
-    "noWeekend": "No Weekend",
     "title": "Trading Permissions",
-    "eaBot": "EA / Bots",
+    "eaBot": "EA/Bot Trading",
     "newsTrading": "News Trading",
     "weekendHolding": "Weekend Holding",
     "allowed": "Allowed",
@@ -34,113 +161,60 @@
     "maxOpenPositions": "Max Open Positions",
     "lots": "lots"
   },
-  "tabs": {
-    "overview": "Overview",
-    "pricing": "Pricing",
-    "rules": "Rules",
-    "permissions": "Permissions",
-    "payout": "Payout",
-    "markets": "Markets",
-    "trust": "Trust & Audit"
-  },
-  "sections": {
-    "about": "About",
-    "bestFor": "Best For",
-    "pros": "Pros",
-    "cons": "Cons",
-    "keyMetrics": "Key Metrics",
-    "riskRules": "Risk Rules",
-    "payoutDetails": "Payout Details",
-    "tradingPermissions": "Trading Permissions",
-    "marketsAndPlatforms": "Markets & Platforms",
-    "dataQuality": "Data Quality & Sources",
-    "allAvailableSizes": "All Available Sizes",
-    "payoutSchedule": "Payout Schedule",
-    "withdrawalMethods": "Withdrawal Methods",
-    "availableMarkets": "Available Markets",
-    "tradingPlatforms": "Trading Platforms",
-    "dataFreshness": "Data Freshness",
-    "verifiedSources": "Verified Sources",
-    "foundOutdatedData": "Found outdated data?",
-    "helpUsKeepAccurate": "Help us keep information accurate by reporting any issues."
-  },
-  "metrics": {
-    "accountSize": "Account Size",
-    "profitSplit": "Profit Split",
-    "entryFee": "Entry Fee",
-    "profitTarget": "Profit Target",
-    "maxDrawdown": "Max Drawdown",
-    "maxDailyLoss": "Max Daily Loss",
-    "minTradingDays": "Min Trading Days",
-    "timeLimit": "Time Limit",
-    "phases": "Phases",
-    "payout": "Payout",
-    "free": "FREE",
-    "target": "Target",
-    "drawdown": "Drawdown",
-    "daily": "Daily",
-    "split": "Split",
-    "time": "Time",
-    "minDays": "Min Days",
-    "step": "Step",
-    "days": "days"
-  },
-  "pricing": {
-    "size": "Size",
-    "fee": "Fee",
-    "refund": "Refund",
-    "refundable": "Refundable",
-    "scaling": "Scaling",
-    "maxScaling": "Max Scaling"
-  },
-  "rules": {
-    "phase": "Phase",
-    "type": "Type",
-    "resetsAt": "Resets at",
-    "consistencyRule": "Consistency Rule",
-    "bestDayMax": "Best day max {percent}% of total profit"
-  },
   "payout": {
     "profitSplit": "Profit Split",
     "initial": "Initial",
     "scaled": "Scaled",
     "maximum": "Maximum",
-    "frequency": "Frequency",
-    "firstPayoutDelay": "First Payout Delay",
-    "eligibleAfter": "Eligible After",
-    "processingTime": "Processing Time",
-    "minimumWithdrawal": "Minimum withdrawal: ${amount}"
+    "frequency": "Payout Frequency",
+    "firstDelay": "First Payout Delay",
+    "withdrawalMethods": "Withdrawal Methods",
+    "minWithdrawal": "Minimum Withdrawal",
+    "processingTime": "Processing Time"
   },
   "markets": {
-    "instrumentsAvailable": "{count} instruments available",
+    "available": "Available Markets",
+    "platforms": "Trading Platforms",
+    "instruments": "Instruments",
     "leverage": "Leverage",
     "commission": "Commission",
-    "tradingHours": "Trading Hours",
-    "forex": "Forex",
-    "indices": "Indices",
-    "commodities": "Commodities",
-    "crypto": "Crypto",
-    "perLot": "/lot"
+    "tradingHours": "Trading Hours"
   },
   "trust": {
-    "lastVerified": "Last verified: {date}",
-    "sourceTracking": "Source tracking coming soon. All data manually verified.",
-    "reportIssue": "Report Issue"
-  },
-  "actions": {
-    "viewDetails": "View Details",
-    "details": "Details",
-    "compare": "Compare",
-    "joinCompetition": "Join Competition",
-    "startChallenge": "Start Challenge",
-    "visitWebsite": "Visit Website",
-    "close": "Close"
+    "dataSources": "Data Sources",
+    "lastVerified": "Last Verified",
+    "freshness": "Data Freshness",
+    "communityReviews": "Community Reviews"
   },
   "badges": {
-    "free": "Free",
-    "paid": "Paid",
-    "trial": "Trial",
+    "free": "FREE",
+    "paid": "PAID",
+    "trial": "Free Trial",
     "freeCompetition": "Free Competition",
-    "propFirm": "Prop Firm"
+    "propFirm": "Prop Firm",
+    "tournament": "Tournament"
+  },
+  "availability": {
+    "alwaysOpen": "Always Open",
+    "next": "Next",
+    "closingSoon": "Closing Soon",
+    "spotsLeft": "{count} spots left"
+  },
+  "competition": {
+    "vsTraders": "vs {count} traders",
+    "targetBased": "Target-Based",
+    "rankingBased": "Ranking-Based"
+  },
+  "accountType": {
+    "live": "Live Account",
+    "paper": "Paper Trading",
+    "demo": "Demo",
+    "sim": "Simulated"
+  },
+  "actions": {
+    "compare": "Compare",
+    "details": "Details",
+    "enroll": "Enroll Now",
+    "learnMore": "Learn More"
   }
 }

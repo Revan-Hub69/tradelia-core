@@ -1,11 +1,24 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { ProgramCard } from '@/components/dashboard/challenges/ProgramCard';
 import { ProgramDrawer } from '@/components/dashboard/challenges/ProgramDrawer';
 import type { ProgramData } from '@/types/program';
+import { cn } from '@/utils/Helpers';
+
+type CategoryFilter = 'all' | 'free' | 'challenges' | 'tournaments';
+type SortOption = 'popularity' | 'account_size_asc' | 'account_size_desc' | 'profit_split_desc' | 'cost_asc' | 'freshness';
+
+type FilterState = {
+  cost: string[];
+  accountSize: string[];
+  profitSplit: string[];
+  type: string[];
+  market: string[];
+  platform: string[];
+};
 
 export default function ChallengesPage() {
   const t = useTranslations('Challenges');
@@ -15,6 +28,22 @@ export default function ChallengesPage() {
 
   const [selectedProgram, setSelectedProgram] = useState<ProgramData | null>(null);
   const [comparisonIds, setComparisonIds] = useState<string[]>([]);
+
+  // Category filter (3 main categories)
+  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('all');
+
+  // Advanced filters
+  const [filters, setFilters] = useState<FilterState>({
+    cost: [],
+    accountSize: [],
+    profitSplit: [],
+    type: [],
+    market: [],
+    platform: [],
+  });
+
+  // Sort
+  const [sortBy, setSortBy] = useState<SortOption>('popularity');
 
   // Fetch programs from API
   useEffect(() => {
@@ -44,6 +73,186 @@ export default function ChallengesPage() {
     };
 
     fetchPrograms();
+  }, []);
+
+  // Category filtering
+  const categoryFilteredPrograms = useMemo(() => {
+    if (categoryFilter === 'all') {
+      return programs;
+    }
+
+    return programs.filter((program) => {
+      if (categoryFilter === 'free') {
+        return program.program.category === 'free_competition';
+      }
+      if (categoryFilter === 'challenges') {
+        return program.program.category === 'paid_evaluation';
+      }
+      if (categoryFilter === 'tournaments') {
+        // Tournament logic - can be based on ruleset_mode or other criteria
+        return program.program.ruleset_mode === 'ranking_based';
+      }
+      return true;
+    });
+  }, [programs, categoryFilter]);
+
+  // Advanced filtering
+  const filteredPrograms = useMemo(() => {
+    return categoryFilteredPrograms.filter((program) => {
+      const offer = program.offers[0];
+      if (!offer) {
+        return false;
+      }
+
+      // Cost filter
+      if (filters.cost.length > 0) {
+        const fee = offer.entry_fee || 0;
+        const matchesCost = filters.cost.some((range) => {
+          if (range === 'free') {
+            return fee === 0;
+          }
+          if (range === 'under50') {
+            return fee > 0 && fee < 50;
+          }
+          if (range === '50to200') {
+            return fee >= 50 && fee <= 200;
+          }
+          if (range === '200to500') {
+            return fee >= 200 && fee <= 500;
+          }
+          if (range === '500plus') {
+            return fee > 500;
+          }
+          return false;
+        });
+        if (!matchesCost) {
+          return false;
+        }
+      }
+
+      // Account size filter
+      if (filters.accountSize.length > 0) {
+        const size = offer.account_size;
+        const matchesSize = filters.accountSize.some((range) => {
+          if (range === 'under10k') {
+            return size < 10000;
+          }
+          if (range === '10kto50k') {
+            return size >= 10000 && size < 50000;
+          }
+          if (range === '50kto100k') {
+            return size >= 50000 && size < 100000;
+          }
+          if (range === '100kplus') {
+            return size >= 100000;
+          }
+          return false;
+        });
+        if (!matchesSize) {
+          return false;
+        }
+      }
+
+      // Profit split filter
+      if (filters.profitSplit.length > 0) {
+        const split = program.kpis.profit_split_max || 0;
+        const matchesSplit = filters.profitSplit.some((range) => {
+          if (range === '80plus') {
+            return split >= 80;
+          }
+          if (range === '90plus') {
+            return split >= 90;
+          }
+          if (range === '95plus') {
+            return split >= 95;
+          }
+          if (range === '100') {
+            return split === 100;
+          }
+          return false;
+        });
+        if (!matchesSplit) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [categoryFilteredPrograms, filters]);
+
+  // Sorting
+  const sortedPrograms = useMemo(() => {
+    return [...filteredPrograms].sort((a, b) => {
+      const offerA = a.offers[0];
+      const offerB = b.offers[0];
+
+      if (!offerA || !offerB) {
+        return 0;
+      }
+
+      switch (sortBy) {
+        case 'account_size_asc':
+          return offerA.account_size - offerB.account_size;
+        case 'account_size_desc':
+          return offerB.account_size - offerA.account_size;
+        case 'profit_split_desc':
+          return (b.kpis.profit_split_max || 0) - (a.kpis.profit_split_max || 0);
+        case 'cost_asc':
+          return (offerA.entry_fee || 0) - (offerB.entry_fee || 0);
+        case 'freshness':
+          return a.kpis.freshness_days - b.kpis.freshness_days;
+        default: // popularity
+          return 0;
+      }
+    });
+  }, [filteredPrograms, sortBy]);
+
+  // URL state sync
+  useEffect(() => {
+    const params = new URLSearchParams();
+
+    if (categoryFilter !== 'all') {
+      params.set('category', categoryFilter);
+    }
+
+    Object.entries(filters).forEach(([key, values]) => {
+      if (values.length > 0) {
+        params.set(key, values.join(','));
+      }
+    });
+
+    if (sortBy !== 'popularity') {
+      params.set('sort', sortBy);
+    }
+
+    const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname;
+    window.history.replaceState({}, '', newUrl);
+  }, [categoryFilter, filters, sortBy]);
+
+  // Load state from URL on mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+
+    const urlCategory = params.get('category') as CategoryFilter;
+    if (urlCategory) {
+      setCategoryFilter(urlCategory);
+    }
+
+    const urlFilters: FilterState = {
+      cost: params.get('cost')?.split(',').filter(Boolean) || [],
+      accountSize: params.get('accountSize')?.split(',').filter(Boolean) || [],
+      profitSplit: params.get('profitSplit')?.split(',').filter(Boolean) || [],
+      type: params.get('type')?.split(',').filter(Boolean) || [],
+      market: params.get('market')?.split(',').filter(Boolean) || [],
+      platform: params.get('platform')?.split(',').filter(Boolean) || [],
+    };
+
+    setFilters(urlFilters);
+
+    const urlSort = params.get('sort') as SortOption;
+    if (urlSort) {
+      setSortBy(urlSort);
+    }
   }, []);
 
   const handleViewDetails = (programId: string, _offerId: string) => {
@@ -81,7 +290,7 @@ export default function ChallengesPage() {
             {[1, 2, 3, 4, 5, 6].map(i => (
               <div
                 key={i}
-                className="h-[600px] animate-pulse rounded-[32px] bg-muted"
+                className="h-[400px] animate-pulse rounded-[32px] bg-muted"
               />
             ))}
           </div>
@@ -97,7 +306,7 @@ export default function ChallengesPage() {
         <div className="rounded-[32px] border border-red-500/20 bg-red-500/5 p-8 text-center">
           <div className="mb-4 text-6xl">⚠️</div>
           <h2 className="mb-2 text-xl font-bold text-red-600 dark:text-red-400">
-            Failed to Load Programs
+            {t('page.error')}
           </h2>
           <p className="mb-6 text-sm text-muted-foreground">{error}</p>
           <button
@@ -105,7 +314,7 @@ export default function ChallengesPage() {
             className="rounded-xl bg-red-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-red-700"
             type="button"
           >
-            Retry
+            {t('page.retry')}
           </button>
         </div>
       </div>
@@ -118,17 +327,17 @@ export default function ChallengesPage() {
       <div className="container mx-auto max-w-7xl px-4 py-8">
         <div className="space-y-6">
           <div>
-            <h1 className="text-2xl font-bold sm:text-3xl">Challenge Library</h1>
+            <h1 className="text-2xl font-bold sm:text-3xl">{t('page.title')}</h1>
             <p className="text-sm text-muted-foreground sm:text-base">
-              Browse and compare trading challenges from top prop firms worldwide
+              {t('page.subtitle', { count: 0 })}
             </p>
           </div>
 
           <div className="rounded-[32px] border border-dashed border-border p-12 text-center">
             <div className="mb-4 text-6xl">📊</div>
-            <h2 className="mb-2 text-xl font-bold">No Programs Available</h2>
+            <h2 className="mb-2 text-xl font-bold">{t('page.empty')}</h2>
             <p className="text-sm text-muted-foreground">
-              Programs will appear here once they are added to the database.
+              {t('page.emptyDescription')}
             </p>
           </div>
         </div>
@@ -142,17 +351,62 @@ export default function ChallengesPage() {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-bold sm:text-3xl">Challenge Library</h1>
+          <h1 className="text-2xl font-bold sm:text-3xl">{t('page.title')}</h1>
           <p className="text-sm text-muted-foreground sm:text-base">
-            Browse and compare
-            {' '}
-            {programs.length}
-            {' '}
-            trading challenge
-            {programs.length !== 1 ? 's' : ''}
-            {' '}
-            from top prop firms worldwide
+            {t('page.subtitle', { count: programs.length })}
           </p>
+        </div>
+
+        {/* Category Tabs - 3 main categories */}
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={() => setCategoryFilter('all')}
+            className={cn(
+              'rounded-xl px-4 py-2.5 text-sm font-semibold transition-all',
+              categoryFilter === 'all'
+                ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20'
+                : 'border border-border bg-background hover:bg-muted',
+            )}
+            type="button"
+          >
+            {t('categories.all')}
+          </button>
+          <button
+            onClick={() => setCategoryFilter('free')}
+            className={cn(
+              'rounded-xl px-4 py-2.5 text-sm font-semibold transition-all',
+              categoryFilter === 'free'
+                ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg shadow-green-500/30'
+                : 'border border-border bg-background hover:bg-muted',
+            )}
+            type="button"
+          >
+            {t('categories.free')}
+          </button>
+          <button
+            onClick={() => setCategoryFilter('challenges')}
+            className={cn(
+              'rounded-xl px-4 py-2.5 text-sm font-semibold transition-all',
+              categoryFilter === 'challenges'
+                ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30'
+                : 'border border-border bg-background hover:bg-muted',
+            )}
+            type="button"
+          >
+            {t('categories.challenges')}
+          </button>
+          <button
+            onClick={() => setCategoryFilter('tournaments')}
+            className={cn(
+              'rounded-xl px-4 py-2.5 text-sm font-semibold transition-all',
+              categoryFilter === 'tournaments'
+                ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/30'
+                : 'border border-border bg-background hover:bg-muted',
+            )}
+            type="button"
+          >
+            {t('categories.tournaments')}
+          </button>
         </div>
 
         {/* Comparison bar */}
@@ -162,53 +416,80 @@ export default function ChallengesPage() {
               <div className="text-sm">
                 <span className="font-semibold">{comparisonIds.length}</span>
                 {' '}
-                offer
-                {comparisonIds.length !== 1 ? 's' : ''}
-                {' '}
-                selected for comparison
+                {t('comparison.selected', { count: comparisonIds.length })}
               </div>
               <div className="flex gap-2">
                 <button
                   onClick={() => {
                     // TODO: Implement comparison view
-                    console.log('Compare offers:', comparisonIds);
                   }}
                   disabled={comparisonIds.length < 2}
                   className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
                   type="button"
                 >
-                  {t('actions.compare')}
+                  {t('comparison.compare')}
                 </button>
                 <button
                   onClick={() => setComparisonIds([])}
                   className="rounded-xl border border-border px-4 py-2 text-sm font-semibold transition-colors hover:bg-muted"
                   type="button"
                 >
-                  Clear
+                  {t('comparison.clear')}
                 </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* Programs grid */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {programs.map(programData => (
-            <ProgramCard
-              key={programData.program.id}
-              program={programData.program}
-              offers={programData.offers}
-              kpis={programData.kpis}
-              permissions={programData.permissions}
-              platforms={programData.platforms}
-              onViewDetails={handleViewDetails}
-              onCompareToggle={handleCompareToggle}
-              isComparing={comparisonIds.some(id =>
-                programData.offers.some(offer => offer.id === id),
-              )}
-            />
-          ))}
+        {/* Results count and sort */}
+        <div className="flex items-center justify-between">
+          <div className="text-sm text-muted-foreground">
+            {t('filters.results', { count: sortedPrograms.length })}
+          </div>
+          <div className="flex gap-2">
+            <select
+              value={sortBy}
+              onChange={e => setSortBy(e.target.value as SortOption)}
+              className="rounded-xl border border-border bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-muted"
+            >
+              <option value="popularity">{t('sort.popularity')}</option>
+              <option value="account_size_asc">{t('sort.accountSizeAsc')}</option>
+              <option value="account_size_desc">{t('sort.accountSizeDesc')}</option>
+              <option value="profit_split_desc">{t('sort.profitSplitDesc')}</option>
+              <option value="cost_asc">{t('sort.costAsc')}</option>
+              <option value="freshness">{t('sort.freshness')}</option>
+            </select>
+          </div>
         </div>
+
+        {/* Programs grid */}
+        {sortedPrograms.length === 0 ? (
+          <div className="rounded-[32px] border border-dashed border-border p-12 text-center">
+            <div className="mb-4 text-6xl">🔍</div>
+            <h2 className="mb-2 text-xl font-bold">No results found</h2>
+            <p className="text-sm text-muted-foreground">
+              Try adjusting your filters or category selection
+            </p>
+          </div>
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {sortedPrograms.map(programData => (
+              <ProgramCard
+                key={programData.program.id}
+                program={programData.program}
+                offers={programData.offers}
+                kpis={programData.kpis}
+                permissions={programData.permissions}
+                platforms={programData.platforms}
+                onViewDetails={handleViewDetails}
+                onCompareToggle={handleCompareToggle}
+                isComparing={comparisonIds.some(id =>
+                  programData.offers.some(offer => offer.id === id),
+                )}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Program Drawer */}
@@ -221,9 +502,8 @@ export default function ChallengesPage() {
           marketAccess={selectedProgram.marketAccess}
           isOpen={!!selectedProgram}
           onClose={handleCloseDrawer}
-          onEnroll={(programId) => {
+          onEnroll={(_programId) => {
             // TODO: Implement enrollment flow
-            console.log('Enroll in program:', programId);
           }}
         />
       )}
