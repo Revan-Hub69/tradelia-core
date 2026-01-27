@@ -105,21 +105,21 @@
     "costOptions": {
       "free": "Gratis",
       "under50": "Meno di $50",
-      "50to200": "$50-$200",
-      "200to500": "$200-$500",
+      "50to200": "Da $50 a $200",
+      "200to500": "Da $200 a $500",
       "500plus": "Oltre $500"
     },
     "accountSizeOptions": {
       "under10k": "Meno di $10K",
-      "10kto50k": "$10K-$50K",
-      "50kto100k": "$50K-$100K",
+      "10kto50k": "Da $10K a $50K",
+      "50kto100k": "Da $50K a $100K",
       "100kplus": "Oltre $100K"
     },
     "profitSplitOptions": {
       "80plus": "80% o più",
       "90plus": "90% o più",
       "95plus": "95% o più",
-      "100": "100%"
+      "100": "100% completo"
     },
     "typeOptions": {
       "1step": "1 Fase",
@@ -127,9 +127,9 @@
       "instant": "Finanziamento Istantaneo"
     },
     "marketOptions": {
-      "forex": "Forex",
-      "futures": "Futures",
-      "crypto": "Crypto",
+      "forex": "Valute (Forex)",
+      "futures": "Contratti Futures",
+      "crypto": "Criptovalute",
       "stocks": "Azioni"
     },
     "platformOptions": {
@@ -173,7 +173,7 @@
       "permissions": "Permessi",
       "payout": "Pagamenti",
       "markets": "Mercati",
-      "trust": "Trust & Audit"
+      "trust": "Affidabilità & Verifica"
     },
     "sections": {
       "about": "Informazioni",
@@ -266,10 +266,10 @@
     "leverage": "Leva",
     "commission": "Commissione",
     "tradingHours": "Orari Trading",
-    "forex": "Forex",
+    "forex": "Valute (Forex)",
     "indices": "Indici",
     "commodities": "Materie Prime",
-    "crypto": "Crypto",
+    "crypto": "Criptovalute",
     "perLot": "/lotto"
   },
   "trust": {
@@ -283,12 +283,12 @@
     "paid": "PAGAMENTO",
     "trial": "Prova Gratuita",
     "freeCompetition": "Competizione Gratuita",
-    "propFirm": "Prop Firm",
+    "propFirm": "Società Prop",
     "tournament": "Torneo"
   },
   "availability": {
     "alwaysOpen": "Sempre Aperto",
-    "live": "Live",
+    "live": "In Corso",
     "liveWithDays": "Live - {days} giorni rimasti",
     "upcoming": "In Arrivo",
     "startsOn": "Inizia {date}",
@@ -306,8 +306,8 @@
   },
   "accountType": {
     "live": "Account Live",
-    "paper": "Paper Trading",
-    "demo": "Demo",
+    "paper": "Trading Simulato",
+    "demo": "Account Demo",
     "sim": "Simulato"
   },
   "actions": {
