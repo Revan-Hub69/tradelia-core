@@ -2,42 +2,26 @@
  * CONTENT SANITIZATION - XSS Protection
  * Best Practice 2026: Sanitize all user-generated content
  * 
- * NOTE: Uses dynamic import to avoid SSR issues with DOMPurify
+ * NOTE: Uses HTML entity escaping for SSR compatibility
+ * React's JSX already provides XSS protection, this is defense-in-depth
  */
 
 /**
  * Sanitize HTML content to prevent XSS attacks
  * Used for user-generated content like descriptions, pros/cons
+ * 
+ * NOTE: Always uses HTML entity escaping for SSR compatibility
+ * React already provides XSS protection, this is defense-in-depth
  */
 export function sanitizeHTML(dirty: string): string {
-  // Server-side: escape HTML entities
-  if (typeof window === 'undefined') {
-    return dirty
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#x27;');
-  }
-
-  // Client-side: use DOMPurify
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const DOMPurify = require('isomorphic-dompurify');
-    return DOMPurify.sanitize(dirty, {
-      ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'ul', 'ol', 'li'],
-      ALLOWED_ATTR: ['href', 'target', 'rel'],
-      ALLOW_DATA_ATTR: false,
-    });
-  } catch {
-    // Fallback: escape HTML entities
-    return dirty
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#x27;');
-  }
+  // Use simple HTML entity escaping (works on both server and client)
+  // React's JSX already provides XSS protection, this is an additional layer
+  return dirty
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
 }
 
 /**
