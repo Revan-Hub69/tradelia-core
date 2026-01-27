@@ -28,7 +28,6 @@ export default function ChallengesPage() {
   const [error, setError] = useState<string | null>(null);
 
   const [selectedProgram, setSelectedProgram] = useState<ProgramData | null>(null);
-  const [comparisonIds, setComparisonIds] = useState<string[]>([]);
 
   // Category filter (3 main categories)
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('all');
@@ -263,14 +262,6 @@ export default function ChallengesPage() {
     }
   };
 
-  const handleCompareToggle = (offerId: string) => {
-    if (comparisonIds.includes(offerId)) {
-      setComparisonIds(comparisonIds.filter(id => id !== offerId));
-    } else if (comparisonIds.length < 3) {
-      setComparisonIds([...comparisonIds, offerId]);
-    }
-  };
-
   const handleCloseDrawer = () => {
     setSelectedProgram(null);
   };
@@ -391,38 +382,6 @@ export default function ChallengesPage() {
           </button>
         </div>
 
-        {/* Comparison bar */}
-        {comparisonIds.length > 0 && (
-          <div className="rounded-[32px] border border-primary/20 bg-primary/5 p-4">
-            <div className="flex items-center justify-between">
-              <div className="text-sm">
-                <span className="font-semibold">{comparisonIds.length}</span>
-                {' '}
-                {t('comparison.selected', { count: comparisonIds.length })}
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => {
-                    // TODO: Implement comparison view
-                  }}
-                  disabled={comparisonIds.length < 2}
-                  className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
-                  type="button"
-                >
-                  {t('comparison.compare')}
-                </button>
-                <button
-                  onClick={() => setComparisonIds([])}
-                  className="rounded-xl border border-border px-4 py-2 text-sm font-semibold transition-colors hover:bg-muted"
-                  type="button"
-                >
-                  {t('comparison.clear')}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Results count and sort */}
         <div className="flex items-center justify-between">
           <div className="text-sm text-muted-foreground">
@@ -470,10 +429,6 @@ export default function ChallengesPage() {
                 kpis={programData.kpis}
                 platforms={programData.platforms}
                 onViewDetails={handleViewDetails}
-                onCompareToggle={handleCompareToggle}
-                isComparing={comparisonIds.some(id =>
-                  programData.offers.some(offer => offer.id === id),
-                )}
               />
             ))}
           </div>

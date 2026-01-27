@@ -78,8 +78,6 @@ type ProgramCardProps = {
   kpis: KPIs;
   platforms?: string[];
   onViewDetails: (programId: string, offerId: string) => void;
-  onCompareToggle: (offerId: string) => void;
-  isComparing: boolean;
 };
 
 const EMPTY_PLATFORMS: string[] = [];
@@ -90,8 +88,6 @@ export function ProgramCard({
   kpis,
   platforms = EMPTY_PLATFORMS,
   onViewDetails,
-  onCompareToggle,
-  isComparing,
 }: ProgramCardProps) {
   const t = useTranslations('Challenges') as any;
 
@@ -156,13 +152,9 @@ export function ProgramCard({
   );
 
   // Callbacks (prevent re-creation)
-  const handleViewDetails = useCallback(() => {
+  const handleCardClick = useCallback(() => {
     onViewDetails(program.id, selectedOfferId);
   }, [onViewDetails, program.id, selectedOfferId]);
-
-  const handleCompareToggle = useCallback(() => {
-    onCompareToggle(selectedOfferId);
-  }, [onCompareToggle, selectedOfferId]);
 
   return (
     <motion.article
@@ -170,14 +162,31 @@ export function ProgramCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      whileHover={{ y: -4 }}
+      whileHover={{ 
+        scale: 1.02,
+        transition: { 
+          duration: 0.4, 
+          ease: [0.25, 0.46, 0.45, 0.94] 
+        }
+      }}
+      whileTap={{ 
+        scale: 0.98,
+        transition: { duration: 0.15 }
+      }}
+      onClick={handleCardClick}
       className={cn(
-        'card-ios-26 card-ios-26-interactive group relative flex min-h-[360px] flex-col overflow-hidden',
+        'card-ios-26 card-ios-26-interactive group relative flex min-h-[320px] flex-col',
         isFree && 'border-green-500/20 bg-gradient-to-br from-green-50/50 to-transparent dark:from-green-950/20',
-        isComparing && 'card-ios-26-selected',
       )}
       aria-label={t('a11y.cardLabel', { name: program.name })}
-      role="article"
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleCardClick();
+        }
+      }}
     >
       {/* Header - Badges & Trust Signals */}
       <div className="mb-3 flex items-start justify-between gap-2">
@@ -335,88 +344,6 @@ export function ProgramCard({
             <span>{kpis.time_limit_common === 0 ? '∞' : `${kpis.time_limit_common}d`}</span>
           </div>
         )}
-      </div>
-
-      {/* Footer - ENTERPRISE PREMIUM DESIGN */}
-      <div className="-mx-6 -mb-6 mt-auto rounded-b-[32px] border-t-2 border-border/80 bg-muted/30 px-5 py-4 backdrop-blur-sm">
-        <div className="flex gap-3">
-          {/* Compare Button - Secondary Action */}
-          <button
-            onClick={handleCompareToggle}
-            className={cn(
-              'group/compare flex min-h-[44px] items-center justify-center gap-2 rounded-xl border-2 px-4 py-3 text-sm font-semibold transition-all duration-300',
-              'hover:scale-[1.02] active:scale-[0.98]',
-              'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
-              isComparing
-                ? 'border-primary bg-primary text-primary-foreground shadow-lg shadow-primary/20'
-                : 'border-border bg-background/50 hover:border-primary/50 hover:bg-muted/50',
-            )}
-            type="button"
-            aria-label={t('a11y.compareToggle', { name: program.name })}
-            aria-pressed={isComparing}
-          >
-            <div
-              className={cn(
-                'flex size-4 items-center justify-center rounded border-2 transition-all',
-                isComparing
-                  ? 'border-primary-foreground bg-primary-foreground'
-                  : 'border-current group-hover/compare:border-primary',
-              )}
-            >
-              {isComparing && (
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-              )}
-            </div>
-            <span className="hidden sm:inline">{t('actions.compare')}</span>
-          </button>
-
-          {/* View Details - PRIMARY ACTION */}
-          <button
-            onClick={handleViewDetails}
-            className={cn(
-              'group/cta flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-xl',
-              'bg-gradient-to-r from-primary to-primary/90 px-4 py-3 text-sm font-semibold text-primary-foreground',
-              'shadow-lg shadow-primary/25 transition-all duration-300',
-              'hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/35',
-              'active:scale-[0.98]',
-              'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
-            )}
-            type="button"
-            aria-label={t('a11y.openDrawer', { name: program.name })}
-          >
-            <span>{t('actions.details')}</span>
-            <svg
-              className="size-4 transition-transform group-hover/cta:translate-x-0.5"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="5" y1="12" x2="19" y2="12" />
-              <polyline points="12 5 19 12 12 19" />
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      {/* Hover Glow */}
-      <div className="pointer-events-none absolute inset-0 rounded-[32px] opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/5 via-transparent to-transparent" />
       </div>
     </motion.article>
   );

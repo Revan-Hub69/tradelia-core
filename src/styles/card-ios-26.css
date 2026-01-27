@@ -24,10 +24,10 @@
    ============================================================================ */
 
 :root {
-  /* Border Radius - visionOS Standard */
-  --card-radius-default: 32px;
-  --card-radius-compact: 24px;
-  --card-radius-mobile: 24px;
+  /* Border Radius - Aligned with Design System Hierarchy */
+  --card-radius-default: 24px;  /* Cards (between panel 32px and dropdown 12px) */
+  --card-radius-compact: 16px;  /* Compact cards */
+  --card-radius-mobile: 20px;   /* Mobile cards */
 
   /* Padding - 8pt Grid System */
   --card-padding-mobile: 16px;
@@ -39,66 +39,61 @@
   --card-gap-tablet: 16px;
   --card-gap-desktop: 20px;
 
-  /* Liquid Glass Material (Soft Cream - Educational) */
-  --card-glass-bg: rgba(252, 251, 248, 0.95);
-  --card-glass-border: rgba(0, 0, 0, 0.06);
+  /* Liquid Glass Material - Match Header Exactly */
+  --card-glass-bg: var(--glass-material-bg);  /* Use shared material */
+  --card-glass-border: var(--glass-material-border);  /* Use shared material */
   --card-glass-blur: 20px;
   --card-glass-saturate: 180%;
 
-  /* Elevation - Level 2 (Cards Default) */
-  --card-shadow-umbra: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --card-shadow-penumbra: 0 2px 4px rgba(0, 0, 0, 0.04);
+  /* Elevation - Match Header Exactly (Level 2) */
+  --card-shadow-umbra: 0 8px 16px rgba(0, 0, 0, 0.12);
+  --card-shadow-penumbra: 0 4px 8px rgba(0, 0, 0, 0.08);
 
   /* Elevation - Level 3 (Hover/Active) */
-  --card-shadow-hover-umbra: 0 8px 16px rgba(0, 0, 0, 0.12);
-  --card-shadow-hover-penumbra: 0 4px 8px rgba(0, 0, 0, 0.06);
+  --card-shadow-hover-umbra: 0 12px 24px rgba(0, 0, 0, 0.16);
+  --card-shadow-hover-penumbra: 0 6px 12px rgba(0, 0, 0, 0.12);
 
-  /* Spring Physics Transitions */
-  --card-transition-spring: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Spring Physics - Match Header Exactly */
+  --card-transition-spring: 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
   --card-transition-quick: 150ms ease-out;
 
-  /* Footer Specific - Enterprise Premium */
-  --card-footer-border-width: 2px;
-  --card-footer-border-color: hsl(var(--border) / 0.8);
-  --card-footer-bg: hsl(var(--muted) / 0.3);
-  --card-footer-padding-x: 20px;
-  --card-footer-padding-y: 16px;
-  --card-footer-gap: 12px;
+  /* Hover Glow Effect */
+  --card-glow-opacity: 0.08;
+  --card-glow-radius: 70%;
 
-  /* Button Specific - Touch Target Compliance */
-  --card-button-padding-x: 16px;
-  --card-button-padding-y: 12px;
-  --card-button-radius: 12px;
-  --card-button-min-height: 44px; /* iOS minimum touch target */
+  /* Color Hierarchy - Enterprise Standard */
+  --card-text-primary-opacity: 1;
+  --card-text-secondary-opacity: 0.85;
+  --card-text-tertiary-opacity: 0.7;
 }
 
 .dark {
-  /* Dark Mode - Liquid Glass */
-  --card-glass-bg: rgba(15, 23, 42, 0.95);
-  --card-glass-border: rgba(255, 255, 255, 0.1);
+  /* Dark Mode - Use Shared Material Variables */
+  --card-glass-bg: var(--glass-material-bg);
+  --card-glass-border: var(--glass-material-border);
 
-  /* Dark Mode - Enhanced Shadows */
-  --card-shadow-umbra: 0 4px 12px rgba(0, 0, 0, 0.24);
-  --card-shadow-penumbra: 0 2px 4px rgba(0, 0, 0, 0.12);
-  --card-shadow-hover-umbra: 0 8px 16px rgba(0, 0, 0, 0.32);
-  --card-shadow-hover-penumbra: 0 4px 8px rgba(0, 0, 0, 0.16);
+  /* Dark Mode - Enhanced Shadows (Match Header) */
+  --card-shadow-umbra: 0 8px 16px rgba(0, 0, 0, 0.24);
+  --card-shadow-penumbra: 0 4px 8px rgba(0, 0, 0, 0.16);
+  --card-shadow-hover-umbra: 0 12px 24px rgba(0, 0, 0, 0.32);
+  --card-shadow-hover-penumbra: 0 6px 12px rgba(0, 0, 0, 0.24);
 }
 
 /* ============================================================================
-   BASE CARD - iOS 26 Standard
+   BASE CARD - iOS 26 Standard (Match Header Material)
    ============================================================================ */
 
 .card-ios-26 {
-  /* Border Radius - visionOS Standard */
+  /* Border Radius - Design System Hierarchy */
   border-radius: var(--card-radius-default);
 
-  /* Liquid Glass Material */
+  /* Liquid Glass Material - Match Header Exactly */
   background: var(--card-glass-bg);
   backdrop-filter: blur(var(--card-glass-blur)) saturate(var(--card-glass-saturate));
   -webkit-backdrop-filter: blur(var(--card-glass-blur)) saturate(var(--card-glass-saturate));
   border: 1px solid var(--card-glass-border);
 
-  /* Elevation - Level 2 (Multi-layer) */
+  /* Elevation - Match Header (Multi-layer) */
   box-shadow: var(--card-shadow-umbra), var(--card-shadow-penumbra);
 
   /* Spacing - 8pt Grid */
@@ -108,23 +103,23 @@
   transform: translateZ(0);
   will-change: transform, box-shadow;
 
-  /* Spring Physics Transitions */
+  /* Spring Physics - Match Header */
   transition:
     transform var(--card-transition-spring),
     box-shadow var(--card-transition-spring);
 }
 
-/* Hover State - Desktop Only (iOS 26 Pattern) */
+/* Hover State - Desktop Only (Match Header Pattern) */
 @media (hover: hover) and (pointer: fine) {
   .card-ios-26:hover {
-    transform: translateY(-2px) scale(1.01);
+    transform: translateZ(0) scale(1.02);  /* Match header scale */
     box-shadow: var(--card-shadow-hover-umbra), var(--card-shadow-hover-penumbra);
   }
 }
 
 /* Active State - All Devices */
 .card-ios-26:active {
-  transform: scale(0.98);
+  transform: translateZ(0) scale(0.98);
   transition: transform var(--card-transition-quick);
 }
 
@@ -159,17 +154,46 @@
   padding: var(--card-padding-mobile);
 }
 
-/* Interactive Card - Clickable */
+/* Interactive Card - Clickable (Match Header Pattern) */
 .card-ios-26-interactive {
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Hover Glow Effect - Match Header Pattern */
+.card-ios-26-interactive::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--card-radius-default);
+  background: radial-gradient(
+    circle at center,
+    rgba(var(--primary-rgb), var(--card-glow-opacity)) 0%,
+    transparent var(--card-glow-radius)
+  );
+  opacity: 0;
+  transition: opacity var(--card-transition-spring);
+  pointer-events: none;
+  z-index: 0;
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .card-ios-26-interactive:hover {
-    transform: translateY(-4px) scale(1.02);
+  .card-ios-26-interactive:hover::before {
+    opacity: 1;
   }
+  
+  .card-ios-26-interactive:hover {
+    transform: translateZ(0) scale(1.02);  /* Match header */
+  }
+}
+
+/* Ensure content is above glow */
+.card-ios-26-interactive > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* Elevated Card - Important Content (Level 3) */
@@ -183,116 +207,49 @@
 }
 
 /* ============================================================================
+   COLOR HIERARCHY - Enterprise Standard
+   ============================================================================ */
+
+/* Text Opacity Levels - Match Header Pattern */
+.card-text-primary {
+  opacity: var(--card-text-primary-opacity);
+  font-weight: 600;
+}
+
+.card-text-secondary {
+  opacity: var(--card-text-secondary-opacity);
+  font-weight: 500;
+}
+
+.card-text-tertiary {
+  opacity: var(--card-text-tertiary-opacity);
+  font-weight: 400;
+}
+
+/* Badge Visual Weight - Enterprise Hierarchy */
+.badge-primary {
+  background: linear-gradient(135deg, 
+    hsl(var(--primary)) 0%, 
+    hsl(var(--primary) / 0.9) 100%
+  );
+  box-shadow: 0 2px 8px hsl(var(--primary) / 0.3);
+  font-weight: 700;
+}
+
+.badge-secondary {
+  background: hsl(var(--muted));
+  opacity: var(--card-text-secondary-opacity);
+  font-weight: 600;
+}
+
+.badge-tertiary {
+  background: hsl(var(--muted) / 0.5);
+  opacity: var(--card-text-tertiary-opacity);
+  font-weight: 500;
+}
+
+/* ============================================================================
    CARD LAYOUTS
-   ============================================================================ */
-
-/* Card Grid - Responsive */
-.card-grid {
-  display: grid;
-  gap: var(--card-gap-mobile);
-  grid-template-columns: 1fr;
-}
-
-@media (min-width: 768px) {
-  .card-grid {
-    gap: var(--card-gap-tablet);
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
-  .card-grid {
-    gap: var(--card-gap-desktop);
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-/* Card List - Vertical Stack */
-.card-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--card-gap-mobile);
-}
-
-@media (min-width: 768px) {
-  .card-list {
-    gap: var(--card-gap-tablet);
-  }
-}
-
-@media (min-width: 1024px) {
-  .card-list {
-    gap: var(--card-gap-desktop);
-  }
-}
-
-/* ============================================================================
-   CARD COMPONENTS - Concentric Corners
-   ============================================================================ */
-
-/* Card Header */
-.card-header {
-  padding: var(--card-padding-mobile);
-  border-bottom: 1px solid var(--card-glass-border);
-  border-radius: var(--card-radius-default) var(--card-radius-default) 0 0;
-}
-
-/* Card Body */
-.card-body {
-  padding: var(--card-padding-tablet);
-}
-
-/* Card Footer - ENTERPRISE PREMIUM */
-.card-footer {
-  padding: var(--card-padding-mobile);
-  border-top: 1px solid var(--card-glass-border);
-  border-radius: 0 0 var(--card-radius-default) var(--card-radius-default);
-}
-
-/* Card Footer - Enterprise Premium Variant */
-.card-footer-premium {
-  margin-top: auto; /* Push to bottom */
-  margin-left: calc(var(--card-padding-tablet) * -1);
-  margin-right: calc(var(--card-padding-tablet) * -1);
-  margin-bottom: calc(var(--card-padding-tablet) * -1);
-  padding: var(--card-footer-padding-y) var(--card-footer-padding-x);
-  border-top: var(--card-footer-border-width) solid var(--card-footer-border-color);
-  background: var(--card-footer-bg);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-radius: 0 0 var(--card-radius-default) var(--card-radius-default);
-}
-
-@media (max-width: 767px) {
-  .card-footer-premium {
-    margin-left: calc(var(--card-padding-mobile) * -1);
-    margin-right: calc(var(--card-padding-mobile) * -1);
-    margin-bottom: calc(var(--card-padding-mobile) * -1);
-  }
-}
-
-@media (min-width: 1024px) {
-  .card-footer-premium {
-    margin-left: calc(var(--card-padding-desktop) * -1);
-    margin-right: calc(var(--card-padding-desktop) * -1);
-    margin-bottom: calc(var(--card-padding-desktop) * -1);
-  }
-}
-
-/* Nested Element - Concentric Corners (iOS 26 Pattern) */
-.card-ios-26 .card-nested {
-  /* Inner Radius = Outer Radius - Padding */
-  border-radius: 16px; /* 32px - 16px */
-  padding: 12px;
-  background: rgba(0, 0, 0, 0.02);
-}
-
-.dark .card-ios-26 .card-nested {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-/* ============================================================================
-   CARD STATES
    ============================================================================ */
 
 /* Loading State */
