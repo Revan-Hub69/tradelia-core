@@ -21,7 +21,7 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { useFocusTrap } from '@/hooks/useFocusTrap';
 import { useScrollToFocus } from '@/hooks/useScrollToFocus';
@@ -38,6 +38,7 @@ import {
   RiskRulesSection,
   TrustSection,
 } from './drawer-sections';
+import { OfferSelector } from './OfferSelector';
 import { ExternalLinkIcon, StarIcon, TrendingUpIcon } from './PremiumIcons';
 
 // Close Icon
@@ -65,6 +66,8 @@ type Offer = {
   entry_fee: number | null;
   fee_currency: string | null;
   refundable: boolean;
+  is_featured?: boolean;
+  display_order: number;
   scaling_max?: number | null;
   time_limit_days?: number | null;
 };
@@ -194,7 +197,21 @@ export function ProgramDrawer({
 
   const isFree = program.category === 'free_competition';
   const phase1Rules = rulesets.find(r => r.phase_number === 1);
-  const firstOffer = offers[0];
+  
+  // Offer selection state (default: featured > lowest fee > first)
+  const defaultOffer = useMemo(
+    () =>
+      offers.find(o => o.is_featured) ||
+      [...offers].sort((a, b) => (a.entry_fee || 0) - (b.entry_fee || 0))[0] ||
+      offers[0],
+    [offers],
+  );
+  
+  const [selectedOfferId, setSelectedOfferId] = useState(defaultOffer?.id || '');
+  const selectedOffer = useMemo(
+    () => offers.find(o => o.id === selectedOfferId) || defaultOffer,
+    [offers, selectedOfferId, defaultOffer],
+  );
 
   return (
     <AnimatePresence>
@@ -265,6 +282,21 @@ export function ProgramDrawer({
                     {program.name}
                   </h2>
 
+                  {/* Offer Selector - Only if multiple offers */}
+                  {offers.length > 1 && selectedOffer && (
+                    <div className="mb-2 sm:mb-3">
+                      <label className="mb-1.5 block text-[10px] font-medium uppercase tracking-wide text-muted-foreground sm:text-xs">
+                        {t('drawer.selectAccountSize')}
+                      </label>
+                      <OfferSelector
+                        offers={offers}
+                        selectedOfferId={selectedOfferId}
+                        onSelect={setSelectedOfferId}
+                        className="max-w-xs"
+                      />
+                    </div>
+                  )}
+
                   {/* Organizer & Traders */}
                   <div className="flex items-center gap-2 text-xs text-muted-foreground sm:gap-3 sm:text-sm">
                     <span>{program.organizer_name}</span>
@@ -296,8 +328,8 @@ export function ProgramDrawer({
             >
               <div className="space-y-6 px-4 py-6 sm:space-y-8 sm:px-6 sm:py-8 lg:space-y-10 lg:px-8 lg:py-10">
                 {/* 📊 KEY METRICS - Always visible */}
-                {firstOffer && (
-                  <KeyMetricsSection offer={firstOffer} payoutTerms={payoutTerms} />
+                {selectedOffer && (
+                  <KeyMetricsSection offer={selectedOffer} payoutTerms={payoutTerms} />
                 )}
 
                 {/* 🏆 PRIZE POOL - Only for free competitions */}

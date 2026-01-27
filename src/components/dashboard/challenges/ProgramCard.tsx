@@ -18,14 +18,13 @@
 
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { FRESHNESS_BADGES, FRESHNESS_STALE, FRESHNESS_THRESHOLDS } from '@/lib/challenge-constants';
 import { getAdaptiveKPIs, getAvailabilityStatus } from '@/lib/challenge-utils';
 import { cn } from '@/utils/Helpers';
 
 import { AvailabilityBadge } from './AvailabilityBadge';
-import { OfferSelector } from './OfferSelector';
 import {
   CheckCircleIcon,
   FreshnessIcon,
@@ -100,11 +99,8 @@ export function ProgramCard({
     [offers],
   );
 
-  const [selectedOfferId, setSelectedOfferId] = useState(defaultOffer?.id || '');
-  const selectedOffer = useMemo(
-    () => offers.find(o => o.id === selectedOfferId) || defaultOffer,
-    [offers, selectedOfferId, defaultOffer],
-  );
+  // Use default offer (no state needed in card)
+  const selectedOffer = defaultOffer;
 
   const isFree = program.category === 'free_competition';
   const isRanking = program.ruleset_mode === 'ranking_based';
@@ -153,8 +149,10 @@ export function ProgramCard({
 
   // Callbacks (prevent re-creation)
   const handleCardClick = useCallback(() => {
-    onViewDetails(program.id, selectedOfferId);
-  }, [onViewDetails, program.id, selectedOfferId]);
+    if (defaultOffer) {
+      onViewDetails(program.id, defaultOffer.id);
+    }
+  }, [onViewDetails, program.id, defaultOffer]);
 
   return (
     <motion.article
@@ -265,20 +263,14 @@ export function ProgramCard({
         <p className="text-xs text-muted-foreground">{program.organizer_name}</p>
       </div>
 
-      {/* Offer Selector */}
-      <div className="mb-4">
-        <OfferSelector
-          offers={offers}
-          selectedOfferId={selectedOfferId}
-          onSelect={setSelectedOfferId}
-        />
-      </div>
-
       {/* 3 KPI Grid - ADAPTIVE based on category */}
       <div className="mb-4 grid flex-1 grid-cols-3 gap-2">
         {adaptiveKPIs.map((kpi) => {
           const colorParts = kpi.color?.split(' ');
           const colorClass = colorParts?.[0]?.replace('text-', '') || 'primary';
+          const isAccountSize = kpi.label === 'accountSize';
+          const hasMultipleOffers = offers.length > 1;
+          
           return (
             <div
               key={kpi.label}
@@ -293,6 +285,14 @@ export function ProgramCard({
               <div className={cn('text-xl font-bold tracking-tight', kpi.color)}>
                 {kpi.value}
               </div>
+              
+              {/* Hint: More sizes available (only for accountSize) */}
+              {isAccountSize && hasMultipleOffers && (
+                <div className="mt-1 flex items-center gap-1 text-[10px] text-muted-foreground">
+                  <span className="size-1 rounded-full bg-primary animate-pulse" />
+                  +{offers.length - 1} more
+                </div>
+              )}
             </div>
           );
         })}
