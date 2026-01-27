@@ -56,6 +56,20 @@
   /* Spring Physics Transitions */
   --card-transition-spring: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
   --card-transition-quick: 150ms ease-out;
+
+  /* Footer Specific - Enterprise Premium */
+  --card-footer-border-width: 2px;
+  --card-footer-border-color: hsl(var(--border) / 0.8);
+  --card-footer-bg: hsl(var(--muted) / 0.3);
+  --card-footer-padding-x: 20px;
+  --card-footer-padding-y: 16px;
+  --card-footer-gap: 12px;
+
+  /* Button Specific - Touch Target Compliance */
+  --card-button-padding-x: 16px;
+  --card-button-padding-y: 12px;
+  --card-button-radius: 12px;
+  --card-button-min-height: 44px; /* iOS minimum touch target */
 }
 
 .dark {
@@ -228,11 +242,41 @@
   padding: var(--card-padding-tablet);
 }
 
-/* Card Footer */
+/* Card Footer - ENTERPRISE PREMIUM */
 .card-footer {
   padding: var(--card-padding-mobile);
   border-top: 1px solid var(--card-glass-border);
   border-radius: 0 0 var(--card-radius-default) var(--card-radius-default);
+}
+
+/* Card Footer - Enterprise Premium Variant */
+.card-footer-premium {
+  margin-top: auto; /* Push to bottom */
+  margin-left: calc(var(--card-padding-tablet) * -1);
+  margin-right: calc(var(--card-padding-tablet) * -1);
+  margin-bottom: calc(var(--card-padding-tablet) * -1);
+  padding: var(--card-footer-padding-y) var(--card-footer-padding-x);
+  border-top: var(--card-footer-border-width) solid var(--card-footer-border-color);
+  background: var(--card-footer-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 0 0 var(--card-radius-default) var(--card-radius-default);
+}
+
+@media (max-width: 767px) {
+  .card-footer-premium {
+    margin-left: calc(var(--card-padding-mobile) * -1);
+    margin-right: calc(var(--card-padding-mobile) * -1);
+    margin-bottom: calc(var(--card-padding-mobile) * -1);
+  }
+}
+
+@media (min-width: 1024px) {
+  .card-footer-premium {
+    margin-left: calc(var(--card-padding-desktop) * -1);
+    margin-right: calc(var(--card-padding-desktop) * -1);
+    margin-bottom: calc(var(--card-padding-desktop) * -1);
+  }
 }
 
 /* Nested Element - Concentric Corners (iOS 26 Pattern) */
