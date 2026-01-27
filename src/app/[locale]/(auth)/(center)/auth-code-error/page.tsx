@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 
 const AuthCodeErrorPage = () => {
-  const t = useTranslations('AuthError');
+  const t = useTranslations('AuthError') as any;
 
   return (
     <div className="mx-auto w-full max-w-md space-y-6 p-6 text-center">
