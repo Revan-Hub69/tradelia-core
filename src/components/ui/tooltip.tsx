@@ -57,8 +57,11 @@ const TooltipContent = React.forwardRef<
 ));
 TooltipContent.displayName = TooltipPrimitive.Content.displayName;
 
+// Export TooltipRoot as Tooltip for backward compatibility
+const Tooltip = TooltipRoot;
+
 // Convenience wrapper component
-type TooltipProps = {
+type TooltipWrapperProps = {
   children: React.ReactNode;
   content: React.ReactNode;
   side?: 'top' | 'right' | 'bottom' | 'left';
@@ -66,13 +69,13 @@ type TooltipProps = {
   className?: string;
 };
 
-function Tooltip({
+function TooltipWrapper({
   children,
   content,
   side = 'bottom',
   delayDuration = 500,
   className,
-}: TooltipProps) {
+}: TooltipWrapperProps) {
   return (
     <TooltipRoot delayDuration={delayDuration}>
       <TooltipTrigger asChild>{children}</TooltipTrigger>
@@ -83,4 +86,4 @@ function Tooltip({
   );
 }
 
-export { Tooltip, TooltipContent, TooltipProvider, TooltipRoot, TooltipTrigger };
+export { Tooltip, TooltipContent, TooltipProvider, TooltipRoot, TooltipTrigger, TooltipWrapper };
