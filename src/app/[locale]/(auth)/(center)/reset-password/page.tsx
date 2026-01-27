@@ -37,7 +37,7 @@ import { Logo } from '@/templates/Logo';
  * - Mobile-first responsive
  */
 const ResetPasswordContent = () => {
-  const t = useTranslations('Auth');
+  const t = useTranslations('Auth') as any;
   const router = useRouter();
   const searchParams = useSearchParams();
   const authRateLimit = useAuthRateLimit();

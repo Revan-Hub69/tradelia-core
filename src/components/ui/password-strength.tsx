@@ -51,7 +51,7 @@ const RequirementItem = ({ met, text }: { met: boolean; text: string }) => {
 };
 
 export const PasswordStrength = ({ password, className = '' }: PasswordStrengthProps) => {
-  const t = useTranslations('Auth');
+  const t = useTranslations('Auth') as any;
 
   const analysis = useMemo((): PasswordStrengthResult => {
     if (!password) {

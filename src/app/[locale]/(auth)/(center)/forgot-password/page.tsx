@@ -34,7 +34,7 @@ import { Logo } from '@/templates/Logo';
  * - Mobile-first responsive
  */
 const ForgotPasswordPage = () => {
-  const t = useTranslations('Auth');
+  const t = useTranslations('Auth') as any;
   const emailCheckRateLimit = useEmailCheckRateLimit();
 
   const emailSchema = z.object({

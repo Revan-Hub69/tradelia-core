@@ -22,7 +22,7 @@ import { Logo } from '@/templates/Logo';
  */
 
 function AuthErrorContent() {
-  const t = useTranslations('Auth');
+  const t = useTranslations('Auth') as any;
   const searchParams = useSearchParams();
 
   const error = searchParams.get('error');

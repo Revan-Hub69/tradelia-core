@@ -42,7 +42,7 @@ import { checkSupabaseConfig } from '@/utils/supabase-config-check';
  * - Context-aware adaptive UI
  */
 const UnifiedAuthPageContent = () => {
-  const t = useTranslations('Auth');
+  const t = useTranslations('Auth') as any;
   const router = useRouter();
   const searchParams = useSearchParams();
 
