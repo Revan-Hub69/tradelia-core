@@ -20,7 +20,7 @@ import { Logo } from '@/templates/Logo';
  * - Accessibility compliant
  */
 const AuthErrorContent = () => {
-  const t = useTranslations('AuthError');
+  const t = useTranslations('AuthError') as any;
   const searchParams = useSearchParams();
 
   const errorParam = searchParams.get('error');
