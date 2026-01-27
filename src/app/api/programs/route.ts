@@ -28,11 +28,11 @@ export async function GET() {
       .order('created_at', { ascending: false });
 
     // Debug logging
-    console.log('Programs query result:', { 
-      programsCount: programs?.length, 
+    console.log('Programs query result:', {
+      programsCount: programs?.length,
       hasError: !!programsError,
       errorMessage: programsError?.message,
-      firstProgram: programs?.[0]?.id 
+      firstProgram: programs?.[0]?.id,
     });
 
     // Handle table not found error (migration not applied yet)
@@ -69,15 +69,15 @@ export async function GET() {
       const offers = Array.isArray(program.offers) ? program.offers : [];
 
       // Collect all rulesets from all offers
-      const allRulesets = offers.flatMap((offer: any) => 
-        Array.isArray(offer.rulesets) ? offer.rulesets : []
+      const allRulesets = offers.flatMap((offer: any) =>
+        Array.isArray(offer.rulesets) ? offer.rulesets : [],
       ).sort((a: any, b: any) => (a.phase_number || 0) - (b.phase_number || 0));
 
       // Get first offer's payout_terms and market_access (they should be the same for all offers)
       const firstOffer = offers[0] || {};
       const payoutTermsArray = Array.isArray(firstOffer.payout_terms) ? firstOffer.payout_terms : [];
       const marketAccessArray = Array.isArray(firstOffer.market_access) ? firstOffer.market_access : [];
-      
+
       const payoutTerms = payoutTermsArray[0] || null;
       const marketAccess = marketAccessArray[0] || null;
 

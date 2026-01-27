@@ -26,7 +26,7 @@ type PayoutSectionProps = {
 
 export function PayoutSection({ payoutTerms }: PayoutSectionProps) {
   const t = useTranslations('Challenges') as any;
-  
+
   if (!payoutTerms) {
     return null;
   }
@@ -77,7 +77,10 @@ export function PayoutSection({ payoutTerms }: PayoutSectionProps) {
         <li className="flex items-start gap-2">
           <span className="text-blue-600 dark:text-blue-400">✓</span>
           <span>
-            <strong>{t('payout.frequency')}:</strong>
+            <strong>
+{t('payout.frequency')}
+:
+            </strong>
             {' '}
             {payoutTerms.payout_frequency}
           </span>
@@ -85,7 +88,10 @@ export function PayoutSection({ payoutTerms }: PayoutSectionProps) {
         <li className="flex items-start gap-2">
           <span className="text-blue-600 dark:text-blue-400">✓</span>
           <span>
-            <strong>{t('payout.firstDelay')}:</strong>
+            <strong>
+{t('payout.firstDelay')}
+:
+            </strong>
             {' '}
             {payoutTerms.first_payout_delay_days}
             {' '}
@@ -96,7 +102,10 @@ export function PayoutSection({ payoutTerms }: PayoutSectionProps) {
           <li className="flex items-start gap-2">
             <span className="text-blue-600 dark:text-blue-400">✓</span>
             <span>
-              <strong>{t('payout.processingTime')}:</strong>
+              <strong>
+{t('payout.processingTime')}
+:
+              </strong>
               {' '}
               {payoutTerms.payout_processing_time_hours}
               {t('payout.hours')}
@@ -107,7 +116,10 @@ export function PayoutSection({ payoutTerms }: PayoutSectionProps) {
           <li className="flex items-start gap-2">
             <span className="text-blue-600 dark:text-blue-400">✓</span>
             <span>
-              <strong>{t('payout.withdrawalMethods')}:</strong>
+              <strong>
+{t('payout.withdrawalMethods')}
+:
+              </strong>
               {' '}
               {payoutTerms.withdrawal_methods.join(', ')}
             </span>

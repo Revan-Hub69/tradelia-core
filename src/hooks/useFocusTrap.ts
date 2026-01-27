@@ -24,10 +24,14 @@ export function useFocusTrap({
   const previousFocusRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    if (!isActive) return;
+    if (!isActive) {
+ return;
+}
 
     const container = containerRef.current;
-    if (!container) return;
+    if (!container) {
+ return;
+}
 
     // Store previously focused element
     previousFocusRef.current = document.activeElement as HTMLElement;
@@ -72,7 +76,9 @@ export function useFocusTrap({
       // Tab key
       if (e.key === 'Tab') {
         const focusableElements = getFocusableElements();
-        if (focusableElements.length === 0) return;
+        if (focusableElements.length === 0) {
+ return;
+}
 
         const firstElement = focusableElements[0];
         const lastElement = focusableElements[focusableElements.length - 1];

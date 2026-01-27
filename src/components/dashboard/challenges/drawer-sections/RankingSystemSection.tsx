@@ -32,7 +32,7 @@ export function RankingSystemSection({
   updateFrequency = 'Real-time',
 }: RankingSystemSectionProps) {
   const t = useTranslations('Challenges') as any;
-  
+
   // Use translated default factors if not provided
   const factors = scoringFactors || getDefaultScoringFactors(t);
 

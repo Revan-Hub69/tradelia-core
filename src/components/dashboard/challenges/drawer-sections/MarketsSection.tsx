@@ -27,7 +27,7 @@ type MarketsSectionProps = {
 
 export function MarketsSection({ marketAccess }: MarketsSectionProps) {
   const t = useTranslations('Challenges') as any;
-  
+
   if (!marketAccess) {
     return null;
   }
@@ -85,7 +85,10 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
               <li className="flex items-start gap-2">
                 <span className="text-purple-600 dark:text-purple-400">✓</span>
                 <span>
-                  <strong>{t('markets.forex')}:</strong>
+                  <strong>
+{t('markets.forex')}
+:
+                  </strong>
                   {' '}
                   {marketAccess.leverage_forex}
                 </span>
@@ -95,7 +98,10 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
               <li className="flex items-start gap-2">
                 <span className="text-purple-600 dark:text-purple-400">✓</span>
                 <span>
-                  <strong>{t('markets.indices')}:</strong>
+                  <strong>
+{t('markets.indices')}
+:
+                  </strong>
                   {' '}
                   {marketAccess.leverage_indices}
                 </span>
@@ -105,7 +111,10 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
               <li className="flex items-start gap-2">
                 <span className="text-purple-600 dark:text-purple-400">✓</span>
                 <span>
-                  <strong>{t('markets.commodities')}:</strong>
+                  <strong>
+{t('markets.commodities')}
+:
+                  </strong>
                   {' '}
                   {marketAccess.leverage_commodities}
                 </span>
@@ -115,7 +124,10 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
               <li className="flex items-start gap-2">
                 <span className="text-purple-600 dark:text-purple-400">✓</span>
                 <span>
-                  <strong>{t('markets.crypto')}:</strong>
+                  <strong>
+{t('markets.crypto')}
+:
+                  </strong>
                   {' '}
                   {marketAccess.leverage_crypto}
                 </span>
@@ -137,7 +149,10 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
               <li className="flex items-start gap-2">
                 <span className="text-orange-600 dark:text-orange-400">✓</span>
                 <span>
-                  <strong>{t('markets.forex')}:</strong>
+                  <strong>
+{t('markets.forex')}
+:
+                  </strong>
                   {' '}
                   $
                   {marketAccess.commission_forex}
@@ -149,7 +164,10 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
               <li className="flex items-start gap-2">
                 <span className="text-orange-600 dark:text-orange-400">✓</span>
                 <span>
-                  <strong>{t('markets.indices')}:</strong>
+                  <strong>
+{t('markets.indices')}
+:
+                  </strong>
                   {' '}
                   $
                   {marketAccess.commission_indices}

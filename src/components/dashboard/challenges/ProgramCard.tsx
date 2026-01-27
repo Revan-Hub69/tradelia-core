@@ -160,16 +160,16 @@ export function ProgramCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      whileHover={{ 
+      whileHover={{
         scale: 1.02,
-        transition: { 
-          duration: 0.4, 
-          ease: [0.25, 0.46, 0.45, 0.94] 
-        }
+        transition: {
+          duration: 0.4,
+          ease: [0.25, 0.46, 0.45, 0.94],
+        },
       }}
-      whileTap={{ 
+      whileTap={{
         scale: 0.98,
-        transition: { duration: 0.15 }
+        transition: { duration: 0.15 },
       }}
       onClick={handleCardClick}
       className={cn(
@@ -270,7 +270,7 @@ export function ProgramCard({
           const colorClass = colorParts?.[0]?.replace('text-', '') || 'primary';
           const isAccountSize = kpi.label === 'accountSize';
           const hasMultipleOffers = offers.length > 1;
-          
+
           return (
             <div
               key={kpi.label}
@@ -285,12 +285,15 @@ export function ProgramCard({
               <div className={cn('text-xl font-bold tracking-tight', kpi.color)}>
                 {kpi.value}
               </div>
-              
+
               {/* Hint: More sizes available (only for accountSize) */}
               {isAccountSize && hasMultipleOffers && (
                 <div className="mt-1 flex items-center gap-1 text-[10px] text-muted-foreground">
-                  <span className="size-1 rounded-full bg-primary animate-pulse" />
-                  +{offers.length - 1} {t('card.moreSizes')}
+                  <span className="size-1 animate-pulse rounded-full bg-primary" />
+                  +
+{offers.length - 1}
+{' '}
+{t('card.moreSizes')}
                 </div>
               )}
             </div>

@@ -26,12 +26,12 @@ type KeyMetricsSectionProps = {
   payoutTerms: PayoutTerms | null;
 };
 
-export const KeyMetricsSection = React.memo(function KeyMetricsSection({
+export const KeyMetricsSection = React.memo(({
   offer,
   payoutTerms,
-}: KeyMetricsSectionProps) {
+}: KeyMetricsSectionProps) => {
   const t = useTranslations('Challenges') as any;
-  
+
   return (
     <section>
       <SectionHeader

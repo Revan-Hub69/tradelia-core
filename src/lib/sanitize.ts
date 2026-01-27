@@ -1,7 +1,7 @@
 /**
  * CONTENT SANITIZATION - XSS Protection
  * Best Practice 2026: Sanitize all user-generated content
- * 
+ *
  * NOTE: Uses HTML entity escaping for SSR compatibility
  * React's JSX already provides XSS protection, this is defense-in-depth
  */
@@ -9,7 +9,7 @@
 /**
  * Sanitize HTML content to prevent XSS attacks
  * Used for user-generated content like descriptions, pros/cons
- * 
+ *
  * NOTE: Always uses HTML entity escaping for SSR compatibility
  * React already provides XSS protection, this is defense-in-depth
  */

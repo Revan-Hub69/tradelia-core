@@ -24,7 +24,7 @@ type PermissionsSectionProps = {
 
 export function PermissionsSection({ phase1Rules }: PermissionsSectionProps) {
   const t = useTranslations('Challenges') as any;
-  
+
   if (!phase1Rules) {
     return null;
   }
@@ -143,7 +143,10 @@ export function PermissionsSection({ phase1Rules }: PermissionsSectionProps) {
                 <li className="flex items-start gap-2">
                   <span className="text-blue-600 dark:text-blue-400">✓</span>
                   <span>
-                    <strong>{t('permissions.maxPositionSize')}:</strong>
+                    <strong>
+{t('permissions.maxPositionSize')}
+:
+                    </strong>
                     {' '}
                     {phase1Rules.max_position_size}
                     {' '}
@@ -155,7 +158,10 @@ export function PermissionsSection({ phase1Rules }: PermissionsSectionProps) {
                 <li className="flex items-start gap-2">
                   <span className="text-blue-600 dark:text-blue-400">✓</span>
                   <span>
-                    <strong>{t('permissions.maxOpenPositions')}:</strong>
+                    <strong>
+{t('permissions.maxOpenPositions')}
+:
+                    </strong>
                     {' '}
                     {phase1Rules.max_open_positions}
                   </span>

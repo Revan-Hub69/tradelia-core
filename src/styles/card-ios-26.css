@@ -25,9 +25,9 @@
 
 :root {
   /* Border Radius - Aligned with Design System Hierarchy */
-  --card-radius-default: 24px;  /* Cards (between panel 32px and dropdown 12px) */
-  --card-radius-compact: 16px;  /* Compact cards */
-  --card-radius-mobile: 20px;   /* Mobile cards */
+  --card-radius-default: 24px; /* Cards (between panel 32px and dropdown 12px) */
+  --card-radius-compact: 16px; /* Compact cards */
+  --card-radius-mobile: 20px; /* Mobile cards */
 
   /* Padding - 8pt Grid System */
   --card-padding-mobile: 16px;
@@ -40,8 +40,8 @@
   --card-gap-desktop: 20px;
 
   /* Liquid Glass Material - Match Header Exactly */
-  --card-glass-bg: var(--glass-material-bg);  /* Use shared material */
-  --card-glass-border: var(--glass-material-border);  /* Use shared material */
+  --card-glass-bg: var(--glass-material-bg); /* Use shared material */
+  --card-glass-border: var(--glass-material-border); /* Use shared material */
   --card-glass-blur: 20px;
   --card-glass-saturate: 180%;
 
@@ -112,7 +112,7 @@
 /* Hover State - Desktop Only (Match Header Pattern) */
 @media (hover: hover) and (pointer: fine) {
   .card-ios-26:hover {
-    transform: translateZ(0) scale(1.02);  /* Match header scale */
+    transform: translateZ(0) scale(1.02); /* Match header scale */
     box-shadow: var(--card-shadow-hover-umbra), var(--card-shadow-hover-penumbra);
   }
 }
@@ -184,9 +184,9 @@
   .card-ios-26-interactive:hover::before {
     opacity: 1;
   }
-  
+
   .card-ios-26-interactive:hover {
-    transform: translateZ(0) scale(1.02);  /* Match header */
+    transform: translateZ(0) scale(1.02); /* Match header */
   }
 }
 
@@ -228,10 +228,7 @@
 
 /* Badge Visual Weight - Enterprise Hierarchy */
 .badge-primary {
-  background: linear-gradient(135deg, 
-    hsl(var(--primary)) 0%, 
-    hsl(var(--primary) / 0.9) 100%
-  );
+  background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.9) 100%);
   box-shadow: 0 2px 8px hsl(var(--primary) / 0.3);
   font-weight: 700;
 }

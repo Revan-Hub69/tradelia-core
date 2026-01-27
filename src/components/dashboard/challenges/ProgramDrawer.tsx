@@ -197,7 +197,7 @@ export function ProgramDrawer({
 
   const isFree = program.category === 'free_competition';
   const phase1Rules = rulesets.find(r => r.phase_number === 1);
-  
+
   // Offer selection state (default: featured > lowest fee > first)
   const defaultOffer = useMemo(
     () =>
@@ -206,7 +206,7 @@ export function ProgramDrawer({
       offers[0],
     [offers],
   );
-  
+
   const [selectedOfferId, setSelectedOfferId] = useState(defaultOffer?.id || '');
   const selectedOffer = useMemo(
     () => offers.find(o => o.id === selectedOfferId) || defaultOffer,
@@ -241,7 +241,7 @@ export function ProgramDrawer({
           >
             {/* Header - Responsive (Enterprise) */}
             <header className="glass-panel sticky top-0 z-10 border-b border-border/50 backdrop-blur-xl">
-              <div className="flex items-start gap-3 px-4 py-4 sm:gap-4 sm:px-6 sm:py-5 lg:px-8 lg:py-6">
+              <div className="flex items-start gap-3 p-4 sm:gap-4 sm:px-6 sm:py-5 lg:px-8 lg:py-6">
                 <div className="min-w-0 flex-1">
                   {/* Badges & Trust Signals */}
                   <div className="mb-2 flex flex-wrap items-center gap-1.5 sm:mb-3 sm:gap-2">
@@ -365,7 +365,7 @@ export function ProgramDrawer({
             </div>
 
             {/* Footer - Responsive Actions (Enterprise spacing) */}
-            <footer className="glass-panel sticky bottom-0 border-t border-border/50 px-4 py-4 backdrop-blur-xl sm:px-6 sm:py-5 lg:px-8 lg:py-6">
+            <footer className="glass-panel sticky bottom-0 border-t border-border/50 p-4 backdrop-blur-xl sm:px-6 sm:py-5 lg:px-8 lg:py-6">
               <div className="flex gap-2.5 sm:gap-3 lg:gap-4">
                 <button
                   onClick={onClose}

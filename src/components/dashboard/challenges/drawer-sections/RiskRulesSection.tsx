@@ -26,7 +26,7 @@ type RiskRulesSectionProps = {
 
 export function RiskRulesSection({ rulesets }: RiskRulesSectionProps) {
   const t = useTranslations('Challenges') as any;
-  
+
   return (
     <section>
       <SectionHeader
@@ -49,7 +49,10 @@ export function RiskRulesSection({ rulesets }: RiskRulesSectionProps) {
               <li className="flex items-start gap-2">
                 <span className="text-green-600 dark:text-green-400">✓</span>
                 <span>
-                  <strong>{t('drawer.sections.profitTarget')}:</strong>
+                  <strong>
+{t('drawer.sections.profitTarget')}
+:
+                  </strong>
                   {' '}
                   {ruleset.profit_target_pct}
                   %
@@ -60,7 +63,10 @@ export function RiskRulesSection({ rulesets }: RiskRulesSectionProps) {
               <li className="flex items-start gap-2">
                 <span className="text-red-600 dark:text-red-400">⚠</span>
                 <span>
-                  <strong>{t('drawer.sections.maxDrawdown')}:</strong>
+                  <strong>
+{t('drawer.sections.maxDrawdown')}
+:
+                  </strong>
                   {' '}
                   {ruleset.max_drawdown_pct}
                   %
@@ -73,7 +79,10 @@ export function RiskRulesSection({ rulesets }: RiskRulesSectionProps) {
               <li className="flex items-start gap-2">
                 <span className="text-orange-600 dark:text-orange-400">⚠</span>
                 <span>
-                  <strong>{t('drawer.sections.maxDailyLoss')}:</strong>
+                  <strong>
+{t('drawer.sections.maxDailyLoss')}
+:
+                  </strong>
                   {' '}
                   {ruleset.max_daily_loss_pct}
                   %
@@ -86,7 +95,10 @@ export function RiskRulesSection({ rulesets }: RiskRulesSectionProps) {
               <li className="flex items-start gap-2">
                 <span className="text-blue-600 dark:text-blue-400">✓</span>
                 <span>
-                  <strong>{t('drawer.sections.minTradingDays')}:</strong>
+                  <strong>
+{t('drawer.sections.minTradingDays')}
+:
+                  </strong>
                   {' '}
                   {ruleset.min_trading_days}
                   {' '}
@@ -98,7 +110,10 @@ export function RiskRulesSection({ rulesets }: RiskRulesSectionProps) {
               <li className="flex items-start gap-2">
                 <span className="text-purple-600 dark:text-purple-400">✓</span>
                 <span>
-                  <strong>{t('drawer.sections.consistencyRule')}:</strong>
+                  <strong>
+{t('drawer.sections.consistencyRule')}
+:
+                  </strong>
                   {' '}
                   {t('drawer.sections.bestDayMax', { percent: ruleset.best_day_max_pct })}
                 </span>
