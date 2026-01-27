@@ -22,7 +22,7 @@ type FilterState = {
 };
 
 export default function ChallengesPage() {
-  const t = useTranslations('Challenges');
+  const t = useTranslations('Challenges') as any;
   const [programs, setPrograms] = useState<ProgramData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
