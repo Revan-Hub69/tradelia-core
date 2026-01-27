@@ -1,23 +1,19 @@
 'use client';
 
 /**
- * PROGRAM CARD - Challenge Library 2026
+ * PROGRAM CARD - Challenge Library 2026 (Tier-1 Compliant)
  *
- * Pattern: 1 card = 1 program con offer selector
+ * Research-based design:
+ * - 300px height target
+ * - 3 KPI only (Account Size, Profit Split, Entry Fee)
+ * - Trust signals (rating, success rate)
+ * - Quick facts line (1 line, icons)
+ * - Progressive disclosure (details in drawer)
  *
- * Features:
- * - Offer selector integrato (desktop/mobile)
- * - KPI grid stabile (non cambia con offer)
- * - Freshness indicator
- * - Platform icons
- * - Comparison checkbox
- * - Liquid glass design (iOS 26)
- *
- * Design System:
- * - 32px border radius
- * - Soft cream palette
- * - Premium SVG icons (no emoji)
- * - Spring physics animations
+ * Sources:
+ * - Nielsen Norman Group: "One Card = One Idea"
+ * - Material Design 3: Visual hierarchy
+ * - Eleken: Card UI best practices 2024
  */
 
 import { motion } from 'framer-motion';
@@ -28,27 +24,10 @@ import { cn } from '@/utils/Helpers';
 
 import { OfferSelector } from './OfferSelector';
 import {
-  BotIcon,
-  CalendarIcon,
   CheckCircleIcon,
-  CTraderIcon,
-  DailyLossIcon,
-  DrawdownIcon,
-  DXTradeIcon,
   FreshnessIcon,
-  LiveAccountIcon,
-  MinDaysIcon,
-  MT4Icon,
-  MT5Icon,
-  NewsIcon,
-  PaperTradingIcon,
-  PayoutIcon,
-  ProfitTargetIcon,
-  TargetIcon,
-  TimeLimitIcon,
-  TradingViewIcon,
-  TrophyIcon,
-  WeekendIcon,
+  StarIcon,
+  TrendingUpIcon,
 } from './PremiumIcons';
 
 type Offer = {
@@ -61,11 +40,6 @@ type Offer = {
   refundable: boolean;
   is_featured?: boolean;
   display_order: number;
-  // Availability
-  recurring?: boolean;
-  next_edition_date?: string | null;
-  // Competition
-  max_participants?: number | null;
 };
 
 type Program = {
@@ -73,27 +47,15 @@ type Program = {
   name: string;
   organizer_name: string;
   category: 'free_competition' | 'paid_evaluation';
-  subtype: string; // 'paper', 'demo', 'sim', 'live', 'hybrid'
+  subtype: string;
   has_free_trial: boolean;
-  // Competition type
   ruleset_mode?: 'target_based' | 'ranking_based';
 };
 
-type Permissions = {
-  ea_allowed?: boolean;
-  news_trading?: boolean;
-  weekend_holding?: boolean;
-};
-
 type KPIs = {
-  profit_target_phase1: number | null;
-  profit_target_phase2: number | null;
+  profit_split_max: number | null;
   max_drawdown_pct: number | null;
   max_daily_loss_pct: number | null;
-  profit_split_max: number | null;
-  min_trading_days: number | null;
-  phase_count: number;
-  first_payout_delay_days: number | null;
   time_limit_common: number | null;
   freshness_days: number;
   sources_count: number;
@@ -103,19 +65,10 @@ type ProgramCardProps = {
   program: Program;
   offers: Offer[];
   kpis: KPIs;
-  permissions?: Permissions;
   platforms?: string[];
   onViewDetails: (programId: string, offerId: string) => void;
   onCompareToggle: (offerId: string) => void;
   isComparing: boolean;
-};
-
-const PLATFORM_ICONS: Record<string, typeof MT4Icon> = {
-  MT4: MT4Icon,
-  MT5: MT5Icon,
-  cTrader: CTraderIcon,
-  DXtrade: DXTradeIcon,
-  TradingView: TradingViewIcon,
 };
 
 const EMPTY_PLATFORMS: string[] = [];
@@ -124,7 +77,6 @@ export function ProgramCard({
   program,
   offers,
   kpis,
-  permissions,
   platforms = EMPTY_PLATFORMS,
   onViewDetails,
   onCompareToggle,
@@ -142,8 +94,6 @@ export function ProgramCard({
   const selectedOffer = offers.find(o => o.id === selectedOfferId) || defaultOffer;
 
   const isFree = program.category === 'free_competition';
-  const isRanking = program.ruleset_mode === 'ranking_based';
-  const isLiveAccount = program.subtype === 'live' || program.subtype === 'hybrid';
 
   // Freshness badge
   const getFreshnessBadge = () => {
@@ -161,6 +111,13 @@ export function ProgramCard({
 
   const freshness = getFreshnessBadge();
 
+  // Mock trust signals (TODO: Get from database)
+  const trustSignals = {
+    rating: 4.8,
+    successRate: 68,
+    traderCount: 2341,
+  };
+
   return (
     <motion.article
       layout
@@ -169,50 +126,57 @@ export function ProgramCard({
       exit={{ opacity: 0, y: -20 }}
       whileHover={{ y: -4 }}
       className={cn(
-        'card-ios-26 card-ios-26-interactive group relative overflow-hidden',
+        'card-ios-26 card-ios-26-interactive group relative flex h-[320px] flex-col overflow-hidden',
         isFree && 'border-green-500/20 bg-gradient-to-br from-green-50/50 to-transparent dark:from-green-950/20',
         isComparing && 'card-ios-26-selected',
       )}
     >
-      {/* Header - Program Info & Badges */}
-      <div className="mb-4 flex items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          {/* Badges Row */}
-          <div className="mb-2 flex flex-wrap items-center gap-2">
-            {/* Category Badge */}
-            {isFree ? (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-white shadow-lg shadow-green-500/30">
-                <span className="size-1.5 animate-pulse rounded-full bg-white" />
-                {t('badges.free')}
-              </span>
-            ) : (
-              <span className="inline-flex items-center rounded-full bg-blue-500/10 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-blue-600 backdrop-blur-sm dark:text-blue-400">
-                {t('badges.paid')}
-              </span>
-            )}
+      {/* Header - Badges & Trust Signals */}
+      <div className="mb-3 flex items-start justify-between gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Category Badge */}
+          {isFree ? (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-white shadow-lg shadow-green-500/30">
+              <span className="size-1.5 animate-pulse rounded-full bg-white" />
+              {t('badges.free')}
+            </span>
+          ) : (
+            <span className="inline-flex items-center rounded-full bg-blue-500/10 px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-blue-600 backdrop-blur-sm dark:text-blue-400">
+              {t('badges.paid')}
+            </span>
+          )}
 
-            {/* Free Trial Badge */}
-            {program.has_free_trial && (
-              <span className="inline-flex items-center rounded-full bg-purple-500/10 px-2.5 py-1 text-xs font-bold text-purple-600 dark:text-purple-400">
-                {t('badges.trial')}
-              </span>
-            )}
+          {/* Rating */}
+          <div className="flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-1">
+            <StarIcon size={12} className="text-amber-600 dark:text-amber-400" />
+            <span className="text-xs font-bold text-amber-600 dark:text-amber-400">
+              {trustSignals.rating}
+            </span>
           </div>
 
-          {/* Program Name */}
-          <h3 className="mb-1 line-clamp-1 text-lg font-bold leading-tight tracking-tight">
-            {program.name}
-          </h3>
-
-          {/* Organizer */}
-          <p className="text-sm text-muted-foreground">{program.organizer_name}</p>
+          {/* Success Rate */}
+          <div className="flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-1">
+            <TrendingUpIcon size={12} className="text-green-600 dark:text-green-400" />
+            <span className="text-xs font-bold text-green-600 dark:text-green-400">
+              {trustSignals.successRate}
+              %
+            </span>
+          </div>
         </div>
 
         {/* Freshness Indicator */}
-        <div className={cn('flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 backdrop-blur-sm', freshness.bg)}>
-          <FreshnessIcon size={12} className={freshness.color} />
+        <div className={cn('flex shrink-0 items-center gap-1 rounded-full px-2 py-1 backdrop-blur-sm', freshness.bg)}>
+          <FreshnessIcon size={10} className={freshness.color} />
           <span className={cn('text-xs font-bold', freshness.color)}>{freshness.label}</span>
         </div>
+      </div>
+
+      {/* Program Name & Organizer */}
+      <div className="mb-3">
+        <h3 className="mb-0.5 line-clamp-1 text-lg font-bold leading-tight tracking-tight">
+          {program.name}
+        </h3>
+        <p className="text-xs text-muted-foreground">{program.organizer_name}</p>
       </div>
 
       {/* Offer Selector */}
@@ -224,254 +188,107 @@ export function ProgramCard({
         />
       </div>
 
-      {/* Status Bar - Critical Info */}
-      <div className="mb-4 flex flex-wrap items-center gap-2">
-        {/* Availability Status */}
-        {selectedOffer?.recurring && selectedOffer?.next_edition_date ? (
-          <div className="flex items-center gap-1.5 rounded-lg border border-blue-500/20 bg-blue-500/10 px-2.5 py-1.5 text-xs font-semibold text-blue-600 dark:text-blue-400">
-            <CalendarIcon size={14} />
-            <span>
-              {t('availability.next')}
-              {' '}
-              {new Date(selectedOffer.next_edition_date).toLocaleDateString()}
-            </span>
+      {/* 3 KPI Grid - DECISION CRITICAL ONLY */}
+      <div className="mb-4 grid flex-1 grid-cols-3 gap-2">
+        {/* Account Size */}
+        <div className="flex flex-col items-center justify-center rounded-xl border border-border/50 bg-gradient-to-br from-background to-muted/30 p-3 transition-all hover:border-primary/30">
+          <div className="mb-1 text-xs font-medium text-muted-foreground">
+            {t('card.accountSize')}
           </div>
-        ) : (
-          <div className="flex items-center gap-1.5 rounded-lg border border-green-500/20 bg-green-500/10 px-2.5 py-1.5 text-xs font-semibold text-green-600 dark:text-green-400">
-            <CheckCircleIcon size={14} />
-            <span>{t('availability.alwaysOpen')}</span>
-          </div>
-        )}
-
-        {/* Competition Type */}
-        {isRanking && selectedOffer?.max_participants ? (
-          <div className="flex items-center gap-1.5 rounded-lg border border-orange-500/20 bg-orange-500/10 px-2.5 py-1.5 text-xs font-semibold text-orange-600 dark:text-orange-400">
-            <TrophyIcon size={14} />
-            <span>{t('competition.vsTraders', { count: selectedOffer.max_participants })}</span>
-          </div>
-        ) : (
-          <div className="flex items-center gap-1.5 rounded-lg border border-border/50 bg-muted/30 px-2.5 py-1.5 text-xs font-semibold text-muted-foreground">
-            <TargetIcon size={14} />
-            <span>{t('competition.targetBased')}</span>
-          </div>
-        )}
-
-        {/* Account Type */}
-        {isLiveAccount ? (
-          <div className="flex items-center gap-1.5 rounded-lg border border-purple-500/20 bg-purple-500/10 px-2.5 py-1.5 text-xs font-semibold text-purple-600 dark:text-purple-400">
-            <LiveAccountIcon size={14} />
-            <span>{t('accountType.live')}</span>
-          </div>
-        ) : (
-          <div className="flex items-center gap-1.5 rounded-lg border border-border/50 bg-muted/30 px-2.5 py-1.5 text-xs font-semibold text-muted-foreground">
-            <PaperTradingIcon size={14} />
-            <span>{t('accountType.paper')}</span>
-          </div>
-        )}
-      </div>
-
-      {/* Permissions Row - Deal Breakers */}
-      {permissions && (
-        <div className="mb-4 flex flex-wrap items-center gap-2">
-          {/* EA/Bot Allowed */}
-          <div
-            className={cn(
-              'flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium',
-              permissions.ea_allowed
-                ? 'border-green-500/20 bg-green-500/10 text-green-600 dark:text-green-400'
-                : 'border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400',
-            )}
-          >
-            <BotIcon size={14} />
-            <span>{permissions.ea_allowed ? t('permissions.eaAllowed') : t('permissions.noEa')}</span>
-          </div>
-
-          {/* News Trading */}
-          <div
-            className={cn(
-              'flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium',
-              permissions.news_trading
-                ? 'border-green-500/20 bg-green-500/10 text-green-600 dark:text-green-400'
-                : 'border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400',
-            )}
-          >
-            <NewsIcon size={14} />
-            <span>{permissions.news_trading ? t('permissions.newsOk') : t('permissions.noNews')}</span>
-          </div>
-
-          {/* Weekend Holding */}
-          <div
-            className={cn(
-              'flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium',
-              permissions.weekend_holding
-                ? 'border-green-500/20 bg-green-500/10 text-green-600 dark:text-green-400'
-                : 'border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400',
-            )}
-          >
-            <WeekendIcon size={14} />
-            <span>{permissions.weekend_holding ? t('permissions.weekendOk') : t('permissions.noWeekend')}</span>
+          <div className="text-xl font-bold tracking-tight">
+            {selectedOffer?.account_currency}
+            {(selectedOffer?.account_size || 0) >= 1000
+              ? `${(selectedOffer?.account_size || 0) / 1000}K`
+              : selectedOffer?.account_size}
           </div>
         </div>
-      )}
-
-      {/* KPI Grid - 2x4 (Stable, non cambia con offer) */}
-      <div className="mb-4 grid grid-cols-2 gap-2">
-        {/* Profit Target */}
-        {kpis.profit_target_phase1 && (
-          <div className="card-nested group/metric relative overflow-hidden rounded-xl border border-border/50 bg-gradient-to-br from-background to-muted/30 p-3 transition-all hover:border-green-500/30">
-            <div className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-              <ProfitTargetIcon size={14} />
-              {t('metrics.target')}
-            </div>
-            <div className="text-lg font-bold tracking-tight text-green-600 dark:text-green-400">
-              {kpis.profit_target_phase1}
-              %
-              {kpis.profit_target_phase2 && (
-                <span className="text-sm">
-                  {' '}
-                  →
-                  {' '}
-                  {kpis.profit_target_phase2}
-                  %
-                </span>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Max Drawdown */}
-        {kpis.max_drawdown_pct && (
-          <div className="card-nested group/metric relative overflow-hidden rounded-xl border border-border/50 bg-gradient-to-br from-background to-muted/30 p-3 transition-all hover:border-red-500/30">
-            <div className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-              <DrawdownIcon size={14} />
-              {t('metrics.drawdown')}
-            </div>
-            <div className="text-lg font-bold tracking-tight text-red-600 dark:text-red-400">
-              {kpis.max_drawdown_pct}
-              %
-            </div>
-          </div>
-        )}
-
-        {/* Daily Loss */}
-        {kpis.max_daily_loss_pct && (
-          <div className="card-nested group/metric relative overflow-hidden rounded-xl border border-border/50 bg-gradient-to-br from-background to-muted/30 p-3 transition-all hover:border-orange-500/30">
-            <div className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-              <DailyLossIcon size={14} />
-              {t('metrics.daily')}
-            </div>
-            <div className="text-lg font-bold tracking-tight text-orange-600 dark:text-orange-400">
-              {kpis.max_daily_loss_pct}
-              %
-            </div>
-          </div>
-        )}
 
         {/* Profit Split */}
         {kpis.profit_split_max && (
-          <div className="card-nested group/metric relative overflow-hidden rounded-xl border border-border/50 bg-gradient-to-br from-background to-muted/30 p-3 transition-all hover:border-blue-500/30">
-            <div className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-              <PayoutIcon size={14} />
-              {t('metrics.split')}
+          <div className="flex flex-col items-center justify-center rounded-xl border border-border/50 bg-gradient-to-br from-background to-muted/30 p-3 transition-all hover:border-green-500/30">
+            <div className="mb-1 text-xs font-medium text-muted-foreground">
+              {t('card.profitSplit')}
             </div>
-            <div className="text-lg font-bold tracking-tight text-blue-600 dark:text-blue-400">
+            <div className="text-xl font-bold tracking-tight text-green-600 dark:text-green-400">
               {kpis.profit_split_max}
               %
             </div>
           </div>
         )}
 
-        {/* Time Limit */}
-        {kpis.time_limit_common !== null && (
-          <div className="card-nested group/metric relative overflow-hidden rounded-xl border border-border/50 bg-gradient-to-br from-background to-muted/30 p-3 transition-all">
-            <div className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-              <TimeLimitIcon size={14} />
-              {t('metrics.time')}
-            </div>
-            <div className="text-lg font-bold tracking-tight">
-              {kpis.time_limit_common === 0 ? '∞' : `${kpis.time_limit_common}d`}
-            </div>
+        {/* Entry Fee */}
+        <div className="flex flex-col items-center justify-center rounded-xl border border-border/50 bg-gradient-to-br from-background to-muted/30 p-3 transition-all hover:border-blue-500/30">
+          <div className="mb-1 text-xs font-medium text-muted-foreground">
+            {t('card.entryFee')}
           </div>
-        )}
-
-        {/* Min Days */}
-        {kpis.min_trading_days && (
-          <div className="card-nested group/metric relative overflow-hidden rounded-xl border border-border/50 bg-gradient-to-br from-background to-muted/30 p-3 transition-all">
-            <div className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-              <MinDaysIcon size={14} />
-              {t('metrics.minDays')}
-            </div>
-            <div className="text-lg font-bold tracking-tight">
-              {kpis.min_trading_days}
-            </div>
-          </div>
-        )}
-
-        {/* Phases */}
-        <div className="card-nested group/metric relative overflow-hidden rounded-xl border border-border/50 bg-gradient-to-br from-background to-muted/30 p-3 transition-all">
-          <div className="mb-1.5 text-xs font-medium text-muted-foreground">
-            {t('metrics.phases')}
-          </div>
-          <div className="text-lg font-bold tracking-tight">
-            {kpis.phase_count}
-            -
-            {t('metrics.step')}
+          <div className="text-xl font-bold tracking-tight text-blue-600 dark:text-blue-400">
+            {selectedOffer?.entry_fee ? (
+              <>
+                {selectedOffer.fee_currency}
+                {selectedOffer.entry_fee}
+              </>
+            ) : (
+              <span className="text-green-600 dark:text-green-400">{t('card.free')}</span>
+            )}
           </div>
         </div>
+      </div>
 
-        {/* First Payout */}
-        {kpis.first_payout_delay_days !== null && (
-          <div className="card-nested group/metric relative overflow-hidden rounded-xl border border-border/50 bg-gradient-to-br from-background to-muted/30 p-3 transition-all">
-            <div className="mb-1.5 text-xs font-medium text-muted-foreground">
-              {t('metrics.payout')}
-            </div>
-            <div className="text-lg font-bold tracking-tight">
-              {kpis.first_payout_delay_days}
-              d
-            </div>
+      {/* Quick Facts Line - Icons Only */}
+      <div className="mb-4 flex items-center justify-center gap-3 text-xs text-muted-foreground">
+        {kpis.max_daily_loss_pct && (
+          <div
+            className="flex items-center gap-1"
+            title={`${kpis.max_daily_loss_pct}% Daily Loss`}
+          >
+            <CheckCircleIcon size={12} className="text-green-600 dark:text-green-400" />
+            <span>
+              {kpis.max_daily_loss_pct}
+              % Daily
+            </span>
+          </div>
+        )}
+        {kpis.max_drawdown_pct && (
+          <div
+            className="flex items-center gap-1"
+            title={`${kpis.max_drawdown_pct}% Max DD`}
+          >
+            <CheckCircleIcon size={12} className="text-green-600 dark:text-green-400" />
+            <span>
+              {kpis.max_drawdown_pct}
+              % DD
+            </span>
+          </div>
+        )}
+        {platforms.length > 0 && (
+          <div className="flex items-center gap-1" title={platforms.join(', ')}>
+            <CheckCircleIcon size={12} className="text-green-600 dark:text-green-400" />
+            <span>
+              {platforms[0]}
+              {platforms.length > 1 && (
+                <>
+                  +
+                  {platforms.length - 1}
+                </>
+              )}
+            </span>
+          </div>
+        )}
+        {kpis.time_limit_common !== null && (
+          <div className="flex items-center gap-1" title={`${kpis.time_limit_common} days limit`}>
+            <CheckCircleIcon size={12} className="text-green-600 dark:text-green-400" />
+            <span>{kpis.time_limit_common === 0 ? '∞' : `${kpis.time_limit_common}d`}</span>
           </div>
         )}
       </div>
 
-      {/* Platforms */}
-      {platforms.length > 0 && (
-        <div className="mb-4 flex flex-wrap items-center gap-2">
-          {platforms.slice(0, 4).map((platform) => {
-            const Icon = PLATFORM_ICONS[platform];
-            return Icon ? (
-              <div
-                key={platform}
-                className="flex items-center gap-1.5 rounded-lg border border-border/50 bg-background/50 px-2.5 py-1.5 text-xs font-medium"
-                title={platform}
-              >
-                <Icon size={14} className="text-muted-foreground" />
-                <span>{platform}</span>
-              </div>
-            ) : (
-              <div
-                key={platform}
-                className="rounded-lg border border-border/50 bg-background/50 px-2.5 py-1.5 text-xs font-medium"
-              >
-                {platform}
-              </div>
-            );
-          })}
-          {platforms.length > 4 && (
-            <div className="rounded-lg border border-border/50 bg-background/50 px-2.5 py-1.5 text-xs font-medium text-muted-foreground">
-              +
-              {platforms.length - 4}
-            </div>
-          )}
-        </div>
-      )}
-
       {/* Actions */}
-      <div className="flex gap-2 border-t border-border/50 pt-4">
+      <div className="flex gap-2 border-t border-border/50 pt-3">
         {/* Compare Checkbox */}
         <button
           onClick={() => onCompareToggle(selectedOfferId)}
           className={cn(
-            'group/compare flex items-center gap-2 rounded-xl border px-3 py-2.5 text-sm font-semibold transition-all sm:px-4',
+            'group/compare flex items-center gap-1.5 rounded-xl border px-2.5 py-2 text-xs font-semibold transition-all',
             isComparing
               ? 'border-primary bg-primary text-primary-foreground shadow-lg shadow-primary/20'
               : 'border-border bg-background/50 hover:border-primary/50 hover:bg-muted/50',
@@ -481,7 +298,7 @@ export function ProgramCard({
         >
           <div
             className={cn(
-              'flex size-4 items-center justify-center rounded border-2 transition-all',
+              'flex size-3.5 items-center justify-center rounded border-2 transition-all',
               isComparing
                 ? 'border-primary-foreground bg-primary-foreground'
                 : 'border-current group-hover/compare:border-primary',
@@ -489,8 +306,8 @@ export function ProgramCard({
           >
             {isComparing && (
               <svg
-                width="12"
-                height="12"
+                width="10"
+                height="10"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -502,24 +319,20 @@ export function ProgramCard({
               </svg>
             )}
           </div>
-          <span className="hidden sm:inline">
-            {t('actions.compare')}
-          </span>
+          <span className="hidden sm:inline">{t('actions.compare')}</span>
         </button>
 
-        {/* View Details */}
+        {/* View Details - PRIMARY ACTION */}
         <button
           onClick={() => onViewDetails(program.id, selectedOfferId)}
-          className="group/cta flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary to-primary/90 px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30"
+          className="group/cta flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-primary to-primary/90 px-3 py-2 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30"
           type="button"
         >
-          <span>
-            {t('actions.details')}
-          </span>
+          <span>{t('actions.details')}</span>
           <svg
-            className="size-4 transition-transform group-hover/cta:translate-x-0.5"
-            width="16"
-            height="16"
+            className="size-3.5 transition-transform group-hover/cta:translate-x-0.5"
+            width="14"
+            height="14"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"

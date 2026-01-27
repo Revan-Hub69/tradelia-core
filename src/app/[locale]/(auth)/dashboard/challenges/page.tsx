@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { useEffect, useMemo, useState } from 'react';
 
+import { EmptyState } from '@/components/dashboard/challenges/EmptyState';
 import { ProgramCard } from '@/components/dashboard/challenges/ProgramCard';
 import { ProgramDrawer } from '@/components/dashboard/challenges/ProgramDrawer';
 import type { ProgramData } from '@/types/program';
@@ -303,25 +304,12 @@ export default function ChallengesPage() {
   if (error) {
     return (
       <div className="container mx-auto max-w-7xl px-4 py-8">
-        <div className="rounded-[32px] border border-red-500/20 bg-red-500/5 p-8 text-center">
-          <div className="mb-4 text-6xl">⚠️</div>
-          <h2 className="mb-2 text-xl font-bold text-red-600 dark:text-red-400">
-            {t('page.error')}
-          </h2>
-          <p className="mb-6 text-sm text-muted-foreground">{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="rounded-xl bg-red-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-red-700"
-            type="button"
-          >
-            {t('page.retry')}
-          </button>
-        </div>
+        <EmptyState type="error" onAction={() => window.location.reload()} />
       </div>
     );
   }
 
-  // Empty state
+  // Empty state - no programs in database
   if (programs.length === 0) {
     return (
       <div className="container mx-auto max-w-7xl px-4 py-8">
@@ -333,13 +321,7 @@ export default function ChallengesPage() {
             </p>
           </div>
 
-          <div className="rounded-[32px] border border-dashed border-border p-12 text-center">
-            <div className="mb-4 text-6xl">📊</div>
-            <h2 className="mb-2 text-xl font-bold">{t('page.empty')}</h2>
-            <p className="text-sm text-muted-foreground">
-              {t('page.emptyDescription')}
-            </p>
-          </div>
+          <EmptyState type="no-programs" />
         </div>
       </div>
     );
@@ -464,13 +446,20 @@ export default function ChallengesPage() {
 
         {/* Programs grid */}
         {sortedPrograms.length === 0 ? (
-          <div className="rounded-[32px] border border-dashed border-border p-12 text-center">
-            <div className="mb-4 text-6xl">🔍</div>
-            <h2 className="mb-2 text-xl font-bold">No results found</h2>
-            <p className="text-sm text-muted-foreground">
-              Try adjusting your filters or category selection
-            </p>
-          </div>
+          <EmptyState
+            type="no-results"
+            onAction={() => {
+              setCategoryFilter('all');
+              setFilters({
+                cost: [],
+                accountSize: [],
+                profitSplit: [],
+                type: [],
+                market: [],
+                platform: [],
+              });
+            }}
+          />
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {sortedPrograms.map(programData => (
@@ -479,7 +468,6 @@ export default function ChallengesPage() {
                 program={programData.program}
                 offers={programData.offers}
                 kpis={programData.kpis}
-                permissions={programData.permissions}
                 platforms={programData.platforms}
                 onViewDetails={handleViewDetails}
                 onCompareToggle={handleCompareToggle}

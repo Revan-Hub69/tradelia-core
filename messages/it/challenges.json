@@ -8,6 +8,32 @@
     "error": "Errore nel caricamento",
     "retry": "Riprova"
   },
+  "emptyStates": {
+    "noPrograms": {
+      "title": "Stiamo Costruendo la Libreria",
+      "description": "Stiamo aggiungendo sfide di trading dalle migliori prop firm. Torna presto per opportunità interessanti!",
+      "action": "Avvisami"
+    },
+    "noResults": {
+      "title": "Nessun Risultato Trovato",
+      "description": "Prova a modificare i filtri o i termini di ricerca per trovare più sfide.",
+      "action": "Cancella Filtri"
+    },
+    "error": {
+      "title": "Qualcosa è Andato Storto",
+      "description": "Non siamo riusciti a caricare le sfide. Controlla la connessione e riprova.",
+      "action": "Riprova"
+    }
+  },
+  "trustSignals": {
+    "rating": "{rating} su 5",
+    "traders": "{count} trader attivi",
+    "totalPaid": "${amount}M pagati",
+    "founded": "Fondata nel {year}",
+    "successRate": "{rate}% tasso successo",
+    "verified": "Verificato",
+    "reputation": "Punteggio Reputazione"
+  },
   "categories": {
     "all": "Tutti",
     "free": "Competizioni Gratuite",
@@ -37,6 +63,12 @@
     "clearAll": "Cancella tutto",
     "results": "{count} risultati",
     "apply": "Applica Filtri",
+    "sidebar": {
+      "title": "Filtra Sfide",
+      "clearAll": "Cancella Tutti i Filtri",
+      "apply": "Applica",
+      "resultCount": "{count} sfide trovate"
+    },
     "cost": "Costo",
     "accountSize": "Dimensione Account",
     "profitSplit": "Split Profitto",

@@ -8,6 +8,32 @@
     "error": "Failed to load programs",
     "retry": "Retry"
   },
+  "emptyStates": {
+    "noPrograms": {
+      "title": "Building Our Library",
+      "description": "We're adding trading challenges from top prop firms. Check back soon for exciting opportunities!",
+      "action": "Notify Me"
+    },
+    "noResults": {
+      "title": "No Results Found",
+      "description": "Try adjusting your filters or search terms to find more challenges.",
+      "action": "Clear Filters"
+    },
+    "error": {
+      "title": "Something Went Wrong",
+      "description": "We couldn't load the challenges. Please check your connection and try again.",
+      "action": "Retry"
+    }
+  },
+  "trustSignals": {
+    "rating": "{rating} out of 5",
+    "traders": "{count} active traders",
+    "totalPaid": "${amount}M paid out",
+    "founded": "Founded {year}",
+    "successRate": "{rate}% pass rate",
+    "verified": "Verified",
+    "reputation": "Reputation Score"
+  },
   "categories": {
     "all": "All",
     "free": "Free Competitions",
@@ -37,6 +63,12 @@
     "clearAll": "Clear all",
     "results": "{count} results",
     "apply": "Apply Filters",
+    "sidebar": {
+      "title": "Filter Challenges",
+      "clearAll": "Clear All Filters",
+      "apply": "Apply",
+      "resultCount": "{count} challenges found"
+    },
     "cost": "Cost",
     "accountSize": "Account Size",
     "profitSplit": "Profit Split",
