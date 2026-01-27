@@ -41,7 +41,7 @@ export const POST = withValidation(
     });
 
     // Award any badges
-    const awardedBadges = [];
+    const awardedBadges: any[] = [];
     for (const badge of badges) {
       try {
         const awardedBadge = await awardBadgeToUser({
