@@ -8,7 +8,7 @@
 
 import { useTranslations } from 'next-intl';
 
-import { StarIcon, TrendingUpIcon } from '../PremiumIcons';
+import { InfoIcon, StarIcon, TrendingUpIcon } from '../PremiumIcons';
 import { SectionHeader } from './SectionHeader';
 
 type RankingSystemSectionProps = {
@@ -20,18 +20,21 @@ type RankingSystemSectionProps = {
   updateFrequency?: string;
 };
 
-const DEFAULT_SCORING_FACTORS = [
-  { factor: 'Total Profit %', weight: 50 },
-  { factor: 'Consistency Score', weight: 30 },
-  { factor: 'Risk Management', weight: 20 },
+const getDefaultScoringFactors = (t: any) => [
+  { factor: t('ranking.totalProfit'), weight: 50 },
+  { factor: t('ranking.consistencyScore'), weight: 30 },
+  { factor: t('ranking.riskManagement'), weight: 20 },
 ];
 
 export function RankingSystemSection({
   rankingMethod = 'profit_percentage',
-  scoringFactors = DEFAULT_SCORING_FACTORS,
+  scoringFactors,
   updateFrequency = 'Real-time',
 }: RankingSystemSectionProps) {
   const t = useTranslations('Challenges') as any;
+  
+  // Use translated default factors if not provided
+  const factors = scoringFactors || getDefaultScoringFactors(t);
 
   const rankingMethodLabels = {
     profit_percentage: t('ranking.profitPercentage'),
@@ -67,7 +70,7 @@ export function RankingSystemSection({
         <div className="text-sm font-medium text-muted-foreground">
           {t('ranking.scoringFactors')}
         </div>
-        {scoringFactors.map(factor => (
+        {factors.map(factor => (
           <div
             key={factor.factor}
             className="flex items-center justify-between rounded-xl border border-border/50 bg-muted/30 p-4"
@@ -92,7 +95,7 @@ export function RankingSystemSection({
       {/* Leaderboard Info */}
       <div className="mt-4 rounded-xl border border-blue-500/20 bg-blue-500/5 p-4">
         <div className="flex items-start gap-3">
-          <div className="mt-0.5 text-blue-600 dark:text-blue-400">ℹ️</div>
+          <InfoIcon size={20} className="mt-0.5 shrink-0 text-blue-600 dark:text-blue-400" />
           <div className="text-sm text-muted-foreground">
             {t('ranking.leaderboardInfo')}
           </div>

@@ -290,7 +290,7 @@ export function ProgramCard({
               {isAccountSize && hasMultipleOffers && (
                 <div className="mt-1 flex items-center gap-1 text-[10px] text-muted-foreground">
                   <span className="size-1 rounded-full bg-primary animate-pulse" />
-                  +{offers.length - 1} more
+                  +{offers.length - 1} {t('card.moreSizes')}
                 </div>
               )}
             </div>

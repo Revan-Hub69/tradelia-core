@@ -82,7 +82,8 @@
     "verified": "Verified",
     "topRated": "Top Rated",
     "new": "New",
-    "hot": "Hot"
+    "hot": "Hot",
+    "moreSizes": "more"
   },
   "filters": {
     "title": "Filters",
@@ -342,6 +343,9 @@
     "consistency": "Consistency Score",
     "updatedFrequency": "Updated: {frequency}",
     "scoringFactors": "Scoring Factors",
-    "leaderboardInfo": "Rankings are updated in real-time. Your position may change as other traders complete trades."
+    "leaderboardInfo": "Rankings are updated in real-time. Your position may change as other traders complete trades.",
+    "totalProfit": "Total Profit %",
+    "consistencyScore": "Consistency Score",
+    "riskManagement": "Risk Management"
   }
 }

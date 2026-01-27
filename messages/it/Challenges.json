@@ -82,7 +82,8 @@
     "verified": "Verificato",
     "topRated": "Più Votato",
     "new": "Nuovo",
-    "hot": "Popolare"
+    "hot": "Popolare",
+    "moreSizes": "altri"
   },
   "filters": {
     "title": "Filtri",
@@ -342,6 +343,9 @@
     "consistency": "Punteggio di Consistenza",
     "updatedFrequency": "Aggiornato: {frequency}",
     "scoringFactors": "Fattori di Punteggio",
-    "leaderboardInfo": "Le classifiche sono aggiornate in tempo reale. La tua posizione può cambiare mentre altri trader completano operazioni."
+    "leaderboardInfo": "Le classifiche sono aggiornate in tempo reale. La tua posizione può cambiare mentre altri trader completano operazioni.",
+    "totalProfit": "Profitto Totale %",
+    "consistencyScore": "Punteggio Consistenza",
+    "riskManagement": "Gestione Rischio"
   }
 }
