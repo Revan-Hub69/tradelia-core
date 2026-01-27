@@ -10,7 +10,7 @@ import { Logo } from './Logo';
 
 export const Footer = () => {
   const t = useTranslations('Footer') as any;
-  const finalCTA = useTranslations('FinalCTA');
+  const finalCTA = useTranslations('FinalCTA') as any;
 
   return (
     <>
