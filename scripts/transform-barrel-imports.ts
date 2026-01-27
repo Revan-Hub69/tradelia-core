@@ -177,7 +177,7 @@ const transform: Transform = (fileInfo: FileInfo, api: API, _options: Options) =
 
       const newImportNodes = [...newImports.entries()].flatMap(
         ([importPath, { valueSpecifiers, typeSpecifiers }]) => {
-          const imports = [];
+          const imports: any[] = [];
           if (valueSpecifiers.length > 0) {
             imports.push(j.importDeclaration(valueSpecifiers, j.literal(importPath)));
           }
