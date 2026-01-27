@@ -3,44 +3,49 @@
 /**
  * PROGRAM DRAWER - Challenge Library 2026 (Tier-1 Compliant)
  *
- * Pattern: Single scroll view con progressive disclosure
+ * Architecture: Modular single-scroll drawer
  *
- * Research-based design:
- * - NO TABS - Single scroll eliminates cognitive load
+ * Best Practices 2026:
+ * - Single Responsibility: Each section is a separate component
+ * - Progressive Disclosure: Most important info first
+ * - NO TABS: Single scroll eliminates cognitive load
  * - Emoji section headers for visual scanning
- * - Progressive disclosure (most important info first)
  * - Trust signals integrated throughout
  *
- * Sources:
+ * Research Sources:
  * - Vaul (Emil Kowalski): Drawer patterns
  * - Nielsen Norman Group: Progressive disclosure
  * - Material Design 3: Content hierarchy
+ * - shadcn/ui: Component architecture
  */
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { useEffect } from 'react';
 
-import { cn } from '@/utils/Helpers';
-
 import {
-  BotIcon,
-  CheckCircleIcon,
-  ClockIcon,
-  CommissionIcon,
-  ExternalLinkIcon,
-  FreshnessIcon,
-  LeverageIcon,
-  NewsIcon,
-  PayoutIcon,
-  StarIcon,
-  TrendingUpIcon,
-  WeekendIcon,
-} from './PremiumIcons';
+  AboutSection,
+  KeyMetricsSection,
+  MarketsSection,
+  PayoutSection,
+  PermissionsSection,
+  RiskRulesSection,
+  TrustSection,
+} from './drawer-sections';
+import { ExternalLinkIcon, StarIcon, TrendingUpIcon } from './PremiumIcons';
 
 // Close Icon
 const CloseIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
     <line x1="18" y1="6" x2="6" y2="18" />
     <line x1="6" y1="6" x2="18" y2="18" />
   </svg>
@@ -168,6 +173,7 @@ export function ProgramDrawer({
 
   const isFree = program.category === 'free_competition';
   const phase1Rules = rulesets.find(r => r.phase_number === 1);
+  const firstOffer = offers[0];
 
   return (
     <AnimatePresence>
@@ -229,7 +235,10 @@ export function ProgramDrawer({
                   </div>
 
                   {/* Title */}
-                  <h2 id="drawer-title" className="mb-2 text-2xl font-bold leading-tight tracking-tight">
+                  <h2
+                    id="drawer-title"
+                    className="mb-2 text-2xl font-bold leading-tight tracking-tight"
+                  >
                     {program.name}
                   </h2>
 
@@ -257,811 +266,36 @@ export function ProgramDrawer({
               </div>
             </header>
 
-            {/* Content - Single Scroll */}
+            {/* Content - Single Scroll with Modular Sections */}
             <div className="flex-1 overflow-y-auto">
               <div className="space-y-8 p-6">
                 {/* 📊 KEY METRICS */}
-                <section>
-                  <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
-                    <span>📊</span>
-                    Key Metrics
-                  </h3>
-                  <div className="grid grid-cols-2 gap-3">
-                    {/* Account Size */}
-                    <div className="rounded-xl border border-border/50 bg-muted/30 p-4">
-                      <div className="mb-1 text-xs text-muted-foreground">Account Size</div>
-                      <div className="text-2xl font-bold">
-                                {offers[0]?.account_currency}
-                        {(offers[0]?.account_size || 0) >= 1000
-                          ? `${(offers[0]?.account_size || 0) / 1000}K`
-                          : offers[0]?.account_size}
-                      </div>
-                    </div>
-
-                    {/* Profit Split */}
-                    {payoutTerms && (
-                      <div className="rounded-xl border border-green-500/20 bg-green-500/5 p-4">
-                        <div className="mb-1 text-xs text-muted-foreground">Profit Split</div>
-                        <div className="text-2xl font-bold text-green-600 dark:text-green-400">
-                          {payoutTerms.profit_split_max}
-                          %
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Entry Fee */}
-                    <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-4">
-                      <div className="mb-1 text-xs text-muted-foreground">Entry Fee</div>
-                      <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                        {offers[0]?.entry_fee ? (
-                          <>
-                            {offers[0].fee_currency}
-                            {offers[0].entry_fee}
-                          </>
-                        ) : (
-                          <span className="text-green-600 dark:text-green-400">FREE</span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* First Payout */}
-                    {payoutTerms && (
-                      <div className="rounded-xl border border-border/50 bg-muted/30 p-4">
-                        <div className="mb-1 text-xs text-muted-foreground">First Payout</div>
-                        <div className="text-2xl font-bold">
-                          {payoutTerms.first_payout_delay_days}
-                          d
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </section>
+                {firstOffer && (
+                  <KeyMetricsSection offer={firstOffer} payoutTerms={payoutTerms} />
+                )}
 
                 {/* ⚠️ RISK RULES */}
-                <section>
-                  <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
-                    <span>⚠️</span>
-                    Risk Rules
-                  </h3>
-                  {rulesets.map(ruleset => (
-                    <div key={ruleset.phase_number} className="mb-4 space-y-3">
-                      {ruleset.phase_number > 1 && (
-                        <div className="text-sm font-bold text-muted-foreground">
-                          Phase
-                          {' '}
-                          {ruleset.phase_number}
-                        </div>
-                      )}
+                <RiskRulesSection rulesets={rulesets} />
 
-                      <ul className="space-y-2 text-sm">
-                        {ruleset.profit_target_pct && (
-                          <li className="flex items-start gap-2">
-                            <span className="text-green-600 dark:text-green-400">✓</span>
-                            <span>
-                              <strong>Profit Target:</strong>
-                              {' '}
-                              {ruleset.profit_target_pct}
-                              %
-                            </span>
-                          </li>
-                        )}
-                        {ruleset.max_drawdown_pct && (
-                          <li className="flex items-start gap-2">
-                            <span className="text-red-600 dark:text-red-400">⚠</span>
-                            <span>
-                              <strong>Max Drawdown:</strong>
-                              {' '}
-                              {ruleset.max_drawdown_pct}
-                              %
-                              {' '}
-                              {ruleset.max_drawdown_type && `(${ruleset.max_drawdown_type.replace('_', ' ')})`}
-                            </span>
-                          </li>
-                        )}
-                        {ruleset.max_daily_loss_pct && (
-                          <li className="flex items-start gap-2">
-                            <span className="text-orange-600 dark:text-orange-400">⚠</span>
-                            <span>
-                              <strong>Max Daily Loss:</strong>
-                              {' '}
-                              {ruleset.max_daily_loss_pct}
-                              %
-                              {' '}
-                              {ruleset.max_daily_loss_type && `(${ruleset.max_daily_loss_type.replace('_', ' ')})`}
-                            </span>
-                          </li>
-                        )}
-                        {ruleset.min_trading_days && (
-                          <li className="flex items-start gap-2">
-                            <span className="text-blue-600 dark:text-blue-400">✓</span>
-                            <span>
-                              <strong>Min Trading Days:</strong>
-                              {' '}
-                              {ruleset.min_trading_days}
-                              {' '}
-                              days
-                            </span>
-                          </li>
-                        )}
-                        {ruleset.consistency_required && ruleset.best_day_max_pct && (
-                          <li className="flex items-start gap-2">
-                            <span className="text-purple-600 dark:text-purple-400">✓</span>
-                            <span>
-                              <strong>Consistency Rule:</strong>
-                              {' '}
-                              Best day max
-                              {' '}
-                              {ruleset.best_day_max_pct}
-                              % of total profit
-                            </span>
-                          </li>
-                        )}
-                      </ul>
-                    </div>
-                  ))}
-                </section>
+                {/* 💰 PAYOUT DETAILS */}
+                <PayoutSection payoutTerms={payoutTerms} />
 
-                {/* More sections will be added via modular components */}
+                {/* 🔐 TRADING PERMISSIONS */}
+                <PermissionsSection phase1Rules={phase1Rules} />
+
+                {/* 📊 MARKETS & PLATFORMS */}
+                <MarketsSection marketAccess={marketAccess} />
+
+                {/* 🎯 ABOUT THIS CHALLENGE */}
+                <AboutSection program={program} />
+
+                {/* 🏢 ABOUT FIRM (Trust Signals) */}
+                <TrustSection
+                  trustSignals={trustSignals}
+                  organizerName={program.organizer_name}
+                />
               </div>
             </div>
-
-            {/* Footer - Fixed Actions */}
-            <footer className="glass-panel sticky bottom-0 border-t border-border/50 p-6 backdrop-blur-xl">
-              <div className="flex gap-3">
-                <button
-                  onClick={onClose}
-                    <h3 className="text-sm font-bold uppercase tracking-wide text-muted-foreground">
-                      {t('sections.allAvailableSizes')}
-                    </h3>
-
-                    {/* Desktop: Table */}
-                    <div className="hidden overflow-hidden rounded-2xl border border-border/50 sm:block">
-                      <table className="w-full">
-                        <thead className="bg-muted/30">
-                          <tr>
-                            <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-muted-foreground">
-                              {t('pricing.size')}
-                            </th>
-                            <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-muted-foreground">
-                              {t('pricing.fee')}
-                            </th>
-                            <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-muted-foreground">
-                              {t('pricing.refund')}
-                            </th>
-                            <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-muted-foreground">
-                              {t('pricing.scaling')}
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-border/50">
-                          {offers.map(offer => (
-                            <tr key={offer.id} className="transition-colors hover:bg-muted/20">
-                              <td className="px-4 py-3 font-semibold">
-                                {offer.account_currency}
-                                {offer.account_size.toLocaleString()}
-                              </td>
-                              <td className="px-4 py-3">
-                                {offer.entry_fee ? `${offer.fee_currency}${offer.entry_fee}` : t('metrics.free')}
-                              </td>
-                              <td className="px-4 py-3">
-                                {offer.refundable ? (
-                                  <span className="text-green-600 dark:text-green-400">✓</span>
-                                ) : (
-                                  <span className="text-muted-foreground">—</span>
-                                )}
-                              </td>
-                              <td className="px-4 py-3 text-muted-foreground">
-                                {offer.scaling_max ? `${offer.account_currency}${offer.scaling_max.toLocaleString()}` : '—'}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-
-                    {/* Mobile: Stacked Cards */}
-                    <div className="space-y-3 sm:hidden">
-                      {offers.map(offer => (
-                        <div key={offer.id} className="card-nested rounded-xl border border-border/50 bg-muted/30 p-4">
-                          <div className="mb-2 text-lg font-bold">
-                            {offer.account_currency}
-                            {offer.account_size.toLocaleString()}
-                          </div>
-                          <div className="space-y-1.5 text-sm">
-                            <div className="flex justify-between">
-                              <span className="text-muted-foreground">
-                                {t('metrics.entryFee')}
-                              </span>
-                              <span className="font-semibold">
-                                {offer.entry_fee ? `${offer.fee_currency}${offer.entry_fee}` : t('metrics.free')}
-                              </span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-muted-foreground">
-                                {t('pricing.refundable')}
-                              </span>
-                              <span className="font-semibold">
-                                {offer.refundable ? (
-                                  <span className="text-green-600 dark:text-green-400">Yes</span>
-                                ) : (
-                                  <span>No</span>
-                                )}
-                              </span>
-                            </div>
-                            {offer.scaling_max && (
-                              <div className="flex justify-between">
-                                <span className="text-muted-foreground">
-                                  {t('pricing.maxScaling')}
-                                </span>
-                                <span className="font-semibold">
-                                  {offer.account_currency}
-                                  {offer.scaling_max.toLocaleString()}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </TabsContent>
-
-                {/* Tab 3: Rules */}
-                <TabsContent value="rules" className="m-0 p-6">
-                  <div className="space-y-6">
-                    {rulesets.map(ruleset => (
-                      <section key={ruleset.phase_number}>
-                        <h3 className="mb-4 text-sm font-bold uppercase tracking-wide text-muted-foreground">
-                          {t('rules.phase')}
-                          {' '}
-                          {ruleset.phase_number}
-                        </h3>
-
-                        <div className="space-y-3">
-                          {/* Profit Target */}
-                          {ruleset.profit_target_pct && (
-                            <div className="flex items-center justify-between rounded-xl border border-green-500/20 bg-green-500/5 p-4">
-                              <span className="font-medium">
-                                {t('metrics.profitTarget')}
-                              </span>
-                              <span className="text-lg font-bold text-green-600 dark:text-green-400">
-                                {ruleset.profit_target_pct}
-                                %
-                              </span>
-                            </div>
-                          )}
-
-                          {/* Max Drawdown */}
-                          {ruleset.max_drawdown_pct && (
-                            <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-4">
-                              <div className="flex items-center justify-between">
-                                <span className="font-medium">
-                                  {t('metrics.maxDrawdown')}
-                                </span>
-                                <span className="text-lg font-bold text-red-600 dark:text-red-400">
-                                  {ruleset.max_drawdown_pct}
-                                  %
-                                </span>
-                              </div>
-                              {ruleset.max_drawdown_type && (
-                                <div className="mt-2 text-xs text-muted-foreground">
-                                  {t('rules.type')}
-                                  :
-                                  {' '}
-                                  {ruleset.max_drawdown_type.replace('_', ' ')}
-                                </div>
-                              )}
-                            </div>
-                          )}
-
-                          {/* Max Daily Loss */}
-                          {ruleset.max_daily_loss_pct && (
-                            <div className="rounded-xl border border-orange-500/20 bg-orange-500/5 p-4">
-                              <div className="flex items-center justify-between">
-                                <span className="font-medium">
-                                  {t('metrics.maxDailyLoss')}
-                                </span>
-                                <span className="text-lg font-bold text-orange-600 dark:text-orange-400">
-                                  {ruleset.max_daily_loss_pct}
-                                  %
-                                </span>
-                              </div>
-                              <div className="mt-2 space-y-1 text-xs text-muted-foreground">
-                                {ruleset.max_daily_loss_type && (
-                                  <div>
-                                    {t('rules.type')}
-                                    :
-                                    {' '}
-                                    {ruleset.max_daily_loss_type.replace('_', ' ')}
-                                  </div>
-                                )}
-                                {ruleset.daily_loss_reset_time && (
-                                  <div className="flex items-center gap-1.5">
-                                    <ClockIcon size={12} />
-                                    {t('rules.resetsAt')}
-                                    :
-                                    {' '}
-                                    {ruleset.daily_loss_reset_time}
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Min Trading Days */}
-                          {ruleset.min_trading_days && (
-                            <div className="flex items-center justify-between rounded-xl border border-border/50 bg-muted/30 p-4">
-                              <span className="font-medium">
-                                {t('metrics.minTradingDays')}
-                              </span>
-                              <span className="text-lg font-bold">
-                                {ruleset.min_trading_days}
-                                {' '}
-                                {t('metrics.days')}
-                              </span>
-                            </div>
-                          )}
-
-                          {/* Consistency Rule */}
-                          {ruleset.consistency_required && ruleset.best_day_max_pct && (
-                            <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-4">
-                              <div className="mb-1 font-medium">
-                                {t('rules.consistencyRule')}
-                              </div>
-                              <div className="text-sm text-muted-foreground">
-                                {t('rules.bestDayMax', { percent: ruleset.best_day_max_pct })}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </section>
-                    ))}
-                  </div>
-                </TabsContent>
-
-                {/* Tab 4: Permissions (NEW) */}
-                <TabsContent value="permissions" className="m-0 p-6">
-                  <div className="space-y-6">
-                    <h3 className="text-sm font-bold uppercase tracking-wide text-muted-foreground">
-                      {t('permissions.title')}
-                    </h3>
-
-                    {phase1Rules && (
-                      <div className="space-y-3">
-                        {/* EA/Bot Allowed */}
-                        <div
-                          className={cn(
-                            'flex items-center justify-between rounded-xl border p-4',
-                            phase1Rules.ea_allowed
-                              ? 'border-green-500/20 bg-green-500/5'
-                              : 'border-red-500/20 bg-red-500/5',
-                          )}
-                        >
-                          <div className="flex items-center gap-2">
-                            <BotIcon size={20} className={phase1Rules.ea_allowed ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'} />
-                            <span className="font-medium">
-                              {t('permissions.eaBot')}
-                            </span>
-                          </div>
-                          <span
-                            className={cn(
-                              'text-lg font-bold',
-                              phase1Rules.ea_allowed
-                                ? 'text-green-600 dark:text-green-400'
-                                : 'text-red-600 dark:text-red-400',
-                            )}
-                          >
-                            {phase1Rules.ea_allowed ? t('permissions.allowed') : t('permissions.notAllowed')}
-                          </span>
-                        </div>
-
-                        {/* News Trading */}
-                        <div
-                          className={cn(
-                            'flex items-center justify-between rounded-xl border p-4',
-                            phase1Rules.news_trading
-                              ? 'border-green-500/20 bg-green-500/5'
-                              : 'border-red-500/20 bg-red-500/5',
-                          )}
-                        >
-                          <div className="flex items-center gap-2">
-                            <NewsIcon size={20} className={phase1Rules.news_trading ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'} />
-                            <span className="font-medium">
-                              {t('permissions.newsTrading')}
-                            </span>
-                          </div>
-                          <span
-                            className={cn(
-                              'text-lg font-bold',
-                              phase1Rules.news_trading
-                                ? 'text-green-600 dark:text-green-400'
-                                : 'text-red-600 dark:text-red-400',
-                            )}
-                          >
-                            {phase1Rules.news_trading ? t('permissions.allowed') : t('permissions.notAllowed')}
-                          </span>
-                        </div>
-
-                        {/* Weekend Holding */}
-                        <div
-                          className={cn(
-                            'flex items-center justify-between rounded-xl border p-4',
-                            phase1Rules.weekend_holding
-                              ? 'border-green-500/20 bg-green-500/5'
-                              : 'border-red-500/20 bg-red-500/5',
-                          )}
-                        >
-                          <div className="flex items-center gap-2">
-                            <WeekendIcon size={20} className={phase1Rules.weekend_holding ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'} />
-                            <span className="font-medium">
-                              {t('permissions.weekendHolding')}
-                            </span>
-                          </div>
-                          <span
-                            className={cn(
-                              'text-lg font-bold',
-                              phase1Rules.weekend_holding
-                                ? 'text-green-600 dark:text-green-400'
-                                : 'text-red-600 dark:text-red-400',
-                            )}
-                          >
-                            {phase1Rules.weekend_holding ? t('permissions.allowed') : t('permissions.notAllowed')}
-                          </span>
-                        </div>
-
-                        {/* Position Limits */}
-                        {(phase1Rules.max_position_size || phase1Rules.max_open_positions) && (
-                          <div className="rounded-xl border border-border/50 bg-muted/30 p-4">
-                            <div className="mb-3 font-medium">
-                              {t('permissions.positionLimits')}
-                            </div>
-                            <div className="space-y-2 text-sm">
-                              {phase1Rules.max_position_size && (
-                                <div className="flex justify-between">
-                                  <span className="text-muted-foreground">
-                                    {t('permissions.maxPositionSize')}
-                                  </span>
-                                  <span className="font-semibold">
-                                    {phase1Rules.max_position_size}
-                                    {' '}
-                                    {t('permissions.lots')}
-                                  </span>
-                                </div>
-                              )}
-                              {phase1Rules.max_open_positions && (
-                                <div className="flex justify-between">
-                                  <span className="text-muted-foreground">
-                                    {t('permissions.maxOpenPositions')}
-                                  </span>
-                                  <span className="font-semibold">{phase1Rules.max_open_positions}</span>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </TabsContent>
-
-                {/* Tab 5: Payout */}
-                <TabsContent value="payout" className="m-0 p-6">
-                  {payoutTerms && (
-                    <div className="space-y-6">
-                      <h3 className="text-sm font-bold uppercase tracking-wide text-muted-foreground">
-                        {t('sections.payoutDetails')}
-                      </h3>
-
-                      {/* Profit Split */}
-                      <div className="rounded-xl border border-border/50 bg-muted/30 p-4">
-                        <div className="mb-3 flex items-center gap-2">
-                          <PayoutIcon size={20} className="text-blue-600 dark:text-blue-400" />
-                          <span className="font-medium">
-                            {t('payout.profitSplit')}
-                          </span>
-                        </div>
-                        <div className="space-y-2 text-sm">
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">
-                              {t('payout.initial')}
-                            </span>
-                            <span className="font-semibold">
-                              {payoutTerms.profit_split_initial}
-                              %
-                            </span>
-                          </div>
-                          {payoutTerms.profit_split_scaled && (
-                            <div className="flex justify-between">
-                              <span className="text-muted-foreground">
-                                {t('payout.scaled')}
-                              </span>
-                              <span className="font-semibold">
-                                {payoutTerms.profit_split_scaled}
-                                %
-                              </span>
-                            </div>
-                          )}
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">
-                              {t('payout.maximum')}
-                            </span>
-                            <span className="font-semibold text-green-600 dark:text-green-400">
-                              {payoutTerms.profit_split_max}
-                              %
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Payout Schedule */}
-                      <div className="rounded-xl border border-border/50 bg-muted/30 p-4">
-                        <div className="mb-3 font-medium">
-                          {t('sections.payoutSchedule')}
-                        </div>
-                        <div className="space-y-2 text-sm">
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">
-                              {t('payout.frequency')}
-                            </span>
-                            <span className="font-semibold capitalize">{payoutTerms.payout_frequency}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">
-                              {t('payout.firstPayoutDelay')}
-                            </span>
-                            <span className="font-semibold">
-                              {payoutTerms.first_payout_delay_days}
-                              {' '}
-                              {t('metrics.days')}
-                            </span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">
-                              {t('payout.eligibleAfter')}
-                            </span>
-                            <span className="font-semibold">
-                              {t('rules.phase')}
-                              {' '}
-                              {payoutTerms.eligible_after_phase}
-                            </span>
-                          </div>
-                          {payoutTerms.payout_processing_time_hours && (
-                            <div className="flex justify-between">
-                              <span className="text-muted-foreground">
-                                {t('payout.processingTime')}
-                              </span>
-                              <span className="font-semibold">
-                                {payoutTerms.payout_processing_time_hours}
-                                h
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Withdrawal Methods */}
-                      {payoutTerms.withdrawal_methods && payoutTerms.withdrawal_methods.length > 0 && (
-                        <div className="rounded-xl border border-border/50 bg-muted/30 p-4">
-                          <div className="mb-3 font-medium">
-                            {t('sections.withdrawalMethods')}
-                          </div>
-                          <div className="flex flex-wrap gap-2">
-                            {payoutTerms.withdrawal_methods.map(method => (
-                              <span
-                                key={method}
-                                className="rounded-lg border border-border/50 bg-background px-3 py-1.5 text-xs font-medium capitalize"
-                              >
-                                {method}
-                              </span>
-                            ))}
-                          </div>
-                          {payoutTerms.min_withdrawal && (
-                            <div className="mt-3 text-xs text-muted-foreground">
-                              {t('payout.minimumWithdrawal', { amount: payoutTerms.min_withdrawal })}
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </TabsContent>
-
-                {/* Tab 6: Markets */}
-                <TabsContent value="markets" className="m-0 p-6">
-                  {marketAccess && (
-                    <div className="space-y-6">
-                      <h3 className="text-sm font-bold uppercase tracking-wide text-muted-foreground">
-                        {t('sections.marketsAndPlatforms')}
-                      </h3>
-
-                      {/* Available Markets */}
-                      <div>
-                        <div className="mb-3 font-medium">
-                          {t('sections.availableMarkets')}
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {marketAccess.markets_available.map(market => (
-                            <span
-                              key={market}
-                              className="rounded-lg border border-border/50 bg-background px-3 py-1.5 text-xs font-medium capitalize"
-                            >
-                              {market}
-                            </span>
-                          ))}
-                        </div>
-                        {marketAccess.instruments_count && (
-                          <div className="mt-2 text-xs text-muted-foreground">
-                            {t('markets.instrumentsAvailable', { count: marketAccess.instruments_count })}
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Leverage */}
-                      {(marketAccess.leverage_forex || marketAccess.leverage_indices || marketAccess.leverage_commodities || marketAccess.leverage_crypto) && (
-                        <div className="rounded-xl border border-border/50 bg-muted/30 p-4">
-                          <div className="mb-3 flex items-center gap-2">
-                            <LeverageIcon size={20} className="text-purple-600 dark:text-purple-400" />
-                            <span className="font-medium">
-                              {t('markets.leverage')}
-                            </span>
-                          </div>
-                          <div className="space-y-2 text-sm">
-                            {marketAccess.leverage_forex && (
-                              <div className="flex justify-between">
-                                <span className="text-muted-foreground">
-                                  {t('markets.forex')}
-                                </span>
-                                <span className="font-semibold">{marketAccess.leverage_forex}</span>
-                              </div>
-                            )}
-                            {marketAccess.leverage_indices && (
-                              <div className="flex justify-between">
-                                <span className="text-muted-foreground">
-                                  {t('markets.indices')}
-                                </span>
-                                <span className="font-semibold">{marketAccess.leverage_indices}</span>
-                              </div>
-                            )}
-                            {marketAccess.leverage_commodities && (
-                              <div className="flex justify-between">
-                                <span className="text-muted-foreground">
-                                  {t('markets.commodities')}
-                                </span>
-                                <span className="font-semibold">{marketAccess.leverage_commodities}</span>
-                              </div>
-                            )}
-                            {marketAccess.leverage_crypto && (
-                              <div className="flex justify-between">
-                                <span className="text-muted-foreground">
-                                  {t('markets.crypto')}
-                                </span>
-                                <span className="font-semibold">{marketAccess.leverage_crypto}</span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Commission */}
-                      {(marketAccess.commission_forex || marketAccess.commission_indices) && (
-                        <div className="rounded-xl border border-border/50 bg-muted/30 p-4">
-                          <div className="mb-3 flex items-center gap-2">
-                            <CommissionIcon size={20} className="text-orange-600 dark:text-orange-400" />
-                            <span className="font-medium">
-                              {t('markets.commission')}
-                            </span>
-                          </div>
-                          <div className="space-y-2 text-sm">
-                            {marketAccess.commission_forex && (
-                              <div className="flex justify-between">
-                                <span className="text-muted-foreground">
-                                  {t('markets.forex')}
-                                </span>
-                                <span className="font-semibold">
-                                  $
-                                  {marketAccess.commission_forex}
-                                  {t('markets.perLot')}
-                                </span>
-                              </div>
-                            )}
-                            {marketAccess.commission_indices && (
-                              <div className="flex justify-between">
-                                <span className="text-muted-foreground">
-                                  {t('markets.indices')}
-                                </span>
-                                <span className="font-semibold">
-                                  $
-                                  {marketAccess.commission_indices}
-                                  {t('markets.perLot')}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Trading Hours */}
-                      {marketAccess.trading_hours && (
-                        <div className="rounded-xl border border-border/50 bg-muted/30 p-4">
-                          <div className="mb-2 flex items-center gap-2">
-                            <ClockIcon size={20} className="text-blue-600 dark:text-blue-400" />
-                            <span className="font-medium">
-                              {t('markets.tradingHours')}
-                            </span>
-                          </div>
-                          <div className="text-sm text-muted-foreground">{marketAccess.trading_hours}</div>
-                        </div>
-                      )}
-
-                      {/* Platforms */}
-                      <div>
-                        <div className="mb-3 font-medium">
-                          {t('sections.tradingPlatforms')}
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {marketAccess.platforms.map(platform => (
-                            <span
-                              key={platform}
-                              className="rounded-lg border border-border/50 bg-background px-3 py-1.5 text-xs font-medium"
-                            >
-                              {platform}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </TabsContent>
-
-                {/* Tab 7: Trust & Audit */}
-                <TabsContent value="trust" className="m-0 p-6">
-                  <div className="space-y-6">
-                    <h3 className="text-sm font-bold uppercase tracking-wide text-muted-foreground">
-                      {t('sections.dataQuality')}
-                    </h3>
-
-                    {/* Freshness Indicator */}
-                    <div className="rounded-xl border border-border/50 bg-muted/30 p-4">
-                      <div className="mb-3 flex items-center gap-2">
-                        <FreshnessIcon size={20} className="text-green-600 dark:text-green-400" />
-                        <span className="font-medium">
-                          {t('sections.dataFreshness')}
-                        </span>
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        {t('trust.lastVerified', { date: 'Today (T-0)' })}
-                      </div>
-                    </div>
-
-                    {/* Placeholder for future source tracking */}
-                    <div className="rounded-xl border border-border/50 bg-muted/30 p-4">
-                      <div className="mb-2 font-medium">
-                        {t('sections.verifiedSources')}
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        {t('trust.sourceTracking')}
-                      </div>
-                    </div>
-
-                    {/* Report Issue */}
-                    <div className="rounded-xl border border-orange-500/20 bg-orange-500/5 p-4">
-                      <div className="mb-2 font-medium text-orange-600 dark:text-orange-400">
-                        {t('sections.foundOutdatedData')}
-                      </div>
-                      <div className="mb-3 text-sm text-muted-foreground">
-                        {t('sections.helpUsKeepAccurate')}
-                      </div>
-                      <button
-                        type="button"
-                        className="rounded-lg border border-orange-500/20 bg-background px-3 py-1.5 text-xs font-medium text-orange-600 transition-colors hover:bg-orange-500/10 dark:text-orange-400"
-                      >
-                        {t('trust.reportIssue')}
-                      </button>
-                    </div>
-                  </div>
-                </TabsContent>
-              </div>
-            </Tabs>
 
             {/* Footer - Fixed Actions */}
             <footer className="glass-panel sticky bottom-0 border-t border-border/50 p-6 backdrop-blur-xl">
@@ -1071,7 +305,7 @@ export function ProgramDrawer({
                   className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-background px-4 py-3 text-sm font-semibold transition-all hover:bg-muted"
                   type="button"
                 >
-                  {t('actions.close')}
+                  {t('drawer.close')}
                 </button>
                 {onEnroll && (
                   <button
@@ -1079,7 +313,7 @@ export function ProgramDrawer({
                     className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary to-primary/90 px-4 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30"
                     type="button"
                   >
-                    {isFree ? t('actions.joinCompetition') : t('actions.startChallenge')}
+                    {isFree ? t('drawer.joinCompetition') : t('drawer.startChallenge')}
                     <ExternalLinkIcon size={16} />
                   </button>
                 )}
