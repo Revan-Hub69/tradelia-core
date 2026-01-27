@@ -18,7 +18,7 @@
     "generic": "Qualcosa è andato storto. Riprova."
   },
   "a11y": {
-    "cardLabel": "Card sfida per {name}",
+    "cardLabel": "Scheda sfida per {name}",
     "openDrawer": "Apri dettagli per {name}",
     "closeDrawer": "Chiudi dettagli sfida",
     "compareToggle": "Attiva/disattiva confronto per {name}",
@@ -26,7 +26,7 @@
     "sortButton": "Cambia ordinamento",
     "availabilityBadge": "Stato sfida: {status}",
     "kpiLabel": "{label}: {value}",
-    "offerSelector": "Seleziona dimensione account",
+    "offerSelector": "Seleziona dimensione conto",
     "loading": "Caricamento sfide in corso, attendere",
     "noResults": "Nessuna sfida corrisponde ai filtri",
     "skipToContent": "Vai alla lista sfide",
@@ -68,21 +68,21 @@
     "tournamentsDescription": "Eventi di trading competitivi"
   },
   "card": {
-    "accountSize": "Account",
-    "profitSplit": "Split",
+    "accountSize": "Conto",
+    "profitSplit": "Divisione",
     "entryFee": "Costo",
-    "prizePool": "Premio",
+    "prizePool": "Montepremi",
     "firstPrize": "1° Premio",
     "participants": "Partecipanti",
     "free": "GRATIS",
     "compare": "Confronta",
     "details": "Dettagli",
-    "step": "Step",
+    "step": "Fase",
     "days": "giorni",
     "verified": "Verificato",
-    "topRated": "Top Rated",
+    "topRated": "Più Votato",
     "new": "Nuovo",
-    "hot": "Hot"
+    "hot": "Popolare"
   },
   "filters": {
     "title": "Filtri",
@@ -96,34 +96,34 @@
       "resultCount": "{count} sfide trovate"
     },
     "cost": "Costo",
-    "accountSize": "Dimensione Account",
-    "profitSplit": "Split Profitto",
+    "accountSize": "Dimensione Conto",
+    "profitSplit": "Divisione Profitti",
     "type": "Tipo",
     "market": "Mercato",
     "platform": "Piattaforma",
     "costOptions": {
       "free": "Gratis",
-      "under50": "Sotto $50",
+      "under50": "Meno di $50",
       "50to200": "$50-$200",
       "200to500": "$200-$500",
-      "500plus": "$500+"
+      "500plus": "Oltre $500"
     },
     "accountSizeOptions": {
-      "under10k": "Sotto $10K",
+      "under10k": "Meno di $10K",
       "10kto50k": "$10K-$50K",
       "50kto100k": "$50K-$100K",
-      "100kplus": "$100K+"
+      "100kplus": "Oltre $100K"
     },
     "profitSplitOptions": {
-      "80plus": "80%+",
-      "90plus": "90%+",
-      "95plus": "95%+",
+      "80plus": "80% o più",
+      "90plus": "90% o più",
+      "95plus": "95% o più",
       "100": "100%"
     },
     "typeOptions": {
-      "1step": "1-Step",
-      "2step": "2-Step",
-      "instant": "Funding Istantaneo"
+      "1step": "1 Fase",
+      "2step": "2 Fasi",
+      "instant": "Finanziamento Istantaneo"
     },
     "marketOptions": {
       "forex": "Forex",
@@ -180,36 +180,36 @@
       "keyMetrics": "Metriche Chiave",
       "riskRules": "Regole di Rischio",
       "bestFor": "Ideale Per",
-      "pros": "Pro",
-      "cons": "Contro",
+      "pros": "Vantaggi",
+      "cons": "Svantaggi",
       "allSizes": "Tutte le Dimensioni Disponibili",
       "payoutDetails": "Dettagli Pagamento",
       "permissionsTitle": "Permessi di Trading",
-      "accountSize": "Dimensione Account",
-      "profitSplit": "Split Profitto",
+      "accountSize": "Dimensione Conto",
+      "profitSplit": "Divisione Profitti",
       "entryFee": "Costo Iscrizione",
       "firstPayout": "Primo Pagamento",
       "phase": "Fase",
-      "profitTarget": "Target Profitto",
+      "profitTarget": "Obiettivo Profitto",
       "maxDrawdown": "Drawdown Massimo",
-      "maxDailyLoss": "Perdita Giornaliera Max",
+      "maxDailyLoss": "Perdita Giornaliera Massima",
       "minTradingDays": "Giorni Trading Minimi",
       "consistencyRule": "Regola Consistenza",
-      "bestDayMax": "Giorno migliore max {percent}% del profitto totale",
+      "bestDayMax": "Il giorno migliore può essere max {percent}% del profitto totale",
       "days": "giorni",
       "rating": "Valutazione",
       "passRate": "Tasso Successo",
       "activeTradersStat": "Trader Attivi",
       "totalPaid": "Totale Pagato",
       "founded": "Fondata",
-      "dataFreshness": "Freschezza Dati",
+      "dataFreshness": "Aggiornamento Dati",
       "lastVerified": "Ultima verifica: {date}"
     }
   },
   "metrics": {
-    "profitTarget": "Target Profitto",
+    "profitTarget": "Obiettivo Profitto",
     "maxDrawdown": "Drawdown Massimo",
-    "maxDailyLoss": "Perdita Giornaliera Max",
+    "maxDailyLoss": "Perdita Giornaliera Massima",
     "minTradingDays": "Giorni Trading Minimi",
     "timeLimit": "Limite Tempo",
     "phases": "Fasi",
@@ -218,10 +218,10 @@
     "days": "giorni"
   },
   "pricing": {
-    "size": "Dimensione Account",
+    "size": "Dimensione Conto",
     "fee": "Costo Iscrizione",
     "refund": "Rimborsabile",
-    "scaling": "Scaling Massimo",
+    "scaling": "Scalabilità Massima",
     "refundable": "Rimborsabile"
   },
   "rules": {
@@ -245,12 +245,12 @@
   },
   "payout": {
     "title": "Dettagli Pagamento",
-    "profitSplit": "Split Profitto",
+    "profitSplit": "Divisione Profitti",
     "initial": "Iniziale",
     "scaled": "Scalato",
     "maximum": "Massimo",
     "frequency": "Frequenza Pagamento",
-    "firstDelay": "Ritardo Primo Pagamento",
+    "firstDelay": "Attesa Primo Pagamento",
     "withdrawalMethods": "Metodi Prelievo",
     "minWithdrawal": "Prelievo Minimo",
     "processingTime": "Tempo Elaborazione",
