@@ -1,13 +1,14 @@
 /**
  * PERMISSIONS SECTION - Program Drawer
- * Modular component following best practices 2026
+ * Enterprise component 2026 - NO EMOJI
  */
 
 import { useTranslations } from 'next-intl';
 
 import { cn } from '@/utils/Helpers';
 
-import { BotIcon, NewsIcon, WeekendIcon } from '../PremiumIcons';
+import { BotIcon, CheckCircleIcon, NewsIcon, WeekendIcon } from '../PremiumIcons';
+import { SectionHeader } from './SectionHeader';
 
 type Ruleset = {
   ea_allowed?: boolean;
@@ -30,10 +31,11 @@ export function PermissionsSection({ phase1Rules }: PermissionsSectionProps) {
 
   return (
     <section>
-      <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
-        <span>🔐</span>
-        {t('permissions.title')}
-      </h3>
+      <SectionHeader
+        icon={<CheckCircleIcon size={20} />}
+        title={t('permissions.title')}
+        iconColor="purple"
+      />
 
       <div className="space-y-3">
         {/* EA/Bot Allowed */}

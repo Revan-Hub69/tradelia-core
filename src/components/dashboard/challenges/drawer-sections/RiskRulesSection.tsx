@@ -1,9 +1,12 @@
 /**
  * RISK RULES SECTION - Program Drawer
- * Modular component following best practices
+ * Enterprise component 2026 - NO EMOJI
  */
 
 import { useTranslations } from 'next-intl';
+
+import { DailyLossIcon } from '../PremiumIcons';
+import { SectionHeader } from './SectionHeader';
 
 type Ruleset = {
   phase_number: number;
@@ -26,10 +29,11 @@ export function RiskRulesSection({ rulesets }: RiskRulesSectionProps) {
   
   return (
     <section>
-      <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
-        <span>⚠️</span>
-        {t('drawer.sections.riskRules')}
-      </h3>
+      <SectionHeader
+        icon={<DailyLossIcon size={20} />}
+        title={t('drawer.sections.riskRules')}
+        iconColor="red"
+      />
       {rulesets.map(ruleset => (
         <div key={ruleset.phase_number} className="mb-4 space-y-3">
           {ruleset.phase_number > 1 && (

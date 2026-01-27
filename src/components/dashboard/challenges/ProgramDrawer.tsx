@@ -32,16 +32,18 @@ import {
   MarketsSection,
   PayoutSection,
   PermissionsSection,
+  PhaseRulesSection,
+  PrizePoolSection,
+  RankingSystemSection,
   RiskRulesSection,
   TrustSection,
 } from './drawer-sections';
 import { ExternalLinkIcon, StarIcon, TrendingUpIcon } from './PremiumIcons';
 
 // Close Icon
-const CloseIcon = () => (
+const CloseIcon = ({ className = '' }: { className?: string }) => (
   <svg
-    width="20"
-    height="20"
+    className={className || 'size-5'}
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -115,6 +117,7 @@ type Program = {
   name: string;
   organizer_name: string;
   category: 'free_competition' | 'paid_evaluation';
+  ruleset_mode?: 'target_based' | 'ranking_based';
   description?: string | null;
   best_for?: string | null;
   pros?: string[];
@@ -206,48 +209,48 @@ export function ProgramDrawer({
             className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md"
           />
 
-          {/* Drawer */}
+          {/* Drawer - Responsive width with breakpoints */}
           <motion.aside
             ref={drawerRef}
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className="fixed right-0 top-0 z-50 flex size-full flex-col overflow-hidden bg-background shadow-2xl sm:w-[640px]"
+            className="fixed right-0 top-0 z-50 flex size-full flex-col overflow-hidden bg-background shadow-2xl sm:w-[640px] lg:w-[720px] xl:w-[800px]"
             role="dialog"
             aria-modal="true"
             aria-labelledby="drawer-title"
             aria-describedby="drawer-description"
           >
-            {/* Header - Fixed */}
+            {/* Header - Responsive (Enterprise) */}
             <header className="glass-panel sticky top-0 z-10 border-b border-border/50 backdrop-blur-xl">
-              <div className="flex items-start gap-4 p-6">
+              <div className="flex items-start gap-3 px-4 py-4 sm:gap-4 sm:px-6 sm:py-5 lg:px-8 lg:py-6">
                 <div className="min-w-0 flex-1">
                   {/* Badges & Trust Signals */}
-                  <div className="mb-3 flex flex-wrap items-center gap-2">
+                  <div className="mb-2 flex flex-wrap items-center gap-1.5 sm:mb-3 sm:gap-2">
                     {isFree ? (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-white shadow-lg shadow-green-500/30">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white shadow-lg shadow-green-500/30 sm:gap-1.5 sm:px-3 sm:py-1.5 sm:text-xs">
                         <span className="size-1.5 animate-pulse rounded-full bg-white" />
                         {t('badges.freeCompetition')}
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-500/10 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-blue-600 backdrop-blur-sm dark:text-blue-400">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-blue-600 backdrop-blur-sm dark:text-blue-400 sm:gap-1.5 sm:px-3 sm:py-1.5 sm:text-xs">
                         {t('badges.propFirm')}
                       </span>
                     )}
 
                     {/* Rating */}
-                    <div className="flex items-center gap-1 rounded-full bg-amber-500/10 px-2.5 py-1">
-                      <StarIcon size={14} className="text-amber-600 dark:text-amber-400" />
-                      <span className="text-xs font-bold text-amber-600 dark:text-amber-400">
+                    <div className="flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 sm:px-2.5 sm:py-1">
+                      <StarIcon size={12} className="text-amber-600 dark:text-amber-400 sm:size-3.5" />
+                      <span className="text-[11px] font-bold text-amber-600 dark:text-amber-400 sm:text-xs">
                         {trustSignals.rating}
                       </span>
                     </div>
 
                     {/* Success Rate */}
-                    <div className="flex items-center gap-1 rounded-full bg-green-500/10 px-2.5 py-1">
-                      <TrendingUpIcon size={14} className="text-green-600 dark:text-green-400" />
-                      <span className="text-xs font-bold text-green-600 dark:text-green-400">
+                    <div className="flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-0.5 sm:px-2.5 sm:py-1">
+                      <TrendingUpIcon size={12} className="text-green-600 dark:text-green-400 sm:size-3.5" />
+                      <span className="text-[11px] font-bold text-green-600 dark:text-green-400 sm:text-xs">
                         {trustSignals.successRate}
                         %
                       </span>
@@ -257,13 +260,13 @@ export function ProgramDrawer({
                   {/* Title */}
                   <h2
                     id="drawer-title"
-                    className="mb-2 text-2xl font-bold leading-tight tracking-tight"
+                    className="mb-1.5 text-xl font-bold leading-tight tracking-tight sm:mb-2 sm:text-2xl lg:text-3xl"
                   >
                     {program.name}
                   </h2>
 
                   {/* Organizer & Traders */}
-                  <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground sm:gap-3 sm:text-sm">
                     <span>{program.organizer_name}</span>
                     <span>•</span>
                     <span>
@@ -274,34 +277,43 @@ export function ProgramDrawer({
                   </div>
                 </div>
 
-                {/* Close Button */}
+                {/* Close Button - Responsive touch target */}
                 <button
                   onClick={onClose}
-                  className="shrink-0 rounded-xl p-2.5 text-muted-foreground transition-all hover:bg-muted hover:text-foreground"
+                  className="shrink-0 rounded-xl p-2.5 text-muted-foreground transition-all hover:bg-muted hover:text-foreground sm:p-2.5 lg:p-3"
                   aria-label={t('a11y.closeDrawer')}
                   type="button"
                 >
-                  <CloseIcon />
+                  <CloseIcon className="size-5 sm:size-5 lg:size-6" />
                 </button>
               </div>
             </header>
 
-            {/* Content - Single Scroll with Modular Sections */}
+            {/* Content - Single Scroll with Modular Sections (Enterprise spacing) */}
             <div
               ref={scrollContainerRef as React.RefObject<HTMLDivElement>}
               className="flex-1 overflow-y-auto"
             >
-              <div className="space-y-8 p-6">
-                {/* 📊 KEY METRICS */}
+              <div className="space-y-6 px-4 py-6 sm:space-y-8 sm:px-6 sm:py-8 lg:space-y-10 lg:px-8 lg:py-10">
+                {/* 📊 KEY METRICS - Always visible */}
                 {firstOffer && (
                   <KeyMetricsSection offer={firstOffer} payoutTerms={payoutTerms} />
                 )}
 
-                {/* ⚠️ RISK RULES */}
+                {/* 🏆 PRIZE POOL - Only for free competitions */}
+                {isFree && <PrizePoolSection />}
+
+                {/* 📋 PHASE RULES - Only for paid evaluations */}
+                {!isFree && <PhaseRulesSection phases={rulesets} />}
+
+                {/* 📈 RANKING SYSTEM - Only for ranking-based tournaments */}
+                {program.ruleset_mode === 'ranking_based' && <RankingSystemSection />}
+
+                {/* ⚠️ RISK RULES - Always visible but simplified for competitions */}
                 <RiskRulesSection rulesets={rulesets} />
 
-                {/* 💰 PAYOUT DETAILS */}
-                <PayoutSection payoutTerms={payoutTerms} />
+                {/* 💰 PAYOUT DETAILS - Only for paid evaluations */}
+                {!isFree && payoutTerms && <PayoutSection payoutTerms={payoutTerms} />}
 
                 {/* 🔐 TRADING PERMISSIONS */}
                 <PermissionsSection phase1Rules={phase1Rules} />
@@ -320,12 +332,12 @@ export function ProgramDrawer({
               </div>
             </div>
 
-            {/* Footer - Fixed Actions */}
-            <footer className="glass-panel sticky bottom-0 border-t border-border/50 p-6 backdrop-blur-xl">
-              <div className="flex gap-3">
+            {/* Footer - Responsive Actions (Enterprise spacing) */}
+            <footer className="glass-panel sticky bottom-0 border-t border-border/50 px-4 py-4 backdrop-blur-xl sm:px-6 sm:py-5 lg:px-8 lg:py-6">
+              <div className="flex gap-2.5 sm:gap-3 lg:gap-4">
                 <button
                   onClick={onClose}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-background px-4 py-3 text-sm font-semibold transition-all hover:bg-muted"
+                  className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-border bg-background px-3 py-2.5 text-sm font-semibold transition-all hover:bg-muted sm:gap-2 sm:px-4 sm:py-3 sm:text-base"
                   type="button"
                 >
                   {t('drawer.close')}
@@ -333,11 +345,11 @@ export function ProgramDrawer({
                 {onEnroll && (
                   <button
                     onClick={() => onEnroll(program.id)}
-                    className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary to-primary/90 px-4 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30"
+                    className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-primary to-primary/90 px-3 py-2.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30 sm:gap-2 sm:px-4 sm:py-3 sm:text-base"
                     type="button"
                   >
                     {isFree ? t('drawer.joinCompetition') : t('drawer.startChallenge')}
-                    <ExternalLinkIcon size={16} />
+                    <ExternalLinkIcon size={14} className="sm:size-4" />
                   </button>
                 )}
               </div>

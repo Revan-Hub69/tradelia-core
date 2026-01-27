@@ -1,11 +1,12 @@
 /**
  * PAYOUT SECTION - Program Drawer
- * Modular component following best practices 2026
+ * Enterprise component 2026 - NO EMOJI
  */
 
 import { useTranslations } from 'next-intl';
 
 import { PayoutIcon } from '../PremiumIcons';
+import { SectionHeader } from './SectionHeader';
 
 type PayoutTerms = {
   profit_split_initial: number;
@@ -32,10 +33,11 @@ export function PayoutSection({ payoutTerms }: PayoutSectionProps) {
 
   return (
     <section>
-      <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
-        <span>💰</span>
-        {t('payout.title')}
-      </h3>
+      <SectionHeader
+        icon={<PayoutIcon size={20} />}
+        title={t('payout.title')}
+        iconColor="green"
+      />
 
       {/* Profit Split */}
       <div className="mb-4 rounded-xl border border-border/50 bg-muted/30 p-4">

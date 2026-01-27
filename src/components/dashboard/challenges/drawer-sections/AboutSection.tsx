@@ -1,6 +1,6 @@
 /**
  * ABOUT SECTION - Program Drawer
- * Modular component following best practices 2026
+ * Enterprise component 2026 - NO EMOJI
  */
 
 import { useTranslations } from 'next-intl';
@@ -8,7 +8,8 @@ import React from 'react';
 
 import { sanitizeHTML, sanitizeText } from '@/lib/sanitize';
 
-import { CheckCircleIcon } from '../PremiumIcons';
+import { CheckCircleIcon, InfoIcon } from '../PremiumIcons';
+import { SectionHeader } from './SectionHeader';
 
 type Program = {
   description?: string | null;
@@ -33,10 +34,11 @@ export const AboutSection = React.memo(function AboutSection({ program }: AboutS
 
   return (
     <section>
-      <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
-        <span>🎯</span>
-        {t('drawer.sections.aboutChallenge')}
-      </h3>
+      <SectionHeader
+        icon={<InfoIcon size={20} />}
+        title={t('drawer.sections.aboutChallenge')}
+        iconColor="primary"
+      />
 
       <div className="space-y-4">
         {/* Description */}
@@ -84,7 +86,7 @@ export const AboutSection = React.memo(function AboutSection({ program }: AboutS
             {program.cons && program.cons.length > 0 && (
               <div>
                 <h4 className="mb-3 flex items-center gap-2 text-sm font-bold text-orange-600 dark:text-orange-400">
-                  <span>⚠️</span>
+                  <InfoIcon size={16} />
                   {t('drawer.sections.cons')}
                 </h4>
                 <ul className="space-y-2">

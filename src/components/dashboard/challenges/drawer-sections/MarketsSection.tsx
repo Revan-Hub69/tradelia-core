@@ -1,11 +1,12 @@
 /**
  * MARKETS SECTION - Program Drawer
- * Modular component following best practices 2026
+ * Enterprise component 2026 - NO EMOJI
  */
 
 import { useTranslations } from 'next-intl';
 
-import { ClockIcon, CommissionIcon, LeverageIcon } from '../PremiumIcons';
+import { ClockIcon, CommissionIcon, LeverageIcon, TrendingUpIcon } from '../PremiumIcons';
+import { SectionHeader } from './SectionHeader';
 
 type MarketAccess = {
   markets_available: string[];
@@ -33,10 +34,11 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
 
   return (
     <section>
-      <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
-        <span>📊</span>
-        {t('markets.title')}
-      </h3>
+      <SectionHeader
+        icon={<TrendingUpIcon size={20} />}
+        title={t('markets.title')}
+        iconColor="blue"
+      />
 
       {/* Available Markets */}
       <div className="mb-4">

@@ -1,11 +1,12 @@
 /**
  * TRUST SECTION - Program Drawer
- * Modular component following best practices 2026
+ * Enterprise component 2026 - NO EMOJI
  */
 
 import { useTranslations } from 'next-intl';
 
-import { FreshnessIcon, StarIcon, TrendingUpIcon } from '../PremiumIcons';
+import { FreshnessIcon, StarIcon, TrendingUpIcon, VerifiedIcon } from '../PremiumIcons';
+import { SectionHeader } from './SectionHeader';
 
 type TrustSignals = {
   rating: number;
@@ -25,10 +26,11 @@ export function TrustSection({ trustSignals, organizerName }: TrustSectionProps)
   
   return (
     <section>
-      <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
-        <span>🏢</span>
-        {t('drawer.sections.aboutFirm', { name: organizerName })}
-      </h3>
+      <SectionHeader
+        icon={<VerifiedIcon size={20} />}
+        title={t('drawer.sections.aboutFirm', { name: organizerName })}
+        iconColor="amber"
+      />
 
       <div className="space-y-3">
         {/* Rating */}

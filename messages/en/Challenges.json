@@ -313,5 +313,34 @@
     "details": "Details",
     "enroll": "Enroll Now",
     "learnMore": "Learn More"
+  },
+  "prizePool": {
+    "title": "Prize Pool",
+    "totalPool": "Total Prize Pool",
+    "distribution": "Prize Distribution",
+    "firstPlace": "1st Place",
+    "secondPlace": "2nd Place",
+    "thirdPlace": "3rd Place"
+  },
+  "phaseRules": {
+    "title": "Phase Rules",
+    "phase": "Phase",
+    "daysLimit": "days limit",
+    "funded": "Funded",
+    "profitTarget": "Profit Target",
+    "maxDrawdown": "Max Drawdown",
+    "dailyLoss": "Daily Loss",
+    "minDays": "Min Days"
+  },
+  "ranking": {
+    "title": "Ranking System",
+    "method": "Ranking Method",
+    "profitPercentage": "Profit Percentage",
+    "absoluteProfit": "Absolute Profit",
+    "riskAdjusted": "Risk-Adjusted Returns",
+    "consistency": "Consistency Score",
+    "updatedFrequency": "Updated: {frequency}",
+    "scoringFactors": "Scoring Factors",
+    "leaderboardInfo": "Rankings are updated in real-time. Your position may change as other traders complete trades."
   }
 }

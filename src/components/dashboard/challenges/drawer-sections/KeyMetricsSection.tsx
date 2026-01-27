@@ -1,10 +1,13 @@
 /**
  * KEY METRICS SECTION - Program Drawer
- * Modular component following best practices
+ * Enterprise component 2026 - NO EMOJI
  */
 
 import { useTranslations } from 'next-intl';
 import React from 'react';
+
+import { TargetIcon } from '../PremiumIcons';
+import { SectionHeader } from './SectionHeader';
 
 type Offer = {
   account_size: number;
@@ -31,17 +34,18 @@ export const KeyMetricsSection = React.memo(function KeyMetricsSection({
   
   return (
     <section>
-      <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
-        <span>📊</span>
-        {t('drawer.sections.keyMetrics')}
-      </h3>
-      <div className="grid grid-cols-2 gap-3">
+      <SectionHeader
+        icon={<TargetIcon size={20} />}
+        title={t('drawer.sections.keyMetrics')}
+        iconColor="blue"
+      />
+      <div className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-4 lg:gap-4">
         {/* Account Size */}
-        <div className="rounded-xl border border-border/50 bg-muted/30 p-4">
+        <div className="rounded-xl border border-border/50 bg-muted/30 p-3 sm:p-4 lg:col-span-1">
           <div className="mb-1 text-xs text-muted-foreground">
             {t('drawer.sections.accountSize')}
           </div>
-          <div className="text-2xl font-bold">
+          <div className="text-xl font-bold sm:text-2xl lg:text-3xl">
             {offer.account_currency}
             {offer.account_size >= 1000
               ? `${offer.account_size / 1000}K`
@@ -51,11 +55,11 @@ export const KeyMetricsSection = React.memo(function KeyMetricsSection({
 
         {/* Profit Split */}
         {payoutTerms && (
-          <div className="rounded-xl border border-green-500/20 bg-green-500/5 p-4">
+          <div className="rounded-xl border border-green-500/20 bg-green-500/5 p-3 sm:p-4 lg:col-span-1">
             <div className="mb-1 text-xs text-muted-foreground">
               {t('drawer.sections.profitSplit')}
             </div>
-            <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+            <div className="text-xl font-bold text-green-600 dark:text-green-400 sm:text-2xl lg:text-3xl">
               {payoutTerms.profit_split_max}
               %
             </div>
@@ -63,11 +67,11 @@ export const KeyMetricsSection = React.memo(function KeyMetricsSection({
         )}
 
         {/* Entry Fee */}
-        <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-4">
+        <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-3 sm:p-4 lg:col-span-1">
           <div className="mb-1 text-xs text-muted-foreground">
             {t('drawer.sections.entryFee')}
           </div>
-          <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+          <div className="text-xl font-bold text-blue-600 dark:text-blue-400 sm:text-2xl lg:text-3xl">
             {offer.entry_fee ? (
               <>
                 {offer.fee_currency}
@@ -83,11 +87,11 @@ export const KeyMetricsSection = React.memo(function KeyMetricsSection({
 
         {/* First Payout */}
         {payoutTerms && (
-          <div className="rounded-xl border border-border/50 bg-muted/30 p-4">
+          <div className="rounded-xl border border-border/50 bg-muted/30 p-3 sm:p-4 lg:col-span-1">
             <div className="mb-1 text-xs text-muted-foreground">
               {t('drawer.sections.firstPayout')}
             </div>
-            <div className="text-2xl font-bold">
+            <div className="text-xl font-bold sm:text-2xl lg:text-3xl">
               {payoutTerms.first_payout_delay_days}
               d
             </div>

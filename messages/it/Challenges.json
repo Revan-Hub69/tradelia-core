@@ -313,5 +313,34 @@
     "details": "Dettagli",
     "enroll": "Iscriviti Ora",
     "learnMore": "Scopri di Più"
+  },
+  "prizePool": {
+    "title": "Montepremi",
+    "totalPool": "Montepremi Totale",
+    "distribution": "Distribuzione Premi",
+    "firstPlace": "1° Posto",
+    "secondPlace": "2° Posto",
+    "thirdPlace": "3° Posto"
+  },
+  "phaseRules": {
+    "title": "Regole per Fase",
+    "phase": "Fase",
+    "daysLimit": "giorni limite",
+    "funded": "Finanziato",
+    "profitTarget": "Target Profitto",
+    "maxDrawdown": "Drawdown Max",
+    "dailyLoss": "Perdita Giornaliera",
+    "minDays": "Giorni Min"
+  },
+  "ranking": {
+    "title": "Sistema di Classifica",
+    "method": "Metodo di Classifica",
+    "profitPercentage": "Percentuale di Profitto",
+    "absoluteProfit": "Profitto Assoluto",
+    "riskAdjusted": "Rendimenti Aggiustati per Rischio",
+    "consistency": "Punteggio di Consistenza",
+    "updatedFrequency": "Aggiornato: {frequency}",
+    "scoringFactors": "Fattori di Punteggio",
+    "leaderboardInfo": "Le classifiche sono aggiornate in tempo reale. La tua posizione può cambiare mentre altri trader completano operazioni."
   }
 }
