@@ -133,7 +133,9 @@ export const CompetitionRulesSection = React.memo(({
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <div className="rounded-xl border border-border/50 bg-muted/30 p-4 text-center">
           <div className="mb-1 text-2xl font-bold text-primary">
-            {prizePool.currency} {prizePool.total.toLocaleString()}
+            {prizePool.currency}
+{' '}
+{prizePool.total.toLocaleString()}
           </div>
           <div className="text-xs text-muted-foreground">
             {t('competitionRules.totalPrize')}
@@ -184,7 +186,10 @@ export const CompetitionRulesSection = React.memo(({
             <div className="flex-1">
               <div className="font-medium">{t('competitionRules.registration')}</div>
               <div className="text-sm text-muted-foreground">
-                {formatDate(period.registrationStart)} → {formatDate(period.registrationEnd)}
+                {formatDate(period.registrationStart)}
+{' '}
+→
+{formatDate(period.registrationEnd)}
               </div>
             </div>
           </div>
@@ -199,7 +204,10 @@ export const CompetitionRulesSection = React.memo(({
             <div className="flex-1">
               <div className="font-medium">{t('competitionRules.trading')}</div>
               <div className="text-sm text-muted-foreground">
-                {formatDate(period.tradingStart)} → {formatDate(period.tradingEnd)}
+                {formatDate(period.tradingStart)}
+{' '}
+→
+{formatDate(period.tradingEnd)}
               </div>
             </div>
           </div>
@@ -231,7 +239,10 @@ export const CompetitionRulesSection = React.memo(({
             <div className="mt-4 flex items-start gap-3 rounded-lg bg-amber-500/10 p-3">
               <WarningIcon size={18} className="mt-0.5 shrink-0 text-amber-600" />
               <div className="text-sm">
-                <span className="font-medium">{t('competitionRules.restrictions')}:</span>
+                <span className="font-medium">
+{t('competitionRules.restrictions')}
+:
+                </span>
                 {' '}
                 {eligibility.restrictedCountries.join(', ')}
               </div>
@@ -303,7 +314,7 @@ export const CompetitionRulesSection = React.memo(({
         />
 
         <div className="space-y-2">
-          {prizeTiers.slice(0, 5).map((tier) => (
+          {prizeTiers.slice(0, 5).map(tier => (
             <div
               key={tier.position}
               className="flex items-center justify-between rounded-xl border border-border/50 bg-muted/20 p-3"
@@ -340,7 +351,10 @@ export const CompetitionRulesSection = React.memo(({
 
           {prizeTiers.length > 5 && (
             <div className="text-center text-sm text-muted-foreground">
-              +{prizeTiers.length - 5} {t('competitionRules.morePrizes')}
+              +
+{prizeTiers.length - 5}
+{' '}
+{t('competitionRules.morePrizes')}
             </div>
           )}
         </div>
@@ -360,7 +374,9 @@ export const CompetitionRulesSection = React.memo(({
                 rel="noopener noreferrer"
                 className="rounded-lg bg-background px-3 py-2 text-sm text-primary hover:underline"
               >
-                {t('competitionRules.officialRules')} →
+                {t('competitionRules.officialRules')}
+{' '}
+→
               </a>
             )}
             {additionalInfo.faqUrl && (
@@ -370,7 +386,9 @@ export const CompetitionRulesSection = React.memo(({
                 rel="noopener noreferrer"
                 className="rounded-lg bg-background px-3 py-2 text-sm text-primary hover:underline"
               >
-                {t('competitionRules.faq')} →
+                {t('competitionRules.faq')}
+{' '}
+→
               </a>
             )}
             {additionalInfo.supportUrl && (
@@ -380,7 +398,9 @@ export const CompetitionRulesSection = React.memo(({
                 rel="noopener noreferrer"
                 className="rounded-lg bg-background px-3 py-2 text-sm text-primary hover:underline"
               >
-                {t('competitionRules.support')} →
+                {t('competitionRules.support')}
+{' '}
+→
               </a>
             )}
           </div>

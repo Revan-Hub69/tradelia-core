@@ -7,16 +7,17 @@
  * Follows Tradelia Design System
  */
 
-import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
+
 import {
-  PendingIcon,
+  ArchiveIcon,
+  CheckCircleIcon,
   HelpCircleIcon,
+  PendingIcon,
   PlayIcon,
   TrophyIcon,
   XCircleIcon,
-  ArchiveIcon,
-  CheckCircleIcon,
 } from './PremiumIcons';
 
 export type EnrollmentStatus =
@@ -29,7 +30,7 @@ export type EnrollmentStatus =
   | 'abandoned'
   | 'archived';
 
-interface EnrollmentStatusCardProps {
+type EnrollmentStatusCardProps = {
   status: EnrollmentStatus;
   programName: string;
   offerName: string;
@@ -37,7 +38,7 @@ interface EnrollmentStatusCardProps {
   onConfirm?: () => void;
   onRemove?: () => void;
   onViewDetails?: () => void;
-}
+};
 
 const statusConfig = {
   interested: {
@@ -126,7 +127,8 @@ export function EnrollmentStatusCard({
         <div className={`
           flex size-12 shrink-0 items-center justify-center rounded-xl
           ${config.bgColor}
-        `}>
+        `}
+        >
           <Icon size={24} className={config.textColor} />
         </div>
 
@@ -140,7 +142,8 @@ export function EnrollmentStatusCard({
         <span className={`
           shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold
           ${config.bgColor} ${config.textColor}
-        `}>
+        `}
+        >
           {t(`enrollment.status.${status}`)}
         </span>
       </div>

@@ -7,15 +7,15 @@
  * Follows Tradelia Design System
  */
 
-import { useEffect, useState } from 'react';
-import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
+import { useEffect, useState } from 'react';
 
-import { EnrollmentStatusCard, type EnrollmentStatus } from '@/components/dashboard/challenges/EnrollmentStatusCard';
 import { EmptyState } from '@/components/dashboard/challenges/EmptyState';
+import { type EnrollmentStatus, EnrollmentStatusCard } from '@/components/dashboard/challenges/EnrollmentStatusCard';
 import { TrendingUpIcon } from '@/components/dashboard/challenges/PremiumIcons';
 
-interface Enrollment {
+type Enrollment = {
   id: string;
   status: EnrollmentStatus;
   program: {
@@ -29,7 +29,7 @@ interface Enrollment {
     account_size: number;
     account_currency: string;
   };
-}
+};
 
 export default function MyChallengesPage() {
   const t = useTranslations('MyChallenges') as any;

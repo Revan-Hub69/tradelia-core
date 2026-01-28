@@ -11,10 +11,10 @@ import { useEffect, useState } from 'react';
 
 import { PostRedirectBanner } from '@/components/dashboard/challenges/PostRedirectBanner';
 
-interface PendingEnrollment {
+type PendingEnrollment = {
   id: string;
   programName: string;
-}
+};
 
 export function EnrollmentBanner() {
   const [pendingEnrollments, setPendingEnrollments] = useState<PendingEnrollment[]>([]);

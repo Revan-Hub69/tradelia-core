@@ -7,21 +7,22 @@
  * Follows Tradelia Design System
  */
 
-import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import { motion, AnimatePresence } from 'framer-motion';
-import { HelpCircleIcon, CheckCircleIcon, XCircleIcon } from './PremiumIcons';
+import { useEffect, useState } from 'react';
 
-interface PendingEnrollment {
+import { CheckCircleIcon, HelpCircleIcon, XCircleIcon } from './PremiumIcons';
+
+type PendingEnrollment = {
   id: string;
   programName: string;
-}
+};
 
-interface PostRedirectBannerProps {
+type PostRedirectBannerProps = {
   pendingEnrollments: PendingEnrollment[];
   onConfirm: (enrollmentId: string) => void;
   onDismiss: (enrollmentId: string) => void;
-}
+};
 
 export function PostRedirectBanner({
   pendingEnrollments,
@@ -58,7 +59,9 @@ export function PostRedirectBanner({
     }
   }, [pendingEnrollments, currentEnrollment]);
 
-  if (!currentEnrollment) return null;
+  if (!currentEnrollment) {
+ return null;
+}
 
   const handleConfirm = () => {
     onConfirm(currentEnrollment.id);
@@ -77,7 +80,7 @@ export function PostRedirectBanner({
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -50 }}
-          className="fixed left-0 right-0 top-0 z-50 border-b border-orange-500/20 bg-orange-500/10 backdrop-blur-xl"
+          className="fixed inset-x-0 top-0 z-50 border-b border-orange-500/20 bg-orange-500/10 backdrop-blur-xl"
           role="alert"
           aria-live="polite"
         >
