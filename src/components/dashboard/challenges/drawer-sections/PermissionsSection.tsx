@@ -141,7 +141,9 @@ export function PermissionsSection({ phase1Rules }: PermissionsSectionProps) {
             <ul className="space-y-2 text-sm">
               {phase1Rules.max_position_size && (
                 <li className="flex items-start gap-2">
-                  <span className="text-blue-600 dark:text-blue-400">✓</span>
+                  <svg className="mt-0.5 size-4 shrink-0 text-blue-600 dark:text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M5 13l4 4L19 7" />
+                  </svg>
                   <span>
                     <strong>
 {t('permissions.maxPositionSize')}
@@ -156,7 +158,9 @@ export function PermissionsSection({ phase1Rules }: PermissionsSectionProps) {
               )}
               {phase1Rules.max_open_positions && (
                 <li className="flex items-start gap-2">
-                  <span className="text-blue-600 dark:text-blue-400">✓</span>
+                  <svg className="mt-0.5 size-4 shrink-0 text-blue-600 dark:text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M5 13l4 4L19 7" />
+                  </svg>
                   <span>
                     <strong>
 {t('permissions.maxOpenPositions')}

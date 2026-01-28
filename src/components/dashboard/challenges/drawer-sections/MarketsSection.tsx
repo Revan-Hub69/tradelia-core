@@ -83,7 +83,9 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
           <ul className="space-y-2 text-sm">
             {marketAccess.leverage_forex && (
               <li className="flex items-start gap-2">
-                <span className="text-purple-600 dark:text-purple-400">✓</span>
+                <svg className="mt-0.5 size-4 shrink-0 text-purple-600 dark:text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M5 13l4 4L19 7" />
+                </svg>
                 <span>
                   <strong>
 {t('markets.forex')}
@@ -96,7 +98,9 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
             )}
             {marketAccess.leverage_indices && (
               <li className="flex items-start gap-2">
-                <span className="text-purple-600 dark:text-purple-400">✓</span>
+                <svg className="mt-0.5 size-4 shrink-0 text-purple-600 dark:text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M5 13l4 4L19 7" />
+                </svg>
                 <span>
                   <strong>
 {t('markets.indices')}
@@ -109,7 +113,9 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
             )}
             {marketAccess.leverage_commodities && (
               <li className="flex items-start gap-2">
-                <span className="text-purple-600 dark:text-purple-400">✓</span>
+                <svg className="mt-0.5 size-4 shrink-0 text-purple-600 dark:text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M5 13l4 4L19 7" />
+                </svg>
                 <span>
                   <strong>
 {t('markets.commodities')}
@@ -122,7 +128,9 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
             )}
             {marketAccess.leverage_crypto && (
               <li className="flex items-start gap-2">
-                <span className="text-purple-600 dark:text-purple-400">✓</span>
+                <svg className="mt-0.5 size-4 shrink-0 text-purple-600 dark:text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M5 13l4 4L19 7" />
+                </svg>
                 <span>
                   <strong>
 {t('markets.crypto')}
@@ -147,7 +155,9 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
           <ul className="space-y-2 text-sm">
             {marketAccess.commission_forex && (
               <li className="flex items-start gap-2">
-                <span className="text-orange-600 dark:text-orange-400">✓</span>
+                <svg className="mt-0.5 size-4 shrink-0 text-orange-600 dark:text-orange-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M5 13l4 4L19 7" />
+                </svg>
                 <span>
                   <strong>
 {t('markets.forex')}
@@ -162,7 +172,9 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
             )}
             {marketAccess.commission_indices && (
               <li className="flex items-start gap-2">
-                <span className="text-orange-600 dark:text-orange-400">✓</span>
+                <svg className="mt-0.5 size-4 shrink-0 text-orange-600 dark:text-orange-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M5 13l4 4L19 7" />
+                </svg>
                 <span>
                   <strong>
 {t('markets.indices')}

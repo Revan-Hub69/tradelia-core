@@ -326,7 +326,7 @@ export function ProgramDrawer({
               ref={scrollContainerRef as React.RefObject<HTMLDivElement>}
               className="flex-1 overflow-y-auto"
             >
-              <div className="space-y-6 px-4 py-6 sm:space-y-8 sm:px-6 sm:py-8 lg:space-y-10 lg:px-8 lg:py-10">
+              <div className="space-y-6 px-4 py-6 sm:space-y-8 sm:px-6 sm:py-8 lg:space-y-10 lg:px-8 lg:py-10 pb-24 sm:pb-28 lg:pb-32">
                 {/* 📊 KEY METRICS - Always visible */}
                 {selectedOffer && (
                   <KeyMetricsSection offer={selectedOffer} payoutTerms={payoutTerms} />

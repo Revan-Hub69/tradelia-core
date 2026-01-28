@@ -75,7 +75,9 @@ export function PayoutSection({ payoutTerms }: PayoutSectionProps) {
       {/* Payout Schedule */}
       <ul className="space-y-2 text-sm">
         <li className="flex items-start gap-2">
-          <span className="text-blue-600 dark:text-blue-400">✓</span>
+          <svg className="mt-0.5 size-4 shrink-0 text-blue-600 dark:text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M5 13l4 4L19 7" />
+          </svg>
           <span>
             <strong>
 {t('payout.frequency')}
@@ -86,7 +88,9 @@ export function PayoutSection({ payoutTerms }: PayoutSectionProps) {
           </span>
         </li>
         <li className="flex items-start gap-2">
-          <span className="text-blue-600 dark:text-blue-400">✓</span>
+          <svg className="mt-0.5 size-4 shrink-0 text-blue-600 dark:text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M5 13l4 4L19 7" />
+          </svg>
           <span>
             <strong>
 {t('payout.firstDelay')}
@@ -100,7 +104,9 @@ export function PayoutSection({ payoutTerms }: PayoutSectionProps) {
         </li>
         {payoutTerms.payout_processing_time_hours && (
           <li className="flex items-start gap-2">
-            <span className="text-blue-600 dark:text-blue-400">✓</span>
+            <svg className="mt-0.5 size-4 shrink-0 text-blue-600 dark:text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M5 13l4 4L19 7" />
+            </svg>
             <span>
               <strong>
 {t('payout.processingTime')}
@@ -114,7 +120,9 @@ export function PayoutSection({ payoutTerms }: PayoutSectionProps) {
         )}
         {payoutTerms.withdrawal_methods && payoutTerms.withdrawal_methods.length > 0 && (
           <li className="flex items-start gap-2">
-            <span className="text-blue-600 dark:text-blue-400">✓</span>
+            <svg className="mt-0.5 size-4 shrink-0 text-blue-600 dark:text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M5 13l4 4L19 7" />
+            </svg>
             <span>
               <strong>
 {t('payout.withdrawalMethods')}

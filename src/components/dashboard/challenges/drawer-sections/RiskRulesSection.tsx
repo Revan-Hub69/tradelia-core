@@ -47,7 +47,9 @@ export function RiskRulesSection({ rulesets }: RiskRulesSectionProps) {
           <ul className="space-y-2 text-sm">
             {ruleset.profit_target_pct && (
               <li className="flex items-start gap-2">
-                <span className="text-green-600 dark:text-green-400">✓</span>
+                <svg className="mt-0.5 size-4 shrink-0 text-green-600 dark:text-green-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M5 13l4 4L19 7" />
+                </svg>
                 <span>
                   <strong>
 {t('drawer.sections.profitTarget')}
@@ -61,7 +63,9 @@ export function RiskRulesSection({ rulesets }: RiskRulesSectionProps) {
             )}
             {ruleset.max_drawdown_pct && (
               <li className="flex items-start gap-2">
-                <span className="text-red-600 dark:text-red-400">⚠</span>
+                <svg className="mt-0.5 size-4 shrink-0 text-red-600 dark:text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
                 <span>
                   <strong>
 {t('drawer.sections.maxDrawdown')}
@@ -77,7 +81,9 @@ export function RiskRulesSection({ rulesets }: RiskRulesSectionProps) {
             )}
             {ruleset.max_daily_loss_pct && (
               <li className="flex items-start gap-2">
-                <span className="text-orange-600 dark:text-orange-400">⚠</span>
+                <svg className="mt-0.5 size-4 shrink-0 text-orange-600 dark:text-orange-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
                 <span>
                   <strong>
 {t('drawer.sections.maxDailyLoss')}
@@ -93,7 +99,9 @@ export function RiskRulesSection({ rulesets }: RiskRulesSectionProps) {
             )}
             {ruleset.min_trading_days && (
               <li className="flex items-start gap-2">
-                <span className="text-blue-600 dark:text-blue-400">✓</span>
+                <svg className="mt-0.5 size-4 shrink-0 text-blue-600 dark:text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M5 13l4 4L19 7" />
+                </svg>
                 <span>
                   <strong>
 {t('drawer.sections.minTradingDays')}
@@ -108,7 +116,9 @@ export function RiskRulesSection({ rulesets }: RiskRulesSectionProps) {
             )}
             {ruleset.consistency_required && ruleset.best_day_max_pct && (
               <li className="flex items-start gap-2">
-                <span className="text-purple-600 dark:text-purple-400">✓</span>
+                <svg className="mt-0.5 size-4 shrink-0 text-purple-600 dark:text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M5 13l4 4L19 7" />
+                </svg>
                 <span>
                   <strong>
 {t('drawer.sections.consistencyRule')}
