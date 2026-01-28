@@ -16,5 +16,28 @@
   "journal_feature_rules_description": "Real-time monitoring of daily loss limits, max drawdown, and consistency rules.",
   "journal_feature_alerts": "Smart Alerts",
   "journal_feature_alerts_description": "Get notified when approaching rule limits. Prevent violations before they happen.",
-  "in_development": "Challenge tracking and trade journal coming soon. Full multi-account management system."
+  "in_development": "Challenge tracking and trade journal coming soon. Full multi-account management system.",
+  "enrollment": {
+    "status": {
+      "interested": "In Preparation",
+      "pending_redirect": "Redirect Pending",
+      "pending_confirmation": "Confirmation Required",
+      "active": "Active",
+      "completed": "Completed",
+      "failed": "Failed",
+      "abandoned": "Abandoned",
+      "archived": "Archived"
+    },
+    "actions": {
+      "confirm": "Confirm Enrollment",
+      "remove": "Remove",
+      "viewDetails": "View Details",
+      "continue": "Continue"
+    },
+    "messages": {
+      "pendingRedirect": "Click to visit the prop firm website",
+      "pendingConfirmation": "Have you completed the enrollment?",
+      "rateLimit": "Maximum enrollments reached for today"
+    }
+  }
 }

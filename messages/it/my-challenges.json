@@ -16,5 +16,28 @@
   "journal_feature_rules_description": "Monitoraggio real-time di limiti perdita giornaliera, max drawdown e regole di consistenza.",
   "journal_feature_alerts": "Alert Intelligenti",
   "journal_feature_alerts_description": "Ricevi notifiche quando ti avvicini ai limiti delle regole. Previeni violazioni prima che accadano.",
-  "in_development": "Tracciamento sfide e diario trading in arrivo. Sistema completo di gestione multi-account."
+  "in_development": "Tracciamento sfide e diario trading in arrivo. Sistema completo di gestione multi-account.",
+  "enrollment": {
+    "status": {
+      "interested": "In Preparazione",
+      "pending_redirect": "Redirect in Attesa",
+      "pending_confirmation": "Conferma Richiesta",
+      "active": "Attiva",
+      "completed": "Completata",
+      "failed": "Fallita",
+      "abandoned": "Abbandonata",
+      "archived": "Archiviata"
+    },
+    "actions": {
+      "confirm": "Conferma Iscrizione",
+      "remove": "Rimuovi",
+      "viewDetails": "Vedi Dettagli",
+      "continue": "Continua"
+    },
+    "messages": {
+      "pendingRedirect": "Clicca per visitare il sito della prop firm",
+      "pendingConfirmation": "Hai completato l'iscrizione?",
+      "rateLimit": "Massimo numero di iscrizioni raggiunto per oggi"
+    }
+  }
 }

@@ -120,12 +120,13 @@ export function OfferSelector({
 
               {/* Menu */}
               <motion.div
-                initial={{ opacity: 0, y: -8 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
+                exit={{ opacity: 0, y: 8 }}
                 transition={{ duration: 0.15 }}
-                className="absolute inset-x-0 z-50 mt-2 overflow-hidden rounded-xl border border-border/50 bg-background shadow-xl"
+                className="absolute inset-x-0 top-full z-50 mt-2 overflow-hidden rounded-xl border border-border/50 bg-background shadow-xl"
                 role="listbox"
+                style={{ transformOrigin: 'top center' }}
               >
                 <div className="max-h-[300px] overflow-y-auto p-1">
                   {offers.map(offer => (
