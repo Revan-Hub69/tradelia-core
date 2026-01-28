@@ -21,6 +21,8 @@ export default getRequestConfig(async ({ requestLocale }) => {
   const dashboardSettingsMessages = (await import(`../../messages/${locale}/dashboard-settings.json`)).default;
   const contactMessages = (await import(`../../messages/${locale}/contact.json`)).default;
   const challengesMessages = (await import(`../../messages/${locale}/Challenges.json`)).default;
+  const myChallengesMessages = (await import(`../../messages/${locale}/my-challenges.json`)).default;
+  const signalsMessages = (await import(`../../messages/${locale}/signals.json`)).default;
 
   return {
     locale,
@@ -30,6 +32,8 @@ export default getRequestConfig(async ({ requestLocale }) => {
       DashboardSettings: dashboardSettingsMessages,
       Contact: contactMessages,
       Challenges: challengesMessages,
+      MyChallenges: myChallengesMessages,
+      Signals: signalsMessages,
     },
   };
 });
