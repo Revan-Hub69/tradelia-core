@@ -326,7 +326,7 @@ export function ProgramDrawer({
               ref={scrollContainerRef as React.RefObject<HTMLDivElement>}
               className="flex-1 overflow-y-auto"
             >
-              <div className="space-y-6 px-4 py-6 sm:space-y-8 sm:px-6 sm:py-8 lg:space-y-10 lg:px-8 lg:py-10 pb-24 sm:pb-28 lg:pb-32">
+              <div className="space-y-6 px-4 py-6 sm:space-y-8 sm:px-6 sm:py-8 lg:space-y-10 lg:px-8 lg:py-10 pb-32 sm:pb-36 lg:pb-40">
                 {/* 📊 KEY METRICS - Always visible */}
                 {selectedOffer && (
                   <KeyMetricsSection offer={selectedOffer} payoutTerms={payoutTerms} />
@@ -364,8 +364,8 @@ export function ProgramDrawer({
               </div>
             </div>
 
-            {/* Footer - Responsive Actions (Enterprise spacing) */}
-            <footer className="glass-panel sticky bottom-0 border-t border-border/50 p-4 backdrop-blur-xl sm:px-6 sm:py-5 lg:px-8 lg:py-6">
+            {/* Footer - Responsive Actions (Enterprise spacing with iOS safe area) */}
+            <footer className="glass-panel sticky bottom-0 border-t border-border/50 p-4 pb-[calc(16px+env(safe-area-inset-bottom))] backdrop-blur-xl sm:px-6 sm:py-5 lg:px-8 lg:py-6">
               <div className="flex gap-2.5 sm:gap-3 lg:gap-4">
                 <button
                   onClick={onCloseAction}
