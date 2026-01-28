@@ -444,8 +444,8 @@ export default function ChallengesPage() {
           payoutTerms={selectedProgram.payoutTerms}
           marketAccess={selectedProgram.marketAccess}
           isOpen={!!selectedProgram}
-          onClose={handleCloseDrawer}
-          onEnroll={(_programId) => {
+          onCloseAction={handleCloseDrawer}
+          onEnrollAction={(_programId) => {
             // TODO: Implement enrollment flow
           }}
         />

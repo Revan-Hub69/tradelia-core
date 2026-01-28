@@ -347,5 +347,32 @@
     "totalProfit": "Profitto Totale %",
     "consistencyScore": "Punteggio Consistenza",
     "riskManagement": "Gestione Rischio"
+  },
+  "competitionRules": {
+    "totalPrize": "Montepremi Totale",
+    "winners": "Vincitori",
+    "minDays": "Giorni Min",
+    "free": "GRATIS",
+    "entry": "Iscrizione",
+    "timelineTitle": "Calendario",
+    "registration": "Periodo Iscrizioni",
+    "trading": "Periodo Trading",
+    "eligibilityTitle": "Chi Può Partecipare",
+    "restrictions": "Restrizioni",
+    "howToWinTitle": "Come Si Vince",
+    "minTradingDays": "Richiesti almeno {days} giorni di trading attivo",
+    "rulesTitle": "Regole di Trading",
+    "prizesTitle": "Premi",
+    "morePrizes": "altri premi",
+    "resources": "Risorse",
+    "officialRules": "Regolamento Ufficiale",
+    "faq": "FAQ",
+    "support": "Supporto",
+    "category": {
+      "instruments": "Strumenti Disponibili",
+      "position_limits": "Limiti Posizione",
+      "activity": "Requisiti Attività",
+      "restrictions": "Restrizioni"
+    }
   }
 }

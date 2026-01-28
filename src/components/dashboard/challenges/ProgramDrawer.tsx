@@ -134,8 +134,8 @@ type ProgramDrawerProps = {
   payoutTerms: PayoutTerms | null;
   marketAccess: MarketAccess | null;
   isOpen: boolean;
-  onClose: () => void;
-  onEnroll?: (programId: string) => void;
+  onCloseAction: () => void;
+  onEnrollAction?: (programId: string) => void;
 };
 
 export function ProgramDrawer({
@@ -145,15 +145,15 @@ export function ProgramDrawer({
   payoutTerms,
   marketAccess,
   isOpen,
-  onClose,
-  onEnroll,
+  onCloseAction,
+  onEnrollAction,
 }: ProgramDrawerProps) {
   const t = useTranslations('Challenges') as any;
 
   // Focus trap for accessibility
   const drawerRef = useFocusTrap({
     isActive: isOpen,
-    onEscape: onClose,
+    onEscape: onCloseAction,
     restoreFocus: true,
   });
 
@@ -222,7 +222,7 @@ export function ProgramDrawer({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
+            onClick={onCloseAction}
             className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md"
           />
 
@@ -311,7 +311,7 @@ export function ProgramDrawer({
 
                 {/* Close Button - Responsive touch target */}
                 <button
-                  onClick={onClose}
+                  onClick={onCloseAction}
                   className="shrink-0 rounded-xl p-2.5 text-muted-foreground transition-all hover:bg-muted hover:text-foreground sm:p-2.5 lg:p-3"
                   aria-label={t('a11y.closeDrawer')}
                   type="button"
@@ -368,15 +368,15 @@ export function ProgramDrawer({
             <footer className="glass-panel sticky bottom-0 border-t border-border/50 p-4 backdrop-blur-xl sm:px-6 sm:py-5 lg:px-8 lg:py-6">
               <div className="flex gap-2.5 sm:gap-3 lg:gap-4">
                 <button
-                  onClick={onClose}
+                  onClick={onCloseAction}
                   className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-border bg-background px-3 py-2.5 text-sm font-semibold transition-all hover:bg-muted sm:gap-2 sm:px-4 sm:py-3 sm:text-base"
                   type="button"
                 >
                   {t('drawer.close')}
                 </button>
-                {onEnroll && (
+                {onEnrollAction && (
                   <button
-                    onClick={() => onEnroll(program.id)}
+                    onClick={() => onEnrollAction(program.id)}
                     className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-primary to-primary/90 px-3 py-2.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30 sm:gap-2 sm:px-4 sm:py-3 sm:text-base"
                     type="button"
                   >

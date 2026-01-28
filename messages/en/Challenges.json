@@ -347,5 +347,32 @@
     "totalProfit": "Total Profit %",
     "consistencyScore": "Consistency Score",
     "riskManagement": "Risk Management"
+  },
+  "competitionRules": {
+    "totalPrize": "Total Prize",
+    "winners": "Winners",
+    "minDays": "Min Days",
+    "free": "FREE",
+    "entry": "Entry",
+    "timelineTitle": "Timeline",
+    "registration": "Registration Period",
+    "trading": "Trading Period",
+    "eligibilityTitle": "Who Can Participate",
+    "restrictions": "Restrictions",
+    "howToWinTitle": "How to Win",
+    "minTradingDays": "Minimum {days} active trading days required",
+    "rulesTitle": "Trading Rules",
+    "prizesTitle": "Prizes",
+    "morePrizes": "more prizes",
+    "resources": "Resources",
+    "officialRules": "Official Rules",
+    "faq": "FAQ",
+    "support": "Support",
+    "category": {
+      "instruments": "Available Instruments",
+      "position_limits": "Position Limits",
+      "activity": "Activity Requirements",
+      "restrictions": "Restrictions"
+    }
   }
 }

@@ -5,6 +5,7 @@
  */
 
 export { AboutSection } from './AboutSection';
+export { CompetitionRulesSection } from './CompetitionRulesSection';
 export { KeyMetricsSection } from './KeyMetricsSection';
 export { MarketsSection } from './MarketsSection';
 export { PayoutSection } from './PayoutSection';
