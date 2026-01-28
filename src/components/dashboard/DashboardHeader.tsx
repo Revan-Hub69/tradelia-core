@@ -201,7 +201,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       <nav aria-label={t('breadcrumb_aria_label')} className="hidden md:flex">
         <ol className="flex items-center space-x-2 text-sm">
           {breadcrumbs.map((item, index) => (
-            <li key={index} className="flex items-center">
+            <li key={`${item.label}-${index}`} className="flex items-center">
               {index > 0 && (
                 <span className="mx-2 text-muted-foreground">/</span>
               )}
@@ -431,18 +431,32 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       {/* Premium Global Search Modal with Liquid Glass */}
       {showSearchModal && (
         <div
+          role="button"
+          tabIndex={0}
           className={cn(
             'layer-modal fixed inset-0 flex items-start justify-center pt-20',
             'search-modal-backdrop',
           )}
           onClick={() => setShowSearchModal(false)}
+          onKeyDown={(e) => {
+ if (e.key === 'Enter' || e.key === ' ') {
+ setShowSearchModal(false);
+}
+}}
         >
           <div
+            role="button"
+            tabIndex={0}
             className={cn(
               'mx-4 w-full max-w-2xl rounded-2xl border shadow-2xl',
               'search-modal-content',
             )}
             onClick={e => e.stopPropagation()}
+            onKeyDown={(e) => {
+ if (e.key === 'Enter' || e.key === ' ') {
+ e.stopPropagation();
+}
+}}
           >
             <div className="p-6">
               <div className="mb-6 flex items-center gap-4">
