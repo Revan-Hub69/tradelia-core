@@ -136,6 +136,7 @@ export async function GET() {
           best_for: program.best_for || null,
           pros: parseStringArray(program.pros),
           cons: parseStringArray(program.cons),
+          official_url: program.official_url || null,
         },
         offers: offers.map((offer: any) => ({
           id: offer.id,

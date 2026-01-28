@@ -4,6 +4,8 @@
   "active_challenges_title": "Sfide Attive",
   "active_challenges_description": "Monitora tutte le tue sfide prop firm e competizioni in corso in un unico posto.",
   "no_active_challenges": "Nessuna sfida attiva. Visita la Libreria Sfide per iniziare.",
+  "completed_challenges_title": "Sfide Completate",
+  "browse_challenges": "Sfoglia Sfide",
   "trade_journal_title": "Diario di Trading",
   "trade_journal_description": "Registra e analizza i tuoi trade su tutte le sfide. Traccia le performance e rispetta le regole delle prop firm.",
   "journal_feature_tracking": "Tracciamento Multi-Account",
@@ -14,5 +16,5 @@
   "journal_feature_rules_description": "Monitoraggio real-time di limiti perdita giornaliera, max drawdown e regole di consistenza.",
   "journal_feature_alerts": "Alert Intelligenti",
   "journal_feature_alerts_description": "Ricevi notifiche quando ti avvicini ai limiti delle regole. Previeni violazioni prima che accadano.",
-  "in_development": "⚠️ Tracciamento sfide e diario trading in arrivo. Sistema completo di gestione multi-account."
+  "in_development": "Tracciamento sfide e diario trading in arrivo. Sistema completo di gestione multi-account."
 }

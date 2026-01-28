@@ -445,8 +445,38 @@ export default function ChallengesPage() {
           marketAccess={selectedProgram.marketAccess}
           isOpen={!!selectedProgram}
           onCloseAction={handleCloseDrawer}
-          onEnrollAction={(_programId) => {
-            // TODO: Implement enrollment flow
+          officialUrl={selectedProgram.program.official_url || 'https://ftmo.com'}
+          onEnrollAction={async (programId: string, offerId: string) => {
+            try {
+              const response = await fetch('/api/enrollments', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  program_id: programId,
+                  offer_id: offerId,
+                  redirect_url: window.location.href,
+                }),
+              });
+
+              const data = await response.json();
+
+              if (!response.ok) {
+                return {
+                  success: false,
+                  error: data.error || 'Failed to create enrollment',
+                };
+              }
+
+              return {
+                success: true,
+                officialUrl: selectedProgram.program.official_url || 'https://ftmo.com',
+              };
+            } catch (err) {
+              return {
+                success: false,
+                error: err instanceof Error ? err.message : 'Unknown error',
+              };
+            }
           }}
         />
       )}

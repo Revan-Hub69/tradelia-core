@@ -38,8 +38,9 @@ import {
   RiskRulesSection,
   TrustSection,
 } from './drawer-sections';
+import { EnrollmentButton } from './EnrollmentButton';
 import { OfferSelector } from './OfferSelector';
-import { ExternalLinkIcon, StarIcon, TrendingUpIcon } from './PremiumIcons';
+import { StarIcon, TrendingUpIcon } from './PremiumIcons';
 
 // Close Icon
 const CloseIcon = ({ className = '' }: { className?: string }) => (
@@ -135,7 +136,8 @@ type ProgramDrawerProps = {
   marketAccess: MarketAccess | null;
   isOpen: boolean;
   onCloseAction: () => void;
-  onEnrollAction?: (programId: string) => void;
+  onEnrollAction?: (programId: string, offerId: string) => Promise<{ success: boolean; officialUrl?: string; error?: string }>;
+  officialUrl?: string;
 };
 
 export function ProgramDrawer({
@@ -147,6 +149,7 @@ export function ProgramDrawer({
   isOpen,
   onCloseAction,
   onEnrollAction,
+  officialUrl = 'https://ftmo.com',
 }: ProgramDrawerProps) {
   const t = useTranslations('Challenges') as any;
 
@@ -374,15 +377,15 @@ export function ProgramDrawer({
                 >
                   {t('drawer.close')}
                 </button>
-                {onEnrollAction && (
-                  <button
-                    onClick={() => onEnrollAction(program.id)}
-                    className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-primary to-primary/90 px-3 py-2.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30 sm:gap-2 sm:px-4 sm:py-3 sm:text-base"
-                    type="button"
-                  >
-                    {isFree ? t('drawer.joinCompetition') : t('drawer.startChallenge')}
-                    <ExternalLinkIcon size={14} className="sm:size-4" />
-                  </button>
+                {onEnrollAction && selectedOffer && (
+                  <EnrollmentButton
+                    programId={program.id}
+                    offerId={selectedOffer.id}
+                    officialUrl={officialUrl}
+                    isFree={isFree}
+                    onEnroll={onEnrollAction}
+                    className="flex-1"
+                  />
                 )}
               </div>
             </footer>

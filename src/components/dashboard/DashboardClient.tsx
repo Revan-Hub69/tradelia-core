@@ -67,6 +67,14 @@ const CommandPalette = dynamic(
   },
 );
 
+const EnrollmentBanner = dynamic(
+  () => import('./EnrollmentBanner').then(mod => ({ default: mod.EnrollmentBanner })),
+  {
+    ssr: false,
+    loading: () => null, // Banner non causa layout shift
+  },
+);
+
 type DashboardClientProps = {
   children: React.ReactNode;
 };
@@ -109,6 +117,9 @@ export function DashboardClient({ children }: DashboardClientProps) {
 
         {/* Command Palette - Lazy loaded */}
         <CommandPalette />
+
+        {/* Enrollment Banner - Shows pending confirmation prompts */}
+        <EnrollmentBanner />
       </DashboardContextProvider>
     </NavigationProvider>
   );

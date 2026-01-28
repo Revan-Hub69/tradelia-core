@@ -374,5 +374,32 @@
       "activity": "Requisiti Attività",
       "restrictions": "Restrizioni"
     }
+  },
+  "enrollment": {
+    "startChallenge": "Inizia Sfida",
+    "joinFree": "Partecipa Gratis",
+    "ariaStartChallenge": "Inizia challenge su sito ufficiale",
+    "ariaJoinFree": "Partecipa gratuitamente",
+    "redirectTitle": "Apertura Sito Ufficiale",
+    "redirectDescription": "Stai per essere reindirizzato al sito ufficiale della prop firm per completare l'iscrizione",
+    "redirectingIn": "Apertura in corso...",
+    "errorGeneric": "Si è verificato un errore. Riprova.",
+    "confirmStarted": "Ho Iniziato",
+    "remove": "Rimuovi",
+    "viewDetails": "Vedi Dettagli",
+    "bannerTitle": "Hai iniziato {programName}?",
+    "bannerDescription": "Conferma se hai completato l'iscrizione sul sito ufficiale",
+    "yesStarted": "Sì, ho iniziato",
+    "notYet": "Non ancora",
+    "status": {
+      "interested": "In preparazione",
+      "pending_redirect": "Apri sito ufficiale",
+      "pending_confirmation": "In attesa",
+      "active": "In corso",
+      "completed": "Completata",
+      "failed": "Fallita",
+      "abandoned": "Abbandonata",
+      "archived": "Archiviata"
+    }
   }
 }

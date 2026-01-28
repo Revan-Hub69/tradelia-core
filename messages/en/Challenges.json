@@ -374,5 +374,32 @@
       "activity": "Activity Requirements",
       "restrictions": "Restrictions"
     }
+  },
+  "enrollment": {
+    "startChallenge": "Start Challenge",
+    "joinFree": "Join Free",
+    "ariaStartChallenge": "Start challenge on official website",
+    "ariaJoinFree": "Join for free",
+    "redirectTitle": "Opening Official Website",
+    "redirectDescription": "You are about to be redirected to the official prop firm website to complete your registration",
+    "redirectingIn": "Opening in progress...",
+    "errorGeneric": "An error occurred. Please try again.",
+    "confirmStarted": "I Started",
+    "remove": "Remove",
+    "viewDetails": "View Details",
+    "bannerTitle": "Did you start {programName}?",
+    "bannerDescription": "Confirm if you completed the registration on the official website",
+    "yesStarted": "Yes, I started",
+    "notYet": "Not yet",
+    "status": {
+      "interested": "Preparing",
+      "pending_redirect": "Open official site",
+      "pending_confirmation": "Waiting",
+      "active": "In progress",
+      "completed": "Completed",
+      "failed": "Failed",
+      "abandoned": "Abandoned",
+      "archived": "Archived"
+    }
   }
 }

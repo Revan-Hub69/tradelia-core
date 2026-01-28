@@ -16,6 +16,7 @@ export type Program = {
   best_for?: string | null;
   pros?: string[];
   cons?: string[];
+  official_url?: string | null;
 };
 
 export type Offer = {
