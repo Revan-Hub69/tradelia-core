@@ -451,9 +451,8 @@ export default function ChallengesPage() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                  program_id: programId,
-                  offer_id: offerId,
-                  redirect_url: window.location.href,
+                  programId,
+                  offerId,
                 }),
               });
 
@@ -468,7 +467,7 @@ export default function ChallengesPage() {
 
               return {
                 success: true,
-                officialUrl: selectedProgram.program.official_url || 'https://ftmo.com',
+                officialUrl: data.data?.officialUrl || selectedProgram.program.official_url || 'https://ftmo.com',
               };
             } catch (err) {
               return {

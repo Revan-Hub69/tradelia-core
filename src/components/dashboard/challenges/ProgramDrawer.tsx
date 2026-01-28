@@ -12,8 +12,8 @@
  * - Sticky footer con CTA chiara
  *
  * Structure:
- * 1. Header: Glass header con nome e badge
- * 2. Body: 3 sezioni (Key Rules, Offers, Markets)
+ * 1. Header: Glass header con nome e badge (NO selezione offerta)
+ * 2. Body: Selezione Account Size (PRIMA SEZIONE), Key Rules, Markets
  * 3. Footer: Glass footer con CTA primaria
  */
 
@@ -224,7 +224,7 @@ export function ProgramDrawer({
             {/* Tradelia Hairline Border */}
             <div className="absolute inset-y-0 left-0 w-px bg-slate-200 dark:bg-slate-800" />
 
-            {/* Header - Tradelia Glass */}
+            {/* Header - Tradelia Glass (SENZA selezione offerta) */}
             <header className="relative border-b border-slate-200 bg-white/60 px-5 py-4 backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/60">
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0 flex-1">
@@ -250,44 +250,6 @@ export function ProgramDrawer({
                   <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">
                     {program.organizer_name}
                   </p>
-
-                  {/* Offer Selector - Tradelia Style */}
-                  {offers.length > 1 && (
-                    <div className="mt-4">
-                      <label className="mb-1.5 block text-[11px] font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                        {t('drawer.selectAccountSize')}
-                      </label>
-                      <select
-                        value={selectedOfferId}
-                        onChange={(e) => {
-                          triggerHaptic();
-                          setSelectedOfferId(e.target.value);
-                        }}
-                        className={cn(
-                          'w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-[14px] text-slate-900',
-                          'backdrop-blur-sm',
-                          'focus:outline-none focus:ring-2 focus:ring-blue-500/20',
-                          'appearance-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100',
-                        )}
-                        style={{
-                          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
-                          backgroundRepeat: 'no-repeat',
-                          backgroundPosition: 'right 12px center',
-                        }}
-                      >
-                        {offers.map(offer => (
-                          <option key={offer.id} value={offer.id}>
-                            {formatSize(offer.account_size, offer.account_currency)}
-                            {' '}
-                            @
-                            {' '}
-                            {formatFee(offer)}
-                            {offer.refundable && ' (Refundable)'}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
                 </div>
 
                 {/* Close Button - Tradelia Glass */}
@@ -311,7 +273,63 @@ export function ProgramDrawer({
             {/* Content - 3 sezioni max */}
             <div className="relative flex-1 overflow-y-auto">
               <div className="space-y-6 p-5 pb-28">
-                {/* SEZIONE 1: Regole Chiave - Tradelia Grid */}
+                {/* SEZIONE 1: Selezione Account Size - PRIMA COSA NEL DRAWER */}
+                {offers.length > 0 && (
+                  <section>
+                    <h3 className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                      {t('drawer.selectAccountSize')}
+                    </h3>
+                    <div className="overflow-hidden rounded-xl border border-slate-200 bg-white/80 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/50">
+                      <table className="w-full text-[13px]">
+                        <thead className="bg-slate-50 dark:bg-slate-800/50">
+                          <tr>
+                            <th className="px-3 py-2 text-left text-[10px] font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{t('drawer.accountSize')}</th>
+                            <th className="px-3 py-2 text-left text-[10px] font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{t('drawer.fee')}</th>
+                            <th className="px-3 py-2 text-right text-[10px] font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400"></th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                          {offers.map(offer => (
+                            <tr
+                              key={offer.id}
+                              className={cn(
+                                'cursor-pointer transition-colors',
+                                'hover:bg-slate-50 dark:hover:bg-slate-800/50',
+                                offer.id === selectedOfferId && 'bg-blue-50/50 dark:bg-blue-950/20',
+                              )}
+                              onClick={() => {
+                                triggerHaptic();
+                                setSelectedOfferId(offer.id);
+                              }}
+                            >
+                              <td className="px-3 py-2.5 font-medium text-slate-900 dark:text-slate-100">
+                                {formatSize(offer.account_size, offer.account_currency)}
+                              </td>
+                              <td className="px-3 py-2.5">
+                                <span className={cn(
+                                  offer.entry_fee === 0 && 'font-medium text-sky-600 dark:text-sky-400',
+                                  offer.entry_fee !== 0 && 'text-slate-700 dark:text-slate-300',
+                                )}
+                                >
+                                  {formatFee(offer)}
+                                </span>
+                              </td>
+                              <td className="px-3 py-2.5 text-right">
+                                {offer.id === selectedOfferId ? (
+                                  <span className="text-[11px] font-medium text-blue-600 dark:text-blue-400">{t('drawer.selected')}</span>
+                                ) : (
+                                  <span className="text-[11px] text-slate-400 dark:text-slate-500">{t('drawer.select')}</span>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </section>
+                )}
+
+                {/* SEZIONE 2: Regole Chiave - Tradelia Grid */}
                 {phase1Rules && (
                   <section>
                     <h3 className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
@@ -377,62 +395,6 @@ export function ProgramDrawer({
                           </span>
                         </div>
                       )}
-                    </div>
-                  </section>
-                )}
-
-                {/* SEZIONE 2: Tabella Offerte - Tradelia Style */}
-                {offers.length > 1 && (
-                  <section>
-                    <h3 className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                      {t('drawer.allOffers')}
-                    </h3>
-                    <div className="overflow-hidden rounded-xl border border-slate-200 bg-white/80 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/50">
-                      <table className="w-full text-[13px]">
-                        <thead className="bg-slate-50 dark:bg-slate-800/50">
-                          <tr>
-                            <th className="px-3 py-2 text-left text-[10px] font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{t('drawer.accountSize')}</th>
-                            <th className="px-3 py-2 text-left text-[10px] font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{t('drawer.fee')}</th>
-                            <th className="px-3 py-2 text-right text-[10px] font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400"></th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                          {offers.map(offer => (
-                            <tr
-                              key={offer.id}
-                              className={cn(
-                                'cursor-pointer transition-colors',
-                                'hover:bg-slate-50 dark:hover:bg-slate-800/50',
-                                offer.id === selectedOfferId && 'bg-blue-50/50 dark:bg-blue-950/20',
-                              )}
-                              onClick={() => {
-                                triggerHaptic();
-                                setSelectedOfferId(offer.id);
-                              }}
-                            >
-                              <td className="px-3 py-2.5 font-medium text-slate-900 dark:text-slate-100">
-                                {formatSize(offer.account_size, offer.account_currency)}
-                              </td>
-                              <td className="px-3 py-2.5">
-                                <span className={cn(
-                                  offer.entry_fee === 0 && 'font-medium text-sky-600 dark:text-sky-400',
-                                  offer.entry_fee !== 0 && 'text-slate-700 dark:text-slate-300',
-                                )}
-                                >
-                                  {formatFee(offer)}
-                                </span>
-                              </td>
-                              <td className="px-3 py-2.5 text-right">
-                                {offer.id === selectedOfferId ? (
-                                  <span className="text-[11px] font-medium text-blue-600 dark:text-blue-400">{t('drawer.selected')}</span>
-                                ) : (
-                                  <span className="text-[11px] text-slate-400 dark:text-slate-500">{t('drawer.select')}</span>
-                                )}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
                     </div>
                   </section>
                 )}
