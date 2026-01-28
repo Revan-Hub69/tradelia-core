@@ -106,7 +106,6 @@ export function ProgramDrawer({
   isOpen,
   onCloseAction,
   onEnrollAction,
-  officialUrl = 'https://ftmo.com',
 }: ProgramDrawerProps) {
   const t = useTranslations('Challenges') as any;
 

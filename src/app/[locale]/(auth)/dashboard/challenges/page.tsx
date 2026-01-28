@@ -426,7 +426,6 @@ export default function ChallengesPage() {
                 key={programData.program.id}
                 program={programData.program}
                 offers={programData.offers}
-                kpis={programData.kpis}
                 platforms={programData.platforms}
                 onViewDetailsAction={handleViewDetails}
               />
