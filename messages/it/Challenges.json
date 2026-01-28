@@ -430,5 +430,39 @@
       "abandoned": "Abbandonata",
       "archived": "Archiviata"
     }
+  },
+  "guide": {
+    "title": "Come Funziona",
+    "description": {
+      "free": "Questa è una competizione di trading gratuita dove puoi esercitarti e vincere premi senza rischi. Perfetta per testare strategie e competere con altri trader.",
+      "paid": "Questa è una valutazione prop firm. Supera la valutazione per ottenere un conto di trading reale. La tua quota di iscrizione viene rimborsata quando diventi finanziato."
+    },
+    "howItWorks": "Passo dopo Passo",
+    "steps": {
+      "selectSize": "Scegli la dimensione del conto che preferisci dalle opzioni qui sotto",
+      "registerFree": "Registrati gratuitamente sul sito ufficiale",
+      "payFee": "Paga la quota di valutazione una tantum",
+      "tradeRanking": "Fai trading e scala la classifica - i migliori vincono",
+      "tradeTarget": "Fai trading per raggiungere il target di profitto rispettando le regole di rischio",
+      "winPrizes": "Vinci premi in denaro in base alla tua posizione in classifica",
+      "getFunded": "Ottieni un conto reale finanziato e inizia a guadagnare"
+    },
+    "practicalTips": "Consigli Pro",
+    "tips": {
+      "freePractice": "Ottima opportunità per esercitarsi senza rischiare denaro reale",
+      "noRisk": "Nessun rischio finanziario - perfetta per testare nuove strategie",
+      "prizes": "Premi reali per i migliori - competi per vincere",
+      "evaluation": "Concentrati sulla consistenza più che su grandi vincite - la crescita costante vince",
+      "refund": "La quota viene rimborsata quando superi - è un investimento",
+      "funding": "Capitale reale ti aspetta - fai trading responsabilmente per tenerlo",
+      "ranking": "La consistenza conta più di un singolo grande trade",
+      "profitTarget": "Il target è {target}% - pianifica i tuoi trade di conseguenza",
+      "riskManagement": "Non rischiare mai più del {drawdown}% - proteggi il tuo conto",
+      "consistency": "Fai trading per almeno {days} giorni - la consistenza genera fiducia"
+    },
+    "aiNote": {
+      "title": "Guida Generata da AI:",
+      "description": "Questa guida si adatta in base al tipo di sfida e alle regole. Verifica sempre i dettagli sul sito ufficiale."
+    }
   }
 }

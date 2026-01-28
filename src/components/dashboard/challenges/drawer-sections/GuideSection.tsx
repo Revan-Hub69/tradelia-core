@@ -38,37 +38,37 @@ export const GuideSection = React.memo(({ program, rulesets }: GuideSectionProps
   const phase1 = rulesets.find(r => r.phase_number === 1);
 
   // Generate contextual tips based on challenge type
-  const getContextualTips = () => {
-    const tips = [];
+  const getContextualTips = (): string[] => {
+    const tips: string[] = [];
 
     if (isFree) {
       tips.push(
-        t('drawer.guide.tips.freePractice'),
-        t('drawer.guide.tips.noRisk'),
-        t('drawer.guide.tips.prizes'),
+        t('guide.tips.freePractice') as string,
+        t('guide.tips.noRisk') as string,
+        t('guide.tips.prizes') as string,
       );
     } else {
       tips.push(
-        t('drawer.guide.tips.evaluation'),
-        t('drawer.guide.tips.refund'),
-        t('drawer.guide.tips.funding'),
+        t('guide.tips.evaluation') as string,
+        t('guide.tips.refund') as string,
+        t('guide.tips.funding') as string,
       );
     }
 
     if (isRankingBased) {
-      tips.push(t('drawer.guide.tips.ranking'));
+      tips.push(t('guide.tips.ranking') as string);
     }
 
     if (phase1?.profit_target_pct) {
-      tips.push(t('drawer.guide.tips.profitTarget', { target: phase1.profit_target_pct }));
+      tips.push(t('guide.tips.profitTarget', { target: phase1.profit_target_pct }) as string);
     }
 
     if (phase1?.max_drawdown_pct) {
-      tips.push(t('drawer.guide.tips.riskManagement', { drawdown: phase1.max_drawdown_pct }));
+      tips.push(t('guide.tips.riskManagement', { drawdown: phase1.max_drawdown_pct }) as string);
     }
 
     if (phase1?.min_trading_days) {
-      tips.push(t('drawer.guide.tips.consistency', { days: phase1.min_trading_days }));
+      tips.push(t('guide.tips.consistency', { days: phase1.min_trading_days }) as string);
     }
 
     return tips;
@@ -80,7 +80,7 @@ export const GuideSection = React.memo(({ program, rulesets }: GuideSectionProps
     <section>
       <SectionHeader
         icon={<LightbulbIcon size={20} />}
-        title={t('drawer.guide.title')}
+        title={t('guide.title') as string}
         iconColor="amber"
       />
 
@@ -89,8 +89,8 @@ export const GuideSection = React.memo(({ program, rulesets }: GuideSectionProps
         <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 dark:bg-amber-950/20">
           <p className="text-sm leading-relaxed text-foreground">
             {isFree
-              ? t('drawer.guide.description.free')
-              : t('drawer.guide.description.paid')}
+              ? (t('guide.description.free') as string)
+              : (t('guide.description.paid') as string)}
           </p>
         </div>
 
@@ -98,7 +98,7 @@ export const GuideSection = React.memo(({ program, rulesets }: GuideSectionProps
         <div className="space-y-3">
           <h4 className="flex items-center gap-2 text-sm font-semibold text-foreground">
             <TargetIcon size={16} className="text-blue-600 dark:text-blue-400" />
-            {t('drawer.guide.howItWorks')}
+            {t('guide.howItWorks') as string}
           </h4>
 
           <ol className="space-y-2 text-sm">
@@ -107,7 +107,7 @@ export const GuideSection = React.memo(({ program, rulesets }: GuideSectionProps
                 1
               </span>
               <span className="text-muted-foreground">
-                {t('drawer.guide.steps.selectSize')}
+                {t('guide.steps.selectSize') as string}
               </span>
             </li>
             <li className="flex gap-3">
@@ -116,8 +116,8 @@ export const GuideSection = React.memo(({ program, rulesets }: GuideSectionProps
               </span>
               <span className="text-muted-foreground">
                 {isFree
-                  ? t('drawer.guide.steps.registerFree')
-                  : t('drawer.guide.steps.payFee')}
+                  ? (t('guide.steps.registerFree') as string)
+                  : (t('guide.steps.payFee') as string)}
               </span>
             </li>
             <li className="flex gap-3">
@@ -126,18 +126,18 @@ export const GuideSection = React.memo(({ program, rulesets }: GuideSectionProps
               </span>
               <span className="text-muted-foreground">
                 {isRankingBased
-                  ? t('drawer.guide.steps.tradeRanking')
-                  : t('drawer.guide.steps.tradeTarget')}
+                  ? (t('guide.steps.tradeRanking') as string)
+                  : (t('guide.steps.tradeTarget') as string)}
               </span>
             </li>
             <li className="flex gap-3">
               <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-green-100 text-xs font-bold text-green-700 dark:bg-green-950 dark:text-green-300">
-                ✓
+                {'\u2713'}
               </span>
               <span className="text-muted-foreground">
                 {isFree
-                  ? t('drawer.guide.steps.winPrizes')
-                  : t('drawer.guide.steps.getFunded')}
+                  ? (t('guide.steps.winPrizes') as string)
+                  : (t('guide.steps.getFunded') as string)}
               </span>
             </li>
           </ol>
@@ -148,13 +148,13 @@ export const GuideSection = React.memo(({ program, rulesets }: GuideSectionProps
           <div className="space-y-3">
             <h4 className="flex items-center gap-2 text-sm font-semibold text-foreground">
               <TrendingUpIcon size={16} className="text-green-600 dark:text-green-400" />
-              {t('drawer.guide.practicalTips')}
+              {t('guide.practicalTips') as string}
             </h4>
 
             <ul className="space-y-2">
-              {tips.map((tip, index) => (
+                {tips.map((tip, tipIndex) => (
                 <li
-                  key={index}
+                  key={`tip-${tipIndex}`}
                   className="flex gap-2 text-sm text-muted-foreground"
                 >
                   <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-amber-500" />
@@ -167,9 +167,9 @@ export const GuideSection = React.memo(({ program, rulesets }: GuideSectionProps
 
         {/* AI Assistant Note */}
         <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
-          <strong>{t('drawer.guide.aiNote.title')}</strong>
+          <strong>{t('guide.aiNote.title') as string}</strong>
           {' '}
-          {t('drawer.guide.aiNote.description')}
+          {t('guide.aiNote.description') as string}
         </div>
       </div>
     </section>

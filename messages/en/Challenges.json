@@ -430,5 +430,39 @@
       "abandoned": "Abandoned",
       "archived": "Archived"
     }
+  },
+  "guide": {
+    "title": "How It Works",
+    "description": {
+      "free": "This is a free trading competition where you can practice your skills and win prizes without any risk. Perfect for testing strategies and competing with other traders.",
+      "paid": "This is a prop firm evaluation challenge. Pass the evaluation to get funded with a real trading account. Your entry fee is refunded when you become funded."
+    },
+    "howItWorks": "Step by Step",
+    "steps": {
+      "selectSize": "Choose your preferred account size from the options below",
+      "registerFree": "Register for free on the official website",
+      "payFee": "Pay the one-time evaluation fee",
+      "tradeRanking": "Trade and climb the rankings - top performers win",
+      "tradeTarget": "Trade to reach the profit target while respecting risk rules",
+      "winPrizes": "Win cash prizes based on your ranking",
+      "getFunded": "Get funded with a real account and start earning"
+    },
+    "practicalTips": "Pro Tips",
+    "tips": {
+      "freePractice": "Great opportunity to practice without risking real money",
+      "noRisk": "No financial risk - perfect for testing new strategies",
+      "prizes": "Real prizes for top performers - compete to win",
+      "evaluation": "Focus on consistency over big wins - steady growth wins",
+      "refund": "Entry fee is refunded when you pass - it's an investment",
+      "funding": "Real capital awaits - trade responsibly to keep it",
+      "ranking": "Consistency matters more than one big trade",
+      "profitTarget": "Target is {target}% - plan your trades accordingly",
+      "riskManagement": "Never risk more than {drawdown}% - protect your account",
+      "consistency": "Trade at least {days} days - consistency builds trust"
+    },
+    "aiNote": {
+      "title": "AI-Generated Guide:",
+      "description": "This guide adapts based on the challenge type and rules. Always verify details on the official website."
+    }
   }
 }
