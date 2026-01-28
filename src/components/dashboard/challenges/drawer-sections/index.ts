@@ -6,6 +6,7 @@
 
 export { AboutSection } from './AboutSection';
 export { CompetitionRulesSection } from './CompetitionRulesSection';
+export { GuideSection } from './GuideSection';
 export { KeyMetricsSection } from './KeyMetricsSection';
 export { MarketsSection } from './MarketsSection';
 export { PayoutSection } from './PayoutSection';

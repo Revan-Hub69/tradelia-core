@@ -32,6 +32,7 @@ import { cn } from '@/utils/Helpers';
 
 // Import modular sections
 import { AboutSection } from './drawer-sections/AboutSection';
+import { GuideSection } from './drawer-sections/GuideSection';
 import { MarketsSection } from './drawer-sections/MarketsSection';
 import { PayoutSection } from './drawer-sections/PayoutSection';
 import { PermissionsSection } from './drawer-sections/PermissionsSection';
@@ -340,6 +341,9 @@ export function ProgramDrawer({
             {/* Content - 6 Sezioni Enterprise */}
             <div className="relative flex-1 overflow-y-auto">
               <div className="space-y-8 p-6 pb-32">
+                {/* SEZIONE 0: AI Guide - Come Funziona */}
+                <GuideSection program={program} rulesets={rulesets} />
+
                 {/* SEZIONE 1: Account Size Selection - PRIMA E CENTRALE */}
                 {offers.length > 0 && (
                   <section>
