@@ -14,7 +14,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { Suspense } from 'react';
+import { Suspense, useCallback, useState } from 'react';
 
 import { NavigationProvider } from '@/components/navigation/NavigationProvider';
 import { DashboardContextProvider } from '@/contexts/DashboardContext';
@@ -75,11 +75,23 @@ const EnrollmentBanner = dynamic(
   },
 );
 
+const MobileMenu = dynamic(
+  () => import('@/components/navigation/MobileMenu').then(mod => ({ default: mod.MobileMenu })),
+  {
+    ssr: false,
+    loading: () => null,
+  },
+);
+
 type DashboardClientProps = {
   children: React.ReactNode;
 };
 
 export function DashboardClient({ children }: DashboardClientProps) {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const closeMobileMenu = useCallback(() => setIsMobileMenuOpen(false), []);
+
   return (
     <NavigationProvider>
       <DashboardContextProvider>
@@ -120,6 +132,11 @@ export function DashboardClient({ children }: DashboardClientProps) {
 
         {/* Enrollment Banner - Shows pending confirmation prompts */}
         <EnrollmentBanner />
+
+        {/* Mobile Menu - Help, Language, Theme */}
+        <Suspense fallback={null}>
+          <MobileMenu isOpen={isMobileMenuOpen} onClose={closeMobileMenu} />
+        </Suspense>
       </DashboardContextProvider>
     </NavigationProvider>
   );

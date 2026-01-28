@@ -47,14 +47,6 @@ export const NAVIGATION_CONFIG: NavigationConfig = {
   semanticRole: 'navigation',
   items: [
     {
-      id: 'home',
-      labelKey: 'Dashboard.nav_home',
-      ariaKey: 'Dashboard.nav_home',
-      href: '/dashboard',
-      iconName: 'HomeIcon',
-      isPriority: true, // Prefetch priority
-    },
-    {
       id: 'challenges',
       labelKey: 'Dashboard.nav_challenges',
       ariaKey: 'Dashboard.nav_challenges',
@@ -82,26 +74,41 @@ export const NAVIGATION_CONFIG: NavigationConfig = {
       featureFlag: 'SIGNALS_ENABLED',
       badgeType: 'dot', // New signals available
     },
-    {
-      id: 'help',
-      labelKey: 'Dashboard.nav_help',
-      ariaKey: 'Dashboard.nav_help',
-      href: '/dashboard/help',
-      iconName: 'HelpIcon',
-      isPriority: false,
-    },
-    {
-      id: 'profile',
-      labelKey: 'Dashboard.nav_profile',
-      ariaKey: 'Dashboard.nav_profile',
-      href: '/dashboard/profile',
-      iconName: 'ProfileIcon',
-      isPriority: false, // Non priority per prefetch
-      featureFlag: 'PROFILE_BADGES',
-      badgeType: 'new', // Badge temporaneo 24h
-    },
   ],
 };
+
+// Header navigation items (tablet/desktop) - includes help
+export const HEADER_NAVIGATION_ITEMS: NavigationItem[] = [
+  {
+    id: 'help',
+    labelKey: 'Dashboard.nav_help',
+    ariaKey: 'Dashboard.nav_help',
+    href: '/dashboard/help',
+    iconName: 'HelpIcon',
+    isPriority: false,
+  },
+];
+
+// Mobile menu items - includes help, profile, settings
+export const MOBILE_MENU_ITEMS: NavigationItem[] = [
+  {
+    id: 'help',
+    labelKey: 'Dashboard.nav_help',
+    ariaKey: 'Dashboard.nav_help',
+    href: '/dashboard/help',
+    iconName: 'HelpIcon',
+    isPriority: false,
+  },
+  {
+    id: 'profile',
+    labelKey: 'Dashboard.nav_profile',
+    ariaKey: 'Dashboard.nav_profile',
+    href: '/dashboard/profile',
+    iconName: 'ProfileIcon',
+    isPriority: false,
+    featureFlag: 'PROFILE_BADGES',
+  },
+];
 
 /*
  * UTILITY FUNCTIONS - Helpers per filtering/processing
