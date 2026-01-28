@@ -17,7 +17,7 @@ export async function GET() {
     if (authError || !user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -48,19 +48,19 @@ export async function GET() {
       console.error('Error fetching pending enrollments:', error);
       return NextResponse.json(
         { error: 'Failed to fetch pending enrollments' },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
     // Transform data for frontend
-    const transformedEnrollments = enrollments?.map(enrollment => {
+    const transformedEnrollments = enrollments?.map((enrollment) => {
       const program = Array.isArray(enrollment.programs)
         ? enrollment.programs[0]
         : enrollment.programs;
       const offer = Array.isArray(enrollment.offers)
         ? enrollment.offers[0]
         : enrollment.offers;
-      
+
       return {
         id: enrollment.id,
         status: enrollment.status,
@@ -88,7 +88,7 @@ export async function GET() {
     console.error('API Error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -2,7 +2,7 @@
 /**
  * Seed script for FTMO data
  * Run with: npx tsx scripts/seed-ftmo-data.ts
- * 
+ *
  * This script seeds FTMO data into the correct database tables:
  * - organizers (prop firms)
  * - programs (challenge types)
@@ -347,7 +347,6 @@ async function seedFTMOData() {
     console.log(`   - ${ftmoPayoutTerms.length} Payout terms`);
     console.log(`   - ${ftmoMarketAccess.length} Market access records`);
     console.log('\n🎯 FTMO data is now live in the database!');
-
   } catch (error) {
     console.error('\n❌ FTMO seed failed:', error);
     process.exit(1);

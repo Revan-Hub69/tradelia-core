@@ -23,7 +23,7 @@ async function addTop5Opportunities() {
       reputation_score: 88,
       trustpilot_score: 4.6,
       logo_url: '/logos/the5ers.svg',
-      notes: 'Prop firm with free competitions - Top 100 prizes'
+      notes: 'Prop firm with free competitions - Top 100 prizes',
     },
     {
       id: 'ninjatrader',
@@ -36,7 +36,7 @@ async function addTop5Opportunities() {
       reputation_score: 92,
       trustpilot_score: 4.5,
       logo_url: '/logos/ninjatrader.svg',
-      notes: 'Futures trading platform with Arena competitions'
+      notes: 'Futures trading platform with Arena competitions',
     },
     {
       id: 'fundednext',
@@ -49,7 +49,7 @@ async function addTop5Opportunities() {
       reputation_score: 92,
       trustpilot_score: 4.4,
       logo_url: '/logos/fundednext.svg',
-      notes: 'Top 4 prop firm with cash contests'
+      notes: 'Top 4 prop firm with cash contests',
     },
     {
       id: 'xm',
@@ -62,8 +62,8 @@ async function addTop5Opportunities() {
       reputation_score: 87,
       trustpilot_score: 4.3,
       logo_url: '/logos/xm.svg',
-      notes: 'Regulated forex broker with trading competitions'
-    }
+      notes: 'Regulated forex broker with trading competitions',
+    },
   ];
 
   for (const org of organizers) {
@@ -96,7 +96,7 @@ async function addTop5Opportunities() {
       description: 'Free trading competition - Top 100 win funded accounts from $5K to $100K',
       pros: JSON.stringify(['Funded account prizes', 'Up to $4M scaling', 'Up to 100% profit split']),
       cons: JSON.stringify(['High competition', 'Top 100 only']),
-      best_for: 'Elite traders'
+      best_for: 'Elite traders',
     },
     {
       id: 'ninjatrader-arena',
@@ -112,7 +112,7 @@ async function addTop5Opportunities() {
       description: 'Monthly futures trading competition with real cash prizes',
       pros: JSON.stringify(['Cash prizes', 'Professional platform', 'Real money rewards']),
       cons: JSON.stringify(['Futures complexity', 'High skill required']),
-      best_for: 'Futures traders'
+      best_for: 'Futures traders',
     },
     {
       id: 'tradingview-leap',
@@ -128,7 +128,7 @@ async function addTop5Opportunities() {
       description: 'Paper trading competition with cash prizes up to $10,000 for 1st place',
       pros: JSON.stringify(['$10K first prize', 'Top 250 win', 'No risk', 'Monthly recurring']),
       cons: JSON.stringify(['High competition', '10K-50K participants']),
-      best_for: 'All levels'
+      best_for: 'All levels',
     },
     {
       id: 'fundednext-contest',
@@ -144,7 +144,7 @@ async function addTop5Opportunities() {
       description: 'Demo contests with real cash prizes (not just funded accounts)',
       pros: JSON.stringify(['Real cash prizes', 'Top 4 prop firm', 'Reliable payouts']),
       cons: JSON.stringify(['Periodic only', 'Limited spots']),
-      best_for: 'Serious traders'
+      best_for: 'Serious traders',
     },
     {
       id: 'xm-competitions',
@@ -160,8 +160,8 @@ async function addTop5Opportunities() {
       description: 'Weekly and monthly demo contests with cash prizes $500-$10,000',
       pros: JSON.stringify(['Regulated broker', 'Frequent contests', 'Cash prizes']),
       cons: JSON.stringify(['Check T&C for withdrawal', 'KYC required']),
-      best_for: 'Forex traders'
-    }
+      best_for: 'Forex traders',
+    },
   ];
 
   for (const prog of programs) {
@@ -200,7 +200,7 @@ async function addTop5Opportunities() {
       is_featured: true,
       is_hot: true,
       refund_conditions: 'Free entry - no refund needed',
-      scaling_conditions: 'Funded account prizes'
+      scaling_conditions: 'Funded account prizes',
     },
     {
       id: 'ninjatrader-arena-monthly',
@@ -222,7 +222,7 @@ async function addTop5Opportunities() {
       is_featured: true,
       is_hot: true,
       refund_conditions: 'Free entry',
-      scaling_conditions: 'Cash prizes paid monthly'
+      scaling_conditions: 'Cash prizes paid monthly',
     },
     {
       id: 'tradingview-leap-feb2026',
@@ -244,7 +244,7 @@ async function addTop5Opportunities() {
       is_featured: true,
       is_hot: true,
       refund_conditions: 'Free entry - zero catch',
-      scaling_conditions: 'Top 500 win prizes'
+      scaling_conditions: 'Top 500 win prizes',
     },
     {
       id: 'fundednext-cash-contest',
@@ -266,7 +266,7 @@ async function addTop5Opportunities() {
       is_featured: true,
       is_hot: false,
       refund_conditions: 'Free entry',
-      scaling_conditions: 'Real cash prizes'
+      scaling_conditions: 'Real cash prizes',
     },
     {
       id: 'xm-demo-monthly',
@@ -288,8 +288,8 @@ async function addTop5Opportunities() {
       is_featured: true,
       is_hot: false,
       refund_conditions: 'Free entry',
-      scaling_conditions: 'Cash prizes'
-    }
+      scaling_conditions: 'Cash prizes',
+    },
   ];
 
   for (const offer of offers) {

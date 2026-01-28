@@ -53,9 +53,9 @@ async function cleanupAndVerify() {
         weekendHolding: { value: true, known: true },
         newsTrading: { value: true, known: true },
         eaAllowed: { value: false, known: true },
-        hedging: { value: true, known: true }
+        hedging: { value: true, known: true },
       },
-      notes: 'Top 100 traders win funded accounts. Scaling up to $4M possible. Profit split up to 100%.'
+      notes: 'Top 100 traders win funded accounts. Scaling up to $4M possible. Profit split up to 100%.',
     },
 
     // 2. NinjaTrader Arena - VERIFICATO
@@ -76,9 +76,9 @@ async function cleanupAndVerify() {
         weekendHolding: { value: null, known: false },
         newsTrading: { value: null, known: false },
         eaAllowed: { value: false, known: true },
-        hedging: { value: null, known: false }
+        hedging: { value: null, known: false },
       },
-      notes: 'Monthly futures trading competition. Cash prizes paid monthly. Professional platform.'
+      notes: 'Monthly futures trading competition. Cash prizes paid monthly. Professional platform.',
     },
 
     // 3. TradingView The Leap - VERIFICATO (Feb 2026 OPEN NOW)
@@ -96,7 +96,7 @@ async function cleanupAndVerify() {
         startDate: '2026-02-01',
         endDate: '2026-02-28',
         registrationDeadline: '2026-03-09',
-        status: 'active'
+        status: 'active',
       },
       rules: {
         profitTarget: { value: null, known: false }, // Ranking based
@@ -106,9 +106,9 @@ async function cleanupAndVerify() {
         weekendHolding: { value: true, known: true },
         newsTrading: { value: true, known: true },
         eaAllowed: { value: false, known: true },
-        hedging: { value: true, known: true }
+        hedging: { value: true, known: true },
       },
-      notes: 'APERTO ADESSO! Registrazione fino 9 Marzo 2026. Top 500 vincono. $100K virtual capital. ZERO catch - nessun deposito richiesto.'
+      notes: 'APERTO ADESSO! Registrazione fino 9 Marzo 2026. Top 500 vincono. $100K virtual capital. ZERO catch - nessun deposito richiesto.',
     },
 
     // 4. FundedNext - VERIFICATO
@@ -129,9 +129,9 @@ async function cleanupAndVerify() {
         weekendHolding: { value: null, known: false },
         newsTrading: { value: null, known: false },
         eaAllowed: { value: null, known: false },
-        hedging: { value: null, known: false }
+        hedging: { value: null, known: false },
       },
-      notes: 'Real cash prizes (not just funded accounts). Top 4 prop firm globally. Reliable payouts.'
+      notes: 'Real cash prizes (not just funded accounts). Top 4 prop firm globally. Reliable payouts.',
     },
 
     // 5. XM - VERIFICATO
@@ -152,17 +152,17 @@ async function cleanupAndVerify() {
         weekendHolding: { value: null, known: false },
         newsTrading: { value: null, known: false },
         eaAllowed: { value: null, known: false },
-        hedging: { value: null, known: false }
+        hedging: { value: null, known: false },
       },
-      notes: 'Regulated broker (Cyprus). Monthly demo contests. Cash prizes. Check T&C for withdrawal requirements.'
-    }
+      notes: 'Regulated broker (Cyprus). Monthly demo contests. Cash prizes. Check T&C for withdrawal requirements.',
+    },
   };
 
   // Update Programs with verified data
   console.log('📊 Updating Programs with verified data...\n');
 
   for (const [key, data] of Object.entries(verifiedData)) {
-    const programId = key === 'tradingview' ? 'tradingview-leap' : 
+    const programId = key === 'tradingview' ? 'tradingview-leap' :
                       key === 'the5ers' ? 'the5ers-top100' :
                       key === 'ninjatrader' ? 'ninjatrader-arena' :
                       key === 'fundednext' ? 'fundednext-contest' :
@@ -174,7 +174,7 @@ async function cleanupAndVerify() {
         description: data.notes,
         pros: JSON.stringify(data.verified ? ['Entry: 0€', `Prize: $${data.firstPrize.toLocaleString()}`, 'Verified'] : []),
         cons: JSON.stringify(data.verified ? ['Competition required'] : ['Verification pending']),
-        best_for: data.competitionType
+        best_for: data.competitionType,
       })
       .eq('id', programId);
 
@@ -198,7 +198,7 @@ async function cleanupAndVerify() {
       frequency: 'one_time',
       status: 'active',
       refund_conditions: 'Entry: 0€ | Prize: Funded account up to $100K',
-      scaling_conditions: 'Top 100 win | Scaling up to $4M possible'
+      scaling_conditions: 'Top 100 win | Scaling up to $4M possible',
     },
     {
       id: 'ninjatrader-arena-monthly',
@@ -208,7 +208,7 @@ async function cleanupAndVerify() {
       frequency: 'monthly',
       status: 'active',
       refund_conditions: 'Entry: 0€ | Cash prizes',
-      scaling_conditions: 'Monthly competition'
+      scaling_conditions: 'Monthly competition',
     },
     {
       id: 'tradingview-leap-feb2026',
@@ -221,7 +221,7 @@ async function cleanupAndVerify() {
       end_date: '2026-02-28',
       registration_deadline: '2026-03-09',
       refund_conditions: 'Entry: 0€ | Top 500 win | ZERO catch',
-      scaling_conditions: 'APERTO ADESSO! Reg by 9 Marzo'
+      scaling_conditions: 'APERTO ADESSO! Reg by 9 Marzo',
     },
     {
       id: 'fundednext-cash-contest',
@@ -231,7 +231,7 @@ async function cleanupAndVerify() {
       frequency: 'one_time',
       status: 'active',
       refund_conditions: 'Entry: 0€ | Real cash (not just account)',
-      scaling_conditions: 'Cash prizes paid directly'
+      scaling_conditions: 'Cash prizes paid directly',
     },
     {
       id: 'xm-demo-monthly',
@@ -241,8 +241,8 @@ async function cleanupAndVerify() {
       frequency: 'monthly',
       status: 'active',
       refund_conditions: 'Entry: 0€ | Check T&C for withdrawal',
-      scaling_conditions: 'Monthly contest'
-    }
+      scaling_conditions: 'Monthly contest',
+    },
   ];
 
   for (const offer of offersUpdate) {
@@ -280,7 +280,7 @@ async function cleanupAndVerify() {
       ea_allowed: false,
       ea_allowed_known: true,
       hedging_allowed: true,
-      hedging_allowed_known: true
+      hedging_allowed_known: true,
     },
     {
       id: 'ninjatrader-arena-rules',
@@ -300,7 +300,7 @@ async function cleanupAndVerify() {
       ea_allowed: false,
       ea_allowed_known: true, // Known: no EAs
       hedging_allowed: null,
-      hedging_allowed_known: false
+      hedging_allowed_known: false,
     },
     {
       id: 'tradingview-leap-rules',
@@ -320,7 +320,7 @@ async function cleanupAndVerify() {
       ea_allowed: false,
       ea_allowed_known: true,
       hedging_allowed: true,
-      hedging_allowed_known: true
+      hedging_allowed_known: true,
     },
     {
       id: 'fundednext-contest-rules',
@@ -340,7 +340,7 @@ async function cleanupAndVerify() {
       ea_allowed: null,
       ea_allowed_known: false,
       hedging_allowed: null,
-      hedging_allowed_known: false
+      hedging_allowed_known: false,
     },
     {
       id: 'xm-competition-rules',
@@ -360,8 +360,8 @@ async function cleanupAndVerify() {
       ea_allowed: null,
       ea_allowed_known: false,
       hedging_allowed: null,
-      hedging_allowed_known: false
-    }
+      hedging_allowed_known: false,
+    },
   ];
 
   for (const ruleset of rulesets) {
@@ -376,7 +376,7 @@ async function cleanupAndVerify() {
         ruleset.weekend_holding_known,
         ruleset.news_trading_known,
         ruleset.ea_allowed_known,
-        ruleset.hedging_allowed_known
+        ruleset.hedging_allowed_known,
       ].filter(Boolean).length;
       console.log(`✅ Ruleset: ${ruleset.id} | Verified rules: ${knownCount}/4`);
     }
@@ -395,7 +395,7 @@ async function cleanupAndVerify() {
       payout_frequency: 'on_demand',
       first_payout_delay_days: 30,
       eligible_after_phase: 1,
-      payout_notes: 'Funded account activated after verification. Profit split up to 100%.'
+      payout_notes: 'Funded account activated after verification. Profit split up to 100%.',
     },
     {
       id: 'ninjatrader-arena-payout',
@@ -406,7 +406,7 @@ async function cleanupAndVerify() {
       payout_frequency: 'monthly',
       first_payout_delay_days: 7,
       eligible_after_phase: 1,
-      payout_notes: 'Cash prizes paid monthly to winners'
+      payout_notes: 'Cash prizes paid monthly to winners',
     },
     {
       id: 'tradingview-leap-payout',
@@ -417,7 +417,7 @@ async function cleanupAndVerify() {
       payout_frequency: 'one_time',
       first_payout_delay_days: 14,
       eligible_after_phase: 1,
-      payout_notes: 'Cash prizes paid after competition ends. ZERO withdrawal requirements.'
+      payout_notes: 'Cash prizes paid after competition ends. ZERO withdrawal requirements.',
     },
     {
       id: 'fundednext-contest-payout',
@@ -428,7 +428,7 @@ async function cleanupAndVerify() {
       payout_frequency: 'on_demand',
       first_payout_delay_days: 14,
       eligible_after_phase: 1,
-      payout_notes: 'Real cash prizes (not trading credit)'
+      payout_notes: 'Real cash prizes (not trading credit)',
     },
     {
       id: 'xm-competition-payout',
@@ -439,8 +439,8 @@ async function cleanupAndVerify() {
       payout_frequency: 'monthly',
       first_payout_delay_days: 30,
       eligible_after_phase: 1,
-      payout_notes: 'Check T&C for withdrawal requirements'
-    }
+      payout_notes: 'Check T&C for withdrawal requirements',
+    },
   ];
 
   for (const payout of payoutTerms) {

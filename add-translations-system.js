@@ -31,7 +31,7 @@ async function createTranslationsSystem() {
         ON program_translations(program_id);
       CREATE INDEX IF NOT EXISTS idx_program_translations_locale 
         ON program_translations(locale);
-    `
+    `,
   });
 
   if (tableError) {
@@ -51,7 +51,7 @@ async function createTranslationsSystem() {
       description: 'Free trading competition where the top 100 traders win funded accounts from $5K to $100K. No entry fee required. Scale up to $4M with profit splits up to 100%.',
       pros: ['Entry: $0', 'Funded account prizes up to $100K', 'Scaling up to $4M', 'Profit split up to 100%', 'Verified rules'],
       cons: ['High competition (top 100 only)', 'Strict risk rules', '5 minimum trading days required'],
-      best_for: 'Experienced traders seeking funded accounts'
+      best_for: 'Experienced traders seeking funded accounts',
     },
     // THE5ERS - IT
     {
@@ -61,7 +61,7 @@ async function createTranslationsSystem() {
       description: 'Competizione di trading gratuita dove i top 100 trader vincono account finanziati da $5K a $100K. Nessuna quota di iscrizione. Scaling fino a $4M con divisione profitti fino al 100%.',
       pros: ['Iscrizione: 0€', 'Account finanziati fino a $100K', 'Scaling fino a $4M', 'Profit split fino al 100%', 'Regole verificate'],
       cons: ['Alta competizione (solo top 100)', 'Regole di rischio rigide', '5 giorni di trading minimi richiesti'],
-      best_for: 'Trader esperti che cercano account finanziati'
+      best_for: 'Trader esperti che cercano account finanziati',
     },
 
     // NINJATRADER - EN
@@ -72,7 +72,7 @@ async function createTranslationsSystem() {
       description: 'Monthly futures trading competition with real cash prizes. Trade on professional simulation platform. $50K prize pool with $10K first prize.',
       pros: ['Entry: $0', '$10,000 first prize', 'Monthly recurring', 'Professional platform', 'Real cash prizes'],
       cons: ['Futures complexity', 'High skill required', 'Rules partially verified'],
-      best_for: 'Futures traders with experience'
+      best_for: 'Futures traders with experience',
     },
     // NINJATRADER - IT
     {
@@ -82,7 +82,7 @@ async function createTranslationsSystem() {
       description: 'Competizione mensile di trading futures con premi in cash reali. Piattaforma professionale di simulazione. Prize pool $50K con $10K primo premio.',
       pros: ['Iscrizione: 0€', '$10.000 primo premio', 'Mensile ricorrente', 'Piattaforma professionale', 'Premi in cash reali'],
       cons: ['Complessità futures', 'Skill elevata richiesta', 'Regole parzialmente verificate'],
-      best_for: 'Trader futures con esperienza'
+      best_for: 'Trader futures con esperienza',
     },
 
     // TRADINGVIEW - EN
@@ -93,7 +93,7 @@ async function createTranslationsSystem() {
       description: '⭐ OPEN NOW! Paper trading competition with cash prizes up to $10,000. Register by March 9, 2026. Trade with $100K virtual capital. Top 500 win prizes. ZERO catch - no deposit required.',
       pros: ['Entry: $0', '$10,000 first prize', 'Top 500 win prizes', 'OPEN NOW - Register by Mar 9', 'No deposit required', 'All verified rules'],
       cons: ['High competition (10K+ participants)', 'Must trade minimum 3 days'],
-      best_for: 'All levels - perfect for beginners'
+      best_for: 'All levels - perfect for beginners',
     },
     // TRADINGVIEW - IT
     {
@@ -103,7 +103,7 @@ async function createTranslationsSystem() {
       description: '⭐ APERTO ADESSO! Competizione paper trading con premi in cash fino a $10.000. Registrazione entro 9 Marzo 2026. Tradare con $100K virtuali. Top 500 vincono. ZERO catch - nessun deposito richiesto.',
       pros: ['Iscrizione: 0€', '$10.000 primo premio', 'Top 500 vincono', 'APERTO ADESSO - Reg entro 9 Marzo', 'Nessun deposito richiesto', 'Tutte le regole verificate'],
       cons: ['Alta competizione (10K+ partecipanti)', 'Minimo 3 giorni di trading richiesti'],
-      best_for: 'Tutti i livelli - perfetto per principianti'
+      best_for: 'Tutti i livelli - perfetto per principianti',
     },
 
     // FUNDEDNEXT - EN
@@ -114,7 +114,7 @@ async function createTranslationsSystem() {
       description: 'Demo trading contests with real cash prizes (not just funded accounts). From the #4 prop firm globally. Reliable payouts and transparent rules.',
       pros: ['Entry: $0', 'Real cash prizes', 'Not just funded accounts', 'Top 4 prop firm', 'Reliable payouts'],
       cons: ['Periodic only', 'Limited spots', 'Rules need verification'],
-      best_for: 'Serious traders wanting cash prizes'
+      best_for: 'Serious traders wanting cash prizes',
     },
     // FUNDEDNEXT - IT
     {
@@ -124,7 +124,7 @@ async function createTranslationsSystem() {
       description: 'Contest di trading demo con premi in cash reali (non solo account finanziati). Dalla #4 prop firm globale. Pagamenti affidabili e regole trasparenti.',
       pros: ['Iscrizione: 0€', 'Premi in cash reali', 'Non solo account', 'Top 4 prop firm', 'Pagamenti affidabili'],
       cons: ['Solo periodici', 'Posti limitati', 'Regole da verificare'],
-      best_for: 'Trader seri che vogliono premi in cash'
+      best_for: 'Trader seri che vogliono premi in cash',
     },
 
     // XM - EN
@@ -135,7 +135,7 @@ async function createTranslationsSystem() {
       description: 'Weekly and monthly demo contests with cash prizes from $500 to $10,000. Regulated broker (Cyprus). Check T&C for withdrawal requirements.',
       pros: ['Entry: $0', 'Regulated broker', 'Frequent contests', 'Cash prizes', 'Weekly and monthly'],
       cons: ['Check T&C for withdrawal', 'KYC required', 'Rules need verification'],
-      best_for: 'Forex traders wanting frequent competitions'
+      best_for: 'Forex traders wanting frequent competitions',
     },
     // XM - IT
     {
@@ -145,8 +145,8 @@ async function createTranslationsSystem() {
       description: 'Contest demo settimanali e mensili con premi in cash da $500 a $10.000. Broker regolamentato (Cipro). Verificare T&C per i requisiti di prelievo.',
       pros: ['Iscrizione: 0€', 'Broker regolamentato', 'Contest frequenti', 'Premi in cash', 'Settimanali e mensili'],
       cons: ['Verificare T&C per prelievo', 'KYC richiesto', 'Regole da verificare'],
-      best_for: 'Trader forex che vogliono contest frequenti'
-    }
+      best_for: 'Trader forex che vogliono contest frequenti',
+    },
   ];
 
   for (const trans of translations) {
@@ -182,7 +182,7 @@ async function createTranslationsSystem() {
       FROM programs p
       LEFT JOIN program_translations pt_en ON p.id = pt_en.program_id AND pt_en.locale = 'en'
       LEFT JOIN program_translations pt_it ON p.id = pt_it.program_id AND pt_it.locale = 'it';
-    `
+    `,
   });
 
   if (viewError) {

@@ -111,7 +111,9 @@ export async function GET() {
 
       // Parse pros/cons from JSON string if needed
       const parseStringArray = (value: any): string[] => {
-        if (Array.isArray(value)) return value;
+        if (Array.isArray(value)) {
+ return value;
+}
         if (typeof value === 'string') {
           try {
             const parsed = JSON.parse(value);

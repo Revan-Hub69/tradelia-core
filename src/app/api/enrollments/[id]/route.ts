@@ -8,7 +8,7 @@ import { createClient } from '@/libs/supabase/server';
  */
 export async function PATCH(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const supabase = await createClient();
@@ -20,7 +20,7 @@ export async function PATCH(
     if (authError || !user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -32,7 +32,7 @@ export async function PATCH(
     if (!status) {
       return NextResponse.json(
         { error: 'Missing required field: status' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -51,7 +51,7 @@ export async function PATCH(
     if (!validStatuses.includes(status)) {
       return NextResponse.json(
         { error: `Invalid status. Must be one of: ${validStatuses.join(', ')}` },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -65,7 +65,7 @@ export async function PATCH(
     if (fetchError || !enrollment) {
       return NextResponse.json(
         { error: 'Enrollment not found' },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -73,31 +73,31 @@ export async function PATCH(
     if (enrollment.user_id !== user.id) {
       return NextResponse.json(
         { error: 'Forbidden' },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
     // Define valid status transitions
     const validTransitions: Record<string, string[]> = {
-      'interested': ['pending_redirect', 'abandoned'],
-      'pending_redirect': ['pending_confirmation', 'abandoned'],
-      'pending_confirmation': ['active', 'abandoned'],
-      'active': ['completed', 'failed', 'abandoned'],
-      'completed': ['archived'],
-      'failed': ['archived'],
-      'abandoned': ['archived'],
-      'archived': [],
+      interested: ['pending_redirect', 'abandoned'],
+      pending_redirect: ['pending_confirmation', 'abandoned'],
+      pending_confirmation: ['active', 'abandoned'],
+      active: ['completed', 'failed', 'abandoned'],
+      completed: ['archived'],
+      failed: ['archived'],
+      abandoned: ['archived'],
+      archived: [],
     };
 
     // Check if transition is valid
     const allowedTransitions = validTransitions[enrollment.status] || [];
     if (!allowedTransitions.includes(status)) {
       return NextResponse.json(
-        { 
+        {
           error: `Invalid status transition from '${enrollment.status}' to '${status}'`,
           allowedTransitions,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -142,7 +142,7 @@ export async function PATCH(
       console.error('Error updating enrollment:', updateError);
       return NextResponse.json(
         { error: 'Failed to update enrollment' },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -154,7 +154,7 @@ export async function PATCH(
     console.error('API Error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -165,7 +165,7 @@ export async function PATCH(
  */
 export async function DELETE(
   _request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const supabase = await createClient();
@@ -177,7 +177,7 @@ export async function DELETE(
     if (authError || !user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -191,7 +191,7 @@ export async function DELETE(
     if (fetchError || !enrollment) {
       return NextResponse.json(
         { error: 'Enrollment not found' },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -199,7 +199,7 @@ export async function DELETE(
     if (enrollment.user_id !== user.id) {
       return NextResponse.json(
         { error: 'Forbidden' },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -207,11 +207,11 @@ export async function DELETE(
     const deletableStatuses = ['interested', 'pending_redirect', 'pending_confirmation'];
     if (!deletableStatuses.includes(enrollment.status)) {
       return NextResponse.json(
-        { 
+        {
           error: `Cannot delete enrollment with status '${enrollment.status}'`,
           message: 'Only pending enrollments can be deleted',
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -225,7 +225,7 @@ export async function DELETE(
       console.error('Error deleting enrollment:', deleteError);
       return NextResponse.json(
         { error: 'Failed to delete enrollment' },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -237,7 +237,7 @@ export async function DELETE(
     console.error('API Error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

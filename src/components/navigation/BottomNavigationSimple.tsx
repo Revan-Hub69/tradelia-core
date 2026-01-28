@@ -7,6 +7,7 @@
  * - Liquid Glass material system
  * - Haptic feedback on interactions
  * - Optimized for thumb reachability
+ * - Auto-hides when overlays (drawers, modals) are open
  *
  * RESEARCH SOURCES:
  * - iOS 26 Tab Bar Design (Michael Tsai, 2026)
@@ -20,6 +21,7 @@ import { useTranslations } from 'next-intl';
 import { useCallback } from 'react';
 
 import { DynamicIcon, type IconName } from '@/components/icons';
+import { useNavigationContext } from '@/components/navigation/NavigationProvider';
 import { getVisibleNavigationItems } from '@/data/navigation.config';
 import { useOptimizedNavigation } from '@/hooks/useOptimizedNavigation';
 import { usePathname } from '@/libs/i18nNavigation';
@@ -47,6 +49,9 @@ export const BottomNavigationSimple: React.FC<BottomNavigationSimpleProps> = ({ 
   const navigationItems = getVisibleNavigationItems();
   const { navigate, isPending, navigationTarget } = useOptimizedNavigation();
 
+  // Get overlay state from navigation context
+  const { isOverlayOpen } = useNavigationContext();
+
   const handleNavigation = useCallback((href: string) => {
     if (pathname === href) {
       return;
@@ -63,10 +68,15 @@ export const BottomNavigationSimple: React.FC<BottomNavigationSimpleProps> = ({ 
       className={cn(
         // iOS 26 Capsule Design
         'bottom-nav-capsule-2026',
+        // Hide when overlay (drawer, modal) is open
+        isOverlayOpen && 'pointer-events-none opacity-0',
+        // Smooth transition for show/hide
+        'transition-opacity duration-300 ease-in-out',
         className,
       )}
       role="navigation"
       aria-label={t('nav_aria_primary')}
+      aria-hidden={isOverlayOpen}
     >
       <div className="flex h-full items-center justify-around gap-1">
         {navigationItems.map((item) => {

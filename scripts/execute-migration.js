@@ -4,8 +4,8 @@
  * Usage: node scripts/execute-migration.js <path-to-sql-file>
  */
 
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 
 // Supabase config from .env.local
 const SUPABASE_URL = 'https://higkhlfjfhlecbtfnznx.supabase.co';
@@ -35,7 +35,7 @@ async function executeMigration(sqlFilePath) {
       'Prefer': 'resolution=merge-duplicates',
     },
     body: JSON.stringify({
-      query: sql
+      query: sql,
     }),
   });
 
@@ -78,7 +78,7 @@ if (!fs.existsSync(fullPath)) {
   process.exit(1);
 }
 
-executeViaPgMeta(fullPath).catch(err => {
+executeViaPgMeta(fullPath).catch((err) => {
   console.error('❌ Error:', err);
   process.exit(1);
 });

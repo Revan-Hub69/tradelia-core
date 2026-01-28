@@ -21,6 +21,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { useEffect, useMemo, useState } from 'react';
 
+import { useNavigationContext } from '@/components/navigation/NavigationProvider';
 import { cn } from '@/utils/Helpers';
 
 type Offer = {
@@ -115,6 +116,17 @@ export function ProgramDrawer({
   onEnrollAction,
 }: ProgramDrawerProps) {
   const t = useTranslations('Challenges') as any;
+
+  // Get navigation context to notify when drawer is open
+  const { setOverlayOpen } = useNavigationContext();
+
+  // Notify navigation context when drawer opens/closes
+  useEffect(() => {
+    setOverlayOpen(isOpen);
+    return () => {
+      setOverlayOpen(false);
+    };
+  }, [isOpen, setOverlayOpen]);
 
   // Body scroll lock
   useEffect(() => {

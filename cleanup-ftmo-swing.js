@@ -31,7 +31,6 @@ async function cleanup() {
 
     console.log('\n✅ Cleanup completed successfully!');
     console.log('🎯 Only real FTMO products remain (Challenge & Trial)');
-
   } catch (error) {
     console.error('\n❌ Cleanup failed:', error);
     process.exit(1);

@@ -17,7 +17,7 @@ export async function GET(request: Request) {
     if (authError || !user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -64,19 +64,19 @@ export async function GET(request: Request) {
       console.error('Error fetching enrollments:', error);
       return NextResponse.json(
         { error: 'Failed to fetch enrollments' },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
     // Transform data for frontend
-    const transformedEnrollments = enrollments?.map(enrollment => {
+    const transformedEnrollments = enrollments?.map((enrollment) => {
       const program = Array.isArray(enrollment.programs)
         ? enrollment.programs[0]
         : enrollment.programs;
       const offer = Array.isArray(enrollment.offers)
         ? enrollment.offers[0]
         : enrollment.offers;
-      
+
       return {
         id: enrollment.id,
         status: enrollment.status,
@@ -112,7 +112,7 @@ export async function GET(request: Request) {
     console.error('API Error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -131,7 +131,7 @@ export async function POST(request: Request) {
     if (authError || !user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -143,7 +143,7 @@ export async function POST(request: Request) {
     if (!programId || !offerId) {
       return NextResponse.json(
         { error: 'Missing required fields: programId, offerId' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -158,7 +158,7 @@ export async function POST(request: Request) {
     if (canCreate === false) {
       return NextResponse.json(
         { error: 'Rate limit exceeded. Max 10 enrollments per day.' },
-        { status: 429 }
+        { status: 429 },
       );
     }
 
@@ -179,11 +179,11 @@ export async function POST(request: Request) {
       // If already exists and not archived, return existing
       if (!['completed', 'failed', 'abandoned', 'archived'].includes(existingEnrollment.status)) {
         return NextResponse.json(
-          { 
+          {
             error: 'Enrollment already exists',
-            data: { id: existingEnrollment.id, status: existingEnrollment.status }
+            data: { id: existingEnrollment.id, status: existingEnrollment.status },
           },
-          { status: 409 }
+          { status: 409 },
         );
       }
     }
@@ -198,7 +198,7 @@ export async function POST(request: Request) {
     if (programError || !program) {
       return NextResponse.json(
         { error: 'Program not found' },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -219,7 +219,7 @@ export async function POST(request: Request) {
       console.error('Error creating enrollment:', insertError);
       return NextResponse.json(
         { error: 'Failed to create enrollment' },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -236,7 +236,7 @@ export async function POST(request: Request) {
     console.error('API Error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
