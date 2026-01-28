@@ -1,19 +1,18 @@
 'use client';
 
 /**
- * PROGRAM CARD - Enterprise Edition 2026
+ * PROGRAM CARD - iOS Glass 2026 Edition
  *
- * Design Principles:
- * - Clarity: Solo informazioni essenziali
- * - Professional: No mock data, no effetti "carnevale"
- * - Constraint: Card decide, Drawer conferma
+ * Design Principles (Tier 1 Research):
+ * - iOS 26 Glass Morphism: Translucency, depth, premium feel
+ * - No CTA Button: Card intera è cliccabile (pattern iOS 26)
+ * - Visual Hierarchy: Badge → Title → KPIs (2 max)
+ * - Micro-interactions: Scale on hover, haptic feedback
  *
- * Structure:
- * 1. Header: Badge tipo (Free/Paid)
- * 2. Title: Program name
- * 3. Organizer: Company name
- * 4. 2 KPI: Account Size + Entry Fee
- * 5. CTA: View Details
+ * Pattern: Card = Button (Apple Design 2026)
+ * - L'intera card è tappabile
+ * - No "View Details" button ridondante
+ * - Visual affordance con hover state
  */
 
 import { motion } from 'framer-motion';
@@ -53,6 +52,13 @@ type ProgramCardProps = {
 
 const EMPTY_PLATFORMS: string[] = [];
 
+// Haptic feedback helper
+const triggerHaptic = () => {
+  if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+    navigator.vibrate([5]);
+  }
+};
+
 export function ProgramCard({
   program,
   offers,
@@ -73,6 +79,7 @@ export function ProgramCard({
   const isFree = program.category === 'free_competition';
 
   const handleCardClick = useCallback(() => {
+    triggerHaptic();
     if (defaultOffer) {
       onViewDetailsAction(program.id, defaultOffer.id);
     }
@@ -97,17 +104,34 @@ export function ProgramCard({
   return (
     <motion.article
       layout
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -16 }}
-      whileHover={{ y: -2 }}
+      exit={{ opacity: 0, y: -12 }}
+      whileHover={{ 
+        scale: 1.01,
+        y: -2,
+        transition: { type: 'spring', stiffness: 400, damping: 25 }
+      }}
+      whileTap={{ scale: 0.98 }}
       onClick={handleCardClick}
       className={cn(
-        'relative flex flex-col gap-4 rounded-2xl border border-border/40',
-        'bg-background p-5 transition-all duration-200',
-        'hover:border-border hover:shadow-md',
+        // iOS 26 Glass Card
+        'group relative flex flex-col gap-3 rounded-2xl',
+        'bg-white/80 dark:bg-white/5',
+        'backdrop-blur-xl',
+        'border border-white/40 dark:border-white/10',
+        'shadow-[0_2px_8px_-2px_rgba(0,0,0,0.08)]',
+        'dark:shadow-[0_2px_8px_-2px_rgba(0,0,0,0.3)]',
+        'p-4',
         'cursor-pointer',
-        isFree && 'border-green-500/20 bg-green-50/5 dark:bg-green-950/5',
+        'transition-shadow duration-300',
+        // Hover: iOS 26 depth effect
+        'hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.12)]',
+        'dark:hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.4)]',
+        // Active state
+        'active:scale-[0.98]',
+        // Free variant: subtle green tint
+        isFree && 'bg-green-50/70 dark:bg-green-950/20 border-green-200/50 dark:border-green-500/20',
       )}
       aria-label={t('a11y.cardLabel', { name: program.name })}
       role="button"
@@ -119,65 +143,68 @@ export function ProgramCard({
         }
       }}
     >
-      {/* 1. HEADER - Badge tipo */}
+      {/* HEADER: Badge + Platforms */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          {isFree ? (
-            <span className="inline-flex items-center gap-1.5 rounded-lg bg-green-500/10 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-green-700 dark:text-green-400">
-              <span className="size-1.5 rounded-full bg-green-600 dark:bg-green-400" />
-              {t('badges.free')}
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1.5 rounded-lg bg-blue-500/10 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-400">
-              {t('badges.paid')}
-            </span>
-          )}
-        </div>
+        {/* iOS 26 Pill Badge */}
+        <span className={cn(
+          'inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide',
+          isFree 
+            ? 'bg-green-500/15 text-green-700 dark:text-green-400'
+            : 'bg-blue-500/15 text-blue-700 dark:text-blue-400'
+        )}>
+          {isFree ? t('badges.free') : t('badges.paid')}
+        </span>
 
-        {/* Piattaforme (max 2) */}
+        {/* Platforms - iOS 26 subtle text */}
         {platforms.length > 0 && (
-          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-            <span>{platforms[0]}</span>
+          <span className="text-[11px] font-medium text-muted-foreground/70">
+            {platforms[0]}
             {platforms.length > 1 && (
-              <span className="text-muted-foreground/60">+{platforms.length - 1}</span>
+              <span className="text-muted-foreground/40"> +{platforms.length - 1}</span>
             )}
-          </div>
+          </span>
         )}
       </div>
 
-      {/* 2. TITLE - Program Name */}
-      <div>
-        <h3 className="line-clamp-2 text-lg font-bold leading-tight">
-          {program.name}
-        </h3>
-      </div>
+      {/* TITLE - iOS 26 Typography */}
+      <h3 className="line-clamp-2 text-[15px] font-semibold leading-snug tracking-tight text-foreground">
+        {program.name}
+      </h3>
 
-      {/* 3. ORGANIZER */}
-      <p className="text-sm text-muted-foreground">
+      {/* ORGANIZER - Subtle secondary */}
+      <p className="text-[13px] text-muted-foreground/80">
         {program.organizer_name}
       </p>
 
-      {/* 4. KPI GRID - Solo 2 metriche */}
+      {/* KPI GRID - iOS 26 Glass Panels */}
       {defaultOffer && (
-        <div className="grid grid-cols-2 gap-3 border-t border-border/30 pt-4">
-          {/* Account Size */}
-          <div className="flex flex-col rounded-lg bg-muted/30 p-3">
-            <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+        <div className="grid grid-cols-2 gap-2 mt-1">
+          {/* Account Size - Primary KPI */}
+          <div className={cn(
+            'flex flex-col rounded-xl px-3 py-2.5',
+            'bg-black/[0.03] dark:bg-white/[0.06]',
+            'backdrop-blur-sm'
+          )}>
+            <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground/70">
               {t('card.accountSize')}
             </span>
-            <span className="text-lg font-bold">
+            <span className="text-[17px] font-bold tracking-tight">
               {formatSize(defaultOffer.account_size, defaultOffer.account_currency)}
             </span>
           </div>
 
-          {/* Entry Fee */}
-          <div className="flex flex-col rounded-lg bg-muted/30 p-3">
-            <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+          {/* Entry Fee - Secondary KPI */}
+          <div className={cn(
+            'flex flex-col rounded-xl px-3 py-2.5',
+            'bg-black/[0.03] dark:bg-white/[0.06]',
+            'backdrop-blur-sm'
+          )}>
+            <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground/70">
               {t('card.entryFee')}
             </span>
             <span className={cn(
-              'text-lg font-bold',
-              isFree ? 'text-green-600 dark:text-green-400' : 'text-foreground',
+              'text-[17px] font-bold tracking-tight',
+              isFree ? 'text-green-600 dark:text-green-400' : 'text-foreground'
             )}>
               {formatFee(defaultOffer)}
             </span>
@@ -185,23 +212,21 @@ export function ProgramCard({
         </div>
       )}
 
-      {/* 5. CTA - View Details */}
-      <div className="border-t border-border/30 pt-4">
-        <button
-          type="button"
-          className={cn(
-            'w-full rounded-xl px-4 py-2.5 text-sm font-semibold transition-all',
-            'bg-primary text-primary-foreground',
-            'hover:bg-primary/90',
-            'focus:outline-none focus:ring-2 focus:ring-primary/20',
-          )}
-          onClick={(e) => {
-            e.stopPropagation();
-            handleCardClick();
-          }}
+      {/* iOS 26: Chevron Indicator (subtle affordance) */}
+      <div className="absolute right-3 top-1/2 -translate-y-1/2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+        <svg 
+          width="20" 
+          height="20" 
+          viewBox="0 0 24 24" 
+          fill="none" 
+          stroke="currentColor" 
+          strokeWidth="2" 
+          strokeLinecap="round" 
+          strokeLinejoin="round"
+          className="text-muted-foreground/40"
         >
-          {t('card.viewDetails')}
-        </button>
+          <path d="m9 18 6-6-6-6" />
+        </svg>
       </div>
     </motion.article>
   );

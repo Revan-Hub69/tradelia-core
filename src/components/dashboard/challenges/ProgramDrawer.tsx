@@ -1,21 +1,19 @@
 'use client';
 
 /**
- * PROGRAM DRAWER - Enterprise Edition 2026
+ * PROGRAM DRAWER - iOS Glass 2026 Edition
  *
- * Design Principles:
- * - Constraint: 3 sezioni max
+ * Design Principles (Tier 1 Research):
+ * - iOS 26 Glass Morphism: Translucency, depth, premium feel
+ * - Constraint: 3 sezioni max per clarity
  * - Focus: OfferSelector come elemento centrale
  * - No mock data, no trust signals fake
- * - Footer sempre visibile con CTA chiara
+ * - Sticky footer con CTA chiara
  *
  * Structure:
- * 1. Header: Nome + Organizer + OfferSelector
- * 2. Body:
-    - Sezione A: Regole chiave (profit target, drawdown, daily loss)
-    - Sezione B: Tabella offerte (se >1)
-    - Sezione C: Mercati e payout essenziali
- * 3. Footer: CTA primaria + Chiudi
+ * 1. Header: Glass header con nome e badge
+ * 2. Body: 3 sezioni (Key Rules, Offers, Markets)
+ * 3. Footer: Glass footer con CTA primaria
  */
 
 import { AnimatePresence, motion } from 'framer-motion';
@@ -81,7 +79,7 @@ type ProgramDrawerProps = {
   officialUrl?: string;
 };
 
-// Close Icon
+// iOS 26 Close Icon
 const CloseIcon = ({ className = '' }: { className?: string }) => (
   <svg
     className={className || 'size-5'}
@@ -96,6 +94,14 @@ const CloseIcon = ({ className = '' }: { className?: string }) => (
     <line x1="6" y1="6" x2="18" y2="18" />
   </svg>
 );
+
+// Haptic feedback
+const triggerHaptic = (type: 'light' | 'medium' = 'light') => {
+  if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+    const patterns = { light: [10], medium: [20] };
+    navigator.vibrate(patterns[type]);
+  }
+};
 
 export function ProgramDrawer({
   program,
@@ -164,67 +170,97 @@ export function ProgramDrawer({
     return `${offer.fee_currency}${offer.entry_fee}`;
   };
 
+  const handleEnroll = async () => {
+    triggerHaptic('medium');
+    if (onEnrollAction && selectedOffer) {
+      const result = await onEnrollAction(program.id, selectedOffer.id);
+      if (result.success && result.officialUrl) {
+        window.open(result.officialUrl, '_blank');
+      }
+    }
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
+          {/* Backdrop - iOS 26 blur */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onCloseAction}
-            className="fixed inset-0 z-50 bg-black/50"
+            className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm"
           />
 
-          {/* Drawer */}
+          {/* Drawer - iOS 26 Glass */}
           <motion.aside
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className="fixed right-0 top-0 z-50 flex size-full flex-col overflow-hidden bg-background shadow-xl sm:w-[560px]"
+            className="fixed right-0 top-0 z-50 flex size-full flex-col overflow-hidden sm:w-[480px]"
             role="dialog"
             aria-modal="true"
             aria-labelledby="drawer-title"
           >
-            {/* Header */}
-            <header className="border-b border-border/50 bg-background px-5 py-4">
+            {/* iOS 26 Glass Background */}
+            <div className="absolute inset-0 bg-white/90 dark:bg-black/90 backdrop-blur-2xl" />
+            
+            {/* iOS 26 Hairline Border */}
+            <div className="absolute left-0 top-0 bottom-0 w-px bg-black/5 dark:bg-white/10" />
+
+            {/* Header - iOS 26 Glass */}
+            <header className="relative border-b border-black/5 dark:border-white/10 bg-white/50 dark:bg-black/50 backdrop-blur-xl px-5 py-4">
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0 flex-1">
-                  {/* Badge */}
+                  {/* iOS 26 Pill Badge */}
                   <div className="mb-2">
-                    {isFree ? (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-0.5 text-xs font-semibold text-green-700 dark:text-green-400">
-                        {t('badges.free')}
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/10 px-2 py-0.5 text-xs font-semibold text-blue-700 dark:text-blue-400">
-                        {t('badges.paid')}
-                      </span>
-                    )}
+                    <span className={cn(
+                      'inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide',
+                      isFree 
+                        ? 'bg-green-500/15 text-green-700 dark:text-green-400'
+                        : 'bg-blue-500/15 text-blue-700 dark:text-blue-400'
+                    )}>
+                      {isFree ? t('badges.free') : t('badges.paid')}
+                    </span>
                   </div>
 
-                  {/* Title */}
-                  <h2 id="drawer-title" className="text-xl font-bold leading-tight">
+                  {/* Title - iOS 26 Typography */}
+                  <h2 id="drawer-title" className="text-[19px] font-semibold leading-tight tracking-tight">
                     {program.name}
                   </h2>
 
                   {/* Organizer */}
-                  <p className="mt-1 text-sm text-muted-foreground">
+                  <p className="mt-1 text-[13px] text-muted-foreground/80">
                     {program.organizer_name}
                   </p>
 
-                  {/* Offer Selector (se >1) */}
+                  {/* Offer Selector - iOS 26 Style */}
                   {offers.length > 1 && (
                     <div className="mt-4">
-                      <label className="mb-1.5 block text-xs font-medium text-muted-foreground">
+                      <label className="mb-1.5 block text-[11px] font-medium uppercase tracking-wide text-muted-foreground/70">
                         {t('drawer.selectAccountSize')}
                       </label>
                       <select
                         value={selectedOfferId}
-                        onChange={(e) => setSelectedOfferId(e.target.value)}
-                        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+                        onChange={(e) => {
+                          triggerHaptic();
+                          setSelectedOfferId(e.target.value);
+                        }}
+                        className={cn(
+                          'w-full rounded-xl border border-black/10 dark:border-white/10',
+                          'bg-white/80 dark:bg-white/5',
+                          'backdrop-blur-sm',
+                          'px-3 py-2.5 text-[14px]',
+                          'focus:outline-none focus:ring-2 focus:ring-primary/20',
+                          'appearance-none'
+                        )}
+                        style={{
+                          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
+                          backgroundRepeat: 'no-repeat',
+                          backgroundPosition: 'right 12px center',
+                        }}
                       >
                         {offers.map((offer) => (
                           <option key={offer.id} value={offer.id}>
@@ -237,10 +273,17 @@ export function ProgramDrawer({
                   )}
                 </div>
 
-                {/* Close Button */}
+                {/* Close Button - iOS 26 Glass */}
                 <button
                   onClick={onCloseAction}
-                  className="shrink-0 rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  className={cn(
+                    'shrink-0 rounded-full p-2',
+                    'bg-black/5 dark:bg-white/10',
+                    'text-muted-foreground',
+                    'transition-all duration-200',
+                    'hover:bg-black/10 dark:hover:bg-white/15',
+                    'active:scale-95'
+                  )}
                   aria-label={t('a11y.closeDrawer')}
                   type="button"
                 >
@@ -250,75 +293,103 @@ export function ProgramDrawer({
             </header>
 
             {/* Content - 3 sezioni max */}
-            <div className="flex-1 overflow-y-auto">
-              <div className="space-y-6 p-5 pb-24">
-                {/* SEZIONE 1: Regole Chiave */}
+            <div className="relative flex-1 overflow-y-auto">
+              <div className="space-y-6 p-5 pb-28">
+                {/* SEZIONE 1: Regole Chiave - iOS 16 Grid */}
                 {phase1Rules && (
                   <section>
-                    <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                    <h3 className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground/70">
                       {t('drawer.keyRules')}
                     </h3>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2 gap-2">
                       {phase1Rules.profit_target_pct && (
-                        <div className="rounded-lg border border-green-500/20 bg-green-500/5 p-3">
-                          <div className="text-xs text-muted-foreground">{t('drawer.profitTarget')}</div>
-                          <div className="text-lg font-bold text-green-600 dark:text-green-400">
+                        <div className={cn(
+                          'flex flex-col rounded-xl px-3 py-3',
+                          'bg-green-500/10 dark:bg-green-500/15',
+                          'backdrop-blur-sm'
+                        )}>
+                          <span className="text-[10px] font-medium uppercase tracking-wide text-green-700/70 dark:text-green-400/70">
+                            {t('drawer.profitTarget')}
+                          </span>
+                          <span className="text-[17px] font-bold text-green-700 dark:text-green-400">
                             {phase1Rules.profit_target_pct}%
-                          </div>
+                          </span>
                         </div>
                       )}
                       {phase1Rules.max_drawdown_pct && (
-                        <div className="rounded-lg border border-red-500/20 bg-red-500/5 p-3">
-                          <div className="text-xs text-muted-foreground">{t('drawer.maxDrawdown')}</div>
-                          <div className="text-lg font-bold text-red-600 dark:text-red-400">
+                        <div className={cn(
+                          'flex flex-col rounded-xl px-3 py-3',
+                          'bg-red-500/10 dark:bg-red-500/15',
+                          'backdrop-blur-sm'
+                        )}>
+                          <span className="text-[10px] font-medium uppercase tracking-wide text-red-700/70 dark:text-red-400/70">
+                            {t('drawer.maxDrawdown')}
+                          </span>
+                          <span className="text-[17px] font-bold text-red-700 dark:text-red-400">
                             {phase1Rules.max_drawdown_pct}%
-                          </div>
+                          </span>
                         </div>
                       )}
                       {phase1Rules.max_daily_loss_pct && (
-                        <div className="rounded-lg border border-orange-500/20 bg-orange-500/5 p-3">
-                          <div className="text-xs text-muted-foreground">{t('drawer.maxDailyLoss')}</div>
-                          <div className="text-lg font-bold text-orange-600 dark:text-orange-400">
+                        <div className={cn(
+                          'flex flex-col rounded-xl px-3 py-3',
+                          'bg-orange-500/10 dark:bg-orange-500/15',
+                          'backdrop-blur-sm'
+                        )}>
+                          <span className="text-[10px] font-medium uppercase tracking-wide text-orange-700/70 dark:text-orange-400/70">
+                            {t('drawer.maxDailyLoss')}
+                          </span>
+                          <span className="text-[17px] font-bold text-orange-700 dark:text-orange-400">
                             {phase1Rules.max_daily_loss_pct}%
-                          </div>
+                          </span>
                         </div>
                       )}
                       {phase1Rules.min_trading_days && (
-                        <div className="rounded-lg border border-border/50 bg-muted/30 p-3">
-                          <div className="text-xs text-muted-foreground">{t('drawer.minTradingDays')}</div>
-                          <div className="text-lg font-bold">
+                        <div className={cn(
+                          'flex flex-col rounded-xl px-3 py-3',
+                          'bg-black/[0.03] dark:bg-white/[0.06]',
+                          'backdrop-blur-sm'
+                        )}>
+                          <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground/70">
+                            {t('drawer.minTradingDays')}
+                          </span>
+                          <span className="text-[17px] font-bold">
                             {phase1Rules.min_trading_days}
-                          </div>
+                          </span>
                         </div>
                       )}
                     </div>
                   </section>
                 )}
 
-                {/* SEZIONE 2: Tabella Offerte (se >1) */}
+                {/* SEZIONE 2: Tabella Offerte - iOS 26 Style */}
                 {offers.length > 1 && (
                   <section>
-                    <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                    <h3 className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground/70">
                       {t('drawer.allOffers')}
                     </h3>
-                    <div className="overflow-hidden rounded-lg border border-border/50">
-                      <table className="w-full text-sm">
-                        <thead className="bg-muted/50">
+                    <div className="overflow-hidden rounded-xl border border-black/5 dark:border-white/10 bg-white/50 dark:bg-white/[0.03] backdrop-blur-sm">
+                      <table className="w-full text-[13px]">
+                        <thead className="bg-black/[0.03] dark:bg-white/[0.05]">
                           <tr>
-                            <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground">{t('drawer.accountSize')}</th>
-                            <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground">{t('drawer.fee')}</th>
-                            <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground"></th>
+                            <th className="px-3 py-2 text-left text-[10px] font-medium uppercase tracking-wide text-muted-foreground/70">{t('drawer.accountSize')}</th>
+                            <th className="px-3 py-2 text-left text-[10px] font-medium uppercase tracking-wide text-muted-foreground/70">{t('drawer.fee')}</th>
+                            <th className="px-3 py-2 text-right text-[10px] font-medium uppercase tracking-wide text-muted-foreground/70"></th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-border/50">
+                        <tbody className="divide-y divide-black/5 dark:divide-white/5">
                           {offers.map((offer) => (
                             <tr
                               key={offer.id}
                               className={cn(
-                                'cursor-pointer transition-colors hover:bg-muted/30',
-                                offer.id === selectedOfferId && 'bg-primary/5',
+                                'cursor-pointer transition-colors',
+                                'hover:bg-black/[0.02] dark:hover:bg-white/[0.03]',
+                                offer.id === selectedOfferId && 'bg-primary/5'
                               )}
-                              onClick={() => setSelectedOfferId(offer.id)}
+                              onClick={() => {
+                                triggerHaptic();
+                                setSelectedOfferId(offer.id);
+                              }}
                             >
                               <td className="px-3 py-2.5 font-medium">
                                 {formatSize(offer.account_size, offer.account_currency)}
@@ -332,9 +403,9 @@ export function ProgramDrawer({
                               </td>
                               <td className="px-3 py-2.5 text-right">
                                 {offer.id === selectedOfferId ? (
-                                  <span className="text-xs font-medium text-primary">{t('drawer.selected')}</span>
+                                  <span className="text-[11px] font-medium text-primary">{t('drawer.selected')}</span>
                                 ) : (
-                                  <span className="text-xs text-muted-foreground">{t('drawer.select')}</span>
+                                  <span className="text-[11px] text-muted-foreground/60">{t('drawer.select')}</span>
                                 )}
                               </td>
                             </tr>
@@ -345,33 +416,45 @@ export function ProgramDrawer({
                   </section>
                 )}
 
-                {/* SEZIONE 3: Mercati e Payout */}
+                {/* SEZIONE 3: Mercati e Payout - iOS 26 List */}
                 <section>
-                  <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                  <h3 className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground/70">
                     {t('drawer.marketsAndPayout')}
                   </h3>
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     {/* Piattaforme */}
                     {marketAccess?.platforms && marketAccess.platforms.length > 0 && (
-                      <div className="flex items-center justify-between rounded-lg border border-border/50 bg-muted/30 px-3 py-2.5">
-                        <span className="text-sm text-muted-foreground">{t('drawer.platforms')}</span>
-                        <span className="text-sm font-medium">{marketAccess.platforms.join(', ')}</span>
+                      <div className={cn(
+                        'flex items-center justify-between rounded-xl px-3 py-2.5',
+                        'bg-black/[0.03] dark:bg-white/[0.06]',
+                        'backdrop-blur-sm'
+                      )}>
+                        <span className="text-[13px] text-muted-foreground/80">{t('drawer.platforms')}</span>
+                        <span className="text-[13px] font-medium">{marketAccess.platforms.join(', ')}</span>
                       </div>
                     )}
 
                     {/* Leverage */}
                     {marketAccess?.leverage_forex && (
-                      <div className="flex items-center justify-between rounded-lg border border-border/50 bg-muted/30 px-3 py-2.5">
-                        <span className="text-sm text-muted-foreground">{t('drawer.leverage')}</span>
-                        <span className="text-sm font-medium">{marketAccess.leverage_forex}</span>
+                      <div className={cn(
+                        'flex items-center justify-between rounded-xl px-3 py-2.5',
+                        'bg-black/[0.03] dark:bg-white/[0.06]',
+                        'backdrop-blur-sm'
+                      )}>
+                        <span className="text-[13px] text-muted-foreground/80">{t('drawer.leverage')}</span>
+                        <span className="text-[13px] font-medium">{marketAccess.leverage_forex}</span>
                       </div>
                     )}
 
-                    {/* Profit Split */}
+                    {/* Profit Split - Highlighted */}
                     {payoutTerms && (
-                      <div className="flex items-center justify-between rounded-lg border border-green-500/20 bg-green-500/5 px-3 py-2.5">
-                        <span className="text-sm text-muted-foreground">{t('drawer.profitSplit')}</span>
-                        <span className="text-sm font-bold text-green-600 dark:text-green-400">
+                      <div className={cn(
+                        'flex items-center justify-between rounded-xl px-3 py-2.5',
+                        'bg-green-500/10 dark:bg-green-500/15',
+                        'backdrop-blur-sm'
+                      )}>
+                        <span className="text-[13px] text-green-700/80 dark:text-green-400/80">{t('drawer.profitSplit')}</span>
+                        <span className="text-[15px] font-bold text-green-700 dark:text-green-400">
                           {payoutTerms.profit_split_max}%
                         </span>
                       </div>
@@ -379,9 +462,13 @@ export function ProgramDrawer({
 
                     {/* Payout Frequency */}
                     {payoutTerms?.payout_frequency && (
-                      <div className="flex items-center justify-between rounded-lg border border-border/50 bg-muted/30 px-3 py-2.5">
-                        <span className="text-sm text-muted-foreground">{t('drawer.payoutFrequency')}</span>
-                        <span className="text-sm font-medium capitalize">{payoutTerms.payout_frequency}</span>
+                      <div className={cn(
+                        'flex items-center justify-between rounded-xl px-3 py-2.5',
+                        'bg-black/[0.03] dark:bg-white/[0.06]',
+                        'backdrop-blur-sm'
+                      )}>
+                        <span className="text-[13px] text-muted-foreground/80">{t('drawer.payoutFrequency')}</span>
+                        <span className="text-[13px] font-medium capitalize">{payoutTerms.payout_frequency}</span>
                       </div>
                     )}
                   </div>
@@ -389,36 +476,40 @@ export function ProgramDrawer({
               </div>
             </div>
 
-            {/* Footer - Sticky CTA */}
-            <footer className="sticky bottom-0 border-t border-border/50 bg-background px-5 py-4">
+            {/* Footer - iOS 26 Glass Sticky */}
+            <footer className="relative border-t border-black/5 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur-xl px-5 py-4">
               <div className="flex gap-3">
                 {onEnrollAction && selectedOffer && (
-                  <button
-                    onClick={async () => {
-                      const result = await onEnrollAction(program.id, selectedOffer.id);
-                      if (result.success && result.officialUrl) {
-                        window.open(result.officialUrl, '_blank');
-                      }
-                    }}
+                  <motion.button
+                    onClick={handleEnroll}
+                    whileTap={{ scale: 0.97 }}
                     className={cn(
-                      'flex-1 rounded-xl px-4 py-3 text-sm font-semibold transition-all',
+                      'flex-1 rounded-xl px-4 py-3 text-[14px] font-semibold',
+                      'transition-all duration-200',
                       isFree
-                        ? 'bg-green-600 text-white hover:bg-green-700'
-                        : 'bg-primary text-primary-foreground hover:bg-primary/90',
+                        ? 'bg-green-600 text-white hover:bg-green-700 shadow-[0_2px_8px_-2px_rgba(34,197,94,0.4)]'
+                        : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.2)]'
                     )}
                     type="button"
                   >
                     {isFree ? t('drawer.joinChallenge') : t('drawer.startChallenge')}
-                  </button>
+                  </motion.button>
                 )}
 
-                <button
+                <motion.button
                   onClick={onCloseAction}
-                  className="rounded-xl border border-border bg-background px-4 py-3 text-sm font-semibold transition-colors hover:bg-muted"
+                  whileTap={{ scale: 0.97 }}
+                  className={cn(
+                    'rounded-xl border border-black/10 dark:border-white/10',
+                    'bg-white/50 dark:bg-white/5',
+                    'px-4 py-3 text-[14px] font-semibold',
+                    'transition-all duration-200',
+                    'hover:bg-black/5 dark:hover:bg-white/10'
+                  )}
                   type="button"
                 >
                   {t('drawer.close')}
-                </button>
+                </motion.button>
               </div>
             </footer>
           </motion.aside>
