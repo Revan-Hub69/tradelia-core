@@ -294,7 +294,7 @@ export function ProgramDrawer({
                       <OfferSelector
                         offers={offers}
                         selectedOfferId={selectedOfferId}
-                        onSelect={setSelectedOfferId}
+                        onSelectAction={setSelectedOfferId}
                         className="max-w-xs"
                       />
                     </div>

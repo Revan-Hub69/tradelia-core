@@ -78,7 +78,7 @@ type ProgramCardProps = {
   offers: Offer[];
   kpis: KPIs;
   platforms?: string[];
-  onViewDetails: (programId: string, offerId: string) => void;
+  onViewDetailsAction: (programId: string, offerId: string) => void;
 };
 
 const EMPTY_PLATFORMS: string[] = [];
@@ -88,7 +88,7 @@ export function ProgramCard({
   offers,
   kpis,
   platforms = EMPTY_PLATFORMS,
-  onViewDetails,
+  onViewDetailsAction,
 }: ProgramCardProps) {
   const t = useTranslations('Challenges') as any;
 
@@ -144,9 +144,9 @@ export function ProgramCard({
 
   const handleCardClick = useCallback(() => {
     if (defaultOffer) {
-      onViewDetails(program.id, defaultOffer.id);
+      onViewDetailsAction(program.id, defaultOffer.id);
     }
-  }, [onViewDetails, program.id, defaultOffer]);
+  }, [onViewDetailsAction, program.id, defaultOffer]);
 
   return (
     <motion.article
