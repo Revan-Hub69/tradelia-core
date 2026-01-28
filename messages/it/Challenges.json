@@ -84,7 +84,8 @@
     "topRated": "Più Votato",
     "new": "Nuovo",
     "hot": "Popolare",
-    "moreSizes": "altri"
+    "moreSizes": "altri",
+    "viewDetails": "Vedi Dettagli"
   },
   "filters": {
     "title": "Filtri",
@@ -176,6 +177,7 @@
     "platforms": "Piattaforme",
     "leverage": "Leva",
     "payoutFrequency": "Frequenza Pagamento",
+    "profitSplit": "Divisione Profitti",
     "profitTarget": "Obiettivo Profitto",
     "maxDrawdown": "Drawdown Massimo",
     "maxDailyLoss": "Perdita Giornaliera Massima",

@@ -84,7 +84,8 @@
     "topRated": "Top Rated",
     "new": "New",
     "hot": "Hot",
-    "moreSizes": "more"
+    "moreSizes": "more",
+    "viewDetails": "View Details"
   },
   "filters": {
     "title": "Filters",
@@ -176,6 +177,7 @@
     "platforms": "Platforms",
     "leverage": "Leverage",
     "payoutFrequency": "Payout Frequency",
+    "profitSplit": "Profit Split",
     "profitTarget": "Profit Target",
     "maxDrawdown": "Max Drawdown",
     "maxDailyLoss": "Max Daily Loss",
