@@ -1,20 +1,26 @@
 'use client';
 
 /**
- * PROGRAM DRAWER - Tradelia Design System 2026 Edition
+ * PROGRAM DRAWER - Enterprise Premium 2026 Edition
  *
  * Design Principles (Tier 1 Research):
  * - Tradelia Color Palette: Scale di blu e grigi-celesti
  * - iOS 26 Glass Morphism: Translucency, depth, premium feel
- * - Constraint: 3 sezioni max per clarity
+ * - 6 sezioni strategiche per completezza e clarity
  * - Focus: OfferSelector come elemento centrale
  * - No mock data, no trust signals fake
  * - Sticky footer con CTA chiara
+ * - Modular architecture with dedicated sections
  *
- * Structure:
- * 1. Header: Glass header con nome e badge (NO selezione offerta)
- * 2. Body: Selezione Account Size (PRIMA SEZIONE), Key Rules, Markets
- * 3. Footer: Glass footer con CTA primaria
+ * Structure Enterprise 2026:
+ * 1. Header: Glass header con nome, badge, organizer
+ * 2. Account Size Selection: Tabella offerte interattiva
+ * 3. About: Descrizione, pros/cons, best for
+ * 4. Risk Rules: Regole complete di trading
+ * 5. Markets: Piattaforme, leverage, commissioni
+ * 6. Payout: Profit split, frequenza, metodi
+ * 7. Permissions: EA, news trading, weekend holding
+ * 8. Footer: Glass footer con CTA primaria
  */
 
 import { AnimatePresence, motion } from 'framer-motion';
@@ -23,6 +29,13 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { useNavigationContext } from '@/components/navigation/useNavigationContext';
 import { cn } from '@/utils/Helpers';
+
+// Import modular sections
+import { AboutSection } from './drawer-sections/AboutSection';
+import { MarketsSection } from './drawer-sections/MarketsSection';
+import { PayoutSection } from './drawer-sections/PayoutSection';
+import { PermissionsSection } from './drawer-sections/PermissionsSection';
+import { RiskRulesSection } from './drawer-sections/RiskRulesSection';
 
 type Offer = {
   id: string;
@@ -46,18 +59,38 @@ type Ruleset = {
   max_daily_loss_pct: number | null;
   max_daily_loss_type?: 'balance_based' | 'equity_based';
   min_trading_days: number | null;
+  consistency_required?: boolean;
+  best_day_max_pct?: number | null;
+  ea_allowed?: boolean;
+  news_trading?: boolean;
+  weekend_holding?: boolean;
+  max_position_size?: number | null;
+  max_open_positions?: number | null;
 };
 
 type PayoutTerms = {
+  profit_split_initial: number;
+  profit_split_scaled?: number | null;
   profit_split_max: number;
   payout_frequency: string;
   first_payout_delay_days: number;
+  eligible_after_phase: number;
+  withdrawal_methods?: string[];
+  min_withdrawal?: number | null;
+  payout_processing_time_hours?: number | null;
 };
 
 type MarketAccess = {
   markets_available: string[];
   platforms: string[];
+  instruments_count?: number | null;
   leverage_forex?: string | null;
+  leverage_indices?: string | null;
+  leverage_commodities?: string | null;
+  leverage_crypto?: string | null;
+  commission_forex?: number | null;
+  commission_indices?: number | null;
+  trading_hours?: string | null;
 };
 
 type Program = {
@@ -67,6 +100,9 @@ type Program = {
   category: 'free_competition' | 'paid_evaluation';
   ruleset_mode?: 'target_based' | 'ranking_based';
   description?: string | null;
+  best_for?: string | null;
+  pros?: string[];
+  cons?: string[];
 };
 
 type ProgramDrawerProps = {
@@ -103,6 +139,22 @@ const triggerHaptic = (type: 'light' | 'medium' = 'light') => {
     const patterns = { light: [10], medium: [20] };
     navigator.vibrate(patterns[type]);
   }
+};
+
+// Format size helper
+const formatSize = (size: number, currency: string) => {
+  if (size >= 1000) {
+    return `${currency}${(size / 1000).toFixed(0)}K`;
+  }
+  return `${currency}${size.toLocaleString()}`;
+};
+
+// Format fee helper
+const formatFee = (offer: Offer, t: any) => {
+  if (offer.entry_fee === null || offer.entry_fee === 0) {
+    return t('card.free');
+  }
+  return `${offer.fee_currency}${offer.entry_fee}`;
 };
 
 export function ProgramDrawer({
@@ -168,22 +220,6 @@ export function ProgramDrawer({
   const isFree = program.category === 'free_competition';
   const phase1Rules = rulesets.find(r => r.phase_number === 1);
 
-  // Format size
-  const formatSize = (size: number, currency: string) => {
-    if (size >= 1000) {
-      return `${currency}${(size / 1000).toFixed(0)}K`;
-    }
-    return `${currency}${size.toLocaleString()}`;
-  };
-
-  // Format fee
-  const formatFee = (offer: Offer) => {
-    if (offer.entry_fee === null || offer.entry_fee === 0) {
-      return t('card.free');
-    }
-    return `${offer.fee_currency}${offer.entry_fee}`;
-  };
-
   const handleEnroll = async () => {
     triggerHaptic('medium');
     if (onEnrollAction && selectedOffer) {
@@ -213,7 +249,7 @@ export function ProgramDrawer({
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className="fixed right-0 top-0 z-50 flex size-full flex-col overflow-hidden sm:w-[480px]"
+            className="fixed right-0 top-0 z-50 flex size-full flex-col overflow-hidden sm:w-[520px]"
             role="dialog"
             aria-modal="true"
             aria-labelledby="drawer-title"
@@ -224,14 +260,14 @@ export function ProgramDrawer({
             {/* Tradelia Hairline Border */}
             <div className="absolute inset-y-0 left-0 w-px bg-slate-200 dark:bg-slate-800" />
 
-            {/* Header - Tradelia Glass (SENZA selezione offerta) */}
-            <header className="relative border-b border-slate-200 bg-white/60 px-5 py-4 backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/60">
+            {/* Header - Enterprise Premium Glass */}
+            <header className="relative border-b border-slate-200 bg-white/60 px-6 py-5 backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/60">
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0 flex-1">
-                  {/* Tradelia Pill Badge */}
-                  <div className="mb-2">
+                  {/* Badge + Organizer Row */}
+                  <div className="mb-2 flex items-center gap-2">
                     <span className={cn(
-                      'inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide',
+                      'inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide',
                       isFree
                         ? 'bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300'
                         : 'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300',
@@ -239,24 +275,55 @@ export function ProgramDrawer({
                     >
                       {isFree ? t('badges.free') : t('badges.paid')}
                     </span>
+                    <span className="text-[12px] font-medium text-slate-500 dark:text-slate-400">
+                      {program.organizer_name}
+                    </span>
                   </div>
 
-                  {/* Title - Tradelia Typography */}
-                  <h2 id="drawer-title" className="text-[19px] font-semibold leading-tight tracking-tight text-slate-900 dark:text-slate-100">
+                  {/* Title - Enterprise Typography */}
+                  <h2 id="drawer-title" className="text-[21px] font-semibold leading-tight tracking-tight text-slate-900 dark:text-slate-100">
                     {program.name}
                   </h2>
 
-                  {/* Organizer */}
-                  <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">
-                    {program.organizer_name}
-                  </p>
+                  {/* Selected Offer Summary */}
+                  {selectedOffer && (
+                    <div className="mt-3 flex items-center gap-3">
+                      <div className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 dark:bg-slate-800">
+                        <span className="text-[13px] font-semibold text-slate-900 dark:text-slate-100">
+                          {formatSize(selectedOffer.account_size, selectedOffer.account_currency)}
+                        </span>
+                      </div>
+                      <div className={cn(
+                        'flex items-center gap-1.5 rounded-lg px-3 py-1.5',
+                        selectedOffer.entry_fee === 0
+                          ? 'bg-sky-50 dark:bg-sky-950/30'
+                          : 'bg-slate-100 dark:bg-slate-800',
+                      )}
+                      >
+                        <span className={cn(
+                          'text-[13px] font-medium',
+                          selectedOffer.entry_fee === 0
+                            ? 'text-sky-700 dark:text-sky-300'
+                            : 'text-slate-700 dark:text-slate-300',
+                        )}
+                        >
+                          {formatFee(selectedOffer, t)}
+                        </span>
+                      </div>
+                      {selectedOffer.refundable && (
+                        <span className="text-[11px] font-medium text-green-600 dark:text-green-400">
+                          {t('drawer.refundable')}
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </div>
 
-                {/* Close Button - Tradelia Glass */}
+                {/* Close Button - Premium Glass */}
                 <button
                   onClick={onCloseAction}
                   className={cn(
-                    'shrink-0 rounded-full p-2',
+                    'shrink-0 rounded-full p-2.5',
                     'bg-slate-100 text-slate-500',
                     'transition-all duration-200',
                     'hover:bg-slate-200 hover:text-slate-700 active:scale-95',
@@ -270,22 +337,25 @@ export function ProgramDrawer({
               </div>
             </header>
 
-            {/* Content - 3 sezioni max */}
+            {/* Content - 6 Sezioni Enterprise */}
             <div className="relative flex-1 overflow-y-auto">
-              <div className="space-y-6 p-5 pb-28">
-                {/* SEZIONE 1: Selezione Account Size - PRIMA COSA NEL DRAWER */}
+              <div className="space-y-8 p-6 pb-32">
+                {/* SEZIONE 1: Account Size Selection - PRIMA E CENTRALE */}
                 {offers.length > 0 && (
                   <section>
-                    <h3 className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                    <h3 className="mb-4 flex items-center gap-2 text-[12px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                      <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                      </svg>
                       {t('drawer.selectAccountSize')}
                     </h3>
-                    <div className="overflow-hidden rounded-xl border border-slate-200 bg-white/80 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/50">
-                      <table className="w-full text-[13px]">
+                    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900/50">
+                      <table className="w-full text-[14px]">
                         <thead className="bg-slate-50 dark:bg-slate-800/50">
                           <tr>
-                            <th className="px-3 py-2 text-left text-[10px] font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{t('drawer.accountSize')}</th>
-                            <th className="px-3 py-2 text-left text-[10px] font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{t('drawer.fee')}</th>
-                            <th className="px-3 py-2 text-right text-[10px] font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400"></th>
+                            <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{t('drawer.accountSize')}</th>
+                            <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{t('drawer.fee')}</th>
+                            <th className="px-4 py-3 text-right text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400"></th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -293,32 +363,56 @@ export function ProgramDrawer({
                             <tr
                               key={offer.id}
                               className={cn(
-                                'cursor-pointer transition-colors',
+                                'cursor-pointer transition-all duration-200',
                                 'hover:bg-slate-50 dark:hover:bg-slate-800/50',
-                                offer.id === selectedOfferId && 'bg-blue-50/50 dark:bg-blue-950/20',
+                                offer.id === selectedOfferId && 'bg-blue-50/60 dark:bg-blue-950/30',
                               )}
                               onClick={() => {
                                 triggerHaptic();
                                 setSelectedOfferId(offer.id);
                               }}
                             >
-                              <td className="px-3 py-2.5 font-medium text-slate-900 dark:text-slate-100">
-                                {formatSize(offer.account_size, offer.account_currency)}
+                              <td className="px-4 py-3.5">
+                                <div className="flex items-center gap-3">
+                                  {offer.id === selectedOfferId && (
+                                    <div className="flex size-5 items-center justify-center rounded-full bg-blue-600">
+                                      <svg className="size-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                                        <path d="M5 13l4 4L19 7" />
+                                      </svg>
+                                    </div>
+                                  )}
+                                  <span className={cn(
+                                    'font-semibold',
+                                    offer.id === selectedOfferId
+                                      ? 'text-blue-700 dark:text-blue-300'
+                                      : 'text-slate-900 dark:text-slate-100',
+                                  )}
+                                  >
+                                    {formatSize(offer.account_size, offer.account_currency)}
+                                  </span>
+                                  {offer.is_featured && (
+                                    <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-700 dark:bg-amber-950 dark:text-amber-300">
+                                      POPULAR
+                                    </span>
+                                  )}
+                                </div>
                               </td>
-                              <td className="px-3 py-2.5">
+                              <td className="px-4 py-3.5">
                                 <span className={cn(
-                                  offer.entry_fee === 0 && 'font-medium text-sky-600 dark:text-sky-400',
-                                  offer.entry_fee !== 0 && 'text-slate-700 dark:text-slate-300',
+                                  'font-medium',
+                                  offer.entry_fee === 0
+                                    ? 'text-sky-600 dark:text-sky-400'
+                                    : 'text-slate-700 dark:text-slate-300',
                                 )}
                                 >
-                                  {formatFee(offer)}
+                                  {formatFee(offer, t)}
                                 </span>
                               </td>
-                              <td className="px-3 py-2.5 text-right">
+                              <td className="px-4 py-3.5 text-right">
                                 {offer.id === selectedOfferId ? (
-                                  <span className="text-[11px] font-medium text-blue-600 dark:text-blue-400">{t('drawer.selected')}</span>
+                                  <span className="text-[12px] font-bold text-blue-600 dark:text-blue-400">{t('drawer.selected')}</span>
                                 ) : (
-                                  <span className="text-[11px] text-slate-400 dark:text-slate-500">{t('drawer.select')}</span>
+                                  <span className="text-[12px] text-slate-400 dark:text-slate-500">{t('drawer.select')}</span>
                                 )}
                               </td>
                             </tr>
@@ -329,150 +423,37 @@ export function ProgramDrawer({
                   </section>
                 )}
 
-                {/* SEZIONE 2: Regole Chiave - Tradelia Grid */}
-                {phase1Rules && (
-                  <section>
-                    <h3 className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                      {t('drawer.keyRules')}
-                    </h3>
-                    <div className="grid grid-cols-2 gap-2">
-                      {phase1Rules.profit_target_pct && (
-                        <div className={cn(
-                          'flex flex-col rounded-xl bg-blue-50 px-3 py-3',
-                          'backdrop-blur-sm dark:bg-blue-950/30',
-                        )}
-                        >
-                          <span className="text-[10px] font-medium uppercase tracking-wide text-blue-600/70 dark:text-blue-400/70">
-                            {t('drawer.profitTarget')}
-                          </span>
-                          <span className="text-[17px] font-bold text-blue-700 dark:text-blue-300">
-                            {phase1Rules.profit_target_pct}
-                            %
-                          </span>
-                        </div>
-                      )}
-                      {phase1Rules.max_drawdown_pct && (
-                        <div className={cn(
-                          'flex flex-col rounded-xl bg-rose-50 px-3 py-3',
-                          'backdrop-blur-sm dark:bg-rose-950/30',
-                        )}
-                        >
-                          <span className="text-[10px] font-medium uppercase tracking-wide text-rose-600/70 dark:text-rose-400/70">
-                            {t('drawer.maxDrawdown')}
-                          </span>
-                          <span className="text-[17px] font-bold text-rose-700 dark:text-rose-300">
-                            {phase1Rules.max_drawdown_pct}
-                            %
-                          </span>
-                        </div>
-                      )}
-                      {phase1Rules.max_daily_loss_pct && (
-                        <div className={cn(
-                          'flex flex-col rounded-xl bg-amber-50 px-3 py-3',
-                          'backdrop-blur-sm dark:bg-amber-950/30',
-                        )}
-                        >
-                          <span className="text-[10px] font-medium uppercase tracking-wide text-amber-600/70 dark:text-amber-400/70">
-                            {t('drawer.maxDailyLoss')}
-                          </span>
-                          <span className="text-[17px] font-bold text-amber-700 dark:text-amber-300">
-                            {phase1Rules.max_daily_loss_pct}
-                            %
-                          </span>
-                        </div>
-                      )}
-                      {phase1Rules.min_trading_days && (
-                        <div className={cn(
-                          'flex flex-col rounded-xl bg-slate-100 px-3 py-3',
-                          'backdrop-blur-sm dark:bg-slate-800',
-                        )}
-                        >
-                          <span className="text-[10px] font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                            {t('drawer.minTradingDays')}
-                          </span>
-                          <span className="text-[17px] font-bold text-slate-700 dark:text-slate-300">
-                            {phase1Rules.min_trading_days}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </section>
-                )}
+                {/* SEZIONE 2: About - Descrizione e Pros/Cons */}
+                <AboutSection program={program} />
 
-                {/* SEZIONE 3: Mercati e Payout - Tradelia List */}
-                <section>
-                  <h3 className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                    {t('drawer.marketsAndPayout')}
-                  </h3>
-                  <div className="space-y-2">
-                    {/* Piattaforme */}
-                    {marketAccess?.platforms && marketAccess.platforms.length > 0 && (
-                      <div className={cn(
-                        'flex items-center justify-between rounded-xl bg-slate-100 px-3 py-2.5',
-                        'backdrop-blur-sm dark:bg-slate-800',
-                      )}
-                      >
-                        <span className="text-[13px] text-slate-500 dark:text-slate-400">{t('drawer.platforms')}</span>
-                        <span className="text-[13px] font-medium text-slate-900 dark:text-slate-100">{marketAccess.platforms.join(', ')}</span>
-                      </div>
-                    )}
+                {/* SEZIONE 3: Risk Rules - Regole complete */}
+                <RiskRulesSection rulesets={rulesets} />
 
-                    {/* Leverage */}
-                    {marketAccess?.leverage_forex && (
-                      <div className={cn(
-                        'flex items-center justify-between rounded-xl bg-slate-100 px-3 py-2.5',
-                        'backdrop-blur-sm dark:bg-slate-800',
-                      )}
-                      >
-                        <span className="text-[13px] text-slate-500 dark:text-slate-400">{t('drawer.leverage')}</span>
-                        <span className="text-[13px] font-medium text-slate-900 dark:text-slate-100">{marketAccess.leverage_forex}</span>
-                      </div>
-                    )}
+                {/* SEZIONE 4: Markets - Piattaforme e condizioni */}
+                <MarketsSection marketAccess={marketAccess} />
 
-                    {/* Profit Split - Highlighted */}
-                    {payoutTerms && (
-                      <div className={cn(
-                        'flex items-center justify-between rounded-xl bg-blue-50 px-3 py-2.5',
-                        'backdrop-blur-sm dark:bg-blue-950/30',
-                      )}
-                      >
-                        <span className="text-[13px] text-blue-600/80 dark:text-blue-400/80">{t('drawer.profitSplit')}</span>
-                        <span className="text-[15px] font-bold text-blue-700 dark:text-blue-300">
-                          {payoutTerms.profit_split_max}
-                          %
-                        </span>
-                      </div>
-                    )}
+                {/* SEZIONE 5: Payout - Termini di pagamento */}
+                <PayoutSection payoutTerms={payoutTerms} />
 
-                    {/* Payout Frequency */}
-                    {payoutTerms?.payout_frequency && (
-                      <div className={cn(
-                        'flex items-center justify-between rounded-xl bg-slate-100 px-3 py-2.5',
-                        'backdrop-blur-sm dark:bg-slate-800',
-                      )}
-                      >
-                        <span className="text-[13px] text-slate-500 dark:text-slate-400">{t('drawer.payoutFrequency')}</span>
-                        <span className="text-[13px] font-medium capitalize text-slate-900 dark:text-slate-100">{payoutTerms.payout_frequency}</span>
-                      </div>
-                    )}
-                  </div>
-                </section>
+                {/* SEZIONE 6: Permissions - Permessi di trading */}
+                <PermissionsSection phase1Rules={phase1Rules} />
               </div>
             </div>
 
-            {/* Footer - Tradelia Glass Sticky */}
-            <footer className="relative border-t border-slate-200 bg-white/80 px-5 py-4 backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/80">
+            {/* Footer - Enterprise Premium Glass Sticky */}
+            <footer className="relative border-t border-slate-200 bg-white/90 px-6 py-5 backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/90">
               <div className="flex gap-3">
                 {onEnrollAction && selectedOffer && (
                   <motion.button
                     onClick={handleEnroll}
                     whileTap={{ scale: 0.97 }}
                     className={cn(
-                      'flex-1 rounded-xl px-4 py-3 text-[14px] font-semibold',
+                      'flex-1 rounded-xl px-5 py-3.5 text-[15px] font-bold',
                       'transition-all duration-200',
+                      'shadow-lg',
                       isFree
-                        ? 'bg-sky-600 text-white shadow-[0_2px_8px_-2px_rgba(2,132,199,0.4)] hover:bg-sky-700'
-                        : 'bg-blue-600 text-white shadow-[0_2px_8px_-2px_rgba(37,99,235,0.4)] hover:bg-blue-700',
+                        ? 'bg-sky-600 text-white shadow-sky-500/30 hover:bg-sky-700 hover:shadow-sky-500/40'
+                        : 'bg-blue-600 text-white shadow-blue-500/30 hover:bg-blue-700 hover:shadow-blue-500/40',
                     )}
                     type="button"
                   >
@@ -484,7 +465,7 @@ export function ProgramDrawer({
                   onClick={onCloseAction}
                   whileTap={{ scale: 0.97 }}
                   className={cn(
-                    'rounded-xl border border-slate-200 bg-white px-4 py-3 text-[14px] font-semibold text-slate-700',
+                    'rounded-xl border border-slate-200 bg-white px-5 py-3.5 text-[15px] font-semibold text-slate-700',
                     'transition-all duration-200',
                     'hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800',
                   )}
