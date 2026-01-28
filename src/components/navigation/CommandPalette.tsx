@@ -52,7 +52,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ className }) => 
     ...navigationItems.map((item, index) => ({
       id: `nav-${item.id}`,
       label: t(item.labelKey.replace('Dashboard.', '') as 'nav_home'),
-      description: t(`nav_${item.id}_desc` as 'nav_home_desc', { defaultValue: '' }),
+      description: t(`nav_${item.id.replace('-', '_')}_desc` as 'nav_home_desc', { defaultValue: '' }),
       icon: item.iconName as IconName,
       action: () => {
         router.push(item.href);

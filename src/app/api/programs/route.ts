@@ -109,6 +109,20 @@ export async function GET() {
       // Extract platforms from market_access
       const platforms = marketAccess?.platforms || [];
 
+      // Parse pros/cons from JSON string if needed
+      const parseStringArray = (value: any): string[] => {
+        if (Array.isArray(value)) return value;
+        if (typeof value === 'string') {
+          try {
+            const parsed = JSON.parse(value);
+            return Array.isArray(parsed) ? parsed : [];
+          } catch {
+            return value ? [value] : [];
+          }
+        }
+        return [];
+      };
+
       return {
         program: {
           id: program.id,
@@ -120,8 +134,8 @@ export async function GET() {
           ruleset_mode: program.ruleset_mode || 'target_based',
           description: program.description || null,
           best_for: program.best_for || null,
-          pros: program.pros || [],
-          cons: program.cons || [],
+          pros: parseStringArray(program.pros),
+          cons: parseStringArray(program.cons),
         },
         offers: offers.map((offer: any) => ({
           id: offer.id,
