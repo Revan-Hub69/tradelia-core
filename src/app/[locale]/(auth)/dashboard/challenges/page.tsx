@@ -428,7 +428,7 @@ export default function ChallengesPage() {
                 offers={programData.offers}
                 kpis={programData.kpis}
                 platforms={programData.platforms}
-                onViewDetails={handleViewDetails}
+                onViewDetailsAction={handleViewDetails}
               />
             ))}
           </div>
