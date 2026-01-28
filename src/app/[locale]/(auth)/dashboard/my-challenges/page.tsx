@@ -192,7 +192,7 @@ export default function MyChallengesPage() {
                   <EnrollmentStatusCard
                     status={enrollment.status}
                     programName={enrollment.program.name}
-                    offerName={`${enrollment.offer.offer_name} (${enrollment.offer.account_size.toLocaleString()} ${enrollment.offer.account_currency})`}
+                    offerName={`${enrollment.offer.offer_name} (${(enrollment.offer.account_size ?? 0).toLocaleString()} ${enrollment.offer.account_currency})`}
                     organizerName={enrollment.program.organizer_name}
                     onConfirm={enrollment.status === 'pending_confirmation'
                       ? () => handleConfirm(enrollment.id)
@@ -227,7 +227,7 @@ export default function MyChallengesPage() {
                   <EnrollmentStatusCard
                     status={enrollment.status}
                     programName={enrollment.program.name}
-                    offerName={`${enrollment.offer.offer_name} (${enrollment.offer.account_size.toLocaleString()} ${enrollment.offer.account_currency})`}
+                    offerName={`${enrollment.offer.offer_name} (${(enrollment.offer.account_size ?? 0).toLocaleString()} ${enrollment.offer.account_currency})`}
                     organizerName={enrollment.program.organizer_name}
                     onViewDetails={() => {
                       // TODO: Navigate to challenge details
