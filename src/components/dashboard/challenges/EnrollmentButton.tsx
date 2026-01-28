@@ -10,26 +10,27 @@
  * - Accessibility: Focus trap, aria-labels, keyboard nav
  */
 
-import { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
+
 import { ExternalLinkIcon, RedirectIcon } from './PremiumIcons';
 
-interface EnrollmentButtonProps {
+type EnrollmentButtonProps = {
   programId: string;
   offerId: string;
   officialUrl: string;
   isFree: boolean;
-  onEnroll: (programId: string, offerId: string) => Promise<{ success: boolean; officialUrl?: string; error?: string }>;
+  onEnrollAction: (programId: string, offerId: string) => Promise<{ success: boolean; officialUrl?: string; error?: string }>;
   className?: string;
-}
+};
 
 export function EnrollmentButton({
   programId,
   offerId,
   officialUrl,
   isFree,
-  onEnroll,
+  onEnrollAction,
   className,
 }: EnrollmentButtonProps) {
   const t = useTranslations('Challenges') as any;
@@ -43,7 +44,7 @@ export function EnrollmentButton({
 
     try {
       // 1. Call enrollment API
-      const result = await onEnroll(programId, offerId);
+      const result = await onEnrollAction(programId, offerId);
 
       if (!result.success) {
         setError(result.error || t('enrollment.errorGeneric'));
@@ -61,7 +62,7 @@ export function EnrollmentButton({
         setShowConfirmation(false);
         setIsLoading(false);
       }, 1500);
-    } catch (err) {
+    } catch {
       setError(t('enrollment.errorGeneric'));
       setIsLoading(false);
     }

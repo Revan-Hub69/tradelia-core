@@ -330,15 +330,15 @@ export default function ChallengesPage() {
           </p>
         </div>
 
-        {/* Category Tabs - 3 main categories */}
+        {/* Category Tabs - 3 main categories - Tradelia Design System */}
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setCategoryFilter('all')}
             className={cn(
               'rounded-xl px-4 py-2.5 text-sm font-semibold transition-all',
               categoryFilter === 'all'
-                ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20'
-                : 'border border-border bg-background hover:bg-muted',
+                ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/20 dark:bg-slate-100 dark:text-slate-900 dark:shadow-slate-100/20'
+                : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800',
             )}
             type="button"
           >
@@ -349,8 +349,8 @@ export default function ChallengesPage() {
             className={cn(
               'rounded-xl px-4 py-2.5 text-sm font-semibold transition-all',
               categoryFilter === 'free'
-                ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg shadow-green-500/30'
-                : 'border border-border bg-background hover:bg-muted',
+                ? 'bg-sky-600 text-white shadow-lg shadow-sky-500/30'
+                : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800',
             )}
             type="button"
           >
@@ -361,8 +361,8 @@ export default function ChallengesPage() {
             className={cn(
               'rounded-xl px-4 py-2.5 text-sm font-semibold transition-all',
               categoryFilter === 'challenges'
-                ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30'
-                : 'border border-border bg-background hover:bg-muted',
+                ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30'
+                : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800',
             )}
             type="button"
           >
@@ -373,8 +373,8 @@ export default function ChallengesPage() {
             className={cn(
               'rounded-xl px-4 py-2.5 text-sm font-semibold transition-all',
               categoryFilter === 'tournaments'
-                ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/30'
-                : 'border border-border bg-background hover:bg-muted',
+                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30'
+                : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800',
             )}
             type="button"
           >
@@ -403,7 +403,7 @@ export default function ChallengesPage() {
           </div>
         </div>
 
-        {/* Programs grid */}
+        {/* Programs grid - Tradelia Design System with padding */}
         {sortedPrograms.length === 0 ? (
           <EmptyState
             type="no-results"
@@ -420,7 +420,7 @@ export default function ChallengesPage() {
             }}
           />
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 px-2 pb-8 sm:grid-cols-2 sm:px-0 lg:grid-cols-3">
             {sortedPrograms.map(programData => (
               <ProgramCard
                 key={programData.program.id}

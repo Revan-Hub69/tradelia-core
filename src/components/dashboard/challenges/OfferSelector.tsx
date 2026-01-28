@@ -1,16 +1,17 @@
 'use client';
 
 /**
- * OFFER SELECTOR - Program Card Component
+ * OFFER SELECTOR - Tradelia Design System 2026 Edition
  *
  * Gestisce la selezione delle offer (account sizes) per un program.
  * Pattern: Select (desktop) → Bottom Sheet (mobile)
  *
  * Features:
- * - Desktop: Select dropdown
+ * - Desktop: Select dropdown con design Tradelia
  * - Mobile: Bottom sheet con radio group
  * - Default selection: user preference > lowest fee > featured
  * - Mostra: size, fee, currency, refundable status
+ * - Palette: Blu e grigi-celesti Tradelia
  */
 
 import { AnimatePresence, motion } from 'framer-motion';
@@ -73,24 +74,24 @@ export function OfferSelector({
       <div className={cn('hidden lg:block', className)}>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="group relative w-full rounded-xl border border-border/50 bg-background/50 px-4 py-3 text-left transition-all hover:border-primary/30 hover:bg-muted/50"
+          className="group relative w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-left transition-all hover:border-blue-300 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-blue-700 dark:hover:bg-slate-800"
           type="button"
         >
           <div className="flex items-center justify-between gap-2">
             <div className="min-w-0 flex-1">
-              <div className="text-sm font-semibold">
+              <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                 {selectedOffer ? formatSize(selectedOffer.account_size) : 'Select offer'}
                 {selectedOffer && (
                   <>
                     {' '}
-                    <span className="text-muted-foreground">@</span>
+                    <span className="text-slate-400">@</span>
                     {' '}
                     {formatFee(selectedOffer)}
                   </>
                 )}
               </div>
               {selectedOffer?.refundable && (
-                <div className="mt-0.5 text-xs text-green-600 dark:text-green-400">
+                <div className="mt-0.5 text-xs text-sky-600 dark:text-sky-400">
                   Refundable
                 </div>
               )}
@@ -98,7 +99,7 @@ export function OfferSelector({
             <ChevronDownIcon
               size={16}
               className={cn(
-                'shrink-0 text-muted-foreground transition-transform',
+                'shrink-0 text-slate-400 transition-transform',
                 isOpen && 'rotate-180',
               )}
             />
@@ -124,7 +125,7 @@ export function OfferSelector({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 8 }}
                 transition={{ duration: 0.15 }}
-                className="absolute inset-x-0 top-full z-50 mt-2 overflow-hidden rounded-xl border border-border/50 bg-background shadow-xl"
+                className="absolute inset-x-0 top-full z-50 mt-2 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-900"
                 role="listbox"
                 style={{ transformOrigin: 'top center' }}
               >
@@ -136,27 +137,27 @@ export function OfferSelector({
                       className={cn(
                         'flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-left transition-colors',
                         offer.id === selectedOfferId
-                          ? 'bg-primary/10 text-primary'
-                          : 'hover:bg-muted',
+                          ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300'
+                          : 'hover:bg-slate-50 dark:hover:bg-slate-800',
                       )}
                       type="button"
                     >
                       <div className="min-w-0 flex-1">
-                        <div className="text-sm font-semibold">
+                        <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                           {formatSize(offer.account_size)}
                           {' '}
-                          <span className="text-muted-foreground">@</span>
+                          <span className="text-slate-400">@</span>
                           {' '}
                           {formatFee(offer)}
                         </div>
                         {offer.refundable && (
-                          <div className="mt-0.5 text-xs text-green-600 dark:text-green-400">
+                          <div className="mt-0.5 text-xs text-sky-600 dark:text-sky-400">
                             Refundable
                           </div>
                         )}
                       </div>
                       {offer.is_featured && (
-                        <span className="shrink-0 rounded-full bg-orange-500/10 px-2 py-0.5 text-xs font-bold text-orange-600 dark:text-orange-400">
+                        <span className="shrink-0 rounded-full bg-blue-100 px-2 py-0.5 text-xs font-bold text-blue-700 dark:bg-blue-950 dark:text-blue-300">
                           Popular
                         </span>
                       )}
@@ -173,29 +174,29 @@ export function OfferSelector({
       <div className={cn('lg:hidden', className)}>
         <button
           onClick={() => setIsOpen(true)}
-          className="w-full rounded-xl border border-border/50 bg-background/50 px-4 py-3 text-left transition-all active:scale-[0.98]"
+          className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-left transition-all active:scale-[0.98] dark:border-slate-700 dark:bg-slate-900"
           type="button"
         >
           <div className="flex items-center justify-between gap-2">
             <div className="min-w-0 flex-1">
-              <div className="text-sm font-semibold">
+              <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                 {selectedOffer ? formatSize(selectedOffer.account_size) : 'Select offer'}
                 {selectedOffer && (
                   <>
                     {' '}
-                    <span className="text-muted-foreground">@</span>
+                    <span className="text-slate-400">@</span>
                     {' '}
                     {formatFee(selectedOffer)}
                   </>
                 )}
               </div>
               {selectedOffer?.refundable && (
-                <div className="mt-0.5 text-xs text-green-600 dark:text-green-400">
+                <div className="mt-0.5 text-xs text-sky-600 dark:text-sky-400">
                   Refundable
                 </div>
               )}
             </div>
-            <ChevronDownIcon size={16} className="shrink-0 text-muted-foreground" />
+            <ChevronDownIcon size={16} className="shrink-0 text-slate-400" />
           </div>
         </button>
 
@@ -209,7 +210,7 @@ export function OfferSelector({
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 onClick={() => setIsOpen(false)}
-                className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
+                className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm"
               />
 
               {/* Sheet */}
@@ -218,17 +219,17 @@ export function OfferSelector({
                 animate={{ y: 0 }}
                 exit={{ y: '100%' }}
                 transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-                className="fixed inset-x-0 bottom-0 z-50 max-h-[80vh] overflow-hidden rounded-t-[32px] bg-background shadow-2xl"
+                className="fixed inset-x-0 bottom-0 z-[101] max-h-[80vh] overflow-hidden rounded-t-[32px] bg-white shadow-2xl dark:bg-slate-900"
               >
                 {/* Handle */}
                 <div className="flex justify-center py-3">
-                  <div className="h-1 w-12 rounded-full bg-muted-foreground/20" />
+                  <div className="h-1 w-12 rounded-full bg-slate-300 dark:bg-slate-700" />
                 </div>
 
                 {/* Header */}
-                <div className="border-b border-border/50 px-6 pb-4">
-                  <h3 className="text-lg font-bold">Select Account Size</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">
+                <div className="border-b border-slate-200 px-6 pb-4 dark:border-slate-700">
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">Select Account Size</h3>
+                  <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                     Choose your preferred account size
                   </p>
                 </div>
@@ -243,8 +244,8 @@ export function OfferSelector({
                         className={cn(
                           'flex w-full items-center gap-3 rounded-xl border p-4 text-left transition-all',
                           offer.id === selectedOfferId
-                            ? 'border-primary bg-primary/5'
-                            : 'border-border/50 active:scale-[0.98]',
+                            ? 'border-blue-500 bg-blue-50/50 dark:border-blue-400 dark:bg-blue-950/30'
+                            : 'border-slate-200 active:scale-[0.98] dark:border-slate-700',
                         )}
                         type="button"
                       >
@@ -253,31 +254,31 @@ export function OfferSelector({
                           className={cn(
                             'flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors',
                             offer.id === selectedOfferId
-                              ? 'border-primary'
-                              : 'border-muted-foreground/30',
+                              ? 'border-blue-500 dark:border-blue-400'
+                              : 'border-slate-300 dark:border-slate-600',
                           )}
                         >
                           {offer.id === selectedOfferId && (
-                            <div className="size-2.5 rounded-full bg-primary" />
+                            <div className="size-2.5 rounded-full bg-blue-500 dark:bg-blue-400" />
                           )}
                         </div>
 
                         {/* Content */}
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2">
-                            <span className="font-semibold">
+                            <span className="font-semibold text-slate-900 dark:text-slate-100">
                               {formatSize(offer.account_size)}
                             </span>
-                            <span className="text-muted-foreground">@</span>
-                            <span className="font-semibold">{formatFee(offer)}</span>
+                            <span className="text-slate-400">@</span>
+                            <span className="font-semibold text-slate-900 dark:text-slate-100">{formatFee(offer)}</span>
                             {offer.is_featured && (
-                              <span className="rounded-full bg-orange-500/10 px-2 py-0.5 text-xs font-bold text-orange-600 dark:text-orange-400">
+                              <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-bold text-blue-700 dark:bg-blue-950 dark:text-blue-300">
                                 Popular
                               </span>
                             )}
                           </div>
                           {offer.refundable && (
-                            <div className="mt-1 text-xs text-green-600 dark:text-green-400">
+                            <div className="mt-1 text-xs text-sky-600 dark:text-sky-400">
                               ✓ Refundable on first payout
                             </div>
                           )}

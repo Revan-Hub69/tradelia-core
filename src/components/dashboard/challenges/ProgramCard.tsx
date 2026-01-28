@@ -1,9 +1,10 @@
 'use client';
 
 /**
- * PROGRAM CARD - iOS Glass 2026 Edition
+ * PROGRAM CARD - Tradelia Design System 2026 Edition
  *
  * Design Principles (Tier 1 Research):
+ * - Tradelia Color Palette: Scale di blu e grigi-celesti
  * - iOS 26 Glass Morphism: Translucency, depth, premium feel
  * - No CTA Button: Card intera è cliccabile (pattern iOS 26)
  * - Visual Hierarchy: Badge → Title → KPIs (2 max)
@@ -107,31 +108,31 @@ export function ProgramCard({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -12 }}
-      whileHover={{ 
+      whileHover={{
         scale: 1.01,
         y: -2,
-        transition: { type: 'spring', stiffness: 400, damping: 25 }
+        transition: { type: 'spring', stiffness: 400, damping: 25 },
       }}
       whileTap={{ scale: 0.98 }}
       onClick={handleCardClick}
       className={cn(
-        // iOS 26 Glass Card
+        // Tradelia Glass Card
         'group relative flex flex-col gap-3 rounded-2xl',
-        'bg-white/80 dark:bg-white/5',
+        'bg-white dark:bg-slate-900',
         'backdrop-blur-xl',
-        'border border-white/40 dark:border-white/10',
+        'border border-slate-200 dark:border-slate-800',
         'shadow-[0_2px_8px_-2px_rgba(0,0,0,0.08)]',
         'dark:shadow-[0_2px_8px_-2px_rgba(0,0,0,0.3)]',
         'p-4',
         'cursor-pointer',
         'transition-shadow duration-300',
-        // Hover: iOS 26 depth effect
+        // Hover: Tradelia depth effect
         'hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.12)]',
         'dark:hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.4)]',
         // Active state
         'active:scale-[0.98]',
-        // Free variant: subtle green tint
-        isFree && 'bg-green-50/70 dark:bg-green-950/20 border-green-200/50 dark:border-green-500/20',
+        // Free variant: subtle sky tint
+        isFree && 'bg-sky-50/50 dark:bg-sky-950/20 border-sky-200/50 dark:border-sky-500/20',
       )}
       aria-label={t('a11y.cardLabel', { name: program.name })}
       role="button"
@@ -145,50 +146,56 @@ export function ProgramCard({
     >
       {/* HEADER: Badge + Platforms */}
       <div className="flex items-center justify-between">
-        {/* iOS 26 Pill Badge */}
+        {/* Tradelia Pill Badge */}
         <span className={cn(
           'inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide',
-          isFree 
-            ? 'bg-green-500/15 text-green-700 dark:text-green-400'
-            : 'bg-blue-500/15 text-blue-700 dark:text-blue-400'
-        )}>
+          isFree
+            ? 'bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300'
+            : 'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300',
+        )}
+        >
           {isFree ? t('badges.free') : t('badges.paid')}
         </span>
 
-        {/* Platforms - iOS 26 subtle text */}
+        {/* Platforms - Tradelia subtle text */}
         {platforms.length > 0 && (
-          <span className="text-[11px] font-medium text-muted-foreground/70">
+          <span className="text-[11px] font-medium text-slate-400 dark:text-slate-500">
             {platforms[0]}
             {platforms.length > 1 && (
-              <span className="text-muted-foreground/40"> +{platforms.length - 1}</span>
+              <span className="text-slate-300 dark:text-slate-600">
+                {' '}
+                +
+                {platforms.length - 1}
+              </span>
             )}
           </span>
         )}
       </div>
 
-      {/* TITLE - iOS 26 Typography */}
-      <h3 className="line-clamp-2 text-[15px] font-semibold leading-snug tracking-tight text-foreground">
+      {/* TITLE - Tradelia Typography */}
+      <h3 className="line-clamp-2 text-[15px] font-semibold leading-snug tracking-tight text-slate-900 dark:text-slate-100">
         {program.name}
       </h3>
 
       {/* ORGANIZER - Subtle secondary */}
-      <p className="text-[13px] text-muted-foreground/80">
+      <p className="text-[13px] text-slate-500 dark:text-slate-400">
         {program.organizer_name}
       </p>
 
-      {/* KPI GRID - iOS 26 Glass Panels */}
+      {/* KPI GRID - Tradelia Glass Panels */}
       {defaultOffer && (
-        <div className="grid grid-cols-2 gap-2 mt-1">
+        <div className="mt-1 grid grid-cols-2 gap-2">
           {/* Account Size - Primary KPI */}
           <div className={cn(
             'flex flex-col rounded-xl px-3 py-2.5',
-            'bg-black/[0.03] dark:bg-white/[0.06]',
-            'backdrop-blur-sm'
-          )}>
-            <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground/70">
+            'bg-slate-100 dark:bg-slate-800',
+            'backdrop-blur-sm',
+          )}
+          >
+            <span className="text-[10px] font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
               {t('card.accountSize')}
             </span>
-            <span className="text-[17px] font-bold tracking-tight">
+            <span className="text-[17px] font-bold tracking-tight text-slate-900 dark:text-slate-100">
               {formatSize(defaultOffer.account_size, defaultOffer.account_currency)}
             </span>
           </div>
@@ -196,34 +203,36 @@ export function ProgramCard({
           {/* Entry Fee - Secondary KPI */}
           <div className={cn(
             'flex flex-col rounded-xl px-3 py-2.5',
-            'bg-black/[0.03] dark:bg-white/[0.06]',
-            'backdrop-blur-sm'
-          )}>
-            <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground/70">
+            'bg-slate-100 dark:bg-slate-800',
+            'backdrop-blur-sm',
+          )}
+          >
+            <span className="text-[10px] font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
               {t('card.entryFee')}
             </span>
             <span className={cn(
               'text-[17px] font-bold tracking-tight',
-              isFree ? 'text-green-600 dark:text-green-400' : 'text-foreground'
-            )}>
+              isFree ? 'text-sky-600 dark:text-sky-400' : 'text-slate-900 dark:text-slate-100',
+            )}
+            >
               {formatFee(defaultOffer)}
             </span>
           </div>
         </div>
       )}
 
-      {/* iOS 26: Chevron Indicator (subtle affordance) */}
+      {/* Tradelia: Chevron Indicator (subtle affordance) */}
       <div className="absolute right-3 top-1/2 -translate-y-1/2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-        <svg 
-          width="20" 
-          height="20" 
-          viewBox="0 0 24 24" 
-          fill="none" 
-          stroke="currentColor" 
-          strokeWidth="2" 
-          strokeLinecap="round" 
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
           strokeLinejoin="round"
-          className="text-muted-foreground/40"
+          className="text-slate-400 dark:text-slate-500"
         >
           <path d="m9 18 6-6-6-6" />
         </svg>
