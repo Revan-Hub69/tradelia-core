@@ -35,21 +35,21 @@ type Offer = {
 type OfferSelectorProps = {
   offers: Offer[];
   selectedOfferId: string;
-  onSelect: (offerId: string) => void;
+  onSelectAction: (offerId: string) => void;
   className?: string;
 };
 
 export function OfferSelector({
   offers,
   selectedOfferId,
-  onSelect,
+  onSelectAction,
   className,
 }: OfferSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const selectedOffer = offers.find(o => o.id === selectedOfferId) || offers[0];
 
   const handleSelect = (offerId: string) => {
-    onSelect(offerId);
+    onSelectAction(offerId);
     setIsOpen(false);
   };
 

@@ -324,42 +324,40 @@ export function ProgramDrawer({
               </div>
             </header>
 
-            {/* Content - Single Scroll with Modular Sections (Enterprise spacing) */}
+            {/* Content - Progressive Disclosure Structure (Enterprise spacing) */}
             <div
               ref={scrollContainerRef as React.RefObject<HTMLDivElement>}
               className="flex-1 overflow-y-auto"
             >
               <div className="space-y-6 px-4 py-6 sm:space-y-8 sm:px-6 sm:py-8 lg:space-y-10 lg:px-8 lg:py-10 pb-32 sm:pb-36 lg:pb-40">
-                {/* 📊 KEY METRICS - Always visible */}
+                {/* 1️⃣ OVERVIEW - Quick Facts (Always first) */}
                 {selectedOffer && (
                   <KeyMetricsSection offer={selectedOffer} payoutTerms={payoutTerms} />
                 )}
 
-                {/* 🏆 PRIZE POOL - Only for free competitions */}
+                {/* 2️⃣ RULES - Profit Targets & Risk Limits (Core info) */}
+                {!isFree && <PhaseRulesSection phases={rulesets} />}
                 {isFree && <PrizePoolSection />}
 
-                {/* 📋 PHASE RULES - Only for paid evaluations */}
-                {!isFree && <PhaseRulesSection phases={rulesets} />}
-
-                {/* 📈 RANKING SYSTEM - Only for ranking-based tournaments */}
-                {program.ruleset_mode === 'ranking_based' && <RankingSystemSection />}
-
-                {/* ⚠️ RISK RULES - Always visible but simplified for competitions */}
+                {/* 3️⃣ RISK RULES - Max Drawdown, Daily Loss (Secondary) */}
                 <RiskRulesSection rulesets={rulesets} />
 
-                {/* 💰 PAYOUT DETAILS - Only for paid evaluations */}
-                {!isFree && payoutTerms && <PayoutSection payoutTerms={payoutTerms} />}
-
-                {/* 🔐 TRADING PERMISSIONS */}
-                <PermissionsSection phase1Rules={phase1Rules} />
-
-                {/* 📊 MARKETS & PLATFORMS */}
+                {/* 4️⃣ MARKETS - Platforms & Instruments (Practical info) */}
                 <MarketsSection marketAccess={marketAccess} />
 
-                {/* 🎯 ABOUT THIS CHALLENGE */}
+                {/* 5️⃣ PAYOUTS - How You Get Paid (Important for funded traders) */}
+                {!isFree && payoutTerms && <PayoutSection payoutTerms={payoutTerms} />}
+
+                {/* 6️⃣ PERMISSIONS - What You Can Do (Trading capabilities) */}
+                <PermissionsSection phase1Rules={phase1Rules} />
+
+                {/* 7️⃣ RANKING SYSTEM - Only for tournaments */}
+                {program.ruleset_mode === 'ranking_based' && <RankingSystemSection />}
+
+                {/* 8️⃣ ABOUT THIS CHALLENGE - Description & details */}
                 <AboutSection program={program} />
 
-                {/* 🏢 ABOUT FIRM (Trust Signals) */}
+                {/* 9️⃣ ABOUT FIRM - Trust Signals & Credibility */}
                 <TrustSection
                   trustSignals={trustSignals}
                   organizerName={program.organizer_name}
@@ -367,16 +365,10 @@ export function ProgramDrawer({
               </div>
             </div>
 
-            {/* Footer - Responsive Actions (Enterprise spacing with iOS safe area) */}
-            <footer className="glass-panel sticky bottom-0 border-t border-border/50 p-4 pb-[calc(16px+env(safe-area-inset-bottom))] backdrop-blur-xl sm:px-6 sm:py-5 lg:px-8 lg:py-6">
-              <div className="flex gap-2.5 sm:gap-3 lg:gap-4">
-                <button
-                  onClick={onCloseAction}
-                  className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-border bg-background px-3 py-2.5 text-sm font-semibold transition-all hover:bg-muted sm:gap-2 sm:px-4 sm:py-3 sm:text-base"
-                  type="button"
-                >
-                  {t('drawer.close')}
-                </button>
+            {/* Footer - Sticky Action Buttons (Mobile-optimized) */}
+            <footer className="glass-panel sticky bottom-0 z-20 border-t border-border/50 bg-background/95 backdrop-blur-xl">
+              <div className="flex flex-col gap-2 p-4 sm:flex-row sm:gap-3 sm:px-6 sm:py-5 lg:px-8 lg:py-6" style={{ paddingBottom: 'calc(1rem + env(safe-area-inset-bottom))' }}>
+                {/* Mobile: Stack vertically, Desktop: Side by side */}
                 {onEnrollAction && selectedOffer && (
                   <EnrollmentButton
                     programId={program.id}
@@ -384,9 +376,17 @@ export function ProgramDrawer({
                     officialUrl={officialUrl}
                     isFree={isFree}
                     onEnroll={onEnrollAction}
-                    className="flex-1"
+                    className="order-first w-full sm:flex-1"
                   />
                 )}
+
+                <button
+                  onClick={onCloseAction}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-muted/30 px-4 py-3 text-sm font-semibold transition-all hover:bg-muted sm:flex-1 sm:py-3 sm:text-base"
+                  type="button"
+                >
+                  {t('drawer.close')}
+                </button>
               </div>
             </footer>
           </motion.aside>

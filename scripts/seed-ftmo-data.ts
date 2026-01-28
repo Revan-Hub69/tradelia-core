@@ -40,7 +40,18 @@ const supabase = createClient(supabaseUrl, supabaseKey, {
 const ftmoOrganizer = {
   id: 'ftmo',
   name: 'FTMO',
-  slug: 'ftmo',
+  organizer_type: 'prop_firm',
+  website_url: 'https://ftmo.com',
+  founded_year: 2015,
+  headquarters: 'Prague, Czech Republic',
+  legal_status: 'active',
+  reputation_score: 96,
+  trustpilot_score: 4.6,
+  trustpilot_reviews: 15000,
+  trustpilot_updated_at: new Date('2026-01-26'),
+  total_paid_out: 150000000,
+  total_paid_currency: 'USD',
+  active_traders: 25000,
 };
 
 // ============================================
@@ -51,58 +62,33 @@ const ftmoPrograms = [
     id: 'ftmo-challenge',
     organizer_id: 'ftmo',
     name: 'FTMO Challenge',
-    slug: 'ftmo-challenge',
     category: 'paid_evaluation',
-    ruleset_mode: 'target_based',
+    type: 'prop_challenge',
+    subtype: '2_step',
     description: 'FTMO\'s flagship 2-step evaluation. Pass Phase 1 (10% profit target) and Phase 2 (5% profit target) to get funded. Industry-leading reputation with bi-weekly payouts.',
     best_for: 'Serious traders ready to invest in evaluation and follow strict rules',
     pros: JSON.stringify(['Excellent reputation', 'Refundable fee', 'Scaling to $2M', 'Multiple platforms', 'Bi-weekly payouts', 'No time limit on Verification']),
     cons: JSON.stringify(['Strict consistency rule', '5-10% pass rate', 'No weekend holding']),
-    popularity_score: 98,
-    difficulty_rating: 'hard',
-    time_limit_days: 30,
-    phases_count: 2,
-    features: JSON.stringify(['Swing trading allowed', 'News trading allowed', 'EA trading allowed']),
     official_url: 'https://ftmo.com/en/evaluation/',
     status: 'active',
-  },
-  {
-    id: 'ftmo-swing',
-    organizer_id: 'ftmo',
-    name: 'FTMO Swing',
-    slug: 'ftmo-swing',
-    category: 'paid_evaluation',
-    ruleset_mode: 'target_based',
-    description: 'FTMO Swing account with weekend holding allowed. Same 2-step evaluation with relaxed rules for swing traders who hold positions over weekends.',
-    best_for: 'Swing traders who hold positions over weekends',
-    pros: JSON.stringify(['Weekend holding allowed', 'Refundable fee', 'Swing trading friendly', 'Multiple platforms', 'No time limit on Verification']),
-    cons: JSON.stringify(['Strict consistency rule', '5-10% pass rate', 'Higher spreads']),
-    popularity_score: 85,
-    difficulty_rating: 'hard',
-    time_limit_days: 30,
-    phases_count: 2,
-    features: JSON.stringify(['Weekend holding', 'News trading allowed', 'EA trading allowed']),
-    official_url: 'https://ftmo.com/en/evaluation/',
-    status: 'active',
+    has_free_trial: true,
+    free_trial_description: 'Free demo account to practice before purchasing challenge',
+    free_trial_url: 'https://ftmo.com/en/free-trial/',
   },
   {
     id: 'ftmo-trial',
     organizer_id: 'ftmo',
     name: 'FTMO Free Trial',
-    slug: 'ftmo-trial',
-    category: 'free_evaluation',
-    ruleset_mode: 'target_based',
+    category: 'free_competition',
+    type: 'paper_trading',
+    subtype: 'trial',
     description: 'FTMO Free Trial - Test the platform with $100,000 virtual account for 14 days. No credit card required. Experience FTMO rules and platform before purchasing a real challenge.',
     best_for: 'Traders wanting to test FTMO platform and rules before investing',
     pros: JSON.stringify(['Completely FREE', 'No credit card required', '$100K virtual account', 'Real FTMO conditions', 'Test all platforms']),
     cons: JSON.stringify(['No real funding', 'No payouts', 'Must pass to be meaningful', 'Same strict rules']),
-    popularity_score: 99,
-    difficulty_rating: 'medium',
-    time_limit_days: 14,
-    phases_count: 1,
-    features: JSON.stringify(['Free trial', 'No credit card', '14 days duration']),
     official_url: 'https://ftmo.com/en/free-trial/',
     status: 'active',
+    has_free_trial: false,
   },
 ];
 
@@ -111,19 +97,13 @@ const ftmoPrograms = [
 // ============================================
 const ftmoOffers = [
   // FTMO Challenge - All Sizes
-  { program_id: 'ftmo-challenge', account_size: 10000, entry_fee: 155, currency: 'EUR', display_order: 1 },
-  { program_id: 'ftmo-challenge', account_size: 25000, entry_fee: 250, currency: 'EUR', display_order: 2 },
-  { program_id: 'ftmo-challenge', account_size: 50000, entry_fee: 345, currency: 'EUR', display_order: 3 },
-  { program_id: 'ftmo-challenge', account_size: 100000, entry_fee: 540, currency: 'EUR', display_order: 4 },
-  { program_id: 'ftmo-challenge', account_size: 200000, entry_fee: 1080, currency: 'EUR', display_order: 5 },
-  // FTMO Swing - All Sizes
-  { program_id: 'ftmo-swing', account_size: 10000, entry_fee: 155, currency: 'EUR', display_order: 1 },
-  { program_id: 'ftmo-swing', account_size: 25000, entry_fee: 250, currency: 'EUR', display_order: 2 },
-  { program_id: 'ftmo-swing', account_size: 50000, entry_fee: 345, currency: 'EUR', display_order: 3 },
-  { program_id: 'ftmo-swing', account_size: 100000, entry_fee: 540, currency: 'EUR', display_order: 4 },
-  { program_id: 'ftmo-swing', account_size: 200000, entry_fee: 1080, currency: 'EUR', display_order: 5 },
+  { program_id: 'ftmo-challenge', account_size: 10000, entry_fee: 155, display_order: 1 },
+  { program_id: 'ftmo-challenge', account_size: 25000, entry_fee: 250, display_order: 2 },
+  { program_id: 'ftmo-challenge', account_size: 50000, entry_fee: 345, display_order: 3 },
+  { program_id: 'ftmo-challenge', account_size: 100000, entry_fee: 540, display_order: 4 },
+  { program_id: 'ftmo-challenge', account_size: 200000, entry_fee: 1080, display_order: 5 },
   // FTMO Trial - Free
-  { program_id: 'ftmo-trial', account_size: 100000, entry_fee: null, currency: 'EUR', display_order: 1 },
+  { program_id: 'ftmo-trial', account_size: 100000, entry_fee: null, display_order: 1 },
 ];
 
 // Generate offer IDs and add common fields
@@ -131,13 +111,16 @@ const ftmoOffersWithIds = ftmoOffers.map((offer, index) => ({
   id: `ftmo-offer-${index + 1}`,
   ...offer,
   offer_name: `$${offer.account_size.toLocaleString()} Account`,
+  account_currency: 'USD',
   fee_currency: 'EUR',
   refundable: offer.program_id !== 'ftmo-trial',
   refund_conditions: offer.program_id !== 'ftmo-trial' ? 'Refunded with first profit split' : null,
   is_featured: offer.account_size === 100000,
   scaling_max: offer.program_id !== 'ftmo-trial' ? 2000000 : null,
-  time_limit_days: offer.program_id === 'ftmo-trial' ? 14 : 30,
-  status: 'active',
+  recurring: true,
+  frequency: 'always_open',
+  min_age: 18,
+  kyc_required: true,
 }));
 
 // ============================================
@@ -146,103 +129,69 @@ const ftmoOffersWithIds = ftmoOffers.map((offer, index) => ({
 const ftmoRulesets = [
   // FTMO Challenge - Phase 1
   {
-    program_id: 'ftmo-challenge',
+    id: 'ftmo-challenge-p1',
+    offer_id: 'ftmo-offer-1',
     phase_number: 1,
     phase_name: 'Challenge Phase',
+    ruleset_mode: 'target_based',
     profit_target_pct: 10,
     max_drawdown_pct: 10,
     max_drawdown_type: 'trailing',
     max_daily_loss_pct: 5,
     max_daily_loss_type: 'equity_based',
-    daily_loss_reset_time: '00:00 CET',
     min_trading_days: 4,
     consistency_required: true,
     best_day_max_pct: 30,
     ea_allowed: true,
+    ea_allowed_known: true,
     news_trading: true,
+    news_trading_known: true,
     weekend_holding: false,
-    time_limit_days: 30,
-    description: 'Phase 1: Reach 10% profit target without violating risk rules',
+    weekend_holding_known: true,
   },
   // FTMO Challenge - Phase 2
   {
-    program_id: 'ftmo-challenge',
+    id: 'ftmo-challenge-p2',
+    offer_id: 'ftmo-offer-1',
     phase_number: 2,
     phase_name: 'Verification Phase',
+    ruleset_mode: 'target_based',
     profit_target_pct: 5,
     max_drawdown_pct: 10,
     max_drawdown_type: 'trailing',
     max_daily_loss_pct: 5,
     max_daily_loss_type: 'equity_based',
-    daily_loss_reset_time: '00:00 CET',
     min_trading_days: 4,
     consistency_required: true,
     best_day_max_pct: 30,
     ea_allowed: true,
+    ea_allowed_known: true,
     news_trading: true,
+    news_trading_known: true,
     weekend_holding: false,
-    time_limit_days: 60,
-    description: 'Phase 2: Reach 5% profit target to get funded. No time limit.',
-  },
-  // FTMO Swing - Phase 1
-  {
-    program_id: 'ftmo-swing',
-    phase_number: 1,
-    phase_name: 'Challenge Phase',
-    profit_target_pct: 10,
-    max_drawdown_pct: 10,
-    max_drawdown_type: 'trailing',
-    max_daily_loss_pct: 5,
-    max_daily_loss_type: 'equity_based',
-    daily_loss_reset_time: '00:00 CET',
-    min_trading_days: 4,
-    consistency_required: true,
-    best_day_max_pct: 30,
-    ea_allowed: true,
-    news_trading: true,
-    weekend_holding: true,
-    time_limit_days: 30,
-    description: 'Phase 1: Reach 10% profit target. Weekend holding allowed.',
-  },
-  // FTMO Swing - Phase 2
-  {
-    program_id: 'ftmo-swing',
-    phase_number: 2,
-    phase_name: 'Verification Phase',
-    profit_target_pct: 5,
-    max_drawdown_pct: 10,
-    max_drawdown_type: 'trailing',
-    max_daily_loss_pct: 5,
-    max_daily_loss_type: 'equity_based',
-    daily_loss_reset_time: '00:00 CET',
-    min_trading_days: 4,
-    consistency_required: true,
-    best_day_max_pct: 30,
-    ea_allowed: true,
-    news_trading: true,
-    weekend_holding: true,
-    time_limit_days: 60,
-    description: 'Phase 2: Reach 5% profit target. Weekend holding allowed.',
+    weekend_holding_known: true,
   },
   // FTMO Trial - Phase 1 (Single Phase)
   {
-    program_id: 'ftmo-trial',
+    id: 'ftmo-trial-p1',
+    offer_id: 'ftmo-offer-11',
     phase_number: 1,
     phase_name: 'Trial Phase',
+    ruleset_mode: 'target_based',
     profit_target_pct: 10,
     max_drawdown_pct: 10,
     max_drawdown_type: 'trailing',
     max_daily_loss_pct: 5,
     max_daily_loss_type: 'equity_based',
-    daily_loss_reset_time: '00:00 CET',
     min_trading_days: 4,
     consistency_required: true,
     best_day_max_pct: 30,
     ea_allowed: true,
+    ea_allowed_known: true,
     news_trading: true,
+    news_trading_known: true,
     weekend_holding: false,
-    time_limit_days: 14,
-    description: 'Free trial: Test FTMO conditions with $100K virtual account for 14 days',
+    weekend_holding_known: true,
   },
 ];
 
@@ -252,41 +201,27 @@ const ftmoRulesets = [
 const ftmoPayoutTerms = [
   // Challenge and Swing have same payout terms
   {
-    program_id: 'ftmo-challenge',
-    profit_split_initial: 80,
-    profit_split_scaled: 90,
-    profit_split_max: 90,
+    id: 'ftmo-challenge-payout',
+    offer_id: 'ftmo-offer-1',
+    profit_split_initial_pct: 80,
+    profit_split_scaled_pct: 90,
+    profit_split_max_pct: 90,
     payout_frequency: 'bi_weekly',
     first_payout_delay_days: 14,
     eligible_after_phase: 2,
-    withdrawal_methods: JSON.stringify(['Bank Transfer', 'PayPal', 'Crypto', 'Wise']),
-    min_withdrawal: null,
-    payout_processing_time_hours: 48,
-  },
-  {
-    program_id: 'ftmo-swing',
-    profit_split_initial: 80,
-    profit_split_scaled: 90,
-    profit_split_max: 90,
-    payout_frequency: 'bi_weekly',
-    first_payout_delay_days: 14,
-    eligible_after_phase: 2,
-    withdrawal_methods: JSON.stringify(['Bank Transfer', 'PayPal', 'Crypto', 'Wise']),
-    min_withdrawal: null,
+    withdrawal_methods: JSON.stringify(['bank', 'paypal', 'crypto', 'wise']),
     payout_processing_time_hours: 48,
   },
   // Trial has no payouts
   {
-    program_id: 'ftmo-trial',
-    profit_split_initial: 0,
-    profit_split_scaled: null,
-    profit_split_max: 0,
+    id: 'ftmo-trial-payout',
+    offer_id: 'ftmo-offer-11',
+    profit_split_initial_pct: 0,
+    profit_split_scaled_pct: null,
+    profit_split_max_pct: 0,
     payout_frequency: null,
     first_payout_delay_days: null,
     eligible_after_phase: null,
-    withdrawal_methods: null,
-    min_withdrawal: null,
-    payout_processing_time_hours: null,
   },
 ];
 
@@ -295,7 +230,8 @@ const ftmoPayoutTerms = [
 // ============================================
 const ftmoMarketAccess = [
   {
-    program_id: 'ftmo-challenge',
+    id: 'ftmo-challenge-market',
+    offer_id: 'ftmo-offer-1',
     markets_available: JSON.stringify(['forex', 'indices', 'commodities', 'crypto', 'stocks']),
     platforms: JSON.stringify(['MT4', 'MT5', 'cTrader', 'DXtrade']),
     instruments_count: 1000,
@@ -304,11 +240,12 @@ const ftmoMarketAccess = [
     leverage_commodities: '1:20',
     leverage_crypto: '1:2',
     commission_forex: 0,
-    commission_indices: 0,
+    commission_type: 'per_lot',
     trading_hours: '24/5 Forex, Exchange hours for indices',
   },
   {
-    program_id: 'ftmo-swing',
+    id: 'ftmo-trial-market',
+    offer_id: 'ftmo-offer-11',
     markets_available: JSON.stringify(['forex', 'indices', 'commodities', 'crypto', 'stocks']),
     platforms: JSON.stringify(['MT4', 'MT5', 'cTrader', 'DXtrade']),
     instruments_count: 1000,
@@ -317,20 +254,7 @@ const ftmoMarketAccess = [
     leverage_commodities: '1:20',
     leverage_crypto: '1:2',
     commission_forex: 0,
-    commission_indices: 0,
-    trading_hours: '24/5 Forex, Exchange hours for indices',
-  },
-  {
-    program_id: 'ftmo-trial',
-    markets_available: JSON.stringify(['forex', 'indices', 'commodities', 'crypto', 'stocks']),
-    platforms: JSON.stringify(['MT4', 'MT5', 'cTrader', 'DXtrade']),
-    instruments_count: 1000,
-    leverage_forex: '1:100',
-    leverage_indices: '1:20',
-    leverage_commodities: '1:20',
-    leverage_crypto: '1:2',
-    commission_forex: 0,
-    commission_indices: 0,
+    commission_type: 'per_lot',
     trading_hours: '24/5 Forex, Exchange hours for indices',
   },
 ];
@@ -382,7 +306,7 @@ async function seedFTMOData() {
     console.log('\n📝 Seeding FTMO rulesets...');
     const { error: rulesetsError } = await supabase
       .from('rulesets')
-      .upsert(ftmoRulesets, { onConflict: 'program_id,phase_number' });
+      .upsert(ftmoRulesets, { onConflict: 'id' });
 
     if (rulesetsError) {
       console.error('❌ Error seeding rulesets:', rulesetsError);
@@ -394,7 +318,7 @@ async function seedFTMOData() {
     console.log('\n📝 Seeding FTMO payout terms...');
     const { error: payoutError } = await supabase
       .from('payout_terms')
-      .upsert(ftmoPayoutTerms, { onConflict: 'program_id' });
+      .upsert(ftmoPayoutTerms, { onConflict: 'id' });
 
     if (payoutError) {
       console.error('❌ Error seeding payout terms:', payoutError);
@@ -406,7 +330,7 @@ async function seedFTMOData() {
     console.log('\n📝 Seeding FTMO market access...');
     const { error: marketError } = await supabase
       .from('market_access')
-      .upsert(ftmoMarketAccess, { onConflict: 'program_id' });
+      .upsert(ftmoMarketAccess, { onConflict: 'id' });
 
     if (marketError) {
       console.error('❌ Error seeding market access:', marketError);
@@ -417,8 +341,8 @@ async function seedFTMOData() {
     console.log('\n✅ FTMO seed completed successfully!');
     console.log('\n📊 Summary:');
     console.log('   - 1 Organizer (FTMO)');
-    console.log(`   - ${ftmoPrograms.length} Programs (Challenge, Swing, Trial)`);
-    console.log(`   - ${ftmoOffersWithIds.length} Offers (all account sizes)`);
+    console.log(`   - ${ftmoPrograms.length} Programs (Challenge, Trial)`);
+    console.log(`   - ${ftmoOffersWithIds.length} Offers (Challenge sizes)`);
     console.log(`   - ${ftmoRulesets.length} Rulesets (phases)`);
     console.log(`   - ${ftmoPayoutTerms.length} Payout terms`);
     console.log(`   - ${ftmoMarketAccess.length} Market access records`);
