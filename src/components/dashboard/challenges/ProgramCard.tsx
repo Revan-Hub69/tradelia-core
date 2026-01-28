@@ -277,9 +277,6 @@ export function ProgramCard({
       {/* 5. KPI GRID - 3 Key Metrics */}
       <div className="grid grid-cols-3 gap-2 border-t border-border/30 pt-3">
         {adaptiveKPIs.map((kpi) => {
-          const colorParts = kpi.color?.split(' ');
-          const colorClass = colorParts?.[0]?.replace('text-', '') || 'primary';
-
           return (
             <div
               key={kpi.label}
