@@ -152,9 +152,9 @@ export const GuideSection = React.memo(({ program, rulesets }: GuideSectionProps
             </h4>
 
             <ul className="space-y-2">
-                {tips.map((tip, tipIndex) => (
+              {tips.map(tip => (
                 <li
-                  key={`tip-${tipIndex}`}
+                  key={tip}
                   className="flex gap-2 text-sm text-muted-foreground"
                 >
                   <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-amber-500" />
