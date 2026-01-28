@@ -21,7 +21,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { useEffect, useMemo, useState } from 'react';
 
-import { useNavigationContext } from '@/components/navigation/NavigationProvider';
+import { useNavigationContext } from '@/components/navigation/useNavigationContext';
 import { cn } from '@/utils/Helpers';
 
 type Offer = {

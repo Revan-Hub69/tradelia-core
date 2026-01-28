@@ -4,22 +4,17 @@
  * Provides keyboard shortcuts and navigation state management
  * Ensures consistent behavior across all navigation components
  * Manages drawer/modal visibility state for bottom nav coordination
+ *
+ * NOTE: Hook moved to separate file for Fast Refresh compatibility
  */
 
 'use client';
 
-import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 
-type NavigationContextType = {
-  isOverlayOpen: boolean;
-  openOverlay: () => void;
-  closeOverlay: () => void;
-  setOverlayOpen: (isOpen: boolean) => void;
-};
-
-const NavigationContext = createContext<NavigationContextType | undefined>(undefined);
+import { NavigationContext } from './NavigationContext';
 
 type NavigationProviderProps = {
   children: React.ReactNode;
@@ -56,13 +51,4 @@ export const NavigationProvider: React.FC<NavigationProviderProps> = ({ children
       {children}
     </NavigationContext.Provider>
   );
-};
-
-// Hook to use navigation context
-export const useNavigationContext = (): NavigationContextType => {
-  const context = useContext(NavigationContext);
-  if (context === undefined) {
-    throw new Error('useNavigationContext must be used within a NavigationProvider');
-  }
-  return context;
 };
