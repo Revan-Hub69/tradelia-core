@@ -34,10 +34,15 @@ export type Offer = {
   max_participants?: number | null;
   scaling_max?: number | null;
   time_limit_days?: number | null;
+  rulesets?: Ruleset[];
+  payout_terms?: PayoutTerms | null;
+  market_access?: MarketAccess | null;
 };
 
 export type Ruleset = {
+  offer_id?: string;
   phase_number: number;
+  phase_name?: string;
   profit_target_pct: number | null;
   max_drawdown_pct: number | null;
   max_drawdown_type?: 'balance_based' | 'equity_based' | 'trailing';

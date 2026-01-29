@@ -37,7 +37,7 @@ import { GuideSection } from './drawer-sections/GuideSection';
 import { MarketsSection } from './drawer-sections/MarketsSection';
 import { PayoutSection } from './drawer-sections/PayoutSection';
 import { PermissionsSection } from './drawer-sections/PermissionsSection';
-import { RiskRulesSection } from './drawer-sections/RiskRulesSection';
+import { PhaseRulesSection } from './drawer-sections/PhaseRulesSection';
 
 type Offer = {
   id: string;
@@ -51,10 +51,15 @@ type Offer = {
   display_order: number;
   scaling_max?: number | null;
   time_limit_days?: number | null;
+  rulesets?: Ruleset[];
+  payout_terms?: PayoutTerms | null;
+  market_access?: MarketAccess | null;
 };
 
 type Ruleset = {
+  offer_id?: string;
   phase_number: number;
+  phase_name?: string;
   profit_target_pct: number | null;
   max_drawdown_pct: number | null;
   max_drawdown_type?: 'balance_based' | 'equity_based' | 'trailing';
@@ -215,12 +220,26 @@ export function ProgramDrawer({
     [offers, selectedOfferId, defaultOffer],
   );
 
+  const selectedRulesets = useMemo(() => {
+    if (selectedOffer?.rulesets?.length) {
+      return selectedOffer.rulesets;
+    }
+    if (selectedOffer?.id) {
+      const filtered = rulesets.filter(r => r.offer_id === selectedOffer.id);
+      return filtered.length ? filtered : rulesets;
+    }
+    return rulesets;
+  }, [rulesets, selectedOffer]);
+
+  const selectedPayoutTerms = selectedOffer?.payout_terms || payoutTerms;
+  const selectedMarketAccess = selectedOffer?.market_access || marketAccess;
+
   if (!program) {
     return null;
   }
 
   const isFree = program.category === 'free_competition';
-  const phase1Rules = rulesets.find(r => r.phase_number === 1);
+  const phase1Rules = selectedRulesets.find(r => r.phase_number === 1);
 
   const handleEnroll = async () => {
     triggerHaptic('medium');
@@ -343,9 +362,6 @@ export function ProgramDrawer({
             {/* Content - 6 Sezioni Enterprise */}
             <div className="relative flex-1 overflow-y-auto">
               <div className="space-y-8 p-6 pb-32">
-                {/* SEZIONE 0: AI Guide - Come Funziona */}
-                <GuideSection program={program} rulesets={rulesets} />
-
                 {/* SEZIONE 1: Account Size Selection - PRIMA E CENTRALE */}
                 {offers.length > 0 && (
                   <section>
@@ -429,19 +445,27 @@ export function ProgramDrawer({
                   </section>
                 )}
 
-                {/* SEZIONE 2: About - Descrizione e Pros/Cons */}
+                {/* SEZIONE 2: AI Guide - Come Funziona */}
+                <GuideSection program={program} rulesets={selectedRulesets} />
+
+                {/* SEZIONE 3: Timeline - Fasi e KPI per offer selezionata */}
+                <PhaseRulesSection
+                  phases={selectedRulesets}
+                  offer={selectedOffer}
+                  program={program}
+                  payoutTerms={selectedPayoutTerms}
+                />
+
+                {/* SEZIONE 4: About - Descrizione e Pros/Cons */}
                 <AboutSection program={program} />
 
-                {/* SEZIONE 3: Risk Rules - Regole complete */}
-                <RiskRulesSection rulesets={rulesets} />
+                {/* SEZIONE 5: Markets - Piattaforme e condizioni */}
+                <MarketsSection marketAccess={selectedMarketAccess} />
 
-                {/* SEZIONE 4: Markets - Piattaforme e condizioni */}
-                <MarketsSection marketAccess={marketAccess} />
+                {/* SEZIONE 6: Payout - Termini di pagamento */}
+                <PayoutSection payoutTerms={selectedPayoutTerms} />
 
-                {/* SEZIONE 5: Payout - Termini di pagamento */}
-                <PayoutSection payoutTerms={payoutTerms} />
-
-                {/* SEZIONE 6: Permissions - Permessi di trading */}
+                {/* SEZIONE 7: Permissions - Permessi di trading */}
                 <PermissionsSection phase1Rules={phase1Rules} />
               </div>
             </div>

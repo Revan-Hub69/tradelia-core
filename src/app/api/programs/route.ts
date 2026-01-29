@@ -69,33 +69,100 @@ export async function GET() {
       // Ensure offers array exists
       const offers = Array.isArray(program.offers) ? program.offers : [];
 
+      const mapRuleset = (ruleset: any, offerId: string) => ({
+        offer_id: ruleset.offer_id || offerId,
+        phase_number: ruleset.phase_number || 1,
+        phase_name: ruleset.phase_name || null,
+        profit_target_pct: ruleset.profit_target_pct || null,
+        max_drawdown_pct: ruleset.max_drawdown_pct || null,
+        max_drawdown_type: ruleset.max_drawdown_type || undefined,
+        max_daily_loss_pct: ruleset.max_daily_loss_pct || null,
+        max_daily_loss_type: ruleset.max_daily_loss_type || undefined,
+        daily_loss_reset_time: ruleset.daily_loss_reset_time || undefined,
+        min_trading_days: ruleset.min_trading_days || null,
+        consistency_required: ruleset.consistency_required || undefined,
+        best_day_max_pct: ruleset.best_day_max_pct || undefined,
+        ea_allowed: ruleset.ea_allowed ?? undefined,
+        news_trading: ruleset.news_trading ?? undefined,
+        weekend_holding: ruleset.weekend_holding ?? undefined,
+        max_position_size: ruleset.max_position_size || undefined,
+        max_open_positions: ruleset.max_open_positions || undefined,
+      });
+
+      const mapPayoutTerms = (payout: any) => ({
+        profit_split_initial: payout?.profit_split_initial ?? payout?.profit_split_initial_pct ?? 0,
+        profit_split_scaled: payout?.profit_split_scaled ?? payout?.profit_split_scaled_pct ?? undefined,
+        profit_split_max: payout?.profit_split_max ?? payout?.profit_split_max_pct ?? 0,
+        payout_frequency: payout?.payout_frequency || 'monthly',
+        first_payout_delay_days: payout?.first_payout_delay_days ?? 0,
+        eligible_after_phase: payout?.eligible_after_phase ?? 1,
+        withdrawal_methods: payout?.withdrawal_methods || undefined,
+        min_withdrawal: payout?.min_withdrawal || undefined,
+        payout_processing_time_hours: payout?.payout_processing_time_hours || undefined,
+      });
+
+      const mappedOffers = offers.map((offer: any) => {
+        const offerRulesets = Array.isArray(offer.rulesets) ? offer.rulesets : [];
+        const payoutTermsArray = Array.isArray(offer.payout_terms) ? offer.payout_terms : [];
+        const marketAccessArray = Array.isArray(offer.market_access) ? offer.market_access : [];
+        const payoutTerms = payoutTermsArray[0] ? mapPayoutTerms(payoutTermsArray[0]) : null;
+
+        return {
+          id: offer.id,
+          offer_name: offer.offer_name || 'Standard',
+          account_size: offer.account_size || 0,
+          account_currency: offer.account_currency || 'USD',
+          entry_fee: offer.entry_fee,
+          fee_currency: offer.fee_currency || 'USD',
+          refundable: offer.refundable || false,
+          is_featured: offer.is_featured || false,
+          display_order: offer.display_order || 0,
+          recurring: offer.recurring ?? true,
+          next_edition_date: offer.next_edition_date || null,
+          max_participants: offer.max_participants || null,
+          current_participants: offer.current_participants || 0,
+          prize_pool: offer.prize_pool || null,
+          first_prize: offer.first_prize || null,
+          start_date: offer.start_date || null,
+          end_date: offer.end_date || null,
+          registration_deadline: offer.registration_deadline || null,
+          frequency: offer.frequency || 'always_open',
+          scaling_max: offer.scaling_max || null,
+          time_limit_days: offer.time_limit_days || null,
+          rulesets: offerRulesets.map((ruleset: any) => mapRuleset(ruleset, offer.id)),
+          payout_terms: payoutTerms,
+          market_access: marketAccessArray[0] || null,
+        };
+      });
+
       // Collect all rulesets from all offers
-      const allRulesets = offers.flatMap((offer: any) =>
+      const allRulesets = mappedOffers.flatMap((offer: any) =>
         Array.isArray(offer.rulesets) ? offer.rulesets : [],
       ).sort((a: any, b: any) => (a.phase_number || 0) - (b.phase_number || 0));
 
-      // Get first offer's payout_terms and market_access (they should be the same for all offers)
-      const firstOffer = offers[0] || {};
-      const payoutTermsArray = Array.isArray(firstOffer.payout_terms) ? firstOffer.payout_terms : [];
-      const marketAccessArray = Array.isArray(firstOffer.market_access) ? firstOffer.market_access : [];
+      // Default offer for KPIs/permissions
+      const defaultOffer = mappedOffers.find((offer: any) => offer.is_featured)
+        || [...mappedOffers].sort((a: any, b: any) => (a.entry_fee || 0) - (b.entry_fee || 0))[0]
+        || mappedOffers[0];
 
-      const payoutTerms = payoutTermsArray[0] || null;
-      const marketAccess = marketAccessArray[0] || null;
+      const defaultRulesets = defaultOffer?.rulesets?.length ? defaultOffer.rulesets : allRulesets;
+      const defaultPayoutTerms = defaultOffer?.payout_terms || null;
+      const defaultMarketAccess = defaultOffer?.market_access || null;
 
       // Get phase 1 rules for permissions (fallback to empty object)
-      const phase1Rules = allRulesets.find((r: any) => r.phase_number === 1) || {};
+      const phase1Rules = defaultRulesets.find((r: any) => r.phase_number === 1) || {};
 
       // Calculate KPIs from rulesets (with safe fallbacks)
       const kpis = {
-        profit_target_phase1: allRulesets[0]?.profit_target_pct || null,
-        profit_target_phase2: allRulesets[1]?.profit_target_pct || null,
-        max_drawdown_pct: allRulesets[0]?.max_drawdown_pct || null,
-        max_daily_loss_pct: allRulesets[0]?.max_daily_loss_pct || null,
-        profit_split_max: payoutTerms?.profit_split_max || null,
-        min_trading_days: allRulesets[0]?.min_trading_days || null,
-        phase_count: allRulesets.length || 1,
-        first_payout_delay_days: payoutTerms?.first_payout_delay_days || null,
-        time_limit_common: allRulesets[0]?.time_limit_days || null,
+        profit_target_phase1: defaultRulesets[0]?.profit_target_pct || null,
+        profit_target_phase2: defaultRulesets[1]?.profit_target_pct || null,
+        max_drawdown_pct: defaultRulesets[0]?.max_drawdown_pct || null,
+        max_daily_loss_pct: defaultRulesets[0]?.max_daily_loss_pct || null,
+        profit_split_max: defaultPayoutTerms?.profit_split_max || null,
+        min_trading_days: defaultRulesets[0]?.min_trading_days || null,
+        phase_count: defaultRulesets.length || 1,
+        first_payout_delay_days: defaultPayoutTerms?.first_payout_delay_days || null,
+        time_limit_common: defaultRulesets[0]?.time_limit_days || null,
         freshness_days: 0, // TODO: Calculate from last_verified_at
         sources_count: 1, // TODO: Implement source tracking
       };
@@ -108,7 +175,7 @@ export async function GET() {
       };
 
       // Extract platforms from market_access
-      const platforms = marketAccess?.platforms || [];
+      const platforms = defaultMarketAccess?.platforms || [];
 
       // Parse pros/cons from JSON string if needed
       const parseStringArray = (value: any): string[] => {
@@ -141,31 +208,11 @@ export async function GET() {
           cons: parseStringArray(program.cons),
           official_url: program.official_url || null,
         },
-        offers: offers.map((offer: any) => ({
-          id: offer.id,
-          offer_name: offer.offer_name || 'Standard',
-          account_size: offer.account_size || 0,
-          account_currency: offer.account_currency || 'USD',
-          entry_fee: offer.entry_fee,
-          fee_currency: offer.fee_currency || 'USD',
-          refundable: offer.refundable || false,
-          is_featured: offer.is_featured || false,
-          display_order: offer.display_order || 0,
-          recurring: offer.recurring ?? true,
-          next_edition_date: offer.next_edition_date || null,
-          max_participants: offer.max_participants || null,
-          current_participants: offer.current_participants || 0,
-          prize_pool: offer.prize_pool || null,
-          first_prize: offer.first_prize || null,
-          start_date: offer.start_date || null,
-          end_date: offer.end_date || null,
-          registration_deadline: offer.registration_deadline || null,
-          frequency: offer.frequency || 'always_open',
-          scaling_max: offer.scaling_max || null,
-          time_limit_days: offer.time_limit_days || null,
-        })),
+        offers: mappedOffers,
         rulesets: allRulesets.map((ruleset: any) => ({
+          offer_id: ruleset.offer_id || undefined,
           phase_number: ruleset.phase_number || 1,
+          phase_name: ruleset.phase_name || null,
           profit_target_pct: ruleset.profit_target_pct || null,
           max_drawdown_pct: ruleset.max_drawdown_pct || null,
           max_drawdown_type: ruleset.max_drawdown_type || undefined,
@@ -181,28 +228,28 @@ export async function GET() {
           max_position_size: ruleset.max_position_size || undefined,
           max_open_positions: ruleset.max_open_positions || undefined,
         })),
-        payoutTerms: payoutTerms ? {
-          profit_split_initial: payoutTerms.profit_split_initial || 0,
-          profit_split_scaled: payoutTerms.profit_split_scaled || undefined,
-          profit_split_max: payoutTerms.profit_split_max || 0,
-          payout_frequency: payoutTerms.payout_frequency || 'monthly',
-          first_payout_delay_days: payoutTerms.first_payout_delay_days || 0,
-          eligible_after_phase: payoutTerms.eligible_after_phase || 1,
-          withdrawal_methods: payoutTerms.withdrawal_methods || undefined,
-          min_withdrawal: payoutTerms.min_withdrawal || undefined,
-          payout_processing_time_hours: payoutTerms.payout_processing_time_hours || undefined,
+        payoutTerms: defaultPayoutTerms ? {
+          profit_split_initial: defaultPayoutTerms.profit_split_initial || 0,
+          profit_split_scaled: defaultPayoutTerms.profit_split_scaled || undefined,
+          profit_split_max: defaultPayoutTerms.profit_split_max || 0,
+          payout_frequency: defaultPayoutTerms.payout_frequency || 'monthly',
+          first_payout_delay_days: defaultPayoutTerms.first_payout_delay_days || 0,
+          eligible_after_phase: defaultPayoutTerms.eligible_after_phase || 1,
+          withdrawal_methods: defaultPayoutTerms.withdrawal_methods || undefined,
+          min_withdrawal: defaultPayoutTerms.min_withdrawal || undefined,
+          payout_processing_time_hours: defaultPayoutTerms.payout_processing_time_hours || undefined,
         } : null,
-        marketAccess: marketAccess ? {
-          markets_available: marketAccess.markets_available || [],
-          platforms: marketAccess.platforms || [],
-          instruments_count: marketAccess.instruments_count || undefined,
-          leverage_forex: marketAccess.leverage_forex || undefined,
-          leverage_indices: marketAccess.leverage_indices || undefined,
-          leverage_commodities: marketAccess.leverage_commodities || undefined,
-          leverage_crypto: marketAccess.leverage_crypto || undefined,
-          commission_forex: marketAccess.commission_forex || undefined,
-          commission_indices: marketAccess.commission_indices || undefined,
-          trading_hours: marketAccess.trading_hours || undefined,
+        marketAccess: defaultMarketAccess ? {
+          markets_available: defaultMarketAccess.markets_available || [],
+          platforms: defaultMarketAccess.platforms || [],
+          instruments_count: defaultMarketAccess.instruments_count || undefined,
+          leverage_forex: defaultMarketAccess.leverage_forex || undefined,
+          leverage_indices: defaultMarketAccess.leverage_indices || undefined,
+          leverage_commodities: defaultMarketAccess.leverage_commodities || undefined,
+          leverage_crypto: defaultMarketAccess.leverage_crypto || undefined,
+          commission_forex: defaultMarketAccess.commission_forex || undefined,
+          commission_indices: defaultMarketAccess.commission_indices || undefined,
+          trading_hours: defaultMarketAccess.trading_hours || undefined,
         } : null,
         kpis,
         permissions,

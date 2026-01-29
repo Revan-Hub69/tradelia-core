@@ -75,21 +75,6 @@ const ftmoPrograms = [
     free_trial_description: 'Free demo account to practice before purchasing challenge',
     free_trial_url: 'https://ftmo.com/en/free-trial/',
   },
-  {
-    id: 'ftmo-trial',
-    organizer_id: 'ftmo',
-    name: 'FTMO Free Trial',
-    category: 'free_competition',
-    type: 'paper_trading',
-    subtype: 'trial',
-    description: 'FTMO Free Trial - Test the platform with $100,000 virtual account for 14 days. No credit card required. Experience FTMO rules and platform before purchasing a real challenge.',
-    best_for: 'Traders wanting to test FTMO platform and rules before investing',
-    pros: JSON.stringify(['Completely FREE', 'No credit card required', '$100K virtual account', 'Real FTMO conditions', 'Test all platforms']),
-    cons: JSON.stringify(['No real funding', 'No payouts', 'Must pass to be meaningful', 'Same strict rules']),
-    official_url: 'https://ftmo.com/en/free-trial/',
-    status: 'active',
-    has_free_trial: false,
-  },
 ];
 
 // ============================================
@@ -102,8 +87,6 @@ const ftmoOffers = [
   { program_id: 'ftmo-challenge', account_size: 50000, entry_fee: 345, display_order: 3 },
   { program_id: 'ftmo-challenge', account_size: 100000, entry_fee: 540, display_order: 4 },
   { program_id: 'ftmo-challenge', account_size: 200000, entry_fee: 1080, display_order: 5 },
-  // FTMO Trial - Free
-  { program_id: 'ftmo-trial', account_size: 100000, entry_fee: null, display_order: 1 },
 ];
 
 // Generate offer IDs and add common fields
@@ -113,10 +96,10 @@ const ftmoOffersWithIds = ftmoOffers.map((offer, index) => ({
   offer_name: `$${offer.account_size.toLocaleString()} Account`,
   account_currency: 'USD',
   fee_currency: 'EUR',
-  refundable: offer.program_id !== 'ftmo-trial',
-  refund_conditions: offer.program_id !== 'ftmo-trial' ? 'Refunded with first profit split' : null,
+  refundable: true,
+  refund_conditions: 'Refunded with first profit split',
   is_featured: offer.account_size === 100000,
-  scaling_max: offer.program_id !== 'ftmo-trial' ? 2000000 : null,
+  scaling_max: 2000000,
   recurring: true,
   frequency: 'always_open',
   min_age: 18,
@@ -171,28 +154,6 @@ const ftmoRulesets = [
     weekend_holding: false,
     weekend_holding_known: true,
   },
-  // FTMO Trial - Phase 1 (Single Phase)
-  {
-    id: 'ftmo-trial-p1',
-    offer_id: 'ftmo-offer-11',
-    phase_number: 1,
-    phase_name: 'Trial Phase',
-    ruleset_mode: 'target_based',
-    profit_target_pct: 10,
-    max_drawdown_pct: 10,
-    max_drawdown_type: 'trailing',
-    max_daily_loss_pct: 5,
-    max_daily_loss_type: 'equity_based',
-    min_trading_days: 4,
-    consistency_required: true,
-    best_day_max_pct: 30,
-    ea_allowed: true,
-    ea_allowed_known: true,
-    news_trading: true,
-    news_trading_known: true,
-    weekend_holding: false,
-    weekend_holding_known: true,
-  },
 ];
 
 // ============================================
@@ -212,17 +173,6 @@ const ftmoPayoutTerms = [
     withdrawal_methods: JSON.stringify(['bank', 'paypal', 'crypto', 'wise']),
     payout_processing_time_hours: 48,
   },
-  // Trial has no payouts
-  {
-    id: 'ftmo-trial-payout',
-    offer_id: 'ftmo-offer-11',
-    profit_split_initial_pct: 0,
-    profit_split_scaled_pct: null,
-    profit_split_max_pct: 0,
-    payout_frequency: null,
-    first_payout_delay_days: null,
-    eligible_after_phase: null,
-  },
 ];
 
 // ============================================
@@ -232,20 +182,6 @@ const ftmoMarketAccess = [
   {
     id: 'ftmo-challenge-market',
     offer_id: 'ftmo-offer-1',
-    markets_available: JSON.stringify(['forex', 'indices', 'commodities', 'crypto', 'stocks']),
-    platforms: JSON.stringify(['MT4', 'MT5', 'cTrader', 'DXtrade']),
-    instruments_count: 1000,
-    leverage_forex: '1:100',
-    leverage_indices: '1:20',
-    leverage_commodities: '1:20',
-    leverage_crypto: '1:2',
-    commission_forex: 0,
-    commission_type: 'per_lot',
-    trading_hours: '24/5 Forex, Exchange hours for indices',
-  },
-  {
-    id: 'ftmo-trial-market',
-    offer_id: 'ftmo-offer-11',
     markets_available: JSON.stringify(['forex', 'indices', 'commodities', 'crypto', 'stocks']),
     platforms: JSON.stringify(['MT4', 'MT5', 'cTrader', 'DXtrade']),
     instruments_count: 1000,
@@ -341,7 +277,7 @@ async function seedFTMOData() {
     console.log('\n✅ FTMO seed completed successfully!');
     console.log('\n📊 Summary:');
     console.log('   - 1 Organizer (FTMO)');
-    console.log(`   - ${ftmoPrograms.length} Programs (Challenge, Trial)`);
+    console.log(`   - ${ftmoPrograms.length} Programs (Challenge only)`);
     console.log(`   - ${ftmoOffersWithIds.length} Offers (Challenge sizes)`);
     console.log(`   - ${ftmoRulesets.length} Rulesets (phases)`);
     console.log(`   - ${ftmoPayoutTerms.length} Payout terms`);

@@ -47,6 +47,17 @@ type Program = {
 type ProgramCardProps = {
   program: Program;
   offers: Offer[];
+  kpis: {
+    profit_target_phase1: number | null;
+    max_drawdown_pct: number | null;
+    max_daily_loss_pct: number | null;
+  };
+  marketAccess: {
+    leverage_forex?: string | null;
+    leverage_indices?: string | null;
+    leverage_commodities?: string | null;
+    leverage_crypto?: string | null;
+  } | null;
   platforms?: string[];
   onViewDetailsAction: (programId: string, offerId: string) => void;
 };
@@ -63,6 +74,8 @@ const triggerHaptic = () => {
 export function ProgramCard({
   program,
   offers,
+  kpis,
+  marketAccess,
   platforms = EMPTY_PLATFORMS,
   onViewDetailsAction,
 }: ProgramCardProps) {
@@ -79,6 +92,14 @@ export function ProgramCard({
 
   const isFree = program.category === 'free_competition';
 
+  const leverage = useMemo(() => {
+    return marketAccess?.leverage_forex
+      || marketAccess?.leverage_indices
+      || marketAccess?.leverage_commodities
+      || marketAccess?.leverage_crypto
+      || null;
+  }, [marketAccess]);
+
   const handleCardClick = useCallback(() => {
     triggerHaptic();
     if (defaultOffer) {
@@ -86,21 +107,46 @@ export function ProgramCard({
     }
   }, [onViewDetailsAction, program.id, defaultOffer]);
 
-  // Format account size
-  const formatSize = (size: number, currency: string) => {
-    if (size >= 1000) {
-      return `${currency}${(size / 1000).toFixed(0)}K`;
-    }
-    return `${currency}${size.toLocaleString()}`;
-  };
+  const kpiItems = useMemo(() => {
+    const items: { label: string; value: string }[] = [];
 
-  // Format fee
-  const formatFee = (offer: Offer) => {
-    if (offer.entry_fee === null || offer.entry_fee === 0) {
-      return t('card.free');
+    if (kpis.profit_target_phase1) {
+      items.push({ label: t('card.profitTarget'), value: `${kpis.profit_target_phase1}%` });
     }
-    return `${offer.fee_currency}${offer.entry_fee}`;
-  };
+
+    if (kpis.max_drawdown_pct) {
+      items.push({ label: t('card.maxLoss'), value: `${kpis.max_drawdown_pct}%` });
+    }
+
+    if (kpis.max_daily_loss_pct) {
+      items.push({ label: t('card.dailyLoss'), value: `${kpis.max_daily_loss_pct}%` });
+    }
+
+    if (leverage) {
+      items.push({ label: t('card.leverage'), value: leverage });
+    }
+
+    if (items.length === 0 && defaultOffer) {
+      const formatSize = (size: number, currency: string) => {
+        if (size >= 1000) {
+          return `${currency}${(size / 1000).toFixed(0)}K`;
+        }
+        return `${currency}${size.toLocaleString()}`;
+      };
+      const formatFee = (offer: Offer) => {
+        if (offer.entry_fee === null || offer.entry_fee === 0) {
+          return t('card.free');
+        }
+        return `${offer.fee_currency}${offer.entry_fee}`;
+      };
+      items.push(
+        { label: t('card.accountSize'), value: formatSize(defaultOffer.account_size, defaultOffer.account_currency) },
+        { label: t('card.entryFee'), value: formatFee(defaultOffer) },
+      );
+    }
+
+    return items.slice(0, 3);
+  }, [kpis, leverage, t, defaultOffer]);
 
   return (
     <motion.article
@@ -182,42 +228,34 @@ export function ProgramCard({
         {program.organizer_name}
       </p>
 
-      {/* KPI GRID - Tradelia Glass Panels */}
-      {defaultOffer && (
-        <div className="mt-1 grid grid-cols-2 gap-2">
-          {/* Account Size - Primary KPI */}
-          <div className={cn(
-            'flex flex-col rounded-xl px-3 py-2.5',
-            'bg-slate-100 dark:bg-slate-800',
-            'backdrop-blur-sm',
-          )}
-          >
-            <span className="text-[10px] font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
-              {t('card.accountSize')}
-            </span>
-            <span className="text-[17px] font-bold tracking-tight text-slate-900 dark:text-slate-100">
-              {formatSize(defaultOffer.account_size, defaultOffer.account_currency)}
-            </span>
-          </div>
-
-          {/* Entry Fee - Secondary KPI */}
-          <div className={cn(
-            'flex flex-col rounded-xl px-3 py-2.5',
-            'bg-slate-100 dark:bg-slate-800',
-            'backdrop-blur-sm',
-          )}
-          >
-            <span className="text-[10px] font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
-              {t('card.entryFee')}
-            </span>
-            <span className={cn(
-              'text-[17px] font-bold tracking-tight',
-              isFree ? 'text-sky-600 dark:text-sky-400' : 'text-slate-900 dark:text-slate-100',
-            )}
+      {/* KPI GRID - Universal KPIs */}
+      {kpiItems.length > 0 && (
+        <div className={cn(
+          'mt-1 grid gap-2',
+          kpiItems.length === 1 ? 'grid-cols-1' : kpiItems.length === 2 ? 'grid-cols-2' : 'grid-cols-3',
+        )}
+        >
+          {kpiItems.map((item) => (
+            <div
+              key={item.label}
+              className={cn(
+                'flex flex-col rounded-xl px-3 py-2.5',
+                'bg-slate-100 dark:bg-slate-800',
+                'backdrop-blur-sm',
+              )}
             >
-              {formatFee(defaultOffer)}
-            </span>
-          </div>
+              <span className="text-[10px] font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                {item.label}
+              </span>
+              <span className={cn(
+                'text-[15px] font-bold tracking-tight',
+                isFree ? 'text-sky-700 dark:text-sky-300' : 'text-slate-900 dark:text-slate-100',
+              )}
+              >
+                {item.value}
+              </span>
+            </div>
+          ))}
         </div>
       )}
 
