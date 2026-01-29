@@ -22,13 +22,16 @@ type Enrollment = {
     id: string;
     name: string;
     organizer_name: string;
+    official_url?: string;
   };
   offer: {
     id: string;
     offer_name: string;
     account_size: number;
     account_currency: string;
+    duration_days?: number;
   };
+  created_at?: string;
 };
 
 export default function MyChallengesPage() {
@@ -67,7 +70,7 @@ export default function MyChallengesPage() {
     fetchEnrollments();
   }, []);
 
-  // Handle enrollment confirmation
+  // Handle enrollment confirmation (Start challenge)
   const handleConfirm = async (enrollmentId: string) => {
     try {
       const response = await fetch(`/api/enrollments/${enrollmentId}`, {
@@ -109,6 +112,12 @@ export default function MyChallengesPage() {
     }
   };
 
+  // Handle opening challenge drawer
+  const handleOpenDrawer = (enrollment: Enrollment) => {
+    // TODO: Open drawer with challenge details
+    console.log('Open drawer for:', enrollment);
+  };
+
   // Group enrollments by status
   const activeEnrollments = enrollments.filter(e =>
     ['active', 'pending_redirect', 'pending_confirmation'].includes(e.status),
@@ -117,6 +126,27 @@ export default function MyChallengesPage() {
   const completedEnrollments = enrollments.filter(e =>
     ['completed', 'failed', 'abandoned'].includes(e.status),
   );
+
+  // Format account size
+  const formatAccountSize = (size: number, currency: string) => {
+    return `${size.toLocaleString()} ${currency}`;
+  };
+
+  // Format duration
+  const formatDuration = (days?: number) => {
+    if (!days) {
+ return undefined;
+}
+    return `${days} days`;
+  };
+
+  // Format start date
+  const formatStartDate = (dateString?: string) => {
+    if (!dateString) {
+ return undefined;
+}
+    return new Date(dateString).toLocaleDateString();
+  };
 
   // Loading state
   if (loading) {
@@ -192,19 +222,19 @@ export default function MyChallengesPage() {
                   <EnrollmentStatusCard
                     status={enrollment.status}
                     programName={enrollment.program.name}
-                    offerName={`${enrollment.offer.offer_name} (${(enrollment.offer.account_size ?? 0).toLocaleString()} ${enrollment.offer.account_currency})`}
+                    offerName={enrollment.offer.offer_name}
                     organizerName={enrollment.program.organizer_name}
+                    accountSize={formatAccountSize(enrollment.offer.account_size, enrollment.offer.account_currency)}
+                    duration={formatDuration(enrollment.offer.duration_days)}
+                    startDate={formatStartDate(enrollment.created_at)}
+                    officialUrl={enrollment.program.official_url}
                     onConfirm={enrollment.status === 'pending_confirmation'
                       ? () => handleConfirm(enrollment.id)
                       : undefined}
-                    onRemove={['pending_redirect', 'pending_confirmation'].includes(enrollment.status)
+                    onRemove={['interested', 'pending_redirect', 'pending_confirmation', 'abandoned'].includes(enrollment.status)
                       ? () => handleRemove(enrollment.id)
                       : undefined}
-                    onViewDetails={enrollment.status === 'active'
-                      ? () => {
-                          // TODO: Navigate to challenge details
-                        }
-                      : undefined}
+                    onOpenDrawer={() => handleOpenDrawer(enrollment)}
                   />
                 </motion.div>
               ))}
@@ -227,11 +257,13 @@ export default function MyChallengesPage() {
                   <EnrollmentStatusCard
                     status={enrollment.status}
                     programName={enrollment.program.name}
-                    offerName={`${enrollment.offer.offer_name} (${(enrollment.offer.account_size ?? 0).toLocaleString()} ${enrollment.offer.account_currency})`}
+                    offerName={enrollment.offer.offer_name}
                     organizerName={enrollment.program.organizer_name}
-                    onViewDetails={() => {
-                      // TODO: Navigate to challenge details
-                    }}
+                    accountSize={formatAccountSize(enrollment.offer.account_size, enrollment.offer.account_currency)}
+                    duration={formatDuration(enrollment.offer.duration_days)}
+                    startDate={formatStartDate(enrollment.created_at)}
+                    officialUrl={enrollment.program.official_url}
+                    onOpenDrawer={() => handleOpenDrawer(enrollment)}
                   />
                 </motion.div>
               ))}
@@ -239,56 +271,24 @@ export default function MyChallengesPage() {
           </section>
         )}
 
-        {/* Trade Journal Section */}
-        <section className="rounded-lg border bg-card p-6">
-          <h2 className="mb-4 text-lg font-semibold">{t('trade_journal_title')}</h2>
-          <p className="mb-4 text-muted-foreground">
-            {t('trade_journal_description')}
-          </p>
-
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950/30">
-              <h3 className="mb-2 font-semibold text-blue-900 dark:text-blue-100">
-                {t('journal_feature_tracking')}
-              </h3>
-              <p className="text-sm text-blue-800 dark:text-blue-200">
-                {t('journal_feature_tracking_description')}
-              </p>
+        {/* Quick Stats Section */}
+        <section className="rounded-2xl border bg-card p-6">
+          <h2 className="mb-4 text-lg font-semibold">Overview</h2>
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="rounded-xl bg-muted/50 p-4 text-center">
+              <div className="text-2xl font-bold text-primary">{activeEnrollments.length}</div>
+              <div className="text-xs uppercase tracking-wide text-muted-foreground">Active</div>
             </div>
-
-            <div className="rounded-lg border border-purple-200 bg-purple-50 p-4 dark:border-purple-800 dark:bg-purple-950/30">
-              <h3 className="mb-2 font-semibold text-purple-900 dark:text-purple-100">
-                {t('journal_feature_analytics')}
-              </h3>
-              <p className="text-sm text-purple-800 dark:text-purple-200">
-                {t('journal_feature_analytics_description')}
-              </p>
+            <div className="rounded-xl bg-muted/50 p-4 text-center">
+              <div className="text-2xl font-bold text-green-600">{completedEnrollments.filter(e => e.status === 'completed').length}</div>
+              <div className="text-xs uppercase tracking-wide text-muted-foreground">Completed</div>
             </div>
-
-            <div className="rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-950/30">
-              <h3 className="mb-2 font-semibold text-green-900 dark:text-green-100">
-                {t('journal_feature_rules')}
-              </h3>
-              <p className="text-sm text-green-800 dark:text-green-200">
-                {t('journal_feature_rules_description')}
-              </p>
-            </div>
-
-            <div className="rounded-lg border border-orange-200 bg-orange-50 p-4 dark:border-orange-800 dark:bg-orange-950/30">
-              <h3 className="mb-2 font-semibold text-orange-900 dark:text-orange-100">
-                {t('journal_feature_alerts')}
-              </h3>
-              <p className="text-sm text-orange-800 dark:text-orange-200">
-                {t('journal_feature_alerts_description')}
-              </p>
+            <div className="rounded-xl bg-muted/50 p-4 text-center">
+              <div className="text-2xl font-bold text-red-600">{completedEnrollments.filter(e => e.status === 'failed').length}</div>
+              <div className="text-xs uppercase tracking-wide text-muted-foreground">Failed</div>
             </div>
           </div>
         </section>
-
-        {/* Coming Soon Notice */}
-        <div className="rounded border border-orange-200 bg-orange-50 p-4 text-sm text-orange-600 dark:border-orange-800 dark:bg-orange-950/30">
-          {t('in_development')}
-        </div>
       </div>
     </div>
   );
