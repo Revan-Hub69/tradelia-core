@@ -209,8 +209,9 @@ export async function POST(request: Request) {
         user_id: user.id,
         program_id: programId,
         offer_id: offerId,
-        status: 'pending_redirect',
+        status: 'pending_confirmation',
         clicked_at: new Date().toISOString(),
+        redirected_at: new Date().toISOString(),
       })
       .select('id, status, program_id, offer_id')
       .single();
