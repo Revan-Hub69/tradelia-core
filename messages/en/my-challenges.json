@@ -71,6 +71,11 @@
     "notes_restricted": "Confirm start before trading.",
     "notes_closed": "Challenge closed. No trading.",
     "loading": "Loading challenge data...",
+    "edit": "Edit",
+    "edit_cancel": "Cancel edit",
+    "save": "Save changes",
+    "open_signals": "Open AI Signals",
+    "abandon": "Suspend / Abandon",
     "stop_rules": {
       "STOP_AFTER_2_LOSSES": "Stop after 2 losses",
       "STOP_IF_EVENT_RISK_LIVE": "Stop if event risk is live"

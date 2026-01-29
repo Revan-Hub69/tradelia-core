@@ -112,6 +112,8 @@ export function MyChallengeDrawer({
   const [showRemoveConfirm, setShowRemoveConfirm] = useState(false);
   const [myChallenge, setMyChallenge] = useState<MyChallengeRecord | null>(null);
   const [loadingMyChallenge, setLoadingMyChallenge] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [draft, setDraft] = useState<MyChallengeRecord | null>(null);
 
   useEffect(() => {
     setOverlayOpen(isOpen);
@@ -140,6 +142,8 @@ export function MyChallengeDrawer({
     let active = true;
     if (!isOpen || !enrollment) {
       setMyChallenge(null);
+      setDraft(null);
+      setIsEditing(false);
       return;
     }
 
@@ -150,10 +154,12 @@ export function MyChallengeDrawer({
         const data = await response.json();
         if (active && response.ok && data?.success) {
           setMyChallenge(data.data ?? null);
+          setDraft(data.data ?? null);
         }
       } catch {
         if (active) {
           setMyChallenge(null);
+          setDraft(null);
         }
       } finally {
         if (active) {
@@ -258,6 +264,30 @@ export function MyChallengeDrawer({
 
   const canActivate = enrollment.status === 'pending_confirmation';
   const canRemove = ['interested', 'pending_redirect', 'pending_confirmation', 'abandoned'].includes(enrollment.status);
+  const canAbandon = enrollment.status === 'active';
+
+  const ensureDraft = () => {
+    if (draft) {
+      return draft;
+    }
+    const seeded: MyChallengeRecord = {
+      enrollment_id: enrollment.id,
+      challenge_ref: {
+        challenge_id: enrollment.program.id,
+        account_size_selected: parseAccountSize(enrollment.offer.accountSize) ?? undefined,
+        started_at: enrollment.createdAt ?? null,
+      },
+      account_state: {},
+      context_lite: {},
+      operating_envelope: {},
+    };
+    setDraft(seeded);
+    return seeded;
+  };
+
+  const updateDraft = (updater: (current: MyChallengeRecord) => MyChallengeRecord) => {
+    setDraft(prev => updater(prev ?? ensureDraft()));
+  };
 
   const handleActivate = async () => {
     if (!onActivate) {
@@ -265,6 +295,59 @@ export function MyChallengeDrawer({
     }
     setIsWorking(true);
     await onActivate(enrollment.id);
+    setIsWorking(false);
+  };
+
+  const handleAbandon = async () => {
+    if (!enrollment) {
+      return;
+    }
+    setIsWorking(true);
+    await fetch(`/api/enrollments/${enrollment.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'abandoned' }),
+    });
+    setIsWorking(false);
+  };
+
+  const handleSave = async () => {
+    if (!enrollment || !draft) {
+      return;
+    }
+    setIsWorking(true);
+
+    const payload = {
+      enrollmentId: enrollment.id,
+      programId: enrollment.program.id,
+      offerId: enrollment.offer.id,
+      challengeRef: draft.challenge_ref ?? {},
+      accountState: draft.account_state ?? {},
+      contextLite: draft.context_lite ?? {},
+      operatingEnvelope: draft.operating_envelope ?? {},
+    };
+
+    const endpoint = myChallenge
+      ? `/api/my-challenges/${enrollment.id}`
+      : '/api/my-challenges';
+
+    const method = myChallenge ? 'PATCH' : 'POST';
+
+    const response = await fetch(endpoint, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data?.success) {
+        setMyChallenge(data.data ?? null);
+        setDraft(data.data ?? null);
+        setIsEditing(false);
+      }
+    }
+
     setIsWorking(false);
   };
 
@@ -355,143 +438,530 @@ export function MyChallengeDrawer({
 
               <section className="space-y-3 rounded-2xl border border-border/60 bg-white/70 p-4 shadow-sm">
                 <h3 className="text-sm font-semibold">{t('drawer.account_state_title')}</h3>
-                <div className="grid gap-2 text-xs text-muted-foreground">
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
-                      <p>{t('drawer.profit_progress_label')}</p>
-                      <p className="text-sm font-semibold text-foreground">
-                        {formatPct(auditContext?.accountState.profitProgressPct ?? null)}
-                      </p>
+                {isEditing ? (
+                  <div className="grid gap-3 text-xs text-muted-foreground">
+                    <div className="grid grid-cols-2 gap-2">
+                      <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <span>{t('drawer.profit_progress_label')}</span>
+                        <input
+                          type="number"
+                          step="0.1"
+                          className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                          value={draft?.account_state?.profit_progress_pct ?? ''}
+                          onChange={(event) => {
+                            const value = event.target.value === '' ? null : Number(event.target.value);
+                            updateDraft(current => ({
+                              ...current,
+                              account_state: {
+                                ...current.account_state,
+                                profit_progress_pct: Number.isNaN(value as number) ? null : value,
+                              },
+                            }));
+                          }}
+                        />
+                      </label>
+                      <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <span>{t('drawer.max_dd_used_label')}</span>
+                        <input
+                          type="number"
+                          step="0.1"
+                          className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                          value={draft?.account_state?.max_dd_used_pct ?? ''}
+                          onChange={(event) => {
+                            const value = event.target.value === '' ? null : Number(event.target.value);
+                            updateDraft(current => ({
+                              ...current,
+                              account_state: {
+                                ...current.account_state,
+                                max_dd_used_pct: Number.isNaN(value as number) ? null : value,
+                              },
+                            }));
+                          }}
+                        />
+                      </label>
+                      <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <span>{t('drawer.daily_loss_used_label')}</span>
+                        <input
+                          type="number"
+                          step="0.1"
+                          className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                          value={draft?.account_state?.daily_loss_used_pct_today ?? ''}
+                          onChange={(event) => {
+                            const value = event.target.value === '' ? null : Number(event.target.value);
+                            updateDraft(current => ({
+                              ...current,
+                              account_state: {
+                                ...current.account_state,
+                                daily_loss_used_pct_today: Number.isNaN(value as number) ? null : value,
+                              },
+                            }));
+                          }}
+                        />
+                      </label>
+                      <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <span>{t('drawer.days_traded_label')}</span>
+                        <input
+                          type="number"
+                          className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                          value={draft?.account_state?.days_traded ?? ''}
+                          onChange={(event) => {
+                            const value = event.target.value === '' ? null : Number(event.target.value);
+                            updateDraft(current => ({
+                              ...current,
+                              account_state: {
+                                ...current.account_state,
+                                days_traded: Number.isNaN(value as number) ? null : value,
+                              },
+                            }));
+                          }}
+                        />
+                      </label>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <span>{t('drawer.today_trade_count_label')}</span>
+                        <input
+                          type="number"
+                          className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                          value={draft?.account_state?.today_trade_count ?? ''}
+                          onChange={(event) => {
+                            const value = event.target.value === '' ? null : Number(event.target.value);
+                            updateDraft(current => ({
+                              ...current,
+                              account_state: {
+                                ...current.account_state,
+                                today_trade_count: Number.isNaN(value as number) ? null : value,
+                              },
+                            }));
+                          }}
+                        />
+                      </label>
+                      <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <span>{t('drawer.today_realized_pnl_label')}</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                          value={draft?.account_state?.today_realized_pnl ?? ''}
+                          onChange={(event) => {
+                            const value = event.target.value === '' ? null : Number(event.target.value);
+                            updateDraft(current => ({
+                              ...current,
+                              account_state: {
+                                ...current.account_state,
+                                today_realized_pnl: Number.isNaN(value as number) ? null : value,
+                              },
+                            }));
+                          }}
+                        />
+                      </label>
+                    </div>
+                    <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                      <span>{t('drawer.last_trade_at_label')}</span>
+                      <input
+                        type="date"
+                        className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                        value={draft?.account_state?.last_trade_at?.slice(0, 10) ?? ''}
+                        onChange={(event) => {
+                          const value = event.target.value ? `${event.target.value}T00:00:00.000Z` : null;
+                          updateDraft(current => ({
+                            ...current,
+                            account_state: {
+                              ...current.account_state,
+                              last_trade_at: value,
+                            },
+                          }));
+                        }}
+                      />
+                    </label>
+                  </div>
+                ) : (
+                  <div className="grid gap-2 text-xs text-muted-foreground">
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <p>{t('drawer.profit_progress_label')}</p>
+                        <p className="text-sm font-semibold text-foreground">
+                          {formatPct(auditContext?.accountState.profitProgressPct ?? null)}
+                        </p>
+                      </div>
+                      <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <p>{t('drawer.max_dd_used_label')}</p>
+                        <p className="text-sm font-semibold text-foreground">
+                          {formatPct(auditContext?.accountState.maxDdUsedPct ?? null)}
+                        </p>
+                      </div>
+                      <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <p>{t('drawer.daily_loss_used_label')}</p>
+                        <p className="text-sm font-semibold text-foreground">
+                          {formatPct(auditContext?.accountState.dailyLossUsedPctToday ?? null)}
+                        </p>
+                      </div>
+                      <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <p>{t('drawer.days_traded_label')}</p>
+                        <p className="text-sm font-semibold text-foreground">
+                          {auditContext?.accountState.daysTraded ?? t('drawer.value_missing')}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <p>{t('drawer.today_trade_count_label')}</p>
+                        <p className="text-sm font-semibold text-foreground">
+                          {auditContext?.accountState.todayTradeCount ?? t('drawer.value_missing')}
+                        </p>
+                      </div>
+                      <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <p>{t('drawer.today_realized_pnl_label')}</p>
+                        <p className="text-sm font-semibold text-foreground">
+                          {auditContext?.accountState.todayRealizedPnl !== null
+                            ? formatMoney(auditContext.accountState.todayRealizedPnl)
+                            : t('drawer.value_missing')}
+                        </p>
+                      </div>
                     </div>
                     <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
-                      <p>{t('drawer.max_dd_used_label')}</p>
+                      <p>{t('drawer.last_trade_at_label')}</p>
                       <p className="text-sm font-semibold text-foreground">
-                        {formatPct(auditContext?.accountState.maxDdUsedPct ?? null)}
-                      </p>
-                    </div>
-                    <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
-                      <p>{t('drawer.daily_loss_used_label')}</p>
-                      <p className="text-sm font-semibold text-foreground">
-                        {formatPct(auditContext?.accountState.dailyLossUsedPctToday ?? null)}
-                      </p>
-                    </div>
-                    <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
-                      <p>{t('drawer.days_traded_label')}</p>
-                      <p className="text-sm font-semibold text-foreground">
-                        {auditContext?.accountState.daysTraded ?? t('drawer.value_missing')}
+                        {formatDate(auditContext?.accountState.lastTradeAt ?? null)}
                       </p>
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
-                      <p>{t('drawer.today_trade_count_label')}</p>
-                      <p className="text-sm font-semibold text-foreground">
-                        {auditContext?.accountState.todayTradeCount ?? t('drawer.value_missing')}
-                      </p>
-                    </div>
-                    <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
-                      <p>{t('drawer.today_realized_pnl_label')}</p>
-                      <p className="text-sm font-semibold text-foreground">
-                        {auditContext?.accountState.todayRealizedPnl !== null
-                          ? formatMoney(auditContext.accountState.todayRealizedPnl)
-                          : t('drawer.value_missing')}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
-                    <p>{t('drawer.last_trade_at_label')}</p>
-                    <p className="text-sm font-semibold text-foreground">
-                      {formatDate(auditContext?.accountState.lastTradeAt ?? null)}
-                    </p>
-                  </div>
-                </div>
+                )}
               </section>
 
               <section className="space-y-3 rounded-2xl border border-border/60 bg-white/70 p-4 shadow-sm">
                 <h3 className="text-sm font-semibold">{t('drawer.context_lite_title')}</h3>
-                <div className="grid gap-2 text-xs text-muted-foreground">
-                  <div className="flex items-center justify-between rounded-xl border border-border/60 bg-white/70 px-3 py-2">
-                    <span>{t('drawer.session_label')}</span>
-                    <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
-                      {auditContext?.contextLite.session}
-                    </span>
+                {isEditing ? (
+                  <div className="grid gap-2 text-xs text-muted-foreground">
+                    <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                      <span>{t('drawer.session_label')}</span>
+                      <select
+                        className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                        value={draft?.context_lite?.session ?? 'OFF'}
+                        onChange={(event) => {
+                          updateDraft(current => ({
+                            ...current,
+                            context_lite: {
+                              ...current.context_lite,
+                              session: event.target.value as MyChallengeRecord['context_lite']['session'],
+                            },
+                          }));
+                        }}
+                      >
+                        {['OFF', 'ASIA', 'EU', 'US'].map(session => (
+                          <option key={session} value={session}>{session}</option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                      <span>{t('drawer.event_risk_label')}</span>
+                      <select
+                        className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                        value={draft?.context_lite?.event_risk ?? 'NONE'}
+                        onChange={(event) => {
+                          updateDraft(current => ({
+                            ...current,
+                            context_lite: {
+                              ...current.context_lite,
+                              event_risk: event.target.value as MyChallengeRecord['context_lite']['event_risk'],
+                            },
+                          }));
+                        }}
+                      >
+                        {['NONE', 'SCHEDULED', 'LIVE'].map(risk => (
+                          <option key={risk} value={risk}>{risk}</option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                      <span>{t('drawer.volatility_hint_label')}</span>
+                      <select
+                        className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                        value={draft?.context_lite?.volatility_hint ?? 'NORMAL'}
+                        onChange={(event) => {
+                          updateDraft(current => ({
+                            ...current,
+                            context_lite: {
+                              ...current.context_lite,
+                              volatility_hint: event.target.value as MyChallengeRecord['context_lite']['volatility_hint'],
+                            },
+                          }));
+                        }}
+                      >
+                        {['LOW', 'NORMAL', 'HIGH'].map(level => (
+                          <option key={level} value={level}>{level}</option>
+                        ))}
+                      </select>
+                    </label>
                   </div>
-                  <div className="flex items-center justify-between rounded-xl border border-border/60 bg-white/70 px-3 py-2">
-                    <span>{t('drawer.event_risk_label')}</span>
-                    <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
-                      {auditContext?.contextLite.eventRisk}
-                    </span>
+                ) : (
+                  <div className="grid gap-2 text-xs text-muted-foreground">
+                    <div className="flex items-center justify-between rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                      <span>{t('drawer.session_label')}</span>
+                      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
+                        {auditContext?.contextLite.session}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                      <span>{t('drawer.event_risk_label')}</span>
+                      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
+                        {auditContext?.contextLite.eventRisk}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                      <span>{t('drawer.volatility_hint_label')}</span>
+                      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
+                        {auditContext?.contextLite.volatilityHint}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between rounded-xl border border-border/60 bg-white/70 px-3 py-2">
-                    <span>{t('drawer.volatility_hint_label')}</span>
-                    <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
-                      {auditContext?.contextLite.volatilityHint}
-                    </span>
-                  </div>
-                </div>
+                )}
               </section>
 
               <section className="space-y-3 rounded-2xl border border-border/60 bg-white/70 p-4 shadow-sm">
                 <h3 className="text-sm font-semibold">{t('drawer.operating_envelope_title')}</h3>
-                <div className="grid gap-3 text-xs text-muted-foreground">
-                  <div className="flex items-center justify-between rounded-xl border border-border/60 bg-white/70 px-3 py-2">
-                    <span>{t('drawer.automation_policy_label')}</span>
-                    <span className="text-sm font-semibold text-foreground">
-                      {auditContext?.operatingEnvelope.automationPolicy}
-                    </span>
+                {isEditing ? (
+                  <div className="grid gap-3 text-xs text-muted-foreground">
+                    <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                      <span>{t('drawer.trade_gate_label')}</span>
+                      <select
+                        className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                        value={draft?.operating_envelope?.trade_gate ?? auditContext?.operatingEnvelope.tradeGate ?? 'RESTRICTED'}
+                        onChange={(event) => {
+                          updateDraft(current => ({
+                            ...current,
+                            operating_envelope: {
+                              ...current.operating_envelope,
+                              trade_gate: event.target.value as MyChallengeRecord['operating_envelope']['trade_gate'],
+                            },
+                          }));
+                        }}
+                      >
+                        {['OPEN', 'RESTRICTED', 'CLOSED'].map(gate => (
+                          <option key={gate} value={gate}>{gate}</option>
+                        ))}
+                      </select>
+                    </label>
+                    <div className="grid grid-cols-3 gap-2">
+                      <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <span>{t('drawer.daily_risk_cap_label')}</span>
+                        <input
+                          type="number"
+                          step="0.1"
+                          className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                          value={draft?.operating_envelope?.risk_budget?.daily_risk_cap_pct ?? ''}
+                          onChange={(event) => {
+                            const value = event.target.value === '' ? null : Number(event.target.value);
+                            updateDraft(current => ({
+                              ...current,
+                              operating_envelope: {
+                                ...current.operating_envelope,
+                                risk_budget: {
+                                  ...current.operating_envelope?.risk_budget,
+                                  daily_risk_cap_pct: Number.isNaN(value as number) ? null : value,
+                                },
+                              },
+                            }));
+                          }}
+                        />
+                      </label>
+                      <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <span>{t('drawer.risk_per_trade_pct_label')}</span>
+                        <input
+                          type="number"
+                          step="0.1"
+                          className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                          value={draft?.operating_envelope?.risk_budget?.risk_per_trade_pct ?? ''}
+                          onChange={(event) => {
+                            const value = event.target.value === '' ? null : Number(event.target.value);
+                            updateDraft(current => ({
+                              ...current,
+                              operating_envelope: {
+                                ...current.operating_envelope,
+                                risk_budget: {
+                                  ...current.operating_envelope?.risk_budget,
+                                  risk_per_trade_pct: Number.isNaN(value as number) ? null : value,
+                                },
+                              },
+                            }));
+                          }}
+                        />
+                      </label>
+                      <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <span>{t('drawer.max_trades_label')}</span>
+                        <input
+                          type="number"
+                          className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                          value={draft?.operating_envelope?.risk_budget?.max_trades ?? ''}
+                          onChange={(event) => {
+                            const value = event.target.value === '' ? null : Number(event.target.value);
+                            updateDraft(current => ({
+                              ...current,
+                              operating_envelope: {
+                                ...current.operating_envelope,
+                                risk_budget: {
+                                  ...current.operating_envelope?.risk_budget,
+                                  max_trades: Number.isNaN(value as number) ? null : value,
+                                },
+                              },
+                            }));
+                          }}
+                        />
+                      </label>
+                    </div>
+                    <div className="grid gap-2">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                        {t('drawer.stop_rules_label')}
+                      </p>
+                      <div className="flex flex-wrap gap-3">
+                        {['STOP_AFTER_2_LOSSES', 'STOP_IF_EVENT_RISK_LIVE'].map(rule => (
+                          <label key={rule} className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <input
+                              type="checkbox"
+                              checked={draft?.operating_envelope?.stop_rules?.includes(rule) ?? false}
+                              onChange={(event) => {
+                                updateDraft(current => {
+                                  const existing = new Set(current.operating_envelope?.stop_rules ?? []);
+                                  if (event.target.checked) {
+                                    existing.add(rule);
+                                  } else {
+                                    existing.delete(rule);
+                                  }
+                                  return {
+                                    ...current,
+                                    operating_envelope: {
+                                      ...current.operating_envelope,
+                                      stop_rules: Array.from(existing),
+                                    },
+                                  };
+                                });
+                              }}
+                            />
+                            <span>{t(`drawer.stop_rules.${rule}`)}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                    <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                      <span>{t('drawer.notes_short_label')}</span>
+                      <textarea
+                        rows={2}
+                        className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                        value={draft?.operating_envelope?.notes_short ?? ''}
+                        onChange={(event) => {
+                          updateDraft(current => ({
+                            ...current,
+                            operating_envelope: {
+                              ...current.operating_envelope,
+                              notes_short: event.target.value,
+                            },
+                          }));
+                        }}
+                      />
+                    </label>
                   </div>
-                  <div className="flex items-center justify-between rounded-xl border border-border/60 bg-white/70 px-3 py-2">
-                    <span>{t('drawer.trade_gate_label')}</span>
-                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-700">
-                      {auditContext?.operatingEnvelope.tradeGate}
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-3 gap-2">
+                ) : (
+                  <div className="grid gap-3 text-xs text-muted-foreground">
+                    <div className="flex items-center justify-between rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                      <span>{t('drawer.automation_policy_label')}</span>
+                      <span className="text-sm font-semibold text-foreground">
+                        {auditContext?.operatingEnvelope.automationPolicy}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                      <span>{t('drawer.trade_gate_label')}</span>
+                      <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-700">
+                        {auditContext?.operatingEnvelope.tradeGate}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <p>{t('drawer.daily_risk_cap_label')}</p>
+                        <p className="text-sm font-semibold text-foreground">
+                          {formatPct(auditContext?.operatingEnvelope.riskBudget.dailyRiskCapPct ?? null)}
+                        </p>
+                      </div>
+                      <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <p>{t('drawer.risk_per_trade_pct_label')}</p>
+                        <p className="text-sm font-semibold text-foreground">
+                          {formatPct(auditContext?.operatingEnvelope.riskBudget.riskPerTradePct ?? null)}
+                        </p>
+                      </div>
+                      <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <p>{t('drawer.max_trades_label')}</p>
+                        <p className="text-sm font-semibold text-foreground">
+                          {auditContext?.operatingEnvelope.riskBudget.maxTrades}
+                        </p>
+                      </div>
+                    </div>
+                    <div>
+                      <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                        {t('drawer.stop_rules_label')}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {auditContext?.operatingEnvelope.stopRules.map(rule => (
+                          <span
+                            key={rule}
+                            className="rounded-full border border-border/60 bg-white/70 px-2 py-0.5 text-[10px] font-semibold text-muted-foreground"
+                          >
+                            {t(`drawer.stop_rules.${rule}`)}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
                     <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
-                      <p>{t('drawer.daily_risk_cap_label')}</p>
-                      <p className="text-sm font-semibold text-foreground">
-                        {formatPct(auditContext?.operatingEnvelope.riskBudget.dailyRiskCapPct ?? null)}
+                      <p>{t('drawer.notes_short_label')}</p>
+                      <p className="text-sm font-medium text-foreground">
+                        {auditContext?.operatingEnvelope.notesShort}
                       </p>
                     </div>
-                    <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
-                      <p>{t('drawer.risk_per_trade_pct_label')}</p>
-                      <p className="text-sm font-semibold text-foreground">
-                        {formatPct(auditContext?.operatingEnvelope.riskBudget.riskPerTradePct ?? null)}
-                      </p>
-                    </div>
-                    <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
-                      <p>{t('drawer.max_trades_label')}</p>
-                      <p className="text-sm font-semibold text-foreground">
-                        {auditContext?.operatingEnvelope.riskBudget.maxTrades}
-                      </p>
-                    </div>
                   </div>
-                  <div>
-                    <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                      {t('drawer.stop_rules_label')}
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {auditContext?.operatingEnvelope.stopRules.map(rule => (
-                        <span
-                          key={rule}
-                          className="rounded-full border border-border/60 bg-white/70 px-2 py-0.5 text-[10px] font-semibold text-muted-foreground"
-                        >
-                          {t(`drawer.stop_rules.${rule}`)}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
-                    <p>{t('drawer.notes_short_label')}</p>
-                    <p className="text-sm font-medium text-foreground">
-                      {auditContext?.operatingEnvelope.notesShort}
-                    </p>
-                  </div>
-                </div>
+                )}
               </section>
             </div>
 
             <div className="relative flex flex-col gap-2 border-t border-border/60 bg-white/80 px-5 py-4">
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsEditing(prev => !prev);
+                    if (!draft) {
+                      ensureDraft();
+                    }
+                  }}
+                  className="rounded-xl border border-border bg-white px-4 py-2 text-sm font-semibold text-foreground transition hover:bg-muted"
+                >
+                  {isEditing ? t('drawer.edit_cancel') : t('drawer.edit')}
+                </button>
+                {isEditing && (
+                  <button
+                    type="button"
+                    onClick={handleSave}
+                    disabled={isWorking}
+                    className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {t('drawer.save')}
+                  </button>
+                )}
+                <a
+                  href="/dashboard/signals"
+                  className="inline-flex items-center justify-center rounded-xl border border-border bg-white px-4 py-2 text-sm font-semibold text-foreground transition hover:bg-muted"
+                >
+                  {t('drawer.open_signals')}
+                </a>
+                {canAbandon && (
+                  <button
+                    type="button"
+                    onClick={handleAbandon}
+                    disabled={isWorking}
+                    className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-700 transition hover:bg-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {t('drawer.abandon')}
+                  </button>
+                )}
+              </div>
+
               {enrollment.program.officialUrl && (
                 <a
                   href={enrollment.program.officialUrl}
