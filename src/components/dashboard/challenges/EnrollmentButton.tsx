@@ -11,6 +11,7 @@
  */
 
 import { AnimatePresence, motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
@@ -34,6 +35,7 @@ export function EnrollmentButton({
   className,
 }: EnrollmentButtonProps) {
   const t = useTranslations('Challenges') as any;
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -61,6 +63,9 @@ export function EnrollmentButton({
         window.open(url, '_blank', 'noopener,noreferrer');
         setShowConfirmation(false);
         setIsLoading(false);
+
+        // 4. Redirect to My Challenges page
+        router.push('/dashboard/my-challenges');
       }, 1500);
     } catch {
       setError(t('enrollment.errorGeneric'));
