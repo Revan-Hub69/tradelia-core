@@ -12,6 +12,7 @@ export type Program = {
   subtype: string;
   has_free_trial: boolean;
   ruleset_mode?: 'target_based' | 'ranking_based';
+  status?: 'active' | 'upcoming' | 'ended' | 'paused';
   description?: string | null;
   best_for?: string | null;
   pros?: string[];

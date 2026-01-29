@@ -202,6 +202,7 @@ export async function GET() {
           subtype: program.subtype || 'demo',
           has_free_trial: program.has_free_trial || false,
           ruleset_mode: program.ruleset_mode || 'target_based',
+          status: program.status || 'active',
           description: program.description || null,
           best_for: program.best_for || null,
           pros: parseStringArray(program.pros),

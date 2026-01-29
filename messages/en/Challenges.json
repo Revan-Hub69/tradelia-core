@@ -76,6 +76,8 @@
     "maxLoss": "Max Loss",
     "dailyLoss": "Daily Loss",
     "leverage": "Leverage",
+    "status": "Status",
+    "comingSoon": "Coming soon",
     "prizePool": "Prize",
     "firstPrize": "1st Prize",
     "participants": "Participants",
@@ -315,6 +317,7 @@
   "badges": {
     "free": "FREE",
     "paid": "PAID",
+    "comingSoon": "COMING SOON",
     "trial": "Free Trial",
     "freeCompetition": "Free Competition",
     "propFirm": "Prop Firm",

@@ -76,6 +76,8 @@
     "maxLoss": "Max Loss",
     "dailyLoss": "Perdita Giornaliera",
     "leverage": "Leva",
+    "status": "Stato",
+    "comingSoon": "In arrivo",
     "prizePool": "Montepremi",
     "firstPrize": "1° Premio",
     "participants": "Partecipanti",
@@ -315,6 +317,7 @@
   "badges": {
     "free": "GRATIS",
     "paid": "PAGAMENTO",
+    "comingSoon": "IN ARRIVO",
     "trial": "Prova Gratuita",
     "freeCompetition": "Competizione Gratuita",
     "propFirm": "Società Prop",

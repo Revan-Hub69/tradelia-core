@@ -42,6 +42,7 @@ type Program = {
   subtype: string;
   has_free_trial: boolean;
   ruleset_mode?: 'target_based' | 'ranking_based';
+  status?: 'active' | 'upcoming' | 'ended' | 'paused';
 };
 
 type ProgramCardProps = {
@@ -91,6 +92,7 @@ export function ProgramCard({
   );
 
   const isFree = program.category === 'free_competition';
+  const isComingSoon = program.status === 'upcoming';
 
   const leverage = useMemo(() => {
     return marketAccess?.leverage_forex
@@ -101,11 +103,14 @@ export function ProgramCard({
   }, [marketAccess]);
 
   const handleCardClick = useCallback(() => {
+    if (isComingSoon) {
+      return;
+    }
     triggerHaptic();
     if (defaultOffer) {
       onViewDetailsAction(program.id, defaultOffer.id);
     }
-  }, [onViewDetailsAction, program.id, defaultOffer]);
+  }, [onViewDetailsAction, program.id, defaultOffer, isComingSoon]);
 
   const kpiItems = useMemo(() => {
     const items: { label: string; value: string }[] = [];
@@ -145,8 +150,12 @@ export function ProgramCard({
       );
     }
 
+    if (items.length === 0 && isComingSoon) {
+      items.push({ label: t('card.status'), value: t('card.comingSoon') });
+    }
+
     return items.slice(0, 3);
-  }, [kpis, leverage, t, defaultOffer]);
+  }, [kpis, leverage, t, defaultOffer, isComingSoon]);
 
   return (
     <motion.article
@@ -159,7 +168,7 @@ export function ProgramCard({
         y: -2,
         transition: { type: 'spring', stiffness: 400, damping: 25 },
       }}
-      whileTap={{ scale: 0.98 }}
+      whileTap={isComingSoon ? undefined : { scale: 0.98 }}
       onClick={handleCardClick}
       className={cn(
         // Tradelia Glass Card
@@ -170,13 +179,13 @@ export function ProgramCard({
         'shadow-[0_2px_8px_-2px_rgba(0,0,0,0.08)]',
         'dark:shadow-[0_2px_8px_-2px_rgba(0,0,0,0.3)]',
         'p-4',
-        'cursor-pointer',
+        isComingSoon ? 'cursor-not-allowed opacity-70' : 'cursor-pointer',
         'transition-shadow duration-300',
         // Hover: Tradelia depth effect
-        'hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.12)]',
-        'dark:hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.4)]',
+        !isComingSoon && 'hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.12)]',
+        !isComingSoon && 'dark:hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.4)]',
         // Active state
-        'active:scale-[0.98]',
+        !isComingSoon && 'active:scale-[0.98]',
         // Free variant: subtle sky tint
         isFree && 'bg-sky-50/50 dark:bg-sky-950/20 border-sky-200/50 dark:border-sky-500/20',
       )}
@@ -184,6 +193,9 @@ export function ProgramCard({
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
+        if (isComingSoon) {
+          return;
+        }
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           handleCardClick();
@@ -204,7 +216,11 @@ export function ProgramCard({
         </span>
 
         {/* Platforms - Tradelia subtle text */}
-        {platforms.length > 0 && (
+        {isComingSoon ? (
+          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-amber-700">
+            {t('badges.comingSoon')}
+          </span>
+        ) : platforms.length > 0 && (
           <span className="text-[11px] font-medium text-slate-400 dark:text-slate-500">
             {platforms[0]}
             {platforms.length > 1 && (
