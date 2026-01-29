@@ -101,7 +101,7 @@ export default function ChallengesPage() {
     return categoryFilteredPrograms.filter((program) => {
       const offer = program.offers[0];
       if (!offer) {
-        return false;
+        return program.program.status === 'upcoming';
       }
 
       // Cost filter
@@ -186,6 +186,12 @@ export default function ChallengesPage() {
       const offerA = a.offers[0];
       const offerB = b.offers[0];
 
+      if (!offerA && offerB) {
+        return 1;
+      }
+      if (!offerB && offerA) {
+        return -1;
+      }
       if (!offerA || !offerB) {
         return 0;
       }
