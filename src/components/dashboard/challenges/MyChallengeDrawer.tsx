@@ -39,6 +39,7 @@ type MyChallengeDrawerProps = {
 type ContextSession = 'EU' | 'US' | 'ASIA' | 'OFF';
 type ContextEventRisk = 'NONE' | 'SCHEDULED' | 'LIVE';
 type ContextVolatility = 'LOW' | 'NORMAL' | 'HIGH';
+type TradeGate = 'OPEN' | 'RESTRICTED' | 'CLOSED';
 
 type MyChallengeRecord = {
   enrollment_id: string;
@@ -76,7 +77,7 @@ type MyChallengeRecord = {
   };
   operating_envelope?: {
     automation_policy?: 'MANUAL_ONLY';
-    trade_gate?: 'OPEN' | 'RESTRICTED' | 'CLOSED';
+    trade_gate?: TradeGate;
     risk_budget?: {
       daily_risk_cap_pct?: number;
       risk_per_trade_pct?: number;
@@ -1078,7 +1079,7 @@ export function MyChallengeDrawer({
                             ...current,
                             operating_envelope: {
                               ...current.operating_envelope,
-                              trade_gate: event.target.value as MyChallengeRecord['operating_envelope']['trade_gate'],
+                              trade_gate: event.target.value as TradeGate,
                             },
                           }));
                         }}
