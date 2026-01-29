@@ -1098,14 +1098,14 @@ export function MyChallengeDrawer({
                           className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
                           value={draft?.operating_envelope?.risk_budget?.daily_risk_cap_pct ?? ''}
                           onChange={(event) => {
-                            const value = event.target.value === '' ? null : Number(event.target.value);
+                            const value = event.target.value === '' ? undefined : Number(event.target.value);
                             updateDraft(current => ({
                               ...current,
                               operating_envelope: {
                                 ...current.operating_envelope,
                                 risk_budget: {
                                   ...current.operating_envelope?.risk_budget,
-                                  daily_risk_cap_pct: Number.isNaN(value as number) ? null : value,
+                                  daily_risk_cap_pct: Number.isNaN(value as number) ? undefined : value,
                                 },
                               },
                             }));
@@ -1120,14 +1120,14 @@ export function MyChallengeDrawer({
                           className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
                           value={draft?.operating_envelope?.risk_budget?.risk_per_trade_pct ?? ''}
                           onChange={(event) => {
-                            const value = event.target.value === '' ? null : Number(event.target.value);
+                            const value = event.target.value === '' ? undefined : Number(event.target.value);
                             updateDraft(current => ({
                               ...current,
                               operating_envelope: {
                                 ...current.operating_envelope,
                                 risk_budget: {
                                   ...current.operating_envelope?.risk_budget,
-                                  risk_per_trade_pct: Number.isNaN(value as number) ? null : value,
+                                  risk_per_trade_pct: Number.isNaN(value as number) ? undefined : value,
                                 },
                               },
                             }));
@@ -1141,14 +1141,14 @@ export function MyChallengeDrawer({
                           className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
                           value={draft?.operating_envelope?.risk_budget?.max_trades ?? ''}
                           onChange={(event) => {
-                            const value = event.target.value === '' ? null : Number(event.target.value);
+                            const value = event.target.value === '' ? undefined : Number(event.target.value);
                             updateDraft(current => ({
                               ...current,
                               operating_envelope: {
                                 ...current.operating_envelope,
                                 risk_budget: {
                                   ...current.operating_envelope?.risk_budget,
-                                  max_trades: Number.isNaN(value as number) ? null : value,
+                                  max_trades: Number.isNaN(value as number) ? undefined : value,
                                 },
                               },
                             }));
