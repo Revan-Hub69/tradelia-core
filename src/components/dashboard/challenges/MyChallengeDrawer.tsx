@@ -294,6 +294,9 @@ export function MyChallengeDrawer({
   if (!enrollment) {
     return null;
   }
+  if (!auditContext) {
+    return null;
+  }
 
   const accountSize = parseAccountSize(enrollment.offer.accountSize);
   const accountCurrency = enrollment.offer.accountCurrency ?? 'USD';
