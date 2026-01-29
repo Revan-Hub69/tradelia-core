@@ -98,7 +98,7 @@ export async function validateBody<T>(
   try {
     const body = await request.json();
     return validate(schema, body);
-  } catch (error) {
+  } catch {
     return {
       success: false,
       error: 'Invalid JSON body',

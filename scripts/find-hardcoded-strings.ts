@@ -61,9 +61,10 @@ const IGNORE_PATTERNS = [
   /^(motion\.|framer-motion)/, // Framer Motion
   /^(cn|clsx|twMerge)/, // Utility functions
   /^(\.|\/)/, // Paths
-  /^(http|https|www)/, // URLs
+  /^https?/, // URLs (http or https)
   /^#[0-9a-f]{3,6}$/i, // Hex colors
-  /^rgb|rgba|hsl|hsla/, // Color functions
+  /^rgb/, // rgb/rgba color functions
+  /^hsl/, // hsl/hsla color functions
   /^var\(--/, // CSS variables
   /^@\//, // Path aliases
 ];

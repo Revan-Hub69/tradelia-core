@@ -35,11 +35,14 @@ export type VirtualScrollListProps = {
 };
 
 // ✅ TIER 1: Virtual scroll implementation based on TanStack research
+const defaultEstimateSize = () => 80; // Default estimate based on research
+const defaultOverscan = 5; // Buffer items for smooth scrolling
+
 export const VirtualScrollList = forwardRef<HTMLDivElement, VirtualScrollListProps>(({
   items,
   height,
-  estimateSize = () => 80, // Default estimate based on research
-  overscan = 5, // Buffer items for smooth scrolling
+  estimateSize = defaultEstimateSize,
+  overscan = defaultOverscan,
   className,
   itemClassName,
   gap = 0,

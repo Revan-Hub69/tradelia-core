@@ -47,13 +47,17 @@ export const useKeyboardShortcuts = () => {
             e.preventDefault();
             router.push('/dashboard');
             break;
-          case 'l': // Alt+L for Learn
+          case 'c': // Alt+C for Challenges
             e.preventDefault();
-            router.push('/dashboard/learn');
+            router.push('/dashboard/challenges');
             break;
-          case 'p': // Alt+P for Profile
+          case 'm': // Alt+M for My Challenges
             e.preventDefault();
-            router.push('/dashboard/profile');
+            router.push('/dashboard/my-challenges');
+            break;
+          case 's': // Alt+S for Signals
+            e.preventDefault();
+            router.push('/dashboard/signals');
             break;
         }
       }
@@ -81,15 +85,14 @@ export const useKeyboardShortcuts = () => {
   // Return available shortcuts for display
   return {
     shortcuts: [
-      { key: 'Alt+1', description: 'Dashboard' },
-      { key: 'Alt+2', description: 'Learn' },
-      { key: 'Alt+3', description: 'Tools' },
-      { key: 'Alt+4', description: 'Community' },
-      { key: 'Alt+5', description: 'Profile' },
+      { key: 'Alt+1', description: 'Challenges' },
+      { key: 'Alt+2', description: 'My Challenges' },
+      { key: 'Alt+3', description: 'Signals' },
       { key: 'Ctrl+K', description: 'Command Palette' },
-      { key: 'Alt+H', description: 'Home' },
-      { key: 'Alt+L', description: 'Learn' },
-      { key: 'Alt+P', description: 'Profile' },
+      { key: 'Alt+H', description: 'Dashboard' },
+      { key: 'Alt+C', description: 'Challenges' },
+      { key: 'Alt+M', description: 'My Challenges' },
+      { key: 'Alt+S', description: 'Signals' },
     ],
   };
 };

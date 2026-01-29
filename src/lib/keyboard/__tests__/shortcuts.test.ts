@@ -26,7 +26,7 @@ describe('Keyboard Shortcuts', () => {
     });
 
     it('should have descriptions for all shortcuts', () => {
-      for (const [shortcut, description] of Object.entries(RESERVED_SHORTCUTS)) {
+      for (const [, description] of Object.entries(RESERVED_SHORTCUTS)) {
         expect(description).toBeTruthy();
         expect(description.length).toBeGreaterThan(0);
       }
@@ -298,15 +298,15 @@ describe('Keyboard Shortcuts', () => {
       expect(conflict).toBeTruthy();
 
       // 3. Get alternative
-      const alternative = getAlternativeShortcut(shortcut);
+      const _alternative = getAlternativeShortcut(shortcut);
 
-      expect(alternative).toBe('Ctrl+Shift+T');
+      expect(_alternative).toBe('Ctrl+Shift+T');
 
       // 4. Get user-friendly message
       const message = getConflictMessage(shortcut);
 
       expect(message).toContain('conflict');
-      expect(message).toContain(alternative);
+      expect(message).toContain(_alternative);
 
       // 5. Get platform-specific shortcut
       const resolved = getResolvedShortcut(shortcut, 'mac');

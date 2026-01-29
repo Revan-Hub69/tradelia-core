@@ -135,7 +135,7 @@ export function DashboardClient({ children }: DashboardClientProps) {
 
         {/* Mobile Menu - Help, Language, Theme */}
         <Suspense fallback={null}>
-          <MobileMenu isOpen={isMobileMenuOpen} onClose={closeMobileMenu} />
+          <MobileMenu isOpen={isMobileMenuOpen} onCloseAction={closeMobileMenu} />
         </Suspense>
       </DashboardContextProvider>
     </NavigationProvider>

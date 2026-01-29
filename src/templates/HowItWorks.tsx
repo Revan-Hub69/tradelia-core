@@ -28,7 +28,7 @@ export const HowItWorks = () => {
     },
   ];
   return (
-    <section className="border-t border-border bg-muted/30 px-4 py-12 sm:px-6 sm:py-16">
+    <section id="how-it-works" className="border-t border-border bg-muted/30 px-4 py-12 sm:px-6 sm:py-16">
       <div className="mx-auto max-w-3xl">
         <h2 className="text-center text-lg font-bold sm:text-xl">{t('title')}</h2>
 

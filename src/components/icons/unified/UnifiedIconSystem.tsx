@@ -13,7 +13,7 @@
  * - Consistency: Stroke weight uniforme, grid alignment perfetto
  * - Recognition: Simboli universali, non interpretazioni creative
  * - Optical Balance: Correzioni ottiche per perfetta percezione visiva
- * - Professional Grade: Qualità enterprise, non consumer
+ * - Professional Grade: Qualita enterprise, non consumer
  */
 
 'use client';
@@ -324,7 +324,7 @@ export const SettingsIcon = memo<Omit<SignatureIconProps, 'children'> & {
   </SignatureIconBase>
 ));
 
-// BOOK ICON - Open book, learning symbol
+// BOOK ICON - Open book, knowledge symbol
 export const LearnIcon = memo<Omit<SignatureIconProps, 'children'> & {
   isActive?: boolean;
 }>(({

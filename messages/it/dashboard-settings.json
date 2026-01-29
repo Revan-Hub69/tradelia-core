@@ -42,21 +42,21 @@
   },
   "preferences": {
     "title": "Preferenze",
-    "description": "Gestisci le tue preferenze di apprendimento",
+    "description": "Gestisci le tue preferenze di trading",
     "language": {
       "label": "Lingua",
       "description": "Scegli la tua lingua preferita"
     },
     "difficulty": {
-      "label": "Difficoltà",
+      "label": "Livello esperienza",
       "beginner": "Principiante",
       "intermediate": "Intermedio",
       "advanced": "Avanzato",
-      "description": "Imposta il tuo livello di difficoltà di apprendimento"
+      "description": "Regola quanta guida visualizzare sulle challenge"
     },
     "autoPlay": {
-      "label": "Avvio automatico prossima lezione",
-      "description": "Avvia automaticamente la prossima lezione dopo averne completata una"
+      "label": "Apri automaticamente la prossima challenge",
+      "description": "Apri la prossima challenge dopo averne vista una"
     }
   },
   "notifications": {
@@ -72,11 +72,11 @@
     },
     "dailyReminder": {
       "label": "Promemoria giornaliero",
-      "description": "Ricevi un promemoria per completare la lezione giornaliera"
+      "description": "Promemoria per controllare challenge e segnali"
     },
     "streakReminder": {
-      "label": "Promemoria serie",
-      "description": "Ricevi una notifica quando la tua serie è a rischio"
+      "label": "Promemoria iscrizioni",
+      "description": "Notifica quando un'iscrizione richiede attenzione"
     }
   },
   "privacy": {
@@ -87,8 +87,8 @@
       "description": "Rendi il tuo profilo visibile agli altri utenti"
     },
     "progressVisible": {
-      "label": "Mostra progresso",
-      "description": "Mostra pubblicamente il tuo progresso di apprendimento"
+      "label": "Mostra riepilogo performance",
+      "description": "Mostra pubblicamente il tuo riepilogo performance"
     },
     "leaderboardVisible": {
       "label": "Partecipazione classifica",
@@ -129,7 +129,7 @@
       "title": "Notifiche",
       "markAllRead": "Segna tutte come lette",
       "settings": "Impostazioni notifiche",
-      "studyReminders": "Promemoria studio",
+      "studyReminders": "Promemoria challenge",
       "doNotDisturb": "Non disturbare"
     }
   },

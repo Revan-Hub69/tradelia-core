@@ -34,7 +34,8 @@ export const PageTransitionWrapper: React.FC<PageTransitionWrapperProps> = ({
         element.style.transform = 'translateY(24px)';
         element.style.transition = 'none';
 
-        // Force reflow
+        // Force reflow - accessing offsetHeight triggers layout
+        // eslint-disable-next-line ts/no-unused-expressions
         element.offsetHeight;
 
         // Animate in with slower, more premium timing

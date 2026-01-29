@@ -28,7 +28,7 @@ export type EmptyStateType = 'informational' | 'action' | 'celebratory';
 export type EmptyStateProps = {
   /**
    * Type of empty state
-   * - informational: Neutral, educational (first use, no data)
+   * - informational: Neutral, helpful (first use, no data)
    * - action: Motivational with CTA (guide to next step)
    * - celebratory: Positive, congratulatory (completed tasks)
    */
@@ -50,7 +50,7 @@ export type EmptyStateProps = {
   /**
    * Description text
    * Should be motivational and helpful
-   * Example: "Start learning to see your progress here."
+   * Example: "Start tracking challenges to see activity here."
    */
   description: string;
 
@@ -79,12 +79,12 @@ export type EmptyStateProps = {
  * ```tsx
  * <EmptyState
  *   type="action"
- *   icon={<BookIcon className="w-full h-full" />}
- *   title="No lessons yet"
- *   description="Start your learning journey by creating your first lesson."
+ *   icon={<TrophyIcon className="w-full h-full" />}
+ *   title="No challenges yet"
+ *   description="Start by exploring the challenge library."
  *   action={{
- *     label: "Create Lesson",
- *     onClick: () => navigate('/lessons/new')
+ *     label: "Explore Challenges",
+ *     onClick: () => navigate('/dashboard/challenges')
  *   }}
  * />
  * ```

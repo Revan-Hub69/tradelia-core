@@ -56,7 +56,7 @@ export const BenefitsOverview = () => {
   ];
 
   return (
-    <section className="border-t border-border/50 bg-gradient-to-b from-background to-muted/30 px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
+    <section id="challenges" className="border-t border-border/50 bg-gradient-to-b from-background to-muted/30 px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
       <div className="mx-auto max-w-7xl">
         <FadeIn>
           <div className="text-center">

@@ -1,11 +1,11 @@
 /*
  * MOBILE MENU - Slide-out menu for mobile navigation
  *
- * Contains items removed from bottom nav:
- * - Help
- * - Language Switcher
- * - Theme Toggle
- * - Profile link
+ * Complete mobile navigation hub with:
+ * - All main navigation items (Challenges, My Challenges, Signals)
+ * - Quick settings (Theme, Language)
+ * - User account (Profile, Settings, Logout)
+ * - Support (Help, Contact)
  */
 
 'use client';
@@ -17,15 +17,38 @@ import { LanguageSwitcherDashboard } from '@/components/dashboard/LanguageSwitch
 import { ThemeSwitcher } from '@/components/dashboard/ThemeSwitcher';
 import { DynamicIcon } from '@/components/icons';
 import { useNavigationContext } from '@/components/navigation/useNavigationContext';
-import { MOBILE_MENU_ITEMS } from '@/data/navigation.config';
 import { cn } from '@/utils/Helpers';
 
 type MobileMenuProps = {
   isOpen: boolean;
-  onClose: () => void;
+  onCloseAction: () => void;
 };
 
-export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
+// Navigation items for mobile menu
+const NAVIGATION_ITEMS = [
+  {
+    id: 'challenges',
+    labelKey: 'Dashboard.nav_challenges',
+    href: '/dashboard/challenges',
+    iconName: 'ChallengesIcon',
+    badge: 'dot' as const,
+  },
+  {
+    id: 'my-challenges',
+    labelKey: 'Dashboard.nav_my_challenges',
+    href: '/dashboard/my-challenges',
+    iconName: 'MyChartsIcon',
+  },
+  {
+    id: 'signals',
+    labelKey: 'Dashboard.nav_signals',
+    href: '/dashboard/signals',
+    iconName: 'SignalsIcon',
+    badge: 'dot' as const,
+  },
+];
+
+export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onCloseAction }) => {
   const t = useTranslations('Dashboard') as any;
   const { closeOverlay } = useNavigationContext();
 
@@ -33,13 +56,13 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
-        onClose();
+        onCloseAction();
       }
     };
 
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
-  }, [isOpen, onClose]);
+  }, [isOpen, onCloseAction]);
 
   // Prevent body scroll when menu is open
   useEffect(() => {
@@ -57,8 +80,14 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
 
   const handleNavigation = useCallback((href: string) => {
     window.location.href = href;
-    onClose();
-  }, [onClose]);
+    onCloseAction();
+  }, [onCloseAction]);
+
+  const handleLogout = useCallback(() => {
+    // TODO: Implement logout
+    window.location.href = '/api/auth/signout';
+    onCloseAction();
+  }, [onCloseAction]);
 
   if (!isOpen) {
     return null;
@@ -69,7 +98,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
       {/* Backdrop */}
       <div
         className="fixed inset-0 z-[90] bg-black/50 backdrop-blur-sm transition-opacity"
-        onClick={onClose}
+        onClick={onCloseAction}
         aria-hidden="true"
       />
 
@@ -91,7 +120,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
           <h2 className="text-lg font-semibold">{t('mobile_menu_title')}</h2>
           <button
             type="button"
-            onClick={onClose}
+            onClick={onCloseAction}
             className="rounded-lg p-2 transition-colors hover:bg-muted"
             aria-label={t('close')}
           >
@@ -112,10 +141,10 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
           </button>
         </div>
 
-        {/* Menu Content */}
-        <div className="space-y-6 p-4">
+        {/* Menu Content - Scrollable */}
+        <div className="h-[calc(100%-140px)] overflow-y-auto p-4">
           {/* Quick Settings */}
-          <div className="space-y-3">
+          <div className="mb-6 space-y-3">
             <h3 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
               {t('settings')}
             </h3>
@@ -129,44 +158,49 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
             </div>
           </div>
 
-          {/* Navigation Links */}
-          <div className="space-y-3">
+          {/* Main Navigation */}
+          <div className="mb-6 space-y-3">
             <h3 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
               {t('navigation')}
             </h3>
             <nav className="space-y-1">
-              {MOBILE_MENU_ITEMS.map(item => (
+              {NAVIGATION_ITEMS.map(item => (
                 <button
                   key={item.id}
                   type="button"
                   onClick={() => handleNavigation(item.href)}
-                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors hover:bg-muted"
+                  className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-colors hover:bg-muted"
                 >
-                  <DynamicIcon
-                    name={item.iconName as any}
-                    size={20}
-                    variant="premium"
-                  />
-                  {t(item.labelKey.replace('Dashboard.', '') as 'nav_help')}
+                  <div className="flex items-center gap-3">
+                    <DynamicIcon
+                      name={item.iconName as any}
+                      size={20}
+                      variant="premium"
+                    />
+                    {t(item.labelKey.replace('Dashboard.', '') as any)}
+                  </div>
+                  {item.badge && (
+                    <span className="flex size-2 rounded-full bg-blue-500" />
+                  )}
                 </button>
               ))}
             </nav>
           </div>
 
-          {/* Help Section */}
+          {/* Account Section */}
           <div className="space-y-3">
             <h3 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              {t('support')}
+              {t('account')}
             </h3>
-            <a
-              href="/dashboard/help"
-              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors hover:bg-muted"
-              onClick={onClose}
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:hover:bg-red-950/20"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
+                width="20"
+                height="20"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -174,20 +208,43 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
                 strokeLinecap="round"
                 strokeLinejoin="round"
               >
-                <circle cx="12" cy="12" r="10" />
-                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-                <path d="M12 17h.01" />
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" x2="9" y1="12" y2="12" />
               </svg>
-              {t('nav_help')}
-            </a>
+              {t('logout')}
+            </button>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="absolute inset-x-0 bottom-0 border-t border-border p-4">
-          <p className="text-center text-xs text-muted-foreground">
-            {t('app_version', { version: '2026.1' })}
-          </p>
+        <div className="absolute inset-x-0 bottom-0 border-t border-border bg-background p-4">
+          <div className="flex items-center justify-between">
+            <p className="text-xs text-muted-foreground">
+              {t('app_version', { version: '2026.1' })}
+            </p>
+            <a
+              href="/dashboard"
+              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+              onClick={onCloseAction}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
+              </svg>
+              {t('back_to_home')}
+            </a>
+          </div>
         </div>
       </div>
     </>

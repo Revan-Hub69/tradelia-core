@@ -29,6 +29,7 @@ for (const file of files) {
     // Pattern: <button without type= attribute
     // Matches: <button onClick=... or <button className=... etc
     // Does NOT match: <button type="..." or <Button (component)
+    // eslint-disable-next-line regexp/no-super-linear-backtracking
     const pattern = /<button(\s+(?!type=)[^>]*)>/g;
 
     content = content.replace(pattern, (match, attributes) => {

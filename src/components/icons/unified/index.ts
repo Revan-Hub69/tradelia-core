@@ -1,13 +1,13 @@
 /*
  * TRADELIA SIGNATURE ICON SYSTEM 2026 - Exports
  *
- * Sistema signature di icone educative per piattaforma crypto
+ * Sistema signature di icone per piattaforma trading
  * Basato su ricerche tier 1: Apple, Linear, IBM Design
  *
  * CARATTERISTICHE:
  * - Grid 24x24px con stroke 2px uniforme
  * - Coordinate snap alla griglia 0.5px
- * - Oggetti appropriati per educazione crypto
+ * - Oggetti appropriati per UX trading
  * - Zero Framer Motion, solo CSS transitions
  * - Colori design system (currentColor)
  */
@@ -35,7 +35,7 @@ export {
   HelpIcon,
   // Core icons
   HomeIcon,
-  // Educational icons
+  // Utility icons
   LearnIcon,
   LightIcon,
   LockIcon,

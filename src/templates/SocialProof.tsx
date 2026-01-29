@@ -68,7 +68,7 @@ export const SocialProof = () => {
   ];
 
   return (
-    <section className="border-t border-border/50 bg-gradient-to-b from-muted/30 to-background px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
+    <section id="signals" className="border-t border-border/50 bg-gradient-to-b from-muted/30 to-background px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
       <div className="mx-auto max-w-7xl">
         <FadeIn>
           <div className="text-center">
@@ -81,10 +81,10 @@ export const SocialProof = () => {
           </div>
         </FadeIn>
 
-        {/* Educational Principles Cards */}
+        {/* Trust & Signal Quality Cards */}
         <FadeIn delay={200}>
           <div className="mt-12 grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {/* Spaced Repetition */}
+            {/* Pillar 1 */}
             <div className="rounded-xl border border-border/50 bg-card/50 p-4 backdrop-blur-sm">
               <div className="mb-3 flex items-center gap-3">
                 <div className="size-10 rounded-lg bg-primary/10 p-2">
@@ -92,17 +92,17 @@ export const SocialProof = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <h3 className="font-semibold">{t('spaced_repetition_title')}</h3>
+                <h3 className="font-semibold">{t('pillar1_title')}</h3>
               </div>
               <p className="mb-2 text-sm text-muted-foreground">
-                {t('spaced_repetition_desc')}
+                {t('pillar1_desc')}
               </p>
               <p className="text-xs text-muted-foreground/70">
-                {t('spaced_repetition_source')}
+                {t('pillar1_source')}
               </p>
             </div>
 
-            {/* Active Recall */}
+            {/* Pillar 2 */}
             <div className="rounded-xl border border-border/50 bg-card/50 p-4 backdrop-blur-sm">
               <div className="mb-3 flex items-center gap-3">
                 <div className="size-10 rounded-lg bg-accent/10 p-2">
@@ -110,17 +110,17 @@ export const SocialProof = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                   </svg>
                 </div>
-                <h3 className="font-semibold">{t('active_recall_title')}</h3>
+                <h3 className="font-semibold">{t('pillar2_title')}</h3>
               </div>
               <p className="mb-2 text-sm text-muted-foreground">
-                {t('active_recall_desc')}
+                {t('pillar2_desc')}
               </p>
               <p className="text-xs text-muted-foreground/70">
-                {t('active_recall_source')}
+                {t('pillar2_source')}
               </p>
             </div>
 
-            {/* Microlearning */}
+            {/* Pillar 3 */}
             <div className="rounded-xl border border-border/50 bg-card/50 p-4 backdrop-blur-sm">
               <div className="mb-3 flex items-center gap-3">
                 <div className="size-10 rounded-lg bg-blue-500/10 p-2">
@@ -128,17 +128,17 @@ export const SocialProof = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
-                <h3 className="font-semibold">{t('microlearning_title')}</h3>
+                <h3 className="font-semibold">{t('pillar3_title')}</h3>
               </div>
               <p className="mb-2 text-sm text-muted-foreground">
-                {t('microlearning_desc')}
+                {t('pillar3_desc')}
               </p>
               <p className="text-xs text-muted-foreground/70">
-                {t('microlearning_source')}
+                {t('pillar3_source')}
               </p>
             </div>
 
-            {/* Cognitive Load Theory */}
+            {/* Pillar 4 */}
             <div className="rounded-xl border border-border/50 bg-card/50 p-4 backdrop-blur-sm">
               <div className="mb-3 flex items-center gap-3">
                 <div className="size-10 rounded-lg bg-green-500/10 p-2">
@@ -146,17 +146,17 @@ export const SocialProof = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                   </svg>
                 </div>
-                <h3 className="font-semibold">{t('cognitive_load_title')}</h3>
+                <h3 className="font-semibold">{t('pillar4_title')}</h3>
               </div>
               <p className="mb-2 text-sm text-muted-foreground">
-                {t('cognitive_load_desc')}
+                {t('pillar4_desc')}
               </p>
               <p className="text-xs text-muted-foreground/70">
-                {t('cognitive_load_source')}
+                {t('pillar4_source')}
               </p>
             </div>
 
-            {/* Dual Coding */}
+            {/* Pillar 5 */}
             <div className="rounded-xl border border-border/50 bg-card/50 p-4 backdrop-blur-sm">
               <div className="mb-3 flex items-center gap-3">
                 <div className="size-10 rounded-lg bg-purple-500/10 p-2">
@@ -165,17 +165,17 @@ export const SocialProof = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                   </svg>
                 </div>
-                <h3 className="font-semibold">{t('dual_coding_title')}</h3>
+                <h3 className="font-semibold">{t('pillar5_title')}</h3>
               </div>
               <p className="mb-2 text-sm text-muted-foreground">
-                {t('dual_coding_desc')}
+                {t('pillar5_desc')}
               </p>
               <p className="text-xs text-muted-foreground/70">
-                {t('dual_coding_source')}
+                {t('pillar5_source')}
               </p>
             </div>
 
-            {/* Interleaving */}
+            {/* Pillar 6 */}
             <div className="rounded-xl border border-border/50 bg-card/50 p-4 backdrop-blur-sm">
               <div className="mb-3 flex items-center gap-3">
                 <div className="size-10 rounded-lg bg-orange-500/10 p-2">
@@ -183,19 +183,19 @@ export const SocialProof = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                   </svg>
                 </div>
-                <h3 className="font-semibold">{t('interleaving_title')}</h3>
+                <h3 className="font-semibold">{t('pillar6_title')}</h3>
               </div>
               <p className="mb-2 text-sm text-muted-foreground">
-                {t('interleaving_desc')}
+                {t('pillar6_desc')}
               </p>
               <p className="text-xs text-muted-foreground/70">
-                {t('interleaving_source')}
+                {t('pillar6_source')}
               </p>
             </div>
           </div>
         </FadeIn>
 
-        {/* Strategic CTA after Educational Principles */}
+        {/* Strategic CTA after trust cards */}
         <FadeIn delay={400}>
           <div className="mt-12 text-center">
             <div className="mx-auto max-w-2xl">
@@ -207,10 +207,10 @@ export const SocialProof = () => {
               </p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
                 <Button asChild size="lg" className="h-12 px-6 text-base">
-                  <Link href="/lesson-0">{t('cta_primary')}</Link>
+                  <Link href="/dashboard/challenges">{t('cta_primary')}</Link>
                 </Button>
                 <Button asChild variant="outline" size="default" className="h-11 px-5 text-sm">
-                  <Link href="#features">{t('cta_secondary')}</Link>
+                  <Link href="#faq">{t('cta_secondary')}</Link>
                 </Button>
               </div>
             </div>
@@ -261,7 +261,6 @@ export const SocialProof = () => {
             ))}
           </StaggerChildren>
         )}
-
       </div>
     </section>
   );

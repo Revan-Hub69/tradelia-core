@@ -6,16 +6,10 @@ import { BenefitsOverview } from '@/templates/BenefitsOverview';
 import { FinalCTA } from '@/templates/FinalCTA';
 import { Hero } from '@/templates/Hero';
 import { HowItWorks } from '@/templates/HowItWorks';
-import { LearningPath } from '@/templates/LearningPath';
 import { Navbar } from '@/templates/Navbar';
 import { PremiumFooter } from '@/templates/PremiumFooter';
 
 // Dynamic imports for below-fold components (performance optimization P0)
-const InteractiveDemo = dynamic(() => import('@/templates/InteractiveDemo').then(mod => ({ default: mod.InteractiveDemo })), {
-  ssr: true, // Keep SSR for SEO
-  loading: () => <div className="reserve-space-lg"><Skeleton className="size-full" /></div>,
-});
-
 const SocialProof = dynamic(() => import('@/templates/SocialProof').then(mod => ({ default: mod.SocialProof })), {
   ssr: true,
   loading: () => <div className="reserve-space-md"><Skeleton className="size-full" /></div>,
@@ -49,8 +43,6 @@ const IndexPage = async (props: { params: Promise<{ locale: string }> }) => {
       <main id="main-content">
         <Hero />
         <BenefitsOverview />
-        <InteractiveDemo />
-        <LearningPath />
         <SocialProof />
         <HowItWorks />
         <FAQ />

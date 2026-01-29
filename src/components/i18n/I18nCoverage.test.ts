@@ -24,36 +24,26 @@ const i18nKeyGenerator = (): fc.Arbitrary<string> => {
   return fc.oneof(
     // Dashboard keys
     fc.constantFrom(
-      'Dashboard.nav_home',
-      'Dashboard.nav_learn',
-      'Dashboard.nav_tools',
-      'Dashboard.nav_community',
-      'Dashboard.nav_profile',
-      'Dashboard.welcome_title',
-      'Dashboard.lessons_completed',
-      'Dashboard.consistency_days',
+      'Dashboard.nav_dashboard',
+      'Dashboard.nav_challenges',
+      'Dashboard.nav_my_challenges',
+      'Dashboard.nav_signals',
+      'Dashboard.overview_title',
+      'Dashboard.overview_description',
     ),
-    // LearnPage keys
+    // Landing keys
     fc.constantFrom(
-      'LearnPage.title',
-      'LearnPage.description',
-      'LearnPage.main_path_title',
-      'LearnPage.module1_title',
-      'LearnPage.content_in_development',
-    ),
-    // Tools keys
-    fc.constantFrom(
-      'Tools.title',
-      'Tools.description',
-      'Tools.portfolio_tracker',
-      'Tools.dca_calculator',
-      'Tools.in_development',
+      'Hero.hero_title_part1',
+      'Hero.hero_subtitle',
+      'BenefitsOverview.section_title',
+      'FAQ.section_title',
+      'FinalCTA.title',
     ),
     // Other common keys
     fc.constantFrom(
       'Navbar.sign_in',
-      'Hero.headline',
-      'Footer.disclaimer',
+      'Hero.hero_title_part2',
+      'PremiumFooter.disclaimer',
     ),
   );
 };
@@ -90,22 +80,24 @@ const getDashboardPageContent = (): string[] => {
   const pageFiles: string[] = [];
 
   try {
-    // Read community page
-    const communityPath = path.join(dashboardPagesDir, 'community/page.tsx');
-    if (fs.existsSync(communityPath)) {
-      pageFiles.push(fs.readFileSync(communityPath, 'utf-8'));
+    const dashboardPath = path.join(dashboardPagesDir, 'page.tsx');
+    if (fs.existsSync(dashboardPath)) {
+      pageFiles.push(fs.readFileSync(dashboardPath, 'utf-8'));
     }
 
-    // Read tools page
-    const toolsPath = path.join(dashboardPagesDir, 'tools/page.tsx');
-    if (fs.existsSync(toolsPath)) {
-      pageFiles.push(fs.readFileSync(toolsPath, 'utf-8'));
+    const challengesPath = path.join(dashboardPagesDir, 'challenges/page.tsx');
+    if (fs.existsSync(challengesPath)) {
+      pageFiles.push(fs.readFileSync(challengesPath, 'utf-8'));
     }
 
-    // Read learn page
-    const learnPath = path.join(dashboardPagesDir, 'learn/page.tsx');
-    if (fs.existsSync(learnPath)) {
-      pageFiles.push(fs.readFileSync(learnPath, 'utf-8'));
+    const myChallengesPath = path.join(dashboardPagesDir, 'my-challenges/page.tsx');
+    if (fs.existsSync(myChallengesPath)) {
+      pageFiles.push(fs.readFileSync(myChallengesPath, 'utf-8'));
+    }
+
+    const signalsPath = path.join(dashboardPagesDir, 'signals/page.tsx');
+    if (fs.existsSync(signalsPath)) {
+      pageFiles.push(fs.readFileSync(signalsPath, 'utf-8'));
     }
   } catch {
     // If files don't exist in test environment, return empty array
@@ -140,7 +132,7 @@ describe('I18n Coverage Property Tests', () => {
           expect(itValue.length).toBeGreaterThan(0);
 
           // Values should be different (not just copied)
-          if (keyPath !== 'Dashboard.nav_home' && keyPath !== 'Dashboard.nav_learn') {
+          if (keyPath !== 'Dashboard.nav_dashboard') {
             // Allow some keys to be the same (like "Home" -> "Home")
             // but most should be translated
             expect(enValue !== itValue || enValue.length < 10).toBe(true);
@@ -246,11 +238,10 @@ describe('I18n Coverage Property Tests', () => {
 
           // All navigation keys should exist
           const requiredNavKeys = [
-            'nav_home',
-            'nav_learn',
-            'nav_tools',
-            'nav_community',
-            'nav_profile',
+            'nav_dashboard',
+            'nav_challenges',
+            'nav_my_challenges',
+            'nav_signals',
           ];
 
           for (const key of requiredNavKeys) {

@@ -24,7 +24,8 @@ export function throttle<T extends (...args: any[]) => any>(
   let timeout: NodeJS.Timeout | null = null;
   let lastRan: number | null = null;
 
-  return function (this: any, ...args: Parameters<T>) {
+  return function (this: ThisParameterType<T>, ...args: Parameters<T>) {
+    // eslint-disable-next-line ts/no-this-alias
     const context = this;
 
     if (!lastRan) {
@@ -82,7 +83,8 @@ export function debounce<T extends (...args: any[]) => any>(
 ): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout | null = null;
 
-  return function (this: any, ...args: Parameters<T>) {
+  return function (this: ThisParameterType<T>, ...args: Parameters<T>) {
+    // eslint-disable-next-line ts/no-this-alias
     const context = this;
 
     if (timeout) {

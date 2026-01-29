@@ -17,10 +17,9 @@ import { createContext, type ReactNode, useContext, useMemo } from 'react';
 
 export type DashboardSection =
   | 'home'
-  | 'learn'
-  | 'progress'
-  | 'community'
-  | 'profile';
+  | 'challenges'
+  | 'my-challenges'
+  | 'signals';
 
 export type StatusChip = {
   type: 'streak' | 'focus' | 'next' | 'progress';
@@ -61,47 +60,39 @@ export function DashboardContextProvider({ children }: DashboardContextProviderP
     if (cleanPath === '/dashboard' || cleanPath === '/dashboard/') {
       return {
         section: 'home',
-        titleKey: 'Dashboard.nav_home',
+        titleKey: 'Dashboard.nav_dashboard',
         breadcrumb: ['Dashboard'],
       };
     }
 
-    if (cleanPath.startsWith('/dashboard/learn') || cleanPath.startsWith('/dashboard/path')) {
+    if (cleanPath.startsWith('/dashboard/challenges')) {
       return {
-        section: 'learn',
-        titleKey: 'Dashboard.nav_learn',
-        breadcrumb: ['Dashboard', 'Learn'],
+        section: 'challenges',
+        titleKey: 'Dashboard.nav_challenges',
+        breadcrumb: ['Dashboard', 'Challenges'],
       };
     }
 
-    if (cleanPath.startsWith('/dashboard/progress')) {
+    if (cleanPath.startsWith('/dashboard/my-challenges')) {
       return {
-        section: 'progress',
-        titleKey: 'Dashboard.nav_progress',
-        breadcrumb: ['Dashboard', 'Progress'],
+        section: 'my-challenges',
+        titleKey: 'Dashboard.nav_my_challenges',
+        breadcrumb: ['Dashboard', 'My Challenges'],
       };
     }
 
-    if (cleanPath.startsWith('/dashboard/community')) {
+    if (cleanPath.startsWith('/dashboard/signals')) {
       return {
-        section: 'community',
-        titleKey: 'Dashboard.nav_community',
-        breadcrumb: ['Dashboard', 'Community'],
-      };
-    }
-
-    if (cleanPath.startsWith('/dashboard/profile') || cleanPath.startsWith('/dashboard/user-profile')) {
-      return {
-        section: 'profile',
-        titleKey: 'Dashboard.nav_profile',
-        breadcrumb: ['Dashboard', 'Profile'],
+        section: 'signals',
+        titleKey: 'Dashboard.nav_signals',
+        breadcrumb: ['Dashboard', 'Signals'],
       };
     }
 
     // Default fallback
     return {
       section: 'home',
-      titleKey: 'Dashboard.nav_home',
+      titleKey: 'Dashboard.nav_dashboard',
       breadcrumb: ['Dashboard'],
     };
   }, [pathname]);
@@ -138,7 +129,7 @@ export function useDashboardContextSafe(): DashboardContextType {
   if (context === undefined) {
     return {
       section: 'home',
-      titleKey: 'Dashboard.nav_home',
+      titleKey: 'Dashboard.nav_dashboard',
       breadcrumb: ['Dashboard'],
     };
   }

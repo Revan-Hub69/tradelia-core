@@ -20,7 +20,7 @@ import { z } from 'zod';
 const sanitizeString = (str: string): string => {
   return str
     .replace(/<[^>]*>/g, '') // Remove HTML tags
-    .replace(/[<>"']/g, '') // Remove dangerous characters
+    .replace(/[<>'"]/g, '') // Remove dangerous characters
     .trim();
 };
 
@@ -220,90 +220,6 @@ export const passwordResetSchema = z.object({
 });
 
 // ============================================================================
-// LESSON SCHEMAS
-// ============================================================================
-
-/**
- * Lesson ID validation
- */
-export const lessonIdSchema = z.string()
-  .regex(/^lesson-\d+$/, 'Invalid lesson ID format');
-
-/**
- * Lesson completion
- */
-export const lessonCompletionSchema = z.object({
-  lessonId: lessonIdSchema,
-  pathId: z.string().default('base').transform(sanitizeString),
-  xpEarned: boundedNumberSchema(0, 1000),
-  approachesUsed: z.array(z.string().transform(sanitizeString)).max(10, 'Too many approaches').optional(),
-  quizScore: boundedNumberSchema(0, 100).optional(),
-  timeSpent: positiveIntSchema.max(86400, 'Time spent too large').optional(), // Max 24 hours
-  badges: z.array(z.object({
-    id: z.string().transform(sanitizeString),
-    name: z.string().max(100, 'Badge name too long').transform(sanitizeString),
-    description: z.string().max(500, 'Badge description too long').transform(sanitizeString).optional(),
-    icon: z.string().max(100, 'Badge icon too long').transform(sanitizeString).optional(),
-    rarity: z.enum(['common', 'rare', 'epic', 'legendary']),
-  })).max(10, 'Too many badges').optional(),
-});
-
-// ============================================================================
-// PROGRESS SCHEMAS
-// ============================================================================
-
-/**
- * User progress creation
- */
-export const userProgressSchema = z.object({
-  initialXP: boundedNumberSchema(0, 10000).optional(),
-});
-
-/**
- * User progress update
- */
-export const userProgressUpdateSchema = z.object({
-  totalXP: positiveIntSchema.optional(),
-  level: positiveIntSchema.max(100, 'Level too high').optional(),
-  currentStreak: positiveIntSchema.max(1000, 'Streak too high').optional(),
-  longestStreak: positiveIntSchema.max(1000, 'Streak too high').optional(),
-});
-
-// ============================================================================
-// BADGE SCHEMAS
-// ============================================================================
-
-/**
- * Badge award
- */
-export const badgeAwardSchema = z.object({
-  badgeId: z.string().transform(sanitizeString),
-  badgeName: z.string().max(100, 'Badge name too long').transform(sanitizeString),
-  badgeDescription: z.string().max(500, 'Badge description too long').transform(sanitizeString).optional(),
-  badgeIcon: z.string().max(100, 'Badge icon too long').transform(sanitizeString).optional(),
-  rarity: z.enum(['common', 'rare', 'epic', 'legendary']),
-});
-
-// ============================================================================
-// LEARNING PATH SCHEMAS
-// ============================================================================
-
-/**
- * Learning path creation (admin only)
- */
-export const learningPathSchema = z.object({
-  id: z.string().max(50, 'ID too long').transform(sanitizeString),
-  title: z.string().min(1, 'Title is required').max(200, 'Title too long').transform(sanitizeString),
-  description: z.string().max(1000, 'Description too long').transform(sanitizeString).optional(),
-  difficulty: z.enum(['beginner', 'intermediate', 'advanced']),
-  isPremium: z.boolean().default(false),
-  estimatedDuration: positiveIntSchema.max(10000, 'Duration too large').optional(),
-  lessonOrder: z.array(lessonIdSchema).max(100, 'Too many lessons'),
-  prerequisites: z.array(z.string().transform(sanitizeString)).max(50, 'Too many prerequisites').default([]),
-  isActive: z.boolean().default(true),
-});
-
-// ============================================================================
 // PAGINATION SCHEMAS
 // ============================================================================
 
@@ -339,7 +255,7 @@ export const searchSchema = z.object({
  * Rate limit action validation
  */
 export const rateLimitSchema = z.object({
-  action: z.enum(['lesson-complete', 'profile-update', 'badge-award', 'auth', 'api']),
+  action: z.enum(['profile-update', 'badge-award', 'auth', 'api']),
   identifier: safeStringSchema,
 });
 
@@ -350,9 +266,5 @@ export const rateLimitSchema = z.object({
 export type UserProfile = z.infer<typeof userProfileSchema>;
 export type UserRegistration = z.infer<typeof userRegistrationSchema>;
 export type UserLogin = z.infer<typeof userLoginSchema>;
-export type LessonCompletion = z.infer<typeof lessonCompletionSchema>;
-export type UserProgress = z.infer<typeof userProgressSchema>;
-export type BadgeAward = z.infer<typeof badgeAwardSchema>;
-export type LearningPath = z.infer<typeof learningPathSchema>;
 export type Pagination = z.infer<typeof paginationSchema>;
 export type Search = z.infer<typeof searchSchema>;

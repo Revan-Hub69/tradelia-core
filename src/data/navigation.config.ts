@@ -5,7 +5,7 @@
  * Supporta feature flags, badges, analytics tracking
  */
 
-export type NavigationItemId = 'home' | 'challenges' | 'my-challenges' | 'signals' | 'help' | 'profile';
+export type NavigationItemId = 'challenges' | 'my-challenges' | 'signals';
 
 export type NavigationItem = {
   id: NavigationItemId;
@@ -35,7 +35,6 @@ export const FEATURE_FLAGS = {
   CHALLENGES_ENABLED: true, // Challenge library
   MY_CHALLENGES_ENABLED: true, // Active challenges tracking
   SIGNALS_ENABLED: true, // AI signal generator
-  PROFILE_BADGES: true, // Sistema badge profilo
 } as const;
 
 /*
@@ -77,38 +76,11 @@ export const NAVIGATION_CONFIG: NavigationConfig = {
   ],
 };
 
-// Header navigation items (tablet/desktop) - includes help
-export const HEADER_NAVIGATION_ITEMS: NavigationItem[] = [
-  {
-    id: 'help',
-    labelKey: 'Dashboard.nav_help',
-    ariaKey: 'Dashboard.nav_help',
-    href: '/dashboard/help',
-    iconName: 'HelpIcon',
-    isPriority: false,
-  },
-];
+// Header navigation items (tablet/desktop)
+export const HEADER_NAVIGATION_ITEMS: NavigationItem[] = [];
 
-// Mobile menu items - includes help, profile, settings
-export const MOBILE_MENU_ITEMS: NavigationItem[] = [
-  {
-    id: 'help',
-    labelKey: 'Dashboard.nav_help',
-    ariaKey: 'Dashboard.nav_help',
-    href: '/dashboard/help',
-    iconName: 'HelpIcon',
-    isPriority: false,
-  },
-  {
-    id: 'profile',
-    labelKey: 'Dashboard.nav_profile',
-    ariaKey: 'Dashboard.nav_profile',
-    href: '/dashboard/profile',
-    iconName: 'ProfileIcon',
-    isPriority: false,
-    featureFlag: 'PROFILE_BADGES',
-  },
-];
+// Mobile menu items
+export const MOBILE_MENU_ITEMS: NavigationItem[] = [];
 
 /*
  * UTILITY FUNCTIONS - Helpers per filtering/processing
@@ -158,7 +130,6 @@ export type NavigationBadgeState = {
 export const MOCK_BADGE_STATE: NavigationBadgeState = {
   challenges: { type: 'dot' }, // New challenges available
   signals: { type: 'count', value: 3 }, // 3 new signals
-  profile: { type: 'new', timestamp: Date.now() }, // Badge nuovo temporaneo
 };
 
 export const getBadgeForItem = (itemId: NavigationItemId): NavigationBadgeState[string] | null => {

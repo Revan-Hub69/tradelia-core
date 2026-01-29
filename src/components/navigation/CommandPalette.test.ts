@@ -17,20 +17,16 @@ import {
 
 // Mock useTranslations for testing
 const mockTranslations = {
-  nav_home: 'Home',
-  nav_learn: 'Learn',
-  nav_tools: 'Tools',
-  nav_community: 'Community',
-  nav_profile: 'Profile',
-  nav_home_desc: 'Go to dashboard home',
-  nav_learn_desc: 'Access learning materials',
-  nav_tools_desc: 'Trading tools and utilities',
-  nav_community_desc: 'Connect with community',
-  nav_profile_desc: 'Manage your profile',
+  nav_challenges: 'Challenges',
+  nav_my_challenges: 'My Challenges',
+  nav_signals: 'Signals',
+  nav_challenges_desc: 'Browse trading challenges and competitions',
+  nav_my_challenges_desc: 'Track your active challenges and trades',
+  nav_signals_desc: 'AI-powered trading signals',
   toggle_theme: 'Toggle Theme',
   toggle_theme_desc: 'Switch between light and dark mode',
   enable_focus_mode: 'Enable Focus Mode',
-  focus_mode_desc: 'Reduce distractions while learning',
+  focus_mode_desc: 'Reduce distractions while trading',
   command_category_navigation: 'Navigation',
   command_category_actions: 'Actions',
   command_category_settings: 'Settings',
@@ -49,7 +45,7 @@ type Command = {
 
 // Generator for navigation item IDs
 const navigationItemIdGenerator = (): fc.Arbitrary<NavigationItemId> => {
-  return fc.constantFrom('home', 'learn', 'tools', 'community', 'profile');
+  return fc.constantFrom('challenges', 'my-challenges', 'signals');
 };
 
 // Generator for mock translation function
@@ -68,7 +64,7 @@ const generateNavigationCommands = (
   return navigationItems.map((item, index) => ({
     id: `nav-${item.id}`,
     label: t(item.labelKey.replace('Dashboard.', '')),
-    description: t(`nav_${item.id}_desc`, { defaultValue: '' }),
+    description: t(`nav_${item.id.replace('-', '_')}_desc`, { defaultValue: '' }),
     icon: item.iconName as IconName,
     action: () => {}, // Mock action
     category: 'navigation' as const,
@@ -300,11 +296,9 @@ describe('Command Palette Type Safety Property Tests', () => {
 
             // Valid icon names (based on the navigation config and common patterns)
             const validIconNames = [
-              'HomeIcon',
-              'LearnIcon',
-              'ToolsIcon',
-              'CommunityIcon',
-              'ProfileIcon',
+              'ChallengesIcon',
+              'MyChartsIcon',
+              'SignalsIcon',
               'SettingsIcon',
             ];
 

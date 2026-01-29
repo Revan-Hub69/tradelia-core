@@ -22,7 +22,7 @@
 import { useTranslations } from 'next-intl';
 import React, { useCallback, useMemo, useState } from 'react';
 
-import { ChevronDownIcon, LogoutIcon, ProfileIcon } from '@/components/icons/unified/UnifiedIconSystem';
+import { ChevronDownIcon, LogoutIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -114,15 +114,6 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
     setIsOpen(false);
   }, []);
 
-  const handleProfileClick = useCallback(() => {
-    // Haptic feedback
-    if ('vibrate' in navigator) {
-      navigator.vibrate(10);
-    }
-    router.push('/dashboard/profile');
-    handleClose();
-  }, [router, handleClose]);
-
   // Render shared menu content
   const renderMenuContent = () => (
     <>
@@ -162,29 +153,6 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
           </div>
         )}
       </div>
-
-      {/* Menu Items with optimized styling */}
-      <button
-        type="button"
-        onClick={handleProfileClick}
-        className={cn(
-          'flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5',
-          // Performance optimized hover
-          'transition-colors duration-200 ease-out',
-          'hover:bg-primary/10 focus:bg-primary/10',
-        )}
-      >
-        <ProfileIcon size={24} variant="premium" />
-        <span className="font-medium">{t('profile')}</span>
-      </button>
-
-      {/* Separator with modern styling */}
-      <div
-        className="my-2 h-px"
-        style={{
-          background: 'linear-gradient(90deg, transparent 0%, rgba(156, 163, 175, 0.2) 50%, transparent 100%)',
-        }}
-      />
 
       <button
         type="button"

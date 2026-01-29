@@ -95,9 +95,9 @@ describe('Feature: supabase-bilingual-email-templates', () => {
       fc.assert(
         fc.property(
           fc.constantFrom('en', 'it'),
-          (langCode) => {
+          (_langCode) => {
             // The navigation should contain a link targeting this language code
-            const linkPattern = new RegExp(`href=["']#${langCode}["']`);
+            const linkPattern = new RegExp(`href=["']#${_langCode}["']`);
 
             expect(languageNavHTML).toMatch(linkPattern);
           },
@@ -124,24 +124,25 @@ describe('Feature: supabase-bilingual-email-templates', () => {
   describe('Property 5: Touch-Friendly Navigation Buttons', () => {
     it('should have navigation links with minimum 44x44px touch target', () => {
       // Extract anchor tag style attributes
-      const anchorRegex = /<a\s[^>]*href=["']#(en|it)["'][^>]*style=["']([^"']+)["'][^>]*>/g;
+      // eslint-disable-next-line regexp/no-unused-capturing-group
+      const anchorRegex = /<a\s[^>]*href=["']#(?:en|it)["'][^>]*style=["']([^"']+)["'][^>]*>/g;
       let match;
-      const touchTargets: Array<{ lang: string; size: { width: number; height: number } }> = [];
+      const touchTargets: Array<{ size: { width: number; height: number } }> = [];
 
+      // eslint-disable-next-line no-cond-assign
       while ((match = anchorRegex.exec(languageNavHTML)) !== null) {
-        const lang = match[1];
-        const styleAttr = match[2];
+        const styleAttr = match[1];
         const styles = parseInlineStyles(styleAttr);
         const size = calculateTouchTargetSize(styles);
 
-        touchTargets.push({ lang, size });
+        touchTargets.push({ size });
       }
 
       // Should have at least 2 touch targets
       expect(touchTargets.length).toBeGreaterThanOrEqual(2);
 
       // Each touch target should meet minimum 44x44px requirement
-      touchTargets.forEach(({ lang, size }) => {
+      touchTargets.forEach(({ size }) => {
         expect(size.height).toBeGreaterThanOrEqual(44);
         expect(size.width).toBeGreaterThanOrEqual(44);
       });
@@ -149,11 +150,13 @@ describe('Feature: supabase-bilingual-email-templates', () => {
 
     it('should have padding that contributes to touch target size', () => {
       // Extract padding from anchor tags
-      const anchorRegex = /<a\s[^>]*href=["']#(en|it)["'][^>]*style=["']([^"']+)["'][^>]*>/g;
+
+      const anchorRegex = /<a\s[^>]*href=["']#(?:en|it)["'][^>]*style=["']([^"']+)["'][^>]*>/g;
       let match;
 
+      // eslint-disable-next-line no-cond-assign
       while ((match = anchorRegex.exec(languageNavHTML)) !== null) {
-        const styleAttr = match[2];
+        const styleAttr = match[1];
         const styles = parseInlineStyles(styleAttr);
 
         // Should have padding defined

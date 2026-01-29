@@ -70,6 +70,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
       let match;
       let foundBrandColor = false;
 
+      // eslint-disable-next-line no-cond-assign
       while ((match = styleRegex.exec(buttonHTML)) !== null) {
         const styleAttr = match[1];
         const styles = parseInlineStyles(styleAttr);
@@ -78,7 +79,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
           const bgColor = styles.background || styles['background-color'];
 
           // Check if background uses Primary Blue
-          if (bgColor.includes('#1D4ED8') || bgColor.includes('#1d4ed8')) {
+          if (bgColor?.includes('#1D4ED8') || bgColor?.includes('#1d4ed8')) {
             foundBrandColor = true;
           }
         }
@@ -106,6 +107,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
       let match;
       const allStyles: string[] = [];
 
+      // eslint-disable-next-line no-cond-assign
       while ((match = styleRegex.exec(buttonHTML)) !== null) {
         allStyles.push(match[1]);
       }
@@ -132,6 +134,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
       const styleAttrs: string[] = [];
       let match;
 
+      // eslint-disable-next-line no-cond-assign
       while ((match = styleRegex.exec(buttonHTML)) !== null) {
         styleAttrs.push(match[1]);
       }
@@ -145,13 +148,15 @@ describe('Feature: supabase-bilingual-email-templates', () => {
             // If the element has a background color
             if (styles.background || styles['background-color']) {
               const bgColor = styles.background || styles['background-color'];
-              const hexColors = extractHexColors(bgColor);
+              if (bgColor) {
+                const hexColors = extractHexColors(bgColor);
 
-              // If there are hex colors, at least one should be a brand color
-              if (hexColors.length > 0) {
-                const hasBrandColor = hexColors.some(color => isTradeliaColor(color));
+                // If there are hex colors, at least one should be a brand color
+                if (hexColors.length > 0) {
+                  const hasBrandColor = hexColors.some(color => isTradeliaColor(color));
 
-                expect(hasBrandColor).toBe(true);
+                  expect(hasBrandColor).toBe(true);
+                }
               }
             }
           },
@@ -194,6 +199,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
       const bgColors: string[] = [];
       let match;
 
+      // eslint-disable-next-line no-cond-assign
       while ((match = bgColorRegex.exec(buttonHTML)) !== null) {
         bgColors.push(match[1].trim());
       }
@@ -205,7 +211,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
             // If it's a solid color (not gradient), it should be Primary Blue
             if (!bgColor.includes('gradient') && !bgColor.includes('rgba')) {
               const hexColors = extractHexColors(bgColor);
-              if (hexColors.length > 0) {
+              if (hexColors.length > 0 && hexColors[0]) {
                 expect(hexColors[0].toUpperCase()).toBe('#1D4ED8');
               }
             }
@@ -223,6 +229,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
       let match;
       let hasBoxShadow = false;
 
+      // eslint-disable-next-line no-cond-assign
       while ((match = styleRegex.exec(buttonHTML)) !== null) {
         const styleAttr = match[1];
         const styles = parseInlineStyles(styleAttr);
@@ -241,6 +248,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
       let match;
       let hasBorder = false;
 
+      // eslint-disable-next-line no-cond-assign
       while ((match = styleRegex.exec(buttonHTML)) !== null) {
         const styleAttr = match[1];
         const styles = parseInlineStyles(styleAttr);
@@ -259,6 +267,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
       let match;
       let hasGlassEffect = false;
 
+      // eslint-disable-next-line no-cond-assign
       while ((match = styleRegex.exec(buttonHTML)) !== null) {
         const styleAttr = match[1];
         const styles = parseInlineStyles(styleAttr);
@@ -278,6 +287,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
       let match;
       const boxShadows: string[] = [];
 
+      // eslint-disable-next-line no-cond-assign
       while ((match = boxShadowRegex.exec(buttonHTML)) !== null) {
         boxShadows.push(match[1].trim());
       }
@@ -301,6 +311,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
       let match;
       const borders: string[] = [];
 
+      // eslint-disable-next-line no-cond-assign
       while ((match = borderRegex.exec(buttonHTML)) !== null) {
         borders.push(match[1].trim());
       }
@@ -324,6 +335,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
       const styleAttrs: string[] = [];
       let match;
 
+      // eslint-disable-next-line no-cond-assign
       while ((match = styleRegex.exec(buttonHTML)) !== null) {
         styleAttrs.push(match[1]);
       }
@@ -358,6 +370,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
       const boxShadows: string[] = [];
       let match;
 
+      // eslint-disable-next-line no-cond-assign
       while ((match = boxShadowRegex.exec(buttonHTML)) !== null) {
         boxShadows.push(match[1].trim());
       }
@@ -368,7 +381,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
           (shadow) => {
             // If shadow uses rgba, it should have low opacity (< 0.5)
             const rgbaMatch = shadow.match(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)/);
-            if (rgbaMatch) {
+            if (rgbaMatch && rgbaMatch[4]) {
               const opacity = Number.parseFloat(rgbaMatch[4]);
 
               expect(opacity).toBeLessThanOrEqual(0.5);
@@ -388,6 +401,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
       const borders: string[] = [];
       let match;
 
+      // eslint-disable-next-line no-cond-assign
       while ((match = borderRegex.exec(buttonHTML)) !== null) {
         borders.push(match[1].trim());
       }
@@ -398,7 +412,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
           (border) => {
             // Border should be thin (1px or 2px)
             const widthMatch = border.match(/(\d+)px/);
-            if (widthMatch) {
+            if (widthMatch && widthMatch[1]) {
               const width = Number.parseInt(widthMatch[1]);
 
               expect(width).toBeLessThanOrEqual(2);
@@ -406,7 +420,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
 
             // If border uses rgba, it should have low opacity
             const rgbaMatch = border.match(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)/);
-            if (rgbaMatch) {
+            if (rgbaMatch && rgbaMatch[4]) {
               const opacity = Number.parseFloat(rgbaMatch[4]);
 
               expect(opacity).toBeLessThanOrEqual(0.3);
@@ -427,6 +441,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
       const styleAttrs: string[] = [];
       let match;
 
+      // eslint-disable-next-line no-cond-assign
       while ((match = styleRegex.exec(buttonHTML)) !== null) {
         styleAttrs.push(match[1]);
       }
@@ -458,6 +473,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
       let match;
       let glassEffectCount = 0;
 
+      // eslint-disable-next-line no-cond-assign
       while ((match = styleRegex.exec(buttonHTML)) !== null) {
         const styleAttr = match[1];
         const styles = parseInlineStyles(styleAttr);

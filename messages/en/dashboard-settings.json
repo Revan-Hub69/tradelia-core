@@ -42,21 +42,21 @@
   },
   "preferences": {
     "title": "Preferences",
-    "description": "Manage your learning preferences",
+    "description": "Manage your trading preferences",
     "language": {
       "label": "Language",
       "description": "Choose your preferred language"
     },
     "difficulty": {
-      "label": "Difficulty",
+      "label": "Experience level",
       "beginner": "Beginner",
       "intermediate": "Intermediate",
       "advanced": "Advanced",
-      "description": "Set your learning difficulty level"
+      "description": "Adjust how much detail you see in challenge guidance"
     },
     "autoPlay": {
-      "label": "Auto-play next lesson",
-      "description": "Automatically start the next lesson after completing one"
+      "label": "Auto-open next challenge",
+      "description": "Automatically open the next challenge after viewing one"
     }
   },
   "notifications": {
@@ -71,12 +71,12 @@
       "description": "Receive browser push notifications"
     },
     "dailyReminder": {
-      "label": "Daily reminder",
-      "description": "Get reminded to complete your daily lesson"
+      "label": "Daily check-in",
+      "description": "Get a reminder to review challenges and signals"
     },
     "streakReminder": {
-      "label": "Streak reminder",
-      "description": "Get notified when your streak is at risk"
+      "label": "Enrollment reminder",
+      "description": "Get notified when an enrollment needs attention"
     }
   },
   "privacy": {
@@ -87,8 +87,8 @@
       "description": "Make your profile visible to other users"
     },
     "progressVisible": {
-      "label": "Show progress",
-      "description": "Display your learning progress publicly"
+      "label": "Show performance summary",
+      "description": "Display your performance summary publicly"
     },
     "leaderboardVisible": {
       "label": "Leaderboard participation",
@@ -129,7 +129,7 @@
       "title": "Notifications",
       "markAllRead": "Mark all as read",
       "settings": "Notification settings",
-      "studyReminders": "Study reminders",
+      "studyReminders": "Challenge reminders",
       "doNotDisturb": "Do not disturb"
     }
   },

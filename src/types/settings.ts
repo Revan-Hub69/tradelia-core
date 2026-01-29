@@ -107,7 +107,7 @@ export type UserSettingsV1 = {
   /**
    * User preferences
    *
-   * Language, difficulty, auto-play settings.
+   * Language, experience level, and auto-open settings.
    */
   preferences: PreferencesSettings;
 
@@ -121,7 +121,7 @@ export type UserSettingsV1 = {
   /**
    * Privacy settings
    *
-   * Profile visibility, progress sharing, leaderboard participation.
+   * Profile visibility, performance sharing, leaderboard participation.
    */
   privacy: PrivacySettings;
 };
@@ -241,7 +241,7 @@ export type PreferencesSettings = {
   language: string;
 
   /**
-   * Learning difficulty level
+   * Experience level for challenge guidance
    *
    * - 'adaptive': AI-adjusted based on performance
    * - 'beginner': Simplified content
@@ -251,9 +251,9 @@ export type PreferencesSettings = {
   difficulty: 'adaptive' | 'beginner' | 'intermediate' | 'advanced';
 
   /**
-   * Auto-play next lesson
+   * Auto-open next challenge
    *
-   * When true, automatically starts next lesson after completion.
+   * When true, automatically opens the next challenge after viewing one.
    */
   autoPlay: boolean;
 };
@@ -290,7 +290,7 @@ export type PrivacySettings = {
   /** Profile visible to other users */
   profileVisible: boolean;
 
-  /** Progress visible to other users */
+  /** Performance summary visible to other users */
   progressVisible: boolean;
 
   /** Participate in leaderboard */

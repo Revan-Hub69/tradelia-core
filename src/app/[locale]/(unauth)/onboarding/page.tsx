@@ -4,7 +4,7 @@ import { unstable_setRequestLocale } from 'next-intl/server';
 export async function generateMetadata() {
   return {
     title: 'Onboarding - Tradelia',
-    description: 'Inizia il tuo percorso di apprendimento crypto con Tradelia',
+    description: 'Complete your dashboard setup and start comparing challenges.',
   };
 }
 

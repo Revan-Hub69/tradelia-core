@@ -9,8 +9,8 @@ import { ClockIcon, CommissionIcon, LeverageIcon, TrendingUpIcon } from '../Prem
 import { SectionHeader } from './SectionHeader';
 
 type MarketAccess = {
-  markets_available: string[];
-  platforms: string[];
+  markets_available: string[] | string;
+  platforms: string[] | string;
   instruments_count?: number | null;
   leverage_forex?: string | null;
   leverage_indices?: string | null;
@@ -19,6 +19,25 @@ type MarketAccess = {
   commission_forex?: number | null;
   commission_indices?: number | null;
   trading_hours?: string | null;
+};
+
+// Helper to safely parse array fields that might be JSON strings
+const _parseArrayField = (value: string[] | string | null | undefined): string[] => {
+  if (!value) {
+    return [];
+  }
+  if (Array.isArray(value)) {
+    return value;
+  }
+  if (typeof value === 'string') {
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : [value];
+    } catch {
+      return [value];
+    }
+  }
+  return [];
 };
 
 type MarketsSectionProps = {
@@ -32,6 +51,10 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
     return null;
   }
 
+  // Safely parse array fields with defensive checks
+  const marketsAvailable = _parseArrayField(marketAccess?.markets_available);
+  const platforms = _parseArrayField(marketAccess?.platforms);
+
   return (
     <section>
       <SectionHeader
@@ -41,40 +64,44 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
       />
 
       {/* Available Markets */}
-      <div className="mb-4">
-        <div className="mb-2 text-sm font-medium">{t('markets.available')}</div>
-        <div className="flex flex-wrap gap-2">
-          {marketAccess.markets_available.map(market => (
-            <span
-              key={market}
-              className="rounded-lg border border-border/50 bg-background px-3 py-1.5 text-xs font-medium capitalize"
-            >
-              {market}
-            </span>
-          ))}
+      {marketsAvailable.length > 0 && (
+        <div className="mb-4">
+          <div className="mb-2 text-sm font-medium">{t('markets.available')}</div>
+          <div className="flex flex-wrap gap-2">
+            {marketsAvailable.map(market => (
+              <span
+                key={market}
+                className="rounded-lg border border-border/50 bg-background px-3 py-1.5 text-xs font-medium capitalize"
+              >
+                {market}
+              </span>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Platforms */}
-      <div className="mb-4">
-        <div className="mb-2 text-sm font-medium">{t('markets.platforms')}</div>
-        <div className="flex flex-wrap gap-2">
-          {marketAccess.platforms.map(platform => (
-            <span
-              key={platform}
-              className="rounded-lg border border-border/50 bg-background px-3 py-1.5 text-xs font-medium"
-            >
-              {platform}
-            </span>
-          ))}
+      {platforms.length > 0 && (
+        <div className="mb-4">
+          <div className="mb-2 text-sm font-medium">{t('markets.platforms')}</div>
+          <div className="flex flex-wrap gap-2">
+            {platforms.map(platform => (
+              <span
+                key={platform}
+                className="rounded-lg border border-border/50 bg-background px-3 py-1.5 text-xs font-medium"
+              >
+                {platform}
+              </span>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Leverage */}
-      {(marketAccess.leverage_forex ||
-        marketAccess.leverage_indices ||
-        marketAccess.leverage_commodities ||
-        marketAccess.leverage_crypto) && (
+      {(marketAccess.leverage_forex
+        || marketAccess.leverage_indices
+        || marketAccess.leverage_commodities
+        || marketAccess.leverage_crypto) && (
         <div className="mb-4 rounded-xl border border-border/50 bg-muted/30 p-4">
           <div className="mb-3 flex items-center gap-2">
             <LeverageIcon size={20} className="text-purple-600 dark:text-purple-400" />
@@ -88,8 +115,8 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
                 </svg>
                 <span>
                   <strong>
-{t('markets.forex')}
-:
+                    {t('markets.forex')}
+                    :
                   </strong>
                   {' '}
                   {marketAccess.leverage_forex}
@@ -103,8 +130,8 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
                 </svg>
                 <span>
                   <strong>
-{t('markets.indices')}
-:
+                    {t('markets.indices')}
+                    :
                   </strong>
                   {' '}
                   {marketAccess.leverage_indices}
@@ -118,8 +145,8 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
                 </svg>
                 <span>
                   <strong>
-{t('markets.commodities')}
-:
+                    {t('markets.commodities')}
+                    :
                   </strong>
                   {' '}
                   {marketAccess.leverage_commodities}
@@ -133,8 +160,8 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
                 </svg>
                 <span>
                   <strong>
-{t('markets.crypto')}
-:
+                    {t('markets.crypto')}
+                    :
                   </strong>
                   {' '}
                   {marketAccess.leverage_crypto}
@@ -160,8 +187,8 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
                 </svg>
                 <span>
                   <strong>
-{t('markets.forex')}
-:
+                    {t('markets.forex')}
+                    :
                   </strong>
                   {' '}
                   $
@@ -177,8 +204,8 @@ export function MarketsSection({ marketAccess }: MarketsSectionProps) {
                 </svg>
                 <span>
                   <strong>
-{t('markets.indices')}
-:
+                    {t('markets.indices')}
+                    :
                   </strong>
                   {' '}
                   $

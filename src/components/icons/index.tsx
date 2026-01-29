@@ -121,7 +121,7 @@ export const ICON_MAP = {
   MyChartsIcon,
   SignalsIcon,
 
-  // Educational icons
+  // Utility icons
   LearnIcon,
   CalculatorIcon,
   ForumIcon,

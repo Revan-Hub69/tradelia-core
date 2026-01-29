@@ -11,7 +11,9 @@ const path = require('node:path');
 const SUPABASE_URL = 'https://higkhlfjfhlecbtfnznx.supabase.co';
 const SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhpZ2tobGZqZmhsZWNidGZuem54Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MjQ1Nzk5OSwiZXhwIjoyMDc4MDMzOTk5fQ.iOqVIFi-WxChkTNkc58fizixSfRcANohcG1A9ggtkjs';
 
-async function executeMigration(sqlFilePath) {
+// This function is kept for future use but currently unused
+// eslint-disable-next-line no-unused-vars
+async function _executeMigration(sqlFilePath) {
   console.log(`🚀 Executing migration: ${sqlFilePath}`);
 
   // Read SQL file

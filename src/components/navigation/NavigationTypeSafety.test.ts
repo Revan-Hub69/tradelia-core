@@ -19,11 +19,9 @@ import {
 
 // Mock i18n keys that should exist for navigation
 const _REQUIRED_I18N_KEYS = [
-  'nav_home',
-  'nav_learn',
-  'nav_tools',
-  'nav_community',
-  'nav_profile',
+  'nav_challenges',
+  'nav_my_challenges',
+  'nav_signals',
   'nav_aria_primary',
   'nav_loading',
   'nav_focus_moved',
@@ -36,19 +34,24 @@ const _REQUIRED_I18N_KEYS = [
 
 // Generator for navigation item IDs
 const navigationItemIdGenerator = (): fc.Arbitrary<NavigationItemId> => {
-  return fc.constantFrom('home', 'learn', 'tools', 'community', 'profile');
+  return fc.constantFrom('challenges', 'my-challenges', 'signals');
 };
 
 // Generator for navigation items
 const navigationItemGenerator = (): fc.Arbitrary<NavigationItem> => {
   return navigationItemIdGenerator().chain((id) => {
-    const keyName = `nav_${id}`;
+    const keyName = `nav_${id.replace('-', '_')}`;
+    const iconNameMap: Record<NavigationItemId, string> = {
+      'challenges': 'ChallengesIcon',
+      'my-challenges': 'MyChartsIcon',
+      'signals': 'SignalsIcon',
+    };
     return fc.record({
       id: fc.constant(id),
       labelKey: fc.constant(`Dashboard.${keyName}`),
       ariaKey: fc.constant(`Dashboard.${keyName}`),
-      href: fc.constant(id === 'home' ? '/dashboard' : `/dashboard/${id}`),
-      iconName: fc.constant(`${id.charAt(0).toUpperCase() + id.slice(1)}Icon`),
+      href: fc.constant(`/dashboard/${id}`),
+      iconName: fc.constant(iconNameMap[id]),
       isPriority: fc.boolean(),
       featureFlag: fc.option(fc.string()),
       badgeType: fc.option(fc.constantFrom('dot', 'count', 'new')),
@@ -134,7 +137,7 @@ describe('Navigation Type Safety Property Tests', () => {
             expect(item).toHaveProperty('iconName');
 
             // Type safety: id should be a valid NavigationItemId
-            expect(['home', 'learn', 'tools', 'community', 'profile']).toContain(item.id);
+            expect(['challenges', 'my-challenges', 'signals']).toContain(item.id);
 
             // i18n keys should follow the expected pattern
             expect(item.labelKey).toMatch(/^Dashboard\.nav_/);
@@ -209,17 +212,13 @@ describe('Navigation Type Safety Property Tests', () => {
             expect(labelKey).toBe(ariaKey);
 
             // The key should correspond to the item ID
-            const expectedKey = `nav_${item.id}`;
+            const expectedKey = `nav_${item.id.replace('-', '_')}`;
 
             expect(labelKey).toBe(expectedKey);
             expect(ariaKey).toBe(expectedKey);
 
             // href should match the expected pattern
-            if (item.id === 'home') {
-              expect(item.href).toBe('/dashboard');
-            } else {
-              expect(item.href).toBe(`/dashboard/${item.id}`);
-            }
+            expect(item.href).toBe(`/dashboard/${item.id}`);
           }
         },
       ), { numRuns: 100 });

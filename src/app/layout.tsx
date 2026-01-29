@@ -20,8 +20,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'Tradelia - Learn Crypto Trading',
-  description: 'Educational platform for cryptocurrency trading',
+  title: 'Tradelia - Trading Challenges & AI Signals',
+  description: 'Find the right trading challenge, track your active runs, and follow AI signals',
   icons: [
     {
       rel: 'apple-touch-icon',

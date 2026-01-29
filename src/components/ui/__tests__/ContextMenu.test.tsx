@@ -35,7 +35,7 @@ describe('ContextMenu', () => {
     it('should render trigger element', () => {
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
         />,
@@ -47,7 +47,7 @@ describe('ContextMenu', () => {
     it('should not render menu initially', () => {
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
         />,
@@ -61,7 +61,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
         />,
@@ -79,7 +79,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
         />,
@@ -99,7 +99,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
         />,
@@ -117,7 +117,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
         />,
@@ -138,7 +138,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
           className="custom-class"
@@ -157,7 +157,7 @@ describe('ContextMenu', () => {
     it('should have correct ARIA attributes on trigger', () => {
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
         />,
@@ -174,7 +174,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
         />,
@@ -194,7 +194,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
         />,
@@ -214,7 +214,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
         />,
@@ -234,7 +234,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
         />,
@@ -258,7 +258,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
         />,
@@ -283,7 +283,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
         />,
@@ -308,7 +308,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
         />,
@@ -333,7 +333,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
         />,
@@ -357,7 +357,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
         />,
@@ -390,7 +390,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={items}
           ariaLabel="Quick actions"
         />,
@@ -417,7 +417,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
         />,
@@ -439,7 +439,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
         />,
@@ -461,7 +461,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
         />,
@@ -483,7 +483,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
         />,
@@ -507,7 +507,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
         />,
@@ -535,7 +535,7 @@ describe('ContextMenu', () => {
         <div>
           <div data-testid="outside">Outside</div>
           <ContextMenu
-            trigger={<button>Open Menu</button>}
+            trigger={<button type="button">Open Menu</button>}
             items={defaultItems}
             ariaLabel="Quick actions"
           />
@@ -560,7 +560,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
         />,
@@ -587,7 +587,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
         />,
@@ -612,7 +612,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
         />,
@@ -639,7 +639,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
           onOpen={mockOnOpen}
@@ -658,7 +658,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
           onClose={mockOnClose}
@@ -694,7 +694,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={items}
           ariaLabel="Quick actions"
         />,
@@ -721,7 +721,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={items}
           ariaLabel="Quick actions"
         />,
@@ -741,7 +741,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={[]}
           ariaLabel="Quick actions"
         />,
@@ -770,7 +770,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={items}
           ariaLabel="Quick actions"
         />,
@@ -796,7 +796,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={items}
           ariaLabel="Quick actions"
         />,
@@ -817,7 +817,7 @@ describe('ContextMenu', () => {
 
       render(
         <ContextMenu
-          trigger={<button>Open Menu</button>}
+          trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
         />,

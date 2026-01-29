@@ -1,155 +1,84 @@
-/*
- * DASHBOARD PAGE - PHASE 3B OPTIMIZED
- *
- * Tier 1 Implementation:
- * - Server Component with parallel data fetching
- * - Preload pattern for critical data
- * - Granular Suspense boundaries
- * - Virtual scrolling for large datasets
- * - Error boundaries for resilience
- */
-
 import { getTranslations } from 'next-intl/server';
-import { Suspense } from 'react';
 
-import { VirtualActivityFeed } from '@/components/dashboard/VirtualActivityFeed';
+import { DynamicIcon, type IconName } from '@/components/icons';
 import { PageTransitionWrapper } from '@/components/transitions/PageTransitionWrapper';
-// ✅ TIER 1: Optimized data fetching
-import { getCriticalDashboardData, preloadDashboardData } from '@/libs/dashboard-data';
+import { Link } from '@/libs/i18nNavigation';
 
-// Client Components for user data
-import {
-  DashboardActivityFeed,
-  DashboardNextSteps,
-  DashboardNotifications,
-  DashboardStatsCard,
-  DashboardStatusCard,
-} from './components';
+type QuickLink = {
+  id: 'challenges' | 'my-challenges' | 'signals';
+  href: string;
+  icon: IconName;
+  titleKey: 'nav_challenges' | 'nav_my_challenges' | 'nav_signals';
+  descKey: 'nav_challenges_desc' | 'nav_my_challenges_desc' | 'nav_signals_desc';
+};
 
-// ✅ TIER 1 PATTERN: Server Component with preloading
+const quickLinks: QuickLink[] = [
+  {
+    id: 'challenges',
+    href: '/dashboard/challenges',
+    icon: 'ChallengesIcon',
+    titleKey: 'nav_challenges',
+    descKey: 'nav_challenges_desc',
+  },
+  {
+    id: 'my-challenges',
+    href: '/dashboard/my-challenges',
+    icon: 'MyChartsIcon',
+    titleKey: 'nav_my_challenges',
+    descKey: 'nav_my_challenges_desc',
+  },
+  {
+    id: 'signals',
+    href: '/dashboard/signals',
+    icon: 'SignalsIcon',
+    titleKey: 'nav_signals',
+    descKey: 'nav_signals_desc',
+  },
+];
+
 const DashboardIndexPage = async () => {
   const t = await getTranslations('Dashboard');
-
-  // Mock user ID - replace with real auth
-  const userId = 'user-123';
-
-  // ✅ TIER 1: Preload critical data
-  preloadDashboardData(userId);
-
-  // ✅ TIER 1: Get critical data for initial render
-  const { userData, error } = await getCriticalDashboardData(userId);
-
-  // Handle authentication error
-  if (error || !userData) {
-    return (
-      <PageTransitionWrapper>
-        <div className="mx-auto max-w-screen-xl">
-          <div className="card-ios-26 text-center">
-            <h1 className="text-2xl font-bold text-destructive">
-              {t('auth_error_title')}
-            </h1>
-            <p className="mt-2 text-muted-foreground">
-              {error || t('auth_error_description')}
-            </p>
-          </div>
-        </div>
-      </PageTransitionWrapper>
-    );
-  }
 
   return (
     <PageTransitionWrapper>
       <div className="mx-auto max-w-screen-xl space-y-6">
-        {/* ✅ TIER 1: Personalized welcome with server-side data */}
-        <div className="stagger-item">
-          <h1 className="text-2xl font-bold">
-            {t('welcome_title', { name: userData.name })}
+        <div className="space-y-2">
+          <h1 className="text-2xl font-bold sm:text-3xl">
+            {t('overview_title')}
           </h1>
           <p className="text-muted-foreground">
-            {t('welcome_description')}
+            {t('overview_description')}
           </p>
         </div>
 
-        {/* ✅ TIER 1: Grid layout for better performance */}
-        <div className="grid gap-6 lg:grid-cols-2">
-          {/* Left Column */}
-          <div className="space-y-6">
-            {/* Current Status - Critical data already loaded */}
-            <DashboardStatusCard userData={userData} />
-
-            {/* Next Steps - Critical data already loaded */}
-            <DashboardNextSteps userData={userData} />
-          </div>
-
-          {/* Right Column */}
-          <div className="space-y-6">
-            {/* Stats - Suspense boundary for secondary data */}
-            <Suspense fallback={(
-              <div className="card-ios-26 stagger-item">
-                <div className="space-y-4">
-                  <div className="h-6 w-32 animate-pulse rounded bg-muted" />
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <div className="h-8 w-16 animate-pulse rounded bg-muted" />
-                      <div className="h-4 w-20 animate-pulse rounded bg-muted" />
-                    </div>
-                    <div className="space-y-2">
-                      <div className="h-8 w-16 animate-pulse rounded bg-muted" />
-                      <div className="h-4 w-20 animate-pulse rounded bg-muted" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+        <div className="grid gap-6 md:grid-cols-3">
+          {quickLinks.map(link => (
+            <Link
+              key={link.id}
+              href={link.href}
+              className="card-ios-26 group flex h-full flex-col justify-between transition-transform duration-200 hover:-translate-y-1"
             >
-              <DashboardStatsCard userId={userId} />
-            </Suspense>
-
-            {/* Notifications - Suspense boundary for secondary data */}
-            <Suspense fallback={(
-              <div className="card-ios-26 stagger-item">
-                <div className="space-y-4">
-                  <div className="h-6 w-40 animate-pulse rounded bg-muted" />
-                  <div className="space-y-3">
-                    <div className="h-12 w-full animate-pulse rounded bg-muted" />
-                    <div className="h-12 w-full animate-pulse rounded bg-muted" />
-                  </div>
-                </div>
-              </div>
-            )}
-            >
-              <DashboardNotifications userId={userId} />
-            </Suspense>
-          </div>
-        </div>
-
-        {/* ✅ PHASE 3B: Virtual Activity Feed - Handles unlimited data */}
-        <div className="grid gap-6 lg:grid-cols-2">
-          {/* Traditional Activity Feed (for comparison) */}
-          <Suspense fallback={(
-            <div className="card-ios-26 stagger-item">
-              <div className="space-y-4">
-                <div className="h-6 w-48 animate-pulse rounded bg-muted" />
+              <div className="flex items-start justify-between gap-4">
                 <div className="space-y-3">
-                  {Array.from({ length: 3 }).map((_, i) => (
-                    <div key={`dashboard-skeleton-${i}`} className="flex space-x-3">
-                      <div className="size-10 animate-pulse rounded-full bg-muted" />
-                      <div className="flex-1 space-y-2">
-                        <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
-                        <div className="h-3 w-1/2 animate-pulse rounded bg-muted" />
-                      </div>
-                    </div>
-                  ))}
+                  <div className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                    <DynamicIcon name={link.icon} size={24} variant="premium" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-semibold">{t(link.titleKey)}</h2>
+                    <p className="text-sm text-muted-foreground">
+                      {t(link.descKey)}
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-1 text-muted-foreground transition-colors group-hover:text-foreground" aria-hidden="true">
+                  &rarr;
                 </div>
               </div>
-            </div>
-          )}
-          >
-            <DashboardActivityFeed userId={userId} />
-          </Suspense>
-
-          {/* ✅ PHASE 3B: Virtual Activity Feed - Unlimited performance */}
-          <VirtualActivityFeed userId={userId} maxHeight={400} />
+              <div className="mt-6 text-xs font-medium text-muted-foreground transition-colors group-hover:text-foreground">
+                {t('overview_cta')}
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
     </PageTransitionWrapper>

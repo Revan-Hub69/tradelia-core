@@ -67,7 +67,7 @@ async function addTop5Opportunities() {
   ];
 
   for (const org of organizers) {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('organizers')
       .upsert(org, { onConflict: 'id' });
 
@@ -165,7 +165,7 @@ async function addTop5Opportunities() {
   ];
 
   for (const prog of programs) {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('programs')
       .upsert(prog, { onConflict: 'id' });
 
@@ -293,7 +293,7 @@ async function addTop5Opportunities() {
   ];
 
   for (const offer of offers) {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('offers')
       .upsert(offer, { onConflict: 'id' });
 

@@ -112,20 +112,8 @@ export type TelemetryPayload = Record<string, unknown>;
  * ```
  */
 export function track(_event: TelemetryEvent, _payload?: TelemetryPayload): void {
-  // No-op in production
-  if (process.env.NODE_ENV === 'production') {
-
-  }
-
-  // Analytics integration point
-  // Future: Send to analytics service
-  // Example:
-  // analytics.track(_event, {
-  //   ..._payload,
-  //   timestamp: Date.now(),
-  //   userId: getCurrentUserId(),
-  //   sessionId: getSessionId(),
-  // });
+  // No-op in production - intentionally empty
+  // Analytics integration point for future implementation
 }
 
 /**

@@ -43,9 +43,9 @@ export default function NotFound() {
             </UiButton>
 
             <UiButton variant="secondary" asChild>
-              <Link href="/lesson-0" className="gap-2">
+              <Link href="/dashboard/challenges" className="gap-2">
                 <Search className="size-4" aria-hidden="true" />
-                {t('start_learning')}
+                {t('start_challenges')}
               </Link>
             </UiButton>
           </div>
@@ -63,22 +63,22 @@ export default function NotFound() {
                 Dashboard
               </Link>
               <Link
-                href="/dashboard/learn"
+                href="/dashboard/challenges"
                 className="rounded-lg border px-3 py-1.5 text-sm transition-colors hover:bg-accent"
               >
-                {t('learn')}
+                {t('challenges')}
               </Link>
               <Link
-                href="/dashboard/tools"
+                href="/dashboard/my-challenges"
                 className="rounded-lg border px-3 py-1.5 text-sm transition-colors hover:bg-accent"
               >
-                {t('tools')}
+                {t('my_challenges')}
               </Link>
               <Link
-                href="/dashboard/community"
+                href="/dashboard/signals"
                 className="rounded-lg border px-3 py-1.5 text-sm transition-colors hover:bg-accent"
               >
-                {t('community')}
+                {t('signals')}
               </Link>
             </div>
           </div>

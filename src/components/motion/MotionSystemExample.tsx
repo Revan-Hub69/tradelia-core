@@ -145,6 +145,7 @@ export const MotionSystemExample: React.FC = () => {
 
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           <button
+            type="button"
             onClick={handleSuccess}
             className="glass-surface rounded-lg p-4 transition-colors hover:bg-accent/10"
           >
@@ -157,6 +158,7 @@ export const MotionSystemExample: React.FC = () => {
           </button>
 
           <button
+            type="button"
             onClick={handleError}
             className="glass-surface rounded-lg p-4 transition-colors hover:bg-destructive/10"
           >
@@ -231,6 +233,7 @@ export const MotionSystemExample: React.FC = () => {
 
         <div className="mb-4 flex gap-4">
           <button
+            type="button"
             onClick={toggleElements}
             className="rounded-lg bg-primary px-4 py-2 text-primary-foreground transition-colors hover:bg-primary/90"
           >
@@ -328,6 +331,7 @@ export const MotionSystemExample: React.FC = () => {
 
               <div className="flex gap-2">
                 <button
+                  type="button"
                   onClick={handleSuccess}
                   className="rounded-lg bg-accent px-4 py-2 text-accent-foreground transition-colors hover:bg-accent/90"
                 >
@@ -335,6 +339,7 @@ export const MotionSystemExample: React.FC = () => {
                 </button>
 
                 <button
+                  type="button"
                   onClick={handleError}
                   className="rounded-lg bg-destructive px-4 py-2 text-destructive-foreground transition-colors hover:bg-destructive/90"
                 >

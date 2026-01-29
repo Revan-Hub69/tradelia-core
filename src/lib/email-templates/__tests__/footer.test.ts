@@ -23,23 +23,6 @@ describe('Feature: supabase-bilingual-email-templates', () => {
   const footerHTML = readFileSync(footerPath, 'utf-8');
 
   /**
-   * Helper function to parse inline styles from a style attribute
-   */
-  function parseInlineStyles(styleAttr: string): Record<string, string> {
-    const styles: Record<string, string> = {};
-    const declarations = styleAttr.split(';').filter(d => d.trim());
-
-    for (const declaration of declarations) {
-      const [property, value] = declaration.split(':').map(s => s.trim());
-      if (property && value) {
-        styles[property] = value;
-      }
-    }
-
-    return styles;
-  }
-
-  /**
    * Helper function to check if a font-family string contains the system font stack
    */
   function hasSystemFontStack(fontFamily: string): boolean {
@@ -55,6 +38,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
       let match;
       const fontFamilies: string[] = [];
 
+      // eslint-disable-next-line no-cond-assign
       while ((match = fontFamilyRegex.exec(footerHTML)) !== null) {
         fontFamilies.push(match[1].trim());
       }
@@ -74,6 +58,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
       let match;
       const fontFamilies: string[] = [];
 
+      // eslint-disable-next-line no-cond-assign
       while ((match = fontFamilyRegex.exec(footerHTML)) !== null) {
         fontFamilies.push(match[1].trim());
       }
@@ -106,6 +91,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
       let match;
       let textElementsChecked = 0;
 
+      // eslint-disable-next-line no-cond-assign
       while ((match = fontFamilyRegex.exec(footerHTML)) !== null) {
         const fontFamily = match[1].trim();
 
@@ -129,6 +115,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
       const fontFamilies: string[] = [];
       let match;
 
+      // eslint-disable-next-line no-cond-assign
       while ((match = fontFamilyRegex.exec(footerHTML)) !== null) {
         fontFamilies.push(match[1].trim());
       }
@@ -154,6 +141,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
       const fontFamilies: string[] = [];
       let match;
 
+      // eslint-disable-next-line no-cond-assign
       while ((match = fontFamilyRegex.exec(footerHTML)) !== null) {
         fontFamilies.push(match[1].trim());
       }
@@ -183,6 +171,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
       const fontFamilies: string[] = [];
       let match;
 
+      // eslint-disable-next-line no-cond-assign
       while ((match = fontFamilyRegex.exec(footerHTML)) !== null) {
         fontFamilies.push(match[1].trim());
       }
@@ -234,6 +223,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
       const fontFamilies: string[] = [];
       let match;
 
+      // eslint-disable-next-line no-cond-assign
       while ((match = fontFamilyRegex.exec(footerHTML)) !== null) {
         fontFamilies.push(match[1].trim());
       }

@@ -3,14 +3,14 @@
  *
  * Enhanced with Apple Liquid Glass design language and Tier-1 research:
  * - Liquid Glass material system (Apple 2026 standard)
- * - Internal toggle button with optimal spacing (Figma UI3 lesson learned)
+ * - Internal toggle button with optimal spacing (Figma UI3 insight)
  * - Premium spring physics animations
- * - Educational calm integration
+ * - Calm-focus integration
  * - Enterprise-level accessibility
  *
  * RESEARCH SOURCES:
  * - Apple Liquid Glass Documentation 2026
- * - Figma UI3 Design Lessons (floating panels failure)
+ * - Figma UI3 Design insights (floating panels failure)
  * - Notion sidebar toggle positioning
  * - Stripe enterprise patterns
  *
@@ -18,7 +18,7 @@
  * - Selective Framer Motion imports
  * - CSS-based animations for simple cases
  * - GPU acceleration with will-change
- * - Educational timing integration
+ * - Calm timing integration
  */
 
 'use client';
@@ -360,7 +360,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                 'hover:shadow-lg hover:scale-[1.02]',
                 'active:scale-[0.98] active:bg-background/90',
                 'focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-                // Educational Calm Integration
+                // Calm-focus integration
                 'educational-hover educational-focus',
                 'transition-all duration-200 ease-out',
               )}

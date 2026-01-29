@@ -56,11 +56,6 @@ export default function DashboardNotFound() {
     setAttemptedPath(path);
 
     // TODO: Send to analytics
-    console.log('404 Error tracked:', {
-      path,
-      referrer: document.referrer,
-      timestamp: new Date().toISOString(),
-    });
 
     // Easter egg: Konami code detection (↑↑↓↓←→←→BA)
     let konamiIndex = 0;
@@ -97,16 +92,16 @@ export default function DashboardNotFound() {
     e.preventDefault();
     const query = debouncedQuery || searchQuery; // Use debounced or current
     if (query.trim()) {
-      // Navigate to learn page with search (or implement real search)
-      router.push(`/dashboard/learn?q=${encodeURIComponent(query)}`);
+      // Navigate to challenges page (search can be wired later)
+      router.push('/dashboard/challenges');
     }
   };
 
   const popularPages = [
     { href: '/dashboard', label: 'Dashboard', icon: Home },
-    { href: '/dashboard/learn', label: t('learn'), icon: TrendingUp },
-    { href: '/dashboard/tools', label: t('tools'), icon: Sparkles },
-    { href: '/dashboard/community', label: t('community'), icon: Map },
+    { href: '/dashboard/challenges', label: t('challenges'), icon: TrendingUp },
+    { href: '/dashboard/my-challenges', label: t('my_challenges'), icon: Sparkles },
+    { href: '/dashboard/signals', label: t('signals'), icon: Map },
   ];
 
   return (
@@ -203,9 +198,9 @@ export default function DashboardNotFound() {
             </UiButton>
 
             <UiButton variant="secondary" asChild>
-              <Link href="/dashboard/learn" className="gap-2">
+              <Link href="/dashboard/challenges" className="gap-2">
                 <TrendingUp className="size-4" aria-hidden="true" />
-                {t('learn')}
+                {t('challenges')}
               </Link>
             </UiButton>
 
@@ -260,7 +255,7 @@ export default function DashboardNotFound() {
               </a>
               <span className="text-muted-foreground/40">•</span>
               <Link
-                href="/dashboard/tools"
+                href="/dashboard/challenges"
                 className="inline-flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-primary"
               >
                 <Map className="size-4" />

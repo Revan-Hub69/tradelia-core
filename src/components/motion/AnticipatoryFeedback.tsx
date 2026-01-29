@@ -273,6 +273,7 @@ export const PressAnticipatory = forwardRef<HTMLButtonElement, PressAnticipatory
     return (
       <button
         ref={ref}
+        type="button"
         className={pressClasses}
         disabled={disabled}
         onMouseDown={handlePressStart}
@@ -358,6 +359,7 @@ export const HoverAnticipatory = forwardRef<HTMLDivElement, HoverAnticipatoryPro
         onMouseLeave={handleHoverEnd}
         onFocus={handleHoverStart}
         onBlur={handleHoverEnd}
+        role="button"
         tabIndex={0}
         {...props}
       >
@@ -445,6 +447,7 @@ export const LongPressAnticipatory: React.FC<{
   } as React.CSSProperties;
 
   return (
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
       className={longPressClasses}
       style={progressStyle}

@@ -1,8 +1,8 @@
--- ============================================================================
+﻿-- ============================================================================
 -- FREE OPPORTUNITIES SEED DATA - Migration 0010
 -- ============================================================================
 -- Date: 2026-01-27
--- Description: Seed verified free trading opportunities (0€ entry, real prizes)
+-- Description: Seed verified free trading opportunities (0 EUR entry, real prizes)
 -- Schema: organizers, programs, offers, rulesets, payout_terms (migrations 0006+0009)
 -- ============================================================================
 
@@ -36,9 +36,6 @@ ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO organizers (id, name, organizer_type, website_url, founded_year, headquarters, legal_status, reputation_score, logo_url, notes)
 VALUES
-  ('berachain', 'Berachain', 'platform', 'https://www.berachain.com', 2021, 'Decentralized', 'active', 88, '/logos/berachain.svg', 'Layer 1 blockchain'),
-  ('linea', 'Linea (Consensys)', 'platform', 'https://linea.build', 2023, 'USA', 'active', 90, '/logos/linea.svg', 'Consensys L2'),
-  ('scroll', 'Scroll', 'platform', 'https://scroll.io', 2021, 'USA', 'active', 85, '/logos/scroll.svg', 'zkEVM L2'),
   ('kucoin', 'KuCoin', 'exchange', 'https://www.kucoin.com', 2017, 'Seychelles', 'active', 83, '/logos/kucoin.svg', 'Crypto exchange'),
   ('mexc', 'MEXC', 'exchange', 'https://www.mexc.com', 2018, 'Seychelles', 'active', 80, '/logos/mexc.svg', 'Crypto exchange'),
   ('instaforex', 'InstaForex', 'broker', 'https://www.instaforex.com', 2007, 'Belize', 'active', 75, '/logos/instaforex.svg', 'Forex broker')
@@ -76,17 +73,7 @@ VALUES
   ('fbs-demo-contests', 'fbs', 'FBS Demo Contests', 'free_competition', 'demo_contest', 'periodic', 'https://fbs.com/contests', 'active', FALSE, 'ranking_based',
    'Various demo contests with bonus/cash prizes',
    '["Multiple contests"]'::jsonb, '["Conditions apply"]'::jsonb, 'Forex traders'),
-  -- TIER 3
-  ('berachain-testnet', 'berachain', 'Berachain Testnet', 'free_competition', 'testnet', 'ongoing', 'https://www.berachain.com', 'active', FALSE, 'ranking_based',
-   'Testnet for potential BERA token airdrop (bArtio)',
-   '["0 cost", "High potential"]'::jsonb, '["Not guaranteed"]'::jsonb, 'Crypto users'),
-  ('linea-voyage', 'linea', 'Linea Voyage', 'free_competition', 'testnet', 'ongoing', 'https://linea.build/voyage', 'active', FALSE, 'ranking_based',
-   'Testnet tasks for LXP points and potential token',
-   '["Consensys backing"]'::jsonb, '["Points != token"]'::jsonb, 'Crypto users'),
-  ('scroll-testnet', 'scroll', 'Scroll Testnet', 'free_competition', 'testnet', 'ongoing', 'https://scroll.io', 'active', FALSE, 'ranking_based',
-   'zkEVM testnet for potential SCR rewards',
-   '["Free participation"]'::jsonb, '["Uncertain"]'::jsonb, 'Crypto users'),
-  -- TIER 4
+  -- TIER 3-4
   ('kucoin-demo', 'kucoin', 'KuCoin Demo Competitions', 'free_competition', 'demo_contest', 'periodic', 'https://www.kucoin.com/competition', 'active', FALSE, 'ranking_based',
    'Demo trading battles with USDT prizes',
    '["USDT prizes"]'::jsonb, '["Periodic"]'::jsonb, 'Crypto traders'),
@@ -123,25 +110,14 @@ VALUES
 ON CONFLICT (id) DO NOTHING;
 
 -- ============================================================================
--- OFFERS - TIER 3 (Testnet)
+-- OFFERS - TIER 3-4
 -- ============================================================================
 
 INSERT INTO offers (id, program_id, offer_name, account_size, account_currency, entry_fee, fee_currency, prize_pool, first_prize, current_participants, recurring, frequency, start_date, end_date, registration_deadline, display_order, is_featured, is_hot, refund_conditions, scaling_conditions)
 VALUES
-  ('berachain-bartio', 'berachain-testnet', 'bArtio Testnet', 0, 'ETH', NULL, NULL, 0, 10000, 0, FALSE, 'one_time', '2024-01-01', '2026-06-30', '2026-06-30', 9, FALSE, FALSE, 'Free - testnet', 'Potential airdrop'),
-  ('linea-voyage-main', 'linea-voyage', 'Voyage Campaign', 0, 'ETH', NULL, NULL, 0, 5000, 0, FALSE, 'one_time', '2023-01-01', '2026-12-31', '2026-12-31', 10, FALSE, FALSE, 'Free - testnet', 'LXP points'),
-  ('scroll-testnet-main', 'scroll-testnet', 'Scroll Sessions', 0, 'ETH', NULL, NULL, 0, 3000, 0, FALSE, 'one_time', '2024-01-01', '2026-12-31', '2026-12-31', 11, FALSE, FALSE, 'Free - testnet', 'Potential SCR')
-ON CONFLICT (id) DO NOTHING;
-
--- ============================================================================
--- OFFERS - TIER 4
--- ============================================================================
-
-INSERT INTO offers (id, program_id, offer_name, account_size, account_currency, entry_fee, fee_currency, prize_pool, first_prize, current_participants, recurring, frequency, start_date, end_date, registration_deadline, display_order, is_featured, is_hot, refund_conditions, scaling_conditions)
-VALUES
-  ('kucoin-demo-weekly', 'kucoin-demo', 'Demo Trading Battle', 50000, 'USDT', NULL, NULL, 15000, 2000, 0, TRUE, 'weekly', '2026-01-27', '2026-02-03', '2026-01-27', 12, FALSE, FALSE, 'Free entry', 'USDT prizes'),
-  ('mexc-demo-weekly', 'mexc-demo', 'Demo Contest', 50000, 'USDT', NULL, NULL, 10000, 1500, 0, TRUE, 'weekly', '2026-01-27', '2026-02-03', '2026-01-27', 13, FALSE, FALSE, 'Free entry', 'USDT prizes'),
-  ('instaforex-great-race', 'instaforex-contests', 'Great Race', 50000, 'USD', NULL, NULL, 50000, 15000, 0, TRUE, 'quarterly', '2026-01-01', '2026-03-31', '2026-03-31', 14, FALSE, FALSE, 'Free entry', 'Cash pool $50K')
+  ('kucoin-demo-weekly', 'kucoin-demo', 'Demo Trading Battle', 50000, 'USDT', NULL, NULL, 15000, 2000, 0, TRUE, 'weekly', '2026-01-27', '2026-02-03', '2026-01-27', 9, FALSE, FALSE, 'Free entry', 'USDT prizes'),
+  ('mexc-demo-weekly', 'mexc-demo', 'Demo Contest', 50000, 'USDT', NULL, NULL, 10000, 1500, 0, TRUE, 'weekly', '2026-01-27', '2026-02-03', '2026-01-27', 10, FALSE, FALSE, 'Free entry', 'USDT prizes'),
+  ('instaforex-great-race', 'instaforex-contests', 'Great Race', 50000, 'USD', NULL, NULL, 50000, 15000, 0, TRUE, 'quarterly', '2026-01-01', '2026-03-31', '2026-03-31', 11, FALSE, FALSE, 'Free entry', 'Cash pool $50K')
 ON CONFLICT (id) DO NOTHING;
 
 -- ============================================================================
@@ -176,21 +152,20 @@ ON CONFLICT (id) DO NOTHING;
 DO $$
 BEGIN
   RAISE NOTICE '';
-  RAISE NOTICE '✅ Migration 0010 Complete - Free Opportunities Seed Data';
-  RAISE NOTICE '📊 Inserted:';
-  RAISE NOTICE '   - 14 Organizers (Tiers 1-4)';
-  RAISE NOTICE '   - 14 Programs (free competitions)';
-  RAISE NOTICE '   - 14 Offers (0€ entry, first_prize set)';
+  RAISE NOTICE 'Migration 0010 Complete - Free Opportunities Seed Data';
+  RAISE NOTICE 'Inserted:';
+  RAISE NOTICE '   - 11 Organizers (Tiers 1-4)';
+  RAISE NOTICE '   - 11 Programs (free competitions)';
+  RAISE NOTICE '   - 11 Offers (0 EUR entry, first_prize set)';
   RAISE NOTICE '   - 5 Rulesets (ranking_based for competitions)';
   RAISE NOTICE '   - 4 Payout Terms';
   RAISE NOTICE '';
-  RAISE NOTICE '🎯 TOP 5 FREE OPPORTUNITIES:';
+  RAISE NOTICE 'TOP 5 FREE OPPORTUNITIES:';
   RAISE NOTICE '   1. NinjaTrader Arena - $50K pool, $10K first prize';
   RAISE NOTICE '   2. Bybit Demo Arena - $50K USDT, $5K first prize';
   RAISE NOTICE '   3. The5ers Competition - $100K funded account';
   RAISE NOTICE '   4. PrimeXBT Demo - $10K weekly, $3K first prize';
   RAISE NOTICE '   5. InstaForex Great Race - $50K pool, $15K first prize';
   RAISE NOTICE '';
-  RAISE NOTICE '⚠️  All entries have entry_fee = NULL (0€ cost)';
-  RAISE NOTICE '⚠️  Testnet opportunities included (airdrop not guaranteed)';
+  RAISE NOTICE 'All entries have entry_fee = NULL (0 EUR cost)';
 END $$;

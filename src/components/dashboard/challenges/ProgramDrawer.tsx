@@ -450,8 +450,8 @@ export function ProgramDrawer({
                 {onEnrollAction && selectedOffer && (
                   <motion.button
                     onClick={handleEnroll}
-                    whileTap={{ scale: 0.97 }}
                     className={cn(
+                      'press-feedback',
                       'flex-1 rounded-xl px-5 py-3.5 text-[15px] font-bold',
                       'transition-all duration-200',
                       'shadow-lg',

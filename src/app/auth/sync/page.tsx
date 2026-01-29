@@ -3,24 +3,18 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 
-import { useLessonCompletion } from '@/hooks/useLessonCompletion';
-
 function AuthSyncContent() {
   const [, setIsLoading] = useState(true);
   const [syncStatus, setSyncStatus] = useState<'syncing' | 'success' | 'error'>('syncing');
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { syncPendingCompletions } = useLessonCompletion();
 
   useEffect(() => {
     const syncData = async () => {
       try {
         setSyncStatus('syncing');
 
-        // Sync any pending lesson completions
-        await syncPendingCompletions();
-
-        // Create user profile and progress if they don't exist
+        // Create user profile if it doesn't exist
         const profileResponse = await fetch('/api/user/profile', {
           method: 'POST',
           headers: {
@@ -31,17 +25,8 @@ function AuthSyncContent() {
           }),
         });
 
-        if (profileResponse.ok) {
-          // Create initial progress record
-          await fetch('/api/user/progress', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              initialXP: 0, // Will be updated by lesson completions
-            }),
-          });
+        if (!profileResponse.ok) {
+          console.warn('Profile sync failed');
         }
 
         setSyncStatus('success');
@@ -65,7 +50,7 @@ function AuthSyncContent() {
     };
 
     syncData();
-  }, [searchParams, router, syncPendingCompletions]);
+  }, [searchParams, router]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background">
@@ -78,7 +63,7 @@ function AuthSyncContent() {
           <div className="space-y-2">
             <h2 className="text-xl font-semibold">Sincronizzazione in corso...</h2>
             <p className="text-muted-foreground">
-              Stiamo configurando il tuo account e sincronizzando i tuoi progressi.
+              Stiamo configurando il tuo account.
             </p>
           </div>
         )}

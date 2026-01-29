@@ -13,7 +13,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
     notFound();
   }
 
-  // Load main messages (includes Dashboard, Learning, etc.)
+  // Load main messages (includes Dashboard and landing namespaces)
   const mainMessages = (await import(`../locales/${locale}.json`)).default;
 
   // Load additional namespace messages

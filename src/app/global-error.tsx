@@ -29,6 +29,7 @@ export default function GlobalError({
               We're sorry, but something unexpected happened.
             </p>
             <button
+              type="button"
               onClick={reset}
               className="rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
             >

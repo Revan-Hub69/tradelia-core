@@ -101,7 +101,7 @@ export const Navbar = () => {
 
   const navLinks = [
     {
-      href: '#percorsi',
+      href: '#challenges',
       label: t('product'),
       description: t('nav_product_desc'),
       icon: (
@@ -111,7 +111,7 @@ export const Navbar = () => {
       ),
     },
     {
-      href: '#features',
+      href: '#signals',
       label: t('docs'),
       description: t('nav_docs_desc'),
       icon: (

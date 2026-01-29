@@ -53,16 +53,11 @@ export default async function middleware(request: NextRequest) {
   const { user } = await updateSession(request);
 
   // Protected routes that require authentication
-  const protectedPaths = ['/dashboard', '/profile'];
-
-  // Lesson routes that require auth (exclude lesson-0 which is free)
-  const isProtectedLesson = request.nextUrl.pathname.includes('/lesson')
-    && !request.nextUrl.pathname.includes('/lesson-0')
-    && !request.nextUrl.pathname.includes('/lesson-demo');
+  const protectedPaths = ['/dashboard'];
 
   const isProtectedPath = protectedPaths.some(path =>
     request.nextUrl.pathname.includes(path),
-  ) || isProtectedLesson;
+  );
 
   // If accessing protected route without auth, redirect to sign-in
   if (isProtectedPath && !user) {

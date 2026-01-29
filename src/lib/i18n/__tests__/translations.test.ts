@@ -40,6 +40,7 @@ function validateICUFormat(message: string): string | null {
   const placeholderRegex = /\{([^}]*)\}/g;
   let match;
 
+  // eslint-disable-next-line no-cond-assign
   while ((match = placeholderRegex.exec(message)) !== null) {
     const content = match[1]?.trim() ?? '';
 
