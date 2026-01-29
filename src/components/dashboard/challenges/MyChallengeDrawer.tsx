@@ -5,7 +5,6 @@ import { useTranslations } from 'next-intl';
 import { useEffect, useMemo, useState } from 'react';
 
 import { useNavigationContext } from '@/components/navigation/useNavigationContext';
-import { cn } from '@/utils/Helpers';
 
 import type { EnrollmentStatus } from './EnrollmentStatusCard';
 import { ExternalLinkIcon } from './PremiumIcons';
@@ -52,33 +51,6 @@ const CloseIcon = ({ className = '' }: { className?: string }) => (
   </svg>
 );
 
-const buildJourneySteps = (status: EnrollmentStatus, t: any) => {
-  const isActive = status === 'active';
-  const isCompleted = status === 'completed';
-  const isFailed = status === 'failed' || status === 'abandoned';
-
-  return [
-    {
-      id: 'setup',
-      title: t('journey.setup_title'),
-      description: t('journey.setup_description'),
-      state: isActive || isCompleted || isFailed ? 'done' : 'current',
-    },
-    {
-      id: 'execute',
-      title: t('journey.execute_title'),
-      description: t('journey.execute_description'),
-      state: isCompleted ? 'done' : isActive ? 'current' : 'upcoming',
-    },
-    {
-      id: 'review',
-      title: t('journey.review_title'),
-      description: t('journey.review_description'),
-      state: isCompleted ? 'done' : isFailed ? 'blocked' : 'upcoming',
-    },
-  ] as const;
-};
-
 const parseAccountSize = (value: Enrollment['offer']['accountSize']) => {
   if (typeof value === 'number' && Number.isFinite(value)) {
     return value;
@@ -89,40 +61,6 @@ const parseAccountSize = (value: Enrollment['offer']['accountSize']) => {
     return Number.isFinite(parsed) ? parsed : null;
   }
   return null;
-};
-
-const buildChecklist = (status: EnrollmentStatus, t: any) => {
-  const enrolled = status !== 'interested';
-  const rulesReviewed = ['pending_confirmation', 'active', 'completed', 'failed', 'abandoned'].includes(status);
-  const platformReady = ['active', 'completed', 'failed', 'abandoned'].includes(status);
-  const firstSession = ['active', 'completed', 'failed', 'abandoned'].includes(status);
-
-  return [
-    {
-      id: 'enrolled',
-      title: t('checklist.enrolled_title'),
-      description: t('checklist.enrolled_description'),
-      done: enrolled,
-    },
-    {
-      id: 'rules',
-      title: t('checklist.rules_title'),
-      description: t('checklist.rules_description'),
-      done: rulesReviewed,
-    },
-    {
-      id: 'platform',
-      title: t('checklist.platform_title'),
-      description: t('checklist.platform_description'),
-      done: platformReady,
-    },
-    {
-      id: 'session',
-      title: t('checklist.session_title'),
-      description: t('checklist.session_description'),
-      done: firstSession,
-    },
-  ] as const;
 };
 
 export function MyChallengeDrawer({
@@ -160,18 +98,55 @@ export function MyChallengeDrawer({
     };
   }, [isOpen]);
 
-  const journeySteps = useMemo(() => {
+  const auditContext = useMemo(() => {
     if (!enrollment) {
-      return [];
+      return null;
     }
-    return buildJourneySteps(enrollment.status, t);
-  }, [enrollment, t]);
 
-  const checklistItems = useMemo(() => {
-    if (!enrollment) {
-      return [];
-    }
-    return buildChecklist(enrollment.status, t);
+    const tradeGate = enrollment.status === 'active'
+      ? 'OPEN'
+      : ['pending_confirmation', 'pending_redirect', 'interested'].includes(enrollment.status)
+        ? 'RESTRICTED'
+        : 'CLOSED';
+
+    return {
+      challengeRef: {
+        challengeId: enrollment.program.id,
+        accountSizeSelected: parseAccountSize(enrollment.offer.accountSize),
+        startedAt: enrollment.createdAt ?? null,
+      },
+      accountState: {
+        balanceStart: null,
+        equityNow: null,
+        profitProgressPct: null,
+        maxDdUsedPct: null,
+        dailyLossUsedPctToday: null,
+        daysTraded: null,
+        lastTradeAt: null,
+        todayTradeCount: null,
+        todayRealizedPnl: null,
+      },
+      contextLite: {
+        session: 'OFF',
+        eventRisk: 'NONE',
+        volatilityHint: 'NORMAL',
+      },
+      operatingEnvelope: {
+        automationPolicy: 'MANUAL_ONLY',
+        tradeGate,
+        riskBudget: {
+          dailyRiskCapPct: 2.0,
+          riskPerTradePct: 0.5,
+          maxTrades: 2,
+        },
+        stopRules: ['STOP_AFTER_2_LOSSES', 'STOP_IF_EVENT_RISK_LIVE'],
+        notesShort: tradeGate === 'OPEN'
+          ? t('drawer.notes_open')
+          : tradeGate === 'RESTRICTED'
+            ? t('drawer.notes_restricted')
+            : t('drawer.notes_closed'),
+      },
+    };
   }, [enrollment, t]);
 
   if (!enrollment) {
@@ -191,8 +166,23 @@ export function MyChallengeDrawer({
       return `${accountCurrency} ${Math.round(value).toLocaleString()}`.trim();
     }
   };
-  const riskPerTrade = accountSize ? accountSize * 0.005 : null;
-  const maxDailyRisk = accountSize ? accountSize * 0.02 : null;
+  const formatPct = (value: number | null) => {
+    if (value === null || Number.isNaN(value)) {
+      return t('drawer.value_missing');
+    }
+    return `${value.toFixed(1)}%`;
+  };
+
+  const formatDate = (value: string | null) => {
+    if (!value) {
+      return t('drawer.value_missing');
+    }
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) {
+      return t('drawer.value_missing');
+    }
+    return parsed.toLocaleDateString();
+  };
 
   const canActivate = enrollment.status === 'pending_confirmation';
   const canRemove = ['interested', 'pending_redirect', 'pending_confirmation', 'abandoned'].includes(enrollment.status);
@@ -265,74 +255,163 @@ export function MyChallengeDrawer({
 
             <div className="relative flex-1 space-y-6 overflow-y-auto px-5 py-6">
               <section className="space-y-3 rounded-2xl border border-border/60 bg-white/70 p-4 shadow-sm">
-                <h3 className="text-sm font-semibold">{t('drawer.journey_title')}</h3>
-                <div className="space-y-3">
-                  {journeySteps.map(step => (
-                    <div key={step.id} className="flex gap-3">
-                      <div className={cn(
-                        'mt-1 size-2 rounded-full',
-                        step.state === 'done' && 'bg-green-500',
-                        step.state === 'current' && 'bg-primary',
-                        step.state === 'blocked' && 'bg-red-500',
-                        step.state === 'upcoming' && 'bg-muted-foreground/40',
-                      )}
-                      />
-                      <div>
-                        <p className="text-sm font-medium">{step.title}</p>
-                        <p className="text-xs text-muted-foreground">{step.description}</p>
-                      </div>
-                    </div>
-                  ))}
+                <h3 className="text-sm font-semibold">{t('drawer.challenge_ref_title')}</h3>
+                <div className="grid gap-3 text-xs text-muted-foreground">
+                  <div className="flex items-center justify-between rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                    <span>{t('drawer.challenge_id_label')}</span>
+                    <span className="text-sm font-semibold text-foreground">
+                      {auditContext?.challengeRef.challengeId ?? t('drawer.value_missing')}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                    <span>{t('drawer.account_size_selected_label')}</span>
+                    <span className="text-sm font-semibold text-foreground">
+                      {accountSize ? formatMoney(accountSize) : t('drawer.value_missing')}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                    <span>{t('drawer.started_at_label')}</span>
+                    <span className="text-sm font-semibold text-foreground">
+                      {formatDate(auditContext?.challengeRef.startedAt ?? null)}
+                    </span>
+                  </div>
                 </div>
               </section>
 
               <section className="space-y-3 rounded-2xl border border-border/60 bg-white/70 p-4 shadow-sm">
-                <h3 className="text-sm font-semibold">{t('drawer.risk_template_title')}</h3>
-                <p className="text-xs text-muted-foreground">{t('drawer.risk_template_description')}</p>
-                <div className="grid gap-2">
-                  <div className="flex items-center justify-between rounded-xl border border-border/60 bg-white/70 px-3 py-2">
-                    <div>
-                      <p className="text-xs font-semibold text-muted-foreground">{t('drawer.risk_per_trade_label')}</p>
-                      <p className="text-sm font-medium">
-                        {riskPerTrade ? formatMoney(riskPerTrade) : t('drawer.risk_template_missing')}
+                <h3 className="text-sm font-semibold">{t('drawer.account_state_title')}</h3>
+                <div className="grid gap-2 text-xs text-muted-foreground">
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                      <p>{t('drawer.profit_progress_label')}</p>
+                      <p className="text-sm font-semibold text-foreground">
+                        {formatPct(auditContext?.accountState.profitProgressPct ?? null)}
                       </p>
                     </div>
+                    <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                      <p>{t('drawer.max_dd_used_label')}</p>
+                      <p className="text-sm font-semibold text-foreground">
+                        {formatPct(auditContext?.accountState.maxDdUsedPct ?? null)}
+                      </p>
+                    </div>
+                    <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                      <p>{t('drawer.daily_loss_used_label')}</p>
+                      <p className="text-sm font-semibold text-foreground">
+                        {formatPct(auditContext?.accountState.dailyLossUsedPctToday ?? null)}
+                      </p>
+                    </div>
+                    <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                      <p>{t('drawer.days_traded_label')}</p>
+                      <p className="text-sm font-semibold text-foreground">
+                        {auditContext?.accountState.daysTraded ?? t('drawer.value_missing')}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                      <p>{t('drawer.today_trade_count_label')}</p>
+                      <p className="text-sm font-semibold text-foreground">
+                        {auditContext?.accountState.todayTradeCount ?? t('drawer.value_missing')}
+                      </p>
+                    </div>
+                    <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                      <p>{t('drawer.today_realized_pnl_label')}</p>
+                      <p className="text-sm font-semibold text-foreground">
+                        {auditContext?.accountState.todayRealizedPnl !== null
+                          ? formatMoney(auditContext.accountState.todayRealizedPnl)
+                          : t('drawer.value_missing')}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                    <p>{t('drawer.last_trade_at_label')}</p>
+                    <p className="text-sm font-semibold text-foreground">
+                      {formatDate(auditContext?.accountState.lastTradeAt ?? null)}
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+              <section className="space-y-3 rounded-2xl border border-border/60 bg-white/70 p-4 shadow-sm">
+                <h3 className="text-sm font-semibold">{t('drawer.context_lite_title')}</h3>
+                <div className="grid gap-2 text-xs text-muted-foreground">
+                  <div className="flex items-center justify-between rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                    <span>{t('drawer.session_label')}</span>
+                    <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
+                      {auditContext?.contextLite.session}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                    <span>{t('drawer.event_risk_label')}</span>
+                    <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
+                      {auditContext?.contextLite.eventRisk}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                    <span>{t('drawer.volatility_hint_label')}</span>
+                    <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
+                      {auditContext?.contextLite.volatilityHint}
+                    </span>
+                  </div>
+                </div>
+              </section>
+
+              <section className="space-y-3 rounded-2xl border border-border/60 bg-white/70 p-4 shadow-sm">
+                <h3 className="text-sm font-semibold">{t('drawer.operating_envelope_title')}</h3>
+                <div className="grid gap-3 text-xs text-muted-foreground">
+                  <div className="flex items-center justify-between rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                    <span>{t('drawer.automation_policy_label')}</span>
+                    <span className="text-sm font-semibold text-foreground">
+                      {auditContext?.operatingEnvelope.automationPolicy}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                    <span>{t('drawer.trade_gate_label')}</span>
                     <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-700">
-                      0.5%
+                      {auditContext?.operatingEnvelope.tradeGate}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between rounded-xl border border-border/60 bg-white/70 px-3 py-2">
-                    <div>
-                      <p className="text-xs font-semibold text-muted-foreground">{t('drawer.max_daily_risk_label')}</p>
-                      <p className="text-sm font-medium">
-                        {maxDailyRisk ? formatMoney(maxDailyRisk) : t('drawer.risk_template_missing')}
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                      <p>{t('drawer.daily_risk_cap_label')}</p>
+                      <p className="text-sm font-semibold text-foreground">
+                        {formatPct(auditContext?.operatingEnvelope.riskBudget.dailyRiskCapPct ?? null)}
                       </p>
                     </div>
-                    <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700">
-                      2%
-                    </span>
-                  </div>
-                </div>
-              </section>
-
-              <section className="space-y-3 rounded-2xl border border-border/60 bg-white/70 p-4 shadow-sm">
-                <h3 className="text-sm font-semibold">{t('drawer.checklist_title')}</h3>
-                <p className="text-xs text-muted-foreground">{t('drawer.checklist_description')}</p>
-                <div className="grid gap-2">
-                  {checklistItems.map(item => (
-                    <div key={item.id} className="flex items-start gap-3 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
-                      <span
-                        className={cn(
-                          'mt-1 size-2 rounded-full',
-                          item.done ? 'bg-emerald-500' : 'bg-muted-foreground/40',
-                        )}
-                      />
-                      <div>
-                        <p className="text-sm font-medium">{item.title}</p>
-                        <p className="text-xs text-muted-foreground">{item.description}</p>
-                      </div>
+                    <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                      <p>{t('drawer.risk_per_trade_pct_label')}</p>
+                      <p className="text-sm font-semibold text-foreground">
+                        {formatPct(auditContext?.operatingEnvelope.riskBudget.riskPerTradePct ?? null)}
+                      </p>
                     </div>
-                  ))}
+                    <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                      <p>{t('drawer.max_trades_label')}</p>
+                      <p className="text-sm font-semibold text-foreground">
+                        {auditContext?.operatingEnvelope.riskBudget.maxTrades}
+                      </p>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                      {t('drawer.stop_rules_label')}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {auditContext?.operatingEnvelope.stopRules.map(rule => (
+                        <span
+                          key={rule}
+                          className="rounded-full border border-border/60 bg-white/70 px-2 py-0.5 text-[10px] font-semibold text-muted-foreground"
+                        >
+                          {t(`drawer.stop_rules.${rule}`)}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                    <p>{t('drawer.notes_short_label')}</p>
+                    <p className="text-sm font-medium text-foreground">
+                      {auditContext?.operatingEnvelope.notesShort}
+                    </p>
+                  </div>
                 </div>
               </section>
             </div>
