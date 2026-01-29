@@ -129,7 +129,11 @@ export function PayoutSection({ payoutTerms }: PayoutSectionProps) {
 :
               </strong>
               {' '}
-              {payoutTerms.withdrawal_methods.join(', ')}
+              {Array.isArray(payoutTerms.withdrawal_methods)
+                ? payoutTerms.withdrawal_methods.join(', ')
+                : typeof payoutTerms.withdrawal_methods === 'string'
+                  ? payoutTerms.withdrawal_methods
+                  : String(payoutTerms.withdrawal_methods)}
             </span>
           </li>
         )}

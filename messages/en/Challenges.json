@@ -185,6 +185,7 @@
     "accountSize": "Account Size",
     "fee": "Fee",
     "viewDetails": "View Details",
+    "refundable": "Refundable",
     "tabs": {
       "overview": "Overview",
       "pricing": "Pricing",
