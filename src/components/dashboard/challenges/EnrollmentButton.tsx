@@ -15,21 +15,19 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
-import { ExternalLinkIcon, RedirectIcon } from './PremiumIcons';
+import { RedirectIcon } from './PremiumIcons';
 
 type EnrollmentButtonProps = {
   programId: string;
   offerId: string;
-  officialUrl: string;
   isFree: boolean;
-  onEnrollAction: (programId: string, offerId: string) => Promise<{ success: boolean; officialUrl?: string; error?: string }>;
+  onEnrollAction: (programId: string, offerId: string) => Promise<{ success: boolean; error?: string }>;
   className?: string;
 };
 
 export function EnrollmentButton({
   programId,
   offerId,
-  officialUrl,
   isFree,
   onEnrollAction,
   className,
@@ -57,10 +55,8 @@ export function EnrollmentButton({
       // 2. Show confirmation modal
       setShowConfirmation(true);
 
-      // 3. Open URL in new tab after delay
+      // 3. Redirect to My Challenges after delay
       setTimeout(() => {
-        const url = result.officialUrl || officialUrl;
-        window.open(url, '_blank', 'noopener,noreferrer');
         setShowConfirmation(false);
         setIsLoading(false);
 
@@ -101,7 +97,6 @@ export function EnrollmentButton({
         ) : (
           <>
             {isFree ? t('enrollment.joinFree') : t('enrollment.startChallenge')}
-            <ExternalLinkIcon size={16} />
           </>
         )}
       </motion.button>

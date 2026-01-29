@@ -24,6 +24,7 @@
  */
 
 import { AnimatePresence, motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -114,8 +115,7 @@ type ProgramDrawerProps = {
   marketAccess: MarketAccess | null;
   isOpen: boolean;
   onCloseAction: () => void;
-  onEnrollAction?: (programId: string, offerId: string) => Promise<{ success: boolean; officialUrl?: string; error?: string }>;
-  officialUrl?: string;
+  onEnrollAction?: (programId: string, offerId: string) => Promise<{ success: boolean; error?: string }>;
 };
 
 // Tradelia Close Icon
@@ -169,6 +169,7 @@ export function ProgramDrawer({
   onEnrollAction,
 }: ProgramDrawerProps) {
   const t = useTranslations('Challenges') as any;
+  const router = useRouter();
 
   // Get navigation context to notify when drawer is open
   const { setOverlayOpen } = useNavigationContext();
@@ -225,8 +226,9 @@ export function ProgramDrawer({
     triggerHaptic('medium');
     if (onEnrollAction && selectedOffer) {
       const result = await onEnrollAction(program.id, selectedOffer.id);
-      if (result.success && result.officialUrl) {
-        window.open(result.officialUrl, '_blank');
+      if (result.success) {
+        onCloseAction();
+        router.push('/dashboard/my-challenges');
       }
     }
   };

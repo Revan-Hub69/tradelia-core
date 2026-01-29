@@ -444,7 +444,6 @@ export default function ChallengesPage() {
           marketAccess={selectedProgram.marketAccess}
           isOpen={!!selectedProgram}
           onCloseAction={handleCloseDrawer}
-          officialUrl={selectedProgram.program.official_url || 'https://ftmo.com'}
           onEnrollAction={async (programId: string, offerId: string) => {
             try {
               const response = await fetch('/api/enrollments', {
@@ -467,7 +466,6 @@ export default function ChallengesPage() {
 
               return {
                 success: true,
-                officialUrl: data.data?.officialUrl || selectedProgram.program.official_url || 'https://ftmo.com',
               };
             } catch (err) {
               return {

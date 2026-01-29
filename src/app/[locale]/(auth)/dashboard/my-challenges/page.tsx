@@ -13,6 +13,7 @@ import { useEffect, useState } from 'react';
 
 import { EmptyState } from '@/components/dashboard/challenges/EmptyState';
 import { type EnrollmentStatus, EnrollmentStatusCard } from '@/components/dashboard/challenges/EnrollmentStatusCard';
+import { MyChallengeDrawer } from '@/components/dashboard/challenges/MyChallengeDrawer';
 import { TrendingUpIcon } from '@/components/dashboard/challenges/PremiumIcons';
 import { logger } from '@/lib/logger';
 
@@ -40,6 +41,7 @@ export default function MyChallengesPage() {
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedEnrollment, setSelectedEnrollment] = useState<Enrollment | null>(null);
 
   // Fetch user enrollments
   useEffect(() => {
@@ -88,7 +90,11 @@ export default function MyChallengesPage() {
       const updatedResponse = await fetch('/api/enrollments');
       const data = await updatedResponse.json();
       if (data.success) {
-        setEnrollments(data.data || []);
+        const nextEnrollments = data.data || [];
+        setEnrollments(nextEnrollments);
+        setSelectedEnrollment(prev => (prev
+          ? nextEnrollments.find((entry: Enrollment) => entry.id === prev.id) || null
+          : prev));
       }
     } catch (err) {
       logger.error('Error confirming enrollment:', err);
@@ -108,6 +114,7 @@ export default function MyChallengesPage() {
 
       // Remove from local state
       setEnrollments(prev => prev.filter(e => e.id !== enrollmentId));
+      setSelectedEnrollment(prev => (prev?.id === enrollmentId ? null : prev));
     } catch (err) {
       logger.error('Error removing enrollment:', err);
     }
@@ -115,8 +122,8 @@ export default function MyChallengesPage() {
 
   // Handle opening challenge drawer
   const handleOpenDrawer = (enrollment: Enrollment) => {
-    // TODO: Open drawer with challenge details
     logger.debug('Open drawer for:', enrollment);
+    setSelectedEnrollment(enrollment);
   };
 
   // Group enrollments by status
@@ -233,13 +240,6 @@ export default function MyChallengesPage() {
                     accountSize={formatAccountSize(enrollment.offer?.accountSize, enrollment.offer?.accountCurrency)}
                     duration={formatDuration(enrollment.offer?.durationDays)}
                     startDate={formatStartDate(enrollment.createdAt)}
-                    officialUrl={enrollment.program.officialUrl}
-                    onConfirm={enrollment.status === 'pending_confirmation'
-                      ? () => handleConfirm(enrollment.id)
-                      : undefined}
-                    onRemove={['interested', 'pending_redirect', 'pending_confirmation', 'abandoned'].includes(enrollment.status)
-                      ? () => handleRemove(enrollment.id)
-                      : undefined}
                     onOpenDrawer={() => handleOpenDrawer(enrollment)}
                   />
                 </motion.div>
@@ -268,7 +268,6 @@ export default function MyChallengesPage() {
                     accountSize={formatAccountSize(enrollment.offer?.accountSize, enrollment.offer?.accountCurrency)}
                     duration={formatDuration(enrollment.offer?.durationDays)}
                     startDate={formatStartDate(enrollment.createdAt)}
-                    officialUrl={enrollment.program.officialUrl}
                     onOpenDrawer={() => handleOpenDrawer(enrollment)}
                   />
                 </motion.div>
@@ -296,6 +295,14 @@ export default function MyChallengesPage() {
           </div>
         </section>
       </div>
+
+      <MyChallengeDrawer
+        enrollment={selectedEnrollment}
+        isOpen={!!selectedEnrollment}
+        onClose={() => setSelectedEnrollment(null)}
+        onActivate={handleConfirm}
+        onRemove={handleRemove}
+      />
     </div>
   );
 }

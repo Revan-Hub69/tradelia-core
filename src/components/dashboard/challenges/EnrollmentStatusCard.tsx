@@ -5,21 +5,16 @@
  *
  * Redesigned card with:
  * - Basic info: duration, account size, status
- * - Action buttons: Start (with confirmation), Delete (with confirmation)
  * - Click to open drawer with more details
  * Follows Tradelia Design System
  */
 
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
 
 import {
   ArchiveIcon,
-  CheckCircleIcon,
   ClockIcon,
-  DeleteIcon,
-  ExternalLinkIcon,
   HelpCircleIcon,
   PendingIcon,
   PlayIcon,
@@ -45,9 +40,6 @@ type EnrollmentStatusCardProps = {
   accountSize: string;
   duration?: string;
   startDate?: string;
-  officialUrl?: string;
-  onConfirm?: () => void;
-  onRemove?: () => void;
   onOpenDrawer?: () => void;
 };
 
@@ -110,76 +102,6 @@ const statusConfig = {
   },
 };
 
-// Confirmation Dialog Component
-function ConfirmationDialog({
-  isOpen,
-  onClose,
-  onConfirm,
-  title,
-  message,
-  confirmText,
-  confirmColor = 'red',
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  title: string;
-  message: string;
-  confirmText: string;
-  confirmColor?: 'red' | 'green' | 'blue';
-}) {
-  const colorClasses = {
-    red: 'bg-red-500 hover:bg-red-600',
-    green: 'bg-green-500 hover:bg-green-600',
-    blue: 'bg-blue-500 hover:bg-blue-600',
-  };
-
-  return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
-          onClick={onClose}
-        >
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
-            className="glass-panel w-full max-w-sm rounded-2xl border border-border/50 p-6 text-center shadow-2xl"
-            onClick={e => e.stopPropagation()}
-          >
-            <h3 className="mb-2 text-lg font-bold">{title}</h3>
-            <p className="mb-6 text-sm text-muted-foreground">{message}</p>
-
-            <div className="flex gap-3">
-              <button
-                onClick={onClose}
-                className="flex-1 rounded-xl border border-border bg-background px-4 py-2.5 text-sm font-semibold transition-all hover:bg-muted"
-                type="button"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  onConfirm();
-                  onClose();
-                }}
-                className={`flex-1 rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition-all ${colorClasses[confirmColor]}`}
-                type="button"
-              >
-                {confirmText}
-              </button>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-}
-
 export function EnrollmentStatusCard({
   status,
   programName,
@@ -188,17 +110,11 @@ export function EnrollmentStatusCard({
   accountSize,
   duration,
   startDate,
-  officialUrl,
-  onConfirm,
-  onRemove,
   onOpenDrawer,
 }: EnrollmentStatusCardProps) {
-  const t = useTranslations('Challenges') as any;
+  const t = useTranslations('MyChallenges') as any;
   const config = statusConfig[status];
   const Icon = config.icon;
-
-  const [showStartConfirm, setShowStartConfirm] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Card is clickable to open drawer
   const handleCardClick = () => {
@@ -206,17 +122,16 @@ export function EnrollmentStatusCard({
   };
 
   return (
-    <>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        onClick={handleCardClick}
-        className={`
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      onClick={handleCardClick}
+      className={`
           glass-panel cursor-pointer rounded-2xl border p-4 sm:p-5
           ${config.borderColor}
           transition-all hover:scale-[1.02] hover:shadow-lg
         `}
-      >
+    >
         {/* Header */}
         <div className="mb-4 flex items-start gap-3">
           <div className={`
@@ -266,91 +181,6 @@ export function EnrollmentStatusCard({
           )}
         </div>
 
-        {/* Actions */}
-        <div className="flex gap-2">
-          {/* Start Button - only for pending_confirmation */}
-          {status === 'pending_confirmation' && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowStartConfirm(true);
-              }}
-              className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-green-500 px-3 py-2 text-xs font-semibold text-white transition-all hover:bg-green-600"
-              type="button"
-            >
-              <PlayIcon size={14} />
-              Start
-            </button>
-          )}
-
-          {/* Open Link Button - for pending_redirect */}
-          {status === 'pending_redirect' && officialUrl && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                window.open(officialUrl, '_blank', 'noopener,noreferrer');
-              }}
-              className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-blue-500 px-3 py-2 text-xs font-semibold text-white transition-all hover:bg-blue-600"
-              type="button"
-            >
-              <ExternalLinkIcon size={14} />
-              Open Site
-            </button>
-          )}
-
-          {/* Delete Button - available for most statuses */}
-          {['interested', 'pending_redirect', 'pending_confirmation', 'abandoned'].includes(status) && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowDeleteConfirm(true);
-              }}
-              className="flex items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-600 transition-all hover:bg-red-100 dark:border-red-800 dark:bg-red-950/30 dark:text-red-400 dark:hover:bg-red-900/30"
-              type="button"
-            >
-              <DeleteIcon size={14} />
-              Delete
-            </button>
-          )}
-
-          {/* View Details for active/completed */}
-          {['active', 'completed', 'failed'].includes(status) && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onOpenDrawer?.();
-              }}
-              className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground transition-all hover:bg-primary/90"
-              type="button"
-            >
-              <CheckCircleIcon size={14} />
-              Details
-            </button>
-          )}
-        </div>
-      </motion.div>
-
-      {/* Start Confirmation Dialog */}
-      <ConfirmationDialog
-        isOpen={showStartConfirm}
-        onClose={() => setShowStartConfirm(false)}
-        onConfirm={() => onConfirm?.()}
-        title="Confirm Challenge Start"
-        message={`Are you sure you want to start "${programName}"? This will mark the challenge as active.`}
-        confirmText="Yes, Start"
-        confirmColor="green"
-      />
-
-      {/* Delete Confirmation Dialog */}
-      <ConfirmationDialog
-        isOpen={showDeleteConfirm}
-        onClose={() => setShowDeleteConfirm(false)}
-        onConfirm={() => onRemove?.()}
-        title="Delete Challenge"
-        message={`Are you sure you want to remove "${programName}"? This action cannot be undone.`}
-        confirmText="Delete"
-        confirmColor="red"
-      />
-    </>
+    </motion.div>
   );
 }

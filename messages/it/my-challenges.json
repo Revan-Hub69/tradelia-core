@@ -39,5 +39,48 @@
       "pendingConfirmation": "Hai completato l'iscrizione?",
       "rateLimit": "Massimo numero di iscrizioni raggiunto per oggi"
     }
+  },
+  "drawer": {
+    "subtitle": "Percorso challenge",
+    "journey_title": "Journey di trading",
+    "risk_template_title": "Template rischio",
+    "risk_template_description": "Limiti suggeriti in base alla dimensione account.",
+    "risk_per_trade_label": "Rischio per trade",
+    "max_daily_risk_label": "Rischio massimo giornaliero",
+    "risk_template_missing": "Inserisci dimensione account",
+    "checklist_title": "Checklist di avvio",
+    "checklist_description": "Essenziali prima di iniziare la challenge.",
+    "official_link": "Sito ufficiale",
+    "activate": "Segna come attiva",
+    "remove": "Rimuovi da Le Mie Sfide"
+  },
+  "journey": {
+    "setup_title": "Setup account & piattaforma",
+    "setup_description": "Configura account, piattaforma e regole base.",
+    "execute_title": "Esegui il piano di trading",
+    "execute_description": "Rispetta limiti e obiettivi fino al target.",
+    "review_title": "Review & payout",
+    "review_description": "Valuta i risultati e prepara la richiesta payout."
+  },
+  "checklist": {
+    "enrolled_title": "Iscrizione completata",
+    "enrolled_description": "La challenge e in Le Mie Sfide.",
+    "rules_title": "Regole lette",
+    "rules_description": "Target, drawdown e tempo sono chiari.",
+    "platform_title": "Piattaforma pronta",
+    "platform_description": "Account connesso e template pronti.",
+    "session_title": "Prima sessione pianificata",
+    "session_description": "Decidi quando iniziare la prima sessione."
+  },
+  "tools": {
+    "signals_title": "AI Signals",
+    "signals_description": "Conferme operative e contesto multi-asset.",
+    "support_title": "Supporto challenge",
+    "support_description": "Dubbi su regole o fasi? Chiedi supporto.",
+    "overview_title": "Dashboard overview",
+    "overview_description": "Tieni sotto controllo performance e priorità.",
+    "action_open": "Apri",
+    "action_contact": "Contatta",
+    "action_go": "Vai"
   }
 }

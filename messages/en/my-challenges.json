@@ -39,5 +39,48 @@
       "pendingConfirmation": "Have you completed the enrollment?",
       "rateLimit": "Maximum enrollments reached for today"
     }
+  },
+  "drawer": {
+    "subtitle": "Challenge Journey",
+    "journey_title": "Trading journey",
+    "risk_template_title": "Risk template",
+    "risk_template_description": "Suggested limits based on your account size.",
+    "risk_per_trade_label": "Risk per trade",
+    "max_daily_risk_label": "Max daily risk",
+    "risk_template_missing": "Add account size",
+    "checklist_title": "Start checklist",
+    "checklist_description": "Quick essentials before trading the challenge.",
+    "official_link": "Official website",
+    "activate": "Mark as active",
+    "remove": "Remove from My Challenges"
+  },
+  "journey": {
+    "setup_title": "Setup account & platform",
+    "setup_description": "Configure account, platform, and basic rules.",
+    "execute_title": "Execute the trading plan",
+    "execute_description": "Respect limits and targets until completion.",
+    "review_title": "Review & payout",
+    "review_description": "Review results and prepare the payout request."
+  },
+  "checklist": {
+    "enrolled_title": "Enrollment completed",
+    "enrolled_description": "Your challenge is in My Challenges.",
+    "rules_title": "Rules reviewed",
+    "rules_description": "Targets, drawdown, and time limits clear.",
+    "platform_title": "Platform ready",
+    "platform_description": "Account connected and templates loaded.",
+    "session_title": "First session planned",
+    "session_description": "Decide when you start the first session."
+  },
+  "tools": {
+    "signals_title": "AI Signals",
+    "signals_description": "Operational confirmations and multi-asset context.",
+    "support_title": "Challenge support",
+    "support_description": "Questions on rules or phases? Get help.",
+    "overview_title": "Dashboard overview",
+    "overview_description": "Keep performance and priorities in focus.",
+    "action_open": "Open",
+    "action_contact": "Contact",
+    "action_go": "Go"
   }
 }
