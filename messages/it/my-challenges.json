@@ -51,8 +51,12 @@
     "checklist_title": "Checklist di avvio",
     "checklist_description": "Essenziali prima di iniziare la challenge.",
     "official_link": "Sito ufficiale",
-    "activate": "Segna come attiva",
-    "remove": "Rimuovi da Le Mie Sfide"
+    "confirm_start": "Conferma avvio challenge",
+    "remove": "Rimuovi da Le Mie Sfide",
+    "remove_confirm_title": "Rimuovere questa challenge?",
+    "remove_confirm_description": "Perderai accesso rapido a journey e checklist.",
+    "remove_confirm_cancel": "Annulla",
+    "remove_confirm_action": "Si, rimuovi"
   },
   "journey": {
     "setup_title": "Setup account & piattaforma",

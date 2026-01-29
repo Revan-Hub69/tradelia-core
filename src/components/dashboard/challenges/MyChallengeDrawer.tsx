@@ -135,6 +135,7 @@ export function MyChallengeDrawer({
   const t = useTranslations('MyChallenges') as any;
   const { setOverlayOpen } = useNavigationContext();
   const [isWorking, setIsWorking] = useState(false);
+  const [showRemoveConfirm, setShowRemoveConfirm] = useState(false);
 
   useEffect(() => {
     setOverlayOpen(isOpen);
@@ -212,6 +213,7 @@ export function MyChallengeDrawer({
     setIsWorking(true);
     await onRemove(enrollment.id);
     setIsWorking(false);
+    setShowRemoveConfirm(false);
     onClose();
   };
 
@@ -355,14 +357,14 @@ export function MyChallengeDrawer({
                   disabled={isWorking}
                   className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {t('drawer.activate')}
+                  {t('drawer.confirm_start')}
                 </button>
               )}
 
               {canRemove && (
                 <button
                   type="button"
-                  onClick={handleRemove}
+                  onClick={() => setShowRemoveConfirm(true)}
                   disabled={isWorking}
                   className="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-red-800 dark:bg-red-950/30 dark:text-red-400 dark:hover:bg-red-900/30"
                 >
@@ -371,6 +373,51 @@ export function MyChallengeDrawer({
               )}
             </div>
           </motion.aside>
+
+          <AnimatePresence>
+            {showRemoveConfirm && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="remove-confirm-title"
+              >
+                <motion.div
+                  initial={{ scale: 0.95, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.95, opacity: 0 }}
+                  className="glass-panel w-full max-w-sm rounded-2xl border border-border/50 p-6 shadow-2xl"
+                >
+                  <h3 id="remove-confirm-title" className="text-lg font-semibold">
+                    {t('drawer.remove_confirm_title')}
+                  </h3>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    {t('drawer.remove_confirm_description')}
+                  </p>
+                  <div className="mt-5 flex items-center justify-end gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowRemoveConfirm(false)}
+                      className="rounded-lg border border-border/60 px-3 py-2 text-sm font-semibold text-foreground transition hover:bg-muted"
+                    >
+                      {t('drawer.remove_confirm_cancel')}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleRemove}
+                      disabled={isWorking}
+                      className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {t('drawer.remove_confirm_action')}
+                    </button>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </>
       )}
     </AnimatePresence>

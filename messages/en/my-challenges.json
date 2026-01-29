@@ -51,8 +51,12 @@
     "checklist_title": "Start checklist",
     "checklist_description": "Quick essentials before trading the challenge.",
     "official_link": "Official website",
-    "activate": "Mark as active",
-    "remove": "Remove from My Challenges"
+    "confirm_start": "Confirm challenge start",
+    "remove": "Remove from My Challenges",
+    "remove_confirm_title": "Remove this challenge?",
+    "remove_confirm_description": "You will lose quick access to the journey and checklist.",
+    "remove_confirm_cancel": "Cancel",
+    "remove_confirm_action": "Yes, remove"
   },
   "journey": {
     "setup_title": "Setup account & platform",
