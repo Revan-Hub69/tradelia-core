@@ -36,6 +36,10 @@ type MyChallengeDrawerProps = {
   onRemove?: (enrollmentId: string) => Promise<void>;
 };
 
+type ContextSession = 'EU' | 'US' | 'ASIA' | 'OFF';
+type ContextEventRisk = 'NONE' | 'SCHEDULED' | 'LIVE';
+type ContextVolatility = 'LOW' | 'NORMAL' | 'HIGH';
+
 type MyChallengeRecord = {
   enrollment_id: string;
   challenge_ref?: {
@@ -66,9 +70,9 @@ type MyChallengeRecord = {
     today_realized_pnl?: number | null;
   };
   context_lite?: {
-    session?: 'EU' | 'US' | 'ASIA' | 'OFF';
-    event_risk?: 'NONE' | 'SCHEDULED' | 'LIVE';
-    volatility_hint?: 'LOW' | 'NORMAL' | 'HIGH';
+    session?: ContextSession;
+    event_risk?: ContextEventRisk;
+    volatility_hint?: ContextVolatility;
   };
   operating_envelope?: {
     automation_policy?: 'MANUAL_ONLY';
@@ -985,7 +989,7 @@ export function MyChallengeDrawer({
                             ...current,
                             context_lite: {
                               ...current.context_lite,
-                              session: event.target.value as MyChallengeRecord['context_lite']['session'],
+                              session: event.target.value as ContextSession,
                             },
                           }));
                         }}
@@ -1005,7 +1009,7 @@ export function MyChallengeDrawer({
                             ...current,
                             context_lite: {
                               ...current.context_lite,
-                              event_risk: event.target.value as MyChallengeRecord['context_lite']['event_risk'],
+                              event_risk: event.target.value as ContextEventRisk,
                             },
                           }));
                         }}
@@ -1025,7 +1029,7 @@ export function MyChallengeDrawer({
                             ...current,
                             context_lite: {
                               ...current.context_lite,
-                              volatility_hint: event.target.value as MyChallengeRecord['context_lite']['volatility_hint'],
+                              volatility_hint: event.target.value as ContextVolatility,
                             },
                           }));
                         }}
