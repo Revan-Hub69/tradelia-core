@@ -49,6 +49,8 @@ type MyChallengeRecord = {
       min_days?: number | null;
       ea_allowed?: boolean | null;
       news_trading?: boolean | null;
+      consistency_required?: boolean | null;
+      best_day_max_pct?: number | null;
     } | null;
   };
   account_state?: {
@@ -89,6 +91,8 @@ type RulesetSpec = {
   min_trading_days: number | null;
   ea_allowed?: boolean | null;
   news_trading?: boolean | null;
+  consistency_required?: boolean | null;
+  best_day_max_pct?: number | null;
 };
 
 type CompetitionRulesSpec = {
@@ -380,8 +384,12 @@ export function MyChallengeDrawer({
     const phase1 = specRulesets.find(r => r.phase_number === 1) ?? specRulesets[0];
     const maxDaily = phase1?.max_daily_loss_pct ?? null;
     const maxDd = phase1?.max_drawdown_pct ?? null;
+    const consistencyRequired = phase1?.consistency_required ?? false;
+    const bestDayMaxPct = phase1?.best_day_max_pct ?? null;
     const dailyUsed = accountState?.daily_loss_used_pct_today ?? null;
     const ddUsed = accountState?.max_dd_used_pct ?? null;
+    const balanceStart = accountState?.balance_start ?? null;
+    const todayRealized = accountState?.today_realized_pnl ?? null;
     const eventRisk = contextLite?.event_risk ?? 'NONE';
 
     let tradeGate: 'OPEN' | 'RESTRICTED' | 'CLOSED' = fallbackGate;
@@ -396,6 +404,19 @@ export function MyChallengeDrawer({
       tradeGate = 'CLOSED';
     }
     if (eventRisk === 'LIVE' && tradeGate !== 'CLOSED') {
+      tradeGate = 'RESTRICTED';
+    }
+
+    let consistencyRisk = false;
+    if (consistencyRequired && typeof bestDayMaxPct === 'number' && Number.isFinite(bestDayMaxPct)) {
+      if (typeof todayRealized === 'number' && Number.isFinite(todayRealized)
+        && typeof balanceStart === 'number' && Number.isFinite(balanceStart) && balanceStart > 0) {
+        const todayPct = (todayRealized / balanceStart) * 100;
+        consistencyRisk = todayPct > bestDayMaxPct;
+      }
+    }
+
+    if (consistencyRisk && tradeGate === 'OPEN') {
       tradeGate = 'RESTRICTED';
     }
 
@@ -415,7 +436,11 @@ export function MyChallengeDrawer({
         risk_per_trade_pct: Number(riskPerTradePct.toFixed(2)),
         max_trades: maxTrades,
       },
-      stop_rules: ['STOP_AFTER_2_LOSSES', 'STOP_IF_EVENT_RISK_LIVE'],
+      stop_rules: [
+        'STOP_AFTER_2_LOSSES',
+        'STOP_IF_EVENT_RISK_LIVE',
+        ...(consistencyRisk ? ['STOP_IF_CONSISTENCY_RISK'] : []),
+      ],
       notes_short: tradeGate === 'OPEN'
         ? t('drawer.notes_open')
         : tradeGate === 'RESTRICTED'
@@ -475,6 +500,8 @@ export function MyChallengeDrawer({
         min_days: phase1.min_trading_days ?? competitionRules?.min_trading_days ?? null,
         ea_allowed: phase1.ea_allowed ?? null,
         news_trading: phase1.news_trading ?? null,
+        consistency_required: phase1.consistency_required ?? null,
+        best_day_max_pct: phase1.best_day_max_pct ?? null,
       }
       : null;
 
@@ -643,6 +670,20 @@ export function MyChallengeDrawer({
                         : t('drawer.automation_check')}
                     </span>
                   </div>
+                  <div className="flex items-center justify-between rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                    <span>{t('drawer.consistency_label')}</span>
+                    <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
+                      {rulesets[0]?.consistency_required ? t('drawer.consistency_on') : t('drawer.consistency_off')}
+                    </span>
+                  </div>
+                  {rulesets[0]?.best_day_max_pct != null && (
+                    <div className="flex items-center justify-between rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                      <span>{t('drawer.best_day_label')}</span>
+                      <span className="text-sm font-semibold text-foreground">
+                        {`${rulesets[0].best_day_max_pct}%`}
+                      </span>
+                    </div>
+                  )}
                 </div>
                 {loadingSpec && (
                   <p className="text-xs text-muted-foreground">{t('drawer.loading_spec')}</p>

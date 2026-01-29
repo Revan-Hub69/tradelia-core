@@ -51,6 +51,10 @@
     "max_dd_label": "Max DD",
     "daily_loss_label": "Perdita giornaliera",
     "min_days_label": "Min giorni",
+    "consistency_label": "Consistenza",
+    "consistency_on": "Richiesta",
+    "consistency_off": "Non richiesta",
+    "best_day_label": "Limite miglior giorno",
     "account_state_title": "Stato account",
     "balance_start_label": "Saldo iniziale",
     "equity_now_label": "Equity attuale",
@@ -89,7 +93,8 @@
     "abandon": "Sospendi / Abbandona",
     "stop_rules": {
       "STOP_AFTER_2_LOSSES": "Stop dopo 2 perdite",
-      "STOP_IF_EVENT_RISK_LIVE": "Stop se rischio eventi e live"
+      "STOP_IF_EVENT_RISK_LIVE": "Stop se rischio eventi e live",
+      "STOP_IF_CONSISTENCY_RISK": "Stop se rischio consistenza"
     },
     "official_link": "Sito ufficiale",
     "confirm_start": "Conferma avvio challenge",
