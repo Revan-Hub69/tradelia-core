@@ -42,10 +42,19 @@ type MyChallengeRecord = {
     challenge_id?: string;
     account_size_selected?: number;
     started_at?: string | null;
+    rule_snapshot?: {
+      target_pct?: number | null;
+      max_dd_pct?: number | null;
+      daily_loss_pct?: number | null;
+      min_days?: number | null;
+      ea_allowed?: boolean | null;
+      news_trading?: boolean | null;
+    } | null;
   };
   account_state?: {
     balance_start?: number | null;
     equity_now?: number | null;
+    peak_equity?: number | null;
     profit_progress_pct?: number | null;
     max_dd_used_pct?: number | null;
     daily_loss_used_pct_today?: number | null;
@@ -70,6 +79,20 @@ type MyChallengeRecord = {
     stop_rules?: string[];
     notes_short?: string;
   };
+};
+
+type RulesetSpec = {
+  phase_number: number;
+  profit_target_pct: number | null;
+  max_drawdown_pct: number | null;
+  max_daily_loss_pct: number | null;
+  min_trading_days: number | null;
+  ea_allowed?: boolean | null;
+  news_trading?: boolean | null;
+};
+
+type CompetitionRulesSpec = {
+  min_trading_days?: number | null;
 };
 
 const CloseIcon = ({ className = '' }: { className?: string }) => (
@@ -114,6 +137,9 @@ export function MyChallengeDrawer({
   const [loadingMyChallenge, setLoadingMyChallenge] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [draft, setDraft] = useState<MyChallengeRecord | null>(null);
+  const [rulesets, setRulesets] = useState<RulesetSpec[]>([]);
+  const [competitionRules, setCompetitionRules] = useState<CompetitionRulesSpec | null>(null);
+  const [loadingSpec, setLoadingSpec] = useState(false);
 
   useEffect(() => {
     setOverlayOpen(isOpen);
@@ -144,6 +170,8 @@ export function MyChallengeDrawer({
       setMyChallenge(null);
       setDraft(null);
       setIsEditing(false);
+      setRulesets([]);
+      setCompetitionRules(null);
       return;
     }
 
@@ -174,6 +202,37 @@ export function MyChallengeDrawer({
     };
   }, [isOpen, enrollment]);
 
+  useEffect(() => {
+    let active = true;
+    if (!isOpen || !enrollment) {
+      return;
+    }
+    const fetchSpec = async () => {
+      try {
+        setLoadingSpec(true);
+        const response = await fetch(`/api/challenge-spec?enrollmentId=${enrollment.id}`);
+        const data = await response.json();
+        if (active && response.ok && data?.success) {
+          setRulesets((data.data?.rulesets ?? []) as RulesetSpec[]);
+          setCompetitionRules((data.data?.competitionRules ?? null) as CompetitionRulesSpec | null);
+        }
+      } catch {
+        if (active) {
+          setRulesets([]);
+          setCompetitionRules(null);
+        }
+      } finally {
+        if (active) {
+          setLoadingSpec(false);
+        }
+      }
+    };
+    fetchSpec();
+    return () => {
+      active = false;
+    };
+  }, [isOpen, enrollment]);
+
   const auditContext = useMemo(() => {
     if (!enrollment) {
       return null;
@@ -195,6 +254,7 @@ export function MyChallengeDrawer({
       accountState: {
         balanceStart: myChallenge?.account_state?.balance_start ?? null,
         equityNow: myChallenge?.account_state?.equity_now ?? null,
+        peakEquity: myChallenge?.account_state?.peak_equity ?? null,
         profitProgressPct: myChallenge?.account_state?.profit_progress_pct ?? null,
         maxDdUsedPct: myChallenge?.account_state?.max_dd_used_pct ?? null,
         dailyLossUsedPctToday: myChallenge?.account_state?.daily_loss_used_pct_today ?? null,
@@ -311,6 +371,59 @@ export function MyChallengeDrawer({
     setIsWorking(false);
   };
 
+  const computeEnvelope = (
+    specRulesets: RulesetSpec[],
+    accountState: MyChallengeRecord['account_state'],
+    contextLite: MyChallengeRecord['context_lite'],
+    fallbackGate: 'OPEN' | 'RESTRICTED' | 'CLOSED',
+  ) => {
+    const phase1 = specRulesets.find(r => r.phase_number === 1) ?? specRulesets[0];
+    const maxDaily = phase1?.max_daily_loss_pct ?? null;
+    const maxDd = phase1?.max_drawdown_pct ?? null;
+    const dailyUsed = accountState?.daily_loss_used_pct_today ?? null;
+    const ddUsed = accountState?.max_dd_used_pct ?? null;
+    const eventRisk = contextLite?.event_risk ?? 'NONE';
+
+    let tradeGate: 'OPEN' | 'RESTRICTED' | 'CLOSED' = fallbackGate;
+    if (typeof maxDaily === 'number' && typeof dailyUsed === 'number') {
+      if (dailyUsed >= maxDaily) {
+        tradeGate = 'CLOSED';
+      } else if (dailyUsed >= maxDaily * 0.75) {
+        tradeGate = 'RESTRICTED';
+      }
+    }
+    if (typeof maxDd === 'number' && typeof ddUsed === 'number' && ddUsed >= maxDd) {
+      tradeGate = 'CLOSED';
+    }
+    if (eventRisk === 'LIVE' && tradeGate !== 'CLOSED') {
+      tradeGate = 'RESTRICTED';
+    }
+
+    const dailyRiskCapPct = typeof maxDaily === 'number' && Number.isFinite(maxDaily)
+      ? Math.max(0.5, maxDaily * 0.5)
+      : 2.0;
+    const riskPerTradePct = typeof maxDaily === 'number' && Number.isFinite(maxDaily)
+      ? Math.min(0.5, maxDaily / 8)
+      : 0.5;
+    const maxTrades = eventRisk === 'LIVE' ? 1 : eventRisk === 'SCHEDULED' ? 2 : 4;
+
+    return {
+      automation_policy: 'MANUAL_ONLY' as const,
+      trade_gate: tradeGate,
+      risk_budget: {
+        daily_risk_cap_pct: Number(dailyRiskCapPct.toFixed(2)),
+        risk_per_trade_pct: Number(riskPerTradePct.toFixed(2)),
+        max_trades: maxTrades,
+      },
+      stop_rules: ['STOP_AFTER_2_LOSSES', 'STOP_IF_EVENT_RISK_LIVE'],
+      notes_short: tradeGate === 'OPEN'
+        ? t('drawer.notes_open')
+        : tradeGate === 'RESTRICTED'
+          ? t('drawer.notes_restricted')
+          : t('drawer.notes_closed'),
+    };
+  };
+
   const handleSave = async () => {
     if (!enrollment || !draft) {
       return;
@@ -320,24 +433,62 @@ export function MyChallengeDrawer({
     const nextAccountState = { ...(draft.account_state ?? {}) };
     const balanceStart = nextAccountState.balance_start;
     const equityNow = nextAccountState.equity_now;
+    const peakEquity = nextAccountState.peak_equity;
     if (typeof balanceStart === 'number' && Number.isFinite(balanceStart)
       && typeof equityNow === 'number' && Number.isFinite(equityNow) && balanceStart > 0) {
       if (nextAccountState.profit_progress_pct == null) {
         nextAccountState.profit_progress_pct = ((equityNow - balanceStart) / balanceStart) * 100;
       }
-      if (nextAccountState.max_dd_used_pct == null) {
-        nextAccountState.max_dd_used_pct = Math.max(0, ((balanceStart - equityNow) / balanceStart) * 100);
+    }
+    if (nextAccountState.max_dd_used_pct == null) {
+      const ddBase = typeof peakEquity === 'number' && Number.isFinite(peakEquity) && peakEquity > 0
+        ? peakEquity
+        : (typeof balanceStart === 'number' && Number.isFinite(balanceStart) && balanceStart > 0
+          ? balanceStart
+          : null);
+      if (ddBase && typeof equityNow === 'number' && Number.isFinite(equityNow)) {
+        nextAccountState.max_dd_used_pct = Math.max(0, ((ddBase - equityNow) / ddBase) * 100);
       }
     }
+
+    const computedEnvelope = computeEnvelope(
+      rulesets,
+      nextAccountState,
+      draft.context_lite,
+      (draft.operating_envelope?.trade_gate as 'OPEN' | 'RESTRICTED' | 'CLOSED') ?? 'RESTRICTED',
+    );
+    const mergedEnvelope = {
+      ...computedEnvelope,
+      ...draft.operating_envelope,
+      risk_budget: {
+        ...computedEnvelope.risk_budget,
+        ...(draft.operating_envelope?.risk_budget ?? {}),
+      },
+    };
+
+    const phase1 = rulesets.find(r => r.phase_number === 1) ?? rulesets[0];
+    const ruleSnapshot = phase1
+      ? {
+        target_pct: phase1.profit_target_pct ?? null,
+        max_dd_pct: phase1.max_drawdown_pct ?? null,
+        daily_loss_pct: phase1.max_daily_loss_pct ?? null,
+        min_days: phase1.min_trading_days ?? competitionRules?.min_trading_days ?? null,
+        ea_allowed: phase1.ea_allowed ?? null,
+        news_trading: phase1.news_trading ?? null,
+      }
+      : null;
 
     const payload = {
       enrollmentId: enrollment.id,
       programId: enrollment.program.id,
       offerId: enrollment.offer.id,
-      challengeRef: draft.challenge_ref ?? {},
+      challengeRef: {
+        ...(draft.challenge_ref ?? {}),
+        rule_snapshot: ruleSnapshot,
+      },
       accountState: nextAccountState,
       contextLite: draft.context_lite ?? {},
-      operatingEnvelope: draft.operating_envelope ?? {},
+      operatingEnvelope: mergedEnvelope,
     };
 
     const endpoint = myChallenge
@@ -450,10 +601,59 @@ export function MyChallengeDrawer({
               </section>
 
               <section className="space-y-3 rounded-2xl border border-border/60 bg-white/70 p-4 shadow-sm">
+                <h3 className="text-sm font-semibold">{t('drawer.challenge_spec_title')}</h3>
+                <div className="grid gap-2 text-xs text-muted-foreground">
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                      <p>{t('drawer.target_label')}</p>
+                      <p className="text-sm font-semibold text-foreground">
+                        {rulesets[0]?.profit_target_pct != null
+                          ? `${rulesets[0].profit_target_pct}%`
+                          : t('drawer.value_missing')}
+                      </p>
+                    </div>
+                    <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                      <p>{t('drawer.max_dd_label')}</p>
+                      <p className="text-sm font-semibold text-foreground">
+                        {rulesets[0]?.max_drawdown_pct != null
+                          ? `${rulesets[0].max_drawdown_pct}%`
+                          : t('drawer.value_missing')}
+                      </p>
+                    </div>
+                    <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                      <p>{t('drawer.daily_loss_label')}</p>
+                      <p className="text-sm font-semibold text-foreground">
+                        {rulesets[0]?.max_daily_loss_pct != null
+                          ? `${rulesets[0].max_daily_loss_pct}%`
+                          : t('drawer.value_missing')}
+                      </p>
+                    </div>
+                    <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                      <p>{t('drawer.min_days_label')}</p>
+                      <p className="text-sm font-semibold text-foreground">
+                        {rulesets[0]?.min_trading_days ?? competitionRules?.min_trading_days ?? t('drawer.value_missing')}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                    <span>{t('drawer.automation_policy_label')}</span>
+                    <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
+                      {rulesets[0]?.ea_allowed === false
+                        ? t('drawer.automation_manual')
+                        : t('drawer.automation_check')}
+                    </span>
+                  </div>
+                </div>
+                {loadingSpec && (
+                  <p className="text-xs text-muted-foreground">{t('drawer.loading_spec')}</p>
+                )}
+              </section>
+
+              <section className="space-y-3 rounded-2xl border border-border/60 bg-white/70 p-4 shadow-sm">
                 <h3 className="text-sm font-semibold">{t('drawer.account_state_title')}</h3>
                 {isEditing ? (
                   <div className="grid gap-3 text-xs text-muted-foreground">
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-3 gap-2">
                       <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
                         <span>{t('drawer.balance_start_label')}</span>
                         <input
@@ -487,6 +687,25 @@ export function MyChallengeDrawer({
                               account_state: {
                                 ...current.account_state,
                                 equity_now: Number.isNaN(value as number) ? null : value,
+                              },
+                            }));
+                          }}
+                        />
+                      </label>
+                      <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <span>{t('drawer.peak_equity_label')}</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                          value={draft?.account_state?.peak_equity ?? ''}
+                          onChange={(event) => {
+                            const value = event.target.value === '' ? null : Number(event.target.value);
+                            updateDraft(current => ({
+                              ...current,
+                              account_state: {
+                                ...current.account_state,
+                                peak_equity: Number.isNaN(value as number) ? null : value,
                               },
                             }));
                           }}
@@ -630,7 +849,7 @@ export function MyChallengeDrawer({
                   </div>
                 ) : (
                   <div className="grid gap-2 text-xs text-muted-foreground">
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-3 gap-2">
                       <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
                         <p>{t('drawer.balance_start_label')}</p>
                         <p className="text-sm font-semibold text-foreground">
@@ -644,6 +863,14 @@ export function MyChallengeDrawer({
                         <p className="text-sm font-semibold text-foreground">
                           {auditContext?.accountState.equityNow !== null
                             ? formatMoney(auditContext.accountState.equityNow)
+                            : t('drawer.value_missing')}
+                        </p>
+                      </div>
+                      <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <p>{t('drawer.peak_equity_label')}</p>
+                        <p className="text-sm font-semibold text-foreground">
+                          {auditContext?.accountState.peakEquity !== null
+                            ? formatMoney(auditContext.accountState.peakEquity)
                             : t('drawer.value_missing')}
                         </p>
                       </div>
