@@ -317,12 +317,25 @@ export function MyChallengeDrawer({
     }
     setIsWorking(true);
 
+    const nextAccountState = { ...(draft.account_state ?? {}) };
+    const balanceStart = nextAccountState.balance_start;
+    const equityNow = nextAccountState.equity_now;
+    if (typeof balanceStart === 'number' && Number.isFinite(balanceStart)
+      && typeof equityNow === 'number' && Number.isFinite(equityNow) && balanceStart > 0) {
+      if (nextAccountState.profit_progress_pct == null) {
+        nextAccountState.profit_progress_pct = ((equityNow - balanceStart) / balanceStart) * 100;
+      }
+      if (nextAccountState.max_dd_used_pct == null) {
+        nextAccountState.max_dd_used_pct = Math.max(0, ((balanceStart - equityNow) / balanceStart) * 100);
+      }
+    }
+
     const payload = {
       enrollmentId: enrollment.id,
       programId: enrollment.program.id,
       offerId: enrollment.offer.id,
       challengeRef: draft.challenge_ref ?? {},
-      accountState: draft.account_state ?? {},
+      accountState: nextAccountState,
       contextLite: draft.context_lite ?? {},
       operatingEnvelope: draft.operating_envelope ?? {},
     };
@@ -440,6 +453,46 @@ export function MyChallengeDrawer({
                 <h3 className="text-sm font-semibold">{t('drawer.account_state_title')}</h3>
                 {isEditing ? (
                   <div className="grid gap-3 text-xs text-muted-foreground">
+                    <div className="grid grid-cols-2 gap-2">
+                      <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <span>{t('drawer.balance_start_label')}</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                          value={draft?.account_state?.balance_start ?? ''}
+                          onChange={(event) => {
+                            const value = event.target.value === '' ? null : Number(event.target.value);
+                            updateDraft(current => ({
+                              ...current,
+                              account_state: {
+                                ...current.account_state,
+                                balance_start: Number.isNaN(value as number) ? null : value,
+                              },
+                            }));
+                          }}
+                        />
+                      </label>
+                      <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <span>{t('drawer.equity_now_label')}</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                          value={draft?.account_state?.equity_now ?? ''}
+                          onChange={(event) => {
+                            const value = event.target.value === '' ? null : Number(event.target.value);
+                            updateDraft(current => ({
+                              ...current,
+                              account_state: {
+                                ...current.account_state,
+                                equity_now: Number.isNaN(value as number) ? null : value,
+                              },
+                            }));
+                          }}
+                        />
+                      </label>
+                    </div>
                     <div className="grid grid-cols-2 gap-2">
                       <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
                         <span>{t('drawer.profit_progress_label')}</span>
@@ -577,6 +630,24 @@ export function MyChallengeDrawer({
                   </div>
                 ) : (
                   <div className="grid gap-2 text-xs text-muted-foreground">
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <p>{t('drawer.balance_start_label')}</p>
+                        <p className="text-sm font-semibold text-foreground">
+                          {auditContext?.accountState.balanceStart !== null
+                            ? formatMoney(auditContext.accountState.balanceStart)
+                            : t('drawer.value_missing')}
+                        </p>
+                      </div>
+                      <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <p>{t('drawer.equity_now_label')}</p>
+                        <p className="text-sm font-semibold text-foreground">
+                          {auditContext?.accountState.equityNow !== null
+                            ? formatMoney(auditContext.accountState.equityNow)
+                            : t('drawer.value_missing')}
+                        </p>
+                      </div>
+                    </div>
                     <div className="grid grid-cols-2 gap-2">
                       <div className="rounded-xl border border-border/60 bg-white/70 px-3 py-2">
                         <p>{t('drawer.profit_progress_label')}</p>

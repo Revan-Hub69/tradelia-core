@@ -47,6 +47,8 @@
     "account_size_selected_label": "Account size",
     "started_at_label": "Started at",
     "account_state_title": "Account state",
+    "balance_start_label": "Balance start",
+    "equity_now_label": "Equity now",
     "profit_progress_label": "Profit progress",
     "max_dd_used_label": "Max DD used",
     "daily_loss_used_label": "Daily loss used",

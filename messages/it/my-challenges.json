@@ -47,6 +47,8 @@
     "account_size_selected_label": "Dimensione account",
     "started_at_label": "Data avvio",
     "account_state_title": "Stato account",
+    "balance_start_label": "Saldo iniziale",
+    "equity_now_label": "Equity attuale",
     "profit_progress_label": "Avanzamento profitto",
     "max_dd_used_label": "Max DD usato",
     "daily_loss_used_label": "Perdita giornaliera usata",
