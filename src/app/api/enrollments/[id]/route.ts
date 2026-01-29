@@ -203,8 +203,8 @@ export async function DELETE(
       );
     }
 
-    // Only allow deletion for pending statuses
-    const deletableStatuses = ['interested', 'pending_redirect', 'pending_confirmation'];
+    // Only allow deletion for pending statuses (and abandoned for cleanup)
+    const deletableStatuses = ['interested', 'pending_redirect', 'pending_confirmation', 'abandoned'];
     if (!deletableStatuses.includes(enrollment.status)) {
       return NextResponse.json(
         {
