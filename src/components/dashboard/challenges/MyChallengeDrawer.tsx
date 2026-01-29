@@ -36,6 +36,42 @@ type MyChallengeDrawerProps = {
   onRemove?: (enrollmentId: string) => Promise<void>;
 };
 
+type MyChallengeRecord = {
+  enrollment_id: string;
+  challenge_ref?: {
+    challenge_id?: string;
+    account_size_selected?: number;
+    started_at?: string | null;
+  };
+  account_state?: {
+    balance_start?: number | null;
+    equity_now?: number | null;
+    profit_progress_pct?: number | null;
+    max_dd_used_pct?: number | null;
+    daily_loss_used_pct_today?: number | null;
+    days_traded?: number | null;
+    last_trade_at?: string | null;
+    today_trade_count?: number | null;
+    today_realized_pnl?: number | null;
+  };
+  context_lite?: {
+    session?: 'EU' | 'US' | 'ASIA' | 'OFF';
+    event_risk?: 'NONE' | 'SCHEDULED' | 'LIVE';
+    volatility_hint?: 'LOW' | 'NORMAL' | 'HIGH';
+  };
+  operating_envelope?: {
+    automation_policy?: 'MANUAL_ONLY';
+    trade_gate?: 'OPEN' | 'RESTRICTED' | 'CLOSED';
+    risk_budget?: {
+      daily_risk_cap_pct?: number;
+      risk_per_trade_pct?: number;
+      max_trades?: number;
+    };
+    stop_rules?: string[];
+    notes_short?: string;
+  };
+};
+
 const CloseIcon = ({ className = '' }: { className?: string }) => (
   <svg
     className={className || 'size-5'}
@@ -74,6 +110,8 @@ export function MyChallengeDrawer({
   const { setOverlayOpen } = useNavigationContext();
   const [isWorking, setIsWorking] = useState(false);
   const [showRemoveConfirm, setShowRemoveConfirm] = useState(false);
+  const [myChallenge, setMyChallenge] = useState<MyChallengeRecord | null>(null);
+  const [loadingMyChallenge, setLoadingMyChallenge] = useState(false);
 
   useEffect(() => {
     setOverlayOpen(isOpen);
@@ -98,6 +136,38 @@ export function MyChallengeDrawer({
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    let active = true;
+    if (!isOpen || !enrollment) {
+      setMyChallenge(null);
+      return;
+    }
+
+    const fetchMyChallenge = async () => {
+      try {
+        setLoadingMyChallenge(true);
+        const response = await fetch(`/api/my-challenges?enrollmentId=${enrollment.id}`);
+        const data = await response.json();
+        if (active && response.ok && data?.success) {
+          setMyChallenge(data.data ?? null);
+        }
+      } catch {
+        if (active) {
+          setMyChallenge(null);
+        }
+      } finally {
+        if (active) {
+          setLoadingMyChallenge(false);
+        }
+      }
+    };
+
+    fetchMyChallenge();
+    return () => {
+      active = false;
+    };
+  }, [isOpen, enrollment]);
+
   const auditContext = useMemo(() => {
     if (!enrollment) {
       return null;
@@ -111,43 +181,45 @@ export function MyChallengeDrawer({
 
     return {
       challengeRef: {
-        challengeId: enrollment.program.id,
-        accountSizeSelected: parseAccountSize(enrollment.offer.accountSize),
-        startedAt: enrollment.createdAt ?? null,
+        challengeId: myChallenge?.challenge_ref?.challenge_id ?? enrollment.program.id,
+        accountSizeSelected: myChallenge?.challenge_ref?.account_size_selected
+          ?? parseAccountSize(enrollment.offer.accountSize),
+        startedAt: myChallenge?.challenge_ref?.started_at ?? enrollment.createdAt ?? null,
       },
       accountState: {
-        balanceStart: null,
-        equityNow: null,
-        profitProgressPct: null,
-        maxDdUsedPct: null,
-        dailyLossUsedPctToday: null,
-        daysTraded: null,
-        lastTradeAt: null,
-        todayTradeCount: null,
-        todayRealizedPnl: null,
+        balanceStart: myChallenge?.account_state?.balance_start ?? null,
+        equityNow: myChallenge?.account_state?.equity_now ?? null,
+        profitProgressPct: myChallenge?.account_state?.profit_progress_pct ?? null,
+        maxDdUsedPct: myChallenge?.account_state?.max_dd_used_pct ?? null,
+        dailyLossUsedPctToday: myChallenge?.account_state?.daily_loss_used_pct_today ?? null,
+        daysTraded: myChallenge?.account_state?.days_traded ?? null,
+        lastTradeAt: myChallenge?.account_state?.last_trade_at ?? null,
+        todayTradeCount: myChallenge?.account_state?.today_trade_count ?? null,
+        todayRealizedPnl: myChallenge?.account_state?.today_realized_pnl ?? null,
       },
       contextLite: {
-        session: 'OFF',
-        eventRisk: 'NONE',
-        volatilityHint: 'NORMAL',
+        session: myChallenge?.context_lite?.session ?? 'OFF',
+        eventRisk: myChallenge?.context_lite?.event_risk ?? 'NONE',
+        volatilityHint: myChallenge?.context_lite?.volatility_hint ?? 'NORMAL',
       },
       operatingEnvelope: {
-        automationPolicy: 'MANUAL_ONLY',
-        tradeGate,
+        automationPolicy: myChallenge?.operating_envelope?.automation_policy ?? 'MANUAL_ONLY',
+        tradeGate: myChallenge?.operating_envelope?.trade_gate ?? tradeGate,
         riskBudget: {
-          dailyRiskCapPct: 2.0,
-          riskPerTradePct: 0.5,
-          maxTrades: 2,
+          dailyRiskCapPct: myChallenge?.operating_envelope?.risk_budget?.daily_risk_cap_pct ?? 2.0,
+          riskPerTradePct: myChallenge?.operating_envelope?.risk_budget?.risk_per_trade_pct ?? 0.5,
+          maxTrades: myChallenge?.operating_envelope?.risk_budget?.max_trades ?? 2,
         },
-        stopRules: ['STOP_AFTER_2_LOSSES', 'STOP_IF_EVENT_RISK_LIVE'],
-        notesShort: tradeGate === 'OPEN'
-          ? t('drawer.notes_open')
-          : tradeGate === 'RESTRICTED'
-            ? t('drawer.notes_restricted')
-            : t('drawer.notes_closed'),
+        stopRules: myChallenge?.operating_envelope?.stop_rules ?? ['STOP_AFTER_2_LOSSES', 'STOP_IF_EVENT_RISK_LIVE'],
+        notesShort: myChallenge?.operating_envelope?.notes_short
+          ?? (tradeGate === 'OPEN'
+            ? t('drawer.notes_open')
+            : tradeGate === 'RESTRICTED'
+              ? t('drawer.notes_restricted')
+              : t('drawer.notes_closed')),
       },
     };
-  }, [enrollment, t]);
+  }, [enrollment, myChallenge, t]);
 
   if (!enrollment) {
     return null;
@@ -276,6 +348,9 @@ export function MyChallengeDrawer({
                     </span>
                   </div>
                 </div>
+                {loadingMyChallenge && (
+                  <p className="text-xs text-muted-foreground">{t('drawer.loading')}</p>
+                )}
               </section>
 
               <section className="space-y-3 rounded-2xl border border-border/60 bg-white/70 p-4 shadow-sm">

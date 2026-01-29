@@ -70,6 +70,7 @@
     "notes_open": "Rispetta cap giornaliero e regole stop.",
     "notes_restricted": "Conferma avvio prima di operare.",
     "notes_closed": "Challenge chiusa. Nessun trade.",
+    "loading": "Caricamento dati challenge...",
     "stop_rules": {
       "STOP_AFTER_2_LOSSES": "Stop dopo 2 perdite",
       "STOP_IF_EVENT_RISK_LIVE": "Stop se rischio eventi e live"
