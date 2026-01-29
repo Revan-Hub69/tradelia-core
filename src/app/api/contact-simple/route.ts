@@ -13,6 +13,8 @@ import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { z } from 'zod';
 
+import { logger } from '@/lib/logger';
+
 const simpleSchema = z.object({
   name: z.string().min(1),
   email: z.string().email(),
@@ -27,7 +29,7 @@ export async function POST(request: Request) {
     const smtpUser = process.env.SMTP_USER;
     const smtpPass = process.env.SMTP_PASS;
 
-    console.log('SMTP Check:', {
+    logger.info('SMTP Check:', {
       host: !!smtpHost,
       user: !!smtpUser,
       pass: !!smtpPass,
@@ -50,13 +52,13 @@ export async function POST(request: Request) {
 
     // Parse request body
     const body = await request.json();
-    console.log('Request body:', body);
+    logger.debug('Request body:', body);
 
     const data = simpleSchema.parse(body);
-    console.log('Validated data:', data);
+    logger.debug('Validated data:', data);
 
     // Create Nodemailer transporter
-    console.log('Creating transporter...');
+    logger.info('Creating transporter...');
     const transporter = nodemailer.createTransport({
       host: smtpHost,
       port: 465,
@@ -68,7 +70,7 @@ export async function POST(request: Request) {
     });
 
     // Send simple email
-    console.log('Sending email...');
+    logger.info('Sending email...');
     await transporter.sendMail({
       from: `"Tradelia Test" <${smtpUser}>`,
       to: smtpUser, // Send to ourselves for testing
@@ -77,14 +79,14 @@ export async function POST(request: Request) {
       text: `Name: ${data.name}\nEmail: ${data.email}\n\nMessage:\n${data.message}`,
     });
 
-    console.log('Email sent successfully!');
+    logger.info('Email sent successfully!');
 
     return NextResponse.json({
       success: true,
       message: 'Test email sent',
     });
   } catch (error) {
-    console.error('Simple contact error:', error);
+    logger.error('Simple contact error:', error);
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(

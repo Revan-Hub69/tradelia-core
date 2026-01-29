@@ -15,6 +15,13 @@ describe('Telemetry Events', () => {
   let consoleDebugSpy: ReturnType<typeof vi.spyOn>;
   let originalNodeEnv: string | undefined;
 
+  const setNodeEnv = (value: string | undefined) => {
+    Object.defineProperty(process.env, 'NODE_ENV', {
+      value,
+      configurable: true,
+    });
+  };
+
   beforeEach(() => {
     consoleDebugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
     originalNodeEnv = process.env.NODE_ENV;
@@ -22,7 +29,7 @@ describe('Telemetry Events', () => {
 
   afterEach(() => {
     consoleDebugSpy.mockRestore();
-    process.env.NODE_ENV = originalNodeEnv;
+    setNodeEnv(originalNodeEnv);
   });
 
   describe('TELEMETRY_EVENTS', () => {
@@ -54,7 +61,7 @@ describe('Telemetry Events', () => {
 
   describe('track()', () => {
     it('should be a no-op in production', () => {
-      process.env.NODE_ENV = 'production';
+      setNodeEnv('production');
 
       track(TELEMETRY_EVENTS.SETTINGS_SAVED, { test: 'data' });
 
@@ -62,7 +69,7 @@ describe('Telemetry Events', () => {
     });
 
     it('should log in development', () => {
-      process.env.NODE_ENV = 'development';
+      setNodeEnv('development');
 
       track(TELEMETRY_EVENTS.SETTINGS_SAVED, { test: 'data' });
 
@@ -74,7 +81,7 @@ describe('Telemetry Events', () => {
     });
 
     it('should work without payload', () => {
-      process.env.NODE_ENV = 'development';
+      setNodeEnv('development');
 
       track(TELEMETRY_EVENTS.SETTINGS_SAVED);
 
@@ -86,7 +93,7 @@ describe('Telemetry Events', () => {
     });
 
     it('should accept any event from TELEMETRY_EVENTS', () => {
-      process.env.NODE_ENV = 'development';
+      setNodeEnv('development');
 
       const events: TelemetryEvent[] = [
         TELEMETRY_EVENTS.SETTINGS_SAVED,
@@ -104,7 +111,7 @@ describe('Telemetry Events', () => {
 
   describe('trackTiming()', () => {
     it('should track timing with duration', () => {
-      process.env.NODE_ENV = 'development';
+      setNodeEnv('development');
 
       trackTiming(TELEMETRY_EVENTS.SETTINGS_SYNC_DURATION, 150);
 
@@ -116,7 +123,7 @@ describe('Telemetry Events', () => {
     });
 
     it('should merge additional payload', () => {
-      process.env.NODE_ENV = 'development';
+      setNodeEnv('development');
 
       trackTiming(TELEMETRY_EVENTS.SETTINGS_SYNC_DURATION, 150, {
         retryCount: 2,
@@ -138,7 +145,7 @@ describe('Telemetry Events', () => {
 
   describe('trackError()', () => {
     it('should track error with Error object', () => {
-      process.env.NODE_ENV = 'development';
+      setNodeEnv('development');
 
       const error = new Error('Test error');
       trackError(TELEMETRY_EVENTS.SETTINGS_SAVE_FAILED, error);
@@ -154,7 +161,7 @@ describe('Telemetry Events', () => {
     });
 
     it('should track error with string message', () => {
-      process.env.NODE_ENV = 'development';
+      setNodeEnv('development');
 
       trackError(TELEMETRY_EVENTS.SETTINGS_SAVE_FAILED, 'Custom error message');
 
@@ -169,7 +176,7 @@ describe('Telemetry Events', () => {
     });
 
     it('should merge additional payload', () => {
-      process.env.NODE_ENV = 'development';
+      setNodeEnv('development');
 
       const error = new Error('Test error');
       trackError(TELEMETRY_EVENTS.SETTINGS_SAVE_FAILED, error, {
@@ -192,7 +199,7 @@ describe('Telemetry Events', () => {
 
   describe('startTiming()', () => {
     it('should track duration when end function is called', () => {
-      process.env.NODE_ENV = 'development';
+      setNodeEnv('development');
 
       const endTiming = startTiming(TELEMETRY_EVENTS.SETTINGS_SYNC_DURATION);
 
@@ -214,13 +221,16 @@ describe('Telemetry Events', () => {
       );
 
       const call = consoleDebugSpy.mock.calls[0];
+      if (!call) {
+        throw new Error('Expected telemetry timing log call.');
+      }
       const payload = call[2] as { duration: number };
 
       expect(payload.duration).toBeGreaterThanOrEqual(10);
     });
 
     it('should merge additional payload', () => {
-      process.env.NODE_ENV = 'development';
+      setNodeEnv('development');
 
       const endTiming = startTiming(TELEMETRY_EVENTS.SETTINGS_SYNC_DURATION, {
         operation: 'save',
@@ -242,7 +252,7 @@ describe('Telemetry Events', () => {
 
   describe('identify()', () => {
     it('should be a no-op in production', () => {
-      process.env.NODE_ENV = 'production';
+      setNodeEnv('production');
 
       identify('user-123', { email: 'test@example.com' });
 
@@ -250,7 +260,7 @@ describe('Telemetry Events', () => {
     });
 
     it('should log in development', () => {
-      process.env.NODE_ENV = 'development';
+      setNodeEnv('development');
 
       identify('user-123', { email: 'test@example.com' });
 
@@ -262,7 +272,7 @@ describe('Telemetry Events', () => {
     });
 
     it('should work without traits', () => {
-      process.env.NODE_ENV = 'development';
+      setNodeEnv('development');
 
       identify('user-123');
 
@@ -276,7 +286,7 @@ describe('Telemetry Events', () => {
 
   describe('reset()', () => {
     it('should be a no-op in production', () => {
-      process.env.NODE_ENV = 'production';
+      setNodeEnv('production');
 
       reset();
 
@@ -284,7 +294,7 @@ describe('Telemetry Events', () => {
     });
 
     it('should log in development', () => {
-      process.env.NODE_ENV = 'development';
+      setNodeEnv('development');
 
       reset();
 
@@ -294,7 +304,7 @@ describe('Telemetry Events', () => {
 
   describe('Integration', () => {
     it('should support typical usage patterns', () => {
-      process.env.NODE_ENV = 'development';
+      setNodeEnv('development');
 
       // Track a simple event
       track(TELEMETRY_EVENTS.SETTINGS_LOADED);

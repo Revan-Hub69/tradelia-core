@@ -35,11 +35,47 @@ import {
 import { useMobileDetection } from '@/hooks/useMobileDetection';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useTooltip } from '@/hooks/useTooltip';
+import { logger } from '@/lib/logger';
 import { usePathname, useRouter } from '@/libs/i18nNavigation';
 import { AppConfig } from '@/utils/AppConfig';
 import { cn } from '@/utils/Helpers';
 
 import { LanguageSwitcherSkeleton } from './HeaderSkeletons';
+
+type LanguageOptionsProps = {
+  locales: typeof AppConfig.locales;
+  locale: string;
+  onChange: (value: string) => void;
+};
+
+const LanguageOptions = ({ locales, locale, onChange }: LanguageOptionsProps) => (
+  <div className="flex flex-col gap-1">
+    {locales.map(lang => (
+      <button
+        key={lang.id}
+        type="button"
+        onClick={() => onChange(lang.id)}
+        className={cn(
+          'flex flex-col gap-0.5 rounded-lg px-4 py-3 text-left transition-colors',
+          'hover:bg-accent/10 focus:bg-accent/10',
+          locale === lang.id && 'bg-accent/10',
+          'min-h-[44px]',
+        )}
+      >
+        <span className={cn(
+          'font-medium text-foreground',
+          locale === lang.id && 'font-semibold',
+        )}
+        >
+          {lang.name}
+        </span>
+        <span className="text-xs text-muted-foreground">
+          {lang.id === 'it' ? 'Italian' : 'English'}
+        </span>
+      </button>
+    ))}
+  </div>
+);
 
 export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ className }) => {
   const router = useRouter();
@@ -74,7 +110,7 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
     // Capture trigger position for mobile popover
     if (open && isMobile && triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect();
-      console.log('[LanguageSwitcher] triggerRect:', {
+      logger.debug('[LanguageSwitcher] triggerRect:', {
         top: rect.top,
         right: rect.right,
         bottom: rect.bottom,
@@ -82,7 +118,7 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
         width: rect.width,
         height: rect.height,
       });
-      console.log('[LanguageSwitcher] viewport:', {
+      logger.debug('[LanguageSwitcher] viewport:', {
         width: window.innerWidth,
         height: window.innerHeight,
       });
@@ -125,39 +161,6 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
   if (!mounted) {
     return <LanguageSwitcherSkeleton />;
   }
-
-  // Language options component (shared between desktop and mobile)
-  const LanguageOptions = () => (
-    <div className="flex flex-col gap-1">
-      {AppConfig.locales.map(lang => (
-        <button
-          key={lang.id}
-          type="button"
-          onClick={() => handleChange(lang.id)}
-          className={cn(
-            'flex flex-col gap-0.5 rounded-lg px-4 py-3 text-left transition-colors',
-            'hover:bg-accent/10 focus:bg-accent/10',
-            locale === lang.id && 'bg-accent/10',
-            // Rule 9: Touch target
-            'min-h-[44px]',
-          )}
-        >
-          {/* Native name (primary) */}
-          <span className={cn(
-            'font-medium text-foreground',
-            locale === lang.id && 'font-semibold',
-          )}
-          >
-            {lang.name}
-          </span>
-          {/* English name (secondary) */}
-          <span className="text-xs text-muted-foreground">
-            {lang.id === 'it' ? 'Italian' : 'English'}
-          </span>
-        </button>
-      ))}
-    </div>
-  );
 
   return (
     <>
@@ -229,7 +232,7 @@ export const LanguageSwitcherDashboard = React.memo<{ className?: string }>(({ c
           triggerRef={triggerRef}
           className="w-64"
         >
-          <LanguageOptions />
+          <LanguageOptions locales={AppConfig.locales} locale={locale} onChange={handleChange} />
         </MobileDropdownPopover>
       ) : (
         /* Desktop: Standard Dropdown */

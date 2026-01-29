@@ -141,14 +141,14 @@ describe('ContextMenu', () => {
           trigger={<button type="button">Open Menu</button>}
           items={defaultItems}
           ariaLabel="Quick actions"
-          className="custom-class"
+          className="bg-background"
         />,
       );
 
       await user.click(screen.getByRole('button', { name: 'Open Menu' }));
 
       await waitFor(() => {
-        expect(screen.getByRole('menu')).toHaveClass('custom-class');
+        expect(screen.getByRole('menu')).toHaveClass('bg-background');
       });
     });
   });

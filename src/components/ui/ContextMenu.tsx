@@ -332,6 +332,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
   // ============================================================================
 
   // Clone trigger with ref and props
+  // eslint-disable-next-line react/no-clone-element
   const triggerElement = React.cloneElement(trigger, {
     'ref': triggerRef,
     'onClick': (e: React.MouseEvent) => {

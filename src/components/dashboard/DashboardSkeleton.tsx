@@ -10,8 +10,8 @@ export const DashboardSkeleton = () => {
         </div>
 
         <div className="grid gap-6 md:grid-cols-3">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="rounded-lg border bg-card p-6">
+          {[1, 2, 3].map(slot => (
+            <div key={`skeleton-card-${slot}`} className="rounded-lg border bg-card p-6">
               <div className="space-y-4">
                 <Skeleton className="size-12 rounded-2xl" />
                 <div className="space-y-2">

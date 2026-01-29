@@ -32,6 +32,7 @@ import { MobileDropdownPopover } from '@/components/ui/MobileDropdownPopover';
 import { useFocusTrap } from '@/hooks/useFocusManagement';
 import { useMobileDetection } from '@/hooks/useMobileDetection';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { logger } from '@/lib/logger';
 import { useRouter } from '@/libs/i18nNavigation';
 import { createClient } from '@/libs/supabase/client';
 import { cn } from '@/utils/Helpers';
@@ -92,7 +93,7 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
     // Capture trigger position for mobile popover
     if (open && isMobile && triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect();
-      console.log('[UserDropdown] triggerRect:', {
+      logger.debug('[UserDropdown] triggerRect:', {
         top: rect.top,
         right: rect.right,
         bottom: rect.bottom,
@@ -100,7 +101,7 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
         width: rect.width,
         height: rect.height,
       });
-      console.log('[UserDropdown] viewport:', {
+      logger.debug('[UserDropdown] viewport:', {
         width: window.innerWidth,
         height: window.innerHeight,
       });

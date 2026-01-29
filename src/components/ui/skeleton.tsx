@@ -80,13 +80,13 @@ SkeletonAvatar.displayName = 'SkeletonAvatar';
 export const SkeletonText = React.memo<{ lines?: number }>(
   ({ lines = 3 }) => (
     <div className="space-y-2">
-      {Array.from({ length: lines }).map((_, i) => (
+      {Array.from({ length: lines }, (_, index) => index + 1).map((line, index) => (
         <Skeleton
-          key={i}
+          key={`skeleton-line-${line}`}
           variant="text"
           className={cn(
             'h-4',
-            i === lines - 1 ? 'w-4/5' : 'w-full',
+            index === lines - 1 ? 'w-4/5' : 'w-full',
           )}
         />
       ))}
@@ -103,8 +103,8 @@ SkeletonText.displayName = 'SkeletonText';
 export const NavigationSkeleton = React.memo<{ isCollapsed?: boolean }>(
   ({ isCollapsed = false }) => (
     <div className="space-y-2 p-4">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <div key={i} className="flex items-center gap-3">
+      {Array.from({ length: 5 }, (_, index) => index + 1).map(line => (
+        <div key={`nav-skeleton-${line}`} className="flex items-center gap-3">
           <Skeleton variant="circular" className="size-8" />
           {!isCollapsed && <Skeleton className="h-4 flex-1" />}
         </div>

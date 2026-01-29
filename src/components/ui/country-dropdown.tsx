@@ -158,10 +158,10 @@ const CountryDropdownComponent = (
               {options
                 .filter(x => x.name)
                 .sort((a, b) => a.name.localeCompare(b.name))
-                .map((option, key: number) => (
+                .map(option => (
                   <CommandItem
                     className="flex w-full cursor-pointer items-center gap-3 px-4 py-3 transition-colors hover:bg-primary/5 hover:text-primary data-[selected]:bg-primary/10"
-                    key={`country-${option.alpha2}-${key}`}
+                    key={`country-${option.alpha2}`}
                     onSelect={() => handleSelect(option)}
                   >
                     <div className="flex size-6 shrink-0 items-center justify-center overflow-hidden rounded-full">

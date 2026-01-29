@@ -31,7 +31,7 @@ describe('Tradelia Motion System', () => {
 
     it('applies correct CSS classes', () => {
       const { container } = render(
-        <TradeliaMotion type="success" intensity="prominent">
+        <TradeliaMotion type="success" intensity="medium">
           <div>Test</div>
         </TradeliaMotion>,
       );
@@ -40,7 +40,7 @@ describe('Tradelia Motion System', () => {
 
       expect(motionElement).toHaveClass('tradelia-motion');
       expect(motionElement).toHaveClass('animate-tradelia-success');
-      expect(motionElement).toHaveClass('motion-intensity-prominent');
+      expect(motionElement).toHaveClass('motion-intensity-medium');
     });
   });
 
@@ -63,7 +63,7 @@ describe('Tradelia Motion System', () => {
   describe('PressAnticipatory Component', () => {
     it('renders as button with press classes', () => {
       render(
-        <PressAnticipatory intensity="medium">
+        <PressAnticipatory intensity="normal">
           Press Me
         </PressAnticipatory>,
       );
@@ -72,7 +72,7 @@ describe('Tradelia Motion System', () => {
 
       expect(button).toBeInTheDocument();
       expect(button).toHaveClass('press-anticipatory');
-      expect(button).toHaveClass('press-intensity-medium');
+      expect(button).toHaveClass('press-intensity-normal');
     });
   });
 

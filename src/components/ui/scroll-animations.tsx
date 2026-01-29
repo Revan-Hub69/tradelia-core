@@ -1,6 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+
+import { useInView } from '@/components/ui/useInView';
 
 /**
  * Hook to detect user's motion preferences
@@ -21,56 +23,6 @@ const useReducedMotion = () => {
   }, []);
 
   return prefersReducedMotion;
-};
-
-/**
- * Intersection Observer hook for scroll animations
- * Optimized for performance with single-use observers
- */
-export const useInView = (options: {
-  threshold?: number;
-  rootMargin?: string;
-  triggerOnce?: boolean;
-} = {}) => {
-  const { threshold = 0.1, rootMargin = '0px', triggerOnce = true } = options;
-  const [isInView, setIsInView] = useState(false);
-  const [hasTriggered, setHasTriggered] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!mounted) {
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting && (!triggerOnce || !hasTriggered)) {
-          setIsInView(true);
-          setHasTriggered(true);
-
-          if (triggerOnce) {
-            observer.disconnect();
-          }
-        } else if (!triggerOnce && !entry?.isIntersecting) {
-          setIsInView(false);
-        }
-      },
-      { threshold, rootMargin },
-    );
-
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-
-    return () => observer.disconnect();
-  }, [threshold, rootMargin, triggerOnce, hasTriggered, mounted]);
-
-  return { ref, isInView: mounted ? isInView : false };
 };
 
 /**
@@ -150,11 +102,16 @@ export const StaggerChildren = ({
   return (
     <div ref={ref} className={className}>
       {Array.isArray(children)
-        ? children.map((child, index) => (
-            <FadeIn key={`stagger-child-${index}`} delay={isInView ? index * staggerDelay : 0}>
-              {child}
-            </FadeIn>
-          ))
+        ? children.map((child, index) => {
+            const key = React.isValidElement(child) && child.key != null
+              ? String(child.key)
+              : `stagger-child-${String(child)}`;
+            return (
+              <FadeIn key={key} delay={isInView ? index * staggerDelay : 0}>
+                {child}
+              </FadeIn>
+            );
+          })
         : children}
     </div>
   );

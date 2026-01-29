@@ -1,25 +1,11 @@
 'use client';
 
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
-import React, { createContext, useContext, useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 import { createClient } from '@/libs/supabase/client';
 
-type UserData = {
-  id: string;
-  email: string;
-  name?: string;
-};
-
-type UserDataContextType = {
-  userData: UserData | null;
-  isLoading: boolean;
-  error: Error | null;
-  refetch: () => void;
-  refreshUserData: () => void; // Alias for backward compatibility
-};
-
-const UserDataContext = createContext<UserDataContextType | undefined>(undefined);
+import { type UserData, UserDataContext, type UserDataContextType } from './userDataContext';
 
 // Create a single QueryClient instance
 const queryClient = new QueryClient({
@@ -79,12 +65,4 @@ export const UserDataProvider = ({ children }: { children: React.ReactNode }) =>
       </UserDataProviderInner>
     </QueryClientProvider>
   );
-};
-
-export const useUserData = (): UserDataContextType => {
-  const context = useContext(UserDataContext);
-  if (context === undefined) {
-    throw new Error('useUserData must be used within a UserDataProvider');
-  }
-  return context;
 };

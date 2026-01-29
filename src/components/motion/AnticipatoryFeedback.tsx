@@ -459,8 +459,10 @@ export const LongPressAnticipatory: React.FC<{
     >
       {children}
       {isPressed && (
+        // eslint-disable-next-line tailwindcss/no-custom-classname
         <div className="long-press-progress-indicator">
           <div
+            // eslint-disable-next-line tailwindcss/no-custom-classname
             className="long-press-progress-fill"
             style={{ width: `${progress}%` }}
           />
@@ -468,100 +470,4 @@ export const LongPressAnticipatory: React.FC<{
       )}
     </div>
   );
-};
-
-/**
- * Hook per gestione anticipatory feedback
- */
-export const useAnticipatoryFeedback = () => {
-  const [feedbackState, setFeedbackState] = useState<'idle' | 'anticipating' | 'active'>('idle');
-  const timeoutRef = useRef<NodeJS.Timeout>();
-
-  const triggerAnticipation = useCallback((delay: number = 45) => {
-    setFeedbackState('anticipating');
-
-    timeoutRef.current = setTimeout(() => {
-      setFeedbackState('active');
-    }, delay);
-  }, []);
-
-  const completeFeedback = useCallback(() => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    setFeedbackState('idle');
-  }, []);
-
-  const resetFeedback = useCallback(() => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    setFeedbackState('idle');
-  }, []);
-
-  React.useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
-
-  return {
-    feedbackState,
-    triggerAnticipation,
-    completeFeedback,
-    resetFeedback,
-    isAnticipating: feedbackState === 'anticipating',
-    isActive: feedbackState === 'active',
-  };
-};
-
-/**
- * Utility per haptic-like patterns
- */
-export const hapticPatterns = {
-  light: {
-    intensity: 'subtle',
-    duration: 80,
-    scale: 0.98,
-  },
-  medium: {
-    intensity: 'normal',
-    duration: 120,
-    scale: 0.96,
-  },
-  heavy: {
-    intensity: 'prominent',
-    duration: 160,
-    scale: 0.94,
-  },
-  success: {
-    intensity: 'normal',
-    duration: 200,
-    scale: 1.02,
-    bounce: true,
-  },
-  warning: {
-    intensity: 'normal',
-    duration: 150,
-    scale: 0.98,
-    shake: true,
-  },
-  error: {
-    intensity: 'prominent',
-    duration: 180,
-    scale: 0.96,
-    shake: true,
-  },
-} as const;
-
-// Export del sistema completo
-export default {
-  AnticipatoryFeedback,
-  PressAnticipatory,
-  HoverAnticipatory,
-  LongPressAnticipatory,
-  useAnticipatoryFeedback,
-  hapticPatterns,
 };

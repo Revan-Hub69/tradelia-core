@@ -14,6 +14,7 @@
 
 import { useEffect, useRef } from 'react';
 
+import { logger } from '@/lib/logger';
 // ============================================================================
 // TYPES
 // ============================================================================
@@ -127,7 +128,7 @@ export function useINPMonitoring(options: {
     // Check if PerformanceObserver is supported
     if (!('PerformanceObserver' in window)) {
       if (debug) {
-        console.warn('[INP] PerformanceObserver not supported');
+        logger.warn('[INP] PerformanceObserver not supported');
       }
       return undefined;
     }
@@ -159,7 +160,7 @@ export function useINPMonitoring(options: {
 
               // Debug logging
               if (debug && inp > reportThreshold) {
-                console.log('[INP] Slow interaction detected:', {
+                logger.debug('[INP] Slow interaction detected:', {
                   inp: `${metric.value}ms`,
                   rating: metric.rating,
                   target: metric.target,
@@ -193,7 +194,7 @@ export function useINPMonitoring(options: {
       };
     } catch (error) {
       if (debug) {
-        console.error('[INP] Failed to initialize observer:', error);
+        logger.error('[INP] Failed to initialize observer:', error);
       }
       return undefined;
     }
@@ -270,7 +271,7 @@ export function sendINPReport(report: INPReport) {
 
   // Log to console in development
   if (process.env.NODE_ENV === 'development') {
-    console.log('[INP Report]', {
+    logger.debug('[INP Report]', {
       averageINP: `${report.averageINP}ms`,
       maxINP: `${report.maxINP}ms`,
       poorInteractions: report.poorInteractions,

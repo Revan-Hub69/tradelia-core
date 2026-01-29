@@ -10,12 +10,11 @@ export {
   type FeedbackIntensity,
   type FeedbackType,
   type HapticPattern,
-  hapticPatterns,
   HoverAnticipatory,
   LongPressAnticipatory,
   PressAnticipatory,
-  useAnticipatoryFeedback,
 } from './AnticipatoryFeedback';
+export { hapticPatterns, useAnticipatoryFeedback } from './AnticipatoryFeedback.utils';
 export {
   anticipatory,
   type Delay,
@@ -43,30 +42,26 @@ export {
   EnterAnimation,
   ErrorAnimation,
   ExitAnimation,
-  getSemanticAnimation,
   LoadingAnimation,
   ProgressAnimation,
   SemanticAnimation,
-  semanticAnimationDefinitions,
   type SemanticType,
   SuccessAnimation,
-  useSemanticAnimations,
   WarningAnimation,
 } from './SemanticAnimations';
+export { getSemanticAnimation, semanticAnimationDefinitions, useSemanticAnimations } from './SemanticAnimations.utils';
 export {
   ErrorMotion,
   FocusMotion,
   HoverMotion,
   type MotionIntensity,
-  motionTokens,
   type MotionType,
   PressMotion,
   StaggerContainer,
   type StaggerDirection,
   SuccessMotion,
   TradeliaMotion,
-  useTradeliaMotion,
 } from './TradeliaMotion';
+export { motionTokens, useTradeliaMotion } from './TradeliaMotion.utils';
 
 // Re-export tutto come default per convenienza
-export { default } from './TradeliaMotion';

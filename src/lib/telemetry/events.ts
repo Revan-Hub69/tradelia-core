@@ -100,8 +100,8 @@ export type TelemetryPayload = Record<string, unknown>;
  * This is a no-op implementation that logs events in development
  * and silently ignores them in production.
  *
- * @param event - Event name (use TELEMETRY_EVENTS constants)
- * @param payload - Optional event-specific data
+ * @param _event - Event name (use TELEMETRY_EVENTS constants)
+ * @param _payload - Optional event-specific data
  *
  * @example
  * ```typescript
@@ -121,9 +121,9 @@ export function track(_event: TelemetryEvent, _payload?: TelemetryPayload): void
  *
  * Convenience function for tracking performance metrics.
  *
- * @param event - Event name (use TELEMETRY_EVENTS constants)
- * @param duration - Duration in milliseconds
- * @param payload - Optional additional data
+ * @param _event - Event name (use TELEMETRY_EVENTS constants)
+ * @param _duration - Duration in milliseconds
+ * @param _payload - Optional additional data
  *
  * @example
  * ```typescript
@@ -149,9 +149,9 @@ export function trackTiming(
  *
  * Convenience function for tracking errors with consistent structure.
  *
- * @param event - Event name (use TELEMETRY_EVENTS constants)
- * @param error - Error object or message
- * @param payload - Optional additional data
+ * @param _event - Event name (use TELEMETRY_EVENTS constants)
+ * @param _error - Error object or message
+ * @param _payload - Optional additional data
  *
  * @example
  * ```typescript
@@ -185,8 +185,8 @@ export function trackError(
  * Returns a function that tracks the duration when called.
  * Useful for tracking async operations.
  *
- * @param event - Event name (use TELEMETRY_EVENTS constants)
- * @param payload - Optional additional data
+ * @param _event - Event name (use TELEMETRY_EVENTS constants)
+ * @param _payload - Optional additional data
  * @returns Function to call when operation completes
  *
  * @example
@@ -213,8 +213,8 @@ export function startTiming(
  *
  * This is a no-op stub for now.
  *
- * @param userId - User ID
- * @param traits - Optional user traits
+ * @param _userId - User ID
+ * @param _traits - Optional user traits
  */
 export function identify(_userId: string, _traits?: Record<string, unknown>): void {
   // Analytics integration point

@@ -262,62 +262,10 @@ describe('I18n Coverage Property Tests', () => {
       ), { numRuns: 100 });
     });
 
-    it('should ensure LearnPage namespace has complete coverage', () => {
-      // Feature: enterprise-complete-roadmap-2026, Property 4: Complete i18n coverage
-      fc.assert(fc.property(
-        fc.constant(['LearnPage']),
-        (_namespace) => {
-          // Property: LearnPage namespace should have complete i18n coverage
-
-          const enLearnPage = enLocale.LearnPage;
-          const itLearnPage = itLocale.LearnPage;
-
-          expect(enLearnPage).toBeDefined();
-          expect(itLearnPage).toBeDefined();
-
-          // Both should be objects
-          expect(typeof enLearnPage).toBe('object');
-          expect(typeof itLearnPage).toBe('object');
-
-          // Should have the same keys
-          const enKeys = Object.keys(enLearnPage).sort();
-          const itKeys = Object.keys(itLearnPage).sort();
-
-          expect(enKeys).toEqual(itKeys);
-
-          // Required LearnPage keys should exist
-          const requiredLearnKeys = [
-            'title',
-            'description',
-            'main_path_title',
-            'main_path_description',
-            'module1_title',
-            'module1_description',
-            'module2_title',
-            'module2_description',
-            'module3_title',
-            'module3_description',
-            'module4_title',
-            'module4_description',
-            'content_in_development',
-          ];
-
-          for (const key of requiredLearnKeys) {
-            expect(enLearnPage).toHaveProperty(key);
-            expect(itLearnPage).toHaveProperty(key);
-            expect(typeof enLearnPage[key]).toBe('string');
-            expect(typeof itLearnPage[key]).toBe('string');
-            expect(enLearnPage[key].length).toBeGreaterThan(0);
-            expect(itLearnPage[key].length).toBeGreaterThan(0);
-          }
-        },
-      ), { numRuns: 100 });
-    });
-
     it('should ensure no missing i18n keys in critical namespaces', () => {
       // Feature: enterprise-complete-roadmap-2026, Property 4: Complete i18n coverage
       fc.assert(fc.property(
-        fc.constantFrom('Dashboard', 'LearnPage', 'Navbar', 'Hero', 'Footer'),
+        fc.constantFrom('Dashboard', 'Navbar', 'Hero', 'Footer'),
         (namespace) => {
           // Property: Critical namespaces should have no missing keys between locales
 

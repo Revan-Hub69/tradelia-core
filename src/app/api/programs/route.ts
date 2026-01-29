@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 
+import { logger } from '@/lib/logger';
 import { createClient } from '@/libs/supabase/server';
 
 /**
@@ -28,7 +29,7 @@ export async function GET() {
       .order('created_at', { ascending: false });
 
     // Debug logging
-    console.log('Programs query result:', {
+    logger.debug('Programs query result:', {
       programsCount: programs?.length,
       hasError: !!programsError,
       errorMessage: programsError?.message,
@@ -39,7 +40,7 @@ export async function GET() {
     if (programsError) {
       // Check if it's a "relation does not exist" error (table not found)
       if (programsError.message?.includes('relation') || programsError.message?.includes('does not exist')) {
-        console.warn('Programs table not found - migration 0006 not applied yet');
+        logger.warn('Programs table not found - migration 0006 not applied yet');
         return NextResponse.json({
           success: true,
           data: [],
@@ -47,7 +48,7 @@ export async function GET() {
         });
       }
 
-      console.error('Error fetching programs:', programsError);
+      logger.error('Error fetching programs:', programsError);
       return NextResponse.json(
         { success: false, error: 'Failed to fetch programs' },
         { status: 500 },
@@ -215,7 +216,7 @@ export async function GET() {
       count: transformedPrograms.length,
     });
   } catch (error) {
-    console.error('Unexpected error in /api/programs:', error);
+    logger.error('Unexpected error in /api/programs:', error);
     return NextResponse.json(
       { success: false, error: 'Internal server error' },
       { status: 500 },

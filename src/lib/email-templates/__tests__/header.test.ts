@@ -54,8 +54,12 @@ describe('Feature: supabase-bilingual-email-templates', () => {
 
       expect(svgMatch).toBeTruthy();
 
+      if (!svgMatch) {
+        throw new Error('Expected SVG tag to be present.');
+      }
+
       // Should have role="img" or similar accessibility attribute
-      const svgTag = svgMatch![0];
+      const svgTag = svgMatch[0];
 
       expect(svgTag).toMatch(/role=["']img["']/i);
     });
@@ -67,7 +71,11 @@ describe('Feature: supabase-bilingual-email-templates', () => {
 
       expect(svgMatch).toBeTruthy();
 
-      const svgTag = svgMatch![0];
+      if (!svgMatch) {
+        throw new Error('Expected SVG tag to be present.');
+      }
+
+      const svgTag = svgMatch[0];
 
       // Should have aria-label
       expect(svgTag).toMatch(/aria-label=["'][^"']+["']/i);
@@ -122,7 +130,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
           const elementRegex = /<(?:svg|img)[^>]*style=["']([^"']+)["'][^>]*>/i;
           const match = html.match(elementRegex);
 
-          if (match) {
+          if (match && match[1]) {
             const styleAttr = match[1];
             const styles = parseInlineStyles(styleAttr);
 
@@ -146,7 +154,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
           const svgRegex = /<svg[^>]*width=["'](\d+)["'][^>]*height=["'](\d+)["'][^>]*>/i;
           const match = html.match(svgRegex);
 
-          if (match) {
+          if (match && match[1] && match[2]) {
             const width = Number.parseInt(match[1], 10);
             const height = Number.parseInt(match[2], 10);
 
@@ -203,7 +211,11 @@ describe('Feature: supabase-bilingual-email-templates', () => {
 
       expect(match).toBeTruthy();
 
-      const gradientDef = match![1];
+      if (!match) {
+        throw new Error('Expected gradient definition to be present.');
+      }
+
+      const gradientDef = match[1];
 
       // Should specify 135deg angle
       expect(gradientDef).toMatch(/135deg/i);
@@ -216,7 +228,11 @@ describe('Feature: supabase-bilingual-email-templates', () => {
 
       expect(match).toBeTruthy();
 
-      const gradientDef = match![1];
+      if (!match) {
+        throw new Error('Expected gradient definition to be present.');
+      }
+
+      const gradientDef = match[1];
 
       // Should have color stops (0% and 100%)
       expect(gradientDef).toMatch(/#667eea\s+0%/i);
@@ -234,7 +250,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
           const gradientRegex = /linear-gradient\(([^)]+)\)/i;
           const match = html.match(gradientRegex);
 
-          if (match) {
+          if (match && match[1]) {
             const gradientDef = match[1].toLowerCase();
 
             // Should contain both brand colors
@@ -278,6 +294,9 @@ describe('Feature: supabase-bilingual-email-templates', () => {
 
           for (const match of matches) {
             const gradientDef = match[1];
+            if (!gradientDef) {
+              continue;
+            }
 
             // Should specify an angle (e.g., 135deg)
             expect(gradientDef).toMatch(/\d+deg/i);
@@ -326,7 +345,7 @@ describe('Feature: supabase-bilingual-email-templates', () => {
           const gradientRegex = /linear-gradient\(([^)]+)\)/i;
           const match = html.match(gradientRegex);
 
-          if (match) {
+          if (match && match[1]) {
             const gradientDef = match[1];
 
             // Extract hex colors
@@ -337,6 +356,9 @@ describe('Feature: supabase-bilingual-email-templates', () => {
             // This is a simplified check - in reality, we'd calculate luminance
             for (const colorMatch of colors) {
               const hex = colorMatch[1];
+              if (!hex) {
+                continue;
+              }
 
               // Convert to RGB
               const r = Number.parseInt(hex.slice(0, 2), 16);

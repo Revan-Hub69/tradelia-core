@@ -4,11 +4,13 @@
 
 import { NextResponse } from 'next/server';
 
+import { logger } from '@/lib/logger';
+
 export const maxDuration = 60;
 
 export async function POST(request: Request) {
   try {
-    console.log('=== Contact Test API Started ===');
+    logger.info('=== Contact Test API Started ===');
 
     // Step 1: Check environment variables
     const envCheck = {
@@ -18,7 +20,7 @@ export async function POST(request: Request) {
       database_url: !!process.env.DATABASE_URL,
     };
 
-    console.log('Environment check:', envCheck);
+    logger.debug('Environment check:', envCheck);
 
     if (!envCheck.smtp_host || !envCheck.smtp_user || !envCheck.smtp_pass) {
       return NextResponse.json(
@@ -33,15 +35,15 @@ export async function POST(request: Request) {
 
     // Step 2: Parse body
     const body = await request.json();
-    console.log('Request body received:', Object.keys(body));
+    logger.debug('Request body received:', Object.keys(body));
 
     // Step 3: Try to import nodemailer
-    console.log('Importing nodemailer...');
+    logger.info('Importing nodemailer...');
     const nodemailer = await import('nodemailer');
-    console.log('Nodemailer imported successfully');
+    logger.info('Nodemailer imported successfully');
 
     // Step 4: Create transporter
-    console.log('Creating transporter...');
+    logger.info('Creating transporter...');
     const transporter = nodemailer.default.createTransport({
       host: process.env.SMTP_HOST,
       port: 465,
@@ -57,17 +59,17 @@ export async function POST(request: Request) {
       logger: true,
       debug: true,
     });
-    console.log('Transporter created');
+    logger.info('Transporter created');
 
     // Step 5: Send simple test email
-    console.log('Sending test email...');
+    logger.info('Sending test email...');
     await transporter.sendMail({
       from: `"Tradelia Test" <${process.env.SMTP_USER}>`,
       to: process.env.SMTP_USER, // Send to ourselves
       subject: 'Test Email from Contact Form',
       text: `Test email sent at ${new Date().toISOString()}\n\nBody: ${JSON.stringify(body, null, 2)}`,
     });
-    console.log('Email sent successfully!');
+    logger.info('Email sent successfully!');
 
     return NextResponse.json({
       success: true,
@@ -75,9 +77,9 @@ export async function POST(request: Request) {
       env: envCheck,
     });
   } catch (error) {
-    console.error('=== Contact Test API Error ===');
-    console.error('Error:', error);
-    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack');
+    logger.error('=== Contact Test API Error ===');
+    logger.error('Error:', error);
+    logger.error('Error stack:', error instanceof Error ? error.stack : 'No stack');
 
     return NextResponse.json(
       {

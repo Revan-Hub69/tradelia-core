@@ -224,8 +224,8 @@ export const CompetitionRulesSection = React.memo(({
 
         <div className="rounded-xl border border-border/50 bg-muted/20 p-4">
           <ul className="space-y-2">
-            {eligibility.requirements.slice(0, 5).map((req, index) => (
-              <li key={index} className="flex items-start gap-3">
+            {eligibility.requirements.slice(0, 5).map(req => (
+              <li key={`${req.type}-${req.description}`} className="flex items-start gap-3">
                 <CheckCircleIcon
                   size={18}
                   className={req.met ? 'text-green-600' : 'text-muted-foreground'}
@@ -288,9 +288,9 @@ export const CompetitionRulesSection = React.memo(({
                 {t(`competitionRules.category.${category}`)}
               </div>
               <ul className="space-y-2">
-                {rules.slice(0, 5).map((rule, index) => (
+                {rules.slice(0, 5).map(rule => (
                   <li
-                    key={index}
+                    key={`${rule.category}-${rule.title}-${rule.description}`}
                     className={`flex items-start gap-3 text-sm ${
                       rule.highlight ? 'font-medium text-foreground' : 'text-muted-foreground'
                     }`}

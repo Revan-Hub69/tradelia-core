@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const { createClient } = require('@supabase/supabase-js');
 
 const supabaseUrl = 'https://higkhlfjfhlecbtfnznx.supabase.co';

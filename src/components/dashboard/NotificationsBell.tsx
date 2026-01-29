@@ -37,6 +37,7 @@ import {
 import { useMobileDetection } from '@/hooks/useMobileDetection';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useTooltip } from '@/hooks/useTooltip';
+import { logger } from '@/lib/logger';
 import { cn } from '@/utils/Helpers';
 
 export const NotificationsBell = React.memo<{ className?: string }>(({ className }) => {
@@ -80,7 +81,7 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
     // Capture trigger position for mobile popover
     if (open && isMobile && triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect();
-      console.log('[NotificationsBell] triggerRect:', {
+      logger.debug('[NotificationsBell] triggerRect:', {
         top: rect.top,
         right: rect.right,
         bottom: rect.bottom,
@@ -88,7 +89,7 @@ export const NotificationsBell = React.memo<{ className?: string }>(({ className
         width: rect.width,
         height: rect.height,
       });
-      console.log('[NotificationsBell] viewport:', {
+      logger.debug('[NotificationsBell] viewport:', {
         width: window.innerWidth,
         height: window.innerHeight,
       });

@@ -201,7 +201,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       <nav aria-label={t('breadcrumb_aria_label')} className="hidden md:flex">
         <ol className="flex items-center space-x-2 text-sm">
           {breadcrumbs.map((item, index) => (
-            <li key={`${item.label}-${index}`} className="flex items-center">
+            <li key={item.href ?? item.label} className="flex items-center">
               {index > 0 && (
                 <span className="mx-2 text-muted-foreground">/</span>
               )}

@@ -17,7 +17,6 @@ import { forwardRef, type ReactNode, useRef } from 'react';
 
 import { cn } from '@/utils/Helpers';
 
-// ✅ TIER 1: Virtual scroll props interface
 export type VirtualScrollItem = {
   id: string;
   content: ReactNode;
@@ -34,9 +33,8 @@ export type VirtualScrollListProps = {
   gap?: number;
 };
 
-// ✅ TIER 1: Virtual scroll implementation based on TanStack research
-const defaultEstimateSize = () => 80; // Default estimate based on research
-const defaultOverscan = 5; // Buffer items for smooth scrolling
+const defaultEstimateSize = () => 80;
+const defaultOverscan = 5;
 
 export const VirtualScrollList = forwardRef<HTMLDivElement, VirtualScrollListProps>(({
   items,
@@ -49,13 +47,11 @@ export const VirtualScrollList = forwardRef<HTMLDivElement, VirtualScrollListPro
 }, ref) => {
   const parentRef = useRef<HTMLDivElement>(null);
 
-  // ✅ TIER 1: TanStack Virtual configuration
   const rowVirtualizer = useVirtualizer({
     count: items.length,
     getScrollElement: () => parentRef.current,
     estimateSize,
     overscan,
-    // ✅ TIER 1: Dynamic height measurement for variable content
     measureElement: (element) => {
       if (!element) {
         return estimateSize(0);
@@ -67,11 +63,7 @@ export const VirtualScrollList = forwardRef<HTMLDivElement, VirtualScrollListPro
   return (
     <div
       ref={ref}
-      className={cn(
-        // ✅ TIER 1: Required CSS for virtual scrolling
-        'overflow-auto',
-        className,
-      )}
+      className={cn('overflow-auto', className)}
       style={{
         height: `${height}px`,
       }}
@@ -93,15 +85,10 @@ export const VirtualScrollList = forwardRef<HTMLDivElement, VirtualScrollListPro
           return (
             <div
               key={item.id}
-              data-index={virtualItem.index} // ✅ TIER 1: Required for measurement
-              ref={rowVirtualizer.measureElement} // ✅ TIER 1: Required for measurement
-              className={cn(
-                // Base positioning styles
-                'absolute top-0 left-0 w-full',
-                itemClassName,
-              )}
+              data-index={virtualItem.index}
+              ref={rowVirtualizer.measureElement}
+              className={cn('absolute top-0 left-0 w-full', itemClassName)}
               style={{
-                // ✅ TIER 1: Positioning with transform for performance
                 transform: `translateY(${virtualItem.start + (gap * virtualItem.index)}px)`,
               }}
             >
@@ -116,26 +103,6 @@ export const VirtualScrollList = forwardRef<HTMLDivElement, VirtualScrollListPro
 
 VirtualScrollList.displayName = 'VirtualScrollList';
 
-// ✅ TIER 1: Hook for virtual scroll state management
-export const useVirtualScrollState = (itemCount: number) => {
-  const parentRef = useRef<HTMLDivElement>(null);
-
-  const virtualizer = useVirtualizer({
-    count: itemCount,
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => 80,
-    overscan: 5,
-  });
-
-  return {
-    parentRef,
-    virtualizer,
-    virtualItems: virtualizer.getVirtualItems(),
-    totalSize: virtualizer.getTotalSize(),
-  };
-};
-
-// ✅ TIER 1: Performance optimized virtual list for large datasets
 export type VirtualListProps<T> = {
   data: T[];
   height: number;

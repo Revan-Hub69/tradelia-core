@@ -70,9 +70,6 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
 
-        {/* Performance P0: DNS prefetch for faster lookups */}
-        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
       </head>
       <body className="overflow-x-hidden bg-background text-foreground antialiased" suppressHydrationWarning>
         {/* Global loading indicator for navigation transitions */}

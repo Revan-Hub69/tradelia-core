@@ -6,7 +6,7 @@
 import { useTranslations } from 'next-intl';
 import React from 'react';
 
-import { sanitizeHTML, sanitizeText } from '@/lib/sanitize';
+import { sanitizeText } from '@/lib/sanitize';
 
 import { CheckCircleIcon, InfoIcon } from '../PremiumIcons';
 import { SectionHeader } from './SectionHeader';
@@ -44,10 +44,9 @@ export const AboutSection = React.memo(({ program }: AboutSectionProps) => {
         {/* Description */}
         {program.description && (
           <div>
-            <p
-              className="leading-relaxed text-foreground"
-              dangerouslySetInnerHTML={{ __html: sanitizeHTML(program.description) }}
-            />
+            <p className="leading-relaxed text-foreground">
+              {sanitizeText(program.description)}
+            </p>
           </div>
         )}
 

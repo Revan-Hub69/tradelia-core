@@ -287,7 +287,7 @@ export const MobileDropdownPopover = React.memo<MobileDropdownPopoverProps>(({
       setPlacement(calculatedPlacement);
       setPosition(calculatedPosition);
     });
-  }, [isOpen, triggerRect]);
+  }, [isOpen, triggerRect, MAX_PREVIEW_HEIGHT]);
 
   // Rule 1: Scroll & Layout Shift - Auto-dismiss
   useEffect(() => {

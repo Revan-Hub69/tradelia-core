@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import { EmptyState } from '@/components/dashboard/challenges/EmptyState';
 import { type EnrollmentStatus, EnrollmentStatusCard } from '@/components/dashboard/challenges/EnrollmentStatusCard';
 import { TrendingUpIcon } from '@/components/dashboard/challenges/PremiumIcons';
+import { logger } from '@/lib/logger';
 
 type Enrollment = {
   id: string;
@@ -21,17 +22,17 @@ type Enrollment = {
   program: {
     id: string;
     name: string;
-    organizer_name: string;
-    official_url?: string;
+    organizerName?: string;
+    officialUrl?: string;
   };
   offer: {
     id: string;
-    offer_name: string;
-    account_size: number;
-    account_currency: string;
-    duration_days?: number;
+    name?: string;
+    accountSize?: number | string | null;
+    accountCurrency?: string | null;
+    durationDays?: number;
   };
-  created_at?: string;
+  createdAt?: string;
 };
 
 export default function MyChallengesPage() {
@@ -60,7 +61,7 @@ export default function MyChallengesPage() {
           throw new Error(data.error || 'Unknown error');
         }
       } catch (err) {
-        console.error('Error fetching enrollments:', err);
+        logger.error('Error fetching enrollments:', err);
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
         setLoading(false);
@@ -90,7 +91,7 @@ export default function MyChallengesPage() {
         setEnrollments(data.data || []);
       }
     } catch (err) {
-      console.error('Error confirming enrollment:', err);
+      logger.error('Error confirming enrollment:', err);
     }
   };
 
@@ -108,14 +109,14 @@ export default function MyChallengesPage() {
       // Remove from local state
       setEnrollments(prev => prev.filter(e => e.id !== enrollmentId));
     } catch (err) {
-      console.error('Error removing enrollment:', err);
+      logger.error('Error removing enrollment:', err);
     }
   };
 
   // Handle opening challenge drawer
   const handleOpenDrawer = (enrollment: Enrollment) => {
     // TODO: Open drawer with challenge details
-    console.log('Open drawer for:', enrollment);
+    logger.debug('Open drawer for:', enrollment);
   };
 
   // Group enrollments by status
@@ -128,8 +129,13 @@ export default function MyChallengesPage() {
   );
 
   // Format account size
-  const formatAccountSize = (size: number, currency: string) => {
-    return `${size.toLocaleString()} ${currency}`;
+  const formatAccountSize = (size: number | string | undefined | null, currency: string | undefined | null) => {
+    const numericSize = typeof size === 'number' ? size : Number(size);
+    if (!Number.isFinite(numericSize)) {
+      return 'N/A';
+    }
+    const safeCurrency = currency || 'USD';
+    return `${numericSize.toLocaleString()} ${safeCurrency}`;
   };
 
   // Format duration
@@ -222,12 +228,12 @@ export default function MyChallengesPage() {
                   <EnrollmentStatusCard
                     status={enrollment.status}
                     programName={enrollment.program.name}
-                    offerName={enrollment.offer.offer_name}
-                    organizerName={enrollment.program.organizer_name}
-                    accountSize={formatAccountSize(enrollment.offer.account_size, enrollment.offer.account_currency)}
-                    duration={formatDuration(enrollment.offer.duration_days)}
-                    startDate={formatStartDate(enrollment.created_at)}
-                    officialUrl={enrollment.program.official_url}
+                    offerName={enrollment.offer?.name || 'N/A'}
+                    organizerName={enrollment.program.organizerName || 'N/A'}
+                    accountSize={formatAccountSize(enrollment.offer?.accountSize, enrollment.offer?.accountCurrency)}
+                    duration={formatDuration(enrollment.offer?.durationDays)}
+                    startDate={formatStartDate(enrollment.createdAt)}
+                    officialUrl={enrollment.program.officialUrl}
                     onConfirm={enrollment.status === 'pending_confirmation'
                       ? () => handleConfirm(enrollment.id)
                       : undefined}
@@ -257,12 +263,12 @@ export default function MyChallengesPage() {
                   <EnrollmentStatusCard
                     status={enrollment.status}
                     programName={enrollment.program.name}
-                    offerName={enrollment.offer.offer_name}
-                    organizerName={enrollment.program.organizer_name}
-                    accountSize={formatAccountSize(enrollment.offer.account_size, enrollment.offer.account_currency)}
-                    duration={formatDuration(enrollment.offer.duration_days)}
-                    startDate={formatStartDate(enrollment.created_at)}
-                    officialUrl={enrollment.program.official_url}
+                    offerName={enrollment.offer?.name || 'N/A'}
+                    organizerName={enrollment.program.organizerName || 'N/A'}
+                    accountSize={formatAccountSize(enrollment.offer?.accountSize, enrollment.offer?.accountCurrency)}
+                    duration={formatDuration(enrollment.offer?.durationDays)}
+                    startDate={formatStartDate(enrollment.createdAt)}
+                    officialUrl={enrollment.program.officialUrl}
                     onOpenDrawer={() => handleOpenDrawer(enrollment)}
                   />
                 </motion.div>

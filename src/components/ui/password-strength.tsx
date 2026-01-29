@@ -204,8 +204,8 @@ export const PasswordStrength = ({ password, className = '' }: PasswordStrengthP
             {t('password_suggestions')}
           </div>
           <div className="space-y-1">
-            {analysis.suggestions.map((suggestion, index) => (
-              <div key={`suggestion-${index}`} className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+            {analysis.suggestions.map(suggestion => (
+              <div key={suggestion} className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                 <svg className="size-3 shrink-0 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>

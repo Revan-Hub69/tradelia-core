@@ -19,6 +19,7 @@
 import { useEffect } from 'react';
 
 import { useINPMonitoring } from '@/hooks/useINPMonitoring';
+import { logger } from '@/lib/logger';
 
 export function WebVitalsMonitor() {
   // Phase 3 Task 1: Advanced INP monitoring with detailed interaction tracking
@@ -29,7 +30,7 @@ export function WebVitalsMonitor() {
     onReport: (report) => {
       // Log detailed INP report in development
       if (process.env.NODE_ENV === 'development') {
-        console.log('📊 INP Report:', {
+        logger.debug('📊 INP Report:', {
           average: `${report.averageINP}ms`,
           max: `${report.maxINP}ms`,
           poorCount: report.poorInteractions,
@@ -58,7 +59,7 @@ export function WebVitalsMonitor() {
         // LCP (Largest Contentful Paint)
         // Target: < 2.5s (good), < 4s (needs improvement)
         const status = metric.value < 2500 ? '✅' : metric.value < 4000 ? '⚠️' : '❌';
-        console.log(`${status} LCP:`, {
+        logger.debug(`${status} LCP:`, {
           value: `${(metric.value / 1000).toFixed(2)}s`,
           rating: metric.rating,
           target: '< 2.5s',
@@ -75,7 +76,7 @@ export function WebVitalsMonitor() {
         // INP (Interaction to Next Paint) - NEW in 2026
         // Target: < 200ms (good), < 500ms (needs improvement)
         const status = metric.value < 200 ? '✅' : metric.value < 500 ? '⚠️' : '❌';
-        console.log(`${status} INP:`, {
+        logger.debug(`${status} INP:`, {
           value: `${metric.value.toFixed(0)}ms`,
           rating: metric.rating,
           target: '< 200ms',
@@ -90,7 +91,7 @@ export function WebVitalsMonitor() {
         // CLS (Cumulative Layout Shift)
         // Target: < 0.1 (good), < 0.25 (needs improvement)
         const status = metric.value < 0.1 ? '✅' : metric.value < 0.25 ? '⚠️' : '❌';
-        console.log(`${status} CLS:`, {
+        logger.debug(`${status} CLS:`, {
           value: metric.value.toFixed(3),
           rating: metric.rating,
           target: '< 0.1',
@@ -106,7 +107,7 @@ export function WebVitalsMonitor() {
         // FCP (First Contentful Paint)
         // Target: < 1.8s (good), < 3s (needs improvement)
         const status = metric.value < 1800 ? '✅' : metric.value < 3000 ? '⚠️' : '❌';
-        console.log(`${status} FCP:`, {
+        logger.debug(`${status} FCP:`, {
           value: `${(metric.value / 1000).toFixed(2)}s`,
           rating: metric.rating,
           target: '< 1.8s',
@@ -117,7 +118,7 @@ export function WebVitalsMonitor() {
         // TTFB (Time to First Byte)
         // Target: < 800ms (good), < 1800ms (needs improvement)
         const status = metric.value < 800 ? '✅' : metric.value < 1800 ? '⚠️' : '❌';
-        console.log(`${status} TTFB:`, {
+        logger.debug(`${status} TTFB:`, {
           value: `${metric.value.toFixed(0)}ms`,
           rating: metric.rating,
           target: '< 800ms',

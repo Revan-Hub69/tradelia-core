@@ -17,21 +17,6 @@ import {
   type NavigationItemId,
 } from '@/data/navigation.config';
 
-// Mock i18n keys that should exist for navigation
-const _REQUIRED_I18N_KEYS = [
-  'nav_challenges',
-  'nav_my_challenges',
-  'nav_signals',
-  'nav_aria_primary',
-  'nav_loading',
-  'nav_focus_moved',
-  'nav_focus_first',
-  'nav_focus_last',
-  'nav_blocked',
-  'nav_offline',
-  'nav_navigating',
-] as const;
-
 // Generator for navigation item IDs
 const navigationItemIdGenerator = (): fc.Arbitrary<NavigationItemId> => {
   return fc.constantFrom('challenges', 'my-challenges', 'signals');

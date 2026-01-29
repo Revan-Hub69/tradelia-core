@@ -9,7 +9,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { createContext, type ReactNode, useContext, useMemo } from 'react';
+import { createContext, type ReactNode, useMemo } from 'react';
 
 // ============================================================================
 // TYPES
@@ -102,37 +102,4 @@ export function DashboardContextProvider({ children }: DashboardContextProviderP
       {children}
     </DashboardContext.Provider>
   );
-}
-
-// ============================================================================
-// HOOK
-// ============================================================================
-
-export function useDashboardContext() {
-  const context = useContext(DashboardContext);
-
-  if (context === undefined) {
-    throw new Error('useDashboardContext must be used within DashboardContextProvider');
-  }
-
-  return context;
-}
-
-// ============================================================================
-// OPTIONAL: Hook with default fallback (no throw)
-// ============================================================================
-
-export function useDashboardContextSafe(): DashboardContextType {
-  const context = useContext(DashboardContext);
-
-  // Fallback if used outside provider
-  if (context === undefined) {
-    return {
-      section: 'home',
-      titleKey: 'Dashboard.nav_dashboard',
-      breadcrumb: ['Dashboard'],
-    };
-  }
-
-  return context;
 }

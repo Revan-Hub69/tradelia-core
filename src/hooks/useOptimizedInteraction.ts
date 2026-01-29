@@ -279,6 +279,8 @@ export function useInteractionObserver(
   callbackRef.current = callback;
 
   const cleanupRef = useRef<(() => void) | null>(null);
+  const DEFAULT_EVENTS = ['mouseenter', 'touchstart', 'focus'];
+  const { events = DEFAULT_EVENTS, once = true } = options;
 
   useEffect(() => {
     return () => {
@@ -298,11 +300,6 @@ export function useInteractionObserver(
     if (!element) {
  return;
 }
-
-    const {
-      events = ['mouseenter', 'touchstart', 'focus'],
-      once = true,
-    } = options;
 
     const handler = () => {
       callbackRef.current();
@@ -324,5 +321,5 @@ export function useInteractionObserver(
     };
 
     cleanupRef.current = cleanup;
-  }, [options.events?.join(','), options.once]);
+  }, [events, once]);
 }

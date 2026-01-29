@@ -124,7 +124,6 @@ describe('Feature: supabase-bilingual-email-templates', () => {
   describe('Property 5: Touch-Friendly Navigation Buttons', () => {
     it('should have navigation links with minimum 44x44px touch target', () => {
       // Extract anchor tag style attributes
-      // eslint-disable-next-line regexp/no-unused-capturing-group
       const anchorRegex = /<a\s[^>]*href=["']#(?:en|it)["'][^>]*style=["']([^"']+)["'][^>]*>/g;
       let match;
       const touchTargets: Array<{ size: { width: number; height: number } }> = [];

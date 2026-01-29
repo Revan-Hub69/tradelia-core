@@ -12,10 +12,10 @@ import { FadeIn, StaggerChildren } from '@/components/ui/scroll-animations';
  */
 const StarRating = ({ rating }: { rating: number }) => (
   <div className="flex items-center gap-1">
-    {[...Array(5)].map((_, i) => (
+    {[1, 2, 3, 4, 5].map(star => (
       <svg
-        key={`star-${rating}-${i}`}
-        className={`size-4 ${i < rating ? 'text-yellow-400' : 'text-muted-foreground/30'}`}
+        key={`star-${rating}-${star}`}
+        className={`size-4 ${star <= rating ? 'text-yellow-400' : 'text-muted-foreground/30'}`}
         fill="currentColor"
         viewBox="0 0 20 20"
         aria-hidden="true"
