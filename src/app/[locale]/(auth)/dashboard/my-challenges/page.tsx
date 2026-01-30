@@ -20,6 +20,11 @@ import { logger } from '@/lib/logger';
 type Enrollment = {
   id: string;
   status: EnrollmentStatus;
+  currentPhaseNumber?: number | null;
+  currentPhaseStatus?: string | null;
+  currentPhaseStartedAt?: string | null;
+  currentPhaseCompletedAt?: string | null;
+  phaseUpdatedAt?: string | null;
   program: {
     id: string;
     name: string;

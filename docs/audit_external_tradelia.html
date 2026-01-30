@@ -1,0 +1,846 @@
+﻿<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <title>Tradelia - Documento di Audit Esterno</title>
+    <style>
+      body { font-family: "Segoe UI", Arial, sans-serif; margin: 32px; color: #111; }
+      h1 { font-size: 24px; margin-bottom: 8px; }
+      h2 { font-size: 18px; margin-top: 22px; }
+      h3 { font-size: 15px; margin-top: 12px; }
+      h4 { font-size: 13px; margin-top: 10px; }
+      hr { border: 0; border-top: 1px solid #ddd; margin: 18px 0; }
+      ul, ol { margin: 6px 0 12px 18px; }
+      li { margin: 4px 0; }
+      .mono { font-family: Consolas, "Courier New", monospace; }
+      table { border-collapse: collapse; margin: 12px 0; }
+      th, td { border: 1px solid #ccc; padding: 6px 10px; font-size: 13px; vertical-align: top; }
+      th { background: #f4f4f4; }
+      .note { color: #555; font-size: 13px; }
+    </style>
+  </head>
+  <body>
+    <h1>Tradelia - Documento di Audit Esterno (AI Signals &amp; Challenges)</h1>
+    <p class="note">Versione: v1.1 | Scopo: audit tecnico-esterno e definizione percorso verso setup reali per prop/challenge</p>
+    <p class="note"><b>Stato:</b> FROZEN / READ-ONLY. Nessuna modifica di sostanza finche non si chiude Phase 1–2 (calibrazione soglie + cost distribution con log). Ammesse solo correzioni editoriali/typo e formattazione.</p>
+
+    <h2>1) Scopo e criteri di audit</h2>
+    <ul>
+      <li>Conformita alle regole delle challenge e alle policy dei prop firm.</li>
+      <li>Controllo del rischio, dei costi e della robustezza operativa.</li>
+      <li>Tracciabilita end-to-end (state, decisioni, motivazioni).</li>
+      <li>Separazione netta tra regole statiche e segnali dinamici.</li>
+      <li>Percorso chiaro verso setup reali (non solo concettuali).</li>
+    </ul>
+
+    <hr />
+
+    <h2>1.1 Audit del documento (conformita e gap)</h2>
+    <table>
+      <tr>
+        <th>Requisito best practice 2026</th>
+        <th>Stato</th>
+        <th>Note / gap</th>
+      </tr>
+      <tr>
+        <td>Separazione regole statiche vs segnali</td>
+        <td>OK</td>
+        <td>Architettura chiara in sezione 2</td>
+      </tr>
+      <tr>
+        <td>Risk/Cost layer esplicito</td>
+        <td>Parziale</td>
+        <td>Serve cost model stocastico e soglie operative minime</td>
+      </tr>
+      <tr>
+        <td>Regime/context osservabile</td>
+        <td>OK</td>
+        <td>OK (versione osservabile); versione probabilistica in roadmap (sez. 18)</td>
+      </tr>
+      <tr>
+        <td>Setup registry minima</td>
+        <td>OK</td>
+        <td>Setup pack v0.1 (1 per arena) in 10.4</td>
+      </tr>
+      <tr>
+        <td>Governance e responsabilita</td>
+        <td>OK</td>
+        <td>Definita in sezione 12</td>
+      </tr>
+      <tr>
+        <td>Testing invarianti / replay</td>
+        <td>OK</td>
+        <td>Definito in sezione 14</td>
+      </tr>
+      <tr>
+        <td>Audit trail e security</td>
+        <td>OK</td>
+        <td>Definito in sezione 15</td>
+      </tr>
+    </table>
+
+    <p class="note">Conclusione audit: documento coerente con best practice 2026, con un gap residuo su soglie operative e cost model stocastico.</p>
+
+    <hr />
+
+    <h2>2) Architettura di separazione (obbligatoria)</h2>
+    <h3>A. ChallengeSpec (Regole statiche)</h3>
+    <ul>
+      <li>Profit target</li>
+      <li>Max drawdown e daily loss</li>
+      <li>Min trading days</li>
+      <li>Permessi (EA, news, weekend)</li>
+    </ul>
+
+    <h3>B. MyChallenge (stato corrente + limiti)</h3>
+    <ul>
+      <li>DD usato, daily loss usato oggi</li>
+      <li>Giorni tradati, sessione, event risk</li>
+    </ul>
+
+    <h3>C. OperatingEnvelope (decisione di rischio)</h3>
+    <ul>
+      <li>Trade Gate: OPEN / RESTRICTED / CLOSED</li>
+      <li>Risk Budget: daily cap, risk per trade, max trades</li>
+      <li>Stop rules e policy di automazione</li>
+    </ul>
+
+    <h3>D. AI Signals (layer advisory)</h3>
+    <ul>
+      <li>Legge solo OperatingEnvelope e Context Lite.</li>
+      <li>Non puo mai superare ChallengeSpec o RiskBudget.</li>
+    </ul>
+
+    <hr />
+
+    <h2>3) Principio guida (accademico)</h2>
+    <p>Nessun segnale senza vincoli e costi. Qualsiasi edge teorico si degrada con costi, impatto e turnover. Un sistema senza cost model e risk gate produce segnali non auditabili. [R1][R2][R3]</p>
+
+    <hr />
+
+    <h2>4) Ordine decisionale (best practice)</h2>
+    <ol>
+      <li>Data Quality &amp; Measurement</li>
+      <li>ChallengeSpec (vincoli duri)</li>
+      <li>Risk/Cost Layer</li>
+      <li>Regime/Context Layer</li>
+      <li>Opportunity &amp; Venue Selection (cross-market)</li>
+      <li>Portfolio/Correlation Layer (se multi-asset)</li>
+      <li>Position sizing &amp; pacing</li>
+      <li>Setup selection</li>
+      <li>Asset selection</li>
+    </ol>
+
+    <hr />
+
+    <h2>5) Risk &amp; Cost Layer (core)</h2>
+    <ul>
+      <li>Transaction costs (spread, commission, slippage proxy)</li>
+      <li>Turnover e mitigazione costi</li>
+      <li>Risk budget giornaliero e per trade</li>
+      <li>Volatility regime per scaling del rischio</li>
+    </ul>
+    <p class="note">Senza cost model realistico, il segnale e non valido. [R1][R2][R3]</p>
+
+    <hr />
+
+    <h2>6) Regime / Context Layer</h2>
+    <ul>
+      <li>Sessione (EU/US/ASIA/OFF)</li>
+      <li>Event risk (NONE/SCHEDULED/LIVE)</li>
+      <li>Volatilita (LOW/NORMAL/HIGH)</li>
+      <li>Spread/liquidita proxy</li>
+    </ul>
+    <p>Il contesto determina se un setup e applicabile oggi. [R4][R5][R6]</p>
+    <p class="note">Session window standard: <span class="mono">session_window { timezone, allowed_blocks, no_trade_buffer_minutes, hard_cutoff }</span>; la sessione Context deriva da timestamp + timezone.</p>
+
+    <hr />
+
+    <h2>7) Portfolio &amp; Correlation Layer (se multi-asset)</h2>
+    <ul>
+      <li>Correlazione tra asset e rischio cumulato</li>
+      <li>Esposizione per valuta/settore</li>
+      <li>Limitazione concentrazione di rischio</li>
+    </ul>
+
+    <hr />
+
+    <h2>8) Position sizing &amp; pacing</h2>
+    <ul>
+      <li>Sizing coerente con daily loss e DD</li>
+      <li>Pacing giornaliero (risk burn)</li>
+      <li>Kill switch su soglie critiche</li>
+    </ul>
+
+    <hr />
+
+    <h2>9) Output Contract AI Signals</h2>
+    <ul>
+      <li>Trade Gate attivo</li>
+      <li>Risk Budget applicabile</li>
+      <li>Contesto sintetico</li>
+      <li>Motivazione breve e auditabile</li>
+    </ul>
+    <p>Se Trade Gate != OPEN, il segnale e bloccato.</p>
+
+    <hr />
+
+    <h2>10) Percorso verso setup reali (prop/challenge)</h2>
+    <h3>10.0 Venue Selection: scegliere dove cercare setup</h3>
+    <p>Layer che decide quale arena oggi ha la migliore combinazione opportunita / rischio / costi e quali mercati sono vietati (regole, costi, eventi, liquidita).</p>
+
+    <h4>Input minimi</h4>
+    <ul class="mono">
+      <li>ChallengeSpec (vincoli per arena)</li>
+      <li>cost_features per arena (spread/slippage proxy + quantili)</li>
+      <li>Regime/Context per arena (trend/expansion + volatility)</li>
+      <li>Catalyst (eventi specifici asset)</li>
+    </ul>
+
+    <h4>OpportunityScore (proxy-based)</h4>
+    <p class="note">OpportunityScore = Trend/Expansion + Catalyst + Liquidity − CostRisk − EventRiskPenalty</p>
+    <p class="note">Prima gate, poi score: se venue_gate=DISABLED o data_quality&lt;min → score = -INF.</p>
+    <p class="note">Componenti discretizzati via quantili robusti per arena: Liquidity ∈ {0,0.5,1} da p33/p66 volume/range; CostRisk ∈ {0,0.5,1} da p33/p66 spread/slippage proxy; Trend/Expansion ∈ {0,0.5,1} da classificatore regime; Catalyst ∈ {0,1}; EventRiskPenalty ∈ {0,1}.</p>
+
+    <h4>Output contract</h4>
+    <ul class="mono">
+      <li>venue_gate: {CRYPTO, FOREX, FUTURES, EQUITIES_NEWS} → ENABLED/DISABLED</li>
+      <li>primary_arena_today</li>
+      <li>secondary_arena (opzionale)</li>
+      <li>watchlist_target (es. ["TSLA"])</li>
+      <li>fallback_index (es. ["NQ"])</li>
+      <li>catalyst_strength: LOW/MED/HIGH</li>
+      <li>universe_today: { arena: [symbols...] }</li>
+      <li>why (motivazione auditabile)</li>
+    </ul>
+
+    <h4>Regole dure (anti-errore)</h4>
+    <ul>
+      <li>Follow the energy: se un’arena ha expansion + liquidita ok + costi accettabili, non puoi ignorarla per un’arena “morta”.</li>
+      <li>Catalyst dominates: se il catalyst e asset-specific, l’arena corretta e quella dell’asset; indice solo fallback.</li>
+      <li>EQUITIES_NEWS requires target: se primary_arena_today=EQUITIES_NEWS allora watchlist_target.length>=1, altrimenti arena DISABLED.</li>
+      <li>Universe consistency: primary_arena_today richiede universe_today[primary_arena_today].length>=1.</li>
+      <li>Instrument consistency: ogni setup candidato deve avere instruments ⊆ universe_today[arena], altrimenti SKIP.</li>
+      <li>Challenge rules override: i vincoli della challenge disabilitano intere arena.</li>
+    </ul>
+
+    <h4>Esempi</h4>
+    <ul>
+      <li>Crypto vola: ArenaScore(CRYPTO) alto, FOREX basso → primary_arena_today = CRYPTO (setup TREND/BREAKOUT).</li>
+      <li>News Tesla: Catalyst TSLA-specific → primary_arena_today = EQUITIES_NEWS (TSLA), indice solo fallback.</li>
+    </ul>
+
+    <h3>10.1 Definizione setup (standard auditabile)</h3>
+    <ul>
+      <li>Setup = regole operative + regime valido + risk budget compatibile.</li>
+      <li>Un setup non esiste se non rispetta costi e vincoli ChallengeSpec.</li>
+      <li>Ogni setup deve avere: regime target, strumenti ammessi, trigger, stop, sizing base.</li>
+    </ul>
+
+    <h3>10.2 Pipeline per arrivare a setup reali</h3>
+    <ol>
+      <li>Definire ChallengeSpec per programma (vincoli duri).</li>
+      <li>Definire Risk/Cost Layer (costi reali, slippage, spread proxy).</li>
+      <li>Definire Regime/Context con metrica osservabile.</li>
+      <li>Proporre 2-3 setup candidati per regime, non per asset.</li>
+      <li>Validare in replay con DecisionState serializzato.</li>
+      <li>Attivare in produzione solo se passano stress test e regole di rischio.</li>
+    </ol>
+
+    <h3>10.3 Output minimo per un setup reale</h3>
+    <ul class="mono">
+      <li>setup_id, name, regime_target, instruments</li>
+      <li>trigger_rules, invalidation_rules</li>
+      <li>risk_per_trade_pct, max_trades, cooldown</li>
+      <li>cost_assumptions, expected_edge_range</li>
+      <li>compliance_flags (news/weekend/EA)</li>
+    </ul>
+
+    <h3>10.4 Setup Registry v0.1 (MVP cross-arena)</h3>
+    <p class="note">MVP: 1 setup per arena. Versione forte: 1 setup per arena × regime.</p>
+
+    <h4>Regime (tassonomia minima e osservabile)</h4>
+    <ul class="mono">
+      <li>TREND</li>
+      <li>RANGE</li>
+      <li>BREAKOUT</li>
+      <li>EXPANSION (volatility expansion / momentum burst)</li>
+      <li>EVENT (asset-specific catalyst)</li>
+    </ul>
+    <p class="note">Regime signals (minimi, per arena):</p>
+    <ul>
+      <li><b>FUTURES:</b> TREND = sopra/sotto VWAP + HH/HL o LL/LH (M15–H1). RANGE = oscillazione attorno value/VWAP + compressione. BREAKOUT = rottura range (opening/premarket) + retest.</li>
+      <li><b>FOREX:</b> BREAKOUT = break del range di sessione (Asia/Londra) + conferma. RANGE = ritorni ripetuti verso mid-range con volatilita compressa. TREND = swing HH/HL o LL/LH su H1/H4.</li>
+      <li><b>CRYPTO:</b> EXPANSION = compressione → break + retest con volatilita in aumento. RANGE = livelli ripetuti e assorbimento. TREND = struttura multi-TF + pullback su livello chiave.</li>
+      <li><b>EQUITIES_NEWS:</b> EVENT = catalyst HIGH + livelli pre-news + comportamento post-news (continuation o reversal). Senza catalyst HIGH → arena DISABLED.</li>
+    </ul>
+
+    <h4>Arene (definizione minima)</h4>
+    <ul>
+      <li><b>FUTURES:</b> ES/NQ; regimi tipici TREND/BREAKOUT; vincoli: news risk, orari sessione US.</li>
+      <li><b>FOREX:</b> major FX; regimi tipici RANGE/BREAKOUT; vincoli: news macro, leverage, overnight.</li>
+      <li><b>CRYPTO:</b> BTC/ETH perp; regimi tipici BREAKOUT/EXPANSION; vincoli: volatilita elevata, 24/7.</li>
+      <li><b>EQUITIES_NEWS:</b> single-name (es. TSLA); regimi tipici EVENT; vincoli: catalyst required, orari.</li>
+    </ul>
+
+    <h4>Setup Pack v0.1 (1 per arena)</h4>
+
+    <h4>FUTURES — “VWAP Pullback Continuation”</h4>
+    <ul class="mono">
+      <li>arena: FUTURES</li>
+      <li>regime_target: TREND</li>
+      <li>instruments: ES, NQ</li>
+      <li>trigger_rules: trend sopra/sotto VWAP; pullback verso VWAP o zona di valore; candle di conferma</li>
+      <li>invalidation_rules: close decisivo oltre VWAP + struttura rotta</li>
+      <li>risk_per_trade_pct: da OperatingEnvelope</li>
+      <li>max_trades: 1–2 per sessione</li>
+      <li>cooldown: 10–20 min dopo loss</li>
+      <li>cost_assumptions: spread + slippage proxy (minimo)</li>
+      <li>compliance_flags: news filter ON, no-trade con event risk LIVE</li>
+    </ul>
+    <p class="note">Output: “Futures attivi → cerca pullback su VWAP.”</p>
+
+    <h4>FOREX — “London Breakout / Session Range Break”</h4>
+    <ul class="mono">
+      <li>arena: FOREX</li>
+      <li>regime_target: BREAKOUT</li>
+      <li>instruments: EURUSD, GBPUSD, USDJPY</li>
+      <li>trigger_rules: break del range sessione Europa/Londra con conferma</li>
+      <li>invalidation_rules: rientro nel range + close opposto</li>
+      <li>max_trades: 1–2</li>
+      <li>cooldown: dopo falso breakout</li>
+      <li>compliance_flags: news filter ON</li>
+    </ul>
+    <p class="note">Output: “Forex attivo → breakout di sessione con conferma.”</p>
+
+    <h4>CRYPTO — “Breakout + Retest su Volatility Expansion”</h4>
+    <ul class="mono">
+      <li>arena: CRYPTO</li>
+      <li>regime_target: BREAKOUT / EXPANSION</li>
+      <li>instruments: BTC, ETH</li>
+      <li>trigger_rules: compressione + break + retest con vol in espansione</li>
+      <li>invalidation_rules: rientro sotto livello + close opposto</li>
+      <li>max_trades: 1–2</li>
+      <li>cooldown: dopo falso breakout</li>
+      <li>compliance_flags: cost check aggressivo</li>
+    </ul>
+    <p class="note">Output: “Crypto in expansion → breakout + retest.”</p>
+
+    <h4>EQUITIES_NEWS — “News Reversal / Continuation”</h4>
+    <ul class="mono">
+      <li>arena: EQUITIES_NEWS</li>
+      <li>regime_target: EVENT</li>
+      <li>instruments: single-name (es. TSLA)</li>
+      <li>trigger_rules: catalyst HIGH + livelli pre-news + impulso/assorbimento</li>
+      <li>invalidation_rules: perdita livello chiave + fallimento catalyst</li>
+      <li>requirements.catalyst_required: HIGH</li>
+      <li>max_trades: 1–2</li>
+      <li>cooldown: dopo failure news</li>
+    </ul>
+    <p class="note">Output: “Equities news attiva → catalyst-driven setup.”</p>
+
+    <h4>Pipeline decisionale (8 righe)</h4>
+    <ol>
+      <li>Trade Gate (OPEN/RESTRICTED/CLOSED)</li>
+      <li>Risk Budget (risk per trade, max trades)</li>
+      <li>Context (session + event risk + spread/liquidity proxy)</li>
+      <li>Regime (TREND / RANGE / BREAKOUT / EXPANSION / EVENT)</li>
+      <li>VenueSelection → primary_arena_today</li>
+      <li>Setup candidates = SetupRegistry.filter(arena + regime + compliance + requirements)</li>
+      <li>Cost check (se costi troppo alti → SKIP)</li>
+      <li>Output: “Cerca questo setup su questo strumento”</li>
+      <li>Se nulla passa → “No setup today”</li>
+    </ol>
+
+    <h3>10.5 Setup Contract JSON (minimo)</h3>
+    <pre class="mono">
+SetupContract {
+  setup_id,
+  arena,
+  name,
+  regime_target,
+  instruments,
+  session_window: { timezone, allowed_blocks, no_trade_buffer_minutes, hard_cutoff },
+  trigger_rules,
+  invalidation_rules,
+  risk_policy: { risk_per_trade_pct, max_trades, cooldown },
+  cost_assumptions,
+  compliance_flags,
+  event_policy,
+  requirements: { catalyst_required }
+}
+    </pre>
+
+    <hr />
+
+    <h2>11) Evidence richieste per audit</h2>
+    <ul>
+      <li>ChallengeSpec versionata e immutabile</li>
+      <li>MyChallenge con stato e audit trail</li>
+      <li>Log del Trade Gate e Risk Budget</li>
+      <li>Regole cost model documentate</li>
+      <li>Policy di explainability e replay</li>
+      <li>Test di regressione per setup attivi</li>
+    </ul>
+
+    <hr />
+
+    <h2>12) Governance, responsabilita e controllo (best practice 2026)</h2>
+    <h3>12.1 Ruoli minimi</h3>
+    <ul>
+      <li>Owner del ChallengeSpec (immutabile per enrollment)</li>
+      <li>Owner del Risk/Cost Layer</li>
+      <li>Owner della Decision Policy</li>
+      <li>Reviewer indipendente per audit trimestrale</li>
+    </ul>
+
+    <h3>12.2 Ciclo di approvazione</h3>
+    <ul>
+      <li>Nessuna modifica a ChallengeSpec o Policy durante una challenge attiva</li>
+      <li>Versioning obbligatorio per ogni update</li>
+      <li>Rollback documentato per ogni release</li>
+    </ul>
+
+    <h3>12.3 Change control (policy)</h3>
+    <ul>
+      <li>Ogni modifica richiede test di regressione e replay deterministico</li>
+      <li>Audit log di chi ha modificato cosa e quando</li>
+    </ul>
+    <p class="note">Governance e model risk management allineati a standard regolatori. [R7][R8]</p>
+
+    <hr />
+
+    <h2>13) Uncertainty &amp; Cost Risk (obbligatorio)</h2>
+    <ul>
+      <li>Uncertainty aggregata: max(data_u, regime_u, execution_u, disagreement_u)</li>
+      <li>Haircut di rischio proporzionale all’incertezza</li>
+      <li>Cost model stocastico (expected + tail proxy)</li>
+      <li>Se cost tail &gt; edge stimato → SKIP</li>
+    </ul>
+    <p class="note">Principi coerenti con evidenze su costi e turnover e con linee guida di risk management. [R1][R2][R3][R7]</p>
+
+    <h3>13.1 Execution Kill-Switch</h3>
+    <ul>
+      <li>Spread anomalo o slippage fuori p99 → SKIP</li>
+      <li>2 anomalie consecutive → HALT sessione</li>
+    </ul>
+    <p class="note">Kill-switch e controlli di rischio operativi sono raccomandati dalle best practice di mercato. [R10]</p>
+
+    <h3>13.2 Soglie minime operative (v0.1, proxy-based)</h3>
+    <ul>
+      <li>Spread (ticks): RESTRICTED se spread &gt; p95_hist, HALT se spread &gt; p99_hist</li>
+      <li>Slippage (ticks): RESTRICTED se |slippage| &gt; p95_hist, HALT se |slippage| &gt; p99_hist o 2 anomalie consecutive</li>
+      <li>Volatilita locale (ATR 1m / range 1m): se &gt; p95_hist → vieta setup RANGE, consenti TREND/ORB con sizing ridotto</li>
+      <li>TotalUncertainty: U = max(data_u, regime_u, execution_u, disagreement_u)</li>
+      <li>U ≥ 0.8 → SKIP; 0.5 ≤ U &lt; 0.8 → DELAY/haircut; U &lt; 0.5 → nominale</li>
+    </ul>
+    <p class="note">Le soglie sono derivate da distribuzioni empiriche (quantili robusti) su proxy osservabili e sostituite con dati di esecuzione reali quando disponibili.</p>
+
+    <h3>13.3 Maturazione soglie (fasi)</h3>
+    <ul>
+      <li><b>Phase 0 (Proxy Calibration):</b> soglie da quantili di proxy osservabili (spread stimato, range/ATR, volume).</li>
+      <li><b>Phase 1 (Paper/Sim log):</b> execution logs sintetici (fill_time, slippage stimato, spread al trigger).</li>
+      <li><b>Phase 2 (Live/Contest):</b> sostituzione con execution logs reali e recalibrazione.</li>
+    </ul>
+
+    <hr />
+
+    <h2>14) Decision Policy Invariants &amp; Testing</h2>
+    <h3>14.1 Invarianti hard</h3>
+    <ol>
+      <li>Idempotenza: stesso state → stessa decisione</li>
+      <li>Determinismo: nessuna randomness non controllata</li>
+      <li>No bypass vincoli ChallengeSpec/RiskBudget</li>
+      <li>Fail-safe: dati mancanti → SKIP</li>
+      <li>Monotonicita: piu incertezza non rende piu permissivo</li>
+    </ol>
+
+    <h3>14.2 Test minimi (property-based)</h3>
+    <ul class="mono">
+      <li>test_idempotence(DecisionState)</li>
+      <li>test_monotonicity_uncertainty(DecisionState[])</li>
+      <li>test_no_constraint_bypass(DecisionState)</li>
+      <li>test_fail_safe(malformed DecisionState)</li>
+    </ul>
+
+    <h3>14.3 Replay deterministico</h3>
+    <ul>
+      <li>Ogni DecisionState serializzato deve poter essere rieseguito</li>
+      <li>Replay deve produrre stessa PolicyDecision</li>
+      <li>Policy/model version fissate per replay</li>
+    </ul>
+    <h3>14.4 Invarianti hard (vincoli contrattuali)</h3>
+    <ul>
+      <li>risk_budget.risk_per_trade_pct &lt;= daily_loss_pct / max_trades</li>
+      <li>trade_gate = CLOSED se daily_loss_used_pct_today &gt;= daily_loss_pct o max_dd_used_pct &gt;= max_dd_pct</li>
+      <li>se news_trading_allowed = false e event_risk in {SCHEDULED,LIVE} ⇒ trade_gate != OPEN</li>
+      <li>se now non e in session_window.allowed_blocks ⇒ trade_gate = CLOSED (default fail-safe)</li>
+      <li>eccezione: se configurato after_hours_policy="RESTRICTED" e non in hard_cutoff ⇒ trade_gate = RESTRICTED</li>
+      <li>se event_risk = SCHEDULED e now nel buffer ⇒ trade_gate != OPEN (policy definita)</li>
+      <li>se event_risk = SCHEDULED e nel buffer ⇒ action = DELAY (default) e reason_codes include SESSION.FAIL.EVENT_BUFFER_ACTIVE</li>
+      <li>action=TRADE ⇒ trade_gate=OPEN e selected_setup_id != null</li>
+      <li>action in {SKIP,HALT} ⇒ selected_setup_id = null</li>
+    </ul>
+    <h3>14.5 Reason Codes v0.1 + Action/Reason Matrix (Replay &amp; Testing)</h3>
+    <h4>14.5.1 Reason Codes (v0.1, enumerazione minima)</h4>
+    <p class="note">Struttura: <span class="mono">CATEGORY.SUBCATEGORY.DETAIL</span></p>
+    <h4>A) Data / Quality</h4>
+    <ul class="mono">
+      <li>DATA.FAIL.MISSING_FIELDS</li>
+      <li>DATA.FAIL.STALE_FRESHNESS</li>
+      <li>DATA.FAIL.LOW_COVERAGE</li>
+      <li>DATA.FAIL.INTEGRITY</li>
+    </ul>
+    <h4>B) Constraints / Challenge</h4>
+    <ul class="mono">
+      <li>CONSTRAINT.HARD.DAILY_LOSS_HIT</li>
+      <li>CONSTRAINT.HARD.MAX_DD_HIT</li>
+      <li>CONSTRAINT.HARD.MIN_DAYS_NOT_MET</li>
+      <li>CONSTRAINT.RULES.NEWS_NOT_ALLOWED</li>
+      <li>CONSTRAINT.RULES.WEEKEND_NOT_ALLOWED</li>
+      <li>CONSTRAINT.RULES.EA_NOT_ALLOWED</li>
+    </ul>
+    <h4>C) Session / Time Window</h4>
+    <ul class="mono">
+      <li>SESSION.FAIL.OUTSIDE_ALLOWED_BLOCK</li>
+      <li>SESSION.FAIL.HARD_CUTOFF_REACHED</li>
+      <li>SESSION.FAIL.EVENT_BUFFER_ACTIVE</li>
+    </ul>
+    <h4>D) Execution / Cost / Market Micro</h4>
+    <ul class="mono">
+      <li>EXEC.HALT.SPREAD_P99</li>
+      <li>EXEC.HALT.SLIPPAGE_P99</li>
+      <li>EXEC.HALT.ANOMALY_STREAK</li>
+      <li>COST.FAIL.TAIL_GT_EDGE</li>
+      <li>COST.RESTRICT.TAIL_NEAR_EDGE</li>
+      <li>LIQ.RESTRICT.LOW_LIQUIDITY</li>
+    </ul>
+    <h4>E) Regime / Confidence</h4>
+    <ul class="mono">
+      <li>REGIME.REVIEW.LOW_CONFIDENCE</li>
+      <li>REGIME.REVIEW.TRANSITION_RISK_HIGH</li>
+      <li>REGIME.OK.MATCH</li>
+    </ul>
+    <h4>F) Venue / Universe / Setup</h4>
+    <ul class="mono">
+      <li>VENUE.FAIL.DISABLED_BY_RULES</li>
+      <li>VENUE.FAIL.NO_PRIMARY_UNIVERSE</li>
+      <li>UNIVERSE.FAIL.INSTRUMENT_NOT_ALLOWED</li>
+      <li>SETUP.FAIL.NO_MATCH</li>
+      <li>SETUP.OK.MATCH</li>
+    </ul>
+    <h4>G) Risk Budget / Pacing</h4>
+    <ul class="mono">
+      <li>RISK.FAIL.TRADE_GATE_CLOSED</li>
+      <li>RISK.RESTRICT.TRADE_GATE_RESTRICTED</li>
+      <li>RISK.RESTRICT.PACING_SLOW</li>
+      <li>RISK.OK.ALL_LIMITS_OK</li>
+    </ul>
+    <h4>H) Trade OK</h4>
+    <ul class="mono">
+      <li>TRADE.OK.ALL_GATES</li>
+      <li>TRADE.OK.WITH_HAIRCUT</li>
+    </ul>
+    <h4>14.5.2 Action ↔ Reason Matrix (vincoli contrattuali)</h4>
+    <p class="note">Regola generale: ogni <span class="mono">PolicyDecision.action</span> deve essere coerente con i <span class="mono">reason_codes</span>, altrimenti e invalid decision.</p>
+    <table>
+      <tr>
+        <th>action</th>
+        <th>reason_codes OBBLIGATORI (almeno 1)</th>
+        <th>reason_codes VIETATI</th>
+      </tr>
+      <tr>
+        <td>TRADE</td>
+        <td>TRADE.OK.ALL_GATES | TRADE.OK.WITH_HAIRCUT</td>
+        <td>qualsiasi *.FAIL.*, EXEC.HALT.*, RISK.FAIL.*</td>
+      </tr>
+      <tr>
+        <td>DELAY</td>
+        <td>REGIME.REVIEW.* | SESSION.FAIL.EVENT_BUFFER_ACTIVE | RISK.RESTRICT.PACING_SLOW</td>
+        <td>EXEC.HALT.*, DATA.FAIL.*, CONSTRAINT.HARD.*</td>
+      </tr>
+      <tr>
+        <td>SKIP</td>
+        <td>DATA.FAIL.* | CONSTRAINT.* | VENUE.FAIL.* | SETUP.FAIL.* | COST.FAIL.*</td>
+        <td>TRADE.OK.*, EXEC.HALT.*</td>
+      </tr>
+      <tr>
+        <td>HALT</td>
+        <td>EXEC.HALT.*</td>
+        <td>TRADE.OK.*, SETUP.*, VENUE.*</td>
+      </tr>
+    </table>
+    <h4>Vincoli aggiuntivi</h4>
+    <ul>
+      <li>action=TRADE ⇒ selected_setup_id presente e instruments ⊆ universe_today[arena]</li>
+      <li>action∈{SKIP,HALT} ⇒ selected_setup_id = null</li>
+      <li>action=HALT ⇒ trade_gate = CLOSED</li>
+      <li>action=TRADE ⇒ trade_gate = OPEN</li>
+      <li>action=DELAY ⇒ trade_gate = RESTRICTED (non CLOSED)</li>
+    </ul>
+    <h3>14.6 DecisionState Canonical Serialization + Hash Spec (Determinismo)</h3>
+    <h4>14.6.1 Scopo</h4>
+    <p>Garantire replay deterministico: stesso DecisionState ⇒ stesso hash ⇒ stessa PolicyDecision.</p>
+    <h4>14.6.2 Canonicalization Rules (hard)</h4>
+    <ul>
+      <li>Campi in ordine fisso (schema canonico)</li>
+      <li>Numeri arrotondati: scores/uncertainty/confidence → 2 decimali; cost_distribution.expected/tail_risk → 4 decimali</li>
+      <li>Array ordinati: watchlist_target ASC; universe_today[arena] ASC</li>
+      <li><span class="mono">timestamp_utc_iso</span> deve essere ISO-8601 UTC con suffisso <span class="mono">Z</span> (es. 2026-01-29T19:15:00Z)</li>
+      <li><span class="mono">signal_candidates_sorted</span> ordinati per <span class="mono">setup_id</span> ASC e poi <span class="mono">expected_edge</span> DESC</li>
+      <li>Nessun campo opzionale omesso: se assente usare null (non missing)</li>
+    </ul>
+    <h4>14.6.3 Canonical Form (DecisionStateCanonical v1)</h4>
+    <pre class="mono">
+DecisionStateCanonical(v1) {
+  timestamp_utc_iso,
+  constraints: {
+    trade_gate,
+    hard_limits: { ... },
+    risk_budget: { ... }
+  },
+  data_quality: { freshness, integrity, coverage },
+  uncertainty: { data_u, regime_u, execution_u, disagreement_u },
+  regime: { state, confidence, transition_risk },
+  market: { volatility_level, liquidity_proxy, session, event_risk },
+  path_state: { loss_streak, recovery_mode, pacing_status },
+  cost_distribution: { expected, tail_risk },
+  venue_selection: {
+    venue_gate,
+    primary_arena_today,
+    secondary_arena,
+    watchlist_target_sorted,
+    fallback_index_sorted,
+    catalyst_strength,
+    universe_today_sorted
+  },
+  signal_candidates_sorted: [ { setup_id, expected_edge } ]
+}
+    </pre>
+    <h4>14.6.4 Hash Spec</h4>
+    <p class="note">state_hash = SHA256( JSON.stringify(DecisionStateCanonical(v1)) )</p>
+    <h4>14.6.5 Replay Invariant (test)</h4>
+    <ul>
+      <li>same canonical JSON ⇒ same state_hash</li>
+      <li>same state_hash + same policy_version ⇒ same PolicyDecision</li>
+    </ul>
+
+    <hr />
+
+    <h2>15) Security, Audit Trail &amp; Access Control</h2>
+    <ul>
+      <li>RBAC su ChallengeSpec, Risk Engine, Policy Engine</li>
+      <li>Log append-only per DecisionState e PolicyDecision</li>
+      <li>Hash chain su eventi critici</li>
+      <li>Timestamp sincronizzati</li>
+    </ul>
+    <p class="note">Allineato alle funzioni Govern/Measure/Manage della AI RMF. [R9]</p>
+    <p class="note">PolicyDecision deve includere <span class="mono">state_hash</span> e versioni (policy/model/spec) per replay deterministico.</p>
+
+    <hr />
+
+    <h2>16) Motore dinamico Tradelia (base operativa)</h2>
+    <p>Il motore deve adattarsi dinamicamente a:</p>
+    <ul>
+      <li>Obiettivi e vincoli della challenge (ChallengeSpec)</li>
+      <li>Condizioni di mercato e regime</li>
+      <li>Volatilita e costi di esecuzione</li>
+    </ul>
+
+    <h3>16.1 DecisionState (single source of truth)</h3>
+    <pre class="mono">
+DecisionState {
+  timestamp,
+  constraints: {
+    trade_gate,
+    risk_budget,
+    hard_limits: {
+      max_dd_pct,
+      daily_loss_pct,
+      profit_target_pct,
+      min_days,
+      max_position_size?,
+      max_trades_per_day?,
+      max_open_positions?,
+      news_trading_allowed,
+      weekend_holding_allowed,
+      ea_allowed
+    }
+  },
+  data_quality: { freshness, integrity, coverage },
+  uncertainty: { data_u, regime_u, execution_u, disagreement_u },
+  regime: { state, confidence, transition_risk },
+  market: { volatility_level, liquidity_proxy, session, event_risk },
+  path_state: { loss_streak, recovery_mode, pacing_status },
+  cost_distribution: { expected, tail_risk },
+  venue_selection: { venue_gate, primary_arena_today, secondary_arena, watchlist_target, fallback_index, catalyst_strength, universe_today },
+  signal_candidates: [ { setup_id, expected_edge } ]
+}
+    </pre>
+
+    <h3>16.2 Regole di dinamica (core)</h3>
+    <ul>
+      <li>Se trade_gate != OPEN → nessun setup attivabile</li>
+      <li>Risk budget scala con volatilita e incertezza</li>
+      <li>Regime state guida la scelta dei setup candidati</li>
+      <li>Cost tail superiore all’edge → SKIP automatico</li>
+      <li>Event risk LIVE → blocco o riduzione severa del rischio</li>
+    </ul>
+
+    <h3>16.3 PolicyDecision (output auditabile + replay)</h3>
+    <pre class="mono">
+PolicyDecision {
+  timestamp,
+  action: TRADE | DELAY | SKIP | HALT,
+  trade_gate: OPEN | RESTRICTED | CLOSED,
+  primary_arena_today,
+  selected_setup_id?,                 // presente solo se action=TRADE
+  instruments?,                       // subset di universe_today[arena]
+  risk_budget_applied: { risk_per_trade_pct, max_trades, cooldown },
+  dominant_constraint: string,
+  reason_codes: [string],
+  uncertainty_summary: { U, data_u, regime_u, execution_u, disagreement_u },
+  cost_check: { expected, tail_risk, verdict: PASS | RESTRICT | FAIL },
+  version: { policy: "vX.Y", model: "vA.B", spec: "vN.M" },
+  state_hash: "sha256(...)",
+  audit_path_id?
+}
+    </pre>
+
+    <hr />
+
+    <h2>17) Data Schema minimo (auditabile)</h2>
+    <h3>ChallengeSpec</h3>
+    <ul class="mono">
+      <li>target_pct</li>
+      <li>max_dd_pct</li>
+      <li>daily_loss_pct</li>
+      <li>min_days</li>
+      <li>ea_allowed</li>
+      <li>news_trading</li>
+      <li>weekend_holding</li>
+    </ul>
+
+    <h3>MyChallenge</h3>
+    <ul class="mono">
+      <li>balance_start</li>
+      <li>equity_now</li>
+      <li>peak_equity</li>
+      <li>profit_progress_pct</li>
+      <li>max_dd_used_pct</li>
+      <li>daily_loss_used_pct_today</li>
+      <li>days_traded</li>
+      <li>event_risk</li>
+      <li>session</li>
+    </ul>
+
+    <h3>OperatingEnvelope</h3>
+    <ul class="mono">
+      <li>trade_gate</li>
+      <li>risk_budget.daily_risk_cap_pct</li>
+      <li>risk_budget.risk_per_trade_pct</li>
+      <li>risk_budget.max_trades</li>
+      <li>stop_rules</li>
+    </ul>
+    <h3>HardLimits (minimo auditabile)</h3>
+    <ul class="mono">
+      <li>max_dd_pct</li>
+      <li>daily_loss_pct</li>
+      <li>profit_target_pct</li>
+      <li>min_days</li>
+      <li>max_position_size</li>
+      <li>max_trades_per_day</li>
+      <li>max_open_positions</li>
+      <li>news_trading_allowed</li>
+      <li>weekend_holding_allowed</li>
+      <li>ea_allowed</li>
+    </ul>
+    <p class="note">
+      Mapping regole: <span class="mono">hard_limits.news_trading_allowed</span> deriva da
+      <span class="mono">ChallengeSpec.news_trading</span> (normalizzazione: news_trading → news_trading_allowed).
+      In caso di conflitto, prevale <span class="mono">ChallengeSpec</span> (immutabile per enrollment).
+    </p>
+
+    <hr />
+
+    <h2>18) Audit Gap Analysis (interno)</h2>
+    <table>
+      <tr>
+        <th>Area</th>
+        <th>Status</th>
+        <th>Gap</th>
+        <th>Azioni richieste</th>
+      </tr>
+      <tr>
+        <td>ChallengeSpec</td>
+        <td>OK</td>
+        <td>Versioning e snapshot per enrollment</td>
+        <td>Bloccare modifiche in corso challenge</td>
+      </tr>
+      <tr>
+        <td>Risk/Cost Layer</td>
+        <td>Parziale</td>
+        <td>Cost model reale e slippage proxy</td>
+        <td>Definire cost distribution minima</td>
+      </tr>
+      <tr>
+        <td>Regime/Context</td>
+        <td>Parziale</td>
+        <td>Versione osservabile presente, probabilistica futura</td>
+        <td>Inserire probabilita e transition risk</td>
+      </tr>
+      <tr>
+        <td>Setup Registry</td>
+        <td>OK</td>
+        <td>v0.1 con 4 setup (1 per arena), da estendere</td>
+        <td>Estendere a v0.2 (5–7 setup) dopo validazione</td>
+      </tr>
+      <tr>
+        <td>Replay/Testing</td>
+        <td>Parziale</td>
+        <td>Framework definito, CI non implementata</td>
+        <td>Property tests in CI + report replay</td>
+      </tr>
+    </table>
+
+    <hr />
+
+    <h2>19) Conclusione</h2>
+    <p>Il sistema e auditabile solo se regole statiche, risk layer e contesto sono separati e tracciati, con governance, testing e security formalizzati. Il motore deve essere dinamico rispetto a vincoli, mercato e volatilita. Il percorso verso setup reali richiede definizione rigorosa, test e cost model realistico prima del rilascio.</p>
+
+    <hr />
+
+    <h2>20) Riferimenti (paper e standard completi)</h2>
+    <ul class="mono">
+      <li>[R1] Markowitz portfolios under transaction costs (2025), Quarterly Review of Economics and Finance, DOI: 10.1016/j.qref.2025.101962.</li>
+      <li>[R2] Portfolio choice and the effects of liquidity (2011), SERIEs, DOI: 10.1007/s13209-010-0025-4.</li>
+      <li>[R3] Portfolio choice under transitory price impact (2010), Journal of Economic Dynamics and Control, DOI: 10.1016/j.jedc.2010.06.005.</li>
+      <li>[R4] Regime-switching in volatility and correlation structure using range-based models with Markov-switching (2013), Economic Modelling, DOI: 10.1016/j.econmod.2012.11.013.</li>
+      <li>[R5] Forecasting realised volatility using regime-switching models (2025), International Review of Economics & Finance, DOI: 10.1016/j.iref.2025.104171.</li>
+      <li>[R6] High-frequency volatility modeling: A Markov-Switching Autoregressive Conditional Intensity model (2021), Journal of Economic Dynamics and Control, DOI: 10.1016/j.jedc.2021.104077.</li>
+      <li>[R7] Federal Reserve SR 11-7: Supervisory Guidance on Model Risk Management (April 4, 2011).</li>
+      <li>[R8] FDIC FIL-22-2017: Adoption of Supervisory Guidance on Model Risk Management (June 7, 2017).</li>
+      <li>[R9] NIST AI Risk Management Framework 1.0 (Jan 26, 2023) and NIST AI RMF Playbook (updated Feb 6, 2025).</li>
+      <li>[R10] FIA: Best Practices for Automated Trading Risk Controls and System Safeguards (July 2024).</li>
+    </ul>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -58,7 +58,7 @@ export async function PATCH(
     // Get current enrollment to check ownership and current status
     const { data: enrollment, error: fetchError } = await supabase
       .from('user_enrollments')
-      .select('id, user_id, status, program_id, offer_id')
+      .select('id, user_id, status, program_id, offer_id, current_phase_number, current_phase_status, current_phase_started_at')
       .eq('id', id)
       .single();
 
@@ -116,12 +116,22 @@ export async function PATCH(
       case 'active':
         updateData.confirmed_at = now;
         updateData.started_at = now;
+        updateData.current_phase_number = enrollment.current_phase_number ?? 1;
+        updateData.current_phase_status = 'active';
+        updateData.current_phase_started_at = enrollment.current_phase_started_at ?? now;
+        updateData.phase_updated_at = now;
         break;
       case 'completed':
         updateData.completed_at = now;
+        updateData.current_phase_status = 'passed';
+        updateData.current_phase_completed_at = now;
+        updateData.phase_updated_at = now;
         break;
       case 'failed':
         updateData.failed_at = now;
+        updateData.current_phase_status = 'failed';
+        updateData.current_phase_completed_at = now;
+        updateData.phase_updated_at = now;
         break;
       case 'abandoned':
         updateData.abandoned_at = now;

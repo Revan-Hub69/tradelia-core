@@ -1,9 +1,173 @@
 'use client';
 
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
+
+type Enrollment = {
+  id: string;
+  status: string;
+  currentPhaseNumber?: number | null;
+  program: {
+    id: string;
+    name: string;
+    organizerName?: string;
+  };
+  offer: {
+    id: string;
+    name?: string | null;
+    accountSize?: number | string | null;
+    accountCurrency?: string | null;
+  };
+};
+
+type Ruleset = {
+  id?: string | null;
+  phase_number: number;
+  phase_name?: string | null;
+  profit_target_pct: number | null;
+  max_drawdown_pct: number | null;
+  max_daily_loss_pct: number | null;
+  min_trading_days: number | null;
+  ea_allowed?: boolean | null;
+  news_trading?: boolean | null;
+  weekend_holding?: boolean | null;
+  consistency_required?: boolean | null;
+  best_day_max_pct?: number | null;
+};
+
+type MyChallengeRecord = {
+  enrollment_id: string;
+  account_state?: {
+    balance_start?: number | null;
+    equity_now?: number | null;
+    profit_progress_pct?: number | null;
+    max_dd_used_pct?: number | null;
+    daily_loss_used_pct_today?: number | null;
+    days_traded?: number | null;
+  };
+};
+
+type OpenPosition = {
+  id: string;
+  symbol: string;
+  side: 'long' | 'short';
+  size: number;
+  entry_price?: number | null;
+  opened_at?: string | null;
+  is_open?: boolean | null;
+};
 
 export default function SignalsPage() {
   const t = useTranslations('Signals') as any;
+  const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
+  const [selectedEnrollmentId, setSelectedEnrollmentId] = useState<string | null>(null);
+  const [isFreeMode, setIsFreeMode] = useState(false);
+  const [rulesets, setRulesets] = useState<Ruleset[]>([]);
+  const [myChallenge, setMyChallenge] = useState<MyChallengeRecord | null>(null);
+  const [openPositions, setOpenPositions] = useState<OpenPosition[]>([]);
+  const [loadingEnrollments, setLoadingEnrollments] = useState(true);
+  const [loadingContext, setLoadingContext] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    const fetchEnrollments = async () => {
+      try {
+        setLoadingEnrollments(true);
+        const response = await fetch('/api/enrollments?status=active');
+        const data = await response.json();
+        if (!active) {
+          return;
+        }
+        if (response.ok && data?.success) {
+          const next = data.data ?? [];
+          setEnrollments(next);
+          setSelectedEnrollmentId(prev => prev ?? next?.[0]?.id ?? null);
+          setIsFreeMode(next.length === 0);
+        } else {
+          setEnrollments([]);
+        }
+      } finally {
+        if (active) {
+          setLoadingEnrollments(false);
+        }
+      }
+    };
+    fetchEnrollments();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    if (!selectedEnrollmentId || isFreeMode) {
+      setRulesets([]);
+      setMyChallenge(null);
+      setOpenPositions([]);
+      return () => {
+        active = false;
+      };
+    }
+
+    const fetchContext = async () => {
+      try {
+        setLoadingContext(true);
+        const [specResponse, challengeResponse, positionsResponse] = await Promise.all([
+          fetch(`/api/challenge-spec?enrollmentId=${selectedEnrollmentId}`),
+          fetch(`/api/my-challenges?enrollmentId=${selectedEnrollmentId}`),
+          fetch(`/api/open-positions?enrollmentId=${selectedEnrollmentId}`),
+        ]);
+        const specData = await specResponse.json();
+        const challengeData = await challengeResponse.json();
+        const positionsData = await positionsResponse.json();
+        if (!active) {
+          return;
+        }
+        if (specResponse.ok && specData?.success) {
+          setRulesets(specData.data?.rulesets ?? []);
+        } else {
+          setRulesets([]);
+        }
+        if (challengeResponse.ok && challengeData?.success) {
+          setMyChallenge(challengeData.data ?? null);
+        } else {
+          setMyChallenge(null);
+        }
+        if (positionsResponse.ok && positionsData?.success) {
+          setOpenPositions(positionsData.data ?? []);
+        } else {
+          setOpenPositions([]);
+        }
+      } finally {
+        if (active) {
+          setLoadingContext(false);
+        }
+      }
+    };
+
+    fetchContext();
+    return () => {
+      active = false;
+    };
+  }, [selectedEnrollmentId]);
+
+  const selectedEnrollment = useMemo(
+    () => enrollments.find(entry => entry.id === selectedEnrollmentId) ?? null,
+    [enrollments, selectedEnrollmentId],
+  );
+
+  const currentPhaseNumber = selectedEnrollment?.currentPhaseNumber ?? 1;
+  const currentRuleset = useMemo(
+    () => rulesets.find(rule => rule.phase_number === currentPhaseNumber) ?? rulesets[0] ?? null,
+    [rulesets, currentPhaseNumber],
+  );
+
+  const formatPct = (value: number | null | undefined) => {
+    if (value == null) {
+      return t('selector_value_missing');
+    }
+    return `${value}%`;
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -13,6 +177,132 @@ export default function SignalsPage() {
           <p className="text-muted-foreground">
             {t('description')}
           </p>
+        </div>
+
+        {/* Challenge Context Selector */}
+        <div className="rounded-2xl border bg-card p-6">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-lg font-semibold">{t('challenge_selector_title')}</h2>
+              <p className="text-sm text-muted-foreground">
+                {t('challenge_selector_description')}
+              </p>
+            </div>
+            <div className="min-w-[220px]">
+              <select
+                className="w-full rounded-xl border border-border bg-white px-3 py-2 text-sm text-foreground"
+                value={isFreeMode ? 'free' : selectedEnrollmentId ?? ''}
+                onChange={(event) => {
+                  const value = event.target.value;
+                  if (value === 'free') {
+                    setIsFreeMode(true);
+                    setSelectedEnrollmentId(null);
+                  } else {
+                    setIsFreeMode(false);
+                    setSelectedEnrollmentId(value);
+                  }
+                }}
+                disabled={loadingEnrollments || enrollments.length === 0}
+              >
+                {enrollments.length === 0 && (
+                  <option value="">{t('challenge_selector_empty')}</option>
+                )}
+                {enrollments.length > 0 && (
+                  <option value="free">{t('challenge_selector_free')}</option>
+                )}
+                {enrollments.map((entry) => (
+                  <option key={entry.id} value={entry.id}>
+                    {entry.program.name}{entry.offer?.name ? ` · ${entry.offer.name}` : ''}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {loadingEnrollments ? (
+            <p className="mt-4 text-sm text-muted-foreground">{t('challenge_selector_loading')}</p>
+          ) : isFreeMode ? (
+            <div className="mt-4 rounded-xl border border-dashed border-muted-foreground/30 p-4 text-sm text-muted-foreground">
+              {t('challenge_selector_free_description')}
+            </div>
+          ) : !selectedEnrollment ? (
+            <div className="mt-4 rounded-xl border border-dashed border-muted-foreground/30 p-4 text-sm text-muted-foreground">
+              {t('challenge_selector_none')}
+            </div>
+          ) : (
+            <div className="mt-6 grid gap-4 lg:grid-cols-3">
+              <div className="rounded-xl border border-border/60 bg-white/70 p-4">
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">{t('challenge_selector_program')}</p>
+                <p className="mt-2 text-sm font-semibold">{selectedEnrollment.program.name}</p>
+                <p className="text-xs text-muted-foreground">
+                  {selectedEnrollment.program.organizerName || t('selector_value_missing')}
+                </p>
+                <p className="mt-3 text-xs text-muted-foreground">
+                  {t('challenge_selector_phase')} {currentPhaseNumber}
+                </p>
+              </div>
+              <div className="rounded-xl border border-border/60 bg-white/70 p-4">
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">{t('challenge_selector_rules')}</p>
+                <div className="mt-2 grid gap-2 text-sm">
+                  <div className="flex items-center justify-between">
+                    <span>{t('challenge_selector_target')}</span>
+                    <span className="font-semibold">{formatPct(currentRuleset?.profit_target_pct)}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>{t('challenge_selector_daily_loss')}</span>
+                    <span className="font-semibold">{formatPct(currentRuleset?.max_daily_loss_pct)}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>{t('challenge_selector_max_dd')}</span>
+                    <span className="font-semibold">{formatPct(currentRuleset?.max_drawdown_pct)}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span>{t('challenge_selector_min_days')}</span>
+                    <span>{currentRuleset?.min_trading_days ?? t('selector_value_missing')}</span>
+                  </div>
+                </div>
+              </div>
+              <div className="rounded-xl border border-border/60 bg-white/70 p-4">
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">{t('challenge_selector_state')}</p>
+                {loadingContext ? (
+                  <p className="mt-2 text-sm text-muted-foreground">{t('challenge_selector_loading_context')}</p>
+                ) : (
+                  <div className="mt-2 grid gap-2 text-sm">
+                    <div className="flex items-center justify-between">
+                      <span>{t('challenge_selector_profit_progress')}</span>
+                      <span className="font-semibold">
+                        {myChallenge?.account_state?.profit_progress_pct != null
+                          ? `${myChallenge.account_state.profit_progress_pct.toFixed(1)}%`
+                          : t('selector_value_missing')}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span>{t('challenge_selector_dd_used')}</span>
+                      <span className="font-semibold">
+                        {myChallenge?.account_state?.max_dd_used_pct != null
+                          ? `${myChallenge.account_state.max_dd_used_pct.toFixed(1)}%`
+                          : t('selector_value_missing')}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span>{t('challenge_selector_daily_used')}</span>
+                      <span className="font-semibold">
+                        {myChallenge?.account_state?.daily_loss_used_pct_today != null
+                          ? `${myChallenge.account_state.daily_loss_used_pct_today.toFixed(1)}%`
+                          : t('selector_value_missing')}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span>{t('challenge_selector_open_positions')}</span>
+                      <span className="font-semibold">
+                        {openPositions.length}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* AI Signal Generator Section */}

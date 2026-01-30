@@ -12,6 +12,11 @@ import { ExternalLinkIcon } from './PremiumIcons';
 type Enrollment = {
   id: string;
   status: EnrollmentStatus;
+  currentPhaseNumber?: number | null;
+  currentPhaseStatus?: string | null;
+  currentPhaseStartedAt?: string | null;
+  currentPhaseCompletedAt?: string | null;
+  phaseUpdatedAt?: string | null;
   program: {
     id: string;
     name: string;
@@ -40,6 +45,37 @@ type ContextSession = 'EU' | 'US' | 'ASIA' | 'OFF';
 type ContextEventRisk = 'NONE' | 'SCHEDULED' | 'LIVE';
 type ContextVolatility = 'LOW' | 'NORMAL' | 'HIGH';
 type TradeGate = 'OPEN' | 'RESTRICTED' | 'CLOSED';
+
+type OpenPosition = {
+  id: string;
+  enrollment_id: string;
+  program_id?: string | null;
+  offer_id?: string | null;
+  symbol: string;
+  side: 'long' | 'short';
+  size: number;
+  entry_price?: number | null;
+  opened_at?: string | null;
+  stop_loss?: number | null;
+  take_profit?: number | null;
+  unrealized_pnl?: number | null;
+  notional_value?: number | null;
+  leverage?: number | null;
+  broker_position_id?: string | null;
+  is_open?: boolean | null;
+  created_at?: string | null;
+};
+
+type OpenPositionDraft = {
+  symbol: string;
+  side: 'long' | 'short';
+  size: string;
+  entryPrice: string;
+  stopLoss: string;
+  takeProfit: string;
+  openedAt: string;
+  unrealizedPnl: string;
+};
 
 type MyChallengeRecord = {
   enrollment_id: string;
@@ -89,6 +125,7 @@ type MyChallengeRecord = {
 };
 
 type RulesetSpec = {
+  id?: string | null;
   phase_number: number;
   profit_target_pct: number | null;
   max_drawdown_pct: number | null;
@@ -149,6 +186,23 @@ export function MyChallengeDrawer({
   const [rulesets, setRulesets] = useState<RulesetSpec[]>([]);
   const [competitionRules, setCompetitionRules] = useState<CompetitionRulesSpec | null>(null);
   const [loadingSpec, setLoadingSpec] = useState(false);
+  const [phaseDraftNumber, setPhaseDraftNumber] = useState<number | null>(null);
+  const [phaseDraftStatus, setPhaseDraftStatus] = useState<'not_started' | 'active' | 'passed' | 'failed' | null>(null);
+  const [phaseUpdating, setPhaseUpdating] = useState(false);
+  const [openPositions, setOpenPositions] = useState<OpenPosition[]>([]);
+  const [loadingOpenPositions, setLoadingOpenPositions] = useState(false);
+  const [openPositionsError, setOpenPositionsError] = useState<string | null>(null);
+  const [isEditingPositions, setIsEditingPositions] = useState(false);
+  const [positionDraft, setPositionDraft] = useState<OpenPositionDraft>({
+    symbol: '',
+    side: 'long',
+    size: '',
+    entryPrice: '',
+    stopLoss: '',
+    takeProfit: '',
+    openedAt: '',
+    unrealizedPnl: '',
+  });
 
   useEffect(() => {
     setOverlayOpen(isOpen);
@@ -181,6 +235,9 @@ export function MyChallengeDrawer({
       setIsEditing(false);
       setRulesets([]);
       setCompetitionRules(null);
+      setOpenPositions([]);
+      setIsEditingPositions(false);
+      setOpenPositionsError(null);
       return;
     }
 
@@ -241,6 +298,55 @@ export function MyChallengeDrawer({
       active = false;
     };
   }, [isOpen, enrollment]);
+
+  useEffect(() => {
+    let active = true;
+    if (!isOpen || !enrollment) {
+      setOpenPositions([]);
+      setOpenPositionsError(null);
+      return;
+    }
+    setIsEditingPositions(false);
+
+    const fetchOpenPositions = async () => {
+      try {
+        setLoadingOpenPositions(true);
+        setOpenPositionsError(null);
+        const response = await fetch(`/api/open-positions?enrollmentId=${enrollment.id}`);
+        const data = await response.json();
+        if (active && response.ok && data?.success) {
+          setOpenPositions(data.data ?? []);
+        } else if (active) {
+          setOpenPositions([]);
+          setOpenPositionsError(t('drawer.open_positions_error_load'));
+        }
+      } catch {
+        if (active) {
+          setOpenPositions([]);
+          setOpenPositionsError(t('drawer.open_positions_error_load'));
+        }
+      } finally {
+        if (active) {
+          setLoadingOpenPositions(false);
+        }
+      }
+    };
+
+    fetchOpenPositions();
+    return () => {
+      active = false;
+    };
+  }, [isOpen, enrollment, t]);
+
+  useEffect(() => {
+    if (!enrollment) {
+      setPhaseDraftNumber(null);
+      setPhaseDraftStatus(null);
+      return;
+    }
+    setPhaseDraftNumber(enrollment.currentPhaseNumber ?? 1);
+    setPhaseDraftStatus(enrollment.currentPhaseStatus ?? 'active');
+  }, [enrollment]);
 
   const auditContext = useMemo(() => {
     if (!enrollment) {
@@ -323,6 +429,21 @@ export function MyChallengeDrawer({
     return `${value.toFixed(1)}%`;
   };
 
+  const parseNumberInput = (value: string) => {
+    if (value.trim() === '') {
+      return null;
+    }
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
+  };
+
+  const formatNumber = (value?: number | null) => {
+    if (value == null || Number.isNaN(value)) {
+      return t('drawer.value_missing');
+    }
+    return value.toLocaleString();
+  };
+
   const formatDate = (value: string | null) => {
     if (!value) {
       return t('drawer.value_missing');
@@ -337,6 +458,7 @@ export function MyChallengeDrawer({
   const canActivate = enrollment.status === 'pending_confirmation';
   const canRemove = ['interested', 'pending_redirect', 'pending_confirmation', 'abandoned'].includes(enrollment.status);
   const canAbandon = enrollment.status === 'active';
+  const canChangePhase = enrollment.status === 'active';
 
   const ensureDraft = () => {
     if (draft) {
@@ -550,6 +672,108 @@ export function MyChallengeDrawer({
     setIsWorking(false);
   };
 
+  const handlePositionCreate = async () => {
+    if (!enrollment) {
+      return;
+    }
+    if (!positionDraft.symbol.trim() || positionDraft.size.trim() === '') {
+      setOpenPositionsError(t('drawer.open_positions_error_required'));
+      return;
+    }
+
+    const sizeValue = parseNumberInput(positionDraft.size);
+    if (sizeValue == null) {
+      setOpenPositionsError(t('drawer.open_positions_error_required'));
+      return;
+    }
+
+    setOpenPositionsError(null);
+    setIsWorking(true);
+    const payload = {
+      enrollmentId: enrollment.id,
+      programId: enrollment.program.id,
+      offerId: enrollment.offer.id,
+      symbol: positionDraft.symbol.trim().toUpperCase(),
+      side: positionDraft.side,
+      size: sizeValue,
+      entryPrice: parseNumberInput(positionDraft.entryPrice),
+      stopLoss: parseNumberInput(positionDraft.stopLoss),
+      takeProfit: parseNumberInput(positionDraft.takeProfit),
+      openedAt: positionDraft.openedAt ? new Date(positionDraft.openedAt).toISOString() : null,
+      unrealizedPnl: parseNumberInput(positionDraft.unrealizedPnl),
+    };
+
+    const response = await fetch('/api/open-positions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data?.success && data.data) {
+        setOpenPositions(prev => [data.data as OpenPosition, ...prev]);
+        setPositionDraft({
+          symbol: '',
+          side: 'long',
+          size: '',
+          entryPrice: '',
+          stopLoss: '',
+          takeProfit: '',
+          openedAt: '',
+          unrealizedPnl: '',
+        });
+      }
+    }
+
+    setIsWorking(false);
+  };
+
+  const handlePositionClose = async (positionId: string) => {
+    setIsWorking(true);
+    const response = await fetch(`/api/open-positions/${positionId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ isOpen: false }),
+    });
+
+    if (response.ok) {
+      setOpenPositions(prev => prev.filter(position => position.id !== positionId));
+    }
+    setIsWorking(false);
+  };
+
+  const handlePositionDelete = async (positionId: string) => {
+    setIsWorking(true);
+    const response = await fetch(`/api/open-positions/${positionId}`, {
+      method: 'DELETE',
+    });
+    if (response.ok) {
+      setOpenPositions(prev => prev.filter(position => position.id !== positionId));
+    }
+    setIsWorking(false);
+  };
+
+  const handlePhaseUpdate = async () => {
+    if (!enrollment || !canChangePhase || !phaseDraftNumber) {
+      return;
+    }
+    setPhaseUpdating(true);
+
+    const rulesetId = rulesets.find(r => r.phase_number === phaseDraftNumber)?.id;
+    await fetch(`/api/enrollments/${enrollment.id}/phase`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        phaseNumber: phaseDraftNumber,
+        phaseStatus: phaseDraftStatus ?? 'active',
+        rulesetId: rulesetId ?? null,
+      }),
+    });
+
+    setPhaseUpdating(false);
+  };
+
   const handleRemove = async () => {
     if (!onRemove) {
       return;
@@ -632,6 +856,75 @@ export function MyChallengeDrawer({
                 </div>
                 {loadingMyChallenge && (
                   <p className="text-xs text-muted-foreground">{t('drawer.loading')}</p>
+                )}
+              </section>
+
+              <section className="space-y-3 rounded-2xl border border-border/60 bg-white/70 p-4 shadow-sm">
+                <h3 className="text-sm font-semibold">{t('drawer.phase_title')}</h3>
+                <div className="grid gap-3 text-xs text-muted-foreground">
+                  <div className="flex items-center justify-between rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                    <span>{t('drawer.phase_number_label')}</span>
+                    <span className="text-sm font-semibold text-foreground">
+                      {enrollment.currentPhaseNumber ?? 1}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                    <span>{t('drawer.phase_status_label')}</span>
+                    <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
+                      {enrollment.currentPhaseStatus ?? 'not_started'}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                    <span>{t('drawer.phase_updated_label')}</span>
+                    <span className="text-sm font-semibold text-foreground">
+                      {formatDate(enrollment.phaseUpdatedAt ?? null)}
+                    </span>
+                  </div>
+                </div>
+
+                {canChangePhase && (
+                  <div className="grid gap-2 text-xs text-muted-foreground">
+                    <div className="grid grid-cols-2 gap-2">
+                      <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <span>{t('drawer.phase_number_label')}</span>
+                        <select
+                          className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                          value={phaseDraftNumber ?? 1}
+                          onChange={(event) => {
+                            const value = Number(event.target.value);
+                            setPhaseDraftNumber(Number.isNaN(value) ? 1 : value);
+                          }}
+                        >
+                          {Array.from({ length: Math.max(1, rulesets.length || 1) }, (_, index) => index + 1)
+                            .map(phaseNumber => (
+                              <option key={phaseNumber} value={phaseNumber}>{phaseNumber}</option>
+                            ))}
+                        </select>
+                      </label>
+                      <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <span>{t('drawer.phase_status_label')}</span>
+                        <select
+                          className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                          value={phaseDraftStatus ?? 'active'}
+                          onChange={(event) => {
+                            setPhaseDraftStatus(event.target.value as 'not_started' | 'active' | 'passed' | 'failed');
+                          }}
+                        >
+                          {['not_started', 'active', 'passed', 'failed'].map(status => (
+                            <option key={status} value={status}>{status}</option>
+                          ))}
+                        </select>
+                      </label>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handlePhaseUpdate}
+                      disabled={phaseUpdating}
+                      className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {t('drawer.phase_update_action')}
+                    </button>
+                  </div>
                 )}
               </section>
 
@@ -972,6 +1265,191 @@ export function MyChallengeDrawer({
                         {formatDate(auditContext?.accountState.lastTradeAt ?? null)}
                       </p>
                     </div>
+                  </div>
+                )}
+              </section>
+
+              <section className="space-y-3 rounded-2xl border border-border/60 bg-white/70 p-4 shadow-sm">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <h3 className="text-sm font-semibold">{t('drawer.open_positions_title')}</h3>
+                  <button
+                    type="button"
+                    onClick={() => setIsEditingPositions(prev => !prev)}
+                    className="rounded-lg border border-border/60 bg-white px-3 py-1 text-xs font-semibold text-foreground transition hover:bg-muted"
+                  >
+                    {isEditingPositions ? t('drawer.open_positions_manage_done') : t('drawer.open_positions_manage')}
+                  </button>
+                </div>
+
+                {loadingOpenPositions ? (
+                  <p className="text-xs text-muted-foreground">{t('drawer.open_positions_loading')}</p>
+                ) : openPositionsError ? (
+                  <p className="text-xs text-red-500">{openPositionsError}</p>
+                ) : openPositions.length === 0 ? (
+                  <p className="text-xs text-muted-foreground">{t('drawer.open_positions_empty')}</p>
+                ) : (
+                  <div className="grid gap-2 text-xs text-muted-foreground">
+                    {openPositions.map(position => (
+                      <div
+                        key={position.id}
+                        className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border/60 bg-white/70 px-3 py-2"
+                      >
+                        <div className="min-w-[120px]">
+                          <p className="text-sm font-semibold text-foreground">{position.symbol}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {position.side.toUpperCase()} · {formatNumber(position.size)}
+                          </p>
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          <p>{t('drawer.open_positions_entry')}</p>
+                          <p className="text-sm font-semibold text-foreground">
+                            {formatNumber(position.entry_price ?? null)}
+                          </p>
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          <p>{t('drawer.open_positions_sl')}</p>
+                          <p className="text-sm font-semibold text-foreground">
+                            {formatNumber(position.stop_loss ?? null)}
+                          </p>
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          <p>{t('drawer.open_positions_tp')}</p>
+                          <p className="text-sm font-semibold text-foreground">
+                            {formatNumber(position.take_profit ?? null)}
+                          </p>
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          <p>{t('drawer.open_positions_opened')}</p>
+                          <p className="text-sm font-semibold text-foreground">
+                            {formatDate(position.opened_at ?? null)}
+                          </p>
+                        </div>
+                        {isEditingPositions && (
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => handlePositionClose(position.id)}
+                              disabled={isWorking}
+                              className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-100 disabled:cursor-not-allowed disabled:opacity-60"
+                            >
+                              {t('drawer.open_positions_close')}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handlePositionDelete(position.id)}
+                              disabled={isWorking}
+                              className="rounded-lg border border-red-200 bg-red-50 px-3 py-1 text-xs font-semibold text-red-600 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-60"
+                            >
+                              {t('drawer.open_positions_remove')}
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {isEditingPositions && (
+                  <div className="grid gap-3 text-xs text-muted-foreground">
+                    <div className="grid grid-cols-2 gap-2">
+                      <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <span>{t('drawer.open_positions_symbol')}</span>
+                        <input
+                          type="text"
+                          className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                          value={positionDraft.symbol}
+                          onChange={(event) => setPositionDraft(prev => ({ ...prev, symbol: event.target.value }))}
+                        />
+                      </label>
+                      <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <span>{t('drawer.open_positions_side')}</span>
+                        <select
+                          className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                          value={positionDraft.side}
+                          onChange={(event) => setPositionDraft(prev => ({
+                            ...prev,
+                            side: event.target.value as 'long' | 'short',
+                          }))}
+                        >
+                          <option value="long">{t('drawer.open_positions_long')}</option>
+                          <option value="short">{t('drawer.open_positions_short')}</option>
+                        </select>
+                      </label>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <span>{t('drawer.open_positions_size')}</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                          value={positionDraft.size}
+                          onChange={(event) => setPositionDraft(prev => ({ ...prev, size: event.target.value }))}
+                        />
+                      </label>
+                      <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <span>{t('drawer.open_positions_entry')}</span>
+                        <input
+                          type="number"
+                          step="0.0001"
+                          className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                          value={positionDraft.entryPrice}
+                          onChange={(event) => setPositionDraft(prev => ({ ...prev, entryPrice: event.target.value }))}
+                        />
+                      </label>
+                      <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <span>{t('drawer.open_positions_unrealized')}</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                          value={positionDraft.unrealizedPnl}
+                          onChange={(event) => setPositionDraft(prev => ({ ...prev, unrealizedPnl: event.target.value }))}
+                        />
+                      </label>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <span>{t('drawer.open_positions_sl')}</span>
+                        <input
+                          type="number"
+                          step="0.0001"
+                          className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                          value={positionDraft.stopLoss}
+                          onChange={(event) => setPositionDraft(prev => ({ ...prev, stopLoss: event.target.value }))}
+                        />
+                      </label>
+                      <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <span>{t('drawer.open_positions_tp')}</span>
+                        <input
+                          type="number"
+                          step="0.0001"
+                          className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                          value={positionDraft.takeProfit}
+                          onChange={(event) => setPositionDraft(prev => ({ ...prev, takeProfit: event.target.value }))}
+                        />
+                      </label>
+                      <label className="grid gap-1 rounded-xl border border-border/60 bg-white/70 px-3 py-2">
+                        <span>{t('drawer.open_positions_opened')}</span>
+                        <input
+                          type="date"
+                          className="rounded-md border border-border/60 bg-white px-2 py-1 text-sm text-foreground"
+                          value={positionDraft.openedAt}
+                          onChange={(event) => setPositionDraft(prev => ({ ...prev, openedAt: event.target.value }))}
+                        />
+                      </label>
+                    </div>
+                    {openPositionsError && (
+                      <p className="text-xs text-red-500">{openPositionsError}</p>
+                    )}
+                    <button
+                      type="button"
+                      onClick={handlePositionCreate}
+                      disabled={isWorking}
+                      className="w-fit rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {t('drawer.open_positions_add')}
+                    </button>
                   </div>
                 )}
               </section>

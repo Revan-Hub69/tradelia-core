@@ -85,6 +85,11 @@ export async function GET(request: Request) {
         redirectedAt: enrollment.redirected_at,
         confirmedAt: enrollment.confirmed_at,
         startedAt: enrollment.started_at,
+        currentPhaseNumber: enrollment.current_phase_number,
+        currentPhaseStatus: enrollment.current_phase_status,
+        currentPhaseStartedAt: enrollment.current_phase_started_at,
+        currentPhaseCompletedAt: enrollment.current_phase_completed_at,
+        phaseUpdatedAt: enrollment.phase_updated_at,
         program: {
           id: program?.id,
           name: program?.name,

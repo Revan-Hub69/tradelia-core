@@ -93,6 +93,28 @@ export default antfu({
     'no-console': ['warn', { allow: ['warn', 'error'] }], // Allow console.warn/error
   },
 }, {
+  files: ['src/domain/**/*.{ts,tsx}'],
+  rules: {
+    'no-restricted-globals': ['error', 'fetch'],
+    'no-restricted-properties': [
+      'error',
+      { object: 'Date', property: 'now', message: 'domain must be deterministic' },
+      { object: 'Math', property: 'random', message: 'domain must be deterministic' },
+    ],
+    'no-restricted-imports': [
+      'error',
+      {
+        paths: [
+          { name: 'node:fs', message: 'domain must be pure' },
+          { name: 'fs', message: 'domain must be pure' },
+          { name: 'process', message: 'domain must be pure' },
+          { name: 'dotenv', message: 'domain must be pure' },
+          { name: 'node-fetch', message: 'domain must be pure' },
+        ],
+      },
+    ],
+  },
+}, {
   // Additional relaxed rules for script files (development only, not in bundle)
   files: ['scripts/**/*.{js,mjs,ts}'],
   rules: {
