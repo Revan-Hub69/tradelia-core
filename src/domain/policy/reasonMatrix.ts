@@ -1,18 +1,18 @@
 ﻿import type { PolicyDecision } from "../contracts/policyDecision";
-import { ReasonCodes } from "../contracts/reasonCodes";
+import { ReasonCodes, type ReasonCode } from "../contracts/reasonCodes";
 
 const startsWith = (s: string, prefix: string) => s.startsWith(prefix);
 
 export function validateActionReasonMatrix(decision: PolicyDecision): { ok: boolean; errors: string[] } {
   const errors: string[] = [];
-  const reasonSet = new Set(Object.values(ReasonCodes));
-  const rc = decision.reason_codes;
+  const reasonSet = new Set<ReasonCode>(Object.values(ReasonCodes) as ReasonCode[]);
+  const rc = decision.reason_codes as ReasonCode[];
 
   for (const code of rc) {
     if (!reasonSet.has(code)) errors.push(`ReasonCode.UNKNOWN.${code}`);
   }
 
-  if (decision.dominant_constraint !== "UNKNOWN" && !rc.includes(decision.dominant_constraint)) {
+  if (decision.dominant_constraint !== "UNKNOWN" && !rc.includes(decision.dominant_constraint as ReasonCode)) {
     errors.push("DominantConstraint.NOT_IN_REASON_CODES");
   }
 
