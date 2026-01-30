@@ -345,7 +345,10 @@ export function MyChallengeDrawer({
       return;
     }
     setPhaseDraftNumber(enrollment.currentPhaseNumber ?? 1);
-    setPhaseDraftStatus(enrollment.currentPhaseStatus ?? 'active');
+    const nextStatus = ['not_started', 'active', 'passed', 'failed'].includes(enrollment.currentPhaseStatus ?? '')
+      ? (enrollment.currentPhaseStatus as 'not_started' | 'active' | 'passed' | 'failed')
+      : 'active';
+    setPhaseDraftStatus(nextStatus);
   }, [enrollment]);
 
   const auditContext = useMemo(() => {
