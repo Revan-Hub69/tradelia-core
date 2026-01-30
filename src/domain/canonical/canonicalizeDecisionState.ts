@@ -63,6 +63,8 @@ const sortCandidates = (arr: { setup_id: string; expected_edge: number | null }[
   });
 };
 
+const gateOrDisabled = (value?: Gate) => value ?? "DISABLED";
+
 export function canonicalizeDecisionStateV1(ds: DecisionState): DecisionStateCanonicalV1 {
   const vSel = ds.venue_selection;
 
@@ -136,10 +138,10 @@ export function canonicalizeDecisionStateV1(ds: DecisionState): DecisionStateCan
 
     venue_selection: {
       venue_gate: {
-        FOREX: vSel.venue_gate.FOREX,
-        CRYPTO: vSel.venue_gate.CRYPTO,
-        FUTURES: vSel.venue_gate.FUTURES,
-        EQUITIES_NEWS: vSel.venue_gate.EQUITIES_NEWS,
+        FOREX: gateOrDisabled(vSel.venue_gate.FOREX),
+        CRYPTO: gateOrDisabled(vSel.venue_gate.CRYPTO),
+        FUTURES: gateOrDisabled(vSel.venue_gate.FUTURES),
+        EQUITIES_NEWS: gateOrDisabled(vSel.venue_gate.EQUITIES_NEWS),
       },
       primary_arena_today: vSel.primary_arena_today ?? null,
       secondary_arena: vSel.secondary_arena ?? null,
