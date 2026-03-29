@@ -5,34 +5,34 @@ import { PageTransitionWrapper } from '@/components/transitions/PageTransitionWr
 import { Link } from '@/libs/i18nNavigation';
 
 type QuickLink = {
-  id: 'challenges' | 'my-challenges' | 'signals';
+  id: 'academy' | 'fundamentals' | 'dca-simulator';
   href: string;
   icon: IconName;
-  titleKey: 'nav_challenges' | 'nav_my_challenges' | 'nav_signals';
-  descKey: 'nav_challenges_desc' | 'nav_my_challenges_desc' | 'nav_signals_desc';
+  titleKey: 'nav_academy' | 'nav_fundamentals' | 'nav_dca_simulator';
+  descKey: 'nav_academy_desc' | 'nav_fundamentals_desc' | 'nav_dca_simulator_desc';
 };
 
 const quickLinks: QuickLink[] = [
   {
-    id: 'challenges',
-    href: '/dashboard/challenges',
-    icon: 'ChallengesIcon',
-    titleKey: 'nav_challenges',
-    descKey: 'nav_challenges_desc',
+    id: 'academy',
+    href: '/dashboard/academy',
+    icon: 'LearnIcon',
+    titleKey: 'nav_academy',
+    descKey: 'nav_academy_desc',
   },
   {
-    id: 'my-challenges',
-    href: '/dashboard/my-challenges',
-    icon: 'MyChartsIcon',
-    titleKey: 'nav_my_challenges',
-    descKey: 'nav_my_challenges_desc',
+    id: 'fundamentals',
+    href: '/dashboard/fundamentals',
+    icon: 'TrendingUpIcon',
+    titleKey: 'nav_fundamentals',
+    descKey: 'nav_fundamentals_desc',
   },
   {
-    id: 'signals',
-    href: '/dashboard/signals',
-    icon: 'SignalsIcon',
-    titleKey: 'nav_signals',
-    descKey: 'nav_signals_desc',
+    id: 'dca-simulator',
+    href: '/dashboard/dca-simulator',
+    icon: 'CalculatorIcon',
+    titleKey: 'nav_dca_simulator',
+    descKey: 'nav_dca_simulator_desc',
   },
 ];
 

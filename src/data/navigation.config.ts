@@ -5,7 +5,7 @@
  * Supporta feature flags, badges, analytics tracking
  */
 
-export type NavigationItemId = 'challenges' | 'my-challenges' | 'signals';
+export type NavigationItemId = 'dashboard' | 'academy' | 'fundamentals' | 'dca-simulator' | 'settings';
 
 export type NavigationItem = {
   id: NavigationItemId;
@@ -32,9 +32,9 @@ export type NavigationConfig = {
  * Collegato al database user permissions in futuro
  */
 export const FEATURE_FLAGS = {
-  CHALLENGES_ENABLED: true, // Challenge library
-  MY_CHALLENGES_ENABLED: true, // Active challenges tracking
-  SIGNALS_ENABLED: true, // AI signal generator
+  ACADEMY_ENABLED: true, // Academy/Courses
+  FUNDAMENTALS_ENABLED: true, // Fundamental analysis
+  DCA_SIMULATOR_ENABLED: true, // DCA/PAC simulator
 } as const;
 
 /*
@@ -46,32 +46,32 @@ export const NAVIGATION_CONFIG: NavigationConfig = {
   semanticRole: 'navigation',
   items: [
     {
-      id: 'challenges',
-      labelKey: 'Dashboard.nav_challenges',
-      ariaKey: 'Dashboard.nav_challenges',
-      href: '/dashboard/challenges',
-      iconName: 'ChallengesIcon',
+      id: 'academy',
+      labelKey: 'Dashboard.nav_academy',
+      ariaKey: 'Dashboard.nav_academy',
+      href: '/dashboard/academy',
+      iconName: 'LearnIcon',
       isPriority: true, // Prefetch priority
-      featureFlag: 'CHALLENGES_ENABLED',
-      badgeType: 'dot', // New challenges available
+      featureFlag: 'ACADEMY_ENABLED',
+      badgeType: 'new', // New courses available
     },
     {
-      id: 'my-challenges',
-      labelKey: 'Dashboard.nav_my_challenges',
-      ariaKey: 'Dashboard.nav_my_challenges',
-      href: '/dashboard/my-challenges',
-      iconName: 'MyChartsIcon',
+      id: 'fundamentals',
+      labelKey: 'Dashboard.nav_fundamentals',
+      ariaKey: 'Dashboard.nav_fundamentals',
+      href: '/dashboard/fundamentals',
+      iconName: 'TrendingUpIcon',
       isPriority: true, // Prefetch priority
-      featureFlag: 'MY_CHALLENGES_ENABLED',
+      featureFlag: 'FUNDAMENTALS_ENABLED',
     },
     {
-      id: 'signals',
-      labelKey: 'Dashboard.nav_signals',
-      ariaKey: 'Dashboard.nav_signals',
-      href: '/dashboard/signals',
-      iconName: 'SignalsIcon',
-      featureFlag: 'SIGNALS_ENABLED',
-      badgeType: 'dot', // New signals available
+      id: 'dca-simulator',
+      labelKey: 'Dashboard.nav_dca_simulator',
+      ariaKey: 'Dashboard.nav_dca_simulator',
+      href: '/dashboard/dca-simulator',
+      iconName: 'CalculatorIcon',
+      featureFlag: 'DCA_SIMULATOR_ENABLED',
+      badgeType: 'new', // New feature
     },
   ],
 };
@@ -128,8 +128,9 @@ export type NavigationBadgeState = {
 
 // Mock badge state - in produzione da database/context
 export const MOCK_BADGE_STATE: NavigationBadgeState = {
-  challenges: { type: 'dot' }, // New challenges available
-  signals: { type: 'count', value: 3 }, // 3 new signals
+  academy: { type: 'new' }, // New courses available
+  fundamentals: { type: 'dot' }, // New analysis available
+  'dca-simulator': { type: 'new' }, // New feature
 };
 
 export const getBadgeForItem = (itemId: NavigationItemId): NavigationBadgeState[string] | null => {

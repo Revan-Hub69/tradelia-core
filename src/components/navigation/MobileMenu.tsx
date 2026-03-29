@@ -27,24 +27,24 @@ type MobileMenuProps = {
 // Navigation items for mobile menu
 const NAVIGATION_ITEMS = [
   {
-    id: 'challenges',
-    labelKey: 'Dashboard.nav_challenges',
-    href: '/dashboard/challenges',
-    iconName: 'ChallengesIcon',
-    badge: 'dot' as const,
+    id: 'academy',
+    labelKey: 'Dashboard.nav_academy',
+    href: '/dashboard/academy',
+    iconName: 'LearnIcon',
+    badge: 'new' as const,
   },
   {
-    id: 'my-challenges',
-    labelKey: 'Dashboard.nav_my_challenges',
-    href: '/dashboard/my-challenges',
-    iconName: 'MyChartsIcon',
+    id: 'fundamentals',
+    labelKey: 'Dashboard.nav_fundamentals',
+    href: '/dashboard/fundamentals',
+    iconName: 'TrendingUpIcon',
   },
   {
-    id: 'signals',
-    labelKey: 'Dashboard.nav_signals',
-    href: '/dashboard/signals',
-    iconName: 'SignalsIcon',
-    badge: 'dot' as const,
+    id: 'dca-simulator',
+    labelKey: 'Dashboard.nav_dca_simulator',
+    href: '/dashboard/dca-simulator',
+    iconName: 'CalculatorIcon',
+    badge: 'new' as const,
   },
 ];
 
