@@ -7,7 +7,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { checkEmailExistsServer, signInWithEmailAndPassword } from '@/app/actions/auth';
+import { checkEmailExistsServer } from '@/app/actions/auth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -215,23 +215,38 @@ const UnifiedAuthPageContent = () => {
     }
 
     setLoading(true);
-    // Server-side login attempt
+    // Client-side login attempt for proper session management
     setError(null);
 
     try {
-      const result = await signInWithEmailAndPassword({
+      const supabase = createClient();
+      const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
       });
 
-      if (!result.success) {
+      if (signInError) {
         authRateLimit.recordAttempt();
-        setError(result.error || 'Errore durante l\'accesso');
+        
+        if (signInError.message.includes('Invalid login credentials')) {
+          setError('Email o password non corretti.');
+        } else if (signInError.message.includes('Email not confirmed')) {
+          setError('Conferma la tua email prima di accedere.');
+        } else {
+          setError(`Errore durante l\'accesso: ${signInError.message}`);
+        }
         setLoading(false);
         return;
       }
 
-      // Login successful
+      if (!authData.user) {
+        authRateLimit.recordAttempt();
+        setError('Errore durante l\'accesso. Riprova.');
+        setLoading(false);
+        return;
+      }
+
+      // Login successful - session will be managed by the browser client
       const redirect = searchParams.get('redirect') || '/dashboard';
       router.push(redirect);
       router.refresh();
