@@ -7,6 +7,8 @@
 
 export type NavigationItemId = 'dashboard' | 'academy' | 'fundamentals' | 'dca-simulator' | 'settings';
 
+export type SettingsNavItem = Extract<NavigationItemId, 'settings'>;
+
 export type NavigationItem = {
   id: NavigationItemId;
   labelKey: string;
@@ -72,6 +74,13 @@ export const NAVIGATION_CONFIG: NavigationConfig = {
       iconName: 'CalculatorIcon',
       featureFlag: 'DCA_SIMULATOR_ENABLED',
       badgeType: 'new', // New feature
+    },
+    {
+      id: 'settings',
+      labelKey: 'Dashboard.settings',
+      ariaKey: 'Dashboard.nav_settings',
+      href: '/dashboard/settings',
+      iconName: 'SettingsIcon',
     },
   ],
 };

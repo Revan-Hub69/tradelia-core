@@ -46,6 +46,12 @@ const NAVIGATION_ITEMS = [
     iconName: 'CalculatorIcon',
     badge: 'new' as const,
   },
+  {
+    id: 'settings',
+    labelKey: 'Dashboard.settings',
+    href: '/dashboard/settings',
+    iconName: 'SettingsIcon',
+  },
 ];
 
 export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onCloseAction }) => {
