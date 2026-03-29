@@ -21,16 +21,27 @@ const queryClient = new QueryClient({
 
 const fetchUserData = async (): Promise<UserData | null> => {
   const supabase = createClient();
-  const { data: { user }, error } = await supabase.auth.getUser();
-
-  if (error || !user) {
-    return null;
+  
+  // Use getSession first (faster, uses local cookies) then getUser for validation
+  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+  
+  if (sessionError || !session?.user) {
+    // Fallback to getUser for network validation
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user) {
+      return null;
+    }
+    return {
+      id: user.id,
+      email: user.email || '',
+      name: user.user_metadata?.name || user.email?.split('@')[0] || 'Utente',
+    };
   }
 
   return {
-    id: user.id,
-    email: user.email || '',
-    name: user.user_metadata?.name || user.email?.split('@')[0] || 'Utente',
+    id: session.user.id,
+    email: session.user.email || '',
+    name: session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'Utente',
   };
 };
 
