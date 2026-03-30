@@ -104,7 +104,7 @@ export function PostRedirectBanner({
                 className="flex items-center gap-1.5 rounded-lg bg-green-500 px-3 py-1.5 text-sm font-semibold text-white transition-all hover:bg-green-600"
                 type="button"
               >
-                <CheckCircleIcon size={14} />
+                <CheckCircleIcon size={16} />
                 {t('enrollment.yesStarted')}
               </button>
               <button
@@ -112,7 +112,7 @@ export function PostRedirectBanner({
                 className="flex items-center gap-1.5 rounded-lg border border-orange-500/30 bg-white/50 px-3 py-1.5 text-sm font-semibold text-orange-800 transition-all hover:bg-white/80 dark:bg-black/50 dark:text-orange-200"
                 type="button"
               >
-                <XCircleIcon size={14} />
+                <XCircleIcon size={16} />
                 {t('enrollment.notYet')}
               </button>
             </div>
