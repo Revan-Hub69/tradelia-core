@@ -440,24 +440,34 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                 || (item.href !== '/dashboard' && pathname.startsWith(item.href));
 
             return (
-              <motion.div
-                key={item.id}
-                initial={false}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{
-                  delay: index * 0.05,
-                  type: 'spring',
-                  stiffness: 400,
-                  damping: 30,
-                }}
-              >
-                <SidebarNavigationItem
-                  item={item}
-                  isActive={isActive}
-                  isCollapsed={isCollapsed}
-                  tGeneral={tGeneral}
-                />
-              </motion.div>
+              <React.Fragment key={item.id}>
+                {/* Section Divider - Separates affiliate/tools from main navigation */}
+                {item.sectionDivider && !isCollapsed && (
+                  <div className="my-3 border-t border-border/40" />
+                )}
+                {item.sectionDivider && isCollapsed && (
+                  <div className="my-3 flex justify-center">
+                    <div className="h-1 w-6 rounded-full bg-border/40" />
+                  </div>
+                )}
+                <motion.div
+                  initial={false}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{
+                    delay: index * 0.05,
+                    type: 'spring',
+                    stiffness: 400,
+                    damping: 30,
+                  }}
+                >
+                  <SidebarNavigationItem
+                    item={item}
+                    isActive={isActive}
+                    isCollapsed={isCollapsed}
+                    tGeneral={tGeneral}
+                  />
+                </motion.div>
+              </React.Fragment>
             );
           })}
         </motion.nav>

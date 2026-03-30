@@ -21,6 +21,7 @@ export type NavigationItem = {
   badgeValue?: number | string;
   disabled?: boolean;
   hidden?: boolean;
+  sectionDivider?: boolean; // Per separatore visivo
 };
 
 export type NavigationConfig = {
@@ -63,7 +64,7 @@ export const NAVIGATION_CONFIG: NavigationConfig = {
       labelKey: 'Dashboard.nav_fundamentals',
       ariaKey: 'Dashboard.nav_fundamentals',
       href: '/dashboard/fundamentals',
-      iconName: 'TrendingUpIcon',
+      iconName: 'GlobeIcon', // Esplora = discovery, exploration
       isPriority: true, // Prefetch priority
       featureFlag: 'FUNDAMENTALS_ENABLED',
     },
@@ -72,18 +73,19 @@ export const NAVIGATION_CONFIG: NavigationConfig = {
       labelKey: 'Dashboard.nav_dca_simulator',
       ariaKey: 'Dashboard.nav_dca_simulator',
       href: '/dashboard/dca-simulator',
-      iconName: 'CalculatorIcon',
+      iconName: 'CalculatorIcon', // Planning & calculation
       featureFlag: 'DCA_SIMULATOR_ENABLED',
       badgeType: 'new', // New feature
     },
-    // Affiliate/Monetization section
+    // Affiliate/Monetization section - Separated with divider
     {
       id: 'tools',
       labelKey: 'Dashboard.nav_tools',
       ariaKey: 'Dashboard.nav_tools',
       href: '/dashboard/tools',
-      iconName: 'ToolsIcon',
+      iconName: 'ToolsIcon', // Cassetta attrezzi
       featureFlag: 'TOOLS_ENABLED',
+      sectionDivider: true, // Visual separator
     },
   ],
 };
