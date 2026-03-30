@@ -194,7 +194,7 @@ const SidebarNavigationItem = React.memo<SidebarNavigationItemProps>(
 
                     {/* Tooltip for collapsed state - CSS only */}
                     {isCollapsed && (
-                        <div className="layer-toast pointer-events-none absolute left-full ml-2 rounded bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+                        <div className="layer-tooltip-sidebar pointer-events-none absolute left-full ml-2 rounded bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
                             {tGeneral(item.labelKey)}
                         </div>
                     )}
@@ -419,7 +419,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                 )}
 
                 {/* Hover tooltip - Positioned to the right of sidebar */}
-                <div className="layer-toast pointer-events-none absolute left-full top-1/2 ml-2 -translate-y-1/2 rounded bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+                <div className="layer-tooltip-sidebar pointer-events-none absolute left-full top-1/2 ml-2 -translate-y-1/2 rounded bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
                   {isCollapsed ? t('expand_sidebar') : t('collapse_sidebar')}
                 </div>
               </div>

@@ -42,6 +42,9 @@
   .layer-toast {
     z-index: var(--z-toast);
   }
+  .layer-tooltip-sidebar {
+    z-index: var(--z-tooltip-sidebar);
+  }
 }
 
 @import './dashboard-ui.css';

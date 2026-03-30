@@ -61,6 +61,7 @@
   --z-popover: 60;
   --z-modal: 70;
   --z-toast: 80;
+  --z-tooltip-sidebar: 100;
 
   /* Glass effects (Soft Cream - Educational) */
   --glass-bg: rgba(252, 251, 248, 0.6);
