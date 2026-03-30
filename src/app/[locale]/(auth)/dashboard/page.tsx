@@ -5,7 +5,7 @@
 
 'use client';
 
-import { DynamicIcon, type IconName } from '@/components/icons';
+import { DynamicIcon } from '@/components/icons';
 import { PageTransitionWrapper } from '@/components/transitions/PageTransitionWrapper';
 
 // Mock Data - UOA (Unusual Options Activity)
