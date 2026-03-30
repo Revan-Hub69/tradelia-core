@@ -50,7 +50,7 @@ export const NAVIGATION_CONFIG: NavigationConfig = {
   items: [
     {
       id: 'dashboard',
-      labelKey: 'Radar',
+      labelKey: 'Flows',
       ariaKey: 'Dashboard.nav_radar',
       href: '/dashboard',
       iconName: 'SignalsIcon',
