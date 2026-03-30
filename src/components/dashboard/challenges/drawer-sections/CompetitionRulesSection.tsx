@@ -17,7 +17,7 @@
 import { useTranslations } from 'next-intl';
 import React from 'react';
 
-import { CheckCircleIcon, ClockIcon, InfoIcon, TrophyIcon, UsersIcon, WarningIcon } from '../PremiumIcons';
+import { CheckCircleIcon, ClockIcon, InfoIcon, TrophyIcon, UsersIcon, WarningIcon } from '@/components/icons/unified';
 import { SectionHeader } from './SectionHeader';
 
 type CompetitionPeriod = {

@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl';
 
 import { cn } from '@/utils/Helpers';
 
-import { BotIcon, CheckCircleIcon, NewsIcon, WeekendIcon } from '../PremiumIcons';
+import { BotIcon, CheckCircleIcon, NewsIcon, WeekendIcon } from '@/components/icons/unified';
 import { SectionHeader } from './SectionHeader';
 
 type Ruleset = {

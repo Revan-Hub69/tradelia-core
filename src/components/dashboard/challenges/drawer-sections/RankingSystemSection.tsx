@@ -8,7 +8,7 @@
 
 import { useTranslations } from 'next-intl';
 
-import { InfoIcon, StarIcon, TrendingUpIcon } from '../PremiumIcons';
+import { InfoIcon, StarIcon, TrendingUpIcon } from '@/components/icons/unified';
 import { SectionHeader } from './SectionHeader';
 
 type RankingSystemSectionProps = {

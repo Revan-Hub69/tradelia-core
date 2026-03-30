@@ -9,7 +9,7 @@
 import { useTranslations } from 'next-intl';
 import React from 'react';
 
-import { LightbulbIcon, TargetIcon, TrendingUpIcon } from '../PremiumIcons';
+import { LightbulbIcon, TargetIcon, TrendingUpIcon } from '@/components/icons/unified';
 import { SectionHeader } from './SectionHeader';
 
 type Program = {

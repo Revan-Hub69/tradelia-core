@@ -27,7 +27,7 @@ import { useNavigationContext } from '@/components/navigation/useNavigationConte
 import { cn } from '@/utils/Helpers';
 
 import type { EnrollmentStatus } from './EnrollmentStatusCard';
-import { ExternalLinkIcon } from './PremiumIcons';
+import { ExternalLinkIcon } from '@/components/icons/unified';
 
 type Enrollment = {
   id: string;

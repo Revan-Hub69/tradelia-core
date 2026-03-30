@@ -6,7 +6,7 @@
 import { useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 
-import { CheckCircleIcon } from '../PremiumIcons';
+import { CheckCircleIcon } from '@/components/icons/unified';
 import { SectionHeader } from './SectionHeader';
 
 type PhaseRule = {

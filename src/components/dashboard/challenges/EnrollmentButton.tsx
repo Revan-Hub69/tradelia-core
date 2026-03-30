@@ -15,7 +15,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
-import { RedirectIcon } from './PremiumIcons';
+import { RedirectIcon } from '@/components/icons/unified';
 
 type EnrollmentButtonProps = {
   programId: string;

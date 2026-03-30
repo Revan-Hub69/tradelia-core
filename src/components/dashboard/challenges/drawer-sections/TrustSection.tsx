@@ -5,7 +5,7 @@
 
 import { useTranslations } from 'next-intl';
 
-import { FreshnessIcon, StarIcon, TrendingUpIcon, VerifiedIcon } from '../PremiumIcons';
+import { FreshnessIcon, StarIcon, TrendingUpIcon, VerifiedIcon } from '@/components/icons/unified';
 import { SectionHeader } from './SectionHeader';
 
 type TrustSignals = {

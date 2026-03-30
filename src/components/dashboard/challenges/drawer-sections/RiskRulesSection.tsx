@@ -5,7 +5,7 @@
 
 import { useTranslations } from 'next-intl';
 
-import { DailyLossIcon } from '../PremiumIcons';
+import { DailyLossIcon } from '@/components/icons/unified';
 import { SectionHeader } from './SectionHeader';
 
 type Ruleset = {

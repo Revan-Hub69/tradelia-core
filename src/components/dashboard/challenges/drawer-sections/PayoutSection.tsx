@@ -5,7 +5,7 @@
 
 import { useTranslations } from 'next-intl';
 
-import { PayoutIcon } from '../PremiumIcons';
+import { PayoutIcon } from '@/components/icons/unified';
 import { SectionHeader } from './SectionHeader';
 
 type PayoutTerms = {

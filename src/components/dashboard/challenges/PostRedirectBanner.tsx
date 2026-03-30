@@ -11,7 +11,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
-import { CheckCircleIcon, HelpCircleIcon, XCircleIcon } from './PremiumIcons';
+import { CheckCircleIcon, HelpCircleIcon, XCircleIcon } from '@/components/icons/unified';
 
 type PendingEnrollment = {
   id: string;

@@ -8,7 +8,7 @@
 
 import { useTranslations } from 'next-intl';
 
-import { TrophyIcon } from '../PremiumIcons';
+import { TrophyIcon } from '@/components/icons/unified';
 import { SectionHeader } from './SectionHeader';
 
 type PrizePoolSectionProps = {

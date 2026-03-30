@@ -19,7 +19,7 @@ import { useState } from 'react';
 
 import { cn } from '@/utils/Helpers';
 
-import { ChevronDownIcon } from './PremiumIcons';
+import { ChevronDownIcon } from '@/components/icons/unified';
 
 type Offer = {
   id: string;

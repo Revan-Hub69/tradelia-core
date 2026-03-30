@@ -522,6 +522,641 @@ export const ClockIcon = memo<Omit<SignatureIconProps, 'children'> & {
   </SignatureIconBase>
 ));
 
+// ============================================================================
+// CHALLENGE METRIC ICONS - Premium Feature Icons
+// ============================================================================
+
+// PROFIT TARGET ICON - Vertical line with dollar sign
+const ProfitTargetIconInner = () => (
+  <>
+    <path d="M12 2v20" />
+    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+  </>
+);
+
+export const ProfitTargetIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <ProfitTargetIconInner />
+  </SignatureIconBase>
+));
+
+// DRAWDOWN ICON - Chart with downward bars
+const DrawdownIconInner = () => (
+  <>
+    <path d="M3 3v18h18" />
+    <path d="M18 17V9" />
+    <path d="M13 17V5" />
+    <path d="M8 17v-3" />
+  </>
+);
+
+export const DrawdownIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <DrawdownIconInner />
+  </SignatureIconBase>
+));
+
+// DAILY LOSS ICON - Downward indicator
+const DailyLossIconInner = () => (
+  <>
+    <path d="M12 9v4" />
+    <path d="M12 17h.01" />
+    <path d="M3.34 7A10 10 0 1 1 7 3.34" />
+  </>
+);
+
+export const DailyLossIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <DailyLossIconInner />
+  </SignatureIconBase>
+));
+
+// PAYOUT ICON - Credit card design
+const PayoutIconInner = () => (
+  <>
+    <rect width="20" height="14" x="2" y="5" rx="2" />
+    <path d="M2 10h20" />
+  </>
+);
+
+export const PayoutIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <PayoutIconInner />
+  </SignatureIconBase>
+));
+
+// SCALING ICON - 3D cube scaling representation
+const ScalingIconInner = () => (
+  <>
+    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+    <polyline points="7.5 4.21 12 6.81 16.5 4.21" />
+    <polyline points="7.5 19.79 7.5 14.6 3 12" />
+    <polyline points="21 12 16.5 14.6 16.5 19.79" />
+    <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+    <line x1="12" x2="12" y1="22.08" y2="12" />
+  </>
+);
+
+export const ScalingIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <ScalingIconInner />
+  </SignatureIconBase>
+));
+
+// TIME LIMIT ICON - Clock with time markers
+const TimeLimitIconInner = () => (
+  <>
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="12 6 12 12 16 14" />
+  </>
+);
+
+export const TimeLimitIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <TimeLimitIconInner />
+  </SignatureIconBase>
+));
+
+// MIN DAYS ICON - Calendar with checkmark
+const MinDaysIconInner = () => (
+  <>
+    <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+    <line x1="16" x2="16" y1="2" y2="6" />
+    <line x1="8" x2="8" y1="2" y2="6" />
+    <line x1="3" x2="21" y1="10" y2="10" />
+    <path d="m9 16 2 2 4-4" />
+  </>
+);
+
+export const MinDaysIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <MinDaysIconInner />
+  </SignatureIconBase>
+));
+
+// REFUND ICON - Circular refund arrow
+const RefundIconInner = () => (
+  <>
+    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+    <path d="M3 3v5h5" />
+    <path d="M12 7v5l4 2" />
+  </>
+);
+
+export const RefundIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <RefundIconInner />
+  </SignatureIconBase>
+));
+
+// ============================================================================
+// BADGE ICONS - Status & Quality Indicators
+// ============================================================================
+
+// VERIFIED ICON - Checkmark badge
+const VerifiedIconInner = () => (
+  <>
+    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+    <path d="M9 12L11 14L15 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+  </>
+);
+
+export const VerifiedIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <VerifiedIconInner />
+  </SignatureIconBase>
+));
+
+// FEATURED ICON - Star polygon
+const FeaturedIconInner = () => (
+  <>
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+  </>
+);
+
+export const FeaturedIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <FeaturedIconInner />
+  </SignatureIconBase>
+));
+
+// NEW BADGE ICON - Lightning bolt
+const NewBadgeIconInner = () => (
+  <>
+    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+  </>
+);
+
+export const NewBadgeIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <NewBadgeIconInner />
+  </SignatureIconBase>
+));
+
+// FRESHNESS ICON - Sparkles
+const FreshnessIconInner = () => (
+  <>
+    <path d="M12 2v4" />
+    <path d="m16.2 7.8 2.9-2.9" />
+    <path d="M18 12h4" />
+    <path d="m16.2 16.2 2.9 2.9" />
+    <path d="M12 18v4" />
+    <path d="m4.9 19.1 2.9-2.9" />
+    <path d="M2 12h4" />
+    <path d="m4.9 4.9 2.9 2.9" />
+  </>
+);
+
+export const FreshnessIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <FreshnessIconInner />
+  </SignatureIconBase>
+));
+
+// ============================================================================
+// PLATFORM ICONS - Trading Platforms
+// ============================================================================
+
+// MT4 ICON - MetaTrader 4 logo representation
+const MT4IconInner = () => (
+  <>
+    <rect width="18" height="18" x="3" y="3" rx="2" />
+    <path d="M7 7h10" />
+    <path d="M10 7v10" />
+    <path d="M14 7v10" />
+  </>
+);
+
+export const MT4Icon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <MT4IconInner />
+  </SignatureIconBase>
+));
+
+// MT5 ICON - MetaTrader 5 logo representation
+const MT5IconInner = () => (
+  <>
+    <rect width="18" height="18" x="3" y="3" rx="2" />
+    <path d="M7 7h10" />
+    <path d="M7 12h10" />
+    <path d="M7 17h10" />
+  </>
+);
+
+export const MT5Icon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <MT5IconInner />
+  </SignatureIconBase>
+));
+
+// CTRADER ICON - cTrader platform representation
+const CTraderIconInner = () => (
+  <>
+    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+    <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+    <line x1="12" x2="12" y1="22.08" y2="12" />
+  </>
+);
+
+export const CTraderIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <CTraderIconInner />
+  </SignatureIconBase>
+));
+
+// DXTRADE ICON - DXtrade platform representation
+const DXTradeIconInner = () => (
+  <>
+    <path d="M3 3v18h18" />
+    <path d="m19 9-5 5-4-4-3 3" />
+  </>
+);
+
+export const DXTradeIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <DXTradeIconInner />
+  </SignatureIconBase>
+));
+
+// TRADINGVIEW ICON - TradingView chart representation
+const TradingViewIconInner = () => (
+  <>
+    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+  </>
+);
+
+export const TradingViewIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <TradingViewIconInner />
+  </SignatureIconBase>
+));
+
+// ============================================================================
+// ADDITIONAL UTILITY ICONS
+// ============================================================================
+
+// TROPHY ICON - Competition/Achievement
+const TrophyIconInner = () => (
+  <>
+    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+    <path d="M4 22h16" />
+    <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+    <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+    <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+  </>
+);
+
+export const TrophyIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <TrophyIconInner />
+  </SignatureIconBase>
+));
+
+// TARGET ICON - Goal/Aim
+const TargetIconInner = () => (
+  <>
+    <circle cx="12" cy="12" r="10" />
+    <circle cx="12" cy="12" r="6" />
+    <circle cx="12" cy="12" r="2" />
+  </>
+);
+
+export const TargetIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <TargetIconInner />
+  </SignatureIconBase>
+));
+
+// BOT ICON - AI/Robot
+const BotIconInner = () => (
+  <>
+    <rect width="18" height="10" x="3" y="11" rx="2" />
+    <circle cx="12" cy="5" r="2" />
+    <path d="M12 7v4" />
+    <line x1="8" x2="8" y1="16" y2="16" />
+    <line x1="16" x2="16" y1="16" y2="16" />
+  </>
+);
+
+export const BotIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <BotIconInner />
+  </SignatureIconBase>
+));
+
+// NEWS ICON - News/Articles
+const NewsIconInner = () => (
+  <>
+    <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" />
+    <path d="M18 14h-8" />
+    <path d="M15 18h-5" />
+    <path d="M10 6h8v4h-8V6Z" />
+  </>
+);
+
+export const NewsIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <NewsIconInner />
+  </SignatureIconBase>
+));
+
+// WEEKEND ICON - Calendar with weekend markers
+const WeekendIconInner = () => (
+  <>
+    <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+    <line x1="16" x2="16" y1="2" y2="6" />
+    <line x1="8" x2="8" y1="2" y2="6" />
+    <line x1="3" x2="21" y1="10" y2="10" />
+    <path d="M8 14h.01" />
+    <path d="M12 14h.01" />
+    <path d="M16 14h.01" />
+    <path d="M8 18h.01" />
+    <path d="M12 18h.01" />
+    <path d="M16 18h.01" />
+  </>
+);
+
+export const WeekendIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <WeekendIconInner />
+  </SignatureIconBase>
+));
+
+// LIVE ACCOUNT ICON - User with live indicator
+const LiveAccountIconInner = () => (
+  <>
+    <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+    <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+    <line x1="12" x2="12" y1="19" y2="22" />
+  </>
+);
+
+export const LiveAccountIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <LiveAccountIconInner />
+  </SignatureIconBase>
+));
+
+// PAPER TRADING ICON - Document with practice lines
+const PaperTradingIconInner = () => (
+  <>
+    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+    <polyline points="14 2 14 8 20 8" />
+    <line x1="16" x2="8" y1="13" y2="13" />
+    <line x1="16" x2="8" y1="17" y2="17" />
+    <line x1="10" x2="8" y1="9" y2="9" />
+  </>
+);
+
+export const PaperTradingIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <PaperTradingIconInner />
+  </SignatureIconBase>
+));
+
+// LEVERAGE ICON - Chart with leverage marker
+const LeverageIconInner = () => (
+  <>
+    <path d="M3 3v18h18" />
+    <path d="m19 9-5 5-4-4-3 3" />
+    <circle cx="19" cy="9" r="2" />
+  </>
+);
+
+export const LeverageIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <LeverageIconInner />
+  </SignatureIconBase>
+));
+
+// COMMISSION ICON - Dollar with commission lines
+const CommissionIconInner = () => (
+  <>
+    <line x1="12" x2="12" y1="2" y2="22" />
+    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+  </>
+);
+
+export const CommissionIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <CommissionIconInner />
+  </SignatureIconBase>
+));
+
+// USERS ICON - Group of users
+const UsersIconInner = () => (
+  <>
+    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+    <circle cx="9" cy="7" r="4" />
+    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+  </>
+);
+
+export const UsersIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <UsersIconInner />
+  </SignatureIconBase>
+));
+
+// ============================================================================
+// ENROLLMENT & STATUS ICONS
+// ============================================================================
+
+// PENDING ICON - Clock circle for pending status
+const PendingIconInner = () => (
+  <>
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="12 6 12 12 16 14" />
+  </>
+);
+
+export const PendingIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <PendingIconInner />
+  </SignatureIconBase>
+));
+
+// HELP CIRCLE ICON - Question mark in circle
+const HelpCircleIconInner = () => (
+  <>
+    <circle cx="12" cy="12" r="10" />
+    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+    <line x1="12" x2="12.01" y1="17" y2="17" />
+  </>
+);
+
+export const HelpCircleIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <HelpCircleIconInner />
+  </SignatureIconBase>
+));
+
+// PLAY ICON - Triangle play button
+const PlayIconInner = () => (
+  <>
+    <polygon points="5 3 19 12 5 21 5 3" />
+  </>
+);
+
+export const PlayIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <PlayIconInner />
+  </SignatureIconBase>
+));
+
+// X CIRCLE ICON - X in circle for rejection/close
+const XCircleIconInner = () => (
+  <>
+    <circle cx="12" cy="12" r="10" />
+    <line x1="15" x2="9" y1="9" y2="15" />
+    <line x1="9" x2="15" y1="9" y2="15" />
+  </>
+);
+
+export const XCircleIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <XCircleIconInner />
+  </SignatureIconBase>
+));
+
+// ARCHIVE ICON - Archive box
+const ArchiveIconInner = () => (
+  <>
+    <polyline points="21 8 21 21 3 21 3 8" />
+    <rect x="1" y="3" width="22" height="5" />
+    <line x1="10" x2="14" y1="12" y2="12" />
+  </>
+);
+
+export const ArchiveIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <ArchiveIconInner />
+  </SignatureIconBase>
+));
+
+// REDIRECT ICON - External link arrow
+const RedirectIconInner = () => (
+  <>
+    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+    <polyline points="15 3 21 3 21 9" />
+    <line x1="10" x2="21" y1="14" y2="3" />
+  </>
+);
+
+export const RedirectIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <RedirectIconInner />
+  </SignatureIconBase>
+));
+
+// WARNING ICON - Warning triangle
+const WarningIconInner = () => (
+  <>
+    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+    <line x1="12" x2="12" y1="9" y2="13" />
+    <line x1="12" x2="12.01" y1="17" y2="17" />
+  </>
+);
+
+export const WarningIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <WarningIconInner />
+  </SignatureIconBase>
+));
+
+// DELETE ICON - Trash can
+const DeleteIconInner = () => (
+  <>
+    <polyline points="3 6 5 6 21 6" />
+    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+    <line x1="10" x2="10" y1="11" y2="17" />
+    <line x1="14" x2="14" y1="11" y2="17" />
+  </>
+);
+
+export const DeleteIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <DeleteIconInner />
+  </SignatureIconBase>
+));
+
+// LIGHTBULB ICON - Idea/Tip
+const LightbulbIconInner = () => (
+  <>
+    <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+    <path d="M9 18h6" />
+    <path d="M10 22h4" />
+  </>
+);
+
+export const LightbulbIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <LightbulbIconInner />
+  </SignatureIconBase>
+));
+
+// INFO ICON - Information circle
+const InfoIconInner = () => (
+  <>
+    <circle cx="12" cy="12" r="10" />
+    <path d="M12 16v-4" />
+    <path d="M12 8h.01" />
+  </>
+);
+
+export const InfoIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <InfoIconInner />
+  </SignatureIconBase>
+));
+
+// EXTERNAL LINK ICON - Open in new tab
+const ExternalLinkIconInner = () => (
+  <>
+    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+    <polyline points="15 3 21 3 21 9" />
+    <line x1="10" x2="21" y1="14" y2="3" />
+  </>
+);
+
+export const ExternalLinkIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <ExternalLinkIconInner />
+  </SignatureIconBase>
+));
+
+// CALENDAR ICON - Calendar date
+const CalendarIconInner = () => (
+  <>
+    <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+    <line x1="16" x2="16" y1="2" y2="6" />
+    <line x1="8" x2="8" y1="2" y2="6" />
+    <line x1="3" x2="21" y1="10" y2="10" />
+  </>
+);
+
+export const CalendarIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <CalendarIconInner />
+  </SignatureIconBase>
+));
+
+// CHECK CIRCLE ICON - Verified checkmark circle
+const CheckCircleIconInner = () => (
+  <>
+    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+    <polyline points="22 4 12 14.01 9 11.01" />
+  </>
+);
+
+export const CheckCircleIcon = memo<Omit<SignatureIconProps, 'children'>>((props) => (
+  <SignatureIconBase {...props}>
+    <CheckCircleIconInner />
+  </SignatureIconBase>
+));
+
 // USER ICON - Person silhouette (alias for ProfileIcon)
 export const UserIcon = memo<Omit<SignatureIconProps, 'children'> & {
   isActive?: boolean;
@@ -847,8 +1482,92 @@ export const ToolsIcon = CalculatorIcon;
 export const CommunityIcon = ForumIcon;
 export const ExitIcon = LogoutIcon; // Use the enhanced LogoutIcon
 
+// Challenge Premium Icons - Aliases to new unified icons
+export const ProfitTarget = ProfitTargetIcon;
+export const Drawdown = DrawdownIcon;
+export const DailyLoss = DailyLossIcon;
+export const Payout = PayoutIcon;
+export const Scaling = ScalingIcon;
+export const TimeLimit = TimeLimitIcon;
+export const MinDays = MinDaysIcon;
+export const Refund = RefundIcon;
+export const Verified = VerifiedIcon;
+export const Featured = FeaturedIcon;
+export const NewBadge = NewBadgeIcon;
+export const Freshness = FreshnessIcon;
+export const MT4 = MT4Icon;
+export const MT5 = MT5Icon;
+export const CTrader = CTraderIcon;
+export const DXTrade = DXTradeIcon;
+export const TradingView = TradingViewIcon;
+export const LiveAccount = LiveAccountIcon;
+export const PaperTrading = PaperTradingIcon;
+export const Leverage = LeverageIcon;
+export const Commission = CommissionIcon;
+export const Pending = PendingIcon;
+export const HelpCircle = HelpCircleIcon;
+export const XCircle = XCircleIcon;
+export const Redirect = RedirectIcon;
+export const Warning = WarningIcon;
+export const Delete = DeleteIcon;
+export const Lightbulb = LightbulbIcon;
+
+// Additional useful aliases
+export const Calendar = CalendarIcon;
+export const CheckCircle = CheckCircleIcon;
+export const ExternalLink = ExternalLinkIcon;
+export const Info = InfoIcon;
+export const Users = UsersIcon;
+export const Trophy = TrophyIcon;
+export const Target = TargetIcon;
+export const Bot = BotIcon;
+export const News = NewsIcon;
+export const Weekend = WeekendIcon;
+
 LightIcon.displayName = 'TradeliaLightIcon';
 DarkIcon.displayName = 'TradeliaDarkIcon';
 ToolsIcon.displayName = 'TradeliaToolsIcon';
 CommunityIcon.displayName = 'TradeliaCommunityIcon';
 ExitIcon.displayName = 'TradeliaExitIcon';
+
+// Display names for new icons
+ProfitTargetIcon.displayName = 'TradeliaProfitTargetIcon';
+DrawdownIcon.displayName = 'TradeliaDrawdownIcon';
+DailyLossIcon.displayName = 'TradeliaDailyLossIcon';
+PayoutIcon.displayName = 'TradeliaPayoutIcon';
+ScalingIcon.displayName = 'TradeliaScalingIcon';
+TimeLimitIcon.displayName = 'TradeliaTimeLimitIcon';
+MinDaysIcon.displayName = 'TradeliaMinDaysIcon';
+RefundIcon.displayName = 'TradeliaRefundIcon';
+VerifiedIcon.displayName = 'TradeliaVerifiedIcon';
+FeaturedIcon.displayName = 'TradeliaFeaturedIcon';
+NewBadgeIcon.displayName = 'TradeliaNewBadgeIcon';
+FreshnessIcon.displayName = 'TradeliaFreshnessIcon';
+MT4Icon.displayName = 'TradeliaMT4Icon';
+MT5Icon.displayName = 'TradeliaMT5Icon';
+CTraderIcon.displayName = 'TradeliaCTraderIcon';
+DXTradeIcon.displayName = 'TradeliaDXTradeIcon';
+TradingViewIcon.displayName = 'TradeliaTradingViewIcon';
+TrophyIcon.displayName = 'TradeliaTrophyIcon';
+TargetIcon.displayName = 'TradeliaTargetIcon';
+BotIcon.displayName = 'TradeliaBotIcon';
+NewsIcon.displayName = 'TradeliaNewsIcon';
+WeekendIcon.displayName = 'TradeliaWeekendIcon';
+LiveAccountIcon.displayName = 'TradeliaLiveAccountIcon';
+PaperTradingIcon.displayName = 'TradeliaPaperTradingIcon';
+LeverageIcon.displayName = 'TradeliaLeverageIcon';
+CommissionIcon.displayName = 'TradeliaCommissionIcon';
+UsersIcon.displayName = 'TradeliaUsersIcon';
+PendingIcon.displayName = 'TradeliaPendingIcon';
+HelpCircleIcon.displayName = 'TradeliaHelpCircleIcon';
+PlayIcon.displayName = 'TradeliaPlayIcon';
+XCircleIcon.displayName = 'TradeliaXCircleIcon';
+ArchiveIcon.displayName = 'TradeliaArchiveIcon';
+RedirectIcon.displayName = 'TradeliaRedirectIcon';
+WarningIcon.displayName = 'TradeliaWarningIcon';
+DeleteIcon.displayName = 'TradeliaDeleteIcon';
+LightbulbIcon.displayName = 'TradeliaLightbulbIcon';
+InfoIcon.displayName = 'TradeliaInfoIcon';
+ExternalLinkIcon.displayName = 'TradeliaExternalLinkIcon';
+CalendarIcon.displayName = 'TradeliaCalendarIcon';
+CheckCircleIcon.displayName = 'TradeliaCheckCircleIcon';

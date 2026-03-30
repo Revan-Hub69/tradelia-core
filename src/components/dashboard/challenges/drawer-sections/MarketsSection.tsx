@@ -5,7 +5,7 @@
 
 import { useTranslations } from 'next-intl';
 
-import { ClockIcon, CommissionIcon, LeverageIcon, TrendingUpIcon } from '../PremiumIcons';
+import { ClockIcon, CommissionIcon, LeverageIcon, TrendingUpIcon } from '@/components/icons/unified';
 import { SectionHeader } from './SectionHeader';
 
 type MarketAccess = {

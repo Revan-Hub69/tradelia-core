@@ -8,7 +8,7 @@ import React from 'react';
 
 import { sanitizeText } from '@/lib/sanitize';
 
-import { CheckCircleIcon, InfoIcon } from '../PremiumIcons';
+import { CheckCircleIcon, InfoIcon } from '@/components/icons/unified';
 import { SectionHeader } from './SectionHeader';
 
 type Program = {

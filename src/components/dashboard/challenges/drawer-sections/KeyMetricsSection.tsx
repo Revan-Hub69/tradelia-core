@@ -6,7 +6,7 @@
 import { useTranslations } from 'next-intl';
 import React from 'react';
 
-import { TargetIcon } from '../PremiumIcons';
+import { TargetIcon } from '@/components/icons/unified';
 import { SectionHeader } from './SectionHeader';
 
 type Offer = {
