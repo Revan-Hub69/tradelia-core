@@ -19,7 +19,8 @@ import {
   PendingIcon,
   PlayIcon,
   TrophyIcon,
-import { XCircleIcon } from '@/components/icons/unified';
+  XCircleIcon,
+} from '@/components/icons/unified';
 
 export type EnrollmentStatus =
   | 'interested'
