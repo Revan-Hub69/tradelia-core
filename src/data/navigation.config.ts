@@ -64,7 +64,7 @@ export const NAVIGATION_CONFIG: NavigationConfig = {
       labelKey: 'Dashboard.nav_fundamentals',
       ariaKey: 'Dashboard.nav_fundamentals',
       href: '/dashboard/fundamentals',
-      iconName: 'GlobeIcon', // Esplora = discovery, exploration
+      iconName: 'TrendingUpIcon', // Fundamental analysis = market trends
       isPriority: true, // Prefetch priority
       featureFlag: 'FUNDAMENTALS_ENABLED',
     },

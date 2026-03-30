@@ -1478,9 +1478,27 @@ SignalsIcon.displayName = 'TradeliaSignalsIcon';
 // Legacy aliases for compatibility - Updated with enhanced versions
 export const LightIcon = SunIcon;
 export const DarkIcon = MoonIcon;
-export const ToolsIcon = CalculatorIcon;
 export const CommunityIcon = ForumIcon;
 export const ExitIcon = LogoutIcon; // Use the enhanced LogoutIcon
+
+// ============================================================================
+// TOOLS ICON - Wrench/Toolbox - NOT an alias of CalculatorIcon
+// ============================================================================
+
+// TOOLS ICON - Professional toolbox/wrench icon
+export const ToolsIcon = memo<Omit<SignatureIconProps, 'children'> & {
+  isActive?: boolean;
+}>(({
+  isActive = false,
+  ...props
+}) => (
+  <SignatureIconBase {...props} state={isActive ? 'active' : props.state}>
+    {/* Professional toolbox/wrench design - distinct from calculator */}
+    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+  </SignatureIconBase>
+));
+
+ToolsIcon.displayName = 'TradeliaToolsIcon';
 
 // Challenge Premium Icons - Aliases to new unified icons
 export const ProfitTarget = ProfitTargetIcon;
