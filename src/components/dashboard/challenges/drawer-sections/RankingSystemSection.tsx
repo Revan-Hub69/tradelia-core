@@ -54,7 +54,7 @@ export function RankingSystemSection({
       {/* Ranking Method */}
       <div className="mb-4 rounded-xl border border-purple-500/20 bg-purple-500/5 p-5">
         <div className="mb-2 flex items-center gap-2">
-          <StarIcon size={18} className="text-purple-600 dark:text-purple-400" />
+          <StarIcon size={20} className="text-purple-600 dark:text-purple-400" />
           <span className="font-medium">{t('ranking.method')}</span>
         </div>
         <div className="text-lg font-bold text-purple-600 dark:text-purple-400">

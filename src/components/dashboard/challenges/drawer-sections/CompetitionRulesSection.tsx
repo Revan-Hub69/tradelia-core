@@ -227,7 +227,7 @@ export const CompetitionRulesSection = React.memo(({
             {eligibility.requirements.slice(0, 5).map(req => (
               <li key={`${req.type}-${req.description}`} className="flex items-start gap-3">
                 <CheckCircleIcon
-                  size={18}
+                  size={20}
                   className={req.met ? 'text-green-600' : 'text-muted-foreground'}
                 />
                 <span className="text-sm">{req.description}</span>
@@ -237,7 +237,7 @@ export const CompetitionRulesSection = React.memo(({
 
           {eligibility.restrictedCountries && eligibility.restrictedCountries.length > 0 && (
             <div className="mt-4 flex items-start gap-3 rounded-lg bg-amber-500/10 p-3">
-              <WarningIcon size={18} className="mt-0.5 shrink-0 text-amber-600" />
+              <WarningIcon size={20} className="mt-0.5 shrink-0 text-amber-600" />
               <div className="text-sm">
                 <span className="font-medium">
 {t('competitionRules.restrictions')}
@@ -264,7 +264,7 @@ export const CompetitionRulesSection = React.memo(({
 
           {winningCriteria.minTradingDays && (
             <div className="flex items-center gap-3 rounded-lg bg-background/50 p-3">
-              <InfoIcon size={18} className="text-amber-600" />
+              <InfoIcon size={20} className="text-amber-600" />
               <span className="text-sm">
                 {t('competitionRules.minTradingDays', { days: winningCriteria.minTradingDays })}
               </span>
