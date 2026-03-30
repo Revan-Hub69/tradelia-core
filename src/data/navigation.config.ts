@@ -5,7 +5,7 @@
  * Supporta feature flags, badges, analytics tracking
  */
 
-export type NavigationItemId = 'dashboard' | 'academy' | 'fundamentals' | 'dca-simulator' | 'settings';
+export type NavigationItemId = 'dashboard' | 'academy' | 'fundamentals' | 'dca-simulator' | 'tools' | 'settings';
 
 export type SettingsNavItem = Extract<NavigationItemId, 'settings'>;
 
@@ -37,6 +37,7 @@ export const FEATURE_FLAGS = {
   ACADEMY_ENABLED: true, // Academy/Courses
   FUNDAMENTALS_ENABLED: true, // Fundamental analysis
   DCA_SIMULATOR_ENABLED: true, // DCA/PAC simulator
+  TOOLS_ENABLED: true, // Recommended platforms (affiliate)
 } as const;
 
 /*
@@ -74,6 +75,15 @@ export const NAVIGATION_CONFIG: NavigationConfig = {
       iconName: 'CalculatorIcon',
       featureFlag: 'DCA_SIMULATOR_ENABLED',
       badgeType: 'new', // New feature
+    },
+    // Affiliate/Monetization section
+    {
+      id: 'tools',
+      labelKey: 'Dashboard.nav_tools',
+      ariaKey: 'Dashboard.nav_tools',
+      href: '/dashboard/tools',
+      iconName: 'ToolsIcon',
+      featureFlag: 'TOOLS_ENABLED',
     },
   ],
 };

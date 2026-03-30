@@ -47,6 +47,12 @@ const NAVIGATION_ITEMS = [
     badge: 'new' as const,
   },
   {
+    id: 'tools',
+    labelKey: 'Dashboard.nav_tools',
+    href: '/dashboard/tools',
+    iconName: 'ToolsIcon',
+  },
+  {
     id: 'settings',
     labelKey: 'Dashboard.settings',
     href: '/dashboard/settings',
