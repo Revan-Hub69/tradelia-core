@@ -5,7 +5,7 @@
  * Pivotato da Prop Firm Challenge -> Terminale Intelligence Finanziaria
  */
 
-export type NavigationItemId = 'dashboard' | 'liquidity' | 'squeeze' | 'ticker' | 'settings';
+export type NavigationItemId = 'radar' | 'structure' | 'volatility' | 'terminal' | 'settings';
 
 export type SettingsNavItem = Extract<NavigationItemId, 'settings'>;
 
@@ -35,9 +35,9 @@ export type NavigationConfig = {
  */
 export const FEATURE_FLAGS = {
   RADAR_ENABLED: true,
-  LIQUIDITY_ENABLED: true,
-  SQUEEZE_ENABLED: true,
-  TICKER_ENABLED: true,
+  STRUCTURE_ENABLED: true,
+  VOLATILITY_ENABLED: true,
+  TERMINAL_ENABLED: true,
 } as const;
 
 /*
@@ -49,8 +49,8 @@ export const NAVIGATION_CONFIG: NavigationConfig = {
   semanticRole: 'navigation',
   items: [
     {
-      id: 'dashboard',
-      labelKey: 'Flows',
+      id: 'radar',
+      labelKey: 'Radar',
       ariaKey: 'Dashboard.nav_radar',
       href: '/dashboard',
       iconName: 'SignalsIcon',
@@ -59,32 +59,32 @@ export const NAVIGATION_CONFIG: NavigationConfig = {
       badgeType: 'dot',
     },
     {
-      id: 'liquidity',
+      id: 'structure',
       labelKey: 'Structure',
-      ariaKey: 'Dashboard.nav_liquidity',
-      href: '/dashboard/liquidity',
+      ariaKey: 'Dashboard.nav_structure',
+      href: '/dashboard/structure',
       iconName: 'TrendingUpIcon',
       isPriority: true,
-      featureFlag: 'LIQUIDITY_ENABLED',
+      featureFlag: 'STRUCTURE_ENABLED',
     },
     {
-      id: 'squeeze',
+      id: 'volatility',
       labelKey: 'Volatility',
-      ariaKey: 'Dashboard.nav_squeeze',
-      href: '/dashboard/squeeze',
+      ariaKey: 'Dashboard.nav_volatility',
+      href: '/dashboard/volatility',
       iconName: 'WarningIcon',
       isPriority: true,
-      featureFlag: 'SQUEEZE_ENABLED',
+      featureFlag: 'VOLATILITY_ENABLED',
       badgeType: 'new',
     },
     {
-      id: 'ticker',
+      id: 'terminal',
       labelKey: 'Terminal',
-      ariaKey: 'Dashboard.nav_ticker',
-      href: '/dashboard/ticker',
+      ariaKey: 'Dashboard.nav_terminal',
+      href: '/dashboard/terminal',
       iconName: 'SearchIcon',
       isPriority: true,
-      featureFlag: 'TICKER_ENABLED',
+      featureFlag: 'TERMINAL_ENABLED',
     },
   ],
 };
@@ -137,8 +137,8 @@ export type NavigationBadgeState = {
 };
 
 export const MOCK_BADGE_STATE: NavigationBadgeState = {
-  dashboard: { type: 'dot' },
-  squeeze: { type: 'new' },
+  radar: { type: 'dot' },
+  volatility: { type: 'new' },
 };
 
 export const getBadgeForItem = (itemId: NavigationItemId): NavigationBadgeState[string] | null => {
