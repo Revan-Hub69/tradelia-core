@@ -76,6 +76,7 @@ export const NAVIGATION_CONFIG: NavigationConfig = {
       iconName: 'CalculatorIcon', // Planning & calculation
       featureFlag: 'DCA_SIMULATOR_ENABLED',
       badgeType: 'new', // New feature
+      sectionDivider: true, // Visual separator for tools section
     },
     // Affiliate/Monetization section - Separated with divider
     {
@@ -85,7 +86,6 @@ export const NAVIGATION_CONFIG: NavigationConfig = {
       href: '/dashboard/tools',
       iconName: 'ToolsIcon', // Cassetta attrezzi
       featureFlag: 'TOOLS_ENABLED',
-      sectionDivider: true, // Visual separator
     },
   ],
 };
