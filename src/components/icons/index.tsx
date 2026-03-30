@@ -53,6 +53,7 @@ import {
   ToolsIcon,
   TrendingUpIcon,
   UserIcon,
+  WarningIcon,
 } from './unified';
 
 // Re-export all icons
@@ -94,6 +95,7 @@ export {
   ToolsIcon,
   TrendingUpIcon,
   UserIcon,
+  WarningIcon,
 };
 
 export type {
@@ -149,6 +151,8 @@ export const ICON_MAP = {
   ToolsIcon,
   CommunityIcon,
   LogoutIcon,
+  // Risk & Alert icons
+  WarningIcon,
 } as const;
 
 export type IconName = keyof typeof ICON_MAP;
