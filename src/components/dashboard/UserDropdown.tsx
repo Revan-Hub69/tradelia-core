@@ -22,7 +22,7 @@
 import { useTranslations } from 'next-intl';
 import React, { useCallback, useMemo, useState } from 'react';
 
-import { ChevronDownIcon, LogoutIcon } from '@/components/icons/unified/UnifiedIconSystem';
+import { ChevronDownIcon, LogoutIcon, ProfileIcon, SettingsIcon } from '@/components/icons/unified/UnifiedIconSystem';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -72,6 +72,14 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
   }, [userName]);
 
   // Memoized callbacks - prevent unnecessary re-renders
+  const handleProfile = useCallback(() => {
+    router.push('/dashboard/profile');
+  }, [router]);
+
+  const handleSettings = useCallback(() => {
+    router.push('/dashboard/settings');
+  }, [router]);
+
   const handleSignOut = useCallback(async () => {
     // Haptic feedback
     if ('vibrate' in navigator) {
@@ -154,6 +162,40 @@ export const UserDropdown = React.memo<UserDropdownProps>(({
           </div>
         )}
       </div>
+
+      {/* Navigation Items */}
+      <div className="mb-2 space-y-1">
+        <button
+          type="button"
+          onClick={handleProfile}
+          className={cn(
+            'flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5',
+            'transition-colors duration-200 ease-out',
+            'hover:bg-muted focus:bg-muted',
+            'text-foreground hover:text-foreground focus:text-foreground',
+          )}
+        >
+          <ProfileIcon size={24} variant="premium" />
+          <span className="font-medium">{t('my_profile')}</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={handleSettings}
+          className={cn(
+            'flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5',
+            'transition-colors duration-200 ease-out',
+            'hover:bg-muted focus:bg-muted',
+            'text-foreground hover:text-foreground focus:text-foreground',
+          )}
+        >
+          <SettingsIcon size={24} variant="premium" />
+          <span className="font-medium">{t('settings')}</span>
+        </button>
+      </div>
+
+      {/* Divider */}
+      <div className="my-2 border-t border-border" />
 
       <button
         type="button"

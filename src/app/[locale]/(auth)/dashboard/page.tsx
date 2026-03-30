@@ -5,10 +5,10 @@ import { PageTransitionWrapper } from '@/components/transitions/PageTransitionWr
 import { Link } from '@/libs/i18nNavigation';
 
 type QuickLink = {
-  id: 'academy' | 'fundamentals' | 'dca-simulator' | 'settings';
+  id: 'academy' | 'fundamentals' | 'dca-simulator';
   href: string;
   icon: IconName;
-  titleKey: 'nav_academy' | 'nav_fundamentals' | 'nav_dca_simulator' | 'settings';
+  titleKey: 'nav_academy' | 'nav_fundamentals' | 'nav_dca_simulator';
   descKey: 'nav_academy_desc' | 'nav_fundamentals_desc' | 'nav_dca_simulator_desc';
 };
 
@@ -33,13 +33,6 @@ const quickLinks: QuickLink[] = [
     icon: 'CalculatorIcon',
     titleKey: 'nav_dca_simulator',
     descKey: 'nav_dca_simulator_desc',
-  },
-  {
-    id: 'settings',
-    href: '/dashboard/settings',
-    icon: 'SettingsIcon',
-    titleKey: 'settings',
-    descKey: 'nav_settings_desc',
   },
 ];
 

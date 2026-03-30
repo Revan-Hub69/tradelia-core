@@ -75,13 +75,6 @@ export const NAVIGATION_CONFIG: NavigationConfig = {
       featureFlag: 'DCA_SIMULATOR_ENABLED',
       badgeType: 'new', // New feature
     },
-    {
-      id: 'settings',
-      labelKey: 'Dashboard.settings',
-      ariaKey: 'Dashboard.nav_settings',
-      href: '/dashboard/settings',
-      iconName: 'SettingsIcon',
-    },
   ],
 };
 
