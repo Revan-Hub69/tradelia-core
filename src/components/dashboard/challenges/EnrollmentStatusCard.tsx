@@ -168,7 +168,7 @@ export function EnrollmentStatusCard({
             <div className="rounded-lg bg-muted/50 p-2">
               <span className="block text-muted-foreground">Duration</span>
               <span className="flex items-center gap-1 font-semibold">
-                <ClockIcon size={12} />
+                <ClockIcon size={16} />
                 {duration}
               </span>
             </div>
