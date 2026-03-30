@@ -7,7 +7,7 @@ export default function TickerPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Ricerca Ticker</h1>
+        <h1 className="text-2xl font-semibold">Terminal</h1>
       </div>
       
       <div className="rounded-lg border border-border p-8 text-center text-muted-foreground">

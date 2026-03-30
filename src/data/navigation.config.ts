@@ -60,7 +60,7 @@ export const NAVIGATION_CONFIG: NavigationConfig = {
     },
     {
       id: 'liquidity',
-      labelKey: 'Mappe di Liquidità',
+      labelKey: 'Structure',
       ariaKey: 'Dashboard.nav_liquidity',
       href: '/dashboard/liquidity',
       iconName: 'TrendingUpIcon',
@@ -69,7 +69,7 @@ export const NAVIGATION_CONFIG: NavigationConfig = {
     },
     {
       id: 'squeeze',
-      labelKey: 'Squeeze & Rischio',
+      labelKey: 'Volatility',
       ariaKey: 'Dashboard.nav_squeeze',
       href: '/dashboard/squeeze',
       iconName: 'WarningIcon',
@@ -79,7 +79,7 @@ export const NAVIGATION_CONFIG: NavigationConfig = {
     },
     {
       id: 'ticker',
-      labelKey: 'Ricerca Ticker',
+      labelKey: 'Terminal',
       ariaKey: 'Dashboard.nav_ticker',
       href: '/dashboard/ticker',
       iconName: 'SearchIcon',

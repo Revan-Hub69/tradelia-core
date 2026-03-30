@@ -7,7 +7,7 @@ export default function LiquidityPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Mappe di Liquidità</h1>
+        <h1 className="text-2xl font-semibold">Structure</h1>
       </div>
       
       <div className="rounded-lg border border-border p-8 text-center text-muted-foreground">
