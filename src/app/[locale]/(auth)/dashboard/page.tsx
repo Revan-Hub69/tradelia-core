@@ -42,14 +42,14 @@ export default function RadarPage() {
           </p>
         </div>
 
-        {/* 3 Card Grid - Bento Style */}
-        <div className="grid gap-4 md:grid-cols-2">
+        {/* 3 Card Grid - Bento Style (2+1 asymmetric) */}
+        <div className="grid gap-4 md:grid-cols-3">
           
           {/* Card 1: Unusual Options Activity (UOA) - Featured (2/3 width) */}
           <div className="card-ios-26 group flex flex-col overflow-hidden md:col-span-2">
-            <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 p-3">
+            <div className="flex items-center justify-between border-b border-neutral-300 dark:border-neutral-800 p-3">
               <div className="flex items-center gap-2.5">
-                <div className="flex size-9 items-center justify-center rounded-lg border border-neutral-200 dark:border-neutral-800">
+                <div className="flex size-9 items-center justify-center rounded-lg border border-neutral-300 dark:border-neutral-800">
                   <DynamicIcon name="WarningIcon" size={20} className="text-neutral-600 dark:text-neutral-400" />
                 </div>
                 <div>
@@ -65,11 +65,11 @@ export default function RadarPage() {
             
             <div className="flex-1 space-y-2 p-3">
               {UOA_ALERTS.map((alert, i) => (
-                <div key={i} className="flex items-center justify-between rounded-md bg-neutral-50 dark:bg-neutral-900/50 p-2.5">
+                <div key={i} className="flex items-center justify-between rounded-md bg-neutral-100 dark:bg-neutral-900/50 border border-neutral-200/60 dark:border-transparent p-2.5">
                   <div className="flex items-center gap-2">
                     <span className="font-mono font-bold text-neutral-900 dark:text-white w-12">{alert.ticker}</span>
                     <div className="flex flex-col">
-                      <span className="text-xs text-neutral-500">{alert.type}</span>
+                      <span className="text-xs text-neutral-600">{alert.type}</span>
                       <span className="text-xs text-neutral-400">Strike: {alert.strike}</span>
                     </div>
                   </div>
@@ -81,18 +81,21 @@ export default function RadarPage() {
               ))}
             </div>
             
-            <div className="border-t border-neutral-200 dark:border-neutral-800 p-3">
+            <div className="border-t border-neutral-300 dark:border-neutral-800 p-3">
               <button className="text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-700 dark:hover:text-neutral-300">
                 View All Alerts →
               </button>
             </div>
           </div>
 
+          {/* Right Column - Smart Money + Dark Pool stacked */}
+          <div className="flex flex-col gap-4">
+
           {/* Card 2: Smart Money Flows */}
-          <div className="card-ios-26 group flex flex-col overflow-hidden">
-            <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 p-3">
+          <div className="card-ios-26 group flex flex-col overflow-hidden flex-1">
+            <div className="flex items-center justify-between border-b border-neutral-300 dark:border-neutral-800 p-3">
               <div className="flex items-center gap-2.5">
-                <div className="flex size-9 items-center justify-center rounded-lg border border-neutral-200 dark:border-neutral-800">
+                <div className="flex size-9 items-center justify-center rounded-lg border border-neutral-300 dark:border-neutral-800">
                   <DynamicIcon name="UserIcon" size={20} className="text-neutral-600 dark:text-neutral-400" />
                 </div>
                 <div>
@@ -100,14 +103,14 @@ export default function RadarPage() {
                   <p className="text-xs text-neutral-500">Insider & Congress</p>
                 </div>
               </div>
-              <span className="rounded border border-neutral-200 dark:border-neutral-800 px-2 py-0.5 text-xs font-medium text-neutral-500">
+              <span className="rounded border border-neutral-300 dark:border-neutral-800 px-2 py-0.5 text-xs font-medium text-neutral-500">
                 TODAY
               </span>
             </div>
             
             <div className="flex-1 space-y-2 p-3">
               {SMART_MONEY.map((item, i) => (
-                <div key={i} className="flex items-center justify-between rounded-md bg-neutral-50 dark:bg-neutral-900/50 p-2.5">
+                <div key={i} className="flex items-center justify-between rounded-md bg-neutral-100 dark:bg-neutral-900/50 border border-neutral-200/60 dark:border-transparent p-2.5">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-mono text-neutral-400 w-8 shrink-0">
                       {item.name.split(' ').map(n => n[0]).join('')}
@@ -140,7 +143,7 @@ export default function RadarPage() {
               ))}
             </div>
             
-            <div className="border-t border-neutral-200 dark:border-neutral-800 p-3">
+            <div className="border-t border-neutral-300 dark:border-neutral-800 p-3">
               <button className="text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-700 dark:hover:text-neutral-300">
                 View All Activity →
               </button>
@@ -148,10 +151,10 @@ export default function RadarPage() {
           </div>
 
           {/* Card 3: Dark Pool Prints */}
-          <div className="card-ios-26 group flex flex-col overflow-hidden">
-            <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 p-3">
+          <div className="card-ios-26 group flex flex-col overflow-hidden flex-1">
+            <div className="flex items-center justify-between border-b border-neutral-300 dark:border-neutral-800 p-3">
               <div className="flex items-center gap-2.5">
-                <div className="flex size-9 items-center justify-center rounded-lg border border-neutral-200 dark:border-neutral-800">
+                <div className="flex size-9 items-center justify-center rounded-lg border border-neutral-300 dark:border-neutral-800">
                   <DynamicIcon name="TrendingUpIcon" size={20} className="text-neutral-600 dark:text-neutral-400" />
                 </div>
                 <div>
@@ -159,14 +162,14 @@ export default function RadarPage() {
                   <p className="text-xs text-neutral-500">Invisible Levels</p>
                 </div>
               </div>
-              <span className="rounded border border-neutral-200 dark:border-neutral-800 px-2 py-0.5 text-xs font-medium text-neutral-500">
+              <span className="rounded border border-neutral-300 dark:border-neutral-800 px-2 py-0.5 text-xs font-medium text-neutral-500">
                 ACTIVE
               </span>
             </div>
             
             <div className="flex-1 space-y-2 p-3">
               {DARK_POOL_LEVELS.map((level, i) => (
-                <div key={i} className="flex items-center justify-between rounded-md bg-neutral-50 dark:bg-neutral-900/50 p-2.5">
+                <div key={i} className="flex items-center justify-between rounded-md bg-neutral-100 dark:bg-neutral-900/50 border border-neutral-200/60 dark:border-transparent p-2.5">
                   <div className="flex items-center gap-2">
                     <span className="font-mono font-bold text-neutral-900 dark:text-white w-12">{level.ticker}</span>
                     <span className={`text-xs px-2 py-0.5 rounded ${
@@ -188,13 +191,13 @@ export default function RadarPage() {
               ))}
             </div>
             
-            <div className="border-t border-neutral-200 dark:border-neutral-800 p-3">
+            <div className="border-t border-neutral-300 dark:border-neutral-800 p-3">
               <button className="text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-700 dark:hover:text-neutral-300">
                 View All Levels →
               </button>
             </div>
           </div>
-
+          </div>
         </div>
       </div>
     </PageTransitionWrapper>
