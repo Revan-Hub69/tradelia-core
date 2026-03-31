@@ -43,45 +43,45 @@ export default function RadarPage() {
         </div>
 
         {/* 3 Card Grid - Bento Style */}
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-3">
           
           {/* Card 1: Unusual Options Activity (UOA) */}
           <div className="card-ios-26 group flex flex-col overflow-hidden">
-            <div className="flex items-center justify-between border-b border-border/40 p-4">
-              <div className="flex items-center gap-3">
-                <div className="flex size-10 items-center justify-center rounded-xl bg-red-500/10">
-                  <DynamicIcon name="WarningIcon" size={20} className="text-red-500" />
+            <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 p-3">
+              <div className="flex items-center gap-2.5">
+                <div className="flex size-9 items-center justify-center rounded-lg bg-rose-50 dark:bg-rose-950/50">
+                  <DynamicIcon name="WarningIcon" size={20} className="text-rose-600 dark:text-rose-400" />
                 </div>
                 <div>
-                  <h2 className="font-semibold">Unusual Options Activity</h2>
-                  <p className="text-xs text-muted-foreground">Volatility Alerts</p>
+                  <h2 className="font-semibold text-neutral-900 dark:text-white">Unusual Options Activity</h2>
+                  <p className="text-xs text-neutral-500">Volatility Alerts</p>
                 </div>
               </div>
-              <span className="rounded-full bg-red-500/20 px-2 py-1 text-xs font-medium text-red-500">
+              <span className="rounded bg-rose-100 dark:bg-rose-950/50 px-2 py-0.5 text-xs font-medium text-rose-600 dark:text-rose-400">
                 LIVE
               </span>
             </div>
             
-            <div className="flex-1 space-y-2 p-4">
+            <div className="flex-1 space-y-2 p-3">
               {UOA_ALERTS.map((alert, i) => (
-                <div key={i} className="flex items-center justify-between rounded-lg bg-muted/50 p-3">
-                  <div className="flex items-center gap-3">
-                    <span className="font-mono font-bold text-red-400">{alert.ticker}</span>
+                <div key={i} className="flex items-center justify-between rounded-md bg-neutral-50 dark:bg-neutral-900/50 p-2.5">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono font-bold text-rose-600 dark:text-rose-400">{alert.ticker}</span>
                     <div className="flex flex-col">
-                      <span className="text-xs text-muted-foreground">{alert.type}</span>
-                      <span className="text-xs text-muted-foreground/70">Strike: {alert.strike}</span>
+                      <span className="text-xs text-neutral-500">{alert.type}</span>
+                      <span className="text-xs text-neutral-400">Strike: {alert.strike}</span>
                     </div>
                   </div>
                   <div className="text-right">
-                    <span className="block font-mono text-sm font-medium text-green-400">{alert.change}</span>
-                    <span className="text-xs text-muted-foreground">{alert.time}</span>
+                    <span className="block font-mono text-sm font-medium text-emerald-600 dark:text-emerald-400">{alert.change}</span>
+                    <span className="text-xs text-neutral-400">{alert.time}</span>
                   </div>
                 </div>
               ))}
             </div>
             
-            <div className="border-t border-border/40 p-4">
-              <button className="text-sm font-medium text-red-400 transition-colors hover:text-red-300">
+            <div className="border-t border-neutral-200 dark:border-neutral-800 p-3">
+              <button className="text-sm font-medium text-rose-600 dark:text-rose-400 transition-colors hover:text-rose-500 dark:hover:text-rose-300">
                 View All Alerts →
               </button>
             </div>
@@ -89,41 +89,41 @@ export default function RadarPage() {
 
           {/* Card 2: Smart Money Flows */}
           <div className="card-ios-26 group flex flex-col overflow-hidden">
-            <div className="flex items-center justify-between border-b border-border/40 p-4">
-              <div className="flex items-center gap-3">
-                <div className="flex size-10 items-center justify-center rounded-xl bg-green-500/10">
-                  <DynamicIcon name="UserIcon" size={20} className="text-green-500" />
+            <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 p-3">
+              <div className="flex items-center gap-2.5">
+                <div className="flex size-9 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-950/50">
+                  <DynamicIcon name="UserIcon" size={20} className="text-emerald-600 dark:text-emerald-400" />
                 </div>
                 <div>
-                  <h2 className="font-semibold">Smart Money Flows</h2>
-                  <p className="text-xs text-muted-foreground">Insider & Congress</p>
+                  <h2 className="font-semibold text-neutral-900 dark:text-white">Smart Money Flows</h2>
+                  <p className="text-xs text-neutral-500">Insider & Congress</p>
                 </div>
               </div>
-              <span className="rounded-full bg-green-500/20 px-2 py-1 text-xs font-medium text-green-500">
+              <span className="rounded bg-emerald-100 dark:bg-emerald-950/50 px-2 py-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-400">
                 TODAY
               </span>
             </div>
             
-            <div className="flex-1 space-y-2 p-4">
+            <div className="flex-1 space-y-2 p-3">
               {SMART_MONEY.map((item, i) => (
-                <div key={i} className="flex items-center justify-between rounded-lg bg-muted/50 p-3">
-                  <div className="flex items-center gap-3">
-                    <div className="flex size-8 items-center justify-center rounded-full bg-green-500/20">
-                      <span className="text-xs font-bold text-green-400">
+                <div key={i} className="flex items-center justify-between rounded-md bg-neutral-50 dark:bg-neutral-900/50 p-2.5">
+                  <div className="flex items-center gap-2">
+                    <div className="flex size-8 items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-950/50">
+                      <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">
                         {item.name.split(' ').map(n => n[0]).join('')}
                       </span>
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-medium">{item.name}</span>
+                        <span className="font-medium text-neutral-900 dark:text-white">{item.name}</span>
                         <span className={`text-xs px-1.5 py-0.5 rounded ${
-                          item.type === 'buy' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+                          item.type === 'buy' ? 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400' : 'bg-rose-100 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400'
                         }`}>
                           {item.type.toUpperCase()}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <span className="font-mono text-green-400">{item.ticker}</span>
+                      <div className="flex items-center gap-2 text-xs text-neutral-500">
+                        <span className="font-mono text-emerald-600 dark:text-emerald-400">{item.ticker}</span>
                         <span>•</span>
                         <span>{item.source}</span>
                       </div>
@@ -131,18 +131,18 @@ export default function RadarPage() {
                   </div>
                   <div className="text-right">
                     <span className={`block font-mono text-sm font-medium ${
-                      item.type === 'buy' ? 'text-green-400' : 'text-red-400'
+                      item.type === 'buy' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
                     }`}>
                       {item.type === 'buy' ? '+' : '-'}{item.amount}
                     </span>
-                    <span className="text-xs text-muted-foreground">{item.date}</span>
+                    <span className="text-xs text-neutral-400">{item.date}</span>
                   </div>
                 </div>
               ))}
             </div>
             
-            <div className="border-t border-border/40 p-4">
-              <button className="text-sm font-medium text-green-400 transition-colors hover:text-green-300">
+            <div className="border-t border-neutral-200 dark:border-neutral-800 p-3">
+              <button className="text-sm font-medium text-emerald-600 dark:text-emerald-400 transition-colors hover:text-emerald-500 dark:hover:text-emerald-300">
                 View All Activity →
               </button>
             </div>
@@ -150,47 +150,47 @@ export default function RadarPage() {
 
           {/* Card 3: Dark Pool Prints */}
           <div className="card-ios-26 group flex flex-col overflow-hidden">
-            <div className="flex items-center justify-between border-b border-border/40 p-4">
-              <div className="flex items-center gap-3">
-                <div className="flex size-10 items-center justify-center rounded-xl bg-blue-500/10">
-                  <DynamicIcon name="TrendingUpIcon" size={20} className="text-blue-500" />
+            <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 p-3">
+              <div className="flex items-center gap-2.5">
+                <div className="flex size-9 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-950/50">
+                  <DynamicIcon name="TrendingUpIcon" size={20} className="text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
-                  <h2 className="font-semibold">Dark Pool Prints</h2>
-                  <p className="text-xs text-muted-foreground">Invisible Levels</p>
+                  <h2 className="font-semibold text-neutral-900 dark:text-white">Dark Pool Prints</h2>
+                  <p className="text-xs text-neutral-500">Invisible Levels</p>
                 </div>
               </div>
-              <span className="rounded-full bg-blue-500/20 px-2 py-1 text-xs font-medium text-blue-500">
+              <span className="rounded bg-blue-100 dark:bg-blue-950/50 px-2 py-0.5 text-xs font-medium text-blue-600 dark:text-blue-400">
                 ACTIVE
               </span>
             </div>
             
-            <div className="flex-1 space-y-2 p-4">
+            <div className="flex-1 space-y-2 p-3">
               {DARK_POOL_LEVELS.map((level, i) => (
-                <div key={i} className="flex items-center justify-between rounded-lg bg-muted/50 p-3">
-                  <div className="flex items-center gap-3">
-                    <span className="font-mono font-bold text-blue-400">{level.ticker}</span>
+                <div key={i} className="flex items-center justify-between rounded-md bg-neutral-50 dark:bg-neutral-900/50 p-2.5">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono font-bold text-blue-600 dark:text-blue-400">{level.ticker}</span>
                     <span className={`text-xs px-2 py-0.5 rounded ${
-                      level.type === 'Wall' ? 'bg-red-500/20 text-red-400' :
-                      level.type === 'Support' ? 'bg-green-500/20 text-green-400' :
-                      'bg-yellow-500/20 text-yellow-400'
+                      level.type === 'Wall' ? 'bg-rose-100 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400' :
+                      level.type === 'Support' ? 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400' :
+                      'bg-amber-100 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400'
                     }`}>
                       {level.type}
                     </span>
                     {level.level === 'major' && (
-                      <span className="text-xs text-muted-foreground/50">★</span>
+                      <span className="text-xs text-neutral-400">★</span>
                     )}
                   </div>
                   <div className="text-right">
-                    <span className="block font-mono text-sm font-medium text-blue-300">{level.price}</span>
-                    <span className="text-xs text-muted-foreground">{level.volume}</span>
+                    <span className="block font-mono text-sm font-medium text-blue-700 dark:text-blue-300">{level.price}</span>
+                    <span className="text-xs text-neutral-400">{level.volume}</span>
                   </div>
                 </div>
               ))}
             </div>
             
-            <div className="border-t border-border/40 p-4">
-              <button className="text-sm font-medium text-blue-400 transition-colors hover:text-blue-300">
+            <div className="border-t border-neutral-200 dark:border-neutral-800 p-3">
+              <button className="text-sm font-medium text-blue-600 dark:text-blue-400 transition-colors hover:text-blue-500 dark:hover:text-blue-300">
                 View All Levels →
               </button>
             </div>
