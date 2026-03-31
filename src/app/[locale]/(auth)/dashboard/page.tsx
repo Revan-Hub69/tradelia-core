@@ -33,7 +33,7 @@ const DARK_POOL_LEVELS = [
 export default function RadarPage() {
   return (
     <PageTransitionWrapper>
-      <div className="mx-auto max-w-screen-xl space-y-8">
+      <div className="mx-auto max-w-screen-xl space-y-8 pb-20">
         {/* Header */}
         <div className="space-y-2">
           <h1 className="text-2xl font-bold sm:text-3xl">RADAR</h1>

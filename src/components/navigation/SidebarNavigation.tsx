@@ -194,7 +194,7 @@ const SidebarNavigationItem = React.memo<SidebarNavigationItemProps>(
 
                     {/* Tooltip for collapsed state - CSS only */}
                     {isCollapsed && (
-                        <div className="layer-tooltip-sidebar pointer-events-none absolute left-full ml-2 rounded bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+                        <div className="layer-tooltip-sidebar pointer-events-none fixed left-[calc(var(--sidebar-width-collapsed)+0.5rem)] top-1/2 -translate-y-1/2 rounded bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100 z-50">
                             {tGeneral(item.labelKey)}
                         </div>
                     )}
@@ -297,7 +297,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
         'hidden md:block',
         // Sticky positioning - stays visible while scrolling
         // Research: https://akashhamirwasia.com/blog/how-to-and-not-to-build-sidebar-layouts/
-        'sticky top-0 h-screen',
+        'sticky top-0 h-screen z-40',
         // Liquid Glass Material System - Apple 2026 Standard
         'glass-sidebar',
         // Premium Animation System
@@ -419,7 +419,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                 )}
 
                 {/* Hover tooltip - Positioned to the right of sidebar */}
-                <div className="layer-tooltip-sidebar pointer-events-none absolute left-full top-1/2 ml-2 -translate-y-1/2 rounded bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+                <div className="layer-tooltip-sidebar pointer-events-none fixed left-[calc(var(--sidebar-width-expanded)+0.5rem)] top-1/2 -translate-y-1/2 rounded bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100 z-50">
                   {isCollapsed ? t('expand_sidebar') : t('collapse_sidebar')}
                 </div>
               </div>
