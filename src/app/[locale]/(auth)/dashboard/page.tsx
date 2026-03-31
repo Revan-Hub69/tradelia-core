@@ -43,21 +43,22 @@ export default function RadarPage() {
         </div>
 
         {/* 3 Card Grid - Bento Style */}
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-4">
           
-          {/* Card 1: Unusual Options Activity (UOA) */}
-          <div className="card-ios-26 group flex flex-col overflow-hidden">
+          {/* Card 1: Unusual Options Activity (UOA) - Featured (2/3 width) */}
+          <div className="card-ios-26 group flex flex-col overflow-hidden md:col-span-2">
             <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 p-3">
               <div className="flex items-center gap-2.5">
-                <div className="flex size-9 items-center justify-center rounded-lg bg-rose-50 dark:bg-rose-950/50">
-                  <DynamicIcon name="WarningIcon" size={20} className="text-rose-600 dark:text-rose-400" />
+                <div className="flex size-9 items-center justify-center rounded-lg border border-neutral-200 dark:border-neutral-800">
+                  <DynamicIcon name="WarningIcon" size={20} className="text-neutral-600 dark:text-neutral-400" />
                 </div>
                 <div>
                   <h2 className="font-semibold text-neutral-900 dark:text-white">Unusual Options Activity</h2>
                   <p className="text-xs text-neutral-500">Volatility Alerts</p>
                 </div>
               </div>
-              <span className="rounded bg-rose-100 dark:bg-rose-950/50 px-2 py-0.5 text-xs font-medium text-rose-600 dark:text-rose-400">
+              <span className="flex items-center gap-1.5 text-xs font-medium text-neutral-500">
+                <span className="size-1.5 rounded-full bg-rose-500 animate-pulse" />
                 LIVE
               </span>
             </div>
@@ -66,7 +67,7 @@ export default function RadarPage() {
               {UOA_ALERTS.map((alert, i) => (
                 <div key={i} className="flex items-center justify-between rounded-md bg-neutral-50 dark:bg-neutral-900/50 p-2.5">
                   <div className="flex items-center gap-2">
-                    <span className="font-mono font-bold text-rose-600 dark:text-rose-400">{alert.ticker}</span>
+                    <span className="font-mono font-bold text-neutral-900 dark:text-white w-12">{alert.ticker}</span>
                     <div className="flex flex-col">
                       <span className="text-xs text-neutral-500">{alert.type}</span>
                       <span className="text-xs text-neutral-400">Strike: {alert.strike}</span>
@@ -81,7 +82,7 @@ export default function RadarPage() {
             </div>
             
             <div className="border-t border-neutral-200 dark:border-neutral-800 p-3">
-              <button className="text-sm font-medium text-rose-600 dark:text-rose-400 transition-colors hover:text-rose-500 dark:hover:text-rose-300">
+              <button className="text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-700 dark:hover:text-neutral-300">
                 View All Alerts →
               </button>
             </div>
@@ -91,15 +92,15 @@ export default function RadarPage() {
           <div className="card-ios-26 group flex flex-col overflow-hidden">
             <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 p-3">
               <div className="flex items-center gap-2.5">
-                <div className="flex size-9 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-950/50">
-                  <DynamicIcon name="UserIcon" size={20} className="text-emerald-600 dark:text-emerald-400" />
+                <div className="flex size-9 items-center justify-center rounded-lg border border-neutral-200 dark:border-neutral-800">
+                  <DynamicIcon name="UserIcon" size={20} className="text-neutral-600 dark:text-neutral-400" />
                 </div>
                 <div>
                   <h2 className="font-semibold text-neutral-900 dark:text-white">Smart Money Flows</h2>
                   <p className="text-xs text-neutral-500">Insider & Congress</p>
                 </div>
               </div>
-              <span className="rounded bg-emerald-100 dark:bg-emerald-950/50 px-2 py-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+              <span className="rounded border border-neutral-200 dark:border-neutral-800 px-2 py-0.5 text-xs font-medium text-neutral-500">
                 TODAY
               </span>
             </div>
@@ -108,14 +109,12 @@ export default function RadarPage() {
               {SMART_MONEY.map((item, i) => (
                 <div key={i} className="flex items-center justify-between rounded-md bg-neutral-50 dark:bg-neutral-900/50 p-2.5">
                   <div className="flex items-center gap-2">
-                    <div className="flex size-8 items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-950/50">
-                      <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">
-                        {item.name.split(' ').map(n => n[0]).join('')}
-                      </span>
-                    </div>
+                    <span className="text-xs font-mono text-neutral-400 w-8 shrink-0">
+                      {item.name.split(' ').map(n => n[0]).join('')}
+                    </span>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-medium text-neutral-900 dark:text-white">{item.name}</span>
+                        <span className="font-medium text-neutral-900 dark:text-white text-sm">{item.name}</span>
                         <span className={`text-xs px-1.5 py-0.5 rounded ${
                           item.type === 'buy' ? 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400' : 'bg-rose-100 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400'
                         }`}>
@@ -123,7 +122,7 @@ export default function RadarPage() {
                         </span>
                       </div>
                       <div className="flex items-center gap-2 text-xs text-neutral-500">
-                        <span className="font-mono text-emerald-600 dark:text-emerald-400">{item.ticker}</span>
+                        <span className="font-mono text-neutral-600 dark:text-neutral-400">{item.ticker}</span>
                         <span>•</span>
                         <span>{item.source}</span>
                       </div>
@@ -142,7 +141,7 @@ export default function RadarPage() {
             </div>
             
             <div className="border-t border-neutral-200 dark:border-neutral-800 p-3">
-              <button className="text-sm font-medium text-emerald-600 dark:text-emerald-400 transition-colors hover:text-emerald-500 dark:hover:text-emerald-300">
+              <button className="text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-700 dark:hover:text-neutral-300">
                 View All Activity →
               </button>
             </div>
@@ -152,15 +151,15 @@ export default function RadarPage() {
           <div className="card-ios-26 group flex flex-col overflow-hidden">
             <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 p-3">
               <div className="flex items-center gap-2.5">
-                <div className="flex size-9 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-950/50">
-                  <DynamicIcon name="TrendingUpIcon" size={20} className="text-blue-600 dark:text-blue-400" />
+                <div className="flex size-9 items-center justify-center rounded-lg border border-neutral-200 dark:border-neutral-800">
+                  <DynamicIcon name="TrendingUpIcon" size={20} className="text-neutral-600 dark:text-neutral-400" />
                 </div>
                 <div>
                   <h2 className="font-semibold text-neutral-900 dark:text-white">Dark Pool Prints</h2>
                   <p className="text-xs text-neutral-500">Invisible Levels</p>
                 </div>
               </div>
-              <span className="rounded bg-blue-100 dark:bg-blue-950/50 px-2 py-0.5 text-xs font-medium text-blue-600 dark:text-blue-400">
+              <span className="rounded border border-neutral-200 dark:border-neutral-800 px-2 py-0.5 text-xs font-medium text-neutral-500">
                 ACTIVE
               </span>
             </div>
@@ -169,7 +168,7 @@ export default function RadarPage() {
               {DARK_POOL_LEVELS.map((level, i) => (
                 <div key={i} className="flex items-center justify-between rounded-md bg-neutral-50 dark:bg-neutral-900/50 p-2.5">
                   <div className="flex items-center gap-2">
-                    <span className="font-mono font-bold text-blue-600 dark:text-blue-400">{level.ticker}</span>
+                    <span className="font-mono font-bold text-neutral-900 dark:text-white w-12">{level.ticker}</span>
                     <span className={`text-xs px-2 py-0.5 rounded ${
                       level.type === 'Wall' ? 'bg-rose-100 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400' :
                       level.type === 'Support' ? 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400' :
@@ -182,7 +181,7 @@ export default function RadarPage() {
                     )}
                   </div>
                   <div className="text-right">
-                    <span className="block font-mono text-sm font-medium text-blue-700 dark:text-blue-300">{level.price}</span>
+                    <span className="block font-mono text-sm font-medium text-neutral-700 dark:text-neutral-300">{level.price}</span>
                     <span className="text-xs text-neutral-400">{level.volume}</span>
                   </div>
                 </div>
@@ -190,7 +189,7 @@ export default function RadarPage() {
             </div>
             
             <div className="border-t border-neutral-200 dark:border-neutral-800 p-3">
-              <button className="text-sm font-medium text-blue-600 dark:text-blue-400 transition-colors hover:text-blue-500 dark:hover:text-blue-300">
+              <button className="text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-700 dark:hover:text-neutral-300">
                 View All Levels →
               </button>
             </div>
