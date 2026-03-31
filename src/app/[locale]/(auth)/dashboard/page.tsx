@@ -43,7 +43,7 @@ export default function RadarPage() {
         </div>
 
         {/* 3 Card Grid - Bento Style */}
-        <div className="grid gap-4 md:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2">
           
           {/* Card 1: Unusual Options Activity (UOA) - Featured (2/3 width) */}
           <div className="card-ios-26 group flex flex-col overflow-hidden md:col-span-2">
@@ -114,7 +114,7 @@ export default function RadarPage() {
                     </span>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-medium text-neutral-900 dark:text-white text-sm">{item.name}</span>
+                        <span className="font-medium text-neutral-900 dark:text-white text-sm truncate max-w-[80px]">{item.name}</span>
                         <span className={`text-xs px-1.5 py-0.5 rounded ${
                           item.type === 'buy' ? 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400' : 'bg-rose-100 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400'
                         }`}>
