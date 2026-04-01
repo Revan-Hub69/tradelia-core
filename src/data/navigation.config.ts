@@ -5,7 +5,7 @@
  * Pivotato da Prop Firm Challenge -> Terminale Intelligence Finanziaria
  */
 
-export type NavigationItemId = 'radar' | 'structure' | 'volatility' | 'terminal' | 'settings';
+export type NavigationItemId = 'radar' | 'structure' | 'volatility' | 'terminal' | 'settings' | 'market';
 
 export type SettingsNavItem = Extract<NavigationItemId, 'settings'>;
 
@@ -38,6 +38,7 @@ export const FEATURE_FLAGS = {
   STRUCTURE_ENABLED: true,
   VOLATILITY_ENABLED: true,
   TERMINAL_ENABLED: true,
+  MARKET_ENABLED: true,
 } as const;
 
 /*
@@ -85,6 +86,15 @@ export const NAVIGATION_CONFIG: NavigationConfig = {
       iconName: 'SearchIcon',
       isPriority: true,
       featureFlag: 'TERMINAL_ENABLED',
+    },
+    {
+      id: 'market',
+      labelKey: 'Market',
+      ariaKey: 'Dashboard.nav_market',
+      href: '/dashboard/market',
+      iconName: 'TrendingUpIcon',
+      isPriority: true,
+      featureFlag: 'MARKET_ENABLED',
     },
   ],
 };
