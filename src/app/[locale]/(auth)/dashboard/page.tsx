@@ -7,7 +7,7 @@
 
 import { DynamicIcon } from '@/components/icons';
 import { PageTransitionWrapper } from '@/components/transitions/PageTransitionWrapper';
-import { TICKER_INTELLIGENCE_DATA, getTopBullish, getTopBearish, formatSize, type TickerIntelligence } from '@/data/ticker-intelligence';
+import { TICKER_INTELLIGENCE_DATA, getTopBullish, formatSize } from '@/data/ticker-intelligence';
 import Link from 'next/link';
 
 // Get data from mock dataset
