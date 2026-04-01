@@ -41,5 +41,10 @@
   "indicator_ema": "EMA (20, 50, 200) - Dynamic support/resistance",
   "indicator_bollinger": "Bollinger Bands - Volatility and mean reversion",
   "indicator_volume": "Volume Analysis - Confirmation of price moves",
-  "in_development": "⚠️ AI signal generator coming soon. Full technical analysis automation system."
+  "in_development": "⚠️ AI signal generator coming soon. Full technical analysis automation system.",
+  "nav_radar": "Radar - Market Scanner",
+  "nav_structure": "Structure - Sector Rotation",
+  "nav_volatility": "Volatility - Risk Analysis",
+  "nav_terminal": "Terminal - Deep Research",
+  "nav_market": "Market - ETF Overview"
 }
