@@ -59,13 +59,14 @@ const generateFlows = (ticker: string, bias: BiasType): OptionsFlow[] => {
   
   for (let i = 0; i < 5; i++) {
     const typeIndex = bias === 'BEARISH' ? 3 : (bias === 'BULLISH' ? 0 : Math.floor(Math.random() * 4));
+    const execIndex = Math.floor(Math.random() * executions.length);
     flows.push({
       ticker,
-      type: callTypes[typeIndex],
+      type: callTypes[typeIndex] as TickerType,
       size: Math.floor(Math.random() * 500000) + 100000,
       strike: Math.floor(Math.random() * 100) * 10 + 100,
       expiry_days: Math.floor(Math.random() * 14) + 1,
-      execution: executions[Math.floor(Math.random() * executions.length)],
+      execution: executions[execIndex] as ExecutionType,
       timestamp: new Date(baseTime - i * 3600000).toISOString(),
     });
   }
