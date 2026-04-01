@@ -454,6 +454,130 @@ export const TICKER_INTELLIGENCE_DATA: TickerIntelligence[] = [
 ];
 
 // Utility functions
+
+export type SectorType = 'Technology' | 'Healthcare' | 'Financials' | 'Consumer Discretionary' | 'Consumer Staples' | 'Energy' | 'Industrials' | 'Utilities' | 'Materials' | 'Real Estate' | 'Communication';
+
+export interface SectorRotation {
+  sector: SectorType;
+  etf: string;
+  dominance: number;
+  delta: number;
+  bias: 'BULLISH' | 'BEARISH' | 'NEUTRAL';
+  volume: number;
+  last_updated: string;
+}
+
+// Mock sector rotation data - compliant, no trading signals
+// Shows where market is allocating pressure, not recommendations
+export const SECTOR_ROTATION_DATA: SectorRotation[] = [
+  {
+    sector: 'Technology',
+    etf: 'XLK',
+    dominance: 0.72,
+    delta: 0.05,
+    bias: 'BULLISH',
+    volume: 450000000,
+    last_updated: new Date().toISOString(),
+  },
+  {
+    sector: 'Financials',
+    etf: 'XLF',
+    dominance: 0.58,
+    delta: 0.02,
+    bias: 'BULLISH',
+    volume: 320000000,
+    last_updated: new Date().toISOString(),
+  },
+  {
+    sector: 'Healthcare',
+    etf: 'XLV',
+    dominance: 0.51,
+    delta: -0.02,
+    bias: 'NEUTRAL',
+    volume: 180000000,
+    last_updated: new Date().toISOString(),
+  },
+  {
+    sector: 'Consumer Discretionary',
+    etf: 'XLY',
+    dominance: 0.48,
+    delta: -0.01,
+    bias: 'NEUTRAL',
+    volume: 210000000,
+    last_updated: new Date().toISOString(),
+  },
+  {
+    sector: 'Energy',
+    etf: 'XLE',
+    dominance: 0.42,
+    delta: -0.03,
+    bias: 'BEARISH',
+    volume: 150000000,
+    last_updated: new Date().toISOString(),
+  },
+  {
+    sector: 'Industrials',
+    etf: 'XLI',
+    dominance: 0.55,
+    delta: 0.01,
+    bias: 'BULLISH',
+    volume: 190000000,
+    last_updated: new Date().toISOString(),
+  },
+  {
+    sector: 'Utilities',
+    etf: 'XLU',
+    dominance: 0.45,
+    delta: 0.00,
+    bias: 'NEUTRAL',
+    volume: 95000000,
+    last_updated: new Date().toISOString(),
+  },
+  {
+    sector: 'Materials',
+    etf: 'XLB',
+    dominance: 0.38,
+    delta: -0.04,
+    bias: 'BEARISH',
+    volume: 85000000,
+    last_updated: new Date().toISOString(),
+  },
+];
+
+export const getSectorRotation = (): SectorRotation[] => {
+  return [...SECTOR_ROTATION_DATA].sort((a, b) => b.dominance - a.dominance);
+};
+
+export const getTopSectors = (limit: number = 5): SectorRotation[] => {
+  return getSectorRotation().slice(0, limit);
+};
+
+export const getSectorBiasColor = (bias: 'BULLISH' | 'BEARISH' | 'NEUTRAL'): string => {
+  switch (bias) {
+    case 'BULLISH': return 'emerald';
+    case 'BEARISH': return 'rose';
+    case 'NEUTRAL': return 'neutral';
+    default: return 'neutral';
+  }
+};
+
+export const getDominanceThreshold = (dominance: number): 'BULLISH' | 'BEARISH' | 'NEUTRAL' => {
+  if (dominance >= 0.6) return 'BULLISH';
+  if (dominance <= 0.4) return 'BEARISH';
+  return 'NEUTRAL';
+};
+
+export const formatSectorVolume = (volume: number): string => {
+  if (volume >= 1000000000) {
+    return `${(volume / 1000000000).toFixed(1)}B`;
+  }
+  return `${(volume / 1000000).toFixed(0)}M`;
+};
+
+export const formatDelta = (delta: number): string => {
+  const sign = delta > 0 ? '+' : '';
+  return `${sign}${(delta * 100).toFixed(0)}%`;
+};
 export const getTickerBySymbol = (symbol: string): TickerIntelligence | undefined => {
   return TICKER_INTELLIGENCE_DATA.find(t => t.ticker === symbol.toUpperCase());
 };
