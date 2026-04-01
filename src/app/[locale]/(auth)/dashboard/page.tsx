@@ -7,28 +7,38 @@
 
 import { DynamicIcon } from '@/components/icons';
 import { PageTransitionWrapper } from '@/components/transitions/PageTransitionWrapper';
+import { TICKER_INTELLIGENCE_DATA, getTopBullish, getTopBearish, formatSize, type TickerIntelligence } from '@/data/ticker-intelligence';
+import Link from 'next/link';
 
-// Mock Data - UOA (Unusual Options Activity)
-const UOA_ALERTS = [
-  { ticker: 'TSLA', type: 'Call Volume Spike', strike: '$200', change: '+500%', time: '2h ago', urgency: 'high' },
-  { ticker: 'NVDA', type: 'Unusual Put Activity', strike: '$150', change: '+340%', time: '4h ago', urgency: 'medium' },
-  { ticker: 'AAPL', type: 'Whale Sweep', strike: '$175', change: '+280%', time: '6h ago', urgency: 'low' },
-];
+// Get data from mock dataset
+const uoaAlerts = TICKER_INTELLIGENCE_DATA
+  .filter(t => t.bias === 'BULLISH' || t.bias === 'VOLATILE')
+  .slice(0, 3)
+  .map(t => ({
+    ticker: t.ticker,
+    type: t.flow_3d.replace('_', ' '),
+    strike: `${t.key_strikes[0]}`,
+    change: `+${t.call_pressure}%`,
+    time: '1h ago',
+    urgency: t.confidence > 70 ? 'high' : 'medium' as const
+  }));
 
-// Mock Data - Smart Money Flows (Insider & Congress)
-const SMART_MONEY = [
-  { name: 'Nancy Pelosi', ticker: 'NVDA', amount: '$1.5M', type: 'buy', date: '2024-01-15', source: 'Congress' },
-  { name: 'Michael Burry', ticker: 'AAPL', amount: '$820K', type: 'buy', date: '2024-01-12', source: '13F' },
-  { name: 'Elon Musk', ticker: 'TSLA', amount: '$5.2M', type: 'sell', date: '2024-01-10', source: 'Insider' },
-];
+const smartMoney = getTopBullish(3).map(t => ({
+  name: t.ticker,
+  ticker: t.ticker,
+  amount: formatSize(Math.floor(Math.random() * 5000000) + 500000),
+  type: t.bias === 'BULLISH' ? 'buy' as const : 'sell' as const,
+  date: new Date().toISOString().split('T')[0],
+  source: 'Flow'
+}));
 
-// Mock Data - Dark Pool Prints
-const DARK_POOL_LEVELS = [
-  { ticker: 'AAPL', price: '$175.50', type: 'Wall', volume: '2.5M', level: 'major' },
-  { ticker: 'MSFT', price: '$380.20', type: 'Support', volume: '1.8M', level: 'minor' },
-  { ticker: 'NVDA', price: '$148.75', type: 'Resistance', volume: '3.2M', level: 'major' },
-  { ticker: 'TSLA', price: '$205.00', type: 'Wall', volume: '4.1M', level: 'major' },
-];
+const darkPoolLevels = TICKER_INTELLIGENCE_DATA.slice(0, 4).map(t => ({
+  ticker: t.ticker,
+  price: `${t.price.toFixed(2)}`,
+  type: t.gex === 'POSITIVE' ? 'Support' : t.gex === 'NEGATIVE' ? 'Wall' : 'Neutral' as const,
+  volume: formatSize(Math.floor(Math.random() * 5000000) + 500000),
+  level: t.confidence > 70 ? 'major' as const : 'minor' as const
+}));
 
 export default function RadarPage() {
   return (
@@ -64,20 +74,22 @@ export default function RadarPage() {
             </div>
             
             <div className="flex-1 space-y-2 p-3">
-              {UOA_ALERTS.map((alert, i) => (
-                <div key={i} className="flex items-center justify-between rounded-md bg-neutral-100 dark:bg-neutral-900/50 border border-neutral-200/60 dark:border-transparent p-2.5">
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono font-bold text-neutral-900 dark:text-white w-12">{alert.ticker}</span>
-                    <div className="flex flex-col">
-                      <span className="text-xs text-neutral-600">{alert.type}</span>
-                      <span className="text-xs text-neutral-400">Strike: {alert.strike}</span>
+              {uoaAlerts.map((alert, i) => (
+                <Link key={i} href={`/dashboard/${alert.ticker}`} className="block">
+                  <div className="flex items-center justify-between rounded-md bg-neutral-100 dark:bg-neutral-900/50 border border-neutral-200/60 dark:border-transparent p-2.5 hover:bg-neutral-200 dark:hover:bg-neutral-800/50 transition-colors">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono font-bold text-neutral-900 dark:text-white w-12">{alert.ticker}</span>
+                      <div className="flex flex-col">
+                        <span className="text-xs text-neutral-600">{alert.type}</span>
+                        <span className="text-xs text-neutral-400">Strike: {alert.strike}</span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <span className="block font-mono text-sm font-medium text-emerald-600 dark:text-emerald-400">{alert.change}</span>
+                      <span className="text-xs text-neutral-400">{alert.time}</span>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <span className="block font-mono text-sm font-medium text-emerald-600 dark:text-emerald-400">{alert.change}</span>
-                    <span className="text-xs text-neutral-400">{alert.time}</span>
-                  </div>
-                </div>
+                </Link>
               ))}
             </div>
             
@@ -109,37 +121,39 @@ export default function RadarPage() {
             </div>
             
             <div className="flex-1 space-y-2 p-3">
-              {SMART_MONEY.map((item, i) => (
-                <div key={i} className="flex items-center justify-between rounded-md bg-neutral-100 dark:bg-neutral-900/50 border border-neutral-200/60 dark:border-transparent p-2.5">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono text-neutral-400 w-8 shrink-0">
-                      {item.name.split(' ').map(n => n[0]).join('')}
-                    </span>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium text-neutral-900 dark:text-white text-sm truncate max-w-[80px]">{item.name}</span>
-                        <span className={`text-xs px-1.5 py-0.5 rounded ${
-                          item.type === 'buy' ? 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400' : 'bg-rose-100 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400'
-                        }`}>
-                          {item.type.toUpperCase()}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2 text-xs text-neutral-500">
-                        <span className="font-mono text-neutral-600 dark:text-neutral-400">{item.ticker}</span>
-                        <span>•</span>
-                        <span>{item.source}</span>
+              {smartMoney.map((item, i) => (
+                <Link key={i} href={`/dashboard/${item.ticker}`} className="block">
+                  <div className="flex items-center justify-between rounded-md bg-neutral-100 dark:bg-neutral-900/50 border border-neutral-200/60 dark:border-transparent p-2.5 hover:bg-neutral-200 dark:hover:bg-neutral-800/50 transition-colors">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-mono text-neutral-400 w-8 shrink-0">
+                        {item.name.split(' ').map(n => n[0]).join('')}
+                      </span>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium text-neutral-900 dark:text-white text-sm truncate max-w-[80px]">{item.name}</span>
+                          <span className={`text-xs px-1.5 py-0.5 rounded ${
+                            item.type === 'buy' ? 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400' : 'bg-rose-100 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400'
+                          }`}>
+                            {item.type.toUpperCase()}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-neutral-500">
+                          <span className="font-mono text-neutral-600 dark:text-neutral-400">{item.ticker}</span>
+                          <span>•</span>
+                          <span>{item.source}</span>
+                        </div>
                       </div>
                     </div>
+                    <div className="text-right">
+                      <span className={`block font-mono text-sm font-medium ${
+                        item.type === 'buy' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
+                      }`}>
+                        {item.type === 'buy' ? '+' : '-'}{item.amount}
+                      </span>
+                      <span className="text-xs text-neutral-400">{item.date}</span>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <span className={`block font-mono text-sm font-medium ${
-                      item.type === 'buy' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
-                    }`}>
-                      {item.type === 'buy' ? '+' : '-'}{item.amount}
-                    </span>
-                    <span className="text-xs text-neutral-400">{item.date}</span>
-                  </div>
-                </div>
+                </Link>
               ))}
             </div>
             
@@ -168,26 +182,28 @@ export default function RadarPage() {
             </div>
             
             <div className="flex-1 space-y-2 p-3">
-              {DARK_POOL_LEVELS.map((level, i) => (
-                <div key={i} className="flex items-center justify-between rounded-md bg-neutral-100 dark:bg-neutral-900/50 border border-neutral-200/60 dark:border-transparent p-2.5">
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono font-bold text-neutral-900 dark:text-white w-12">{level.ticker}</span>
-                    <span className={`text-xs px-2 py-0.5 rounded ${
-                      level.type === 'Wall' ? 'bg-rose-100 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400' :
-                      level.type === 'Support' ? 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400' :
-                      'bg-amber-100 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400'
-                    }`}>
-                      {level.type}
-                    </span>
-                    {level.level === 'major' && (
-                      <span className="text-xs text-neutral-400">★</span>
-                    )}
+              {darkPoolLevels.map((level, i) => (
+                <Link key={i} href={`/dashboard/${level.ticker}`} className="block">
+                  <div className="flex items-center justify-between rounded-md bg-neutral-100 dark:bg-neutral-900/50 border border-neutral-200/60 dark:border-transparent p-2.5 hover:bg-neutral-200 dark:hover:bg-neutral-800/50 transition-colors">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono font-bold text-neutral-900 dark:text-white w-12">{level.ticker}</span>
+                      <span className={`text-xs px-2 py-0.5 rounded ${
+                        level.type === 'Wall' ? 'bg-rose-100 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400' :
+                        level.type === 'Support' ? 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400' :
+                        'bg-amber-100 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400'
+                      }`}>
+                        {level.type}
+                      </span>
+                      {level.level === 'major' && (
+                        <span className="text-xs text-neutral-400">★</span>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      <span className="block font-mono text-sm font-medium text-neutral-700 dark:text-neutral-300">{level.price}</span>
+                      <span className="text-xs text-neutral-400">{level.volume}</span>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <span className="block font-mono text-sm font-medium text-neutral-700 dark:text-neutral-300">{level.price}</span>
-                    <span className="text-xs text-neutral-400">{level.volume}</span>
-                  </div>
-                </div>
+                </Link>
               ))}
             </div>
             
