@@ -8,7 +8,6 @@
 import { DynamicIcon } from '@/components/icons';
 import { PageTransitionWrapper } from '@/components/transitions/PageTransitionWrapper';
 import { 
-  TICKER_INTELLIGENCE_DATA, 
   getTickerBySymbol, 
   formatSize,
   type TickerIntelligence,
