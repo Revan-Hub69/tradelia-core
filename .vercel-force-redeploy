@@ -1,3 +1,0 @@
-Force redeploy - 2026-01-28 18:00
-Commit: 85b2892b - feat(database): add drawer fields migration and seed data
-Migration: 0014_add_drawer_fields.sql applied successfully
