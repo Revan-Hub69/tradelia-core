@@ -445,5 +445,50 @@
     "sort": "Ordina",
     "refresh": "Aggiorna",
     "retry": "Riprova"
+  },
+  "Tools": {
+    "hero_title": "Strumenti di Analisi degli Investimenti",
+    "hero_subtitle": "Quantificazione dei rendimenti netti, esposizione e attività di mercato.",
+    "cta_primary": "Esegui Net Return Model",
+    "cta_secondary": "Analisi Esposizione",
+    "cta_tertiary": "Flow Radar",
+    "trust": "Gratis da usare - Nessuna registrazione"
+  },
+  "NetReturn": {
+    "title": "Net Return Model",
+    "description": "Simula risultati reali degli investimenti dopo costi, tasse e commissioni.",
+    "feature1": "Commissioni broker e TER inclusi",
+    "feature2": "Regimi fiscali italiani",
+    "feature3": "Confronto PAC vs investimento unico",
+    "cta": "Esegui"
+  },
+  "Exposure": {
+    "title": "Exposure Comparator",
+    "description": "Confronta l'esposizione reale tra CFD, opzioni, futures e asset sottostante.",
+    "feature1": "Nozionale e leva effettiva",
+    "feature2": "Scenario P&L per movimento del 1%",
+    "feature3": "Confronto requisiti di margine",
+    "cta": "Confronta"
+  },
+  "Flow": {
+    "title": "Flow Radar",
+    "description": "Rileva anomalie nei flussi di mercato e pattern di attività inusuali.",
+    "feature1": "Segnali di flow sulle opzioni",
+    "feature2": "Movimenti ETF insoliti",
+    "feature3": "Pattern matching",
+    "cta_waitlist": "Entra nella Waitlist"
+  },
+  "Framework": {
+    "title": "Struttura Analitica",
+    "returns_label": "Rendimenti",
+    "exposure_label": "Esposizione",
+    "flow_label": "Flussi"
+  },
+  "Methodology": {
+    "title": "Metodologia",
+    "item1": "Modelli deterministici",
+    "item2": "Calcoli consapevoli dei costi",
+    "item3": "Comparabilità cross-strumenti",
+    "disclaimer": "Nessuna garanzia previsionale"
   }
 }

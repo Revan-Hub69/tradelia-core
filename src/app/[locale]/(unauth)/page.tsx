@@ -1,24 +1,10 @@
-import dynamic from 'next/dynamic';
 import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 
-import { Skeleton } from '@/components/ui/skeleton';
-import { BenefitsOverview } from '@/templates/BenefitsOverview';
-import { FinalCTA } from '@/templates/FinalCTA';
-import { Hero } from '@/templates/Hero';
-import { HowItWorks } from '@/templates/HowItWorks';
 import { Navbar } from '@/templates/Navbar';
 import { PremiumFooter } from '@/templates/PremiumFooter';
-
-// Dynamic imports for below-fold components (performance optimization P0)
-const SocialProof = dynamic(() => import('@/templates/SocialProof').then(mod => ({ default: mod.SocialProof })), {
-  ssr: true,
-  loading: () => <div className="reserve-space-md"><Skeleton className="size-full" /></div>,
-});
-
-const FAQ = dynamic(() => import('@/templates/FAQ').then(mod => ({ default: mod.FAQ })), {
-  ssr: true,
-  loading: () => <div className="reserve-space-lg"><Skeleton className="size-full" /></div>,
-});
+import { ToolsHero } from '@/templates/ToolsHero';
+import { NetReturnCard, SecondaryTools } from '@/templates/ToolCard';
+import { FrameworkSection, MethodologySection } from '@/templates/FrameworkSection';
 
 export async function generateMetadata(props: { params: Promise<{ locale: string }> }) {
   const params = await props.params;
@@ -41,12 +27,32 @@ const IndexPage = async (props: { params: Promise<{ locale: string }> }) => {
     <>
       <Navbar />
       <main id="main-content">
-        <Hero />
-        <BenefitsOverview />
-        <SocialProof />
-        <HowItWorks />
-        <FAQ />
-        <FinalCTA />
+        {/* Hero - Tools access */}
+        <ToolsHero />
+
+        {/* Primary Tool - Net Return Model (70% visual weight) */}
+        <section id="net-return" className="px-4 py-12 sm:px-6 sm:py-16 lg:py-20">
+          <div className="mx-auto max-w-3xl">
+            <NetReturnCard />
+          </div>
+        </section>
+
+        {/* Secondary Tools - Exposure + Flow (20% + 10%) */}
+        <section id="exposure" className="border-t border-border/40 px-4 py-12 sm:px-6 sm:py-16">
+          <div className="mx-auto max-w-4xl">
+            <SecondaryTools />
+          </div>
+        </section>
+
+        {/* Framework - Elevates from tool to system */}
+        <section id="framework">
+          <FrameworkSection />
+        </section>
+
+        {/* Methodology - Professional credibility */}
+        <section id="methodology">
+          <MethodologySection />
+        </section>
       </main>
       <PremiumFooter />
     </>

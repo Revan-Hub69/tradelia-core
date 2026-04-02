@@ -445,5 +445,50 @@
     "sort": "Sort",
     "refresh": "Refresh",
     "retry": "Retry"
+  },
+  "Tools": {
+    "hero_title": "Investment Analysis Tools",
+    "hero_subtitle": "Quantifying net returns, exposure, and market activity.",
+    "cta_primary": "Run Net Return Model",
+    "cta_secondary": "Exposure Analysis",
+    "cta_tertiary": "Flow Radar",
+    "trust": "Free to use - No signup required"
+  },
+  "NetReturn": {
+    "title": "Net Return Model",
+    "description": "Simulates real investment outcomes after fees, taxes, and fund costs.",
+    "feature1": "Broker fees and TER included",
+    "feature2": "Italian tax regimes",
+    "feature3": "PAC vs Lump Sum comparison",
+    "cta": "Run Model"
+  },
+  "Exposure": {
+    "title": "Exposure Comparator",
+    "description": "Compare real exposure across CFDs, options, futures and underlying assets.",
+    "feature1": "Notional and effective leverage",
+    "feature2": "P&L scenarios for 1% move",
+    "feature3": "Margin requirements comparison",
+    "cta": "Compare"
+  },
+  "Flow": {
+    "title": "Flow Radar",
+    "description": "Detects anomalies in market flows and unusual activity patterns.",
+    "feature1": "Options flow signals",
+    "feature2": "ETF unusual moves",
+    "feature3": "Pattern matching",
+    "cta_waitlist": "Join Waitlist"
+  },
+  "Framework": {
+    "title": "Analytical Framework",
+    "returns_label": "Returns",
+    "exposure_label": "Exposure",
+    "flow_label": "Flow"
+  },
+  "Methodology": {
+    "title": "Methodology",
+    "item1": "Deterministic models",
+    "item2": "Cost-aware calculations",
+    "item3": "Cross-instrument comparability",
+    "disclaimer": "No forward-looking guarantees"
   }
 }
