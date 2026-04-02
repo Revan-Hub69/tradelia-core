@@ -12,10 +12,6 @@ export const FrameworkSection = () => {
   return (
     <section className="border-t border-border/40 bg-gradient-to-b from-background to-background/50 py-16">
       <div className="mx-auto max-w-3xl px-4 text-center">
-        <h2 className="text-lg font-medium tracking-wide text-foreground/80">
-          {t('title')}
-        </h2>
-
         {/* Flow visualization - returns to flow */}
         <div className="mt-8 flex items-center justify-center gap-4 sm:gap-8">
           {/* Returns */}
