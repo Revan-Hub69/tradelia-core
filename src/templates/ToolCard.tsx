@@ -24,18 +24,8 @@ export const ToolCard = ({
   href,
 }: ToolCardProps) => {
   const t = useTranslations(namespace) as (key: string) => string;
-  const commonT = useTranslations('Common') as (key: string) => string;
 
   const isPrimary = variant === 'primary';
-
-  // Get CTA text - try namespace first, fallback to common
-  const getCtaText = () => {
-    try {
-      return t(ctaKey);
-    } catch {
-      return commonT(ctaKey);
-    }
-  };
 
   return (
     <div
@@ -76,11 +66,11 @@ export const ToolCard = ({
         <div className="mt-6">
           {isPrimary ? (
             <Button asChild size="lg" className="w-full">
-              <Link href={href}>{getCtaText()}</Link>
+              <Link href={href}>{t(ctaKey)}</Link>
             </Button>
           ) : (
             <Button asChild variant="outline" className="w-full">
-              <Link href={href}>{getCtaText()}</Link>
+              <Link href={href}>{t(ctaKey)}</Link>
             </Button>
           )}
         </div>
