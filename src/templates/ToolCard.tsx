@@ -23,8 +23,8 @@ export const ToolCard = ({
   ctaKey,
   href,
 }: ToolCardProps) => {
-  const t = useTranslations(namespace);
-  const commonT = useTranslations('Common');
+  const t = useTranslations(namespace) as (key: string) => string;
+  const commonT = useTranslations('Common') as (key: string) => string;
 
   const isPrimary = variant === 'primary';
 

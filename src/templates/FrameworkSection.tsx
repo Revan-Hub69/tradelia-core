@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl';
  * This elevates the product from "tool directory" to "analytical system"
  */
 export const FrameworkSection = () => {
-  const t = useTranslations('Framework');
+  const t = useTranslations('Framework') as (key: string) => string;
 
   return (
     <section className="border-t border-border/40 bg-gradient-to-b from-background to-background/50 py-16">
@@ -74,7 +74,7 @@ export const FrameworkSection = () => {
  * No testimonials, just methodology (finance 2026 style)
  */
 export const MethodologySection = () => {
-  const t = useTranslations('Methodology');
+  const t = useTranslations('Methodology') as (key: string) => string;
 
   return (
     <section className="border-t border-border/40 py-12">

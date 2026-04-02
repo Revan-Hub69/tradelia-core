@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
  * Identity + immediate access to tools (no marketing fluff)
  */
 export const ToolsHero = () => {
-  const t = useTranslations('Tools');
+  const t = useTranslations('Tools') as (key: string) => string;
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-background to-background/50 px-4 py-16 sm:px-6 sm:py-20">
