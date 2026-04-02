@@ -8,7 +8,6 @@ import { useTranslations } from 'next-intl';
  */
 export const FrameworkSection = () => {
   const t = useTranslations('Framework');
-  const tCommon = useTranslations('Common');
 
   return (
     <section className="border-t border-border/40 bg-gradient-to-b from-background to-background/50 py-16">
