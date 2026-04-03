@@ -7,8 +7,8 @@ import { SectionContainer } from '@/components/ui/SectionContainer';
 import { scenarioLeverageRange } from '@/config/tradescope';
 import { AppConfig } from '@/utils/AppConfig';
 
-type AssetKey = 'equities' | 'etf' | 'forex' | 'indices';
-type HorizonKey = 'intraday' | 'swing' | 'position' | 'accumulation';
+type AssetKey = 'forex' | 'indices' | 'crypto' | 'us_equities' | 'it_equities' | 'commodities';
+type HorizonKey = 'scalping' | 'intraday' | 'swing';
 type DriverKey = 'execution' | 'holding' | 'structure';
 
 type DriverWeights = Record<DriverKey, number>;
@@ -26,56 +26,79 @@ type AssetDefinition = {
 };
 
 const driverKeys: DriverKey[] = ['execution', 'holding', 'structure'];
-const assetKeys: AssetKey[] = ['equities', 'etf', 'forex', 'indices'];
+const assetKeys: AssetKey[] = ['forex', 'indices', 'crypto', 'us_equities', 'it_equities', 'commodities'];
 
 const horizonAdjustments: Record<HorizonKey, DriverWeights> = {
+  scalping: { execution: 28, holding: -14, structure: -12 },
   intraday: { execution: 18, holding: -10, structure: -8 },
   swing: { execution: 8, holding: 4, structure: -2 },
-  position: { execution: -4, holding: 8, structure: 8 },
-  accumulation: { execution: -12, holding: -6, structure: 18 },
 };
 
 const assetMatrix: Record<AssetKey, AssetDefinition> = {
-  equities: {
-    horizons: ['intraday', 'swing', 'position', 'accumulation'],
-    baseDrivers: { execution: 26, holding: 16, structure: 58 },
-    strategies: [
-      { key: 'opening_breakout', horizons: ['intraday'], driverBias: { execution: 18, holding: -8, structure: -4 } },
-      { key: 'mean_reversion', horizons: ['intraday', 'swing'], driverBias: { execution: 12, holding: -4, structure: 0 } },
-      { key: 'earnings_swing', horizons: ['swing'], driverBias: { execution: 6, holding: 8, structure: 2 } },
-      { key: 'stock_picking', horizons: ['position'], driverBias: { execution: -6, holding: 4, structure: 14 } },
-      { key: 'quality_compound', horizons: ['position', 'accumulation'], driverBias: { execution: -10, holding: -2, structure: 18 } },
-      { key: 'dividend_reinvest', horizons: ['accumulation'], driverBias: { execution: -12, holding: -4, structure: 20 } },
-    ],
-  },
-  etf: {
-    horizons: ['swing', 'position', 'accumulation'],
-    baseDrivers: { execution: 18, holding: 10, structure: 72 },
-    strategies: [
-      { key: 'sector_rotation', horizons: ['swing'], driverBias: { execution: 8, holding: 0, structure: 6 } },
-      { key: 'core_satellite', horizons: ['position', 'accumulation'], driverBias: { execution: -4, holding: 0, structure: 12 } },
-      { key: 'macro_allocation', horizons: ['position'], driverBias: { execution: -6, holding: 0, structure: 14 } },
-      { key: 'pac_etf', horizons: ['accumulation'], driverBias: { execution: -12, holding: -4, structure: 22 } },
-    ],
-  },
   forex: {
-    horizons: ['intraday', 'swing', 'position'],
+    horizons: ['scalping', 'intraday', 'swing'],
     baseDrivers: { execution: 50, holding: 30, structure: 20 },
     strategies: [
-      { key: 'session_breakout', horizons: ['intraday'], driverBias: { execution: 18, holding: -6, structure: -4 } },
-      { key: 'mean_reversion_fx', horizons: ['intraday', 'swing'], driverBias: { execution: 12, holding: 2, structure: -2 } },
-      { key: 'macro_swing', horizons: ['swing'], driverBias: { execution: 4, holding: 10, structure: 0 } },
-      { key: 'carry_trade', horizons: ['position'], driverBias: { execution: -4, holding: 18, structure: -2 } },
+      { key: 'momentum', horizons: ['scalping', 'intraday', 'swing'], driverBias: { execution: 16, holding: -4, structure: -2 } },
+      { key: 'breakout', horizons: ['scalping', 'intraday'], driverBias: { execution: 20, holding: -6, structure: -4 } },
+      { key: 'mean_reversion', horizons: ['scalping', 'intraday', 'swing'], driverBias: { execution: 12, holding: 2, structure: -2 } },
+      { key: 'trend', horizons: ['swing'], driverBias: { execution: -4, holding: 12, structure: 0 } },
+      { key: 'news', horizons: ['scalping', 'intraday'], driverBias: { execution: 24, holding: -8, structure: -6 } },
     ],
   },
   indices: {
-    horizons: ['intraday', 'swing', 'position'],
+    horizons: ['scalping', 'intraday', 'swing'],
     baseDrivers: { execution: 56, holding: 24, structure: 20 },
     strategies: [
-      { key: 'trend_day', horizons: ['intraday'], driverBias: { execution: 20, holding: -6, structure: -4 } },
-      { key: 'open_drive', horizons: ['intraday'], driverBias: { execution: 18, holding: -6, structure: -4 } },
-      { key: 'breakout_pullback', horizons: ['swing'], driverBias: { execution: 8, holding: 6, structure: 0 } },
-      { key: 'macro_trend', horizons: ['position'], driverBias: { execution: 2, holding: 12, structure: 0 } },
+      { key: 'momentum', horizons: ['scalping', 'intraday', 'swing'], driverBias: { execution: 18, holding: -4, structure: -2 } },
+      { key: 'breakout', horizons: ['scalping', 'intraday'], driverBias: { execution: 20, holding: -6, structure: -4 } },
+      { key: 'mean_reversion', horizons: ['intraday', 'swing'], driverBias: { execution: 10, holding: 4, structure: 0 } },
+      { key: 'trend', horizons: ['swing'], driverBias: { execution: -2, holding: 10, structure: 2 } },
+      { key: 'news', horizons: ['scalping', 'intraday'], driverBias: { execution: 22, holding: -8, structure: -4 } },
+    ],
+  },
+  crypto: {
+    horizons: ['scalping', 'intraday', 'swing'],
+    baseDrivers: { execution: 40, holding: 36, structure: 24 },
+    strategies: [
+      { key: 'momentum', horizons: ['scalping', 'intraday', 'swing'], driverBias: { execution: 14, holding: -2, structure: 0 } },
+      { key: 'breakout', horizons: ['scalping', 'intraday'], driverBias: { execution: 18, holding: -4, structure: -2 } },
+      { key: 'mean_reversion', horizons: ['intraday', 'swing'], driverBias: { execution: 8, holding: 6, structure: 0 } },
+      { key: 'trend', horizons: ['swing'], driverBias: { execution: -4, holding: 14, structure: 2 } },
+      { key: 'news', horizons: ['scalping', 'intraday'], driverBias: { execution: 20, holding: -6, structure: -4 } },
+    ],
+  },
+  us_equities: {
+    horizons: ['intraday', 'swing'],
+    baseDrivers: { execution: 26, holding: 16, structure: 58 },
+    strategies: [
+      { key: 'momentum', horizons: ['intraday'], driverBias: { execution: 16, holding: -6, structure: -4 } },
+      { key: 'breakout', horizons: ['intraday'], driverBias: { execution: 18, holding: -6, structure: -2 } },
+      { key: 'mean_reversion', horizons: ['intraday', 'swing'], driverBias: { execution: 10, holding: 2, structure: 0 } },
+      { key: 'trend', horizons: ['swing'], driverBias: { execution: -4, holding: 8, structure: 6 } },
+      { key: 'news', horizons: ['intraday'], driverBias: { execution: 20, holding: -8, structure: -6 } },
+    ],
+  },
+  it_equities: {
+    horizons: ['intraday', 'swing'],
+    baseDrivers: { execution: 30, holding: 18, structure: 52 },
+    strategies: [
+      { key: 'momentum', horizons: ['intraday'], driverBias: { execution: 14, holding: -4, structure: -2 } },
+      { key: 'breakout', horizons: ['intraday'], driverBias: { execution: 16, holding: -4, structure: -2 } },
+      { key: 'mean_reversion', horizons: ['intraday', 'swing'], driverBias: { execution: 8, holding: 4, structure: 0 } },
+      { key: 'trend', horizons: ['swing'], driverBias: { execution: -4, holding: 8, structure: 8 } },
+      { key: 'news', horizons: ['intraday'], driverBias: { execution: 18, holding: -6, structure: -4 } },
+    ],
+  },
+  commodities: {
+    horizons: ['intraday', 'swing'],
+    baseDrivers: { execution: 34, holding: 28, structure: 38 },
+    strategies: [
+      { key: 'momentum', horizons: ['intraday', 'swing'], driverBias: { execution: 14, holding: -2, structure: 0 } },
+      { key: 'breakout', horizons: ['intraday'], driverBias: { execution: 18, holding: -4, structure: -2 } },
+      { key: 'mean_reversion', horizons: ['intraday', 'swing'], driverBias: { execution: 8, holding: 6, structure: 2 } },
+      { key: 'trend', horizons: ['swing'], driverBias: { execution: -4, holding: 12, structure: 4 } },
+      { key: 'news', horizons: ['intraday'], driverBias: { execution: 20, holding: -6, structure: -4 } },
     ],
   },
 };
@@ -103,7 +126,7 @@ const getCapitalBias = (capital: number): DriverWeights => {
 
 const getLeverageBias = (leverage: number, horizon: HorizonKey): DriverWeights => ({
   execution: Math.round((leverage - 1) * 0.9),
-  holding: Math.round((leverage - 1) * (horizon === 'intraday' ? 0.4 : 1.5)),
+  holding: Math.round((leverage - 1) * (horizon === 'scalping' ? 0.2 : horizon === 'intraday' ? 0.4 : 1.5)),
   structure: Math.round((leverage - 1) * 0.4),
 });
 
@@ -111,9 +134,9 @@ export const ScenarioSection = () => {
   const t = useTranslations('Scenario') as (key: string) => string;
   const currencyCode = AppConfig.defaultCurrency;
 
-  const [selectedAsset, setSelectedAsset] = useState<AssetKey>('etf');
-  const [selectedHorizon, setSelectedHorizon] = useState<HorizonKey>('accumulation');
-  const [selectedStrategy, setSelectedStrategy] = useState('pac_etf');
+  const [selectedAsset, setSelectedAsset] = useState<AssetKey>('forex');
+  const [selectedHorizon, setSelectedHorizon] = useState<HorizonKey>('intraday');
+  const [selectedStrategy, setSelectedStrategy] = useState('momentum');
   const [capital, setCapital] = useState(15000);
   const [leverage, setLeverage] = useState<number>(scenarioLeverageRange.min);
 

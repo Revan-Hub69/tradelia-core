@@ -2,8 +2,6 @@
   "net": "Net return",
   "drag": "Cost drag",
   "same_underlying": "SAME UNDERLYING / DIFFERENT EFFICIENCY",
-  "etf": "ETF",
-  "etf_sub": "TER 0.20%",
   "cfd": "CFD",
   "cfd_sub": "spread+swap",
   "futures": "Futures",

@@ -1,14 +1,14 @@
 {
   "eyebrow": "Il meccanismo",
-  "title": "Smetti di indovinare. Inizia a calcolare.",
-  "intro": "Il simulatore non parte dall'etichetta generica di trader. Parte da asset, strategia, orizzonte, capitale e leva, poi incrocia la combinazione con un database di costi reali.",
+  "title": "01 — Contesto",
+  "intro": "Definisci asset, strategia e orizzonte. Il motore applica costi reali agli strumenti e ai broker coerenti.",
   "step1_tag": "contesto",
-  "step2_tag": "motore",
+  "step2_tag": "analisi",
   "step3_tag": "ranking",
   "step1_title": "Definisci il contesto",
-  "step1_desc": "Seleziona asset, orizzonte temporale e strategia. Le strategie disponibili cambiano in base al contesto scelto.",
-  "step2_title": "Lascia leggere il motore",
-  "step2_desc": "Il sistema applica spread, funding, TER e commissioni reali agli strumenti e ai broker coerenti con la combinazione.",
+  "step1_desc": "Seleziona asset, strategia e orizzonte operativo. Le opzioni disponibili cambiano in base al contesto scelto.",
+  "step2_title": "Analisi dei costi",
+  "step2_desc": "Il motore applica spread, funding, commissioni e struttura dello strumento ai broker coerenti con la combinazione.",
   "step3_title": "Ottieni il ranking",
-  "step3_desc": "Scopri quale combinazione broker e strumento e matematicamente piu efficiente per il tuo caso d'uso."
+  "step3_desc": "La combinazione piu efficiente per il tuo caso operativo. Non un vincitore universale, ma la scelta giusta per il contesto."
 }

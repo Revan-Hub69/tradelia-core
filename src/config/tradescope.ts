@@ -19,11 +19,10 @@ export const heroChartAxisTicks = [
 ] as const;
 
 export const heroChartBars = [
-  { key: 'etf', subKey: 'etf_sub', x: 84, dragHeight: 14, dragFill: '#F97316', netY: 65, netHeight: 105, netFill: '#60A5FA' },
-  { key: 'cfd', subKey: 'cfd_sub', x: 184, dragHeight: 54, dragFill: '#F97316', netY: 105, netHeight: 65, netFill: '#38BDF8' },
-  { key: 'futures', subKey: 'futures_sub', x: 284, dragHeight: 21, dragFill: '#F59E0B', netY: 72, netHeight: 98, netFill: '#818CF8' },
-  { key: 'options', subKey: 'options_sub', x: 384, dragHeight: 38, dragFill: '#FB923C', netY: 89, netHeight: 81, netFill: '#A78BFA' },
-  { key: 'cash', subKey: 'cash_sub', x: 484, dragHeight: 12, dragFill: '#F97316', netY: 63, netHeight: 107, netFill: '#34D399' },
+  { key: 'cfd', subKey: 'cfd_sub', x: 84, dragHeight: 54, dragFill: '#F97316', netY: 105, netHeight: 65, netFill: '#38BDF8' },
+  { key: 'futures', subKey: 'futures_sub', x: 184, dragHeight: 21, dragFill: '#F59E0B', netY: 72, netHeight: 98, netFill: '#818CF8' },
+  { key: 'options', subKey: 'options_sub', x: 284, dragHeight: 38, dragFill: '#FB923C', netY: 89, netHeight: 81, netFill: '#A78BFA' },
+  { key: 'cash', subKey: 'cash_sub', x: 384, dragHeight: 12, dragFill: '#F97316', netY: 63, netHeight: 107, netFill: '#34D399' },
 ] as const;
 
 export const heroMonitorRows = [
@@ -31,9 +30,9 @@ export const heroMonitorRows = [
     labelKey: 'monitor_row_1_label',
     metaKey: 'monitor_row_1_meta',
     noteKey: 'monitor_row_1_note',
-    dominantKey: 'monitor_dominant_structure',
-    intensity: 42,
-    barClass: 'bg-emerald-400',
+    dominantKey: 'monitor_dominant_execution',
+    intensity: 83,
+    barClass: 'bg-sky-400',
   },
   {
     labelKey: 'monitor_row_2_label',
@@ -47,9 +46,9 @@ export const heroMonitorRows = [
     labelKey: 'monitor_row_3_label',
     metaKey: 'monitor_row_3_meta',
     noteKey: 'monitor_row_3_note',
-    dominantKey: 'monitor_dominant_execution',
-    intensity: 83,
-    barClass: 'bg-sky-400',
+    dominantKey: 'monitor_dominant_structure',
+    intensity: 42,
+    barClass: 'bg-emerald-400',
   },
 ] as const;
 

@@ -1,14 +1,14 @@
 {
-  "eyebrow": "Mechanism",
-  "title": "Stop guessing. Start calculating.",
-  "intro": "The simulator does not start from the vague label of trader. It starts from asset, strategy, horizon, capital, and leverage, then cross-matches that combination with a real cost database.",
+  "eyebrow": "The mechanism",
+  "title": "01 — Context",
+  "intro": "Define asset, strategy, and horizon. The engine applies real costs to instruments and brokers that match the combination.",
   "step1_tag": "context",
-  "step2_tag": "engine",
+  "step2_tag": "analysis",
   "step3_tag": "ranking",
   "step1_title": "Define the context",
-  "step1_desc": "Choose asset, holding horizon, and strategy. Available strategies change with the selected context.",
-  "step2_title": "Let the engine read it",
-  "step2_desc": "The system applies real spreads, funding, TER, and commissions to the instruments and brokers that fit the combination.",
+  "step1_desc": "Select asset, strategy, and operational horizon. Available options change based on the selected context.",
+  "step2_title": "Cost analysis",
+  "step2_desc": "The engine applies spread, funding, commissions, and instrument structure to brokers consistent with the combination.",
   "step3_title": "Get the ranking",
-  "step3_desc": "See which broker and instrument combination is mathematically more efficient for your use case."
+  "step3_desc": "The most efficient combination for your operational case. Not a universal winner, but the right choice for the context."
 }

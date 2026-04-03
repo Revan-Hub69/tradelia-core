@@ -15,8 +15,6 @@ type ChartLabels = {
   net: string;
   drag: string;
   sameUnderlying: string;
-  etf: string;
-  etfSub: string;
   cfd: string;
   cfdSub: string;
   futures: string;
@@ -90,8 +88,6 @@ export const TradeHero = ({ broker }: TradeHeroProps) => {
     net: tChart('net'),
     drag: tChart('drag'),
     sameUnderlying: tChart('same_underlying'),
-    etf: tChart('etf'),
-    etfSub: tChart('etf_sub'),
     cfd: tChart('cfd'),
     cfdSub: tChart('cfd_sub'),
     futures: tChart('futures'),
