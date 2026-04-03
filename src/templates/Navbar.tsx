@@ -101,12 +101,10 @@ export const Navbar = () => {
           </nav>
 
           <div className="hidden items-center gap-2 md:flex">
-            <ThemeSwitcher />
             <LocaleSwitcher />
           </div>
 
           <div className="flex items-center gap-2 md:hidden">
-            <ThemeSwitcher />
             <LocaleSwitcher />
             <button
               type="button"
