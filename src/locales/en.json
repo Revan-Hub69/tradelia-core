@@ -1,7 +1,71 @@
 {
   "Index": {
-    "meta_title": "Tradelia - Challenges & AI signals for traders",
-    "meta_description": "Compare prop firm challenges, track enrollments, and follow AI signals in one dashboard."
+    "meta_title": "TradeScope – Trading Cost Simulator",
+    "meta_description": "Compare real costs of CFDs, futures, ETFs and options based on your actual trading scenario. Free, no sign-up required."
+  },
+  "TradeHero": {
+    "eyebrow": "Trading cost simulator",
+    "title": "See what trading really costs you",
+    "subtitle": "Compare CFDs, futures, ETFs and options on the same underlying. Estimated real costs, not theoretical.",
+    "cta": "Run simulation",
+    "cta_note": "Free · No sign-up",
+    "trust": "Informational tool · Not financial advice · Data based on market averages"
+  },
+  "HowItWorks": {
+    "eyebrow": "How it works",
+    "title": "Three steps to understand your real costs",
+    "step1_title": "Enter your scenario",
+    "step1_desc": "Choose asset, time horizon, capital, and leverage usage.",
+    "step2_title": "We analyse the instruments",
+    "step2_desc": "We calculate spread, commissions, overnight, and estimated slippage for each instrument.",
+    "step3_title": "Clear comparison",
+    "step3_desc": "Get a comparison table with total costs and operational efficiency index."
+  },
+  "Compare": {
+    "eyebrow": "Instruments compared",
+    "title": "Same underlying, very different costs",
+    "intro": "Each instrument has a different cost structure. The simulator normalises them to make them comparable.",
+    "etf_label": "ETF",
+    "etf_desc": "Low management cost, no overnight. Ideal for medium-to-long horizons.",
+    "etf_cost": "TER + broker commission",
+    "cfd_label": "CFD",
+    "cfd_desc": "Fast access with leverage, but spread and overnight swap can weigh on operations.",
+    "cfd_cost": "Spread + overnight swap",
+    "futures_label": "Futures",
+    "futures_desc": "Regulated instrument, periodic rollover. Low costs at high volumes.",
+    "futures_cost": "Commission + rollover",
+    "options_label": "Options",
+    "options_desc": "Flexible payoff, but theta and commissions raise the effective cost.",
+    "options_cost": "Premium + theta + commission"
+  },
+  "OutputPreview": {
+    "eyebrow": "Example output",
+    "title": "What you get from the simulation",
+    "intro": "Example scenario: €5,000 capital, intraday horizon, Nasdaq. Values are illustrative.",
+    "col_instrument": "Instrument",
+    "col_cost": "Est. Cost",
+    "col_efficiency": "Efficiency",
+    "col_drag": "Cost drag",
+    "col_note": "Notes",
+    "output_etf_note": "Annual TER + entry commission",
+    "output_cfd_note": "Wide spread + overnight swap",
+    "output_futures_note": "Fixed commission + quarterly rollover",
+    "output_options_note": "Theta decay + commission per leg",
+    "table_note": "Estimates based on average market conditions. Do not represent guaranteed costs."
+  },
+  "WhyDifferent": {
+    "eyebrow": "Why it's different",
+    "title": "Not a static comparator. A contextual simulation.",
+    "p1_title": "Estimated real costs",
+    "p1_desc": "We don't show rate cards. We calculate costs in the context of your specific scenario.",
+    "p2_title": "Homogeneous comparison",
+    "p2_desc": "CFDs, futures, ETFs and options on the same underlying, made comparable on an equal basis.",
+    "p3_title": "Neutral approach",
+    "p3_desc": "No recommendations. Only data to help you understand the cost structure."
+  },
+  "Disclaimer": {
+    "label": "Disclaimer:",
+    "text": "The information provided is for informational purposes only and does not constitute financial advice, investment recommendation, or solicitation to buy or sell financial instruments. Values shown are estimates based on market averages and may differ from actual costs applied by individual brokers. You always operate at your own risk."
   },
   "Navbar": {
     "sign_in": "Sign In",
@@ -82,45 +146,34 @@
     "testimonial3_role": "Prop firm hopeful",
     "testimonial3_content": "Comparisons saved me hours and avoided bad conditions."
   },
-  "HowItWorks": {
-    "title": "How it works",
-    "step1_title": "Pick a challenge",
-    "step1_desc": "Browse verified firms and competitions.",
-    "step2_title": "Compare rules",
-    "step2_desc": "See drawdown, targets, and fees in one view.",
-    "step3_title": "Enroll & track",
-    "step3_desc": "Confirm status and keep everything organized.",
-    "step4_title": "Follow signals",
-    "step4_desc": "Optional AI setups with risk/reward context."
-  },
   "FAQ": {
-    "question1": "What is Tradelia?",
-    "answer1": "A dashboard to compare trading challenges and follow AI signals.",
+    "question1": "What is TradeScope?",
+    "answer1": "A free tool to simulate and compare the real costs of different financial instruments based on your trading scenario.",
     "question2": "Is it free?",
-    "answer2": "Browsing is free. Challenge fees depend on each firm.",
+    "answer2": "Yes, completely free. No sign-up required.",
     "question3": "Do you provide financial advice?",
-    "answer3": "No. Signals are informational; you decide and trade at your own risk.",
-    "question4": "How often are challenges updated?",
-    "answer4": "We refresh rules and pricing regularly and show the latest info.",
-    "question5": "Which markets are covered?",
-    "answer5": "Forex, indices, commodities, and crypto when offered by the firm.",
+    "answer3": "No. Results are informational estimates. You decide and operate at your own risk.",
+    "question4": "How accurate is the data?",
+    "answer4": "Calculations are based on market averages. Actual costs depend on your broker and market conditions.",
+    "question5": "Which instruments do you compare?",
+    "answer5": "CFDs, futures, ETFs and options. Same underlying, different cost structures.",
     "question6": "What data do you store?",
-    "answer6": "Only what's needed for your account and enrollments. No selling your data.",
+    "answer6": "None. The simulation is completely anonymous and requires no account.",
     "section_title": "Frequently Asked Questions",
     "section_subtitle": "Quick answers before you start",
     "cta_badge": "More questions? Contact us"
   },
   "FinalCTA": {
-    "title": "Ready to choose your next challenge?",
-    "subtitle": "Compare rules, start with confidence.",
-    "cta_button": "Explore challenges",
-    "trust1": "Free to browse",
-    "trust2": "Verified rules",
-    "trust3": "No hype"
+    "title": "Ready to understand your real costs?",
+    "subtitle": "Simulate your scenario in seconds.",
+    "cta_button": "Run simulation",
+    "trust1": "Free",
+    "trust2": "No sign-up",
+    "trust3": "Data only, no recommendations"
   },
   "PremiumFooter": {
     "product_section": "Product",
-    "features": "Challenges",
+    "features": "Simulator",
     "pricing": "Pricing",
     "roadmap": "Roadmap",
     "changelog": "Changelog",
@@ -139,9 +192,9 @@
     "careers": "Careers",
     "contact": "Contact",
     "press": "Press Kit",
-    "brand_description": "Compare prop firm challenges and track AI signals with clarity.",
-    "newsletter_title": "Stay in the loop",
-    "newsletter_desc": "Weekly updates on challenges, payouts, and signal improvements.",
+    "brand_description": "Simulate real trading costs. Neutral comparison across financial instruments.",
+    "newsletter_title": "Stay updated",
+    "newsletter_desc": "Updates on new instruments, assets, and simulator improvements.",
     "newsletter_placeholder": "Enter your email",
     "newsletter_button": "Subscribe",
     "disclaimer_title": "Risk disclaimer:",
