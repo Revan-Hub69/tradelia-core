@@ -7,180 +7,186 @@ import { Button } from '@/components/ui/button';
 import { FadeIn, SlideReveal } from '@/components/ui/scroll-animations';
 
 /**
- * Hero Illustration - Challenge + Signals SVG
- * Optimized for LCP, with lightweight labels
+ * CostBarChart — product preview used as hero visual.
+ * Instruments: ETF, CFD, Futures, Options, Turbo/KO
+ * Fully i18n via props.
  */
-const HeroIllustration = () => (
+interface CostBarChartProps {
+  labels: {
+    net: string;
+    drag: string;
+    sameUnderlying: string;
+    etf: string;
+    cfd: string;
+    futures: string;
+    options: string;
+    turbo: string;
+    etfSub: string;
+    cfdSub: string;
+    futuresSub: string;
+    optionsSub: string;
+    turboSub: string;
+  };
+}
+
+const CostBarChart = ({ labels }: CostBarChartProps) => (
   <svg
-    viewBox="0 0 400 320"
+    viewBox="0 0 600 220"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
-    className="h-auto w-full max-w-xs sm:max-w-sm lg:max-w-md"
+    className="h-auto w-full"
     aria-hidden="true"
   >
-    {/* Background circles */}
-    <circle cx="200" cy="160" r="140" className="fill-primary/5" />
-    <circle cx="200" cy="160" r="100" className="fill-primary/10" />
+    {/* Grid lines */}
+    <line x1="60" y1="170" x2="580" y2="170" stroke="currentColor" strokeOpacity="0.08" strokeWidth="1" />
+    <line x1="60" y1="130" x2="580" y2="130" stroke="currentColor" strokeOpacity="0.05" strokeWidth="1" strokeDasharray="4 4" />
+    <line x1="60" y1="90"  x2="580" y2="90"  stroke="currentColor" strokeOpacity="0.05" strokeWidth="1" strokeDasharray="4 4" />
+    <line x1="60" y1="50"  x2="580" y2="50"  stroke="currentColor" strokeOpacity="0.05" strokeWidth="1" strokeDasharray="4 4" />
+    <line x1="60" y1="30"  x2="60"  y2="170" stroke="currentColor" strokeOpacity="0.08" strokeWidth="1" />
 
-    {/* Central status badge */}
-    <circle cx="200" cy="140" r="35" className="fill-primary" />
-    <text
-      x="200"
-      y="150"
-      textAnchor="middle"
-      className="fill-primary-foreground"
-      style={{ fontSize: '28px', fontWeight: 'bold' }}
-    >
-      WIN
+    {/* Y labels */}
+    <text x="52" y="173" textAnchor="end" style={{fontSize:'8px',fill:'currentColor',opacity:0.3}}>0</text>
+    <text x="52" y="133" textAnchor="end" style={{fontSize:'8px',fill:'currentColor',opacity:0.3}}>25</text>
+    <text x="52" y="93"  textAnchor="end" style={{fontSize:'8px',fill:'currentColor',opacity:0.3}}>50</text>
+    <text x="52" y="53"  textAnchor="end" style={{fontSize:'8px',fill:'currentColor',opacity:0.3}}>75</text>
+
+    {/* ETF — cost drag 12%, net 88% */}
+    <rect x="84"  y="51" width="44" height="119" rx="3" fill="currentColor" fillOpacity="0.06" />
+    <rect x="84"  y="65" width="44" height="105" rx="3" fill="currentColor" fillOpacity="0.60" className="text-primary" />
+    <rect x="84"  y="51" width="44" height="14"  rx="2" fill="#ef4444" fillOpacity="0.45" />
+    <text x="106" y="188" textAnchor="middle" style={{fontSize:'10px',fontWeight:700,fill:'currentColor',opacity:0.65}}>{labels.etf}</text>
+    <text x="106" y="199" textAnchor="middle" style={{fontSize:'7px',fill:'currentColor',opacity:0.35}}>{labels.etfSub}</text>
+
+    {/* CFD — cost drag 45%, net 55% */}
+    <rect x="184" y="51" width="44" height="119" rx="3" fill="currentColor" fillOpacity="0.06" />
+    <rect x="184" y="105" width="44" height="65"  rx="3" fill="currentColor" fillOpacity="0.45" className="text-primary" />
+    <rect x="184" y="51" width="44" height="54"  rx="2" fill="#ef4444" fillOpacity="0.45" />
+    <text x="206" y="188" textAnchor="middle" style={{fontSize:'10px',fontWeight:700,fill:'currentColor',opacity:0.65}}>{labels.cfd}</text>
+    <text x="206" y="199" textAnchor="middle" style={{fontSize:'7px',fill:'currentColor',opacity:0.35}}>{labels.cfdSub}</text>
+
+    {/* Futures — cost drag 18%, net 82% */}
+    <rect x="284" y="51" width="44" height="119" rx="3" fill="currentColor" fillOpacity="0.06" />
+    <rect x="284" y="72" width="44" height="98"  rx="3" fill="currentColor" fillOpacity="0.55" className="text-primary" />
+    <rect x="284" y="51" width="44" height="21"  rx="2" fill="#ef4444" fillOpacity="0.45" />
+    <text x="306" y="188" textAnchor="middle" style={{fontSize:'10px',fontWeight:700,fill:'currentColor',opacity:0.65}}>{labels.futures}</text>
+    <text x="306" y="199" textAnchor="middle" style={{fontSize:'7px',fill:'currentColor',opacity:0.35}}>{labels.futuresSub}</text>
+
+    {/* Options — cost drag 35%, net 65% */}
+    <rect x="384" y="51" width="44" height="119" rx="3" fill="currentColor" fillOpacity="0.06" />
+    <rect x="384" y="89" width="44" height="81"  rx="3" fill="currentColor" fillOpacity="0.40" className="text-primary" />
+    <rect x="384" y="51" width="44" height="38"  rx="2" fill="#ef4444" fillOpacity="0.45" />
+    <text x="406" y="188" textAnchor="middle" style={{fontSize:'10px',fontWeight:700,fill:'currentColor',opacity:0.65}}>{labels.options}</text>
+    <text x="406" y="199" textAnchor="middle" style={{fontSize:'7px',fill:'currentColor',opacity:0.35}}>{labels.optionsSub}</text>
+
+    {/* Turbo/KO — cost drag 65%, net 35% */}
+    <rect x="484" y="51" width="44" height="119" rx="3" fill="currentColor" fillOpacity="0.06" />
+    <rect x="484" y="128" width="44" height="42"  rx="3" fill="currentColor" fillOpacity="0.30" className="text-primary" />
+    <rect x="484" y="51"  width="44" height="77"  rx="2" fill="#ef4444" fillOpacity="0.50" />
+    <text x="506" y="188" textAnchor="middle" style={{fontSize:'10px',fontWeight:700,fill:'currentColor',opacity:0.65}}>{labels.turbo}</text>
+    <text x="506" y="199" textAnchor="middle" style={{fontSize:'7px',fill:'currentColor',opacity:0.35}}>{labels.turboSub}</text>
+
+    {/* Legend */}
+    <rect x="500" y="14" width="9" height="9" rx="1" fill="currentColor" fillOpacity="0.55" className="text-primary" />
+    <text x="513" y="22" style={{fontSize:'8px',fill:'currentColor',opacity:0.45}}>{labels.net}</text>
+    <rect x="500" y="28" width="9" height="9" rx="1" fill="#ef4444" fillOpacity="0.45" />
+    <text x="513" y="36" style={{fontSize:'8px',fill:'currentColor',opacity:0.45}}>{labels.drag}</text>
+
+    {/* Same underlying label */}
+    <text x="320" y="15" textAnchor="middle" style={{fontSize:'8px',fill:'currentColor',opacity:0.22,letterSpacing:'0.06em'}}>
+      {labels.sameUnderlying}
     </text>
-
-    {/* Person 1 - Left */}
-    <g>
-      <circle cx="80" cy="120" r="22" className="fill-secondary" />
-      <circle cx="80" cy="120" r="18" className="fill-muted" />
-      <circle cx="80" cy="115" r="8" className="fill-foreground/20" />
-      <rect x="72" y="130" width="16" height="20" rx="4" className="fill-foreground/20" />
-      <rect x="55" y="70" width="50" height="28" rx="8" className="fill-card stroke-border" strokeWidth="1" />
-      <text x="80" y="88" textAnchor="middle" className="fill-primary" style={{ fontSize: '10px', fontWeight: 500 }}>RULES</text>
-      <polygon points="75,98 85,98 80,106" className="fill-card" />
-    </g>
-
-    {/* Person 2 - Right */}
-    <g>
-      <circle cx="320" cy="130" r="22" className="fill-secondary" />
-      <circle cx="320" cy="130" r="18" className="fill-muted" />
-      <circle cx="320" cy="125" r="8" className="fill-foreground/20" />
-      <rect x="312" y="140" width="16" height="20" rx="4" className="fill-foreground/20" />
-      <rect x="295" y="80" width="50" height="28" rx="8" className="fill-card stroke-border" strokeWidth="1" />
-      <text x="320" y="98" textAnchor="middle" className="fill-accent" style={{ fontSize: '10px', fontWeight: 500 }}>AI</text>
-      <polygon points="315,108 325,108 320,116" className="fill-card" />
-    </g>
-
-    {/* Person 3 - Bottom Left */}
-    <g>
-      <circle cx="120" cy="240" r="20" className="fill-secondary" />
-      <circle cx="120" cy="240" r="16" className="fill-muted" />
-      <circle cx="120" cy="236" r="7" className="fill-foreground/20" />
-      <rect x="113" y="248" width="14" height="18" rx="3" className="fill-foreground/20" />
-      <rect x="95" y="195" width="50" height="26" rx="7" className="fill-card stroke-border" strokeWidth="1" />
-      <text x="120" y="212" textAnchor="middle" className="fill-primary" style={{ fontSize: '9px', fontWeight: 500 }}>PAYOUT</text>
-      <polygon points="115,221 125,221 120,228" className="fill-card" />
-    </g>
-
-    {/* Person 4 - Bottom Right */}
-    <g>
-      <circle cx="280" cy="235" r="20" className="fill-secondary" />
-      <circle cx="280" cy="235" r="16" className="fill-muted" />
-      <circle cx="280" cy="231" r="7" className="fill-foreground/20" />
-      <rect x="273" y="243" width="14" height="18" rx="3" className="fill-foreground/20" />
-      <rect x="255" y="190" width="50" height="26" rx="7" className="fill-card stroke-border" strokeWidth="1" />
-      <text x="280" y="207" textAnchor="middle" className="fill-accent" style={{ fontSize: '9px', fontWeight: 500 }}>RISK</text>
-      <polygon points="275,216 285,216 280,223" className="fill-card" />
-    </g>
-
-    {/* Connection lines */}
-    <line x1="100" y1="130" x2="165" y2="140" className="stroke-border" strokeWidth="1" strokeDasharray="4 2" />
-    <line x1="235" y1="140" x2="300" y2="135" className="stroke-border" strokeWidth="1" strokeDasharray="4 2" />
-    <line x1="135" y1="230" x2="175" y2="175" className="stroke-border" strokeWidth="1" strokeDasharray="4 2" />
-    <line x1="225" y1="175" x2="265" y2="225" className="stroke-border" strokeWidth="1" strokeDasharray="4 2" />
-
-    {/* Floating symbols */}
-    <circle cx="150" cy="80" r="12" className="fill-accent/20" />
-    <circle cx="250" cy="75" r="10" className="fill-primary/20" />
-    <circle cx="340" cy="200" r="11" className="fill-accent/20" />
-    <circle cx="60" cy="190" r="10" className="fill-primary/20" />
   </svg>
 );
 
-/**
- * Scroll cue component
- */
-const ScrollCue = ({ t }: { t: (key: string) => string }) => (
-  <div className="mt-10 flex flex-col items-center gap-2 sm:mt-12">
-    <span className="text-sm text-muted-foreground">{t('scroll_cue')}</span>
-    <svg
-      className="size-5 animate-bounce text-muted-foreground sm:size-6"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      aria-hidden="true"
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-    </svg>
-  </div>
-);
+interface HeroProps {
+  broker?: string;
+}
 
-export const Hero = () => {
+export const Hero = ({ broker }: HeroProps) => {
   const t = useTranslations('Hero') as (key: string) => string;
+  const tChart = useTranslations('Chart') as (key: string) => string;
+
+  const chartLabels = {
+    net: tChart('net'),
+    drag: tChart('drag'),
+    sameUnderlying: tChart('same_underlying'),
+    etf: tChart('etf'),
+    cfd: tChart('cfd'),
+    futures: tChart('futures'),
+    options: tChart('options'),
+    turbo: tChart('turbo'),
+    etfSub: tChart('etf_sub'),
+    cfdSub: tChart('cfd_sub'),
+    futuresSub: tChart('futures_sub'),
+    optionsSub: tChart('options_sub'),
+    turboSub: tChart('turbo_sub'),
+  };
 
   return (
-    <>
-      {/* HERO SECTION - Awareness */}
-      <section className="relative overflow-hidden px-4 py-16 pt-24 sm:px-6 sm:py-20 sm:pt-28 lg:py-24 lg:pt-32">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-            {/* Text - FIRST on mobile, LEFT on desktop */}
-            <div className="order-1">
-              <SlideReveal>
-                <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-5xl">
-                  {t('hero_title_part1')}
-                  {' '}
-                  <span className="relative inline-block pb-2 text-primary">
-                    {t('hero_title_part2')}
-                    <span
-                      className="absolute -bottom-1 left-0 h-1 w-full rounded-full bg-primary/50"
-                      aria-hidden="true"
-                    />
+    <section className="relative overflow-hidden px-4 py-16 pt-24 sm:px-6 sm:py-20 sm:pt-28 md:py-24 md:pt-32 lg:py-28 lg:pt-36">
+      <div className="mx-auto max-w-5xl">
+        <div className="grid items-start gap-10 lg:grid-cols-[1fr_1.2fr] lg:gap-16 xl:gap-20">
+
+          {/* ── Text column ── */}
+          <div className="order-1">
+            <SlideReveal>
+              {/* Eyebrow */}
+              <p className="mb-3 font-mono text-xs font-medium uppercase tracking-widest text-muted-foreground/60">
+                {t('eyebrow')}
+                {broker && (
+                  <span className="ml-2 font-semibold text-muted-foreground/80">
+                    · {broker}
                   </span>
-                </h1>
-              </SlideReveal>
+                )}
+              </p>
 
-              <FadeIn delay={200}>
-                <p className="mt-5 text-base text-muted-foreground sm:mt-6 sm:text-lg lg:text-xl">
-                  {t('hero_subtitle')}
-                </p>
-              </FadeIn>
+              {/* H1 */}
+              <h1 className="max-w-xl text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl">
+                {t('hero_title_part1')}{' '}
+                <span className="relative inline-block pb-1 text-primary">
+                  {t('hero_title_part2')}
+                  <span
+                    className="absolute -bottom-0.5 left-0 h-[3px] w-full rounded-full bg-primary/40"
+                    aria-hidden="true"
+                  />
+                </span>
+              </h1>
+            </SlideReveal>
 
-              <FadeIn delay={600}>
-                {/* CTA Buttons - Premium positioning */}
-                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:gap-4">
-                  <Button asChild size="lg" className="h-12 px-6 text-base sm:h-14 sm:px-8 sm:text-lg">
-                    <Link href="/dashboard/challenges">{t('cta_primary')}</Link>
-                  </Button>
-                  <Button asChild variant="outline" size="default" className="h-11 px-5 text-sm sm:h-12 sm:px-6 sm:text-base">
-                    <Link href="#how-it-works">{t('cta_secondary')}</Link>
-                  </Button>
-                </div>
+            <FadeIn delay={200}>
+              {/* Subtitle */}
+              <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg">
+                {broker
+                  ? t('hero_subtitle_broker').replace('{broker}', broker)
+                  : t('hero_subtitle')}
+              </p>
+            </FadeIn>
 
-                {/* Trust signals */}
-                <p className="mt-4 text-sm text-muted-foreground">
-                  {t('trust')}
-                </p>
+            <FadeIn delay={400}>
+              {/* CTA */}
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:gap-4">
+                <Button asChild size="lg" className="h-12 px-6 text-base sm:h-13 sm:px-8">
+                  <Link href="/tool">{t('cta_primary')}</Link>
+                </Button>
+                <Button asChild variant="outline" size="default" className="h-11 px-5 text-sm sm:h-12 sm:px-6">
+                  <Link href="#framework">{t('cta_secondary')}</Link>
+                </Button>
+              </div>
 
-                {/* Soft CTA - touch area 44px */}
-                <div className="mt-6 sm:mt-8">
-                  <Link
-                    href="#how-it-works"
-                    className="inline-flex items-center gap-1.5 py-2 text-sm font-medium text-primary transition-colors hover:text-primary/80 sm:text-base"
-                  >
-                    {t('soft_cta')}
-                    <svg className="size-4 sm:size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </Link>
-                </div>
-
-                <ScrollCue t={t} />
-              </FadeIn>
-            </div>
-
-            {/* Illustration - SECOND on mobile, RIGHT on desktop */}
-            <FadeIn delay={300} direction="right" className="order-2 flex justify-center lg:justify-end">
-              <HeroIllustration />
+              {/* Trust line */}
+              <p className="mt-5 text-xs text-muted-foreground/60">
+                {t('trust')}
+              </p>
             </FadeIn>
           </div>
+
+          {/* ── Chart column ── */}
+          <FadeIn delay={250} direction="right" className="order-2 w-full overflow-x-auto">
+            <CostBarChart labels={chartLabels} />
+          </FadeIn>
+
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 };
