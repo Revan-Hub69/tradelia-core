@@ -4,263 +4,110 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { FadeIn, StaggerChildren } from '@/components/ui/scroll-animations';
+import { FadeIn } from '@/components/ui/scroll-animations';
 
 /**
- * Premium Star Rating Component
+ * SocialProof — Differentiation through comparison
+ * SOTA 2026: replaces the 6-pillar multi-color grid (AI anti-pattern) with:
+ *   1. A "Most tools vs Tradelia" comparison table — 2 columns, 3 rows
+ *   2. A single quantitative stat block for credibility
+ *   3. A clean CTA — no testimonial cards, no star ratings
+ * All colors: primary only + neutrals. Zero extra hues.
  */
-const StarRating = ({ rating }: { rating: number }) => (
-  <div className="flex items-center gap-1">
-    {[1, 2, 3, 4, 5].map(star => (
-      <svg
-        key={`star-${rating}-${star}`}
-        className={`size-4 ${star <= rating ? 'text-yellow-400' : 'text-muted-foreground/30'}`}
-        fill="currentColor"
-        viewBox="0 0 20 20"
-        aria-hidden="true"
-      >
-        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-      </svg>
-    ))}
-  </div>
-);
-
-/**
- * Premium Avatar Component
- */
-const Avatar = ({ name, role }: { name: string; role: string }) => (
-  <div className="flex items-center gap-3">
-    <div className="size-12 overflow-hidden rounded-full bg-gradient-to-br from-primary/20 to-accent/20">
-      <div className="flex size-full items-center justify-center text-sm font-semibold text-primary">
-        {name.split(' ').map(n => n[0]).join('')}
-      </div>
-    </div>
-    <div>
-      <div className="font-medium text-foreground">{name}</div>
-      <div className="text-sm text-muted-foreground">{role}</div>
-    </div>
-  </div>
-);
-
 export const SocialProof = () => {
-  const t = useTranslations('SocialProof') as any;
+  const t = useTranslations('SocialProof') as (key: string) => string;
 
-  const testimonials = [
-    {
-      name: t('testimonial1_name'),
-      role: t('testimonial1_role'),
-      content: t('testimonial1_content'),
-      rating: 5,
-    },
-    {
-      name: t('testimonial2_name'),
-      role: t('testimonial2_role'),
-      content: t('testimonial2_content'),
-      rating: 5,
-    },
-    {
-      name: t('testimonial3_name'),
-      role: t('testimonial3_role'),
-      content: t('testimonial3_content'),
-      rating: 5,
-    },
+  const rows = [
+    { dimension: t('row1_dim'), others: t('row1_others'), tradelia: t('row1_tradelia') },
+    { dimension: t('row2_dim'), others: t('row2_others'), tradelia: t('row2_tradelia') },
+    { dimension: t('row3_dim'), others: t('row3_others'), tradelia: t('row3_tradelia') },
   ];
 
   return (
-    <section id="signals" className="border-t border-border/50 bg-gradient-to-b from-muted/30 to-background px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
-      <div className="mx-auto max-w-7xl">
+    <section
+      id="signals"
+      className="border-t border-border/40 px-4 py-16 sm:px-6 md:py-20 xl:py-24"
+    >
+      <div className="mx-auto max-w-4xl">
+
+        {/* Eyebrow */}
         <FadeIn>
-          <div className="text-center">
-            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
-              {t('section_title')}
-            </h2>
-            <p className="mt-4 text-lg text-muted-foreground sm:text-xl">
-              {t('section_subtitle')}
+          <p className="mb-2 font-mono text-xs font-medium uppercase tracking-widest text-muted-foreground/60">
+            {t('eyebrow')}
+          </p>
+          <h2 className="mb-10 max-w-lg text-xl font-semibold tracking-tight sm:text-2xl md:text-3xl">
+            {t('section_title')}
+          </h2>
+        </FadeIn>
+
+        {/* Comparison table */}
+        <FadeIn delay={100}>
+          <div className="overflow-x-auto rounded-lg border border-border/40">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border/40 bg-muted/20">
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground/60">
+                    {t('col_dimension')}
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground/60">
+                    {t('col_others')}
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-primary/80">
+                    {t('col_tradelia')}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((row, i) => (
+                  <tr
+                    key={row.dimension}
+                    className={`border-b border-border/25 ${
+                      i === rows.length - 1 ? 'border-b-0' : ''
+                    }`}
+                  >
+                    <td className="px-4 py-4 text-xs font-medium text-muted-foreground/70 sm:text-sm">
+                      {row.dimension}
+                    </td>
+                    <td className="px-4 py-4 text-xs text-muted-foreground/50 sm:text-sm">
+                      {row.others}
+                    </td>
+                    <td className="px-4 py-4 text-xs font-semibold text-foreground sm:text-sm">
+                      {row.tradelia}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </FadeIn>
+
+        {/* Quantitative stat */}
+        <FadeIn delay={200}>
+          <div className="mt-10 border-l-0 border-t border-border/30 pt-8">
+            <p className="mb-1 font-mono text-xs text-muted-foreground/50">
+              {t('stat_label')}
+            </p>
+            <p className="text-3xl font-bold tracking-tight sm:text-4xl">
+              {t('stat_value')}
+            </p>
+            <p className="mt-2 max-w-md text-sm text-muted-foreground">
+              {t('stat_desc')}
             </p>
           </div>
         </FadeIn>
 
-        {/* Trust & Signal Quality Cards */}
-        <FadeIn delay={200}>
-          <div className="mt-12 grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {/* Pillar 1 */}
-            <div className="rounded-xl border border-border/50 bg-card/50 p-4 backdrop-blur-sm">
-              <div className="mb-3 flex items-center gap-3">
-                <div className="size-10 rounded-lg bg-primary/10 p-2">
-                  <svg className="size-full text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <h3 className="font-semibold">{t('pillar1_title')}</h3>
-              </div>
-              <p className="mb-2 text-sm text-muted-foreground">
-                {t('pillar1_desc')}
-              </p>
-              <p className="text-xs text-muted-foreground/70">
-                {t('pillar1_source')}
-              </p>
-            </div>
-
-            {/* Pillar 2 */}
-            <div className="rounded-xl border border-border/50 bg-card/50 p-4 backdrop-blur-sm">
-              <div className="mb-3 flex items-center gap-3">
-                <div className="size-10 rounded-lg bg-accent/10 p-2">
-                  <svg className="size-full text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                  </svg>
-                </div>
-                <h3 className="font-semibold">{t('pillar2_title')}</h3>
-              </div>
-              <p className="mb-2 text-sm text-muted-foreground">
-                {t('pillar2_desc')}
-              </p>
-              <p className="text-xs text-muted-foreground/70">
-                {t('pillar2_source')}
-              </p>
-            </div>
-
-            {/* Pillar 3 */}
-            <div className="rounded-xl border border-border/50 bg-card/50 p-4 backdrop-blur-sm">
-              <div className="mb-3 flex items-center gap-3">
-                <div className="size-10 rounded-lg bg-blue-500/10 p-2">
-                  <svg className="size-full text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                </div>
-                <h3 className="font-semibold">{t('pillar3_title')}</h3>
-              </div>
-              <p className="mb-2 text-sm text-muted-foreground">
-                {t('pillar3_desc')}
-              </p>
-              <p className="text-xs text-muted-foreground/70">
-                {t('pillar3_source')}
-              </p>
-            </div>
-
-            {/* Pillar 4 */}
-            <div className="rounded-xl border border-border/50 bg-card/50 p-4 backdrop-blur-sm">
-              <div className="mb-3 flex items-center gap-3">
-                <div className="size-10 rounded-lg bg-green-500/10 p-2">
-                  <svg className="size-full text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
-                </div>
-                <h3 className="font-semibold">{t('pillar4_title')}</h3>
-              </div>
-              <p className="mb-2 text-sm text-muted-foreground">
-                {t('pillar4_desc')}
-              </p>
-              <p className="text-xs text-muted-foreground/70">
-                {t('pillar4_source')}
-              </p>
-            </div>
-
-            {/* Pillar 5 */}
-            <div className="rounded-xl border border-border/50 bg-card/50 p-4 backdrop-blur-sm">
-              <div className="mb-3 flex items-center gap-3">
-                <div className="size-10 rounded-lg bg-purple-500/10 p-2">
-                  <svg className="size-full text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
-                </div>
-                <h3 className="font-semibold">{t('pillar5_title')}</h3>
-              </div>
-              <p className="mb-2 text-sm text-muted-foreground">
-                {t('pillar5_desc')}
-              </p>
-              <p className="text-xs text-muted-foreground/70">
-                {t('pillar5_source')}
-              </p>
-            </div>
-
-            {/* Pillar 6 */}
-            <div className="rounded-xl border border-border/50 bg-card/50 p-4 backdrop-blur-sm">
-              <div className="mb-3 flex items-center gap-3">
-                <div className="size-10 rounded-lg bg-orange-500/10 p-2">
-                  <svg className="size-full text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                  </svg>
-                </div>
-                <h3 className="font-semibold">{t('pillar6_title')}</h3>
-              </div>
-              <p className="mb-2 text-sm text-muted-foreground">
-                {t('pillar6_desc')}
-              </p>
-              <p className="text-xs text-muted-foreground/70">
-                {t('pillar6_source')}
-              </p>
-            </div>
+        {/* CTA */}
+        <FadeIn delay={300}>
+          <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:gap-4">
+            <Button asChild size="lg" className="h-12 px-6 text-base">
+              <Link href="/tool">{t('cta_primary')}</Link>
+            </Button>
+            <Button asChild variant="outline" size="default" className="h-11 px-5 text-sm">
+              <Link href="#faq">{t('cta_secondary')}</Link>
+            </Button>
           </div>
         </FadeIn>
 
-        {/* Strategic CTA after trust cards */}
-        <FadeIn delay={400}>
-          <div className="mt-12 text-center">
-            <div className="mx-auto max-w-2xl">
-              <h3 className="text-xl font-semibold text-foreground sm:text-2xl">
-                {t('cta_title')}
-              </h3>
-              <p className="mt-3 text-muted-foreground">
-                {t('cta_subtitle')}
-              </p>
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
-                <Button asChild size="lg" className="h-12 px-6 text-base">
-                  <Link href="/dashboard/challenges">{t('cta_primary')}</Link>
-                </Button>
-                <Button asChild variant="outline" size="default" className="h-11 px-5 text-sm">
-                  <Link href="#faq">{t('cta_secondary')}</Link>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </FadeIn>
-
-        {/* Testimonials Grid - Only show if testimonials exist */}
-        {testimonials.some(t => t.content) && (
-          <StaggerChildren
-            staggerDelay={150}
-            className="mt-16 grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8"
-          >
-            {testimonials.filter(t => t.content).map((testimonial, _index) => (
-              <Card
-                key={testimonial.name}
-                className="group relative overflow-hidden border-border/50 bg-card/50 p-6 backdrop-blur-sm transition-all duration-300 hover:border-primary/20 hover:bg-card/80 hover:shadow-lg hover:shadow-primary/10"
-              >
-                {/* Premium gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-
-                <div className="relative">
-                  {/* Quote icon */}
-                  <div className="mb-4 flex size-10 items-center justify-center rounded-lg bg-primary/10">
-                    <svg className="size-5 text-primary" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                      <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-
-                  {/* Rating */}
-                  <div className="mb-4">
-                    <StarRating rating={testimonial.rating} />
-                  </div>
-
-                  {/* Content */}
-                  <blockquote className="mb-6 text-sm leading-relaxed text-muted-foreground sm:text-base">
-                    "
-                    {testimonial.content}
-                    "
-                  </blockquote>
-
-                  {/* Author */}
-                  <Avatar
-                    name={testimonial.name}
-                    role={testimonial.role}
-                  />
-                </div>
-              </Card>
-            ))}
-          </StaggerChildren>
-        )}
       </div>
     </section>
   );
