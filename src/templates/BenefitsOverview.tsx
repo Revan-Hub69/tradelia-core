@@ -2,126 +2,95 @@
 
 import { useTranslations } from 'next-intl';
 
-import { Card } from '@/components/ui/card';
-import { FadeIn, StaggerChildren } from '@/components/ui/scroll-animations';
+import { FadeIn } from '@/components/ui/scroll-animations';
 
 /**
- * Premium Benefits Icons - Enterprise grade SVGs
+ * BenefitsOverview — Why Tradelia is different
+ * SOTA 2026: asymmetric 1+2 layout, no icon boxes, no gradient hover,
+ * no checkmark badges, left-aligned text, neutral borders only.
  */
-const BenefitIcons = {
-  foundation: (
-    <svg viewBox="0 0 24 24" fill="none" className="size-8 sm:size-10" aria-hidden="true">
-      <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z" className="fill-primary" />
-      <path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" className="fill-primary/60" />
-    </svg>
-  ),
-  efficiency: (
-    <svg viewBox="0 0 24 24" fill="none" className="size-8 sm:size-10" aria-hidden="true">
-      <circle cx="12" cy="12" r="9" className="stroke-primary" strokeWidth="2" fill="none" />
-      <path d="M12 7v5l3 3" className="stroke-primary" strokeWidth="2" strokeLinecap="round" />
-      <circle cx="12" cy="12" r="2" className="fill-primary" />
-    </svg>
-  ),
-  adaptive: (
-    <svg viewBox="0 0 24 24" fill="none" className="size-8 sm:size-10" aria-hidden="true">
-      <path d="M2 17l10 5 10-5M2 12l10 5 10-5" className="stroke-primary" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M2 7l10 5 10-5" className="stroke-primary" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="12" cy="12" r="3" className="fill-primary/20" />
-    </svg>
-  ),
-};
-
 export const BenefitsOverview = () => {
-  const t = useTranslations('BenefitsOverview') as any;
-
-  const benefits = [
-    {
-      icon: BenefitIcons.foundation,
-      title: t('benefit1_title'),
-      description: t('benefit1_desc'),
-      highlight: t('benefit1_highlight'),
-    },
-    {
-      icon: BenefitIcons.efficiency,
-      title: t('benefit2_title'),
-      description: t('benefit2_desc'),
-      highlight: t('benefit2_highlight'),
-    },
-    {
-      icon: BenefitIcons.adaptive,
-      title: t('benefit3_title'),
-      description: t('benefit3_desc'),
-      highlight: t('benefit3_highlight'),
-    },
-  ];
+  const t = useTranslations('BenefitsOverview') as (key: string) => string;
 
   return (
-    <section id="challenges" className="border-t border-border/50 bg-gradient-to-b from-background to-muted/30 px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
-      <div className="mx-auto max-w-7xl">
+    <section
+      id="why"
+      className="border-t border-border/40 px-4 py-16 sm:px-6 md:py-20 xl:py-24"
+    >
+      <div className="mx-auto max-w-4xl">
+
         <FadeIn>
-          <div className="text-center">
-            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
-              {t('section_title')}
-            </h2>
-            <p className="mt-4 text-lg text-muted-foreground sm:text-xl">
-              {t('section_subtitle')}
+          {/* Eyebrow */}
+          <p className="mb-2 font-mono text-xs font-medium uppercase tracking-widest text-muted-foreground/60">
+            {t('eyebrow')}
+          </p>
+
+          {/* Section title */}
+          <h2 className="mb-10 max-w-lg text-xl font-semibold tracking-tight sm:text-2xl md:text-3xl">
+            {t('section_title')}
+          </h2>
+        </FadeIn>
+
+        {/* Asymmetric 1+2 grid */}
+        <div className="grid gap-px border border-border/30 bg-border/30 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr]">
+
+          {/* PRIMARY block — wide, left column */}
+          <FadeIn className="bg-background p-8 sm:col-span-2 lg:col-span-1">
+            <p className="mb-2 font-mono text-xs text-muted-foreground/50">
+              {t('primary_label')}
             </p>
-          </div>
+            <p className="mb-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+              {t('primary_stat')}
+            </p>
+            <p className="mb-3 text-base font-semibold">
+              {t('primary_title')}
+            </p>
+            <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
+              {t('primary_desc')}
+            </p>
+          </FadeIn>
+
+          {/* BLOCK 2 */}
+          <FadeIn delay={100} className="bg-background p-6 sm:p-8">
+            <p className="mb-1 font-mono text-xs text-muted-foreground/50">
+              {t('b2_label')}
+            </p>
+            <p className="mb-3 text-2xl font-bold tracking-tight">
+              {t('b2_stat')}
+            </p>
+            <p className="mb-2 text-sm font-semibold">
+              {t('b2_title')}
+            </p>
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              {t('b2_desc')}
+            </p>
+          </FadeIn>
+
+          {/* BLOCK 3 */}
+          <FadeIn delay={200} className="bg-background p-6 sm:p-8">
+            <p className="mb-1 font-mono text-xs text-muted-foreground/50">
+              {t('b3_label')}
+            </p>
+            <p className="mb-3 text-2xl font-bold tracking-tight">
+              {t('b3_stat')}
+            </p>
+            <p className="mb-2 text-sm font-semibold">
+              {t('b3_title')}
+            </p>
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              {t('b3_desc')}
+            </p>
+          </FadeIn>
+
+        </div>
+
+        {/* Contrast line — replaces trust indicator */}
+        <FadeIn delay={300}>
+          <p className="mt-8 text-sm font-medium text-muted-foreground/70">
+            {t('contrast_line')}
+          </p>
         </FadeIn>
 
-        <StaggerChildren
-          staggerDelay={150}
-          className="mt-12 grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3 lg:gap-10"
-        >
-          {benefits.map((benefit, _index) => (
-            <Card
-              key={benefit.title}
-              className="group relative overflow-hidden border-border/50 bg-card/50 p-6 backdrop-blur-sm transition-all duration-300 hover:border-primary/20 hover:bg-card/80 hover:shadow-lg hover:shadow-primary/10 sm:p-8"
-            >
-              {/* Premium gradient overlay on hover */}
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-
-              <div className="relative">
-                {/* Icon with premium styling */}
-                <div className="mb-4 flex size-16 items-center justify-center rounded-2xl bg-primary/10 transition-colors duration-300 group-hover:bg-primary/20 sm:size-20">
-                  {benefit.icon}
-                </div>
-
-                {/* Content */}
-                <h3 className="mb-3 text-lg font-semibold tracking-tight sm:text-xl">
-                  {benefit.title}
-                </h3>
-
-                <p className="mb-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
-                  {benefit.description}
-                </p>
-
-                {/* Highlight badge */}
-                <div className="inline-flex items-center rounded-full border border-accent/20 bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
-                  <svg className="mr-1.5 size-3" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  {benefit.highlight}
-                </div>
-              </div>
-            </Card>
-          ))}
-        </StaggerChildren>
-
-        {/* Premium trust indicator */}
-        <FadeIn delay={400}>
-          <div className="mt-12 text-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-border/50 bg-background/50 px-4 py-2 backdrop-blur-sm">
-              <svg viewBox="0 0 24 24" fill="none" className="size-5 text-accent" aria-hidden="true">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M9 12l2 2 4-4" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              <span className="text-sm font-medium text-muted-foreground">
-                {t('trust_indicator')}
-              </span>
-            </div>
-          </div>
-        </FadeIn>
       </div>
     </section>
   );
