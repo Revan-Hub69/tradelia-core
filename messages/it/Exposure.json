@@ -1,8 +1,0 @@
-{
-  "title": "Comparatore Esposizione",
-  "description": "Mappa l'esposizione reale di ETF, CFD, futures e opzioni sullo stesso sottostante. Nozionale delta-adjusted, leva e margini normalizzati.",
-  "feature1": "Equivalenza nozionale delta-adjusted",
-  "feature2": "Dettaglio leva e margini richiesti",
-  "feature3": "Confronto strumenti su sottostante identico",
-  "cta": "Confronta Esposizione"
-}

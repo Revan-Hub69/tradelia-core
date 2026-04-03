@@ -1,9 +1,0 @@
-{
-  "title": "Methodology",
-  "item1": "Deterministic models",
-  "item2": "Broker fee normalisation",
-  "item3": "Instrument-level exposure mapping",
-  "item4": "No forward-looking guarantees",
-  "data_sources": "Sources: official broker fee schedules, PRIIPs KID, public APIs.",
-  "disclaimer": "Simulations are for illustrative purposes only and do not constitute personalised financial advice."
-}

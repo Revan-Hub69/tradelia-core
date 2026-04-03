@@ -4,22 +4,22 @@
     "meta_description": "Compare real costs of CFDs, futures, ETFs and options based on your actual trading scenario. Free, no sign-up required."
   },
   "TradeHero": {
-    "eyebrow": "Trading cost simulator",
-    "title": "See what trading really costs you",
-    "subtitle": "Compare CFDs, futures, ETFs and options on the same underlying. Estimated real costs, not theoretical.",
-    "cta": "Run simulation",
-    "cta_note": "Free · No sign-up",
-    "trust": "Informational tool · Not financial advice · Data based on market averages"
+    "eyebrow": "Tradelia · TradeScope",
+    "title": "Simulate your strategy and discover what it really costs you",
+    "subtitle": "Enter capital, leverage, time horizon and operating strategy: the simulator calculates real costs from measured database and generates rankings of the most efficient instruments and brokers for your scenario.",
+    "cta": "Run Simulation",
+    "cta_note": "Free, no sign-up required",
+    "trust": "Informational tool · Not financial advice · Based on real measured data"
   },
   "HowItWorks": {
     "eyebrow": "How it works",
-    "title": "Three steps to understand your real costs",
-    "step1_title": "Enter your scenario",
-    "step1_desc": "Choose asset, time horizon, capital, and leverage usage.",
-    "step2_title": "We analyse the instruments",
-    "step2_desc": "We calculate spread, commissions, overnight, and estimated slippage for each instrument.",
-    "step3_title": "Clear comparison",
-    "step3_desc": "Get a comparison table with total costs and operational efficiency index."
+    "title": "Three steps for your strategy",
+    "step1_title": "Define strategy and horizon",
+    "step1_desc": "Enter capital, leverage, time horizon (scalping, intraday, multi-day, long-term) and operating strategy (breakout, momentum, spiky, pullback, carry/income).",
+    "step2_title": "Real data-based analysis",
+    "step2_desc": "The simulator applies real costs from measured database: spreads, commissions, rollover, theta decay. Automatic ranking of most efficient instruments and brokers for your scenario.",
+    "step3_title": "Clear comparison and insights",
+    "step3_desc": "Dynamic table with total costs, efficiency index, top instruments and top brokers. Charts show the impact of costs on capital."
   },
   "Compare": {
     "eyebrow": "Instruments compared",
@@ -39,29 +39,30 @@
     "options_cost": "Premium + theta + commission"
   },
   "OutputPreview": {
-    "eyebrow": "Example output",
-    "title": "What you get from the simulation",
-    "intro": "Example scenario: €5,000 capital, intraday horizon, Nasdaq. Values are illustrative.",
+    "eyebrow": "Output",
+    "title": "Rankings and real data",
+    "intro": "The output is not an opinion. It is a quantitative reading based on real measured data. Example: €5,000, intraday horizon, Nasdaq.",
     "col_instrument": "Instrument",
-    "col_cost": "Est. Cost",
+    "col_broker": "Top broker",
+    "col_cost": "Est. cost",
     "col_efficiency": "Efficiency",
-    "col_drag": "Cost drag",
-    "col_note": "Notes",
-    "output_etf_note": "Annual TER + entry commission",
-    "output_cfd_note": "Wide spread + overnight swap",
-    "output_futures_note": "Fixed commission + quarterly rollover",
-    "output_options_note": "Theta decay + commission per leg",
-    "table_note": "Estimates based on average market conditions. Do not represent guaranteed costs."
+    "col_rank_instrument": "Instrument rank",
+    "col_rank_broker": "Broker rank",
+    "output_etf_note": "Simple structure, contained costs",
+    "output_cfd_note": "Spread and funding impact multi-day",
+    "output_futures_note": "Efficient over longer horizons",
+    "output_options_note": "Theta decay relevant beyond 15 days",
+    "table_note": "Rankings automatically generated from real measured cost database."
   },
   "WhyDifferent": {
     "eyebrow": "Why it's different",
-    "title": "Not a static comparator. A contextual simulation.",
-    "p1_title": "Estimated real costs",
-    "p1_desc": "We don't show rate cards. We calculate costs in the context of your specific scenario.",
-    "p2_title": "Homogeneous comparison",
-    "p2_desc": "CFDs, futures, ETFs and options on the same underlying, made comparable on an equal basis.",
-    "p3_title": "Neutral approach",
-    "p3_desc": "No recommendations. Only data to help you understand the cost structure."
+    "title": "Not theoretical estimates. Real measured data.",
+    "p1_title": "Real cost database",
+    "p1_desc": "The simulator doesn't use generic averages. It applies real costs from measured database — spreads, commissions, rollover, theta decay — specific to your scenario.",
+    "p2_title": "Objective rankings",
+    "p2_desc": "Instruments and brokers are automatically ranked based on cost efficiency for your horizon and strategy. No recommendations, just data.",
+    "p3_title": "Homogeneous comparison",
+    "p3_desc": "All instruments are normalised to the same notional exposure. You compare apples to apples — ETF, CFD, Futures, Options on the same underlying."
   },
   "Disclaimer": {
     "label": "Disclaimer:",

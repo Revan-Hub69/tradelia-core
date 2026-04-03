@@ -1,9 +1,0 @@
-{
-  "title": "Instrument Efficiency Comparison",
-  "description": "Quantifies and compares the net efficiency of ETF, CFD, futures and options on the same underlying asset. Real costs applied — spreads, commissions, swap rates, theta decay, rollover costs and broker fees normalised to a common basis.",
-  "feature1": "Net return vs gross return across all instrument types",
-  "feature2": "Real broker fee schedule applied per instrument",
-  "feature3": "Cost drag breakdown: spread, commission, carry, decay",
-  "feature4": "Delta-adjusted notional equivalence for fair comparison",
-  "cta": "Start Comparison"
-}
