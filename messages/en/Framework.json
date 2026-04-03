@@ -1,10 +1,12 @@
 {
-  "eyebrow": "How it works",
-  "title": "One underlying. Four instruments. One clear answer.",
-  "returns_label": "Choose underlying",
-  "returns_desc": "Select the asset, investment horizon, and capital. The tool normalises all instruments to the same notional exposure.",
-  "exposure_label": "Apply real costs",
-  "exposure_desc": "Spreads, swap rates, commissions, theta decay, rollover costs and broker fees are applied from official fee schedules.",
-  "flow_label": "Compare net efficiency",
-  "flow_desc": "Output: net return per instrument, cost drag in euros, and a ranked comparison. Broker suggestions where relevant."
+  "eyebrow": "Decision framework",
+  "optimized_for": "optimised for",
+  "title": "Not three tools. One process.",
+  "returns_label": "Net Return Model",
+  "returns_desc": "Quantifies the real outcome after broker costs. Output: net capital, cumulative cost drag, broker comparison.",
+  "exposure_label": "Exposure Analysis",
+  "exposure_desc": "Aligns the instrument to its effective risk. Output: equivalent exposure across ETF, CFD, Futures, Options and Turbo/KO on the same underlying.",
+  "flow_label": "Market Flow Radar",
+  "flow_desc": "Identifies anomalous activity and relevant signals before entry. Output: conviction score, noise filter.",
+  "flow_signals_label": "Flow signals \u2014 coming soon"
 }
