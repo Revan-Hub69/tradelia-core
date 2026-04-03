@@ -1,8 +1,9 @@
 {
   "title": "Metodologia",
-  "item1": "Modelli deterministici — stessi input restituiscono sempre gli stessi output",
-  "item2": "Dati fee broker da tariffari ufficiali",
-  "item3": "Mappatura esposizione a livello strumento, non approssimazioni",
-  "item4": "Anomalie di flusso quantificate con soglie statistiche",
-  "disclaimer": "Le simulazioni sono puramente illustrative e non costituiscono consulenza in materia di investimenti né garanzia di rendimenti futuri."
+  "item1": "Modelli deterministici",
+  "item2": "Normalizzazione fee per broker",
+  "item3": "Mapping esposizione a livello strumento",
+  "item4": "Nessuna proiezione forward-looking",
+  "data_sources": "Fonti: fee schedule ufficiali broker, PRIIPs KID, API pubbliche.",
+  "disclaimer": "Le simulazioni sono a scopo illustrativo e non costituiscono consulenza finanziaria personalizzata."
 }

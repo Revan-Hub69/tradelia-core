@@ -1,10 +1,12 @@
 {
-  "eyebrow": "Come funziona",
-  "title": "Un sottostante. Quattro strumenti. Una risposta chiara.",
-  "returns_label": "Scegli il sottostante",
-  "returns_desc": "Seleziona l'asset, l'orizzonte temporale e il capitale. Il tool normalizza tutti gli strumenti alla stessa esposizione nozionale.",
-  "exposure_label": "Applica i costi reali",
-  "exposure_desc": "Spread, swap rate, commissioni, theta decay, rollover e fee broker vengono applicati dai tariffari ufficiali.",
-  "flow_label": "Confronta l'efficienza netta",
-  "flow_desc": "Output: rendimento netto per strumento, cost drag in euro e confronto ordinato. Suggerimenti broker dove rilevante."
+  "eyebrow": "Framework decisionale",
+  "optimized_for": "ottimizzato per",
+  "title": "Non tre tool. Un processo.",
+  "returns_label": "Net Return Model",
+  "returns_desc": "Quantifica il risultato reale dopo i costi dell\u2019intermediario. Output: capitale netto, cost drag cumulato, confronto broker.",
+  "exposure_label": "Exposure Analysis",
+  "exposure_desc": "Allinea lo strumento al rischio effettivo. Output: esposizione equivalente tra ETF, CFD, Futures, Options e Turbo/KO sullo stesso sottostante.",
+  "flow_label": "Market Flow Radar",
+  "flow_desc": "Identifica attivit\u00e0 anomala e segnali rilevanti prima dell\u2019entrata. Output: score di convenzione, filtro rumore.",
+  "flow_signals_label": "Flow signals — coming soon"
 }
