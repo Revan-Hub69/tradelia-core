@@ -6,86 +6,67 @@ import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 
 /**
- * HeroIllustration - Decision pipeline visualisation
- * Three analysis stages connected by directed flow
+ * HeroIllustration — Instrument efficiency comparison visualisation
+ * Shows 4 instruments side by side with cost/return bars
  */
 const HeroIllustration = () => (
   <svg
-    viewBox="0 0 480 160"
+    viewBox="0 0 480 180"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
-    className="h-auto w-full max-w-lg"
+    className="h-auto w-full max-w-xl"
     aria-hidden="true"
   >
-    {/* ── Node 1: Net Return ── */}
-    <rect x="0" y="32" width="128" height="96" rx="10" className="fill-card" stroke="currentColor" strokeOpacity="0.12" strokeWidth="1" />
-    {/* mini bar chart */}
-    <rect x="16" y="90" width="10" height="24" rx="2" className="fill-primary" fillOpacity="0.25" />
-    <rect x="30" y="78" width="10" height="36" rx="2" className="fill-primary" fillOpacity="0.45" />
-    <rect x="44" y="62" width="10" height="52" rx="2" className="fill-primary" fillOpacity="0.70" />
-    <rect x="58" y="50" width="10" height="64" rx="2" className="fill-primary" />
-    {/* label */}
-    <text x="16" y="52" className="fill-foreground" style={{fontSize:'9px', fontWeight:600, letterSpacing:'0.06em', textTransform:'uppercase', opacity:0.5}}>Net Return</text>
-    {/* value */}
-    <text x="86" y="95" textAnchor="middle" className="fill-primary" style={{fontSize:'18px', fontWeight:700}}>+4.2%</text>
-    <text x="86" y="110" textAnchor="middle" style={{fontSize:'8px', opacity:0.4, fill:'currentColor'}}>after fees</text>
+    {/* Grid lines */}
+    <line x1="48" y1="20" x2="48" y2="140" stroke="currentColor" strokeOpacity="0.08" strokeWidth="1" />
+    <line x1="48" y1="140" x2="460" y2="140" stroke="currentColor" strokeOpacity="0.08" strokeWidth="1" />
+    <line x1="48" y1="100" x2="460" y2="100" stroke="currentColor" strokeOpacity="0.06" strokeWidth="1" strokeDasharray="4 4" />
+    <line x1="48" y1="60" x2="460" y2="60" stroke="currentColor" strokeOpacity="0.06" strokeWidth="1" strokeDasharray="4 4" />
 
-    {/* ── Arrow 1→2 ── */}
-    <line x1="136" y1="80" x2="172" y2="80" stroke="currentColor" strokeOpacity="0.2" strokeWidth="1.5" strokeDasharray="4 3" />
-    <polygon points="172,76 180,80 172,84" className="fill-primary" fillOpacity="0.4" />
+    {/* Y axis labels */}
+    <text x="40" y="143" textAnchor="end" style={{fontSize:'8px', opacity:0.3, fill:'currentColor'}}>0</text>
+    <text x="40" y="103" textAnchor="end" style={{fontSize:'8px', opacity:0.3, fill:'currentColor'}}>50</text>
+    <text x="40" y="63" textAnchor="end" style={{fontSize:'8px', opacity:0.3, fill:'currentColor'}}>100</text>
 
-    {/* ── Node 2: Exposure ── */}
-    <rect x="180" y="32" width="120" height="96" rx="10" className="fill-card" stroke="currentColor" strokeOpacity="0.12" strokeWidth="1" />
-    {/* radar-style concentric arcs (exposure rings) */}
-    <circle cx="240" cy="95" r="28" stroke="currentColor" strokeOpacity="0.08" strokeWidth="1" fill="none" />
-    <circle cx="240" cy="95" r="18" stroke="currentColor" strokeOpacity="0.12" strokeWidth="1" fill="none" />
-    <circle cx="240" cy="95" r="8" className="fill-primary" fillOpacity="0.15" stroke="none" />
-    {/* axis lines */}
-    <line x1="240" y1="67" x2="240" y2="95" stroke="currentColor" strokeOpacity="0.15" strokeWidth="1" />
-    <line x1="212" y1="95" x2="240" y2="95" stroke="currentColor" strokeOpacity="0.15" strokeWidth="1" />
-    <line x1="220" y1="72" x2="240" y2="95" stroke="currentColor" strokeOpacity="0.15" strokeWidth="1" />
-    {/* data polygon */}
-    <polygon points="240,73 255,88 248,108 232,108 225,88" className="fill-primary" fillOpacity="0.18" stroke="none" />
-    <polygon points="240,73 255,88 248,108 232,108 225,88" fill="none" className="stroke-primary" strokeWidth="1.5" strokeOpacity="0.7" />
-    {/* label */}
-    <text x="196" y="52" className="fill-foreground" style={{fontSize:'9px', fontWeight:600, letterSpacing:'0.06em', opacity:0.5}}>Exposure</text>
-    <text x="240" y="95" textAnchor="middle" className="fill-primary" style={{fontSize:'8px', fontWeight:700, dominantBaseline:'middle'}}>ETF</text>
+    {/* ── ETF ── */}
+    {/* Gross return bar */}
+    <rect x="72" y="42" width="36" height="98" rx="3" className="fill-primary" fillOpacity="0.15" />
+    {/* Net return bar */}
+    <rect x="72" y="52" width="36" height="88" rx="3" className="fill-primary" fillOpacity="0.75" />
+    {/* Cost gap indicator */}
+    <rect x="72" y="42" width="36" height="10" rx="2" fill="#ef4444" fillOpacity="0.35" />
+    <text x="90" y="158" textAnchor="middle" style={{fontSize:'9px', fontWeight:600, opacity:0.55, fill:'currentColor'}}>ETF</text>
+    <text x="90" y="168" textAnchor="middle" style={{fontSize:'7px', opacity:0.3, fill:'currentColor'}}>0.20%/y</text>
 
-    {/* ── Arrow 2→3 ── */}
-    <line x1="308" y1="80" x2="344" y2="80" stroke="currentColor" strokeOpacity="0.2" strokeWidth="1.5" strokeDasharray="4 3" />
-    <polygon points="344,76 352,80 344,84" className="fill-primary" fillOpacity="0.4" />
+    {/* ── CFD ── */}
+    <rect x="156" y="42" width="36" height="98" rx="3" className="fill-primary" fillOpacity="0.15" />
+    <rect x="156" y="82" width="36" height="58" rx="3" className="fill-primary" fillOpacity="0.55" />
+    <rect x="156" y="42" width="36" height="40" rx="2" fill="#ef4444" fillOpacity="0.35" />
+    <text x="174" y="158" textAnchor="middle" style={{fontSize:'9px', fontWeight:600, opacity:0.55, fill:'currentColor'}}>CFD</text>
+    <text x="174" y="168" textAnchor="middle" style={{fontSize:'7px', opacity:0.3, fill:'currentColor'}}>spread+swap</text>
 
-    {/* ── Node 3: Flow Radar ── */}
-    <rect x="352" y="32" width="128" height="96" rx="10" className="fill-card" stroke="currentColor" strokeOpacity="0.12" strokeWidth="1" />
-    {/* sparkline with anomaly spike */}
-    <polyline
-      points="368,100 382,98 396,101 410,97 418,103 424,88 430,103 444,100 458,99 468,101"
-      fill="none"
-      className="stroke-primary"
-      strokeWidth="1.5"
-      strokeOpacity="0.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    {/* anomaly highlight */}
-    <circle cx="424" cy="88" r="5" className="fill-primary" fillOpacity="0.2" />
-    <circle cx="424" cy="88" r="2.5" className="fill-primary" fillOpacity="0.9" />
-    {/* label */}
-    <text x="368" y="52" className="fill-foreground" style={{fontSize:'9px', fontWeight:600, letterSpacing:'0.06em', opacity:0.5}}>Flow Radar</text>
-    <text x="424" y="75" textAnchor="middle" style={{fontSize:'7px', opacity:0.5, fill:'currentColor'}}>anomaly</text>
-    <line x1="424" y1="77" x2="424" y2="83" stroke="currentColor" strokeOpacity="0.25" strokeWidth="1" strokeDasharray="2 1" />
+    {/* ── Futures ── */}
+    <rect x="240" y="42" width="36" height="98" rx="3" className="fill-primary" fillOpacity="0.15" />
+    <rect x="240" y="56" width="36" height="84" rx="3" className="fill-primary" fillOpacity="0.65" />
+    <rect x="240" y="42" width="36" height="14" rx="2" fill="#ef4444" fillOpacity="0.35" />
+    <text x="258" y="158" textAnchor="middle" style={{fontSize:'9px', fontWeight:600, opacity:0.55, fill:'currentColor'}}>Futures</text>
+    <text x="258" y="168" textAnchor="middle" style={{fontSize:'7px', opacity:0.3, fill:'currentColor'}}>rollover</text>
 
-    {/* ── Step numbers ── */}
-    <text x="64" y="145" textAnchor="middle" style={{fontSize:'8px', opacity:0.3, fill:'currentColor', letterSpacing:'0.05em'}}>01</text>
-    <text x="240" y="145" textAnchor="middle" style={{fontSize:'8px', opacity:0.3, fill:'currentColor', letterSpacing:'0.05em'}}>02</text>
-    <text x="416" y="145" textAnchor="middle" style={{fontSize:'8px', opacity:0.3, fill:'currentColor', letterSpacing:'0.05em'}}>03</text>
+    {/* ── Options ── */}
+    <rect x="324" y="42" width="36" height="98" rx="3" className="fill-primary" fillOpacity="0.15" />
+    <rect x="324" y="70" width="36" height="70" rx="3" className="fill-primary" fillOpacity="0.50" />
+    <rect x="324" y="42" width="36" height="28" rx="2" fill="#ef4444" fillOpacity="0.35" />
+    <text x="342" y="158" textAnchor="middle" style={{fontSize:'9px', fontWeight:600, opacity:0.55, fill:'currentColor'}}>Options</text>
+    <text x="342" y="168" textAnchor="middle" style={{fontSize:'7px', opacity:0.3, fill:'currentColor'}}>theta+commission</text>
+
+    {/* ── Legend ── */}
+    <rect x="396" y="60" width="8" height="8" rx="1" className="fill-primary" fillOpacity="0.7" />
+    <text x="408" y="68" style={{fontSize:'8px', opacity:0.45, fill:'currentColor'}}>Net return</text>
+    <rect x="396" y="76" width="8" height="8" rx="1" fill="#ef4444" fillOpacity="0.4" />
+    <text x="408" y="84" style={{fontSize:'8px', opacity:0.45, fill:'currentColor'}}>Cost drag</text>
   </svg>
 );
 
-/**
- * ToolsHero - Finance 2026 entry point
- * Shows the decision pipeline immediately, no marketing copy
- */
 export const ToolsHero = () => {
   const t = useTranslations('Tools') as (key: string) => string;
 
@@ -97,7 +78,7 @@ export const ToolsHero = () => {
           {t('eyebrow')}
         </p>
 
-        {/* Title — left aligned, not centered */}
+        {/* Title — left aligned */}
         <h1 className="max-w-2xl text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
           {t('hero_title')}
         </h1>
@@ -111,21 +92,15 @@ export const ToolsHero = () => {
           <HeroIllustration />
         </div>
 
-        {/* CTAs — hierarchy: primary → secondary → ghost */}
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Button asChild size="lg" className="h-12 px-7 text-base">
-            <Link href="#net-return">{t('cta_primary')}</Link>
-          </Button>
-          <Button asChild variant="outline" size="default" className="h-11 px-5">
-            <Link href="#exposure">{t('cta_secondary')}</Link>
-          </Button>
-          <Button asChild variant="ghost" size="default" className="h-11 px-5 text-muted-foreground">
-            <Link href="#flow">{t('cta_tertiary')}</Link>
+        {/* Single CTA */}
+        <div className="mt-8">
+          <Button asChild size="lg" className="h-12 px-8 text-base">
+            <Link href="#tool">{t('cta_primary')}</Link>
           </Button>
         </div>
 
-        {/* Credibility line — istituzionale, non e-commerce */}
-        <p className="mt-6 text-xs text-muted-foreground/60">
+        {/* Credibility line */}
+        <p className="mt-5 text-xs text-muted-foreground/60">
           {t('trust')}
         </p>
       </div>

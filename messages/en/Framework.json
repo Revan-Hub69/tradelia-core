@@ -1,10 +1,10 @@
 {
   "eyebrow": "How it works",
-  "title": "Three analytical layers. One decision.",
-  "returns_label": "Net Return Model",
-  "returns_desc": "Quantifies the real outcome after all costs. Starting point for any investment decision.",
-  "exposure_label": "Exposure Comparator",
-  "exposure_desc": "Aligns instruments with the intended risk profile. Reveals what you are actually buying.",
-  "flow_label": "Flow Radar",
-  "flow_desc": "Identifies relevant market activity before entry. Context, not just signal."
+  "title": "One underlying. Four instruments. One clear answer.",
+  "returns_label": "Choose underlying",
+  "returns_desc": "Select the asset, investment horizon, and capital. The tool normalises all instruments to the same notional exposure.",
+  "exposure_label": "Apply real costs",
+  "exposure_desc": "Spreads, swap rates, commissions, theta decay, rollover costs and broker fees are applied from official fee schedules.",
+  "flow_label": "Compare net efficiency",
+  "flow_desc": "Output: net return per instrument, cost drag in euros, and a ranked comparison. Broker suggestions where relevant."
 }

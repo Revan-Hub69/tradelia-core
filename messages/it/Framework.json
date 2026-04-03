@@ -1,10 +1,10 @@
 {
   "eyebrow": "Come funziona",
-  "title": "Tre livelli di analisi. Una decisione.",
-  "returns_label": "Net Return Model",
-  "returns_desc": "Quantifica il risultato reale dopo tutti i costi. Punto di partenza per qualsiasi decisione di investimento.",
-  "exposure_label": "Comparatore Esposizione",
-  "exposure_desc": "Allinea gli strumenti al profilo di rischio desiderato. Rivela cosa stai comprando davvero.",
-  "flow_label": "Flow Radar",
-  "flow_desc": "Identifica l'attività di mercato rilevante prima dell'ingresso. Contesto, non solo segnale."
+  "title": "Un sottostante. Quattro strumenti. Una risposta chiara.",
+  "returns_label": "Scegli il sottostante",
+  "returns_desc": "Seleziona l'asset, l'orizzonte temporale e il capitale. Il tool normalizza tutti gli strumenti alla stessa esposizione nozionale.",
+  "exposure_label": "Applica i costi reali",
+  "exposure_desc": "Spread, swap rate, commissioni, theta decay, rollover e fee broker vengono applicati dai tariffari ufficiali.",
+  "flow_label": "Confronta l'efficienza netta",
+  "flow_desc": "Output: rendimento netto per strumento, cost drag in euro e confronto ordinato. Suggerimenti broker dove rilevante."
 }

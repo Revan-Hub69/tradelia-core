@@ -1,9 +1,7 @@
 {
   "eyebrow": "Investment Analysis",
-  "hero_title": "Quantify the decision before you trade.",
-  "hero_subtitle": "Net returns after real costs, structured exposure across instruments, contextualised market flow — in a single analytical system.",
-  "cta_primary": "Net Return Model",
-  "cta_secondary": "Exposure Comparator",
-  "cta_tertiary": "Flow Radar",
+  "hero_title": "Which instrument actually costs less?",
+  "hero_subtitle": "Compare the real efficiency of ETF, CFD, futures and options on the same underlying. Net return after all costs, side by side.",
+  "cta_primary": "Run Instrument Comparison",
   "trust": "Deterministic models · No forward-looking guarantees · Broker affiliations disclosed"
 }

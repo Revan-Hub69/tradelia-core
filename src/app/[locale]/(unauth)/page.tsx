@@ -3,7 +3,7 @@ import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 import { Navbar } from '@/templates/Navbar';
 import { PremiumFooter } from '@/templates/PremiumFooter';
 import { ToolsHero } from '@/templates/ToolsHero';
-import { NetReturnCard, SecondaryTools } from '@/templates/ToolCard';
+import { ToolCard } from '@/templates/ToolCard';
 import { FrameworkSection, MethodologySection } from '@/templates/FrameworkSection';
 import { FAQ } from '@/templates/FAQ';
 
@@ -28,34 +28,33 @@ const IndexPage = async (props: { params: Promise<{ locale: string }> }) => {
     <>
       <Navbar />
       <main id="main-content">
-        {/* Hero - Tools access */}
+        {/* Hero */}
         <ToolsHero />
 
-        {/* Primary Tool - Net Return Model (70% visual weight) */}
-        <section id="net-return" className="px-4 py-12 sm:px-6 sm:py-16 lg:py-20">
-          <div className="mx-auto max-w-3xl">
-            <NetReturnCard />
+        {/* Single tool */}
+        <section id="tool" className="border-t border-border/40 px-4 py-12 sm:px-6 sm:py-16 lg:py-20">
+          <div className="mx-auto max-w-2xl">
+            <ToolCard
+              variant="primary"
+              namespace="Tool"
+              features={['feature1', 'feature2', 'feature3', 'feature4']}
+              ctaKey="cta"
+              href="/tool"
+            />
           </div>
         </section>
 
-        {/* Secondary Tools - Exposure + Flow (20% + 10%) */}
-        <section id="exposure" className="border-t border-border/40 px-4 py-12 sm:px-6 sm:py-16">
-          <div className="mx-auto max-w-4xl">
-            <SecondaryTools />
-          </div>
-        </section>
-
-        {/* Framework - Elevates from tool to system */}
+        {/* How it works */}
         <section id="framework">
           <FrameworkSection />
         </section>
 
-        {/* Methodology - Professional credibility */}
+        {/* Methodology */}
         <section id="methodology">
           <MethodologySection />
         </section>
 
-        {/* FAQ - Always visible scroll */}
+        {/* FAQ */}
         <section id="faq" className="border-t border-border/40 px-4 py-12 sm:px-6 sm:py-16">
           <div className="mx-auto max-w-3xl">
             <FAQ />

@@ -1,8 +1,7 @@
 {
-  "nav_net_return": "Net Return",
-  "nav_exposure": "Esposizione",
-  "nav_flow": "Flow Radar",
+  "nav_tool": "Strumento di Confronto",
   "nav_methodology": "Metodologia",
+  "nav_faq": "FAQ",
   "credibility_bar": "Analisi indipendente · Modelli deterministici · Affiliazioni broker dichiarate",
   "menu_open": "Apri menu",
   "menu_close": "Chiudi menu",

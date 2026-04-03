@@ -1,0 +1,9 @@
+{
+  "title": "Confronto Efficienza Strumenti",
+  "description": "Quantifica e confronta l'efficienza netta di ETF, CFD, futures e opzioni sullo stesso sottostante. Costi reali applicati: spread, commissioni, swap, theta decay, rollover e commissioni broker normalizzati su base comune.",
+  "feature1": "Rendimento netto vs lordo per tutti i tipi di strumento",
+  "feature2": "Tariffario broker reale applicato per strumento",
+  "feature3": "Dettaglio cost drag: spread, commissione, carry, decay",
+  "feature4": "Equivalenza nozionale delta-adjusted per confronto equo",
+  "cta": "Avvia il Confronto"
+}
