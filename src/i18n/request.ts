@@ -1,39 +1,49 @@
+import { readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
 import { notFound } from 'next/navigation';
 import { getRequestConfig } from 'next-intl/server';
 
 import { AllLocales } from '@/utils/AppConfig';
 
-// Using internationalization in Server Components
+const namespaceAliases: Record<string, string> = {
+  common: 'Common',
+  'dashboard-settings': 'DashboardSettings',
+  contact: 'Contact',
+  Challenges: 'Challenges',
+  'my-challenges': 'MyChallenges',
+  signals: 'Signals',
+};
+
+const loadMessageNamespaces = (locale: string) => {
+  const localeDir = join(process.cwd(), 'messages', locale);
+
+  return readdirSync(localeDir)
+    .filter(file => file.endsWith('.json'))
+    .reduce<Record<string, unknown>>((acc, file) => {
+      const rawNamespace = file.replace(/\.json$/u, '');
+      const namespace = namespaceAliases[rawNamespace] ?? rawNamespace;
+      const filePath = join(localeDir, file);
+      acc[namespace] = JSON.parse(readFileSync(filePath, 'utf-8'));
+      return acc;
+    }, {});
+};
+
 export default getRequestConfig(async ({ requestLocale }) => {
-  // This is the new API that replaces the deprecated `locale` parameter
   const locale = await requestLocale;
 
-  // Validate that the incoming `locale` parameter is valid
   if (!locale || !AllLocales.includes(locale)) {
     notFound();
   }
 
-  // Load main messages (includes Dashboard and landing namespaces)
   const mainMessages = (await import(`../locales/${locale}.json`)).default;
-
-  // Load additional namespace messages
-  const commonMessages = (await import(`../../messages/${locale}/common.json`)).default;
-  const dashboardSettingsMessages = (await import(`../../messages/${locale}/dashboard-settings.json`)).default;
-  const contactMessages = (await import(`../../messages/${locale}/contact.json`)).default;
-  const challengesMessages = (await import(`../../messages/${locale}/Challenges.json`)).default;
-  const myChallengesMessages = (await import(`../../messages/${locale}/my-challenges.json`)).default;
-  const signalsMessages = (await import(`../../messages/${locale}/signals.json`)).default;
+  const modularMessages = loadMessageNamespaces(locale);
 
   return {
     locale,
     messages: {
       ...mainMessages,
-      Common: commonMessages,
-      DashboardSettings: dashboardSettingsMessages,
-      Contact: contactMessages,
-      Challenges: challengesMessages,
-      MyChallenges: myChallengesMessages,
-      Signals: signalsMessages,
+      ...modularMessages,
     },
   };
 });

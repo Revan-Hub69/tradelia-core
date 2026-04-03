@@ -8,19 +8,73 @@
 
 import 'next-intl';
 
+import type analysisEn from '../../messages/en/Analysis.json';
+import type benefitsOverviewEn from '../../messages/en/BenefitsOverview.json';
 import type challengesEn from '../../messages/en/Challenges.json';
+import type chartEn from '../../messages/en/Chart.json';
 import type commonEn from '../../messages/en/common.json';
+import type compareEn from '../../messages/en/Compare.json';
+import type comparisonEn from '../../messages/en/Comparison.json';
 import type contactEn from '../../messages/en/contact.json';
 import type dashboardSettingsEn from '../../messages/en/dashboard-settings.json';
-// Import actual translation files to infer types
+import type disclaimerEn from '../../messages/en/Disclaimer.json';
+import type emailEn from '../../messages/en/email.json';
+import type exposureEn from '../../messages/en/Exposure.json';
+import type faqEn from '../../messages/en/FAQ.json';
+import type flowEn from '../../messages/en/Flow.json';
+import type frameworkEn from '../../messages/en/Framework.json';
+import type heroEn from '../../messages/en/Hero.json';
+import type howItWorksEn from '../../messages/en/HowItWorks.json';
+import type indexEn from '../../messages/en/Index.json';
+import type landingFooterEn from '../../messages/en/LandingFooter.json';
+import type methodologyEn from '../../messages/en/Methodology.json';
+import type myChallengesEn from '../../messages/en/my-challenges.json';
+import type navbarEn from '../../messages/en/Navbar.json';
+import type netReturnEn from '../../messages/en/NetReturn.json';
+import type outputPreviewEn from '../../messages/en/OutputPreview.json';
+import type problemEn from '../../messages/en/Problem.json';
+import type scenarioEn from '../../messages/en/Scenario.json';
+import type signalsEn from '../../messages/en/signals.json';
+import type socialProofEn from '../../messages/en/SocialProof.json';
+import type toolEn from '../../messages/en/Tool.json';
+import type toolsEn from '../../messages/en/Tools.json';
+import type tradeHeroEn from '../../messages/en/TradeHero.json';
+import type whyDifferentEn from '../../messages/en/WhyDifferent.json';
 import type enLocale from '../locales/en.json';
 
-// Combine all message types
 type Messages = typeof enLocale & {
+  Analysis: typeof analysisEn;
+  BenefitsOverview: typeof benefitsOverviewEn;
   Challenges: typeof challengesEn;
+  Chart: typeof chartEn;
   Common: typeof commonEn;
+  Compare: typeof compareEn;
+  Comparison: typeof comparisonEn;
   Contact: typeof contactEn;
   DashboardSettings: typeof dashboardSettingsEn;
+  Disclaimer: typeof disclaimerEn;
+  email: typeof emailEn;
+  Exposure: typeof exposureEn;
+  FAQ: typeof faqEn;
+  Flow: typeof flowEn;
+  Framework: typeof frameworkEn;
+  Hero: typeof heroEn;
+  HowItWorks: typeof howItWorksEn;
+  Index: typeof indexEn;
+  LandingFooter: typeof landingFooterEn;
+  Methodology: typeof methodologyEn;
+  MyChallenges: typeof myChallengesEn;
+  Navbar: typeof navbarEn;
+  NetReturn: typeof netReturnEn;
+  OutputPreview: typeof outputPreviewEn;
+  Problem: typeof problemEn;
+  Scenario: typeof scenarioEn;
+  Signals: typeof signalsEn;
+  SocialProof: typeof socialProofEn;
+  Tool: typeof toolEn;
+  Tools: typeof toolsEn;
+  TradeHero: typeof tradeHeroEn;
+  WhyDifferent: typeof whyDifferentEn;
 };
 
 declare module 'next-intl' {

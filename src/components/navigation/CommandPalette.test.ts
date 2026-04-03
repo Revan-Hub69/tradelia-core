@@ -17,12 +17,16 @@ import {
 
 // Mock useTranslations for testing
 const mockTranslations = {
-  nav_challenges: 'Challenges',
-  nav_my_challenges: 'My Challenges',
-  nav_signals: 'Signals',
-  nav_challenges_desc: 'Browse trading challenges and competitions',
-  nav_my_challenges_desc: 'Track your active challenges and trades',
-  nav_signals_desc: 'AI-powered trading signals',
+  Radar: 'Radar',
+  Structure: 'Structure',
+  Volatility: 'Volatility',
+  Terminal: 'Terminal',
+  Market: 'Market',
+  nav_radar_desc: 'Monitor market radar conditions',
+  nav_structure_desc: 'Read structural market context',
+  nav_volatility_desc: 'Track volatility regimes',
+  nav_terminal_desc: 'Access terminal workflows',
+  nav_market_desc: 'Scan market-wide signals',
   toggle_theme: 'Toggle Theme',
   toggle_theme_desc: 'Switch between light and dark mode',
   enable_focus_mode: 'Enable Focus Mode',
@@ -45,7 +49,7 @@ type Command = {
 
 // Generator for navigation item IDs
 const navigationItemIdGenerator = (): fc.Arbitrary<NavigationItemId> => {
-  return fc.constantFrom('challenges', 'my-challenges', 'signals');
+  return fc.constantFrom('radar', 'structure', 'volatility', 'terminal', 'market');
 };
 
 // Generator for mock translation function
@@ -296,9 +300,10 @@ describe('Command Palette Type Safety Property Tests', () => {
 
             // Valid icon names (based on the navigation config and common patterns)
             const validIconNames = [
-              'ChallengesIcon',
-              'MyChartsIcon',
+              'TrendingUpIcon',
               'SignalsIcon',
+              'WarningIcon',
+              'SearchIcon',
               'SettingsIcon',
             ];
 

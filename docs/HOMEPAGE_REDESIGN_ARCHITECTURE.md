@@ -1,261 +1,171 @@
-# Homepage Redesign - Architecture Document
+# Homepage Redesign Architecture
 
-## Current State Analysis
+## Product Direction
 
-### Existing Homepage Structure
-```
-src/app/[locale]/(unauth)/page.tsx
-├── Navbar
-├── Hero
-├── BenefitsOverview
-├── SocialProof
-├── HowItWorks
-├── FAQ
-├── FinalCTA
-└── PremiumFooter
-```
+Homepage direction is now fixed:
 
-### Current Content Focus
-- Prop firm challenge comparisons
-- AI signals for traders
-- Enrollment tracking
+- one product
+- one promise
+- one primary CTA
 
-### Current Problem
-The current homepage is oriented around "challenges" (prop firm trading competitions) which was the original product. Now we need to pivot to 3 distinct financial tools.
+Product:
 
----
+- `TradeScope`
+- a trading cost simulator
+- focused on spreads, swaps, commissions, leverage, and holding horizon
 
-## New Architecture - Finance 2026 Pattern
+This is not a prop-firm marketplace and not a directory of unrelated tools.
 
-### Design Philosophy
-Following Bloomberg Terminal, Koyfin, Portfolio Visualizer, OptionStrat patterns:
+## Homepage Job
 
-1. **NOT a landing page** → It's an access point to tools
-2. **Minimal header** → 3-5 items max
-3. **Immediate tool access** → Within 1 scroll
-4. **Zero friction** → No forced signup, no popups
-5. **Subtle credibility** → Methodology over testimonials
+The homepage must do four things in order:
 
-### Target Visual Hierarchy
+1. create doubt about the trader's current instrument or broker choice
+2. explain why cost structure destroys otherwise valid strategies
+3. show a believable calculation mechanism
+4. transition the user into the simulator
 
-| Element | Visual Weight |
-|---------|----------------|
-| Net Return Model | 🔴 HIGHEST (70%) |
-| Hero CTA | 🔴 HIGH |
-| Exposure Comparator | 🟡 MEDIUM |
-| Flow Radar | 🟡 MEDIUM-LOW |
-| Framework | ⚪ LOW |
-| Methodology | ⚪ LOW |
+## Design Direction
 
----
+Visual language target:
 
-## Proposed Structure
+- terminal-lite, not Bloomberg cosplay
+- product interface first, landing page second
+- high signal density, low decorative fluff
+- crisp surfaces and strong hierarchy
+- quantitative credibility over testimonials
 
-### 1. Header (64px)
-```
-[TRADELIA]              Net Return   Exposure   Flow
-```
+Avoid:
 
-- Minimal: Logo + 3 nav items
-- No login button (MVP)
-- No marketing elements
+- generic SaaS gradients
+- oversized glassmorphism everywhere
+- fake trust badges
+- testimonial walls
+- multiple equal CTAs competing for attention
 
-### 2. Hero (420px max)
-```
-Investment Analysis Tools
+## Information Hierarchy
 
-Quantifying net returns, exposure, and market activity.
+### 1. Navbar
 
-[ Run Net Return Model ] [ Exposure Analysis ] [ Flow Radar ]
-```
+Purpose:
 
-- Identity statement (NOT marketing)
-- 3 CTAs with clear hierarchy
+- anchor the narrative
+- expose the simulator CTA immediately
+- use compact market-data style microcopy
 
-### 3. Primary Module - Net Return Model (420px)
-```
-┌──────────────────────────────────────────────┐
-│ Net Return Model                             │
-│                                              │
-│ Simulates real investment outcomes after     │
-│ fees, taxes, and fund costs.                 │
-│                                              │
-│ • Broker fees and TER included               │
-│ • Italian tax regimes                        │
-│ • PAC vs Lump Sum                            │
-│                                              │
-│ [ Run Model ]                                │
-└──────────────────────────────────────────────┘
-```
+### 2. Hero
 
-- Full width (max 960px centered)
-- Dominant visual element
+Purpose:
 
-### 4. Secondary Modules (320px)
-```
-┌───────────────┐   ┌───────────────┐
-│ Exposure      │   │ Flow Radar    │
-│ Analysis      │   │               │
-│               │   │               │
-│ Compare       │   │ Detect        │
-│ instruments   │   │ anomalies     │
-│               │   │               │
-│ [ Run ]       │   │ [ Waitlist ]  │
-└───────────────┘   └───────────────┘
-```
+- present the core thesis fast
+- show that the product reasons about cost structure, not vague "insights"
 
-- 2 columns, 24px gap
-- Visually smaller than primary
+Must contain:
 
-### 5. Framework Section (160px)
-```
-Analytical Framework
+- sharp H1
+- cost-first subtitle
+- one primary CTA
+- one diagnostic visual
 
-Returns  →  Exposure  →  Flow
-```
+### 3. Problem Section
 
-- Elevates product from "tool directory" to "analytical system"
+Purpose:
 
-### 6. Methodology (140px)
-```
-Methodology
+- amplify the user's hidden loss mechanism
+- make cost drag feel structural rather than incidental
 
-Deterministic models  
-Cost-aware calculations  
-Cross-instrument comparability  
-No forward-looking guarantees
-```
+Must contain:
 
-### 7. Footer
-```
-Tradelia © 2026
-```
+- direct statement of pain
+- explanation of why trader habit creates drag
+- compact quantitative panel or matrix
 
----
+### 4. Mechanism Section
 
-## Responsive Behavior
+Purpose:
 
-### Breakpoint System (6 states)
+- explain how the simulator works without sounding magical
 
-```css
-xs: 0-480px     → mobile small
-sm: 480-768px   → mobile large
-md: 768-1024px  → tablet
-lg: 1024-1280px → laptop
-xl: 1280-1536px → desktop
-2xl: 1536px+    → large desktop
-```
+Must contain:
 
-### Layout Changes by Breakpoint
+- three clear steps
+- plain language
+- no AI theater
 
-| Section | xs-sm | md | lg | xl+ |
-|---------|-------|----|----|-----|
-| Hero | full, stacked | 10col | 8col centered | 8col centered |
-| Net Return | full | 10col | 8col centered | 8col centered |
-| Secondary | stacked | stacked | 6+6 col | 5+5 col |
-| Framework | vertical | horizontal | centered | centered |
-| Methodology | 1 col | 2 col | 2 col | 3 col |
+### 5. Simulator Preview
 
----
+Purpose:
 
-## Implementation Path
+- feel like a real product surface
+- show how user inputs change the analysis
 
-### Phase 1: Keep existing components
-- Reuse Navbar, Footer templates
-- Keep translations
+Must contain:
 
-### Phase 2: New sections to create
-- New `ToolCard` component
-- New `FrameworkSection` component
-- New `MethodologySection` component
+- capital
+- leverage
+- holding horizon
+- trade frequency
+- output surface with cost pressure interpretation
 
-### Phase 3: Modify existing
-- Update Hero copy
-- Repurpose BenefitsOverview → could be removed or repurposed
-- Remove SocialProof (testimonials not finance-style)
-- Repurpose HowItWorks → could become framework section
-- Remove FAQ (or keep minimal)
-- Repurpose FinalCTA → could be removed
+### 6. FAQ
 
-### Translation Updates Needed
-Add new keys:
-- `Tools.hero_title`
-- `Tools.hero_subtitle`
-- `Tools.cta_primary`
-- `Tools.cta_secondary`
-- `Tools.cta_tertiary`
-- `NetReturn.title`
-- `NetReturn.description`
-- `NetReturn.features`
-- `Exposure.title`
-- `Exposure.description`
-- `Exposure.cta`
-- `Flow.title`
-- `Flow.description`
-- `Flow.cta_waitlist`
-- `Framework.title`
-- `Methodology.title`
+Purpose:
 
----
+- remove friction
+- clarify scope and methodology
 
-## Component Specifications
+### 7. Disclaimer + Footer
 
-### ToolCard Component
-```tsx
-interface ToolCardProps {
-  title: string;
-  description: string;
-  features: string[];
-  cta: string;
-  variant: 'primary' | 'secondary';
-  href: string;
-}
-```
+Purpose:
 
-- Border: `1px solid rgba(0,0,0,0.06)`
-- Border-radius: `12px`
-- Hover: `border-color: rgba(0,0,0,0.12)`, `translateY(-2px)`
-- Transition: `all 0.15s ease`
+- close the page with clarity, not filler
 
-### Typography Scale
-```css
-h1: 28-44px (responsive)
-h2: 20-28px (responsive)
-body: 14-16px
-line-height: 1.4-1.6
-```
+## Component Map
 
-### Spacing System
-```css
-section spacing: 48-120px (responsive)
-card padding: 20-32px (responsive)
-grid gap: 24px
-```
+Current component ownership:
 
----
+- `src/templates/Navbar.tsx`
+- `src/templates/TradeHero.tsx`
+- `src/templates/ProblemSection.tsx`
+- `src/templates/HowItWorks.tsx`
+- `src/templates/ScenarioSection.tsx`
+- `src/templates/FAQ.tsx`
+- `src/templates/DisclaimerBar.tsx`
+- `src/templates/LandingFooter.tsx`
 
-## Migration Notes
+## Copy Guardrails
 
-1. **Keep backward compatibility** - Dashboard and auth routes remain
-2. **i18n first** - Add translations before implementing
-3. **Component reuse** - Leverage existing UI components
-4. **Mobile-first** - Design mobile layout first, then scale up
-5. **Zero marketing** - No popups, no forced signup, no testimonials
+Preferred vocabulary:
 
----
+- cost drag
+- holding pressure
+- execution quality
+- broker fee structure
+- real spreads
+- overnight swaps
+- deterministic output
 
-## Summary
+Avoid:
 
-Transforming from:
-> "Challenge comparison platform" (current)
+- life-changing
+- unlock alpha
+- AI-powered edge
+- best broker in the world
+- guaranteed profits
 
-To:
-> "Investment Analysis System" (target)
+## UX Guardrails
 
-Key changes:
-- Remove: testimonials, social proof, heavy marketing
-- Keep: professional credibility, clean design, i18n
-- Add: tool hierarchy, framework section, methodology
-- Maintain: responsive design, component quality
+- mobile first
+- CTA visible within first viewport
+- one dominant path
+- section anchors must match navbar items
+- visuals must support the thesis, not decorate it
 
-This matches finance 2026 standards (Bloomberg, Koyfin style) while preserving the quality already built.
+## Success Criteria
+
+The homepage is aligned when:
+
+- a new visitor understands the product in under 10 seconds
+- the page feels like a quantitative product, not a startup template
+- the simulator preview feels adjacent to a real workflow
+- documentation and metadata describe the same product

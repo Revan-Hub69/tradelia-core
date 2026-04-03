@@ -1,10 +1,14 @@
 {
-  "eyebrow": "Come funziona",
-  "title": "In 3 passi verso la scelta migliore",
-  "step1_title": "Definisci il tuo scenario",
-  "step1_desc": "Inserisci asset, capitale, leva, orizzonte temporale e strategia operativa. Il simulatore normalizza tutti gli strumenti alla stessa esposizione.",
-  "step2_title": "Analisi con dati reali",
-  "step2_desc": "Il simulatore calcola costi reali da database misurati, normalizza gli strumenti e genera classifiche strumenti e broker più efficienti.",
-  "step3_title": "Confronto e insight",
-  "step3_desc": "Ottieni tabella comparativa con costi, breakdown per componente e ranking di efficienza per strumento e broker."
+  "eyebrow": "Il meccanismo",
+  "title": "Smetti di indovinare. Inizia a calcolare.",
+  "intro": "Il simulatore non parla di costi in astratto. Incrocia il tuo stile operativo con un database di spread, swap e commissioni applicati a mercato.",
+  "step1_tag": "profilo",
+  "step2_tag": "calcolo",
+  "step3_tag": "verdetto",
+  "step1_title": "Definisci il tuo stile",
+  "step1_desc": "Inserisci capitale, leva, orizzonte temporale e frequenza dei trade.",
+  "step2_title": "Lascia calcolare il motore",
+  "step2_desc": "Il sistema applica spread medi, swap e commissioni reali dei principali broker e strumenti.",
+  "step3_title": "Ottieni il verdetto",
+  "step3_desc": "Scopri quale setup e matematicamente piu efficiente per il tuo profilo."
 }

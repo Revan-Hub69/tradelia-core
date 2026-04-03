@@ -20,8 +20,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'Tradelia - Trading Challenges & AI Signals',
-  description: 'Find the right trading challenge, track your active runs, and follow AI signals',
+  title: 'TradeScope | Trading Cost Simulator',
+  description: 'Model spreads, swaps, commissions, and holding pressure to find the broker and instrument setup that best protects your net returns.',
   icons: [
     {
       rel: 'apple-touch-icon',

@@ -1,48 +1,37 @@
-# Docs - Trading Focus Only
+# Docs Index
 
-**Data**: 26 Gennaio 2026  
-**Focus**: Trading competitions → Prop Firm CFD/Futures
+This folder contains both current product docs and legacy research.
 
----
+## Canonical Product Docs
 
-## 📁 Struttura
+These are the documents that should guide new work on the public product:
 
-```
-docs/
-├── research/           ← Ricerche trading
-│   ├── TRADING_PATH_2026.md
-│   ├── TRADING_COMPETITIONS_FREE_PRIZES_2026.md
-│   ├── PROP_FIRM_BOOTSTRAP_STRATEGY_TIER1_2026.md
-│   ├── FUTURES_VS_CFD_PROPFIRM_TIER1_2026.md
-│   ├── INTELLIGENT_TRADING_ARCHITECTURE_TIER1_2026.md
-│   ├── AI_TRADING_INFRASTRUCTURE_PROPFIRM_TIER1_2026.md
-│   └── ACADEMIC_REALITY_CHECK_TRADING_TIER1_2026.md
-│
-└── _archive_2026-01-26/  ← Tutto il resto archiviato
-```
+- `HOMEPAGE_REDESIGN_ARCHITECTURE.md`
+- `FRONTEND_SOTA_2026_CHEATSHEET.md`
 
----
+Current public direction:
 
-## 🎯 Documenti Attivi
+- product name: `TradeScope`
+- brand: `Tradelia`
+- category: trading cost simulator
+- homepage: single-tool landing
+- primary narrative: spreads, swaps, commissions, and cost-aware broker selection
 
-### Trading Path
-- **research/TRADING_PATH_2026.md** - Piano completo
-- **research/TRADING_COMPETITIONS_FREE_PRIZES_2026.md** - Competitions
-- **research/PROP_FIRM_BOOTSTRAP_STRATEGY_TIER1_2026.md** - Prop firm
-- **research/FUTURES_VS_CFD_PROPFIRM_TIER1_2026.md** - CFD vs Futures
-- **research/INTELLIGENT_TRADING_ARCHITECTURE_TIER1_2026.md** - Architettura
-- **research/AI_TRADING_INFRASTRUCTURE_PROPFIRM_TIER1_2026.md** - AI trading
-- **research/ACADEMIC_REALITY_CHECK_TRADING_TIER1_2026.md** - Realtà
+## Legacy / Historical Material
 
----
+Many docs in `docs/research/` and several root docs still reflect older product directions:
 
-## 🗂️ Archivio
+- trading challenges
+- prop-firm infrastructure
+- AI signals
+- challenge dashboards
 
-Tutto il resto (Tradelia app, email system, UI, etc.) è in:
-- **_archive_2026-01-26/**
+These files are useful as background context only.
+They are not the public product spec.
 
-**Motivo**: Focus 100% su trading path
+## Working Rule
 
----
+If a document conflicts with the current homepage or the canonical docs above:
 
-*Focus: Trading competitions → Prop Firm CFD/Futures*
+1. trust the canonical docs
+2. treat the conflicting file as legacy unless explicitly updated

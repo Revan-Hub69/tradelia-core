@@ -1,22 +1,71 @@
-// Use type safe message keys with `next-intl`
 type Messages = typeof import('../locales/en.json');
 
-// Namespace messages (modular translation system)
+type AnalysisMessages = typeof import('../../messages/en/Analysis.json');
+type BenefitsOverviewMessages = typeof import('../../messages/en/BenefitsOverview.json');
+type ChallengesMessages = typeof import('../../messages/en/Challenges.json');
+type ChartMessages = typeof import('../../messages/en/Chart.json');
 type CommonMessages = typeof import('../../messages/en/common.json');
-type DashboardSettingsMessages = typeof import('../../messages/en/dashboard-settings.json');
+type CompareMessages = typeof import('../../messages/en/Compare.json');
+type ComparisonMessages = typeof import('../../messages/en/Comparison.json');
 type ContactMessages = typeof import('../../messages/en/contact.json');
-type ChallengesMessages = typeof import('../../messages/en/challenges.json');
+type DashboardSettingsMessages = typeof import('../../messages/en/dashboard-settings.json');
+type DisclaimerMessages = typeof import('../../messages/en/Disclaimer.json');
+type EmailMessages = typeof import('../../messages/en/email.json');
+type ExposureMessages = typeof import('../../messages/en/Exposure.json');
+type FaqMessages = typeof import('../../messages/en/FAQ.json');
+type FlowMessages = typeof import('../../messages/en/Flow.json');
+type FrameworkMessages = typeof import('../../messages/en/Framework.json');
+type HeroMessages = typeof import('../../messages/en/Hero.json');
+type HowItWorksMessages = typeof import('../../messages/en/HowItWorks.json');
+type IndexMessages = typeof import('../../messages/en/Index.json');
+type LandingFooterMessages = typeof import('../../messages/en/LandingFooter.json');
+type MethodologyMessages = typeof import('../../messages/en/Methodology.json');
 type MyChallengesMessages = typeof import('../../messages/en/my-challenges.json');
+type NavbarMessages = typeof import('../../messages/en/Navbar.json');
+type NetReturnMessages = typeof import('../../messages/en/NetReturn.json');
+type OutputPreviewMessages = typeof import('../../messages/en/OutputPreview.json');
+type ProblemMessages = typeof import('../../messages/en/Problem.json');
+type ScenarioMessages = typeof import('../../messages/en/Scenario.json');
 type SignalsMessages = typeof import('../../messages/en/signals.json');
+type SocialProofMessages = typeof import('../../messages/en/SocialProof.json');
+type ToolMessages = typeof import('../../messages/en/Tool.json');
+type ToolsMessages = typeof import('../../messages/en/Tools.json');
+type TradeHeroMessages = typeof import('../../messages/en/TradeHero.json');
+type WhyDifferentMessages = typeof import('../../messages/en/WhyDifferent.json');
 
-// Merge all message types
 type AllMessages = Messages & {
-  Common: CommonMessages;
-  DashboardSettings: DashboardSettingsMessages;
-  Contact: ContactMessages;
+  Analysis: AnalysisMessages;
+  BenefitsOverview: BenefitsOverviewMessages;
   Challenges: ChallengesMessages;
+  Chart: ChartMessages;
+  Common: CommonMessages;
+  Compare: CompareMessages;
+  Comparison: ComparisonMessages;
+  Contact: ContactMessages;
+  DashboardSettings: DashboardSettingsMessages;
+  Disclaimer: DisclaimerMessages;
+  email: EmailMessages;
+  Exposure: ExposureMessages;
+  FAQ: FaqMessages;
+  Flow: FlowMessages;
+  Framework: FrameworkMessages;
+  Hero: HeroMessages;
+  HowItWorks: HowItWorksMessages;
+  Index: IndexMessages;
+  LandingFooter: LandingFooterMessages;
+  Methodology: MethodologyMessages;
   MyChallenges: MyChallengesMessages;
+  Navbar: NavbarMessages;
+  NetReturn: NetReturnMessages;
+  OutputPreview: OutputPreviewMessages;
+  Problem: ProblemMessages;
+  Scenario: ScenarioMessages;
   Signals: SignalsMessages;
+  SocialProof: SocialProofMessages;
+  Tool: ToolMessages;
+  Tools: ToolsMessages;
+  TradeHero: TradeHeroMessages;
+  WhyDifferent: WhyDifferentMessages;
 };
 
 // eslint-disable-next-line ts/consistent-type-definitions

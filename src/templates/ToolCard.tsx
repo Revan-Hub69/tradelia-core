@@ -5,13 +5,13 @@ import { useTranslations } from 'next-intl';
 
 import { Button } from '@/components/ui/button';
 
-interface ToolCardProps {
+type ToolCardProps = {
   variant: 'primary' | 'secondary';
   namespace: string;
   features: string[];
   ctaKey: string;
   href: string;
-}
+};
 
 export const ToolCard = ({
   variant,
@@ -20,7 +20,7 @@ export const ToolCard = ({
   ctaKey,
   href,
 }: ToolCardProps) => {
-  const t = useTranslations(namespace) as (key: string) => string;
+  const t = useTranslations(namespace as never) as (key: string) => string;
   const isPrimary = variant === 'primary';
 
   return (

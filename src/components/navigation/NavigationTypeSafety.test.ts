@@ -19,7 +19,7 @@ import {
 
 // Generator for navigation item IDs
 const navigationItemIdGenerator = (): fc.Arbitrary<NavigationItemId> => {
-  return fc.constantFrom('challenges', 'my-challenges', 'signals');
+  return fc.constantFrom('radar', 'structure', 'volatility', 'terminal', 'market');
 };
 
 // Generator for navigation items
@@ -27,9 +27,12 @@ const navigationItemGenerator = (): fc.Arbitrary<NavigationItem> => {
   return navigationItemIdGenerator().chain((id) => {
     const keyName = `nav_${id.replace('-', '_')}`;
     const iconNameMap: Record<NavigationItemId, string> = {
-      'challenges': 'ChallengesIcon',
-      'my-challenges': 'MyChartsIcon',
-      'signals': 'SignalsIcon',
+      radar: 'SignalsIcon',
+      structure: 'TrendingUpIcon',
+      volatility: 'WarningIcon',
+      terminal: 'SearchIcon',
+      market: 'TrendingUpIcon',
+      settings: 'SettingsIcon',
     };
     return fc.record({
       id: fc.constant(id),
@@ -122,7 +125,7 @@ describe('Navigation Type Safety Property Tests', () => {
             expect(item).toHaveProperty('iconName');
 
             // Type safety: id should be a valid NavigationItemId
-            expect(['challenges', 'my-challenges', 'signals']).toContain(item.id);
+            expect(['radar', 'structure', 'volatility', 'terminal', 'market']).toContain(item.id);
 
             // i18n keys should follow the expected pattern
             expect(item.labelKey).toMatch(/^Dashboard\.nav_/);

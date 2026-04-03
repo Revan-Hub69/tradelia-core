@@ -1,10 +1,14 @@
 {
-  "eyebrow": "How it works",
-  "title": "3 steps to the best choice",
-  "step1_title": "Define your scenario",
-  "step1_desc": "Enter asset, capital, leverage, time horizon and operational strategy. The simulator normalizes all instruments to the same exposure.",
-  "step2_title": "Real data analysis",
-  "step2_desc": "The simulator calculates real costs from measured databases, normalizes instruments and generates rankings of most efficient instruments and brokers.",
-  "step3_title": "Compare and insights",
-  "step3_desc": "Get comparative table with costs, component breakdown and efficiency ranking for instruments and brokers."
+  "eyebrow": "Mechanism",
+  "title": "Stop guessing. Start calculating.",
+  "intro": "The simulator does not talk about costs in abstract terms. It cross-matches your trading profile with a database of real spreads, swaps, and commissions.",
+  "step1_tag": "input",
+  "step2_tag": "engine",
+  "step3_tag": "verdict",
+  "step1_title": "Define your style",
+  "step1_desc": "Enter capital, leverage, holding horizon, and trade frequency.",
+  "step2_title": "Let the engine calculate",
+  "step2_desc": "The system applies average spreads, swaps, and real commissions across major brokers and instruments.",
+  "step3_title": "Get the verdict",
+  "step3_desc": "See which setup is mathematically more efficient for your profile."
 }
