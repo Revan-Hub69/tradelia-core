@@ -98,6 +98,42 @@ const CostBarChart = ({ labels }: CostBarChartProps) => (
   </svg>
 );
 
+/** Pipeline pill — three steps shown as inline chips */
+const PipelinePills = ({ steps }: { steps: string[] }) => (
+  <div className="mt-6 flex flex-wrap items-center gap-2" aria-label="Analysis pipeline">
+    {steps.map((step, i) => (
+      <>
+        <span
+          key={step}
+          className="inline-flex items-center rounded-full border border-border/40 bg-muted/20 px-3 py-1 font-mono text-[11px] text-muted-foreground/70"
+        >
+          <span className="mr-1.5 font-semibold text-primary/60">0{i + 1}</span>
+          {step}
+        </span>
+        {i < steps.length - 1 && (
+          <svg
+            key={`arrow-${i}`}
+            width="12"
+            height="8"
+            viewBox="0 0 12 8"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M0 4H8M6 1.5L10 4L6 6.5"
+              stroke="currentColor"
+              strokeOpacity="0.3"
+              strokeWidth="1.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        )}
+      </>
+    ))}
+  </div>
+);
+
 interface HeroProps {
   broker?: string;
 }
@@ -105,6 +141,7 @@ interface HeroProps {
 export const Hero = ({ broker }: HeroProps) => {
   const t = useTranslations('Hero') as (key: string) => string;
   const tChart = useTranslations('Chart') as (key: string) => string;
+  const tFramework = useTranslations('Framework') as (key: string) => string;
 
   const chartLabels = {
     net: tChart('net'),
@@ -121,6 +158,12 @@ export const Hero = ({ broker }: HeroProps) => {
     optionsSub: tChart('options_sub'),
     turboSub: tChart('turbo_sub'),
   };
+
+  const pipelineSteps = [
+    tFramework('returns_label'),
+    tFramework('exposure_label'),
+    tFramework('flow_label'),
+  ];
 
   return (
     <section className="relative overflow-hidden px-4 py-16 pt-24 sm:px-6 sm:py-20 sm:pt-28 md:py-24 md:pt-32 lg:py-28 lg:pt-36">
@@ -140,15 +183,11 @@ export const Hero = ({ broker }: HeroProps) => {
                 )}
               </p>
 
-              {/* H1 */}
+              {/* H1 — plain, no decorative underline */}
               <h1 className="max-w-xl text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl">
                 {t('hero_title_part1')}{' '}
-                <span className="relative inline-block pb-1 text-primary">
+                <span className="text-primary">
                   {t('hero_title_part2')}
-                  <span
-                    className="absolute -bottom-0.5 left-0 h-[3px] w-full rounded-full bg-primary/40"
-                    aria-hidden="true"
-                  />
                 </span>
               </h1>
             </SlideReveal>
@@ -160,13 +199,16 @@ export const Hero = ({ broker }: HeroProps) => {
                   ? t('hero_subtitle_broker').replace('{broker}', broker)
                   : t('hero_subtitle')}
               </p>
+
+              {/* Pipeline pills — shows the 3-step process inline */}
+              <PipelinePills steps={pipelineSteps} />
             </FadeIn>
 
             <FadeIn delay={400}>
-              {/* CTA */}
+              {/* CTA — primary → Net Return Model, secondary → #framework */}
               <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:gap-4">
                 <Button asChild size="lg" className="h-12 px-6 text-base sm:h-13 sm:px-8">
-                  <Link href="/tool">{t('cta_primary')}</Link>
+                  <Link href="/net-return">{t('cta_primary')}</Link>
                 </Button>
                 <Button asChild variant="outline" size="default" className="h-11 px-5 text-sm sm:h-12 sm:px-6">
                   <Link href="#framework">{t('cta_secondary')}</Link>
