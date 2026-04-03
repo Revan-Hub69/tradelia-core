@@ -10,11 +10,18 @@ import { Logo } from './Logo';
 
 export const LandingFooter = () => {
   const t = useTranslations('LandingFooter') as (key: string) => string;
+  const navLinks = [
+    { href: '/#problem', label: t('nav_problem') },
+    { href: '/#how-it-works', label: t('nav_mechanism') },
+    { href: '/#simulator', label: t('nav_simulator') },
+    { href: '/#faq', label: t('nav_faq') },
+  ];
+  const scopeItems = [t('scope_item_1'), t('scope_item_2'), t('scope_item_3')];
 
   return (
     <footer className="border-t border-border/40 bg-slate-950 py-10 text-slate-200 sm:py-12 lg:py-14 2xl:py-16">
       <SectionContainer size="wide">
-        <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+        <div className="grid gap-8 lg:grid-cols-[1.15fr_0.72fr_0.98fr] lg:gap-10">
           <div className="max-w-md">
             <Logo href="/" />
             <div className="mt-4 inline-flex rounded-full border border-slate-800 bg-slate-900 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-400">
@@ -23,21 +30,70 @@ export const LandingFooter = () => {
             <p className="mt-4 text-sm leading-7 text-slate-400">
               {t('description')}
             </p>
+            <div className="mt-5 flex flex-wrap gap-2">
+              {[t('chip_asset'), t('chip_strategy'), t('chip_horizon')].map(item => (
+                <span
+                  key={item}
+                  className="rounded-full border border-slate-800 bg-slate-900/80 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-slate-400"
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
           </div>
 
-          <div className="flex flex-col items-start gap-3 text-sm md:items-end">
-            <a
-              href="#faq"
-              className="font-mono text-[11px] uppercase tracking-[0.18em] text-slate-400 transition-colors hover:text-slate-100"
-            >
-              {t('faq')}
-            </a>
-            <Link
-              href="/contact"
-              className="font-mono text-[11px] uppercase tracking-[0.18em] text-slate-400 transition-colors hover:text-slate-100"
-            >
-              {t('contact')}
-            </Link>
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+              {t('nav_title')}
+            </p>
+            <div className="mt-4 grid gap-3">
+              {navLinks.map(link => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="font-mono text-[11px] uppercase tracking-[0.18em] text-slate-400 transition-colors hover:text-slate-100"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-[28px] border border-slate-800 bg-slate-900/70 p-5 sm:p-6">
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+              {t('scope_title')}
+            </p>
+            <div className="mt-4 space-y-3">
+              {scopeItems.map(item => (
+                <div key={item} className="flex items-start gap-3 text-sm leading-6 text-slate-300">
+                  <span className="mt-2 size-1.5 shrink-0 rounded-full bg-sky-400" />
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6 border-t border-slate-800 pt-5">
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+                {t('contact_title')}
+              </p>
+              <p className="mt-3 text-sm leading-7 text-slate-400">
+                {t('contact_note')}
+              </p>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center rounded-full bg-slate-100 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-slate-950 transition-colors hover:bg-white"
+                >
+                  {t('contact')}
+                </Link>
+                <a
+                  href="mailto:support@tradelia.org"
+                  className="inline-flex items-center rounded-full border border-slate-700 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-slate-300 transition-colors hover:border-slate-500 hover:text-slate-100"
+                >
+                  {t('email_cta')}
+                </a>
+              </div>
+            </div>
           </div>
         </div>
 

@@ -1,7 +1,7 @@
 {
   "net": "Rendimento netto",
   "drag": "Cost drag",
-  "same_underlying": "STESSO SOTTOSTANTE — EFFICIENZA DIVERSA",
+  "same_underlying": "STESSO SOTTOSTANTE / EFFICIENZA DIVERSA",
   "etf": "ETF",
   "etf_sub": "TER 0.20%",
   "cfd": "CFD",
@@ -10,6 +10,6 @@
   "futures_sub": "rollover",
   "options": "Options",
   "options_sub": "theta+comm.",
-  "turbo": "Turbo/KO",
-  "turbo_sub": "gap risk+KO"
+  "cash": "Cash/Spot",
+  "cash_sub": "ticket+custody"
 }

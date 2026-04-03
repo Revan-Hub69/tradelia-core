@@ -152,7 +152,7 @@ export const Navbar = () => {
         </SectionContainer>
       </header>
 
-      <div className={cn('fixed inset-0 z-50 md:hidden', isMenuOpen ? 'pointer-events-auto' : 'pointer-events-none')}>
+      <div className={cn('fixed inset-0 z-50 overflow-x-clip md:hidden', isMenuOpen ? 'pointer-events-auto' : 'pointer-events-none')}>
         <div
           className={cn('absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300', isMenuOpen ? 'opacity-100' : 'opacity-0')}
           onClick={() => setIsMenuOpen(false)}

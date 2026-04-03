@@ -1,7 +1,21 @@
 {
-  "description": "TradeScope is Tradelia's public simulator for reading the real weight of spreads, swaps, and commissions on a trading profile.",
-  "faq": "Frequently asked questions",
+  "description": "TradeScope is Tradelia's public simulator for comparing brokers and instruments by asset, strategy, horizon, capital, and leverage.",
+  "chip_asset": "Asset",
+  "chip_strategy": "Strategy",
+  "chip_horizon": "Horizon",
+  "nav_title": "Navigation",
+  "nav_problem": "Problem",
+  "nav_mechanism": "Mechanism",
+  "nav_simulator": "Simulator",
+  "nav_faq": "FAQ",
+  "scope_title": "Coverage",
+  "scope_item_1": "From intraday index and forex trading to position stock picking.",
+  "scope_item_2": "Also covers ETF accumulation plans, core-satellite allocation, and long-horizon cases.",
+  "scope_item_3": "The final ranking compares execution drag, holding cost, and structural friction.",
+  "contact_title": "Contact",
+  "contact_note": "For methodology, data, or partnerships, use the contact page or write directly to support.",
   "contact": "Contact",
+  "email_cta": "Support email",
   "disclaimer": "Informational tool. Results do not constitute personalized investment advice.",
   "copyright": "All rights reserved."
 }

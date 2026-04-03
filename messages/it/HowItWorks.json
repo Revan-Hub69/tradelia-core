@@ -1,14 +1,14 @@
 {
   "eyebrow": "Il meccanismo",
   "title": "Smetti di indovinare. Inizia a calcolare.",
-  "intro": "Il simulatore non parla di costi in astratto. Incrocia il tuo stile operativo con un database di spread, swap e commissioni applicati a mercato.",
-  "step1_tag": "profilo",
-  "step2_tag": "calcolo",
-  "step3_tag": "verdetto",
-  "step1_title": "Definisci il tuo stile",
-  "step1_desc": "Inserisci capitale, leva, orizzonte temporale e frequenza dei trade.",
-  "step2_title": "Lascia calcolare il motore",
-  "step2_desc": "Il sistema applica spread medi, swap e commissioni reali dei principali broker e strumenti.",
-  "step3_title": "Ottieni il verdetto",
-  "step3_desc": "Scopri quale setup e matematicamente piu efficiente per il tuo profilo."
+  "intro": "Il simulatore non parte dall'etichetta generica di trader. Parte da asset, strategia, orizzonte, capitale e leva, poi incrocia la combinazione con un database di costi reali.",
+  "step1_tag": "contesto",
+  "step2_tag": "motore",
+  "step3_tag": "ranking",
+  "step1_title": "Definisci il contesto",
+  "step1_desc": "Seleziona asset, orizzonte temporale e strategia. Le strategie disponibili cambiano in base al contesto scelto.",
+  "step2_title": "Lascia leggere il motore",
+  "step2_desc": "Il sistema applica spread, funding, TER e commissioni reali agli strumenti e ai broker coerenti con la combinazione.",
+  "step3_title": "Ottieni il ranking",
+  "step3_desc": "Scopri quale combinazione broker e strumento e matematicamente piu efficiente per il tuo caso d'uso."
 }

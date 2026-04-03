@@ -1,7 +1,21 @@
 {
-  "description": "TradeScope e il simulatore pubblico di Tradelia per leggere il vero peso di spread, swap e commissioni sulla tua operativita.",
-  "faq": "Domande frequenti",
+  "description": "TradeScope e il simulatore pubblico di Tradelia per confrontare broker e strumenti in base ad asset, strategia, orizzonte, capitale e leva.",
+  "chip_asset": "Asset",
+  "chip_strategy": "Strategia",
+  "chip_horizon": "Orizzonte",
+  "nav_title": "Navigazione",
+  "nav_problem": "Problema",
+  "nav_mechanism": "Meccanismo",
+  "nav_simulator": "Simulatore",
+  "nav_faq": "FAQ",
+  "scope_title": "Copertura",
+  "scope_item_1": "Dall'intraday su indici e forex fino allo stock picking position.",
+  "scope_item_2": "Include anche PAC ETF, allocazione core-satellite e casi di lungo periodo.",
+  "scope_item_3": "Il ranking finale confronta attrito di esecuzione, mantenimento e struttura costi.",
+  "contact_title": "Contatti",
+  "contact_note": "Per metodologia, dati o partnership puoi usare il modulo contatti oppure scrivere direttamente al supporto.",
   "contact": "Contatti",
+  "email_cta": "Email supporto",
   "disclaimer": "Strumento informativo. I risultati non costituiscono consulenza finanziaria personalizzata.",
   "copyright": "Tutti i diritti riservati."
 }

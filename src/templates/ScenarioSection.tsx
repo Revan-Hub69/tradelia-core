@@ -1,59 +1,174 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { SectionContainer } from '@/components/ui/SectionContainer';
 
-const timeHorizons = [
-  { key: 'intraday' },
-  { key: 'multiday' },
-  { key: 'position' },
-] as const;
+type AssetKey = 'equities' | 'etf' | 'forex' | 'indices';
+type HorizonKey = 'intraday' | 'swing' | 'position' | 'accumulation';
+type DriverKey = 'execution' | 'holding' | 'structure';
 
-const tradeFrequencies = [
-  { key: 'low' },
-  { key: 'medium' },
-  { key: 'high' },
-] as const;
+type DriverWeights = Record<DriverKey, number>;
+
+type StrategyDefinition = {
+  key: string;
+  horizons: HorizonKey[];
+  driverBias: DriverWeights;
+};
+
+type AssetDefinition = {
+  horizons: HorizonKey[];
+  baseDrivers: DriverWeights;
+  strategies: StrategyDefinition[];
+};
+
+const driverKeys: DriverKey[] = ['execution', 'holding', 'structure'];
+const assetKeys: AssetKey[] = ['equities', 'etf', 'forex', 'indices'];
+
+const horizonAdjustments: Record<HorizonKey, DriverWeights> = {
+  intraday: { execution: 18, holding: -10, structure: -8 },
+  swing: { execution: 8, holding: 4, structure: -2 },
+  position: { execution: -4, holding: 8, structure: 8 },
+  accumulation: { execution: -12, holding: -6, structure: 18 },
+};
+
+const assetMatrix: Record<AssetKey, AssetDefinition> = {
+  equities: {
+    horizons: ['intraday', 'swing', 'position', 'accumulation'],
+    baseDrivers: { execution: 26, holding: 16, structure: 58 },
+    strategies: [
+      { key: 'opening_breakout', horizons: ['intraday'], driverBias: { execution: 18, holding: -8, structure: -4 } },
+      { key: 'mean_reversion', horizons: ['intraday', 'swing'], driverBias: { execution: 12, holding: -4, structure: 0 } },
+      { key: 'earnings_swing', horizons: ['swing'], driverBias: { execution: 6, holding: 8, structure: 2 } },
+      { key: 'stock_picking', horizons: ['position'], driverBias: { execution: -6, holding: 4, structure: 14 } },
+      { key: 'quality_compound', horizons: ['position', 'accumulation'], driverBias: { execution: -10, holding: -2, structure: 18 } },
+      { key: 'dividend_reinvest', horizons: ['accumulation'], driverBias: { execution: -12, holding: -4, structure: 20 } },
+    ],
+  },
+  etf: {
+    horizons: ['swing', 'position', 'accumulation'],
+    baseDrivers: { execution: 18, holding: 10, structure: 72 },
+    strategies: [
+      { key: 'sector_rotation', horizons: ['swing'], driverBias: { execution: 8, holding: 0, structure: 6 } },
+      { key: 'core_satellite', horizons: ['position', 'accumulation'], driverBias: { execution: -4, holding: 0, structure: 12 } },
+      { key: 'macro_allocation', horizons: ['position'], driverBias: { execution: -6, holding: 0, structure: 14 } },
+      { key: 'pac_etf', horizons: ['accumulation'], driverBias: { execution: -12, holding: -4, structure: 22 } },
+    ],
+  },
+  forex: {
+    horizons: ['intraday', 'swing', 'position'],
+    baseDrivers: { execution: 50, holding: 30, structure: 20 },
+    strategies: [
+      { key: 'session_breakout', horizons: ['intraday'], driverBias: { execution: 18, holding: -6, structure: -4 } },
+      { key: 'mean_reversion_fx', horizons: ['intraday', 'swing'], driverBias: { execution: 12, holding: 2, structure: -2 } },
+      { key: 'macro_swing', horizons: ['swing'], driverBias: { execution: 4, holding: 10, structure: 0 } },
+      { key: 'carry_trade', horizons: ['position'], driverBias: { execution: -4, holding: 18, structure: -2 } },
+    ],
+  },
+  indices: {
+    horizons: ['intraday', 'swing', 'position'],
+    baseDrivers: { execution: 56, holding: 24, structure: 20 },
+    strategies: [
+      { key: 'trend_day', horizons: ['intraday'], driverBias: { execution: 20, holding: -6, structure: -4 } },
+      { key: 'open_drive', horizons: ['intraday'], driverBias: { execution: 18, holding: -6, structure: -4 } },
+      { key: 'breakout_pullback', horizons: ['swing'], driverBias: { execution: 8, holding: 6, structure: 0 } },
+      { key: 'macro_trend', horizons: ['position'], driverBias: { execution: 2, holding: 12, structure: 0 } },
+    ],
+  },
+};
+
+const sumWeights = (...groups: DriverWeights[]) =>
+  driverKeys.reduce<DriverWeights>(
+    (accumulator, key) => {
+      accumulator[key] = groups.reduce((sum, group) => sum + group[key], 0);
+      return accumulator;
+    },
+    { execution: 0, holding: 0, structure: 0 },
+  );
+
+const getCapitalBias = (capital: number): DriverWeights => {
+  if (capital >= 50000) {
+    return { execution: 8, holding: 4, structure: -10 };
+  }
+
+  if (capital >= 10000) {
+    return { execution: 3, holding: 2, structure: -2 };
+  }
+
+  return { execution: -2, holding: 0, structure: 10 };
+};
+
+const getLeverageBias = (leverage: number, horizon: HorizonKey): DriverWeights => ({
+  execution: Math.round((leverage - 1) * 0.9),
+  holding: Math.round((leverage - 1) * (horizon === 'intraday' ? 0.4 : 1.5)),
+  structure: Math.round((leverage - 1) * 0.4),
+});
 
 export const ScenarioSection = () => {
   const t = useTranslations('Scenario') as (key: string) => string;
 
-  const [selectedHorizon, setSelectedHorizon] = useState('multiday');
-  const [selectedFrequency, setSelectedFrequency] = useState('medium');
-  const [capital, setCapital] = useState(10000);
-  const [leverage, setLeverage] = useState(3);
+  const [selectedAsset, setSelectedAsset] = useState<AssetKey>('etf');
+  const [selectedHorizon, setSelectedHorizon] = useState<HorizonKey>('accumulation');
+  const [selectedStrategy, setSelectedStrategy] = useState('pac_etf');
+  const [capital, setCapital] = useState(15000);
+  const [leverage, setLeverage] = useState(1);
 
-  const baseWeights = {
-    intraday: { spread: 54, swap: 6, commissions: 40 },
-    multiday: { spread: 34, swap: 38, commissions: 28 },
-    position: { spread: 18, swap: 58, commissions: 24 },
-  }[selectedHorizon as 'intraday' | 'multiday' | 'position'];
+  useEffect(() => {
+    const nextHorizons = assetMatrix[selectedAsset].horizons;
+    const fallbackHorizon = nextHorizons[0];
 
-  const frequencyAdjustments = {
-    low: { spread: -8, swap: 8, commissions: -3 },
-    medium: { spread: 0, swap: 0, commissions: 0 },
-    high: { spread: 12, swap: -10, commissions: 10 },
-  }[selectedFrequency as 'low' | 'medium' | 'high'];
+    if (fallbackHorizon && !nextHorizons.includes(selectedHorizon)) {
+      setSelectedHorizon(fallbackHorizon);
+      return;
+    }
 
-  const rawDrivers = {
-    spread: Math.max(8, baseWeights.spread + frequencyAdjustments.spread + Math.round(leverage * 0.8)),
-    swap: Math.max(6, baseWeights.swap + frequencyAdjustments.swap + Math.round(leverage * (selectedHorizon === 'position' ? 1.6 : 0.7))),
-    commissions: Math.max(8, baseWeights.commissions + frequencyAdjustments.commissions + Math.round(leverage * (selectedFrequency === 'high' ? 0.7 : 0.3))),
-  };
+    const nextStrategies = assetMatrix[selectedAsset].strategies.filter(strategy =>
+      strategy.horizons.includes(selectedHorizon),
+    );
 
-  const total = rawDrivers.spread + rawDrivers.swap + rawDrivers.commissions;
-  const spreadValue = Math.round((rawDrivers.spread / total) * 100);
-  const swapValue = Math.round((rawDrivers.swap / total) * 100);
+    if (!nextStrategies.some(strategy => strategy.key === selectedStrategy)) {
+      setSelectedStrategy(nextStrategies[0]?.key ?? selectedStrategy);
+    }
+  }, [selectedAsset, selectedHorizon, selectedStrategy]);
+
+  const selectedAssetConfig = assetMatrix[selectedAsset];
+  const availableHorizons = selectedAssetConfig.horizons;
+  const availableStrategies = selectedAssetConfig.strategies.filter(strategy =>
+    strategy.horizons.includes(selectedHorizon),
+  );
+  const activeStrategy = availableStrategies.find(strategy => strategy.key === selectedStrategy) ?? availableStrategies[0];
+
+  if (!activeStrategy) {
+    return null;
+  }
+
+  const rawDrivers = sumWeights(
+    selectedAssetConfig.baseDrivers,
+    horizonAdjustments[selectedHorizon],
+    activeStrategy.driverBias,
+    getCapitalBias(capital),
+    getLeverageBias(leverage, selectedHorizon),
+  );
+
+  const executionRaw = Math.max(8, rawDrivers.execution);
+  const holdingRaw = Math.max(8, rawDrivers.holding);
+  const structureRaw = Math.max(8, rawDrivers.structure);
+  const total = executionRaw + holdingRaw + structureRaw;
+  const executionValue = Math.round((executionRaw / total) * 100);
+  const holdingValue = Math.round((holdingRaw / total) * 100);
+
   const drivers = [
-    { key: 'spread', value: spreadValue, barClass: 'bg-sky-400' },
-    { key: 'swap', value: swapValue, barClass: 'bg-amber-400' },
-    { key: 'commissions', value: 100 - spreadValue - swapValue, barClass: 'bg-indigo-400' },
-  ];
+    { key: 'execution', value: executionValue, barClass: 'bg-sky-400' },
+    { key: 'holding', value: holdingValue, barClass: 'bg-amber-400' },
+    { key: 'structure', value: 100 - executionValue - holdingValue, barClass: 'bg-emerald-400' },
+  ] as const;
 
-  const dominantDriver = [...drivers].sort((a, b) => b.value - a.value)[0]?.key ?? 'spread';
-  const pressureScore = Math.min(99, Math.round((rawDrivers.spread + rawDrivers.swap * 1.1 + rawDrivers.commissions * 0.9) / 3));
+  const dominantDriver = [...drivers].sort((a, b) => b.value - a.value)[0]?.key ?? 'execution';
+  const pressureScore = Math.min(
+    99,
+    Math.round((executionRaw * 0.95 + holdingRaw * 1.08 + structureRaw) / 3 + (leverage - 1) * 1.8),
+  );
   const firstAudit = t(`review_${dominantDriver}`);
 
   const capitalRead =
@@ -63,10 +178,19 @@ export const ScenarioSection = () => {
         ? t('read_capital_mid')
         : t('read_capital_small');
 
+  const leverageRead =
+    leverage === 1
+      ? t('read_leverage_unlevered')
+      : leverage <= 3
+        ? t('read_leverage_light')
+        : t('read_leverage_high');
+
   const engineReads = [
+    t(`read_asset_${selectedAsset}`),
     t(`read_horizon_${selectedHorizon}`),
-    t(`read_frequency_${selectedFrequency}`),
+    t(`read_strategy_${activeStrategy.key}`),
     capitalRead,
+    leverageRead,
   ];
 
   return (
@@ -96,6 +220,78 @@ export const ScenarioSection = () => {
             <div className="mt-5 space-y-4">
               <div className="rounded-2xl border border-border/50 bg-background/80 p-4">
                 <label className="text-sm font-medium">
+                  {t('asset_label')}
+                </label>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {assetKeys.map(asset => (
+                    <button
+                      key={asset}
+                      type="button"
+                      onClick={() => setSelectedAsset(asset)}
+                      className={`inline-flex items-center rounded-full px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] transition-colors ${
+                        selectedAsset === asset
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                      }`}
+                    >
+                      {t(`asset_${asset}`)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-border/50 bg-background/80 p-4">
+                <label className="text-sm font-medium">
+                  {t('horizon_label')}
+                </label>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {availableHorizons.map(horizon => (
+                    <button
+                      key={horizon}
+                      type="button"
+                      onClick={() => setSelectedHorizon(horizon)}
+                      className={`inline-flex items-center rounded-full px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] transition-colors ${
+                        selectedHorizon === horizon
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                      }`}
+                    >
+                      {t(`horizon_${horizon}`)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-border/50 bg-background/80 p-4">
+                <label className="text-sm font-medium">
+                  {t('strategy_label')}
+                </label>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {availableStrategies.map(strategy => (
+                    <button
+                      key={strategy.key}
+                      type="button"
+                      onClick={() => setSelectedStrategy(strategy.key)}
+                      className={`inline-flex items-center rounded-full px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] transition-colors ${
+                        selectedStrategy === strategy.key
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                      }`}
+                    >
+                      {t(`strategy_${strategy.key}`)}
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-3 text-xs leading-6 text-muted-foreground/60">
+                  {t('strategy_hint')}
+                </p>
+                <p className="mt-2 text-xs leading-6 text-muted-foreground/60">
+                  {t(`strategy_note_${activeStrategy.key}`)}
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-border/50 bg-background/80 p-4">
+                <label className="text-sm font-medium">
                   {t('capital_label')}
                 </label>
                 <div className="mt-3 flex items-center gap-3 rounded-2xl border border-border/50 bg-background px-4 py-3">
@@ -119,72 +315,25 @@ export const ScenarioSection = () => {
                     {t('leverage_label')}
                   </label>
                   <span className="font-mono text-sm text-primary">
-{leverage}
-x
+                    {leverage}
+                    x
                   </span>
                 </div>
                 <input
                   type="range"
                   min={1}
-                  max={15}
+                  max={12}
                   value={leverage}
                   onChange={e => setLeverage(Number(e.target.value))}
                   className="mt-4 flex h-2 w-full cursor-pointer appearance-none rounded-full bg-muted"
                   style={{
-                    background: `linear-gradient(to right, var(--primary) ${(leverage / 15) * 100}%, var(--muted) ${(leverage / 15) * 100}%)`,
+                    background: `linear-gradient(to right, var(--primary) ${(leverage / 12) * 100}%, var(--muted) ${(leverage / 12) * 100}%)`,
                   }}
                 />
                 <div className="mt-2 flex justify-between font-mono text-[11px] text-muted-foreground">
                   <span>1x</span>
-                  <span>15x</span>
+                  <span>12x</span>
                 </div>
-              </div>
-
-              <div className="rounded-2xl border border-border/50 bg-background/80 p-4">
-                <label className="text-sm font-medium">
-                  {t('horizon_label')}
-                </label>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {timeHorizons.map(horizon => (
-                    <button
-                      key={horizon.key}
-                      type="button"
-                      onClick={() => setSelectedHorizon(horizon.key)}
-                      className={`inline-flex items-center rounded-full px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] transition-colors ${
-                        selectedHorizon === horizon.key
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                      }`}
-                    >
-                      {t(`horizon_${horizon.key}`)}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-border/50 bg-background/80 p-4">
-                <label className="text-sm font-medium">
-                  {t('frequency_label')}
-                </label>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {tradeFrequencies.map(frequency => (
-                    <button
-                      key={frequency.key}
-                      type="button"
-                      onClick={() => setSelectedFrequency(frequency.key)}
-                      className={`inline-flex items-center rounded-full px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] transition-colors ${
-                        selectedFrequency === frequency.key
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                      }`}
-                    >
-                      {t(`frequency_${frequency.key}`)}
-                    </button>
-                  ))}
-                </div>
-                <p className="mt-3 text-xs leading-6 text-muted-foreground/60">
-                  {t(`frequency_hint_${selectedFrequency}`)}
-                </p>
               </div>
             </div>
           </div>
@@ -201,19 +350,22 @@ x
 
             <div className="mt-5 flex flex-wrap gap-2">
               <span className="rounded-full border border-slate-800 bg-slate-900/70 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.16em] text-slate-300">
-                EUR
-{' '}
-{capital.toLocaleString()}
-              </span>
-              <span className="rounded-full border border-slate-800 bg-slate-900/70 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.16em] text-slate-300">
-                {leverage}
-x
+                {t(`asset_${selectedAsset}`)}
               </span>
               <span className="rounded-full border border-slate-800 bg-slate-900/70 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.16em] text-slate-300">
                 {t(`horizon_${selectedHorizon}`)}
               </span>
               <span className="rounded-full border border-slate-800 bg-slate-900/70 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.16em] text-slate-300">
-                {t(`frequency_${selectedFrequency}`)}
+                {t(`strategy_${activeStrategy.key}`)}
+              </span>
+              <span className="rounded-full border border-slate-800 bg-slate-900/70 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.16em] text-slate-300">
+                EUR
+                {' '}
+                {capital.toLocaleString()}
+              </span>
+              <span className="rounded-full border border-slate-800 bg-slate-900/70 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.16em] text-slate-300">
+                {leverage}
+                x
               </span>
             </div>
 
@@ -242,8 +394,8 @@ x
                     <div className="flex items-center justify-between text-sm text-slate-300">
                       <span>{t(`driver_${driver.key}`)}</span>
                       <span className="font-mono text-xs">
-{driver.value}
-%
+                        {driver.value}
+                        %
                       </span>
                     </div>
                     <div className="h-2 rounded-full bg-slate-800">

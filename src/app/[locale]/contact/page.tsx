@@ -3,8 +3,9 @@ import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 
 import { ContactForm } from '@/components/forms/ContactForm';
 import { ClockIcon, MailIcon } from '@/components/icons';
+import { SectionContainer } from '@/components/ui/SectionContainer';
+import { LandingFooter } from '@/templates/LandingFooter';
 import { Navbar } from '@/templates/Navbar';
-import { PremiumFooter } from '@/templates/PremiumFooter';
 
 export async function generateMetadata(props: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const params = await props.params;
@@ -29,7 +30,7 @@ export default async function ContactPage(props: { params: Promise<{ locale: str
     <>
       <Navbar />
       <main id="main-content" className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
-        <div className="container max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
+        <SectionContainer size="content" className="py-16 sm:py-18 lg:py-20">
           {/* Header Section - Landing Style */}
           <div className="mb-12 text-center">
             <div className="mb-4 inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary backdrop-blur-sm">
@@ -99,9 +100,9 @@ export default async function ContactPage(props: { params: Promise<{ locale: str
               <ContactForm variant="landing" />
             </div>
           </div>
-        </div>
+        </SectionContainer>
       </main>
-      <PremiumFooter />
+      <LandingFooter />
     </>
   );
 }

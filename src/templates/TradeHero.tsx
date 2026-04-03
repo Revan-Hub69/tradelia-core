@@ -17,8 +17,8 @@ type ChartLabels = {
   futuresSub: string;
   options: string;
   optionsSub: string;
-  turbo: string;
-  turboSub: string;
+  cash: string;
+  cashSub: string;
 };
 
 const CostBarChart = ({ labels }: { labels: ChartLabels }) => (
@@ -65,10 +65,10 @@ const CostBarChart = ({ labels }: { labels: ChartLabels }) => (
     <text x="406" y="199" textAnchor="middle" style={{ fontSize: '7px', fill: 'currentColor', opacity: 0.48 }}>{labels.optionsSub}</text>
 
     <rect x="484" y="51" width="44" height="119" rx="3" fill="currentColor" fillOpacity="0.08" />
-    <rect x="484" y="128" width="44" height="42" rx="3" fill="#94A3B8" fillOpacity="0.72" />
-    <rect x="484" y="51" width="44" height="77" rx="2" fill="#EF4444" fillOpacity="0.95" />
-    <text x="506" y="188" textAnchor="middle" style={{ fontSize: '10px', fontWeight: 700, fill: 'currentColor', opacity: 0.9 }}>{labels.turbo}</text>
-    <text x="506" y="199" textAnchor="middle" style={{ fontSize: '7px', fill: 'currentColor', opacity: 0.48 }}>{labels.turboSub}</text>
+    <rect x="484" y="63" width="44" height="107" rx="3" fill="#34D399" fillOpacity="0.78" />
+    <rect x="484" y="51" width="44" height="12" rx="2" fill="#F97316" fillOpacity="0.9" />
+    <text x="506" y="188" textAnchor="middle" style={{ fontSize: '10px', fontWeight: 700, fill: 'currentColor', opacity: 0.9 }}>{labels.cash}</text>
+    <text x="506" y="199" textAnchor="middle" style={{ fontSize: '7px', fill: 'currentColor', opacity: 0.48 }}>{labels.cashSub}</text>
 
     <rect x="500" y="14" width="9" height="9" rx="1" fill="#60A5FA" fillOpacity="0.8" />
     <text x="513" y="22" style={{ fontSize: '8px', fill: 'currentColor', opacity: 0.58 }}>{labels.net}</text>
@@ -88,7 +88,6 @@ type TradeHeroProps = {
 export const TradeHero = ({ broker }: TradeHeroProps) => {
   const t = useTranslations('TradeHero') as (key: string) => string;
   const tChart = useTranslations('Chart') as (key: string) => string;
-  const tScenario = useTranslations('Scenario') as (key: string) => string;
 
   const chartLabels: ChartLabels = {
     net: tChart('net'),
@@ -102,37 +101,40 @@ export const TradeHero = ({ broker }: TradeHeroProps) => {
     futuresSub: tChart('futures_sub'),
     options: tChart('options'),
     optionsSub: tChart('options_sub'),
-    turbo: tChart('turbo'),
-    turboSub: tChart('turbo_sub'),
+    cash: tChart('cash'),
+    cashSub: tChart('cash_sub'),
   };
 
   const tapeItems = [
-    { label: t('tape_db_label'), value: t('tape_db_value') },
-    { label: t('tape_swap_label'), value: t('tape_swap_value') },
-    { label: t('tape_fee_label'), value: t('tape_fee_value') },
+    { label: t('tape_asset_label'), value: t('tape_asset_value') },
+    { label: t('tape_strategy_label'), value: t('tape_strategy_value') },
+    { label: t('tape_cost_label'), value: t('tape_cost_value') },
   ];
 
   const profileRows = [
     {
-      label: tScenario('horizon_intraday'),
-      note: t('monitor_intraday_note'),
-      dominant: t('chip_spread'),
-      intensity: 78,
-      barClass: 'bg-sky-400',
+      label: t('monitor_row_1_label'),
+      meta: t('monitor_row_1_meta'),
+      note: t('monitor_row_1_note'),
+      dominant: t('monitor_dominant_structure'),
+      intensity: 42,
+      barClass: 'bg-emerald-400',
     },
     {
-      label: tScenario('horizon_multiday'),
-      note: t('monitor_multiday_note'),
-      dominant: t('chip_swap'),
-      intensity: 64,
+      label: t('monitor_row_2_label'),
+      meta: t('monitor_row_2_meta'),
+      note: t('monitor_row_2_note'),
+      dominant: t('monitor_dominant_holding'),
+      intensity: 57,
       barClass: 'bg-amber-400',
     },
     {
-      label: tScenario('horizon_position'),
-      note: t('monitor_position_note'),
-      dominant: t('chip_commissions'),
-      intensity: 42,
-      barClass: 'bg-indigo-400',
+      label: t('monitor_row_3_label'),
+      meta: t('monitor_row_3_meta'),
+      note: t('monitor_row_3_note'),
+      dominant: t('monitor_dominant_execution'),
+      intensity: 83,
+      barClass: 'bg-sky-400',
     },
   ];
 
@@ -163,7 +165,7 @@ export const TradeHero = ({ broker }: TradeHeroProps) => {
             </p>
 
             <div className="mt-7 flex flex-wrap gap-2">
-              {['chip_spread', 'chip_swap', 'chip_commissions'].map(key => (
+              {['chip_asset', 'chip_strategy', 'chip_horizon'].map(key => (
                 <span
                   key={key}
                   className="rounded-full border border-border/60 bg-background px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-foreground/75"
@@ -209,7 +211,7 @@ export const TradeHero = ({ broker }: TradeHeroProps) => {
                   <div key={row.label} className="grid gap-3 sm:grid-cols-[110px_1fr] sm:items-start">
                     <div>
                       <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-slate-300">{row.label}</p>
-                      <p className="mt-1 text-[11px] text-slate-500">{row.dominant}</p>
+                      <p className="mt-1 text-[11px] text-slate-500">{row.meta}</p>
                     </div>
                     <div>
                       <div className="flex items-center justify-between text-[11px] text-slate-400">

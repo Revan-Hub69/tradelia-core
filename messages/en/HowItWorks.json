@@ -1,14 +1,14 @@
 {
   "eyebrow": "Mechanism",
   "title": "Stop guessing. Start calculating.",
-  "intro": "The simulator does not talk about costs in abstract terms. It cross-matches your trading profile with a database of real spreads, swaps, and commissions.",
-  "step1_tag": "input",
+  "intro": "The simulator does not start from the vague label of trader. It starts from asset, strategy, horizon, capital, and leverage, then cross-matches that combination with a real cost database.",
+  "step1_tag": "context",
   "step2_tag": "engine",
-  "step3_tag": "verdict",
-  "step1_title": "Define your style",
-  "step1_desc": "Enter capital, leverage, holding horizon, and trade frequency.",
-  "step2_title": "Let the engine calculate",
-  "step2_desc": "The system applies average spreads, swaps, and real commissions across major brokers and instruments.",
-  "step3_title": "Get the verdict",
-  "step3_desc": "See which setup is mathematically more efficient for your profile."
+  "step3_tag": "ranking",
+  "step1_title": "Define the context",
+  "step1_desc": "Choose asset, holding horizon, and strategy. Available strategies change with the selected context.",
+  "step2_title": "Let the engine read it",
+  "step2_desc": "The system applies real spreads, funding, TER, and commissions to the instruments and brokers that fit the combination.",
+  "step3_title": "Get the ranking",
+  "step3_desc": "See which broker and instrument combination is mathematically more efficient for your use case."
 }
