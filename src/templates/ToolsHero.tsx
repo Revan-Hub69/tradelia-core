@@ -6,94 +6,126 @@ import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 
 /**
- * Hero Illustration - Finance Tools SVG
- * Simple, clean visualization
+ * HeroIllustration - Decision pipeline visualisation
+ * Three analysis stages connected by directed flow
  */
 const HeroIllustration = () => (
   <svg
-    viewBox="0 0 400 280"
+    viewBox="0 0 480 160"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
-    className="h-auto w-full max-w-xs sm:max-w-sm"
+    className="h-auto w-full max-w-lg"
     aria-hidden="true"
   >
-    {/* Background circles */}
-    <circle cx="200" cy="140" r="120" className="fill-primary/5" />
-    <circle cx="200" cy="140" r="80" className="fill-primary/10" />
+    {/* ── Node 1: Net Return ── */}
+    <rect x="0" y="32" width="128" height="96" rx="10" className="fill-card" stroke="currentColor" strokeOpacity="0.12" strokeWidth="1" />
+    {/* mini bar chart */}
+    <rect x="16" y="90" width="10" height="24" rx="2" className="fill-primary" fillOpacity="0.25" />
+    <rect x="30" y="78" width="10" height="36" rx="2" className="fill-primary" fillOpacity="0.45" />
+    <rect x="44" y="62" width="10" height="52" rx="2" className="fill-primary" fillOpacity="0.70" />
+    <rect x="58" y="50" width="10" height="64" rx="2" className="fill-primary" />
+    {/* label */}
+    <text x="16" y="52" className="fill-foreground" style={{fontSize:'9px', fontWeight:600, letterSpacing:'0.06em', textTransform:'uppercase', opacity:0.5}}>Net Return</text>
+    {/* value */}
+    <text x="86" y="95" textAnchor="middle" className="fill-primary" style={{fontSize:'18px', fontWeight:700}}>+4.2%</text>
+    <text x="86" y="110" textAnchor="middle" style={{fontSize:'8px', opacity:0.4, fill:'currentColor'}}>after fees</text>
 
-    {/* Central chart icon */}
-    <rect x="160" y="100" width="80" height="60" rx="8" className="fill-card stroke-border" strokeWidth="1" />
-    <path d="M175 140 L190 120 L205 130 L220 105 L235 115 L245 95" className="stroke-primary" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-    <circle cx="175" cy="140" r="3" className="fill-primary" />
-    <circle cx="190" cy="120" r="3" className="fill-primary" />
-    <circle cx="205" cy="130" r="3" className="fill-primary" />
-    <circle cx="220" cy="105" r="3" className="fill-primary" />
-    <circle cx="235" cy="115" r="3" className="fill-primary" />
-    <circle cx="245" cy="95" r="3" className="fill-primary" />
+    {/* ── Arrow 1→2 ── */}
+    <line x1="136" y1="80" x2="172" y2="80" stroke="currentColor" strokeOpacity="0.2" strokeWidth="1.5" strokeDasharray="4 3" />
+    <polygon points="172,76 180,80 172,84" className="fill-primary" fillOpacity="0.4" />
 
-    {/* Left card - Net Return */}
-    <rect x="60" y="180" width="60" height="40" rx="6" className="fill-card stroke-border" strokeWidth="1" />
-    <text x="90" y="205" textAnchor="middle" className="fill-muted-foreground" style={{ fontSize: '10px', fontWeight: 500 }}>NET</text>
-    <text x="90" y="215" textAnchor="middle" className="fill-primary" style={{ fontSize: '8px' }}>RETURN</text>
+    {/* ── Node 2: Exposure ── */}
+    <rect x="180" y="32" width="120" height="96" rx="10" className="fill-card" stroke="currentColor" strokeOpacity="0.12" strokeWidth="1" />
+    {/* radar-style concentric arcs (exposure rings) */}
+    <circle cx="240" cy="95" r="28" stroke="currentColor" strokeOpacity="0.08" strokeWidth="1" fill="none" />
+    <circle cx="240" cy="95" r="18" stroke="currentColor" strokeOpacity="0.12" strokeWidth="1" fill="none" />
+    <circle cx="240" cy="95" r="8" className="fill-primary" fillOpacity="0.15" stroke="none" />
+    {/* axis lines */}
+    <line x1="240" y1="67" x2="240" y2="95" stroke="currentColor" strokeOpacity="0.15" strokeWidth="1" />
+    <line x1="212" y1="95" x2="240" y2="95" stroke="currentColor" strokeOpacity="0.15" strokeWidth="1" />
+    <line x1="220" y1="72" x2="240" y2="95" stroke="currentColor" strokeOpacity="0.15" strokeWidth="1" />
+    {/* data polygon */}
+    <polygon points="240,73 255,88 248,108 232,108 225,88" className="fill-primary" fillOpacity="0.18" stroke="none" />
+    <polygon points="240,73 255,88 248,108 232,108 225,88" fill="none" className="stroke-primary" strokeWidth="1.5" strokeOpacity="0.7" />
+    {/* label */}
+    <text x="196" y="52" className="fill-foreground" style={{fontSize:'9px', fontWeight:600, letterSpacing:'0.06em', opacity:0.5}}>Exposure</text>
+    <text x="240" y="95" textAnchor="middle" className="fill-primary" style={{fontSize:'8px', fontWeight:700, dominantBaseline:'middle'}}>ETF</text>
 
-    {/* Right card - Flow */}
-    <rect x="280" y="180" width="60" height="40" rx="6" className="fill-card stroke-border" strokeWidth="1" />
-    <text x="310" y="205" textAnchor="middle" className="fill-muted-foreground" style={{ fontSize: '10px', fontWeight: 500 }}>FLOW</text>
-    <text x="310" y="215" textAnchor="middle" className="fill-accent" style={{ fontSize: '8px' }}>RADAR</text>
+    {/* ── Arrow 2→3 ── */}
+    <line x1="308" y1="80" x2="344" y2="80" stroke="currentColor" strokeOpacity="0.2" strokeWidth="1.5" strokeDasharray="4 3" />
+    <polygon points="344,76 352,80 344,84" className="fill-primary" fillOpacity="0.4" />
 
-    {/* Top indicators */}
-    <circle cx="140" cy="60" r="15" className="fill-primary/20" />
-    <text x="140" y="65" textAnchor="middle" className="fill-primary" style={{ fontSize: '10px', fontWeight: 600 }}>▲</text>
+    {/* ── Node 3: Flow Radar ── */}
+    <rect x="352" y="32" width="128" height="96" rx="10" className="fill-card" stroke="currentColor" strokeOpacity="0.12" strokeWidth="1" />
+    {/* sparkline with anomaly spike */}
+    <polyline
+      points="368,100 382,98 396,101 410,97 418,103 424,88 430,103 444,100 458,99 468,101"
+      fill="none"
+      className="stroke-primary"
+      strokeWidth="1.5"
+      strokeOpacity="0.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    {/* anomaly highlight */}
+    <circle cx="424" cy="88" r="5" className="fill-primary" fillOpacity="0.2" />
+    <circle cx="424" cy="88" r="2.5" className="fill-primary" fillOpacity="0.9" />
+    {/* label */}
+    <text x="368" y="52" className="fill-foreground" style={{fontSize:'9px', fontWeight:600, letterSpacing:'0.06em', opacity:0.5}}>Flow Radar</text>
+    <text x="424" y="75" textAnchor="middle" style={{fontSize:'7px', opacity:0.5, fill:'currentColor'}}>anomaly</text>
+    <line x1="424" y1="77" x2="424" y2="83" stroke="currentColor" strokeOpacity="0.25" strokeWidth="1" strokeDasharray="2 1" />
 
-    <circle cx="260" cy="60" r="15" className="fill-accent/20" />
-    <text x="260" y="65" textAnchor="middle" className="fill-accent" style={{ fontSize: '10px', fontWeight: 600 }}>◆</text>
+    {/* ── Step numbers ── */}
+    <text x="64" y="145" textAnchor="middle" style={{fontSize:'8px', opacity:0.3, fill:'currentColor', letterSpacing:'0.05em'}}>01</text>
+    <text x="240" y="145" textAnchor="middle" style={{fontSize:'8px', opacity:0.3, fill:'currentColor', letterSpacing:'0.05em'}}>02</text>
+    <text x="416" y="145" textAnchor="middle" style={{fontSize:'8px', opacity:0.3, fill:'currentColor', letterSpacing:'0.05em'}}>03</text>
   </svg>
 );
 
 /**
- * ToolsHero - Finance 2026 style hero
- * Identity + immediate access to tools (no marketing fluff)
+ * ToolsHero - Finance 2026 entry point
+ * Shows the decision pipeline immediately, no marketing copy
  */
 export const ToolsHero = () => {
   const t = useTranslations('Tools') as (key: string) => string;
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-background to-background/50 px-4 py-16 sm:px-6 sm:py-20">
-      <div className="mx-auto max-w-4xl text-center">
-        {/* Illustration */}
-        <div className="mb-8 flex justify-center">
-          <HeroIllustration />
-        </div>
+    <section className="relative overflow-hidden px-4 py-14 sm:px-6 sm:py-20">
+      <div className="mx-auto max-w-4xl">
+        {/* Eyebrow */}
+        <p className="mb-4 text-xs font-medium uppercase tracking-widest text-muted-foreground">
+          {t('eyebrow')}
+        </p>
 
-        {/* Identity - Finance style, not marketing */}
-        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+        {/* Title — left aligned, not centered */}
+        <h1 className="max-w-2xl text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
           {t('hero_title')}
         </h1>
 
-        <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground sm:text-lg">
+        <p className="mt-4 max-w-xl text-base text-muted-foreground sm:text-lg">
           {t('hero_subtitle')}
         </p>
 
-        {/* Immediate access to tools - 3 CTAs with hierarchy */}
-        <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
-          {/* Primary - Net Return (main tool) */}
-          <Button asChild size="lg" className="h-12 px-6 text-base sm:h-14 sm:px-8">
+        {/* Pipeline illustration */}
+        <div className="mt-10 overflow-x-auto pb-2">
+          <HeroIllustration />
+        </div>
+
+        {/* CTAs — hierarchy: primary → secondary → ghost */}
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Button asChild size="lg" className="h-12 px-7 text-base">
             <Link href="#net-return">{t('cta_primary')}</Link>
           </Button>
-
-          {/* Secondary - Exposure */}
           <Button asChild variant="outline" size="default" className="h-11 px-5">
             <Link href="#exposure">{t('cta_secondary')}</Link>
           </Button>
-
-          {/* Tertiary - Flow */}
           <Button asChild variant="ghost" size="default" className="h-11 px-5 text-muted-foreground">
             <Link href="#flow">{t('cta_tertiary')}</Link>
           </Button>
         </div>
 
-        {/* Trust - minimal, no signup friction */}
-        <p className="mt-6 text-sm text-muted-foreground/80">
+        {/* Credibility line — istituzionale, non e-commerce */}
+        <p className="mt-6 text-xs text-muted-foreground/60">
           {t('trust')}
         </p>
       </div>

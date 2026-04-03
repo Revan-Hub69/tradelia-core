@@ -1,0 +1,8 @@
+{
+  "title": "Metodologia",
+  "item1": "Modelli deterministici — stessi input restituiscono sempre gli stessi output",
+  "item2": "Dati fee broker da tariffari ufficiali",
+  "item3": "Mappatura esposizione a livello strumento, non approssimazioni",
+  "item4": "Anomalie di flusso quantificate con soglie statistiche",
+  "disclaimer": "Le simulazioni sono puramente illustrative e non costituiscono consulenza in materia di investimenti né garanzia di rendimenti futuri."
+}

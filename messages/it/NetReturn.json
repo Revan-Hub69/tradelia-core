@@ -1,0 +1,8 @@
+{
+  "title": "Net Return Model",
+  "description": "Simula il risultato reale di un piano di accumulo dopo commissioni broker, costi del fondo e capitalizzazione. Confronta capitale lordo vs netto tra broker sullo stesso ETF.",
+  "feature1": "Fee broker reale applicata per periodo",
+  "feature2": "Confronto capitale lordo vs netto",
+  "feature3": "Impatto dei costi visualizzato sull'intero orizzonte",
+  "cta": "Avvia Net Return Model"
+}

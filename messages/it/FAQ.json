@@ -1,0 +1,17 @@
+{
+  "section_title": "Domande frequenti",
+  "section_subtitle": "Risposte pratiche sul funzionamento degli strumenti e per chi sono pensati.",
+  "question1": "Cosa calcola esattamente il Net Return Model?",
+  "answer1": "Simula un piano di accumulo applicando ogni periodo il tariffario broker reale — costi fissi, commissioni percentuali e soglie minime — poi confronta il capitale lordo con quello netto sull'orizzonte scelto. Vedi l'impatto dei costi in euro, non in percentuali.",
+  "question2": "In cosa è diverso il Comparatore Esposizione da un calcolatore di leva?",
+  "answer2": "Un calcolatore di leva ti dice quanto puoi prendere a prestito. Il Comparatore Esposizione normalizza il nozionale delta-adjusted tra strumenti — ETF, CFD, futures, opzioni — sullo stesso sottostante, così confronti realmente a cosa sei esposto in ciascun caso.",
+  "question3": "Quali dati usa Flow Radar?",
+  "answer3": "Flow Radar analizza dati pubblici di order flow e volume, applicando soglie z-score per isolare l'attività statisticamente significativa. Non utilizza dati proprietari o non pubblici.",
+  "question4": "I link broker sono link affiliati?",
+  "answer4": "Dove un link broker è affiliato, è indicato esplicitamente. Nei confronti sono inclusi anche link non affiliati. L'analisi non favorisce commercialmente alcun broker.",
+  "question5": "Questo è un servizio di consulenza?",
+  "answer5": "No. Tradelia fornisce strumenti di analisi quantitativa a scopo informativo. I risultati sono simulazioni deterministiche, non previsioni. Nessun contenuto su questa piattaforma costituisce consulenza in materia di investimenti.",
+  "question6": "Quali broker sono inclusi nel Net Return Model?",
+  "answer6": "La release iniziale copre i principali broker retail disponibili in Italia e nell'UE: DEGIRO, Fineco, Directa, Scalable Capital, Trade Republic e Interactive Brokers. Ulteriori broker saranno aggiunti man mano che i tariffari vengono normalizzati.",
+  "cta_badge": "Hai altre domande? Usa il modulo di contatto."
+}

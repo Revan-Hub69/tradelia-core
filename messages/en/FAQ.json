@@ -1,0 +1,17 @@
+{
+  "section_title": "Frequently asked questions",
+  "section_subtitle": "Practical answers about how the tools work and what they are designed for.",
+  "question1": "What does the Net Return Model actually calculate?",
+  "answer1": "It simulates an accumulation plan (PAC) by applying the real broker fee schedule each period — fixed costs, percentage commissions, and minimum thresholds — then compares gross capital against net capital over the chosen horizon. You see the cost drag in euros, not percentages.",
+  "question2": "How is the Exposure Comparator different from a leverage calculator?",
+  "answer2": "A leverage calculator tells you how much you can borrow. The Exposure Comparator normalises the delta-adjusted notional across instruments — ETF, CFD, futures, options — on the same underlying, so you can compare what you are actually exposed to in each case.",
+  "question3": "What data does Flow Radar use?",
+  "answer3": "Flow Radar analyses publicly available order flow and volume data, applying z-score thresholds to isolate statistically significant activity. It does not use proprietary or non-public data sources.",
+  "question4": "Are broker links affiliate links?",
+  "answer4": "Where a broker link is an affiliate link, it is labelled explicitly. Non-affiliate links are also included in comparisons. The analysis does not favour any broker commercially.",
+  "question5": "Is this investment advice?",
+  "answer5": "No. Tradelia provides quantitative analysis tools for informational purposes. Results are deterministic simulations, not forecasts. No content on this platform constitutes investment advice or a recommendation to buy or sell any instrument.",
+  "question6": "Which brokers are included in the Net Return Model?",
+  "answer6": "The initial release covers the main retail brokers available in Italy and the EU: DEGIRO, Fineco, Directa, Scalable Capital, Trade Republic, and Interactive Brokers. More brokers will be added as fee schedules are normalised.",
+  "cta_badge": "Still have questions? Use the contact form."
+}

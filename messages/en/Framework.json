@@ -1,0 +1,10 @@
+{
+  "eyebrow": "How it works",
+  "title": "Three analytical layers. One decision.",
+  "returns_label": "Net Return Model",
+  "returns_desc": "Quantifies the real outcome after all costs. Starting point for any investment decision.",
+  "exposure_label": "Exposure Comparator",
+  "exposure_desc": "Aligns instruments with the intended risk profile. Reveals what you are actually buying.",
+  "flow_label": "Flow Radar",
+  "flow_desc": "Identifies relevant market activity before entry. Context, not just signal."
+}

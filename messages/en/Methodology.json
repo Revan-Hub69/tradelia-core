@@ -1,0 +1,8 @@
+{
+  "title": "Methodology",
+  "item1": "Deterministic models — same inputs always return same outputs",
+  "item2": "Broker fee data sourced from official schedules",
+  "item3": "Instrument-level exposure mapping, not approximations",
+  "item4": "Flow anomalies quantified via statistical thresholds",
+  "disclaimer": "Simulations are illustrative only and do not constitute investment advice or guarantees of future performance."
+}
