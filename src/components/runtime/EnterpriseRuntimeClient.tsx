@@ -1,7 +1,9 @@
 'use client';
 
-import { ThemeProvider } from 'next-themes';
+import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import * as React from 'react';
+
+export { ThemeProvider as NextThemesProvider } from 'next-themes';
 
 export function EnterpriseRuntimeClient(props: { children: React.ReactNode }) {
   // Use useLayoutEffect to set runtime flag BEFORE first paint
@@ -11,13 +13,13 @@ export function EnterpriseRuntimeClient(props: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <ThemeProvider
+    <NextThemesProvider
       attribute="class"
       defaultTheme="dark"
       enableSystem
       disableTransitionOnChange
     >
       {props.children}
-    </ThemeProvider>
+    </NextThemesProvider>
   );
 }

@@ -1,5 +1,6 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, unstable_setRequestLocale } from 'next-intl/server';
+import { ThemeProvider as NextThemesProvider } from '@/components/runtime/EnterpriseRuntimeClient';
 
 import { AllLocales } from '@/utils/AppConfig';
 
@@ -25,7 +26,9 @@ export default async function LocaleLayout(props: {
 
   return (
     <NextIntlClientProvider locale={params.locale} messages={messages}>
-      {props.children}
+      <NextThemesProvider>
+        {props.children}
+      </NextThemesProvider>
     </NextIntlClientProvider>
   );
 }

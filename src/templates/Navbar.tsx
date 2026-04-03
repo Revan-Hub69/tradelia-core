@@ -201,9 +201,6 @@ export const Navbar = () => {
           <div className="hidden items-center gap-2 md:flex lg:gap-3">
             <ThemeSwitcher />
             <LocaleSwitcher />
-            <Link href="/auth" className={buttonVariants({ size: 'sm' })}>
-              {t('enter')}
-            </Link>
           </div>
 
           {/* Mobile Controls - hidden from md */}
@@ -321,24 +318,6 @@ export const Navbar = () => {
 
           {/* Divider */}
           <div className="mx-6 h-px bg-border/50" />
-
-          {/* Auth Button */}
-          <div
-            className="flex flex-col gap-3 p-6"
-            style={{
-              transform: isMenuOpen ? 'translateX(0)' : 'translateX(20px)',
-              opacity: isMenuOpen ? 1 : 0,
-              transition: 'all 300ms ease-out 250ms',
-            }}
-          >
-            <Link
-              href="/auth"
-              onClick={() => setIsMenuOpen(false)}
-              className="flex h-12 items-center justify-center rounded-xl bg-primary font-medium text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25 active:scale-[0.98]"
-            >
-              {t('enter')}
-            </Link>
-          </div>
         </div>
       </div>
 
