@@ -8,7 +8,6 @@ import { ScenarioSection } from '@/templates/ScenarioSection';
 import { AnalysisSection } from '@/templates/AnalysisSection';
 import { ComparisonSection } from '@/templates/ComparisonSection';
 import { CompareInstruments } from '@/templates/CompareInstruments';
-import { OutputPreview } from '@/templates/OutputPreview';
 import { WhyDifferent } from '@/templates/WhyDifferent';
 import { FAQ } from '@/templates/FAQ';
 import { DisclaimerBar } from '@/templates/DisclaimerBar';
