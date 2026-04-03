@@ -1,0 +1,17 @@
+{
+  "section_eyebrow": "Step 2 of 3",
+  "section_title": "Real data analysis",
+  "section_intro": "The simulator calculates real costs from measured databases, normalizes instruments and generates rankings of the most efficient instruments and brokers.",
+  "chart_title": "Instrument efficiency",
+  "chart_center": "efficiency",
+  "instrument_etf": "ETF",
+  "instrument_cfd": "CFD",
+  "instrument_futures": "Futures",
+  "instrument_options": "Options",
+  "instrument_certificates": "Certificates",
+  "legend_high": "High",
+  "legend_medium": "Medium",
+  "legend_low": "Low",
+  "brokers_title": "Top brokers for your scenario",
+  "broker_cost": "estimated"
+}

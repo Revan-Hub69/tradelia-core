@@ -1,0 +1,20 @@
+{
+  "section_eyebrow": "Step 1 di 3",
+  "section_title": "Definisci il tuo scenario operativo",
+  "capital_label": "Capitale",
+  "leverage_label": "Leva",
+  "horizon_label": "Orizzonte temporale",
+  "horizon_scalping": "Scalping",
+  "horizon_intraday": "Intraday",
+  "horizon_multi_day": "Multi-day",
+  "horizon_long_term": "Lungo termine",
+  "strategy_label": "Strategia operativa",
+  "strategy_breakout": "Breakout",
+  "strategy_momentum": "Momentum",
+  "strategy_spiky": "Spiky",
+  "strategy_pullback": "Pullback",
+  "strategy_carry": "Carry/Income",
+  "preview_label": "Anteprima costo stimato",
+  "preview_note": "Costo indicativo basato sullo scenario",
+  "cta": "Avvia simulazione"
+}

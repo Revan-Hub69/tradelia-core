@@ -1,8 +1,8 @@
 {
   "eyebrow": "Tradelia · TradeScope",
-  "title": "What does trading actually cost you?",
-  "subtitle": "TradeScope compares ETF, CFD, Futures and Options on the same underlying. Real costs applied — spreads, commissions, funding, rollover, theta decay — net comparison, not theoretical.",
-  "cta": "Run Analysis",
-  "cta_note": "No sign-up required",
+  "title": "Simulate your strategy and discover what trading really costs you",
+  "subtitle": "Enter capital, leverage, time horizon and operational strategy: the simulator calculates real costs from measured databases and generates rankings of the most efficient instruments and brokers for your scenario.",
+  "cta": "Start Simulation – Free",
+  "cta_note": "Informational tool · Based on real data",
   "trust": "Independent analysis · Deterministic models · Broker affiliations disclosed where applicable"
 }

@@ -1,0 +1,20 @@
+{
+  "section_eyebrow": "Step 1 of 3",
+  "section_title": "Define your operational scenario",
+  "capital_label": "Capital",
+  "leverage_label": "Leverage",
+  "horizon_label": "Time horizon",
+  "horizon_scalping": "Scalping",
+  "horizon_intraday": "Intraday",
+  "horizon_multi_day": "Multi-day",
+  "horizon_long_term": "Long term",
+  "strategy_label": "Operational strategy",
+  "strategy_breakout": "Breakout",
+  "strategy_momentum": "Momentum",
+  "strategy_spiky": "Spiky",
+  "strategy_pullback": "Pullback",
+  "strategy_carry": "Carry/Income",
+  "preview_label": "Estimated cost preview",
+  "preview_note": "Indicative cost based on scenario",
+  "cta": "Start simulation"
+}

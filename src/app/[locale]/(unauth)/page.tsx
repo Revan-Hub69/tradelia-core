@@ -4,6 +4,9 @@ import { Navbar } from '@/templates/Navbar';
 import { PremiumFooter } from '@/templates/PremiumFooter';
 import { TradeHero } from '@/templates/TradeHero';
 import { HowItWorks } from '@/templates/HowItWorks';
+import { ScenarioSection } from '@/templates/ScenarioSection';
+import { AnalysisSection } from '@/templates/AnalysisSection';
+import { ComparisonSection } from '@/templates/ComparisonSection';
 import { CompareInstruments } from '@/templates/CompareInstruments';
 import { OutputPreview } from '@/templates/OutputPreview';
 import { WhyDifferent } from '@/templates/WhyDifferent';
@@ -29,8 +32,10 @@ const IndexPage = async (props: { params: Promise<{ locale: string }> }) => {
       <main id="main-content">
         <TradeHero />
         <HowItWorks />
+        <ScenarioSection />
+        <AnalysisSection />
+        <ComparisonSection />
         <CompareInstruments />
-        <OutputPreview />
         <WhyDifferent />
         <section id="faq" className="border-t border-border/40 px-4 py-12 sm:px-6 sm:py-16">
           <div className="mx-auto max-w-3xl">

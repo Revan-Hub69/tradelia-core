@@ -1,10 +1,10 @@
 {
   "eyebrow": "How it works",
-  "title": "One scenario. Four instruments. One net comparison.",
-  "step1_title": "Enter your scenario",
-  "step1_desc": "Choose the underlying, time horizon, capital and leverage. The tool normalises all instruments to the same notional exposure.",
-  "step2_title": "We apply real costs",
-  "step2_desc": "Spreads, commissions, swap rates, theta decay, rollover and broker fees are applied from up-to-date official fee schedules.",
-  "step3_title": "Compare net efficiency",
-  "step3_desc": "Get a comparison table with total costs, per-component breakdown and Operational Efficiency Index per instrument."
+  "title": "3 steps to the best choice",
+  "step1_title": "Define your scenario",
+  "step1_desc": "Enter asset, capital, leverage, time horizon and operational strategy. The simulator normalizes all instruments to the same exposure.",
+  "step2_title": "Real data analysis",
+  "step2_desc": "The simulator calculates real costs from measured databases, normalizes instruments and generates rankings of most efficient instruments and brokers.",
+  "step3_title": "Compare and insights",
+  "step3_desc": "Get comparative table with costs, component breakdown and efficiency ranking for instruments and brokers."
 }

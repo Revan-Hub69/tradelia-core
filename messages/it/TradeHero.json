@@ -1,8 +1,8 @@
 {
   "eyebrow": "Tradelia · TradeScope",
-  "title": "Quanto ti costa davvero tradare?",
-  "subtitle": "TradeScope confronta ETF, CFD, Futures e Options sullo stesso sottostante. Costi reali applicati — spread, commissioni, funding, rollover, theta decay — confronto netto, non teorico.",
-  "cta": "Avvia analisi",
-  "cta_note": "Nessuna registrazione richiesta",
+  "title": "Simula la tua strategia e scopri quanto ti costa davvero",
+  "subtitle": "Inserisci capitale, leva, orizzonte temporale e strategia operativa: il simulatore calcola costi reali da database misurati e genera classifiche di strumenti e broker più efficienti per il tuo scenario.",
+  "cta": "Avvia simulazione – Gratuito",
+  "cta_note": "Strumento informativo · Basato su dati reali",
   "trust": "Analisi indipendente · Modelli deterministici · Affiliazioni broker dichiarate dove presenti"
 }
