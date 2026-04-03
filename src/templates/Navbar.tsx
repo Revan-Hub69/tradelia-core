@@ -4,7 +4,6 @@ import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 
 import { LocaleSwitcher } from '@/components/LocaleSwitcher';
-import { buttonVariants } from '@/components/ui/buttonVariants';
 import { Link } from '@/libs/i18nNavigation';
 import { cn } from '@/utils/Helpers';
 import { throttle } from '@/utils/throttle';
