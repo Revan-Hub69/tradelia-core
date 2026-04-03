@@ -5,6 +5,7 @@ import { PremiumFooter } from '@/templates/PremiumFooter';
 import { ToolsHero } from '@/templates/ToolsHero';
 import { NetReturnCard, SecondaryTools } from '@/templates/ToolCard';
 import { FrameworkSection, MethodologySection } from '@/templates/FrameworkSection';
+import { FAQ } from '@/templates/FAQ';
 
 export async function generateMetadata(props: { params: Promise<{ locale: string }> }) {
   const params = await props.params;
@@ -52,6 +53,13 @@ const IndexPage = async (props: { params: Promise<{ locale: string }> }) => {
         {/* Methodology - Professional credibility */}
         <section id="methodology">
           <MethodologySection />
+        </section>
+
+        {/* FAQ - Always visible scroll */}
+        <section id="faq" className="border-t border-border/40 px-4 py-12 sm:px-6 sm:py-16">
+          <div className="mx-auto max-w-3xl">
+            <FAQ />
+          </div>
         </section>
       </main>
       <PremiumFooter />
