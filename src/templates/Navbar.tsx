@@ -9,7 +9,6 @@ import { cn } from '@/utils/Helpers';
 import { throttle } from '@/utils/throttle';
 
 import { Logo } from './Logo';
-import { ThemeSwitcher } from '@/components/dashboard/ThemeSwitcher';
 
 const useFocusTrap = (isOpen: boolean, containerRef: React.RefObject<HTMLDivElement>) => {
   useEffect(() => {
