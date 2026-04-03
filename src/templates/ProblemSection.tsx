@@ -44,12 +44,17 @@ export const ProblemSection = () => {
                 <p>{t('paragraph2')}</p>
               </div>
 
-              <p className="mt-8 max-w-lg text-lg font-semibold leading-8 tracking-tight text-foreground">
-                {t('quote')}
-              </p>
-              <p className="mt-3 max-w-lg text-sm leading-7 text-muted-foreground">
-                {t('card_note')}
-              </p>
+              <div className="mt-8 max-w-lg rounded-[28px] border border-border/50 bg-background/80 p-5 shadow-[0_16px_40px_-34px_rgba(15,23,42,0.24)]">
+                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/55">
+                  {t('card_eyebrow')}
+                </p>
+                <p className="mt-4 text-lg font-semibold leading-8 tracking-tight text-foreground">
+                  {t('quote')}
+                </p>
+                <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                  {t('card_note')}
+                </p>
+              </div>
             </div>
 
             <div className="min-w-0 rounded-[32px] border border-border/60 bg-background p-6 shadow-[0_24px_60px_-42px_rgba(15,23,42,0.38)] sm:p-7 xl:p-8">

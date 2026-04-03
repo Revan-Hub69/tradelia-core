@@ -38,7 +38,7 @@ export const FAQ = () => {
         <FadeIn>
           <div className="text-center">
             <p className="font-mono text-xs uppercase tracking-[0.24em] text-muted-foreground/55">
-              FAQ
+              {t('section_eyebrow')}
             </p>
             <h2 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">
               {t('section_title')}
@@ -53,7 +53,11 @@ export const FAQ = () => {
           {faqs.map((faq, index) => (
             <div
               key={faq.question}
-              className="overflow-hidden rounded-[24px] border border-border/50 bg-background transition-colors duration-200 hover:border-border/70"
+              className={`overflow-hidden rounded-[24px] border bg-background transition-colors duration-200 ${
+                openItems.has(index)
+                  ? 'border-border/80 shadow-[0_16px_40px_-34px_rgba(15,23,42,0.28)]'
+                  : 'border-border/50 hover:border-border/70'
+              }`}
             >
               <button
                 type="button"
@@ -67,9 +71,14 @@ export const FAQ = () => {
                 className="flex w-full items-center justify-between gap-6 p-5 text-left transition-colors duration-200 hover:bg-muted/30 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 sm:px-6"
                 aria-expanded={openItems.has(index)}
               >
-                <span className="text-base font-semibold leading-7 sm:text-lg">
-                  {faq.question}
-                </span>
+                <div className="flex items-start gap-4">
+                  <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-full border border-border/60 bg-muted/30 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <span className="pt-0.5 text-base font-semibold leading-7 sm:text-lg">
+                    {faq.question}
+                  </span>
+                </div>
                 <svg
                   className={`size-5 shrink-0 text-muted-foreground transition-transform duration-200 ${
                     openItems.has(index) ? 'rotate-180' : ''

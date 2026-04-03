@@ -14,6 +14,7 @@ import { getClientIp, rateLimit } from '@/lib/rate-limit';
 import { db } from '@/libs/DB';
 import { supportTicketsSchema } from '@/models/Schema';
 import { contactFormSchema } from '@/types/contact';
+import { AppConfig } from '@/utils/AppConfig';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -23,7 +24,7 @@ export async function POST(request: Request) {
     const smtpHost = process.env.SMTP_HOST;
     const smtpUser = process.env.SMTP_USER;
     const smtpPass = process.env.SMTP_PASS;
-    const supportEmail = process.env.SUPPORT_EMAIL || 'support@tradelia.org';
+    const supportEmail = process.env.SUPPORT_EMAIL || AppConfig.supportEmail;
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tradelia.org';
 
     const ip = getClientIp(request);

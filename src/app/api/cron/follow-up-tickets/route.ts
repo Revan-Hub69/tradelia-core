@@ -18,6 +18,7 @@ import {
 } from '@/lib/email-templates';
 import { db } from '@/libs/DB';
 import { supportTicketsSchema } from '@/models/Schema';
+import { AppConfig } from '@/utils/AppConfig';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -39,7 +40,7 @@ export async function GET(request: Request) {
     const smtpHost = process.env.SMTP_HOST;
     const smtpUser = process.env.SMTP_USER;
     const smtpPass = process.env.SMTP_PASS;
-    const supportEmail = process.env.SUPPORT_EMAIL || 'support@tradelia.org';
+    const supportEmail = process.env.SUPPORT_EMAIL || AppConfig.supportEmail;
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tradelia.org';
 
     if (!smtpHost || !smtpUser || !smtpPass) {

@@ -6,6 +6,7 @@ import { ClockIcon, MailIcon } from '@/components/icons';
 import { SectionContainer } from '@/components/ui/SectionContainer';
 import { LandingFooter } from '@/templates/LandingFooter';
 import { Navbar } from '@/templates/Navbar';
+import { AppConfig } from '@/utils/AppConfig';
 
 export async function generateMetadata(props: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const params = await props.params;
@@ -25,6 +26,7 @@ export default async function ContactPage(props: { params: Promise<{ locale: str
   unstable_setRequestLocale(params.locale);
 
   const t = await getTranslations('Contact');
+  const supportEmail = AppConfig.supportEmail;
 
   return (
     <>
@@ -39,7 +41,7 @@ export default async function ContactPage(props: { params: Promise<{ locale: str
             <h1 className="mb-4 text-4xl font-bold tracking-tight sm:text-5xl">
               {t('title')}
             </h1>
-            <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
+            <p className="mx-auto max-w-2xl text-lg leading-8 text-muted-foreground">
               {t('description')}
             </p>
           </div>
@@ -62,10 +64,10 @@ export default async function ContactPage(props: { params: Promise<{ locale: str
                       <div className="min-w-0 flex-1">
                         <p className="text-sm font-medium">{t('email_label')}</p>
                         <a
-                          href="mailto:support@tradelia.org"
+                          href={`mailto:${supportEmail}`}
                           className="mt-1 block truncate text-sm text-primary hover:underline"
                         >
-                          support@tradelia.org
+                          {supportEmail}
                         </a>
                       </div>
                     </div>

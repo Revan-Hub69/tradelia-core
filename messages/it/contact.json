@@ -26,9 +26,9 @@
   "sending": "Invio in corso...",
   "successTitle": "Messaggio Inviato con Successo!",
   "successMessage": "Grazie per averci contattato. Abbiamo ricevuto il tuo messaggio e risponderemo entro 24 ore.",
-  "successNextSteps": "💡 Suggerimento: Controlla la cartella spam se non vedi la nostra risposta nella posta in arrivo.",
+  "successNextSteps": "Suggerimento: controlla la cartella spam se non vedi la nostra risposta nella posta in arrivo.",
   "errorTitle": "Invio Fallito",
-  "errorMessage": "Qualcosa è andato storto. Riprova o contattaci direttamente a support@tradelia.org",
+  "errorMessage": "Qualcosa e andato storto. Riprova o contattaci direttamente a {supportEmail}",
   "meta_title": "Contattaci - Tradelia",
   "meta_description": "Mettiti in contatto con il team Tradelia. Rispondiamo entro 24 ore.",
   "badge": "Siamo qui per aiutarti",
@@ -39,5 +39,5 @@
   "response_time_label": "Tempo di risposta",
   "response_time_value": "Entro 24 ore",
   "help_card_title": "Serve aiuto immediato?",
-  "help_card_description": "Consulta la nostra sezione FAQ per risposte rapide alle domande più comuni."
+  "help_card_description": "Consulta la nostra sezione FAQ per risposte rapide alle domande piu comuni."
 }

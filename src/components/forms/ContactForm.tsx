@@ -20,6 +20,7 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import type { ContactFormData } from '@/types/contact';
 import { contactFormSchema, INQUIRY_TYPES } from '@/types/contact';
+import { AppConfig } from '@/utils/AppConfig';
 
 import { HoneypotField } from './HoneypotField';
 
@@ -33,6 +34,9 @@ export function ContactForm({
   onSuccess,
 }: ContactFormProps) {
   const t = useTranslations('Contact') as any;
+  const genericErrorMessage = t('errorMessage', {
+    supportEmail: AppConfig.supportEmail,
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<
     'idle' | 'success' | 'error'
@@ -91,9 +95,13 @@ export function ContactForm({
     } catch (error) {
       console.error('Contact form error:', error);
       setSubmitStatus('error');
-      setErrorMessage(
-        error instanceof Error ? error.message : 'Something went wrong',
-      );
+      const nextErrorMessage = error instanceof Error ? error.message : '';
+      const shouldUseFallback
+        = !nextErrorMessage
+          || nextErrorMessage === 'Failed to send message'
+          || nextErrorMessage === 'Server error - no response'
+          || nextErrorMessage === 'Something went wrong';
+      setErrorMessage(shouldUseFallback ? genericErrorMessage : nextErrorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -329,7 +337,7 @@ export function ContactForm({
                 {t('privacyConsent')}
 {' '}
                 <Link
-                  href="/privacy-policy"
+                  href={AppConfig.routes.privacyPolicy}
                   className="text-primary hover:underline"
                   target="_blank"
                 >

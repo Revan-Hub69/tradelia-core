@@ -4,6 +4,8 @@ import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
 import { SectionContainer } from '@/components/ui/SectionContainer';
+import { scenarioLeverageRange } from '@/config/tradescope';
+import { AppConfig } from '@/utils/AppConfig';
 
 type AssetKey = 'equities' | 'etf' | 'forex' | 'indices';
 type HorizonKey = 'intraday' | 'swing' | 'position' | 'accumulation';
@@ -107,12 +109,13 @@ const getLeverageBias = (leverage: number, horizon: HorizonKey): DriverWeights =
 
 export const ScenarioSection = () => {
   const t = useTranslations('Scenario') as (key: string) => string;
+  const currencyCode = AppConfig.defaultCurrency;
 
   const [selectedAsset, setSelectedAsset] = useState<AssetKey>('etf');
   const [selectedHorizon, setSelectedHorizon] = useState<HorizonKey>('accumulation');
   const [selectedStrategy, setSelectedStrategy] = useState('pac_etf');
   const [capital, setCapital] = useState(15000);
-  const [leverage, setLeverage] = useState(1);
+  const [leverage, setLeverage] = useState<number>(scenarioLeverageRange.min);
 
   useEffect(() => {
     const nextHorizons = assetMatrix[selectedAsset].horizons;
@@ -295,7 +298,7 @@ export const ScenarioSection = () => {
                   {t('capital_label')}
                 </label>
                 <div className="mt-3 flex items-center gap-3 rounded-2xl border border-border/50 bg-background px-4 py-3">
-                  <span className="font-mono text-sm text-muted-foreground">EUR</span>
+                  <span className="font-mono text-sm text-muted-foreground">{currencyCode}</span>
                   <input
                     type="number"
                     value={capital}
@@ -321,18 +324,24 @@ export const ScenarioSection = () => {
                 </div>
                 <input
                   type="range"
-                  min={1}
-                  max={12}
+                  min={scenarioLeverageRange.min}
+                  max={scenarioLeverageRange.max}
                   value={leverage}
                   onChange={e => setLeverage(Number(e.target.value))}
                   className="mt-4 flex h-2 w-full cursor-pointer appearance-none rounded-full bg-muted"
                   style={{
-                    background: `linear-gradient(to right, var(--primary) ${(leverage / 12) * 100}%, var(--muted) ${(leverage / 12) * 100}%)`,
+                    background: `linear-gradient(to right, var(--primary) ${(leverage / scenarioLeverageRange.max) * 100}%, var(--muted) ${(leverage / scenarioLeverageRange.max) * 100}%)`,
                   }}
                 />
                 <div className="mt-2 flex justify-between font-mono text-[11px] text-muted-foreground">
-                  <span>1x</span>
-                  <span>12x</span>
+                  <span>
+                    {scenarioLeverageRange.min}
+                    x
+                  </span>
+                  <span>
+                    {scenarioLeverageRange.max}
+                    x
+                  </span>
                 </div>
               </div>
             </div>
@@ -359,7 +368,7 @@ export const ScenarioSection = () => {
                 {t(`strategy_${activeStrategy.key}`)}
               </span>
               <span className="rounded-full border border-slate-800 bg-slate-900/70 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.16em] text-slate-300">
-                EUR
+                {currencyCode}
                 {' '}
                 {capital.toLocaleString()}
               </span>

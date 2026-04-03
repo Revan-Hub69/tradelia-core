@@ -1,11 +1,13 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 
 import { LocaleSwitcher } from '@/components/LocaleSwitcher';
 import { Button } from '@/components/ui/button';
 import { SectionContainer } from '@/components/ui/SectionContainer';
+import { getLandingSectionHref, landingSections } from '@/config/tradescope';
+import { usePathname } from '@/libs/i18nNavigation';
 import { cn } from '@/utils/Helpers';
 import { throttle } from '@/utils/throttle';
 
@@ -51,6 +53,8 @@ const useFocusTrap = (isOpen: boolean, containerRef: React.RefObject<HTMLDivElem
 
 export const Navbar = () => {
   const t = useTranslations('Navbar') as (key: string) => string;
+  const locale = useLocale();
+  const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -70,12 +74,11 @@ export const Navbar = () => {
     };
   }, [isMenuOpen]);
 
-  const navLinks = [
-    { href: '#problem', label: t('nav_problem') },
-    { href: '#how-it-works', label: t('nav_mechanism') },
-    { href: '#simulator', label: t('nav_simulator') },
-    { href: '#faq', label: t('nav_faq') },
-  ];
+  const navLinks = landingSections.map(section => ({
+    href: getLandingSectionHref(locale, pathname, section.id),
+    label: t(section.navbarLabelKey),
+  }));
+  const simulatorHref = getLandingSectionHref(locale, pathname, 'simulator');
 
   const stripItems = [
     { label: t('strip_spread'), value: t('strip_spread_value') },
@@ -130,7 +133,7 @@ export const Navbar = () => {
           <div className="hidden items-center gap-3 md:flex">
             <LocaleSwitcher />
             <Button asChild size="sm" className="h-10 rounded-full px-5 font-mono text-[11px] uppercase tracking-[0.16em]">
-              <a href="#simulator">{t('cta')}</a>
+              <a href={simulatorHref}>{t('cta')}</a>
             </Button>
           </div>
 
@@ -199,7 +202,7 @@ export const Navbar = () => {
             ))}
 
             <Button asChild className="mt-3 h-11 rounded-full font-mono text-[11px] uppercase tracking-[0.16em]">
-              <a href="#simulator" onClick={() => setIsMenuOpen(false)}>
+              <a href={simulatorHref} onClick={() => setIsMenuOpen(false)}>
                 {t('cta')}
               </a>
             </Button>

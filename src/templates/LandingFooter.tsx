@@ -1,22 +1,24 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 import { SectionContainer } from '@/components/ui/SectionContainer';
-import { Link } from '@/libs/i18nNavigation';
+import { getLandingSectionHref, heroContextChipKeys, landingSections } from '@/config/tradescope';
+import { Link, usePathname } from '@/libs/i18nNavigation';
 import { AppConfig } from '@/utils/AppConfig';
 
 import { Logo } from './Logo';
 
 export const LandingFooter = () => {
   const t = useTranslations('LandingFooter') as (key: string) => string;
-  const navLinks = [
-    { href: '/#problem', label: t('nav_problem') },
-    { href: '/#how-it-works', label: t('nav_mechanism') },
-    { href: '/#simulator', label: t('nav_simulator') },
-    { href: '/#faq', label: t('nav_faq') },
-  ];
+  const locale = useLocale();
+  const pathname = usePathname();
+  const navLinks = landingSections.map(section => ({
+    href: getLandingSectionHref(locale, pathname, section.id),
+    label: t(section.footerLabelKey),
+  }));
   const scopeItems = [t('scope_item_1'), t('scope_item_2'), t('scope_item_3')];
+  const brandBadge = `${AppConfig.productName} / ${AppConfig.name}`;
 
   return (
     <footer className="border-t border-border/40 bg-slate-950 py-10 text-slate-200 sm:py-12 lg:py-14 2xl:py-16">
@@ -25,18 +27,18 @@ export const LandingFooter = () => {
           <div className="max-w-md">
             <Logo href="/" />
             <div className="mt-4 inline-flex rounded-full border border-slate-800 bg-slate-900 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-400">
-              TradeScope / Tradelia
+              {brandBadge}
             </div>
             <p className="mt-4 text-sm leading-7 text-slate-400">
               {t('description')}
             </p>
             <div className="mt-5 flex flex-wrap gap-2">
-              {[t('chip_asset'), t('chip_strategy'), t('chip_horizon')].map(item => (
+              {heroContextChipKeys.map(key => (
                 <span
-                  key={item}
+                  key={key}
                   className="rounded-full border border-slate-800 bg-slate-900/80 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-slate-400"
                 >
-                  {item}
+                  {t(key)}
                 </span>
               ))}
             </div>
@@ -48,13 +50,13 @@ export const LandingFooter = () => {
             </p>
             <div className="mt-4 grid gap-3">
               {navLinks.map(link => (
-                <Link
+                <a
                   key={link.href}
                   href={link.href}
                   className="font-mono text-[11px] uppercase tracking-[0.18em] text-slate-400 transition-colors hover:text-slate-100"
                 >
                   {link.label}
-                </Link>
+                </a>
               ))}
             </div>
           </div>
@@ -81,13 +83,13 @@ export const LandingFooter = () => {
               </p>
               <div className="mt-4 flex flex-wrap gap-3">
                 <Link
-                  href="/contact"
+                  href={AppConfig.routes.contact}
                   className="inline-flex items-center rounded-full bg-slate-100 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-slate-950 transition-colors hover:bg-white"
                 >
                   {t('contact')}
                 </Link>
                 <a
-                  href="mailto:support@tradelia.org"
+                  href={`mailto:${AppConfig.supportEmail}`}
                   className="inline-flex items-center rounded-full border border-slate-700 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-slate-300 transition-colors hover:border-slate-500 hover:text-slate-100"
                 >
                   {t('email_cta')}
