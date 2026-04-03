@@ -1,0 +1,15 @@
+{
+  "eyebrow": "Output",
+  "title": "Cosa ottieni",
+  "intro": "L'output non è un parere. È una lettura quantitativa dello scenario inserito. Esempio su €10.000, orizzonte 30 giorni, Nasdaq.",
+  "col_instrument": "Strumento",
+  "col_cost": "Costo stimato",
+  "col_efficiency": "Efficienza",
+  "col_drag": "Cost drag",
+  "col_note": "Note",
+  "output_etf_note": "Struttura semplice, cost drag contenuto",
+  "output_cfd_note": "Spread e funding incidono sul mantenimento",
+  "output_futures_note": "Più efficiente su orizzonti più ampi",
+  "output_options_note": "Theta decay rilevante oltre i 15 giorni",
+  "table_note": "Valori simulati a scopo illustrativo. Parametri reali variano per broker e condizioni di mercato."
+}

@@ -1,0 +1,149 @@
+{
+  "appearance": {
+    "title": "Appearance",
+    "description": "Customize how Tradelia looks and feels",
+    "theme": {
+      "label": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "auto": "Auto",
+      "schedule": "Schedule",
+      "description": "Choose your preferred color theme"
+    },
+    "fontSize": {
+      "label": "Font Size",
+      "small": "Small",
+      "medium": "Medium",
+      "large": "Large",
+      "extraLarge": "Extra Large",
+      "description": "Adjust text size for better readability"
+    },
+    "density": {
+      "label": "Density",
+      "compact": "Compact",
+      "comfortable": "Comfortable",
+      "spacious": "Spacious",
+      "description": "Control spacing between UI elements"
+    },
+    "contrast": {
+      "label": "Contrast",
+      "normal": "Normal",
+      "high": "High",
+      "auto": "Auto",
+      "description": "Adjust color contrast for better visibility"
+    },
+    "motion": {
+      "label": "Motion",
+      "full": "Full",
+      "reduced": "Reduced",
+      "none": "None",
+      "description": "Control animation and transition effects"
+    }
+  },
+  "preferences": {
+    "title": "Preferences",
+    "description": "Manage your trading preferences",
+    "language": {
+      "label": "Language",
+      "description": "Choose your preferred language"
+    },
+    "difficulty": {
+      "label": "Experience level",
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced",
+      "description": "Adjust how much detail you see in challenge guidance"
+    },
+    "autoPlay": {
+      "label": "Auto-open next challenge",
+      "description": "Automatically open the next challenge after viewing one"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "description": "Manage how you receive notifications",
+    "email": {
+      "label": "Email notifications",
+      "description": "Receive updates via email"
+    },
+    "push": {
+      "label": "Push notifications",
+      "description": "Receive browser push notifications"
+    },
+    "dailyReminder": {
+      "label": "Daily check-in",
+      "description": "Get a reminder to review challenges and signals"
+    },
+    "streakReminder": {
+      "label": "Enrollment reminder",
+      "description": "Get notified when an enrollment needs attention"
+    }
+  },
+  "privacy": {
+    "title": "Privacy",
+    "description": "Control your privacy settings",
+    "profileVisible": {
+      "label": "Public profile",
+      "description": "Make your profile visible to other users"
+    },
+    "progressVisible": {
+      "label": "Show performance summary",
+      "description": "Display your performance summary publicly"
+    },
+    "leaderboardVisible": {
+      "label": "Leaderboard participation",
+      "description": "Appear on public leaderboards"
+    }
+  },
+  "policy": {
+    "locked": "Locked by policy",
+    "enforced": "Enforced by policy: {value}",
+    "managed": "Managed by policy",
+    "description": "This setting is controlled by your organization"
+  },
+  "saveStatus": {
+    "saving": "Saving...",
+    "saved": "Saved",
+    "error": "Error saving settings",
+    "offline": "Offline - changes will sync when online"
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "reset": "Reset to defaults",
+    "resetConfirm": "Are you sure you want to reset all settings to defaults?"
+  },
+  "quickActions": {
+    "theme": {
+      "title": "Theme",
+      "light": "Light mode",
+      "dark": "Dark mode",
+      "auto": "Auto (system)",
+      "schedule": "Schedule"
+    },
+    "language": {
+      "title": "Language",
+      "recent": "Recent languages"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "markAllRead": "Mark all as read",
+      "settings": "Notification settings",
+      "studyReminders": "Challenge reminders",
+      "doNotDisturb": "Do not disturb"
+    }
+  },
+  "keyboard": {
+    "shortcuts": {
+      "theme": "Toggle theme (Alt+T)",
+      "language": "Change language (Alt+L)",
+      "conflict": "Shortcut may conflict with browser. Try {alternative}",
+      "alternative": "Ctrl+Shift+{key}"
+    }
+  },
+  "coachmarks": {
+    "longPress": "Long press for quick actions",
+    "recentLanguages": "Long press for recent languages",
+    "themeOptions": "Long press for theme options"
+  }
+}

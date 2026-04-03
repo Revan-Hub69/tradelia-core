@@ -1,0 +1,10 @@
+{
+  "eyebrow": "Come funziona",
+  "title": "Un solo scenario. Quattro strumenti. Un confronto netto.",
+  "step1_title": "Inserisci lo scenario operativo",
+  "step1_desc": "Scegli il sottostante, l'orizzonte temporale, il capitale e il livello di leva. Il tool normalizza tutti gli strumenti alla stessa esposizione nozionale.",
+  "step2_title": "Applichiamo i costi reali",
+  "step2_desc": "Spread, commissioni, swap rate, theta decay, rollover e fee broker vengono applicati dai tariffari ufficiali aggiornati.",
+  "step3_title": "Confronta l'efficienza netta",
+  "step3_desc": "Ottieni la tabella comparativa con costi totali, breakdown per componente e Indice di Efficienza Operativa per strumento."
+}

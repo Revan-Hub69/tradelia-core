@@ -1,0 +1,15 @@
+{
+  "eyebrow": "Output",
+  "title": "What you get",
+  "intro": "The output is not an opinion. It is a quantitative reading of the scenario you entered. Example: €10,000, 30-day horizon, Nasdaq.",
+  "col_instrument": "Instrument",
+  "col_cost": "Est. cost",
+  "col_efficiency": "Efficiency",
+  "col_drag": "Cost drag",
+  "col_note": "Notes",
+  "output_etf_note": "Simple structure, contained cost drag",
+  "output_cfd_note": "Spread and funding impact multi-day holds",
+  "output_futures_note": "More efficient over longer horizons",
+  "output_options_note": "Theta decay relevant beyond 15 days",
+  "table_note": "Simulated values for illustrative purposes. Actual parameters vary by broker and market conditions."
+}

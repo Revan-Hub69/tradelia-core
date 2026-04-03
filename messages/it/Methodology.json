@@ -1,0 +1,9 @@
+{
+  "title": "Metodologia",
+  "item1": "Modelli deterministici",
+  "item2": "Normalizzazione fee per broker",
+  "item3": "Mapping esposizione a livello strumento",
+  "item4": "Nessuna proiezione forward-looking",
+  "data_sources": "Fonti: fee schedule ufficiali broker, PRIIPs KID, API pubbliche.",
+  "disclaimer": "Le simulazioni sono a scopo illustrativo e non costituiscono consulenza finanziaria personalizzata."
+}

@@ -1,0 +1,8 @@
+{
+  "title": "Exposure Comparator",
+  "description": "Maps the real risk exposure of ETF, CFD, futures, and options on the same underlying. Delta-adjusted notional, leverage, and margin requirements normalised.",
+  "feature1": "Delta-adjusted notional equivalence",
+  "feature2": "Leverage and margin breakdown",
+  "feature3": "Instrument comparison on identical underlying",
+  "cta": "Compare Exposure"
+}

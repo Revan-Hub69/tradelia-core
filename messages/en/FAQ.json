@@ -1,0 +1,17 @@
+{
+  "section_title": "Frequently asked questions",
+  "section_subtitle": "Practical answers about how the comparison works and what it is designed for.",
+  "question1": "What does \"instrument efficiency\" mean?",
+  "answer1": "Efficiency is the ratio of net return to gross return — how much of the theoretical gain you actually keep after all costs. Two instruments with the same gross exposure can have very different efficiencies depending on spread, carry, commission structure and holding period.",
+  "question2": "Which instruments are included?",
+  "answer2": "ETF (accumulation and distributing), CFD, equity futures, and vanilla options (long calls/puts). The comparison is always on the same underlying and the same delta-adjusted notional, so results are directly comparable.",
+  "question3": "How are CFD swap rates calculated?",
+  "answer3": "Swap rates are sourced from broker specifications and applied daily on overnight positions. The tool uses the rate published in each broker\u2019s product schedule, not a generic market rate.",
+  "question4": "Are broker links affiliate links?",
+  "answer4": "Where a broker link is an affiliate link, it is labelled explicitly. Non-affiliate links are also included in comparisons. The ranking is based purely on cost efficiency, not commercial relationships.",
+  "question5": "Is this investment advice?",
+  "answer5": "No. Tradelia provides quantitative analysis tools for informational purposes. Results are deterministic simulations based on current cost schedules and do not constitute investment advice or guarantees of future performance.",
+  "question6": "How often are fee schedules updated?",
+  "answer6": "Fee schedules are reviewed and updated manually when brokers publish changes. The last update date is shown next to each broker in the results. If you notice an outdated figure, use the contact form to report it.",
+  "cta_badge": "Still have questions? Use the contact form."
+}
