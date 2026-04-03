@@ -2,44 +2,31 @@
 
 import { useTranslations } from 'next-intl';
 
+const steps = [
+  { num: '01', titleKey: 'step1_title', descKey: 'step1_desc' },
+  { num: '02', titleKey: 'step2_title', descKey: 'step2_desc' },
+  { num: '03', titleKey: 'step3_title', descKey: 'step3_desc' },
+];
+
 export const HowItWorks = () => {
-  const t = useTranslations('HowItWorks') as any;
+  const t = useTranslations('HowItWorks') as (key: string) => string;
 
-  const steps = [
-    {
-      num: '1',
-      title: t('step1_title'),
-      desc: t('step1_desc'),
-    },
-    {
-      num: '2',
-      title: t('step2_title'),
-      desc: t('step2_desc'),
-    },
-    {
-      num: '3',
-      title: t('step3_title'),
-      desc: t('step3_desc'),
-    },
-    {
-      num: '4',
-      title: t('step4_title'),
-      desc: t('step4_desc'),
-    },
-  ];
   return (
-    <section id="how-it-works" className="border-t border-border bg-muted/30 px-4 py-12 sm:px-6 sm:py-16">
-      <div className="mx-auto max-w-3xl">
-        <h2 className="text-center text-lg font-bold sm:text-xl">{t('title')}</h2>
+    <section className="border-t border-border/40 px-4 py-12 sm:px-6 sm:py-16">
+      <div className="mx-auto max-w-4xl">
+        <p className="mb-2 font-mono text-xs uppercase tracking-widest text-muted-foreground/50">
+          {t('eyebrow')}
+        </p>
+        <h2 className="mb-10 text-xl font-semibold tracking-tight sm:text-2xl">
+          {t('title')}
+        </h2>
 
-        <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-6">
-          {steps.map(step => (
-            <div key={step.num} className="text-center">
-              <span className="mx-auto flex size-10 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground sm:size-12">
-                {step.num}
-              </span>
-              <p className="mt-3 text-sm font-semibold">{step.title}</p>
-              <p className="mt-1 text-xs text-muted-foreground">{step.desc}</p>
+        <div className="grid gap-8 sm:grid-cols-3">
+          {steps.map((s) => (
+            <div key={s.num} className="flex flex-col gap-3">
+              <span className="font-mono text-2xl font-bold text-primary/30">{s.num}</span>
+              <h3 className="text-sm font-semibold leading-snug">{t(s.titleKey)}</h3>
+              <p className="text-sm leading-relaxed text-muted-foreground">{t(s.descKey)}</p>
             </div>
           ))}
         </div>

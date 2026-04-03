@@ -2,18 +2,17 @@ import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 
 import { Navbar } from '@/templates/Navbar';
 import { PremiumFooter } from '@/templates/PremiumFooter';
-import { ToolsHero } from '@/templates/ToolsHero';
-import { ToolCard } from '@/templates/ToolCard';
-import { FrameworkSection, MethodologySection } from '@/templates/FrameworkSection';
+import { TradeHero } from '@/templates/TradeHero';
+import { HowItWorks } from '@/templates/HowItWorks';
+import { CompareInstruments } from '@/templates/CompareInstruments';
+import { OutputPreview } from '@/templates/OutputPreview';
+import { WhyDifferent } from '@/templates/WhyDifferent';
 import { FAQ } from '@/templates/FAQ';
+import { DisclaimerBar } from '@/templates/DisclaimerBar';
 
 export async function generateMetadata(props: { params: Promise<{ locale: string }> }) {
   const params = await props.params;
-  const t = await getTranslations({
-    locale: params.locale,
-    namespace: 'Index',
-  });
-
+  const t = await getTranslations({ locale: params.locale, namespace: 'Index' });
   return {
     title: t('meta_title'),
     description: t('meta_description'),
@@ -28,38 +27,17 @@ const IndexPage = async (props: { params: Promise<{ locale: string }> }) => {
     <>
       <Navbar />
       <main id="main-content">
-        {/* Hero */}
-        <ToolsHero />
-
-        {/* Single tool */}
-        <section id="tool" className="border-t border-border/40 px-4 py-12 sm:px-6 sm:py-16 lg:py-20">
-          <div className="mx-auto max-w-2xl">
-            <ToolCard
-              variant="primary"
-              namespace="Tool"
-              features={['feature1', 'feature2', 'feature3', 'feature4']}
-              ctaKey="cta"
-              href="/tool"
-            />
-          </div>
-        </section>
-
-        {/* How it works */}
-        <section id="framework">
-          <FrameworkSection />
-        </section>
-
-        {/* Methodology */}
-        <section id="methodology">
-          <MethodologySection />
-        </section>
-
-        {/* FAQ */}
+        <TradeHero />
+        <HowItWorks />
+        <CompareInstruments />
+        <OutputPreview />
+        <WhyDifferent />
         <section id="faq" className="border-t border-border/40 px-4 py-12 sm:px-6 sm:py-16">
           <div className="mx-auto max-w-3xl">
             <FAQ />
           </div>
         </section>
+        <DisclaimerBar />
       </main>
       <PremiumFooter />
     </>
