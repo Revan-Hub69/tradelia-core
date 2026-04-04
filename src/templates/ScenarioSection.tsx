@@ -260,7 +260,7 @@ export const ScenarioSection = () => {
       className="scroll-mt-32 border-t border-border/40 bg-gradient-to-b from-background to-muted/20 py-14 sm:py-16 lg:py-20 xl:py-24 2xl:py-28"
     >
       <SectionContainer size="wide">
-        <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-10 2xl:gap-12">
+        <div className="grid gap-8 lg:grid-cols-[0.4fr_0.6fr] xl:grid-cols-[0.42fr_0.58fr] lg:gap-6 xl:gap-8">
           <div className="space-y-6">
             <div>
               <p className="mb-3 font-mono text-xs font-medium uppercase tracking-[0.24em] text-muted-foreground/60">
@@ -274,7 +274,7 @@ export const ScenarioSection = () => {
               </p>
             </div>
 
-            <div className="rounded-3xl border border-border/60 bg-card p-5 shadow-xl sm:p-6 lg:p-7">
+            <div className="rounded-3xl border border-border/60 bg-card p-4 shadow-xl sm:p-5 lg:p-5">
               <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/55">
                 {t('control_label')}
               </p>
@@ -282,7 +282,7 @@ export const ScenarioSection = () => {
               <div className="mt-5 space-y-5">
                 <div>
                   <label className="text-sm font-medium text-foreground/80">{t('group_label')}</label>
-                  <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+                  <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5">
                     {assetGroupKeys.map(group => {
                       const colors = groupColors[group];
                       const isActive = selectedGroup === group;
