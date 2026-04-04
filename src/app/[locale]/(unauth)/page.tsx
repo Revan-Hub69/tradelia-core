@@ -8,7 +8,7 @@ import { HowItWorks } from '@/templates/HowItWorks';
 import { ScenarioSection } from '@/templates/ScenarioSection';
 import { FAQ } from '@/templates/FAQ';
 import { DisclaimerBar } from '@/templates/DisclaimerBar';
-import { SocialProof } from '@/templates/SocialProofMetrics';
+import { BrokerTicker } from '@/templates/BrokerTicker';
 import { FeatureBento } from '@/templates/FeatureBento';
 import { Comparison } from '@/templates/Comparison';
 import { FinalCTA } from '@/templates/FinalCTA';
@@ -31,7 +31,7 @@ const IndexPage = async (props: { params: Promise<{ locale: string }> }) => {
       <Navbar />
       <main id="main-content">
         <TradeHero />
-        <SocialProof />
+        <BrokerTicker />
         <ProblemSection />
         <HowItWorks />
         <FeatureBento />
