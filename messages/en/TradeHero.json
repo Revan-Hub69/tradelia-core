@@ -1,9 +1,9 @@
 {
   "eyebrow": "TradeScope",
-  "title": "Are you using the wrong combination for your strategy?",
-  "subtitle": "Forex, indices, cryptocurrencies, equities, commodities. TradeScope cross-matches asset, strategy, horizon, capital, and leverage with a real cost database to identify the most efficient instrument and broker.",
+  "title": "The same strategy can yield different results. Often due to costs, not the market.",
+  "subtitle": "TradeScope analyzes how instrument, broker, and cost structure influence your trading outcome.",
   "cta": "Launch TradeScope",
-  "cta_note": "Asset, strategy, horizon. Then the ranking.",
+  "cta_note": "Enter asset, strategy, and horizon. Get a comparison based on real costs.",
   "trust": "The engine reads the operational combination and applies spread, funding, commissions, and instrument structure before comparing instruments and brokers.",
   "trust_point_1": "The combination is evaluated for consistency between asset, strategy, and horizon.",
   "trust_point_2": "Costs are read as execution friction and holding friction.",

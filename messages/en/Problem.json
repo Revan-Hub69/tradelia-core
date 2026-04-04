@@ -1,8 +1,8 @@
 {
   "eyebrow": "The problem",
-  "title": "The wrong cost changes the result before the strategy does.",
-  "paragraph1": "Many traders optimize their setup but ignore real spreads, slippage, holding costs, and differences between instruments on the same underlying.",
-  "paragraph2": "TradeScope starts from the operational combination and measures where cost becomes decisive. Not from the product, but from the real cost of the combination you are using.",
+  "title": "Many traders optimize their strategy, but don't consider key factors.",
+  "paragraph1": "Real spreads, execution quality, holding costs, and differences between instruments on the same underlying can impact the final result.",
+  "paragraph2": "TradeScope starts from your real operational context and measures where cost becomes decisive. Not from the product, but from the real cost of the combination you are using.",
   "card_eyebrow": "Where cost becomes decisive",
   "chip_spread": "Execution",
   "chip_swap": "Holding",
