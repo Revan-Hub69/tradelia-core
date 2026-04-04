@@ -23,8 +23,8 @@ export const LandingFooter = () => {
   return (
     <footer className="border-t border-border/40 bg-slate-950 py-10 text-slate-200 sm:py-12 lg:py-14 2xl:py-16">
       <SectionContainer size="wide">
-        <div className="grid gap-8 lg:grid-cols-[1.15fr_0.72fr_0.98fr] lg:gap-10">
-          <div className="max-w-md">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-[1.15fr_0.72fr_0.98fr] lg:gap-10">
+          <div className="md:col-span-2 lg:col-span-1">
             <Logo href="/" />
             <div className="mt-4 inline-flex rounded-full border border-slate-800 bg-slate-900 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-400">
               {brandBadge}
@@ -44,7 +44,7 @@ export const LandingFooter = () => {
             </div>
           </div>
 
-          <div>
+          <div className="md:col-span-1">
             <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
               {t('nav_title')}
             </p>
@@ -61,7 +61,7 @@ export const LandingFooter = () => {
             </div>
           </div>
 
-          <div className="rounded-[28px] border border-slate-800 bg-slate-900/70 p-5 sm:p-6">
+          <div className="rounded-[28px] border border-slate-800 bg-slate-900/70 p-5 sm:p-6 md:col-span-1">
             <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
               {t('scope_title')}
             </p>
