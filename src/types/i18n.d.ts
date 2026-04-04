@@ -1,11 +1,3 @@
-/**
- * Type definitions for next-intl translations
- *
- * This file provides type safety for translation keys across the application.
- * It supports both the legacy monolithic system (src/locales) and the new
- * modular namespace system (messages/).
- */
-
 import 'next-intl';
 
 import type analysisEn from '../../messages/en/Analysis.json';
@@ -21,6 +13,9 @@ import type disclaimerEn from '../../messages/en/Disclaimer.json';
 import type emailEn from '../../messages/en/email.json';
 import type exposureEn from '../../messages/en/Exposure.json';
 import type faqEn from '../../messages/en/FAQ.json';
+import type featureBentoEn from '../../messages/en/FeatureBento.json';
+import type featuresComparisonEn from '../../messages/en/FeaturesComparison.json';
+import type finalCtaEn from '../../messages/en/FinalCTA.json';
 import type flowEn from '../../messages/en/Flow.json';
 import type frameworkEn from '../../messages/en/Framework.json';
 import type heroEn from '../../messages/en/Hero.json';
@@ -56,6 +51,9 @@ type Messages = typeof enLocale & {
   email: typeof emailEn;
   Exposure: typeof exposureEn;
   FAQ: typeof faqEn;
+  FeatureBento: typeof featureBentoEn;
+  FeaturesComparison: typeof featuresComparisonEn;
+  FinalCTA: typeof finalCtaEn;
   Flow: typeof flowEn;
   Framework: typeof frameworkEn;
   Hero: typeof heroEn;

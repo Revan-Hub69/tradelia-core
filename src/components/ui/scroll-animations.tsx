@@ -4,9 +4,6 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { useInView } from '@/components/ui/useInView';
 
-/**
- * Hook to detect user's motion preferences
- */
 const useReducedMotion = () => {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
@@ -25,9 +22,6 @@ const useReducedMotion = () => {
   return prefersReducedMotion;
 };
 
-/**
- * Fade in animation component
- */
 export const FadeIn = ({
   children,
   delay = 0,
@@ -85,9 +79,6 @@ export const FadeIn = ({
   );
 };
 
-/**
- * Stagger children animation
- */
 export const StaggerChildren = ({
   children,
   staggerDelay = 100,
@@ -117,9 +108,6 @@ export const StaggerChildren = ({
   );
 };
 
-/**
- * Scale in animation
- */
 export const ScaleIn = ({
   children,
   delay = 0,
@@ -154,9 +142,6 @@ export const ScaleIn = ({
   );
 };
 
-/**
- * Slide reveal animation (for text/content)
- */
 export const SlideReveal = ({
   children,
   delay = 0,
@@ -190,18 +175,19 @@ export const SlideReveal = ({
   );
 };
 
-/**
- * Counter animation for numbers
- */
 export const AnimatedCounter = ({
   end,
   duration = 2000,
   suffix = '',
+  prefix = '',
+  decimals = 0,
   className = '',
 }: {
   end: number;
   duration?: number;
   suffix?: string;
+  prefix?: string;
+  decimals?: number;
   className?: string;
 }) => {
   const { ref, isInView } = useInView();
@@ -218,16 +204,14 @@ export const AnimatedCounter = ({
     }
 
     let startTime: number;
-    const startCount = 0;
 
     const animate = (currentTime: number) => {
       if (!startTime) {
         startTime = currentTime;
       }
       const progress = Math.min((currentTime - startTime) / duration, 1);
-
       const easeOutQuart = 1 - (1 - progress) ** 4;
-      const currentCount = Math.floor(startCount + (end - startCount) * easeOutQuart);
+      const currentCount = end * easeOutQuart;
 
       setCount(currentCount);
 
@@ -242,7 +226,8 @@ export const AnimatedCounter = ({
   if (!mounted) {
     return (
       <span ref={ref} className={className}>
-        {end.toLocaleString()}
+        {prefix}
+        {end.toFixed(decimals)}
         {suffix}
       </span>
     );
@@ -250,15 +235,13 @@ export const AnimatedCounter = ({
 
   return (
     <span ref={ref} className={className}>
-      {count.toLocaleString()}
+      {prefix}
+      {count.toFixed(decimals)}
       {suffix}
     </span>
   );
 };
 
-/**
- * Parallax scroll effect
- */
 export const Parallax = ({
   children,
   speed = 0.5,

@@ -8,6 +8,10 @@ import { HowItWorks } from '@/templates/HowItWorks';
 import { ScenarioSection } from '@/templates/ScenarioSection';
 import { FAQ } from '@/templates/FAQ';
 import { DisclaimerBar } from '@/templates/DisclaimerBar';
+import { SocialProof } from '@/templates/SocialProofMetrics';
+import { FeatureBento } from '@/templates/FeatureBento';
+import { Comparison } from '@/templates/Comparison';
+import { FinalCTA } from '@/templates/FinalCTA';
 
 export async function generateMetadata(props: { params: Promise<{ locale: string }> }) {
   const params = await props.params;
@@ -27,9 +31,13 @@ const IndexPage = async (props: { params: Promise<{ locale: string }> }) => {
       <Navbar />
       <main id="main-content">
         <TradeHero />
+        <SocialProof />
         <ProblemSection />
         <HowItWorks />
+        <FeatureBento />
         <ScenarioSection />
+        <Comparison />
+        <FinalCTA />
         <FAQ />
         <DisclaimerBar />
       </main>
