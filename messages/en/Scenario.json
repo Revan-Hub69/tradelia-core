@@ -66,6 +66,8 @@
   "capital_label": "Capital",
   "capital_hint": "Capital shifts the balance between fixed and variable costs.",
   "leverage_label": "Leverage/Margin",
+  "leverage_on": "Leverage Active",
+  "leverage_off": "No Leverage",
   "preview_label": "Cost pressure map",
   "dominant_label": "Critical driver",
   "score_label": "Friction score",

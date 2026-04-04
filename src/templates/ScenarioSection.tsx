@@ -377,22 +377,17 @@ export const ScenarioSection = () => {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
                     <label className="text-sm font-medium text-foreground/80">{t('capital_label')}</label>
-                    <div className="mt-3 flex flex-wrap gap-2">
+                    <select
+                      value={capitalRange}
+                      onChange={e => setCapitalRange(e.target.value as CapitalRangeKey)}
+                      className="mt-3 w-full rounded-2xl border border-border/50 bg-background px-4 py-3 font-mono text-sm outline-none transition-colors focus:border-primary/50"
+                    >
                       {capitalRanges.map(range => (
-                        <button
-                          key={range.key}
-                          type="button"
-                          onClick={() => setCapitalRange(range.key)}
-                          className={`rounded-full px-3 py-2 font-mono text-[10px] uppercase tracking-[0.14em] transition-all ${
-                            capitalRange === range.key
-                              ? 'bg-foreground text-background'
-                              : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                          }`}
-                        >
-                          {range.label}
-                        </button>
+                        <option key={range.key} value={range.key}>
+                          {range.label} EUR
+                        </option>
                       ))}
-                    </div>
+                    </select>
                     <p className="mt-2 text-xs text-muted-foreground/60">{t('capital_hint')}</p>
                   </div>
 
@@ -401,25 +396,25 @@ export const ScenarioSection = () => {
                     <button
                       type="button"
                       onClick={() => setLeverageOn(!leverageOn)}
-                      className={`mt-3 relative h-12 w-full rounded-2xl border transition-all duration-300 ${
+                      className={`mt-3 relative flex h-12 w-full items-center justify-center rounded-2xl border text-sm font-medium uppercase tracking-wider transition-all duration-200 ${
                         leverageOn
-                          ? 'border-emerald-500/50 bg-emerald-500/10'
-                          : 'border-border/50 bg-muted/40'
+                          ? 'border-emerald-500/60 bg-emerald-500/15 text-emerald-400'
+                          : 'border-slate-600 bg-slate-800/50 text-slate-400'
                       }`}
                     >
-                      <span
-                        className={`absolute left-1 top-1 h-10 w-[calc(50%-4px)] rounded-xl bg-emerald-500 transition-transform duration-300 ${
-                          leverageOn ? 'translate-x-0' : 'translate-x-full'
-                        }`}
-                      />
-                      <div className="relative flex h-full items-center justify-around">
-                        <span className={`font-mono text-[10px] uppercase tracking-[0.12em] ${!leverageOn ? 'text-background' : 'text-muted-foreground'}`}>
-                          OFF
-                        </span>
-                        <span className={`font-mono text-[10px] uppercase tracking-[0.12em] ${leverageOn ? 'text-background' : 'text-muted-foreground'}`}>
-                          ON
-                        </span>
-                      </div>
+                      <span className="flex items-center gap-2">
+                        {leverageOn ? (
+                          <>
+                            <span className="size-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                            {t('leverage_on')}
+                          </>
+                        ) : (
+                          <>
+                            <span className="size-2.5 rounded-full bg-slate-500" />
+                            {t('leverage_off')}
+                          </>
+                        )}
+                      </span>
                     </button>
                   </div>
                 </div>

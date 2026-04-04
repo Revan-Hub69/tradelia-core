@@ -66,6 +66,8 @@
   "capital_label": "Capitale",
   "capital_hint": "Il capitale sposta il peso tra costi fissi e variabili.",
   "leverage_label": "Leva/Marginazione",
+  "leverage_on": "Leva Attiva",
+  "leverage_off": "Senza Leva",
   "preview_label": "Mappa pressione costi",
   "dominant_label": "Driver critico",
   "score_label": "Indice attrito",
