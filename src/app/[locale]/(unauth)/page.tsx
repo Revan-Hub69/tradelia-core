@@ -12,6 +12,7 @@ import { BrokerTicker } from '@/templates/BrokerTicker';
 import { FeatureBento } from '@/templates/FeatureBento';
 import { Comparison } from '@/templates/Comparison';
 import { FinalCTA } from '@/templates/FinalCTA';
+import { TrustBadge } from '@/templates/TrustBadge';
 
 export async function generateMetadata(props: { params: Promise<{ locale: string }> }) {
   const params = await props.params;
@@ -31,6 +32,7 @@ const IndexPage = async (props: { params: Promise<{ locale: string }> }) => {
       <Navbar />
       <main id="main-content">
         <TradeHero />
+        <TrustBadge />
         <BrokerTicker />
         <ProblemSection />
         <HowItWorks />
