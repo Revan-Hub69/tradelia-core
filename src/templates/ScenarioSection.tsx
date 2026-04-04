@@ -151,11 +151,29 @@ const sumWeights = (...groups: DriverWeights[]) =>
     { execution: 0, holding: 0, structure: 0 },
   );
 
-const getCapitalBias = (capital: number): DriverWeights => {
-  if (capital >= 50000) return { execution: 8, holding: 4, structure: -10 };
-  if (capital >= 10000) return { execution: 3, holding: 2, structure: -2 };
-  return { execution: -2, holding: 0, structure: 10 };
+const getCapitalBias = (capitalRange: string): DriverWeights => {
+  switch (capitalRange) {
+    case 'small':
+      return { execution: -2, holding: 0, structure: 10 };
+    case 'mid':
+      return { execution: 3, holding: 2, structure: -2 };
+    case 'large':
+      return { execution: 8, holding: 4, structure: -10 };
+    default:
+      return { execution: 0, holding: 0, structure: 0 };
+  }
 };
+
+const capitalRanges = [
+  { key: 'tiny', min: 100, max: 300, label: '100 - 300' },
+  { key: 'small', min: 300, max: 1000, label: '300 - 1.000' },
+  { key: 'mid', min: 1000, max: 3000, label: '1.000 - 3.000' },
+  { key: 'mid_plus', min: 3000, max: 7000, label: '3.000 - 7.000' },
+  { key: 'large', min: 7000, max: 15000, label: '7.000 - 15.000' },
+  { key: 'xlarge', min: 15000, max: 1000000, label: '> 15.000' },
+] as const;
+
+type CapitalRangeKey = typeof capitalRanges[number]['key'];
 
 const getLeverageBias = (leverageOn: boolean): DriverWeights =>
   leverageOn ? { execution: 6, holding: 8, structure: 4 } : { execution: 0, holding: 0, structure: 0 };
@@ -176,7 +194,7 @@ export const ScenarioSection = () => {
   const [selectedSub, setSelectedSub] = useState<AssetSubKey>('major');
   const [selectedHorizon, setSelectedHorizon] = useState<HorizonKey>('intraday');
   const [selectedStrategy, setSelectedStrategy] = useState('momentum_intraday');
-  const [capital, setCapital] = useState(15000);
+  const [capitalRange, setCapitalRange] = useState<CapitalRangeKey>('mid');
   const [leverageOn, setLeverageOn] = useState(true);
 
   const currentAsset = assetGroups[selectedGroup];
@@ -204,7 +222,7 @@ export const ScenarioSection = () => {
     currentAsset.baseDrivers,
     horizonAdjustments[selectedHorizon],
     activeStrategy.driverBias,
-    getCapitalBias(capital),
+    getCapitalBias(capitalRange),
     getLeverageBias(leverageOn),
   );
 
@@ -225,7 +243,7 @@ export const ScenarioSection = () => {
   const pressureScore = Math.min(99, Math.round((executionRaw + holdingRaw + structureRaw) / 3 + (leverageOn ? 8 : 0)));
   const firstAudit = t(`review_${dominantDriver}`);
 
-  const capitalRead = capital >= 50000 ? t('read_capital_large') : capital >= 10000 ? t('read_capital_mid') : t('read_capital_small');
+  const capitalRead = capitalRange === 'large' || capitalRange === 'xlarge' ? t('read_capital_large') : capitalRange === 'mid' || capitalRange === 'mid_plus' ? t('read_capital_mid') : t('read_capital_small');
   const leverageRead = leverageOn ? t('read_leverage_on') : t('read_leverage_off');
 
   const engineReads = [
@@ -359,17 +377,21 @@ export const ScenarioSection = () => {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
                     <label className="text-sm font-medium text-foreground/80">{t('capital_label')}</label>
-                    <div className="mt-3 flex items-center gap-3 rounded-2xl border border-border/50 bg-background px-4 py-3">
-                      <span className="font-mono text-sm text-muted-foreground">{currencyCode}</span>
-                      <input
-                        type="number"
-                        value={capital}
-                        onChange={e => setCapital(Number(e.target.value) || 0)}
-                        className="w-full bg-transparent text-base font-medium outline-none"
-                        min={1000}
-                        max={10000000}
-                        step={1000}
-                      />
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {capitalRanges.map(range => (
+                        <button
+                          key={range.key}
+                          type="button"
+                          onClick={() => setCapitalRange(range.key)}
+                          className={`rounded-full px-3 py-2 font-mono text-[10px] uppercase tracking-[0.14em] transition-all ${
+                            capitalRange === range.key
+                              ? 'bg-foreground text-background'
+                              : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                          }`}
+                        >
+                          {range.label}
+                        </button>
+                      ))}
                     </div>
                     <p className="mt-2 text-xs text-muted-foreground/60">{t('capital_hint')}</p>
                   </div>
@@ -426,9 +448,7 @@ export const ScenarioSection = () => {
                 {t(`strategy_${activeStrategy.key}`)}
               </span>
               <span className="rounded-full border border-slate-800 bg-slate-900/70 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.16em] text-slate-300">
-                {currencyCode}
-                {' '}
-                {capital.toLocaleString()}
+                {currencyCode} {capitalRanges.find(r => r.key === capitalRange)?.label}
               </span>
               <span className={`rounded-full border px-3 py-1 font-mono text-[11px] uppercase tracking-[0.16em] ${leverageOn ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300' : 'border-slate-800 bg-slate-900/70 text-slate-400'}`}>
                 {leverageOn ? 'LEVA ON' : 'LEVA OFF'}
