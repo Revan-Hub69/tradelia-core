@@ -96,7 +96,6 @@ const SimulatorContent = () => {
   const [searchQuery,        setSearchQuery]        = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // ── filtered underlyings ──
   const filteredUnderlyings = useMemo(() => {
     let items = UNDERLYING_GROUPS.filter(u => u.group === selectedGroup);
     if (searchQuery) {
@@ -132,20 +131,19 @@ const SimulatorContent = () => {
 
   if (!activeStrategy) return null;
 
-  // ── compute drivers ──
   const rawDrivers  = sumWeights(
     assetDefs[selectedGroup]!.baseDrivers,
     horizonAdjustments[selectedHorizon],
     getCapitalBias(capitalRange),
     leverageOn ? { execution: 6, holding: 8, structure: 4 } : { execution: 0, holding: 0, structure: 0 },
   );
-  const execRaw     = Math.max(8, rawDrivers.execution);
-  const holdRaw     = Math.max(8, rawDrivers.holding);
-  const structRaw   = Math.max(8, rawDrivers.structure);
-  const total       = execRaw + holdRaw + structRaw;
-  const execPct     = Math.round((execRaw  / total) * 100);
-  const holdPct     = Math.round((holdRaw  / total) * 100);
-  const structPct   = 100 - execPct - holdPct;
+  const execRaw   = Math.max(8, rawDrivers.execution);
+  const holdRaw   = Math.max(8, rawDrivers.holding);
+  const structRaw = Math.max(8, rawDrivers.structure);
+  const total     = execRaw + holdRaw + structRaw;
+  const execPct   = Math.round((execRaw  / total) * 100);
+  const holdPct   = Math.round((holdRaw  / total) * 100);
+  const structPct = 100 - execPct - holdPct;
 
   const drivers = [
     { key: 'execution' as const, value: execPct,   barClass: 'bg-sky-400' },
@@ -178,13 +176,13 @@ const SimulatorContent = () => {
 
       {/* ── LEFT: INPUT PANEL ── */}
       <div className="space-y-5">
-        <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground/55">
+        <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-zinc-500 dark:text-zinc-400">
           {t('control_label')}
         </p>
 
         {/* Asset Group */}
         <div>
-          <label className="text-xs font-medium text-foreground/70 uppercase tracking-wider">{t('group_label')}</label>
+          <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">{t('group_label')}</label>
           <div className="mt-2.5 grid grid-cols-3 gap-1.5">
             {ASSET_GROUPS.map(g => {
               const c = groupColors[g.id]!;
@@ -195,11 +193,11 @@ const SimulatorContent = () => {
                   type="button"
                   onClick={() => setSelectedGroup(g.id as AssetGroupKey)}
                   className={`rounded-xl border px-3 py-2.5 text-left transition-all duration-200 hover:scale-[1.02] ${
-                    active ? `${c.border} ${c.bg}` : 'border-border/40 bg-muted/30 hover:bg-muted/50'
+                    active ? `${c.border} ${c.bg}` : 'border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700'
                   }`}
                 >
                   <span className={`block font-mono text-[10px] uppercase tracking-[0.14em] ${
-                    active ? 'text-foreground' : 'text-muted-foreground'
+                    active ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 dark:text-zinc-400'
                   }`}>
                     {g.label}
                   </span>
@@ -211,19 +209,19 @@ const SimulatorContent = () => {
 
         {/* Underlying dropdown */}
         <div ref={dropdownRef}>
-          <label className="text-xs font-medium text-foreground/70 uppercase tracking-wider">{t('sub_label')}</label>
+          <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">{t('sub_label')}</label>
           <div className="relative mt-2.5">
             <button
               type="button"
               onClick={() => setIsDropdownOpen(v => !v)}
-              className="w-full rounded-xl border border-border/50 bg-background px-3.5 py-2.5 text-sm text-left flex items-center justify-between outline-none transition-colors focus:border-primary/50"
+              className="w-full rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-3.5 py-2.5 text-sm text-left flex items-center justify-between outline-none transition-colors focus:border-blue-500/50"
             >
               <div>
-                <p className="font-medium text-sm">{selectedUnderlying.label}</p>
-                <p className="text-[10px] font-mono text-muted-foreground/60">{selectedUnderlying.id}</p>
+                <p className="font-medium text-sm text-zinc-900 dark:text-white">{selectedUnderlying.label}</p>
+                <p className="text-[10px] font-mono text-zinc-400">{selectedUnderlying.id}</p>
               </div>
               <svg
-                className="w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-200"
+                className="w-4 h-4 text-zinc-400 shrink-0 transition-transform duration-200"
                 style={{ transform: isDropdownOpen ? 'rotate(180deg)' : '' }}
                 fill="none" stroke="currentColor" viewBox="0 0 24 24"
               >
@@ -231,15 +229,15 @@ const SimulatorContent = () => {
               </svg>
             </button>
             {isDropdownOpen && (
-              <div className="absolute top-full left-0 right-0 mt-1.5 z-50 rounded-xl border border-border/60 bg-card shadow-xl overflow-hidden">
-                <div className="p-2 border-b border-border/30">
+              <div className="absolute top-full left-0 right-0 mt-1.5 z-50 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-xl overflow-hidden">
+                <div className="p-2 border-b border-zinc-100 dark:border-zinc-800">
                   <input
                     autoFocus
                     type="text"
                     placeholder="Filter..."
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
-                    className="w-full rounded-lg border border-border/40 bg-background px-3 py-2 text-sm outline-none focus:border-primary/50"
+                    className="w-full rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-3 py-2 text-sm text-zinc-900 dark:text-white outline-none focus:border-blue-500/50"
                   />
                 </div>
                 <div className="max-h-56 overflow-y-auto">
@@ -248,12 +246,12 @@ const SimulatorContent = () => {
                       key={ug.id}
                       type="button"
                       onClick={() => { setSelectedUnderlying(ug); setIsDropdownOpen(false); setSearchQuery(''); }}
-                      className={`w-full px-4 py-3 text-left text-sm hover:bg-muted/50 transition-colors ${
-                        selectedUnderlying.id === ug.id ? 'bg-muted/30' : ''
+                      className={`w-full px-4 py-3 text-left text-sm hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors ${
+                        selectedUnderlying.id === ug.id ? 'bg-zinc-50 dark:bg-zinc-800' : ''
                       }`}
                     >
-                      <p className="font-medium">{ug.label}</p>
-                      <p className="text-xs text-muted-foreground/60 mt-0.5">{ug.tooltip}</p>
+                      <p className="font-medium text-zinc-900 dark:text-white">{ug.label}</p>
+                      <p className="text-xs text-zinc-400 mt-0.5">{ug.tooltip}</p>
                     </button>
                   ))}
                 </div>
@@ -264,7 +262,7 @@ const SimulatorContent = () => {
 
         {/* Horizon */}
         <div>
-          <label className="text-xs font-medium text-foreground/70 uppercase tracking-wider">{t('horizon_label')}</label>
+          <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">{t('horizon_label')}</label>
           <div className="mt-2.5 flex flex-wrap gap-1.5">
             {HORIZONS.map(h => (
               <button
@@ -273,8 +271,8 @@ const SimulatorContent = () => {
                 onClick={() => setSelectedHorizon(h.id as HorizonKey)}
                 className={`rounded-full px-3.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] transition-all ${
                   selectedHorizon === h.id
-                    ? 'bg-foreground text-background'
-                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                    ? 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900'
+                    : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
                 }`}
               >
                 {h.label}
@@ -285,7 +283,7 @@ const SimulatorContent = () => {
 
         {/* Strategy */}
         <div>
-          <label className="text-xs font-medium text-foreground/70 uppercase tracking-wider">{t('strategy_label')}</label>
+          <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">{t('strategy_label')}</label>
           <div className="mt-2.5 flex flex-wrap gap-1.5">
             {availableStrategies.map(s => (
               <button
@@ -294,8 +292,8 @@ const SimulatorContent = () => {
                 onClick={() => setSelectedStrategy(s.value)}
                 className={`rounded-full px-3.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] transition-all ${
                   selectedStrategy === s.value
-                    ? 'bg-foreground text-background'
-                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                    ? 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900'
+                    : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
                 }`}
               >
                 {s.label}
@@ -307,11 +305,11 @@ const SimulatorContent = () => {
         {/* Capital + Leverage */}
         <div className="grid gap-3 sm:grid-cols-2">
           <div>
-            <label className="text-xs font-medium text-foreground/70 uppercase tracking-wider">{t('capital_label')}</label>
+            <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">{t('capital_label')}</label>
             <select
               value={capitalRange}
               onChange={e => setCapitalRange(e.target.value as CapitalRangeKey)}
-              className="mt-2.5 w-full rounded-xl border border-border/50 bg-background px-3.5 py-2.5 font-mono text-sm outline-none focus:border-primary/50"
+              className="mt-2.5 w-full rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white px-3.5 py-2.5 font-mono text-sm outline-none focus:border-blue-500/50"
             >
               {capitalRanges.map(r => (
                 <option key={r.key} value={r.key}>{r.label} {currencyCode}</option>
@@ -319,19 +317,19 @@ const SimulatorContent = () => {
             </select>
           </div>
           <div>
-            <label className="text-xs font-medium text-foreground/70 uppercase tracking-wider">{t('leverage_label')}</label>
+            <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">{t('leverage_label')}</label>
             <button
               type="button"
               onClick={() => setLeverageOn(v => !v)}
               className={`mt-2.5 flex h-[42px] w-full items-center justify-center rounded-xl border text-xs font-medium uppercase tracking-wider transition-all duration-200 ${
                 leverageOn
-                  ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-400'
-                  : 'border-border/50 bg-muted/30 text-muted-foreground'
+                  ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                  : 'border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-400'
               }`}
             >
               <span className="flex items-center gap-2">
                 <span className={`size-2 rounded-full ${
-                  leverageOn ? 'bg-emerald-400 animate-pulse' : 'bg-muted-foreground/40'
+                  leverageOn ? 'bg-emerald-400 animate-pulse' : 'bg-zinc-400'
                 }`} />
                 {leverageOn ? t('leverage_on') : t('leverage_off')}
               </span>
@@ -341,15 +339,13 @@ const SimulatorContent = () => {
       </div>
 
       {/* ── RIGHT: OUTPUT CONSOLE ── */}
-      <div className="rounded-2xl border border-slate-800/80 bg-slate-950 p-5 space-y-4">
+      <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-5 space-y-4">
         {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-zinc-500">
             {t('console_label')}
           </p>
-          <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] ${
-            colors.border.replace('border-', 'border-').replace('/30', '/25')
-          } bg-slate-900/60 text-slate-300`}>
+          <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] ${colors.border} bg-zinc-900 text-zinc-300`}>
             <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
             {t('preview_ready')}
           </span>
@@ -362,14 +358,14 @@ const SimulatorContent = () => {
             HORIZONS.find(h => h.id === selectedHorizon)?.label,
             `${currencyCode} ${capitalRanges.find(r => r.key === capitalRange)?.label}`,
           ].map(chip => chip && (
-            <span key={chip} className="rounded-full border border-slate-800 bg-slate-900/70 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-slate-300">
+            <span key={chip} className="rounded-full border border-zinc-800 bg-zinc-900 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-300">
               {chip}
             </span>
           ))}
           <span className={`rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] ${
             leverageOn
               ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300'
-              : 'border-slate-800 bg-slate-900/70 text-slate-500'
+              : 'border-zinc-800 bg-zinc-900 text-zinc-500'
           }`}>
             {leverageOn ? 'Leva ON' : 'Leva OFF'}
           </span>
@@ -377,31 +373,31 @@ const SimulatorContent = () => {
 
         {/* KPIs */}
         <div className="grid gap-2 sm:grid-cols-3">
-          <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-3">
-            <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-slate-500">{t('dominant_label')}</p>
+          <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-3">
+            <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-zinc-500">{t('dominant_label')}</p>
             <p className="mt-2 text-sm font-semibold tracking-tight text-white">{t(`driver_${dominantDriver}`)}</p>
           </div>
-          <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-3">
-            <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-slate-500">{t('score_label')}</p>
+          <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-3">
+            <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-zinc-500">{t('score_label')}</p>
             <p className="mt-2 text-sm font-semibold tracking-tight text-white">{pressureScore}</p>
-            <p className="mt-1 text-[10px] leading-4 text-slate-500">{t('score_note')}</p>
+            <p className="mt-1 text-[10px] leading-4 text-zinc-500">{t('score_note')}</p>
           </div>
-          <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-3">
-            <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-slate-500">{t('review_label')}</p>
-            <p className="mt-2 text-xs font-medium leading-5 text-slate-100">{firstAudit}</p>
+          <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-3">
+            <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-zinc-500">{t('review_label')}</p>
+            <p className="mt-2 text-xs font-medium leading-5 text-zinc-100">{firstAudit}</p>
           </div>
         </div>
 
         {/* Pressure bars */}
-        <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4 space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-slate-500">{t('preview_label')}</p>
+        <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4 space-y-3">
+          <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-zinc-500">{t('preview_label')}</p>
           {drivers.map(d => (
             <div key={d.key} className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <span className="text-xs text-slate-300">{t(`driver_${d.key}`)}</span>
-                <span className="font-mono text-[10px] text-slate-400">{d.value}%</span>
+                <span className="text-xs text-zinc-300">{t(`driver_${d.key}`)}</span>
+                <span className="font-mono text-[10px] text-zinc-400">{d.value}%</span>
               </div>
-              <div className="h-1.5 rounded-full bg-slate-800">
+              <div className="h-1.5 rounded-full bg-zinc-800">
                 <div
                   className={`h-1.5 rounded-full transition-all duration-500 ${d.barClass}`}
                   style={{ width: `${d.value}%` }}
@@ -409,21 +405,21 @@ const SimulatorContent = () => {
               </div>
             </div>
           ))}
-          <p className="pt-1 text-xs leading-6 text-slate-400">{t(`insight_${selectedHorizon}`)}</p>
+          <p className="pt-1 text-xs leading-6 text-zinc-400">{t(`insight_${selectedHorizon}`)}</p>
         </div>
 
         {/* Engine reads */}
-        <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-4 space-y-2.5">
-          <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-slate-500">{t('engine_reads_label')}</p>
+        <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-4 space-y-2.5">
+          <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-zinc-500">{t('engine_reads_label')}</p>
           {engineReads.map((line, i) => (
-            <div key={i} className="flex items-start gap-2.5 text-xs leading-5 text-slate-300">
+            <div key={i} className="flex items-start gap-2.5 text-xs leading-5 text-zinc-300">
               <span className="mt-1.5 size-1 shrink-0 rounded-full bg-sky-400" />
               <span>{line}</span>
             </div>
           ))}
         </div>
 
-        <p className="text-[10px] leading-5 text-slate-600">{t('preview_note')}</p>
+        <p className="text-[10px] leading-5 text-zinc-600">{t('preview_note')}</p>
       </div>
     </div>
   );
@@ -439,7 +435,6 @@ export const SimulatorDrawer = ({ isOpen, onClose }: Props) => {
   const t = useTranslations('Scenario') as (key: string) => string;
   const isMobile = useIsMobile();
 
-  // Prevent body scroll when desktop modal is open
   useEffect(() => {
     if (!isMobile && isOpen) {
       document.body.style.overflow = 'hidden';
@@ -447,7 +442,6 @@ export const SimulatorDrawer = ({ isOpen, onClose }: Props) => {
     }
   }, [isMobile, isOpen]);
 
-  // ESC on desktop
   useEffect(() => {
     if (!isMobile && isOpen) {
       const fn = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
@@ -456,7 +450,7 @@ export const SimulatorDrawer = ({ isOpen, onClose }: Props) => {
     }
   }, [isMobile, isOpen, onClose]);
 
-  // ── mobile: use existing MobileBottomSheet ──
+  // ── mobile ──
   if (isMobile) {
     return (
       <MobileBottomSheet
@@ -470,7 +464,7 @@ export const SimulatorDrawer = ({ isOpen, onClose }: Props) => {
     );
   }
 
-  // ── desktop: centered dialog ──
+  // ── desktop ──
   if (!isOpen) return null;
 
   return (
@@ -480,22 +474,23 @@ export const SimulatorDrawer = ({ isOpen, onClose }: Props) => {
       aria-modal="true"
       aria-label={t('section_title')}
     >
-      {/* Backdrop */}
+      {/* Backdrop — colore opaco esplicito, no CSS vars */}
       <div
-        className="absolute inset-0 bg-background/80 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* Panel */}
-      <div className="relative z-10 w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-2xl border border-border/60 bg-card shadow-2xl">
-        {/* Drawer header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border/40 bg-card/95 backdrop-blur-sm px-6 py-4">
+      {/* Panel — bg-white light / bg-zinc-900 dark, NIENTE bg-card */}
+      <div className="relative z-10 w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-2xl">
+
+        {/* Sticky header */}
+        <div className="sticky top-0 z-20 flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-4">
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground/55">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-zinc-400">
               {t('section_eyebrow')}
             </p>
-            <h2 className="mt-0.5 text-lg font-semibold tracking-tight">
+            <h2 className="mt-0.5 text-lg font-semibold tracking-tight text-zinc-900 dark:text-white">
               {t('section_title')}
             </h2>
           </div>
@@ -503,7 +498,7 @@ export const SimulatorDrawer = ({ isOpen, onClose }: Props) => {
             type="button"
             onClick={onClose}
             aria-label="Chiudi simulatore"
-            className="flex size-9 items-center justify-center rounded-xl border border-border/50 bg-muted/40 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            className="flex size-9 items-center justify-center rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-700 hover:text-zinc-900 dark:hover:text-white"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M18 6 6 18M6 6l12 12" />
