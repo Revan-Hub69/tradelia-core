@@ -77,6 +77,59 @@ CREATE TYPE tradescope_underlying_group AS ENUM (
 
 ---
 
+## ASSET TOP — DATI DI ESEMPIO
+
+Non servono 10.000 asset. Per coprire il 90% del volume retail, bastano questi:
+
+### Forex
+| Asset | Gruppo | Note |
+|-------|--------|------|
+| EURUSD | `fx_core` | |
+| GBPUSD | `fx_core` | |
+| USDJPY | `fx_core` | |
+| AUDUSD | `fx_core` | |
+| USDCAD | `fx_core` | |
+| EURGBP | `fx_cross` | |
+| GBPJPY | `fx_cross` | |
+| XAUUSD | `commodity_metal` | Oro (Spot/Forex) |
+| XAGUSD | `commodity_metal` | Argento |
+
+### Indici
+| Asset | Gruppo | Note |
+|-------|--------|------|
+| SP500 (US500) | `index_us` | |
+| US30 | `index_us` | Dow Jones |
+| NAS100 | `index_us` | Nasdaq |
+| DAX40 | `index_eu_core` | |
+| FTSE MIB | `index_eu_tax` | Tobin Tax |
+
+### Crypto
+| Asset | Gruppo | Note |
+|-------|--------|------|
+| BTC | `crypto_major` | |
+| ETH | `crypto_major` | |
+| SOL | `crypto_altcoin` | |
+
+### Materie Prime (Futures)
+| Asset | Gruppo | Note |
+|-------|--------|------|
+| WTI | `commodity_energy` | Petrolio greggio |
+| Brent | `commodity_energy` | |
+| Natural Gas | `commodity_energy` | |
+
+### Azioni (Magnificent 7)
+| Asset | Gruppo | Note |
+|-------|--------|------|
+| AAPL | `equity_us_large` | |
+| MSFT | `equity_us_large` | |
+| NVDA | `equity_us_large` | |
+| TSLA | `equity_us_large` | |
+| AMZN | `equity_us_large` | |
+| META | `equity_us_large` | |
+| GOOGL | `equity_us_large` | |
+
+---
+
 ## TABELLA 1 — `instruments` (strumenti reali)
 
 | Campo | Descrizione |
