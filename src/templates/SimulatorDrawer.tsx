@@ -12,21 +12,32 @@ import {
   STRATEGY_MAP,
 } from '@/templates/ScenarioSection';
 
-// ── types ──────────────────────────────────────────────────────────────────
+// ── types ─────────────────────────────────────────────────────────────────
 type AssetGroupKey   = (typeof ASSET_GROUPS)[number]['id'];
 type HorizonKey      = (typeof HORIZONS)[number]['id'];
 type CapitalRangeKey = 'tiny' | 'small' | 'mid' | 'mid_plus' | 'large' | 'xlarge';
 type DriverWeights   = { execution: number; holding: number; structure: number };
 
-// ── static data ────────────────────────────────────────────────────────────
+// ── static data ───────────────────────────────────────────────────────────
 const capitalRanges = [
   { key: 'tiny'     as CapitalRangeKey, label: '100 – 300' },
-  { key: 'small'    as CapitalRangeKey, label: '300 – 1.000' },
-  { key: 'mid'      as CapitalRangeKey, label: '1.000 – 3.000' },
-  { key: 'mid_plus' as CapitalRangeKey, label: '3.000 – 7.000' },
-  { key: 'large'    as CapitalRangeKey, label: '7.000 – 15.000' },
-  { key: 'xlarge'   as CapitalRangeKey, label: '> 15.000' },
+  { key: 'small'    as CapitalRangeKey, label: '300 – 1K' },
+  { key: 'mid'      as CapitalRangeKey, label: '1K – 3K' },
+  { key: 'mid_plus' as CapitalRangeKey, label: '3K – 7K' },
+  { key: 'large'    as CapitalRangeKey, label: '7K – 15K' },
+  { key: 'xlarge'   as CapitalRangeKey, label: '> 15K' },
 ];
+
+// Colore accent per ogni range — dal più neutro (tiny) al più caldo (xlarge)
+// Usa la stessa logica cromatica dei groupColors: tinta leggera bg + bordo
+const capitalColors: Record<CapitalRangeKey, { bg: string; border: string }> = {
+  tiny:     { bg: 'bg-zinc-500/10',    border: 'border-zinc-500/30' },
+  small:    { bg: 'bg-sky-500/10',     border: 'border-sky-500/30' },
+  mid:      { bg: 'bg-teal-500/10',    border: 'border-teal-500/30' },
+  mid_plus: { bg: 'bg-emerald-500/10', border: 'border-emerald-500/30' },
+  large:    { bg: 'bg-amber-500/10',   border: 'border-amber-500/30' },
+  xlarge:   { bg: 'bg-orange-500/10',  border: 'border-orange-500/30' },
+};
 
 const assetDefs: Record<AssetGroupKey, { baseDrivers: DriverWeights }> = {
   forex:       { baseDrivers: { execution: 50, holding: 30, structure: 20 } },
@@ -68,7 +79,43 @@ const groupColors: Record<AssetGroupKey, { bg: string; border: string }> = {
   crypto:      { bg: 'bg-violet-500/10',  border: 'border-violet-500/30' },
 };
 
-// ── hook: useIsMobile ────────────────────────────────────────────────────
+// ── utils ─────────────────────────────────────────────────────────────────
+/**
+ * Scrolla l'elemento in vista dentro il suo primo antenato con overflow scroll/auto.
+ * Fallback a element.scrollIntoView() se non trova un container scrollabile.
+ * Usato invece del nativo scrollIntoView() che scrolla la window invece del panel.
+ */
+const scrollIntoContainer = (
+  el: HTMLElement | null,
+  behavior: ScrollBehavior = 'smooth',
+) => {
+  if (!el) return;
+  let parent = el.parentElement;
+  while (parent) {
+    const style = window.getComputedStyle(parent);
+    const overflow = style.overflowY;
+    if (overflow === 'auto' || overflow === 'scroll') {
+      const elRect = el.getBoundingClientRect();
+      const parentRect = parent.getBoundingClientRect();
+      const isBelow = elRect.bottom > parentRect.bottom;
+      const isAbove = elRect.top < parentRect.top;
+      if (isBelow || isAbove) {
+        parent.scrollBy({
+          top: isBelow
+            ? elRect.bottom - parentRect.bottom + 16
+            : elRect.top - parentRect.top - 16,
+          behavior,
+        });
+      }
+      return;
+    }
+    parent = parent.parentElement;
+  }
+  // nessun container scrollabile trovato → fallback nativo
+  el.scrollIntoView({ block: 'nearest', behavior });
+};
+
+// ── hook: useIsMobile ──────────────────────────────────────────────────────
 const useIsMobile = () => {
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
@@ -81,7 +128,7 @@ const useIsMobile = () => {
   return isMobile;
 };
 
-// ── SimulatorContent ──────────────────────────────────────────────────────
+// ── SimulatorContent ───────────────────────────────────────────────────────
 const SimulatorContent = () => {
   const t = useTranslations('Scenario') as (key: string) => string;
   const currencyCode = AppConfig.defaultCurrency;
@@ -94,14 +141,21 @@ const SimulatorContent = () => {
   const [leverageOn,         setLeverageOn]         = useState(true);
   const [isDropdownOpen,     setIsDropdownOpen]     = useState(false);
   const [searchQuery,        setSearchQuery]        = useState('');
+
   const dropdownRef    = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  // ref al trigger del dropdown strumenti — usato per scrollIntoContainer
+  const dropdownTriggerRef = useRef<HTMLButtonElement>(null);
+  // ref alla sezione capitale — usato per scrollIntoContainer quando si interagisce
+  const capitalSectionRef  = useRef<HTMLDivElement>(null);
 
   const filteredUnderlyings = useMemo(() => {
     let items = UNDERLYING_GROUPS.filter(u => u.group === selectedGroup);
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
-      items = items.filter(u => u.label.toLowerCase().includes(q) || u.tooltip.toLowerCase().includes(q));
+      items = items.filter(u =>
+        u.label.toLowerCase().includes(q) || u.tooltip.toLowerCase().includes(q)
+      );
     }
     return items;
   }, [selectedGroup, searchQuery]);
@@ -128,27 +182,22 @@ const SimulatorContent = () => {
     return () => document.removeEventListener('mousedown', close);
   }, []);
 
-  // Autofocus sull'input di ricerca + scrollIntoView sul dropdown
-  // - focus(): porta il cursore nell'input per digitare subito
-  // - scrollIntoView(): su desktop, se il dialog e scrollato e il dropdown
-  //   e parzialmente fuori vista, lo porta in view automaticamente.
-  //   block:'nearest' evita scroll aggressivo se gia visibile.
+  // Quando il dropdown si apre:
+  // 1. focus sull'input di ricerca (digitazione immediata)
+  // 2. scrollIntoContainer sul trigger — porta il dropdown IN VISTA dentro il
+  //    panel scrollabile (desktop overflow-y-auto o wrapper mobile), non sulla window
   useEffect(() => {
     if (!isDropdownOpen) return;
     const id = setTimeout(() => {
-      // 1. focus input ricerca
       searchInputRef.current?.focus();
-      // 2. scroll desktop: porta il wrapper del dropdown in vista
-      dropdownRef.current?.scrollIntoView({
-        block: 'nearest',
-        behavior: 'smooth',
-      });
-    }, 50);
+      scrollIntoContainer(dropdownTriggerRef.current);
+    }, 60);
     return () => clearTimeout(id);
   }, [isDropdownOpen]);
 
   const availableStrategies = STRATEGY_MAP[selectedHorizon] ?? [];
-  const activeStrategy      = availableStrategies.find(s => s.value === selectedStrategy) ?? availableStrategies[0];
+  const activeStrategy = availableStrategies.find(s => s.value === selectedStrategy)
+    ?? availableStrategies[0];
 
   if (!activeStrategy) return null;
 
@@ -156,7 +205,9 @@ const SimulatorContent = () => {
     assetDefs[selectedGroup]!.baseDrivers,
     horizonAdjustments[selectedHorizon],
     getCapitalBias(capitalRange),
-    leverageOn ? { execution: 6, holding: 8, structure: 4 } : { execution: 0, holding: 0, structure: 0 },
+    leverageOn
+      ? { execution: 6, holding: 8, structure: 4 }
+      : { execution: 0, holding: 0, structure: 0 },
   );
   const execRaw   = Math.max(8, rawDrivers.execution);
   const holdRaw   = Math.max(8, rawDrivers.holding);
@@ -173,14 +224,17 @@ const SimulatorContent = () => {
   ];
 
   const dominantDriver = [...drivers].sort((a, b) => b.value - a.value)[0]!.key;
-  const pressureScore  = Math.min(99, Math.round((execRaw + holdRaw + structRaw) / 3 + (leverageOn ? 8 : 0)));
-  const firstAudit     = t(`review_${dominantDriver}`);
+  const pressureScore  = Math.min(99, Math.round(
+    (execRaw + holdRaw + structRaw) / 3 + (leverageOn ? 8 : 0)
+  ));
+  const firstAudit = t(`review_${dominantDriver}`);
 
-  const capitalRead = capitalRange === 'large' || capitalRange === 'xlarge'
-    ? t('read_capital_large')
-    : capitalRange === 'mid' || capitalRange === 'mid_plus'
-      ? t('read_capital_mid')
-      : t('read_capital_small');
+  const capitalRead =
+    capitalRange === 'large' || capitalRange === 'xlarge'
+      ? t('read_capital_large')
+      : capitalRange === 'mid' || capitalRange === 'mid_plus'
+        ? t('read_capital_mid')
+        : t('read_capital_small');
 
   const engineReads = [
     t(`read_group_${selectedUnderlying.id}`),
@@ -203,7 +257,9 @@ const SimulatorContent = () => {
 
         {/* Asset Group */}
         <div>
-          <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">{t('group_label')}</label>
+          <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">
+            {t('group_label')}
+          </label>
           <div className="mt-2.5 grid grid-cols-3 gap-1.5">
             {ASSET_GROUPS.map(g => {
               const c = groupColors[g.id]!;
@@ -230,21 +286,33 @@ const SimulatorContent = () => {
           </div>
         </div>
 
-        {/* Underlying dropdown */}
+        {/* Underlying dropdown — visually matches asset group buttons */}
         <div ref={dropdownRef}>
-          <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">{t('sub_label')}</label>
+          <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">
+            {t('sub_label')}
+          </label>
           <div className="relative mt-2.5">
+            {/* Trigger: stessa forma dei pulsanti asset — border + bg tintato quando aperto */}
             <button
+              ref={dropdownTriggerRef}
               type="button"
               onClick={() => setIsDropdownOpen(v => !v)}
-              className="w-full rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-3.5 py-2.5 text-sm text-left flex items-center justify-between outline-none transition-colors focus:border-blue-500/50"
+              className={`w-full rounded-xl border px-3.5 py-2.5 text-left flex items-center justify-between transition-all duration-200 outline-none ${
+                isDropdownOpen
+                  ? `${groupColors[selectedGroup]!.border} ${groupColors[selectedGroup]!.bg}`
+                  : 'border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700'
+              }`}
             >
               <div>
-                <p className="font-medium text-sm text-zinc-900 dark:text-white">{selectedUnderlying.label}</p>
-                <p className="text-[10px] font-mono text-zinc-400">{selectedUnderlying.id}</p>
+                <p className={`font-mono text-[10px] uppercase tracking-[0.14em] ${
+                  isDropdownOpen ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 dark:text-zinc-400'
+                }`}>
+                  {selectedUnderlying.label}
+                </p>
+                <p className="text-[9px] font-mono text-zinc-400 mt-0.5">{selectedUnderlying.id}</p>
               </div>
               <svg
-                className="w-4 h-4 text-zinc-400 shrink-0 transition-transform duration-200"
+                className="w-3.5 h-3.5 text-zinc-400 shrink-0 transition-transform duration-200"
                 style={{ transform: isDropdownOpen ? 'rotate(180deg)' : '' }}
                 fill="none" stroke="currentColor" viewBox="0 0 24 24"
               >
@@ -258,26 +326,43 @@ const SimulatorContent = () => {
                   <input
                     ref={searchInputRef}
                     type="text"
-                    placeholder="Filter..."
+                    placeholder="Filtra strumento..."
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
-                    className="w-full rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-3 py-2 text-sm text-zinc-900 dark:text-white outline-none focus:border-blue-500/50"
+                    className="w-full rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 px-3 py-2 font-mono text-[11px] text-zinc-900 dark:text-white outline-none focus:border-zinc-400 dark:focus:border-zinc-500 transition-colors"
                   />
                 </div>
                 <div className="max-h-48 overflow-y-auto">
-                  {filteredUnderlyings.map(ug => (
-                    <button
-                      key={ug.id}
-                      type="button"
-                      onClick={() => { setSelectedUnderlying(ug); setIsDropdownOpen(false); setSearchQuery(''); }}
-                      className={`w-full px-4 py-3 text-left text-sm hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors ${
-                        selectedUnderlying.id === ug.id ? 'bg-zinc-50 dark:bg-zinc-800' : ''
-                      }`}
-                    >
-                      <p className="font-medium text-zinc-900 dark:text-white">{ug.label}</p>
-                      <p className="text-xs text-zinc-400 mt-0.5">{ug.tooltip}</p>
-                    </button>
-                  ))}
+                  {filteredUnderlyings.length === 0 && (
+                    <p className="px-4 py-3 text-xs text-zinc-400">Nessun risultato</p>
+                  )}
+                  {filteredUnderlyings.map(ug => {
+                    const isActive = selectedUnderlying.id === ug.id;
+                    const c = groupColors[selectedGroup]!;
+                    return (
+                      <button
+                        key={ug.id}
+                        type="button"
+                        onClick={() => {
+                          setSelectedUnderlying(ug);
+                          setIsDropdownOpen(false);
+                          setSearchQuery('');
+                        }}
+                        className={`w-full px-4 py-2.5 text-left transition-colors ${
+                          isActive
+                            ? `${c.bg} ${c.border} border-l-2`
+                            : 'hover:bg-zinc-50 dark:hover:bg-zinc-800 border-l-2 border-transparent'
+                        }`}
+                      >
+                        <p className={`font-mono text-[10px] uppercase tracking-[0.12em] ${
+                          isActive ? 'text-zinc-900 dark:text-white' : 'text-zinc-600 dark:text-zinc-300'
+                        }`}>
+                          {ug.label}
+                        </p>
+                        <p className="text-[10px] text-zinc-400 mt-0.5">{ug.tooltip}</p>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -286,7 +371,9 @@ const SimulatorContent = () => {
 
         {/* Horizon */}
         <div>
-          <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">{t('horizon_label')}</label>
+          <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">
+            {t('horizon_label')}
+          </label>
           <div className="mt-2.5 flex flex-wrap gap-1.5">
             {HORIZONS.map(h => (
               <button
@@ -307,7 +394,9 @@ const SimulatorContent = () => {
 
         {/* Strategy */}
         <div>
-          <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">{t('strategy_label')}</label>
+          <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">
+            {t('strategy_label')}
+          </label>
           <div className="mt-2.5 flex flex-wrap gap-1.5">
             {availableStrategies.map(s => (
               <button
@@ -326,22 +415,50 @@ const SimulatorContent = () => {
           </div>
         </div>
 
-        {/* Capital + Leverage */}
+        {/* Dimensione Conto (ex Capitale) + Leverage */}
         <div className="grid gap-3 sm:grid-cols-2">
-          <div>
-            <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">{t('capital_label')}</label>
-            <select
-              value={capitalRange}
-              onChange={e => setCapitalRange(e.target.value as CapitalRangeKey)}
-              className="mt-2.5 w-full rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white px-3.5 py-2.5 font-mono text-sm outline-none focus:border-blue-500/50"
-            >
-              {capitalRanges.map(r => (
-                <option key={r.key} value={r.key}>{r.label} {currencyCode}</option>
-              ))}
-            </select>
+
+          {/* ── Dimensione Conto: grid di pulsanti stile asset group ── */}
+          <div ref={capitalSectionRef}>
+            <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">
+              {t('account_label')}
+            </label>
+            <div className="mt-2.5 grid grid-cols-3 gap-1.5">
+              {capitalRanges.map(r => {
+                const c = capitalColors[r.key]!;
+                const active = capitalRange === r.key;
+                return (
+                  <button
+                    key={r.key}
+                    type="button"
+                    onClick={() => {
+                      setCapitalRange(r.key);
+                      // Scrolla la sezione capitale in vista nel container
+                      scrollIntoContainer(capitalSectionRef.current);
+                    }}
+                    className={`rounded-xl border px-2 py-2 text-center transition-all duration-200 hover:scale-[1.02] ${
+                      active
+                        ? `${c.border} ${c.bg}`
+                        : 'border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700'
+                    }`}
+                  >
+                    <span className={`block font-mono text-[9px] uppercase tracking-[0.1em] leading-tight ${
+                      active ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 dark:text-zinc-400'
+                    }`}>
+                      {r.label}
+                    </span>
+                    <span className="block font-mono text-[8px] text-zinc-400 mt-0.5">{currencyCode}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
+
+          {/* ── Leverage toggle ── */}
           <div>
-            <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">{t('leverage_label')}</label>
+            <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">
+              {t('leverage_label')}
+            </label>
             <button
               type="button"
               onClick={() => setLeverageOn(v => !v)}
@@ -363,6 +480,12 @@ const SimulatorContent = () => {
       </div>
 
       {/* ── RIGHT: OUTPUT CONSOLE ── */}
+      {/*
+        Palette coerente: il pannello output usa SEMPRE zinc-dark (zinc-900/800/950)
+        indipendentemente dal tema. Questo perche vuole comunicare "terminale/console"
+        — un look intenzionalmente dark anche in light mode, come VS Code o Vercel logs.
+        I testi interni usano zinc-300/400/500 su sfondo scuro — contrasto ok in entrambi i temi.
+      */}
       <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-5 space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-zinc-500">
@@ -374,13 +497,17 @@ const SimulatorContent = () => {
           </span>
         </div>
 
+        {/* Chips stato attivo */}
         <div className="flex flex-wrap gap-1.5">
           {[
             selectedUnderlying.label,
             HORIZONS.find(h => h.id === selectedHorizon)?.label,
             `${currencyCode} ${capitalRanges.find(r => r.key === capitalRange)?.label}`,
           ].map(chip => chip && (
-            <span key={chip} className="rounded-full border border-zinc-800 bg-zinc-900 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-300">
+            <span
+              key={chip}
+              className="rounded-full border border-zinc-800 bg-zinc-900 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-300"
+            >
               {chip}
             </span>
           ))}
@@ -393,6 +520,7 @@ const SimulatorContent = () => {
           </span>
         </div>
 
+        {/* KPI cards */}
         <div className="grid gap-2 sm:grid-cols-3">
           <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-3">
             <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-zinc-500">{t('dominant_label')}</p>
@@ -409,6 +537,7 @@ const SimulatorContent = () => {
           </div>
         </div>
 
+        {/* Driver bars */}
         <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4 space-y-3">
           <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-zinc-500">{t('preview_label')}</p>
           {drivers.map(d => (
@@ -428,6 +557,7 @@ const SimulatorContent = () => {
           <p className="pt-1 text-xs leading-6 text-zinc-400">{t(`insight_${selectedHorizon}`)}</p>
         </div>
 
+        {/* Engine reads */}
         <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-4 space-y-2.5">
           <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-zinc-500">{t('engine_reads_label')}</p>
           {engineReads.map((line, i) => (
@@ -453,10 +583,14 @@ type Props = {
 export const SimulatorDrawer = ({ isOpen, onClose }: Props) => {
   const t = useTranslations('Scenario') as (key: string) => string;
   const isMobile = useIsMobile();
+  // ref al panel scrollabile desktop — scrollato a top quando il drawer si apre
+  const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isMobile && isOpen) {
       document.body.style.overflow = 'hidden';
+      // Scroll panel a top ad ogni apertura
+      panelRef.current?.scrollTo({ top: 0, behavior: 'instant' });
       return () => { document.body.style.overflow = ''; };
     }
   }, [isMobile, isOpen]);
@@ -508,9 +642,11 @@ export const SimulatorDrawer = ({ isOpen, onClose }: Props) => {
         aria-hidden="true"
       />
 
-      {/* Panel */}
-      <div className="relative z-10 w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-2xl">
-
+      {/* Panel — ref per scroll-to-top ad apertura e per scrollIntoContainer */}
+      <div
+        ref={panelRef}
+        className="relative z-10 w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-2xl"
+      >
         {/* Sticky header */}
         <div className="sticky top-0 z-20 flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-4">
           <div>
