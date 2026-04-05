@@ -68,7 +68,7 @@ const groupColors: Record<AssetGroupKey, { bg: string; border: string }> = {
   crypto:      { bg: 'bg-violet-500/10',  border: 'border-violet-500/30' },
 };
 
-// ── hook: useMediaQuery ────────────────────────────────────────────────────
+// ── hook: useIsMobile ────────────────────────────────────────────────────
 const useIsMobile = () => {
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
@@ -94,7 +94,10 @@ const SimulatorContent = () => {
   const [leverageOn,         setLeverageOn]         = useState(true);
   const [isDropdownOpen,     setIsDropdownOpen]     = useState(false);
   const [searchQuery,        setSearchQuery]        = useState('');
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownRef     = useRef<HTMLDivElement>(null);
+  // Ref per l'input di ricerca nel dropdown — usiamo questo per autofocus
+  // invece di `autoFocus` HTML che su iOS causa keyboard-jump indesiderato
+  const searchInputRef  = useRef<HTMLInputElement>(null);
 
   const filteredUnderlyings = useMemo(() => {
     let items = UNDERLYING_GROUPS.filter(u => u.group === selectedGroup);
@@ -117,6 +120,7 @@ const SimulatorContent = () => {
       setSelectedStrategy(available[0]?.value ?? '');
   }, [selectedHorizon, selectedStrategy]);
 
+  // Chiudi dropdown cliccando fuori
   useEffect(() => {
     const close = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node))
@@ -126,12 +130,21 @@ const SimulatorContent = () => {
     return () => document.removeEventListener('mousedown', close);
   }, []);
 
+  // Autofocus sull'input di ricerca quando il dropdown si apre
+  // Timeout 50ms per attendere il render del dropdown prima di fare focus
+  useEffect(() => {
+    if (isDropdownOpen) {
+      const id = setTimeout(() => searchInputRef.current?.focus(), 50);
+      return () => clearTimeout(id);
+    }
+  }, [isDropdownOpen]);
+
   const availableStrategies = STRATEGY_MAP[selectedHorizon] ?? [];
   const activeStrategy      = availableStrategies.find(s => s.value === selectedStrategy) ?? availableStrategies[0];
 
   if (!activeStrategy) return null;
 
-  const rawDrivers  = sumWeights(
+  const rawDrivers = sumWeights(
     assetDefs[selectedGroup]!.baseDrivers,
     horizonAdjustments[selectedHorizon],
     getCapitalBias(capitalRange),
@@ -193,7 +206,9 @@ const SimulatorContent = () => {
                   type="button"
                   onClick={() => setSelectedGroup(g.id as AssetGroupKey)}
                   className={`rounded-xl border px-3 py-2.5 text-left transition-all duration-200 hover:scale-[1.02] ${
-                    active ? `${c.border} ${c.bg}` : 'border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700'
+                    active
+                      ? `${c.border} ${c.bg}`
+                      : 'border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700'
                   }`}
                 >
                   <span className={`block font-mono text-[10px] uppercase tracking-[0.14em] ${
@@ -228,11 +243,13 @@ const SimulatorContent = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </button>
+
             {isDropdownOpen && (
               <div className="absolute top-full left-0 right-0 mt-1.5 z-50 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-xl overflow-hidden">
                 <div className="p-2 border-b border-zinc-100 dark:border-zinc-800">
+                  {/* ref invece di autoFocus — autofocus gestito via useEffect con timeout */}
                   <input
-                    autoFocus
+                    ref={searchInputRef}
                     type="text"
                     placeholder="Filter..."
                     value={searchQuery}
@@ -240,7 +257,7 @@ const SimulatorContent = () => {
                     className="w-full rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-3 py-2 text-sm text-zinc-900 dark:text-white outline-none focus:border-blue-500/50"
                   />
                 </div>
-                <div className="max-h-56 overflow-y-auto">
+                <div className="max-h-48 overflow-y-auto">
                   {filteredUnderlyings.map(ug => (
                     <button
                       key={ug.id}
@@ -340,7 +357,6 @@ const SimulatorContent = () => {
 
       {/* ── RIGHT: OUTPUT CONSOLE ── */}
       <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-5 space-y-4">
-        {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-2">
           <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-zinc-500">
             {t('console_label')}
@@ -351,7 +367,6 @@ const SimulatorContent = () => {
           </span>
         </div>
 
-        {/* Active chips */}
         <div className="flex flex-wrap gap-1.5">
           {[
             selectedUnderlying.label,
@@ -371,7 +386,6 @@ const SimulatorContent = () => {
           </span>
         </div>
 
-        {/* KPIs */}
         <div className="grid gap-2 sm:grid-cols-3">
           <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-3">
             <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-zinc-500">{t('dominant_label')}</p>
@@ -388,7 +402,6 @@ const SimulatorContent = () => {
           </div>
         </div>
 
-        {/* Pressure bars */}
         <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4 space-y-3">
           <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-zinc-500">{t('preview_label')}</p>
           {drivers.map(d => (
@@ -408,7 +421,6 @@ const SimulatorContent = () => {
           <p className="pt-1 text-xs leading-6 text-zinc-400">{t(`insight_${selectedHorizon}`)}</p>
         </div>
 
-        {/* Engine reads */}
         <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-4 space-y-2.5">
           <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-zinc-500">{t('engine_reads_label')}</p>
           {engineReads.map((line, i) => (
@@ -450,7 +462,7 @@ export const SimulatorDrawer = ({ isOpen, onClose }: Props) => {
     }
   }, [isMobile, isOpen, onClose]);
 
-  // ── mobile ──
+  // ── mobile: MobileBottomSheet con wrapper scroll sicuro ──
   if (isMobile) {
     return (
       <MobileBottomSheet
@@ -459,12 +471,26 @@ export const SimulatorDrawer = ({ isOpen, onClose }: Props) => {
         title={t('section_title')}
         showHandle
       >
-        <SimulatorContent />
+        {/*
+          Wrapper con min-h-0 + overflow-y-auto per contenere il contenuto lungo
+          dentro la viewport mobile senza che fuoriesca.
+          pb-[env(safe-area-inset-bottom)] gestisce la home indicator iOS.
+          bg esplicito per non dipendere dalle CSS vars del tema.
+        */}
+        <div
+          className="min-h-0 overflow-y-auto bg-white dark:bg-zinc-900"
+          style={{
+            maxHeight: 'calc(100dvh - 140px)',
+            paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))',
+          }}
+        >
+          <SimulatorContent />
+        </div>
       </MobileBottomSheet>
     );
   }
 
-  // ── desktop ──
+  // ── desktop: centered dialog ──
   if (!isOpen) return null;
 
   return (
@@ -474,14 +500,14 @@ export const SimulatorDrawer = ({ isOpen, onClose }: Props) => {
       aria-modal="true"
       aria-label={t('section_title')}
     >
-      {/* Backdrop — colore opaco esplicito, no CSS vars */}
+      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* Panel — bg-white light / bg-zinc-900 dark, NIENTE bg-card */}
+      {/* Panel */}
       <div className="relative z-10 w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-2xl">
 
         {/* Sticky header */}
@@ -506,7 +532,6 @@ export const SimulatorDrawer = ({ isOpen, onClose }: Props) => {
           </button>
         </div>
 
-        {/* Body */}
         <div className="p-6">
           <SimulatorContent />
         </div>
