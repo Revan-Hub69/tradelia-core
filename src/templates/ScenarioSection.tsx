@@ -240,7 +240,7 @@ export const ScenarioSection = () => {
   if (!activeStrategy) return null;
 
   const rawDrivers = sumWeights(
-    currentDef.baseDrivers,
+    currentDef!.baseDrivers,
     horizonAdjustments[selectedHorizon],
     getCapitalBias(capitalRange),
     getLeverageBias(leverageOn),
