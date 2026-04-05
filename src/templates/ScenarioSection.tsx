@@ -208,15 +208,15 @@ export const ScenarioSection = () => {
   const [capitalRange, setCapitalRange] = useState<CapitalRangeKey>('mid');
   const [leverageOn, setLeverageOn] = useState(true);
 
-  const currentDef = assetDefs[selectedGroup];
+  // @ts-ignore
+  const currentDef = assetDefs[selectedGroup]!;
 
   useEffect(() => {
-    if (!currentDef) return;
     const firstSub = currentDef.subOptions[0]?.key;
     if (firstSub && !currentDef.subOptions.some(s => s.key === selectedSub)) {
       setSelectedSub(firstSub);
     }
-  }, [selectedGroup, currentDef, selectedSub]);
+  }, [selectedGroup, selectedSub]);
 
   useEffect(() => {
     const available = STRATEGY_MAP[selectedHorizon] ?? [];
@@ -228,7 +228,7 @@ export const ScenarioSection = () => {
   const availableStrategies = STRATEGY_MAP[selectedHorizon] ?? [];
   const activeStrategy = availableStrategies.find(s => s.value === selectedStrategy) ?? availableStrategies[0];
 
-  if (!activeStrategy || !currentDef) return null;
+  if (!activeStrategy) return null;
 
   const activeSub = currentDef.subOptions.find(s => s.key === selectedSub) ?? currentDef.subOptions[0];
 
