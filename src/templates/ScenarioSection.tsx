@@ -2,271 +2,60 @@
 
 import { useTranslations } from 'next-intl';
 import { useEffect, useState, useMemo, useRef } from 'react';
-import Fuse from 'fuse.js';
 
 import { SectionContainer } from '@/components/ui/SectionContainer';
 import { AppConfig } from '@/utils/AppConfig';
 
-// ==================== SOTA MATRIX CONFIG ====================
-// EXACT DB ENUM MAPPING - NEVER CHANGE THESE VALUES
+// ==============================================
+// SOTA MATRIX CONFIG - 1:1 DB ENUM ALIGNMENT
+// NEVER MODIFY THESE VALUES - THEY MATCH POSTGRESQL
+// ==============================================
 export const ASSET_GROUPS = [
   { id: 'forex', label: 'Forex' },
-  { id: 'indices', label: 'Indici & Volatilità' },
-  { id: 'equities', label: 'Azioni (Equities)' },
+  { id: 'indices', label: 'Indices & Volatility' },
+  { id: 'equities', label: 'Equities' },
   { id: 'etf', label: 'ETF' },
-  { id: 'commodities', label: 'Materie Prime' },
+  { id: 'commodities', label: 'Commodities' },
   { id: 'crypto', label: 'Crypto' },
 ];
 
-// ALL TOP ASSETS - 90% OF RETAIL VOLUME COVERAGE
-// Direct 1:1 mapping to underlying_group enum
-export const ASSET_HIERARCHY = [
+// EXACT UNDERLYING_GROUP ENUM FROM DATABASE SCHEMA
+// THIS IS THE SINGLE SOURCE OF TRUTH
+export const UNDERLYING_GROUPS = [
   // Forex
-  {
-    id: 'forex',
-    label: 'Forex',
-    children: [
-      {
-        id: 'fx_core',
-        label: 'Major (Core)',
-        assets: [
-          { symbol: 'EURUSD', name: 'Euro / US Dollar' },
-          { symbol: 'GBPUSD', name: 'British Pound / US Dollar' },
-          { symbol: 'USDJPY', name: 'US Dollar / Japanese Yen' },
-          { symbol: 'AUDUSD', name: 'Australian Dollar / US Dollar' },
-          { symbol: 'USDCAD', name: 'US Dollar / Canadian Dollar' },
-        ]
-      },
-      {
-        id: 'fx_cross',
-        label: 'Cross',
-        assets: [
-          { symbol: 'EURGBP', name: 'Euro / British Pound' },
-          { symbol: 'GBPJPY', name: 'British Pound / Japanese Yen' },
-        ]
-      },
-      {
-        id: 'fx_exotic',
-        label: 'Esotiche',
-        assets: [
-          { symbol: 'USDTRY', name: 'US Dollar / Turkish Lira' },
-          { symbol: 'USDMXN', name: 'US Dollar / Mexican Peso' },
-        ]
-      }
-    ]
-  },
-  // Indici
-  {
-    id: 'indices',
-    label: 'Indici & Volatilità',
-    children: [
-      {
-        id: 'index_us',
-        label: 'Indici USA',
-        assets: [
-          { symbol: 'US500', name: 'S&P 500' },
-          { symbol: 'US30', name: 'Dow Jones Industrial Average' },
-          { symbol: 'NAS100', name: 'Nasdaq 100' },
-        ]
-      },
-      {
-        id: 'index_eu_core',
-        label: 'Indici EU (No Tax)',
-        assets: [
-          { symbol: 'DAX40', name: 'DAX 40' },
-        ]
-      },
-      {
-        id: 'index_eu_tax',
-        label: 'Indici EU (Tassati)',
-        assets: [
-          { symbol: 'FTSEMIB', name: 'FTSE MIB' },
-          { symbol: 'IBEX35', name: 'IBEX 35' },
-        ]
-      },
-      {
-        id: 'index_asia',
-        label: 'Indici Asiatici',
-        assets: [
-          { symbol: 'JPN225', name: 'Nikkei 225' },
-        ]
-      },
-      {
-        id: 'index_volatility',
-        label: 'Volatilità (VIX)',
-        assets: [
-          { symbol: 'VIX', name: 'CBOE Volatility Index' },
-        ]
-      }
-    ]
-  },
+  { id: 'fx_core', label: 'Major (Core)', group: 'forex', tooltip: 'EURUSD, GBPUSD, USDJPY. Ultra-tight spreads.' },
+  { id: 'fx_cross', label: 'Cross', group: 'forex', tooltip: 'EURGBP, GBPJPY. G10 non-USD pairs.' },
+  { id: 'fx_exotic', label: 'Exotic', group: 'forex', tooltip: 'USDTRY, USDMXN. Predatory spreads.' },
+  
+  // Indices
+  { id: 'index_us', label: 'US Indices', group: 'indices', tooltip: 'SP500, NAS100, US30. 24h liquidity.' },
+  { id: 'index_eu_core', label: 'EU Indices (No Tax)', group: 'indices', tooltip: 'DAX40. No government levy.' },
+  { id: 'index_eu_tax', label: 'EU Indices (FTT)', group: 'indices', tooltip: 'FTSE MIB, IBEX. Tobin Tax applies.' },
+  { id: 'index_asia', label: 'Asian Indices', group: 'indices', tooltip: 'Nikkei 225. Off-hours slippage.' },
+  { id: 'index_volatility', label: 'Volatility (VIX)', group: 'indices', tooltip: 'Structural contango decay.' },
+  
   // Equities
-  {
-    id: 'equities',
-    label: 'Azioni (Equities)',
-    children: [
-      {
-        id: 'equity_us_large',
-        label: 'USA Large Cap',
-        assets: [
-          { symbol: 'AAPL', name: 'Apple Inc.' },
-          { symbol: 'MSFT', name: 'Microsoft Corporation' },
-          { symbol: 'NVDA', name: 'NVIDIA Corporation' },
-          { symbol: 'TSLA', name: 'Tesla Inc.' },
-          { symbol: 'AMZN', name: 'Amazon.com Inc.' },
-          { symbol: 'META', name: 'Meta Platforms Inc.' },
-          { symbol: 'GOOGL', name: 'Alphabet Inc.' },
-        ]
-      },
-      {
-        id: 'equity_us_small',
-        label: 'USA Small Cap',
-        assets: []
-      },
-      {
-        id: 'equity_eu_ftt',
-        label: 'Europa (Con FTT)',
-        assets: [
-          { symbol: 'ENI', name: 'ENI SpA' },
-          { symbol: 'ISP', name: 'Intesa Sanpaolo' },
-        ]
-      },
-      {
-        id: 'equity_eu_core',
-        label: 'Europa (No Tax)',
-        assets: [
-          { symbol: 'BMW', name: 'Bayerische Motoren Werke AG' },
-          { symbol: 'SIE', name: 'Siemens AG' },
-        ]
-      },
-      {
-        id: 'equity_uk',
-        label: 'UK (Londra)',
-        assets: [
-          { symbol: 'BP.', name: 'BP Plc' },
-        ]
-      }
-    ]
-  },
+  { id: 'equity_us_large', label: 'US Large Cap', group: 'equities', tooltip: 'AAPL, MSFT, NVDA. Penny spreads.' },
+  { id: 'equity_us_small', label: 'US Small Cap', group: 'equities', tooltip: 'Hard-to-borrow fees apply.' },
+  { id: 'equity_eu_ftt', label: 'EU (With FTT)', group: 'equities', tooltip: 'Italy, France, Spain. Spot Tobin Tax.' },
+  { id: 'equity_eu_core', label: 'EU (No Tax)', group: 'equities', tooltip: 'Germany, Netherlands. Pure broker costs.' },
+  { id: 'equity_uk', label: 'UK (London)', group: 'equities', tooltip: '0.5% Stamp Duty on spot buy.' },
+  { id: 'equity_adr', label: 'ADR', group: 'equities', tooltip: 'Foreign companies US listed. Pass-through fees.' },
+  
   // Commodities
-  {
-    id: 'commodities',
-    label: 'Materie Prime',
-    children: [
-      {
-        id: 'commodity_metal',
-        label: 'Metalli (Spot)',
-        assets: [
-          { symbol: 'XAUUSD', name: 'Gold / US Dollar' },
-          { symbol: 'XAGUSD', name: 'Silver / US Dollar' },
-        ]
-      },
-      {
-        id: 'commodity_energy',
-        label: 'Energetiche',
-        assets: [
-          { symbol: 'WTI', name: 'West Texas Intermediate Crude Oil' },
-          { symbol: 'BRENT', name: 'Brent Crude Oil' },
-          { symbol: 'NATGAS', name: 'Natural Gas' },
-        ]
-      },
-      {
-        id: 'commodity_agri',
-        label: 'Agricole',
-        assets: [
-          { symbol: 'WHEAT', name: 'Wheat Futures' },
-          { symbol: 'COFFEE', name: 'Coffee C Futures' },
-        ]
-      }
-    ]
-  },
+  { id: 'commodity_metal', label: 'Metals (Spot)', group: 'commodities', tooltip: 'Gold, Silver. FX-like behaviour.' },
+  { id: 'commodity_energy', label: 'Energy', group: 'commodities', tooltip: 'Oil, Gas. Monthly rollover cost.' },
+  { id: 'commodity_agri', label: 'Agriculture', group: 'commodities', tooltip: 'Opening gap risk and high slippage.' },
+  
   // ETF
-  {
-    id: 'etf',
-    label: 'ETF',
-    children: [
-      {
-        id: 'etf_us_broad',
-        label: 'Indici USA',
-        assets: [
-          { symbol: 'SPY', name: 'SPDR S&P 500 ETF Trust' },
-          { symbol: 'QQQ', name: 'Invesco QQQ Trust' },
-        ]
-      },
-      {
-        id: 'etf_us_leveraged',
-        label: 'Leva 2x/3x',
-        assets: [
-          { symbol: 'TQQQ', name: 'ProShares UltraPro QQQ' },
-          { symbol: 'SQQQ', name: 'ProShares UltraPro Short QQQ' },
-        ]
-      },
-      {
-        id: 'etf_ucits',
-        label: 'UCITS (Europa)',
-        assets: [
-          { symbol: 'CSPX', name: 'iShares Core S&P 500 UCITS ETF' },
-        ]
-      }
-    ]
-  },
+  { id: 'etf_us_broad', label: 'US Broad Market', group: 'etf', tooltip: 'SPY, QQQ. Often commission-free.' },
+  { id: 'etf_us_leveraged', label: 'Leveraged 2x/3x', group: 'etf', tooltip: 'Volatility drag over long term.' },
+  { id: 'etf_ucits', label: 'UCITS (Europe)', group: 'etf', tooltip: 'Harmonised for EU residents.' },
+  
   // Crypto
-  {
-    id: 'crypto',
-    label: 'Crypto',
-    children: [
-      {
-        id: 'crypto_major',
-        label: 'Major',
-        assets: [
-          { symbol: 'BTCUSD', name: 'Bitcoin / US Dollar' },
-          { symbol: 'ETHUSD', name: 'Ethereum / US Dollar' },
-        ]
-      },
-      {
-        id: 'crypto_altcoin',
-        label: 'Altcoins',
-        assets: [
-          { symbol: 'SOLUSD', name: 'Solana / US Dollar' },
-          { symbol: 'DOGEUSD', name: 'Dogecoin / US Dollar' },
-        ]
-      }
-    ]
-  }
+  { id: 'crypto_major', label: 'Major', group: 'crypto', tooltip: 'BTC, ETH. Reasonable spreads.' },
+  { id: 'crypto_altcoin', label: 'Altcoins', group: 'crypto', tooltip: 'Predatory retail spreads.' },
 ];
-
-// Flatten for search
-const flattenAssets = () => {
-  const items: any[] = [];
-  ASSET_HIERARCHY.forEach(group => {
-    group.children.forEach(subgroup => {
-      // Add subgroup as selectable item
-      items.push({
-        type: 'subgroup',
-        id: subgroup.id,
-        label: subgroup.label,
-        group: group.id,
-        underlying_group: subgroup.id
-      });
-      // Add individual assets
-      subgroup.assets.forEach(asset => {
-        items.push({
-          type: 'asset',
-          id: asset.symbol,
-          symbol: asset.symbol,
-          name: asset.name,
-          label: `${asset.symbol} - ${asset.name}`,
-          group: group.id,
-          subgroup: subgroup.id,
-          underlying_group: subgroup.id
-        });
-      });
-    });
-  });
-  return items;
-};
-
-const ALL_SEARCH_ITEMS = flattenAssets();
 
 export const HORIZONS = [
   { id: 'scalping', label: 'Scalping', holdingDays: 0, tradesPerDay: 15 },
@@ -283,7 +72,7 @@ export const STRATEGY_MAP: Record<string, { value: string; label: string }[]> = 
   ],
   intraday: [
     { value: 'breakout', label: 'Breakout' },
-    { value: 'vwap_bounce', label: 'VWAP Bounce' },
+    { value: 'vwap_bounce', label: 'VWAP Reversion' },
     { value: 'trend_following_day', label: 'Trend Following Intraday' },
   ],
   swing: [
@@ -308,35 +97,19 @@ const capitalRanges = [
 ] as const;
 
 type CapitalRangeKey = (typeof capitalRanges)[number]['key'];
-
-// ==================== INTERNAL TYPES ====================
 type AssetGroupKey = (typeof ASSET_GROUPS)[number]['id'];
 type HorizonKey = (typeof HORIZONS)[number]['id'];
 type DriverWeights = { execution: number; holding: number; structure: number };
-type AssetDefinition = {
-  baseDrivers: DriverWeights;
-};
+type AssetDefinition = { baseDrivers: DriverWeights };
 
 // ==================== DRIVER BIAS MAP ====================
 const assetDefs: Record<AssetGroupKey, AssetDefinition> = {
-  forex: {
-    baseDrivers: { execution: 50, holding: 30, structure: 20 },
-  },
-  indices: {
-    baseDrivers: { execution: 56, holding: 24, structure: 20 },
-  },
-  equities: {
-    baseDrivers: { execution: 28, holding: 16, structure: 56 },
-  },
-  etf: {
-    baseDrivers: { execution: 22, holding: 22, structure: 56 },
-  },
-  commodities: {
-    baseDrivers: { execution: 34, holding: 28, structure: 38 },
-  },
-  crypto: {
-    baseDrivers: { execution: 40, holding: 36, structure: 24 },
-  },
+  forex:       { baseDrivers: { execution: 50, holding: 30, structure: 20 } },
+  indices:     { baseDrivers: { execution: 56, holding: 24, structure: 20 } },
+  equities:    { baseDrivers: { execution: 28, holding: 16, structure: 56 } },
+  etf:         { baseDrivers: { execution: 22, holding: 22, structure: 56 } },
+  commodities: { baseDrivers: { execution: 34, holding: 28, structure: 38 } },
+  crypto:      { baseDrivers: { execution: 40, holding: 36, structure: 24 } },
 };
 
 const horizonAdjustments: Record<HorizonKey, DriverWeights> = {
@@ -375,41 +148,36 @@ const groupColors: Record<AssetGroupKey, { bg: string; border: string; active: s
   crypto:      { bg: 'bg-violet-500/10',  border: 'border-violet-500/30',  active: 'bg-violet-500' },
 };
 
-// ==================== FUZZY SEARCH CONFIG ====================
-const fuseOptions = {
-  keys: ['label', 'symbol', 'name'],
-  threshold: 0.3,
-  distance: 100,
-};
-
 // ==================== COMPONENT ====================
 export const ScenarioSection = () => {
   const t = useTranslations('Scenario') as (key: string) => string;
   const currencyCode = AppConfig.defaultCurrency;
 
   const [selectedGroup, setSelectedGroup] = useState<AssetGroupKey>('forex');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedItem, setSelectedItem] = useState(ALL_SEARCH_ITEMS[0]);
+  const [selectedUnderlying, setSelectedUnderlying] = useState(UNDERLYING_GROUPS[0]);
   const [selectedHorizon, setSelectedHorizon] = useState<HorizonKey>('intraday');
   const [selectedStrategy, setSelectedStrategy] = useState('breakout');
   const [capitalRange, setCapitalRange] = useState<CapitalRangeKey>('mid');
   const [leverageOn, setLeverageOn] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const currentDef = assetDefs[selectedGroup];
-
-  // Fuse.js search instance
-  const fuse = useMemo(() => new Fuse(ALL_SEARCH_ITEMS, fuseOptions), []);
   
-  // Filter items by search query
-  const filteredItems = useMemo(() => {
+  // Filter underlying groups by selected asset group
+  const filteredUnderlyings = useMemo(() => {
+    let items = UNDERLYING_GROUPS.filter(u => u.group === selectedGroup);
     if (searchQuery.length > 0) {
-      return fuse.search(searchQuery).map(r => r.item);
+      const q = searchQuery.toLowerCase();
+      items = items.filter(u => 
+        u.label.toLowerCase().includes(q) || 
+        u.id.toLowerCase().includes(q) ||
+        u.tooltip.toLowerCase().includes(q)
+      );
     }
-    // Show hierarchical structure when no search
-    return ALL_SEARCH_ITEMS.filter(i => i.group === selectedGroup);
-  }, [searchQuery, selectedGroup, fuse]);
+    return items;
+  }, [selectedGroup, searchQuery]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -421,6 +189,12 @@ export const ScenarioSection = () => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Auto-select first underlying when group changes
+  useEffect(() => {
+    const firstMatch = UNDERLYING_GROUPS.find(u => u.group === selectedGroup);
+    if (firstMatch) setSelectedUnderlying(firstMatch);
+  }, [selectedGroup]);
 
   useEffect(() => {
     const available = STRATEGY_MAP[selectedHorizon] ?? [];
@@ -435,10 +209,10 @@ export const ScenarioSection = () => {
   if (!activeStrategy) return null;
 
   const rawDrivers = sumWeights(
-    currentDef!.baseDrivers,
-    horizonAdjustments[selectedHorizon]!,
-    getCapitalBias(capitalRange)!,
-    getLeverageBias(leverageOn)!,
+    currentDef.baseDrivers,
+    horizonAdjustments[selectedHorizon],
+    getCapitalBias(capitalRange),
+    getLeverageBias(leverageOn),
   );
 
   const executionRaw = Math.max(8, rawDrivers.execution);
@@ -469,7 +243,7 @@ export const ScenarioSection = () => {
   const leverageRead = leverageOn ? t('read_leverage_on') : t('read_leverage_off');
 
   const engineReads = [
-    t(`read_group_${selectedItem.underlying_group}`),
+    t(`read_group_${selectedUnderlying.id}`),
     t(`read_horizon_${selectedHorizon}`),
     t(`read_strategy_${activeStrategy.value}`),
     capitalRead,
@@ -480,7 +254,7 @@ export const ScenarioSection = () => {
     <section id="simulator" className="scroll-mt-32 border-t border-border/40 bg-gradient-to-b from-background to-muted/20 py-14 sm:py-16 lg:py-20 xl:py-24 2xl:py-28">
       <SectionContainer size="wide">
         <div className="grid gap-8 lg:grid-cols-[0.4fr_0.6fr] xl:grid-cols-[0.42fr_0.58fr] lg:gap-6 xl:gap-8">
-          {/* INPUT PANEL */}
+          {/* INPUT PANEL - SOTA 2026 INSTITUTIONAL DESIGN */}
           <div className="space-y-6">
             <div>
               <p className="mb-3 font-mono text-xs font-medium uppercase tracking-[0.24em] text-muted-foreground/60">
@@ -500,7 +274,7 @@ export const ScenarioSection = () => {
               </p>
 
               <div className="mt-5 space-y-5">
-                {/* Asset Group */}
+                {/* Asset Group Selection */}
                 <div>
                   <label className="text-sm font-medium text-foreground/80">{t('group_label')}</label>
                   <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -514,9 +288,6 @@ export const ScenarioSection = () => {
                           onClick={() => {
                             setSelectedGroup(group.id);
                             setSearchQuery('');
-                            // Select first item in new group
-                            const firstItem = ALL_SEARCH_ITEMS.find(i => i.group === group.id);
-                            if (firstItem) setSelectedItem(firstItem);
                           }}
                           className={`group relative overflow-hidden rounded-2xl border p-3 text-left transition-all duration-300 hover:scale-[1.02] ${
                             isActive
@@ -533,70 +304,54 @@ export const ScenarioSection = () => {
                   </div>
                 </div>
 
-                {/* Asset Search Dropdown */}
+                {/* Underlying Group Dropdown - SOTA 2026 CLEAN DESIGN */}
                 <div ref={dropdownRef}>
-                  <label className="text-sm font-medium text-foreground/80">{t('asset_label')}</label>
+                  <label className="text-sm font-medium text-foreground/80">{t('sub_label')}</label>
                   <div className="mt-3 relative">
                     <button
                       type="button"
                       onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                      className="w-full rounded-2xl border border-border/50 bg-background px-4 py-3 font-mono text-sm outline-none transition-colors focus:border-primary/50 text-left flex items-center justify-between"
+                      className="w-full rounded-2xl border border-border/50 bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-primary/50 text-left flex items-center justify-between"
                     >
-                      <div>
-                        <p className="font-semibold">{selectedItem.label}</p>
-                        {selectedItem.type === 'asset' && (
-                          <p className="text-xs text-muted-foreground">{selectedItem.name}</p>
-                        )}
+                      <div className="text-left">
+                        <p className="font-medium">{selectedUnderlying.label}</p>
+                        <p className="text-xs text-muted-foreground font-mono opacity-70">{selectedUnderlying.id}</p>
                       </div>
-                      <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 text-muted-foreground transition-transform duration-200" style={{ transform: isDropdownOpen ? 'rotate(180deg)' : '' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
                     </button>
 
-                    {/* Search Input inside Dropdown */}
+                    {/* Dropdown Panel */}
                     {isDropdownOpen && (
                       <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border/60 rounded-2xl shadow-xl z-50 overflow-hidden">
-                        <div className="p-3 border-b border-border/50">
+                        <div className="p-2 border-b border-border/30">
                           <input
                             type="text"
-                            placeholder={t('search_placeholder')}
+                            placeholder="Filter groups..."
                             value={searchQuery}
                             onChange={e => setSearchQuery(e.target.value)}
-                            className="w-full rounded-xl border border-border/50 bg-background px-4 py-2 font-mono text-sm outline-none transition-colors focus:border-primary/50"
+                            className="w-full rounded-xl border border-border/40 bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary/50"
                             autoFocus
                           />
                         </div>
-                        <div className="max-h-64 overflow-y-auto">
-                          {filteredItems.map(item => (
+                        <div className="max-h-72 overflow-y-auto">
+                          {filteredUnderlyings.map(ug => (
                             <button
-                              key={item.id}
+                              key={ug.id}
                               type="button"
                               onClick={() => {
-                                setSelectedItem(item);
-                                setSelectedGroup(item.group);
-                                setSearchQuery('');
+                                setSelectedUnderlying(ug);
                                 setIsDropdownOpen(false);
+                                setSearchQuery('');
                               }}
-                              className={`w-full px-4 py-3 text-left hover:bg-muted/60 transition-colors ${
-                                selectedItem.id === item.id ? 'bg-muted/40' : ''
+                              className={`w-full px-4 py-3 text-left hover:bg-muted/50 transition-colors ${
+                                selectedUnderlying.id === ug.id ? 'bg-muted/30 border-l-2 border-primary' : ''
                               }`}
                             >
-                              <div className="flex items-center justify-between">
-                                <div>
-                                  <p className="font-mono font-semibold">
-                                    {item.type === 'subgroup' ? (
-                                      <span className="text-amber-500">📁 {item.label}</span>
-                                    ) : (
-                                      item.label
-                                    )}
-                                  </p>
-                                  {item.type === 'asset' && (
-                                    <p className="text-xs text-muted-foreground">{item.name}</p>
-                                  )}
-                                </div>
-                                <div className="text-xs font-mono uppercase text-muted-foreground/60">
-                                  {ASSET_GROUPS.find(g => g.id === item.group)?.label}
-                                </div>
+                              <div className="flex flex-col gap-0.5">
+                                <span className="font-medium">{ug.label}</span>
+                                <span className="text-xs text-muted-foreground opacity-70">{ug.tooltip}</span>
                               </div>
                             </button>
                           ))}
@@ -606,7 +361,7 @@ export const ScenarioSection = () => {
                   </div>
                 </div>
 
-                {/* Horizon */}
+                {/* Horizon Selection */}
                 <div>
                   <label className="text-sm font-medium text-foreground/80">{t('horizon_label')}</label>
                   <div className="mt-3 flex flex-wrap gap-2">
@@ -627,7 +382,7 @@ export const ScenarioSection = () => {
                   </div>
                 </div>
 
-                {/* Strategy */}
+                {/* Strategy Selection */}
                 <div>
                   <label className="text-sm font-medium text-foreground/80">{t('strategy_label')}</label>
                   <div className="mt-3 flex flex-wrap gap-2">
@@ -707,7 +462,7 @@ export const ScenarioSection = () => {
 
             <div className="mt-5 flex flex-wrap gap-2">
               <span className="rounded-full border border-slate-800 bg-slate-900/70 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.16em] text-slate-300">
-                {selectedItem.label}
+                {selectedUnderlying.label}
               </span>
               <span className="rounded-full border border-slate-800 bg-slate-900/70 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.16em] text-slate-300">
                 {HORIZONS.find(h => h.id === selectedHorizon)?.label}
