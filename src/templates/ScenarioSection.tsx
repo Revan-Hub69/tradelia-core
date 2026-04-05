@@ -249,7 +249,7 @@ export const ScenarioSection = () => {
   const leverageRead = leverageOn ? t('read_leverage_on') : t('read_leverage_off');
 
   const engineReads = [
-    t(`read_group_${activeSub!.underlying_group}`),
+    t(`read_group_${activeSub!.key}`),
     t(`read_horizon_${selectedHorizon}`),
     t(`read_strategy_${activeStrategy.key}`),
     capitalRead,
