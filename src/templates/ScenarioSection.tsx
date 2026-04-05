@@ -242,9 +242,9 @@ export const ScenarioSection = () => {
 
   const rawDrivers = sumWeights(
     currentDef!.baseDrivers,
-    horizonAdjustments[selectedHorizon],
-    getCapitalBias(capitalRange),
-    getLeverageBias(leverageOn),
+    horizonAdjustments[selectedHorizon]!,
+    getCapitalBias(capitalRange)!,
+    getLeverageBias(leverageOn)!,
   );
 
   const executionRaw = Math.max(8, rawDrivers.execution);
