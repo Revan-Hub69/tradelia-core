@@ -205,7 +205,6 @@ export const ScenarioSection = () => {
   const [selectedStrategy, setSelectedStrategy] = useState('breakout');
   const [capitalRange, setCapitalRange] = useState<CapitalRangeKey>('mid');
   const [leverageOn, setLeverageOn] = useState(true);
-  const [showResults, setShowResults] = useState(false);
 
   const currentDef = assetDefs[selectedGroup];
 
@@ -478,14 +477,7 @@ export const ScenarioSection = () => {
                   </div>
                 </div>
 
-                {/* Calculate Button */}
-                <button
-                  type="button"
-                  onClick={() => setShowResults(true)}
-                  className="w-full mt-2 h-14 rounded-2xl bg-foreground text-background font-semibold text-sm uppercase tracking-wider hover:bg-foreground/90 transition-all duration-200"
-                >
-                  {t('calculate_button')}
-                </button>
+
               </div>
             </div>
           </div>
