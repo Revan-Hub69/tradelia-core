@@ -118,5 +118,6 @@
   "read_capital_large": "Large capital: percentage cost becomes more visible.",
   "read_leverage_on": "Leverage active: margin costs apply.",
   "read_leverage_off": "No leverage: profile stays close to direct instrument.",
-  "preview_note": "Qualitative indicator based on the selected combination."
+  "preview_note": "Qualitative indicator based on the selected combination.",
+  "cta_open_simulator": "Open Cost Simulator"
 }
