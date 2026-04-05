@@ -1,3 +1,5 @@
+'use client';
+
 import { useTranslations } from 'next-intl';
 import { useEffect, useState, useMemo } from 'react';
 import Fuse from 'fuse.js';
