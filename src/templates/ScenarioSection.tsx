@@ -98,7 +98,6 @@ type CapitalRangeKey = (typeof capitalRanges)[number]['key'];
 type AssetGroupKey = (typeof ASSET_GROUPS)[number]['id'];
 type HorizonKey = (typeof HORIZONS)[number]['id'];
 type DriverWeights = { execution: number; holding: number; structure: number };
-type StrategyDefinition = { key: string; horizons: HorizonKey[]; driverBias: DriverWeights };
 
 type AssetDefinition = {
   subOptions: { key: string; label: string; underlying_group: string }[];
