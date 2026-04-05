@@ -1,7 +1,7 @@
 {
   "Index": {
     "meta_title": "TradeScope – Simulatore Costi Trading",
-    "meta_description": "Confronta i costi reali di CFD, futures, ETF e opzioni in base al tuo scenario operativo. Gratis, nessuna registrazione."
+    "meta_description": "Confronta i costi reali di forex, indici, crypto e azioni in base al tuo scenario operativo. Nessuna registrazione richiesta."
   },
   "TradeHero": {
     "eyebrow": "Tradelia · TradeScope",
@@ -99,7 +99,7 @@
     "scroll_cue": "Guarda il flusso in 30 secondi"
   },
   "BenefitsOverview": {
-    "section_title": "Perché i trader usano Tradelia",
+    "section_title": "Perché i trader usano TradeScope",
     "section_subtitle": "Challenge, segnali e regole chiare in un'unica vista",
     "benefit1_title": "Regole verificate",
     "benefit1_desc": "Drawdown, target e costi a confronto prima di iscriverti.",

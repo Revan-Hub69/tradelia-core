@@ -1,5 +1,5 @@
 {
-  "description": "TradeScope è il simulatore pubblico di Tradelia per confrontare broker e strumenti in base ad asset, strategia, orizzonte, capitale e leva.",
+  "description": "TradeScope è il simulatore pubblico per confrontare broker e strumenti in base ad asset, strategia, orizzonte, capitale e leva.",
   "chip_asset": "Asset",
   "chip_strategy": "Strategia",
   "chip_horizon": "Orizzonte",
