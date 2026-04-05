@@ -41,8 +41,6 @@ export const MobileBottomSheet = React.memo<MobileBottomSheetProps>((
   }, [isOpen]);
 
   // Focus trap + scrollIntoView
-  // Porta in vista il primo elemento interattivo: fix autoscroll quando
-  // il dropdown / input e in fondo al contenuto del sheet
   useEffect(() => {
     if (!isOpen || !sheetRef.current) return;
     const delay = prefersReducedMotion ? 0 : 330;
@@ -80,19 +78,18 @@ export const MobileBottomSheet = React.memo<MobileBottomSheetProps>((
         aria-modal="true"
         aria-label={title ?? 'Bottom sheet'}
         className={cn('dropdown-mobile', isOpen && 'open', className)}
-        style={{
-          // Fallback bg inline: garantisce colore anche se il CSS globale
-          // non e ancora caricato o le CSS vars del tema non sono risolte
-          backgroundColor: 'var(--sheet-bg, #ffffff)',
-        }}
+        style={{ backgroundColor: 'var(--sheet-bg, #ffffff)' }}
       >
+        {/* CloseIcon: size deve essere un valore valido della union IconSize = 16|20|24|28|32.
+            18 NON e nella union — causava crash 'Cannot read properties of undefined (reading size)'
+            perche SIGNATURE_TOKENS.sizes[18] e undefined. Corretto a 20. */}
         <button
           type="button"
           onClick={onClose}
           aria-label="Chiudi"
           className="bottom-sheet-close"
         >
-          <CloseIcon size={18} variant="signature" />
+          <CloseIcon size={20} variant="signature" />
         </button>
 
         {title && (
@@ -111,7 +108,6 @@ export const MobileBottomSheet = React.memo<MobileBottomSheetProps>((
         </div>
       </div>
 
-      {/* CSS vars dark mode inline - fallback se il foglio globale non copre */}
       <style>{`
         :root { --sheet-bg: #ffffff; --sheet-text: #18181b; }
         .dark { --sheet-bg: #18181b; --sheet-text: #f4f4f5; }

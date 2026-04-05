@@ -94,10 +94,8 @@ const SimulatorContent = () => {
   const [leverageOn,         setLeverageOn]         = useState(true);
   const [isDropdownOpen,     setIsDropdownOpen]     = useState(false);
   const [searchQuery,        setSearchQuery]        = useState('');
-  const dropdownRef     = useRef<HTMLDivElement>(null);
-  // Ref per l'input di ricerca nel dropdown — usiamo questo per autofocus
-  // invece di `autoFocus` HTML che su iOS causa keyboard-jump indesiderato
-  const searchInputRef  = useRef<HTMLInputElement>(null);
+  const dropdownRef    = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const filteredUnderlyings = useMemo(() => {
     let items = UNDERLYING_GROUPS.filter(u => u.group === selectedGroup);
@@ -130,13 +128,23 @@ const SimulatorContent = () => {
     return () => document.removeEventListener('mousedown', close);
   }, []);
 
-  // Autofocus sull'input di ricerca quando il dropdown si apre
-  // Timeout 50ms per attendere il render del dropdown prima di fare focus
+  // Autofocus sull'input di ricerca + scrollIntoView sul dropdown
+  // - focus(): porta il cursore nell'input per digitare subito
+  // - scrollIntoView(): su desktop, se il dialog e scrollato e il dropdown
+  //   e parzialmente fuori vista, lo porta in view automaticamente.
+  //   block:'nearest' evita scroll aggressivo se gia visibile.
   useEffect(() => {
-    if (isDropdownOpen) {
-      const id = setTimeout(() => searchInputRef.current?.focus(), 50);
-      return () => clearTimeout(id);
-    }
+    if (!isDropdownOpen) return;
+    const id = setTimeout(() => {
+      // 1. focus input ricerca
+      searchInputRef.current?.focus();
+      // 2. scroll desktop: porta il wrapper del dropdown in vista
+      dropdownRef.current?.scrollIntoView({
+        block: 'nearest',
+        behavior: 'smooth',
+      });
+    }, 50);
+    return () => clearTimeout(id);
   }, [isDropdownOpen]);
 
   const availableStrategies = STRATEGY_MAP[selectedHorizon] ?? [];
@@ -247,7 +255,6 @@ const SimulatorContent = () => {
             {isDropdownOpen && (
               <div className="absolute top-full left-0 right-0 mt-1.5 z-50 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-xl overflow-hidden">
                 <div className="p-2 border-b border-zinc-100 dark:border-zinc-800">
-                  {/* ref invece di autoFocus — autofocus gestito via useEffect con timeout */}
                   <input
                     ref={searchInputRef}
                     type="text"
@@ -462,7 +469,7 @@ export const SimulatorDrawer = ({ isOpen, onClose }: Props) => {
     }
   }, [isMobile, isOpen, onClose]);
 
-  // ── mobile: MobileBottomSheet con wrapper scroll sicuro ──
+  // ── mobile: MobileBottomSheet ──
   if (isMobile) {
     return (
       <MobileBottomSheet
@@ -471,12 +478,6 @@ export const SimulatorDrawer = ({ isOpen, onClose }: Props) => {
         title={t('section_title')}
         showHandle
       >
-        {/*
-          Wrapper con min-h-0 + overflow-y-auto per contenere il contenuto lungo
-          dentro la viewport mobile senza che fuoriesca.
-          pb-[env(safe-area-inset-bottom)] gestisce la home indicator iOS.
-          bg esplicito per non dipendere dalle CSS vars del tema.
-        */}
         <div
           className="min-h-0 overflow-y-auto bg-white dark:bg-zinc-900"
           style={{
