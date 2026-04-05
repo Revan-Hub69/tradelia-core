@@ -211,6 +211,7 @@ export const ScenarioSection = () => {
   const currentDef = assetDefs[selectedGroup];
 
   useEffect(() => {
+    if (!currentDef) return;
     const firstSub = currentDef.subOptions[0]?.key;
     if (firstSub && !currentDef.subOptions.some(s => s.key === selectedSub)) {
       setSelectedSub(firstSub);
@@ -227,7 +228,7 @@ export const ScenarioSection = () => {
   const availableStrategies = STRATEGY_MAP[selectedHorizon] ?? [];
   const activeStrategy = availableStrategies.find(s => s.value === selectedStrategy) ?? availableStrategies[0];
 
-  if (!activeStrategy) return null;
+  if (!activeStrategy || !currentDef) return null;
 
   const activeSub = currentDef.subOptions.find(s => s.key === selectedSub) ?? currentDef.subOptions[0];
 
@@ -273,7 +274,7 @@ export const ScenarioSection = () => {
     leverageRead,
   ];
 
-  const subCategory = ASSET_SUBCATEGORIES[selectedGroup];
+  const subCategory = ASSET_SUBCATEGORIES[selectedGroup] ?? [];
 
   return (
     <section id="simulator" className="scroll-mt-32 border-t border-border/40 bg-gradient-to-b from-background to-muted/20 py-14 sm:py-16 lg:py-20 xl:py-24 2xl:py-28">
