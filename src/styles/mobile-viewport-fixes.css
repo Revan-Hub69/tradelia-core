@@ -1,184 +1,133 @@
-/*
- * MOBILE VIEWPORT FIXES - Bottom Sheet Pattern
- *
- * Based on Tier-1 Research:
- * - Nielsen Norman Group: Bottom Sheets Guidelines
- * - Mozilla MDN: CSS env() Function
- * - Theosoti: Safe Area Insets
- *
- * Design Principles:
- * - Bottom sheet pattern for mobile (< 768px)
- * - iOS safe area insets (notch/home indicator)
- * - Visible close button (accessibility)
- * - Backdrop overlay
- * - Spring physics animations
- * - No stacking (single sheet only)
- *
- * RESEARCH DOCUMENT:
- * docs/research/LOADING_EMPTY_STATES_MOBILE_TIER1_2026.md
- */
-
-/* ============================================================================
-   DESIGN TOKENS - Mobile Bottom Sheet
-   ============================================================================ */
+/* MOBILE VIEWPORT FIXES - Bottom Sheet Pattern */
 
 :root {
-  /* Border Radius */
   --bottom-sheet-radius: 24px;
-
-  /* Backdrop */
   --backdrop-bg: rgba(0, 0, 0, 0.5);
   --backdrop-blur: 4px;
-
-  /* Transitions */
   --bottom-sheet-transition: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
-
-  /* Z-index */
   --z-backdrop: 70;
   --z-bottom-sheet: 71;
 }
 
-/* ============================================================================
-   MOBILE BOTTOM SHEET - Dropdown Replacement
-   ============================================================================ */
+/* BACKDROP */
+.dropdown-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--backdrop-bg);
+  backdrop-filter: blur(var(--backdrop-blur));
+  -webkit-backdrop-filter: blur(var(--backdrop-blur));
+  z-index: var(--z-backdrop);
+  animation: fadeIn 200ms ease-out;
+}
+.dropdown-backdrop.open { display: block; }
 
+/* MOBILE BOTTOM SHEET */
 @media (max-width: 767px) {
-  /* Backdrop overlay - rendered by Radix UI Portal */
-  [data-radix-popper-content-wrapper] {
-    /* Check if dropdown is open */
-    &:has(.dropdown-mobile.open) {
-      /* Create backdrop */
-      &::before {
-        content: '';
-        position: fixed;
-        inset: 0;
-        background: var(--backdrop-bg);
-        backdrop-filter: blur(var(--backdrop-blur));
-        -webkit-backdrop-filter: blur(var(--backdrop-blur));
-        z-index: var(--z-backdrop);
-        animation: fadeIn 200ms ease-out;
-      }
-    }
-  }
-
-  /* Override dropdown positioning on mobile */
   .dropdown-mobile {
-    /* Fixed to bottom */
     position: fixed !important;
     bottom: 0 !important;
     left: 0 !important;
     right: 0 !important;
     top: auto !important;
-
-    /* Full width */
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 !important;
 
-    /* Rounded top corners only */
+    /* CRITICO: background esplicito - senza questo e trasparente */
+    background-color: #ffffff !important;
+
     border-radius: var(--bottom-sheet-radius) var(--bottom-sheet-radius) 0 0 !important;
-
-    /* iOS Safe Area Insets */
+    border: 1px solid rgba(0,0,0,0.08) !important;
+    border-bottom: none !important;
+    box-shadow: 0 -4px 32px rgba(0,0,0,0.12) !important;
     padding-bottom: calc(16px + env(safe-area-inset-bottom)) !important;
-
-    /* Z-index */
     z-index: var(--z-bottom-sheet);
-
-    /* Initial state - hidden below viewport */
     transform: translateY(100%);
     transition: transform var(--bottom-sheet-transition);
-
-    /* Max height - leave space for backdrop tap */
-    max-height: 80vh;
+    max-height: 92dvh;
     overflow-y: auto;
-
-    /* Smooth scrolling */
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
   }
 
-  /* Open state */
-  .dropdown-mobile.open {
-    transform: translateY(0);
+  .dark .dropdown-mobile {
+    background-color: #18181b !important;
+    border-color: rgba(255,255,255,0.08) !important;
+    box-shadow: 0 -4px 32px rgba(0,0,0,0.4) !important;
   }
 
-  /* Grab handle (optional visual indicator) */
+  .dropdown-mobile.open { transform: translateY(0); }
+
   .dropdown-mobile::before {
     content: '';
-    /* Positioning */
     position: absolute;
-    top: 12px;
+    top: 10px;
     left: 50%;
     transform: translateX(-50%);
-
-    /* Size */
-    width: 40px;
+    width: 36px;
     height: 4px;
-
-    /* Visual */
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0,0,0,0.15);
     border-radius: 2px;
-
-    /* Pointer events */
     pointer-events: none;
   }
-
-  .dark .dropdown-mobile::before {
-    background: rgba(255, 255, 255, 0.3);
-  }
+  .dark .dropdown-mobile::before { background: rgba(255,255,255,0.2); }
+  .bottom-sheet-handle { display: none; }
 }
 
-/* Fade in animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-/* ============================================================================
-   DESKTOP - Keep normal dropdown behavior
-   ============================================================================ */
-
+/* DESKTOP */
 @media (min-width: 768px) {
-  .dropdown-mobile {
-    /* Normal dropdown positioning */
-    position: absolute;
+  .dropdown-mobile { position: absolute; }
+  .dropdown-backdrop, .bottom-sheet-close, .bottom-sheet-handle { display: none; }
+}
+
+/* CLOSE BUTTON */
+.bottom-sheet-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.06);
+  color: #71717a;
+  border: none;
+  cursor: pointer;
+  z-index: 2;
+  transition: background 150ms ease;
+}
+.bottom-sheet-close:hover { background: rgba(0,0,0,0.1); }
+.dark .bottom-sheet-close { background: rgba(255,255,255,0.08); color: #a1a1aa; }
+.dark .bottom-sheet-close:hover { background: rgba(255,255,255,0.12); }
+
+/* BODY SCROLL LOCK - senza position:fixed per evitare layout shift */
+body.bottom-sheet-open {
+  overflow: hidden;
+  touch-action: none;
+}
+.dropdown-mobile { touch-action: pan-y; }
+
+/* ANIMAZIONI */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dropdown-mobile, .dropdown-backdrop, .bottom-sheet-close {
+    transition: none !important;
+    animation: none !important;
   }
-
-  .dropdown-backdrop,
-  .bottom-sheet-close,
-  .bottom-sheet-handle {
-    display: none;
-  }
 }
 
-/* ============================================================================
-   SAFE AREA INSETS - iOS Notch/Home Indicator
-   ============================================================================ */
-
-/* Apply to all fixed bottom elements */
-.safe-area-bottom {
-  padding-bottom: env(safe-area-inset-bottom);
-}
-
-/* Apply to all fixed top elements */
-.safe-area-top {
-  padding-top: env(safe-area-inset-top);
-}
-
-/* Apply to all fixed left elements */
-.safe-area-left {
-  padding-left: env(safe-area-inset-left);
-}
-
-/* Apply to all fixed right elements */
-.safe-area-right {
-  padding-right: env(safe-area-inset-right);
-}
-
-/* All safe areas */
+/* SAFE AREAS */
+.safe-area-bottom { padding-bottom: env(safe-area-inset-bottom); }
+.safe-area-top    { padding-top: env(safe-area-inset-top); }
+.safe-area-left   { padding-left: env(safe-area-inset-left); }
+.safe-area-right  { padding-right: env(safe-area-inset-right); }
 .safe-area-all {
   padding-top: env(safe-area-inset-top);
   padding-right: env(safe-area-inset-right);
@@ -186,41 +135,7 @@
   padding-left: env(safe-area-inset-left);
 }
 
-/* ============================================================================
-   PREVENT BODY SCROLL - When bottom sheet is open
-   ============================================================================ */
-
-body.bottom-sheet-open {
-  overflow: hidden;
-  /* iOS momentum scrolling fix */
-  position: fixed;
-  width: 100%;
-}
-
-/* ============================================================================
-   REDUCED MOTION - Accessibility
-   ============================================================================ */
-
-@media (prefers-reduced-motion: reduce) {
-  .dropdown-mobile,
-  .dropdown-backdrop,
-  .bottom-sheet-close {
-    transition: none !important;
-  }
-
-  .dropdown-mobile {
-    /* Instant show/hide */
-  }
-
-  .dropdown-mobile.open {
-    transform: translateY(0);
-  }
-}
-
-/* ============================================================================
-   FOUC PREVENTION
-   ============================================================================ */
-
+/* FOUC PREVENTION */
 html:not([data-tradelia-runtime='ready']) .dropdown-mobile,
 html:not([data-tradelia-runtime='ready']) .dropdown-backdrop {
   transition: none !important;
