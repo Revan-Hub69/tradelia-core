@@ -1,5 +1,5 @@
 {
-  "description": "TradeScope is the public simulator for comparing brokers and instruments by asset, strategy, horizon, capital, and leverage.",
+  "description": "TradeScope is Tradelia's public simulator for comparing brokers and instruments by asset, strategy, horizon, capital, and leverage.",
   "chip_asset": "Asset",
   "chip_strategy": "Strategy",
   "chip_horizon": "Horizon",
