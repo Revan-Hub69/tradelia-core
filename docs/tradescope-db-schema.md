@@ -34,7 +34,7 @@ Il costo azionario è dominato dalla residenza fiscale dell'azienda e dalla faci
 * **`equity_adr`** (es. BABA, NIO): Aziende estere quotate negli USA. Subiscono costi aggiuntivi (ADR pass-through fees) addebitati dai broker.
 
 ### 4. COMMODITIES / MATERIE PRIME (Driver: Curva Forward e Scadenza)
-Si dividono in base alla necessità di stoccaggio fisico o cartaceo.
+Si dividono per necessità di stoccaggio fisico o cartaceo.
 * **`commodity_metal`** (es. Oro, Argento): Trattati come valute (XAU/USD). L'attrito è dominato dallo spread e dal classico swap giornaliero.
 * **`commodity_energy`** (es. Petrolio, Gas Naturale): Legati a contratti fisici a scadenza mensile. L'attrito invisibile è il **Rollover** (Contango/Backwardation).
 * **`commodity_agri`** (es. Grano, Caffè): Orari di sessione frammentati. L'attrito principale è lo **Slippage** causato dai forti gap di apertura quotidiani.
@@ -75,6 +75,137 @@ CREATE TYPE tradescope_underlying_group AS ENUM (
 );
 ```
 
-Questa matrice è perfetta. Se il motore riceve in pasto un asset classificato come `equity_eu_ftt`, saprà istantaneamente che se l'utente ha scelto "Cash/Spot", dovrà sottrarre lo 0.10% di tasse al rendimento netto prima ancora di guardare il listino del broker. Se riceve `commodity_energy` e la strategia è "Multiday > 30 giorni", attiverà il modulo di calcolo del drag da rollover. 
+---
 
-È una struttura che trasforma TradeScope da un semplice comparatore di listini a un simulatore di attrito istituzionale.
+## TABELLA 1 — `instruments` (strumenti reali)
+
+| Campo | Descrizione |
+|-------|-------------|
+| `instrument_id` | PK |
+| `asset_group` | Includi il nuovo campo `underlying_group` qui per la classificazione SOTA. |
+| `instrument_type` | spot, cfd, futures, perpetual |
+| `base_currency` | EUR, USD, BTC |
+| `quote_currency` | USD, EUR, USDT |
+| `contract_size` | lotto o unità base (es. 100000 forex, 1 futures) |
+| `tick_size` | es. 0.0001 per forex, 1 per indici |
+| `tick_value` | valore monetario per tick/punto |
+| `avg_daily_volume` | utile per stimare slippage |
+| `avg_spread` | pips / punti / % media realistica |
+| `avg_slippage` | pips / punti / % stimata |
+| `overnight_long_rate` | % giornaliero long |
+| `overnight_short_rate` | % giornaliero short |
+| `funding_long_rate` | % giornaliero CFD / crypto long |
+| `funding_short_rate` | % giornaliero CFD / crypto short |
+| `currency_conversion_fee` | % media conversione se base != conto |
+| `max_order_size` | massimo volume senza impattare troppo lo slippage |
+| `underlying_group` | Enum `tradescope_underlying_group` per classificazione cost signature |
+
+---
+
+## TABELLA 2 — `brokers`
+
+| Campo | Descrizione |
+|-------|-------------|
+| `broker_id` | PK |
+| `broker_name` | |
+| `account_currency` | EUR, USD, BTC |
+| `account_type` | standard, pro, ECN |
+| `spread_markup` | aggiunto allo spread base |
+| `commission_per_lot` | forex round-turn |
+| `commission_per_contract` | futures / CFD |
+| `commission_percent` | crypto (% per trade) |
+| `swap_markup` | aggiunta a overnight/funding |
+| `conversion_markup` | aggiunta alla conversione valuta |
+| `min_lot_size` | |
+| `leverage_max` | |
+| `execution_quality_factor` | fattore stimato per slippage reale |
+| `max_volume_limit` | lotto massimo supportato senza penalità extra |
+
+---
+
+## TABELLA 3 — `instrument_broker_map`
+
+| Campo | Descrizione |
+|-------|-------------|
+| `id` | PK |
+| `instrument_id` | FK |
+| `broker_id` | FK |
+| `enabled` | se broker offre lo strumento |
+| `extra_spread` | override specifico, opzionale |
+| `extra_commission` | override specifico, opzionale |
+| `extra_slippage` | override specifico, opzionale |
+| `funding_override_long` | override se diverso dal default |
+| `funding_override_short` | idem |
+
+---
+
+## TABELLA 4 — `strategy_profiles`
+
+| Campo | Descrizione |
+|-------|-------------|
+| `strategy_id` | PK |
+| `name` | scalping, intraday, swing, position |
+| `trades_per_day` | |
+| `avg_holding_hours` | |
+| `avg_holding_days` | |
+| `slippage_multiplier` | moltiplicatore reale per volume / velocità trade |
+| `overnight_days_factor` | quanto pesa overnight/funding nella strategia |
+| `max_position_size` | lotto max per strategia |
+
+---
+
+## FORMULA COSTO REALE (senza fuffa)
+
+### Spread totale
+```
+spread_total = instrument.avg_spread + broker.spread_markup + instrument_broker_map.extra_spread
+```
+
+### Commissione totale
+```
+forex → broker.commission_per_lot + instrument_broker_map.extra_commission
+futures → broker.commission_per_contract
+crypto → % trade size
+```
+
+### Slippage totale
+```
+slippage_total = instrument.avg_slippage * strategy.slippage_multiplier + instrument_broker_map.extra_slippage
+```
+
+### Costo overnight
+```
+overnight_cost =
+    (instrument.overnight_rate + broker.swap_markup + instrument_broker_map.funding_override) 
+    * avg_holding_days * capital
+```
+
+### Costo conversione
+```
+se base_currency != account_currency →
+    instrument.currency_conversion_fee + broker.conversion_markup
+```
+
+---
+
+## COSTO TOTALE STRATEGIA
+
+```
+total_cost_per_trade = spread_total + commission_total + slippage_total
+
+total_strategy_cost =
+    total_cost_per_trade * trades_per_day * avg_holding_days
+    + overnight_cost
+    + conversion_cost
+```
+
+---
+
+## NOTE AGGIUNTIVE
+
+1. **Slippage dinamico** → incluso tramite `slippage_multiplier` + `execution_quality_factor`
+2. **Funding / swap** per crypto/CFD → incluso
+3. **Conversioni valutarie** → incluse
+4. **Massimi ordini e leva** → limitano costi e rendono realistico l'output
+5. **Tutto è numerico**, niente categorie tipo "basso/medio"
+
