@@ -5,7 +5,7 @@ import { X, ChevronDown, Search } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from '@/components/ui/sheet';
+import { MobileBottomSheet } from '@/components/ui/MobileBottomSheet';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -52,7 +52,6 @@ function scrollIntoContainer(el: HTMLElement | null, behavior: ScrollBehavior = 
     if (ov === 'auto' || ov === 'scroll') {
       const elRect     = el.getBoundingClientRect();
       const parentRect = parent.getBoundingClientRect();
-      const scrollTop  = parent.scrollTop;
       if (elRect.top < parentRect.top + 8) {
         parent.scrollBy({ top: elRect.top - parentRect.top - 16, behavior });
       } else if (elRect.bottom > parentRect.bottom - 8) {
@@ -168,18 +167,12 @@ const SimulatorContent = ({ onClose }: SimulatorContentProps) => {
     return () => document.removeEventListener('mousedown', handler);
   }, [isDropdownOpen]);
 
-  // Quando il dropdown si apre:
-  // 1. focus sull\'input di ricerca (digitazione immediata)
-  // 2. scrollIntoContainer sul trigger porta il trigger in vista nel panel
-  // 3. doppio setTimeout (120ms) per aspettare che il dropdown list sia nel DOM
-  //    e poi calcola se la lista dropdown sfora il bottom del container scroll
   useEffect(() => {
     if (!isDropdownOpen) return;
     const id = setTimeout(() => {
       searchInputRef.current?.focus();
       scrollIntoContainer(dropdownTriggerRef.current, 'smooth');
     }, 60);
-    // Secondo pass: dopo che la lista è renderata, scrolla il container se sfora in basso
     const id2 = setTimeout(() => {
       if (!dropdownRef.current) return;
       let parent = dropdownRef.current.parentElement;
@@ -489,7 +482,6 @@ export const SimulatorDrawer = ({ isOpen, onClose }: Props) => {
   // Scroll panel to top every time drawer opens (desktop)
   useEffect(() => {
     if (!isMobile && isOpen) {
-      // small delay so the panel is mounted before scrolling
       const id = setTimeout(() => {
         panelRef.current?.scrollTo({ top: 0, behavior: 'instant' });
       }, 20);
@@ -506,32 +498,17 @@ export const SimulatorDrawer = ({ isOpen, onClose }: Props) => {
     }
   }, [isMobile, isOpen, onClose]);
 
-  // ── Mobile: Sheet ───────────────────────────────────────────────────────────
+  // ── Mobile: MobileBottomSheet ────────────────────────────────────────────────
   if (isMobile) {
     return (
-      <Sheet open={isOpen} onOpenChange={open => { if (!open) onClose(); }}>
-        <SheetContent side="bottom" className="max-h-[92dvh] overflow-y-auto rounded-t-2xl p-0">
-          <SheetHeader className="sticky top-0 z-20 border-b border-border bg-background px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground/60">
-                  {t('drawer_eyebrow')}
-                </p>
-                <SheetTitle className="mt-0.5 text-lg font-semibold tracking-tight">
-                  {t('drawer_title')}
-                </SheetTitle>
-              </div>
-              <SheetClose asChild>
-                <button className="flex size-9 items-center justify-center rounded-xl border border-border bg-muted/30 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
-                  <X className="size-4" />
-                  <span className="sr-only">{t('close')}</span>
-                </button>
-              </SheetClose>
-            </div>
-          </SheetHeader>
-          <SimulatorContent />
-        </SheetContent>
-      </Sheet>
+      <MobileBottomSheet
+        isOpen={isOpen}
+        onClose={onClose}
+        title={t('drawer_title')}
+        showHandle
+      >
+        <SimulatorContent />
+      </MobileBottomSheet>
     );
   }
 
