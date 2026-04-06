@@ -67,13 +67,8 @@ const CommandPalette = dynamic(
   },
 );
 
-const EnrollmentBanner = dynamic(
-  () => import('./EnrollmentBanner').then(mod => ({ default: mod.EnrollmentBanner })),
-  {
-    ssr: false,
-    loading: () => null, // Banner non causa layout shift
-  },
-);
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _unused = null; // Placeholder to avoid breaking imports after EnrollmentBanner removal
 
 const MobileMenu = dynamic(
   () => import('@/components/navigation/MobileMenu').then(mod => ({ default: mod.MobileMenu })),
@@ -130,8 +125,7 @@ export function DashboardClient({ children }: DashboardClientProps) {
         {/* Command Palette - Lazy loaded */}
         <CommandPalette />
 
-        {/* Enrollment Banner - Shows pending confirmation prompts */}
-        <EnrollmentBanner />
+        {/* Enrollment Banner - Removed (challenge system deprecated) */}
 
         {/* Mobile Menu - Help, Language, Theme */}
         <Suspense fallback={null}>
