@@ -2,7 +2,6 @@
 
 import { useTranslations } from 'next-intl';
 
-import { Button } from '@/components/ui/button';
 import { SectionContainer } from '@/components/ui/SectionContainer';
 import { InteractiveSimulator } from '@/features/landing/InteractiveSimulator';
 
@@ -38,17 +37,6 @@ export const TradeHero = () => {
             {t('subtitle')}
           </p>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <Button
-              asChild
-              size="lg"
-              className="h-11 rounded-full px-7 font-mono text-[11px] uppercase tracking-[0.18em]"
-            >
-              <a href="#problem">{t('cta')}</a>
-            </Button>
-            <span className="text-xs text-muted-foreground/50">{t('cta_note')}</span>
-          </div>
-
           {/* Social proof line */}
           <p className="mt-8 border-t border-border/30 pt-6 text-xs leading-6 text-muted-foreground/60">
             {t('trust')}
@@ -57,7 +45,7 @@ export const TradeHero = () => {
 
         {/* ── RIGHT: simulator — the product ── */}
         <div className="mt-12 min-w-0 flex-1 xl:mt-0">
-          {/* Label so it's 100% clear what this is */}
+          {/* Label so it\'s 100% clear what this is */}
           <div className="mb-5 flex items-center gap-3">
             <div className="h-px flex-1 bg-border/40" />
             <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground/50">

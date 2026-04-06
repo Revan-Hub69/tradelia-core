@@ -3,7 +3,7 @@
 import { useLocale, useTranslations } from 'next-intl';
 
 import { SectionContainer } from '@/components/ui/SectionContainer';
-import { getLandingSectionHref, heroContextChipKeys, landingSections } from '@/config/tradescope';
+import { getLandingSectionHref, heroContextChipKeys, landingSections } from '@/config/landing';
 import { Link, usePathname } from '@/libs/i18nNavigation';
 import { AppConfig } from '@/utils/AppConfig';
 

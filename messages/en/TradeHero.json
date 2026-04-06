@@ -1,8 +1,7 @@
 {
-  "eyebrow": "TradeScope",
+  "eyebrow": "Tradelia",
   "title": "The same strategy can yield different results. Often due to costs, not the market.",
-  "subtitle": "TradeScope analyzes how instrument, broker, and cost structure influence your trading outcome.",
-  "cta": "Launch TradeScope",
+  "subtitle": "Tradelia analyzes how instrument, broker, and cost structure influence your trading outcome.",
   "cta_note": "Enter asset, strategy, and horizon. Get a comparison based on real costs.",
   "trust": "The engine reads the operational combination and applies spread, funding, commissions, and instrument structure before comparing instruments and brokers.",
   "trust_point_1": "The combination is evaluated for consistency between asset, strategy, and horizon.",
@@ -31,5 +30,6 @@
   "monitor_row_2_note": "Execution quality and overnight management directly impact the edge.",
   "monitor_row_3_label": "Crypto + Intraday",
   "monitor_row_3_meta": "Holding",
-  "monitor_row_3_note": "Funding and market structure influence results more than the setup."
+  "monitor_row_3_note": "Funding and market structure influence results more than the setup.",
+  "simulator_label": "Simulator"
 }
