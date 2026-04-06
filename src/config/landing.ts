@@ -1,19 +1,30 @@
 import { AppConfig } from '@/utils/AppConfig';
 
 export const landingSections = [
-  { id: 'problem',      navbarLabelKey: 'nav_problem',    footerLabelKey: 'nav_problem' },
-  { id: 'how-it-works', navbarLabelKey: 'nav_mechanism',  footerLabelKey: 'nav_mechanism' },
-  { id: 'simulator',   navbarLabelKey: 'nav_simulator',  footerLabelKey: 'nav_simulator' },
-  { id: 'faq',         navbarLabelKey: 'nav_faq',        footerLabelKey: 'nav_faq' },
+  { id: 'problem',       navbarLabelKey: 'nav_problem',   footerLabelKey: 'nav_problem' },
+  { id: 'how-it-works',  navbarLabelKey: 'nav_mechanism', footerLabelKey: 'nav_mechanism' },
+  { id: 'simulator',    navbarLabelKey: 'nav_simulator', footerLabelKey: 'nav_simulator' },
+  { id: 'faq',          navbarLabelKey: 'nav_faq',       footerLabelKey: 'nav_faq' },
 ] as const;
 
 export type LandingSectionId = (typeof landingSections)[number]['id'];
 
+// Usato da TradeHero.tsx — chip contestuali nella hero
+export const heroContextChipKeys = ['chip_asset', 'chip_strategy', 'chip_horizon'] as const;
+
+// Usato da TradeHero.tsx — tick asse Y del grafico SVG
+export const heroChartAxisTicks = [
+  { label: '0',  y: 173 },
+  { label: '25', y: 133 },
+  { label: '50', y: 93 },
+  { label: '75', y: 53 },
+] as const;
+
 export const heroChartBars = [
-  { key: 'cfd',     subKey: 'cfd_sub',     x: 84,  dragHeight: 54,  dragFill: '#F97316', netY: 105, netHeight: 65,  netFill: '#38BDF8' },
-  { key: 'futures', subKey: 'futures_sub', x: 184, dragHeight: 21,  dragFill: '#F59E0B', netY: 72,  netHeight: 98,  netFill: '#818CF8' },
-  { key: 'options', subKey: 'options_sub', x: 284, dragHeight: 38,  dragFill: '#FB923C', netY: 89,  netHeight: 81,  netFill: '#A78BFA' },
-  { key: 'cash',    subKey: 'cash_sub',    x: 384, dragHeight: 12,  dragFill: '#F97316', netY: 63,  netHeight: 107, netFill: '#34D399' },
+  { key: 'cfd',     subKey: 'cfd_sub',     x: 84,  dragHeight: 54, dragFill: '#F97316', netY: 105, netHeight: 65,  netFill: '#38BDF8' },
+  { key: 'futures', subKey: 'futures_sub', x: 184, dragHeight: 21, dragFill: '#F59E0B', netY: 72,  netHeight: 98,  netFill: '#818CF8' },
+  { key: 'options', subKey: 'options_sub', x: 284, dragHeight: 38, dragFill: '#FB923C', netY: 89,  netHeight: 81,  netFill: '#A78BFA' },
+  { key: 'cash',    subKey: 'cash_sub',    x: 384, dragHeight: 12, dragFill: '#F97316', netY: 63,  netHeight: 107, netFill: '#34D399' },
 ] as const;
 
 export const heroMonitorRows = [
