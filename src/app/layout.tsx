@@ -20,7 +20,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'TradeScope | Trading Cost Simulator',
+  title: 'Tradelia | Trading Cost Simulator',
   description: 'Model spreads, swaps, commissions, and holding pressure to find the broker and instrument setup that best protects your net returns.',
   icons: [
     {
