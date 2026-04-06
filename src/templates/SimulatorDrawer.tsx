@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   autoUpdate,
   flip,
@@ -105,22 +105,22 @@ const STRATEGY_MAP: Record<HorizonId, { value: StrategyId; labelKey: string }[]>
 // ─── Color helpers ────────────────────────────────────────────────────────────
 
 const COLOR_ACTIVE: Record<string, string> = {
-  slate:   'border-slate-400/50   bg-slate-400/10   text-slate-300',
-  sky:     'border-sky-400/50     bg-sky-400/10     text-sky-300',
-  emerald: 'border-emerald-400/50 bg-emerald-400/10 text-emerald-300',
-  amber:   'border-amber-400/50   bg-amber-400/10   text-amber-300',
-  orange:  'border-orange-400/50  bg-orange-400/10  text-orange-300',
-  teal:    'border-teal-400/50    bg-teal-400/10    text-teal-300',
-  violet:  'border-violet-400/50  bg-violet-400/10  text-violet-300',
+  slate:   'border-slate-400/40   bg-slate-400/8    text-slate-300',
+  sky:     'border-sky-400/40     bg-sky-400/8      text-sky-300',
+  emerald: 'border-emerald-400/40 bg-emerald-400/8  text-emerald-300',
+  amber:   'border-amber-400/40   bg-amber-400/8    text-amber-300',
+  orange:  'border-orange-400/40  bg-orange-400/8   text-orange-300',
+  teal:    'border-teal-400/40    bg-teal-400/8     text-teal-300',
+  violet:  'border-violet-400/40  bg-violet-400/8   text-violet-300',
 };
 
-const IDLE = 'border-border/40 bg-card/60 text-muted-foreground hover:border-border hover:bg-card hover:text-foreground';
+const IDLE = 'border-border/30 bg-transparent text-muted-foreground/70 hover:border-border/60 hover:bg-muted/20 hover:text-foreground';
 
 // ─── Driver computation ───────────────────────────────────────────────────────
 
 type OutputKey = 'execution' | 'holding' | 'structure';
 type W = { execution: number; holding: number; structure: number };
-interface Output { key: OutputKey; value: number; bar: string; label: string }
+interface Output { key: OutputKey; value: number; label: string; color: string; trackColor: string }
 
 const assetW: Record<AssetGroupId, W> = {
   forex:       { execution: 50, holding: 30, structure: 20 },
@@ -146,15 +146,18 @@ const capitalW: Record<CapitalRange, W> = {
 
 function computeOutputs(capital: CapitalRange, asset: AssetGroupId, horizon: HorizonId, lev: boolean): Output[] {
   const levW: W = lev ? { execution: 6, holding: 8, structure: 4 } : { execution: 0, holding: 0, structure: 0 };
-  const add = (...ws: W[]): W => ws.reduce((a, c) => ({ execution: a.execution + c.execution, holding: a.holding + c.holding, structure: a.structure + c.structure }), { execution: 0, holding: 0, structure: 0 });
+  const add = (...ws: W[]): W => ws.reduce(
+    (a, c) => ({ execution: a.execution + c.execution, holding: a.holding + c.holding, structure: a.structure + c.structure }),
+    { execution: 0, holding: 0, structure: 0 },
+  );
   const raw = add(assetW[asset], horizonW[horizon], capitalW[capital], levW);
   const e = Math.max(8, raw.execution), h = Math.max(8, raw.holding), s = Math.max(8, raw.structure);
   const tot = e + h + s;
   const ep = Math.round(e / tot * 100), hp = Math.round(h / tot * 100);
   return [
-    { key: 'execution', value: ep,            bar: 'bg-sky-400',     label: 'driver_execution' },
-    { key: 'holding',   value: hp,            bar: 'bg-amber-400',   label: 'driver_holding' },
-    { key: 'structure', value: 100 - ep - hp, bar: 'bg-emerald-400', label: 'driver_structure' },
+    { key: 'execution', value: ep,            label: 'driver_execution', color: 'bg-sky-400',     trackColor: 'bg-sky-400/12' },
+    { key: 'holding',   value: hp,            label: 'driver_holding',   color: 'bg-amber-400',   trackColor: 'bg-amber-400/12' },
+    { key: 'structure', value: 100 - ep - hp, label: 'driver_structure', color: 'bg-emerald-400', trackColor: 'bg-emerald-400/12' },
   ];
 }
 
@@ -172,8 +175,34 @@ function useIsMobile(bp = 768) {
   return v;
 }
 
+// ─── Animated number ──────────────────────────────────────────────────────────
+
+const AnimatedNumber = ({ value }: { value: number }) => {
+  const [display, setDisplay] = useState(value);
+  const prev = useRef(value);
+
+  useEffect(() => {
+    if (prev.current === value) return;
+    const start = prev.current;
+    const diff = value - start;
+    const duration = 420;
+    const startTime = performance.now();
+    let raf: number;
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - startTime) / duration);
+      const ease = 1 - (1 - p) ** 3;
+      setDisplay(Math.round(start + diff * ease));
+      if (p < 1) raf = requestAnimationFrame(tick);
+      else prev.current = value;
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [value]);
+
+  return <>{display}</>;
+};
+
 // ─── SearchCombobox (floating, portal) ───────────────────────────────────────
-// Used ONLY as fallback on tablet for underlying search.
 
 interface SearchComboboxProps {
   label: string;
@@ -214,30 +243,32 @@ const SearchCombobox = ({ label, value, options, onSelect, searchPlaceholder, no
     return () => document.removeEventListener('mousedown', h);
   }, [open, refs.floating, refs.reference]);
 
-  const filtered = options.filter(u => t(u.labelKey).toLowerCase().includes(q.toLowerCase()) || u.tooltip.toLowerCase().includes(q.toLowerCase()));
+  const filtered = options.filter(u =>
+    t(u.labelKey).toLowerCase().includes(q.toLowerCase()) || u.tooltip.toLowerCase().includes(q.toLowerCase()),
+  );
 
   return (
     <div>
-      <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/50">{label}</p>
+      <p className="mb-2.5 text-xs font-medium text-muted-foreground/60">{label}</p>
       <button
         ref={refs.setReference} type="button"
         onClick={() => { refs.reference.current instanceof HTMLElement && refs.reference.current.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); setTimeout(() => setOpen(v => !v), 60); }}
-        className="flex w-full items-center justify-between gap-3 rounded-xl border border-border/50 bg-card px-4 py-3 text-sm font-medium text-foreground transition-all hover:border-border hover:bg-card/80 active:scale-[0.99]"
+        className="flex w-full items-center justify-between gap-3 rounded-xl border border-border/40 bg-muted/10 px-4 py-3 text-sm font-medium text-foreground transition-all duration-150 hover:border-border/60 hover:bg-muted/20 active:scale-[0.99]"
       >
         <div className="min-w-0 flex-1 text-left">
           <p className="truncate">{t(value.labelKey)}</p>
-          <p className="truncate font-mono text-[10px] text-muted-foreground/50">{value.tooltip}</p>
+          <p className="mt-0.5 truncate text-[11px] text-muted-foreground/40">{value.tooltip}</p>
         </div>
-        <ChevronDown className={`size-4 shrink-0 text-muted-foreground transition-transform ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`size-4 shrink-0 text-muted-foreground/50 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
         <FloatingPortal>
-          <div ref={refs.setFloating} style={{ ...floatingStyles, zIndex: 9999 }} className="overflow-hidden rounded-xl border border-border bg-popover shadow-xl">
-            <div className="border-b border-border/40 px-3 py-2">
+          <div ref={refs.setFloating} style={{ ...floatingStyles, zIndex: 9999 }} className="overflow-hidden rounded-xl border border-border/60 bg-popover shadow-xl shadow-black/20">
+            <div className="border-b border-border/30 px-3 py-2.5">
               <div className="flex items-center gap-2">
-                <Search className="size-3.5 text-muted-foreground/50" />
+                <Search className="size-3.5 shrink-0 text-muted-foreground/40" />
                 <input ref={inputRef} value={q} onChange={e => setQ(e.target.value)} placeholder={searchPlaceholder} className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none" />
-                {q && <button type="button" onClick={() => setQ('')}><X className="size-3 text-muted-foreground/50" /></button>}
+                {q && <button type="button" onClick={() => setQ('')} className="shrink-0"><X className="size-3 text-muted-foreground/40" /></button>}
               </div>
             </div>
             <div className="overflow-y-auto" style={{ overscrollBehavior: 'contain' }}>
@@ -245,11 +276,11 @@ const SearchCombobox = ({ label, value, options, onSelect, searchPlaceholder, no
                 ? <p className="px-4 py-3 text-sm text-muted-foreground/50">{noResults}</p>
                 : filtered.map(u => (
                   <button key={u.id} type="button" onClick={() => { onSelect(u); setOpen(false); }}
-                    className={`flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors hover:bg-muted/40 ${value.id === u.id ? 'bg-primary/[0.07] font-semibold text-foreground' : 'text-muted-foreground'}`}>
+                    className={`flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors hover:bg-muted/30 ${value.id === u.id ? 'bg-primary/[0.06] text-foreground' : 'text-muted-foreground'}`}>
                     <span className="flex size-4 shrink-0 items-center justify-center">{value.id === u.id && <Check className="size-3.5 text-primary" />}</span>
                     <div>
-                      <p className="text-sm">{t(u.labelKey)}</p>
-                      <p className="font-mono text-[10px] text-muted-foreground/40">{u.tooltip}</p>
+                      <p className="text-sm font-medium">{t(u.labelKey)}</p>
+                      <p className="text-[11px] text-muted-foreground/40">{u.tooltip}</p>
                     </div>
                   </button>
                 ))}
@@ -278,101 +309,131 @@ const LivePreview = ({ capital, asset, underlying, horizon, strategy, leverage, 
   const outputs = computeOutputs(capital, asset, horizon, leverage);
   const strategies = STRATEGY_MAP[horizon] ?? [];
   const activeStrat = strategies.find(s => s.value === strategy) ?? strategies[0];
-  const capitalItem = CAPITAL_RANGES.find(c => c.id === capital);
-  const assetItem   = ASSET_GROUPS.find(a => a.id === asset);
+  const assetItem = ASSET_GROUPS.find(a => a.id === asset);
 
   return (
-    <div className={`flex flex-col gap-4 ${compact ? '' : 'h-full'}`}>
-      {/* Header */}
+    <div className={`flex flex-col gap-5 ${compact ? '' : 'h-full'}`}>
+
+      {/* ── Header row ── */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Zap className="size-3.5 text-primary" />
-          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60">
+          <Zap className="size-3.5 text-primary" strokeWidth={2.5} />
+          <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/50">
             {t('preview_title')}
           </span>
         </div>
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/8 px-2.5 py-1">
           <span className="size-1.5 animate-pulse rounded-full bg-emerald-400" />
-          <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-emerald-400">{t('preview_live')}</span>
+          <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-emerald-400">{t('preview_live')}</span>
         </div>
       </div>
 
-      {/* Config summary pills */}
-      <div className="flex flex-wrap gap-1.5">
-        {capitalItem && (
-          <span className={`rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] ${COLOR_ACTIVE[capitalItem.color]}`}>
-            {t(capitalItem.labelKey)}
-          </span>
-        )}
-        {assetItem && (
-          <span className={`rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] ${COLOR_ACTIVE[assetItem.color]}`}>
-            {assetItem.emoji} {t(assetItem.labelKey)}
-          </span>
-        )}
-        <span className="rounded-full border border-border/40 bg-muted/20 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground/60">
-          {t(underlying.labelKey)}
-        </span>
-        <span className={`rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] ${
-          leverage ? 'border-emerald-400/50 bg-emerald-400/10 text-emerald-300' : 'border-border/40 bg-muted/20 text-muted-foreground/50'
-        }`}>
-          {leverage ? t('leverage_on') : t('leverage_off')}
-        </span>
-      </div>
-
-      {/* Engine row */}
-      <div className="flex items-center gap-2 rounded-xl border border-border/40 bg-background/60 px-3 py-2.5">
-        <span className={`size-1.5 rounded-full ${leverage ? 'animate-pulse bg-emerald-400' : 'bg-muted-foreground/30'}`} />
-        <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/60">{t(`engine_${horizon}`)}</span>
-      </div>
-
-      {/* Strategy pill */}
-      {activeStrat && (
-        <div className={`rounded-xl border px-3 py-2 font-mono text-[11px] uppercase tracking-[0.12em] ${
-          leverage ? 'border-emerald-400/30 bg-emerald-400/[0.07] text-emerald-300' : 'border-border/40 bg-muted/20 text-muted-foreground/50'
-        }`}>
-          {t(activeStrat.labelKey)}
+      {/* ── Active configuration summary ── */}
+      <div className="rounded-2xl border border-border/30 bg-muted/10 p-4">
+        <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/40">
+          {t('preview_config_title') || 'Configuration'}
+        </p>
+        <div className="grid grid-cols-2 gap-x-4 gap-y-2.5">
+          {/* Capital */}
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground/40">{t('label_capital')}</p>
+            <p className="mt-0.5 text-sm font-semibold text-foreground">{t(CAPITAL_RANGES.find(c => c.id === capital)?.labelKey ?? '')}</p>
+          </div>
+          {/* Asset */}
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground/40">{t('label_instrument')}</p>
+            <p className="mt-0.5 text-sm font-semibold text-foreground">
+              {assetItem?.emoji} {t(assetItem?.labelKey ?? '')}
+            </p>
+          </div>
+          {/* Underlying */}
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground/40">{t('label_underlying')}</p>
+            <p className="mt-0.5 text-sm font-medium text-foreground/80">{t(underlying.labelKey)}</p>
+          </div>
+          {/* Horizon */}
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground/40">{t('label_horizon')}</p>
+            <p className="mt-0.5 text-sm font-medium text-foreground/80">{t(HORIZONS.find(h => h.id === horizon)?.labelKey ?? '')}</p>
+          </div>
+          {/* Strategy */}
+          <div className="col-span-2">
+            <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground/40">{t('label_strategy')}</p>
+            <p className="mt-0.5 text-sm font-medium text-foreground/80">{activeStrat ? t(activeStrat.labelKey) : '—'}</p>
+          </div>
         </div>
-      )}
+        {/* Leverage badge */}
+        <div className="mt-3 flex items-center gap-2 border-t border-border/20 pt-3">
+          <div className={`h-2 w-2 rounded-full transition-colors duration-300 ${leverage ? 'bg-emerald-400' : 'bg-muted-foreground/20'}`} />
+          <span className={`text-[11px] font-medium transition-colors duration-300 ${leverage ? 'text-emerald-400' : 'text-muted-foreground/40'}`}>
+            {leverage ? t('leverage_on') : t('leverage_off')}
+          </span>
+        </div>
+      </div>
 
-      {/* Driver bars */}
-      <div className="space-y-3">
+      {/* ── Cost driver breakdown ── */}
+      <div className="flex flex-col gap-3">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/40">
+          {t('drivers_title') || 'Cost Drivers'}
+        </p>
         {outputs.map(d => (
-          <div key={d.key}>
-            <div className="mb-1.5 flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">{t(d.label)}</span>
-              <span className="font-mono text-[10px] tabular-nums text-muted-foreground/60">{d.value}%</span>
+          <div key={d.key} className="flex items-center gap-3">
+            {/* Large % number */}
+            <div className="w-12 shrink-0 text-right">
+              <span className="text-xl font-bold tabular-nums leading-none text-foreground">
+                <AnimatedNumber value={d.value} />
+              </span>
+              <span className="text-xs text-muted-foreground/50">%</span>
             </div>
-            <div className="h-1.5 overflow-hidden rounded-full bg-muted/30">
-              <div
-                className={`h-1.5 rounded-full ${d.bar} transition-[width] duration-500 ease-out`}
-                style={{ width: `${d.value}%` }}
-              />
+            {/* Bar + label */}
+            <div className="min-w-0 flex-1">
+              <p className="mb-1.5 text-xs font-medium text-muted-foreground/70">{t(d.label)}</p>
+              <div className={`h-2.5 overflow-hidden rounded-full ${d.trackColor}`}>
+                <div
+                  className={`h-2.5 rounded-full ${d.color} transition-[width] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]`}
+                  style={{ width: `${d.value}%` }}
+                />
+              </div>
             </div>
           </div>
         ))}
-        <p className="pt-1 text-[11px] leading-5 text-muted-foreground/50">{t(`insight_${horizon}`)}</p>
       </div>
 
-      {/* Engine reads */}
-      <div className="rounded-xl border border-border/30 bg-muted/10 px-4 py-3">
-        <p className="mb-2.5 font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/40">{t('engine_reads_title')}</p>
-        <div className="space-y-2">
-          {(['read_1', 'read_2', 'read_3'] as const).map(k => (
-            <div key={k} className="flex items-start gap-2">
-              <span className="mt-1.5 size-1 shrink-0 rounded-full bg-sky-400/70" />
-              <p className="text-[11px] leading-5 text-muted-foreground/60">{t(k)}</p>
-            </div>
-          ))}
+      {/* ── Engine insight ── */}
+      <div className="rounded-2xl border border-border/25 bg-muted/8 px-4 py-3.5">
+        <div className="mb-2.5 flex items-center gap-2">
+          <div className={`size-1.5 rounded-full transition-colors duration-300 ${leverage ? 'bg-emerald-400' : 'bg-muted-foreground/30'}`} />
+          <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/40">
+            {t(`engine_${horizon}`) || 'Engine'}
+          </span>
         </div>
+        <p className="text-xs leading-relaxed text-muted-foreground/60">{t(`insight_${horizon}`)}</p>
       </div>
 
-      <p className="text-[10px] leading-4 text-muted-foreground/40">{t('preview_note')}</p>
+      {/* ── Engine reads ── */}
+      <div className="space-y-2.5">
+        {(['read_1', 'read_2', 'read_3'] as const).map((k, i) => (
+          <div key={k} className="flex items-start gap-3">
+            <div className="mt-1 flex size-4 shrink-0 items-center justify-center rounded-full bg-sky-400/10">
+              <span className="text-[9px] font-bold tabular-nums text-sky-400">{i + 1}</span>
+            </div>
+            <p className="text-xs leading-relaxed text-muted-foreground/60">{t(k)}</p>
+          </div>
+        ))}
+      </div>
+
+      <p className="text-[10px] leading-4 text-muted-foreground/35">{t('preview_note')}</p>
     </div>
   );
 };
 
+// ─── FieldLabel ───────────────────────────────────────────────────────────────
+
+const FieldLabel = ({ children }: { children: React.ReactNode }) => (
+  <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground/50">{children}</p>
+);
+
 // ─── SimulatorControls ────────────────────────────────────────────────────────
-// All the form fields. Used both in desktop (full) and mobile (per-step).
 
 interface ControlsProps {
   capital: CapitalRange; setCapital: (v: CapitalRange) => void;
@@ -382,13 +443,8 @@ interface ControlsProps {
   strategy: StrategyId;  setStrategy: (v: StrategyId) => void;
   leverage: boolean;     setLeverage: (v: boolean) => void;
   t: (k: string) => string;
-  /** Which step to show on mobile (0 = all on desktop) */
   step?: 1 | 2 | 3;
 }
-
-const Label = ({ children }: { children: React.ReactNode }) => (
-  <p className="mb-2.5 font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground/50">{children}</p>
-);
 
 const SimulatorControls = ({
   capital, setCapital, asset, setAsset, underlying, setUnderlying,
@@ -402,19 +458,19 @@ const SimulatorControls = ({
   const showStep3 = !step || step === 3;
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-6">
 
       {/* ── STEP 1: Capital + Asset ── */}
       {showStep1 && (
         <>
           <div>
-            <Label>{t('label_capital')}</Label>
-            <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
+            <FieldLabel>{t('label_capital')}</FieldLabel>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
               {CAPITAL_RANGES.map(c => (
                 <button
                   key={c.id} type="button"
                   onClick={() => setCapital(c.id)}
-                  className={`rounded-xl border px-3 py-2.5 text-left text-[13px] font-medium transition-all duration-150 active:scale-[0.97] ${
+                  className={`rounded-xl border px-3 py-3 text-left text-sm font-medium transition-all duration-150 active:scale-[0.97] ${
                     capital === c.id ? COLOR_ACTIVE[c.color] : IDLE
                   }`}
                 >
@@ -425,13 +481,13 @@ const SimulatorControls = ({
           </div>
 
           <div>
-            <Label>{t('label_instrument')}</Label>
-            <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
+            <FieldLabel>{t('label_instrument')}</FieldLabel>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
               {ASSET_GROUPS.map(ag => (
                 <button
                   key={ag.id} type="button"
                   onClick={() => setAsset(ag.id)}
-                  className={`flex items-center gap-2 rounded-xl border px-3 py-2.5 text-[13px] font-medium transition-all duration-150 active:scale-[0.97] ${
+                  className={`flex items-center gap-2 rounded-xl border px-3 py-3 text-sm font-medium transition-all duration-150 active:scale-[0.97] ${
                     asset === ag.id ? COLOR_ACTIVE[ag.color] : IDLE
                   }`}
                 >
@@ -447,16 +503,15 @@ const SimulatorControls = ({
       {/* ── STEP 2: Underlying + Horizon + Strategy ── */}
       {showStep2 && (
         <>
-          {/* Underlying chips — inline, no dropdown */}
           <div>
-            <Label>{t('label_underlying')}</Label>
-            <div className="flex flex-wrap gap-1.5">
+            <FieldLabel>{t('label_underlying')}</FieldLabel>
+            <div className="flex flex-wrap gap-2">
               {underlyingsForAsset.map(u => (
                 <button
                   key={u.id} type="button"
                   onClick={() => setUnderlying(u)}
                   title={u.tooltip}
-                  className={`rounded-full border px-3 py-1.5 text-[12px] font-medium transition-all duration-150 active:scale-[0.97] ${
+                  className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition-all duration-150 active:scale-[0.97] ${
                     underlying.id === u.id
                       ? 'border-primary/50 bg-primary/10 text-primary'
                       : IDLE
@@ -467,39 +522,38 @@ const SimulatorControls = ({
               ))}
             </div>
             {underlying && (
-              <p className="mt-1.5 font-mono text-[10px] text-muted-foreground/40">{underlying.tooltip}</p>
+              <p className="mt-2 text-[11px] text-muted-foreground/40">{underlying.tooltip}</p>
             )}
           </div>
 
           <div>
-            <Label>{t('label_horizon')}</Label>
-            <div className="grid grid-cols-3 gap-1.5">
+            <FieldLabel>{t('label_horizon')}</FieldLabel>
+            <div className="grid grid-cols-3 gap-2">
               {HORIZONS.map(h => (
                 <button
                   key={h.id} type="button"
                   onClick={() => setHorizon(h.id)}
-                  className={`flex flex-col items-start rounded-xl border px-3 py-2.5 transition-all duration-150 active:scale-[0.97] ${
+                  className={`flex flex-col items-start rounded-xl border px-3 py-3 transition-all duration-150 active:scale-[0.97] ${
                     horizon === h.id
-                      ? 'border-primary/40 bg-primary/10 text-foreground'
+                      ? 'border-primary/40 bg-primary/8 text-foreground'
                       : IDLE
                   }`}
                 >
-                  <span className="text-[13px] font-medium">{t(h.labelKey)}</span>
-                  <span className="mt-0.5 font-mono text-[9px] text-muted-foreground/40">{h.desc}</span>
+                  <span className="text-sm font-semibold">{t(h.labelKey)}</span>
+                  <span className="mt-1 text-[10px] text-muted-foreground/40">{h.desc}</span>
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Strategy pills */}
           <div>
-            <Label>{t('label_strategy')}</Label>
-            <div className="flex flex-wrap gap-1.5">
+            <FieldLabel>{t('label_strategy')}</FieldLabel>
+            <div className="flex flex-wrap gap-2">
               {strategies.map(s => (
                 <button
                   key={s.value} type="button"
                   onClick={() => setStrategy(s.value)}
-                  className={`rounded-full border px-3 py-1.5 text-[12px] font-medium transition-all duration-150 active:scale-[0.97] ${
+                  className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition-all duration-150 active:scale-[0.97] ${
                     strategy === s.value
                       ? 'border-primary/50 bg-primary/10 text-primary'
                       : IDLE
@@ -515,19 +569,19 @@ const SimulatorControls = ({
 
       {/* ── STEP 3: Leverage ── */}
       {showStep3 && (
-        <div className="flex items-center justify-between rounded-xl border border-border/40 bg-card/60 px-4 py-3.5">
+        <div className="flex items-center justify-between rounded-xl border border-border/30 bg-muted/10 px-4 py-4">
           <div>
-            <p className="text-[13px] font-medium text-foreground">{t('label_leverage')}</p>
-            <p className="mt-0.5 text-[11px] text-muted-foreground/50">{t('leverage_note')}</p>
+            <p className="text-sm font-semibold text-foreground">{t('label_leverage')}</p>
+            <p className="mt-0.5 text-xs text-muted-foreground/50">{t('leverage_note')}</p>
           </div>
           <button
             type="button" role="switch" aria-checked={leverage}
             onClick={() => setLeverage(!leverage)}
-            className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-200 ${
-              leverage ? 'bg-primary' : 'bg-muted'
+            className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 ${
+              leverage ? 'bg-primary' : 'bg-muted-foreground/20'
             }`}
           >
-            <span className={`inline-block size-4 rounded-full bg-white shadow-sm transition-transform duration-200 ${leverage ? 'translate-x-6' : 'translate-x-1'}`} />
+            <span className={`inline-block size-4 rounded-full bg-white shadow transition-transform duration-200 ${leverage ? 'translate-x-6' : 'translate-x-1'}`} />
           </button>
         </div>
       )}
@@ -535,7 +589,7 @@ const SimulatorControls = ({
   );
 };
 
-// ─── Desktop / Tablet layout ──────────────────────────────────────────────────
+// ─── Desktop layout ───────────────────────────────────────────────────────────
 
 const DesktopContent = ({ onClose }: { onClose: () => void }) => {
   const t = useTranslations('Simulator') as (k: string) => string;
@@ -546,13 +600,11 @@ const DesktopContent = ({ onClose }: { onClose: () => void }) => {
   const [strategy,   setStrategy]   = useState<StrategyId>('order_flow');
   const [leverage,   setLeverage]   = useState(false);
 
-  // Auto-reset underlying when asset changes
   useEffect(() => {
     const first = UNDERLYING_GROUPS.find(u => u.group === asset);
     if (first) setUnderlying(first);
   }, [asset]);
 
-  // Auto-reset strategy when horizon changes
   useEffect(() => {
     const available = STRATEGY_MAP[horizon] ?? [];
     if (!available.find(s => s.value === strategy))
@@ -562,25 +614,27 @@ const DesktopContent = ({ onClose }: { onClose: () => void }) => {
   return (
     <div className="flex h-full flex-col">
       {/* Sticky header */}
-      <div className="flex shrink-0 items-center justify-between border-b border-border/50 px-6 py-4">
+      <div className="flex shrink-0 items-center justify-between border-b border-border/40 px-7 py-5">
         <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground/50">{t('drawer_eyebrow')}</p>
-          <h2 className="mt-0.5 text-[17px] font-semibold tracking-tight text-foreground">{t('drawer_title')}</h2>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-muted-foreground/40">
+            {t('drawer_eyebrow')}
+          </p>
+          <h2 className="mt-1 text-lg font-semibold tracking-tight text-foreground">{t('drawer_title')}</h2>
         </div>
         <button
           type="button" onClick={onClose}
-          className="flex size-9 items-center justify-center rounded-xl border border-border/50 bg-muted/20 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          className="flex size-9 items-center justify-center rounded-xl border border-border/40 bg-muted/10 text-muted-foreground/60 transition-all duration-150 hover:bg-muted/30 hover:text-foreground"
         >
           <X className="size-4" />
           <span className="sr-only">{t('close')}</span>
         </button>
       </div>
 
-      {/* Body: two columns */}
-      <div className="grid min-h-0 flex-1 grid-cols-[58fr_42fr] divide-x divide-border/40">
+      {/* Body: left controls / right preview — 54/46 */}
+      <div className="grid min-h-0 flex-1 grid-cols-[54fr_46fr] divide-x divide-border/30">
 
-        {/* Left — controls, scrollable */}
-        <div className="overflow-y-auto p-6">
+        {/* Left — scrollable controls */}
+        <div className="overflow-y-auto p-7">
           <SimulatorControls
             capital={capital} setCapital={setCapital}
             asset={asset}     setAsset={setAsset}
@@ -592,8 +646,8 @@ const DesktopContent = ({ onClose }: { onClose: () => void }) => {
           />
         </div>
 
-        {/* Right — live preview, sticky (does not scroll) */}
-        <div className="flex flex-col overflow-y-auto p-6">
+        {/* Right — sticky preview */}
+        <div className="flex flex-col overflow-y-auto p-7">
           <LivePreview
             capital={capital} asset={asset} underlying={underlying}
             horizon={horizon} strategy={strategy} leverage={leverage}
@@ -615,7 +669,7 @@ type Step = typeof STEPS[number];
 
 const STEP_LABELS: Record<Step, string> = {
   1: 'Capital & Asset',
-  2: 'Underlying & Strategy',
+  2: 'Market & Strategy',
   3: 'Leverage & Preview',
 };
 
@@ -644,33 +698,41 @@ const MobileWizard = ({ onClose }: { onClose: () => void }) => {
 
   return (
     <div className="flex flex-col">
-      {/* Progress bar */}
-      <div className="h-0.5 w-full bg-border/30">
+
+      {/* ── Progress bar (thin, precise) ── */}
+      <div className="h-px w-full bg-border/20">
         <div
-          className="h-0.5 bg-primary transition-[width] duration-400 ease-out"
+          className="h-px bg-primary transition-[width] duration-400 ease-[cubic-bezier(0.16,1,0.3,1)]"
           style={{ width: `${progress}%` }}
         />
       </div>
 
-      {/* Step indicator */}
-      <div className="flex items-center justify-between px-5 py-3">
+      {/* ── Step header ── */}
+      <div className="flex items-center justify-between px-5 py-4">
+        {/* Step dots */}
         <div className="flex items-center gap-2">
           {STEPS.map(s => (
-            <div key={s} className={`flex size-5 items-center justify-center rounded-full text-[10px] font-bold transition-colors ${
-              s < step ? 'bg-primary text-white' :
-              s === step ? 'border-2 border-primary text-primary' :
-              'border border-border/50 text-muted-foreground/40'
-            }`}>
-              {s < step ? <Check className="size-2.5" /> : s}
+            <div
+              key={s}
+              className={`flex size-5 items-center justify-center rounded-full text-[10px] font-bold transition-all duration-200 ${
+                s < step
+                  ? 'bg-primary text-white'
+                  : s === step
+                    ? 'border-2 border-primary text-primary'
+                    : 'border border-border/40 text-muted-foreground/30'
+              }`}
+            >
+              {s < step ? <Check className="size-2.5" strokeWidth={3} /> : s}
             </div>
           ))}
         </div>
-        <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/50">
+        {/* Step label */}
+        <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground/50">
           {STEP_LABELS[step]}
         </span>
       </div>
 
-      {/* Step content */}
+      {/* ── Step content ── */}
       <div className="px-5 pb-4">
         {step < 3
           ? (
@@ -685,7 +747,8 @@ const MobileWizard = ({ onClose }: { onClose: () => void }) => {
             />
           )
           : (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-5">
+              {/* Leverage toggle on step 3 */}
               <SimulatorControls
                 capital={capital} setCapital={setCapital}
                 asset={asset}     setAsset={setAsset}
@@ -695,23 +758,26 @@ const MobileWizard = ({ onClose }: { onClose: () => void }) => {
                 leverage={leverage} setLeverage={setLeverage}
                 t={t} step={3}
               />
-              <LivePreview
-                capital={capital} asset={asset} underlying={underlying}
-                horizon={horizon} strategy={strategy} leverage={leverage}
-                t={t} compact
-              />
+              {/* Full preview panel */}
+              <div className="rounded-2xl border border-border/30 bg-muted/8 p-4">
+                <LivePreview
+                  capital={capital} asset={asset} underlying={underlying}
+                  horizon={horizon} strategy={strategy} leverage={leverage}
+                  t={t} compact
+                />
+              </div>
             </div>
           )
         }
       </div>
 
-      {/* Navigation */}
-      <div className="flex items-center gap-3 border-t border-border/30 px-5 py-4">
+      {/* ── Navigation footer ── */}
+      <div className="flex items-center gap-3 border-t border-border/25 px-5 py-4">
         {step > 1
           ? (
             <button
               type="button" onClick={() => setStep(s => (s - 1) as Step)}
-              className="flex items-center gap-1.5 rounded-xl border border-border/50 bg-card px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              className="flex items-center gap-1.5 rounded-xl border border-border/40 bg-muted/10 px-4 py-2.5 text-sm font-medium text-muted-foreground/70 transition-all duration-150 hover:bg-muted/20 hover:text-foreground active:scale-[0.97]"
             >
               <ArrowLeft className="size-3.5" /> Back
             </button>
@@ -721,7 +787,7 @@ const MobileWizard = ({ onClose }: { onClose: () => void }) => {
           ? (
             <button
               type="button" onClick={() => setStep(s => (s + 1) as Step)}
-              className="ml-auto flex items-center gap-1.5 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 active:opacity-80"
+              className="ml-auto flex items-center gap-1.5 rounded-xl bg-foreground px-5 py-2.5 text-sm font-semibold text-background transition-all duration-150 hover:opacity-90 active:scale-[0.97]"
             >
               Next <ArrowRight className="size-3.5" />
             </button>
@@ -760,9 +826,19 @@ export const SimulatorDrawer = ({ isOpen, onClose }: Props) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8" role="dialog" aria-modal="true">
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} aria-hidden="true" />
-      <div className="relative z-10 flex h-[88vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8"
+      role="dialog"
+      aria-modal="true"
+    >
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-black/50 backdrop-blur-[6px]"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+      {/* Panel */}
+      <div className="relative z-10 flex h-[88vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-border/50 bg-background shadow-2xl shadow-black/30">
         <DesktopContent onClose={onClose} />
       </div>
     </div>
