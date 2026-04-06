@@ -1,8 +1,7 @@
-use client;
+"use client";
 
 import { useState } from 'react';
-import { useTranslations } from 'next-intl';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 
 import { SectionContainer } from '@/components/ui/SectionContainer';
 import { SimulatorDrawer } from '@/templates/SimulatorDrawer';
@@ -78,7 +77,7 @@ const TEASER_CHIPS = [
   { label: 'Leverage analysis' },
 ];
 
-const drawerVariants = {
+const drawerVariants: Variants = {
   open: {
     opacity: 1,
     x: 0,
@@ -92,22 +91,21 @@ const drawerVariants = {
 };
 
 export const ScenarioSection = () => {
-  const t = useTranslations('scenario');
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
     <>
       <section className="scroll-mt-32 border-t border-border/40 bg-gradient-to-b from-background to-muted/20 py-14 sm:py-16 lg:py-20">
-        <SectionContainer size="default">
+        <SectionContainer size="wide">
           <div className="mx-auto max-w-2xl text-center">
             <p className="font-mono text-xs font-medium uppercase tracking-[0.24em] text-muted-foreground/60">
-              {t('section_eyebrow')}
+              Scenario Simulator
             </p>
             <h2 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">
-              {t('section_title')}
+              Build Your Trading Scenario
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-muted-foreground">
-              {t('section_intro')}
+              Customize your trading simulation with precise parameters
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-2">
               {TEASER_CHIPS.map((chip) => (
@@ -130,9 +128,9 @@ export const ScenarioSection = () => {
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                   <path d="M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z" />
                 </svg>
-                {t('cta_open_simulator')}
+                Open Simulator
               </motion.button>
-              <p className="mt-4 text-xs text-muted-foreground/50">{t('preview_note')}</p>
+              <p className="mt-4 text-xs text-muted-foreground/50">Preview only - full features available in simulator</p>
             </div>
           </div>
         </SectionContainer>
