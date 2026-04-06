@@ -1,8 +1,10 @@
 /**
  * SimulatorDrawer — DEPRECATO.
- *
  * Il simulatore è ora inline nella landing via InteractiveSimulator.
- * Questo file esiste solo per non rompere eventuali import residui.
- * Rimuovere dopo aver verificato che nessun altro file lo importa.
+ * Mantenuto per non rompere import residui. Da eliminare dopo verifica.
  */
-export {};
+
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+export function SimulatorDrawer(_props: { isOpen?: boolean; onClose?: () => void }) {
+  return null;
+}
