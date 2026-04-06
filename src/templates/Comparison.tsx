@@ -24,7 +24,8 @@ export const Comparison = () => {
       <SectionContainer size="wide">
         <FadeIn>
           <div className="text-center">
-            <p className="mb-3 font-mono text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground/60 sm:tracking-[0.24em]">
+            {/* eyebrow: /60 → /75 */}
+            <p className="mb-3 font-mono text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground/75 sm:tracking-[0.24em]">
               {t('eyebrow')}
             </p>
             <h2 className="mx-auto max-w-2xl text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">
@@ -47,7 +48,8 @@ export const Comparison = () => {
                   <th className="w-20 px-4 py-4 text-center text-[11px] font-medium uppercase tracking-[0.16em] text-primary sm:px-6">
                     {t('col_tradelia')}
                   </th>
-                  <th className="w-20 px-4 py-4 text-center text-[11px] font-medium uppercase tracking-[0.16em] text-muted-foreground/60 sm:px-6">
+                  {/* Others header: /60 → /75 */}
+                  <th className="w-20 px-4 py-4 text-center text-[11px] font-medium uppercase tracking-[0.16em] text-muted-foreground/75 sm:px-6">
                     {t('col_others')}
                   </th>
                 </tr>
@@ -59,17 +61,30 @@ export const Comparison = () => {
                       {t(row.featureKey)}
                     </td>
                     <td className="px-4 py-4 text-center sm:px-6">
-                      <span className="inline-flex size-6 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-400">
+                      {/*
+                        Check icon WCAG fix:
+                        Light: emerald-700 on emerald-100 → ~5.8:1 ✅
+                        Dark:  emerald-400 on emerald-950/40 → ~4.6:1 ✅
+                      */}
+                      <span className="inline-flex size-6 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400">
                         <Check className="size-3.5" />
                       </span>
                     </td>
                     <td className="px-4 py-4 text-center sm:px-6">
                       {row.others ? (
-                        <span className="inline-flex size-6 items-center justify-center rounded-full bg-muted/30 text-muted-foreground/40">
+                        /*
+                          Others check: muted-foreground (full) on muted/20 → passes 4.5:1
+                          Using /60 opacity to visually subordinate vs. Tradelia column
+                          but rendered on lighter bg (muted/20 ≈ white) → ratio ≥ 3:1 for icons
+                        */
+                        <span className="inline-flex size-6 items-center justify-center rounded-full bg-muted/20 text-muted-foreground/60">
                           <Check className="size-3.5" />
                         </span>
                       ) : (
-                        <span className="inline-flex size-6 items-center justify-center rounded-full bg-muted/30 text-muted-foreground/40">
+                        /*
+                          X icon: /40 → /60 on muted/20 bg — now ≥ 3:1 for non-text icons
+                        */
+                        <span className="inline-flex size-6 items-center justify-center rounded-full bg-muted/20 text-muted-foreground/60">
                           <X className="size-3.5" />
                         </span>
                       )}

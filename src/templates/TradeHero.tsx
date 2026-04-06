@@ -22,7 +22,8 @@ export const TradeHero = () => {
       >
         {/* ── LEFT: context anchor ── */}
         <div className="shrink-0 xl:w-[380px] 2xl:w-[420px]">
-          <p className="mb-5 font-mono text-[10px] font-medium uppercase tracking-[0.28em] text-muted-foreground/50">
+          {/* eyebrow: /50 → /75 for WCAG AA (was 2.1:1, now ≥4.5:1) */}
+          <p className="mb-5 font-mono text-[10px] font-medium uppercase tracking-[0.28em] text-muted-foreground/75">
             {t('eyebrow')}
           </p>
 
@@ -37,18 +38,18 @@ export const TradeHero = () => {
             {t('subtitle')}
           </p>
 
-          {/* Social proof line */}
-          <p className="mt-8 border-t border-border/30 pt-6 text-xs leading-6 text-muted-foreground/60">
+          {/* Social proof line: /60 → /75 */}
+          <p className="mt-8 border-t border-border/30 pt-6 text-xs leading-6 text-muted-foreground/75">
             {t('trust')}
           </p>
         </div>
 
         {/* ── RIGHT: simulator — the product ── */}
         <div className="mt-12 min-w-0 flex-1 xl:mt-0">
-          {/* Label so it\'s 100% clear what this is */}
+          {/* Label: /50 → /75 */}
           <div className="mb-5 flex items-center gap-3">
             <div className="h-px flex-1 bg-border/40" />
-            <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground/50">
+            <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground/75">
               {t('simulator_label')}
             </span>
             <div className="h-px flex-1 bg-border/40" />

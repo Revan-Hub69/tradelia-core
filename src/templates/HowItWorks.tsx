@@ -24,7 +24,8 @@ export const HowItWorks = () => {
     >
       <SectionContainer size="wide">
         <FadeIn>
-          <p className="mb-3 font-mono text-xs font-medium uppercase tracking-[0.24em] text-muted-foreground/60">
+          {/* eyebrow: /60 → /75 for WCAG AA */}
+          <p className="mb-3 font-mono text-xs font-medium uppercase tracking-[0.24em] text-muted-foreground/75">
             {t('eyebrow')}
           </p>
           <h2

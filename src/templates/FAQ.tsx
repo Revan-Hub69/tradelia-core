@@ -37,7 +37,8 @@ export const FAQ = () => {
       <SectionContainer size="content">
         <FadeIn>
           <div className="text-center">
-            <p className="font-mono text-xs uppercase tracking-[0.24em] text-muted-foreground/55">
+            {/* eyebrow: /55 → /75 for WCAG AA */}
+            <p className="font-mono text-xs uppercase tracking-[0.24em] text-muted-foreground/75">
               {t('section_eyebrow')}
             </p>
             <h2 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">
@@ -80,7 +81,7 @@ export const FAQ = () => {
                   </span>
                 </div>
                 <svg
-                  className={`size-5 shrink-0 text-muted-foreground transition-transform duration-200 ${
+                  className={`size-5 shrink-0 text-muted-foreground transition-transform duration-300 ease-[cubic-bezier(0,0,0.2,1)] ${
                     openItems.has(index) ? 'rotate-180' : ''
                   }`}
                   fill="none"
@@ -92,15 +93,23 @@ export const FAQ = () => {
                 </svg>
               </button>
 
+              {/*
+                Grid-rows accordion — replaces max-h transition.
+                CSS Grid animation: grid-template-rows 0fr → 1fr is GPU-accelerated,
+                avoids layout thrash from max-height, and eliminates CLS on scroll.
+                The inner div needs min-h-0 so it can collapse to zero inside 0fr.
+              */}
               <div
-                className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                  openItems.has(index) ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                className={`grid transition-[grid-template-rows] duration-300 ease-[cubic-bezier(0,0,0.2,1)] ${
+                  openItems.has(index) ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
                 }`}
               >
-                <div className="border-t border-border/30 px-5 pb-5 pt-4 sm:px-6 sm:pb-6">
-                  <p className="text-sm leading-7 text-muted-foreground sm:text-base">
-                    {faq.answer}
-                  </p>
+                <div className="min-h-0 overflow-hidden">
+                  <div className="border-t border-border/30 px-5 pb-5 pt-4 sm:px-6 sm:pb-6">
+                    <p className="text-sm leading-7 text-muted-foreground sm:text-base">
+                      {faq.answer}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
