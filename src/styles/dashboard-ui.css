@@ -74,13 +74,13 @@
 .ui-nav-item-active {
   @apply ui-nav-item;
   /* Pill attivo — nessuna barra verticale painted-edge */
-  @apply bg-primary/12 text-foreground font-medium;
+  @apply bg-primary/10 text-foreground font-medium;
 }
 
 .ui-nav-item-inactive {
   @apply ui-nav-item;
   @apply text-muted-foreground;
-  @apply hover:text-foreground hover:bg-foreground/6;
+  @apply hover:text-foreground hover:bg-foreground/5;
 }
 
 .ui-nav-item-disabled {
@@ -150,7 +150,7 @@
   @apply font-medium text-sm;
   @apply ui-pressable ui-focusable;
   /* Neutro su hover — MAI bg-accent */
-  @apply hover:bg-foreground/8;
+  @apply hover:bg-foreground/10;
   @apply disabled:opacity-50 disabled:cursor-not-allowed;
 }
 
@@ -159,7 +159,7 @@
   @apply flex items-center justify-center;
   @apply text-foreground/70;
   @apply ui-pressable ui-focusable;
-  @apply hover:bg-foreground/8 hover:text-foreground;
+  @apply hover:bg-foreground/10 hover:text-foreground;
 }
 
 /* ============================================================================
