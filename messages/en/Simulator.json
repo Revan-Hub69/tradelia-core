@@ -1,0 +1,62 @@
+{
+  "drawer_eyebrow": "Strategy Simulator",
+  "drawer_title": "Simulate your setup",
+  "close": "Close",
+
+  "label_capital": "Capital range",
+  "capital_small": "< $10k",
+  "capital_mid": "$10k – $50k",
+  "capital_mid_plus": "$50k – $200k",
+  "capital_large": "> $200k",
+
+  "label_instrument": "Instrument",
+  "instrument_forex": "Forex",
+  "instrument_indices": "Indices",
+  "instrument_equities": "Equities",
+
+  "label_horizon": "Time horizon",
+  "horizon_scalp": "Scalping",
+  "horizon_swing": "Swing",
+  "horizon_position": "Position",
+
+  "label_strategy": "Strategy",
+  "strategy_placeholder": "Select a strategy…",
+  "strategy_search": "Search strategies…",
+  "strategy_no_results": "No strategies found",
+
+  "strat_momentum_1m": "Momentum 1m",
+  "strat_breakout_5m": "Breakout 5m",
+  "strat_mean_rev": "Mean Reversion",
+  "strat_trend_4h": "Trend Following 4h",
+  "strat_pullback_d1": "Pullback D1",
+  "strat_macro_wk": "Macro Weekly",
+  "strat_carry": "Carry Trade",
+
+  "label_leverage": "Leverage",
+  "leverage_note": "Amplifies both gains and drawdowns",
+  "leverage_on": "Leverage ON",
+  "leverage_off": "Leverage OFF",
+
+  "preview_title": "Output preview",
+  "preview_live": "Live",
+  "preview_note": "Indicative scores based on selected parameters. Not financial advice.",
+
+  "engine_scalp": "Scalp engine · tick-level execution",
+  "engine_swing": "Swing engine · multi-session hold",
+  "engine_position": "Position engine · macro-driven",
+
+  "engine_reads_title": "Engine reads",
+  "read_1": "Spread sensitivity calibrated to selected instrument and horizon.",
+  "read_2": "Drawdown budget adjusted for capital tier and leverage toggle.",
+  "read_3": "Strategy fit score reflects historical regime alignment.",
+
+  "driver_execution": "Execution weight",
+  "driver_holding": "Holding weight",
+  "driver_structure": "Structure weight",
+
+  "insight_scalp": "Short-horizon setups prioritise execution precision over holding time.",
+  "insight_swing": "Swing setups balance entry timing with multi-session holding capacity.",
+  "insight_position": "Position trades rely heavily on macro structure and patience.",
+
+  "cta": "Start with this setup"
+}
