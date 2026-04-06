@@ -1,18 +1,20 @@
 import { AppConfig } from '@/utils/AppConfig';
 
 export const landingSections = [
-  { id: 'problem',       navbarLabelKey: 'nav_problem',   footerLabelKey: 'nav_problem' },
-  { id: 'how-it-works',  navbarLabelKey: 'nav_mechanism', footerLabelKey: 'nav_mechanism' },
   { id: 'simulator',    navbarLabelKey: 'nav_simulator', footerLabelKey: 'nav_simulator' },
+  { id: 'problem',      navbarLabelKey: 'nav_problem',   footerLabelKey: 'nav_problem' },
+  { id: 'how-it-works', navbarLabelKey: 'nav_mechanism', footerLabelKey: 'nav_mechanism' },
   { id: 'faq',          navbarLabelKey: 'nav_faq',       footerLabelKey: 'nav_faq' },
 ] as const;
 
 export type LandingSectionId = (typeof landingSections)[number]['id'];
 
-// Usato da TradeHero.tsx — chip contestuali nella hero
+// ─── TradeHero.tsx (legacy chart / monitor data) ──────────────────────────────
+// Kept for backward-compat; TradeHero now renders InteractiveSimulator in-fold.
+// Remove these once the old SVG chart block is fully retired.
+
 export const heroContextChipKeys = ['chip_asset', 'chip_strategy', 'chip_horizon'] as const;
 
-// Usato da TradeHero.tsx — tick asse Y del grafico SVG
 export const heroChartAxisTicks = [
   { label: '0',  y: 173 },
   { label: '25', y: 133 },
