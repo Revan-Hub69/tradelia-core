@@ -1,6 +1,7 @@
 /**
  * PHASE RULES SECTION - Vertical Timeline
- * Enterprise component 2026 - Adaptive for Paid Evaluations
+ * Enterprise component 2026
+ * Palette: desaturated semantic tokens, single institutional accent
  */
 
 import { useMemo } from 'react';
@@ -41,22 +42,13 @@ type PhaseRulesSectionProps = {
 
 const formatMoney = (value: number, currency: string) => {
   try {
-    return new Intl.NumberFormat(undefined, {
-      style: 'currency',
-      currency,
-      maximumFractionDigits: 0,
-    }).format(value);
+    return new Intl.NumberFormat(undefined, { style: 'currency', currency, maximumFractionDigits: 0 }).format(value);
   } catch {
     return `${currency} ${Math.round(value).toLocaleString()}`.trim();
   }
 };
 
-export function PhaseRulesSection({
-  phases,
-  offer,
-  program,
-  payoutTerms,
-}: PhaseRulesSectionProps) {
+export function PhaseRulesSection({ phases, offer, program, payoutTerms }: PhaseRulesSectionProps) {
   const t = useTranslations('Challenges') as any;
 
   const sortedPhases = useMemo(
@@ -64,9 +56,7 @@ export function PhaseRulesSection({
     [phases],
   );
 
-  if (!sortedPhases.length) {
-    return null;
-  }
+  if (!sortedPhases.length) return null;
 
   const currency = offer?.account_currency || 'USD';
   const isPaid = program?.category === 'paid_evaluation';
@@ -80,7 +70,8 @@ export function PhaseRulesSection({
       />
 
       <div className="relative mt-4">
-        <div className="absolute left-2 top-2 h-full w-px bg-border/70" />
+        {/* Timeline line */}
+        <div className="absolute left-2 top-2 h-full w-px bg-slate-200 dark:bg-slate-800" />
 
         <div className="space-y-5">
           {sortedPhases.map((phase, index) => {
@@ -93,45 +84,44 @@ export function PhaseRulesSection({
 
             return (
               <div key={`${phase.phase_number}-${index}`} className="relative flex gap-4">
-                <div className="relative z-10 mt-1 flex size-5 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white shadow-sm">
+                {/* Step dot */}
+                <div className="relative z-10 mt-1 flex size-5 items-center justify-center rounded-full bg-[#1B62E8] text-[10px] font-bold text-white shadow-sm shadow-black/10">
                   {phase.phase_number}
                 </div>
 
-                <div className="flex-1 rounded-xl border border-border/60 bg-white/70 p-4 shadow-sm">
+                <div className="flex-1 rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm shadow-black/4 dark:border-slate-800/80 dark:bg-slate-900">
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <div className="text-sm font-semibold text-foreground">
+                    <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                       {phase.phase_name || `${t('phaseRules.phase')} ${phase.phase_number}`}
                     </div>
                     {offer && (
-                      <div className="text-xs font-medium text-muted-foreground">
-                        {t('card.accountSize')}
-                        {': '}
-                        {formatMoney(offer.account_size, currency)}
+                      <div className="text-xs font-medium text-slate-400 dark:text-slate-500">
+                        {t('card.accountSize')}{': '}{formatMoney(offer.account_size, currency)}
                       </div>
                     )}
                   </div>
 
                   <div className="mt-3 grid gap-2 sm:grid-cols-2">
                     {phase.profit_target_pct && (
-                      <div className="rounded-lg border border-green-500/20 bg-green-500/5 px-3 py-2 text-sm">
-                        <span className="text-xs uppercase text-muted-foreground">
+                      <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800/60">
+                        <span className="text-xs uppercase tracking-wide text-slate-400 dark:text-slate-500">
                           {t('phaseRules.profitTarget')}
                         </span>
-                        <div className="font-semibold text-green-700 dark:text-green-300">
+                        <div className="font-semibold text-[#1E7D4F] dark:text-[#5AB585]">
                           {phase.profit_target_pct}%
                         </div>
                       </div>
                     )}
 
                     {phase.max_drawdown_pct && (
-                      <div className="rounded-lg border border-red-500/20 bg-red-500/5 px-3 py-2 text-sm">
-                        <span className="text-xs uppercase text-muted-foreground">
+                      <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800/60">
+                        <span className="text-xs uppercase tracking-wide text-slate-400 dark:text-slate-500">
                           {t('phaseRules.maxDrawdown')}
                         </span>
-                        <div className="font-semibold text-red-600 dark:text-red-300">
+                        <div className="font-semibold text-[#C0373A] dark:text-[#E07A7C]">
                           {phase.max_drawdown_pct}%
                           {maxLossAmount && (
-                            <span className="ml-2 text-xs text-muted-foreground">
+                            <span className="ml-2 text-xs font-normal text-slate-400 dark:text-slate-500">
                               ({formatMoney(maxLossAmount, currency)})
                             </span>
                           )}
@@ -140,14 +130,14 @@ export function PhaseRulesSection({
                     )}
 
                     {phase.max_daily_loss_pct && (
-                      <div className="rounded-lg border border-orange-500/20 bg-orange-500/5 px-3 py-2 text-sm">
-                        <span className="text-xs uppercase text-muted-foreground">
+                      <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800/60">
+                        <span className="text-xs uppercase tracking-wide text-slate-400 dark:text-slate-500">
                           {t('phaseRules.dailyLoss')}
                         </span>
-                        <div className="font-semibold text-orange-600 dark:text-orange-300">
+                        <div className="font-semibold text-[#A05C00] dark:text-[#D4956A]">
                           {phase.max_daily_loss_pct}%
                           {dailyLossAmount && (
-                            <span className="ml-2 text-xs text-muted-foreground">
+                            <span className="ml-2 text-xs font-normal text-slate-400 dark:text-slate-500">
                               ({formatMoney(dailyLossAmount, currency)})
                             </span>
                           )}
@@ -156,11 +146,11 @@ export function PhaseRulesSection({
                     )}
 
                     {phase.min_trading_days && (
-                      <div className="rounded-lg border border-blue-500/20 bg-blue-500/5 px-3 py-2 text-sm">
-                        <span className="text-xs uppercase text-muted-foreground">
+                      <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800/60">
+                        <span className="text-xs uppercase tracking-wide text-slate-400 dark:text-slate-500">
                           {t('phaseRules.minDays')}
                         </span>
-                        <div className="font-semibold text-blue-600 dark:text-blue-300">
+                        <div className="font-semibold text-slate-700 dark:text-slate-300">
                           {phase.min_trading_days}
                         </div>
                       </div>
@@ -173,26 +163,26 @@ export function PhaseRulesSection({
 
           {isPaid && (
             <div className="relative flex gap-4">
-              <div className="relative z-10 mt-1 flex size-5 items-center justify-center rounded-full bg-green-600 text-[10px] font-bold text-white shadow-sm">
-                F
+              <div className="relative z-10 mt-1 flex size-5 items-center justify-center rounded-full bg-[#1E7D4F] text-[10px] font-bold text-white shadow-sm shadow-black/10">
+                <svg className="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M5 13l4 4L19 7" />
+                </svg>
               </div>
-              <div className="flex-1 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4">
-                <div className="text-sm font-semibold text-emerald-700 dark:text-emerald-300">
+              <div className="flex-1 rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-900">
+                <div className="text-sm font-semibold text-[#1E7D4F] dark:text-[#5AB585]">
                   {t('phaseRules.funded')}
                 </div>
-                <div className="mt-2 space-y-1 text-sm text-emerald-700/80 dark:text-emerald-200/80">
+                <div className="mt-2 space-y-1 text-sm text-slate-600 dark:text-slate-400">
                   {payoutTerms?.profit_split_max && (
                     <div>
-                      {t('drawer.profitSplit')}
-                      {': '}
-                      <strong>{payoutTerms.profit_split_max}%</strong>
+                      {t('drawer.profitSplit')}{': '}
+                      <strong className="text-slate-900 dark:text-slate-100">{payoutTerms.profit_split_max}%</strong>
                     </div>
                   )}
                   {offer?.scaling_max && (
                     <div>
-                      {t('pricing.scaling')}
-                      {': '}
-                      <strong>{formatMoney(offer.scaling_max, currency)}</strong>
+                      {t('pricing.scaling')}{': '}
+                      <strong className="text-slate-900 dark:text-slate-100">{formatMoney(offer.scaling_max, currency)}</strong>
                     </div>
                   )}
                 </div>
