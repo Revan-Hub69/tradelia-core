@@ -282,7 +282,7 @@ export function InteractiveSimulator() {
             <motion.div
               key="step-1"
               variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
-              className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full"
+              className="grid grid-cols-3 gap-3 w-full"
             >
               {STRATEGIES.map((item) => (
                 <OptionCard
