@@ -1,76 +1,95 @@
 /**
  * ERROR BOUNDARY - Challenge Library
- * Best Practice 2026: Graceful error handling
+ * Best Practice 2026: Modern functional error boundary
  */
 
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { EmptyState } from './EmptyState';
 
 type ErrorBoundaryProps = {
   children: React.ReactNode;
   fallback?: React.ReactNode;
-  onError?: (error: Error, errorInfo: React.ErrorInfo) => void;
+  onError?: (error: Error, errorInfo?: React.ErrorInfo) => void;
 };
 
-type ErrorBoundaryState = {
+type ErrorState = {
   hasError: boolean;
   error: Error | null;
 };
 
-export class ErrorBoundary extends React.Component<
-  ErrorBoundaryProps,
-  ErrorBoundaryState
-> {
-  constructor(props: ErrorBoundaryProps) {
-    super(props);
-    this.state = { hasError: false, error: null };
-  }
+/**
+ * Modern Error Boundary using React 18+ patterns
+ */
+export function ErrorBoundary({ children, fallback, onError }: ErrorBoundaryProps) {
+  const [errorState, setErrorState] = useState<ErrorState>({
+    hasError: false,
+    error: null,
+  });
 
-  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    return { hasError: true, error };
-  }
+  // Handle uncaught errors in child components
+  useEffect(() => {
+    const handleError = (error: ErrorEvent) => {
+      console.error('Challenge Library Error:', error.error);
+      setErrorState({ hasError: true, error: error.error });
+      onError?.(error.error);
+    };
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    // Log error to monitoring service
-    console.error('Challenge Library Error:', error, errorInfo);
+    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+      console.error('Challenge Library Unhandled Rejection:', event.reason);
+      const error = event.reason instanceof Error ? event.reason : new Error(String(event.reason));
+      setErrorState({ hasError: true, error });
+      onError?.(error);
+    };
 
-    // Call optional error handler
-    this.props.onError?.(error, errorInfo);
-  }
+    window.addEventListener('error', handleError);
+    window.addEventListener('unhandledrejection', handleUnhandledRejection);
 
-  render() {
-    if (this.state.hasError) {
-      // Use custom fallback or default EmptyState
-      if (this.props.fallback) {
-        return this.props.fallback;
-      }
+    return () => {
+      window.removeEventListener('error', handleError);
+      window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+    };
+  }, [onError]);
 
-      return (
-        <div className="flex min-h-[400px] items-center justify-center p-6">
-          <EmptyState type="error" />
-        </div>
-      );
+  // Reset error state when children change
+  useEffect(() => {
+    if (errorState.hasError) {
+      setErrorState({ hasError: false, error: null });
+    }
+  }, [children]);
+
+  if (errorState.hasError) {
+    // Use custom fallback or default EmptyState
+    if (fallback) {
+      return <>{fallback}</>;
     }
 
-    return this.props.children;
+    return (
+      <div className="flex min-h-[400px] items-center justify-center p-6">
+        <EmptyState type="error" />
+      </div>
+    );
   }
+
+  return <>{children}</>;
 }
 
 /**
- * HOC to wrap components with error boundary
+ * HOC to wrap components with error boundary (modern functional approach)
  */
 export function withErrorBoundary<P extends object>(
   Component: React.ComponentType<P>,
   fallback?: React.ReactNode,
 ) {
-  return function WithErrorBoundary(props: P) {
-    return (
-      <ErrorBoundary fallback={fallback}>
-        <Component {...props} />
-      </ErrorBoundary>
-    );
-  };
+  const WrappedComponent = (props: P) => (
+    <ErrorBoundary fallback={fallback}>
+      <Component {...props} />
+    </ErrorBoundary>
+  );
+
+  WrappedComponent.displayName = `withErrorBoundary(${Component.displayName || Component.name})`;
+
+  return WrappedComponent;
 }
