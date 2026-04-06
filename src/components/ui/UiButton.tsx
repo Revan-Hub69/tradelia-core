@@ -1,13 +1,10 @@
 /**
- * UI BUTTON - Signature Primitive v1
+ * UI BUTTON - Signature Primitive v2
  *
- * Sostituisce: SignatureButton, press-depth, CTA header
- *
- * REGOLE:
- * - focus-visible
- * - aria compliant
- * - Zero side effects
- * - Server-safe (no 'use client' needed for base)
+ * SOTA 2026:
+ * - primary shadow: hsl(var(--primary)/0.20) — token-aware, dark mode safe
+ * - ghost/icon hover: bg-foreground/8 (neutro) invece di bg-accent (colorato)
+ * - active: scale(0.98) + translate-y(1px) per feedback tattile realistico
  */
 
 import { Slot } from '@radix-ui/react-slot';
@@ -17,14 +14,12 @@ import { type ButtonHTMLAttributes, forwardRef } from 'react';
 import { cn } from '@/utils/Helpers';
 
 const uiButtonVariants = cva(
-  // Base styles
   cn(
     'inline-flex items-center justify-center gap-2',
     'rounded-xl font-medium',
     'transition-all duration-200 ease-out',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2',
     'disabled:pointer-events-none disabled:opacity-50',
-    // Signature press feedback (CSS-only)
     'active:scale-[0.98] active:translate-y-[1px]',
     'active:transition-transform active:duration-75',
   ),
@@ -34,8 +29,9 @@ const uiButtonVariants = cva(
         primary: cn(
           'bg-primary text-primary-foreground',
           'hover:bg-primary/90',
-          'shadow-[0_2px_8px_rgba(59,130,246,0.2)]',
-          'hover:shadow-[0_4px_16px_rgba(59,130,246,0.3)]',
+          // Shadow token-aware: usa hsl(var(--primary)) invece di rgba hardcoded
+          'shadow-[0_2px_8px_hsl(var(--primary)/0.20)]',
+          'hover:shadow-[0_4px_16px_hsl(var(--primary)/0.28)]',
         ),
         secondary: cn(
           'bg-secondary text-secondary-foreground',
@@ -43,13 +39,17 @@ const uiButtonVariants = cva(
           'border border-border/50',
         ),
         ghost: cn(
-          'hover:bg-accent hover:text-accent-foreground',
-          'data-[active=true]:bg-accent data-[active=true]:text-accent-foreground',
+          'text-foreground',
+          // Neutro su hover — MAI bg-accent (colorato)
+          'hover:bg-foreground/8',
+          'data-[active=true]:bg-foreground/8 data-[active=true]:text-foreground',
         ),
         icon: cn(
           'size-9 p-0',
-          'hover:bg-accent hover:text-accent-foreground',
-          'data-[active=true]:bg-accent data-[active=true]:text-accent-foreground',
+          'text-foreground/70',
+          // Neutro su hover — MAI bg-accent
+          'hover:bg-foreground/8 hover:text-foreground',
+          'data-[active=true]:bg-foreground/8 data-[active=true]:text-foreground',
         ),
       },
       size: {
@@ -69,16 +69,6 @@ export type UiButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
     asChild?: boolean;
   };
 
-/**
- * UiButton - Foundation button component
- *
- * Usage:
- * - Primary: <UiButton variant="primary">Save</UiButton>
- * - Secondary: <UiButton variant="secondary">Cancel</UiButton>
- * - Ghost: <UiButton variant="ghost">Edit</UiButton>
- * - Icon: <UiButton variant="icon"><Icon /></UiButton>
- * - As Link: <UiButton asChild><Link href="...">Go</Link></UiButton>
- */
 export const UiButton = forwardRef<HTMLButtonElement, UiButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button';

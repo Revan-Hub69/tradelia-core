@@ -7,7 +7,7 @@
 
 /* Performance P0: Font display optimization */
 @font-face {
-  font-display: swap; /* Prevent FOIT (Flash of Invisible Text) */
+  font-display: swap;
 }
 
 * {
@@ -58,27 +58,21 @@ h4 {
   }
 }
 
-/* Scrollbar - Premium minimal design matching header colors */
+/*
+ * Scrollbar — design minimale, colore consistente
+ *
+ * SOTA 2026: la scrollbar NON cambia colore su *:hover di ogni elemento.
+ * Il colore rimane stabile (muted) e diventa primary solo sulla scrollbar stessa (:hover su thumb).
+ * Questo evita flicker visivo continuo durante la navigazione.
+ */
 @supports (scrollbar-width: auto) {
   * {
     scrollbar-width: thin;
-    /* Light mode: Match header icon color (Slate 700) */
-    scrollbar-color: hsl(215 20% 35%) transparent;
+    scrollbar-color: hsl(215 20% 45% / 0.5) transparent;
   }
 
   .dark * {
-    /* Dark mode: Lighter for visibility (Slate 400) */
-    scrollbar-color: hsl(215 20% 50%) transparent;
-  }
-
-  *:hover {
-    /* Hover: Primary color with subtle track */
-    scrollbar-color: hsl(224 76% 48%) hsl(217 33% 17% / 0.3);
-  }
-
-  .dark *:hover {
-    /* Dark hover: Lighter primary for contrast */
-    scrollbar-color: hsl(213 94% 68%) hsl(217 33% 20% / 0.3);
+    scrollbar-color: hsl(215 20% 55% / 0.4) transparent;
   }
 }
 
@@ -94,25 +88,22 @@ h4 {
   }
 
   ::-webkit-scrollbar-thumb {
-    /* Light mode: Match header icon color (Slate 700) */
-    background: hsl(215 20% 35%);
+    background: hsl(215 20% 45% / 0.4);
     border-radius: 3px;
     transition: background 0.2s ease;
   }
 
   .dark ::-webkit-scrollbar-thumb {
-    /* Dark mode: Lighter for visibility (Slate 400) */
-    background: hsl(215 20% 50%);
+    background: hsl(215 20% 55% / 0.35);
   }
 
+  /* Hover solo sul thumb della scrollbar, non su *:hover */
   ::-webkit-scrollbar-thumb:hover {
-    /* Hover: Primary color */
-    background: hsl(224 76% 48%);
+    background: hsl(var(--primary) / 0.7);
   }
 
   .dark ::-webkit-scrollbar-thumb:hover {
-    /* Dark hover: Lighter primary for contrast */
-    background: hsl(213 94% 68%);
+    background: hsl(var(--primary) / 0.8);
   }
 
   ::-webkit-scrollbar-corner {

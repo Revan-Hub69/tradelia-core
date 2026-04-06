@@ -1,12 +1,11 @@
 /**
- * UI NAV ITEM - Signature Primitive v1
+ * UI NAV ITEM - Signature Primitive v2
  *
- * Unifica: sidebar, bottom nav, header breadcrumbs
- *
- * REGOLE:
+ * SOTA 2026:
+ * - Hover: solo bg + color change, zero transform/scale
+ * - Active: bg-primary/12 pill, nessuna barra verticale painted-edge
  * - aria-current="page" per active
  * - focus-visible
- * - Zero side effects
  */
 
 import { Slot } from '@radix-ui/react-slot';
@@ -21,48 +20,33 @@ export type UiNavItemProps = HTMLAttributes<HTMLElement> & {
   asChild?: boolean;
 };
 
-/**
- * UiNavItem - Navigation item with consistent styling
- *
- * Usage:
- * - Sidebar: <UiNavItem active icon={<HomeIcon />}>Home</UiNavItem>
- * - Bottom Nav: <UiNavItem active icon={<LearnIcon />}>Learn</UiNavItem>
- * - As Link: <UiNavItem asChild><Link href="...">Profile</Link></UiNavItem>
- */
+const navItemBase = [
+  'group relative flex items-center gap-3 px-3 py-2',
+  'rounded-xl',
+  'text-sm',
+  'transition-colors duration-150 ease-out',
+  'cursor-pointer select-none',
+  // Inactive hover — solo colore, zero scale
+  'text-muted-foreground hover:text-foreground hover:bg-foreground/6',
+  // Active
+  'data-[active=true]:bg-primary/12 data-[active=true]:text-foreground data-[active=true]:font-medium',
+  // Press feedback — solo scale, no translate
+  'active:scale-[0.98] active:transition-transform active:duration-75',
+  // Focus
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2',
+].join(' ');
+
 export const UiNavItem = forwardRef<HTMLElement, UiNavItemProps>(
   ({ className, active = false, icon, children, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : 'div';
 
-    // When asChild, we can't render icon/children as separate elements
-    // The child (Link) must handle its own content
     if (asChild) {
       return (
         <Comp
           ref={ref as any}
           aria-current={active ? 'page' : undefined}
           data-active={active}
-          className={cn(
-            // Base styles
-            'group relative flex items-center gap-3 px-3 py-2',
-            'rounded-xl',
-            'transition-all duration-200 ease-out',
-            'cursor-pointer',
-
-            // Inactive state
-            'hover:bg-primary/10 hover:scale-[1.02]',
-
-            // Active state
-            'data-[active=true]:bg-primary/15',
-            'data-[active=true]:font-medium',
-
-            // Focus
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2',
-
-            // Signature press feedback
-            'active:scale-[0.98] active:transition-transform active:duration-75',
-
-            className,
-          )}
+          className={cn(navItemBase, className)}
           {...props}
         >
           {children}
@@ -75,38 +59,15 @@ export const UiNavItem = forwardRef<HTMLElement, UiNavItemProps>(
         ref={ref as any}
         aria-current={active ? 'page' : undefined}
         data-active={active}
-        className={cn(
-          // Base styles
-          'group relative flex items-center gap-3 px-3 py-2',
-          'rounded-xl',
-          'transition-all duration-200 ease-out',
-          'cursor-pointer',
-
-          // Inactive state
-          'hover:bg-primary/10 hover:scale-[1.02]',
-
-          // Active state
-          'data-[active=true]:bg-primary/15',
-          'data-[active=true]:font-medium',
-
-          // Focus
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2',
-
-          // Signature press feedback
-          'active:scale-[0.98] active:transition-transform active:duration-75',
-
-          className,
-        )}
+        className={cn(navItemBase, className)}
         {...props}
       >
         {/* Icon */}
         {icon && (
           <span
-            data-active={active}
             className={cn(
-              'shrink-0 text-foreground/80 transition-colors',
-              'group-hover:text-foreground',
-              'data-[active=true]:text-primary',
+              'shrink-0 transition-colors duration-150',
+              active ? 'text-primary' : 'text-foreground/50 group-hover:text-foreground/80',
             )}
             aria-hidden="true"
           >
@@ -115,24 +76,9 @@ export const UiNavItem = forwardRef<HTMLElement, UiNavItemProps>(
         )}
 
         {/* Label */}
-        <span
-          data-active={active}
-          className={cn(
-            'flex-1 text-muted-foreground transition-colors',
-            'group-hover:text-foreground/90',
-            'data-[active=true]:text-foreground',
-          )}
-        >
+        <span className="flex-1 truncate">
           {children}
         </span>
-
-        {/* Active indicator (visual only) */}
-        {active && (
-          <span
-            className="absolute left-0 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-primary"
-            aria-hidden="true"
-          />
-        )}
       </Comp>
     );
   },

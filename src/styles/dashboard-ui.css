@@ -4,6 +4,11 @@
  * Semantic naming for navigation and dashboard UI components
  * Anti-drift guardrails for design system consistency
  * Based on design tokens and best practices 2026
+ *
+ * SOTA 2026 rules:
+ * - .ui-hoverable: max scale-[1.02], preferire shadow lift a scale
+ * - .ui-nav-item-active: bg-primary/10 senza barra verticale painted-edge
+ * - Nessun glow radial-gradient su elementi UI (solo su data viz se necessario)
  */
 
 /* ============================================================================
@@ -16,8 +21,6 @@
   @apply backdrop-blur-2xl backdrop-saturate-150;
   @apply border border-white/10 dark:border-white/5;
 }
-
-/* NOTE: .ui-glass-header removed - use header-system.css .glass-header directly */
 
 .ui-glass-card {
   @apply ui-glass-surface;
@@ -37,19 +40,21 @@
 
 .ui-pressable {
   @apply transition-all duration-200;
-  @apply active:scale-95 active:translate-y-0.5;
+  @apply active:scale-[0.98] active:translate-y-0.5;
   @apply active:shadow-inner;
 }
 
 .ui-hoverable {
-  @apply transition-all duration-300;
-  @apply hover:scale-105;
+  /* SOTA 2026: max scale-[1.02] — scale-105 è troppo per un tool professionale.
+     Preferire shadow lift a transform scale. */
+  @apply transition-all duration-200;
   @apply hover:shadow-lg;
+  @apply hover:scale-[1.01];
 }
 
 .ui-focusable {
   @apply focus:outline-none;
-  @apply focus:ring-2 focus:ring-primary focus:ring-offset-2;
+  @apply focus:ring-2 focus:ring-primary/50 focus:ring-offset-2;
   @apply focus:ring-offset-background;
 }
 
@@ -59,22 +64,23 @@
 
 .ui-nav-item {
   @apply relative flex items-center gap-3;
-  @apply px-3 py-2 rounded-lg;
+  @apply px-3 py-2 rounded-xl;
   @apply text-sm font-medium;
-  @apply transition-all duration-300;
+  /* SOTA 2026: solo transition-colors, zero transform su nav */
+  @apply transition-colors duration-150;
   @apply ui-pressable ui-focusable;
 }
 
 .ui-nav-item-active {
   @apply ui-nav-item;
-  @apply bg-primary/10 text-primary;
-  @apply shadow-sm;
+  /* Pill attivo — nessuna barra verticale painted-edge */
+  @apply bg-primary/12 text-foreground font-medium;
 }
 
 .ui-nav-item-inactive {
   @apply ui-nav-item;
   @apply text-muted-foreground;
-  @apply hover:text-foreground hover:bg-accent/50;
+  @apply hover:text-foreground hover:bg-foreground/6;
 }
 
 .ui-nav-item-disabled {
@@ -91,27 +97,29 @@
 .ui-status-chip {
   @apply inline-flex items-center gap-2;
   @apply px-3 py-1.5 rounded-full;
-  @apply text-sm font-medium;
-  @apply ui-glass-surface;
-  @apply transition-all duration-200;
+  @apply text-sm font-medium text-muted-foreground;
+  @apply border border-border/60 bg-foreground/5;
+  @apply transition-shadow duration-150;
+  @apply hover:shadow-sm;
 }
 
+/* Varianti semantiche — bg/border colorati a bassa opacità, testo sempre muted */
 .ui-status-chip-streak {
   @apply ui-status-chip;
-  @apply border-orange-500/30 bg-orange-500/10;
-  @apply text-orange-700 dark:text-orange-300;
+  border-color: hsl(var(--warning) / 0.25);
+  background-color: hsl(var(--warning) / 0.08);
 }
 
 .ui-status-chip-progress {
   @apply ui-status-chip;
-  @apply border-primary/30 bg-primary/10;
-  @apply text-primary;
+  border-color: hsl(var(--primary) / 0.25);
+  background-color: hsl(var(--primary) / 0.08);
 }
 
 .ui-status-chip-focus {
   @apply ui-status-chip;
-  @apply border-blue-500/30 bg-blue-500/10;
-  @apply text-blue-700 dark:text-blue-300;
+  border-color: hsl(var(--info) / 0.25);
+  background-color: hsl(var(--info) / 0.08);
 }
 
 /* ============================================================================
@@ -138,19 +146,20 @@
 
 .ui-button-ghost {
   @apply px-3 py-2 rounded-xl;
-  @apply bg-transparent;
+  @apply bg-transparent text-foreground;
   @apply font-medium text-sm;
   @apply ui-pressable ui-focusable;
-  @apply hover:bg-accent/50;
+  /* Neutro su hover — MAI bg-accent */
+  @apply hover:bg-foreground/8;
   @apply disabled:opacity-50 disabled:cursor-not-allowed;
 }
 
 .ui-icon-button {
   @apply size-9 p-0 rounded-xl;
   @apply flex items-center justify-center;
-  @apply ui-glass-surface;
+  @apply text-foreground/70;
   @apply ui-pressable ui-focusable;
-  @apply hover:bg-white/60 dark:hover:bg-white/20;
+  @apply hover:bg-foreground/8 hover:text-foreground;
 }
 
 /* ============================================================================
@@ -164,14 +173,11 @@
   @apply transition-all duration-300 ease-out;
 }
 
-/* NOTE: .ui-header and .ui-glass-header removed - use header-system.css classes directly */
-
 .ui-bottom-nav {
   @apply fixed bottom-0 left-0 right-0 z-50;
   @apply md:hidden;
   @apply ui-glass-surface;
   @apply border-t border-white/20 dark:border-white/10;
-  /* Safe area padding */
   padding-bottom: max(12px, env(safe-area-inset-bottom));
 }
 
