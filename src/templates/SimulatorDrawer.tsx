@@ -7,26 +7,34 @@ import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { MobileBottomSheet } from '@/components/ui/MobileBottomSheet';
 
-// ─── Types ───────────────────────────────────────────────────────────────────
+// ─── Types ────────────────────────────────────────────────────────────────────
 
-type CapitalRange = 'small' | 'mid' | 'mid_plus' | 'large';
-type InstrumentId = 'forex' | 'indices' | 'equities';
-type HorizonId = 'scalp' | 'swing' | 'position';
-type StrategyId = string;
+type CapitalRange = 'tiny' | 'small' | 'mid' | 'mid_plus' | 'large' | 'xlarge';
+type AssetGroupId = 'forex' | 'indices' | 'equities' | 'etf' | 'commodities' | 'crypto';
+type HorizonId    = 'scalp' | 'swing' | 'position';
+type StrategyId   = string;
 
-// ─── Static data ─────────────────────────────────────────────────────────────
+// ─── Static data ──────────────────────────────────────────────────────────────
+// Capital ranges — 1:1 with ScenarioSection capitalRanges (6 tiers)
 
 const CAPITAL_RANGES: { id: CapitalRange; labelKey: string; bg: string; border: string }[] = [
-  { id: 'small',    labelKey: 'capital_small',    bg: 'bg-sky-500/10',     border: 'border-sky-500/30' },
-  { id: 'mid',      labelKey: 'capital_mid',      bg: 'bg-sky-500/10',     border: 'border-sky-500/30' },
-  { id: 'mid_plus', labelKey: 'capital_mid_plus', bg: 'bg-emerald-500/10', border: 'border-emerald-500/30' },
-  { id: 'large',    labelKey: 'capital_large',    bg: 'bg-amber-500/10',   border: 'border-amber-500/30' },
+  { id: 'tiny',     labelKey: 'capital_tiny',     bg: 'bg-slate-500/10',   border: 'border-slate-500/30' },
+  { id: 'small',    labelKey: 'capital_small',     bg: 'bg-sky-500/10',     border: 'border-sky-500/30' },
+  { id: 'mid',      labelKey: 'capital_mid',       bg: 'bg-sky-500/10',     border: 'border-sky-500/30' },
+  { id: 'mid_plus', labelKey: 'capital_mid_plus',  bg: 'bg-emerald-500/10', border: 'border-emerald-500/30' },
+  { id: 'large',    labelKey: 'capital_large',     bg: 'bg-amber-500/10',   border: 'border-amber-500/30' },
+  { id: 'xlarge',   labelKey: 'capital_xlarge',    bg: 'bg-orange-500/10',  border: 'border-orange-500/30' },
 ];
 
-const INSTRUMENTS: { id: InstrumentId; labelKey: string; bg: string; border: string }[] = [
-  { id: 'forex',    labelKey: 'instrument_forex',    bg: 'bg-amber-500/10',   border: 'border-amber-500/30' },
-  { id: 'indices',  labelKey: 'instrument_indices',  bg: 'bg-sky-500/10',     border: 'border-sky-500/30' },
-  { id: 'equities', labelKey: 'instrument_equities', bg: 'bg-emerald-500/10', border: 'border-emerald-500/30' },
+// Asset groups — 1:1 with ScenarioSection ASSET_GROUPS (6 groups)
+
+const ASSET_GROUPS: { id: AssetGroupId; labelKey: string; bg: string; border: string }[] = [
+  { id: 'forex',       labelKey: 'instrument_forex',       bg: 'bg-amber-500/10',   border: 'border-amber-500/30' },
+  { id: 'indices',     labelKey: 'instrument_indices',     bg: 'bg-sky-500/10',     border: 'border-sky-500/30' },
+  { id: 'equities',    labelKey: 'instrument_equities',    bg: 'bg-emerald-500/10', border: 'border-emerald-500/30' },
+  { id: 'etf',         labelKey: 'instrument_etf',         bg: 'bg-teal-500/10',    border: 'border-teal-500/30' },
+  { id: 'commodities', labelKey: 'instrument_commodities', bg: 'bg-orange-500/10',  border: 'border-orange-500/30' },
+  { id: 'crypto',      labelKey: 'instrument_crypto',      bg: 'bg-violet-500/10',  border: 'border-violet-500/30' },
 ];
 
 const HORIZONS: { id: HorizonId; labelKey: string }[] = [
@@ -35,10 +43,27 @@ const HORIZONS: { id: HorizonId; labelKey: string }[] = [
   { id: 'position', labelKey: 'horizon_position' },
 ];
 
+// Strategies — aligned with ScenarioSection STRATEGY_MAP (scalping→scalp, intraday merged into scalp/swing)
+
 const STRATEGY_MAP: Record<HorizonId, { value: StrategyId; labelKey: string }[]> = {
-  scalp:    [{ value: 'momentum_1m', labelKey: 'strat_momentum_1m' }, { value: 'breakout_5m', labelKey: 'strat_breakout_5m' }, { value: 'mean_rev', labelKey: 'strat_mean_rev' }],
-  swing:    [{ value: 'trend_4h',   labelKey: 'strat_trend_4h' },   { value: 'pullback_d1', labelKey: 'strat_pullback_d1' }],
-  position: [{ value: 'macro_wk',   labelKey: 'strat_macro_wk' },   { value: 'carry',       labelKey: 'strat_carry' }],
+  scalp: [
+    { value: 'order_flow',    labelKey: 'strat_order_flow' },
+    { value: 'micro_momentum',labelKey: 'strat_micro_momentum' },
+    { value: 'news_reaction', labelKey: 'strat_news_reaction' },
+    { value: 'breakout',      labelKey: 'strat_breakout' },
+    { value: 'vwap_bounce',   labelKey: 'strat_vwap_bounce' },
+  ],
+  swing: [
+    { value: 'trend_following',     labelKey: 'strat_trend_following' },
+    { value: 'range_trading',       labelKey: 'strat_range_trading' },
+    { value: 'mean_reversion',      labelKey: 'strat_mean_reversion' },
+    { value: 'trend_following_day', labelKey: 'strat_trend_following_day' },
+  ],
+  position: [
+    { value: 'macro_trend',    labelKey: 'strat_macro_trend' },
+    { value: 'carry_trade',    labelKey: 'strat_carry_trade' },
+    { value: 'value_investing',labelKey: 'strat_value_investing' },
+  ],
 };
 
 // ─── scrollIntoContainer helper ───────────────────────────────────────────────
@@ -63,7 +88,7 @@ function scrollIntoContainer(el: HTMLElement | null, behavior: ScrollBehavior = 
   }
 }
 
-// ─── useIsMobile ─────────────────────────────────────────────────────────────
+// ─── useIsMobile ──────────────────────────────────────────────────────────────
 
 function useIsMobile(breakpoint = 768) {
   const [isMobile, setIsMobile] = useState(false);
@@ -78,6 +103,7 @@ function useIsMobile(breakpoint = 768) {
 }
 
 // ─── Output computation ───────────────────────────────────────────────────────
+// Mirrors assetDefs + horizonAdjustments + getCapitalBias from ScenarioSection
 
 type OutputKey = 'execution' | 'holding' | 'structure';
 
@@ -87,40 +113,52 @@ interface Output {
   barClass: string;
 }
 
+type DriverWeights = { execution: number; holding: number; structure: number };
+
+const assetDrivers: Record<AssetGroupId, DriverWeights> = {
+  forex:       { execution: 50, holding: 30, structure: 20 },
+  indices:     { execution: 56, holding: 24, structure: 20 },
+  equities:    { execution: 28, holding: 16, structure: 56 },
+  etf:         { execution: 22, holding: 22, structure: 56 },
+  commodities: { execution: 34, holding: 28, structure: 38 },
+  crypto:      { execution: 40, holding: 36, structure: 24 },
+};
+
+const horizonAdj: Record<HorizonId, DriverWeights> = {
+  scalp:    { execution: 26, holding: -12, structure: -10 },
+  swing:    { execution:  8, holding:   4, structure:  -2 },
+  position: { execution: -4, holding:  14, structure:   2 },
+};
+
+const capitalAdj: Record<CapitalRange, DriverWeights> = {
+  tiny:     { execution: -2, holding: 0,  structure: 10 },
+  small:    { execution: -1, holding: 0,  structure:  8 },
+  mid:      { execution:  3, holding: 2,  structure: -2 },
+  mid_plus: { execution:  5, holding: 3,  structure: -5 },
+  large:    { execution:  8, holding: 4,  structure: -10 },
+  xlarge:   { execution: 10, holding: 5,  structure: -12 },
+};
+
 function computeOutputs(
   capital: CapitalRange,
-  instrument: InstrumentId,
+  asset: AssetGroupId,
   horizon: HorizonId,
   leverageOn: boolean,
 ): Output[] {
-  const base: Record<CapitalRange, [number, number]> = {
-    small:    [40, 35],
-    mid:      [35, 38],
-    mid_plus: [30, 42],
-    large:    [25, 45],
-  };
-  const instBonus: Record<InstrumentId, [number, number]> = {
-    forex:    [5, 0],
-    indices:  [0, 5],
-    equities: [2, 3],
-  };
-  const horizonBonus: Record<HorizonId, [number, number]> = {
-    scalp:    [8, -4],
-    swing:    [0, 2],
-    position: [-5, 8],
-  };
-  const leverageAdj = leverageOn ? [3, -3] : [0, 0];
+  const lev: DriverWeights = leverageOn ? { execution: 6, holding: 8, structure: 4 } : { execution: 0, holding: 0, structure: 0 };
 
-  const [b0, b1] = base[capital];
-  const [i0, i1] = instBonus[instrument];
-  const [h0, h1] = horizonBonus[horizon];
-  const [l0, l1] = leverageAdj;
+  const sum = (...gs: DriverWeights[]) =>
+    gs.reduce<DriverWeights>((a, c) => ({ execution: a.execution + c.execution, holding: a.holding + c.holding, structure: a.structure + c.structure }), { execution: 0, holding: 0, structure: 0 });
 
-  const execRaw   = Math.max(10, b0 + i0 + h0 + l0);
-  const holdRaw   = Math.max(10, b1 + i1 + h1 + l1);
-  const total     = execRaw + holdRaw + 20;
-  const execPct   = Math.round((execRaw  / total) * 100);
-  const holdPct   = Math.round((holdRaw  / total) * 100);
+  const raw = sum(assetDrivers[asset], horizonAdj[horizon], capitalAdj[capital], lev);
+
+  const execRaw   = Math.max(8, raw.execution);
+  const holdRaw   = Math.max(8, raw.holding);
+  const structRaw = Math.max(8, raw.structure);
+  const total     = execRaw + holdRaw + structRaw;
+
+  const execPct   = Math.round((execRaw   / total) * 100);
+  const holdPct   = Math.round((holdRaw   / total) * 100);
   const structPct = 100 - execPct - holdPct;
 
   return [
@@ -136,23 +174,23 @@ interface SimulatorContentProps {
   onClose?: () => void;
 }
 
-const SimulatorContent = ({ onClose }: SimulatorContentProps) => {
+const SimulatorContent = ({ onClose: _onClose }: SimulatorContentProps) => {
   const t = useTranslations('Simulator') as (key: string) => string;
 
-  const [selectedCapital,   setSelectedCapital]   = useState<CapitalRange>('mid');
-  const [selectedInstrument,setSelectedInstrument]= useState<InstrumentId>('forex');
-  const [selectedHorizon,   setSelectedHorizon]   = useState<HorizonId>('scalp');
-  const [selectedStrategy,  setSelectedStrategy]  = useState<StrategyId>('');
-  const [leverageOn,        setLeverageOn]        = useState(false);
-  const [isDropdownOpen,    setIsDropdownOpen]    = useState(false);
-  const [searchQuery,       setSearchQuery]       = useState('');
+  const [selectedCapital,    setSelectedCapital]    = useState<CapitalRange>('mid');
+  const [selectedAsset,      setSelectedAsset]      = useState<AssetGroupId>('forex');
+  const [selectedHorizon,    setSelectedHorizon]    = useState<HorizonId>('scalp');
+  const [selectedStrategy,   setSelectedStrategy]   = useState<StrategyId>('');
+  const [leverageOn,         setLeverageOn]         = useState(false);
+  const [isDropdownOpen,     setIsDropdownOpen]     = useState(false);
+  const [searchQuery,        setSearchQuery]        = useState('');
 
   const dropdownRef        = useRef<HTMLDivElement>(null);
   const dropdownTriggerRef = useRef<HTMLButtonElement>(null);
   const searchInputRef     = useRef<HTMLInputElement>(null);
   const capitalSectionRef  = useRef<HTMLDivElement>(null);
 
-  const outputs = computeOutputs(selectedCapital, selectedInstrument, selectedHorizon, leverageOn);
+  const outputs = computeOutputs(selectedCapital, selectedAsset, selectedHorizon, leverageOn);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -182,7 +220,7 @@ const SimulatorContent = ({ onClose }: SimulatorContentProps) => {
         if (ov === 'auto' || ov === 'scroll') {
           const listEl = dropdownRef.current.querySelector('[data-dropdown-list]') as HTMLElement | null;
           if (!listEl) break;
-          const listRect  = listEl.getBoundingClientRect();
+          const listRect   = listEl.getBoundingClientRect();
           const parentRect = parent.getBoundingClientRect();
           if (listRect.bottom > parentRect.bottom) {
             parent.scrollBy({ top: listRect.bottom - parentRect.bottom + 16, behavior: 'smooth' });
@@ -205,20 +243,18 @@ const SimulatorContent = ({ onClose }: SimulatorContentProps) => {
 
   const handleCapitalSelect = useCallback((id: CapitalRange) => {
     setSelectedCapital(id);
-    if (capitalSectionRef.current) {
-      scrollIntoContainer(capitalSectionRef.current);
-    }
+    if (capitalSectionRef.current) scrollIntoContainer(capitalSectionRef.current);
   }, []);
 
   return (
     <div className="flex flex-col gap-6 p-6 sm:p-7">
 
-      {/* Capital range */}
+      {/* Capital range — 6 tiers, 3-col grid */}
       <div ref={capitalSectionRef}>
         <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground/60">
           {t('label_capital')}
         </p>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {CAPITAL_RANGES.map(c => (
             <button
               key={c.id}
@@ -235,23 +271,23 @@ const SimulatorContent = ({ onClose }: SimulatorContentProps) => {
         </div>
       </div>
 
-      {/* Instrument */}
+      {/* Asset group — 6 groups, 3-col grid */}
       <div>
         <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground/60">
           {t('label_instrument')}
         </p>
-        <div className="grid grid-cols-3 gap-2">
-          {INSTRUMENTS.map(ins => (
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+          {ASSET_GROUPS.map(ag => (
             <button
-              key={ins.id}
-              onClick={() => setSelectedInstrument(ins.id)}
+              key={ag.id}
+              onClick={() => setSelectedAsset(ag.id)}
               className={`rounded-xl border px-3 py-2.5 text-center text-sm font-medium transition-all duration-200 active:scale-[0.97] ${
-                selectedInstrument === ins.id
-                  ? `${ins.bg} ${ins.border} text-foreground shadow-sm`
+                selectedAsset === ag.id
+                  ? `${ag.bg} ${ag.border} text-foreground shadow-sm`
                   : 'border-border/50 bg-card text-muted-foreground hover:border-border hover:bg-card/80'
               }`}
             >
-              {t(ins.labelKey)}
+              {t(ag.labelKey)}
             </button>
           ))}
         </div>
@@ -266,7 +302,7 @@ const SimulatorContent = ({ onClose }: SimulatorContentProps) => {
           {HORIZONS.map(h => (
             <button
               key={h.id}
-              onClick={() => setSelectedHorizon(h.id as HorizonId)}
+              onClick={() => setSelectedHorizon(h.id)}
               className={`rounded-xl border px-3 py-2.5 text-center text-sm font-medium transition-all duration-200 active:scale-[0.97] ${
                 selectedHorizon === h.id
                   ? 'border-primary/40 bg-primary/10 text-foreground shadow-sm'
@@ -299,7 +335,6 @@ const SimulatorContent = ({ onClose }: SimulatorContentProps) => {
 
         {isDropdownOpen && (
           <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-50 overflow-hidden rounded-xl border border-border bg-popover shadow-lg">
-            {/* Search */}
             <div className="border-b border-border/50 px-3 py-2">
               <div className="flex items-center gap-2">
                 <Search className="size-3.5 shrink-0 text-muted-foreground/60" />
@@ -312,7 +347,6 @@ const SimulatorContent = ({ onClose }: SimulatorContentProps) => {
                 />
               </div>
             </div>
-            {/* List */}
             <div className="max-h-48 overflow-y-auto" data-dropdown-list>
               {filteredStrategies.length > 0 ? (
                 filteredStrategies.map(s => (
@@ -362,7 +396,7 @@ const SimulatorContent = ({ onClose }: SimulatorContentProps) => {
         </button>
       </div>
 
-      {/* ── Output preview ───────────────────────────────────────────── */}
+      {/* ── Output preview ─────────────────────────────────────────────────── */}
       <div className="rounded-2xl border border-border/50 bg-muted/10 p-5">
         <div className="mb-4 flex items-center justify-between">
           <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground/60">
@@ -380,7 +414,7 @@ const SimulatorContent = ({ onClose }: SimulatorContentProps) => {
         <div className="mb-4 flex flex-wrap gap-1.5">
           {[
             CAPITAL_RANGES.find(c => c.id === selectedCapital),
-            INSTRUMENTS.find(i => i.id === selectedInstrument),
+            ASSET_GROUPS.find(a => a.id === selectedAsset),
           ].filter(Boolean).map(item => item && (
             <span
               key={item.id}
@@ -472,14 +506,13 @@ interface Props {
   onClose: () => void;
 }
 
-// ─── SimulatorDrawer ─────────────────────────────────────────────────────────
+// ─── SimulatorDrawer ──────────────────────────────────────────────────────────
 
 export const SimulatorDrawer = ({ isOpen, onClose }: Props) => {
-  const t          = useTranslations('Simulator') as (key: string) => string;
-  const isMobile   = useIsMobile();
-  const panelRef   = useRef<HTMLDivElement>(null);
+  const t        = useTranslations('Simulator') as (key: string) => string;
+  const isMobile = useIsMobile();
+  const panelRef = useRef<HTMLDivElement>(null);
 
-  // Scroll panel to top every time drawer opens (desktop)
   useEffect(() => {
     if (!isMobile && isOpen) {
       const id = setTimeout(() => {
@@ -489,7 +522,6 @@ export const SimulatorDrawer = ({ isOpen, onClose }: Props) => {
     }
   }, [isMobile, isOpen]);
 
-  // Close on Escape (desktop)
   useEffect(() => {
     if (!isMobile && isOpen) {
       const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
@@ -498,21 +530,14 @@ export const SimulatorDrawer = ({ isOpen, onClose }: Props) => {
     }
   }, [isMobile, isOpen, onClose]);
 
-  // ── Mobile: MobileBottomSheet ────────────────────────────────────────────────
   if (isMobile) {
     return (
-      <MobileBottomSheet
-        isOpen={isOpen}
-        onClose={onClose}
-        title={t('drawer_title')}
-        showHandle
-      >
+      <MobileBottomSheet isOpen={isOpen} onClose={onClose} title={t('drawer_title')} showHandle>
         <SimulatorContent />
       </MobileBottomSheet>
     );
   }
 
-  // ── Desktop: Dialog overlay ──────────────────────────────────────────────────
   if (!isOpen) return null;
 
   return (
@@ -522,19 +547,15 @@ export const SimulatorDrawer = ({ isOpen, onClose }: Props) => {
       aria-modal="true"
       aria-label={t('drawer_title')}
     >
-      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
         aria-hidden="true"
       />
-
-      {/* Panel */}
       <div
         ref={panelRef}
         className="relative z-10 w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-background shadow-2xl"
       >
-        {/* Sticky header */}
         <div className="sticky top-0 z-20 flex items-center justify-between border-b border-border bg-background px-6 py-4">
           <div>
             <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground/60">
@@ -552,7 +573,6 @@ export const SimulatorDrawer = ({ isOpen, onClose }: Props) => {
             <span className="sr-only">{t('close')}</span>
           </button>
         </div>
-
         <SimulatorContent onClose={onClose} />
       </div>
     </div>
