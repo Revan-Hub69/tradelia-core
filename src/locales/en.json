@@ -13,13 +13,17 @@
   },
   "HowItWorks": {
     "eyebrow": "How it works",
-    "title": "Three steps for your strategy",
-    "step1_title": "Define strategy and horizon",
-    "step1_desc": "Enter capital, leverage, time horizon (scalping, intraday, multi-day, long-term) and operating strategy (breakout, momentum, spiky, pullback, carry/income).",
-    "step2_title": "Real data-based analysis",
-    "step2_desc": "The simulator applies real costs from measured database: spreads, commissions, rollover, theta decay. Automatic ranking of most efficient instruments and brokers for your scenario.",
-    "step3_title": "Clear comparison and insights",
-    "step3_desc": "Dynamic table with total costs, efficiency index, top instruments and top brokers. Charts show the impact of costs on capital."
+    "title": "How the simulator works",
+    "intro": "Three inputs, one clear output. No sign-up required.",
+    "step1_tag": "Setup",
+    "step1_title": "Define your strategy and horizon",
+    "step1_desc": "Enter capital, leverage, time horizon (scalping, intraday, multi-day, long-term) and trading strategy (breakout, momentum, pullback, carry).",
+    "step2_tag": "Calculation",
+    "step2_title": "Analysis on real measured data",
+    "step2_desc": "The simulator applies spreads, commissions, rollover, and theta decay from a measured database — not generic averages. Instruments and brokers are automatically ranked by efficiency for your scenario.",
+    "step3_tag": "Output",
+    "step3_title": "Rankings and cost impact on capital",
+    "step3_desc": "Dynamic table with total costs and efficiency index. Charts show how much costs actually weigh on your capital over time."
   },
   "Compare": {
     "eyebrow": "Instruments compared",
@@ -39,9 +43,9 @@
     "options_cost": "Premium + theta + commission"
   },
   "OutputPreview": {
-    "eyebrow": "Output",
-    "title": "Rankings and real data",
-    "intro": "The output is not an opinion. It is a quantitative reading based on real measured data. Example: €5,000, intraday horizon, Nasdaq.",
+    "eyebrow": "Output example",
+    "title": "See what you get before you start",
+    "intro": "A real example: €5,000 capital, intraday horizon, Nasdaq underlying. The table below is generated automatically by the calculation engine — not an opinion, a quantitative cost reading.",
     "col_instrument": "Instrument",
     "col_broker": "Top broker",
     "col_cost": "Est. cost",
@@ -49,20 +53,20 @@
     "col_rank_instrument": "Instrument rank",
     "col_rank_broker": "Broker rank",
     "output_etf_note": "Simple structure, contained costs",
-    "output_cfd_note": "Spread and funding impact multi-day",
+    "output_cfd_note": "Spread and funding impact multi-day operations",
     "output_futures_note": "Efficient over longer horizons",
     "output_options_note": "Theta decay relevant beyond 15 days",
-    "table_note": "Rankings automatically generated from real measured cost database."
+    "table_note": "Rankings automatically generated from real measured cost database. Does not constitute investment advice."
   },
   "WhyDifferent": {
     "eyebrow": "Why it's different",
-    "title": "Not theoretical estimates. Real measured data.",
+    "title": "Not opinions. Calculations from measured data.",
     "p1_title": "Real cost database",
-    "p1_desc": "The simulator doesn't use generic averages. It applies real costs from measured database — spreads, commissions, rollover, theta decay — specific to your scenario.",
+    "p1_desc": "The simulator doesn't use generic averages. It applies spreads, commissions, rollover, and theta decay from a measured database — specific to your operating scenario.",
     "p2_title": "Objective rankings",
-    "p2_desc": "Instruments and brokers are automatically ranked based on cost efficiency for your horizon and strategy. No recommendations, just data.",
+    "p2_desc": "Instruments and brokers are automatically ranked by cost efficiency for your horizon and strategy. No recommendations: just sorted data.",
     "p3_title": "Homogeneous comparison",
-    "p3_desc": "All instruments are normalised to the same notional exposure. You compare apples to apples — ETF, CFD, Futures, Options on the same underlying."
+    "p3_desc": "Every instrument is normalised to the same notional exposure. ETFs, CFDs, Futures, and Options on the same underlying, compared on a level playing field."
   },
   "Disclaimer": {
     "label": "Disclaimer:",
@@ -155,7 +159,7 @@
     "question3": "Do you provide financial advice?",
     "answer3": "No. Results are informational estimates. You decide and operate at your own risk.",
     "question4": "How accurate is the data?",
-    "answer4": "Calculations are based on market averages. Actual costs depend on your broker and market conditions.",
+    "answer4": "Calculations use data measured from market sources. They represent informational estimates — exact costs depend on your broker and operating conditions at the time of the transaction.",
     "question5": "Which instruments do you compare?",
     "answer5": "CFDs, futures, ETFs and options. Same underlying, different cost structures.",
     "question6": "What data do you store?",
@@ -165,8 +169,8 @@
     "cta_badge": "More questions? Contact us"
   },
   "FinalCTA": {
-    "title": "Ready to understand your real costs?",
-    "subtitle": "Simulate your scenario in seconds.",
+    "title": "Your real costs, before you trade.",
+    "subtitle": "Configure your scenario and get rankings in seconds.",
     "cta_button": "Run simulation",
     "trust1": "Free",
     "trust2": "No sign-up",

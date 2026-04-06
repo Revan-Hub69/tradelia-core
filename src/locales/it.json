@@ -13,13 +13,17 @@
   },
   "HowItWorks": {
     "eyebrow": "Come funziona",
-    "title": "Tre passi per la tua strategia",
+    "title": "Come funziona il simulatore",
+    "intro": "Tre input, un output chiaro. Nessuna registrazione richiesta.",
+    "step1_tag": "Configurazione",
     "step1_title": "Definisci strategia e orizzonte",
-    "step1_desc": "Inserisci capitale, leva, orizzonte temporale (scalping, intraday, multi-day, lungo termine) e strategia operativa (breakout, momentum, spiky, pullback, carry/income).",
-    "step2_title": "Analisi basata su dati reali",
-    "step2_desc": "Il simulatore applica costi reali da database misurato: spread, commissioni, rollover, theta decay. Classifica automatica degli strumenti e broker più efficienti per il tuo scenario.",
-    "step3_title": "Confronto chiaro e insight",
-    "step3_desc": "Tabella dinamica con costi totali, indice di efficienza, strumenti top e broker top. Grafici mostrano l'impatto dei costi sul capitale."
+    "step1_desc": "Inserisci capitale, leva, orizzonte temporale (scalping, intraday, multi-day, lungo termine) e strategia operativa (breakout, momentum, pullback, carry).",
+    "step2_tag": "Calcolo",
+    "step2_title": "Analisi su dati reali misurati",
+    "step2_desc": "Il simulatore applica spread, commissioni, rollover e theta decay da database misurato — non medie generiche. Classifica automaticamente strumenti e broker per efficienza nel tuo scenario.",
+    "step3_tag": "Output",
+    "step3_title": "Classifiche e impatto sul capitale",
+    "step3_desc": "Tabella dinamica con costi totali e indice di efficienza. I grafici mostrano quanto pesano davvero i costi sul tuo capitale nel tempo."
   },
   "Compare": {
     "eyebrow": "Strumenti a confronto",
@@ -39,9 +43,9 @@
     "options_cost": "Premio + theta + commissione"
   },
   "OutputPreview": {
-    "eyebrow": "Output",
-    "title": "Classifiche e dati reali",
-    "intro": "L'output non è un parere. È una lettura quantitativa basata su dati reali misurati. Esempio su €5.000, orizzonte intraday, Nasdaq.",
+    "eyebrow": "Esempio di output",
+    "title": "Vedi cosa ottieni prima di iniziare",
+    "intro": "Un esempio reale: €5.000 di capitale, orizzonte intraday, sottostante Nasdaq. La tabella qui sotto è generata automaticamente dal motore di calcolo — non è un parere, è una lettura quantitativa dei costi.",
     "col_instrument": "Strumento",
     "col_broker": "Broker top",
     "col_cost": "Costo stimato",
@@ -49,20 +53,20 @@
     "col_rank_instrument": "Rank strumento",
     "col_rank_broker": "Rank broker",
     "output_etf_note": "Struttura semplice, costi contenuti",
-    "output_cfd_note": "Spread e funding incidono su multi-day",
-    "output_futures_note": "Efficiente su orizzonti ampi",
-    "output_options_note": "Theta decay rilevante oltre 15gg",
-    "table_note": "Classifiche generate automaticamente da database costi reali misurati."
+    "output_cfd_note": "Spread e funding incidono su operatività multi-day",
+    "output_futures_note": "Efficiente su orizzonti più ampi",
+    "output_options_note": "Theta decay rilevante oltre i 15 giorni",
+    "table_note": "Classifiche generate automaticamente da database costi reali misurati. Non costituiscono raccomandazione d'investimento."
   },
   "WhyDifferent": {
     "eyebrow": "Perché è diverso",
-    "title": "Non stime teoriche. Dati reali misurati.",
+    "title": "Non opinioni. Calcoli basati su dati misurati.",
     "p1_title": "Database costi reali",
-    "p1_desc": "Il simulatore non usa medie generiche. Applica costi reali da database misurato — spread, commissioni, rollover, theta decay — specifici per il tuo scenario.",
+    "p1_desc": "Il simulatore non usa medie generiche. Applica spread, commissioni, rollover e theta decay da database misurato — specifici per il tuo scenario operativo.",
     "p2_title": "Classifiche oggettive",
-    "p2_desc": "Strumenti e broker vengono classificati automaticamente in base all'efficienza dei costi per il tuo orizzonte e strategia. Nessuna raccomandazione, solo dati.",
-    "p3_title": "Confronto omogeneo",
-    "p3_desc": "Tutti gli strumenti sono normalizzati alla stessa esposizione nozionale. Confronti mele con mele — ETF, CFD, Futures, Opzioni sullo stesso sottostante."
+    "p2_desc": "Strumenti e broker vengono classificati automaticamente per efficienza dei costi in base al tuo orizzonte e strategia. Nessuna raccomandazione: solo dati ordinati.",
+    "p3_title": "Confronto su base omogenea",
+    "p3_desc": "Ogni strumento è normalizzato alla stessa esposizione nozionale. ETF, CFD, Futures e Opzioni sullo stesso sottostante, confrontati in modo diretto."
   },
   "Disclaimer": {
     "label": "Avvertenza:",
@@ -155,7 +159,7 @@
     "question3": "Fornite consulenza finanziaria?",
     "answer3": "No. I risultati sono stime informative. Decidi tu e operi a tuo rischio.",
     "question4": "Quanto sono precisi i dati?",
-    "answer4": "I calcoli si basano su medie di mercato. I costi reali dipendono dal broker e dalle condizioni di mercato.",
+    "answer4": "I calcoli usano dati misurati da fonti di mercato. Rappresentano stime informative — i costi esatti dipendono dal broker e dalle condizioni operative al momento della transazione.",
     "question5": "Quali strumenti confrontate?",
     "answer5": "CFD, futures, ETF e opzioni. Stesso sottostante, strutture di costo diverse.",
     "question6": "Quali dati salvate?",
@@ -165,8 +169,8 @@
     "cta_badge": "Altre domande? Contattaci"
   },
   "FinalCTA": {
-    "title": "Pronto a capire i tuoi costi reali?",
-    "subtitle": "Simula il tuo scenario in pochi secondi.",
+    "title": "I tuoi costi reali, prima di operare.",
+    "subtitle": "Configura il tuo scenario e ottieni classifiche in pochi secondi.",
     "cta_button": "Avvia simulazione",
     "trust1": "Gratuito",
     "trust2": "Nessuna registrazione",
