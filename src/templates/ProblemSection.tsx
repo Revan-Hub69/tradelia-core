@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { useTranslations } from 'next-intl';
 
 import { FadeIn } from '@/components/ui/scroll-animations';
@@ -15,6 +16,7 @@ export const ProblemSection = () => {
     <section
       id="problem"
       className="scroll-mt-32 border-t border-border/40 bg-muted/20 py-14 sm:py-16 lg:py-20 xl:py-24 2xl:py-28"
+      style={{ contentVisibility: 'auto', containIntrinsicSize: '0 700px' } as React.CSSProperties}
     >
       <SectionContainer size="wide">
         <FadeIn>
@@ -24,7 +26,10 @@ export const ProblemSection = () => {
                 {t('eyebrow')}
               </p>
 
-              <h2 className="max-w-2xl text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">
+              <h2
+                className="max-w-2xl text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl"
+                style={{ textWrap: 'balance' } as React.CSSProperties}
+              >
                 {t('title')}
               </h2>
 

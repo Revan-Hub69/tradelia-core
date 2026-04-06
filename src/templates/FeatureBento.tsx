@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { ArrowRight, BarChart3, Shield, Zap, Target, TrendingUp, Globe } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
@@ -7,12 +8,12 @@ import { FadeIn } from '@/components/ui/scroll-animations';
 import { SectionContainer } from '@/components/ui/SectionContainer';
 
 const accentMap = {
-  blue: { bg: 'bg-blue-500/10', text: 'text-blue-400' },
-  amber: { bg: 'bg-amber-500/10', text: 'text-amber-400' },
+  blue:    { bg: 'bg-blue-500/10',    text: 'text-blue-400' },
+  amber:   { bg: 'bg-amber-500/10',   text: 'text-amber-400' },
   emerald: { bg: 'bg-emerald-500/10', text: 'text-emerald-400' },
-  purple: { bg: 'bg-purple-500/10', text: 'text-purple-400' },
-  rose: { bg: 'bg-rose-500/10', text: 'text-rose-400' },
-  cyan: { bg: 'bg-cyan-500/10', text: 'text-cyan-400' },
+  purple:  { bg: 'bg-purple-500/10',  text: 'text-purple-400' },
+  rose:    { bg: 'bg-rose-500/10',    text: 'text-rose-400' },
+  cyan:    { bg: 'bg-cyan-500/10',    text: 'text-cyan-400' },
 };
 
 type TileDef = {
@@ -24,11 +25,11 @@ type TileDef = {
 
 const tiles: TileDef[] = [
   { icon: <BarChart3 className="size-5" />, titleKey: 'tile1_title', descKey: 'tile1_desc', accent: 'blue' },
-  { icon: <Zap className="size-5" />, titleKey: 'tile2_title', descKey: 'tile2_desc', accent: 'amber' },
-  { icon: <Target className="size-5" />, titleKey: 'tile3_title', descKey: 'tile3_desc', accent: 'emerald' },
-  { icon: <Shield className="size-5" />, titleKey: 'tile4_title', descKey: 'tile4_desc', accent: 'purple' },
+  { icon: <Zap       className="size-5" />, titleKey: 'tile2_title', descKey: 'tile2_desc', accent: 'amber' },
+  { icon: <Target    className="size-5" />, titleKey: 'tile3_title', descKey: 'tile3_desc', accent: 'emerald' },
+  { icon: <Shield    className="size-5" />, titleKey: 'tile4_title', descKey: 'tile4_desc', accent: 'purple' },
   { icon: <TrendingUp className="size-5" />, titleKey: 'tile5_title', descKey: 'tile5_desc', accent: 'rose' },
-  { icon: <Globe className="size-5" />, titleKey: 'tile6_title', descKey: 'tile6_desc', accent: 'cyan' },
+  { icon: <Globe     className="size-5" />, titleKey: 'tile6_title', descKey: 'tile6_desc', accent: 'cyan' },
 ];
 
 const BentoTile = ({ icon, titleKey, descKey, accent }: TileDef) => {
@@ -42,7 +43,10 @@ const BentoTile = ({ icon, titleKey, descKey, accent }: TileDef) => {
       <div className={`relative inline-flex size-10 items-center justify-center rounded-xl ${colors.bg} ${colors.text} transition-transform duration-300 group-hover:scale-110`}>
         {icon}
       </div>
-      <h3 className="relative mt-4 text-lg font-semibold tracking-tight text-foreground">
+      <h3
+        className="relative mt-4 text-lg font-semibold tracking-tight text-foreground"
+        style={{ textWrap: 'balance' } as React.CSSProperties}
+      >
         {t(titleKey)}
       </h3>
       <p className="relative mt-2 flex-1 text-sm leading-7 text-muted-foreground">
@@ -61,14 +65,20 @@ export const FeatureBento = () => {
   const t = useTranslations('FeatureBento') as (key: string) => string;
 
   return (
-    <section className="border-t border-border/40 py-14 sm:py-16 lg:py-20 xl:py-24">
+    <section
+      className="border-t border-border/40 py-14 sm:py-16 lg:py-20 xl:py-24"
+      style={{ contentVisibility: 'auto', containIntrinsicSize: '0 800px' } as React.CSSProperties}
+    >
       <SectionContainer size="wide">
         <FadeIn>
           <div className="mx-auto mb-10 max-w-2xl text-center sm:mb-12">
             <p className="mb-3 font-mono text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground/60 sm:tracking-[0.24em]">
               {t('eyebrow')}
             </p>
-            <h2 className="mx-auto max-w-xl text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">
+            <h2
+              className="mx-auto max-w-xl text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl"
+              style={{ textWrap: 'balance' } as React.CSSProperties}
+            >
               {t('title')}
             </h2>
             <p className="mx-auto mt-4 max-w-lg text-[15px] leading-7 text-muted-foreground sm:mt-5 sm:text-base sm:leading-8">
