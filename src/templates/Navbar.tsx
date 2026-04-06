@@ -4,56 +4,48 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 
 import { LocaleSwitcher } from '@/components/LocaleSwitcher';
-import { Button } from '@/components/ui/button';
 import { SectionContainer } from '@/components/ui/SectionContainer';
-import { getLandingSectionHref, landingSections } from '@/config/tradescope';
+import { getLandingSectionHref, landingSections } from '@/config/landing';
 import { usePathname } from '@/libs/i18nNavigation';
 import { cn } from '@/utils/Helpers';
 import { throttle } from '@/utils/throttle';
 
 import { Logo } from './Logo';
 
-const useFocusTrap = (isOpen: boolean, containerRef: React.RefObject<HTMLDivElement>) => {
+const useFocusTrap = (
+  isOpen: boolean,
+  containerRef: React.RefObject<HTMLDivElement>,
+) => {
   useEffect(() => {
-    if (!isOpen || !containerRef.current) {
- return;
-}
+    if (!isOpen || !containerRef.current) return;
     const container = containerRef.current;
-    const focusableElements = container.querySelectorAll(
+    const focusable = container.querySelectorAll<HTMLElement>(
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
     );
-    const firstElement = focusableElements[0] as HTMLElement;
-    const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+    const first = focusable[0];
+    const last  = focusable[focusable.length - 1];
 
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Tab') {
-        if (e.shiftKey) {
-          if (document.activeElement === firstElement) {
-            e.preventDefault();
-            lastElement?.focus();
-          }
-        } else if (document.activeElement === lastElement) {
+        if (e.shiftKey ? document.activeElement === first : document.activeElement === last) {
           e.preventDefault();
-          firstElement?.focus();
+          (e.shiftKey ? last : first)?.focus();
         }
       }
-
       if (e.key === 'Escape') {
-        const closeButton = container.querySelector('[data-close-menu]') as HTMLElement;
-        closeButton?.click();
+        (container.querySelector('[data-close-menu]') as HTMLElement)?.click();
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    setTimeout(() => firstElement?.focus(), 100);
-
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener('keydown', onKey);
+    setTimeout(() => first?.focus(), 100);
+    return () => document.removeEventListener('keydown', onKey);
   }, [isOpen, containerRef]);
 };
 
 export const Navbar = () => {
-  const t = useTranslations('Navbar') as (key: string) => string;
-  const locale = useLocale();
+  const t        = useTranslations('Navbar') as (key: string) => string;
+  const locale   = useLocale();
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -69,25 +61,23 @@ export const Navbar = () => {
 
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? 'hidden' : '';
-    return () => {
-      document.body.style.overflow = '';
-    };
+    return () => { document.body.style.overflow = ''; };
   }, [isMenuOpen]);
 
   const navLinks = landingSections.map(section => ({
-    href: getLandingSectionHref(locale, pathname, section.id),
+    href:  getLandingSectionHref(locale, pathname, section.id),
     label: t(section.navbarLabelKey),
   }));
-  const simulatorHref = getLandingSectionHref(locale, pathname, 'simulator');
 
   const stripItems = [
     { label: t('strip_spread'), value: t('strip_spread_value') },
-    { label: t('strip_swap'), value: t('strip_swap_value') },
-    { label: t('strip_fees'), value: t('strip_fees_value') },
+    { label: t('strip_swap'),   value: t('strip_swap_value') },
+    { label: t('strip_fees'),   value: t('strip_fees_value') },
   ];
 
   return (
     <>
+      {/* ── Info strip ── */}
       <div className="fixed inset-x-0 top-0 z-40 border-b border-slate-800/80 bg-slate-950 text-slate-200">
         <SectionContainer size="wide" className="hidden h-8 items-center justify-between gap-3 sm:flex">
           {stripItems.map(item => (
@@ -102,6 +92,7 @@ export const Navbar = () => {
         </div>
       </div>
 
+      {/* ── Main header ── */}
       <header
         className={cn(
           'fixed left-0 right-0 top-8 z-50 transition-all duration-300',
@@ -111,13 +102,11 @@ export const Navbar = () => {
         )}
       >
         <SectionContainer size="wide" className="flex h-14 items-center justify-between sm:h-16">
-          <div className="flex items-center gap-3">
-            <Logo size="md" href="/" />
-            <span className="hidden rounded-full border border-border/60 bg-background px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground lg:inline-flex">
-              {t('product_badge')}
-            </span>
-          </div>
 
+          {/* Logo */}
+          <Logo size="md" href="/" />
+
+          {/* Desktop nav */}
           <nav className="hidden items-center gap-1 md:flex">
             {navLinks.map(link => (
               <a
@@ -130,13 +119,12 @@ export const Navbar = () => {
             ))}
           </nav>
 
+          {/* Desktop right */}
           <div className="hidden items-center gap-3 md:flex">
             <LocaleSwitcher />
-            <Button asChild size="sm" className="h-10 rounded-full px-5 font-mono text-[11px] uppercase tracking-[0.16em]">
-              <a href={simulatorHref}>{t('cta')}</a>
-            </Button>
           </div>
 
+          {/* Mobile hamburger */}
           <div className="flex items-center gap-2 md:hidden">
             <LocaleSwitcher />
             <button
@@ -152,9 +140,11 @@ export const Navbar = () => {
               </div>
             </button>
           </div>
+
         </SectionContainer>
       </header>
 
+      {/* ── Mobile drawer ── */}
       <div className={cn('fixed inset-0 z-50 overflow-x-clip md:hidden', isMenuOpen ? 'pointer-events-auto' : 'pointer-events-none')}>
         <div
           className={cn('absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300', isMenuOpen ? 'opacity-100' : 'opacity-0')}
@@ -162,19 +152,17 @@ export const Navbar = () => {
           role="button"
           tabIndex={0}
           aria-label={t('menu_close_mobile')}
-          onKeyDown={(e) => {
-            if (e.key === 'Escape') {
- setIsMenuOpen(false);
-}
-          }}
+          onKeyDown={e => { if (e.key === 'Escape') setIsMenuOpen(false); }}
         />
-
         <div
           ref={menuRef}
-          className={cn('absolute bottom-0 right-0 top-0 w-[82%] max-w-xs border-l border-border/60 bg-background shadow-2xl transition-transform duration-300 ease-out', isMenuOpen ? 'translate-x-0' : 'translate-x-full')}
+          className={cn(
+            'absolute bottom-0 right-0 top-0 w-[82%] max-w-xs border-l border-border/60 bg-background shadow-2xl transition-transform duration-300 ease-out',
+            isMenuOpen ? 'translate-x-0' : 'translate-x-full',
+          )}
         >
           <div className="flex h-14 items-center justify-between border-b border-border/40 px-5">
-            <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">{t('menu_title')}</span>
+            <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Menu</span>
             <button
               type="button"
               data-close-menu
@@ -187,7 +175,6 @@ export const Navbar = () => {
               </svg>
             </button>
           </div>
-
           <nav className="flex flex-col p-3">
             {navLinks.map((link, i) => (
               <a
@@ -195,17 +182,15 @@ export const Navbar = () => {
                 href={link.href}
                 onClick={() => setIsMenuOpen(false)}
                 className="rounded-2xl px-4 py-3.5 font-mono text-[11px] uppercase tracking-[0.18em] text-foreground/80 transition-all hover:bg-muted"
-                style={{ transform: isMenuOpen ? 'translateX(0)' : 'translateX(16px)', opacity: isMenuOpen ? 1 : 0, transition: `all 280ms ease-out ${i * 40 + 80}ms` }}
+                style={{
+                  transform:  isMenuOpen ? 'translateX(0)' : 'translateX(16px)',
+                  opacity:    isMenuOpen ? 1 : 0,
+                  transition: `all 280ms ease-out ${i * 40 + 80}ms`,
+                }}
               >
                 {link.label}
               </a>
             ))}
-
-            <Button asChild className="mt-3 h-11 rounded-full font-mono text-[11px] uppercase tracking-[0.16em]">
-              <a href={simulatorHref} onClick={() => setIsMenuOpen(false)}>
-                {t('cta')}
-              </a>
-            </Button>
           </nav>
         </div>
       </div>
