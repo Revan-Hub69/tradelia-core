@@ -3,7 +3,14 @@ import { cva } from 'class-variance-authority';
 /**
  * Button Variants - Tradelia Design System 2026
  *
- * Hover: primary/10 (blu leggero) - MAI verde
+ * Regole:
+ * - default/primary: bg-primary solido, hover opacity 90%
+ * - outline: hover border-border/80 + bg-foreground/5, testo resta foreground (MAI text-primary)
+ * - ghost: hover bg-foreground/8, testo resta foreground (MAI text-primary)
+ * - secondary: bg-secondary, hover opacity 80%
+ * - destructive: bg-destructive
+ * - link: underline on hover
+ *
  * Transizioni: 200ms ease-out
  * Active: scale(0.98) per feedback tattile
  */
@@ -12,21 +19,24 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-md',
+        default:
+          'bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-md',
         destructive:
           'bg-destructive text-destructive-foreground hover:bg-destructive/90',
         outline:
-          'border border-border bg-transparent hover:border-primary/50 hover:bg-primary/5 hover:text-primary',
+          'border border-border bg-transparent text-foreground hover:border-border/80 hover:bg-foreground/5',
         secondary:
           'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-        ghost: 'hover:bg-primary/10 hover:text-primary',
-        link: 'text-primary underline-offset-4 hover:underline',
+        ghost:
+          'text-foreground hover:bg-foreground/8',
+        link:
+          'text-primary underline-offset-4 hover:underline',
       },
       size: {
         default: 'h-10 px-4 py-2',
-        sm: 'h-9 rounded-lg px-3',
-        lg: 'h-11 rounded-lg px-8',
-        icon: 'size-10',
+        sm:      'h-9  rounded-lg px-3',
+        lg:      'h-11 rounded-lg px-8',
+        icon:    'size-10',
       },
     },
     defaultVariants: {
