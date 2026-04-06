@@ -3,6 +3,7 @@
 import React from 'react';
 import { useTranslations } from 'next-intl';
 
+import { BackToSimulator } from '@/components/ui/BackToSimulator';
 import { FadeIn, StaggerChildren } from '@/components/ui/scroll-animations';
 import { SectionContainer } from '@/components/ui/SectionContainer';
 
@@ -66,6 +67,8 @@ export const HowItWorks = () => {
             ))}
           </StaggerChildren>
         </div>
+
+        <BackToSimulator />
       </SectionContainer>
     </section>
   );

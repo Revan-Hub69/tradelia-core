@@ -3,6 +3,7 @@
 import React from 'react';
 import { useTranslations } from 'next-intl';
 
+import { BackToSimulator } from '@/components/ui/BackToSimulator';
 import { FadeIn } from '@/components/ui/scroll-animations';
 import { SectionContainer } from '@/components/ui/SectionContainer';
 
@@ -120,6 +121,8 @@ export const ProblemSection = () => {
               </div>
             </div>
           </div>
+
+          <BackToSimulator />
         </FadeIn>
       </SectionContainer>
     </section>
