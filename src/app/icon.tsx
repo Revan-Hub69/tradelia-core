@@ -3,6 +3,9 @@ import { ImageResponse } from 'next/og';
 export const size = { width: 32, height: 32 };
 export const contentType = 'image/png';
 
+// Brand primary: teal #0f766e — must match Logo.tsx fill-primary
+const PRIMARY = '#0f766e';
+
 export default function Icon() {
   return new ImageResponse(
     (
@@ -11,18 +14,18 @@ export default function Icon() {
           width: 32,
           height: 32,
           borderRadius: 8,
-          background: '#1D4ED8',
+          background: PRIMARY,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           position: 'relative',
         }}
       >
-        {/* T horizontal bar */}
+        {/* T — horizontal bar */}
         <div
           style={{
             position: 'absolute',
-            top: 10,
+            top: 9,
             left: 7,
             width: 18,
             height: 3,
@@ -30,28 +33,28 @@ export default function Icon() {
             background: 'white',
           }}
         />
-        {/* T vertical bar */}
+        {/* T — vertical bar */}
         <div
           style={{
             position: 'absolute',
-            top: 10,
+            top: 9,
             left: 14.5,
             width: 3,
-            height: 13,
+            height: 14,
             borderRadius: 2,
             background: 'white',
           }}
         />
-        {/* Green dot */}
+        {/* Accent dot — white/60 */}
         <div
           style={{
             position: 'absolute',
-            top: 8,
-            right: 7,
+            top: 7,
+            right: 6,
             width: 5,
             height: 5,
             borderRadius: '50%',
-            background: '#059669',
+            background: 'rgba(255,255,255,0.6)',
           }}
         />
       </div>
