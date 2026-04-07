@@ -43,10 +43,20 @@ export const viewport: Viewport = {
   viewportFit: 'cover',
 };
 
+// SVG favicon inline — emerald brand primary #157a53, white T glyph
+// Data-URI is browser-universal and doesn’t depend on runtime rendering
+const FAVICON_SVG = `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#157a53"/><path d="M8 11h16M16 11v12" stroke="white" stroke-width="3" stroke-linecap="round"/><circle cx="22" cy="11" r="2" fill="rgba(255,255,255,0.6)"/></svg>`)}`;
+
 export const metadata: Metadata = {
   title: 'Tradelia | Trading Cost Simulator',
   description: 'Model spreads, swaps, commissions, and holding pressure to find the broker and instrument setup that best protects your net returns.',
-  // Favicon is handled automatically by Next.js via src/app/icon.tsx
+  icons: {
+    icon: [
+      { url: FAVICON_SVG, type: 'image/svg+xml' },
+      { url: '/icon.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: '/apple-icon.png',
+  },
 };
 
 export default async function RootLayout({

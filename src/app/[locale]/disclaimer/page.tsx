@@ -39,84 +39,82 @@ export default async function DisclaimerPage(
     <>
       <Navbar />
 
-      <main id="main-content" className="min-h-screen bg-slate-950 pt-20 pb-32">
-        <SectionContainer size="wide">
+      <main id="main-content" className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
+        <SectionContainer size="content" className="py-16 sm:py-18 lg:py-20">
 
-          {/* ────── Page header ────── */}
-          <div className="mb-14 mt-10 max-w-2xl">
-            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500">
+          {/* ── Page header ── */}
+          <div className="mb-12 text-center">
+            <div className="mb-4 inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary backdrop-blur-sm">
               {t('eyebrow')}
-            </p>
-            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-50 sm:text-4xl">
+            </div>
+            <h1 className="mb-4 text-4xl font-bold tracking-tight sm:text-5xl">
               {t('heading')}
             </h1>
-            <p className="mt-3 text-sm text-slate-500">
+            <p className="mx-auto max-w-xl text-base leading-7 text-muted-foreground">
               {t('last_updated')}
             </p>
           </div>
 
-          {/* ────── Callout ────── */}
-          <div className="mb-12 flex gap-4 rounded-2xl border border-amber-800/30 bg-amber-950/30 px-6 py-5">
-            <span className="mt-0.5 shrink-0 text-amber-500" aria-hidden="true">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          {/* ── Callout ── */}
+          <div className="mb-10 flex gap-3 rounded-xl border border-warning/30 bg-warning/5 px-5 py-4">
+            <span className="mt-0.5 shrink-0 text-warning" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
                 <line x1="12" y1="9" x2="12" y2="13" />
                 <line x1="12" y1="17" x2="12.01" y2="17" />
               </svg>
             </span>
-            <p className="text-sm leading-7 text-amber-200/70">
+            <p className="text-sm leading-7 text-foreground/70">
               {t('intro_callout')}
             </p>
           </div>
 
-          {/* ────── Two-column layout: TOC + content ────── */}
-          <div className="grid grid-cols-1 gap-10 lg:grid-cols-[200px_1fr] lg:gap-16 xl:grid-cols-[220px_1fr]">
+          {/* ── Two-column: TOC + sections ── */}
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[180px_1fr] lg:gap-12">
 
-            {/* Sidebar TOC — sticky on desktop */}
+            {/* Sidebar TOC */}
             <aside className="hidden lg:block">
               <div className="sticky top-28 space-y-1">
-                <p className="mb-4 font-mono text-[9px] uppercase tracking-[0.22em] text-slate-600">
-                  Indice
+                <p className="mb-4 font-mono text-[10px] uppercase tracking-widest text-muted-foreground/50">
+                  {locale === 'it' ? 'Indice' : 'Contents'}
                 </p>
                 {sections.map(s => (
                   <a
                     key={s.id}
                     href={`#${s.id}`}
-                    className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs text-slate-500 transition-colors hover:bg-slate-900 hover:text-slate-200"
+                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                   >
-                    <span className="font-mono text-[10px] text-slate-700">{s.num}</span>
+                    <span className="font-mono text-[10px] text-muted-foreground/40">{s.num}</span>
                     <span>{s.title}</span>
                   </a>
                 ))}
               </div>
             </aside>
 
-            {/* Main content */}
-            <div className="space-y-6">
+            {/* Sections */}
+            <div className="space-y-4">
               {sections.map(s => (
                 <section
                   key={s.id}
                   id={s.id}
                   aria-labelledby={`${s.id}-heading`}
-                  className="group rounded-2xl border border-slate-800/60 bg-slate-900/50 p-7 sm:p-8 transition-colors hover:border-slate-700/60"
+                  className="rounded-xl border border-border/50 bg-card/50 p-6 backdrop-blur-sm"
                 >
-                  {/* Section number — large ambient */}
-                  <div className="mb-4 flex items-start justify-between gap-4">
+                  <div className="mb-3 flex items-start justify-between gap-4">
                     <h2
                       id={`${s.id}-heading`}
-                      className="text-base font-semibold text-slate-100"
+                      className="text-base font-semibold"
                     >
                       {s.title}
                     </h2>
                     <span
-                      className="shrink-0 font-mono text-3xl font-bold leading-none text-slate-800 select-none"
+                      className="shrink-0 font-mono text-2xl font-bold leading-none text-muted-foreground/20 select-none"
                       aria-hidden="true"
                     >
                       {s.num}
                     </span>
                   </div>
-
-                  <p className="text-sm leading-8 text-slate-400">
+                  <p className="text-sm leading-7 text-muted-foreground">
                     {s.body}
                   </p>
                 </section>
@@ -124,9 +122,9 @@ export default async function DisclaimerPage(
             </div>
           </div>
 
-          {/* ────── Footer note ────── */}
-          <div className="mt-16 border-t border-slate-800 pt-8">
-            <p className="text-xs leading-7 text-slate-500">
+          {/* ── Footer note ── */}
+          <div className="mt-12 border-t border-border pt-8">
+            <p className="text-xs leading-7 text-muted-foreground/70">
               {t('footer_note')}
             </p>
           </div>
