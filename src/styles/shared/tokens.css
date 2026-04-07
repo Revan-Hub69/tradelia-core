@@ -1,173 +1,181 @@
 /*
- * TRADELIA DESIGN TOKENS
+ * TRADELIA DESIGN TOKENS — SOTA 2026
  * Shared across all routes (landing + dashboard)
  *
- * Based on 2026 best practices:
- * - CSS custom properties for theming
- * - HSL color space for easy manipulation
- * - Semantic naming (not presentational)
+ * Font stack convention:
+ *   --font-body    → Inter (next/font, injected as CSS var on <html>)
+ *   --font-display → Instrument Serif (next/font, injected as CSS var on <html>)
+ *   --font-mono    → Geist Mono (next/font, injected as CSS var on <html>)
+ *
+ * Color philosophy:
+ *   Neutral warm surface + single emerald accent.
+ *   Emerald = profit/performance signal in trading contexts.
+ *   --primary replaces generic blue-600 (shadcn default).
  */
 
 :root {
-  /* Colors - Light mode (WCAG AA Compliant) */
-  --background: 210 20% 98%;
-  --foreground: 215 25% 27%; /* Slate 700 #475569 - Professional Dark Gray */
-  --card: 0 0% 100%;
-  --card-foreground: 215 25% 27%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 215 25% 27%;
-  --primary: 224 76% 48%;
-  --primary-foreground: 0 0% 100%;
+  /* ──────────────────────────────────────────────────────────────────────────
+     FONT STACKS — reference next/font variables; fallbacks mirror layout.tsx
+     ────────────────────────────────────────────────────────────────────────── */
+  --font-body:    var(--font-body,    ui-sans-serif, system-ui, sans-serif);
+  --font-display: var(--font-display, Georgia, ui-serif, serif);
+  --font-mono:    var(--font-mono,    ui-monospace, SFMono-Regular, Menlo, monospace);
 
-  /* Primary RGB (for rgba() usage in premium effects)
-     NOTE: keep in sync with --primary manually if hue changes */
-  --primary-rgb: 29, 78, 216; /* hsl(224 76% 48%) */
-  --secondary: 210 40% 96%;
-  --secondary-foreground: 215 25% 27%;
-  --muted: 210 40% 96%;
-  --muted-foreground: 215 20% 45%; /* Slate 600 #64748B - Readable Gray */
-  --accent: 213 50% 50%;
-  --accent-foreground: 0 0% 100%;
-  --destructive: 0 84% 60%;
+  /* ──────────────────────────────────────────────────────────────────────────
+     COLORS — Light mode (WCAG AA Compliant)
+     Surface: warm-neutral (not cold blue-white)
+     Primary: emerald 700 — profit green, distinctive, non-shadcn
+     ────────────────────────────────────────────────────────────────────────── */
+  --background:            150 14% 97%;   /* #f6f8f7 — warm white with green undertone */
+  --foreground:            160 25% 16%;   /* #1f2e28 — deep forest, not flat black */
+  --card:                  0 0% 100%;
+  --card-foreground:       160 25% 16%;
+  --popover:               0 0% 100%;
+  --popover-foreground:    160 25% 16%;
+
+  /* Emerald primary — hsl(162 72% 34%) = #157a53 */
+  --primary:               162 72% 34%;
+  --primary-foreground:    0 0% 100%;
+
+  /* Primary RGB for rgba() premium effects — keep in sync with --primary */
+  --primary-rgb:           21, 122, 83; /* hsl(162 72% 34%) */
+
+  --secondary:             150 20% 94%;  /* soft sage tint */
+  --secondary-foreground:  160 25% 16%;
+  --muted:                 150 15% 94%;
+  --muted-foreground:      155 12% 42%;  /* readable medium gray-green */
+  --accent:                162 55% 42%;  /* lighter emerald for hover states */
+  --accent-foreground:     0 0% 100%;
+  --destructive:           0 84% 60%;
   --destructive-foreground: 0 0% 100%;
-  --warning: 38 92% 50%;
-  --warning-foreground: 0 0% 0%;
-  --info: 199 89% 48%;
-  --info-foreground: 0 0% 100%;
-  --border: 214 32% 91%;
-  --input: 214 32% 91%;
-  --ring: 224 76% 48%;
-  --radius: 0.625rem;
+  --warning:               38 92% 50%;
+  --warning-foreground:    0 0% 0%;
+  --info:                  199 89% 48%;
+  --info-foreground:       0 0% 100%;
+  --border:                150 18% 88%;  /* soft sage border */
+  --input:                 150 18% 88%;
+  --ring:                  162 72% 34%;  /* matches primary */
+  --radius:                0.625rem;
 
-  /* Spacing */
-  /* NOTE: Core dimensions defined in src/config/layout.ts (Single Source of Truth) */
-  /* NOTE: --header-height defined in header-system.css (Single Source of Truth) */
-  --nav-height: 64px;
-  --sidebar-width-expanded: 240px;
-  --sidebar-width-collapsed: 64px;
-  --sidebar-width-current: var(--sidebar-width-expanded); /* Dynamic, set by JS */
-  --tap-target: 44px;
-  --nav-padding: 1rem;
-  --header-padding: 1rem 1.5rem;
+  /* ──────────────────────────────────────────────────────────────────────────
+     SPACING / LAYOUT
+     ────────────────────────────────────────────────────────────────────────── */
+  --nav-height:                64px;
+  --sidebar-width-expanded:    240px;
+  --sidebar-width-collapsed:   64px;
+  --sidebar-width-current:     var(--sidebar-width-expanded);
+  --tap-target:                44px;
+  --nav-padding:               1rem;
+  --header-padding:            1rem 1.5rem;
 
-  /* Motion */
+  /* ──────────────────────────────────────────────────────────────────────────
+     MOTION
+     ────────────────────────────────────────────────────────────────────────── */
   --motion-fast: 150ms;
   --motion-base: 250ms;
-  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-out:    cubic-bezier(0, 0, 0.2, 1);
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
-  /* Z-index layers */
-  --z-nav: 40;
-  --z-header: 50;
-  --z-popover: 60;
-  --z-modal: 70;
-  --z-toast: 80;
-  --z-tooltip-sidebar: 100;
+  /* ──────────────────────────────────────────────────────────────────────────
+     Z-INDEX LAYERS
+     ────────────────────────────────────────────────────────────────────────── */
+  --z-nav:              40;
+  --z-header:           50;
+  --z-popover:          60;
+  --z-modal:            70;
+  --z-toast:            80;
+  --z-tooltip-sidebar:  100;
 
-  /* ============================================================================
-     HOVER LIFT — tokenised micro-interaction distances
-     ============================================================================ */
-  --hover-lift-distance: 2px;
+  /* ──────────────────────────────────────────────────────────────────────────
+     MICRO-INTERACTION
+     ────────────────────────────────────────────────────────────────────────── */
+  --hover-lift-distance:        2px;
   --hover-lift-subtle-distance: 0.5px;
 
-  /* ============================================================================
+  /* ──────────────────────────────────────────────────────────────────────────
      SKELETON TOKENS
-     Used by .animate-skeleton in animation-tokens.css
-     ============================================================================ */
-  --skeleton-base: 214, 32%, 80%;
-  --skeleton-highlight: 210, 40%, 92%;
+     ────────────────────────────────────────────────────────────────────────── */
+  --skeleton-base:      150, 15%, 88%;
+  --skeleton-highlight: 150, 20%, 94%;
 
-  /* ============================================================================
-     SHADOWS — light mode
-     tone-matched to warm surfaces; dark mode overrides below in .dark {}
-     ============================================================================ */
-  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.08);
-  --shadow-nav:  0 4px 16px rgba(0, 0, 0, 0.10);
-  --shadow-glass: 0 20px 40px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.08);
+  /* ──────────────────────────────────────────────────────────────────────────
+     SHADOWS — light mode, tone-matched to warm-sage surface
+     ────────────────────────────────────────────────────────────────────────── */
+  --shadow-soft:  0 2px 8px rgba(15, 46, 30, 0.07);
+  --shadow-nav:   0 4px 16px rgba(15, 46, 30, 0.09);
+  --shadow-glass: 0 20px 40px rgba(15, 46, 30, 0.11), 0 8px 16px rgba(15, 46, 30, 0.07);
 
-  /* ============================================================================
-     GLASS MATERIAL — SINGLE SOURCE OF TRUTH (iOS 26 Liquid Glass)
-     Values derived from surface tokens via color-mix() so they follow
-     any future palette changes automatically.
-     ============================================================================ */
+  /* ──────────────────────────────────────────────────────────────────────────
+     GLASS MATERIAL — single source of truth
+     color-mix(in oklch) so glass follows any future surface palette changes
+     ────────────────────────────────────────────────────────────────────────── */
+  --glass-bg:               color-mix(in oklch, hsl(var(--background)) 60%, transparent);
+  --glass-border:           rgba(0, 0, 0, 0.06);
+  --glass-blur:             12px;
+  --glass-saturate:         1.8;
 
-  /* Light Mode — Soft Cream (Educational & Warm) */
-  --glass-bg:              color-mix(in oklch, hsl(var(--background)) 60%, transparent);
-  --glass-border:          rgba(0, 0, 0, 0.06);
-  --glass-blur:            12px;
-  --glass-saturate:        1.8;
-
-  --glass-material-bg:     color-mix(in oklch, hsl(var(--card)) 95%, transparent);
-  --glass-material-border: rgba(0, 0, 0, 0.06);
-  --glass-material-blur:   20px;
+  --glass-material-bg:      color-mix(in oklch, hsl(var(--card)) 95%, transparent);
+  --glass-material-border:  rgba(0, 0, 0, 0.06);
+  --glass-material-blur:    20px;
   --glass-material-saturate: 180%;
-  --glass-material-shadow: var(--shadow-glass);
-
-  /* ============================================================================
-     P3 WIDE-GAMUT (SOTA 2026)
-     Applied on displays that support Display P3 — no fallback needed,
-     browsers ignore unknown @media blocks gracefully.
-     ============================================================================ */
+  --glass-material-shadow:  var(--shadow-glass);
 }
 
+/* ────────────────────────────────────────────────────────────────────────────
+   P3 WIDE-GAMUT (SOTA 2026)
+   Richer emerald on Display P3 screens (MacBook Pro, iPhone 15+)
+   ────────────────────────────────────────────────────────────────────────── */
 @media (color-gamut: p3) {
   :root {
-    --primary: 224 76% 48%; /* keep HSL as base; P3 override below */
-    /* Vivid blue — perceptually richer on P3 displays */
-    --glass-bg:   color-mix(in oklch, oklch(0.98 0.005 220) 60%, transparent);
+    /* Perceptually vivid emerald — oklch(0.45 0.14 162) */
+    --glass-bg: color-mix(in oklch, oklch(0.97 0.008 155) 60%, transparent);
   }
 }
 
+/* ────────────────────────────────────────────────────────────────────────────
+   DARK MODE
+   Neutral slate (no blue tint), emerald primary shifted for dark surfaces
+   ────────────────────────────────────────────────────────────────────────── */
 .dark {
-  /* Colors - Dark mode (WCAG AA Compliant) */
-  --background: 222 47% 11%;
-  --foreground: 214 32% 91%; /* Slate 200 #E2E8F0 - Readable Light Gray */
-  --card: 220 40% 17%; /* #1E2330 - Slightly lighter with blue tint (Layer 2) */
-  --card-foreground: 214 32% 91%;
-  --popover: 216 30% 26%; /* #343A4D - Most elevated surface (Layer 4) */
-  --popover-foreground: 214 32% 91%;
-  --primary: 213 65% 68%; /* Reduced saturation from 94% to 65% for dark mode */
-  --primary-foreground: 222 47% 11%;
+  --background:            220 13% 10%;  /* #181c1b — near-black, neutral warm-dark */
+  --foreground:            150 12% 88%;  /* #dce8e3 — sage-tinted light */
+  --card:                  220 12% 14%;  /* #1e2220 — subtle lift from bg */
+  --card-foreground:       150 12% 88%;
+  --popover:               220 11% 19%;
+  --popover-foreground:    150 12% 88%;
 
-  /* Primary RGB (for rgba() usage in premium effects) */
-  --primary-rgb: 96, 165, 250; /* hsl(213 94% 68%) */
-  --secondary: 217 33% 25%;
-  --secondary-foreground: 214 32% 91%;
-  --muted: 217 33% 25%;
-  --muted-foreground: 215 20% 65%; /* raised from 60% → 65% for WCAG AA on muted bg (≥4.5:1) */
-  --accent: 213 60% 60%;
-  --accent-foreground: 222 47% 11%;
-  --destructive: 0 72% 51%;
+  /* Emerald lightened for dark surfaces — contrast ≥4.5:1 on --card */
+  --primary:               158 52% 58%;  /* #52bf93 */
+  --primary-foreground:    220 13% 10%;
+
+  --primary-rgb:           82, 191, 147; /* hsl(158 52% 58%) */
+
+  --secondary:             220 10% 18%;
+  --secondary-foreground:  150 12% 88%;
+  --muted:                 220 10% 18%;
+  --muted-foreground:      150 8% 60%;
+  --accent:                158 45% 50%;
+  --accent-foreground:     220 13% 10%;
+  --destructive:           0 72% 51%;
   --destructive-foreground: 0 0% 100%;
-  --warning: 38 92% 50%;
-  --warning-foreground: 0 0% 0%;
-  --info: 199 89% 48%;
-  --info-foreground: 0 0% 100%;
-  --border: 217 33% 25%;
-  --input: 217 33% 25%;
-  --ring: 213 65% 68%; /* Match reduced saturation primary */
+  --warning:               38 92% 50%;
+  --warning-foreground:    0 0% 0%;
+  --info:                  199 89% 48%;
+  --info-foreground:       0 0% 100%;
+  --border:                220 10% 20%;
+  --input:                 220 10% 20%;
+  --ring:                  158 52% 58%;
 
-  /* ============================================================================
-     SKELETON TOKENS — dark mode
-     ============================================================================ */
-  --skeleton-base: 217, 33%, 22%;
-  --skeleton-highlight: 217, 33%, 30%;
+  --skeleton-base:      220, 10%, 18%;
+  --skeleton-highlight: 220, 10%, 25%;
 
-  /* ============================================================================
-     SHADOWS — dark mode (higher opacity, perceptually correct)
-     ============================================================================ */
   --shadow-soft:  0 2px 8px rgba(0, 0, 0, 0.25);
   --shadow-nav:   0 4px 16px rgba(0, 0, 0, 0.35);
   --shadow-glass: 0 20px 40px rgba(0, 0, 0, 0.40), 0 8px 16px rgba(0, 0, 0, 0.25);
 
-  /* ============================================================================
-     GLASS MATERIAL — dark mode
-     Derived from --card and --background surface tokens.
-     ============================================================================ */
   --glass-bg:              color-mix(in oklch, hsl(var(--background)) 60%, transparent);
-  --glass-border:          rgba(255, 255, 255, 0.10);
-
+  --glass-border:          rgba(255, 255, 255, 0.08);
   --glass-material-bg:     color-mix(in oklch, hsl(var(--card)) 95%, transparent);
-  --glass-material-border: rgba(255, 255, 255, 0.10);
+  --glass-material-border: rgba(255, 255, 255, 0.08);
   --glass-material-shadow: var(--shadow-glass);
 }

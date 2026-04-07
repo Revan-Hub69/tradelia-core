@@ -5,6 +5,15 @@ module.exports = {
   ],
   theme: {
     extend: {
+      /* ────────────────────────────────────────────────────────────────────
+         FONT FAMILIES — driven by CSS variables injected by next/font.
+         Fallback stacks mirror next/font fallback arrays for zero-shift.
+         ──────────────────────────────────────────────────────────────────── */
+      fontFamily: {
+        body:    ['var(--font-body)',    'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['var(--font-display)', 'Georgia',       'ui-serif',  'serif'],
+        mono:    ['var(--font-mono)',    'ui-monospace',  'SFMono-Regular', 'Menlo', 'monospace'],
+      },
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
@@ -37,8 +46,8 @@ module.exports = {
           foreground: 'hsl(var(--card-foreground))'
         },
         border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
+        input:  'hsl(var(--input))',
+        ring:   'hsl(var(--ring))',
         chart: {
           '1': 'hsl(var(--chart-1))',
           '2': 'hsl(var(--chart-2))',
