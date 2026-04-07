@@ -105,7 +105,8 @@
   }
 }
 
-/* Skeleton Loading - For content placeholders */
+/* Skeleton Loading — uses --skeleton-base and --skeleton-highlight
+   defined in tokens.css (both light and dark mode variants) */
 @keyframes skeleton-shimmer {
   0% {
     background-position: 200% 0;
@@ -146,12 +147,13 @@
 .animate-skeleton {
   background: linear-gradient(
     90deg,
-    rgba(var(--skeleton-base), 0.1) 0%,
-    rgba(var(--skeleton-highlight), 0.2) 50%,
-    rgba(var(--skeleton-base), 0.1) 100%
+    hsl(var(--skeleton-base) / 0.6) 0%,
+    hsl(var(--skeleton-highlight) / 0.9) 50%,
+    hsl(var(--skeleton-base) / 0.6) 100%
   );
   background-size: 200% 100%;
-  animation: skeleton-shimmer 1.5s infinite;
+  animation: skeleton-shimmer var(--animation-duration-slow) infinite
+    var(--animation-ease-in-out);
 }
 
 /* ============================================
@@ -165,30 +167,14 @@
   animation: fade-in-up var(--animation-duration-slower) var(--animation-ease-out) forwards;
 }
 
-.stagger-item:nth-child(1) {
-  animation-delay: 50ms;
-}
-.stagger-item:nth-child(2) {
-  animation-delay: 150ms;
-}
-.stagger-item:nth-child(3) {
-  animation-delay: 250ms;
-}
-.stagger-item:nth-child(4) {
-  animation-delay: 350ms;
-}
-.stagger-item:nth-child(5) {
-  animation-delay: 450ms;
-}
-.stagger-item:nth-child(6) {
-  animation-delay: 550ms;
-}
-.stagger-item:nth-child(7) {
-  animation-delay: 650ms;
-}
-.stagger-item:nth-child(8) {
-  animation-delay: 750ms;
-}
+.stagger-item:nth-child(1) { animation-delay: 50ms; }
+.stagger-item:nth-child(2) { animation-delay: 150ms; }
+.stagger-item:nth-child(3) { animation-delay: 250ms; }
+.stagger-item:nth-child(4) { animation-delay: 350ms; }
+.stagger-item:nth-child(5) { animation-delay: 450ms; }
+.stagger-item:nth-child(6) { animation-delay: 550ms; }
+.stagger-item:nth-child(7) { animation-delay: 650ms; }
+.stagger-item:nth-child(8) { animation-delay: 750ms; }
 
 /* ============================================
    ACCESSIBILITY
@@ -205,7 +191,6 @@
     scroll-behavior: auto !important;
   }
 
-  /* Disable all custom animations */
   .animate-pulse,
   .animate-fade-in-up,
   .animate-fade-in-scale,
@@ -224,7 +209,6 @@
    PERFORMANCE OPTIMIZATIONS
    ============================================ */
 
-/* Promote animated elements to their own layer */
 .animate-pulse,
 .animate-fade-in-up,
 .animate-fade-in-scale,
@@ -233,7 +217,7 @@
   will-change: transform, opacity;
 }
 
-/* Remove will-change after animation completes */
+/* Remove will-change when idle */
 .animate-pulse:not(:hover),
 .animate-fade-in-up:not(:hover),
 .animate-fade-in-scale:not(:hover),

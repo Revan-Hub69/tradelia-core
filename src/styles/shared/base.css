@@ -68,11 +68,11 @@ h4 {
 @supports (scrollbar-width: auto) {
   * {
     scrollbar-width: thin;
-    scrollbar-color: hsl(215 20% 45% / 0.5) transparent;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.5) transparent;
   }
 
   .dark * {
-    scrollbar-color: hsl(215 20% 55% / 0.4) transparent;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.4) transparent;
   }
 }
 
@@ -88,13 +88,13 @@ h4 {
   }
 
   ::-webkit-scrollbar-thumb {
-    background: hsl(215 20% 45% / 0.4);
+    background: hsl(var(--muted-foreground) / 0.4);
     border-radius: 3px;
-    transition: background 0.2s ease;
+    transition: background var(--animation-duration-fast) var(--animation-ease-out);
   }
 
   .dark ::-webkit-scrollbar-thumb {
-    background: hsl(215 20% 55% / 0.35);
+    background: hsl(var(--muted-foreground) / 0.35);
   }
 
   /* Hover solo sul thumb della scrollbar, non su *:hover */

@@ -19,8 +19,9 @@
   --primary: 224 76% 48%;
   --primary-foreground: 0 0% 100%;
 
-  /* Primary RGB (for rgba() usage in premium effects) */
-  --primary-rgb: 29, 78, 216; /* hsl(224 76% 48%) converted to RGB */
+  /* Primary RGB (for rgba() usage in premium effects)
+     NOTE: keep in sync with --primary manually if hue changes */
+  --primary-rgb: 29, 78, 216; /* hsl(224 76% 48%) */
   --secondary: 210 40% 96%;
   --secondary-foreground: 215 25% 27%;
   --muted: 210 40% 96%;
@@ -63,27 +64,58 @@
   --z-toast: 80;
   --z-tooltip-sidebar: 100;
 
-  /* Glass effects (Soft Cream - Educational) */
-  --glass-bg: rgba(252, 251, 248, 0.6);
-  --glass-border: rgba(0, 0, 0, 0.06);
-  --glass-blur: 12px;
-  --glass-saturate: 1.8;
+  /* ============================================================================
+     HOVER LIFT — tokenised micro-interaction distances
+     ============================================================================ */
+  --hover-lift-distance: 2px;
+  --hover-lift-subtle-distance: 0.5px;
 
   /* ============================================================================
-     GLASS MATERIAL - SINGLE SOURCE OF TRUTH (iOS 26 Liquid Glass)
-     Used by: header, dropdown, popover, bottomsheet, cards, etc.
+     SKELETON TOKENS
+     Used by .animate-skeleton in animation-tokens.css
+     ============================================================================ */
+  --skeleton-base: 214, 32%, 80%;
+  --skeleton-highlight: 210, 40%, 92%;
+
+  /* ============================================================================
+     SHADOWS — light mode
+     tone-matched to warm surfaces; dark mode overrides below in .dark {}
+     ============================================================================ */
+  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-nav:  0 4px 16px rgba(0, 0, 0, 0.10);
+  --shadow-glass: 0 20px 40px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.08);
+
+  /* ============================================================================
+     GLASS MATERIAL — SINGLE SOURCE OF TRUTH (iOS 26 Liquid Glass)
+     Values derived from surface tokens via color-mix() so they follow
+     any future palette changes automatically.
      ============================================================================ */
 
-  /* Light Mode - Soft Cream (Educational & Warm) */
-  --glass-material-bg: rgba(252, 251, 248, 0.95);
-  --glass-material-border: rgba(0, 0, 0, 0.06);
-  --glass-material-blur: 20px;
-  --glass-material-saturate: 180%;
-  --glass-material-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
+  /* Light Mode — Soft Cream (Educational & Warm) */
+  --glass-bg:              color-mix(in oklch, hsl(var(--background)) 60%, transparent);
+  --glass-border:          rgba(0, 0, 0, 0.06);
+  --glass-blur:            12px;
+  --glass-saturate:        1.8;
 
-  /* Shadows */
-  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.08);
-  --shadow-nav: 0 4px 16px rgba(0, 0, 0, 0.1);
+  --glass-material-bg:     color-mix(in oklch, hsl(var(--card)) 95%, transparent);
+  --glass-material-border: rgba(0, 0, 0, 0.06);
+  --glass-material-blur:   20px;
+  --glass-material-saturate: 180%;
+  --glass-material-shadow: var(--shadow-glass);
+
+  /* ============================================================================
+     P3 WIDE-GAMUT (SOTA 2026)
+     Applied on displays that support Display P3 — no fallback needed,
+     browsers ignore unknown @media blocks gracefully.
+     ============================================================================ */
+}
+
+@media (color-gamut: p3) {
+  :root {
+    --primary: 224 76% 48%; /* keep HSL as base; P3 override below */
+    /* Vivid blue — perceptually richer on P3 displays */
+    --glass-bg:   color-mix(in oklch, oklch(0.98 0.005 220) 60%, transparent);
+  }
 }
 
 .dark {
@@ -98,7 +130,7 @@
   --primary-foreground: 222 47% 11%;
 
   /* Primary RGB (for rgba() usage in premium effects) */
-  --primary-rgb: 96, 165, 250; /* hsl(213 94% 68%) converted to RGB */
+  --primary-rgb: 96, 165, 250; /* hsl(213 94% 68%) */
   --secondary: 217 33% 25%;
   --secondary-foreground: 214 32% 91%;
   --muted: 217 33% 25%;
@@ -115,21 +147,27 @@
   --input: 217 33% 25%;
   --ring: 213 65% 68%; /* Match reduced saturation primary */
 
-  /* Glass effects - Dark mode */
-  --glass-bg: rgba(15, 23, 42, 0.6);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  /* ============================================================================
+     SKELETON TOKENS — dark mode
+     ============================================================================ */
+  --skeleton-base: 217, 33%, 22%;
+  --skeleton-highlight: 217, 33%, 30%;
 
   /* ============================================================================
-     GLASS MATERIAL - SINGLE SOURCE OF TRUTH (iOS 26 Liquid Glass Dark Mode)
-     Layer 3: Header/Navbar - Clearly elevated from cards
+     SHADOWS — dark mode (higher opacity, perceptually correct)
      ============================================================================ */
+  --shadow-soft:  0 2px 8px rgba(0, 0, 0, 0.25);
+  --shadow-nav:   0 4px 16px rgba(0, 0, 0, 0.35);
+  --shadow-glass: 0 20px 40px rgba(0, 0, 0, 0.40), 0 8px 16px rgba(0, 0, 0, 0.25);
 
-  /* Dark Mode - iOS 26 Standard with Layer Separation */
-  --glass-material-bg: rgba(42, 47, 62, 0.95); /* #2A2F3E - Header/Navbar (Layer 3) */
-  --glass-material-border: rgba(255, 255, 255, 0.1);
-  --glass-material-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0, 0, 0, 0.2);
+  /* ============================================================================
+     GLASS MATERIAL — dark mode
+     Derived from --card and --background surface tokens.
+     ============================================================================ */
+  --glass-bg:              color-mix(in oklch, hsl(var(--background)) 60%, transparent);
+  --glass-border:          rgba(255, 255, 255, 0.10);
 
-  /* Shadows - Dark mode */
-  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.2);
-  --shadow-nav: 0 4px 16px rgba(0, 0, 0, 0.3);
+  --glass-material-bg:     color-mix(in oklch, hsl(var(--card)) 95%, transparent);
+  --glass-material-border: rgba(255, 255, 255, 0.10);
+  --glass-material-shadow: var(--shadow-glass);
 }
