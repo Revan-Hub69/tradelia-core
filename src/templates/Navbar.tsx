@@ -4,120 +4,121 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 
 import { LocaleSwitcher } from '@/components/LocaleSwitcher';
-import { Button } from '@/components/ui/button';
 import { SectionContainer } from '@/components/ui/SectionContainer';
-import { getLandingSectionHref, landingSections } from '@/config/tradescope';
+import { getLandingSectionHref, landingSections } from '@/config/landing';
+import { useScrollDirection } from '@/hooks/useScrollDirection';
 import { usePathname } from '@/libs/i18nNavigation';
 import { cn } from '@/utils/Helpers';
-import { throttle } from '@/utils/throttle';
 
 import { Logo } from './Logo';
 
-const useFocusTrap = (isOpen: boolean, containerRef: React.RefObject<HTMLDivElement>) => {
+const useFocusTrap = (
+  isOpen: boolean,
+  containerRef: React.RefObject<HTMLDivElement>,
+) => {
   useEffect(() => {
-    if (!isOpen || !containerRef.current) {
- return;
-}
+    if (!isOpen || !containerRef.current) return;
     const container = containerRef.current;
-    const focusableElements = container.querySelectorAll(
+    const focusable = container.querySelectorAll<HTMLElement>(
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
     );
-    const firstElement = focusableElements[0] as HTMLElement;
-    const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+    const first = focusable[0];
+    const last  = focusable[focusable.length - 1];
 
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Tab') {
-        if (e.shiftKey) {
-          if (document.activeElement === firstElement) {
-            e.preventDefault();
-            lastElement?.focus();
-          }
-        } else if (document.activeElement === lastElement) {
+        if (e.shiftKey ? document.activeElement === first : document.activeElement === last) {
           e.preventDefault();
-          firstElement?.focus();
+          (e.shiftKey ? last : first)?.focus();
         }
       }
-
       if (e.key === 'Escape') {
-        const closeButton = container.querySelector('[data-close-menu]') as HTMLElement;
-        closeButton?.click();
+        (container.querySelector('[data-close-menu]') as HTMLElement)?.click();
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    setTimeout(() => firstElement?.focus(), 100);
-
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener('keydown', onKey);
+    setTimeout(() => first?.focus(), 100);
+    return () => document.removeEventListener('keydown', onKey);
   }, [isOpen, containerRef]);
 };
 
 export const Navbar = () => {
-  const t = useTranslations('Navbar') as (key: string) => string;
+  const t      = useTranslations('Navbar') as (key: string) => string;
   const locale = useLocale();
   const pathname = usePathname();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  useFocusTrap(isMenuOpen, menuRef);
+  // ── Scroll state (landing variant) ────────────────────────────────
+  // Hide-on-scroll: mobile + tablet (< 1024px). Desktop: always visible.
+  const [isTabletOrMobile, setIsTabletOrMobile] = useState(false);
+  const [isAtScrollEdge, setIsAtScrollEdge] = useState(true);
 
+  const { isScrolled, isHeaderVisible } = useScrollDirection({ threshold: 15 });
+
+  // Breakpoint detection: tablet-or-mobile = < 1024px
   useEffect(() => {
-    const handleScroll = throttle(() => setIsScrolled(window.scrollY > 20), 100);
+    const check = () => setIsTabletOrMobile(window.innerWidth < 1024);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  // Scroll edge detection for compact-edge blur boost
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop    = window.scrollY || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight;
+      const clientHeight = document.documentElement.clientHeight;
+      setIsAtScrollEdge(scrollTop < 10 || scrollTop + clientHeight >= scrollHeight - 10);
+    };
+    handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Lock body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? 'hidden' : '';
-    return () => {
-      document.body.style.overflow = '';
-    };
+    return () => { document.body.style.overflow = ''; };
   }, [isMenuOpen]);
 
+  useFocusTrap(isMenuOpen, menuRef);
+
+  // Hide only on mobile + tablet, never on desktop
+  const shouldHide = isTabletOrMobile && !isHeaderVisible;
+
   const navLinks = landingSections.map(section => ({
-    href: getLandingSectionHref(locale, pathname, section.id),
+    href:  getLandingSectionHref(locale, pathname, section.id),
     label: t(section.navbarLabelKey),
   }));
-  const simulatorHref = getLandingSectionHref(locale, pathname, 'simulator');
-
-  const stripItems = [
-    { label: t('strip_spread'), value: t('strip_spread_value') },
-    { label: t('strip_swap'), value: t('strip_swap_value') },
-    { label: t('strip_fees'), value: t('strip_fees_value') },
-  ];
 
   return (
     <>
-      <div className="fixed inset-x-0 top-0 z-40 border-b border-slate-800/80 bg-slate-950 text-slate-200">
-        <SectionContainer size="wide" className="hidden h-8 items-center justify-between gap-3 sm:flex">
-          {stripItems.map(item => (
-            <div key={item.label} className="flex min-w-0 items-center gap-2">
-              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">{item.label}</span>
-              <span className="truncate text-[11px] text-slate-300">{item.value}</span>
-            </div>
-          ))}
-        </SectionContainer>
-        <div className="flex h-8 items-center justify-center px-4 text-center text-[11px] tracking-[0.16em] text-slate-300 sm:hidden">
-          {t('credibility_bar')}
-        </div>
-      </div>
-
+      {/* ── Main header ── */}
       <header
+        role="banner"
         className={cn(
-          'fixed left-0 right-0 top-8 z-50 transition-all duration-300',
-          isScrolled
-            ? 'border-b border-border/60 bg-background/92 shadow-[0_10px_30px_-24px_rgba(15,23,42,0.45)] backdrop-blur-xl'
-            : 'bg-background/78 backdrop-blur-lg',
+          // Core glass system
+          'header-2026',
+          // Subtle scroll shadow (landing variant — ghost header, NOT header-scrolled)
+          isScrolled && 'header-scrolled-subtle',
+          // Stronger blur at scroll edges
+          isAtScrollEdge && 'header-compact-edge',
+          // Hide/show animation: tablet + mobile only
+          shouldHide ? 'header-hide-animation' : 'header-show-animation',
+          // will-change optimisation
+          isTabletOrMobile ? 'header-will-change-transform' : isAtScrollEdge ? 'header-will-change-effects' : '',
         )}
       >
         <SectionContainer size="wide" className="flex h-14 items-center justify-between sm:h-16">
-          <div className="flex items-center gap-3">
-            <Logo size="md" href="/" />
-            <span className="hidden rounded-full border border-border/60 bg-background px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground lg:inline-flex">
-              {t('product_badge')}
-            </span>
-          </div>
 
+          {/* Logo */}
+          <Logo size="md" href="/" />
+
+          {/* Desktop nav */}
           <nav className="hidden items-center gap-1 md:flex">
             {navLinks.map(link => (
               <a
@@ -130,13 +131,12 @@ export const Navbar = () => {
             ))}
           </nav>
 
+          {/* Desktop right */}
           <div className="hidden items-center gap-3 md:flex">
             <LocaleSwitcher />
-            <Button asChild size="sm" className="h-10 rounded-full px-5 font-mono text-[11px] uppercase tracking-[0.16em]">
-              <a href={simulatorHref}>{t('cta')}</a>
-            </Button>
           </div>
 
+          {/* Mobile hamburger */}
           <div className="flex items-center gap-2 md:hidden">
             <LocaleSwitcher />
             <button
@@ -152,65 +152,40 @@ export const Navbar = () => {
               </div>
             </button>
           </div>
+
         </SectionContainer>
       </header>
 
-      <div className={cn('fixed inset-0 z-50 overflow-x-clip md:hidden', isMenuOpen ? 'pointer-events-auto' : 'pointer-events-none')}>
-        <div
-          className={cn('absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300', isMenuOpen ? 'opacity-100' : 'opacity-0')}
-          onClick={() => setIsMenuOpen(false)}
-          role="button"
-          tabIndex={0}
-          aria-label={t('menu_close_mobile')}
-          onKeyDown={(e) => {
-            if (e.key === 'Escape') {
- setIsMenuOpen(false);
-}
-          }}
-        />
+      {/* Spacer: 56px mobile / 64px desktop */}
+      <div className="h-14 sm:h-16" />
 
+      {/* ── Mobile fullscreen menu ── */}
+      {isMenuOpen && (
         <div
           ref={menuRef}
-          className={cn('absolute bottom-0 right-0 top-0 w-[82%] max-w-xs border-l border-border/60 bg-background shadow-2xl transition-transform duration-300 ease-out', isMenuOpen ? 'translate-x-0' : 'translate-x-full')}
+          className="fixed inset-0 z-40 flex flex-col bg-background/95 pt-16 backdrop-blur-xl md:hidden"
         >
-          <div className="flex h-14 items-center justify-between border-b border-border/40 px-5">
-            <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">{t('menu_title')}</span>
-            <button
-              type="button"
-              data-close-menu
-              onClick={() => setIsMenuOpen(false)}
-              className="flex size-8 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted"
-              aria-label={t('menu_close')}
-            >
-              <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-
-          <nav className="flex flex-col p-3">
-            {navLinks.map((link, i) => (
+          <nav className="flex flex-col gap-1 px-4 pt-4">
+            {navLinks.map(link => (
               <a
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsMenuOpen(false)}
-                className="rounded-2xl px-4 py-3.5 font-mono text-[11px] uppercase tracking-[0.18em] text-foreground/80 transition-all hover:bg-muted"
-                style={{ transform: isMenuOpen ? 'translateX(0)' : 'translateX(16px)', opacity: isMenuOpen ? 1 : 0, transition: `all 280ms ease-out ${i * 40 + 80}ms` }}
+                className="rounded-xl px-4 py-3 font-mono text-sm uppercase tracking-[0.18em] text-foreground/80 transition-colors hover:bg-muted hover:text-foreground"
               >
                 {link.label}
               </a>
             ))}
-
-            <Button asChild className="mt-3 h-11 rounded-full font-mono text-[11px] uppercase tracking-[0.16em]">
-              <a href={simulatorHref} onClick={() => setIsMenuOpen(false)}>
-                {t('cta')}
-              </a>
-            </Button>
           </nav>
+          <button
+            data-close-menu
+            type="button"
+            onClick={() => setIsMenuOpen(false)}
+            className="sr-only"
+            aria-label={t('menu_close')}
+          />
         </div>
-      </div>
-
-      <div className="h-[88px] lg:h-[92px]" />
+      )}
     </>
   );
 };

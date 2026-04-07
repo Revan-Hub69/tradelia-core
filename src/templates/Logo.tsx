@@ -9,14 +9,14 @@ type LogoProps = {
   size?: 'sm' | 'md' | 'lg';
   href?: string;
   className?: string;
-  asChild?: boolean; // When true, don't wrap in Link (already inside a Link)
+  asChild?: boolean;
 };
 
 /**
- * Tradelia Logo - Memorabile
+ * Tradelia Logo
  *
- * Testo con gradient diagonale: blu in basso, grigio in alto
- * Effetto underline moderno all'hover
+ * Wordmark con gradient diagonale sharp 45°
+ * Usa le CSS var del tema — light e dark corretti automaticamente.
  */
 export const Logo = ({ isTextHidden = false, size = 'md', href, className, asChild = false }: LogoProps) => {
   const sizes = {
@@ -44,16 +44,18 @@ export const Logo = ({ isTextHidden = false, size = 'md', href, className, asChi
           strokeWidth="3"
           strokeLinecap="round"
         />
-        <circle cx="22" cy="11" r="2" className="fill-accent" />
+        {/* Accent dot — usa fill-primary/60 invece di fill-accent per coerenza palette */}
+        <circle cx="22" cy="11" r="2" className="fill-white/60" />
       </svg>
 
-      {/* Wordmark con taglio diagonale SHARP 45° */}
+      {/* Wordmark con gradient diagonale SHARP 45° — colori dal tema */}
       {!isTextHidden && (
         <span className="relative flex items-center">
           <span
             className={cn(`font-bold tracking-tight leading-none ${text}`)}
             style={{
-              background: 'linear-gradient(45deg, #64748B 50%, #1D4ED8 50%)',
+              background:
+                'linear-gradient(45deg, hsl(var(--foreground)) 50%, hsl(var(--primary)) 50%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
@@ -63,14 +65,13 @@ export const Logo = ({ isTextHidden = false, size = 'md', href, className, asChi
           </span>
           {/* Underline animato all'hover */}
           <span
-            className="absolute -bottom-0.5 left-0 h-0.5 w-0 bg-gradient-to-r from-primary to-accent transition-all duration-300 group-hover:w-full"
+            className="absolute -bottom-0.5 left-0 h-0.5 w-0 bg-gradient-to-r from-primary to-primary/60 transition-all duration-300 group-hover:w-full"
           />
         </span>
       )}
     </div>
   );
 
-  // Don't wrap in Link if already inside a Link (asChild) or no href provided
   if (href && !asChild) {
     return <Link href={href}>{content}</Link>;
   }
@@ -79,21 +80,22 @@ export const Logo = ({ isTextHidden = false, size = 'md', href, className, asChi
 };
 
 /**
- * Logo Icon Only - per favicon
+ * Logo Icon Only — per favicon / avatar
  */
 export const LogoIcon = () => (
   <svg
     viewBox="0 0 32 32"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    aria-label="Tradelia"
   >
-    <rect width="32" height="32" rx="8" fill="#1D4ED8" />
+    <rect width="32" height="32" rx="8" className="fill-primary" />
     <path
       d="M8 11h16M16 11v12"
       stroke="white"
       strokeWidth="3"
       strokeLinecap="round"
     />
-    <circle cx="22" cy="11" r="2" fill="#059669" />
+    <circle cx="22" cy="11" r="2" className="fill-white/60" />
   </svg>
 );

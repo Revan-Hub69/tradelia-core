@@ -7,7 +7,7 @@ const localePrefix = 'as-needed' as const;
  */
 export const AppConfig = {
   name: 'Tradelia',
-  productName: 'TradeScope',
+  productName: 'Tradelia',
   supportEmail: 'support@tradelia.org',
   defaultCurrency: 'EUR',
   routes: {

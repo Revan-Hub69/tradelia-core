@@ -2,221 +2,61 @@
 
 import { useTranslations } from 'next-intl';
 
-import { Button } from '@/components/ui/button';
 import { SectionContainer } from '@/components/ui/SectionContainer';
-import {
-  heroChartAxisTicks,
-  heroChartBars,
-  heroContextChipKeys,
-  heroMonitorRows,
-} from '@/config/tradescope';
+import { InteractiveSimulator } from '@/features/landing/InteractiveSimulator';
 
-type ChartLabels = {
-  net: string;
-  drag: string;
-  sameUnderlying: string;
-  cfd: string;
-  cfdSub: string;
-  futures: string;
-  futuresSub: string;
-  options: string;
-  optionsSub: string;
-  cash: string;
-  cashSub: string;
-};
-
-const CostBarChart = ({ labels }: { labels: ChartLabels }) => (
-  <svg
-    viewBox="0 0 600 220"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    className="h-auto w-full max-w-2xl"
-    aria-hidden="true"
-  >
-    <line x1="60" y1="170" x2="580" y2="170" stroke="currentColor" strokeOpacity="0.14" strokeWidth="1" />
-    <line x1="60" y1="130" x2="580" y2="130" stroke="currentColor" strokeOpacity="0.1" strokeWidth="1" strokeDasharray="4 4" />
-    <line x1="60" y1="90" x2="580" y2="90" stroke="currentColor" strokeOpacity="0.1" strokeWidth="1" strokeDasharray="4 4" />
-    <line x1="60" y1="50" x2="580" y2="50" stroke="currentColor" strokeOpacity="0.1" strokeWidth="1" strokeDasharray="4 4" />
-    <line x1="60" y1="30" x2="60" y2="170" stroke="currentColor" strokeOpacity="0.14" strokeWidth="1" />
-
-    {heroChartAxisTicks.map(tick => (
-      <text
-        key={tick.label}
-        x="52"
-        y={tick.y}
-        textAnchor="end"
-        style={{ fontSize: '8px', fill: 'currentColor', opacity: 0.5 }}
-      >
-        {tick.label}
-      </text>
-    ))}
-
-    {heroChartBars.map(bar => (
-      <g key={bar.key}>
-        <rect x={bar.x} y="51" width="44" height="119" rx="3" fill="currentColor" fillOpacity="0.08" />
-        <rect x={bar.x} y={bar.netY} width="44" height={bar.netHeight} rx="3" fill={bar.netFill} fillOpacity="0.78" />
-        <rect x={bar.x} y="51" width="44" height={bar.dragHeight} rx="2" fill={bar.dragFill} fillOpacity="0.9" />
-        <text x={bar.x + 22} y="188" textAnchor="middle" style={{ fontSize: '10px', fontWeight: 700, fill: 'currentColor', opacity: 0.9 }}>
-          {labels[bar.key]}
-        </text>
-        <text x={bar.x + 22} y="199" textAnchor="middle" style={{ fontSize: '7px', fill: 'currentColor', opacity: 0.48 }}>
-          {labels[bar.subKey]}
-        </text>
-      </g>
-    ))}
-
-    <rect x="500" y="14" width="9" height="9" rx="1" fill="#60A5FA" fillOpacity="0.8" />
-    <text x="513" y="22" style={{ fontSize: '8px', fill: 'currentColor', opacity: 0.58 }}>{labels.net}</text>
-    <rect x="500" y="28" width="9" height="9" rx="1" fill="#F97316" fillOpacity="0.9" />
-    <text x="513" y="36" style={{ fontSize: '8px', fill: 'currentColor', opacity: 0.58 }}>{labels.drag}</text>
-
-    <text x="320" y="15" textAnchor="middle" style={{ fontSize: '8px', fill: 'currentColor', opacity: 0.3, letterSpacing: '0.06em' }}>
-      {labels.sameUnderlying}
-    </text>
-  </svg>
-);
-
-type TradeHeroProps = {
-  broker?: string;
-};
-
-export const TradeHero = ({ broker }: TradeHeroProps) => {
+export const TradeHero = () => {
   const t = useTranslations('TradeHero') as (key: string) => string;
-  const tChart = useTranslations('Chart') as (key: string) => string;
-
-  const chartLabels: ChartLabels = {
-    net: tChart('net'),
-    drag: tChart('drag'),
-    sameUnderlying: tChart('same_underlying'),
-    cfd: tChart('cfd'),
-    cfdSub: tChart('cfd_sub'),
-    futures: tChart('futures'),
-    futuresSub: tChart('futures_sub'),
-    options: tChart('options'),
-    optionsSub: tChart('options_sub'),
-    cash: tChart('cash'),
-    cashSub: tChart('cash_sub'),
-  };
-
-  const tapeItems = [
-    { label: t('tape_asset_label'), value: t('tape_asset_value') },
-    { label: t('tape_strategy_label'), value: t('tape_strategy_value') },
-    { label: t('tape_cost_label'), value: t('tape_cost_value') },
-  ];
-
-  const trustPoints = [t('trust_point_1'), t('trust_point_2'), t('trust_point_3')];
-  const profileRows = heroMonitorRows.map(row => ({
-    label: t(row.labelKey),
-    meta: t(row.metaKey),
-    note: t(row.noteKey),
-    dominant: t(row.dominantKey),
-    intensity: row.intensity,
-    barClass: row.barClass,
-  }));
 
   return (
-    <section className="relative overflow-hidden border-b border-border/40 pb-16 pt-20 sm:pb-20 sm:pt-24 md:pb-24 md:pt-28 xl:pb-28 xl:pt-32 2xl:pb-32 2xl:pt-36">
-      <div className="absolute inset-x-0 top-0 h-80 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.18),transparent_48%),radial-gradient(circle_at_top_left,rgba(249,115,22,0.10),transparent_38%)]" />
+    <section
+      id="simulator"
+      className="relative min-h-[calc(100dvh-88px)] overflow-hidden border-b border-border/40"
+    >
+      {/* Subtle ambient gradient — muted, not glowing */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_20%_0%,rgba(59,130,246,0.06),transparent_60%),radial-gradient(ellipse_60%_40%_at_80%_100%,rgba(249,115,22,0.04),transparent_60%)]" />
 
-      <SectionContainer size="wide" className="relative">
-        <div className="grid items-start gap-10 xl:grid-cols-[0.88fr_1.12fr] xl:gap-16 2xl:gap-20">
-          <div className="pt-2">
-            <p className="mb-4 font-mono text-xs font-medium uppercase tracking-[0.24em] text-muted-foreground/60">
-              {t('eyebrow')}
-              {broker && (
-                <span className="ml-2 text-muted-foreground/80">
-                  |
-                  {' '}
-                  {broker}
-                </span>
-              )}
-            </p>
+      <SectionContainer
+        size="wide"
+        className="relative flex min-h-[calc(100dvh-88px)] flex-col justify-center py-16 xl:flex-row xl:items-center xl:gap-16 xl:py-20 2xl:gap-24"
+      >
+        {/* ── LEFT: context anchor ── */}
+        <div className="shrink-0 xl:w-[380px] 2xl:w-[420px]">
+          {/* eyebrow: /50 → /75 for WCAG AA (was 2.1:1, now ≥4.5:1) */}
+          <p className="mb-5 font-mono text-[10px] font-medium uppercase tracking-[0.28em] text-muted-foreground/75">
+            {t('eyebrow')}
+          </p>
 
-            <h1 className="max-w-[13ch] text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl xl:text-[4.35rem] 2xl:text-[4.85rem]">
-              {t('title')}
-            </h1>
+          <h1
+            className="text-3xl font-semibold leading-[1.15] tracking-tight text-foreground sm:text-4xl xl:text-[2.6rem] 2xl:text-5xl"
+            style={{ textWrap: 'balance' } as React.CSSProperties}
+          >
+            {t('title')}
+          </h1>
 
-            <p className="mt-6 max-w-2xl text-base leading-8 text-muted-foreground sm:text-lg">
-              {t('subtitle')}
-            </p>
+          <p className="mt-5 text-sm leading-7 text-muted-foreground sm:text-base sm:leading-8">
+            {t('subtitle')}
+          </p>
 
-            <div className="mt-7 flex flex-wrap gap-2">
-              {heroContextChipKeys.map(key => (
-                <span
-                  key={key}
-                  className="rounded-full border border-border/60 bg-background px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-foreground/75"
-                >
-                  {t(key)}
-                </span>
-              ))}
-            </div>
+          {/* Social proof line: /60 → /75 */}
+          <p className="mt-8 border-t border-border/30 pt-6 text-xs leading-6 text-muted-foreground/75">
+            {t('trust')}
+          </p>
+        </div>
 
-            <div className="mt-8 flex flex-wrap items-center gap-4">
-              <Button asChild size="lg" className="h-12 rounded-full px-8 font-mono text-[11px] uppercase tracking-[0.16em]">
-                <a href="#simulator">{t('cta')}</a>
-              </Button>
-              <span className="text-xs text-muted-foreground/[0.62]">{t('cta_note')}</span>
-            </div>
-
-            <div className="mt-8 rounded-[28px] border border-border/50 bg-card/70 p-5 shadow-[0_18px_45px_-38px_rgba(15,23,42,0.28)] sm:p-6">
-              <p className="text-sm leading-7 text-muted-foreground/[0.76]">
-                {t('trust')}
-              </p>
-              <div className="mt-4 space-y-3">
-                {trustPoints.map(point => (
-                  <div key={point} className="flex items-start gap-3 text-sm leading-6 text-foreground/80">
-                    <span className="mt-2 size-1.5 shrink-0 rounded-full bg-primary" />
-                    <span>{point}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+        {/* ── RIGHT: simulator — the product ── */}
+        <div className="mt-12 min-w-0 flex-1 xl:mt-0">
+          {/* Label: /50 → /75 */}
+          <div className="mb-5 flex items-center gap-3">
+            <div className="h-px flex-1 bg-border/40" />
+            <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground/75">
+              {t('simulator_label')}
+            </span>
+            <div className="h-px flex-1 bg-border/40" />
           </div>
 
-          <div className="rounded-[32px] border border-slate-800 bg-slate-950 p-5 text-slate-100 shadow-[0_30px_80px_-42px_rgba(15,23,42,0.75)] sm:p-6 xl:p-7 2xl:p-8">
-            <div className="grid gap-2 sm:grid-cols-3">
-              {tapeItems.map(item => (
-                <div key={item.label} className="rounded-2xl border border-slate-800 bg-slate-900/80 px-4 py-3">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">{item.label}</p>
-                  <p className="mt-2 text-sm text-slate-200">{item.value}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-5 rounded-[24px] border border-slate-800 bg-slate-900/[0.72] p-4 text-slate-100 sm:p-5">
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">{t('visual_eyebrow')}</p>
-              <div className="mt-4 overflow-x-auto">
-                <CostBarChart labels={chartLabels} />
-              </div>
-            </div>
-
-            <div className="mt-5 rounded-[24px] border border-slate-800 bg-slate-900/[0.58] p-4 sm:p-5">
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">{t('monitor_title')}</p>
-              <div className="mt-4 space-y-4">
-                {profileRows.map(row => (
-                  <div key={row.label} className="grid gap-3 sm:grid-cols-[110px_1fr] sm:items-start">
-                    <div>
-                      <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-slate-300">{row.label}</p>
-                      <p className="mt-1 text-[11px] text-slate-500">{row.meta}</p>
-                    </div>
-                    <div>
-                      <div className="flex items-center justify-between text-[11px] text-slate-400">
-                        <span>{row.dominant}</span>
-                        <span className="font-mono">
-                          {row.intensity}
-                          %
-                        </span>
-                      </div>
-                      <div className="mt-2 h-1.5 rounded-full bg-slate-800">
-                        <div className={`h-1.5 rounded-full ${row.barClass}`} style={{ width: `${row.intensity}%` }} />
-                      </div>
-                      <p className="mt-2 text-xs leading-6 text-slate-400">{row.note}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <p className="mt-4 text-xs leading-6 text-slate-500">{t('visual_note')}</p>
-            </div>
+          <div className="rounded-[32px] border border-border/60 bg-card/80 shadow-[0_24px_60px_-40px_rgba(15,23,42,0.35)]">
+            <InteractiveSimulator />
           </div>
         </div>
       </SectionContainer>

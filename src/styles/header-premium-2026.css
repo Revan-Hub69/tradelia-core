@@ -214,6 +214,12 @@
 
 /* Dark mode handled by --glass-material-bg variable in tokens.css */
 
+/*
+ * .header-scrolled
+ * Dashboard / app shell — ombra forte, separazione netta dal contenuto.
+ * NON usare sulla landing (unauth): troppo invasiva su pagine di contenuto.
+ * Usa .header-scrolled-subtle per la Navbar della landing.
+ */
 .header-scrolled {
   box-shadow:
     0 20px 40px rgba(0, 0, 0, 0.15),
@@ -228,6 +234,25 @@
     0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
+/*
+ * .header-scrolled-subtle
+ * Landing / unauth pages — ombra leggera, ghost header.
+ * Segnala visivamente la separazione senza pesare sul layout.
+ * Pattern: "present but not intrusive" (ghost header).
+ */
+.header-scrolled-subtle {
+  box-shadow:
+    0 1px 0px rgba(0, 0, 0, 0.04),
+    0 2px 8px rgba(0, 0, 0, 0.06);
+  border-radius: 0 0 12px 12px;
+}
+
+.dark .header-scrolled-subtle {
+  box-shadow:
+    0 1px 0px rgba(255, 255, 255, 0.04),
+    0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
 .header-compact-edge {
   backdrop-filter: blur(30px) saturate(200%);
   -webkit-backdrop-filter: blur(30px) saturate(200%);
@@ -238,7 +263,7 @@
 }
 
 /* ============================================================================
-   HEADER ANIMATIONS - Hide/Show on Scroll (Mobile Only)
+   HEADER ANIMATIONS - Hide/Show on Scroll (Mobile + Tablet)
    ============================================================================ */
 
 .header-hide-animation {

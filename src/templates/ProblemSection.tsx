@@ -3,6 +3,7 @@
 import React from 'react';
 import { useTranslations } from 'next-intl';
 
+import { BackToSimulator } from '@/components/ui/BackToSimulator';
 import { FadeIn } from '@/components/ui/scroll-animations';
 import { SectionContainer } from '@/components/ui/SectionContainer';
 
@@ -22,7 +23,8 @@ export const ProblemSection = () => {
         <FadeIn>
           <div className="grid gap-8 xl:grid-cols-[0.88fr_1.12fr] xl:gap-14 2xl:gap-16">
             <div>
-              <p className="mb-3 font-mono text-xs font-medium uppercase tracking-[0.24em] text-muted-foreground/60">
+              {/* eyebrow: /60 → /75 for WCAG AA */}
+              <p className="mb-3 font-mono text-xs font-medium uppercase tracking-[0.24em] text-muted-foreground/75">
                 {t('eyebrow')}
               </p>
 
@@ -50,7 +52,8 @@ export const ProblemSection = () => {
               </div>
 
               <div className="mt-8 max-w-lg rounded-[28px] border border-border/50 bg-background/80 p-5 shadow-[0_16px_40px_-34px_rgba(15,23,42,0.24)]">
-                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/55">
+                {/* card_eyebrow: /55 → /70 */}
+                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70">
                   {t('card_eyebrow')}
                 </p>
                 <p className="mt-4 text-lg font-semibold leading-8 tracking-tight text-foreground">
@@ -63,7 +66,8 @@ export const ProblemSection = () => {
             </div>
 
             <div className="min-w-0 rounded-[32px] border border-border/60 bg-background p-6 shadow-[0_24px_60px_-42px_rgba(15,23,42,0.38)] sm:p-7 xl:p-8">
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/55">
+              {/* matrix_title: /55 → /70 */}
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70">
                 {t('matrix_title')}
               </p>
 
@@ -120,6 +124,8 @@ export const ProblemSection = () => {
               </div>
             </div>
           </div>
+
+          <BackToSimulator />
         </FadeIn>
       </SectionContainer>
     </section>

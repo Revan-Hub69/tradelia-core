@@ -4,6 +4,7 @@ import '@/styles/custom-scrollbar-2026.css';
 
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Inter, Instrument_Serif, Geist_Mono } from 'next/font/google';
 import type { Metadata, Viewport } from 'next';
 import NextTopLoader from 'nextjs-toploader';
 
@@ -11,68 +12,70 @@ import { RuntimeReady } from '@/components/runtime/RuntimeReady';
 import { ServiceWorkerCleanup } from '@/components/ServiceWorkerCleanup';
 import { WebVitalsMonitor } from '@/components/WebVitalsMonitor';
 
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-body',
+  display: 'swap',
+  fallback: ['ui-sans-serif', 'system-ui', 'sans-serif'],
+});
+
+const instrumentSerif = Instrument_Serif({
+  subsets: ['latin'],
+  weight: ['400'],
+  style: ['normal', 'italic'],
+  variable: '--font-display',
+  display: 'swap',
+  fallback: ['Georgia', 'ui-serif', 'serif'],
+});
+
+const geistMono = Geist_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
+  display: 'swap',
+  fallback: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+});
+
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
   userScalable: true,
-  viewportFit: 'cover', // iOS safe area insets support
+  viewportFit: 'cover',
 };
+
+// SVG favicon inline — emerald brand primary #157a53, white T glyph
+// Data-URI is browser-universal and doesn’t depend on runtime rendering
+const FAVICON_SVG = `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#157a53"/><path d="M8 11h16M16 11v12" stroke="white" stroke-width="3" stroke-linecap="round"/><circle cx="22" cy="11" r="2" fill="rgba(255,255,255,0.6)"/></svg>`)}`;
 
 export const metadata: Metadata = {
-  title: 'TradeScope | Trading Cost Simulator',
+  title: 'Tradelia | Trading Cost Simulator',
   description: 'Model spreads, swaps, commissions, and holding pressure to find the broker and instrument setup that best protects your net returns.',
-  icons: [
-    {
-      rel: 'apple-touch-icon',
-      url: '/apple-touch-icon.png',
-    },
-    {
-      rel: 'icon',
-      type: 'image/png',
-      sizes: '32x32',
-      url: '/favicon-32x32.png',
-    },
-    {
-      rel: 'icon',
-      type: 'image/png',
-      sizes: '16x16',
-      url: '/favicon-16x16.png',
-    },
-    {
-      rel: 'icon',
-      url: '/favicon.ico',
-    },
-  ],
+  icons: {
+    icon: [
+      { url: FAVICON_SVG, type: 'image/svg+xml' },
+      { url: '/icon.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: '/apple-icon.png',
+  },
 };
 
-/**
- * Root Layout - ONLY place for <html>, <head>, <body>
- *
- * This is the true root layout for Next.js App Router.
- * Nested layouts (like [locale]/layout.tsx) should NOT render html/head/body.
- *
- * CSP Configuration (2026):
- * - Domain-based CSP with 'unsafe-inline' (no nonces)
- * - See: docs/research/CSP_NONCE_NEXTJS15_TIER1_2026.md
- * - Nonce-based CSP removed due to Next.js 15 incompatibility
- * - Static generation enabled (no force-dynamic required)
- */
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning data-tradelia-runtime="boot">
-      <head>
-        {/* Performance P0: Preconnect to external origins */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-
-      </head>
-      <body className="overflow-x-hidden bg-background text-foreground antialiased" suppressHydrationWarning>
-        {/* Global loading indicator for navigation transitions */}
+    <html
+      lang="en"
+      suppressHydrationWarning
+      data-tradelia-runtime="boot"
+      className={`${inter.variable} ${instrumentSerif.variable} ${geistMono.variable}`}
+    >
+      <head />
+      <body
+        className="overflow-x-hidden bg-background font-body text-foreground antialiased"
+        suppressHydrationWarning
+      >
         <NextTopLoader
           color="hsl(var(--primary))"
           initialPosition={0.08}
@@ -90,11 +93,9 @@ export default async function RootLayout({
         <ServiceWorkerCleanup />
         <WebVitalsMonitor />
 
-        {/* Vercel Analytics - Real User Monitoring */}
         <Analytics />
         <SpeedInsights />
 
-        {/* Skip to content link for accessibility */}
         <a
           href="#main-content"
           className="layer-modal sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary-foreground focus:ring-offset-2"

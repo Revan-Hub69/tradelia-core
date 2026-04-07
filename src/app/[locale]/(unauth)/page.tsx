@@ -5,14 +5,9 @@ import { LandingFooter } from '@/templates/LandingFooter';
 import { ProblemSection } from '@/templates/ProblemSection';
 import { TradeHero } from '@/templates/TradeHero';
 import { HowItWorks } from '@/templates/HowItWorks';
-import { ScenarioSection } from '@/templates/ScenarioSection';
 import { FAQ } from '@/templates/FAQ';
-import { DisclaimerBar } from '@/templates/DisclaimerBar';
-import { BrokerTicker } from '@/templates/BrokerTicker';
-import { FeatureBento } from '@/templates/FeatureBento';
 import { Comparison } from '@/templates/Comparison';
-import { FinalCTA } from '@/templates/FinalCTA';
-import { TrustBadge } from '@/templates/TrustBadge';
+import { ScrollToTop } from '@/templates/ScrollToTop';
 
 export async function generateMetadata(props: { params: Promise<{ locale: string }> }) {
   const params = await props.params;
@@ -31,19 +26,20 @@ const IndexPage = async (props: { params: Promise<{ locale: string }> }) => {
     <>
       <Navbar />
       <main id="main-content">
+        {/* 1. Hero = Simulator in fold */}
         <TradeHero />
-        <TrustBadge />
-        <BrokerTicker />
+        {/* 2. Problem — after the aha moment, explain why it happens */}
         <ProblemSection />
+        {/* 3. How it works — 3 steps, contextual to simulator output */}
         <HowItWorks />
-        <FeatureBento />
-        <ScenarioSection />
+        {/* 4. Comparison — reinforce with structured proof */}
         <Comparison />
-        <FinalCTA />
+        {/* 5. FAQ — handle final objections */}
         <FAQ />
-        <DisclaimerBar />
       </main>
       <LandingFooter />
+      {/* iOS 26 pill capsule floater */}
+      <ScrollToTop />
     </>
   );
 };
