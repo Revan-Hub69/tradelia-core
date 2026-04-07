@@ -471,7 +471,7 @@ const COST_TABLE: CostTable = {
     },
     breakout: {
       scalping:  r(1,0,   0.01, 3,  'low',    'Spread minimo su ETF liquid',         'ETF liquid = breakout scalping ok'),
-      intraday:  r(1,0,   0.01, 3,  'low',    'Breakout efficiente su SPY/QQQ',      'Volume massimo all'open NYSE'),
+      intraday:  r(1,0,   0.01, 3,  'low',    'Spread 0.01% su SPY, QQQ, IWM',      "Volume massimo all'open NYSE"),
       multiday:  r(1,0.5, 0.01, 9,  'low',    'Expense ratio + rischio gap',         'ETF cash, nessuna leva su multiday'),
       position:  r(1,0.5, 0.01, 18, 'low',    'Expense ratio basso su position',     'ETF è il veicolo ideale per position'),
     },
