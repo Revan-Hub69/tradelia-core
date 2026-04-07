@@ -70,25 +70,97 @@ export const Navbar = () => {
   }));
 
   const stripItems = [
-    { label: t('strip_spread'), value: t('strip_spread_value') },
-    { label: t('strip_swap'),   value: t('strip_swap_value') },
-    { label: t('strip_fees'),   value: t('strip_fees_value') },
+    { icon: '◈', text: t('strip_item_1') },
+    { icon: '◈', text: t('strip_item_2') },
+    { icon: '◈', text: t('strip_item_3') },
   ];
 
   return (
     <>
       {/* ── Info strip ── */}
-      <div className="fixed inset-x-0 top-0 z-40 border-b border-slate-800/80 bg-slate-950 text-slate-200">
-        <SectionContainer size="wide" className="hidden h-8 items-center justify-between gap-3 sm:flex">
-          {stripItems.map(item => (
-            <div key={item.label} className="flex min-w-0 items-center gap-2">
-              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">{item.label}</span>
-              <span className="truncate text-[11px] text-slate-300">{item.value}</span>
-            </div>
-          ))}
+      <div
+        className="fixed inset-x-0 top-0 z-40 border-b"
+        style={{
+          background: 'hsl(var(--background) / 0.97)',
+          borderColor: 'hsl(var(--border) / 0.5)',
+        }}
+      >
+        {/* Desktop strip */}
+        <SectionContainer size="wide" className="hidden h-8 items-center justify-between sm:flex">
+          {/* Left: strip items */}
+          <div className="flex items-center gap-6">
+            {stripItems.map(item => (
+              <div key={item.text} className="flex items-center gap-1.5">
+                <span
+                  className="text-[9px]"
+                  style={{ color: 'hsl(var(--primary))' }}
+                  aria-hidden="true"
+                >
+                  ●
+                </span>
+                <span
+                  className="font-mono text-[10px] uppercase tracking-[0.15em]"
+                  style={{ color: 'hsl(var(--foreground) / 0.55)' }}
+                >
+                  {item.text}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Right: ESMA badge */}
+          <div
+            className="flex items-center gap-1.5 rounded-full px-2.5 py-0.5"
+            style={{
+              background: 'hsl(var(--primary) / 0.08)',
+              border: '1px solid hsl(var(--primary) / 0.2)',
+            }}
+          >
+            <svg
+              width="10"
+              height="10"
+              viewBox="0 0 10 10"
+              fill="none"
+              aria-hidden="true"
+              style={{ color: 'hsl(var(--primary))' }}
+            >
+              <path
+                d="M5 1L6.12 3.62L9 4.01L7 5.96L7.49 8.83L5 7.45L2.51 8.83L3 5.96L1 4.01L3.88 3.62L5 1Z"
+                fill="currentColor"
+              />
+            </svg>
+            <span
+              className="font-mono text-[10px] font-medium uppercase tracking-[0.12em]"
+              style={{ color: 'hsl(var(--primary))' }}
+            >
+              {t('strip_esma_badge')}
+            </span>
+          </div>
         </SectionContainer>
-        <div className="flex h-8 items-center justify-center px-4 text-center text-[11px] tracking-[0.16em] text-slate-300 sm:hidden">
-          {t('credibility_bar')}
+
+        {/* Mobile strip — solo badge ESMA */}
+        <div
+          className="flex h-8 items-center justify-center gap-2 px-4 sm:hidden"
+        >
+          <svg
+            width="10"
+            height="10"
+            viewBox="0 0 10 10"
+            fill="none"
+            aria-hidden="true"
+            style={{ color: 'hsl(var(--primary))' }}
+          >
+            <path
+              d="M5 1L6.12 3.62L9 4.01L7 5.96L7.49 8.83L5 7.45L2.51 8.83L3 5.96L1 4.01L3.88 3.62L5 1Z"
+              fill="currentColor"
+            />
+          </svg>
+          <span
+            className="font-mono text-[10px] font-medium uppercase tracking-[0.12em]"
+            style={{ color: 'hsl(var(--primary))' }}
+          >
+            {t('strip_esma_badge')}
+          </span>
         </div>
       </div>
 
