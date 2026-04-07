@@ -51,29 +51,28 @@ export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // ── Scroll state (same system as DashboardHeader) ──────────────────────────
-  const [isMobile, setIsMobile] = useState(false);
+  // ── Scroll state (landing variant) ────────────────────────────────
+  // Hide-on-scroll: mobile + tablet (< 1024px). Desktop: always visible.
+  const [isTabletOrMobile, setIsTabletOrMobile] = useState(false);
   const [isAtScrollEdge, setIsAtScrollEdge] = useState(true);
 
   const { isScrolled, isHeaderVisible } = useScrollDirection({ threshold: 15 });
 
-  // Responsive mobile detection
+  // Breakpoint detection: tablet-or-mobile = < 1024px
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
+    const check = () => setIsTabletOrMobile(window.innerWidth < 1024);
     check();
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  // Scroll edge detection (top/bottom) for compact-edge blur boost
+  // Scroll edge detection for compact-edge blur boost
   useEffect(() => {
     const handleScroll = () => {
-      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const scrollTop    = window.scrollY || document.documentElement.scrollTop;
       const scrollHeight = document.documentElement.scrollHeight;
       const clientHeight = document.documentElement.clientHeight;
-      const atTop    = scrollTop < 10;
-      const atBottom = scrollTop + clientHeight >= scrollHeight - 10;
-      setIsAtScrollEdge(atTop || atBottom);
+      setIsAtScrollEdge(scrollTop < 10 || scrollTop + clientHeight >= scrollHeight - 10);
     };
     handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -88,7 +87,8 @@ export const Navbar = () => {
 
   useFocusTrap(isMenuOpen, menuRef);
 
-  const shouldHide = isMobile && !isHeaderVisible;
+  // Hide only on mobile + tablet, never on desktop
+  const shouldHide = isTabletOrMobile && !isHeaderVisible;
 
   const navLinks = landingSections.map(section => ({
     href:  getLandingSectionHref(locale, pathname, section.id),
@@ -101,16 +101,16 @@ export const Navbar = () => {
       <header
         role="banner"
         className={cn(
-          // ── Core glass system (from header-premium-2026.css) ──
+          // Core glass system
           'header-2026',
-          // Scroll shadow
-          isScrolled && 'header-scrolled',
+          // Subtle scroll shadow (landing variant — ghost header, NOT header-scrolled)
+          isScrolled && 'header-scrolled-subtle',
           // Stronger blur at scroll edges
           isAtScrollEdge && 'header-compact-edge',
-          // Mobile hide/show animation
+          // Hide/show animation: tablet + mobile only
           shouldHide ? 'header-hide-animation' : 'header-show-animation',
           // will-change optimisation
-          isMobile ? 'header-will-change-transform' : isAtScrollEdge ? 'header-will-change-effects' : '',
+          isTabletOrMobile ? 'header-will-change-transform' : isAtScrollEdge ? 'header-will-change-effects' : '',
         )}
       >
         <SectionContainer size="wide" className="flex h-14 items-center justify-between sm:h-16">
