@@ -3,78 +3,81 @@
 import { useState } from 'react';
 import { motion, Variants } from 'framer-motion';
 
+import { useTranslations } from 'next-intl';
 import { SectionContainer } from '@/components/ui/SectionContainer';
 import { SimulatorDrawer } from '@/templates/SimulatorDrawer';
 
-export const ASSET_GROUPS = [
-  { id: 'forex', label: 'Forex' },
-  { id: 'indices', label: 'Indices & Volatility' },
-  { id: 'equities', label: 'Equities' },
-  { id: 'etf', label: 'ETF' },
-  { id: 'commodities', label: 'Commodities' },
-  { id: 'crypto', label: 'Crypto' },
+const t = useTranslations('Simulator');
+
+const ASSET_GROUPS = [
+  { id: 'forex', label: t('assetGroups.forex') },
+  { id: 'indices', label: t('assetGroups.indices') },
+  { id: 'equities', label: t('assetGroups.equities') },
+  { id: 'etf', label: t('assetGroups.etf') },
+  { id: 'commodities', label: t('assetGroups.commodities') },
+  { id: 'crypto', label: t('assetGroups.crypto') },
 ];
 
-export const UNDERLYING_GROUPS = [
-  { id: 'fx_core', label: 'Major (Core)', group: 'forex', tooltip: 'EURUSD, GBPUSD, USDJPY. Ultra-tight spreads.' },
-  { id: 'fx_cross', label: 'Cross', group: 'forex', tooltip: 'EURGBP, GBPJPY. G10 non-USD pairs.' },
-  { id: 'fx_exotic', label: 'Exotic', group: 'forex', tooltip: 'USDTRY, USDMXN. Predatory spreads.' },
-  { id: 'index_us', label: 'US Indices', group: 'indices', tooltip: 'SP500, NAS100, US30. 24h liquidity.' },
-  { id: 'index_eu_core', label: 'EU Indices (No Tax)', group: 'indices', tooltip: 'DAX40. No government levy.' },
-  { id: 'index_eu_tax', label: 'EU Indices (FTT)', group: 'indices', tooltip: 'FTSE MIB, IBEX. Tobin Tax applies.' },
-  { id: 'index_asia', label: 'Asian Indices', group: 'indices', tooltip: 'Nikkei 225. Off-hours slippage.' },
-  { id: 'index_volatility', label: 'Volatility (VIX)', group: 'indices', tooltip: 'Structural contango decay.' },
-  { id: 'equity_us_large', label: 'US Large Cap', group: 'equities', tooltip: 'AAPL, MSFT, NVDA. Penny spreads.' },
-  { id: 'equity_us_small', label: 'US Small Cap', group: 'equities', tooltip: 'Hard-to-borrow fees apply.' },
-  { id: 'equity_eu_ftt', label: 'EU (With FTT)', group: 'equities', tooltip: 'Italy, France, Spain. Spot Tobin Tax.' },
-  { id: 'equity_eu_core', label: 'EU (No Tax)', group: 'equities', tooltip: 'Germany, Netherlands. Pure broker costs.' },
-  { id: 'equity_uk', label: 'UK (London)', group: 'equities', tooltip: '0.5% Stamp Duty on spot buy.' },
-  { id: 'equity_adr', label: 'ADR', group: 'equities', tooltip: 'Foreign companies US listed. Pass-through fees.' },
-  { id: 'commodity_metal', label: 'Metals (Spot)', group: 'commodities', tooltip: 'Gold, Silver. FX-like behaviour.' },
-  { id: 'commodity_energy', label: 'Energy', group: 'commodities', tooltip: 'Oil, Gas. Monthly rollover cost.' },
-  { id: 'commodity_agri', label: 'Agriculture', group: 'commodities', tooltip: 'Opening gap risk and high slippage.' },
-  { id: 'etf_us_broad', label: 'US Broad Market', group: 'etf', tooltip: 'SPY, QQQ. Often commission-free.' },
-  { id: 'etf_us_leveraged', label: 'Leveraged 2x/3x', group: 'etf', tooltip: 'Volatility drag over long term.' },
-  { id: 'etf_ucits', label: 'UCITS (Europe)', group: 'etf', tooltip: 'Harmonised for EU residents.' },
-  { id: 'crypto_major', label: 'Major', group: 'crypto', tooltip: 'BTC, ETH. Reasonable spreads.' },
-  { id: 'crypto_altcoin', label: 'Altcoins', group: 'crypto', tooltip: 'Predatory retail spreads.' },
+const UNDERLYING_GROUPS = [
+  { id: 'fx_core', label: t('underlyingGroups.fx_core'), group: 'forex', tooltip: t('underlyingGroups.fx_core_tooltip') },
+  { id: 'fx_cross', label: t('underlyingGroups.fx_cross'), group: 'forex', tooltip: t('underlyingGroups.fx_cross_tooltip') },
+  { id: 'fx_exotic', label: t('underlyingGroups.fx_exotic'), group: 'forex', tooltip: t('underlyingGroups.fx_exotic_tooltip') },
+  { id: 'index_us', label: t('underlyingGroups.index_us'), group: 'indices', tooltip: t('underlyingGroups.index_us_tooltip') },
+  { id: 'index_eu_core', label: t('underlyingGroups.index_eu_core'), group: 'indices', tooltip: t('underlyingGroups.index_eu_core_tooltip') },
+  { id: 'index_eu_tax', label: t('underlyingGroups.index_eu_tax'), group: 'indices', tooltip: t('underlyingGroups.index_eu_tax_tooltip') },
+  { id: 'index_asia', label: t('underlyingGroups.index_asia'), group: 'indices', tooltip: t('underlyingGroups.index_asia_tooltip') },
+  { id: 'index_volatility', label: t('underlyingGroups.index_volatility'), group: 'indices', tooltip: t('underlyingGroups.index_volatility_tooltip') },
+  { id: 'equity_us_large', label: t('underlyingGroups.equity_us_large'), group: 'equities', tooltip: t('underlyingGroups.equity_us_large_tooltip') },
+  { id: 'equity_us_small', label: t('underlyingGroups.equity_us_small'), group: 'equities', tooltip: t('underlyingGroups.equity_us_small_tooltip') },
+  { id: 'equity_eu_ftt', label: t('underlyingGroups.equity_eu_ftt'), group: 'equities', tooltip: t('underlyingGroups.equity_eu_ftt_tooltip') },
+  { id: 'equity_eu_core', label: t('underlyingGroups.equity_eu_core'), group: 'equities', tooltip: t('underlyingGroups.equity_eu_core_tooltip') },
+  { id: 'equity_uk', label: t('underlyingGroups.equity_uk'), group: 'equities', tooltip: t('underlyingGroups.equity_uk_tooltip') },
+  { id: 'equity_adr', label: t('underlyingGroups.equity_adr'), group: 'equities', tooltip: t('underlyingGroups.equity_adr_tooltip') },
+  { id: 'commodity_metal', label: t('underlyingGroups.commodity_metal'), group: 'commodities', tooltip: t('underlyingGroups.commodity_metal_tooltip') },
+  { id: 'commodity_energy', label: t('underlyingGroups.commodity_energy'), group: 'commodities', tooltip: t('underlyingGroups.commodity_energy_tooltip') },
+  { id: 'commodity_agri', label: t('underlyingGroups.commodity_agri'), group: 'commodities', tooltip: t('underlyingGroups.commodity_agri_tooltip') },
+  { id: 'etf_us_broad', label: t('underlyingGroups.etf_us_broad'), group: 'etf', tooltip: t('underlyingGroups.etf_us_broad_tooltip') },
+  { id: 'etf_us_leveraged', label: t('underlyingGroups.etf_us_leveraged'), group: 'etf', tooltip: t('underlyingGroups.etf_us_leveraged_tooltip') },
+  { id: 'etf_ucits', label: t('underlyingGroups.etf_ucits'), group: 'etf', tooltip: t('underlyingGroups.etf_ucits_tooltip') },
+  { id: 'crypto_major', label: t('underlyingGroups.crypto_major'), group: 'crypto', tooltip: t('underlyingGroups.crypto_major_tooltip') },
+  { id: 'crypto_altcoin', label: t('underlyingGroups.crypto_altcoin'), group: 'crypto', tooltip: t('underlyingGroups.crypto_altcoin_tooltip') },
 ];
 
-export const HORIZONS = [
-  { id: 'scalping', label: 'Scalping', holdingDays: 0, tradesPerDay: 15 },
-  { id: 'intraday', label: 'Intraday', holdingDays: 0, tradesPerDay: 3 },
-  { id: 'swing', label: 'Swing Trading', holdingDays: 4, tradesPerDay: 0.5 },
-  { id: 'position', label: 'Position / Hold', holdingDays: 45, tradesPerDay: 0.05 },
+const HORIZONS = [
+  { id: 'scalping', label: t('horizons.scalping'), holdingDays: 0, tradesPerDay: 15 },
+  { id: 'intraday', label: t('horizons.intraday'), holdingDays: 0, tradesPerDay: 3 },
+  { id: 'swing', label: t('horizons.swing'), holdingDays: 4, tradesPerDay: 0.5 },
+  { id: 'position', label: t('horizons.position'), holdingDays: 45, tradesPerDay: 0.05 },
 ];
 
-export const STRATEGY_MAP = {
+const STRATEGY_MAP = {
   scalping: [
-    { value: 'order_flow', label: 'Order Flow / DOM' },
-    { value: 'micro_momentum', label: 'Micro Momentum' },
-    { value: 'news_reaction', label: 'News Reaction' },
+    { value: 'order_flow', label: t('strategy.scalping.order_flow') },
+    { value: 'micro_momentum', label: t('strategy.scalping.micro_momentum') },
+    { value: 'news_reaction', label: t('strategy.scalping.news_reaction') },
   ],
   intraday: [
-    { value: 'breakout', label: 'Breakout' },
-    { value: 'vwap_bounce', label: 'VWAP Reversion' },
-    { value: 'trend_following_day', label: 'Trend Following Intraday' },
+    { value: 'breakout', label: t('strategy.intraday.breakout') },
+    { value: 'vwap_bounce', label: t('strategy.intraday.vwap_bounce') },
+    { value: 'trend_following_day', label: t('strategy.intraday.trend_following_day') },
   ],
   swing: [
-    { value: 'trend_following', label: 'Trend Following' },
-    { value: 'range_trading', label: 'Range / Channel Trading' },
-    { value: 'mean_reversion', label: 'Mean Reversion' },
+    { value: 'trend_following', label: t('strategy.swing.trend_following') },
+    { value: 'range_trading', label: t('strategy.swing.range_trading') },
+    { value: 'mean_reversion', label: t('strategy.swing.mean_reversion') },
   ],
   position: [
-    { value: 'macro_trend', label: 'Macro Trend Play' },
-    { value: 'carry_trade', label: 'Carry Trade (Swap Yield)' },
-    { value: 'value_investing', label: 'Value / Dividend Capture' },
+    { value: 'macro_trend', label: t('strategy.position.macro_trend') },
+    { value: 'carry_trade', label: t('strategy.position.carry_trade') },
+    { value: 'value_investing', label: t('strategy.position.value_investing') },
   ],
 };
 
 const TEASER_CHIPS = [
-  { label: 'Forex · Crypto · Indices' },
-  { label: 'Scalping → Position' },
-  { label: 'Execution · Holding · Structure' },
-  { label: 'Leverage analysis' },
+  { label: t('teaserChips.forexCryptoIndices') },
+  { label: t('teaserChips.scalpingToPosition') },
+  { label: t('teaserChips.executionHoldingStructure') },
+  { label: t('teaserChips.leverageAnalysis') },
 ];
 
 const drawerVariants: Variants = {
