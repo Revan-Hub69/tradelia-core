@@ -1,0 +1,15 @@
+{
+  "title": "Utilizziamo i cookie",
+  "description": "Usiamo cookie tecnici necessari al funzionamento del sito. Con il tuo consenso, utilizziamo anche cookie analitici e di marketing per migliorare l'esperienza e mostrarti contenuti pertinenti.",
+  "accept_all": "Accetta tutto",
+  "accept_necessary": "Solo necessari",
+  "manage": "Gestisci preferenze",
+  "save": "Salva preferenze",
+  "privacy_link": "Privacy Policy",
+  "category_necessary": "Necessari",
+  "category_necessary_desc": "Indispensabili per il funzionamento del sito (lingua, tema). Non disattivabili.",
+  "category_analytics": "Analytics",
+  "category_analytics_desc": "Statistiche anonime di utilizzo tramite Vercel Analytics. Ci aiutano a migliorare il prodotto.",
+  "category_marketing": "Marketing",
+  "category_marketing_desc": "Pixel di tracciamento per campagne pubblicitarie personalizzate (Meta, Google, Reddit, X). Attivati solo se presenti e configurati."
+}

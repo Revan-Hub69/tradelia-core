@@ -1,0 +1,15 @@
+{
+  "title": "We use cookies",
+  "description": "We use strictly necessary technical cookies for the site to work. With your consent, we also use analytics and marketing cookies to improve your experience and show you relevant content.",
+  "accept_all": "Accept all",
+  "accept_necessary": "Necessary only",
+  "manage": "Manage preferences",
+  "save": "Save preferences",
+  "privacy_link": "Privacy Policy",
+  "category_necessary": "Necessary",
+  "category_necessary_desc": "Essential for the site to function (language, theme). Cannot be disabled.",
+  "category_analytics": "Analytics",
+  "category_analytics_desc": "Anonymous usage statistics via Vercel Analytics. Help us improve the product.",
+  "category_marketing": "Marketing",
+  "category_marketing_desc": "Tracking pixels for personalised advertising campaigns (Meta, Google, Reddit, X). Loaded only when configured."
+}
