@@ -32,7 +32,6 @@ export const LandingFooter = () => {
             <p className="mt-4 max-w-xs text-sm leading-7 text-slate-400">
               {t('platform_description')}
             </p>
-            {/* Tool list — placeholder for future switcher */}
             <div className="mt-6 space-y-2">
               <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-600">
                 {t('tools_label')}
@@ -51,7 +50,7 @@ export const LandingFooter = () => {
             </div>
           </div>
 
-          {/* Col 2 — This tool navigation */}
+          {/* Col 2 — Navigation */}
           <div className="md:col-span-1">
             <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
               {t('nav_title')}
@@ -96,7 +95,7 @@ export const LandingFooter = () => {
 
         {/* ── Bottom bar ── */}
         <div className="mt-10 border-t border-slate-800 pt-5">
-          {/* Disclaimer — leggibile, secondario rispetto al contenuto principale */}
+          {/* Disclaimer text */}
           <p className="text-xs leading-6 text-slate-400">
             {t('disclaimer')}
             {' '}
@@ -108,10 +107,27 @@ export const LandingFooter = () => {
             </Link>
             {'.'}
           </p>
-          {/* Copyright */}
-          <p className="mt-2 text-xs text-slate-600">
-            &copy; {new Date().getFullYear()} {AppConfig.name}. {t('copyright')}
-          </p>
+
+          {/* Legal links row + copyright */}
+          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+            <p className="text-xs text-slate-600">
+              &copy; {new Date().getFullYear()} {AppConfig.name}. {t('copyright')}
+            </p>
+            <span className="text-slate-700" aria-hidden="true">·</span>
+            <Link
+              href="/disclaimer"
+              className="text-xs text-slate-600 underline underline-offset-2 transition-colors hover:text-slate-400"
+            >
+              Disclaimer
+            </Link>
+            <span className="text-slate-700" aria-hidden="true">·</span>
+            <Link
+              href="/privacy-policy"
+              className="text-xs text-slate-600 underline underline-offset-2 transition-colors hover:text-slate-400"
+            >
+              {t('privacy_link_label')}
+            </Link>
+          </div>
         </div>
 
       </SectionContainer>
