@@ -6,9 +6,9 @@ import { useEffect, useRef, useState } from 'react';
 import { LocaleSwitcher } from '@/components/LocaleSwitcher';
 import { SectionContainer } from '@/components/ui/SectionContainer';
 import { getLandingSectionHref, landingSections } from '@/config/landing';
+import { useScrollDirection } from '@/hooks/useScrollDirection';
 import { usePathname } from '@/libs/i18nNavigation';
 import { cn } from '@/utils/Helpers';
-import { throttle } from '@/utils/throttle';
 
 import { Logo } from './Logo';
 
@@ -44,25 +44,51 @@ const useFocusTrap = (
 };
 
 export const Navbar = () => {
-  const t        = useTranslations('Navbar') as (key: string) => string;
-  const locale   = useLocale();
+  const t      = useTranslations('Navbar') as (key: string) => string;
+  const locale = useLocale();
   const pathname = usePathname();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  useFocusTrap(isMenuOpen, menuRef);
+  // ── Scroll state (same system as DashboardHeader) ──────────────────────────
+  const [isMobile, setIsMobile] = useState(false);
+  const [isAtScrollEdge, setIsAtScrollEdge] = useState(true);
 
+  const { isScrolled, isHeaderVisible } = useScrollDirection({ threshold: 15 });
+
+  // Responsive mobile detection
   useEffect(() => {
-    const handleScroll = throttle(() => setIsScrolled(window.scrollY > 20), 100);
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  // Scroll edge detection (top/bottom) for compact-edge blur boost
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight;
+      const clientHeight = document.documentElement.clientHeight;
+      const atTop    = scrollTop < 10;
+      const atBottom = scrollTop + clientHeight >= scrollHeight - 10;
+      setIsAtScrollEdge(atTop || atBottom);
+    };
+    handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Lock body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [isMenuOpen]);
+
+  useFocusTrap(isMenuOpen, menuRef);
+
+  const shouldHide = isMobile && !isHeaderVisible;
 
   const navLinks = landingSections.map(section => ({
     href:  getLandingSectionHref(locale, pathname, section.id),
@@ -73,11 +99,18 @@ export const Navbar = () => {
     <>
       {/* ── Main header ── */}
       <header
+        role="banner"
         className={cn(
-          'fixed inset-x-0 top-0 z-50 transition-all duration-300',
-          isScrolled
-            ? 'border-b border-border/60 bg-background/92 shadow-[0_10px_30px_-24px_rgba(15,23,42,0.45)] backdrop-blur-xl'
-            : 'bg-background/78 backdrop-blur-lg',
+          // ── Core glass system (from header-premium-2026.css) ──
+          'header-2026',
+          // Scroll shadow
+          isScrolled && 'header-scrolled',
+          // Stronger blur at scroll edges
+          isAtScrollEdge && 'header-compact-edge',
+          // Mobile hide/show animation
+          shouldHide ? 'header-hide-animation' : 'header-show-animation',
+          // will-change optimisation
+          isMobile ? 'header-will-change-transform' : isAtScrollEdge ? 'header-will-change-effects' : '',
         )}
       >
         <SectionContainer size="wide" className="flex h-14 items-center justify-between sm:h-16">
@@ -125,6 +158,34 @@ export const Navbar = () => {
 
       {/* Spacer: 56px mobile / 64px desktop */}
       <div className="h-14 sm:h-16" />
+
+      {/* ── Mobile fullscreen menu ── */}
+      {isMenuOpen && (
+        <div
+          ref={menuRef}
+          className="fixed inset-0 z-40 flex flex-col bg-background/95 pt-16 backdrop-blur-xl md:hidden"
+        >
+          <nav className="flex flex-col gap-1 px-4 pt-4">
+            {navLinks.map(link => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={() => setIsMenuOpen(false)}
+                className="rounded-xl px-4 py-3 font-mono text-sm uppercase tracking-[0.18em] text-foreground/80 transition-colors hover:bg-muted hover:text-foreground"
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+          <button
+            data-close-menu
+            type="button"
+            onClick={() => setIsMenuOpen(false)}
+            className="sr-only"
+            aria-label={t('menu_close')}
+          />
+        </div>
+      )}
     </>
   );
 };
