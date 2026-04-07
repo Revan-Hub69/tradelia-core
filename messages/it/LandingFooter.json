@@ -13,6 +13,7 @@
   "contact_note": "Per metodologia, dati o partnership puoi usare il modulo contatti oppure scrivere direttamente al supporto.",
   "contact": "Contatti",
   "email_cta": "Email supporto",
-  "disclaimer": "Strumento informativo. I risultati non costituiscono consulenza finanziaria personalizzata.",
+  "disclaimer": "Strumento informativo. I risultati non costituiscono consulenza in materia di investimenti ai sensi dell'art. 1, comma 5-septies, D.Lgs. 58/1998 (TUF) né raccomandazione personalizzata ai sensi della Direttiva MiFID II. Tradelia non è un intermediario finanziario autorizzato.",
+  "disclaimer_link_label": "Leggi il disclaimer completo",
   "copyright": "Tutti i diritti riservati."
 }

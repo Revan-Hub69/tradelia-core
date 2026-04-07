@@ -13,6 +13,7 @@
   "contact_note": "For methodology, data, or partnerships, use the contact page or write directly to support.",
   "contact": "Contact",
   "email_cta": "Support email",
-  "disclaimer": "Informational tool. Results do not constitute personalized investment advice.",
+  "disclaimer": "Informational tool. Results do not constitute investment advice under Article 1(5g) of the TUF (D.Lgs. 58/1998) or a personalised recommendation under MiFID II Directive. Tradelia is not an authorised financial intermediary.",
+  "disclaimer_link_label": "Read full disclaimer",
   "copyright": "All rights reserved."
 }

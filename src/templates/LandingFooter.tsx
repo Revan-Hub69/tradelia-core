@@ -95,11 +95,21 @@ export const LandingFooter = () => {
         </div>
 
         {/* ── Bottom bar ── */}
-        <div className="mt-10 border-t border-slate-800 pt-5 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs text-slate-600">
+        <div className="mt-10 border-t border-slate-800 pt-5">
+          {/* Disclaimer text — full 3-clause version */}
+          <p className="text-xs leading-6 text-slate-600">
             {t('disclaimer')}
+            {' '}
+            <Link
+              href="/disclaimer"
+              className="underline underline-offset-2 text-slate-500 hover:text-slate-300 transition-colors"
+            >
+              {t('disclaimer_link_label')}
+            </Link>
+            {'.'}
           </p>
-          <p className="text-xs text-slate-700">
+          {/* Copyright */}
+          <p className="mt-2 text-xs text-slate-700">
             &copy; {new Date().getFullYear()} {AppConfig.name}. {t('copyright')}
           </p>
         </div>

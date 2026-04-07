@@ -1,0 +1,33 @@
+{
+  "meta_title": "Legal Disclaimer – Tradelia",
+  "meta_description": "Tradelia's legal disclaimer: nature of the tool, exclusion from investment advice under MiFID II and Italian law (TUF), limitation of liability, and applicable jurisdiction.",
+
+  "eyebrow": "Legal notice",
+  "heading": "Disclaimer",
+  "last_updated": "Last updated: April 2026",
+
+  "intro_callout": "Please read carefully before using any tool on this site. Using Tradelia implies full acceptance of the terms set out in this document.",
+
+  "s1_title": "Nature of the tool",
+  "s1_body": "Tradelia is a platform of informational and simulation tools intended solely for educational and illustrative purposes. The outputs produced by individual tools – including the Cost Simulator and any future tool – are numerical calculations based on user-supplied parameters and publicly available fee schedules. Tradelia is not a financial intermediary, not a broker, and not a trading platform. It does not collect orders, manage portfolios, or execute transactions on behalf of third parties.",
+
+  "s2_title": "Exclusion from investment advice (MiFID II / TUF)",
+  "s2_body": "The information, simulations, and comparisons provided by Tradelia do not constitute investment advice within the meaning of Article 1(5g) of Italian Legislative Decree No. 58 of 24 February 1998 (Consolidated Finance Act – TUF), nor personalised investment recommendations, nor solicitation to invest under Directive 2014/65/EU (MiFID II) and Delegated Regulation (EU) 2017/565. Tradelia is not authorised by CONSOB or any other European supervisory authority to provide investment services or activities under Article 1(5) of the TUF. All outputs are purely indicative and do not take into account the individual user's financial situation, investment objectives, risk tolerance, or time horizon.",
+
+  "s3_title": "Data accuracy and timeliness",
+  "s3_body": "The fee data and information used by Tradelia tools are sourced from public sources (brokers' official websites, prospectuses, press releases) and are updated with reasonable frequency. Tradelia does not warrant the completeness, accuracy, timeliness, or error-free nature of the data presented. Broker terms and conditions may change at any time without notice. Users must independently verify current contractual conditions directly with the relevant broker before making any investment decision.",
+
+  "s4_title": "Limitation of liability",
+  "s4_body": "Tradelia and its owners, contributors, and data providers accept no liability – direct, indirect, incidental, or consequential – for financial losses, lost profits, or any other damages arising from the use of or reliance on the information and results provided by the platform. Users use Tradelia at their own exclusive risk. No output produced by Tradelia tools should be interpreted as a guarantee of future performance.",
+
+  "s5_title": "Absence of conflicts of interest",
+  "s5_body": "Tradelia has no commercial, affiliate, referral, or other economic arrangement with any broker, trading platform, or financial intermediary mentioned or compared in its tools. Brokers are included in simulations solely for comparative and informational purposes. Any future commercial partnerships will be disclosed explicitly and transparently.",
+
+  "s6_title": "Applicable law and jurisdiction",
+  "s6_body": "This disclaimer and the use of the Tradelia platform are governed by Italian law. Any dispute arising from the use of this site and its tools shall be subject to the exclusive jurisdiction of the Court of Campobasso, unless otherwise required by mandatory law.",
+
+  "s7_title": "Document versioning",
+  "s7_body": "This document may be updated at any time without notice to reflect regulatory, operational, or editorial changes. The 'Last updated' date shown at the top of the page identifies the current version. Users are encouraged to review this page periodically.",
+
+  "footer_note": "For questions regarding this disclaimer or tool methodology, please contact the Tradelia team via the contact form available on the Contact page."
+}
