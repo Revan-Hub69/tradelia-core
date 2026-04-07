@@ -43,6 +43,26 @@ const useFocusTrap = (
   }, [isOpen, containerRef]);
 };
 
+// Trust badge shield icon
+const ShieldIcon = () => (
+  <svg width="11" height="12" viewBox="0 0 11 12" fill="none" aria-hidden="true" style={{ flexShrink: 0 }}>
+    <path
+      d="M5.5 1L1 3v3c0 2.5 1.9 4.8 4.5 5.5C10.1 10.8 10 8.5 10 6V3L5.5 1Z"
+      fill="currentColor"
+      opacity="0.2"
+      stroke="currentColor"
+      strokeWidth="1"
+      strokeLinejoin="round"
+    />
+    <path d="M3.5 6l1.5 1.5L7.5 4.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+// Separator dot
+const Sep = () => (
+  <span aria-hidden="true" style={{ color: 'hsl(var(--border))', fontSize: 10, lineHeight: 1, flexShrink: 0 }}>{'|'}</span>
+);
+
 export const Navbar = () => {
   const t        = useTranslations('Navbar') as (key: string) => string;
   const locale   = useLocale();
@@ -69,105 +89,58 @@ export const Navbar = () => {
     label: t(section.navbarLabelKey),
   }));
 
-  const stripItems = [
-    { icon: '◈', text: t('strip_item_1') },
-    { icon: '◈', text: t('strip_item_2') },
-    { icon: '◈', text: t('strip_item_3') },
+  const trustBadges = [
+    t('trust_esma'),
+    t('trust_nodv'),
+    t('trust_free'),
   ];
 
   return (
     <>
-      {/* ── Info strip ── */}
+      {/* ── Trust strip ── */}
+      {/*
+          Design intent: thin 1px divider line above the main header.
+          Visually distinct from the header through a slightly deeper surface tint
+          and a bottom separator. Text is muted — purely informational.
+      */}
       <div
-        className="fixed inset-x-0 top-0 z-40 border-b"
+        className="fixed inset-x-0 top-0 z-40"
         style={{
-          background: 'hsl(var(--background) / 0.97)',
-          borderColor: 'hsl(var(--border) / 0.5)',
+          background: 'hsl(var(--muted) / 0.6)',
+          borderBottom: '1px solid hsl(var(--border) / 0.7)',
         }}
       >
-        {/* Desktop strip */}
-        <SectionContainer size="wide" className="hidden h-8 items-center justify-between sm:flex">
-          {/* Left: strip items */}
-          <div className="flex items-center gap-6">
-            {stripItems.map(item => (
-              <div key={item.text} className="flex items-center gap-1.5">
-                <span
-                  className="text-[9px]"
-                  style={{ color: 'hsl(var(--primary))' }}
-                  aria-hidden="true"
-                >
-                  ●
-                </span>
-                <span
-                  className="font-mono text-[10px] uppercase tracking-[0.15em]"
-                  style={{ color: 'hsl(var(--foreground) / 0.55)' }}
-                >
-                  {item.text}
-                </span>
+        {/* Desktop */}
+        <SectionContainer size="wide" className="hidden h-7 items-center justify-center gap-3 sm:flex">
+          {trustBadges.map((badge, i) => (
+            <>
+              {i > 0 && <Sep key={`sep-${i}`} />}
+              <div
+                key={badge}
+                className="flex items-center gap-1"
+                style={{ color: 'hsl(var(--foreground) / 0.45)' }}
+              >
+                <ShieldIcon />
+                <span className="font-mono text-[10px] tracking-[0.12em]">{badge}</span>
               </div>
-            ))}
-          </div>
-
-          {/* Right: ESMA badge */}
-          <div
-            className="flex items-center gap-1.5 rounded-full px-2.5 py-0.5"
-            style={{
-              background: 'hsl(var(--primary) / 0.08)',
-              border: '1px solid hsl(var(--primary) / 0.2)',
-            }}
-          >
-            <svg
-              width="10"
-              height="10"
-              viewBox="0 0 10 10"
-              fill="none"
-              aria-hidden="true"
-              style={{ color: 'hsl(var(--primary))' }}
-            >
-              <path
-                d="M5 1L6.12 3.62L9 4.01L7 5.96L7.49 8.83L5 7.45L2.51 8.83L3 5.96L1 4.01L3.88 3.62L5 1Z"
-                fill="currentColor"
-              />
-            </svg>
-            <span
-              className="font-mono text-[10px] font-medium uppercase tracking-[0.12em]"
-              style={{ color: 'hsl(var(--primary))' }}
-            >
-              {t('strip_esma_badge')}
-            </span>
-          </div>
+            </>
+          ))}
         </SectionContainer>
 
-        {/* Mobile strip — solo badge ESMA */}
+        {/* Mobile — solo primo badge */}
         <div
-          className="flex h-8 items-center justify-center gap-2 px-4 sm:hidden"
+          className="flex h-7 items-center justify-center gap-1 sm:hidden"
+          style={{ color: 'hsl(var(--foreground) / 0.45)' }}
         >
-          <svg
-            width="10"
-            height="10"
-            viewBox="0 0 10 10"
-            fill="none"
-            aria-hidden="true"
-            style={{ color: 'hsl(var(--primary))' }}
-          >
-            <path
-              d="M5 1L6.12 3.62L9 4.01L7 5.96L7.49 8.83L5 7.45L2.51 8.83L3 5.96L1 4.01L3.88 3.62L5 1Z"
-              fill="currentColor"
-            />
-          </svg>
-          <span
-            className="font-mono text-[10px] font-medium uppercase tracking-[0.12em]"
-            style={{ color: 'hsl(var(--primary))' }}
-          >
-            {t('strip_esma_badge')}
-          </span>
+          <ShieldIcon />
+          <span className="font-mono text-[10px] tracking-[0.12em]">{trustBadges[0]}</span>
         </div>
       </div>
 
       {/* ── Main header ── */}
       <header
         className={cn(
-          'fixed left-0 right-0 top-8 z-50 transition-all duration-300',
+          'fixed left-0 right-0 top-7 z-50 transition-all duration-300',
           isScrolled
             ? 'border-b border-border/60 bg-background/92 shadow-[0_10px_30px_-24px_rgba(15,23,42,0.45)] backdrop-blur-xl'
             : 'bg-background/78 backdrop-blur-lg',
@@ -267,7 +240,8 @@ export const Navbar = () => {
         </div>
       </div>
 
-      <div className="h-[88px] lg:h-[92px]" />
+      {/* Spacer: 7px strip + 56px header = 63px mobile, 7px + 64px = 71px desktop */}
+      <div className="h-[71px] lg:h-[71px]" />
     </>
   );
 };

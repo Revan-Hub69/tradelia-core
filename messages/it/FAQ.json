@@ -2,8 +2,8 @@
   "section_eyebrow": "FAQ",
   "section_title": "Domande frequenti",
   "section_subtitle": "Risposte pratiche su metodo, copertura e limiti del motore.",
-  "question1": "Che cosa simula davvero TradeScope?",
-  "answer1": "TradeScope modella come costi di esecuzione, mantenimento e struttura cambiano per una combinazione di asset, strategia e orizzonte, tenendo conto anche di capitale e leva.",
+  "question1": "Che cosa simula davvero il simulatore?",
+  "answer1": "Tradelia modella come costi di esecuzione, mantenimento e struttura cambiano per una combinazione di asset, strategia e orizzonte, tenendo conto anche di capitale e leva.",
   "question2": "Il simulatore usa costi teorici o costi reali?",
   "answer2": "La direzione del prodotto e usare tariffari broker, spread osservati, funding e commissioni reali. La preview in homepage mostra solo la logica di lettura della combinazione, non il ranking completo.",
   "question3": "Per quali casi d'uso e utile?",
@@ -11,8 +11,8 @@
   "question4": "Il risultato dice quale broker e il migliore in assoluto?",
   "answer4": "No. Il punto non e dichiarare un vincitore universale, ma trovare la combinazione broker e strumento piu efficiente per il tuo specifico asset, la tua strategia e il tuo orizzonte.",
   "question5": "I risultati sono in tempo reale?",
-  "answer5": "No. TradeScope non e un feed tick-by-tick. E un motore di simulazione costruito su dati di costo aggiornati e su regole di pricing applicate dai broker.",
+  "answer5": "No. Tradelia non e un feed tick-by-tick. E un motore di simulazione costruito su dati di costo aggiornati e su regole di pricing applicate dai broker.",
   "question6": "Questo strumento e consulenza finanziaria?",
-  "answer6": "No. TradeScope e uno strumento informativo e quantitativo. I risultati non costituiscono consulenza personalizzata, raccomandazioni di investimento o promesse di profitto.",
+  "answer6": "No. Tradelia e uno strumento informativo e quantitativo. I risultati non costituiscono consulenza personalizzata, raccomandazioni di investimento o promesse di profitto.",
   "cta_badge": "Per dubbi specifici su dati o metodologia puoi usare il modulo contatti."
 }

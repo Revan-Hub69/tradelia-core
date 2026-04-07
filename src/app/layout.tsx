@@ -12,11 +12,6 @@ import { RuntimeReady } from '@/components/runtime/RuntimeReady';
 import { ServiceWorkerCleanup } from '@/components/ServiceWorkerCleanup';
 import { WebVitalsMonitor } from '@/components/WebVitalsMonitor';
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   FONTS — next/font (zero layout shift, self-hosted via Vercel edge)
-   ─────────────────────────────────────────────────────────────────────────── */
-
-/** Body & UI: Inter variable — tabular-nums, data-dense, WCAG-safe at 12px+ */
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-body',
@@ -24,7 +19,6 @@ const inter = Inter({
   fallback: ['ui-sans-serif', 'system-ui', 'sans-serif'],
 });
 
-/** Display / Hero headings: Instrument Serif — editorial authority, H1/H2 only */
 const instrumentSerif = Instrument_Serif({
   subsets: ['latin'],
   weight: ['400'],
@@ -34,7 +28,6 @@ const instrumentSerif = Instrument_Serif({
   fallback: ['Georgia', 'ui-serif', 'serif'],
 });
 
-/** Monospace: Geist Mono — eyebrows, labels, code, ticker data */
 const geistMono = Geist_Mono({
   subsets: ['latin'],
   variable: '--font-mono',
@@ -53,24 +46,9 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: 'Tradelia | Trading Cost Simulator',
   description: 'Model spreads, swaps, commissions, and holding pressure to find the broker and instrument setup that best protects your net returns.',
-  icons: [
-    { rel: 'apple-touch-icon', url: '/apple-touch-icon.png' },
-    { rel: 'icon', type: 'image/png', sizes: '32x32', url: '/favicon-32x32.png' },
-    { rel: 'icon', type: 'image/png', sizes: '16x16', url: '/favicon-16x16.png' },
-    { rel: 'icon', url: '/favicon.ico' },
-  ],
+  // Favicon is handled automatically by Next.js via src/app/icon.tsx
 };
 
-/**
- * Root Layout — ONLY place for <html>, <head>, <body>
- *
- * Font CSS variables injected via next/font className on <html>:
- *   --font-body    → Inter (variable font, full axis range)
- *   --font-display → Instrument Serif (400 normal + italic)
- *   --font-mono    → Geist Mono (variable)
- *
- * CSP: domain-based, 'unsafe-inline' — see docs/research/CSP_NONCE_NEXTJS15_TIER1_2026.md
- */
 export default async function RootLayout({
   children,
 }: {
