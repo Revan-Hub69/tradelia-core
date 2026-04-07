@@ -3,47 +3,55 @@
 import { useLocale, useTranslations } from 'next-intl';
 
 import { SectionContainer } from '@/components/ui/SectionContainer';
-import { getLandingSectionHref, heroContextChipKeys, landingSections } from '@/config/landing';
+import { getLandingSectionHref, landingSections } from '@/config/landing';
 import { Link, usePathname } from '@/libs/i18nNavigation';
 import { AppConfig } from '@/utils/AppConfig';
 
 import { Logo } from './Logo';
 
 export const LandingFooter = () => {
-  const t = useTranslations('LandingFooter') as (key: string) => string;
-  const locale = useLocale();
+  const t        = useTranslations('LandingFooter') as (key: string) => string;
+  const locale   = useLocale();
   const pathname = usePathname();
+
   const navLinks = landingSections.map(section => ({
-    href: getLandingSectionHref(locale, pathname, section.id),
+    href:  getLandingSectionHref(locale, pathname, section.id),
     label: t(section.footerLabelKey),
   }));
-  const scopeItems = [t('scope_item_1'), t('scope_item_2'), t('scope_item_3')];
-  const brandBadge = `${AppConfig.productName} / ${AppConfig.name}`;
 
   return (
     <footer className="border-t border-border/40 bg-slate-950 py-10 text-slate-200 sm:py-12 lg:py-14 2xl:py-16">
       <SectionContainer size="wide">
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-[1.15fr_0.72fr_0.98fr] lg:gap-10">
+
+        {/* ── Top grid ── */}
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-[1.4fr_0.7fr_0.9fr] lg:gap-12">
+
+          {/* Col 1 — Platform identity */}
           <div className="md:col-span-2 lg:col-span-1">
             <Logo href="/" />
-            <div className="mt-4 inline-flex rounded-full border border-slate-800 bg-slate-900 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-400">
-              {brandBadge}
-            </div>
-            <p className="mt-4 text-sm leading-7 text-slate-400">
-              {t('description')}
+            <p className="mt-4 max-w-xs text-sm leading-7 text-slate-400">
+              {t('platform_description')}
             </p>
-            <div className="mt-5 flex flex-wrap gap-2">
-              {heroContextChipKeys.map(key => (
-                <span
-                  key={key}
-                  className="rounded-full border border-slate-800 bg-slate-900/80 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-slate-400"
-                >
-                  {t(key)}
+            {/* Tool list — placeholder for future switcher */}
+            <div className="mt-6 space-y-2">
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-600">
+                {t('tools_label')}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-900/80 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-slate-300">
+                  <span className="size-1.5 rounded-full bg-emerald-400" />
+                  {t('tool_cost_simulator')}
                 </span>
-              ))}
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-800 bg-slate-900/40 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-slate-600">
+                  <span className="size-1.5 rounded-full bg-slate-700" />
+                  {t('tool_etf_screener')}
+                  <span className="ml-0.5 text-[9px] tracking-normal text-slate-700">{t('tool_coming_soon')}</span>
+                </span>
+              </div>
             </div>
           </div>
 
+          {/* Col 2 — This tool navigation */}
           <div className="md:col-span-1">
             <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
               {t('nav_title')}
@@ -61,57 +69,41 @@ export const LandingFooter = () => {
             </div>
           </div>
 
-          <div className="rounded-[28px] border border-slate-800 bg-slate-900/70 p-5 sm:p-6 md:col-span-1">
+          {/* Col 3 — Contact */}
+          <div className="rounded-[24px] border border-slate-800 bg-slate-900/70 p-5 sm:p-6 md:col-span-1">
             <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
-              {t('scope_title')}
+              {t('contact_title')}
             </p>
-            <div className="mt-4 space-y-3">
-              {scopeItems.map(item => (
-                <div key={item} className="flex items-start gap-3 text-sm leading-6 text-slate-300">
-                  <span className="mt-2 size-1.5 shrink-0 rounded-full bg-sky-400" />
-                  <span>{item}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-6 border-t border-slate-800 pt-5">
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
-                {t('contact_title')}
-              </p>
-              <p className="mt-3 text-sm leading-7 text-slate-400">
-                {t('contact_note')}
-              </p>
-              <div className="mt-4 flex flex-wrap gap-3">
-                <Link
-                  href={AppConfig.routes.contact}
-                  className="inline-flex items-center rounded-full bg-slate-100 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-slate-950 transition-colors hover:bg-white"
-                >
-                  {t('contact')}
-                </Link>
-                <a
-                  href={`mailto:${AppConfig.supportEmail}`}
-                  className="inline-flex items-center rounded-full border border-slate-700 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-slate-300 transition-colors hover:border-slate-500 hover:text-slate-100"
-                >
-                  {t('email_cta')}
-                </a>
-              </div>
+            <p className="mt-3 text-sm leading-7 text-slate-400">
+              {t('contact_note')}
+            </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link
+                href={AppConfig.routes.contact}
+                className="inline-flex items-center rounded-full bg-slate-100 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-slate-950 transition-colors hover:bg-white"
+              >
+                {t('contact')}
+              </Link>
+              <a
+                href={`mailto:${AppConfig.supportEmail}`}
+                className="inline-flex items-center rounded-full border border-slate-700 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-slate-300 transition-colors hover:border-slate-500 hover:text-slate-100"
+              >
+                {t('email_cta')}
+              </a>
             </div>
           </div>
         </div>
 
-        <div className="mt-8 border-t border-slate-800 pt-4 text-xs leading-6 text-slate-500">
-          <p>{t('disclaimer')}</p>
-          <p className="mt-2">
-            (c)
-{' '}
-{new Date().getFullYear()}
-{' '}
-{AppConfig.name}
-.
-{' '}
-{t('copyright')}
+        {/* ── Bottom bar ── */}
+        <div className="mt-10 border-t border-slate-800 pt-5 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-xs text-slate-600">
+            {t('disclaimer')}
+          </p>
+          <p className="text-xs text-slate-700">
+            &copy; {new Date().getFullYear()} {AppConfig.name}. {t('copyright')}
           </p>
         </div>
+
       </SectionContainer>
     </footer>
   );

@@ -43,26 +43,6 @@ const useFocusTrap = (
   }, [isOpen, containerRef]);
 };
 
-// Trust badge shield icon
-const ShieldIcon = () => (
-  <svg width="11" height="12" viewBox="0 0 11 12" fill="none" aria-hidden="true" style={{ flexShrink: 0 }}>
-    <path
-      d="M5.5 1L1 3v3c0 2.5 1.9 4.8 4.5 5.5C10.1 10.8 10 8.5 10 6V3L5.5 1Z"
-      fill="currentColor"
-      opacity="0.2"
-      stroke="currentColor"
-      strokeWidth="1"
-      strokeLinejoin="round"
-    />
-    <path d="M3.5 6l1.5 1.5L7.5 4.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
-
-// Separator dot
-const Sep = () => (
-  <span aria-hidden="true" style={{ color: 'hsl(var(--border))', fontSize: 10, lineHeight: 1, flexShrink: 0 }}>{'|'}</span>
-);
-
 export const Navbar = () => {
   const t        = useTranslations('Navbar') as (key: string) => string;
   const locale   = useLocale();
@@ -89,58 +69,12 @@ export const Navbar = () => {
     label: t(section.navbarLabelKey),
   }));
 
-  const trustBadges = [
-    t('trust_esma'),
-    t('trust_nodv'),
-    t('trust_free'),
-  ];
-
   return (
     <>
-      {/* ── Trust strip ── */}
-      {/*
-          Design intent: thin 1px divider line above the main header.
-          Visually distinct from the header through a slightly deeper surface tint
-          and a bottom separator. Text is muted — purely informational.
-      */}
-      <div
-        className="fixed inset-x-0 top-0 z-40"
-        style={{
-          background: 'hsl(var(--muted) / 0.6)',
-          borderBottom: '1px solid hsl(var(--border) / 0.7)',
-        }}
-      >
-        {/* Desktop */}
-        <SectionContainer size="wide" className="hidden h-7 items-center justify-center gap-3 sm:flex">
-          {trustBadges.map((badge, i) => (
-            <>
-              {i > 0 && <Sep key={`sep-${i}`} />}
-              <div
-                key={badge}
-                className="flex items-center gap-1"
-                style={{ color: 'hsl(var(--foreground) / 0.45)' }}
-              >
-                <ShieldIcon />
-                <span className="font-mono text-[10px] tracking-[0.12em]">{badge}</span>
-              </div>
-            </>
-          ))}
-        </SectionContainer>
-
-        {/* Mobile — solo primo badge */}
-        <div
-          className="flex h-7 items-center justify-center gap-1 sm:hidden"
-          style={{ color: 'hsl(var(--foreground) / 0.45)' }}
-        >
-          <ShieldIcon />
-          <span className="font-mono text-[10px] tracking-[0.12em]">{trustBadges[0]}</span>
-        </div>
-      </div>
-
       {/* ── Main header ── */}
       <header
         className={cn(
-          'fixed left-0 right-0 top-7 z-50 transition-all duration-300',
+          'fixed inset-x-0 top-0 z-50 transition-all duration-300',
           isScrolled
             ? 'border-b border-border/60 bg-background/92 shadow-[0_10px_30px_-24px_rgba(15,23,42,0.45)] backdrop-blur-xl'
             : 'bg-background/78 backdrop-blur-lg',
@@ -189,59 +123,8 @@ export const Navbar = () => {
         </SectionContainer>
       </header>
 
-      {/* ── Mobile drawer ── */}
-      <div className={cn('fixed inset-0 z-50 overflow-x-clip md:hidden', isMenuOpen ? 'pointer-events-auto' : 'pointer-events-none')}>
-        <div
-          className={cn('absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300', isMenuOpen ? 'opacity-100' : 'opacity-0')}
-          onClick={() => setIsMenuOpen(false)}
-          role="button"
-          tabIndex={0}
-          aria-label={t('menu_close_mobile')}
-          onKeyDown={e => { if (e.key === 'Escape') setIsMenuOpen(false); }}
-        />
-        <div
-          ref={menuRef}
-          className={cn(
-            'absolute bottom-0 right-0 top-0 w-[82%] max-w-xs border-l border-border/60 bg-background shadow-2xl transition-transform duration-300 ease-out',
-            isMenuOpen ? 'translate-x-0' : 'translate-x-full',
-          )}
-        >
-          <div className="flex h-14 items-center justify-between border-b border-border/40 px-5">
-            <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Menu</span>
-            <button
-              type="button"
-              data-close-menu
-              onClick={() => setIsMenuOpen(false)}
-              className="flex size-8 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted"
-              aria-label={t('menu_close')}
-            >
-              <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-          <nav className="flex flex-col p-3">
-            {navLinks.map((link, i) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={() => setIsMenuOpen(false)}
-                className="rounded-2xl px-4 py-3.5 font-mono text-[11px] uppercase tracking-[0.18em] text-foreground/80 transition-all hover:bg-muted"
-                style={{
-                  transform:  isMenuOpen ? 'translateX(0)' : 'translateX(16px)',
-                  opacity:    isMenuOpen ? 1 : 0,
-                  transition: `all 280ms ease-out ${i * 40 + 80}ms`,
-                }}
-              >
-                {link.label}
-              </a>
-            ))}
-          </nav>
-        </div>
-      </div>
-
-      {/* Spacer: 7px strip + 56px header = 63px mobile, 7px + 64px = 71px desktop */}
-      <div className="h-[71px] lg:h-[71px]" />
+      {/* Spacer: 56px mobile / 64px desktop */}
+      <div className="h-14 sm:h-16" />
     </>
   );
 };
