@@ -30,46 +30,41 @@ import { cn } from '@/utils/Helpers';
 // ---------------------------------------------------------------------------
 
 const CATEGORIES = [
-  { id: 'forex',       label: 'Forex',       icon: Globe,     desc: 'Major, Cross & Exotic' },
-  { id: 'indices',     label: 'Indici',      icon: BarChart3, desc: 'US, EU, Asia & VIX'   },
-  { id: 'equities',    label: 'Azioni',      icon: Building2, desc: 'US, EU, UK & ADR'      },
-  { id: 'commodities', label: 'Commodity',   icon: Wheat,     desc: 'Metalli, Energia, Agri'},
-  { id: 'etf',         label: 'ETF',         icon: Layers,    desc: 'US, UCITS & Leveraged' },
-  { id: 'crypto',      label: 'Crypto',      icon: Coins,     desc: 'Major & Altcoin'       },
+  { id: 'forex',       label: 'Forex',       icon: Globe,     desc: 'Major, Cross & Esotico'  },
+  { id: 'indices',     label: 'Indici',      icon: BarChart3, desc: 'US, EU & Asia'            },
+  { id: 'equities',    label: 'Azioni',      icon: Building2, desc: 'US, EU & Asia Large Cap'  },
+  { id: 'commodities', label: 'Commodity',   icon: Wheat,     desc: 'Metalli & Energia'        },
+  { id: 'etf',         label: 'ETF',         icon: Layers,    desc: 'US, UCITS & Leveraged'    },
+  { id: 'crypto',      label: 'Crypto',      icon: Coins,     desc: 'Major & Altcoin'          },
 ] as const;
 
 type CategoryId = typeof CATEGORIES[number]['id'];
 
-// 22 underlying groups
+// 17 underlying groups
 const UNDERLYING_GROUPS = [
   // forex (3)
-  { id: 'ug_fx_core',         categoryId: 'forex'       as CategoryId, label: 'Major (Core)',       desc: 'EUR/USD, GBP/USD, USD/JPY…' },
-  { id: 'ug_fx_cross',        categoryId: 'forex'       as CategoryId, label: 'Cross',              desc: 'EUR/GBP, AUD/JPY, GBP/CHF…' },
-  { id: 'ug_fx_exotic',       categoryId: 'forex'       as CategoryId, label: 'Esotico',            desc: 'USD/TRY, USD/ZAR, USD/MXN…' },
-  // indices (5)
-  { id: 'ug_index_us',        categoryId: 'indices'     as CategoryId, label: 'Indici US',          desc: 'S&P500, NQ100, DJIA…'       },
-  { id: 'ug_index_eu_core',   categoryId: 'indices'     as CategoryId, label: 'EU (No Tax)',        desc: 'DAX, CAC40, FTSE MIB CFD…'  },
-  { id: 'ug_index_eu_tax',    categoryId: 'indices'     as CategoryId, label: 'EU (FTT)',           desc: 'FTSE MIB futures — FTT 0.02%'},
-  { id: 'ug_index_asia',      categoryId: 'indices'     as CategoryId, label: 'Asiatici',           desc: 'Nikkei, Hang Seng, ASX…'    },
-  { id: 'ug_index_volatility',categoryId: 'indices'     as CategoryId, label: 'Volatilità (VIX)',   desc: 'VIX futures, UVXY, SVXY…'   },
-  // equities (6)
-  { id: 'ug_equity_us_large', categoryId: 'equities'   as CategoryId, label: 'US Large Cap',       desc: 'AAPL, MSFT, NVDA, SPY…'     },
-  { id: 'ug_equity_us_small', categoryId: 'equities'   as CategoryId, label: 'US Small Cap',       desc: 'Russell 2000, micro cap…'   },
-  { id: 'ug_equity_eu_ftt',   categoryId: 'equities'   as CategoryId, label: 'EU con FTT',         desc: 'Azioni IT/FR con Tobin tax' },
-  { id: 'ug_equity_eu_core',  categoryId: 'equities'   as CategoryId, label: 'EU (No Tax)',        desc: 'DE, NL, CH — no FTT'        },
-  { id: 'ug_equity_uk',       categoryId: 'equities'   as CategoryId, label: 'UK (Londra)',        desc: 'Stamp duty 0.5% su acquisto'},
-  { id: 'ug_equity_adr',      categoryId: 'equities'   as CategoryId, label: 'ADR',                desc: 'Azioni estere su US exchanges'},
-  // commodities (3)
-  { id: 'ug_commodity_metal', categoryId: 'commodities'as CategoryId, label: 'Metalli (Spot)',     desc: 'Gold, Silver, Platinum…'    },
-  { id: 'ug_commodity_energy',categoryId: 'commodities'as CategoryId, label: 'Energia',            desc: 'WTI, Brent, Nat Gas…'       },
-  { id: 'ug_commodity_agri',  categoryId: 'commodities'as CategoryId, label: 'Agricoltura',        desc: 'Wheat, Corn, Soybean…'      },
+  { id: 'ug_fx_core',          categoryId: 'forex'       as CategoryId, label: 'Major',            desc: 'EUR/USD, GBP/USD, USD/JPY…'  },
+  { id: 'ug_fx_cross',         categoryId: 'forex'       as CategoryId, label: 'Cross',             desc: 'EUR/GBP, AUD/JPY, GBP/CHF…'  },
+  { id: 'ug_fx_exotic',        categoryId: 'forex'       as CategoryId, label: 'Esotico',           desc: 'USD/TRY, USD/ZAR, USD/MXN…'  },
+  // indices (3)
+  { id: 'ug_index_us',         categoryId: 'indices'     as CategoryId, label: 'US',                desc: 'S&P500, NQ100, DJIA…'         },
+  { id: 'ug_index_eu',         categoryId: 'indices'     as CategoryId, label: 'EU',                desc: 'DAX, CAC40, FTSE MIB…'        },
+  { id: 'ug_index_asia',       categoryId: 'indices'     as CategoryId, label: 'Asia',              desc: 'Nikkei, Hang Seng, ASX…'      },
+  // equities (4)
+  { id: 'ug_equity_us_large',  categoryId: 'equities'    as CategoryId, label: 'US Large Cap',      desc: 'AAPL, MSFT, NVDA, SPY…'       },
+  { id: 'ug_equity_us_mid',    categoryId: 'equities'    as CategoryId, label: 'US Mid Cap',        desc: 'S&P 400, MDY, titoli $1-10B…' },
+  { id: 'ug_equity_eu_large',  categoryId: 'equities'    as CategoryId, label: 'EU Large Cap',      desc: 'SAP, ASML, Nestlé, BNP…'      },
+  { id: 'ug_equity_asia',      categoryId: 'equities'    as CategoryId, label: 'Asia Large Cap',    desc: 'Toyota, Samsung, Alibaba…'    },
+  // commodities (2)
+  { id: 'ug_commodity_metal',  categoryId: 'commodities' as CategoryId, label: 'Metalli',           desc: 'Gold, Silver, Platinum…'      },
+  { id: 'ug_commodity_energy', categoryId: 'commodities' as CategoryId, label: 'Energia',           desc: 'WTI, Brent, Nat Gas…'         },
   // etf (3)
-  { id: 'ug_etf_us_broad',     categoryId: 'etf'       as CategoryId, label: 'US Broad Market',   desc: 'SPY, QQQ, IWM…'             },
-  { id: 'ug_etf_us_leveraged', categoryId: 'etf'       as CategoryId, label: 'Leveraged 2x/3x',   desc: 'TQQQ, SOXL, UPRO…'         },
-  { id: 'ug_etf_ucits',        categoryId: 'etf'       as CategoryId, label: 'UCITS (Europa)',     desc: 'iShares, Amundi, Xtrackers…'},
+  { id: 'ug_etf_us_broad',     categoryId: 'etf'         as CategoryId, label: 'US Broad Market',   desc: 'SPY, QQQ, IWM…'               },
+  { id: 'ug_etf_us_leveraged', categoryId: 'etf'         as CategoryId, label: 'Leveraged 2x/3x',   desc: 'TQQQ, SOXL, UPRO…'           },
+  { id: 'ug_etf_ucits',        categoryId: 'etf'         as CategoryId, label: 'UCITS Europa',      desc: 'iShares, Amundi, Xtrackers…'  },
   // crypto (2)
-  { id: 'ug_crypto_major',    categoryId: 'crypto'     as CategoryId, label: 'Major',              desc: 'BTC, ETH, SOL…'             },
-  { id: 'ug_crypto_altcoin',  categoryId: 'crypto'     as CategoryId, label: 'Altcoin',            desc: 'Tutto il resto — high beta' },
+  { id: 'ug_crypto_major',     categoryId: 'crypto'      as CategoryId, label: 'Major',             desc: 'BTC, ETH, SOL…'               },
+  { id: 'ug_crypto_altcoin',   categoryId: 'crypto'      as CategoryId, label: 'Altcoin',           desc: 'Tutto il resto — high beta'   },
 ] as const;
 
 type UnderlyingGroupId = typeof UNDERLYING_GROUPS[number]['id'];
@@ -122,7 +117,7 @@ const COST_TABLE: CostTable = {
       position:  r(2,1.2, 0.01, 38, 'high',   'Swap mangia i profitti',              'Futures o ETC valutari per position trading'),
     },
     breakout: {
-      scalping:  r(2,0,   0.01, 6,  'low',    'Slippage in breakout reale',          'Controlla slippage del broker in volatilità'),
+      scalping:  r(2,0,   0.01, 6,  'low',    'Slippage in breakout reale',          'Controlla slippage del broker in volatilita'),
       intraday:  r(2,0,   0.01, 4,  'low',    'Falsi breakout aumentano i trade',    'Filtra breakout con volume'),
       multiday:  r(2,1.2, 0.01, 14, 'medium', 'Swap su posizioni overnight',         'Rollover su futures valutari'),
       position:  r(2,1.2, 0.01, 42, 'high',   'Swap settimanale distrugge edge',     'Futures su cambi — nessun swap'),
@@ -136,13 +131,13 @@ const COST_TABLE: CostTable = {
   },
   ug_fx_cross: {
     momentum: {
-      scalping:  r(4,0,   0.01, 9,  'medium', 'Spread più largo sui cross',          'Usa ECN, evita cross illiquidi in scalping'),
+      scalping:  r(4,0,   0.01, 9,  'medium', 'Spread piu largo sui cross',          'Usa ECN, evita cross illiquidi in scalping'),
       intraday:  r(4,0,   0.01, 8,  'medium', 'Spread variabile durante overlap',    'Opera negli overlap London/NY'),
       multiday:  r(4,1.5, 0.01, 18, 'medium', 'Spread + swap si sommano',            'Futures OTC o CFD con swap contenuto'),
       position:  r(4,1.5, 0.01, 45, 'high',   'Swap elevato su cross minori',        'Considera futures o ETC per esposizione lunga'),
     },
     breakout: {
-      scalping:  r(5,0,   0.01, 11, 'medium', 'Spread ampio mangia breakout piccoli','Target minimo 3× lo spread'),
+      scalping:  r(5,0,   0.01, 11, 'medium', 'Spread ampio mangia breakout piccoli','Target minimo 3x lo spread'),
       intraday:  r(4,0,   0.01, 9,  'medium', 'Falsi breakout frequenti sui cross',  'Filtra con ATR e volume relativo'),
       multiday:  r(4,1.5, 0.01, 20, 'high',   'Swap overnight + spread = alto drag', 'Riduci leva su cross multiday'),
       position:  r(4,1.5, 0.01, 50, 'high',   'Swap distrugge edge su cross',        'Spot solo con capitale adeguato'),
@@ -150,7 +145,7 @@ const COST_TABLE: CostTable = {
     mean_reversion: {
       scalping:  r(5,0,   0.01, 12, 'high',   'Spread troppo largo per scalping MR', 'Mean rev su cross funziona da H4 in su'),
       intraday:  r(4,0,   0.01, 9,  'medium', 'Range intraday spesso valido',        'Concentrati sugli overlap liquidi'),
-      multiday:  r(4,1.5, 0.01, 19, 'medium', 'Swap + drawdown allungato',           'Orizzonte intraday più efficiente per MR'),
+      multiday:  r(4,1.5, 0.01, 19, 'medium', 'Swap + drawdown allungato',           'Orizzonte intraday piu efficiente per MR'),
       position:  r(4,1.5, 0.01, 48, 'high',   'Swap + mean rev lenta = rischio alto','Evita mean rev a leva su cross minori'),
     },
   },
@@ -178,7 +173,7 @@ const COST_TABLE: CostTable = {
   // ── INDICES ──────────────────────────────────────────────────────────────
   ug_index_us: {
     momentum: {
-      scalping:  r(3,0,   0.02, 7,  'medium', 'CFD spread ampliato in volatilità',   'Usa E-mini o Micro futures per scalping'),
+      scalping:  r(3,0,   0.02, 7,  'medium', 'CFD spread ampliato in volatilita',   'Usa E-mini o Micro futures per scalping'),
       intraday:  r(2,0,   0.02, 5,  'low',    'Spread CFD competitivo nelle ore US',  'Confronta CFD vs E-mini su costi totali'),
       multiday:  r(3,1.5, 0.02, 18, 'medium', 'Financing charge CFD overnight',       'Futures su indici eliminano financing'),
       position:  r(3,1.5, 0.02, 50, 'high',   'CFD financing distrugge position',     'ETF a leva o futures rolling'),
@@ -192,13 +187,13 @@ const COST_TABLE: CostTable = {
     mean_reversion: {
       scalping:  r(4,0,   0.02, 9,  'medium', 'Indici US tendono — MR rischiosa',     'Verifica regime di mercato prima'),
       intraday:  r(3,0,   0.02, 6,  'low',    'Range intraday predicibile su US',     'Orari: open US e close EU'),
-      multiday:  r(3,1.5, 0.02, 19, 'medium', 'Trend può sovrastare mean reversion',  'Usa filtro di trend prima di entrare'),
+      multiday:  r(3,1.5, 0.02, 19, 'medium', 'Trend puo sovrastare mean reversion',  'Usa filtro di trend prima di entrare'),
       position:  r(3,1.5, 0.02, 48, 'high',   'Holding lungo + MR = mal mix',         'Strategia inadatta a position su indici'),
     },
   },
-  ug_index_eu_core: {
+  ug_index_eu: {
     momentum: {
-      scalping:  r(4,0,   0.02, 9,  'medium', 'Spread CFD EU più largo di US',        'Futures DAX o CAC per scalping efficiente'),
+      scalping:  r(4,0,   0.02, 9,  'medium', 'Spread CFD EU piu largo di US',        'Futures DAX o CAC per scalping efficiente'),
       intraday:  r(3,0,   0.02, 7,  'medium', 'Spread variabile open Londra',         'Opera nelle prime 2h di apertura EU'),
       multiday:  r(3,1.5, 0.02, 19, 'medium', 'Financing overnight CFD EU',           'Futures EU-listed, rollover pulito'),
       position:  r(3,1.5, 0.02, 52, 'high',   'CFD financing annulla edge',           'ETF UCITS senza leva per position'),
@@ -212,34 +207,14 @@ const COST_TABLE: CostTable = {
     mean_reversion: {
       scalping:  r(5,0,   0.02, 12, 'medium', 'Spread alto mina frequenza MR',        'Ridurre frequenza, opera solo su H1+'),
       intraday:  r(3,0,   0.02, 7,  'low',    'Range intraday EU abbastanza stabile', 'Frankfurt open e 30min prima close EU'),
-      multiday:  r(3,1.5, 0.02, 20, 'medium', 'Trend macro EU può rompere range',     'Stop trend-filter obbligatorio'),
+      multiday:  r(3,1.5, 0.02, 20, 'medium', 'Trend macro EU puo rompere range',     'Stop trend-filter obbligatorio'),
       position:  r(3,1.5, 0.02, 50, 'high',   'MR + position su indici = rischioso',  'ETF inversi o opzioni per hedging'),
-    },
-  },
-  ug_index_eu_tax: {
-    momentum: {
-      scalping:  r(5,0,   0.04, 18, 'high',   'FTT 0.02% ogni trade — devastante',   'FTSE MIB futures evitano FTT su frequente'),
-      intraday:  r(4,0,   0.03, 12, 'high',   'FTT si somma a spread e commissioni', 'Valuta se edge > FTT accumulata'),
-      multiday:  r(4,1.5, 0.03, 24, 'high',   'FTT + financing CFD double drag',     'Futures con scadenza mensile, nessuna FTT'),
-      position:  r(4,1.5, 0.03, 58, 'high',   'FTT + swap + spread = edge azzerato', 'ETF senza leva o futures a scadenza'),
-    },
-    breakout: {
-      scalping:  r(6,0,   0.04, 22, 'high',   'FTT ogni entrata distrugge scalping', 'Scalping incompatibile con FTT — evita'),
-      intraday:  r(4,0,   0.03, 13, 'high',   'FTT riduce drasticamente R/R',        'Solo breakout con target > 3× FTT+spread'),
-      multiday:  r(4,1.5, 0.03, 26, 'high',   'FTT + financing + swap cumulato',     'Futures FTSE MIB su Euronext'),
-      position:  r(4,1.5, 0.03, 62, 'high',   'FTT moltiplica su ogni re-entry',     'ETF FTSE MIB senza leva per position'),
-    },
-    mean_reversion: {
-      scalping:  r(6,0,   0.04, 24, 'high',   'MR + FTT + alta freq = perdita certa','Non scalping su mercati con FTT'),
-      intraday:  r(4,0,   0.03, 13, 'high',   'Ogni range-trade tassato',            'Riduci fortemente la frequenza'),
-      multiday:  r(4,1.5, 0.03, 25, 'high',   'FTT + mean rev lenta = alto costo',   'Orizzonte intraday più efficiente'),
-      position:  r(4,1.5, 0.03, 60, 'high',   'FTT + holding + swap insostenibile',  'ETF o azioni cash senza leva'),
     },
   },
   ug_index_asia: {
     momentum: {
       scalping:  r(6,0,   0.02, 14, 'high',   'Sessioni asiatiche illiquide',         'Spread molto ampio fuori orario EU/US'),
-      intraday:  r(5,0,   0.02, 11, 'medium', 'Spread più alto che su EU/US',         'Opera nelle 2h di open Tokyo'),
+      intraday:  r(5,0,   0.02, 11, 'medium', 'Spread piu alto che su EU/US',         'Opera nelle 2h di open Tokyo'),
       multiday:  r(5,2.0, 0.02, 26, 'high',   'Financing + spread asiatico',          'ETF Nikkei/Hang Seng senza swap'),
       position:  r(5,2.0, 0.02, 62, 'high',   'Financing lungo su CFD asia',          'ETF UCITS o futures CME Nikkei'),
     },
@@ -251,29 +226,9 @@ const COST_TABLE: CostTable = {
     },
     mean_reversion: {
       scalping:  r(7,0,   0.02, 18, 'high',   'Asia spread troppo ampio per MR',      'MR asiatica solo su H4 e superiore'),
-      intraday:  r(5,0,   0.02, 12, 'medium', 'Range asiatico spesso valido',         'Nikkei range notturno può essere stabile'),
+      intraday:  r(5,0,   0.02, 12, 'medium', 'Range asiatico spesso valido',         'Nikkei range notturno puo essere stabile'),
       multiday:  r(5,2.0, 0.02, 27, 'high',   'Range rotto da gap apertura EU/US',    'Stop su gap protezione obbligatoria'),
       position:  r(5,2.0, 0.02, 60, 'high',   'MR position su Asia — inadatto',       'ETF o obbligazioni EM come alternativa'),
-    },
-  },
-  ug_index_volatility: {
-    momentum: {
-      scalping:  r(15,0,  0.05, 35, 'high',   'VIX futures spread elevatissimo',     'VIX non è scalp — troppo drag'),
-      intraday:  r(12,0,  0.05, 28, 'high',   'VIX tende a 0 → non fare momentum',  'Momentum su VIX solo in spike >= 25'),
-      multiday:  r(12,5,  0.05, 52, 'high',   'Contango VX futures erode posizione', 'SVXY (short VIX) per carry ma rischio gap'),
-      position:  r(12,5,  0.05, 85, 'high',   'Contango destroy long VIX position',  'Long vol solo come hedge, non come trade'),
-    },
-    breakout: {
-      scalping:  r(15,0,  0.05, 38, 'high',   'Spread VIX enorme su breakout',       'Non scalping su volatilità sintetica'),
-      intraday:  r(12,0,  0.05, 30, 'high',   'VIX spike: slippage incontrollabile', 'Usa opzioni per exposure su spike VIX'),
-      multiday:  r(12,5,  0.05, 55, 'high',   'Contango mangia breakout lunghi',     'Futures VX sul mese più vicino, size tiny'),
-      position:  r(12,5,  0.05, 88, 'high',   'Rollover mensile del contango letale','Opzioni su VIX per position long vol'),
-    },
-    mean_reversion: {
-      scalping:  r(15,0,  0.05, 40, 'high',   'Spread + IV crush = alto drag',       'Non scalping su VIX'),
-      intraday:  r(12,0,  0.05, 30, 'high',   'MR su VIX funziona solo da estreme',  'Usa VIX > 30 come segnale entry short vol'),
-      multiday:  r(12,5,  0.05, 54, 'high',   'Contango sfavorisce MR long',         'Short VIX solo con hedge opzioni'),
-      position:  r(12,5,  0.05, 86, 'high',   'Long VIX position = perdita lenta',   'VIX non è un asset da tenere lungo'),
     },
   },
 
@@ -292,56 +247,36 @@ const COST_TABLE: CostTable = {
       position:  r(2,1.0, 0.02, 38, 'high',   'CFD cost + gap risk su position',     'ETF tematici per exposure direzionale'),
     },
     mean_reversion: {
-      scalping:  r(2,0,   0.02, 6,  'low',    'MR su large cap: commissioni ok',     'Target per trade >= 3× spread'),
+      scalping:  r(2,0,   0.02, 6,  'low',    'MR su large cap: commissioni ok',     'Target per trade >= 3x spread'),
       intraday:  r(2,0,   0.02, 5,  'low',    'MR solida su blue chip liquide US',   'VWAP e open-range come riferimento range'),
       multiday:  r(2,1.0, 0.02, 13, 'medium', 'Notizie societarie rompono il range', 'Filtra per assenza di catalyst'),
       position:  r(2,1.0, 0.02, 35, 'high',   'MR long-term su azioni = alto rischio','Value investing, non MR a leva'),
     },
   },
-  ug_equity_us_small: {
+  ug_equity_us_mid: {
     momentum: {
-      scalping:  r(8,0,   0.03, 20, 'high',   'Spread ampio e liquidità bassa',      'Small cap non adatte a scalping'),
-      intraday:  r(6,0,   0.03, 14, 'medium', 'Volume variabile su small cap',       'Opera solo su giorni con catalyst noto'),
-      multiday:  r(6,1.5, 0.03, 26, 'high',   'Spread + financing + gap risk',       'Size ridottissima, stop obbligatorio'),
-      position:  r(6,1.5, 0.03, 58, 'high',   'Cumulativo insostenibile',            'ETF Russell 2000 per exposure small cap'),
+      scalping:  r(5,0,   0.02, 12, 'medium', 'Spread piu largo su mid cap',         'Opera solo su titoli volume > 1M/giorno'),
+      intraday:  r(4,0,   0.02, 9,  'medium', 'Volume variabile, spread intraday',   'Evita prime 15min di mercato su mid cap'),
+      multiday:  r(4,1.2, 0.02, 18, 'medium', 'CFD overnight + gap risk mid cap',    'Azioni cash, stop overnight obbligatorio'),
+      position:  r(4,1.2, 0.02, 42, 'high',   'CFD financing su mid cap costa',      'ETF S&P 400 per exposure diversificata'),
     },
     breakout: {
-      scalping:  r(10,0,  0.03, 24, 'high',   'Spread > target su ogni breakout',    'Non scalping su small cap'),
-      intraday:  r(7,0,   0.03, 16, 'high',   'Breakout spesso falso su low float',  'Filtra con relative volume > 3×'),
-      multiday:  r(6,1.5, 0.03, 28, 'high',   'Gap risk elevato overnight',          'Stop fisso obbligatorio'),
-      position:  r(6,1.5, 0.03, 60, 'high',   'Strutturalmente rischioso',           'ETF o indice invece di singolo titolo'),
+      scalping:  r(6,0,   0.02, 14, 'medium', 'Spread mid cap ampio su breakout',    'Limit orders, non market orders'),
+      intraday:  r(4,0,   0.02, 10, 'medium', 'Breakout valido su catalyst noto',    'Opera solo con catalyst (earnings, news)'),
+      multiday:  r(4,1.2, 0.02, 20, 'high',   'Gap overnight frequente su mid cap',  'Stop fisso obbligatorio'),
+      position:  r(4,1.2, 0.02, 44, 'high',   'CFD drag + gap risk accumulato',      'ETF settoriale per position holding'),
     },
     mean_reversion: {
-      scalping:  r(10,0,  0.03, 25, 'high',   'Spread distrugge MR in scalping',     'Non scalping su small cap'),
-      intraday:  r(7,0,   0.03, 17, 'high',   'Small cap non mean-reverting spesso',  'Solo su titoli con range storico definito'),
-      multiday:  r(6,1.5, 0.03, 27, 'high',   'Gap e news catalyst rompono range',   'Filtra per assenza news e calendar'),
-      position:  r(6,1.5, 0.03, 56, 'high',   'MR + position su small cap = pericoloso','ETF invece di single stock'),
+      scalping:  r(6,0,   0.02, 15, 'high',   'Spread mid cap mina MR in scalping',  'MR su mid cap funziona da H1 in su'),
+      intraday:  r(4,0,   0.02, 10, 'medium', 'VWAP reversion valida su mid cap',    'Usa VWAP come livello di riferimento'),
+      multiday:  r(4,1.2, 0.02, 19, 'medium', 'News societarie rompono range',       'Filtra per assenza di catalyst'),
+      position:  r(4,1.2, 0.02, 40, 'high',   'MR position su mid cap = rischioso',  'Value approach piu adatto'),
     },
   },
-  ug_equity_eu_ftt: {
+  ug_equity_eu_large: {
     momentum: {
-      scalping:  r(5,0,   0.04, 18, 'high',   'FTT + spread italiano/francese',      'Futures FTSE MIB per evitare FTT'),
-      intraday:  r(4,0,   0.03, 12, 'high',   'FTT 0.1% su ogni acquisto',           'Edge deve superare FTT + spread'),
-      multiday:  r(4,1.5, 0.03, 24, 'high',   'FTT + CFD financing double drag',     'Cash equities, niente leva'),
-      position:  r(4,1.5, 0.03, 56, 'high',   'FTT + swap + spread uccide edge',     'ETF senza leva'),
-    },
-    breakout: {
-      scalping:  r(6,0,   0.04, 22, 'high',   'FTT ogni entrata incompatibile',      'Scalping incompatibile con FTT'),
-      intraday:  r(4,0,   0.03, 13, 'high',   'FTT riduce R/R drasticamente',        'Solo breakout con target ampio'),
-      multiday:  r(4,1.5, 0.03, 26, 'high',   'FTT + overnight financing',           'Cash azioni senza CFD per multiday'),
-      position:  r(4,1.5, 0.03, 60, 'high',   'FTT moltiplica su ogni re-entry',     'ETF MSCI Italy/France senza leva'),
-    },
-    mean_reversion: {
-      scalping:  r(6,0,   0.04, 24, 'high',   'MR + FTT + alta freq = perdita',      'Non scalping su mercati FTT'),
-      intraday:  r(4,0,   0.03, 13, 'high',   'Ogni range-trade tassato',            'Riduci fortemente la frequenza'),
-      multiday:  r(4,1.5, 0.03, 25, 'high',   'FTT + mean rev lenta = alto costo',   'Orizzonte intraday più efficiente'),
-      position:  r(4,1.5, 0.03, 58, 'high',   'FTT + holding = insostenibile',       'ETF o azioni cash senza leva'),
-    },
-  },
-  ug_equity_eu_core: {
-    momentum: {
-      scalping:  r(3,0,   0.02, 8,  'medium', 'Spread EU leggermente più largo US',  'DMA broker o CFD con spread fisso'),
-      intraday:  r(3,0,   0.02, 7,  'medium', 'Liquidità alta su DE/NL large cap',   'Opera nelle prime 2h apertura Xetra'),
+      scalping:  r(3,0,   0.02, 8,  'medium', 'Spread EU leggermente piu largo US',  'DMA broker o CFD con spread fisso'),
+      intraday:  r(3,0,   0.02, 7,  'medium', 'Liquidita alta su DE/NL large cap',   'Opera nelle prime 2h apertura Xetra'),
       multiday:  r(3,1.2, 0.02, 16, 'medium', 'CFD overnight charge EU',             'Cash equity per multiday'),
       position:  r(3,1.2, 0.02, 40, 'high',   'CFD financing > dividend yield',      'Cash titoli, incassa dividendi'),
     },
@@ -352,50 +287,30 @@ const COST_TABLE: CostTable = {
       position:  r(3,1.2, 0.02, 42, 'high',   'CFD financing erode position',        'Cash equity long per position'),
     },
     mean_reversion: {
-      scalping:  r(4,0,   0.02, 10, 'medium', 'Spread EU mina frequenza alta',       'Target >= 3× spread per trade'),
+      scalping:  r(4,0,   0.02, 10, 'medium', 'Spread EU mina frequenza alta',       'Target >= 3x spread per trade'),
       intraday:  r(3,0,   0.02, 7,  'low',    'MR solida su EU blue chip',           'VWAP come riferimento range EU'),
       multiday:  r(3,1.2, 0.02, 17, 'medium', 'News EU rompono range multiday',      'Filtra per assenza catalyst'),
-      position:  r(3,1.2, 0.02, 38, 'high',   'MR position EU = rischioso',          'Value investing più adatto'),
+      position:  r(3,1.2, 0.02, 38, 'high',   'MR position EU = rischioso',          'Value investing piu adatto'),
     },
   },
-  ug_equity_uk: {
+  ug_equity_asia: {
     momentum: {
-      scalping:  r(4,0,   0.05, 14, 'high',   'Stamp Duty 0.5% su acquisto UK',      'CFD o spread betting esenti Stamp Duty'),
-      intraday:  r(3,0,   0.03, 10, 'medium', 'Stamp Duty se azioni cash',           'CFD su UK equity per intraday'),
-      multiday:  r(3,1.2, 0.03, 18, 'medium', 'Stamp Duty + CFD overnight charge',  'Spread betting UK: no Stamp, no CGT'),
-      position:  r(3,1.2, 0.03, 42, 'high',   'Stamp Duty + financing accumulato',   'ISA o spread betting per position UK'),
+      scalping:  r(7,0,   0.03, 17, 'high',   'Spread asiatico ampio + sessioni',    'Opera solo durante orario Tokyo/HK'),
+      intraday:  r(5,0,   0.02, 12, 'medium', 'Spread variabile su Asia large cap',  'Tokyo: 02:00-08:00 CET, HK: 03:30-09:00'),
+      multiday:  r(5,2.0, 0.03, 26, 'high',   'Overnight financing + gap valutario', 'ETF Nikkei/Hang Seng senza swap'),
+      position:  r(5,2.0, 0.03, 58, 'high',   'Financing + FX drag su long periodo', 'ETF UCITS Asia o azioni locali cash'),
     },
     breakout: {
-      scalping:  r(5,0,   0.05, 16, 'high',   'Stamp Duty ogni acquisto scalp',      'Spread betting — niente stamp duty'),
-      intraday:  r(4,0,   0.03, 11, 'medium', 'Stamp duty riduce R/R breakout',      'CFD UK equity esenta da Stamp'),
-      multiday:  r(3,1.2, 0.03, 19, 'medium', 'Gap overnight + stamp accumulato',    'CFD con stop garantito'),
-      position:  r(3,1.2, 0.03, 44, 'high',   'Stamp Duty + financing posizione',    'ETF FTSE100 UCITS per position'),
+      scalping:  r(8,0,   0.03, 19, 'high',   'Spread Asia troppo ampio per scalp',  'Non scalping su azioni asiatiche'),
+      intraday:  r(5,0,   0.02, 13, 'medium', 'Breakout segue catalysts locali',     'Segui notizie mercato locale (PBOC, BOJ)'),
+      multiday:  r(5,2.0, 0.03, 28, 'high',   'Gap notturno + financing overnight',  'Stop garantito obbligatorio'),
+      position:  r(5,2.0, 0.03, 60, 'high',   'Financing + FX drag accumulato',      'ETF paese o azioni locali cash'),
     },
     mean_reversion: {
-      scalping:  r(5,0,   0.05, 18, 'high',   'Stamp Duty + MR alta freq = perdita', 'Non scalping su azioni UK cash'),
-      intraday:  r(4,0,   0.03, 11, 'medium', 'MR UK ok se su liquid FTSE100',       'CFD per evitare Stamp Duty'),
-      multiday:  r(3,1.2, 0.03, 19, 'medium', 'UK news rompono range multiday',      'Filtra per assenza news societarie'),
-      position:  r(3,1.2, 0.03, 42, 'high',   'MR + position UK = rischioso',        'ETF FTSE100 senza leva'),
-    },
-  },
-  ug_equity_adr: {
-    momentum: {
-      scalping:  r(5,0,   0.03, 12, 'medium', 'Spread ADR più largo di ordinario',   'Usa azione originale se accessibile'),
-      intraday:  r(4,0,   0.03, 10, 'medium', 'Volume ADR spesso inferiore al titolo','Orari migliori: open NYSE'),
-      multiday:  r(4,1.5, 0.03, 22, 'high',   'ADR fee annuale + CFD financing',     'Futures su mercato locale come alternativa'),
-      position:  r(4,1.5, 0.03, 48, 'high',   'ADR fee + FX risk + financing',       'ETF mercato locale preferibile'),
-    },
-    breakout: {
-      scalping:  r(6,0,   0.03, 15, 'high',   'Spread ADR distrugge target piccoli', 'Non scalping su ADR'),
-      intraday:  r(4,0,   0.03, 11, 'medium', 'Breakout ADR segue il mercato locale','Controlla orario apertura mercato locale'),
-      multiday:  r(4,1.5, 0.03, 24, 'high',   'Gap notturno quando il mercato locale è aperto','Stop garantito obbligatorio'),
-      position:  r(4,1.5, 0.03, 50, 'high',   'ADR fee + FX drag accumulato',        'ETF paese o azioni locali'),
-    },
-    mean_reversion: {
-      scalping:  r(6,0,   0.03, 17, 'high',   'MR + spread ADR = impossibile',       'Non scalping su ADR'),
-      intraday:  r(4,0,   0.03, 11, 'medium', 'MR ADR funziona su liquid ADR',       'Solo ADR con volumi > 500K/giorno'),
-      multiday:  r(4,1.5, 0.03, 23, 'high',   'Gap notizie da mercato locale',       'Filtra notizie mercato sottostante'),
-      position:  r(4,1.5, 0.03, 46, 'high',   'ADR non ideale per position MR',      'ETF locale invece di ADR singolo'),
+      scalping:  r(8,0,   0.03, 20, 'high',   'Spread Asia distrugge MR scalping',   'MR su Asia solo da H4 in su'),
+      intraday:  r(5,0,   0.02, 12, 'medium', 'Range intraday Asia abbastanza stabile','Nikkei e HSI range definiti in sessione'),
+      multiday:  r(5,2.0, 0.03, 27, 'high',   'Notizie macro Asia rompono range',    'Filtra per assenza catalyst PBOC/BOJ'),
+      position:  r(5,2.0, 0.03, 56, 'high',   'MR + position Asia = rischioso',      'ETF EM o obbligazioni EM come alternativa'),
     },
   },
 
@@ -408,14 +323,14 @@ const COST_TABLE: CostTable = {
       position:  r(3,1.0, 0.02, 38, 'high',   'Swap spot oro/argento si accumula',   'ETC oro fisico (PHAU) per position'),
     },
     breakout: {
-      scalping:  r(4,0,   0.02, 10, 'medium', 'Spread metallic più ampio in news',   'Target >= 3× spread per breakout'),
+      scalping:  r(4,0,   0.02, 10, 'medium', 'Spread metalli piu ampio in news',    'Target >= 3x spread per breakout'),
       intraday:  r(3,0,   0.02, 8,  'medium', 'Falsi breakout in range compresso',   'Filtra con volume COMEX'),
       multiday:  r(3,1.0, 0.02, 16, 'medium', 'Swap overnight + gap risk',           'Futures COMEX rolling mensile'),
       position:  r(3,1.0, 0.02, 42, 'high',   'Swap si accumula su position',        'ETC fisico per holding lungo'),
     },
     mean_reversion: {
       scalping:  r(4,0,   0.02, 10, 'medium', 'Metalli non sono mean-reverting breve','MR su metalli funziona da D1 in su'),
-      intraday:  r(3,0,   0.02, 7,  'medium', 'Range intraday Gold abbastanza stabile','London open è punto di riferimento'),
+      intraday:  r(3,0,   0.02, 7,  'medium', 'Range intraday Gold abbastanza stabile','London open e punto di riferimento'),
       multiday:  r(3,1.0, 0.02, 15, 'medium', 'Trend macro rompe range multiday',    'Filtro trend obbligatorio'),
       position:  r(3,1.0, 0.02, 38, 'high',   'MR oro/argento position = rischioso', 'ETC senza leva preferito'),
     },
@@ -429,7 +344,7 @@ const COST_TABLE: CostTable = {
     },
     breakout: {
       scalping:  r(9,0,   0.03, 22, 'high',   'EIA/OPEC rende spread estremo',       'Non scalping su energia in giorni EIA'),
-      intraday:  r(6,0,   0.03, 15, 'high',   'News OPEC causa slippage incontrollabile','Stop wide o non operare in news'),
+      intraday:  r(6,0,   0.03, 15, 'high',   'News OPEC causa slippage alto',        'Stop wide o non operare in news'),
       multiday:  r(6,2.0, 0.03, 30, 'high',   'Contango + futures rollover cost',    'Futures front month, size tiny'),
       position:  r(6,2.0, 0.03, 68, 'high',   'Contango distrugge posizione lunga',  'Azioni oil major (CVX, XOM) come alternativa'),
     },
@@ -440,71 +355,51 @@ const COST_TABLE: CostTable = {
       position:  r(6,2.0, 0.03, 66, 'high',   'Contango + position holding = rischioso','Azioni energy senza leva per esposizione'),
     },
   },
-  ug_commodity_agri: {
-    momentum: {
-      scalping:  r(10,0,  0.03, 24, 'high',   'Spread agricolo molto ampio',         'Agricoltura non adatta a scalping'),
-      intraday:  r(8,0,   0.03, 19, 'high',   'Stagionalità rompe momentum',         'Solo su breakout crop reports USDA'),
-      multiday:  r(8,3.0, 0.03, 38, 'high',   'Contango agri + weather risk',        'Futures CBOT con size minima'),
-      position:  r(8,3.0, 0.03, 78, 'high',   'Contango stagionale distrugge leva',  'ETF agri o azioni settore per position'),
-    },
-    breakout: {
-      scalping:  r(12,0,  0.03, 28, 'high',   'Spread agri incompatibile con scalp', 'Non scalping su commodity agricole'),
-      intraday:  r(9,0,   0.03, 22, 'high',   'Solo su crop reports USDA/WASDE',     'Breakout solo in giornate report'),
-      multiday:  r(8,3.0, 0.03, 40, 'high',   'Weather e geopolitica = gap risk',    'Stop molto wide o niente leva'),
-      position:  r(8,3.0, 0.03, 80, 'high',   'Contango + weather = alto drag',      'ETF agri per esposizione senza leva'),
-    },
-    mean_reversion: {
-      scalping:  r(12,0,  0.03, 30, 'high',   'Spread + MR = perdita immediata',     'Non scalping su agri'),
-      intraday:  r(9,0,   0.03, 22, 'high',   'Agri non mean-reverting su breve',    'MR agri solo su stagionale annuale'),
-      multiday:  r(8,3.0, 0.03, 40, 'high',   'Stagionalità rompe range',            'Usa stagionalità come segnale, non MR'),
-      position:  r(8,3.0, 0.03, 78, 'high',   'Position MR agri = non strutturato',  'ETF o fondi commodity gestiti'),
-    },
-  },
 
   // ── ETF ──────────────────────────────────────────────────────────────────
   ug_etf_us_broad: {
     momentum: {
       scalping:  r(1,0,   0.01, 3,  'low',    'Spread ETF broad market minimo',      'ETF US broad = ottimo per scalping light'),
-      intraday:  r(1,0,   0.01, 3,  'low',    'Spread 0.01% su SPY, QQQ, IWM',      'Liquidità massima, costo minimo'),
+      intraday:  r(1,0,   0.01, 3,  'low',    'Spread 0.01% su SPY, QQQ, IWM',      'Liquidita massima, costo minimo'),
       multiday:  r(1,0.5, 0.01, 8,  'low',    'Expense ratio annuale (0.03-0.09%)',  'ETF cash no leva = multiday ideale'),
-      position:  r(1,0.5, 0.01, 16, 'low',    'Solo expense ratio, nessun swap',     'ETF cash è lo strumento ottimale'),
+      position:  r(1,0.5, 0.01, 16, 'low',    'Solo expense ratio, nessun swap',     'ETF cash e lo strumento ottimale'),
     },
     breakout: {
       scalping:  r(1,0,   0.01, 3,  'low',    'Spread minimo su ETF liquid',         'ETF liquid = breakout scalping ok'),
-      intraday:  r(1,0,   0.01, 3,  'low',    'Spread 0.01% su SPY, QQQ, IWM',      "Volume massimo all'open NYSE"),
+      intraday:  r(1,0,   0.01, 3,  'low',    'Spread 0.01% su SPY, QQQ, IWM',      'Volume massimo a open NYSE'),
       multiday:  r(1,0.5, 0.01, 9,  'low',    'Expense ratio + rischio gap',         'ETF cash, nessuna leva su multiday'),
-      position:  r(1,0.5, 0.01, 18, 'low',    'Expense ratio basso su position',     'ETF è il veicolo ideale per position'),
+      position:  r(1,0.5, 0.01, 18, 'low',    'Expense ratio basso su position',     'ETF e il veicolo ideale per position'),
     },
     mean_reversion: {
       scalping:  r(1,0,   0.01, 3,  'low',    'MR su ETF broad: spread ok',          'ETF broad sono abbastanza mean-reverting'),
       intraday:  r(1,0,   0.01, 3,  'low',    'VWAP reversion su SPY/QQQ efficiente','Usa VWAP come ancora di MR'),
       multiday:  r(1,0.5, 0.01, 9,  'low',    'MR su ETF solida su intraday',        'Multiday MR rischiosa su trend mercato'),
-      position:  r(1,0.5, 0.01, 17, 'low',    'Position MR su ETF broad = value inv','Logica value investing più che MR'),
+      position:  r(1,0.5, 0.01, 17, 'low',    'Position MR su ETF broad = value inv','Logica value investing piu che MR'),
     },
   },
   ug_etf_us_leveraged: {
     momentum: {
-      scalping:  r(3,0,   0.02, 8,  'medium', 'Spread ETF leva più ampio di base',   'Volumi ok su TQQQ/SOXL in orario US'),
-      intraday:  r(2,0,   0.02, 6,  'medium', 'Volatility drag su ETF 3× intraday',  'Tieni solo per sessione, non overnight'),
+      scalping:  r(3,0,   0.02, 8,  'medium', 'Spread ETF leva piu ampio di base',   'Volumi ok su TQQQ/SOXL in orario US'),
+      intraday:  r(2,0,   0.02, 6,  'medium', 'Volatility drag su ETF 3x intraday',  'Tieni solo per sessione, non overnight'),
       multiday:  r(2,3.0, 0.02, 22, 'high',   'Volatility decay distrugge ETF leva', 'ETF leva solo intraday — mai overnight'),
       position:  r(2,3.0, 0.02, 75, 'high',   'Decay giornaliero = perdita certa',   'ETF leva non adatti a position holding'),
     },
     breakout: {
       scalping:  r(4,0,   0.02, 10, 'medium', 'Spread + amplificazione leva',        'Breakout solo su sessione principale'),
-      intraday:  r(3,0,   0.02, 7,  'medium', 'Breakout amplificato su ETF 3×',      'Attenzione a IV crush in reverse'),
+      intraday:  r(3,0,   0.02, 7,  'medium', 'Breakout amplificato su ETF 3x',      'Attenzione a IV crush in reverse'),
       multiday:  r(3,3.0, 0.02, 28, 'high',   'Decay overnight annulla breakout',    'Chiudi prima del close sempre'),
       position:  r(3,3.0, 0.02, 80, 'high',   'Strutturalmente inappropriato',       'Mai tenere ETF leva beyond 1 giorno'),
     },
     mean_reversion: {
-      scalping:  r(4,0,   0.02, 10, 'medium', 'ETF leva non sono mean-reverting',    'MR su ETF leva è controintuitivo'),
-      intraday:  r(3,0,   0.02, 7,  'medium', 'MR su TQQQ intraday può funzionare', 'Solo su inversioni di breve nel trend'),
+      scalping:  r(4,0,   0.02, 10, 'medium', 'ETF leva non sono mean-reverting',    'MR su ETF leva e controintuitivo'),
+      intraday:  r(3,0,   0.02, 7,  'medium', 'MR su TQQQ intraday puo funzionare', 'Solo su inversioni di breve nel trend'),
       multiday:  r(3,3.0, 0.02, 30, 'high',   'Decay + MR lenta = perdita certa',   'Non tenere ETF leva overnight'),
       position:  r(3,3.0, 0.02, 82, 'high',   'ETF leva non per position MR',        'Impossibile — decay giornaliero costante'),
     },
   },
   ug_etf_ucits: {
     momentum: {
-      scalping:  r(4,0,   0.02, 10, 'medium', 'Spread UCITS più alto di ETF US',     'UCITS meno liquidi di SPY/QQQ'),
+      scalping:  r(4,0,   0.02, 10, 'medium', 'Spread UCITS piu alto di ETF US',     'UCITS meno liquidi di SPY/QQQ'),
       intraday:  r(3,0,   0.02, 8,  'medium', 'Volume intraday UCITS limitato',      'Opera nelle ore peak di Borsa Italiana/Xetra'),
       multiday:  r(3,0.3, 0.02, 12, 'low',    'Expense ratio UCITS (0.07-0.3%)',     'ETF UCITS cash = multiday efficiente'),
       position:  r(3,0.3, 0.02, 20, 'low',    'Solo expense ratio UCITS annuo',      'ETF UCITS ideale per position in EUR'),
@@ -517,8 +412,8 @@ const COST_TABLE: CostTable = {
     },
     mean_reversion: {
       scalping:  r(5,0,   0.02, 12, 'medium', 'Spread UCITS mina MR scalping',       'Non scalping su UCITS'),
-      intraday:  r(4,0,   0.02, 9,  'medium', 'MR UCITS funziona su blue chip EU',   'Opera nelle ore di liquidità EU'),
-      multiday:  r(3,0.3, 0.02, 13, 'low',    'MR multiday UCITS accettabile',       'ETF UCITS tra i più adatti a MR swing'),
+      intraday:  r(4,0,   0.02, 9,  'medium', 'MR UCITS funziona su blue chip EU',   'Opera nelle ore di liquidita EU'),
+      multiday:  r(3,0.3, 0.02, 13, 'low',    'MR multiday UCITS accettabile',       'ETF UCITS tra i piu adatti a MR swing'),
       position:  r(3,0.3, 0.02, 20, 'low',    'Position MR UCITS ok per investitore','ETF UCITS = veicolo ideale EU'),
     },
   },
@@ -534,12 +429,12 @@ const COST_TABLE: CostTable = {
     breakout: {
       scalping:  r(10,0,  0.04, 25, 'high',   'Breakout falsi + spread altissimo',   'Filtra breakout con OI e volume on-chain'),
       intraday:  r(7,0,   0.04, 18, 'medium', 'Fee taker + liquidazioni casuali',    'Stop fisico e size contenuta'),
-      multiday:  r(6,2.0, 0.04, 30, 'high',   'Funding + volatilità = incertezza',   'Usa spot BTC/ETH per breakout strutturale'),
+      multiday:  r(6,2.0, 0.04, 30, 'high',   'Funding + volatilita = incertezza',   'Usa spot BTC/ETH per breakout strutturale'),
       position:  r(6,2.0, 0.04, 75, 'high',   'Funding distrugge edge su leva',      'Spot only per breakout lungo periodo'),
     },
     mean_reversion: {
-      scalping:  r(8,0,   0.04, 22, 'high',   'Crypto non è mean-reverting su scalp','MR su crypto funziona solo da H4+'),
-      intraday:  r(6,0,   0.04, 16, 'medium', 'Range intraday instabile in crypto',  'Usa bande di volatilità storica'),
+      scalping:  r(8,0,   0.04, 22, 'high',   'Crypto non e mean-reverting su scalp','MR su crypto funziona solo da H4+'),
+      intraday:  r(6,0,   0.04, 16, 'medium', 'Range intraday instabile in crypto',  'Usa bande di volatilita storica'),
       multiday:  r(6,2.0, 0.04, 28, 'high',   'Funding rate + drawdown esteso',      'Spot + DCA per mean reversion lenta'),
       position:  r(6,2.0, 0.04, 72, 'high',   'Funding a leva + MR = perdita',       'Spot accumulation, nessuna leva'),
     },
@@ -547,8 +442,8 @@ const COST_TABLE: CostTable = {
   ug_crypto_altcoin: {
     momentum: {
       scalping:  r(20,0,  0.06, 50, 'high',   'Spread altcoin estremo + fee alta',   'Altcoin incompatibili con scalping'),
-      intraday:  r(15,0,  0.05, 38, 'high',   'Liquidità bassa, slippage enorme',    'Solo altcoin top-20 per intraday'),
-      multiday:  r(15,3.0,0.05, 65, 'high',   'Funding + spread + liquidità bassa',  'Size tiny, stop molto largo'),
+      intraday:  r(15,0,  0.05, 38, 'high',   'Liquidita bassa, slippage enorme',    'Solo altcoin top-20 per intraday'),
+      multiday:  r(15,3.0,0.05, 65, 'high',   'Funding + spread + liquidita bassa',  'Size tiny, stop molto largo'),
       position:  r(15,3.0,0.05, 110,'high',   'Funding distrugge posizione leva',    'Spot only, nessuna leva su altcoin'),
     },
     breakout: {
