@@ -7,6 +7,7 @@ import { TradeHero } from '@/templates/TradeHero';
 import { HowItWorks } from '@/templates/HowItWorks';
 import { FAQ } from '@/templates/FAQ';
 import { Comparison } from '@/templates/Comparison';
+import { ScrollToTop } from '@/templates/ScrollToTop';
 
 export async function generateMetadata(props: { params: Promise<{ locale: string }> }) {
   const params = await props.params;
@@ -37,6 +38,8 @@ const IndexPage = async (props: { params: Promise<{ locale: string }> }) => {
         <FAQ />
       </main>
       <LandingFooter />
+      {/* iOS 26 pill capsule floater */}
+      <ScrollToTop />
     </>
   );
 };
