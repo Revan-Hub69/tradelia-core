@@ -26,10 +26,10 @@ import {
   Landmark,
   Minimize2,
   Minus,
-  Plus,
-  Maximize2,
   ShieldCheck,
   Flame,
+  Plus,
+  Maximize2,
 } from 'lucide-react';
 import { cn } from '@/utils/Helpers';
 import {
@@ -307,7 +307,48 @@ function computeDrag(
 }
 
 // ---------------------------------------------------------------------------
-// 3. STATE & ANIMATION
+// 3. RATING CONFIG — usa CSS tokens, non Tailwind hardcoded
+// ---------------------------------------------------------------------------
+
+/**
+ * Tutti i colori del simulatore passano attraverso i CSS token del progetto:
+ *   low    → --primary   (emerald — verde profitto, coerente col brand)
+ *   medium → --warning   (amber)
+ *   high   → --destructive (rosso)
+ *
+ * In questo modo dark mode, P3 wide-gamut e future palette change
+ * si propagano automaticamente senza toccare il componente.
+ */
+type RatingKey = 'low' | 'medium' | 'high';
+
+const RATING_CONFIG: Record<RatingKey, {
+  icon:       React.ElementType;
+  colorClass: string;   // testo
+  bgClass:    string;   // bg + bordo del badge principale
+  label:      string;
+}> = {
+  low: {
+    icon:       CheckCircle2,
+    colorClass: 'text-primary',
+    bgClass:    'bg-primary/10 border-primary/20',
+    label:      'Attrito basso',
+  },
+  medium: {
+    icon:       AlertTriangle,
+    colorClass: 'text-warning',
+    bgClass:    'bg-warning/10 border-warning/20',
+    label:      'Attrito moderato',
+  },
+  high: {
+    icon:       TrendingDown,
+    colorClass: 'text-destructive',
+    bgClass:    'bg-destructive/10 border-destructive/20',
+    label:      'Attrito elevato',
+  },
+};
+
+// ---------------------------------------------------------------------------
+// 4. STATE & ANIMATION
 // ---------------------------------------------------------------------------
 
 type SimulatorState = {
@@ -363,7 +404,7 @@ function statReveal(i: number) {
 }
 
 // ---------------------------------------------------------------------------
-// 4. MAIN COMPONENT
+// 5. MAIN COMPONENT
 // ---------------------------------------------------------------------------
 
 export function InteractiveSimulator() {
@@ -411,16 +452,10 @@ export function InteractiveSimulator() {
   const PROMPTS: (string | null)[] = [
     'Cosa tradi principalmente?',
     'Qual è il sottogruppo?',
-    'Come operi?',              // step 2: rimane fisso, il label interno cambia
+    'Come operi?',
     'Il tuo profilo operativo',
     null,
   ];
-
-  const ratingConfig = {
-    low:    { icon: CheckCircle2,  color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20', label: 'Attrito basso'    },
-    medium: { icon: AlertTriangle, color: 'text-amber-400',   bg: 'bg-amber-500/10 border-amber-500/20',    label: 'Attrito moderato' },
-    high:   { icon: TrendingDown,  color: 'text-red-400',     bg: 'bg-red-500/10 border-red-500/20',         label: 'Attrito elevato'  },
-  };
 
   const TOTAL_STEPS = 4;
 
@@ -450,7 +485,7 @@ export function InteractiveSimulator() {
         </span>
       </div>
 
-      {/* Prompt header — fisso per step 2, non cambia al click sull'orizzonte */}
+      {/* Prompt header */}
       <div className="mb-5 h-10">
         <AnimatePresence mode="wait">
           {PROMPTS[step] && (
@@ -488,20 +523,16 @@ export function InteractiveSimulator() {
             </motion.div>
           )}
 
-          {/* STEP 2 — orizzonte + stile accorpati */}
+          {/* STEP 2 — orizzonte + stile */}
           {step === 2 && (
             <motion.div key="step-2" variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
               className="flex flex-col gap-4 w-full">
 
-              {/* Sezione orizzonte — sempre visibile */}
               <ProfileSection label="Orizzonte temporale">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
                   {HORIZONS.map(item => (
                     <OptionCard
-                      key={item.id}
-                      icon={item.icon}
-                      title={item.label}
-                      description={item.desc}
+                      key={item.id} icon={item.icon} title={item.label} description={item.desc}
                       selected={selections.horizon === item.id}
                       onClick={() => handleSelectHorizon(item.id)}
                     />
@@ -509,25 +540,17 @@ export function InteractiveSimulator() {
                 </div>
               </ProfileSection>
 
-              {/* Sezione frequenza — appare dopo la scelta dell’orizzonte */}
               <AnimatePresence>
                 {selections.horizon && (
-                  <motion.div
-                    key={`styles-${selections.horizon}`}
-                    variants={slideDown} initial="initial" animate="animate" exit="exit"
-                  >
+                  <motion.div key={`styles-${selections.horizon}`} variants={slideDown} initial="initial" animate="animate" exit="exit">
                     <ProfileSection label={STYLE_PROMPT[selections.horizon]}>
                       <div className={cn(
                         'grid gap-2 sm:gap-3',
-                        availableStyles.length === 2
-                          ? 'grid-cols-1 sm:grid-cols-2'
-                          : 'grid-cols-1 sm:grid-cols-3',
+                        availableStyles.length === 2 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-3',
                       )}>
                         {availableStyles.map(item => (
                           <OptionCard
-                            key={item.id}
-                            icon={item.icon}
-                            title={item.label}
+                            key={item.id} icon={item.icon} title={item.label}
                             description={item.desc[selections.horizon!]}
                             selected={selections.style === item.id}
                             onClick={() => handleSelectStyle(item.id as StyleId)}
@@ -592,15 +615,9 @@ export function InteractiveSimulator() {
                   <motion.div key="cta" variants={slideDown} initial="initial" animate="animate" exit="exit">
                     <button
                       onClick={handleConfirmProfile}
-                      className={cn(
-                        'w-full flex items-center justify-center gap-2 rounded-2xl px-6 py-3',
-                        'bg-primary text-primary-foreground font-medium text-sm',
-                        'hover:bg-primary/90 transition-colors duration-200',
-                        'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-                      )}
+                      className="w-full flex items-center justify-center gap-2 rounded-2xl px-6 py-3 bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     >
-                      Vedi i risultati
-                      <ArrowRight className="size-4" />
+                      Vedi i risultati <ArrowRight className="size-4" />
                     </button>
                   </motion.div>
                 )}
@@ -610,81 +627,12 @@ export function InteractiveSimulator() {
 
           {/* STEP 4 — Risultato */}
           {step === 4 && result && selections.ugId && selections.horizon && selectedStyle && (
-            <motion.div key="step-4"
-              initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { duration: 0.15 } }}
-              exit={{ opacity: 0, transition: { duration: 0.1 } }}
-              className="w-full space-y-3">
-
-              <motion.div variants={badgeReveal} initial="initial" animate="animate"
-                className={cn('flex items-center gap-3 rounded-2xl border px-4 py-3', ratingConfig[result.rating].bg)}>
-                {(() => { const Icon = ratingConfig[result.rating].icon; return <Icon className={cn('size-5 shrink-0', ratingConfig[result.rating].color)} />; })()}
-                <div>
-                  <p className={cn('font-mono text-[11px] font-semibold uppercase tracking-[0.18em]', ratingConfig[result.rating].color)}>
-                    {ratingConfig[result.rating].label}
-                  </p>
-                  <p className="text-xs text-muted-foreground/70">{result.primaryIssue}</p>
-                </div>
-                <span className={cn('ml-auto font-mono text-xl font-bold', ratingConfig[result.rating].color)}>
-                  {result.totalDrag} bps
-                </span>
-              </motion.div>
-
-              <motion.div variants={statReveal(0)} initial="initial" animate="animate" className="flex flex-wrap gap-1.5">
-                {[
-                  selections.accountSize  ? ACCOUNT_SIZES[selections.accountSize].label   : null,
-                  selections.positionSize ? POSITION_SIZES[selections.positionSize].label : null,
-                  selections.leverage     ? LEVERAGE_PROFILES[selections.leverage].label  : null,
-                ].filter(Boolean).map(label => (
-                  <span key={label} className="rounded-full border border-border/50 bg-background px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
-                    {label}
-                  </span>
-                ))}
-              </motion.div>
-
-              <div className="grid grid-cols-3 gap-2">
-                {[
-                  { label: 'Spread',       value: `${result.spreadBps} bps` },
-                  { label: 'Swap/giorno',  value: result.swapPerDay > 0 ? `${result.swapPerDay} bps` : '--' },
-                  { label: 'Platform fee', value: `${result.platformFee}%` },
-                ].map(({ label, value }, i) => (
-                  <motion.div key={label} variants={statReveal(i + 1)} initial="initial" animate="animate"
-                    className="rounded-2xl border border-border/50 bg-background/60 px-3 py-3 text-center">
-                    <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground/60">{label}</p>
-                    <p className="mt-1 font-mono text-sm font-semibold text-foreground tabular-nums">{value}</p>
-                  </motion.div>
-                ))}
-              </div>
-
-              <motion.p variants={revealVariant(300)} initial="initial" animate="animate"
-                className="font-mono text-[10px] text-muted-foreground/50 text-center tracking-wide">
-                {selectedStyle.freq} trade/sessione · {HORIZON_PARAMS[selections.horizon].holdingDays}gg holding · spread {result.spreadBps}bps
-              </motion.p>
-
-              <motion.div variants={revealVariant(380)} initial="initial" animate="animate"
-                className="flex items-start gap-3 rounded-2xl border border-border/50 bg-muted/30 px-4 py-3">
-                <ArrowRight className="mt-0.5 size-4 shrink-0 text-primary" />
-                <p className="text-sm leading-6 text-muted-foreground">
-                  <span className="font-medium text-foreground">Cosa fare: </span>
-                  {result.suggestion}
-                </p>
-              </motion.div>
-
-              <motion.div variants={revealVariant(460)} initial="initial" animate="animate"
-                className="flex items-center justify-between">
-                <div className="flex gap-2 flex-wrap">
-                  {[selections.category, selections.ugId, selections.horizon, selections.style].map(s => s && (
-                    <span key={s} className="rounded-full border border-border/50 bg-background px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                      {s.replace('ug_', '').replace(/_/g, ' ')}
-                    </span>
-                  ))}
-                </div>
-                <button onClick={reset}
-                  className="flex items-center gap-1.5 rounded-full border border-border/50 bg-background px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground">
-                  <RotateCcw className="size-3" />
-                  Ricomincia
-                </button>
-              </motion.div>
-            </motion.div>
+            <ResultView
+              result={result}
+              selections={selections}
+              selectedStyle={selectedStyle}
+              onReset={reset}
+            />
           )}
 
         </AnimatePresence>
@@ -694,19 +642,22 @@ export function InteractiveSimulator() {
       {step > 0 && step < TOTAL_STEPS && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-5 flex items-center gap-2 flex-wrap">
           {selections.category && (
-            <button onClick={() => navigateToStep(0)} className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-secondary">
+            <button onClick={() => navigateToStep(0)}
+              className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-secondary">
               <ChevronLeft className="size-3" />{CATEGORIES.find(c => c.id === selections.category)?.label}
             </button>
           )}
           {step > 1 && selections.ugId && (
             <><span className="text-muted-foreground/30 text-xs">/</span>
-            <button onClick={() => navigateToStep(1)} className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-secondary">
+            <button onClick={() => navigateToStep(1)}
+              className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-secondary">
               <ChevronLeft className="size-3" />{UNDERLYING_GROUPS.find(u => u.id === selections.ugId)?.label}
             </button></>
           )}
           {step > 2 && selections.horizon && (
             <><span className="text-muted-foreground/30 text-xs">/</span>
-            <button onClick={() => navigateToStep(2)} className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-secondary">
+            <button onClick={() => navigateToStep(2)}
+              className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-secondary">
               <ChevronLeft className="size-3" />{HORIZONS.find(h => h.id === selections.horizon)?.label}
               {selections.style && <span className="opacity-50">· {STYLES.find(s => s.id === selections.style)?.label}</span>}
             </button></>
@@ -718,27 +669,124 @@ export function InteractiveSimulator() {
 }
 
 // ---------------------------------------------------------------------------
-// 5. SUB-COMPONENTS
+// 6. RESULT VIEW — estratto per leggibilità, usa token CSS
+// ---------------------------------------------------------------------------
+
+function ResultView({
+  result, selections, selectedStyle, onReset,
+}: {
+  result:        SimResult;
+  selections:    SimulatorState;
+  selectedStyle: typeof STYLES[number];
+  onReset:       () => void;
+}) {
+  const cfg = RATING_CONFIG[result.rating];
+  const Icon = cfg.icon;
+
+  return (
+    <motion.div key="step-4"
+      initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { duration: 0.15 } }}
+      exit={{ opacity: 0, transition: { duration: 0.1 } }}
+      className="w-full space-y-3">
+
+      {/* Rating badge — usa token CSS */}
+      <motion.div variants={badgeReveal} initial="initial" animate="animate"
+        className={cn('flex items-center gap-3 rounded-2xl border px-4 py-3', cfg.bgClass)}>
+        <Icon className={cn('size-5 shrink-0', cfg.colorClass)} />
+        <div>
+          <p className={cn('font-mono text-[11px] font-semibold uppercase tracking-[0.18em]', cfg.colorClass)}>
+            {cfg.label}
+          </p>
+          <p className="text-xs text-muted-foreground/70">{result.primaryIssue}</p>
+        </div>
+        <span className={cn('ml-auto font-mono text-xl font-bold tabular-nums', cfg.colorClass)}>
+          {result.totalDrag} bps
+        </span>
+      </motion.div>
+
+      {/* Profilo recap chips */}
+      <motion.div variants={statReveal(0)} initial="initial" animate="animate" className="flex flex-wrap gap-1.5">
+        {[
+          selections.accountSize  ? ACCOUNT_SIZES[selections.accountSize].label   : null,
+          selections.positionSize ? POSITION_SIZES[selections.positionSize].label : null,
+          selections.leverage     ? LEVERAGE_PROFILES[selections.leverage].label  : null,
+        ].filter(Boolean).map(label => (
+          <span key={label}
+            className="rounded-full border border-border/50 bg-background px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
+            {label}
+          </span>
+        ))}
+      </motion.div>
+
+      {/* Cost breakdown */}
+      <div className="grid grid-cols-3 gap-2">
+        {[
+          { label: 'Spread',       value: `${result.spreadBps} bps` },
+          { label: 'Swap/giorno',  value: result.swapPerDay > 0 ? `${result.swapPerDay} bps` : '--' },
+          { label: 'Platform fee', value: `${result.platformFee}%` },
+        ].map(({ label, value }, i) => (
+          <motion.div key={label} variants={statReveal(i + 1)} initial="initial" animate="animate"
+            className="rounded-2xl border border-border/50 bg-background/60 px-3 py-3 text-center">
+            <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground/60">{label}</p>
+            <p className="mt-1 font-mono text-sm font-semibold text-foreground tabular-nums">{value}</p>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Formula line */}
+      <motion.p variants={revealVariant(300)} initial="initial" animate="animate"
+        className="font-mono text-[10px] text-muted-foreground/50 text-center tracking-wide">
+        {selectedStyle.freq} trade/sessione · {HORIZON_PARAMS[selections.horizon!].holdingDays}gg holding · spread {result.spreadBps}bps
+      </motion.p>
+
+      {/* Suggestion */}
+      <motion.div variants={revealVariant(380)} initial="initial" animate="animate"
+        className="flex items-start gap-3 rounded-2xl border border-border/50 bg-muted/30 px-4 py-3">
+        <ArrowRight className="mt-0.5 size-4 shrink-0 text-primary" />
+        <p className="text-sm leading-6 text-muted-foreground">
+          <span className="font-medium text-foreground">Cosa fare: </span>
+          {result.suggestion}
+        </p>
+      </motion.div>
+
+      {/* Tags + reset */}
+      <motion.div variants={revealVariant(460)} initial="initial" animate="animate"
+        className="flex items-center justify-between">
+        <div className="flex gap-2 flex-wrap">
+          {[selections.category, selections.ugId, selections.horizon, selections.style].map(s => s && (
+            <span key={s}
+              className="rounded-full border border-border/50 bg-background px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+              {s.replace('ug_', '').replace(/_/g, ' ')}
+            </span>
+          ))}
+        </div>
+        <button onClick={onReset}
+          className="flex items-center gap-1.5 rounded-full border border-border/50 bg-background px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground">
+          <RotateCcw className="size-3" /> Ricomincia
+        </button>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 7. SUB-COMPONENTS
 // ---------------------------------------------------------------------------
 
 function OptionCard({
   icon: Icon, title, description, onClick, selected = false,
 }: {
-  icon: React.ElementType;
-  title: string;
-  description: string;
-  onClick: () => void;
-  selected?: boolean;
+  icon: React.ElementType; title: string; description: string;
+  onClick: () => void; selected?: boolean;
 }) {
   return (
     <button onClick={onClick}
       className={cn(
-        'group relative flex flex-col items-start justify-between p-3 sm:p-4 text-left transition-all duration-200',
-        'border rounded-2xl',
+        'group relative flex flex-col items-start justify-between p-3 sm:p-4 text-left transition-all duration-200 border rounded-2xl',
         selected
           ? 'border-primary/70 bg-primary/10 text-foreground'
           : 'bg-background/60 text-card-foreground border-border/50 hover:border-primary/60 hover:bg-accent/30 hover:shadow-md hover:-translate-y-0.5',
-        'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+        'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
       )}>
       <Icon className={cn('mb-2 size-4 stroke-[1.5] transition-colors duration-200', selected ? 'text-primary' : 'text-muted-foreground group-hover:text-primary')} />
       <div>
@@ -756,7 +804,7 @@ function UGCard({ label, desc, onClick }: { label: string; desc: string; onClick
         'group flex items-center justify-between w-full px-4 py-3 text-left transition-all duration-200',
         'bg-background/60 border border-border/50 rounded-2xl',
         'hover:border-primary/60 hover:bg-accent/30 hover:shadow-md',
-        'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+        'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
       )}>
       <div>
         <p className="text-sm font-medium text-foreground">{label}</p>
@@ -783,7 +831,7 @@ function ProfileChip({
     <button onClick={onClick}
       className={cn(
         'flex items-center gap-2 px-3 py-2.5 rounded-xl border text-left text-sm transition-all duration-200',
-        'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+        'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
         selected
           ? 'border-primary/70 bg-primary/10 text-foreground'
           : 'border-border/50 bg-background/60 text-muted-foreground hover:border-primary/40 hover:text-foreground',

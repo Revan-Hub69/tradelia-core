@@ -4,7 +4,7 @@ import '@/styles/custom-scrollbar-2026.css';
 
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import { Inter, Instrument_Serif, Geist_Mono } from 'next/font/google';
+import { Inter, Geist_Mono } from 'next/font/google';
 import type { Metadata, Viewport } from 'next';
 import NextTopLoader from 'nextjs-toploader';
 
@@ -17,15 +17,6 @@ const inter = Inter({
   variable: '--font-body',
   display: 'swap',
   fallback: ['ui-sans-serif', 'system-ui', 'sans-serif'],
-});
-
-const instrumentSerif = Instrument_Serif({
-  subsets: ['latin'],
-  weight: ['400'],
-  style: ['normal', 'italic'],
-  variable: '--font-display',
-  display: 'swap',
-  fallback: ['Georgia', 'ui-serif', 'serif'],
 });
 
 const geistMono = Geist_Mono({
@@ -44,7 +35,6 @@ export const viewport: Viewport = {
 };
 
 // SVG favicon inline — emerald brand primary #157a53, white T glyph
-// Data-URI is browser-universal and doesn’t depend on runtime rendering
 const FAVICON_SVG = `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#157a53"/><path d="M8 11h16M16 11v12" stroke="white" stroke-width="3" stroke-linecap="round"/><circle cx="22" cy="11" r="2" fill="rgba(255,255,255,0.6)"/></svg>`)}`;
 
 export const metadata: Metadata = {
@@ -69,7 +59,7 @@ export default async function RootLayout({
       lang="en"
       suppressHydrationWarning
       data-tradelia-runtime="boot"
-      className={`${inter.variable} ${instrumentSerif.variable} ${geistMono.variable}`}
+      className={`${inter.variable} ${geistMono.variable}`}
     >
       <head />
       <body
