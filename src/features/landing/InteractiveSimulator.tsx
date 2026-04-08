@@ -275,7 +275,6 @@ type SimulatorState = {
 
 const spring = { type: 'spring' as const, stiffness: 280, damping: 28 };
 
-// Standard page-level fade used for steps 0-3
 const fade = {
   initial: { opacity: 0, y: 16, scale: 0.99 },
   animate: { opacity: 1, y: 0,  scale: 1 },
@@ -285,9 +284,6 @@ const fade = {
 // ---------------------------------------------------------------------------
 // 3b. STAGGERED REVEAL VARIANTS — step 4 only
 // ---------------------------------------------------------------------------
-// Each result section has a fixed transitionDelay so they materialise
-// one after another from the moment step-4 mounts. The container uses
-// motion.layout so its height grows smoothly instead of jumping.
 
 function revealVariant(delayMs: number) {
   return {
@@ -305,7 +301,6 @@ function revealVariant(delayMs: number) {
   };
 }
 
-// Badge: first thing revealed — needs a little extra spring pop
 const badgeReveal = {
   initial: { opacity: 0, scale: 0.96, filter: 'blur(6px)' },
   animate: {
@@ -320,7 +315,6 @@ const badgeReveal = {
   },
 };
 
-// Individual stat card — staggers by index
 function statReveal(i: number) {
   return {
     initial: { opacity: 0, y: 8, scale: 0.97 },
@@ -349,36 +343,18 @@ export function InteractiveSimulator() {
     ? UNDERLYING_GROUPS.filter(ug => ug.categoryId === selections.category)
     : [];
 
-  const handleSelectCategory = (id: CategoryId) => {
-    setSelections({ category: id });
-    setStep(1);
-  };
-
-  const handleSelectUG = (id: UnderlyingGroupId) => {
-    setSelections(prev => ({ ...prev, ugId: id }));
-    setStep(2);
-  };
-
-  const handleSelectHorizon = (id: HorizonId) => {
-    setSelections(prev => ({ ...prev, horizon: id }));
-    setStep(3);
-  };
-
-  // Result is computed immediately; the staggered reveal provides the
-  // perceived "processing" feel without any artificial delay state.
-  const handleSelectStyle = (id: StyleId) => {
-    setSelections(prev => ({ ...prev, style: id }));
-    setStep(4);
-  };
+  const handleSelectCategory = (id: CategoryId) => { setSelections({ category: id }); setStep(1); };
+  const handleSelectUG       = (id: UnderlyingGroupId) => { setSelections(prev => ({ ...prev, ugId: id })); setStep(2); };
+  const handleSelectHorizon  = (id: HorizonId) => { setSelections(prev => ({ ...prev, horizon: id })); setStep(3); };
+  const handleSelectStyle    = (id: StyleId) => { setSelections(prev => ({ ...prev, style: id })); setStep(4); };
 
   const navigateToStep = (target: number) => {
-    if (target < step) {
-      if (target === 0) setSelections({});
-      if (target === 1) setSelections(prev => ({ category: prev.category }));
-      if (target === 2) setSelections(prev => ({ category: prev.category, ugId: prev.ugId }));
-      if (target === 3) setSelections(prev => ({ category: prev.category, ugId: prev.ugId, horizon: prev.horizon }));
-      setStep(target);
-    }
+    if (target >= step) return;
+    if (target === 0) setSelections({});
+    if (target === 1) setSelections(prev => ({ category: prev.category }));
+    if (target === 2) setSelections(prev => ({ category: prev.category, ugId: prev.ugId }));
+    if (target === 3) setSelections(prev => ({ category: prev.category, ugId: prev.ugId, horizon: prev.horizon }));
+    setStep(target);
   };
 
   const reset = () => { setSelections({}); setStep(0); };
@@ -448,14 +424,14 @@ export function InteractiveSimulator() {
       </div>
 
       {/*
-        Step content.
-        CRITICAL: the outer div uses `motion.layout` so that when the
-        container grows from step-3 height (~130px, 3 cards) to step-4
-        height (~280px, full result), the height change is spring-animated
-        instead of jumping. `overflow-hidden` prevents children from
-        bleeding out during the transition.
+        layout="size" — animates only width/height, does NOT propagate layout
+        recalculation to siblings or parent (avoids the "thrashing" that plain
+        layout causes when the hero column re-measures on every step change).
+        min-h-[380px] is calibrated on step-1 with 4 UG rows (equities) which
+        is the tallest of steps 0-3. Steps 2 and 3 (3 cards) never shrink
+        below this floor. Step 4 grows freely above it.
       */}
-      <motion.div layout className="relative overflow-hidden">
+      <motion.div layout="size" className="relative overflow-hidden min-h-[380px]">
         <AnimatePresence mode="wait">
 
           {/* STEP 0 */}
@@ -533,17 +509,16 @@ export function InteractiveSimulator() {
             </motion.div>
           )}
 
-          {/* STEP 4 — staggered reveal, no intermediate loader state */}
+          {/* STEP 4 — staggered reveal */}
           {step === 4 && result && selections.ugId && selections.horizon && selectedStyle && (
             <motion.div
               key="step-4"
-              // Entry: the whole block fades in as a unit (fast)
               initial={{ opacity: 0 }}
               animate={{ opacity: 1, transition: { duration: 0.15 } }}
               exit={{ opacity: 0, transition: { duration: 0.1 } }}
               className="w-full space-y-3"
             >
-              {/* 1. Rating badge — first, with scale+blur pop */}
+              {/* 1. Rating badge */}
               <motion.div
                 variants={badgeReveal}
                 initial="initial"
@@ -565,7 +540,7 @@ export function InteractiveSimulator() {
                 </span>
               </motion.div>
 
-              {/* 2. Cost stats — each card staggers individually */}
+              {/* 2. Cost stats */}
               <div className="grid grid-cols-3 gap-2">
                 {[
                   { label: 'Spread',       value: `${result.spreadBps} bps` },
