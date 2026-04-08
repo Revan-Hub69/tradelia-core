@@ -7,6 +7,6 @@ export * from './horizons';
 export * from './styles';
 export * from './instruments';
 export * from './account-sizes';
-export * from './position-sizes';
+
 export * from './leverage-profiles';
 export * from './brokers';

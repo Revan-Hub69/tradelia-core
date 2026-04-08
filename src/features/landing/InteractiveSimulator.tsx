@@ -24,12 +24,8 @@ import {
   Wallet,
   BadgeEuro,
   Landmark,
-  Minimize2,
-  Minus,
   ShieldCheck,
   Flame,
-  Plus,
-  Maximize2,
 } from 'lucide-react';
 import { cn } from '@/utils/Helpers';
 import {
@@ -38,12 +34,6 @@ import {
   type AccountSizeId,
 } from '@/data/simulator/account-sizes';
 import {
-  POSITION_SIZES,
-  POSITION_SIZE_IDS,
-  RECOMMENDED_POSITION_SIZES,
-  type PositionSizeId,
-} from '@/data/simulator/position-sizes';
-import {
   LEVERAGE_PROFILES,
   LEVERAGE_PROFILE_IDS,
   type LeverageProfileId,
@@ -51,7 +41,6 @@ import {
 
 const LUCIDE_ICON_MAP: Record<string, React.ElementType> = {
   Sprout, Wallet, BadgeEuro, TrendingUp, Landmark,
-  Minimize2, Minus, Plus, Maximize2,
   ShieldCheck, Zap, Flame,
 };
 
@@ -357,7 +346,6 @@ type SimulatorState = {
   horizon?:      HorizonId;
   style?:        StyleId;
   accountSize?:  AccountSizeId;
-  positionSize?: PositionSizeId;
   leverage?:     LeverageProfileId;
 };
 
@@ -417,16 +405,11 @@ export function InteractiveSimulator() {
 
   const availableStyles = selections.horizon ? filteredStyles(selections.horizon) : [];
 
-  const availablePositionSizes = selections.accountSize
-    ? RECOMMENDED_POSITION_SIZES[selections.accountSize].map(id => POSITION_SIZES[id])
-    : POSITION_SIZE_IDS.map(id => POSITION_SIZES[id]);
-
   const handleSelectCategory     = (id: CategoryId)        => { setSelections({ category: id }); setStep(1); };
   const handleSelectUG           = (id: UnderlyingGroupId) => { setSelections(prev => ({ ...prev, ugId: id })); setStep(2); };
   const handleSelectHorizon      = (id: HorizonId)         => { setSelections(prev => ({ ...prev, horizon: id, style: undefined })); };
   const handleSelectStyle        = (id: StyleId)           => { setSelections(prev => ({ ...prev, style: id })); setStep(3); };
-  const handleSelectAccountSize  = (id: AccountSizeId)     => { setSelections(prev => ({ ...prev, accountSize: id, positionSize: undefined })); };
-  const handleSelectPositionSize = (id: PositionSizeId)    => { setSelections(prev => ({ ...prev, positionSize: id })); };
+  const handleSelectAccountSize  = (id: AccountSizeId)     => { setSelections(prev => ({ ...prev, accountSize: id })); };
   const handleSelectLeverage     = (id: LeverageProfileId) => { setSelections(prev => ({ ...prev, leverage: id })); };
   const handleConfirmProfile     = () => { if (step4Ready) setStep(4); };
 
@@ -435,14 +418,14 @@ export function InteractiveSimulator() {
     if (target === 0) setSelections({});
     if (target === 1) setSelections(prev => ({ category: prev.category }));
     if (target === 2) setSelections(prev => ({ category: prev.category, ugId: prev.ugId, horizon: undefined, style: undefined }));
-    if (target === 3) setSelections(prev => ({ ...prev, accountSize: undefined, positionSize: undefined, leverage: undefined }));
+    if (target === 3) setSelections(prev => ({ ...prev, accountSize: undefined, leverage: undefined }));
     setStep(target);
   };
 
   const reset = () => { setSelections({}); setStep(0); };
 
   const selectedStyle = STYLES.find(s => s.id === selections.style);
-  const step4Ready    = !!(selections.accountSize && selections.positionSize && selections.leverage);
+  const step4Ready    = !!(selections.accountSize && selections.leverage);
 
   const result: SimResult | null =
     step === 4 && selections.ugId && selections.horizon && selectedStyle
@@ -579,23 +562,7 @@ export function InteractiveSimulator() {
                 </div>
               </ProfileSection>
 
-              <AnimatePresence>
-                {selections.accountSize && (
-                  <motion.div key="pos-size" variants={slideDown} initial="initial" animate="animate" exit="exit">
-                    <ProfileSection label="Dimensione posizione">
-                      <div className="grid grid-cols-2 gap-2">
-                        {availablePositionSizes.map(item => {
-                          const Icon = LUCIDE_ICON_MAP[item.icon] ?? Minus;
-                          return <ProfileChip key={item.id} icon={Icon} label={item.label} selected={selections.positionSize === item.id} onClick={() => handleSelectPositionSize(item.id)} />;
-                        })}
-                      </div>
-                    </ProfileSection>
-                  </motion.div>
-                )}
-              </AnimatePresence>
 
-              <AnimatePresence>
-                {selections.positionSize && (
                   <motion.div key="leverage" variants={slideDown} initial="initial" animate="animate" exit="exit">
                     <ProfileSection label="Leva utilizzata">
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -708,7 +675,6 @@ function ResultView({
       <motion.div variants={statReveal(0)} initial="initial" animate="animate" className="flex flex-wrap gap-1.5">
         {[
           selections.accountSize  ? ACCOUNT_SIZES[selections.accountSize].label   : null,
-          selections.positionSize ? POSITION_SIZES[selections.positionSize].label : null,
           selections.leverage     ? LEVERAGE_PROFILES[selections.leverage].label  : null,
         ].filter(Boolean).map(label => (
           <span key={label}
