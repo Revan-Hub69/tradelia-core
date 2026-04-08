@@ -20,8 +20,44 @@ import {
   CheckCircle2,
   Target,
   ChevronLeft,
+  Sprout,
+  Wallet,
+  BadgeEuro,
+  Landmark,
+  Minimize2,
+  Minus,
+  Plus,
+  Maximize2,
+  ShieldCheck,
+  Flame,
 } from 'lucide-react';
 import { cn } from '@/utils/Helpers';
+import {
+  ACCOUNT_SIZES,
+  ACCOUNT_SIZE_IDS,
+  type AccountSizeId,
+} from '@/data/simulator/account-sizes';
+import {
+  POSITION_SIZES,
+  POSITION_SIZE_IDS,
+  RECOMMENDED_POSITION_SIZES,
+  type PositionSizeId,
+} from '@/data/simulator/position-sizes';
+import {
+  LEVERAGE_PROFILES,
+  LEVERAGE_PROFILE_IDS,
+  type LeverageProfileId,
+} from '@/data/simulator/leverage-profiles';
+
+// ---------------------------------------------------------------------------
+// ICON MAP — usato per i nuovi step dal DB
+// ---------------------------------------------------------------------------
+
+const LUCIDE_ICON_MAP: Record<string, React.ElementType> = {
+  Sprout, Wallet, BadgeEuro, TrendingUp, Landmark,
+  Minimize2, Minus, Plus, Maximize2,
+  ShieldCheck, Zap, Flame,
+};
 
 // ---------------------------------------------------------------------------
 // 1. DATA DOMAIN
@@ -63,11 +99,6 @@ const HORIZONS = [
 ] as const;
 
 type HorizonId = typeof HORIZONS[number]['id'];
-
-// ---------------------------------------------------------------------------
-// STYLES — descriptions are horizon-aware (Opzione C)
-// Alta frequenza is excluded on multiday (Opzione D) via filteredStyles()
-// ---------------------------------------------------------------------------
 
 const STYLES = [
   {
@@ -284,10 +315,13 @@ function computeDrag(
 // ---------------------------------------------------------------------------
 
 type SimulatorState = {
-  category?: CategoryId;
-  ugId?:     UnderlyingGroupId;
-  horizon?:  HorizonId;
-  style?:    StyleId;
+  category?:     CategoryId;
+  ugId?:         UnderlyingGroupId;
+  horizon?:      HorizonId;
+  style?:        StyleId;
+  accountSize?:  AccountSizeId;
+  positionSize?: PositionSizeId;
+  leverage?:     LeverageProfileId;
 };
 
 const spring = { type: 'spring' as const, stiffness: 280, damping: 28 };
@@ -340,10 +374,25 @@ export function InteractiveSimulator() {
 
   const availableStyles = selections.horizon ? filteredStyles(selections.horizon) : STYLES;
 
-  const handleSelectCategory = (id: CategoryId) => { setSelections({ category: id }); setStep(1); };
-  const handleSelectUG       = (id: UnderlyingGroupId) => { setSelections(prev => ({ ...prev, ugId: id })); setStep(2); };
-  const handleSelectHorizon  = (id: HorizonId) => { setSelections(prev => ({ ...prev, horizon: id })); setStep(3); };
-  const handleSelectStyle    = (id: StyleId) => { setSelections(prev => ({ ...prev, style: id })); setStep(4); };
+  // Position sizes filtrate per account size selezionato
+  const availablePositionSizes = selections.accountSize
+    ? RECOMMENDED_POSITION_SIZES[selections.accountSize].map(id => POSITION_SIZES[id])
+    : POSITION_SIZE_IDS.map(id => POSITION_SIZES[id]);
+
+  const handleSelectCategory    = (id: CategoryId)       => { setSelections({ category: id }); setStep(1); };
+  const handleSelectUG          = (id: UnderlyingGroupId) => { setSelections(prev => ({ ...prev, ugId: id })); setStep(2); };
+  const handleSelectHorizon     = (id: HorizonId)        => { setSelections(prev => ({ ...prev, horizon: id })); setStep(3); };
+  const handleSelectStyle       = (id: StyleId)          => { setSelections(prev => ({ ...prev, style: id })); setStep(4); };
+  const handleSelectAccountSize = (id: AccountSizeId)    => { setSelections(prev => ({ ...prev, accountSize: id, positionSize: undefined })); };
+  const handleSelectPositionSize= (id: PositionSizeId)   => { setSelections(prev => ({ ...prev, positionSize: id })); };
+  const handleSelectLeverage    = (id: LeverageProfileId)=> { setSelections(prev => ({ ...prev, leverage: id })); };
+
+  // Avanza al risultato solo quando tutti e 3 i campi step 4 sono compilati
+  const handleConfirmProfile = () => {
+    if (selections.accountSize && selections.positionSize && selections.leverage) {
+      setStep(5);
+    }
+  };
 
   const navigateToStep = (target: number) => {
     if (target >= step) return;
@@ -351,6 +400,7 @@ export function InteractiveSimulator() {
     if (target === 1) setSelections(prev => ({ category: prev.category }));
     if (target === 2) setSelections(prev => ({ category: prev.category, ugId: prev.ugId }));
     if (target === 3) setSelections(prev => ({ category: prev.category, ugId: prev.ugId, horizon: prev.horizon, style: undefined }));
+    if (target === 4) setSelections(prev => ({ ...prev, accountSize: undefined, positionSize: undefined, leverage: undefined }));
     setStep(target);
   };
 
@@ -359,7 +409,7 @@ export function InteractiveSimulator() {
   const selectedStyle = STYLES.find(s => s.id === selections.style);
 
   const result: SimResult | null =
-    step === 4 && selections.ugId && selections.horizon && selectedStyle
+    step === 5 && selections.ugId && selections.horizon && selectedStyle
       ? computeDrag(selections.ugId, selections.horizon, selectedStyle.freq)
       : null;
 
@@ -370,6 +420,7 @@ export function InteractiveSimulator() {
     'Qual è il sottogruppo?',
     'Che orizzonte temporale usi?',
     step3Prompt,
+    'Il tuo profilo operativo',
     null,
   ];
 
@@ -379,7 +430,10 @@ export function InteractiveSimulator() {
     high:   { icon: TrendingDown,  color: 'text-red-400',     bg: 'bg-red-500/10 border-red-500/20',         label: 'Attrito elevato'  },
   };
 
-  const TOTAL_STEPS = 4;
+  const TOTAL_STEPS = 5;
+
+  // Stato validazione step 4
+  const step4Ready = !!(selections.accountSize && selections.positionSize && selections.leverage);
 
   return (
     <div className="relative w-full flex flex-col p-5 sm:p-6 xl:p-7">
@@ -425,7 +479,7 @@ export function InteractiveSimulator() {
       <motion.div layout="size" className="relative overflow-hidden min-h-[300px] sm:min-h-[340px] xl:min-h-[320px]">
         <AnimatePresence mode="wait">
 
-          {/* STEP 0 — 5 categories: 2 cols mobile / 3 cols sm+ (2+3 layout) */}
+          {/* STEP 0 */}
           {step === 0 && (
             <motion.div
               key="step-0"
@@ -433,18 +487,12 @@ export function InteractiveSimulator() {
               className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 w-full"
             >
               {CATEGORIES.map((item) => (
-                <OptionCard
-                  key={item.id}
-                  icon={item.icon}
-                  title={item.label}
-                  description={item.desc}
-                  onClick={() => handleSelectCategory(item.id)}
-                />
+                <OptionCard key={item.id} icon={item.icon} title={item.label} description={item.desc} onClick={() => handleSelectCategory(item.id)} />
               ))}
             </motion.div>
           )}
 
-          {/* STEP 1 — UG rows, 1 col list */}
+          {/* STEP 1 */}
           {step === 1 && (
             <motion.div
               key="step-1"
@@ -452,17 +500,12 @@ export function InteractiveSimulator() {
               className="flex flex-col gap-2 w-full"
             >
               {filteredUGs.map((ug) => (
-                <UGCard
-                  key={ug.id}
-                  label={ug.label}
-                  desc={ug.desc}
-                  onClick={() => handleSelectUG(ug.id)}
-                />
+                <UGCard key={ug.id} label={ug.label} desc={ug.desc} onClick={() => handleSelectUG(ug.id)} />
               ))}
             </motion.div>
           )}
 
-          {/* STEP 2 — 3 horizons: 1 col mobile, 3 cols sm+ */}
+          {/* STEP 2 */}
           {step === 2 && (
             <motion.div
               key="step-2"
@@ -470,27 +513,19 @@ export function InteractiveSimulator() {
               className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 w-full"
             >
               {HORIZONS.map((item) => (
-                <OptionCard
-                  key={item.id}
-                  icon={item.icon}
-                  title={item.label}
-                  description={item.desc}
-                  onClick={() => handleSelectHorizon(item.id)}
-                />
+                <OptionCard key={item.id} icon={item.icon} title={item.label} description={item.desc} onClick={() => handleSelectHorizon(item.id)} />
               ))}
             </motion.div>
           )}
 
-          {/* STEP 3 — styles (filtered): 1 col mobile, 2-3 cols sm+ */}
+          {/* STEP 3 */}
           {step === 3 && (
             <motion.div
               key={`step-3-${selections.horizon}`}
               variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
               className={cn(
                 'grid gap-2 sm:gap-3 w-full',
-                availableStyles.length === 2
-                  ? 'grid-cols-1 sm:grid-cols-2'
-                  : 'grid-cols-1 sm:grid-cols-3',
+                availableStyles.length === 2 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-3',
               )}
             >
               {availableStyles.map((item) => (
@@ -505,16 +540,125 @@ export function InteractiveSimulator() {
             </motion.div>
           )}
 
-          {/* STEP 4 — staggered reveal */}
-          {step === 4 && result && selections.ugId && selections.horizon && selectedStyle && (
+          {/* STEP 4 — Profilo operativo */}
+          {step === 4 && (
             <motion.div
               key="step-4"
+              variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
+              className="flex flex-col gap-5 w-full"
+            >
+              {/* Account Size */}
+              <ProfileSection label="Dimensione conto">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {ACCOUNT_SIZE_IDS.map((id) => {
+                    const item = ACCOUNT_SIZES[id];
+                    const Icon = LUCIDE_ICON_MAP[item.icon] ?? Wallet;
+                    return (
+                      <ProfileChip
+                        key={id}
+                        icon={Icon}
+                        label={item.label}
+                        selected={selections.accountSize === id}
+                        onClick={() => handleSelectAccountSize(id)}
+                      />
+                    );
+                  })}
+                </div>
+              </ProfileSection>
+
+              {/* Position Size — visibile solo dopo aver scelto account size */}
+              <AnimatePresence>
+                {selections.accountSize && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0, transition: { duration: 0.28, ease: [0.16, 1, 0.3, 1] } }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <ProfileSection label="Dimensione posizione">
+                      <div className="grid grid-cols-2 gap-2">
+                        {availablePositionSizes.map((item) => {
+                          const Icon = LUCIDE_ICON_MAP[item.icon] ?? Minus;
+                          return (
+                            <ProfileChip
+                              key={item.id}
+                              icon={Icon}
+                              label={item.label}
+                              selected={selections.positionSize === item.id}
+                              onClick={() => handleSelectPositionSize(item.id)}
+                            />
+                          );
+                        })}
+                      </div>
+                    </ProfileSection>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Leverage — visibile solo dopo aver scelto position size */}
+              <AnimatePresence>
+                {selections.positionSize && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0, transition: { duration: 0.28, ease: [0.16, 1, 0.3, 1] } }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <ProfileSection label="Leva utilizzata">
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        {LEVERAGE_PROFILE_IDS.map((id) => {
+                          const item = LEVERAGE_PROFILES[id];
+                          const Icon = LUCIDE_ICON_MAP[item.icon] ?? ShieldCheck;
+                          return (
+                            <ProfileChip
+                              key={id}
+                              icon={Icon}
+                              label={item.label}
+                              selected={selections.leverage === id}
+                              onClick={() => handleSelectLeverage(id)}
+                            />
+                          );
+                        })}
+                      </div>
+                    </ProfileSection>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* CTA — attivo solo quando tutto compilato */}
+              <AnimatePresence>
+                {step4Ready && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0, transition: { duration: 0.28, ease: [0.16, 1, 0.3, 1] } }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <button
+                      onClick={handleConfirmProfile}
+                      className={cn(
+                        'w-full flex items-center justify-center gap-2 rounded-2xl px-6 py-3',
+                        'bg-primary text-primary-foreground font-medium text-sm',
+                        'hover:bg-primary/90 transition-colors duration-200',
+                        'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+                      )}
+                    >
+                      Vedi i risultati
+                      <ArrowRight className="size-4" />
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          )}
+
+          {/* STEP 5 — Risultato */}
+          {step === 5 && result && selections.ugId && selections.horizon && selectedStyle && (
+            <motion.div
+              key="step-5"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1, transition: { duration: 0.15 } }}
               exit={{ opacity: 0, transition: { duration: 0.1 } }}
               className="w-full space-y-3"
             >
-              {/* 1. Rating badge */}
+              {/* Rating badge */}
               <motion.div
                 variants={badgeReveal} initial="initial" animate="animate"
                 className={cn('flex items-center gap-3 rounded-2xl border px-4 py-3', ratingConfig[result.rating].bg)}
@@ -531,7 +675,20 @@ export function InteractiveSimulator() {
                 </span>
               </motion.div>
 
-              {/* 2. Cost stats */}
+              {/* Profilo recap chips */}
+              <motion.div variants={statReveal(0)} initial="initial" animate="animate" className="flex flex-wrap gap-1.5">
+                {[
+                  selections.accountSize  ? ACCOUNT_SIZES[selections.accountSize].label    : null,
+                  selections.positionSize ? POSITION_SIZES[selections.positionSize].label  : null,
+                  selections.leverage     ? LEVERAGE_PROFILES[selections.leverage].label   : null,
+                ].filter(Boolean).map(label => (
+                  <span key={label} className="rounded-full border border-border/50 bg-background px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
+                    {label}
+                  </span>
+                ))}
+              </motion.div>
+
+              {/* Cost stats */}
               <div className="grid grid-cols-3 gap-2">
                 {[
                   { label: 'Spread',       value: `${result.spreadBps} bps` },
@@ -540,7 +697,7 @@ export function InteractiveSimulator() {
                 ].map(({ label, value }, i) => (
                   <motion.div
                     key={label}
-                    variants={statReveal(i)} initial="initial" animate="animate"
+                    variants={statReveal(i + 1)} initial="initial" animate="animate"
                     className="rounded-2xl border border-border/50 bg-background/60 px-3 py-3 text-center"
                   >
                     <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground/60">{label}</p>
@@ -549,15 +706,15 @@ export function InteractiveSimulator() {
                 ))}
               </div>
 
-              {/* 3. Formula note */}
+              {/* Formula note */}
               <motion.p
                 variants={revealVariant(300)} initial="initial" animate="animate"
                 className="font-mono text-[10px] text-muted-foreground/50 text-center tracking-wide"
               >
-                {selectedStyle.freq} trade/sessione &middot; {HORIZON_PARAMS[selections.horizon].holdingDays}gg holding &middot; spread {result.spreadBps}bps
+                {selectedStyle.freq} trade/sessione · {HORIZON_PARAMS[selections.horizon].holdingDays}gg holding · spread {result.spreadBps}bps
               </motion.p>
 
-              {/* 4. Suggestion */}
+              {/* Suggestion */}
               <motion.div
                 variants={revealVariant(380)} initial="initial" animate="animate"
                 className="flex items-start gap-3 rounded-2xl border border-border/50 bg-muted/30 px-4 py-3"
@@ -569,7 +726,7 @@ export function InteractiveSimulator() {
                 </p>
               </motion.div>
 
-              {/* 5. Recap + reset */}
+              {/* Recap + reset */}
               <motion.div
                 variants={revealVariant(460)} initial="initial" animate="animate"
                 className="flex items-center justify-between"
@@ -619,6 +776,15 @@ export function InteractiveSimulator() {
               <button onClick={() => navigateToStep(2)} className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-secondary">
                 <ChevronLeft className="size-3" />
                 {HORIZONS.find(h => h.id === selections.horizon)?.label}
+              </button>
+            </>
+          )}
+          {step > 3 && selections.style && (
+            <>
+              <span className="text-muted-foreground/30 text-xs">/</span>
+              <button onClick={() => navigateToStep(3)} className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-secondary">
+                <ChevronLeft className="size-3" />
+                {STYLES.find(s => s.id === selections.style)?.label}
               </button>
             </>
           )}
@@ -683,6 +849,45 @@ function UGCard({
         <p className="mt-0.5 text-[10px] text-muted-foreground">{desc}</p>
       </div>
       <ArrowRight className="size-4 text-muted-foreground/40 group-hover:text-primary group-hover:translate-x-0.5 transition-all duration-200" />
+    </button>
+  );
+}
+
+function ProfileSection({
+  label, children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60">{label}</p>
+      {children}
+    </div>
+  );
+}
+
+function ProfileChip({
+  icon: Icon, label, selected, onClick,
+}: {
+  icon: React.ElementType;
+  label: string;
+  selected: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        'flex items-center gap-2 px-3 py-2.5 rounded-xl border text-left text-sm transition-all duration-200',
+        'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+        selected
+          ? 'border-primary/70 bg-primary/10 text-foreground'
+          : 'border-border/50 bg-background/60 text-muted-foreground hover:border-primary/40 hover:text-foreground',
+      )}
+    >
+      <Icon className={cn('size-3.5 shrink-0 transition-colors', selected ? 'text-primary' : 'text-muted-foreground/60')} />
+      <span className="text-xs font-medium leading-tight">{label}</span>
     </button>
   );
 }
