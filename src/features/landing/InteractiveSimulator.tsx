@@ -69,13 +69,63 @@ const HORIZONS = [
 
 type HorizonId = typeof HORIZONS[number]['id'];
 
+// ---------------------------------------------------------------------------
+// STYLES — descriptions are horizon-aware (Opzione C)
+// Alta frequenza is excluded on multiday (Opzione D) via filteredStyles()
+// ---------------------------------------------------------------------------
+
 const STYLES = [
-  { id: 'selective', label: 'Selettivo',       icon: Target,     desc: 'Pochi setup, alta qualita',       freq: 2  },
-  { id: 'active',    label: 'Attivo',           icon: TrendingUp, desc: 'Setup multipli, segue momentum', freq: 7  },
-  { id: 'high_freq', label: 'Alta frequenza',   icon: Zap,        desc: 'Scalping continuo',               freq: 20 },
+  {
+    id: 'selective',
+    label: 'Selettivo',
+    icon: Target,
+    freq: 2,
+    desc: {
+      scalping: '1–3 trade/ora · alta selettività',
+      intraday: '1–3 setup/giornata · alta qualità',
+      multiday: '1–2 posizioni · massima selezione',
+    } as Record<HorizonId, string>,
+  },
+  {
+    id: 'active',
+    label: 'Attivo',
+    icon: TrendingUp,
+    freq: 7,
+    desc: {
+      scalping: '5–10 trade/ora · segue momentum',
+      intraday: '4–8 setup/giornata · multi-setup',
+      multiday: '3–6 posizioni · basket attivo',
+    } as Record<HorizonId, string>,
+  },
+  {
+    id: 'high_freq',
+    label: 'Alta frequenza',
+    icon: Zap,
+    freq: 20,
+    desc: {
+      scalping: '20+ trade/ora · scalping continuo',
+      intraday: '15–25 trade/giornata · alta frequenza',
+      // multiday intentionally omitted — filtered out in filteredStyles()
+      multiday: '',
+    } as Record<HorizonId, string>,
+  },
 ] as const;
 
 type StyleId = typeof STYLES[number]['id'];
+
+// Returns styles available for the given horizon.
+// Alta frequenza is semantically wrong on multiday: excluded.
+function filteredStyles(horizonId: HorizonId) {
+  if (horizonId === 'multiday') return STYLES.filter(s => s.id !== 'high_freq');
+  return STYLES;
+}
+
+// Prompt for step 3 is horizon-aware
+const STYLE_PROMPT: Record<HorizonId, string> = {
+  scalping: 'Quanti trade fai per ora?',
+  intraday: 'Quanti setup apri in giornata?',
+  multiday: 'Quante posizioni tieni aperte?',
+};
 
 // ---------------------------------------------------------------------------
 // 2. COST MODEL
@@ -281,22 +331,12 @@ const fade = {
   exit:    { opacity: 0, y: -12, scale: 0.99, position: 'absolute' as const },
 };
 
-// ---------------------------------------------------------------------------
-// 3b. STAGGERED REVEAL VARIANTS — step 4 only
-// ---------------------------------------------------------------------------
-
 function revealVariant(delayMs: number) {
   return {
     initial: { opacity: 0, y: 10, filter: 'blur(4px)' },
     animate: {
-      opacity: 1,
-      y: 0,
-      filter: 'blur(0px)',
-      transition: {
-        delay:    delayMs / 1000,
-        duration: 0.38,
-        ease:     [0.16, 1, 0.3, 1] as [number, number, number, number],
-      },
+      opacity: 1, y: 0, filter: 'blur(0px)',
+      transition: { delay: delayMs / 1000, duration: 0.38, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
     },
   };
 }
@@ -304,14 +344,8 @@ function revealVariant(delayMs: number) {
 const badgeReveal = {
   initial: { opacity: 0, scale: 0.96, filter: 'blur(6px)' },
   animate: {
-    opacity: 1,
-    scale: 1,
-    filter: 'blur(0px)',
-    transition: {
-      delay:     0.06,
-      duration:  0.42,
-      ease:      [0.16, 1, 0.3, 1] as [number, number, number, number],
-    },
+    opacity: 1, scale: 1, filter: 'blur(0px)',
+    transition: { delay: 0.06, duration: 0.42, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
   },
 };
 
@@ -319,14 +353,8 @@ function statReveal(i: number) {
   return {
     initial: { opacity: 0, y: 8, scale: 0.97 },
     animate: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        delay:    0.20 + i * 0.055,
-        duration: 0.32,
-        ease:     [0.16, 1, 0.3, 1] as [number, number, number, number],
-      },
+      opacity: 1, y: 0, scale: 1,
+      transition: { delay: 0.20 + i * 0.055, duration: 0.32, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
     },
   };
 }
@@ -343,6 +371,8 @@ export function InteractiveSimulator() {
     ? UNDERLYING_GROUPS.filter(ug => ug.categoryId === selections.category)
     : [];
 
+  const availableStyles = selections.horizon ? filteredStyles(selections.horizon) : STYLES;
+
   const handleSelectCategory = (id: CategoryId) => { setSelections({ category: id }); setStep(1); };
   const handleSelectUG       = (id: UnderlyingGroupId) => { setSelections(prev => ({ ...prev, ugId: id })); setStep(2); };
   const handleSelectHorizon  = (id: HorizonId) => { setSelections(prev => ({ ...prev, horizon: id })); setStep(3); };
@@ -352,8 +382,9 @@ export function InteractiveSimulator() {
     if (target >= step) return;
     if (target === 0) setSelections({});
     if (target === 1) setSelections(prev => ({ category: prev.category }));
+    // Clear style when going back to horizon — avoids stale high_freq on multiday
     if (target === 2) setSelections(prev => ({ category: prev.category, ugId: prev.ugId }));
-    if (target === 3) setSelections(prev => ({ category: prev.category, ugId: prev.ugId, horizon: prev.horizon }));
+    if (target === 3) setSelections(prev => ({ category: prev.category, ugId: prev.ugId, horizon: prev.horizon, style: undefined }));
     setStep(target);
   };
 
@@ -366,11 +397,14 @@ export function InteractiveSimulator() {
       ? computeDrag(selections.ugId, selections.horizon, selectedStyle.freq)
       : null;
 
-  const PROMPTS = [
+  // Dynamic prompts
+  const step3Prompt = selections.horizon ? STYLE_PROMPT[selections.horizon] : 'Quanti trade fai per sessione?';
+
+  const PROMPTS: (string | null)[] = [
     'Cosa tradi principalmente?',
     'Qual e il sottogruppo?',
     'Che orizzonte temporale usi?',
-    'Con che frequenza operi?',
+    step3Prompt,
     null,
   ];
 
@@ -413,7 +447,7 @@ export function InteractiveSimulator() {
         <AnimatePresence mode="wait">
           {PROMPTS[step] && (
             <motion.p
-              key={step}
+              key={step === 3 ? `step-3-${selections.horizon}` : step}
               variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
               className="text-base font-medium tracking-tight text-foreground sm:text-lg"
             >
@@ -424,22 +458,19 @@ export function InteractiveSimulator() {
       </div>
 
       {/*
-        layout="size" — animates only width/height, does NOT propagate layout
-        recalculation to siblings or parent (avoids the "thrashing" that plain
-        layout causes when the hero column re-measures on every step change).
-        min-h-[380px] is calibrated on step-1 with 4 UG rows (equities) which
-        is the tallest of steps 0-3. Steps 2 and 3 (3 cards) never shrink
-        below this floor. Step 4 grows freely above it.
+        layout="size" — animates only height, no layout thrashing on siblings.
+        min-h is responsive: calibrated on step-1 worst case (4 UG rows)
+        but relaxed on xl where cards are already shorter.
       */}
-      <motion.div layout="size" className="relative overflow-hidden min-h-[380px]">
+      <motion.div layout="size" className="relative overflow-hidden min-h-[300px] sm:min-h-[340px] xl:min-h-[320px]">
         <AnimatePresence mode="wait">
 
-          {/* STEP 0 */}
+          {/* STEP 0 — 6 categories, 2 cols mobile / 3 cols sm+ */}
           {step === 0 && (
             <motion.div
               key="step-0"
               variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
-              className="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full"
+              className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 w-full"
             >
               {CATEGORIES.map((item) => (
                 <OptionCard
@@ -453,7 +484,7 @@ export function InteractiveSimulator() {
             </motion.div>
           )}
 
-          {/* STEP 1 */}
+          {/* STEP 1 — UG rows, always 1 col list */}
           {step === 1 && (
             <motion.div
               key="step-1"
@@ -471,12 +502,12 @@ export function InteractiveSimulator() {
             </motion.div>
           )}
 
-          {/* STEP 2 */}
+          {/* STEP 2 — 3 horizons: 1 col mobile, 3 cols sm+ */}
           {step === 2 && (
             <motion.div
               key="step-2"
               variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
-              className="grid grid-cols-3 gap-3 w-full"
+              className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 w-full"
             >
               {HORIZONS.map((item) => (
                 <OptionCard
@@ -490,20 +521,25 @@ export function InteractiveSimulator() {
             </motion.div>
           )}
 
-          {/* STEP 3 */}
+          {/* STEP 3 — styles (filtered): 1 col mobile, 2-3 cols sm+ */}
           {step === 3 && (
             <motion.div
-              key="step-3"
+              key={`step-3-${selections.horizon}`}
               variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
-              className="grid grid-cols-3 gap-3 w-full"
+              className={cn(
+                'grid gap-2 sm:gap-3 w-full',
+                availableStyles.length === 2
+                  ? 'grid-cols-1 sm:grid-cols-2'
+                  : 'grid-cols-1 sm:grid-cols-3',
+              )}
             >
-              {STYLES.map((item) => (
+              {availableStyles.map((item) => (
                 <OptionCard
                   key={item.id}
                   icon={item.icon}
                   title={item.label}
-                  description={item.desc}
-                  onClick={() => handleSelectStyle(item.id)}
+                  description={selections.horizon ? item.desc[selections.horizon] : ''}
+                  onClick={() => handleSelectStyle(item.id as StyleId)}
                 />
               ))}
             </motion.div>
@@ -520,15 +556,10 @@ export function InteractiveSimulator() {
             >
               {/* 1. Rating badge */}
               <motion.div
-                variants={badgeReveal}
-                initial="initial"
-                animate="animate"
+                variants={badgeReveal} initial="initial" animate="animate"
                 className={cn('flex items-center gap-3 rounded-2xl border px-4 py-3', ratingConfig[result.rating].bg)}
               >
-                {(() => {
-                  const Icon = ratingConfig[result.rating].icon;
-                  return <Icon className={cn('size-5 shrink-0', ratingConfig[result.rating].color)} />;
-                })()}
+                {(() => { const Icon = ratingConfig[result.rating].icon; return <Icon className={cn('size-5 shrink-0', ratingConfig[result.rating].color)} />; })()}
                 <div>
                   <p className={cn('font-mono text-[11px] font-semibold uppercase tracking-[0.18em]', ratingConfig[result.rating].color)}>
                     {ratingConfig[result.rating].label}
@@ -549,9 +580,7 @@ export function InteractiveSimulator() {
                 ].map(({ label, value }, i) => (
                   <motion.div
                     key={label}
-                    variants={statReveal(i)}
-                    initial="initial"
-                    animate="animate"
+                    variants={statReveal(i)} initial="initial" animate="animate"
                     className="rounded-2xl border border-border/50 bg-background/60 px-3 py-3 text-center"
                   >
                     <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground/60">{label}</p>
@@ -562,9 +591,7 @@ export function InteractiveSimulator() {
 
               {/* 3. Formula note */}
               <motion.p
-                variants={revealVariant(300)}
-                initial="initial"
-                animate="animate"
+                variants={revealVariant(300)} initial="initial" animate="animate"
                 className="font-mono text-[10px] text-muted-foreground/50 text-center tracking-wide"
               >
                 {selectedStyle.freq} trade/sessione &middot; {HORIZON_PARAMS[selections.horizon].holdingDays}gg holding &middot; spread {result.spreadBps}bps
@@ -572,9 +599,7 @@ export function InteractiveSimulator() {
 
               {/* 4. Suggestion */}
               <motion.div
-                variants={revealVariant(380)}
-                initial="initial"
-                animate="animate"
+                variants={revealVariant(380)} initial="initial" animate="animate"
                 className="flex items-start gap-3 rounded-2xl border border-border/50 bg-muted/30 px-4 py-3"
               >
                 <ArrowRight className="mt-0.5 size-4 shrink-0 text-primary" />
@@ -586,9 +611,7 @@ export function InteractiveSimulator() {
 
               {/* 5. Recap + reset */}
               <motion.div
-                variants={revealVariant(460)}
-                initial="initial"
-                animate="animate"
+                variants={revealVariant(460)} initial="initial" animate="animate"
                 className="flex items-center justify-between"
               >
                 <div className="flex gap-2 flex-wrap">
@@ -614,16 +637,9 @@ export function InteractiveSimulator() {
 
       {/* Breadcrumb trail */}
       {step > 0 && step < TOTAL_STEPS && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="mt-5 flex items-center gap-2 flex-wrap"
-        >
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-5 flex items-center gap-2 flex-wrap">
           {selections.category && (
-            <button
-              onClick={() => navigateToStep(0)}
-              className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-secondary"
-            >
+            <button onClick={() => navigateToStep(0)} className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-secondary">
               <ChevronLeft className="size-3" />
               {CATEGORIES.find(c => c.id === selections.category)?.label}
             </button>
@@ -631,10 +647,7 @@ export function InteractiveSimulator() {
           {step > 1 && selections.ugId && (
             <>
               <span className="text-muted-foreground/30 text-xs">/</span>
-              <button
-                onClick={() => navigateToStep(1)}
-                className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-secondary"
-              >
+              <button onClick={() => navigateToStep(1)} className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-secondary">
                 <ChevronLeft className="size-3" />
                 {UNDERLYING_GROUPS.find(u => u.id === selections.ugId)?.label}
               </button>
@@ -643,10 +656,7 @@ export function InteractiveSimulator() {
           {step > 2 && selections.horizon && (
             <>
               <span className="text-muted-foreground/30 text-xs">/</span>
-              <button
-                onClick={() => navigateToStep(2)}
-                className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-secondary"
-              >
+              <button onClick={() => navigateToStep(2)} className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-secondary">
                 <ChevronLeft className="size-3" />
                 {HORIZONS.find(h => h.id === selections.horizon)?.label}
               </button>
@@ -674,16 +684,18 @@ function OptionCard({
     <button
       onClick={onClick}
       className={cn(
-        'group relative flex flex-col items-start justify-between p-4 sm:p-5 text-left transition-all duration-200',
+        'group relative flex flex-col items-start justify-between p-3 sm:p-4 text-left transition-all duration-200',
         'bg-background/60 text-card-foreground border border-border/50 rounded-2xl',
         'hover:border-primary/60 hover:bg-accent/30 hover:shadow-md hover:-translate-y-0.5',
         'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background',
       )}
     >
-      <Icon className="mb-3 size-5 stroke-[1.5] text-muted-foreground group-hover:text-primary transition-colors duration-200" />
+      <Icon className="mb-2 size-4 stroke-[1.5] text-muted-foreground group-hover:text-primary transition-colors duration-200" />
       <div>
         <p className="text-sm font-medium leading-5 text-foreground">{title}</p>
-        <p className="mt-0.5 text-[10px] text-muted-foreground">{description}</p>
+        {description && (
+          <p className="mt-0.5 text-[10px] text-muted-foreground hidden sm:block">{description}</p>
+        )}
       </div>
     </button>
   );
