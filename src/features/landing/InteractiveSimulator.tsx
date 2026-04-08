@@ -562,7 +562,8 @@ export function InteractiveSimulator() {
                 </div>
               </ProfileSection>
 
-
+              <AnimatePresence>
+                {selections.accountSize && (
                   <motion.div key="leverage" variants={slideDown} initial="initial" animate="animate" exit="exit">
                     <ProfileSection label="Leva utilizzata">
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
