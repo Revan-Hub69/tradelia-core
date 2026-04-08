@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Globe,
@@ -281,6 +281,9 @@ type SimulatorState = {
   style?:    StyleId;
 };
 
+// Step 'computing' is the transient loader phase between step 3 and step 4
+type StepValue = 0 | 1 | 2 | 3 | 'computing' | 4;
+
 const spring = { type: 'spring' as const, stiffness: 280, damping: 28 };
 
 const fade = {
@@ -290,12 +293,112 @@ const fade = {
 };
 
 // ---------------------------------------------------------------------------
+// 3b. COMPUTING LOADER COMPONENT
+// ---------------------------------------------------------------------------
+
+const COMPUTE_PHASES = [
+  'Lettura parametri',
+  'Calcolo attrito',
+  'Elaborazione risultato',
+] as const;
+
+// Total duration: 900ms split across 3 phases (~300ms each)
+const PHASE_DURATION = 300;
+
+function ComputingLoader() {
+  const [phase, setPhase] = useState<number>(0);
+
+  useEffect(() => {
+    if (phase >= COMPUTE_PHASES.length - 1) return;
+    const t = setTimeout(() => setPhase(p => p + 1), PHASE_DURATION);
+    return () => clearTimeout(t);
+  }, [phase]);
+
+  return (
+    <motion.div
+      key="step-computing"
+      variants={fade}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      transition={spring}
+      className="w-full flex flex-col gap-5 py-2"
+    >
+      {/* Segmented track */}
+      <div className="flex gap-1.5 w-full">
+        {COMPUTE_PHASES.map((_, i) => (
+          <div
+            key={i}
+            className="relative flex-1 h-[3px] rounded-full overflow-hidden bg-border/40"
+          >
+            <motion.div
+              className="absolute inset-y-0 left-0 rounded-full bg-primary"
+              initial={{ width: '0%' }}
+              animate={{ width: i <= phase ? '100%' : '0%' }}
+              transition={
+                i === phase
+                  ? { duration: PHASE_DURATION / 1000, ease: [0.16, 1, 0.3, 1] }
+                  : i < phase
+                  ? { duration: 0 }
+                  : { duration: 0 }
+              }
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* Phase label */}
+      <div className="h-5 relative overflow-hidden">
+        <AnimatePresence mode="wait">
+          <motion.p
+            key={phase}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
+            className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60 text-center absolute inset-x-0"
+          >
+            {COMPUTE_PHASES[phase]}
+          </motion.p>
+        </AnimatePresence>
+      </div>
+
+      {/* Skeleton preview — mirrors the result layout, fades out as phase advances */}
+      <motion.div
+        className="space-y-3"
+        animate={{ opacity: phase === 0 ? 0.35 : phase === 1 ? 0.6 : 0.85 }}
+        transition={{ duration: 0.25 }}
+      >
+        {/* Rating badge skeleton */}
+        <div className="h-[58px] rounded-2xl bg-muted/40 animate-pulse" />
+        {/* Cost stats skeleton */}
+        <div className="grid grid-cols-3 gap-2">
+          {[0, 1, 2].map(i => (
+            <div key={i} className="h-[58px] rounded-2xl bg-muted/30 animate-pulse" style={{ animationDelay: `${i * 80}ms` }} />
+          ))}
+        </div>
+        {/* Suggestion skeleton */}
+        <div className="h-[52px] rounded-2xl bg-muted/25 animate-pulse" />
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // 4. MAIN COMPONENT
 // ---------------------------------------------------------------------------
 
 export function InteractiveSimulator() {
-  const [step, setStep]             = useState<number>(0);
+  const [step, setStep]             = useState<StepValue>(0);
   const [selections, setSelections] = useState<SimulatorState>({});
+  const computeTimerRef             = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (computeTimerRef.current) clearTimeout(computeTimerRef.current);
+    };
+  }, []);
 
   const filteredUGs = selections.category
     ? UNDERLYING_GROUPS.filter(ug => ug.categoryId === selections.category)
@@ -316,22 +419,38 @@ export function InteractiveSimulator() {
     setStep(3);
   };
 
+  // Style selection triggers the computing loader before revealing the result
   const handleSelectStyle = (id: StyleId) => {
     setSelections(prev => ({ ...prev, style: id }));
-    setStep(4);
+    setStep('computing');
+    // Total loader duration: 3 phases × 300ms = 900ms
+    computeTimerRef.current = setTimeout(() => setStep(4), COMPUTE_PHASES.length * PHASE_DURATION);
   };
 
   const navigateToStep = (target: number) => {
-    if (target < step) {
+    // Cancel any in-flight compute timer when navigating back
+    if (computeTimerRef.current) {
+      clearTimeout(computeTimerRef.current);
+      computeTimerRef.current = null;
+    }
+    const numericStep = step === 'computing' ? 3 : step;
+    if (target < numericStep) {
       if (target === 0) setSelections({});
       if (target === 1) setSelections(prev => ({ category: prev.category }));
       if (target === 2) setSelections(prev => ({ category: prev.category, ugId: prev.ugId }));
       if (target === 3) setSelections(prev => ({ category: prev.category, ugId: prev.ugId, horizon: prev.horizon }));
-      setStep(target);
+      setStep(target as StepValue);
     }
   };
 
-  const reset = () => { setSelections({}); setStep(0); };
+  const reset = () => {
+    if (computeTimerRef.current) {
+      clearTimeout(computeTimerRef.current);
+      computeTimerRef.current = null;
+    }
+    setSelections({});
+    setStep(0);
+  };
 
   const selectedStyle = STYLES.find(s => s.id === selections.style);
 
@@ -340,13 +459,14 @@ export function InteractiveSimulator() {
       ? computeDrag(selections.ugId, selections.horizon, selectedStyle.freq)
       : null;
 
-  const PROMPTS = [
-    'Cosa tradi principalmente?',
-    'Qual e il sottogruppo?',
-    'Che orizzonte temporale usi?',
-    'Con che frequenza operi?',
-    null,
-  ];
+  const PROMPTS: Record<StepValue, string | null> = {
+    0: 'Cosa tradi principalmente?',
+    1: 'Qual e il sottogruppo?',
+    2: 'Che orizzonte temporale usi?',
+    3: 'Con che frequenza operi?',
+    computing: 'Analisi in corso...',
+    4: null,
+  };
 
   const ratingConfig = {
     low:    { icon: CheckCircle2,  color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20', label: 'Attrito basso'    },
@@ -355,6 +475,7 @@ export function InteractiveSimulator() {
   };
 
   const TOTAL_STEPS = 4;
+  const numericStep = step === 'computing' ? 3 : step;
 
   return (
     <div className="relative w-full flex flex-col p-5 sm:p-6 xl:p-7">
@@ -365,20 +486,24 @@ export function InteractiveSimulator() {
           <button
             key={i}
             onClick={() => navigateToStep(i)}
-            disabled={i >= step}
+            disabled={i >= numericStep}
             aria-label={`Torna allo step ${i + 1}`}
             className={cn(
               'h-1.5 rounded-full transition-all duration-300',
-              i < step
+              i < numericStep
                 ? 'w-8 bg-primary cursor-pointer hover:bg-primary/80'
-                : i === step
+                : i === numericStep
                   ? 'w-8 bg-primary/40'
                   : 'w-4 bg-border/50',
             )}
           />
         ))}
         <span className="ml-auto font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/40">
-          {step < TOTAL_STEPS ? `${step + 1} / ${TOTAL_STEPS}` : 'Risultato'}
+          {step === 'computing'
+            ? `4 / ${TOTAL_STEPS}`
+            : step < TOTAL_STEPS
+            ? `${(step as number) + 1} / ${TOTAL_STEPS}`
+            : 'Risultato'}
         </span>
       </div>
 
@@ -389,7 +514,10 @@ export function InteractiveSimulator() {
             <motion.p
               key={step}
               variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
-              className="text-base font-medium tracking-tight text-foreground sm:text-lg"
+              className={cn(
+                'text-base font-medium tracking-tight text-foreground sm:text-lg',
+                step === 'computing' && 'text-muted-foreground',
+              )}
             >
               {PROMPTS[step]}
             </motion.p>
@@ -476,6 +604,9 @@ export function InteractiveSimulator() {
             </motion.div>
           )}
 
+          {/* STEP computing -- loader between step 3 and step 4 */}
+          {step === 'computing' && <ComputingLoader />}
+
           {/* STEP 4 -- result */}
           {step === 4 && result && selections.ugId && selections.horizon && selectedStyle && (
             <motion.div
@@ -545,7 +676,7 @@ export function InteractiveSimulator() {
       </div>
 
       {/* Breadcrumb trail */}
-      {step > 0 && step < TOTAL_STEPS && (
+      {numericStep > 0 && step !== 'computing' && step < TOTAL_STEPS && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -560,7 +691,7 @@ export function InteractiveSimulator() {
               {CATEGORIES.find(c => c.id === selections.category)?.label}
             </button>
           )}
-          {step > 1 && selections.ugId && (
+          {numericStep > 1 && selections.ugId && (
             <>
               <span className="text-muted-foreground/30 text-xs">/</span>
               <button
@@ -572,7 +703,7 @@ export function InteractiveSimulator() {
               </button>
             </>
           )}
-          {step > 2 && selections.horizon && (
+          {numericStep > 2 && selections.horizon && (
             <>
               <span className="text-muted-foreground/30 text-xs">/</span>
               <button
