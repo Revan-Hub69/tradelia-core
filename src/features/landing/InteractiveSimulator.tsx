@@ -49,10 +49,6 @@ import {
   type LeverageProfileId,
 } from '@/data/simulator/leverage-profiles';
 
-// ---------------------------------------------------------------------------
-// ICON MAP — usato per i nuovi step dal DB
-// ---------------------------------------------------------------------------
-
 const LUCIDE_ICON_MAP: Record<string, React.ElementType> = {
   Sprout, Wallet, BadgeEuro, TrendingUp, Landmark,
   Minimize2, Minus, Plus, Maximize2,
@@ -74,20 +70,20 @@ const CATEGORIES = [
 type CategoryId = typeof CATEGORIES[number]['id'];
 
 const UNDERLYING_GROUPS = [
-  { id: 'ug_fx_core',          categoryId: 'forex'       as CategoryId, label: 'Major',          desc: 'EUR/USD, GBP/USD, USD/JPY...' },
-  { id: 'ug_fx_cross',         categoryId: 'forex'       as CategoryId, label: 'Cross',           desc: 'EUR/GBP, AUD/JPY, GBP/CHF...' },
-  { id: 'ug_fx_exotic',        categoryId: 'forex'       as CategoryId, label: 'Esotico',         desc: 'USD/TRY, USD/ZAR, USD/MXN...' },
-  { id: 'ug_index_us',         categoryId: 'indices'     as CategoryId, label: 'US',              desc: 'S&P500, NQ100, DJIA...'        },
-  { id: 'ug_index_eu',         categoryId: 'indices'     as CategoryId, label: 'EU',              desc: 'DAX, CAC40, FTSE MIB...'       },
-  { id: 'ug_index_asia',       categoryId: 'indices'     as CategoryId, label: 'Asia',            desc: 'Nikkei, Hang Seng, ASX...'     },
-  { id: 'ug_equity_us_large',  categoryId: 'equities'    as CategoryId, label: 'US Large Cap',    desc: 'AAPL, MSFT, NVDA...'           },
-  { id: 'ug_equity_us_mid',    categoryId: 'equities'    as CategoryId, label: 'US Mid Cap',      desc: 'S&P 400, titoli $1-10B...'     },
-  { id: 'ug_equity_eu_large',  categoryId: 'equities'    as CategoryId, label: 'EU Large Cap',    desc: 'SAP, ASML, Nestle, BNP...'     },
-  { id: 'ug_equity_asia',      categoryId: 'equities'    as CategoryId, label: 'Asia Large Cap',  desc: 'Toyota, Samsung, Alibaba...'   },
-  { id: 'ug_commodity_metal',  categoryId: 'commodities' as CategoryId, label: 'Metalli',         desc: 'Gold, Silver, Platinum...'     },
-  { id: 'ug_commodity_energy', categoryId: 'commodities' as CategoryId, label: 'Energia',         desc: 'WTI, Brent, Nat Gas...'        },
-  { id: 'ug_crypto_major',     categoryId: 'crypto'      as CategoryId, label: 'Major',           desc: 'BTC, ETH, SOL...'              },
-  { id: 'ug_crypto_altcoin',   categoryId: 'crypto'      as CategoryId, label: 'Altcoin',         desc: 'Tutto il resto -- high beta'   },
+  { id: 'ug_fx_core',          categoryId: 'forex'       as CategoryId, label: 'Major',         desc: 'EUR/USD, GBP/USD, USD/JPY...' },
+  { id: 'ug_fx_cross',         categoryId: 'forex'       as CategoryId, label: 'Cross',          desc: 'EUR/GBP, AUD/JPY, GBP/CHF...' },
+  { id: 'ug_fx_exotic',        categoryId: 'forex'       as CategoryId, label: 'Esotico',        desc: 'USD/TRY, USD/ZAR, USD/MXN...' },
+  { id: 'ug_index_us',         categoryId: 'indices'     as CategoryId, label: 'US',             desc: 'S&P500, NQ100, DJIA...'       },
+  { id: 'ug_index_eu',         categoryId: 'indices'     as CategoryId, label: 'EU',             desc: 'DAX, CAC40, FTSE MIB...'      },
+  { id: 'ug_index_asia',       categoryId: 'indices'     as CategoryId, label: 'Asia',           desc: 'Nikkei, Hang Seng, ASX...'    },
+  { id: 'ug_equity_us_large',  categoryId: 'equities'    as CategoryId, label: 'US Large Cap',   desc: 'AAPL, MSFT, NVDA...'          },
+  { id: 'ug_equity_us_mid',    categoryId: 'equities'    as CategoryId, label: 'US Mid Cap',     desc: 'S&P 400, titoli $1-10B...'    },
+  { id: 'ug_equity_eu_large',  categoryId: 'equities'    as CategoryId, label: 'EU Large Cap',   desc: 'SAP, ASML, Nestle, BNP...'    },
+  { id: 'ug_equity_asia',      categoryId: 'equities'    as CategoryId, label: 'Asia Large Cap', desc: 'Toyota, Samsung, Alibaba...'  },
+  { id: 'ug_commodity_metal',  categoryId: 'commodities' as CategoryId, label: 'Metalli',        desc: 'Gold, Silver, Platinum...'    },
+  { id: 'ug_commodity_energy', categoryId: 'commodities' as CategoryId, label: 'Energia',        desc: 'WTI, Brent, Nat Gas...'       },
+  { id: 'ug_crypto_major',     categoryId: 'crypto'      as CategoryId, label: 'Major',          desc: 'BTC, ETH, SOL...'             },
+  { id: 'ug_crypto_altcoin',   categoryId: 'crypto'      as CategoryId, label: 'Altcoin',        desc: 'Tutto il resto -- high beta'  },
 ] as const;
 
 type UnderlyingGroupId = typeof UNDERLYING_GROUPS[number]['id'];
@@ -273,24 +269,24 @@ const UG_PARAMS: Record<UnderlyingGroupId, UgParams> = {
     spread: 8, swapPerDay: 2.0, platformFee: 0.03, thresholdLow: 30, thresholdHigh: 60,
     texts: {
       scalping: { primaryIssue: 'WTI spread ampio + slippage su EIA report',   suggestion: 'Futures CL (NYMEX) per scalping energia' },
-      intraday: { primaryIssue: 'Spread variabile intorno a EIA/OPEC report',   suggestion: 'Non operare 30min prima/dopo report EIA' },
-      multiday: { primaryIssue: 'Contango futures petrolio erode la leva',      suggestion: 'Futures rolling attento a contango' },
+      intraday: { primaryIssue: 'Spread variabile intorno a EIA/OPEC report',  suggestion: 'Non operare 30min prima/dopo report EIA' },
+      multiday: { primaryIssue: 'Contango futures petrolio erode la leva',     suggestion: 'Futures rolling attento a contango' },
     },
   },
   ug_crypto_major: {
     spread: 6, swapPerDay: 2.0, platformFee: 0.04, thresholdLow: 25, thresholdHigh: 55,
     texts: {
-      scalping: { primaryIssue: 'Fee taker + spread molto elevati su crypto',   suggestion: 'Maker orders su MEXC/Bybit per fee zero' },
-      intraday: { primaryIssue: 'Fee taker + spread variabile e liquidazioni',   suggestion: 'Maker-only strategy o exchange con rebate' },
-      multiday: { primaryIssue: 'Funding rate perpetual ogni 8h si accumula',   suggestion: 'Monitora funding ogni 8h, chiudi se > 0.1%' },
+      scalping: { primaryIssue: 'Fee taker + spread molto elevati su crypto',  suggestion: 'Maker orders su MEXC/Bybit per fee zero' },
+      intraday: { primaryIssue: 'Fee taker + spread variabile e liquidazioni',  suggestion: 'Maker-only strategy o exchange con rebate' },
+      multiday: { primaryIssue: 'Funding rate perpetual ogni 8h si accumula',  suggestion: 'Monitora funding ogni 8h, chiudi se > 0.1%' },
     },
   },
   ug_crypto_altcoin: {
     spread: 18, swapPerDay: 3.0, platformFee: 0.06, thresholdLow: 45, thresholdHigh: 80,
     texts: {
-      scalping: { primaryIssue: 'Spread altcoin estremo + fee alta su scalp',    suggestion: 'Altcoin incompatibili con scalping' },
-      intraday: { primaryIssue: 'Liquidita bassa, slippage enorme su altcoin',   suggestion: 'Solo altcoin top-20 per intraday' },
-      multiday: { primaryIssue: 'Funding + spread + liquidita bassa accumulati', suggestion: 'Size tiny, stop molto largo, spot only' },
+      scalping: { primaryIssue: 'Spread altcoin estremo + fee alta su scalp',   suggestion: 'Altcoin incompatibili con scalping' },
+      intraday: { primaryIssue: 'Liquidita bassa, slippage enorme su altcoin',  suggestion: 'Solo altcoin top-20 per intraday' },
+      multiday: { primaryIssue: 'Funding + spread + liquidita bassa accumulati',suggestion: 'Size tiny, stop molto largo, spot only' },
     },
   },
 };
@@ -311,7 +307,7 @@ function computeDrag(
 }
 
 // ---------------------------------------------------------------------------
-// 3. STATE & ANIMATION PRIMITIVES
+// 3. STATE & ANIMATION
 // ---------------------------------------------------------------------------
 
 type SimulatorState = {
@@ -332,12 +328,18 @@ const fade = {
   exit:    { opacity: 0, y: -12, scale: 0.99, position: 'absolute' as const },
 };
 
+const slideDown = {
+  initial: { opacity: 0, y: 10 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.28, ease: [0.16, 1, 0.3, 1] as [number,number,number,number] } },
+  exit:    { opacity: 0 },
+};
+
 function revealVariant(delayMs: number) {
   return {
     initial: { opacity: 0, y: 10, filter: 'blur(4px)' },
     animate: {
       opacity: 1, y: 0, filter: 'blur(0px)',
-      transition: { delay: delayMs / 1000, duration: 0.38, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
+      transition: { delay: delayMs / 1000, duration: 0.38, ease: [0.16, 1, 0.3, 1] as [number,number,number,number] },
     },
   };
 }
@@ -346,7 +348,7 @@ const badgeReveal = {
   initial: { opacity: 0, scale: 0.96, filter: 'blur(6px)' },
   animate: {
     opacity: 1, scale: 1, filter: 'blur(0px)',
-    transition: { delay: 0.06, duration: 0.42, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
+    transition: { delay: 0.06, duration: 0.42, ease: [0.16, 1, 0.3, 1] as [number,number,number,number] },
   },
 };
 
@@ -355,7 +357,7 @@ function statReveal(i: number) {
     initial: { opacity: 0, y: 8, scale: 0.97 },
     animate: {
       opacity: 1, y: 0, scale: 1,
-      transition: { delay: 0.20 + i * 0.055, duration: 0.32, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
+      transition: { delay: 0.20 + i * 0.055, duration: 0.32, ease: [0.16, 1, 0.3, 1] as [number,number,number,number] },
     },
   };
 }
@@ -372,56 +374,53 @@ export function InteractiveSimulator() {
     ? UNDERLYING_GROUPS.filter(ug => ug.categoryId === selections.category)
     : [];
 
-  const availableStyles = selections.horizon ? filteredStyles(selections.horizon) : STYLES;
+  const availableStyles = selections.horizon ? filteredStyles(selections.horizon) : [];
 
-  // Position sizes filtrate per account size selezionato
   const availablePositionSizes = selections.accountSize
     ? RECOMMENDED_POSITION_SIZES[selections.accountSize].map(id => POSITION_SIZES[id])
     : POSITION_SIZE_IDS.map(id => POSITION_SIZES[id]);
 
-  const handleSelectCategory    = (id: CategoryId)       => { setSelections({ category: id }); setStep(1); };
-  const handleSelectUG          = (id: UnderlyingGroupId) => { setSelections(prev => ({ ...prev, ugId: id })); setStep(2); };
-  const handleSelectHorizon     = (id: HorizonId)        => { setSelections(prev => ({ ...prev, horizon: id })); setStep(3); };
-  const handleSelectStyle       = (id: StyleId)          => { setSelections(prev => ({ ...prev, style: id })); setStep(4); };
-  const handleSelectAccountSize = (id: AccountSizeId)    => { setSelections(prev => ({ ...prev, accountSize: id, positionSize: undefined })); };
-  const handleSelectPositionSize= (id: PositionSizeId)   => { setSelections(prev => ({ ...prev, positionSize: id })); };
-  const handleSelectLeverage    = (id: LeverageProfileId)=> { setSelections(prev => ({ ...prev, leverage: id })); };
-
-  // Avanza al risultato solo quando tutti e 3 i campi step 4 sono compilati
-  const handleConfirmProfile = () => {
-    if (selections.accountSize && selections.positionSize && selections.leverage) {
-      setStep(5);
-    }
-  };
+  const handleSelectCategory     = (id: CategoryId)        => { setSelections({ category: id }); setStep(1); };
+  const handleSelectUG           = (id: UnderlyingGroupId) => { setSelections(prev => ({ ...prev, ugId: id })); setStep(2); };
+  // Step 3: orizzonte e stile accorpati
+  const handleSelectHorizon      = (id: HorizonId)         => { setSelections(prev => ({ ...prev, horizon: id, style: undefined })); };
+  const handleSelectStyle        = (id: StyleId)           => { setSelections(prev => ({ ...prev, style: id })); setStep(3); };
+  const handleSelectAccountSize  = (id: AccountSizeId)     => { setSelections(prev => ({ ...prev, accountSize: id, positionSize: undefined })); };
+  const handleSelectPositionSize = (id: PositionSizeId)    => { setSelections(prev => ({ ...prev, positionSize: id })); };
+  const handleSelectLeverage     = (id: LeverageProfileId) => { setSelections(prev => ({ ...prev, leverage: id })); };
+  const handleConfirmProfile     = () => { if (step3Complete && step4Ready) setStep(4); };
 
   const navigateToStep = (target: number) => {
     if (target >= step) return;
     if (target === 0) setSelections({});
     if (target === 1) setSelections(prev => ({ category: prev.category }));
-    if (target === 2) setSelections(prev => ({ category: prev.category, ugId: prev.ugId }));
-    if (target === 3) setSelections(prev => ({ category: prev.category, ugId: prev.ugId, horizon: prev.horizon, style: undefined }));
-    if (target === 4) setSelections(prev => ({ ...prev, accountSize: undefined, positionSize: undefined, leverage: undefined }));
+    if (target === 2) setSelections(prev => ({ category: prev.category, ugId: prev.ugId, horizon: undefined, style: undefined }));
+    if (target === 3) setSelections(prev => ({ ...prev, accountSize: undefined, positionSize: undefined, leverage: undefined }));
     setStep(target);
   };
 
   const reset = () => { setSelections({}); setStep(0); };
 
-  const selectedStyle = STYLES.find(s => s.id === selections.style);
+  const selectedStyle   = STYLES.find(s => s.id === selections.style);
+  const step3Complete   = !!(selections.horizon && selections.style);
+  const step4Ready      = !!(selections.accountSize && selections.positionSize && selections.leverage);
 
   const result: SimResult | null =
-    step === 5 && selections.ugId && selections.horizon && selectedStyle
+    step === 4 && selections.ugId && selections.horizon && selectedStyle
       ? computeDrag(selections.ugId, selections.horizon, selectedStyle.freq)
       : null;
 
-  const step3Prompt = selections.horizon ? STYLE_PROMPT[selections.horizon] : 'Quanti trade fai per sessione?';
+  // Prompt per step 2 (accorpato): se orizzonte già scelto mostra il prompt stile
+  const step2Prompt = selections.horizon
+    ? STYLE_PROMPT[selections.horizon]
+    : 'Come operi?';
 
   const PROMPTS: (string | null)[] = [
-    'Cosa tradi principalmente?',
-    'Qual è il sottogruppo?',
-    'Che orizzonte temporale usi?',
-    step3Prompt,
-    'Il tuo profilo operativo',
-    null,
+    'Cosa tradi principalmente?',   // 0
+    'Qual è il sottogruppo?',        // 1
+    step2Prompt,                    // 2 — aggiornato dinamicamente
+    'Il tuo profilo operativo',     // 3
+    null,                           // 4 risultato
   ];
 
   const ratingConfig = {
@@ -430,10 +429,7 @@ export function InteractiveSimulator() {
     high:   { icon: TrendingDown,  color: 'text-red-400',     bg: 'bg-red-500/10 border-red-500/20',         label: 'Attrito elevato'  },
   };
 
-  const TOTAL_STEPS = 5;
-
-  // Stato validazione step 4
-  const step4Ready = !!(selections.accountSize && selections.positionSize && selections.leverage);
+  const TOTAL_STEPS = 4; // step visibili nei progress dots (0–3 + risultato)
 
   return (
     <div className="relative w-full flex flex-col p-5 sm:p-6 xl:p-7">
@@ -461,12 +457,12 @@ export function InteractiveSimulator() {
         </span>
       </div>
 
-      {/* Prompt */}
+      {/* Prompt — aggiornato in tempo reale per step 2 */}
       <div className="mb-5 h-10">
         <AnimatePresence mode="wait">
           {PROMPTS[step] && (
             <motion.p
-              key={step === 3 ? `step-3-${selections.horizon}` : step}
+              key={step === 2 ? `step-2-${selections.horizon ?? 'init'}` : step}
               variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
               className="text-base font-medium tracking-tight text-foreground sm:text-lg"
             >
@@ -479,114 +475,97 @@ export function InteractiveSimulator() {
       <motion.div layout="size" className="relative overflow-hidden min-h-[300px] sm:min-h-[340px] xl:min-h-[320px]">
         <AnimatePresence mode="wait">
 
-          {/* STEP 0 */}
+          {/* STEP 0 — categorie */}
           {step === 0 && (
-            <motion.div
-              key="step-0"
-              variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
-              className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 w-full"
-            >
-              {CATEGORIES.map((item) => (
+            <motion.div key="step-0" variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
+              className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 w-full">
+              {CATEGORIES.map(item => (
                 <OptionCard key={item.id} icon={item.icon} title={item.label} description={item.desc} onClick={() => handleSelectCategory(item.id)} />
               ))}
             </motion.div>
           )}
 
-          {/* STEP 1 */}
+          {/* STEP 1 — underlying group */}
           {step === 1 && (
-            <motion.div
-              key="step-1"
-              variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
-              className="flex flex-col gap-2 w-full"
-            >
-              {filteredUGs.map((ug) => (
+            <motion.div key="step-1" variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
+              className="flex flex-col gap-2 w-full">
+              {filteredUGs.map(ug => (
                 <UGCard key={ug.id} label={ug.label} desc={ug.desc} onClick={() => handleSelectUG(ug.id)} />
               ))}
             </motion.div>
           )}
 
-          {/* STEP 2 */}
+          {/* STEP 2 — orizzonte + stile accorpati */}
           {step === 2 && (
-            <motion.div
-              key="step-2"
-              variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
-              className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 w-full"
-            >
-              {HORIZONS.map((item) => (
-                <OptionCard key={item.id} icon={item.icon} title={item.label} description={item.desc} onClick={() => handleSelectHorizon(item.id)} />
-              ))}
+            <motion.div key="step-2" variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
+              className="flex flex-col gap-4 w-full">
+
+              {/* Orizzonte */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
+                {HORIZONS.map(item => (
+                  <OptionCard
+                    key={item.id}
+                    icon={item.icon}
+                    title={item.label}
+                    description={item.desc}
+                    selected={selections.horizon === item.id}
+                    onClick={() => handleSelectHorizon(item.id)}
+                  />
+                ))}
+              </div>
+
+              {/* Stile — appare dopo la scelta dell’orizzonte */}
+              <AnimatePresence>
+                {selections.horizon && (
+                  <motion.div
+                    key={`styles-${selections.horizon}`}
+                    variants={slideDown} initial="initial" animate="animate" exit="exit"
+                    className={cn(
+                      'grid gap-2 sm:gap-3',
+                      availableStyles.length === 2
+                        ? 'grid-cols-1 sm:grid-cols-2'
+                        : 'grid-cols-1 sm:grid-cols-3',
+                    )}
+                  >
+                    {availableStyles.map(item => (
+                      <OptionCard
+                        key={item.id}
+                        icon={item.icon}
+                        title={item.label}
+                        description={item.desc[selections.horizon!]}
+                        selected={selections.style === item.id}
+                        onClick={() => handleSelectStyle(item.id as StyleId)}
+                      />
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
           )}
 
-          {/* STEP 3 */}
+          {/* STEP 3 — profilo operativo */}
           {step === 3 && (
-            <motion.div
-              key={`step-3-${selections.horizon}`}
-              variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
-              className={cn(
-                'grid gap-2 sm:gap-3 w-full',
-                availableStyles.length === 2 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-3',
-              )}
-            >
-              {availableStyles.map((item) => (
-                <OptionCard
-                  key={item.id}
-                  icon={item.icon}
-                  title={item.label}
-                  description={selections.horizon ? item.desc[selections.horizon] : ''}
-                  onClick={() => handleSelectStyle(item.id as StyleId)}
-                />
-              ))}
-            </motion.div>
-          )}
+            <motion.div key="step-3" variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
+              className="flex flex-col gap-5 w-full">
 
-          {/* STEP 4 — Profilo operativo */}
-          {step === 4 && (
-            <motion.div
-              key="step-4"
-              variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
-              className="flex flex-col gap-5 w-full"
-            >
-              {/* Account Size */}
               <ProfileSection label="Dimensione conto">
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  {ACCOUNT_SIZE_IDS.map((id) => {
+                  {ACCOUNT_SIZE_IDS.map(id => {
                     const item = ACCOUNT_SIZES[id];
                     const Icon = LUCIDE_ICON_MAP[item.icon] ?? Wallet;
-                    return (
-                      <ProfileChip
-                        key={id}
-                        icon={Icon}
-                        label={item.label}
-                        selected={selections.accountSize === id}
-                        onClick={() => handleSelectAccountSize(id)}
-                      />
-                    );
+                    return <ProfileChip key={id} icon={Icon} label={item.label} selected={selections.accountSize === id} onClick={() => handleSelectAccountSize(id)} />;
                   })}
                 </div>
               </ProfileSection>
 
-              {/* Position Size — visibile solo dopo aver scelto account size */}
               <AnimatePresence>
                 {selections.accountSize && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0, transition: { duration: 0.28, ease: [0.16, 1, 0.3, 1] } }}
-                    exit={{ opacity: 0 }}
-                  >
+                  <motion.div key="pos-size" variants={slideDown} initial="initial" animate="animate" exit="exit">
                     <ProfileSection label="Dimensione posizione">
                       <div className="grid grid-cols-2 gap-2">
-                        {availablePositionSizes.map((item) => {
+                        {availablePositionSizes.map(item => {
                           const Icon = LUCIDE_ICON_MAP[item.icon] ?? Minus;
-                          return (
-                            <ProfileChip
-                              key={item.id}
-                              icon={Icon}
-                              label={item.label}
-                              selected={selections.positionSize === item.id}
-                              onClick={() => handleSelectPositionSize(item.id)}
-                            />
-                          );
+                          return <ProfileChip key={item.id} icon={Icon} label={item.label} selected={selections.positionSize === item.id} onClick={() => handleSelectPositionSize(item.id)} />;
                         })}
                       </div>
                     </ProfileSection>
@@ -594,28 +573,15 @@ export function InteractiveSimulator() {
                 )}
               </AnimatePresence>
 
-              {/* Leverage — visibile solo dopo aver scelto position size */}
               <AnimatePresence>
                 {selections.positionSize && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0, transition: { duration: 0.28, ease: [0.16, 1, 0.3, 1] } }}
-                    exit={{ opacity: 0 }}
-                  >
+                  <motion.div key="leverage" variants={slideDown} initial="initial" animate="animate" exit="exit">
                     <ProfileSection label="Leva utilizzata">
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                        {LEVERAGE_PROFILE_IDS.map((id) => {
+                        {LEVERAGE_PROFILE_IDS.map(id => {
                           const item = LEVERAGE_PROFILES[id];
                           const Icon = LUCIDE_ICON_MAP[item.icon] ?? ShieldCheck;
-                          return (
-                            <ProfileChip
-                              key={id}
-                              icon={Icon}
-                              label={item.label}
-                              selected={selections.leverage === id}
-                              onClick={() => handleSelectLeverage(id)}
-                            />
-                          );
+                          return <ProfileChip key={id} icon={Icon} label={item.label} selected={selections.leverage === id} onClick={() => handleSelectLeverage(id)} />;
                         })}
                       </div>
                     </ProfileSection>
@@ -623,14 +589,9 @@ export function InteractiveSimulator() {
                 )}
               </AnimatePresence>
 
-              {/* CTA — attivo solo quando tutto compilato */}
               <AnimatePresence>
                 {step4Ready && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0, transition: { duration: 0.28, ease: [0.16, 1, 0.3, 1] } }}
-                    exit={{ opacity: 0 }}
-                  >
+                  <motion.div key="cta" variants={slideDown} initial="initial" animate="animate" exit="exit">
                     <button
                       onClick={handleConfirmProfile}
                       className={cn(
@@ -649,20 +610,15 @@ export function InteractiveSimulator() {
             </motion.div>
           )}
 
-          {/* STEP 5 — Risultato */}
-          {step === 5 && result && selections.ugId && selections.horizon && selectedStyle && (
-            <motion.div
-              key="step-5"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1, transition: { duration: 0.15 } }}
+          {/* STEP 4 — Risultato */}
+          {step === 4 && result && selections.ugId && selections.horizon && selectedStyle && (
+            <motion.div key="step-4"
+              initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { duration: 0.15 } }}
               exit={{ opacity: 0, transition: { duration: 0.1 } }}
-              className="w-full space-y-3"
-            >
-              {/* Rating badge */}
-              <motion.div
-                variants={badgeReveal} initial="initial" animate="animate"
-                className={cn('flex items-center gap-3 rounded-2xl border px-4 py-3', ratingConfig[result.rating].bg)}
-              >
+              className="w-full space-y-3">
+
+              <motion.div variants={badgeReveal} initial="initial" animate="animate"
+                className={cn('flex items-center gap-3 rounded-2xl border px-4 py-3', ratingConfig[result.rating].bg)}>
                 {(() => { const Icon = ratingConfig[result.rating].icon; return <Icon className={cn('size-5 shrink-0', ratingConfig[result.rating].color)} />; })()}
                 <div>
                   <p className={cn('font-mono text-[11px] font-semibold uppercase tracking-[0.18em]', ratingConfig[result.rating].color)}>
@@ -678,9 +634,9 @@ export function InteractiveSimulator() {
               {/* Profilo recap chips */}
               <motion.div variants={statReveal(0)} initial="initial" animate="animate" className="flex flex-wrap gap-1.5">
                 {[
-                  selections.accountSize  ? ACCOUNT_SIZES[selections.accountSize].label    : null,
-                  selections.positionSize ? POSITION_SIZES[selections.positionSize].label  : null,
-                  selections.leverage     ? LEVERAGE_PROFILES[selections.leverage].label   : null,
+                  selections.accountSize  ? ACCOUNT_SIZES[selections.accountSize].label   : null,
+                  selections.positionSize ? POSITION_SIZES[selections.positionSize].label : null,
+                  selections.leverage     ? LEVERAGE_PROFILES[selections.leverage].label  : null,
                 ].filter(Boolean).map(label => (
                   <span key={label} className="rounded-full border border-border/50 bg-background px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
                     {label}
@@ -688,37 +644,27 @@ export function InteractiveSimulator() {
                 ))}
               </motion.div>
 
-              {/* Cost stats */}
               <div className="grid grid-cols-3 gap-2">
                 {[
                   { label: 'Spread',       value: `${result.spreadBps} bps` },
                   { label: 'Swap/giorno',  value: result.swapPerDay > 0 ? `${result.swapPerDay} bps` : '--' },
                   { label: 'Platform fee', value: `${result.platformFee}%` },
                 ].map(({ label, value }, i) => (
-                  <motion.div
-                    key={label}
-                    variants={statReveal(i + 1)} initial="initial" animate="animate"
-                    className="rounded-2xl border border-border/50 bg-background/60 px-3 py-3 text-center"
-                  >
+                  <motion.div key={label} variants={statReveal(i + 1)} initial="initial" animate="animate"
+                    className="rounded-2xl border border-border/50 bg-background/60 px-3 py-3 text-center">
                     <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground/60">{label}</p>
                     <p className="mt-1 font-mono text-sm font-semibold text-foreground tabular-nums">{value}</p>
                   </motion.div>
                 ))}
               </div>
 
-              {/* Formula note */}
-              <motion.p
-                variants={revealVariant(300)} initial="initial" animate="animate"
-                className="font-mono text-[10px] text-muted-foreground/50 text-center tracking-wide"
-              >
+              <motion.p variants={revealVariant(300)} initial="initial" animate="animate"
+                className="font-mono text-[10px] text-muted-foreground/50 text-center tracking-wide">
                 {selectedStyle.freq} trade/sessione · {HORIZON_PARAMS[selections.horizon].holdingDays}gg holding · spread {result.spreadBps}bps
               </motion.p>
 
-              {/* Suggestion */}
-              <motion.div
-                variants={revealVariant(380)} initial="initial" animate="animate"
-                className="flex items-start gap-3 rounded-2xl border border-border/50 bg-muted/30 px-4 py-3"
-              >
+              <motion.div variants={revealVariant(380)} initial="initial" animate="animate"
+                className="flex items-start gap-3 rounded-2xl border border-border/50 bg-muted/30 px-4 py-3">
                 <ArrowRight className="mt-0.5 size-4 shrink-0 text-primary" />
                 <p className="text-sm leading-6 text-muted-foreground">
                   <span className="font-medium text-foreground">Cosa fare: </span>
@@ -726,22 +672,17 @@ export function InteractiveSimulator() {
                 </p>
               </motion.div>
 
-              {/* Recap + reset */}
-              <motion.div
-                variants={revealVariant(460)} initial="initial" animate="animate"
-                className="flex items-center justify-between"
-              >
+              <motion.div variants={revealVariant(460)} initial="initial" animate="animate"
+                className="flex items-center justify-between">
                 <div className="flex gap-2 flex-wrap">
-                  {[selections.category, selections.ugId, selections.horizon, selections.style].map((s) => s && (
+                  {[selections.category, selections.ugId, selections.horizon, selections.style].map(s => s && (
                     <span key={s} className="rounded-full border border-border/50 bg-background px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
                       {s.replace('ug_', '').replace(/_/g, ' ')}
                     </span>
                   ))}
                 </div>
-                <button
-                  onClick={reset}
-                  className="flex items-center gap-1.5 rounded-full border border-border/50 bg-background px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground"
-                >
+                <button onClick={reset}
+                  className="flex items-center gap-1.5 rounded-full border border-border/50 bg-background px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground">
                   <RotateCcw className="size-3" />
                   Ricomincia
                 </button>
@@ -752,41 +693,25 @@ export function InteractiveSimulator() {
         </AnimatePresence>
       </motion.div>
 
-      {/* Breadcrumb trail */}
+      {/* Breadcrumb */}
       {step > 0 && step < TOTAL_STEPS && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-5 flex items-center gap-2 flex-wrap">
           {selections.category && (
             <button onClick={() => navigateToStep(0)} className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-secondary">
-              <ChevronLeft className="size-3" />
-              {CATEGORIES.find(c => c.id === selections.category)?.label}
+              <ChevronLeft className="size-3" />{CATEGORIES.find(c => c.id === selections.category)?.label}
             </button>
           )}
           {step > 1 && selections.ugId && (
-            <>
-              <span className="text-muted-foreground/30 text-xs">/</span>
-              <button onClick={() => navigateToStep(1)} className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-secondary">
-                <ChevronLeft className="size-3" />
-                {UNDERLYING_GROUPS.find(u => u.id === selections.ugId)?.label}
-              </button>
-            </>
+            <><span className="text-muted-foreground/30 text-xs">/</span>
+            <button onClick={() => navigateToStep(1)} className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-secondary">
+              <ChevronLeft className="size-3" />{UNDERLYING_GROUPS.find(u => u.id === selections.ugId)?.label}
+            </button></>
           )}
           {step > 2 && selections.horizon && (
-            <>
-              <span className="text-muted-foreground/30 text-xs">/</span>
-              <button onClick={() => navigateToStep(2)} className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-secondary">
-                <ChevronLeft className="size-3" />
-                {HORIZONS.find(h => h.id === selections.horizon)?.label}
-              </button>
-            </>
-          )}
-          {step > 3 && selections.style && (
-            <>
-              <span className="text-muted-foreground/30 text-xs">/</span>
-              <button onClick={() => navigateToStep(3)} className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-secondary">
-                <ChevronLeft className="size-3" />
-                {STYLES.find(s => s.id === selections.style)?.label}
-              </button>
-            </>
+            <><span className="text-muted-foreground/30 text-xs">/</span>
+            <button onClick={() => navigateToStep(2)} className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-secondary">
+              <ChevronLeft className="size-3" />{HORIZONS.find(h => h.id === selections.horizon)?.label}
+            </button></>
           )}
         </motion.div>
       )}
@@ -799,51 +724,42 @@ export function InteractiveSimulator() {
 // ---------------------------------------------------------------------------
 
 function OptionCard({
-  icon: Icon, title, description, onClick,
+  icon: Icon, title, description, onClick, selected = false,
 }: {
   icon: React.ElementType;
   title: string;
   description: string;
   onClick: () => void;
+  selected?: boolean;
 }) {
   return (
-    <button
-      onClick={onClick}
+    <button onClick={onClick}
       className={cn(
         'group relative flex flex-col items-start justify-between p-3 sm:p-4 text-left transition-all duration-200',
-        'bg-background/60 text-card-foreground border border-border/50 rounded-2xl',
-        'hover:border-primary/60 hover:bg-accent/30 hover:shadow-md hover:-translate-y-0.5',
+        'border rounded-2xl',
+        selected
+          ? 'border-primary/70 bg-primary/10 text-foreground'
+          : 'bg-background/60 text-card-foreground border-border/50 hover:border-primary/60 hover:bg-accent/30 hover:shadow-md hover:-translate-y-0.5',
         'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background',
-      )}
-    >
-      <Icon className="mb-2 size-4 stroke-[1.5] text-muted-foreground group-hover:text-primary transition-colors duration-200" />
+      )}>
+      <Icon className={cn('mb-2 size-4 stroke-[1.5] transition-colors duration-200', selected ? 'text-primary' : 'text-muted-foreground group-hover:text-primary')} />
       <div>
         <p className="text-sm font-medium leading-5 text-foreground">{title}</p>
-        {description && (
-          <p className="mt-0.5 text-[10px] text-muted-foreground hidden sm:block">{description}</p>
-        )}
+        {description && <p className="mt-0.5 text-[10px] text-muted-foreground hidden sm:block">{description}</p>}
       </div>
     </button>
   );
 }
 
-function UGCard({
-  label, desc, onClick,
-}: {
-  label: string;
-  desc: string;
-  onClick: () => void;
-}) {
+function UGCard({ label, desc, onClick }: { label: string; desc: string; onClick: () => void }) {
   return (
-    <button
-      onClick={onClick}
+    <button onClick={onClick}
       className={cn(
         'group flex items-center justify-between w-full px-4 py-3 text-left transition-all duration-200',
         'bg-background/60 border border-border/50 rounded-2xl',
         'hover:border-primary/60 hover:bg-accent/30 hover:shadow-md',
         'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background',
-      )}
-    >
+      )}>
       <div>
         <p className="text-sm font-medium text-foreground">{label}</p>
         <p className="mt-0.5 text-[10px] text-muted-foreground">{desc}</p>
@@ -853,12 +769,7 @@ function UGCard({
   );
 }
 
-function ProfileSection({
-  label, children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
+function ProfileSection({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-2">
       <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60">{label}</p>
@@ -869,23 +780,16 @@ function ProfileSection({
 
 function ProfileChip({
   icon: Icon, label, selected, onClick,
-}: {
-  icon: React.ElementType;
-  label: string;
-  selected: boolean;
-  onClick: () => void;
-}) {
+}: { icon: React.ElementType; label: string; selected: boolean; onClick: () => void }) {
   return (
-    <button
-      onClick={onClick}
+    <button onClick={onClick}
       className={cn(
         'flex items-center gap-2 px-3 py-2.5 rounded-xl border text-left text-sm transition-all duration-200',
         'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
         selected
           ? 'border-primary/70 bg-primary/10 text-foreground'
           : 'border-border/50 bg-background/60 text-muted-foreground hover:border-primary/40 hover:text-foreground',
-      )}
-    >
+      )}>
       <Icon className={cn('size-3.5 shrink-0 transition-colors', selected ? 'text-primary' : 'text-muted-foreground/60')} />
       <span className="text-xs font-medium leading-tight">{label}</span>
     </button>
