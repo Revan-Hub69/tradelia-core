@@ -9,7 +9,6 @@ import {
   Building2,
   Zap,
   TrendingUp,
-  Layers,
   Wheat,
   Clock,
   Calendar,
@@ -29,34 +28,30 @@ import { cn } from '@/utils/Helpers';
 // ---------------------------------------------------------------------------
 
 const CATEGORIES = [
-  { id: 'forex',       label: 'Forex',       icon: Globe,     desc: 'Major, Cross & Esotico'  },
-  { id: 'indices',     label: 'Indici',      icon: BarChart3, desc: 'US, EU & Asia'            },
-  { id: 'equities',    label: 'Azioni',      icon: Building2, desc: 'US, EU & Asia Large Cap'  },
-  { id: 'commodities', label: 'Commodity',   icon: Wheat,     desc: 'Metalli & Energia'        },
-  { id: 'etf',         label: 'ETF',         icon: Layers,    desc: 'US, UCITS & Leveraged'    },
-  { id: 'crypto',      label: 'Crypto',      icon: Coins,     desc: 'Major & Altcoin'          },
+  { id: 'forex',       label: 'Forex',     icon: Globe,     desc: 'Major, Cross & Esotico' },
+  { id: 'indices',     label: 'Indici',    icon: BarChart3, desc: 'US, EU & Asia'           },
+  { id: 'equities',    label: 'Azioni',    icon: Building2, desc: 'US, EU & Asia Large Cap' },
+  { id: 'commodities', label: 'Commodity', icon: Wheat,     desc: 'Metalli & Energia'       },
+  { id: 'crypto',      label: 'Crypto',    icon: Coins,     desc: 'Major & Altcoin'         },
 ] as const;
 
 type CategoryId = typeof CATEGORIES[number]['id'];
 
 const UNDERLYING_GROUPS = [
-  { id: 'ug_fx_core',          categoryId: 'forex'       as CategoryId, label: 'Major',            desc: 'EUR/USD, GBP/USD, USD/JPY...'  },
-  { id: 'ug_fx_cross',         categoryId: 'forex'       as CategoryId, label: 'Cross',             desc: 'EUR/GBP, AUD/JPY, GBP/CHF...'  },
-  { id: 'ug_fx_exotic',        categoryId: 'forex'       as CategoryId, label: 'Esotico',           desc: 'USD/TRY, USD/ZAR, USD/MXN...'  },
-  { id: 'ug_index_us',         categoryId: 'indices'     as CategoryId, label: 'US',                desc: 'S&P500, NQ100, DJIA...'         },
-  { id: 'ug_index_eu',         categoryId: 'indices'     as CategoryId, label: 'EU',                desc: 'DAX, CAC40, FTSE MIB...'        },
-  { id: 'ug_index_asia',       categoryId: 'indices'     as CategoryId, label: 'Asia',              desc: 'Nikkei, Hang Seng, ASX...'      },
-  { id: 'ug_equity_us_large',  categoryId: 'equities'    as CategoryId, label: 'US Large Cap',      desc: 'AAPL, MSFT, NVDA, SPY...'       },
-  { id: 'ug_equity_us_mid',    categoryId: 'equities'    as CategoryId, label: 'US Mid Cap',        desc: 'S&P 400, MDY, titoli $1-10B...' },
-  { id: 'ug_equity_eu_large',  categoryId: 'equities'    as CategoryId, label: 'EU Large Cap',      desc: 'SAP, ASML, Nestle, BNP...'      },
-  { id: 'ug_equity_asia',      categoryId: 'equities'    as CategoryId, label: 'Asia Large Cap',    desc: 'Toyota, Samsung, Alibaba...'    },
-  { id: 'ug_commodity_metal',  categoryId: 'commodities' as CategoryId, label: 'Metalli',           desc: 'Gold, Silver, Platinum...'      },
-  { id: 'ug_commodity_energy', categoryId: 'commodities' as CategoryId, label: 'Energia',           desc: 'WTI, Brent, Nat Gas...'         },
-  { id: 'ug_etf_us_broad',     categoryId: 'etf'         as CategoryId, label: 'US Broad Market',   desc: 'SPY, QQQ, IWM...'               },
-  { id: 'ug_etf_us_leveraged', categoryId: 'etf'         as CategoryId, label: 'Leveraged 2x/3x',   desc: 'TQQQ, SOXL, UPRO...'           },
-  { id: 'ug_etf_ucits',        categoryId: 'etf'         as CategoryId, label: 'UCITS Europa',      desc: 'iShares, Amundi, Xtrackers...'  },
-  { id: 'ug_crypto_major',     categoryId: 'crypto'      as CategoryId, label: 'Major',             desc: 'BTC, ETH, SOL...'               },
-  { id: 'ug_crypto_altcoin',   categoryId: 'crypto'      as CategoryId, label: 'Altcoin',           desc: 'Tutto il resto -- high beta'    },
+  { id: 'ug_fx_core',          categoryId: 'forex'       as CategoryId, label: 'Major',          desc: 'EUR/USD, GBP/USD, USD/JPY...' },
+  { id: 'ug_fx_cross',         categoryId: 'forex'       as CategoryId, label: 'Cross',           desc: 'EUR/GBP, AUD/JPY, GBP/CHF...' },
+  { id: 'ug_fx_exotic',        categoryId: 'forex'       as CategoryId, label: 'Esotico',         desc: 'USD/TRY, USD/ZAR, USD/MXN...' },
+  { id: 'ug_index_us',         categoryId: 'indices'     as CategoryId, label: 'US',              desc: 'S&P500, NQ100, DJIA...'        },
+  { id: 'ug_index_eu',         categoryId: 'indices'     as CategoryId, label: 'EU',              desc: 'DAX, CAC40, FTSE MIB...'       },
+  { id: 'ug_index_asia',       categoryId: 'indices'     as CategoryId, label: 'Asia',            desc: 'Nikkei, Hang Seng, ASX...'     },
+  { id: 'ug_equity_us_large',  categoryId: 'equities'    as CategoryId, label: 'US Large Cap',    desc: 'AAPL, MSFT, NVDA...'           },
+  { id: 'ug_equity_us_mid',    categoryId: 'equities'    as CategoryId, label: 'US Mid Cap',      desc: 'S&P 400, titoli $1-10B...'     },
+  { id: 'ug_equity_eu_large',  categoryId: 'equities'    as CategoryId, label: 'EU Large Cap',    desc: 'SAP, ASML, Nestle, BNP...'     },
+  { id: 'ug_equity_asia',      categoryId: 'equities'    as CategoryId, label: 'Asia Large Cap',  desc: 'Toyota, Samsung, Alibaba...'   },
+  { id: 'ug_commodity_metal',  categoryId: 'commodities' as CategoryId, label: 'Metalli',         desc: 'Gold, Silver, Platinum...'     },
+  { id: 'ug_commodity_energy', categoryId: 'commodities' as CategoryId, label: 'Energia',         desc: 'WTI, Brent, Nat Gas...'        },
+  { id: 'ug_crypto_major',     categoryId: 'crypto'      as CategoryId, label: 'Major',           desc: 'BTC, ETH, SOL...'              },
+  { id: 'ug_crypto_altcoin',   categoryId: 'crypto'      as CategoryId, label: 'Altcoin',         desc: 'Tutto il resto -- high beta'   },
 ] as const;
 
 type UnderlyingGroupId = typeof UNDERLYING_GROUPS[number]['id'];
@@ -105,7 +100,6 @@ const STYLES = [
     desc: {
       scalping: '20+ trade/ora · scalping continuo',
       intraday: '15–25 trade/giornata · alta frequenza',
-      // multiday intentionally omitted — filtered out in filteredStyles()
       multiday: '',
     } as Record<HorizonId, string>,
   },
@@ -113,14 +107,11 @@ const STYLES = [
 
 type StyleId = typeof STYLES[number]['id'];
 
-// Returns styles available for the given horizon.
-// Alta frequenza is semantically wrong on multiday: excluded.
 function filteredStyles(horizonId: HorizonId) {
   if (horizonId === 'multiday') return STYLES.filter(s => s.id !== 'high_freq');
   return STYLES;
 }
 
-// Prompt for step 3 is horizon-aware
 const STYLE_PROMPT: Record<HorizonId, string> = {
   scalping: 'Quanti trade fai per ora?',
   intraday: 'Quanti setup apri in giornata?',
@@ -255,30 +246,6 @@ const UG_PARAMS: Record<UnderlyingGroupId, UgParams> = {
       multiday: { primaryIssue: 'Contango futures petrolio erode la leva',      suggestion: 'Futures rolling attento a contango' },
     },
   },
-  ug_etf_us_broad: {
-    spread: 1, swapPerDay: 0.5, platformFee: 0.01, thresholdLow: 10, thresholdHigh: 30,
-    texts: {
-      scalping: { primaryIssue: 'Spread ETF broad market minimo su SPY/QQQ',   suggestion: 'ETF US broad ideale per scalping leggero' },
-      intraday: { primaryIssue: 'Liquidita massima, spread 0.01% su SPY',      suggestion: 'Volume massimo a open NYSE' },
-      multiday: { primaryIssue: 'Solo expense ratio annuale 0.03-0.09%',       suggestion: 'ETF cash senza leva, multiday ideale' },
-    },
-  },
-  ug_etf_us_leveraged: {
-    spread: 3, swapPerDay: 3.0, platformFee: 0.02, thresholdLow: 20, thresholdHigh: 50,
-    texts: {
-      scalping: { primaryIssue: 'Spread ETF leva piu ampio del sottostante',   suggestion: 'Volumi ok su TQQQ/SOXL in orario US' },
-      intraday: { primaryIssue: 'Volatility drag su ETF 3x si accumula',       suggestion: 'Tieni solo per sessione, non overnight' },
-      multiday: { primaryIssue: 'Volatility decay distrugge ETF leva',         suggestion: 'ETF leva solo intraday -- mai overnight' },
-    },
-  },
-  ug_etf_ucits: {
-    spread: 4, swapPerDay: 0.3, platformFee: 0.02, thresholdLow: 18, thresholdHigh: 40,
-    texts: {
-      scalping: { primaryIssue: 'Spread UCITS piu alto degli ETF US',          suggestion: 'UCITS meno liquidi di SPY/QQQ' },
-      intraday: { primaryIssue: 'Volume intraday UCITS limitato in EU',         suggestion: 'Opera nelle ore peak di Borsa Italiana/Xetra' },
-      multiday: { primaryIssue: 'Expense ratio UCITS 0.07-0.3% annuo',         suggestion: 'ETF UCITS cash, multiday efficiente in EUR' },
-    },
-  },
   ug_crypto_major: {
     spread: 6, swapPerDay: 2.0, platformFee: 0.04, thresholdLow: 25, thresholdHigh: 55,
     texts: {
@@ -290,8 +257,8 @@ const UG_PARAMS: Record<UnderlyingGroupId, UgParams> = {
   ug_crypto_altcoin: {
     spread: 18, swapPerDay: 3.0, platformFee: 0.06, thresholdLow: 45, thresholdHigh: 80,
     texts: {
-      scalping: { primaryIssue: 'Spread altcoin estremo + fee alta su scalp',   suggestion: 'Altcoin incompatibili con scalping' },
-      intraday: { primaryIssue: 'Liquidita bassa, slippage enorme su altcoin',  suggestion: 'Solo altcoin top-20 per intraday' },
+      scalping: { primaryIssue: 'Spread altcoin estremo + fee alta su scalp',    suggestion: 'Altcoin incompatibili con scalping' },
+      intraday: { primaryIssue: 'Liquidita bassa, slippage enorme su altcoin',   suggestion: 'Solo altcoin top-20 per intraday' },
       multiday: { primaryIssue: 'Funding + spread + liquidita bassa accumulati', suggestion: 'Size tiny, stop molto largo, spot only' },
     },
   },
@@ -382,7 +349,6 @@ export function InteractiveSimulator() {
     if (target >= step) return;
     if (target === 0) setSelections({});
     if (target === 1) setSelections(prev => ({ category: prev.category }));
-    // Clear style when going back to horizon — avoids stale high_freq on multiday
     if (target === 2) setSelections(prev => ({ category: prev.category, ugId: prev.ugId }));
     if (target === 3) setSelections(prev => ({ category: prev.category, ugId: prev.ugId, horizon: prev.horizon, style: undefined }));
     setStep(target);
@@ -397,12 +363,11 @@ export function InteractiveSimulator() {
       ? computeDrag(selections.ugId, selections.horizon, selectedStyle.freq)
       : null;
 
-  // Dynamic prompts
   const step3Prompt = selections.horizon ? STYLE_PROMPT[selections.horizon] : 'Quanti trade fai per sessione?';
 
   const PROMPTS: (string | null)[] = [
     'Cosa tradi principalmente?',
-    'Qual e il sottogruppo?',
+    'Qual è il sottogruppo?',
     'Che orizzonte temporale usi?',
     step3Prompt,
     null,
@@ -457,15 +422,10 @@ export function InteractiveSimulator() {
         </AnimatePresence>
       </div>
 
-      {/*
-        layout="size" — animates only height, no layout thrashing on siblings.
-        min-h is responsive: calibrated on step-1 worst case (4 UG rows)
-        but relaxed on xl where cards are already shorter.
-      */}
       <motion.div layout="size" className="relative overflow-hidden min-h-[300px] sm:min-h-[340px] xl:min-h-[320px]">
         <AnimatePresence mode="wait">
 
-          {/* STEP 0 — 6 categories, 2 cols mobile / 3 cols sm+ */}
+          {/* STEP 0 — 5 categories: 2 cols mobile / 3 cols sm+ (2+3 layout) */}
           {step === 0 && (
             <motion.div
               key="step-0"
@@ -484,7 +444,7 @@ export function InteractiveSimulator() {
             </motion.div>
           )}
 
-          {/* STEP 1 — UG rows, always 1 col list */}
+          {/* STEP 1 — UG rows, 1 col list */}
           {step === 1 && (
             <motion.div
               key="step-1"
