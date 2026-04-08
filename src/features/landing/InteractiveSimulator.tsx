@@ -331,7 +331,7 @@ const fade = {
 const slideDown = {
   initial: { opacity: 0, y: 10 },
   animate: { opacity: 1, y: 0, transition: { duration: 0.28, ease: [0.16, 1, 0.3, 1] as [number,number,number,number] } },
-  exit:    { opacity: 0 },
+  exit:    { opacity: 0, transition: { duration: 0.15 } },
 };
 
 function revealVariant(delayMs: number) {
@@ -382,13 +382,12 @@ export function InteractiveSimulator() {
 
   const handleSelectCategory     = (id: CategoryId)        => { setSelections({ category: id }); setStep(1); };
   const handleSelectUG           = (id: UnderlyingGroupId) => { setSelections(prev => ({ ...prev, ugId: id })); setStep(2); };
-  // Step 3: orizzonte e stile accorpati
   const handleSelectHorizon      = (id: HorizonId)         => { setSelections(prev => ({ ...prev, horizon: id, style: undefined })); };
   const handleSelectStyle        = (id: StyleId)           => { setSelections(prev => ({ ...prev, style: id })); setStep(3); };
   const handleSelectAccountSize  = (id: AccountSizeId)     => { setSelections(prev => ({ ...prev, accountSize: id, positionSize: undefined })); };
   const handleSelectPositionSize = (id: PositionSizeId)    => { setSelections(prev => ({ ...prev, positionSize: id })); };
   const handleSelectLeverage     = (id: LeverageProfileId) => { setSelections(prev => ({ ...prev, leverage: id })); };
-  const handleConfirmProfile     = () => { if (step3Complete && step4Ready) setStep(4); };
+  const handleConfirmProfile     = () => { if (step4Ready) setStep(4); };
 
   const navigateToStep = (target: number) => {
     if (target >= step) return;
@@ -401,26 +400,20 @@ export function InteractiveSimulator() {
 
   const reset = () => { setSelections({}); setStep(0); };
 
-  const selectedStyle   = STYLES.find(s => s.id === selections.style);
-  const step3Complete   = !!(selections.horizon && selections.style);
-  const step4Ready      = !!(selections.accountSize && selections.positionSize && selections.leverage);
+  const selectedStyle = STYLES.find(s => s.id === selections.style);
+  const step4Ready    = !!(selections.accountSize && selections.positionSize && selections.leverage);
 
   const result: SimResult | null =
     step === 4 && selections.ugId && selections.horizon && selectedStyle
       ? computeDrag(selections.ugId, selections.horizon, selectedStyle.freq)
       : null;
 
-  // Prompt per step 2 (accorpato): se orizzonte già scelto mostra il prompt stile
-  const step2Prompt = selections.horizon
-    ? STYLE_PROMPT[selections.horizon]
-    : 'Come operi?';
-
   const PROMPTS: (string | null)[] = [
-    'Cosa tradi principalmente?',   // 0
-    'Qual è il sottogruppo?',        // 1
-    step2Prompt,                    // 2 — aggiornato dinamicamente
-    'Il tuo profilo operativo',     // 3
-    null,                           // 4 risultato
+    'Cosa tradi principalmente?',
+    'Qual è il sottogruppo?',
+    'Come operi?',              // step 2: rimane fisso, il label interno cambia
+    'Il tuo profilo operativo',
+    null,
   ];
 
   const ratingConfig = {
@@ -429,7 +422,7 @@ export function InteractiveSimulator() {
     high:   { icon: TrendingDown,  color: 'text-red-400',     bg: 'bg-red-500/10 border-red-500/20',         label: 'Attrito elevato'  },
   };
 
-  const TOTAL_STEPS = 4; // step visibili nei progress dots (0–3 + risultato)
+  const TOTAL_STEPS = 4;
 
   return (
     <div className="relative w-full flex flex-col p-5 sm:p-6 xl:p-7">
@@ -457,12 +450,12 @@ export function InteractiveSimulator() {
         </span>
       </div>
 
-      {/* Prompt — aggiornato in tempo reale per step 2 */}
+      {/* Prompt header — fisso per step 2, non cambia al click sull'orizzonte */}
       <div className="mb-5 h-10">
         <AnimatePresence mode="wait">
           {PROMPTS[step] && (
             <motion.p
-              key={step === 2 ? `step-2-${selections.horizon ?? 'init'}` : step}
+              key={step}
               variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
               className="text-base font-medium tracking-tight text-foreground sm:text-lg"
             >
@@ -475,7 +468,7 @@ export function InteractiveSimulator() {
       <motion.div layout="size" className="relative overflow-hidden min-h-[300px] sm:min-h-[340px] xl:min-h-[320px]">
         <AnimatePresence mode="wait">
 
-          {/* STEP 0 — categorie */}
+          {/* STEP 0 */}
           {step === 0 && (
             <motion.div key="step-0" variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
               className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 w-full">
@@ -485,7 +478,7 @@ export function InteractiveSimulator() {
             </motion.div>
           )}
 
-          {/* STEP 1 — underlying group */}
+          {/* STEP 1 */}
           {step === 1 && (
             <motion.div key="step-1" variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
               className="flex flex-col gap-2 w-full">
@@ -500,43 +493,48 @@ export function InteractiveSimulator() {
             <motion.div key="step-2" variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
               className="flex flex-col gap-4 w-full">
 
-              {/* Orizzonte */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
-                {HORIZONS.map(item => (
-                  <OptionCard
-                    key={item.id}
-                    icon={item.icon}
-                    title={item.label}
-                    description={item.desc}
-                    selected={selections.horizon === item.id}
-                    onClick={() => handleSelectHorizon(item.id)}
-                  />
-                ))}
-              </div>
+              {/* Sezione orizzonte — sempre visibile */}
+              <ProfileSection label="Orizzonte temporale">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
+                  {HORIZONS.map(item => (
+                    <OptionCard
+                      key={item.id}
+                      icon={item.icon}
+                      title={item.label}
+                      description={item.desc}
+                      selected={selections.horizon === item.id}
+                      onClick={() => handleSelectHorizon(item.id)}
+                    />
+                  ))}
+                </div>
+              </ProfileSection>
 
-              {/* Stile — appare dopo la scelta dell’orizzonte */}
+              {/* Sezione frequenza — appare dopo la scelta dell’orizzonte */}
               <AnimatePresence>
                 {selections.horizon && (
                   <motion.div
                     key={`styles-${selections.horizon}`}
                     variants={slideDown} initial="initial" animate="animate" exit="exit"
-                    className={cn(
-                      'grid gap-2 sm:gap-3',
-                      availableStyles.length === 2
-                        ? 'grid-cols-1 sm:grid-cols-2'
-                        : 'grid-cols-1 sm:grid-cols-3',
-                    )}
                   >
-                    {availableStyles.map(item => (
-                      <OptionCard
-                        key={item.id}
-                        icon={item.icon}
-                        title={item.label}
-                        description={item.desc[selections.horizon!]}
-                        selected={selections.style === item.id}
-                        onClick={() => handleSelectStyle(item.id as StyleId)}
-                      />
-                    ))}
+                    <ProfileSection label={STYLE_PROMPT[selections.horizon]}>
+                      <div className={cn(
+                        'grid gap-2 sm:gap-3',
+                        availableStyles.length === 2
+                          ? 'grid-cols-1 sm:grid-cols-2'
+                          : 'grid-cols-1 sm:grid-cols-3',
+                      )}>
+                        {availableStyles.map(item => (
+                          <OptionCard
+                            key={item.id}
+                            icon={item.icon}
+                            title={item.label}
+                            description={item.desc[selections.horizon!]}
+                            selected={selections.style === item.id}
+                            onClick={() => handleSelectStyle(item.id as StyleId)}
+                          />
+                        ))}
+                      </div>
+                    </ProfileSection>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -631,7 +629,6 @@ export function InteractiveSimulator() {
                 </span>
               </motion.div>
 
-              {/* Profilo recap chips */}
               <motion.div variants={statReveal(0)} initial="initial" animate="animate" className="flex flex-wrap gap-1.5">
                 {[
                   selections.accountSize  ? ACCOUNT_SIZES[selections.accountSize].label   : null,
@@ -711,6 +708,7 @@ export function InteractiveSimulator() {
             <><span className="text-muted-foreground/30 text-xs">/</span>
             <button onClick={() => navigateToStep(2)} className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-secondary">
               <ChevronLeft className="size-3" />{HORIZONS.find(h => h.id === selections.horizon)?.label}
+              {selections.style && <span className="opacity-50">· {STYLES.find(s => s.id === selections.style)?.label}</span>}
             </button></>
           )}
         </motion.div>
