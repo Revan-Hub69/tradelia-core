@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Globe,
@@ -40,27 +40,21 @@ const CATEGORIES = [
 type CategoryId = typeof CATEGORIES[number]['id'];
 
 const UNDERLYING_GROUPS = [
-  // forex (3)
   { id: 'ug_fx_core',          categoryId: 'forex'       as CategoryId, label: 'Major',            desc: 'EUR/USD, GBP/USD, USD/JPY...'  },
   { id: 'ug_fx_cross',         categoryId: 'forex'       as CategoryId, label: 'Cross',             desc: 'EUR/GBP, AUD/JPY, GBP/CHF...'  },
   { id: 'ug_fx_exotic',        categoryId: 'forex'       as CategoryId, label: 'Esotico',           desc: 'USD/TRY, USD/ZAR, USD/MXN...'  },
-  // indices (3)
   { id: 'ug_index_us',         categoryId: 'indices'     as CategoryId, label: 'US',                desc: 'S&P500, NQ100, DJIA...'         },
   { id: 'ug_index_eu',         categoryId: 'indices'     as CategoryId, label: 'EU',                desc: 'DAX, CAC40, FTSE MIB...'        },
   { id: 'ug_index_asia',       categoryId: 'indices'     as CategoryId, label: 'Asia',              desc: 'Nikkei, Hang Seng, ASX...'      },
-  // equities (4)
   { id: 'ug_equity_us_large',  categoryId: 'equities'    as CategoryId, label: 'US Large Cap',      desc: 'AAPL, MSFT, NVDA, SPY...'       },
   { id: 'ug_equity_us_mid',    categoryId: 'equities'    as CategoryId, label: 'US Mid Cap',        desc: 'S&P 400, MDY, titoli $1-10B...' },
   { id: 'ug_equity_eu_large',  categoryId: 'equities'    as CategoryId, label: 'EU Large Cap',      desc: 'SAP, ASML, Nestle, BNP...'      },
   { id: 'ug_equity_asia',      categoryId: 'equities'    as CategoryId, label: 'Asia Large Cap',    desc: 'Toyota, Samsung, Alibaba...'    },
-  // commodities (2)
   { id: 'ug_commodity_metal',  categoryId: 'commodities' as CategoryId, label: 'Metalli',           desc: 'Gold, Silver, Platinum...'      },
   { id: 'ug_commodity_energy', categoryId: 'commodities' as CategoryId, label: 'Energia',           desc: 'WTI, Brent, Nat Gas...'         },
-  // etf (3)
   { id: 'ug_etf_us_broad',     categoryId: 'etf'         as CategoryId, label: 'US Broad Market',   desc: 'SPY, QQQ, IWM...'               },
   { id: 'ug_etf_us_leveraged', categoryId: 'etf'         as CategoryId, label: 'Leveraged 2x/3x',   desc: 'TQQQ, SOXL, UPRO...'           },
   { id: 'ug_etf_ucits',        categoryId: 'etf'         as CategoryId, label: 'UCITS Europa',      desc: 'iShares, Amundi, Xtrackers...'  },
-  // crypto (2)
   { id: 'ug_crypto_major',     categoryId: 'crypto'      as CategoryId, label: 'Major',             desc: 'BTC, ETH, SOL...'               },
   { id: 'ug_crypto_altcoin',   categoryId: 'crypto'      as CategoryId, label: 'Altcoin',           desc: 'Tutto il resto -- high beta'    },
 ] as const;
@@ -260,18 +254,16 @@ function computeDrag(
 ): SimResult {
   const { spread, swapPerDay, platformFee, thresholdLow, thresholdHigh, texts } = UG_PARAMS[ugId];
   const { holdingDays, holdingFactor } = HORIZON_PARAMS[horizonId];
-
   const spreadDrag = spread * styleFreq * holdingFactor;
   const swapDrag   = swapPerDay * holdingDays;
   const totalDrag  = Math.round(spreadDrag + swapDrag + platformFee * 100);
   const rating     = totalDrag <= thresholdLow ? 'low' : totalDrag >= thresholdHigh ? 'high' : 'medium';
   const { primaryIssue, suggestion } = texts[horizonId];
-
   return { spreadBps: spread, swapPerDay, platformFee, totalDrag, rating, primaryIssue, suggestion };
 }
 
 // ---------------------------------------------------------------------------
-// 3. STATE TYPES & ANIMATION
+// 3. STATE & ANIMATION PRIMITIVES
 // ---------------------------------------------------------------------------
 
 type SimulatorState = {
@@ -281,11 +273,9 @@ type SimulatorState = {
   style?:    StyleId;
 };
 
-// Step 'computing' is the transient loader phase between step 3 and step 4
-type StepValue = 0 | 1 | 2 | 3 | 'computing' | 4;
-
 const spring = { type: 'spring' as const, stiffness: 280, damping: 28 };
 
+// Standard page-level fade used for steps 0-3
 const fade = {
   initial: { opacity: 0, y: 16, scale: 0.99 },
   animate: { opacity: 1, y: 0,  scale: 1 },
@@ -293,95 +283,58 @@ const fade = {
 };
 
 // ---------------------------------------------------------------------------
-// 3b. COMPUTING LOADER COMPONENT
+// 3b. STAGGERED REVEAL VARIANTS — step 4 only
 // ---------------------------------------------------------------------------
+// Each result section has a fixed transitionDelay so they materialise
+// one after another from the moment step-4 mounts. The container uses
+// motion.layout so its height grows smoothly instead of jumping.
 
-const COMPUTE_PHASES = [
-  'Lettura parametri',
-  'Calcolo attrito',
-  'Elaborazione risultato',
-] as const;
+function revealVariant(delayMs: number) {
+  return {
+    initial: { opacity: 0, y: 10, filter: 'blur(4px)' },
+    animate: {
+      opacity: 1,
+      y: 0,
+      filter: 'blur(0px)',
+      transition: {
+        delay:    delayMs / 1000,
+        duration: 0.38,
+        ease:     [0.16, 1, 0.3, 1] as [number, number, number, number],
+      },
+    },
+  };
+}
 
-// Total duration: 900ms split across 3 phases (~300ms each)
-const PHASE_DURATION = 300;
+// Badge: first thing revealed — needs a little extra spring pop
+const badgeReveal = {
+  initial: { opacity: 0, scale: 0.96, filter: 'blur(6px)' },
+  animate: {
+    opacity: 1,
+    scale: 1,
+    filter: 'blur(0px)',
+    transition: {
+      delay:     0.06,
+      duration:  0.42,
+      ease:      [0.16, 1, 0.3, 1] as [number, number, number, number],
+    },
+  },
+};
 
-function ComputingLoader() {
-  const [phase, setPhase] = useState<number>(0);
-
-  useEffect(() => {
-    if (phase >= COMPUTE_PHASES.length - 1) return;
-    const t = setTimeout(() => setPhase(p => p + 1), PHASE_DURATION);
-    return () => clearTimeout(t);
-  }, [phase]);
-
-  return (
-    <motion.div
-      key="step-computing"
-      variants={fade}
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      transition={spring}
-      className="w-full flex flex-col gap-5 py-2"
-    >
-      {/* Segmented track */}
-      <div className="flex gap-1.5 w-full">
-        {COMPUTE_PHASES.map((_, i) => (
-          <div
-            key={i}
-            className="relative flex-1 h-[3px] rounded-full overflow-hidden bg-border/40"
-          >
-            <motion.div
-              className="absolute inset-y-0 left-0 rounded-full bg-primary"
-              initial={{ width: '0%' }}
-              animate={{ width: i <= phase ? '100%' : '0%' }}
-              transition={
-                i === phase
-                  ? { duration: PHASE_DURATION / 1000, ease: [0.16, 1, 0.3, 1] }
-                  : i < phase
-                  ? { duration: 0 }
-                  : { duration: 0 }
-              }
-            />
-          </div>
-        ))}
-      </div>
-
-      {/* Phase label */}
-      <div className="h-5 relative overflow-hidden">
-        <AnimatePresence mode="wait">
-          <motion.p
-            key={phase}
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.18, ease: 'easeOut' }}
-            className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60 text-center absolute inset-x-0"
-          >
-            {COMPUTE_PHASES[phase]}
-          </motion.p>
-        </AnimatePresence>
-      </div>
-
-      {/* Skeleton preview — mirrors the result layout, fades out as phase advances */}
-      <motion.div
-        className="space-y-3"
-        animate={{ opacity: phase === 0 ? 0.35 : phase === 1 ? 0.6 : 0.85 }}
-        transition={{ duration: 0.25 }}
-      >
-        {/* Rating badge skeleton */}
-        <div className="h-[58px] rounded-2xl bg-muted/40 animate-pulse" />
-        {/* Cost stats skeleton */}
-        <div className="grid grid-cols-3 gap-2">
-          {[0, 1, 2].map(i => (
-            <div key={i} className="h-[58px] rounded-2xl bg-muted/30 animate-pulse" style={{ animationDelay: `${i * 80}ms` }} />
-          ))}
-        </div>
-        {/* Suggestion skeleton */}
-        <div className="h-[52px] rounded-2xl bg-muted/25 animate-pulse" />
-      </motion.div>
-    </motion.div>
-  );
+// Individual stat card — staggers by index
+function statReveal(i: number) {
+  return {
+    initial: { opacity: 0, y: 8, scale: 0.97 },
+    animate: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        delay:    0.20 + i * 0.055,
+        duration: 0.32,
+        ease:     [0.16, 1, 0.3, 1] as [number, number, number, number],
+      },
+    },
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -389,16 +342,8 @@ function ComputingLoader() {
 // ---------------------------------------------------------------------------
 
 export function InteractiveSimulator() {
-  const [step, setStep]             = useState<StepValue>(0);
+  const [step, setStep]             = useState<number>(0);
   const [selections, setSelections] = useState<SimulatorState>({});
-  const computeTimerRef             = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Cleanup timer on unmount
-  useEffect(() => {
-    return () => {
-      if (computeTimerRef.current) clearTimeout(computeTimerRef.current);
-    };
-  }, []);
 
   const filteredUGs = selections.category
     ? UNDERLYING_GROUPS.filter(ug => ug.categoryId === selections.category)
@@ -419,38 +364,24 @@ export function InteractiveSimulator() {
     setStep(3);
   };
 
-  // Style selection triggers the computing loader before revealing the result
+  // Result is computed immediately; the staggered reveal provides the
+  // perceived "processing" feel without any artificial delay state.
   const handleSelectStyle = (id: StyleId) => {
     setSelections(prev => ({ ...prev, style: id }));
-    setStep('computing');
-    // Total loader duration: 3 phases × 300ms = 900ms
-    computeTimerRef.current = setTimeout(() => setStep(4), COMPUTE_PHASES.length * PHASE_DURATION);
+    setStep(4);
   };
 
   const navigateToStep = (target: number) => {
-    // Cancel any in-flight compute timer when navigating back
-    if (computeTimerRef.current) {
-      clearTimeout(computeTimerRef.current);
-      computeTimerRef.current = null;
-    }
-    const numericStep = step === 'computing' ? 3 : step;
-    if (target < numericStep) {
+    if (target < step) {
       if (target === 0) setSelections({});
       if (target === 1) setSelections(prev => ({ category: prev.category }));
       if (target === 2) setSelections(prev => ({ category: prev.category, ugId: prev.ugId }));
       if (target === 3) setSelections(prev => ({ category: prev.category, ugId: prev.ugId, horizon: prev.horizon }));
-      setStep(target as StepValue);
+      setStep(target);
     }
   };
 
-  const reset = () => {
-    if (computeTimerRef.current) {
-      clearTimeout(computeTimerRef.current);
-      computeTimerRef.current = null;
-    }
-    setSelections({});
-    setStep(0);
-  };
+  const reset = () => { setSelections({}); setStep(0); };
 
   const selectedStyle = STYLES.find(s => s.id === selections.style);
 
@@ -459,14 +390,13 @@ export function InteractiveSimulator() {
       ? computeDrag(selections.ugId, selections.horizon, selectedStyle.freq)
       : null;
 
-  const PROMPTS: Record<StepValue, string | null> = {
-    0: 'Cosa tradi principalmente?',
-    1: 'Qual e il sottogruppo?',
-    2: 'Che orizzonte temporale usi?',
-    3: 'Con che frequenza operi?',
-    computing: 'Analisi in corso...',
-    4: null,
-  };
+  const PROMPTS = [
+    'Cosa tradi principalmente?',
+    'Qual e il sottogruppo?',
+    'Che orizzonte temporale usi?',
+    'Con che frequenza operi?',
+    null,
+  ];
 
   const ratingConfig = {
     low:    { icon: CheckCircle2,  color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20', label: 'Attrito basso'    },
@@ -475,7 +405,6 @@ export function InteractiveSimulator() {
   };
 
   const TOTAL_STEPS = 4;
-  const numericStep = step === 'computing' ? 3 : step;
 
   return (
     <div className="relative w-full flex flex-col p-5 sm:p-6 xl:p-7">
@@ -486,24 +415,20 @@ export function InteractiveSimulator() {
           <button
             key={i}
             onClick={() => navigateToStep(i)}
-            disabled={i >= numericStep}
+            disabled={i >= step}
             aria-label={`Torna allo step ${i + 1}`}
             className={cn(
               'h-1.5 rounded-full transition-all duration-300',
-              i < numericStep
+              i < step
                 ? 'w-8 bg-primary cursor-pointer hover:bg-primary/80'
-                : i === numericStep
+                : i === step
                   ? 'w-8 bg-primary/40'
                   : 'w-4 bg-border/50',
             )}
           />
         ))}
         <span className="ml-auto font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/40">
-          {step === 'computing'
-            ? `4 / ${TOTAL_STEPS}`
-            : step < TOTAL_STEPS
-            ? `${(step as number) + 1} / ${TOTAL_STEPS}`
-            : 'Risultato'}
+          {step < TOTAL_STEPS ? `${step + 1} / ${TOTAL_STEPS}` : 'Risultato'}
         </span>
       </div>
 
@@ -514,10 +439,7 @@ export function InteractiveSimulator() {
             <motion.p
               key={step}
               variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
-              className={cn(
-                'text-base font-medium tracking-tight text-foreground sm:text-lg',
-                step === 'computing' && 'text-muted-foreground',
-              )}
+              className="text-base font-medium tracking-tight text-foreground sm:text-lg"
             >
               {PROMPTS[step]}
             </motion.p>
@@ -525,11 +447,18 @@ export function InteractiveSimulator() {
         </AnimatePresence>
       </div>
 
-      {/* Step content */}
-      <div className="relative min-h-[200px]">
+      {/*
+        Step content.
+        CRITICAL: the outer div uses `motion.layout` so that when the
+        container grows from step-3 height (~130px, 3 cards) to step-4
+        height (~280px, full result), the height change is spring-animated
+        instead of jumping. `overflow-hidden` prevents children from
+        bleeding out during the transition.
+      */}
+      <motion.div layout className="relative overflow-hidden">
         <AnimatePresence mode="wait">
 
-          {/* STEP 0 -- 6 categories */}
+          {/* STEP 0 */}
           {step === 0 && (
             <motion.div
               key="step-0"
@@ -548,7 +477,7 @@ export function InteractiveSimulator() {
             </motion.div>
           )}
 
-          {/* STEP 1 -- underlying groups (filtered) */}
+          {/* STEP 1 */}
           {step === 1 && (
             <motion.div
               key="step-1"
@@ -566,7 +495,7 @@ export function InteractiveSimulator() {
             </motion.div>
           )}
 
-          {/* STEP 2 -- horizons */}
+          {/* STEP 2 */}
           {step === 2 && (
             <motion.div
               key="step-2"
@@ -585,7 +514,7 @@ export function InteractiveSimulator() {
             </motion.div>
           )}
 
-          {/* STEP 3 -- styles */}
+          {/* STEP 3 */}
           {step === 3 && (
             <motion.div
               key="step-3"
@@ -604,18 +533,23 @@ export function InteractiveSimulator() {
             </motion.div>
           )}
 
-          {/* STEP computing -- loader between step 3 and step 4 */}
-          {step === 'computing' && <ComputingLoader />}
-
-          {/* STEP 4 -- result */}
+          {/* STEP 4 — staggered reveal, no intermediate loader state */}
           {step === 4 && result && selections.ugId && selections.horizon && selectedStyle && (
             <motion.div
               key="step-4"
-              variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
-              className="w-full space-y-4"
+              // Entry: the whole block fades in as a unit (fast)
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1, transition: { duration: 0.15 } }}
+              exit={{ opacity: 0, transition: { duration: 0.1 } }}
+              className="w-full space-y-3"
             >
-              {/* Rating badge */}
-              <div className={cn('flex items-center gap-3 rounded-2xl border px-4 py-3', ratingConfig[result.rating].bg)}>
+              {/* 1. Rating badge — first, with scale+blur pop */}
+              <motion.div
+                variants={badgeReveal}
+                initial="initial"
+                animate="animate"
+                className={cn('flex items-center gap-3 rounded-2xl border px-4 py-3', ratingConfig[result.rating].bg)}
+              >
                 {(() => {
                   const Icon = ratingConfig[result.rating].icon;
                   return <Icon className={cn('size-5 shrink-0', ratingConfig[result.rating].color)} />;
@@ -629,31 +563,59 @@ export function InteractiveSimulator() {
                 <span className={cn('ml-auto font-mono text-xl font-bold', ratingConfig[result.rating].color)}>
                   {result.totalDrag} bps
                 </span>
-              </div>
+              </motion.div>
 
-              {/* Cost breakdown */}
+              {/* 2. Cost stats — each card staggers individually */}
               <div className="grid grid-cols-3 gap-2">
-                <CostStat label="Spread"      value={`${result.spreadBps} bps`} />
-                <CostStat label="Swap/giorno" value={result.swapPerDay > 0 ? `${result.swapPerDay} bps` : '--'} />
-                <CostStat label="Platform fee" value={`${result.platformFee}%`} />
+                {[
+                  { label: 'Spread',       value: `${result.spreadBps} bps` },
+                  { label: 'Swap/giorno',  value: result.swapPerDay > 0 ? `${result.swapPerDay} bps` : '--' },
+                  { label: 'Platform fee', value: `${result.platformFee}%` },
+                ].map(({ label, value }, i) => (
+                  <motion.div
+                    key={label}
+                    variants={statReveal(i)}
+                    initial="initial"
+                    animate="animate"
+                    className="rounded-2xl border border-border/50 bg-background/60 px-3 py-3 text-center"
+                  >
+                    <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground/60">{label}</p>
+                    <p className="mt-1 font-mono text-sm font-semibold text-foreground tabular-nums">{value}</p>
+                  </motion.div>
+                ))}
               </div>
 
-              {/* Formula note */}
-              <p className="font-mono text-[10px] text-muted-foreground/50 text-center tracking-wide">
+              {/* 3. Formula note */}
+              <motion.p
+                variants={revealVariant(300)}
+                initial="initial"
+                animate="animate"
+                className="font-mono text-[10px] text-muted-foreground/50 text-center tracking-wide"
+              >
                 {selectedStyle.freq} trade/sessione &middot; {HORIZON_PARAMS[selections.horizon].holdingDays}gg holding &middot; spread {result.spreadBps}bps
-              </p>
+              </motion.p>
 
-              {/* Suggestion */}
-              <div className="flex items-start gap-3 rounded-2xl border border-border/50 bg-muted/30 px-4 py-3">
+              {/* 4. Suggestion */}
+              <motion.div
+                variants={revealVariant(380)}
+                initial="initial"
+                animate="animate"
+                className="flex items-start gap-3 rounded-2xl border border-border/50 bg-muted/30 px-4 py-3"
+              >
                 <ArrowRight className="mt-0.5 size-4 shrink-0 text-primary" />
                 <p className="text-sm leading-6 text-muted-foreground">
                   <span className="font-medium text-foreground">Cosa fare: </span>
                   {result.suggestion}
                 </p>
-              </div>
+              </motion.div>
 
-              {/* Recap + reset */}
-              <div className="flex items-center justify-between">
+              {/* 5. Recap + reset */}
+              <motion.div
+                variants={revealVariant(460)}
+                initial="initial"
+                animate="animate"
+                className="flex items-center justify-between"
+              >
                 <div className="flex gap-2 flex-wrap">
                   {[selections.category, selections.ugId, selections.horizon, selections.style].map((s) => s && (
                     <span key={s} className="rounded-full border border-border/50 bg-background px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
@@ -668,15 +630,15 @@ export function InteractiveSimulator() {
                   <RotateCcw className="size-3" />
                   Ricomincia
                 </button>
-              </div>
+              </motion.div>
             </motion.div>
           )}
 
         </AnimatePresence>
-      </div>
+      </motion.div>
 
       {/* Breadcrumb trail */}
-      {numericStep > 0 && step !== 'computing' && step < TOTAL_STEPS && (
+      {step > 0 && step < TOTAL_STEPS && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -691,7 +653,7 @@ export function InteractiveSimulator() {
               {CATEGORIES.find(c => c.id === selections.category)?.label}
             </button>
           )}
-          {numericStep > 1 && selections.ugId && (
+          {step > 1 && selections.ugId && (
             <>
               <span className="text-muted-foreground/30 text-xs">/</span>
               <button
@@ -703,7 +665,7 @@ export function InteractiveSimulator() {
               </button>
             </>
           )}
-          {numericStep > 2 && selections.horizon && (
+          {step > 2 && selections.horizon && (
             <>
               <span className="text-muted-foreground/30 text-xs">/</span>
               <button
@@ -775,14 +737,5 @@ function UGCard({
       </div>
       <ArrowRight className="size-4 text-muted-foreground/40 group-hover:text-primary group-hover:translate-x-0.5 transition-all duration-200" />
     </button>
-  );
-}
-
-function CostStat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-2xl border border-border/50 bg-background/60 px-3 py-3 text-center">
-      <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground/60">{label}</p>
-      <p className="mt-1 font-mono text-sm font-semibold text-foreground tabular-nums">{value}</p>
-    </div>
   );
 }
