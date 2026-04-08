@@ -12,7 +12,8 @@ export type InstrumentCategory =
   | 'derivative_linear'      // CFD, Futures
   | 'derivative_structured'  // Turbo KO, Mini Future, Leva Fissa
   | 'exchange_product'       // ETF, ETC, ETP
-  | 'crypto_native';         // Spot, Perpetual, Futures datati
+  | 'crypto_native'          // Spot, Perpetual, Futures datati
+  | 'spot_otc';              // Forex Spot OTC interbancario
 
 // ── Modello di esecuzione ────────────────────────────────────
 export type ExecutionModel =
@@ -20,7 +21,8 @@ export type ExecutionModel =
   | 'ecn_stp'        // ECN/STP — forex no-dealing desk
   | 'mm_internal'    // Market Maker interno (dealing desk)
   | 'issuer_priced'  // Prezzo fissato dall'emittente (certificati SeDeX)
-  | 'crypto_ob';     // Orderbook exchange crypto
+  | 'crypto_ob'      // Orderbook exchange crypto
+  | 'ecn_ndd';       // ECN puro NDD — spot FX interbancario (LMAX, Dukascopy)
 
 // ── Tier liquidità ───────────────────────────────────────────
 export type LiquidityTier = 'high' | 'medium' | 'low';
@@ -31,104 +33,101 @@ export type LiquidityTier = 'high' | 'medium' | 'low';
 export type CostStructure = {
 
   // 1. SPREAD
-  // Tipo di spread applicato all'eseguito
   spreadType:
-    | 'fixed_bps'       // CFD DD — spread fisso in bps nel prezzo
-    | 'tick'            // Futures — spread = 1 tick su CLOB
-    | 'ob_variable'     // Crypto — spread variabile per liquidityTier
-    | 'issuer_fixed'    // Certificati SeDeX — spread fisso emittente
-    | 'borsa_variable'; // ETF/ETC — spread variabile su borsa
+    | 'fixed_bps'
+    | 'tick'
+    | 'ob_variable'
+    | 'issuer_fixed'
+    | 'borsa_variable'
+    | 'raw_ecn';      // Spot FX OTC — spread near-zero su LP interbancario
 
   // 2. COMMISSION
-  // Struttura commissione esplicita per eseguito
   commissionType:
-    | 'none'            // CFD DD, Turbo/LevFissa su Fineco
-    | 'per_lot'         // CFD ECN — €/$ per lotto standard (100k)
-    | 'per_contract'    // Futures — €/$ per contratto RT
-    | 'maker_taker'     // Crypto — % separata maker vs taker
-    | 'per_trade_pct';  // ETF/ETC — % sul nozionale per trade
+    | 'none'
+    | 'per_lot'
+    | 'per_contract'
+    | 'maker_taker'
+    | 'per_trade_pct'
+    | 'per_lot_ecn';  // Spot FX OTC — commission per lotto come ECN ma su spot
 
   // 3. OVERNIGHT / FINANCING
-  // Costo di detenzione notturna
   overnightType:
-    | 'none'                  // Futures, ETF, ETC, Crypto native
-    | 'sofr_plus_markup'      // CFD su sottostanti USD (indici USA, commodity, FX)
-    | 'euribor_plus_markup'   // CFD su sottostanti EUR (indici EU, azioni EU)
-    | 'integrated_in_price';  // Turbo KO, Mini Future — nel livello KO/financing
+    | 'none'
+    | 'sofr_plus_markup'
+    | 'euribor_plus_markup'
+    | 'integrated_in_price'
+    | 'tom_next_rollover';  // Spot FX OTC — rollover tom/next ogni giorno lavorativo
 
   // 4. REBASING / DECAY
-  // Erosione strutturale da reset giornaliero della leva
   rebasingType:
     | 'none'
-    | 'daily_lev_squared'; // ETF leva, ETC leva, Leva Fissa — formula (L²-L)/2 × σ²
-  leverageMultiplier: number | null; // 2, 3, 5, -1, -2, -3 — null se non applicabile
+    | 'daily_lev_squared';
+  leverageMultiplier: number | null;
 
   // 5. FUNDING RATE
-  // Costo periodico su posizioni aperte (solo crypto perp)
   fundingType:
     | 'none'
-    | 'every_8h_variable'; // Crypto Perp — pagato o ricevuto ogni 8h
+    | 'every_8h_variable';
   fundingDirection:
     | 'none'
-    | 'variable'; // sempre variable a runtime — long/short × sentiment mercato
+    | 'variable';
 
   // 6. ROLL COST
-  // Costo di rinnovo posizione a scadenza
   rollType:
     | 'none'
-    | 'quarterly'   // Futures CME/Eurex — roll ogni trimestre
-    | 'at_expiry';  // Crypto Futures datati — roll a scadenza
+    | 'quarterly'
+    | 'at_expiry'
+    | 'daily_tomnext';  // Spot FX OTC — roll giornaliero tom/next
   rollCostType:
     | 'none'
-    | 'bid_ask_twice'    // Paghi spread 2x (chiudi vecchio + apri nuovo)
-    | 'basis_dependent'; // Crypto — costo dipende da contango/backwardation
+    | 'bid_ask_twice'
+    | 'basis_dependent'
+    | 'tomnext_rate';   // Spot FX OTC — costo dipende da differenziale tassi
 
   // 7. KO / LIQUIDATION RISK
-  // Rischio di chiusura forzata istantanea
   koType:
     | 'none'
-    | 'instant_ko'      // Turbo KO — perdita totale del premio al tocco barrier
-    | 'soft_stop_loss'  // Mini Future — stop-loss con recupero parziale residuo
-    | 'liquidation';    // Crypto Perp/Futures — liquidazione automatica per margin
+    | 'instant_ko'
+    | 'soft_stop_loss'
+    | 'liquidation';
   koDistanceInput:
     | 'none'
-    | 'static_pct'       // Turbo — distanza % fissa dal barrier al momento acquisto
-    | 'dynamic_barrier'  // Mini Future — barrier si aggiorna con financing level
-    | 'leverage_based';  // Crypto — funzione della leva (1/L - maintenance margin)
+    | 'static_pct'
+    | 'dynamic_barrier'
+    | 'leverage_based';
 
   // 8. FX CONVERSION
-  // Costo di conversione valuta (conto sempre EUR per retail IT)
   underlyingCurrency: 'EUR' | 'USD' | 'JPY' | 'GBP' | 'CHF' | 'other';
   fxConversionType:
-    | 'none'       // Sottostante EUR, conto EUR
-    | 'on_trade'   // Conversione al momento dell'eseguito (futures CME, ETF su LSE)
-    | 'on_pnl';    // Conversione solo sul P&L (alcuni broker CFD)
+    | 'none'
+    | 'on_trade'
+    | 'on_pnl'
+    | 'native';  // Spot FX OTC — il prodotto stesso è la coppia valutaria, nessuna conversione aggiuntiva
 
   // 9. TER ANNUO
-  // Total Expense Ratio — solo ETF/ETC/ETP
   hasTER: boolean;
-  terAnnualPct: number | null; // es. 0.35 ETF leva, 1.20 ETP crypto — null se N/A
+  terAnnualPct: number | null;
 
   // 10. MARGIN INTEREST
-  // Tasso applicato sul capitale immobilizzato come margin
   marginInterestType:
-    | 'none'                // Prodotti senza margin (ETF, ETC, certificati)
-    | 'on_initial_margin'   // Futures — tasso su margin iniziale immobilizzato
-    | 'on_full_notional';   // Alcuni CFD — tasso sull'intero nozionale
+    | 'none'
+    | 'on_initial_margin'
+    | 'on_full_notional';
 
-  // 11. CRYPTO ONLY — deposit / withdrawal fees
+  // 11. CRYPTO ONLY
   withdrawalFeeType:
     | 'none'
-    | 'per_chain_variable'; // Fee fissa per rete blockchain (variabile per chain)
+    | 'per_chain_variable';
   depositFeeType:
     | 'none'
-    | 'fiat_to_crypto_pct'; // % sulla conversione EUR → crypto al deposito
+    | 'fiat_to_crypto_pct';
 };
 
 // ============================================================
 // INSTRUMENT TYPE — entità completa
 // ============================================================
 export type InstrumentTypeId =
+  | 'spot_fx'
   | 'cfd_dd'
   | 'cfd_ecn'
   | 'futures_std'
@@ -163,6 +162,41 @@ export type InstrumentType = {
 // ============================================================
 export const INSTRUMENT_TYPES: Record<InstrumentTypeId, InstrumentType> = {
 
+  // ── FOREX SPOT OTC ──────────────────────────────────────────
+  spot_fx: {
+    id: 'spot_fx',
+    label: 'Forex Spot OTC',
+    labelEn: 'FX Spot OTC',
+    category: 'spot_otc',
+    executionModel: 'ecn_ndd',
+    liquidityTier: 'high',
+    maxLeverageESMA: 30,
+    availableForUGs: [
+      'ug_fx_major', 'ug_fx_minor', 'ug_fx_exotic',
+    ],
+    notes: 'Mercato interbancario OTC puro. Spread near-zero su major con broker ECN NDD (LMAX, Dukascopy, Saxo). Commission per lotto esplicita. Rollover tom/next overnight — costo dipende dal differenziale tassi tra le due valute della coppia. Nessun KO strutturale. Leva max 30:1 ESMA su major.',
+    costStructure: {
+      spreadType: 'raw_ecn',
+      commissionType: 'per_lot_ecn',
+      overnightType: 'tom_next_rollover',
+      rebasingType: 'none',
+      leverageMultiplier: null,
+      fundingType: 'none',
+      fundingDirection: 'none',
+      rollType: 'daily_tomnext',
+      rollCostType: 'tomnext_rate',
+      koType: 'none',
+      koDistanceInput: 'none',
+      underlyingCurrency: 'USD',
+      fxConversionType: 'native',
+      hasTER: false,
+      terAnnualPct: null,
+      marginInterestType: 'none',
+      withdrawalFeeType: 'none',
+      depositFeeType: 'none',
+    },
+  },
+
   // ── CFD DEALING DESK ────────────────────────────────────────
   cfd_dd: {
     id: 'cfd_dd',
@@ -173,7 +207,7 @@ export const INSTRUMENT_TYPES: Record<InstrumentTypeId, InstrumentType> = {
     liquidityTier: 'high',
     maxLeverageESMA: 30,
     availableForUGs: [
-      'ug_fx_major', 'ug_fx_minor', 'ug_fx_exotic',
+      'ug_fx_major', 'ug_fx_minor', 'ug_fx_exotic',  // fix: aggiunto ug_fx_minor
       'ug_idx_us', 'ug_idx_eu', 'ug_idx_asia',
       'ug_eq_us_largecap', 'ug_eq_eu_largecap', 'ug_eq_it',
       'ug_cmd_metals_precious', 'ug_cmd_metals_industrial', 'ug_cmd_energy',
@@ -183,7 +217,7 @@ export const INSTRUMENT_TYPES: Record<InstrumentTypeId, InstrumentType> = {
     costStructure: {
       spreadType: 'fixed_bps',
       commissionType: 'none',
-      overnightType: 'sofr_plus_markup', // default USD — broker specifica quale tasso
+      overnightType: 'sofr_plus_markup',
       rebasingType: 'none',
       leverageMultiplier: null,
       fundingType: 'none',
@@ -286,10 +320,11 @@ export const INSTRUMENT_TYPES: Record<InstrumentTypeId, InstrumentType> = {
     liquidityTier: 'high',
     maxLeverageESMA: null,
     availableForUGs: [
+      'ug_fx_major', 'ug_fx_minor',                          // fix: aggiunti FX (M6E, M6B, MJY CME)
       'ug_idx_us', 'ug_idx_eu',
       'ug_cmd_metals_precious', 'ug_cmd_energy',
     ],
-    notes: '1/10 del nozionale futures standard. Stessa struttura costi. Commission proporzionalmente più alta su nozionale. Ideale retail con capitale <10k.',
+    notes: '1/10 del nozionale futures standard. Stessa struttura costi. Commission proporzionalmente più alta su nozionale. Ideale retail con capitale <10k. FX: M6E (€12.5k), M6B (£6.25k), MJY.',
     costStructure: {
       spreadType: 'tick',
       commissionType: 'per_contract',
@@ -331,7 +366,7 @@ export const INSTRUMENT_TYPES: Record<InstrumentTypeId, InstrumentType> = {
       commissionType: 'per_trade_pct',
       overnightType: 'none',
       rebasingType: 'daily_lev_squared',
-      leverageMultiplier: 2, // default — valore specifico per ETF dipende dal prodotto
+      leverageMultiplier: 2,
       fundingType: 'none',
       fundingDirection: 'none',
       rollType: 'none',
@@ -341,7 +376,7 @@ export const INSTRUMENT_TYPES: Record<InstrumentTypeId, InstrumentType> = {
       underlyingCurrency: 'USD',
       fxConversionType: 'on_trade',
       hasTER: true,
-      terAnnualPct: 0.35, // valore medio — range 0.20–0.75%
+      terAnnualPct: 0.35,
       marginInterestType: 'none',
       withdrawalFeeType: 'none',
       depositFeeType: 'none',
@@ -433,13 +468,13 @@ export const INSTRUMENT_TYPES: Record<InstrumentTypeId, InstrumentType> = {
       'ug_eq_us_largecap', 'ug_eq_eu_largecap', 'ug_eq_it',
       'ug_cmd_metals_precious', 'ug_cmd_energy',
     ],
-    notes: 'KO istantaneo al tocco del barrier — perdita totale del premio. Spread emittente fisso. Finanziamento integrato nel prezzo. Quotato SeDeX. Zero comm su Fineco.',
+    notes: 'KO istantaneo al tocco del barrier — perdita totale del premio. Spread emittente fisso. Finanziamento integrato nel prezzo. Quotato SeDeX o OTC (IG Turbo24). Zero comm su Fineco.',
     costStructure: {
       spreadType: 'issuer_fixed',
-      commissionType: 'none', // Fineco zero — altri broker applicano commission
+      commissionType: 'none',
       overnightType: 'integrated_in_price',
       rebasingType: 'none',
-      leverageMultiplier: null, // leva dinamica — funzione distanza dal barrier
+      leverageMultiplier: null,
       fundingType: 'none',
       fundingDirection: 'none',
       rollType: 'none',
@@ -466,15 +501,15 @@ export const INSTRUMENT_TYPES: Record<InstrumentTypeId, InstrumentType> = {
     liquidityTier: 'medium',
     maxLeverageESMA: null,
     availableForUGs: [
-      'ug_fx_major',
+      'ug_fx_major', 'ug_fx_minor',                          // fix: aggiunto ug_fx_minor
       'ug_idx_us', 'ug_idx_eu',
       'ug_eq_us_largecap', 'ug_eq_eu_largecap', 'ug_eq_it',
       'ug_cmd_metals_precious', 'ug_cmd_energy',
     ],
-    notes: 'Open-end senza scadenza. Stop-loss level con recupero parziale (non KO secco). Financing level aggiornato periodicamente. Spread emittente.',
+    notes: 'Open-end senza scadenza. Stop-loss level con recupero parziale (non KO secco). Financing level aggiornato periodicamente. Spread emittente. SeDeX + broker strutturati (Saxo, Exante, Swissquote).',
     costStructure: {
       spreadType: 'issuer_fixed',
-      commissionType: 'per_trade_pct', // commission broker variabile
+      commissionType: 'per_trade_pct',
       overnightType: 'integrated_in_price',
       rebasingType: 'none',
       leverageMultiplier: null,
@@ -511,10 +546,10 @@ export const INSTRUMENT_TYPES: Record<InstrumentTypeId, InstrumentType> = {
     notes: 'Leva fissa 2x/3x/5x/-2x/-3x. Rebasing giornaliero identico agli ETF leva. Zero comm su Fineco. Adatto intraday/breve termine — decay penalizza multiday.',
     costStructure: {
       spreadType: 'issuer_fixed',
-      commissionType: 'none', // zero su Fineco
+      commissionType: 'none',
       overnightType: 'none',
       rebasingType: 'daily_lev_squared',
-      leverageMultiplier: 3, // default — range 2/3/5/-2/-3
+      leverageMultiplier: 3,
       fundingType: 'none',
       fundingDirection: 'none',
       rollType: 'none',
