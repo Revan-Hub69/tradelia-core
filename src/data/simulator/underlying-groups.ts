@@ -3,6 +3,8 @@
 // 14 gruppi suddivisi per asset class
 // ============================================================
 
+import type { UnderlyingId } from './underlyings';
+
 export type AssetClassId =
   | 'forex'
   | 'indices'
@@ -36,9 +38,14 @@ export type UnderlyingGroup = {
   label: string;
   labelEn: string;
   assetClass: AssetClassId;
-  examples: string[];       // ticker/simboli rappresentativi
-  baseCurrency: string;     // valuta nativa del sottostante
-  typicalVolatilityPct: number; // volatilità giornaliera tipica %
+  examples: string[];            // ticker/simboli rappresentativi
+  baseCurrency: string;          // valuta nativa del sottostante
+  typicalVolatilityPct: number;  // volatilità giornaliera tipica %
+  // Asset selezionabile di default per il calcolo del ranking.
+  // Presente solo per i gruppi che hanno underlyings.ts popolato.
+  // Per gli altri gruppi (indices, equities, ecc.) sarà aggiunto
+  // quando il relativo file underlyings.ts verrà popolato.
+  defaultUnderlyingId?: UnderlyingId;
 };
 
 export const UNDERLYING_GROUPS: Record<UnderlyingGroupId, UnderlyingGroup> = {
@@ -51,6 +58,7 @@ export const UNDERLYING_GROUPS: Record<UnderlyingGroupId, UnderlyingGroup> = {
     examples: ['EUR/USD', 'GBP/USD', 'USD/JPY', 'USD/CHF', 'AUD/USD', 'USD/CAD'],
     baseCurrency: 'USD',
     typicalVolatilityPct: 0.5,
+    defaultUnderlyingId: 'eurusd',
   },
   ug_fx_minor: {
     id: 'ug_fx_minor',
@@ -60,6 +68,7 @@ export const UNDERLYING_GROUPS: Record<UnderlyingGroupId, UnderlyingGroup> = {
     examples: ['EUR/GBP', 'EUR/JPY', 'GBP/JPY', 'EUR/CHF', 'AUD/JPY'],
     baseCurrency: 'USD',
     typicalVolatilityPct: 0.7,
+    defaultUnderlyingId: 'eurgbp',
   },
   ug_fx_exotic: {
     id: 'ug_fx_exotic',
@@ -69,6 +78,7 @@ export const UNDERLYING_GROUPS: Record<UnderlyingGroupId, UnderlyingGroup> = {
     examples: ['USD/TRY', 'USD/ZAR', 'EUR/PLN', 'USD/MXN', 'USD/SGD'],
     baseCurrency: 'USD',
     typicalVolatilityPct: 1.5,
+    defaultUnderlyingId: 'usdtry',
   },
 
   // ── INDICES ────────────────────────────────────────────────
