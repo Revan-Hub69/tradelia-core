@@ -6,49 +6,103 @@ import type { InstrumentTypeId } from '../instruments';
 import type { UnderlyingGroupId } from '../underlying-groups';
 import type { HorizonId } from '../horizons';
 import type { AccountTypeId } from './broker.types';
+import type { UnderlyingId } from './index';
+
+export type ExecutionType = 'instant' | 'market';
+
+export type UnderlyingOfferOverride = {
+  spreadAvgBps:            number | null;
+  spreadMinBps:            number | null;
+  spreadMaxBps:            number | null;
+  overnightLongAnnualPct:  number | null;
+  overnightShortAnnualPct: number | null;
+  marginRequirementPct:    number | null;
+  slippageAvgBps:          number | null;
+  slippageNewsBps:         number | null;
+};
 
 export type InstrumentOffer = {
-  accountTypeId:            AccountTypeId;
-  instrumentTypeId:         InstrumentTypeId;
-  ugIds:                    UnderlyingGroupId[];
-  compatibleHorizons:       HorizonId[];
-  minPositionEUR:           number;
-  maxLeverageOffered:       number | null;
+  // Identificazione
+  accountTypeId:      AccountTypeId;
+  instrumentTypeId:   InstrumentTypeId;
+  ugIds:              UnderlyingGroupId[];
+  compatibleHorizons: HorizonId[];
+  minPositionEUR:     number;
+  maxLeverageOffered: number | null;
+
+  // Override per singolo underlying
+  underlyingOverrides: Partial<Record<UnderlyingId, UnderlyingOfferOverride>> | null;
+
+  // Margin
   marginRequirementPct:     number;
   maintenanceMarginPct:     number | null;
+
+  // Commissioni
   commissionPerLotEUR:      number | null;
   commissionPerLotUSD:      number | null;
   commissionPerContractEUR: number | null;
   commissionPerContractUSD: number | null;
+  commissionMinPerTradeEUR: number | null;
+  commissionMinPerTradeUSD: number | null;
   makerFeePct:              number | null;
   takerFeePct:              number | null;
   commissionNotes:          string;
+
+  // Spread
   spreadAvgBps:             number;
-  spreadMinBps:            number;
-  spreadMaxBps:            number;
+  spreadMinBps:             number;
+  spreadMaxBps:             number;
   spreadNotes:              string;
-  overnightLongAnnualPct:  number | null;
-  overnightShortAnnualPct: number | null;
-  overnightTripleDay:      'wednesday' | 'friday' | 'none' | null;
-  overnightNotes:          string;
+
+  // Overnight / Swap
+  overnightLongAnnualPct:    number | null;
+  overnightShortAnnualPct:   number | null;
+  overnightTripleDay:       'wednesday' | 'friday' | 'none' | null;
+  overnightTripleMultiplier: number | null;
+  overnightNotes:           string;
+
+  // Funding (crypto perp)
   fundingRateTypicalPct8h: number | null;
-  fundingRateMaxPct8h:      number | null;
-  fundingNotes:             string;
-  rebasingLeverageMult:    number | null;
-  rebasingNotes:           string;
+  fundingRateMaxPct8h:     number | null;
+  fundingNotes:            string;
+
+  // Rebasing
+  rebasingLeverageMult:   number | null;
+  rebasingNotes:         string;
+
+  // Roll (futures)
   rollSpreadBps:           number | null;
-  rollFrequencyDays:        number | null;
-  rollNotes:                string;
-  koDistancePctTypical:    number | null;
-  koNotes:                 string;
-  fxConversionBps:         number | null;
-  terAnnualPct:             number | null;
-  depositFiatPct:           number | null;
-  withdrawalFeeUSD:         number | null;
-  withdrawalFeeUSDCheap:    number | null;
-  slippageAvgBps:           number | null;
-  slippageNewsBps:          number | null;
-  notes:                    string;
+  rollFrequencyDays:      number | null;
+  rollNotes:              string;
+
+  // KO / Liquidation
+  koDistancePctTypical:   number | null;
+  koNotes:                string;
+
+  // FX Conversion
+  fxConversionBps:        number | null;
+
+  // TER (ETF/ETC/ETP)
+  terAnnualPct:            number | null;
+
+  // Fee depositi/prelievi
+  depositWireEUR:          number | null;
+  depositFiatPct:          number | null;
+  withdrawalWireEUR:      number | null;
+  withdrawalFeeUSD:       number | null;
+  withdrawalFeeUSDCheap:  number | null;
+  inactivityFeeMonthlyEUR: number | null;
+
+  // Slippage / Execution
+  slippageAvgBps:          number | null;
+  slippageNewsBps:         number | null;
+  executionType:          ExecutionType | null;
+  maxSlippageOnInstantBps: number | null;
+
+  // Metadata
+  lastUpdated:             string;
+  dataSource:              string;
+  notes:                   string;
 };
 
 export type RankedResult = {
