@@ -5,7 +5,7 @@
 import type { InstrumentTypeId } from '../instruments';
 import type { UnderlyingGroupId } from '../underlying-groups';
 import type { HorizonId } from '../horizons';
-import type { AccountTypeId } from './broker.types';
+import type { AccountTypeId, BrokerId } from './broker.types';
 import type { UnderlyingId } from './index';
 
 export type ExecutionType = 'instant' | 'market';
@@ -23,12 +23,13 @@ export type UnderlyingOfferOverride = {
 
 export type InstrumentOffer = {
   // Identificazione
-  accountTypeId:      AccountTypeId;
-  instrumentTypeId:   InstrumentTypeId;
-  ugIds:              UnderlyingGroupId[];
-  compatibleHorizons: HorizonId[];
-  minPositionEUR:     number;
-  maxLeverageOffered: number | null;
+  brokerId:            BrokerId;
+  accountTypeId:       AccountTypeId;
+  instrumentTypeId:    InstrumentTypeId;
+  ugIds:               UnderlyingGroupId[];
+  compatibleHorizons:  HorizonId[];
+  minPositionEUR:      number;
+  maxLeverageOffered:  number | null;
 
   // Override per singolo underlying
   underlyingOverrides: Partial<Record<UnderlyingId, UnderlyingOfferOverride>> | null;

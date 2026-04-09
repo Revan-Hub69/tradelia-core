@@ -2,9 +2,8 @@
 // SIMULATOR DATA — re-export pubblico
 // ============================================================
 
-// Schema — tipi puri (mai modificati)
-export * from './schema/broker.types';
-export * from './schema/offer.types';
+// Schema — tipi puri (re-export compatto)
+export * from './schema';
 
 // Catalog — dati statici stabili
 export * from './underlying-groups';
