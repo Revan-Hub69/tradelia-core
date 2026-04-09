@@ -12,6 +12,7 @@ export type ExecutionType = 'instant' | 'market';
 
 // Override per singola coppia (EUR/USD, GBP/JPY, etc)
 // I valori sono in pip per notte — formato broker standard
+// Slippage: solo slippageAvgBps da fonti verificate (es. MyFXBook)
 export type UnderlyingOfferOverride = {
   spreadAvgBps:            number | null;
   spreadMinBps:            number | null;
@@ -20,7 +21,7 @@ export type UnderlyingOfferOverride = {
   overnightShortPipsPerDay: number | null;
   marginRequirementPct:    number | null;
   slippageAvgBps:          number | null;
-  slippageNewsBps:         number | null;
+  // slippageNewsBps rimosso — non modellabile con dati pubblici affidabili
 };
 
 export type InstrumentOffer = {
@@ -97,8 +98,9 @@ export type InstrumentOffer = {
   inactivityFeeMonthlyEUR: number | null;
 
   // Slippage / Execution
-  slippageAvgBps:          number | null;
-  slippageNewsBps:         number | null;
+  // NOTA: slippageNewsBps rimosso — non modellabile con dati pubblici affidabili
+  // Durante eventi macroeconomici lo slippage è imprevedibile e non incluso nel calcolo
+  slippageAvgBps:          number | null;  // solo da MyFXBook execution stats verificati
   executionType:          ExecutionType | null;
   maxSlippageOnInstantBps: number | null;
 
