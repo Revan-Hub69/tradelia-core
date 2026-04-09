@@ -10,12 +10,14 @@ import type { UnderlyingId } from './index';
 
 export type ExecutionType = 'instant' | 'market';
 
+// Override per singola coppia (EUR/USD, GBP/JPY, etc)
+// I valori sono in pip per notte — formato broker standard
 export type UnderlyingOfferOverride = {
   spreadAvgBps:            number | null;
   spreadMinBps:            number | null;
   spreadMaxBps:            number | null;
-  overnightLongAnnualPct:  number | null;
-  overnightShortAnnualPct: number | null;
+  overnightLongPipsPerDay:  number | null;
+  overnightShortPipsPerDay: number | null;
   marginRequirementPct:    number | null;
   slippageAvgBps:          number | null;
   slippageNewsBps:         number | null;
@@ -55,12 +57,12 @@ export type InstrumentOffer = {
   spreadMaxBps:             number;
   spreadNotes:              string;
 
-  // Overnight / Swap
-  overnightLongAnnualPct:    number | null;
-  overnightShortAnnualPct:   number | null;
-  overnightTripleDay:       'wednesday' | 'friday' | 'none' | null;
-  overnightTripleMultiplier: number | null;
-  overnightNotes:           string;
+  // Overnight / Swap (in pip per notte — formato broker standard)
+  overnightLongPipsPerDay:    number | null;
+  overnightShortPipsPerDay:   number | null;
+  overnightTripleDay:         'wednesday' | 'friday' | 'none' | null;
+  overnightTripleMultiplier:  number | null;  // es. 3.0 o 2.8
+  overnightNotes:             string;
 
   // Funding (crypto perp)
   fundingRateTypicalPct8h: number | null;
