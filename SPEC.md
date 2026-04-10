@@ -59,26 +59,33 @@ INPUT UTENTE
   ├── horizon (daily)
   ├── frequency (10 trade/giorno)
   ├── accountSize (md = 2.000€)
-  └── leverage (medium = 10x)
+  └── notional (10.000€)        // esposizione nozionale fissa
         ↓
 FILTRO OFFERTE
   ├── brokerId → accountType → minDepositEUR <= accountSize
   ├── ugIds includes underlyingGroup
   ├── compatibleHorizons includes horizon
-  └── maxLeverageOffered >= leverage
+  └── maxLeverageOffered >= (1 / marginRequirementPct)  // leva effettiva dello strumento
         ↓
 CALCOLO COSTI (per offer valida)
-  ├── spreadCost = spreadAvgBps × notional
+  ├── lots = notional / contractSize  // es. 10.000€ / 100.000€ = 0.1 lotti
+  ├── spreadCost = spreadAvgBps × notional × (trades/anno)
   ├── commissionCost = commissionPerLot × lots × trades
-  ├── overnightCost = swapPips × lots × days
-  ├── fundingCost (crypto perp)
-  ├── fxConversionCost
-  └── totalCostBps = somma in bps
+  ├── overnightCost = overnightPipsPerDay × pipValue × lots × days
+  ├── fundingCost (se applicabile)
+  ├── fxConversionCost (se applicabile)
+  └── totalCostBps = (costo annuo totale / notional) × 10.000
         ↓
 OUTPUT
-  ├── ranking per broker × strumento
+  ├── ranking per broker × strumento (costo totale annuo in EUR o bps)
   ├── costBreakdown (spread/comm/overnight/funding/fx/other)
-  ├── compatibilityFlags
+  ├── compatibilityFlags {
+        leverageOk:      maxLeverageOffered >= userDesiredLeverage,
+        accountSizeOk:   accountSize >= notional * marginRequirementPct,
+        positionSizeOk:  notional >= minPositionEUR,
+        horizonOk:       horizon in compatibleHorizons,
+        accessibleIT:    broker accessible from Italy
+  }
   └── warnings
 ```
 
