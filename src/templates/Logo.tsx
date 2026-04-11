@@ -15,21 +15,30 @@ type LogoProps = {
 /**
  * Tradelia Logo
  *
- * Wordmark con gradient diagonale sharp 45°
- * Usa le CSS var del tema — light e dark corretti automaticamente.
+ * Mark: doppio canale asimmetrico — evoca confronto, split, convergenza.
+ * Due barre di altezza diversa collegate da un connettore orizzontale.
+ * Monocromatico, usa currentColor — si adatta a light/dark senza override.
+ *
+ * Wordmark: peso 700, tracking stretto, nessun gradient — il mark porta il carattere visivo.
  */
-export const Logo = ({ isTextHidden = false, size = 'md', href, className, asChild = false }: LogoProps) => {
+export const Logo = ({
+  isTextHidden = false,
+  size = 'md',
+  href,
+  className,
+  asChild = false,
+}: LogoProps) => {
   const sizes = {
-    sm: { icon: 'size-6', text: 'text-lg', gap: 'gap-2' },
-    md: { icon: 'size-7', text: 'text-xl', gap: 'gap-2.5' },
-    lg: { icon: 'size-8', text: 'text-2xl', gap: 'gap-3' },
+    sm: { icon: 'size-6', text: 'text-lg',  gap: 'gap-2'   },
+    md: { icon: 'size-7', text: 'text-xl',  gap: 'gap-2.5' },
+    lg: { icon: 'size-8', text: 'text-2xl', gap: 'gap-3'   },
   };
 
   const { icon, text, gap } = sizes[size];
 
   const content = (
     <div className={cn(`group flex items-center ${gap}`, className)}>
-      {/* Icon: T stilizzata minimal */}
+      {/* Mark: dual-bar comparison symbol */}
       <svg
         className={cn(icon, 'shrink-0')}
         viewBox="0 0 32 32"
@@ -37,36 +46,50 @@ export const Logo = ({ isTextHidden = false, size = 'md', href, className, asChi
         xmlns="http://www.w3.org/2000/svg"
         aria-label="Tradelia"
       >
-        <rect width="32" height="32" rx="8" className="fill-primary" />
-        <path
-          d="M8 11h16M16 11v12"
-          stroke="white"
-          strokeWidth="3"
+        {/* Barra sinistra — altezza piena, colore primario */}
+        <rect
+          x="4"
+          y="5"
+          width="9"
+          height="22"
+          rx="2.5"
+          className="fill-primary"
+        />
+        {/* Barra destra — altezza ridotta, tono muted */}
+        <rect
+          x="19"
+          y="10"
+          width="9"
+          height="14"
+          rx="2.5"
+          className="fill-primary"
+          opacity="0.38"
+        />
+        {/* Connettore orizzontale centrale */}
+        <line
+          x1="13"
+          y1="16"
+          x2="19"
+          y2="16"
+          className="stroke-primary"
+          strokeWidth="2"
           strokeLinecap="round"
         />
-        {/* Accent dot — usa fill-primary/60 invece di fill-accent per coerenza palette */}
-        <circle cx="22" cy="11" r="2" className="fill-white/60" />
       </svg>
 
-      {/* Wordmark con gradient diagonale SHARP 45° — colori dal tema */}
+      {/* Wordmark — clean, nessun gradient */}
       {!isTextHidden && (
         <span className="relative flex items-center">
           <span
-            className={cn(`font-bold tracking-tight leading-none ${text}`)}
-            style={{
-              background:
-                'linear-gradient(45deg, hsl(var(--foreground)) 50%, hsl(var(--primary)) 50%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
+            className={cn(
+              `font-bold tracking-tight leading-none ${text}`,
+              'text-foreground'
+            )}
           >
             {AppConfig.name}
           </span>
           {/* Underline animato all'hover */}
-          <span
-            className="absolute -bottom-0.5 left-0 h-0.5 w-0 bg-gradient-to-r from-primary to-primary/60 transition-all duration-300 group-hover:w-full"
-          />
+          <span className="absolute -bottom-0.5 left-0 h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-full" />
         </span>
       )}
     </div>
@@ -80,7 +103,7 @@ export const Logo = ({ isTextHidden = false, size = 'md', href, className, asChi
 };
 
 /**
- * Logo Icon Only — per favicon / avatar
+ * LogoIcon — solo mark, per favicon / avatar / spazi stretti
  */
 export const LogoIcon = () => (
   <svg
@@ -89,13 +112,8 @@ export const LogoIcon = () => (
     xmlns="http://www.w3.org/2000/svg"
     aria-label="Tradelia"
   >
-    <rect width="32" height="32" rx="8" className="fill-primary" />
-    <path
-      d="M8 11h16M16 11v12"
-      stroke="white"
-      strokeWidth="3"
-      strokeLinecap="round"
-    />
-    <circle cx="22" cy="11" r="2" className="fill-white/60" />
+    <rect x="4"  y="5"  width="9" height="22" rx="2.5" className="fill-primary" />
+    <rect x="19" y="10" width="9" height="14" rx="2.5" className="fill-primary" opacity="0.38" />
+    <line x1="13" y1="16" x2="19" y2="16" className="stroke-primary" strokeWidth="2" strokeLinecap="round" />
   </svg>
 );
