@@ -3,8 +3,6 @@ import { ImageResponse } from 'next/og';
 export const size = { width: 180, height: 180 };
 export const contentType = 'image/png';
 
-const PRIMARY = '#0f766e';
-
 export default function AppleIcon() {
   return new ImageResponse(
     (
@@ -13,49 +11,40 @@ export default function AppleIcon() {
           width: 180,
           height: 180,
           borderRadius: 40,
-          background: PRIMARY,
+          background: '#0d0f12',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          position: 'relative',
         }}
       >
-        {/* T — horizontal bar */}
-        <div
-          style={{
-            position: 'absolute',
-            top: 52,
-            left: 38,
-            width: 104,
-            height: 16,
-            borderRadius: 8,
-            background: 'white',
-          }}
-        />
-        {/* T — vertical bar */}
-        <div
-          style={{
-            position: 'absolute',
-            top: 52,
-            left: 82,
-            width: 16,
-            height: 76,
-            borderRadius: 8,
-            background: 'white',
-          }}
-        />
-        {/* Accent dot — white/60 */}
-        <div
-          style={{
-            position: 'absolute',
-            top: 38,
-            right: 38,
-            width: 24,
-            height: 24,
-            borderRadius: '50%',
-            background: 'rgba(255,255,255,0.6)',
-          }}
-        />
+        <svg
+          width="120"
+          height="130"
+          viewBox="0 0 48 52"
+          fill="none"
+        >
+          <polygon
+            points="24,4 2,48 46,48"
+            stroke="#07C99A"
+            stroke-width="3.5"
+            stroke-linejoin="round"
+            stroke-linecap="round"
+            fill="none"
+          />
+          <polygon
+            points="24,4 2,48 46,48"
+            fill="#07C99A"
+            opacity="0.07"
+          />
+          <line
+            x1="16" y1="32" x2="32" y2="32"
+            stroke="#07C99A"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            opacity="0.7"
+          />
+          <circle cx="24" cy="4" r="3.5" fill="#07C99A" />
+        </svg>
       </div>
     ),
     { ...size },

@@ -3,9 +3,7 @@ import { ImageResponse } from 'next/og';
 export const size = { width: 32, height: 32 };
 export const contentType = 'image/png';
 
-// Brand primary: teal #0f766e — must match Logo.tsx fill-primary
-const PRIMARY = '#0f766e';
-
+// Delta mark V2 — dark bg, teal gradient outline + benchmark bar
 export default function Icon() {
   return new ImageResponse(
     (
@@ -13,50 +11,39 @@ export default function Icon() {
         style={{
           width: 32,
           height: 32,
-          borderRadius: 8,
-          background: PRIMARY,
+          borderRadius: 7,
+          background: '#0d0f12',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          position: 'relative',
         }}
       >
-        {/* T — horizontal bar */}
-        <div
-          style={{
-            position: 'absolute',
-            top: 9,
-            left: 7,
-            width: 18,
-            height: 3,
-            borderRadius: 2,
-            background: 'white',
-          }}
-        />
-        {/* T — vertical bar */}
-        <div
-          style={{
-            position: 'absolute',
-            top: 9,
-            left: 14.5,
-            width: 3,
-            height: 14,
-            borderRadius: 2,
-            background: 'white',
-          }}
-        />
-        {/* Accent dot — white/60 */}
-        <div
-          style={{
-            position: 'absolute',
-            top: 7,
-            right: 6,
-            width: 5,
-            height: 5,
-            borderRadius: '50%',
-            background: 'rgba(255,255,255,0.6)',
-          }}
-        />
+        <svg
+          width="22"
+          height="24"
+          viewBox="0 0 48 52"
+          fill="none"
+        >
+          {/* Delta outline — teal solid (no gradient in OG) */}
+          <polygon
+            points="24,4 2,48 46,48"
+            stroke="#07C99A"
+            stroke-width="4"
+            stroke-linejoin="round"
+            stroke-linecap="round"
+            fill="none"
+          />
+          {/* Benchmark bar */}
+          <line
+            x1="16" y1="32" x2="32" y2="32"
+            stroke="#07C99A"
+            stroke-width="3"
+            stroke-linecap="round"
+            opacity="0.7"
+          />
+          {/* Top dot */}
+          <circle cx="24" cy="4" r="4" fill="#07C99A" />
+        </svg>
       </div>
     ),
     { ...size },
