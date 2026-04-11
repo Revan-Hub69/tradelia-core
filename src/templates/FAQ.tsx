@@ -37,7 +37,6 @@ export const FAQ = () => {
       <SectionContainer size="content">
         <FadeIn>
           <div className="text-center">
-            {/* eyebrow: /55 → /75 for WCAG AA */}
             <p className="font-mono text-xs uppercase tracking-[0.24em] text-muted-foreground/75">
               {t('section_eyebrow')}
             </p>
@@ -81,7 +80,7 @@ export const FAQ = () => {
                   </span>
                 </div>
                 <svg
-                  className={`size-5 shrink-0 text-muted-foreground transition-transform duration-300 ease-[cubic-bezier(0,0,0.2,1)] ${
+                  className={`size-5 shrink-0 text-muted-foreground transition-transform duration-300 ease-out ${
                     openItems.has(index) ? 'rotate-180' : ''
                   }`}
                   fill="none"
@@ -93,14 +92,8 @@ export const FAQ = () => {
                 </svg>
               </button>
 
-              {/*
-                Grid-rows accordion — replaces max-h transition.
-                CSS Grid animation: grid-template-rows 0fr → 1fr is GPU-accelerated,
-                avoids layout thrash from max-height, and eliminates CLS on scroll.
-                The inner div needs min-h-0 so it can collapse to zero inside 0fr.
-              */}
               <div
-                className={`grid transition-[grid-template-rows] duration-300 ease-[cubic-bezier(0,0,0.2,1)] ${
+                className={`grid transition-[grid-template-rows] duration-300 ease-out ${
                   openItems.has(index) ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
                 }`}
               >
