@@ -1,7 +1,7 @@
 'use client';
 
+import React from 'react';
 import { Link } from '@/libs/i18nNavigation';
-import { AppConfig } from '@/utils/AppConfig';
 import { cn } from '@/utils/Helpers';
 
 type LogoProps = {
@@ -12,90 +12,101 @@ type LogoProps = {
   asChild?: boolean;
 };
 
-/**
- * Tradelia Logo
- *
- * Wordmark con gradient diagonale sharp 45°
- * Usa le CSS var del tema — light e dark corretti automaticamente.
- */
-export const Logo = ({ isTextHidden = false, size = 'md', href, className, asChild = false }: LogoProps) => {
-  const sizes = {
-    sm: { icon: 'size-6', text: 'text-lg', gap: 'gap-2' },
-    md: { icon: 'size-7', text: 'text-xl', gap: 'gap-2.5' },
-    lg: { icon: 'size-8', text: 'text-2xl', gap: 'gap-3' },
-  };
+const SIZE_MAP = {
+  sm: 24,
+  md: 28,
+  lg: 34,
+};
 
-  const { icon, text, gap } = sizes[size];
+function TDMark({ size }: { size: number }) {
+  const gradId = `tdg_${size}`;
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 72 72"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      style={{ flexShrink: 0, display: 'block' }}
+    >
+      <defs>
+        <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#07E0B0" />
+          <stop offset="100%" stopColor="#0594CC" />
+        </linearGradient>
+      </defs>
+      {/* Asse X */}
+      <line x1="8" y1="58" x2="64" y2="58" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity="0.18" />
+      {/* Asse Y */}
+      <line x1="8" y1="58" x2="8" y2="10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity="0.18" />
+      {/* Area fill */}
+      <polygon points="8,58 18,48 28,52 40,36 54,24 64,14 64,58" fill={`url(#${gradId})`} opacity="0.07" />
+      {/* Sparkline */}
+      <polyline
+        points="8,58 18,48 28,52 40,36 54,24 64,14"
+        fill="none"
+        stroke={`url(#${gradId})`}
+        strokeWidth="3.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      {/* Dot terminale */}
+      <circle cx="64" cy="14" r="5" fill="#07E0B0" />
+      <circle cx="64" cy="14" r="9.5" fill="none" stroke="#07E0B0" strokeWidth="1.5" opacity="0.32" />
+    </svg>
+  );
+}
+
+export const Logo = ({
+  isTextHidden = false,
+  size = 'md',
+  href,
+  className,
+  asChild = false,
+}: LogoProps) => {
+  const px = SIZE_MAP[size];
+  const fontSize = Math.round(px * 0.54);
 
   const content = (
-    <div className={cn(`group flex items-center ${gap}`, className)}>
-      {/* Icon: T stilizzata minimal */}
-      <svg
-        className={cn(icon, 'shrink-0')}
-        viewBox="0 0 32 32"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-label="Tradelia"
-      >
-        <rect width="32" height="32" rx="8" className="fill-primary" />
-        <path
-          d="M8 11h16M16 11v12"
-          stroke="white"
-          strokeWidth="3"
-          strokeLinecap="round"
-        />
-        {/* Accent dot — usa fill-primary/60 invece di fill-accent per coerenza palette */}
-        <circle cx="22" cy="11" r="2" className="fill-white/60" />
-      </svg>
-
-      {/* Wordmark con gradient diagonale SHARP 45° — colori dal tema */}
+    <div className={cn('group flex items-center', className)} style={{ gap: Math.round(px * 0.35) }}>
+      <TDMark size={px} />
       {!isTextHidden && (
-        <span className="relative flex items-center">
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', userSelect: 'none' }}>
           <span
-            className={cn(`font-bold tracking-tight leading-none ${text}`)}
             style={{
-              background:
-                'linear-gradient(45deg, hsl(var(--foreground)) 50%, hsl(var(--primary)) 50%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
+              fontFamily: "'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+              fontSize: `${fontSize}px`,
+              fontWeight: 700,
+              letterSpacing: '-0.04em',
+              color: 'currentColor',
+              lineHeight: 1,
             }}
           >
-            {AppConfig.name}
+            tradelia
           </span>
-          {/* Underline animato all'hover */}
-          <span
-            className="absolute -bottom-0.5 left-0 h-0.5 w-0 bg-gradient-to-r from-primary to-primary/60 transition-all duration-300 group-hover:w-full"
+          <div
+            style={{
+              marginTop: '3px',
+              width: `${Math.round(fontSize * 1.2)}px`,
+              height: '2px',
+              borderRadius: '1px',
+              background: 'linear-gradient(90deg, #07E0B0, #0594CC)',
+            }}
           />
-        </span>
+        </div>
       )}
     </div>
   );
 
   if (href && !asChild) {
-    return <Link href={href}>{content}</Link>;
+    return <Link href={href} aria-label="Tradelia — home">{content}</Link>;
   }
 
   return content;
 };
 
 /**
- * Logo Icon Only — per favicon / avatar
+ * LogoIcon — mark only, per favicon / avatar
  */
-export const LogoIcon = () => (
-  <svg
-    viewBox="0 0 32 32"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    aria-label="Tradelia"
-  >
-    <rect width="32" height="32" rx="8" className="fill-primary" />
-    <path
-      d="M8 11h16M16 11v12"
-      stroke="white"
-      strokeWidth="3"
-      strokeLinecap="round"
-    />
-    <circle cx="22" cy="11" r="2" className="fill-white/60" />
-  </svg>
-);
+export const LogoIcon = () => <TDMark size={32} />;
