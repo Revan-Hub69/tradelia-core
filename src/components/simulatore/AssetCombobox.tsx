@@ -34,7 +34,6 @@ export function AssetCombobox({
   const [query,   setQuery]   = useState('');
   const [activeI, setActiveI] = useState(-1);
 
-  // Opzioni filtrate
   const filtered = query.trim()
     ? options.filter(o =>
         o.value.toLowerCase().includes(query.toLowerCase()) ||
@@ -42,16 +41,13 @@ export function AssetCombobox({
       )
     : options;
 
-  // Raggruppa per group
   const grouped = filtered.reduce<Record<string, string[]>>((acc, o) => {
     (acc[o.group] ??= []).push(o.value);
     return acc;
   }, {});
 
-  // Lista flat degli asset filtrati (per keyboard nav)
   const flat = filtered.map(o => o.value);
 
-  // Chiude se click fuori
   useEffect(() => {
     if (!open) return;
     const handler = (e: MouseEvent) => {
@@ -61,12 +57,9 @@ export function AssetCombobox({
     return () => document.removeEventListener('mousedown', handler);
   }, [open]);
 
-  // Scroll item attivo in view
   useEffect(() => {
     if (activeI < 0 || !listRef.current) return;
-    const el = listRef.current.querySelector<HTMLLIElement>(
-      `[data-idx="${activeI}"]`
-    );
+    const el = listRef.current.querySelector<HTMLLIElement>(`[data-idx="${activeI}"]`);
     el?.scrollIntoView({ block: 'nearest' });
   }, [activeI]);
 
@@ -84,13 +77,11 @@ export function AssetCombobox({
     setActiveI(-1);
   }, []);
 
-  const select = (v: string) => {
-    onChange(v);
-    close();
-  };
+  const select = (v: string) => { onChange(v); close(); };
 
   const clear = (e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
     onChange(null);
     close();
   };
@@ -103,38 +94,18 @@ export function AssetCombobox({
       return;
     }
     switch (e.key) {
-      case 'ArrowDown':
-        e.preventDefault();
-        setActiveI(i => Math.min(i + 1, flat.length - 1));
-        break;
-      case 'ArrowUp':
-        e.preventDefault();
-        setActiveI(i => Math.max(i - 1, 0));
-        break;
-      case 'Enter':
-        e.preventDefault();
-        if (activeI >= 0 && flat[activeI]) select(flat[activeI]!);
-        break;
-      case 'Escape':
-        e.preventDefault();
-        close();
-        break;
-      case 'Tab':
-        close();
-        break;
+      case 'ArrowDown': e.preventDefault(); setActiveI(i => Math.min(i + 1, flat.length - 1)); break;
+      case 'ArrowUp':   e.preventDefault(); setActiveI(i => Math.max(i - 1, 0)); break;
+      case 'Enter':     e.preventDefault(); if (activeI >= 0 && flat[activeI]) select(flat[activeI]!); break;
+      case 'Escape':    e.preventDefault(); close(); break;
+      case 'Tab':       close(); break;
     }
   };
-
-  const displayValue = value ?? '';
 
   return (
     <div
       ref={containerRef}
-      className={`sim-combobox${
-        open     ? ' sim-combobox--open'     : ''
-      }${
-        disabled ? ' sim-combobox--disabled' : ''
-      }`}
+      className={`sim-combobox${open ? ' sim-combobox--open' : ''}${disabled ? ' sim-combobox--disabled' : ''}`}
       onKeyDown={onKeyDown}
     >
       {/* ── TRIGGER ── */}
@@ -161,39 +132,41 @@ export function AssetCombobox({
             onClick={e => e.stopPropagation()}
             aria-autocomplete="list"
             aria-controls={listId}
-            aria-activedescendant={
-              activeI >= 0 ? `${id}-opt-${activeI}` : undefined
-            }
+            aria-activedescendant={activeI >= 0 ? `${id}-opt-${activeI}` : undefined}
           />
         ) : (
-          <span className={`sim-combobox__value${
-            !value ? ' sim-combobox__value--placeholder' : ''
-          }`}>
+          <span className={`sim-combobox__value${!value ? ' sim-combobox__value--placeholder' : ''}`}>
             {value ?? placeholder}
           </span>
         )}
 
-        <span className="sim-combobox__actions" aria-hidden="true">
-          {value && !open && (
-            <span
-              className="sim-combobox__clear"
-              role="button"
-              aria-label="Rimuovi selezione"
-              tabIndex={-1}
-              onMouseDown={clear}
-            >
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-              </svg>
-            </span>
-          )}
-          <span className={`sim-combobox__chevron${open ? ' sim-combobox__chevron--up' : ''}`}>
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-              <path d="M1 3.5l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </span>
+        {/* Chevron — sempre visibile in fondo */}
+        <span className={`sim-combobox__chevron${open ? ' sim-combobox__chevron--up' : ''}`} aria-hidden="true">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <path d="M1 3.5l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
         </span>
       </button>
+
+      {/*
+        Clear button — FUORI dal trigger, posizionato in assoluto
+        top-right del container. Visibile solo quando c'è un valore
+        e il dropdown è chiuso. Non interferisce con il layout interno.
+      */}
+      {value && !open && (
+        <button
+          type="button"
+          className="sim-combobox__clear"
+          aria-label="Rimuovi selezione"
+          tabIndex={0}
+          onMouseDown={clear}
+          onClick={clear}
+        >
+          <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
+            <path d="M1 1l6 6M7 1L1 7" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round"/>
+          </svg>
+        </button>
+      )}
 
       {/* ── DROPDOWN ── */}
       {open && (
@@ -205,16 +178,12 @@ export function AssetCombobox({
           className="sim-combobox__list"
         >
           {flat.length === 0 ? (
-            <li className="sim-combobox__empty" role="presentation">
-              Nessun asset trovato
-            </li>
+            <li className="sim-combobox__empty" role="presentation">Nessun asset trovato</li>
           ) : (
             Object.entries(grouped).map(([group, items]) => (
               <React.Fragment key={group}>
                 {Object.keys(grouped).length > 1 && (
-                  <li className="sim-combobox__group-label" role="presentation">
-                    {group}
-                  </li>
+                  <li className="sim-combobox__group-label" role="presentation">{group}</li>
                 )}
                 {items.map(item => {
                   const globalIdx = flat.indexOf(item);
@@ -225,11 +194,7 @@ export function AssetCombobox({
                       role="option"
                       data-idx={globalIdx}
                       aria-selected={value === item}
-                      className={`sim-combobox__option${
-                        value    === item     ? ' sim-combobox__option--selected' : ''
-                      }${
-                        activeI  === globalIdx ? ' sim-combobox__option--active'   : ''
-                      }`}
+                      className={`sim-combobox__option${value === item ? ' sim-combobox__option--selected' : ''}${activeI === globalIdx ? ' sim-combobox__option--active' : ''}`}
                       onMouseEnter={() => setActiveI(globalIdx)}
                       onMouseDown={e => { e.preventDefault(); select(item); }}
                     >

@@ -1,11 +1,11 @@
 /*
- * combobox.css — AssetCombobox SOTA 2026 v2
- * Clear sempre visibile, hover forti, dropdown connesso al trigger
+ * combobox.css — AssetCombobox SOTA 2026 v3
+ * Clear assoluto top-right teal, dropdown sfondo solido, cursor pointer option
  */
 
 /* ─── CONTAINER ───────────────────────────────────────────────────────── */
 .sim-combobox {
-  position: relative;
+  position: relative;   /* anchor per clear assoluto e dropdown */
   width: 100%;
   font-family: var(--s-sans);
 }
@@ -22,7 +22,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 0 10px 0 12px;
+  /* padding-right allargato: 36px = spazio per chevron + clear assoluto */
+  padding: 0 36px 0 12px;
   background: var(--s-s2);
   border: 1px solid var(--s-line3);
   border-radius: var(--s-r2);
@@ -63,6 +64,7 @@
   color: var(--s-t1);
   font-family: var(--s-sans);
   min-width: 0;
+  cursor: text;
 }
 .sim-combobox__search::placeholder { color: var(--s-t3); }
 
@@ -85,49 +87,59 @@
   font-size: 13px;
 }
 
-/* ─── ACTIONS (clear + chevron) ───────────────────────────────────────── */
-.sim-combobox__actions {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  flex-shrink: 0;
-}
-
-/*
- * Clear button — sempre visibile quando c'è un valore selezionato.
- * Background permanente (non solo su hover) = non si mimetizza.
- */
-.sim-combobox__clear {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  cursor: pointer;
-  flex-shrink: 0;
-  /* Visibile di default — sfondo permanente */
-  color: var(--s-t2);
-  background: var(--s-s4);
-  border: 1px solid var(--s-line3);
-  transition: color var(--s-ease), background var(--s-ease), border-color var(--s-ease);
-}
-.sim-combobox__clear:hover {
-  color: var(--s-t1);
-  background: var(--s-ac-dim);
-  border-color: var(--s-ac);
-}
-
+/* ─── CHEVRON (dentro trigger, lato destro) ─────────────────────────── */
 .sim-combobox__chevron {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
   align-items: center;
   color: var(--s-t3);
   transition: transform var(--s-ease), color var(--s-ease);
-  flex-shrink: 0;
+  pointer-events: none;   /* non intercetta click */
 }
 .sim-combobox__chevron--up {
-  transform: rotate(180deg);
+  transform: translateY(-50%) rotate(180deg);
   color: var(--s-ac);
+}
+
+/* ─── CLEAR — assoluto top-right, sempre teal, sempre visibile ───────── */
+/*
+ * Posizionato fuori dal trigger (sibling nel container).
+ * top/right allineati al centro-destra del trigger (h=40px).
+ * Z-index sopra il trigger per intercettare il click.
+ */
+.sim-combobox__clear {
+  position: absolute;
+  top: 50%;
+  right: 28px;            /* a sinistra del chevron (10px) + 10px gap */
+  transform: translateY(-50%);
+  z-index: 10;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+
+  /* Teal acceso — riconoscibile anche senza hover */
+  color: var(--s-ac);
+  background: var(--s-ac-dim);
+  transition: color var(--s-ease), background var(--s-ease), transform var(--s-ease);
+}
+.sim-combobox__clear:hover {
+  color: #fff;
+  background: var(--s-ac);
+  transform: translateY(-50%) scale(1.15);
+}
+.sim-combobox__clear:focus-visible {
+  outline: 2px solid var(--s-ac);
+  outline-offset: 2px;
 }
 
 /* ─── DROPDOWN LIST ───────────────────────────────────────────────────── */
@@ -136,21 +148,26 @@
   top: 100%;
   left: 0;
   right: 0;
-  z-index: 50;
+  z-index: 200;           /* sopra tutto nel panel */
+
   max-height: 220px;
   overflow-y: auto;
   overflow-x: hidden;
   list-style: none;
   margin: 0;
   padding: 4px 0;
-  background: var(--s-s2);
+
+  /* Sfondo solido — non trasparente, non dipende dal parent */
+  background: var(--s-s0);
   border: 1px solid var(--s-ac);
   border-top: none;
   border-bottom-left-radius:  var(--s-r2);
   border-bottom-right-radius: var(--s-r2);
   box-shadow:
-    0 8px 24px rgba(0,0,0,0.4),
-    0 2px 8px  rgba(0,0,0,0.3);
+    0 12px 32px rgba(0,0,0,0.6),
+    0 4px  12px rgba(0,0,0,0.4),
+    0 0   0 1px rgba(64,168,184,0.08) inset;
+
   scrollbar-width: thin;
   scrollbar-color: var(--s-s5) transparent;
 }
@@ -174,15 +191,17 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 7px 12px;
-  cursor: pointer;
+  padding: 8px 12px;
+  cursor: pointer;        /* ← FIX: mancava */
   font-size: 13px;
   font-weight: 400;
   color: var(--s-t2);
   font-family: var(--s-mono);
-  transition: background var(--s-ease), color var(--s-ease);
   user-select: none;
+  transition: background var(--s-ease), color var(--s-ease);
 }
+/* Hover esplicito via CSS — non dipende solo dalla classe JS */
+.sim-combobox__option:hover,
 .sim-combobox__option--active {
   background: var(--s-s4);
   color: var(--s-t1);
@@ -191,8 +210,10 @@
   color: var(--s-ac);
   font-weight: 600;
 }
+.sim-combobox__option--selected:hover,
 .sim-combobox__option--selected.sim-combobox__option--active {
   background: var(--s-ac-dim);
+  color: var(--s-ac);
 }
 .sim-combobox__option-text {
   flex: 1;
@@ -207,7 +228,7 @@
 
 /* ─── EMPTY STATE ─────────────────────────────────────────────────────── */
 .sim-combobox__empty {
-  padding: 12px;
+  padding: 14px 12px;
   font-size: 12px;
   color: var(--s-t3);
   text-align: center;
