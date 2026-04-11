@@ -20,9 +20,9 @@ const ASSET_TREE: Record<string, Record<string, string[]>> = {
 type StyleType   = 'scalping' | 'intraday' | 'swing' | 'position';
 type FreqId     = 'low' | 'mid' | 'high';
 type AccountType = 'demo' | 'micro' | 'retail' | 'semipro' | 'pro';
-type LevaType    = 'bassa' | 'media' | 'alta';
+type LevaType    = 'nessuna' | 'bassa' | 'media' | 'alta';
 
-/* ─── STILE OPTIONS ─────────────────────────────────────────────────────── */
+/* ─── STILE OPTIONS ───────────────────────────────────────────────────── */
 const STYLE_OPTIONS: { id: StyleType; label: string; hint: string }[] = [
   { id: 'scalping',  label: 'Scalping',  hint: 'sec / min' },
   { id: 'intraday',  label: 'Intraday',  hint: 'ore'       },
@@ -31,13 +31,6 @@ const STYLE_OPTIONS: { id: StyleType; label: string; hint: string }[] = [
 ];
 
 /* ─── FREQUENZA CONTESTUALE ───────────────────────────────────────────────── */
-/*
- * Ogni stile ha la sua unità temporale e le sue 3 fasce di frequenza.
- * • scalping  → al giorno    (5–10 / 20–50 / 100+)
- * • intraday  → al giorno    (1–2  / 3–5  / 10+)
- * • swing     → a settimana  (1–2  / 3–5  / 10+)
- * • position  → al mese      (1–2  / 3–5  / 10+)
- */
 type FreqOption = { id: FreqId; label: string; hint: string };
 type FreqConfig = { unit: string; options: FreqOption[] };
 
@@ -45,7 +38,7 @@ const FREQ_BY_STYLE: Record<StyleType, FreqConfig> = {
   scalping: {
     unit: 'al giorno',
     options: [
-      { id: 'low',  label: 'Bassa',   hint: '5–10 trade' },
+      { id: 'low',  label: 'Bassa',   hint: '5–10 trade'  },
       { id: 'mid',  label: 'Media',   hint: '20–50 trade' },
       { id: 'high', label: 'Intensa', hint: '100+ trade'  },
     ],
@@ -76,7 +69,7 @@ const FREQ_BY_STYLE: Record<StyleType, FreqConfig> = {
   },
 };
 
-/* ─── ACCOUNT OPTIONS ───────────────────────────────────────────────────── */
+/* ─── ACCOUNT + LEVA OPTIONS ──────────────────────────────────────────────── */
 const ACCOUNT_OPTIONS: { id: AccountType; label: string; range: string }[] = [
   { id: 'demo',    label: 'Demo / Test', range: '< €500'      },
   { id: 'micro',   label: 'Micro',       range: '€500 – €2k'  },
@@ -85,10 +78,16 @@ const ACCOUNT_OPTIONS: { id: AccountType; label: string; range: string }[] = [
   { id: 'pro',     label: 'Pro',         range: '€50k+'       },
 ];
 
+/*
+ * Leva: 4 livelli incluso Nessuna (default).
+ * Nessuna = trading senza margine, 1:1.
+ * L'utente che non conosce la leva parte da uno stato neutro.
+ */
 const LEVA_OPTIONS: { id: LevaType; label: string; hint: string }[] = [
-  { id: 'bassa', label: 'Bassa', hint: '1:2 – 1:5'    },
-  { id: 'media', label: 'Media', hint: '1:10 – 1:20'  },
-  { id: 'alta',  label: 'Alta',  hint: '1:50 – 1:500' },
+  { id: 'nessuna', label: 'Nessuna', hint: '1:1'          },
+  { id: 'bassa',   label: 'Bassa',   hint: '1:2 – 1:5'    },
+  { id: 'media',   label: 'Media',   hint: '1:10 – 1:20'  },
+  { id: 'alta',    label: 'Alta',    hint: '1:50 – 1:500' },
 ];
 
 /* ─── CHIP GROUP ──────────────────────────────────────────────────────── */
@@ -169,20 +168,19 @@ export function SimulatoreShell() {
   const [style,     setStyle]     = useState<StyleType>('intraday');
   const [freq,      setFreq]      = useState<FreqId>('mid');
   const [account,   setAccount]   = useState<AccountType>('retail');
-  const [leva,      setLeva]      = useState<LevaType>('media');
+  const [leva,      setLeva]      = useState<LevaType>('nessuna'); // default neutro
 
   const groups = assetClass ? Object.keys(ASSET_TREE[assetClass] ?? {}) : [];
   const assets = assetClass && subGroup ? (ASSET_TREE[assetClass]?.[subGroup] ?? []) : [];
 
   const handleGroupChange = (g: string) => { setAssetClass(g); setSubGroup(null); setAsset(null); };
   const handleSubChange   = (s: string) => { setSubGroup(s);   setAsset(null); };
-
-  // Quando cambia lo stile, reset freq a 'mid' (sempre valido)
   const handleStyleChange = (s: StyleType) => { setStyle(s); setFreq('mid'); };
 
-  const freqConfig   = FREQ_BY_STYLE[style];
-  const freqCurrent  = freqConfig.options.find(o => o.id === freq);
-  const freqLabel    = freqCurrent ? `${freqCurrent.hint} ${freqConfig.unit}` : '';
+  const freqConfig  = FREQ_BY_STYLE[style];
+  const freqCurrent = freqConfig.options.find(o => o.id === freq);
+  const freqLabel   = freqCurrent ? `${freqCurrent.hint} ${freqConfig.unit}` : '';
+  const levaLabel   = LEVA_OPTIONS.find(o => o.id === leva)?.hint ?? '';
 
   const { snap, toggle: toggleSheet, onTouchStart, onTouchMove, onTouchEnd, sheetRef } =
     usePanelSheet();
@@ -190,7 +188,7 @@ export function SimulatoreShell() {
   const statusAsset   = asset ?? subGroup ?? assetClass ?? '—';
   const statusAccount = ACCOUNT_OPTIONS.find(o => o.id === account)?.label ?? '—';
 
-  /* ── PANEL CONTENT ───────────────────────────────────────────────────── */
+  /* ── PANEL CONTENT ──────────────────────────────────────────────────── */
   const panelContent = (
     <>
       {/* ══ BLOCCO 1 — STRUMENTO ══ */}
@@ -219,7 +217,6 @@ export function SimulatoreShell() {
       {/* ══ BLOCCO 2 — IL TUO PROFILO ══ */}
       <BlockDivider label="Il tuo profilo" />
 
-      {/* Stile operativo */}
       <Section
         label="Stile operativo"
         value={STYLE_OPTIONS.find(o => o.id === style)?.label}
@@ -228,7 +225,6 @@ export function SimulatoreShell() {
         <ChipGroup options={STYLE_OPTIONS} value={style} onChange={handleStyleChange} />
       </Section>
 
-      {/* Frequenza — dipendente dallo stile */}
       <Section
         label={`Operazioni ${freqConfig.unit}`}
         value={freqLabel}
@@ -237,7 +233,6 @@ export function SimulatoreShell() {
         <ChipGroup options={freqConfig.options} value={freq} onChange={setFreq} />
       </Section>
 
-      {/* Dimensione account */}
       <Section
         label="Dimensione account"
         value={ACCOUNT_OPTIONS.find(o => o.id === account)?.range}
@@ -259,11 +254,10 @@ export function SimulatoreShell() {
         </div>
       </Section>
 
-      {/* Leva */}
       <Section
         label="Leva finanziaria"
-        value={LEVA_OPTIONS.find(o => o.id === leva)?.hint}
-        hint="Moltiplicatore di esposizione sul mercato"
+        value={levaLabel}
+        hint="Moltiplicatore di esposizione. Senza leva = 1:1"
       >
         <ChipGroup options={LEVA_OPTIONS} value={leva} onChange={setLeva} />
       </Section>
@@ -303,14 +297,12 @@ export function SimulatoreShell() {
 
   return (
     <>
-      {/* ── DESKTOP ≥861px ── */}
       <aside className="sim-panel" aria-label="Parametri simulazione">
         <div className="sim-panel__content">{panelContent}</div>
       </aside>
 
       {resultsArea}
 
-      {/* ── MOBILE ≤860px ── bottom sheet */}
       <div
         ref={sheetRef}
         className={`sim-sheet sim-sheet--${snap}`}
