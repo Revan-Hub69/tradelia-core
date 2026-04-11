@@ -3,43 +3,104 @@
 import React, { useState } from 'react';
 import { useSimulatorEngine } from '@/hooks/useSimulatorEngine';
 import { usePanelSheet } from '@/hooks/usePanelSheet';
-import { ExposureInput } from './ExposureInput';
 import { ScoreCardList } from './ScoreCardList';
 import { SimResultsEmpty } from './SimResultsEmpty';
 import { SimulatoreSkeleton } from './SimulatoreSkeleton';
 
-/* ─── ASSET DATA ───────────────────────────────────────────────────────── */
+/* ─── ASSET TREE ──────────────────────────────────────────────────────── */
 const ASSET_TREE: Record<string, Record<string, string[]>> = {
   Forex: {
-    Majors:   ['EUR/USD', 'GBP/USD', 'USD/JPY', 'USD/CHF'],
-    Minors:   ['EUR/GBP', 'EUR/JPY', 'GBP/JPY'],
-    Exotic:   ['USD/TRY', 'USD/ZAR', 'EUR/TRY'],
+    Majors: ['EUR/USD', 'GBP/USD', 'USD/JPY', 'USD/CHF'],
+    Minors: ['EUR/GBP', 'EUR/JPY', 'GBP/JPY'],
+    Exotic: ['USD/TRY', 'USD/ZAR', 'EUR/TRY'],
   },
   Crypto: {
     'Large Cap': ['BTC/USD', 'ETH/USD', 'BNB/USD'],
     'Mid Cap':   ['SOL/USD', 'ADA/USD', 'DOT/USD'],
-    Stablecoin: ['USDT/USD', 'USDC/USD'],
+    Stablecoin:  ['USDT/USD', 'USDC/USD'],
   },
   Indici: {
-    Europa:    ['DAX 40', 'FTSE 100', 'CAC 40'],
-    'USA':     ['S&P 500', 'NASDAQ 100', 'DOW 30'],
-    Asia:      ['Nikkei 225', 'Hang Seng'],
+    Europa: ['DAX 40', 'FTSE 100', 'CAC 40'],
+    USA:    ['S&P 500', 'NASDAQ 100', 'DOW 30'],
+    Asia:   ['Nikkei 225', 'Hang Seng'],
   },
   Azioni: {
-    Tech:     ['Apple', 'Microsoft', 'NVIDIA', 'Meta'],
-    Finance:  ['JPMorgan', 'Goldman Sachs', 'Visa'],
-    Energy:   ['ExxonMobil', 'Shell', 'TotalEnergies'],
+    Tech:    ['Apple', 'Microsoft', 'NVIDIA', 'Meta'],
+    Finance: ['JPMorgan', 'Goldman Sachs', 'Visa'],
+    Energy:  ['ExxonMobil', 'Shell', 'TotalEnergies'],
   },
   Materie: {
-    Metalli:  ['Oro', 'Argento', 'Rame'],
-    Energia:  ['Petrolio WTI', 'Gas Nat.', 'Brent'],
+    Metalli: ['Oro', 'Argento', 'Rame'],
+    Energia: ['Petrolio WTI', 'Gas Nat.', 'Brent'],
   },
 };
 
-/* ─── CHIP GROUP ───────────────────────────────────────────────────────── */
+/* ─── TYPES ───────────────────────────────────────────────────────────── */
+type StyleType     = 'scalping' | 'intraday' | 'swing' | 'position';
+type IntensityType = 'raro' | 'regolare' | 'frequente';
+type AccountType   = 'demo' | 'micro' | 'retail' | 'semipro' | 'pro';
+type LevaType      = 'bassa' | 'media' | 'alta';
+
+/* ─── OPTIONS ─────────────────────────────────────────────────────────── */
+const STYLE_OPTIONS: { id: StyleType; label: string; hint: string }[] = [
+  { id: 'scalping',  label: 'Scalping',  hint: 'sec / min' },
+  { id: 'intraday',  label: 'Intraday',  hint: 'ore'       },
+  { id: 'swing',     label: 'Swing',     hint: '2–14 gg'   },
+  { id: 'position',  label: 'Position',  hint: '1 mese+'   },
+];
+
+const INTENSITY_OPTIONS: { id: IntensityType; label: string; hint: string }[] = [
+  { id: 'raro',      label: 'Raro',      hint: '1–3 / sett.' },
+  { id: 'regolare',  label: 'Regolare',  hint: '1–3 / giorno' },
+  { id: 'frequente', label: 'Frequente', hint: '10+ / giorno'  },
+];
+
+const ACCOUNT_OPTIONS: { id: AccountType; label: string; range: string }[] = [
+  { id: 'demo',    label: 'Demo / Test', range: '< €500'         },
+  { id: 'micro',   label: 'Micro',       range: '€500 – €2k'     },
+  { id: 'retail',  label: 'Retail',      range: '€2k – €10k'     },
+  { id: 'semipro', label: 'Semi-pro',    range: '€10k – €50k'    },
+  { id: 'pro',     label: 'Pro',         range: '€50k+'          },
+];
+
+const LEVA_OPTIONS: { id: LevaType; label: string; hint: string }[] = [
+  { id: 'bassa',  label: 'Bassa',  hint: '1:2 – 1:5'   },
+  { id: 'media',  label: 'Media',  hint: '1:10 – 1:20' },
+  { id: 'alta',   label: 'Alta',   hint: '1:50 – 1:500' },
+];
+
+/* ─── CHIP GROUP ──────────────────────────────────────────────────────── */
 function ChipGroup<T extends string>({
   options, value, onChange, mono = false,
-}: { options: T[]; value: T | null; onChange: (v: T) => void; mono?: boolean }) {
+}: {
+  options: { id: T; label: string; hint?: string }[];
+  value: T | null;
+  onChange: (v: T) => void;
+  mono?: boolean;
+}) {
+  return (
+    <div className="sim-chips">
+      {options.map(o => (
+        <button
+          key={o.id} type="button"
+          className={mono ? 'sim-chip sim-chip--mono' : 'sim-chip'}
+          data-active={value === o.id ? 'true' : 'false'}
+          aria-pressed={value === o.id}
+          onClick={() => onChange(o.id)}
+        >
+          <span>{o.label}</span>
+          {o.hint && <span className="sim-chip__hint">{o.hint}</span>}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function StringChipGroup({
+  options, value, onChange, mono,
+}: {
+  options: string[]; value: string | null; onChange: (v: string) => void; mono?: boolean;
+}) {
   return (
     <div className="sim-chips">
       {options.map(o => (
@@ -55,53 +116,7 @@ function ChipGroup<T extends string>({
   );
 }
 
-/* ─── LEVA SLIDER ──────────────────────────────────────────────────────── */
-const LEVA_STEPS = [1, 2, 5, 10, 20, 30, 50, 100, 200, 400, 500];
-function LevaSlider({ value, onChange }: { value: number; onChange: (v: number) => void }) {
-  const idx = LEVA_STEPS.indexOf(value);
-  return (
-    <div className="sim-leva">
-      <div className="sim-leva__track">
-        <input
-          type="range" min={0} max={LEVA_STEPS.length - 1}
-          value={idx < 0 ? 0 : idx}
-          onChange={e => onChange(LEVA_STEPS[+e.target.value]!)}
-          className="sim-leva__slider"
-          aria-label="Leva finanziaria"
-        />
-        <div className="sim-leva__fill" style={{ width: `${((idx < 0 ? 0 : idx) / (LEVA_STEPS.length - 1)) * 100}%` }} />
-      </div>
-      <div className="sim-leva__labels">
-        <span className="sim-leva__label">1×</span>
-        <span className="sim-leva__value">1:{value}</span>
-        <span className="sim-leva__label">500×</span>
-      </div>
-      {value > 30 && (
-        <p className="sim-leva__warning">⚠ Leva elevata — rischio perdite superiori al capitale</p>
-      )}
-    </div>
-  );
-}
-
-/* ─── FREQUENZA OPERATIVA ──────────────────────────────────────────────── */
-type FreqType = 'scalping' | 'intraday' | 'swing' | 'position';
-const FREQ_OPTIONS: { id: FreqType; label: string; hint: string }[] = [
-  { id: 'scalping',  label: 'Scalping',  hint: 'Sec/Min' },
-  { id: 'intraday',  label: 'Intraday',  hint: 'Ore' },
-  { id: 'swing',     label: 'Swing',     hint: '2–14 gg' },
-  { id: 'position',  label: 'Position',  hint: '1 m+' },
-];
-
-/* ─── SIZE ACCOUNT PRESETS ──────────────────────────────────────────────── */
-const SIZE_PRESETS = [500, 1_000, 5_000, 10_000, 25_000, 50_000, 100_000];
-
-function fmt(n: number) {
-  if (n >= 1_000_000) return `${n / 1_000_000}M`;
-  if (n >= 1_000)     return `${n / 1_000}k`;
-  return `${n}`;
-}
-
-/* ─── SECTION WRAPPER ──────────────────────────────────────────────────── */
+/* ─── SECTION + BLOCK DIVIDER ─────────────────────────────────────────── */
 function Section({ label, value, hint, children }: {
   label: string; value?: string; hint?: string; children: React.ReactNode;
 }) {
@@ -121,68 +136,49 @@ function BlockDivider({ label }: { label: string }) {
   return <div className="sim-block-divider">{label}</div>;
 }
 
-/* ─── SHELL ─────────────────────────────────────────────────────────────── */
+/* ─── SHELL ───────────────────────────────────────────────────────────── */
 export function SimulatoreShell() {
   const {
-    exposure, setExposure,
     assetClass, setAssetClass,
     results, isComputing,
   } = useSimulatorEngine();
 
-  // Livello 2 — sottogruppo
-  const [subGroup, setSubGroup]     = useState<string | null>(null);
-  // Livello 3 — asset specifico
-  const [asset, setAsset]           = useState<string | null>(null);
-  // Stile trading
-  const [freq, setFreq]             = useState<FreqType>('intraday');
-  const [holding, setHolding]       = useState<'1d' | '1w' | '1m'>('1d');
-  // Rischio
-  const [accountSize, setAccountSize] = useState<number>(10_000);
-  const [leva, setLeva]             = useState<number>(10);
+  const [subGroup,   setSubGroup]   = useState<string | null>(null);
+  const [asset,      setAsset]      = useState<string | null>(null);
+  const [style,      setStyle]      = useState<StyleType>('intraday');
+  const [intensity,  setIntensity]  = useState<IntensityType>('regolare');
+  const [account,    setAccount]    = useState<AccountType>('retail');
+  const [leva,       setLeva]       = useState<LevaType>('media');
 
   const groups = assetClass ? Object.keys(ASSET_TREE[assetClass] ?? {}) : [];
   const assets = assetClass && subGroup ? (ASSET_TREE[assetClass]?.[subGroup] ?? []) : [];
 
-  // reset cascade
-  const handleGroupChange = (g: string) => {
-    setAssetClass(g);
-    setSubGroup(null);
-    setAsset(null);
-  };
-  const handleSubChange = (s: string) => {
-    setSubGroup(s);
-    setAsset(null);
-  };
+  const handleGroupChange = (g: string) => { setAssetClass(g); setSubGroup(null); setAsset(null); };
+  const handleSubChange   = (s: string) => { setSubGroup(s);   setAsset(null); };
 
   const { snap, toggle: toggleSheet, onTouchStart, onTouchMove, onTouchEnd, sheetRef } =
     usePanelSheet();
 
-  const exposureSummary   = `€${exposure.toLocaleString('it-IT')}`;
-  const assetSummary      = asset ?? subGroup ?? assetClass ?? '—';
+  const statusAsset   = asset ?? subGroup ?? assetClass ?? '—';
+  const statusAccount = ACCOUNT_OPTIONS.find(o => o.id === account)?.label ?? '—';
 
-  /* ── PANEL CONTENT ─────────────────────────────────────────────────── */
+  /* ── PANEL CONTENT ──────────────────────────────────────────────────── */
   const panelContent = (
     <>
-      {/* ══ BLOCCO 1 — COSA ANALIZZI ══ */}
+      {/* ══ BLOCCO 1 — STRUMENTO ══ */}
       <BlockDivider label="Strumento" />
 
-      <Section
-        label="Categoria"
-        value={assetClass ?? '—'}
-      >
-        <ChipGroup
-          options={Object.keys(ASSET_TREE) as string[]}
+      <Section label="Categoria" value={assetClass ?? '—'}>
+        <StringChipGroup
+          options={Object.keys(ASSET_TREE)}
           value={assetClass}
           onChange={handleGroupChange}
         />
       </Section>
 
       {assetClass && (
-        <Section
-          label="Sottogruppo"
-          value={subGroup ?? '—'}
-        >
-          <ChipGroup
+        <Section label="Sottogruppo" value={subGroup ?? '—'}>
+          <StringChipGroup
             options={groups}
             value={subGroup}
             onChange={handleSubChange}
@@ -191,12 +187,8 @@ export function SimulatoreShell() {
       )}
 
       {subGroup && assets.length > 0 && (
-        <Section
-          label="Asset"
-          value={asset ?? '—'}
-          hint="Seleziona per confronto specifico"
-        >
-          <ChipGroup
+        <Section label="Asset" value={asset ?? '—'} hint="Opzionale — per confronto specifico">
+          <StringChipGroup
             options={assets}
             value={asset}
             onChange={setAsset}
@@ -205,88 +197,52 @@ export function SimulatoreShell() {
         </Section>
       )}
 
-      {/* ══ BLOCCO 2 — COME OPERI ══ */}
-      <BlockDivider label="Stile operativo" />
+      {/* ══ BLOCCO 2 — IL TUO PROFILO ══ */}
+      <BlockDivider label="Il tuo profilo" />
 
       <Section
-        label="Frequenza"
-        value={FREQ_OPTIONS.find(o => o.id === freq)?.label}
-        hint="Impatta spread effettivo e costi per operazione"
+        label="Stile operativo"
+        value={STYLE_OPTIONS.find(o => o.id === style)?.label}
+        hint="Determina l'orizzonte e i costi overnight"
       >
-        <div className="sim-chips">
-          {FREQ_OPTIONS.map(o => (
+        <ChipGroup options={STYLE_OPTIONS} value={style} onChange={setStyle} />
+      </Section>
+
+      <Section
+        label="Frequenza operazioni"
+        value={INTENSITY_OPTIONS.find(o => o.id === intensity)?.label}
+        hint="Quante operazioni apri nell'orizzonte scelto"
+      >
+        <ChipGroup options={INTENSITY_OPTIONS} value={intensity} onChange={setIntensity} />
+      </Section>
+
+      <Section
+        label="Dimensione account"
+        value={ACCOUNT_OPTIONS.find(o => o.id === account)?.range}
+        hint="Capitale totale che gestisci"
+      >
+        <div className="sim-chips sim-chips--col">
+          {ACCOUNT_OPTIONS.map(o => (
             <button
               key={o.id} type="button"
-              className="sim-chip"
-              data-active={freq === o.id ? 'true' : 'false'}
-              aria-pressed={freq === o.id}
-              title={o.hint}
-              onClick={() => setFreq(o.id)}
+              className="sim-chip sim-chip--row"
+              data-active={account === o.id ? 'true' : 'false'}
+              aria-pressed={account === o.id}
+              onClick={() => setAccount(o.id)}
             >
-              <span>{o.label}</span>
-              <span className="sim-chip__hint">{o.hint}</span>
+              <span className="sim-chip__main">{o.label}</span>
+              <span className="sim-chip__hint">{o.range}</span>
             </button>
           ))}
         </div>
       </Section>
 
       <Section
-        label="Orizzonte"
-        value={holding === '1d' ? '1 giorno' : holding === '1w' ? '1 settimana' : '1 mese'}
-        hint="Influisce sui costi overnight"
+        label="Leva finanziaria"
+        value={LEVA_OPTIONS.find(o => o.id === leva)?.hint}
+        hint="Moltiplicatore di esposizione sul mercato"
       >
-        <div className="sim-holding">
-          {(['1d', '1w', '1m'] as const).map(h => (
-            <button
-              key={h} type="button"
-              className="sim-holding__chip"
-              data-active={holding === h ? 'true' : 'false'}
-              aria-pressed={holding === h}
-              onClick={() => setHolding(h)}
-            >
-              {h === '1d' ? '1 gg' : h === '1w' ? '1 sett.' : '1 mese'}
-            </button>
-          ))}
-        </div>
-      </Section>
-
-      {/* ══ BLOCCO 3 — QUANTO RISCHI ══ */}
-      <BlockDivider label="Rischio" />
-
-      <Section
-        label="Esposizione"
-        value={exposureSummary}
-        hint="Capitale che vuoi esporre"
-      >
-        <ExposureInput value={exposure} onChange={setExposure} />
-      </Section>
-
-      <Section
-        label="Size account"
-        value={`€${fmt(accountSize)}`}
-        hint="Capitale totale disponibile"
-      >
-        <div className="sim-chips">
-          {SIZE_PRESETS.map(s => (
-            <button
-              key={s} type="button"
-              className="sim-chip sim-chip--mono"
-              data-active={accountSize === s ? 'true' : 'false'}
-              aria-pressed={accountSize === s}
-              onClick={() => setAccountSize(s)}
-            >
-              €{fmt(s)}
-            </button>
-          ))}
-        </div>
-      </Section>
-
-      <Section
-        label="Leva"
-        value={`1:${leva}`}
-        hint="Moltiplicatore di esposizione"
-      >
-        <LevaSlider value={leva} onChange={setLeva} />
+        <ChipGroup options={LEVA_OPTIONS} value={leva} onChange={setLeva} />
       </Section>
     </>
   );
@@ -299,10 +255,10 @@ export function SimulatoreShell() {
           <span className="sim-results__count">{results.length} strumenti analizzati</span>
           <div className="sim-results__legend">
             {[
-              { label: 'Spread',    color: 'var(--s-ac)' },
-              { label: 'Comm.',     color: 'var(--s-gold)' },
+              { label: 'Spread',    color: 'var(--s-ac)'    },
+              { label: 'Comm.',     color: 'var(--s-gold)'  },
               { label: 'Overnight', color: 'var(--s-amber)' },
-              { label: 'Slippage', color: 'var(--s-t3)' },
+              { label: 'Slippage', color: 'var(--s-t3)'    },
             ].map(l => (
               <span key={l.label} className="sim-results__legend-item">
                 <span className="sim-results__legend-dot" style={{ background: l.color }} />
@@ -324,7 +280,7 @@ export function SimulatoreShell() {
 
   return (
     <>
-      {/* ── DESKTOP ≥861px ── panel fisso */}
+      {/* ── DESKTOP ≥861px ── */}
       <aside className="sim-panel" aria-label="Parametri simulazione">
         <div className="sim-panel__content">
           {panelContent}
@@ -349,9 +305,9 @@ export function SimulatoreShell() {
         >
           <div className="sim-sheet__drag-bar" aria-hidden="true" />
           <div className="sim-sheet__status">
-            <span className="sim-sheet__status-exposure">{exposureSummary}</span>
+            <span className="sim-sheet__status-exposure">{statusAccount}</span>
             <span className="sim-sheet__status-dot" aria-hidden="true" />
-            <span className="sim-sheet__status-asset">{assetSummary}</span>
+            <span className="sim-sheet__status-asset">{statusAsset}</span>
             <svg className={`sim-sheet__chevron sim-sheet__chevron--${snap}`}
               width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
               <path d="M2 8l4-4 4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
