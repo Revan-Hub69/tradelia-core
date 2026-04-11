@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function SimulatoreLayout({ children }: { children: ReactNode }) {
   return (
-    <>
+    <div className="sim-root" data-sim-theme="dark">
       {/* General Sans via Fontshare */}
       <link
         rel="preconnect"
@@ -29,9 +29,7 @@ export default function SimulatoreLayout({ children }: { children: ReactNode }) 
         href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&display=swap"
         rel="stylesheet"
       />
-      <div className="sim-root">
-        {children}
-      </div>
-    </>
+      {children}
+    </div>
   );
 }
