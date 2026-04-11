@@ -1,16 +1,8 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useId, useCallback } from 'react';
-import dynamic from 'next/dynamic';
-
-// Importato dinamicamente senza SSR:
-// - non tocca mai il server
-// - document.body disponibile garantito
-// - nessun hydration mismatch
-const ComboboxPortal = dynamic(
-  () => import('./ComboboxPortal').then(m => m.ComboboxPortal),
-  { ssr: false }
-);
+import React, {
+  useState, useRef, useEffect, useId, useCallback,
+} from 'react';
 
 export interface AssetOption {
   value: string;
@@ -26,21 +18,22 @@ interface Props {
 }
 
 export function AssetCombobox({
-  options, value, onChange,
+  options,
+  value,
+  onChange,
   placeholder = 'Cerca asset…',
   disabled = false,
 }: Props) {
-  const id         = useId();
-  const inputRef   = useRef<HTMLInputElement>(null);
-  const triggerRef = useRef<HTMLButtonElement>(null);
+  const id           = useId();
+  const listId       = `${id}-list`;
+  const inputRef     = useRef<HTMLInputElement>(null);
+  const listRef      = useRef<HTMLUListElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [open,    setOpen]    = useState(false);
   const [query,   setQuery]   = useState('');
   const [activeI, setActiveI] = useState(-1);
-  const [coords,  setCoords]  = useState({ top: 0, left: 0, width: 0 });
 
-  /* ── Filtered + grouped ───────────────────────────────────────── */
   const filtered = query.trim()
     ? options.filter(o =>
         o.value.toLowerCase().includes(query.toLowerCase()) ||
@@ -55,57 +48,41 @@ export function AssetCombobox({
 
   const flat = filtered.map(o => o.value);
 
-  /* ── Coords ────────────────────────────────────────────────────── */
-  const calcCoords = useCallback(() => {
-    const r = triggerRef.current?.getBoundingClientRect();
-    if (!r) return;
-    // position:fixed → usa clientRect direttamente (viewport coords)
-    setCoords({ top: r.bottom, left: r.left, width: r.width });
-  }, []);
-
-  /* ── Close on outside click ─────────────────────────────────────── */
   useEffect(() => {
     if (!open) return;
     const handler = (e: MouseEvent) => {
-      const t = e.target as Node;
-      // Controlla sia il trigger che il portaled list (che è in body)
-      const inTrigger = containerRef.current?.contains(t);
-      const inList    = document.getElementById(`${id}-list`)?.contains(t);
-      if (!inTrigger && !inList) close();
+      if (!containerRef.current?.contains(e.target as Node)) close();
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
-  }, [open, id]);
+  }, [open]);
 
-  /* ── Reposition ────────────────────────────────────────────────────── */
   useEffect(() => {
-    if (!open) return;
-    calcCoords();
-    window.addEventListener('scroll', calcCoords, true);
-    window.addEventListener('resize', calcCoords);
-    return () => {
-      window.removeEventListener('scroll', calcCoords, true);
-      window.removeEventListener('resize', calcCoords);
-    };
-  }, [open, calcCoords]);
-
-  /* ── Handlers ──────────────────────────────────────────────────────── */
-  const close = useCallback(() => {
-    setOpen(false); setQuery(''); setActiveI(-1);
-  }, []);
+    if (activeI < 0 || !listRef.current) return;
+    const el = listRef.current.querySelector<HTMLLIElement>(`[data-idx="${activeI}"]`);
+    el?.scrollIntoView({ block: 'nearest' });
+  }, [activeI]);
 
   const openDropdown = () => {
     if (disabled) return;
-    calcCoords();
-    setOpen(true); setQuery(''); setActiveI(-1);
+    setOpen(true);
+    setQuery('');
+    setActiveI(-1);
     requestAnimationFrame(() => inputRef.current?.focus());
   };
+
+  const close = useCallback(() => {
+    setOpen(false);
+    setQuery('');
+    setActiveI(-1);
+  }, []);
 
   const select = (v: string) => { onChange(v); close(); };
 
   const clear = (e: React.MouseEvent) => {
-    e.stopPropagation(); e.preventDefault();
-    onChange(null); close();
+    e.stopPropagation();
+    onChange(null);
+    close();
   };
 
   const onKeyDown = (e: React.KeyboardEvent) => {
@@ -127,21 +104,16 @@ export function AssetCombobox({
   return (
     <div
       ref={containerRef}
-      className={[
-        'sim-combobox',
-        open     ? 'sim-combobox--open'     : '',
-        disabled ? 'sim-combobox--disabled' : '',
-      ].filter(Boolean).join(' ')}
+      className={`sim-combobox${open ? ' sim-combobox--open' : ''}${disabled ? ' sim-combobox--disabled' : ''}`}
       onKeyDown={onKeyDown}
     >
-      {/* ── TRIGGER ── */}
+      {/* TRIGGER */}
       <button
-        ref={triggerRef}
         type="button"
         className="sim-combobox__trigger"
         aria-haspopup="listbox"
         aria-expanded={open}
-        aria-controls={open ? `${id}-list` : undefined}
+        aria-controls={open ? listId : undefined}
         aria-label={value ? `Asset selezionato: ${value}` : placeholder}
         disabled={disabled}
         onClick={() => open ? close() : openDropdown()}
@@ -158,7 +130,7 @@ export function AssetCombobox({
             onChange={e => { setQuery(e.target.value); setActiveI(-1); }}
             onClick={e => e.stopPropagation()}
             aria-autocomplete="list"
-            aria-controls={`${id}-list`}
+            aria-controls={listId}
             aria-activedescendant={activeI >= 0 ? `${id}-opt-${activeI}` : undefined}
           />
         ) : (
@@ -166,42 +138,72 @@ export function AssetCombobox({
             {value ?? placeholder}
           </span>
         )}
-        <span className={`sim-combobox__chevron${open ? ' sim-combobox__chevron--up' : ''}`} aria-hidden="true">
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-            <path d="M1 3.5l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+
+        <span className="sim-combobox__actions" aria-hidden="true">
+          {value && !open && (
+            <span
+              className="sim-combobox__clear"
+              role="button"
+              aria-label="Rimuovi selezione"
+              tabIndex={-1}
+              onMouseDown={clear}
+            >
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+            </span>
+          )}
+          <span className={`sim-combobox__chevron${open ? ' sim-combobox__chevron--up' : ''}`}>
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+              <path d="M1 3.5l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </span>
         </span>
       </button>
 
-      {/* ── CLEAR badge rosso top-right ── */}
-      {value && !open && (
-        <button
-          type="button"
-          className="sim-combobox__clear"
-          aria-label="Rimuovi selezione asset"
-          tabIndex={0}
-          style={{ cursor: 'pointer' }}
-          onMouseDown={clear}
-          onClick={clear}
-        >
-          <svg width="7" height="7" viewBox="0 0 7 7" fill="none">
-            <path d="M1 1l5 5M6 1L1 6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
-          </svg>
-        </button>
-      )}
-
-      {/* ── PORTAL DROPDOWN (solo client, ssr:false) ── */}
+      {/* DROPDOWN — nel flow normale, senza portal */}
       {open && (
-        <ComboboxPortal
-          id={id}
-          flat={flat}
-          grouped={grouped}
-          value={value}
-          activeI={activeI}
-          coords={coords}
-          onSelect={select}
-          onMouseEnter={setActiveI}
-        />
+        <ul
+          ref={listRef}
+          id={listId}
+          role="listbox"
+          aria-label="Asset disponibili"
+          className="sim-combobox__list"
+        >
+          {flat.length === 0 ? (
+            <li className="sim-combobox__empty" role="presentation">Nessun asset trovato</li>
+          ) : (
+            Object.entries(grouped).map(([group, items]) => (
+              <React.Fragment key={group}>
+                {Object.keys(grouped).length > 1 && (
+                  <li className="sim-combobox__group-label" role="presentation">{group}</li>
+                )}
+                {items.map(item => {
+                  const globalIdx = flat.indexOf(item);
+                  return (
+                    <li
+                      key={item}
+                      id={`${id}-opt-${globalIdx}`}
+                      role="option"
+                      data-idx={globalIdx}
+                      aria-selected={value === item}
+                      className={`sim-combobox__option${value === item ? ' sim-combobox__option--selected' : ''}${activeI === globalIdx ? ' sim-combobox__option--active' : ''}`}
+                      onMouseEnter={() => setActiveI(globalIdx)}
+                      onMouseDown={e => { e.preventDefault(); select(item); }}
+                    >
+                      <span className="sim-combobox__option-text">{item}</span>
+                      {value === item && (
+                        <svg className="sim-combobox__check" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                          <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      )}
+                    </li>
+                  );
+                })}
+              </React.Fragment>
+            ))
+          )}
+        </ul>
       )}
     </div>
   );
