@@ -1,34 +1,23 @@
 import type { Metadata } from 'next';
-import type { ReactNode } from 'react';
 import '@/styles/simulatore.css';
 
 export const metadata: Metadata = {
-  title: 'Simulatore | Tradelia',
-  description:
-    'Simula costi, esposizione reale e score strumenti finanziari — futures, CFD, ETF, crypto.',
-  robots: { index: true, follow: true },
+  title: 'Simulatore — Tradelia',
+  description: 'Confronta strumenti finanziari per la tua esposizione target. Analisi costi, fattibilità e score comparativo.',
+  openGraph: {
+    title: 'Simulatore Tradelia',
+    description: 'Trova lo strumento ottimale per la tua esposizione.',
+    type: 'website',
+  },
 };
 
-export default function SimulatoreLayout({ children }: { children: ReactNode }) {
+export default function SimulatoreLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <div className="sim-root" data-sim-theme="dark">
-      {/* General Sans via Fontshare */}
-      <link
-        rel="preconnect"
-        href="https://api.fontshare.com"
-        crossOrigin="anonymous"
-      />
-      <link
-        href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap"
-        rel="stylesheet"
-      />
-      {/* Geist Mono via Google Fonts */}
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&display=swap"
-        rel="stylesheet"
-      />
+    <div data-theme="dark" className="sim-root">
       {children}
     </div>
   );
