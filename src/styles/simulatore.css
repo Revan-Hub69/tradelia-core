@@ -68,7 +68,7 @@
   margin: 0; padding: 0;
 }
 
-/* ─── LAYOUT DESKTOP ────────────────────────────────── */
+/* ─── LAYOUT ────────────────────────────────────────── */
 .sim-main {
   display: grid;
   grid-template-columns: var(--s-pw) 1fr;
@@ -82,21 +82,27 @@
   grid-template-columns: var(--s-pwr) 1fr;
 }
 
-/* Mobile: tutto in colonna, sheet sopra */
+/* ─── BREAKPOINT MOBILE ≤860px ──────────────────────── */
+/*
+ * FIX BUG 1: .sim-panel ha display:flex nel blocco base.
+ * Su mobile lo nascondiamo con !important per battere la specificità
+ * del blocco base — il panel desktop non deve mai apparire su mobile.
+ * La sidebar è sostituita interamente dal bottom sheet .sim-sheet.
+ */
 @media (max-width: 860px) {
   .sim-main {
     grid-template-columns: 1fr;
-    padding-bottom: 64px; /* spazio per sheet collapsed */
+    padding-bottom: 64px;
   }
-  .sim-panel--desktop { display: none; }
+  .sim-panel          { display: none !important; }
   .sim-mobile-results { display: block; }
-  .sim-sheet { display: flex; }
+  .sim-sheet          { display: flex; }
 }
 
+/* ─── BREAKPOINT DESKTOP ≥861px ─────────────────────── */
 @media (min-width: 861px) {
   .sim-mobile-results { display: none; }
-  .sim-sheet { display: none; }
-  .sim-panel--desktop { display: flex; }
+  .sim-sheet          { display: none; }
 }
 
 /* ─── HEADER ──────────────────────────────────────────── */
@@ -160,10 +166,16 @@
 }
 
 /* ─── PANEL DESKTOP ───────────────────────────────────── */
+/*
+ * Il panel è display:flex SOLO su desktop (≥861px).
+ * Non scriviamo display:flex nel blocco base perché il blocco mobile
+ * dovrebbe sovrascriverlo — ma la specificità piatta di una media query
+ * non garantisce la vittoria. Usiamo invece display come proprietà
+ * applicata solo quando il breakpoint lo prevede.
+ */
 .sim-panel {
   background: var(--s-s1);
   border-right: 1px solid var(--s-line);
-  display: flex;
   flex-direction: column;
   overflow-y: auto;
   height: calc(100dvh - var(--s-hh));
@@ -171,33 +183,55 @@
   top: var(--s-hh);
   scrollbar-width: thin;
   scrollbar-color: var(--s-s5) transparent;
-  transition: width var(--s-ease-spring), padding var(--s-ease-spring);
+  transition: width var(--s-ease-spring);
   width: var(--s-pw);
   padding: 0;
+  /* display gestito esclusivamente dai breakpoint — NON impostarlo qui */
 }
 .sim-panel::-webkit-scrollbar { width: 4px; }
 .sim-panel::-webkit-scrollbar-thumb { background: var(--s-s5); border-radius: 99px; }
 
-/* Pulsante collapse — visibile solo 860-1100px */
+/* Su desktop il panel è visibile */
+@media (min-width: 861px) {
+  .sim-panel { display: flex; }
+}
+
+/* ─── COLLAPSE TOGGLE (solo 860-1100px) ──────────────── */
+/*
+ * FIX BUG 2: il bottone era tagliato da overflow:hidden del panel collapsed.
+ * Soluzione: flex-shrink:0 garantisce che non venga schiacciato,
+ * e lo rendiamo visibile ANCHE quando il panel è collapsed (è l'unico
+ * elemento che deve restare visibile per poter riaprire).
+ */
 .sim-panel__collapse-btn {
-  display: none;
+  display: none;              /* nascosto su desktop >1100 e su mobile */
   align-items: center;
   justify-content: center;
   width: 100%;
+  min-height: 44px;           /* touch target garantito */
   height: 44px;
+  flex-shrink: 0;             /* FIX: non viene mai schiacciato da flex container */
   border-bottom: 1px solid var(--s-line);
   color: var(--s-t3);
   cursor: pointer;
   transition: color var(--s-ease), background var(--s-ease);
-  flex-shrink: 0;
+  position: relative;
+  z-index: 1;                 /* FIX: sopra overflow:hidden del panel collapsed */
 }
-.sim-panel__collapse-btn:hover { color: var(--s-t1); background: var(--s-s2); }
+.sim-panel__collapse-btn:hover  { color: var(--s-t1); background: var(--s-s2); }
+.sim-panel__collapse-btn:focus-visible { outline: 2px solid var(--s-ac); outline-offset: -2px; }
 
-@media (min-width: 860px) and (max-width: 1100px) {
+/* Visibile SOLO nella finestra tablet 860-1100px */
+@media (min-width: 861px) and (max-width: 1100px) {
   .sim-panel__collapse-btn { display: flex; }
 }
 
-/* Panel collapsed */
+/* ─── PANEL COLLAPSED ─────────────────────────────────── */
+/*
+ * Quando collapsed, il panel si restringe a --s-pwr (48px).
+ * overflow:hidden nasconde il contenuto degli accordion MA non
+ * deve nascondere il collapse-btn — già fixato con z-index e flex-shrink sopra.
+ */
 .sim-panel--collapsed {
   width: var(--s-pwr);
   overflow: hidden;
@@ -237,7 +271,7 @@
   cursor: pointer;
   color: var(--s-t1);
   transition: background var(--s-ease);
-  min-height: 44px; /* touch target */
+  min-height: 44px;
 }
 .sim-accordion__trigger:hover { background: var(--s-s2); }
 .sim-accordion__trigger:focus-visible { outline: 2px solid var(--s-ac); outline-offset: -2px; }
@@ -249,7 +283,6 @@
   text-transform: uppercase;
   color: var(--s-t3);
 }
-
 .sim-accordion--open .sim-accordion__label { color: var(--s-t2); }
 
 .sim-accordion__right {
@@ -273,7 +306,7 @@
 }
 .sim-accordion--open .sim-accordion__chevron { transform: rotate(180deg); }
 
-/* Animazione apertura con grid-template-rows (no JS height) */
+/* Animazione apertura con grid-template-rows (no JS height calc) */
 .sim-accordion__body {
   display: grid;
   grid-template-rows: 0fr;
@@ -300,7 +333,7 @@
   line-height: 1.45;
 }
 
-/* ─── EXPOSURE INPUT ─────────────────────────────────── */
+/* ─── EXPOSURE INPUT ──────────────────────────────────── */
 .sim-exposure { display: flex; flex-direction: column; gap: 10px; }
 
 .sim-exposure__field {
@@ -379,7 +412,7 @@
   color: var(--s-ac); border-color: var(--s-ac); background: var(--s-ac-dim); font-weight: 600;
 }
 
-/* ─── ASSET CHIPS ───────────────────────────────────────── */
+/* ─── ASSET CHIPS ─────────────────────────────────────── */
 .sim-chips { display: flex; flex-wrap: wrap; gap: 4px; }
 .sim-chip {
   height: 28px; padding-inline: 10px;
@@ -394,7 +427,7 @@
 }
 .sim-chip:focus-visible { outline: 2px solid var(--s-ac); outline-offset: 2px; }
 
-/* ─── RESULTS AREA ─────────────────────────────────────── */
+/* ─── RESULTS AREA ────────────────────────────────────── */
 .sim-results {
   background: var(--s-bg);
   padding: 1.25rem 1.5rem 2rem;
@@ -434,7 +467,7 @@
   padding-bottom: 80px;
 }
 
-/* ─── SCORE CARD ───────────────────────────────────────── */
+/* ─── SCORE CARD ──────────────────────────────────────── */
 .sim-card {
   background: var(--s-s1); border: 1px solid var(--s-line);
   border-radius: var(--s-r3); padding: 1rem 1.125rem;
@@ -486,13 +519,12 @@
 .sim-card__score-label { font-size: 9px; color: var(--s-t3); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; margin-top: -1px; text-align: right; }
 .sim-card__deviation { font-size: 10px; font-family: var(--s-mono); color: var(--s-t2); }
 
-/* Mobile card compact */
 @media (max-width: 480px) {
   .sim-card { grid-template-columns: 36px 1fr auto; gap: 8px; padding: 0.75rem; }
   .sim-card__cost-detail { display: none; }
 }
 
-/* ─── BADGE ─────────────────────────────────────────────── */
+/* ─── BADGE ───────────────────────────────────────────── */
 .sim-badge {
   display: inline-flex; align-items: center; gap: 4px;
   height: 18px; padding-inline: 6px; border-radius: var(--s-r1);
@@ -508,7 +540,7 @@
 .sim-badge--warning    { color: var(--s-amber);  background: var(--s-amber-dim); }
 .sim-badge--infeasible { color: var(--s-red);    background: var(--s-red-dim); }
 
-/* ─── BOTTOM SHEET MOBILE ──────────────────────────────── */
+/* ─── BOTTOM SHEET MOBILE ─────────────────────────────── */
 .sim-sheet {
   position: fixed;
   bottom: 0; left: 0; right: 0;
@@ -519,18 +551,15 @@
   border-radius: 16px 16px 0 0;
   border-top: 1px solid var(--s-line2);
   transition: transform var(--s-ease-spring);
-  /* default: collapsed */
   transform: translateY(calc(var(--s-sh) - 64px));
   will-change: transform;
   touch-action: none;
 }
 
-/* Snap states via translateY */
 .sim-sheet--collapsed { transform: translateY(calc(var(--s-sh) - 64px)); }
 .sim-sheet--half      { transform: translateY(calc(var(--s-sh) - 50vh)); }
 .sim-sheet--full      { transform: translateY(calc(var(--s-sh) - 90vh)); }
 
-/* Handle area — 64px, sempre visibile */
 .sim-sheet__handle-area {
   height: 64px;
   display: flex;
@@ -545,7 +574,6 @@
 }
 .sim-sheet__handle-area:focus-visible { outline: 2px solid var(--s-ac); outline-offset: -2px; border-radius: 16px 16px 0 0; }
 
-/* Drag bar */
 .sim-sheet__drag-bar {
   width: 36px; height: 4px;
   background: var(--s-s5);
@@ -554,7 +582,6 @@
 }
 .sim-sheet__handle-area:hover .sim-sheet__drag-bar { background: var(--s-line3); }
 
-/* Status row */
 .sim-sheet__status {
   display: flex;
   align-items: center;
@@ -580,16 +607,10 @@
   transition: transform var(--s-ease);
   margin-left: auto;
 }
-/* Freccia verso il basso quando collapsed/half = si può aprire */
 .sim-sheet__chevron--collapsed,
-.sim-sheet__chevron--half {
-  transform: rotate(0deg); /* freccia su = apri */
-}
-.sim-sheet__chevron--full {
-  transform: rotate(180deg); /* freccia giù = chiudi */
-}
+.sim-sheet__chevron--half  { transform: rotate(0deg); }
+.sim-sheet__chevron--full  { transform: rotate(180deg); }
 
-/* Contenuto scrollabile del sheet */
 .sim-sheet__content {
   flex: 1;
   overflow-y: auto;
@@ -599,13 +620,7 @@
   padding-bottom: env(safe-area-inset-bottom, 16px);
 }
 
-/* Overlay dim sui results quando sheet è half/full */
-.sim-sheet--half ~ .sim-mobile-results,
-.sim-sheet--full ~ .sim-mobile-results {
-  pointer-events: none;
-}
-
-/* ─── SKELETON ──────────────────────────────────────────── */
+/* ─── SKELETON ────────────────────────────────────────── */
 @keyframes sim-shimmer {
   0%   { background-position: -200% 0; }
   100% { background-position:  200% 0; }
@@ -618,13 +633,13 @@
 }
 .sim-skeleton--card { height: 76px; border-radius: var(--s-r3); }
 
-/* ─── UTILITY ───────────────────────────────────────────── */
+/* ─── UTILITY ─────────────────────────────────────────── */
 .sim-num { font-family: var(--s-mono); font-variant-numeric: tabular-nums; transition: opacity 150ms ease; }
 .sim-num[data-updating='true'] { opacity: 0.35; }
 
 .sim-root :focus-visible { outline: 2px solid var(--s-ac); outline-offset: 2px; border-radius: var(--s-r1); }
 
-/* ─── REDUCED MOTION ─────────────────────────────────── */
+/* ─── REDUCED MOTION ──────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .sim-skeleton { animation: none; }
   .sim-sheet, .sim-accordion__body,
