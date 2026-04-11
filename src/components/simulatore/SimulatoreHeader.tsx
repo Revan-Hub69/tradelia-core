@@ -27,7 +27,16 @@ export function SimulatoreHeader() {
   return (
     <header className="sim-header">
       <div className="sim-header__left">
-        <Logo href="/" size="sm" />
+        {/*
+          Wrapper con --foreground forzato a bianco e --primary al teal del sim.
+          Il gradient 45deg del Logo legge queste due var — risultato: testo bianco/teal.
+        */}
+        <div style={{
+          '--foreground': '0 0% 100%',
+          '--primary': 'var(--s-ac-raw, 174 89% 41%)',
+        } as React.CSSProperties}>
+          <Logo href="/" size="sm" />
+        </div>
 
         <span className="sim-header__page-label" aria-hidden="true">
           <span className="sim-header__page-sep">/</span>
