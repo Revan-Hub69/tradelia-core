@@ -1,11 +1,13 @@
 /*
- * combobox.css — AssetCombobox SOTA 2026 v3
- * Clear assoluto top-right teal, dropdown sfondo solido, cursor pointer option
+ * combobox.css — AssetCombobox SOTA 2026 v4
+ * Portal dropdown (position fixed via inline style),
+ * clear badge rosso top-right assoluto,
+ * cursor pointer inline sui li
  */
 
 /* ─── CONTAINER ───────────────────────────────────────────────────────── */
 .sim-combobox {
-  position: relative;   /* anchor per clear assoluto e dropdown */
+  position: relative;
   width: 100%;
   font-family: var(--s-sans);
 }
@@ -22,8 +24,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  /* padding-right allargato: 36px = spazio per chevron + clear assoluto */
-  padding: 0 36px 0 12px;
+  padding: 0 32px 0 12px;   /* spazio a destra per chevron */
   background: var(--s-s2);
   border: 1px solid var(--s-line3);
   border-radius: var(--s-r2);
@@ -34,6 +35,7 @@
     box-shadow   var(--s-ease);
   outline: none;
   text-align: left;
+  overflow: visible;
 }
 .sim-combobox__trigger:hover {
   border-color: var(--s-ac);
@@ -60,7 +62,6 @@
   border: none;
   outline: none;
   font-size: 13px;
-  font-weight: 400;
   color: var(--s-t1);
   font-family: var(--s-sans);
   min-width: 0;
@@ -84,10 +85,9 @@
   color: var(--s-t3);
   font-family: var(--s-sans);
   font-weight: 400;
-  font-size: 13px;
 }
 
-/* ─── CHEVRON (dentro trigger, lato destro) ─────────────────────────── */
+/* ─── CHEVRON ─────────────────────────────────────────────────────────── */
 .sim-combobox__chevron {
   position: absolute;
   right: 10px;
@@ -96,59 +96,63 @@
   display: flex;
   align-items: center;
   color: var(--s-t3);
+  pointer-events: none;
   transition: transform var(--s-ease), color var(--s-ease);
-  pointer-events: none;   /* non intercetta click */
 }
 .sim-combobox__chevron--up {
   transform: translateY(-50%) rotate(180deg);
   color: var(--s-ac);
 }
 
-/* ─── CLEAR — assoluto top-right, sempre teal, sempre visibile ───────── */
+/* ─── CLEAR — badge rosso, top-right del container ─────────────────── */
 /*
- * Posizionato fuori dal trigger (sibling nel container).
- * top/right allineati al centro-destra del trigger (h=40px).
- * Z-index sopra il trigger per intercettare il click.
+ * Posizionato rispetto al .sim-combobox (position:relative).
+ * top: -6px, right: -6px = sopra e a destra del trigger,
+ * come un badge di notifica. Rosso = inequivocabilmente "rimuovi".
  */
 .sim-combobox__clear {
   position: absolute;
-  top: 50%;
-  right: 28px;            /* a sinistra del chevron (10px) + 10px gap */
-  transform: translateY(-50%);
-  z-index: 10;
+  top:   -7px;
+  right: -7px;
+  z-index: 20;
 
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  border: none;
-  cursor: pointer;
+  border: 1.5px solid var(--s-bg);   /* anello scuro che lo stacca dal trigger */
   padding: 0;
+  cursor: pointer;
 
-  /* Teal acceso — riconoscibile anche senza hover */
-  color: var(--s-ac);
-  background: var(--s-ac-dim);
-  transition: color var(--s-ease), background var(--s-ease), transform var(--s-ease);
+  /* Rosso — universalmente riconosciuto come "rimuovi" */
+  color: #fff;
+  background: var(--s-red);
+
+  transition:
+    background  var(--s-ease),
+    transform   var(--s-ease),
+    box-shadow  var(--s-ease);
 }
 .sim-combobox__clear:hover {
-  color: #fff;
-  background: var(--s-ac);
-  transform: translateY(-50%) scale(1.15);
+  background: #e0307a;    /* red più acceso su hover */
+  transform: scale(1.2);
+  box-shadow: 0 0 0 3px rgba(196,85,144,0.30);
 }
 .sim-combobox__clear:focus-visible {
-  outline: 2px solid var(--s-ac);
+  outline: 2px solid var(--s-red);
   outline-offset: 2px;
 }
 
-/* ─── DROPDOWN LIST ───────────────────────────────────────────────────── */
+/* ─── DROPDOWN (Portal — position absolute via inline style) ────────── */
+/*
+ * Il <ul> viene renderizzato in <body> tramite createPortal.
+ * Le coordinate top/left/width vengono iniettate come style inline.
+ * Qui definiamo solo l'aspetto, NON position/top/left/width.
+ */
 .sim-combobox__list {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  z-index: 200;           /* sopra tutto nel panel */
+  z-index: 9999;
 
   max-height: 220px;
   overflow-y: auto;
@@ -157,22 +161,24 @@
   margin: 0;
   padding: 4px 0;
 
-  /* Sfondo solido — non trasparente, non dipende dal parent */
-  background: var(--s-s0);
+  /* Sfondo solido più scuro del panel — non trasparente */
+  background: #111110;
   border: 1px solid var(--s-ac);
-  border-top: none;
-  border-bottom-left-radius:  var(--s-r2);
-  border-bottom-right-radius: var(--s-r2);
+  border-radius: var(--s-r2);
   box-shadow:
-    0 12px 32px rgba(0,0,0,0.6),
-    0 4px  12px rgba(0,0,0,0.4),
-    0 0   0 1px rgba(64,168,184,0.08) inset;
+    0 16px 48px rgba(0,0,0,0.70),
+    0  4px 16px rgba(0,0,0,0.50),
+    0  0   0 1px rgba(64,168,184,0.10) inset;
 
   scrollbar-width: thin;
   scrollbar-color: var(--s-s5) transparent;
+
+  /* Font dal parent non ereditato via portal: ridichiarazione */
+  font-family: var(--s-mono, ui-monospace, monospace);
+  color: #a8a7a4;
 }
 .sim-combobox__list::-webkit-scrollbar { width: 4px; }
-.sim-combobox__list::-webkit-scrollbar-thumb { background: var(--s-s5); border-radius: 99px; }
+.sim-combobox__list::-webkit-scrollbar-thumb { background: #3e3e3c; border-radius: 99px; }
 
 /* ─── GROUP LABEL ─────────────────────────────────────────────────────── */
 .sim-combobox__group-label {
@@ -181,8 +187,9 @@
   font-weight: 700;
   letter-spacing: 0.10em;
   text-transform: uppercase;
-  color: var(--s-t3);
+  color: #6e6e6b;
   user-select: none;
+  font-family: ui-sans-serif, system-ui, sans-serif;
 }
 
 /* ─── OPTION ──────────────────────────────────────────────────────────── */
@@ -192,28 +199,30 @@
   justify-content: space-between;
   gap: 8px;
   padding: 8px 12px;
-  cursor: pointer;        /* ← FIX: mancava */
+  cursor: pointer;
   font-size: 13px;
   font-weight: 400;
-  color: var(--s-t2);
-  font-family: var(--s-mono);
+  color: #a8a7a4;
   user-select: none;
-  transition: background var(--s-ease), color var(--s-ease);
+  transition: background 120ms ease, color 120ms ease;
 }
-/* Hover esplicito via CSS — non dipende solo dalla classe JS */
-.sim-combobox__option:hover,
+/* CSS hover diretto — funziona sempre, anche senza JS active */
+.sim-combobox__option:hover {
+  background: #313130;
+  color: #f0efed;
+}
 .sim-combobox__option--active {
-  background: var(--s-s4);
-  color: var(--s-t1);
+  background: #313130;
+  color: #f0efed;
 }
 .sim-combobox__option--selected {
-  color: var(--s-ac);
+  color: #40a8b8;
   font-weight: 600;
 }
 .sim-combobox__option--selected:hover,
 .sim-combobox__option--selected.sim-combobox__option--active {
-  background: var(--s-ac-dim);
-  color: var(--s-ac);
+  background: rgba(64,168,184,0.12);
+  color: #40a8b8;
 }
 .sim-combobox__option-text {
   flex: 1;
@@ -223,14 +232,15 @@
 }
 .sim-combobox__check {
   flex-shrink: 0;
-  color: var(--s-ac);
+  color: #40a8b8;
 }
 
 /* ─── EMPTY STATE ─────────────────────────────────────────────────────── */
 .sim-combobox__empty {
   padding: 14px 12px;
   font-size: 12px;
-  color: var(--s-t3);
+  color: #6e6e6b;
   text-align: center;
   user-select: none;
+  font-family: ui-sans-serif, system-ui, sans-serif;
 }
