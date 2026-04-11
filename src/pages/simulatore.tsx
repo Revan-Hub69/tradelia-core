@@ -1,1 +1,0 @@
-import SimulatorePage from './src/pages/Simulatore.tsx';
