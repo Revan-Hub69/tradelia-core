@@ -1,54 +1,116 @@
+'use client';
+
 import Link from 'next/link';
 import { useTheme } from '@/app/hooks/theme';
 import { useLocale } from '@/app/hooks/locale';
+import TDLogo from '@/components/icons/TDLogo';
 
 export default function Header() {
-  const { darkMode } = useTheme();
+  const { darkMode, toggleDarkMode } = useTheme();
   const { locale, locales } = useLocale();
 
   return (
-    <header className="fixed top-0 left-0 w-full bg-neutral-50 border-b border-neutral-200 z-50 backdrop-blur-sm">
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-        {/* Brand */}
-        <Link href="/" className="flex items-center gap-2">
-          <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v1 MuhundredM" />
-          </svg>
-          <span className="text-lg font-semibold text-tradeblue">Tradelia</span>
+    <header
+      className="fixed top-0 left-0 w-full z-50"
+      style={{
+        backgroundColor: 'var(--color-bg, #f7f6f2)',
+        borderBottom: '1px solid var(--color-border, #d4d1ca)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
+      }}
+    >
+      <div
+        style={{
+          maxWidth: '80rem',
+          margin: '0 auto',
+          padding: '0.625rem 1rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        {/* ── Brand ── */}
+        <Link
+          href="/"
+          style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}
+          aria-label="Tradelia — home"
+        >
+          <TDLogo size={32} variant="full" color="auto" />
         </Link>
 
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center space-x-6">
-          {[...locales].map((l, i) => (
-            <Link key={i} href={`/${l}`} className="text-sm text-gray-600 hover:text-tradeblue transition-colors">
+        {/* ── Desktop Nav ── */}
+        <nav className="hidden md:flex" style={{ alignItems: 'center', gap: '1.5rem' }}>
+          {([...locales] as string[]).map((l) => (
+            <Link
+              key={l}
+              href={`/${l}`}
+              style={{
+                fontSize: '0.875rem',
+                color: locale === l
+                  ? 'var(--color-primary, #01696f)'
+                  : 'var(--color-text-muted, #7a7974)',
+                fontWeight: locale === l ? 600 : 400,
+                textDecoration: 'none',
+                transition: 'color 180ms ease',
+              }}
+            >
               {l.toUpperCase()}
             </Link>
           ))}
         </nav>
 
-        {/* Mobile Nav Button */}
-        <button className="md:hidden text-gray-600 hover:text-tradeblue focus:outline-none">
-          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-
-        {/* Theme / Locale Switcher */}
-        <div className="flex items-center space-x-3">
-          <button className="p-2 rounded-full text-gray-600 hover:text-tradeblue transition-colors">
+        {/* ── Right controls ── */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          {/* Theme toggle */}
+          <button
+            onClick={toggleDarkMode}
+            aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+            style={{
+              padding: '0.5rem',
+              borderRadius: '9999px',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              color: 'var(--color-text-muted, #7a7974)',
+              display: 'flex',
+              alignItems: 'center',
+              transition: 'color 180ms ease',
+            }}
+          >
             {darkMode ? (
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v2m0 14v2m9-9h-2M5 12h.01M21 12h-.01M12 3v2m0 14v2m-8-10C5.943 7 5 7.943 5 9c0 5.554 3.844 10.743 9 16 5.156-5.257 9-10.446 9-16 0-6.058-3.942-11-9-11zm0 12c-1.657 0-3-.893-3-2h4c0 1.105.894 2 2 2h4c1.105 0 2-.895 2-2v-4c0-1.105-.894-2-2-2h-4c-1.657 0-3 .893-3 2h4c0 1.105.894 2 2 2z" />
+              // Sun
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="5" />
+                <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
               </svg>
             ) : (
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v2m0 14v2m9-9h-2M5 12h.01M21 12h-.01M12 3v2m0 14v2m-8-10C5.943 7 5 7.943 5 9c0 5.554 3.844 10.743 9 16 5.156-5.257 9-10.446 9-16 0-6.058-3.942-11-9-11z" />
+              // Moon
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
               </svg>
             )}
           </button>
 
-          <button className="p-2 rounded-full text-gray-600 hover:text-tradeblue transition-colors">
-            {locale === 'en' ? 'EN' : 'IT'}
+          {/* Mobile menu button */}
+          <button
+            className="md:hidden"
+            aria-label="Open menu"
+            style={{
+              padding: '0.5rem',
+              borderRadius: '0.375rem',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              color: 'var(--color-text-muted, #7a7974)',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
           </button>
         </div>
       </div>
