@@ -1,20 +1,23 @@
 import type { Metadata } from 'next';
-import type { ReactNode } from 'react';
+import '@/styles/simulatore.css';
 
 export const metadata: Metadata = {
-  title: 'Simulatore | Tradelia',
-  description:
-    'Simula costi, esposizione reale e score strumenti finanziari — futures, CFD, ETF, crypto.',
-  robots: { index: true, follow: true },
+  title: 'Simulatore — Tradelia',
+  description: 'Confronta strumenti finanziari per la tua esposizione target. Analisi costi, fattibilità e score comparativo.',
+  openGraph: {
+    title: 'Simulatore Tradelia',
+    description: 'Trova lo strumento ottimale per la tua esposizione.',
+    type: 'website',
+  },
 };
 
-/**
- * Layout standalone del Simulatore.
- * Nessun header/footer della landing — UI propria dedicata.
- */
-export default function SimulatoreLayout({ children }: { children: ReactNode }) {
+export default function SimulatoreLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <div className="sim-root" data-theme="dark">
+    <div data-theme="dark" className="sim-root">
       {children}
     </div>
   );
