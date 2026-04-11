@@ -1,6 +1,9 @@
 /*
- * simulatore.css — Tradelia Simulatore v10
- * Fix UX: gerarchia visiva cascata, hover chip forti, clear combobox visibile
+ * simulatore.css — Tradelia Simulatore v11
+ * Fix overflow: sim-root e sim-panel non hanno più overflow:hidden
+ * Il clipping avviene solo su sim-panel__content (scroll interno)
+ * Questo permette al FloatingPortal di @floating-ui/react di renderizzare
+ * il dropdown sopra qualsiasi elemento della sidebar.
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap');
@@ -68,12 +71,12 @@
   padding: 0;
 }
 
-/* ─── ROOT LAYOUT ───────────────────────────────────────────────────── */
+/* ─── ROOT LAYOUT ─────────────────────────────────────────────────── */
 .sim-root {
   display: grid;
   grid-template-rows: var(--s-hh) 1fr;
   height: 100dvh;
-  overflow: hidden;
+  /* NO overflow:hidden — altrimenti intrappola FloatingPortal */
 }
 .sim-header { grid-row: 1; }
 .sim-main {
@@ -81,12 +84,12 @@
   display: grid;
   grid-template-columns: var(--s-pw) 1fr;
   height: 100%;
-  overflow: hidden;
+  /* NO overflow:hidden */
 }
 
 @media (max-width: 860px) {
-  .sim-root  { height: auto; overflow: visible; }
-  .sim-main  { grid-template-columns: 1fr; height: auto; overflow: visible; padding-bottom: 72px; }
+  .sim-root  { height: auto; }
+  .sim-main  { grid-template-columns: 1fr; height: auto; padding-bottom: 72px; }
   .sim-panel { display: none !important; }
   .sim-sheet { display: flex; }
 }
@@ -95,7 +98,7 @@
   .sim-sheet { display: none; }
 }
 
-/* ─── HEADER ────────────────────────────────────────────────────────── */
+/* ─── HEADER ──────────────────────────────────────────────────────────── */
 .sim-header {
   height: var(--s-hh);
   display: flex;
@@ -152,24 +155,32 @@
 .sim-tooltip-wrap:focus-within .sim-tooltip { opacity: 1; }
 @media (max-width: 860px) { .sim-tooltip { display: none; } }
 
-/* ─── PANEL ─────────────────────────────────────────────────────────── */
+/* ─── PANEL ──────────────────────────────────────────────────────────── */
 .sim-panel {
   background: var(--s-s1);
   border-right: 1px solid var(--s-line2);
-  display: flex; flex-direction: column;
-  height: 100%; overflow: hidden;
-  width: var(--s-pw); flex-shrink: 0; min-width: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  /* NO overflow:hidden — altrimenti crea stacking context che intrappola il dropdown */
+  width: var(--s-pw);
+  flex-shrink: 0;
+  min-width: 0;
 }
 .sim-panel__content {
-  display: flex; flex-direction: column; flex: 1;
-  overflow-y: auto; overflow-x: hidden;
-  scrollbar-width: thin; scrollbar-color: var(--s-s5) transparent;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;   /* scroll solo qui */
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--s-s5) transparent;
   min-height: 0;
 }
 .sim-panel__content::-webkit-scrollbar { width: 4px; }
 .sim-panel__content::-webkit-scrollbar-thumb { background: var(--s-s5); border-radius: 99px; }
 
-/* ─── BLOCK DIVIDER ───────────────────────────────────────────────────── */
+/* ─── BLOCK DIVIDER ─────────────────────────────────────────────────── */
 .sim-block-divider {
   display: flex; align-items: center; gap: 8px;
   padding: 14px 16px 6px;
@@ -184,19 +195,13 @@
   background: var(--s-line2); border-radius: 99px;
 }
 
-/* ─── SECTIONS ───────────────────────────────────────────────────────── */
+/* ─── SECTIONS ─────────────────────────────────────────────────────────── */
 .sim-section {
   padding: 12px 16px 16px;
   border-bottom: 1px solid var(--s-line2);
   display: flex; flex-direction: column; gap: 10px;
 }
 .sim-section:last-child { border-bottom: none; }
-
-/*
- * Gerarchia cascata: Sottogruppo e Asset sono livelli dipendenti.
- * Indentazione progressiva + linea sinistra colorata = gerarchia SENZA boxed containers.
- * Tecnica usata da Linear, Vercel, Raycast.
- */
 .sim-section--child {
   padding-left: 24px;
   border-left: 2px solid var(--s-line3);
@@ -209,7 +214,6 @@
   margin-left: 16px;
   padding-right: 16px;
 }
-
 .sim-section__header {
   display: flex; align-items: baseline;
   justify-content: space-between; gap: 8px;
@@ -237,17 +241,9 @@
   text-transform: uppercase; color: var(--s-t2); flex-shrink: 0;
 }
 
-/* ─── CHIPS ──────────────────────────────────────────────────────────── */
+/* ─── CHIPS ───────────────────────────────────────────────────────────── */
 .sim-chips { display: flex; flex-wrap: wrap; gap: 5px; }
 .sim-chips--col { flex-direction: column; gap: 4px; }
-
-/*
- * Hover forte e percepibile:
- * - border → teal immediato
- * - background → s4 (era s3, +1 step)
- * - color → t1 bianco
- * - box-shadow teal sottile = micro-glow
- */
 .sim-chip {
   display: flex; flex-direction: column; align-items: center;
   justify-content: center; gap: 1px;
@@ -272,8 +268,6 @@
   font-size: 9px; color: var(--s-t3);
   font-family: var(--s-sans); letter-spacing: 0.02em; line-height: 1;
 }
-
-/* HOVER — visibile senza dubbio */
 .sim-chip:hover {
   color: var(--s-t1);
   border-color: var(--s-ac);
@@ -281,8 +275,6 @@
   box-shadow: 0 0 0 1px rgba(64,168,184,0.25);
 }
 .sim-chip:hover .sim-chip__hint { color: var(--s-t2); }
-
-/* ACTIVE / SELECTED */
 .sim-chip[data-active='true'] {
   color: var(--s-t1);
   border-color: var(--s-ac);
@@ -292,8 +284,6 @@
 }
 .sim-chip[data-active='true'] .sim-chip__hint { color: var(--s-ac); opacity: 0.8; }
 .sim-chip:focus-visible { outline: 2px solid var(--s-ac); outline-offset: 2px; }
-
-/* CHIP ROW (account) */
 .sim-chip--row {
   flex-direction: row; justify-content: space-between;
   min-height: 34px; padding: 6px 11px; width: 100%;
@@ -317,7 +307,7 @@
 }
 .sim-holding__chip:focus-visible { outline: 2px solid var(--s-ac); outline-offset: 2px; }
 
-/* ─── LEVA SLIDER ───────────────────────────────────────────────────── */
+/* ─── LEVA SLIDER ─────────────────────────────────────────────────────── */
 .sim-leva { display: flex; flex-direction: column; gap: 8px; }
 .sim-leva__track { position: relative; height: 24px; display: flex; align-items: center; }
 .sim-leva__fill {
@@ -407,7 +397,7 @@
   box-shadow: 0 0 0 1px var(--s-ac);
 }
 
-/* ─── RESULTS ────────────────────────────────────────────────────────── */
+/* ─── RESULTS ──────────────────────────────────────────────────────────── */
 .sim-results {
   background: var(--s-bg); padding: 1.25rem 1.5rem 2rem;
   display: flex; flex-direction: column; gap: 6px;
@@ -425,7 +415,7 @@
 .sim-results__legend-item { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--s-t2); }
 .sim-results__legend-dot  { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
 
-/* ─── SCORE CARD ─────────────────────────────────────────────────────── */
+/* ─── SCORE CARD ──────────────────────────────────────────────────────── */
 .sim-card {
   background: var(--s-s1); border: 1px solid var(--s-line2);
   border-radius: var(--s-r3); padding: 1rem 1.125rem;
@@ -474,7 +464,7 @@
   .sim-card__cost-detail { display: none; }
 }
 
-/* ─── BADGE ─────────────────────────────────────────────────────────── */
+/* ─── BADGE ───────────────────────────────────────────────────────────── */
 .sim-badge {
   display: inline-flex; align-items: center; gap: 4px;
   height: 18px; padding-inline: 6px; border-radius: var(--s-r1);
@@ -487,7 +477,7 @@
 .sim-badge--warning    { color: var(--s-amber);  background: var(--s-amber-dim); }
 .sim-badge--infeasible { color: var(--s-red);    background: var(--s-red-dim); }
 
-/* ─── BOTTOM SHEET (mobile) ────────────────────────────────────────────────── */
+/* ─── BOTTOM SHEET (mobile) ──────────────────────────────────────────────── */
 .sim-sheet {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
   height: 92dvh; flex-direction: column;
@@ -520,7 +510,7 @@
   padding-bottom: env(safe-area-inset-bottom, 16px); touch-action: pan-y;
 }
 
-/* ─── SKELETON ────────────────────────────────────────────────────────── */
+/* ─── SKELETON ──────────────────────────────────────────────────────────── */
 @keyframes sim-shimmer {
   0%   { background-position: -200% 0; }
   100% { background-position:  200% 0; }
@@ -533,7 +523,7 @@
 }
 .sim-skeleton--card { height: 76px; border-radius: var(--s-r3); }
 
-/* ─── UTILITY ────────────────────────────────────────────────────────── */
+/* ─── UTILITY ──────────────────────────────────────────────────────────── */
 .sim-num { font-family: var(--s-mono); font-variant-numeric: tabular-nums; transition: opacity 150ms ease; }
 .sim-num[data-updating='true'] { opacity: 0.35; }
 .sim-panel__section { padding: 12px 16px; border-bottom: 1px solid var(--s-line2); display: flex; flex-direction: column; gap: 8px; }
