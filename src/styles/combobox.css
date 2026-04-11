@@ -1,9 +1,9 @@
 /*
- * combobox.css — AssetCombobox v5
- * Dropdown via @floating-ui/react FloatingPortal:
- * - Il <ul> viene montato in <body> con position:fixed iniettato inline da floatingStyles
- * - Il CSS qui NON deve dichiarare position/top/left/width su __list
- * - Il trigger aperto mantiene border-radius pieno (il dropdown è in body, non attaccato)
+ * combobox.css — AssetCombobox v6
+ * Dropdown position:absolute nel DOM normale (NO portal, NO @floating-ui).
+ * Il container .sim-combobox ha position:relative.
+ * Il <ul> ha position:absolute top:100% left:0 width:100%.
+ * z-index:9999 basta perché il container non è dentro un overflow:hidden.
  */
 
 /* ─── CONTAINER ───────────────────────────────────────────────────────── */
@@ -43,11 +43,12 @@
   background: var(--s-s4);
   box-shadow: 0 0 0 1px rgba(64,168,184,0.25);
 }
-/* Aperto: border-radius COMPLETO — il dropdown è in body, non sotto il trigger */
 .sim-combobox--open .sim-combobox__trigger {
   border-color: var(--s-ac);
   background: var(--s-s2);
   box-shadow: 0 0 0 3px rgba(64,168,184,0.15);
+  border-bottom-left-radius:  0;
+  border-bottom-right-radius: 0;
 }
 .sim-combobox__trigger:focus-visible {
   outline: 2px solid var(--s-ac);
@@ -136,28 +137,29 @@
   outline-offset: 2px;
 }
 
-/* ─── DROPDOWN ────────────────────────────────────────────────────────── */
-/*
- * IMPORTANTE: position, top, left, width sono iniettati da floatingStyles (inline)
- * da @floating-ui/react. NON dichiarare qui position:absolute/fixed/top/left/width.
- * Il z-index qui viene sovrascritto dall'inline solo se non è !important,
- * quindi lo lasciamo come fallback.
- */
+/* ─── DROPDOWN (position:absolute, nel DOM normale) ──────────────────── */
 .sim-combobox__list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
   z-index: 9999;
+
   max-height: 220px;
   overflow-y: auto;
   overflow-x: hidden;
   list-style: none;
   margin: 0;
   padding: 4px 0;
+
   background: #111110;
   border: 1px solid var(--s-ac);
-  border-radius: var(--s-r2);
+  border-top: none;
+  border-radius: 0 0 var(--s-r2) var(--s-r2);
   box-shadow:
     0 16px 48px rgba(0,0,0,0.70),
-    0  4px 16px rgba(0,0,0,0.50),
-    0  0   0 1px rgba(64,168,184,0.10) inset;
+    0  4px 16px rgba(0,0,0,0.50);
+
   scrollbar-width: thin;
   scrollbar-color: var(--s-s5) transparent;
   font-family: var(--s-mono, ui-monospace, monospace);
