@@ -1,16 +1,19 @@
 'use client';
 
-const PRESETS = [500, 1000, 5000, 10000, 25000, 50000];
+const PRESETS = [500, 1_000, 5_000, 10_000, 25_000, 50_000];
 const MIN = 100;
-const MAX = 100000;
+const MAX = 100_000;
 
 type Props = { value: number; onChange: (v: number) => void; };
 
 export function ExposureInput({ value, onChange }: Props) {
-  const clamp = (v: number) => Math.min(MAX, Math.max(MIN, v));
+  const clamp = (v: number) => Math.min(MAX, Math.max(MIN, isNaN(v) ? MIN : v));
+  const fillPct = ((value - MIN) / (MAX - MIN)) * 100;
+
   return (
     <div className="sim-exposure">
-      <div className="sim-exposure__value-row">
+      {/* Input numerico */}
+      <div className="sim-exposure__field">
         <span className="sim-exposure__currency">€</span>
         <input
           type="number"
@@ -21,14 +24,27 @@ export function ExposureInput({ value, onChange }: Props) {
           onChange={e => onChange(clamp(Number(e.target.value)))}
         />
       </div>
-      <input
-        type="range"
-        className="sim-exposure__slider"
-        min={MIN} max={MAX} step={100}
-        value={value}
-        aria-hidden="true"
-        onChange={e => onChange(Number(e.target.value))}
-      />
+
+      {/* Range con fill visivo */}
+      <div className="sim-exposure__track">
+        <div className="sim-exposure__track-bg" />
+        <div
+          className="sim-exposure__track-fill"
+          style={{ width: `${fillPct}%` }}
+          aria-hidden="true"
+        />
+        <input
+          type="range"
+          className="sim-exposure__slider"
+          min={MIN} max={MAX} step={100}
+          value={value}
+          aria-hidden="true"
+          tabIndex={-1}
+          onChange={e => onChange(Number(e.target.value))}
+        />
+      </div>
+
+      {/* Quick presets */}
       <div className="sim-exposure__presets" role="group" aria-label="Importi rapidi">
         {PRESETS.map(p => (
           <button
@@ -37,7 +53,7 @@ export function ExposureInput({ value, onChange }: Props) {
             data-active={value === p ? 'true' : 'false'}
             onClick={() => onChange(p)}
           >
-            {p >= 1000 ? `${p / 1000}k` : p}
+            {p >= 1000 ? `${p / 1000}k` : String(p)}
           </button>
         ))}
       </div>

@@ -1,482 +1,754 @@
 /*
- * simulatore.css
- * Scope: tutto ciò che ha class sim-* o vive dentro [data-theme="dark"] .sim-root
- * Non usa Tailwind — CSS puro con custom properties per essere autonomo dal tema globale.
+ * simulatore.css — Tradelia Simulatore standalone
  *
- * Art direction: tool finanziario, dark-first, accento teal, numeri Geist Mono
- * Palette: bg #0f0f0d → surface #161614 → surface-2 #1c1b19
- * Accent: #4f98a3 (teal, identico a --color-primary dark mode Nexus)
+ * Art direction: fintech tool, dark-first, precision UI
+ * Riferimento visivo: Linear, Vercel dashboard, Bloomberg Terminal (senza la brutalità)
+ * Palette: bg quasi-nero caldo → surface layers → accento teal preciso
+ * Font: General Sans (body) + Geist Mono (numeri)
+ * Nessun Tailwind. CSS puro scoped a .sim-root.
  */
 
-/* ─── Tokens ─────────────────────────────────────────── */
+@import url('https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap');
+
+/* ─── DESIGN TOKENS ─────────────────────────────────────── */
 .sim-root {
-  --sim-bg:             #0f0f0d;
-  --sim-surface:        #161614;
-  --sim-surface-2:      #1c1b19;
-  --sim-surface-3:      #222120;
-  --sim-border:         rgba(255,255,255,0.07);
-  --sim-border-strong:  rgba(255,255,255,0.13);
+  /* Superfici */
+  --s-bg:          #0c0c0b;
+  --s-s0:          #111110;
+  --s-s1:          #161615;
+  --s-s2:          #1b1b1a;
+  --s-s3:          #222221;
+  --s-s4:          #2a2a28;
 
-  --sim-text:           #cdccca;
-  --sim-text-muted:     #797876;
-  --sim-text-faint:     #4a4948;
+  /* Bordi */
+  --s-line:        rgba(255,255,255,0.06);
+  --s-line-2:      rgba(255,255,255,0.10);
+  --s-line-3:      rgba(255,255,255,0.16);
 
-  --sim-accent:         #4f98a3;
-  --sim-accent-hover:   #227f8b;
-  --sim-accent-dim:     rgba(79,152,163,0.12);
+  /* Testo */
+  --s-t1:          #e8e7e5;   /* primario */
+  --s-t2:          #8a8987;   /* muted */
+  --s-t3:          #4e4e4c;   /* faint */
 
-  --sim-gold:           #e8af34;
-  --sim-gold-dim:       rgba(232,175,52,0.12);
-  --sim-success:        #6daa45;
-  --sim-success-dim:    rgba(109,170,69,0.12);
-  --sim-warning:        #bb653b;
-  --sim-warning-dim:    rgba(187,101,59,0.12);
-  --sim-error:          #d163a7;
-  --sim-error-dim:      rgba(209,99,167,0.12);
+  /* Accento principale — teal preciso */
+  --s-ac:          #3d9aa8;
+  --s-ac-h:        #2d7f8c;
+  --s-ac-dim:      rgba(61,154,168,0.10);
+  --s-ac-dim2:     rgba(61,154,168,0.18);
 
-  --sim-radius-sm:      0.375rem;
-  --sim-radius-md:      0.625rem;
-  --sim-radius-lg:      1rem;
+  /* Segnali semantici */
+  --s-gold:        #c9961f;
+  --s-gold-dim:    rgba(201,150,31,0.10);
+  --s-green:       #5a9e34;
+  --s-green-dim:   rgba(90,158,52,0.10);
+  --s-amber:       #a85e2a;
+  --s-amber-dim:   rgba(168,94,42,0.10);
+  --s-red:         #b84f8a;
+  --s-red-dim:     rgba(184,79,138,0.10);
 
-  --sim-transition:     180ms cubic-bezier(0.16, 1, 0.3, 1);
+  /* Radii */
+  --s-r1: 4px;
+  --s-r2: 8px;
+  --s-r3: 12px;
+  --s-r4: 16px;
 
-  --sim-font-body:      'General Sans', 'Inter', system-ui, sans-serif;
-  --sim-font-mono:      'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;
+  /* Transizioni */
+  --s-ease: 160ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Font */
+  --s-sans: 'General Sans', 'Inter', system-ui, sans-serif;
+  --s-mono: 'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;
 
   /* Layout */
-  --sim-header-h:       52px;
-  --sim-panel-w:        360px;
+  --s-hh: 52px;       /* header height */
+  --s-pw: 340px;      /* panel width desktop */
 
-  font-family: var(--sim-font-body);
-  background: var(--sim-bg);
-  color: var(--sim-text);
+  /* Applicazione */
+  font-family: var(--s-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  background: var(--s-bg);
+  color: var(--s-t1);
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-/* ─── Reset scoped ─────────────────────────────────────── */
 .sim-root *, .sim-root *::before, .sim-root *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-/* ─── Root & Main ─────────────────────────────────────── */
+/* ─── LAYOUT ────────────────────────────────────────── */
 .sim-main {
   display: grid;
-  grid-template-columns: var(--sim-panel-w) 1fr;
-  min-height: calc(100dvh - var(--sim-header-h));
-  margin-top: var(--sim-header-h);
+  grid-template-columns: var(--s-pw) 1fr;
+  min-height: calc(100dvh - var(--s-hh));
+  margin-top: var(--s-hh);
 }
 
-@media (max-width: 768px) {
-  .sim-main {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ─── Header ─────────────────────────────────────────── */
+/* ─── HEADER ───────────────────────────────────────── */
 .sim-header {
   position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 100;
-  height: var(--sim-header-h);
-  display: flex;
+  inset: 0 0 auto 0;
+  z-index: 200;
+  height: var(--s-hh);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
   padding-inline: 1.25rem;
-  background: color-mix(in oklch, var(--sim-surface) 80%, transparent);
-  backdrop-filter: blur(12px) saturate(1.4);
-  -webkit-backdrop-filter: blur(12px) saturate(1.4);
-  border-bottom: 1px solid var(--sim-border);
+  background: color-mix(in srgb, var(--s-s0) 85%, transparent);
+  backdrop-filter: blur(16px) saturate(1.6);
+  -webkit-backdrop-filter: blur(16px) saturate(1.6);
+  border-bottom: 1px solid var(--s-line);
 }
 
-.sim-header__left,
-.sim-header__right {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  min-width: 180px;
-}
-.sim-header__right { justify-content: flex-end; }
+.sim-header__left  { display: flex; align-items: center; }
+.sim-header__right { display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem; }
 
 .sim-header__center {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.8125rem;
-  color: var(--sim-text-muted);
+  font-size: 12px;
+  color: var(--s-t2);
   white-space: nowrap;
 }
 
 .sim-header__title {
-  color: var(--sim-text);
+  color: var(--s-t1);
   font-weight: 500;
-  font-size: 0.8125rem;
+  font-size: 13px;
 }
-
-.sim-header__sep { opacity: 0.3; }
 
 .sim-header__subtitle {
-  color: var(--sim-text-muted);
-  font-size: 0.8125rem;
-  font-variant-numeric: tabular-nums;
+  color: var(--s-t2);
+  font-size: 12px;
 }
 
-.sim-header__btn-share {
+/* ─── LOGO (dark-safe, inline, no CSS var dipendenze esterne) ── */
+.sim-logo {
   display: flex;
   align-items: center;
-  gap: 0.375rem;
-  padding: 0.375rem 0.75rem;
-  border-radius: var(--sim-radius-sm);
-  border: 1px solid var(--sim-border-strong);
+  gap: 8px;
+  text-decoration: none;
+  outline-offset: 4px;
+}
+.sim-logo:focus-visible {
+  outline: 2px solid var(--s-ac);
+  border-radius: var(--s-r1);
+}
+
+.sim-logo__icon {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  display: block;
+}
+
+.sim-logo__wordmark {
+  font-family: var(--s-sans);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  user-select: none;
+}
+
+/* "Trade" in bianco — visibile su dark */
+.sim-logo__wordmark-dark {
+  color: #e8e7e5;
+}
+
+/* "lia" in teal — accento brand */
+.sim-logo__wordmark-accent {
+  color: var(--s-ac);
+}
+
+/* ─── BOTTONI HEADER ────────────────────────────────── */
+.sim-header__btn-share {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding-inline: 10px;
+  border-radius: var(--s-r2);
+  border: 1px solid var(--s-line-2);
   background: transparent;
-  color: var(--sim-text-muted);
-  font-size: 0.8125rem;
-  font-family: var(--sim-font-body);
+  color: var(--s-t2);
+  font-family: var(--s-sans);
+  font-size: 12px;
+  font-weight: 500;
   cursor: pointer;
-  transition: color var(--sim-transition), border-color var(--sim-transition), background var(--sim-transition);
+  transition: color var(--s-ease), border-color var(--s-ease), background var(--s-ease);
+  outline: none;
 }
 .sim-header__btn-share:hover {
-  color: var(--sim-text);
-  border-color: var(--sim-accent);
-  background: var(--sim-accent-dim);
+  color: var(--s-t1);
+  border-color: var(--s-ac);
+  background: var(--s-ac-dim);
+}
+.sim-header__btn-share:focus-visible {
+  outline: 2px solid var(--s-ac);
+  outline-offset: 2px;
+}
+.sim-header__btn-share:active {
+  background: var(--s-ac-dim2);
 }
 
-/* ─── Input Panel ─────────────────────────────────────── */
+/* ─── INPUT PANEL ────────────────────────────────────── */
 .sim-panel {
-  background: var(--sim-surface);
-  border-right: 1px solid var(--sim-border);
-  padding: 1.5rem 1.25rem;
+  background: var(--s-s1);
+  border-right: 1px solid var(--s-line);
+  padding: 1.5rem 1.25rem 2rem;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 0;
   overflow-y: auto;
-  height: calc(100dvh - var(--sim-header-h));
+  height: calc(100dvh - var(--s-hh));
   position: sticky;
-  top: var(--sim-header-h);
-}
+  top: var(--s-hh);
 
+  /* scrollbar sottile */
+  scrollbar-width: thin;
+  scrollbar-color: var(--s-s4) transparent;
+}
+.sim-panel::-webkit-scrollbar { width: 4px; }
+.sim-panel::-webkit-scrollbar-track { background: transparent; }
+.sim-panel::-webkit-scrollbar-thumb { background: var(--s-s4); border-radius: 99px; }
+
+/* Divisori tra sezioni */
 .sim-panel__section {
+  padding-block: 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.875rem;
+}
+.sim-panel__section + .sim-panel__section {
+  border-top: 1px solid var(--s-line);
 }
 
+/* Label uppercase micro */
 .sim-panel__label {
-  font-size: 0.6875rem;
+  font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--sim-text-faint);
+  color: var(--s-t3);
 }
 
-/* ─── Exposure Input ─────────────────────────────────── */
+/* Sublabel descrittivo */
+.sim-panel__hint {
+  font-size: 12px;
+  color: var(--s-t2);
+  line-height: 1.4;
+  margin-top: -0.25rem;
+}
+
+/* ─── EXPOSURE INPUT ──────────────────────────────── */
 .sim-exposure {
   display: flex;
   flex-direction: column;
-  gap: 0.625rem;
+  gap: 10px;
 }
 
-.sim-exposure__value-row {
+.sim-exposure__field {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0;
+  background: var(--s-s2);
+  border: 1px solid var(--s-line-2);
+  border-radius: var(--s-r2);
+  overflow: hidden;
+  transition: border-color var(--s-ease);
+}
+.sim-exposure__field:focus-within {
+  border-color: var(--s-ac);
+  background: color-mix(in srgb, var(--s-s2) 94%, var(--s-ac));
 }
 
 .sim-exposure__currency {
-  font-size: 1rem;
-  color: var(--sim-text-muted);
-  font-family: var(--sim-font-mono);
+  padding: 0 10px 0 12px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--s-mono);
+  color: var(--s-t2);
   user-select: none;
+  border-right: 1px solid var(--s-line);
+  height: 40px;
+  display: flex;
+  align-items: center;
+  background: var(--s-s3);
+  flex-shrink: 0;
 }
 
 .sim-exposure__input {
   flex: 1;
-  background: var(--sim-surface-2);
-  border: 1px solid var(--sim-border);
-  border-radius: var(--sim-radius-sm);
-  padding: 0.5rem 0.75rem;
-  font-size: 1.25rem;
-  font-weight: 600;
-  font-family: var(--sim-font-mono);
-  color: var(--sim-text);
-  font-variant-numeric: tabular-nums;
+  height: 40px;
+  padding: 0 12px;
+  background: transparent;
+  border: none;
   outline: none;
-  transition: border-color var(--sim-transition), background var(--sim-transition);
+  font-size: 18px;
+  font-weight: 600;
+  font-family: var(--s-mono);
+  color: var(--s-t1);
+  font-variant-numeric: tabular-nums;
   width: 100%;
-}
-.sim-exposure__input:focus {
-  border-color: var(--sim-accent);
-  background: color-mix(in oklch, var(--sim-surface-2) 95%, var(--sim-accent));
 }
 .sim-exposure__input::-webkit-inner-spin-button,
 .sim-exposure__input::-webkit-outer-spin-button { -webkit-appearance: none; }
 
+/* Range slider */
+.sim-exposure__track {
+  position: relative;
+  height: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.sim-exposure__track-bg {
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: var(--s-s4);
+  border-radius: 99px;
+  pointer-events: none;
+}
+
+.sim-exposure__track-fill {
+  position: absolute;
+  left: 0;
+  height: 2px;
+  background: var(--s-ac);
+  border-radius: 99px;
+  pointer-events: none;
+  transition: width var(--s-ease);
+}
+
 .sim-exposure__slider {
+  position: relative;
+  z-index: 1;
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  height: 3px;
-  border-radius: 999px;
-  background: var(--sim-surface-3);
+  height: 20px;
+  background: transparent;
   outline: none;
   cursor: pointer;
+  margin: 0;
 }
 .sim-exposure__slider::-webkit-slider-thumb {
   -webkit-appearance: none;
-  appearance: none;
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: var(--sim-accent);
+  background: var(--s-t1);
+  border: 2px solid var(--s-ac);
   cursor: pointer;
-  transition: transform var(--sim-transition);
+  transition: transform var(--s-ease), box-shadow var(--s-ease);
 }
-.sim-exposure__slider:hover::-webkit-slider-thumb { transform: scale(1.25); }
+.sim-exposure__slider:hover::-webkit-slider-thumb,
+.sim-exposure__slider:focus::-webkit-slider-thumb {
+  transform: scale(1.2);
+  box-shadow: 0 0 0 4px var(--s-ac-dim2);
+}
+.sim-exposure__slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--s-t1);
+  border: 2px solid var(--s-ac);
+  cursor: pointer;
+}
 
+/* Presets */
 .sim-exposure__presets {
   display: flex;
-  gap: 0.375rem;
+  gap: 4px;
   flex-wrap: wrap;
 }
 
 .sim-exposure__preset {
-  padding: 0.25rem 0.625rem;
-  border-radius: var(--sim-radius-sm);
-  border: 1px solid var(--sim-border);
+  height: 24px;
+  padding-inline: 8px;
+  border-radius: var(--s-r1);
+  border: 1px solid var(--s-line-2);
   background: transparent;
-  color: var(--sim-text-muted);
-  font-size: 0.75rem;
-  font-family: var(--sim-font-mono);
+  color: var(--s-t2);
+  font-size: 11px;
+  font-family: var(--s-mono);
+  font-weight: 500;
   cursor: pointer;
-  transition: color var(--sim-transition), border-color var(--sim-transition), background var(--sim-transition);
+  transition: all var(--s-ease);
+  letter-spacing: 0.02em;
 }
-.sim-exposure__preset:hover,
+.sim-exposure__preset:hover { color: var(--s-t1); border-color: var(--s-line-3); }
 .sim-exposure__preset[data-active='true'] {
-  color: var(--sim-accent);
-  border-color: var(--sim-accent);
-  background: var(--sim-accent-dim);
+  color: var(--s-ac);
+  border-color: var(--s-ac);
+  background: var(--s-ac-dim);
+  font-weight: 600;
 }
 
-/* ─── Chip Selector ──────────────────────────────────────── */
+/* ─── ASSET CHIP SELECTOR ────────────────────────────── */
 .sim-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.375rem;
+  gap: 4px;
 }
 
 .sim-chip {
-  padding: 0.3125rem 0.75rem;
-  border-radius: var(--sim-radius-sm);
-  border: 1px solid var(--sim-border);
+  height: 28px;
+  padding-inline: 10px;
+  border-radius: var(--s-r1);
+  border: 1px solid var(--s-line-2);
   background: transparent;
-  color: var(--sim-text-muted);
-  font-size: 0.8125rem;
-  cursor: pointer;
-  transition: color var(--sim-transition), border-color var(--sim-transition), background var(--sim-transition);
-  white-space: nowrap;
-}
-.sim-chip:hover {
-  color: var(--sim-text);
-  border-color: var(--sim-border-strong);
-}
-.sim-chip[data-active='true'] {
-  color: var(--sim-accent);
-  border-color: var(--sim-accent);
-  background: var(--sim-accent-dim);
+  color: var(--s-t2);
+  font-family: var(--s-sans);
+  font-size: 12px;
   font-weight: 500;
+  cursor: pointer;
+  transition: all var(--s-ease);
+  white-space: nowrap;
+  outline: none;
 }
+.sim-chip:hover { color: var(--s-t1); border-color: var(--s-line-3); background: var(--s-s3); }
+.sim-chip[data-active='true'] {
+  color: var(--s-ac);
+  border-color: var(--s-ac);
+  background: var(--s-ac-dim);
+  font-weight: 600;
+}
+.sim-chip:focus-visible { outline: 2px solid var(--s-ac); outline-offset: 2px; }
 
-/* ─── Results Area ─────────────────────────────────────── */
+/* ─── RESULTS AREA ───────────────────────────────────── */
 .sim-results {
+  background: var(--s-bg);
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 8px;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--s-s4) transparent;
 }
 
+/* Header risultati */
+.sim-results__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--s-line);
+  margin-bottom: 0.25rem;
+}
+
+.sim-results__count {
+  font-size: 11px;
+  color: var(--s-t3);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.sim-results__legend {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sim-results__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: var(--s-t3);
+}
+
+.sim-results__legend-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+/* Empty state */
 .sim-results__empty {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
-  min-height: 320px;
-  color: var(--sim-text-faint);
+  gap: 12px;
+  min-height: 60vh;
+  color: var(--s-t3);
   text-align: center;
 }
-.sim-results__empty-icon { opacity: 0.3; }
+.sim-results__empty-icon { opacity: 0.25; }
 .sim-results__empty p {
-  font-size: 0.875rem;
-  max-width: 30ch;
-  line-height: 1.5;
+  font-size: 13px;
+  max-width: 28ch;
+  line-height: 1.6;
+  color: var(--s-t2);
 }
 
-/* ─── Score Card ─────────────────────────────────────── */
+/* ─── SCORE CARD ────────────────────────────────────── */
 .sim-card {
-  background: var(--sim-surface);
-  border: 1px solid var(--sim-border);
-  border-radius: var(--sim-radius-lg);
-  padding: 1.25rem;
+  background: var(--s-s1);
+  border: 1px solid var(--s-line);
+  border-radius: var(--s-r3);
+  padding: 1rem 1.125rem;
   display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 1rem;
-  align-items: start;
-  transition: border-color var(--sim-transition), background var(--sim-transition);
+  grid-template-columns: 44px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  transition: border-color var(--s-ease), background var(--s-ease), transform var(--s-ease);
+  cursor: default;
 }
 .sim-card:hover {
-  border-color: var(--sim-border-strong);
-  background: var(--sim-surface-2);
-}
-.sim-card--optimal {
-  border-color: color-mix(in oklch, var(--sim-accent) 40%, var(--sim-border));
-  background: color-mix(in oklch, var(--sim-surface) 97%, var(--sim-accent));
+  border-color: var(--s-line-2);
+  background: var(--s-s2);
 }
 
+/* Card ottimale — accento teal sottile, no colored border */
+.sim-card--optimal {
+  border-color: color-mix(in srgb, var(--s-ac) 35%, var(--s-line));
+  background: color-mix(in srgb, var(--s-s1) 96%, var(--s-ac));
+}
+.sim-card--optimal:hover {
+  background: color-mix(in srgb, var(--s-s2) 94%, var(--s-ac));
+}
+
+/* ─ Rank + Gauge */
 .sim-card__rank {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.25rem;
-  min-width: 40px;
+  gap: 3px;
 }
+
 .sim-card__rank-num {
-  font-size: 0.6875rem;
+  font-size: 10px;
   font-weight: 700;
-  font-family: var(--sim-font-mono);
-  color: var(--sim-text-faint);
-  letter-spacing: 0.05em;
+  font-family: var(--s-mono);
+  color: var(--s-t3);
+  letter-spacing: 0.04em;
 }
-.sim-card__gauge-svg { width: 40px; height: 40px; }
+
+.sim-card__gauge-svg { width: 36px; height: 36px; }
+
 .sim-card__gauge-track {
   fill: none;
-  stroke: var(--sim-surface-3);
-  stroke-width: 3;
+  stroke: var(--s-s4);
+  stroke-width: 2.5;
 }
+
 .sim-card__gauge-fill {
   fill: none;
-  stroke-width: 3;
+  stroke-width: 2.5;
   stroke-linecap: round;
   transform-origin: center;
   transform: rotate(-90deg);
-  transition: stroke-dashoffset 600ms cubic-bezier(0.16, 1, 0.3, 1), stroke 300ms ease;
+  transition: stroke-dashoffset 700ms cubic-bezier(0.16, 1, 0.3, 1), stroke 400ms ease;
 }
+
+/* ─ Body */
 .sim-card__body {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 4px;
   min-width: 0;
 }
+
+.sim-card__name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .sim-card__name {
-  font-size: 0.9375rem;
+  font-size: 14px;
   font-weight: 600;
-  color: var(--sim-text);
+  color: var(--s-t1);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.sim-card__broker { font-size: 0.75rem; color: var(--sim-text-muted); }
+
+.sim-card__broker {
+  font-size: 11px;
+  color: var(--s-t2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Cost bar — 4 segmenti stacked */
 .sim-card__cost-bar {
   display: flex;
-  height: 4px;
-  border-radius: 999px;
+  height: 3px;
+  border-radius: 99px;
   overflow: hidden;
   gap: 1px;
-  margin-top: 0.25rem;
+  margin-top: 2px;
+  background: var(--s-s4);
 }
+
 .sim-card__cost-segment {
   height: 100%;
-  border-radius: 999px;
-  transition: flex var(--sim-transition);
+  min-width: 2px;
+  border-radius: 99px;
+  transition: flex var(--s-ease);
 }
-.sim-card__cost-segment--spread    { background: var(--sim-accent); }
-.sim-card__cost-segment--comm      { background: var(--sim-gold); }
-.sim-card__cost-segment--overnight { background: var(--sim-warning); }
-.sim-card__cost-segment--slippage  { background: var(--sim-text-faint); }
+.sim-card__cost-segment--spread    { background: var(--s-ac); }
+.sim-card__cost-segment--comm      { background: var(--s-gold); }
+.sim-card__cost-segment--overnight { background: var(--s-amber); }
+.sim-card__cost-segment--slippage  { background: var(--s-t3); }
+
+/* Cost detail inline */
+.sim-card__cost-detail {
+  display: flex;
+  gap: 8px;
+  margin-top: 1px;
+}
+
+.sim-card__cost-item {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  color: var(--s-t3);
+  font-family: var(--s-mono);
+}
+
+.sim-card__cost-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ─ Meta (score + badge) */
 .sim-card__meta {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 0.375rem;
-}
-.sim-card__score {
-  font-size: 1.375rem;
-  font-weight: 700;
-  font-family: var(--sim-font-mono);
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
+  gap: 5px;
 }
 
-/* ─── Feasibility Badge ─────────────────────────────── */
+.sim-card__score {
+  font-size: 22px;
+  font-weight: 700;
+  font-family: var(--s-mono);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.sim-card__score-label {
+  font-size: 9px;
+  color: var(--s-t3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  margin-top: -2px;
+  text-align: right;
+}
+
+.sim-card__deviation {
+  font-size: 10px;
+  font-family: var(--s-mono);
+  color: var(--s-t2);
+}
+
+/* ─── FEASIBILITY BADGE ─────────────────────────────── */
 .sim-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  padding: 0.1875rem 0.5rem;
-  border-radius: var(--sim-radius-sm);
-  font-size: 0.6875rem;
+  gap: 4px;
+  height: 18px;
+  padding-inline: 6px;
+  border-radius: var(--s-r1);
+  font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
   white-space: nowrap;
 }
 .sim-badge::before {
   content: '';
-  width: 5px; height: 5px;
+  width: 4px; height: 4px;
   border-radius: 50%;
   background: currentColor;
-  opacity: 0.8;
+  flex-shrink: 0;
 }
-.sim-badge--optimal    { color: var(--sim-accent);   background: var(--sim-accent-dim); }
-.sim-badge--feasible   { color: var(--sim-success);  background: var(--sim-success-dim); }
-.sim-badge--warning    { color: var(--sim-warning);  background: var(--sim-warning-dim); }
-.sim-badge--infeasible { color: var(--sim-error);    background: var(--sim-error-dim); }
+.sim-badge--optimal    { color: var(--s-ac);    background: var(--s-ac-dim); }
+.sim-badge--feasible   { color: var(--s-green);  background: var(--s-green-dim); }
+.sim-badge--warning    { color: var(--s-amber);  background: var(--s-amber-dim); }
+.sim-badge--infeasible { color: var(--s-red);    background: var(--s-red-dim); }
 
-/* ─── Skeleton ───────────────────────────────────────── */
+/* ─── SKELETON LOADER ───────────────────────────────── */
 @keyframes sim-shimmer {
   0%   { background-position: -200% 0; }
   100% { background-position:  200% 0; }
 }
 .sim-skeleton {
-  background: linear-gradient(
-    90deg,
-    var(--sim-surface-2) 25%,
-    var(--sim-surface-3) 50%,
-    var(--sim-surface-2) 75%
-  );
+  background: linear-gradient(90deg, var(--s-s2) 25%, var(--s-s3) 50%, var(--s-s2) 75%);
   background-size: 200% 100%;
-  animation: sim-shimmer 1.5s ease-in-out infinite;
-  border-radius: var(--sim-radius-sm);
+  animation: sim-shimmer 1.6s ease-in-out infinite;
+  border-radius: var(--s-r2);
 }
 .sim-skeleton--card {
-  height: 88px;
-  border-radius: var(--sim-radius-lg);
+  height: 76px;
+  border-radius: var(--s-r3);
 }
 
-/* ─── Animated number ───────────────────────────────── */
+/* ─── UTILITY ────────────────────────────────────────── */
 .sim-num {
-  font-family: var(--sim-font-mono);
+  font-family: var(--s-mono);
   font-variant-numeric: tabular-nums;
-  transition: opacity 200ms ease;
+  transition: opacity 150ms ease;
 }
-.sim-num[data-updating='true'] { opacity: 0.4; }
+.sim-num[data-updating='true'] { opacity: 0.35; }
 
-/* ─── Reduced motion ────────────────────────────────── */
+/* Focus rings globali scoped */
+.sim-root :focus-visible {
+  outline: 2px solid var(--s-ac);
+  outline-offset: 2px;
+  border-radius: var(--s-r1);
+}
+
+/* ─── REDUCED MOTION ──────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .sim-skeleton { animation: none; }
-  .sim-card__gauge-fill { transition: none; }
+  .sim-card__gauge-fill,
+  .sim-exposure__track-fill { transition: none; }
 }
 
-/* ─── Mobile ─────────────────────────────────────────── */
-@media (max-width: 768px) {
+/* ─── RESPONSIVE ────────────────────────────────────── */
+@media (max-width: 860px) {
+  .sim-main { grid-template-columns: 1fr; }
   .sim-panel {
     position: static;
     height: auto;
     border-right: none;
-    border-bottom: 1px solid var(--sim-border);
+    border-bottom: 1px solid var(--s-line);
   }
   .sim-header__center { display: none; }
   .sim-results { padding: 1rem; }
+}
+
+@media (max-width: 480px) {
+  :root { --s-pw: 100%; }
+  .sim-card {
+    grid-template-columns: 36px 1fr auto;
+    gap: 8px;
+    padding: 0.75rem;
+  }
+  .sim-card__cost-detail { display: none; }
 }
