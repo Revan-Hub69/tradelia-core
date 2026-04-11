@@ -3,19 +3,8 @@
 /**
  * SimulatorHeader
  * ───────────────
- * Minimal sticky header used exclusively on the /simulatore page.
- *
- * Layout:
- *   [TD mark]  [breadcrumb: Tradelia / Simulatore]  ──spacer──  [step badge]  [share btn]
- *
- * The mark is intentionally smaller (24px) and mark-only — no wordmark —
- * so the header stays ultra-compact and the simulator content dominates.
- *
- * Props
- * ─────
- * currentStep   1-based step index shown in the step badge (optional)
- * totalSteps    total steps count (default: 4)
- * onShare       callback for share button; if omitted the button is hidden
+ * Minimal sticky header for /simulatore.
+ * Uses TDLogo variant='mark' — sparkline icon only, no wordmark.
  */
 
 import Link from 'next/link';
@@ -55,7 +44,7 @@ export default function SimulatorHeader({
           gap: '0.75rem',
         }}
       >
-        {/* ── Mark only — no wordmark — keeps it compact ── */}
+        {/* ── Mark only ── */}
         <Link href="/" aria-label="Torna alla home di Tradelia" style={{ display: 'flex', alignItems: 'center' }}>
           <TDLogo size={24} variant="mark" color="auto" />
         </Link>
@@ -100,7 +89,7 @@ export default function SimulatorHeader({
         {/* ── Spacer ── */}
         <div style={{ flex: 1 }} />
 
-        {/* ── Step badge (optional) ── */}
+        {/* ── Step badge ── */}
         {currentStep != null && (
           <div
             aria-label={`Step ${currentStep} di ${totalSteps}`}
@@ -142,7 +131,7 @@ export default function SimulatorHeader({
           </div>
         )}
 
-        {/* ── Share button (optional) ── */}
+        {/* ── Share button ── */}
         {onShare && (
           <button
             onClick={onShare}
