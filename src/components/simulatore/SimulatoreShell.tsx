@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { useSimulatorEngine } from '@/hooks/useSimulatorEngine';
 import { usePanelSheet } from '@/hooks/usePanelSheet';
-import { AssetCombobox } from './AssetCombobox';
 import { ScoreCardList } from './ScoreCardList';
 import { SimResultsEmpty } from './SimResultsEmpty';
 import { SimulatoreSkeleton } from './SimulatoreSkeleton';
@@ -19,11 +18,11 @@ const ASSET_TREE: Record<string, Record<string, string[]>> = {
 
 /* ─── TYPES ───────────────────────────────────────────────────────────── */
 type StyleType   = 'scalping' | 'intraday' | 'swing' | 'position';
-type FreqId      = 'low' | 'mid' | 'high';
+type FreqId     = 'low' | 'mid' | 'high';
 type AccountType = 'demo' | 'micro' | 'retail' | 'semipro' | 'pro';
 type LevaType    = 'nessuna' | 'bassa' | 'media' | 'alta';
 
-/* ─── OPTIONS ─────────────────────────────────────────────────────────── */
+/* ─── STILE OPTIONS ───────────────────────────────────────────────────── */
 const STYLE_OPTIONS: { id: StyleType; label: string; hint: string }[] = [
   { id: 'scalping',  label: 'Scalping',  hint: 'sec / min' },
   { id: 'intraday',  label: 'Intraday',  hint: 'ore'       },
@@ -31,16 +30,46 @@ const STYLE_OPTIONS: { id: StyleType; label: string; hint: string }[] = [
   { id: 'position',  label: 'Position',  hint: '1 mese+'   },
 ];
 
+/* ─── FREQUENZA CONTESTUALE ───────────────────────────────────────────────── */
 type FreqOption = { id: FreqId; label: string; hint: string };
 type FreqConfig = { unit: string; options: FreqOption[] };
 
 const FREQ_BY_STYLE: Record<StyleType, FreqConfig> = {
-  scalping: { unit: 'al giorno',   options: [{ id:'low', label:'Bassa',   hint:'5–10 trade' }, { id:'mid', label:'Media',   hint:'20–50 trade' }, { id:'high', label:'Intensa', hint:'100+ trade' }] },
-  intraday: { unit: 'al giorno',   options: [{ id:'low', label:'Bassa',   hint:'1–2 trade'  }, { id:'mid', label:'Media',   hint:'3–5 trade'   }, { id:'high', label:'Intensa', hint:'10+ trade'  }] },
-  swing:    { unit: 'a settimana', options: [{ id:'low', label:'Bassa',   hint:'1–2 trade'  }, { id:'mid', label:'Media',   hint:'3–5 trade'   }, { id:'high', label:'Intensa', hint:'10+ trade'  }] },
-  position: { unit: 'al mese',     options: [{ id:'low', label:'Bassa',   hint:'1–2 trade'  }, { id:'mid', label:'Media',   hint:'3–5 trade'   }, { id:'high', label:'Intensa', hint:'10+ trade'  }] },
+  scalping: {
+    unit: 'al giorno',
+    options: [
+      { id: 'low',  label: 'Bassa',   hint: '5–10 trade'  },
+      { id: 'mid',  label: 'Media',   hint: '20–50 trade' },
+      { id: 'high', label: 'Intensa', hint: '100+ trade'  },
+    ],
+  },
+  intraday: {
+    unit: 'al giorno',
+    options: [
+      { id: 'low',  label: 'Bassa',   hint: '1–2 trade' },
+      { id: 'mid',  label: 'Media',   hint: '3–5 trade'  },
+      { id: 'high', label: 'Intensa', hint: '10+ trade'   },
+    ],
+  },
+  swing: {
+    unit: 'a settimana',
+    options: [
+      { id: 'low',  label: 'Bassa',   hint: '1–2 trade' },
+      { id: 'mid',  label: 'Media',   hint: '3–5 trade'  },
+      { id: 'high', label: 'Intensa', hint: '10+ trade'   },
+    ],
+  },
+  position: {
+    unit: 'al mese',
+    options: [
+      { id: 'low',  label: 'Bassa',   hint: '1–2 trade' },
+      { id: 'mid',  label: 'Media',   hint: '3–5 trade'  },
+      { id: 'high', label: 'Intensa', hint: '10+ trade'   },
+    ],
+  },
 };
 
+/* ─── ACCOUNT + LEVA OPTIONS ──────────────────────────────────────────────── */
 const ACCOUNT_OPTIONS: { id: AccountType; label: string; range: string }[] = [
   { id: 'demo',    label: 'Demo / Test', range: '< €500'      },
   { id: 'micro',   label: 'Micro',       range: '€500 – €2k'  },
@@ -68,7 +97,8 @@ function ChipGroup<T extends string>({
     <div className="sim-chips">
       {options.map(o => (
         <button
-          key={o.id} type="button" className="sim-chip"
+          key={o.id} type="button"
+          className="sim-chip"
           data-active={value === o.id ? 'true' : 'false'}
           aria-pressed={value === o.id}
           onClick={() => onChange(o.id)}
@@ -82,15 +112,16 @@ function ChipGroup<T extends string>({
 }
 
 function StringChipGroup({
-  options, value, onChange,
+  options, value, onChange, mono,
 }: {
-  options: string[]; value: string | null; onChange: (v: string) => void;
+  options: string[]; value: string | null; onChange: (v: string) => void; mono?: boolean;
 }) {
   return (
     <div className="sim-chips">
       {options.map(o => (
         <button
-          key={o} type="button" className="sim-chip"
+          key={o} type="button"
+          className={mono ? 'sim-chip sim-chip--mono' : 'sim-chip'}
           data-active={value === o ? 'true' : 'false'}
           aria-pressed={value === o}
           onClick={() => onChange(o)}
@@ -101,18 +132,11 @@ function StringChipGroup({
 }
 
 /* ─── SECTION + BLOCK DIVIDER ─────────────────────────────────────────── */
-function Section({ label, value, hint, children, variant }: {
-  label: string; value?: string; hint?: string;
-  children: React.ReactNode;
-  variant?: 'child' | 'asset';
+function Section({ label, value, hint, children }: {
+  label: string; value?: string; hint?: string; children: React.ReactNode;
 }) {
-  const cls = variant === 'asset'
-    ? 'sim-section sim-section--asset'
-    : variant === 'child'
-    ? 'sim-section sim-section--child'
-    : 'sim-section';
   return (
-    <div className={cls}>
+    <div className="sim-section">
       <div className="sim-section__header">
         <span className="sim-section__label">{label}</span>
         {value && <span className="sim-section__value sim-num">{value}</span>}
@@ -129,123 +153,113 @@ function BlockDivider({ label }: { label: string }) {
 
 /* ─── SHELL ───────────────────────────────────────────────────────────── */
 export function SimulatoreShell() {
-  const { assetClass, setAssetClass, results, isComputing } = useSimulatorEngine();
+  const {
+    assetClass, setAssetClass,
+    results, isComputing,
+  } = useSimulatorEngine();
 
-  const [subGroup, setSubGroup] = useState<string | null>(null);
-  const [asset,    setAsset]    = useState<string | null>(null);
-  const [style,    setStyle]    = useState<StyleType>('intraday');
-  const [freq,     setFreq]     = useState<FreqId>('mid');
-  const [account,  setAccount]  = useState<AccountType>('retail');
-  const [leva,     setLeva]     = useState<LevaType>('nessuna');
+  const [subGroup,  setSubGroup]  = useState<string | null>(null);
+  const [asset,     setAsset]     = useState<string | null>(null);
+  const [style,     setStyle]     = useState<StyleType>('intraday');
+  const [freq,      setFreq]      = useState<FreqId>('mid');
+  const [account,   setAccount]   = useState<AccountType>('retail');
+  const [leva,      setLeva]      = useState<LevaType>('nessuna');
 
   const groups = assetClass ? Object.keys(ASSET_TREE[assetClass] ?? {}) : [];
-  const comboOptions = assetClass && subGroup
-    ? (ASSET_TREE[assetClass]?.[subGroup] ?? []).map(v => ({ value: v, group: subGroup }))
-    : [];
+  const assets = assetClass && subGroup ? (ASSET_TREE[assetClass]?.[subGroup] ?? []) : [];
 
   const handleGroupChange = (g: string) => { setAssetClass(g); setSubGroup(null); setAsset(null); };
   const handleSubChange   = (s: string) => { setSubGroup(s);   setAsset(null); };
   const handleStyleChange = (s: StyleType) => { setStyle(s); setFreq('mid'); };
 
-  const profiloReady = !!asset;
-  const freqConfig   = FREQ_BY_STYLE[style];
-  const freqCurrent  = freqConfig.options.find(o => o.id === freq);
-  const freqLabel    = freqCurrent ? `${freqCurrent.hint} ${freqConfig.unit}` : '';
-  const levaLabel    = LEVA_OPTIONS.find(o => o.id === leva)?.hint ?? '';
+  const freqConfig  = FREQ_BY_STYLE[style];
+  const freqCurrent = freqConfig.options.find(o => o.id === freq);
+  const freqLabel   = freqCurrent ? `${freqCurrent.hint} ${freqConfig.unit}` : '';
+  const levaLabel   = LEVA_OPTIONS.find(o => o.id === leva)?.hint ?? '';
 
-  const { snap, toggle: toggleSheet, onTouchStart, onTouchMove, onTouchEnd, sheetRef } = usePanelSheet();
+  const { snap, toggle: toggleSheet, onTouchStart, onTouchMove, onTouchEnd, sheetRef } =
+    usePanelSheet();
+
   const statusAsset   = asset ?? subGroup ?? assetClass ?? '—';
   const statusAccount = ACCOUNT_OPTIONS.find(o => o.id === account)?.label ?? '—';
 
   /* ── PANEL CONTENT ──────────────────────────────────────────────────── */
   const panelContent = (
     <>
+      {/* ══ BLOCCO 1 — STRUMENTO ══ */}
       <BlockDivider label="Strumento" />
 
-      {/* Livello 1 — Categoria */}
       <Section label="Categoria" value={assetClass ?? '—'}>
-        <StringChipGroup options={Object.keys(ASSET_TREE)} value={assetClass} onChange={handleGroupChange} />
+        <StringChipGroup
+          options={Object.keys(ASSET_TREE)}
+          value={assetClass}
+          onChange={handleGroupChange}
+        />
       </Section>
 
-      {/* Livello 2 — Sottogruppo (indentato, linea grigia) */}
       {assetClass && (
-        <Section label="Sottogruppo" value={subGroup ?? '—'} variant="child">
+        <Section label="Sottogruppo" value={subGroup ?? '—'}>
           <StringChipGroup options={groups} value={subGroup} onChange={handleSubChange} />
         </Section>
       )}
 
-      {/* Livello 3 — Asset combobox (indentato, linea teal) */}
-      {subGroup && (
-        <Section
-          label="Asset"
-          value={asset ?? undefined}
-          hint="Spread e costi sono specifici per asset"
-          variant="asset"
-        >
-          <AssetCombobox
-            options={comboOptions}
-            value={asset}
-            onChange={setAsset}
-            placeholder="Cerca o seleziona asset…"
-          />
+      {subGroup && assets.length > 0 && (
+        <Section label="Asset" value={asset ?? '—'} hint="Opzionale — per confronto specifico">
+          <StringChipGroup options={assets} value={asset} onChange={setAsset} mono />
         </Section>
       )}
 
-      {/* Blocco profilo — gated su asset selezionato */}
-      {profiloReady && (
-        <>
-          <BlockDivider label="Il tuo profilo" />
+      {/* ══ BLOCCO 2 — IL TUO PROFILO ══ */}
+      <BlockDivider label="Il tuo profilo" />
 
-          <Section
-            label="Stile operativo"
-            value={STYLE_OPTIONS.find(o => o.id === style)?.label}
-            hint="Orizzonte temporale di ogni operazione"
-          >
-            <ChipGroup options={STYLE_OPTIONS} value={style} onChange={handleStyleChange} />
-          </Section>
+      <Section
+        label="Stile operativo"
+        value={STYLE_OPTIONS.find(o => o.id === style)?.label}
+        hint="Orizzonte temporale di ogni operazione"
+      >
+        <ChipGroup options={STYLE_OPTIONS} value={style} onChange={handleStyleChange} />
+      </Section>
 
-          <Section
-            label={`Operazioni ${freqConfig.unit}`}
-            value={freqLabel}
-            hint="Quante operazioni apri in media"
-          >
-            <ChipGroup options={freqConfig.options} value={freq} onChange={setFreq} />
-          </Section>
+      <Section
+        label={`Operazioni ${freqConfig.unit}`}
+        value={freqLabel}
+        hint="Quante operazioni apri in media"
+      >
+        <ChipGroup options={freqConfig.options} value={freq} onChange={setFreq} />
+      </Section>
 
-          <Section
-            label="Dimensione account"
-            value={ACCOUNT_OPTIONS.find(o => o.id === account)?.range}
-            hint="Capitale totale che gestisci"
-          >
-            <div className="sim-chips sim-chips--col">
-              {ACCOUNT_OPTIONS.map(o => (
-                <button
-                  key={o.id} type="button"
-                  className="sim-chip sim-chip--row"
-                  data-active={account === o.id ? 'true' : 'false'}
-                  aria-pressed={account === o.id}
-                  onClick={() => setAccount(o.id)}
-                >
-                  <span className="sim-chip__main">{o.label}</span>
-                  <span className="sim-chip__hint">{o.range}</span>
-                </button>
-              ))}
-            </div>
-          </Section>
+      <Section
+        label="Dimensione account"
+        value={ACCOUNT_OPTIONS.find(o => o.id === account)?.range}
+        hint="Capitale totale che gestisci"
+      >
+        <div className="sim-chips sim-chips--col">
+          {ACCOUNT_OPTIONS.map(o => (
+            <button
+              key={o.id} type="button"
+              className="sim-chip sim-chip--row"
+              data-active={account === o.id ? 'true' : 'false'}
+              aria-pressed={account === o.id}
+              onClick={() => setAccount(o.id)}
+            >
+              <span className="sim-chip__main">{o.label}</span>
+              <span className="sim-chip__hint">{o.range}</span>
+            </button>
+          ))}
+        </div>
+      </Section>
 
-          <Section
-            label="Leva finanziaria"
-            value={levaLabel}
-            hint="Moltiplicatore di esposizione. Senza leva = 1:1"
-          >
-            <ChipGroup options={LEVA_OPTIONS} value={leva} onChange={setLeva} />
-          </Section>
-        </>
-      )}
+      <Section
+        label="Leva finanziaria"
+        value={levaLabel}
+        hint="Moltiplicatore di esposizione. Senza leva = 1:1"
+      >
+        <ChipGroup options={LEVA_OPTIONS} value={leva} onChange={setLeva} />
+      </Section>
     </>
   );
 
-  /* ── RESULTS AREA ── */
+  /* ── RESULTS AREA ───────────────────────────────────────────────────── */
   const resultsArea = (
     <section className="sim-results" aria-label="Risultati simulazione" aria-live="polite">
       {!isComputing && results.length > 0 && (
@@ -266,12 +280,13 @@ export function SimulatoreShell() {
           </div>
         </div>
       )}
-      {isComputing
-        ? <SimulatoreSkeleton count={4} />
-        : results.length === 0
-        ? <SimResultsEmpty />
-        : <ScoreCardList results={results} />
-      }
+      {isComputing ? (
+        <SimulatoreSkeleton count={4} />
+      ) : results.length === 0 ? (
+        <SimResultsEmpty />
+      ) : (
+        <ScoreCardList results={results} />
+      )}
     </section>
   );
 
