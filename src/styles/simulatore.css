@@ -1,6 +1,6 @@
 /*
  * simulatore.css — Tradelia Simulatore standalone
- * v5: SOTA 2026 — header 44px, panel collapse inline, sheet drag fluido
+ * v6: sidebar fissa su desktop, logo mark rivisitato
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap');
@@ -42,15 +42,14 @@
   --s-r3: 12px;
   --s-r4: 16px;
 
-  --s-ease:        160ms cubic-bezier(0.16, 1, 0.3, 1);
-  --s-spring:      300ms cubic-bezier(0.32, 0.72, 0, 1);
+  --s-ease:   160ms cubic-bezier(0.16, 1, 0.3, 1);
+  --s-spring: 300ms cubic-bezier(0.32, 0.72, 0, 1);
 
   --s-sans: var(--font-body, 'Inter', system-ui, sans-serif);
   --s-mono: 'Geist Mono', var(--font-mono, ui-monospace, monospace);
 
-  --s-hh:  44px;   /* header height — SOTA tool: 44px */
-  --s-pw:  296px;  /* panel width espanso */
-  --s-pwr: 44px;   /* panel collapsed (icon rail) */
+  --s-hh: 44px;   /* header height */
+  --s-pw: 296px;  /* panel width — fisso su desktop */
 
   font-family: var(--s-sans);
   font-size: 14px;
@@ -80,14 +79,14 @@
 .sim-main {
   grid-row: 2;
   display: grid;
+  /*
+   * Su desktop: colonna panel FISSA a --s-pw.
+   * Il panel non è collassabile — contiene troppa densità informativa.
+   * Collapse disponibile solo su mobile via bottom sheet.
+   */
   grid-template-columns: var(--s-pw) 1fr;
   height: 100%;
   overflow: hidden;
-  transition: grid-template-columns var(--s-spring);
-}
-
-.sim-main:has(.sim-panel--collapsed) {
-  grid-template-columns: var(--s-pwr) 1fr;
 }
 
 /* ─── MOBILE ≤860px ───────────────────────────────────────────────────── */
@@ -140,7 +139,7 @@
 .sim-logo {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   text-decoration: none;
   flex-shrink: 0;
 }
@@ -173,7 +172,7 @@
   text-overflow: ellipsis;
 }
 
-/* Share button — icon-only su desktop */
+/* Share button — icon-only */
 .sim-header__btn-share {
   display: inline-flex;
   align-items: center;
@@ -197,37 +196,22 @@
 .sim-header__btn-share:active { background: var(--s-s4); }
 .sim-header__btn-share:focus-visible { outline: 2px solid var(--s-ac); outline-offset: 2px; }
 
-/* Icone share: di default mostra default, nasconde copied */
 .sim-header__share-icon--default { display: block; }
 .sim-header__share-icon--copied  { display: none; color: var(--s-green); }
-
-/* Quando data-copied=true: swap icone */
 .sim-header__btn-share[data-copied='true'] .sim-header__share-icon--default { display: none; }
 .sim-header__btn-share[data-copied='true'] .sim-header__share-icon--copied  { display: block; }
 .sim-header__btn-share[data-copied='true'] { color: var(--s-green); border-color: var(--s-green); background: var(--s-green-dim); }
 
-/* Testo share visibile solo su mobile */
 .sim-header__share-label { display: none; }
 
 @media (max-width: 860px) {
-  .sim-header__btn-share {
-    width: auto;
-    padding-inline: 10px;
-  }
-  .sim-header__share-label {
-    display: inline;
-    font-size: 12px;
-    font-weight: 500;
-    font-family: var(--s-sans);
-  }
+  .sim-header__btn-share { width: auto; padding-inline: 10px; }
+  .sim-header__share-label { display: inline; font-size: 12px; font-weight: 500; }
   .sim-header__page-label { display: none; }
 }
 
 /* Tooltip */
-.sim-tooltip-wrap {
-  position: relative;
-  display: inline-flex;
-}
+.sim-tooltip-wrap { position: relative; display: inline-flex; }
 .sim-tooltip {
   position: absolute;
   bottom: calc(100% + 6px);
@@ -246,115 +230,72 @@
   z-index: 300;
 }
 .sim-tooltip-wrap:hover .sim-tooltip,
-.sim-tooltip-wrap:focus-within .sim-tooltip {
-  opacity: 1;
-}
-@media (max-width: 860px) {
-  .sim-tooltip { display: none; }
-}
+.sim-tooltip-wrap:focus-within .sim-tooltip { opacity: 1; }
+@media (max-width: 860px) { .sim-tooltip { display: none; } }
 
-/* ─── PANEL ───────────────────────────────────────────────────────────── */
+/* ─── PANEL (desktop fisso) ───────────────────────────────────────────── */
+/*
+ * Il panel su desktop non ha collapse.
+ * È un contenitore dati denso — nasconderlo sarebbe contro-produttivo
+ * per uno strumento di analisi (vedi: Bloomberg, TradingView, Figma).
+ * Il bottone collapse rimane solo nello Shell per compatibilità JSX
+ * ma il topbar viene nascosto via CSS su desktop.
+ */
 .sim-panel {
   background: var(--s-s1);
   border-right: 1px solid var(--s-line);
+  display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: visible;
-  position: relative;
+  overflow: hidden;
   width: var(--s-pw);
   flex-shrink: 0;
-  transition: width var(--s-spring);
   min-width: 0;
+  /* Nessuna transizione width — il panel è statico su desktop */
 }
 
-.sim-panel--collapsed {
-  width: var(--s-pwr);
+/* Topbar: su desktop mostra solo il label, nasconde il collapse-btn */
+.sim-panel__topbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 38px;
+  padding-inline: 14px;
+  border-bottom: 1px solid var(--s-line);
+  flex-shrink: 0;
+  gap: 6px;
 }
+
+/* Il bottone collapse esiste nel JSX ma è invisibile su desktop */
+.sim-panel__collapse-btn {
+  display: none;
+}
+
+/* Label topbar: leggera, uppercase tracked — è un titolo sezione non un'azione */
+.sim-panel__topbar-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--s-t3);
+  user-select: none;
+}
+
+/* Icon rail — non usata su desktop, ma lasciata per sicurezza */
+.sim-panel__icon-rail { display: none; }
 
 .sim-panel__content {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: thin;
   scrollbar-color: var(--s-s5) transparent;
-  padding-top: 2px;
   min-height: 0;
 }
 .sim-panel__content::-webkit-scrollbar { width: 4px; }
 .sim-panel__content::-webkit-scrollbar-thumb { background: var(--s-s5); border-radius: 99px; }
-
-/* ─── PANEL TOPBAR ────────────────────────────────────────────────────── */
-/*
-  Topbar inline nel panel — pattern Linear/Figma/Notion 2026.
-  Contiene label "Parametri" + bottone collapse/expand.
-  Sostituisce il collapse-tab che sporgeva dal bordo (pattern 2018).
-*/
-.sim-panel__topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 40px;
-  padding-inline: 12px 8px;
-  border-bottom: 1px solid var(--s-line);
-  flex-shrink: 0;
-}
-
-.sim-panel--collapsed .sim-panel__topbar {
-  justify-content: center;
-  padding-inline: 0;
-}
-
-.sim-panel__topbar-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--s-t3);
-  letter-spacing: 0.04em;
-  user-select: none;
-}
-
-/* Bottone collapse — inline nel topbar */
-.sim-panel__collapse-btn {
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--s-r2);
-  border: none;
-  background: transparent;
-  color: var(--s-t3);
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: background var(--s-ease), color var(--s-ease);
-}
-.sim-panel__collapse-btn:hover {
-  background: var(--s-s3);
-  color: var(--s-t1);
-}
-.sim-panel__collapse-btn:active { background: var(--s-s4); }
-.sim-panel__collapse-btn:focus-visible { outline: 2px solid var(--s-ac); outline-offset: 2px; }
-
-/* Icon rail quando collapsed */
-.sim-panel__icon-rail {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 0 0;
-}
-.sim-panel__rail-icon {
-  width: 28px; height: 28px;
-  display: flex; align-items: center; justify-content: center;
-  border-radius: var(--s-r2);
-  background: var(--s-s3);
-  color: var(--s-t2);
-  font-size: 11px; font-weight: 700; font-family: var(--s-mono);
-  cursor: default;
-  transition: background var(--s-ease), color var(--s-ease);
-}
-.sim-panel__rail-icon:hover { background: var(--s-s4); color: var(--s-t1); }
 
 .sim-panel__hint {
   font-size: 12px;
@@ -363,16 +304,14 @@
 }
 
 /* ─── ACCORDION ───────────────────────────────────────────────────────── */
-.sim-accordion {
-  border-bottom: 1px solid var(--s-line);
-}
+.sim-accordion { border-bottom: 1px solid var(--s-line); }
 
 .sim-accordion__trigger {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 12px;
+  padding: 10px 14px;
   cursor: pointer;
   color: var(--s-t1);
   transition: background var(--s-ease);
@@ -387,11 +326,6 @@
 .sim-accordion__trigger:focus-visible { outline: 2px solid var(--s-ac); outline-offset: -2px; }
 
 .sim-accordion__label {
-  /*
-    SOTA 2026: normal-case semibold 12px.
-    NON più ALL-CAPS 10px letter-spacing — pattern Bootstrap 2014.
-    Leggibilità superiore, aspetto più maturo (Linear, Vercel, Supabase).
-  */
   font-size: 12px;
   font-weight: 600;
   color: var(--s-t2);
@@ -433,7 +367,7 @@
 
 .sim-accordion__inner {
   overflow: hidden;
-  padding: 0 12px 12px;
+  padding: 0 14px 14px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -631,12 +565,7 @@
 .sim-badge--warning    { color: var(--s-amber);  background: var(--s-amber-dim); }
 .sim-badge--infeasible { color: var(--s-red);    background: var(--s-red-dim); }
 
-/* ─── BOTTOM SHEET ────────────────────────────────────────────────────── */
-/*
-  La posizione è controllata da JS via style.transform inline (usePanelSheet).
-  Il CSS definisce solo la forma, il colore, il border-radius, il layout.
-  Nessun translateY fisso nel CSS — tutto via JS per safe-area correttezza.
-*/
+/* ─── BOTTOM SHEET (mobile only) ─────────────────────────────────────── */
 .sim-sheet {
   position: fixed;
   bottom: 0; left: 0; right: 0;
@@ -648,11 +577,9 @@
   border-top: 1px solid var(--s-line2);
   will-change: transform;
   touch-action: none;
-  /* Transizione di default — sovrascritta da JS durante il drag */
   transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-/* Handle area */
 .sim-sheet__handle-area {
   height: 56px;
   display: flex;
@@ -674,10 +601,8 @@
 }
 
 .sim-sheet__drag-bar {
-  width: 32px;
-  height: 4px;
-  background: var(--s-s5);
-  border-radius: 99px;
+  width: 32px; height: 4px;
+  background: var(--s-s5); border-radius: 99px;
   transition: background var(--s-ease), width var(--s-ease);
 }
 .sim-sheet__handle-area:hover .sim-sheet__drag-bar,
@@ -686,52 +611,32 @@
   width: 40px;
 }
 
-/* Status bar nell'handle */
 .sim-sheet__status {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  width: 100%;
-  justify-content: center;
+  display: flex; align-items: center; gap: 7px;
+  width: 100%; justify-content: center;
 }
 
-/* Esposizione: prominente, mono bold */
 .sim-sheet__status-exposure {
-  font-family: var(--s-mono);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--s-t1);
-  letter-spacing: -0.01em;
-  font-variant-numeric: tabular-nums;
+  font-family: var(--s-mono); font-size: 13px; font-weight: 700;
+  color: var(--s-t1); letter-spacing: -0.01em; font-variant-numeric: tabular-nums;
 }
-
-/* Punto separatore */
 .sim-sheet__status-dot {
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: var(--s-t3);
-  flex-shrink: 0;
+  width: 3px; height: 3px; border-radius: 50%;
+  background: var(--s-t3); flex-shrink: 0;
 }
-
-/* Asset: secondario, muted */
 .sim-sheet__status-asset {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--s-t2);
+  font-size: 12px; font-weight: 500; color: var(--s-t2);
 }
 
 .sim-sheet__chevron {
   color: var(--s-t3);
   transition: transform var(--s-ease);
-  margin-left: auto;
-  flex-shrink: 0;
+  margin-left: auto; flex-shrink: 0;
 }
 .sim-sheet__chevron--collapsed { transform: rotate(0deg); }
-.sim-sheet__chevron--half      { transform: rotate(180deg); }
+.sim-sheet__chevron--half,
 .sim-sheet__chevron--full      { transform: rotate(180deg); }
 
-/* Contenuto scrollabile */
 .sim-sheet__content {
   flex: 1;
   overflow-y: auto;
@@ -756,9 +661,9 @@
 }
 .sim-skeleton--card { height: 76px; border-radius: var(--s-r3); }
 
-/* sim-panel__section — usato nel fallback SSR di page.tsx */
+/* sim-panel__section — fallback SSR */
 .sim-panel__section {
-  padding: 12px;
+  padding: 12px 14px;
   border-bottom: 1px solid var(--s-line);
   display: flex;
   flex-direction: column;
