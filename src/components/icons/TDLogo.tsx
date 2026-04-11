@@ -1,19 +1,22 @@
 /**
- * TDLogo — Tradelia monogram mark
+ * TDLogo — Tradelia brand mark  (V1 SOTA 2026)
  *
- * The 't' and 'd' share a single vertical stem. The crossbar of 't' also
- * serves as the visual cap-line of 'd', creating a locked, inseparable glyph.
+ * Mark concept: sparkline ascendente su assi XY sottili + dot teal terminale.
+ * Un solo gesto — il grafico è il logo. Legge da 16px a 128px.
+ *
+ * Wordmark: "tradelia" — Inter 700, letter-spacing -1.5px.
+ * Accent:   underline teal largo 24px sotto le prime 2 lettere.
  *
  * Props
  * ─────
- * size       px height (and proportional width). Default: 32
- * variant    'mark'  → SVG glyph only
- *            'full'  → glyph + wordmark "tradelia" beside it  (default)
- *            'stacked' → glyph above wordmark (useful for splash / favicon)
- * color      'auto'  → currentColor (inherits from parent, works in dark/light)
- *            'teal'  → forces brand teal (#01696f / #4f98a3 dark)
- *            'white' → forces white (for dark backgrounds)
- * className  extra Tailwind / CSS classes forwarded to the root element
+ * size       px height del mark (default: 32). Wordmark scala proporzionalmente.
+ * variant    'mark'    → solo sparkline SVG
+ *            'full'    → mark + wordmark affiancati  (default)
+ *            'stacked' → mark sopra wordmark (splash, og:image)
+ * color      'auto'  → currentColor per il testo; teal forced per mark
+ *            'teal'  → forza teal su tutto
+ *            'white' → forza bianco su tutto (background scuro esplicito)
+ * className  classi extra Tailwind / CSS forwarded al root element
  */
 
 import React from 'react';
@@ -26,110 +29,143 @@ export interface TDLogoProps {
   variant?: TDLogoVariant;
   color?: TDLogoColor;
   className?: string;
-  /** forwarded to the root <svg> or <div> */
   'aria-label'?: string;
 }
 
-/** The raw SVG mark — 't' and 'd' on a shared stem, viewBox 0 0 28 36 */
+/* ─────────────────────────────────────────────
+   TDMark — sparkline su asse XY, viewBox 0 0 72 72
+   ───────────────────────────────────────────── */
 function TDMark({
   size,
-  colorValue,
   ariaLabel,
   ariaHidden,
 }: {
   size: number;
-  colorValue: string;
   ariaLabel?: string;
   ariaHidden?: boolean;
 }) {
-  // Proportional width from the 28×36 viewBox
-  const width = Math.round((size * 28) / 36);
+  // Mantieni proporzione 1:1 (il mark è quadrato)
+  const uid = React.useId ? React.useId().replace(/:/g, '') : 'tdm';
+  const gradId = `tdGrad_${uid}`;
 
   return (
     <svg
-      width={width}
+      width={size}
       height={size}
-      viewBox="0 0 28 36"
+      viewBox="0 0 72 72"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      aria-label={ariaHidden ? undefined : ariaLabel ?? 'Tradelia'}
+      aria-label={ariaHidden ? undefined : (ariaLabel ?? 'Tradelia')}
       aria-hidden={ariaHidden ? true : undefined}
       role={ariaHidden ? undefined : 'img'}
-      style={{ color: colorValue, flexShrink: 0 }}
+      style={{ flexShrink: 0, display: 'block' }}
     >
-      {/*
-        Geometry
-        ────────
-        Shared vertical stem  x=12  top=4   bottom=32  strokeWidth=2.5
-        Crossbar of 't'       x=6   x2=18   y=13       strokeWidth=2.5
-        Bowl of 'd'           circle-arc from stem, right side, bottom at y=28
+      <defs>
+        <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#07E0B0" />
+          <stop offset="100%" stopColor="#0594CC" />
+        </linearGradient>
+      </defs>
 
-        We draw everything as stroked paths so the mark scales
-        cleanly and inherits color via `currentColor`.
-      */}
-
-      {/* ── shared vertical stem ── */}
+      {/* ── Asse X ── */}
       <line
-        x1="13" y1="4"
-        x2="13" y2="32"
-        stroke="currentColor"
-        strokeWidth="2.5"
-        strokeLinecap="round"
+        x1="8" y1="58" x2="64" y2="58"
+        stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+        opacity="0.18"
+      />
+      {/* ── Asse Y ── */}
+      <line
+        x1="8" y1="58" x2="8" y2="10"
+        stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+        opacity="0.18"
       />
 
-      {/* ── 't' crossbar ── */}
-      <line
-        x1="6" y1="13"
-        x2="20" y2="13"
-        stroke="currentColor"
-        strokeWidth="2.5"
-        strokeLinecap="round"
+      {/* ── Area fill sotto la sparkline ── */}
+      <polygon
+        points="8,58 18,48 28,52 40,36 54,24 64,14 64,58"
+        fill={`url(#${gradId})`}
+        opacity="0.07"
       />
 
-      {/*
-        ── 'd' bowl ──
-        A right-opening arc anchored to the stem at y=14 (just below crossbar)
-        and y=29 (just above baseline), bulging to x=26 at midpoint y=21.5
-        The bowl is a cubic bezier: M 13,14 C 13,14 26,14 26,21.5 C 26,29 13,29 13,29
-      */}
-      <path
-        d="M 13 14 C 20 14 26 16.5 26 21.5 C 26 26.5 20 29 13 29"
-        stroke="currentColor"
-        strokeWidth="2.5"
-        strokeLinecap="round"
+      {/* ── Sparkline ── */}
+      <polyline
+        points="8,58 18,48 28,52 40,36 54,24 64,14"
         fill="none"
+        stroke={`url(#${gradId})`}
+        strokeWidth="3.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+
+      {/* ── Dot terminale ── */}
+      <circle cx="64" cy="14" r="5" fill="#07E0B0" />
+      {/* Ring halo */}
+      <circle
+        cx="64" cy="14" r="9.5"
+        fill="none"
+        stroke="#07E0B0"
+        strokeWidth="1.5"
+        opacity="0.32"
       />
     </svg>
   );
 }
 
-/** Wordmark — "tradelia" in Geist Mono, tracked slightly */
-function Wordmark({ size, colorValue }: { size: number; colorValue: string }) {
-  // Font size scales with the mark height, capped for readability
-  const fontSize = Math.round(size * 0.38);
+/* ─────────────────────────────────────────────
+   Wordmark — "tradelia" in Inter 700
+   ───────────────────────────────────────────── */
+function Wordmark({
+  size,
+  colorValue,
+}: {
+  size: number;
+  colorValue: string;
+}) {
+  const fontSize = Math.round(size * 0.52);
+  const underlineW = Math.round(fontSize * 1.2); // accent sotto le prime ~2 lettere
+
   return (
-    <span
-      style={{
-        fontFamily: "'Geist Mono', 'Courier New', monospace",
-        fontSize: `${fontSize}px`,
-        fontWeight: 500,
-        letterSpacing: '0.04em',
-        color: colorValue,
-        lineHeight: 1,
-        userSelect: 'none',
-      }}
-    >
-      tradelia
-    </span>
+    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', userSelect: 'none' }}>
+      <span
+        style={{
+          fontFamily: "'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+          fontSize: `${fontSize}px`,
+          fontWeight: 700,
+          letterSpacing: '-0.04em',
+          color: colorValue,
+          lineHeight: 1,
+        }}
+      >
+        tradelia
+      </span>
+      {/* Accent underline teal — visibile solo ≥ 20px */}
+      {size >= 20 && (
+        <div
+          style={{
+            marginTop: '3px',
+            width: `${underlineW}px`,
+            height: '2px',
+            borderRadius: '1px',
+            background: 'linear-gradient(90deg, #07E0B0, #0594CC)',
+          }}
+        />
+      )}
+    </div>
   );
 }
 
+/* ─────────────────────────────────────────────
+   Color map
+   ───────────────────────────────────────────── */
 const COLOR_MAP: Record<TDLogoColor, string> = {
   auto: 'currentColor',
-  teal: 'var(--color-primary, #01696f)',
+  teal: '#07E0B0',
   white: '#ffffff',
 };
 
+/* ─────────────────────────────────────────────
+   TDLogo — default export
+   ───────────────────────────────────────────── */
 export default function TDLogo({
   size = 32,
   variant = 'full',
@@ -139,39 +175,49 @@ export default function TDLogo({
 }: TDLogoProps) {
   const colorValue = COLOR_MAP[color];
 
+  /* ── mark only ── */
   if (variant === 'mark') {
     return (
       <TDMark
         size={size}
-        colorValue={colorValue}
         ariaLabel={ariaLabel}
       />
     );
   }
 
+  /* ── stacked ── */
   if (variant === 'stacked') {
     return (
       <div
         className={className}
-        style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', gap: Math.round(size * 0.15) }}
+        style={{
+          display: 'inline-flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: Math.round(size * 0.18),
+        }}
         aria-label={ariaLabel}
         role="img"
       >
-        <TDMark size={size} colorValue={colorValue} ariaHidden />
+        <TDMark size={size} ariaHidden />
         <Wordmark size={size} colorValue={colorValue} />
       </div>
     );
   }
 
-  // variant === 'full'  (default)
+  /* ── full (default) ── */
   return (
     <div
       className={className}
-      style={{ display: 'inline-flex', alignItems: 'center', gap: Math.round(size * 0.3) }}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: Math.round(size * 0.35),
+      }}
       aria-label={ariaLabel}
       role="img"
     >
-      <TDMark size={size} colorValue={colorValue} ariaHidden />
+      <TDMark size={size} ariaHidden />
       <Wordmark size={size} colorValue={colorValue} />
     </div>
   );
