@@ -1,11 +1,11 @@
 /*
  * simulatore.css — Tradelia Simulatore standalone
- * Layout completo: accordion desktop + bottom sheet mobile + panel collapse
+ * v3: fix overflow + collapse tab laterale + layout grid corretto
  */
 
 @import url('https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap');
 
-/* ─── TOKENS ───────────────────────────────────────── */
+/* ─── TOKENS ──────────────────────────────────────────── */
 .sim-root {
   --s-bg:   #0c0c0b;
   --s-s0:   #111110;
@@ -48,68 +48,76 @@
   --s-sans: 'General Sans', 'Inter', system-ui, sans-serif;
   --s-mono: 'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;
 
-  --s-hh:  52px;    /* header height */
-  --s-pw:  340px;   /* panel width desktop */
-  --s-pwr: 48px;    /* panel width collapsed (icon rail) */
-  --s-sh:  90vh;    /* sheet max height mobile */
+  --s-hh:  52px;
+  --s-pw:  320px;
+  --s-pwr: 48px;
+  --s-sh:  90vh;
 
   font-family: var(--s-sans);
   font-size: 14px;
   line-height: 1.5;
   background: var(--s-bg);
   color: var(--s-t1);
-  min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
 .sim-root *, .sim-root *::before, .sim-root *::after {
   box-sizing: border-box;
-  margin: 0; padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
-/* ─── LAYOUT ────────────────────────────────────────── */
+/* ─── ROOT LAYOUT ────────────────────────────────────────── */
+/*
+  .sim-root è il contenitore di pagina.
+  Su desktop il layout è a due colonne: panel | results.
+  Entrambe le colonne sono alte esattamente 100dvh - header,
+  con overflow interno — così il contenuto NON esce mai
+  dal viewport.
+*/
+.sim-root {
+  display: grid;
+  grid-template-rows: var(--s-hh) 1fr;
+  height: 100dvh;
+  overflow: hidden;   /* FIX overflow: niente scroll a livello root */
+}
+
+.sim-header {
+  grid-row: 1;
+  /* header styles sotto */
+}
+
 .sim-main {
+  grid-row: 2;
   display: grid;
   grid-template-columns: var(--s-pw) 1fr;
-  min-height: calc(100dvh - var(--s-hh));
-  margin-top: var(--s-hh);
+  height: 100%;       /* prende esattamente lo spazio rimanente */
+  overflow: hidden;   /* i figli scrollano internamente */
   transition: grid-template-columns var(--s-ease-spring);
 }
 
-/* Panel collapsed su 860-1100px */
+/* Collapsed: rail 48px */
 .sim-main:has(.sim-panel--collapsed) {
   grid-template-columns: var(--s-pwr) 1fr;
 }
 
-/* ─── BREAKPOINT MOBILE ≤860px ──────────────────────── */
-/*
- * FIX BUG 1: .sim-panel ha display:flex nel blocco base.
- * Su mobile lo nascondiamo con !important per battere la specificità
- * del blocco base — il panel desktop non deve mai apparire su mobile.
- * La sidebar è sostituita interamente dal bottom sheet .sim-sheet.
- */
+/* ─── MOBILE ≤860px ───────────────────────────────────────── */
 @media (max-width: 860px) {
-  .sim-main {
-    grid-template-columns: 1fr;
-    padding-bottom: 64px;
-  }
-  .sim-panel          { display: none !important; }
-  .sim-mobile-results { display: block; }
-  .sim-sheet          { display: flex; }
+  .sim-root   { overflow: auto; }  /* scroll normale su mobile */
+  .sim-main   { grid-template-columns: 1fr; height: auto; overflow: visible; padding-bottom: 72px; }
+  .sim-panel  { display: none !important; }
+  .sim-sheet  { display: flex; }
 }
 
-/* ─── BREAKPOINT DESKTOP ≥861px ─────────────────────── */
+/* ─── DESKTOP ≥861px ───────────────────────────────────────── */
 @media (min-width: 861px) {
-  .sim-mobile-results { display: none; }
-  .sim-sheet          { display: none; }
+  .sim-panel { display: flex; }
+  .sim-sheet { display: none; }
 }
 
-/* ─── HEADER ──────────────────────────────────────────── */
+/* ─── HEADER ────────────────────────────────────────────── */
 .sim-header {
-  position: fixed;
-  inset: 0 0 auto 0;
-  z-index: 200;
   height: var(--s-hh);
   display: grid;
   grid-template-columns: 1fr auto 1fr;
@@ -119,6 +127,9 @@
   backdrop-filter: blur(20px) saturate(1.8);
   -webkit-backdrop-filter: blur(20px) saturate(1.8);
   border-bottom: 1px solid var(--s-line);
+  position: sticky;
+  top: 0;
+  z-index: 200;
 }
 
 .sim-header__left  { display: flex; align-items: center; }
@@ -127,10 +138,9 @@
   display: flex; align-items: center; gap: 6px;
   color: var(--s-t2); white-space: nowrap;
 }
-.sim-header__title   { color: var(--s-t1); font-size: 13px; font-weight: 500; }
+.sim-header__title    { color: var(--s-t1); font-size: 13px; font-weight: 500; }
 .sim-header__subtitle { font-size: 12px; color: var(--s-t2); }
 
-/* Logo */
 .sim-logo {
   display: flex; align-items: center; gap: 8px;
   text-decoration: none;
@@ -145,7 +155,6 @@
 }
 .sim-logo:hover .sim-logo__wordmark::after { width: 100%; }
 
-/* Share btn */
 .sim-header__btn-share {
   display: inline-flex; align-items: center; gap: 5px;
   height: 30px; padding-inline: 10px;
@@ -165,77 +174,98 @@
   .sim-header { padding-inline: 1rem; }
 }
 
-/* ─── PANEL DESKTOP ───────────────────────────────────── */
-/*
- * Il panel è display:flex SOLO su desktop (≥861px).
- * Non scriviamo display:flex nel blocco base perché il blocco mobile
- * dovrebbe sovrascriverlo — ma la specificità piatta di una media query
- * non garantisce la vittoria. Usiamo invece display come proprietà
- * applicata solo quando il breakpoint lo prevede.
- */
+/* ─── PANEL ───────────────────────────────────────────────── */
 .sim-panel {
   background: var(--s-s1);
   border-right: 1px solid var(--s-line);
   flex-direction: column;
-  overflow-y: auto;
-  height: calc(100dvh - var(--s-hh));
-  position: sticky;
-  top: var(--s-hh);
+  height: 100%;         /* riempie il grid row 2 */
+  overflow-y: auto;     /* scorre internamente */
+  overflow-x: hidden;
+  position: relative;   /* ancora il tab di collapse */
   scrollbar-width: thin;
   scrollbar-color: var(--s-s5) transparent;
   transition: width var(--s-ease-spring);
   width: var(--s-pw);
-  padding: 0;
-  /* display gestito esclusivamente dai breakpoint — NON impostarlo qui */
+  flex-shrink: 0;
 }
 .sim-panel::-webkit-scrollbar { width: 4px; }
 .sim-panel::-webkit-scrollbar-thumb { background: var(--s-s5); border-radius: 99px; }
 
-/* Su desktop il panel è visibile */
-@media (min-width: 861px) {
-  .sim-panel { display: flex; }
-}
-
-/* ─── COLLAPSE TOGGLE (solo 860-1100px) ──────────────── */
-/*
- * FIX BUG 2: il bottone era tagliato da overflow:hidden del panel collapsed.
- * Soluzione: flex-shrink:0 garantisce che non venga schiacciato,
- * e lo rendiamo visibile ANCHE quando il panel è collapsed (è l'unico
- * elemento che deve restare visibile per poter riaprire).
- */
-.sim-panel__collapse-btn {
-  display: none;              /* nascosto su desktop >1100 e su mobile */
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-height: 44px;           /* touch target garantito */
-  height: 44px;
-  flex-shrink: 0;             /* FIX: non viene mai schiacciato da flex container */
-  border-bottom: 1px solid var(--s-line);
-  color: var(--s-t3);
-  cursor: pointer;
-  transition: color var(--s-ease), background var(--s-ease);
-  position: relative;
-  z-index: 1;                 /* FIX: sopra overflow:hidden del panel collapsed */
-}
-.sim-panel__collapse-btn:hover  { color: var(--s-t1); background: var(--s-s2); }
-.sim-panel__collapse-btn:focus-visible { outline: 2px solid var(--s-ac); outline-offset: -2px; }
-
-/* Visibile SOLO nella finestra tablet 860-1100px */
-@media (min-width: 861px) and (max-width: 1100px) {
-  .sim-panel__collapse-btn { display: flex; }
-}
-
-/* ─── PANEL COLLAPSED ─────────────────────────────────── */
-/*
- * Quando collapsed, il panel si restringe a --s-pwr (48px).
- * overflow:hidden nasconde il contenuto degli accordion MA non
- * deve nascondere il collapse-btn — già fixato con z-index e flex-shrink sopra.
- */
 .sim-panel--collapsed {
   width: var(--s-pwr);
   overflow: hidden;
-  padding: 0;
+}
+
+/* Wrapper del contenuto accordion — padding uniforme */
+.sim-panel__content {
+  display: flex;
+  flex-direction: column;
+  padding-top: 4px;   /* piccolo respiro sopra il primo accordion */
+}
+
+/* ─── COLLAPSE TAB LATERALE ──────────────────────────────────── */
+/*
+  Il tab sporge sul bordo destro del panel, centrato verticalmente.
+  Pattern usato da Linear, Figma sidebar, VS Code activity bar.
+  È incollato al bordo con position:absolute right:-1px,
+  così copre il border-right del panel e si fonde visivamente.
+  Visibile SOLO nella finestra tablet 861-1100px.
+*/
+.sim-panel__collapse-tab {
+  display: none;  /* nascosto di default */
+  position: absolute;
+  right: -16px;            /* spunta di 15px oltre il bordo */
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+
+  width: 16px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--s-s2);
+  border: 1px solid var(--s-line2);
+  border-left: none;       /* si fonde col panel */
+  border-radius: 0 var(--s-r2) var(--s-r2) 0;
+
+  color: var(--s-t3);
+  cursor: pointer;
+  transition:
+    color var(--s-ease),
+    background var(--s-ease),
+    right var(--s-ease);
+}
+
+/* Hover: si allarga leggermente e si illumina */
+.sim-panel__collapse-tab:hover {
+  right: -20px;
+  width: 20px;
+  color: var(--s-t1);
+  background: var(--s-s3);
+}
+
+/* Active: feedback pressione */
+.sim-panel__collapse-tab:active {
+  background: var(--s-s4);
+  right: -14px;
+  width: 14px;
+}
+
+.sim-panel__collapse-tab:focus-visible {
+  outline: 2px solid var(--s-ac);
+  outline-offset: 2px;
+}
+
+.sim-panel__collapse-tab-icon {
+  flex-shrink: 0;
+  transition: transform var(--s-ease);
+}
+
+/* Visibile solo 861-1100px */
+@media (min-width: 861px) and (max-width: 1100px) {
+  .sim-panel__collapse-tab { display: flex; }
 }
 
 /* Icon rail */
@@ -243,8 +273,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding-top: 1rem;
+  gap: 10px;
+  padding: 12px 0 0;
 }
 .sim-panel__rail-icon {
   width: 32px; height: 32px;
@@ -254,20 +284,20 @@
   color: var(--s-t2);
   font-size: 11px; font-weight: 700; font-family: var(--s-mono);
   cursor: default;
+  transition: background var(--s-ease), color var(--s-ease);
 }
+.sim-panel__rail-icon:hover { background: var(--s-s4); color: var(--s-t1); }
 
-/* ─── ACCORDION ───────────────────────────────────────── */
-.sim-accordion {
-  border-bottom: 1px solid var(--s-line);
-}
-.sim-accordion:first-child { border-top: 1px solid var(--s-line); }
+/* ─── ACCORDION ────────────────────────────────────────────── */
+.sim-accordion { border-bottom: 1px solid var(--s-line); }
+.sim-accordion:first-child { border-top: none; }  /* il wrapper .sim-panel__content ha già il padding top */
 
 .sim-accordion__trigger {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 13px 1.25rem;
+  padding: 12px 1.125rem;
   cursor: pointer;
   color: var(--s-t1);
   transition: background var(--s-ease);
@@ -285,11 +315,7 @@
 }
 .sim-accordion--open .sim-accordion__label { color: var(--s-t2); }
 
-.sim-accordion__right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+.sim-accordion__right { display: flex; align-items: center; gap: 8px; }
 
 .sim-accordion__summary {
   font-size: 11px;
@@ -306,34 +332,31 @@
 }
 .sim-accordion--open .sim-accordion__chevron { transform: rotate(180deg); }
 
-/* Animazione apertura con grid-template-rows (no JS height calc) */
 .sim-accordion__body {
   display: grid;
   grid-template-rows: 0fr;
   transition: grid-template-rows var(--s-ease-spring);
   overflow: hidden;
 }
-.sim-accordion--open .sim-accordion__body {
-  grid-template-rows: 1fr;
-}
+.sim-accordion--open .sim-accordion__body { grid-template-rows: 1fr; }
 
 .sim-accordion__inner {
   overflow: hidden;
-  padding: 0 1.25rem 1.25rem;
+  padding: 0 1.125rem 1.125rem;
   display: flex;
   flex-direction: column;
   gap: 10px;
   min-height: 0;
 }
 
-/* ─── PANEL UTILITIES ─────────────────────────────────── */
+/* ─── PANEL UTILITIES ──────────────────────────────────────── */
 .sim-panel__hint {
   font-size: 12px;
   color: var(--s-t2);
   line-height: 1.45;
 }
 
-/* ─── EXPOSURE INPUT ──────────────────────────────────── */
+/* ─── EXPOSURE INPUT ─────────────────────────────────────── */
 .sim-exposure { display: flex; flex-direction: column; gap: 10px; }
 
 .sim-exposure__field {
@@ -342,7 +365,7 @@
   border: 1px solid var(--s-line2);
   border-radius: var(--s-r2);
   overflow: hidden;
-  transition: border-color var(--s-ease);
+  transition: border-color var(--s-ease), box-shadow var(--s-ease);
 }
 .sim-exposure__field:focus-within {
   border-color: var(--s-ac);
@@ -412,7 +435,7 @@
   color: var(--s-ac); border-color: var(--s-ac); background: var(--s-ac-dim); font-weight: 600;
 }
 
-/* ─── ASSET CHIPS ─────────────────────────────────────── */
+/* ─── ASSET CHIPS ─────────────────────────────────────────── */
 .sim-chips { display: flex; flex-wrap: wrap; gap: 4px; }
 .sim-chip {
   height: 28px; padding-inline: 10px;
@@ -427,47 +450,49 @@
 }
 .sim-chip:focus-visible { outline: 2px solid var(--s-ac); outline-offset: 2px; }
 
-/* ─── RESULTS AREA ────────────────────────────────────── */
+/* ─── RESULTS ───────────────────────────────────────────────── */
+/*
+  .sim-results è la colonna destra del grid.
+  height:100% + overflow-y:auto = scorre internamente,
+  il contenuto non esce mai dal viewport.
+*/
 .sim-results {
   background: var(--s-bg);
   padding: 1.25rem 1.5rem 2rem;
-  display: flex; flex-direction: column; gap: 6px;
-  overflow-y: auto;
-  scrollbar-width: thin; scrollbar-color: var(--s-s5) transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 100%;       /* FIX: occupa esattamente il grid cell */
+  overflow-y: auto;   /* FIX: scorre internamente */
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--s-s5) transparent;
+}
+
+@media (max-width: 860px) {
+  /* Su mobile non c'è altezza fissa — scorre con la pagina */
+  .sim-results {
+    height: auto;
+    overflow-y: visible;
+    padding-bottom: 80px;
+  }
 }
 
 .sim-results__header {
   display: flex; align-items: center; justify-content: space-between;
   padding-bottom: 10px; margin-bottom: 4px;
   border-bottom: 1px solid var(--s-line);
+  flex-shrink: 0;
 }
 .sim-results__count {
   font-size: 11px; color: var(--s-t3);
   letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600;
 }
 .sim-results__legend { display: flex; align-items: center; gap: 12px; }
-.sim-results__legend-item {
-  display: flex; align-items: center; gap: 4px;
-  font-size: 10px; color: var(--s-t3);
-}
-.sim-results__legend-dot { width: 6px; height: 6px; border-radius: 50%; }
+.sim-results__legend-item { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--s-t3); }
+.sim-results__legend-dot  { width: 6px; height: 6px; border-radius: 50%; }
 
-.sim-results__empty {
-  display: flex; flex-direction: column; align-items: center;
-  justify-content: center; gap: 14px; min-height: 60vh; text-align: center;
-}
-.sim-results__empty-icon { opacity: 0.18; }
-.sim-results__empty p {
-  font-size: 13px; max-width: 28ch; line-height: 1.65; color: var(--s-t2);
-}
-
-/* Mobile results wrapper */
-.sim-mobile-results .sim-results {
-  min-height: calc(100dvh - var(--s-hh));
-  padding-bottom: 80px;
-}
-
-/* ─── SCORE CARD ──────────────────────────────────────── */
+/* ─── SCORE CARD ───────────────────────────────────────────── */
 .sim-card {
   background: var(--s-s1); border: 1px solid var(--s-line);
   border-radius: var(--s-r3); padding: 1rem 1.125rem;
@@ -475,6 +500,7 @@
   gap: 12px; align-items: center;
   transition: border-color var(--s-ease), background var(--s-ease);
   cursor: default;
+  flex-shrink: 0;
 }
 .sim-card:hover { border-color: var(--s-line2); background: var(--s-s2); }
 .sim-card--optimal {
@@ -484,9 +510,7 @@
 .sim-card--optimal:hover { background: color-mix(in srgb, var(--s-s2) 95%, var(--s-ac)); }
 
 .sim-card__rank { display: flex; flex-direction: column; align-items: center; gap: 3px; }
-.sim-card__rank-num {
-  font-size: 10px; font-weight: 700; font-family: var(--s-mono); color: var(--s-t3); letter-spacing: 0.04em;
-}
+.sim-card__rank-num { font-size: 10px; font-weight: 700; font-family: var(--s-mono); color: var(--s-t3); letter-spacing: 0.04em; }
 .sim-card__gauge-svg { width: 36px; height: 36px; }
 .sim-card__gauge-track { fill: none; stroke: var(--s-s5); stroke-width: 2.5; }
 .sim-card__gauge-fill {
@@ -497,14 +521,14 @@
 
 .sim-card__body { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .sim-card__name-row { display: flex; align-items: center; gap: 6px; }
-.sim-card__name { font-size: 13px; font-weight: 600; color: var(--s-t1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sim-card__name   { font-size: 13px; font-weight: 600; color: var(--s-t1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sim-card__broker { font-size: 11px; color: var(--s-t2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .sim-card__cost-bar {
   display: flex; height: 3px; border-radius: 99px;
   overflow: hidden; gap: 1px; margin-top: 4px; background: var(--s-s5);
 }
-.sim-card__cost-segment { height: 100%; min-width: 2px; border-radius: 99px; transition: flex var(--s-ease); }
+.sim-card__cost-segment     { height: 100%; min-width: 2px; border-radius: 99px; transition: flex var(--s-ease); }
 .sim-card__cost-segment--spread    { background: var(--s-ac); }
 .sim-card__cost-segment--comm      { background: var(--s-gold); }
 .sim-card__cost-segment--overnight { background: var(--s-amber); }
@@ -512,7 +536,7 @@
 
 .sim-card__cost-detail { display: flex; gap: 8px; margin-top: 2px; }
 .sim-card__cost-item { display: flex; align-items: center; gap: 3px; font-size: 10px; color: var(--s-t3); font-family: var(--s-mono); }
-.sim-card__cost-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.sim-card__cost-dot  { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
 
 .sim-card__meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
 .sim-card__score { font-size: 22px; font-weight: 700; font-family: var(--s-mono); font-variant-numeric: tabular-nums; line-height: 1; letter-spacing: -0.02em; }
@@ -524,7 +548,7 @@
   .sim-card__cost-detail { display: none; }
 }
 
-/* ─── BADGE ───────────────────────────────────────────── */
+/* ─── BADGE ────────────────────────────────────────────────── */
 .sim-badge {
   display: inline-flex; align-items: center; gap: 4px;
   height: 18px; padding-inline: 6px; border-radius: var(--s-r1);
@@ -540,7 +564,7 @@
 .sim-badge--warning    { color: var(--s-amber);  background: var(--s-amber-dim); }
 .sim-badge--infeasible { color: var(--s-red);    background: var(--s-red-dim); }
 
-/* ─── BOTTOM SHEET MOBILE ─────────────────────────────── */
+/* ─── BOTTOM SHEET ───────────────────────────────────────────── */
 .sim-sheet {
   position: fixed;
   bottom: 0; left: 0; right: 0;
@@ -555,10 +579,9 @@
   will-change: transform;
   touch-action: none;
 }
-
 .sim-sheet--collapsed { transform: translateY(calc(var(--s-sh) - 64px)); }
 .sim-sheet--half      { transform: translateY(calc(var(--s-sh) - 50vh)); }
-.sim-sheet--full      { transform: translateY(calc(var(--s-sh) - 90vh)); }
+.sim-sheet--full      { transform: translateY(0); }
 
 .sim-sheet__handle-area {
   height: 64px;
@@ -572,7 +595,11 @@
   padding-inline: 1rem;
   user-select: none;
 }
-.sim-sheet__handle-area:focus-visible { outline: 2px solid var(--s-ac); outline-offset: -2px; border-radius: 16px 16px 0 0; }
+.sim-sheet__handle-area:focus-visible {
+  outline: 2px solid var(--s-ac);
+  outline-offset: -2px;
+  border-radius: 16px 16px 0 0;
+}
 
 .sim-sheet__drag-bar {
   width: 36px; height: 4px;
@@ -583,23 +610,13 @@
 .sim-sheet__handle-area:hover .sim-sheet__drag-bar { background: var(--s-line3); }
 
 .sim-sheet__status {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--s-t2);
-  width: 100%;
-  justify-content: center;
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; justify-content: center;
 }
-
 .sim-sheet__status-pill {
-  font-family: var(--s-mono);
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--s-t1);
-  letter-spacing: 0.02em;
+  font-family: var(--s-mono); font-size: 12px; font-weight: 600;
+  color: var(--s-t1); letter-spacing: 0.02em;
 }
-
 .sim-sheet__status-sep { color: var(--s-t3); }
 
 .sim-sheet__chevron {
@@ -608,8 +625,8 @@
   margin-left: auto;
 }
 .sim-sheet__chevron--collapsed,
-.sim-sheet__chevron--half  { transform: rotate(0deg); }
-.sim-sheet__chevron--full  { transform: rotate(180deg); }
+.sim-sheet__chevron--half { transform: rotate(0deg); }
+.sim-sheet__chevron--full { transform: rotate(180deg); }
 
 .sim-sheet__content {
   flex: 1;
@@ -620,7 +637,7 @@
   padding-bottom: env(safe-area-inset-bottom, 16px);
 }
 
-/* ─── SKELETON ────────────────────────────────────────── */
+/* ─── SKELETON ──────────────────────────────────────────────── */
 @keyframes sim-shimmer {
   0%   { background-position: -200% 0; }
   100% { background-position:  200% 0; }
@@ -630,16 +647,16 @@
   background-size: 200% 100%;
   animation: sim-shimmer 1.6s ease-in-out infinite;
   border-radius: var(--s-r2);
+  flex-shrink: 0;
 }
 .sim-skeleton--card { height: 76px; border-radius: var(--s-r3); }
 
-/* ─── UTILITY ─────────────────────────────────────────── */
+/* ─── UTILITY ───────────────────────────────────────────────── */
 .sim-num { font-family: var(--s-mono); font-variant-numeric: tabular-nums; transition: opacity 150ms ease; }
 .sim-num[data-updating='true'] { opacity: 0.35; }
 
 .sim-root :focus-visible { outline: 2px solid var(--s-ac); outline-offset: 2px; border-radius: var(--s-r1); }
 
-/* ─── REDUCED MOTION ──────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .sim-skeleton { animation: none; }
   .sim-sheet, .sim-accordion__body,

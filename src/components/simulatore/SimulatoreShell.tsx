@@ -10,14 +10,6 @@ import { ScoreCardList } from './ScoreCardList';
 import { SimResultsEmpty } from './SimResultsEmpty';
 import { SimulatoreSkeleton } from './SimulatoreSkeleton';
 
-/**
- * SimulatoreShell
- *
- * Layout a 3 breakpoint:
- *   ≥1100px  — panel fisso 340px + accordion sezioni
- *   860-1100 — panel collassabile (icon rail 48px) via usePanelCollapse
- *   ≤860px   — results full-screen + bottom sheet 3-snap via usePanelSheet
- */
 export function SimulatoreShell() {
   const {
     exposure, setExposure,
@@ -31,7 +23,6 @@ export function SimulatoreShell() {
   const exposureSummary = `€${exposure.toLocaleString('it-IT')}`;
   const assetSummary = assetClass;
 
-  // Contenuto del panel (riusato sia in desktop che in sheet mobile)
   const panelContent = (
     <>
       <PanelAccordion
@@ -42,7 +33,6 @@ export function SimulatoreShell() {
       >
         <ExposureInput value={exposure} onChange={setExposure} />
       </PanelAccordion>
-
       <PanelAccordion
         label="Categoria strumento"
         hint="Asset class di riferimento per il confronto"
@@ -50,14 +40,11 @@ export function SimulatoreShell() {
       >
         <AssetSelector value={assetClass} onChange={setAssetClass} />
       </PanelAccordion>
-
-      {/* Placeholder sezioni future */}
       <PanelAccordion label="Broker" summary="Tutti">
         <p className="sim-panel__hint" style={{ paddingBlock: '0.5rem' }}>
           Filtro broker — disponibile nella v1.1
         </p>
       </PanelAccordion>
-
       <PanelAccordion label="Profilo" summary="Retail">
         <p className="sim-panel__hint" style={{ paddingBlock: '0.5rem' }}>
           Holding period, frequenza, rischio — disponibile nella v1.1
@@ -66,7 +53,6 @@ export function SimulatoreShell() {
     </>
   );
 
-  // Area risultati comune
   const resultsArea = (
     <section
       className="sim-results"
@@ -78,10 +64,10 @@ export function SimulatoreShell() {
           <span className="sim-results__count">{results.length} strumenti analizzati</span>
           <div className="sim-results__legend">
             {[
-              { label: 'Spread',      color: 'var(--s-ac)' },
-              { label: 'Comm.',       color: 'var(--s-gold)' },
-              { label: 'Overnight',  color: 'var(--s-amber)' },
-              { label: 'Slippage',   color: 'var(--s-t3)' },
+              { label: 'Spread',     color: 'var(--s-ac)' },
+              { label: 'Comm.',      color: 'var(--s-gold)' },
+              { label: 'Overnight', color: 'var(--s-amber)' },
+              { label: 'Slippage',  color: 'var(--s-t3)' },
             ].map(l => (
               <span key={l.label} className="sim-results__legend-item">
                 <span className="sim-results__legend-dot" style={{ background: l.color }} />
@@ -91,7 +77,6 @@ export function SimulatoreShell() {
           </div>
         </div>
       )}
-
       {isComputing ? (
         <SimulatoreSkeleton count={4} />
       ) : results.length === 0 ? (
@@ -104,60 +89,57 @@ export function SimulatoreShell() {
 
   return (
     <>
-      {/* ── DESKTOP (≥860px) ─────────────────────────────────── */}
+      {/* ── DESKTOP ≥861px ───────────────────────────────── */}
+      {/*
+        Il panel ha position:relative per ancorare il tab di collapse
+        che sporge sul bordo destro (position:absolute).
+      */}
       <aside
-        className={`sim-panel${
-          collapsed ? ' sim-panel--collapsed' : ''
-        } sim-panel--desktop`}
+        className={`sim-panel${collapsed ? ' sim-panel--collapsed' : ''}`}
         aria-label="Parametri simulazione"
       >
-        {/* Toggle collapse — visibile solo 860-1100px */}
+        {/* Tab laterale collapse — spunta dal bordo destro del panel */}
         <button
           type="button"
-          className="sim-panel__collapse-btn"
+          className="sim-panel__collapse-tab"
           aria-label={collapsed ? 'Espandi parametri' : 'Comprimi parametri'}
           aria-expanded={!collapsed}
           onClick={togglePanel}
         >
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          {/* Chevron: punta a sinistra quando espanso (chiudi), a destra quando collapsed (apri) */}
+          <svg
+            className="sim-panel__collapse-tab-icon"
+            width="10" height="10" viewBox="0 0 10 10"
+            fill="none" aria-hidden="true"
+          >
             <path
-              d={collapsed
-                ? 'M5 3l4 4-4 4'   // chevron destra — espandi
-                : 'M9 3l-4 4 4 4'  // chevron sinistra — comprimi
-              }
+              d={collapsed ? 'M3 2l4 3-4 3' : 'M7 2L3 5l4 3'}
               stroke="currentColor" strokeWidth="1.5"
               strokeLinecap="round" strokeLinejoin="round"
             />
           </svg>
         </button>
 
-        {/* Contenuto panel — nascosto quando collapsed */}
-        {!collapsed && panelContent}
-
-        {/* Icon rail quando collapsed */}
+        {/* Icon rail quando collapsed — indicatori stato visibili */}
         {collapsed && (
           <div className="sim-panel__icon-rail" aria-hidden="true">
-            <span className="sim-panel__rail-icon" title="Esposizione">
-              €
-            </span>
-            <span className="sim-panel__rail-icon" title={assetClass}>
-              {assetClass[0]}
-            </span>
+            <span className="sim-panel__rail-icon" title={`Esposizione: ${exposureSummary}`}>€</span>
+            <span className="sim-panel__rail-icon" title={`Asset: ${assetClass}`}>{assetClass[0]}</span>
+          </div>
+        )}
+
+        {/* Contenuto accordion — nascosto quando collapsed */}
+        {!collapsed && (
+          <div className="sim-panel__content">
+            {panelContent}
           </div>
         )}
       </aside>
 
-      {/* Risultati — desktop */}
-      <div className="sim-panel--desktop" style={{ display: 'contents' }}>
-        {resultsArea}
-      </div>
+      {/* Area risultati desktop — griglia diretta, niente wrapper extra */}
+      {resultsArea}
 
-      {/* ── MOBILE (≤860px) ──────────────────────────────────── */}
-      {/* Results full-screen */}
-      <div className="sim-mobile-results">
-        {resultsArea}
-      </div>
-
+      {/* ── MOBILE ≤860px ─────────────────────────────────── */}
       {/* Bottom sheet */}
       <div
         ref={sheetRef}
@@ -165,7 +147,6 @@ export function SimulatoreShell() {
         aria-label="Parametri simulazione"
         role="complementary"
       >
-        {/* Drag handle + status bar */}
         <div
           className="sim-sheet__handle-area"
           onTouchStart={onTouchStart}
@@ -178,13 +159,9 @@ export function SimulatoreShell() {
         >
           <div className="sim-sheet__drag-bar" aria-hidden="true" />
           <div className="sim-sheet__status">
-            <span className="sim-sheet__status-pill">
-              {exposureSummary}
-            </span>
+            <span className="sim-sheet__status-pill">{exposureSummary}</span>
             <span className="sim-sheet__status-sep" aria-hidden="true">·</span>
-            <span className="sim-sheet__status-pill">
-              {assetSummary}
-            </span>
+            <span className="sim-sheet__status-pill">{assetSummary}</span>
             <svg
               className={`sim-sheet__chevron sim-sheet__chevron--${snap}`}
               width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"
@@ -194,8 +171,6 @@ export function SimulatoreShell() {
             </svg>
           </div>
         </div>
-
-        {/* Contenuto sheet */}
         <div
           className="sim-sheet__content"
           onTouchStart={onTouchStart}
