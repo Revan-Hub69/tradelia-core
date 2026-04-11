@@ -3,43 +3,12 @@
 import Link from 'next/link';
 import { AppConfig } from '@/utils/AppConfig';
 
-function DeltaMark() {
-  return (
-    <svg
-      width="28" height="30"
-      viewBox="0 0 48 52"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-      style={{ flexShrink: 0, display: 'block' }}
-    >
-      <defs>
-        <linearGradient id="sh_dlg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#07C99A" />
-          <stop offset="100%" stopColor="#0594CC" />
-        </linearGradient>
-      </defs>
-      <polygon
-        points="24,4 2,48 46,48"
-        stroke="url(#sh_dlg)"
-        strokeWidth="3"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <polygon points="24,4 2,48 46,48" fill="url(#sh_dlg)" opacity="0.06" />
-      <line x1="16" y1="32" x2="32" y2="32" stroke="url(#sh_dlg)" strokeWidth="2" strokeLinecap="round" opacity="0.7" />
-      <circle cx="24" cy="4" r="3.5" fill="#07C99A" />
-    </svg>
-  );
-}
-
 export function SimulatoreHeader() {
   const handleShare = () => {
     if (typeof window === 'undefined') return;
     const url = window.location.href;
     if (navigator.share) {
-      navigator.share({ title: `${AppConfig.name} — Simulatore`, url });
+      navigator.share({ title: `${AppConfig.name} \u2014 Simulatore`, url });
     } else {
       navigator.clipboard.writeText(url).then(() => {
         const btn = document.querySelector<HTMLButtonElement>('.sim-header__btn-share');
@@ -61,10 +30,30 @@ export function SimulatoreHeader() {
         <Link
           href="/"
           className="sim-logo"
-          aria-label={`${AppConfig.name} — torna alla home`}
-          style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}
+          aria-label={`${AppConfig.name} \u2014 torna alla home`}
+          style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}
         >
-          <DeltaMark />
+          {/* Stesso mark della homepage — T in box verde */}
+          <svg
+            width="26"
+            height="26"
+            viewBox="0 0 32 32"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+            style={{ flexShrink: 0, display: 'block' }}
+          >
+            <rect width="32" height="32" rx="8" fill="var(--s-ac)" />
+            <path
+              d="M8 11h16M16 11v12"
+              stroke="white"
+              strokeWidth="3"
+              strokeLinecap="round"
+            />
+            <circle cx="22" cy="11" r="2" fill="rgba(255,255,255,0.6)" />
+          </svg>
+
+          {/* Wordmark bianco su dark */}
           <span style={{
             fontWeight: 700,
             fontSize: '0.9375rem',
@@ -93,7 +82,8 @@ export function SimulatoreHeader() {
             onClick={handleShare}
           >
             <svg className="sim-header__share-icon sim-header__share-icon--default" width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
-              <path d="M10.5 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4zM4.5 5.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4zM10.5 9a2 2 0 1 1 0 4 2 2 0 0 1 0-4z" stroke="currentColor" strokeWidth="1.25"/>
+              <path d="M10.5 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4zM4.5 5.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4z" stroke="currentColor" strokeWidth="1.25"/>
+              <path d="M10.5 9a2 2 0 1 1 0 4 2 2 0 0 1 0-4z" stroke="currentColor" strokeWidth="1.25"/>
               <path d="M6.35 6.35l2.3-1.2M6.35 8.65l2.3 1.2" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round"/>
             </svg>
             <svg className="sim-header__share-icon sim-header__share-icon--copied" width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
