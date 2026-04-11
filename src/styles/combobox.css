@@ -1,6 +1,6 @@
 /*
- * combobox.css — AssetCombobox SOTA 2026
- * Custom combobox searchable: trigger + dropdown + keyboard nav
+ * combobox.css — AssetCombobox SOTA 2026 v2
+ * Clear sempre visibile, hover forti, dropdown connesso al trigger
  */
 
 /* ─── CONTAINER ───────────────────────────────────────────────────────── */
@@ -9,7 +9,6 @@
   width: 100%;
   font-family: var(--s-sans);
 }
-
 .sim-combobox--disabled {
   opacity: 0.40;
   pointer-events: none;
@@ -37,7 +36,8 @@
 }
 .sim-combobox__trigger:hover {
   border-color: var(--s-ac);
-  background: var(--s-s3);
+  background: var(--s-s4);
+  box-shadow: 0 0 0 1px rgba(64,168,184,0.25);
 }
 .sim-combobox--open .sim-combobox__trigger {
   border-color: var(--s-ac);
@@ -51,7 +51,7 @@
   outline-offset: 2px;
 }
 
-/* ─── SEARCH INPUT (dentro trigger quando open) ────────────────────────── */
+/* ─── SEARCH INPUT ───────────────────────────────────────────────────── */
 .sim-combobox__search {
   flex: 1;
   height: 100%;
@@ -64,15 +64,13 @@
   font-family: var(--s-sans);
   min-width: 0;
 }
-.sim-combobox__search::placeholder {
-  color: var(--s-t3);
-}
+.sim-combobox__search::placeholder { color: var(--s-t3); }
 
 /* ─── VALUE / PLACEHOLDER ─────────────────────────────────────────────── */
 .sim-combobox__value {
   flex: 1;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--s-t1);
   font-family: var(--s-mono);
   white-space: nowrap;
@@ -84,6 +82,7 @@
   color: var(--s-t3);
   font-family: var(--s-sans);
   font-weight: 400;
+  font-size: 13px;
 }
 
 /* ─── ACTIONS (clear + chevron) ───────────────────────────────────────── */
@@ -92,23 +91,31 @@
   align-items: center;
   gap: 4px;
   flex-shrink: 0;
-  color: var(--s-t3);
 }
 
+/*
+ * Clear button — sempre visibile quando c'è un valore selezionato.
+ * Background permanente (non solo su hover) = non si mimetizza.
+ */
 .sim-combobox__clear {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   cursor: pointer;
+  flex-shrink: 0;
+  /* Visibile di default — sfondo permanente */
   color: var(--s-t2);
-  transition: color var(--s-ease), background var(--s-ease);
+  background: var(--s-s4);
+  border: 1px solid var(--s-line3);
+  transition: color var(--s-ease), background var(--s-ease), border-color var(--s-ease);
 }
 .sim-combobox__clear:hover {
   color: var(--s-t1);
-  background: var(--s-s5);
+  background: var(--s-ac-dim);
+  border-color: var(--s-ac);
 }
 
 .sim-combobox__chevron {
@@ -116,6 +123,7 @@
   align-items: center;
   color: var(--s-t3);
   transition: transform var(--s-ease), color var(--s-ease);
+  flex-shrink: 0;
 }
 .sim-combobox__chevron--up {
   transform: rotate(180deg);
@@ -176,7 +184,7 @@
   user-select: none;
 }
 .sim-combobox__option--active {
-  background: var(--s-s3);
+  background: var(--s-s4);
   color: var(--s-t1);
 }
 .sim-combobox__option--selected {
@@ -186,14 +194,12 @@
 .sim-combobox__option--selected.sim-combobox__option--active {
   background: var(--s-ac-dim);
 }
-
 .sim-combobox__option-text {
   flex: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .sim-combobox__check {
   flex-shrink: 0;
   color: var(--s-ac);

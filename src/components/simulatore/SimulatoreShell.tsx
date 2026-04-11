@@ -35,10 +35,10 @@ type FreqOption = { id: FreqId; label: string; hint: string };
 type FreqConfig = { unit: string; options: FreqOption[] };
 
 const FREQ_BY_STYLE: Record<StyleType, FreqConfig> = {
-  scalping: { unit: 'al giorno',     options: [{ id:'low', label:'Bassa',   hint:'5–10 trade' }, { id:'mid', label:'Media',   hint:'20–50 trade' }, { id:'high', label:'Intensa', hint:'100+ trade'  }] },
-  intraday: { unit: 'al giorno',     options: [{ id:'low', label:'Bassa',   hint:'1–2 trade'  }, { id:'mid', label:'Media',   hint:'3–5 trade'   }, { id:'high', label:'Intensa', hint:'10+ trade'   }] },
-  swing:    { unit: 'a settimana',   options: [{ id:'low', label:'Bassa',   hint:'1–2 trade'  }, { id:'mid', label:'Media',   hint:'3–5 trade'   }, { id:'high', label:'Intensa', hint:'10+ trade'   }] },
-  position: { unit: 'al mese',       options: [{ id:'low', label:'Bassa',   hint:'1–2 trade'  }, { id:'mid', label:'Media',   hint:'3–5 trade'   }, { id:'high', label:'Intensa', hint:'10+ trade'   }] },
+  scalping: { unit: 'al giorno',   options: [{ id:'low', label:'Bassa',   hint:'5–10 trade' }, { id:'mid', label:'Media',   hint:'20–50 trade' }, { id:'high', label:'Intensa', hint:'100+ trade' }] },
+  intraday: { unit: 'al giorno',   options: [{ id:'low', label:'Bassa',   hint:'1–2 trade'  }, { id:'mid', label:'Media',   hint:'3–5 trade'   }, { id:'high', label:'Intensa', hint:'10+ trade'  }] },
+  swing:    { unit: 'a settimana', options: [{ id:'low', label:'Bassa',   hint:'1–2 trade'  }, { id:'mid', label:'Media',   hint:'3–5 trade'   }, { id:'high', label:'Intensa', hint:'10+ trade'  }] },
+  position: { unit: 'al mese',     options: [{ id:'low', label:'Bassa',   hint:'1–2 trade'  }, { id:'mid', label:'Media',   hint:'3–5 trade'   }, { id:'high', label:'Intensa', hint:'10+ trade'  }] },
 };
 
 const ACCOUNT_OPTIONS: { id: AccountType; label: string; range: string }[] = [
@@ -50,10 +50,10 @@ const ACCOUNT_OPTIONS: { id: AccountType; label: string; range: string }[] = [
 ];
 
 const LEVA_OPTIONS: { id: LevaType; label: string; hint: string }[] = [
-  { id: 'nessuna', label: 'Nessuna', hint: '1:1'           },
-  { id: 'bassa',   label: 'Bassa',   hint: '1:2 – 1:5'     },
-  { id: 'media',   label: 'Media',   hint: '1:10 – 1:20'   },
-  { id: 'alta',    label: 'Alta',    hint: '1:50 – 1:500'  },
+  { id: 'nessuna', label: 'Nessuna', hint: '1:1'          },
+  { id: 'bassa',   label: 'Bassa',   hint: '1:2 – 1:5'    },
+  { id: 'media',   label: 'Media',   hint: '1:10 – 1:20'  },
+  { id: 'alta',    label: 'Alta',    hint: '1:50 – 1:500' },
 ];
 
 /* ─── CHIP GROUP ──────────────────────────────────────────────────────── */
@@ -68,8 +68,7 @@ function ChipGroup<T extends string>({
     <div className="sim-chips">
       {options.map(o => (
         <button
-          key={o.id} type="button"
-          className="sim-chip"
+          key={o.id} type="button" className="sim-chip"
           data-active={value === o.id ? 'true' : 'false'}
           aria-pressed={value === o.id}
           onClick={() => onChange(o.id)}
@@ -91,8 +90,7 @@ function StringChipGroup({
     <div className="sim-chips">
       {options.map(o => (
         <button
-          key={o} type="button"
-          className="sim-chip"
+          key={o} type="button" className="sim-chip"
           data-active={value === o ? 'true' : 'false'}
           aria-pressed={value === o}
           onClick={() => onChange(o)}
@@ -103,11 +101,18 @@ function StringChipGroup({
 }
 
 /* ─── SECTION + BLOCK DIVIDER ─────────────────────────────────────────── */
-function Section({ label, value, hint, children }: {
-  label: string; value?: string; hint?: string; children: React.ReactNode;
+function Section({ label, value, hint, children, variant }: {
+  label: string; value?: string; hint?: string;
+  children: React.ReactNode;
+  variant?: 'child' | 'asset';
 }) {
+  const cls = variant === 'asset'
+    ? 'sim-section sim-section--asset'
+    : variant === 'child'
+    ? 'sim-section sim-section--child'
+    : 'sim-section';
   return (
-    <div className="sim-section">
+    <div className={cls}>
       <div className="sim-section__header">
         <span className="sim-section__label">{label}</span>
         {value && <span className="sim-section__value sim-num">{value}</span>}
@@ -124,10 +129,7 @@ function BlockDivider({ label }: { label: string }) {
 
 /* ─── SHELL ───────────────────────────────────────────────────────────── */
 export function SimulatoreShell() {
-  const {
-    assetClass, setAssetClass,
-    results, isComputing,
-  } = useSimulatorEngine();
+  const { assetClass, setAssetClass, results, isComputing } = useSimulatorEngine();
 
   const [subGroup, setSubGroup] = useState<string | null>(null);
   const [asset,    setAsset]    = useState<string | null>(null);
@@ -137,8 +139,6 @@ export function SimulatoreShell() {
   const [leva,     setLeva]     = useState<LevaType>('nessuna');
 
   const groups = assetClass ? Object.keys(ASSET_TREE[assetClass] ?? {}) : [];
-
-  // Opzioni combobox: tutti gli asset del sottogruppo selezionato, con group label
   const comboOptions = assetClass && subGroup
     ? (ASSET_TREE[assetClass]?.[subGroup] ?? []).map(v => ({ value: v, group: subGroup }))
     : [];
@@ -147,45 +147,40 @@ export function SimulatoreShell() {
   const handleSubChange   = (s: string) => { setSubGroup(s);   setAsset(null); };
   const handleStyleChange = (s: StyleType) => { setStyle(s); setFreq('mid'); };
 
-  // Blocco profilo visibile solo dopo selezione asset
   const profiloReady = !!asset;
+  const freqConfig   = FREQ_BY_STYLE[style];
+  const freqCurrent  = freqConfig.options.find(o => o.id === freq);
+  const freqLabel    = freqCurrent ? `${freqCurrent.hint} ${freqConfig.unit}` : '';
+  const levaLabel    = LEVA_OPTIONS.find(o => o.id === leva)?.hint ?? '';
 
-  const freqConfig  = FREQ_BY_STYLE[style];
-  const freqCurrent = freqConfig.options.find(o => o.id === freq);
-  const freqLabel   = freqCurrent ? `${freqCurrent.hint} ${freqConfig.unit}` : '';
-  const levaLabel   = LEVA_OPTIONS.find(o => o.id === leva)?.hint ?? '';
-
-  const { snap, toggle: toggleSheet, onTouchStart, onTouchMove, onTouchEnd, sheetRef } =
-    usePanelSheet();
-
+  const { snap, toggle: toggleSheet, onTouchStart, onTouchMove, onTouchEnd, sheetRef } = usePanelSheet();
   const statusAsset   = asset ?? subGroup ?? assetClass ?? '—';
   const statusAccount = ACCOUNT_OPTIONS.find(o => o.id === account)?.label ?? '—';
 
   /* ── PANEL CONTENT ──────────────────────────────────────────────────── */
   const panelContent = (
     <>
-      {/* ══ BLOCCO 1 — STRUMENTO ══ */}
       <BlockDivider label="Strumento" />
 
+      {/* Livello 1 — Categoria */}
       <Section label="Categoria" value={assetClass ?? '—'}>
-        <StringChipGroup
-          options={Object.keys(ASSET_TREE)}
-          value={assetClass}
-          onChange={handleGroupChange}
-        />
+        <StringChipGroup options={Object.keys(ASSET_TREE)} value={assetClass} onChange={handleGroupChange} />
       </Section>
 
+      {/* Livello 2 — Sottogruppo (indentato, linea grigia) */}
       {assetClass && (
-        <Section label="Sottogruppo" value={subGroup ?? '—'}>
+        <Section label="Sottogruppo" value={subGroup ?? '—'} variant="child">
           <StringChipGroup options={groups} value={subGroup} onChange={handleSubChange} />
         </Section>
       )}
 
+      {/* Livello 3 — Asset combobox (indentato, linea teal) */}
       {subGroup && (
         <Section
           label="Asset"
           value={asset ?? undefined}
           hint="Spread e costi sono specifici per asset"
+          variant="asset"
         >
           <AssetCombobox
             options={comboOptions}
@@ -196,8 +191,7 @@ export function SimulatoreShell() {
         </Section>
       )}
 
-      {/* ══ BLOCCO 2 — IL TUO PROFILO ══
-           Visibile solo dopo aver selezionato un asset */}
+      {/* Blocco profilo — gated su asset selezionato */}
       {profiloReady && (
         <>
           <BlockDivider label="Il tuo profilo" />
@@ -251,7 +245,7 @@ export function SimulatoreShell() {
     </>
   );
 
-  /* ── RESULTS AREA ───────────────────────────────────────────────────── */
+  /* ── RESULTS AREA ── */
   const resultsArea = (
     <section className="sim-results" aria-label="Risultati simulazione" aria-live="polite">
       {!isComputing && results.length > 0 && (
@@ -272,13 +266,12 @@ export function SimulatoreShell() {
           </div>
         </div>
       )}
-      {isComputing ? (
-        <SimulatoreSkeleton count={4} />
-      ) : results.length === 0 ? (
-        <SimResultsEmpty />
-      ) : (
-        <ScoreCardList results={results} />
-      )}
+      {isComputing
+        ? <SimulatoreSkeleton count={4} />
+        : results.length === 0
+        ? <SimResultsEmpty />
+        : <ScoreCardList results={results} />
+      }
     </section>
   );
 
