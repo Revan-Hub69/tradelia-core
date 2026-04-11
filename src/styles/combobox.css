@@ -1,8 +1,9 @@
 /*
- * combobox.css — AssetCombobox SOTA 2026 v4
- * Portal dropdown (position fixed via inline style),
- * clear badge rosso top-right assoluto,
- * cursor pointer inline sui li
+ * combobox.css — AssetCombobox v5
+ * Dropdown via @floating-ui/react FloatingPortal:
+ * - Il <ul> viene montato in <body> con position:fixed iniettato inline da floatingStyles
+ * - Il CSS qui NON deve dichiarare position/top/left/width su __list
+ * - Il trigger aperto mantiene border-radius pieno (il dropdown è in body, non attaccato)
  */
 
 /* ─── CONTAINER ───────────────────────────────────────────────────────── */
@@ -24,7 +25,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 0 32px 0 12px;   /* spazio a destra per chevron */
+  padding: 0 32px 0 12px;
   background: var(--s-s2);
   border: 1px solid var(--s-line3);
   border-radius: var(--s-r2);
@@ -42,12 +43,11 @@
   background: var(--s-s4);
   box-shadow: 0 0 0 1px rgba(64,168,184,0.25);
 }
+/* Aperto: border-radius COMPLETO — il dropdown è in body, non sotto il trigger */
 .sim-combobox--open .sim-combobox__trigger {
   border-color: var(--s-ac);
   background: var(--s-s2);
   box-shadow: 0 0 0 3px rgba(64,168,184,0.15);
-  border-bottom-left-radius:  0;
-  border-bottom-right-radius: 0;
 }
 .sim-combobox__trigger:focus-visible {
   outline: 2px solid var(--s-ac);
@@ -104,39 +104,30 @@
   color: var(--s-ac);
 }
 
-/* ─── CLEAR — badge rosso, top-right del container ─────────────────── */
-/*
- * Posizionato rispetto al .sim-combobox (position:relative).
- * top: -6px, right: -6px = sopra e a destra del trigger,
- * come un badge di notifica. Rosso = inequivocabilmente "rimuovi".
- */
+/* ─── CLEAR — badge rosso top-right ─────────────────────────────────── */
 .sim-combobox__clear {
   position: absolute;
   top:   -7px;
   right: -7px;
   z-index: 20;
-
   display: flex;
   align-items: center;
   justify-content: center;
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  border: 1.5px solid var(--s-bg);   /* anello scuro che lo stacca dal trigger */
+  border: 1.5px solid var(--s-bg);
   padding: 0;
   cursor: pointer;
-
-  /* Rosso — universalmente riconosciuto come "rimuovi" */
   color: #fff;
   background: var(--s-red);
-
   transition:
     background  var(--s-ease),
     transform   var(--s-ease),
     box-shadow  var(--s-ease);
 }
 .sim-combobox__clear:hover {
-  background: #e0307a;    /* red più acceso su hover */
+  background: #e0307a;
   transform: scale(1.2);
   box-shadow: 0 0 0 3px rgba(196,85,144,0.30);
 }
@@ -145,23 +136,21 @@
   outline-offset: 2px;
 }
 
-/* ─── DROPDOWN (Portal — position absolute via inline style) ────────── */
+/* ─── DROPDOWN ────────────────────────────────────────────────────────── */
 /*
- * Il <ul> viene renderizzato in <body> tramite createPortal.
- * Le coordinate top/left/width vengono iniettate come style inline.
- * Qui definiamo solo l'aspetto, NON position/top/left/width.
+ * IMPORTANTE: position, top, left, width sono iniettati da floatingStyles (inline)
+ * da @floating-ui/react. NON dichiarare qui position:absolute/fixed/top/left/width.
+ * Il z-index qui viene sovrascritto dall'inline solo se non è !important,
+ * quindi lo lasciamo come fallback.
  */
 .sim-combobox__list {
   z-index: 9999;
-
   max-height: 220px;
   overflow-y: auto;
   overflow-x: hidden;
   list-style: none;
   margin: 0;
   padding: 4px 0;
-
-  /* Sfondo solido più scuro del panel — non trasparente */
   background: #111110;
   border: 1px solid var(--s-ac);
   border-radius: var(--s-r2);
@@ -169,11 +158,8 @@
     0 16px 48px rgba(0,0,0,0.70),
     0  4px 16px rgba(0,0,0,0.50),
     0  0   0 1px rgba(64,168,184,0.10) inset;
-
   scrollbar-width: thin;
   scrollbar-color: var(--s-s5) transparent;
-
-  /* Font dal parent non ereditato via portal: ridichiarazione */
   font-family: var(--s-mono, ui-monospace, monospace);
   color: #a8a7a4;
 }
@@ -206,7 +192,6 @@
   user-select: none;
   transition: background 120ms ease, color 120ms ease;
 }
-/* CSS hover diretto — funziona sempre, anche senza JS active */
 .sim-combobox__option:hover {
   background: #313130;
   color: #f0efed;
