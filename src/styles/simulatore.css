@@ -1,11 +1,12 @@
 /*
  * simulatore.css — Tradelia Simulatore standalone
- * v3: fix overflow + collapse tab laterale + layout grid corretto
+ * v4: fix overflow chain + collapse-tab overflow:visible su panel
  */
 
-@import url('https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap');
+/* Font caricati via Google Fonts (permesso da CSP) */
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap');
 
-/* ─── TOKENS ──────────────────────────────────────────── */
+/* ─── TOKENS ─────────────────────────────────────────────────── */
 .sim-root {
   --s-bg:   #0c0c0b;
   --s-s0:   #111110;
@@ -42,16 +43,17 @@
   --s-r3: 12px;
   --s-r4: 16px;
 
-  --s-ease: 160ms cubic-bezier(0.16, 1, 0.3, 1);
+  --s-ease:        160ms cubic-bezier(0.16, 1, 0.3, 1);
   --s-ease-spring: 400ms cubic-bezier(0.16, 1, 0.3, 1);
 
-  --s-sans: 'General Sans', 'Inter', system-ui, sans-serif;
-  --s-mono: 'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;
+  /* Inter è già caricato dal root layout come --font-body.
+     Geist Mono viene da Google Fonts (CSP ok dopo fix). */
+  --s-sans: var(--font-body, 'Inter', system-ui, sans-serif);
+  --s-mono: 'Geist Mono', var(--font-mono, ui-monospace, monospace);
 
-  --s-hh:  52px;
-  --s-pw:  320px;
-  --s-pwr: 48px;
-  --s-sh:  90vh;
+  --s-hh:  52px;   /* altezza header */
+  --s-pw:  320px;  /* larghezza panel espanso */
+  --s-pwr: 48px;   /* larghezza panel collapsed (icon rail) */
 
   font-family: var(--s-sans);
   font-size: 14px;
@@ -68,32 +70,30 @@
   padding: 0;
 }
 
-/* ─── ROOT LAYOUT ────────────────────────────────────────── */
-/*
-  .sim-root è il contenitore di pagina.
-  Su desktop il layout è a due colonne: panel | results.
-  Entrambe le colonne sono alte esattamente 100dvh - header,
-  con overflow interno — così il contenuto NON esce mai
-  dal viewport.
-*/
+/* ─── ROOT LAYOUT ──────────────────────────────────────────────
+  .sim-root occupa 100dvh.
+  html+body sono forzati a height:100%+overflow:hidden
+  dal <style> inline nel layout.tsx (scoped con :has(.sim-root)).
+  Questo chiude la chain di altezza:
+    html(100%) → body(100%) → .sim-root(100dvh)
+    → .sim-main(height:100%) → panel/results(height:100%)
+  Ogni colonna scrolla internamente. Niente sfonda il viewport.
+──────────────────────────────────────────────────────────────── */
 .sim-root {
   display: grid;
   grid-template-rows: var(--s-hh) 1fr;
   height: 100dvh;
-  overflow: hidden;   /* FIX overflow: niente scroll a livello root */
+  overflow: hidden;
 }
 
-.sim-header {
-  grid-row: 1;
-  /* header styles sotto */
-}
+.sim-header { grid-row: 1; }
 
 .sim-main {
   grid-row: 2;
   display: grid;
   grid-template-columns: var(--s-pw) 1fr;
-  height: 100%;       /* prende esattamente lo spazio rimanente */
-  overflow: hidden;   /* i figli scrollano internamente */
+  height: 100%;
+  overflow: hidden;
   transition: grid-template-columns var(--s-ease-spring);
 }
 
@@ -102,21 +102,22 @@
   grid-template-columns: var(--s-pwr) 1fr;
 }
 
-/* ─── MOBILE ≤860px ───────────────────────────────────────── */
+/* ─── MOBILE ≤860px ─────────────────────────────────────────── */
 @media (max-width: 860px) {
-  .sim-root   { overflow: auto; }  /* scroll normale su mobile */
-  .sim-main   { grid-template-columns: 1fr; height: auto; overflow: visible; padding-bottom: 72px; }
-  .sim-panel  { display: none !important; }
-  .sim-sheet  { display: flex; }
+  /* Su mobile html/body tornano auto (gestito dal layout :has) */
+  .sim-root  { height: auto; overflow: visible; }
+  .sim-main  { grid-template-columns: 1fr; height: auto; overflow: visible; padding-bottom: 72px; }
+  .sim-panel { display: none !important; }
+  .sim-sheet { display: flex; }
 }
 
-/* ─── DESKTOP ≥861px ───────────────────────────────────────── */
+/* ─── DESKTOP ≥861px ────────────────────────────────────────── */
 @media (min-width: 861px) {
   .sim-panel { display: flex; }
   .sim-sheet { display: none; }
 }
 
-/* ─── HEADER ────────────────────────────────────────────── */
+/* ─── HEADER ───────────────────────────────────────────────── */
 .sim-header {
   height: var(--s-hh);
   display: grid;
@@ -132,12 +133,9 @@
   z-index: 200;
 }
 
-.sim-header__left  { display: flex; align-items: center; }
-.sim-header__right { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
-.sim-header__center {
-  display: flex; align-items: center; gap: 6px;
-  color: var(--s-t2); white-space: nowrap;
-}
+.sim-header__left   { display: flex; align-items: center; }
+.sim-header__right  { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
+.sim-header__center { display: flex; align-items: center; gap: 6px; color: var(--s-t2); white-space: nowrap; }
 .sim-header__title    { color: var(--s-t1); font-size: 13px; font-weight: 500; }
 .sim-header__subtitle { font-size: 12px; color: var(--s-t2); }
 
@@ -174,83 +172,103 @@
   .sim-header { padding-inline: 1rem; }
 }
 
-/* ─── PANEL ───────────────────────────────────────────────── */
+/* ─── PANEL ─────────────────────────────────────────────────── */
 .sim-panel {
   background: var(--s-s1);
   border-right: 1px solid var(--s-line);
   flex-direction: column;
-  height: 100%;         /* riempie il grid row 2 */
-  overflow-y: auto;     /* scorre internamente */
-  overflow-x: hidden;
-  position: relative;   /* ancora il tab di collapse */
-  scrollbar-width: thin;
-  scrollbar-color: var(--s-s5) transparent;
-  transition: width var(--s-ease-spring);
+  height: 100%;
+  /*
+    CRITICO: overflow-y:auto per scorrere il contenuto,
+    MA overflow-x deve essere VISIBLE perché il collapse-tab
+    sporge di ~20px oltre il bordo destro con position:absolute.
+    overflow-y:auto + overflow-x:visible non funziona in CSS
+    (se un asse è auto/scroll, l'altro non può essere visible).
+    Soluzione: usiamo overflow:visible sul panel e mettiamo
+    lo scroll su .sim-panel__content internamente.
+  */
+  overflow: visible;
+  position: relative; /* ancora il collapse-tab */
   width: var(--s-pw);
   flex-shrink: 0;
+  transition: width var(--s-ease-spring);
 }
-.sim-panel::-webkit-scrollbar { width: 4px; }
-.sim-panel::-webkit-scrollbar-thumb { background: var(--s-s5); border-radius: 99px; }
 
 .sim-panel--collapsed {
   width: var(--s-pwr);
-  overflow: hidden;
+  /* NON overflow:hidden — taglierebbe il tab */
 }
 
-/* Wrapper del contenuto accordion — padding uniforme */
+/* Scroll interno: solo il contenuto scorre, non il panel intero */
 .sim-panel__content {
   display: flex;
   flex-direction: column;
-  padding-top: 4px;   /* piccolo respiro sopra il primo accordion */
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--s-s5) transparent;
+  padding-top: 4px;
 }
+.sim-panel__content::-webkit-scrollbar { width: 4px; }
+.sim-panel__content::-webkit-scrollbar-thumb { background: var(--s-s5); border-radius: 99px; }
 
-/* ─── COLLAPSE TAB LATERALE ──────────────────────────────────── */
-/*
-  Il tab sporge sul bordo destro del panel, centrato verticalmente.
-  Pattern usato da Linear, Figma sidebar, VS Code activity bar.
-  È incollato al bordo con position:absolute right:-1px,
-  così copre il border-right del panel e si fonde visivamente.
-  Visibile SOLO nella finestra tablet 861-1100px.
-*/
+/* ─── COLLAPSE TAB LATERALE ──────────────────────────────────
+  Pattern Linear/Figma: un tab che spunta dal bordo destro
+  del panel, centrato verticalmente, con forma a linguetta.
+
+  PERCHÉ position:absolute funziona:
+  - .sim-panel ha position:relative e overflow:visible
+  - il tab è a right:-16px → spunta di 16px oltre il panel
+  - border-left:none → si fonde col bordo destro del panel
+  - border-radius 0 sul lato sinistro, arrotondato a destra
+
+  Visibile solo 861-1100px (tablet/small desktop).
+  Su desktop largo (>1100px) il panel è sempre espanso.
+──────────────────────────────────────────────────────────────── */
 .sim-panel__collapse-tab {
-  display: none;  /* nascosto di default */
+  /* nascosto di default, reso flex dal media query sotto */
+  display: none;
+
   position: absolute;
-  right: -16px;            /* spunta di 15px oltre il bordo */
+  right: -16px;           /* spunta oltre il bordo del panel */
   top: 50%;
   transform: translateY(-50%);
-  z-index: 10;
+  z-index: 20;            /* sopra .sim-results */
 
   width: 16px;
   height: 48px;
   align-items: center;
   justify-content: center;
 
-  background: var(--s-s2);
+  background: var(--s-s3);
   border: 1px solid var(--s-line2);
-  border-left: none;       /* si fonde col panel */
+  border-left: none;      /* si fonde col panel */
   border-radius: 0 var(--s-r2) var(--s-r2) 0;
 
   color: var(--s-t3);
   cursor: pointer;
   transition:
-    color var(--s-ease),
-    background var(--s-ease),
-    right var(--s-ease);
+    width     var(--s-ease),
+    right     var(--s-ease),
+    color     var(--s-ease),
+    background var(--s-ease);
 }
 
-/* Hover: si allarga leggermente e si illumina */
+/* Hover: si allarga, si illumina */
 .sim-panel__collapse-tab:hover {
   right: -20px;
   width: 20px;
   color: var(--s-t1);
-  background: var(--s-s3);
+  background: var(--s-s4);
 }
 
 /* Active: feedback pressione */
 .sim-panel__collapse-tab:active {
-  background: var(--s-s4);
-  right: -14px;
-  width: 14px;
+  right: -13px;
+  width: 13px;
+  background: var(--s-s5);
+  transition-duration: 80ms;
 }
 
 .sim-panel__collapse-tab:focus-visible {
@@ -258,17 +276,12 @@
   outline-offset: 2px;
 }
 
-.sim-panel__collapse-tab-icon {
-  flex-shrink: 0;
-  transition: transform var(--s-ease);
-}
-
-/* Visibile solo 861-1100px */
+/* Visibile solo nella finestra tablet 861-1100px */
 @media (min-width: 861px) and (max-width: 1100px) {
   .sim-panel__collapse-tab { display: flex; }
 }
 
-/* Icon rail */
+/* Icon rail (quando collapsed) */
 .sim-panel__icon-rail {
   display: flex;
   flex-direction: column;
@@ -288,9 +301,8 @@
 }
 .sim-panel__rail-icon:hover { background: var(--s-s4); color: var(--s-t1); }
 
-/* ─── ACCORDION ────────────────────────────────────────────── */
+/* ─── ACCORDION ─────────────────────────────────────────────── */
 .sim-accordion { border-bottom: 1px solid var(--s-line); }
-.sim-accordion:first-child { border-top: none; }  /* il wrapper .sim-panel__content ha già il padding top */
 
 .sim-accordion__trigger {
   width: 100%;
@@ -302,6 +314,10 @@
   color: var(--s-t1);
   transition: background var(--s-ease);
   min-height: 44px;
+  background: none;
+  border: none;
+  font-family: var(--s-sans);
+  text-align: left;
 }
 .sim-accordion__trigger:hover { background: var(--s-s2); }
 .sim-accordion__trigger:focus-visible { outline: 2px solid var(--s-ac); outline-offset: -2px; }
@@ -349,14 +365,14 @@
   min-height: 0;
 }
 
-/* ─── PANEL UTILITIES ──────────────────────────────────────── */
+/* ─── PANEL UTILITIES ───────────────────────────────────────── */
 .sim-panel__hint {
   font-size: 12px;
   color: var(--s-t2);
   line-height: 1.45;
 }
 
-/* ─── EXPOSURE INPUT ─────────────────────────────────────── */
+/* ─── EXPOSURE INPUT ────────────────────────────────────────── */
 .sim-exposure { display: flex; flex-direction: column; gap: 10px; }
 
 .sim-exposure__field {
@@ -435,7 +451,7 @@
   color: var(--s-ac); border-color: var(--s-ac); background: var(--s-ac-dim); font-weight: 600;
 }
 
-/* ─── ASSET CHIPS ─────────────────────────────────────────── */
+/* ─── ASSET CHIPS ───────────────────────────────────────────── */
 .sim-chips { display: flex; flex-wrap: wrap; gap: 4px; }
 .sim-chip {
   height: 28px; padding-inline: 10px;
@@ -451,26 +467,20 @@
 .sim-chip:focus-visible { outline: 2px solid var(--s-ac); outline-offset: 2px; }
 
 /* ─── RESULTS ───────────────────────────────────────────────── */
-/*
-  .sim-results è la colonna destra del grid.
-  height:100% + overflow-y:auto = scorre internamente,
-  il contenuto non esce mai dal viewport.
-*/
 .sim-results {
   background: var(--s-bg);
   padding: 1.25rem 1.5rem 2rem;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  height: 100%;       /* FIX: occupa esattamente il grid cell */
-  overflow-y: auto;   /* FIX: scorre internamente */
+  height: 100%;
+  overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: thin;
   scrollbar-color: var(--s-s5) transparent;
 }
 
 @media (max-width: 860px) {
-  /* Su mobile non c'è altezza fissa — scorre con la pagina */
   .sim-results {
     height: auto;
     overflow-y: visible;
@@ -492,7 +502,7 @@
 .sim-results__legend-item { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--s-t3); }
 .sim-results__legend-dot  { width: 6px; height: 6px; border-radius: 50%; }
 
-/* ─── SCORE CARD ───────────────────────────────────────────── */
+/* ─── SCORE CARD ────────────────────────────────────────────── */
 .sim-card {
   background: var(--s-s1); border: 1px solid var(--s-line);
   border-radius: var(--s-r3); padding: 1rem 1.125rem;
@@ -548,7 +558,7 @@
   .sim-card__cost-detail { display: none; }
 }
 
-/* ─── BADGE ────────────────────────────────────────────────── */
+/* ─── BADGE ─────────────────────────────────────────────────── */
 .sim-badge {
   display: inline-flex; align-items: center; gap: 4px;
   height: 18px; padding-inline: 6px; border-radius: var(--s-r1);
@@ -564,23 +574,23 @@
 .sim-badge--warning    { color: var(--s-amber);  background: var(--s-amber-dim); }
 .sim-badge--infeasible { color: var(--s-red);    background: var(--s-red-dim); }
 
-/* ─── BOTTOM SHEET ───────────────────────────────────────────── */
+/* ─── BOTTOM SHEET ──────────────────────────────────────────── */
 .sim-sheet {
   position: fixed;
   bottom: 0; left: 0; right: 0;
   z-index: 100;
-  height: var(--s-sh);
+  height: 90vh;
   flex-direction: column;
   background: var(--s-s1);
   border-radius: 16px 16px 0 0;
   border-top: 1px solid var(--s-line2);
   transition: transform var(--s-ease-spring);
-  transform: translateY(calc(var(--s-sh) - 64px));
+  transform: translateY(calc(90vh - 64px));
   will-change: transform;
   touch-action: none;
 }
-.sim-sheet--collapsed { transform: translateY(calc(var(--s-sh) - 64px)); }
-.sim-sheet--half      { transform: translateY(calc(var(--s-sh) - 50vh)); }
+.sim-sheet--collapsed { transform: translateY(calc(90vh - 64px)); }
+.sim-sheet--half      { transform: translateY(calc(90vh - 50vh)); }
 .sim-sheet--full      { transform: translateY(0); }
 
 .sim-sheet__handle-area {
@@ -626,7 +636,7 @@
 }
 .sim-sheet__chevron--collapsed,
 .sim-sheet__chevron--half { transform: rotate(0deg); }
-.sim-sheet__chevron--full { transform: rotate(180deg); }
+.sim-sheet__chevron--full  { transform: rotate(180deg); }
 
 .sim-sheet__content {
   flex: 1;
