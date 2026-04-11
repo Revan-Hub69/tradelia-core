@@ -1,8 +1,8 @@
 'use client';
 
 import { Link } from '@/libs/i18nNavigation';
-import { cn } from '@/utils/Helpers';
 import { AppConfig } from '@/utils/AppConfig';
+import { cn } from '@/utils/Helpers';
 
 type LogoProps = {
   isTextHidden?: boolean;
@@ -12,100 +12,84 @@ type LogoProps = {
   asChild?: boolean;
 };
 
-const SIZE_MAP = { sm: 36, md: 42, lg: 52 };
+/**
+ * Tradelia Logo
+ *
+ * Wordmark con gradient diagonale sharp 45°
+ * Usa le CSS var del tema — light e dark corretti automaticamente.
+ */
+export const Logo = ({ isTextHidden = false, size = 'md', href, className, asChild = false }: LogoProps) => {
+  const sizes = {
+    sm: { icon: 'size-6', text: 'text-lg', gap: 'gap-2' },
+    md: { icon: 'size-7', text: 'text-xl', gap: 'gap-2.5' },
+    lg: { icon: 'size-8', text: 'text-2xl', gap: 'gap-3' },
+  };
 
-function DeltaMark({ px }: { px: number }) {
-  // viewBox 48×52
-  // top=(24,4) bl=(2,48) br=(46,48)
-  // benchmark bar at y=32: left edge=16, right edge=32
-  return (
-    <svg
-      width={px}
-      height={Math.round(px * 52 / 48)}
-      viewBox="0 0 48 52"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-      style={{ flexShrink: 0, display: 'block' }}
-    >
-      <defs>
-        <linearGradient id="dlg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#07C99A" />
-          <stop offset="100%" stopColor="#0594CC" />
-        </linearGradient>
-      </defs>
-      {/* Delta outline */}
-      <polygon
-        points="24,4 2,48 46,48"
-        stroke="url(#dlg)"
-        strokeWidth="3"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-        fill="none"
-      />
-      {/* Inner fill subtle */}
-      <polygon points="24,4 2,48 46,48" fill="url(#dlg)" opacity="0.06" />
-      {/* Benchmark bar — comparazione */}
-      <line x1="16" y1="32" x2="32" y2="32" stroke="url(#dlg)" strokeWidth="2" strokeLinecap="round" opacity="0.7" />
-      {/* Top vertex dot */}
-      <circle cx="24" cy="4" r="3.5" fill="#07C99A" />
-    </svg>
-  );
-}
-
-export const Logo = ({
-  isTextHidden = false,
-  size = 'md',
-  href,
-  className,
-  asChild = false,
-}: LogoProps) => {
-  const px = SIZE_MAP[size];
-  const fontSize = Math.round(px * 0.57);
+  const { icon, text, gap } = sizes[size];
 
   const content = (
-    <div
-      className={cn('group flex items-center', className)}
-      style={{ gap: Math.round(px * 0.28) }}
-    >
-      <DeltaMark px={px} />
+    <div className={cn(`group flex items-center ${gap}`, className)}>
+      {/* Icon: T stilizzata minimal */}
+      <svg
+        className={cn(icon, 'shrink-0')}
+        viewBox="0 0 32 32"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-label="Tradelia"
+      >
+        <rect width="32" height="32" rx="8" className="fill-primary" />
+        <path
+          d="M8 11h16M16 11v12"
+          stroke="white"
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
+        <circle cx="22" cy="11" r="2" className="fill-white/60" />
+      </svg>
+
       {!isTextHidden && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, userSelect: 'none' }}>
+        <span className="relative flex items-center">
           <span
+            className={cn(`font-bold tracking-tight leading-none ${text}`)}
             style={{
-              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              fontSize: `${fontSize}px`,
-              fontWeight: 700,
-              letterSpacing: '-0.038em',
-              color: 'currentColor',
-              lineHeight: 1,
+              background:
+                'linear-gradient(45deg, hsl(var(--foreground)) 50%, hsl(var(--primary)) 50%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
             }}
           >
             {AppConfig.name}
           </span>
           <span
-            style={{
-              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              fontSize: '8px',
-              fontWeight: 400,
-              letterSpacing: '0.22em',
-              color: 'currentColor',
-              opacity: 0.35,
-              lineHeight: 1,
-              textTransform: 'uppercase',
-            }}
-          >
-            Financial Tool
-          </span>
-        </div>
+            className="absolute -bottom-0.5 left-0 h-0.5 w-0 bg-gradient-to-r from-primary to-primary/60 transition-all duration-300 group-hover:w-full"
+          />
+        </span>
       )}
     </div>
   );
 
   if (href && !asChild) {
-    return <Link href={href} aria-label={`${AppConfig.name} — home`}>{content}</Link>;
+    return <Link href={href}>{content}</Link>;
   }
+
   return content;
 };
 
-export const LogoIcon = () => <DeltaMark px={28} />;
+export const LogoIcon = () => (
+  <svg
+    viewBox="0 0 32 32"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-label="Tradelia"
+  >
+    <rect width="32" height="32" rx="8" className="fill-primary" />
+    <path
+      d="M8 11h16M16 11v12"
+      stroke="white"
+      strokeWidth="3"
+      strokeLinecap="round"
+    />
+    <circle cx="22" cy="11" r="2" className="fill-white/60" />
+  </svg>
+);
