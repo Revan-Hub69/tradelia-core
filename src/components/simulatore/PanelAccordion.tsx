@@ -5,17 +5,16 @@ import { useState, useId } from 'react';
 type Props = {
   label: string;
   hint?: string;
-  summary?: string;      // valore attivo mostrato da chiuso (es. "FOREX", "€5.000")
+  summary?: string;
   defaultOpen?: boolean;
   children: React.ReactNode;
 };
 
 /**
- * PanelAccordion
- * Sezione collassabile del panel input.
- * - Aperto: mostra label + hint + children
- * - Chiuso: mostra label + summary del valore attivo
- * Animazione con CSS grid-template-rows 0fr→1fr (no JS height calc).
+ * PanelAccordion — SOTA 2026.
+ * Label: 12px semibold normal-case (non più ALL-CAPS 10px tracked).
+ * Animazione: CSS grid-template-rows 0fr→1fr, zero JS height calc.
+ * Summary inline quando chiuso: valore attivo in mono teal.
  */
 export function PanelAccordion({ label, hint, summary, defaultOpen = false, children }: Props) {
   const [open, setOpen] = useState(defaultOpen);
@@ -46,12 +45,7 @@ export function PanelAccordion({ label, hint, summary, defaultOpen = false, chil
         </span>
       </button>
 
-      <div
-        id={id}
-        className="sim-accordion__body"
-        role="region"
-        aria-label={label}
-      >
+      <div id={id} className="sim-accordion__body" role="region" aria-label={label}>
         <div className="sim-accordion__inner">
           {hint && <p className="sim-panel__hint">{hint}</p>}
           {children}

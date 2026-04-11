@@ -1,17 +1,16 @@
 'use client';
 
 import Link from 'next/link';
-import { Share2 } from 'lucide-react';
 import { AppConfig } from '@/utils/AppConfig';
 
 /**
- * Header standalone del simulatore.
+ * Header standalone del simulatore — SOTA 2026.
  *
- * Usa il MEDESIMO mark SVG del Logo della home — identico rx, identica T + punto accento.
- * Il wordmark replica la logica del gradient 45° MA con colori hardcoded dark-safe:
- * non dipende da hsl(var(--foreground)) che nel contesto sim-root non è definita.
- *
- * Invariante: l'icona è pixel-perfect identica al Logo della home.
+ * Pattern: 44px, logo + titolo left, actions right.
+ * - Niente breadcrumb verboso (ridondante sulla pagina simulatore)
+ * - Logo wordmark flat senza gradient sharp — colore piatto #e8e7e5
+ * - Share: icon-only con tooltip su desktop, testo visibile su mobile
+ * - Keyboard shortcut [S] per share
  */
 export function SimulatoreHeader() {
   const handleShare = () => {
@@ -20,89 +19,93 @@ export function SimulatoreHeader() {
     if (navigator.share) {
       navigator.share({ title: `${AppConfig.name} — Simulatore`, url });
     } else {
-      navigator.clipboard.writeText(url);
+      navigator.clipboard.writeText(url).then(() => {
+        // Feedback visivo inline sul bottone — no toast
+        const btn = document.querySelector<HTMLButtonElement>('.sim-header__btn-share');
+        if (!btn) return;
+        const original = btn.getAttribute('aria-label') ?? '';
+        btn.setAttribute('aria-label', 'Link copiato!');
+        btn.setAttribute('data-copied', 'true');
+        setTimeout(() => {
+          btn.setAttribute('aria-label', original);
+          btn.removeAttribute('data-copied');
+        }, 1800);
+      });
     }
   };
 
   return (
     <header className="sim-header">
-      {/* LEFT: Logo */}
+      {/* LEFT: Logo — identico alla home, niente gradient */}
       <div className="sim-header__left">
         <Link href="/" className="sim-logo" aria-label={`${AppConfig.name} — torna alla home`}>
-          {/*
-           * Icona: identica al Logo della home.
-           * fill="#3d9aa8" = --s-ac (teal accento sim) che approssima
-           * il colore `primary` del tema chiaro senza usare CSS vars esterne.
-           */}
           <svg
-            width="28"
-            height="28"
-            viewBox="0 0 32 32"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-            style={{ flexShrink: 0 }}
+            width="26" height="26" viewBox="0 0 32 32"
+            fill="none" xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true" style={{ flexShrink: 0 }}
           >
             <rect width="32" height="32" rx="8" fill="#3d9aa8" />
-            <path
-              d="M8 11h16M16 11v12"
-              stroke="white"
-              strokeWidth="3"
-              strokeLinecap="round"
-            />
+            <path d="M8 11h16M16 11v12" stroke="white" strokeWidth="3" strokeLinecap="round" />
             <circle cx="22" cy="11" r="2" fill="rgba(255,255,255,0.6)" />
           </svg>
-
-          {/*
-           * Wordmark: gradient diagonale SHARP 45° — identico alla home.
-           * Home usa: hsl(var(--foreground)) 50%, hsl(var(--primary)) 50%
-           * Qui usiamo colori espliciti per il contesto dark:
-           *   — #e8e7e5 (bianco caldo) al posto di --foreground
-           *   — #3d9aa8 (teal) al posto di --primary
-           */}
-          <span
-            className="sim-logo__wordmark"
-            aria-label={AppConfig.name}
-          >
-            <span
-              style={{
-                fontWeight: 700,
-                fontSize: '1rem',
-                letterSpacing: '-0.02em',
-                lineHeight: 1,
-                background: 'linear-gradient(45deg, #e8e7e5 50%, #3d9aa8 50%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                fontFamily: 'var(--s-sans)',
-              }}
-            >
+          <span className="sim-logo__wordmark" aria-label={AppConfig.name}>
+            <span style={{
+              fontWeight: 700,
+              fontSize: '0.9375rem',
+              letterSpacing: '-0.025em',
+              lineHeight: 1,
+              color: '#e8e7e5',
+              fontFamily: 'var(--s-sans)',
+            }}>
               {AppConfig.name}
             </span>
           </span>
         </Link>
+
+        {/* Divisore + label pagina */}
+        <span className="sim-header__page-label" aria-hidden="true">
+          <span className="sim-header__page-sep">/</span>
+          <span className="sim-header__page-name">Simulatore</span>
+        </span>
       </div>
 
-      {/* CENTER: breadcrumb */}
-      <div className="sim-header__center" aria-label="Posizione corrente">
-        <span className="sim-header__title">Simulatore</span>
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" style={{ opacity: 0.3 }}>
-          <path d="M4 2l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        <span className="sim-header__subtitle">Confronto strumenti</span>
-      </div>
-
-      {/* RIGHT */}
+      {/* RIGHT: Share icon-only + tooltip */}
       <div className="sim-header__right">
-        <button
-          type="button"
-          className="sim-header__btn-share"
-          aria-label="Condividi questa simulazione"
-          onClick={handleShare}
-        >
-          <Share2 size={13} strokeWidth={1.75} aria-hidden="true" />
-          <span>Condividi</span>
-        </button>
+        <div className="sim-tooltip-wrap">
+          <button
+            type="button"
+            className="sim-header__btn-share"
+            aria-label="Condividi questa simulazione"
+            onClick={handleShare}
+          >
+            {/* Stato normale: share icon */}
+            <svg
+              className="sim-header__share-icon sim-header__share-icon--default"
+              width="15" height="15" viewBox="0 0 15 15"
+              fill="none" aria-hidden="true"
+            >
+              <path
+                d="M10.5 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4zM4.5 5.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4zM10.5 9a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"
+                stroke="currentColor" strokeWidth="1.25"
+              />
+              <path
+                d="M6.35 6.35l2.3-1.2M6.35 8.65l2.3 1.2"
+                stroke="currentColor" strokeWidth="1.25" strokeLinecap="round"
+              />
+            </svg>
+            {/* Stato copiato: checkmark */}
+            <svg
+              className="sim-header__share-icon sim-header__share-icon--copied"
+              width="15" height="15" viewBox="0 0 15 15"
+              fill="none" aria-hidden="true"
+            >
+              <path d="M3 7.5l3 3 6-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            {/* Testo visibile solo su mobile */}
+            <span className="sim-header__share-label">Condividi</span>
+          </button>
+          <span className="sim-tooltip" role="tooltip">Copia link</span>
+        </div>
       </div>
     </header>
   );

@@ -18,10 +18,10 @@ export function SimulatoreShell() {
   } = useSimulatorEngine();
 
   const { collapsed, toggle: togglePanel } = usePanelCollapse();
-  const { snap, toggle: toggleSheet, onTouchStart, onTouchEnd, sheetRef } = usePanelSheet();
+  const { snap, toggle: toggleSheet, onTouchStart, onTouchMove, onTouchEnd, sheetRef } = usePanelSheet();
 
   const exposureSummary = `€${exposure.toLocaleString('it-IT')}`;
-  const assetSummary = assetClass;
+  const assetSummary    = assetClass;
 
   const panelContent = (
     <>
@@ -64,10 +64,10 @@ export function SimulatoreShell() {
           <span className="sim-results__count">{results.length} strumenti analizzati</span>
           <div className="sim-results__legend">
             {[
-              { label: 'Spread',     color: 'var(--s-ac)' },
-              { label: 'Comm.',      color: 'var(--s-gold)' },
+              { label: 'Spread',    color: 'var(--s-ac)' },
+              { label: 'Comm.',     color: 'var(--s-gold)' },
               { label: 'Overnight', color: 'var(--s-amber)' },
-              { label: 'Slippage',  color: 'var(--s-t3)' },
+              { label: 'Slippage', color: 'var(--s-t3)' },
             ].map(l => (
               <span key={l.label} className="sim-results__legend-item">
                 <span className="sim-results__legend-dot" style={{ background: l.color }} />
@@ -89,38 +89,48 @@ export function SimulatoreShell() {
 
   return (
     <>
-      {/* ── DESKTOP ≥861px ───────────────────────────────── */}
-      {/*
-        Il panel ha position:relative per ancorare il tab di collapse
-        che sporge sul bordo destro (position:absolute).
-      */}
+      {/* ── DESKTOP ≥861px ─────────────────────────────── */}
       <aside
         className={`sim-panel${collapsed ? ' sim-panel--collapsed' : ''}`}
         aria-label="Parametri simulazione"
       >
-        {/* Tab laterale collapse — spunta dal bordo destro del panel */}
-        <button
-          type="button"
-          className="sim-panel__collapse-tab"
-          aria-label={collapsed ? 'Espandi parametri' : 'Comprimi parametri'}
-          aria-expanded={!collapsed}
-          onClick={togglePanel}
-        >
-          {/* Chevron: punta a sinistra quando espanso (chiudi), a destra quando collapsed (apri) */}
-          <svg
-            className="sim-panel__collapse-tab-icon"
-            width="10" height="10" viewBox="0 0 10 10"
-            fill="none" aria-hidden="true"
+        {/*
+          Collapse button inline nel panel header — pattern Linear/Figma 2026.
+          NON più il tab che spunta dal bordo (pattern 2018).
+          Visibile sempre su ≥861px, non solo 861-1100px.
+        */}
+        <div className="sim-panel__topbar">
+          {!collapsed && (
+            <span className="sim-panel__topbar-label">Parametri</span>
+          )}
+          <button
+            type="button"
+            className="sim-panel__collapse-btn"
+            aria-label={collapsed ? 'Espandi pannello' : 'Comprimi pannello'}
+            aria-expanded={!collapsed}
+            onClick={togglePanel}
+            title={collapsed ? 'Espandi' : 'Comprimi'}
           >
-            <path
-              d={collapsed ? 'M3 2l4 3-4 3' : 'M7 2L3 5l4 3'}
-              stroke="currentColor" strokeWidth="1.5"
-              strokeLinecap="round" strokeLinejoin="round"
-            />
-          </svg>
-        </button>
+            <svg
+              width="14" height="14" viewBox="0 0 14 14"
+              fill="none" aria-hidden="true"
+              className="sim-panel__collapse-btn-icon"
+              style={{
+                transform: collapsed ? 'rotate(180deg)' : 'none',
+                transition: 'transform 200ms cubic-bezier(0.16,1,0.3,1)',
+              }}
+            >
+              {/* Doppia freccia: sinistra quando espanso (comprimi), destra quando collapsed (espandi) */}
+              <path
+                d="M9 3L5 7l4 4M5 3l-4 4 4 4"
+                stroke="currentColor" strokeWidth="1.4"
+                strokeLinecap="round" strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
 
-        {/* Icon rail quando collapsed — indicatori stato visibili */}
+        {/* Icon rail quando collapsed */}
         {collapsed && (
           <div className="sim-panel__icon-rail" aria-hidden="true">
             <span className="sim-panel__rail-icon" title={`Esposizione: ${exposureSummary}`}>€</span>
@@ -128,7 +138,7 @@ export function SimulatoreShell() {
           </div>
         )}
 
-        {/* Contenuto accordion — nascosto quando collapsed */}
+        {/* Contenuto accordion */}
         {!collapsed && (
           <div className="sim-panel__content">
             {panelContent}
@@ -136,20 +146,20 @@ export function SimulatoreShell() {
         )}
       </aside>
 
-      {/* Area risultati desktop — griglia diretta, niente wrapper extra */}
       {resultsArea}
 
-      {/* ── MOBILE ≤860px ─────────────────────────────────── */}
-      {/* Bottom sheet */}
+      {/* ── MOBILE ≤860px ── Bottom sheet */}
       <div
         ref={sheetRef}
         className={`sim-sheet sim-sheet--${snap}`}
         aria-label="Parametri simulazione"
         role="complementary"
       >
+        {/* Handle area: drag + tap per ciclo snap */}
         <div
           className="sim-sheet__handle-area"
           onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
           onClick={toggleSheet}
           role="button"
@@ -159,9 +169,9 @@ export function SimulatoreShell() {
         >
           <div className="sim-sheet__drag-bar" aria-hidden="true" />
           <div className="sim-sheet__status">
-            <span className="sim-sheet__status-pill">{exposureSummary}</span>
-            <span className="sim-sheet__status-sep" aria-hidden="true">·</span>
-            <span className="sim-sheet__status-pill">{assetSummary}</span>
+            <span className="sim-sheet__status-exposure">{exposureSummary}</span>
+            <span className="sim-sheet__status-dot" aria-hidden="true" />
+            <span className="sim-sheet__status-asset">{assetSummary}</span>
             <svg
               className={`sim-sheet__chevron sim-sheet__chevron--${snap}`}
               width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"
@@ -171,9 +181,12 @@ export function SimulatoreShell() {
             </svg>
           </div>
         </div>
+
+        {/* Contenuto scrollabile */}
         <div
           className="sim-sheet__content"
           onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
         >
           {panelContent}
