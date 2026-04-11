@@ -1,6 +1,8 @@
 'use client';
 
+import Link from 'next/link';
 import { useTranslations } from 'next-intl';
+import { ArrowRight } from 'lucide-react';
 
 import { SectionContainer } from '@/components/ui/SectionContainer';
 import { InteractiveSimulator } from '@/features/landing/InteractiveSimulator';
@@ -13,40 +15,31 @@ export const TradeHero = () => {
       id="simulator"
       className="relative min-h-[calc(100dvh-88px)] overflow-hidden border-b border-border/40"
     >
-      {/* Subtle ambient gradient — muted, not glowing */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_20%_0%,rgba(59,130,246,0.06),transparent_60%),radial-gradient(ellipse_60%_40%_at_80%_100%,rgba(249,115,22,0.04),transparent_60%)]" />
 
       <SectionContainer
         size="wide"
         className="relative flex min-h-[calc(100dvh-88px)] flex-col justify-center py-16 xl:flex-row xl:items-center xl:gap-16 xl:py-20 2xl:gap-24"
       >
-        {/* ── LEFT: context anchor ── */}
         <div className="shrink-0 xl:w-[380px] 2xl:w-[420px]">
-          {/* eyebrow: /50 → /75 for WCAG AA (was 2.1:1, now ≥4.5:1) */}
           <p className="mb-5 font-mono text-[10px] font-medium uppercase tracking-[0.28em] text-muted-foreground/75">
             {t('eyebrow')}
           </p>
-
           <h1
             className="text-3xl font-semibold leading-[1.15] tracking-tight text-foreground sm:text-4xl xl:text-[2.6rem] 2xl:text-5xl"
             style={{ textWrap: 'balance' } as React.CSSProperties}
           >
             {t('title')}
           </h1>
-
           <p className="mt-5 text-sm leading-7 text-muted-foreground sm:text-base sm:leading-8">
             {t('subtitle')}
           </p>
-
-          {/* Social proof line: /60 → /75 */}
           <p className="mt-8 border-t border-border/30 pt-6 text-xs leading-6 text-muted-foreground/75">
             {t('trust')}
           </p>
         </div>
 
-        {/* ── RIGHT: simulator — the product ── */}
         <div className="mt-12 min-w-0 flex-1 xl:mt-0">
-          {/* Label: /50 → /75 */}
           <div className="mb-5 flex items-center gap-3">
             <div className="h-px flex-1 bg-border/40" />
             <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground/75">
@@ -57,6 +50,16 @@ export const TradeHero = () => {
 
           <div className="rounded-[32px] border border-border/60 bg-card/80 shadow-[0_24px_60px_-40px_rgba(15,23,42,0.35)]">
             <InteractiveSimulator />
+          </div>
+
+          <div className="mt-4 flex justify-end">
+            <Link
+              href="/simulatore"
+              className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-muted-foreground/75 transition-colors hover:text-foreground"
+            >
+              Apri simulatore completo
+              <ArrowRight size={13} strokeWidth={1.75} />
+            </Link>
           </div>
         </div>
       </SectionContainer>
