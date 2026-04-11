@@ -1,6 +1,14 @@
 /*
  * simulatore.css — Tradelia Simulatore standalone
- * v6: sidebar fissa su desktop, logo mark rivisitato
+ * v7: logo mark F (T+spark), sidebar flat sections, holding period
+ *
+ * Cambiamenti v7:
+ *   - Aggiunti .sim-section, .sim-section__header, .sim-section__label,
+ *     .sim-section__value, .sim-section__hint, .sim-section--disabled,
+ *     .sim-section__badge-soon
+ *   - Aggiunti .sim-holding, .sim-holding__chip
+ *   - Rimosso .sim-panel__topbar dal layout (topbar non renderizzata)
+ *   - .sim-accordion preservato in CSS per non rompere import residui
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap');
@@ -48,8 +56,8 @@
   --s-sans: var(--font-body, 'Inter', system-ui, sans-serif);
   --s-mono: 'Geist Mono', var(--font-mono, ui-monospace, monospace);
 
-  --s-hh: 44px;   /* header height */
-  --s-pw: 296px;  /* panel width — fisso su desktop */
+  --s-hh: 44px;
+  --s-pw: 296px;
 
   font-family: var(--s-sans);
   font-size: 14px;
@@ -79,11 +87,6 @@
 .sim-main {
   grid-row: 2;
   display: grid;
-  /*
-   * Su desktop: colonna panel FISSA a --s-pw.
-   * Il panel non è collassabile — contiene troppa densità informativa.
-   * Collapse disponibile solo su mobile via bottom sheet.
-   */
   grid-template-columns: var(--s-pw) 1fr;
   height: 100%;
   overflow: hidden;
@@ -149,7 +152,7 @@
   border-radius: var(--s-r1);
 }
 
-/* Divisore + pagina corrente — pattern Vercel/Linear */
+/* Breadcrumb: / Simulatore */
 .sim-header__page-label {
   display: flex;
   align-items: center;
@@ -172,7 +175,7 @@
   text-overflow: ellipsis;
 }
 
-/* Share button — icon-only */
+/* Share button */
 .sim-header__btn-share {
   display: inline-flex;
   align-items: center;
@@ -188,11 +191,7 @@
   transition: color var(--s-ease), border-color var(--s-ease), background var(--s-ease);
   position: relative;
 }
-.sim-header__btn-share:hover {
-  color: var(--s-t1);
-  border-color: var(--s-line3);
-  background: var(--s-s3);
-}
+.sim-header__btn-share:hover  { color: var(--s-t1); border-color: var(--s-line3); background: var(--s-s3); }
 .sim-header__btn-share:active { background: var(--s-s4); }
 .sim-header__btn-share:focus-visible { outline: 2px solid var(--s-ac); outline-offset: 2px; }
 
@@ -233,13 +232,10 @@
 .sim-tooltip-wrap:focus-within .sim-tooltip { opacity: 1; }
 @media (max-width: 860px) { .sim-tooltip { display: none; } }
 
-/* ─── PANEL (desktop fisso) ───────────────────────────────────────────── */
+/* ─── PANEL ───────────────────────────────────────────────────────────── */
 /*
- * Il panel su desktop non ha collapse.
- * È un contenitore dati denso — nasconderlo sarebbe contro-produttivo
- * per uno strumento di analisi (vedi: Bloomberg, TradingView, Figma).
- * Il bottone collapse rimane solo nello Shell per compatibilità JSX
- * ma il topbar viene nascosto via CSS su desktop.
+ * Su desktop il panel è FISSO — non collassabile.
+ * Contiene parametri ad alta densità (TradingView pattern).
  */
 .sim-panel {
   background: var(--s-s1);
@@ -251,38 +247,7 @@
   width: var(--s-pw);
   flex-shrink: 0;
   min-width: 0;
-  /* Nessuna transizione width — il panel è statico su desktop */
 }
-
-/* Topbar: su desktop mostra solo il label, nasconde il collapse-btn */
-.sim-panel__topbar {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  height: 38px;
-  padding-inline: 14px;
-  border-bottom: 1px solid var(--s-line);
-  flex-shrink: 0;
-  gap: 6px;
-}
-
-/* Il bottone collapse esiste nel JSX ma è invisibile su desktop */
-.sim-panel__collapse-btn {
-  display: none;
-}
-
-/* Label topbar: leggera, uppercase tracked — è un titolo sezione non un'azione */
-.sim-panel__topbar-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--s-t3);
-  user-select: none;
-}
-
-/* Icon rail — non usata su desktop, ma lasciata per sicurezza */
-.sim-panel__icon-rail { display: none; }
 
 .sim-panel__content {
   display: flex;
@@ -303,86 +268,153 @@
   line-height: 1.45;
 }
 
-/* ─── ACCORDION ───────────────────────────────────────────────────────── */
-.sim-accordion { border-bottom: 1px solid var(--s-line); }
+/* Collapse btn — non renderizzato in v3, mantenuto per compat */
+.sim-panel__collapse-btn { display: none; }
+.sim-panel__topbar { display: none; }
+.sim-panel__icon-rail { display: none; }
 
-.sim-accordion__trigger {
-  width: 100%;
+/* ─── FLAT SECTIONS (nuovo pattern v7) ───────────────────────────────── */
+/*
+ * .sim-section sostituisce .sim-accordion nella sidebar.
+ * Contenuto sempre visibile — nessun toggle.
+ * Separazione tramite border-bottom sottile.
+ *
+ * Struttura:
+ *   .sim-section
+ *     .sim-section__header
+ *       .sim-section__label   — nome parametro
+ *       .sim-section__value   — valore corrente (mono teal)
+ *     .sim-section__hint      — descrizione opzionale
+ *     [children: controllo]   — ExposureInput / chips / etc.
+ */
+.sim-section {
+  padding: 14px 14px 16px;
+  border-bottom: 1px solid var(--s-line);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.sim-section:last-child { border-bottom: none; }
+
+.sim-section__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 14px;
-  cursor: pointer;
-  color: var(--s-t1);
-  transition: background var(--s-ease);
-  min-height: 40px;
-  background: none;
-  border: none;
-  font-family: var(--s-sans);
-  text-align: left;
   gap: 8px;
-}
-.sim-accordion__trigger:hover { background: var(--s-s2); }
-.sim-accordion__trigger:focus-visible { outline: 2px solid var(--s-ac); outline-offset: -2px; }
-
-.sim-accordion__label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--s-t2);
-  letter-spacing: 0;
-  text-transform: none;
-  transition: color var(--s-ease);
-}
-.sim-accordion--open .sim-accordion__label { color: var(--s-t1); }
-
-.sim-accordion__right {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
+  min-height: 20px;
 }
 
-.sim-accordion__summary {
+.sim-section__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--s-t3);
+  user-select: none;
+  line-height: 1;
+}
+
+.sim-section__value {
   font-size: 11px;
   font-weight: 600;
   font-family: var(--s-mono);
   color: var(--s-ac);
   letter-spacing: 0.01em;
-}
-
-.sim-accordion__chevron {
-  color: var(--s-t3);
-  transition: transform var(--s-ease);
   flex-shrink: 0;
 }
-.sim-accordion--open .sim-accordion__chevron { transform: rotate(180deg); }
 
-.sim-accordion__body {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows var(--s-spring);
-  overflow: hidden;
+.sim-section__hint {
+  font-size: 11px;
+  color: var(--s-t3);
+  line-height: 1.45;
+  margin-top: -2px;
 }
-.sim-accordion--open .sim-accordion__body { grid-template-rows: 1fr; }
 
-.sim-accordion__inner {
-  overflow: hidden;
-  padding: 0 14px 14px;
+/* Sezione disabilitata (coming soon) */
+.sim-section--disabled {
+  opacity: 0.55;
+  pointer-events: none;
+  user-select: none;
+}
+.sim-section--disabled .sim-section__label { color: var(--s-t3); }
+
+.sim-section__badge-soon {
+  display: inline-flex;
+  align-items: center;
+  height: 16px;
+  padding-inline: 6px;
+  border-radius: var(--s-r1);
+  background: var(--s-s4);
+  border: 1px solid var(--s-line2);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--s-t3);
+  flex-shrink: 0;
+}
+
+/* ─── HOLDING PERIOD CHIPS ────────────────────────────────────────────── */
+.sim-holding {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  min-height: 0;
+  gap: 4px;
 }
+
+.sim-holding__chip {
+  flex: 1;
+  height: 30px;
+  border-radius: var(--s-r2);
+  border: 1px solid var(--s-line2);
+  background: transparent;
+  color: var(--s-t2);
+  font-family: var(--s-sans);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--s-ease);
+  outline: none;
+  text-align: center;
+  white-space: nowrap;
+}
+.sim-holding__chip:hover {
+  color: var(--s-t1);
+  border-color: var(--s-line3);
+  background: var(--s-s3);
+}
+.sim-holding__chip[data-active='true'] {
+  color: var(--s-ac);
+  border-color: var(--s-ac);
+  background: var(--s-ac-dim);
+  font-weight: 600;
+}
+.sim-holding__chip:focus-visible { outline: 2px solid var(--s-ac); outline-offset: 2px; }
+
+/* ─── ACCORDION (mantenuto per compat CSS, non renderizzato) ──────────── */
+.sim-accordion { border-bottom: 1px solid var(--s-line); }
+.sim-accordion__trigger {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; cursor: pointer; color: var(--s-t1);
+  transition: background var(--s-ease); min-height: 40px;
+  background: none; border: none; font-family: var(--s-sans); text-align: left; gap: 8px;
+}
+.sim-accordion__trigger:hover { background: var(--s-s2); }
+.sim-accordion__label { font-size: 12px; font-weight: 600; color: var(--s-t2); }
+.sim-accordion--open .sim-accordion__label { color: var(--s-t1); }
+.sim-accordion__right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.sim-accordion__summary { font-size: 11px; font-weight: 600; font-family: var(--s-mono); color: var(--s-ac); }
+.sim-accordion__chevron { color: var(--s-t3); transition: transform var(--s-ease); }
+.sim-accordion--open .sim-accordion__chevron { transform: rotate(180deg); }
+.sim-accordion__body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows var(--s-spring); overflow: hidden; }
+.sim-accordion--open .sim-accordion__body { grid-template-rows: 1fr; }
+.sim-accordion__inner { overflow: hidden; padding: 0 14px 14px; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
 
 /* ─── EXPOSURE INPUT ──────────────────────────────────────────────────── */
 .sim-exposure { display: flex; flex-direction: column; gap: 10px; }
 
 .sim-exposure__field {
   display: flex; align-items: center;
-  background: var(--s-s2);
-  border: 1px solid var(--s-line2);
-  border-radius: var(--s-r2);
-  overflow: hidden;
+  background: var(--s-s2); border: 1px solid var(--s-line2);
+  border-radius: var(--s-r2); overflow: hidden;
   transition: border-color var(--s-ease), box-shadow var(--s-ease);
 }
 .sim-exposure__field:focus-within {
@@ -391,10 +423,8 @@
 }
 
 .sim-exposure__currency {
-  padding: 0 10px 0 12px;
-  font-size: 13px; font-weight: 500; font-family: var(--s-mono);
-  color: var(--s-t2);
-  border-right: 1px solid var(--s-line);
+  padding: 0 10px 0 12px; font-size: 13px; font-weight: 500; font-family: var(--s-mono);
+  color: var(--s-t2); border-right: 1px solid var(--s-line);
   height: 42px; display: flex; align-items: center;
   background: var(--s-s3); flex-shrink: 0; user-select: none;
 }
@@ -414,25 +444,19 @@
   height: 2px; background: var(--s-s5); border-radius: 99px; pointer-events: none;
 }
 .sim-exposure__track-fill {
-  position: absolute; left: 0;
-  height: 2px; background: var(--s-ac); border-radius: 99px;
+  position: absolute; left: 0; height: 2px; background: var(--s-ac); border-radius: 99px;
   pointer-events: none; transition: width var(--s-ease);
 }
 .sim-exposure__slider {
-  position: relative; z-index: 1;
-  -webkit-appearance: none; appearance: none;
-  width: 100%; height: 20px; background: transparent;
-  outline: none; cursor: pointer; margin: 0;
+  position: relative; z-index: 1; -webkit-appearance: none; appearance: none;
+  width: 100%; height: 20px; background: transparent; outline: none; cursor: pointer; margin: 0;
 }
 .sim-exposure__slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 14px; height: 14px; border-radius: 50%;
+  -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%;
   background: var(--s-t1); border: 2px solid var(--s-ac);
   cursor: pointer; transition: transform var(--s-ease), box-shadow var(--s-ease);
 }
-.sim-exposure__slider:hover::-webkit-slider-thumb {
-  transform: scale(1.2); box-shadow: 0 0 0 4px var(--s-ac-d2);
-}
+.sim-exposure__slider:hover::-webkit-slider-thumb { transform: scale(1.2); box-shadow: 0 0 0 4px var(--s-ac-d2); }
 .sim-exposure__slider::-moz-range-thumb {
   width: 14px; height: 14px; border-radius: 50%;
   background: var(--s-t1); border: 2px solid var(--s-ac);
@@ -440,8 +464,7 @@
 
 .sim-exposure__presets { display: flex; gap: 4px; flex-wrap: wrap; }
 .sim-exposure__preset {
-  height: 24px; padding-inline: 8px;
-  border-radius: var(--s-r1); border: 1px solid var(--s-line2);
+  height: 24px; padding-inline: 8px; border-radius: var(--s-r1); border: 1px solid var(--s-line2);
   background: transparent; color: var(--s-t2);
   font-size: 11px; font-family: var(--s-mono); font-weight: 500;
   cursor: pointer; transition: all var(--s-ease); letter-spacing: 0.02em;
@@ -454,30 +477,21 @@
 /* ─── ASSET CHIPS ─────────────────────────────────────────────────────── */
 .sim-chips { display: flex; flex-wrap: wrap; gap: 4px; }
 .sim-chip {
-  height: 28px; padding-inline: 10px;
-  border-radius: var(--s-r1); border: 1px solid var(--s-line2);
+  height: 28px; padding-inline: 10px; border-radius: var(--s-r1); border: 1px solid var(--s-line2);
   background: transparent; color: var(--s-t2);
   font-family: var(--s-sans); font-size: 12px; font-weight: 500;
   cursor: pointer; transition: all var(--s-ease); outline: none;
 }
 .sim-chip:hover { color: var(--s-t1); border-color: var(--s-line3); background: var(--s-s3); }
-.sim-chip[data-active='true'] {
-  color: var(--s-ac); border-color: var(--s-ac); background: var(--s-ac-dim); font-weight: 600;
-}
+.sim-chip[data-active='true'] { color: var(--s-ac); border-color: var(--s-ac); background: var(--s-ac-dim); font-weight: 600; }
 .sim-chip:focus-visible { outline: 2px solid var(--s-ac); outline-offset: 2px; }
 
 /* ─── RESULTS ─────────────────────────────────────────────────────────── */
 .sim-results {
-  background: var(--s-bg);
-  padding: 1.25rem 1.5rem 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  scrollbar-width: thin;
-  scrollbar-color: var(--s-s5) transparent;
+  background: var(--s-bg); padding: 1.25rem 1.5rem 2rem;
+  display: flex; flex-direction: column; gap: 6px;
+  height: 100%; overflow-y: auto; overflow-x: hidden;
+  scrollbar-width: thin; scrollbar-color: var(--s-s5) transparent;
 }
 @media (max-width: 860px) {
   .sim-results { height: auto; overflow-y: visible; padding-bottom: 80px; }
@@ -486,8 +500,7 @@
 .sim-results__header {
   display: flex; align-items: center; justify-content: space-between;
   padding-bottom: 10px; margin-bottom: 4px;
-  border-bottom: 1px solid var(--s-line);
-  flex-shrink: 0;
+  border-bottom: 1px solid var(--s-line); flex-shrink: 0;
 }
 .sim-results__count { font-size: 11px; color: var(--s-t3); letter-spacing: 0.04em; font-weight: 600; }
 .sim-results__legend { display: flex; align-items: center; gap: 12px; }
@@ -565,86 +578,46 @@
 .sim-badge--warning    { color: var(--s-amber);  background: var(--s-amber-dim); }
 .sim-badge--infeasible { color: var(--s-red);    background: var(--s-red-dim); }
 
-/* ─── BOTTOM SHEET (mobile only) ─────────────────────────────────────── */
+/* ─── BOTTOM SHEET (mobile) ───────────────────────────────────────────── */
 .sim-sheet {
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  z-index: 100;
-  height: 92dvh;
-  flex-direction: column;
-  background: var(--s-s1);
-  border-radius: 14px 14px 0 0;
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+  height: 92dvh; flex-direction: column;
+  background: var(--s-s1); border-radius: 14px 14px 0 0;
   border-top: 1px solid var(--s-line2);
-  will-change: transform;
-  touch-action: none;
+  will-change: transform; touch-action: none;
   transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 .sim-sheet__handle-area {
-  height: 56px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  cursor: pointer;
-  flex-shrink: 0;
-  padding-inline: 1rem;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: none;
+  height: 56px; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 7px; cursor: pointer; flex-shrink: 0;
+  padding-inline: 1rem; user-select: none; -webkit-user-select: none; touch-action: none;
 }
 .sim-sheet__handle-area:focus-visible {
-  outline: 2px solid var(--s-ac);
-  outline-offset: -2px;
-  border-radius: 14px 14px 0 0;
+  outline: 2px solid var(--s-ac); outline-offset: -2px; border-radius: 14px 14px 0 0;
 }
 
 .sim-sheet__drag-bar {
-  width: 32px; height: 4px;
-  background: var(--s-s5); border-radius: 99px;
+  width: 32px; height: 4px; background: var(--s-s5); border-radius: 99px;
   transition: background var(--s-ease), width var(--s-ease);
 }
 .sim-sheet__handle-area:hover .sim-sheet__drag-bar,
-.sim-sheet__handle-area:active .sim-sheet__drag-bar {
-  background: var(--s-line3);
-  width: 40px;
-}
+.sim-sheet__handle-area:active .sim-sheet__drag-bar { background: var(--s-line3); width: 40px; }
 
-.sim-sheet__status {
-  display: flex; align-items: center; gap: 7px;
-  width: 100%; justify-content: center;
-}
+.sim-sheet__status { display: flex; align-items: center; gap: 7px; width: 100%; justify-content: center; }
+.sim-sheet__status-exposure { font-family: var(--s-mono); font-size: 13px; font-weight: 700; color: var(--s-t1); letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+.sim-sheet__status-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--s-t3); flex-shrink: 0; }
+.sim-sheet__status-asset { font-size: 12px; font-weight: 500; color: var(--s-t2); }
 
-.sim-sheet__status-exposure {
-  font-family: var(--s-mono); font-size: 13px; font-weight: 700;
-  color: var(--s-t1); letter-spacing: -0.01em; font-variant-numeric: tabular-nums;
-}
-.sim-sheet__status-dot {
-  width: 3px; height: 3px; border-radius: 50%;
-  background: var(--s-t3); flex-shrink: 0;
-}
-.sim-sheet__status-asset {
-  font-size: 12px; font-weight: 500; color: var(--s-t2);
-}
-
-.sim-sheet__chevron {
-  color: var(--s-t3);
-  transition: transform var(--s-ease);
-  margin-left: auto; flex-shrink: 0;
-}
+.sim-sheet__chevron { color: var(--s-t3); transition: transform var(--s-ease); margin-left: auto; flex-shrink: 0; }
 .sim-sheet__chevron--collapsed { transform: rotate(0deg); }
 .sim-sheet__chevron--half,
 .sim-sheet__chevron--full      { transform: rotate(180deg); }
 
 .sim-sheet__content {
-  flex: 1;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
-  scrollbar-color: var(--s-s5) transparent;
-  padding-bottom: env(safe-area-inset-bottom, 16px);
-  touch-action: pan-y;
+  flex: 1; overflow-y: auto; overscroll-behavior: contain;
+  scrollbar-width: thin; scrollbar-color: var(--s-s5) transparent;
+  padding-bottom: env(safe-area-inset-bottom, 16px); touch-action: pan-y;
 }
 
 /* ─── SKELETON ────────────────────────────────────────────────────────── */
@@ -656,23 +629,18 @@
   background: linear-gradient(90deg, var(--s-s2) 25%, var(--s-s3) 50%, var(--s-s2) 75%);
   background-size: 200% 100%;
   animation: sim-shimmer 1.6s ease-in-out infinite;
-  border-radius: var(--s-r2);
-  flex-shrink: 0;
+  border-radius: var(--s-r2); flex-shrink: 0;
 }
 .sim-skeleton--card { height: 76px; border-radius: var(--s-r3); }
-
-/* sim-panel__section — fallback SSR */
-.sim-panel__section {
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--s-line);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
 
 /* ─── UTILITY ─────────────────────────────────────────────────────────── */
 .sim-num { font-family: var(--s-mono); font-variant-numeric: tabular-nums; transition: opacity 150ms ease; }
 .sim-num[data-updating='true'] { opacity: 0.35; }
+
+.sim-panel__section {
+  padding: 12px 14px; border-bottom: 1px solid var(--s-line);
+  display: flex; flex-direction: column; gap: 8px;
+}
 
 .sim-root :focus-visible { outline: 2px solid var(--s-ac); outline-offset: 2px; border-radius: var(--s-r1); }
 

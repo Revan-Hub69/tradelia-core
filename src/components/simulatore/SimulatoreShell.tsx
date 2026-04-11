@@ -1,15 +1,59 @@
 'use client';
 
 import { useSimulatorEngine } from '@/hooks/useSimulatorEngine';
-import { usePanelCollapse } from '@/hooks/usePanelCollapse';
 import { usePanelSheet } from '@/hooks/usePanelSheet';
-import { PanelAccordion } from './PanelAccordion';
 import { ExposureInput } from './ExposureInput';
 import { AssetSelector } from './AssetSelector';
 import { ScoreCardList } from './ScoreCardList';
 import { SimResultsEmpty } from './SimResultsEmpty';
 import { SimulatoreSkeleton } from './SimulatoreSkeleton';
 
+/**
+ * Holding period selector — chip inline.
+ * Impatta direttamente i costi overnight nel motore.
+ */
+type HoldingPeriod = '1d' | '1w' | '1m';
+const HOLDING_OPTIONS: { id: HoldingPeriod; label: string; hint: string }[] = [
+  { id: '1d', label: '1 giorno',     hint: 'Intraday / day trading' },
+  { id: '1w', label: '1 settimana',  hint: 'Swing trading' },
+  { id: '1m', label: '1 mese',       hint: 'Posizione medio termine' },
+];
+
+function HoldingPeriodSelector({
+  value, onChange,
+}: { value: HoldingPeriod; onChange: (v: HoldingPeriod) => void }) {
+  return (
+    <div className="sim-holding" role="group" aria-label="Durata posizione">
+      {HOLDING_OPTIONS.map(o => (
+        <button
+          key={o.id}
+          type="button"
+          className="sim-holding__chip"
+          data-active={value === o.id ? 'true' : 'false'}
+          aria-pressed={value === o.id}
+          title={o.hint}
+          onClick={() => onChange(o.id)}
+        >
+          {o.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/**
+ * SimulatoreShell — v3
+ *
+ * Sidebar parametri: sezioni FLAT, nessun accordion.
+ * Ogni sezione è sempre visibile — zero click per aprire contenuti.
+ * Pattern: .sim-section con label + hint (opzionale) + controllo.
+ *
+ * Struttura sidebar:
+ *   § Esposizione target  — ExposureInput
+ *   § Categoria           — AssetSelector chips
+ *   § Durata posizione    — HoldingPeriodSelector chips
+ *   § Broker / Profilo    — fieldset disabilitato + badge Presto
+ */
 export function SimulatoreShell() {
   const {
     exposure, setExposure,
@@ -17,42 +61,74 @@ export function SimulatoreShell() {
     results, isComputing,
   } = useSimulatorEngine();
 
-  const { collapsed, toggle: togglePanel } = usePanelCollapse();
-  const { snap, toggle: toggleSheet, onTouchStart, onTouchMove, onTouchEnd, sheetRef } = usePanelSheet();
+  // Holding period locale — sarà integrato in useSimulatorEngine nella v1.1
+  const [holdingPeriod, setHoldingPeriod] = React.useState<HoldingPeriod>('1d');
+
+  const { snap, toggle: toggleSheet, onTouchStart, onTouchMove, onTouchEnd, sheetRef } =
+    usePanelSheet();
 
   const exposureSummary = `€${exposure.toLocaleString('it-IT')}`;
   const assetSummary    = assetClass;
 
+  /* ── PANEL CONTENT — sidebar flat ────────────────────────────── */
   const panelContent = (
     <>
-      <PanelAccordion
-        label="Esposizione target"
-        hint="Capitale che vuoi esporre sul mercato"
-        summary={exposureSummary}
-        defaultOpen
-      >
+      {/* § 1 — Esposizione */}
+      <div className="sim-section">
+        <div className="sim-section__header">
+          <span className="sim-section__label">Esposizione target</span>
+          <span className="sim-section__value sim-num">{exposureSummary}</span>
+        </div>
+        <p className="sim-section__hint">
+          Capitale che vuoi esporre sul mercato
+        </p>
         <ExposureInput value={exposure} onChange={setExposure} />
-      </PanelAccordion>
-      <PanelAccordion
-        label="Categoria strumento"
-        hint="Asset class di riferimento per il confronto"
-        summary={assetSummary}
-      >
+      </div>
+
+      {/* § 2 — Categoria strumento */}
+      <div className="sim-section">
+        <div className="sim-section__header">
+          <span className="sim-section__label">Categoria</span>
+          <span className="sim-section__value sim-num">{assetSummary}</span>
+        </div>
         <AssetSelector value={assetClass} onChange={setAssetClass} />
-      </PanelAccordion>
-      <PanelAccordion label="Broker" summary="Tutti">
-        <p className="sim-panel__hint" style={{ paddingBlock: '0.5rem' }}>
-          Filtro broker — disponibile nella v1.1
+      </div>
+
+      {/* § 3 — Durata posizione */}
+      <div className="sim-section">
+        <div className="sim-section__header">
+          <span className="sim-section__label">Durata posizione</span>
+          <span className="sim-section__value sim-num">
+            {HOLDING_OPTIONS.find(o => o.id === holdingPeriod)?.label}
+          </span>
+        </div>
+        <p className="sim-section__hint">
+          Influisce sui costi overnight e sulla capitalizzazione
         </p>
-      </PanelAccordion>
-      <PanelAccordion label="Profilo" summary="Retail">
-        <p className="sim-panel__hint" style={{ paddingBlock: '0.5rem' }}>
-          Holding period, frequenza, rischio — disponibile nella v1.1
+        <HoldingPeriodSelector value={holdingPeriod} onChange={setHoldingPeriod} />
+      </div>
+
+      {/* § 4 — Broker + Profilo (coming soon) */}
+      <div className="sim-section sim-section--disabled">
+        <div className="sim-section__header">
+          <span className="sim-section__label">Broker &amp; Profilo</span>
+          <span className="sim-section__badge-soon">Presto</span>
+        </div>
+        <p className="sim-section__hint">
+          Filtro broker specifico e profilo rischio retail/pro —
+          disponibili nella versione 1.1
         </p>
-      </PanelAccordion>
+        {/* Chip disabilitati — preview visuale */}
+        <div className="sim-chips" aria-hidden="true">
+          {['eToro', 'Degiro', 'IBKR', 'XTB'].map(b => (
+            <button key={b} className="sim-chip" disabled style={{ opacity: 0.35, cursor: 'not-allowed' }}>{b}</button>
+          ))}
+        </div>
+      </div>
     </>
   );
 
+  /* ── RESULTS AREA ─────────────────────────────────────────────── */
   const resultsArea = (
     <section
       className="sim-results"
@@ -89,73 +165,25 @@ export function SimulatoreShell() {
 
   return (
     <>
-      {/* ── DESKTOP ≥861px ─────────────────────────────── */}
+      {/* ── DESKTOP ≥861px ── panel fisso */}
       <aside
-        className={`sim-panel${collapsed ? ' sim-panel--collapsed' : ''}`}
+        className="sim-panel"
         aria-label="Parametri simulazione"
       >
-        {/*
-          Collapse button inline nel panel header — pattern Linear/Figma 2026.
-          NON più il tab che spunta dal bordo (pattern 2018).
-          Visibile sempre su ≥861px, non solo 861-1100px.
-        */}
-        <div className="sim-panel__topbar">
-          {!collapsed && (
-            <span className="sim-panel__topbar-label">Parametri</span>
-          )}
-          <button
-            type="button"
-            className="sim-panel__collapse-btn"
-            aria-label={collapsed ? 'Espandi pannello' : 'Comprimi pannello'}
-            aria-expanded={!collapsed}
-            onClick={togglePanel}
-            title={collapsed ? 'Espandi' : 'Comprimi'}
-          >
-            <svg
-              width="14" height="14" viewBox="0 0 14 14"
-              fill="none" aria-hidden="true"
-              className="sim-panel__collapse-btn-icon"
-              style={{
-                transform: collapsed ? 'rotate(180deg)' : 'none',
-                transition: 'transform 200ms cubic-bezier(0.16,1,0.3,1)',
-              }}
-            >
-              {/* Doppia freccia: sinistra quando espanso (comprimi), destra quando collapsed (espandi) */}
-              <path
-                d="M9 3L5 7l4 4M5 3l-4 4 4 4"
-                stroke="currentColor" strokeWidth="1.4"
-                strokeLinecap="round" strokeLinejoin="round"
-              />
-            </svg>
-          </button>
+        <div className="sim-panel__content">
+          {panelContent}
         </div>
-
-        {/* Icon rail quando collapsed */}
-        {collapsed && (
-          <div className="sim-panel__icon-rail" aria-hidden="true">
-            <span className="sim-panel__rail-icon" title={`Esposizione: ${exposureSummary}`}>€</span>
-            <span className="sim-panel__rail-icon" title={`Asset: ${assetClass}`}>{assetClass[0]}</span>
-          </div>
-        )}
-
-        {/* Contenuto accordion */}
-        {!collapsed && (
-          <div className="sim-panel__content">
-            {panelContent}
-          </div>
-        )}
       </aside>
 
       {resultsArea}
 
-      {/* ── MOBILE ≤860px ── Bottom sheet */}
+      {/* ── MOBILE ≤860px ── bottom sheet */}
       <div
         ref={sheetRef}
         className={`sim-sheet sim-sheet--${snap}`}
         aria-label="Parametri simulazione"
         role="complementary"
       >
-        {/* Handle area: drag + tap per ciclo snap */}
         <div
           className="sim-sheet__handle-area"
           onTouchStart={onTouchStart}
@@ -181,8 +209,6 @@ export function SimulatoreShell() {
             </svg>
           </div>
         </div>
-
-        {/* Contenuto scrollabile */}
         <div
           className="sim-sheet__content"
           onTouchStart={onTouchStart}
@@ -195,3 +221,5 @@ export function SimulatoreShell() {
     </>
   );
 }
+
+import React from 'react';

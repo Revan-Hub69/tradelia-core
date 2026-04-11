@@ -4,16 +4,15 @@ import Link from 'next/link';
 import { AppConfig } from '@/utils/AppConfig';
 
 /**
- * SimulatoreHeader — v2
+ * SimulatoreHeader — v3
  *
- * Logo mark: candlestick + trend integrati.
- * Concept: due candele (bullish/bearish) con un segmento trend ascendente
- * che le attraversa — leggibile a 18px, riconoscibile a 64px.
- * Geometria: rette pulite, nessun arrotondamento eccessivo.
+ * Logo mark F (definitivo):
+ *   Traversa orizzontale  = orizzonte / baseline mercato
+ *   Gamba verticale       = posizione / strumento selezionato
+ *   Spark + punto         = performance, upside, confronto
  *
- * Struttura header:
- *   LEFT: mark + wordmark + / + Simulatore
- *   RIGHT: share icon-only (desktop), share con testo (mobile)
+ * Due gesti, due colori, leggibile a 16px.
+ * Non aggiunge: candele, wicks, gradienti, glows, pattern ripetuti.
  */
 export function SimulatoreHeader() {
   const handleShare = () => {
@@ -25,11 +24,11 @@ export function SimulatoreHeader() {
       navigator.clipboard.writeText(url).then(() => {
         const btn = document.querySelector<HTMLButtonElement>('.sim-header__btn-share');
         if (!btn) return;
-        const original = btn.getAttribute('aria-label') ?? '';
+        const orig = btn.getAttribute('aria-label') ?? '';
         btn.setAttribute('aria-label', 'Link copiato!');
         btn.setAttribute('data-copied', 'true');
         setTimeout(() => {
-          btn.setAttribute('aria-label', original);
+          btn.setAttribute('aria-label', orig);
           btn.removeAttribute('data-copied');
         }, 1800);
       });
@@ -41,65 +40,47 @@ export function SimulatoreHeader() {
       <div className="sim-header__left">
         <Link href="/" className="sim-logo" aria-label={`${AppConfig.name} — torna alla home`}>
           {/*
-           * LOGO MARK v2 — Candlestick + Trend
-           *
-           * Composizione:
-           * - 2 candele OHLC stilizzate (corpo rettangolare + shadow verticale)
-           *   Prima: bearish (rossa tenue) — wick top/bottom
-           *   Seconda: bullish (teal, prominente) — wick top/bottom
-           * - Linea trend diagonale ascendente che attraversa entrambe
-           * - Sfondo: nessuno (trasparente) — mark si integra in qualsiasi header
+           * MARK F — T + spark
+           * viewBox 36×36
+           *   rect (3,9 30×4 rx2)  = traversa T  → orizzonte/mercato
+           *   rect (15,9 6×22 rx2) = gamba T     → posizione/strumento
+           *   polyline (23,26→27,19→31,14) = spark ascendente
+           *   circle (31,14 r2.5)  = terminale upside
            *
            * Colori:
-           * - Candela 1 corpo: rgba(184,79,138,0.55) — bearish, tenue
-           * - Candela 2 corpo: #3d9aa8 — bullish, brand teal pieno
-           * - Wicks: rgba(255,255,255,0.3)
-           * - Trend line: #3d9aa8 con leggero glow
-           *
-           * viewBox 24×24 — resa ottimale da 16px a 40px
+           *   --s-ac   (#3d9aa8) per la T — brand color
+           *   --s-t1   (#e8e7e5) per spark — contrasto attivo
            */}
           <svg
-            width="24" height="24" viewBox="0 0 24 24"
-            fill="none" xmlns="http://www.w3.org/2000/svg"
+            width="26" height="26"
+            viewBox="0 0 36 36"
+            fill="none"
             aria-hidden="true"
             style={{ flexShrink: 0 }}
           >
-            {/* Wick candela 1 (bearish, sinistra) */}
-            <line x1="7" y1="3.5" x2="7" y2="18.5" stroke="rgba(255,255,255,0.22)" strokeWidth="1"/>
-            {/* Corpo candela 1: bearish — si apre in alto, chiude in basso */}
-            <rect x="4.5" y="7" width="5" height="7" rx="0.5"
-              fill="rgba(184,79,138,0.45)" stroke="rgba(184,79,138,0.6)" strokeWidth="0.75"/>
-
-            {/* Wick candela 2 (bullish, destra) */}
-            <line x1="17" y1="4.5" x2="17" y2="20.5" stroke="rgba(255,255,255,0.22)" strokeWidth="1"/>
-            {/* Corpo candela 2: bullish — si apre in basso, chiude in alto */}
-            <rect x="14.5" y="8" width="5" height="8.5" rx="0.5"
-              fill="#3d9aa8" stroke="#4fb3c2" strokeWidth="0.75"/>
-            {/* Highlight interno candela bullish — senso di profondità */}
-            <rect x="15.5" y="9" width="2" height="2" rx="0.25"
-              fill="rgba(255,255,255,0.15)"/>
-
-            {/* Trend line ascendente: dal basso-sx all'alto-dx, attraversa entrambe le candele */}
-            <line
-              x1="2" y1="20"
-              x2="22" y2="5"
-              stroke="#3d9aa8"
-              strokeWidth="1.25"
+            {/* Traversa T = orizzonte mercato */}
+            <rect x="3" y="9" width="30" height="4" rx="2" fill="var(--s-ac)" />
+            {/* Gamba T = posizione / strumento */}
+            <rect x="15" y="9" width="6" height="22" rx="2" fill="var(--s-ac)" />
+            {/* Spark ascendente = performance, upside */}
+            <polyline
+              points="23,26 27,19 31,14"
+              stroke="var(--s-t1)"
+              strokeWidth="2.2"
               strokeLinecap="round"
-              strokeOpacity="0.7"
+              strokeLinejoin="round"
             />
-
-            {/* Punto terminale del trend — segnala la direzione */}
-            <circle cx="21.5" cy="5.5" r="1.5" fill="#3d9aa8" fillOpacity="0.9"/>
+            {/* Punto terminale */}
+            <circle cx="31" cy="14" r="2.5" fill="var(--s-t1)" />
           </svg>
 
-          {/* Wordmark: nome brand, weight 700, kerning stretto */}
+          {/* Wordmark */}
           <span style={{
             fontWeight: 700,
             fontSize: '0.9375rem',
             letterSpacing: '-0.03em',
             lineHeight: 1,
-            color: '#e8e7e5',
+            color: 'var(--s-t1)',
             fontFamily: 'var(--s-sans)',
             userSelect: 'none',
           }}>
@@ -107,7 +88,7 @@ export function SimulatoreHeader() {
           </span>
         </Link>
 
-        {/* Divisore / Simulatore */}
+        {/* breadcrumb: / Simulatore */}
         <span className="sim-header__page-label" aria-hidden="true">
           <span className="sim-header__page-sep">/</span>
           <span className="sim-header__page-name">Simulatore</span>
@@ -122,6 +103,7 @@ export function SimulatoreHeader() {
             aria-label="Condividi questa simulazione"
             onClick={handleShare}
           >
+            {/* Share icon */}
             <svg
               className="sim-header__share-icon sim-header__share-icon--default"
               width="15" height="15" viewBox="0 0 15 15"
@@ -136,6 +118,7 @@ export function SimulatoreHeader() {
                 stroke="currentColor" strokeWidth="1.25" strokeLinecap="round"
               />
             </svg>
+            {/* Check icon (copied state) */}
             <svg
               className="sim-header__share-icon sim-header__share-icon--copied"
               width="15" height="15" viewBox="0 0 15 15"
