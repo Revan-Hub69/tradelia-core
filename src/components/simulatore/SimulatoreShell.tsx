@@ -9,39 +9,20 @@ import { SimulatoreSkeleton } from './SimulatoreSkeleton';
 
 /* ─── ASSET TREE ──────────────────────────────────────────────────────── */
 const ASSET_TREE: Record<string, Record<string, string[]>> = {
-  Forex: {
-    Majors: ['EUR/USD', 'GBP/USD', 'USD/JPY', 'USD/CHF'],
-    Minors: ['EUR/GBP', 'EUR/JPY', 'GBP/JPY'],
-    Exotic: ['USD/TRY', 'USD/ZAR', 'EUR/TRY'],
-  },
-  Crypto: {
-    'Large Cap': ['BTC/USD', 'ETH/USD', 'BNB/USD'],
-    'Mid Cap':   ['SOL/USD', 'ADA/USD', 'DOT/USD'],
-    Stablecoin:  ['USDT/USD', 'USDC/USD'],
-  },
-  Indici: {
-    Europa: ['DAX 40', 'FTSE 100', 'CAC 40'],
-    USA:    ['S&P 500', 'NASDAQ 100', 'DOW 30'],
-    Asia:   ['Nikkei 225', 'Hang Seng'],
-  },
-  Azioni: {
-    Tech:    ['Apple', 'Microsoft', 'NVIDIA', 'Meta'],
-    Finance: ['JPMorgan', 'Goldman Sachs', 'Visa'],
-    Energy:  ['ExxonMobil', 'Shell', 'TotalEnergies'],
-  },
-  Materie: {
-    Metalli: ['Oro', 'Argento', 'Rame'],
-    Energia: ['Petrolio WTI', 'Gas Nat.', 'Brent'],
-  },
+  Forex:   { Majors: ['EUR/USD','GBP/USD','USD/JPY','USD/CHF'], Minors: ['EUR/GBP','EUR/JPY','GBP/JPY'], Exotic: ['USD/TRY','USD/ZAR','EUR/TRY'] },
+  Crypto:  { 'Large Cap': ['BTC/USD','ETH/USD','BNB/USD'], 'Mid Cap': ['SOL/USD','ADA/USD','DOT/USD'], Stablecoin: ['USDT/USD','USDC/USD'] },
+  Indici:  { Europa: ['DAX 40','FTSE 100','CAC 40'], USA: ['S&P 500','NASDAQ 100','DOW 30'], Asia: ['Nikkei 225','Hang Seng'] },
+  Azioni:  { Tech: ['Apple','Microsoft','NVIDIA','Meta'], Finance: ['JPMorgan','Goldman Sachs','Visa'], Energy: ['ExxonMobil','Shell','TotalEnergies'] },
+  Materie: { Metalli: ['Oro','Argento','Rame'], Energia: ['Petrolio WTI','Gas Nat.','Brent'] },
 };
 
 /* ─── TYPES ───────────────────────────────────────────────────────────── */
-type StyleType     = 'scalping' | 'intraday' | 'swing' | 'position';
-type IntensityType = 'raro' | 'regolare' | 'frequente';
-type AccountType   = 'demo' | 'micro' | 'retail' | 'semipro' | 'pro';
-type LevaType      = 'bassa' | 'media' | 'alta';
+type StyleType   = 'scalping' | 'intraday' | 'swing' | 'position';
+type FreqId     = 'low' | 'mid' | 'high';
+type AccountType = 'demo' | 'micro' | 'retail' | 'semipro' | 'pro';
+type LevaType    = 'bassa' | 'media' | 'alta';
 
-/* ─── OPTIONS ─────────────────────────────────────────────────────────── */
+/* ─── STILE OPTIONS ─────────────────────────────────────────────────────── */
 const STYLE_OPTIONS: { id: StyleType; label: string; hint: string }[] = [
   { id: 'scalping',  label: 'Scalping',  hint: 'sec / min' },
   { id: 'intraday',  label: 'Intraday',  hint: 'ore'       },
@@ -49,41 +30,81 @@ const STYLE_OPTIONS: { id: StyleType; label: string; hint: string }[] = [
   { id: 'position',  label: 'Position',  hint: '1 mese+'   },
 ];
 
-const INTENSITY_OPTIONS: { id: IntensityType; label: string; hint: string }[] = [
-  { id: 'raro',      label: 'Raro',      hint: '1–3 / sett.' },
-  { id: 'regolare',  label: 'Regolare',  hint: '1–3 / giorno' },
-  { id: 'frequente', label: 'Frequente', hint: '10+ / giorno'  },
-];
+/* ─── FREQUENZA CONTESTUALE ───────────────────────────────────────────────── */
+/*
+ * Ogni stile ha la sua unità temporale e le sue 3 fasce di frequenza.
+ * • scalping  → al giorno    (5–10 / 20–50 / 100+)
+ * • intraday  → al giorno    (1–2  / 3–5  / 10+)
+ * • swing     → a settimana  (1–2  / 3–5  / 10+)
+ * • position  → al mese      (1–2  / 3–5  / 10+)
+ */
+type FreqOption = { id: FreqId; label: string; hint: string };
+type FreqConfig = { unit: string; options: FreqOption[] };
 
+const FREQ_BY_STYLE: Record<StyleType, FreqConfig> = {
+  scalping: {
+    unit: 'al giorno',
+    options: [
+      { id: 'low',  label: 'Bassa',   hint: '5–10 trade' },
+      { id: 'mid',  label: 'Media',   hint: '20–50 trade' },
+      { id: 'high', label: 'Intensa', hint: '100+ trade'  },
+    ],
+  },
+  intraday: {
+    unit: 'al giorno',
+    options: [
+      { id: 'low',  label: 'Bassa',   hint: '1–2 trade' },
+      { id: 'mid',  label: 'Media',   hint: '3–5 trade'  },
+      { id: 'high', label: 'Intensa', hint: '10+ trade'   },
+    ],
+  },
+  swing: {
+    unit: 'a settimana',
+    options: [
+      { id: 'low',  label: 'Bassa',   hint: '1–2 trade' },
+      { id: 'mid',  label: 'Media',   hint: '3–5 trade'  },
+      { id: 'high', label: 'Intensa', hint: '10+ trade'   },
+    ],
+  },
+  position: {
+    unit: 'al mese',
+    options: [
+      { id: 'low',  label: 'Bassa',   hint: '1–2 trade' },
+      { id: 'mid',  label: 'Media',   hint: '3–5 trade'  },
+      { id: 'high', label: 'Intensa', hint: '10+ trade'   },
+    ],
+  },
+};
+
+/* ─── ACCOUNT OPTIONS ───────────────────────────────────────────────────── */
 const ACCOUNT_OPTIONS: { id: AccountType; label: string; range: string }[] = [
-  { id: 'demo',    label: 'Demo / Test', range: '< €500'         },
-  { id: 'micro',   label: 'Micro',       range: '€500 – €2k'     },
-  { id: 'retail',  label: 'Retail',      range: '€2k – €10k'     },
-  { id: 'semipro', label: 'Semi-pro',    range: '€10k – €50k'    },
-  { id: 'pro',     label: 'Pro',         range: '€50k+'          },
+  { id: 'demo',    label: 'Demo / Test', range: '< €500'      },
+  { id: 'micro',   label: 'Micro',       range: '€500 – €2k'  },
+  { id: 'retail',  label: 'Retail',      range: '€2k – €10k'  },
+  { id: 'semipro', label: 'Semi-pro',    range: '€10k – €50k' },
+  { id: 'pro',     label: 'Pro',         range: '€50k+'       },
 ];
 
 const LEVA_OPTIONS: { id: LevaType; label: string; hint: string }[] = [
-  { id: 'bassa',  label: 'Bassa',  hint: '1:2 – 1:5'   },
-  { id: 'media',  label: 'Media',  hint: '1:10 – 1:20' },
-  { id: 'alta',   label: 'Alta',   hint: '1:50 – 1:500' },
+  { id: 'bassa', label: 'Bassa', hint: '1:2 – 1:5'    },
+  { id: 'media', label: 'Media', hint: '1:10 – 1:20'  },
+  { id: 'alta',  label: 'Alta',  hint: '1:50 – 1:500' },
 ];
 
 /* ─── CHIP GROUP ──────────────────────────────────────────────────────── */
 function ChipGroup<T extends string>({
-  options, value, onChange, mono = false,
+  options, value, onChange,
 }: {
   options: { id: T; label: string; hint?: string }[];
   value: T | null;
   onChange: (v: T) => void;
-  mono?: boolean;
 }) {
   return (
     <div className="sim-chips">
       {options.map(o => (
         <button
           key={o.id} type="button"
-          className={mono ? 'sim-chip sim-chip--mono' : 'sim-chip'}
+          className="sim-chip"
           data-active={value === o.id ? 'true' : 'false'}
           aria-pressed={value === o.id}
           onClick={() => onChange(o.id)}
@@ -143,12 +164,12 @@ export function SimulatoreShell() {
     results, isComputing,
   } = useSimulatorEngine();
 
-  const [subGroup,   setSubGroup]   = useState<string | null>(null);
-  const [asset,      setAsset]      = useState<string | null>(null);
-  const [style,      setStyle]      = useState<StyleType>('intraday');
-  const [intensity,  setIntensity]  = useState<IntensityType>('regolare');
-  const [account,    setAccount]    = useState<AccountType>('retail');
-  const [leva,       setLeva]       = useState<LevaType>('media');
+  const [subGroup,  setSubGroup]  = useState<string | null>(null);
+  const [asset,     setAsset]     = useState<string | null>(null);
+  const [style,     setStyle]     = useState<StyleType>('intraday');
+  const [freq,      setFreq]      = useState<FreqId>('mid');
+  const [account,   setAccount]   = useState<AccountType>('retail');
+  const [leva,      setLeva]      = useState<LevaType>('media');
 
   const groups = assetClass ? Object.keys(ASSET_TREE[assetClass] ?? {}) : [];
   const assets = assetClass && subGroup ? (ASSET_TREE[assetClass]?.[subGroup] ?? []) : [];
@@ -156,13 +177,20 @@ export function SimulatoreShell() {
   const handleGroupChange = (g: string) => { setAssetClass(g); setSubGroup(null); setAsset(null); };
   const handleSubChange   = (s: string) => { setSubGroup(s);   setAsset(null); };
 
+  // Quando cambia lo stile, reset freq a 'mid' (sempre valido)
+  const handleStyleChange = (s: StyleType) => { setStyle(s); setFreq('mid'); };
+
+  const freqConfig   = FREQ_BY_STYLE[style];
+  const freqCurrent  = freqConfig.options.find(o => o.id === freq);
+  const freqLabel    = freqCurrent ? `${freqCurrent.hint} ${freqConfig.unit}` : '';
+
   const { snap, toggle: toggleSheet, onTouchStart, onTouchMove, onTouchEnd, sheetRef } =
     usePanelSheet();
 
   const statusAsset   = asset ?? subGroup ?? assetClass ?? '—';
   const statusAccount = ACCOUNT_OPTIONS.find(o => o.id === account)?.label ?? '—';
 
-  /* ── PANEL CONTENT ──────────────────────────────────────────────────── */
+  /* ── PANEL CONTENT ───────────────────────────────────────────────────── */
   const panelContent = (
     <>
       {/* ══ BLOCCO 1 — STRUMENTO ══ */}
@@ -178,44 +206,38 @@ export function SimulatoreShell() {
 
       {assetClass && (
         <Section label="Sottogruppo" value={subGroup ?? '—'}>
-          <StringChipGroup
-            options={groups}
-            value={subGroup}
-            onChange={handleSubChange}
-          />
+          <StringChipGroup options={groups} value={subGroup} onChange={handleSubChange} />
         </Section>
       )}
 
       {subGroup && assets.length > 0 && (
         <Section label="Asset" value={asset ?? '—'} hint="Opzionale — per confronto specifico">
-          <StringChipGroup
-            options={assets}
-            value={asset}
-            onChange={setAsset}
-            mono
-          />
+          <StringChipGroup options={assets} value={asset} onChange={setAsset} mono />
         </Section>
       )}
 
       {/* ══ BLOCCO 2 — IL TUO PROFILO ══ */}
       <BlockDivider label="Il tuo profilo" />
 
+      {/* Stile operativo */}
       <Section
         label="Stile operativo"
         value={STYLE_OPTIONS.find(o => o.id === style)?.label}
-        hint="Determina l'orizzonte e i costi overnight"
+        hint="Orizzonte temporale di ogni operazione"
       >
-        <ChipGroup options={STYLE_OPTIONS} value={style} onChange={setStyle} />
+        <ChipGroup options={STYLE_OPTIONS} value={style} onChange={handleStyleChange} />
       </Section>
 
+      {/* Frequenza — dipendente dallo stile */}
       <Section
-        label="Frequenza operazioni"
-        value={INTENSITY_OPTIONS.find(o => o.id === intensity)?.label}
-        hint="Quante operazioni apri nell'orizzonte scelto"
+        label={`Operazioni ${freqConfig.unit}`}
+        value={freqLabel}
+        hint="Quante operazioni apri in media"
       >
-        <ChipGroup options={INTENSITY_OPTIONS} value={intensity} onChange={setIntensity} />
+        <ChipGroup options={freqConfig.options} value={freq} onChange={setFreq} />
       </Section>
 
+      {/* Dimensione account */}
       <Section
         label="Dimensione account"
         value={ACCOUNT_OPTIONS.find(o => o.id === account)?.range}
@@ -237,6 +259,7 @@ export function SimulatoreShell() {
         </div>
       </Section>
 
+      {/* Leva */}
       <Section
         label="Leva finanziaria"
         value={LEVA_OPTIONS.find(o => o.id === leva)?.hint}
@@ -282,9 +305,7 @@ export function SimulatoreShell() {
     <>
       {/* ── DESKTOP ≥861px ── */}
       <aside className="sim-panel" aria-label="Parametri simulazione">
-        <div className="sim-panel__content">
-          {panelContent}
-        </div>
+        <div className="sim-panel__content">{panelContent}</div>
       </aside>
 
       {resultsArea}
