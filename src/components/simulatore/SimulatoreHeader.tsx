@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
 import { AppConfig } from '@/utils/AppConfig';
+import { Logo } from '@/templates/Logo';
 
 export function SimulatoreHeader() {
   const handleShare = () => {
@@ -27,45 +27,7 @@ export function SimulatoreHeader() {
   return (
     <header className="sim-header">
       <div className="sim-header__left">
-        <Link
-          href="/"
-          className="sim-logo"
-          aria-label={`${AppConfig.name} \u2014 torna alla home`}
-          style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}
-        >
-          {/* Stesso mark della homepage — T in box verde */}
-          <svg
-            width="26"
-            height="26"
-            viewBox="0 0 32 32"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-            style={{ flexShrink: 0, display: 'block' }}
-          >
-            <rect width="32" height="32" rx="8" fill="var(--s-ac)" />
-            <path
-              d="M8 11h16M16 11v12"
-              stroke="white"
-              strokeWidth="3"
-              strokeLinecap="round"
-            />
-            <circle cx="22" cy="11" r="2" fill="rgba(255,255,255,0.6)" />
-          </svg>
-
-          {/* Wordmark bianco su dark */}
-          <span style={{
-            fontWeight: 700,
-            fontSize: '0.9375rem',
-            letterSpacing: '-0.03em',
-            lineHeight: 1,
-            color: 'var(--s-t1)',
-            fontFamily: 'var(--s-sans)',
-            userSelect: 'none',
-          }}>
-            {AppConfig.name}
-          </span>
-        </Link>
+        <Logo href="/" size="sm" />
 
         <span className="sim-header__page-label" aria-hidden="true">
           <span className="sim-header__page-sep">/</span>
