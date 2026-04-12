@@ -1,33 +1,37 @@
 // ============================================================
-// RECOMMEND ENGINE v2
+// RECOMMEND ENGINE v3
 //
-// Output: classifica broker per tipo strumento,
-//         ordinata per costo mensile stimato (EUR) ASC.
+// CHANGES v3 (vs v2):
 //
-// Struttura output principale (UI-ready):
+//   fix(🔴): eliminato double-scaling
+//            engine ora è per-trade → recommend moltiplica × tradesPerMonth
+//            PRIMA: engine riceveva nTrades e recommend moltiplicava ancora
 //
-//   rankingTable: InstrumentRanking[]
-//   ├── { instrumentType: 'CFD ECN/STP', brokers: BrokerRow[] }
-//   ├── { instrumentType: 'CFD Market Maker', brokers: BrokerRow[] }
-//   ├── { instrumentType: 'Spot FX', brokers: BrokerRow[] }
-//   └── { instrumentType: 'FX Futures', brokers: BrokerRow[] }
+//   add(🟢): BrokerRow.monthlyCost: CostRange (best/expected/worst)
+//            BrokerRow.singleTradeCost: CostRange
 //
-//   Ogni BrokerRow:
-//   { rank, brokerName, accountType, monthlyCostEUR, breakdown, feasibility }
+//   fix(🟠): monthlyCostEUR mantenuto come backward-compat (= expected)
 //
-// Logica:
-//   1. runEngine() per singolo trade
-//   2. × tradesPerMonth → costi mensili
-//   3. Raggruppa per InstrumentCategory
-//   4. INFEASIBLE → rejected[] (non nella tabella)
-//   5. Dentro ogni categoria: ordina per monthlyCostEUR ASC
-//   6. toRankingTable() → array ordinato per categoria, solo quelle non vuote
+//   fix(🟠): sort per monthlyCost.expected ASC (non score)
+//
+//   fix(🟠): breakdown monthly ora include slippageEUR scalato
 // ============================================================
 
 import { runEngine }         from './engine';
 import type { EngineInput, SimulatorResult } from './engine';
 
-// ── Tipi ───────────────────────────────────────────────────────────────────
+// ── Range type (re-export per UI) ─────────────────────────────────────────
+export type CostRange = {
+  best:     number;
+  expected: number;
+  worst:    number;
+};
+
+function scaleRange(r: CostRange, factor: number): CostRange {
+  return { best: r.best * factor, expected: r.expected * factor, worst: r.worst * factor };
+}
+
+// ── Tipi ──────────────────────────────────────────────────────────────────
 
 export type InstrumentCategory =
   | 'CFD_ECN'
@@ -42,71 +46,50 @@ export type BrokerRow = {
   brokerId:         string;
   brokerName:       string;
   accountTypeName:  string;
-  // Costo singolo trade
+  // Costo per singolo trade
   singleTradeCostBps: number;
-  singleTradeCostEUR: number;
-  // Costo mensile stimato (= singleTrade × tradesPerMonth)
-  monthlyCostEUR:   number;
+  singleTradeCostEUR: number;        // backward compat (= expected)
+  singleTradeCost:    CostRange;     // NEW — distribuzione per trade
+  // Costo mensile (= singleTrade × tradesPerMonth)
+  monthlyCostEUR:   number;          // backward compat (= expected)
   monthlyCostBps:   number;
-  // Breakdown mensile — ogni voce è già scalata × tradesPerMonth
+  monthlyCost:      CostRange;       // NEW — distribuzione mensile
+  // Breakdown mensile (ogni voce scalata × tradesPerMonth, valore expected)
   breakdown: {
     spreadEUR:      number;
     commissionEUR:  number;
     overnightEUR:   number;
+    slippageEUR:    number;          // NEW — non più assente
     exchangeFeeEUR: number;
     rollEUR:        number;
   };
-  feasibility:      import('./engine').Feasibility;
+  feasibility:       import('./engine').Feasibility;
   feasibilityDetail: import('./engine').FeasibilityDetail;
-  score:            number;
-  // Futures: taglia selezionata (micro/mini/full), null per CFD/Spot
-  contractSize:     'micro' | 'mini' | 'full' | null;
-  raw:              SimulatorResult;
+  score:             number;
+  contractSize:      'micro' | 'mini' | 'full' | null;
+  raw:               SimulatorResult;
 };
 
-/**
- * Classifica broker per UN tipo strumento.
- * Questa è l'unità di rendering della UI:
- *   <InstrumentRankingTable data={ranking} />
- */
 export type InstrumentRanking = {
   category:      InstrumentCategory;
-  categoryLabel: string;           // 'CFD ECN/STP', 'FX Futures', ...
-  brokers:       BrokerRow[];      // ordinato per monthlyCostEUR ASC, solo accessible
-  cheapest:      BrokerRow | null; // brokers[0]
-  unavailable:   boolean;          // true se nessun broker accessibile
+  categoryLabel: string;
+  brokers:       BrokerRow[];
+  cheapest:      BrokerRow | null;
+  unavailable:   boolean;
 };
 
-/** Entry interna (pre-UI) — mantiene compatibilità con globalRanking */
 export type RankedEntry = BrokerRow & {
   instrumentCategory: InstrumentCategory;
 };
 
 export type RecommendOutput = {
-  /**
-   * STRUTTURA PRINCIPALE — lista per tipo strumento, UI-ready.
-   * Ordinata: CFD_ECN → CFD_DD → SPOT_FX → FUTURES → OTHER.
-   * Categorie senza broker accessibili sono ESCLUSE.
-   */
   rankingTable:       InstrumentRanking[];
-
-  /** Stessa struttura, include anche categorie vuote — per debug/completezza */
   byCategory:         Record<InstrumentCategory, InstrumentRanking>;
-
-  /** Tutti i broker accessibili, mixed, ordinati per monthlyCostEUR ASC */
   globalRanking:      RankedEntry[];
-
-  /** Broker assoluto più economico tra tutti i tipi strumento */
   bestOverall:        RankedEntry | null;
-
-  /** Offerte scartate (INFEASIBLE) — da mostrare separatamente nella UI */
   rejected:           RankedEntry[];
-
-  /** true = nessuna offerta è risk-sustainable → suggerisci ETF valutario */
   suggestCurrencyETF: boolean;
-
   inputSummary: {
-    exposure:       number;
     capital:        number;
     tradesPerMonth: number;
     avgHoldingDays: number;
@@ -115,14 +98,14 @@ export type RecommendOutput = {
   };
 };
 
-export type RecommendInput = Omit<EngineInput, 'nTrades' | 'nDaysOpen'> & {
+export type RecommendInput = Omit<EngineInput, 'nDaysOpen'> & {
   /** Numero operazioni al mese — default 10 */
   tradesPerMonth: number;
   /** Giorni medi di holding per trade — default 1 (intraday) */
   avgHoldingDays: number;
 };
 
-// ── Costanti ───────────────────────────────────────────────────────────────
+// ── Costanti ──────────────────────────────────────────────────────────────
 
 const CATEGORY_LABELS: Record<InstrumentCategory, string> = {
   CFD_ECN:  'CFD ECN / STP',
@@ -132,7 +115,6 @@ const CATEGORY_LABELS: Record<InstrumentCategory, string> = {
   OTHER:    'Altro',
 };
 
-/** Ordine di rendering nella UI */
 const CATEGORY_ORDER: InstrumentCategory[] = [
   'CFD_ECN',
   'CFD_DD',
@@ -141,7 +123,7 @@ const CATEGORY_ORDER: InstrumentCategory[] = [
   'OTHER',
 ];
 
-// ── Helpers ────────────────────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────────
 
 function categorize(instrumentTypeId: string): InstrumentCategory {
   if (instrumentTypeId === 'futures_std') return 'FUTURES';
@@ -151,34 +133,49 @@ function categorize(instrumentTypeId: string): InstrumentCategory {
   return 'OTHER';
 }
 
+/**
+ * Converte SimulatorResult (per-trade) → BrokerRow (mensile).
+ * SCALING: singleTrade × tradesPerMonth.
+ * Nessun double-scaling: engine è per singolo trade.
+ */
 function toBrokerRow(
   raw:            SimulatorResult,
   tradesPerMonth: number,
   rank:           number,
 ): BrokerRow {
-  const singleTradeCostEUR = raw.costBreakdown.totalEUR;
-  const singleTradeCostBps = raw.totalCostBps;
+  const perTrade = raw.costRange.perTrade;
+
+  const singleTradeCost: CostRange = {
+    best:     perTrade.best,
+    expected: perTrade.expected,
+    worst:    perTrade.worst,
+  };
+
+  const monthlyCost = scaleRange(singleTradeCost, tradesPerMonth);
 
   return {
     rank,
-    brokerId:          raw.id.split('_')[0] ?? raw.id,
-    brokerName:        raw.brokerName,
-    accountTypeName:   raw.accountTypeName,
-    singleTradeCostBps,
-    singleTradeCostEUR,
-    monthlyCostEUR:    singleTradeCostEUR * tradesPerMonth,
-    monthlyCostBps:    singleTradeCostBps * tradesPerMonth,
+    brokerId:           raw.id.split('_')[0] ?? raw.id,
+    brokerName:         raw.brokerName,
+    accountTypeName:    raw.accountTypeName,
+    singleTradeCostBps: raw.totalCostBps,
+    singleTradeCostEUR: singleTradeCost.expected,   // backward compat
+    singleTradeCost,
+    monthlyCostEUR:     monthlyCost.expected,        // backward compat
+    monthlyCostBps:     raw.totalCostBps * tradesPerMonth,
+    monthlyCost,
     breakdown: {
       spreadEUR:      raw.costBreakdown.spreadEUR      * tradesPerMonth,
       commissionEUR:  raw.costBreakdown.commissionEUR  * tradesPerMonth,
       overnightEUR:   raw.costBreakdown.overnightEUR   * tradesPerMonth,
+      slippageEUR:    raw.costBreakdown.slippageEUR    * tradesPerMonth,  // NEW
       exchangeFeeEUR: raw.costBreakdown.exchangeFeeEUR * tradesPerMonth,
       rollEUR:        raw.costBreakdown.rollEUR        * tradesPerMonth,
     },
-    feasibility:        raw.feasibility,
-    feasibilityDetail:  raw.feasibilityDetail,
-    score:              raw.score,
-    contractSize:       raw.contractSize,
+    feasibility:       raw.feasibility,
+    feasibilityDetail: raw.feasibilityDetail,
+    score:             raw.score,
+    contractSize:      raw.contractSize,
     raw,
   };
 }
@@ -187,45 +184,38 @@ function toRankedEntry(row: BrokerRow, category: InstrumentCategory): RankedEntr
   return { ...row, instrumentCategory: category };
 }
 
-/**
- * Costruisce InstrumentRanking[] dalla mappa byCategory.
- * - Filtra categorie vuote (unavailable)
- * - Rispetta CATEGORY_ORDER
- * Esporta per testing diretto.
- */
 export function toRankingTable(
   byCategory: Record<InstrumentCategory, InstrumentRanking>,
 ): InstrumentRanking[] {
   return CATEGORY_ORDER
     .map(cat => byCategory[cat])
-    .filter(r => !r.unavailable);
+    .filter((r): r is InstrumentRanking => !r.unavailable);
 }
 
-// ── Funzione principale ────────────────────────────────────────────────────
+// ── Funzione principale ───────────────────────────────────────────────────
 
 export function recommend({
   tradesPerMonth = 10,
   avgHoldingDays = 1,
   capital,
-  exposure,
   ...engineParams
 }: RecommendInput): RecommendOutput {
-  const effectiveCapital = capital ?? exposure;
+  const effectiveCapital = capital ?? 0;
 
+  // Engine per singolo trade — nessun nTrades passato
   const rawResults = runEngine({
     ...engineParams,
-    exposure,
     capital:   effectiveCapital,
-    nTrades:   1,
     nDaysOpen: avgHoldingDays,
   });
 
-  // ── Raggruppa per categoria ─────────────────────────────────────────────
+  // ── Raggruppa per categoria ────────────────────────────────────────────
   const byCategory = Object.fromEntries(
     CATEGORY_ORDER.map(cat => {
       const rows = rawResults
         .filter(r => r.feasibility !== 'INFEASIBLE' && categorize(r.instrumentName) === cat)
-        .sort((a, b) => a.costBreakdown.totalEUR - b.costBreakdown.totalEUR)
+        // sort per costo atteso per trade ASC (engine ha già ordinato, ma ri-sort per sicurezza)
+        .sort((a, b) => a.costRange.perTrade.expected - b.costRange.perTrade.expected)
         .map((r, i) => toBrokerRow(r, tradesPerMonth, i + 1));
 
       const ranking: InstrumentRanking = {
@@ -239,21 +229,20 @@ export function recommend({
     }),
   ) as Record<InstrumentCategory, InstrumentRanking>;
 
-  // ── Rejected (INFEASIBLE) ───────────────────────────────────────────────
+  // ── Rejected ───────────────────────────────────────────────────────────
   const rejected: RankedEntry[] = rawResults
     .filter(r => r.feasibility === 'INFEASIBLE')
     .map((r, i) => toRankedEntry(toBrokerRow(r, tradesPerMonth, i + 1), categorize(r.instrumentName)));
 
-  // ── Global ranking (accessible, mixed, ASC) ────────────────────────────
+  // ── Global ranking ─────────────────────────────────────────────────────
   const globalRanking: RankedEntry[] = CATEGORY_ORDER
     .flatMap(cat => byCategory[cat].brokers.map(row => toRankedEntry(row, cat)))
-    .sort((a, b) => a.monthlyCostEUR - b.monthlyCostEUR)
+    .sort((a, b) => a.monthlyCost.expected - b.monthlyCost.expected)
     .map((e, i) => ({ ...e, rank: i + 1 }));
 
   const bestOverall = globalRanking[0] ?? null;
 
-  // ── suggestCurrencyETF ─────────────────────────────────────────────────
-  const anySustainable = globalRanking.some(e => e.feasibilityDetail.sustainable);
+  const anySustainable    = globalRanking.some(e => e.feasibilityDetail.sustainable);
   const suggestCurrencyETF = globalRanking.length > 0 && !anySustainable;
 
   return {
@@ -264,7 +253,6 @@ export function recommend({
     rejected,
     suggestCurrencyETF,
     inputSummary: {
-      exposure,
       capital:        effectiveCapital,
       tradesPerMonth,
       avgHoldingDays,
