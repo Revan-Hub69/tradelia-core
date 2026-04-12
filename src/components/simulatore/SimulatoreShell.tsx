@@ -25,6 +25,9 @@ const ASSET_TREE: Record<string, Record<string, string[]>> = {
   Materie: { Metalli: ['Oro','Argento','Rame'], Energia: ['Petrolio WTI','Gas Nat.','Brent'] },
 };
 
+/* ─── Categorie senza selettore leva (leva implicita nel prodotto) ── */
+const NO_LEVA_CATEGORIES = new Set(['Forex']);
+
 /* ─── DEFAULTS ────────────────────────────────────────────────────── */
 const DEFAULT_CATEGORY  = 'Forex';
 const DEFAULT_SUBGROUP  = 'Majors';
@@ -40,7 +43,9 @@ type FreqId      = 'low' | 'mid' | 'high';
 type AccountType = 'demo' | 'micro' | 'retail' | 'semipro' | 'pro';
 type LevaType    = 'nessuna' | 'bassa' | 'media' | 'alta';
 
-const STEPS = ['categoria','sottogruppo','stile','frequenza','account','leva'] as const;
+/* Steps: leva è inclusa solo se la categoria la richiede */
+const STEPS_WITH_LEVA    = ['categoria','sottogruppo','stile','frequenza','account','leva'] as const;
+const STEPS_WITHOUT_LEVA = ['categoria','sottogruppo','stile','frequenza','account'] as const;
 
 /* ─── OPTIONS ─────────────────────────────────────────────────────── */
 const STYLE_OPTIONS: { id: StyleType; label: string; hint: string }[] = [
@@ -248,6 +253,14 @@ export function SimulatoreShell() {
   const [account,  setAccount]  = useState<AccountType | null>(DEFAULT_ACCOUNT);
   const [leva,     setLeva]     = useState<LevaType | null>(DEFAULT_LEVA);
 
+  /* Leva non applicabile per alcune categorie (es. Forex) */
+  const showLeva = !NO_LEVA_CATEGORIES.has(assetClass ?? '');
+
+  /* Quando si cambia categoria e la nuova non ha leva, resettiamo lo stato leva */
+  useEffect(() => {
+    if (!showLeva) setLeva(null);
+  }, [showLeva]);
+
   /* Sincronizza la categoria col motore usando il default all'avvio */
   useEffect(() => {
     if (!assetClass) setAssetClass(DEFAULT_CATEGORY);
@@ -280,10 +293,15 @@ export function SimulatoreShell() {
   const freqLabel   = freqCurrent && freqConfig ? `${freqCurrent.hint} ${freqConfig.unit}` : undefined;
   const levaLabel   = leva ? (LEVA_OPTIONS.find(o => o.id === leva)?.hint ?? undefined) : undefined;
 
-  const completedSteps = [assetClass, subGroup, style, freq, account, leva].filter(Boolean).length;
-  const totalSteps     = STEPS.length;
+  /* Step e completamento dinamici in base alla categoria */
+  const STEPS        = showLeva ? STEPS_WITH_LEVA : STEPS_WITHOUT_LEVA;
+  const totalSteps   = STEPS.length;
+  const filledValues = showLeva
+    ? [assetClass, subGroup, style, freq, account, leva]
+    : [assetClass, subGroup, style, freq, account];
+  const completedSteps = filledValues.filter(Boolean).length;
   const isComplete     = completedSteps === totalSteps;
-  const scrollTrigger  = [assetClass, subGroup, style, freq, account, leva].join('|');
+  const scrollTrigger  = filledValues.join('|');
 
   useStepAutoScroll(panelContentRef, scrollTrigger, true);
   useStepAutoScroll(sheetContentRef, scrollTrigger, snap === 'full');
@@ -393,23 +411,26 @@ export function SimulatoreShell() {
           </Section>
         </AnimatedSection>
 
-        <AnimatedSection show={!!account}>
-          <Section
-            label="Leva finanziaria"
-            value={levaLabel}
-            hint="Moltiplicatore di esposizione"
-            done={!!leva}
-            groupId="sim-leva"
-          >
-            <RadioChipGroup
-              id="sim-leva"
+        {/* Leva: visibile solo per categorie che la supportano (non Forex) */}
+        {showLeva && (
+          <AnimatedSection show={!!account}>
+            <Section
               label="Leva finanziaria"
-              options={LEVA_OPTIONS}
-              value={leva}
-              onChange={setLeva}
-            />
-          </Section>
-        </AnimatedSection>
+              value={levaLabel}
+              hint="Moltiplicatore di esposizione"
+              done={!!leva}
+              groupId="sim-leva"
+            >
+              <RadioChipGroup
+                id="sim-leva"
+                label="Leva finanziaria"
+                options={LEVA_OPTIONS}
+                value={leva}
+                onChange={setLeva}
+              />
+            </Section>
+          </AnimatedSection>
+        )}
 
         <AnimatedSection show={isComplete}>
           <div className="sim-sheet__cta">
