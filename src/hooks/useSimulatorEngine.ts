@@ -24,13 +24,6 @@ const STYLE_TO_DAYS: Record<string, number> = {
   scalping: 0, intraday: 1, swing: 7, position: 30,
 };
 
-const FREQ_TRADES: Record<string, Record<string, number>> = {
-  scalping:  { low: 7,  mid: 30, high: 100 },
-  intraday:  { low: 1,  mid: 4,  high: 10  },
-  swing:     { low: 1,  mid: 4,  high: 10  },
-  position:  { low: 1,  mid: 3,  high: 6   },
-};
-
 const LEVA_TO_SL_PIPS: Record<string, number> = {
   nessuna: 200, bassa: 100, media: 30, alta: 15,
 };
@@ -44,14 +37,13 @@ export type ProfileInput = {
 
 /**
  * Converte il profilo UI → parametri EngineInput.
- * Restituisce SOLO capital (non exposure) — il motore deriva
- * l'exposure applicando la leva ESMA corretta per asset class.
+ * nTrades rimosso (v4 engine è sempre per-singolo-trade).
+ * Scaling mensile = responsabilità del caller / recommend().
  */
 function profileToEngineParams(p: ProfileInput): Partial<EngineInput> {
   return {
     capital:      p.account ? (ACCOUNT_TO_CAPITAL[p.account] ?? 6_000) : 6_000,
     nDaysOpen:    p.style   ? (STYLE_TO_DAYS[p.style]         ?? 1)    : 1,
-    nTrades:      (p.style && p.freq) ? (FREQ_TRADES[p.style]?.[p.freq] ?? 1) : 1,
     stopLossPips: p.leva    ? (LEVA_TO_SL_PIPS[p.leva]        ?? 20)   : 20,
   };
 }
@@ -77,8 +69,6 @@ export function useSimulatorEngine() {
     setIsComputing(true);
     debounceRef.current = setTimeout(() => {
       const extra = profileToEngineParams(profileRef.current);
-      // NON passiamo exposure: il motore la calcola da capital × ESMA_leverage.
-      // Se capital è assente (profilo incompleto) il motore usa il default 6k.
       const input: EngineInput = {
         assetClass: assetRef.current!,
         ...extra,
@@ -115,11 +105,18 @@ export function useSimulatorEngine() {
     scheduleRun();
   }, [syncUrl, scheduleRun]);
 
+  // setExposure: no-op stub — exposure è derivata da capital × ESMA nel motore.
+  // Mantenuto per compatibilità con SimulatoreShell senza modificare il componente.
+  const setExposure = useCallback((_exposure: number) => {
+    // intenzionalmente vuoto: il motore ignora exposure diretta
+  }, []);
+
   return {
     assetClass,
     setAssetClass,
     profile,
     setProfile,
+    setExposure,
     results,
     isComputing: isComputing || isPending,
   };
